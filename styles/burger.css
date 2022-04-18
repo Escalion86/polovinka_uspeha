@@ -1,0 +1,122 @@
+.menu-btn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  transition: all .5s ease-in-out;
+  /* border: 3px solid #fff; */
+}
+
+.menu-btn__burger {
+  width: 40px;
+  height: 5px;
+  /* background: rgba(76, 29, 149, 1); */
+  border-radius: 5px;
+  /* box-shadow: 0 2px 5px rgba(76, 29, 149, 1); */
+  transition: all .5s ease-in-out;
+}
+
+.menu-btn__burger::before, .menu-btn__burger::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 5px;
+  /* background: rgba(76, 29, 149, 1); */
+  border-radius: 5px;
+  /* box-shadow: 0 2px 5px rgba(76, 29, 149, 1); */
+  transition: all .5s ease-in-out;
+}
+
+.menu-btn__burger::before {
+  transform: translateY(-14px);
+}
+
+.menu-btn__burger::after {
+  transform: translateY(14px);
+}
+
+/* ANIMATION */
+
+.menu-btn.open .menu-btn__burger {
+  transform: translateX(-50px);
+  background: transparent;
+  box-shadow: none;
+}
+
+.menu-btn.open .menu-btn__burger:before {
+  transform: rotate(45deg) translate(35px, -35px)
+}
+
+.menu-btn.open .menu-btn__burger:after {
+  transform: rotate(-45deg) translate(35px, 35px)
+}
+
+.overlay {
+  /* Height & width depends on how you want to reveal the overlay (see JS below) */
+  height: 0;
+  width: 100%;
+  position: fixed;
+  /* Stay in place */
+  /* z-index: 1; */
+  /* Sit on top */
+  left: 0;
+  /* top: 120; */
+  background-color: rgb(255, 255, 255);
+  /* Black fallback color */
+  background-color: rgba(255, 255, 255, 0.90);
+  /* Black w/opacity */
+  overflow: hidden;
+  /* Disable horizontal scroll */
+  transition: 0.5s;
+  /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
+
+.overlay.open {
+  /* Height & width depends on how you want to reveal the overlay (see JS below) */
+  height: 100%;
+}
+
+.overlay-content {
+  /* position: relative; */
+  /* top: 25%; */
+  /* 25% from the top */
+  width: 100%;
+  /* 100% width */
+  text-align: center;
+  /* Centered text/links */
+  /* margin-top: 30px; */
+  /* 30px top margin to avoid conflict with the close button on smaller screens */
+}
+
+/* The Overlay (background) */
+
+/* The navigation links inside the overlay */
+
+/* .overlay a { */
+
+/* padding: 8px; */
+
+/* text-decoration: none; */
+
+/* font-size: 36px; */
+
+/* color: rgba(76, 29, 149, 1); */
+
+/* display: block; */
+
+/* Display block instead of inline */
+
+/* transition: 0.3s; */
+
+/* Transition effects on hover (color) */
+
+/* } */
+
+/* When you mouse over the navigation links, change their color */
+
+/* .overlay a:hover, .overlay a:focus {
+  color: #f1f1f1;
+} */
