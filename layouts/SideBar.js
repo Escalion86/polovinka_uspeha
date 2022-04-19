@@ -16,8 +16,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { motion } from 'framer-motion'
 import { pages, pagesGroups } from '@helpers/constants'
 import Burger from '@components/Burger'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import menuOpenAtom from '@state/atoms/menuOpen'
+import Link from 'next/link'
 
 const menuCfg = (pages, pagesGroups, user) => {
   return pagesGroups.reduce((totalGroups, group) => {
@@ -45,36 +46,40 @@ const menuCfg = (pages, pagesGroups, user) => {
   }, [])
 }
 
-const MenuItem = ({
-  item,
-  setPageId = () => {},
-  active = false,
-  groupIsActive,
-}) => {
+const MenuItem = ({ item, active = false }) => {
+  const setMenuOpen = useSetRecoilState(menuOpenAtom)
   return (
-    <a
-      // className="flex items-center justify-between px-3 py-1 mt-2 duration-300 bg-gray-200 rounded-lg cursor-pointer flex-nowrap hover:bg-hover"
-      className={cn(
-        'flex items-center justify-between mb-1 duration-300 rounded-lg cursor-pointer group-hover:text-general flex-nowrap hover:bg-general',
-        groupIsActive ? 'text-primary' : 'text-white'
-      )}
-      onClick={() => {
-        setPageId(item.id)
-      }}
-    >
-      <div className="w-full px-3 py-1 hover:text-white">
-        <span className={'text-sm font-medium whitespace-nowrap'}>
-          {item.name}
-        </span>
-        {item.num !== null && (
-          <span className="text-xs font-semibold text-general">{item.num}</span>
+    <Link href={'/cabinet/' + item.href}>
+      <a
+        // className="flex items-center justify-between px-3 py-1 mt-2 duration-300 bg-gray-200 rounded-lg cursor-pointer flex-nowrap hover:bg-hover"
+        className={cn(
+          'flex items-center justify-between mb-1 rounded-lg cursor-pointer flex-nowrap ',
+          active ? 'bg-general text-white' : '',
+          'hover:bg-general hover:text-white'
         )}
-      </div>
-    </a>
+        // onClick={() => {
+        //   setPageId(item.id)
+        // }}
+        onClick={() => setMenuOpen(false)}
+      >
+        <div className={cn('flex items-center w-full px-3 py-1 gap-x-2 ')}>
+          <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
+          <span className={'text-sm font-medium whitespace-nowrap'}>
+            {item.name}
+          </span>
+          {item.num !== null && (
+            <span className="text-xs font-semibold text-general">
+              {item.num}
+            </span>
+          )}
+        </div>
+      </a>
+    </Link>
   )
 }
 
-const Menu = ({ menuCfg, setPageId, activePageId = 0 }) => {
+const Menu = ({ menuCfg, activePage }) => {
+  console.log('activePage', activePage)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
   const variants = {
@@ -87,7 +92,7 @@ const Menu = ({ menuCfg, setPageId, activePageId = 0 }) => {
   }, [menuOpen])
 
   const indexOfActiveGroup = menuCfg.findIndex((item) =>
-    item.items.find((item) => item.id === activePageId)
+    item.items.find((item) => item.href === activePage)
   )
 
   return (
@@ -96,6 +101,14 @@ const Menu = ({ menuCfg, setPageId, activePageId = 0 }) => {
         menuCfg.length > 0 &&
         menuCfg.map((item, index) => {
           const groupIsActive = index === indexOfActiveGroup
+          const Component =
+            item.items.length === 1
+              ? (props) => (
+                  <Link href={props.href}>
+                    <a {...props} />
+                  </Link>
+                )
+              : (props) => <button {...props} />
           return (
             <div
               className={cn('flex flex-col', {
@@ -115,14 +128,15 @@ const Menu = ({ menuCfg, setPageId, activePageId = 0 }) => {
                 )}
                 key={'groupMenu' + index}
               >
-                <button
+                <Component
                   className={cn(
                     'flex items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
                     // groupIsActive ? 'text-ganeral' : 'text-white'
                   )}
+                  href={item.items[0].href}
                   onClick={() => {
                     if (item.items.length === 1) {
-                      setPageId(item.items[0].id)
+                      // setPageId(item.items[0].id)
                       setMenuOpen(false)
                     } else {
                       setOpenedMenuIndex(
@@ -152,25 +166,19 @@ const Menu = ({ menuCfg, setPageId, activePageId = 0 }) => {
                       <FontAwesomeIcon icon={faAngleDown} size="lg" />
                     </div>
                   )}
-                </button>
+                </Component>
                 {item.items.length > 1 && (
                   <motion.div
                     variants={variants}
                     initial="hide"
                     animate={openedMenuIndex === index ? 'show' : 'hide'}
-                    className="ml-10 mr-2 overflow-hidden"
+                    className="ml-3 mr-2 overflow-hidden"
                   >
                     {item.items.map((subitem, index) => (
                       <MenuItem
                         key={'menu' + subitem.id}
                         item={subitem}
-                        setPageId={(id) => {
-                          setOpenedMenuIndex(null)
-                          setMenuOpen(false)
-                          setPageId(id)
-                        }}
-                        groupIsActive={groupIsActive}
-                        active={activePageId === subitem.id}
+                        active={activePage === subitem.href}
                       />
                     ))}
                   </motion.div>
@@ -183,7 +191,7 @@ const Menu = ({ menuCfg, setPageId, activePageId = 0 }) => {
   )
 }
 
-const SideBar = ({ user }) => {
+const SideBar = ({ user, page }) => {
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const variants = {
     min: { width: 64 },
@@ -209,15 +217,8 @@ const SideBar = ({ user }) => {
         initial={'min'}
         layout
       >
-        <div className="flex flex-col flex-1 w-full px-2 py-3 overflow-y-auto border-r border-general">
-          <Menu
-            menuCfg={menuCfg(pages, pagesGroups, user)}
-            setPageId={(id) => {
-              setPageId(id)
-              closeMenu()
-            }}
-            activePageId={0}
-          />
+        <div className="flex flex-col flex-1 w-full px-2 py-3 overflow-y-auto border-l border-r border-general">
+          <Menu menuCfg={menuCfg(pages, pagesGroups, user)} activePage={page} />
         </div>
       </motion.div>
     </div>

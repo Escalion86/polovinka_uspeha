@@ -12,7 +12,7 @@ import CabinetHeader from '@layouts/CabinetHeader'
 function CabinetPage({ user }) {
   // const { courses, user, userCourses } = props
 
-  const router = useRouter()
+  // const router = useRouter()
 
   // const coursesWithMoreInfo = courses.map((course) => {
   //   const chaptersOfCourse = chapters.filter(
@@ -133,146 +133,18 @@ export default CabinetPage
 
 export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
-  console.log('session', session)
-  try {
-    const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+
+  if (session) {
     return {
-      props: {
-        events,
-        user: session?.user ? session.user : null,
+      redirect: {
+        destination: `/cabinet/directions`,
       },
     }
-  } catch {
+  } else {
     return {
-      props: {
-        events: null,
-        user: session?.user ? session.user : null,
+      redirect: {
+        destination: `/`,
       },
-      // notFound: true,
     }
   }
-
-  // try {
-  //   await dbConnect()
-
-  //   // Сначала проверяем - возможно было приглашение на курс
-  //   const emailInvitationCourses = await EmailInvitationCourses.find({
-  //     email: session.user.email,
-  //   })
-  //   // Если приглашение было, то сначала создаем пользователя как участника курса и только потом удаляем приглашение
-  //   if (emailInvitationCourses.length > 0) {
-  //     for (let i = 0; i < emailInvitationCourses.length; i++) {
-  //       const checkUserInCourse = await UsersCourses.find({
-  //         userId: session.user._id,
-  //         courseId: emailInvitationCourses[i].courseId,
-  //       })
-  //       if (checkUserInCourse.length === 0) {
-  //         await UsersCourses.create({
-  //           userId: session.user._id,
-  //           courseId: emailInvitationCourses[i].courseId,
-  //           role: emailInvitationCourses[i].role,
-  //         })
-  //       }
-  //     }
-  //     await EmailInvitationCourses.deleteMany({ email: session.user.email })
-  //   }
-
-  //   // Получаем список Id курсов доступных для пользователя
-
-  //   const userCourses = await UsersCourses.find({ userId: session.user._id })
-
-  //   console.log('emailInvitationCourses', emailInvitationCourses)
-
-  //   const coursesIds = getIds(userCourses, 'courseId')
-
-  //   const courses = JSON.parse(
-  //     JSON.stringify(
-  //       await Courses.find({
-  //         _id: { $in: coursesIds },
-  //       })
-  //     )
-  //   )
-
-  //   const coursesRole = {}
-  //   userCourses.forEach((userCourse) => {
-  //     coursesRole[userCourse.courseId] = userCourse.role
-  //   })
-
-  //   const chapters = JSON.parse(
-  //     JSON.stringify(
-  //       await Chapters.find({
-  //         courseId: { $in: coursesIds },
-  //       })
-  //     )
-  //   )
-
-  //   if (!chapters) {
-  //     return {
-  //       notFound: true,
-  //     }
-  //   }
-
-  //   const lectures = JSON.parse(
-  //     JSON.stringify(
-  //       await Lectures.find({
-  //         chapterId: { $in: getIds(chapters) },
-  //       })
-  //     )
-  //   )
-
-  //   if (!lectures) {
-  //     return {
-  //       notFound: true,
-  //     }
-  //   }
-
-  //   const tasks = JSON.parse(
-  //     JSON.stringify(
-  //       await Tasks.find({
-  //         lectureId: { $in: getIds(lectures) },
-  //       })
-  //     )
-  //   )
-
-  //   if (!tasks) {
-  //     return {
-  //       notFound: true,
-  //     }
-  //   }
-
-  //   const answers = JSON.parse(
-  //     JSON.stringify(await Answers.find({ taskId: { $in: getIds(tasks) } }))
-  //   )
-
-  //   if (!answers) {
-  //     return {
-  //       notFound: true,
-  //     }
-  //   }
-
-  //   return {
-  //     props: {
-  //       courses,
-  //       coursesRole,
-  //       chapters,
-  //       lectures,
-  //       tasks,
-  //       answers,
-  //       user: session?.user ? session.user : null,
-  //     },
-  //   }
-  // } catch {
-  //   return {
-  //     props: {
-  //       courses: [],
-  //       coursesRole: {},
-  //       chapters: [],
-  //       lectures: [],
-  //       tasks: [],
-  //       answers: [],
-  //       user: session?.user ? session.user : null,
-  //     },
-  //     // notFound: true,
-  //   }
-  // }
 }
