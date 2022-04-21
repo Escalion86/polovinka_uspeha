@@ -5,42 +5,25 @@ import 'react-edit-text/dist/index.css'
 
 import { useRouter } from 'next/router'
 import SideBar from 'layouts/SideBar'
-import CabinetWrapper from '@layouts/content/CabinetWrapper'
-import ContentWrapper from '@layouts/content/ContentWrapper'
+import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
+import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 import CabinetHeader from '@layouts/CabinetHeader'
+import { CONTENTS } from '@helpers/constants'
+import {
+  fetchingDirections,
+  fetchingEvents,
+  fetchingReviews,
+} from '@helpers/fetchers'
+import { useState, useEffect } from 'react'
+import LoadingContent from '@layouts/content/LoadingContent'
+
+import Modal from '@layouts/modals/Modal'
+import ModalsPortal from '@layouts/modals/ModalsPortal'
 
 function CabinetPage({ user, events, directions, reviews, page }) {
-  console.log('page', page)
-  // const { courses, user, userCourses } = props
-
-  const router = useRouter()
-
-  // const coursesWithMoreInfo = courses.map((course) => {
-  //   const chaptersOfCourse = chapters.filter(
-  //     (chapter) => chapter.courseId === course._id
-  //   )
-  //   const chaptersOfCourseIds = getIds(chaptersOfCourse)
-  //   const lecturesOfCourse = lectures.filter((lecture) =>
-  //     chaptersOfCourseIds.includes(lecture.chapterId)
-  //   )
-  //   const lecturesOfCourseIds = getIds(lecturesOfCourse)
-  //   const tasksOfCourse = tasks.filter((task) =>
-  //     lecturesOfCourseIds.includes(task.lectureId)
-  //   )
-  //   return {
-  //     ...course,
-  //     chaptersCount: chaptersOfCourseIds.length,
-  //     lecturesCount: lecturesOfCourse.length,
-  //     tasksCount: tasksOfCourse.length,
-  //   }
-  // })
-
-  // const accessCourses = coursesWithMoreInfo.filter(
-  //   (course) => coursesRole[course._id] !== 'admin'
-  // )
-  // const adminCourses = coursesWithMoreInfo.filter(
-  //   (course) => coursesRole[course._id] === 'admin'
-  // )
+  const Component = CONTENTS[page]
+    ? CONTENTS[page]
+    : (props) => <div className="flex justify-center px-2">Ошибка 404</div>
 
   return (
     <>
@@ -53,7 +36,12 @@ function CabinetPage({ user, events, directions, reviews, page }) {
         <CabinetHeader user={user} title="Кабинет" titleLink={`/cabinet`} />
         <SideBar user={user} page={page} />
         <ContentWrapper>
-          {page}
+          <Component
+            user={user}
+            events={events}
+            directions={directions}
+            reviews={reviews}
+          />
           {/* <H2>Доступные курсы</H2>
           <div className="w-full">
             {accessCourses.length > 0 ? (
@@ -97,6 +85,7 @@ function CabinetPage({ user, events, directions, reviews, page }) {
             Создать свой курс
           </button> */}
         </ContentWrapper>
+        <ModalsPortal />
       </CabinetWrapper>
     </>
   )
@@ -139,7 +128,7 @@ export const getServerSideProps = async (context) => {
   const { params } = context
   const { page } = params
 
-  // console.log('session', session)
+  console.log('session', session)
   try {
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)

@@ -97,7 +97,7 @@ const Modal = ({
       <motion.div
         className={
           cn(
-            'relative min-w-84 max-w-132 w-9/12 tablet:min-w-116 px-3 pb-3 duration-300 my-auto bg-white border-l rounded-lg border-primary',
+            'relative min-w-84 w-9/12 tablet:min-w-116 px-3 pb-3 duration-300 my-auto bg-white border-l rounded-lg border-primary',
             title ? 'py-3' : 'py-12'
           )
           // + (rendered ? '' : ' scale-50')

@@ -5,8 +5,8 @@ import 'react-edit-text/dist/index.css'
 
 import { useRouter } from 'next/router'
 import SideBar from 'layouts/SideBar'
-import CabinetWrapper from '@layouts/content/CabinetWrapper'
-import ContentWrapper from '@layouts/content/ContentWrapper'
+import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
+import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 import CabinetHeader from '@layouts/CabinetHeader'
 
 function CabinetPage({ user }) {

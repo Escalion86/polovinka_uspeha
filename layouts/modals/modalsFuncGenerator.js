@@ -1,13 +1,16 @@
-import CheckBox from '@components/CheckBox'
-import ComboBoxRoles from '@components/ComboBoxRoles'
-import Input from '@components/Input'
-import { MODES } from '@helpers/constants'
-import { postData } from '@helpers/CRUD'
-import emailValidator from '@helpers/emailValidator'
-import { useEffect, useState } from 'react'
-import useErrors from '@helpers/useErrors'
+// import CheckBox from '@components/CheckBox'
+// import Input from '@components/Input'
+// import { MODES } from '@helpers/constants'
+// import { postData } from '@helpers/CRUD'
+// import emailValidator from '@helpers/emailValidator'
+// import { useEffect, useState } from 'react'
+// import useErrors from '@helpers/useErrors'
 // import { modalsFuncAtom } from '@state/atoms'
 // import { useRecoilValue } from 'recoil'
+
+import reviewFunc from './modalsFunc/reviewFunc'
+import directionFunc from './modalsFunc/directionFunc'
+import eventFunc from './modalsFunc/eventFunc'
 
 const modalsFuncGenerator = (setModals) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -34,6 +37,9 @@ const modalsFuncGenerator = (setModals) => {
         Children,
       })
     },
+    review: (review) => addModal(reviewFunc(review)),
+    direction: (direction) => addModal(directionFunc(direction)),
+    event: (event) => addModal(eventFunc(event)),
     // addUserToCourse: ({ course }) =>
     //   addModal({
     //     title: `Приглашение пользователя на курс\n"${course.title}"`,

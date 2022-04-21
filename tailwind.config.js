@@ -44,6 +44,9 @@ module.exports = {
         disabled: '#555555',
         black: '#1C1D1F',
       },
+      gridTemplateColumns: {
+        form: 'minmax(min-content, 20%) 1fr',
+      },
       fontSize: {
         xxs: '.625rem',
       },

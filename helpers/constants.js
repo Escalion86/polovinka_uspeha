@@ -77,6 +77,9 @@ import {
   faHeart,
 } from '@fortawesome/free-solid-svg-icons'
 import { faCalendar, faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
+import DirectionsContent from '@layouts/content/DirectionsContent'
+import ReviewsContent from '@layouts/content/ReviewsContent'
+import EventsContent from '@layouts/content/EventsContent'
 // import {
 //   InvitationsContent,
 //   ProductCirculationsContent,
@@ -95,6 +98,12 @@ import { faCalendar, faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 //   DistrictsContent,
 // } from './content'
 // import DevToDoContent from './content/DevToDoContent'
+
+export const CONTENTS = {
+  directions: DirectionsContent,
+  reviews: ReviewsContent,
+  events: EventsContent,
+}
 
 export const pages = [
   {

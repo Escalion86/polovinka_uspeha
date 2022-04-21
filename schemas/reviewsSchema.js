@@ -5,7 +5,7 @@ const reviewsSchema = {
     maxlength: [100, 'Имя автора'],
     default: '',
   },
-  reviewsSchema: {
+  review: {
     type: String,
     maxlength: [600, 'Отзыв не может превышать 600 символов'],
     default: '',

@@ -60,13 +60,14 @@ const EditableTextarea = ({
   disabled,
   onChange,
   onBlur,
-  readonly = true,
+  // readonly = true,
   placeholder,
   onSave,
   uncontrolled = true,
   btnSaveName = 'Сохранить',
   disableUndo = false,
   title,
+  forGrid = false,
 }) => {
   const [textHtml, setTextHtml] = useState(html)
   const [isSaveProcess, setIsSaveProcess] = useState(false)
@@ -94,73 +95,65 @@ const EditableTextarea = ({
   // )
 
   return (
-    <div>
-      {readonly ? (
-        <div>
-          {title && <div className="font-bold">{title}</div>}
-          <div
-            dangerouslySetInnerHTML={{
-              __html: textHtml,
-            }}
-          />
-        </div>
-      ) : (
-        <div className="p-2 bg-white border border-gray-300">
-          <div className="flex flex-wrap gap-1">
-            <GroupButtons name="Стиль">
-              <TextareaButton cmd="italic" icon={faItalic} />
-              <TextareaButton cmd="bold" icon={faBold} />
-              <TextareaButton cmd="underline" icon={faUnderline} />
-              <TextareaButton cmd="strikeThrough" icon={faStrikethrough} />
-              <TextareaButton cmd="subscript" icon={faSubscript} />
-              <TextareaButton cmd="superscript" icon={faSuperscript} />
-              <TextareaButton cmd="removeFormat" icon={faEraser} />
-            </GroupButtons>
-            <GroupButtons name="Размер">
-              <TextareaButton
-                cmd="fontSize"
-                icon={faFont}
-                arg="2"
-                iconClassName="w-2 h-2"
-              />
-              <TextareaButton
-                cmd="fontSize"
-                icon={faFont}
-                arg="3"
-                iconClassName="w-2.5 h-2.5"
-              />
-              <TextareaButton
-                cmd="fontSize"
-                icon={faFont}
-                arg="4"
-                iconClassName="w-3 h-3"
-              />
-              <TextareaButton
-                cmd="fontSize"
-                icon={faFont}
-                arg="5"
-                iconClassName="w-3.5 h-3.5"
-              />
-              <TextareaButton
-                cmd="fontSize"
-                icon={faFont}
-                arg="6"
-                iconClassName="w-4 h-4"
-              />
-              <TextareaButton
-                cmd="fontSize"
-                icon={faFont}
-                arg="7"
-                iconClassName="w-5 h-5"
-              />
-            </GroupButtons>
-            <GroupButtons name="Выравнивание">
-              <TextareaButton cmd="justifyLeft" icon={faAlignLeft} />
-              <TextareaButton cmd="justifyCenter" icon={faAlignCenter} />
-              <TextareaButton cmd="justifyRight" icon={faAlignRight} />
-              <TextareaButton cmd="justifyFull" icon={faAlignJustify} />
-            </GroupButtons>
-            <GroupButtons name="Тест">
+    <>
+      {title && <div>{title}</div>}
+
+      <div className="p-2 bg-white border border-gray-300">
+        <div className="flex flex-wrap gap-1">
+          <GroupButtons name="Стиль">
+            <TextareaButton cmd="italic" icon={faItalic} />
+            <TextareaButton cmd="bold" icon={faBold} />
+            <TextareaButton cmd="underline" icon={faUnderline} />
+            <TextareaButton cmd="strikeThrough" icon={faStrikethrough} />
+            <TextareaButton cmd="subscript" icon={faSubscript} />
+            <TextareaButton cmd="superscript" icon={faSuperscript} />
+            <TextareaButton cmd="removeFormat" icon={faEraser} />
+          </GroupButtons>
+          <GroupButtons name="Размер">
+            <TextareaButton
+              cmd="fontSize"
+              icon={faFont}
+              arg="2"
+              iconClassName="w-2 h-2"
+            />
+            <TextareaButton
+              cmd="fontSize"
+              icon={faFont}
+              arg="3"
+              iconClassName="w-2.5 h-2.5"
+            />
+            <TextareaButton
+              cmd="fontSize"
+              icon={faFont}
+              arg="4"
+              iconClassName="w-3 h-3"
+            />
+            <TextareaButton
+              cmd="fontSize"
+              icon={faFont}
+              arg="5"
+              iconClassName="w-3.5 h-3.5"
+            />
+            <TextareaButton
+              cmd="fontSize"
+              icon={faFont}
+              arg="6"
+              iconClassName="w-4 h-4"
+            />
+            <TextareaButton
+              cmd="fontSize"
+              icon={faFont}
+              arg="7"
+              iconClassName="w-5 h-5"
+            />
+          </GroupButtons>
+          <GroupButtons name="Выравнивание">
+            <TextareaButton cmd="justifyLeft" icon={faAlignLeft} />
+            <TextareaButton cmd="justifyCenter" icon={faAlignCenter} />
+            <TextareaButton cmd="justifyRight" icon={faAlignRight} />
+            <TextareaButton cmd="justifyFull" icon={faAlignJustify} />
+          </GroupButtons>
+          {/* <GroupButtons name="Тест">
               <TextareaButton
                 cmd="hiliteColor"
                 icon={faAlignLeft}
@@ -178,63 +171,66 @@ const EditableTextarea = ({
 
               <TextareaButton cmd="undo" icon={faUndo} />
               <TextareaButton cmd="redo" icon={faRedo} />
-              <TextareaButton cmd="redo" icon={faRedo} />
-              {/* <TextareaButton cmd="justifyCenter" icon={faAlignCenter} />
+              <TextareaButton cmd="redo" icon={faRedo} /> */}
+          {/* <TextareaButton cmd="justifyCenter" icon={faAlignCenter} />
               <TextareaButton cmd="justifyRight" icon={faAlignRight} />
               <TextareaButton cmd="justifyFull" icon={faAlignJustify} /> */}
-            </GroupButtons>
-            {/* <GroupButtons name="Список">
+          {/* </GroupButtons> */}
+          {/* <GroupButtons name="Список">
           <Button cmd="superscript" icon={faAlignLeft} />
         </GroupButtons> */}
-          </div>
-          <Divider thin light />
-          <ContentEditable
-            className={cn('outline-none list-disc my-2', className)}
-            html={uncontrolled ? textHtml : html}
-            disabled={disabled}
-            // onChange={onChange}
-            onChange={(e) => {
-              if (uncontrolled) setTextHtml(e.target.value)
-              else onChange && onChange()
-            }}
-            onBlur={onBlur}
-            placeholder={placeholder}
-          />
-          <Divider thin light />
-          <div className="flex justify-between py-1">
-            {(!uncontrolled || !isSaveProcess) && (
-              <>
-                {!disableUndo && (
-                  <Button
-                    onClick={() => setTextHtml(html)}
-                    classBgColor="bg-gray-700"
-                    name="Отменить изменения"
-                    disabled={html === textHtml}
-                  />
-                )}
-                {onSave && (
-                  <div className="flex justify-end flex-1">
+        </div>
+        <Divider thin light />
+        <ContentEditable
+          className={cn('outline-none list-disc my-2', className)}
+          html={uncontrolled ? textHtml : html}
+          disabled={disabled}
+          // onChange={onChange}
+          onChange={(e) => {
+            if (uncontrolled) setTextHtml(e.target.value)
+            else onChange && onChange(e)
+          }}
+          onBlur={onBlur}
+          placeholder={placeholder}
+        />
+
+        {uncontrolled && (
+          <>
+            <Divider thin light />
+            <div className="flex justify-between py-1">
+              {(!uncontrolled || !isSaveProcess) && (
+                <>
+                  {!disableUndo && (
                     <Button
-                      onClick={saveTask}
-                      classBgColor="bg-blue-700"
-                      name={btnSaveName}
+                      onClick={() => setTextHtml(html)}
+                      classBgColor="bg-gray-700"
+                      name="Отменить изменения"
                       disabled={html === textHtml}
                     />
-                  </div>
-                )}
-              </>
-            )}
-            {uncontrolled && isSaveProcess && (
-              <div className="flex items-center gap-2">
-                <span>Сохранение...</span>
-                <LoadingSpinner size="xs" />
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-      <div>{textHtml}</div>
-    </div>
+                  )}
+                  {onSave && (
+                    <div className="flex justify-end flex-1">
+                      <Button
+                        onClick={saveTask}
+                        classBgColor="bg-blue-700"
+                        name={btnSaveName}
+                        disabled={html === textHtml}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+              {uncontrolled && isSaveProcess && (
+                <div className="flex items-center gap-2">
+                  <span>Сохранение...</span>
+                  <LoadingSpinner size="xs" />
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </>
   )
 }
 

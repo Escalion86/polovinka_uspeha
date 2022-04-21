@@ -25,15 +25,17 @@ const Input = ({
 
   return forGrid ? (
     <>
-      <label className={cn('text-text', labelClassName)}>{label}</label>
-      <input {...props} />
+      <label className={cn('text-text whitespace-nowrap', labelClassName)}>
+        {label}
+      </label>
+      <textarea rows={8} {...props} />
     </>
   ) : (
     <div className={cn('flex gap-1', { 'flex-col': !inLine }, className)}>
       <label className={cn('text-text whitespace-nowrap', labelClassName)}>
         {label}
       </label>
-      <input {...props} />
+      <textarea rows={8} {...props} />
     </div>
   )
 }
