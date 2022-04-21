@@ -109,7 +109,7 @@ export default function Home(props) {
               1
           }
         />
-        <PriceBlock />
+        {/* <PriceBlock /> */}
         <ReviewsBlock reviews={reviews} />
         <ContactsBlock />
         {/* <BlockContainer className="text-white bg-black">
