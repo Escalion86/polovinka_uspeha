@@ -11,6 +11,7 @@
 import reviewFunc from './modalsFunc/reviewFunc'
 import directionFunc from './modalsFunc/directionFunc'
 import eventFunc from './modalsFunc/eventFunc'
+import { deleteData } from '@helpers/CRUD'
 
 const modalsFuncGenerator = (setModals) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -37,9 +38,33 @@ const modalsFuncGenerator = (setModals) => {
         Children,
       })
     },
-    review: (review) => addModal(reviewFunc(review)),
-    direction: (direction) => addModal(directionFunc(direction)),
-    event: (event) => addModal(eventFunc(event)),
+    review: {
+      edit: (review) => addModal(reviewFunc(review)),
+      delete: (review) =>
+        addModal({
+          title: 'Удаление отзыва',
+          text: 'Вы уверены, что хотите удалить отзыв?',
+          onConfirm: async (refreshPage) =>
+            await deleteData(`/api/reviews/${review._id}`, review, refreshPage),
+        }),
+    },
+    direction: {
+      edit: (direction) => addModal(directionFunc(direction)),
+      delete: (direction) =>
+        addModal({
+          title: 'Удаление направления',
+          text: 'Вы уверены, что хотите удалить направление?',
+          onConfirm: async (refreshPage) =>
+            await deleteData(
+              `/api/directions/${direction._id}`,
+              direction,
+              refreshPage
+            ),
+        }),
+    },
+    event: {
+      edit: (event) => addModal(eventFunc(event)),
+    },
     // addUserToCourse: ({ course }) =>
     //   addModal({
     //     title: `Приглашение пользователя на курс\n"${course.title}"`,

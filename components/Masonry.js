@@ -128,7 +128,6 @@ const Masonry = ({
       const colsElements = Array.from({ length: columns }, () => null) //[].fill([], 0, cols)
       for (let i = 0; i < childrenRef.current.length; i++) {
         const minCol = Math.min(...colsHeights)
-        console.log('colsHeights', colsHeights)
 
         const indexOfMinCol = colsHeights.indexOf(minCol)
         // console.log('indexOfMinCol', indexOfMinCol)

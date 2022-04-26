@@ -4,10 +4,10 @@ const CabinetWrapper = ({ children }) => {
       className="grid w-full h-screen overflow-hidden"
       style={{
         gridTemplateRows: 'auto 1fr',
-        gridTemplateColumns: 'auto 1fr',
+        gridTemplateColumns: '64px 1fr',
         gridTemplateAreas: `
-          'sidebar header'
-          'sidebar content'
+          'burger header'
+          'content content'
         `,
       }}
     >

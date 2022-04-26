@@ -1,8 +1,11 @@
 import Divider from '@components/Divider'
+import menuOpenAtom from '@state/atoms/menuOpen'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
+import { useSetRecoilState } from 'recoil'
 
-const CabinetHeader = ({ user, title = '', titleLink = '/', icon }) => {
+const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
+  const setMenuOpen = useSetRecoilState(menuOpenAtom)
   return (
     <div
       className="relative flex items-center justify-end w-full h-16 px-3 text-white bg-black"
@@ -15,7 +18,7 @@ const CabinetHeader = ({ user, title = '', titleLink = '/', icon }) => {
               <img
                 className="rounded-full h-14"
                 src={icon || '/img/logo_heart.png'}
-                alt="uniplatform"
+                alt="logo"
                 // width={48}
                 // height={48}
               />
@@ -23,11 +26,15 @@ const CabinetHeader = ({ user, title = '', titleLink = '/', icon }) => {
           </Link>
           <div className="flex flex-1">
             <Divider type="vertical" />
-            <Link href={titleLink}>
-              <a className="hover:text-gray-300">
-                <h1>{title}</h1>
-              </a>
-            </Link>
+            {titleLink ? (
+              <Link href={titleLink}>
+                <a className="hover:text-gray-300">
+                  <h1>{title}</h1>
+                </a>
+              </Link>
+            ) : (
+              <h1>{title}</h1>
+            )}
           </div>
         </>
       )}
@@ -71,9 +78,16 @@ const CabinetHeader = ({ user, title = '', titleLink = '/', icon }) => {
             />
             <div className="w-0 h-0 overflow-hidden duration-300 scale-0 translate-x-1/2 -translate-y-1/2 group-hover:w-auto group-hover:h-auto group-hover:translate-y-0 group-hover:translate-x-0 group-hover:scale-100 top-12">
               <Link href="/cabinet">
-                <a>
+                <a onClick={() => setMenuOpen(false)}>
                   <div className="px-3 py-2 text-black bg-white border border-gray-300 cursor-pointer whitespace-nowrap hover:bg-gray-500 hover:text-white">
                     Мой кабинет
+                  </div>
+                </a>
+              </Link>
+              <Link href="/cabinet/questionnaire">
+                <a onClick={() => setMenuOpen(false)}>
+                  <div className="px-3 py-2 text-black bg-white border border-gray-300 cursor-pointer whitespace-nowrap hover:bg-gray-500 hover:text-white">
+                    Моя анкета
                   </div>
                 </a>
               </Link>

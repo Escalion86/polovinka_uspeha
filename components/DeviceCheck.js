@@ -1,7 +1,8 @@
 import isDevMode from '@helpers/isDevMode'
+import cn from 'classnames'
 import { useEffect, useState } from 'react'
 
-const DeviceCheck = ({ className = null, textClassName = null }) => {
+const DeviceCheck = ({ textClassName = null, right = false }) => {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
@@ -12,12 +13,10 @@ const DeviceCheck = ({ className = null, textClassName = null }) => {
 
   return (
     <div
-      className={
-        'flex items-center justify-center ' +
-        (className
-          ? className
-          : 'text-white border-white border-t-1 border-r-1 border-l-1 fixed -left-7 z-50 h-10 text-sm leading-3 w-24 top-40 bg-general rounded-t-md transform rotate-90')
-      }
+      className={cn(
+        'flex items-center justify-center text-white border-white border-t-1 border-r-1 border-l-1 fixed z-50 h-10 text-sm leading-3 w-24 top-40 bg-general rounded-t-md transform',
+        right ? '-right-7 -rotate-90' : '-left-7 rotate-90'
+      )}
     >
       <div
         className={

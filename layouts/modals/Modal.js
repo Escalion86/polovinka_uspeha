@@ -12,6 +12,7 @@ import Divider from '@components/Divider'
 import Button from '@components/Button'
 import cn from 'classnames'
 import ModalButtons from '@layouts/modals/ModalButtons'
+import { useRouter } from 'next/router'
 
 const Modal = ({
   Children,
@@ -48,9 +49,15 @@ const Modal = ({
     )
   }
 
+  const router = useRouter()
+
+  const refreshPage = () => {
+    router.replace(router.asPath)
+  }
+
   const onConfirmClick = () => {
-    if (onConfirmFunc) return onConfirmFunc()
-    onConfirm && onConfirm()
+    if (onConfirmFunc) return onConfirmFunc(refreshPage)
+    onConfirm && onConfirm(refreshPage)
     closeModal()
   }
 

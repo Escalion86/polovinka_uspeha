@@ -94,7 +94,7 @@ export default function Home(props) {
         </ContentWrapper>
       </CourseWrapper> */}
       <div className="w-full bg-white">
-        <DeviceCheck />
+        {/* <DeviceCheck /> */}
         <Header user={user} />
         <TitleBlock userIsLogged={!!user} />
         <AboutBlock />

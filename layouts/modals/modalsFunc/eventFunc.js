@@ -6,8 +6,9 @@ import React, { useEffect, useState } from 'react'
 import EditableTextarea from '@components/EditableTextarea'
 import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
+import InputImage from '@components/InputImage'
 
-const eventFunc = (event, refreshPage) => {
+const eventFunc = (event) => {
   const isEditing = !!event
 
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -15,6 +16,7 @@ const eventFunc = (event, refreshPage) => {
     const [description, setDescription] = useState(
       isEditing ? event.description : ''
     )
+    const [image, setImage] = useState(isEditing ? event.image : '')
     const [date, setDate] = useState(isEditing ? event.date : Date.now())
     const [showOnSite, setShowOnSite] = useState(
       isEditing ? event.showOnSite : true
@@ -65,17 +67,23 @@ const eventFunc = (event, refreshPage) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-    }, [title, description])
+    }, [title, description, showOnSite])
 
     return (
       <FormWrapper>
+        <InputImage
+          label="Картинка"
+          directory="directions"
+          image={image}
+          onChange={setImage}
+        />
         <Input
           label="Название"
           type="text"
           value={title}
-          onChange={(e) => {
+          onChange={(value) => {
             removeError('title')
-            setTitle(e.target.value)
+            setTitle(value)
           }}
           // labelClassName="w-40"
           error={errors.title}
@@ -96,9 +104,9 @@ const eventFunc = (event, refreshPage) => {
           html={description}
           readonly={false}
           uncontrolled={false}
-          onChange={(e) => {
+          onChange={(value) => {
             removeError('description')
-            setDescription(e.target.value)
+            setDescription(value)
           }}
           forGrid
         />

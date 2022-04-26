@@ -6,8 +6,9 @@ import React, { useEffect, useState } from 'react'
 import EditableTextarea from '@components/EditableTextarea'
 import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
+import InputImage from '@components/InputImage'
 
-const directionFunc = (direction, refreshPage) => {
+const directionFunc = (direction) => {
   const isEditing = !!direction
 
   const DirectionModal = ({
@@ -19,6 +20,7 @@ const directionFunc = (direction, refreshPage) => {
     const [description, setDescription] = useState(
       isEditing ? direction.description : ''
     )
+    const [image, setImage] = useState(isEditing ? direction.image : '')
     const [showOnSite, setShowOnSite] = useState(
       isEditing ? direction.showOnSite : true
     )
@@ -48,6 +50,7 @@ const directionFunc = (direction, refreshPage) => {
               title,
               description,
               showOnSite,
+              image,
             },
             refreshPage
           )
@@ -58,6 +61,7 @@ const directionFunc = (direction, refreshPage) => {
               title,
               description,
               showOnSite,
+              image,
             },
             refreshPage
           )
@@ -68,17 +72,23 @@ const directionFunc = (direction, refreshPage) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-    }, [title, description])
+    }, [title, description, showOnSite])
 
     return (
       <FormWrapper>
+        <InputImage
+          label="Картинка"
+          directory="directions"
+          image={image}
+          onChange={setImage}
+        />
         <Input
           label="Название"
           type="text"
           value={title}
-          onChange={(e) => {
+          onChange={(value) => {
             removeError('title')
-            setTitle(e.target.value)
+            setTitle(value)
           }}
           // labelClassName="w-40"
           error={errors.title}
@@ -99,9 +109,9 @@ const directionFunc = (direction, refreshPage) => {
           html={description}
           readonly={false}
           uncontrolled={false}
-          onChange={(e) => {
+          onChange={(value) => {
             removeError('description')
-            setDescription(e.target.value)
+            setDescription(value)
           }}
           forGrid
         />
@@ -125,7 +135,7 @@ const directionFunc = (direction, refreshPage) => {
   }
 
   return {
-    title: `${isEditing ? 'Редактирование' : 'Создание'} отзыва`,
+    title: `${isEditing ? 'Редактирование' : 'Создание'} направления`,
     confirmButtonName: isEditing ? 'Применить' : 'Создать',
     Children: DirectionModal,
   }

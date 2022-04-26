@@ -16,6 +16,7 @@ const InputImage = ({
   directory = null,
   imageName = null,
   onDelete = null,
+  forGrid = false,
 }) => {
   const hiddenFileInput = useRef(null)
   const selectImageClick = (event) => {
@@ -40,13 +41,9 @@ const InputImage = ({
   if (readOnly && !image) return null
 
   return (
-    <div>
+    <>
       {label && (
-        <label
-          className={cn({
-            'border-b-1 border-primary max-w-min whitespace-nowrap': readOnly,
-          })}
-        >
+        <label className="flex items-center justify-end leading-4 text-right ">
           {label}
           {readOnly ? ':' : required && <span className="text-red-700">*</span>}
         </label>
@@ -108,7 +105,7 @@ const InputImage = ({
         style={{ display: 'none' }}
         accept="image/jpeg,image/png"
       />
-    </div>
+    </>
   )
 }
 

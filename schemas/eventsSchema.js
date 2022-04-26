@@ -1,4 +1,8 @@
 const eventsSchema = {
+  directionId: {
+    type: String,
+    required: [true, 'Необходимо выбрать направление мероприятия'],
+  },
   title: {
     type: String,
     // required: [true, 'Введите название курса. Давай включи фантазию!'],

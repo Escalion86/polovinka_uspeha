@@ -8,6 +8,7 @@ import GoogleProvider from 'next-auth/providers/google'
 import { fetchingUserByEmail } from '@helpers/fetchers'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
+import usersSchema from '@schemas/usersSchema'
 // import VkProvider from 'next-auth/providers/vk'
 // import EmailProvider from 'next-auth/providers/email'
 // import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
@@ -153,10 +154,14 @@ export default async function auth(req, res) {
           // } else {
           //   user.image = result[0].image
           // }
-
+          // for (var key in result[0]) {
+          //   user[key] = result[0][key]
+          // }
           user._id = result[0]._id
           user.role = result[0].role
           user.name = result[0].name
+          user.secondname = result[0].secondname
+          user.thirdname = result[0].thirdname
           user.phone = result[0].phone
           user.whatsapp = result[0].whatsapp
           user.viber = result[0].viber
@@ -166,7 +171,10 @@ export default async function auth(req, res) {
           user.gender = result[0].gender
           user.birthday = result[0].birthday
           user.lastActivityAt = result[0].lastActivityAt
-          user.prevActivityAt = result[0].prevActivityAt
+          user.orientation = result[0].orientation
+          user.profession = result[0].profession
+          user.interests = result[0].interests
+          user.about = result[0].about
 
           if (result[0].role === 'client') {
           } else {

@@ -1,6 +1,7 @@
 import cn from 'classnames'
+import { forwardRef } from 'react'
 
-const PulseButton = ({ title, className, onClick }) => (
+const PulseButton = forwardRef(({ title, className, onClick }, ref) => (
   <div className={cn('relative', className)}>
     <div className="absolute top-0 left-0 z-0 w-full h-full rounded-lg animate-ping-light bg-general" />
     <button
@@ -10,6 +11,6 @@ const PulseButton = ({ title, className, onClick }) => (
       {title}
     </button>
   </div>
-)
+))
 
 export default PulseButton

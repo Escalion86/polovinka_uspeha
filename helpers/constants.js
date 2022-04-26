@@ -6,6 +6,7 @@ import {
   faComments,
   faGift,
   faMars,
+  faMarsDouble,
   faTimesCircle,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
@@ -32,23 +33,15 @@ export const GENDERS = [
   { value: 'famale', name: 'Женщина', color: 'red-400', icon: faVenus },
 ]
 
+export const ORIENTATIONS = [
+  { value: 'getero', name: 'Гетеросексуал', color: 'blue-400' },
+  { value: 'bi', name: 'Бисексуал', color: 'purple-400' },
+  { value: 'homo', name: 'Гомосексуал', color: 'red-400' },
+]
+
 export const CLOUDINARY_FOLDER = isDevMode
-  ? 'obnimisharik_courses_dev'
-  : 'obnimisharik_courses'
-
-export const MODES = Object.freeze({
-  ADMIN: 'admin',
-  TEACHER: 'teacher',
-  STUDENT: 'student',
-  VIEWER: 'viewer',
-})
-
-export const MODES_NAMES = {
-  [MODES.ADMIN]: 'Администратор',
-  [MODES.TEACHER]: 'Преподаватель',
-  [MODES.STUDENT]: 'Студент',
-  [MODES.VIEWER]: 'Наблюдатель',
-}
+  ? 'polovinka_uspeha'
+  : 'polovinka_uspeha'
 
 // import {
 //   BtnAddClient,
@@ -80,6 +73,8 @@ import { faCalendar, faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 import DirectionsContent from '@layouts/content/DirectionsContent'
 import ReviewsContent from '@layouts/content/ReviewsContent'
 import EventsContent from '@layouts/content/EventsContent'
+import SertificatContent from '@layouts/content/SertificatContent'
+import QuestionnaireContent from '@layouts/content/QuestionnaireContent'
 // import {
 //   InvitationsContent,
 //   ProductCirculationsContent,
@@ -100,9 +95,11 @@ import EventsContent from '@layouts/content/EventsContent'
 // import DevToDoContent from './content/DevToDoContent'
 
 export const CONTENTS = {
-  directions: DirectionsContent,
-  reviews: ReviewsContent,
-  events: EventsContent,
+  directions: { Component: DirectionsContent, name: 'Сайт / Направления' },
+  reviews: { Component: ReviewsContent, name: 'Сайт / Отзывы' },
+  sertificat: { Component: SertificatContent, name: 'Сайт / Сертификат' },
+  events: { Component: EventsContent, name: 'Мероприятия' },
+  questionnaire: { Component: QuestionnaireContent, name: 'Моя анкета' },
 }
 
 export const pages = [

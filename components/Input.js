@@ -2,39 +2,62 @@ import cn from 'classnames'
 
 const Input = ({
   label,
-  className,
   onChange,
   value,
   type = 'text',
   inputClassName,
   labelClassName,
-  inLine = true,
   error = false,
-  forGrid = false,
+  prefix,
+  prefixClassName,
+  postfix,
+  postfixClassName,
 }) => {
-  const props = {
-    className: cn(
-      'px-1 border rounded outline-none flex-1',
-      error ? 'border-red-500' : 'border-gray-400',
-      inputClassName
-    ),
-    type,
-    value,
-    onChange,
-  }
-
-  return forGrid ? (
+  return (
     <>
-      <label className={cn('text-text', labelClassName)}>{label}</label>
-      <input {...props} />
-    </>
-  ) : (
-    <div className={cn('flex gap-1', { 'flex-col': !inLine }, className)}>
-      <label className={cn('text-text whitespace-nowrap', labelClassName)}>
+      <label
+        className={cn(
+          'flex items-center justify-end text-text leading-4 text-right',
+          labelClassName
+        )}
+      >
         {label}
       </label>
-      <input {...props} />
-    </div>
+      <div
+        className={cn(
+          'flex rounded overflow-hidden border bg-white',
+          error ? 'border-red-500' : 'border-gray-400',
+          inputClassName
+        )}
+      >
+        {prefix && (
+          <div
+            className={cn(
+              'px-1 bg-gray-200 border-r border-gray-400',
+              prefixClassName
+            )}
+          >
+            {prefix}
+          </div>
+        )}
+        <input
+          className={cn('outline-none px-1 flex-1 bg-transparent min-w-10')}
+          type={type}
+          value={value ?? ''}
+          onChange={(e) => onChange(e.target.value)}
+        />
+        {postfix && (
+          <div
+            className={cn(
+              'px-1 bg-gray-200 border-l border-gray-400',
+              postfixClassName
+            )}
+          >
+            {postfix}
+          </div>
+        )}
+      </div>
+    </>
   )
 }
 

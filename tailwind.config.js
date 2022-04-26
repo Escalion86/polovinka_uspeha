@@ -46,6 +46,7 @@ module.exports = {
       },
       gridTemplateColumns: {
         form: 'minmax(min-content, 20%) 1fr',
+        form2: 'minmax(min-content, 20%) 1fr minmax(min-content, 20%) 1fr',
       },
       fontSize: {
         xxs: '.625rem',

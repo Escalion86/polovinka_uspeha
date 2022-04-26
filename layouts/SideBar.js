@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { motion } from 'framer-motion'
 import { pages, pagesGroups } from '@helpers/constants'
 import Burger from '@components/Burger'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import Link from 'next/link'
 
@@ -79,7 +79,6 @@ const MenuItem = ({ item, active = false }) => {
 }
 
 const Menu = ({ menuCfg, activePage }) => {
-  console.log('activePage', activePage)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
   const variants = {
@@ -96,7 +95,7 @@ const Menu = ({ menuCfg, activePage }) => {
   )
 
   return (
-    <nav className="flex flex-col w-full h-full mt-1 gap-y-2">
+    <nav className="flex flex-col w-full h-full px-2 py-3 mt-1 gap-y-2 ">
       {menuCfg &&
         menuCfg.length > 0 &&
         menuCfg.map((item, index) => {
@@ -192,20 +191,20 @@ const Menu = ({ menuCfg, activePage }) => {
 }
 
 const SideBar = ({ user, page }) => {
-  const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
+  const menuOpen = useRecoilValue(menuOpenAtom)
   const variants = {
-    min: { width: 64 },
+    min: { width: '100%' },
     max: { width: 280 },
   }
 
   return (
-    <div className="relative w-16" style={{ gridArea: 'sidebar' }}>
-      <div className="flex items-center justify-center h-16 bg-general">
-        <Burger />
-      </div>
+    <div
+      className="relative flex flex-col w-0 h-full tablet:w-16 bg-general"
+      style={{ gridArea: 'sidebar' }}
+    >
       <motion.div
         className={
-          'flex flex-col items-start z-50 bg-general h-full absolute top-16 left-0'
+          'items-start z-50 bg-general'
           // 'sidepanel fixed laptop:static w-64 h-full pb-15 laptop:pb-0 max-h-screen left-0 top-menu laptop:top-0 z-40 transform duration-300 border-t border-primary laptop:border-t-0 bg-white' +
           // (!menuOpen
           //   ? ' scale-x-0 -translate-x-32 w-0 laptop:w-64 laptop:transform-none'
@@ -217,9 +216,10 @@ const SideBar = ({ user, page }) => {
         initial={'min'}
         layout
       >
-        <div className="flex flex-col flex-1 w-full px-2 py-3 overflow-y-auto border-l border-r border-general">
+        <div className="flex flex-col w-full overflow-x-hidden overflow-y-auto">
           <Menu menuCfg={menuCfg(pages, pagesGroups, user)} activePage={page} />
         </div>
+        <div className="z-50 h-screen bg-general" />
       </motion.div>
     </div>
   )

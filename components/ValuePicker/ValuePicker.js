@@ -6,14 +6,17 @@ const colors = [
   'border-red-400',
   'border-yellow-400',
   'border-green-400',
+  'border-purple-400',
   'text-red-400',
   'text-blue-400',
   'text-yellow-400',
   'text-green-400',
+  'text-purple-400',
   'bg-blue-400',
   'bg-red-400',
   'bg-yellow-400',
   'bg-green-400',
+  'bg-purple-400',
 ]
 
 const ValueItem = ({
@@ -26,16 +29,16 @@ const ValueItem = ({
 }) => (
   <button
     className={cn(
-      `flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-1 rounded-lg cursor-pointer gap-x-2 flex-nowrap`,
+      `flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded-lg cursor-pointer gap-x-2 flex-nowrap`,
       `border-${color}`,
       active ? `text-white bg-${color}` : `text-${color} bg-white`
     )}
     onClick={() => onClick(value)}
   >
-    {icon && <FontAwesomeIcon icon={icon} size="lg" />}
+    {icon && <FontAwesomeIcon icon={icon} className="h-6" />}
     <div
       className={cn(
-        'whitespace-nowrap duration-300 text-sm select-none',
+        'whitespace-nowrap duration-300 select-none',
         active ? 'text-white' : `text-input`
       )}
     >
@@ -49,59 +52,22 @@ const ValuePicker = ({
   valuesArray = [],
   label = null,
   onChange = null,
-  inLine = false,
-  className = null,
-  labelStyle = null,
   name = 'prop',
   required = false,
-  readOnly = false,
   disselectOnSameClick = true,
 }) => {
-  if (readOnly) {
-    if (!value && value !== 0) return null
-    const itemInArray = valuesArray.find((item) => item.value === value)
-    return (
-      <div className={cn('flex gap-x-1 flex-row', className)}>
-        {label && (
-          <div>
-            <label
-              className={cn(
-                'border-b-1 border-primary max-w-min whitespace-nowrap',
-                labelStyle
-              )}
-              htmlFor={name}
-            >
-              {label}:
-            </label>
-          </div>
-        )}
-        <div className="ml-2 italic">
-          {itemInArray ? itemInArray.name : '-'}
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div
-      className={cn(
-        'flex',
-        inLine ? ' flex-row items-center' : ' flex-col',
-        className
-      )}
-    >
+    <>
       {label && (
         <label
-          className={cn(labelStyle, {
-            'min-w-24 max-w-40 w-1/4': inLine && !labelStyle,
-          })}
+          className="flex items-center justify-end text-right"
           htmlFor={name}
         >
           {label}
           {required && <span className="text-red-700">*</span>}
         </label>
       )}
-      <div className="flex flex-wrap py-1 gap-x-2 gap-y-1">
+      <div className="flex flex-wrap gap-x-2 gap-y-1">
         {valuesArray.map((item) => (
           <ValueItem
             key={name + item.value}
@@ -118,7 +84,7 @@ const ValuePicker = ({
           />
         ))}
       </div>
-    </div>
+    </>
   )
 }
 

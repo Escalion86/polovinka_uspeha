@@ -18,6 +18,7 @@ const reviewFunc = (review) => {
       isEditing ? review.showOnSite : true
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
+    console.log('showOnSite', showOnSite)
 
     const router = useRouter()
 
@@ -65,7 +66,7 @@ const reviewFunc = (review) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-    }, [author, reviewText, authorAge])
+    }, [author, reviewText, authorAge, showOnSite])
 
     return (
       // <div className="flex flex-col gap-2">
@@ -74,9 +75,9 @@ const reviewFunc = (review) => {
           label="Имя автора"
           type="text"
           value={author}
-          onChange={(e) => {
+          onChange={(value) => {
             removeError('author')
-            setAuthor(e.target.value)
+            setAuthor(value)
           }}
           // labelClassName="w-40"
           error={errors.author}
@@ -86,9 +87,9 @@ const reviewFunc = (review) => {
           label="Возраст автора, лет"
           type="number"
           value={authorAge}
-          onChange={(e) => {
+          onChange={(value) => {
             removeError('authorAge')
-            setAuthorAge(e.target.value)
+            setAuthorAge(value)
           }}
           // labelClassName="w-40"
           error={errors.authorAge}
@@ -98,9 +99,9 @@ const reviewFunc = (review) => {
           label="Отзыв"
           type="text"
           value={reviewText}
-          onChange={(e) => {
+          onChange={(value) => {
             removeError('reviewText')
-            setReviewText(e.target.value)
+            setReviewText(value)
           }}
           // labelClassName="w-40"
           error={errors.reviewText}

@@ -15,6 +15,7 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from 'tailwind.config.js'
 import passwordValidator from '@helpers/passwordValidator'
 import SvgLove from 'svg/SvgLove'
+import Link from 'next/link'
 
 // import UndrawGraduation from 'public/img/login/undraw_graduation.svg'
 // import Image from 'next/image'
@@ -319,6 +320,7 @@ const Login = () => {
                   >
                     {isRegistrationProcess ? 'Авторизация' : 'Регистрация'}
                   </a>
+                  {/* TODO Сделать восстановление пароля */}
                   <a
                     tabIndex={0}
                     className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
@@ -370,6 +372,14 @@ const Login = () => {
                   />
                   <span className="flex-1">Google</span>
                 </button>
+                <Link href="/">
+                  <a
+                    tabIndex={0}
+                    className="block py-3 my-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"
+                  >
+                    Вернуться на главную страницу сайта
+                  </a>
+                </Link>
               </>
             )}
           </form>

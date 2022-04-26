@@ -59,6 +59,7 @@ export const sendImage = async (
       'upload_preset',
       folder ? CLOUDINARY_FOLDER + '_' + folder : CLOUDINARY_FOLDER
     )
+    console.log('folder', CLOUDINARY_FOLDER + '_' + folder)
     if (imageName) {
       // console.log(`imageName`, imageName)
       // await deleteImage(imageName)

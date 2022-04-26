@@ -19,23 +19,28 @@ import LoadingContent from '@layouts/content/LoadingContent'
 
 import Modal from '@layouts/modals/Modal'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
+import BurgerLayout from '@layouts/BurgerLayout'
+import DeviceCheck from '@components/DeviceCheck'
 
 function CabinetPage({ user, events, directions, reviews, page }) {
   const Component = CONTENTS[page]
-    ? CONTENTS[page]
+    ? CONTENTS[page].Component
     : (props) => <div className="flex justify-center px-2">Ошибка 404</div>
+
+  const title = CONTENTS[page] ? CONTENTS[page].name : ''
 
   return (
     <>
       <Head>
-        <title>Кабинет</title>
+        <title>Половинка успеха - Кабинет{title ? ' / ' + title : ''}</title>
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
       <CabinetWrapper>
         {/* ----------------------------- HEADER ------------------------------- */}
-        <CabinetHeader user={user} title="Кабинет" titleLink={`/cabinet`} />
-        <SideBar user={user} page={page} />
-        <ContentWrapper>
+        <DeviceCheck right />
+        <CabinetHeader user={user} title={title} />
+        <BurgerLayout />
+        <ContentWrapper user={user} page={page}>
           <Component
             user={user}
             events={events}
@@ -129,6 +134,14 @@ export const getServerSideProps = async (context) => {
   const { page } = params
 
   console.log('session', session)
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: `/`,
+      },
+    }
+  }
+
   try {
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
