@@ -100,15 +100,15 @@ const eventFunc = (event) => {
           error={errors.description}
         /> */}
         <EditableTextarea
-          title="Описание"
+          label="Описание"
           html={description}
-          readonly={false}
           uncontrolled={false}
           onChange={(value) => {
             removeError('description')
             setDescription(value)
           }}
           forGrid
+          placeholder="Описание мероприятия..."
         />
         <CheckBox
           checked={showOnSite}
@@ -130,7 +130,7 @@ const eventFunc = (event) => {
   }
 
   return {
-    title: `${isEditing ? 'Редактирование' : 'Создание'} отзыва`,
+    title: `${isEditing ? 'Редактирование' : 'Создание'} мероприятия`,
     confirmButtonName: isEditing ? 'Применить' : 'Создать',
     Children: EventModal,
   }

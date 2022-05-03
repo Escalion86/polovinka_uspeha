@@ -6,6 +6,7 @@ import {
   fetchingDirections,
   fetchingEvents,
   fetchingReviews,
+  fetchingSertificates,
 } from '@helpers/fetchers'
 import Header from '@layouts/Header'
 import cn from 'classnames'
@@ -21,17 +22,17 @@ import PulseButton from '@components/PulseButton'
 import ContactsBlock from '@blocks/ContactsBlock'
 import ReviewsBlock from '@blocks/ReviewsBlock'
 import PriceBlock from '@blocks/PriceBlock'
-import SertificatBlock from '@blocks/SertificatBlock'
+import SertificateBlock from '@blocks/SertificateBlock'
 import TimeTableBlock from '@blocks/TimeTableBlock'
 import AboutBlock from '@blocks/AboutBlock'
 import TitleBlock from '@blocks/TitleBlock'
 
-const sertificat = {
-  image: '/img/other/IF8t5okaUQI_1.webp',
-  title: 'Подарочный сертификат',
-  description:
-    'Лучший подарок для человека - это эмоции! Наш подарочный сертификат: способ подарить эти незабываемые эмоции. Подарочный сертификат нашего Центра осознанных знакомств номиналом 1500 руб, можно использовать на одно мероприятие на выбор в течение года: 1. Быстрые свидания Speed-Dating 1 раз в месяц. 2. Одно индивидуальное свидание (подбираются партнёры с учетом психологической совместимости и возрастной категории). 3. Свидание по-новому — новые интересные форматы общих встреч (мастер-классы, "Мафия", прогулки, походы и пикники знакомств) проводятся 1 раз в месяц. Подарите сертификат близкому человеку: подруге или другу, сестре или брату - тому, кто в поисках своей второй половинки, но ещё не встретил её в силу занятости и других причин. На встрече он (она) получит: - новые эмоции - приятные и полезные знакомства, как для личной жизни, так и для своего увлечения или профессиональной деятельности - романтическую обстановку. Возрастная категория участника по сертификату 25-40 лет. Сертификат можно приобрести как электронно, так и в печатном виде с доставкой.',
-}
+// const sertificat = {
+//   image: '/img/other/IF8t5okaUQI_1.webp',
+//   title: 'Подарочный сертификат',
+//   description:
+//     'Лучший подарок для человека - это эмоции! Наш подарочный сертификат: способ подарить эти незабываемые эмоции. Подарочный сертификат нашего Центра осознанных знакомств номиналом 1500 руб, можно использовать на одно мероприятие на выбор в течение года: 1. Быстрые свидания Speed-Dating 1 раз в месяц. 2. Одно индивидуальное свидание (подбираются партнёры с учетом психологической совместимости и возрастной категории). 3. Свидание по-новому — новые интересные форматы общих встреч (мастер-классы, "Мафия", прогулки, походы и пикники знакомств) проводятся 1 раз в месяц. Подарите сертификат близкому человеку: подруге или другу, сестре или брату - тому, кто в поисках своей второй половинки, но ещё не встретил её в силу занятости и других причин. На встрече он (она) получит: - новые эмоции - приятные и полезные знакомства, как для личной жизни, так и для своего увлечения или профессиональной деятельности - романтическую обстановку. Возрастная категория участника по сертификату 25-40 лет. Сертификат можно приобрести как электронно, так и в печатном виде с доставкой.',
+// }
 
 // const CardEvent = ({ event }) => (
 //   <div className="flex flex-col items-center bg-white border border-gray-600 rounded-lg gap-y-2">
@@ -54,11 +55,18 @@ const sertificat = {
 // )
 
 export default function Home(props) {
-  const { events, directions, reviews, user } = props
+  const { events, directions, reviews, user, sertificates } = props
 
-  // const otziviRef = useRef([])
+  const filteredEvents = events.filter((event) => event.showOnSite)
+  const filteredReviews = reviews.filter((review) => review.showOnSite)
+  const filteredDirections = directions.filter(
+    (direction) => direction.showOnSite
+  )
+  const filteredSertificates = sertificates.filter(
+    (sertificate) => sertificate.showOnSite
+  )
 
-  const router = useRouter()
+  // const router = useRouter()
   // const { height, width } = useWindowDimensions()
   // const { data: session, status } = useSession()
   // const loading = status === 'loading'
@@ -79,29 +87,20 @@ export default function Home(props) {
       <Head>
         <title>Центр осознанных знакомств - "Половинка успеха"</title>
       </Head>
-      {/* <CourseWrapper>
-        <Header user={user} title="Uniplatform" />
-        <ContentWrapper>
-          {courses.map((course) => {
-            return (
-              <Link key={course._id} href={`/course/${course._id}`}>
-                <a className="px-2 py-1 text-left border-b border-gray-300 cursor-pointer hover:bg-gray-400">
-                  {course.title}
-                </a>
-              </Link>
-            )
-          })}
-        </ContentWrapper>
-      </CourseWrapper> */}
       <div className="w-full bg-white">
         {/* <DeviceCheck /> */}
-        <Header user={user} />
+        <Header
+          events={filteredEvents}
+          directions={filteredDirections}
+          sertificates={filteredSertificates}
+          reviews={filteredReviews}
+        />
         <TitleBlock userIsLogged={!!user} />
         <AboutBlock />
-        <TimeTableBlock events={events} />
-        <DirectionsBlock directions={directions} />
-        <SertificatBlock
-          sertificat={sertificat}
+        <TimeTableBlock events={filteredEvents} />
+        <DirectionsBlock directions={filteredDirections} />
+        <SertificateBlock
+          sertificate={filteredSertificates ? filteredSertificates[0] : null}
           inverse={
             directions &&
             directions.filter((direction) => direction.showOnSite).length %
@@ -110,7 +109,7 @@ export default function Home(props) {
           }
         />
         {/* <PriceBlock /> */}
-        <ReviewsBlock reviews={reviews} />
+        <ReviewsBlock reviews={filteredReviews} />
         <ContactsBlock />
         {/* <BlockContainer className="text-white bg-black">
           <H3>Есть знания, но не знаете как ими поделиться?</H3>
@@ -148,11 +147,13 @@ export const getServerSideProps = async (context) => {
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    const sertificates = await fetchingSertificates(process.env.NEXTAUTH_SITE)
     return {
       props: {
         events,
         directions: directions.filter((direction) => direction.showOnSite),
         reviews: reviews.filter((review) => review.showOnSite),
+        sertificates,
         user: session?.user ? session.user : null,
       },
     }
@@ -162,6 +163,7 @@ export const getServerSideProps = async (context) => {
         events: null,
         directions: null,
         reviews: null,
+        sertificates: null,
         user: session?.user ? session.user : null,
       },
       // notFound: true,

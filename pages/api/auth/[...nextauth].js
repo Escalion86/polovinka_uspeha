@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 // import Providers from 'next-auth/providers'
 // import dbConnect from '@utils/dbConnect'
 import Users from '@models/Users'
-// import CRUD from '@server/CRUD'
+import CRUD from '@server/CRUD'
 // import Auth0Provider from 'next-auth/providers/auth0'
 import GoogleProvider from 'next-auth/providers/google'
 import { fetchingUserByEmail } from '@helpers/fetchers'
@@ -189,6 +189,15 @@ export default async function auth(req, res) {
           }
         } else {
           // если пользователь не зарегистрирован
+          await CRUD(Users, {
+            method: 'POST',
+            body: {
+              name: user.name,
+              email: userEmail,
+              image: user.image,
+              role: 'client',
+            },
+          })
         }
         return Promise.resolve(session)
       },

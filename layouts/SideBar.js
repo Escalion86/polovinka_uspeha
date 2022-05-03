@@ -21,29 +21,34 @@ import menuOpenAtom from '@state/atoms/menuOpen'
 import Link from 'next/link'
 
 const menuCfg = (pages, pagesGroups, user) => {
-  return pagesGroups.reduce((totalGroups, group) => {
-    const pagesItems = pages.reduce((totalPages, page) => {
-      if (page.group === group.id) {
-        totalPages.push(page)
-        // if (user.access && page.variable && user.access[page.variable]) {
-        //   if (user.access[page.variable].page) totalPages.push(page)
-        //   return totalPages
-        // } else {
-        //   if (user.access && user.access['other'].page) totalPages.push(page)
-        //   return totalPages
-        // }
-      }
-      return totalPages
+  return pagesGroups
+    .filter(
+      (pageGroup) =>
+        pageGroup.access === 'all' || pageGroup.access === user.role
+    )
+    .reduce((totalGroups, group) => {
+      const pagesItems = pages.reduce((totalPages, page) => {
+        if (page.group === group.id) {
+          totalPages.push(page)
+          // if (user.access && page.variable && user.access[page.variable]) {
+          //   if (user.access[page.variable].page) totalPages.push(page)
+          //   return totalPages
+          // } else {
+          //   if (user.access && user.access['other'].page) totalPages.push(page)
+          //   return totalPages
+          // }
+        }
+        return totalPages
+      }, [])
+      if (pagesItems.length > 0)
+        totalGroups.push({
+          name: group.name,
+          icon: group.icon,
+          items: pagesItems,
+          bottom: group.bottom,
+        })
+      return totalGroups
     }, [])
-    if (pagesItems.length > 0)
-      totalGroups.push({
-        name: group.name,
-        icon: group.icon,
-        items: pagesItems,
-        bottom: group.bottom,
-      })
-    return totalGroups
-  }, [])
 }
 
 const MenuItem = ({ item, active = false }) => {

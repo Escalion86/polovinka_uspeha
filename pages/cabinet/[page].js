@@ -13,6 +13,9 @@ import {
   fetchingDirections,
   fetchingEvents,
   fetchingReviews,
+  fetchingSertificates,
+  fetchingUsers,
+  fetchingEventsUsers,
 } from '@helpers/fetchers'
 import { useState, useEffect } from 'react'
 import LoadingContent from '@layouts/content/LoadingContent'
@@ -22,7 +25,8 @@ import ModalsPortal from '@layouts/modals/ModalsPortal'
 import BurgerLayout from '@layouts/BurgerLayout'
 import DeviceCheck from '@components/DeviceCheck'
 
-function CabinetPage({ user, events, directions, reviews, page }) {
+function CabinetPage(props) {
+  const { page, loggedUser } = props
   const Component = CONTENTS[page]
     ? CONTENTS[page].Component
     : (props) => <div className="flex justify-center px-2">Ошибка 404</div>
@@ -38,15 +42,10 @@ function CabinetPage({ user, events, directions, reviews, page }) {
       <CabinetWrapper>
         {/* ----------------------------- HEADER ------------------------------- */}
         <DeviceCheck right />
-        <CabinetHeader user={user} title={title} />
+        <CabinetHeader user={loggedUser} title={title} />
         <BurgerLayout />
-        <ContentWrapper user={user} page={page}>
-          <Component
-            user={user}
-            events={events}
-            directions={directions}
-            reviews={reviews}
-          />
+        <ContentWrapper user={loggedUser} page={page}>
+          <Component {...props} />
           {/* <H2>Доступные курсы</H2>
           <div className="w-full">
             {accessCourses.length > 0 ? (
@@ -143,26 +142,35 @@ export const getServerSideProps = async (context) => {
   }
 
   try {
+    const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    const sertificates = await fetchingSertificates(process.env.NEXTAUTH_SITE)
+    const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
     return {
       props: {
+        users,
         events,
         directions,
         reviews,
         page,
-        user: session?.user ? session.user : null,
+        sertificates,
+        eventsUsers,
+        loggedUser: session?.user ? session.user : null,
       },
     }
   } catch {
     return {
       props: {
+        users: null,
         events: null,
         directions: null,
         reviews: null,
         page,
-        user: session?.user ? session.user : null,
+        sertificates: null,
+        eventsUsers: null,
+        loggedUser: session?.user ? session.user : null,
       },
       // notFound: true,
     }

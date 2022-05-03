@@ -37,6 +37,14 @@ export async function fetchingReviews(domen = process.env.NEXTAUTH_SITE) {
   return resp
 }
 
+export async function fetchingSertificates(domen = process.env.NEXTAUTH_SITE) {
+  console.log('Запущен fetchingSertificates')
+  const resp = await fetch(`${domen}/api/sertificates`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+  return resp
+}
+
 export async function fetchingUsers(domen = process.env.NEXTAUTH_SITE) {
   console.log('Запущен fetchingUsers')
   const resp = await fetch(`${domen}/api/users`)
@@ -59,6 +67,14 @@ export async function fetchingUserByEmail(
 ) {
   console.log('Запущен fetchingUserByEmail')
   const resp = await fetch(`${domen}/api/users/byEmail/${email}`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+  return resp
+}
+
+export async function fetchingEventsUsers(domen = process.env.NEXTAUTH_SITE) {
+  console.log('Запущен fetchingEventsUsers')
+  const resp = await fetch(`${domen}/api/eventsusers`)
     .then((res) => res.json())
     .then((json) => json.data)
   return resp

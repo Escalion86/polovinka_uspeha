@@ -34,16 +34,23 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 }
 
 const menu = [
-  { name: 'О нас', href: '#about' },
-  { name: 'Запись', href: '#timetable' },
-  { name: 'Направления', href: '#directions' },
-  { name: 'Сертификат', href: '#sertificat' },
-  { name: 'Стоимость', href: '#price' },
-  { name: 'Отзывы', href: '#otzivi' },
-  { name: 'Контакты', href: '#contacts' },
+  { name: 'О нас', href: '#about', key: null },
+  { name: 'Запись', href: '#timetable', key: 'events' },
+  { name: 'Направления', href: '#directions', key: 'directions' },
+  { name: 'Сертификат', href: '#sertificate', key: 'sertificates' },
+  // { name: 'Стоимость', href: '#price', key: null },
+  { name: 'Отзывы', href: '#reviews', key: 'reviews' },
+  { name: 'Контакты', href: '#contacts', key: null },
 ]
 
-const Header = ({ user }) => {
+const Header = (props) => {
+  const { user, sertifacates, events, directions, reviews } = props
+
+  const filteredMenu = menu.filter(
+    (menuItem) =>
+      !menuItem.key || (props[menuItem.key] && props[menuItem.key].length > 0)
+  )
+
   const menuOpen = useRecoilValue(menuOpenAtom)
   return (
     <div className="h-18">
@@ -72,9 +79,9 @@ const Header = ({ user }) => {
           </div>
         </div>
         <ul className="items-center justify-center hidden w-full h-8 text-lg duration-300 bg-white bg-opacity-75 tablet:flex gap-x-4 hover:bg-opacity-100">
-          {menu.map(({ name, href }, index) => (
-            <MenuItem key={'menuItem' + index} text={name} href={href} />
-          ))}
+          {filteredMenu.map(({ name, href }, index) => {
+            return <MenuItem key={'menuItem' + index} text={name} href={href} />
+          })}
         </ul>
         <div
           className={cn(
@@ -101,7 +108,7 @@ const Header = ({ user }) => {
             </div>
             <div className="px-2 py-2 w-60 phoneH:py-0">
               <ul className="flex flex-col gap-y-2">
-                {menu.map(({ name, href }, index) => (
+                {filteredMenu.map(({ name, href }, index) => (
                   <BurgerMenuItem
                     key={'burgerMenuItem' + index}
                     text={name}

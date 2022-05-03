@@ -2,8 +2,10 @@ import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
 import getNoun from '@helpers/getNoun'
 import Fab from '@components/Fab'
+import CardButtons from '@components/CardButtons'
 
-const ReviewsContent = ({ user, events, directions, reviews }) => {
+const ReviewsContent = (props) => {
+  const { reviews } = props
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   return (
     <>
@@ -11,16 +13,19 @@ const ReviewsContent = ({ user, events, directions, reviews }) => {
         reviews.map((review) => (
           <div
             key={review._id}
-            className="px-2 py-1 duration-300 bg-white border-t border-b border-gray-400 shadow-sm cursor-pointer hover:shadow-medium-active"
+            className="duration-300 bg-white border-t border-b border-gray-400 shadow-sm cursor-pointer hover:shadow-medium-active"
             onClick={() => modalsFunc.review.edit(review)}
           >
-            <div className="text-xl font-bold">
-              {review.author}
-              {review.authorAge
-                ? ', ' + getNoun(review.authorAge, 'год', 'года', 'лет')
-                : ''}
+            <div className="flex">
+              <div className="flex-1 px-2 py-1 text-xl font-bold">
+                {review.author}
+                {review.authorAge
+                  ? ', ' + getNoun(review.authorAge, 'год', 'года', 'лет')
+                  : ''}
+              </div>
+              <CardButtons item={review} typeOfItem="review" />
             </div>
-            <div>{review.review}</div>
+            <div className="px-2 py-1">{review.review}</div>
           </div>
         ))
       ) : (

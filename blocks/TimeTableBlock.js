@@ -49,7 +49,7 @@ const CardEvent = ({ event }) => (
 )
 
 const TimeTableBlock = ({ events }) => {
-  if (!events) return null
+  if (!events || events.length === 0) return null
   return (
     <BlockContainer id="timetable" className="bg-gray-200">
       <H3>Ближайшие мероприятия</H3>

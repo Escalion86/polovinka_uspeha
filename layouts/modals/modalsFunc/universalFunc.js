@@ -115,7 +115,6 @@ const universalFunc = (item, schema) => {
         <EditableTextarea
           title="Описание"
           html={description}
-          readonly={false}
           uncontrolled={false}
           onChange={(e) => {
             removeError('description')

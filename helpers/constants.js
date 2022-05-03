@@ -12,6 +12,39 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import isDevMode from './isDevMode'
 
+import {
+  faBug,
+  faChartBar,
+  faCog,
+  faCubes,
+  faFilter,
+  faFire,
+  faHome,
+  faMoneyBill,
+  faUser,
+  faHeart,
+} from '@fortawesome/free-solid-svg-icons'
+import { faCalendar, faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
+import DirectionsContent from '@layouts/content/DirectionsContent'
+import ReviewsContent from '@layouts/content/ReviewsContent'
+import EventsContent from '@layouts/content/EventsContent'
+import SertificateContent from '@layouts/content/SertificateContent'
+import QuestionnaireContent from '@layouts/content/QuestionnaireContent'
+import UsersContent from '@layouts/content/UsersContent'
+
+import ZodiacCapricorn from 'svg/zodiac/ZodiacCapricorn'
+import ZodiacTaurus from 'svg/zodiac/ZodiacTaurus'
+import ZodiacGemini from 'svg/zodiac/ZodiacGemini'
+import ZodiacCancer from 'svg/zodiac/ZodiacCancer'
+import ZodiacLeo from 'svg/zodiac/ZodiacLeo'
+import ZodiacLibra from 'svg/zodiac/ZodiacLibra'
+import ZodiacSagittarius from 'svg/zodiac/ZodiacSagittarius'
+import ZodiacAries from 'svg/zodiac/ZodiacAries'
+import ZodiacAquarius from 'svg/zodiac/ZodiacAquarius'
+import ZodiacPisces from 'svg/zodiac/ZodiacPisces'
+import ZodiacVirgo from 'svg/zodiac/ZodiacVirgo'
+import ZodiacScorpio from 'svg/zodiac/ZodiacScorpio'
+
 export const DEFAULT_USER = {
   name: 'Гость',
   email: '',
@@ -39,6 +72,93 @@ export const ORIENTATIONS = [
   { value: 'homo', name: 'Гомосексуал', color: 'red-400' },
 ]
 
+export const ZODIAC = [
+  {
+    name: 'Овен',
+    component: ZodiacAries,
+    element: 'Огонь',
+    dateFrom: '21.03',
+    dateTo: '19.04',
+  },
+  {
+    name: 'Телец',
+    component: ZodiacTaurus,
+    element: 'Земля',
+    dateFrom: '20.04',
+    dateTo: '20.05',
+  },
+  {
+    name: 'Близнецы',
+    component: ZodiacGemini,
+    element: 'Воздух',
+    dateFrom: '21.05',
+    dateTo: '20.06',
+  },
+  {
+    name: 'Рак',
+    component: ZodiacCancer,
+    element: 'Вода',
+    dateFrom: '21.06',
+    dateTo: '22.07',
+  },
+  {
+    name: 'Лев',
+    component: ZodiacLeo,
+    element: 'Огонь',
+    dateFrom: '23.07',
+    dateTo: '22.08',
+  },
+  {
+    name: 'Дева',
+    component: ZodiacVirgo,
+    element: 'Земля',
+    dateFrom: '23.08',
+    dateTo: '22.09',
+  },
+  {
+    name: 'Весы',
+    component: ZodiacLibra,
+    element: 'Воздух',
+    dateFrom: '23.09',
+    dateTo: '22.10',
+  },
+  {
+    name: 'Скорпион',
+    component: ZodiacScorpio,
+    element: 'Вода',
+    dateFrom: '23.10',
+    dateTo: '21.11',
+  },
+  {
+    name: 'Стрелец',
+    component: ZodiacSagittarius,
+    element: 'Огонь',
+    dateFrom: '22.11',
+    dateTo: '21.12',
+  },
+  {
+    name: 'Козерог',
+    component: ZodiacCapricorn,
+    element: 'Земля',
+    dateFrom: '22.12',
+    dateTo: '19.01',
+  },
+  {
+    name: 'Водолей',
+    component: ZodiacAquarius,
+    element: 'Воздух',
+    dateFrom: '20.01',
+    dateTo: '18.02',
+  },
+  {
+    name: 'Рыбы',
+    component: ZodiacPisces,
+    element: 'Вода',
+    dateFrom: '19.02',
+    dateTo: '20.03',
+  },
+]
+
 export const CLOUDINARY_FOLDER = isDevMode
   ? 'polovinka_uspeha'
   : 'polovinka_uspeha'
@@ -57,24 +177,7 @@ export const CLOUDINARY_FOLDER = isDevMode
 //   BtnTest,
 //   BtnAddDistrict,
 // } from '@admincomponents/TitleButtons'
-import {
-  faBug,
-  faChartBar,
-  faCog,
-  faCubes,
-  faFilter,
-  faFire,
-  faHome,
-  faMoneyBill,
-  faUser,
-  faHeart,
-} from '@fortawesome/free-solid-svg-icons'
-import { faCalendar, faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
-import DirectionsContent from '@layouts/content/DirectionsContent'
-import ReviewsContent from '@layouts/content/ReviewsContent'
-import EventsContent from '@layouts/content/EventsContent'
-import SertificatContent from '@layouts/content/SertificatContent'
-import QuestionnaireContent from '@layouts/content/QuestionnaireContent'
+
 // import {
 //   InvitationsContent,
 //   ProductCirculationsContent,
@@ -97,9 +200,10 @@ import QuestionnaireContent from '@layouts/content/QuestionnaireContent'
 export const CONTENTS = {
   directions: { Component: DirectionsContent, name: 'Сайт / Направления' },
   reviews: { Component: ReviewsContent, name: 'Сайт / Отзывы' },
-  sertificat: { Component: SertificatContent, name: 'Сайт / Сертификат' },
+  sertificate: { Component: SertificateContent, name: 'Сайт / Сертификат' },
   events: { Component: EventsContent, name: 'Мероприятия' },
   questionnaire: { Component: QuestionnaireContent, name: 'Моя анкета' },
+  users: { Component: UsersContent, name: 'Пользователи' },
 }
 
 export const pages = [
@@ -109,21 +213,13 @@ export const pages = [
     name: 'Направления',
     href: 'directions',
     icon: faHeart,
-    // pageContent: OverviewContent,
-    // addButton: null,
-    // backToPageId: null,
-    // variable: null,
   },
   {
     id: 1,
     group: 0,
     name: 'Сертификат',
-    href: 'sertificat',
+    href: 'sertificate',
     icon: faGift,
-    // pageContent: OverviewContent,
-    // addButton: null,
-    // backToPageId: null,
-    // variable: null,
   },
   {
     id: 2,
@@ -131,10 +227,6 @@ export const pages = [
     name: 'Отзывы',
     href: 'reviews',
     icon: faComments,
-    // pageContent: OverviewContent,
-    // addButton: null,
-    // backToPageId: null,
-    // variable: null,
   },
   {
     id: 3,
@@ -142,182 +234,20 @@ export const pages = [
     name: 'Мероприятия',
     href: 'events',
     icon: faCalendar,
-    // pageContent: OverviewContent,
-    // addButton: null,
-    // backToPageId: null,
-    // variable: null,
   },
-  // {
-  //   id: 4,
-  //   group: 1,
-  //   name: 'тест',
-  //   href: 'events',
-  //   icon: faCalendar,
-  //   // pageContent: OverviewContent,
-  //   // addButton: null,
-  //   // backToPageId: null,
-  //   // variable: null,
-  // },
-  // {
-  //   id: 1,
-  //   group: 1,
-  //   name: 'Товары',
-  //   // pageContent: ProductsContent,
-  //   // addButton: BtnAddProduct,
-  //   backToPageId: null,
-  //   variable: 'products',
-  // },
-  // {
-  //   id: 2,
-  //   group: 1,
-  //   name: 'Типы товаров',
-  //   // pageContent: ProductTypesContent,
-  //   // addButton: BtnAddProductType,
-  //   backToPageId: null,
-  //   variable: 'productTypes',
-  // },
-  // {
-  //   id: 3,
-  //   group: 1,
-  //   name: 'Наборы',
-  //   // pageContent: SetsContent,
-  //   // addButton: BtnAddSet,
-  //   backToPageId: null,
-  //   variable: 'sets',
-  // },
-  // {
-  //   id: 4,
-  //   group: 1,
-  //   name: 'Типы наборов',
-  //   // pageContent: SetTypesContent,
-  //   // addButton: BtnAddSetType,
-  //   backToPageId: null,
-  //   variable: 'setTypes',
-  // },
-  // {
-  //   id: 5,
-  //   group: null,
-  //   name: 'Параметры учетной записи',
-  //   // pageContent: UserContent,
-  //   // addButton: null,
-  //   backToPageId: null,
-  //   variable: null,
-  // },
-  // {
-  //   id: 6,
-  //   group: 6,
-  //   name: 'Сотрудники',
-  //   // pageContent: UsersContent,
-  //   // addButton: null,
-  //   backToPageId: null,
-  //   variable: 'users',
-  // },
-  // {
-  //   id: 7,
-  //   group: 6,
-  //   name: 'Приглашения сотрудников',
-  //   // pageContent: InvitationsContent,
-  //   // addButton: BtnAddInvitation,
-  //   backToPageId: null,
-  //   variable: 'invitations',
-  // },
-  // {
-  //   id: 9,
-  //   group: 1,
-  //   name: 'Движение товаров',
-  //   // pageContent: ProductCirculationsContent,
-  //   // addButton: BtnAddProductCirculation,
-  //   backToPageId: 0,
-  //   variable: 'productCirculations',
-  // },
-  // {
-  //   id: 10,
-  //   group: 3,
-  //   name: 'Клиенты',
-  //   // pageContent: ClientsContent,
-  //   // addButton: BtnAddClient,
-  //   backToPageId: 0,
-  //   variable: 'clients',
-  // },
-  // {
-  //   id: 11,
-  //   group: 2,
-  //   name: 'Заказы',
-  //   // pageContent: OrdersContent,
-  //   // addButton: BtnAddOrder,
-  //   backToPageId: 0,
-  //   variable: 'orders',
-  // },
-  // {
-  //   id: 12,
-  //   group: 4,
-  //   name: 'Транзакции',
-  //   // pageContent: PaymentsContent,
-  //   // addButton: BtnAddPayment,
-  //   backToPageId: 0,
-  //   variable: 'payments',
-  // },
-  // {
-  //   id: 99,
-  //   group: 10,
-  //   name: 'Тестовая страница',
-  //   // pageContent: TestContent,
-  //   // addButton: BtnTest,
-  //   backToPageId: 0,
-  //   variable: 'dev',
-  // },
-  // {
-  //   id: 13,
-  //   group: 0,
-  //   name: 'Аэродизайнер',
-  //   pageContent: OrdersContent,
-  //   pageButtons: [],
-  //   backToPageId: 0,
-  //   accessRoles: ['aerodesigner'],
-  //   variable: 'orders',
-  // },
-  // {
-  //   id: 14,
-  //   group: 0,
-  //   name: 'Курьер',
-  //   pageContent: OrdersContent,
-  //   pageButtons: [],
-  //   backToPageId: 0,
-  //   accessRoles: ['deliver'],
-  //   variable: 'orders',
-  // },
-  // {
-  //   id: 15,
-  //   group: 10,
-  //   name: 'Заявки разработчику',
-  //   // pageContent: DevToDoContent,
-  //   // addButton: BtnAddDevToDo,
-  //   backToPageId: 0,
-  //   variable: 'devToDo',
-  // },
-  // {
-  //   id: 16,
-  //   group: 6,
-  //   name: 'Районы доставки',
-  //   // pageContent: DistrictsContent,
-  //   // addButton: BtnAddDistrict,
-  //   backToPageId: 0,
-  //   variable: 'districts',
-  // },
-  // {
-  //   id: 8,
-  //   group: 6,
-  //   name: 'Настройки CRM',
-  //   // pageContent: SettingsContent,
-  //   // addButton: null,
-  //   backToPageId: 0,
-  //   variable: null,
-  // },
+  {
+    id: 4,
+    group: 2,
+    name: 'Пользователи',
+    href: 'users',
+    icon: faCalendar,
+  },
 ]
 
 export const pagesGroups = [
-  { id: 0, name: 'Сайт', icon: faHome },
-  { id: 1, name: 'Мероприятия', icon: faCalendarAlt },
+  { id: 0, name: 'Сайт', icon: faHome, access: 'admin' },
+  { id: 1, name: 'Мероприятия', icon: faCalendarAlt, access: 'all' },
+  { id: 2, name: 'Пользователи', icon: faUser, access: 'admin' },
   // { id: 2, name: 'Заказы', icon: faFire },
   // { id: 1, name: 'Склад', icon: faCubes },
   // { id: 3, name: 'Клиенты', icon: faUser },

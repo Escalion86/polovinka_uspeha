@@ -54,8 +54,10 @@ const ValuePicker = ({
   onChange = null,
   name = 'prop',
   required = false,
-  disselectOnSameClick = true,
+  disselectOnSameClick = false,
 }) => {
+  console.log('valuesArray', valuesArray)
+  console.log('value', value)
   return (
     <>
       {label && (

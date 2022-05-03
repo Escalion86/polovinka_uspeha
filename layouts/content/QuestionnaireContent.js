@@ -1,6 +1,3 @@
-// import { modalsFuncAtom } from '@state/atoms'
-// import { useRecoilValue } from 'recoil'
-
 import Button from '@components/Button'
 import DatePicker from '@components/DatePicker'
 import FormWrapper from '@components/FormWrapper'
@@ -11,11 +8,13 @@ import Textarea from '@components/Textarea'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import { putData } from '@helpers/CRUD'
+import getZodiac from '@helpers/getZodiac'
 import useErrors from '@helpers/useErrors'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-const QuestionnaireContent = ({ user, events, directions, reviews }) => {
+const QuestionnaireContent = (props) => {
+  const user = props.loggedUser
   const [name, setName] = useState(user?.name)
   const [secondname, setSecondname] = useState(user?.secondname)
   const [thirdname, setThirdname] = useState(user?.thirdname)
@@ -165,6 +164,8 @@ const QuestionnaireContent = ({ user, events, directions, reviews }) => {
             label="День рождения"
             value={birthday}
             onChange={setBirthday}
+            showYears
+            showZodiac
           />
           <Textarea
             label="Обо мне"

@@ -1,6 +1,7 @@
 import formatDate from '@helpers/formatDate'
 import birthDateToAge from '@helpers/birthDateToAge'
 import cn from 'classnames'
+import getZodiac from '@helpers/getZodiac'
 
 const DatePicker = ({
   label = '',
@@ -12,6 +13,7 @@ const DatePicker = ({
   disabled = false,
   inLine = false,
   showYears = false,
+  showZodiac = false,
 }) => {
   return (
     <>
@@ -44,9 +46,13 @@ const DatePicker = ({
           // min="2018-01-01"
           // max="2018-12-31"
         />
-        {value && showYears && (
+        {value && (showYears || showZodiac) && (
           <div className="ml-2 whitespace-nowrap">
-            {'(' + birthDateToAge(value) + ')'}
+            {'(' +
+              (showYears ? birthDateToAge(value) : '') +
+              (showYears && showZodiac ? ', ' : '') +
+              (showZodiac ? getZodiac(value).name : '') +
+              ')'}
           </div>
         )}
       </div>

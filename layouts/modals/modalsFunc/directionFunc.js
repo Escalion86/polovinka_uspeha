@@ -105,9 +105,8 @@ const directionFunc = (direction) => {
           error={errors.description}
         /> */}
         <EditableTextarea
-          title="Описание"
+          label="Описание"
           html={description}
-          readonly={false}
           uncontrolled={false}
           onChange={(value) => {
             removeError('description')

@@ -11,6 +11,7 @@
 import reviewFunc from './modalsFunc/reviewFunc'
 import directionFunc from './modalsFunc/directionFunc'
 import eventFunc from './modalsFunc/eventFunc'
+import userFunc from './modalsFunc/userFunc'
 import { deleteData } from '@helpers/CRUD'
 
 const modalsFuncGenerator = (setModals) => {
@@ -64,6 +65,9 @@ const modalsFuncGenerator = (setModals) => {
     },
     event: {
       edit: (event) => addModal(eventFunc(event)),
+    },
+    user: {
+      edit: (user) => addModal(userFunc(user)),
     },
     // addUserToCourse: ({ course }) =>
     //   addModal({

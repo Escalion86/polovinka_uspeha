@@ -49,7 +49,7 @@ const TextareaButton = ({
 
 const GroupButtons = ({ name, children }) => (
   <div className="flex flex-col p-1 border border-gray-300 rounded gap-y-1">
-    <div className="flex justify-center">{name}</div>
+    <div className="flex justify-center text-sm">{name}</div>
     <div className="flex gap-x-1">{children}</div>
   </div>
 )
@@ -60,14 +60,12 @@ const EditableTextarea = ({
   disabled,
   onChange,
   onBlur,
-  // readonly = true,
   placeholder,
   onSave,
   uncontrolled = true,
   btnSaveName = 'Сохранить',
   disableUndo = false,
-  title,
-  forGrid = false,
+  label,
 }) => {
   const [textHtml, setTextHtml] = useState(html)
   const [isSaveProcess, setIsSaveProcess] = useState(false)
@@ -96,10 +94,10 @@ const EditableTextarea = ({
 
   return (
     <>
-      {title && <div>{title}</div>}
+      {label && <div className="text-right">{label}</div>}
 
-      <div className="p-2 bg-white border border-gray-300">
-        <div className="flex flex-wrap gap-1">
+      <div className="bg-white border border-gray-400 rounded">
+        <div className="flex flex-wrap gap-1 p-1">
           <GroupButtons name="Стиль">
             <TextareaButton cmd="italic" icon={faItalic} />
             <TextareaButton cmd="bold" icon={faBold} />
@@ -182,13 +180,13 @@ const EditableTextarea = ({
         </div>
         <Divider thin light />
         <ContentEditable
-          className={cn('outline-none list-disc my-2', className)}
+          className={cn('px-1 outline-none list-disc my-1', className)}
           html={uncontrolled ? textHtml : html}
           disabled={disabled}
           // onChange={onChange}
           onChange={(e) => {
             if (uncontrolled) setTextHtml(e.target.value)
-            else onChange && onChange(e)
+            else onChange && onChange(e.target.value)
           }}
           onBlur={onBlur}
           placeholder={placeholder}

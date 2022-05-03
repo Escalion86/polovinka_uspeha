@@ -4,7 +4,8 @@ import getNoun from '@helpers/getNoun'
 import formatDateTime from '@helpers/formatDateTime'
 import Fab from '@components/Fab'
 
-const EventsContent = ({ user, events, directions, reviews }) => {
+const EventsContent = (props) => {
+  const { events } = props
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   return (
     <>

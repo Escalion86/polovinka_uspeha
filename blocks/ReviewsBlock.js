@@ -13,10 +13,10 @@ const Review = ({ review, style }) => (
 )
 
 const ReviewsBlock = ({ reviews }) => {
-  if (!reviews) return null
+  if (!reviews || reviews.length === 0) return null
   return (
     <BlockContainer
-      id="otzivi"
+      id="reviews"
       style={{
         backgroundImage: `url("/img/bg.webp")`,
         backgroundRepeat: 'no-repeat',
