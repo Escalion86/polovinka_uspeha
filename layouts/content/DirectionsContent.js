@@ -13,7 +13,7 @@ const DirectionsContent = (props) => {
 
   return (
     <>
-      {directions ? (
+      {directions?.length > 0 ? (
         directions.map((direction) => (
           <div
             key={direction._id}

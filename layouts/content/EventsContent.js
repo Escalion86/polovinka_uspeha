@@ -9,7 +9,7 @@ const EventsContent = (props) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   return (
     <>
-      {events ? (
+      {events?.length > 0 ? (
         events.map((event) => (
           <div
             key={event._id}

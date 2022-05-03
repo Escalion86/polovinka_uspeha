@@ -7,15 +7,13 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import FormWrapper from '@components/FormWrapper'
 
-const reviewFunc = (review) => {
-  const isEditing = !!review
-
+const reviewFunc = (review, clone = false) => {
   const ReviewModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
-    const [author, setAuthor] = useState(isEditing ? review.author : '')
-    const [authorAge, setAuthorAge] = useState(isEditing ? review.authorAge : 0)
-    const [reviewText, setReviewText] = useState(isEditing ? review.review : '')
+    const [author, setAuthor] = useState(review ? review.author : '')
+    const [authorAge, setAuthorAge] = useState(review ? review.authorAge : 0)
+    const [reviewText, setReviewText] = useState(review ? review.review : '')
     const [showOnSite, setShowOnSite] = useState(
-      isEditing ? review.showOnSite : true
+      review ? review.showOnSite : true
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
     console.log('showOnSite', showOnSite)
@@ -37,7 +35,7 @@ const reviewFunc = (review) => {
         error = true
       }
       if (!error) {
-        if (isEditing) {
+        if (review && !clone) {
           await putData(
             `/api/reviews/${review._id}`,
             {
@@ -127,8 +125,8 @@ const reviewFunc = (review) => {
   }
 
   return {
-    title: `${isEditing ? 'Редактирование' : 'Создание'} отзыва`,
-    confirmButtonName: isEditing ? 'Применить' : 'Создать',
+    title: `${review && !clone ? 'Редактирование' : 'Создание'} отзыва`,
+    confirmButtonName: review && !clone ? 'Применить' : 'Создать',
     Children: ReviewModal,
   }
 }

@@ -8,18 +8,16 @@ import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 
-const eventFunc = (event) => {
-  const isEditing = !!event
-
+const eventFunc = (event, clone = false) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
-    const [title, setTitle] = useState(isEditing ? event.title : '')
+    const [title, setTitle] = useState(event ? event.title : '')
     const [description, setDescription] = useState(
-      isEditing ? event.description : ''
+      event ? event.description : ''
     )
-    const [image, setImage] = useState(isEditing ? event.image : '')
-    const [date, setDate] = useState(isEditing ? event.date : Date.now())
+    const [image, setImage] = useState(event ? event.image : '')
+    const [date, setDate] = useState(event ? event.date : Date.now())
     const [showOnSite, setShowOnSite] = useState(
-      isEditing ? event.showOnSite : true
+      event ? event.showOnSite : true
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
 
@@ -40,7 +38,7 @@ const eventFunc = (event) => {
         error = true
       }
       if (!error) {
-        if (isEditing) {
+        if (event && !clone) {
           await putData(
             `/api/events/${event._id}`,
             {
@@ -130,8 +128,8 @@ const eventFunc = (event) => {
   }
 
   return {
-    title: `${isEditing ? 'Редактирование' : 'Создание'} мероприятия`,
-    confirmButtonName: isEditing ? 'Применить' : 'Создать',
+    title: `${event && !clone ? 'Редактирование' : 'Создание'} мероприятия`,
+    confirmButtonName: event && !clone ? 'Применить' : 'Создать',
     Children: EventModal,
   }
 }

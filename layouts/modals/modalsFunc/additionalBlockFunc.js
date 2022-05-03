@@ -8,19 +8,27 @@ import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 
-const directionFunc = (direction, clone = false) => {
-  const DirectionModal = ({
+const additionalBlockFunc = (additionalBlock, clone = false) => {
+  const AdditionalBlockModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
   }) => {
-    const [title, setTitle] = useState(direction ? direction.title : '')
-    const [description, setDescription] = useState(
-      direction ? direction.description : ''
+    const [title, setTitle] = useState(
+      additionalBlock ? additionalBlock.title : ''
     )
-    const [image, setImage] = useState(direction ? direction.image : '')
+    const [description, setDescription] = useState(
+      additionalBlock ? additionalBlock.description : ''
+    )
+
+    const [image, setImage] = useState(
+      additionalBlock ? additionalBlock.image : ''
+    )
+    const [menuName, setMenuName] = useState(
+      additionalBlock ? additionalBlock.menuName : ''
+    )
     const [showOnSite, setShowOnSite] = useState(
-      direction ? direction.showOnSite : true
+      additionalBlock ? additionalBlock.showOnSite : true
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
 
@@ -41,25 +49,27 @@ const directionFunc = (direction, clone = false) => {
         error = true
       }
       if (!error) {
-        if (direction && !clone) {
+        if (additionalBlock && !clone) {
           await putData(
-            `/api/directions/${direction._id}`,
+            `/api/additionalBlocks/${additionalBlock._id}`,
             {
               title,
               description,
               showOnSite,
               image,
+              menuName,
             },
             refreshPage
           )
         } else {
           await postData(
-            `/api/directions`,
+            `/api/additionalBlocks`,
             {
               title,
               description,
               showOnSite,
               image,
+              menuName,
             },
             refreshPage
           )
@@ -70,13 +80,13 @@ const directionFunc = (direction, clone = false) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-    }, [title, description, showOnSite, image])
+    }, [title, description, showOnSite, image, menuName])
 
     return (
       <FormWrapper>
         <InputImage
           label="Картинка"
-          directory="directions"
+          directory="additionalBlocks"
           image={image}
           onChange={setImage}
         />
@@ -112,6 +122,18 @@ const directionFunc = (direction, clone = false) => {
           }}
           forGrid
         />
+        <Input
+          label="Название в меню"
+          type="text"
+          value={menuName}
+          onChange={(value) => {
+            removeError('menuName')
+            setMenuName(value)
+          }}
+          // labelClassName="w-40"
+          error={errors.menuName}
+          forGrid
+        />
         <CheckBox
           checked={showOnSite}
           labelPos="left"
@@ -132,10 +154,10 @@ const directionFunc = (direction, clone = false) => {
   }
 
   return {
-    title: `${direction && !clone ? 'Редактирование' : 'Создание'} направления`,
-    confirmButtonName: direction && !clone ? 'Применить' : 'Создать',
-    Children: DirectionModal,
+    title: `${additionalBlock && !clone ? 'Редактирование' : 'Создание'} блока`,
+    confirmButtonName: additionalBlock && !clone ? 'Применить' : 'Создать',
+    Children: AdditionalBlockModal,
   }
 }
 
-export default directionFunc
+export default additionalBlockFunc

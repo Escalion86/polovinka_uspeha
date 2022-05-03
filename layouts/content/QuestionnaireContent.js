@@ -84,116 +84,105 @@ const QuestionnaireContent = (props) => {
   }
 
   return (
-    <>
-      <div className="flex flex-col px-2 gap-y-2">
-        <FormWrapper>
-          <InputImage
-            label="Картинка"
-            directory="users"
-            image={image}
-            onChange={setImage}
-          />
-          <Input
-            label="Имя"
-            type="text"
-            value={name}
-            onChange={(value) => {
-              removeError('name')
-              setName(value)
-            }}
-            // labelClassName="w-40"
-            error={errors.name}
-            forGrid
-          />
-          <Input
-            label="Фамилия"
-            type="text"
-            value={secondname}
-            onChange={(value) => {
-              removeError('secondname')
-              setSecondname(value)
-            }}
-            // labelClassName="w-40"
-            error={errors.secondname}
-            forGrid
-          />
-          <Input
-            label="Отчество"
-            type="text"
-            value={thirdname}
-            onChange={(value) => {
-              removeError('thirdname')
-              setThirdname(value)
-            }}
-            // labelClassName="w-40"
-            error={errors.thirdname}
-            forGrid
-          />
-          <GenderPicker gender={gender} onChange={setGender} />
-          <OrientationPicker
-            orientation={orientation}
-            onChange={setOrientation}
-          />
-          <FormWrapper twoColumns>
-            <PhoneInput label="Телефон" value={phone} onChange={setPhone} />
-            <PhoneInput
-              label="Whatsapp"
-              value={whatsapp}
-              onChange={setWhatsapp}
-            />
-          </FormWrapper>
-          <FormWrapper twoColumns>
-            <PhoneInput label="Viber" value={viber} onChange={setViber} />
-            <Input
-              prefix="@"
-              label="Telegram"
-              value={telegram}
-              onChange={setTelegram}
-            />
-          </FormWrapper>
-          <FormWrapper twoColumns>
-            <Input
-              prefix="@"
-              label="Instagram"
-              value={instagram}
-              onChange={setInstagram}
-            />
-            <Input prefix="@" label="Vk" value={vk} onChange={setVk} />
-          </FormWrapper>
-          <DatePicker
-            label="День рождения"
-            value={birthday}
-            onChange={setBirthday}
-            showYears
-            showZodiac
-          />
-          <Textarea
-            label="Обо мне"
-            value={about}
-            onChange={setAbout}
-            rows={4}
-          />
-          <Textarea
-            label="Профессия"
-            value={profession}
-            onChange={setProfession}
-            rows={4}
-          />
-          <Textarea
-            label="Интересы"
-            value={interests}
-            onChange={setInterests}
-            rows={4}
+    <div className="flex flex-col h-screen px-2 mb-2 gap-y-2">
+      <FormWrapper>
+        <InputImage
+          label="Картинка"
+          directory="users"
+          image={image}
+          onChange={setImage}
+        />
+        <Input
+          label="Имя"
+          type="text"
+          value={name}
+          onChange={(value) => {
+            removeError('name')
+            setName(value)
+          }}
+          // labelClassName="w-40"
+          error={errors.name}
+          forGrid
+        />
+        <Input
+          label="Фамилия"
+          type="text"
+          value={secondname}
+          onChange={(value) => {
+            removeError('secondname')
+            setSecondname(value)
+          }}
+          // labelClassName="w-40"
+          error={errors.secondname}
+          forGrid
+        />
+        <Input
+          label="Отчество"
+          type="text"
+          value={thirdname}
+          onChange={(value) => {
+            removeError('thirdname')
+            setThirdname(value)
+          }}
+          // labelClassName="w-40"
+          error={errors.thirdname}
+          forGrid
+        />
+        <GenderPicker gender={gender} onChange={setGender} />
+        <OrientationPicker
+          orientation={orientation}
+          onChange={setOrientation}
+        />
+        <FormWrapper twoColumns>
+          <PhoneInput label="Телефон" value={phone} onChange={setPhone} />
+          <PhoneInput
+            label="Whatsapp"
+            value={whatsapp}
+            onChange={setWhatsapp}
           />
         </FormWrapper>
-
-        <Button
-          name="Применить"
-          disabled={!formChanged}
-          onClick={handleSubmit}
+        <FormWrapper twoColumns>
+          <PhoneInput label="Viber" value={viber} onChange={setViber} />
+          <Input
+            prefix="@"
+            label="Telegram"
+            value={telegram}
+            onChange={setTelegram}
+          />
+        </FormWrapper>
+        <FormWrapper twoColumns>
+          <Input
+            prefix="@"
+            label="Instagram"
+            value={instagram}
+            onChange={setInstagram}
+          />
+          <Input prefix="@" label="Vk" value={vk} onChange={setVk} />
+        </FormWrapper>
+        <DatePicker
+          label="День рождения"
+          value={birthday}
+          onChange={setBirthday}
+          showYears
+          showZodiac
         />
-      </div>
-    </>
+        <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
+        <Textarea
+          label="Профессия"
+          value={profession}
+          onChange={setProfession}
+          rows={4}
+        />
+        <Textarea
+          label="Интересы"
+          value={interests}
+          onChange={setInterests}
+          rows={4}
+        />
+      </FormWrapper>
+
+      <Button name="Применить" disabled={!formChanged} onClick={handleSubmit} />
+    </div>
   )
 }
 

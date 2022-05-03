@@ -17,7 +17,7 @@ const UsersContent = (props) => {
 
   return (
     <>
-      {users ? (
+      {users?.length > 0 ? (
         users.map((user) => {
           const userGender =
             user.gender &&
@@ -70,24 +70,26 @@ const UsersContent = (props) => {
                     <CardButtons item={user} typeOfItem="user" />
                   </div>
                   <div className="flex flex-col justify-between flex-1 px-2 text-sm font-normal">
-                    {user.about && (
-                      <div>
-                        <span className="font-bold">Обо мне:</span>
-                        <span>{user.about}</span>
-                      </div>
-                    )}
-                    {user.profession && (
-                      <div>
-                        <span className="font-bold">Профессия:</span>
-                        <span>{user.profession}</span>
-                      </div>
-                    )}
-                    {user.interests && (
-                      <div>
-                        <span className="font-bold">Интересы:</span>
-                        <span>{user.interests}</span>
-                      </div>
-                    )}
+                    <div className="flex-1">
+                      {user.about && (
+                        <div>
+                          <span className="font-bold">Обо мне:</span>
+                          <span>{user.about}</span>
+                        </div>
+                      )}
+                      {user.profession && (
+                        <div>
+                          <span className="font-bold">Профессия:</span>
+                          <span>{user.profession}</span>
+                        </div>
+                      )}
+                      {user.interests && (
+                        <div>
+                          <span className="font-bold">Интересы:</span>
+                          <span>{user.interests}</span>
+                        </div>
+                      )}
+                    </div>
                     <ContactsIconsButtons user={user} />
                   </div>
                 </div>

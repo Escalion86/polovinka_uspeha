@@ -1,9 +1,9 @@
-const sertificatesSchema = {
+const additionalBlocksSchema = {
   title: {
     type: String,
     // required: [true, 'Введите название курса. Давай включи фантазию!'],
-    maxlength: [100, 'Название сертификата не может превышать 100 символов'],
-    default: 'Сертификат',
+    maxlength: [100, 'Название блока не может превышать 100 символов'],
+    default: 'Новый блок',
     formOptions: {
       name: 'Название',
       type: 'text',
@@ -15,7 +15,7 @@ const sertificatesSchema = {
       2000,
       'Описание не может превышать 2000 символов. Краткость - сестра таланта!',
     ],
-    default: 'Описание сертификата',
+    default: '',
     formOptions: {
       name: 'Описание',
       type: 'editabletextarea',
@@ -29,6 +29,14 @@ const sertificatesSchema = {
       type: 'image',
     },
   },
+  menuName: {
+    type: String,
+    default: '',
+    formOptions: {
+      name: 'Название в меню',
+      type: 'menuName',
+    },
+  },
   showOnSite: {
     type: Boolean,
     default: true,
@@ -39,4 +47,4 @@ const sertificatesSchema = {
   },
 }
 
-export default sertificatesSchema
+export default additionalBlocksSchema

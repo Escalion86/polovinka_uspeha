@@ -1,24 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 
-const colors = [
-  'border-blue-400',
-  'border-red-400',
-  'border-yellow-400',
-  'border-green-400',
-  'border-purple-400',
-  'text-red-400',
-  'text-blue-400',
-  'text-yellow-400',
-  'text-green-400',
-  'text-purple-400',
-  'bg-blue-400',
-  'bg-red-400',
-  'bg-yellow-400',
-  'bg-green-400',
-  'bg-purple-400',
-]
-
 const ValueItem = ({
   active = false,
   value = 0,

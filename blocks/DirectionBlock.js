@@ -17,8 +17,8 @@ const DirectionBlock = ({
     >
       <div
         className={cn(
-          'flex flex-col laptop:flex-row gap-4',
-          inverse ? 'flex-row-reverse ' : ''
+          'flex flex-col gap-4 w-full',
+          inverse ? 'laptop:flex-row-reverse' : 'laptop:flex-row'
         )}
       >
         {(title || image) && (

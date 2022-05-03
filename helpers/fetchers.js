@@ -37,9 +37,11 @@ export async function fetchingReviews(domen = process.env.NEXTAUTH_SITE) {
   return resp
 }
 
-export async function fetchingSertificates(domen = process.env.NEXTAUTH_SITE) {
-  console.log('Запущен fetchingSertificates')
-  const resp = await fetch(`${domen}/api/sertificates`)
+export async function fetchingAdditionalBlocks(
+  domen = process.env.NEXTAUTH_SITE
+) {
+  console.log('Запущен fetchingAdditionalBlocks')
+  const resp = await fetch(`${domen}/api/additionalBlocks`)
     .then((res) => res.json())
     .then((json) => json.data)
   return resp

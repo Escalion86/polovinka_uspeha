@@ -9,7 +9,7 @@ const ReviewsContent = (props) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   return (
     <>
-      {reviews ? (
+      {reviews?.length > 0 ? (
         reviews.map((review) => (
           <div
             key={review._id}

@@ -3,10 +3,10 @@ import DeviceCheck from '@components/DeviceCheck'
 import { H1, H2, H3, H4, P } from '@components/tags'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  fetchingAdditionalBlocks,
   fetchingDirections,
   fetchingEvents,
   fetchingReviews,
-  fetchingSertificates,
 } from '@helpers/fetchers'
 import Header from '@layouts/Header'
 import cn from 'classnames'
@@ -22,7 +22,7 @@ import PulseButton from '@components/PulseButton'
 import ContactsBlock from '@blocks/ContactsBlock'
 import ReviewsBlock from '@blocks/ReviewsBlock'
 import PriceBlock from '@blocks/PriceBlock'
-import SertificateBlock from '@blocks/SertificateBlock'
+import AdditionalBlocks from '@blocks/AdditionalBlocks'
 import TimeTableBlock from '@blocks/TimeTableBlock'
 import AboutBlock from '@blocks/AboutBlock'
 import TitleBlock from '@blocks/TitleBlock'
@@ -55,15 +55,15 @@ import TitleBlock from '@blocks/TitleBlock'
 // )
 
 export default function Home(props) {
-  const { events, directions, reviews, user, sertificates } = props
+  const { events, directions, reviews, loggedUser, additionalBlocks } = props
 
   const filteredEvents = events.filter((event) => event.showOnSite)
   const filteredReviews = reviews.filter((review) => review.showOnSite)
   const filteredDirections = directions.filter(
     (direction) => direction.showOnSite
   )
-  const filteredSertificates = sertificates.filter(
-    (sertificate) => sertificate.showOnSite
+  const filteredAdditionalBlocks = additionalBlocks.filter(
+    (additionalBlock) => additionalBlock.showOnSite
   )
 
   // const router = useRouter()
@@ -92,15 +92,16 @@ export default function Home(props) {
         <Header
           events={filteredEvents}
           directions={filteredDirections}
-          sertificates={filteredSertificates}
+          additionalBlocks={filteredAdditionalBlocks}
           reviews={filteredReviews}
+          loggedUser={loggedUser}
         />
-        <TitleBlock userIsLogged={!!user} />
+        <TitleBlock userIsLogged={!!loggedUser} />
         <AboutBlock />
         <TimeTableBlock events={filteredEvents} />
         <DirectionsBlock directions={filteredDirections} />
-        <SertificateBlock
-          sertificate={filteredSertificates ? filteredSertificates[0] : null}
+        <AdditionalBlocks
+          additionalBlocks={filteredAdditionalBlocks}
           inverse={
             directions &&
             directions.filter((direction) => direction.showOnSite).length %
@@ -147,14 +148,16 @@ export const getServerSideProps = async (context) => {
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
-    const sertificates = await fetchingSertificates(process.env.NEXTAUTH_SITE)
+    const additionalBlocks = await fetchingAdditionalBlocks(
+      process.env.NEXTAUTH_SITE
+    )
     return {
       props: {
         events,
         directions: directions.filter((direction) => direction.showOnSite),
         reviews: reviews.filter((review) => review.showOnSite),
-        sertificates,
-        user: session?.user ? session.user : null,
+        additionalBlocks,
+        loggedUser: session?.user ? session.user : null,
       },
     }
   } catch {
@@ -163,8 +166,8 @@ export const getServerSideProps = async (context) => {
         events: null,
         directions: null,
         reviews: null,
-        sertificates: null,
-        user: session?.user ? session.user : null,
+        additionalBlocks: null,
+        loggedUser: session?.user ? session.user : null,
       },
       // notFound: true,
     }

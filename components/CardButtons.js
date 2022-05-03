@@ -3,6 +3,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import { useRouter } from 'next/router'
 import { useRecoilValue } from 'recoil'
 import {
+  faCopy,
   faEye,
   faEyeSlash,
   faTrashAlt,
@@ -10,11 +11,11 @@ import {
 import { putData } from '@helpers/CRUD'
 import cn from 'classnames'
 
-const CardButton = ({ active, icon, onClick }) => (
+const CardButton = ({ active, icon, onClick, color = 'red' }) => (
   <div
     className={cn(
-      'flex border items-center justify-center w-8 h-8 hover:bg-red-600 border-red-500 hover:border-red-600 hover:text-white',
-      active ? 'bg-red-500 text-white' : 'bg-white text-red-500'
+      `flex border items-center justify-center w-8 h-8 hover:bg-${color}-600 border-${color}-500 hover:border-${color}-600 hover:text-white`,
+      active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
     )}
     onClick={onClick}
   >
@@ -34,6 +35,16 @@ const CardButtons = ({ item, typeOfItem }) => {
     <div className="flex h-8 overflow-hidden">
       {item.showOnSite !== undefined && (
         <CardButton
+          icon={faCopy}
+          onClick={(e) => {
+            e.stopPropagation()
+            modalsFunc[typeOfItem].add(item)
+          }}
+          color="blue"
+        />
+      )}
+      {item.showOnSite !== undefined && (
+        <CardButton
           active={!item.showOnSite}
           icon={item.showOnSite ? faEye : faEyeSlash}
           onClick={async (e) => {
@@ -46,6 +57,7 @@ const CardButtons = ({ item, typeOfItem }) => {
               refreshPage
             )
           }}
+          color="purple"
         />
       )}
       <CardButton
@@ -54,6 +66,7 @@ const CardButtons = ({ item, typeOfItem }) => {
           e.stopPropagation()
           modalsFunc[typeOfItem].delete(item)
         }}
+        color="red"
       />
       {/* <div
   className={cn(

@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   important: true,
   mode: 'jit',
@@ -43,6 +45,16 @@ module.exports = {
         input: '#2A323B',
         disabled: '#555555',
         black: '#1C1D1F',
+        // black: colors.black,
+        // white: colors.white,
+        // gray: colors.gray,
+        // emerald: colors.emerald,
+        // indigo: colors.indigo,
+        // yellow: colors.yellow,
+        // purple: colors.purple,
+        // 'blue-400': '#60a5fa',
+        // 'blue-500': '#3b82f6',
+        // 'blue-600': '#2563eb',
       },
       gridTemplateColumns: {
         form: 'minmax(min-content, 20%) 1fr',

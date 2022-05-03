@@ -13,26 +13,26 @@ import PhoneInput from '@components/PhoneInput'
 import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 
-const userFunc = (user) => {
-  const isEditing = !!user
-
+const userFunc = (user, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
-    const [name, setName] = useState(user?.name)
-    const [secondname, setSecondname] = useState(user?.secondname)
-    const [thirdname, setThirdname] = useState(user?.thirdname)
-    const [about, setAbout] = useState(user?.about)
-    const [interests, setInterests] = useState(user?.interests)
-    const [profession, setProfession] = useState(user?.profession)
-    const [orientation, setOrientation] = useState(user?.orientation)
-    const [gender, setGender] = useState(user?.gender)
-    const [phone, setPhone] = useState(user?.phone)
-    const [whatsapp, setWhatsapp] = useState(user?.whatsapp)
-    const [viber, setViber] = useState(user?.viber)
-    const [telegram, setTelegram] = useState(user?.telegram)
-    const [instagram, setInstagram] = useState(user?.instagram)
-    const [vk, setVk] = useState(user?.vk)
-    const [image, setImage] = useState(user?.image)
-    const [birthday, setBirthday] = useState(user?.birthday)
+    const [name, setName] = useState(user ? user?.name : '')
+    const [secondname, setSecondname] = useState(user ? user?.secondname : '')
+    const [thirdname, setThirdname] = useState(user ? user?.thirdname : '')
+    const [about, setAbout] = useState(user ? user?.about : '')
+    const [interests, setInterests] = useState(user ? user?.interests : '')
+    const [profession, setProfession] = useState(user ? user?.profession : '')
+    const [orientation, setOrientation] = useState(
+      user ? user?.orientation : ''
+    )
+    const [gender, setGender] = useState(user ? user?.gender : null)
+    const [phone, setPhone] = useState(user ? user?.phone : '')
+    const [whatsapp, setWhatsapp] = useState(user ? user?.whatsapp : '')
+    const [viber, setViber] = useState(user ? user?.viber : '')
+    const [telegram, setTelegram] = useState(user ? user?.telegram : '')
+    const [instagram, setInstagram] = useState(user ? user?.instagram : '')
+    const [vk, setVk] = useState(user ? user?.vk : '')
+    const [image, setImage] = useState(user ? user?.image : '')
+    const [birthday, setBirthday] = useState(user ? user?.birthday : '')
 
     const [errors, addError, removeError, clearErrors] = useErrors()
 
@@ -53,7 +53,7 @@ const userFunc = (user) => {
       //   error = true
       // }
       if (!error) {
-        if (isEditing) {
+        if (user && !clone) {
           await putData(
             `/api/users/${user._id}`,
             {
@@ -232,8 +232,8 @@ const userFunc = (user) => {
   }
 
   return {
-    title: `${isEditing ? 'Редактирование' : 'Создание'} пользователя`,
-    confirmButtonName: isEditing ? 'Применить' : 'Создать',
+    title: `${user && !clone ? 'Редактирование' : 'Создание'} пользователя`,
+    confirmButtonName: user && !clone ? 'Применить' : 'Создать',
     Children: UserModal,
   }
 }

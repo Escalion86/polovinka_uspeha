@@ -28,7 +28,7 @@ import { faCalendar, faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 import DirectionsContent from '@layouts/content/DirectionsContent'
 import ReviewsContent from '@layouts/content/ReviewsContent'
 import EventsContent from '@layouts/content/EventsContent'
-import SertificateContent from '@layouts/content/SertificateContent'
+import AdditionalBlocksContent from '@layouts/content/AdditionalBlocksContent'
 import QuestionnaireContent from '@layouts/content/QuestionnaireContent'
 import UsersContent from '@layouts/content/UsersContent'
 
@@ -44,6 +44,54 @@ import ZodiacAquarius from 'svg/zodiac/ZodiacAquarius'
 import ZodiacPisces from 'svg/zodiac/ZodiacPisces'
 import ZodiacVirgo from 'svg/zodiac/ZodiacVirgo'
 import ZodiacScorpio from 'svg/zodiac/ZodiacScorpio'
+
+const colors = [
+  'border-blue-400',
+  'border-red-400',
+  'border-yellow-400',
+  'border-green-400',
+  'border-purple-400',
+  'text-red-400',
+  'text-blue-400',
+  'text-yellow-400',
+  'text-green-400',
+  'text-purple-400',
+  'bg-blue-400',
+  'bg-red-400',
+  'bg-yellow-400',
+  'bg-green-400',
+  'bg-purple-400',
+  'border-blue-500',
+  'border-red-500',
+  'border-yellow-500',
+  'border-green-500',
+  'border-purple-500',
+  'text-red-500',
+  'text-blue-500',
+  'text-yellow-500',
+  'text-green-500',
+  'text-purple-500',
+  'bg-blue-500',
+  'bg-red-500',
+  'bg-yellow-500',
+  'bg-green-500',
+  'bg-purple-500',
+  'border-blue-600',
+  'border-red-600',
+  'border-yellow-600',
+  'border-green-600',
+  'border-purple-600',
+  'text-red-600',
+  'text-blue-600',
+  'text-yellow-600',
+  'text-green-600',
+  'text-purple-600',
+  'bg-blue-600',
+  'bg-red-600',
+  'bg-yellow-600',
+  'bg-green-600',
+  'bg-purple-600',
+]
 
 export const DEFAULT_USER = {
   name: 'Гость',
@@ -200,7 +248,10 @@ export const CLOUDINARY_FOLDER = isDevMode
 export const CONTENTS = {
   directions: { Component: DirectionsContent, name: 'Сайт / Направления' },
   reviews: { Component: ReviewsContent, name: 'Сайт / Отзывы' },
-  sertificate: { Component: SertificateContent, name: 'Сайт / Сертификат' },
+  additionalBlocks: {
+    Component: AdditionalBlocksContent,
+    name: 'Сайт / Доп. блоки',
+  },
   events: { Component: EventsContent, name: 'Мероприятия' },
   questionnaire: { Component: QuestionnaireContent, name: 'Моя анкета' },
   users: { Component: UsersContent, name: 'Пользователи' },
@@ -217,8 +268,8 @@ export const pages = [
   {
     id: 1,
     group: 0,
-    name: 'Сертификат',
-    href: 'sertificate',
+    name: 'Доп. блоки',
+    href: 'additionalBlocks',
     icon: faGift,
   },
   {

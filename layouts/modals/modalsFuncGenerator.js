@@ -12,6 +12,8 @@ import reviewFunc from './modalsFunc/reviewFunc'
 import directionFunc from './modalsFunc/directionFunc'
 import eventFunc from './modalsFunc/eventFunc'
 import userFunc from './modalsFunc/userFunc'
+import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
+
 import { deleteData } from '@helpers/CRUD'
 
 const modalsFuncGenerator = (setModals) => {
@@ -40,6 +42,7 @@ const modalsFuncGenerator = (setModals) => {
       })
     },
     review: {
+      add: (review) => addModal(reviewFunc(review, true)),
       edit: (review) => addModal(reviewFunc(review)),
       delete: (review) =>
         addModal({
@@ -50,6 +53,7 @@ const modalsFuncGenerator = (setModals) => {
         }),
     },
     direction: {
+      add: (direction) => addModal(directionFunc(direction, true)),
       edit: (direction) => addModal(directionFunc(direction)),
       delete: (direction) =>
         addModal({
@@ -64,10 +68,17 @@ const modalsFuncGenerator = (setModals) => {
         }),
     },
     event: {
+      add: (event) => addModal(eventFunc(event, true)),
       edit: (event) => addModal(eventFunc(event)),
     },
     user: {
+      add: (user) => addModal(userFunc(user, true)),
       edit: (user) => addModal(userFunc(user)),
+    },
+    additionalBlock: {
+      add: (additionalBlock) =>
+        addModal(additionalBlockFunc(additionalBlock, true)),
+      edit: (additionalBlock) => addModal(additionalBlockFunc(additionalBlock)),
     },
     // addUserToCourse: ({ course }) =>
     //   addModal({

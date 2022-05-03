@@ -13,9 +13,9 @@ import {
   fetchingDirections,
   fetchingEvents,
   fetchingReviews,
-  fetchingSertificates,
   fetchingUsers,
   fetchingEventsUsers,
+  fetchingAdditionalBlocks,
 } from '@helpers/fetchers'
 import { useState, useEffect } from 'react'
 import LoadingContent from '@layouts/content/LoadingContent'
@@ -41,7 +41,7 @@ function CabinetPage(props) {
       </Head>
       <CabinetWrapper>
         {/* ----------------------------- HEADER ------------------------------- */}
-        <DeviceCheck right />
+        {/* <DeviceCheck right /> */}
         <CabinetHeader user={loggedUser} title={title} />
         <BurgerLayout />
         <ContentWrapper user={loggedUser} page={page}>
@@ -146,7 +146,9 @@ export const getServerSideProps = async (context) => {
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
-    const sertificates = await fetchingSertificates(process.env.NEXTAUTH_SITE)
+    const additionalBlocks = await fetchingAdditionalBlocks(
+      process.env.NEXTAUTH_SITE
+    )
     const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
     return {
       props: {
@@ -155,7 +157,7 @@ export const getServerSideProps = async (context) => {
         directions,
         reviews,
         page,
-        sertificates,
+        additionalBlocks,
         eventsUsers,
         loggedUser: session?.user ? session.user : null,
       },
@@ -168,7 +170,7 @@ export const getServerSideProps = async (context) => {
         directions: null,
         reviews: null,
         page,
-        sertificates: null,
+        additionalBlocks: null,
         eventsUsers: null,
         loggedUser: session?.user ? session.user : null,
       },

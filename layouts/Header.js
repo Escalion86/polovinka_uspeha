@@ -1,5 +1,6 @@
 import Burger from '@components/Burger'
 import Divider from '@components/Divider'
+import transliterate from '@helpers/transliterate'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
 import Link from 'next/link'
@@ -11,9 +12,9 @@ const MenuItem = ({ text, href = '#' }) => (
   <li>
     <a
       href={href}
-      className="cursor-pointer text-general hover:text-gray-300 whitespace-nowrap"
+      className="cursor-pointer first-letter:uppercase text-general hover:text-gray-300"
     >
-      {text}
+      <p className="first-letter:uppercase whitespace-nowrap">{text}</p>
     </a>
   </li>
 )
@@ -33,23 +34,38 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
   )
 }
 
-const menu = [
-  { name: 'О нас', href: '#about', key: null },
-  { name: 'Запись', href: '#timetable', key: 'events' },
-  { name: 'Направления', href: '#directions', key: 'directions' },
-  { name: 'Сертификат', href: '#sertificate', key: 'sertificates' },
-  // { name: 'Стоимость', href: '#price', key: null },
-  { name: 'Отзывы', href: '#reviews', key: 'reviews' },
-  { name: 'Контакты', href: '#contacts', key: null },
-]
+// const menu = [
+//   { name: 'О нас', href: '#about', key: null },
+//   { name: 'Запись', href: '#timetable', key: 'events' },
+//   { name: 'Направления', href: '#directions', key: 'directions' },
+//   // { name: 'Доп. блоки', href: '#additionalBlock', key: 'additionalBlocks' },
+//   // { name: 'Стоимость', href: '#price', key: null },
+//   { name: 'Отзывы', href: '#reviews', key: 'reviews' },
+//   { name: 'Контакты', href: '#contacts', key: null },
+// ]
 
 const Header = (props) => {
-  const { user, sertifacates, events, directions, reviews } = props
+  const { loggedUser, additionalBlocks, events, directions, reviews } = props
 
-  const filteredMenu = menu.filter(
-    (menuItem) =>
-      !menuItem.key || (props[menuItem.key] && props[menuItem.key].length > 0)
-  )
+  const menu = [{ name: 'О нас', href: '#about' }]
+  if (events?.length > 0) menu.push({ name: 'Запись', href: '#timetable' })
+  if (directions?.length > 0)
+    menu.push({ name: 'Направления', href: '#directions' })
+
+  additionalBlocks.forEach((additionalBlock) => {
+    if (additionalBlock.menuName)
+      menu.push({
+        name: additionalBlock.menuName,
+        href: '#' + transliterate(additionalBlock.menuName),
+      })
+  })
+  if (reviews?.length > 0) menu.push({ name: 'Отзывы', href: '#reviews' })
+  menu.push({ name: 'Контакты', href: '#contacts' })
+
+  // const filteredMenu = menu.filter(
+  //   (menuItem) =>
+  //     !menuItem.key || (props[menuItem.key] && props[menuItem.key].length > 0)
+  // )
 
   const menuOpen = useRecoilValue(menuOpenAtom)
   return (
@@ -75,11 +91,11 @@ const Header = (props) => {
           </div>
 
           <div className="absolute hidden phoneH:block right-4">
-            <UserMenu user={user} />
+            <UserMenu user={loggedUser} />
           </div>
         </div>
         <ul className="items-center justify-center hidden w-full h-8 text-lg duration-300 bg-white bg-opacity-75 tablet:flex gap-x-4 hover:bg-opacity-100">
-          {filteredMenu.map(({ name, href }, index) => {
+          {menu.map(({ name, href }, index) => {
             return <MenuItem key={'menuItem' + index} text={name} href={href} />
           })}
         </ul>
@@ -91,10 +107,10 @@ const Header = (props) => {
         >
           <div className="pt-20 pb-4 w-60">
             <div className="flex w-full px-2 pb-2 border-b phoneH:hidden border-general">
-              {user ? (
+              {loggedUser ? (
                 <Link href="/cabinet">
                   <a className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general">
-                    <Avatar user={user} />
+                    <Avatar user={loggedUser} />
                     <span>Мой кабинет</span>
                   </a>
                 </Link>
@@ -108,7 +124,7 @@ const Header = (props) => {
             </div>
             <div className="px-2 py-2 w-60 phoneH:py-0">
               <ul className="flex flex-col gap-y-2">
-                {filteredMenu.map(({ name, href }, index) => (
+                {menu.map(({ name, href }, index) => (
                   <BurgerMenuItem
                     key={'burgerMenuItem' + index}
                     text={name}

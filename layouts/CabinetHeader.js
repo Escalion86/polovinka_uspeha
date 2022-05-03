@@ -69,21 +69,25 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
           <div className="relative flex flex-col items-end group mt-2.5 w-12">
             <img
               // onClick={() => closeMenu()}
-              className="border border-opacity-50 rounded-full cursor-pointer border-whiteobject-cover h-11 w-11 min-w-9"
+              className="absolute z-10 border border-opacity-50 rounded-full cursor-pointer border-whiteobject-cover h-11 w-11 min-w-9"
               src={
                 user?.image ??
                 `/img/users/${user?.gender ? user.gender : 'male'}.jpg`
               }
               alt="Avatar"
             />
-            <div className="w-0 h-0 overflow-hidden duration-300 scale-0 translate-x-1/2 -translate-y-1/2 group-hover:w-auto group-hover:h-auto group-hover:translate-y-0 group-hover:translate-x-0 group-hover:scale-100 top-12">
-              <Link href="/cabinet">
+            <div className="absolute top-0 z-0 w-0 h-0 overflow-hidden duration-300 scale-0 translate-x-[40%] -translate-y-1/2 group-hover:w-auto group-hover:h-auto group-hover:translate-y-0 group-hover:translate-x-0 group-hover:scale-100 border border-gray-800 rounded-tr-3xl">
+              <div className="flex flex-col justify-center px-3 py-1 font-bold leading-4 text-white border-b border-gray-800 cursor-default bg-general rounded-tr-3xl h-11">
+                <span>{user.name}</span>
+                <span>{user.secondname}</span>
+              </div>
+              {/* <Link href="/cabinet">
                 <a onClick={() => setMenuOpen(false)}>
                   <div className="px-3 py-2 text-black bg-white border border-gray-300 cursor-pointer whitespace-nowrap hover:bg-gray-500 hover:text-white">
                     Мой кабинет
                   </div>
                 </a>
-              </Link>
+              </Link> */}
               <Link href="/cabinet/questionnaire">
                 <a onClick={() => setMenuOpen(false)}>
                   <div className="px-3 py-2 text-black bg-white border border-gray-300 cursor-pointer whitespace-nowrap hover:bg-gray-500 hover:text-white">
