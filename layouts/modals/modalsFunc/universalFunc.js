@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import directionsSchema from '@schemas/directionsSchema'
+import ErrorsList from '@components/ErrorsList'
 
 const schemaToState = (item = {}, schema) => {
   if (!schema) return {}
@@ -130,13 +131,7 @@ const universalFunc = (item, schema) => {
           onClick={() => setShowOnSite((checked) => !checked)}
           label="Показывать на сайте"
         /> */}
-        {Object.values(errors).length > 0 && (
-          <div className="flex flex-col text-red-500">
-            {Object.values(errors).map((error) => (
-              <div key={error}>{error}</div>
-            ))}
-          </div>
-        )}
+        <ErrorsList errors={errors} />
       </FormWrapper>
     )
   }

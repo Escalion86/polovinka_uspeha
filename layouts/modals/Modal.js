@@ -13,6 +13,7 @@ import Button from '@components/Button'
 import cn from 'classnames'
 import ModalButtons from '@layouts/modals/ModalButtons'
 import { useRouter } from 'next/router'
+import ReactTooltip from 'react-tooltip'
 
 const Modal = ({
   Children,
@@ -93,7 +94,7 @@ const Modal = ({
     <motion.div
       className={
         'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 items-center justify-center w-screen h-screen overflow-y-auto bg-gray-800' +
-        (subModalText ? ' pt-10 pb-5' : ' p-5')
+        (subModalText ? ' pt-10 pb-5' : ' py-5')
         //  + (rendered ? ' opacity-100' : ' opacity-0')
       }
       initial={{ opacity: 0 }}
@@ -104,7 +105,7 @@ const Modal = ({
       <motion.div
         className={
           cn(
-            'relative min-w-84 w-9/12 tablet:min-w-116 px-3 pb-3 duration-300 my-auto bg-white border-l rounded-lg border-primary',
+            'relative min-w-84 w-[95%] tablet:w-9/12 tablet:min-w-156 px-3 pb-3 duration-300 my-auto bg-white border-l rounded-lg border-primary',
             title ? 'py-3' : 'py-12'
           )
           // + (rendered ? '' : ' scale-50')
@@ -122,12 +123,14 @@ const Modal = ({
             </div>
           </div>
         )}
-        <FontAwesomeIcon
-          className="absolute w-6 h-6 text-black duration-200 transform cursor-pointer right-3 top-3 hover:scale-110"
-          icon={faTimes}
-          size="1x"
-          onClick={onDeclineClick}
-        />
+        <div className="absolute right-3 top-3" data-tip="Закрыть">
+          <FontAwesomeIcon
+            className="w-6 h-6 text-black duration-200 transform cursor-pointer hover:scale-110"
+            icon={faTimes}
+            size="1x"
+            onClick={onDeclineClick}
+          />
+        </div>
         {title && (
           <div className="mx-10 mb-2 text-lg font-bold leading-6 text-center whitespace-pre-line">
             {title}
@@ -180,6 +183,7 @@ const Modal = ({
             onDeclineClick={onDeclineClick}
           />
         )}
+        <ReactTooltip effect="solid" delayShow={400} type="dark" />
       </motion.div>
     </motion.div>
   )

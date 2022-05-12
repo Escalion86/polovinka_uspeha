@@ -14,7 +14,7 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
       {title && (
         <>
           <Link href="/">
-            <a>
+            <a className="hidden tablet:block">
               <img
                 className="rounded-full h-14"
                 src={icon || '/img/logo_heart.png'}
@@ -25,7 +25,7 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
             </a>
           </Link>
           <div className="flex flex-1">
-            <Divider type="vertical" />
+            <Divider type="vertical" className="hidden tablet:block" />
             {titleLink ? (
               <Link href={titleLink}>
                 <a className="hover:text-gray-300">

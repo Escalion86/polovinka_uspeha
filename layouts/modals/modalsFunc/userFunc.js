@@ -12,6 +12,7 @@ import DatePicker from '@components/DatePicker'
 import PhoneInput from '@components/PhoneInput'
 import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
+import ErrorsList from '@components/ErrorsList'
 
 const userFunc = (user, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -220,13 +221,7 @@ const userFunc = (user, clone = false) => {
           onChange={setInterests}
           rows={4}
         />
-        {Object.values(errors).length > 0 && (
-          <div className="flex flex-col text-red-500">
-            {Object.values(errors).map((error) => (
-              <div key={error}>{error}</div>
-            ))}
-          </div>
-        )}
+        <ErrorsList errors={errors} />
       </FormWrapper>
     )
   }

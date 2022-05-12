@@ -1,5 +1,6 @@
 import BlockContainer from '@components/BlockContainer'
 import { H3, H4, P } from '@components/tags'
+import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
 import cn from 'classnames'
 
@@ -34,7 +35,9 @@ const CardEvent = ({ event }) => (
           <H4>{event.title}</H4>
         </div>
         <P className="flex-1">{event.description}</P>
-        {event.address && <div className="">Адрес: {event.address}</div>}
+        {event.address && (
+          <div className="">Адрес: {formatAddress(event.address)}</div>
+        )}
       </div>
       <div className="flex items-center">
         <div className="flex-1 px-4 text-lg font-bold text-general">

@@ -7,6 +7,7 @@ import EditableTextarea from '@components/EditableTextarea'
 import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
+import ErrorsList from '@components/ErrorsList'
 
 const additionalBlockFunc = (additionalBlock, clone = false) => {
   const AdditionalBlockModal = ({
@@ -142,13 +143,7 @@ const additionalBlockFunc = (additionalBlock, clone = false) => {
           onClick={() => setShowOnSite((checked) => !checked)}
           label="Показывать на сайте"
         />
-        {Object.values(errors).length > 0 && (
-          <div className="flex flex-col text-red-500">
-            {Object.values(errors).map((error) => (
-              <div key={error}>{error}</div>
-            ))}
-          </div>
-        )}
+        <ErrorsList errors={errors} />
       </FormWrapper>
     )
   }

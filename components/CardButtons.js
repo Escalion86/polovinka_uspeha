@@ -10,14 +10,16 @@ import {
 } from '@fortawesome/free-regular-svg-icons'
 import { putData } from '@helpers/CRUD'
 import cn from 'classnames'
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 
-const CardButton = ({ active, icon, onClick, color = 'red' }) => (
+const CardButton = ({ active, icon, onClick, color = 'red', dataTip }) => (
   <div
     className={cn(
-      `flex border items-center justify-center w-8 h-8 hover:bg-${color}-600 border-${color}-500 hover:border-${color}-600 hover:text-white`,
+      `duration-300 flex border items-center justify-center w-8 h-8 hover:bg-${color}-600 border-${color}-500 hover:border-${color}-600 hover:text-white`,
       active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
     )}
     onClick={onClick}
+    data-tip={dataTip}
   >
     <FontAwesomeIcon icon={icon} className="w-6 h-6" />
   </div>
@@ -33,7 +35,16 @@ const CardButtons = ({ item, typeOfItem }) => {
 
   return (
     <div className="flex h-8 overflow-hidden">
-      {item.showOnSite !== undefined && (
+      <CardButton
+        icon={faPencilAlt}
+        onClick={(e) => {
+          e.stopPropagation()
+          modalsFunc[typeOfItem].edit(item)
+        }}
+        color="orange"
+        dataTip="Редактировать"
+      />
+      {typeOfItem !== 'user' && typeOfItem !== 'review' && (
         <CardButton
           icon={faCopy}
           onClick={(e) => {
@@ -41,6 +52,7 @@ const CardButtons = ({ item, typeOfItem }) => {
             modalsFunc[typeOfItem].add(item)
           }}
           color="blue"
+          dataTip="Клонировать"
         />
       )}
       {item.showOnSite !== undefined && (
@@ -58,6 +70,7 @@ const CardButtons = ({ item, typeOfItem }) => {
             )
           }}
           color="purple"
+          dataTip="Показывать на сайте"
         />
       )}
       <CardButton
@@ -67,6 +80,7 @@ const CardButtons = ({ item, typeOfItem }) => {
           modalsFunc[typeOfItem].delete(item)
         }}
         color="red"
+        dataTip="Удалить"
       />
       {/* <div
   className={cn(

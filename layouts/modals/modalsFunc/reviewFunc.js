@@ -6,6 +6,7 @@ import useErrors from '@helpers/useErrors'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import FormWrapper from '@components/FormWrapper'
+import ErrorsList from '@components/ErrorsList'
 
 const reviewFunc = (review, clone = false) => {
   const ReviewModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -113,13 +114,7 @@ const reviewFunc = (review, clone = false) => {
           label="Показывать на сайте"
           forGrid
         />
-        {Object.values(errors).length > 0 && (
-          <div className="flex flex-col text-red-500">
-            {Object.values(errors).map((error) => (
-              <div key={error}>{error}</div>
-            ))}
-          </div>
-        )}
+        <ErrorsList errors={errors} />
       </FormWrapper>
     )
   }

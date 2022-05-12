@@ -15,6 +15,7 @@ import userFunc from './modalsFunc/userFunc'
 import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
 
 import { deleteData } from '@helpers/CRUD'
+import eventSignUpFunc from './modalsFunc/eventSignUpFunc'
 
 const modalsFuncGenerator = (setModals) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -49,7 +50,7 @@ const modalsFuncGenerator = (setModals) => {
           title: 'Удаление отзыва',
           text: 'Вы уверены, что хотите удалить отзыв?',
           onConfirm: async (refreshPage) =>
-            await deleteData(`/api/reviews/${review._id}`, review, refreshPage),
+            await deleteData(`/api/reviews/${review._id}`, refreshPage),
         }),
     },
     direction: {
@@ -60,25 +61,46 @@ const modalsFuncGenerator = (setModals) => {
           title: 'Удаление направления',
           text: 'Вы уверены, что хотите удалить направление?',
           onConfirm: async (refreshPage) =>
-            await deleteData(
-              `/api/directions/${direction._id}`,
-              direction,
-              refreshPage
-            ),
+            await deleteData(`/api/directions/${direction._id}`, refreshPage),
         }),
     },
     event: {
       add: (event) => addModal(eventFunc(event, true)),
       edit: (event) => addModal(eventFunc(event)),
+      delete: (event) =>
+        addModal({
+          title: 'Удаление события',
+          text: 'Вы уверены, что хотите удалить событие?',
+          onConfirm: async (refreshPage) =>
+            await deleteData(`/api/events/${event._id}`, refreshPage),
+        }),
+      signUp: (event) => addModal(eventSignUpFunc(event)),
     },
     user: {
       add: (user) => addModal(userFunc(user, true)),
       edit: (user) => addModal(userFunc(user)),
+      delete: (user) =>
+        addModal({
+          title: 'Удаление пользователя',
+          text: 'Вы уверены, что хотите удалить пользователя?',
+          onConfirm: async (refreshPage) =>
+            await deleteData(`/api/users/${user._id}`, refreshPage),
+        }),
     },
     additionalBlock: {
       add: (additionalBlock) =>
         addModal(additionalBlockFunc(additionalBlock, true)),
       edit: (additionalBlock) => addModal(additionalBlockFunc(additionalBlock)),
+      delete: (additionalBlock) =>
+        addModal({
+          title: 'Удаление дополнительного блока',
+          text: 'Вы уверены, что хотите удалить дополнительный блок?',
+          onConfirm: async (refreshPage) =>
+            await deleteData(
+              `/api/additionalblocks/${additionalBlock._id}`,
+              refreshPage
+            ),
+        }),
     },
     // addUserToCourse: ({ course }) =>
     //   addModal({

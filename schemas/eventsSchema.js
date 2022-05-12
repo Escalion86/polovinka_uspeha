@@ -22,8 +22,8 @@ const eventsSchema = {
     default: null,
   },
   address: {
-    type: String,
-    default: '',
+    type: Map,
+    of: String,
   },
   status: {
     type: String,

@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
+import Modal from './Modal'
 
 const directionFunc = (direction, clone = false) => {
   const DirectionModal = ({
@@ -74,26 +75,27 @@ const directionFunc = (direction, clone = false) => {
     }, [title, description, showOnSite, image])
 
     return (
-      <FormWrapper>
-        <InputImage
-          label="Картинка"
-          directory="directions"
-          image={image}
-          onChange={setImage}
-        />
-        <Input
-          label="Название"
-          type="text"
-          value={title}
-          onChange={(value) => {
-            removeError('title')
-            setTitle(value)
-          }}
-          // labelClassName="w-40"
-          error={errors.title}
-          forGrid
-        />
-        {/* <Input
+      <Modal>
+        <FormWrapper>
+          <InputImage
+            label="Картинка"
+            directory="directions"
+            image={image}
+            onChange={setImage}
+          />
+          <Input
+            label="Название"
+            type="text"
+            value={title}
+            onChange={(value) => {
+              removeError('title')
+              setTitle(value)
+            }}
+            // labelClassName="w-40"
+            error={errors.title}
+            forGrid
+          />
+          {/* <Input
           label="Описание"
           value={description}
           onChange={(e) => {
@@ -103,26 +105,27 @@ const directionFunc = (direction, clone = false) => {
           labelClassName="w-40"
           error={errors.description}
         /> */}
-        <EditableTextarea
-          label="Описание"
-          html={description}
-          uncontrolled={false}
-          onChange={(value) => {
-            removeError('description')
-            setDescription(value)
-          }}
-          forGrid
-        />
-        <CheckBox
-          checked={showOnSite}
-          labelPos="left"
-          // labelClassName="w-40"
-          forGrid
-          onClick={() => setShowOnSite((checked) => !checked)}
-          label="Показывать на сайте"
-        />
-        <ErrorsList errors={errors} />
-      </FormWrapper>
+          <EditableTextarea
+            label="Описание"
+            html={description}
+            uncontrolled={false}
+            onChange={(value) => {
+              removeError('description')
+              setDescription(value)
+            }}
+            forGrid
+          />
+          <CheckBox
+            checked={showOnSite}
+            labelPos="left"
+            // labelClassName="w-40"
+            forGrid
+            onClick={() => setShowOnSite((checked) => !checked)}
+            label="Показывать на сайте"
+          />
+          <ErrorsList errors={errors} />
+        </FormWrapper>
+      </Modal>
     )
   }
 

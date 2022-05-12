@@ -7,15 +7,40 @@ import EditableTextarea from '@components/EditableTextarea'
 import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
+import DatePicker from '@components/DatePicker'
+import DateTimePicker from '@components/DateTimePicker'
+import ErrorsList from '@components/ErrorsList'
+import AddressPicker from '@components/AddressPicker'
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import loadingEventsAtom from '@state/atoms/loadingEventsAtom'
 
 const eventFunc = (event, clone = false) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+    const [loading, setLoading] = useRecoilState(loadingEventsAtom(event._id))
+
+    useEffect(() => {
+      if (loading) setLoading(false)
+    }, [loading])
+
     const [title, setTitle] = useState(event ? event.title : '')
     const [description, setDescription] = useState(
       event ? event.description : ''
     )
     const [image, setImage] = useState(event ? event.image : '')
     const [date, setDate] = useState(event ? event.date : Date.now())
+    const [address, setAddress] = useState(
+      event?.address && typeof event.address === 'object'
+        ? event.address
+        : {
+            town: '',
+            street: '',
+            house: '',
+            entrance: '',
+            floor: '',
+            flat: '',
+            comment: '',
+          }
+    )
     const [showOnSite, setShowOnSite] = useState(
       event ? event.showOnSite : true
     )
@@ -24,7 +49,9 @@ const eventFunc = (event, clone = false) => {
     const router = useRouter()
 
     const refreshPage = () => {
+      // router.replace(router.asPath, '', { shallow: true })
       router.replace(router.asPath)
+      // router.reload()
     }
 
     const onClickConfirm = async () => {
@@ -37,16 +64,28 @@ const eventFunc = (event, clone = false) => {
         addError({ description: 'Необходимо ввести описание' })
         error = true
       }
+      if (!date) {
+        addError({ date: 'Необходимо ввести дату' })
+        error = true
+      }
       if (!error) {
+        // Устанавливаем атом загрузки
+        setLoading(true)
         if (event && !clone) {
           await putData(
             `/api/events/${event._id}`,
             {
+              image,
               title,
               description,
               showOnSite,
+              date,
+              address,
             },
-            refreshPage
+            () => {
+              // setLoading(false)
+              refreshPage()
+            }
           )
         } else {
           await postData(
@@ -55,8 +94,14 @@ const eventFunc = (event, clone = false) => {
               title,
               description,
               showOnSite,
+              date,
+              image,
+              address,
             },
-            refreshPage
+            () => {
+              // setLoading(false)
+              refreshPage()
+            }
           )
         }
         closeModal()
@@ -65,7 +110,7 @@ const eventFunc = (event, clone = false) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-    }, [title, description, showOnSite])
+    }, [title, description, showOnSite, date, image, address])
 
     return (
       <FormWrapper>
@@ -85,7 +130,6 @@ const eventFunc = (event, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.title}
-          forGrid
         />
         {/* <Input
           label="Описание"
@@ -105,24 +149,23 @@ const eventFunc = (event, clone = false) => {
             removeError('description')
             setDescription(value)
           }}
-          forGrid
           placeholder="Описание мероприятия..."
         />
+        <DateTimePicker value={date} onChange={setDate} label="Дата и время" />
+        {/* <DatePicker
+          label="Дата"
+          value={birthday}
+          onChange={setBirthday}
+        /> */}
+        <AddressPicker address={address} onChange={setAddress} />
         <CheckBox
           checked={showOnSite}
           labelPos="left"
           // labelClassName="w-40"
-          forGrid
           onClick={() => setShowOnSite((checked) => !checked)}
           label="Показывать на сайте"
         />
-        {Object.values(errors).length > 0 && (
-          <div className="flex flex-col text-red-500">
-            {Object.values(errors).map((error) => (
-              <div key={error}>{error}</div>
-            ))}
-          </div>
-        )}
+        <ErrorsList errors={errors} />
       </FormWrapper>
     )
   }
