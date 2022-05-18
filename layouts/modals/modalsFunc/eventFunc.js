@@ -11,16 +11,16 @@ import DatePicker from '@components/DatePicker'
 import DateTimePicker from '@components/DateTimePicker'
 import ErrorsList from '@components/ErrorsList'
 import AddressPicker from '@components/AddressPicker'
-import { useRecoilState, useSetRecoilState } from 'recoil'
-import loadingEventsAtom from '@state/atoms/loadingEventsAtom'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { DEFAULT_ADDRESS } from '@helpers/constants'
+import eventSelector from '@state/selectors/eventSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import loadingAtom from '@state/atoms/loadingAtom'
 
-const eventFunc = (event, clone = false) => {
+const eventFunc = (eventId, clone = false) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
-    const [loading, setLoading] = useRecoilState(loadingEventsAtom(event._id))
-
-    useEffect(() => {
-      if (loading) setLoading(false)
-    }, [loading])
+    const event = useRecoilValue(eventSelector(eventId))
+    const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
     const [title, setTitle] = useState(event ? event.title : '')
     const [description, setDescription] = useState(
@@ -31,28 +31,23 @@ const eventFunc = (event, clone = false) => {
     const [address, setAddress] = useState(
       event?.address && typeof event.address === 'object'
         ? event.address
-        : {
-            town: '',
-            street: '',
-            house: '',
-            entrance: '',
-            floor: '',
-            flat: '',
-            comment: '',
-          }
+        : DEFAULT_ADDRESS
     )
     const [showOnSite, setShowOnSite] = useState(
       event ? event.showOnSite : true
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
 
-    const router = useRouter()
+    // const router = useRouter()
 
-    const refreshPage = () => {
-      // router.replace(router.asPath, '', { shallow: true })
-      router.replace(router.asPath)
-      // router.reload()
-    }
+    // const refreshPage = (data) => {
+    //   setEvent(data)
+    //   // setLoading(false)
+    //   toggleLoading(event._id)
+    //   // router.replace(router.asPath, '', { shallow: true })
+    //   // router.replace(router.asPath)
+    //   // router.reload()
+    // }
 
     const onClickConfirm = async () => {
       let error = false
@@ -69,42 +64,19 @@ const eventFunc = (event, clone = false) => {
         error = true
       }
       if (!error) {
-        // Устанавливаем атом загрузки
-        setLoading(true)
-        if (event && !clone) {
-          await putData(
-            `/api/events/${event._id}`,
-            {
-              image,
-              title,
-              description,
-              showOnSite,
-              date,
-              address,
-            },
-            () => {
-              // setLoading(false)
-              refreshPage()
-            }
-          )
-        } else {
-          await postData(
-            `/api/events`,
-            {
-              title,
-              description,
-              showOnSite,
-              date,
-              image,
-              address,
-            },
-            () => {
-              // setLoading(false)
-              refreshPage()
-            }
-          )
-        }
         closeModal()
+        setEvent(
+          {
+            _id: event?._id,
+            image,
+            title,
+            description,
+            showOnSite,
+            date,
+            address,
+          },
+          clone
+        )
       }
     }
 
@@ -171,8 +143,8 @@ const eventFunc = (event, clone = false) => {
   }
 
   return {
-    title: `${event && !clone ? 'Редактирование' : 'Создание'} мероприятия`,
-    confirmButtonName: event && !clone ? 'Применить' : 'Создать',
+    title: `${eventId && !clone ? 'Редактирование' : 'Создание'} мероприятия`,
+    confirmButtonName: eventId && !clone ? 'Применить' : 'Создать',
     Children: EventModal,
   }
 }

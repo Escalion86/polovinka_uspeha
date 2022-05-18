@@ -52,7 +52,9 @@ export default async function handler(Schema, req, res, params = null) {
             ?.status(400)
             .json({ success: false, error: 'No need to set Id' })
         } else {
-          data = await Schema.create(body)
+          const clearedBody = { ...body }
+          delete clearedBody._id
+          data = await Schema.create(clearedBody)
           if (!data) {
             return res?.status(400).json({ success: false })
           }

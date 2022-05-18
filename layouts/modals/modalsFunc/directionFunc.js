@@ -8,13 +8,19 @@ import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
+import directionSelector from '@state/selectors/directionSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import { useRecoilValue } from 'recoil'
 
-const directionFunc = (direction, clone = false) => {
+const directionFunc = (directionId, clone = false) => {
   const DirectionModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
   }) => {
+    const direction = useRecoilValue(directionSelector(directionId))
+    const setDirection = useRecoilValue(itemsFuncAtom).direction.set
+
     const [title, setTitle] = useState(direction ? direction.title : '')
     const [description, setDescription] = useState(
       direction ? direction.description : ''
@@ -25,11 +31,11 @@ const directionFunc = (direction, clone = false) => {
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
 
-    const router = useRouter()
+    // const router = useRouter()
 
-    const refreshPage = () => {
-      router.replace(router.asPath)
-    }
+    // const refreshPage = () => {
+    //   router.replace(router.asPath)
+    // }
 
     const onClickConfirm = async () => {
       let error = false
@@ -42,30 +48,40 @@ const directionFunc = (direction, clone = false) => {
         error = true
       }
       if (!error) {
-        if (direction && !clone) {
-          await putData(
-            `/api/directions/${direction._id}`,
-            {
-              title,
-              description,
-              showOnSite,
-              image,
-            },
-            refreshPage
-          )
-        } else {
-          await postData(
-            `/api/directions`,
-            {
-              title,
-              description,
-              showOnSite,
-              image,
-            },
-            refreshPage
-          )
-        }
         closeModal()
+        setDirection(
+          {
+            _id: direction?._id,
+            title,
+            description,
+            showOnSite,
+            image,
+          },
+          clone
+        )
+        // if (direction && !clone) {
+        //   await putData(
+        //     `/api/directions/${direction._id}`,
+        //     {
+        //       title,
+        //       description,
+        //       showOnSite,
+        //       image,
+        //     },
+        //     refreshPage
+        //   )
+        // } else {
+        //   await postData(
+        //     `/api/directions`,
+        //     {
+        //       title,
+        //       description,
+        //       showOnSite,
+        //       image,
+        //     },
+        //     refreshPage
+        //   )
+        // }
       }
     }
 
@@ -127,8 +143,10 @@ const directionFunc = (direction, clone = false) => {
   }
 
   return {
-    title: `${direction && !clone ? 'Редактирование' : 'Создание'} направления`,
-    confirmButtonName: direction && !clone ? 'Применить' : 'Создать',
+    title: `${
+      directionId && !clone ? 'Редактирование' : 'Создание'
+    } направления`,
+    confirmButtonName: directionId && !clone ? 'Применить' : 'Создать',
     Children: DirectionModal,
   }
 }

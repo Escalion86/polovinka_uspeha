@@ -41,6 +41,7 @@
     "react-edit-text": "^4.2.0",
     "react-image-gallery": "^1.2.7",
     "react-input-mask": "^2.0.4",
+    "react-loading-skeleton": "^3.1.0",
     "react-medium-image-zoom": "^4.3.5",
     "react-player": "^2.9.0",
     "react-redux": "^7.2.5",

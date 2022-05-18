@@ -8,13 +8,21 @@ import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
+import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import { useRecoilValue } from 'recoil'
 
-const additionalBlockFunc = (additionalBlock, clone = false) => {
+const additionalBlockFunc = (additionalBlockId, clone = false) => {
   const AdditionalBlockModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
   }) => {
+    const additionalBlock = useRecoilValue(
+      additionalBlockSelector(additionalBlockId)
+    )
+    const setAdditionalBlock = useRecoilValue(itemsFuncAtom).additionalBlock.set
+
     const [title, setTitle] = useState(
       additionalBlock ? additionalBlock.title : ''
     )
@@ -33,11 +41,11 @@ const additionalBlockFunc = (additionalBlock, clone = false) => {
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
 
-    const router = useRouter()
+    // const router = useRouter()
 
-    const refreshPage = () => {
-      router.replace(router.asPath)
-    }
+    // const refreshPage = () => {
+    //   router.replace(router.asPath)
+    // }
 
     const onClickConfirm = async () => {
       let error = false
@@ -50,32 +58,43 @@ const additionalBlockFunc = (additionalBlock, clone = false) => {
         error = true
       }
       if (!error) {
-        if (additionalBlock && !clone) {
-          await putData(
-            `/api/additionalBlocks/${additionalBlock._id}`,
-            {
-              title,
-              description,
-              showOnSite,
-              image,
-              menuName,
-            },
-            refreshPage
-          )
-        } else {
-          await postData(
-            `/api/additionalBlocks`,
-            {
-              title,
-              description,
-              showOnSite,
-              image,
-              menuName,
-            },
-            refreshPage
-          )
-        }
         closeModal()
+        setAdditionalBlock(
+          {
+            _id: additionalBlock?._id,
+            title,
+            description,
+            showOnSite,
+            image,
+            menuName,
+          },
+          clone
+        )
+        // if (additionalBlock && !clone) {
+        //   await putData(
+        //     `/api/additionalBlocks/${additionalBlock._id}`,
+        //     {
+        //       title,
+        //       description,
+        //       showOnSite,
+        //       image,
+        //       menuName,
+        //     },
+        //     refreshPage
+        //   )
+        // } else {
+        //   await postData(
+        //     `/api/additionalBlocks`,
+        //     {
+        //       title,
+        //       description,
+        //       showOnSite,
+        //       image,
+        //       menuName,
+        //     },
+        //     refreshPage
+        //   )
+        // }
       }
     }
 
@@ -149,8 +168,10 @@ const additionalBlockFunc = (additionalBlock, clone = false) => {
   }
 
   return {
-    title: `${additionalBlock && !clone ? 'Редактирование' : 'Создание'} блока`,
-    confirmButtonName: additionalBlock && !clone ? 'Применить' : 'Создать',
+    title: `${
+      additionalBlockId && !clone ? 'Редактирование' : 'Создание'
+    } блока`,
+    confirmButtonName: additionalBlockId && !clone ? 'Применить' : 'Создать',
     Children: AdditionalBlockModal,
   }
 }

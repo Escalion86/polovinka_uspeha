@@ -10,10 +10,12 @@ import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
+import usersAtom from '@state/atoms/usersAtom'
 
 const UsersContent = (props) => {
-  const { users } = props
+  // const { users } = props
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const users = useRecoilValue(usersAtom)
 
   return (
     <>

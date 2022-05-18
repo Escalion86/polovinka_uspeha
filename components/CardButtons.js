@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRouter } from 'next/router'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import {
   faCopy,
   faEye,
@@ -25,13 +25,14 @@ const CardButton = ({ active, icon, onClick, color = 'red', dataTip }) => (
   </div>
 )
 
-const CardButtons = ({ item, typeOfItem }) => {
+const CardButtons = ({ item, typeOfItem, showOnSiteOnClick }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const router = useRouter()
 
-  const refreshPage = () => {
-    router.replace(router.asPath)
-  }
+  // const router = useRouter()
+
+  // const refreshPage = () => {
+  //   router.replace(router.asPath)
+  // }
 
   return (
     <div className="flex h-8 overflow-hidden">
@@ -39,7 +40,7 @@ const CardButtons = ({ item, typeOfItem }) => {
         icon={faPencilAlt}
         onClick={(e) => {
           e.stopPropagation()
-          modalsFunc[typeOfItem].edit(item)
+          modalsFunc[typeOfItem].edit(item._id)
         }}
         color="orange"
         dataTip="Редактировать"
@@ -49,25 +50,19 @@ const CardButtons = ({ item, typeOfItem }) => {
           icon={faCopy}
           onClick={(e) => {
             e.stopPropagation()
-            modalsFunc[typeOfItem].add(item)
+            modalsFunc[typeOfItem].add(item._id)
           }}
           color="blue"
           dataTip="Клонировать"
         />
       )}
-      {item.showOnSite !== undefined && (
+      {showOnSiteOnClick && (
         <CardButton
           active={!item.showOnSite}
           icon={item.showOnSite ? faEye : faEyeSlash}
-          onClick={async (e) => {
+          onClick={(e) => {
             e.stopPropagation()
-            await putData(
-              `/api/${typeOfItem}s/${item._id}`,
-              {
-                showOnSite: !item.showOnSite,
-              },
-              refreshPage
-            )
+            showOnSiteOnClick()
           }}
           color="purple"
           dataTip="Показывать на сайте"
@@ -77,7 +72,7 @@ const CardButtons = ({ item, typeOfItem }) => {
         icon={faTrashAlt}
         onClick={(e) => {
           e.stopPropagation()
-          modalsFunc[typeOfItem].delete(item)
+          modalsFunc[typeOfItem].delete(item._id)
         }}
         color="red"
         dataTip="Удалить"

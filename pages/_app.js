@@ -20,6 +20,7 @@ import {
 
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 // import { createStore, applyMiddleware, compose } from 'redux'
 // import thunk from 'redux-thunk'

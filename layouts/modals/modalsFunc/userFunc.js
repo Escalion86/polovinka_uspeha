@@ -13,9 +13,15 @@ import PhoneInput from '@components/PhoneInput'
 import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import ErrorsList from '@components/ErrorsList'
+import { useRecoilValue } from 'recoil'
+import userSelector from '@state/selectors/userSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
-const userFunc = (user, clone = false) => {
+const userFunc = (userId, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+    const user = useRecoilValue(userSelector(userId))
+    const setUser = useRecoilValue(itemsFuncAtom).user.set
+
     const [name, setName] = useState(user ? user?.name : '')
     const [secondname, setSecondname] = useState(user ? user?.secondname : '')
     const [thirdname, setThirdname] = useState(user ? user?.thirdname : '')
@@ -54,54 +60,76 @@ const userFunc = (user, clone = false) => {
       //   error = true
       // }
       if (!error) {
-        if (user && !clone) {
-          await putData(
-            `/api/users/${user._id}`,
-            {
-              name,
-              secondname,
-              thirdname,
-              about,
-              interests,
-              profession,
-              orientation,
-              gender,
-              phone,
-              whatsapp,
-              viber,
-              telegram,
-              instagram,
-              vk,
-              image,
-              birthday,
-            },
-            refreshPage
-          )
-        } else {
-          await postData(
-            `/api/users`,
-            {
-              name,
-              secondname,
-              thirdname,
-              about,
-              interests,
-              profession,
-              orientation,
-              gender,
-              phone,
-              whatsapp,
-              viber,
-              telegram,
-              instagram,
-              vk,
-              image,
-              birthday,
-            },
-            refreshPage
-          )
-        }
         closeModal()
+        setUser(
+          {
+            _id: user?._id,
+            name,
+            secondname,
+            thirdname,
+            about,
+            interests,
+            profession,
+            orientation,
+            gender,
+            phone,
+            whatsapp,
+            viber,
+            telegram,
+            instagram,
+            vk,
+            image,
+            birthday,
+          },
+          clone
+        )
+        // if (user && !clone) {
+        //   await putData(
+        //     `/api/users/${user._id}`,
+        //     {
+        //       name,
+        //       secondname,
+        //       thirdname,
+        //       about,
+        //       interests,
+        //       profession,
+        //       orientation,
+        //       gender,
+        //       phone,
+        //       whatsapp,
+        //       viber,
+        //       telegram,
+        //       instagram,
+        //       vk,
+        //       image,
+        //       birthday,
+        //     },
+        //     refreshPage
+        //   )
+        // } else {
+        //   await postData(
+        //     `/api/users`,
+        //     {
+        //       name,
+        //       secondname,
+        //       thirdname,
+        //       about,
+        //       interests,
+        //       profession,
+        //       orientation,
+        //       gender,
+        //       phone,
+        //       whatsapp,
+        //       viber,
+        //       telegram,
+        //       instagram,
+        //       vk,
+        //       image,
+        //       birthday,
+        //     },
+        //     refreshPage
+        //   )
+        // }
       }
     }
 
@@ -227,8 +255,8 @@ const userFunc = (user, clone = false) => {
   }
 
   return {
-    title: `${user && !clone ? 'Редактирование' : 'Создание'} пользователя`,
-    confirmButtonName: user && !clone ? 'Применить' : 'Создать',
+    title: `${userId && !clone ? 'Редактирование' : 'Создание'} пользователя`,
+    confirmButtonName: userId && !clone ? 'Применить' : 'Создать',
     Children: UserModal,
   }
 }

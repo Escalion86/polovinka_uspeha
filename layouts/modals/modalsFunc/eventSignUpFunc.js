@@ -13,69 +13,73 @@ import ImageGallery from 'react-image-gallery'
 import getDaysFromNow from '@helpers/getDaysFromNow'
 import Button from '@components/Button'
 import formatAddress from '@helpers/formatAddress'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
-const eventSignUpFunc = (event, clone = false) => {
+const eventSignUpFunc = (eventId, clone = false) => {
   const EventSignUpModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
   }) => {
-    const router = useRouter()
+    const event = useRecoilValue(eventSelector(eventId))
+    // const router = useRouter()
 
-    const refreshPage = () => {
-      router.replace(router.asPath)
-    }
+    // const refreshPage = () => {
+    //   // setEvent(data)
+    //   // router.replace(router.asPath)
+    // }
 
-    const onClickConfirm = async () => {
-      let error = false
-      if (!title) {
-        addError({ title: 'Необходимо ввести название' })
-        error = true
-      }
-      if (!description) {
-        addError({ description: 'Необходимо ввести описание' })
-        error = true
-      }
-      if (!error) {
-        if (event && !clone) {
-          await putData(
-            `/api/events/${event._id}`,
-            {
-              title,
-              description,
-              showOnSite,
-            },
-            refreshPage
-          )
-        } else {
-          await postData(
-            `/api/events`,
-            {
-              title,
-              description,
-              showOnSite,
-            },
-            refreshPage
-          )
-        }
-        closeModal()
-      }
-    }
+    // const onClickConfirm = async () => {
+    //   let error = false
+    //   if (!title) {
+    //     addError({ title: 'Необходимо ввести название' })
+    //     error = true
+    //   }
+    //   if (!description) {
+    //     addError({ description: 'Необходимо ввести описание' })
+    //     error = true
+    //   }
+    //   if (!error) {
+    //     closeModal()
+    //     if (event && !clone) {
+    //       await putData(
+    //         `/api/events/${event._id}`,
+    //         {
+    //           title,
+    //           description,
+    //           showOnSite,
+    //         },
+    //         refreshPage
+    //       )
+    //     } else {
+    //       await postData(
+    //         `/api/events`,
+    //         {
+    //           title,
+    //           description,
+    //           showOnSite,
+    //         },
+    //         refreshPage
+    //       )
+    //     }
+    //   }
+    // }
 
-    const images = [
-      {
-        original: 'https://picsum.photos/id/1018/1000/600/',
-        // thumbnail: 'https://picsum.photos/id/1018/250/150/',
-      },
-      {
-        original: 'https://picsum.photos/id/1015/1000/600/',
-        // thumbnail: 'https://picsum.photos/id/1015/250/150/',
-      },
-      {
-        original: 'https://picsum.photos/id/1019/1000/600/',
-        // thumbnail: 'https://picsum.photos/id/1019/250/150/',
-      },
-    ]
+    // const images = [
+    //   {
+    //     original: 'https://picsum.photos/id/1018/1000/600/',
+    //     // thumbnail: 'https://picsum.photos/id/1018/250/150/',
+    //   },
+    //   {
+    //     original: 'https://picsum.photos/id/1015/1000/600/',
+    //     // thumbnail: 'https://picsum.photos/id/1015/250/150/',
+    //   },
+    //   {
+    //     original: 'https://picsum.photos/id/1019/1000/600/',
+    //     // thumbnail: 'https://picsum.photos/id/1019/250/150/',
+    //   },
+    // ]
 
     const daysFromNow = getDaysFromNow(event.date, false, false)
 

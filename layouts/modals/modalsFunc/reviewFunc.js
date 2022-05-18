@@ -7,9 +7,15 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import reviewSelector from '@state/selectors/reviewSelector'
+import { useRecoilValue } from 'recoil'
 
-const reviewFunc = (review, clone = false) => {
+const reviewFunc = (reviewId, clone = false) => {
   const ReviewModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+    const review = useRecoilValue(reviewSelector(reviewId))
+    const setReview = useRecoilValue(itemsFuncAtom).review.set
+
     const [author, setAuthor] = useState(review ? review.author : '')
     const [authorAge, setAuthorAge] = useState(review ? review.authorAge : 0)
     const [reviewText, setReviewText] = useState(review ? review.review : '')
@@ -17,13 +23,12 @@ const reviewFunc = (review, clone = false) => {
       review ? review.showOnSite : true
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
-    console.log('showOnSite', showOnSite)
 
-    const router = useRouter()
+    // const router = useRouter()
 
-    const refreshPage = () => {
-      router.replace(router.asPath)
-    }
+    // const refreshPage = () => {
+    //   router.replace(router.asPath)
+    // }
 
     const onClickConfirm = async () => {
       let error = false
@@ -36,30 +41,40 @@ const reviewFunc = (review, clone = false) => {
         error = true
       }
       if (!error) {
-        if (review && !clone) {
-          await putData(
-            `/api/reviews/${review._id}`,
-            {
-              author,
-              authorAge,
-              review: reviewText,
-              showOnSite,
-            },
-            refreshPage
-          )
-        } else {
-          await postData(
-            `/api/reviews`,
-            {
-              author,
-              authorAge,
-              review: reviewText,
-              showOnSite,
-            },
-            refreshPage
-          )
-        }
         closeModal()
+        setReview(
+          {
+            _id: review?._id,
+            author,
+            authorAge,
+            review: reviewText,
+            showOnSite,
+          },
+          clone
+        )
+        // if (review && !clone) {
+        //   await putData(
+        //     `/api/reviews/${review._id}`,
+        //     {
+        //       author,
+        //       authorAge,
+        //       review: reviewText,
+        //       showOnSite,
+        //     },
+        //     refreshPage
+        //   )
+        // } else {
+        //   await postData(
+        //     `/api/reviews`,
+        //     {
+        //       author,
+        //       authorAge,
+        //       review: reviewText,
+        //       showOnSite,
+        //     },
+        //     refreshPage
+        //   )
+        // }
       }
     }
 
@@ -120,8 +135,8 @@ const reviewFunc = (review, clone = false) => {
   }
 
   return {
-    title: `${review && !clone ? 'Редактирование' : 'Создание'} отзыва`,
-    confirmButtonName: review && !clone ? 'Применить' : 'Создать',
+    title: `${reviewId && !clone ? 'Редактирование' : 'Создание'} отзыва`,
+    confirmButtonName: reviewId && !clone ? 'Применить' : 'Создать',
     Children: ReviewModal,
   }
 }

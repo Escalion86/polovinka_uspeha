@@ -24,26 +24,85 @@ import Modal from '@layouts/modals/Modal'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import BurgerLayout from '@layouts/BurgerLayout'
 import DeviceCheck from '@components/DeviceCheck'
-import loadingEventsAtom from '@state/atoms/loadingEventsAtom'
 import propsAtom from '@state/atoms/propsAtom'
 import { useRecoilCallback, useRecoilState, useSetRecoilState } from 'recoil'
-import eventsSelector, { eventsAtom, eventsIds } from '@state/atoms/eventsAtom'
+import eventsAtom from '@state/atoms/eventsAtom'
+import itemsAtom from '@state/atoms/itemsFuncAtom'
+import { putData } from '@helpers/CRUD'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncGenerator from '@state/itemsFuncGenerator'
+import toggleLoadingSelector from '@state/selectors/toggleLoadingselector'
+import eventEditSelector from '@state/selectors/eventEditSelector'
+import directionsAtom from '@state/atoms/directionsAtom'
+import directionEditSelector from '@state/selectors/directionEditSelector'
+import eventDeleteSelector from '@state/selectors/eventDeleteSelector'
+import directionDeleteSelector from '@state/selectors/directionDeleteSelector'
+import reviewEditSelector from '@state/selectors/reviewEditSelector'
+import reviewDeleteSelector from '@state/selectors/reviewDeleteSelector'
+import userEditSelector from '@state/selectors/userEditSelector'
+import userDeleteSelector from '@state/selectors/userDeleteSelector'
+import additionalBlockEditSelector from '@state/selectors/additionalBlockEditSelector'
+import additionalBlockDeleteSelector from '@state/selectors/additionalBlockDeleteSelector'
+import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
+import usersAtom from '@state/atoms/usersAtom'
+import reviewsAtom from '@state/atoms/reviewsAtom'
 
 function CabinetPage(props) {
   const { page, loggedUser } = props
-  // const [propsState, setPropsState] = useRecoilState(propsAtom)
+  const setEventsState = useSetRecoilState(eventsAtom)
+  const setDirectionsState = useSetRecoilState(directionsAtom)
+  const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
+  const setUsersState = useSetRecoilState(usersAtom)
+  const setReviewsState = useSetRecoilState(reviewsAtom)
 
-  const setEventAtom = useRecoilCallback(
-    ({ set }) =>
-      (event) => {
-        set(eventsIds, (prev) => {
-          if (prev.includes(event._id)) return prev
-          return [...prev, event._id]
+  const setEvent = useSetRecoilState(eventEditSelector)
+  const deleteEvent = useSetRecoilState(eventDeleteSelector)
+  const setDirection = useSetRecoilState(directionEditSelector)
+  const deleteDirection = useSetRecoilState(directionDeleteSelector)
+  const setAdditionalBlock = useSetRecoilState(additionalBlockEditSelector)
+  const deleteAdditionalBlock = useSetRecoilState(additionalBlockDeleteSelector)
+  const setUser = useSetRecoilState(userEditSelector)
+  const deleteUser = useSetRecoilState(userDeleteSelector)
+  const setReview = useSetRecoilState(reviewEditSelector)
+  const deleteReview = useSetRecoilState(reviewDeleteSelector)
+
+  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
+  const toggleLoading = useSetRecoilState(toggleLoadingSelector)
+
+  useEffect(
+    () =>
+      setItemsFunc(
+        itemsFuncGenerator({
+          toggleLoading,
+          setEvent,
+          deleteEvent,
+          setDirection,
+          deleteDirection,
+          setAdditionalBlock,
+          deleteAdditionalBlock,
+          setUser,
+          deleteUser,
+          setReview,
+          deleteReview,
         })
-        set(eventsAtom(event._id), event)
-      },
+      ),
     []
   )
+
+  // const setEvent = useSetRecoilState(eventAtom())
+  // const setItemFunc = useSetRecoilState(itemsAtom)
+
+  // const setEventAtom = useRecoilCallback(
+  //   ({ set }) =>
+  //     (event) => {
+  //       set(eventsIds, (prev) => {
+  //         if (prev.includes(event._id)) return prev
+  //         return [...prev, event._id]
+  //       })
+  //       set(eventsAtom(event._id), event)
+  //     },
+  //   []
+  // )
 
   const [loading, setLoading] = useState(true)
 
@@ -60,11 +119,34 @@ function CabinetPage(props) {
   const title = CONTENTS[page] ? CONTENTS[page].name : ''
 
   useEffect(() => {
-    props.events.forEach((event) => {
-      setEventAtom(event)
-    })
+    setEventsState(props.events)
+    setDirectionsState(props.directions)
+    setAdditionalBlocksState(props.additionalBlocks)
+    setUsersState(props.users)
+    setReviewsState(props.reviews)
+    // props.events.forEach((event) => {
+    //   setEventAtom(event)
+    // })
     // setPropsState(props)
     setLoading(false)
+    // setItemFunc({
+    //   event: {setShowOnSite:
+    //     async (eventId) => {
+    //       const event = useRecoilValue(eventAtom(eventId))
+    //       setLoading(true)
+    //       await putData(
+    //         `/api/events/${eventId}`,
+    //         {
+    //           showOnSite: !event.showOnSite,
+    //         },
+    //         (data) => {
+    //           setEvent(data)
+    //           setLoading(false)
+    //         }
+    //       )
+    //     }
+    //   }
+    // })
   }, [])
 
   return (

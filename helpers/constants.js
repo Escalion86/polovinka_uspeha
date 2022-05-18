@@ -157,9 +157,12 @@ const colors = [
   'hover:bg-orange-600',
 ]
 
-export const DEFAULT_USER = {
-  name: 'Гость',
-  email: '',
+export const DEFAULT_USER = Object.freeze({
+  name: '',
+  secondname: '',
+  thirdname: '',
+  password: '',
+  email: null,
   phone: null,
   whatsapp: null,
   viber: null,
@@ -170,8 +173,56 @@ export const DEFAULT_USER = {
   gender: null,
   image: null,
   role: 'client',
-  subRoles: [],
-}
+  interests: '',
+  profession: '',
+  orientation: null,
+  lastActivityAt: null,
+  prevActivityAt: null,
+  archive: false,
+})
+
+export const DEFAULT_ADDRESS = Object.freeze({
+  town: '',
+  street: '',
+  house: '',
+  entrance: '',
+  floor: '',
+  flat: '',
+  comment: '',
+})
+
+export const DEFAULT_EVENT = Object.freeze({
+  directionId: null,
+  title: '',
+  description: '',
+  date: null,
+  address: DEFAULT_ADDRESS,
+  status: '',
+  image: null,
+  showOnSite: true,
+})
+
+export const DEFAULT_DIRECTION = Object.freeze({
+  title: '',
+  description: '',
+  image: null,
+  showOnSite: true,
+})
+
+export const DEFAULT_REVIEW = Object.freeze({
+  author: '',
+  review: '',
+  authorAge: null,
+  showOnSite: true,
+})
+
+export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
+  title: '',
+  description: '',
+  image: null,
+  menuName: null,
+  showOnSite: true,
+})
 
 export const GENDERS = [
   { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },

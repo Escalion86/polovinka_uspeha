@@ -100,7 +100,7 @@ const Menu = ({ menuCfg, activePage }) => {
   )
 
   return (
-    <nav className="flex flex-col w-full h-full px-2 py-3 mt-1 gap-y-2 ">
+    <nav className="flex flex-col w-full h-full px-2 py-3 mt-1 gap-y-2">
       {menuCfg &&
         menuCfg.length > 0 &&
         menuCfg.map((item, index) => {
@@ -115,7 +115,7 @@ const Menu = ({ menuCfg, activePage }) => {
               : (props) => <button {...props} />
           return (
             <div
-              className={cn('flex flex-col', {
+              className={cn('z-50 flex flex-col', {
                 'flex-1': item.bottom && !menuCfg[index - 1].bottom,
               })}
               key={index}
@@ -204,7 +204,7 @@ const SideBar = ({ user, page }) => {
 
   return (
     <div
-      className="relative top-0 bottom-0 flex flex-col w-0 tablet:w-16 bg-general"
+      className="relative top-0 bottom-0 z-50 flex flex-col w-0 tablet:w-16 bg-general"
       style={{ gridArea: 'sidebar' }}
     >
       <motion.div
