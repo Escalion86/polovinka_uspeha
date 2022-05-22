@@ -1,17 +1,13 @@
 import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import getNoun from '@helpers/getNoun'
+import { useRecoilValue } from 'recoil'
 import formatDateTime from '@helpers/formatDateTime'
 import Fab from '@components/Fab'
 import CardButtons from '@components/CardButtons'
 import formatAddress from '@helpers/formatAddress'
 import loadingAtom from '@state/atoms/loadingAtom'
-import { putData } from '@helpers/CRUD'
 import eventsAtom from '@state/atoms/eventsAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import cn from 'classnames'
-import LoadingSpinner from '@components/LoadingSpinner'
 import { CardWrapper } from '@components/CardWrapper'
 
 const EventCard = ({ eventId }) => {
@@ -38,10 +34,7 @@ const EventCard = ({ eventId }) => {
       )}
       <div className="flex flex-col flex-1">
         <div className="flex">
-          <div className="flex-1 text-xl font-bold">
-            {event.title}{' '}
-            {/* {loading && <span className="text-red-700">Загружается</span>} */}
-          </div>
+          <div className="flex-1 text-xl font-bold">{event.title}</div>
           <CardButtons
             item={event}
             typeOfItem="event"
@@ -51,20 +44,6 @@ const EventCard = ({ eventId }) => {
                 showOnSite: !event.showOnSite,
               })
             }}
-            // showOnSiteOnClick={async (e) => {
-            //   e.stopPropagation()
-            //   setLoading(true)
-            //   await putData(
-            //     `/api/events/${event._id}`,
-            //     {
-            //       showOnSite: !event.showOnSite,
-            //     },
-            //     (data) => {
-            //       setEvent(data)
-            //       setLoading(false)
-            //     }
-            //   )
-            // }}
           />
         </div>
         <div className="flex-1">{event.description}</div>
@@ -81,8 +60,7 @@ const EventCard = ({ eventId }) => {
   )
 }
 
-const EventsContent = (props) => {
-  // const { events } = props
+const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   return (

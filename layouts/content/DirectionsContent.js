@@ -2,14 +2,11 @@ import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import Fab from '@components/Fab'
 
-import { putData } from '@helpers/CRUD'
 import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
-import cn from 'classnames'
-import { useRouter } from 'next/router'
 import { useRecoilValue } from 'recoil'
 
 const DirectionCard = ({ directionId }) => {
@@ -60,8 +57,7 @@ const DirectionCard = ({ directionId }) => {
   )
 }
 
-const DirectionsContent = (props) => {
-  // const { directions } = props
+const DirectionsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const directions = useRecoilValue(directionsAtom)
 

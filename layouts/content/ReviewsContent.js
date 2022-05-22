@@ -44,14 +44,15 @@ const ReviewCard = ({ reviewId }) => {
   )
 }
 
-const ReviewsContent = (props) => {
-  // const { reviews } = props
+const ReviewsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const reviews = useRecoilValue(reviewsAtom)
   return (
     <>
       {reviews?.length > 0 ? (
-        reviews.map((review) => <ReviewCard reviewId={review._id} />)
+        reviews.map((review) => (
+          <ReviewCard key={review._id} reviewId={review._id} />
+        ))
       ) : (
         <div className="flex justify-center p-2">Нет отзывов</div>
       )}

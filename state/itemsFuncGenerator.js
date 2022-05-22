@@ -32,7 +32,9 @@ const itemsFuncGenerator = (props) => {
             // setEvent(data)
           })
         } else {
-          await postData(`/api/${itemName}s`, item, (data) => {
+          const clearedItem = { ...item }
+          delete clearedItem._id
+          await postData(`/api/${itemName}s`, clearedItem, (data) => {
             props['set' + capitalizeFirstLetter(itemName)](data)
             // setEvent(data)
           })
@@ -48,6 +50,16 @@ const itemsFuncGenerator = (props) => {
       },
     }
   })
+
+  obj['additionalBlock'].up = async (itemId) => {
+    // Сначала получаем список элементов которые можно поднять
+    toggleLoading('additionalBlock' + itemId)
+    await putData(
+      `/api/additionalBlocks/${itemId}`,
+      () => props['setAdditionalBlock'](itemId)
+      //  deleteEvent(itemId)
+    )
+  }
 
   return obj
 
