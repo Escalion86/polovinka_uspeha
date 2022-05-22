@@ -5,7 +5,6 @@ import '../styles/burger.css'
 import 'react-medium-image-zoom/dist/styles.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 
-import ReactTooltip from 'react-tooltip'
 import Head from 'next/head'
 import { SessionProvider } from 'next-auth/react'
 import { CloudinaryContext } from 'cloudinary-react'
@@ -69,15 +68,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         <CloudinaryContext cloudName="escalion-ru">
           <RecoilRoot>
             <Component {...pageProps} />
-            <ReactTooltip
-              effect="solid"
-              delayShow={400}
-              // backgroundColor="white"
-              // textColor="black"
-              // border
-              // borderColor="gray"
-              type="dark"
-            />
           </RecoilRoot>
         </CloudinaryContext>
         {/* </Provider> */}

@@ -29,6 +29,10 @@ const additionalBlocksSchema = {
       type: 'image',
     },
   },
+  index: {
+    type: Number,
+    default: null,
+  },
   menuName: {
     type: String,
     default: '',

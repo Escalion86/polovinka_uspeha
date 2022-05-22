@@ -47,17 +47,16 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     //   router.replace(router.asPath)
     // }
 
+    const checkErrors = () => {
+      return (
+        (!title && addError({ title: 'Необходимо ввести название' })) ||
+        (!description &&
+          addError({ description: 'Необходимо ввести описание' }))
+      )
+    }
+
     const onClickConfirm = async () => {
-      let error = false
-      if (!title) {
-        addError({ title: 'Необходимо ввести название' })
-        error = true
-      }
-      if (!description) {
-        addError({ description: 'Необходимо ввести описание' })
-        error = true
-      }
-      if (!error) {
+      if (checkErrors()) {
         closeModal()
         setAdditionalBlock(
           {
@@ -70,31 +69,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
           },
           clone
         )
-        // if (additionalBlock && !clone) {
-        //   await putData(
-        //     `/api/additionalBlocks/${additionalBlock._id}`,
-        //     {
-        //       title,
-        //       description,
-        //       showOnSite,
-        //       image,
-        //       menuName,
-        //     },
-        //     refreshPage
-        //   )
-        // } else {
-        //   await postData(
-        //     `/api/additionalBlocks`,
-        //     {
-        //       title,
-        //       description,
-        //       showOnSite,
-        //       image,
-        //       menuName,
-        //     },
-        //     refreshPage
-        //   )
-        // }
       }
     }
 

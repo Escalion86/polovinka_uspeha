@@ -46,9 +46,11 @@ import additionalBlockDeleteSelector from '@state/selectors/additionalBlockDelet
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
+import ReactTooltip from 'react-tooltip'
 
 function CabinetPage(props) {
   const { page, loggedUser } = props
+
   const setEventsState = useSetRecoilState(eventsAtom)
   const setDirectionsState = useSetRecoilState(directionsAtom)
   const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)

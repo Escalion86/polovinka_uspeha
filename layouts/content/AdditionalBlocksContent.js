@@ -18,6 +18,46 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
   )
   const itemFunc = useRecoilValue(itemsFuncAtom)
 
+  const additionalBlocks = useRecoilValue(additionalBlocksAtom)
+
+  const setUp = async () => {
+    if (additionalBlock.index === 0) return
+
+    const itemsToChange = additionalBlocks.map((item) => {
+      if (item.index === additionalBlock.index)
+        return { ...item, index: item.index - 1 }
+      if (item.index === additionalBlock.index - 1)
+        return { ...item, index: item.index + 1 }
+    })
+    await Promise.all(
+      itemsToChange.map(async (item) => {
+        await itemFunc.additionalBlock.set({
+          _id: item._id,
+          index: item.index,
+        })
+      })
+    )
+  }
+
+  const setDown = async () => {
+    if (additionalBlock.index >= additionalBlocks.length - 1) return
+
+    const itemsToChange = additionalBlocks.map((item) => {
+      if (item.index === additionalBlock.index)
+        return { ...item, index: item.index + 1 }
+      if (item.index === additionalBlock.index + 1)
+        return { ...item, index: item.index - 1 }
+    })
+    await Promise.all(
+      itemsToChange.map(async (item) => {
+        await itemFunc.additionalBlock.set({
+          _id: item._id,
+          index: item.index,
+        })
+      })
+    )
+  }
+
   return (
     <CardWrapper
       loading={loading}
@@ -48,6 +88,10 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
                 showOnSite: !additionalBlock.showOnSite,
               })
             }}
+            onUpClick={additionalBlock.index > 0 && setUp}
+            onDownClick={
+              additionalBlock.index < additionalBlocks.length - 1 && setDown
+            }
           />
         </div>
         {/* <div>{direction.description}</div> */}
@@ -62,17 +106,23 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
   )
 }
 
-const AdditionalBlocksContent = (props) => {
-  // const { additionalBlocks } = props
+const AdditionalBlocksContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const additionalBlocks = useRecoilValue(additionalBlocksAtom)
+  // const sortedAdditionalBlocks = additionalBlocks
+  // .sort((a, b) => (a.index < b.index ? -1 : 1))
 
   return (
     <>
       {additionalBlocks?.length > 0 ? (
-        additionalBlocks.map((additionalBlock) => (
-          <AdditionalBlockCard additionalBlockId={additionalBlock._id} />
-        ))
+        [...additionalBlocks]
+          .sort((a, b) => (a.index < b.index ? -1 : 1))
+          .map((additionalBlock) => (
+            <AdditionalBlockCard
+              key={additionalBlock._id}
+              additionalBlockId={additionalBlock._id}
+            />
+          ))
       ) : (
         <div className="flex justify-center p-2">Нет дополнительных блоков</div>
       )}
