@@ -3,8 +3,6 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import 'react-edit-text/dist/index.css'
 
-import { useRouter } from 'next/router'
-import SideBar from 'layouts/SideBar'
 import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
 import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 import CabinetHeader from '@layouts/CabinetHeader'
@@ -18,20 +16,15 @@ import {
   fetchingAdditionalBlocks,
 } from '@helpers/fetchers'
 import { useState, useEffect } from 'react'
-import LoadingContent from '@layouts/content/LoadingContent'
 
-import Modal from '@layouts/modals/Modal'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import BurgerLayout from '@layouts/BurgerLayout'
 import DeviceCheck from '@components/DeviceCheck'
-import propsAtom from '@state/atoms/propsAtom'
-import { useRecoilCallback, useRecoilState, useSetRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import eventsAtom from '@state/atoms/eventsAtom'
-import itemsAtom from '@state/atoms/itemsFuncAtom'
-import { putData } from '@helpers/CRUD'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import itemsFuncGenerator from '@state/itemsFuncGenerator'
-import toggleLoadingSelector from '@state/selectors/toggleLoadingselector'
+import toggleLoadingSelector from '@state/selectors/toggleLoadingSelector'
 import eventEditSelector from '@state/selectors/eventEditSelector'
 import directionsAtom from '@state/atoms/directionsAtom'
 import directionEditSelector from '@state/selectors/directionEditSelector'
@@ -46,7 +39,6 @@ import additionalBlockDeleteSelector from '@state/selectors/additionalBlockDelet
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
-import ReactTooltip from 'react-tooltip'
 
 function CabinetPage(props) {
   const { page, loggedUser } = props
