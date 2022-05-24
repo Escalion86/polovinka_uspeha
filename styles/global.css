@@ -54,6 +54,6 @@ body {
   object-fit: contain;
 }
 
-.image-gallery-content, .image-gallery-slide-wrapper {
+.image-gallery-content, .image-gallery-slide-wrapper, .image-gallery-swipe, .image-gallery-slides {
   height: 100%;
 }
