@@ -145,6 +145,7 @@ export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
   console.log('session', session)
   try {
+    console.log('process.env.NEXTAUTH_SITE', process.env.NEXTAUTH_SITE)
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
