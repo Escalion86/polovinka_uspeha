@@ -151,6 +151,11 @@ export const getServerSideProps = async (context) => {
     const additionalBlocks = await fetchingAdditionalBlocks(
       process.env.NEXTAUTH_SITE
     )
+
+    console.log('events', events)
+    console.log('directions', directions)
+    console.log('reviews', reviews)
+    console.log('additionalBlocks', additionalBlocks)
     return {
       props: {
         events,
