@@ -75,7 +75,8 @@ function formatDateTime(
   dateTime,
   fullMonth = true,
   forComponent = false,
-  showDayOfWeek = true
+  showDayOfWeek = true,
+  twoLines = false
 ) {
   if (!dateTime) return undefined
   var d = new Date(dateTime),
@@ -100,7 +101,7 @@ function formatDateTime(
       (fullMonth ? monthsFull[month - 1] : months[month - 1]) +
       ' ' +
       year.toString() + //.substr(2, 2) +
-      ' ' +
+      (twoLines ? `\n` : ' ') +
       (showDayOfWeek ? dayOfWeek[week] + ' ' : '') +
       hours +
       ':' +

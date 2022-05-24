@@ -20,12 +20,13 @@ const EventCard = ({ eventId }) => {
     <CardWrapper
       loading={loading}
       onClick={() => !loading && modalsFunc.event.signUp(event._id)}
+      showOnSite={event.showOnSite}
     >
-      {event?.image && (
+      {event?.images && event.images.length > 0 && (
         // <div className="flex justify-center w-full tablet:w-auto">
         <img
           className="object-cover w-32 h-32 min-w-32 min-h-32 tablet:w-40 tablet:h-40"
-          src={event.image}
+          src={event.images[0]}
           alt="event"
           // width={48}
           // height={48}
@@ -47,13 +48,16 @@ const EventCard = ({ eventId }) => {
           />
         </div>
         <div className="flex-1">{event.description}</div>
-        <div className="flex flex-col flex-wrap justify-between tablet:flex-row">
-          {event.address && (
-            <div className="">Адрес: {formatAddress(event.address)}</div>
-          )}
-          <div className="text-lg font-bold text-general">
-            {formatDateTime(event.date)}
+        <div className="flex flex-col-reverse justify-between tablet:flex-row-reverse">
+          <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-32 tablet:whitespace-pre-wrap text-general">
+            {formatDateTime(event.date, false, false, true, true)}
           </div>
+          {event.address && (
+            <div className="flex leading-5 gap-x-1">
+              <span className="italic font-bold">Адрес:</span>{' '}
+              {formatAddress(event.address)}
+            </div>
+          )}
         </div>
       </div>
     </CardWrapper>

@@ -85,22 +85,20 @@ const eventSignUpFunc = (eventId, clone = false) => {
 
     return (
       <div className="flex flex-col gap-y-2">
-        {event.image && (
-          <div className="flex justify-center w-full">
-            {/* <img
-              className="object-contain w-full h-70 phoneH:h-80 tablet:h-60"
-              src={event.image}
-              alt="event"
-              // width={48}
-              // height={48}
-            /> */}
-            <div>
-              <ImageGallery
-                items={[{ original: event.image }]}
-                showPlayButton={false}
-                showFullscreenButton={false}
-              />
-            </div>
+        {event?.images && event.images.length > 0 && (
+          <div className="flex justify-center w-full border border-gray-400 h-60 laptop:h-80">
+            <ImageGallery
+              items={event.images.map((image) => {
+                return {
+                  original: image,
+                  originalClass: 'object-contain max-h-60 laptop:max-h-80',
+                  // sizes: '(max-width: 60px) 30px, (min-width: 60px) 60px',
+                }
+              })}
+              showPlayButton={false}
+              showFullscreenButton={false}
+              additionalClass="w-full max-h-60 laptop:max-h-80 max-w-full"
+            />
           </div>
         )}
         <div className="flex flex-col flex-1">

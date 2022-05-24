@@ -11,9 +11,16 @@ import cn from 'classnames'
 import {
   faArrowDown,
   faArrowUp,
+  faEllipsisV,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import ReactTooltip from 'react-tooltip'
+import useWindowDimensions, {
+  useWindowDimensionsTailwind,
+} from '@helpers/useWindowDimensions'
+
+import { motion } from 'framer-motion'
+import { useState } from 'react'
 
 const CardButton = ({ active, icon, onClick, color = 'red', dataTip }) => (
   <div
@@ -40,6 +47,23 @@ const CardButton = ({ active, icon, onClick, color = 'red', dataTip }) => (
   </div>
 )
 
+const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
+  <div
+    className={cn(
+      `px-2 duration-300 flex items-center gap-x-2 h-8 hover:bg-${color}-600 hover:text-white`,
+      active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
+    )}
+    onClick={(e) => {
+      e.stopPropagation()
+      onClick && onClick()
+    }}
+    data-tip={dataTip}
+  >
+    <FontAwesomeIcon icon={icon} className="w-6 h-6" />
+    <div className="whitespace-nowrap">{dataTip}</div>
+  </div>
+)
+
 const CardButtons = ({
   item,
   typeOfItem,
@@ -49,13 +73,105 @@ const CardButtons = ({
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
+  const device = useWindowDimensionsTailwind()
+
+  const [open, setOpen] = useState(false)
+
+  // if (device === 'phoneV' || device === 'phoneH') {
+
+  // }
+
   // const router = useRouter()
 
   // const refreshPage = () => {
   //   router.replace(router.asPath)
   // }
 
-  return (
+  return device === 'phoneV' || device === 'phoneH' ? (
+    <div
+      className="relative"
+      onClick={(e) => {
+        e.stopPropagation()
+        setOpen((state) => !state)
+      }}
+    >
+      <motion.div
+        className="absolute right-0 z-50 overflow-hidden w-min top-8"
+        initial={{ height: 0 }}
+        animate={{ height: open ? 'auto' : 0 }}
+        transition={{ type: 'tween' }}
+      >
+        <div className="h-full bg-red-200 border border-gray-200">
+          {onUpClick && (
+            <MenuItem
+              icon={faArrowUp}
+              onClick={() => {
+                setOpen(false)
+                onUpClick()
+              }}
+              color="gray"
+              dataTip="Переместить выше"
+            />
+          )}
+          {onDownClick && (
+            <MenuItem
+              icon={faArrowDown}
+              onClick={() => {
+                setOpen(false)
+                onDownClick()
+              }}
+              color="gray"
+              dataTip="Переместить ниже"
+            />
+          )}
+          <MenuItem
+            icon={faPencilAlt}
+            onClick={() => {
+              setOpen(false)
+              modalsFunc[typeOfItem].edit(item._id)
+            }}
+            color="orange"
+            dataTip="Редактировать"
+          />
+          {typeOfItem !== 'user' && typeOfItem !== 'review' && (
+            <MenuItem
+              icon={faCopy}
+              onClick={() => {
+                setOpen(false)
+                modalsFunc[typeOfItem].add(item._id)
+              }}
+              color="blue"
+              dataTip="Клонировать"
+            />
+          )}
+          {showOnSiteOnClick && (
+            <MenuItem
+              active={!item.showOnSite}
+              icon={item.showOnSite ? faEye : faEyeSlash}
+              onClick={() => {
+                setOpen(false)
+                showOnSiteOnClick()
+              }}
+              color="purple"
+              dataTip="Показывать на сайте"
+            />
+          )}
+          <MenuItem
+            icon={faTrashAlt}
+            onClick={() => {
+              setOpen(false)
+              modalsFunc[typeOfItem].delete(item._id)
+            }}
+            color="red"
+            dataTip="Удалить"
+          />
+        </div>
+      </motion.div>
+      <div className="flex items-center justify-center w-8 h-8 text-general">
+        <FontAwesomeIcon icon={faEllipsisV} className="w-6 h-6" />
+      </div>
+    </div>
+  ) : (
     <div className="flex">
       {onUpClick && (
         <CardButton
@@ -102,29 +218,6 @@ const CardButtons = ({
         color="red"
         dataTip="Удалить"
       />
-      {/* <div
-  className={cn(
-    'flex border items-center justify-center w-8 h-8 hover:bg-red-600 hover:text-white',
-    direction.showOnSite
-      ? 'bg-white border-red-500 text-red-500'
-      : 'bg-red-500 text-white'
-  )}
-  onClick={async (e) => {
-    e.stopPropagation()
-    await putData(
-      `/api/directions/${direction._id}`,
-      {
-        showOnSite: !direction.showOnSite,
-      },
-      refreshPage
-    )
-  }}
->
-  <FontAwesomeIcon
-    icon={direction.showOnSite ? faEye : faEyeSlash}
-    className="w-6 h-6"
-  />
-</div> */}
     </div>
   )
 }

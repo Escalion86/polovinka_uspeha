@@ -29,9 +29,9 @@ const eventsSchema = {
     type: String,
     default: '',
   },
-  image: {
-    type: String,
-    default: '',
+  images: {
+    type: Array,
+    default: [],
   },
   showOnSite: {
     type: Boolean,

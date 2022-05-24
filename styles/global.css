@@ -42,3 +42,18 @@ body {
   background: grey;
   margin-bottom: 30px;
 }
+
+
+.image-gallery-slides {
+  height: 500px;
+}
+
+.image-gallery-slide, .image-gallery-image {
+  max-height: unset;
+  height: 100%;
+  object-fit: contain;
+}
+
+.image-gallery-content, .image-gallery-slide-wrapper {
+  height: 100%;
+}

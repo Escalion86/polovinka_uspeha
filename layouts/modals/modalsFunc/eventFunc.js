@@ -1,21 +1,17 @@
 import CheckBox from '@components/CheckBox'
 import Input from '@components/Input'
-import { postData, putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
 import React, { useEffect, useState } from 'react'
 import EditableTextarea from '@components/EditableTextarea'
-import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
-import InputImage from '@components/InputImage'
-import DatePicker from '@components/DatePicker'
 import DateTimePicker from '@components/DateTimePicker'
 import ErrorsList from '@components/ErrorsList'
 import AddressPicker from '@components/AddressPicker'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import { DEFAULT_ADDRESS } from '@helpers/constants'
 import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loadingAtom from '@state/atoms/loadingAtom'
+import InputImages from '@components/InputImages'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -23,10 +19,10 @@ const eventFunc = (eventId, clone = false) => {
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
     const [title, setTitle] = useState(event ? event.title : '')
+    const [images, setImages] = useState(event?.images ? event.images : [])
     const [description, setDescription] = useState(
       event ? event.description : ''
     )
-    const [image, setImage] = useState(event ? event.image : '')
     const [date, setDate] = useState(event ? event.date : Date.now())
     const [address, setAddress] = useState(
       event?.address && typeof event.address === 'object'
@@ -37,17 +33,6 @@ const eventFunc = (eventId, clone = false) => {
       event ? event.showOnSite : true
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
-
-    // const router = useRouter()
-
-    // const refreshPage = (data) => {
-    //   setEvent(data)
-    //   // setLoading(false)
-    //   toggleLoading(event._id)
-    //   // router.replace(router.asPath, '', { shallow: true })
-    //   // router.replace(router.asPath)
-    //   // router.reload()
-    // }
 
     const onClickConfirm = async () => {
       let error = false
@@ -68,7 +53,7 @@ const eventFunc = (eventId, clone = false) => {
         setEvent(
           {
             _id: event?._id,
-            image,
+            images,
             title,
             description,
             showOnSite,
@@ -82,15 +67,15 @@ const eventFunc = (eventId, clone = false) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-    }, [title, description, showOnSite, date, image, address])
+    }, [title, description, showOnSite, date, images, address])
 
     return (
       <FormWrapper>
-        <InputImage
-          label="Картинка"
-          directory="directions"
-          image={image}
-          onChange={setImage}
+        <InputImages
+          label="Фотографии"
+          directory="events"
+          images={images}
+          onChange={setImages}
         />
         <Input
           label="Название"
@@ -103,16 +88,6 @@ const eventFunc = (eventId, clone = false) => {
           // labelClassName="w-40"
           error={errors.title}
         />
-        {/* <Input
-          label="Описание"
-          value={description}
-          onChange={(e) => {
-            removeError('description')
-            setDescription(e.target.value)
-          }}
-          labelClassName="w-40"
-          error={errors.description}
-        /> */}
         <EditableTextarea
           label="Описание"
           html={description}
@@ -124,11 +99,6 @@ const eventFunc = (eventId, clone = false) => {
           placeholder="Описание мероприятия..."
         />
         <DateTimePicker value={date} onChange={setDate} label="Дата и время" />
-        {/* <DatePicker
-          label="Дата"
-          value={birthday}
-          onChange={setBirthday}
-        /> */}
         <AddressPicker address={address} onChange={setAddress} />
         <CheckBox
           checked={showOnSite}

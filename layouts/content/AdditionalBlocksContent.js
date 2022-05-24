@@ -62,6 +62,7 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
     <CardWrapper
       loading={loading}
       onClick={() => modalsFunc.additionalBlock.edit(additionalBlock)}
+      showOnSite={additionalBlock.showOnSite}
     >
       {additionalBlock?.image && (
         // <div className="flex justify-center w-full tablet:w-auto">

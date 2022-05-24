@@ -19,6 +19,7 @@ const DirectionCard = ({ directionId }) => {
     <CardWrapper
       loading={loading}
       onClick={() => !loading && modalsFunc.direction.edit(direction._id)}
+      showOnSite={direction.showOnSite}
     >
       {direction?.image && (
         // <div className="flex justify-center w-full tablet:w-auto">

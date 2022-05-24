@@ -18,11 +18,11 @@ const Button = ({ title, className, onClick }) => (
 
 const CardEvent = ({ event }) => (
   <div className="flex flex-col flex-1 w-full overflow-hidden bg-white border border-gray-600 rounded-lg max-w-100 tablet:max-w-none tablet:flex-row gap-y-2">
-    {event.image && (
+    {event?.images && event.images.length > 0 && (
       <div className="flex justify-center w-full tablet:w-auto">
         <img
           className="object-cover w-full tablet:w-40 h-70 phoneH:h-80 tablet:h-40"
-          src={event.image}
+          src={event.images[0]}
           alt="event"
           // width={48}
           // height={48}

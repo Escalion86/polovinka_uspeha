@@ -20,6 +20,7 @@ const ReviewCard = ({ reviewId }) => {
       loading={loading}
       onClick={() => modalsFunc.review.edit(review)}
       flex={false}
+      showOnSite={review.showOnSite}
     >
       <div className="flex">
         <div className="flex-1 px-2 py-1 text-xl font-bold">
