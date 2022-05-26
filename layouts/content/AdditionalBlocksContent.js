@@ -61,7 +61,7 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
   return (
     <CardWrapper
       loading={loading}
-      onClick={() => modalsFunc.additionalBlock.edit(additionalBlock)}
+      onClick={() => modalsFunc.additionalBlock.edit(additionalBlock._id)}
       showOnSite={additionalBlock.showOnSite}
     >
       {additionalBlock?.image && (

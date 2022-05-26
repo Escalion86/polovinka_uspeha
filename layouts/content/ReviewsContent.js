@@ -18,7 +18,7 @@ const ReviewCard = ({ reviewId }) => {
   return (
     <CardWrapper
       loading={loading}
-      onClick={() => modalsFunc.review.edit(review)}
+      onClick={() => modalsFunc.review.edit(review._id)}
       flex={false}
       showOnSite={review.showOnSite}
     >

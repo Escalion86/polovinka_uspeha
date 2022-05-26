@@ -13,19 +13,23 @@ import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import usersAtom from '@state/atoms/usersAtom'
 import userSelector from '@state/selectors/userSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
+import { CardWrapper } from '@components/CardWrapper'
 
 const UserCard = ({ userId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const user = useRecoilValue(userSelector(userId))
-  const loading = useRecoilValue(loadingAtom('user' + reviewId))
+  const loading = useRecoilValue(loadingAtom('user' + userId))
   // const itemFunc = useRecoilValue(itemsFuncAtom)
 
   const userGender =
     user.gender && GENDERS.find((gender) => gender.value === user.gender)
 
   return (
-    <CardWrapper loading={loading} onClick={() => modalsFunc.user.edit(user)}>
-      <div className="flex">
+    <CardWrapper
+      loading={loading}
+      onClick={() => modalsFunc.user.edit(user._id)}
+    >
+      <div className="flex w-full">
         <div
           className={cn(
             'w-8 flex justify-center items-center',
