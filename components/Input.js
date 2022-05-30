@@ -1,4 +1,5 @@
 import cn from 'classnames'
+import InputWrapper from './InputWrapper'
 
 const Input = ({
   label,
@@ -12,17 +13,16 @@ const Input = ({
   prefixClassName,
   postfix,
   postfixClassName,
+  copyPasteButtons = false,
 }) => {
   return (
-    <>
-      <label
-        className={cn(
-          'flex items-center justify-end text-text leading-4 text-right',
-          labelClassName
-        )}
-      >
-        {label}
-      </label>
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      onChange={onChange}
+      copyPasteButtons={copyPasteButtons}
+      value={value}
+    >
       <div
         className={cn(
           'flex rounded overflow-hidden border bg-white',
@@ -57,7 +57,7 @@ const Input = ({
           </div>
         )}
       </div>
-    </>
+    </InputWrapper>
   )
 }
 

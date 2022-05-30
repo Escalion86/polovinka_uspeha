@@ -1,5 +1,6 @@
 import InputMask from 'node_modules/react-input-mask'
 import cn from 'classnames'
+import InputWrapper from './InputWrapper'
 
 const PhoneInput = ({
   value,
@@ -8,16 +9,25 @@ const PhoneInput = ({
   onChange,
   required = false,
   disabled,
+  labelClassName,
+  copyPasteButtons,
 }) => {
   return (
-    <>
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      onChange={onChange}
+      copyPasteButtons={copyPasteButtons}
+      value={value}
+    >
+      {/* <>
       <label
         className="flex items-center justify-end leading-4 "
         htmlFor={name}
       >
         {label}
         {required && <span className="text-red-700">*</span>}
-      </label>
+      </label> */}
 
       <InputMask
         className={cn(
@@ -37,7 +47,7 @@ const PhoneInput = ({
           onChange(value === '7' ? null : Number(value))
         }}
       />
-    </>
+    </InputWrapper>
   )
 }
 
