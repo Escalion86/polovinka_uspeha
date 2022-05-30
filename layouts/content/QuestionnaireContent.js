@@ -134,20 +134,32 @@ const QuestionnaireContent = (props) => {
           onChange={setOrientation}
         />
         <FormWrapper twoColumns>
-          <PhoneInput label="Телефон" value={phone} onChange={setPhone} />
+          <PhoneInput
+            label="Телефон"
+            value={phone}
+            onChange={setPhone}
+            copyPasteButtons
+          />
           <PhoneInput
             label="Whatsapp"
             value={whatsapp}
             onChange={setWhatsapp}
+            copyPasteButtons
           />
         </FormWrapper>
         <FormWrapper twoColumns>
-          <PhoneInput label="Viber" value={viber} onChange={setViber} />
+          <PhoneInput
+            label="Viber"
+            value={viber}
+            onChange={setViber}
+            copyPasteButtons
+          />
           <Input
             prefix="@"
             label="Telegram"
             value={telegram}
             onChange={setTelegram}
+            copyPasteButtons
           />
         </FormWrapper>
         <FormWrapper twoColumns>
@@ -156,8 +168,15 @@ const QuestionnaireContent = (props) => {
             label="Instagram"
             value={instagram}
             onChange={setInstagram}
+            copyPasteButtons
           />
-          <Input prefix="@" label="Vk" value={vk} onChange={setVk} />
+          <Input
+            prefix="@"
+            label="Vk"
+            value={vk}
+            onChange={setVk}
+            copyPasteButtons
+          />
         </FormWrapper>
         <DatePicker
           label="День рождения"
