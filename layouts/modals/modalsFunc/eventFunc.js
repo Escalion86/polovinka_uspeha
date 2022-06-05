@@ -12,6 +12,7 @@ import { DEFAULT_ADDRESS } from '@helpers/constants'
 import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import InputImages from '@components/InputImages'
+import PriceInput from '@components/PriceInput'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -29,6 +30,7 @@ const eventFunc = (eventId, clone = false) => {
         ? event.address
         : DEFAULT_ADDRESS
     )
+    const [price, setPrice] = useState(event ? event.price : 0)
     const [showOnSite, setShowOnSite] = useState(
       event ? event.showOnSite : true
     )
@@ -59,6 +61,7 @@ const eventFunc = (eventId, clone = false) => {
             showOnSite,
             date,
             address,
+            price,
           },
           clone
         )
@@ -67,7 +70,7 @@ const eventFunc = (eventId, clone = false) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-    }, [title, description, showOnSite, date, images, address])
+    }, [title, description, showOnSite, date, images, address, price])
 
     return (
       <FormWrapper>
@@ -100,6 +103,13 @@ const eventFunc = (eventId, clone = false) => {
         />
         <DateTimePicker value={date} onChange={setDate} label="Дата и время" />
         <AddressPicker address={address} onChange={setAddress} />
+        <PriceInput
+          value={price}
+          onChange={(value) => {
+            removeError('price')
+            setPrice(value)
+          }}
+        />
         <CheckBox
           checked={showOnSite}
           labelPos="left"

@@ -47,6 +47,14 @@ export async function fetchingAdditionalBlocks(
   return resp
 }
 
+export async function fetchingPayments(domen = process.env.NEXTAUTH_SITE) {
+  console.log('Запущен fetchingPayments')
+  const resp = await fetch(`${domen}/api/payments`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+  return resp
+}
+
 export async function fetchingUsers(domen = process.env.NEXTAUTH_SITE) {
   console.log('Запущен fetchingUsers')
   const resp = await fetch(`${domen}/api/users`)

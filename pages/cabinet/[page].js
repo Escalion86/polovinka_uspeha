@@ -14,6 +14,7 @@ import {
   fetchingUsers,
   fetchingEventsUsers,
   fetchingAdditionalBlocks,
+  fetchingPayments,
 } from '@helpers/fetchers'
 import { useState, useEffect } from 'react'
 
@@ -39,6 +40,9 @@ import additionalBlockDeleteSelector from '@state/selectors/additionalBlockDelet
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
+import paymentEditSelector from '@state/selectors/paymentEditSelector'
+import paymentsDeleteSelector from '@state/selectors/paymentsDeleteSelector'
+import paymentsAtom from '@state/atoms/paymentsAtom'
 
 function CabinetPage(props) {
   const { page, loggedUser } = props
@@ -48,6 +52,7 @@ function CabinetPage(props) {
   const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
   const setUsersState = useSetRecoilState(usersAtom)
   const setReviewsState = useSetRecoilState(reviewsAtom)
+  const setPaymentsState = useSetRecoilState(paymentsAtom)
 
   const setEvent = useSetRecoilState(eventEditSelector)
   const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -59,6 +64,8 @@ function CabinetPage(props) {
   const deleteUser = useSetRecoilState(userDeleteSelector)
   const setReview = useSetRecoilState(reviewEditSelector)
   const deleteReview = useSetRecoilState(reviewDeleteSelector)
+  const setPayment = useSetRecoilState(paymentEditSelector)
+  const deletePayment = useSetRecoilState(paymentsDeleteSelector)
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
   const toggleLoading = useSetRecoilState(toggleLoadingSelector)
@@ -78,6 +85,8 @@ function CabinetPage(props) {
           deleteUser,
           setReview,
           deleteReview,
+          setPayment,
+          deletePayment,
         })
       ),
     []
@@ -118,6 +127,8 @@ function CabinetPage(props) {
     setAdditionalBlocksState(props.additionalBlocks)
     setUsersState(props.users)
     setReviewsState(props.reviews)
+    setPaymentsState(props.payments)
+
     // props.events.forEach((event) => {
     //   setEventAtom(event)
     // })
@@ -224,6 +235,7 @@ export const getServerSideProps = async (context) => {
       process.env.NEXTAUTH_SITE
     )
     const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
     return {
       props: {
         users,
@@ -233,6 +245,7 @@ export const getServerSideProps = async (context) => {
         page,
         additionalBlocks,
         eventsUsers,
+        payments,
         loggedUser: session?.user ? session.user : null,
       },
     }
@@ -246,6 +259,7 @@ export const getServerSideProps = async (context) => {
         page,
         additionalBlocks: null,
         eventsUsers: null,
+        payments: null,
         loggedUser: session?.user ? session.user : null,
       },
       // notFound: true,

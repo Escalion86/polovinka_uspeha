@@ -35,7 +35,7 @@ const TitleBlock = ({ userIsLogged = false }) => {
         >
           г.Красноярск
         </H2>
-        {!userIsLogged && (
+        {/* {!userIsLogged && (
           <Link
             href={{
               pathname: '/login',
@@ -48,7 +48,7 @@ const TitleBlock = ({ userIsLogged = false }) => {
               // onClick={() => router.push('./login?registration=true')}
             />
           </Link>
-        )}
+        )} */}
       </div>
     </div>
   )

@@ -48,7 +48,7 @@ const Header = (props) => {
   const { loggedUser, additionalBlocks, events, directions, reviews } = props
 
   const menu = [{ name: 'О нас', href: '#about' }]
-  if (events?.length > 0) menu.push({ name: 'Запись', href: '#timetable' })
+  // if (events?.length > 0) menu.push({ name: 'Запись', href: '#timetable' })
   if (directions?.length > 0)
     menu.push({ name: 'Направления', href: '#directions' })
 
@@ -90,9 +90,9 @@ const Header = (props) => {
             </Link>
           </div>
 
-          <div className="absolute hidden phoneH:block right-4">
+          {/* <div className="absolute hidden phoneH:block right-4">
             <UserMenu user={loggedUser} />
-          </div>
+          </div> */}
         </div>
         <ul className="items-center justify-center hidden w-full h-8 text-lg duration-300 bg-white bg-opacity-75 tablet:flex gap-x-4 hover:bg-opacity-100">
           {menu.map(({ name, href }, index) => {
@@ -106,7 +106,7 @@ const Header = (props) => {
           )}
         >
           <div className="pt-20 pb-4 w-60">
-            <div className="flex w-full px-2 pb-2 border-b phoneH:hidden border-general">
+            {/* <div className="flex w-full px-2 pb-2 border-b phoneH:hidden border-general">
               {loggedUser ? (
                 <Link href="/cabinet">
                   <a className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general">
@@ -121,7 +121,7 @@ const Header = (props) => {
                   </a>
                 </Link>
               )}
-            </div>
+            </div> */}
             <div className="px-2 py-2 w-60 phoneH:py-0">
               <ul className="flex flex-col gap-y-2">
                 {menu.map(({ name, href }, index) => (

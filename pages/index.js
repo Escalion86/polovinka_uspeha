@@ -98,7 +98,7 @@ export default function Home(props) {
         />
         <TitleBlock userIsLogged={!!loggedUser} />
         <AboutBlock />
-        <TimeTableBlock events={filteredEvents} />
+        {/* <TimeTableBlock events={filteredEvents} /> */}
         <DirectionsBlock directions={filteredDirections} />
         <AdditionalBlocks
           additionalBlocks={filteredAdditionalBlocks}
