@@ -140,10 +140,21 @@ const eventSignUpFunc = (eventId, clone = false) => {
             )}
           </div>
           <div className="flex flex-col items-end phoneH:flex-row">
-            <div className="flex flex-wrap flex-1 px-4 text-lg font-bold gap-x-1 text-general">
+            <div className="flex flex-wrap justify-center flex-1 px-4 text-lg font-bold gap-x-1 text-general">
               <div>{formatDateTime(event.date)}</div>
               <div className="font-normal">({getDaysFromNow(event.date)})</div>
             </div>
+          </div>
+          <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
+            {event.price ? (
+              <div className="flex flex-wrap flex-1 px-4 text-lg font-bold gap-x-1 text-general">
+                Стоимость мероприятия: {event.price / 100} ₽
+              </div>
+            ) : (
+              <div className="px-4 text-lg font-bold text-general">
+                Мероприятие бесплатное
+              </div>
+            )}
             <Button
               className="w-full px-4 py-1 text-white duration-300 border rounded phoneH:w-auto "
               name="Записаться"

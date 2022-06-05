@@ -14,6 +14,7 @@ const Input = ({
   postfix,
   postfixClassName,
   copyPasteButtons = false,
+  wrapperClassName,
 }) => {
   return (
     <InputWrapper
@@ -22,6 +23,7 @@ const Input = ({
       onChange={onChange}
       copyPasteButtons={copyPasteButtons}
       value={value}
+      className={wrapperClassName}
     >
       <div
         className={cn(

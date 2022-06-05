@@ -5,21 +5,16 @@ function capitalizeFirstLetter(string) {
 }
 
 const itemsFuncGenerator = (props) => {
-  const {
-    toggleLoading,
-    setEvent,
-    deleteEvent,
-    setDirection,
-    deleteDirection,
-    setAdditionalBlock,
-    deleteAdditionalBlock,
-    setUser,
-    deleteUser,
-    setReview,
-    deleteReview,
-  } = props
+  const { toggleLoading } = props
 
-  const array = ['event', 'direction', 'additionalBlock', 'user', 'review']
+  const array = [
+    'event',
+    'direction',
+    'additionalBlock',
+    'user',
+    'review',
+    'payment',
+  ]
   const obj = {}
   array.forEach((itemName) => {
     obj[itemName] = {

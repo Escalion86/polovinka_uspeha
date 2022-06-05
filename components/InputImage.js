@@ -11,7 +11,6 @@ const InputImage = ({
   noImage = '/img/no_image.png',
   onChange = () => {},
   required = false,
-  readOnly = false,
   noEditButton = false,
   directory = null,
   imageName = null,
@@ -37,27 +36,22 @@ const InputImage = ({
       onChange(null)
     }
   }
-  if (readOnly && !image) return null
+  if (!image) return null
 
   return (
     <>
-      {label && (
-        <label className="flex items-center justify-end leading-4 text-right">
-          {label}
-          {readOnly ? ':' : required && <span className="text-red-700">*</span>}
-        </label>
-      )}
-      {!image && readOnly ? (
+      <label className="flex items-center justify-end leading-4 text-right">
+        {label}
+        {/* {required && <span className="text-red-700">*</span>} */}
+      </label>
+      {!image ? (
         <div className="ml-2">-</div>
       ) : (
         <div
           className={cn(
             'relative border rounded-sm h-20 w-20 overflow-hidden group',
-            { 'border-gray-400 hover:border-primary': readOnly },
-            {
-              [required && !image ? ' border-red-700' : ' border-gray-400']:
-                !readOnly,
-            }
+
+            required && !image ? ' border-red-700' : ' border-gray-400'
           )}
         >
           <img
@@ -65,7 +59,7 @@ const InputImage = ({
             src={image || noImage}
             alt="item_no_image"
           />
-          {!readOnly && image && (
+          {image && (
             <FontAwesomeIcon
               className="absolute w-5 h-5 text-red-700 duration-200 transform cursor-pointer -top-5 group-hover:top-1 -right-5 group-hover:right-1 hover:scale-125"
               icon={faTrash}
@@ -76,7 +70,7 @@ const InputImage = ({
               }}
             />
           )}
-          {!readOnly && !image && (
+          {!image && (
             <FontAwesomeIcon
               className="absolute w-6 h-6 duration-200 transform -translate-x-1/2 -translate-y-1/2 opacity-0 cursor-pointer text-primary tran top-1/2 left-1/2 group-hover:opacity-80 group-hover:scale-125"
               icon={faPencilAlt}
@@ -84,7 +78,7 @@ const InputImage = ({
               onClick={() => selectImageClick()}
             />
           )}
-          {!readOnly && !noEditButton && image && (
+          {!noEditButton && image && (
             <FontAwesomeIcon
               className="absolute w-5 h-5 duration-200 transform cursor-pointer -top-5 -left-5 group-hover:top-1 group-hover:left-1 text-primary hover:scale-125"
               icon={faPencilAlt}

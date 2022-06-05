@@ -8,6 +8,7 @@ import {
   faGift,
   faMars,
   faMarsDouble,
+  faSignInAlt,
   faTimesCircle,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
@@ -25,7 +26,11 @@ import {
   faUser,
   faHeart,
 } from '@fortawesome/free-solid-svg-icons'
-import { faCalendar, faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
+import {
+  faCalendar,
+  faCalendarAlt,
+  faCreditCard,
+} from '@fortawesome/free-regular-svg-icons'
 import DirectionsContent from '@layouts/content/DirectionsContent'
 import ReviewsContent from '@layouts/content/ReviewsContent'
 import EventsContent from '@layouts/content/EventsContent'
@@ -45,6 +50,7 @@ import ZodiacAquarius from 'svg/zodiac/ZodiacAquarius'
 import ZodiacPisces from 'svg/zodiac/ZodiacPisces'
 import ZodiacVirgo from 'svg/zodiac/ZodiacVirgo'
 import ZodiacScorpio from 'svg/zodiac/ZodiacScorpio'
+import PaymentsContent from '@layouts/content/PaymentsContent'
 
 const colors = [
   'border-blue-400',
@@ -234,6 +240,14 @@ export const DEFAULT_REVIEW = Object.freeze({
   showOnSite: true,
 })
 
+export const DEFAULT_PAYMENT = Object.freeze({
+  userId: null,
+  payType: 'card',
+  sum: 0,
+  status: 'created',
+  payAt: null,
+})
+
 export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
   title: '',
   description: '',
@@ -389,6 +403,7 @@ export const CONTENTS = {
   events: { Component: EventsContent, name: 'Мероприятия' },
   questionnaire: { Component: QuestionnaireContent, name: 'Моя анкета' },
   users: { Component: UsersContent, name: 'Пользователи' },
+  payments: { Component: PaymentsContent, name: 'Транзакции' },
 }
 
 export const pages = [
@@ -428,12 +443,31 @@ export const pages = [
     href: 'users',
     icon: faCalendar,
   },
+  {
+    id: 5,
+    group: 3,
+    name: 'Транзакции',
+    href: 'payments',
+    icon: faMoneyBill,
+  },
+]
+
+export const PAY_TYPES = [
+  { value: 'card', name: 'Картой', color: 'blue-400', icon: faCreditCard },
+  { value: 'cash', name: 'Наличными', color: 'green-400', icon: faMoneyBill },
+  {
+    value: 'remittance',
+    name: 'Перевод',
+    color: 'yellow-400',
+    icon: faSignInAlt,
+  },
 ]
 
 export const pagesGroups = [
   { id: 0, name: 'Мероприятия', icon: faCalendarAlt, access: 'all' },
   { id: 1, name: 'Сайт', icon: faHome, access: 'admin' },
   { id: 2, name: 'Пользователи', icon: faUser, access: 'admin' },
+  { id: 3, name: 'Транзакции', icon: faMoneyBill, access: 'admin' },
   // { id: 2, name: 'Заказы', icon: faFire },
   // { id: 1, name: 'Склад', icon: faCubes },
   // { id: 3, name: 'Клиенты', icon: faUser },

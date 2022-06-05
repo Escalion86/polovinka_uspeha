@@ -47,8 +47,13 @@ const EventCard = ({ eventId }) => {
             }}
           />
         </div>
-        <div className="flex-1">{event.description}</div>
-        <div className="flex flex-col-reverse justify-between tablet:flex-row-reverse">
+        <div className="flex justify-between flex-1 pr-1">
+          <div className="flex flex-1">{event.description}</div>
+          <div className="flex flex-wrap items-center h-full text-lg font-bold gap-x-1 text-general">
+            {event.price ? event.price / 100 + ' ₽' : 'Бесплатное'}
+          </div>
+        </div>
+        <div className="flex flex-col-reverse justify-between pr-1 tablet:flex-row-reverse">
           <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-32 tablet:whitespace-pre-wrap text-general">
             {formatDateTime(event.date, false, false, true, true)}
           </div>

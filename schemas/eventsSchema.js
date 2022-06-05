@@ -33,6 +33,11 @@ const eventsSchema = {
     type: Array,
     default: [],
   },
+  price: {
+    type: Number,
+    max: [99999999, 'Сумма не может превышать 999999,99 руб'],
+    default: null,
+  },
   showOnSite: {
     type: Boolean,
     default: true,

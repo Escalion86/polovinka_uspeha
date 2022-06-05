@@ -12,7 +12,7 @@ export const LoadingSpinner = ({ size = 'md', text = null }) => {
       ? 50
       : 60
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center h-full">
       <motion.div
         animate={{ scale: [1, 1, 1.15, 1.05, 1.15, 1] }}
         transition={{
@@ -20,12 +20,15 @@ export const LoadingSpinner = ({ size = 'md', text = null }) => {
           repeat: Infinity,
           times: [0, 0.6, 0.7, 0.8, 0.9, 1],
         }}
+        className="flex items-center justify-center h-full"
       >
         <img
+          className="object-contain max-h-[80%] aspect-square"
+          style={{ height: widthHeight, width: widthHeight }}
           src="/img/logo_heart.png"
           alt="logo"
-          width={widthHeight}
-          height={widthHeight}
+          // width={widthHeight}
+          // height={widthHeight}
         />
       </motion.div>
       {text && <div className="text-lg font-bold animate-pulse">{text}</div>}

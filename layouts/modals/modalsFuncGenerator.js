@@ -16,6 +16,7 @@ import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
 
 import { deleteData } from '@helpers/CRUD'
 import eventSignUpFunc from './modalsFunc/eventSignUpFunc'
+import paymentFunc from './modalsFunc/paymentFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -72,6 +73,16 @@ const modalsFuncGenerator = (setModals, itemsFunc) => {
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
       signUp: (eventId) => addModal(eventSignUpFunc(eventId)),
+    },
+    payment: {
+      add: (paymentId) => addModal(paymentFunc(paymentId, true)),
+      edit: (paymentId) => addModal(paymentFunc(paymentId)),
+      delete: (paymentId) =>
+        addModal({
+          title: 'Удаление транзакции',
+          text: 'Вы уверены, что хотите удалить транзакцию?',
+          onConfirm: async () => itemsFunc.payment.delete(paymentId),
+        }),
     },
     user: {
       add: (userId) => addModal(userFunc(userId, true)),
