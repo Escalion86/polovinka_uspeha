@@ -79,12 +79,12 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
 
     return (
       <FormWrapper>
-        <InputImage
+        {/* <InputImage
           label="Картинка"
           directory="additionalBlocks"
           image={image}
           onChange={setImage}
-        />
+        /> */}
         <Input
           label="Название"
           type="text"
