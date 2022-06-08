@@ -4,7 +4,7 @@ import {
   faTimes,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import { cloneElement, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { modalsAtom } from '@state/atoms'
 import { useSetRecoilState } from 'recoil'

@@ -119,7 +119,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
           labelClassName="w-40"
           error={errors.description}
         /> */}
-        {/* <EditableTextarea
+        <EditableTextarea
           label="Описание"
           html={description}
           uncontrolled={false}
@@ -128,7 +128,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
             setDescription(value)
           }}
           forGrid
-        /> */}
+        />
         <Input
           label="Название в меню"
           type="text"
