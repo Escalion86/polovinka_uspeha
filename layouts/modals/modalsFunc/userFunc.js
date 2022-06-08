@@ -1,10 +1,11 @@
-import CheckBox from '@components/CheckBox'
-import Input from '@components/Input'
-import { postData, putData } from '@helpers/CRUD'
-import useErrors from '@helpers/useErrors'
 import React, { useEffect, useState } from 'react'
-import EditableTextarea from '@components/EditableTextarea'
-import { useRouter } from 'next/router'
+import useErrors from '@helpers/useErrors'
+
+import { useRecoilValue } from 'recoil'
+import userSelector from '@state/selectors/userSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+
+import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import Textarea from '@components/Textarea'
@@ -13,9 +14,6 @@ import PhoneInput from '@components/PhoneInput'
 import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import ErrorsList from '@components/ErrorsList'
-import { useRecoilValue } from 'recoil'
-import userSelector from '@state/selectors/userSelector'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -43,11 +41,11 @@ const userFunc = (userId, clone = false) => {
 
     const [errors, addError, removeError, clearErrors] = useErrors()
 
-    const router = useRouter()
+    // const router = useRouter()
 
-    const refreshPage = () => {
-      router.replace(router.asPath)
-    }
+    // const refreshPage = () => {
+    //   router.replace(router.asPath)
+    // }
 
     const onClickConfirm = async () => {
       let error = false
