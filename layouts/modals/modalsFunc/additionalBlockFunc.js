@@ -1,16 +1,16 @@
+import React, { useEffect, useState } from 'react'
+import useErrors from '@helpers/useErrors'
+
+import { useRecoilValue } from 'recoil'
+import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+
 import CheckBox from '@components/CheckBox'
 import Input from '@components/Input'
-import { postData, putData } from '@helpers/CRUD'
-import useErrors from '@helpers/useErrors'
-import React, { useEffect, useState } from 'react'
 import EditableTextarea from '@components/EditableTextarea'
-import { useRouter } from 'next/router'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
-import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { useRecoilValue } from 'recoil'
 
 const additionalBlockFunc = (additionalBlockId, clone = false) => {
   const AdditionalBlockModal = ({
@@ -48,6 +48,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     // }
 
     const checkErrors = () => {
+      console.log('checkErrors')
       return (
         (!title && addError({ title: 'Необходимо ввести название' })) ||
         (!description &&

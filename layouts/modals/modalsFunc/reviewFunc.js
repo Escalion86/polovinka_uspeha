@@ -1,15 +1,15 @@
+import React, { useEffect, useState } from 'react'
+import useErrors from '@helpers/useErrors'
+
+import { useRecoilValue } from 'recoil'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import reviewSelector from '@state/selectors/reviewSelector'
+
 import CheckBox from '@components/CheckBox'
 import Textarea from '@components/Textarea'
 import Input from '@components/Input'
-import { postData, putData } from '@helpers/CRUD'
-import useErrors from '@helpers/useErrors'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import reviewSelector from '@state/selectors/reviewSelector'
-import { useRecoilValue } from 'recoil'
 
 const reviewFunc = (reviewId, clone = false) => {
   const ReviewModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {

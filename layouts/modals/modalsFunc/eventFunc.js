@@ -1,18 +1,21 @@
-import CheckBox from '@components/CheckBox'
-import Input from '@components/Input'
-import useErrors from '@helpers/useErrors'
 import React, { useEffect, useState } from 'react'
+import useErrors from '@helpers/useErrors'
+
+import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+
 import EditableTextarea from '@components/EditableTextarea'
 import FormWrapper from '@components/FormWrapper'
 import DateTimePicker from '@components/DateTimePicker'
 import ErrorsList from '@components/ErrorsList'
 import AddressPicker from '@components/AddressPicker'
-import { useRecoilValue } from 'recoil'
-import { DEFAULT_ADDRESS } from '@helpers/constants'
-import eventSelector from '@state/selectors/eventSelector'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import InputImages from '@components/InputImages'
 import PriceInput from '@components/PriceInput'
+import CheckBox from '@components/CheckBox'
+import Input from '@components/Input'
+
+import { DEFAULT_ADDRESS } from '@helpers/constants'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {

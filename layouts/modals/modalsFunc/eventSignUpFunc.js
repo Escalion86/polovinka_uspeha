@@ -1,20 +1,16 @@
-import CheckBox from '@components/CheckBox'
-import Input from '@components/Input'
-import { postData, putData } from '@helpers/CRUD'
-import useErrors from '@helpers/useErrors'
-import React, { useEffect, useState } from 'react'
-import EditableTextarea from '@components/EditableTextarea'
-import { useRouter } from 'next/router'
-import FormWrapper from '@components/FormWrapper'
-import InputImage from '@components/InputImage'
-import { H3, H4, P } from '@components/tags'
-import formatDateTime from '@helpers/formatDateTime'
-import ImageGallery from 'react-image-gallery'
-import getDaysFromNow from '@helpers/getDaysFromNow'
-import Button from '@components/Button'
-import formatAddress from '@helpers/formatAddress'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import React from 'react'
+
+import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
+
+import ImageGallery from 'react-image-gallery'
+
+import { P } from '@components/tags'
+import Button from '@components/Button'
+
+import formatAddress from '@helpers/formatAddress'
+import formatDateTime from '@helpers/formatDateTime'
+import getDaysFromNow from '@helpers/getDaysFromNow'
 
 const eventSignUpFunc = (eventId, clone = false) => {
   const EventSignUpModal = ({
