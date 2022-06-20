@@ -6,15 +6,16 @@ const Button = ({
   className,
   disabled = false,
   classBgColor = 'bg-general',
+  classHoverBgColor = 'hover:bg-green-600',
 }) => (
   <button
     onClick={() => onClick && !disabled && onClick()}
     className={cn(
-      'px-4 h-10 py-1 rounded text-white border border-gray-200 bg-opacity-90',
+      'px-4 h-9 py-1 rounded text-white bg-opacity-90',
       className,
       disabled
         ? 'bg-gray-300 text-white cursor-not-allowed'
-        : cn('hover:bg-green-600', classBgColor)
+        : cn(classHoverBgColor, classBgColor)
     )}
   >
     {name}

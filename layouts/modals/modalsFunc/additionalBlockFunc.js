@@ -22,14 +22,12 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
       additionalBlockSelector(additionalBlockId)
     )
     const setAdditionalBlock = useRecoilValue(itemsFuncAtom).additionalBlock.set
-
     const [title, setTitle] = useState(
       additionalBlock ? additionalBlock.title : ''
     )
     const [description, setDescription] = useState(
       additionalBlock ? additionalBlock.description : ''
     )
-
     const [image, setImage] = useState(
       additionalBlock ? additionalBlock.image : ''
     )
@@ -41,21 +39,13 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     )
     const [errors, addError, removeError, clearErrors] = useErrors()
 
-    // const router = useRouter()
-
-    // const refreshPage = () => {
-    //   router.replace(router.asPath)
-    // }
-
     const checkErrors = () => {
-      console.log('checkErrors')
       return (
         (!title && addError({ title: 'Необходимо ввести название' })) ||
         (!description &&
           addError({ description: 'Необходимо ввести описание' }))
       )
     }
-
     const onClickConfirm = async () => {
       if (checkErrors()) {
         closeModal()
@@ -72,7 +62,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
         )
       }
     }
-
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
     }, [title, description, showOnSite, image, menuName])
@@ -97,16 +86,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
           error={errors.title}
           forGrid
         />
-        {/* <Input
-          label="Описание"
-          value={description}
-          onChange={(e) => {
-            removeError('description')
-            setDescription(e.target.value)
-          }}
-          labelClassName="w-40"
-          error={errors.description}
-        /> */}
         <EditableTextarea
           label="Описание"
           html={description}

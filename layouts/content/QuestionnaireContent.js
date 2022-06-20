@@ -13,6 +13,7 @@ import useErrors from '@helpers/useErrors'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
+// TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
   const user = props.loggedUser
   const [name, setName] = useState(user?.name)

@@ -72,14 +72,7 @@ import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 // )
 
 export default function Home(props) {
-  const {
-    events,
-    directions,
-    reviews,
-    loggedUser,
-    additionalBlocks,
-    siteSettings,
-  } = props
+  const { events, directions, reviews, loggedUser, additionalBlocks } = props
 
   const setLoggedUserState = useSetRecoilState(loggedUserAtom)
   const setEventsState = useSetRecoilState(eventsAtom)
@@ -143,11 +136,10 @@ export default function Home(props) {
   return (
     <>
       <Head>
-        <title>Центр осознанных знакомств - "Половинка успеха"</title>
+        <title>Мероприятия - ЦОЗ "Половинка успеха"</title>
       </Head>
       <div>
         <div className="w-full bg-white">
-          {/* <DeviceCheck /> */}
           <Header
             events={filteredEvents}
             directions={filteredDirections}
@@ -156,45 +148,8 @@ export default function Home(props) {
             loggedUser={loggedUser}
           />
           <TitleBlock userIsLogged={!!loggedUser} />
-          <AboutBlock />
-          <EventsBlock events={filteredEvents} maxEvents={4} />
-          <DirectionsBlock directions={filteredDirections} />
-          <AdditionalBlocks
-            additionalBlocks={filteredAdditionalBlocks}
-            inverse={
-              directions &&
-              directions.filter((direction) => direction.showOnSite).length %
-                2 ===
-                1
-            }
-          />
-          {/* <PriceBlock /> */}
-          <ReviewsBlock reviews={filteredReviews} />
+          <EventsBlock events={filteredEvents} maxEvents />
           <ContactsBlock siteSettings={siteSettings} />
-          {/* <BlockContainer className="text-white bg-black">
-          <H3>Есть знания, но не знаете как ими поделиться?</H3>
-          <P>
-            Просто зарегистрируйтесь в системе и начните заполнять курс своими
-            знаниями. Не беспокойтесь если у Вас в голове "каша", система
-            позволит менять местами блоки и структурировать Ваши знания
-          </P>
-        </BlockContainer>
-        <BlockContainer id="tarifs" className="bg-gray-200">
-          <H3>Тарифы</H3>
-          <P>
-            Проект находится в стадии разработки и тестирования. Размещение по
-            индивидуальным условиям.
-          </P>
-        </BlockContainer> */}
-          {/* <BlockContainer id="contacts" className="bg-gray-200">
-          <H3>Контакты</H3>
-        </BlockContainer> */}
-          {/* <div className="flex flex-col items-start px-10 py-5 text-sm font-thin text-white bg-black min-h-80 tablet:px-20">
-          <div>
-            © ИП Белинский Алексей Алексеевич, ИНН 245727560982, ОГРНИП
-            319246800103511
-          </div>
-        </div> */}
         </div>
         <ModalsPortal />
       </div>
@@ -213,10 +168,7 @@ export const getServerSideProps = async (context) => {
     )
     const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
     const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
-    // console.log('events', events)
-    // console.log('directions', directions)
-    // console.log('reviews', reviews)
-    // console.log('additionalBlocks', additionalBlocks)
+
     return {
       props: {
         events,

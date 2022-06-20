@@ -9,7 +9,7 @@ const ModalButtons = ({
 }) => (
   <>
     <Divider light thin />
-    <div className="flex justify-end">
+    <div className="flex justify-end gap-x-1 tablet:gap-x-2">
       <Button
         name={declineName}
         classBgColor="bg-danger"

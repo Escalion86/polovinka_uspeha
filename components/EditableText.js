@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 import {
   faAlignCenter,
   faAlignJustify,
@@ -19,9 +21,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MODES } from '@helpers/constants'
 import cn from 'classnames'
-import { useState } from 'react'
 import { EditText } from 'react-edit-text'
-import { useEffect } from 'react/cjs/react.development'
 import { LoadingSpinner } from '.'
 
 const EditableText = ({

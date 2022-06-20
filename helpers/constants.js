@@ -8,6 +8,7 @@ import {
   faGift,
   faMars,
   faMarsDouble,
+  faPhone,
   faSignInAlt,
   faTimesCircle,
   faVenus,
@@ -51,6 +52,7 @@ import ZodiacPisces from 'svg/zodiac/ZodiacPisces'
 import ZodiacVirgo from 'svg/zodiac/ZodiacVirgo'
 import ZodiacScorpio from 'svg/zodiac/ZodiacScorpio'
 import PaymentsContent from '@layouts/content/PaymentsContent'
+import ContactsContent from '@layouts/content/ContactsContent'
 
 const colors = [
   'border-blue-400',
@@ -404,6 +406,7 @@ export const CONTENTS = {
   questionnaire: { Component: QuestionnaireContent, name: 'Моя анкета' },
   users: { Component: UsersContent, name: 'Пользователи' },
   payments: { Component: PaymentsContent, name: 'Транзакции' },
+  contacts: { Component: ContactsContent, name: 'Контакты на сайте' },
 }
 
 export const pages = [
@@ -435,16 +438,22 @@ export const pages = [
     href: 'reviews',
     icon: faComments,
   },
-
   {
     id: 4,
+    group: 1,
+    name: 'Контакты',
+    href: 'contacts',
+    icon: faPhone,
+  },
+  {
+    id: 5,
     group: 2,
     name: 'Пользователи',
     href: 'users',
     icon: faCalendar,
   },
   {
-    id: 5,
+    id: 6,
     group: 3,
     name: 'Транзакции',
     href: 'payments',

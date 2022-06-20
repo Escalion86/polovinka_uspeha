@@ -14,11 +14,10 @@ import eventFunc from './modalsFunc/eventFunc'
 import userFunc from './modalsFunc/userFunc'
 import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
 
-import { deleteData } from '@helpers/CRUD'
-import eventSignUpFunc from './modalsFunc/eventSignUpFunc'
+import eventViewFunc from './modalsFunc/eventViewFunc'
 import paymentFunc from './modalsFunc/paymentFunc'
 
-const modalsFuncGenerator = (setModals, itemsFunc) => {
+const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const addModal = (props) => setModals((modals) => [...modals, props])
 
@@ -35,14 +34,7 @@ const modalsFuncGenerator = (setModals, itemsFunc) => {
         onConfirm,
       })
     },
-    custom: ({ title, text, onConfirm, Children }) => {
-      addModal({
-        title,
-        text,
-        onConfirm,
-        Children,
-      })
-    },
+    custom: addModal,
     review: {
       add: (reviewId) => addModal(reviewFunc(reviewId, true)),
       edit: (reviewId) => addModal(reviewFunc(reviewId)),
@@ -72,7 +64,43 @@ const modalsFuncGenerator = (setModals, itemsFunc) => {
           text: 'Вы уверены, что хотите удалить событие?',
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
-      signUp: (eventId) => addModal(eventSignUpFunc(eventId)),
+      view: (eventId) => addModal(eventViewFunc(eventId)),
+      signUp: (eventId) => {
+        if (!loggedUser?._id)
+          addModal({
+            title: 'Необходимо зарегистрироваться',
+            text: 'Для записи на мероприятие, необходимо сначала авторизироваться на сайте',
+            confirmButtonName: 'Авторизироваться',
+            onConfirm: () => router.push('/login'),
+          })
+        else
+          addModal({
+            title: 'Запись на мероприятие',
+            text: 'Вы уверены что хотите записаться на мероприятие?',
+            confirmButtonName: 'Записаться',
+            onConfirm: () => {
+              itemsFunc.event.signUp(eventId, loggedUser._id)
+            },
+          })
+      },
+      signOut: (eventId) => {
+        if (!loggedUser?._id)
+          addModal({
+            title: 'Необходимо зарегистрироваться',
+            text: 'Для записи на мероприятие, необходимо сначала авторизироваться на сайте',
+            confirmButtonName: 'Авторизироваться',
+            onConfirm: () => router.push('/login'),
+          })
+        else
+          addModal({
+            title: 'Отмена записии на мероприятие',
+            text: 'Вы уверены что хотите отменить запись на мероприятие?',
+            confirmButtonName: 'Отменить запись',
+            onConfirm: () => {
+              itemsFunc.event.signOut(eventId, loggedUser._id)
+            },
+          })
+      },
     },
     payment: {
       add: (paymentId) => addModal(paymentFunc(paymentId, true)),

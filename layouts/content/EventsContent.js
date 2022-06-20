@@ -19,7 +19,7 @@ const EventCard = ({ eventId }) => {
   return (
     <CardWrapper
       loading={loading}
-      onClick={() => !loading && modalsFunc.event.signUp(event._id)}
+      onClick={() => !loading && modalsFunc.event.view(event._id)}
       showOnSite={event.showOnSite}
     >
       {event?.images && event.images.length > 0 && (

@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { Editor, EditorState } from 'draft-js'
 import {
   faAlignCenter,
@@ -21,9 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import { useState } from 'react'
 import ContentEditable from 'react-contenteditable'
-import { useEffect } from 'react/cjs/react.development'
 import { Divider, LoadingSpinner } from '.'
 import Button from './Button'
 

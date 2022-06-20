@@ -90,6 +90,14 @@ export async function fetchingEventsUsers(domen = process.env.NEXTAUTH_SITE) {
   return resp
 }
 
+export async function fetchingSiteSettings(domen = process.env.NEXTAUTH_SITE) {
+  console.log('Запущен fetchingSiteSettings')
+  const resp = await fetch(`${domen}/api/site`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+  return resp
+}
+
 // export async function fetchingUsersCourses(domen = process.env.NEXTAUTH_SITE) {
 //   console.log('Запущен fetchingUsersCourses')
 //   const resp = await fetch(`${domen}/api/userscourses`)
