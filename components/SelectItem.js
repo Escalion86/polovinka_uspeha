@@ -12,6 +12,7 @@ import { Virtuoso } from 'react-virtuoso'
 import {
   UserItem,
   EventItem,
+  DirectionItem,
   // ProductItem,
   // SetItem,
   // PersonaItem,
@@ -23,6 +24,7 @@ import cn from 'classnames'
 import usersAtom from '@state/atoms/usersAtom'
 import { useRecoilValue } from 'recoil'
 import eventsAtom from '@state/atoms/eventsAtom'
+import directionsAtom from '@state/atoms/directionsAtom'
 // import useClickOutside from '@helpers/hooks/21-useClickOutside/useClickOutside'
 
 const filteredItems = (
@@ -381,6 +383,42 @@ export const SelectEvent = ({
       <SelectItem
         items={events}
         itemComponent={EventItem}
+        onChange={onChange}
+        selectedId={selectedId}
+        className={
+          'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
+        }
+        exceptedIds={exceptedIds}
+      />
+    </SelectItemContainer>
+  )
+}
+
+export const SelectDirection = ({
+  onChange,
+  onDelete,
+  selectedId = null,
+  exceptedIds = [],
+  required = false,
+  clearButton = null,
+}) => {
+  const directions = useRecoilValue(directionsAtom)
+  return (
+    <SelectItemContainer
+      required={required}
+      label="Направление"
+      onClickClearButton={
+        selectedId && clearButton
+          ? onDelete
+            ? () => onDelete()
+            : () => onChange(null)
+          : null
+      }
+    >
+      <SelectItem
+        items={directions}
+        itemComponent={DirectionItem}
+        itemHeight={50}
         onChange={onChange}
         selectedId={selectedId}
         className={

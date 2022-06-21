@@ -134,6 +134,57 @@ export const EventItem = ({ item, onClick = null, active = false }) => (
   </ItemContainer>
 )
 
+export const DirectionItem = ({ item, onClick = null, active = false }) => (
+  <ItemContainer onClick={onClick} active={active} className="flex gap-x-1">
+    {item?.image && (
+      // <div className="flex justify-center w-full tablet:w-auto">
+      <img
+        className="object-cover w-12 h-12 min-w-12 max-h-12"
+        src={item.image}
+        alt="direction"
+        // width={48}
+        // height={48}
+      />
+      // </div>
+    )}
+    <div>
+      <div className="h-5 text-sm font-bold text-gray-800 truncate">
+        {item.title}
+      </div>
+      <div className="flex items-center text-xs text-gray-600 gap-x-2">
+        {/* <div className="flex-2 whitespace-nowrap">
+        Артикул: {item.а || '[нет]'}
+      </div> */}
+        {/* <div className="flex-1 whitespace-nowrap">
+        {formatDateTime(item.date, false)}
+      </div> */}
+        <div
+          dangerouslySetInnerHTML={{
+            __html: item.description,
+          }}
+          className="flex-1 max-w-full overflow-hidden leading-[0.85rem]"
+          style={{
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2,
+          }}
+          // className="flex-1 h-8 max-w-full overflow-hidden text-clip"
+        />
+        {/* <div
+          className="flex-1 max-w-full"
+          style={{
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2,
+          }}
+        >
+          {item.description}
+        </div> */}
+      </div>
+    </div>
+  </ItemContainer>
+)
+
 // export const PaymentItem = ({ item, onClick = null, active = false }) => {
 //   const { orders, clients } = useSelector((state) => state)
 //   const order = item.orderId
