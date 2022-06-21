@@ -74,6 +74,7 @@ const AddressPicker = ({
         </FormWrapper>
         <FormWrapper>
           <Input
+            // wrapperClassName="col-span-2"
             label="Уточнения по адресу"
             type="text"
             value={address.comment}
