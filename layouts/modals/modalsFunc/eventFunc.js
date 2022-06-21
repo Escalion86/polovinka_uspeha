@@ -16,12 +16,16 @@ import CheckBox from '@components/CheckBox'
 import Input from '@components/Input'
 
 import { DEFAULT_ADDRESS } from '@helpers/constants'
+import { SelectDirection } from '@components/SelectItem'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
+    const [directionId, setDirectionId] = useState(
+      event ? event.directionId : null
+    )
     const [title, setTitle] = useState(event ? event.title : '')
     const [images, setImages] = useState(event?.images ? event.images : [])
     const [description, setDescription] = useState(
@@ -65,6 +69,7 @@ const eventFunc = (eventId, clone = false) => {
             date,
             address,
             price,
+            directionId,
           },
           clone
         )
@@ -73,7 +78,16 @@ const eventFunc = (eventId, clone = false) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-    }, [title, description, showOnSite, date, images, address, price])
+    }, [
+      title,
+      description,
+      showOnSite,
+      date,
+      images,
+      address,
+      price,
+      directionId,
+    ])
 
     return (
       <FormWrapper>
@@ -82,6 +96,10 @@ const eventFunc = (eventId, clone = false) => {
           directory="events"
           images={images}
           onChange={setImages}
+        />
+        <SelectDirection
+          selectedId={directionId}
+          onChange={(direction) => setDirectionId(direction._id)}
         />
         <Input
           label="Название"

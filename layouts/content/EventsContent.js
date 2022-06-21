@@ -9,10 +9,12 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { CardWrapper } from '@components/CardWrapper'
+import directionSelector from '@state/selectors/directionSelector'
 
 const EventCard = ({ eventId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
+  const direction = useRecoilValue(directionSelector(event.directionId))
   const loading = useRecoilValue(loadingAtom('event' + eventId))
   const itemFunc = useRecoilValue(itemsFuncAtom)
 
@@ -34,8 +36,11 @@ const EventCard = ({ eventId }) => {
         // </div>
       )}
       <div className="flex flex-col flex-1">
-        <div className="flex">
-          <div className="flex-1 text-xl font-bold">{event.title}</div>
+        <div className="flex items-center">
+          <div className="flex-1 text-lg italic font-bold text-general">
+            {direction.title}
+          </div>
+
           <CardButtons
             item={event}
             typeOfItem="event"
@@ -48,7 +53,10 @@ const EventCard = ({ eventId }) => {
           />
         </div>
         <div className="flex justify-between flex-1 pr-1">
-          <div className="flex flex-1">{event.description}</div>
+          <div className="flex-1">
+            <div className="text-xl font-bold ">{event.title}</div>
+            <div className="flex flex-1">{event.description}</div>
+          </div>
           <div className="flex flex-wrap items-center h-full text-lg font-bold gap-x-1 text-general">
             {event.price ? event.price / 100 + ' ₽' : 'Бесплатное'}
           </div>
