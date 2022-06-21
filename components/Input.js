@@ -15,6 +15,7 @@ const Input = ({
   postfixClassName,
   copyPasteButtons = false,
   wrapperClassName,
+  noBorder = false,
 }) => {
   return (
     <InputWrapper
@@ -27,9 +28,10 @@ const Input = ({
     >
       <div
         className={cn(
-          'flex rounded overflow-hidden border bg-white',
+          'flex rounded overflow-hidden bg-white',
           error ? 'border-red-500' : 'border-gray-400',
-          inputClassName
+          inputClassName ? inputClassName : 'w-full',
+          noBorder ? '' : 'border'
         )}
       >
         {prefix && (

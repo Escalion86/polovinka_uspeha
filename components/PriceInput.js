@@ -43,7 +43,9 @@ const PriceInput = ({
         <Input
           // label={label}
           className="gap-x-0"
-          inputClassName="border-0 rounded-none rounded-l w-22"
+          // wrapperClassName="border-0"
+          noBorder
+          inputClassName="rounded-l rounded-r-none w-24"
           postfixClassName="rounded-r-none"
           labelClassName={labelClassName}
           type="number"
@@ -59,8 +61,9 @@ const PriceInput = ({
         <Input
           // label={label}
           className={className}
-          wrapperClassName="w-16 border-0 border-l rounded-none rounded-r"
-          inputClassName="border-0 border-l rounded-l-none rounded-r"
+          noBorder
+          wrapperClassName="w-20 border-l rounded-none rounded-r"
+          inputClassName="border-l rounded-l-none rounded-r"
           labelClassName={labelClassName}
           type="number"
           name={name + 'коп'}
