@@ -3,11 +3,11 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import 'react-edit-text/dist/index.css'
 
-import { useRouter } from 'next/router'
-import SideBar from 'layouts/SideBar'
+// import { useRouter } from 'next/router'
+// import SideBar from 'layouts/SideBar'
 import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
-import ContentWrapper from '@layouts/wrappers/ContentWrapper'
-import CabinetHeader from '@layouts/CabinetHeader'
+// import ContentWrapper from '@layouts/wrappers/ContentWrapper'
+// import CabinetHeader from '@layouts/CabinetHeader'
 
 function CabinetPage({ user }) {
   // const { courses, user, userCourses } = props
