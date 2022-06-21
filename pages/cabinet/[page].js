@@ -49,6 +49,9 @@ import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
 import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 
+// TODO Сделать копирование БД с main на dev
+// TODO Сделать переключение с БД main на dev
+
 function CabinetPage(props) {
   const { page, loggedUser } = props
 

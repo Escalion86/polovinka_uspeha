@@ -49,10 +49,10 @@ function CabinetPage({ user }) {
       </Head>
       <CabinetWrapper>
         {/* ----------------------------- HEADER ------------------------------- */}
-        <CabinetHeader user={user} title="Кабинет" titleLink={`/cabinet`} />
+        {/* <CabinetHeader user={user} title="Кабинет" titleLink={`/cabinet`} />
         <SideBar user={user} />
-        <ContentWrapper>
-          {/* <H2>Доступные курсы</H2>
+        <ContentWrapper> */}
+        {/* <H2>Доступные курсы</H2>
           <div className="w-full">
             {accessCourses.length > 0 ? (
               <ul className="w-full">
@@ -94,7 +94,7 @@ function CabinetPage({ user }) {
           >
             Создать свой курс
           </button> */}
-        </ContentWrapper>
+        {/* </ContentWrapper> */}
       </CabinetWrapper>
     </>
   )
