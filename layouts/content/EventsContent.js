@@ -17,6 +17,7 @@ const EventsContent = () => {
             event.usersStatusAccess[loggedUser?.status ?? 'novice']
         )
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+
   return (
     <>
       {visibleEvents?.length > 0 ? (
@@ -32,7 +33,9 @@ const EventsContent = () => {
       ) : (
         <div className="flex justify-center p-2">Нет мероприятий</div>
       )}
-      <Fab onClick={() => modalsFunc.event.add()} show />
+      {(loggedUser?.role === 'admin' || loggedUser?.role === 'dev') && (
+        <Fab onClick={() => modalsFunc.event.add()} show />
+      )}
     </>
   )
 }
