@@ -25,7 +25,7 @@ const EventsContent = () => {
             key={event._id}
             eventId={event._id}
             noButtons={
-              loggedUser?.role !== 'admin' || loggedUser?.role !== 'dev'
+              loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
             }
           />
         ))
