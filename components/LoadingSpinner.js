@@ -10,6 +10,8 @@ export const LoadingSpinner = ({ size = 'md', text = null }) => {
       ? 40
       : size === 'md'
       ? 50
+      : size === 'lg'
+      ? 100
       : 60
   return (
     <div className="flex flex-col items-center justify-center h-full">

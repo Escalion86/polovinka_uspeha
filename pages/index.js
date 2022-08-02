@@ -45,6 +45,7 @@ import itemsFuncGenerator from '@state/itemsFuncGenerator'
 import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
 import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -149,7 +150,9 @@ export default function Home(props) {
       </Head>
       <div>
         {loading ? (
-          <div>Загрузка</div>
+          <div className="w-full h-screen">
+            <LoadingSpinner size="lg" />
+          </div>
         ) : (
           <div className="w-full bg-white">
             {/* <DeviceCheck /> */}
