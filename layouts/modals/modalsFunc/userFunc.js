@@ -64,7 +64,7 @@ const userFunc = (userId, clone = false) => {
         addError({ phone: 'Необходимо ввести пол' })
         error = true
       }
-      if (!phone) {
+      if (!phone || `${phone}`.length !== 11) {
         addError({ phone: 'Необходимо ввести телефон' })
         error = true
       }

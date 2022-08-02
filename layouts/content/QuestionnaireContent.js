@@ -1,5 +1,6 @@
 import Button from '@components/Button'
 import DatePicker from '@components/DatePicker'
+import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import InputImage from '@components/InputImage'
@@ -59,29 +60,53 @@ const QuestionnaireContent = (props) => {
     user?.image !== image ||
     user?.birthday !== birthday
 
-  const handleSubmit = async () => {
-    await putData(
-      `/api/users/${user._id}`,
-      {
-        name,
-        secondName,
-        thirdName,
-        about,
-        interests,
-        profession,
-        orientation,
-        gender,
-        phone,
-        whatsapp,
-        viber,
-        telegram,
-        instagram,
-        vk,
-        image,
-        birthday,
-      },
-      refreshPage
-    )
+  const onClickConfirm = async () => {
+    clearErrors()
+    let error = false
+    if (!name) {
+      addError({ name: 'Необходимо ввести имя' })
+      error = true
+    }
+    if (!secondName) {
+      addError({ secondName: 'Необходимо ввести фамилию' })
+      error = true
+    }
+    if (!gender) {
+      addError({ phone: 'Необходимо ввести пол' })
+      error = true
+    }
+    if (!phone || `${phone}`.length !== 11) {
+      addError({ phone: 'Необходимо ввести телефон' })
+      error = true
+    }
+    if (!birthday) {
+      addError({ birthday: 'Необходимо ввести дату рождения' })
+      error = true
+    }
+    if (!error) {
+      await putData(
+        `/api/users/${user._id}`,
+        {
+          name,
+          secondName,
+          thirdName,
+          about,
+          interests,
+          profession,
+          orientation,
+          gender,
+          phone,
+          whatsapp,
+          viber,
+          telegram,
+          instagram,
+          vk,
+          image,
+          birthday,
+        },
+        refreshPage
+      )
+    }
   }
 
   return (
@@ -204,8 +229,12 @@ const QuestionnaireContent = (props) => {
           rows={4}
         />
       </FormWrapper>
-
-      <Button name="Применить" disabled={!formChanged} onClick={handleSubmit} />
+      <ErrorsList errors={errors} />
+      <Button
+        name="Применить"
+        disabled={!formChanged}
+        onClick={onClickConfirm}
+      />
     </div>
   )
 }

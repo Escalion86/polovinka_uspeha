@@ -45,7 +45,7 @@ const TitleBlock = ({ userIsLogged = false }) => {
             <PulseButton
               className="mt-8"
               title="Зарегистрироваться"
-              // onClick={() => router.push('./login?registration=true')}
+              onClick={() => router.push('./login?registration=true')}
             />
           </Link>
         )}

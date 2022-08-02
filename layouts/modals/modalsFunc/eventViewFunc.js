@@ -25,6 +25,7 @@ import cn from 'classnames'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import PriceDiscount from '@components/PriceDiscount'
+import { useRouter } from 'next/router'
 
 const eventViewFunc = (eventId, clone = false) => {
   const EventSignUpModal = ({
@@ -41,6 +42,8 @@ const eventViewFunc = (eventId, clone = false) => {
     // const eventUsers = useRecoilValue(usersSelectorByEventId(eventId))
 
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+
+    const router = useRouter()
 
     const eventUser = loggedUser?._id
       ? eventUsers.find((eventUser) => eventUser.user._id === loggedUser._id)
@@ -306,8 +309,12 @@ const eventViewFunc = (eventId, clone = false) => {
             ) : (
               <Button
                 onClick={() => {
-                  if (eventUser) modalsFunc.event.signOut(event._id)
-                  else if (canUserSignUp) modalsFunc.event.signUp(event._id)
+                  if (!loggedUser?.gender || !loggedUser?.birthday) {
+                    closeModal()
+                    router.push('./cabinet/questionnaire')
+                  } else if (eventUser) modalsFunc.event.signOut(event._id)
+                  else if (canUserSignUp || !loggedUser)
+                    modalsFunc.event.signUp(event._id)
                 }}
                 // className={cn(
                 //   'px-4 py-1 text-white duration-300 border-t border-l rounded-tl-lg hover:bg-white',
@@ -323,11 +330,15 @@ const eventViewFunc = (eventId, clone = false) => {
                 name={
                   eventUser
                     ? 'Отменить запись'
-                    : canUserSignUp
+                    : canUserSignUp || !loggedUser
                     ? 'Записаться'
-                    : 'Мест нет'
+                    : loggedUser?.gender && loggedUser?.birthday
+                    ? 'Мест нет'
+                    : 'Заполните свою анкету'
                 }
-                disabled={!eventUser && !canUserSignUp}
+                disabled={
+                  !canUserSignUp && loggedUser?.gender && loggedUser?.birthday
+                }
               />
             )}
           </div>

@@ -8,9 +8,8 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventsUsersSelectorByEventId from '@state/selectors/eventsUsersByEventIdSelector'
 import cn from 'classnames'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue } from 'recoil'
 
 const Button = ({ title, className, href, onClick }) => {
   if (onClick)
