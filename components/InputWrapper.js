@@ -72,6 +72,7 @@ const InputWrapper = ({
   copyPasteButtons,
   value,
   className,
+  required,
 }) => {
   const copyToClipboard = (text) => navigator.clipboard.writeText(text)
   const pasteFromClipboard = () => navigator.clipboard.readText().then(onChange)
@@ -85,6 +86,7 @@ const InputWrapper = ({
         )}
       >
         {label}
+        {required && <span className="text-red-700">*</span>}
       </label>
       <div className={cn('flex items-center gap-x-1', className)}>
         {children}

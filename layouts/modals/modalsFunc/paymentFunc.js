@@ -32,6 +32,7 @@ const paymentFunc = (paymentId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
+      clearErrors()
       let error = false
       if (!userId) {
         addError({ userId: 'Необходимо указать пользователя' })
@@ -92,6 +93,7 @@ const paymentFunc = (paymentId, clone = false) => {
     return (
       <FormWrapper>
         <SelectUser
+          label="Платильщик"
           selectedId={userId}
           onChange={(user) => setUserId(user._id)}
           // onDelete={(e) => console.log('e', e)}

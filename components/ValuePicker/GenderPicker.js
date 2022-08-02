@@ -1,7 +1,12 @@
 import { GENDERS } from '@helpers/constants'
 import ValuePicker from './ValuePicker'
 
-const GenderPicker = ({ gender, onChange = null, required = false }) => (
+const GenderPicker = ({
+  gender,
+  onChange = null,
+  required = false,
+  error = false,
+}) => (
   <ValuePicker
     value={gender}
     valuesArray={GENDERS}
@@ -9,6 +14,7 @@ const GenderPicker = ({ gender, onChange = null, required = false }) => (
     onChange={onChange}
     name="gender"
     required={required}
+    error={error}
   />
 )
 

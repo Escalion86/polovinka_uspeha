@@ -19,6 +19,7 @@ const PhoneInput = ({
       onChange={onChange}
       copyPasteButtons={copyPasteButtons}
       value={value}
+      required={required}
     >
       {/* <>
       <label

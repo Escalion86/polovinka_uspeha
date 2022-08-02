@@ -52,22 +52,77 @@ const itemsFuncGenerator = (
   //   )
   // }
 
+  obj.event.cancel = async (eventId) => {
+    toggleLoading('event' + eventId)
+    await putData(`/api/events/${eventId}`, { status: 'canceled' }, (data) => {
+      toggleLoading('event' + eventId)
+      props.setEvent(data)
+    })
+  }
+
+  obj.event.uncancel = async (eventId) => {
+    toggleLoading('event' + eventId)
+    await putData(`/api/events/${eventId}`, { status: 'active' }, (data) => {
+      toggleLoading('event' + eventId)
+      props.setEvent(data)
+    })
+  }
+
   obj.event.signUp = async (eventId, userId) => {
+    toggleLoading('event' + eventId)
     await postData(
       `/api/eventsusers`,
       { eventId, userId },
-      (data) => props.setEventsUsers(data)
+      (data) => {
+        toggleLoading('event' + eventId)
+        props.setEventsUsers(data)
+      }
+
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)
     )
   }
 
   obj.event.signOut = async (eventId, userId) => {
+    toggleLoading('event' + eventId)
     await deleteData(
       `/api/eventsusers`,
-      (data) => props.deleteEventsUsers(data._id),
+      (data) => {
+        toggleLoading('event' + eventId)
+        props.deleteEventsUsers(data._id)
+      },
       null,
       { eventId, userId }
+      // () => props['setAdditionalBlock'](itemId)
+      //  deleteEvent(itemId)
+    )
+  }
+
+  // obj.event.setUsers = async (eventId, usersId) => {
+  //   toggleLoading('event' + eventId)
+  //   await postData(
+  //     `/api/eventsusers`,
+  //     { eventId, usersId },
+  //     (data) => {
+  //       toggleLoading('event' + eventId)
+  //       props.deleteEventsUsersByEventId(eventId)
+  //       props.setEventsUsers(data)
+  //     }
+  //     // () => props['setAdditionalBlock'](itemId)
+  //     //  deleteEvent(itemId)
+  //   )
+  // }
+
+  obj.event.setEventUsers = async (eventId, eventUsersStatuses) => {
+    toggleLoading('event' + eventId)
+    await postData(
+      `/api/eventsusers`,
+      { eventId, eventUsersStatuses },
+      (data) => {
+        toggleLoading('event' + eventId)
+        props.deleteEventsUsersByEventId(eventId)
+        props.setEventsUsers(data)
+      }
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)
     )

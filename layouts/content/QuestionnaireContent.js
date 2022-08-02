@@ -17,8 +17,8 @@ import { useState } from 'react'
 const QuestionnaireContent = (props) => {
   const user = props.loggedUser
   const [name, setName] = useState(user?.name)
-  const [secondname, setSecondname] = useState(user?.secondname)
-  const [thirdname, setThirdname] = useState(user?.thirdname)
+  const [secondName, setSecondName] = useState(user?.secondName)
+  const [thirdName, setThirdName] = useState(user?.thirdName)
   const [about, setAbout] = useState(user?.about)
   const [interests, setInterests] = useState(user?.interests)
   const [profession, setProfession] = useState(user?.profession)
@@ -43,8 +43,8 @@ const QuestionnaireContent = (props) => {
 
   const formChanged =
     user?.name !== name ||
-    user?.secondname !== secondname ||
-    user?.thirdname !== thirdname ||
+    user?.secondName !== secondName ||
+    user?.thirdName !== thirdName ||
     user?.about !== about ||
     user?.interests !== interests ||
     user?.profession !== profession ||
@@ -64,8 +64,8 @@ const QuestionnaireContent = (props) => {
       `/api/users/${user._id}`,
       {
         name,
-        secondname,
-        thirdname,
+        secondName,
+        thirdName,
         about,
         interests,
         profession,
@@ -88,7 +88,7 @@ const QuestionnaireContent = (props) => {
     <div className="flex flex-col h-screen px-2 mb-2 gap-y-2">
       <FormWrapper>
         <InputImage
-          label="Картинка"
+          label="Фотография"
           directory="users"
           image={image}
           onChange={setImage}
@@ -101,6 +101,7 @@ const QuestionnaireContent = (props) => {
             removeError('name')
             setName(value)
           }}
+          required
           // labelClassName="w-40"
           error={errors.name}
           forGrid
@@ -108,28 +109,29 @@ const QuestionnaireContent = (props) => {
         <Input
           label="Фамилия"
           type="text"
-          value={secondname}
+          value={secondName}
           onChange={(value) => {
-            removeError('secondname')
-            setSecondname(value)
+            removeError('secondName')
+            setSecondName(value)
           }}
+          required
           // labelClassName="w-40"
-          error={errors.secondname}
+          error={errors.secondName}
           forGrid
         />
         <Input
           label="Отчество"
           type="text"
-          value={thirdname}
+          value={thirdName}
           onChange={(value) => {
-            removeError('thirdname')
-            setThirdname(value)
+            removeError('thirdName')
+            setThirdName(value)
           }}
           // labelClassName="w-40"
-          error={errors.thirdname}
+          error={errors.thirdName}
           forGrid
         />
-        <GenderPicker gender={gender} onChange={setGender} />
+        <GenderPicker required gender={gender} onChange={setGender} />
         <OrientationPicker
           orientation={orientation}
           onChange={setOrientation}
@@ -140,6 +142,7 @@ const QuestionnaireContent = (props) => {
             value={phone}
             onChange={setPhone}
             copyPasteButtons
+            required
           />
           <PhoneInput
             label="Whatsapp"
@@ -185,6 +188,7 @@ const QuestionnaireContent = (props) => {
           onChange={setBirthday}
           showYears
           showZodiac
+          required
         />
         <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
         <Textarea

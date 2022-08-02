@@ -7,7 +7,7 @@ const usersSchema = {
     ],
     default: '',
   },
-  secondname: {
+  secondName: {
     type: String,
     maxlength: [
       100,
@@ -15,7 +15,7 @@ const usersSchema = {
     ],
     default: '',
   },
-  thirdname: {
+  thirdName: {
     type: String,
     maxlength: [
       100,
@@ -60,6 +60,10 @@ const usersSchema = {
     type: Number,
     default: null,
   },
+  phoneConfirm: {
+    type: Boolean,
+    default: false,
+  },
   whatsapp: {
     type: Number,
     default: null,
@@ -91,6 +95,10 @@ const usersSchema = {
   role: {
     type: String,
     default: 'client',
+  },
+  status: {
+    type: String,
+    default: 'novice',
   },
   lastActivityAt: {
     type: Date,

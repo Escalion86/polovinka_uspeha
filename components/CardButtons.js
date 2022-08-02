@@ -11,8 +11,11 @@ import cn from 'classnames'
 import {
   faArrowDown,
   faArrowUp,
+  faBan,
   faEllipsisV,
   faPencilAlt,
+  faPlay,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import ReactTooltip from 'react-tooltip'
 import useWindowDimensions, {
@@ -77,6 +80,115 @@ const CardButtons = ({
 
   const [open, setOpen] = useState(false)
 
+  const isCompact = device === 'phoneV' || device === 'phoneH'
+
+  const ItemComponent = isCompact ? MenuItem : CardButton
+
+  // const items = [
+  //   {condition: typeOfItem === 'event',
+  //   icon: faUsers,
+  //   onClick: () => {
+  //     setOpen(false)
+  //     modalsFunc.event.users(item._id)
+  //   },
+  //   color:"green",
+  //   dataTip:"Участники мероприятия"
+  // }
+  // ]
+
+  const items = (
+    <>
+      {typeOfItem === 'event' && (
+        <ItemComponent
+          icon={faUsers}
+          onClick={() => {
+            setOpen(false)
+            // onUpClick()
+            modalsFunc.event.users(item._id)
+          }}
+          color="green"
+          dataTip="Участники мероприятия"
+        />
+      )}
+      {onUpClick && (
+        <ItemComponent
+          icon={faArrowUp}
+          onClick={() => {
+            setOpen(false)
+            onUpClick()
+          }}
+          color="gray"
+          dataTip="Переместить выше"
+        />
+      )}
+      {onDownClick && (
+        <ItemComponent
+          icon={faArrowDown}
+          onClick={() => {
+            setOpen(false)
+            onDownClick()
+          }}
+          color="gray"
+          dataTip="Переместить ниже"
+        />
+      )}
+      <ItemComponent
+        icon={faPencilAlt}
+        onClick={() => {
+          setOpen(false)
+          modalsFunc[typeOfItem].edit(item._id)
+        }}
+        color="orange"
+        dataTip="Редактировать"
+      />
+      {typeOfItem !== 'user' && typeOfItem !== 'review' && (
+        <ItemComponent
+          icon={faCopy}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc[typeOfItem].add(item._id)
+          }}
+          color="blue"
+          dataTip="Клонировать"
+        />
+      )}
+      {showOnSiteOnClick && (
+        <ItemComponent
+          active={!item.showOnSite}
+          icon={item.showOnSite ? faEye : faEyeSlash}
+          onClick={() => {
+            setOpen(false)
+            showOnSiteOnClick()
+          }}
+          color="purple"
+          dataTip="Показывать на сайте"
+        />
+      )}
+      {typeOfItem === 'event' && (
+        <ItemComponent
+          icon={item.status === 'canceled' ? faPlay : faBan}
+          onClick={() => {
+            setOpen(false)
+            if (item.status === 'canceled')
+              modalsFunc[typeOfItem].uncancel(item._id)
+            else modalsFunc[typeOfItem].cancel(item._id)
+          }}
+          color={item.status === 'canceled' ? 'green' : 'red'}
+          dataTip={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
+        />
+      )}
+      <ItemComponent
+        icon={faTrashAlt}
+        onClick={() => {
+          setOpen(false)
+          modalsFunc[typeOfItem].delete(item._id)
+        }}
+        color="red"
+        dataTip="Удалить"
+      />
+    </>
+  )
+
   // if (device === 'phoneV' || device === 'phoneH') {
 
   // }
@@ -87,7 +199,7 @@ const CardButtons = ({
   //   router.replace(router.asPath)
   // }
 
-  return device === 'phoneV' || device === 'phoneH' ? (
+  return isCompact ? (
     <div
       className="relative"
       onClick={(e) => {
@@ -102,6 +214,19 @@ const CardButtons = ({
         transition={{ type: 'tween' }}
       >
         <div className="h-full bg-red-200 border border-gray-200">
+          {items}
+          {/* {typeOfItem === 'event' && (
+            <MenuItem
+              icon={faUsers}
+              onClick={() => {
+                setOpen(false)
+                // onUpClick()
+                modalsFunc.event.users(item._id)
+              }}
+              color="green"
+              dataTip="Участники мероприятия"
+            />
+          )}
           {onUpClick && (
             <MenuItem
               icon={faArrowUp}
@@ -156,6 +281,19 @@ const CardButtons = ({
               dataTip="Показывать на сайте"
             />
           )}
+          {typeOfItem === 'event' && (
+            <MenuItem
+              icon={item.status === 'canceled' ? faPlay : faBan}
+              onClick={() => {
+                setOpen(false)
+                if (item.status === 'canceled')
+                  modalsFunc[typeOfItem].cancel(item._id)
+                else modalsFunc[typeOfItem].uncancel(item._id)
+              }}
+              color={item.status === 'canceled' ? 'green' : 'red'}
+              dataTip="Отменить"
+            />
+          )}
           <MenuItem
             icon={faTrashAlt}
             onClick={() => {
@@ -164,7 +302,7 @@ const CardButtons = ({
             }}
             color="red"
             dataTip="Удалить"
-          />
+          /> */}
         </div>
       </motion.div>
       <div className="flex items-center justify-center w-8 h-8 text-general">
@@ -173,6 +311,19 @@ const CardButtons = ({
     </div>
   ) : (
     <div className="flex">
+      {items}
+      {/* {typeOfItem === 'event' && (
+        <CardButton
+          icon={faUsers}
+          onClick={() => {
+            setOpen(false)
+            // onUpClick()
+            modalsFunc.event.users(item._id)
+          }}
+          color="green"
+          dataTip="Участники мероприятия"
+        />
+      )}
       {onUpClick && (
         <CardButton
           icon={faArrowUp}
@@ -212,12 +363,25 @@ const CardButtons = ({
           dataTip="Показывать на сайте"
         />
       )}
+      {typeOfItem === 'event' && (
+        <CardButton
+          icon={item.status === 'canceled' ? faPlay : faBan}
+          onClick={() => {
+            setOpen(false)
+            if (item.status === 'canceled')
+              modalsFunc[typeOfItem].cancel(item._id)
+            else modalsFunc[typeOfItem].uncancel(item._id)
+          }}
+          color={item.status === 'canceled' ? 'green' : 'red'}
+          dataTip="Отменить"
+        />
+      )}
       <CardButton
         icon={faTrashAlt}
         onClick={() => modalsFunc[typeOfItem].delete(item._id)}
         color="red"
         dataTip="Удалить"
-      />
+      /> */}
     </div>
   )
 }

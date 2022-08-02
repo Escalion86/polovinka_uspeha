@@ -48,6 +48,7 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
 import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
+import eventsUsersDeleteByEventIdSelector from '@state/selectors/eventsUsersDeleteByEventIdSelector'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -78,6 +79,9 @@ function CabinetPage(props) {
   const deletePayment = useSetRecoilState(paymentsDeleteSelector)
   const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
   const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
+  const deleteEventsUsersByEventId = useSetRecoilState(
+    eventsUsersDeleteByEventIdSelector
+  )
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
   const toggleLoading = useSetRecoilState(toggleLoadingSelector)
@@ -101,6 +105,7 @@ function CabinetPage(props) {
           deletePayment,
           setEventsUsers,
           deleteEventsUsers,
+          deleteEventsUsersByEventId,
         })
       ),
     []

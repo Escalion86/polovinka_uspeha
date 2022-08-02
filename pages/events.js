@@ -74,7 +74,7 @@ import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 export default function Home(props) {
   const { events, directions, reviews, loggedUser, additionalBlocks } = props
 
-  const setLoggedUserState = useSetRecoilState(loggedUserAtom)
+  const setLoggedUser = useSetRecoilState(loggedUserAtom)
   const setEventsState = useSetRecoilState(eventsAtom)
   const setDirectionsState = useSetRecoilState(directionsAtom)
   const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
@@ -87,7 +87,16 @@ export default function Home(props) {
   const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
   const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
 
-  const filteredEvents = events.filter(
+  const visibleEvents =
+    loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
+      ? events
+      : events.filter(
+          (event) =>
+            !event.usersStatusAccess ||
+            event.usersStatusAccess[loggedUser?.status ?? 'novice']
+        )
+
+  const filteredEvents = visibleEvents.filter(
     (event) => event.showOnSite && new Date(event.date) >= new Date()
   )
   const filteredReviews = reviews.filter((review) => review.showOnSite)
@@ -99,7 +108,7 @@ export default function Home(props) {
   )
 
   useEffect(() => {
-    setLoggedUserState(props.loggedUser)
+    setLoggedUser(props.loggedUser)
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)

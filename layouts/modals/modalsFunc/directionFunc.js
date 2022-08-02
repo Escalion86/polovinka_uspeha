@@ -38,6 +38,7 @@ const directionFunc = (directionId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
+      clearErrors()
       let error = false
       if (!title) {
         addError({ title: 'Необходимо ввести название' })

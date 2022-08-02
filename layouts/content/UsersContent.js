@@ -5,7 +5,7 @@ import Fab from '@components/Fab'
 import CardButtons from '@components/CardButtons'
 import birthDateToAge from '@helpers/birthDateToAge'
 import getZodiac from '@helpers/getZodiac'
-import { GENDERS } from '@helpers/constants'
+import { GENDERS, USERS_STATUSES } from '@helpers/constants'
 import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons'
@@ -24,10 +24,14 @@ const UserCard = ({ userId }) => {
   const userGender =
     user.gender && GENDERS.find((gender) => gender.value === user.gender)
 
+  const userStatusArr = USERS_STATUSES.find(
+    (userStatus) => userStatus.value === user.status
+  )
+
   return (
     <CardWrapper
       loading={loading}
-      onClick={() => modalsFunc.user.edit(user._id)}
+      onClick={() => modalsFunc.user.view(user._id)}
     >
       <div className="flex w-full">
         <div
@@ -60,6 +64,16 @@ const UserCard = ({ userId }) => {
                       getZodiac(user.birthday).name
                     : ''}
                 </div>
+              )}
+              {userStatusArr && userStatusArr.value !== 'novice' && (
+                <span
+                  className={cn(
+                    'font-normal uppercase',
+                    'text-' + userStatusArr.color
+                  )}
+                >
+                  {userStatusArr.name}
+                </span>
               )}
               {user.role === 'admin' && (
                 <span className="font-normal text-red-400">АДМИНИСТРАТОР</span>

@@ -31,6 +31,7 @@ const reviewFunc = (reviewId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
+      clearErrors()
       let error = false
       if (!author) {
         addError({ author: 'Необходимо ввести имя автора' })

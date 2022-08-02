@@ -1,16 +1,14 @@
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import { selectorFamily } from 'recoil'
 
-export const eventsUsersSelectorByEventId = selectorFamily({
-  key: 'eventsUsersSelectorByEventId',
+export const eventsUsersByUserIdSelector = selectorFamily({
+  key: 'eventsUsersByUserIdSelector',
   get:
     (id) =>
     ({ get }) => {
-      if (!id) return null
+      if (!id) return []
       const eventsUsers = get(eventsUsersAtom)
-      return eventsUsers
-        ? eventsUsers.filter((item) => item.eventId === id)
-        : []
+      return eventsUsers ? eventsUsers.filter((item) => item.userId === id) : []
     },
   // set:
   //   (id) =>
@@ -19,4 +17,4 @@ export const eventsUsersSelectorByEventId = selectorFamily({
   //   },
 })
 
-export default eventsUsersSelectorByEventId
+export default eventsUsersByUserIdSelector

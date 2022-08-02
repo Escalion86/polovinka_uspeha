@@ -16,6 +16,12 @@ const Input = ({
   copyPasteButtons = false,
   wrapperClassName,
   noBorder = false,
+  placeholder,
+  disabled = false,
+  min,
+  max,
+  required,
+  step,
 }) => {
   return (
     <InputWrapper
@@ -25,6 +31,7 @@ const Input = ({
       copyPasteButtons={copyPasteButtons}
       value={value}
       className={wrapperClassName}
+      required={required}
     >
       <div
         className={cn(
@@ -45,10 +52,29 @@ const Input = ({
           </div>
         )}
         <input
-          className={cn('outline-none px-1 flex-1 bg-transparent min-w-10')}
+          step={step}
+          className={cn(
+            'outline-none px-1 flex-1 min-w-10',
+            disabled
+              ? 'cursor-not-allowed bg-gray-200 text-gray-200'
+              : 'bg-transparent'
+          )}
           type={type}
           value={value ?? ''}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            const { value } = e.target
+            if (type === 'number') {
+              if (
+                (typeof min !== 'number' || value >= min) &&
+                (typeof max !== 'number' || value <= max)
+              )
+                onChange(value)
+            } else {
+              onChange(value)
+            }
+          }}
+          placeholder={placeholder}
+          disabled={disabled}
         />
         {postfix && (
           <div

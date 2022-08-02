@@ -40,6 +40,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     const [errors, addError, removeError, clearErrors] = useErrors()
 
     const checkErrors = () => {
+      clearErrors()
       return (
         (!title && addError({ title: 'Необходимо ввести название' })) ||
         (!description &&

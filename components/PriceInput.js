@@ -17,8 +17,8 @@ const PriceInput = ({
   const onChangeUpd = (value, rub = true) => {
     if (!onChange) return
     let newValue
-    if (rub) newValue = Number(value * 100) + cops
-    else newValue = rubles * 100 + Number(value)
+    if (rub) newValue = Number((value > 0 ? value : 0) * 100) + cops
+    else newValue = rubles * 100 + Number(value > 0 ? value : 0)
 
     onChange(newValue)
   }
@@ -42,6 +42,7 @@ const PriceInput = ({
       >
         <Input
           // label={label}
+          step="100"
           className="gap-x-0"
           // wrapperClassName="border-0"
           noBorder
@@ -57,8 +58,10 @@ const PriceInput = ({
           postfix="₽"
           // readOnly={readOnly}
           maxLength={6}
+          min={0}
         />
         <Input
+          step="10"
           // label={label}
           className={className}
           noBorder
@@ -74,6 +77,7 @@ const PriceInput = ({
           postfix="коп"
           // readOnly={readOnly}
           maxLength={2}
+          min={0}
         />
       </div>
     </InputWrapper>

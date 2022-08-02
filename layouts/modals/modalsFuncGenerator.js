@@ -11,11 +11,13 @@
 import reviewFunc from './modalsFunc/reviewFunc'
 import directionFunc from './modalsFunc/directionFunc'
 import eventFunc from './modalsFunc/eventFunc'
+import eventUsersFunc from './modalsFunc/eventUsersFunc'
 import userFunc from './modalsFunc/userFunc'
 import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
 
 import eventViewFunc from './modalsFunc/eventViewFunc'
 import paymentFunc from './modalsFunc/paymentFunc'
+import userViewFunc from './modalsFunc/userViewFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -58,6 +60,19 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
     event: {
       add: (eventId) => addModal(eventFunc(eventId, true)),
       edit: (eventId) => addModal(eventFunc(eventId)),
+      users: (eventId) => addModal(eventUsersFunc(eventId)),
+      cancel: (eventId) =>
+        addModal({
+          title: 'Отмена события',
+          text: 'Вы уверены, что хотите отменить событие (это не удалит событие, а лишь изменит его статус на отмененное)?',
+          onConfirm: async () => itemsFunc.event.cancel(eventId),
+        }),
+      uncancel: (eventId) =>
+        addModal({
+          title: 'Возобновление события',
+          text: 'Вы уверены, что хотите возобновить событие?',
+          onConfirm: async () => itemsFunc.event.uncancel(eventId),
+        }),
       delete: (eventId) =>
         addModal({
           title: 'Удаление события',
@@ -121,6 +136,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           text: 'Вы уверены, что хотите удалить пользователя?',
           onConfirm: async () => itemsFunc.user.delete(userId),
         }),
+      view: (userId) => addModal(userViewFunc(userId)),
     },
     additionalBlock: {
       add: (additionalBlockId) =>

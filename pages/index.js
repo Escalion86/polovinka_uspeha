@@ -7,8 +7,10 @@ import {
   fetchingDirections,
   fetchingEvents,
   fetchingEventsUsers,
+  fetchingPayments,
   fetchingReviews,
   fetchingSiteSettings,
+  fetchingUsers,
 } from '@helpers/fetchers'
 import Header from '@layouts/Header'
 import cn from 'classnames'
@@ -28,7 +30,7 @@ import AdditionalBlocks from '@blocks/AdditionalBlocks'
 import EventsBlock from '@blocks/EventsBlock'
 import AboutBlock from '@blocks/AboutBlock'
 import TitleBlock from '@blocks/TitleBlock'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useSetRecoilState } from 'recoil'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
@@ -80,6 +82,7 @@ export default function Home(props) {
     additionalBlocks,
     siteSettings,
   } = props
+  const [loading, setLoading] = useState(true)
 
   const setLoggedUserState = useSetRecoilState(loggedUserAtom)
   const setEventsState = useSetRecoilState(eventsAtom)
@@ -116,29 +119,28 @@ export default function Home(props) {
     setEventsUsersState(props.eventsUsers)
   }, [])
 
-  useEffect(
-    () =>
-      setItemsFunc(
-        itemsFuncGenerator({
-          // toggleLoading,
-          // setEvent,
-          // deleteEvent,
-          // setDirection,
-          // deleteDirection,
-          // setAdditionalBlock,
-          // deleteAdditionalBlock,
-          // setUser,
-          // deleteUser,
-          // setReview,
-          // deleteReview,
-          // setPayment,
-          // deletePayment,
-          setEventsUsers,
-          deleteEventsUsers,
-        })
-      ),
-    []
-  )
+  useEffect(() => {
+    setItemsFunc(
+      itemsFuncGenerator({
+        // toggleLoading,
+        // setEvent,
+        // deleteEvent,
+        // setDirection,
+        // deleteDirection,
+        // setAdditionalBlock,
+        // deleteAdditionalBlock,
+        // setUser,
+        // deleteUser,
+        // setReview,
+        // deleteReview,
+        // setPayment,
+        // deletePayment,
+        setEventsUsers,
+        deleteEventsUsers,
+      })
+    )
+    setLoading(false)
+  }, [])
 
   return (
     <>
@@ -146,32 +148,35 @@ export default function Home(props) {
         <title>Центр осознанных знакомств - "Половинка успеха"</title>
       </Head>
       <div>
-        <div className="w-full bg-white">
-          {/* <DeviceCheck /> */}
-          <Header
-            events={filteredEvents}
-            directions={filteredDirections}
-            additionalBlocks={filteredAdditionalBlocks}
-            reviews={filteredReviews}
-            loggedUser={loggedUser}
-          />
-          <TitleBlock userIsLogged={!!loggedUser} />
-          <AboutBlock />
-          <EventsBlock events={filteredEvents} maxEvents={4} />
-          <DirectionsBlock directions={filteredDirections} />
-          <AdditionalBlocks
-            additionalBlocks={filteredAdditionalBlocks}
-            inverse={
-              directions &&
-              directions.filter((direction) => direction.showOnSite).length %
-                2 ===
-                1
-            }
-          />
-          {/* <PriceBlock /> */}
-          <ReviewsBlock reviews={filteredReviews} />
-          <ContactsBlock siteSettings={siteSettings} />
-          {/* <BlockContainer className="text-white bg-black">
+        {loading ? (
+          <div>Загрузка</div>
+        ) : (
+          <div className="w-full bg-white">
+            {/* <DeviceCheck /> */}
+            <Header
+              events={filteredEvents}
+              directions={filteredDirections}
+              additionalBlocks={filteredAdditionalBlocks}
+              reviews={filteredReviews}
+              loggedUser={loggedUser}
+            />
+            <TitleBlock userIsLogged={!!loggedUser} />
+            <AboutBlock />
+            <EventsBlock events={filteredEvents} maxEvents={4} />
+            <DirectionsBlock directions={filteredDirections} />
+            <AdditionalBlocks
+              additionalBlocks={filteredAdditionalBlocks}
+              inverse={
+                directions &&
+                directions.filter((direction) => direction.showOnSite).length %
+                  2 ===
+                  1
+              }
+            />
+            {/* <PriceBlock /> */}
+            <ReviewsBlock reviews={filteredReviews} />
+            <ContactsBlock siteSettings={siteSettings} />
+            {/* <BlockContainer className="text-white bg-black">
           <H3>Есть знания, но не знаете как ими поделиться?</H3>
           <P>
             Просто зарегистрируйтесь в системе и начните заполнять курс своими
@@ -186,16 +191,17 @@ export default function Home(props) {
             индивидуальным условиям.
           </P>
         </BlockContainer> */}
-          {/* <BlockContainer id="contacts" className="bg-gray-200">
+            {/* <BlockContainer id="contacts" className="bg-gray-200">
           <H3>Контакты</H3>
         </BlockContainer> */}
-          {/* <div className="flex flex-col items-start px-10 py-5 text-sm font-thin text-white bg-black min-h-80 tablet:px-20">
+            {/* <div className="flex flex-col items-start px-10 py-5 text-sm font-thin text-white bg-black min-h-80 tablet:px-20">
           <div>
             © ИП Белинский Алексей Алексеевич, ИНН 245727560982, ОГРНИП
             319246800103511
           </div>
         </div> */}
-        </div>
+          </div>
+        )}
         <ModalsPortal />
       </div>
     </>
@@ -205,6 +211,7 @@ export default function Home(props) {
 export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
   try {
+    const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
@@ -212,18 +219,37 @@ export const getServerSideProps = async (context) => {
       process.env.NEXTAUTH_SITE
     )
     const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
     const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+
+    // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+    // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+    // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    // const additionalBlocks = await fetchingAdditionalBlocks(
+    //   process.env.NEXTAUTH_SITE
+    // )
+    // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     // console.log('events', events)
     // console.log('directions', directions)
     // console.log('reviews', reviews)
     // console.log('additionalBlocks', additionalBlocks)
     return {
       props: {
+        // events,
+        // directions: directions.filter((direction) => direction.showOnSite),
+        // reviews: reviews.filter((review) => review.showOnSite),
+        // additionalBlocks,
+        // eventsUsers,
+        // siteSettings,
+        // loggedUser: session?.user ? session.user : null,
+        users,
         events,
-        directions: directions.filter((direction) => direction.showOnSite),
-        reviews: reviews.filter((review) => review.showOnSite),
+        directions,
+        reviews,
         additionalBlocks,
         eventsUsers,
+        payments,
         siteSettings,
         loggedUser: session?.user ? session.user : null,
       },
@@ -231,11 +257,20 @@ export const getServerSideProps = async (context) => {
   } catch {
     return {
       props: {
+        // events: null,
+        // directions: null,
+        // reviews: null,
+        // additionalBlocks: null,
+        // eventsUsers: null,
+        // siteSettings: null,
+        // loggedUser: session?.user ? session.user : null,
+        users: null,
         events: null,
         directions: null,
         reviews: null,
         additionalBlocks: null,
         eventsUsers: null,
+        payments: null,
         siteSettings: null,
         loggedUser: session?.user ? session.user : null,
       },

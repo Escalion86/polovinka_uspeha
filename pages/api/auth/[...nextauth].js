@@ -160,8 +160,8 @@ export default async function auth(req, res) {
           user._id = result[0]._id
           user.role = result[0].role
           user.name = result[0].name
-          user.secondname = result[0].secondname
-          user.thirdname = result[0].thirdname
+          user.secondName = result[0].secondName
+          user.thirdName = result[0].thirdName
           user.phone = result[0].phone
           user.whatsapp = result[0].whatsapp
           user.viber = result[0].viber
@@ -175,6 +175,7 @@ export default async function auth(req, res) {
           user.profession = result[0].profession
           user.interests = result[0].interests
           user.about = result[0].about
+          user.status = result[0].status
 
           if (result[0].role === 'client') {
           } else {

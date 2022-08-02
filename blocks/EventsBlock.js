@@ -2,9 +2,10 @@ import BlockContainer from '@components/BlockContainer'
 import { H3, H4, P } from '@components/tags'
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
+import EventCard from '@layouts/cards/EventCard'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import eventsUsersSelectorByEventId from '@state/selectors/eventsUsersSelectorByEventId'
+import eventsUsersSelectorByEventId from '@state/selectors/eventsUsersByEventIdSelector'
 import cn from 'classnames'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -99,7 +100,20 @@ const CardEvent = ({ event }) => {
 
 const EventsBlock = ({ events, maxEvents }) => {
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
-  const filteredEvents = events.slice(0, maxShowedEvents)
+
+  const loggedUser = useRecoilValue(loggedUserAtom)
+
+  const visibleEvents =
+    loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
+      ? events
+      : events.filter(
+          (event) =>
+            event.status !== 'canceled' &&
+            (!event.usersStatusAccess ||
+              event.usersStatusAccess[loggedUser?.status ?? 'novice'])
+        )
+
+  const filteredEvents = visibleEvents.slice(0, maxShowedEvents)
 
   // if (!events || events.length === 0) return null
   return (
@@ -111,7 +125,8 @@ const EventsBlock = ({ events, maxEvents }) => {
           filteredEvents
             .sort((a, b) => (a.date < b.date ? -1 : 1))
             .map((event, index) => (
-              <CardEvent key={'event' + index} event={event} />
+              <EventCard key={'event' + index} eventId={event._id} noButtons />
+              // <CardEvent key={'event' + index} event={event} />
             ))
         ) : (
           <P>Будущих мероприятий не запланировано</P>

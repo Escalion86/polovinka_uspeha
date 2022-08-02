@@ -41,6 +41,7 @@ const InputImages = ({
       {label && (
         <label className="flex items-center justify-end leading-4 text-right">
           {label}
+          {required && <span className="text-red-700">*</span>}
         </label>
       )}
       <div

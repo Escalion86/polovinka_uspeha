@@ -14,6 +14,7 @@ import PhoneInput from '@components/PhoneInput'
 import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import ErrorsList from '@components/ErrorsList'
+import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -21,8 +22,8 @@ const userFunc = (userId, clone = false) => {
     const setUser = useRecoilValue(itemsFuncAtom).user.set
 
     const [name, setName] = useState(user ? user?.name : '')
-    const [secondname, setSecondname] = useState(user ? user?.secondname : '')
-    const [thirdname, setThirdname] = useState(user ? user?.thirdname : '')
+    const [secondName, setSecondName] = useState(user ? user?.secondName : '')
+    const [thirdName, setThirdName] = useState(user ? user?.thirdName : '')
     const [about, setAbout] = useState(user ? user?.about : '')
     const [interests, setInterests] = useState(user ? user?.interests : '')
     const [profession, setProfession] = useState(user ? user?.profession : '')
@@ -38,6 +39,7 @@ const userFunc = (userId, clone = false) => {
     const [vk, setVk] = useState(user ? user?.vk : '')
     const [image, setImage] = useState(user ? user?.image : '')
     const [birthday, setBirthday] = useState(user ? user?.birthday : '')
+    const [status, setStatus] = useState(user ? user?.status : 'novice')
 
     const [errors, addError, removeError, clearErrors] = useErrors()
 
@@ -48,23 +50,36 @@ const userFunc = (userId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
+      clearErrors()
       let error = false
-      // if (!title) {
-      //   addError({ title: 'Необходимо ввести название' })
-      //   error = true
-      // }
-      // if (!description) {
-      //   addError({ description: 'Необходимо ввести описание' })
-      //   error = true
-      // }
+      if (!name) {
+        addError({ name: 'Необходимо ввести имя' })
+        error = true
+      }
+      if (!secondName) {
+        addError({ secondName: 'Необходимо ввести фамилию' })
+        error = true
+      }
+      if (!gender) {
+        addError({ phone: 'Необходимо ввести пол' })
+        error = true
+      }
+      if (!phone) {
+        addError({ phone: 'Необходимо ввести телефон' })
+        error = true
+      }
+      if (!birthday) {
+        addError({ birthday: 'Необходимо ввести дату рождения' })
+        error = true
+      }
       if (!error) {
         closeModal()
         setUser(
           {
             _id: user?._id,
             name,
-            secondname,
-            thirdname,
+            secondName,
+            thirdName,
             about,
             interests,
             profession,
@@ -78,6 +93,7 @@ const userFunc = (userId, clone = false) => {
             vk,
             image,
             birthday,
+            status,
           },
           clone
         )
@@ -86,8 +102,8 @@ const userFunc = (userId, clone = false) => {
         //     `/api/users/${user._id}`,
         //     {
         //       name,
-        //       secondname,
-        //       thirdname,
+        //       secondName,
+        //       thirdName,
         //       about,
         //       interests,
         //       profession,
@@ -109,8 +125,8 @@ const userFunc = (userId, clone = false) => {
         //     `/api/users`,
         //     {
         //       name,
-        //       secondname,
-        //       thirdname,
+        //       secondName,
+        //       thirdName,
         //       about,
         //       interests,
         //       profession,
@@ -135,8 +151,8 @@ const userFunc = (userId, clone = false) => {
       setOnConfirmFunc(onClickConfirm)
     }, [
       name,
-      secondname,
-      thirdname,
+      secondName,
+      thirdName,
       about,
       interests,
       profession,
@@ -150,12 +166,13 @@ const userFunc = (userId, clone = false) => {
       vk,
       image,
       birthday,
+      status,
     ])
 
     return (
       <FormWrapper>
         <InputImage
-          label="Картинка"
+          label="Фотография"
           directory="users"
           image={image}
           onChange={setImage}
@@ -171,38 +188,51 @@ const userFunc = (userId, clone = false) => {
           // labelClassName="w-40"
           error={errors.name}
           forGrid
+          required
         />
         <Input
           label="Фамилия"
           type="text"
-          value={secondname}
+          value={secondName}
           onChange={(value) => {
-            removeError('secondname')
-            setSecondname(value)
+            removeError('secondName')
+            setSecondName(value)
           }}
           // labelClassName="w-40"
-          error={errors.secondname}
+          error={errors.secondName}
           forGrid
+          required
         />
         <Input
           label="Отчество"
           type="text"
-          value={thirdname}
+          value={thirdName}
           onChange={(value) => {
-            removeError('thirdname')
-            setThirdname(value)
+            removeError('thirdName')
+            setThirdName(value)
           }}
           // labelClassName="w-40"
-          error={errors.thirdname}
+          error={errors.thirdName}
           forGrid
         />
-        <GenderPicker gender={gender} onChange={setGender} />
+        <GenderPicker
+          required
+          gender={gender}
+          onChange={setGender}
+          error={errors.gender}
+        />
         <OrientationPicker
           orientation={orientation}
           onChange={setOrientation}
         />
         <FormWrapper twoColumns>
-          <PhoneInput label="Телефон" value={phone} onChange={setPhone} />
+          <PhoneInput
+            required
+            label="Телефон"
+            value={phone}
+            onChange={setPhone}
+            error={errors.phone}
+          />
           <PhoneInput
             label="Whatsapp"
             value={whatsapp}
@@ -233,6 +263,14 @@ const userFunc = (userId, clone = false) => {
           onChange={setBirthday}
           showYears
           showZodiac
+          required
+          error={errors.birthday}
+        />
+        <UserStatusPicker
+          required
+          status={status}
+          onChange={setStatus}
+          error={errors.status}
         />
         <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
         <Textarea

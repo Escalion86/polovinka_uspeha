@@ -7,10 +7,10 @@ const eventsUsersSchema = {
     type: String,
     required: [true, 'Необходимо выбрать пользователя'],
   },
-  // role: {
-  //   type: String, // participant -участник
-  //   required: [true, 'Необходимо выбрать роль пользователя на мероприятии'],
-  // },
+  status: {
+    type: String,
+    default: 'participant',
+  },
 }
 
 export default eventsUsersSchema

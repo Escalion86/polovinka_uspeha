@@ -13,7 +13,7 @@ const ItemContainer = ({
 }) => (
   <div
     className={cn(
-      'w-full max-w-full border-b border-gray-700 last:border-0',
+      'flex w-full max-w-full border-b border-gray-700 last:border-0',
       { 'hover:bg-blue-200 cursor-pointer': onClick },
       { 'bg-green-200': active },
       { 'py-0.5 px-1': !noPadding },
@@ -80,14 +80,14 @@ export const UserItem = ({ item, onClick = null, active = false }) => (
         // height={48}
       />
     )}
-    <div className="py-0.5 px-1">
-      <div className="flex h-5 text-sm text-gray-800 truncate gap-x-1">
+    <div className="flex-col flex-1 py-0.5 px-1">
+      <div className="flex flex-wrap flex-1 h-5 text-sm text-gray-800 truncate max-h-5 gap-x-1">
         <span className="font-semibold">{item.name}</span>
-        {item.secondname && (
-          <span className="font-semibold">{item.secondname}</span>
+        {item.secondName && (
+          <span className="font-semibold">{item.secondName}</span>
         )}
-        {item.thirdname && (
-          <span className="font-semibold">{item.thirdname}</span>
+        {item.thirdName && (
+          <span className="font-semibold">{item.thirdName}</span>
         )}
         {item.birthday && (
           <span className="italic">
@@ -95,17 +95,17 @@ export const UserItem = ({ item, onClick = null, active = false }) => (
           </span>
         )}
       </div>
-      <div className="flex items-center overflow-x-hidden text-xs text-gray-600 gap-x-2">
-        <div className="flex-1 whitespace-nowrap">
+      <div className="flex flex-wrap items-center justify-between flex-1 h-4 overflow-hidden text-xs text-gray-600 max-h-4 gap-x-2">
+        <div className="whitespace-nowrap">
           Телефон: {item.phone ? '+' + item.phone : '[нет]'}
         </div>
         {item.whatsapp && (
-          <div className="flex-1 text-center whitespace-nowrap">
-            WhatsApp: +{item.whatsapp ? '+' + item.whatsapp : [нет]}
+          <div className="whitespace-nowrap">
+            WhatsApp: {item.whatsapp ? '+' + item.whatsapp : '[нет]'}
           </div>
         )}
         {item.email && (
-          <div className="flex-1 text-right whitespace-nowrap">
+          <div className="whitespace-nowrap">
             Email: {item.email || '[нет]'}
           </div>
         )}
@@ -116,20 +116,20 @@ export const UserItem = ({ item, onClick = null, active = false }) => (
 )
 
 export const EventItem = ({ item, onClick = null, active = false }) => (
-  <ItemContainer onClick={onClick} active={active}>
-    <div className="h-5 text-sm font-bold text-gray-800 truncate">
+  <ItemContainer onClick={onClick} active={active} className="justify-between">
+    <div className="h-5 text-xs font-bold text-gray-800 truncate tablet:text-sm">
       {item.title}
     </div>
-    <div className="flex items-center text-xs text-gray-600 gap-x-2">
+    <div className="flex items-center text-xs text-gray-600 tablet:text-sm gap-x-2">
       {/* <div className="flex-2 whitespace-nowrap">
         Артикул: {item.а || '[нет]'}
       </div> */}
       <div className="flex-1 whitespace-nowrap">
         {formatDateTime(item.date, false)}
       </div>
-      <div className="flex-1 text-right whitespace-nowrap">
+      {/* <div className="flex-1 w-10 text-right whitespace-nowrap">
         {item.price ? item.price / 100 : 0} ₽
-      </div>
+      </div> */}
     </div>
   </ItemContainer>
 )
