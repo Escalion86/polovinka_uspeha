@@ -83,9 +83,9 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
       signUp: (eventId) => {
         if (!loggedUser?._id)
           addModal({
-            title: 'Необходимо зарегистрироваться',
-            text: 'Для записи на мероприятие, необходимо сначала авторизироваться на сайте',
-            confirmButtonName: 'Авторизироваться',
+            title: 'Необходимо зарегистрироваться и авторизироваться',
+            text: 'Для записи на мероприятие, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
+            confirmButtonName: 'Зарегистрироваться / Авторизироваться',
             onConfirm: () => router.push('/login'),
           })
         else

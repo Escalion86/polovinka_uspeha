@@ -309,7 +309,10 @@ const eventViewFunc = (eventId, clone = false) => {
             ) : (
               <Button
                 onClick={() => {
-                  if (!loggedUser?.gender || !loggedUser?.birthday) {
+                  if (
+                    loggedUser &&
+                    (!loggedUser?.gender || !loggedUser?.birthday)
+                  ) {
                     closeModal()
                     router.push('./cabinet/questionnaire')
                   } else if (eventUser) modalsFunc.event.signOut(event._id)
