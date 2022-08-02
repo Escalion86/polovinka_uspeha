@@ -21,7 +21,13 @@ const EventsContent = () => {
     <>
       {visibleEvents?.length > 0 ? (
         visibleEvents.map((event) => (
-          <EventCard key={event._id} eventId={event._id} />
+          <EventCard
+            key={event._id}
+            eventId={event._id}
+            noButtons={
+              loggedUser?.role !== 'admin' || loggedUser?.role !== 'dev'
+            }
+          />
         ))
       ) : (
         <div className="flex justify-center p-2">Нет мероприятий</div>
