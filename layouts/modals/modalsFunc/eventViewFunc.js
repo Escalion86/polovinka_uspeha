@@ -133,9 +133,9 @@ const eventViewFunc = (eventId, clone = false) => {
     const canUserSignUp =
       typeof event.maxUsers !== 'number' ||
       event.maxUsers > eventParticipantsCount
-        ? loggedUser.gender === 'male'
+        ? loggedUser?.gender === 'male'
           ? event.maxMans === null || eventMansCount < event.maxMans
-          : loggedUser.gender === 'woman'
+          : loggedUser?.gender === 'woman'
           ? event.maxWomans === null || eventWomansCount < event.maxWomans
           : false
         : false
