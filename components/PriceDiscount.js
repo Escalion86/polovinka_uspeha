@@ -3,7 +3,7 @@ import cn from 'classnames'
 import React from 'react'
 import { useRecoilValue } from 'recoil'
 
-const PriceDiscount = ({ event, user, className, prefix }) => {
+const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
 
   const useUser = user ?? loggedUser
@@ -27,19 +27,39 @@ const PriceDiscount = ({ event, user, className, prefix }) => {
             </span>
           </div>
         ) : (
-          <div className="flex gap-x-1">
+          <div
+            className={cn('flex gap-x-1', {
+              'items-center': vertical,
+            })}
+          >
             {prefix && (
-              <span className="mt-3.5 text-lg  font-bold">{prefix}</span>
+              <span
+                className={cn('text-lg font-bold', {
+                  'mt-3.5': vertical,
+                })}
+              >
+                {prefix}
+              </span>
             )}
-            <div className="relative">
-              <div className="text-center whitespace-normal absolute top-0 left-0 right-0 text-sm">
+            <div
+              className={vertical ? 'relative' : 'flex items-center gap-x-2'}
+            >
+              <div
+                className={cn('text-center whitespace-normal', {
+                  'absolute top-0 left-0 right-0': vertical,
+                })}
+              >
                 <div className="relative">
                   <div>{event.price / 100 + ' ₽'}</div>
-                  <div className="absolute top-[8px] left-0 right-0 transform rotate-15 border-b-2 border-danger" />
-                  <div className="absolute top-[8px] left-0 right-0 transform -rotate-15 border-b-2 border-danger" />
+                  <div className="absolute top-[11px] left-0 right-0 transform rotate-15 border-b-2 border-danger" />
+                  <div className="absolute top-[11px] left-0 right-0 transform -rotate-15 border-b-2 border-danger" />
                 </div>
               </div>
-              <div className="mt-3.5 whitespace-normal text-xl font-bold">
+              <div
+                className={cn('whitespace-normal text-xl font-bold', {
+                  'mt-3.5': vertical,
+                })}
+              >
                 {eventPriceForUser + ' ₽'}
               </div>
             </div>

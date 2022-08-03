@@ -14,6 +14,8 @@ import usersAtom from '@state/atoms/usersAtom'
 import userSelector from '@state/selectors/userSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
 import { CardWrapper } from '@components/CardWrapper'
+import Image from 'next/image'
+import Tooltip from '../../components/Tooltip'
 
 const UserCard = ({ userId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -54,8 +56,20 @@ const UserCard = ({ userId }) => {
         />
         <div className="flex flex-col flex-1 text-xl font-bold">
           <div className="flex">
-            <div className="flex flex-wrap flex-1 px-2 gap-x-2">
-              {user.name}
+            <div className="flex flex-wrap flex-1 px-2 gap-x-1">
+              {userStatusArr && userStatusArr.value !== 'novice' && (
+                <Tooltip content="Участник клуба">
+                  <div className="w-6 h-6 my-1">
+                    <Image
+                      src="/img/svg_icons/medal.svg"
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                </Tooltip>
+              )}
+              <span>{user.name}</span>
+              {user.secondName && <span>{user.secondName}</span>}
               {user.birthday && (
                 <div className="font-normal whitespace-nowrap">
                   {user.birthday
@@ -65,7 +79,7 @@ const UserCard = ({ userId }) => {
                     : ''}
                 </div>
               )}
-              {userStatusArr && userStatusArr.value !== 'novice' && (
+              {/* {userStatusArr && userStatusArr.value !== 'novice' && (
                 <span
                   className={cn(
                     'font-normal uppercase',
@@ -74,7 +88,7 @@ const UserCard = ({ userId }) => {
                 >
                   {userStatusArr.name}
                 </span>
-              )}
+              )} */}
               {user.role === 'admin' && (
                 <span className="font-normal text-red-400">АДМИНИСТРАТОР</span>
               )}

@@ -51,7 +51,7 @@ const EventCard = ({ eventId, noButtons }) => {
           )}
         >
           <img
-            className="object-cover w-32 h-32 min-w-32 min-h-32 tablet:w-40 tablet:h-40"
+            className="object-cover w-32 h-full min-w-32 min-h-42 tablet:w-40 tablet:h-40 max-h-60"
             src={event.images[0]}
             alt="event"
             // width={48}
@@ -64,10 +64,10 @@ const EventCard = ({ eventId, noButtons }) => {
           )}
         </div>
       )}
-      <div className="flex flex-col justify-between flex-1">
+      <div className="flex flex-col justify-between flex-1 w-full">
         <div className="pl-2">
-          <div className="flex items-center">
-            <div className="flex-1 text-lg italic font-bold text-general">
+          <div className="flex items-stretch">
+            <div className="flex-1 text-lg flex items-center italic font-bold text-general">
               {direction.title}
             </div>
 
@@ -134,7 +134,7 @@ const EventCard = ({ eventId, noButtons }) => {
               </div>
             </div>
             <div className="flex flex-col items-end tablet:justify-between h-full pr-1 tablet:min-h-[6rem]">
-              <PriceDiscount event={event} />
+              <PriceDiscount event={event} vertical />
               <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 tablet:whitespace-pre-wrap text-general">
                 {formatDateTime(event.date, false, false, true, true)}
               </div>
