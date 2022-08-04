@@ -9,9 +9,12 @@ export const eventsUsersFullByEventIdSelector = selectorFamily({
     ({ get }) => {
       if (!id) return []
       const eventsUsers = get(eventsUsersAtom)
+
       return eventsUsers
         ? eventsUsers
-            .filter((item) => item.eventId === id)
+            .filter(
+              (item) => item.eventId && item.userId && item.eventId === id
+            )
             .map((item) => {
               return { ...item, user: get(userSelector(item.userId)) }
             })

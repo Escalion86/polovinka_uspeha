@@ -11,11 +11,13 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
 
   const eventMansCount = eventUsers.filter(
     (item) =>
+      item.user &&
       item.user.gender == 'male' &&
       (!item.status || item.status === '' || item.status === 'participant')
   ).length
   const eventWomansCount = eventUsers.filter(
     (item) =>
+      item.user &&
       item.user.gender == 'famale' &&
       (!item.status || item.status === '' || item.status === 'participant')
   ).length

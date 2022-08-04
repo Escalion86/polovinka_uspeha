@@ -76,11 +76,14 @@ import LoadingSpinner from '@components/LoadingSpinner'
 
 export default function Home(props) {
   const {
+    loggedUser,
+    users,
     events,
     directions,
     reviews,
-    loggedUser,
     additionalBlocks,
+    eventsUsers,
+    payments,
     siteSettings,
   } = props
   const [loading, setLoading] = useState(true)
@@ -89,9 +92,9 @@ export default function Home(props) {
   const setEventsState = useSetRecoilState(eventsAtom)
   const setDirectionsState = useSetRecoilState(directionsAtom)
   const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
-  // const setUsersState = useSetRecoilState(usersAtom)
+  const setUsersState = useSetRecoilState(usersAtom)
   const setReviewsState = useSetRecoilState(reviewsAtom)
-  // const setPaymentsState = useSetRecoilState(paymentsAtom)
+  const setPaymentsState = useSetRecoilState(paymentsAtom)
   const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
@@ -109,18 +112,18 @@ export default function Home(props) {
     (additionalBlock) => additionalBlock.showOnSite
   )
 
+  console.log('props.eventsUsers', props.eventsUsers)
+
   useEffect(() => {
     setLoggedUserState(props.loggedUser)
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
-    // setUsersState(props.users)
+    setUsersState(props.users)
     setReviewsState(props.reviews)
-    // setPaymentsState(props.payments)
+    setPaymentsState(props.payments)
     setEventsUsersState(props.eventsUsers)
-  }, [])
 
-  useEffect(() => {
     setItemsFunc(
       itemsFuncGenerator({
         // toggleLoading,

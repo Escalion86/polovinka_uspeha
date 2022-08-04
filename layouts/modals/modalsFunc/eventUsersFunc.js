@@ -31,11 +31,12 @@ const eventUsersFunc = (eventId) => {
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
     const eventAssistantsIds = eventUsers
-      .filter((item) => item.status === 'assistant')
-      .map((item) => item.user._id)
+      .filter((item) => item.status === 'assistant' && item.user)
+      .map((item) => item.user?._id)
     const eventMansIds = eventUsers
       .filter(
         (item) =>
+          item.user &&
           item.user.gender == 'male' &&
           (!item.status || item.status === '' || item.status === 'participant')
       )
@@ -43,15 +44,16 @@ const eventUsersFunc = (eventId) => {
     const eventWomansIds = eventUsers
       .filter(
         (item) =>
+          item.user &&
           item.user.gender == 'famale' &&
           (!item.status || item.status === '' || item.status === 'participant')
       )
       .map((item) => item.user._id)
     const eventReservedParticipantsIds = eventUsers
-      .filter((item) => item.status === 'reserve')
+      .filter((item) => item.user && item.status === 'reserve')
       .map((item) => item.user._id)
     const eventBannedParticipantsIds = eventUsers
-      .filter((item) => item.status === 'ban')
+      .filter((item) => item.user && item.status === 'ban')
       .map((item) => item.user._id)
 
     const [assistantsIds, setAssistantsIds] = useState(eventAssistantsIds)

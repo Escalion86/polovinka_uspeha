@@ -47,7 +47,7 @@ const eventViewFunc = (eventId, clone = false) => {
     const router = useRouter()
 
     const eventUser = loggedUser?._id
-      ? eventUsers.find((eventUser) => eventUser.user._id === loggedUser._id)
+      ? eventUsers.find((eventUser) => eventUser.user?._id === loggedUser._id)
       : null
 
     // const eventUsersCount = eventUsers.length
@@ -59,16 +59,16 @@ const eventViewFunc = (eventId, clone = false) => {
     // ).length
 
     const eventAssistants = eventUsers
-      .filter((item) => item.status === 'assistant')
+      .filter((item) => item.user && item.status === 'assistant')
       .map((item) => item.user)
     const eventMansCount = eventUsers.filter(
       (item) =>
-        item.user.gender == 'male' &&
+      item.user && item.user.gender == 'male' &&
         (!item.status || item.status === '' || item.status === 'participant')
     ).length
     const eventWomansCount = eventUsers.filter(
       (item) =>
-        item.user.gender == 'famale' &&
+      item.user && item.user.gender == 'famale' &&
         (!item.status || item.status === '' || item.status === 'participant')
     ).length
 

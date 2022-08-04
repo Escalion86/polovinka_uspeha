@@ -31,7 +31,7 @@ const EventCard = ({ eventId, noButtons }) => {
   if (!event) return null
 
   const eventAssistants = eventUsers
-    .filter((item) => item.status === 'assistant')
+    .filter((item) => item.user && item.status === 'assistant')
     .map((item) => item.user)
 
   const formatedAddress = formatAddress(event.address)
@@ -67,7 +67,7 @@ const EventCard = ({ eventId, noButtons }) => {
       <div className="flex flex-col justify-between flex-1 w-full">
         <div className="pl-2">
           <div className="flex items-stretch">
-            <div className="flex-1 text-lg flex items-center italic font-bold text-general">
+            <div className="flex items-center flex-1 text-lg italic font-bold text-general">
               {direction.title}
             </div>
 
