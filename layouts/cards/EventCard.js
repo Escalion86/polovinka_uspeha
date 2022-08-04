@@ -47,11 +47,11 @@ const EventCard = ({ eventId, noButtons }) => {
         <div
           className={cn(
             'relative flex justify-center flex-1 phoneH:flex-none',
-            { 'w-full laptop:w-auto': noButtons }
+            { 'laptop:w-auto': noButtons }
           )}
         >
           <img
-            className="object-cover w-32 h-full min-w-32 min-h-42 tablet:w-40 tablet:h-40 max-h-60"
+            className="object-cover w-32 h-full min-w-32 min-h-42 laptop:w-40 laptop:h-40 max-h-60"
             src={event.images[0]}
             alt="event"
             // width={48}
@@ -133,9 +133,9 @@ const EventCard = ({ eventId, noButtons }) => {
                   )}
               </div>
             </div>
-            <div className="flex flex-col items-end tablet:justify-between h-full pr-1 tablet:min-h-[6rem]">
-              <PriceDiscount event={event} vertical />
-              <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 tablet:whitespace-pre-wrap text-general">
+            <div className="flex flex-col items-end laptop:justify-between h-full pr-1 laptop:min-h-[6rem]">
+              <PriceDiscount event={event} />
+              <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
                 {formatDateTime(event.date, false, false, true, true)}
               </div>
             </div>

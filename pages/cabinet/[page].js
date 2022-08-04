@@ -187,7 +187,7 @@ function CabinetPage(props) {
         ) : (
           <>
             {/* ----------------------------- HEADER ------------------------------- */}
-            <DeviceCheck right />
+            {loggedUser?.role === 'dev' && <DeviceCheck right />}
             <CabinetHeader user={loggedUser} title={title} />
             <BurgerLayout />
             <ContentWrapper user={loggedUser} page={page}>

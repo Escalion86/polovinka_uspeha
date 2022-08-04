@@ -155,7 +155,7 @@ export default function Home(props) {
           </div>
         ) : (
           <div className="w-full bg-white">
-            {/* <DeviceCheck /> */}
+            {loggedUser?.role === 'dev' && <DeviceCheck right />}
             <Header
               events={filteredEvents}
               directions={filteredDirections}

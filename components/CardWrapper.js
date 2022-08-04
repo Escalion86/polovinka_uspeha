@@ -17,7 +17,7 @@ export const CardWrapper = ({
   return (
     <div
       className={cn(
-        'relative flex-col w-full tablet:flex-row items-center duration-300 bg-white border-t border-b border-gray-400 shadow-sm hover:shadow-medium-active',
+        'relative flex-col w-full laptop:flex-row items-center laptop:items-stretch duration-300 bg-white border-t border-b border-gray-400 shadow-sm hover:shadow-medium-active',
         { 'cursor-pointer': !loading },
         { flex: flex },
         { 'gap-x-2': gap }

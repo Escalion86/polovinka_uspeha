@@ -34,7 +34,7 @@ const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
           >
             {prefix && (
               <span
-                className={cn('text-lg font-bold', {
+                className={cn('font-bold', {
                   'mt-3.5': vertical,
                 })}
               >

@@ -26,6 +26,7 @@ import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullBy
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import PriceDiscount from '@components/PriceDiscount'
 import { useRouter } from 'next/router'
+import Divider from '@components/Divider'
 
 const eventViewFunc = (eventId, clone = false) => {
   const EventSignUpModal = ({
@@ -166,13 +167,15 @@ const eventViewFunc = (eventId, clone = false) => {
             <div className="flex justify-center w-full text-3xl font-bold">
               {event.title}
             </div>
-            <P className="flex-1">{event.description}</P>
+            <p className="flex-1">{event.description}</p>
+            <Divider thin light />
             {direction?.title && (
               <div className="flex gap-x-1">
                 <span className="font-bold">Направление:</span>
                 <span>{direction.title}</span>
               </div>
             )}
+
             {event.address && (
               <div className="flex items-center gap-x-1">
                 <span className="font-bold">Адрес:</span>{' '}
@@ -242,61 +245,13 @@ const eventViewFunc = (eventId, clone = false) => {
               )}
           </div>
           <EventUsersCounterAndAge eventId={eventId} />
-          {/* <div className="flex items-center flex-1 px-4">
-            <div className="flex pr-2 font-bold leading-5 gap-x-1">
-              Участники:
-            </div>
-            <div className="flex px-2 leading-5 border-r gap-x-1">
-              <FontAwesomeIcon
-                icon={faMars}
-                className="w-5 h-5 text-blue-600"
-              />
-              <span>{eventMansCount}</span>
-              {typeof event.maxMans === 'number' && (
-                <>
-                  <span>/</span>
-                  <span>{event.maxMans}</span>
-                </>
-              )}
-            </div>
-            <div className="flex px-2 leading-5 border-r gap-x-1">
-              <FontAwesomeIcon
-                icon={faVenus}
-                className="w-5 h-5 text-red-600"
-              />
-              <span>{eventWomansCount}</span>
-              {typeof event.maxWomans === 'number' && (
-                <>
-                  <span>/</span>
-                  <span>{event.maxWomans}</span>
-                </>
-              )}
-            </div>
-            <div className="flex px-2 leading-5 gap-x-1">
-              <span className="italic font-bold">Всего:</span>
-              <span>{eventParticipantsCount}</span>
-              {typeof event.maxUsers === 'number' && (
-                <>
-                  <span>/</span>
-                  <span>{event.maxUsers}</span>
-                </>
-              )}
-            </div>
-          </div> */}
+          <Divider thin light />
           <div className="flex flex-wrap justify-center flex-1 px-4 text-lg font-bold gap-x-1 text-general">
             <div>{formatDateTime(event.date)}</div>
             <div className="font-normal">({getDaysFromNow(event.date)})</div>
           </div>
+          <Divider thin light />
           <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
-            {/* {event.price ? (
-              <div className="flex flex-wrap flex-1 px-4 text-lg font-bold gap-x-1 text-general">
-                Стоимость мероприятия: {event.price / 100} ₽
-              </div>
-            ) : (
-              <div className="px-4 text-lg font-bold text-general">
-                Мероприятие бесплатное
-              </div>
-            )} */}
             <PriceDiscount event={event} className="px-2" prefix="Стоимость:" />
             {event.status === 'canceled' ? (
               <div className="text-lg font-bold uppercase text-danger">

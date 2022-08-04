@@ -35,7 +35,7 @@ const DirectionBlock = ({
             )}
             {image && (
               <img
-                className="object-cover w-full h-full max-h-100 laptop:max-h-full laptop:h-full tablet:h-60 tablet:w-1/2 laptop:w-full"
+                className="object-contain w-full h-full max-h-100 laptop:max-h-full laptop:h-full tablet:h-60 tablet:w-1/2 laptop:w-full"
                 src={image}
                 alt="direction"
                 // width={48}
