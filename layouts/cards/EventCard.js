@@ -12,11 +12,12 @@ import { CardWrapper } from '@components/CardWrapper'
 import directionSelector from '@state/selectors/directionSelector'
 import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 import UserNameById from '@components/UserNameById'
-import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+// import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import UserName from '@components/UserName'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import PriceDiscount from '@components/PriceDiscount'
 import cn from 'classnames'
+import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 
 const EventCard = ({ eventId, noButtons }) => {
   const widthNum = useWindowDimensionsTailwindNum()
@@ -26,13 +27,15 @@ const EventCard = ({ eventId, noButtons }) => {
   const direction = useRecoilValue(directionSelector(event?.directionId))
   const loading = useRecoilValue(loadingAtom('event' + eventId))
   const itemFunc = useRecoilValue(itemsFuncAtom)
-  const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+  // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
   if (!event) return null
 
-  const eventAssistants = eventUsers
-    .filter((item) => item.user && item.status === 'assistant')
-    .map((item) => item.user)
+  // const eventAssistants = eventUsers
+  //   .filter((item) => item.user && item.status === 'assistant')
+  //   .map((item) => item.user)
+
+  const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
 
   const formatedAddress = formatAddress(event.address)
 

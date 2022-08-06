@@ -56,12 +56,23 @@ const UserCard = ({ userId }) => {
         />
         <div className="flex flex-col flex-1 text-xl font-bold">
           <div className="flex">
-            <div className="flex flex-wrap flex-1 px-2 gap-x-1">
-              {userStatusArr && userStatusArr.value !== 'novice' && (
+            <div className="flex flex-wrap flex-1 px-2 gap-x-1 items-center">
+              {userStatusArr?.value === 'member' && (
                 <Tooltip content="Участник клуба">
-                  <div className="w-6 h-6 my-1">
+                  <div className="w-6 h-6">
                     <Image
                       src="/img/svg_icons/medal.svg"
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                </Tooltip>
+              )}
+              {userStatusArr?.value === 'ban' && (
+                <Tooltip content="Забанен">
+                  <div className="w-6 h-6">
+                    <Image
+                      src="/img/svg_icons/ban.svg"
                       width="24"
                       height="24"
                     />

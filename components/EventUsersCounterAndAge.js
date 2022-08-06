@@ -1,26 +1,34 @@
 import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import eventMansSelector from '@state/selectors/eventMansSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 
 const EventUsersCounterAndAge = ({ eventId, className }) => {
   const event = useRecoilValue(eventSelector(eventId))
-  const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+  // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
-  const eventMansCount = eventUsers.filter(
-    (item) =>
-      item.user &&
-      item.user.gender == 'male' &&
-      (!item.status || item.status === '' || item.status === 'participant')
-  ).length
-  const eventWomansCount = eventUsers.filter(
-    (item) =>
-      item.user &&
-      item.user.gender == 'famale' &&
-      (!item.status || item.status === '' || item.status === 'participant')
-  ).length
+  // const eventAssistantsIds = useRecoilValue(eventAssistantsSelector(eventId)).map((user) => user._id)
+  const eventMansCount = useRecoilValue(eventMansSelector(eventId)).length
+  const eventWomansCount = useRecoilValue(eventWomansSelector(eventId)).length
+  // const eventReservedParticipantsIds = useRecoilValue(eventUsersInReserveSelector(eventId)).map((user) => user._id)
+  // const eventBannedParticipantsIds = useRecoilValue(eventUsersInBanSelector(eventId)).map((user) => user._id)
+
+  // const eventMansCount = eventUsers.filter(
+  //   (item) =>
+  //     item.user &&
+  //     item.user.gender == 'male' &&
+  //     (!item.status || item.status === '' || item.status === 'participant')
+  // ).length
+  // const eventWomansCount = eventUsers.filter(
+  //   (item) =>
+  //     item.user &&
+  //     item.user.gender == 'famale' &&
+  //     (!item.status || item.status === '' || item.status === 'participant')
+  // ).length
 
   const eventParticipantsCount = eventWomansCount + eventMansCount
 
@@ -31,7 +39,7 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
         className
       )}
     >
-      <div className="hidden tablet:flex items-center px-2 font-bold gap-x-1">
+      <div className="items-center hidden px-2 font-bold tablet:flex gap-x-1">
         Участники:
       </div>
       <div className="flex items-center px-2 tablet:border-r gap-x-0.5">

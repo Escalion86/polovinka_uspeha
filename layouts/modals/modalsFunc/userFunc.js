@@ -15,6 +15,7 @@ import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import ErrorsList from '@components/ErrorsList'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
+import validateEmail from '@helpers/validateEmail'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -31,6 +32,7 @@ const userFunc = (userId, clone = false) => {
       user ? user?.orientation : ''
     )
     const [gender, setGender] = useState(user ? user?.gender : null)
+    const [email, setEmail] = useState(user ? user?.email : '')
     const [phone, setPhone] = useState(user ? user?.phone : '')
     const [whatsapp, setWhatsapp] = useState(user ? user?.whatsapp : '')
     const [viber, setViber] = useState(user ? user?.viber : '')
@@ -64,8 +66,23 @@ const userFunc = (userId, clone = false) => {
         addError({ phone: 'Необходимо ввести пол' })
         error = true
       }
-      if (!phone || `${phone}`.length !== 11) {
+      if (!phone) {
         addError({ phone: 'Необходимо ввести телефон' })
+        error = true
+      } else if (phone && `${phone}`.length !== 11) {
+        addError({ phone: 'Некорректно введен номер телефона' })
+        error = true
+      }
+      if (viber && `${viber}`.length !== 11) {
+        addError({ viber: 'Некорректно введен номер viber' })
+        error = true
+      }
+      if (whatsapp && `${whatsapp}`.length !== 11) {
+        addError({ whatsapp: 'Некорректно введен номер whatsapp' })
+        error = true
+      }
+      if (email && !validateEmail(email)) {
+        addError({ whatsapp: 'Некорректно введен email' })
         error = true
       }
       if (!birthday) {
@@ -85,6 +102,7 @@ const userFunc = (userId, clone = false) => {
             profession,
             orientation,
             gender,
+            email,
             phone,
             whatsapp,
             viber,
@@ -158,6 +176,7 @@ const userFunc = (userId, clone = false) => {
       profession,
       orientation,
       gender,
+      email,
       phone,
       whatsapp,
       viber,
@@ -225,6 +244,13 @@ const userFunc = (userId, clone = false) => {
           orientation={orientation}
           onChange={setOrientation}
         />
+        <Input
+          label="Email"
+          value={email}
+          onChange={setEmail}
+          error={errors.email}
+          copyPasteButtons
+        />
         <FormWrapper twoColumns>
           <PhoneInput
             required
@@ -232,20 +258,30 @@ const userFunc = (userId, clone = false) => {
             value={phone}
             onChange={setPhone}
             error={errors.phone}
+            copyPasteButtons
           />
           <PhoneInput
             label="Whatsapp"
             value={whatsapp}
             onChange={setWhatsapp}
+            error={errors.whatsapp}
+            copyPasteButtons
           />
         </FormWrapper>
         <FormWrapper twoColumns>
-          <PhoneInput label="Viber" value={viber} onChange={setViber} />
+          <PhoneInput
+            label="Viber"
+            value={viber}
+            onChange={setViber}
+            error={errors.viber}
+            copyPasteButtons
+          />
           <Input
             prefix="@"
             label="Telegram"
             value={telegram}
             onChange={setTelegram}
+            copyPasteButtons
           />
         </FormWrapper>
         <FormWrapper twoColumns>
@@ -254,8 +290,15 @@ const userFunc = (userId, clone = false) => {
             label="Instagram"
             value={instagram}
             onChange={setInstagram}
+            copyPasteButtons
           />
-          <Input prefix="@" label="Vk" value={vk} onChange={setVk} />
+          <Input
+            prefix="@"
+            label="Vk"
+            value={vk}
+            onChange={setVk}
+            copyPasteButtons
+          />
         </FormWrapper>
         <DatePicker
           label="День рождения"

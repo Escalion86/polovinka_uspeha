@@ -27,6 +27,14 @@ import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import PriceDiscount from '@components/PriceDiscount'
 import { useRouter } from 'next/router'
 import Divider from '@components/Divider'
+import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
+import eventMansSelector from '@state/selectors/eventMansSelector'
+import eventWomansSelector from '@state/selectors/eventWomansSelector'
+
+import birthDateToAge from '@helpers/birthDateToAge'
+import userToEventStatus from '@helpers/userToEventStatus'
+import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
+import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 
 const eventViewFunc = (eventId, clone = false) => {
   const EventSignUpModal = ({
@@ -42,35 +50,37 @@ const eventViewFunc = (eventId, clone = false) => {
     // const eventUsers = useRecoilValue(eventsUsersSelectorByEventId(eventId))
     // const eventUsers = useRecoilValue(usersSelectorByEventId(eventId))
 
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
     const router = useRouter()
 
-    const eventUser = loggedUser?._id
-      ? eventUsers.find((eventUser) => eventUser.user?._id === loggedUser._id)
-      : null
+    // const eventUser = loggedUser?._id
+    //   ? eventUsers.find((eventUser) => eventUser.user?._id === loggedUser._id)
+    //   : null
 
-    // const eventUsersCount = eventUsers.length
+    const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
+    const eventMansCount = useRecoilValue(eventMansSelector(eventId)).length
+    const eventWomansCount = useRecoilValue(eventWomansSelector(eventId)).length
+
+    const eventLoggedUserStatus = useRecoilValue(
+      loggedUserToEventStatusSelector(eventId)
+    )
+
+    // const eventAssistants = eventUsers
+    //   .filter((item) => item.user && item.status === 'assistant')
+    //   .map((item) => item.user)
     // const eventMansCount = eventUsers.filter(
-    //   (user) => user.gender === 'male'
+    //   (item) =>
+    //     item.user &&
+    //     item.user.gender == 'male' &&
+    //     (!item.status || item.status === '' || item.status === 'participant')
     // ).length
     // const eventWomansCount = eventUsers.filter(
-    //   (user) => user.gender === 'famale'
+    //   (item) =>
+    //     item.user &&
+    //     item.user.gender == 'famale' &&
+    //     (!item.status || item.status === '' || item.status === 'participant')
     // ).length
-
-    const eventAssistants = eventUsers
-      .filter((item) => item.user && item.status === 'assistant')
-      .map((item) => item.user)
-    const eventMansCount = eventUsers.filter(
-      (item) =>
-      item.user && item.user.gender == 'male' &&
-        (!item.status || item.status === '' || item.status === 'participant')
-    ).length
-    const eventWomansCount = eventUsers.filter(
-      (item) =>
-      item.user && item.user.gender == 'famale' &&
-        (!item.status || item.status === '' || item.status === 'participant')
-    ).length
 
     const eventParticipantsCount = eventWomansCount + eventMansCount
 
@@ -143,6 +153,8 @@ const eventViewFunc = (eventId, clone = false) => {
           ? event.maxWomans === null || eventWomansCount < event.maxWomans
           : false
         : false
+
+    const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
     return (
       <div className="flex flex-col gap-y-2">
@@ -257,21 +269,23 @@ const eventViewFunc = (eventId, clone = false) => {
               <div className="text-lg font-bold uppercase text-danger">
                 Отменено
               </div>
-            ) : daysFromNow < 0 && event.status === 'active' ? (
+            ) : eventLoggedUserStatus.isEventExpired ? (
               <div className="text-lg font-bold uppercase text-success">
                 Завершено
               </div>
             ) : (
               <Button
                 onClick={() => {
-                  if (
-                    loggedUser &&
-                    (!loggedUser?.gender || !loggedUser?.birthday)
-                  ) {
+                  // Если анкета заполнена не полностью
+                  if (!isUserQuestionnaireFilled) {
                     closeModal()
-                    router.push('./cabinet/questionnaire')
-                  } else if (eventUser) modalsFunc.event.signOut(event._id)
-                  else if (canUserSignUp || !loggedUser)
+                    router.push('/cabinet/questionnaire')
+                  } else if (eventLoggedUserStatus.canSignOut)
+                    modalsFunc.event.signOut(event._id)
+                  else if (
+                    eventLoggedUserStatus.canSignIn &&
+                    !eventLoggedUserStatus.alreadySignIn
+                  )
                     modalsFunc.event.signUp(event._id)
                 }}
                 // className={cn(
@@ -280,22 +294,26 @@ const eventViewFunc = (eventId, clone = false) => {
                 //     ? 'bg-success hover:text-success border-success'
                 //     : 'bg-general hover:text-general border-general'
                 // )}
-                classBgColor={eventUser ? 'bg-danger' : undefined}
+                classBgColor={
+                  eventLoggedUserStatus.canSignOut ? 'bg-danger' : undefined
+                }
                 // classHoverBgColor={eventUser ? 'hover:bg-danger' : undefined}
                 className={cn(
                   'w-full px-4 py-1 text-white duration-300 border rounded phoneH:w-auto'
                 )}
                 name={
-                  eventUser
+                  eventLoggedUserStatus.canSignOut
                     ? 'Отменить запись'
-                    : canUserSignUp || !loggedUser
+                    : eventLoggedUserStatus.canSignIn
                     ? 'Записаться'
-                    : loggedUser?.gender && loggedUser?.birthday
+                    : isUserQuestionnaireFilled
                     ? 'Мест нет'
                     : 'Заполните свою анкету'
                 }
                 disabled={
-                  !canUserSignUp && loggedUser?.gender && loggedUser?.birthday
+                  !eventLoggedUserStatus.canSignOut &&
+                  !eventLoggedUserStatus.canSignIn &&
+                  isUserQuestionnaireFilled
                 }
               />
             )}

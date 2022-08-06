@@ -516,4 +516,5 @@ export const DEFAULT_USERS_STATUS_DISCOUNT = {
 export const USERS_STATUSES = [
   { value: 'novice', name: 'Новичок', color: 'blue-400' },
   { value: 'member', name: 'Участник клуба', color: 'green-400' },
+  { value: 'ban', name: 'Бан', color: 'danger' },
 ]

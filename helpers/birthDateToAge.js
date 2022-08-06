@@ -1,6 +1,7 @@
 import formatDate from './formatDate'
 
 function textAge(age) {
+  if (!age) return
   var txt,
     count = age % 100
   if (count >= 5 && count <= 20) {
@@ -19,6 +20,7 @@ function textAge(age) {
 }
 
 const birthDateToAge = (birthDate, showWord = true, showDate = false) => {
+  if (!birthDate) return
   const tempBirthDate = new Date(birthDate)
   const now = new Date(),
     age = now.getFullYear() - tempBirthDate.getFullYear()
@@ -29,4 +31,5 @@ const birthDateToAge = (birthDate, showWord = true, showDate = false) => {
     ? formatDate(birthDate) + ' (' + formatedText + ')'
     : formatedText
 }
+
 export default birthDateToAge

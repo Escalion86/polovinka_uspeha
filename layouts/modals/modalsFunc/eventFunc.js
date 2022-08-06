@@ -185,7 +185,7 @@ const eventFunc = (eventId, clone = false) => {
     //             label="Фотографии"
     //             directory="events"
     //             images={images}
-    //             onChange={(tmages) => {
+    //             onChange={(images) => {
     //               removeError('images')
     //               setImages(images)
     //             }}
@@ -395,21 +395,21 @@ const eventFunc = (eventId, clone = false) => {
       <Tabs id="custom-animation" value="general">
         <TabsHeader
           // indicatorProps={{ className: 'duration-0 bg-general h-1 top-8' }}
-          className="duration-0 bg-gray-200"
+          className="bg-gray-200 duration-0"
         >
           {/* {data.map(({ label, value }) => (
           <Tab key={value} value={value}>
             {label}
           </Tab>
         ))} */}
-          <Tab key="general" value="general" className="font-bold italic">
+          <Tab key="general" value="general" className="italic font-bold">
             Общие
           </Tab>
-          <Tab key="access" value="access" className="font-bold italic">
+          <Tab key="access" value="access" className="italic font-bold">
             Доступ и стоимость
           </Tab>
           {eventId && (
-            <Tab key="status" value="status" className="font-bold italic">
+            <Tab key="status" value="status" className="italic font-bold">
               Статус и отчет
             </Tab>
           )}
@@ -435,7 +435,7 @@ const eventFunc = (eventId, clone = false) => {
                 label="Фотографии"
                 directory="events"
                 images={images}
-                onChange={(tmages) => {
+                onChange={(images) => {
                   removeError('images')
                   setImages(images)
                 }}

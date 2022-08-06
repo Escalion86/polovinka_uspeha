@@ -4,18 +4,29 @@ import Fab from '@components/Fab'
 import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import EventCard from '@layouts/cards/EventCard'
+import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
+import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
 
 const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
   const loggedUser = useRecoilValue(loggedUserAtom)
+  const eventsLoggedUser = useRecoilValue(
+    eventsUsersByUserIdSelector(loggedUser?._id)
+  )
   const visibleEvents =
     loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
       ? events
-      : events.filter(
-          (event) =>
-            !event.usersStatusAccess ||
-            event.usersStatusAccess[loggedUser?.status ?? 'novice']
-        )
+      : events.filter((event) => {
+          const eventUser = eventsLoggedUser.find(
+            (eventUser) => eventUser.eventId === event._id
+          )
+          return (
+            eventUser?.status !== 'ban' &&
+            (!event.usersStatusAccess ||
+              event.usersStatusAccess[loggedUser?.status ?? 'novice'])
+          )
+        })
+
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   return (

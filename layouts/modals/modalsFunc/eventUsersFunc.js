@@ -1,60 +1,81 @@
 import React, { useEffect, useState } from 'react'
-import useErrors from '@helpers/useErrors'
+// import useErrors from '@helpers/useErrors'
 
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
-import EditableTextarea from '@components/EditableTextarea'
-import FormWrapper from '@components/FormWrapper'
-import DateTimePicker from '@components/DateTimePicker'
-import ErrorsList from '@components/ErrorsList'
-import AddressPicker from '@components/AddressPicker'
-import InputImages from '@components/InputImages'
-import PriceInput from '@components/PriceInput'
-import CheckBox from '@components/CheckBox'
-import Input from '@components/Input'
+// import EditableTextarea from '@components/EditableTextarea'
+// import FormWrapper from '@components/FormWrapper'
+// import DateTimePicker from '@components/DateTimePicker'
+// import ErrorsList from '@components/ErrorsList'
+// import AddressPicker from '@components/AddressPicker'
+// import InputImages from '@components/InputImages'
+// import PriceInput from '@components/PriceInput'
+// import CheckBox from '@components/CheckBox'
+// import Input from '@components/Input'
 
-import { DEFAULT_ADDRESS } from '@helpers/constants'
-import { SelectDirection } from '@components/SelectItem'
-import eventsUsersSelector from '@state/selectors/eventsUsersSelector'
-import eventsUsersSelectorByEventId from '@state/selectors/eventsUsersByEventIdSelector'
-import { SelectItemsList, SelectUserList } from '@components/SelectItemList'
+// import { DEFAULT_ADDRESS } from '@helpers/constants'
+// import { SelectDirection } from '@components/SelectItem'
+// import eventsUsersSelector from '@state/selectors/eventsUsersSelector'
+// import eventsUsersSelectorByEventId from '@state/selectors/eventsUsersByEventIdSelector'
+import { SelectUserList } from '@components/SelectItemList'
 // import usersSelectorByEventId from '@state/selectors/usersByEventIdSelector'
-import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+// import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
+import eventMansSelector from '@state/selectors/eventMansSelector'
+import eventWomansSelector from '@state/selectors/eventWomansSelector'
+import eventUsersInReserveSelector from '@state/selectors/eventUsersInReserveSelector'
+import eventUsersInBanSelector from '@state/selectors/eventUsersInBanSelector'
 
 const eventUsersFunc = (eventId) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
 
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
-    const eventAssistantsIds = eventUsers
-      .filter((item) => item.status === 'assistant' && item.user)
-      .map((item) => item.user?._id)
-    const eventMansIds = eventUsers
-      .filter(
-        (item) =>
-          item.user &&
-          item.user.gender == 'male' &&
-          (!item.status || item.status === '' || item.status === 'participant')
-      )
-      .map((item) => item.user._id)
-    const eventWomansIds = eventUsers
-      .filter(
-        (item) =>
-          item.user &&
-          item.user.gender == 'famale' &&
-          (!item.status || item.status === '' || item.status === 'participant')
-      )
-      .map((item) => item.user._id)
-    const eventReservedParticipantsIds = eventUsers
-      .filter((item) => item.user && item.status === 'reserve')
-      .map((item) => item.user._id)
-    const eventBannedParticipantsIds = eventUsers
-      .filter((item) => item.user && item.status === 'ban')
-      .map((item) => item.user._id)
+    const eventAssistantsIds = useRecoilValue(
+      eventAssistantsSelector(eventId)
+    ).map((user) => user._id)
+    const eventMansIds = useRecoilValue(eventMansSelector(eventId)).map(
+      (user) => user._id
+    )
+    const eventWomansIds = useRecoilValue(eventWomansSelector(eventId)).map(
+      (user) => user._id
+    )
+    const eventReservedParticipantsIds = useRecoilValue(
+      eventUsersInReserveSelector(eventId)
+    ).map((user) => user._id)
+    const eventBannedParticipantsIds = useRecoilValue(
+      eventUsersInBanSelector(eventId)
+    ).map((user) => user._id)
+
+    // const eventAssistantsIds = eventUsers
+    //   .filter((item) => item.status === 'assistant' && item.user)
+    //   .map((item) => item.user?._id)
+    // const eventMansIds = eventUsers
+    //   .filter(
+    //     (item) =>
+    //       item.user &&
+    //       item.user.gender == 'male' &&
+    //       (!item.status || item.status === '' || item.status === 'participant')
+    //   )
+    //   .map((item) => item.user._id)
+    // const eventWomansIds = eventUsers
+    //   .filter(
+    //     (item) =>
+    //       item.user &&
+    //       item.user.gender == 'famale' &&
+    //       (!item.status || item.status === '' || item.status === 'participant')
+    //   )
+    //   .map((item) => item.user._id)
+    // const eventReservedParticipantsIds = eventUsers
+    //   .filter((item) => item.user && item.status === 'reserve')
+    //   .map((item) => item.user._id)
+    // const eventBannedParticipantsIds = eventUsers
+    //   .filter((item) => item.user && item.status === 'ban')
+    //   .map((item) => item.user._id)
 
     const [assistantsIds, setAssistantsIds] = useState(eventAssistantsIds)
     const [mansIds, setMansIds] = useState(eventMansIds)

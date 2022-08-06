@@ -112,8 +112,6 @@ export default function Home(props) {
     (additionalBlock) => additionalBlock.showOnSite
   )
 
-  console.log('props.eventsUsers', props.eventsUsers)
-
   useEffect(() => {
     setLoggedUserState(props.loggedUser)
     setEventsState(props.events)

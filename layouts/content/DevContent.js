@@ -15,6 +15,7 @@ import userSelector from '@state/selectors/userSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
+import eventsAtom from '@state/atoms/eventsAtom'
 
 const DevCard = ({ title, data }) => {
   return (
@@ -33,11 +34,17 @@ const DevCard = ({ title, data }) => {
 }
 
 const DevContent = () => {
+  const events = useRecoilValue(eventsAtom)
   const users = useRecoilValue(usersAtom)
   const eventsUsers = useRecoilValue(eventsUsersAtom)
+
+  console.log('events', events)
+  console.log('users', users)
+  console.log('eventsUsers', eventsUsers)
   return (
     <div className="flex flex-col">
       <DevCard title="users" data={users} />
+      <DevCard title="events" data={events} />
       <DevCard title="eventsUsers" data={eventsUsers} />
     </div>
   )

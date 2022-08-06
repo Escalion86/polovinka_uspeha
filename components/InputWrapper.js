@@ -12,14 +12,11 @@ import Tooltip from './Tooltip'
 const SmallIconButton = ({ onClick, icon, dataTip, infoTextOnClick }) => {
   return (
     <Tooltip content={dataTip}>
-      <div className="relative">
+      <div className="relative" onClick={onClick}>
         <Popover>
           <PopoverHandler>
             {/*  */}
-            <div
-              onClick={onClick}
-              className="flex items-center justify-center p-1 bg-gray-100 border border-gray-400 rounded cursor-pointer group"
-            >
+            <div className="flex items-center justify-center p-1 bg-gray-100 border border-gray-400 rounded cursor-pointer group">
               <FontAwesomeIcon
                 className="w-4 h-4 duration-200 text-general group-hover:scale-125"
                 icon={icon}
@@ -70,7 +67,10 @@ const InputWrapper = ({
         {copyPasteButtons && (
           <>
             <SmallIconButton
-              onClick={() => copyToClipboard(value)}
+              onClick={() => {
+                console.log('value', value)
+                copyToClipboard(value)
+              }}
               icon={faCopy}
               dataTip="Копировать"
               infoTextOnClick="Текст скопирован"
