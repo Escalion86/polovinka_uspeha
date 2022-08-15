@@ -422,6 +422,14 @@ const Login = () => {
       </>
     ) : null
 
+  const isButtonDisabled =
+    !varifyPhone ||
+    (!isRegistrationProcess && inputPassword.length === 0) ||
+    (isRegistrationProcess &&
+      ((registrationLevel === 2 && inputPinCode.length !== 4) ||
+        (registrationLevel === 3 &&
+          (inputPassword.length === 0 || inputPasswordRepeat.length === 0))))
+
   return (
     <div className="box-border w-screen h-screen overflow-y-auto">
       {/* <Wave /> */}
@@ -577,23 +585,13 @@ const Login = () => {
                       submit()
                     }}
                     className={cn(
-                      !varifyPhone ||
-                        inputPassword.length === 0 ||
-                        (isRegistrationProcess &&
-                          registrationLevel === 2 &&
-                          inputPinCode.length !== 4)
+                      isButtonDisabled
                         ? 'bg-gray-200'
                         : 'bg-gray-500 focus:bg-general focus:border-2 focus:border-black hover:bg-general',
                       'block w-full h-12 text-white uppercase duration-300  border-0 outline-none  rounded-3xl'
                     )}
                     tabIndex={0}
-                    disabled={
-                      !varifyPhone ||
-                      inputPassword.length === 0 ||
-                      (isRegistrationProcess &&
-                        registrationLevel === 2 &&
-                        inputPinCode.length !== 4)
-                    }
+                    disabled={isButtonDisabled}
                   >
                     {isRegistrationProcess
                       ? registrationLevel === 1
