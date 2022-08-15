@@ -4,6 +4,7 @@ import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import InputImage from '@components/InputImage'
+import InputImages from '@components/InputImages'
 import PhoneInput from '@components/PhoneInput'
 import Textarea from '@components/Textarea'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
@@ -11,31 +12,39 @@ import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import { putData } from '@helpers/CRUD'
 import getZodiac from '@helpers/getZodiac'
 import useErrors from '@helpers/useErrors'
+import validateEmail from '@helpers/validateEmail'
+import { modalsFuncAtom } from '@state/atoms'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
   const user = props.loggedUser
-  const [name, setName] = useState(user?.name)
-  const [secondName, setSecondName] = useState(user?.secondName)
-  const [thirdName, setThirdName] = useState(user?.thirdName)
-  const [about, setAbout] = useState(user?.about)
-  const [interests, setInterests] = useState(user?.interests)
-  const [profession, setProfession] = useState(user?.profession)
-  const [orientation, setOrientation] = useState(user?.orientation)
-  const [gender, setGender] = useState(user?.gender)
-  const [email, setEmail] = useState(user ? user?.email : '')
-  const [phone, setPhone] = useState(user?.phone)
-  const [whatsapp, setWhatsapp] = useState(user?.whatsapp)
-  const [viber, setViber] = useState(user?.viber)
-  const [telegram, setTelegram] = useState(user?.telegram)
-  const [instagram, setInstagram] = useState(user?.instagram)
-  const [vk, setVk] = useState(user?.vk)
-  const [image, setImage] = useState(user?.image)
-  const [birthday, setBirthday] = useState(user?.birthday)
+  const [name, setName] = useState(user?.name ?? '')
+  const [secondName, setSecondName] = useState(user?.secondName ?? '')
+  const [thirdName, setThirdName] = useState(user?.thirdName ?? '')
+  const [about, setAbout] = useState(user?.about ?? '')
+  const [interests, setInterests] = useState(user?.interests ?? '')
+  const [profession, setProfession] = useState(user?.profession ?? '')
+  const [orientation, setOrientation] = useState(user?.orientation ?? '')
+  const [gender, setGender] = useState(user?.gender ?? null)
+  const [email, setEmail] = useState(user?.email ?? '')
+  const [phone, setPhone] = useState(user?.phone ?? '')
+  const [whatsapp, setWhatsapp] = useState(user?.whatsapp ?? '')
+  const [viber, setViber] = useState(user?.viber ?? '')
+  const [telegram, setTelegram] = useState(user?.telegram ?? '')
+  const [instagram, setInstagram] = useState(user?.instagram ?? '')
+  const [vk, setVk] = useState(user?.vk ?? '')
+  const [images, setImages] = useState(user?.images ?? [])
+  const [birthday, setBirthday] = useState(user?.birthday ?? '')
+
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const [errors, addError, removeError, clearErrors] = useErrors()
+
+  const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
+  const [message, setMessage] = useState('')
 
   const router = useRouter()
 
@@ -59,22 +68,23 @@ const QuestionnaireContent = (props) => {
     user?.telegram !== telegram ||
     user?.instagram !== instagram ||
     user?.vk !== vk ||
-    user?.image !== image ||
+    user?.images !== images ||
     user?.birthday !== birthday
 
   const onClickConfirm = async () => {
     clearErrors()
+    setMessage('')
     let error = false
-    if (!name) {
-      addError({ name: 'Необходимо ввести имя' })
-      error = true
-    }
+    // if (!name) {
+    //   addError({ name: 'Необходимо ввести имя' })
+    //   error = true
+    // }
     if (!secondName) {
       addError({ secondName: 'Необходимо ввести фамилию' })
       error = true
     }
     if (!gender) {
-      addError({ phone: 'Необходимо ввести пол' })
+      addError({ gender: 'Необходимо ввести пол' })
       error = true
     }
     if (!phone) {
@@ -101,6 +111,7 @@ const QuestionnaireContent = (props) => {
       error = true
     }
     if (!error) {
+      setIsWaitingToResponse(true)
       await putData(
         `/api/users/${user._id}`,
         {
@@ -119,22 +130,76 @@ const QuestionnaireContent = (props) => {
           telegram,
           instagram,
           vk,
-          image,
+          images,
           birthday,
         },
-        refreshPage
+        () => {
+          setMessage('Данные анкеты обновлены успешно')
+          refreshPage()
+        },
+        () => {
+          setMessage('')
+          addError({ response: 'Ошибка обновления данных' })
+        }
       )
+      // setIsWaitingToResponse(false)
     }
   }
+
+  useEffect(() => {
+    if (isWaitingToResponse) {
+      setIsWaitingToResponse(false)
+      // setMessage('Данные анкеты обновлены успешно')
+    }
+  }, [props])
+
+  useEffect(() => {
+    if (!name || !secondName || !phone || !gender) {
+      typeof modalsFunc.add === 'function' &&
+        modalsFunc.add({
+          id: 'questionnaireNotFilled',
+          title: 'Необходимо заполнить анкету',
+          text: (
+            <>
+              <span>
+                Для возможности записи на мероприятия необходимо заполнить
+                обязательные поля анкеты:
+              </span>
+              <ul className="ml-4 list-disc">
+                <li>Имя</li>
+                <li>Фамилия</li>
+                <li>Дата рождения</li>
+                <li>Пол</li>
+              </ul>
+            </>
+          ),
+          onConfirm: () => {},
+          confirmButtonName: 'Хорошо',
+          showDecline: false,
+        })
+    }
+  }, [modalsFunc])
 
   return (
     <div className="flex flex-col h-screen px-2 mb-2 gap-y-2">
       <FormWrapper>
-        <InputImage
+        {/* <InputImage
           label="Фотография"
           directory="users"
           image={image}
           onChange={setImage}
+          noImage={image ?? `/img/users/${gender ?? 'male'}.jpg`}
+        /> */}
+        <InputImages
+          label="Фотографии"
+          directory="users"
+          images={images}
+          onChange={(images) => {
+            removeError('images')
+            setImages(images)
+          }}
+          // required
+          error={errors.images}
         />
         <Input
           label="Имя"
@@ -174,7 +239,15 @@ const QuestionnaireContent = (props) => {
           error={errors.thirdName}
           forGrid
         />
-        <GenderPicker required gender={gender} onChange={setGender} />
+        <GenderPicker
+          required
+          gender={gender}
+          onChange={(value) => {
+            removeError('gender')
+            setGender(value)
+          }}
+          error={errors.gender}
+        />
         <OrientationPicker
           orientation={orientation}
           onChange={setOrientation}
@@ -189,11 +262,12 @@ const QuestionnaireContent = (props) => {
         <FormWrapper twoColumns>
           <PhoneInput
             required
-            label="Телефон"
+            label="Телефон (логин)"
             value={phone}
             onChange={setPhone}
             error={errors.phone}
             copyPasteButtons
+            disabled
           />
           <PhoneInput
             label="Whatsapp"
@@ -243,7 +317,7 @@ const QuestionnaireContent = (props) => {
           showZodiac
           required
         />
-        <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
+        {/* <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
         <Textarea
           label="Профессия"
           value={profession}
@@ -255,14 +329,18 @@ const QuestionnaireContent = (props) => {
           value={interests}
           onChange={setInterests}
           rows={4}
-        />
+        /> */}
       </FormWrapper>
       <ErrorsList errors={errors} />
       <Button
         name="Применить"
         disabled={!formChanged}
         onClick={onClickConfirm}
+        loading={isWaitingToResponse}
       />
+      {message && !isWaitingToResponse && (
+        <div className="flex flex-col col-span-2 text-success">{message}</div>
+      )}
     </div>
   )
 }

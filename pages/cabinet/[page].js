@@ -49,6 +49,7 @@ import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
 import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import eventsUsersDeleteByEventIdSelector from '@state/selectors/eventsUsersDeleteByEventIdSelector'
+import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -238,11 +239,22 @@ export const getServerSideProps = async (context) => {
   const { params } = context
   const { page } = params
 
+  console.log('params', params)
+  console.log('page', page)
+
   console.log('session', session)
   if (!session?.user) {
     return {
       redirect: {
         destination: `/`,
+      },
+    }
+  }
+
+  if (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) {
+    return {
+      redirect: {
+        destination: `/cabinet/questionnaire`,
       },
     }
   }

@@ -18,6 +18,8 @@ const PhoneInput = ({
       labelClassName={labelClassName}
       onChange={onChange}
       copyPasteButtons={copyPasteButtons}
+      copyButton={copyPasteButtons}
+      pasteButton={!disabled && copyPasteButtons}
       value={value}
       required={required}
     >

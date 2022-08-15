@@ -16,6 +16,7 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import Image from 'next/image'
 import Tooltip from '../../components/Tooltip'
+import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 
 const UserCard = ({ userId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -49,14 +50,14 @@ const UserCard = ({ userId }) => {
         </div>
         <img
           className="object-cover w-20 h-20 tablet:w-24 tablet:h-24"
-          src={user.image}
+          src={getUserAvatarSrc(user)}
           alt="user"
           // width={48}
           // height={48}
         />
         <div className="flex flex-col flex-1 text-xl font-bold">
           <div className="flex">
-            <div className="flex flex-wrap flex-1 px-2 gap-x-1 items-center">
+            <div className="flex flex-wrap items-center flex-1 px-2 gap-x-1">
               {userStatusArr?.value === 'member' && (
                 <Tooltip content="Участник клуба">
                   <div className="w-6 h-6">

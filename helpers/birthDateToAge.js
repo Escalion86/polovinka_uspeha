@@ -1,6 +1,7 @@
 import formatDate from './formatDate'
 
 function textAge(age) {
+  if (age === 0) return 'лет'
   if (!age) return
   var txt,
     count = age % 100

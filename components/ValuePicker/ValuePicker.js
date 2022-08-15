@@ -11,7 +11,7 @@ const ValueItem = ({
 }) => (
   <button
     className={cn(
-      `flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded cursor-pointer gap-x-2 flex-nowrap`,
+      `z-10 flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded cursor-pointer gap-x-2 flex-nowrap`,
       `border-${color}`,
       active ? `text-white bg-${color}` : `text-${color} bg-white`
     )}
@@ -52,10 +52,13 @@ const ValuePicker = ({
       )}
       <div
         className={cn(
-          'flex flex-wrap gap-x-2 gap-y-1 max-w-fit',
-          error ? 'border border-red-500 rounded -m-0.5 p-0.5' : ''
+          'relative flex flex-wrap gap-x-2 gap-y-1 max-w-fit'
+          // error ? 'border border-red-500 rounded -m-0.5 p-0.5' : ''
         )}
       >
+        {error && (
+          <div className="top-0 bottom-0 right-0 left-0 absolute -m-0.5 border border-red-500 rounded" />
+        )}
         {valuesArray.map((item) => (
           <ValueItem
             key={name + item.value}

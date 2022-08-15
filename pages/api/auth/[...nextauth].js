@@ -5,7 +5,7 @@ import Users from '@models/Users'
 import CRUD from '@server/CRUD'
 // import Auth0Provider from 'next-auth/providers/auth0'
 import GoogleProvider from 'next-auth/providers/google'
-import { fetchingUserByEmail } from '@helpers/fetchers'
+import { fetchingUserByEmail, fetchingUserByPhone } from '@helpers/fetchers'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
 import usersSchema from '@schemas/usersSchema'
@@ -71,21 +71,26 @@ export default async function auth(req, res) {
         id: 'credentials', // <- add this line
         name: 'credentials',
         credentials: {
-          username: { label: 'EMail', type: 'text', placeholder: '' },
+          phone: { label: 'Phone', type: 'text', placeholder: '' },
           password: { label: 'Password', type: 'password' },
         },
-        authorize: async (credentials) => {
-          const { username, password } = credentials
-          if (username && password) {
+        authorize: async (credentials, req) => {
+          const { phone, password } = credentials
+          // console.log('---------------- credentials', credentials)
+          // return { name: 'test', email: '123@123.ru' }
+          if (phone && password) {
             await dbConnect()
-            const userEmail = username.toLowerCase()
-            const fetchedUser = await Users.find({ email: userEmail, password })
-            console.log('fetchedUser', fetchedUser)
-            if (fetchedUser.length > 0) {
-              console.log('fetchedUser[0].name', fetchedUser[0]?.name)
+            // const userEmail = username.toLowerCase()
+            const fetchedUser = await Users.find({ phone, password })
+            // console.log('fetchedUser', fetchedUser)
+            // return null
+            if (fetchedUser?.length > 0) {
+              // return { ...fetchedUser[0], name: 'test' }
+              // console.log('fetchedUser[0].name', fetchedUser[0]?.name)
               return {
-                name: fetchedUser[0].name,
-                email: fetchedUser[0].email,
+                name: phone,
+                // email: 'test',
+                // phone: fetchedUser[0].phone,
               }
             } else {
               return null
@@ -108,14 +113,22 @@ export default async function auth(req, res) {
       // ...add more providers here
     ],
     callbacks: {
-      async session({ session, token }) {
-        const { user } = session
-        const userEmail = user.email?.toLowerCase()
+      // async jwt({ token, user }) {
+      //   return { ...token, ...user }
+      // },
+      async session({ session, user, token }) {
+        // console.log('------- user', user)
+        // console.log('------- session.user', session.user)
+        // console.log('token', token)
+        // return Promise.resolve(session)
+        // const { user } = session
+        const userPhone = session.user.name
         // const cached = await dbConnect()
-        const result = await fetchingUserByEmail(
-          userEmail,
+        const result = await fetchingUserByPhone(
+          userPhone,
           process.env.NEXTAUTH_SITE
         )
+
         // console.log('result', result)
         // const result = await Users.find({
         //   email: userEmail,
@@ -157,34 +170,36 @@ export default async function auth(req, res) {
           // for (var key in result[0]) {
           //   user[key] = result[0][key]
           // }
-          user._id = result[0]._id
-          user.role = result[0].role
-          user.name = result[0].name
-          user.secondName = result[0].secondName
-          user.thirdName = result[0].thirdName
-          user.phone = result[0].phone
-          user.whatsapp = result[0].whatsapp
-          user.viber = result[0].viber
-          user.telegram = result[0].telegram
-          user.instagram = result[0].instagram
-          user.vk = result[0].vk
-          user.gender = result[0].gender
-          user.birthday = result[0].birthday
-          user.lastActivityAt = result[0].lastActivityAt
-          user.orientation = result[0].orientation
-          user.profession = result[0].profession
-          user.interests = result[0].interests
-          user.about = result[0].about
-          user.status = result[0].status
+          session.user._id = result[0]._id
+          session.user.role = result[0].role
+          session.user.name = result[0].name
+          session.user.secondName = result[0].secondName
+          session.user.thirdName = result[0].thirdName
+          session.user.phone = result[0].phone
+          session.user.email = result[0].email
+          session.user.whatsapp = result[0].whatsapp
+          session.user.viber = result[0].viber
+          session.user.telegram = result[0].telegram
+          session.user.instagram = result[0].instagram
+          session.user.vk = result[0].vk
+          session.user.gender = result[0].gender
+          session.user.birthday = result[0].birthday
+          session.user.lastActivityAt = result[0].lastActivityAt
+          session.user.orientation = result[0].orientation
+          session.user.profession = result[0].profession
+          session.user.interests = result[0].interests
+          session.user.about = result[0].about
+          session.user.status = result[0].status
+          session.user.images = result[0].images
 
           if (result[0].role === 'client') {
           } else {
             // Если пользователь авторизован, то обновляем только время активности
             await Users.findOneAndUpdate(
-              { email: userEmail },
+              { phone: userPhone },
               {
                 lastActivityAt: Date.now(),
-                prevActivityAt: user.lastActivityAt,
+                prevActivityAt: session.user.lastActivityAt,
               }
             )
           }
@@ -193,9 +208,9 @@ export default async function auth(req, res) {
           await CRUD(Users, {
             method: 'POST',
             body: {
-              name: user.name,
-              email: userEmail,
-              image: user.image,
+              name: session.user.name,
+              phone: userPhone,
+              images: [session.user.image],
               role: 'client',
             },
           })

@@ -554,7 +554,7 @@ const eventFunc = (eventId, clone = false) => {
                   </>
                 )}
               </FormWrapper>
-              <FormWrapper flex className="min-h-[26px]">
+              <FormWrapper flex className="min-h-[26px] flex-wrap">
                 <CheckBox
                   checked={usersStatusAccess?.member}
                   labelPos="left"
@@ -567,7 +567,7 @@ const eventFunc = (eventId, clone = false) => {
                   label="Участник клуба"
                 />
                 {usersStatusAccess?.member && (
-                  <>
+                  <div className="min-w-max">
                     <PriceInput
                       label="Скидка"
                       value={usersStatusDiscount?.member ?? 0}
@@ -581,7 +581,7 @@ const eventFunc = (eventId, clone = false) => {
                     <div>
                       Итого: {(price - usersStatusDiscount?.member) / 100} ₽
                     </div>
-                  </>
+                  </div>
                 )}
               </FormWrapper>
               <FormWrapper title="Ограничения" flex>

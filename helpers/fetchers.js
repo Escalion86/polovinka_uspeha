@@ -82,6 +82,17 @@ export async function fetchingUserByEmail(
   return resp
 }
 
+export async function fetchingUserByPhone(
+  phone,
+  domen = process.env.NEXTAUTH_SITE
+) {
+  console.log('Запущен fetchingUserByPhone')
+  const resp = await fetch(`${domen}/api/users/byPhone/${phone}`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+  return resp
+}
+
 export async function fetchingEventsUsers(domen = process.env.NEXTAUTH_SITE) {
   console.log('Запущен fetchingEventsUsers')
   const resp = await fetch(`${domen}/api/eventsusers`)

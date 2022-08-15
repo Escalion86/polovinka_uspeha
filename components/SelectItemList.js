@@ -157,10 +157,9 @@ export const SelectItemList = ({
           )}
         >
           <div
-            className={cn(
-              'flex items-center justify-center flex-1 transparent',
-              { 'duration-200 group-hover:scale-110': addButtonIsActive }
-            )}
+            className={cn('flex items-center justify-center transparent', {
+              'duration-200 group-hover:scale-110': addButtonIsActive,
+            })}
           >
             <FontAwesomeIcon
               className={

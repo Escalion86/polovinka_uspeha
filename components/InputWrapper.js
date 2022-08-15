@@ -8,6 +8,7 @@ import {
   PopoverContent,
 } from '@material-tailwind/react'
 import Tooltip from './Tooltip'
+import Label from './Label'
 
 const SmallIconButton = ({ onClick, icon, dataTip, infoTextOnClick }) => {
   return (
@@ -44,6 +45,8 @@ const InputWrapper = ({
   children,
   onChange,
   copyPasteButtons,
+  copyButton = true,
+  pasteButton = true,
   value,
   className,
   required,
@@ -53,33 +56,26 @@ const InputWrapper = ({
 
   return (
     <>
-      <label
-        className={cn(
-          'flex items-center justify-end text-text leading-4 text-right',
-          labelClassName
-        )}
-      >
-        {label}
-        {required && <span className="text-red-700">*</span>}
-      </label>
+      <Label text={label} className={labelClassName} required={required} />
       <div className={cn('flex items-center gap-x-1', className)}>
         {children}
         {copyPasteButtons && (
           <>
-            <SmallIconButton
-              onClick={() => {
-                console.log('value', value)
-                copyToClipboard(value)
-              }}
-              icon={faCopy}
-              dataTip="Копировать"
-              infoTextOnClick="Текст скопирован"
-            />
-            <SmallIconButton
-              onClick={pasteFromClipboard}
-              icon={faPaste}
-              dataTip="Вставить"
-            />
+            {copyButton && (
+              <SmallIconButton
+                onClick={() => copyToClipboard(value)}
+                icon={faCopy}
+                dataTip="Копировать"
+                infoTextOnClick="Текст скопирован"
+              />
+            )}
+            {pasteButton && (
+              <SmallIconButton
+                onClick={pasteFromClipboard}
+                icon={faPaste}
+                dataTip="Вставить"
+              />
+            )}
           </>
         )}
       </div>

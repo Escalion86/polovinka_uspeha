@@ -21,7 +21,12 @@ import userViewFunc from './modalsFunc/userViewFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const addModal = (props) => setModals((modals) => [...modals, props])
+  const addModal = (props) =>
+    setModals((modals) => {
+      if (props.id && modals.find((modal) => modal.id === props.id))
+        return modals
+      return [...modals, props]
+    })
 
   return {
     add: addModal,

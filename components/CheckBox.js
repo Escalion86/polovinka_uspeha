@@ -1,4 +1,5 @@
 import cn from 'classnames'
+import Label from './Label'
 
 const CheckBox = ({
   checked = false,
@@ -11,23 +12,25 @@ const CheckBox = ({
   name,
   readOnly = false,
 }) => {
-  const Label = () => (
-    <label
-      className={cn(
-        'flex justify-end items-center font-normal dark:text-white',
-        labelClassName
-      )}
-      htmlFor={name}
-    >
-      {label}
-    </label>
-  )
+  // const Label = () => (
+  //   <label
+  //     className={cn(
+  //       'flex justify-end items-center font-normal dark:text-white',
+  //       labelClassName
+  //     )}
+  //     htmlFor={name}
+  //   >
+  //     {label}
+  //   </label>
+  // )
 
   if (readOnly && !checked) return null
 
   return (
     <>
-      {label && labelPos === 'left' && <Label />}
+      {label && labelPos === 'left' && (
+        <Label text={label} className={labelClassName} htmlFor={name} />
+      )}
       {(!readOnly || checked) && (
         <div className="flex items-center">
           <input

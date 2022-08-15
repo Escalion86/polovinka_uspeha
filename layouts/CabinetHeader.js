@@ -1,4 +1,5 @@
 import Divider from '@components/Divider'
+import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
@@ -44,8 +45,8 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
             <a>
               <img
                 className="h-12"
-                src="/img/UniPlatform2.png"
-                alt="uniPlatform"
+                src="/img/logo_horizontal.png"
+                alt="logo"
                 // width={40}
                 // height={40}
               />
@@ -70,10 +71,7 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
             <img
               // onClick={() => closeMenu()}
               className="absolute z-10 border border-opacity-50 rounded-full cursor-pointer border-whiteobject-cover h-11 w-11 min-w-9"
-              src={
-                user?.image ??
-                `/img/users/${user?.gender ? user.gender : 'male'}.jpg`
-              }
+              src={getUserAvatarSrc(user)}
               alt="Avatar"
             />
             <div className="absolute top-0 z-0 w-0 h-0 overflow-hidden duration-300 scale-0 translate-x-[40%] -translate-y-1/2 group-hover:w-auto group-hover:h-auto group-hover:translate-y-0 group-hover:translate-x-0 group-hover:scale-100 border border-gray-800 rounded-tr-3xl">

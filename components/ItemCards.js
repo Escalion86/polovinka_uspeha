@@ -1,5 +1,6 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import formatDateTime from '@helpers/formatDateTime'
+import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 // import roleRus from '@helpers/roleRus'
 // import { useSelector } from 'react-redux'
 import cn from 'classnames'
@@ -74,7 +75,7 @@ export const UserItem = ({ item, onClick = null, active = false }) => (
     {item.image && (
       <img
         className="object-cover h-10 aspect-1"
-        src={item.image}
+        src={getUserAvatarSrc(item)}
         alt="user"
         // width={48}
         // height={48}

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Zoom from 'react-medium-image-zoom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -6,6 +6,7 @@ import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { sendImage } from '@helpers/cloudinary'
 import cn from 'classnames'
 import LoadingSpinner from './LoadingSpinner'
+import Label from './Label'
 
 const InputImages = ({
   images = [],
@@ -14,6 +15,7 @@ const InputImages = ({
   label = null,
   directory = null,
   maxImages = 4,
+  labelClassName,
 }) => {
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
@@ -32,7 +34,6 @@ const InputImages = ({
       sendImage(
         newImage,
         (imageUrl) => {
-          setAddingImage(false)
           onChange([...images, imageUrl])
         },
         directory
@@ -42,13 +43,12 @@ const InputImages = ({
     }
   }
 
+  useEffect(() => setAddingImage(false), [images])
+
   return (
     <>
       {label && (
-        <label className="flex items-center justify-end leading-4 text-right">
-          {label}
-          {required && <span className="text-red-700">*</span>}
-        </label>
+        <Label text={label} className={labelClassName} required={required} />
       )}
       <div
         className={cn(

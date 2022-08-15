@@ -16,32 +16,31 @@ import GenderPicker from '@components/ValuePicker/GenderPicker'
 import ErrorsList from '@components/ErrorsList'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import validateEmail from '@helpers/validateEmail'
+import InputImages from '@components/InputImages'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
 
-    const [name, setName] = useState(user ? user?.name : '')
-    const [secondName, setSecondName] = useState(user ? user?.secondName : '')
-    const [thirdName, setThirdName] = useState(user ? user?.thirdName : '')
-    const [about, setAbout] = useState(user ? user?.about : '')
-    const [interests, setInterests] = useState(user ? user?.interests : '')
-    const [profession, setProfession] = useState(user ? user?.profession : '')
-    const [orientation, setOrientation] = useState(
-      user ? user?.orientation : ''
-    )
-    const [gender, setGender] = useState(user ? user?.gender : null)
-    const [email, setEmail] = useState(user ? user?.email : '')
-    const [phone, setPhone] = useState(user ? user?.phone : '')
-    const [whatsapp, setWhatsapp] = useState(user ? user?.whatsapp : '')
-    const [viber, setViber] = useState(user ? user?.viber : '')
-    const [telegram, setTelegram] = useState(user ? user?.telegram : '')
-    const [instagram, setInstagram] = useState(user ? user?.instagram : '')
-    const [vk, setVk] = useState(user ? user?.vk : '')
-    const [image, setImage] = useState(user ? user?.image : '')
-    const [birthday, setBirthday] = useState(user ? user?.birthday : '')
-    const [status, setStatus] = useState(user ? user?.status : 'novice')
+    const [name, setName] = useState(user?.name ?? '')
+    const [secondName, setSecondName] = useState(user?.secondName ?? '')
+    const [thirdName, setThirdName] = useState(user?.thirdName ?? '')
+    const [about, setAbout] = useState(user?.about ?? '')
+    const [interests, setInterests] = useState(user?.interests ?? '')
+    const [profession, setProfession] = useState(user?.profession ?? '')
+    const [orientation, setOrientation] = useState(user?.orientation ?? '')
+    const [gender, setGender] = useState(user?.gender ?? null)
+    const [email, setEmail] = useState(user?.email ?? '')
+    const [phone, setPhone] = useState(user?.phone ?? '')
+    const [whatsapp, setWhatsapp] = useState(user?.whatsapp ?? '')
+    const [viber, setViber] = useState(user?.viber ?? '')
+    const [telegram, setTelegram] = useState(user?.telegram ?? '')
+    const [instagram, setInstagram] = useState(user?.instagram ?? '')
+    const [vk, setVk] = useState(user?.vk ?? '')
+    const [images, setImages] = useState(user?.images ?? [])
+    const [birthday, setBirthday] = useState(user?.birthday ?? '')
+    const [status, setStatus] = useState(user?.status ?? 'novice')
 
     const [errors, addError, removeError, clearErrors] = useErrors()
 
@@ -63,7 +62,7 @@ const userFunc = (userId, clone = false) => {
         error = true
       }
       if (!gender) {
-        addError({ phone: 'Необходимо ввести пол' })
+        addError({ gender: 'Необходимо ввести пол' })
         error = true
       }
       if (!phone) {
@@ -109,7 +108,7 @@ const userFunc = (userId, clone = false) => {
             telegram,
             instagram,
             vk,
-            image,
+            images,
             birthday,
             status,
           },
@@ -183,18 +182,29 @@ const userFunc = (userId, clone = false) => {
       telegram,
       instagram,
       vk,
-      image,
+      images,
       birthday,
       status,
     ])
 
     return (
       <FormWrapper>
-        <InputImage
+        {/* <InputImage
           label="Фотография"
           directory="users"
           image={image}
           onChange={setImage}
+        /> */}
+        <InputImages
+          label="Фотографии"
+          directory="users"
+          images={images}
+          onChange={(images) => {
+            removeError('images')
+            setImages(images)
+          }}
+          // required
+          error={errors.images}
         />
         <Input
           label="Имя"
@@ -315,7 +325,7 @@ const userFunc = (userId, clone = false) => {
           onChange={setStatus}
           error={errors.status}
         />
-        <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
+        {/* <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
         <Textarea
           label="Профессия"
           value={profession}
@@ -327,7 +337,7 @@ const userFunc = (userId, clone = false) => {
           value={interests}
           onChange={setInterests}
           rows={4}
-        />
+        /> */}
         <ErrorsList errors={errors} />
       </FormWrapper>
     )
