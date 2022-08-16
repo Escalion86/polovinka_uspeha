@@ -48,7 +48,9 @@ const CheckBox = ({
           />
         </div>
       )}
-      {label && labelPos !== 'left' && <Label />}
+      {label && labelPos !== 'left' && (
+        <Label text={label} className={labelClassName} htmlFor={name} />
+      )}
     </>
   )
 }

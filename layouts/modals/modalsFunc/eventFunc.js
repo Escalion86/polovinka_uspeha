@@ -537,7 +537,7 @@ const eventFunc = (eventId, clone = false) => {
                   label="Новичок"
                 />
                 {usersStatusAccess?.novice && (
-                  <>
+                  <div className="flex min-w-min flex-nowrap gap-x-1">
                     <PriceInput
                       label="Скидка"
                       value={usersStatusDiscount?.novice ?? 0}
@@ -551,7 +551,7 @@ const eventFunc = (eventId, clone = false) => {
                     <div>
                       Итого: {(price - usersStatusDiscount?.novice) / 100} ₽
                     </div>
-                  </>
+                  </div>
                 )}
               </FormWrapper>
               <FormWrapper flex className="min-h-[26px] flex-wrap">
@@ -567,7 +567,7 @@ const eventFunc = (eventId, clone = false) => {
                   label="Участник клуба"
                 />
                 {usersStatusAccess?.member && (
-                  <div className="min-w-max">
+                  <div className="flex min-w-min flex-nowrap gap-x-1">
                     <PriceInput
                       label="Скидка"
                       value={usersStatusDiscount?.member ?? 0}

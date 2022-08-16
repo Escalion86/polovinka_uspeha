@@ -59,8 +59,8 @@ const eventViewFunc = (eventId, clone = false) => {
     //   : null
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
-    const eventMansCount = useRecoilValue(eventMansSelector(eventId)).length
-    const eventWomansCount = useRecoilValue(eventWomansSelector(eventId)).length
+    // const eventMansCount = useRecoilValue(eventMansSelector(eventId)).length
+    // const eventWomansCount = useRecoilValue(eventWomansSelector(eventId)).length
 
     const eventLoggedUserStatus = useRecoilValue(
       loggedUserToEventStatusSelector(eventId)
@@ -82,7 +82,7 @@ const eventViewFunc = (eventId, clone = false) => {
     //     (!item.status || item.status === '' || item.status === 'participant')
     // ).length
 
-    const eventParticipantsCount = eventWomansCount + eventMansCount
+    // const eventParticipantsCount = eventWomansCount + eventMansCount
 
     // const router = useRouter()
 
@@ -142,17 +142,17 @@ const eventViewFunc = (eventId, clone = false) => {
     //   },
     // ]
 
-    const daysFromNow = getDaysFromNow(event.date, false, false)
+    // const daysFromNow = getDaysFromNow(event.date, false, false)
 
-    const canUserSignUp =
-      typeof event.maxUsers !== 'number' ||
-      event.maxUsers > eventParticipantsCount
-        ? loggedUser?.gender === 'male'
-          ? event.maxMans === null || eventMansCount < event.maxMans
-          : loggedUser?.gender === 'woman'
-          ? event.maxWomans === null || eventWomansCount < event.maxWomans
-          : false
-        : false
+    // const canUserSignUp =
+    //   typeof event.maxUsers !== 'number' ||
+    //   event.maxUsers > eventParticipantsCount
+    //     ? loggedUser?.gender === 'male'
+    //       ? event.maxMans === null || eventMansCount < event.maxMans
+    //       : loggedUser?.gender === 'woman'
+    //       ? event.maxWomans === null || eventWomansCount < event.maxWomans
+    //       : false
+    //     : false
 
     const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 

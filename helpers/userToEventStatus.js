@@ -72,7 +72,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'event expired',
     }
 
-  if (isUserQuestionnaireFilled(user))
+  if (!isUserQuestionnaireFilled(user))
     return {
       canSee,
       alreadySignIn,
