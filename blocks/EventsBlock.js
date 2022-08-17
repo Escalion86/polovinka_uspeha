@@ -97,7 +97,7 @@ const Button = ({ title, className, href, onClick }) => {
 //   )
 // }
 
-const EventsBlock = ({ events, maxEvents }) => {
+const EventsBlock = ({ events, maxEvents, hideBlockOnZeroEvents = false }) => {
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
 
   const loggedUser = useRecoilValue(loggedUserAtom)
@@ -114,22 +114,26 @@ const EventsBlock = ({ events, maxEvents }) => {
 
   const filteredEvents = visibleEvents.slice(0, maxShowedEvents)
 
-  // if (!events || events.length === 0) return null
+  if (hideBlockOnZeroEvents && filteredEvents?.length === 0) return null
+
   return (
     <BlockContainer id="events" className="bg-gray-200">
       <H3>Ближайшие мероприятия</H3>
       {/* <div className="grid gap-6 tablet:grid-cols-2 laptop:grid-cols-4"> */}
       <div className="flex flex-col items-center w-full gap-4">
-        {filteredEvents?.length ? (
+        {
+          // filteredEvents?.length ? (
           filteredEvents
             .sort((a, b) => (a.date < b.date ? -1 : 1))
             .map((event, index) => (
               <EventCard key={'event' + index} eventId={event._id} noButtons />
               // <CardEvent key={'event' + index} event={event} />
             ))
-        ) : (
-          <P>Будущих мероприятий не запланировано</P>
-        )}
+          // )
+          //  : (
+          //   <P>Будущих мероприятий не запланировано</P>
+          // )
+        }
         {maxEvents && events?.length > maxShowedEvents && (
           <Button title="Посмотреть все" href="/events" />
         )}
