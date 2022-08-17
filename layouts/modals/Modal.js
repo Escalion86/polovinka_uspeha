@@ -8,12 +8,10 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { modalsAtom } from '@state/atoms'
 import { useSetRecoilState } from 'recoil'
-import Divider from '@components/Divider'
-import Button from '@components/Button'
-import cn from 'classnames'
 import ModalButtons from '@layouts/modals/ModalButtons'
 import { useRouter } from 'next/router'
-import ReactTooltip from 'react-tooltip'
+import Tooltip from '../../components/Tooltip'
+import cn from 'classnames'
 
 const Modal = ({
   Children,
@@ -33,16 +31,18 @@ const Modal = ({
   onDecline,
   confirmButtonName,
   declineButtonName,
+  showConfirm,
+  showDecline,
 }) => {
   // const [rendered, setRendered] = useState(false)
-  const [preventCloseFunc, setPreventCloseFunc] = useState(null)
+  // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
   const [onDeclineFunc, setOnDeclineFunc] = useState(null)
   const setModals = useSetRecoilState(modalsAtom)
   const [close, setClose] = useState(false)
 
   const closeModal = () => {
-    onClose && onClose()
+    onClose && typeof onClose === 'function' && onClose()
     setClose(true)
     setTimeout(
       () => setModals((modals) => modals.filter((modal, i) => i !== index)),
@@ -58,13 +58,13 @@ const Modal = ({
 
   const onConfirmClick = () => {
     if (onConfirmFunc) return onConfirmFunc(refreshPage)
-    onConfirm && onConfirm(refreshPage)
+    onConfirm && typeof onConfirm === 'function' && onConfirm(refreshPage)
     closeModal()
   }
 
   const onDeclineClick = () => {
     if (onDeclineFunc) return onDeclineFunc()
-    onDecline && onDecline()
+    onDecline && typeof onDecline === 'function' && onDecline()
     closeModal()
   }
 
@@ -93,8 +93,10 @@ const Modal = ({
   return (
     <motion.div
       className={
-        'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 items-center justify-center w-screen h-screen overflow-y-auto bg-gray-800' +
-        (subModalText ? ' pt-10 pb-5' : ' py-5')
+        cn(
+          'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 items-center justify-center w-screen h-screen tablet:overflow-y-auto bg-gray-800',
+          subModalText ? 'tablet:pt-10 tablet:pb-5' : 'tablet:py-5'
+        )
         //  + (rendered ? ' opacity-100' : ' opacity-0')
       }
       initial={{ opacity: 0 }}
@@ -105,7 +107,7 @@ const Modal = ({
       <motion.div
         className={
           cn(
-            'relative min-w-84 w-[95%] tablet:w-9/12 tablet:min-w-156 px-3 pb-3 duration-300 my-auto bg-white border-l rounded-lg border-primary',
+            'flex flex-col h-screen tablet:h-auto relative min-w-84 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 px-2 tablet:px-3 pb-3 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
             title ? 'py-3' : 'py-12'
           )
           // + (rendered ? '' : ' scale-50')
@@ -123,7 +125,8 @@ const Modal = ({
             </div>
           </div>
         )}
-        <div className="absolute right-3 top-3" data-tip="Закрыть">
+        {/* <Tooltip content="Закрыть"> */}
+        <div className="absolute right-3 top-3">
           <FontAwesomeIcon
             className="w-6 h-6 text-black duration-200 transform cursor-pointer hover:scale-110"
             icon={faTimes}
@@ -131,6 +134,7 @@ const Modal = ({
             onClick={onDeclineClick}
           />
         </div>
+        {/* </Tooltip> */}
         {title && (
           <div className="mx-10 mb-2 text-lg font-bold leading-6 text-center whitespace-pre-line">
             {title}
@@ -164,26 +168,30 @@ const Modal = ({
         {/* {noPropsToChildren
           ? children
           : cloneElement(children, { onClose: closeModal, setBeforeCloseFunc })} */}
-        {Children && (
-          <Children
-            closeModal={closeModal}
-            setOnConfirmFunc={(func) =>
-              setOnConfirmFunc(func ? () => func : null)
-            }
-            setOnDeclineFunc={(func) =>
-              setOnDeclineFunc(func ? () => func : null)
-            }
-          />
-        )}
+        <div className="flex-1 px-2 overflow-y-auto tablet:px-0">
+          {Children && (
+            <Children
+              closeModal={closeModal}
+              setOnConfirmFunc={(func) =>
+                setOnConfirmFunc(func ? () => func : null)
+              }
+              setOnDeclineFunc={(func) =>
+                setOnDeclineFunc(func ? () => func : null)
+              }
+            />
+          )}
+        </div>
+
         {(onConfirm || onConfirmFunc) && (
           <ModalButtons
             confirmName={confirmButtonName}
             declineName={declineButtonName}
             onConfirmClick={onConfirmClick}
             onDeclineClick={onDeclineClick}
+            showConfirm={showConfirm}
+            showDecline={showDecline}
           />
         )}
-        <ReactTooltip effect="solid" delayShow={400} type="dark" />
       </motion.div>
     </motion.div>
   )

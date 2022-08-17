@@ -1,3 +1,8 @@
+import {
+  DEFAULT_USERS_STATUS_ACCESS,
+  DEFAULT_USERS_STATUS_DISCOUNT,
+} from '@helpers/constants'
+
 const eventsSchema = {
   directionId: {
     type: String,
@@ -21,22 +26,68 @@ const eventsSchema = {
     type: Date,
     default: null,
   },
+  duration: {
+    type: Number,
+    default: 60, // минут
+  },
   address: {
     type: Map,
     of: String,
   },
   status: {
     type: String,
-    default: '',
+    default: 'active',
   },
   images: {
     type: Array,
     default: [],
   },
+  organizerId: {
+    type: String,
+    default: null,
+  },
   price: {
     type: Number,
     max: [99999999, 'Сумма не может превышать 999999,99 руб'],
     default: null,
+  },
+  maxParticipants: {
+    type: Number,
+    default: null,
+  },
+  maxMans: {
+    type: Number,
+    default: null,
+  },
+  maxWomans: {
+    type: Number,
+    default: null,
+  },
+  minMansAge: {
+    type: Number,
+    default: null,
+  },
+  maxMansAge: {
+    type: Number,
+    default: null,
+  },
+  minWomansAge: {
+    type: Number,
+    default: null,
+  },
+  maxWomansAge: {
+    type: Number,
+    default: null,
+  },
+  usersStatusAccess: {
+    type: Map,
+    of: Boolean,
+    default: DEFAULT_USERS_STATUS_ACCESS,
+  },
+  usersStatusDiscount: {
+    type: Map,
+    of: Number,
+    default: DEFAULT_USERS_STATUS_DISCOUNT,
   },
   showOnSite: {
     type: Boolean,

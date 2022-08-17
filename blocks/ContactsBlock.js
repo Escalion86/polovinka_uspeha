@@ -13,26 +13,53 @@ const ContactImage = ({ src, href }) => (
   </a>
 )
 
-const ContactsBlock = () => (
+const ContactsBlock = ({ siteSettings }) => (
   <BlockContainer id="contacts" small>
     <H3>Контакты</H3>
     <div className="flex w-full justify-evenly">
-      <ContactImage
-        src="/img/contacts/intagram.webp"
-        href="https://www.instagram.com/polovinka.krsk/"
-      />
-      <ContactImage
-        src="/img/contacts/telegram.webp"
-        href="https://t.me/polovinkakrsk"
-      />
-      <ContactImage
-        src="/img/contacts/vk.webp"
-        href="https://vk.com/polovinka.krsk"
-      />
-      <ContactImage
-        src="/img/contacts/whatsapp.webp"
-        href="https://wa.me/79504280891"
-      />
+      {siteSettings?.phone && (
+        <ContactImage
+          src="/img/contacts/phone.png"
+          href={'tel:' + siteSettings.phone}
+        />
+      )}
+      {siteSettings?.instagram && (
+        <ContactImage
+          src="/img/contacts/intagram.webp"
+          href={'https://www.instagram.com/' + siteSettings.instagram}
+        />
+      )}
+      {siteSettings?.telegram && (
+        <ContactImage
+          src="/img/contacts/telegram.webp"
+          href={'https://t.me/' + siteSettings.telegram}
+        />
+      )}
+      {siteSettings?.vk && (
+        <ContactImage
+          src="/img/contacts/vk.png"
+          href={'https://vk.com/' + siteSettings.vk}
+        />
+      )}
+      {siteSettings?.whatsapp && (
+        <ContactImage
+          src="/img/contacts/whatsapp.webp"
+          // href={'https://wa.me/' + siteSettings?.whatsapp}
+          href={'https://api.whatsapp.com/send?phone=' + siteSettings?.whatsapp}
+        />
+      )}
+      {siteSettings?.viber && (
+        <ContactImage
+          src="/img/contacts/viber.png"
+          href={'viber://chat?number=' + siteSettings?.viber}
+        />
+      )}
+      {siteSettings?.email && (
+        <ContactImage
+          src="/img/contacts/email.png"
+          href={'mailto:' + siteSettings?.email}
+        />
+      )}
     </div>
   </BlockContainer>
 )

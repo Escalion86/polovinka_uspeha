@@ -5,7 +5,7 @@ import Fab from '@components/Fab'
 import CardButtons from '@components/CardButtons'
 import birthDateToAge from '@helpers/birthDateToAge'
 import getZodiac from '@helpers/getZodiac'
-import { GENDERS } from '@helpers/constants'
+import { GENDERS, USERS_STATUSES } from '@helpers/constants'
 import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons'
@@ -14,6 +14,9 @@ import usersAtom from '@state/atoms/usersAtom'
 import userSelector from '@state/selectors/userSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
 import { CardWrapper } from '@components/CardWrapper'
+import Image from 'next/image'
+import Tooltip from '../../components/Tooltip'
+import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 
 const UserCard = ({ userId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -24,10 +27,14 @@ const UserCard = ({ userId }) => {
   const userGender =
     user.gender && GENDERS.find((gender) => gender.value === user.gender)
 
+  const userStatusArr = USERS_STATUSES.find(
+    (userStatus) => userStatus.value === user.status
+  )
+
   return (
     <CardWrapper
       loading={loading}
-      onClick={() => modalsFunc.user.edit(user._id)}
+      onClick={() => modalsFunc.user.view(user._id)}
     >
       <div className="flex w-full">
         <div
@@ -43,15 +50,38 @@ const UserCard = ({ userId }) => {
         </div>
         <img
           className="object-cover w-20 h-20 tablet:w-24 tablet:h-24"
-          src={user.image}
+          src={getUserAvatarSrc(user)}
           alt="user"
           // width={48}
           // height={48}
         />
         <div className="flex flex-col flex-1 text-xl font-bold">
           <div className="flex">
-            <div className="flex flex-wrap flex-1 px-2 gap-x-2">
-              {user.name}
+            <div className="flex flex-wrap items-center flex-1 px-2 gap-x-1">
+              {userStatusArr?.value === 'member' && (
+                <Tooltip content="Участник клуба">
+                  <div className="w-6 h-6">
+                    <Image
+                      src="/img/svg_icons/medal.svg"
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                </Tooltip>
+              )}
+              {userStatusArr?.value === 'ban' && (
+                <Tooltip content="Забанен">
+                  <div className="w-6 h-6">
+                    <Image
+                      src="/img/svg_icons/ban.svg"
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                </Tooltip>
+              )}
+              <span>{user.name}</span>
+              {user.secondName && <span>{user.secondName}</span>}
               {user.birthday && (
                 <div className="font-normal whitespace-nowrap">
                   {user.birthday
@@ -61,6 +91,16 @@ const UserCard = ({ userId }) => {
                     : ''}
                 </div>
               )}
+              {/* {userStatusArr && userStatusArr.value !== 'novice' && (
+                <span
+                  className={cn(
+                    'font-normal uppercase',
+                    'text-' + userStatusArr.color
+                  )}
+                >
+                  {userStatusArr.name}
+                </span>
+              )} */}
               {user.role === 'admin' && (
                 <span className="font-normal text-red-400">АДМИНИСТРАТОР</span>
               )}

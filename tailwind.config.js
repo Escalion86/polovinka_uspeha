@@ -193,6 +193,7 @@ module.exports = {
           '0 0 3px 1px rgba(38, 163, 212, 0.5), 0 0 3px 1px rgba(38, 163, 212, 0.3)',
         'medium-active': '0 1px 4px 5px rgba(38, 163, 212, 0.5)',
         primary: '0px 0px 8px 8px #26A3D4',
+        white2: '0px 0px 8px 8px rgba(255, 255, 255, 0.50)',
       },
       spacing: {
         15: '3.75rem',

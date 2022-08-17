@@ -1,6 +1,7 @@
+import cn from 'classnames'
 import { motion } from 'framer-motion'
 
-export const LoadingSpinner = ({ size = 'md', text = null }) => {
+export const LoadingSpinner = ({ className, size = 'md', text = null }) => {
   const widthHeight =
     size === 'xxs'
       ? 24
@@ -10,9 +11,20 @@ export const LoadingSpinner = ({ size = 'md', text = null }) => {
       ? 40
       : size === 'md'
       ? 50
+      : size === 'lg'
+      ? 100
       : 60
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div
+      className={cn(
+        'relative flex flex-col items-center justify-center h-full',
+        className
+      )}
+    >
+      <div
+        style={{ height: widthHeight * 1.25, width: widthHeight * 1.25 }}
+        className="absolute top-auto bottom-auto left-auto right-auto border-l-2 rounded-full border-general animate-spin"
+      ></div>
       <motion.div
         animate={{ scale: [1, 1, 1.15, 1.05, 1.15, 1] }}
         transition={{

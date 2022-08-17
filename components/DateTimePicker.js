@@ -1,5 +1,6 @@
 import formatDateTime from '@helpers/formatDateTime'
 import cn from 'classnames'
+import InputWrapper from './InputWrapper'
 
 const DateTimePicker = ({
   label = '',
@@ -7,19 +8,25 @@ const DateTimePicker = ({
   value,
   onChange,
   required = false,
-  className,
+  labelClassName,
+  wrapperClassName,
+  // className,
   disabled = false,
 }) => {
   return (
-    <>
-      <label className={'flex items-center justify-end'} htmlFor={name}>
-        {label}
-        {required && <span className="text-red-700">*</span>}
-      </label>
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      onChange={onChange}
+      copyPasteButtons={false}
+      value={value}
+      className={wrapperClassName}
+      required={required}
+    >
       <input
         className={cn(
           'text-input px-1 border rounded w-44 outline-none focus:shadow-active',
-          required && !value ? ' border-red-700' : ' border-gray-400',
+          // required && !value ? ' border-red-700' : ' border-gray-400',
           { 'bg-gray-200  text-disabled': disabled }
         )}
         type="datetime-local"
@@ -41,7 +48,7 @@ const DateTimePicker = ({
         min="2021-01-01T00:00"
         max="2030-12-31T00:00"
       />
-    </>
+    </InputWrapper>
   )
 }
 

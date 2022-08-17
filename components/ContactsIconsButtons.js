@@ -26,58 +26,105 @@ const ContactIconBtn = ({ url, icon, size = 'lg', className = null }) => (
   />
 )
 
-const ContactsIconsButtons = ({ user }) => (
-  <div className="flex flex-wrap items-center justify-end py-1 gap-x-2 gap-y-1">
-    {user?.phone && (
-      <ContactIconBtn
-        icon={faPhone}
-        className="text-yellow-600"
-        url={'tel:+' + user.phone}
+const ContactIconBtnWithTitle = ({
+  url,
+  icon,
+  size = 'lg',
+  className = null,
+  title,
+}) => (
+  <div
+    className="flex items-center cursor-pointer gap-x-2 group"
+    onClick={(event) => {
+      event.stopPropagation()
+      window.open(url)
+    }}
+  >
+    <div className="flex items-center justify-center w-6">
+      <FontAwesomeIcon
+        className={cn(
+          'h-6 group-hover:text-toxic duration-300 group-hover:scale-115',
+          className
+        )}
+        icon={icon}
+        size={size}
       />
-    )}
-    {user?.whatsapp && (
-      <ContactIconBtn
-        icon={faWhatsapp}
-        className="text-green-600"
-        url={'https://wa.me/' + user.whatsapp}
-      />
-    )}
-    {user?.viber && (
-      <ContactIconBtn
-        icon={faViber}
-        className="text-purple-600"
-        url={'viber://chat?number=' + user.viber}
-      />
-    )}
-    {user?.telegram && (
-      <ContactIconBtn
-        icon={faTelegramPlane}
-        className="text-blue-600"
-        url={'https://t.me/' + user.telegram}
-      />
-    )}
-    {user?.instagram && (
-      <ContactIconBtn
-        icon={faInstagram}
-        className="text-yellow-700"
-        url={'https://instagram.com/' + user.instagram}
-      />
-    )}
-    {user?.vk && (
-      <ContactIconBtn
-        icon={faVk}
-        url={'https://vk.com/' + user.vk}
-        className="text-blue-600"
-      />
-    )}
-    {user?.email && (
-      <ContactIconBtn
-        icon={faEnvelope}
-        className="text-red-400"
-        url={'mailto:' + user.email}
-      />
-    )}
+    </div>
+    <span className="group-hover:text-toxic">{title}</span>
   </div>
 )
+
+const ContactsIconsButtons = ({ user, withTitle, vertical, className }) => {
+  const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
+  return (
+    <div
+      className={cn(
+        'flex flex-wrap',
+        withTitle ? 'gap-x-3' : 'gap-x-2',
+        vertical
+          ? 'gap-y-2 flex-col items-start mx-1'
+          : 'justify-end items-center my-1',
+        className
+      )}
+    >
+      {user?.phone && (
+        <Btn
+          icon={faPhone}
+          className="text-yellow-600"
+          url={'tel:+' + user.phone}
+          title={'+' + user.phone}
+        />
+      )}
+      {user?.whatsapp && (
+        <Btn
+          icon={faWhatsapp}
+          className="text-green-600"
+          url={'https://wa.me/' + user.whatsapp}
+          title={'+' + user.whatsapp}
+        />
+      )}
+      {user?.viber && (
+        <Btn
+          icon={faViber}
+          className="text-purple-600"
+          url={'viber://chat?number=' + user.viber}
+          title={'+' + user.viber}
+        />
+      )}
+      {user?.telegram && (
+        <Btn
+          icon={faTelegramPlane}
+          className="text-blue-600"
+          url={'https://t.me/' + user.telegram}
+          title={'@' + user.telegram}
+        />
+      )}
+      {user?.instagram && (
+        <Btn
+          icon={faInstagram}
+          className="text-yellow-700"
+          url={'https://instagram.com/' + user.instagram}
+          title={'@' + user.instagram}
+        />
+      )}
+      {user?.vk && (
+        <Btn
+          icon={faVk}
+          url={'https://vk.com/' + user.vk}
+          className="text-blue-600"
+          title={'@' + user.vk}
+        />
+      )}
+      {user?.email && (
+        <Btn
+          icon={faEnvelope}
+          className="text-red-400"
+          url={'mailto:' + user.email}
+          title={user.email}
+        />
+      )}
+    </div>
+  )
+}
 
 export default ContactsIconsButtons

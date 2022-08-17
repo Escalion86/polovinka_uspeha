@@ -29,8 +29,8 @@ const EmailConfirm = ({ user, error, success }) => {
         <Link href="/">
           <a>
             <img
-              src="/img/UniPlatform2_inverse.png"
-              alt="uniplatform"
+              src="/img/logo_horizontal.png"
+              alt="logo"
               width={300}
               // height={40}
             />

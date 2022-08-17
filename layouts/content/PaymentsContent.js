@@ -95,7 +95,7 @@ const PaymentsContent = () => {
       ) : (
         <div className="flex justify-center p-2">Нет транзакций</div>
       )}
-      <Fab onClick={() => modalsFunc.payments.edit()} show />
+      <Fab onClick={() => modalsFunc.payment.edit()} show />
     </>
   )
 }

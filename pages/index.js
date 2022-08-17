@@ -6,7 +6,11 @@ import {
   fetchingAdditionalBlocks,
   fetchingDirections,
   fetchingEvents,
+  fetchingEventsUsers,
+  fetchingPayments,
   fetchingReviews,
+  fetchingSiteSettings,
+  fetchingUsers,
 } from '@helpers/fetchers'
 import Header from '@layouts/Header'
 import cn from 'classnames'
@@ -23,9 +27,25 @@ import ContactsBlock from '@blocks/ContactsBlock'
 import ReviewsBlock from '@blocks/ReviewsBlock'
 import PriceBlock from '@blocks/PriceBlock'
 import AdditionalBlocks from '@blocks/AdditionalBlocks'
-import TimeTableBlock from '@blocks/TimeTableBlock'
+import EventsBlock from '@blocks/EventsBlock'
 import AboutBlock from '@blocks/AboutBlock'
 import TitleBlock from '@blocks/TitleBlock'
+import { useEffect, useState } from 'react'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import { useSetRecoilState } from 'recoil'
+import ModalsPortal from '@layouts/modals/ModalsPortal'
+import eventsAtom from '@state/atoms/eventsAtom'
+import directionsAtom from '@state/atoms/directionsAtom'
+import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
+import usersAtom from '@state/atoms/usersAtom'
+import reviewsAtom from '@state/atoms/reviewsAtom'
+import paymentsAtom from '@state/atoms/paymentsAtom'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncGenerator from '@state/itemsFuncGenerator'
+import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
+import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
+import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -55,9 +75,35 @@ import TitleBlock from '@blocks/TitleBlock'
 // )
 
 export default function Home(props) {
-  const { events, directions, reviews, loggedUser, additionalBlocks } = props
+  const {
+    loggedUser,
+    users,
+    events,
+    directions,
+    reviews,
+    additionalBlocks,
+    eventsUsers,
+    payments,
+    siteSettings,
+  } = props
+  const [loading, setLoading] = useState(true)
 
-  const filteredEvents = events.filter((event) => event.showOnSite)
+  const setLoggedUserState = useSetRecoilState(loggedUserAtom)
+  const setEventsState = useSetRecoilState(eventsAtom)
+  const setDirectionsState = useSetRecoilState(directionsAtom)
+  const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
+  const setUsersState = useSetRecoilState(usersAtom)
+  const setReviewsState = useSetRecoilState(reviewsAtom)
+  const setPaymentsState = useSetRecoilState(paymentsAtom)
+  const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
+
+  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
+  const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
+  const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
+
+  const filteredEvents = events.filter(
+    (event) => event.showOnSite && new Date(event.date) >= new Date()
+  )
   const filteredReviews = reviews.filter((review) => review.showOnSite)
   const filteredDirections = directions.filter(
     (direction) => direction.showOnSite
@@ -66,53 +112,75 @@ export default function Home(props) {
     (additionalBlock) => additionalBlock.showOnSite
   )
 
-  // const router = useRouter()
-  // const { height, width } = useWindowDimensions()
-  // const { data: session, status } = useSession()
-  // const loading = status === 'loading'
+  useEffect(() => {
+    setLoggedUserState(props.loggedUser)
+    setEventsState(props.events)
+    setDirectionsState(props.directions)
+    setAdditionalBlocksState(props.additionalBlocks)
+    setUsersState(props.users)
+    setReviewsState(props.reviews)
+    setPaymentsState(props.payments)
+    setEventsUsersState(props.eventsUsers)
 
-  // if (session) console.log(`session`, session)
-  // console.log('events', events)
-  // console.log('user', user)
-
-  // useEffect(() => {
-  //   console.log('otziviRef', otziviRef.current)
-  //   for (let i = 0; i < otziviRef.current.length; i++) {
-  //     console.log(i, otziviRef.current[i].offsetHeight)
-  //   }
-  // }, [])
+    setItemsFunc(
+      itemsFuncGenerator({
+        // toggleLoading,
+        // setEvent,
+        // deleteEvent,
+        // setDirection,
+        // deleteDirection,
+        // setAdditionalBlock,
+        // deleteAdditionalBlock,
+        // setUser,
+        // deleteUser,
+        // setReview,
+        // deleteReview,
+        // setPayment,
+        // deletePayment,
+        setEventsUsers,
+        deleteEventsUsers,
+      })
+    )
+    setLoading(false)
+  }, [])
 
   return (
     <>
       <Head>
         <title>Центр осознанных знакомств - "Половинка успеха"</title>
       </Head>
-      <div className="w-full bg-white">
-        {/* <DeviceCheck /> */}
-        <Header
-          events={filteredEvents}
-          directions={filteredDirections}
-          additionalBlocks={filteredAdditionalBlocks}
-          reviews={filteredReviews}
-          loggedUser={loggedUser}
-        />
-        <TitleBlock userIsLogged={!!loggedUser} />
-        <AboutBlock />
-        {/* <TimeTableBlock events={filteredEvents} /> */}
-        <DirectionsBlock directions={filteredDirections} />
-        <AdditionalBlocks
-          additionalBlocks={filteredAdditionalBlocks}
-          inverse={
-            directions &&
-            directions.filter((direction) => direction.showOnSite).length %
-              2 ===
-              1
-          }
-        />
-        {/* <PriceBlock /> */}
-        <ReviewsBlock reviews={filteredReviews} />
-        <ContactsBlock />
-        {/* <BlockContainer className="text-white bg-black">
+      <div>
+        {loading ? (
+          <div className="w-full h-screen">
+            <LoadingSpinner size="lg" />
+          </div>
+        ) : (
+          <div className="w-full bg-white">
+            {loggedUser?.role === 'dev' && <DeviceCheck right />}
+            <Header
+              events={filteredEvents}
+              directions={filteredDirections}
+              additionalBlocks={filteredAdditionalBlocks}
+              reviews={filteredReviews}
+              loggedUser={loggedUser}
+            />
+            <TitleBlock userIsLogged={!!loggedUser} />
+            <AboutBlock />
+            <EventsBlock events={filteredEvents} maxEvents={4} />
+            <DirectionsBlock directions={filteredDirections} />
+            <AdditionalBlocks
+              additionalBlocks={filteredAdditionalBlocks}
+              inverse={
+                directions &&
+                directions.filter((direction) => direction.showOnSite).length %
+                  2 ===
+                  1
+              }
+            />
+            {/* <PriceBlock /> */}
+            <ReviewsBlock reviews={filteredReviews} />
+            <ContactsBlock siteSettings={siteSettings} />
+            {/* <BlockContainer className="text-white bg-black">
           <H3>Есть знания, но не знаете как ими поделиться?</H3>
           <P>
             Просто зарегистрируйтесь в системе и начните заполнять курс своими
@@ -127,15 +195,18 @@ export default function Home(props) {
             индивидуальным условиям.
           </P>
         </BlockContainer> */}
-        {/* <BlockContainer id="contacts" className="bg-gray-200">
+            {/* <BlockContainer id="contacts" className="bg-gray-200">
           <H3>Контакты</H3>
         </BlockContainer> */}
-        {/* <div className="flex flex-col items-start px-10 py-5 text-sm font-thin text-white bg-black min-h-80 tablet:px-20">
+            {/* <div className="flex flex-col items-start px-10 py-5 text-sm font-thin text-white bg-black min-h-80 tablet:px-20">
           <div>
             © ИП Белинский Алексей Алексеевич, ИНН 245727560982, ОГРНИП
             319246800103511
           </div>
         </div> */}
+          </div>
+        )}
+        <ModalsPortal />
       </div>
     </>
   )
@@ -143,36 +214,86 @@ export default function Home(props) {
 
 export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
-  console.log('session', session)
   try {
-    console.log('process.env.NEXTAUTH_SITE', process.env.NEXTAUTH_SITE)
+    console.time('Loading time')
+    console.time('users')
+    const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
+    console.timeEnd('users')
+    console.time('events')
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+    console.timeEnd('events')
+    console.time('directions')
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+    console.timeEnd('directions')
+    console.time('reviews')
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    console.timeEnd('reviews')
+    console.time('additionalBlocks')
     const additionalBlocks = await fetchingAdditionalBlocks(
       process.env.NEXTAUTH_SITE
     )
+    console.timeEnd('additionalBlocks')
+    console.time('eventsUsers')
+    const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    console.timeEnd('eventsUsers')
+    console.time('payments')
+    const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
+    console.timeEnd('payments')
+    console.time('siteSettings')
+    const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+    console.timeEnd('siteSettings')
+    console.timeEnd('Loading time')
 
-    console.log('events', events)
-    console.log('directions', directions)
-    console.log('reviews', reviews)
-    console.log('additionalBlocks', additionalBlocks)
+    // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+    // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+    // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    // const additionalBlocks = await fetchingAdditionalBlocks(
+    //   process.env.NEXTAUTH_SITE
+    // )
+    // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+    // console.log('events', events)
+    // console.log('directions', directions)
+    // console.log('reviews', reviews)
+    // console.log('additionalBlocks', additionalBlocks)
     return {
       props: {
+        // events,
+        // directions: directions.filter((direction) => direction.showOnSite),
+        // reviews: reviews.filter((review) => review.showOnSite),
+        // additionalBlocks,
+        // eventsUsers,
+        // siteSettings,
+        // loggedUser: session?.user ? session.user : null,
+        users,
         events,
-        directions: directions.filter((direction) => direction.showOnSite),
-        reviews: reviews.filter((review) => review.showOnSite),
+        directions,
+        reviews,
         additionalBlocks,
+        eventsUsers,
+        payments,
+        siteSettings,
         loggedUser: session?.user ? session.user : null,
       },
     }
   } catch {
     return {
       props: {
+        // events: null,
+        // directions: null,
+        // reviews: null,
+        // additionalBlocks: null,
+        // eventsUsers: null,
+        // siteSettings: null,
+        // loggedUser: session?.user ? session.user : null,
+        users: null,
         events: null,
         directions: null,
         reviews: null,
         additionalBlocks: null,
+        eventsUsers: null,
+        payments: null,
+        siteSettings: null,
         loggedUser: session?.user ? session.user : null,
       },
       // notFound: true,

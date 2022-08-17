@@ -1,10 +1,12 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Zoom from 'react-medium-image-zoom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { sendImage } from '@helpers/cloudinary'
 import cn from 'classnames'
+import LoadingSpinner from './LoadingSpinner'
+import Label from './Label'
 
 const InputImages = ({
   images = [],
@@ -13,7 +15,9 @@ const InputImages = ({
   label = null,
   directory = null,
   maxImages = 4,
+  labelClassName,
 }) => {
+  const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
   const addImageClick = (event) => {
     hiddenFileInput.current.click()
@@ -26,9 +30,12 @@ const InputImages = ({
   const onAddImage = async (newImage) => {
     if (newImage) {
       // if (image) await deleteImages([image])
+      setAddingImage(true)
       sendImage(
         newImage,
-        (imageUrl) => onChange([...images, imageUrl]),
+        (imageUrl) => {
+          onChange([...images, imageUrl])
+        },
         directory
       )
     } else {
@@ -36,12 +43,12 @@ const InputImages = ({
     }
   }
 
+  useEffect(() => setAddingImage(false), [images])
+
   return (
     <>
       {label && (
-        <label className="flex items-center justify-end leading-4 text-right">
-          {label}
-        </label>
+        <Label text={label} className={labelClassName} required={required} />
       )}
       <div
         className={cn(
@@ -56,7 +63,7 @@ const InputImages = ({
           images.map((image, index) => (
             <div
               key={index}
-              className="relative h-20 overflow-hidden border border-gray-300 group"
+              className="relative w-20 h-20 overflow-hidden border border-gray-300 group"
             >
               <Zoom zoomMargin={20}>
                 <img
@@ -75,7 +82,7 @@ const InputImages = ({
               />
             </div>
           ))}
-        {images.length < maxImages && (
+        {!isAddingImage && images.length < maxImages && (
           <div
             onClick={addImageClick}
             className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer rounded-xl"
@@ -98,6 +105,9 @@ const InputImages = ({
               />
             </div>
           </div>
+        )}
+        {isAddingImage && (
+          <LoadingSpinner className="w-20 h-20 border border-gray-300 bg-general bg-opacity-20" />
         )}
       </div>
     </>

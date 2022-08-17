@@ -7,7 +7,7 @@ const usersSchema = {
     ],
     default: '',
   },
-  secondname: {
+  secondName: {
     type: String,
     maxlength: [
       100,
@@ -15,7 +15,7 @@ const usersSchema = {
     ],
     default: '',
   },
-  thirdname: {
+  thirdName: {
     type: String,
     maxlength: [
       100,
@@ -26,15 +26,18 @@ const usersSchema = {
   email: {
     type: String,
     lowercase: true,
-    required: [true, 'Введите EMail'],
   },
   password: {
     type: String,
     default: null,
   },
-  image: {
-    type: String,
-    default: null,
+  // image: {
+  //   type: String,
+  //   default: null,
+  // },
+  images: {
+    type: Array,
+    default: [],
   },
   gender: {
     type: String,
@@ -59,6 +62,11 @@ const usersSchema = {
   phone: {
     type: Number,
     default: null,
+    required: [true, 'Введите Телефон'],
+  },
+  phoneConfirm: {
+    type: Boolean,
+    default: false,
   },
   whatsapp: {
     type: Number,
@@ -91,6 +99,10 @@ const usersSchema = {
   role: {
     type: String,
     default: 'client',
+  },
+  status: {
+    type: String,
+    default: 'novice',
   },
   lastActivityAt: {
     type: Date,

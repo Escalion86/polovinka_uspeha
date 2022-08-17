@@ -1,19 +1,31 @@
 import cn from 'classnames'
 
-const FormWrapper = ({ children, twoColumns = false, className }) => (
-  <div
-    className={cn(
-      'grid w-full col-span-2 gap-2 grid-cols-form',
-      { 'tablet:grid-cols-form2': twoColumns },
-      className
-    )}
-    // style={{
-    //   gridTemplateColumns: twoColumns
-    //     ? 'minmax(min-content, 20%) 1fr minmax(min-content, 20%) 1fr'
-    //     : `minmax(min-content, 20%) 1fr`,
-    // }}
-  >
-    {children}
+const FormWrapper = ({
+  children,
+  twoColumns = false,
+  grid = true,
+  flex = false,
+  className,
+  title,
+}) => (
+  <div className="w-full col-span-2 flex flex-col">
+    {title && <div className="font-bold text-center text-lg">{title}</div>}
+    <div
+      className={cn(
+        'flex-1 gap-2',
+        { flex: flex },
+        { 'grid  grid-cols-form': grid && !flex },
+        { 'tablet:grid-cols-form2': twoColumns },
+        className
+      )}
+      // style={{
+      //   gridTemplateColumns: twoColumns
+      //     ? 'minmax(min-content, 20%) 1fr minmax(min-content, 20%) 1fr'
+      //     : `minmax(min-content, 20%) 1fr`,
+      // }}
+    >
+      {children}
+    </div>
   </div>
 )
 

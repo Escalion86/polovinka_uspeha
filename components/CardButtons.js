@@ -11,40 +11,33 @@ import cn from 'classnames'
 import {
   faArrowDown,
   faArrowUp,
+  faBan,
   faEllipsisV,
   faPencilAlt,
+  faPlay,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
-import ReactTooltip from 'react-tooltip'
-import useWindowDimensions, {
-  useWindowDimensionsTailwind,
-} from '@helpers/useWindowDimensions'
+import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
 
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import Tooltip from './Tooltip'
 
 const CardButton = ({ active, icon, onClick, color = 'red', dataTip }) => (
-  <div
-    className={cn(
-      `duration-300 flex border items-center justify-center w-8 h-8 hover:bg-${color}-600 border-${color}-500 hover:border-${color}-600 hover:text-white`,
-      active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
-    )}
-    onClick={(e) => {
-      e.stopPropagation()
-      onClick && onClick()
-    }}
-    data-tip={dataTip}
-  >
-    <FontAwesomeIcon icon={icon} className="w-6 h-6" />
-    <ReactTooltip
-      effect="solid"
-      delayShow={400}
-      // backgroundColor="white"
-      // textColor="black"
-      // border
-      // borderColor="gray"
-      type="dark"
-    />
-  </div>
+  <Tooltip content={dataTip}>
+    <div
+      className={cn(
+        `duration-300 flex border items-center justify-center w-8 h-8 hover:bg-${color}-600 border-${color}-500 hover:border-${color}-600 hover:text-white`,
+        active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
+      )}
+      onClick={(e) => {
+        e.stopPropagation()
+        onClick && onClick()
+      }}
+    >
+      <FontAwesomeIcon icon={icon} className="w-6 h-6" />
+    </div>
+  </Tooltip>
 )
 
 const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
@@ -57,7 +50,6 @@ const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
       e.stopPropagation()
       onClick && onClick()
     }}
-    data-tip={dataTip}
   >
     <FontAwesomeIcon icon={icon} className="w-6 h-6" />
     <div className="whitespace-nowrap">{dataTip}</div>
@@ -77,6 +69,115 @@ const CardButtons = ({
 
   const [open, setOpen] = useState(false)
 
+  const isCompact = device === 'phoneV' || device === 'phoneH'
+
+  const ItemComponent = isCompact ? MenuItem : CardButton
+
+  // const items = [
+  //   {condition: typeOfItem === 'event',
+  //   icon: faUsers,
+  //   onClick: () => {
+  //     setOpen(false)
+  //     modalsFunc.event.users(item._id)
+  //   },
+  //   color:"green",
+  //   dataTip:"Участники мероприятия"
+  // }
+  // ]
+
+  const items = (
+    <>
+      {typeOfItem === 'event' && (
+        <ItemComponent
+          icon={faUsers}
+          onClick={() => {
+            setOpen(false)
+            // onUpClick()
+            modalsFunc.event.users(item._id)
+          }}
+          color="green"
+          dataTip="Участники мероприятия"
+        />
+      )}
+      {onUpClick && (
+        <ItemComponent
+          icon={faArrowUp}
+          onClick={() => {
+            setOpen(false)
+            onUpClick()
+          }}
+          color="gray"
+          dataTip="Переместить выше"
+        />
+      )}
+      {onDownClick && (
+        <ItemComponent
+          icon={faArrowDown}
+          onClick={() => {
+            setOpen(false)
+            onDownClick()
+          }}
+          color="gray"
+          dataTip="Переместить ниже"
+        />
+      )}
+      <ItemComponent
+        icon={faPencilAlt}
+        onClick={() => {
+          setOpen(false)
+          modalsFunc[typeOfItem].edit(item._id)
+        }}
+        color="orange"
+        dataTip="Редактировать"
+      />
+      {typeOfItem !== 'user' && typeOfItem !== 'review' && (
+        <ItemComponent
+          icon={faCopy}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc[typeOfItem].add(item._id)
+          }}
+          color="blue"
+          dataTip="Клонировать"
+        />
+      )}
+      {showOnSiteOnClick && (
+        <ItemComponent
+          active={!item.showOnSite}
+          icon={item.showOnSite ? faEye : faEyeSlash}
+          onClick={() => {
+            setOpen(false)
+            showOnSiteOnClick()
+          }}
+          color="purple"
+          dataTip="Показывать на сайте"
+        />
+      )}
+      {typeOfItem === 'event' && (
+        <ItemComponent
+          icon={item.status === 'canceled' ? faPlay : faBan}
+          onClick={() => {
+            setOpen(false)
+            if (item.status === 'canceled')
+              modalsFunc[typeOfItem].uncancel(item._id)
+            else modalsFunc[typeOfItem].cancel(item._id)
+          }}
+          color={item.status === 'canceled' ? 'green' : 'red'}
+          dataTip={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
+        />
+      )}
+      <ItemComponent
+        icon={faTrashAlt}
+        onClick={() => {
+          setOpen(false)
+          modalsFunc[typeOfItem].delete(item._id)
+        }}
+        color="red"
+        dataTip="Удалить"
+      />
+    </>
+  )
+
   // if (device === 'phoneV' || device === 'phoneH') {
 
   // }
@@ -87,7 +188,7 @@ const CardButtons = ({
   //   router.replace(router.asPath)
   // }
 
-  return device === 'phoneV' || device === 'phoneH' ? (
+  return isCompact ? (
     <div
       className="relative"
       onClick={(e) => {
@@ -101,124 +202,14 @@ const CardButtons = ({
         animate={{ height: open ? 'auto' : 0 }}
         transition={{ type: 'tween' }}
       >
-        <div className="h-full bg-red-200 border border-gray-200">
-          {onUpClick && (
-            <MenuItem
-              icon={faArrowUp}
-              onClick={() => {
-                setOpen(false)
-                onUpClick()
-              }}
-              color="gray"
-              dataTip="Переместить выше"
-            />
-          )}
-          {onDownClick && (
-            <MenuItem
-              icon={faArrowDown}
-              onClick={() => {
-                setOpen(false)
-                onDownClick()
-              }}
-              color="gray"
-              dataTip="Переместить ниже"
-            />
-          )}
-          <MenuItem
-            icon={faPencilAlt}
-            onClick={() => {
-              setOpen(false)
-              modalsFunc[typeOfItem].edit(item._id)
-            }}
-            color="orange"
-            dataTip="Редактировать"
-          />
-          {typeOfItem !== 'user' && typeOfItem !== 'review' && (
-            <MenuItem
-              icon={faCopy}
-              onClick={() => {
-                setOpen(false)
-                modalsFunc[typeOfItem].add(item._id)
-              }}
-              color="blue"
-              dataTip="Клонировать"
-            />
-          )}
-          {showOnSiteOnClick && (
-            <MenuItem
-              active={!item.showOnSite}
-              icon={item.showOnSite ? faEye : faEyeSlash}
-              onClick={() => {
-                setOpen(false)
-                showOnSiteOnClick()
-              }}
-              color="purple"
-              dataTip="Показывать на сайте"
-            />
-          )}
-          <MenuItem
-            icon={faTrashAlt}
-            onClick={() => {
-              setOpen(false)
-              modalsFunc[typeOfItem].delete(item._id)
-            }}
-            color="red"
-            dataTip="Удалить"
-          />
-        </div>
+        <div className="h-full bg-red-200 border border-gray-200">{items}</div>
       </motion.div>
       <div className="flex items-center justify-center w-8 h-8 text-general">
         <FontAwesomeIcon icon={faEllipsisV} className="w-6 h-6" />
       </div>
     </div>
   ) : (
-    <div className="flex">
-      {onUpClick && (
-        <CardButton
-          icon={faArrowUp}
-          onClick={onUpClick}
-          color="gray"
-          dataTip="Переместить выше"
-        />
-      )}
-      {onDownClick && (
-        <CardButton
-          icon={faArrowDown}
-          onClick={onDownClick}
-          color="gray"
-          dataTip="Переместить ниже"
-        />
-      )}
-      <CardButton
-        icon={faPencilAlt}
-        onClick={() => modalsFunc[typeOfItem].edit(item._id)}
-        color="orange"
-        dataTip="Редактировать"
-      />
-      {typeOfItem !== 'user' && typeOfItem !== 'review' && (
-        <CardButton
-          icon={faCopy}
-          onClick={() => modalsFunc[typeOfItem].add(item._id)}
-          color="blue"
-          dataTip="Клонировать"
-        />
-      )}
-      {showOnSiteOnClick && (
-        <CardButton
-          active={!item.showOnSite}
-          icon={item.showOnSite ? faEye : faEyeSlash}
-          onClick={() => showOnSiteOnClick()}
-          color="purple"
-          dataTip="Показывать на сайте"
-        />
-      )}
-      <CardButton
-        icon={faTrashAlt}
-        onClick={() => modalsFunc[typeOfItem].delete(item._id)}
-        color="red"
-        dataTip="Удалить"
-      />
-    </div>
+    <div className="flex">{items}</div>
   )
 }
 

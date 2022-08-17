@@ -24,7 +24,7 @@ const DirectionCard = ({ directionId }) => {
       {direction?.image && (
         // <div className="flex justify-center w-full tablet:w-auto">
         <img
-          className="object-cover h-full w-36 tablet:w-48 max-h-60 tablet:max-h-72"
+          className="object-cover h-full max-w-full tablet:w-48 tablet:max-w-48 max-h-60 tablet:max-h-72"
           src={direction.image}
           alt="direction"
           // width={48}

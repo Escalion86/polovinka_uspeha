@@ -1,5 +1,5 @@
 export async function fetchingAll(setState = () => {}) {
-  console.log('Запущен fetchingAll')
+  // console.log('Запущен fetchingAll')
   const urls = ['/api/admin']
   const result = await Promise.all(
     urls.map(async (url) => {
@@ -14,7 +14,7 @@ export async function fetchingAll(setState = () => {}) {
 }
 
 export async function fetchingEvents(domen = process.env.NEXTAUTH_SITE) {
-  console.log('Запущен fetchingEvents')
+  // console.log('Запущен fetchingEvents')
   const resp = await fetch(`${domen}/api/events`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -22,7 +22,7 @@ export async function fetchingEvents(domen = process.env.NEXTAUTH_SITE) {
 }
 
 export async function fetchingDirections(domen = process.env.NEXTAUTH_SITE) {
-  console.log('Запущен fetchingDirections')
+  // console.log('Запущен fetchingDirections')
   const resp = await fetch(`${domen}/api/directions`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -30,7 +30,7 @@ export async function fetchingDirections(domen = process.env.NEXTAUTH_SITE) {
 }
 
 export async function fetchingReviews(domen = process.env.NEXTAUTH_SITE) {
-  console.log('Запущен fetchingReviews')
+  // console.log('Запущен fetchingReviews')
   const resp = await fetch(`${domen}/api/reviews`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -40,7 +40,7 @@ export async function fetchingReviews(domen = process.env.NEXTAUTH_SITE) {
 export async function fetchingAdditionalBlocks(
   domen = process.env.NEXTAUTH_SITE
 ) {
-  console.log('Запущен fetchingAdditionalBlocks')
+  // console.log('Запущен fetchingAdditionalBlocks')
   const resp = await fetch(`${domen}/api/additionalBlocks`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -48,7 +48,7 @@ export async function fetchingAdditionalBlocks(
 }
 
 export async function fetchingPayments(domen = process.env.NEXTAUTH_SITE) {
-  console.log('Запущен fetchingPayments')
+  // console.log('Запущен fetchingPayments')
   const resp = await fetch(`${domen}/api/payments`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -56,7 +56,7 @@ export async function fetchingPayments(domen = process.env.NEXTAUTH_SITE) {
 }
 
 export async function fetchingUsers(domen = process.env.NEXTAUTH_SITE) {
-  console.log('Запущен fetchingUsers')
+  // console.log('Запущен fetchingUsers')
   const resp = await fetch(`${domen}/api/users`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -64,7 +64,7 @@ export async function fetchingUsers(domen = process.env.NEXTAUTH_SITE) {
 }
 
 export async function fetchingUsersById(id, domen = process.env.NEXTAUTH_SITE) {
-  console.log('Запущен fetchingUsersById')
+  // console.log('Запущен fetchingUsersById')
   const resp = await fetch(`${domen}/api/users/byId/${id}`)
     .then((res) => res.json())
     .then((json) => json.data)
@@ -75,16 +75,35 @@ export async function fetchingUserByEmail(
   email,
   domen = process.env.NEXTAUTH_SITE
 ) {
-  console.log('Запущен fetchingUserByEmail')
+  // console.log('Запущен fetchingUserByEmail')
   const resp = await fetch(`${domen}/api/users/byEmail/${email}`)
     .then((res) => res.json())
     .then((json) => json.data)
   return resp
 }
 
+export async function fetchingUserByPhone(
+  phone,
+  domen = process.env.NEXTAUTH_SITE
+) {
+  // console.log('Запущен fetchingUserByPhone')
+  const resp = await fetch(`${domen}/api/users/byPhone/${phone}`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+  return resp
+}
+
 export async function fetchingEventsUsers(domen = process.env.NEXTAUTH_SITE) {
-  console.log('Запущен fetchingEventsUsers')
+  // console.log('Запущен fetchingEventsUsers')
   const resp = await fetch(`${domen}/api/eventsusers`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+  return resp
+}
+
+export async function fetchingSiteSettings(domen = process.env.NEXTAUTH_SITE) {
+  // console.log('Запущен fetchingSiteSettings')
+  const resp = await fetch(`${domen}/api/site`)
     .then((res) => res.json())
     .then((json) => json.data)
   return resp

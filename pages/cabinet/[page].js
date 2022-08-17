@@ -15,6 +15,7 @@ import {
   fetchingEventsUsers,
   fetchingAdditionalBlocks,
   fetchingPayments,
+  fetchingSiteSettings,
 } from '@helpers/fetchers'
 import { useState, useEffect } from 'react'
 
@@ -43,16 +44,27 @@ import reviewsAtom from '@state/atoms/reviewsAtom'
 import paymentEditSelector from '@state/selectors/paymentEditSelector'
 import paymentsDeleteSelector from '@state/selectors/paymentsDeleteSelector'
 import paymentsAtom from '@state/atoms/paymentsAtom'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
+import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
+import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
+import eventsUsersDeleteByEventIdSelector from '@state/selectors/eventsUsersDeleteByEventIdSelector'
+import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
+
+// TODO Сделать копирование БД с main на dev
+// TODO Сделать переключение с БД main на dev
 
 function CabinetPage(props) {
   const { page, loggedUser } = props
 
+  const setLoggedUserState = useSetRecoilState(loggedUserAtom)
   const setEventsState = useSetRecoilState(eventsAtom)
   const setDirectionsState = useSetRecoilState(directionsAtom)
   const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
   const setUsersState = useSetRecoilState(usersAtom)
   const setReviewsState = useSetRecoilState(reviewsAtom)
   const setPaymentsState = useSetRecoilState(paymentsAtom)
+  const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
 
   const setEvent = useSetRecoilState(eventEditSelector)
   const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -66,6 +78,11 @@ function CabinetPage(props) {
   const deleteReview = useSetRecoilState(reviewDeleteSelector)
   const setPayment = useSetRecoilState(paymentEditSelector)
   const deletePayment = useSetRecoilState(paymentsDeleteSelector)
+  const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
+  const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
+  const deleteEventsUsersByEventId = useSetRecoilState(
+    eventsUsersDeleteByEventIdSelector
+  )
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
   const toggleLoading = useSetRecoilState(toggleLoadingSelector)
@@ -87,6 +104,9 @@ function CabinetPage(props) {
           deleteReview,
           setPayment,
           deletePayment,
+          setEventsUsers,
+          deleteEventsUsers,
+          deleteEventsUsersByEventId,
         })
       ),
     []
@@ -122,12 +142,14 @@ function CabinetPage(props) {
   const title = CONTENTS[page] ? CONTENTS[page].name : ''
 
   useEffect(() => {
+    setLoggedUserState(props.loggedUser)
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
     setUsersState(props.users)
     setReviewsState(props.reviews)
     setPaymentsState(props.payments)
+    setEventsUsersState(props.eventsUsers)
 
     // props.events.forEach((event) => {
     //   setEventAtom(event)
@@ -166,7 +188,7 @@ function CabinetPage(props) {
         ) : (
           <>
             {/* ----------------------------- HEADER ------------------------------- */}
-            <DeviceCheck right />
+            {loggedUser?.role === 'dev' && <DeviceCheck right />}
             <CabinetHeader user={loggedUser} title={title} />
             <BurgerLayout />
             <ContentWrapper user={loggedUser} page={page}>
@@ -217,6 +239,9 @@ export const getServerSideProps = async (context) => {
   const { params } = context
   const { page } = params
 
+  console.log('params', params)
+  console.log('page', page)
+
   console.log('session', session)
   if (!session?.user) {
     return {
@@ -226,16 +251,44 @@ export const getServerSideProps = async (context) => {
     }
   }
 
+  if (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) {
+    return {
+      redirect: {
+        destination: `/cabinet/questionnaire`,
+      },
+    }
+  }
+
   try {
+    console.time('Loading time')
+    console.time('users')
     const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
+    console.timeEnd('users')
+    console.time('events')
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+    console.timeEnd('events')
+    console.time('directions')
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+    console.timeEnd('directions')
+    console.time('reviews')
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    console.timeEnd('reviews')
+    console.time('additionalBlocks')
     const additionalBlocks = await fetchingAdditionalBlocks(
       process.env.NEXTAUTH_SITE
     )
+    console.timeEnd('additionalBlocks')
+    console.time('eventsUsers')
     const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    console.timeEnd('eventsUsers')
+    console.time('payments')
     const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
+    console.timeEnd('payments')
+    console.time('siteSettings')
+    const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+    console.timeEnd('siteSettings')
+    console.timeEnd('Loading time')
+
     return {
       props: {
         users,
@@ -246,6 +299,7 @@ export const getServerSideProps = async (context) => {
         additionalBlocks,
         eventsUsers,
         payments,
+        siteSettings,
         loggedUser: session?.user ? session.user : null,
       },
     }
@@ -260,6 +314,7 @@ export const getServerSideProps = async (context) => {
         additionalBlocks: null,
         eventsUsers: null,
         payments: null,
+        siteSettings: null,
         loggedUser: session?.user ? session.user : null,
       },
       // notFound: true,

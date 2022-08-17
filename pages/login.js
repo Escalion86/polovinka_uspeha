@@ -2,13 +2,11 @@ import { getSession, signIn, signOut, useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import SvgWave from 'svg/SvgWave'
-import SvgLogin from 'svg/SvgLogin'
-import SvgAvatar from 'svg/SvgAvatar'
+// import SvgLogin from 'svg/SvgLogin'
+// import SvgAvatar from 'svg/SvgAvatar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLock, faPassport, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import cn from 'classnames'
-import emailValidator from '@helpers/emailValidator'
-import SvgEmailConfirm from 'svg/SvgEmailConfirm'
 import SvgMailBox from 'svg/SvgMailBox'
 import { postData } from '@helpers/CRUD'
 import resolveConfig from 'tailwindcss/resolveConfig'
@@ -16,9 +14,10 @@ import tailwindConfig from 'tailwind.config.js'
 import passwordValidator from '@helpers/passwordValidator'
 import SvgLove from 'svg/SvgLove'
 import Link from 'next/link'
-
-// import UndrawGraduation from 'public/img/login/undraw_graduation.svg'
-// import Image from 'next/image'
+import MaskedInput from 'react-text-mask'
+import LoadingSpinner from '@components/LoadingSpinner'
+import phoneValidator from '@helpers/phoneValidator'
+import useErrors from '@helpers/useErrors'
 
 const Input = ({
   className = '',
@@ -31,10 +30,15 @@ const Input = ({
   error = false,
   tabIndex,
   inputRef,
+  max,
+  maxLength,
+  readOnly,
 }) => {
   const [focused, setFocused] = useState(false)
   const onFocus = () => setFocused(true)
   const onBlur = () => setFocused(false)
+
+  console.log('value', value)
 
   return (
     <div
@@ -63,7 +67,7 @@ const Input = ({
           <h5
             className={cn(
               'absolute top-1/2 left-3 -translate-y-1/2 text-lg duration-300',
-              { 'text-sm -top-0.5': focused || value },
+              { 'text-sm top-0': focused || value },
               error
                 ? focused
                   ? 'text-red-600'
@@ -75,16 +79,58 @@ const Input = ({
           >
             {name}
           </h5>
-          <input
-            ref={inputRef}
-            className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-1 text-lg text-gray-600"
-            type={type}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            value={value}
-            onChange={onChange}
-            tabIndex={tabIndex}
-          />
+          {type === 'phone' ? (
+            <MaskedInput
+              disabled={readOnly}
+              ref={inputRef}
+              className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-1 text-lg text-gray-600"
+              showMask={value == '7'}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              onChange={onChange}
+              // keepCharPositions
+              mask={[
+                '+',
+                '7',
+                ' ',
+                '(',
+                /[1-9]/,
+                /\d/,
+                /\d/,
+                ')',
+                ' ',
+                /\d/,
+                /\d/,
+                /\d/,
+                '-',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+              ]}
+              value={
+                value
+                  ? value.toString().substr(0, 1) == '7'
+                    ? value.toString().substring(1)
+                    : value.toString()
+                  : ''
+              }
+            />
+          ) : (
+            <input
+              ref={inputRef}
+              className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-1 text-lg text-gray-600"
+              type={type}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              value={value}
+              onChange={onChange}
+              tabIndex={tabIndex}
+              max={max}
+              maxLength={maxLength}
+              disabled={readOnly}
+            />
+          )}
         </div>
       </div>
       <div className="relative h-0.5 flex justify-center">
@@ -109,18 +155,61 @@ const Input = ({
 const fullConfig = resolveConfig(tailwindConfig)
 const generalColor = fullConfig.theme.colors.general
 
+const RepeatCall = ({ onClickRepeat }) => {
+  const [secondsLeft, setIsSecondsLeft] = useState(60)
+
+  var timer
+
+  useEffect(() => {
+    if (!timer && secondsLeft === 60) {
+      timer = setInterval(() => {
+        setIsSecondsLeft((state) => state - 1)
+      }, 1000)
+    }
+    if (timer && secondsLeft <= 0) clearInterval(timer)
+    return () => {
+      if (timer) clearInterval(timer)
+    }
+  }, [secondsLeft])
+
+  return (
+    <div className="mt-2">
+      {secondsLeft > 0 ? (
+        <>Запросить повторый звонок возможно через {secondsLeft} сек</>
+      ) : (
+        <>
+          Звонок не поступил?{' '}
+          <div
+            onClick={async () => {
+              onClickRepeat && (await onClickRepeat())
+              setIsSecondsLeft(60)
+            }}
+            className="font-bold cursor-pointer"
+          >
+            Повторный звонок
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 const Login = () => {
   const router = useRouter()
   // const { data: session, status } = useSession()
   // const { courseId, lectureId } = router.query
   const [isRegistrationProcess, setIsRegistrationProcess] = useState(false)
-  const [inputEmail, setInputEmail] = useState('')
+  const [registrationLevel, setRegistrationLevel] = useState(1)
+  const [waitingResponse, setWaitingResponse] = useState(false)
+  const [inputPhone, setInputPhone] = useState('')
   const [inputPassword, setInputPassword] = useState('')
+  const [inputPinCode, setInputPinCode] = useState('')
   const [inputPasswordRepeat, setInputPasswordRepeat] = useState('')
-  const [errors, setErrors] = useState({})
+  // const [errors, setErrors] = useState({})
+  const [errors, addError, removeError, clearErrors] = useErrors()
   const [needToCheckMail, setNeedToCheckMail] = useState(false)
 
-  const inputEmailRef = useRef()
+  const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
 
   useEffect(() => {
@@ -128,81 +217,176 @@ const Login = () => {
   }, [router])
 
   useEffect(() => {
-    if (router.query?.email && inputPasswordRef.current) {
-      setInputEmail(router.query.email)
+    if (router.query?.phone && inputPasswordRef.current) {
+      setInputPhone(router.query.phone)
       inputPasswordRef?.current?.focus()
     }
   }, [router, inputPasswordRef.current])
 
   const submit = () => {
-    const newErrors = {}
+    clearErrors()
 
-    if (inputEmail === '') {
-      newErrors.email = 'Укажите Email'
-    } else if (!emailValidator(inputEmail)) {
-      newErrors.email = 'Email указан не верно'
+    if (inputPhone === '') {
+      return addError({ phone: 'Укажите телефон' })
+      // newErrors.phone = 'Укажите телефон'
+    } else if (!phoneValidator(inputPhone)) {
+      // newErrors.phone = 'Телефон указан не верно'
+      return addError({ phone: 'Телефон указан не верно' })
     }
 
-    if (inputPassword === '') {
-      newErrors.password = 'Введите пароль'
-    } else if (isRegistrationProcess) {
-      if (!passwordValidator(inputPassword)) {
-        newErrors.password =
-          'Пароль должен содержать строчные и заглавные буквы, а также минимум одну цифру'
-      } else if (inputPassword !== inputPasswordRepeat) {
-        newErrors.password = 'Пароли не совпадают'
+    if (!isRegistrationProcess) {
+      if (inputPassword === '') {
+        // newErrors.password = 'Введите пароль'
+        return addError({ password: 'Введите пароль' })
+      }
+    } else {
+      if (registrationLevel === 3) {
+        if (!passwordValidator(inputPassword)) {
+          return addError({
+            password:
+              'Пароль должен быть длинной не менее 8 символов, содержать строчные и заглавные буквы, а также минимум одну цифру',
+          })
+          // newErrors.password =
+          //   'Пароль должен содержать строчные и заглавные буквы, а также минимум одну цифру'
+        } else if (inputPassword !== inputPasswordRepeat) {
+          // newErrors.password = 'Пароли не совпадают'
+          return addError({ password: 'Пароли не совпадают' })
+        }
       }
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      return setErrors(newErrors)
-    } else {
-      clearErrors()
-    }
+    // if (inputPhone === '') {
+    //   newErrors.phone = 'Укажите телефон'
+    // } else if (!phoneValidator(inputPhone)) {
+    //   newErrors.phone = 'Телефон указан не верно'
+    // }
+
+    // if (!isRegistrationProcess) {
+    //   if (inputPassword === '') {
+    //     newErrors.password = 'Введите пароль'
+    //   } else if (isRegistrationProcess) {
+    //     if (!passwordValidator(inputPassword)) {
+    //       newErrors.password =
+    //         'Пароль должен содержать строчные и заглавные буквы, а также минимум одну цифру'
+    //     } else if (inputPassword !== inputPasswordRepeat) {
+    //       newErrors.password = 'Пароли не совпадают'
+    //     }
+    //   }
+    // }
+
+    // if (Object.keys(newErrors).length > 0) {
+    //   return setErrors(newErrors)
+    // } else {
+    //   clearErrors()
+    // }
 
     if (isRegistrationProcess) {
-      // Если это регистрация
-      postData(
-        `/api/emailconfirm`,
-        { email: inputEmail, password: inputPassword },
-        (res) => {
-          if (res.error === 'User already registered') {
-            setErrors({
-              email: 'Пользователь с таким Email уже зарегистрирован',
-            })
-            setInputPassword('')
-            setInputPasswordRepeat('')
-          } else if (res.error) {
-            setErrors({
-              email: res.error,
-            })
+      if (registrationLevel === 1) {
+        setWaitingResponse(true)
+
+        postData(`/api/ucaller`, { phone: inputPhone }, (res) => {
+          setWaitingResponse(false)
+          if (res.error) {
+            addError({ [res.error.type]: res.error.message })
+            // updateErrors(res.error.type, res.error.message)
           } else {
-            setNeedToCheckMail(true)
+            setRegistrationLevel(2)
           }
-        }
-      )
+        })
+      }
+      if (registrationLevel === 2) {
+        setWaitingResponse(true)
+
+        postData(
+          `/api/ucaller`,
+          { phone: inputPhone, code: inputPinCode },
+          (res) => {
+            setWaitingResponse(false)
+
+            if (res.error) {
+              addError({ [res.error.type]: res.error.message })
+              // updateErrors(res.error.type, res.error.message)
+            } else {
+              setRegistrationLevel(3)
+            }
+
+            // Если код не верный
+            // if (res.errorNum === 3) {
+            //   updateErrors('pinCode', 'Неверный код')
+            // }
+            // Если небыло ошибок и статус подтвержден
+            // if (!res.errorNum && res.confirmed) {
+            //   setRegistrationLevel(3)
+            // }
+          }
+        )
+      }
+      if (registrationLevel === 3) {
+        setWaitingResponse(true)
+
+        postData(
+          `/api/ucaller`,
+          { phone: inputPhone, password: inputPassword },
+          (res) => {
+            if (res.error) {
+              setWaitingResponse(false)
+              addError({ [res.error.type]: res.error.message })
+              // updateErrors(res.error.type, res.error.message)
+            } else {
+              // setRegistrationLevel(4)
+              // router.push('/cabinet/questionnaire')
+              signIn('credentials', {
+                redirect: false,
+                phone: inputPhone,
+                password: inputPassword,
+              }).then((res) => {
+                if (res.error === 'CredentialsSignin') {
+                  setWaitingResponse(false)
+                  setInputPassword('')
+                  addError({ password: 'Телефон или пароль не верны' })
+                } else router.push('/cabinet/questionnaire')
+              })
+            }
+            // Если код не верный
+            // if (res.errorNum === 3) {
+            //   updateErrors('pinCode', 'Неверный код')
+            // }
+            // Если небыло ошибок
+            // if (!res.errorNum) {
+            //   setRegistrationLevel(3)
+            // }
+            // if (res.status) setRegistrationLevel(2)
+            // else console.log('Ошибка ответа регистрации')
+          }
+        )
+      }
     } else {
+      setWaitingResponse(true)
       // Если это авторизация
       signIn('credentials', {
         redirect: false,
-        username: inputEmail.toLowerCase(),
+        phone: inputPhone,
         password: inputPassword,
       }).then((res) => {
         if (res.error === 'CredentialsSignin') {
+          setWaitingResponse(false)
           setInputPassword('')
-          setErrors({ password: 'Логин или пароль не верны' })
-        }
+          addError({ password: 'Телефон или пароль не верны' })
+        } else router.push('/cabinet')
       })
     }
   }
 
-  const clearErrors = () => {
-    if (Object.keys(errors).length > 0) setErrors({})
-  }
+  // const clearErrors = () => {
+  //   if (Object.keys(errors).length > 0) setErrors({})
+  // }
 
-  const updateErrors = (key, error) => {
-    if (errors[key] !== error) setErrors({ ...errors, [key]: error })
-  }
+  // const updateErrors = (key, error) => {
+  //   if (errors[key] !== error)
+  //     setErrors((state) => {
+  //       return { ...state, [key]: error }
+  //     })
+  // }
 
   // useEffect(() => {
   //   if (router) {
@@ -216,6 +400,29 @@ const Login = () => {
   //     }
   //   }
   // }, [!!session, status, router])
+
+  const varifyPhone = inputPhone?.toString().length === 11
+
+  const message =
+    isRegistrationProcess && registrationLevel === 2 ? (
+      <>
+        На телефон <b>+{inputPhone}</b> поступит звонок. Трубку брать не нужно,
+        введите 4 последние цифры номера входящего звонка
+      </>
+    ) : isRegistrationProcess && registrationLevel === 3 ? (
+      <>
+        Для завершения регистрации создайте пароль для входа введя его два раза.
+        Ваш логин: <b>+{inputPhone}</b>
+      </>
+    ) : null
+
+  const isButtonDisabled =
+    !varifyPhone ||
+    (!isRegistrationProcess && inputPassword.length === 0) ||
+    (isRegistrationProcess &&
+      ((registrationLevel === 2 && inputPinCode.length !== 4) ||
+        (registrationLevel === 3 &&
+          (inputPassword.length === 0 || inputPasswordRepeat.length === 0))))
 
   return (
     <div className="box-border w-screen h-screen overflow-y-auto">
@@ -236,7 +443,7 @@ const Login = () => {
               <img
                 className="rounded-full h-1/6"
                 src={'/img/logo.webp'}
-                alt="uniplatform"
+                alt="logo"
                 // width={48}
                 // height={48}
               />
@@ -272,44 +479,147 @@ const Login = () => {
             ) : (
               <>
                 <Input
-                  inputRef={inputEmailRef}
+                  inputRef={inputPhoneRef}
                   className="mt-0"
-                  type="text"
-                  name="E-Mail"
+                  type="phone"
+                  name="Телефон"
                   icon={faUser}
                   onChange={(event) => {
-                    updateErrors('email', null)
-                    setInputEmail(event.target.value)
+                    removeError('phone')
+
+                    const value = event.target.value.replace(/[^0-9]/g, '')
+
+                    setInputPhone(
+                      !value
+                        ? '7'
+                        : value == '77' || value == '78'
+                        ? '7'
+                        : Number(value)
+                    )
                   }}
-                  value={inputEmail}
-                  error={errors.email}
+                  value={inputPhone}
+                  error={errors.phone}
+                  max={9999999999}
+                  maxLength="10"
+                  hidden={isRegistrationProcess && registrationLevel !== 1}
+                  readOnly={waitingResponse}
+                />
+
+                {message && <div className="mt-2">{message}</div>}
+                <Input
+                  type="text"
+                  name="Последние 4 цифры номера"
+                  icon={faLock}
+                  onChange={(event) => {
+                    removeError('pinCode')
+                    // updateErrors('pinCode', null)
+                    setInputPinCode(event.target.value)
+                  }}
+                  value={inputPinCode}
+                  error={errors.pinCode}
+                  hidden={!isRegistrationProcess || registrationLevel !== 2}
+                  readOnly={waitingResponse}
+                  maxLength="4"
                 />
                 <Input
                   inputRef={inputPasswordRef}
+                  className="mt-0"
                   type="password"
                   name="Пароль"
                   icon={faLock}
                   onChange={(event) => {
-                    updateErrors('password', null)
+                    removeError('password')
+                    // updateErrors('password', null)
                     setInputPassword(event.target.value)
                   }}
                   value={inputPassword}
                   error={errors.password}
+                  hidden={isRegistrationProcess && registrationLevel !== 3}
+                  readOnly={waitingResponse}
                 />
                 <Input
                   type="password"
                   name="Повтор пароля"
                   icon={faLock}
                   onChange={(event) => {
-                    updateErrors('password', null)
+                    removeError('password')
+                    // updateErrors('password', null)
                     setInputPasswordRepeat(event.target.value)
                   }}
                   value={inputPasswordRepeat}
-                  hidden={!isRegistrationProcess}
                   error={errors.password}
                   tabIndex={isRegistrationProcess ? 0 : -1}
+                  hidden={!isRegistrationProcess || registrationLevel !== 3}
+                  readOnly={waitingResponse}
                 />
-                <div className="flex justify-between">
+
+                {Object.values(errors).length > 0 && (
+                  <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
+                    {Object.values(errors).map(
+                      (error, index) =>
+                        error && <li key={'error' + index}>{error}</li>
+                    )}
+                  </ul>
+                )}
+                {errors.pinCodeCountLimit && registrationLevel === 1 && (
+                  <div
+                    className="mb-2 cursor-pointer"
+                    onClick={() => setRegistrationLevel(2)}
+                  >
+                    Я знаю код
+                  </div>
+                )}
+                {waitingResponse ? (
+                  <div
+                    className={cn(
+                      'block border-gray-500 bg-gray-200 w-full h-12 mt-4 text-white uppercase duration-300 border-2 outline-none rounded-3xl'
+                    )}
+                  >
+                    <LoadingSpinner size="xxs" />
+                  </div>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      submit()
+                    }}
+                    className={cn(
+                      isButtonDisabled
+                        ? 'bg-gray-200'
+                        : 'bg-gray-500 focus:bg-general focus:border-2 focus:border-black hover:bg-general',
+                      'block w-full h-12 text-white uppercase duration-300  border-0 outline-none  rounded-3xl'
+                    )}
+                    tabIndex={0}
+                    disabled={isButtonDisabled}
+                  >
+                    {isRegistrationProcess
+                      ? registrationLevel === 1
+                        ? 'Зарегистрироваться'
+                        : registrationLevel === 2
+                        ? 'Отправить код'
+                        : 'Завершить регистрацию'
+                      : 'Авторизироваться'}
+                  </button>
+                )}
+                {isRegistrationProcess && registrationLevel === 2 && (
+                  <RepeatCall
+                    onClickRepeat={async () => {
+                      setWaitingResponse(true)
+                      await postData(
+                        `/api/ucaller`,
+                        { phone: inputPhone },
+                        (res) => {
+                          setWaitingResponse(false)
+                          if (res.error) {
+                            addError({ [res.error.type]: res.error.message })
+                            // updateErrors(res.error.type, res.error.message)
+                          }
+                        }
+                      )
+                    }}
+                  />
+                )}
+                <div className="flex justify-between mt-4">
                   <a
                     tabIndex={0}
                     onClick={() => {
@@ -328,33 +638,7 @@ const Login = () => {
                     Забыли пароль?
                   </a>
                 </div>
-                {Object.values(errors).length > 0 && (
-                  <ul className="mt-4 ml-5 text-left text-red-600 list-disc">
-                    {Object.values(errors).map(
-                      (error, index) =>
-                        error && <li key={'error' + index}>{error}</li>
-                    )}
-                  </ul>
-                )}
-                <button
-                  onClick={(e) => {
-                    e.preventDefault()
-                    submit()
-                  }}
-                  // style={{
-                  //   backgroundImage:
-                  //     'linear-gradient(to right, #32be8f, #38d39f, #32be8f)',
-                  // }}
-                  className={
-                    'focus:bg-general focus:border-2 focus:border-black block w-full h-12 mt-4 text-white uppercase duration-300 bg-gray-500 border-0 outline-none hover:bg-general rounded-3xl'
-                  }
-                  tabIndex={0}
-                >
-                  {isRegistrationProcess
-                    ? 'Зарегистрироваться'
-                    : 'Авторизироваться'}
-                </button>
-                <div className="my-5 text-lg text-gray-700">Или</div>
+                {/* <div className="my-5 text-lg text-gray-700">Или</div>
                 <button
                   onClick={(e) => {
                     e.preventDefault()
@@ -371,11 +655,11 @@ const Login = () => {
                     src="/img/google.png"
                   />
                   <span className="flex-1">Google</span>
-                </button>
+                </button> */}
                 <Link href="/">
                   <a
                     tabIndex={0}
-                    className="block py-3 my-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"
+                    className="block py-3 mt-2 mb-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"
                   >
                     Вернуться на главную страницу сайта
                   </a>

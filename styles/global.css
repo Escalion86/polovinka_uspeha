@@ -10,6 +10,9 @@ body {
   background: #F5F6F8;
   color: #1C1D1F;
 
+  /* overflow-y: hidden;
+  max-height: 100%; */
+
   font-family: 'Futura PT', sans-serif;
 }
 
@@ -56,4 +59,16 @@ body {
 
 .image-gallery-content, .image-gallery-slide-wrapper, .image-gallery-swipe, .image-gallery-slides {
   height: 100%;
+}
+
+.MuiSlider-thumb {
+  color: #7a5151;
+}
+
+.MuiSlider-rail {
+  color: rgba(122, 81, 81, 0.5);
+}
+
+.MuiSlider-track {
+  color: #7a5151;
 }

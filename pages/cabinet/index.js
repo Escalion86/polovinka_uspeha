@@ -3,11 +3,11 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import 'react-edit-text/dist/index.css'
 
-import { useRouter } from 'next/router'
-import SideBar from 'layouts/SideBar'
+// import { useRouter } from 'next/router'
+// import SideBar from 'layouts/SideBar'
 import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
-import ContentWrapper from '@layouts/wrappers/ContentWrapper'
-import CabinetHeader from '@layouts/CabinetHeader'
+// import ContentWrapper from '@layouts/wrappers/ContentWrapper'
+// import CabinetHeader from '@layouts/CabinetHeader'
 
 function CabinetPage({ user }) {
   // const { courses, user, userCourses } = props
@@ -49,10 +49,10 @@ function CabinetPage({ user }) {
       </Head>
       <CabinetWrapper>
         {/* ----------------------------- HEADER ------------------------------- */}
-        <CabinetHeader user={user} title="Кабинет" titleLink={`/cabinet`} />
+        {/* <CabinetHeader user={user} title="Кабинет" titleLink={`/cabinet`} />
         <SideBar user={user} />
-        <ContentWrapper>
-          {/* <H2>Доступные курсы</H2>
+        <ContentWrapper> */}
+        {/* <H2>Доступные курсы</H2>
           <div className="w-full">
             {accessCourses.length > 0 ? (
               <ul className="w-full">
@@ -94,7 +94,7 @@ function CabinetPage({ user }) {
           >
             Создать свой курс
           </button> */}
-        </ContentWrapper>
+        {/* </ContentWrapper> */}
       </CabinetWrapper>
     </>
   )

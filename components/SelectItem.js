@@ -1,6 +1,7 @@
 // import { useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faCross,
   faPencilAlt,
   faPlus,
   faSearch,
@@ -12,6 +13,7 @@ import { Virtuoso } from 'react-virtuoso'
 import {
   UserItem,
   EventItem,
+  DirectionItem,
   // ProductItem,
   // SetItem,
   // PersonaItem,
@@ -23,6 +25,8 @@ import cn from 'classnames'
 import usersAtom from '@state/atoms/usersAtom'
 import { useRecoilValue } from 'recoil'
 import eventsAtom from '@state/atoms/eventsAtom'
+import directionsAtom from '@state/atoms/directionsAtom'
+import { modalsFuncAtom } from '@state/atoms'
 // import useClickOutside from '@helpers/hooks/21-useClickOutside/useClickOutside'
 
 const filteredItems = (
@@ -49,37 +53,41 @@ const filteredItems = (
               if (!(item[key] == parseInt(rule.substr(1)))) return false
             }
           }
+        if (searchText) {
+          if (searchText[0] === '>') {
+            if (searchText[1] === '=')
+              return item.price >= parseInt(searchText.substr(2)) * 100
+            return item.price > parseInt(searchText.substr(1)) * 100
+          }
+          if (searchText[0] === '<') {
+            if (searchText[1] === '=')
+              return item.price <= parseInt(searchText.substr(2)) * 100
+            return item.price < parseInt(searchText.substr(1)) * 100
+          }
+          if (searchText[0] === '=') {
+            return item.price == parseInt(searchText.substr(1)) * 100
+          }
 
-        if (searchText[0] === '>') {
-          if (searchText[1] === '=')
-            return item.price >= parseInt(searchText.substr(2)) * 100
-          return item.price > parseInt(searchText.substr(1)) * 100
-        }
-        if (searchText[0] === '<') {
-          if (searchText[1] === '=')
-            return item.price <= parseInt(searchText.substr(2)) * 100
-          return item.price < parseInt(searchText.substr(1)) * 100
-        }
-        if (searchText[0] === '=') {
-          return item.price == parseInt(searchText.substr(1)) * 100
-        }
-
-        const searchTextLowerCase = searchText.toLowerCase()
-        // const itemNameLowerCase = item.name?.toLowerCase()
-        return (
-          !exceptedIds.includes(item._id) &&
-          (item.name?.toString().toLowerCase().includes(searchTextLowerCase) ||
-            item.number?.toString().includes(searchTextLowerCase) ||
-            item.phone?.toString().includes(searchTextLowerCase) ||
-            item.whatsapp?.toString().includes(searchTextLowerCase) ||
-            item.viber?.toString().includes(searchTextLowerCase) ||
-            item.telegram?.toString().includes(searchTextLowerCase) ||
-            item.instagram?.toString().includes(searchTextLowerCase) ||
-            item.vk?.toString().includes(searchTextLowerCase) ||
-            item.price?.toString().includes(searchTextLowerCase))
-          // ||
-          // item.fullPrice?.toString().includes(searchTextLowerCase)
-        )
+          const searchTextLowerCase = searchText.toLowerCase()
+          // const itemNameLowerCase = item.name?.toLowerCase()
+          return (
+            !exceptedIds?.includes(item._id) &&
+            (item.name
+              ?.toString()
+              .toLowerCase()
+              .includes(searchTextLowerCase) ||
+              item.number?.toString().includes(searchTextLowerCase) ||
+              item.phone?.toString().includes(searchTextLowerCase) ||
+              item.whatsapp?.toString().includes(searchTextLowerCase) ||
+              item.viber?.toString().includes(searchTextLowerCase) ||
+              item.telegram?.toString().includes(searchTextLowerCase) ||
+              item.instagram?.toString().includes(searchTextLowerCase) ||
+              item.vk?.toString().includes(searchTextLowerCase) ||
+              item.price?.toString().includes(searchTextLowerCase))
+            // ||
+            // item.fullPrice?.toString().includes(searchTextLowerCase)
+          )
+        } else return !exceptedIds?.includes(item._id)
       })
     : [...items]
   ).sort((a, b) => {
@@ -105,6 +113,7 @@ export const SelectItem = ({
   noSearch = false,
   itemWidth = 0,
   moreOneFilterTurnOn = true,
+  onNoChoose,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(selectedId === '?')
   const [searchText, setSearchText] = useState('')
@@ -126,16 +135,25 @@ export const SelectItem = ({
 
   const Item = itemComponent
 
+  const preFilteredItemsArray = isMenuOpen
+    ? filteredItems(items, null, exceptedIds, {})
+    : []
+
   const filteredItemsArray = isMenuOpen
     ? filteredItems(
-        items,
+        preFilteredItemsArray,
         searchText,
-        exceptedIds,
+        [],
         moreOneFilterTurnOnExists && moreOneFilter ? { count: '>0' } : {}
       )
     : []
 
-  const toggleIsMenuOpen = () => setIsMenuOpen((state) => !state)
+  const toggleIsMenuOpen = () => {
+    if (isMenuOpen && onNoChoose) onNoChoose()
+    setIsMenuOpen((state) => !state)
+  }
+
+  const isSearchVisible = !noSearch && preFilteredItemsArray.length > 0
 
   useEffect(() => {
     // console.log(`ref.current`, ref.current)
@@ -145,23 +163,25 @@ export const SelectItem = ({
       //   ref.current.contains(e.target)
       // )
       if (
+        !onClick &&
         dropDownList &&
         isMenuOpen &&
         ref.current &&
         !ref.current.contains(e.target)
       ) {
+        if (isMenuOpen && onNoChoose) onNoChoose()
         setIsMenuOpen(false)
       }
     }
 
     document.addEventListener('mousedown', checkIfClickedOutside)
 
-    if (isMenuOpen && !noSearch) inputRef.current.focus()
+    if (isMenuOpen && isSearchVisible) inputRef.current.focus()
 
     return () => {
       document.removeEventListener('mousedown', checkIfClickedOutside)
     }
-  }, [dropDownList, isMenuOpen, ref, inputRef])
+  }, [onClick, dropDownList, isMenuOpen, ref, inputRef])
 
   return (
     <div
@@ -171,8 +191,8 @@ export const SelectItem = ({
       )}
       style={{ height: itemHeight, width: itemWidth }}
       onClick={() => {
-        if (dropDownList) toggleIsMenuOpen()
-        if (onClick) onClick(selectedItem)
+        if ((!selectedItem || !onClick) && dropDownList) toggleIsMenuOpen()
+        if (onClick && selectedItem) onClick(selectedItem)
       }}
       ref={ref}
     >
@@ -180,14 +200,15 @@ export const SelectItem = ({
         <div
           className={
             cn(
-              'absolute overflow-hidden max-h-64 transform duration-300 ease-out flex flex-col top-full left-0 right-0 bg-white shadow-sm border border-gray-700 z-50',
+              'absolute border overflow-hidden max-h-64 transform duration-300 ease-out flex flex-col top-full -left-[1px] -right-[1px] bg-white shadow border-gray-700 z-50',
+              { hidden: !isMenuOpen },
               { 'opacity-0': !isMenuOpen }
             ) // scale-y-0 -translate-y-1/2
           }
           // style={{ width: itemWidth }}
           onClick={(e) => e.stopPropagation()}
         >
-          {!noSearch && (
+          {isSearchVisible && (
             <div
               className={cn(
                 'flex gap-1 items-center border-gray-700 border-b p-1',
@@ -223,28 +244,31 @@ export const SelectItem = ({
               ) : null}
             </div>
           )}
-          {isMenuOpen && (
-            <Virtuoso
-              totalCount={filteredItemsArray.length}
-              style={{
-                maxHeight: 400,
-                height: filteredItemsArray.length * itemHeight,
-              }}
-              className={cn({ hidden: !isMenuOpen })}
-              data={filteredItemsArray}
-              itemContent={(index, item) => (
-                <Item
-                  key={item._id}
-                  item={item}
-                  onClick={() => {
-                    setIsMenuOpen(false)
-                    onChange(item)
-                  }}
-                  active={item._id === selectedId}
-                />
-              )}
-            />
-          )}
+          {isMenuOpen &&
+            (filteredItemsArray.length > 0 ? (
+              <Virtuoso
+                totalCount={filteredItemsArray.length}
+                style={{
+                  maxHeight: 400,
+                  height: filteredItemsArray.length * itemHeight,
+                }}
+                className={cn({ hidden: !isMenuOpen })}
+                data={filteredItemsArray}
+                itemContent={(index, item) => (
+                  <Item
+                    key={item._id}
+                    item={item}
+                    onClick={() => {
+                      setIsMenuOpen(false)
+                      onChange(item)
+                    }}
+                    active={item._id === selectedId}
+                  />
+                )}
+              />
+            ) : (
+              <div className="text-center bg-red-100">Нет элементов</div>
+            ))}
         </div>
       )}
       {selectedItem ? (
@@ -256,13 +280,34 @@ export const SelectItem = ({
   )
 }
 
+const ItemButton = ({ onClick, icon, iconClassName }) => (
+  <div className="flex items-center justify-center border-l border-gray-700">
+    <button
+      onClick={onClick}
+      className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
+    >
+      <FontAwesomeIcon
+        className={cn(
+          'w-4 h-4 duration-300 group-hover:scale-125',
+          iconClassName
+        )}
+        icon={icon}
+      />
+    </button>
+  </div>
+)
+
 const SelectItemContainer = ({
   required,
   label = '',
   onClickClearButton = null,
   onCreateNew,
   onEdit,
+  bordered = true,
   children,
+  error,
+  buttons,
+  selectedId,
 }) => {
   const Container = ({ children }) => (
     <>
@@ -270,7 +315,16 @@ const SelectItemContainer = ({
         {label}
         {required && <span className="text-red-700">*</span>}
       </label>
-      <div className="flex flex-1 border border-gray-700 rounded">
+      <div
+        className={cn(
+          'flex flex-1 rounded',
+          error
+            ? 'border border-red-500'
+            : bordered
+            ? 'border border-gray-700'
+            : ''
+        )}
+      >
         {children}
       </div>
     </>
@@ -279,44 +333,67 @@ const SelectItemContainer = ({
   return (
     <Container>
       {children}
+      {buttons &&
+        buttons.map(({ onClick, icon, iconClassName }, index) => (
+          <ItemButton
+            onClick={() => onClick(selectedId)}
+            icon={icon}
+            iconClassName={iconClassName}
+          />
+        ))}
       {onEdit && (
-        <div className="flex items-center justify-center border-l border-gray-700">
-          <button
-            onClick={onEdit}
-            className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
-          >
-            <FontAwesomeIcon
-              className="w-3 h-3 duration-300 text-primary group-hover:scale-125"
-              icon={faPencilAlt}
-            />
-          </button>
-        </div>
+        <ItemButton
+          onClick={onEdit}
+          icon={faPencilAlt}
+          iconClassName="text-primary"
+        />
+        // <div className="flex items-center justify-center border-l border-gray-700">
+        //   <button
+        //     onClick={onEdit}
+        //     className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
+        //   >
+        //     <FontAwesomeIcon
+        //       className="w-3 h-3 duration-300 text-primary group-hover:scale-125"
+        //       icon={faPencilAlt}
+        //     />
+        //   </button>
+        // </div>
       )}
       {onCreateNew && (
-        <div className="flex items-center justify-center border-l border-gray-700">
-          <button
-            onClick={onCreateNew}
-            className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
-          >
-            <FontAwesomeIcon
-              className="w-3 h-3 duration-300 text-primary group-hover:scale-125"
-              icon={faPlus}
-            />
-          </button>
-        </div>
+        <ItemButton
+          onClick={onCreateNew}
+          icon={faPlus}
+          iconClassName="text-primary"
+        />
+        // <div className="flex items-center justify-center border-l border-gray-700">
+        //   <button
+        //     onClick={onCreateNew}
+        //     className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
+        //   >
+        //     <FontAwesomeIcon
+        //       className="w-3 h-3 duration-300 text-primary group-hover:scale-125"
+        //       icon={faPlus}
+        //     />
+        //   </button>
+        // </div>
       )}
       {onClickClearButton && (
-        <div className="flex items-center justify-center border-l border-gray-700">
-          <button
-            onClick={onClickClearButton}
-            className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
-          >
-            <FontAwesomeIcon
-              className="w-3 h-3 text-red-700 duration-300 group-hover:scale-125"
-              icon={faTrash}
-            />
-          </button>
-        </div>
+        <ItemButton
+          onClick={onClickClearButton}
+          icon={faTimes}
+          iconClassName="text-red-700"
+        />
+        // <div className="flex items-center justify-center border-l border-gray-700">
+        //   <button
+        //     onClick={onClickClearButton}
+        //     className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
+        //   >
+        //     <FontAwesomeIcon
+        //       className="w-4 h-4 text-red-700 duration-300 group-hover:scale-125"
+        //       icon={faTimes}
+        //     />
+        //   </button>
+        // </div>
       )}
     </Container>
   )
@@ -329,29 +406,56 @@ export const SelectUser = ({
   exceptedIds = [],
   required = false,
   clearButton = null,
+  label,
+  filter,
+  disableDropDownList,
+  error,
+  bordered = true,
+  bottons,
 }) => {
   const users = useRecoilValue(usersAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+
+  const filteredUsers =
+    filter && typeof filter === 'object'
+      ? users.filter((user) => {
+          for (const [key, value] of Object.entries(filter)) {
+            if (user[key] !== value) return false
+          }
+          return true
+        })
+      : users
+
+  const onClickClearButton =
+    selectedId && clearButton
+      ? onDelete
+        ? () => onDelete()
+        : () => onChange(null)
+      : null
+
   return (
     <SelectItemContainer
       required={required}
-      label="Платильщик"
-      onClickClearButton={
-        selectedId && clearButton
-          ? onDelete
-            ? () => onDelete()
-            : () => onChange(null)
-          : null
-      }
+      label={label}
+      onClickClearButton={onClickClearButton}
+      bordered={bordered}
+      error={error}
+      bottons={bottons}
+      selectedId={selectedId}
     >
       <SelectItem
-        items={users}
-        itemComponent={UserItem}
+        items={filteredUsers}
+        itemComponent={(props) => UserItem({ ...props, bordered })}
         onChange={onChange}
         selectedId={selectedId}
         className={
           'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
         }
         exceptedIds={exceptedIds}
+        onClick={
+          disableDropDownList ? (user) => modalsFunc.user.view(user._id) : null
+        }
+        onNoChoose={onDelete}
       />
     </SelectItemContainer>
   )
@@ -364,6 +468,9 @@ export const SelectEvent = ({
   exceptedIds = [],
   required = false,
   clearButton = null,
+  error,
+  bordered = true,
+  bottons,
 }) => {
   const events = useRecoilValue(eventsAtom)
   return (
@@ -377,10 +484,57 @@ export const SelectEvent = ({
             : () => onChange(null)
           : null
       }
+      error={error}
+      bordered={bordered}
+      bottons={bottons}
+      selectedId={selectedId}
     >
       <SelectItem
         items={events}
         itemComponent={EventItem}
+        onChange={onChange}
+        selectedId={selectedId}
+        className={
+          'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
+        }
+        exceptedIds={exceptedIds}
+      />
+    </SelectItemContainer>
+  )
+}
+
+export const SelectDirection = ({
+  onChange,
+  onDelete,
+  selectedId = null,
+  exceptedIds = [],
+  required = false,
+  clearButton = null,
+  error,
+  bordered = true,
+  bottons,
+}) => {
+  const directions = useRecoilValue(directionsAtom)
+  return (
+    <SelectItemContainer
+      required={required}
+      label="Направление"
+      onClickClearButton={
+        selectedId && clearButton
+          ? onDelete
+            ? () => onDelete()
+            : () => onChange(null)
+          : null
+      }
+      error={error}
+      bordered={bordered}
+      bottons={bottons}
+      selectedId={selectedId}
+    >
+      <SelectItem
+        items={directions}
+        itemComponent={DirectionItem}
+        itemHeight={50}
         onChange={onChange}
         selectedId={selectedId}
         className={

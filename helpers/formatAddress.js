@@ -1,5 +1,5 @@
-const formatAddress = (address) => {
-  if (!address?.town && !address?.street) return 'неизвестен'
+const formatAddress = (address, textIfNoAddress) => {
+  if (!address?.town && !address?.street) return textIfNoAddress ?? ''
   return `${
     address?.town &&
     address.town + (address?.street ? ', ' + address.street : '')

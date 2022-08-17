@@ -1,4 +1,5 @@
 import {
+  faBan,
   faCalendarDay,
   faCheckCircle,
   faCircle,
@@ -8,6 +9,8 @@ import {
   faGift,
   faMars,
   faMarsDouble,
+  faPhone,
+  faPlay,
   faSignInAlt,
   faTimesCircle,
   faVenus,
@@ -51,6 +54,8 @@ import ZodiacPisces from 'svg/zodiac/ZodiacPisces'
 import ZodiacVirgo from 'svg/zodiac/ZodiacVirgo'
 import ZodiacScorpio from 'svg/zodiac/ZodiacScorpio'
 import PaymentsContent from '@layouts/content/PaymentsContent'
+import ContactsContent from '@layouts/content/ContactsContent'
+import DevContent from '@layouts/content/DevContent'
 
 const colors = [
   'border-blue-400',
@@ -183,8 +188,8 @@ const colors = [
 
 export const DEFAULT_USER = Object.freeze({
   name: '',
-  secondname: '',
-  thirdname: '',
+  secondName: '',
+  thirdName: '',
   password: '',
   email: null,
   phone: null,
@@ -256,6 +261,11 @@ export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
   index: 0,
   showOnSite: true,
 })
+
+export const EVENT_STATUSES = [
+  { value: 'active', name: 'Активно', color: 'green-400', icon: faPlay },
+  { value: 'canceled', name: 'Отменено', color: 'red-400', icon: faBan },
+]
 
 export const GENDERS = [
   { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },
@@ -404,6 +414,8 @@ export const CONTENTS = {
   questionnaire: { Component: QuestionnaireContent, name: 'Моя анкета' },
   users: { Component: UsersContent, name: 'Пользователи' },
   payments: { Component: PaymentsContent, name: 'Транзакции' },
+  contacts: { Component: ContactsContent, name: 'Контакты на сайте' },
+  dev: { Component: DevContent, name: 'Разработчик' },
 }
 
 export const pages = [
@@ -435,20 +447,33 @@ export const pages = [
     href: 'reviews',
     icon: faComments,
   },
-
   {
     id: 4,
+    group: 1,
+    name: 'Контакты',
+    href: 'contacts',
+    icon: faPhone,
+  },
+  {
+    id: 5,
     group: 2,
     name: 'Пользователи',
     href: 'users',
     icon: faCalendar,
   },
   {
-    id: 5,
+    id: 6,
     group: 3,
     name: 'Транзакции',
     href: 'payments',
     icon: faMoneyBill,
+  },
+  {
+    id: 99,
+    group: 99,
+    name: 'Разработчик',
+    href: 'dev',
+    icon: faBug,
   },
 ]
 
@@ -468,10 +493,28 @@ export const pagesGroups = [
   { id: 1, name: 'Сайт', icon: faHome, access: 'admin' },
   { id: 2, name: 'Пользователи', icon: faUser, access: 'admin' },
   { id: 3, name: 'Транзакции', icon: faMoneyBill, access: 'admin' },
+  { id: 99, name: 'Разработчик', icon: faBug, access: 'admin' },
   // { id: 2, name: 'Заказы', icon: faFire },
   // { id: 1, name: 'Склад', icon: faCubes },
   // { id: 3, name: 'Клиенты', icon: faUser },
   // { id: 4, name: 'Оплата', icon: faMoneyBill },
   // { id: 6, name: 'Настройки', icon: faCog, bottom: true },
   // { id: 10, name: 'Разработка', icon: faBug, bottom: true },
+]
+
+export const DEFAULT_USERS_STATUS_ACCESS = {
+  noReg: true,
+  novice: true,
+  member: true,
+}
+
+export const DEFAULT_USERS_STATUS_DISCOUNT = {
+  novice: 0,
+  member: 0,
+}
+
+export const USERS_STATUSES = [
+  { value: 'novice', name: 'Новичок', color: 'blue-400' },
+  { value: 'member', name: 'Участник клуба', color: 'green-400' },
+  { value: 'ban', name: 'Бан', color: 'danger' },
 ]

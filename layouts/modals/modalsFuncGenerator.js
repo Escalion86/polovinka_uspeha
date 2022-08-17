@@ -11,16 +11,22 @@
 import reviewFunc from './modalsFunc/reviewFunc'
 import directionFunc from './modalsFunc/directionFunc'
 import eventFunc from './modalsFunc/eventFunc'
+import eventUsersFunc from './modalsFunc/eventUsersFunc'
 import userFunc from './modalsFunc/userFunc'
 import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
 
-import { deleteData } from '@helpers/CRUD'
-import eventSignUpFunc from './modalsFunc/eventSignUpFunc'
+import eventViewFunc from './modalsFunc/eventViewFunc'
 import paymentFunc from './modalsFunc/paymentFunc'
+import userViewFunc from './modalsFunc/userViewFunc'
 
-const modalsFuncGenerator = (setModals, itemsFunc) => {
+const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const addModal = (props) => setModals((modals) => [...modals, props])
+  const addModal = (props) =>
+    setModals((modals) => {
+      if (props.id && modals.find((modal) => modal.id === props.id))
+        return modals
+      return [...modals, props]
+    })
 
   return {
     add: addModal,
@@ -35,14 +41,7 @@ const modalsFuncGenerator = (setModals, itemsFunc) => {
         onConfirm,
       })
     },
-    custom: ({ title, text, onConfirm, Children }) => {
-      addModal({
-        title,
-        text,
-        onConfirm,
-        Children,
-      })
-    },
+    custom: addModal,
     review: {
       add: (reviewId) => addModal(reviewFunc(reviewId, true)),
       edit: (reviewId) => addModal(reviewFunc(reviewId)),
@@ -66,13 +65,62 @@ const modalsFuncGenerator = (setModals, itemsFunc) => {
     event: {
       add: (eventId) => addModal(eventFunc(eventId, true)),
       edit: (eventId) => addModal(eventFunc(eventId)),
+      users: (eventId) => addModal(eventUsersFunc(eventId)),
+      cancel: (eventId) =>
+        addModal({
+          title: 'Отмена события',
+          text: 'Вы уверены, что хотите отменить событие (это не удалит событие, а лишь изменит его статус на отмененное)?',
+          onConfirm: async () => itemsFunc.event.cancel(eventId),
+        }),
+      uncancel: (eventId) =>
+        addModal({
+          title: 'Возобновление события',
+          text: 'Вы уверены, что хотите возобновить событие?',
+          onConfirm: async () => itemsFunc.event.uncancel(eventId),
+        }),
       delete: (eventId) =>
         addModal({
           title: 'Удаление события',
           text: 'Вы уверены, что хотите удалить событие?',
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
-      signUp: (eventId) => addModal(eventSignUpFunc(eventId)),
+      view: (eventId) => addModal(eventViewFunc(eventId)),
+      signUp: (eventId) => {
+        if (!loggedUser?._id)
+          addModal({
+            title: 'Необходимо зарегистрироваться и авторизироваться',
+            text: 'Для записи на мероприятие, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
+            confirmButtonName: 'Зарегистрироваться / Авторизироваться',
+            onConfirm: () => router.push('/login'),
+          })
+        else
+          addModal({
+            title: 'Запись на мероприятие',
+            text: 'Вы уверены что хотите записаться на мероприятие?',
+            confirmButtonName: 'Записаться',
+            onConfirm: () => {
+              itemsFunc.event.signUp(eventId, loggedUser._id)
+            },
+          })
+      },
+      signOut: (eventId) => {
+        if (!loggedUser?._id)
+          addModal({
+            title: 'Необходимо зарегистрироваться',
+            text: 'Для записи на мероприятие, необходимо сначала авторизироваться на сайте',
+            confirmButtonName: 'Авторизироваться',
+            onConfirm: () => router.push('/login'),
+          })
+        else
+          addModal({
+            title: 'Отмена записии на мероприятие',
+            text: 'Вы уверены что хотите отменить запись на мероприятие?',
+            confirmButtonName: 'Отменить запись',
+            onConfirm: () => {
+              itemsFunc.event.signOut(eventId, loggedUser._id)
+            },
+          })
+      },
     },
     payment: {
       add: (paymentId) => addModal(paymentFunc(paymentId, true)),
@@ -93,6 +141,7 @@ const modalsFuncGenerator = (setModals, itemsFunc) => {
           text: 'Вы уверены, что хотите удалить пользователя?',
           onConfirm: async () => itemsFunc.user.delete(userId),
         }),
+      view: (userId) => addModal(userViewFunc(userId)),
     },
     additionalBlock: {
       add: (additionalBlockId) =>
