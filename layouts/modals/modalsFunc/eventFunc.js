@@ -14,6 +14,7 @@ import InputImages from '@components/InputImages'
 import PriceInput from '@components/PriceInput'
 import CheckBox from '@components/CheckBox'
 import Input from '@components/Input'
+import formatMinutes from '@helpers/formatMinutes'
 
 import {
   DEFAULT_ADDRESS,
@@ -39,6 +40,7 @@ import {
   AccordionHeader,
   AccordionBody,
 } from '@material-tailwind/react'
+import TimePicker from '@components/TimePicker'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -53,6 +55,7 @@ const eventFunc = (eventId, clone = false) => {
     const [images, setImages] = useState(event?.images ?? [])
     const [description, setDescription] = useState(event?.description ?? '')
     const [date, setDate] = useState(event?.date ?? Date.now())
+    const [duration, setDuration] = useState(event?.duration ?? 60)
     const [address, setAddress] = useState(
       event?.address && typeof event.address === 'object'
         ? event.address
@@ -95,6 +98,8 @@ const eventFunc = (eventId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(event?.showOnSite ?? true)
     const [errors, addError, removeError, clearErrors] = useErrors()
 
+    console.log('duration', duration)
+
     const onClickConfirm = async () => {
       clearErrors()
       let error = false
@@ -128,6 +133,7 @@ const eventFunc = (eventId, clone = false) => {
             description,
             showOnSite,
             date,
+            duration,
             address,
             price,
             directionId,
@@ -155,6 +161,7 @@ const eventFunc = (eventId, clone = false) => {
       description,
       showOnSite,
       date,
+      duration,
       images,
       address,
       price,
@@ -475,16 +482,39 @@ const eventFunc = (eventId, clone = false) => {
                 required
                 error={errors.description}
               />
-              <DateTimePicker
-                value={date}
-                onChange={(date) => {
-                  removeError('date')
-                  setDate(date)
-                }}
-                label="Дата и время"
-                required
-                error={errors.date}
-              />
+              <FormWrapper twoColumns>
+                <DateTimePicker
+                  value={date}
+                  onChange={(date) => {
+                    removeError('date')
+                    setDate(date)
+                  }}
+                  label="Дата и время"
+                  required
+                  error={errors.date}
+                />
+                <TimePicker
+                  value={
+                    formatMinutes(duration, true)
+                    // (Math.ceil(duration / 60) <= 9
+                    //   ? '0' + Math.ceil(duration / 60)
+                    //   : Math.ceil(duration / 60)) +
+                    // ':' +
+                    // (duration % 60 <= 9 ? '0' + (duration % 60) : duration % 60)
+                  }
+                  onChange={(duration) => {
+                    removeError('duration')
+                    setDuration(
+                      duration
+                        .split(':')
+                        .reduce((seconds, v) => +v + seconds * 60, 0)
+                    )
+                  }}
+                  label="Продолжительность"
+                  required
+                  error={errors.duration}
+                />
+              </FormWrapper>
               <SelectUser
                 label="Организатор"
                 selectedId={organizerId}

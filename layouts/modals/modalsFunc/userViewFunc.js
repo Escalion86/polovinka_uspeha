@@ -8,6 +8,7 @@ import FormWrapper from '@components/FormWrapper'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import birthDateToAge from '@helpers/birthDateToAge'
 import UserName from '@components/UserName'
+import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -18,7 +19,7 @@ const userViewFunc = (userId, clone = false) => {
         <div className="flex flex-1 gap-x-2">
           <img
             className="object-cover w-20 h-20 tablet:w-24 tablet:h-24"
-            src={user.image}
+            src={getUserAvatarSrc(user)}
             alt="user"
             // width={48}
             // height={48}
@@ -32,7 +33,7 @@ const userViewFunc = (userId, clone = false) => {
                 {GENDERS.find((item) => item.value === user.gender)?.name}
               </span>
             </div>
-            <div className="flex gap-x-2">
+            {/* <div className="flex gap-x-2">
               <span className="font-bold">Ориентация:</span>
               <span>
                 {
@@ -40,7 +41,7 @@ const userViewFunc = (userId, clone = false) => {
                     ?.name
                 }
               </span>
-            </div>
+            </div> */}
             {user.birthday && (
               <div className="flex gap-x-2">
                 <span className="font-bold">Дата рождения:</span>

@@ -18,18 +18,25 @@ import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import PriceDiscount from '@components/PriceDiscount'
 import cn from 'classnames'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
+import formatMinutes from '@helpers/formatMinutes'
+import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
+import EventButtonSignIn from '@components/EventButtonSignIn'
 
 const EventCard = ({ eventId, noButtons }) => {
   const widthNum = useWindowDimensionsTailwindNum()
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
+  if (!event) return null
+
   const direction = useRecoilValue(directionSelector(event?.directionId))
   const loading = useRecoilValue(loadingAtom('event' + eventId))
   const itemFunc = useRecoilValue(itemsFuncAtom)
   // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
-  if (!event) return null
+  const eventLoggedUserStatus = useRecoilValue(
+    loggedUserToEventStatusSelector(eventId)
+  )
 
   // const eventAssistants = eventUsers
   //   .filter((item) => item.user && item.status === 'assistant')
@@ -141,18 +148,28 @@ const EventCard = ({ eventId, noButtons }) => {
               <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
                 {formatDateTime(event.date, false, false, true, true)}
               </div>
+              <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
+                {formatMinutes(event.duration ?? 60)}
+              </div>
             </div>
           </div>
         </div>
+
         {widthNum >= 3 && (
-          <EventUsersCounterAndAge eventId={eventId} className="border-t" />
+          <div className="flex items-center justify-between border-t">
+            <EventUsersCounterAndAge eventId={eventId} />
+            <EventButtonSignIn eventId={eventId} className="mx-1" />
+          </div>
         )}
       </div>
       {widthNum <= 2 && (
-        <EventUsersCounterAndAge
-          eventId={eventId}
-          className="flex-1 min-w-full border-t"
-        />
+        <div className="flex flex-wrap justify-end flex-1 w-full">
+          <EventUsersCounterAndAge
+            eventId={eventId}
+            className="flex-1 min-w-full border-t border-b"
+          />
+          <EventButtonSignIn eventId={eventId} className="m-1" />
+        </div>
       )}
     </CardWrapper>
   )

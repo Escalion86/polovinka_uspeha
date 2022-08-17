@@ -260,16 +260,34 @@ export const getServerSideProps = async (context) => {
   }
 
   try {
+    console.time('Loading time')
+    console.time('users')
     const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
+    console.timeEnd('users')
+    console.time('events')
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+    console.timeEnd('events')
+    console.time('directions')
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+    console.timeEnd('directions')
+    console.time('reviews')
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    console.timeEnd('reviews')
+    console.time('additionalBlocks')
     const additionalBlocks = await fetchingAdditionalBlocks(
       process.env.NEXTAUTH_SITE
     )
+    console.timeEnd('additionalBlocks')
+    console.time('eventsUsers')
     const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    console.timeEnd('eventsUsers')
+    console.time('payments')
     const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
+    console.timeEnd('payments')
+    console.time('siteSettings')
     const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+    console.timeEnd('siteSettings')
+    console.timeEnd('Loading time')
 
     return {
       props: {

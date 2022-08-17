@@ -1,4 +1,7 @@
+import { faGenderless } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
+import { GENDERS } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 // import roleRus from '@helpers/roleRus'
@@ -70,51 +73,62 @@ const ItemContainer = ({
 
 // export const SetItem = (props) => ProductItem(props)
 
-export const UserItem = ({ item, onClick = null, active = false }) => (
-  <ItemContainer onClick={onClick} active={active} noPadding className="flex">
-    {item.image && (
+export const UserItem = ({ item, onClick = null, active = false }) => {
+  const userGender =
+    item.gender && GENDERS.find((gender) => gender.value === item.gender)
+  return (
+    <ItemContainer onClick={onClick} active={active} noPadding className="flex">
+      <div
+        className={cn(
+          'w-7 flex justify-center items-center',
+          userGender ? 'bg-' + userGender.color : 'bg-gray-400'
+        )}
+      >
+        <FontAwesomeIcon
+          className="w-6 h-6 text-white"
+          icon={userGender ? userGender.icon : faGenderless}
+        />
+      </div>
       <img
         className="object-cover h-10 aspect-1"
         src={getUserAvatarSrc(item)}
         alt="user"
-        // width={48}
-        // height={48}
       />
-    )}
-    <div className="flex-col flex-1 py-0.5 px-1">
-      <div className="flex flex-wrap flex-1 h-5 text-sm text-gray-800 truncate max-h-5 gap-x-1">
-        <span className="font-semibold">{item.name}</span>
-        {item.secondName && (
-          <span className="font-semibold">{item.secondName}</span>
-        )}
-        {item.thirdName && (
-          <span className="font-semibold">{item.thirdName}</span>
-        )}
-        {item.birthday && (
-          <span className="italic">
-            {' (' + birthDateToAge(item.birthday) + ')'}
-          </span>
-        )}
-      </div>
-      <div className="flex flex-wrap items-center justify-between flex-1 h-4 overflow-hidden text-xs text-gray-600 max-h-4 gap-x-2">
-        <div className="whitespace-nowrap">
-          Телефон: {item.phone ? '+' + item.phone : '[нет]'}
+      <div className="flex-col flex-1 py-0.5 px-1">
+        <div className="flex flex-wrap flex-1 h-5 text-sm text-gray-800 truncate max-h-5 gap-x-1">
+          <span className="font-semibold">{item.name}</span>
+          {item.secondName && (
+            <span className="font-semibold">{item.secondName}</span>
+          )}
+          {item.thirdName && (
+            <span className="font-semibold">{item.thirdName}</span>
+          )}
+          {item.birthday && (
+            <span className="italic">
+              {' (' + birthDateToAge(item.birthday) + ')'}
+            </span>
+          )}
         </div>
-        {item.whatsapp && (
+        <div className="flex flex-wrap items-center justify-between flex-1 h-4 overflow-hidden text-xs text-gray-600 max-h-4 gap-x-2">
           <div className="whitespace-nowrap">
-            WhatsApp: {item.whatsapp ? '+' + item.whatsapp : '[нет]'}
+            Телефон: {item.phone ? '+' + item.phone : '[нет]'}
           </div>
-        )}
-        {item.email && (
-          <div className="whitespace-nowrap">
-            Email: {item.email || '[нет]'}
-          </div>
-        )}
+          {item.whatsapp && (
+            <div className="whitespace-nowrap">
+              WhatsApp: {item.whatsapp ? '+' + item.whatsapp : '[нет]'}
+            </div>
+          )}
+          {item.email && (
+            <div className="whitespace-nowrap">
+              Email: {item.email || '[нет]'}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  </ItemContainer>
-  // </Tooltip>
-)
+    </ItemContainer>
+    // </Tooltip>
+  )
+}
 
 export const EventItem = ({ item, onClick = null, active = false }) => (
   <ItemContainer onClick={onClick} active={active} className="justify-between">

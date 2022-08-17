@@ -1,5 +1,7 @@
 import Burger from '@components/Burger'
 import Divider from '@components/Divider'
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import transliterate from '@helpers/transliterate'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
@@ -80,7 +82,7 @@ const Header = (props) => {
           <Link href="/">
             <a>
               <img
-                className="object-contain h-16 phoneH:min-w-min"
+                className="object-contain h-16 tablet:min-w-min"
                 src={'/img/logo_horizontal.png'}
                 alt="logo"
                 // width={48}
@@ -90,7 +92,7 @@ const Header = (props) => {
           </Link>
         </div>
 
-        <div className="absolute hidden phoneH:block right-4">
+        <div className="absolute right-2">
           <UserMenu user={loggedUser} />
         </div>
       </div>
@@ -106,7 +108,7 @@ const Header = (props) => {
         )}
       >
         <div className="pt-20 pb-4 w-60">
-          <div className="flex w-full px-2 pb-2 border-b phoneH:hidden border-general">
+          <div className="flex w-full px-2 pb-2 border-b tablet:hidden border-general">
             {loggedUser ? (
               <Link href="/cabinet">
                 <a className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general">
@@ -116,13 +118,14 @@ const Header = (props) => {
               </Link>
             ) : (
               <Link href="/login">
-                <a className="w-full py-2 text-lg text-center border border-white rounded-lg flexpx-2 text-general tablet:px-3 hover:text-white hover:bg-general">
-                  Авторизоваться
+                <a className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general tablet:px-3 hover:text-white hover:bg-general">
+                  <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
+                  <span>Авторизоваться</span>
                 </a>
               </Link>
             )}
           </div>
-          <div className="px-2 py-2 w-60 phoneH:py-0">
+          <div className="px-2 py-2 w-60 tablet:py-0">
             <ul className="flex flex-col gap-y-2">
               {menu.map(({ name, href }, index) => (
                 <BurgerMenuItem

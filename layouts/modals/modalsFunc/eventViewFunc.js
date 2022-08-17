@@ -5,36 +5,20 @@ import eventSelector from '@state/selectors/eventSelector'
 
 import ImageGallery from 'react-image-gallery'
 
-import { P } from '@components/tags'
-import Button from '@components/Button'
-
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
 import getDaysFromNow from '@helpers/getDaysFromNow'
-import { modalsFuncAtom } from '@state/atoms'
-import eventsUsersSelectorByEventId from '@state/selectors/eventsUsersByEventIdSelector'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import UserName from '@components/UserName'
 import directionSelector from '@state/selectors/directionSelector'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import userSelector from '@state/selectors/userSelector'
-import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import usersSelectorByEventId from '@state/selectors/usersByEventIdSelector'
-import cn from 'classnames'
-import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import PriceDiscount from '@components/PriceDiscount'
-import { useRouter } from 'next/router'
 import Divider from '@components/Divider'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
-import eventMansSelector from '@state/selectors/eventMansSelector'
-import eventWomansSelector from '@state/selectors/eventWomansSelector'
 
-import birthDateToAge from '@helpers/birthDateToAge'
-import userToEventStatus from '@helpers/userToEventStatus'
-import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
-import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
+import formatMinutes from '@helpers/formatMinutes'
+import EventButtonSignIn from '@components/EventButtonSignIn'
 
 const eventViewFunc = (eventId, clone = false) => {
   const EventSignUpModal = ({
@@ -42,119 +26,11 @@ const eventViewFunc = (eventId, clone = false) => {
     setOnConfirmFunc,
     setOnDeclineFunc,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
     const event = useRecoilValue(eventSelector(eventId))
     const direction = useRecoilValue(directionSelector(event.directionId))
     const organizer = useRecoilValue(userSelector(event.organizerId))
-    const loggedUser = useRecoilValue(loggedUserAtom)
-    // const eventUsers = useRecoilValue(eventsUsersSelectorByEventId(eventId))
-    // const eventUsers = useRecoilValue(usersSelectorByEventId(eventId))
-
-    // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
-
-    const router = useRouter()
-
-    // const eventUser = loggedUser?._id
-    //   ? eventUsers.find((eventUser) => eventUser.user?._id === loggedUser._id)
-    //   : null
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
-    // const eventMansCount = useRecoilValue(eventMansSelector(eventId)).length
-    // const eventWomansCount = useRecoilValue(eventWomansSelector(eventId)).length
-
-    const eventLoggedUserStatus = useRecoilValue(
-      loggedUserToEventStatusSelector(eventId)
-    )
-
-    // const eventAssistants = eventUsers
-    //   .filter((item) => item.user && item.status === 'assistant')
-    //   .map((item) => item.user)
-    // const eventMansCount = eventUsers.filter(
-    //   (item) =>
-    //     item.user &&
-    //     item.user.gender == 'male' &&
-    //     (!item.status || item.status === '' || item.status === 'participant')
-    // ).length
-    // const eventWomansCount = eventUsers.filter(
-    //   (item) =>
-    //     item.user &&
-    //     item.user.gender == 'famale' &&
-    //     (!item.status || item.status === '' || item.status === 'participant')
-    // ).length
-
-    // const eventParticipantsCount = eventWomansCount + eventMansCount
-
-    // const router = useRouter()
-
-    // const refreshPage = () => {
-    //   // setEvent(data)
-    //   // router.replace(router.asPath)
-    // }
-
-    // const onClickConfirm = async () => {
-    //   let error = false
-    //   if (!title) {
-    //     addError({ title: 'Необходимо ввести название' })
-    //     error = true
-    //   }
-    //   if (!description) {
-    //     addError({ description: 'Необходимо ввести описание' })
-    //     error = true
-    //   }
-    //   if (!error) {
-    //     closeModal()
-    //     if (event && !clone) {
-    //       await putData(
-    //         `/api/events/${event._id}`,
-    //         {
-    //           title,
-    //           description,
-    //           showOnSite,
-    //         },
-    //         refreshPage
-    //       )
-    //     } else {
-    //       await postData(
-    //         `/api/events`,
-    //         {
-    //           title,
-    //           description,
-    //           showOnSite,
-    //         },
-    //         refreshPage
-    //       )
-    //     }
-    //   }
-    // }
-
-    // const images = [
-    //   {
-    //     original: 'https://picsum.photos/id/1018/1000/600/',
-    //     // thumbnail: 'https://picsum.photos/id/1018/250/150/',
-    //   },
-    //   {
-    //     original: 'https://picsum.photos/id/1015/1000/600/',
-    //     // thumbnail: 'https://picsum.photos/id/1015/250/150/',
-    //   },
-    //   {
-    //     original: 'https://picsum.photos/id/1019/1000/600/',
-    //     // thumbnail: 'https://picsum.photos/id/1019/250/150/',
-    //   },
-    // ]
-
-    // const daysFromNow = getDaysFromNow(event.date, false, false)
-
-    // const canUserSignUp =
-    //   typeof event.maxUsers !== 'number' ||
-    //   event.maxUsers > eventParticipantsCount
-    //     ? loggedUser?.gender === 'male'
-    //       ? event.maxMans === null || eventMansCount < event.maxMans
-    //       : loggedUser?.gender === 'woman'
-    //       ? event.maxWomans === null || eventWomansCount < event.maxWomans
-    //       : false
-    //     : false
-
-    const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
     return (
       <div className="flex flex-col gap-y-2">
@@ -187,6 +63,15 @@ const eventViewFunc = (eventId, clone = false) => {
                 <span>{direction.title}</span>
               </div>
             )}
+            <div className="flex items-center leading-5 gap-x-1">
+              <span className="font-bold">Начало:</span>
+              <div>{formatDateTime(event.date)}</div>
+              <div className="font-normal">({getDaysFromNow(event.date)})</div>
+            </div>
+            <div className="flex items-center leading-5 gap-x-1">
+              <span className="font-bold">Продолжительность:</span>
+              <div>{formatMinutes(event.duration ?? 60)}</div>
+            </div>
 
             {event.address && (
               <div className="flex items-center gap-x-1">
@@ -257,66 +142,16 @@ const eventViewFunc = (eventId, clone = false) => {
               )}
           </div>
           <EventUsersCounterAndAge eventId={eventId} />
-          <Divider thin light />
-          <div className="flex flex-wrap justify-center flex-1 px-4 text-lg font-bold gap-x-1 text-general">
+          {/* <Divider thin light /> */}
+
+          {/* <div className="flex flex-wrap justify-center flex-1 px-4 text-lg font-bold gap-x-1 text-general">
             <div>{formatDateTime(event.date)}</div>
             <div className="font-normal">({getDaysFromNow(event.date)})</div>
-          </div>
+          </div> */}
           <Divider thin light />
           <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
             <PriceDiscount event={event} className="px-2" prefix="Стоимость:" />
-            {event.status === 'canceled' ? (
-              <div className="text-lg font-bold uppercase text-danger">
-                Отменено
-              </div>
-            ) : eventLoggedUserStatus.isEventExpired ? (
-              <div className="text-lg font-bold uppercase text-success">
-                Завершено
-              </div>
-            ) : (
-              <Button
-                onClick={() => {
-                  // Если анкета заполнена не полностью
-                  if (!isUserQuestionnaireFilled) {
-                    closeModal()
-                    router.push('/cabinet/questionnaire')
-                  } else if (eventLoggedUserStatus.canSignOut)
-                    modalsFunc.event.signOut(event._id)
-                  else if (
-                    eventLoggedUserStatus.canSignIn &&
-                    !eventLoggedUserStatus.alreadySignIn
-                  )
-                    modalsFunc.event.signUp(event._id)
-                }}
-                // className={cn(
-                //   'px-4 py-1 text-white duration-300 border-t border-l rounded-tl-lg hover:bg-white',
-                //   eventUser
-                //     ? 'bg-success hover:text-success border-success'
-                //     : 'bg-general hover:text-general border-general'
-                // )}
-                classBgColor={
-                  eventLoggedUserStatus.canSignOut ? 'bg-danger' : undefined
-                }
-                // classHoverBgColor={eventUser ? 'hover:bg-danger' : undefined}
-                className={cn(
-                  'w-full px-4 py-1 text-white duration-300 border rounded phoneH:w-auto'
-                )}
-                name={
-                  eventLoggedUserStatus.canSignOut
-                    ? 'Отменить запись'
-                    : eventLoggedUserStatus.canSignIn
-                    ? 'Записаться'
-                    : isUserQuestionnaireFilled
-                    ? 'Мест нет'
-                    : 'Заполните свою анкету'
-                }
-                disabled={
-                  !eventLoggedUserStatus.canSignOut &&
-                  !eventLoggedUserStatus.canSignIn &&
-                  isUserQuestionnaireFilled
-                }
-              />
-            )}
+            <EventButtonSignIn eventId={event._id} />
           </div>
         </div>
       </div>

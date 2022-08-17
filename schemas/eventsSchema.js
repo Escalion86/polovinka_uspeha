@@ -26,6 +26,10 @@ const eventsSchema = {
     type: Date,
     default: null,
   },
+  duration: {
+    type: Number,
+    default: 60, // минут
+  },
   address: {
     type: Map,
     of: String,

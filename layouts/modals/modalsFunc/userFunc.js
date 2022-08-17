@@ -7,11 +7,10 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
 import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
-import InputImage from '@components/InputImage'
-import Textarea from '@components/Textarea'
+// import InputImage from '@components/InputImage'
 import DatePicker from '@components/DatePicker'
 import PhoneInput from '@components/PhoneInput'
-import OrientationPicker from '@components/ValuePicker/OrientationPicker'
+// import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import ErrorsList from '@components/ErrorsList'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
@@ -26,10 +25,10 @@ const userFunc = (userId, clone = false) => {
     const [name, setName] = useState(user?.name ?? '')
     const [secondName, setSecondName] = useState(user?.secondName ?? '')
     const [thirdName, setThirdName] = useState(user?.thirdName ?? '')
-    const [about, setAbout] = useState(user?.about ?? '')
-    const [interests, setInterests] = useState(user?.interests ?? '')
-    const [profession, setProfession] = useState(user?.profession ?? '')
-    const [orientation, setOrientation] = useState(user?.orientation ?? '')
+    // const [about, setAbout] = useState(user?.about ?? '')
+    // const [interests, setInterests] = useState(user?.interests ?? '')
+    // const [profession, setProfession] = useState(user?.profession ?? '')
+    // const [orientation, setOrientation] = useState(user?.orientation ?? '')
     const [gender, setGender] = useState(user?.gender ?? null)
     const [email, setEmail] = useState(user?.email ?? '')
     const [phone, setPhone] = useState(user?.phone ?? '')
@@ -96,10 +95,10 @@ const userFunc = (userId, clone = false) => {
             name,
             secondName,
             thirdName,
-            about,
-            interests,
-            profession,
-            orientation,
+            // about,
+            // interests,
+            // profession,
+            // orientation,
             gender,
             email,
             phone,
@@ -170,10 +169,10 @@ const userFunc = (userId, clone = false) => {
       name,
       secondName,
       thirdName,
-      about,
-      interests,
-      profession,
-      orientation,
+      // about,
+      // interests,
+      // profession,
+      // orientation,
       gender,
       email,
       phone,
@@ -250,17 +249,20 @@ const userFunc = (userId, clone = false) => {
           onChange={setGender}
           error={errors.gender}
         />
-        <OrientationPicker
+        {/* <OrientationPicker
           orientation={orientation}
           onChange={setOrientation}
+        /> */}
+        <DatePicker
+          label="День рождения"
+          value={birthday}
+          onChange={setBirthday}
+          showYears
+          showZodiac
+          required
+          error={errors.birthday}
         />
-        <Input
-          label="Email"
-          value={email}
-          onChange={setEmail}
-          error={errors.email}
-          copyPasteButtons
-        />
+
         <FormWrapper twoColumns>
           <PhoneInput
             required
@@ -310,14 +312,12 @@ const userFunc = (userId, clone = false) => {
             copyPasteButtons
           />
         </FormWrapper>
-        <DatePicker
-          label="День рождения"
-          value={birthday}
-          onChange={setBirthday}
-          showYears
-          showZodiac
-          required
-          error={errors.birthday}
+        <Input
+          label="Email"
+          value={email}
+          onChange={setEmail}
+          error={errors.email}
+          copyPasteButtons
         />
         <UserStatusPicker
           required

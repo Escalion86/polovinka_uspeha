@@ -2,13 +2,11 @@ import { getSession, signIn, signOut, useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import SvgWave from 'svg/SvgWave'
-import SvgLogin from 'svg/SvgLogin'
-import SvgAvatar from 'svg/SvgAvatar'
+// import SvgLogin from 'svg/SvgLogin'
+// import SvgAvatar from 'svg/SvgAvatar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLock, faPassport, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import cn from 'classnames'
-// import phoneValidator from '@helpers/phoneValidator'
-// import SvgPhoneConfirm from 'svg/SvgPhoneConfirm'
 import SvgMailBox from 'svg/SvgMailBox'
 import { postData } from '@helpers/CRUD'
 import resolveConfig from 'tailwindcss/resolveConfig'
@@ -20,9 +18,6 @@ import MaskedInput from 'react-text-mask'
 import LoadingSpinner from '@components/LoadingSpinner'
 import phoneValidator from '@helpers/phoneValidator'
 import useErrors from '@helpers/useErrors'
-
-// import UndrawGraduation from 'public/img/login/undraw_graduation.svg'
-// import Image from 'next/image'
 
 const Input = ({
   className = '',
@@ -42,6 +37,8 @@ const Input = ({
   const [focused, setFocused] = useState(false)
   const onFocus = () => setFocused(true)
   const onBlur = () => setFocused(false)
+
+  console.log('value', value)
 
   return (
     <div
@@ -70,7 +67,7 @@ const Input = ({
           <h5
             className={cn(
               'absolute top-1/2 left-3 -translate-y-1/2 text-lg duration-300',
-              { 'text-sm -top-0.5': focused || value },
+              { 'text-sm top-0': focused || value },
               error
                 ? focused
                   ? 'text-red-600'
@@ -87,7 +84,9 @@ const Input = ({
               disabled={readOnly}
               ref={inputRef}
               className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-1 text-lg text-gray-600"
-              // showMask
+              showMask={value == '7'}
+              onFocus={onFocus}
+              onBlur={onBlur}
               onChange={onChange}
               // keepCharPositions
               mask={[
@@ -172,11 +171,6 @@ const RepeatCall = ({ onClickRepeat }) => {
       if (timer) clearInterval(timer)
     }
   }, [secondsLeft])
-
-  // useEffect(() => {
-  //   console.log('typeof timer', typeof timer)
-  //   if (secondsLeft <= 0) clearInterval(timer)
-  // }, [secondsLeft])
 
   return (
     <div className="mt-2">
@@ -492,11 +486,16 @@ const Login = () => {
                   icon={faUser}
                   onChange={(event) => {
                     removeError('phone')
-                    // updateErrors(res.error.type, res.error.message)
-                    // updateErrors('phone', null)
+
                     const value = event.target.value.replace(/[^0-9]/g, '')
 
-                    setInputPhone(value === '7' ? null : Number(value))
+                    setInputPhone(
+                      !value
+                        ? '7'
+                        : value == '77' || value == '78'
+                        ? '7'
+                        : Number(value)
+                    )
                   }}
                   value={inputPhone}
                   error={errors.phone}

@@ -3,14 +3,12 @@ import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-import InputImage from '@components/InputImage'
+// import InputImage from '@components/InputImage'
 import InputImages from '@components/InputImages'
 import PhoneInput from '@components/PhoneInput'
-import Textarea from '@components/Textarea'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
-import OrientationPicker from '@components/ValuePicker/OrientationPicker'
+// import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import { putData } from '@helpers/CRUD'
-import getZodiac from '@helpers/getZodiac'
 import useErrors from '@helpers/useErrors'
 import validateEmail from '@helpers/validateEmail'
 import { modalsFuncAtom } from '@state/atoms'
@@ -24,10 +22,10 @@ const QuestionnaireContent = (props) => {
   const [name, setName] = useState(user?.name ?? '')
   const [secondName, setSecondName] = useState(user?.secondName ?? '')
   const [thirdName, setThirdName] = useState(user?.thirdName ?? '')
-  const [about, setAbout] = useState(user?.about ?? '')
-  const [interests, setInterests] = useState(user?.interests ?? '')
-  const [profession, setProfession] = useState(user?.profession ?? '')
-  const [orientation, setOrientation] = useState(user?.orientation ?? '')
+  // const [about, setAbout] = useState(user?.about ?? '')
+  // const [interests, setInterests] = useState(user?.interests ?? '')
+  // const [profession, setProfession] = useState(user?.profession ?? '')
+  // const [orientation, setOrientation] = useState(user?.orientation ?? '')
   const [gender, setGender] = useState(user?.gender ?? null)
   const [email, setEmail] = useState(user?.email ?? '')
   const [phone, setPhone] = useState(user?.phone ?? '')
@@ -56,10 +54,10 @@ const QuestionnaireContent = (props) => {
     user?.name !== name ||
     user?.secondName !== secondName ||
     user?.thirdName !== thirdName ||
-    user?.about !== about ||
-    user?.interests !== interests ||
-    user?.profession !== profession ||
-    user?.orientation !== orientation ||
+    // user?.about !== about ||
+    // user?.interests !== interests ||
+    // user?.profession !== profession ||
+    // user?.orientation !== orientation ||
     user?.gender !== gender ||
     user?.email !== email ||
     user?.phone !== phone ||
@@ -118,10 +116,10 @@ const QuestionnaireContent = (props) => {
           name,
           secondName,
           thirdName,
-          about,
-          interests,
-          profession,
-          orientation,
+          // about,
+          // interests,
+          // profession,
+          // orientation,
           gender,
           email,
           phone,
@@ -248,17 +246,19 @@ const QuestionnaireContent = (props) => {
           }}
           error={errors.gender}
         />
-        <OrientationPicker
+        {/* <OrientationPicker
           orientation={orientation}
           onChange={setOrientation}
+        /> */}
+        <DatePicker
+          label="День рождения"
+          value={birthday}
+          onChange={setBirthday}
+          showYears
+          showZodiac
+          required
         />
-        <Input
-          label="Email"
-          value={email}
-          onChange={setEmail}
-          error={errors.email}
-          copyPasteButtons
-        />
+
         <FormWrapper twoColumns>
           <PhoneInput
             required
@@ -309,13 +309,12 @@ const QuestionnaireContent = (props) => {
             copyPasteButtons
           />
         </FormWrapper>
-        <DatePicker
-          label="День рождения"
-          value={birthday}
-          onChange={setBirthday}
-          showYears
-          showZodiac
-          required
+        <Input
+          label="Email"
+          value={email}
+          onChange={setEmail}
+          error={errors.email}
+          copyPasteButtons
         />
         {/* <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
         <Textarea

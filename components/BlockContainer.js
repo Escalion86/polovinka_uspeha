@@ -6,16 +6,21 @@ const BlockContainer = ({ id, style, className, children, small }) => {
 
   return (
     <div
-      className={cn(
-        `flex flex-col justify-center items-center tablet:gap-y-6 w-full marker:gap-y-4 px-10 tablet:px-20 ${
-          small ? 'py-10' : 'py-20'
-        }`,
-        className
-      )}
-      style={style}
+      className="flex flex-col items-center justify-center"
+      // style={style}
     >
       {id && <Section id={id} />}
-      {children}
+      <div
+        className={cn(
+          `flex flex-col justify-center items-center tablet:gap-y-6 w-full gap-y-4 px-6 laptop:px-20 ${
+            small ? 'py-10' : 'py-20'
+          }`,
+          className
+        )}
+        style={style}
+      >
+        {children}
+      </div>
     </div>
   )
 }
