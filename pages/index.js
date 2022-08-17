@@ -166,7 +166,11 @@ export default function Home(props) {
             />
             <TitleBlock userIsLogged={!!loggedUser} />
             <AboutBlock />
-            <EventsBlock events={filteredEvents} maxEvents={4} />
+            <EventsBlock
+              events={filteredEvents}
+              maxEvents={4}
+              hideBlockOnZeroEvents
+            />
             <DirectionsBlock directions={filteredDirections} />
             <AdditionalBlocks
               additionalBlocks={filteredAdditionalBlocks}
