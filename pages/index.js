@@ -32,7 +32,7 @@ import AboutBlock from '@blocks/AboutBlock'
 import TitleBlock from '@blocks/TitleBlock'
 import { useEffect, useState } from 'react'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -46,6 +46,15 @@ import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
 import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
+import Users from '@models/Users'
+import Events from '@models/Events'
+import Directions from '@models/Directions'
+import Reviews from '@models/Reviews'
+import AdditionalBlocksModel from '@models/AdditionalBlocks'
+import EventsUsers from '@models/EventsUsers'
+import Payments from '@models/Payments'
+import Site from '@models/Site'
+import dbConnect from '@utils/dbConnect'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -88,12 +97,15 @@ export default function Home(props) {
   } = props
   const [loading, setLoading] = useState(true)
 
+  console.log('props.error', props.error)
+
   const setLoggedUserState = useSetRecoilState(loggedUserAtom)
-  const setEventsState = useSetRecoilState(eventsAtom)
-  const setDirectionsState = useSetRecoilState(directionsAtom)
-  const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
+  const [eventsState, setEventsState] = useRecoilState(eventsAtom)
+  const [directionsState, setDirectionsState] = useRecoilState(directionsAtom)
+  const [additionalBlocksState, setAdditionalBlocksState] =
+    useRecoilState(additionalBlocksAtom)
   const setUsersState = useSetRecoilState(usersAtom)
-  const setReviewsState = useSetRecoilState(reviewsAtom)
+  const [reviewsState, setReviewsState] = useRecoilState(reviewsAtom)
   const setPaymentsState = useSetRecoilState(paymentsAtom)
   const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
 
@@ -101,14 +113,15 @@ export default function Home(props) {
   const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
   const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
 
-  const filteredEvents = events.filter(
+  console.log('eventsState', eventsState)
+  const filteredEvents = eventsState.filter(
     (event) => event.showOnSite && new Date(event.date) >= new Date()
   )
-  const filteredReviews = reviews.filter((review) => review.showOnSite)
-  const filteredDirections = directions.filter(
+  const filteredReviews = reviewsState.filter((review) => review.showOnSite)
+  const filteredDirections = directionsState.filter(
     (direction) => direction.showOnSite
   )
-  const filteredAdditionalBlocks = additionalBlocks.filter(
+  const filteredAdditionalBlocks = additionalBlocksState.filter(
     (additionalBlock) => additionalBlock.showOnSite
   )
 
@@ -175,8 +188,9 @@ export default function Home(props) {
             <AdditionalBlocks
               additionalBlocks={filteredAdditionalBlocks}
               inverse={
-                directions &&
-                directions.filter((direction) => direction.showOnSite).length %
+                directionsState &&
+                directionsState.filter((direction) => direction.showOnSite)
+                  .length %
                   2 ===
                   1
               }
@@ -218,35 +232,63 @@ export default function Home(props) {
 
 export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
+
+  // console.log('1')
+  // const session = await getSession({ req })
+  // console.log('2')
+  // if (!session || !session.user._id)
+  //   return res?.status(400).json({ success: false })
+  // console.log('3')
+  // const { user } = session
+  // console.log(`user`, user)
+
   try {
+    await dbConnect()
+    // const users = await Users.find({})
+    // const events = await Events.find({})
+    // const directions = await Directions.find({})
+    // const reviews = await Reviews.find({})
+    // const additionalBlocks = await AdditionalBlocksModel.find({})
+    // const eventsUsers = await EventsUsers.find({})
+    // const payments = await Payments.find({})
+    // const siteSettings = await Site.find({})
     console.time('Loading time')
     console.time('users')
-    const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
+    const users = await Users.find({})
+    // const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
     console.timeEnd('users')
     console.time('events')
-    const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+    const events = await Events.find({})
+    // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     console.timeEnd('events')
     console.time('directions')
-    const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+    const directions = await Directions.find({})
+    // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
     console.timeEnd('directions')
     console.time('reviews')
-    const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    const reviews = await Reviews.find({})
+    // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
     console.timeEnd('reviews')
     console.time('additionalBlocks')
-    const additionalBlocks = await fetchingAdditionalBlocks(
-      process.env.NEXTAUTH_SITE
-    )
+    const additionalBlocks = await AdditionalBlocksModel.find({})
+    // const additionalBlocks = await fetchingAdditionalBlocks(
+    //   process.env.NEXTAUTH_SITE
+    // )
     console.timeEnd('additionalBlocks')
     console.time('eventsUsers')
-    const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    const eventsUsers = await EventsUsers.find({})
+    // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
     console.timeEnd('eventsUsers')
     console.time('payments')
-    const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
+    const payments = await Payments.find({})
+    // const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
     console.timeEnd('payments')
     console.time('siteSettings')
-    const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+    const siteSettings = await Site.find({})
+    // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     console.timeEnd('siteSettings')
     console.timeEnd('Loading time')
+    // dbDisconnect()
 
     // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
@@ -260,6 +302,7 @@ export const getServerSideProps = async (context) => {
     // console.log('directions', directions)
     // console.log('reviews', reviews)
     // console.log('additionalBlocks', additionalBlocks)
+
     return {
       props: {
         // events,
@@ -269,18 +312,18 @@ export const getServerSideProps = async (context) => {
         // eventsUsers,
         // siteSettings,
         // loggedUser: session?.user ? session.user : null,
-        users,
-        events,
-        directions,
-        reviews,
-        additionalBlocks,
-        eventsUsers,
-        payments,
-        siteSettings,
-        loggedUser: session?.user ? session.user : null,
+        users: JSON.parse(JSON.stringify(users)),
+        events: JSON.parse(JSON.stringify(events)),
+        directions: JSON.parse(JSON.stringify(directions)),
+        reviews: JSON.parse(JSON.stringify(reviews)),
+        additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
+        eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
+        payments: JSON.parse(JSON.stringify(payments)),
+        siteSettings: JSON.parse(JSON.stringify(siteSettings)),
+        loggedUser: session?.user ?? null,
       },
     }
-  } catch {
+  } catch (error) {
     return {
       props: {
         // events: null,
@@ -298,7 +341,8 @@ export const getServerSideProps = async (context) => {
         eventsUsers: null,
         payments: null,
         siteSettings: null,
-        loggedUser: session?.user ? session.user : null,
+        loggedUser: session?.user ?? null,
+        error: JSON.parse(JSON.stringify(error)),
       },
       // notFound: true,
     }

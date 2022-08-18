@@ -50,6 +50,15 @@ import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelecto
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import eventsUsersDeleteByEventIdSelector from '@state/selectors/eventsUsersDeleteByEventIdSelector'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
+import dbConnect from '@utils/dbConnect'
+import Site from '@models/Site'
+import Payments from '@models/Payments'
+import EventsUsers from '@models/EventsUsers'
+import Reviews from '@models/Reviews'
+import Directions from '@models/Directions'
+import Events from '@models/Events'
+import Users from '@models/Users'
+import AdditionalBlocksModel from '@models/AdditionalBlocks'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -269,62 +278,89 @@ export const getServerSideProps = async (context) => {
   }
 
   try {
+    await dbConnect()
+    // const users = await Users.find({})
+    // const events = await Events.find({})
+    // const directions = await Directions.find({})
+    // const reviews = await Reviews.find({})
+    // const additionalBlocks = await AdditionalBlocksModel.find({})
+    // const eventsUsers = await EventsUsers.find({})
+    // const payments = await Payments.find({})
+    // const siteSettings = await Site.find({})
     console.time('Loading time')
     console.time('users')
-    const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
+    const users = await Users.find({})
+    // const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
     console.timeEnd('users')
     console.time('events')
-    const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+    const events = await Events.find({})
+    // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     console.timeEnd('events')
     console.time('directions')
-    const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+    const directions = await Directions.find({})
+    // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
     console.timeEnd('directions')
     console.time('reviews')
-    const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    const reviews = await Reviews.find({})
+    // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
     console.timeEnd('reviews')
     console.time('additionalBlocks')
-    const additionalBlocks = await fetchingAdditionalBlocks(
-      process.env.NEXTAUTH_SITE
-    )
+    const additionalBlocks = await AdditionalBlocksModel.find({})
+    // const additionalBlocks = await fetchingAdditionalBlocks(
+    //   process.env.NEXTAUTH_SITE
+    // )
     console.timeEnd('additionalBlocks')
     console.time('eventsUsers')
-    const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    const eventsUsers = await EventsUsers.find({})
+    // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
     console.timeEnd('eventsUsers')
     console.time('payments')
-    const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
+    const payments = await Payments.find({})
+    // const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
     console.timeEnd('payments')
     console.time('siteSettings')
-    const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+    const siteSettings = await Site.find({})
+    // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     console.timeEnd('siteSettings')
     console.timeEnd('Loading time')
+    // dbDisconnect()
 
     return {
       props: {
-        users,
-        events,
-        directions,
-        reviews,
+        // users,
+        // events,
+        // directions,
+        // reviews,
+        // additionalBlocks,
+        // eventsUsers,
+        // payments,
+        // siteSettings,
+        users: JSON.parse(JSON.stringify(users)),
+        events: JSON.parse(JSON.stringify(events)),
+        directions: JSON.parse(JSON.stringify(directions)),
+        reviews: JSON.parse(JSON.stringify(reviews)),
+        additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
+        eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
+        payments: JSON.parse(JSON.stringify(payments)),
+        siteSettings: JSON.parse(JSON.stringify(siteSettings)),
         page,
-        additionalBlocks,
-        eventsUsers,
-        payments,
-        siteSettings,
-        loggedUser: session?.user ? session.user : null,
+        loggedUser: session?.user ?? null,
       },
     }
-  } catch {
+  } catch (error) {
     return {
       props: {
         users: null,
         events: null,
         directions: null,
         reviews: null,
-        page,
         additionalBlocks: null,
         eventsUsers: null,
         payments: null,
         siteSettings: null,
-        loggedUser: session?.user ? session.user : null,
+        page,
+        loggedUser: session?.user ?? null,
+        error: JSON.parse(JSON.stringify(error)),
       },
       // notFound: true,
     }
