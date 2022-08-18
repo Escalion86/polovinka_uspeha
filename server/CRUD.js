@@ -26,18 +26,21 @@ export default async function handler(Schema, req, res, params = null) {
       try {
         if (params) {
           data = await Schema.find(params)
+          console.log('data', data)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else if (id) {
           data = await Schema.findById(id)
+          console.log('data', data)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else {
           data = await Schema.find()
+          console.log('data', data)
           return res?.status(200).json({ success: true, data })
         }
       } catch (error) {
