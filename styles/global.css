@@ -22,6 +22,18 @@ body {
   color: #aaa;
 }
 
+.real-screen-height {
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100 - 100px);
+  /* min-height: -webkit-fill-available; */
+
+}
+
+.fab-top {
+  top: 90vh;
+  top: calc(var(--vh, 1vh) * 100 - 134px);
+}
+
 .my-masonry-grid {
   display: -webkit-box;
   /* Not needed if autoprefixing */

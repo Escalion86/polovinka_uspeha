@@ -14,8 +14,8 @@ const Fab = ({ onClick = () => {}, show = true }) => {
   return (
     <div
       className={cn(
-        'flex flex-col justify-end absolute right-6 tablet:right-8 ',
-        show ? 'tablet:bottom-8 bottom-6' : '-bottom-20'
+        'flex flex-col justify-end absolute right-8',
+        show ? 'fab-top' : '-bottom-20'
       )}
     >
       <div

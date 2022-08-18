@@ -57,6 +57,8 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 function CabinetPage(props) {
   const { page, loggedUser } = props
 
+  const [loading, setLoading] = useState(true)
+
   const setLoggedUserState = useSetRecoilState(loggedUserAtom)
   const setEventsState = useSetRecoilState(eventsAtom)
   const setDirectionsState = useSetRecoilState(directionsAtom)
@@ -86,6 +88,13 @@ function CabinetPage(props) {
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
   const toggleLoading = useSetRecoilState(toggleLoadingSelector)
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      let vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    })
+  }, [])
 
   useEffect(
     () =>
@@ -126,8 +135,6 @@ function CabinetPage(props) {
   //     },
   //   []
   // )
-
-  const [loading, setLoading] = useState(true)
 
   // if (loading) {
   //   props.events.forEach((event) => {
