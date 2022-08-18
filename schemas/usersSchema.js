@@ -64,10 +64,6 @@ const usersSchema = {
     default: null,
     required: [true, 'Введите Телефон'],
   },
-  phoneConfirm: {
-    type: Boolean,
-    default: false,
-  },
   whatsapp: {
     type: Number,
     default: null,
