@@ -15,11 +15,11 @@ export default async function handler(Schema, req, res, params = null) {
   await dbConnect()
 
   let data
-  // console.log('Schema', Schema)
-  // console.log(`method`, method)
-  // console.log(`params`, params)
-  // console.log(`id`, id)
-  // console.log(`body`, body)
+  console.log('Schema', Schema)
+  console.log(`method`, method)
+  console.log(`params`, params)
+  console.log(`id`, id)
+  console.log(`body`, body)
 
   switch (method) {
     case 'GET':
