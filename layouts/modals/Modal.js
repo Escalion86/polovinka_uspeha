@@ -94,7 +94,7 @@ const Modal = ({
     <motion.div
       className={
         cn(
-          'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 items-center justify-center w-screen h-screen tablet:overflow-y-auto bg-gray-800',
+          'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 tablet:items-center justify-center w-screen h-screen tablet:overflow-y-auto bg-gray-800',
           subModalText ? 'tablet:pt-10 tablet:pb-5' : 'tablet:py-5'
         )
         //  + (rendered ? ' opacity-100' : ' opacity-0')
