@@ -1,4 +1,9 @@
-import { faSign, faSignInAlt } from '@fortawesome/free-solid-svg-icons'
+import {
+  faSign,
+  faSignInAlt,
+  faSignOutAlt,
+  faUserAlt,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
@@ -17,17 +22,29 @@ const UserMenu = ({ user }) => {
           </div>
           <Link href="/cabinet">
             <a>
-              <div className="px-3 py-2 text-black bg-white border border-gray-300 cursor-pointer whitespace-nowrap hover:bg-gray-500 hover:text-white">
-                Мой кабинет
+              <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
+                <FontAwesomeIcon
+                  icon={faUserAlt}
+                  className="w-5 h-5 text-general"
+                />
+                <span className="prevent-select-text whitespace-nowrap">
+                  Мой кабинет
+                </span>
               </div>
             </a>
           </Link>
 
           <div
             onClick={signOut}
-            className="px-3 py-2 text-black bg-white border border-gray-300 cursor-pointer whitespace-nowrap hover:bg-gray-500 hover:text-white"
+            className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 hover:bg-gray-500 hover:text-white"
           >
-            Выйти из учетной записи
+            <FontAwesomeIcon
+              icon={faSignOutAlt}
+              className="w-5 h-5 text-general"
+            />
+            <span className="prevent-select-text whitespace-nowrap">
+              Выйти из учетной записи
+            </span>
           </div>
         </div>
       </div>
