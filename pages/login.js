@@ -38,8 +38,6 @@ const Input = ({
   const onFocus = () => setFocused(true)
   const onBlur = () => setFocused(false)
 
-  console.log('value', value)
-
   return (
     <div
       className={cn(
@@ -66,8 +64,8 @@ const Input = ({
         <div className="relative h-10">
           <h5
             className={cn(
-              'absolute top-1/2 left-3 -translate-y-1/2 text-lg duration-300',
-              { 'text-sm top-0': focused || value },
+              'absolute left-3 -translate-y-1/2 duration-300',
+              focused || value ? 'text-sm top-0' : 'text-lg top-1/2',
               error
                 ? focused
                   ? 'text-red-600'
