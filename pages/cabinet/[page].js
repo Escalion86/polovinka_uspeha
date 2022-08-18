@@ -252,7 +252,9 @@ export default CabinetPage
 // }
 
 export const getServerSideProps = async (context) => {
+  console.log(`start getServerSideProps`)
   const session = await getSession({ req: context.req })
+  console.log('session', session)
 
   const { params } = context
   const { page } = params
@@ -278,7 +280,9 @@ export const getServerSideProps = async (context) => {
   }
 
   try {
+    console.log(`start dbConnect`)
     await dbConnect()
+    console.log(`finished dbConnect`)
     // const users = await Users.find({})
     // const events = await Events.find({})
     // const directions = await Directions.find({})

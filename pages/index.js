@@ -231,8 +231,9 @@ export default function Home(props) {
 }
 
 export const getServerSideProps = async (context) => {
+  console.log(`start getServerSideProps`)
   const session = await getSession({ req: context.req })
-
+  console.log('session', session)
   // console.log('1')
   // const session = await getSession({ req })
   // console.log('2')
@@ -243,7 +244,9 @@ export const getServerSideProps = async (context) => {
   // console.log(`user`, user)
 
   try {
+    console.log(`start dbConnect`)
     await dbConnect()
+    console.log(`finished dbConnect`)
     // const users = await Users.find({})
     // const events = await Events.find({})
     // const directions = await Directions.find({})
