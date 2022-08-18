@@ -19,7 +19,7 @@ import { useRecoilValue } from 'recoil'
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
   const user = props.loggedUser
-  const [name, setName] = useState(user?.name ?? '')
+  const [firstName, setFirstName] = useState(user?.firstName ?? '')
   const [secondName, setSecondName] = useState(user?.secondName ?? '')
   const [thirdName, setThirdName] = useState(user?.thirdName ?? '')
   // const [about, setAbout] = useState(user?.about ?? '')
@@ -51,7 +51,7 @@ const QuestionnaireContent = (props) => {
   }
 
   const formChanged =
-    user?.name !== name ||
+    user?.firstName !== firstName ||
     user?.secondName !== secondName ||
     user?.thirdName !== thirdName ||
     // user?.about !== about ||
@@ -202,14 +202,14 @@ const QuestionnaireContent = (props) => {
         <Input
           label="Имя"
           type="text"
-          value={name}
+          value={firstName}
           onChange={(value) => {
-            removeError('name')
-            setName(value)
+            removeError('firstName')
+            setFirstName(value)
           }}
           required
           // labelClassName="w-40"
-          error={errors.name}
+          error={errors.firstName}
           forGrid
         />
         <Input

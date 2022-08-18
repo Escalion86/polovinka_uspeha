@@ -80,7 +80,7 @@ const UserCard = ({ userId }) => {
                   </div>
                 </Tooltip>
               )}
-              <span>{user.name}</span>
+              <span>{user.firstName}</span>
               {user.secondName && <span>{user.secondName}</span>}
               {user.birthday && (
                 <div className="font-normal whitespace-nowrap">
@@ -91,16 +91,6 @@ const UserCard = ({ userId }) => {
                     : ''}
                 </div>
               )}
-              {/* {userStatusArr && userStatusArr.value !== 'novice' && (
-                <span
-                  className={cn(
-                    'font-normal uppercase',
-                    'text-' + userStatusArr.color
-                  )}
-                >
-                  {userStatusArr.name}
-                </span>
-              )} */}
               {user.role === 'admin' && (
                 <span className="font-normal text-red-400">АДМИНИСТРАТОР</span>
               )}

@@ -1,5 +1,5 @@
 const usersSchema = {
-  name: {
+  firstName: {
     type: String,
     maxlength: [
       100,

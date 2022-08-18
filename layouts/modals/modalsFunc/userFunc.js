@@ -22,7 +22,7 @@ const userFunc = (userId, clone = false) => {
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
 
-    const [name, setName] = useState(user?.name ?? '')
+    const [firstName, setFirstName] = useState(user?.firstName ?? '')
     const [secondName, setSecondName] = useState(user?.secondName ?? '')
     const [thirdName, setThirdName] = useState(user?.thirdName ?? '')
     // const [about, setAbout] = useState(user?.about ?? '')
@@ -52,8 +52,8 @@ const userFunc = (userId, clone = false) => {
     const onClickConfirm = async () => {
       clearErrors()
       let error = false
-      if (!name) {
-        addError({ name: 'Необходимо ввести имя' })
+      if (!firstName) {
+        addError({ firstName: 'Необходимо ввести имя' })
         error = true
       }
       if (!secondName) {
@@ -208,13 +208,13 @@ const userFunc = (userId, clone = false) => {
         <Input
           label="Имя"
           type="text"
-          value={name}
+          value={firstName}
           onChange={(value) => {
-            removeError('name')
-            setName(value)
+            removeError('firstName')
+            setFirstName(value)
           }}
           // labelClassName="w-40"
-          error={errors.name}
+          error={errors.firstName}
           forGrid
           required
         />
