@@ -233,8 +233,7 @@ export default function Home(props) {
 
 export const getServerSideProps = async (context) => {
   console.log(`start getServerSideProps`)
-  const session = await getSession({ req: context.req })
-  console.log('session', session)
+
   // console.log('1')
   // const session = await getSession({ req })
   // console.log('2')
@@ -246,6 +245,8 @@ export const getServerSideProps = async (context) => {
 
   // try {
   const fetchedProps = await fetchProps()
+  const session = await getSession({ req: context.req })
+  console.log('session', session)
   // console.log(`start dbConnect`)
   // await dbConnect()
   // console.log(`finished dbConnect`)
