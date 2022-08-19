@@ -122,6 +122,7 @@ export default async function auth(req, res) {
         // console.log('token', token)
         // return Promise.resolve(session)
         // const { user } = session
+        console.log('session.user', session?.user)
         const userPhone = session.user.name
         console.log('nextauth userPhone', userPhone)
         // const cached = await dbConnect()
