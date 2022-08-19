@@ -1,10 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { SelectItem, SelectUser } from './SelectItem'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
-import usersAtom from '@state/atoms/usersAtom'
-import { modalsFuncAtom } from '@state/atoms'
 
 const ItemRow = ({
   onChange,
@@ -23,7 +20,6 @@ const ItemRow = ({
   return (
     <div className="flex border-b border-gray-700">
       <SelectItemComponent
-        // className={cn('flex-1', { 'rounded-tl-lg': index === 0 })}
         onChange={(item) => onChangeItem(item._id)}
         selectedId={selectedId}
         exceptedIds={selectedItemsIds}
@@ -39,7 +35,6 @@ const ItemRow = ({
 }
 
 export const SelectItemList = ({
-  // items = [],
   itemsId = [],
   SelectItemComponent,
   title = '',
@@ -53,21 +48,8 @@ export const SelectItemList = ({
   showCounter,
   counterPostfix,
   canAddItem = true,
-  // exceptedIds,
-  // filter,
 }) => {
   if (!itemsId) itemsId = []
-
-  // const filteredItems =
-  //   filter && typeof filter === 'object'
-  //     ? items.filter((item) => {
-  //         console.log('item', item)
-  //         for (const [key, value] of Object.entries(filter)) {
-  //           if (item[key] !== value) return false
-  //         }
-  //         return true
-  //       })
-  //     : items
 
   const onChangeItemRow = (id, index) => {
     if (!onChange) return
@@ -95,7 +77,6 @@ export const SelectItemList = ({
   itemsId.forEach((itemId) =>
     itemRows.push(({ index }) => (
       <ItemRow
-        // items={filteredItems}
         onChange={onChangeItemRow}
         onDelete={(index, item) => {
           if (onDelete) onDelete(item, () => deleteRow(index))
@@ -113,11 +94,7 @@ export const SelectItemList = ({
     ))
   )
 
-  // const hasOneOrMoreToChoose =
-  //   !exceptedIds?.length > 0 || items.find((item) => !exceptedIds.includes(item._id))
-
   const addButtonIsActive = canAddItem && !itemsId.includes('?')
-  //  && hasOneOrMoreToChoose
 
   return (
     <>
@@ -190,7 +167,6 @@ export const SelectUserList = ({
 }) => {
   return (
     <SelectItemList
-      // items={users}
       itemsId={usersId}
       title={title}
       onChange={onChange}
@@ -200,14 +176,11 @@ export const SelectUserList = ({
           ...props,
           bordered: false,
           filter,
-          // onEdit: () => modalsFunc.user.edit(props.selectedId),
           disableDropDownList: true,
           exceptedIds,
           buttons,
         })
       }
-      // onEdit={() => modalsFunc.user.edit(user._id)}
-      // onEdit={(data) => console.log(data)}
       required={required}
       filter={filter}
       showCounter={showCounter ?? true}
@@ -215,44 +188,9 @@ export const SelectUserList = ({
         (typeof maxUsers === 'number' ? ' / ' + maxUsers + ' ' : '') + 'чел.'
       }
       canAddItem={canAddItem}
-      // exceptedIds={exceptedIds}
     />
   )
 }
-
-// export const SelectSetList = ({
-//   setsIdCount = null,
-//   onChange = () => {},
-//   required = false,
-//   readOnly = false,
-//   title = 'Список наборов',
-//   callbackArray = false,
-// }) => {
-//   const { products, sets } = useSelector((state) => state)
-//   return (
-//     <SelectItemList
-//       items={sets}
-//       subItems={products}
-//       subItemsIdCountKey="productsIdCount"
-//       itemsIdCount={setsIdCount}
-//       title={title}
-//       onChange={(itemsIdCount) => {
-//         if (callbackArray) {
-//           const tempItemsIdCount = []
-//           for (const [id, count] of Object.entries(itemsIdCount)) {
-//             tempItemsIdCount.push({
-//               set: id === '?' ? null : sets.find((set) => set._id === id),
-//               count,
-//             })
-//           }
-//           onChange(tempItemsIdCount)
-//         } else onChange(itemsIdCount)
-//       }}
-//       required={required}
-//       readOnly={readOnly}
-//     />
-//   )
-// }
 
 // export const SelectPaymentList = ({
 //   paymentsId = null,

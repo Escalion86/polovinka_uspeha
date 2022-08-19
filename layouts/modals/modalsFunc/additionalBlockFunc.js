@@ -22,6 +22,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
       additionalBlockSelector(additionalBlockId)
     )
     const setAdditionalBlock = useRecoilValue(itemsFuncAtom).additionalBlock.set
+
     const [title, setTitle] = useState(
       additionalBlock ? additionalBlock.title : ''
     )
@@ -47,6 +48,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
           addError({ description: 'Необходимо ввести описание' }))
       )
     }
+
     const onClickConfirm = async () => {
       if (checkErrors()) {
         closeModal()
@@ -66,7 +68,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
     }, [title, description, showOnSite, image, menuName])
-
     return (
       <FormWrapper>
         <InputImage

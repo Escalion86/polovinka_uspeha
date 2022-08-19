@@ -26,21 +26,18 @@ export default async function handler(Schema, req, res, params = null) {
       try {
         if (params) {
           data = await Schema.find(params)
-          console.log('data', data)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else if (id) {
           data = await Schema.findById(id)
-          console.log('data', data)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else {
           data = await Schema.find()
-          console.log('data', data)
           return res?.status(200).json({ success: true, data })
         }
       } catch (error) {
@@ -61,27 +58,15 @@ export default async function handler(Schema, req, res, params = null) {
           if (!data) {
             return res?.status(400).json({ success: false })
           }
-          // Добавляем уведомление о создании
-          // FIX
-          // if (Schema === Products || Schema === Sets)
-          //   await Notifications.create({
-          //     responsibleUserId: session.user._id,
-          //     dbName: dbNameFromSchema(Schema),
-          //     itemId: data._id,
-          //     oldItem: null,
-          //     newItem: prepareData(data),
-          //     status: 'add',
-          //   })
 
           return res?.status(201).json({ success: true, data })
-          // return { newData: data, oldData }
         }
       } catch (error) {
         console.log(error)
         return res?.status(400).json({ success: false, error })
       }
       break
-    case 'PUT' /* Edit a model by its ID */:
+    case 'PUT':
       try {
         if (id) {
           data = await Schema.findById(id)
@@ -95,20 +80,8 @@ export default async function handler(Schema, req, res, params = null) {
           if (!data) {
             return res?.status(400).json({ success: false })
           }
-          // Добавляем уведомление об изменении
-          // FIX
-          // if (Schema === Products || Schema === Sets)
-          //   await Notifications.create({
-          //     responsibleUserId: session.user._id,
-          //     dbName: dbNameFromSchema(Schema),
-          //     itemId: id,
-          //     oldItem: prepareData(oldData),
-          //     newItem: prepareData(data),
-          //     status: 'update',
-          //   })
 
           return res?.status(200).json({ success: true, data })
-          // return { newData: data, oldData }
         } else {
           return res?.status(400).json({ success: false, error: 'No Id' })
         }
@@ -117,7 +90,7 @@ export default async function handler(Schema, req, res, params = null) {
         return res?.status(400).json({ success: false })
       }
       break
-    case 'DELETE' /* Delete a model by its ID */:
+    case 'DELETE':
       try {
         if (params) {
           data = await Schema.deleteMany(params)
@@ -149,8 +122,6 @@ export default async function handler(Schema, req, res, params = null) {
           //     status: 'delete',
           //   })
           return res?.status(200).json({ success: true, data })
-
-          // return { newData: data, oldData }
         } else if (body?.params) {
           data = await Schema.deleteMany({
             _id: { $in: body.params },
@@ -162,7 +133,6 @@ export default async function handler(Schema, req, res, params = null) {
         } else {
           return res?.status(400).json({ success: false })
         }
-        // res?.status(200).json({ success: true, data: {} })
       } catch (error) {
         console.log(error)
         return res?.status(400).json({ success: false, error })

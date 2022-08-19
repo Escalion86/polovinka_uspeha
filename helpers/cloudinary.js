@@ -1,8 +1,6 @@
 import { CLOUDINARY_FOLDER } from './constants'
 
 export const deleteImage = async (publicId, resource_type = 'image') => {
-  // const { id } = router.query
-
   try {
     const res = await fetch('/api/cloudimages', {
       method: 'DELETE',
@@ -17,11 +15,6 @@ export const deleteImage = async (publicId, resource_type = 'image') => {
     if (!res.ok) {
       throw new Error(res.status)
     }
-
-    // const { data } = await res.json()
-    // console.log(`data`, data)
-    // mutate(url, data, false) // Update the local data without a revalidation
-    // afterConfirm()
   } catch (error) {
     // setMessage('Failed to update on ' + url)
   }
@@ -59,16 +52,8 @@ export const sendImage = async (
       'upload_preset',
       folder ? CLOUDINARY_FOLDER + '_' + folder : CLOUDINARY_FOLDER
     )
-    console.log('folder', CLOUDINARY_FOLDER + '_' + folder)
-    if (imageName) {
-      // console.log(`imageName`, imageName)
-      // await deleteImage(imageName)
-      // await deleteImages([(folder ? folder + '/' : '') + imageName])
 
-      formData.append('public_id', imageName)
-      // formData.append('filename_override', true)
-      // formData.append('use_filename', true)
-    }
+    if (imageName) formData.append('public_id', imageName)
 
     return await fetch(
       'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
@@ -95,12 +80,6 @@ export const sendVideo = async (
   videoName = null
 ) => {
   if (typeof video === 'object') {
-    // console.log(
-    //   'send video to',
-    //   (folder ? CLOUDINARY_FOLDER + '_' + folder : CLOUDINARY_FOLDER) +
-    //     '/' +
-    //     videoName
-    // )
     const formData = new FormData()
     formData.append('file', video)
     formData.append(
@@ -120,7 +99,6 @@ export const sendVideo = async (
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log('data of sended video file', data)
         if (data.secure_url !== '') {
           if (callback) callback(data.secure_url)
           return data.secure_url
@@ -143,16 +121,10 @@ export const deleteVideo = async (publicId, resource_type = 'video') => {
       body: JSON.stringify({ publicId, resource_type }),
     })
 
-    // Throw error with status code in case Fetch API req failed
     if (!res.ok) {
       throw new Error(res.status)
     }
     return res
-
-    // const { data } = await res.json()
-    // console.log(`data`, data)
-    // mutate(url, data, false) // Update the local data without a revalidation
-    // afterConfirm()
   } catch (error) {
     return error
     // setMessage('Failed to update on ' + url)
