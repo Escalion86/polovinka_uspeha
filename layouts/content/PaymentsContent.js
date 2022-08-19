@@ -18,7 +18,7 @@ const PaymentCard = ({ paymentId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payment = useRecoilValue(paymentSelector(paymentId))
   const loading = useRecoilValue(loadingAtom('payment' + paymentId))
-  const itemFunc = useRecoilValue(itemsFuncAtom)
+  // const itemFunc = useRecoilValue(itemsFuncAtom)
 
   const payType = PAY_TYPES.find(
     (payTypeItem) => payTypeItem.value === payment.payType
