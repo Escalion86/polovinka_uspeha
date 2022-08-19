@@ -122,21 +122,21 @@ export default async function auth(req, res) {
         // console.log('token', token)
         // return Promise.resolve(session)
         // const { user } = session
-        const log = await fetchingLog(session?.user, process.env.NEXTAUTH_SITE)
-        console.log('session.user', session?.user)
-        const userPhone = session.user.name
-        console.log('nextauth userPhone', userPhone)
-        // const cached = await dbConnect()
-        console.log(
-          'nextauth process.env.NEXTAUTH_SITE',
+        await fetchingLog(
+          { from: 'nextauth callback session', user: session?.user },
           process.env.NEXTAUTH_SITE
         )
+
+        const userPhone = session.user.name
+
         const result = await fetchingUserByPhone(
           userPhone,
           process.env.NEXTAUTH_SITE
         )
-
-        console.log('result in nextauth', result)
+        await fetchingLog(
+          { from: 'result in nextauth', result },
+          process.env.NEXTAUTH_SITE
+        )
 
         // console.log('result', result)
         // const result = await Users.find({
@@ -145,6 +145,10 @@ export default async function auth(req, res) {
 
         // Если пользователь есть в базе
         if (result?.length) {
+          await fetchingLog(
+            { from: 'after if (result?.length)' },
+            process.env.NEXTAUTH_SITE
+          )
           // Если аватарка пользователя не сохранена в cloudinary, то сохраняем в cloudinary и обнояем данные пользователя
           // if (
           //   result[0].image &&
@@ -201,25 +205,36 @@ export default async function auth(req, res) {
           session.user.status = result[0].status
           session.user.images = result[0].images
 
-          if (result[0].role === 'client') {
-          } else {
-            // Если пользователь авторизован, то обновляем только время активности
-            await Users.findOneAndUpdate(
-              { phone: userPhone },
-              {
-                lastActivityAt: Date.now(),
-                prevActivityAt: session.user.lastActivityAt,
-              }
-            )
-          }
+          await fetchingLog(
+            { from: 'session.user in nextauth', user: session.user },
+            process.env.NEXTAUTH_SITE
+          )
+
+          // if (result[0].role === 'client') {
+          // } else {
+          // Обновляем только время активности
+          await dbConnect()
+
+          await Users.findOneAndUpdate(
+            { phone: userPhone },
+            {
+              lastActivityAt: Date.now(),
+              prevActivityAt: session.user.lastActivityAt,
+            }
+          )
+          // }
         } else {
+          await fetchingLog(
+            { from: 'after if (result?.length) ELSE' },
+            process.env.NEXTAUTH_SITE
+          )
           // если пользователь не зарегистрирован
           await CRUD(Users, {
             method: 'POST',
             body: {
               // firstName: session.user.name,
               phone: userPhone,
-              images: [session.user.image],
+              // images: [session.user.image],
               role: 'client',
             },
           })
