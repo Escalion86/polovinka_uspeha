@@ -5,7 +5,7 @@ import Users from '@models/Users'
 import CRUD from '@server/CRUD'
 // import Auth0Provider from 'next-auth/providers/auth0'
 // import GoogleProvider from 'next-auth/providers/google'
-import { fetchingUserByPhone } from '@helpers/fetchers'
+import { fetchingLog, fetchingUserByPhone } from '@helpers/fetchers'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
 // import usersSchema from '@schemas/usersSchema'
@@ -122,6 +122,7 @@ export default async function auth(req, res) {
         // console.log('token', token)
         // return Promise.resolve(session)
         // const { user } = session
+        const log = await fetchingLog(session?.user, process.env.NEXTAUTH_SITE)
         console.log('session.user', session?.user)
         const userPhone = session.user.name
         console.log('nextauth userPhone', userPhone)

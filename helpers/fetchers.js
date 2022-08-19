@@ -94,6 +94,26 @@ export async function fetchingUserByPhone(
   return resp
 }
 
+export async function fetchingLog(data, domen = process.env.NEXTAUTH_SITE) {
+  console.log('Запущен fetchingLog')
+  const resp = await fetch(`${domen}/api/events`, {
+    method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    // mode: 'cors', // no-cors, *cors, same-origin
+    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    // credentials: 'same-origin', // include, *same-origin, omit
+    // headers: {
+    // 'Content-Type': 'application/json'
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+    // },
+    // redirect: 'follow', // manual, *follow, error
+    // referrerPolicy: 'no-referrer', // no-referrer, *client
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+  })
+    .then((res) => res.json())
+    .then((json) => json.data)
+  return resp
+}
+
 export async function fetchingEventsUsers(domen = process.env.NEXTAUTH_SITE) {
   // console.log('Запущен fetchingEventsUsers')
   const resp = await fetch(`${domen}/api/eventsusers`)
