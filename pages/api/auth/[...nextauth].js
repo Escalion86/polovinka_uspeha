@@ -210,17 +210,19 @@ export default async function auth(req, res) {
             process.env.NEXTAUTH_SITE
           )
 
-          if (result[0].role === 'client') {
-          } else {
-            // Если пользователь авторизован, то обновляем только время активности
-            await Users.findOneAndUpdate(
-              { phone: userPhone },
-              {
-                lastActivityAt: Date.now(),
-                prevActivityAt: session.user.lastActivityAt,
-              }
-            )
-          }
+          // if (result[0].role === 'client') {
+          // } else {
+          // Обновляем только время активности
+          await dbConnect()
+
+          await Users.findOneAndUpdate(
+            { phone: userPhone },
+            {
+              lastActivityAt: Date.now(),
+              prevActivityAt: session.user.lastActivityAt,
+            }
+          )
+          // }
         } else {
           await fetchingLog(
             { from: 'after if (result?.length) ELSE' },
