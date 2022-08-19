@@ -123,7 +123,12 @@ export default async function auth(req, res) {
         // return Promise.resolve(session)
         // const { user } = session
         const userPhone = session.user.name
+        console.log('nextauth userPhone', userPhone)
         // const cached = await dbConnect()
+        console.log(
+          'nextauth process.env.NEXTAUTH_SITE',
+          process.env.NEXTAUTH_SITE
+        )
         const result = await fetchingUserByPhone(
           userPhone,
           process.env.NEXTAUTH_SITE
