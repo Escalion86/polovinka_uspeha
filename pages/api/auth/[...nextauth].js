@@ -1,74 +1,20 @@
 import NextAuth from 'next-auth'
-// import Providers from 'next-auth/providers'
-// import dbConnect from '@utils/dbConnect'
 import Users from '@models/Users'
 import CRUD from '@server/CRUD'
-// import Auth0Provider from 'next-auth/providers/auth0'
-// import GoogleProvider from 'next-auth/providers/google'
 import { fetchingLog, fetchingUserByPhone } from '@helpers/fetchers'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
-// import usersSchema from '@schemas/usersSchema'
-// import VkProvider from 'next-auth/providers/vk'
-// import EmailProvider from 'next-auth/providers/email'
-// import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
-// import clientPromise from '@utils/mongodb'
-
-// import { MongoClient } from 'mongodb'
-
-// const uri = process.env.MONGODB_URI
-// const options = {
-//   useUnifiedTopology: true,
-//   useNewUrlParser: true,
-// }
-
-// let client
-// let clientPromise
-
-// if (!process.env.MONGODB_URI) {
-//   throw new Error('Please add your Mongo URI to .env.local')
-// }
-
-// if (process.env.NODE_ENV === 'development') {
-//   // In development mode, use a global variable so that the value
-//   // is preserved across module reloads caused by HMR (Hot Module Replacement).
-//   if (!global._mongoClientPromise) {
-//     client = new MongoClient(uri, options)
-//     global._mongoClientPromise = client.connect()
-//   }
-//   clientPromise = global._mongoClientPromise
-// } else {
-//   // In production mode, it's best to not use a global variable.
-//   client = new MongoClient(uri, options)
-//   clientPromise = client.connect()
-// }
-
-// const defaultUserProps = {
-//   role: 'client',
-//   phone: null,
-//   whatsapp: null,
-//   viber: null,
-//   telegram: null,
-//   instagram: null,
-//   vk: null,
-//   gender: null,
-//   birthday: null,
-//   updatedAt: Date.now(),
-//   lastActivityAt: Date.now(),
-//   prevActivityAt: Date.now(),
-// }
 
 export default async function auth(req, res) {
   return await NextAuth(req, res, {
     secret: process.env.SECRET,
-    // Configure one or more authentication providers
     providers: [
       // Providers.Email({
       //   server: process.env.EMAIL_SERVER,
       //   from: process.env.EMAIL_FROM,
       // }),
       CredentialsProvider({
-        id: 'credentials', // <- add this line
+        id: 'credentials',
         name: 'credentials',
         credentials: {
           phone: { label: 'Phone', type: 'text', placeholder: '' },
@@ -76,21 +22,14 @@ export default async function auth(req, res) {
         },
         authorize: async (credentials, req) => {
           const { phone, password } = credentials
-          // console.log('---------------- credentials', credentials)
-          // return { name: 'test', email: '123@123.ru' }
           if (phone && password) {
             await dbConnect()
-            // const userEmail = username.toLowerCase()
+
             const fetchedUser = await Users.find({ phone, password })
-            // console.log('fetchedUser', fetchedUser)
-            // return null
+
             if (fetchedUser?.length > 0) {
-              // return { ...fetchedUser[0], name: 'test' }
-              // console.log('fetchedUser[0].name', fetchedUser[0]?.name)
               return {
                 name: phone,
-                // email: 'test',
-                // phone: fetchedUser[0].phone,
               }
             } else {
               return null
@@ -117,11 +56,6 @@ export default async function auth(req, res) {
       //   return { ...token, ...user }
       // },
       async session({ session, user, token }) {
-        // console.log('------- user', user)
-        // console.log('------- session.user', session.user)
-        // console.log('token', token)
-        // return Promise.resolve(session)
-        // const { user } = session
         await fetchingLog(
           { from: 'nextauth callback session', user: session?.user },
           process.env.NEXTAUTH_SITE
@@ -138,51 +72,13 @@ export default async function auth(req, res) {
           process.env.NEXTAUTH_SITE
         )
 
-        // console.log('result', result)
-        // const result = await Users.find({
-        //   email: userEmail,
-        // })
-
         // Если пользователь есть в базе
         if (result?.length) {
           await fetchingLog(
             { from: 'after if (result?.length)' },
             process.env.NEXTAUTH_SITE
           )
-          // Если аватарка пользователя не сохранена в cloudinary, то сохраняем в cloudinary и обнояем данные пользователя
-          // if (
-          //   result[0].image &&
-          //   !result[0].image.includes('https://res.cloudinary.com')
-          // ) {
-          //   await fetch(process.env.CLOUDINARY_UPLOAD_URL, {
-          //     method: 'POST',
-          //     headers: {
-          //       'Content-Type': 'application/json;charset=utf-8',
-          //     },
-          //     body: JSON.stringify({
-          //       file: result[0].image,
-          //       upload_preset: process.env.CLOUDINARY_FOLDER + '_users',
-          //       public_id: result[0]._id,
-          //     }),
-          //   })
-          //     .then((response) => response.json())
-          //     .then(async (data) => {
-          //       if (data.secure_url !== '') {
-          //         await CRUD(Users, {
-          //           method: 'PUT',
-          //           query: { id: result[0]._id },
-          //           body: { image: data.secure_url },
-          //         })
-          //         user.image = data.secure_url
-          //       }
-          //     })
-          //     .catch((err) => console.error(err))
-          // } else {
-          //   user.image = result[0].image
-          // }
-          // for (var key in result[0]) {
-          //   user[key] = result[0][key]
-          // }
+
           session.user._id = result[0]._id
           session.user.role = result[0].role
           session.user.firstName = result[0].firstName
@@ -205,14 +101,7 @@ export default async function auth(req, res) {
           session.user.status = result[0].status
           session.user.images = result[0].images
 
-          await fetchingLog(
-            { from: 'session.user in nextauth', user: session.user },
-            process.env.NEXTAUTH_SITE
-          )
-
-          // if (result[0].role === 'client') {
-          // } else {
-          // Обновляем только время активности
+          // Обновляем время активности
           await dbConnect()
 
           await Users.findOneAndUpdate(
@@ -222,19 +111,12 @@ export default async function auth(req, res) {
               prevActivityAt: session.user.lastActivityAt,
             }
           )
-          // }
         } else {
-          await fetchingLog(
-            { from: 'after if (result?.length) ELSE' },
-            process.env.NEXTAUTH_SITE
-          )
           // если пользователь не зарегистрирован
           await CRUD(Users, {
             method: 'POST',
             body: {
-              // firstName: session.user.name,
               phone: userPhone,
-              // images: [session.user.image],
               role: 'client',
             },
           })

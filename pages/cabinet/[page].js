@@ -133,27 +133,6 @@ function CabinetPage(props) {
     []
   )
 
-  // const setEvent = useSetRecoilState(eventAtom())
-  // const setItemFunc = useSetRecoilState(itemsAtom)
-
-  // const setEventAtom = useRecoilCallback(
-  //   ({ set }) =>
-  //     (event) => {
-  //       set(eventsIds, (prev) => {
-  //         if (prev.includes(event._id)) return prev
-  //         return [...prev, event._id]
-  //       })
-  //       set(eventsAtom(event._id), event)
-  //     },
-  //   []
-  // )
-
-  // if (loading) {
-  //   props.events.forEach((event) => {
-  //     createEventAtom(event)
-  //   })
-  // }
-
   const Component = CONTENTS[page]
     ? CONTENTS[page].Component
     : (props) => <div className="flex justify-center px-2">Ошибка 404</div>
@@ -170,29 +149,7 @@ function CabinetPage(props) {
     setPaymentsState(props.payments)
     setEventsUsersState(props.eventsUsers)
 
-    // props.events.forEach((event) => {
-    //   setEventAtom(event)
-    // })
-    // setPropsState(props)
     setLoading(false)
-    // setItemFunc({
-    //   event: {setShowOnSite:
-    //     async (eventId) => {
-    //       const event = useRecoilValue(eventAtom(eventId))
-    //       setLoading(true)
-    //       await putData(
-    //         `/api/events/${eventId}`,
-    //         {
-    //           showOnSite: !event.showOnSite,
-    //         },
-    //         (data) => {
-    //           setEvent(data)
-    //           setLoading(false)
-    //         }
-    //       )
-    //     }
-    //   }
-    // })
   }, [])
 
   return (
@@ -253,17 +210,11 @@ export default CabinetPage
 // }
 
 export const getServerSideProps = async (context) => {
-  console.log(`start getServerSideProps`)
   const session = await getSession({ req: context.req })
-  console.log('session', session)
 
   const { params } = context
   const { page } = params
 
-  console.log('params', params)
-  console.log('page', page)
-
-  console.log('session', session)
   if (!session?.user) {
     return {
       redirect: {
@@ -280,220 +231,13 @@ export const getServerSideProps = async (context) => {
     }
   }
 
-  // try {
   const fetchedProps = await fetchProps()
-  // console.log(`start dbConnect`)
-  // await dbConnect()
-  // console.log(`finished dbConnect`)
-  // // const users = await Users.find({})
-  // // const events = await Events.find({})
-  // // const directions = await Directions.find({})
-  // // const reviews = await Reviews.find({})
-  // // const additionalBlocks = await AdditionalBlocksModel.find({})
-  // // const eventsUsers = await EventsUsers.find({})
-  // // const payments = await Payments.find({})
-  // // const siteSettings = await Site.find({})
-  // console.time('Loading time')
-  // console.time('users')
-  // // const users = await Users.find({})
-  // // const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
-  // console.timeEnd('users')
-  // console.time('events')
-  // // const events = await Events.find({})
-  // // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
-  // console.timeEnd('events')
-  // console.time('directions')
-  // // const directions = await Directions.find({})
-  // // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
-  // console.timeEnd('directions')
-  // console.time('reviews')
-  // // const reviews = await Reviews.find({})
-  // // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
-  // console.timeEnd('reviews')
-  // console.time('additionalBlocks')
-  // // const additionalBlocks = await AdditionalBlocksModel.find({})
-  // // const additionalBlocks = await fetchingAdditionalBlocks(
-  // //   process.env.NEXTAUTH_SITE
-  // // )
-  // console.timeEnd('additionalBlocks')
-  // console.time('eventsUsers')
-  // // const eventsUsers = await EventsUsers.find({})
-  // // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
-  // console.timeEnd('eventsUsers')
-  // console.time('payments')
-  // const payments = await Payments.find({})
-  // // const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
-  // console.timeEnd('payments')
-  // console.time('siteSettings')
-  // const siteSettings = await Site.find({})
-  // // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
-  // console.timeEnd('siteSettings')
-  // console.timeEnd('Loading time')
-  // // dbDisconnect()
 
   return {
     props: {
-      // users,
-      // events,
-      // directions,
-      // reviews,
-      // additionalBlocks,
-      // eventsUsers,
-      // payments,
-      // siteSettings,
-      // users: JSON.parse(JSON.stringify(users)),
-      // events: JSON.parse(JSON.stringify(events)),
-      // directions: JSON.parse(JSON.stringify(directions)),
-      // reviews: JSON.parse(JSON.stringify(reviews)),
-      // additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
-      // eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
-      // payments: JSON.parse(JSON.stringify(payments)),
-      // siteSettings: JSON.parse(JSON.stringify(siteSettings)),
       ...fetchedProps,
       page,
       loggedUser: session?.user ?? null,
     },
   }
-  // } catch (error) {
-  //   return {
-  //     props: {
-  //       users: null,
-  //       events: null,
-  //       directions: null,
-  //       reviews: null,
-  //       additionalBlocks: null,
-  //       eventsUsers: null,
-  //       payments: null,
-  //       siteSettings: null,
-  //       page,
-  //       loggedUser: session?.user ?? null,
-  //       error: JSON.parse(JSON.stringify(error)),
-  //     },
-  //     // notFound: true,
-  //   }
-  // }
-
-  // try {
-  //   await dbConnect()
-
-  //   // Сначала проверяем - возможно было приглашение на курс
-  //   const emailInvitationCourses = await EmailInvitationCourses.find({
-  //     email: session.user.email,
-  //   })
-  //   // Если приглашение было, то сначала создаем пользователя как участника курса и только потом удаляем приглашение
-  //   if (emailInvitationCourses.length > 0) {
-  //     for (let i = 0; i < emailInvitationCourses.length; i++) {
-  //       const checkUserInCourse = await UsersCourses.find({
-  //         userId: session.user._id,
-  //         courseId: emailInvitationCourses[i].courseId,
-  //       })
-  //       if (checkUserInCourse.length === 0) {
-  //         await UsersCourses.create({
-  //           userId: session.user._id,
-  //           courseId: emailInvitationCourses[i].courseId,
-  //           role: emailInvitationCourses[i].role,
-  //         })
-  //       }
-  //     }
-  //     await EmailInvitationCourses.deleteMany({ email: session.user.email })
-  //   }
-
-  //   // Получаем список Id курсов доступных для пользователя
-
-  //   const userCourses = await UsersCourses.find({ userId: session.user._id })
-
-  //   console.log('emailInvitationCourses', emailInvitationCourses)
-
-  //   const coursesIds = getIds(userCourses, 'courseId')
-
-  //   const courses = JSON.parse(
-  //     JSON.stringify(
-  //       await Courses.find({
-  //         _id: { $in: coursesIds },
-  //       })
-  //     )
-  //   )
-
-  //   const coursesRole = {}
-  //   userCourses.forEach((userCourse) => {
-  //     coursesRole[userCourse.courseId] = userCourse.role
-  //   })
-
-  //   const chapters = JSON.parse(
-  //     JSON.stringify(
-  //       await Chapters.find({
-  //         courseId: { $in: coursesIds },
-  //       })
-  //     )
-  //   )
-
-  //   if (!chapters) {
-  //     return {
-  //       notFound: true,
-  //     }
-  //   }
-
-  //   const lectures = JSON.parse(
-  //     JSON.stringify(
-  //       await Lectures.find({
-  //         chapterId: { $in: getIds(chapters) },
-  //       })
-  //     )
-  //   )
-
-  //   if (!lectures) {
-  //     return {
-  //       notFound: true,
-  //     }
-  //   }
-
-  //   const tasks = JSON.parse(
-  //     JSON.stringify(
-  //       await Tasks.find({
-  //         lectureId: { $in: getIds(lectures) },
-  //       })
-  //     )
-  //   )
-
-  //   if (!tasks) {
-  //     return {
-  //       notFound: true,
-  //     }
-  //   }
-
-  //   const answers = JSON.parse(
-  //     JSON.stringify(await Answers.find({ taskId: { $in: getIds(tasks) } }))
-  //   )
-
-  //   if (!answers) {
-  //     return {
-  //       notFound: true,
-  //     }
-  //   }
-
-  //   return {
-  //     props: {
-  //       courses,
-  //       coursesRole,
-  //       chapters,
-  //       lectures,
-  //       tasks,
-  //       answers,
-  //       user: session?.user ? session.user : null,
-  //     },
-  //   }
-  // } catch {
-  //   return {
-  //     props: {
-  //       courses: [],
-  //       coursesRole: {},
-  //       chapters: [],
-  //       lectures: [],
-  //       tasks: [],
-  //       answers: [],
-  //       user: session?.user ? session.user : null,
-  //     },
-  //     // notFound: true,
-  //   }
-  // }
 }

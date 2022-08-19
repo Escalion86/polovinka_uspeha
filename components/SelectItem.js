@@ -1,25 +1,14 @@
 // import { useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faCross,
   faPencilAlt,
   faPlus,
   faSearch,
   faTimes,
-  faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import { useEffect, useRef, useState } from 'react'
 import { Virtuoso } from 'react-virtuoso'
-import {
-  UserItem,
-  EventItem,
-  DirectionItem,
-  // ProductItem,
-  // SetItem,
-  // PersonaItem,
-  // PaymentItem,
-  // DistrictItem,
-} from './ItemCards'
+import { UserItem, EventItem, DirectionItem } from './ItemCards'
 
 import cn from 'classnames'
 import usersAtom from '@state/atoms/usersAtom'
@@ -27,7 +16,6 @@ import { useRecoilValue } from 'recoil'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import { modalsFuncAtom } from '@state/atoms'
-// import useClickOutside from '@helpers/hooks/21-useClickOutside/useClickOutside'
 
 const filteredItems = (
   items = [],
@@ -69,7 +57,6 @@ const filteredItems = (
           }
 
           const searchTextLowerCase = searchText.toLowerCase()
-          // const itemNameLowerCase = item.name?.toLowerCase()
           return (
             !exceptedIds?.includes(item._id) &&
             (item.name
@@ -84,8 +71,6 @@ const filteredItems = (
               item.instagram?.toString().includes(searchTextLowerCase) ||
               item.vk?.toString().includes(searchTextLowerCase) ||
               item.price?.toString().includes(searchTextLowerCase))
-            // ||
-            // item.fullPrice?.toString().includes(searchTextLowerCase)
           )
         } else return !exceptedIds?.includes(item._id)
       })
@@ -124,11 +109,6 @@ export const SelectItem = ({
 
   const moreOneFilterTurnOnExists = items.length && items[0].count !== undefined
 
-  // useClickOutside(inputRef, () => {
-  //   console.log(`OUTSIDE`)
-  //   if (isMenuOpen) setIsMenuOpen(false)
-  // })
-
   const selectedItem = selectedId
     ? items.find((item) => item._id === selectedId)
     : null
@@ -156,12 +136,7 @@ export const SelectItem = ({
   const isSearchVisible = !noSearch && preFilteredItemsArray.length > 0
 
   useEffect(() => {
-    // console.log(`ref.current`, ref.current)
     const checkIfClickedOutside = (e) => {
-      // console.log(
-      //   `ref.current.contains(e.target)`,
-      //   ref.current.contains(e.target)
-      // )
       if (
         !onClick &&
         dropDownList &&
@@ -198,14 +173,11 @@ export const SelectItem = ({
     >
       {dropDownList && (
         <div
-          className={
-            cn(
-              'absolute border overflow-hidden max-h-64 transform duration-300 ease-out flex flex-col top-full -left-[1px] -right-[1px] bg-white shadow border-gray-700 z-50',
-              { hidden: !isMenuOpen },
-              { 'opacity-0': !isMenuOpen }
-            ) // scale-y-0 -translate-y-1/2
-          }
-          // style={{ width: itemWidth }}
+          className={cn(
+            'absolute border overflow-hidden max-h-64 transform duration-300 ease-out flex flex-col top-full -left-[1px] -right-[1px] bg-white shadow border-gray-700 z-50',
+            { hidden: !isMenuOpen },
+            { 'opacity-0': !isMenuOpen }
+          )}
           onClick={(e) => e.stopPropagation()}
         >
           {isSearchVisible && (
@@ -347,17 +319,6 @@ const SelectItemContainer = ({
           icon={faPencilAlt}
           iconClassName="text-primary"
         />
-        // <div className="flex items-center justify-center border-l border-gray-700">
-        //   <button
-        //     onClick={onEdit}
-        //     className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
-        //   >
-        //     <FontAwesomeIcon
-        //       className="w-3 h-3 duration-300 text-primary group-hover:scale-125"
-        //       icon={faPencilAlt}
-        //     />
-        //   </button>
-        // </div>
       )}
       {onCreateNew && (
         <ItemButton
@@ -365,17 +326,6 @@ const SelectItemContainer = ({
           icon={faPlus}
           iconClassName="text-primary"
         />
-        // <div className="flex items-center justify-center border-l border-gray-700">
-        //   <button
-        //     onClick={onCreateNew}
-        //     className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
-        //   >
-        //     <FontAwesomeIcon
-        //       className="w-3 h-3 duration-300 text-primary group-hover:scale-125"
-        //       icon={faPlus}
-        //     />
-        //   </button>
-        // </div>
       )}
       {onClickClearButton && (
         <ItemButton
@@ -383,17 +333,6 @@ const SelectItemContainer = ({
           icon={faTimes}
           iconClassName="text-red-700"
         />
-        // <div className="flex items-center justify-center border-l border-gray-700">
-        //   <button
-        //     onClick={onClickClearButton}
-        //     className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
-        //   >
-        //     <FontAwesomeIcon
-        //       className="w-4 h-4 text-red-700 duration-300 group-hover:scale-125"
-        //       icon={faTimes}
-        //     />
-        //   </button>
-        // </div>
       )}
     </Container>
   )
@@ -546,176 +485,6 @@ export const SelectDirection = ({
   )
 }
 
-// export const SelectProduct = ({
-//   onChange,
-//   onDelete,
-//   selectedId = null,
-//   exceptedIds = [],
-//   required = false,
-//   className = null,
-//   clearButton = null,
-// }) => {
-//   const { products } = useSelector((state) => state)
-//   return (
-//     <SelectItemContainer
-//       required={required}
-//       label="Товар"
-//       className={className}
-//       onClickClearButton={
-//         selectedId && clearButton
-//           ? onDelete
-//             ? () => onDelete()
-//             : () => onChange(null)
-//           : null
-//       }
-//     >
-//       <SelectItem
-//         items={products}
-//         itemComponent={ProductItem}
-//         onChange={onChange}
-//         selectedId={selectedId}
-//         className={
-//           'flex-1' +
-//           ( selectedId && clearButton
-//             ? ' rounded-l-lg'
-//             : ' rounded-lg')
-//         }
-//         exceptedIds={exceptedIds}
-//       />
-//     </SelectItemContainer>
-//   )
-// }
-
-// export const SelectSet = ({
-//   onChange,
-//   onDelete,
-//   selectedId = null,
-//   exceptedIds = [],
-//   required = false,
-//   className = null,
-//   clearButton = null,
-//   readOnly = false,
-// }) => {
-//   const { sets } = useSelector((state) => state)
-//   return (
-//     <SelectItemContainer
-//       required={required}
-//       label="Набор"
-//       className={className}
-//       onClickClearButton={
-//         selectedId && clearButton
-//           ? onDelete
-//             ? () => onDelete()
-//             : () => onChange(null)
-//           : null
-//       }
-//       readOnly={readOnly}
-//     >
-//       <SelectItem
-//         items={sets}
-//         itemComponent={SetItem}
-//         onChange={onChange}
-//         selectedId={selectedId}
-//         className={className}
-//         className={
-//           'flex-1' +
-//           (!readOnly && selectedId && clearButton
-//             ? ' rounded-l-lg'
-//             : ' rounded-lg')
-//         }
-//         exceptedIds={exceptedIds}
-//         readOnly={readOnly}
-//       />
-//     </SelectItemContainer>
-//   )
-// }
-
-// export const SelectClient = ({
-//   onChange,
-//   onDelete,
-//   selectedId = null,
-//   exceptedIds = [],
-//   required = false,
-//   className = null,
-//   clearButton = null,
-//   readOnly = false,
-// }) => {
-//   const { clients } = useSelector((state) => state)
-//   return (
-//     <SelectItemContainer
-//       required={required}
-//       label="Клиент"
-//       className={className}
-//       onClickClearButton={
-//         selectedId && clearButton
-//           ? onDelete
-//             ? () => onDelete()
-//             : () => onChange(null)
-//           : null
-//       }
-//       readOnly={readOnly}
-//     >
-//       <SelectItem
-//         items={clients}
-//         itemComponent={PersonaItem}
-//         onChange={onChange}
-//         selectedId={selectedId}
-//         className={
-//           'flex-1' +
-//           (!readOnly && selectedId && clearButton
-//             ? ' rounded-l-lg'
-//             : ' rounded-lg')
-//         }
-//         exceptedIds={exceptedIds}
-//         readOnly={readOnly}
-//       />
-//     </SelectItemContainer>
-//   )
-// }
-
-// export const SelectOrder = ({
-//   onChange,
-//   onDelete,
-//   selectedId = null,
-//   exceptedIds = [],
-//   required = false,
-//   className = null,
-//   clearButton = null,
-//   readOnly = false,
-// }) => {
-//   const { orders } = useSelector((state) => state)
-//   return (
-//     <SelectItemContainer
-//       required={required}
-//       label="Заказ"
-//       className={className}
-//       onClickClearButton={
-//         selectedId && clearButton
-//           ? onDelete
-//             ? () => onDelete()
-//             : () => onChange(null)
-//           : null
-//       }
-//       readOnly={readOnly}
-//     >
-//       <SelectItem
-//         items={orders}
-//         itemComponent={OrderItem}
-//         onChange={onChange}
-//         selectedId={selectedId}
-//         className={
-//           'flex-1' +
-//           (!readOnly && selectedId && clearButton
-//             ? ' rounded-l-lg'
-//             : ' rounded-lg')
-//         }
-//         exceptedIds={exceptedIds}
-//         readOnly={readOnly}
-//       />
-//     </SelectItemContainer>
-//   )
-// }
-
 // export const SelectPayment = ({
 //   onChange,
 //   onDelete,
@@ -766,173 +535,6 @@ export const SelectDirection = ({
 //         exceptedIds={exceptedIds}
 //         onClick={selectedId !== '?' && payment ? () => onClick(payment) : null}
 //         dropDownList={dropDownList}
-//         readOnly={readOnly}
-//       />
-//     </SelectItemContainer>
-//   )
-// }
-
-// export const SelectDeliver = ({
-//   onChange,
-//   selectedId = null,
-//   exceptedIds = [],
-//   required = false,
-//   className = null,
-//   clearButton = null,
-//   readOnly = false,
-// }) => {
-//   const { users } = useSelector((state) => state)
-//   const delivers = users.filter(
-//     (user) => user.role === 'deliver' || user.subRoles?.includes('deliver')
-//   )
-//   return (
-//     <SelectItemContainer
-//       required={required}
-//       label="Курьер"
-//       className={className}
-//       onClickClearButton={
-//         selectedId && clearButton ? () => onChange(null) : null
-//       }
-//       readOnly={readOnly}
-//     >
-//       <SelectItem
-//         items={delivers}
-//         itemComponent={PersonaItem}
-//         onChange={onChange}
-//         selectedId={selectedId}
-//         className={
-//           'flex-1' +
-//           (!readOnly && selectedId && clearButton
-//             ? ' rounded-l-lg'
-//             : ' rounded-lg')
-//         }
-//         exceptedIds={exceptedIds}
-//         readOnly={readOnly}
-//       />
-//     </SelectItemContainer>
-//   )
-// }
-
-// export const SelectAerodesigner = ({
-//   onChange,
-//   selectedId = null,
-//   exceptedIds = [],
-//   required = false,
-//   className = null,
-//   clearButton = null,
-//   readOnly = false,
-// }) => {
-//   const { users } = useSelector((state) => state)
-//   const aerodesigners = users.filter(
-//     (user) =>
-//       user.role === 'aerodesigner' || user.subRoles?.includes('aerodesigner')
-//   )
-//   return (
-//     <SelectItemContainer
-//       required={required}
-//       label="Аэродизайнер"
-//       className={className}
-//       onClickClearButton={
-//         selectedId && clearButton ? () => onChange(null) : null
-//       }
-//       readOnly={readOnly}
-//     >
-//       <SelectItem
-//         items={aerodesigners}
-//         itemComponent={PersonaItem}
-//         onChange={onChange}
-//         selectedId={selectedId}
-//         className={
-//           'flex-1' +
-//           (!readOnly && selectedId && clearButton
-//             ? ' rounded-l-lg'
-//             : ' rounded-lg')
-//         }
-//         exceptedIds={exceptedIds}
-//         readOnly={readOnly}
-//       />
-//     </SelectItemContainer>
-//   )
-// }
-
-// export const SelectOperator = ({
-//   onChange,
-//   selectedId = null,
-//   exceptedIds = [],
-//   required = false,
-//   className = null,
-//   clearButton = null,
-//   readOnly = false,
-// }) => {
-//   const { users } = useSelector((state) => state)
-//   const operators = users.filter(
-//     (user) => user.role === 'operator' || user.subRoles?.includes('operator')
-//   )
-//   return (
-//     <SelectItemContainer
-//       required={required}
-//       label="Оператор"
-//       className={className}
-//       onClickClearButton={
-//         selectedId && clearButton ? () => onChange(null) : null
-//       }
-//       readOnly={readOnly}
-//     >
-//       <SelectItem
-//         items={operators}
-//         itemComponent={PersonaItem}
-//         onChange={onChange}
-//         selectedId={selectedId}
-//         className={
-//           'flex-1' +
-//           (!readOnly && selectedId && clearButton
-//             ? ' rounded-l-lg'
-//             : ' rounded-lg')
-//         }
-//         exceptedIds={exceptedIds}
-//         readOnly={readOnly}
-//       />
-//     </SelectItemContainer>
-//   )
-// }
-
-// export const SelectDistrict = ({
-//   onChange,
-//   selectedId = null,
-//   exceptedIds = [],
-//   required = false,
-//   className = null,
-//   clearButton = true,
-//   readOnly = false,
-// }) => {
-//   const { districts } = useSelector((state) => state)
-//   return (
-//     <SelectItemContainer
-//       required={required}
-//       label="Район"
-//       className={className ? ' ' + className : ''}
-//       onClickClearButton={
-//         selectedId && clearButton ? () => onChange(null) : null
-//       }
-//       inLine
-//       readOnly={readOnly}
-//     >
-//       <SelectItem
-//         items={districts}
-//         itemComponent={DistrictItem}
-//         onChange={onChange}
-//         selectedId={selectedId}
-//         className={
-//           'flex-1' +
-//           (!readOnly && selectedId && clearButton
-//             ? ' rounded-l-lg'
-//             : ' rounded-lg')
-//         }
-//         exceptedIds={exceptedIds}
-//         itemHeight={24}
-//         itemWidth="100%"
-//         noSearch
-//         sort="name"
 //         readOnly={readOnly}
 //       />
 //     </SelectItemContainer>
