@@ -145,6 +145,10 @@ export default async function auth(req, res) {
 
         // Если пользователь есть в базе
         if (result?.length) {
+          await fetchingLog(
+            { from: 'after if (result?.length)' },
+            process.env.NEXTAUTH_SITE
+          )
           // Если аватарка пользователя не сохранена в cloudinary, то сохраняем в cloudinary и обнояем данные пользователя
           // if (
           //   result[0].image &&
@@ -218,13 +222,17 @@ export default async function auth(req, res) {
             )
           }
         } else {
+          await fetchingLog(
+            { from: 'after if (result?.length) ELSE' },
+            process.env.NEXTAUTH_SITE
+          )
           // если пользователь не зарегистрирован
           await CRUD(Users, {
             method: 'POST',
             body: {
               // firstName: session.user.name,
               phone: userPhone,
-              images: [session.user.image],
+              // images: [session.user.image],
               role: 'client',
             },
           })
