@@ -10,6 +10,7 @@
 
 const fetchProps = async () => {
   try {
+    console.log(`start fetchProps`)
     // console.log(`start dbConnect`)
     // await dbConnect()
     // console.log(`finished dbConnect`)
