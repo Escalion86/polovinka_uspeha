@@ -96,7 +96,7 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
       />
       <div className="flex-col flex-1 py-0.5 px-1">
         <div className="flex flex-wrap flex-1 h-5 text-sm text-gray-800 truncate max-h-5 gap-x-1">
-          <span className="font-semibold">{item.name}</span>
+          <span className="font-semibold">{item.firstName}</span>
           {item.secondName && (
             <span className="font-semibold">{item.secondName}</span>
           )}
