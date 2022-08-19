@@ -12,30 +12,32 @@ import { putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
 import validateEmail from '@helpers/validateEmail'
 import { modalsFuncAtom } from '@state/atoms'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
-  const user = props.loggedUser
-  const [firstName, setFirstName] = useState(user?.firstName ?? '')
-  const [secondName, setSecondName] = useState(user?.secondName ?? '')
-  const [thirdName, setThirdName] = useState(user?.thirdName ?? '')
+  // const user = props.loggedUser
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const [firstName, setFirstName] = useState(loggedUser?.firstName ?? '')
+  const [secondName, setSecondName] = useState(loggedUser?.secondName ?? '')
+  const [thirdName, setThirdName] = useState(loggedUser?.thirdName ?? '')
   // const [about, setAbout] = useState(user?.about ?? '')
   // const [interests, setInterests] = useState(user?.interests ?? '')
   // const [profession, setProfession] = useState(user?.profession ?? '')
   // const [orientation, setOrientation] = useState(user?.orientation ?? '')
-  const [gender, setGender] = useState(user?.gender ?? null)
-  const [email, setEmail] = useState(user?.email ?? '')
-  const [phone, setPhone] = useState(user?.phone ?? '')
-  const [whatsapp, setWhatsapp] = useState(user?.whatsapp ?? '')
-  const [viber, setViber] = useState(user?.viber ?? '')
-  const [telegram, setTelegram] = useState(user?.telegram ?? '')
-  const [instagram, setInstagram] = useState(user?.instagram ?? '')
-  const [vk, setVk] = useState(user?.vk ?? '')
-  const [images, setImages] = useState(user?.images ?? [])
-  const [birthday, setBirthday] = useState(user?.birthday ?? '')
+  const [gender, setGender] = useState(loggedUser?.gender ?? null)
+  const [email, setEmail] = useState(loggedUser?.email ?? '')
+  const [phone, setPhone] = useState(loggedUser?.phone ?? '')
+  const [whatsapp, setWhatsapp] = useState(loggedUser?.whatsapp ?? '')
+  const [viber, setViber] = useState(loggedUser?.viber ?? '')
+  const [telegram, setTelegram] = useState(loggedUser?.telegram ?? '')
+  const [instagram, setInstagram] = useState(loggedUser?.instagram ?? '')
+  const [vk, setVk] = useState(loggedUser?.vk ?? '')
+  const [images, setImages] = useState(loggedUser?.images ?? [])
+  const [birthday, setBirthday] = useState(loggedUser?.birthday ?? '')
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -51,23 +53,23 @@ const QuestionnaireContent = (props) => {
   }
 
   const formChanged =
-    user?.firstName !== firstName ||
-    user?.secondName !== secondName ||
-    user?.thirdName !== thirdName ||
+    loggedUser?.firstName !== firstName ||
+    loggedUser?.secondName !== secondName ||
+    loggedUser?.thirdName !== thirdName ||
     // user?.about !== about ||
     // user?.interests !== interests ||
     // user?.profession !== profession ||
     // user?.orientation !== orientation ||
-    user?.gender !== gender ||
-    user?.email !== email ||
-    user?.phone !== phone ||
-    user?.whatsapp !== whatsapp ||
-    user?.viber !== viber ||
-    user?.telegram !== telegram ||
-    user?.instagram !== instagram ||
-    user?.vk !== vk ||
-    user?.images !== images ||
-    user?.birthday !== birthday
+    loggedUser?.gender !== gender ||
+    loggedUser?.email !== email ||
+    loggedUser?.phone !== phone ||
+    loggedUser?.whatsapp !== whatsapp ||
+    loggedUser?.viber !== viber ||
+    loggedUser?.telegram !== telegram ||
+    loggedUser?.instagram !== instagram ||
+    loggedUser?.vk !== vk ||
+    loggedUser?.images !== images ||
+    loggedUser?.birthday !== birthday
 
   const onClickConfirm = async () => {
     clearErrors()
@@ -111,7 +113,7 @@ const QuestionnaireContent = (props) => {
     if (!error) {
       setIsWaitingToResponse(true)
       await putData(
-        `/api/users/${user._id}`,
+        `/api/users/${loggedUser._id}`,
         {
           name,
           secondName,
@@ -131,13 +133,16 @@ const QuestionnaireContent = (props) => {
           images,
           birthday,
         },
-        () => {
+        (data) => {
+          setLoggedUser(data)
           setMessage('Данные анкеты обновлены успешно')
-          refreshPage()
+          setIsWaitingToResponse(false)
+          // refreshPage()
         },
         () => {
           setMessage('')
           addError({ response: 'Ошибка обновления данных' })
+          setIsWaitingToResponse(false)
         }
       )
       // setIsWaitingToResponse(false)
@@ -152,7 +157,7 @@ const QuestionnaireContent = (props) => {
   }, [props])
 
   useEffect(() => {
-    if (!name || !secondName || !phone || !gender) {
+    if (!firstName || !secondName || !phone || !gender) {
       typeof modalsFunc.add === 'function' &&
         modalsFunc.add({
           id: 'questionnaireNotFilled',

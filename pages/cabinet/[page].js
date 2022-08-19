@@ -22,7 +22,7 @@ import { useState, useEffect } from 'react'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import BurgerLayout from '@layouts/BurgerLayout'
 import DeviceCheck from '@components/DeviceCheck'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import eventsAtom from '@state/atoms/eventsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import itemsFuncGenerator from '@state/itemsFuncGenerator'
@@ -64,11 +64,11 @@ import AdditionalBlocksModel from '@models/AdditionalBlocks'
 // TODO Сделать переключение с БД main на dev
 
 function CabinetPage(props) {
-  const { page, loggedUser } = props
+  const { page } = props
 
   const [loading, setLoading] = useState(true)
 
-  const setLoggedUserState = useSetRecoilState(loggedUserAtom)
+  const [loggedUserState, setLoggedUserState] = useRecoilState(loggedUserAtom)
   const setEventsState = useSetRecoilState(eventsAtom)
   const setDirectionsState = useSetRecoilState(directionsAtom)
   const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
@@ -206,10 +206,10 @@ function CabinetPage(props) {
         ) : (
           <>
             {/* ----------------------------- HEADER ------------------------------- */}
-            {loggedUser?.role === 'dev' && <DeviceCheck right />}
-            <CabinetHeader user={loggedUser} title={title} />
+            {loggedUserState?.role === 'dev' && <DeviceCheck right />}
+            <CabinetHeader user={loggedUserState} title={title} />
             <BurgerLayout />
-            <ContentWrapper user={loggedUser} page={page}>
+            <ContentWrapper user={loggedUserState} page={page}>
               <Component {...props} />
             </ContentWrapper>
             <ModalsPortal />
