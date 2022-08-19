@@ -90,6 +90,7 @@ export async function fetchingUserByPhone(
   const resp = await fetch(`${domen}/api/users/byPhone/${phone}`)
     .then((res) => res.json())
     .then((json) => json.data)
+    .catch((error) => console.log(error))
   return resp
 }
 
