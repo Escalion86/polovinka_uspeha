@@ -46,15 +46,16 @@ import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
 import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
-import Users from '@models/Users'
-import Events from '@models/Events'
-import Directions from '@models/Directions'
-import Reviews from '@models/Reviews'
-import AdditionalBlocksModel from '@models/AdditionalBlocks'
-import EventsUsers from '@models/EventsUsers'
-import Payments from '@models/Payments'
-import Site from '@models/Site'
-import dbConnect from '@utils/dbConnect'
+// import Users from '@models/Users'
+// import Events from '@models/Events'
+// import Directions from '@models/Directions'
+// import Reviews from '@models/Reviews'
+// import AdditionalBlocksModel from '@models/AdditionalBlocks'
+// import EventsUsers from '@models/EventsUsers'
+// import Payments from '@models/Payments'
+// import Site from '@models/Site'
+// import dbConnect from '@utils/dbConnect'
+import fetchProps from '@server/fetchProps'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -243,111 +244,113 @@ export const getServerSideProps = async (context) => {
   // const { user } = session
   // console.log(`user`, user)
 
-  try {
-    console.log(`start dbConnect`)
-    await dbConnect()
-    console.log(`finished dbConnect`)
-    // const users = await Users.find({})
-    // const events = await Events.find({})
-    // const directions = await Directions.find({})
-    // const reviews = await Reviews.find({})
-    // const additionalBlocks = await AdditionalBlocksModel.find({})
-    // const eventsUsers = await EventsUsers.find({})
-    // const payments = await Payments.find({})
-    // const siteSettings = await Site.find({})
-    console.time('Loading time')
-    console.time('users')
-    const users = await Users.find({})
-    // const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
-    console.timeEnd('users')
-    console.time('events')
-    const events = await Events.find({})
-    // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
-    console.timeEnd('events')
-    console.time('directions')
-    const directions = await Directions.find({})
-    // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
-    console.timeEnd('directions')
-    console.time('reviews')
-    const reviews = await Reviews.find({})
-    // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
-    console.timeEnd('reviews')
-    console.time('additionalBlocks')
-    const additionalBlocks = await AdditionalBlocksModel.find({})
-    // const additionalBlocks = await fetchingAdditionalBlocks(
-    //   process.env.NEXTAUTH_SITE
-    // )
-    console.timeEnd('additionalBlocks')
-    console.time('eventsUsers')
-    const eventsUsers = await EventsUsers.find({})
-    // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
-    console.timeEnd('eventsUsers')
-    console.time('payments')
-    const payments = await Payments.find({})
-    // const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
-    console.timeEnd('payments')
-    console.time('siteSettings')
-    const siteSettings = await Site.find({})
-    // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
-    console.timeEnd('siteSettings')
-    console.timeEnd('Loading time')
-    // dbDisconnect()
+  // try {
+  const fetchedProps = await fetchProps()
+  // console.log(`start dbConnect`)
+  // await dbConnect()
+  // console.log(`finished dbConnect`)
+  // // const users = await Users.find({})
+  // // const events = await Events.find({})
+  // // const directions = await Directions.find({})
+  // // const reviews = await Reviews.find({})
+  // // const additionalBlocks = await AdditionalBlocksModel.find({})
+  // // const eventsUsers = await EventsUsers.find({})
+  // // const payments = await Payments.find({})
+  // // const siteSettings = await Site.find({})
+  // console.time('Loading time')
+  // console.time('users')
+  // const users = await Users.find({})
+  // // const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
+  // console.timeEnd('users')
+  // console.time('events')
+  // const events = await Events.find({})
+  // // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+  // console.timeEnd('events')
+  // console.time('directions')
+  // const directions = await Directions.find({})
+  // // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+  // console.timeEnd('directions')
+  // console.time('reviews')
+  // const reviews = await Reviews.find({})
+  // // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+  // console.timeEnd('reviews')
+  // console.time('additionalBlocks')
+  // const additionalBlocks = await AdditionalBlocksModel.find({})
+  // // const additionalBlocks = await fetchingAdditionalBlocks(
+  // //   process.env.NEXTAUTH_SITE
+  // // )
+  // console.timeEnd('additionalBlocks')
+  // console.time('eventsUsers')
+  // const eventsUsers = await EventsUsers.find({})
+  // // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+  // console.timeEnd('eventsUsers')
+  // console.time('payments')
+  // const payments = await Payments.find({})
+  // // const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
+  // console.timeEnd('payments')
+  // console.time('siteSettings')
+  // const siteSettings = await Site.find({})
+  // // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+  // console.timeEnd('siteSettings')
+  // console.timeEnd('Loading time')
+  // // dbDisconnect()
 
-    // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
-    // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
-    // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
-    // const additionalBlocks = await fetchingAdditionalBlocks(
-    //   process.env.NEXTAUTH_SITE
-    // )
-    // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
-    // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
-    // console.log('events', events)
-    // console.log('directions', directions)
-    // console.log('reviews', reviews)
-    // console.log('additionalBlocks', additionalBlocks)
+  // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+  // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+  // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+  // const additionalBlocks = await fetchingAdditionalBlocks(
+  //   process.env.NEXTAUTH_SITE
+  // )
+  // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+  // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+  // console.log('events', events)
+  // console.log('directions', directions)
+  // console.log('reviews', reviews)
+  // console.log('additionalBlocks', additionalBlocks)
 
-    return {
-      props: {
-        // events,
-        // directions: directions.filter((direction) => direction.showOnSite),
-        // reviews: reviews.filter((review) => review.showOnSite),
-        // additionalBlocks,
-        // eventsUsers,
-        // siteSettings,
-        // loggedUser: session?.user ? session.user : null,
-        users: JSON.parse(JSON.stringify(users)),
-        events: JSON.parse(JSON.stringify(events)),
-        directions: JSON.parse(JSON.stringify(directions)),
-        reviews: JSON.parse(JSON.stringify(reviews)),
-        additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
-        eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
-        payments: JSON.parse(JSON.stringify(payments)),
-        siteSettings: JSON.parse(JSON.stringify(siteSettings)),
-        loggedUser: session?.user ?? null,
-      },
-    }
-  } catch (error) {
-    return {
-      props: {
-        // events: null,
-        // directions: null,
-        // reviews: null,
-        // additionalBlocks: null,
-        // eventsUsers: null,
-        // siteSettings: null,
-        // loggedUser: session?.user ? session.user : null,
-        users: null,
-        events: null,
-        directions: null,
-        reviews: null,
-        additionalBlocks: null,
-        eventsUsers: null,
-        payments: null,
-        siteSettings: null,
-        loggedUser: session?.user ?? null,
-        error: JSON.parse(JSON.stringify(error)),
-      },
-      // notFound: true,
-    }
+  return {
+    props: {
+      // events,
+      // directions: directions.filter((direction) => direction.showOnSite),
+      // reviews: reviews.filter((review) => review.showOnSite),
+      // additionalBlocks,
+      // eventsUsers,
+      // siteSettings,
+      // loggedUser: session?.user ? session.user : null,
+      // users: JSON.parse(JSON.stringify(users)),
+      // events: JSON.parse(JSON.stringify(events)),
+      // directions: JSON.parse(JSON.stringify(directions)),
+      // reviews: JSON.parse(JSON.stringify(reviews)),
+      // additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
+      // eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
+      // payments: JSON.parse(JSON.stringify(payments)),
+      ...fetchedProps,
+      siteSettings: JSON.parse(JSON.stringify(siteSettings)),
+      loggedUser: session?.user ?? null,
+    },
   }
+  // } catch (error) {
+  //   return {
+  //     props: {
+  //       // events: null,
+  //       // directions: null,
+  //       // reviews: null,
+  //       // additionalBlocks: null,
+  //       // eventsUsers: null,
+  //       // siteSettings: null,
+  //       // loggedUser: session?.user ? session.user : null,
+  //       users: null,
+  //       events: null,
+  //       directions: null,
+  //       reviews: null,
+  //       additionalBlocks: null,
+  //       eventsUsers: null,
+  //       payments: null,
+  //       siteSettings: null,
+  //       loggedUser: session?.user ?? null,
+  //       error: JSON.parse(JSON.stringify(error)),
+  //     },
+  //     // notFound: true,
+  //   }
+  // }
 }
