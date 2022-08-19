@@ -8,6 +8,17 @@
 // const { default: Users } = require('@models/Users')
 // const { default: dbConnect } = require('@utils/dbConnect')
 
+import {
+  fetchingAdditionalBlocks,
+  fetchingDirections,
+  fetchingEvents,
+  fetchingEventsUsers,
+  fetchingPayments,
+  fetchingReviews,
+  fetchingSiteSettings,
+  fetchingUsers,
+} from '@helpers/fetchers'
+
 const fetchProps = async () => {
   try {
     console.log(`start fetchProps`)
