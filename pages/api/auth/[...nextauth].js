@@ -122,21 +122,21 @@ export default async function auth(req, res) {
         // console.log('token', token)
         // return Promise.resolve(session)
         // const { user } = session
-        const log = await fetchingLog(session?.user, process.env.NEXTAUTH_SITE)
-        console.log('session.user', session?.user)
-        const userPhone = session.user.name
-        console.log('nextauth userPhone', userPhone)
-        // const cached = await dbConnect()
-        console.log(
-          'nextauth process.env.NEXTAUTH_SITE',
+        await fetchingLog(
+          { from: 'nextauth callback session', user: session?.user },
           process.env.NEXTAUTH_SITE
         )
+
+        const userPhone = session.user.name
+
         const result = await fetchingUserByPhone(
           userPhone,
           process.env.NEXTAUTH_SITE
         )
-
-        console.log('result in nextauth', result)
+        await fetchingLog(
+          { from: 'result in nextauth', result },
+          process.env.NEXTAUTH_SITE
+        )
 
         // console.log('result', result)
         // const result = await Users.find({
@@ -200,6 +200,11 @@ export default async function auth(req, res) {
           session.user.about = result[0].about
           session.user.status = result[0].status
           session.user.images = result[0].images
+
+          await fetchingLog(
+            { from: 'session.user in nextauth', user: session.user },
+            process.env.NEXTAUTH_SITE
+          )
 
           if (result[0].role === 'client') {
           } else {
