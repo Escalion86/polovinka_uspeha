@@ -328,7 +328,7 @@ export const getServerSideProps = async (context) => {
       // eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
       // payments: JSON.parse(JSON.stringify(payments)),
       ...fetchedProps,
-      siteSettings: JSON.parse(JSON.stringify(siteSettings)),
+      // siteSettings: JSON.parse(JSON.stringify(siteSettings)),
       loggedUser: session?.user ?? null,
     },
   }
