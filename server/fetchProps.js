@@ -26,6 +26,7 @@ import Payments from '@models/Payments'
 import Reviews from '@models/Reviews'
 import Site from '@models/Site'
 import Users from '@models/Users'
+import dbConnect from '@utils/dbConnect'
 
 const fetchProps = async () => {
   try {
