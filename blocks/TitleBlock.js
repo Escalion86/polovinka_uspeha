@@ -8,7 +8,7 @@ const TitleBlock = ({ userIsLogged = false }) => {
 
   return (
     <div
-      className="h-screen"
+      className="h-[calc(100vh-70px)]"
       style={{
         backgroundImage: `url("/img/bg.webp")`,
         backgroundRepeat: 'no-repeat',
