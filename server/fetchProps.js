@@ -22,42 +22,51 @@ const fetchProps = async () => {
     // const eventsUsers = await EventsUsers.find({})
     // const payments = await Payments.find({})
     // const siteSettings = await Site.find({})
-    console.time('Loading time')
-    console.time('users')
+    // console.time('Loading time')
+    // console.time('users')
     // const users = await Users.find({})
+    console.log('process.env.NEXTAUTH_SITE', process.env.NEXTAUTH_SITE)
     const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
-    console.timeEnd('users')
-    console.time('events')
+    console.log(`users`, users)
+    // console.timeEnd('users')
+    // console.time('events')
     // const events = await Events.find({})
     const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
-    console.timeEnd('events')
-    console.time('directions')
+    console.log(`events`, events)
+    // console.timeEnd('events')
+    // console.time('directions')
     // const directions = await Directions.find({})
     const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
-    console.timeEnd('directions')
-    console.time('reviews')
+    console.log(`directions`, directions)
+    // console.timeEnd('directions')
+    // console.time('reviews')
     // const reviews = await Reviews.find({})
     const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
-    console.timeEnd('reviews')
-    console.time('additionalBlocks')
+    console.log(`reviews`, reviews)
+    // console.timeEnd('reviews')
+    // console.time('additionalBlocks')
     // const additionalBlocks = await AdditionalBlocks.find({})
     const additionalBlocks = await fetchingAdditionalBlocks(
       process.env.NEXTAUTH_SITE
     )
-    console.timeEnd('additionalBlocks')
-    console.time('eventsUsers')
+    console.log(`additionalBlocks`, additionalBlocks)
+    // console.timeEnd('additionalBlocks')
+    // console.time('eventsUsers')
     // const eventsUsers = await EventsUsers.find({})
     const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
-    console.timeEnd('eventsUsers')
-    console.time('payments')
+    console.log(`eventsUsers`, eventsUsers)
+    // console.timeEnd('eventsUsers')
+    // console.time('payments')
     // const payments = await Payments.find({})
     const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
-    console.timeEnd('payments')
-    console.time('siteSettings')
+    console.log(`payments`, payments)
+    // console.timeEnd('payments')
+    // console.time('siteSettings')
     // const siteSettings = await Site.find({})
     const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
-    console.timeEnd('siteSettings')
-    console.timeEnd('Loading time')
+    console.log(`siteSettings`, siteSettings)
+    // console.timeEnd('siteSettings')
+    // console.timeEnd('Loading time')
     // dbDisconnect()
     // console.log('return result', {
     //   users: JSON.parse(JSON.stringify(users)),
@@ -69,16 +78,6 @@ const fetchProps = async () => {
     //   payments: JSON.parse(JSON.stringify(payments)),
     //   siteSettings: JSON.parse(JSON.stringify(siteSettings)),
     // })
-    console.log('return result', {
-      users,
-      events,
-      directions,
-      reviews,
-      additionalBlocks,
-      eventsUsers,
-      payments,
-      siteSettings,
-    })
 
     return {
       users,
