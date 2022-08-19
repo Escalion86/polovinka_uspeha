@@ -87,7 +87,7 @@ const InputImages = ({
             onClick={addImageClick}
             className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer rounded-xl"
           >
-            <div className="flex items-center justify-center w-12 h-12 duration-200 transparent hover:scale-150 ">
+            <div className="flex items-center justify-center w-12 h-12 duration-200 transparent hover:scale-125 ">
               <FontAwesomeIcon
                 className="text-gray-700"
                 icon={faPlus}
