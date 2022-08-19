@@ -98,7 +98,7 @@ export default function Home(props) {
   } = props
   const [loading, setLoading] = useState(true)
 
-  console.log('props.error', props.error)
+  if (props.error) console.log('props.error', props.error)
 
   const setLoggedUserState = useSetRecoilState(loggedUserAtom)
   const [eventsState, setEventsState] = useRecoilState(eventsAtom)
@@ -114,7 +114,6 @@ export default function Home(props) {
   const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
   const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
 
-  console.log('eventsState', eventsState)
   const filteredEvents = eventsState.filter(
     (event) => event.showOnSite && new Date(event.date) >= new Date()
   )
