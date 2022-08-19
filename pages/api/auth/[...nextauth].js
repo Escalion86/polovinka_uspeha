@@ -4,11 +4,11 @@ import NextAuth from 'next-auth'
 import Users from '@models/Users'
 import CRUD from '@server/CRUD'
 // import Auth0Provider from 'next-auth/providers/auth0'
-import GoogleProvider from 'next-auth/providers/google'
-import { fetchingUserByEmail, fetchingUserByPhone } from '@helpers/fetchers'
+// import GoogleProvider from 'next-auth/providers/google'
+import { fetchingLog, fetchingUserByPhone } from '@helpers/fetchers'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
-import usersSchema from '@schemas/usersSchema'
+// import usersSchema from '@schemas/usersSchema'
 // import VkProvider from 'next-auth/providers/vk'
 // import EmailProvider from 'next-auth/providers/email'
 // import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
@@ -100,12 +100,12 @@ export default async function auth(req, res) {
           }
         },
       }),
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        // authorizationUrl:
-        //   'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code',
-      }),
+      // GoogleProvider({
+      //   clientId: process.env.GOOGLE_CLIENT_ID,
+      //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      //   // authorizationUrl:
+      //   //   'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code',
+      // }),
       // VkProvider({
       //   clientId: process.env.VK_CLIENT_ID,
       //   clientSecret: process.env.VK_CLIENT_SECRET,
@@ -122,12 +122,21 @@ export default async function auth(req, res) {
         // console.log('token', token)
         // return Promise.resolve(session)
         // const { user } = session
+        const log = await fetchingLog(session?.user, process.env.NEXTAUTH_SITE)
+        console.log('session.user', session?.user)
         const userPhone = session.user.name
+        console.log('nextauth userPhone', userPhone)
         // const cached = await dbConnect()
+        console.log(
+          'nextauth process.env.NEXTAUTH_SITE',
+          process.env.NEXTAUTH_SITE
+        )
         const result = await fetchingUserByPhone(
           userPhone,
           process.env.NEXTAUTH_SITE
         )
+
+        console.log('result in nextauth', result)
 
         // console.log('result', result)
         // const result = await Users.find({

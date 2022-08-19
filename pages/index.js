@@ -1,31 +1,31 @@
 // import dbConnect from '@utils/dbConnect'
 import DeviceCheck from '@components/DeviceCheck'
-import { H1, H2, H3, H4, P } from '@components/tags'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  fetchingAdditionalBlocks,
-  fetchingDirections,
-  fetchingEvents,
-  fetchingEventsUsers,
-  fetchingPayments,
-  fetchingReviews,
-  fetchingSiteSettings,
-  fetchingUsers,
-} from '@helpers/fetchers'
+// import { H1, H2, H3, H4, P } from '@components/tags'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import {
+//   fetchingAdditionalBlocks,
+//   fetchingDirections,
+//   fetchingEvents,
+//   fetchingEventsUsers,
+//   fetchingPayments,
+//   fetchingReviews,
+//   fetchingSiteSettings,
+//   fetchingUsers,
+// } from '@helpers/fetchers'
 import Header from '@layouts/Header'
-import cn from 'classnames'
-import { getSession, signOut } from 'next-auth/react'
+// import cn from 'classnames'
+import { getSession } from 'next-auth/react'
 import Head from 'next/head'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import formatDateTime from '@helpers/formatDateTime'
-import Masonry from '@components/Masonry'
-import BlockContainer from '@components/BlockContainer'
+// import Link from 'next/link'
+// import { useRouter } from 'next/router'
+// import formatDateTime from '@helpers/formatDateTime'
+// import Masonry from '@components/Masonry'
+// import BlockContainer from '@components/BlockContainer'
 import DirectionsBlock from '@blocks/DirectionsBlock'
-import PulseButton from '@components/PulseButton'
+// import PulseButton from '@components/PulseButton'
 import ContactsBlock from '@blocks/ContactsBlock'
 import ReviewsBlock from '@blocks/ReviewsBlock'
-import PriceBlock from '@blocks/PriceBlock'
+// import PriceBlock from '@blocks/PriceBlock'
 import AdditionalBlocks from '@blocks/AdditionalBlocks'
 import EventsBlock from '@blocks/EventsBlock'
 import AboutBlock from '@blocks/AboutBlock'
@@ -46,15 +46,16 @@ import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
 import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
-import Users from '@models/Users'
-import Events from '@models/Events'
-import Directions from '@models/Directions'
-import Reviews from '@models/Reviews'
-import AdditionalBlocksModel from '@models/AdditionalBlocks'
-import EventsUsers from '@models/EventsUsers'
-import Payments from '@models/Payments'
-import Site from '@models/Site'
-import dbConnect from '@utils/dbConnect'
+// import Users from '@models/Users'
+// import Events from '@models/Events'
+// import Directions from '@models/Directions'
+// import Reviews from '@models/Reviews'
+// import AdditionalBlocksModel from '@models/AdditionalBlocks'
+// import EventsUsers from '@models/EventsUsers'
+// import Payments from '@models/Payments'
+// import Site from '@models/Site'
+// import dbConnect from '@utils/dbConnect'
+import fetchProps from '@server/fetchProps'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -86,18 +87,18 @@ import dbConnect from '@utils/dbConnect'
 export default function Home(props) {
   const {
     loggedUser,
-    users,
-    events,
-    directions,
-    reviews,
-    additionalBlocks,
-    eventsUsers,
-    payments,
+    // users,
+    // events,
+    // directions,
+    // reviews,
+    // additionalBlocks,
+    // eventsUsers,
+    // payments,
     siteSettings,
   } = props
   const [loading, setLoading] = useState(true)
 
-  console.log('props.error', props.error)
+  if (props.error) console.log('props.error', props.error)
 
   const setLoggedUserState = useSetRecoilState(loggedUserAtom)
   const [eventsState, setEventsState] = useRecoilState(eventsAtom)
@@ -113,7 +114,6 @@ export default function Home(props) {
   const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
   const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
 
-  console.log('eventsState', eventsState)
   const filteredEvents = eventsState.filter(
     (event) => event.showOnSite && new Date(event.date) >= new Date()
   )
@@ -232,8 +232,7 @@ export default function Home(props) {
 
 export const getServerSideProps = async (context) => {
   console.log(`start getServerSideProps`)
-  const session = await getSession({ req: context.req })
-  console.log('session', session)
+
   // console.log('1')
   // const session = await getSession({ req })
   // console.log('2')
@@ -244,54 +243,59 @@ export const getServerSideProps = async (context) => {
   // console.log(`user`, user)
 
   try {
-    console.log(`start dbConnect`)
-    await dbConnect()
-    console.log(`finished dbConnect`)
+    const session = await getSession({ req: context.req })
+    console.log('session', session)
+
+    const fetchedProps = await fetchProps()
+
+    // console.log(`start dbConnect`)
+    // await dbConnect()
+    // console.log(`finished dbConnect`)
+    // // const users = await Users.find({})
+    // // const events = await Events.find({})
+    // // const directions = await Directions.find({})
+    // // const reviews = await Reviews.find({})
+    // // const additionalBlocks = await AdditionalBlocksModel.find({})
+    // // const eventsUsers = await EventsUsers.find({})
+    // // const payments = await Payments.find({})
+    // // const siteSettings = await Site.find({})
+    // console.time('Loading time')
+    // console.time('users')
     // const users = await Users.find({})
+    // // const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
+    // console.timeEnd('users')
+    // console.time('events')
     // const events = await Events.find({})
+    // // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
+    // console.timeEnd('events')
+    // console.time('directions')
     // const directions = await Directions.find({})
+    // // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
+    // console.timeEnd('directions')
+    // console.time('reviews')
     // const reviews = await Reviews.find({})
+    // // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
+    // console.timeEnd('reviews')
+    // console.time('additionalBlocks')
     // const additionalBlocks = await AdditionalBlocksModel.find({})
+    // // const additionalBlocks = await fetchingAdditionalBlocks(
+    // //   process.env.NEXTAUTH_SITE
+    // // )
+    // console.timeEnd('additionalBlocks')
+    // console.time('eventsUsers')
     // const eventsUsers = await EventsUsers.find({})
+    // // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
+    // console.timeEnd('eventsUsers')
+    // console.time('payments')
     // const payments = await Payments.find({})
+    // // const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
+    // console.timeEnd('payments')
+    // console.time('siteSettings')
     // const siteSettings = await Site.find({})
-    console.time('Loading time')
-    console.time('users')
-    const users = await Users.find({})
-    // const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
-    console.timeEnd('users')
-    console.time('events')
-    const events = await Events.find({})
-    // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
-    console.timeEnd('events')
-    console.time('directions')
-    const directions = await Directions.find({})
-    // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
-    console.timeEnd('directions')
-    console.time('reviews')
-    const reviews = await Reviews.find({})
-    // const reviews = await fetchingReviews(process.env.NEXTAUTH_SITE)
-    console.timeEnd('reviews')
-    console.time('additionalBlocks')
-    const additionalBlocks = await AdditionalBlocksModel.find({})
-    // const additionalBlocks = await fetchingAdditionalBlocks(
-    //   process.env.NEXTAUTH_SITE
-    // )
-    console.timeEnd('additionalBlocks')
-    console.time('eventsUsers')
-    const eventsUsers = await EventsUsers.find({})
-    // const eventsUsers = await fetchingEventsUsers(process.env.NEXTAUTH_SITE)
-    console.timeEnd('eventsUsers')
-    console.time('payments')
-    const payments = await Payments.find({})
-    // const payments = await fetchingPayments(process.env.NEXTAUTH_SITE)
-    console.timeEnd('payments')
-    console.time('siteSettings')
-    const siteSettings = await Site.find({})
-    // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
-    console.timeEnd('siteSettings')
-    console.timeEnd('Loading time')
-    // dbDisconnect()
+    // // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
+    // console.timeEnd('siteSettings')
+    // console.timeEnd('Loading time')
+    // // dbDisconnect()
 
     // const events = await fetchingEvents(process.env.NEXTAUTH_SITE)
     // const directions = await fetchingDirections(process.env.NEXTAUTH_SITE)
@@ -315,14 +319,15 @@ export const getServerSideProps = async (context) => {
         // eventsUsers,
         // siteSettings,
         // loggedUser: session?.user ? session.user : null,
-        users: JSON.parse(JSON.stringify(users)),
-        events: JSON.parse(JSON.stringify(events)),
-        directions: JSON.parse(JSON.stringify(directions)),
-        reviews: JSON.parse(JSON.stringify(reviews)),
-        additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
-        eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
-        payments: JSON.parse(JSON.stringify(payments)),
-        siteSettings: JSON.parse(JSON.stringify(siteSettings)),
+        // users: JSON.parse(JSON.stringify(users)),
+        // events: JSON.parse(JSON.stringify(events)),
+        // directions: JSON.parse(JSON.stringify(directions)),
+        // reviews: JSON.parse(JSON.stringify(reviews)),
+        // additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
+        // eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
+        // payments: JSON.parse(JSON.stringify(payments)),
+        ...fetchedProps,
+        // siteSettings: JSON.parse(JSON.stringify(siteSettings)),
         loggedUser: session?.user ?? null,
       },
     }

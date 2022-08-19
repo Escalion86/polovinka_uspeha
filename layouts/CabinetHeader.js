@@ -1,6 +1,10 @@
 import Divider from '@components/Divider'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
-import { faSignOutAlt, faUserAlt } from '@fortawesome/free-solid-svg-icons'
+import {
+  faHome,
+  faSignOutAlt,
+  faUserAlt,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import menuOpenAtom from '@state/atoms/menuOpen'
@@ -93,9 +97,25 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
                 </div>
               </a>
             </Link>
+            <Link href="/">
+              <a onClick={() => setMenuOpen(false)}>
+                <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
+                  <FontAwesomeIcon
+                    icon={faHome}
+                    className="w-5 h-5 text-general"
+                  />
+                  <span className="prevent-select-text whitespace-nowrap">
+                    Главная страница сайта
+                  </span>
+                </div>
+              </a>
+            </Link>
 
             <div
-              onClick={signOut}
+              onClick={() => {
+                setMenuOpen(false)
+                signOut()
+              }}
               className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 hover:bg-gray-500 hover:text-white"
             >
               <FontAwesomeIcon

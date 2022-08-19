@@ -499,6 +499,12 @@ const Login = () => {
                   error={errors.phone}
                   max={9999999999}
                   maxLength="10"
+                  tabIndex={
+                    (isRegistrationProcess && registrationLevel === 1) ||
+                    !isRegistrationProcess
+                      ? 0
+                      : -1
+                  }
                   hidden={isRegistrationProcess && registrationLevel !== 1}
                   readOnly={waitingResponse}
                 />
@@ -516,6 +522,9 @@ const Login = () => {
                   value={inputPinCode}
                   error={errors.pinCode}
                   hidden={!isRegistrationProcess || registrationLevel !== 2}
+                  tabIndex={
+                    isRegistrationProcess && registrationLevel === 2 ? 0 : -1
+                  }
                   readOnly={waitingResponse}
                   maxLength="4"
                 />
@@ -532,6 +541,12 @@ const Login = () => {
                   }}
                   value={inputPassword}
                   error={errors.password}
+                  tabIndex={
+                    (isRegistrationProcess && registrationLevel === 3) ||
+                    !isRegistrationProcess
+                      ? 0
+                      : -1
+                  }
                   hidden={isRegistrationProcess && registrationLevel !== 3}
                   readOnly={waitingResponse}
                 />
@@ -546,7 +561,9 @@ const Login = () => {
                   }}
                   value={inputPasswordRepeat}
                   error={errors.password}
-                  tabIndex={isRegistrationProcess ? 0 : -1}
+                  tabIndex={
+                    isRegistrationProcess && registrationLevel === 3 ? 0 : -1
+                  }
                   hidden={!isRegistrationProcess || registrationLevel !== 3}
                   readOnly={waitingResponse}
                 />
