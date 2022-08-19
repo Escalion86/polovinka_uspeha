@@ -1,7 +1,7 @@
 const isUserQuestionnaireFilled = (user) =>
   !!(
     user &&
-    user.name &&
+    user.firstName &&
     user.secondName &&
     user.phone &&
     user.gender &&

@@ -9,7 +9,7 @@ const UserName = ({ user, className, noWrap }) => (
     )}
   >
     {user?.secondName && <span>{user.secondName}</span>}
-    {user?.name && <span>{user.name}</span>}
+    {user?.firstName && <span>{user.firstName}</span>}
     {user?.thirdName && <span>{user.thirdName}</span>}
   </div>
 )

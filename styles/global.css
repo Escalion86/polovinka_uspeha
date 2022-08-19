@@ -22,6 +22,26 @@ body {
   color: #aaa;
 }
 
+.prevent-select-text {
+  -webkit-user-select: none;
+  /* Safari */
+  -ms-user-select: none;
+  /* IE 10 and IE 11 */
+  user-select: none;
+  /* Standard syntax */
+}
+
+.real-screen-height {
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  /* min-height: -webkit-fill-available; */
+}
+
+.fab-top {
+  top: 90vh;
+  top: calc(var(--vh, 1vh) * 100 - 134px);
+}
+
 .my-masonry-grid {
   display: -webkit-box;
   /* Not needed if autoprefixing */

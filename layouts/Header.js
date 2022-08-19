@@ -113,14 +113,14 @@ const Header = (props) => {
               <Link href="/cabinet">
                 <a className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general">
                   <Avatar user={loggedUser} />
-                  <span>Мой кабинет</span>
+                  <span className="prevent-select-text">Мой кабинет</span>
                 </a>
               </Link>
             ) : (
               <Link href="/login">
                 <a className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general tablet:px-3 hover:text-white hover:bg-general">
                   <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
-                  <span>Авторизоваться</span>
+                  <span className="prevent-select-text">Авторизоваться</span>
                 </a>
               </Link>
             )}

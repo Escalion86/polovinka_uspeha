@@ -1,5 +1,5 @@
 const usersSchema = {
-  name: {
+  firstName: {
     type: String,
     maxlength: [
       100,
@@ -63,10 +63,6 @@ const usersSchema = {
     type: Number,
     default: null,
     required: [true, 'Введите Телефон'],
-  },
-  phoneConfirm: {
-    type: Boolean,
-    default: false,
   },
   whatsapp: {
     type: Number,

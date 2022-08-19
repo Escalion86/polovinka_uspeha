@@ -172,7 +172,7 @@ export default async function auth(req, res) {
           // }
           session.user._id = result[0]._id
           session.user.role = result[0].role
-          session.user.name = result[0].name
+          session.user.firstName = result[0].firstName
           session.user.secondName = result[0].secondName
           session.user.thirdName = result[0].thirdName
           session.user.phone = result[0].phone
@@ -208,7 +208,7 @@ export default async function auth(req, res) {
           await CRUD(Users, {
             method: 'POST',
             body: {
-              name: session.user.name,
+              // firstName: session.user.name,
               phone: userPhone,
               images: [session.user.image],
               role: 'client',
