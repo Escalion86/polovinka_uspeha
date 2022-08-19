@@ -58,6 +58,16 @@ const fetchProps = async () => {
     console.timeEnd('siteSettings')
     console.timeEnd('Loading time')
     // dbDisconnect()
+    console.log('return result', {
+      users: JSON.parse(JSON.stringify(users)),
+      events: JSON.parse(JSON.stringify(events)),
+      directions: JSON.parse(JSON.stringify(directions)),
+      reviews: JSON.parse(JSON.stringify(reviews)),
+      additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
+      eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
+      payments: JSON.parse(JSON.stringify(payments)),
+      siteSettings: JSON.parse(JSON.stringify(siteSettings)),
+    })
 
     return {
       users: JSON.parse(JSON.stringify(users)),
