@@ -1,4 +1,4 @@
-import Site from '@models/Site'
+import SiteSettings from '@models/SiteSettings'
 // import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
 
@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   await dbConnect()
   if (method === 'POST') {
     try {
-      const data = await Site.findOneAndUpdate({}, body, {
+      const data = await SiteSettings.findOneAndUpdate({}, body, {
         new: true,
         upsert: true, // Make this update into an upsert
       })
@@ -21,9 +21,9 @@ export default async function handler(req, res) {
 
       return res?.status(201).json({ success: true, data })
       // Сначала находим запись
-      // const siteSettings = await Site.findOne()
+      // const siteSettings = await SiteSettings.findOne()
       // if (!siteSettings) {
-      //   const newSiteSettings = await Site.create(body)
+      //   const newSiteSettings = await SiteSettings.create(body)
       //   if (!newSiteSettings)
       //   return res
       //     ?.status(200)
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       //     return res?.status(201).json({ success: true, data: newSiteSettings })
       // }
 
-      // const data = await Site.findOneAndUpdate({}, body)
+      // const data = await SiteSettings.findOneAndUpdate({}, body)
 
       // const newEventUser = await EventsUsers.create({
       //   eventId,
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
   }
   if (method === 'GET') {
     try {
-      const data = await Site.find()
+      const data = await SiteSettings.find()
       if (!data) {
         return res?.status(400).json({ success: false })
       }

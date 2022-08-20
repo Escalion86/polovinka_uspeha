@@ -4,7 +4,7 @@
 // const { default: EventsUsers } = require('@models/EventsUsers')
 // const { default: Payments } = require('@models/Payments')
 // const { default: Reviews } = require('@models/Reviews')
-// const { default: Site } = require('@models/Site')
+// const { default: SiteSettings } = require('@models/SiteSettings')
 // const { default: Users } = require('@models/Users')
 // const { default: dbConnect } = require('@utils/dbConnect')
 
@@ -24,7 +24,7 @@ import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
 import Payments from '@models/Payments'
 import Reviews from '@models/Reviews'
-import Site from '@models/Site'
+import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
@@ -41,7 +41,7 @@ const fetchProps = async () => {
     // const additionalBlocks = await AdditionalBlocksModel.find({})
     // const eventsUsers = await EventsUsers.find({})
     // const payments = await Payments.find({})
-    // const siteSettings = await Site.find({})
+    // const siteSettings = await SiteSettings.find({})
     console.time('Loading time')
     console.time('users')
     const users = await Users.find({})
@@ -82,7 +82,7 @@ const fetchProps = async () => {
     // console.log(`payments`, payments)
     console.timeEnd('payments')
     console.time('siteSettings')
-    const siteSettings = await Site.find({})
+    const siteSettings = await SiteSettings.find({})
     // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     // console.log(`siteSettings`, siteSettings)
     console.timeEnd('siteSettings')
@@ -118,7 +118,7 @@ const fetchProps = async () => {
       additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
       eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
       payments: JSON.parse(JSON.stringify(payments)),
-      siteSettings: JSON.parse(JSON.stringify(siteSettings)),
+      siteSettings: JSON.parse(JSON.stringify(siteSettings[0])),
     }
   } catch (error) {
     return {

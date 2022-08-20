@@ -53,7 +53,7 @@ import LoadingSpinner from '@components/LoadingSpinner'
 // import AdditionalBlocksModel from '@models/AdditionalBlocks'
 // import EventsUsers from '@models/EventsUsers'
 // import Payments from '@models/Payments'
-// import Site from '@models/Site'
+// import SiteSettings from '@models/SiteSettings'
 // import dbConnect from '@utils/dbConnect'
 import fetchProps from '@server/fetchProps'
 
