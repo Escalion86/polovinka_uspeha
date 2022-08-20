@@ -1,4 +1,4 @@
-const siteSchema = {
+const siteSettingsSchema = {
   email: {
     type: String,
     lowercase: true,
@@ -29,4 +29,4 @@ const siteSchema = {
   },
 }
 
-export default siteSchema
+export default siteSettingsSchema
