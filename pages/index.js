@@ -56,6 +56,7 @@ import LoadingSpinner from '@components/LoadingSpinner'
 // import SiteSettings from '@models/SiteSettings'
 // import dbConnect from '@utils/dbConnect'
 import fetchProps from '@server/fetchProps'
+import { fetchingLog } from '@helpers/fetchers'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -232,6 +233,10 @@ export default function Home(props) {
 
 export const getServerSideProps = async (context) => {
   try {
+    await fetchingLog(
+      { from: 'start getServerSideProps in index' },
+      process.env.NEXTAUTH_SITE
+    )
     const session = await getSession({ req: context.req })
 
     const fetchedProps = await fetchProps()

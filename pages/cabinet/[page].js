@@ -16,6 +16,7 @@ import {
   fetchingAdditionalBlocks,
   fetchingPayments,
   fetchingSiteSettings,
+  fetchingLog,
 } from '@helpers/fetchers'
 import { useState, useEffect } from 'react'
 
@@ -210,6 +211,10 @@ export default CabinetPage
 // }
 
 export const getServerSideProps = async (context) => {
+  await fetchingLog(
+    { from: 'start getServerSideProps in page' },
+    process.env.NEXTAUTH_SITE
+  )
   const session = await getSession({ req: context.req })
 
   const { params } = context
