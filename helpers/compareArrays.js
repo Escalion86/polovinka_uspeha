@@ -1,13 +1,18 @@
 const compareArrays = (arrayOld, arrayNew) => {
-  let removed = 0
-  if (arrayOld.length !== 0) {
-    removed = arrayOld.filter((data) => !arrayNew.includes(data))
+  if (
+    typeof arrayOld !== 'object' ||
+    typeof arrayNew !== 'object' ||
+    arrayOld.length !== arrayNew.length
+  )
+    return false
+
+  for (let i = 0; i < arrayOld.length; i++) {
+    if (arrayOld[i] !== arrayNew[i]) {
+      return false
+    }
   }
-  let added = 0
-  if (arrayNew.length === 0) {
-    added = arrayNew.filter((data) => !arrayOld.includes(data))
-  }
-  return { added, removed }
+
+  return true
 }
 
 export default compareArrays

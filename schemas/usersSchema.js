@@ -112,6 +112,10 @@ const usersSchema = {
     type: Boolean,
     default: false,
   },
+  haveKids: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 export default usersSchema

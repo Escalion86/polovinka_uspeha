@@ -1,4 +1,5 @@
 import Button from '@components/Button'
+import CheckBox from '@components/CheckBox'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -7,13 +8,14 @@ import Input from '@components/Input'
 import InputImages from '@components/InputImages'
 import PhoneInput from '@components/PhoneInput'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
+import compareArrays from '@helpers/compareArrays'
 // import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import { putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
 import validateEmail from '@helpers/validateEmail'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
@@ -39,6 +41,8 @@ const QuestionnaireContent = (props) => {
   const [images, setImages] = useState(loggedUser?.images ?? [])
   const [birthday, setBirthday] = useState(loggedUser?.birthday ?? '')
 
+  const [haveKids, setHaveKids] = useState(loggedUser?.haveKids ?? false)
+
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const [errors, addError, removeError, clearErrors] = useErrors()
@@ -46,11 +50,11 @@ const QuestionnaireContent = (props) => {
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
   const [message, setMessage] = useState('')
 
-  const router = useRouter()
+  // const router = useRouter()
 
-  const refreshPage = () => {
-    router.replace(router.asPath)
-  }
+  // const refreshPage = () => {
+  //   router.replace(router.asPath)
+  // }
 
   const formChanged =
     loggedUser?.firstName !== firstName ||
@@ -68,8 +72,9 @@ const QuestionnaireContent = (props) => {
     loggedUser?.telegram !== telegram ||
     loggedUser?.instagram !== instagram ||
     loggedUser?.vk !== vk ||
-    loggedUser?.images !== images ||
-    loggedUser?.birthday !== birthday
+    !compareArrays(loggedUser?.images, images) ||
+    loggedUser?.birthday !== birthday ||
+    loggedUser?.haveKids !== haveKids
 
   const onClickConfirm = async () => {
     clearErrors()
@@ -115,7 +120,7 @@ const QuestionnaireContent = (props) => {
       await putData(
         `/api/users/${loggedUser._id}`,
         {
-          name,
+          firstName,
           secondName,
           thirdName,
           // about,
@@ -132,6 +137,7 @@ const QuestionnaireContent = (props) => {
           vk,
           images,
           birthday,
+          haveKids,
         },
         (data) => {
           setLoggedUser(data)
@@ -320,6 +326,12 @@ const QuestionnaireContent = (props) => {
           onChange={setEmail}
           error={errors.email}
           copyPasteButtons
+        />
+        <CheckBox
+          checked={haveKids}
+          labelPos="left"
+          onClick={() => setHaveKids((checked) => !checked)}
+          label="Есть дети"
         />
         {/* <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
         <Textarea

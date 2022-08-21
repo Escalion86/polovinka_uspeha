@@ -16,6 +16,7 @@ import ErrorsList from '@components/ErrorsList'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import validateEmail from '@helpers/validateEmail'
 import InputImages from '@components/InputImages'
+import CheckBox from '@components/CheckBox'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
@@ -40,6 +41,8 @@ const userFunc = (userId, clone = false) => {
     const [images, setImages] = useState(user?.images ?? [])
     const [birthday, setBirthday] = useState(user?.birthday ?? '')
     const [status, setStatus] = useState(user?.status ?? 'novice')
+
+    const [haveKids, setHaveKids] = useState(user?.haveKids ?? false)
 
     const [errors, addError, removeError, clearErrors] = useErrors()
 
@@ -92,7 +95,7 @@ const userFunc = (userId, clone = false) => {
         setUser(
           {
             _id: user?._id,
-            name,
+            firstName,
             secondName,
             thirdName,
             // about,
@@ -110,6 +113,7 @@ const userFunc = (userId, clone = false) => {
             images,
             birthday,
             status,
+            haveKids,
           },
           clone
         )
@@ -166,7 +170,7 @@ const userFunc = (userId, clone = false) => {
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
     }, [
-      name,
+      firstName,
       secondName,
       thirdName,
       // about,
@@ -184,6 +188,7 @@ const userFunc = (userId, clone = false) => {
       images,
       birthday,
       status,
+      haveKids,
     ])
 
     return (
@@ -318,6 +323,12 @@ const userFunc = (userId, clone = false) => {
           onChange={setEmail}
           error={errors.email}
           copyPasteButtons
+        />
+        <CheckBox
+          checked={haveKids}
+          labelPos="left"
+          onClick={() => setHaveKids((checked) => !checked)}
+          label="Есть дети"
         />
         <UserStatusPicker
           required

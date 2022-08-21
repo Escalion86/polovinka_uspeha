@@ -26,6 +26,13 @@ export default async function auth(req, res) {
             await dbConnect()
 
             const fetchedUser = await Users.find({ phone, password })
+            await Users.findOneAndUpdate(
+              { phone, password },
+              {
+                lastActivityAt: Date.now(),
+                // prevActivityAt: session.user.lastActivityAt,
+              }
+            )
 
             if (fetchedUser?.length > 0) {
               return {
@@ -63,64 +70,87 @@ export default async function auth(req, res) {
 
         const userPhone = session.user.name
 
-        const result = await fetchingUserByPhone(
-          userPhone,
+        // Находим данные пользователя и обновляем время активности
+        await fetchingLog(
+          { from: 'start dbConnect in nextauth' },
           process.env.NEXTAUTH_SITE
         )
+        await dbConnect()
         await fetchingLog(
-          { from: 'result in nextauth', result },
+          { from: 'finish dbConnect in nextauth' },
           process.env.NEXTAUTH_SITE
         )
 
-        // Если пользователь есть в базе
-        if (result?.length) {
+        const result = await Users.findOne({ phone: userPhone })
+
+        // const result = await Users.findOneAndUpdate(
+        //   { phone: userPhone },
+        //   {
+        //     lastActivityAt: Date.now(),
+        //     // prevActivityAt: session.user.lastActivityAt,
+        //   }
+        // )
+        console.log('!!!!!!!!!!!result', result)
+        await fetchingLog(
+          { from: 'update User activity time in nextauth' },
+          process.env.NEXTAUTH_SITE
+        )
+
+        // const result = await fetchingUserByPhone(
+        //   userPhone,
+        //   process.env.NEXTAUTH_SITE
+        // )
+        // await fetchingLog(
+        //   { from: 'result in nextauth', result },
+        //   process.env.NEXTAUTH_SITE
+        // )
+
+        // Если пользователь есть в базе (а он должен быть)
+        if (result) {
           await fetchingLog(
             { from: 'after if (result?.length)' },
             process.env.NEXTAUTH_SITE
           )
+          result.prevActivityAt = result.lastActivityAt
+          result.lastActivityAt = Date.now()
+          result.save()
 
-          session.user._id = result[0]._id
-          session.user.role = result[0].role
-          session.user.firstName = result[0].firstName
-          session.user.secondName = result[0].secondName
-          session.user.thirdName = result[0].thirdName
-          session.user.phone = result[0].phone
-          session.user.email = result[0].email
-          session.user.whatsapp = result[0].whatsapp
-          session.user.viber = result[0].viber
-          session.user.telegram = result[0].telegram
-          session.user.instagram = result[0].instagram
-          session.user.vk = result[0].vk
-          session.user.gender = result[0].gender
-          session.user.birthday = result[0].birthday
-          session.user.lastActivityAt = result[0].lastActivityAt
-          session.user.orientation = result[0].orientation
-          session.user.profession = result[0].profession
-          session.user.interests = result[0].interests
-          session.user.about = result[0].about
-          session.user.status = result[0].status
-          session.user.images = result[0].images
+          await fetchingLog({ from: 'result saved' }, process.env.NEXTAUTH_SITE)
 
-          // Обновляем время активности
-          await dbConnect()
-
-          await Users.findOneAndUpdate(
-            { phone: userPhone },
-            {
-              lastActivityAt: Date.now(),
-              prevActivityAt: session.user.lastActivityAt,
-            }
-          )
-        } else {
-          // если пользователь не зарегистрирован
-          await CRUD(Users, {
-            method: 'POST',
-            body: {
-              phone: userPhone,
-              role: 'client',
-            },
-          })
+          session.user._id = result._id
+          session.user.role = result.role
+          session.user.firstName = result.firstName
+          session.user.secondName = result.secondName
+          session.user.thirdName = result.thirdName
+          session.user.phone = result.phone
+          session.user.email = result.email
+          session.user.whatsapp = result.whatsapp
+          session.user.viber = result.viber
+          session.user.telegram = result.telegram
+          session.user.instagram = result.instagram
+          session.user.vk = result.vk
+          session.user.gender = result.gender
+          session.user.birthday = result.birthday
+          session.user.lastActivityAt = result.lastActivityAt
+          session.user.prevActivityAt = result.prevActivityAt
+          session.user.orientation = result.orientation
+          session.user.profession = result.profession
+          session.user.interests = result.interests
+          session.user.about = result.about
+          session.user.status = result.status
+          session.user.images = result.images
+          session.user.haveKids = result.haveKids
         }
+        //  else {
+        //   // если пользователь не зарегистрирован
+        //   await CRUD(Users, {
+        //     method: 'POST',
+        //     body: {
+        //       phone: userPhone,
+        //       role: 'client',
+        //     },
+        //   })
+        // }
         return Promise.resolve(session)
       },
     },
