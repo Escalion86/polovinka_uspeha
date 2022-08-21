@@ -117,6 +117,10 @@ const eventFunc = (eventId, clone = false) => {
         addError({ description: 'Необходимо ввести описание' })
         error = true
       }
+      if (!organizerId) {
+        addError({ organizer: 'Необходимо указать организатора' })
+        error = true
+      }
       if (!date) {
         addError({ date: 'Необходимо ввести дату' })
         error = true
@@ -516,8 +520,12 @@ const eventFunc = (eventId, clone = false) => {
               <SelectUser
                 label="Организатор"
                 selectedId={organizerId}
-                onChange={(user) => setOrganizerId(user._id)}
+                onChange={(user) => {
+                  removeError('organizer')
+                  setOrganizerId(user._id)
+                }}
                 required
+                error={errors.organizer}
               />
               <AddressPicker address={address} onChange={setAddress} />
             </FormWrapper>
