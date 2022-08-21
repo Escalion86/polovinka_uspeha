@@ -112,7 +112,7 @@ const eventUsersFunc = (eventId) => {
     // const [showOnSite, setShowOnSite] = useState(
     //   event ? event.showOnSite : true
     // )
-    // const [errors, addError, removeError, clearErrors] = useErrors()
+    // const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
     const onClickConfirm = async () => {
       // let error = false

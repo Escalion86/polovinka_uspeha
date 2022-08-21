@@ -204,7 +204,7 @@ const Login = () => {
   const [inputPinCode, setInputPinCode] = useState('')
   const [inputPasswordRepeat, setInputPasswordRepeat] = useState('')
   // const [errors, setErrors] = useState({})
-  const [errors, addError, removeError, clearErrors] = useErrors()
+  const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
   const [needToCheckMail, setNeedToCheckMail] = useState(false)
 
   const inputPhoneRef = useRef()

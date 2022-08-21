@@ -29,7 +29,8 @@ const directionFunc = (directionId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       direction ? direction.showOnSite : true
     )
-    const [errors, addError, removeError, clearErrors] = useErrors()
+    const [errors, checkErrors, addError, removeError, clearErrors] =
+      useErrors()
 
     // const router = useRouter()
 
@@ -38,17 +39,7 @@ const directionFunc = (directionId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
-      clearErrors()
-      let error = false
-      if (!title) {
-        addError({ title: 'Необходимо ввести название' })
-        error = true
-      }
-      if (!description) {
-        addError({ description: 'Необходимо ввести описание' })
-        error = true
-      }
-      if (!error) {
+      if (!checkErrors({ title, description, image })) {
         closeModal()
         setDirection(
           {

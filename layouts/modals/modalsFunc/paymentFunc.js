@@ -23,7 +23,8 @@ const paymentFunc = (paymentId, clone = false) => {
     const [payAt, setPayAt] = useState(payment ? payment.payAt : null)
     const [payType, setPayType] = useState(payment ? payment.payType : null)
 
-    const [errors, addError, removeError, clearErrors] = useErrors()
+    const [errors, checkErrors, addError, removeError, clearErrors] =
+      useErrors()
 
     // const router = useRouter()
 
@@ -32,21 +33,7 @@ const paymentFunc = (paymentId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
-      clearErrors()
-      let error = false
-      if (!userId) {
-        addError({ userId: 'Необходимо указать пользователя' })
-        error = true
-      }
-      if (!eventId) {
-        addError({ eventId: 'Необходимо указать мероприятие' })
-        error = true
-      }
-      if (!sum) {
-        addError({ sum: 'Необходимо указать сумму' })
-        error = true
-      }
-      if (!error) {
+      if (!checkErrors({ userId, eventId, sum })) {
         closeModal()
         setPayment(
           {

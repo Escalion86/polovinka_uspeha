@@ -100,36 +100,20 @@ const eventFunc = (eventId, clone = false) => {
     })
 
     const [showOnSite, setShowOnSite] = useState(event?.showOnSite ?? true)
-    const [errors, addError, removeError, clearErrors] = useErrors()
+    const [errors, checkErrors, addError, removeError, clearErrors] =
+      useErrors()
 
     const onClickConfirm = async () => {
-      clearErrors()
-      let error = false
-      if (!images || images.length === 0) {
-        addError({ images: 'Необходимо загрузить хотябы одно фото' })
-        error = true
-      }
-      if (!directionId) {
-        addError({ direction: 'Необходимо выбрать направление мероприятия' })
-        error = true
-      }
-      if (!title) {
-        addError({ title: 'Необходимо ввести название' })
-        error = true
-      }
-      if (!description) {
-        addError({ description: 'Необходимо ввести описание' })
-        error = true
-      }
-      if (!organizerId) {
-        addError({ organizer: 'Необходимо указать организатора' })
-        error = true
-      }
-      if (!date) {
-        addError({ date: 'Необходимо ввести дату' })
-        error = true
-      }
-      if (!error) {
+      if (
+        !checkErrors({
+          title,
+          description,
+          images,
+          directionId,
+          organizerId,
+          date,
+        })
+      ) {
         closeModal()
         setEvent(
           {
@@ -458,7 +442,7 @@ const eventFunc = (eventId, clone = false) => {
               <SelectDirection
                 selectedId={directionId}
                 onChange={(direction) => {
-                  removeError('direction')
+                  removeError('directionId')
                   setDirectionId(direction._id)
                 }}
                 required
@@ -525,7 +509,7 @@ const eventFunc = (eventId, clone = false) => {
                 label="Организатор"
                 selectedId={organizerId}
                 onChange={(user) => {
-                  removeError('organizer')
+                  removeError('organizerId')
                   setOrganizerId(user._id)
                 }}
                 required
