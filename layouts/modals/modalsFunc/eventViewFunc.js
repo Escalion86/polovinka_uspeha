@@ -85,7 +85,9 @@ const eventViewFunc = (eventId, clone = false) => {
                   <>
                     <a
                       data-tip="Открыть адрес в 2ГИС"
-                      href={`https://2gis.ru/search/${event.address.town},%20${event.address.street}%20${event.address.house}`}
+                      href={`https://2gis.ru/search/${event.address.town},%20${
+                        event.address.street
+                      }%20${event.address.house.replace('/', '%2F')}`}
                     >
                       <img
                         className="h-6"
@@ -96,7 +98,11 @@ const eventViewFunc = (eventId, clone = false) => {
                     <a
                       className="laptop:hidden"
                       data-tip="Открыть адрес в Яндекс Навигаторе"
-                      href={`yandexnavi://map_search?text=${event.address.town},%20${event.address.street}%20${event.address.house}`}
+                      href={`yandexnavi://map_search?text=${
+                        event.address.town
+                      },%20${
+                        event.address.street
+                      }%20${event.address.house.replace('/', '%2F')}`}
                     >
                       <img
                         className="h-6"

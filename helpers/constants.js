@@ -226,7 +226,7 @@ export const DEFAULT_EVENT = Object.freeze({
   description: '',
   date: null,
   address: DEFAULT_ADDRESS,
-  status: '',
+  status: 'active',
   image: null,
   showOnSite: true,
 })

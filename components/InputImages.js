@@ -14,7 +14,7 @@ const InputImages = ({
   required = false,
   label = null,
   directory = null,
-  maxImages = 4,
+  maxImages = 10,
   labelClassName,
 }) => {
   const [isAddingImage, setAddingImage] = useState(false)

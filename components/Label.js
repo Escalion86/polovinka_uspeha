@@ -5,7 +5,7 @@ const Label = ({ className, text, required, htmlFor }) => {
   return (
     <label
       className={cn(
-        'flex items-start justify-end text-text leading-4 text-right',
+        'flex items-start justify-end text-text leading-4 pt-1 text-right',
         className
       )}
       htmlFor={htmlFor}
