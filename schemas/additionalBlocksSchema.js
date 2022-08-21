@@ -2,7 +2,7 @@ const additionalBlocksSchema = {
   title: {
     type: String,
     // required: [true, 'Введите название курса. Давай включи фантазию!'],
-    maxlength: [100, 'Название блока не может превышать 100 символов'],
+    // maxlength: [100, 'Название блока не может превышать 100 символов'],
     default: 'Новый блок',
     formOptions: {
       name: 'Название',
@@ -11,10 +11,10 @@ const additionalBlocksSchema = {
   },
   description: {
     type: String,
-    maxlength: [
-      2000,
-      'Описание не может превышать 2000 символов. Краткость - сестра таланта!',
-    ],
+    // maxlength: [
+    //   000,
+    //   'Описание не может превышать 2000 символов. Краткость - сестра таланта!',
+    // ],
     default: '',
     formOptions: {
       name: 'Описание',

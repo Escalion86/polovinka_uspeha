@@ -44,7 +44,8 @@ const userFunc = (userId, clone = false) => {
 
     const [haveKids, setHaveKids] = useState(user?.haveKids ?? false)
 
-    const [errors, addError, removeError, clearErrors] = useErrors()
+    const [errors, checkErrors, addError, removeError, clearErrors] =
+      useErrors()
 
     // const router = useRouter()
 
@@ -53,44 +54,18 @@ const userFunc = (userId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
-      clearErrors()
-      let error = false
-      if (!firstName) {
-        addError({ firstName: 'Необходимо ввести имя' })
-        error = true
-      }
-      if (!secondName) {
-        addError({ secondName: 'Необходимо ввести фамилию' })
-        error = true
-      }
-      if (!gender) {
-        addError({ gender: 'Необходимо ввести пол' })
-        error = true
-      }
-      if (!phone) {
-        addError({ phone: 'Необходимо ввести телефон' })
-        error = true
-      } else if (phone && `${phone}`.length !== 11) {
-        addError({ phone: 'Некорректно введен номер телефона' })
-        error = true
-      }
-      if (viber && `${viber}`.length !== 11) {
-        addError({ viber: 'Некорректно введен номер viber' })
-        error = true
-      }
-      if (whatsapp && `${whatsapp}`.length !== 11) {
-        addError({ whatsapp: 'Некорректно введен номер whatsapp' })
-        error = true
-      }
-      if (email && !validateEmail(email)) {
-        addError({ whatsapp: 'Некорректно введен email' })
-        error = true
-      }
-      if (!birthday) {
-        addError({ birthday: 'Необходимо ввести дату рождения' })
-        error = true
-      }
-      if (!error) {
+      if (
+        !checkErrors({
+          firstName,
+          secondName,
+          gender,
+          phone,
+          viber,
+          whatsapp,
+          email,
+          birthday,
+        })
+      ) {
         closeModal()
         setUser(
           {

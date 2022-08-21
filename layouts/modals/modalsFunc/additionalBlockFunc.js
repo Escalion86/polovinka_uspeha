@@ -38,19 +38,11 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       additionalBlock ? additionalBlock.showOnSite : true
     )
-    const [errors, addError, removeError, clearErrors] = useErrors()
-
-    const checkErrors = () => {
-      clearErrors()
-      return (
-        (!title && addError({ title: 'Необходимо ввести название' })) ||
-        (!description &&
-          addError({ description: 'Необходимо ввести описание' }))
-      )
-    }
+    const [errors, checkErrors, addError, removeError, clearErrors] =
+      useErrors()
 
     const onClickConfirm = async () => {
-      if (checkErrors()) {
+      if (!checkErrors({ title, description, image })) {
         closeModal()
         setAdditionalBlock(
           {
@@ -65,16 +57,25 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
         )
       }
     }
+
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
     }, [title, description, showOnSite, image, menuName])
+
+    console.log('errors.image', errors.image)
+
     return (
       <FormWrapper>
         <InputImage
           label="Картинка"
           directory="additionalBlocks"
           image={image}
-          onChange={setImage}
+          onChange={(value) => {
+            removeError('image')
+            setImage(value)
+          }}
+          required
+          error={errors.image}
         />
         <Input
           label="Название"
@@ -84,8 +85,8 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
             removeError('title')
             setTitle(value)
           }}
-          // labelClassName="w-40"
           error={errors.title}
+          required
           forGrid
         />
         <EditableTextarea
@@ -97,6 +98,8 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
             setDescription(value)
           }}
           forGrid
+          error={errors.description}
+          required
         />
         <Input
           label="Название в меню"

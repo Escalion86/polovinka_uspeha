@@ -45,7 +45,7 @@ const QuestionnaireContent = (props) => {
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
-  const [errors, addError, removeError, clearErrors] = useErrors()
+  const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
   const [message, setMessage] = useState('')
@@ -77,45 +77,19 @@ const QuestionnaireContent = (props) => {
     loggedUser?.haveKids !== haveKids
 
   const onClickConfirm = async () => {
-    clearErrors()
     setMessage('')
-    let error = false
-    // if (!name) {
-    //   addError({ name: 'Необходимо ввести имя' })
-    //   error = true
-    // }
-    if (!secondName) {
-      addError({ secondName: 'Необходимо ввести фамилию' })
-      error = true
-    }
-    if (!gender) {
-      addError({ gender: 'Необходимо ввести пол' })
-      error = true
-    }
-    if (!phone) {
-      addError({ phone: 'Необходимо ввести телефон' })
-      error = true
-    } else if (phone && `${phone}`.length !== 11) {
-      addError({ phone: 'Некорректно введен номер телефона' })
-      error = true
-    }
-    if (viber && `${viber}`.length !== 11) {
-      addError({ viber: 'Некорректно введен номер viber' })
-      error = true
-    }
-    if (whatsapp && `${whatsapp}`.length !== 11) {
-      addError({ whatsapp: 'Некорректно введен номер whatsapp' })
-      error = true
-    }
-    if (email && !validateEmail(email)) {
-      addError({ whatsapp: 'Некорректно введен email' })
-      error = true
-    }
-    if (!birthday) {
-      addError({ birthday: 'Необходимо ввести дату рождения' })
-      error = true
-    }
-    if (!error) {
+    if (
+      !checkErrors({
+        firstName,
+        secondName,
+        gender,
+        phone,
+        viber,
+        whatsapp,
+        email,
+        birthday,
+      })
+    ) {
       setIsWaitingToResponse(true)
       await putData(
         `/api/users/${loggedUser._id}`,

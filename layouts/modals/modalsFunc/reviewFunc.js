@@ -22,7 +22,8 @@ const reviewFunc = (reviewId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       review ? review.showOnSite : true
     )
-    const [errors, addError, removeError, clearErrors] = useErrors()
+    const [errors, checkErrors, addError, removeError, clearErrors] =
+      useErrors()
 
     // const router = useRouter()
 
@@ -31,17 +32,7 @@ const reviewFunc = (reviewId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
-      clearErrors()
-      let error = false
-      if (!author) {
-        addError({ author: 'Необходимо ввести имя автора' })
-        error = true
-      }
-      if (!reviewText) {
-        addError({ reviewText: 'Необходимо ввести текст отзыва' })
-        error = true
-      }
-      if (!error) {
+      if (!checkErrors({ author, reviewText })) {
         closeModal()
         setReview(
           {
