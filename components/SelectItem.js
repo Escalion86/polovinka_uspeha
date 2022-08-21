@@ -16,6 +16,7 @@ import { useRecoilValue } from 'recoil'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import { modalsFuncAtom } from '@state/atoms'
+import Label from './Label'
 
 const filteredItems = (
   items = [],
@@ -283,10 +284,13 @@ const SelectItemContainer = ({
 }) => {
   const Container = ({ children }) => (
     <>
-      <label className="flex items-center justify-end leading-4 text-right">
+      {label && (
+        <Label text={label} className="items-center" required={required} />
+      )}
+      {/* <label className="flex items-center justify-end leading-4 text-right">
         {label}
         {required && <span className="text-red-700">*</span>}
-      </label>
+      </label> */}
       <div
         className={cn(
           'flex flex-1 rounded',
