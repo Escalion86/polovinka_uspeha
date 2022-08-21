@@ -31,9 +31,10 @@ import dbConnect from '@utils/dbConnect'
 const fetchProps = async () => {
   try {
     console.log(`start fetchProps`)
-    console.log(`start dbConnect`)
+    console.time('Loading time')
+    console.time('dbConnect')
     await dbConnect()
-    console.log(`finished dbConnect`)
+    console.timeEnd(`dbConnect`)
     // const users = await Users.find({})
     // const events = await Events.find({})
     // const directions = await Directions.find({})
@@ -42,7 +43,7 @@ const fetchProps = async () => {
     // const eventsUsers = await EventsUsers.find({})
     // const payments = await Payments.find({})
     // const siteSettings = await SiteSettings.find({})
-    console.time('Loading time')
+
     console.time('users')
     const users = await Users.find({})
     // console.log('process.env.NEXTAUTH_SITE', process.env.NEXTAUTH_SITE)

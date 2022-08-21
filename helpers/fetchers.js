@@ -103,7 +103,7 @@ export async function fetchingUserByPhone(
 }
 
 export async function fetchingLog(data, domen = process.env.NEXTAUTH_SITE) {
-  console.log('Запущен fetchingLog')
+  // console.log('Запущен fetchingLog')
   const resp = await fetch(`${domen}/api/log`, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     // mode: 'cors', // no-cors, *cors, same-origin

@@ -98,8 +98,6 @@ const eventFunc = (eventId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(event?.showOnSite ?? true)
     const [errors, addError, removeError, clearErrors] = useErrors()
 
-    console.log('duration', duration)
-
     const onClickConfirm = async () => {
       clearErrors()
       let error = false
