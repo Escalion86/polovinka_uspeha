@@ -1,7 +1,7 @@
 import BlockContainer from '@components/BlockContainer'
 import DirectionBlock from './DirectionBlock'
 
-const DirectionsBlock = ({ directions }) => {
+const DirectionsBlock = ({ directions, startInverse = false }) => {
   if (!directions || directions.length === 0) return null
   return (
     <>
@@ -12,7 +12,7 @@ const DirectionsBlock = ({ directions }) => {
           image={direction.image}
           title={direction.title}
           description={direction.description}
-          inverse={index % 2 === 1}
+          inverse={index % 2 === (startInverse ? 1 : 0)}
         />
       ))}
     </>
