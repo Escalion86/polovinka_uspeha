@@ -41,20 +41,24 @@ import {
   AccordionBody,
 } from '@material-tailwind/react'
 import TimePicker from '@components/TimePicker'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
-    const [page, setPage] = useState(1)
-
     const [directionId, setDirectionId] = useState(event?.directionId ?? null)
-    const [organizerId, setOrganizerId] = useState(event?.organizerId ?? null)
+    const [organizerId, setOrganizerId] = useState(
+      event?.organizerId ?? useRecoilValue(loggedUserAtom)._id
+    )
+
     const [title, setTitle] = useState(event?.title ?? '')
     const [images, setImages] = useState(event?.images ?? [])
     const [description, setDescription] = useState(event?.description ?? '')
-    const [date, setDate] = useState(event?.date ?? Date.now())
+    const [date, setDate] = useState(
+      event?.date ?? Date.now() - (Date.now() % 3600000) + 3600000
+    )
     const [duration, setDuration] = useState(event?.duration ?? 60)
     const [address, setAddress] = useState(
       event?.address && typeof event.address === 'object'
@@ -722,8 +726,8 @@ const eventFunc = (eventId, clone = false) => {
               </FormWrapper>
             </FormWrapper>
           </TabPanel>
-          <TabPanel value="status">
-            {eventId && (
+          {eventId && (
+            <TabPanel value="status">
               <FormWrapper>
                 <EventStatusPicker
                   required
@@ -731,8 +735,8 @@ const eventFunc = (eventId, clone = false) => {
                   onChange={setStatus}
                 />
               </FormWrapper>
-            )}
-          </TabPanel>
+            </TabPanel>
+          )}
         </TabsBody>
 
         <ErrorsList errors={errors} />
