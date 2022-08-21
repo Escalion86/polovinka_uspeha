@@ -55,7 +55,11 @@ const eventViewFunc = (eventId, clone = false) => {
             <div className="flex justify-center w-full text-3xl font-bold">
               {event.title}
             </div>
-            <p className="flex-1">{event.description}</p>
+            {/* <p className="flex-1">{event.description}</p> */}
+            <div
+              className="flex-1"
+              dangerouslySetInnerHTML={{ __html: event.description }}
+            />
             <Divider thin light />
             {direction?.title && (
               <div className="flex gap-x-1">
