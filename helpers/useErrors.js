@@ -100,11 +100,7 @@ const useErrors = () => {
     }
 
     for (const [key, value] of Object.entries(object)) {
-      // console.log('key', key)
-      // console.log('value', value)
-      // console.log('checks[key](value)', checks[key](value))
       checks[key] && checks[key](value)
-      // console.log('error', error)
     }
 
     return error
