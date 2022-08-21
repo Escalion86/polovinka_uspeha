@@ -53,7 +53,7 @@ const EventCard = ({ eventId, noButtons }) => {
       showOnSite={event.showOnSite}
       gap={false}
     >
-      {event?.images && event.images.length > 0 && (
+      {/* {event?.images && event.images.length > 0 && (
         <div
           className={cn(
             'relative flex justify-center flex-1 phoneH:flex-none',
@@ -64,6 +64,27 @@ const EventCard = ({ eventId, noButtons }) => {
             className="object-cover w-32 h-full min-w-32 min-h-42 laptop:w-40 laptop:h-40 max-h-60"
             src={event.images[0]}
             alt="event"
+            // width={48}
+            // height={48}
+          />
+          {event.status === 'canceled' && (
+            <div className="absolute text-3xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
+              Отменено
+            </div>
+          )}
+        </div>
+      )} */}
+      {direction?.image && (
+        <div
+          className={cn(
+            'relative flex justify-center flex-1 phoneH:flex-none',
+            { 'laptop:w-auto': noButtons }
+          )}
+        >
+          <img
+            className="object-cover w-32 h-full min-w-32 min-h-42 laptop:w-40 laptop:h-40 max-h-60"
+            src={direction.image}
+            alt="direction"
             // width={48}
             // height={48}
           />
@@ -98,7 +119,7 @@ const EventCard = ({ eventId, noButtons }) => {
             <div className="flex justify-between flex-1 pr-1">
               <div className="flex-1">
                 <div className="text-xl font-bold ">{event.title}</div>
-                <div className="flex flex-1">{event.description}</div>
+                {/* <div className="flex flex-1">{event.description}</div> */}
                 {formatedAddress && (
                   <div className="flex leading-5 gap-x-1">
                     <span className="italic font-bold">Адрес:</span>
@@ -146,7 +167,7 @@ const EventCard = ({ eventId, noButtons }) => {
             <div className="flex flex-col items-end laptop:justify-between h-full pr-1 laptop:min-h-[6rem]">
               <PriceDiscount event={event} />
               <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
-                {formatDateTime(event.date, false, false, true, true)}
+                {formatDateTime(event.date, false, false, true, false)}
               </div>
               <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
                 {formatMinutes(event.duration ?? 60)}

@@ -185,7 +185,10 @@ export default function Home(props) {
               maxEvents={4}
               hideBlockOnZeroEvents
             />
-            <DirectionsBlock directions={filteredDirections} />
+            <DirectionsBlock
+              directions={filteredDirections}
+              startInverse={filteredEvents.length > 0}
+            />
             <AdditionalBlocks
               additionalBlocks={filteredAdditionalBlocks}
               inverse={

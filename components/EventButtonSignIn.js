@@ -32,6 +32,10 @@ const EventButtonSignIn = ({ eventId, className }) => {
     <div className={cn('text-lg font-bold uppercase text-success', className)}>
       Завершено
     </div>
+  ) : eventLoggedUserStatus.userEventStatus === 'assistant' ? (
+    <div className={cn('text-lg font-bold uppercase text-general', className)}>
+      Ведущий
+    </div>
   ) : (
     <Button
       stopPropagation
