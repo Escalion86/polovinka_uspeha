@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import useErrors from '@helpers/useErrors'
 
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import userSelector from '@state/selectors/userSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
@@ -17,9 +17,11 @@ import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import validateEmail from '@helpers/validateEmail'
 import InputImages from '@components/InputImages'
 import CheckBox from '@components/CheckBox'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+    const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
 
@@ -67,7 +69,7 @@ const userFunc = (userId, clone = false) => {
         })
       ) {
         closeModal()
-        setUser(
+        const result = await setUser(
           {
             _id: user?._id,
             firstName,
@@ -92,6 +94,9 @@ const userFunc = (userId, clone = false) => {
           },
           clone
         )
+        if (user?._id && loggedUser._id === result?._id) {
+          setLoggedUser(result)
+        }
         // if (user && !clone) {
         //   await putData(
         //     `/api/users/${user._id}`,
