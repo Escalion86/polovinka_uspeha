@@ -57,6 +57,20 @@ import LoadingSpinner from '@components/LoadingSpinner'
 // import dbConnect from '@utils/dbConnect'
 import fetchProps from '@server/fetchProps'
 import { fetchingLog } from '@helpers/fetchers'
+import eventEditSelector from '@state/selectors/eventEditSelector'
+import eventDeleteSelector from '@state/selectors/eventDeleteSelector'
+import directionEditSelector from '@state/selectors/directionEditSelector'
+import directionDeleteSelector from '@state/selectors/directionDeleteSelector'
+import additionalBlockEditSelector from '@state/selectors/additionalBlockEditSelector'
+import additionalBlockDeleteSelector from '@state/selectors/additionalBlockDeleteSelector'
+import userEditSelector from '@state/selectors/userEditSelector'
+import userDeleteSelector from '@state/selectors/userDeleteSelector'
+import reviewEditSelector from '@state/selectors/reviewEditSelector'
+import reviewDeleteSelector from '@state/selectors/reviewDeleteSelector'
+import paymentEditSelector from '@state/selectors/paymentEditSelector'
+import paymentsDeleteSelector from '@state/selectors/paymentsDeleteSelector'
+import eventsUsersDeleteByEventIdSelector from '@state/selectors/eventsUsersDeleteByEventIdSelector'
+import toggleLoadingSelector from '@state/selectors/toggleLoadingSelector'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -111,9 +125,26 @@ export default function Home(props) {
   const setPaymentsState = useSetRecoilState(paymentsAtom)
   const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
 
-  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
+  const setEvent = useSetRecoilState(eventEditSelector)
+  const deleteEvent = useSetRecoilState(eventDeleteSelector)
+  const setDirection = useSetRecoilState(directionEditSelector)
+  const deleteDirection = useSetRecoilState(directionDeleteSelector)
+  const setAdditionalBlock = useSetRecoilState(additionalBlockEditSelector)
+  const deleteAdditionalBlock = useSetRecoilState(additionalBlockDeleteSelector)
+  const setUser = useSetRecoilState(userEditSelector)
+  const deleteUser = useSetRecoilState(userDeleteSelector)
+  const setReview = useSetRecoilState(reviewEditSelector)
+  const deleteReview = useSetRecoilState(reviewDeleteSelector)
+  const setPayment = useSetRecoilState(paymentEditSelector)
+  const deletePayment = useSetRecoilState(paymentsDeleteSelector)
   const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
   const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
+  const deleteEventsUsersByEventId = useSetRecoilState(
+    eventsUsersDeleteByEventIdSelector
+  )
+
+  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
+  const toggleLoading = useSetRecoilState(toggleLoadingSelector)
 
   const filteredEvents = eventsState.filter(
     (event) => event.showOnSite && new Date(event.date) >= new Date()
@@ -138,25 +169,30 @@ export default function Home(props) {
 
     setItemsFunc(
       itemsFuncGenerator({
-        // toggleLoading,
-        // setEvent,
-        // deleteEvent,
-        // setDirection,
-        // deleteDirection,
-        // setAdditionalBlock,
-        // deleteAdditionalBlock,
-        // setUser,
-        // deleteUser,
-        // setReview,
-        // deleteReview,
-        // setPayment,
-        // deletePayment,
+        toggleLoading,
+        setEvent,
+        deleteEvent,
+        setDirection,
+        deleteDirection,
+        setAdditionalBlock,
+        deleteAdditionalBlock,
+        setUser,
+        deleteUser,
+        setReview,
+        deleteReview,
+        setPayment,
+        deletePayment,
         setEventsUsers,
         deleteEventsUsers,
+        deleteEventsUsersByEventId,
       })
     )
     setLoading(false)
   }, [])
+
+  const directionsBlocksInverse = filteredEvents.length > 0
+  const additionalBlocksInverse =
+    ((directionsBlocksInverse ? 1 : 0) + filteredDirections.length) % 2 === 0
 
   return (
     <>
@@ -187,17 +223,11 @@ export default function Home(props) {
             />
             <DirectionsBlock
               directions={filteredDirections}
-              startInverse={filteredEvents.length > 0}
+              startInverse={directionsBlocksInverse}
             />
             <AdditionalBlocks
               additionalBlocks={filteredAdditionalBlocks}
-              inverse={
-                directionsState &&
-                directionsState.filter((direction) => direction.showOnSite)
-                  .length %
-                  2 ===
-                  1
-              }
+              startInverse={additionalBlocksInverse}
             />
             {/* <PriceBlock /> */}
             <ReviewsBlock reviews={filteredReviews} />

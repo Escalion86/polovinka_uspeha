@@ -23,9 +23,16 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const addModal = (props) =>
     setModals((modals) => {
-      if (props.id && modals.find((modal) => modal.id === props.id))
-        return modals
-      return [...modals, props]
+      const maxId =
+        modals.length > 0
+          ? Math.max.apply(
+              null,
+              modals.map((modal) => modal.id)
+            )
+          : -1
+      // if (props.id && modals.find((modal) => modal.id === props.id))
+      //   return modals
+      return [...modals, { id: maxId + 1, props }]
     })
 
   return {

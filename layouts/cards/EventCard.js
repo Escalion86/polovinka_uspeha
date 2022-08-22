@@ -77,12 +77,12 @@ const EventCard = ({ eventId, noButtons }) => {
       {direction?.image && (
         <div
           className={cn(
-            'relative flex justify-center flex-1 phoneH:flex-none',
+            'relative flex justify-center flex-1 phoneH:flex-none h-44 max-h-44 tablet:h-52 tablet:max-h-52',
             { 'laptop:w-auto': noButtons }
           )}
         >
           <img
-            className="object-cover w-32 h-full min-w-32 min-h-42 laptop:w-40 laptop:h-40 max-h-60"
+            className="object-contain w-full laptop:object-cover min-w-32 laptop:w-80"
             src={direction.image}
             alt="direction"
             // width={48}

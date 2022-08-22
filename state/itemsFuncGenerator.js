@@ -17,15 +17,19 @@ const itemsFuncGenerator = (
         set: async (item, clone) => {
           if (item?._id && !clone) {
             toggleLoading(itemName + item._id)
-            await putData(`/api/${itemName}s/${item._id}`, item, (data) => {
-              toggleLoading(itemName + item._id)
-              props['set' + capitalizeFirstLetter(itemName)](data)
-              // setEvent(data)
-            })
+            return await putData(
+              `/api/${itemName}s/${item._id}`,
+              item,
+              (data) => {
+                toggleLoading(itemName + item._id)
+                props['set' + capitalizeFirstLetter(itemName)](data)
+                // setEvent(data)
+              }
+            )
           } else {
             const clearedItem = { ...item }
             delete clearedItem._id
-            await postData(`/api/${itemName}s`, clearedItem, (data) => {
+            return await postData(`/api/${itemName}s`, clearedItem, (data) => {
               props['set' + capitalizeFirstLetter(itemName)](data)
               // setEvent(data)
             })
@@ -33,7 +37,7 @@ const itemsFuncGenerator = (
         },
         delete: async (itemId) => {
           toggleLoading(itemName + itemId)
-          await deleteData(
+          return await deleteData(
             `/api/${itemName}s/${itemId}`,
             () => props['delete' + capitalizeFirstLetter(itemName)](itemId)
             //  deleteEvent(itemId)
@@ -54,23 +58,31 @@ const itemsFuncGenerator = (
 
   obj.event.cancel = async (eventId) => {
     toggleLoading('event' + eventId)
-    await putData(`/api/events/${eventId}`, { status: 'canceled' }, (data) => {
-      toggleLoading('event' + eventId)
-      props.setEvent(data)
-    })
+    return await putData(
+      `/api/events/${eventId}`,
+      { status: 'canceled' },
+      (data) => {
+        toggleLoading('event' + eventId)
+        props.setEvent(data)
+      }
+    )
   }
 
   obj.event.uncancel = async (eventId) => {
     toggleLoading('event' + eventId)
-    await putData(`/api/events/${eventId}`, { status: 'active' }, (data) => {
-      toggleLoading('event' + eventId)
-      props.setEvent(data)
-    })
+    return await putData(
+      `/api/events/${eventId}`,
+      { status: 'active' },
+      (data) => {
+        toggleLoading('event' + eventId)
+        props.setEvent(data)
+      }
+    )
   }
 
   obj.event.signUp = async (eventId, userId) => {
     toggleLoading('event' + eventId)
-    await postData(
+    return await postData(
       `/api/eventsusers`,
       { eventId, userId },
       (data) => {
@@ -85,7 +97,7 @@ const itemsFuncGenerator = (
 
   obj.event.signOut = async (eventId, userId) => {
     toggleLoading('event' + eventId)
-    await deleteData(
+    return await deleteData(
       `/api/eventsusers`,
       (data) => {
         toggleLoading('event' + eventId)
@@ -115,7 +127,7 @@ const itemsFuncGenerator = (
 
   obj.event.setEventUsers = async (eventId, eventUsersStatuses) => {
     toggleLoading('event' + eventId)
-    await postData(
+    return await postData(
       `/api/eventsusers`,
       { eventId, eventUsersStatuses },
       (data) => {

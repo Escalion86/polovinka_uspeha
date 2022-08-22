@@ -37,7 +37,14 @@ import {
 } from '@material-tailwind/react'
 
 const eventUsersFunc = (eventId) => {
-  const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+  const EventModal = ({
+    closeModal,
+    setOnConfirmFunc,
+    setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
+  }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
 
@@ -159,6 +166,16 @@ const eventUsersFunc = (eventId) => {
     }
 
     useEffect(() => {
+      const isFormChanged =
+        assistantsIds !== eventAssistantsIds ||
+        mansIds !== eventMansIds ||
+        womansIds !== eventWomansIds ||
+        reservedParticipantsIds !== eventReservedParticipantsIds ||
+        bannedParticipantsIds !== eventBannedParticipantsIds
+
+      setOnConfirmFunc(onClickConfirm)
+      setOnShowOnCloseConfirmDialog(isFormChanged)
+      setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)
     }, [
       mansIds,

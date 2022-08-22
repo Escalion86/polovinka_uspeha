@@ -6,8 +6,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { modalsAtom } from '@state/atoms'
-import { useSetRecoilState } from 'recoil'
+import { modalsAtom, modalsFuncAtom } from '@state/atoms'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import ModalButtons from '@layouts/modals/ModalButtons'
 import { useRouter } from 'next/router'
 import Tooltip from '../../components/Tooltip'
@@ -15,7 +15,7 @@ import cn from 'classnames'
 
 const Modal = ({
   Children,
-  index,
+  id,
   // onClose = () => {},
   // onDelete = null,
   // twoCols = false,
@@ -36,6 +36,11 @@ const Modal = ({
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const [disableConfirm, setDisableConfirm] = useState(false)
+  const [disableDecline, setDisableDecline] = useState(false)
+  const [onShowOnCloseConfirmDialog, setOnShowOnCloseConfirmDialog] =
+    useState(false)
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
   const [onDeclineFunc, setOnDeclineFunc] = useState(null)
   const setModals = useSetRecoilState(modalsAtom)
@@ -45,7 +50,7 @@ const Modal = ({
     onClose && typeof onClose === 'function' && onClose()
     setClose(true)
     setTimeout(
-      () => setModals((modals) => modals.filter((modal, i) => i !== index)),
+      () => setModals((modals) => modals.filter((modal) => modal.id !== id)),
       200
     )
   }
@@ -63,9 +68,22 @@ const Modal = ({
   }
 
   const onDeclineClick = () => {
-    if (onDeclineFunc) return onDeclineFunc()
-    onDecline && typeof onDecline === 'function' && onDecline()
-    closeModal()
+    const decline = () => {
+      if (onDeclineFunc) return onDeclineFunc()
+      onDecline && typeof onDecline === 'function' && onDecline()
+      closeModal()
+    }
+
+    if (onShowOnCloseConfirmDialog) {
+      modalsFunc.confirm({
+        onConfirm: () => {
+          decline()
+          setOnShowOnCloseConfirmDialog(false)
+        },
+      })
+    } else {
+      decline()
+    }
   }
 
   // const closeFunc = () => {
@@ -178,6 +196,9 @@ const Modal = ({
               setOnDeclineFunc={(func) =>
                 setOnDeclineFunc(func ? () => func : null)
               }
+              setOnShowOnCloseConfirmDialog={setOnShowOnCloseConfirmDialog}
+              setDisableConfirm={setDisableConfirm}
+              setDisableDecline={setDisableDecline}
             />
           )}
         </div>
@@ -190,6 +211,8 @@ const Modal = ({
             onDeclineClick={onDeclineClick}
             showConfirm={showConfirm}
             showDecline={showDecline}
+            disableConfirm={disableConfirm}
+            disableDecline={disableDecline}
           />
         )}
       </motion.div>

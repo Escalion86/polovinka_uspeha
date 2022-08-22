@@ -10,18 +10,34 @@ import ErrorsList from '@components/ErrorsList'
 import { SelectEvent, SelectUser } from '@components/SelectItem'
 import PriceInput from '@components/PriceInput'
 import PayTypePicker from '@components/ValuePicker/PayTypePicker'
+import { DEFAULT_PAYMENT } from '@helpers/constants'
 
 const paymentFunc = (paymentId, clone = false) => {
-  const PaymentModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+  const PaymentModal = ({
+    closeModal,
+    setOnConfirmFunc,
+    setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
+  }) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
 
-    const [userId, setUserId] = useState(payment ? payment.userId : null)
-    const [eventId, setEventId] = useState(payment ? payment.eventId : null)
-    const [sum, setSum] = useState(payment ? payment.sum : 0)
-    const [status, setStatus] = useState(payment ? payment.status : '')
-    const [payAt, setPayAt] = useState(payment ? payment.payAt : null)
-    const [payType, setPayType] = useState(payment ? payment.payType : null)
+    const [userId, setUserId] = useState(
+      payment?.userId ?? DEFAULT_PAYMENT.userId
+    )
+    const [eventId, setEventId] = useState(
+      payment?.eventId ?? DEFAULT_PAYMENT.eventId
+    )
+    const [sum, setSum] = useState(payment?.sum ?? DEFAULT_PAYMENT.sum)
+    const [status, setStatus] = useState(
+      payment?.status ?? DEFAULT_PAYMENT.status
+    )
+    const [payAt, setPayAt] = useState(payment?.payAt ?? DEFAULT_PAYMENT.payAt)
+    const [payType, setPayType] = useState(
+      payment?.payType ?? DEFAULT_PAYMENT.payType
+    )
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -74,7 +90,17 @@ const paymentFunc = (paymentId, clone = false) => {
     }
 
     useEffect(() => {
+      const isFormChanged =
+        payment?.userId !== userId ||
+        payment?.eventId !== eventId ||
+        payment?.sum !== sum ||
+        payment?.status !== status ||
+        payment?.payAt !== payAt ||
+        payment?.payType !== payType
+
       setOnConfirmFunc(onClickConfirm)
+      setOnShowOnCloseConfirmDialog(isFormChanged)
+      setDisableConfirm(!isFormChanged)
     }, [userId, eventId, sum, status, payAt, payType])
 
     return (

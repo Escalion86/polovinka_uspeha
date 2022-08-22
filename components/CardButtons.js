@@ -27,7 +27,7 @@ const CardButton = ({ active, icon, onClick, color = 'red', dataTip }) => (
   <Tooltip content={dataTip}>
     <div
       className={cn(
-        `duration-300 flex border items-center justify-center w-8 h-8 hover:bg-${color}-600 border-${color}-500 hover:border-${color}-600 hover:text-white`,
+        `text-base font-normal duration-300 flex border items-center justify-center w-8 h-8 hover:bg-${color}-600 border-${color}-500 hover:border-${color}-600 hover:text-white`,
         active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
       )}
       onClick={(e) => {
@@ -43,7 +43,7 @@ const CardButton = ({ active, icon, onClick, color = 'red', dataTip }) => (
 const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
   <div
     className={cn(
-      `px-2 duration-300 flex items-center gap-x-2 h-8 hover:bg-${color}-600 hover:text-white`,
+      `text-base font-normal px-2 duration-300 flex items-center gap-x-2 h-8 hover:bg-${color}-600 hover:text-white`,
       active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
     )}
     onClick={(e) => {

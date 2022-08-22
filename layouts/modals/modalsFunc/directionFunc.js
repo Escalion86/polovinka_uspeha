@@ -11,23 +11,31 @@ import EditableTextarea from '@components/EditableTextarea'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
+import { DEFAULT_DIRECTION } from '@helpers/constants'
 
 const directionFunc = (directionId, clone = false) => {
   const DirectionModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
   }) => {
     const direction = useRecoilValue(directionSelector(directionId))
     const setDirection = useRecoilValue(itemsFuncAtom).direction.set
 
-    const [title, setTitle] = useState(direction ? direction.title : '')
-    const [description, setDescription] = useState(
-      direction ? direction.description : ''
+    const [title, setTitle] = useState(
+      direction?.title ?? DEFAULT_DIRECTION.title
     )
-    const [image, setImage] = useState(direction ? direction.image : '')
+    const [description, setDescription] = useState(
+      direction?.description ?? DEFAULT_DIRECTION.description
+    )
+    const [image, setImage] = useState(
+      direction?.image ?? DEFAULT_DIRECTION.image
+    )
     const [showOnSite, setShowOnSite] = useState(
-      direction ? direction.showOnSite : true
+      direction?.showOnSite ?? DEFAULT_DIRECTION.showOnSite
     )
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -78,7 +86,15 @@ const directionFunc = (directionId, clone = false) => {
     }
 
     useEffect(() => {
+      const isFormChanged =
+        direction?.title !== title ||
+        direction?.description !== description ||
+        direction?.showOnSite !== showOnSite ||
+        direction?.image !== image
+
       setOnConfirmFunc(onClickConfirm)
+      setOnShowOnCloseConfirmDialog(isFormChanged)
+      setDisableConfirm(!isFormChanged)
     }, [title, description, showOnSite, image])
 
     return (

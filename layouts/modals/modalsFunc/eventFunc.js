@@ -18,6 +18,7 @@ import formatMinutes from '@helpers/formatMinutes'
 
 import {
   DEFAULT_ADDRESS,
+  DEFAULT_EVENT,
   DEFAULT_USERS_STATUS_ACCESS,
   DEFAULT_USERS_STATUS_DISCOUNT,
 } from '@helpers/constants'
@@ -42,64 +43,93 @@ import {
 } from '@material-tailwind/react'
 import TimePicker from '@components/TimePicker'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import compareArrays from '@helpers/compareArrays'
+import compareObjects from '@helpers/compareObjects'
 
 const eventFunc = (eventId, clone = false) => {
-  const EventModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+  const EventModal = ({
+    closeModal,
+    setOnConfirmFunc,
+    setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
+  }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
-    const [directionId, setDirectionId] = useState(event?.directionId ?? null)
+    const [directionId, setDirectionId] = useState(
+      event?.directionId ?? DEFAULT_EVENT.directionId
+    )
     const [organizerId, setOrganizerId] = useState(
       event?.organizerId ?? useRecoilValue(loggedUserAtom)._id
     )
 
-    const [title, setTitle] = useState(event?.title ?? '')
-    const [images, setImages] = useState(event?.images ?? [])
-    const [description, setDescription] = useState(event?.description ?? '')
+    const [title, setTitle] = useState(event?.title ?? DEFAULT_EVENT.title)
+    const [images, setImages] = useState(event?.images ?? DEFAULT_EVENT.images)
+    const [description, setDescription] = useState(
+      event?.description ?? DEFAULT_EVENT.description
+    )
     const [date, setDate] = useState(
       event?.date ?? Date.now() - (Date.now() % 3600000) + 3600000
     )
-    const [duration, setDuration] = useState(event?.duration ?? 60)
+    const [duration, setDuration] = useState(
+      event?.duration ?? DEFAULT_EVENT.duration
+    )
     const [address, setAddress] = useState(
       event?.address && typeof event.address === 'object'
         ? event.address
-        : DEFAULT_ADDRESS
+        : DEFAULT_EVENT.address
     )
-    const [price, setPrice] = useState(event?.price ?? 0)
+    const [price, setPrice] = useState(event?.price ?? DEFAULT_EVENT.proce)
 
-    const [status, setStatus] = useState(event?.status ?? 'active')
+    const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
 
     const [maxParticipants, setMaxParticipants] = useState(
-      event?.maxParticipants ?? null
+      event?.maxParticipants ?? DEFAULT_EVENT.maxParticipants
     )
-    const [maxMans, setMaxMans] = useState(event?.maxMans ?? null)
-    const [maxWomans, setMaxWomans] = useState(event?.maxWomans ?? null)
+    const [maxMans, setMaxMans] = useState(
+      event?.maxMans ?? DEFAULT_EVENT.maxMans
+    )
+    const [maxWomans, setMaxWomans] = useState(
+      event?.maxWomans ?? DEFAULT_EVENT.maxWomans
+    )
     const [maxParticipantsCheck, setMaxParticipantsCheck] = useState(
-      typeof event.maxParticipants !== 'number'
+      typeof event?.maxParticipants !== 'number'
     )
     const [maxMansCheck, setMaxMansCheck] = useState(
-      typeof event.maxMans !== 'number'
+      typeof event?.maxMans !== 'number'
     )
     const [maxWomansCheck, setMaxWomansCheck] = useState(
-      typeof event.maxWomans !== 'number'
+      typeof event?.maxWomans !== 'number'
     )
 
-    const [minMansAge, setMinMansAge] = useState(event?.minMansAge ?? 18)
-    const [minWomansAge, setMinWomansAge] = useState(event?.minWomansAge ?? 18)
-    const [maxMansAge, setMaxMansAge] = useState(event?.maxMansAge ?? 60)
-    const [maxWomansAge, setMaxWomansAge] = useState(event?.maxWomansAge ?? 60)
+    const [minMansAge, setMinMansAge] = useState(
+      event?.minMansAge ?? DEFAULT_EVENT.minMansAge
+    )
+    const [minWomansAge, setMinWomansAge] = useState(
+      event?.minWomansAge ?? DEFAULT_EVENT.minWomansAge
+    )
+    const [maxMansAge, setMaxMansAge] = useState(
+      event?.maxMansAge ?? DEFAULT_EVENT.maxMansAge
+    )
+    const [maxWomansAge, setMaxWomansAge] = useState(
+      event?.maxWomansAge ?? DEFAULT_EVENT.maxWomansAge
+    )
 
     const [usersStatusAccess, setUsersStatusAccess] = useState({
       ...DEFAULT_USERS_STATUS_ACCESS,
-      ...(event?.usersStatusAccess ?? {}),
+      ...event?.usersStatusAccessusersStatusAccess,
     })
 
     const [usersStatusDiscount, setUsersStatusDiscount] = useState({
       ...DEFAULT_USERS_STATUS_DISCOUNT,
-      ...(event?.usersStatusDiscount ?? {}),
+      ...(event?.usersStatusDiscount ?? DEFAULT_EVENT.usersStatusDiscount),
     })
 
-    const [showOnSite, setShowOnSite] = useState(event?.showOnSite ?? true)
+    const [showOnSite, setShowOnSite] = useState(
+      event?.showOnSite ?? DEFAULT_EVENT.showOnSite
+    )
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
@@ -145,6 +175,29 @@ const eventFunc = (eventId, clone = false) => {
     }
 
     useEffect(() => {
+      const isFormChanged =
+        event?.title !== title ||
+        event?.description !== description ||
+        event?.showOnSite !== showOnSite ||
+        event?.date !== date ||
+        event?.duration !== duration ||
+        !compareArrays(event?.images, images) ||
+        !compareObjects(event?.address, address) ||
+        event?.price !== price ||
+        event?.directionId !== directionId ||
+        event?.maxParticipants !== maxParticipants ||
+        event?.maxMans !== maxMans ||
+        event?.maxWomans !== maxWomans ||
+        event?.maxMansAge !== maxMansAge ||
+        event?.maxWomansAge !== maxWomansAge ||
+        event?.organizerId !== organizerId ||
+        event?.status !== status ||
+        !compareObjects(event?.usersStatusAccess, usersStatusAccess) ||
+        !compareObjects(event?.usersStatusDiscount, usersStatusDiscount)
+
+      setOnConfirmFunc(onClickConfirm)
+      setOnShowOnCloseConfirmDialog(isFormChanged)
+      setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)
     }, [
       title,
