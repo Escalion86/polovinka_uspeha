@@ -38,6 +38,7 @@ import {
   PopoverContent,
   Button as PopoverButton,
 } from '@material-tailwind/react'
+import useFocus from '@helpers/useFocus'
 
 const TextareaButton = ({
   icon,
@@ -68,7 +69,7 @@ const GroupButtons = ({ name, children }) => (
   </div>
 )
 
-const CreateLinkButton = ({}) => {
+const CreateLinkButton = ({ setInputFocus }) => {
   const [showInput, setShowInput] = useState(false)
   const [inputValue, setInputValue] = useState('')
 
@@ -117,7 +118,8 @@ const CreateLinkButton = ({}) => {
           icon={faCheck}
           onMouseDown={() => {
             setShowInput(false)
-            document.execCommand('createLink', false, inputValue)
+            setInputFocus()
+            // document.execCommand('createLink', false, inputValue)
           }}
           // onMouseDown={() => document.execCommand("createLink", false, arg)}
         />
@@ -147,6 +149,7 @@ const EditableTextarea = ({
 }) => {
   const [textHtml, setTextHtml] = useState(html)
   const [isSaveProcess, setIsSaveProcess] = useState(false)
+  // const [inputRef, setInputFocus] = useFocus()
 
   // const [editorState, setEditorState] = useState(() =>
   //   EditorState.createEmpty()
@@ -243,14 +246,14 @@ const EditableTextarea = ({
               <TextareaButton cmd="justifyRight" icon={faAlignRight} />
               <TextareaButton cmd="justifyFull" icon={faAlignJustify} />
             </GroupButtons>
-            <GroupButtons name="Тест">
-              {/* <TextareaButton
-                cmd="createLink"
-                arg="https://github.com/lovasoa/react-contenteditable"
-                icon={faNetworkWired}
-              /> */}
-              <CreateLinkButton />
-            </GroupButtons>
+            {/* <GroupButtons name="Тест">
+              // <TextareaButton
+              //   cmd="createLink"
+              //   arg="https://github.com/lovasoa/react-contenteditable"
+              //   icon={faNetworkWired}
+              // />}
+              <CreateLinkButton setInputFocus={setInputFocus} />
+            </GroupButtons> */}
             {/* <EditButton
           cmd="createLink"
           arg="https://github.com/lovasoa/react-contenteditable"
@@ -285,6 +288,7 @@ const EditableTextarea = ({
           </div>
           <Divider thin light />
           <ContentEditable
+            // innerRef={inputRef}
             className={cn(
               'textarea px-1 outline-none list-disc my-1',
               className

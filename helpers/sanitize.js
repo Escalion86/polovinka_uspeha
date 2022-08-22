@@ -17,7 +17,7 @@ const sanitizeConf = {
     'sub',
     'sup',
   ],
-  allowedAttributes: { a: ['href'], div: ['style'] },
+  allowedAttributes: { a: ['href'], div: ['style'], font: ['size'] },
   allowedStyles: {
     // '*': {
     // Match HEX and RGB
