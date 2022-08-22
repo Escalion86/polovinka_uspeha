@@ -117,7 +117,7 @@ const EventsBlock = ({ events, maxEvents, hideBlockOnZeroEvents = false }) => {
   if (hideBlockOnZeroEvents && filteredEvents?.length === 0) return null
 
   return (
-    <BlockContainer id="events" className="bg-gray-200">
+    <BlockContainer id="events" altBg>
       <H3>Ближайшие мероприятия</H3>
       {/* <div className="grid gap-6 tablet:grid-cols-2 laptop:grid-cols-4"> */}
       <div className="flex flex-col items-center w-full gap-4">

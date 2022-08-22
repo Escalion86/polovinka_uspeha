@@ -34,7 +34,7 @@ module.exports = {
         header: '#4D9DC4',
         general: '#7a5151',
         primary: '#2A323B',
-        secondary: '#4C8BF7',
+        secondary: '#D3D0C9',
         third: '#176D8F',
         bg: '#f7f9fa',
         toxic: '#6ad424',
