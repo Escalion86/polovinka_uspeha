@@ -27,7 +27,7 @@ const Button = ({
         onClick && !disabled && onClick()
       }}
       className={cn(
-        'px-4 h-9 py-1 rounded text-white bg-opacity-90 min-w-max prevent-select-text',
+        'duration-300 px-4 h-9 py-1 rounded text-white bg-opacity-90 min-w-max prevent-select-text',
         className,
         disabled
           ? 'bg-gray-300 text-white cursor-not-allowed'

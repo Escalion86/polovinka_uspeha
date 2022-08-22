@@ -26,10 +26,11 @@ const usersSchema = {
   email: {
     type: String,
     lowercase: true,
+    default: '',
   },
   password: {
     type: String,
-    default: null,
+    default: '',
   },
   // image: {
   //   type: String,
@@ -61,8 +62,8 @@ const usersSchema = {
   },
   phone: {
     type: Number,
-    default: null,
     required: [true, 'Введите Телефон'],
+    default: null,
   },
   whatsapp: {
     type: Number,
@@ -74,22 +75,18 @@ const usersSchema = {
   },
   telegram: {
     type: String,
-    default: null,
+    default: '',
   },
   instagram: {
     type: String,
-    default: null,
+    default: '',
   },
   vk: {
     type: String,
-    default: null,
+    default: '',
   },
   birthday: {
     type: Date,
-    default: null,
-  },
-  gender: {
-    type: String,
     default: null,
   },
   role: {

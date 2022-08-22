@@ -10,17 +10,31 @@ import Textarea from '@components/Textarea'
 import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
+import { DEFAULT_REVIEW } from '@helpers/constants'
 
 const reviewFunc = (reviewId, clone = false) => {
-  const ReviewModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+  const ReviewModal = ({
+    closeModal,
+    setOnConfirmFunc,
+    setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
+  }) => {
     const review = useRecoilValue(reviewSelector(reviewId))
     const setReview = useRecoilValue(itemsFuncAtom).review.set
 
-    const [author, setAuthor] = useState(review ? review.author : '')
-    const [authorAge, setAuthorAge] = useState(review ? review.authorAge : 0)
-    const [reviewText, setReviewText] = useState(review ? review.review : '')
+    const [author, setAuthor] = useState(
+      review?.author ?? DEFAULT_REVIEW.author
+    )
+    const [authorAge, setAuthorAge] = useState(
+      review?.authorAge ?? DEFAULT_REVIEW.authorAge
+    )
+    const [reviewText, setReviewText] = useState(
+      review?.review ?? DEFAULT_REVIEW.review
+    )
     const [showOnSite, setShowOnSite] = useState(
-      review ? review.showOnSite : true
+      review?.showOnSite ?? DEFAULT_REVIEW.showOnSite
     )
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -71,7 +85,15 @@ const reviewFunc = (reviewId, clone = false) => {
     }
 
     useEffect(() => {
+      const isFormChanged =
+        review?.author !== author ||
+        review?.reviewText !== reviewText ||
+        review?.authorAge !== authorAge ||
+        review?.showOnSite !== showOnSite
+
       setOnConfirmFunc(onClickConfirm)
+      setOnShowOnCloseConfirmDialog(isFormChanged)
+      setDisableConfirm(!isFormChanged)
     }, [author, reviewText, authorAge, showOnSite])
 
     return (

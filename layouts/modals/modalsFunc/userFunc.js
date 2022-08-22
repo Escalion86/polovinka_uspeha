@@ -18,33 +18,58 @@ import validateEmail from '@helpers/validateEmail'
 import InputImages from '@components/InputImages'
 import CheckBox from '@components/CheckBox'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import compareArrays from '@helpers/compareArrays'
+import { DEFAULT_USER } from '@helpers/constants'
 
 const userFunc = (userId, clone = false) => {
-  const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+  const UserModal = ({
+    closeModal,
+    setOnConfirmFunc,
+    setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
+  }) => {
     const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
 
-    const [firstName, setFirstName] = useState(user?.firstName ?? '')
-    const [secondName, setSecondName] = useState(user?.secondName ?? '')
-    const [thirdName, setThirdName] = useState(user?.thirdName ?? '')
-    // const [about, setAbout] = useState(user?.about ?? '')
-    // const [interests, setInterests] = useState(user?.interests ?? '')
-    // const [profession, setProfession] = useState(user?.profession ?? '')
-    // const [orientation, setOrientation] = useState(user?.orientation ?? '')
-    const [gender, setGender] = useState(user?.gender ?? null)
-    const [email, setEmail] = useState(user?.email ?? '')
-    const [phone, setPhone] = useState(user?.phone ?? '')
-    const [whatsapp, setWhatsapp] = useState(user?.whatsapp ?? '')
-    const [viber, setViber] = useState(user?.viber ?? '')
-    const [telegram, setTelegram] = useState(user?.telegram ?? '')
-    const [instagram, setInstagram] = useState(user?.instagram ?? '')
-    const [vk, setVk] = useState(user?.vk ?? '')
-    const [images, setImages] = useState(user?.images ?? [])
-    const [birthday, setBirthday] = useState(user?.birthday ?? '')
-    const [status, setStatus] = useState(user?.status ?? 'novice')
+    const [firstName, setFirstName] = useState(
+      user?.firstName ?? DEFAULT_USER.firstName
+    )
+    const [secondName, setSecondName] = useState(
+      user?.secondName ?? DEFAULT_USER.secondName
+    )
+    const [thirdName, setThirdName] = useState(
+      user?.thirdName ?? DEFAULT_USER.thirdName
+    )
+    // const [about, setAbout] = useState(user?.about ?? DEFAULT_USER.about)
+    // const [interests, setInterests] = useState(user?.interests ?? DEFAULT_USER.interests)
+    // const [profession, setProfession] = useState(user?.profession ?? DEFAULT_USER.profession)
+    // const [orientation, setOrientation] = useState(user?.orientation ?? DEFAULT_USER.orientation)
+    const [gender, setGender] = useState(user?.gender ?? DEFAULT_USER.gender)
+    const [email, setEmail] = useState(user?.email ?? DEFAULT_USER.email)
+    const [phone, setPhone] = useState(user?.phone ?? DEFAULT_USER.phone)
+    const [whatsapp, setWhatsapp] = useState(
+      user?.whatsapp ?? DEFAULT_USER.whatsapp
+    )
+    const [viber, setViber] = useState(user?.viber ?? DEFAULT_USER.viber)
+    const [telegram, setTelegram] = useState(
+      user?.telegram ?? DEFAULT_USER.telegram
+    )
+    const [instagram, setInstagram] = useState(
+      user?.instagram ?? DEFAULT_USER.instagram
+    )
+    const [vk, setVk] = useState(user?.vk ?? DEFAULT_USER.vk)
+    const [images, setImages] = useState(user?.images ?? DEFAULT_USER.images)
+    const [birthday, setBirthday] = useState(
+      user?.birthday ?? DEFAULT_USER.birthday
+    )
+    const [status, setStatus] = useState(user?.status ?? DEFAULT_USER.status)
 
-    const [haveKids, setHaveKids] = useState(user?.haveKids ?? false)
+    const [haveKids, setHaveKids] = useState(
+      user?.haveKids ?? DEFAULT_USER.haveKids
+    )
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -94,6 +119,7 @@ const userFunc = (userId, clone = false) => {
           },
           clone
         )
+
         if (user?._id && loggedUser._id === result?._id) {
           setLoggedUser(result)
         }
@@ -148,7 +174,30 @@ const userFunc = (userId, clone = false) => {
     }
 
     useEffect(() => {
+      const isFormChanged =
+        user?.firstName !== firstName ||
+        user?.secondName !== secondName ||
+        user?.thirdName !== thirdName ||
+        // user?.about !== about ||
+        // user?.interests !== interests ||
+        // user?.profession !== profession ||
+        // user?.orientation !== orientation ||
+        user?.gender !== gender ||
+        user?.email !== email ||
+        user?.phone !== phone ||
+        user?.whatsapp !== whatsapp ||
+        user?.viber !== viber ||
+        user?.telegram !== telegram ||
+        user?.instagram !== instagram ||
+        user?.vk !== vk ||
+        !compareArrays(user?.images, images) ||
+        user?.birthday !== birthday ||
+        user?.haveKids !== haveKids ||
+        user?.status !== status
+
       setOnConfirmFunc(onClickConfirm)
+      setOnShowOnCloseConfirmDialog(isFormChanged)
+      setDisableConfirm(!isFormChanged)
     }, [
       firstName,
       secondName,

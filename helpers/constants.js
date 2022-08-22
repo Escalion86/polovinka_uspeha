@@ -187,27 +187,29 @@ const colors = [
 ]
 
 export const DEFAULT_USER = Object.freeze({
-  name: '',
+  firstName: '',
   secondName: '',
   thirdName: '',
   password: '',
-  email: null,
+  email: '',
   phone: null,
   whatsapp: null,
   viber: null,
-  telegram: null,
-  vk: null,
-  instagram: null,
+  telegram: '',
+  vk: '',
+  instagram: '',
   birthday: null,
   gender: null,
-  image: null,
+  images: [],
   role: 'client',
   interests: '',
   profession: '',
   orientation: null,
+  status: 'novice',
   lastActivityAt: null,
   prevActivityAt: null,
   archive: false,
+  haveKids: false,
 })
 
 export const DEFAULT_ADDRESS = Object.freeze({
@@ -222,13 +224,25 @@ export const DEFAULT_ADDRESS = Object.freeze({
 
 export const DEFAULT_EVENT = Object.freeze({
   directionId: null,
+  organizerId: null,
   title: '',
   description: '',
   date: null,
   address: DEFAULT_ADDRESS,
   status: 'active',
-  image: null,
+  images: [],
   showOnSite: true,
+  duration: 60,
+  price: 0,
+  maxParticipants: null,
+  maxMans: null,
+  maxWomans: null,
+  minMansAge: 35,
+  minWomanAge: 30,
+  maxMansAge: 50,
+  maxWansAge: 45,
+  usersStatusAccess: {},
+  usersStatusDiscount: {},
 })
 
 export const DEFAULT_DIRECTION = Object.freeze({
@@ -247,6 +261,7 @@ export const DEFAULT_REVIEW = Object.freeze({
 
 export const DEFAULT_PAYMENT = Object.freeze({
   userId: null,
+  eventId: null,
   payType: 'card',
   sum: 0,
   status: 'created',

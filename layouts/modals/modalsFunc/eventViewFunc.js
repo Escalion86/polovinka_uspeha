@@ -25,6 +25,9 @@ const eventViewFunc = (eventId, clone = false) => {
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const direction = useRecoilValue(directionSelector(event.directionId))

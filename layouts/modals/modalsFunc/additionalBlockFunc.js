@@ -11,12 +11,16 @@ import EditableTextarea from '@components/EditableTextarea'
 import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
+import { DEFAULT_ADDITIONAL_BLOCK } from '@helpers/constants'
 
 const additionalBlockFunc = (additionalBlockId, clone = false) => {
   const AdditionalBlockModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
   }) => {
     const additionalBlock = useRecoilValue(
       additionalBlockSelector(additionalBlockId)
@@ -24,19 +28,19 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     const setAdditionalBlock = useRecoilValue(itemsFuncAtom).additionalBlock.set
 
     const [title, setTitle] = useState(
-      additionalBlock ? additionalBlock.title : ''
+      additionalBlock?.title ?? DEFAULT_ADDITIONAL_BLOCK.title
     )
     const [description, setDescription] = useState(
-      additionalBlock ? additionalBlock.description : ''
+      additionalBlock?.description ?? DEFAULT_ADDITIONAL_BLOCK.description
     )
     const [image, setImage] = useState(
-      additionalBlock ? additionalBlock.image : ''
+      additionalBlock?.image ?? DEFAULT_ADDITIONAL_BLOCK.image
     )
     const [menuName, setMenuName] = useState(
-      additionalBlock ? additionalBlock.menuName : ''
+      additionalBlock?.menuName ?? DEFAULT_ADDITIONAL_BLOCK.menuName
     )
     const [showOnSite, setShowOnSite] = useState(
-      additionalBlock ? additionalBlock.showOnSite : true
+      additionalBlock?.showOnSite ?? DEFAULT_ADDITIONAL_BLOCK.setShowOnSite
     )
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -59,10 +63,17 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     }
 
     useEffect(() => {
-      setOnConfirmFunc(onClickConfirm)
-    }, [title, description, showOnSite, image, menuName])
+      const isFormChanged =
+        additionalBlock?.title !== title ||
+        additionalBlock?.description !== description ||
+        additionalBlock?.showOnSite !== showOnSite ||
+        additionalBlock?.image !== image ||
+        additionalBlock?.menuName !== menuName
 
-    console.log('errors.image', errors.image)
+      setOnConfirmFunc(onClickConfirm)
+      setOnShowOnCloseConfirmDialog(isFormChanged)
+      setDisableConfirm(!isFormChanged)
+    }, [title, description, showOnSite, image, menuName])
 
     return (
       <FormWrapper>

@@ -8,6 +8,8 @@ const ModalButtons = ({
   onDeclineClick,
   showConfirm = true,
   showDecline = true,
+  disableConfirm = false,
+  disableDecline = false,
 }) => {
   if (!showConfirm && !showDecline) return null
   return (
@@ -19,6 +21,7 @@ const ModalButtons = ({
             name={confirmName}
             classBgColor="bg-general"
             onClick={onConfirmClick}
+            disabled={disableConfirm}
           />
         )}
         {showDecline && (
@@ -26,6 +29,7 @@ const ModalButtons = ({
             name={declineName}
             classBgColor="bg-danger"
             onClick={onDeclineClick}
+            disabled={disableDecline}
           />
         )}
       </div>

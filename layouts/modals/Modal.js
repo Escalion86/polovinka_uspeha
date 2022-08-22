@@ -37,6 +37,8 @@ const Modal = ({
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const [disableConfirm, setDisableConfirm] = useState(false)
+  const [disableDecline, setDisableDecline] = useState(false)
   const [onShowOnCloseConfirmDialog, setOnShowOnCloseConfirmDialog] =
     useState(false)
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
@@ -195,6 +197,8 @@ const Modal = ({
                 setOnDeclineFunc(func ? () => func : null)
               }
               setOnShowOnCloseConfirmDialog={setOnShowOnCloseConfirmDialog}
+              setDisableConfirm={setDisableConfirm}
+              setDisableDecline={setDisableDecline}
             />
           )}
         </div>
@@ -207,6 +211,8 @@ const Modal = ({
             onDeclineClick={onDeclineClick}
             showConfirm={showConfirm}
             showDecline={showDecline}
+            disableConfirm={disableConfirm}
+            disableDecline={disableDecline}
           />
         )}
       </motion.div>

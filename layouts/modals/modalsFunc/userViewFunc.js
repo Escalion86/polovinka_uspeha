@@ -11,7 +11,14 @@ import UserName from '@components/UserName'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 
 const userViewFunc = (userId, clone = false) => {
-  const UserModal = ({ closeModal, setOnConfirmFunc, setOnDeclineFunc }) => {
+  const UserModal = ({
+    closeModal,
+    setOnConfirmFunc,
+    setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
+  }) => {
     const user = useRecoilValue(userSelector(userId))
 
     return (

@@ -23,25 +23,45 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 const QuestionnaireContent = (props) => {
   // const user = props.loggedUser
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
-  const [firstName, setFirstName] = useState(loggedUser?.firstName ?? '')
-  const [secondName, setSecondName] = useState(loggedUser?.secondName ?? '')
-  const [thirdName, setThirdName] = useState(loggedUser?.thirdName ?? '')
+  const [firstName, setFirstName] = useState(
+    loggedUser?.firstName ?? DEFAULT_USER.firstName
+  )
+  const [secondName, setSecondName] = useState(
+    loggedUser?.secondName ?? DEFAULT_USER.secondName
+  )
+  const [thirdName, setThirdName] = useState(
+    loggedUser?.thirdName ?? DEFAULT_USER.thirdName
+  )
   // const [about, setAbout] = useState(user?.about ?? '')
   // const [interests, setInterests] = useState(user?.interests ?? '')
   // const [profession, setProfession] = useState(user?.profession ?? '')
-  // const [orientation, setOrientation] = useState(user?.orientation ?? '')
-  const [gender, setGender] = useState(loggedUser?.gender ?? null)
-  const [email, setEmail] = useState(loggedUser?.email ?? '')
-  const [phone, setPhone] = useState(loggedUser?.phone ?? '')
-  const [whatsapp, setWhatsapp] = useState(loggedUser?.whatsapp ?? '')
-  const [viber, setViber] = useState(loggedUser?.viber ?? '')
-  const [telegram, setTelegram] = useState(loggedUser?.telegram ?? '')
-  const [instagram, setInstagram] = useState(loggedUser?.instagram ?? '')
-  const [vk, setVk] = useState(loggedUser?.vk ?? '')
-  const [images, setImages] = useState(loggedUser?.images ?? [])
-  const [birthday, setBirthday] = useState(loggedUser?.birthday ?? '')
+  // const [orientation, setOrientation] = useState(user?.orientation ?? DEFAULT_USER.orientation)
+  const [gender, setGender] = useState(
+    loggedUser?.gender ?? DEFAULT_USER.gender
+  )
+  const [email, setEmail] = useState(loggedUser?.email ?? DEFAULT_USER.email)
+  const [phone, setPhone] = useState(loggedUser?.phone ?? DEFAULT_USER.phone)
+  const [whatsapp, setWhatsapp] = useState(
+    loggedUser?.whatsapp ?? DEFAULT_USER.whatsapp
+  )
+  const [viber, setViber] = useState(loggedUser?.viber ?? DEFAULT_USER.viber)
+  const [telegram, setTelegram] = useState(
+    loggedUser?.telegram ?? DEFAULT_USER.telegram
+  )
+  const [instagram, setInstagram] = useState(
+    loggedUser?.instagram ?? DEFAULT_USER.instagram
+  )
+  const [vk, setVk] = useState(loggedUser?.vk ?? DEFAULT_USER.vk)
+  const [images, setImages] = useState(
+    loggedUser?.images ?? DEFAULT_USER.images
+  )
+  const [birthday, setBirthday] = useState(
+    loggedUser?.birthday ?? DEFAULT_USER.birthday
+  )
 
-  const [haveKids, setHaveKids] = useState(loggedUser?.haveKids ?? false)
+  const [haveKids, setHaveKids] = useState(
+    loggedUser?.haveKids ?? DEFAULT_USER.haveKids
+  )
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 

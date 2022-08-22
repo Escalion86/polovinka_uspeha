@@ -17,6 +17,9 @@ const eventSignUpFunc = (eventId, clone = false) => {
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     // const router = useRouter()
