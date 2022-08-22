@@ -12,6 +12,7 @@ export const CardWrapper = ({
   flex = true,
   gap = true,
   showOnSite = true,
+  className,
 }) => {
   const device = useWindowDimensionsTailwind()
   return (
@@ -20,7 +21,8 @@ export const CardWrapper = ({
         'relative flex-col w-full laptop:flex-row items-center laptop:items-stretch duration-300 bg-white border-t border-b border-gray-400 shadow-sm hover:shadow-medium-active',
         { 'cursor-pointer': !loading },
         { flex: flex },
-        { 'gap-x-2': gap }
+        { 'gap-x-2': gap },
+        className
       )}
       onClick={onClick}
     >
