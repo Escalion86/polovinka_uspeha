@@ -12,10 +12,7 @@ const DirectionBlock = ({
   id,
 }) => {
   return (
-    <BlockContainer
-      className={cn(inverse ? 'bg-gray-200' : 'bg-white', className)}
-      id={id}
-    >
+    <BlockContainer className={className} altBg={inverse} id={id}>
       <div
         className={cn(
           'flex flex-col gap-4 w-full',
