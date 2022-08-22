@@ -2,25 +2,36 @@ import cn from 'classnames'
 import React from 'react'
 import FormWrapper from './FormWrapper'
 import Input from './Input'
+import InputWrapper from './InputWrapper'
 
 const AddressPicker = ({
   address,
   onChange,
   label = 'Адрес',
   labelClassName,
+  wrapperClassName,
   errors,
+  required,
 }) => {
   return (
-    <>
-      <label
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      onChange={onChange}
+      copyPasteButtons={false}
+      value={address}
+      className={wrapperClassName}
+      required={required}
+    >
+      {/* <label
         className={cn(
           'flex items-center justify-end text-text leading-4 text-right',
           labelClassName
         )}
       >
         {label}
-      </label>
-      <div className="flex flex-col gap-2 p-1 border border-gray-400 rounded">
+      </label> */}
+      <div className="flex flex-col flex-1 gap-2 p-1 border border-gray-400 rounded">
         <FormWrapper twoColumns>
           <Input
             label="Город"
@@ -83,7 +94,7 @@ const AddressPicker = ({
           />
         </FormWrapper>
       </div>
-    </>
+    </InputWrapper>
   )
 }
 
