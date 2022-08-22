@@ -12,6 +12,7 @@ import {
   faFont,
   faHeading,
   faItalic,
+  faNetworkWired,
   faPencilAlt,
   faRedo,
   faStrikethrough,
@@ -27,6 +28,7 @@ import ContentEditable from 'react-contenteditable'
 import { Divider, LoadingSpinner } from '.'
 import Button from './Button'
 import InputWrapper from './InputWrapper'
+import sanitize from '@helpers/sanitize'
 
 const TextareaButton = ({
   icon,
@@ -90,6 +92,8 @@ const EditableTextarea = ({
       setIsSaveProcess(false)
     if (html !== textHtml) setTextHtml(html)
   }, [html])
+
+  console.log('html', uncontrolled ? textHtml : html)
 
   // return (
   //   <div>
@@ -171,6 +175,18 @@ const EditableTextarea = ({
             </GroupButtons>
             {/* <GroupButtons name="Тест">
               <TextareaButton
+                cmd="createLink"
+                arg="https://github.com/lovasoa/react-contenteditable"
+                icon={faNetworkWired}
+              />
+            </GroupButtons> */}
+            {/* <EditButton
+          cmd="createLink"
+          arg="https://github.com/lovasoa/react-contenteditable"
+          name="hyperlink"
+        /> */}
+            {/* <GroupButtons name="Тест">
+              <TextareaButton
                 cmd="hiliteColor"
                 icon={faAlignLeft}
                 arg="#123456"
@@ -198,13 +214,17 @@ const EditableTextarea = ({
           </div>
           <Divider thin light />
           <ContentEditable
-            className={cn('px-1 outline-none list-disc my-1', className)}
+            className={cn(
+              'textarea px-1 outline-none list-disc my-1',
+              className
+            )}
             html={uncontrolled ? textHtml : html}
             disabled={disabled}
             // onChange={onChange}
             onChange={(e) => {
-              if (uncontrolled) setTextHtml(e.target.value)
-              else onChange && onChange(e.target.value)
+              const sanitizedValue = sanitize(e.target.value)
+              if (uncontrolled) setTextHtml(sanitizedValue)
+              else onChange && onChange(sanitizedValue)
             }}
             onBlur={onBlur}
             placeholder={placeholder}

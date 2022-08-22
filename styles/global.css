@@ -22,6 +22,11 @@ body {
   color: #aaa;
 }
 
+.textarea a {
+  text-decoration: underline;
+  color: #7a5151;
+}
+
 .prevent-select-text {
   -webkit-user-select: none;
   /* Safari */

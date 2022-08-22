@@ -1,6 +1,7 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import Fab from '@components/Fab'
+import sanitize from '@helpers/sanitize'
 
 import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -50,8 +51,8 @@ const DirectionCard = ({ directionId }) => {
         </div>
         {/* <div>{direction.description}</div> */}
         <div
-          className="px-2 py-1 text-sm "
-          dangerouslySetInnerHTML={{ __html: direction.description }}
+          className="textarea px-2 py-1 text-sm"
+          dangerouslySetInnerHTML={{ __html: sanitize(direction.description) }}
         />
       </div>
     </CardWrapper>

@@ -7,6 +7,7 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
+import sanitize from '@helpers/sanitize'
 
 const AdditionalBlockCard = ({ additionalBlockId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -97,9 +98,9 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
         </div>
         {/* <div>{direction.description}</div> */}
         <div
-          className="px-2 py-1 text-sm "
+          className="px-2 py-1 text-sm textarea"
           dangerouslySetInnerHTML={{
-            __html: additionalBlock.description,
+            __html: sanitize(additionalBlock.description),
           }}
         />
       </div>

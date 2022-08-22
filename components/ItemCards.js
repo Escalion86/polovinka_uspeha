@@ -4,6 +4,7 @@ import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
+import sanitize from '@helpers/sanitize'
 // import roleRus from '@helpers/roleRus'
 // import { useSelector } from 'react-redux'
 import cn from 'classnames'
@@ -175,9 +176,9 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
       </div> */}
         <div
           dangerouslySetInnerHTML={{
-            __html: item.description,
+            __html: sanitize(item.description),
           }}
-          className="flex-1 max-w-full overflow-hidden leading-[0.85rem]"
+          className="textarea flex-1 max-w-full overflow-hidden leading-[0.85rem]"
           style={{
             display: '-webkit-box',
             WebkitBoxOrient: 'vertical',
