@@ -19,6 +19,7 @@ import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 
 import formatMinutes from '@helpers/formatMinutes'
 import EventButtonSignIn from '@components/EventButtonSignIn'
+import sanitize from '@helpers/sanitize'
 
 const eventViewFunc = (eventId, clone = false) => {
   const EventSignUpModal = ({
@@ -60,8 +61,8 @@ const eventViewFunc = (eventId, clone = false) => {
             </div>
             {/* <p className="flex-1">{event.description}</p> */}
             <div
-              className="flex-1"
-              dangerouslySetInnerHTML={{ __html: event.description }}
+              className="textarea flex-1"
+              dangerouslySetInnerHTML={{ __html: sanitize(event.description) }}
             />
             <Divider thin light />
             {direction?.title && (

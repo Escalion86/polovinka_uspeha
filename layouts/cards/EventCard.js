@@ -120,7 +120,7 @@ const EventCard = ({ eventId, noButtons }) => {
               <div className="flex-1">
                 <div className="text-xl font-bold ">{event.title}</div>
                 {/* <div className="flex flex-1">{event.description}</div> */}
-                {/* <div className="flex flex-1" dangerouslySetInnerHTML={{ __html: event.description }} /> */}
+                {/* <div className="textarea flex flex-1" dangerouslySetInnerHTML={{ __html: event.description }} /> */}
                 {formatedAddress && (
                   <div className="flex leading-5 gap-x-1">
                     <span className="italic font-bold">Адрес:</span>

@@ -1,5 +1,6 @@
 import BlockContainer from '@components/BlockContainer'
 import { H3 } from '@components/tags'
+import sanitize from '@helpers/sanitize'
 import cn from 'classnames'
 
 const DirectionBlock = ({
@@ -49,7 +50,10 @@ const DirectionBlock = ({
           {title && (
             <H3 className="mb-4 tablet:hidden laptop:block">{title}</H3>
           )}
-          <div dangerouslySetInnerHTML={{ __html: description }} />
+          <div
+            className="textarea"
+            dangerouslySetInnerHTML={{ __html: sanitize(description) }}
+          />
         </div>
       </div>
     </BlockContainer>
