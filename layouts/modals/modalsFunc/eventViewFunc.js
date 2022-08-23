@@ -91,7 +91,7 @@ const eventViewFunc = (eventId, clone = false) => {
                       data-tip="Открыть адрес в 2ГИС"
                       href={`https://2gis.ru/search/${event.address.town},%20${
                         event.address.street
-                      }%20${event.address.house.replace('/', '%2F')}`}
+                      }%20${event.address.house.replaceAll('/', '%2F')}`}
                     >
                       <img
                         className="h-6"
@@ -106,7 +106,7 @@ const eventViewFunc = (eventId, clone = false) => {
                         event.address.town
                       },%20${
                         event.address.street
-                      }%20${event.address.house.replace('/', '%2F')}`}
+                      }%20${event.address.house.replaceAll('/', '%2F')}`}
                     >
                       <img
                         className="h-6"
