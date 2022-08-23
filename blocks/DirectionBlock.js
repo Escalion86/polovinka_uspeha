@@ -1,5 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
-import { H3 } from '@components/tags'
+import { H2, H3 } from '@components/tags'
 import sanitize from '@helpers/sanitize'
 import cn from 'classnames'
 
@@ -22,14 +22,14 @@ const DirectionBlock = ({
         {(title || image) && (
           <div className="flex items-center flex-1 gap-x-4">
             {title && (
-              <H3
+              <H2
                 className={cn(
                   'hidden tablet:block laptop:hidden',
                   image ? 'w-1/2' : 'w-full'
                 )}
               >
                 {title}
-              </H3>
+              </H2>
             )}
             {image && (
               <img
@@ -45,7 +45,7 @@ const DirectionBlock = ({
 
         <div className="flex-1">
           {title && (
-            <H3 className="mb-4 tablet:hidden laptop:block">{title}</H3>
+            <H2 className="mb-4 tablet:hidden laptop:block">{title}</H2>
           )}
           <div
             className="textarea"

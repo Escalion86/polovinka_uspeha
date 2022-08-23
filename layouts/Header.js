@@ -49,8 +49,8 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 const Header = (props) => {
   const { loggedUser, additionalBlocks, events, directions, reviews } = props
 
-  const menu = [{ name: 'О нас', href: '/#about' }]
-  if (events?.length > 0) menu.push({ name: 'Запись', href: '/#events' })
+  const menu = [{ name: 'Наши цели', href: '/#about' }]
+  if (events?.length > 0) menu.push({ name: 'Мероприятия', href: '/#events' })
   if (directions?.length > 0)
     menu.push({ name: 'Направления', href: '/#directions' })
 

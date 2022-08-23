@@ -9,6 +9,7 @@ module.exports = {
     './helpers/**/*.{js,jsx}',
     './layouts/**/*.{js,jsx}',
     './blocks/**/*.{js,jsx}',
+    './public/**/*.{svg}',
   ],
   darkMode: 'class', // or 'media' or 'class'
   i18n: {

@@ -1,5 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
-import { H3 } from '@components/tags'
+import { H2, H3 } from '@components/tags'
 
 const ContactImage = ({ src, href }) => (
   <a href={href} className="duration-300 hover:scale-125">
@@ -15,7 +15,7 @@ const ContactImage = ({ src, href }) => (
 
 const ContactsBlock = ({ siteSettings }) => (
   <BlockContainer id="contacts" small>
-    <H3>Контакты</H3>
+    <H2>Контакты</H2>
     <div className="flex w-full justify-evenly">
       {siteSettings?.phone && (
         <ContactImage

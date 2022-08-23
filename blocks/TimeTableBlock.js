@@ -1,5 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
-import { H3, H4, P } from '@components/tags'
+import { H2, H3, H4, P } from '@components/tags'
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
 import cn from 'classnames'
@@ -55,7 +55,7 @@ const TimeTableBlock = ({ events }) => {
   if (!events || events.length === 0) return null
   return (
     <BlockContainer id="timetable" className="bg-gray-200">
-      <H3>Ближайшие мероприятия</H3>
+      <H2>Ближайшие мероприятия</H2>
       {/* <div className="grid gap-6 tablet:grid-cols-2 laptop:grid-cols-4"> */}
       <div className="flex flex-col items-center w-full gap-4">
         {events &&

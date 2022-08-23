@@ -1,5 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
-import { H3, H4, P } from '@components/tags'
+import { H2, H3, H4, P } from '@components/tags'
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
 import EventCard from '@layouts/cards/EventCard'
@@ -118,7 +118,7 @@ const EventsBlock = ({ events, maxEvents, hideBlockOnZeroEvents = false }) => {
 
   return (
     <BlockContainer id="events" altBg>
-      <H3>Ближайшие мероприятия</H3>
+      <H2>Ближайшие мероприятия</H2>
       {/* <div className="grid gap-6 tablet:grid-cols-2 laptop:grid-cols-4"> */}
       <div className="flex flex-col items-center w-full gap-4">
         {

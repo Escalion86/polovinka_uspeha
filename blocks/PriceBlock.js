@@ -1,5 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
-import { H3 } from '@components/tags'
+import { H2, H3 } from '@components/tags'
 
 const PriceBlock = () => (
   <BlockContainer
@@ -11,7 +11,7 @@ const PriceBlock = () => (
       backgroundSize: 'cover',
     }}
   >
-    <H3>Стоимость услуг</H3>
+    <H2>Стоимость услуг</H2>
   </BlockContainer>
 )
 
