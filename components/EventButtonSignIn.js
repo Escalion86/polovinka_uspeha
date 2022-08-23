@@ -62,7 +62,7 @@ const EventButtonSignIn = ({ eventId, className }) => {
       classBgColor={eventLoggedUserStatus.canSignOut ? 'bg-danger' : undefined}
       // classHoverBgColor={eventUser ? 'hover:bg-danger' : undefined}
       className={cn(
-        'w-full px-4 py-1 text-white duration-300 border rounded phoneH:w-auto',
+        'px-4 py-1 text-white duration-300 border rounded w-auto',
         className
       )}
       name={

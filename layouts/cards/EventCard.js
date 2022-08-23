@@ -53,6 +53,26 @@ const EventCard = ({ eventId, noButtons }) => {
       showOnSite={event.showOnSite}
       gap={false}
     >
+      {/* <div className="flex items-stretch"> */}
+      <div className="absolute top-0 right-0 z-10 tablet:hidden">
+        {/* <div className="flex-1 ml-8 text-xl font-bold text-center">
+          {event.title}
+        </div> */}
+
+        {!noButtons && (
+          <CardButtons
+            item={event}
+            typeOfItem="event"
+            showOnSiteOnClick={() => {
+              itemFunc.event.set({
+                _id: event._id,
+                showOnSite: !event.showOnSite,
+              })
+            }}
+            className="bg-white border-b border-l rounded-bl-md border-general"
+          />
+        )}
+      </div>
       {/* {event?.images && event.images.length > 0 && (
         <div
           className={cn(
@@ -77,7 +97,7 @@ const EventCard = ({ eventId, noButtons }) => {
       {direction?.image && (
         <div
           className={cn(
-            'relative flex justify-center flex-1 phoneH:flex-none h-44 max-h-44 tablet:h-52 tablet:max-h-52',
+            'relative flex justify-center flex-1 phoneH:flex-none h-44 max-h-44',
             { 'laptop:w-auto': noButtons }
           )}
         >
@@ -95,12 +115,10 @@ const EventCard = ({ eventId, noButtons }) => {
           )}
         </div>
       )}
-      <div className="flex flex-col justify-between flex-1 w-full">
-        <div className="pl-2">
-          <div className="flex items-stretch">
-            <div className="flex items-center flex-1 text-lg italic font-bold text-general">
-              {direction.title}
-            </div>
+      <div className="relative flex flex-col justify-between flex-1 w-full">
+        <div className="flex flex-col flex-1">
+          <div className="flex pl-2">
+            <div className="flex-1 text-xl font-bold">{event.title}</div>
 
             {!noButtons && (
               <CardButtons
@@ -112,15 +130,15 @@ const EventCard = ({ eventId, noButtons }) => {
                     showOnSite: !event.showOnSite,
                   })
                 }}
+                className="hidden tablet:block"
               />
             )}
           </div>
-          <div className="flex flex-col tablet:flex-row">
-            <div className="flex justify-between flex-1 pr-1">
+          <div className="flex flex-col flex-1 tablet:flex-row">
+            <div className="flex justify-between flex-1 pl-2 pr-1">
               <div className="flex-1">
-                <div className="text-xl font-bold ">{event.title}</div>
                 {/* <div className="flex flex-1">{event.description}</div> */}
-                {/* <div className="textarea flex flex-1" dangerouslySetInnerHTML={{ __html: event.description }} /> */}
+                {/* <div className="flex flex-1 textarea" dangerouslySetInnerHTML={{ __html: event.description }} /> */}
                 {formatedAddress && (
                   <div className="flex leading-5 gap-x-1">
                     <span className="italic font-bold">Адрес:</span>
@@ -165,14 +183,27 @@ const EventCard = ({ eventId, noButtons }) => {
                   )}
               </div>
             </div>
-            <div className="flex flex-col items-end laptop:justify-between h-full pr-1 laptop:min-h-[6rem]">
-              <PriceDiscount event={event} />
-              <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
-                {formatDateTime(event.date, false, false, true, false)}
-              </div>
-              <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
-                {formatMinutes(event.duration ?? 60)}
-              </div>
+            <div className="flex flex-col items-center h-full pt-1 pl-2 pr-1">
+              <PriceDiscount event={event} className="hidden tablet:flex" />
+              {/* <div className="flex justify-between w-full tablet:flex-col">
+                <div className="text-lg font-bold leading-5 whitespace-normal tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
+                  {formatDateTime(event.date, false, false, true, false)}
+                </div>
+                <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
+                  {formatMinutes(event.duration ?? 60)}
+                </div>
+              </div> */}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center py-1 pl-2 pr-1 mt-1 border-t border-gray-300 tablet:items-end">
+          {/* <PriceDiscount event={event} className="hidden tablet:flex" /> */}
+          <div className="flex justify-between w-full">
+            <div className="text-lg font-bold leading-5 whitespace-normal tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
+              {formatDateTime(event.date, false, false, true, false)}
+            </div>
+            <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
+              {formatMinutes(event.duration ?? 60)}
             </div>
           </div>
         </div>
@@ -190,6 +221,7 @@ const EventCard = ({ eventId, noButtons }) => {
             eventId={eventId}
             className="flex-1 min-w-full border-t border-b"
           />
+          <PriceDiscount event={event} className="mx-2" prefix="Стоимость:" />
           <EventButtonSignIn eventId={eventId} className="m-1" />
         </div>
       )}

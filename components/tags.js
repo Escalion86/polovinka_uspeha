@@ -3,7 +3,7 @@ import cn from 'classnames'
 export const H1 = ({ className, style, children, bold = true }) => (
   <h1
     className={cn(
-      'text-4xl text-center tablet:text-5xl',
+      'text-3xl text-center tablet:text-4xl',
       { 'font-bold': bold },
       className
     )}
@@ -16,7 +16,7 @@ export const H1 = ({ className, style, children, bold = true }) => (
 export const H2 = ({ className, style, children, bold = true }) => (
   <h2
     className={cn(
-      'text-xl text-center tablet:text-3xl',
+      'text-2xl text-center tablet:text-3xl',
       { 'font-bold': bold },
       className
     )}

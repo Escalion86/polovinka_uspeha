@@ -20,9 +20,9 @@ const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
     >
       {event.price ? (
         eventPriceForUser === event.price / 100 ? (
-          <div className="flex gap-x-1 text-lg font-bold">
-            {prefix && <span>{prefix}</span>}
-            <span className="whitespace-normal">
+          <div className="flex items-center text-lg font-bold gap-x-1 flex-nowrap">
+            {prefix && <span className="text-base font-normal">{prefix}</span>}
+            <span className="whitespace-nowrap">
               {event.price / 100 + ' ₽'}
             </span>
           </div>
@@ -66,7 +66,7 @@ const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
           </div>
         )
       ) : (
-        <div className="whitespace-normal text-lg font-bold">Бесплатное</div>
+        <div className="text-lg font-bold whitespace-normal">Бесплатное</div>
       )}
     </div>
   )

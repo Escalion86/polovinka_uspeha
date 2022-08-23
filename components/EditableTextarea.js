@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { Editor, EditorState } from 'draft-js'
 import {
@@ -118,7 +118,7 @@ const CreateLinkButton = ({ setInputFocus }) => {
           icon={faCheck}
           onMouseDown={() => {
             setShowInput(false)
-            setInputFocus()
+            setInputFocus && setInputFocus()
             // document.execCommand('createLink', false, inputValue)
           }}
           // onMouseDown={() => document.execCommand("createLink", false, arg)}
@@ -150,6 +150,11 @@ const EditableTextarea = ({
   const [textHtml, setTextHtml] = useState(html)
   const [isSaveProcess, setIsSaveProcess] = useState(false)
   // const [inputRef, setInputFocus] = useFocus()
+  const inputRef = useRef(null)
+
+  if (inputRef?.current) {
+    console.log('inputRef', inputRef.current)
+  }
 
   // console.log('html', uncontrolled ? textHtml : html)
 
@@ -248,14 +253,16 @@ const EditableTextarea = ({
               <TextareaButton cmd="justifyRight" icon={faAlignRight} />
               <TextareaButton cmd="justifyFull" icon={faAlignJustify} />
             </GroupButtons>
-            {/* <GroupButtons name="Тест">
-              // <TextareaButton
+            <GroupButtons name="Тест">
+              {/* // <TextareaButton
               //   cmd="createLink"
               //   arg="https://github.com/lovasoa/react-contenteditable"
               //   icon={faNetworkWired}
-              // />}
-              <CreateLinkButton setInputFocus={setInputFocus} />
-            </GroupButtons> */}
+              // /> */}
+              <CreateLinkButton
+              // setInputFocus={setInputFocus}
+              />
+            </GroupButtons>
             {/* <EditButton
           cmd="createLink"
           arg="https://github.com/lovasoa/react-contenteditable"
@@ -290,19 +297,14 @@ const EditableTextarea = ({
           </div>
           <Divider thin light />
           <ContentEditable
-            // innerRef={inputRef}
+            innerRef={inputRef}
             className={cn(
               'textarea px-1 outline-none list-disc my-1',
               className
             )}
             html={uncontrolled ? textHtml : html}
             disabled={disabled}
-            // onChange={onChange}
             onChange={(e) => {
-              console.log('value', e.target.value)
-              console.log('sanitize', sanitize(e.target.value))
-              console.log('same', e.target.value === sanitize(e.target.value))
-              // const sanitizedValue = e.target.value
               const sanitizedValue = sanitize(e.target.value)
               if (uncontrolled) setTextHtml(sanitizedValue)
               else onChange && onChange(sanitizedValue)

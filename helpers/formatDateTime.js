@@ -88,10 +88,10 @@ function formatDateTime(
     year = d.getFullYear()
 
   if (minutes.length < 2) minutes = '0' + minutes
+  if (hours.length < 2) hours = '0' + hours
 
   if (forComponent) {
     if (day.length < 2) day = '0' + day
-    if (hours.length < 2) hours = '0' + hours
     if (month.length < 2) month = '0' + month
     return [year, month, day].join('-') + 'T' + [hours, minutes].join(':')
   } else

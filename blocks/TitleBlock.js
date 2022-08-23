@@ -1,7 +1,8 @@
 import PulseButton from '@components/PulseButton'
-import { H2, H1, H3 } from '@components/tags'
+import { H2, H1, H3, H4 } from '@components/tags'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Svg30Plus from 'svg/Svg30Plus'
 
 const TitleBlock = ({ userIsLogged = false }) => {
   const router = useRouter()
@@ -16,8 +17,17 @@ const TitleBlock = ({ userIsLogged = false }) => {
         backgroundSize: 'cover',
       }}
     >
-      <div className="flex flex-col items-center justify-center w-full h-full max-h-[calc(100vh-70px)] px-10 pt-5 tablet:pt-12 pb-8 tablet:pb-10 text-white bg-gray-800 bg-opacity-20 tablet:px-20 ">
-        <div className="flex justify-center flex-1 max-h-[400px]">
+      <div className="relative flex flex-col items-center justify-center w-full h-full max-h-[calc(100vh-70px)] px-10 pt-5 tablet:pt-12 pb-8 tablet:pb-10 text-white bg-gray-800 bg-opacity-20 laptop:px-20 ">
+        {/* <img
+          className="absolute w-12 h-12 tablet:w-16 tablet:h-16 top-6 right-6 tablet:top-14 tablet:right-12 laptop:h-20 laptop:w-20"
+          src={'/img/other/30-plus.png'}
+          alt="30+"
+          // width="100%"
+          // height="100%"
+        /> */}
+        <Svg30Plus className="absolute w-12 h-12 tablet:w-16 tablet:h-16 top-6 right-6 tablet:top-14 tablet:right-12 laptop:h-20 laptop:w-20 fill-general" />
+
+        <div className="flex justify-center flex-1 max-h-[350px]">
           <img
             className="object-contain max-w-[90%] laptop:max-w-[100%] h-full"
             src={'/img/logo.webp'}
@@ -33,17 +43,17 @@ const TitleBlock = ({ userIsLogged = false }) => {
           >
             Центр осознанных знакомств
           </H1>
-          <H3 style={{ textShadow: '1px 1px 2px black' }} bold={false}>
+          <H4 style={{ textShadow: '1px 1px 2px black' }} bold={false}>
             г.Красноярск
-          </H3>
-          <H2
+          </H4>
+          <H3
             // className="font-thin"
             style={{ textShadow: '1px 1px 2px black' }}
           >
-            Мы работаем онлайн и организовываем офлайн-события
+            Мы организовываем уникальные форматы знакомств
             <br />
-            для поиска своей половинки 30+
-          </H2>
+            для поиска своей второй половинки
+          </H3>
         </div>
         {!userIsLogged && (
           <Link

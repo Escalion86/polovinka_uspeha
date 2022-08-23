@@ -62,6 +62,7 @@ const CardButtons = ({
   showOnSiteOnClick,
   onUpClick,
   onDownClick,
+  className,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -190,7 +191,7 @@ const CardButtons = ({
 
   return isCompact ? (
     <div
-      className="relative"
+      className={cn('relative', className)}
       onClick={(e) => {
         e.stopPropagation()
         setOpen((state) => !state)

@@ -1,6 +1,6 @@
 import BlockContainer from '@components/BlockContainer'
 import Masonry from '@components/Masonry'
-import { H3 } from '@components/tags'
+import { H2, H3 } from '@components/tags'
 
 const Review = ({ review, style }) => (
   <div className="p-3 bg-white rounded-lg" style={style}>
@@ -24,7 +24,7 @@ const ReviewsBlock = ({ reviews }) => {
         backgroundSize: 'cover',
       }}
     >
-      <H3>Отзывы</H3>
+      <H2>Отзывы</H2>
       <Masonry gap={16}>
         {reviews.map((review, index) => (
           <Review key={'review' + index} review={review} />
