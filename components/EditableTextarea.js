@@ -151,6 +151,8 @@ const EditableTextarea = ({
   const [isSaveProcess, setIsSaveProcess] = useState(false)
   // const [inputRef, setInputFocus] = useFocus()
 
+  // console.log('html', uncontrolled ? textHtml : html)
+
   // const [editorState, setEditorState] = useState(() =>
   //   EditorState.createEmpty()
   // )
@@ -297,6 +299,10 @@ const EditableTextarea = ({
             disabled={disabled}
             // onChange={onChange}
             onChange={(e) => {
+              console.log('value', e.target.value)
+              console.log('sanitize', sanitize(e.target.value))
+              console.log('same', e.target.value === sanitize(e.target.value))
+              // const sanitizedValue = e.target.value
               const sanitizedValue = sanitize(e.target.value)
               if (uncontrolled) setTextHtml(sanitizedValue)
               else onChange && onChange(sanitizedValue)

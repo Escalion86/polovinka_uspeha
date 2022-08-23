@@ -17,6 +17,7 @@ const sanitizeConf = {
     'sub',
     'sup',
   ],
+  // selfClosing: ['br'],
   allowedAttributes: { a: ['href'], div: ['style'], font: ['size'] },
   allowedStyles: {
     // '*': {
@@ -39,6 +40,7 @@ const sanitizeConf = {
   },
 }
 
-const sanitize = (html) => sanitizeHtml(html, sanitizeConf)
+const sanitize = (html) =>
+  sanitizeHtml(html, sanitizeConf).replaceAll('<br />', '<br>')
 
 export default sanitize
