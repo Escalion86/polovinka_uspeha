@@ -32,7 +32,7 @@ import AboutBlock from '@blocks/AboutBlock'
 import TitleBlock from '@blocks/TitleBlock'
 import { useEffect, useState } from 'react'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -71,6 +71,13 @@ import paymentEditSelector from '@state/selectors/paymentEditSelector'
 import paymentsDeleteSelector from '@state/selectors/paymentsDeleteSelector'
 import eventsUsersDeleteByEventIdSelector from '@state/selectors/eventsUsersDeleteByEventIdSelector'
 import toggleLoadingSelector from '@state/selectors/toggleLoadingSelector'
+import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
+import visibleEventsForUser from '@helpers/visibleEventsForUser'
+import setLoadingSelector from '@state/selectors/setLoadingSelector'
+import setNotLoadingSelector from '@state/selectors/setNotLoadingSelector'
+import setErrorSelector from '@state/selectors/setErrorSelector'
+import setNotErrorSelector from '@state/selectors/setNotErrorSelector'
+import { modalsFuncAtom } from '@state/atoms'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -101,7 +108,7 @@ import toggleLoadingSelector from '@state/selectors/toggleLoadingSelector'
 
 export default function Home(props) {
   const {
-    loggedUser,
+    // loggedUser,
     // users,
     // events,
     // directions,
@@ -115,7 +122,9 @@ export default function Home(props) {
 
   if (props.error) console.log('props.error', props.error)
 
-  const setLoggedUserState = useSetRecoilState(loggedUserAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+
+  const [loggedUserState, setLoggedUserState] = useRecoilState(loggedUserAtom)
   const [eventsState, setEventsState] = useRecoilState(eventsAtom)
   const [directionsState, setDirectionsState] = useRecoilState(directionsAtom)
   const [additionalBlocksState, setAdditionalBlocksState] =
@@ -123,7 +132,8 @@ export default function Home(props) {
   const setUsersState = useSetRecoilState(usersAtom)
   const [reviewsState, setReviewsState] = useRecoilState(reviewsAtom)
   const setPaymentsState = useSetRecoilState(paymentsAtom)
-  const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
+  const [eventsUsersState, setEventsUsersState] =
+    useRecoilState(eventsUsersAtom)
 
   const setEvent = useSetRecoilState(eventEditSelector)
   const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -143,12 +153,42 @@ export default function Home(props) {
     eventsUsersDeleteByEventIdSelector
   )
 
-  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
-  const toggleLoading = useSetRecoilState(toggleLoadingSelector)
+  const [itemsFunc, setItemsFunc] = useRecoilState(itemsFuncAtom)
+  // const toggleLoading = useSetRecoilState(toggleLoadingSelector)
+  const setLoadingCard = useSetRecoilState(setLoadingSelector)
+  const setNotLoadingCard = useSetRecoilState(setNotLoadingSelector)
+  const setErrorCard = useSetRecoilState(setErrorSelector)
+  const setNotErrorCard = useSetRecoilState(setNotErrorSelector)
 
-  const filteredEvents = eventsState.filter(
-    (event) => event.showOnSite && new Date(event.date) >= new Date()
+  // const loggedUser = useRecoilValue(loggedUserAtom)
+  // const eventsLoggedUser = useRecoilValue(
+  //   eventsUsersByUserIdSelector(loggedUser?._id)
+  // )
+
+  const filteredEvents = visibleEventsForUser(
+    eventsState,
+    eventsUsersState,
+    loggedUserState,
+    true
   )
+  // loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
+  //   ? events
+  //   : events.filter((event) => {
+  //       if (!event.showOnSite || new Date(event.date) < new Date()) return false
+
+  //       const eventUser = eventsLoggedUser.find(
+  //         (eventUser) => eventUser.eventId === event._id
+  //       )
+  //       return (
+  //         eventUser?.status !== 'ban' &&
+  //         (!event.usersStatusAccess ||
+  //           event.usersStatusAccess[loggedUser?.status ?? 'novice'])
+  //       )
+  //     })
+
+  // const filteredEvents = eventsState.filter(
+  //   (event) => event.showOnSite && new Date(event.date) >= new Date()
+  // )
   const filteredReviews = reviewsState.filter((review) => review.showOnSite)
   const filteredDirections = directionsState.filter(
     (direction) => direction.showOnSite
@@ -167,28 +207,37 @@ export default function Home(props) {
     setPaymentsState(props.payments)
     setEventsUsersState(props.eventsUsers)
 
-    setItemsFunc(
-      itemsFuncGenerator({
-        toggleLoading,
-        setEvent,
-        deleteEvent,
-        setDirection,
-        deleteDirection,
-        setAdditionalBlock,
-        deleteAdditionalBlock,
-        setUser,
-        deleteUser,
-        setReview,
-        deleteReview,
-        setPayment,
-        deletePayment,
-        setEventsUsers,
-        deleteEventsUsers,
-        deleteEventsUsersByEventId,
-      })
-    )
     setLoading(false)
   }, [])
+
+  useEffect(() => {
+    if (Object.keys(modalsFunc).length > 0 && !itemsFunc)
+      setItemsFunc(
+        itemsFuncGenerator({
+          setLoading,
+          modalsFunc,
+          setLoadingCard,
+          setNotLoadingCard,
+          setErrorCard,
+          setNotErrorCard,
+          setEvent,
+          deleteEvent,
+          setDirection,
+          deleteDirection,
+          setAdditionalBlock,
+          deleteAdditionalBlock,
+          setUser,
+          deleteUser,
+          setReview,
+          deleteReview,
+          setPayment,
+          deletePayment,
+          setEventsUsers,
+          deleteEventsUsers,
+          deleteEventsUsersByEventId,
+        })
+      )
+  }, [modalsFunc])
 
   const directionsBlocksInverse = filteredEvents.length > 0
   const additionalBlocksInverse =
@@ -206,17 +255,18 @@ export default function Home(props) {
           </div>
         ) : (
           <div className="w-full bg-white">
-            {loggedUser?.role === 'dev' && <DeviceCheck right />}
+            {loggedUserState?.role === 'dev' && <DeviceCheck right />}
             <Header
               events={filteredEvents}
               directions={filteredDirections}
               additionalBlocks={filteredAdditionalBlocks}
               reviews={filteredReviews}
-              loggedUser={loggedUser}
+              loggedUser={loggedUserState}
             />
-            <TitleBlock userIsLogged={!!loggedUser} />
+            <TitleBlock userIsLogged={!!loggedUserState} />
             <AboutBlock />
             <EventsBlock
+              title="Ближайшие мероприятия"
               events={filteredEvents}
               maxEvents={4}
               hideBlockOnZeroEvents

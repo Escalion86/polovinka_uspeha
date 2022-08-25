@@ -53,14 +53,14 @@ const Header = (props) => {
   if (events?.length > 0) menu.push({ name: 'Мероприятия', href: '/#events' })
   if (directions?.length > 0)
     menu.push({ name: 'Направления', href: '/#directions' })
-
-  additionalBlocks.forEach((additionalBlock) => {
-    if (additionalBlock.menuName)
-      menu.push({
-        name: additionalBlock.menuName,
-        href: '/#' + transliterate(additionalBlock.menuName),
-      })
-  })
+  if (additionalBlocks?.length > 0)
+    additionalBlocks.forEach((additionalBlock) => {
+      if (additionalBlock.menuName)
+        menu.push({
+          name: additionalBlock.menuName,
+          href: '/#' + transliterate(additionalBlock.menuName),
+        })
+    })
   if (reviews?.length > 0) menu.push({ name: 'Отзывы', href: '/#reviews' })
   menu.push({ name: 'Контакты', href: '/#contacts' })
 

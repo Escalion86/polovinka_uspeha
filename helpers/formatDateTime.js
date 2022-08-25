@@ -69,7 +69,7 @@ const monthsFull = [
   'декабря',
 ]
 
-const dayOfWeek = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
+const dayOfWeek = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
 
 function formatDateTime(
   dateTime,

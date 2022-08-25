@@ -17,6 +17,8 @@ const EventsContent = () => {
     loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
       ? events
       : events.filter((event) => {
+          if (!event.showOnSite || new Date(event.date) < new Date())
+            return false
           const eventUser = eventsLoggedUser.find(
             (eventUser) => eventUser.eventId === event._id
           )
