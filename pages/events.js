@@ -30,7 +30,7 @@ import EventsBlock from '@blocks/EventsBlock'
 import TitleBlock from '@blocks/TitleBlock'
 import { useEffect } from 'react'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -44,40 +44,51 @@ import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
 import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import fetchProps from '@server/fetchProps'
+import visibleEventsForUser from '@helpers/visibleEventsForUser'
+import eventEditSelector from '@state/selectors/eventEditSelector'
+import eventDeleteSelector from '@state/selectors/eventDeleteSelector'
 
 export default function Home(props) {
-  const { events, directions, reviews, loggedUser, additionalBlocks } = props
+  const { siteSettings } = props
 
-  const setLoggedUser = useSetRecoilState(loggedUserAtom)
-  const setEventsState = useSetRecoilState(eventsAtom)
-  const setDirectionsState = useSetRecoilState(directionsAtom)
-  const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
-  // const setUsersState = useSetRecoilState(usersAtom)
-  const setReviewsState = useSetRecoilState(reviewsAtom)
+  const [loggedUserState, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const [eventsState, setEventsState] = useRecoilState(eventsAtom)
+  const [directionsState, setDirectionsState] = useRecoilState(directionsAtom)
+  const [additionalBlocksState, setAdditionalBlocksState] =
+    useRecoilState(additionalBlocksAtom)
+  const setUsersState = useSetRecoilState(usersAtom)
+  const [reviewsState, setReviewsState] = useRecoilState(reviewsAtom)
   // const setPaymentsState = useSetRecoilState(paymentsAtom)
-  const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
+  const [eventsUsersState, setEventsUsersState] =
+    useRecoilState(eventsUsersAtom)
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
   const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
   const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
 
-  const visibleEvents =
-    loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
-      ? events
-      : events.filter(
-          (event) =>
-            !event.usersStatusAccess ||
-            event.usersStatusAccess[loggedUser?.status ?? 'novice']
-        )
+  const setEvent = useSetRecoilState(eventEditSelector)
+  const deleteEvent = useSetRecoilState(eventDeleteSelector)
 
-  const filteredEvents = visibleEvents.filter(
-    (event) => event.showOnSite && new Date(event.date) >= new Date()
+  // const visibleEvents =
+  //   loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
+  //     ? events
+  //     : events.filter(
+  //         (event) =>
+  //           !event.usersStatusAccess ||
+  //           event.usersStatusAccess[loggedUser?.status ?? 'novice']
+  //       )
+
+  const filteredEvents = visibleEventsForUser(
+    eventsState,
+    eventsUsersState,
+    loggedUserState,
+    true
   )
-  const filteredReviews = reviews.filter((review) => review.showOnSite)
-  const filteredDirections = directions.filter(
+  const filteredReviews = reviewsState.filter((review) => review.showOnSite)
+  const filteredDirections = directionsState.filter(
     (direction) => direction.showOnSite
   )
-  const filteredAdditionalBlocks = additionalBlocks.filter(
+  const filteredAdditionalBlocks = additionalBlocksState.filter(
     (additionalBlock) => additionalBlock.showOnSite
   )
 
@@ -86,7 +97,7 @@ export default function Home(props) {
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
-    // setUsersState(props.users)
+    setUsersState(props.users)
     setReviewsState(props.reviews)
     // setPaymentsState(props.payments)
     setEventsUsersState(props.eventsUsers)
@@ -97,8 +108,8 @@ export default function Home(props) {
       setItemsFunc(
         itemsFuncGenerator({
           // toggleLoading,
-          // setEvent,
-          // deleteEvent,
+          setEvent,
+          deleteEvent,
           // setDirection,
           // deleteDirection,
           // setAdditionalBlock,
@@ -128,10 +139,10 @@ export default function Home(props) {
             directions={filteredDirections}
             additionalBlocks={filteredAdditionalBlocks}
             reviews={filteredReviews}
-            loggedUser={loggedUser}
+            loggedUser={loggedUserState}
           />
-          <TitleBlock userIsLogged={!!loggedUser} />
-          <EventsBlock events={filteredEvents} maxEvents />
+          <TitleBlock userIsLogged={!!loggedUserState} />
+          <EventsBlock title="Ближайшие мероприятия" events={filteredEvents} />
           <ContactsBlock siteSettings={siteSettings} />
         </div>
         <ModalsPortal />

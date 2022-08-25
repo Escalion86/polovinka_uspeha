@@ -97,7 +97,12 @@ const Button = ({ title, className, href, onClick }) => {
 //   )
 // }
 
-const EventsBlock = ({ events, maxEvents, hideBlockOnZeroEvents = false }) => {
+const EventsBlock = ({
+  events,
+  maxEvents = null,
+  hideBlockOnZeroEvents = false,
+  title,
+}) => {
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
 
   const loggedUser = useRecoilValue(loggedUserAtom)
@@ -118,7 +123,7 @@ const EventsBlock = ({ events, maxEvents, hideBlockOnZeroEvents = false }) => {
 
   return (
     <BlockContainer id="events" altBg>
-      <H2>Ближайшие мероприятия</H2>
+      <H2>{title}</H2>
       {/* <div className="grid gap-6 tablet:grid-cols-2 laptop:grid-cols-4"> */}
       <div className="flex flex-col items-center w-full gap-4">
         {
@@ -126,7 +131,13 @@ const EventsBlock = ({ events, maxEvents, hideBlockOnZeroEvents = false }) => {
           filteredEvents
             .sort((a, b) => (a.date < b.date ? -1 : 1))
             .map((event, index) => (
-              <EventCard key={'event' + index} eventId={event._id} noButtons />
+              <EventCard
+                key={'event' + index}
+                eventId={event._id}
+                noButtons={
+                  loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
+                }
+              />
               // <CardEvent key={'event' + index} event={event} />
             ))
           // )
