@@ -3,9 +3,7 @@ import { atom } from 'recoil'
 
 const itemsFuncAtom = atom({
   key: 'items',
-  default: {
-    event: null,
-  },
+  default: null,
 })
 
 export default itemsFuncAtom

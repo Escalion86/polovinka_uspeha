@@ -61,7 +61,7 @@ const eventViewFunc = (eventId, clone = false) => {
             </div>
             {/* <p className="flex-1">{event.description}</p> */}
             <div
-              className="textarea flex-1"
+              className="flex-1 textarea"
               dangerouslySetInnerHTML={{ __html: sanitize(event.description) }}
             />
             <Divider thin light />
@@ -71,18 +71,18 @@ const eventViewFunc = (eventId, clone = false) => {
                 <span>{direction.title}</span>
               </div>
             )}
-            <div className="flex items-center leading-5 gap-x-1">
+            <div className="flex items-start leading-5 gap-x-1">
               <span className="font-bold">Начало:</span>
               <div>{formatDateTime(event.date)}</div>
               <div className="font-normal">({getDaysFromNow(event.date)})</div>
             </div>
-            <div className="flex items-center leading-5 gap-x-1">
+            <div className="flex items-start leading-5 gap-x-1">
               <span className="font-bold">Продолжительность:</span>
               <div>{formatMinutes(event.duration ?? 60)}</div>
             </div>
 
             {event.address && (
-              <div className="flex items-center gap-x-1">
+              <div className="flex items-start gap-x-1">
                 <span className="font-bold">Адрес:</span>{' '}
                 {formatAddress(event.address, '[не указан]')}
                 {event.address?.town && event.address?.street && (
@@ -94,7 +94,7 @@ const eventViewFunc = (eventId, clone = false) => {
                       }%20${event.address.house.replaceAll('/', '%2F')}`}
                     >
                       <img
-                        className="h-6"
+                        className="object-contain w-6 h-6"
                         src="/img/navigators/2gis.png"
                         alt="2gis"
                       />
@@ -109,7 +109,7 @@ const eventViewFunc = (eventId, clone = false) => {
                       }%20${event.address.house.replaceAll('/', '%2F')}`}
                     >
                       <img
-                        className="h-6"
+                        className="object-contain w-6 h-6"
                         src="/img/navigators/yandex.png"
                         alt="2gis"
                       />
@@ -119,7 +119,7 @@ const eventViewFunc = (eventId, clone = false) => {
               </div>
             )}
             {event.organizerId && (
-              <div className="flex items-center leading-5 gap-x-1">
+              <div className="flex items-start leading-5 gap-x-1">
                 <span className="font-bold">Организатор:</span>
                 <div className="flex flex-wrap items-center gap-1">
                   <UserName user={organizer} noWrap />

@@ -18,6 +18,7 @@ import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
 import eventViewFunc from './modalsFunc/eventViewFunc'
 import paymentFunc from './modalsFunc/paymentFunc'
 import userViewFunc from './modalsFunc/userViewFunc'
+import errorFunc from './modalsFunc/errorFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -49,6 +50,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
       })
     },
     custom: addModal,
+    error: (data) => addModal(errorFunc(data)),
     review: {
       add: (reviewId) => addModal(reviewFunc(reviewId, true)),
       edit: (reviewId) => addModal(reviewFunc(reviewId)),

@@ -188,7 +188,9 @@ const eventFunc = (eventId, clone = false) => {
         event?.maxParticipants !== maxParticipants ||
         event?.maxMans !== maxMans ||
         event?.maxWomans !== maxWomans ||
+        event?.minMansAge !== minMansAge ||
         event?.maxMansAge !== maxMansAge ||
+        event?.minWomansAge !== minWomansAge ||
         event?.maxWomansAge !== maxWomansAge ||
         event?.organizerId !== organizerId ||
         event?.status !== status ||

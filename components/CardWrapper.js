@@ -1,19 +1,23 @@
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
+import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import React from 'react'
+import { useRecoilValue } from 'recoil'
 import LoadingSpinner from './LoadingSpinner'
 
 export const CardWrapper = ({
   onClick,
   loading,
+  error,
   children,
   flex = true,
   gap = true,
   showOnSite = true,
   className,
 }) => {
+  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const device = useWindowDimensionsTailwind()
   return (
     <div
@@ -26,7 +30,15 @@ export const CardWrapper = ({
       )}
       onClick={onClick}
     >
-      {loading && (
+      {error && (
+        <div
+          // onClick={() => modalsFunc.error(error)}
+          className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center text-2xl text-white bg-red-800 bg-opacity-80"
+        >
+          ОШИБКА
+        </div>
+      )}
+      {loading && !error && (
         <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center bg-general bg-opacity-80">
           <LoadingSpinner />
         </div>

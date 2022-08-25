@@ -18,6 +18,10 @@ export const putData = async (
       body: JSON.stringify(form),
     })
 
+    if (a === res) {
+      console.log('!')
+    }
+
     // Throw error with status code in case Fetch API req failed
     if (!res.ok) {
       throw new Error(res.status)

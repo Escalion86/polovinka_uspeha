@@ -23,7 +23,7 @@ import { useState, useEffect } from 'react'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import BurgerLayout from '@layouts/BurgerLayout'
 import DeviceCheck from '@components/DeviceCheck'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import eventsAtom from '@state/atoms/eventsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import itemsFuncGenerator from '@state/itemsFuncGenerator'
@@ -61,6 +61,13 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 // import Users from '@models/Users'
 // import AdditionalBlocksModel from '@models/AdditionalBlocks'
 import fetchProps from '@server/fetchProps'
+// import stateAtom from '@state/atoms/stateAtom'
+import setLoadingSelector from '@state/selectors/setLoadingSelector'
+// import setNotLoadingSelector from '@state/selectors/setNotLoadingSelector'
+import setErrorSelector from '@state/selectors/setErrorSelector'
+import setNotLoadingSelector from '@state/selectors/setNotLoadingSelector'
+import setNotErrorSelector from '@state/selectors/setNotErrorSelector'
+import { modalsFuncAtom } from '@state/atoms'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -69,6 +76,8 @@ function CabinetPage(props) {
   const { page } = props
 
   const [loading, setLoading] = useState(true)
+
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const [loggedUserState, setLoggedUserState] = useRecoilState(loggedUserAtom)
   const setEventsState = useSetRecoilState(eventsAtom)
@@ -97,8 +106,12 @@ function CabinetPage(props) {
     eventsUsersDeleteByEventIdSelector
   )
 
-  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
-  const toggleLoading = useSetRecoilState(toggleLoadingSelector)
+  const [itemsFunc, setItemsFunc] = useRecoilState(itemsFuncAtom)
+  const setLoadingCard = useSetRecoilState(setLoadingSelector)
+  const setNotLoadingCard = useSetRecoilState(setNotLoadingSelector)
+  const setErrorCard = useSetRecoilState(setErrorSelector)
+  const setNotErrorCard = useSetRecoilState(setNotErrorSelector)
+  // const setState = useSetRecoilState(stateAtom)
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01
@@ -109,11 +122,18 @@ function CabinetPage(props) {
     })
   }, [])
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (Object.keys(modalsFunc).length > 0 && !itemsFunc)
       setItemsFunc(
         itemsFuncGenerator({
-          toggleLoading,
+          // toggleLoadingCard,
+          modalsFunc,
+          setLoading,
+          setLoadingCard,
+          setNotLoadingCard,
+          setErrorCard,
+          setNotErrorCard,
+          // setError,
           setEvent,
           deleteEvent,
           setDirection,
@@ -130,9 +150,8 @@ function CabinetPage(props) {
           deleteEventsUsers,
           deleteEventsUsersByEventId,
         })
-      ),
-    []
-  )
+      )
+  }, [modalsFunc])
 
   const Component = CONTENTS[page]
     ? CONTENTS[page].Component
