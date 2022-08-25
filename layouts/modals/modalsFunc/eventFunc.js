@@ -119,7 +119,7 @@ const eventFunc = (eventId, clone = false) => {
 
     const [usersStatusAccess, setUsersStatusAccess] = useState({
       ...DEFAULT_USERS_STATUS_ACCESS,
-      ...event?.usersStatusAccessusersStatusAccess,
+      ...event?.usersStatusAccess,
     })
 
     const [usersStatusDiscount, setUsersStatusDiscount] = useState({
