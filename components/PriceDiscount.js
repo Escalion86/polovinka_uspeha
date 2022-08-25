@@ -50,13 +50,15 @@ const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
                 })}
               >
                 <div className="relative">
-                  <div>{event.price / 100 + ' ₽'}</div>
+                  <div className="whitespace-nowrap">
+                    {event.price / 100 + ' ₽'}
+                  </div>
                   <div className="absolute top-[11px] left-0 right-0 transform rotate-15 border-b-2 border-danger" />
                   <div className="absolute top-[11px] left-0 right-0 transform -rotate-15 border-b-2 border-danger" />
                 </div>
               </div>
               <div
-                className={cn('whitespace-normal text-xl font-bold', {
+                className={cn('whitespace-nowrap text-xl font-bold', {
                   'mt-3.5': vertical,
                 })}
               >
