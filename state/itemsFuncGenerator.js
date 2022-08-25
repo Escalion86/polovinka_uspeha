@@ -176,7 +176,7 @@ const itemsFuncGenerator = (
       `/api/eventsusers`,
       { eventId, eventUsersStatuses },
       (data) => {
-        toggleLoading('event' + eventId)
+        setNotLoadingCard('event' + eventId)
         props.deleteEventsUsersByEventId(eventId)
         props.setEventsUsers(data)
       },
