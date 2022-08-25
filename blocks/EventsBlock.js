@@ -128,7 +128,7 @@ const EventsBlock = ({
       <div className="flex flex-col items-center w-full gap-4">
         {
           // filteredEvents?.length ? (
-          filteredEvents
+          [...filteredEvents]
             .sort((a, b) => (a.date < b.date ? -1 : 1))
             .map((event, index) => (
               <EventCard

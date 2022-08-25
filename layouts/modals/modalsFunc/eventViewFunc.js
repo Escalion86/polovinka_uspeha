@@ -94,7 +94,7 @@ const eventViewFunc = (eventId, clone = false) => {
                       }%20${event.address.house.replaceAll('/', '%2F')}`}
                     >
                       <img
-                        className="object-contain w-6 h-6"
+                        className="object-contain w-6 h-6 min-w-6 min-h-6"
                         src="/img/navigators/2gis.png"
                         alt="2gis"
                       />
@@ -109,7 +109,7 @@ const eventViewFunc = (eventId, clone = false) => {
                       }%20${event.address.house.replaceAll('/', '%2F')}`}
                     >
                       <img
-                        className="object-contain w-6 h-6"
+                        className="object-contain w-6 h-6 min-w-6 min-h-6"
                         src="/img/navigators/yandex.png"
                         alt="2gis"
                       />
