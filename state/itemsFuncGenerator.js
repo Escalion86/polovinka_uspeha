@@ -8,7 +8,13 @@ const itemsFuncGenerator = (
   props,
   array = ['event', 'direction', 'additionalBlock', 'user', 'review', 'payment']
 ) => {
-  const { toggleLoading } = props
+  const {
+    setLoadingCard,
+    setNotLoadingCard,
+    setErrorCard,
+    setNotErrorCard,
+    modalsFunc,
+  } = props
 
   const obj = {}
   array?.length > 0 &&
@@ -16,30 +22,50 @@ const itemsFuncGenerator = (
       obj[itemName] = {
         set: async (item, clone) => {
           if (item?._id && !clone) {
-            toggleLoading(itemName + item._id)
+            setLoadingCard(itemName + item._id)
             return await putData(
               `/api/${itemName}s/${item._id}`,
               item,
               (data) => {
-                toggleLoading(itemName + item._id)
+                setNotLoadingCard(itemName + item._id)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
+              },
+              (error) => {
+                setErrorCard(itemName + item._id)
+                const data = { itemName, item, error }
+                modalsFunc.error(data)
+                console.log('UPDATE ERROR', data)
               }
             )
           } else {
             const clearedItem = { ...item }
             delete clearedItem._id
-            return await postData(`/api/${itemName}s`, clearedItem, (data) => {
-              props['set' + capitalizeFirstLetter(itemName)](data)
-              // setEvent(data)
-            })
+            return await postData(
+              `/api/${itemName}s`,
+              clearedItem,
+              (data) => {
+                props['set' + capitalizeFirstLetter(itemName)](data)
+                // setEvent(data)
+              },
+              (error) => {
+                setErrorCard(itemName + item._id)
+                const data = { itemName, item, error }
+                console.log('CREATE ERROR', data)
+              }
+            )
           }
         },
         delete: async (itemId) => {
-          toggleLoading(itemName + itemId)
+          setLoadingCard(itemName + itemId)
           return await deleteData(
             `/api/${itemName}s/${itemId}`,
-            () => props['delete' + capitalizeFirstLetter(itemName)](itemId)
+            () => props['delete' + capitalizeFirstLetter(itemName)](itemId),
+            (error) => {
+              setErrorCard(itemName + item._id)
+              const data = { itemName, item, error }
+              console.log('DELETE ERROR', data)
+            }
             //  deleteEvent(itemId)
           )
         },
@@ -57,37 +83,52 @@ const itemsFuncGenerator = (
   // }
 
   obj.event.cancel = async (eventId) => {
-    toggleLoading('event' + eventId)
+    setLoadingCard('event' + eventId)
     return await putData(
       `/api/events/${eventId}`,
       { status: 'canceled' },
       (data) => {
-        toggleLoading('event' + eventId)
+        setNotLoadingCard('event' + eventId)
         props.setEvent(data)
+      },
+      (error) => {
+        setErrorCard('event' + eventId)
+        const data = { eventId, error }
+        console.log('EVENT CANCEL ERROR', data)
       }
     )
   }
 
   obj.event.uncancel = async (eventId) => {
-    toggleLoading('event' + eventId)
+    setLoadingCard('event' + eventId)
     return await putData(
       `/api/events/${eventId}`,
       { status: 'active' },
       (data) => {
-        toggleLoading('event' + eventId)
+        setNotLoadingCard('event' + eventId)
         props.setEvent(data)
+      },
+      (error) => {
+        setErrorCard('event' + eventId)
+        const data = { eventId, error }
+        console.log('EVENT ACTIVE ERROR', data)
       }
     )
   }
 
   obj.event.signUp = async (eventId, userId) => {
-    toggleLoading('event' + eventId)
+    setLoadingCard('event' + eventId)
     return await postData(
       `/api/eventsusers`,
       { eventId, userId },
       (data) => {
-        toggleLoading('event' + eventId)
+        setNotLoadingCard('event' + eventId)
         props.setEventsUsers(data)
+      },
+      (error) => {
+        setErrorCard('event' + eventId)
+        const data = { eventId, userId, error }
+        console.log('EVENT SIGNUP ERROR', data)
       }
 
       // () => props['setAdditionalBlock'](itemId)
@@ -96,14 +137,18 @@ const itemsFuncGenerator = (
   }
 
   obj.event.signOut = async (eventId, userId) => {
-    toggleLoading('event' + eventId)
+    setLoadingCard('event' + eventId)
     return await deleteData(
       `/api/eventsusers`,
       (data) => {
-        toggleLoading('event' + eventId)
+        setNotLoadingCard('event' + eventId)
         props.deleteEventsUsers(data._id)
       },
-      null,
+      (error) => {
+        setErrorCard('event' + eventId)
+        const data = { eventId, userId, error }
+        console.log('EVENT SIGNOUT ERROR', data)
+      },
       { eventId, userId }
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)
@@ -126,7 +171,7 @@ const itemsFuncGenerator = (
   // }
 
   obj.event.setEventUsers = async (eventId, eventUsersStatuses) => {
-    toggleLoading('event' + eventId)
+    setLoadingCard('event' + eventId)
     return await postData(
       `/api/eventsusers`,
       { eventId, eventUsersStatuses },
@@ -134,6 +179,15 @@ const itemsFuncGenerator = (
         toggleLoading('event' + eventId)
         props.deleteEventsUsersByEventId(eventId)
         props.setEventsUsers(data)
+      },
+      (error) => {
+        setErrorCard('event' + eventId)
+        const data = {
+          eventId,
+          eventUsersStatuses,
+          error,
+        }
+        console.log('setEventUsers ERROR', data)
       }
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)

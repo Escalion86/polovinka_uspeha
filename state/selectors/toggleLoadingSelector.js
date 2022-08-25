@@ -3,7 +3,7 @@ import { selector } from 'recoil'
 
 const toggleLoadingSelector = selector({
   key: 'toggleLoadingSelector',
-  get: ({ get }) => get(loadingAtom(itemNameId)),
+  get: ({ get }) => false,
   set: ({ set, get }, itemNameId) => {
     set(loadingAtom(itemNameId), !get(loadingAtom(itemNameId)))
   },

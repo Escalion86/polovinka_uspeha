@@ -9,6 +9,8 @@ import {
 } from '@material-tailwind/react'
 import Tooltip from './Tooltip'
 import Label from './Label'
+import copyToClipboard from '@helpers/copyToClipboard'
+import pasteFromClipboard from '@helpers/pasteFromClipboard'
 
 const SmallIconButton = ({ onClick, icon, dataTip, infoTextOnClick }) => {
   return (
@@ -31,7 +33,7 @@ const SmallIconButton = ({ onClick, icon, dataTip, infoTextOnClick }) => {
             {/* </Tooltip> */}
           </PopoverHandler>
           {infoTextOnClick && (
-            <PopoverContent>{infoTextOnClick}</PopoverContent>
+            <PopoverContent className="z-50">{infoTextOnClick}</PopoverContent>
           )}
         </Popover>
       </div>
@@ -50,37 +52,32 @@ const InputWrapper = ({
   value,
   className,
   required,
-}) => {
-  const copyToClipboard = (text) => navigator.clipboard.writeText(text)
-  const pasteFromClipboard = () => navigator.clipboard.readText().then(onChange)
-
-  return (
-    <>
-      <Label text={label} className={labelClassName} required={required} />
-      <div className={cn('flex items-center gap-x-1', className)}>
-        {children}
-        {copyPasteButtons && (
-          <>
-            {copyButton && (
-              <SmallIconButton
-                onClick={() => copyToClipboard(value)}
-                icon={faCopy}
-                dataTip="Копировать"
-                infoTextOnClick="Текст скопирован"
-              />
-            )}
-            {pasteButton && (
-              <SmallIconButton
-                onClick={pasteFromClipboard}
-                icon={faPaste}
-                dataTip="Вставить"
-              />
-            )}
-          </>
-        )}
-      </div>
-    </>
-  )
-}
+}) => (
+  <>
+    <Label text={label} className={labelClassName} required={required} />
+    <div className={cn('flex items-center gap-x-1', className)}>
+      {children}
+      {copyPasteButtons && (
+        <>
+          {copyButton && (
+            <SmallIconButton
+              onClick={() => copyToClipboard(value)}
+              icon={faCopy}
+              dataTip="Копировать"
+              infoTextOnClick="Текст скопирован"
+            />
+          )}
+          {pasteButton && (
+            <SmallIconButton
+              onClick={() => pasteFromClipboard(onChange)}
+              icon={faPaste}
+              dataTip="Вставить"
+            />
+          )}
+        </>
+      )}
+    </div>
+  </>
+)
 
 export default InputWrapper

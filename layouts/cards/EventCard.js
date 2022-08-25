@@ -21,6 +21,7 @@ import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import formatMinutes from '@helpers/formatMinutes'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import EventButtonSignIn from '@components/EventButtonSignIn'
+import errorAtom from '@state/atoms/errorAtom'
 
 const EventCard = ({ eventId, noButtons }) => {
   const widthNum = useWindowDimensionsTailwindNum()
@@ -31,12 +32,13 @@ const EventCard = ({ eventId, noButtons }) => {
 
   const direction = useRecoilValue(directionSelector(event?.directionId))
   const loading = useRecoilValue(loadingAtom('event' + eventId))
+  const error = useRecoilValue(errorAtom('event' + eventId))
   const itemFunc = useRecoilValue(itemsFuncAtom)
   // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
-  const eventLoggedUserStatus = useRecoilValue(
-    loggedUserToEventStatusSelector(eventId)
-  )
+  // const eventLoggedUserStatus = useRecoilValue(
+  //   loggedUserToEventStatusSelector(eventId)
+  // )
 
   // const eventAssistants = eventUsers
   //   .filter((item) => item.user && item.status === 'assistant')
@@ -49,6 +51,7 @@ const EventCard = ({ eventId, noButtons }) => {
   return (
     <CardWrapper
       loading={loading}
+      error={error}
       onClick={() => !loading && modalsFunc.event.view(event._id)}
       showOnSite={event.showOnSite}
       gap={false}

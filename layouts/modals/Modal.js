@@ -203,7 +203,7 @@ const Modal = ({
           )}
         </div>
 
-        {(onConfirm || onConfirmFunc) && (
+        {(onConfirm || onConfirmFunc || showConfirm || showDecline) && (
           <ModalButtons
             confirmName={confirmButtonName}
             declineName={declineButtonName}
