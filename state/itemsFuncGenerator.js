@@ -33,9 +33,13 @@ const itemsFuncGenerator = (
               },
               (error) => {
                 setErrorCard(itemName + item._id)
-                const data = { itemName, item, error }
+                const data = {
+                  errorPlace: 'UPDATE ERROR',
+                  itemName,
+                  item,
+                  error,
+                }
                 modalsFunc.error(data)
-                console.log('UPDATE ERROR', data)
               }
             )
           } else {
@@ -50,8 +54,14 @@ const itemsFuncGenerator = (
               },
               (error) => {
                 setErrorCard(itemName + item._id)
-                const data = { itemName, item, error }
-                console.log('CREATE ERROR', data)
+                const data = {
+                  errorPlace: 'CREATE ERROR',
+                  itemName,
+                  item,
+                  error,
+                }
+                modalsFunc.error(data)
+                console.log(data)
               }
             )
           }
@@ -63,8 +73,9 @@ const itemsFuncGenerator = (
             () => props['delete' + capitalizeFirstLetter(itemName)](itemId),
             (error) => {
               setErrorCard(itemName + item._id)
-              const data = { itemName, item, error }
-              console.log('DELETE ERROR', data)
+              const data = { errorPlace: 'DELETE ERROR', itemName, item, error }
+              modalsFunc.error(data)
+              console.log(data)
             }
             //  deleteEvent(itemId)
           )
@@ -93,8 +104,9 @@ const itemsFuncGenerator = (
       },
       (error) => {
         setErrorCard('event' + eventId)
-        const data = { eventId, error }
-        console.log('EVENT CANCEL ERROR', data)
+        const data = { errorPlace: 'EVENT CANCEL ERROR', eventId, error }
+        modalsFunc.error(data)
+        console.log(data)
       }
     )
   }
@@ -110,8 +122,9 @@ const itemsFuncGenerator = (
       },
       (error) => {
         setErrorCard('event' + eventId)
-        const data = { eventId, error }
-        console.log('EVENT ACTIVE ERROR', data)
+        const data = { errorPlace: 'EVENT ACTIVE ERROR', eventId, error }
+        modalsFunc.error(data)
+        console.log(data)
       }
     )
   }
@@ -127,8 +140,14 @@ const itemsFuncGenerator = (
       },
       (error) => {
         setErrorCard('event' + eventId)
-        const data = { eventId, userId, error }
-        console.log('EVENT SIGNUP ERROR', data)
+        const data = {
+          errorPlace: 'EVENT SIGNUP ERROR',
+          eventId,
+          userId,
+          error,
+        }
+        modalsFunc.error(data)
+        console.log(data)
       }
 
       // () => props['setAdditionalBlock'](itemId)
@@ -146,8 +165,14 @@ const itemsFuncGenerator = (
       },
       (error) => {
         setErrorCard('event' + eventId)
-        const data = { eventId, userId, error }
-        console.log('EVENT SIGNOUT ERROR', data)
+        const data = {
+          errorPlace: 'EVENT SIGNOUT ERROR',
+          eventId,
+          userId,
+          error,
+        }
+        modalsFunc.error(data)
+        console.log(data)
       },
       { eventId, userId }
       // () => props['setAdditionalBlock'](itemId)
@@ -183,11 +208,13 @@ const itemsFuncGenerator = (
       (error) => {
         setErrorCard('event' + eventId)
         const data = {
+          errorPlace: 'setEventUsers ERROR',
           eventId,
           eventUsersStatuses,
           error,
         }
-        console.log('setEventUsers ERROR', data)
+        modalsFunc.error(data)
+        console.log(data)
       }
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)
