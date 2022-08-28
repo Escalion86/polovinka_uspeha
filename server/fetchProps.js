@@ -33,8 +33,9 @@ const fetchProps = async () => {
     console.log(`start fetchProps`)
     console.time('Loading time')
     console.time('dbConnect')
-    await dbConnect()
+    const db = await dbConnect()
     console.timeEnd(`dbConnect`)
+    console.log('db', db)
     // const users = await Users.find({})
     // const events = await Events.find({})
     // const directions = await Directions.find({})
@@ -123,14 +124,14 @@ const fetchProps = async () => {
     }
   } catch (error) {
     return {
-      users: null,
-      events: null,
-      directions: null,
-      reviews: null,
-      additionalBlocks: null,
-      eventsUsers: null,
-      payments: null,
-      siteSettings: null,
+      users: [],
+      events: [],
+      directions: [],
+      reviews: [],
+      additionalBlocks: [],
+      eventsUsers: [],
+      payments: [],
+      siteSettings: {},
       error: JSON.parse(JSON.stringify(error)),
     }
   }

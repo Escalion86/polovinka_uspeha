@@ -70,8 +70,8 @@ import reviewDeleteSelector from '@state/selectors/reviewDeleteSelector'
 import paymentEditSelector from '@state/selectors/paymentEditSelector'
 import paymentsDeleteSelector from '@state/selectors/paymentsDeleteSelector'
 import eventsUsersDeleteByEventIdSelector from '@state/selectors/eventsUsersDeleteByEventIdSelector'
-import toggleLoadingSelector from '@state/selectors/toggleLoadingSelector'
-import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
+// import toggleLoadingSelector from '@state/selectors/toggleLoadingSelector'
+// import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import setLoadingSelector from '@state/selectors/setLoadingSelector'
 import setNotLoadingSelector from '@state/selectors/setNotLoadingSelector'
@@ -120,7 +120,8 @@ export default function Home(props) {
   } = props
   const [loading, setLoading] = useState(true)
 
-  if (props.error) console.log('props.error', props.error)
+  if (props.error && Object.keys(props.error).length > 0)
+    console.log('props.error', props.error)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
