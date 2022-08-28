@@ -25,6 +25,11 @@ export default async function auth(req, res) {
           if (phone && password) {
             await dbConnect()
 
+            await fetchingLog(
+              { from: 'update User activity time in nextauth authorize' },
+              process.env.NEXTAUTH_SITE
+            )
+
             const fetchedUser = await Users.find({ phone, password })
             await Users.findOneAndUpdate(
               { phone, password },
@@ -90,11 +95,7 @@ export default async function auth(req, res) {
         //     // prevActivityAt: session.user.lastActivityAt,
         //   }
         // )
-        console.log('!!!!!!!!!!!result', result)
-        await fetchingLog(
-          { from: 'update User activity time in nextauth' },
-          process.env.NEXTAUTH_SITE
-        )
+        // console.log('!!!!!!!!!!!result', result)
 
         // const result = await fetchingUserByPhone(
         //   userPhone,

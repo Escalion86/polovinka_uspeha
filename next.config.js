@@ -6,9 +6,9 @@ module.exports = {
   //   return config
   // },
   reactStrictMode: true,
-  images: {
-    domains: ['uniplatform.ru, dev.uniplatform.ru, localhost'],
-  },
+  // images: {
+  //   domains: ['uniplatform.ru, dev.uniplatform.ru, localhost'],
+  // },
   // webpack(config, options) {
   //   config.module.rules.push({
   //     loader: '@svgr/webpack',

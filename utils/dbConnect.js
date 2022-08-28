@@ -1,6 +1,6 @@
 // const fs = require('fs');
 const mongoose = require('mongoose')
-const autoIncrement = require('mongoose-auto-increment')
+// const autoIncrement = require('mongoose-auto-increment')
 
 // const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.0ogkw.mongodb.net/${process.env.MONGODB_DBNAME}?retryWrites=true&w=majority`
 const MONGODB_URI = process.env.MONGODB_URI
@@ -33,15 +33,22 @@ async function dbConnect() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       bufferCommands: false,
+      // useFindAndModify: false,
     }
+
+    const db = mongoose.connection
+    db.on('error', console.error.bind(console, 'connection error: '))
+    db.once('open', function () {
+      console.log('Connected successfully')
+    })
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       return mongoose
     })
   }
   cached.conn = await cached.promise
-  autoIncrement.initialize(cached.conn)
-  cached.autoIncrement = autoIncrement
+  // autoIncrement.initialize(cached.conn)
+  // cached.autoIncrement = autoIncrement
   return cached
 }
 

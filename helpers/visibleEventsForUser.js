@@ -1,4 +1,5 @@
 const visibleEventsForUser = (events, eventsUsers, user, onlyNew = false) => {
+  if (!events) return events
   if (!user) {
     return events.filter((event) => {
       if (!event.showOnSite || (onlyNew && new Date(event.date) < new Date()))
