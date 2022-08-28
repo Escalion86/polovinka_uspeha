@@ -25,19 +25,19 @@ export default async function auth(req, res) {
           if (phone && password) {
             await dbConnect()
 
-            await fetchingLog(
-              { from: 'update User activity time in nextauth authorize' },
-              process.env.NEXTAUTH_SITE
-            )
+            // await fetchingLog(
+            //   { from: 'update User activity time in nextauth authorize' },
+            //   process.env.NEXTAUTH_SITE
+            // )
 
             const fetchedUser = await Users.find({ phone, password })
-            await Users.findOneAndUpdate(
-              { phone, password },
-              {
-                lastActivityAt: Date.now(),
-                // prevActivityAt: session.user.lastActivityAt,
-              }
-            )
+            // await Users.findOneAndUpdate(
+            //   { phone, password },
+            //   {
+            //     lastActivityAt: Date.now(),
+            //     // prevActivityAt: session.user.lastActivityAt,
+            //   }
+            // )
 
             if (fetchedUser?.length > 0) {
               return {
@@ -109,14 +109,23 @@ export default async function auth(req, res) {
         // Если пользователь есть в базе (а он должен быть)
         if (result) {
           await fetchingLog(
-            { from: 'after if (result?.length)' },
+            {
+              from: 'user finded. update User activity time in nextauth authorize',
+            },
             process.env.NEXTAUTH_SITE
           )
+          // await fetchingLog(
+          //   { from: 'update User activity time in nextauth authorize' },
+          //   process.env.NEXTAUTH_SITE
+          // )
           result.prevActivityAt = result.lastActivityAt
           result.lastActivityAt = Date.now()
           result.save()
 
-          await fetchingLog({ from: 'result saved' }, process.env.NEXTAUTH_SITE)
+          await fetchingLog(
+            { from: 'user activity time saved' },
+            process.env.NEXTAUTH_SITE
+          )
 
           session.user._id = result._id
           session.user.role = result.role
