@@ -25,12 +25,13 @@ if (!cached) {
 
 async function dbConnect() {
   if (cached.conn) {
-    console.log('dbConnect: cached.conn', cached.conn)
+    console.log('dbConnect: используется текущее соединение')
+    // console.log('dbConnect: cached.conn', cached.conn)
     return cached.conn
   }
 
   if (!cached.promise) {
-    console.log('dbConnect: !cached.promise')
+    console.log('dbConnect: соединяем')
     const opts = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -47,8 +48,11 @@ async function dbConnect() {
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       return mongoose
     })
+  } else {
+    console.log('dbConnect: ожидаем соединения (повторно)')
   }
   cached.conn = await cached.promise
+  // console.log('cached.conn.connections[0]', cached.conn.connections[0])
   // autoIncrement.initialize(cached.conn)
   // cached.autoIncrement = autoIncrement
   return cached
