@@ -150,11 +150,11 @@ const EditableTextarea = ({
   const [textHtml, setTextHtml] = useState(html)
   const [isSaveProcess, setIsSaveProcess] = useState(false)
   // const [inputRef, setInputFocus] = useFocus()
-  const inputRef = useRef(null)
+  // const inputRef = useRef(null)
 
-  if (inputRef?.current) {
-    console.log('inputRef', inputRef.current)
-  }
+  // if (inputRef?.current) {
+  //   console.log('inputRef', inputRef.current)
+  // }
 
   // console.log('html', uncontrolled ? textHtml : html)
 
@@ -253,16 +253,16 @@ const EditableTextarea = ({
               <TextareaButton cmd="justifyRight" icon={faAlignRight} />
               <TextareaButton cmd="justifyFull" icon={faAlignJustify} />
             </GroupButtons>
-            <GroupButtons name="Тест">
-              {/* // <TextareaButton
+            {/* <GroupButtons name="Тест">
+              // <TextareaButton
               //   cmd="createLink"
               //   arg="https://github.com/lovasoa/react-contenteditable"
               //   icon={faNetworkWired}
-              // /> */}
+              // /> 
               <CreateLinkButton
               // setInputFocus={setInputFocus}
               />
-            </GroupButtons>
+            </GroupButtons>*/}
             {/* <EditButton
           cmd="createLink"
           arg="https://github.com/lovasoa/react-contenteditable"
@@ -297,7 +297,7 @@ const EditableTextarea = ({
           </div>
           <Divider thin light />
           <ContentEditable
-            innerRef={inputRef}
+            // innerRef={inputRef}
             className={cn(
               'textarea px-1 outline-none list-disc my-1',
               className

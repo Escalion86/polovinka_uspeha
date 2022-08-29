@@ -1,5 +1,6 @@
-import getDaysFromNow from './getDaysFromNow'
+import getMinutesBetween from './getMinutesBetween'
 
-const isEventExpired = (event) => getDaysFromNow(event.date, false, false) < 0
+const isEventExpired = (event) =>
+  getMinutesBetween(event.date) >= (event.duration ?? 0)
 
 export default isEventExpired

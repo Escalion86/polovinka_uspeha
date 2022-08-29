@@ -1,5 +1,7 @@
 import birthDateToAge from './birthDateToAge'
+import getMinutesBetween from './getMinutesBetween'
 import isEventExpiredFunc from './isEventExpired'
+import isEventInProcessFunc from './isEventInProcess'
 import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
 
 const userToEventStatus = (event, user, eventUsersFull) => {
@@ -10,11 +12,13 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut: false,
       isEventExpired: true,
+      isEventInProcess: false,
       userEventStatus: undefined,
       status: 'no eventId',
     }
 
   const isEventExpired = isEventExpiredFunc(event)
+  const isEventInProcess = isEventInProcessFunc(event)
 
   if (!user?._id)
     return {
@@ -23,6 +27,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut: false,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: undefined,
       status: 'user not signIn in site',
     }
@@ -46,6 +51,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut: false,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: userEvent?.status,
       status: 'user status is banned',
     }
@@ -57,6 +63,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: userEvent?.status,
       status: 'event canceled',
     }
@@ -68,6 +75,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: userEvent?.status,
       status: 'event expired',
     }
@@ -79,6 +87,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: userEvent?.status,
       status: 'user questionnaire not filled',
     }
@@ -101,6 +110,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: userEvent?.status,
       status: 'event full',
     }
@@ -116,6 +126,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: userEvent?.status,
       status: 'event full of mans',
     }
@@ -130,6 +141,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: userEvent?.status,
       status: 'event full of womans',
     }
@@ -150,6 +162,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: userEvent?.status,
       status: 'user too old',
     }
@@ -167,6 +180,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignIn: false,
       canSignOut,
       isEventExpired,
+      isEventInProcess,
       userEventStatus: userEvent?.status,
       status: 'user too young',
     }
@@ -177,6 +191,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
     canSignIn: true,
     canSignOut,
     isEventExpired,
+    isEventInProcess,
     userEventStatus: userEvent?.status,
     status: 'ok',
   }
