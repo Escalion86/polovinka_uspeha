@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 import Button from '@components/Button'
 import cn from 'classnames'
 
-const EventButtonSignIn = ({ eventId, className }) => {
+const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
   const loggedUser = useRecoilValue(loggedUserAtom)
@@ -35,6 +35,17 @@ const EventButtonSignIn = ({ eventId, className }) => {
   ) : eventLoggedUserStatus.userEventStatus === 'assistant' ? (
     <div className={cn('text-lg font-bold uppercase text-general', className)}>
       Ведущий
+    </div>
+  ) : (noButtonIfAlreadySignIn && eventLoggedUserStatus.canSignOut) ||
+    (eventLoggedUserStatus.isEventInProcess &&
+      eventLoggedUserStatus.canSignOut) ? (
+    <div className={cn('text-lg font-bold uppercase text-blue-600', className)}>
+      Записан
+    </div>
+  ) : eventLoggedUserStatus.isEventInProcess &&
+    (noButtonIfAlreadySignIn || !eventLoggedUserStatus.canSignIn) ? (
+    <div className={cn('text-lg font-bold uppercase text-general', className)}>
+      В процессе
     </div>
   ) : (
     <Button
