@@ -18,6 +18,7 @@
 //   fetchingSiteSettings,
 //   fetchingUsers,
 // } from '@helpers/fetchers'
+import { fetchingLog } from '@helpers/fetchers'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
 import Events from '@models/Events'
@@ -35,7 +36,8 @@ const fetchProps = async () => {
     console.time('dbConnect')
     const db = await dbConnect()
     console.timeEnd(`dbConnect`)
-    console.log('db', db)
+    // await fetchingLog({ from: 'fetchProps', db }, process.env.NEXTAUTH_SITE)
+    // console.log('db', db)
     // const users = await Users.find({})
     // const events = await Events.find({})
     // const directions = await Directions.find({})

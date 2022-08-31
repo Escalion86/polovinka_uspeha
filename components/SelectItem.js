@@ -64,6 +64,18 @@ const filteredItems = (
               ?.toString()
               .toLowerCase()
               .includes(searchTextLowerCase) ||
+              item.firstName
+                ?.toString()
+                .toLowerCase()
+                .includes(searchTextLowerCase) ||
+              item.secondName
+                ?.toString()
+                .toLowerCase()
+                .includes(searchTextLowerCase) ||
+              item.thirdName
+                ?.toString()
+                .toLowerCase()
+                .includes(searchTextLowerCase) ||
               item.number?.toString().includes(searchTextLowerCase) ||
               item.phone?.toString().includes(searchTextLowerCase) ||
               item.whatsapp?.toString().includes(searchTextLowerCase) ||
