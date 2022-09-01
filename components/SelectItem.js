@@ -470,6 +470,7 @@ export const SelectDirection = ({
   bottons,
 }) => {
   const directions = useRecoilValue(directionsAtom)
+
   return (
     <SelectItemContainer
       required={required}

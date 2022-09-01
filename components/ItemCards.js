@@ -1,4 +1,8 @@
-import { faGenderless } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChartPie,
+  faCheck,
+  faGenderless,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
@@ -8,6 +12,7 @@ import sanitize from '@helpers/sanitize'
 // import roleRus from '@helpers/roleRus'
 // import { useSelector } from 'react-redux'
 import cn from 'classnames'
+import Image from 'next/image'
 
 const ItemContainer = ({
   onClick,
@@ -18,7 +23,7 @@ const ItemContainer = ({
 }) => (
   <div
     className={cn(
-      'flex w-full max-w-full border-b border-gray-700 last:border-0',
+      'relative flex w-full max-w-full border-b border-gray-700 last:border-0',
       { 'hover:bg-blue-200 cursor-pointer': onClick },
       { 'bg-green-200': active },
       { 'py-0.5 px-1': !noPadding },
@@ -33,6 +38,14 @@ const ItemContainer = ({
         : null
     }
   >
+    <div
+      className={cn(
+        'absolute flex items-center top-0 bottom-0 left-0 duration-300 bg-green-400',
+        active ? 'w-7' : 'w-0'
+      )}
+    >
+      <FontAwesomeIcon icon={faCheck} className="w-5 h-5 ml-1 text-white" />
+    </div>
     {children}
   </div>
 )
@@ -95,8 +108,8 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
         src={getUserAvatarSrc(item)}
         alt="user"
       />
-      <div className="flex-col flex-1 py-0.5 px-1">
-        <div className="flex flex-wrap flex-1 h-5 text-sm text-gray-800 truncate max-h-5 gap-x-1">
+      <div className="flex items-center flex-1 py-0.5 px-1">
+        <div className="flex flex-wrap items-center flex-1 text-sm text-gray-800 truncate tablet:text-base gap-x-1">
           <span className="font-semibold">{item.firstName}</span>
           {item.secondName && (
             <span className="font-semibold">{item.secondName}</span>
@@ -110,7 +123,7 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
             </span>
           )}
         </div>
-        <div className="flex flex-wrap items-center justify-between flex-1 h-4 overflow-hidden text-xs text-gray-600 max-h-4 gap-x-2">
+        {/* <div className="flex flex-wrap items-center justify-between flex-1 h-4 overflow-hidden text-xs text-gray-600 max-h-4 gap-x-2">
           <div className="whitespace-nowrap">
             Телефон: {item.phone ? '+' + item.phone : '[нет]'}
           </div>
@@ -122,6 +135,18 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
           {item.email && (
             <div className="whitespace-nowrap">
               Email: {item.email || '[нет]'}
+            </div>
+          )}
+        </div> */}
+        <div>
+          {item.status === 'member' && (
+            <div className="w-6 h-6">
+              <Image src="/img/svg_icons/medal.svg" width="24" height="24" />
+            </div>
+          )}
+          {item.status === 'ban' && (
+            <div className="w-6 h-6">
+              <Image src="/img/svg_icons/ban.svg" width="24" height="24" />
             </div>
           )}
         </div>
@@ -210,7 +235,7 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
 //     ? clients.find((client) => client._id === item.clientId)
 //     : null
 //   return (
-//     <ItemContainer onClick={onClick} active={active}>
+//     <ItemContainer onClick={() => onClick(item)} active={active}>
 //       <div className="flex justify-between h-5 text-sm text-gray-800 truncate">
 //         <div>№ {item.number}</div>
 //         {order && <div>Заказ №{order.number}</div>}
@@ -230,14 +255,3 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
 //     </ItemContainer>
 //   )
 // }
-
-// export const DistrictItem = ({ item, onClick = null, active = false }) => (
-//   <ItemContainer onClick={onClick} active={active}>
-//     <div className="flex justify-between">
-//       <div className="text-sm text-gray-800 truncate">{item.name}</div>
-//       <div className="flex-1 text-sm text-right whitespace-nowrap">
-//         {item.deliveryPrice / 100} ₽
-//       </div>
-//     </div>
-//   </ItemContainer>
-// )
