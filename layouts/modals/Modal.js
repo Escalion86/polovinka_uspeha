@@ -45,6 +45,7 @@ const Modal = ({
   const [onDeclineFunc, setOnDeclineFunc] = useState(null)
   const setModals = useSetRecoilState(modalsAtom)
   const [close, setClose] = useState(false)
+  const [ComponentInFooter, setComponentInFooter] = useState(null)
 
   const closeModal = () => {
     onClose && typeof onClose === 'function' && onClose()
@@ -199,11 +200,16 @@ const Modal = ({
               setOnShowOnCloseConfirmDialog={setOnShowOnCloseConfirmDialog}
               setDisableConfirm={setDisableConfirm}
               setDisableDecline={setDisableDecline}
+              setComponentInFooter={setComponentInFooter}
             />
           )}
         </div>
 
-        {(onConfirm || onConfirmFunc || showConfirm || showDecline) && (
+        {(onConfirm ||
+          onConfirmFunc ||
+          showConfirm ||
+          showDecline ||
+          ComponentInFooter) && (
           <ModalButtons
             confirmName={confirmButtonName}
             declineName={declineButtonName}
@@ -213,7 +219,9 @@ const Modal = ({
             showDecline={showDecline}
             disableConfirm={disableConfirm}
             disableDecline={disableDecline}
-          />
+          >
+            {ComponentInFooter}
+          </ModalButtons>
         )}
       </motion.div>
     </motion.div>

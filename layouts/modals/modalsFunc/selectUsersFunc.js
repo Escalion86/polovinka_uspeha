@@ -46,6 +46,7 @@ const selectUsersFunc = (state, filter, onConfirm, exceptedIds, maxUsers) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setComponentInFooter,
   }) => {
     const users = useRecoilValue(usersAtom)
     const [selectedUsers, setSelectedUsers] = useState(state ?? [])
@@ -98,7 +99,19 @@ const selectUsersFunc = (state, filter, onConfirm, exceptedIds, maxUsers) => {
       //   womansIds !== eventWomansIds ||
       //   reservedParticipantsIds !== eventReservedParticipantsIds ||
       //   bannedParticipantsIds !== eventBannedParticipantsIds
-
+      setComponentInFooter(
+        <div className="flex text-lg gap-x-1 teblet:text-base flex-nowrap">
+          <span>Выбрано:</span>
+          <span className="font-bold">{selectedUsers.length}</span>
+          {maxUsers && (
+            <>
+              <span>/</span>
+              <span>{maxUsers}</span>
+            </>
+          )}
+          <span>чел.</span>
+        </div>
+      )
       setOnConfirmFunc(() => {
         onConfirm(selectedUsers)
         closeModal()
@@ -124,12 +137,7 @@ const selectUsersFunc = (state, filter, onConfirm, exceptedIds, maxUsers) => {
             onClick={() => onClick(user._id)}
           />
         ))}
-        <div className="flex gap-x-1">
-          <span>Кол-во:</span>
-          <span className="font-bold">{selectedUsers.length}</span>
-          {maxUsers && <span> / {maxUsers}</span>}
-          <span>чел.</span>
-        </div>
+
         {showErrorMax && (
           <div className="text-danger">
             Выбрано максимальное количество пользователей
