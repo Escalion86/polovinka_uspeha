@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { SelectItem, SelectUser } from './SelectItem'
 import cn from 'classnames'
+import { modalsFuncAtom } from '@state/atoms'
+import { useRecoilValue } from 'recoil'
 
 const ItemRow = ({
   onChange,
@@ -48,7 +50,13 @@ export const SelectItemList = ({
   showCounter,
   counterPostfix,
   canAddItem = true,
+  filter,
+  exceptedIds,
+  modalFuncKey,
+  maxItems,
 }) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+
   if (!itemsId) itemsId = []
 
   const onChangeItemRow = (id, index) => {
@@ -59,10 +67,14 @@ export const SelectItemList = ({
   }
 
   const addRow = () => {
-    if (!onChange) return
-    const tempItemsId = [...itemsId]
-    tempItemsId.push('?')
-    onChange(tempItemsId)
+    if (modalFuncKey)
+      modalsFunc[modalFuncKey](itemsId, filter, onChange, exceptedIds, maxItems)
+    else {
+      if (!onChange) return
+      const tempItemsId = [...itemsId]
+      tempItemsId.push('?')
+      onChange(tempItemsId)
+    }
   }
 
   const deleteRow = (index) => {
@@ -188,6 +200,9 @@ export const SelectUserList = ({
         (typeof maxUsers === 'number' ? ' / ' + maxUsers + ' ' : '') + 'чел.'
       }
       canAddItem={canAddItem}
+      exceptedIds={exceptedIds}
+      maxItems={maxUsers}
+      modalFuncKey="selectUsers"
     />
   )
 }

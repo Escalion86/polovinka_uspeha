@@ -7,7 +7,7 @@ const sanitizeConf = {
     'i',
     'em',
     'strong',
-    'a',
+    // 'a',
     'p',
     'u',
     'h1',

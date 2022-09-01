@@ -173,7 +173,6 @@ const eventUsersFunc = (eventId) => {
         reservedParticipantsIds !== eventReservedParticipantsIds ||
         bannedParticipantsIds !== eventBannedParticipantsIds
 
-      setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)
@@ -219,7 +218,7 @@ const eventUsersFunc = (eventId) => {
     }
 
     return (
-      <Tabs id="custom-animation" value="partisipants">
+      <Tabs id="custom-animation" value="partisipants" className="min-h-full">
         <TabsHeader
           // indicatorProps={{ className: 'duration-0 bg-general h-1 top-8' }}
           className="bg-gray-200 duration-0"
@@ -257,6 +256,7 @@ const eventUsersFunc = (eventId) => {
             mount: { scale: 1 },
             unmount: { scale: 0 },
           }}
+          className="h-full min-h-full"
         >
           <TabPanel value="assistants">
             <SelectUserList
@@ -274,7 +274,7 @@ const eventUsersFunc = (eventId) => {
               ]}
             />
           </TabPanel>
-          <TabPanel value="partisipants">
+          <TabPanel value="partisipants" className="h-full min-h-full">
             <SelectUserList
               title="Участники Мужчины"
               filter={{ gender: 'male' }}
