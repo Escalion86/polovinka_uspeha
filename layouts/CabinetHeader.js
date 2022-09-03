@@ -68,7 +68,7 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
         <div className="relative flex flex-col items-end group mt-2.5 w-12">
           <img
             // onClick={() => closeMenu()}
-            className="absolute z-10 border border-opacity-50 rounded-full cursor-pointer border-whiteobject-cover h-11 w-11 min-w-9"
+            className="absolute z-10 object-cover border border-white border-opacity-50 rounded-full cursor-pointer h-11 w-11 min-w-9"
             src={getUserAvatarSrc(user)}
             alt="Avatar"
           />
