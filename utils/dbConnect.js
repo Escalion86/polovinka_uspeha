@@ -143,10 +143,11 @@ async function dbConnect() {
   if (!cached.promise) {
     console.log('dbConnect: соединяем')
     const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      bufferCommands: false,
+      // useNewUrlParser: true,
+      // useUnifiedTopology: true,
+      // bufferCommands: false,
       // useFindAndModify: false,
+      dbName: process.env.MONGODB_DBNAME,
     }
 
     const db = mongoose.connection
