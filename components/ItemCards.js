@@ -10,7 +10,6 @@ import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
 // import roleRus from '@helpers/roleRus'
-// import { useSelector } from 'react-redux'
 import cn from 'classnames'
 import Image from 'next/image'
 

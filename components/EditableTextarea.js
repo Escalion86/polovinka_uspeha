@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { Editor, EditorState } from 'draft-js'
 import {
   faAlignCenter,
   faAlignJustify,

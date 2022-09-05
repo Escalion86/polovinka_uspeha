@@ -274,12 +274,11 @@ module.exports = {
     ],
     textColor: ['responsive', 'hover', 'focus', 'group-hover', 'group-focus'],
     // boxShadow: ['responsive', 'hover', 'focus'],
-    // transform: ['hover', 'responsive'],
+    transform: ['hover', 'responsive', 'group-hover'],
+    scale: ['hover', 'responsive', 'group-hover'],
+    translate: ['hover', 'responsive', 'group-hover'],
   },
-  plugins: [
-    require('tailwindcss-nested-groups'),
-    require('@tailwindcss/aspect-ratio'),
-  ],
+  plugins: [require('@tailwindcss/aspect-ratio')],
   future: {
     purgeLayersByDefault: true,
   },

@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import { SelectItem } from './SelectItem'
-// import { useSelector } from 'react-redux'
 import cn from 'classnames'
 
 // const СomboList = ({ onChange, selectedId, products }) => (
