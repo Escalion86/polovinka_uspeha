@@ -1,5 +1,6 @@
 import BlockContainer from '@components/BlockContainer'
 import { H2, H3, H4, P } from '@components/tags'
+import isEventExpiredFunc from '@helpers/isEventExpired'
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
 import EventCard from '@layouts/cards/EventCard'
@@ -107,7 +108,7 @@ const EventsBlock = ({
 
   const loggedUser = useRecoilValue(loggedUserAtom)
 
-  const visibleEvents =
+  const visibleEvents = (
     loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
       ? events
       : events.filter(
@@ -116,6 +117,7 @@ const EventsBlock = ({
             (!event.usersStatusAccess ||
               event.usersStatusAccess[loggedUser?.status ?? 'novice'])
         )
+  ).filter((event) => !isEventExpiredFunc(event))
 
   const filteredEvents = visibleEvents.slice(0, maxShowedEvents)
 
