@@ -1,6 +1,7 @@
 import BlockContainer from '@components/BlockContainer'
 import { H2 } from '@components/tags'
 import isEventExpiredFunc from '@helpers/isEventExpired'
+import EventCard from '@layouts/cards/EventCard'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import cn from 'classnames'
 import Link from 'next/link'
@@ -72,9 +73,9 @@ const EventsBlock = ({
               <EventCard
                 key={'event' + index}
                 eventId={event._id}
-                noButtons={
-                  loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
-                }
+                // noButtons={
+                //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
+                // }
               />
               // <CardEvent key={'event' + index} event={event} />
             ))

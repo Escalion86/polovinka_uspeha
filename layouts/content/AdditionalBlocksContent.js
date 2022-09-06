@@ -8,6 +8,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import sanitize from '@helpers/sanitize'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
 const AdditionalBlockCard = ({ additionalBlockId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -115,7 +116,7 @@ const AdditionalBlocksContent = () => {
   // .sort((a, b) => (a.index < b.index ? -1 : 1))
 
   return (
-    <>
+    <CardListWrapper>
       {additionalBlocks?.length > 0 ? (
         [...additionalBlocks]
           .sort((a, b) => (a.index < b.index ? -1 : 1))
@@ -129,7 +130,7 @@ const AdditionalBlocksContent = () => {
         <div className="flex justify-center p-2">Нет дополнительных блоков</div>
       )}
       <Fab onClick={() => modalsFunc.additionalBlock.edit()} show />
-    </>
+    </CardListWrapper>
   )
 }
 

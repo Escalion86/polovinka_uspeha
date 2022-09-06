@@ -184,7 +184,7 @@ const QuestionnaireContent = (props) => {
   }, [modalsFunc])
 
   return (
-    <div className="flex flex-col h-screen px-2 mb-2 gap-y-2">
+    <div className="flex flex-col flex-1 h-screen px-2 mb-2 gap-y-2">
       <FormWrapper>
         {/* <InputImage
           label="Фотография"

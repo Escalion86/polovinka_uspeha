@@ -49,7 +49,7 @@ const ContactsContent = (props) => {
   }
 
   return (
-    <div className="flex flex-col h-screen px-2 mb-2 gap-y-2">
+    <div className="flex flex-col flex-1 h-screen px-2 mb-2 gap-y-2">
       <FormWrapper>
         <FormWrapper twoColumns>
           <PhoneInput

@@ -8,6 +8,7 @@ import reviewSelector from '@state/selectors/reviewSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { CardWrapper } from '@components/CardWrapper'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
 const ReviewCard = ({ reviewId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -49,7 +50,7 @@ const ReviewsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const reviews = useRecoilValue(reviewsAtom)
   return (
-    <>
+    <CardListWrapper>
       {reviews?.length > 0 ? (
         reviews.map((review) => (
           <ReviewCard key={review._id} reviewId={review._id} />
@@ -58,7 +59,7 @@ const ReviewsContent = () => {
         <div className="flex justify-center p-2">Нет отзывов</div>
       )}
       <Fab onClick={() => modalsFunc.review.edit()} show />
-    </>
+    </CardListWrapper>
   )
 }
 

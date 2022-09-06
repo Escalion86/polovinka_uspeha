@@ -8,6 +8,7 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import paymentsAtom from '@state/atoms/paymentsAtom'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
 const DevCard = ({ title, data }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -37,7 +38,7 @@ const DevContent = () => {
   const payments = useRecoilValue(paymentsAtom)
 
   return (
-    <>
+    <CardListWrapper>
       <DevCard title="users" data={users} />
       <DevCard title="events" data={events} />
       <DevCard title="eventsUsers" data={eventsUsers} />
@@ -45,7 +46,7 @@ const DevContent = () => {
       <DevCard title="reviews" data={reviews} />
       <DevCard title="additionalBlocks" data={additionalBlocks} />
       <DevCard title="payments" data={payments} />
-    </>
+    </CardListWrapper>
   )
 }
 

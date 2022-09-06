@@ -8,14 +8,7 @@ const ContentWrapper = ({ children, className, user, page }) => {
       style={{ gridArea: 'content' }}
     >
       <SideBar user={user} page={page} />
-      <div
-        className={cn(
-          'flex-1 flex flex-col w-full overflow-scroll overflow-x-hidden py-1 bg-opacity-15 gap-y-2 bg-general',
-          className
-        )}
-      >
-        {children}
-      </div>
+      <div className="flex flex-col flex-1">{children}</div>
     </div>
   )
 }

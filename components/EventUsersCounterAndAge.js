@@ -30,6 +30,8 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
   //     (!item.status || item.status === '' || item.status === 'participant')
   // ).length
 
+  if (!eventId || !event) return null
+
   const eventParticipantsCount = eventWomansCount + eventMansCount
 
   return (
