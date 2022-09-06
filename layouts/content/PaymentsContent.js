@@ -5,6 +5,7 @@ import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PAY_TYPES } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -87,7 +88,7 @@ const PaymentsContent = () => {
   const payments = useRecoilValue(paymentsAtom)
 
   return (
-    <>
+    <CardListWrapper>
       {payments?.length > 0 ? (
         payments.map((payment) => (
           <PaymentCard key={payment._id} paymentId={payment._id} />
@@ -96,7 +97,7 @@ const PaymentsContent = () => {
         <div className="flex justify-center p-2">Нет транзакций</div>
       )}
       <Fab onClick={() => modalsFunc.payment.edit()} show />
-    </>
+    </CardListWrapper>
   )
 }
 

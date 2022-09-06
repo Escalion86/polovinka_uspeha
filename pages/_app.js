@@ -16,9 +16,39 @@ import {
   useRecoilValue,
 } from 'recoil'
 
+import { ThemeProvider } from '@mui/material/styles'
+
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-loading-skeleton/dist/skeleton.css'
+
+import { createTheme } from '@mui/material/styles'
+import { red } from '@mui/material/colors'
+import { CssBaseline } from '@mui/material/'
+
+// Create a theme instance.
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#7a5151',
+    },
+    secondary: {
+      main: '#2A323B',
+    },
+    error: {
+      main: red.A400,
+    },
+    // background: {
+    //   default: '#FFD600',
+    // },
+  },
+  root: {
+    // height: '-webkit-fill-available',
+    // margin: 0,
+    // paddingLeft: 30,
+    background: 'rgba(239, 243, 246, 1)',
+  },
+})
 
 // import { createStore, applyMiddleware, compose } from 'redux'
 // import thunk from 'redux-thunk'
@@ -52,7 +82,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <SessionProvider session={session} refetchInterval={5 * 60}>
         {/* <Provider store={store}> */}
         <RecoilRoot>
-          <Component {...pageProps} />
+          <ThemeProvider theme={theme}>
+            {/* <CssBaseline /> */}
+            <Component {...pageProps} />
+          </ThemeProvider>
         </RecoilRoot>
         {/* </Provider> */}
       </SessionProvider>

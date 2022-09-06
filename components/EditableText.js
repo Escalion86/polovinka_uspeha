@@ -1,25 +1,7 @@
 import { useState, useEffect } from 'react'
 
-import {
-  faAlignCenter,
-  faAlignJustify,
-  faAlignLeft,
-  faAlignRight,
-  faBan,
-  faBold,
-  faCheck,
-  faFont,
-  faHeading,
-  faItalic,
-  faPencilAlt,
-  faStrikethrough,
-  faSubscript,
-  faSuperscript,
-  faTimes,
-  faUnderline,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { MODES } from '@helpers/constants'
 import cn from 'classnames'
 import { EditText } from 'react-edit-text'
 import { LoadingSpinner } from '.'

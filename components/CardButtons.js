@@ -15,30 +15,16 @@ import {
   faEllipsisV,
   faPencilAlt,
   faPlay,
+  faShareAlt,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
 
 import { motion } from 'framer-motion'
-import { useState } from 'react'
-import Tooltip from './Tooltip'
-
-const CardButton = ({ active, icon, onClick, color = 'red', dataTip }) => (
-  <Tooltip content={dataTip}>
-    <div
-      className={cn(
-        `text-base font-normal duration-300 flex border items-center justify-center w-8 h-8 hover:bg-${color}-600 border-${color}-500 hover:border-${color}-600 hover:text-white`,
-        active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
-      )}
-      onClick={(e) => {
-        e.stopPropagation()
-        onClick && onClick()
-      }}
-    >
-      <FontAwesomeIcon icon={icon} className="w-6 h-6" />
-    </div>
-  </Tooltip>
-)
+import { useEffect, useState } from 'react'
+import CardButton from './CardButton'
+import copyToClipboard from '@helpers/copyToClipboard'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
   <div
@@ -65,6 +51,7 @@ const CardButtons = ({
   className,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const loggedUser = useRecoilValue(loggedUserAtom)
 
   const device = useWindowDimensionsTailwind()
 
@@ -72,23 +59,25 @@ const CardButtons = ({
 
   const isCompact = device === 'phoneV' || device === 'phoneH'
 
-  const ItemComponent = isCompact ? MenuItem : CardButton
+  const showAdminButtons =
+    loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
 
-  // const items = [
-  //   {condition: typeOfItem === 'event',
-  //   icon: faUsers,
-  //   onClick: () => {
-  //     setOpen(false)
-  //     modalsFunc.event.users(item._id)
-  //   },
-  //   color:"green",
-  //   dataTip:"Участники мероприятия"
-  // }
-  // ]
+  const ItemComponent = showAdminButtons && isCompact ? MenuItem : CardButton
 
   const items = (
     <>
-      {typeOfItem === 'event' && (
+      {window?.location?.origin && typeOfItem === 'event' && (
+        <ItemComponent
+          icon={faShareAlt}
+          onClick={() =>
+            copyToClipboard(window.location.origin + '/event/' + item._id)
+          }
+          color="blue"
+          dataTip="Скопировать ссылку на мероприятие"
+          popoverText="Ссылка на мероприятие скопирована"
+        />
+      )}
+      {showAdminButtons && typeOfItem === 'event' && (
         <ItemComponent
           icon={faUsers}
           onClick={() => {
@@ -100,7 +89,7 @@ const CardButtons = ({
           dataTip="Участники мероприятия"
         />
       )}
-      {onUpClick && (
+      {showAdminButtons && onUpClick && (
         <ItemComponent
           icon={faArrowUp}
           onClick={() => {
@@ -111,7 +100,7 @@ const CardButtons = ({
           dataTip="Переместить выше"
         />
       )}
-      {onDownClick && (
+      {showAdminButtons && onDownClick && (
         <ItemComponent
           icon={faArrowDown}
           onClick={() => {
@@ -122,16 +111,18 @@ const CardButtons = ({
           dataTip="Переместить ниже"
         />
       )}
-      <ItemComponent
-        icon={faPencilAlt}
-        onClick={() => {
-          setOpen(false)
-          modalsFunc[typeOfItem].edit(item._id)
-        }}
-        color="orange"
-        dataTip="Редактировать"
-      />
-      {typeOfItem !== 'user' && typeOfItem !== 'review' && (
+      {showAdminButtons && (
+        <ItemComponent
+          icon={faPencilAlt}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc[typeOfItem].edit(item._id)
+          }}
+          color="orange"
+          dataTip="Редактировать"
+        />
+      )}
+      {showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review' && (
         <ItemComponent
           icon={faCopy}
           onClick={() => {
@@ -142,7 +133,7 @@ const CardButtons = ({
           dataTip="Клонировать"
         />
       )}
-      {showOnSiteOnClick && (
+      {showAdminButtons && showOnSiteOnClick && (
         <ItemComponent
           active={!item.showOnSite}
           icon={item.showOnSite ? faEye : faEyeSlash}
@@ -154,7 +145,7 @@ const CardButtons = ({
           dataTip="Показывать на сайте"
         />
       )}
-      {typeOfItem === 'event' && (
+      {showAdminButtons && typeOfItem === 'event' && (
         <ItemComponent
           icon={item.status === 'canceled' ? faPlay : faBan}
           onClick={() => {
@@ -167,29 +158,21 @@ const CardButtons = ({
           dataTip={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
         />
       )}
-      <ItemComponent
-        icon={faTrashAlt}
-        onClick={() => {
-          setOpen(false)
-          modalsFunc[typeOfItem].delete(item._id)
-        }}
-        color="red"
-        dataTip="Удалить"
-      />
+      {showAdminButtons && (
+        <ItemComponent
+          icon={faTrashAlt}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc[typeOfItem].delete(item._id)
+          }}
+          color="red"
+          dataTip="Удалить"
+        />
+      )}
     </>
   )
 
-  // if (device === 'phoneV' || device === 'phoneH') {
-
-  // }
-
-  // const router = useRouter()
-
-  // const refreshPage = () => {
-  //   router.replace(router.asPath)
-  // }
-
-  return isCompact ? (
+  return showAdminButtons && isCompact ? (
     <div
       className={cn('relative', className)}
       onClick={(e) => {

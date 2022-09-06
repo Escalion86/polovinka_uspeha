@@ -12,18 +12,6 @@ const CheckBox = ({
   name,
   readOnly = false,
 }) => {
-  // const Label = () => (
-  //   <label
-  //     className={cn(
-  //       'flex justify-end items-center font-normal dark:text-white',
-  //       labelClassName
-  //     )}
-  //     htmlFor={name}
-  //   >
-  //     {label}
-  //   </label>
-  // )
-
   if (readOnly && !checked) return null
 
   return (

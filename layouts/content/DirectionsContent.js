@@ -2,6 +2,7 @@ import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import Fab from '@components/Fab'
 import sanitize from '@helpers/sanitize'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
 import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -64,7 +65,7 @@ const DirectionsContent = () => {
   const directions = useRecoilValue(directionsAtom)
 
   return (
-    <>
+    <CardListWrapper>
       {directions?.length > 0 ? (
         directions.map((direction) => (
           <DirectionCard key={direction._id} directionId={direction._id} />
@@ -73,7 +74,7 @@ const DirectionsContent = () => {
         <div className="flex justify-center p-2">Нет направлений</div>
       )}
       <Fab onClick={() => modalsFunc.direction.edit()} show />
-    </>
+    </CardListWrapper>
   )
 }
 

@@ -1,18 +1,6 @@
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import getNoun from '@helpers/getNoun'
-import Fab from '@components/Fab'
-import CardButtons from '@components/CardButtons'
-import birthDateToAge from '@helpers/birthDateToAge'
-import getZodiac from '@helpers/getZodiac'
-import { GENDERS } from '@helpers/constants'
-import cn from 'classnames'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGenderless } from '@fortawesome/free-solid-svg-icons'
-import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import usersAtom from '@state/atoms/usersAtom'
-import userSelector from '@state/selectors/userSelector'
-import loadingAtom from '@state/atoms/loadingAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -20,6 +8,7 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import paymentsAtom from '@state/atoms/paymentsAtom'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
 const DevCard = ({ title, data }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -49,7 +38,7 @@ const DevContent = () => {
   const payments = useRecoilValue(paymentsAtom)
 
   return (
-    <>
+    <CardListWrapper>
       <DevCard title="users" data={users} />
       <DevCard title="events" data={events} />
       <DevCard title="eventsUsers" data={eventsUsers} />
@@ -57,7 +46,7 @@ const DevContent = () => {
       <DevCard title="reviews" data={reviews} />
       <DevCard title="additionalBlocks" data={additionalBlocks} />
       <DevCard title="payments" data={payments} />
-    </>
+    </CardListWrapper>
   )
 }
 

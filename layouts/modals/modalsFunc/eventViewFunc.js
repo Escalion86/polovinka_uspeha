@@ -20,8 +20,12 @@ import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import formatMinutes from '@helpers/formatMinutes'
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import sanitize from '@helpers/sanitize'
+import eventsAtom from '@state/atoms/eventsAtom'
+import CardButton from '@components/CardButton'
+import { faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import copyToClipboard from '@helpers/copyToClipboard'
 
-const eventViewFunc = (eventId, clone = false) => {
+const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -31,10 +35,18 @@ const eventViewFunc = (eventId, clone = false) => {
     setDisableDecline,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
-    const direction = useRecoilValue(directionSelector(event.directionId))
-    const organizer = useRecoilValue(userSelector(event.organizerId))
+    const events = useRecoilValue(eventsAtom)
+    const direction = useRecoilValue(directionSelector(event?.directionId))
+    const organizer = useRecoilValue(userSelector(event?.organizerId))
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
+
+    if (!event || !eventId)
+      return (
+        <div className="flex justify-center w-full text-lg ">
+          ОШИБКА! Мероприятие не найдено!
+        </div>
+      )
 
     return (
       <div className="flex flex-col gap-y-2">
@@ -55,14 +67,35 @@ const eventViewFunc = (eventId, clone = false) => {
           </div>
         )}
         <div className="flex flex-col flex-1">
-          <div className="flex flex-col flex-1 px-2 py-2">
+          <div className="relative flex flex-col flex-1 px-2 py-2">
+            <div className="absolute top-2 right-2">
+              <CardButton
+                icon={faShareAlt}
+                color="blue"
+                onClick={() => {
+                  copyToClipboard(
+                    window?.location.origin + '/event/' + event._id
+                  )
+                  // window.open(
+                  //   window?.location.origin,
+                  //   'sharer',
+                  //   'status=0,toolbar=0,width=650,height=500'
+                  // )
+                  // if (typeof window !== 'undefined') {
+                  //   console.log('window.location.href', window?.location.origin)
+                  // }
+                }}
+                dataTip="Скопировать ссылку на мероприятие"
+                popoverText="Ссылка на мероприятие скопирована"
+              />
+            </div>
             <div className="flex justify-center w-full text-3xl font-bold">
-              {event.title}
+              {event?.title}
             </div>
             {/* <p className="flex-1">{event.description}</p> */}
             <div
               className="flex-1 textarea"
-              dangerouslySetInnerHTML={{ __html: sanitize(event.description) }}
+              dangerouslySetInnerHTML={{ __html: sanitize(event?.description) }}
             />
             <Divider thin light />
             {direction?.title && (
@@ -73,18 +106,18 @@ const eventViewFunc = (eventId, clone = false) => {
             )}
             <div className="flex items-start leading-5 gap-x-1">
               <span className="font-bold">Начало:</span>
-              <div>{formatDateTime(event.date)}</div>
-              <div className="font-normal">({getDaysFromNow(event.date)})</div>
+              <div>{formatDateTime(event?.date)}</div>
+              <div className="font-normal">({getDaysFromNow(event?.date)})</div>
             </div>
             <div className="flex items-start leading-5 gap-x-1">
               <span className="font-bold">Продолжительность:</span>
-              <div>{formatMinutes(event.duration ?? 60)}</div>
+              <div>{formatMinutes(event?.duration ?? 60)}</div>
             </div>
 
-            {event.address && (
+            {event?.address && (
               <div className="flex items-start gap-x-1">
                 <span className="font-bold">Адрес:</span>{' '}
-                {formatAddress(event.address, '[не указан]')}
+                {formatAddress(event?.address, '[не указан]')}
                 {event.address?.town && event.address?.street && (
                   <>
                     <a
@@ -118,7 +151,7 @@ const eventViewFunc = (eventId, clone = false) => {
                 )}
               </div>
             )}
-            {event.organizerId && (
+            {event?.organizerId && (
               <div className="flex items-start leading-5 gap-x-1">
                 <span className="font-bold">Организатор:</span>
                 <div className="flex flex-wrap items-center gap-1">
@@ -165,7 +198,7 @@ const eventViewFunc = (eventId, clone = false) => {
           <Divider thin light />
           <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
             <PriceDiscount event={event} className="px-2" prefix="Стоимость:" />
-            <EventButtonSignIn eventId={event._id} />
+            <EventButtonSignIn eventId={event?._id} />
           </div>
         </div>
       </div>

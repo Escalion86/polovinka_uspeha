@@ -13,7 +13,6 @@ import { DEFAULT_USER } from '@helpers/constants'
 // import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import { putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
-import validateEmail from '@helpers/validateEmail'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 // import { useRouter } from 'next/router'
@@ -185,7 +184,7 @@ const QuestionnaireContent = (props) => {
   }, [modalsFunc])
 
   return (
-    <div className="flex flex-col h-screen px-2 mb-2 gap-y-2">
+    <div className="flex flex-col flex-1 h-screen px-2 mb-2 gap-y-2">
       <FormWrapper>
         {/* <InputImage
           label="Фотография"

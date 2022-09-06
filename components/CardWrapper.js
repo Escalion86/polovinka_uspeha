@@ -1,10 +1,8 @@
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
-import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import React from 'react'
-import { useRecoilValue } from 'recoil'
 import LoadingSpinner from './LoadingSpinner'
 
 export const CardWrapper = ({
@@ -17,7 +15,6 @@ export const CardWrapper = ({
   showOnSite = true,
   className,
 }) => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const device = useWindowDimensionsTailwind()
   return (
     <div

@@ -3,28 +3,6 @@ import { faTrash, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import { SelectItem } from './SelectItem'
 import cn from 'classnames'
 
-// const СomboList = ({ onChange, selectedId, products }) => (
-//   <select
-//     className="w-full px-2 py-1 text-sm bg-gray-200 cursor-pointer"
-//     onChange={onChange}
-//     defaultValue={selectedId ? selectedId : '?'}
-//   >
-//     <option disabled className="text-sm" value="?">
-//       Выберите товар
-//     </option>
-//     {products.map((product, index) => (
-//       <option
-//         key={'combo' + product._id}
-//         className="text-sm"
-//         value={product._id}
-//       >
-//         {product.article ? '(' + product.article + ')' : '(без артикула)'}{' '}
-//         {product.name}
-//       </option>
-//     ))}
-//   </select>
-// )
-
 const ItemRow = ({
   items,
   onChange,

@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil'
 
 const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
+  if (!event) return null
 
   const useUser = user ?? loggedUser
 

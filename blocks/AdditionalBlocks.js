@@ -1,4 +1,3 @@
-import BlockContainer from '@components/BlockContainer'
 import transliterate from '@helpers/transliterate'
 import DirectionBlock from './DirectionBlock'
 

@@ -14,20 +14,10 @@ const DatePicker = ({
   wrapperClassName,
   // className,
   disabled = false,
-  // inLine = false,
   showYears = false,
   showZodiac = false,
 }) => {
   return (
-    // <>
-    //   <label
-    //     className="flex items-center justify-end leading-4 text-right"
-    //     htmlFor={name}
-    //   >
-    //     {label}
-    //     {required && <span className="text-red-700">*</span>}
-    //   </label>
-    //   <div className="flex items-center">
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
@@ -68,8 +58,6 @@ const DatePicker = ({
         </div>
       )}
     </InputWrapper>
-    //   </div>
-    // </>
   )
 }
 

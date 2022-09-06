@@ -1,15 +1,8 @@
 import Button from '@components/Button'
-import DatePicker from '@components/DatePicker'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-import InputImage from '@components/InputImage'
 import PhoneInput from '@components/PhoneInput'
-import Textarea from '@components/Textarea'
-import GenderPicker from '@components/ValuePicker/GenderPicker'
-import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import { postData, putData } from '@helpers/CRUD'
-import getZodiac from '@helpers/getZodiac'
-import useErrors from '@helpers/useErrors'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
@@ -56,7 +49,7 @@ const ContactsContent = (props) => {
   }
 
   return (
-    <div className="flex flex-col h-screen px-2 mb-2 gap-y-2">
+    <div className="flex flex-col flex-1 h-screen px-2 mb-2 gap-y-2">
       <FormWrapper>
         <FormWrapper twoColumns>
           <PhoneInput
