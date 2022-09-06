@@ -4,7 +4,6 @@ import Fab from '@components/Fab'
 import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import EventCard from '@layouts/cards/EventCard'
-import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
 

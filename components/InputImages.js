@@ -23,13 +23,8 @@ const InputImages = ({
     hiddenFileInput.current.click()
   }
 
-  // const handleChange = (e) => {
-  //   onAddImage(e.target.files[0])
-  // }
-
   const onAddImage = async (newImage) => {
     if (newImage) {
-      // if (image) await deleteImages([image])
       setAddingImage(true)
       sendImage(
         newImage,

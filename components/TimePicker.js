@@ -1,7 +1,4 @@
-// import formatDate from '@helpers/formatDate'
-import birthDateToAge from '@helpers/birthDateToAge'
 import cn from 'classnames'
-import getZodiac from '@helpers/getZodiac'
 import InputWrapper from './InputWrapper'
 
 const TimePicker = ({

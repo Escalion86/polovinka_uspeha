@@ -35,9 +35,7 @@ import {
   Popover,
   PopoverHandler,
   PopoverContent,
-  Button as PopoverButton,
 } from '@material-tailwind/react'
-import useFocus from '@helpers/useFocus'
 
 const TextareaButton = ({
   icon,

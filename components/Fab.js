@@ -1,14 +1,6 @@
-import {
-  faGraduationCap,
-  faPencilAlt,
-  faPlus,
-  faSmile,
-} from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { MODES } from '@helpers/constants'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
-import { useState } from 'react'
 
 const Fab = ({ onClick = () => {}, show = true }) => {
   return (

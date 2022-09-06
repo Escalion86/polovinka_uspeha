@@ -1,15 +1,10 @@
-import {
-  faChartPie,
-  faCheck,
-  faGenderless,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faGenderless } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
-// import roleRus from '@helpers/roleRus'
 import cn from 'classnames'
 import Image from 'next/image'
 
