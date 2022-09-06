@@ -21,6 +21,7 @@ import userViewFunc from './modalsFunc/userViewFunc'
 import errorFunc from './modalsFunc/errorFunc'
 import selectUsersFunc from './modalsFunc/selectUsersFunc'
 import selectDirectionFunc from './modalsFunc/selectDirectionFunc'
+import jsonFunc from './modalsFunc/jsonFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -53,6 +54,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
     },
     custom: addModal,
     error: (data) => addModal(errorFunc(data)),
+    json: (data) => addModal(jsonFunc(data)),
     selectUsers: (itemsId, filter, onChange, exceptedIds, maxUsers) =>
       addModal(
         selectUsersFunc(itemsId, filter, onChange, exceptedIds, maxUsers)
