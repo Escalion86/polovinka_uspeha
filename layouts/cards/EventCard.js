@@ -100,7 +100,7 @@ const EventCard = ({ eventId, noButtons }) => {
       {direction?.image && (
         <div
           className={cn(
-            'relative flex justify-center flex-1 phoneH:flex-none h-44 max-h-44',
+            'hidden tablet:flex relative justify-center flex-1 phoneH:flex-none h-44 max-h-44',
             { 'laptop:w-auto': noButtons }
           )}
         >
@@ -121,8 +121,12 @@ const EventCard = ({ eventId, noButtons }) => {
       <div className="relative flex flex-col justify-between flex-1 w-full">
         <div className="flex flex-col flex-1">
           <div className="flex pl-2">
-            <div className="flex-1 text-xl font-bold">{event.title}</div>
-
+            <div className="flex-1 mr-10 text-xl font-bold tablet:hidden text-general">
+              {direction.title}
+            </div>
+            <div className="flex-1 hidden text-xl font-bold tablet:block">
+              {event.title}
+            </div>
             {!noButtons && (
               <CardButtons
                 item={event}
@@ -138,8 +142,11 @@ const EventCard = ({ eventId, noButtons }) => {
             )}
           </div>
           <div className="flex flex-col flex-1 tablet:flex-row">
-            <div className="justify-between flex-1 hidden pl-2 pr-1 tablet:flex">
-              <div className="flex-1">
+            <div className="flex justify-between flex-1 pl-2 pr-1">
+              <div className="flex-1 text-xl font-bold tablet:hidden">
+                {event.title}
+              </div>
+              <div className="flex-1 hidden tablet:block">
                 {/* <div className="flex flex-1">{event.description}</div> */}
                 {/* <div className="flex flex-1 textarea" dangerouslySetInnerHTML={{ __html: event.description }} /> */}
                 {formatedAddress && (
@@ -201,11 +208,11 @@ const EventCard = ({ eventId, noButtons }) => {
         </div>
         <div className="flex flex-col items-center py-1 pl-2 pr-1 mt-1 border-t border-gray-300 tablet:items-end">
           {/* <PriceDiscount event={event} className="hidden tablet:flex" /> */}
-          <div className="flex justify-between w-full">
-            <div className="text-lg font-bold leading-5 whitespace-normal tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
+          <div className="flex flex-wrap justify-between w-full">
+            <div className="text-lg font-bold leading-5 whitespace-nowrap tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
               {formatDateTime(event.date, false, false, true, false)}
             </div>
-            <div className="text-lg font-bold leading-5 text-right whitespace-normal min-w-24 laptop:whitespace-pre-wrap text-general">
+            <div className="text-lg font-bold leading-5 text-right whitespace-nowrap min-w-24 laptop:whitespace-pre-wrap text-general">
               {formatMinutes(event.duration ?? 60)}
             </div>
           </div>
