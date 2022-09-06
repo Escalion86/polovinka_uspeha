@@ -138,7 +138,7 @@ const EventCard = ({ eventId, noButtons }) => {
             )}
           </div>
           <div className="flex flex-col flex-1 tablet:flex-row">
-            <div className="flex justify-between flex-1 pl-2 pr-1">
+            <div className="justify-between flex-1 hidden pl-2 pr-1 tablet:flex">
               <div className="flex-1">
                 {/* <div className="flex flex-1">{event.description}</div> */}
                 {/* <div className="flex flex-1 textarea" dangerouslySetInnerHTML={{ __html: event.description }} /> */}

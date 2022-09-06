@@ -146,7 +146,7 @@ const EventsBlock = ({
           // )
         }
         {maxEvents && events?.length > maxShowedEvents && (
-          <Button title="Посмотреть все" href="/events" />
+          <Button title="Посмотреть все" href="/events#events" />
         )}
         {!maxEvents && events?.length > maxShowedEvents && (
           <Button
