@@ -25,8 +25,8 @@ const menuCfg = (pages, pagesGroups, user) => {
     .filter(
       (pageGroup) =>
         pageGroup.access === 'all' ||
-        pageGroup.access === user.role ||
-        user.role === 'dev'
+        pageGroup.access === user?.role ||
+        user?.role === 'dev'
     )
     .reduce((totalGroups, group) => {
       const pagesItems = pages.reduce((totalPages, page) => {

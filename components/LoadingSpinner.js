@@ -17,7 +17,7 @@ export const LoadingSpinner = ({ className, size = 'md', text = null }) => {
   return (
     <div
       className={cn(
-        'relative flex flex-col items-center justify-center h-full',
+        'relative flex flex-col items-center justify-center h-full max-h-full',
         className
       )}
     >
@@ -32,7 +32,7 @@ export const LoadingSpinner = ({ className, size = 'md', text = null }) => {
           repeat: Infinity,
           times: [0, 0.6, 0.7, 0.8, 0.9, 1],
         }}
-        className="flex items-center justify-center h-full"
+        className="flex items-center justify-center h-[86%]"
       >
         <img
           className="object-contain max-h-[80%] aspect-1 h-[70%] w-[70%]"

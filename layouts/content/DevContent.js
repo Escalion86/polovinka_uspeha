@@ -49,7 +49,7 @@ const DevContent = () => {
   const payments = useRecoilValue(paymentsAtom)
 
   return (
-    <div className="flex flex-col">
+    <>
       <DevCard title="users" data={users} />
       <DevCard title="events" data={events} />
       <DevCard title="eventsUsers" data={eventsUsers} />
@@ -57,7 +57,7 @@ const DevContent = () => {
       <DevCard title="reviews" data={reviews} />
       <DevCard title="additionalBlocks" data={additionalBlocks} />
       <DevCard title="payments" data={payments} />
-    </div>
+    </>
   )
 }
 

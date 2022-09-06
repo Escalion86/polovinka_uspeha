@@ -68,6 +68,7 @@ import setErrorSelector from '@state/selectors/setErrorSelector'
 import setNotLoadingSelector from '@state/selectors/setNotLoadingSelector'
 import setNotErrorSelector from '@state/selectors/setNotErrorSelector'
 import { modalsFuncAtom } from '@state/atoms'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -178,22 +179,22 @@ function CabinetPage(props) {
         <title>Половинка успеха - Кабинет{title ? ' / ' + title : ''}</title>
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
-      <CabinetWrapper>
-        {loading ? (
-          <div>Загрузка</div>
-        ) : (
-          <>
-            {/* ----------------------------- HEADER ------------------------------- */}
-            {loggedUserState?.role === 'dev' && <DeviceCheck right />}
-            <CabinetHeader user={loggedUserState} title={title} />
-            <BurgerLayout />
-            <ContentWrapper user={loggedUserState} page={page}>
-              <Component {...props} />
-            </ContentWrapper>
-            <ModalsPortal />
-          </>
-        )}
-      </CabinetWrapper>
+      {loading ? (
+        <div className="w-full h-screen">
+          <LoadingSpinner size="lg" />
+        </div>
+      ) : (
+        <CabinetWrapper>
+          {/* ----------------------------- HEADER ------------------------------- */}
+          {loggedUserState?.role === 'dev' && <DeviceCheck right />}
+          <CabinetHeader user={loggedUserState} title={title} />
+          <BurgerLayout />
+          <ContentWrapper user={loggedUserState} page={page}>
+            <Component {...props} />
+          </ContentWrapper>
+          <ModalsPortal />
+        </CabinetWrapper>
+      )}
     </>
   )
 }
