@@ -6,22 +6,8 @@ import {
   PopoverContent,
 } from '@material-tailwind/react'
 
-function replaceErrors(key, value) {
-  if (value instanceof Error) {
-    var error = {}
-
-    Object.getOwnPropertyNames(value).forEach(function (propName) {
-      error[propName] = value[propName]
-    })
-
-    return error
-  }
-
-  return value
-}
-
-const errorFunc = (data) => {
-  const ErrorModal = ({
+const jsonFunc = (data) => {
+  const JSONModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
@@ -29,7 +15,7 @@ const errorFunc = (data) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const json = JSON.stringify(data, replaceErrors, 4)
+    const json = JSON.stringify(data, null, 4)
 
     return (
       <div>
@@ -53,12 +39,12 @@ const errorFunc = (data) => {
   }
 
   return {
-    title: `ОШИБКА`,
+    title: `JSON`,
     declineButtonName: 'Закрыть',
-    Children: ErrorModal,
+    Children: JSONModal,
     showDecline: true,
     showConfirm: false,
   }
 }
 
-export default errorFunc
+export default jsonFunc
