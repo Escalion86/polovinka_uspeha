@@ -8,6 +8,7 @@ import Input from '@components/Input'
 import InputImages from '@components/InputImages'
 import PhoneInput from '@components/PhoneInput'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
+import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
 // import OrientationPicker from '@components/ValuePicker/OrientationPicker'
@@ -321,12 +322,7 @@ const QuestionnaireContent = (props) => {
           error={errors.email}
           copyPasteButtons
         />
-        <CheckBox
-          checked={haveKids}
-          labelPos="left"
-          onClick={() => setHaveKids((checked) => !checked)}
-          label="Есть дети"
-        />
+        <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
         {/* <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
         <Textarea
           label="Профессия"

@@ -360,17 +360,7 @@ const userFunc = (userId, clone = false) => {
           onClick={() => setHaveKids((checked) => !checked)}
           label="Есть дети"
         /> */}
-        <ValuePicker
-          value={haveKids}
-          valuesArray={[
-            { value: false, name: 'Нет', color: 'blue-400' },
-            { value: true, name: 'Есть', color: 'green-400' },
-            { value: null, name: 'Не указано', color: 'red-400' },
-          ]}
-          label="Есть дети"
-          onChange={setHaveKids}
-          name="haveKids"
-        />
+        <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
         <UserStatusPicker
           required
           status={status}
