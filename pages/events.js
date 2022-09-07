@@ -130,7 +130,7 @@ export default function Home(props) {
   return (
     <>
       <Head>
-        <title>Мероприятия - ЦОЗ "Половинка успеха"</title>
+        <title>{`Мероприятия - ЦОЗ "Половинка успеха"`}</title>
       </Head>
       <div>
         <div className="w-full bg-white">

@@ -273,7 +273,7 @@ export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
   description: '',
   image: null,
   menuName: null,
-  index: 0,
+  index: null,
   showOnSite: true,
 })
 

@@ -247,7 +247,7 @@ export default function Home(props) {
   return (
     <>
       <Head>
-        <title>Центр осознанных знакомств - "Половинка успеха"</title>
+        <title>{`Центр осознанных знакомств - "Половинка успеха"`}</title>
       </Head>
       <div>
         {loading ? (

@@ -16,3 +16,16 @@ const getNoun = (number, one, two, five, withNumber = true) => {
 }
 
 export default getNoun
+
+export const getNounEvents = (number) =>
+  getNoun(number, 'мероприятие', 'мероприятия', 'мероприятий')
+
+export const getNounDirections = (number) =>
+  getNoun(number, 'направление', 'направления', 'направлений')
+
+export const getNounHours = (number) => getNoun(number, 'час', 'часа', 'часов')
+
+export const getNounMinutes = (number) =>
+  getNoun(number, 'направление', 'направления', 'направлений')
+
+export const getNounAges = (number) => getNoun(number, 'год', 'года', 'лет')

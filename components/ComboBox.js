@@ -36,11 +36,7 @@ const ComboBox = ({
           </option>
         )}
         {items.map((item, index) => (
-          <option
-            className="cursor-pointer"
-            key={'combo' + index}
-            value={item.value}
-          >
+          <option className="cursor-pointer" key={item.name} value={item.value}>
             {item.name}
           </option>
         ))}

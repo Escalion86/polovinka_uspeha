@@ -196,7 +196,7 @@ function EventPage(props) {
     <>
       <Head>
         <title>
-          Половинка успеха - Мероприятие{title ? ' "' + title + '"' : ''}
+          {`Половинка успеха - Мероприятие${title ? ' "' + title + '"' : ''}`}
         </title>
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>

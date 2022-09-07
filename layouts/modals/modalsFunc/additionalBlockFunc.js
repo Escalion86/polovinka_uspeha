@@ -12,6 +12,7 @@ import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
 import { DEFAULT_ADDITIONAL_BLOCK } from '@helpers/constants'
+import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 
 const additionalBlockFunc = (additionalBlockId, clone = false) => {
   const AdditionalBlockModal = ({
@@ -22,9 +23,12 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    const additionalBlocks = useRecoilValue(additionalBlocksAtom)
+
     const additionalBlock = useRecoilValue(
       additionalBlockSelector(additionalBlockId)
     )
+
     const setAdditionalBlock = useRecoilValue(itemsFuncAtom).additionalBlock.set
 
     const [title, setTitle] = useState(
@@ -56,6 +60,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
             showOnSite,
             image,
             menuName,
+            index: additionalBlock?.index ?? additionalBlocks.length,
           },
           clone
         )

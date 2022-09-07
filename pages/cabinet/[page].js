@@ -176,7 +176,9 @@ function CabinetPage(props) {
   return (
     <>
       <Head>
-        <title>Половинка успеха - Кабинет{title ? ' / ' + title : ''}</title>
+        <title>{`Половинка успеха - Кабинет${
+          title ? ' / ' + title : ''
+        }`}</title>
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
       {loading ? (

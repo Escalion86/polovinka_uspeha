@@ -173,7 +173,7 @@ const eventViewFunc = (eventId) => {
                         return (
                           <div
                             className="flex flex-wrap"
-                            key={'assistant' + index}
+                            key={'assistant' + user._id}
                           >
                             <UserName user={user} noWrap />
                             <span>,</span>
@@ -181,7 +181,7 @@ const eventViewFunc = (eventId) => {
                         )
                       } else
                         return (
-                          <UserName user={user} key={'assistant' + index} />
+                          <UserName user={user} key={'assistant' + user._id} />
                         )
                     })}
                   </div>

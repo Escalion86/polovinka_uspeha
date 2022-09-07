@@ -1,4 +1,4 @@
-import getNoun from './getNoun'
+import { getNounHours, getNounMinutes } from './getNoun'
 
 function formatMinutes(time, forComponent = false) {
   if (!time || typeof time !== 'number') return undefined
@@ -14,10 +14,8 @@ function formatMinutes(time, forComponent = false) {
     )
   else
     return (
-      (hours > 0 ? getNoun(hours, 'час', 'часа', 'часов') : '') +
-      (minutes > 0
-        ? (hours > 0 ? ' ' : '') + getNoun(minutes, 'минута', 'минуты', 'минут')
-        : '')
+      (hours > 0 ? getNounHours(hours) : '') +
+      (minutes > 0 ? (hours > 0 ? ' ' : '') + getNounMinutes(minutes) : '')
     )
 }
 

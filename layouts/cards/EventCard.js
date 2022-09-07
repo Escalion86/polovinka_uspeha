@@ -23,7 +23,7 @@ import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventS
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import errorAtom from '@state/atoms/errorAtom'
 
-const EventCard = ({ eventId, noButtons }) => {
+const EventCard = ({ eventId, noButtons, hidden = false }) => {
   const widthNum = useWindowDimensionsTailwindNum()
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -55,6 +55,7 @@ const EventCard = ({ eventId, noButtons }) => {
       onClick={() => !loading && modalsFunc.event.view(event._id)}
       showOnSite={event.showOnSite}
       gap={false}
+      hidden={hidden}
     >
       {/* <div className="flex items-stretch"> */}
       <div className="absolute top-0 right-0 z-10 tablet:hidden">

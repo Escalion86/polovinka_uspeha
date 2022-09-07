@@ -574,7 +574,7 @@ const Login = () => {
                   <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
                     {Object.values(errors).map(
                       (error, index) =>
-                        error && <li key={'error' + index}>{error}</li>
+                        error && <li key={'error' + error}>{error}</li>
                     )}
                   </ul>
                 )}

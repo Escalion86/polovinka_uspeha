@@ -62,9 +62,7 @@ const TimeTableBlock = ({ events }) => {
           events
             .slice(0, 4)
             .sort((a, b) => (a.date < b.date ? -1 : 1))
-            .map((event, index) => (
-              <CardEvent key={'event' + index} event={event} />
-            ))}
+            .map((event, index) => <CardEvent key={event._id} event={event} />)}
         <Button title="Посмотреть все" />
       </div>
     </BlockContainer>

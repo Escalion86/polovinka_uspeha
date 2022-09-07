@@ -26,9 +26,7 @@ const ReviewCard = ({ reviewId }) => {
       <div className="flex">
         <div className="flex-1 px-2 py-1 text-xl font-bold">
           {review.author}
-          {review.authorAge
-            ? ', ' + getNoun(review.authorAge, 'год', 'года', 'лет')
-            : ''}
+          {review.authorAge ? ', ' + getNounAges(review.authorAge) : ''}
         </div>
         <CardButtons
           item={review}
