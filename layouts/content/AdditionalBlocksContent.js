@@ -25,18 +25,28 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
   const setUp = async () => {
     if (additionalBlock.index === 0) return
 
+    var movedUp = false
+    var movedDown = false
     const itemsToChange = additionalBlocks.map((item) => {
       if (item.index === additionalBlock.index)
-        return { ...item, index: item.index - 1 }
+        if (!movedUp) {
+          movedUp = true
+          return { ...item, index: item.index - 1 }
+        }
+
       if (item.index === additionalBlock.index - 1)
-        return { ...item, index: item.index + 1 }
+        if (!movedDown) {
+          movedDown = true
+          return { ...item, index: item.index + 1 }
+        }
     })
     await Promise.all(
       itemsToChange.map(async (item) => {
-        await itemFunc.additionalBlock.set({
-          _id: item._id,
-          index: item.index,
-        })
+        if (item)
+          await itemFunc.additionalBlock.set({
+            _id: item._id,
+            index: item.index,
+          })
       })
     )
   }
@@ -44,18 +54,27 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
   const setDown = async () => {
     if (additionalBlock.index >= additionalBlocks.length - 1) return
 
+    var movedUp = false
+    var movedDown = false
     const itemsToChange = additionalBlocks.map((item) => {
       if (item.index === additionalBlock.index)
-        return { ...item, index: item.index + 1 }
+        if (!movedDown) {
+          movedDown = true
+          return { ...item, index: item.index + 1 }
+        }
       if (item.index === additionalBlock.index + 1)
-        return { ...item, index: item.index - 1 }
+        if (!movedUp) {
+          movedUp = true
+          return { ...item, index: item.index - 1 }
+        }
     })
     await Promise.all(
       itemsToChange.map(async (item) => {
-        await itemFunc.additionalBlock.set({
-          _id: item._id,
-          index: item.index,
-        })
+        if (item)
+          await itemFunc.additionalBlock.set({
+            _id: item._id,
+            index: item.index,
+          })
       })
     )
   }
