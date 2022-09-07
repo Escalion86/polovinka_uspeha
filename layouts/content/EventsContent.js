@@ -58,6 +58,108 @@ const Filter = ({ options, show, onChange }) => {
     })
   }
 
+  const elements = Object.entries(options).map(
+    ([key, { type, value, name, items }]) => {
+      const [componentValue, setComponentValue] = useState(value)
+      const onChangeComponent = (key, newValue) => {
+        setComponentValue(newValue)
+        onChangeFilter(key, newValue)
+      }
+
+      if (type === 'toggle') {
+        return (
+          <FormControl size="small" className="mt-2" key={key}>
+            <ToggleButton
+              size="small"
+              value="check"
+              selected={componentValue}
+              onChange={() => onChangeComponent(key, !componentValue)}
+              color="primary"
+            >
+              <Check />
+              <div>{name}</div>
+            </ToggleButton>
+          </FormControl>
+        )
+      } else if (type === 'directions') {
+        const directions = useRecoilValue(directionsAtom)
+        return (
+          <FormControl
+            sx={{ m: 1, width: 300 }}
+            size="small"
+            margin="none"
+            key={key}
+          >
+            <InputLabel id="demo-multiple-name-label">Направления</InputLabel>
+            <Select
+              labelId="demo-multiple-name-label"
+              id="demo-multiple-name"
+              multiple
+              value={componentValue}
+              onChange={(e) => onChangeComponent(key, e.target.value)}
+              input={<OutlinedInput label="Направления" />}
+              renderValue={(selected) =>
+                selected.length === directions.length
+                  ? 'Все'
+                  : selected.length === 1
+                  ? directions.find(
+                      (direction) => direction._id === selected[0]
+                    ).title
+                  : getNounDirections(selected.length)
+              }
+              MenuProps={MenuProps}
+            >
+              {directions.map((direction) => (
+                <MenuItem
+                  sx={{ padding: 0 }}
+                  key={direction._id}
+                  value={direction._id}
+                >
+                  <Checkbox
+                    checked={componentValue.indexOf(direction._id) > -1}
+                  />
+                  <ListItemText primary={direction.title} size="small" />
+                  {/* {item.title} */}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )
+      } else if (type === 'multiselect') {
+        return (
+          <FormControl
+            sx={{ m: 1, width: 300 }}
+            size="small"
+            margin="none"
+            key={key}
+          >
+            <InputLabel id="demo-multiple-name-label">{name}</InputLabel>
+            <Select
+              labelId="demo-multiple-name-label"
+              id="demo-multiple-name"
+              multiple
+              value={componentValue}
+              onChange={(e) => onChangeComponent(key, e.target.value)}
+              input={<OutlinedInput label={name} />}
+              renderValue={(selected) =>
+                selected.length === items.length ? 'Все' : selected.join(', ')
+              }
+              MenuProps={MenuProps}
+            >
+              {[...items].map((item) => (
+                <MenuItem sx={{ padding: 0 }} key={item._id} value={item._id}>
+                  <Checkbox checked={componentValue.indexOf(item._id) > -1} />
+                  <ListItemText primary={item.title} size="small" />
+                  {/* {item.title} */}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )
+      }
+    }
+  )
+
   return (
     <motion.div
       // initial={{}}
@@ -80,71 +182,7 @@ const Filter = ({ options, show, onChange }) => {
     Показывать завершенные
     <FontAwesomeIcon icon={icon} className={iconClassName ?? 'w-5 h-5'} />
   </button> */}
-        {Object.entries(options).map(([key, { type, value, name, items }]) => {
-          const [componentValue, setComponentValue] = useState(value)
-          if (type === 'toggle') {
-            return (
-              <FormControl size="small" className="mt-2" key={key}>
-                <ToggleButton
-                  size="small"
-                  value="check"
-                  selected={componentValue}
-                  onChange={() => {
-                    setComponentValue(!componentValue)
-                    onChangeFilter(key, !componentValue)
-                  }}
-                  color="primary"
-                >
-                  <Check />
-                  <div>{name}</div>
-                </ToggleButton>
-              </FormControl>
-            )
-          } else if (type === 'multiselect')
-            return (
-              <FormControl
-                sx={{ m: 1, width: 300 }}
-                size="small"
-                margin="none"
-                key={key}
-              >
-                <InputLabel id="demo-multiple-name-label">{name}</InputLabel>
-                <Select
-                  labelId="demo-multiple-name-label"
-                  id="demo-multiple-name"
-                  multiple
-                  value={componentValue}
-                  onChange={(e) => {
-                    setComponentValue(e.target.value)
-                    onChangeFilter(key, e.target.value)
-                  }}
-                  input={<OutlinedInput label={name} />}
-                  renderValue={(selected) =>
-                    selected.length === Object.keys(items).length
-                      ? 'Все'
-                      : items.length === 1
-                      ? items.find((item) => item._id === selected[0]).title
-                      : getNounDirections(selected.length)
-                  }
-                  MenuProps={MenuProps}
-                >
-                  {[...items].map((item) => (
-                    <MenuItem
-                      sx={{ padding: 0 }}
-                      key={item._id}
-                      value={item._id}
-                    >
-                      <Checkbox
-                        checked={componentValue.indexOf(item._id) > -1}
-                      />
-                      <ListItemText primary={item.title} size="small" />
-                      {/* {item.title} */}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )
-        })}
+        {elements}
       </div>
     </motion.div>
   )
@@ -175,12 +213,12 @@ const EventsContent = () => {
   )
 
   const [filterOptions, setFilterOptions] = useState({
-    showedDirections: directionsIds,
+    directions: directionsIds,
   })
 
   const options = {
-    showedDirections: {
-      type: 'multiselect',
+    directions: {
+      type: 'directions',
       value: directionsIds,
       name: 'Направления',
       items: directions,
@@ -188,13 +226,20 @@ const EventsContent = () => {
   }
 
   const filteredEvents = useMemo(
+    () => visibleEventsForUser(events, eventsLoggedUser, loggedUser, true),
+    [loggedUser]
+  )
+
+  const visibleEventsIds = useMemo(
     () =>
-      visibleEventsForUser(events, eventsLoggedUser, loggedUser, true).filter(
-        (event) =>
-          showFinished !== isEventExpiredFunc(event) &&
-          filterOptions.showedDirections.includes(event.directionId)
-      ),
-    [loggedUser, showFinished, filterOptions.showedDirections.length]
+      filteredEvents
+        .filter(
+          (event) =>
+            showFinished === isEventExpiredFunc(event) &&
+            filterOptions.directions.includes(event.directionId)
+        )
+        .map((event) => event._id),
+    [showFinished, filterOptions.directions.length]
   )
 
   const filteredAndSortedEvents = useMemo(
@@ -206,7 +251,7 @@ const EventsContent = () => {
   )
   console.log('1', 1)
 
-  const isFiltered = filterOptions.showedDirections.length !== directions.length
+  const isFiltered = filterOptions.directions.length !== directions.length
 
   return (
     <>
@@ -217,21 +262,21 @@ const EventsContent = () => {
           aria-label="outlined primary button group"
         >
           <Button
-            onClick={() => setShowFinished(true)}
-            variant={showFinished ? 'contained' : 'outlined'}
+            onClick={() => setShowFinished(false)}
+            variant={!showFinished ? 'contained' : 'outlined'}
           >
             Предстоящие
           </Button>
           <Button
-            onClick={() => setShowFinished(false)}
-            variant={!showFinished ? 'contained' : 'outlined'}
+            onClick={() => setShowFinished(true)}
+            variant={showFinished ? 'contained' : 'outlined'}
           >
             Завершенные
           </Button>
         </ButtonGroup>
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounEvents(filteredEvents.length)}
+            {getNounEvents(visibleEventsIds.length)}
           </div>
           <FormControl size="small">
             <ToggleButton
@@ -268,6 +313,7 @@ const EventsContent = () => {
             <EventCard
               key={event._id}
               eventId={event._id}
+              hidden={!visibleEventsIds.includes(event._id)}
               // noButtons={
               //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
               // }

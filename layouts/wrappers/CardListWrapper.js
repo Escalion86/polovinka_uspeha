@@ -1,15 +1,17 @@
 import cn from 'classnames'
+import { LayoutGroup, motion } from 'framer-motion'
 
 const CardListWrapper = ({ children, className }) => {
   return (
-    <div
+    <motion.div
       className={cn(
-        'flex-1 flex flex-col w-full overflow-scroll overflow-x-hidden py-1 bg-opacity-15 gap-y-2 bg-general',
+        'flex-1 w-full overflow-y-scroll overflow-x-hidden py-1 bg-opacity-15 bg-general',
         className
       )}
+      layoutScroll
     >
       {children}
-    </div>
+    </motion.div>
   )
 }
 

@@ -8,7 +8,7 @@ import cn from 'classnames'
 import LoadingSpinner from './LoadingSpinner'
 import Label from './Label'
 import arrayMove from '@helpers/arrayMove'
-import { motion } from 'framer-motion'
+import { LayoutGroup, motion } from 'framer-motion'
 
 const InputImages = ({
   images = [],
@@ -18,7 +18,6 @@ const InputImages = ({
   directory = null,
   maxImages = 10,
   labelClassName,
-  canSetGeneral = false,
 }) => {
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
@@ -63,6 +62,7 @@ const InputImages = ({
               key={image}
               className="relative w-20 h-20 overflow-hidden border border-gray-300 group"
               layout
+              transition={{ duration: 0.2, type: 'just' }}
             >
               <Zoom zoomMargin={20}>
                 <img
@@ -72,25 +72,31 @@ const InputImages = ({
                 />
               </Zoom>
 
-              <FontAwesomeIcon
-                className="absolute w-4 h-4 text-red-700 duration-200 transform cursor-pointer -top-4 group-hover:top-1 -right-4 group-hover:right-1 hover:scale-125"
-                icon={faTrash}
-                onClick={() => {
-                  onChange(images.filter((image, i) => i !== index))
-                }}
-              />
-              <FontAwesomeIcon
+              <div className="absolute flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 -top-5 group-hover:top-0 -right-5 group-hover:right-0 hover:scale-125">
+                <FontAwesomeIcon
+                  className="h-4 text-red-700"
+                  icon={faTrash}
+                  onClick={() => {
+                    onChange(images.filter((image, i) => i !== index))
+                  }}
+                />
+              </div>
+              <div
                 className={cn(
-                  'absolute w-4 h-4 text-orange-600 duration-200 transform cursor-pointer hover:scale-125',
+                  'absolute flex p-1 duration-200 transform bg-white rounded-br-full cursor-pointer w-7 h-7 hover:scale-125',
                   index === 0
-                    ? 'top-1 left-1'
-                    : '-top-4 group-hover:top-1 -left-4 group-hover:left-1'
+                    ? 'top-0 left-0'
+                    : '-top-5 group-hover:top-0 -left-5 group-hover:left-0'
                 )}
-                icon={faHome}
-                onClick={() => {
-                  onChange(arrayMove(images, index, 0))
-                }}
-              />
+              >
+                <FontAwesomeIcon
+                  className="h-4 text-orange-600"
+                  icon={faHome}
+                  onClick={() => {
+                    if (index !== 0) onChange(arrayMove(images, index, 0))
+                  }}
+                />
+              </div>
             </motion.div>
           ))}
         {!isAddingImage && images.length < maxImages && (
