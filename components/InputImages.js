@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import Zoom from 'react-medium-image-zoom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faPlus, faHome } from '@fortawesome/free-solid-svg-icons'
 import { sendImage } from '@helpers/cloudinary'
 import cn from 'classnames'
 import LoadingSpinner from './LoadingSpinner'
 import Label from './Label'
+import arrayMove from '@helpers/arrayMove'
+import { motion } from 'framer-motion'
 
 const InputImages = ({
   images = [],
@@ -16,10 +18,11 @@ const InputImages = ({
   directory = null,
   maxImages = 10,
   labelClassName,
+  canSetGeneral = false,
 }) => {
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
-  const addImageClick = (event) => {
+  const addImageClick = () => {
     hiddenFileInput.current.click()
   }
 
@@ -56,9 +59,10 @@ const InputImages = ({
       >
         {images.length > 0 &&
           images.map((image, index) => (
-            <div
-              key={index}
+            <motion.div
+              key={image}
               className="relative w-20 h-20 overflow-hidden border border-gray-300 group"
+              layout
             >
               <Zoom zoomMargin={20}>
                 <img
@@ -75,7 +79,19 @@ const InputImages = ({
                   onChange(images.filter((image, i) => i !== index))
                 }}
               />
-            </div>
+              <FontAwesomeIcon
+                className={cn(
+                  'absolute w-4 h-4 text-orange-600 duration-200 transform cursor-pointer hover:scale-125',
+                  index === 0
+                    ? 'top-1 left-1'
+                    : '-top-4 group-hover:top-1 -left-4 group-hover:left-1'
+                )}
+                icon={faHome}
+                onClick={() => {
+                  onChange(arrayMove(images, index, 0))
+                }}
+              />
+            </motion.div>
           ))}
         {!isAddingImage && images.length < maxImages && (
           <div
