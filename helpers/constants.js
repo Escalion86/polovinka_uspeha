@@ -209,7 +209,7 @@ export const DEFAULT_USER = Object.freeze({
   lastActivityAt: null,
   prevActivityAt: null,
   archive: false,
-  haveKids: false,
+  haveKids: null,
 })
 
 export const DEFAULT_ADDRESS = Object.freeze({

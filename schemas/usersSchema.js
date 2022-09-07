@@ -111,7 +111,7 @@ const usersSchema = {
   },
   haveKids: {
     type: Boolean,
-    default: false,
+    default: null,
   },
 }
 

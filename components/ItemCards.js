@@ -7,6 +7,7 @@ import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
 import cn from 'classnames'
 import Image from 'next/image'
+import UserName from './UserName'
 
 const ItemContainer = ({
   onClick,
@@ -104,13 +105,7 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
       />
       <div className="flex items-center flex-1 py-0.5 px-1">
         <div className="flex flex-wrap items-center flex-1 text-sm text-gray-800 truncate tablet:text-base gap-x-1">
-          <span className="font-semibold">{item.firstName}</span>
-          {item.secondName && (
-            <span className="font-semibold">{item.secondName}</span>
-          )}
-          {item.thirdName && (
-            <span className="font-semibold">{item.thirdName}</span>
-          )}
+          <UserName user={item} className="font-semibold" />
           {item.birthday && (
             <span className="italic">
               {' (' + birthDateToAge(item.birthday) + ')'}

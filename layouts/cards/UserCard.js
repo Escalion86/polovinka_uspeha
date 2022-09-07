@@ -24,9 +24,9 @@ const UserCard = ({ userId }) => {
   const userGender =
     user.gender && GENDERS.find((gender) => gender.value === user.gender)
 
-  const userStatusArr = USERS_STATUSES.find(
-    (userStatus) => userStatus.value === user.status
-  )
+  // const userStatusArr = USERS_STATUSES.find(
+  //   (userStatus) => userStatus.value === user.status
+  // )
 
   return (
     <CardWrapper
@@ -55,7 +55,7 @@ const UserCard = ({ userId }) => {
         <div className="flex flex-col flex-1 text-xl font-bold">
           <div className="flex">
             <div className="flex flex-wrap items-center flex-1 px-2 gap-x-1">
-              {userStatusArr?.value === 'member' && (
+              {user.status === 'member' && (
                 <Tooltip content="Участник клуба">
                   <div className="w-6 h-6">
                     <Image
@@ -66,7 +66,7 @@ const UserCard = ({ userId }) => {
                   </div>
                 </Tooltip>
               )}
-              {userStatusArr?.value === 'ban' && (
+              {user.status === 'ban' && (
                 <Tooltip content="Забанен">
                   <div className="w-6 h-6">
                     <Image
