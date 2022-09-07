@@ -38,7 +38,7 @@ const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
     }}
   >
     <FontAwesomeIcon icon={icon} className="w-6 h-6" />
-    <div className="whitespace-nowrap">{dataTip}</div>
+    <div className="whitespace-nowrap prevent-select-text">{dataTip}</div>
   </div>
 )
 
@@ -69,9 +69,10 @@ const CardButtons = ({
       {window?.location?.origin && typeOfItem === 'event' && (
         <ItemComponent
           icon={faShareAlt}
-          onClick={() =>
+          onClick={() => {
+            setOpen(false)
             copyToClipboard(window.location.origin + '/event/' + item._id)
-          }
+          }}
           color="blue"
           dataTip="Скопировать ссылку на мероприятие"
           popoverText="Ссылка на мероприятие скопирована"
@@ -158,7 +159,7 @@ const CardButtons = ({
           dataTip={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
         />
       )}
-      {showAdminButtons && (
+      {loggedUser?.role === 'dev' && showAdminButtons && (
         <ItemComponent
           icon={faTrashAlt}
           onClick={() => {

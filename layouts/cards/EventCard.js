@@ -155,12 +155,12 @@ const EventCard = ({ eventId, noButtons }) => {
                     <span>{formatedAddress}</span>
                   </div>
                 )}
-                {event.organizerId && (
+                {/* {event.organizerId && (
                   <div className="flex leading-5 gap-x-1">
                     <span className="font-bold">Организатор:</span>
                     <UserNameById userId={event.organizerId} noWrap />
                   </div>
-                )}
+                )} */}
                 {eventAssistants &&
                   typeof eventAssistants === 'object' &&
                   eventAssistants.length > 0 && (

@@ -20,6 +20,7 @@ import CheckBox from '@components/CheckBox'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
+import ValuePicker from '@components/ValuePicker/ValuePicker'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -353,11 +354,22 @@ const userFunc = (userId, clone = false) => {
           error={errors.email}
           copyPasteButtons
         />
-        <CheckBox
+        {/* <CheckBox
           checked={haveKids}
           labelPos="left"
           onClick={() => setHaveKids((checked) => !checked)}
           label="Есть дети"
+        /> */}
+        <ValuePicker
+          value={haveKids}
+          valuesArray={[
+            { value: false, name: 'Нет', color: 'blue-400' },
+            { value: true, name: 'Есть', color: 'green-400' },
+            { value: null, name: 'Не указано', color: 'red-400' },
+          ]}
+          label="Есть дети"
+          onChange={setHaveKids}
+          name="haveKids"
         />
         <UserStatusPicker
           required

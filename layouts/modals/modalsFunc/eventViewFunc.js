@@ -152,7 +152,7 @@ const eventViewFunc = (eventId) => {
               </div>
             )}
             {event?.organizerId && (
-              <div className="flex items-start leading-5 gap-x-1">
+              <div className="flex items-center leading-5 gap-x-1">
                 <span className="font-bold">Организатор:</span>
                 <div className="flex flex-wrap items-center gap-1">
                   <UserName user={organizer} noWrap />
