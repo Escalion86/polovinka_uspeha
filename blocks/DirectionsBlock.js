@@ -8,7 +8,7 @@ const DirectionsBlock = ({ directions, startInverse = false }) => {
       <BlockContainer id="directions" />
       {directions.map((direction, index) => (
         <DirectionBlock
-          key={'direction' + index}
+          key={direction._id}
           image={direction.image}
           title={direction.title}
           description={direction.description}

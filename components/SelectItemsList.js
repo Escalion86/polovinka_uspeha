@@ -116,7 +116,7 @@ export const SelectItemsList = ({
 
       return itemRows.map((item, index) => (
         <div
-          key={item?._id ? item._id : index}
+          key={item?._id ?? index}
           className="flex flex-col ml-2 italic gap-y-1"
         >
           <div

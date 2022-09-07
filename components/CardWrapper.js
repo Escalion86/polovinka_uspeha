@@ -2,6 +2,7 @@ import { faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
 import cn from 'classnames'
+import { motion } from 'framer-motion'
 import React from 'react'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -17,7 +18,7 @@ export const CardWrapper = ({
 }) => {
   const device = useWindowDimensionsTailwind()
   return (
-    <div
+    <motion.div
       className={cn(
         'relative flex-col w-full laptop:flex-row items-center laptop:items-stretch duration-300 bg-white border-t border-b border-gray-400 shadow-sm hover:shadow-medium-active',
         { 'cursor-pointer': !loading },
@@ -26,6 +27,7 @@ export const CardWrapper = ({
         className
       )}
       onClick={onClick}
+      // layout
     >
       {error && (
         <div
@@ -47,6 +49,6 @@ export const CardWrapper = ({
         />
       )}
       {children}
-    </div>
+    </motion.div>
   )
 }

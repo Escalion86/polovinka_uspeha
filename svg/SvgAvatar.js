@@ -18,7 +18,7 @@ const SvgAvatar = ({ color = '#9563ff', className }) => (
         <stop offset="1" stopColor="gray" stopOpacity="0.1" />
       </linearGradient>
     </defs>
-    <title>profile pic</title>
+    <title>profile_pic</title>
     <g opacity="0.5">
       <circle
         cx="349"

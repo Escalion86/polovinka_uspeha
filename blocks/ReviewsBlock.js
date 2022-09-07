@@ -27,7 +27,7 @@ const ReviewsBlock = ({ reviews }) => {
       <H2>Отзывы</H2>
       <Masonry gap={16}>
         {reviews.map((review, index) => (
-          <Review key={'review' + index} review={review} />
+          <Review key={review._id} review={review} />
         ))}
       </Masonry>
     </BlockContainer>

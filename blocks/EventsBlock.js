@@ -71,13 +71,13 @@ const EventsBlock = ({
             .sort((a, b) => (a.date < b.date ? -1 : 1))
             .map((event, index) => (
               <EventCard
-                key={'event' + index}
+                key={event._id}
                 eventId={event._id}
                 // noButtons={
                 //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
                 // }
               />
-              // <CardEvent key={'event' + index} event={event} />
+              // <CardEvent key={event._id} event={event} />
             ))
           // )
           //  : (

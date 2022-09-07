@@ -7,7 +7,7 @@ const AdditionalBlocks = ({ additionalBlocks, startInverse }) => {
     .sort((a, b) => (a.index < b.index ? -1 : 1))
     .map((additionalBlock, index) => (
       <DirectionBlock
-        key={'additionalBlock' + index}
+        key={additionalBlock._id}
         image={additionalBlock.image}
         title={additionalBlock.title}
         description={additionalBlock.description}

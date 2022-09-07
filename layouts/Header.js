@@ -98,7 +98,7 @@ const Header = (props) => {
       </div>
       <ul className="items-center justify-center hidden w-full h-[40px] text-lg duration-300 bg-white bg-opacity-75 tablet:flex gap-x-4 hover:bg-opacity-100">
         {menu.map(({ name, href }, index) => {
-          return <MenuItem key={'menuItem' + index} text={name} href={href} />
+          return <MenuItem key={'menuItem' + name} text={name} href={href} />
         })}
       </ul>
       <div

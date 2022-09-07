@@ -9,7 +9,7 @@ import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import cn from 'classnames'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -26,10 +26,10 @@ import {
   Button,
   ButtonGroup,
 } from '@mui/material'
-import { Check, FilterAlt } from '@mui/icons-material'
+import { Check, FilterAlt, Sort } from '@mui/icons-material'
 
 // import { makeStyles } from '@mui/styles'
-import getNoun from '@helpers/getNoun'
+import { getNounDirections, getNounEvents } from '@helpers/getNoun'
 import { motion } from 'framer-motion'
 
 const ITEM_HEIGHT = 48
@@ -124,12 +124,7 @@ const Filter = ({ options, show, onChange }) => {
                       ? 'Все'
                       : items.length === 1
                       ? items.find((item) => item._id === selected[0]).title
-                      : getNoun(
-                          selected.length,
-                          'направление',
-                          'напрпавления',
-                          'направлений'
-                        )
+                      : getNounDirections(selected.length)
                   }
                   MenuProps={MenuProps}
                 >
@@ -150,59 +145,6 @@ const Filter = ({ options, show, onChange }) => {
               </FormControl>
             )
         })}
-        {/* <FormControl size="small" className="mt-2">
-        <ToggleButton
-          size="small"
-          value="check"
-          selected={showFinished}
-          onChange={() => {
-            setShowFinished((state) => !state)
-          }}
-          color="primary"
-        >
-          <Check />
-          <div>Завершенные</div>
-        </ToggleButton>
-      </FormControl> */}
-        {/* <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none">
-        <InputLabel id="demo-multiple-name-label">Направления</InputLabel>
-        <Select
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
-          multiple
-          value={showedDirections}
-          onChange={(e) => setShowedDirections(e.target.value)}
-          input={<OutlinedInput label="Направления" />}
-          renderValue={(selected) =>
-            selected.length === directions.length
-              ? 'Все'
-              : selected.length === 1
-              ? directions.find((direction) => direction._id === selected[0])
-                  .title
-              : getNoun(
-                  selected.length,
-                  'направление',
-                  'напрпавления',
-                  'направлений'
-                )
-          }
-          MenuProps={MenuProps}
-        >
-          {[...directions].map((direction) => (
-            <MenuItem
-              sx={{ padding: 0 }}
-              key={direction._id}
-              value={direction._id}
-            >
-              <Checkbox
-                checked={showedDirections.indexOf(direction._id) > -1}
-              />
-              <ListItemText primary={direction.title} size="small" />
-              {direction.title}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
       </div>
     </motion.div>
   )
@@ -216,26 +158,9 @@ const EventsContent = () => {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
-  const options = {
-    // finished: {
-    //   type: 'toggle',
-    //   value: true,
-    //   name: 'Завершенные',
-    // },
-    showedDirections: {
-      type: 'multiselect',
-      value: [...directions].map((direction) => direction._id),
-      name: 'Направления',
-      items: directions,
-    },
-  }
-
-  const [filterOptions, setFilterOptions] = useState({
-    showedDirections: [...directions].map((direction) => direction._id),
-  })
-
   const [showFilter, setShowFilter] = useState(false)
   const [showFinished, setShowFinished] = useState(false)
+  const [isSorted, setIsSorted] = useState(false)
   // const [showedDirections, setShowedDirections] = useState(
   //   [...directions].map((direction) => direction._id)
   // )
@@ -244,16 +169,42 @@ const EventsContent = () => {
     eventsUsersByUserIdSelector(loggedUser?._id)
   )
 
-  const filteredEvents = visibleEventsForUser(
-    events,
-    eventsLoggedUser,
-    loggedUser,
-    true
-  ).filter(
-    (event) =>
-      showFinished !== isEventExpiredFunc(event) &&
-      filterOptions.showedDirections.includes(event.directionId)
+  const directionsIds = useMemo(
+    () => [...directions].map((direction) => direction._id),
+    [directions]
   )
+
+  const [filterOptions, setFilterOptions] = useState({
+    showedDirections: directionsIds,
+  })
+
+  const options = {
+    showedDirections: {
+      type: 'multiselect',
+      value: directionsIds,
+      name: 'Направления',
+      items: directions,
+    },
+  }
+
+  const filteredEvents = useMemo(
+    () =>
+      visibleEventsForUser(events, eventsLoggedUser, loggedUser, true).filter(
+        (event) =>
+          showFinished !== isEventExpiredFunc(event) &&
+          filterOptions.showedDirections.includes(event.directionId)
+      ),
+    [loggedUser, showFinished, filterOptions.showedDirections.length]
+  )
+
+  const filteredAndSortedEvents = useMemo(
+    () =>
+      [...filteredEvents].sort((a, b) =>
+        (isSorted ? a.date < b.date : a.date > b.date) ? -1 : 1
+      ),
+    [filteredEvents, isSorted]
+  )
+  console.log('1', 1)
 
   const isFiltered = filterOptions.showedDirections.length !== directions.length
 
@@ -280,12 +231,7 @@ const EventsContent = () => {
         </ButtonGroup>
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNoun(
-              filteredEvents.length,
-              'мероприятие',
-              'мероприятия',
-              'мероприятий'
-            )}
+            {getNounEvents(filteredEvents.length)}
           </div>
           <FormControl size="small">
             <ToggleButton
@@ -300,24 +246,35 @@ const EventsContent = () => {
               <FilterAlt />
             </ToggleButton>
           </FormControl>
+          {/* <FormControl size="small">
+            <ToggleButton
+              size="small"
+              value="sort"
+              selected={isSorted}
+              onChange={() => {
+                setIsSorted((state) => !state)
+              }}
+              color="warning"
+            >
+              <Sort />
+            </ToggleButton>
+          </FormControl> */}
         </div>
       </div>
       <Filter show={showFilter} options={options} onChange={setFilterOptions} />
       <CardListWrapper>
-        {filteredEvents?.length > 0 ? (
-          [...filteredEvents]
-            .sort((a, b) => (a.date < b.date ? -1 : 1))
-            .map((event) => (
-              <EventCard
-                key={event._id}
-                eventId={event._id}
-                // noButtons={
-                //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
-                // }
-              />
-            ))
+        {filteredAndSortedEvents?.length > 0 ? (
+          filteredAndSortedEvents.map((event) => (
+            <EventCard
+              key={event._id}
+              eventId={event._id}
+              // noButtons={
+              //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
+              // }
+            />
+          ))
         ) : (
-          <div className="flex justify-center p-2">Нет мероприятий</div>
+          <div className="flex justify-center p-2">{`Нет мероприятий`}</div>
         )}
         {(loggedUser?.role === 'admin' || loggedUser?.role === 'dev') && (
           <Fab onClick={() => modalsFunc.event.add()} show />
