@@ -21,6 +21,7 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
+import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({
