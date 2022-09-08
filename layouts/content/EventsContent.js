@@ -198,7 +198,7 @@ const EventsContent = () => {
 
   const [showFilter, setShowFilter] = useState(false)
   const [showFinished, setShowFinished] = useState(false)
-  const [isSorted, setIsSorted] = useState(false)
+  const [isSorted, setIsSorted] = useState(true)
   // const [showedDirections, setShowedDirections] = useState(
   //   [...directions].map((direction) => direction._id)
   // )
@@ -249,7 +249,6 @@ const EventsContent = () => {
       ),
     [filteredEvents, isSorted]
   )
-  console.log('1', 1)
 
   const isFiltered = filterOptions.directions.length !== directions.length
 
