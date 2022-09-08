@@ -196,7 +196,7 @@ const CardButtons = ({
       </div>
     </div>
   ) : (
-    <div className="flex">{items}</div>
+    <div className={cn('flex', className)}>{items}</div>
   )
 }
 
