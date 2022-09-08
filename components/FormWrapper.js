@@ -12,9 +12,9 @@ const FormWrapper = ({
     {title && <div className="text-lg font-bold text-center">{title}</div>}
     <div
       className={cn(
-        'flex-1 gap-2',
+        'flex flex-col flex-1 gap-y-1',
         { flex: flex },
-        { 'tablet:grid tablet:grid-cols-form': grid && !flex },
+        { 'gap-2 tablet:grid tablet:grid-cols-form': grid && !flex },
         { 'tablet:grid-cols-form2': twoColumns },
         className
       )}

@@ -21,9 +21,9 @@ export const CardWrapper = ({
   return (
     <motion.div
       className={cn(
-        'w-full overflow-hidden'
+        'w-full',
 
-        // hidden ? 'h-0 overflow-hidden' : 'h-auto'
+        hidden ? 'overflow-hidden' : ''
       )}
       onClick={onClick}
       transition={{ duration: 0.3, type: 'just' }}
