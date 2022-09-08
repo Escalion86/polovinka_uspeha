@@ -69,6 +69,7 @@ import setNotLoadingSelector from '@state/selectors/setNotLoadingSelector'
 import setNotErrorSelector from '@state/selectors/setNotErrorSelector'
 import { modalsFuncAtom } from '@state/atoms'
 import LoadingSpinner from '@components/LoadingSpinner'
+import isUserAdmin from '@helpers/isUserAdmin'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -250,7 +251,11 @@ export const getServerSideProps = async (context) => {
     }
   }
 
-  if (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) {
+  // Ограничиваем пользователям доступ к страницам
+  if (
+    (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) ||
+    (!['events', 'questionnaire'].includes(page) && !isUserAdmin(session?.user))
+  ) {
     return {
       redirect: {
         destination: `/cabinet/questionnaire`,

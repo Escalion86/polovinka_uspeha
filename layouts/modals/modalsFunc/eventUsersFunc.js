@@ -35,7 +35,7 @@ import {
   Tab,
   TabPanel,
 } from '@material-tailwind/react'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const eventUsersFunc = (eventId) => {
   const EventModal = ({
@@ -45,8 +45,9 @@ const eventUsersFunc = (eventId) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setOnlyCloseButtonShow,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
+    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
 
@@ -119,6 +120,7 @@ const eventUsersFunc = (eventId) => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)
+      if (!isLoggedUserAdmin) setOnlyCloseButtonShow(true)
     }, [
       mansIds,
       womansIds,
@@ -159,9 +161,6 @@ const eventUsersFunc = (eventId) => {
       }
       setReservedParticipantsIds(tempIds)
     }
-
-    const isLoggedUserAdmin =
-      loggedUser?.role === 'dev' || loggedUser?.role === 'admin'
 
     return (
       <Tabs id="custom-animation" value="partisipants" className="min-h-full">

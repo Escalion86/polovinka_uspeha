@@ -1,12 +1,10 @@
 import upperCaseFirst from '@helpers/upperCaseFirst'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 
 const UserName = ({ user, className, noWrap }) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
-  const isLoggedUserAdmin =
-    loggedUser?.role === 'dev' || loggedUser?.role === 'admin'
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   return (
     <div

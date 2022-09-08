@@ -5,7 +5,7 @@ import { GENDERS } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import cn from 'classnames'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
@@ -85,9 +85,7 @@ const ItemContainer = ({
 // export const SetItem = (props) => ProductItem(props)
 
 export const UserItem = ({ item, onClick = null, active = false }) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
-  const isLoggedUserAdmin =
-    loggedUser?.role === 'dev' || loggedUser?.role === 'admin'
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
