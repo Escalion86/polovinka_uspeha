@@ -11,8 +11,7 @@ const ValueItem = ({
 }) => (
   <button
     className={cn(
-      `z-10 flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded cursor-pointer gap-x-2 flex-nowrap`,
-      `border-${color}`,
+      `z-10 flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded cursor-pointer gap-x-2 flex-nowrap border-${color}`,
       active ? `text-white bg-${color}` : `text-${color} bg-white`
     )}
     onClick={() => onClick(value)}
@@ -38,9 +37,12 @@ const ValuePicker = ({
   required = false,
   disselectOnSameClick = false,
   error = false,
+  inLine,
 }) => {
+  const Wrapper = ({ children }) =>
+    inLine ? <div className="flex gap-x-1">{children}</div> : <>{children}</>
   return (
-    <>
+    <Wrapper>
       {label && (
         <label
           className="flex items-center justify-end text-right"
@@ -75,7 +77,7 @@ const ValuePicker = ({
           />
         ))}
       </div>
-    </>
+    </Wrapper>
   )
 }
 

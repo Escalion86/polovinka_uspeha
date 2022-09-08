@@ -5,8 +5,10 @@ import { GENDERS } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import cn from 'classnames'
 import Image from 'next/image'
+import { useRecoilValue } from 'recoil'
 import UserName from './UserName'
 
 const ItemContainer = ({
@@ -83,6 +85,10 @@ const ItemContainer = ({
 // export const SetItem = (props) => ProductItem(props)
 
 export const UserItem = ({ item, onClick = null, active = false }) => {
+  const loggedUser = useRecoilValue(loggedUserAtom)
+  const isLoggedUserAdmin =
+    loggedUser?.role === 'dev' || loggedUser?.role === 'admin'
+
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
   return (
@@ -106,7 +112,7 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
       <div className="flex items-center flex-1 py-0.5 px-1">
         <div className="flex flex-wrap items-center flex-1 text-sm text-gray-800 truncate tablet:text-base gap-x-1">
           <UserName user={item} className="font-semibold" />
-          {item.birthday && (
+          {item.birthday && (isLoggedUserAdmin || item.security?.showAge) && (
             <span className="italic">
               {' (' + birthDateToAge(item.birthday) + ')'}
             </span>

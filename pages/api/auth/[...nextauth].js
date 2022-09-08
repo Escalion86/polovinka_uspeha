@@ -150,6 +150,7 @@ export default async function auth(req, res) {
           session.user.status = result.status
           session.user.images = result.images
           session.user.haveKids = result.haveKids
+          session.user.security = result.security
         }
         //  else {
         //   // если пользователь не зарегистрирован

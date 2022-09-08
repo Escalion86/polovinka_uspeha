@@ -35,6 +35,7 @@ import {
   Tab,
   TabPanel,
 } from '@material-tailwind/react'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const eventUsersFunc = (eventId) => {
   const EventModal = ({
@@ -45,6 +46,7 @@ const eventUsersFunc = (eventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    const loggedUser = useRecoilValue(loggedUserAtom)
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
 
@@ -66,32 +68,6 @@ const eventUsersFunc = (eventId) => {
       eventUsersInBanSelector(eventId)
     ).map((user) => user._id)
 
-    // const eventAssistantsIds = eventUsers
-    //   .filter((item) => item.status === 'assistant' && item.user)
-    //   .map((item) => item.user?._id)
-    // const eventMansIds = eventUsers
-    //   .filter(
-    //     (item) =>
-    //       item.user &&
-    //       item.user.gender == 'male' &&
-    //       (!item.status || item.status === '' || item.status === 'participant')
-    //   )
-    //   .map((item) => item.user._id)
-    // const eventWomansIds = eventUsers
-    //   .filter(
-    //     (item) =>
-    //       item.user &&
-    //       item.user.gender == 'famale' &&
-    //       (!item.status || item.status === '' || item.status === 'participant')
-    //   )
-    //   .map((item) => item.user._id)
-    // const eventReservedParticipantsIds = eventUsers
-    //   .filter((item) => item.user && item.status === 'reserve')
-    //   .map((item) => item.user._id)
-    // const eventBannedParticipantsIds = eventUsers
-    //   .filter((item) => item.user && item.status === 'ban')
-    //   .map((item) => item.user._id)
-
     const [assistantsIds, setAssistantsIds] = useState(eventAssistantsIds)
     const [mansIds, setMansIds] = useState(eventMansIds)
     const [womansIds, setWomansIds] = useState(eventWomansIds)
@@ -101,41 +77,8 @@ const eventUsersFunc = (eventId) => {
     const [bannedParticipantsIds, setBannedParticipantsIds] = useState(
       eventBannedParticipantsIds
     )
-    // const [directionId, setDirectionId] = useState(
-    //   event ? event.directionId : null
-    // )
-    // const [title, setTitle] = useState(event ? event.title : '')
-    // const [images, setImages] = useState(event?.images ? event.images : [])
-    // const [description, setDescription] = useState(
-    //   event ? event.description : ''
-    // )
-    // const [date, setDate] = useState(event ? event.date : Date.now())
-    // const [address, setAddress] = useState(
-    //   event?.address && typeof event.address === 'object'
-    //     ? event.address
-    //     : DEFAULT_ADDRESS
-    // )
-    // const [price, setPrice] = useState(event ? event.price : 0)
-    // const [showOnSite, setShowOnSite] = useState(
-    //   event ? event.showOnSite : true
-    // )
-    // const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
     const onClickConfirm = async () => {
-      // let error = false
-      // if (!title) {
-      //   addError({ title: 'Необходимо ввести название' })
-      //   error = true
-      // }
-      // if (!description) {
-      //   addError({ description: 'Необходимо ввести описание' })
-      //   error = true
-      // }
-      // if (!date) {
-      //   addError({ date: 'Необходимо ввести дату' })
-      //   error = true
-      // }
-      // if (!error) {
       closeModal()
       const filteredAssistantsIds = assistantsIds.filter((user) => user !== '?')
       const filteredParticipantsIds = [
@@ -217,17 +160,15 @@ const eventUsersFunc = (eventId) => {
       setReservedParticipantsIds(tempIds)
     }
 
+    const isLoggedUserAdmin =
+      loggedUser?.role === 'dev' || loggedUser?.role === 'admin'
+
     return (
       <Tabs id="custom-animation" value="partisipants" className="min-h-full">
         <TabsHeader
           // indicatorProps={{ className: 'duration-0 bg-general h-1 top-8' }}
           className="bg-gray-200 duration-0"
         >
-          {/* {data.map(({ label, value }) => (
-        <Tab key={value} value={value}>
-          {label}
-        </Tab>
-      ))} */}
           <Tab key="assistants" value="assistants" className="flex flex-col">
             <div className="italic font-bold">Ведущие</div>
             <div className="-m-1 text-sm">{assistantsIds.length}</div>
@@ -246,10 +187,12 @@ const eventUsersFunc = (eventId) => {
             <div className="italic font-bold">Резерв</div>
             <div className="-m-1 text-sm">{reservedParticipantsIds.length}</div>
           </Tab>
-          <Tab key="ban" value="ban" className="italic font-bold">
-            <div className="italic font-bold">Бан</div>
-            <div className="-m-1 text-sm">{bannedParticipantsIds.length}</div>
-          </Tab>
+          {isLoggedUserAdmin && (
+            <Tab key="ban" value="ban" className="italic font-bold">
+              <div className="italic font-bold">Бан</div>
+              <div className="-m-1 text-sm">{bannedParticipantsIds.length}</div>
+            </Tab>
+          )}
         </TabsHeader>
         <TabsBody
           animate={{
@@ -272,6 +215,7 @@ const eventUsersFunc = (eventId) => {
                 ...womansIds,
                 ...bannedParticipantsIds,
               ]}
+              readOnly={!isLoggedUserAdmin}
             />
           </TabPanel>
           <TabPanel value="partisipants" className="h-full min-h-full">
@@ -290,6 +234,7 @@ const eventUsersFunc = (eventId) => {
                 (event.maxMans === null || event.maxMans > mansIds.length)
               }
               exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
+              readOnly={!isLoggedUserAdmin}
             />
             <SelectUserList
               title="Участники Женщины"
@@ -306,6 +251,7 @@ const eventUsersFunc = (eventId) => {
                 (event.maxWomans === null || event.maxWomans > womansIds.length)
               }
               exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
+              readOnly={!isLoggedUserAdmin}
             />
             <div className="flex justify-end gap-x-1">
               <span>Всего:</span>
@@ -333,69 +279,26 @@ const eventUsersFunc = (eventId) => {
                 ...reservedParticipantsIds,
                 ...bannedParticipantsIds,
               ]}
+              readOnly={!isLoggedUserAdmin}
             />
           </TabPanel>
-          <TabPanel value="ban">
-            <SelectUserList
-              title="Блокированные"
-              usersId={bannedParticipantsIds}
-              onChange={(usersIds) => {
-                removeIdsFromAllByBan(usersIds)
-                setBannedParticipantsIds(usersIds)
-              }}
-              // onDelete={(user, onConfirm) => {
-              //   console.log('1', 1)
-              // }}
-              exceptedIds={bannedParticipantsIds}
-            />
-          </TabPanel>
-          {/* <InputImages
-          label="Фотографии"
-          directory="events"
-          images={images}
-          onChange={setImages}
-        />
-        <SelectDirection
-          selectedId={directionId}
-          onChange={(direction) => setDirectionId(direction._id)}
-        />
-        <Input
-          label="Название"
-          type="text"
-          value={title}
-          onChange={(value) => {
-            removeError('title')
-            setTitle(value)
-          }}
-          // labelClassName="w-40"
-          error={errors.title}
-        />
-        <EditableTextarea
-          label="Описание"
-          html={description}
-          uncontrolled={false}
-          onChange={(value) => {
-            removeError('description')
-            setDescription(value)
-          }}
-          placeholder="Описание мероприятия..."
-        />
-        <DateTimePicker value={date} onChange={setDate} label="Дата и время" />
-        <AddressPicker address={address} onChange={setAddress} />
-        <PriceInput
-          value={price}
-          onChange={(value) => {
-            removeError('price')
-            setPrice(value)
-          }}
-        />
-        <CheckBox
-          checked={showOnSite}
-          labelPos="left"
-          // labelClassName="w-40"
-          onClick={() => setShowOnSite((checked) => !checked)}
-          label="Показывать на сайте"
-        /> */}
+          {isLoggedUserAdmin && (
+            <TabPanel value="ban">
+              <SelectUserList
+                title="Блокированные"
+                usersId={bannedParticipantsIds}
+                onChange={(usersIds) => {
+                  removeIdsFromAllByBan(usersIds)
+                  setBannedParticipantsIds(usersIds)
+                }}
+                // onDelete={(user, onConfirm) => {
+                //   console.log('1', 1)
+                // }}
+                exceptedIds={bannedParticipantsIds}
+                readOnly={!isLoggedUserAdmin}
+              />
+            </TabPanel>
+          )}
           {/* <ErrorsList errors={errors} /> */}
         </TabsBody>
       </Tabs>
