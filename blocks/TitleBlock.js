@@ -50,7 +50,7 @@ const TitleBlock = ({ userIsLogged = false }) => {
             // className="font-thin"
             style={{ textShadow: '1px 1px 2px black' }}
           >
-            Мы организовываем уникальные форматы знакомств
+            Уникальные форматы знакомств
             <br />
             для поиска своей второй половинки
           </H3>
