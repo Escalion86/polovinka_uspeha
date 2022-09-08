@@ -1,3 +1,4 @@
+import Label from '@components/Label'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 
@@ -11,12 +12,12 @@ const ValueItem = ({
 }) => (
   <button
     className={cn(
-      `z-10 flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded cursor-pointer gap-x-2 flex-nowrap border-${color}`,
+      `h-[30px] z-10 flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded cursor-pointer gap-x-2 flex-nowrap border-${color}`,
       active ? `text-white bg-${color}` : `text-${color} bg-white`
     )}
     onClick={() => onClick(value)}
   >
-    {icon && <FontAwesomeIcon icon={icon} className="h-6" />}
+    {icon && <FontAwesomeIcon icon={icon} className="h-5" />}
     <div
       className={cn(
         'whitespace-nowrap duration-300 select-none',
@@ -38,12 +39,13 @@ const ValuePicker = ({
   disselectOnSameClick = false,
   error = false,
   inLine,
+  labelClassName,
 }) => {
   const Wrapper = ({ children }) =>
     inLine ? <div className="flex gap-x-1">{children}</div> : <>{children}</>
   return (
     <Wrapper>
-      {label && (
+      {/* {label && (
         <label
           className="flex items-center justify-end text-right"
           htmlFor={name}
@@ -51,10 +53,11 @@ const ValuePicker = ({
           {label}
           {required && <span className="text-red-700">*</span>}
         </label>
-      )}
+      )} */}
+      <Label text={label} className={labelClassName} required={required} />
       <div
         className={cn(
-          'relative flex flex-wrap gap-x-2 gap-y-1 max-w-fit'
+          'relative flex flex-wrap items-center gap-x-2 gap-y-1 max-w-fit'
           // error ? 'border border-red-500 rounded -m-0.5 p-0.5' : ''
         )}
       >

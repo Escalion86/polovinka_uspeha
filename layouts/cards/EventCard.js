@@ -58,25 +58,6 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
       hidden={hidden}
     >
       {/* <div className="flex items-stretch"> */}
-      <div className="absolute top-0 right-0 z-10 tablet:hidden">
-        {/* <div className="flex-1 ml-8 text-xl font-bold text-center">
-          {event.title}
-        </div> */}
-
-        {!noButtons && (
-          <CardButtons
-            item={event}
-            typeOfItem="event"
-            showOnSiteOnClick={() => {
-              itemFunc.event.set({
-                _id: event._id,
-                showOnSite: !event.showOnSite,
-              })
-            }}
-            className="bg-white border-b border-l rounded-bl-md border-general"
-          />
-        )}
-      </div>
       {/* {event?.images && event.images.length > 0 && (
         <div
           className={cn(
@@ -122,8 +103,21 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
       <div className="relative flex flex-col justify-between flex-1 w-full">
         <div className="flex flex-col flex-1">
           <div className="flex pl-2">
-            <div className="flex-1 mr-10 text-xl font-bold tablet:hidden text-general">
-              {direction.title}
+            <div className="flex flex-1 text-xl font-bold tablet:hidden text-general">
+              <div className="flex-1">{direction.title}</div>
+              {!noButtons && (
+                <CardButtons
+                  item={event}
+                  typeOfItem="event"
+                  showOnSiteOnClick={() => {
+                    itemFunc.event.set({
+                      _id: event._id,
+                      showOnSite: !event.showOnSite,
+                    })
+                  }}
+                  className="bg-white border-b border-l tablet:hidden rounded-bl-md border-general"
+                />
+              )}
             </div>
             <div className="flex-1 hidden text-xl font-bold tablet:block">
               {event.title}

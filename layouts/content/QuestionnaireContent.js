@@ -211,8 +211,12 @@ const QuestionnaireContent = (props) => {
   }, [modalsFunc])
 
   return (
-    <div className="flex flex-col w-full">
-      <Tabs id="custom-animation" value="general">
+    <div className="flex flex-col w-full h-full max-h-full min-h-full">
+      <Tabs
+        className="flex flex-col flex-1"
+        id="custom-animation"
+        value="general"
+      >
         <TabsHeader
           // indicatorProps={{ className: 'duration-0 bg-general h-1 top-8' }}
           className="bg-gray-200 duration-0"
@@ -229,148 +233,151 @@ const QuestionnaireContent = (props) => {
             mount: { scale: 1 },
             unmount: { scale: 0 },
           }}
-          className="h-full max-h-full min-h-full"
+          className="flex-1"
         >
-          <TabPanel value="general">
-            <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2">
-              <FormWrapper>
-                {/* <InputImage
+          <TabPanel
+            value="general"
+            className="h-full max-h-full overflow-y-auto"
+          >
+            {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}
+            <FormWrapper>
+              {/* <InputImage
           label="Фотография"
           directory="users"
           image={image}
           onChange={setImage}
           noImage={image ?? `/img/users/${gender ?? 'male'}.jpg`}
         /> */}
-                <InputImages
-                  label="Фотографии"
-                  directory="users"
-                  images={images}
-                  onChange={(images) => {
-                    removeError('images')
-                    setImages(images)
-                  }}
-                  // required
-                  error={errors.images}
-                />
-                <Input
-                  label="Имя"
-                  type="text"
-                  value={firstName}
-                  onChange={(value) => {
-                    removeError('firstName')
-                    setFirstName(value)
-                  }}
-                  required
-                  // labelClassName="w-40"
-                  error={errors.firstName}
-                  forGrid
-                />
-                <Input
-                  label="Фамилия"
-                  type="text"
-                  value={secondName}
-                  onChange={(value) => {
-                    removeError('secondName')
-                    setSecondName(value)
-                  }}
-                  required
-                  // labelClassName="w-40"
-                  error={errors.secondName}
-                  forGrid
-                />
-                <Input
-                  label="Отчество"
-                  type="text"
-                  value={thirdName}
-                  onChange={(value) => {
-                    removeError('thirdName')
-                    setThirdName(value)
-                  }}
-                  // labelClassName="w-40"
-                  error={errors.thirdName}
-                  forGrid
-                />
-                <GenderPicker
-                  required
-                  gender={gender}
-                  onChange={(value) => {
-                    removeError('gender')
-                    setGender(value)
-                  }}
-                  error={errors.gender}
-                />
-                {/* <OrientationPicker
+              <InputImages
+                label="Фотографии"
+                directory="users"
+                images={images}
+                onChange={(images) => {
+                  removeError('images')
+                  setImages(images)
+                }}
+                // required
+                error={errors.images}
+              />
+              <Input
+                label="Имя"
+                type="text"
+                value={firstName}
+                onChange={(value) => {
+                  removeError('firstName')
+                  setFirstName(value)
+                }}
+                required
+                // labelClassName="w-40"
+                error={errors.firstName}
+                forGrid
+              />
+              <Input
+                label="Фамилия"
+                type="text"
+                value={secondName}
+                onChange={(value) => {
+                  removeError('secondName')
+                  setSecondName(value)
+                }}
+                required
+                // labelClassName="w-40"
+                error={errors.secondName}
+                forGrid
+              />
+              <Input
+                label="Отчество"
+                type="text"
+                value={thirdName}
+                onChange={(value) => {
+                  removeError('thirdName')
+                  setThirdName(value)
+                }}
+                // labelClassName="w-40"
+                error={errors.thirdName}
+                forGrid
+              />
+              <GenderPicker
+                required
+                gender={gender}
+                onChange={(value) => {
+                  removeError('gender')
+                  setGender(value)
+                }}
+                error={errors.gender}
+              />
+              {/* <OrientationPicker
           orientation={orientation}
           onChange={setOrientation}
         /> */}
-                <DatePicker
-                  label="День рождения"
-                  value={birthday}
-                  onChange={setBirthday}
-                  showYears
-                  showZodiac
-                  required
-                />
+              <DatePicker
+                label="День рождения"
+                value={birthday}
+                onChange={setBirthday}
+                showYears
+                showZodiac
+                required
+              />
 
-                <FormWrapper twoColumns>
-                  <PhoneInput
-                    required
-                    label="Телефон (логин)"
-                    value={phone}
-                    onChange={setPhone}
-                    error={errors.phone}
-                    copyPasteButtons
-                    disabled
-                  />
-                  <PhoneInput
-                    label="Whatsapp"
-                    value={whatsapp}
-                    onChange={setWhatsapp}
-                    error={errors.whatsapp}
-                    copyPasteButtons
-                  />
-                </FormWrapper>
-                <FormWrapper twoColumns>
-                  <PhoneInput
-                    label="Viber"
-                    value={viber}
-                    onChange={setViber}
-                    error={errors.viber}
-                    copyPasteButtons
-                  />
-                  <Input
-                    prefix="@"
-                    label="Telegram"
-                    value={telegram}
-                    onChange={setTelegram}
-                    copyPasteButtons
-                  />
-                </FormWrapper>
-                <FormWrapper twoColumns>
-                  <Input
-                    prefix="@"
-                    label="Instagram"
-                    value={instagram}
-                    onChange={setInstagram}
-                    copyPasteButtons
-                  />
-                  <Input
-                    prefix="@"
-                    label="Vk"
-                    value={vk}
-                    onChange={setVk}
-                    copyPasteButtons
-                  />
-                </FormWrapper>
-                <Input
-                  label="Email"
-                  value={email}
-                  onChange={setEmail}
-                  error={errors.email}
+              <FormWrapper twoColumns>
+                <PhoneInput
+                  required
+                  label="Телефон (логин)"
+                  value={phone}
+                  onChange={setPhone}
+                  error={errors.phone}
+                  copyPasteButtons
+                  disabled
+                />
+                <PhoneInput
+                  label="Whatsapp"
+                  value={whatsapp}
+                  onChange={setWhatsapp}
+                  error={errors.whatsapp}
                   copyPasteButtons
                 />
-                <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
-                {/* <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
+              </FormWrapper>
+              <FormWrapper twoColumns>
+                <PhoneInput
+                  label="Viber"
+                  value={viber}
+                  onChange={setViber}
+                  error={errors.viber}
+                  copyPasteButtons
+                />
+                <Input
+                  prefix="@"
+                  label="Telegram"
+                  value={telegram}
+                  onChange={setTelegram}
+                  copyPasteButtons
+                />
+              </FormWrapper>
+              <FormWrapper twoColumns>
+                <Input
+                  prefix="@"
+                  label="Instagram"
+                  value={instagram}
+                  onChange={setInstagram}
+                  copyPasteButtons
+                />
+                <Input
+                  prefix="@"
+                  label="Vk"
+                  value={vk}
+                  onChange={setVk}
+                  copyPasteButtons
+                />
+              </FormWrapper>
+              <Input
+                label="Email"
+                value={email}
+                onChange={setEmail}
+                error={errors.email}
+                copyPasteButtons
+              />
+              <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
+              {/* <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
         <Textarea
           label="Профессия"
           value={profession}
@@ -383,63 +390,68 @@ const QuestionnaireContent = (props) => {
           onChange={setInterests}
           rows={4}
         /> */}
-              </FormWrapper>
-            </div>
+            </FormWrapper>
+            {/* </div> */}
           </TabPanel>
-          <TabPanel value="security" className="flex flex-col gap-y-2">
-            <ValuePicker
-              value={security.fullSecondName}
-              valuesArray={[
-                { value: true, name: 'Полностью', color: 'green-400' },
-                {
-                  value: false,
-                  name: 'Только первую букву',
-                  color: 'blue-400',
-                },
-              ]}
-              label="Показывать фамилию"
-              onChange={() => toggleSecurytyKey('fullSecondName')}
-              name="yes_no"
-              inLine
-            />
-            <ValuePicker
-              value={security.fullThirdName}
-              valuesArray={[
-                { value: true, name: 'Полностью', color: 'green-400' },
-                {
-                  value: false,
-                  name: 'Только первую букву',
-                  color: 'blue-400',
-                },
-              ]}
-              label="Показывать отчество"
-              onChange={() => toggleSecurytyKey('fullThirdName')}
-              name="yes_no"
-              inLine
-            />
-            <YesNoPicker
-              label="Показывать дату рождения"
-              inLine
-              value={security.showBirthday}
-              onChange={() => toggleSecurytyKey('showBirthday')}
-            />
-            <YesNoPicker
-              label="Показывать возраст"
-              inLine
-              value={security.showAge}
-              onChange={() => toggleSecurytyKey('showAge')}
-            />
-            <YesNoPicker
-              label="Показывать контакты (телефон и пр.)"
-              inLine
-              value={security.showContacts}
-              onChange={() => toggleSecurytyKey('showContacts')}
-            />
+          <TabPanel
+            value="security"
+            className="flex flex-col h-full max-h-full overflow-y-auto gap-y-2"
+          >
+            <FormWrapper>
+              <ValuePicker
+                value={security.fullSecondName}
+                valuesArray={[
+                  { value: true, name: 'Полностью', color: 'green-400' },
+                  {
+                    value: false,
+                    name: 'Только первую букву',
+                    color: 'blue-400',
+                  },
+                ]}
+                label="Показывать фамилию"
+                onChange={() => toggleSecurytyKey('fullSecondName')}
+                name="yes_no"
+                // inLine
+              />
+              <ValuePicker
+                value={security.fullThirdName}
+                valuesArray={[
+                  { value: true, name: 'Полностью', color: 'green-400' },
+                  {
+                    value: false,
+                    name: 'Только первую букву',
+                    color: 'blue-400',
+                  },
+                ]}
+                label="Показывать отчество"
+                onChange={() => toggleSecurytyKey('fullThirdName')}
+                name="yes_no"
+                // inLine
+              />
+              <YesNoPicker
+                label="Показывать дату рождения"
+                // inLine
+                value={security.showBirthday}
+                onChange={() => toggleSecurytyKey('showBirthday')}
+              />
+              <YesNoPicker
+                label="Показывать возраст"
+                // inLine
+                value={security.showAge}
+                onChange={() => toggleSecurytyKey('showAge')}
+              />
+              <YesNoPicker
+                label="Показывать контакты (телефон и пр.)"
+                // inLine
+                value={security.showContacts}
+                onChange={() => toggleSecurytyKey('showContacts')}
+              />
+            </FormWrapper>
             {/* </FormWrapper> */}
           </TabPanel>
         </TabsBody>
       </Tabs>
-      <div className="flex flex-col w-full px-1">
+      <div className="flex flex-col w-full p-1">
         <ErrorsList errors={errors} />
         <Button
           name="Применить"
