@@ -76,7 +76,6 @@ const CardButtons = ({
     (showAdminButtons && showOnSiteOnClick ? 1 : 0) +
     (showAdminButtons && typeOfItem === 'event' ? 1 : 0) +
     (loggedUser?.role === 'dev' && showAdminButtons ? 1 : 0)
-  console.log('numberOfButtons', numberOfButtons)
 
   const ItemComponent = numberOfButtons > 3 && isCompact ? MenuItem : CardButton
 
