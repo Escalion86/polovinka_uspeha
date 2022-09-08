@@ -62,6 +62,8 @@ const CardButtons = ({
   const showAdminButtons =
     loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
 
+  const isUserMember = loggedUser.status === 'member'
+
   const ItemComponent = showAdminButtons && isCompact ? MenuItem : CardButton
 
   const items = (
@@ -78,7 +80,7 @@ const CardButtons = ({
           popoverText="Ссылка на мероприятие скопирована"
         />
       )}
-      {showAdminButtons && typeOfItem === 'event' && (
+      {(showAdminButtons || isUserMember) && typeOfItem === 'event' && (
         <ItemComponent
           icon={faUsers}
           onClick={() => {

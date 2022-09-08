@@ -12,6 +12,7 @@ import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import Tooltip from '@components/Tooltip'
 import Image from 'next/image'
 import ImageGallery from 'react-image-gallery'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -22,6 +23,10 @@ const userViewFunc = (userId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    const loggedUser = useRecoilValue(loggedUserAtom)
+    const isLoggedUserAdmin =
+      loggedUser?.role === 'dev' || loggedUser?.role === 'admin'
+
     const user = useRecoilValue(userSelector(userId))
 
     return (
@@ -81,12 +86,22 @@ const userViewFunc = (userId, clone = false) => {
                 }
               </span>
             </div> */}
-            {user.birthday && (
-              <div className="flex gap-x-2">
-                <span className="font-bold">Дата рождения:</span>
-                <span>{birthDateToAge(user.birthday, true, true)}</span>
-              </div>
-            )}
+            {user.birthday &&
+              (isLoggedUserAdmin ||
+                user.security?.showBirthday ||
+                user.security?.showAge) && (
+                <div className="flex gap-x-2">
+                  <span className="font-bold">Дата рождения:</span>
+                  <span>
+                    {birthDateToAge(
+                      user.birthday,
+                      true,
+                      isLoggedUserAdmin || user.security?.showBirthday,
+                      isLoggedUserAdmin || user.security?.showAge
+                    )}
+                  </span>
+                </div>
+              )}
             <div className="flex gap-x-2">
               <span className="font-bold">Дети:</span>
               <span>
@@ -99,7 +114,9 @@ const userViewFunc = (userId, clone = false) => {
             </div>
           </div>
         </div>
-        <ContactsIconsButtons user={user} withTitle vertical />
+        {(isLoggedUserAdmin || user.security?.showContacts) && (
+          <ContactsIconsButtons user={user} withTitle vertical />
+        )}
       </FormWrapper>
     )
   }

@@ -1,3 +1,5 @@
+import { DEFAULT_USERS_SECURITY } from '@helpers/constants'
+
 const usersSchema = {
   firstName: {
     type: String,
@@ -112,6 +114,11 @@ const usersSchema = {
   haveKids: {
     type: Boolean,
     default: null,
+  },
+  security: {
+    type: Map,
+    of: Boolean,
+    default: DEFAULT_USERS_SECURITY,
   },
 }
 

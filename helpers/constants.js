@@ -186,6 +186,14 @@ const colors = [
   'hover:bg-gray-600',
 ]
 
+export const DEFAULT_USERS_SECURITY = Object.freeze({
+  fullSecondName: false,
+  fullThirdName: false,
+  showBirthday: false,
+  showAge: false,
+  showContacts: false,
+})
+
 export const DEFAULT_USER = Object.freeze({
   firstName: '',
   secondName: '',
@@ -210,6 +218,7 @@ export const DEFAULT_USER = Object.freeze({
   prevActivityAt: null,
   archive: false,
   haveKids: null,
+  security: DEFAULT_USERS_SECURITY,
 })
 
 export const DEFAULT_ADDRESS = Object.freeze({

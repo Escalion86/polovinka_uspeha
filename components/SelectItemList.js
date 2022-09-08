@@ -16,19 +16,24 @@ const ItemRow = ({
   selectedItemsIds,
   SelectItemComponent = SelectItem,
   dropDownList,
+  readOnly,
 }) => {
   const onChangeItem = (value) => onChange(value, index)
 
   return (
-    <div className="flex border-b border-gray-700">
+    <div
+      className={cn('flex', index === 0 ? null : 'border-t border-gray-700')}
+    >
       <SelectItemComponent
-        onChange={(item) => onChangeItem(item._id)}
+        onChange={readOnly ? null : (item) => onChangeItem(item._id)}
         selectedId={selectedId}
         exceptedIds={selectedItemsIds}
-        clearButton={dropDownList && onDelete}
-        onDelete={onDelete ? (item) => onDelete(index, item) : null}
-        onCreateNew={onCreateNew ? () => onCreateNew(index) : null}
-        onEdit={onEdit ? (item) => onEdit(index, item) : null}
+        clearButton={!readOnly && dropDownList && onDelete}
+        onDelete={
+          !readOnly && onDelete ? (item) => onDelete(index, item) : null
+        }
+        onCreateNew={!readOnly && onCreateNew ? () => onCreateNew(index) : null}
+        onEdit={!readOnly && onEdit ? (item) => onEdit(index, item) : null}
         onClick={onClick ? (item) => onClick(index, item) : null}
         dropDownList={dropDownList}
       />
@@ -54,6 +59,7 @@ export const SelectItemList = ({
   exceptedIds,
   modalFuncKey,
   maxItems,
+  readOnly,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -102,6 +108,7 @@ export const SelectItemList = ({
         selectedItemsIds={itemsId}
         SelectItemComponent={SelectItemComponent}
         dropDownList={dropDownList}
+        readOnly={readOnly}
       />
     ))
   )
@@ -123,43 +130,49 @@ export const SelectItemList = ({
           </div>
         ) : null}
       </div>
-      <div
-        name="itemsIds"
-        className={cn(
-          'flex flex-col flex-wrap-reverse bg-gray-200 border rounded',
-          required && (itemsId.length === 0 || itemsId[0] === '?')
-            ? 'border-red-700'
-            : 'border-gray-700'
-        )}
-      >
-        {itemRows.map((Item, index) => (
-          <Item key={'ItemRow' + index} index={index} />
-        ))}
+      {itemRows.length === 0 && readOnly ? (
+        <div>{'Нет записей'}</div>
+      ) : (
         <div
-          onClick={
-            addButtonIsActive ? (dropDownList ? addRow : onCreateNew) : null
-          }
+          name="itemsIds"
           className={cn(
-            'group flex items-center justify-center h-6 bg-white',
-            itemRows.length > 0 ? 'rounded-b' : 'rounded',
-            { 'cursor-pointer': addButtonIsActive }
+            'flex flex-col flex-wrap-reverse bg-gray-200 border rounded overflow-hidden',
+            required && (itemsId.length === 0 || itemsId[0] === '?')
+              ? 'border-red-700'
+              : 'border-gray-700'
           )}
         >
-          <div
-            className={cn('flex items-center justify-center transparent', {
-              'duration-200 group-hover:scale-110': addButtonIsActive,
-            })}
-          >
-            <FontAwesomeIcon
-              className={
-                'h-5 w-5 ' +
-                (addButtonIsActive ? 'text-gray-700' : 'text-gray-400')
+          {itemRows.map((Item, index) => (
+            <Item key={'ItemRow' + index} index={index} />
+          ))}
+          {!readOnly && (
+            <div
+              onClick={
+                addButtonIsActive ? (dropDownList ? addRow : onCreateNew) : null
               }
-              icon={faPlus}
-            />
-          </div>
+              className={cn(
+                'group flex items-center justify-center h-6 bg-white',
+                itemRows.length > 0 ? 'rounded-b' : 'rounded',
+                { 'cursor-pointer': addButtonIsActive }
+              )}
+            >
+              <div
+                className={cn('flex items-center justify-center transparent', {
+                  'duration-200 group-hover:scale-110': addButtonIsActive,
+                })}
+              >
+                <FontAwesomeIcon
+                  className={
+                    'h-5 w-5 ' +
+                    (addButtonIsActive ? 'text-gray-700' : 'text-gray-400')
+                  }
+                  icon={faPlus}
+                />
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </>
   )
 }
@@ -176,6 +189,7 @@ export const SelectUserList = ({
   canAddItem = true,
   exceptedIds,
   buttons,
+  readOnly,
 }) => {
   return (
     <SelectItemList
@@ -203,6 +217,7 @@ export const SelectUserList = ({
       exceptedIds={exceptedIds}
       maxItems={maxUsers}
       modalFuncKey="selectUsers"
+      readOnly={readOnly}
     />
   )
 }
