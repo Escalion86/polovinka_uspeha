@@ -64,7 +64,21 @@ const CardButtons = ({
 
   const isUserMember = loggedUser.status === 'member'
 
-  const ItemComponent = showAdminButtons && isCompact ? MenuItem : CardButton
+  const numberOfButtons =
+    (window?.location?.origin && typeOfItem === 'event' ? 1 : 0) +
+    ((showAdminButtons || isUserMember) && typeOfItem === 'event' ? 1 : 0) +
+    (showAdminButtons && onUpClick ? 1 : 0) +
+    (showAdminButtons && onDownClick ? 1 : 0) +
+    (showAdminButtons ? 1 : 0) +
+    (showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review'
+      ? 1
+      : 0) +
+    (showAdminButtons && showOnSiteOnClick ? 1 : 0) +
+    (showAdminButtons && typeOfItem === 'event' ? 1 : 0) +
+    (loggedUser?.role === 'dev' && showAdminButtons ? 1 : 0)
+  console.log('numberOfButtons', numberOfButtons)
+
+  const ItemComponent = numberOfButtons > 3 && isCompact ? MenuItem : CardButton
 
   const items = (
     <>
@@ -175,7 +189,7 @@ const CardButtons = ({
     </>
   )
 
-  return showAdminButtons && isCompact ? (
+  return numberOfButtons > 3 && isCompact ? (
     <div
       className={cn('relative', className)}
       onClick={(e) => {
