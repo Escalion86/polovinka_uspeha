@@ -115,7 +115,9 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
                       showOnSite: !event.showOnSite,
                     })
                   }}
-                  className="bg-white border-b border-l tablet:hidden rounded-bl-md border-general"
+                  className="tablet:hidden"
+
+                  // className="bg-white border-b border-l tablet:hidden rounded-bl-md border-general"
                 />
               )}
             </div>
@@ -132,7 +134,7 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
                     showOnSite: !event.showOnSite,
                   })
                 }}
-                className="hidden tablet:block"
+                className="hidden tablet:flex"
               />
             )}
           </div>

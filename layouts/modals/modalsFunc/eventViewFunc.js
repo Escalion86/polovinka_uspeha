@@ -20,10 +20,14 @@ import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import formatMinutes from '@helpers/formatMinutes'
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import sanitize from '@helpers/sanitize'
-import eventsAtom from '@state/atoms/eventsAtom'
+// import eventsAtom from '@state/atoms/eventsAtom'
 import CardButton from '@components/CardButton'
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons'
 import copyToClipboard from '@helpers/copyToClipboard'
+import Button from '@components/Button'
+import { modalsFuncAtom } from '@state/atoms'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import isUserAdmin from '@helpers/isUserAdmin'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -35,9 +39,11 @@ const eventViewFunc = (eventId) => {
     setDisableDecline,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
-    const events = useRecoilValue(eventsAtom)
+    const loggedUser = useRecoilValue(loggedUserAtom)
+    // const events = useRecoilValue(eventsAtom)
     const direction = useRecoilValue(directionSelector(event?.directionId))
     const organizer = useRecoilValue(userSelector(event?.organizerId))
+    const modalsFunc = useRecoilValue(modalsFuncAtom)
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
 
@@ -188,7 +194,15 @@ const eventViewFunc = (eventId) => {
                 </div>
               )}
           </div>
-          <EventUsersCounterAndAge eventId={eventId} />
+          <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
+            <EventUsersCounterAndAge eventId={eventId} />
+            {(loggedUser.status === 'member' || isUserAdmin(loggedUser)) && (
+              <Button
+                name="Посмотреть участников"
+                onClick={() => modalsFunc.event.users(eventId)}
+              />
+            )}
+          </div>
           {/* <Divider thin light /> */}
 
           {/* <div className="flex flex-wrap justify-center flex-1 px-4 text-lg font-bold gap-x-1 text-general">

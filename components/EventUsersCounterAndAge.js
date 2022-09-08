@@ -37,7 +37,7 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
   return (
     <div
       className={cn(
-        'flex text-sm tablet:text-base leading-4 tablet:leading-5 flex-row justify-between tablet:justify-start border-gray-300 tablet:flex-row',
+        'flex text-sm tablet:text-base leading-4 tablet:leading-5 justify-between tablet:justify-start border-gray-300',
         className
       )}
     >
