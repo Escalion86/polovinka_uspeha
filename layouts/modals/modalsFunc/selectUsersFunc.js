@@ -70,8 +70,8 @@ const selectUsersFunc = (state, filter, onConfirm, exceptedIds, maxUsers) => {
       )
     }
     const sortedUsers = [...filteredUsers].sort((a, b) =>
-      a.secondName && b.secondName
-        ? a.secondName.toLocaleLowerCase() < b.secondName.toLocaleLowerCase()
+      a.firstName && b.firstName
+        ? a.firstName.toLocaleLowerCase() < b.firstName.toLocaleLowerCase()
           ? -1
           : 1
         : -1
