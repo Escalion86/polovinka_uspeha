@@ -33,6 +33,7 @@ const Modal = ({
   declineButtonName,
   showConfirm,
   showDecline,
+  closeButtonShow = false,
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
@@ -46,6 +47,8 @@ const Modal = ({
   const setModals = useSetRecoilState(modalsAtom)
   const [close, setClose] = useState(false)
   const [ComponentInFooter, setComponentInFooter] = useState(null)
+  const [onlyCloseButtonShow, setOnlyCloseButtonShow] =
+    useState(closeButtonShow)
 
   const closeModal = () => {
     onClose && typeof onClose === 'function' && onClose()
@@ -201,6 +204,7 @@ const Modal = ({
               setDisableConfirm={setDisableConfirm}
               setDisableDecline={setDisableDecline}
               setComponentInFooter={setComponentInFooter}
+              setOnlyCloseButtonShow={setOnlyCloseButtonShow}
             />
           )}
         </div>
@@ -209,16 +213,20 @@ const Modal = ({
           onConfirmFunc ||
           showConfirm ||
           showDecline ||
-          ComponentInFooter) && (
+          ComponentInFooter ||
+          closeButtonShow ||
+          onlyCloseButtonShow) && (
           <ModalButtons
+            closeButtonShow={onlyCloseButtonShow}
             confirmName={confirmButtonName}
             declineName={declineButtonName}
             onConfirmClick={onConfirmClick}
             onDeclineClick={onDeclineClick}
-            showConfirm={showConfirm}
-            showDecline={showDecline}
+            showConfirm={!onlyCloseButtonShow && showConfirm}
+            showDecline={!onlyCloseButtonShow && showDecline}
             disableConfirm={disableConfirm}
             disableDecline={disableDecline}
+            closeModal={closeModal}
           >
             {ComponentInFooter}
           </ModalButtons>

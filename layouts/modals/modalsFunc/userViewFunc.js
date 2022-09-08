@@ -8,11 +8,10 @@ import FormWrapper from '@components/FormWrapper'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import birthDateToAge from '@helpers/birthDateToAge'
 import UserName from '@components/UserName'
-import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import Tooltip from '@components/Tooltip'
 import Image from 'next/image'
 import ImageGallery from 'react-image-gallery'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -23,9 +22,7 @@ const userViewFunc = (userId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
-    const isLoggedUserAdmin =
-      loggedUser?.role === 'dev' || loggedUser?.role === 'admin'
+    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
     const user = useRecoilValue(userSelector(userId))
 
@@ -124,6 +121,7 @@ const userViewFunc = (userId, clone = false) => {
   return {
     title: `Анкета пользователя`,
     declineButtonName: 'Закрыть',
+    closeButtonShow: true,
     Children: UserModal,
   }
 }

@@ -11,8 +11,10 @@ const ModalButtons = ({
   disableConfirm = false,
   disableDecline = false,
   children,
+  closeButtonShow,
+  closeModal,
 }) => {
-  if (!showConfirm && !showDecline) return null
+  if (!showConfirm && !showDecline && !closeButtonShow) return null
   return (
     <>
       <Divider light thin />
@@ -33,6 +35,13 @@ const ModalButtons = ({
               classBgColor="bg-danger"
               onClick={onDeclineClick}
               disabled={disableDecline}
+            />
+          )}
+          {closeButtonShow && (
+            <Button
+              name="Закрыть"
+              classBgColor="bg-general"
+              onClick={closeModal}
             />
           )}
         </div>
