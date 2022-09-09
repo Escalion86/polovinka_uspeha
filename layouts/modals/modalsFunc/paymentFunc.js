@@ -133,13 +133,11 @@ const paymentFunc = (paymentId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.sum}
-          forGrid
         /> */}
         {/* <CheckBox
           checked={showOnSite}
           labelPos="left"
           // labelClassName="w-40"
-          forGrid
           onClick={() => setShowOnSite((checked) => !checked)}
           label="Показывать на сайте"
         /> */}

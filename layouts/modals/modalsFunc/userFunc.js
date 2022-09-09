@@ -251,7 +251,6 @@ const userFunc = (userId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.firstName}
-          forGrid
           required
         />
         <Input
@@ -264,7 +263,6 @@ const userFunc = (userId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.secondName}
-          forGrid
           required
         />
         <Input
@@ -277,7 +275,6 @@ const userFunc = (userId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.thirdName}
-          forGrid
         />
         <GenderPicker
           required
@@ -368,19 +365,6 @@ const userFunc = (userId, clone = false) => {
           onChange={setStatus}
           error={errors.status}
         />
-        {/* <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
-        <Textarea
-          label="Профессия"
-          value={profession}
-          onChange={setProfession}
-          rows={4}
-        />
-        <Textarea
-          label="Интересы"
-          value={interests}
-          onChange={setInterests}
-          rows={4}
-        /> */}
         <ErrorsList errors={errors} />
       </FormWrapper>
     )

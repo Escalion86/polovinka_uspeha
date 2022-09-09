@@ -237,7 +237,6 @@ const QuestionnaireContent = (props) => {
               required
               // labelClassName="w-40"
               error={errors.firstName}
-              forGrid
             />
             <Input
               label="Фамилия"
@@ -250,7 +249,6 @@ const QuestionnaireContent = (props) => {
               required
               // labelClassName="w-40"
               error={errors.secondName}
-              forGrid
             />
             <Input
               label="Отчество"
@@ -262,7 +260,6 @@ const QuestionnaireContent = (props) => {
               }}
               // labelClassName="w-40"
               error={errors.thirdName}
-              forGrid
             />
             <GenderPicker
               required
@@ -344,19 +341,6 @@ const QuestionnaireContent = (props) => {
               copyPasteButtons
             />
             <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
-            {/* <Textarea label="Обо мне" value={about} onChange={setAbout} rows={4} />
-        <Textarea
-          label="Профессия"
-          value={profession}
-          onChange={setProfession}
-          rows={4}
-        />
-        <Textarea
-          label="Интересы"
-          value={interests}
-          onChange={setInterests}
-          rows={4}
-        /> */}
           </FormWrapper>
           {/* </div> */}
         </TabPanel>

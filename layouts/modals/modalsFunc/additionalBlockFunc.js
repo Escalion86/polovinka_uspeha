@@ -103,7 +103,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
           }}
           error={errors.title}
           required
-          forGrid
         />
         <EditableTextarea
           label="Описание"
@@ -113,7 +112,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
             removeError('description')
             setDescription(value)
           }}
-          forGrid
           error={errors.description}
           required
         />
@@ -127,13 +125,11 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.menuName}
-          forGrid
         />
         <CheckBox
           checked={showOnSite}
           labelPos="left"
           // labelClassName="w-40"
-          forGrid
           onClick={() => setShowOnSite((checked) => !checked)}
           label="Показывать на сайте"
         />

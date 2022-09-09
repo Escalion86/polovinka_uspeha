@@ -115,7 +115,6 @@ const directionFunc = (directionId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.title}
-          forGrid
         />
         {/* <Input
           label="Описание"
@@ -135,13 +134,11 @@ const directionFunc = (directionId, clone = false) => {
             removeError('description')
             setDescription(value)
           }}
-          forGrid
         />
         <CheckBox
           checked={showOnSite}
           labelPos="left"
           // labelClassName="w-40"
-          forGrid
           onClick={() => setShowOnSite((checked) => !checked)}
           label="Показывать на сайте"
         />
