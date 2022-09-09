@@ -54,6 +54,7 @@ const InputWrapper = ({
   required,
   labelPos,
   labelContentWidth,
+  wrapperClassName,
 }) => (
   <div
     className={cn(
@@ -63,7 +64,8 @@ const InputWrapper = ({
         ? 'flex-col'
         : labelPos === 'left' || labelPos === 'right'
         ? 'flex-row items-center'
-        : 'flex-col laptop:flex-row laptop:items-center'
+        : 'flex-col laptop:flex-row laptop:items-center',
+      wrapperClassName
     )}
   >
     {label && (!labelPos || labelPos === 'left' || labelPos === 'top') && (
