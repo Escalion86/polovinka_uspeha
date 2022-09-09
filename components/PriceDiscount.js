@@ -1,17 +1,18 @@
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import cn from 'classnames'
 import React from 'react'
 import { useRecoilValue } from 'recoil'
 
 const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   if (!event) return null
 
-  const useUser = user ?? loggedUser
-
   const eventPriceForUser = event.price
-    ? useUser?.status
-      ? (event.price - event.usersStatusDiscount[useUser.status] ?? 0) / 100
+    ? loggedUserActiveStatus
+      ? (event.price - event.usersStatusDiscount[loggedUserActiveStatus] ?? 0) /
+        100
       : event.price / 100
     : 0
 

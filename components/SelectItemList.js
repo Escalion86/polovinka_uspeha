@@ -22,7 +22,7 @@ const ItemRow = ({
   const onChangeItem = (value) => onChange(value, index)
 
   return (
-    <div className={cn('flex', 'border-b border-gray-700')}>
+    <div className={cn('flex', 'border-b border-gray-700 last:border-0')}>
       <SelectItemComponent
         onChange={readOnly ? null : (item) => onChangeItem(item._id)}
         selectedId={selectedId}

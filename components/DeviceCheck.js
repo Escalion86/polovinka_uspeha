@@ -1,15 +1,13 @@
-import isDevMode from '@helpers/isDevMode'
+// import isDevMode from '@helpers/isDevMode'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import cn from 'classnames'
-import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
+// import { useEffect, useState } from 'react'
 
 const DeviceCheck = ({ textClassName = null, right = false }) => {
-  const [show, setShow] = useState(false)
+  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
 
-  useEffect(() => {
-    if (isDevMode) setShow(true)
-  })
-
-  if (!show) return null
+  if (!isLoggedUserDev) return null
 
   return (
     <div

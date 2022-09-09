@@ -20,25 +20,12 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
-// import {
-//   Tabs,
-//   TabsHeader,
-//   TabsBody,
-//   Tab,
-//   TabPanel,
-// } from '@material-tailwind/react'
-// import {Tabs,Tab} from '@mui/material';
-import Tab from '@mui/material/Tab'
-// import Tabs from '@mui/material/Tabs'
-
 import YesNoPicker from '@components/ValuePicker/YesNoPicker'
 import compareObjects from '@helpers/compareObjects'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 
 import TabPanel from '@components/Tabs/TabPanel'
-import TabList from '@components/Tabs/TabList'
 import TabContext from '@components/Tabs/TabContext'
-TabContext
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
@@ -217,34 +204,7 @@ const QuestionnaireContent = (props) => {
 
   return (
     <div className="flex flex-col w-full h-full max-h-full min-h-full">
-      {/* <Tabs
-        className="flex flex-col flex-1"
-        id="custom-animation"
-        value="general"
-      > */}
       <TabContext value="Анкета">
-        {/* <TabList onChange={setTab}>
-          <Tab label="Анкета" value="general" />
-          <Tab label="Безопасность" value="security" />
-        </TabList> */}
-        {/* <TabsHeader
-          // indicatorProps={{ className: 'duration-0 bg-general h-1 top-8' }}
-          className="bg-gray-200 duration-0"
-        >
-          <Tab key="general" value="general" className="flex flex-col">
-            Анкета
-          </Tab>
-          <Tab key="security" value="security" className="flex flex-col">
-            Безопасность
-          </Tab>
-        </TabsHeader> */}
-        {/* <TabsBody
-          animate={{
-            mount: { scale: 1 },
-            unmount: { scale: 0 },
-          }}
-          className="flex-1"
-        > */}
         <TabPanel tabName="Анкета" className="flex-1">
           {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}
           <FormWrapper>
@@ -453,9 +413,7 @@ const QuestionnaireContent = (props) => {
           </FormWrapper>
           {/* </FormWrapper> */}
         </TabPanel>
-        {/* </TabsBody> */}
       </TabContext>
-      {/* </Tabs> */}
       <div className="flex flex-col w-full p-1">
         <ErrorsList errors={errors} />
         <Button

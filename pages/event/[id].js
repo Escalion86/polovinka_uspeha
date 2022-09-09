@@ -76,6 +76,10 @@ import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import eventFunc from '@layouts/modals/modalsFunc/eventFunc'
 import eventViewFunc from '@layouts/modals/modalsFunc/eventViewFunc'
 import { H2 } from '@components/tags'
+import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -87,8 +91,12 @@ function EventPage(props) {
   const [loading, setLoading] = useState(true)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const [loggedUserState, setLoggedUserState] = useRecoilState(loggedUserAtom)
+  const setLoggedUserActiveRole = useSetRecoilState(loggedUserActiveRoleAtom)
+  const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
+    loggedUserActiveStatusAtom
+  )
   const [eventsState, setEventsState] = useRecoilState(eventsAtom)
   const [directionsState, setDirectionsState] = useRecoilState(directionsAtom)
   const [additionalBlocksState, setAdditionalBlocksState] =
@@ -127,8 +135,11 @@ function EventPage(props) {
     eventsState,
     eventsUsersState,
     loggedUserState,
-    true
+    true,
+    isLoggedUserAdmin,
+    loggedUserActiveStatus
   )
+
   const filteredReviews = reviewsState.filter((review) => review.showOnSite)
   const filteredDirections = directionsState.filter(
     (direction) => direction.showOnSite
@@ -170,6 +181,8 @@ function EventPage(props) {
 
   useEffect(() => {
     setLoggedUserState(props.loggedUser)
+    setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
+    setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
@@ -206,7 +219,7 @@ function EventPage(props) {
         </div>
       ) : (
         <div className="w-full bg-white">
-          {loggedUserState?.role === 'dev' && <DeviceCheck right />}
+          <DeviceCheck right />
           <Header
             events={filteredEvents}
             directions={filteredDirections}

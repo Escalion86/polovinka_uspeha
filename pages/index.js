@@ -78,6 +78,11 @@ import setNotLoadingSelector from '@state/selectors/setNotLoadingSelector'
 import setErrorSelector from '@state/selectors/setErrorSelector'
 import setNotErrorSelector from '@state/selectors/setNotErrorSelector'
 import { modalsFuncAtom } from '@state/atoms'
+import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -124,8 +129,12 @@ export default function Home(props) {
     console.log('props.error', props.error)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const [loggedUserState, setLoggedUserState] = useRecoilState(loggedUserAtom)
+  const setLoggedUserActiveRole = useSetRecoilState(loggedUserActiveRoleAtom)
+  const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
+    loggedUserActiveStatusAtom
+  )
   const [eventsState, setEventsState] = useRecoilState(eventsAtom)
   const [directionsState, setDirectionsState] = useRecoilState(directionsAtom)
   const [additionalBlocksState, setAdditionalBlocksState] =
@@ -170,7 +179,9 @@ export default function Home(props) {
     eventsState,
     eventsUsersState,
     loggedUserState,
-    true
+    true,
+    isLoggedUserAdmin,
+    loggedUserActiveStatus
   )
   // loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
   //   ? events
@@ -200,6 +211,8 @@ export default function Home(props) {
 
   useEffect(() => {
     setLoggedUserState(props.loggedUser)
+    setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
+    setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
@@ -256,7 +269,7 @@ export default function Home(props) {
           </div>
         ) : (
           <div className="w-full bg-white">
-            {loggedUserState?.role === 'dev' && <DeviceCheck right />}
+            <DeviceCheck right />
             <Header
               events={filteredEvents}
               directions={filteredDirections}

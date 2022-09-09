@@ -70,6 +70,9 @@ import setNotErrorSelector from '@state/selectors/setNotErrorSelector'
 import { modalsFuncAtom } from '@state/atoms'
 import LoadingSpinner from '@components/LoadingSpinner'
 import isUserAdmin from '@helpers/isUserAdmin'
+import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -80,8 +83,12 @@ function CabinetPage(props) {
   const [loading, setLoading] = useState(true)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-
+  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const [loggedUserState, setLoggedUserState] = useRecoilState(loggedUserAtom)
+  const setLoggedUserActiveRole = useSetRecoilState(loggedUserActiveRoleAtom)
+  const setLoggedUserActiveStatus = useSetRecoilState(
+    loggedUserActiveStatusAtom
+  )
   const setEventsState = useSetRecoilState(eventsAtom)
   const setDirectionsState = useSetRecoilState(directionsAtom)
   const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
@@ -163,6 +170,8 @@ function CabinetPage(props) {
 
   useEffect(() => {
     setLoggedUserState(props.loggedUser)
+    setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
+    setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
@@ -189,7 +198,7 @@ function CabinetPage(props) {
       ) : (
         <CabinetWrapper>
           {/* ----------------------------- HEADER ------------------------------- */}
-          {loggedUserState?.role === 'dev' && <DeviceCheck right />}
+          {isLoggedUserDev && <DeviceCheck right />}
           <CabinetHeader user={loggedUserState} title={title} />
           <BurgerLayout />
           <ContentWrapper user={loggedUserState} page={page}>

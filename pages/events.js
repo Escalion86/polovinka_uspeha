@@ -47,11 +47,21 @@ import fetchProps from '@server/fetchProps'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import eventEditSelector from '@state/selectors/eventEditSelector'
 import eventDeleteSelector from '@state/selectors/eventDeleteSelector'
+import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import DeviceCheck from '@components/DeviceCheck'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 
 export default function Home(props) {
   const { siteSettings } = props
 
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const [loggedUserState, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const setLoggedUserActiveRole = useSetRecoilState(loggedUserActiveRoleAtom)
+  const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
+    loggedUserActiveStatusAtom
+  )
   const [eventsState, setEventsState] = useRecoilState(eventsAtom)
   const [directionsState, setDirectionsState] = useRecoilState(directionsAtom)
   const [additionalBlocksState, setAdditionalBlocksState] =
@@ -82,7 +92,9 @@ export default function Home(props) {
     eventsState,
     eventsUsersState,
     loggedUserState,
-    true
+    true,
+    isLoggedUserAdmin,
+    loggedUserActiveStatus
   )
   const filteredReviews = reviewsState.filter((review) => review.showOnSite)
   const filteredDirections = directionsState.filter(
@@ -94,6 +106,8 @@ export default function Home(props) {
 
   useEffect(() => {
     setLoggedUser(props.loggedUser)
+    setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
+    setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
@@ -134,6 +148,7 @@ export default function Home(props) {
       </Head>
       <div>
         <div className="w-full bg-white">
+          <DeviceCheck right />
           <Header
             events={filteredEvents}
             directions={filteredDirections}

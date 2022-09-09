@@ -1,4 +1,4 @@
-import { DEFAULT_USER } from '@helpers/constants'
+// import { DEFAULT_USER } from '@helpers/constants'
 import { atom } from 'recoil'
 
 const loggedUserAtom = atom({
