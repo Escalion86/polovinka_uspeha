@@ -7,14 +7,14 @@ const TabContext = ({ value, children }) => {
   const [tab, setTab] = useState(value)
   const tabNames = []
   children.forEach((child, index) => {
-    console.log('child ' + index, child)
-    console.log('child.type.name', child.type.name)
-    if (child.type.name === 'TabPanel' && child.props?.name) {
-      tabNames.push(child.props.name)
+    // console.log('child ' + index, child)
+    // console.log('child.type.name', child.type.name)
+    if (child.props?.tabName) {
+      tabNames.push(child.props.tabName)
     }
   })
 
-  console.log('tabNames', tabNames)
+  // console.log('tabNames', tabNames)
 
   return (
     <MuiTabContext value={tab}>

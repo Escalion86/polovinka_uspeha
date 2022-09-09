@@ -245,7 +245,7 @@ const QuestionnaireContent = (props) => {
           }}
           className="flex-1"
         > */}
-        <TabPanel name="Анкета" className="flex-1">
+        <TabPanel tabName="Анкета" className="flex-1">
           {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}
           <FormWrapper>
             {/* <InputImage
@@ -400,7 +400,7 @@ const QuestionnaireContent = (props) => {
           </FormWrapper>
           {/* </div> */}
         </TabPanel>
-        <TabPanel name="Конфиденциальность" className="flex-1 p-2">
+        <TabPanel tabName="Конфиденциальность" className="flex-1 p-2">
           <FormWrapper>
             <ValuePicker
               value={security.fullSecondName}
