@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import cn from 'classnames'
 import { useState } from 'react'
 import {
@@ -198,16 +198,39 @@ const Menu = ({ menuCfg, activePage }) => {
 }
 
 const SideBar = ({ user, page }) => {
-  const menuOpen = useRecoilValue(menuOpenAtom)
+  const wrapperRef = useRef(null)
+  const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const variants = {
     min: { width: '100%' },
     max: { width: 280 },
   }
 
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target) &&
+        !event.target.classList.contains('menu-btn') &&
+        !event.target.classList.contains('menu-btn__burger')
+      )
+        setMenuOpen(false)
+    }
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [wrapperRef])
+
   return (
     <div
       className="relative top-0 bottom-0 z-50 flex flex-col w-0 tablet:w-16 bg-general"
       style={{ gridArea: 'sidebar' }}
+      ref={wrapperRef}
     >
       <motion.div
         className={
