@@ -1,4 +1,5 @@
 import cn from 'classnames'
+import InputWrapper from './InputWrapper'
 
 const Textarea = ({
   label,
@@ -6,16 +7,21 @@ const Textarea = ({
   value,
   inputClassName,
   labelClassName,
+  wrapperClassName,
   error = false,
   rows = 6,
+  required,
 }) => {
   return (
-    <>
-      <label
-        className={cn('text-text whitespace-nowrap text-right', labelClassName)}
-      >
-        {label}
-      </label>
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      onChange={onChange}
+      copyPasteButtons={false}
+      value={value}
+      className={wrapperClassName}
+      required={required}
+    >
       <textarea
         className={cn(
           'px-1 border rounded outline-none flex-1',
@@ -26,7 +32,7 @@ const Textarea = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-    </>
+    </InputWrapper>
   )
 }
 

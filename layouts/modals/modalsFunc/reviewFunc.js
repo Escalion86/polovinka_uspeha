@@ -11,6 +11,7 @@ import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
 import { DEFAULT_REVIEW } from '@helpers/constants'
+import EditableTextarea from '@components/EditableTextarea'
 
 const reviewFunc = (reviewId, clone = false) => {
   const ReviewModal = ({
@@ -87,7 +88,7 @@ const reviewFunc = (reviewId, clone = false) => {
     useEffect(() => {
       const isFormChanged =
         review?.author !== author ||
-        review?.reviewText !== reviewText ||
+        review?.review !== reviewText ||
         review?.authorAge !== authorAge ||
         review?.showOnSite !== showOnSite
 
@@ -109,7 +110,6 @@ const reviewFunc = (reviewId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.author}
-          forGrid
         />
         <Input
           label="Возраст автора, лет"
@@ -121,7 +121,6 @@ const reviewFunc = (reviewId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.authorAge}
-          forGrid
         />
         <Textarea
           label="Отзыв"
@@ -133,15 +132,25 @@ const reviewFunc = (reviewId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.reviewText}
-          forGrid
         />
+        {/* <EditableTextarea
+                label="Отзыв"
+                html={reviewText}
+                uncontrolled={false}
+                onChange={(value) => {
+                  removeError('reviewText')
+                  setReviewText(value)
+                }}
+                placeholder="Текст отзыва..."
+                required
+                error={errors.reviewText}
+              /> */}
         <CheckBox
           checked={showOnSite}
           labelPos="left"
           // labelClassName="w-40"
           onClick={() => setShowOnSite((checked) => !checked)}
           label="Показывать на сайте"
-          forGrid
         />
         <ErrorsList errors={errors} />
       </FormWrapper>
