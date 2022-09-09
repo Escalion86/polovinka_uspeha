@@ -1,6 +1,6 @@
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import getNoun from '@helpers/getNoun'
+import getNoun, { getNounAges } from '@helpers/getNoun'
 import Fab from '@components/Fab'
 import CardButtons from '@components/CardButtons'
 import reviewsAtom from '@state/atoms/reviewsAtom'
