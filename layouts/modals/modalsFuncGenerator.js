@@ -118,7 +118,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
             text: 'Вы уверены что хотите записаться на мероприятие?',
             confirmButtonName: 'Записаться',
             onConfirm: () => {
-              itemsFunc.event.signUp(eventId, loggedUser._id)
+              itemsFunc.event.signUp(eventId, loggedUser?._id)
             },
           })
       },
@@ -136,7 +136,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
             text: 'Вы уверены что хотите отменить запись на мероприятие?',
             confirmButtonName: 'Отменить запись',
             onConfirm: () => {
-              itemsFunc.event.signOut(eventId, loggedUser._id)
+              itemsFunc.event.signOut(eventId, loggedUser?._id)
             },
           })
       },
