@@ -10,6 +10,8 @@ const PriceInput = ({
   className,
   labelClassName,
   name = 'price',
+  labelContentWidth,
+  labelPos,
 }) => {
   const rubles = value ? Math.floor(value / 100) : 0
   const cops = value ? Math.floor(value % 100) : 0
@@ -26,11 +28,13 @@ const PriceInput = ({
   return (
     <InputWrapper
       label={label}
-      // labelClassName={labelClassName}
+      labelClassName={labelClassName}
       onChange={onChange}
       // copyPasteButtons={copyPasteButtons}
       value={value}
       // style={wrapperStyle}
+      labelContentWidth={labelContentWidth}
+      labelPos={labelPos}
     >
       <div
         className={cn(
@@ -48,7 +52,7 @@ const PriceInput = ({
           noBorder
           inputClassName="rounded-l rounded-r-none w-24"
           postfixClassName="rounded-r-none"
-          labelClassName={labelClassName}
+          // labelClassName={labelClassName}
           type="number"
           name={name + '₽'}
           value={rubles}
@@ -67,7 +71,7 @@ const PriceInput = ({
           noBorder
           wrapperClassName="w-20 border-l rounded-none rounded-r"
           inputClassName="border-l rounded-l-none rounded-r"
-          labelClassName={labelClassName}
+          // labelClassName={labelClassName}
           type="number"
           name={name + 'коп'}
           value={cops}

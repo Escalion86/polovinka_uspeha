@@ -2,20 +2,20 @@ import cn from 'classnames'
 
 const FormWrapper = ({
   children,
-  twoColumns = false,
-  grid = true,
-  flex = false,
+  // twoColumns = false,
+  // grid = true,
+  // flex = false,
   className,
   title,
 }) => (
-  <div className="flex flex-col w-full col-span-2">
+  <div className="flex flex-col w-full">
     {title && <div className="text-lg font-bold text-center">{title}</div>}
     <div
       className={cn(
-        'flex flex-col flex-1 gap-y-1',
-        { flex: flex },
-        { 'gap-2 tablet:grid tablet:grid-cols-form': grid && !flex },
-        { 'tablet:grid-cols-form2': twoColumns },
+        'flex flex-col flex-1 gap-y-2',
+        // { flex: flex },
+        // { 'laptop:gap-2 laptop:grid laptop:grid-cols-form': grid && !flex },
+        // { 'laptop:grid-cols-form2': twoColumns },
         className
       )}
       // style={{

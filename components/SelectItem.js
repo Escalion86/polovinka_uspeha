@@ -16,6 +16,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import Label from './Label'
+import InputWrapper from './InputWrapper'
 
 const filteredItems = (
   items = [],
@@ -292,12 +293,19 @@ const SelectItemContainer = ({
   error,
   buttons,
   selectedId,
+  labelClassName,
+  className,
 }) => {
   const Container = ({ children }) => (
-    <>
-      {label && (
-        <Label text={label} className="items-center" required={required} />
-      )}
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      // onChange={onChange}
+      // value={images}
+      className={cn('flex-1', className)}
+      required={required}
+      // labelPos="top"
+    >
       {/* <label className="flex items-center justify-end leading-4 text-right">
         {label}
         {required && <span className="text-red-700">*</span>}
@@ -314,7 +322,7 @@ const SelectItemContainer = ({
       >
         {children}
       </div>
-    </>
+    </InputWrapper>
   )
 
   return (
