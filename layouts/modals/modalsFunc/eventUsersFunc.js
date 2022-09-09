@@ -205,7 +205,7 @@ const eventUsersFunc = (eventId) => {
         > */}
         <TabPanel tabName="Ведущие">
           <SelectUserList
-            title="Ведущие"
+            label="Ведущие"
             usersId={assistantsIds}
             onChange={(usersIds) => {
               removeIdsFromReserve(usersIds)
@@ -222,7 +222,7 @@ const eventUsersFunc = (eventId) => {
         </TabPanel>
         <TabPanel tabName="Участники">
           <SelectUserList
-            title="Участники Мужчины"
+            label="Участники Мужчины"
             filter={{ gender: 'male' }}
             usersId={mansIds}
             onChange={(usersIds) => {
@@ -239,7 +239,7 @@ const eventUsersFunc = (eventId) => {
             readOnly={!isLoggedUserAdmin}
           />
           <SelectUserList
-            title="Участники Женщины"
+            label="Участники Женщины"
             filter={{ gender: 'famale' }}
             usersId={womansIds}
             onChange={(usersIds) => {
@@ -271,7 +271,7 @@ const eventUsersFunc = (eventId) => {
         </TabPanel>
         <TabPanel tabName="Резерв">
           <SelectUserList
-            title="Резерв"
+            label="Резерв"
             usersId={reservedParticipantsIds}
             onChange={setReservedParticipantsIds}
             exceptedIds={[
@@ -287,7 +287,7 @@ const eventUsersFunc = (eventId) => {
         {isLoggedUserAdmin && (
           <TabPanel tabName="Бан">
             <SelectUserList
-              title="Блокированные"
+              label="Блокированные"
               usersId={bannedParticipantsIds}
               onChange={(usersIds) => {
                 removeIdsFromAllByBan(usersIds)
