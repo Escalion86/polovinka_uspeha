@@ -31,20 +31,23 @@ import Slider from '@components/Slider'
 // import TabList from '@mui/lab/TabList'
 // import TabPanel from '@mui/lab/TabPanel'
 // import Tabs from '@mui/material/Tabs'
-import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
-  Tab,
-  TabPanel,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-} from '@material-tailwind/react'
+// import {
+//   Tabs,
+//   TabsHeader,
+//   TabsBody,
+//   Tab,
+//   TabPanel,
+//   Accordion,
+//   AccordionHeader,
+//   AccordionBody,
+// } from '@material-tailwind/react'
 import TimePicker from '@components/TimePicker'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
+import TabContext from '@components/Tabs/TabContext'
+import TabPanel from '@components/Tabs/TabPanel'
+import FormRow from '@components/FormRow'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -444,16 +447,13 @@ const eventFunc = (eventId, clone = false) => {
 
     return (
       // <TabContext value={tabPage}>
-      <Tabs id="custom-animation" value="general">
-        <TabsHeader
+      <>
+        <TabContext value="Общие">
+          {/* <Tabs id="custom-animation" value="general"> */}
+          {/* <TabsHeader
           // indicatorProps={{ className: 'duration-0 bg-general h-1 top-8' }}
           className="bg-gray-200 duration-0"
         >
-          {/* {data.map(({ label, value }) => (
-          <Tab key={value} value={value}>
-            {label}
-          </Tab>
-        ))} */}
           <Tab key="general" value="general" className="italic font-bold">
             Общие
           </Tab>
@@ -465,13 +465,13 @@ const eventFunc = (eventId, clone = false) => {
               Статус и отчет
             </Tab>
           )}
-        </TabsHeader>
-        <TabsBody
+        </TabsHeader> */}
+          {/* <TabsBody
           animate={{
             mount: { scale: 1 },
             unmount: { scale: 0 },
           }}
-        >
+        > */}
           {/* <TabList
           onChange={(event, newValue) => setTabPage(newValue)}
           aria-label="lab API tabs example"
@@ -481,7 +481,7 @@ const eventFunc = (eventId, clone = false) => {
           <Tab label="Доступ и стоимость" value="2" />
           <Tab label="Item Three" value="3" />
         </TabList> */}
-          <TabPanel value="general">
+          <TabPanel name="Общие">
             <FormWrapper>
               <InputImages
                 label="Фотографии"
@@ -573,7 +573,7 @@ const eventFunc = (eventId, clone = false) => {
               <AddressPicker address={address} onChange={setAddress} />
             </FormWrapper>
           </TabPanel>
-          <TabPanel value="access">
+          <TabPanel name="Доступ и стоимость">
             <FormWrapper title="Стоимость, доступ и скидки">
               <PriceInput
                 value={price}
@@ -581,151 +581,168 @@ const eventFunc = (eventId, clone = false) => {
                   removeError('price')
                   setPrice(value)
                 }}
+                // labelPos="left"
               />
-              <FormWrapper flex>
-                <CheckBox
-                  checked={usersStatusAccess?.noReg}
-                  labelPos="left"
-                  onClick={() =>
-                    setUsersStatusAccess((state) => {
-                      return { ...state, noReg: !usersStatusAccess?.noReg }
-                    })
-                  }
-                  labelClassName="w-[20%]"
-                  label="Не авторизован"
-                />
-                {/* <PriceInput
+              {/* <FormWrapper> */}
+              <CheckBox
+                checked={usersStatusAccess?.noReg}
+                labelPos="left"
+                onClick={() =>
+                  setUsersStatusAccess((state) => {
+                    return { ...state, noReg: !usersStatusAccess?.noReg }
+                  })
+                }
+                // labelClassName="w-[20%]"
+                label="Не авторизован"
+              />
+              {/* <PriceInput
           label="Скидка"
           value={price}
           onChange={(value) => {
             // removeError('price')
             setPrice(value)
           }} */}
-                {/* /> */}
-              </FormWrapper>
-              <FormWrapper flex className="min-h-[26px]">
-                <CheckBox
-                  checked={usersStatusAccess?.novice}
-                  labelPos="left"
-                  onClick={() =>
-                    setUsersStatusAccess((state) => {
-                      return { ...state, novice: !usersStatusAccess?.novice }
-                    })
-                  }
-                  labelClassName="w-[20%]"
-                  label="Новичок"
-                />
-                {usersStatusAccess?.novice && (
-                  <div className="flex min-w-min flex-nowrap gap-x-1">
-                    <PriceInput
-                      label="Скидка"
-                      value={usersStatusDiscount?.novice ?? 0}
-                      onChange={(value) => {
-                        // removeError('price')
-                        setUsersStatusDiscount((state) => {
-                          return { ...state, novice: value }
-                        })
-                      }}
-                    />
-                    <div>
-                      Итого: {(price - usersStatusDiscount?.novice) / 100} ₽
-                    </div>
+              {/* /> */}
+              {/* </FormWrapper> */}
+              {/* <FormWrapper className="min-h-[26px]"> */}
+              {/* <FormRow className="tablet:min-h-[26px]"> */}
+              <CheckBox
+                checked={usersStatusAccess?.novice}
+                labelPos="left"
+                onClick={() =>
+                  setUsersStatusAccess((state) => {
+                    return { ...state, novice: !usersStatusAccess?.novice }
+                  })
+                }
+                // labelClassName="w-[20%]"
+                label="Новичок"
+              />
+              {usersStatusAccess?.novice && (
+                <FormRow>
+                  <PriceInput
+                    label="Скидка новичкам"
+                    value={usersStatusDiscount?.novice ?? 0}
+                    onChange={(value) => {
+                      // removeError('price')
+                      setUsersStatusDiscount((state) => {
+                        return { ...state, novice: value }
+                      })
+                    }}
+                    // labelContentWidth
+                    // labelPos="left"
+                  />
+                  <div>
+                    Итого: {(price - usersStatusDiscount?.novice) / 100} ₽
                   </div>
-                )}
-              </FormWrapper>
-              <FormWrapper flex className="min-h-[26px] flex-wrap">
-                <CheckBox
-                  checked={usersStatusAccess?.member}
-                  labelPos="left"
-                  onClick={() =>
-                    setUsersStatusAccess((state) => {
-                      return { ...state, member: !usersStatusAccess?.member }
-                    })
-                  }
-                  labelClassName="w-[20%]"
-                  label="Участник клуба"
-                />
-                {usersStatusAccess?.member && (
-                  <div className="flex min-w-min flex-nowrap gap-x-1">
-                    <PriceInput
-                      label="Скидка"
-                      value={usersStatusDiscount?.member ?? 0}
-                      onChange={(value) => {
-                        // removeError('price')
-                        setUsersStatusDiscount((state) => {
-                          return { ...state, member: value }
-                        })
-                      }}
-                    />
-                    <div>
-                      Итого: {(price - usersStatusDiscount?.member) / 100} ₽
-                    </div>
+                </FormRow>
+              )}
+              {/* </FormRow> */}
+              {/* </FormWrapper> */}
+              {/* <FormWrapper className="min-h-[26px] flex-wrap"> */}
+              {/* <FormRow className="tablet:min-h-[26px]"> */}
+              <CheckBox
+                checked={usersStatusAccess?.member}
+                labelPos="left"
+                onClick={() =>
+                  setUsersStatusAccess((state) => {
+                    return { ...state, member: !usersStatusAccess?.member }
+                  })
+                }
+                // labelClassName="w-[20%]"
+                label="Участник клуба"
+              />
+              {usersStatusAccess?.member && (
+                <FormRow>
+                  <PriceInput
+                    label="Скидка участникам клуба"
+                    value={usersStatusDiscount?.member ?? 0}
+                    onChange={(value) => {
+                      // removeError('price')
+                      setUsersStatusDiscount((state) => {
+                        return { ...state, member: value }
+                      })
+                    }}
+                    // labelContentWidth
+                    // labelPos="left"
+                  />
+                  <div>
+                    Итого: {(price - usersStatusDiscount?.member) / 100} ₽
                   </div>
-                )}
-              </FormWrapper>
-              <FormWrapper title="Ограничения" flex>
-                <Input
-                  label="Макс. участников"
-                  type="number"
-                  inputClassName="w-16"
-                  labelClassName="w-[20%]"
-                  value={maxParticipants}
-                  onChange={setMaxParticipants}
-                  // error={errors?.address?.flat}
-                  placeholder={maxParticipantsCheck ? '' : '0'}
-                  disabled={maxParticipantsCheck}
-                  min={0}
-                />
-                <CheckBox
-                  checked={maxParticipantsCheck}
-                  labelPos="right"
-                  onClick={() => setMaxParticipantsCheck((checked) => !checked)}
-                  label="Не ограничено"
-                />
+                </FormRow>
+              )}
+              {/* </FormRow> */}
+              {/* </FormWrapper> */}
+              <FormWrapper title="Ограничения">
+                <FormRow>
+                  <Input
+                    label="Макс. участников"
+                    type="number"
+                    inputClassName="w-16"
+                    value={maxParticipants}
+                    onChange={setMaxParticipants}
+                    // error={errors?.address?.flat}
+                    placeholder={maxParticipantsCheck ? '' : '0'}
+                    disabled={maxParticipantsCheck}
+                    min={0}
+                    labelPos="left"
+                  />
+                  <CheckBox
+                    checked={maxParticipantsCheck}
+                    labelPos="right"
+                    onClick={() =>
+                      setMaxParticipantsCheck((checked) => !checked)
+                    }
+                    label="Не ограничено"
+                  />
+                </FormRow>
               </FormWrapper>
 
-              <FormWrapper flex>
-                <Input
-                  label="Макс. мужчин"
-                  type="number"
-                  inputClassName="w-16"
-                  labelClassName="w-[20%]"
-                  value={maxMans}
-                  onChange={setMaxMans}
-                  // error={errors?.address?.flat}
-                  placeholder={maxMansCheck ? '' : '0'}
-                  disabled={maxMansCheck}
-                  min={0}
-                />
-                <CheckBox
-                  checked={maxMansCheck}
-                  labelPos="right"
-                  onClick={() => setMaxMansCheck((checked) => !checked)}
-                  label="Не ограничено"
-                />
-              </FormWrapper>
-              <FormWrapper flex>
-                <Input
-                  label="Макс. женщин"
-                  type="number"
-                  inputClassName="w-16"
-                  labelClassName="w-[20%]"
-                  value={maxWomans}
-                  onChange={setMaxWomans}
-                  // error={errors?.address?.flat}
-                  placeholder={maxWomansCheck ? '' : '0'}
-                  disabled={maxWomansCheck}
-                  min={0}
-                />
-                <CheckBox
-                  checked={maxWomansCheck}
-                  labelPos="right"
-                  onClick={() => setMaxWomansCheck((checked) => !checked)}
-                  label="Не ограничено"
-                />
-              </FormWrapper>
+              <FormWrapper>
+                <FormRow>
+                  <Input
+                    label="Макс. мужчин"
+                    type="number"
+                    inputClassName="w-16"
+                    value={maxMans}
+                    onChange={setMaxMans}
+                    // error={errors?.address?.flat}
+                    placeholder={maxMansCheck ? '' : '0'}
+                    disabled={maxMansCheck}
+                    min={0}
+                    labelPos="left"
+                  />
+                  <CheckBox
+                    checked={maxMansCheck}
+                    labelPos="right"
+                    onClick={() => setMaxMansCheck((checked) => !checked)}
+                    label="Не ограничено"
+                  />
+                </FormRow>
+                {/* </FormWrapper>
+              <FormWrapper> */}
+                <FormRow>
+                  <Input
+                    label="Макс. женщин"
+                    type="number"
+                    inputClassName="w-16"
+                    value={maxWomans}
+                    onChange={setMaxWomans}
+                    // error={errors?.address?.flat}
+                    placeholder={maxWomansCheck ? '' : '0'}
+                    disabled={maxWomansCheck}
+                    min={0}
+                    labelPos="left"
+                  />
+                  <CheckBox
+                    checked={maxWomansCheck}
+                    labelPos="right"
+                    onClick={() => setMaxWomansCheck((checked) => !checked)}
+                    label="Не ограничено"
+                  />
+                </FormRow>
+                {/* </FormWrapper>
 
-              <FormWrapper flex>
+              <FormWrapper> */}
                 <Slider
                   value={[minMansAge, maxMansAge]}
                   onChange={([min, max]) => {
@@ -735,11 +752,11 @@ const eventFunc = (eventId, clone = false) => {
                   min={18}
                   max={60}
                   label="Возраст мужчин"
-                  labelClassName="w-[20%]"
-                  wrapperClassName="flex-1"
+                  // labelClassName="w-[20%]"
+                  // wrapperClassName="flex-1"
                 />
-              </FormWrapper>
-              <FormWrapper flex>
+                {/* </FormWrapper> */}
+                {/* <FormWrapper> */}
                 <Slider
                   value={[minWomansAge, maxWomansAge]}
                   onChange={([min, max]) => {
@@ -749,24 +766,24 @@ const eventFunc = (eventId, clone = false) => {
                   min={18}
                   max={60}
                   label="Возраст женщин"
-                  labelClassName="w-[20%]"
-                  wrapperClassName="flex-1"
+                  // labelClassName="w-[20%]"
+                  // wrapperClassName="flex-1"
                 />
               </FormWrapper>
 
-              <FormWrapper title="Видимость">
-                <CheckBox
-                  checked={showOnSite}
-                  labelPos="left"
-                  // labelClassName="w-40"
-                  onClick={() => setShowOnSite((checked) => !checked)}
-                  label="Показывать на сайте"
-                />
-              </FormWrapper>
+              {/* <FormWrapper title="Видимость"> */}
+              <CheckBox
+                checked={showOnSite}
+                labelPos="left"
+                // labelClassName="w-40"
+                onClick={() => setShowOnSite((checked) => !checked)}
+                label="Показывать на сайте"
+              />
+              {/* </FormWrapper> */}
             </FormWrapper>
           </TabPanel>
           {eventId && (
-            <TabPanel value="status">
+            <TabPanel name="Статус и отчет">
               <FormWrapper>
                 <EventStatusPicker
                   required
@@ -776,10 +793,12 @@ const eventFunc = (eventId, clone = false) => {
               </FormWrapper>
             </TabPanel>
           )}
-        </TabsBody>
+          {/* </TabsBody> */}
 
-        <ErrorsList errors={errors} />
-      </Tabs>
+          {/* </Tabs> */}
+        </TabContext>
+        {/* <ErrorsList errors={errors} /> */}
+      </>
     )
   }
 

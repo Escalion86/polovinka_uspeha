@@ -68,6 +68,7 @@ var a = {
 }
 
 function transliterate(word) {
+  if (typeof word !== 'string') return word
   return word
     .split('')
     .map(function (char) {

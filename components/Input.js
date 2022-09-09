@@ -22,6 +22,7 @@ const Input = ({
   max,
   required,
   step,
+  labelPos,
 }) => {
   return (
     <InputWrapper
@@ -32,6 +33,7 @@ const Input = ({
       value={value}
       className={wrapperClassName}
       required={required}
+      labelPos={labelPos}
     >
       <div
         className={cn(

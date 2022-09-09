@@ -21,7 +21,7 @@ const Slider = ({
       onChange={onChange}
       copyPasteButtons={copyPasteButtons}
       value={value}
-      className={wrapperClassName}
+      className={cn('flex-1', wrapperClassName)}
       required={required}
     >
       {/* <div

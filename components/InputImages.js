@@ -9,6 +9,7 @@ import LoadingSpinner from './LoadingSpinner'
 import Label from './Label'
 import arrayMove from '@helpers/arrayMove'
 import { LayoutGroup, motion } from 'framer-motion'
+import InputWrapper from './InputWrapper'
 
 const InputImages = ({
   images = [],
@@ -18,6 +19,7 @@ const InputImages = ({
   directory = null,
   maxImages = 10,
   labelClassName,
+  className,
 }) => {
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
@@ -43,10 +45,15 @@ const InputImages = ({
   useEffect(() => setAddingImage(false), [images])
 
   return (
-    <>
-      {label && (
-        <Label text={label} className={labelClassName} required={required} />
-      )}
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      onChange={onChange}
+      value={images}
+      className={cn('flex-1', className)}
+      required={required}
+      // labelPos="top"
+    >
       <div
         className={cn(
           'flex flex-wrap w-full gap-1 p-0.5 rounded',
@@ -127,7 +134,7 @@ const InputImages = ({
           <LoadingSpinner className="w-20 h-20 border border-gray-300 bg-general bg-opacity-20" />
         )}
       </div>
-    </>
+    </InputWrapper>
   )
 }
 

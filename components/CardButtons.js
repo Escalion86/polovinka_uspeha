@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react'
 import CardButton from './CardButton'
 import copyToClipboard from '@helpers/copyToClipboard'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import isUserAdmin from '@helpers/isUserAdmin'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
   <div
@@ -59,10 +60,9 @@ const CardButtons = ({
 
   const isCompact = device === 'phoneV' || device === 'phoneH'
 
-  const showAdminButtons =
-    loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
+  const showAdminButtons = isUserAdmin(loggedUser)
 
-  const isUserMember = loggedUser.status === 'member'
+  const isUserMember = loggedUser?.status === 'member'
 
   const numberOfButtons =
     (window?.location?.origin && typeOfItem === 'event' ? 1 : 0) +
@@ -75,7 +75,7 @@ const CardButtons = ({
       : 0) +
     (showAdminButtons && showOnSiteOnClick ? 1 : 0) +
     (showAdminButtons && typeOfItem === 'event' ? 1 : 0) +
-    (loggedUser?.role === 'dev' && showAdminButtons ? 1 : 0)
+    (showAdminButtons ? 1 : 0)
 
   const ItemComponent = numberOfButtons > 3 && isCompact ? MenuItem : CardButton
 
@@ -174,7 +174,7 @@ const CardButtons = ({
           dataTip={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
         />
       )}
-      {loggedUser?.role === 'dev' && showAdminButtons && (
+      {showAdminButtons && (
         <ItemComponent
           icon={faTrashAlt}
           onClick={() => {

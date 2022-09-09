@@ -1,3 +1,4 @@
+import InputWrapper from '@components/InputWrapper'
 import Label from '@components/Label'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
@@ -38,13 +39,18 @@ const ValuePicker = ({
   required = false,
   disselectOnSameClick = false,
   error = false,
-  inLine,
   labelClassName,
+  className,
 }) => {
-  const Wrapper = ({ children }) =>
-    inLine ? <div className="flex gap-x-1">{children}</div> : <>{children}</>
   return (
-    <Wrapper>
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      onChange={onChange}
+      value={value}
+      className={cn('flex-1', className)}
+      required={required}
+    >
       {/* {label && (
         <label
           className="flex items-center justify-end text-right"
@@ -54,7 +60,7 @@ const ValuePicker = ({
           {required && <span className="text-red-700">*</span>}
         </label>
       )} */}
-      <Label text={label} className={labelClassName} required={required} />
+      {/* <Label text={label} className={labelClassName} required={required} /> */}
       <div
         className={cn(
           'relative flex flex-wrap items-center gap-x-2 gap-y-1 max-w-fit'
@@ -80,7 +86,7 @@ const ValuePicker = ({
           />
         ))}
       </div>
-    </Wrapper>
+    </InputWrapper>
   )
 }
 

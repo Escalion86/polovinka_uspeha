@@ -52,14 +52,34 @@ const InputWrapper = ({
   value,
   className,
   required,
+  labelPos,
+  labelContentWidth,
 }) => (
-  <>
-    <Label text={label} className={labelClassName} required={required} />
-    <div className={cn('flex items-center gap-x-1', className)}>
+  <div
+    className={cn(
+      'flex gap-y-1 gap-x-2',
+      // inLine ? '' : 'flex-col laptop:flex-row',
+      labelPos === 'top' || labelPos === 'bottom'
+        ? 'flex-col'
+        : labelPos === 'left' || labelPos === 'right'
+        ? 'flex-row items-center'
+        : 'flex-col laptop:flex-row laptop:items-center'
+    )}
+  >
+    {label && (!labelPos || labelPos === 'left' || labelPos === 'top') && (
+      <Label
+        text={label}
+        className={labelClassName}
+        required={required}
+        contentWidth={labelContentWidth || labelPos === 'top'}
+        textPos={labelPos === 'top' ? 'left' : 'right'}
+      />
+    )}
+    <div className={cn('flex items-center gap-x-1 flex-1', className)}>
       {children}
       {copyPasteButtons && (
         <>
-          {copyButton && (
+          {copyButton && value && (
             <SmallIconButton
               onClick={() => copyToClipboard(value)}
               icon={faCopy}
@@ -67,7 +87,7 @@ const InputWrapper = ({
               infoTextOnClick="Текст скопирован"
             />
           )}
-          {pasteButton && (
+          {pasteButton && onChange && (
             <SmallIconButton
               onClick={() => pasteFromClipboard(onChange)}
               icon={faPaste}
@@ -77,7 +97,16 @@ const InputWrapper = ({
         </>
       )}
     </div>
-  </>
+    {label && (labelPos === 'right' || labelPos === 'bottom') && (
+      <Label
+        text={label}
+        className={labelClassName}
+        required={required}
+        contentWidth
+        textPos={labelPos === 'bottom' ? 'left' : 'right'}
+      />
+    )}
+  </div>
 )
 
 export default InputWrapper
