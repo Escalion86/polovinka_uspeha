@@ -481,7 +481,7 @@ const eventFunc = (eventId, clone = false) => {
           <Tab label="Доступ и стоимость" value="2" />
           <Tab label="Item Three" value="3" />
         </TabList> */}
-          <TabPanel name="Общие">
+          <TabPanel tabName="Общие">
             <FormWrapper>
               <InputImages
                 label="Фотографии"
@@ -573,7 +573,7 @@ const eventFunc = (eventId, clone = false) => {
               <AddressPicker address={address} onChange={setAddress} />
             </FormWrapper>
           </TabPanel>
-          <TabPanel name="Доступ и стоимость">
+          <TabPanel tabName="Доступ и стоимость">
             <FormWrapper title="Стоимость, доступ и скидки">
               <PriceInput
                 value={price}
@@ -783,7 +783,7 @@ const eventFunc = (eventId, clone = false) => {
             </FormWrapper>
           </TabPanel>
           {eventId && (
-            <TabPanel name="Статус и отчет">
+            <TabPanel tabName="Статус и отчет">
               <FormWrapper>
                 <EventStatusPicker
                   required
