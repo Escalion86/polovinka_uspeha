@@ -196,7 +196,7 @@ const eventViewFunc = (eventId) => {
           </div>
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
             <EventUsersCounterAndAge eventId={eventId} />
-            {(loggedUser.status === 'member' || isUserAdmin(loggedUser)) && (
+            {(loggedUser?.status === 'member' || isUserAdmin(loggedUser)) && (
               <Button
                 name="Посмотреть участников"
                 onClick={() => modalsFunc.event.users(eventId)}

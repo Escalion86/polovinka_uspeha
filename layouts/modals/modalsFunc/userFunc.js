@@ -122,7 +122,7 @@ const userFunc = (userId, clone = false) => {
           clone
         )
 
-        if (user?._id && loggedUser._id === result?._id) {
+        if (user?._id && loggedUser?._id === result?._id) {
           setLoggedUser(result)
         }
         // if (user && !clone) {
