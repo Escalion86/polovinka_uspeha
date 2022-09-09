@@ -1,11 +1,15 @@
 import BlockContainer from '@components/BlockContainer'
 import { H2 } from '@components/tags'
 import isEventExpiredFunc from '@helpers/isEventExpired'
+import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import EventCard from '@layouts/cards/EventCard'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import cn from 'classnames'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
 const Button = ({ title, className, href, onClick }) => {
@@ -44,19 +48,39 @@ const EventsBlock = ({
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
 
   const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const eventsLoggedUser = useRecoilValue(
+    eventsUsersByUserIdSelector(loggedUser?._id)
+  )
 
-  const visibleEvents = (
-    loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
-      ? events
-      : events.filter(
-          (event) =>
-            event.status !== 'canceled' &&
-            (!event.usersStatusAccess ||
-              event.usersStatusAccess[loggedUser?.status ?? 'novice'])
-        )
-  ).filter((event) => !isEventExpiredFunc(event))
+  const filteredEvents = useMemo(
+    () =>
+      visibleEventsForUser(
+        events,
+        eventsLoggedUser,
+        loggedUser,
+        true,
+        isLoggedUserAdmin,
+        loggedUserActiveStatus
+      )
+        .filter((event) => !isEventExpiredFunc(event))
+        .slice(0, maxShowedEvents),
+    [loggedUser, isLoggedUserAdmin, loggedUserActiveStatus, maxShowedEvents]
+  )
 
-  const filteredEvents = visibleEvents.slice(0, maxShowedEvents)
+  // const visibleEvents = (
+  //   isLoggedUserAdmin
+  //     ? events
+  //     : events.filter(
+  //         (event) =>
+  //           event.status !== 'canceled' &&
+  //           (!event.usersStatusAccess ||
+  //             event.usersStatusAccess[loggedUserActiveStatus ?? 'novice'])
+  //       )
+  // ).filter((event) => !isEventExpiredFunc(event))
+
+  // const filteredEvents = visibleEvents.slice(0, maxShowedEvents)
 
   if (hideBlockOnZeroEvents && filteredEvents?.length === 0) return null
 

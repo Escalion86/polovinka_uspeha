@@ -1,3 +1,4 @@
+import DevSwitch from '@components/DevSwitch'
 import Divider from '@components/Divider'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import {
@@ -84,6 +85,7 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
                   </div>
                 </a>
               </Link> */}
+            <DevSwitch />
             <Link href="/cabinet/questionnaire">
               <a onClick={() => setMenuOpen(false)}>
                 <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
@@ -92,7 +94,7 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
                     className="w-5 h-5 text-general"
                   />
                   <span className="prevent-select-text whitespace-nowrap">
-                    Моя анкета
+                    {'Моя анкета'}
                   </span>
                 </div>
               </a>
@@ -105,7 +107,7 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
                     className="w-5 h-5 text-general"
                   />
                   <span className="prevent-select-text whitespace-nowrap">
-                    Главная страница сайта
+                    {'Главная страница сайта'}
                   </span>
                 </div>
               </a>
@@ -123,7 +125,7 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
                 className="w-5 h-5 text-general"
               />
               <span className="prevent-select-text whitespace-nowrap">
-                Выйти из учетной записи
+                {'Выйти из учетной записи'}
               </span>
             </div>
           </div>

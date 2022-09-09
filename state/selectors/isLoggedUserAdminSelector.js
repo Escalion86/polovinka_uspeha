@@ -1,10 +1,10 @@
 import isUserAdmin from '@helpers/isUserAdmin'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import { selector } from 'recoil'
 
 const isLoggedUserAdminSelector = selector({
   key: 'isLoggedUserAdminSelector',
-  get: ({ get }) => isUserAdmin(get(loggedUserAtom)),
+  get: ({ get }) => isUserAdmin({ role: get(loggedUserActiveRoleAtom) }),
 })
 
 export default isLoggedUserAdminSelector

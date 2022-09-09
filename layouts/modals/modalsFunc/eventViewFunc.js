@@ -28,6 +28,9 @@ import Button from '@components/Button'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import isUserAdmin from '@helpers/isUserAdmin'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -39,7 +42,9 @@ const eventViewFunc = (eventId) => {
     setDisableDecline,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
-    const loggedUser = useRecoilValue(loggedUserAtom)
+    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+    const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
     // const events = useRecoilValue(eventsAtom)
     const direction = useRecoilValue(directionSelector(event?.directionId))
     const organizer = useRecoilValue(userSelector(event?.organizerId))
@@ -98,12 +103,19 @@ const eventViewFunc = (eventId) => {
             <div className="flex justify-center w-full text-3xl font-bold">
               {event?.title}
             </div>
+
             {/* <p className="flex-1">{event.description}</p> */}
             <div
               className="flex-1 textarea"
               dangerouslySetInnerHTML={{ __html: sanitize(event?.description) }}
             />
             <Divider thin light />
+            {isLoggedUserDev && (
+              <div className="flex gap-x-1">
+                <span className="font-bold">ID:</span>
+                <span>{event?._id}</span>
+              </div>
+            )}
             {direction?.title && (
               <div className="flex gap-x-1">
                 <span className="font-bold">Направление:</span>
@@ -196,7 +208,7 @@ const eventViewFunc = (eventId) => {
           </div>
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
             <EventUsersCounterAndAge eventId={eventId} />
-            {(loggedUser?.status === 'member' || isUserAdmin(loggedUser)) && (
+            {(isLoggedUserMember || isLoggedUserAdmin) && (
               <Button
                 name="Посмотреть участников"
                 onClick={() => modalsFunc.event.users(eventId)}

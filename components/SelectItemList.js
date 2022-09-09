@@ -4,6 +4,7 @@ import { SelectItem, SelectUser } from './SelectItem'
 import cn from 'classnames'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
+import Label from './Label'
 
 const ItemRow = ({
   onChange,
@@ -21,9 +22,7 @@ const ItemRow = ({
   const onChangeItem = (value) => onChange(value, index)
 
   return (
-    <div
-      className={cn('flex', index === 0 ? null : 'border-t border-gray-700')}
-    >
+    <div className={cn('flex', 'border-b border-gray-700 last:border-0')}>
       <SelectItemComponent
         onChange={readOnly ? null : (item) => onChangeItem(item._id)}
         selectedId={selectedId}
@@ -44,7 +43,7 @@ const ItemRow = ({
 export const SelectItemList = ({
   itemsId = [],
   SelectItemComponent,
-  title = '',
+  label = '',
   onChange = null,
   onCreateNew = null,
   onEdit = null,
@@ -60,6 +59,7 @@ export const SelectItemList = ({
   modalFuncKey,
   maxItems,
   readOnly,
+  labelClassName,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -116,19 +116,29 @@ export const SelectItemList = ({
   const addButtonIsActive = canAddItem && !itemsId.includes('?')
 
   return (
-    <>
-      <div className="flex justify-between">
-        <label htmlFor="itemsIds">
+    <div>
+      <div className="flex items-center justify-between">
+        {label && (
+          <Label
+            text={label}
+            className={labelClassName}
+            required={required}
+            contentWidth
+            // contentWidth={labelContentWidth || labelPos === 'top'}
+            // textPos={labelPos === 'top' ? 'left' : 'right'}
+          />
+        )}
+        {/* <label htmlFor="itemsIds">
           {title}
           {required && <span className="text-red-700">*</span>}
-        </label>
-        {showCounter ? (
+        </label> */}
+        {showCounter && (
           <div className="flex gap-x-1">
             <span>Кол-во:</span>
             <span className="font-bold">{itemRows.length}</span>
             {counterPostfix ? <span>{counterPostfix}</span> : null}
           </div>
-        ) : null}
+        )}
       </div>
       {itemRows.length === 0 && readOnly ? (
         <div>{'Нет записей'}</div>
@@ -173,7 +183,7 @@ export const SelectItemList = ({
           )}
         </div>
       )}
-    </>
+    </div>
   )
 }
 
@@ -182,7 +192,7 @@ export const SelectUserList = ({
   onChange = null,
   onDelete,
   required = false,
-  title,
+  label,
   filter,
   showCounter,
   maxUsers = null,
@@ -190,11 +200,12 @@ export const SelectUserList = ({
   exceptedIds,
   buttons,
   readOnly,
+  labelClassName,
 }) => {
   return (
     <SelectItemList
       itemsId={usersId}
-      title={title}
+      label={label}
       onChange={onChange}
       onDelete={onDelete}
       SelectItemComponent={(props) =>
@@ -218,6 +229,7 @@ export const SelectUserList = ({
       maxItems={maxUsers}
       modalFuncKey="selectUsers"
       readOnly={readOnly}
+      labelClassName={labelClassName}
     />
   )
 }

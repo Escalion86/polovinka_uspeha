@@ -31,6 +31,9 @@ import { Check, FilterAlt, Sort } from '@mui/icons-material'
 // import { makeStyles } from '@mui/styles'
 import { getNounDirections, getNounEvents } from '@helpers/getNoun'
 import { motion } from 'framer-motion'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -194,6 +197,8 @@ const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
   const loggedUser = useRecoilValue(loggedUserAtom)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const [showFilter, setShowFilter] = useState(false)
@@ -226,8 +231,16 @@ const EventsContent = () => {
   }
 
   const filteredEvents = useMemo(
-    () => visibleEventsForUser(events, eventsLoggedUser, loggedUser, true),
-    [loggedUser]
+    () =>
+      visibleEventsForUser(
+        events,
+        eventsLoggedUser,
+        loggedUser,
+        true,
+        isLoggedUserAdmin,
+        loggedUserActiveStatus
+      ),
+    [loggedUser, isLoggedUserAdmin, loggedUserActiveStatus]
   )
 
   const visibleEventsIds = useMemo(
@@ -321,7 +334,7 @@ const EventsContent = () => {
         ) : (
           <div className="flex justify-center p-2">{`Нет мероприятий`}</div>
         )}
-        {(loggedUser?.role === 'admin' || loggedUser?.role === 'dev') && (
+        {isLoggedUserAdmin && (
           <Fab onClick={() => modalsFunc.event.add()} show />
         )}
       </CardListWrapper>

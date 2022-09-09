@@ -1,3 +1,4 @@
+import DevSwitch from '@components/DevSwitch'
 import {
   faSign,
   faSignInAlt,
@@ -20,6 +21,7 @@ const UserMenu = ({ user }) => {
             <span>{user.firstName}</span>
             <span>{user.secondName}</span>
           </div>
+          <DevSwitch />
           <Link href="/cabinet">
             <a>
               <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">

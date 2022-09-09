@@ -1,41 +1,19 @@
 import React, { useEffect, useState } from 'react'
-// import useErrors from '@helpers/useErrors'
 
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
-// import EditableTextarea from '@components/EditableTextarea'
-// import FormWrapper from '@components/FormWrapper'
-// import DateTimePicker from '@components/DateTimePicker'
-// import ErrorsList from '@components/ErrorsList'
-// import AddressPicker from '@components/AddressPicker'
-// import InputImages from '@components/InputImages'
-// import PriceInput from '@components/PriceInput'
-// import CheckBox from '@components/CheckBox'
-// import Input from '@components/Input'
-
-// import { DEFAULT_ADDRESS } from '@helpers/constants'
-// import { SelectDirection } from '@components/SelectItem'
-// import eventsUsersSelector from '@state/selectors/eventsUsersSelector'
-// import eventsUsersSelectorByEventId from '@state/selectors/eventsUsersByEventIdSelector'
 import { SelectUserList } from '@components/SelectItemList'
-// import usersSelectorByEventId from '@state/selectors/usersByEventIdSelector'
-// import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import eventMansSelector from '@state/selectors/eventMansSelector'
 import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import eventUsersInReserveSelector from '@state/selectors/eventUsersInReserveSelector'
 import eventUsersInBanSelector from '@state/selectors/eventUsersInBanSelector'
 
-import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
-  Tab,
-  TabPanel,
-} from '@material-tailwind/react'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import TabContext from '@components/Tabs/TabContext'
+import TabPanel from '@components/Tabs/TabPanel'
 
 const eventUsersFunc = (eventId) => {
   const EventModal = ({
@@ -50,8 +28,6 @@ const eventUsersFunc = (eventId) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
-
-    // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
     const eventAssistantsIds = useRecoilValue(
       eventAssistantsSelector(eventId)
@@ -163,144 +139,109 @@ const eventUsersFunc = (eventId) => {
     }
 
     return (
-      <Tabs id="custom-animation" value="partisipants" className="min-h-full">
-        <TabsHeader
-          // indicatorProps={{ className: 'duration-0 bg-general h-1 top-8' }}
-          className="bg-gray-200 duration-0"
-        >
-          <Tab key="assistants" value="assistants" className="flex flex-col">
-            <div className="italic font-bold">Ведущие</div>
-            <div className="-m-1 text-sm">{assistantsIds.length}</div>
-          </Tab>
-          <Tab
-            key="partisipants"
-            value="partisipants"
-            className="italic font-bold"
-          >
-            <div className="italic font-bold">Участники</div>
-            <div className="-m-1 text-sm">
-              {mansIds.length + womansIds.length}
-            </div>
-          </Tab>
-          <Tab key="reserve" value="reserve" className="italic font-bold">
-            <div className="italic font-bold">Резерв</div>
-            <div className="-m-1 text-sm">{reservedParticipantsIds.length}</div>
-          </Tab>
-          {isLoggedUserAdmin && (
-            <Tab key="ban" value="ban" className="italic font-bold">
-              <div className="italic font-bold">Бан</div>
-              <div className="-m-1 text-sm">{bannedParticipantsIds.length}</div>
-            </Tab>
-          )}
-        </TabsHeader>
-        <TabsBody
-          animate={{
-            mount: { scale: 1 },
-            unmount: { scale: 0 },
-          }}
-          className="h-full min-h-full"
-        >
-          <TabPanel value="assistants">
+      <TabContext value="Участники">
+        <TabPanel tabName="Участники">
+          <SelectUserList
+            label="Участники Мужчины"
+            filter={{ gender: 'male' }}
+            usersId={mansIds}
+            onChange={(usersIds) => {
+              removeIdsFromReserve(usersIds)
+              setMansIds(usersIds)
+            }}
+            maxUsers={event.maxMans}
+            canAddItem={
+              (!event.maxUsers ||
+                mansIds.length + womansIds.length < event.maxUsers) &&
+              (event.maxMans === null || event.maxMans > mansIds.length)
+            }
+            exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
+            readOnly={!isLoggedUserAdmin}
+          />
+          <SelectUserList
+            label="Участники Женщины"
+            filter={{ gender: 'famale' }}
+            usersId={womansIds}
+            onChange={(usersIds) => {
+              removeIdsFromReserve(usersIds)
+              setWomansIds(usersIds)
+            }}
+            maxUsers={event.maxWomans}
+            canAddItem={
+              (!event.maxUsers ||
+                mansIds.length + womansIds.length < event.maxUsers) &&
+              (event.maxWomans === null || event.maxWomans > womansIds.length)
+            }
+            exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
+            readOnly={!isLoggedUserAdmin}
+          />
+          <div className="flex justify-end gap-x-1">
+            <span>Всего:</span>
+            <span className="font-bold">
+              {mansIds.length + womansIds.length + assistantsIds.length}
+            </span>
+            {event.maxUsers ? (
+              <>
+                <span>/</span>
+                <span>{event.maxUsers}</span>
+              </>
+            ) : null}
+            <span>чел.</span>
+          </div>
+        </TabPanel>
+        <TabPanel tabName="Резерв">
+          <SelectUserList
+            label="Резерв"
+            usersId={reservedParticipantsIds}
+            onChange={setReservedParticipantsIds}
+            exceptedIds={[
+              ...assistantsIds,
+              ...mansIds,
+              ...womansIds,
+              ...reservedParticipantsIds,
+              ...bannedParticipantsIds,
+            ]}
+            readOnly={!isLoggedUserAdmin}
+          />
+        </TabPanel>
+        <TabPanel tabName="Ведущие">
+          <SelectUserList
+            label="Ведущие"
+            usersId={assistantsIds}
+            onChange={(usersIds) => {
+              removeIdsFromReserve(usersIds)
+              setAssistantsIds(usersIds)
+            }}
+            exceptedIds={[
+              ...assistantsIds,
+              ...mansIds,
+              ...womansIds,
+              ...bannedParticipantsIds,
+            ]}
+            readOnly={!isLoggedUserAdmin}
+          />
+        </TabPanel>
+        {isLoggedUserAdmin && (
+          <TabPanel tabName="Бан">
             <SelectUserList
-              title="Ведущие"
-              usersId={assistantsIds}
+              label="Блокированные"
+              usersId={bannedParticipantsIds}
               onChange={(usersIds) => {
-                removeIdsFromReserve(usersIds)
-                setAssistantsIds(usersIds)
+                removeIdsFromAllByBan(usersIds)
+                setBannedParticipantsIds(usersIds)
               }}
-              exceptedIds={[
-                ...assistantsIds,
-                ...mansIds,
-                ...womansIds,
-                ...bannedParticipantsIds,
-              ]}
+              // onDelete={(user, onConfirm) => {
+              //   console.log('1', 1)
+              // }}
+              exceptedIds={bannedParticipantsIds}
               readOnly={!isLoggedUserAdmin}
             />
           </TabPanel>
-          <TabPanel value="partisipants" className="h-full min-h-full">
-            <SelectUserList
-              title="Участники Мужчины"
-              filter={{ gender: 'male' }}
-              usersId={mansIds}
-              onChange={(usersIds) => {
-                removeIdsFromReserve(usersIds)
-                setMansIds(usersIds)
-              }}
-              maxUsers={event.maxMans}
-              canAddItem={
-                (!event.maxUsers ||
-                  mansIds.length + womansIds.length < event.maxUsers) &&
-                (event.maxMans === null || event.maxMans > mansIds.length)
-              }
-              exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-              readOnly={!isLoggedUserAdmin}
-            />
-            <SelectUserList
-              title="Участники Женщины"
-              filter={{ gender: 'famale' }}
-              usersId={womansIds}
-              onChange={(usersIds) => {
-                removeIdsFromReserve(usersIds)
-                setWomansIds(usersIds)
-              }}
-              maxUsers={event.maxWomans}
-              canAddItem={
-                (!event.maxUsers ||
-                  mansIds.length + womansIds.length < event.maxUsers) &&
-                (event.maxWomans === null || event.maxWomans > womansIds.length)
-              }
-              exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-              readOnly={!isLoggedUserAdmin}
-            />
-            <div className="flex justify-end gap-x-1">
-              <span>Всего:</span>
-              <span className="font-bold">
-                {mansIds.length + womansIds.length + assistantsIds.length}
-              </span>
-              {event.maxUsers ? (
-                <>
-                  <span>/</span>
-                  <span>{event.maxUsers}</span>
-                </>
-              ) : null}
-              <span>чел.</span>
-            </div>
-          </TabPanel>
-          <TabPanel value="reserve">
-            <SelectUserList
-              title="Резерв"
-              usersId={reservedParticipantsIds}
-              onChange={setReservedParticipantsIds}
-              exceptedIds={[
-                ...assistantsIds,
-                ...mansIds,
-                ...womansIds,
-                ...reservedParticipantsIds,
-                ...bannedParticipantsIds,
-              ]}
-              readOnly={!isLoggedUserAdmin}
-            />
-          </TabPanel>
-          {isLoggedUserAdmin && (
-            <TabPanel value="ban">
-              <SelectUserList
-                title="Блокированные"
-                usersId={bannedParticipantsIds}
-                onChange={(usersIds) => {
-                  removeIdsFromAllByBan(usersIds)
-                  setBannedParticipantsIds(usersIds)
-                }}
-                // onDelete={(user, onConfirm) => {
-                //   console.log('1', 1)
-                // }}
-                exceptedIds={bannedParticipantsIds}
-                readOnly={!isLoggedUserAdmin}
-              />
-            </TabPanel>
-          )}
-          {/* <ErrorsList errors={errors} /> */}
-        </TabsBody>
-      </Tabs>
+        )}
+        {/* <ErrorsList errors={errors} /> */}
+        {/* </TabsBody>
+      </Tabs> */}
+      </TabContext>
     )
   }
 

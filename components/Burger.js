@@ -7,7 +7,7 @@ const Burger = () => {
   return (
     <div
       className={'menu-btn' + (menuOpen ? ' open' : '')}
-      onClick={() => setMenuOpen(!menuOpen)}
+      onClick={() => setMenuOpen((state) => !state)}
     >
       <div
         className={cn(

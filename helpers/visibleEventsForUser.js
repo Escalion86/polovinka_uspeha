@@ -1,4 +1,11 @@
-const visibleEventsForUser = (events, eventsUsers, user, onlyNew = false) => {
+const visibleEventsForUser = (
+  events,
+  eventsUsers,
+  user,
+  onlyNew = false,
+  isUserAdmin,
+  userStatus
+) => {
   if (!events) return events
   if (!user) {
     return events.filter((event) => {
@@ -8,7 +15,7 @@ const visibleEventsForUser = (events, eventsUsers, user, onlyNew = false) => {
       return !event.usersStatusAccess || event.usersStatusAccess.novice
     })
   } else {
-    if (user?.role === 'admin' || user?.role === 'dev') return events
+    if (isUserAdmin) return events
 
     const eventsUser = eventsUsers.filter((event) => event.userId === user._id)
 
@@ -19,12 +26,13 @@ const visibleEventsForUser = (events, eventsUsers, user, onlyNew = false) => {
       const eventUser = eventsUser.find(
         (eventUser) => eventUser.eventId === event._id
       )
+
       return (
         eventUser?.status === 'participant' ||
         eventUser?.status === 'assistant' ||
         (eventUser?.status !== 'ban' &&
           (!event.usersStatusAccess ||
-            event.usersStatusAccess[user?.status ?? 'novice']))
+            event.usersStatusAccess[userStatus ?? 'novice']))
       )
     })
   }

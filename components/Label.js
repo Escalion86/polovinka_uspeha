@@ -13,7 +13,7 @@ const Label = ({
   return (
     <label
       className={cn(
-        'flex items-start text-text leading-[0.875rem]',
+        'flex text-text leading-[0.875rem]',
         contentWidth ? '' : 'min-w-[14vw]',
         textPos
           ? textPos === 'right' || textPos === 'bottom'
@@ -25,7 +25,9 @@ const Label = ({
       htmlFor={htmlFor}
     >
       <span className="flex">
-        <span className="flex-1 text-right">{text}</span>
+        <span className={cn('flex-1', textPos === 'right' ? '' : 'text-right')}>
+          {text}
+        </span>
         {required && <span className="text-red-700">*</span>}
       </span>
     </label>

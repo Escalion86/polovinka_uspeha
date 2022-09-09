@@ -302,7 +302,7 @@ const SelectItemContainer = ({
       labelClassName={labelClassName}
       // onChange={onChange}
       // value={images}
-      className={cn('flex-1', className)}
+      wrapperClassName={cn('flex-1', className)}
       required={required}
       // labelPos="top"
     >

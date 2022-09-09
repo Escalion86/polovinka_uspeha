@@ -25,7 +25,8 @@ import { useEffect, useState } from 'react'
 import CardButton from './CardButton'
 import copyToClipboard from '@helpers/copyToClipboard'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import isUserAdmin from '@helpers/isUserAdmin'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
   <div
@@ -52,7 +53,8 @@ const CardButtons = ({
   className,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
   const device = useWindowDimensionsTailwind()
 
@@ -60,13 +62,13 @@ const CardButtons = ({
 
   const isCompact = device === 'phoneV' || device === 'phoneH'
 
-  const showAdminButtons = isUserAdmin(loggedUser)
-
-  const isUserMember = loggedUser?.status === 'member'
+  const showAdminButtons = isLoggedUserAdmin
 
   const numberOfButtons =
     (window?.location?.origin && typeOfItem === 'event' ? 1 : 0) +
-    ((showAdminButtons || isUserMember) && typeOfItem === 'event' ? 1 : 0) +
+    ((showAdminButtons || isLoggedUserMember) && typeOfItem === 'event'
+      ? 1
+      : 0) +
     (showAdminButtons && onUpClick ? 1 : 0) +
     (showAdminButtons && onDownClick ? 1 : 0) +
     (showAdminButtons ? 1 : 0) +
@@ -93,7 +95,7 @@ const CardButtons = ({
           popoverText="Ссылка на мероприятие скопирована"
         />
       )}
-      {(showAdminButtons || isUserMember) && typeOfItem === 'event' && (
+      {(showAdminButtons || isLoggedUserMember) && typeOfItem === 'event' && (
         <ItemComponent
           icon={faUsers}
           onClick={() => {
