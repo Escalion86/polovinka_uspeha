@@ -10,27 +10,55 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
+import { motion } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil'
+import UserMenu from './UserMenu'
 
 const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
-  const [isHovering, setIsHovering] = useState(false)
+  const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
+
+  const router = useRouter()
+
+  console.log('router.asPath', router.asPath)
 
   const handleMouseOver = () => {
     setMenuOpen(false)
-    setIsHovering(true)
+    setIsUserMenuOpened(true)
   }
 
-  const handleMouseOut = () => setIsHovering(false)
+  const handleMouseOut = () => setIsUserMenuOpened(false)
 
   if (!user) return null
 
+  const variants = {
+    show: {
+      scale: 1,
+      // width: 'auto',
+      // height: 'auto',
+      top: 0,
+      right: 0,
+      translateX: 0,
+      translateY: 0,
+    },
+    hide: {
+      scale: 0,
+      top: 7,
+      right: 7,
+      // width: 0,
+      // height: 0,
+      translateX: '50%',
+      translateY: '-50%',
+    },
+  }
+
   return (
     <div
-      className="relative flex items-center justify-end w-full h-16 px-3 text-white bg-black"
+      className="relative z-10 flex items-center justify-end w-full h-16 px-3 text-white bg-black"
       style={{ gridArea: 'header' }}
     >
       {title && (
@@ -75,38 +103,37 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
           </Link>
         </div>
       )}
-      <div className="z-10 flex items-start justify-end h-full px-2">
-        <div
-          onMouseOver={handleMouseOver}
-          onMouseOut={handleMouseOut}
-          className="relative flex flex-col items-end group mt-2.5 w-12"
-        >
+      <div className="absolute right-2">
+        <UserMenu />
+      </div>
+      {/* <div
+        className="z-10 flex items-start justify-end h-full px-2"
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+      >
+        <div className="relative flex flex-col items-end group mt-2.5 w-12">
           <img
-            onClick={() => setMenuOpen(false)}
+            onClick={() => setIsUserMenuOpened(!isUserMenuOpened)}
             className="absolute z-10 object-cover border border-white border-opacity-50 rounded-full cursor-pointer h-11 w-11 min-w-9"
             src={getUserAvatarSrc(user)}
             alt="Avatar"
           />
-          <div
+          <motion.div
             className={cn(
-              'absolute top-0 z-0 w-0 h-0 overflow-hidden duration-300 scale-0 translate-x-[40%] -translate-y-1/2 border border-gray-800 rounded-tr-3xl',
-              {
-                'scale-100 h-auto translate-y-0 translate-x-0 w-auto':
-                  isHovering,
-              }
+              'absolute overflow-hidden duration-300 border border-gray-800 rounded-tr-3xl'
+              // isUserMenuOpened
+              //   ? 'scale-100 h-auto translate-y-0 translate-x-0 w-auto'
+              //   : 'w-0 h-0 scale-0 translate-x-[40%] -translate-y-1/2'
             )}
+            variants={variants}
+            animate={isUserMenuOpened ? 'show' : 'hide'}
+            initial="hide"
+            transition={{ duration: 0.2, type: 'tween' }}
           >
             <div className="flex flex-col justify-center px-3 py-1 font-bold leading-4 text-white border-b border-gray-800 cursor-default bg-general rounded-tr-3xl h-11">
               <span>{user.firstName}</span>
               <span>{user.secondName}</span>
             </div>
-            {/* <Link href="/cabinet">
-                <a onClick={() => setMenuOpen(false)}>
-                  <div className="px-3 py-2 text-black bg-white border border-gray-300 cursor-pointer whitespace-nowrap hover:bg-gray-500 hover:text-white">
-                    Мой кабинет
-                  </div>
-                </a>
-              </Link> */}
             <DevSwitch />
             <Link href="/cabinet/questionnaire">
               <a onClick={() => setMenuOpen(false)}>
@@ -150,9 +177,9 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
                 {'Выйти из учетной записи'}
               </span>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

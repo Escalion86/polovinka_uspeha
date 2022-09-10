@@ -93,7 +93,7 @@ const Header = (props) => {
         </div>
 
         <div className="absolute right-2">
-          <UserMenu user={loggedUser} />
+          <UserMenu />
         </div>
       </div>
       <ul className="items-center justify-center hidden w-full h-[40px] text-lg duration-300 bg-white bg-opacity-75 tablet:flex gap-x-4 hover:bg-opacity-100">

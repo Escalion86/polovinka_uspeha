@@ -30,7 +30,7 @@ import EventsBlock from '@blocks/EventsBlock'
 import TitleBlock from '@blocks/TitleBlock'
 import { useEffect } from 'react'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -68,7 +68,7 @@ export default function Home(props) {
     useRecoilState(additionalBlocksAtom)
   const setUsersState = useSetRecoilState(usersAtom)
   const [reviewsState, setReviewsState] = useRecoilState(reviewsAtom)
-  // const setPaymentsState = useSetRecoilState(paymentsAtom)
+  const setPaymentsState = useSetRecoilState(paymentsAtom)
   const [eventsUsersState, setEventsUsersState] =
     useRecoilState(eventsUsersAtom)
 
@@ -96,6 +96,8 @@ export default function Home(props) {
     isLoggedUserAdmin,
     loggedUserActiveStatus
   )
+  console.log('filteredEvents', filteredEvents)
+
   const filteredReviews = reviewsState.filter((review) => review.showOnSite)
   const filteredDirections = directionsState.filter(
     (direction) => direction.showOnSite
@@ -113,7 +115,7 @@ export default function Home(props) {
     setAdditionalBlocksState(props.additionalBlocks)
     setUsersState(props.users)
     setReviewsState(props.reviews)
-    // setPaymentsState(props.payments)
+    setPaymentsState(props.payments)
     setEventsUsersState(props.eventsUsers)
   }, [])
 
