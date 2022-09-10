@@ -141,7 +141,7 @@ export const SelectItemList = ({
         )}
       </div>
       {itemRows.length === 0 && readOnly ? (
-        <div>{'Нет записей'}</div>
+        <div className="italic">{'Нет записей'}</div>
       ) : (
         <div
           name="itemsIds"
