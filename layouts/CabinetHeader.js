@@ -9,12 +9,22 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import menuOpenAtom from '@state/atoms/menuOpen'
+import cn from 'classnames'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
-import { useSetRecoilState } from 'recoil'
+import { useState } from 'react'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
+  const [isHovering, setIsHovering] = useState(false)
+
+  const handleMouseOver = () => {
+    setMenuOpen(false)
+    setIsHovering(true)
+  }
+
+  const handleMouseOut = () => setIsHovering(false)
 
   if (!user) return null
 
@@ -66,14 +76,26 @@ const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
         </div>
       )}
       <div className="z-10 flex items-start justify-end h-full px-2">
-        <div className="relative flex flex-col items-end group mt-2.5 w-12">
+        <div
+          onMouseOver={handleMouseOver}
+          onMouseOut={handleMouseOut}
+          className="relative flex flex-col items-end group mt-2.5 w-12"
+        >
           <img
-            // onClick={() => closeMenu()}
+            onClick={() => setMenuOpen(false)}
             className="absolute z-10 object-cover border border-white border-opacity-50 rounded-full cursor-pointer h-11 w-11 min-w-9"
             src={getUserAvatarSrc(user)}
             alt="Avatar"
           />
-          <div className="absolute top-0 z-0 w-0 h-0 overflow-hidden duration-300 scale-0 translate-x-[40%] -translate-y-1/2 group-hover:w-auto group-hover:h-auto group-hover:translate-y-0 group-hover:translate-x-0 group-hover:scale-100 border border-gray-800 rounded-tr-3xl">
+          <div
+            className={cn(
+              'absolute top-0 z-0 w-0 h-0 overflow-hidden duration-300 scale-0 translate-x-[40%] -translate-y-1/2 border border-gray-800 rounded-tr-3xl',
+              {
+                'scale-100 h-auto translate-y-0 translate-x-0 w-auto':
+                  isHovering,
+              }
+            )}
+          >
             <div className="flex flex-col justify-center px-3 py-1 font-bold leading-4 text-white border-b border-gray-800 cursor-default bg-general rounded-tr-3xl h-11">
               <span>{user.firstName}</span>
               <span>{user.secondName}</span>
