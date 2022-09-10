@@ -66,7 +66,13 @@ const EventsBlock = ({
       )
         .filter((event) => !isEventExpiredFunc(event))
         .slice(0, maxShowedEvents),
-    [loggedUser, isLoggedUserAdmin, loggedUserActiveStatus, maxShowedEvents]
+    [
+      events,
+      loggedUser,
+      isLoggedUserAdmin,
+      loggedUserActiveStatus,
+      maxShowedEvents,
+    ]
   )
 
   // const visibleEvents = (

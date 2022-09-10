@@ -330,10 +330,6 @@ export default function Home(props) {
 
 export const getServerSideProps = async (context) => {
   try {
-    await fetchingLog(
-      { from: 'start getServerSideProps in index' },
-      process.env.NEXTAUTH_SITE
-    )
     const session = await getSession({ req: context.req })
 
     const fetchedProps = await fetchProps()
