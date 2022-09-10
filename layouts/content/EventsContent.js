@@ -236,7 +236,7 @@ const EventsContent = () => {
         events,
         eventsLoggedUser,
         loggedUser,
-        true,
+        false,
         isLoggedUserAdmin,
         loggedUserActiveStatus
       ),
