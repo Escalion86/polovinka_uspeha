@@ -29,6 +29,10 @@ const directionsSchema = {
       type: 'image',
     },
   },
+  index: {
+    type: Number,
+    default: null,
+  },
   showOnSite: {
     type: Boolean,
     default: true,
