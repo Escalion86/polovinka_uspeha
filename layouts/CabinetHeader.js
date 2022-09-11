@@ -1,60 +1,64 @@
-import DevSwitch from '@components/DevSwitch'
+// import DevSwitch from '@components/DevSwitch'
 import Divider from '@components/Divider'
-import { faUser } from '@fortawesome/free-regular-svg-icons'
-import {
-  faHome,
-  faSignOutAlt,
-  faUserAlt,
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
-import menuOpenAtom from '@state/atoms/menuOpen'
-import cn from 'classnames'
-import { motion } from 'framer-motion'
-import { signOut } from 'next-auth/react'
+// import { faUser } from '@fortawesome/free-regular-svg-icons'
+// import {
+//   faHome,
+//   faSignOutAlt,
+//   faUserAlt,
+// } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+// import menuOpenAtom from '@state/atoms/menuOpen'
+// import cn from 'classnames'
+// import { motion } from 'framer-motion'
+// import { signOut } from 'next-auth/react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { useState } from 'react'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilValue } from 'recoil'
+// import { useRouter } from 'next/router'
+// import { useState } from 'react'
+// import { useRecoilState, useSetRecoilState } from 'recoil'
 import UserMenu from './UserMenu'
 
-const CabinetHeader = ({ user, title = '', titleLink, icon }) => {
-  const setMenuOpen = useSetRecoilState(menuOpenAtom)
-  const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
+const CabinetHeader = ({ title = '', titleLink, icon }) => {
+  // const setMenuOpen = useSetRecoilState(menuOpenAtom)
+  // const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
 
-  const router = useRouter()
+  const loggedUser = useRecoilValue(loggedUserAtom)
 
-  console.log('router.asPath', router.asPath)
+  // const router = useRouter()
 
-  const handleMouseOver = () => {
-    setMenuOpen(false)
-    setIsUserMenuOpened(true)
-  }
+  // console.log('router.asPath', router.asPath)
 
-  const handleMouseOut = () => setIsUserMenuOpened(false)
+  // const handleMouseOver = () => {
+  //   setMenuOpen(false)
+  //   setIsUserMenuOpened(true)
+  // }
 
-  if (!user) return null
+  // const handleMouseOut = () => setIsUserMenuOpened(false)
 
-  const variants = {
-    show: {
-      scale: 1,
-      // width: 'auto',
-      // height: 'auto',
-      top: 0,
-      right: 0,
-      translateX: 0,
-      translateY: 0,
-    },
-    hide: {
-      scale: 0,
-      top: 7,
-      right: 7,
-      // width: 0,
-      // height: 0,
-      translateX: '50%',
-      translateY: '-50%',
-    },
-  }
+  if (!loggedUser) return null
+
+  // const variants = {
+  //   show: {
+  //     scale: 1,
+  //     // width: 'auto',
+  //     // height: 'auto',
+  //     top: 0,
+  //     right: 0,
+  //     translateX: 0,
+  //     translateY: 0,
+  //   },
+  //   hide: {
+  //     scale: 0,
+  //     top: 7,
+  //     right: 7,
+  //     // width: 0,
+  //     // height: 0,
+  //     translateX: '50%',
+  //     translateY: '-50%',
+  //   },
+  // }
 
   return (
     <div

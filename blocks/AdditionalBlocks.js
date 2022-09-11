@@ -1,9 +1,14 @@
 import transliterate from '@helpers/transliterate'
+import filteredAdditionalBlocksSelector from '@state/selectors/filteredAdditionalBlocksSelector'
+import { useRecoilValue } from 'recoil'
 import DirectionBlock from './DirectionBlock'
 
-const AdditionalBlocks = ({ additionalBlocks, startInverse }) => {
-  if (!additionalBlocks) return null
-  return [...additionalBlocks]
+const AdditionalBlocks = ({ startInverse }) => {
+  const filteredAdditionalBlocks = useRecoilValue(
+    filteredAdditionalBlocksSelector
+  )
+  if (!filteredAdditionalBlocks) return null
+  return [...filteredAdditionalBlocks]
     .sort((a, b) => (a.index < b.index ? -1 : 1))
     .map((additionalBlock, index) => (
       <DirectionBlock

@@ -1,14 +1,18 @@
 import Button from '@components/Button'
+import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import PhoneInput from '@components/PhoneInput'
 import { postData, putData } from '@helpers/CRUD'
+import useErrors from '@helpers/useErrors'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useRecoilState } from 'recoil'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const ContactsContent = (props) => {
-  const siteSettings = props.siteSettings
+  const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
   const [phone, setPhone] = useState(siteSettings?.phone)
   const [whatsapp, setWhatsapp] = useState(siteSettings?.whatsapp)
   const [viber, setViber] = useState(siteSettings?.viber)
@@ -17,11 +21,10 @@ const ContactsContent = (props) => {
   const [vk, setVk] = useState(siteSettings?.vk)
   const [email, setEmail] = useState(siteSettings?.email)
 
-  const router = useRouter()
+  const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
-  const refreshPage = () => {
-    router.replace(router.asPath)
-  }
+  const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
+  const [message, setMessage] = useState('')
 
   const formChanged =
     siteSettings?.phone !== phone ||
@@ -32,21 +35,46 @@ const ContactsContent = (props) => {
     siteSettings?.vk !== vk ||
     siteSettings?.email !== email
 
-  const handleSubmit = async () => {
-    await postData(
-      `/api/site`,
-      {
-        phone,
-        whatsapp,
+  const onClickConfirm = async () => {
+    if (
+      !checkErrors({
+        phoneNoRequired: phone,
         viber,
-        telegram,
-        instagram,
-        vk,
+        whatsapp,
         email,
-      },
-      refreshPage
+      })
     )
+      await postData(
+        `/api/site`,
+        {
+          phone,
+          whatsapp,
+          viber,
+          telegram,
+          instagram,
+          vk,
+          email,
+        },
+        (data) => {
+          setSiteSettings(data)
+          setMessage('Данные обновлены успешно')
+          setIsWaitingToResponse(false)
+          // refreshPage()
+        },
+        () => {
+          setMessage('')
+          addError({ response: 'Ошибка обновления данных' })
+          setIsWaitingToResponse(false)
+        }
+      )
   }
+
+  useEffect(() => {
+    if (isWaitingToResponse) {
+      setIsWaitingToResponse(false)
+      // setMessage('Данные анкеты обновлены успешно')
+    }
+  }, [props])
 
   return (
     <div className="flex flex-col flex-1 h-screen px-2 mb-2 gap-y-2">
@@ -56,12 +84,14 @@ const ContactsContent = (props) => {
             label="Телефон"
             value={phone}
             onChange={setPhone}
+            error={errors.phone}
             copyPasteButtons
           />
           <PhoneInput
             label="Whatsapp"
             value={whatsapp}
             onChange={setWhatsapp}
+            error={errors.whatsapp}
             copyPasteButtons
           />
         </FormWrapper>
@@ -70,6 +100,7 @@ const ContactsContent = (props) => {
             label="Viber"
             value={viber}
             onChange={setViber}
+            error={errors.viber}
             copyPasteButtons
           />
           <Input
@@ -96,9 +127,26 @@ const ContactsContent = (props) => {
             copyPasteButtons
           />
         </FormWrapper>
+        <Input
+          label="Email"
+          value={email}
+          onChange={setEmail}
+          error={errors.email}
+          copyPasteButtons
+        />
       </FormWrapper>
-
-      <Button name="Применить" disabled={!formChanged} onClick={handleSubmit} />
+      <div className="flex flex-col w-full p-1">
+        <ErrorsList errors={errors} />
+        <Button
+          name="Применить"
+          disabled={!formChanged}
+          onClick={onClickConfirm}
+          loading={isWaitingToResponse}
+        />
+        {message && !isWaitingToResponse && (
+          <div className="flex flex-col col-span-2 text-success">{message}</div>
+        )}
+      </div>
     </div>
   )
 }

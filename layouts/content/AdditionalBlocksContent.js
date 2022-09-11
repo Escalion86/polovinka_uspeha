@@ -28,6 +28,11 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
     var movedUp = false
     var movedDown = false
     const itemsToChange = additionalBlocks.map((item) => {
+      if (!item.index && item.index === 0)
+        Object.keys(additionalBlocks).reduce((key, v) =>
+          additionalBlocks[v] < additionalBlocks[key] ? v : key
+        )
+
       if (item.index === additionalBlock.index)
         if (!movedUp) {
           movedUp = true

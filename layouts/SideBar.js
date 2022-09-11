@@ -199,7 +199,7 @@ const Menu = ({ menuCfg, activePage }) => {
   )
 }
 
-const SideBar = ({ user, page }) => {
+const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)

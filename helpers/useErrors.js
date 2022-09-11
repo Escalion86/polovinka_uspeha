@@ -76,8 +76,12 @@ const useErrors = () => {
         !data ? setError({ gender: 'Необходимо ввести пол' }) : null,
       phone: (data) =>
         !data
-          ? setError({ phone: 'Необходимо ввести текст отзыва' })
+          ? setError({ phone: 'Необходимо ввести номер телефона' })
           : `${data}`.length !== 11
+          ? setError({ phone: 'Некорректно введен номер телефона' })
+          : null,
+      phoneNoRequired: (data) =>
+        data && `${data}`.length !== 11
           ? setError({ phone: 'Некорректно введен номер телефона' })
           : null,
       viber: (data) => {

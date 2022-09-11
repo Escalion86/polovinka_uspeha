@@ -1,12 +1,16 @@
 import BlockContainer from '@components/BlockContainer'
+import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
+import { useRecoilValue } from 'recoil'
 import DirectionBlock from './DirectionBlock'
 
-const DirectionsBlock = ({ directions, startInverse = false }) => {
-  if (!directions || directions.length === 0) return null
+const DirectionsBlock = ({ startInverse = false }) => {
+  const filteredDirections = useRecoilValue(filteredDirectionsSelector)
+
+  if (!filteredDirections || filteredDirections.length === 0) return null
   return (
     <>
       <BlockContainer id="directions" />
-      {directions.map((direction, index) => (
+      {filteredDirections.map((direction, index) => (
         <DirectionBlock
           key={direction._id}
           image={direction.image}

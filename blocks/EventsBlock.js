@@ -99,14 +99,7 @@ const EventsBlock = ({
             .sort((a, b) => (a.date < b.date ? -1 : 1))
             .slice(0, maxShowedEvents)
             .map((event, index) => (
-              <EventCard
-                key={event._id}
-                eventId={event._id}
-                // noButtons={
-                //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
-                // }
-              />
-              // <CardEvent key={event._id} event={event} />
+              <EventCard key={event._id} eventId={event._id} />
             ))
           // )
           //  : (
