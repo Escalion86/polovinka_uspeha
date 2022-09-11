@@ -3,9 +3,11 @@ import { H2 } from '@components/tags'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import EventCard from '@layouts/cards/EventCard'
+import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
+import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import cn from 'classnames'
 import Link from 'next/link'
@@ -43,37 +45,32 @@ const EventsBlock = ({
   events,
   maxEvents = null,
   hideBlockOnZeroEvents = false,
-  title,
+  title = 'Ближайшие мероприятия',
 }) => {
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
 
-  const loggedUser = useRecoilValue(loggedUserAtom)
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const eventsLoggedUser = useRecoilValue(
-    eventsUsersByUserIdSelector(loggedUser?._id)
-  )
+  const filteredEvents = useRecoilValue(filteredEventsSelector)
 
-  const filteredEvents = useMemo(
-    () =>
-      visibleEventsForUser(
-        events,
-        eventsLoggedUser,
-        loggedUser,
-        true,
-        isLoggedUserAdmin,
-        loggedUserActiveStatus
-      )
-        .filter((event) => !isEventExpiredFunc(event))
-        .slice(0, maxShowedEvents),
-    [
-      events,
-      loggedUser,
-      isLoggedUserAdmin,
-      loggedUserActiveStatus,
-      maxShowedEvents,
-    ]
-  )
+  // const filteredEvents = useMemo(
+  //   () =>
+  //     visibleEventsForUser(
+  //       events,
+  //       eventsLoggedUser,
+  //       loggedUser,
+  //       true,
+  //       isLoggedUserAdmin,
+  //       loggedUserActiveStatus
+  //     )
+  //       .filter((event) => !isEventExpiredFunc(event))
+  //       .slice(0, maxShowedEvents),
+  //   [
+  //     events,
+  //     loggedUser,
+  //     isLoggedUserAdmin,
+  //     loggedUserActiveStatus,
+  //     maxShowedEvents,
+  //   ]
+  // )
 
   // const visibleEvents = (
   //   isLoggedUserAdmin
@@ -98,7 +95,9 @@ const EventsBlock = ({
         {
           // filteredEvents?.length ? (
           [...filteredEvents]
+            .filter((event) => !isEventExpiredFunc(event))
             .sort((a, b) => (a.date < b.date ? -1 : 1))
+            .slice(0, maxShowedEvents)
             .map((event, index) => (
               <EventCard
                 key={event._id}

@@ -17,6 +17,7 @@ import { useState } from 'react'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import getParentDir from '@state/atoms/getParentDir'
 
 const variants = {
   show: {
@@ -43,12 +44,15 @@ const UserMenu = () => {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
+  const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
 
   const router = useRouter()
 
   const handleMouseOver = () => {
-    setMenuOpen(false)
-    setIsUserMenuOpened(true)
+    if (turnOnHandleMouseOver) {
+      setMenuOpen(false)
+      setIsUserMenuOpened(true)
+    }
   }
 
   const handleMouseOut = () => setIsUserMenuOpened(false)
@@ -58,6 +62,14 @@ const UserMenu = () => {
       className="z-50 flex items-start justify-end h-16"
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
+      onClick={() => {
+        setTurnOnHandleMouseOver(false)
+        setIsUserMenuOpened(!isUserMenuOpened)
+        const timer = setTimeout(() => {
+          setTurnOnHandleMouseOver(true)
+          clearTimeout(timer)
+        }, 500)
+      }}
     >
       <div className="relative flex flex-col items-end group mt-2.5 w-12">
         <Avatar user={loggedUser} className="z-10" />
@@ -79,7 +91,36 @@ const UserMenu = () => {
               <span>{loggedUser.secondName}</span>
             </div>
             <DevSwitch />
-            {router.asPath === '/' ? (
+            {getParentDir(router.asPath) === 'cabinet' ? (
+              <>
+                <Link href="/cabinet/questionnaire">
+                  <a>
+                    <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
+                      <FontAwesomeIcon
+                        icon={faUserAlt}
+                        className="w-5 h-5 text-general"
+                      />
+                      <span className="prevent-select-text whitespace-nowrap">
+                        {'Моя анкета'}
+                      </span>
+                    </div>
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a>
+                    <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
+                      <FontAwesomeIcon
+                        icon={faHome}
+                        className="w-5 h-5 text-general"
+                      />
+                      <span className="prevent-select-text whitespace-nowrap">
+                        {'Главная страница сайта'}
+                      </span>
+                    </div>
+                  </a>
+                </Link>
+              </>
+            ) : (
               <Link href="/cabinet">
                 <a>
                   <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
@@ -93,35 +134,6 @@ const UserMenu = () => {
                   </div>
                 </a>
               </Link>
-            ) : (
-              <>
-                <Link href="/cabinet/questionnaire">
-                  <a onClick={() => setMenuOpen(false)}>
-                    <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
-                      <FontAwesomeIcon
-                        icon={faUserAlt}
-                        className="w-5 h-5 text-general"
-                      />
-                      <span className="prevent-select-text whitespace-nowrap">
-                        {'Моя анкета'}
-                      </span>
-                    </div>
-                  </a>
-                </Link>
-                <Link href="/">
-                  <a onClick={() => setMenuOpen(false)}>
-                    <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
-                      <FontAwesomeIcon
-                        icon={faHome}
-                        className="w-5 h-5 text-general"
-                      />
-                      <span className="prevent-select-text whitespace-nowrap">
-                        {'Главная страница сайта'}
-                      </span>
-                    </div>
-                  </a>
-                </Link>
-              </>
             )}
 
             <div
