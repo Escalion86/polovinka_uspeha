@@ -85,8 +85,10 @@ function CabinetPage(props) {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const [loggedUserState, setLoggedUserState] = useRecoilState(loggedUserAtom)
-  const setLoggedUserActiveRole = useSetRecoilState(loggedUserActiveRoleAtom)
-  const setLoggedUserActiveStatus = useSetRecoilState(
+  const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
+    loggedUserActiveRoleAtom
+  )
+  const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
     loggedUserActiveStatusAtom
   )
   const setEventsState = useSetRecoilState(eventsAtom)
@@ -169,9 +171,14 @@ function CabinetPage(props) {
   const title = CONTENTS[page] ? CONTENTS[page].name : ''
 
   useEffect(() => {
+    if (
+      !loggedUserActiveRole ||
+      props.loggedUser?.role !== loggedUserState?.role
+    )
+      setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
+    if (!loggedUserActiveStatus || props.loggedUser?.role !== 'dev')
+      setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
     setLoggedUserState(props.loggedUser)
-    setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
-    setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)

@@ -83,6 +83,10 @@ import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
+import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
+import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
+import filteredAdditionalBlocksSelector from '@state/selectors/filteredAdditionalBlocksSelector'
 
 // const sertificat = {
 //   image: '/img/other/IF8t5okaUQI_1.webp',
@@ -129,21 +133,22 @@ export default function Home(props) {
     console.log('props.error', props.error)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const [loggedUserState, setLoggedUserState] = useRecoilState(loggedUserAtom)
-  const setLoggedUserActiveRole = useSetRecoilState(loggedUserActiveRoleAtom)
+  // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
+    loggedUserActiveRoleAtom
+  )
   const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
     loggedUserActiveStatusAtom
   )
-  const [eventsState, setEventsState] = useRecoilState(eventsAtom)
-  const [directionsState, setDirectionsState] = useRecoilState(directionsAtom)
-  const [additionalBlocksState, setAdditionalBlocksState] =
-    useRecoilState(additionalBlocksAtom)
+
+  const setEventsState = useSetRecoilState(eventsAtom)
+  const setDirectionsState = useSetRecoilState(directionsAtom)
+  const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
   const setUsersState = useSetRecoilState(usersAtom)
-  const [reviewsState, setReviewsState] = useRecoilState(reviewsAtom)
+  const setReviewsState = useSetRecoilState(reviewsAtom)
   const setPaymentsState = useSetRecoilState(paymentsAtom)
-  const [eventsUsersState, setEventsUsersState] =
-    useRecoilState(eventsUsersAtom)
+  const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
 
   const setEvent = useSetRecoilState(eventEditSelector)
   const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -170,19 +175,18 @@ export default function Home(props) {
   const setErrorCard = useSetRecoilState(setErrorSelector)
   const setNotErrorCard = useSetRecoilState(setNotErrorSelector)
 
+  const filteredEvents = useRecoilValue(filteredEventsSelector)
+  const filteredReviews = useRecoilValue(filteredReviewsSelector)
+  const filteredDirections = useRecoilValue(filteredDirectionsSelector)
+  const filteredAdditionalBlocks = useRecoilValue(
+    filteredAdditionalBlocksSelector
+  )
+
   // const loggedUser = useRecoilValue(loggedUserAtom)
   // const eventsLoggedUser = useRecoilValue(
   //   eventsUsersByUserIdSelector(loggedUser?._id)
   // )
 
-  const filteredEvents = visibleEventsForUser(
-    eventsState,
-    eventsUsersState,
-    loggedUserState,
-    true,
-    isLoggedUserAdmin,
-    loggedUserActiveStatus
-  )
   // loggedUser?.role === 'admin' || loggedUser?.role === 'dev'
   //   ? events
   //   : events.filter((event) => {
@@ -198,21 +202,12 @@ export default function Home(props) {
   //       )
   //     })
 
-  // const filteredEvents = eventsState.filter(
-  //   (event) => event.showOnSite && new Date(event.date) >= new Date()
-  // )
-  const filteredReviews = reviewsState.filter((review) => review.showOnSite)
-  const filteredDirections = directionsState.filter(
-    (direction) => direction.showOnSite
-  )
-  const filteredAdditionalBlocks = additionalBlocksState.filter(
-    (additionalBlock) => additionalBlock.showOnSite
-  )
-
   useEffect(() => {
-    setLoggedUserState(props.loggedUser)
-    setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
-    setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
+    if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
+      setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
+    if (!loggedUserActiveStatus || props.loggedUser?.role !== 'dev')
+      setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
+    setLoggedUser(props.loggedUser)
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
@@ -270,21 +265,10 @@ export default function Home(props) {
         ) : (
           <div className="w-full bg-white">
             <DeviceCheck right />
-            <Header
-              events={filteredEvents}
-              directions={filteredDirections}
-              additionalBlocks={filteredAdditionalBlocks}
-              reviews={filteredReviews}
-              loggedUser={loggedUserState}
-            />
-            <TitleBlock userIsLogged={!!loggedUserState} />
+            <Header />
+            <TitleBlock userIsLogged={!!loggedUser} />
             <AboutBlock />
-            <EventsBlock
-              title="Ближайшие мероприятия"
-              events={filteredEvents}
-              maxEvents={4}
-              hideBlockOnZeroEvents
-            />
+            <EventsBlock maxEvents={4} hideBlockOnZeroEvents />
             <DirectionsBlock
               directions={filteredDirections}
               startInverse={directionsBlocksInverse}

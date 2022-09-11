@@ -87,7 +87,7 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
           )}
         >
           <img
-            className="object-contain w-full laptop:object-cover min-w-32 laptop:w-80"
+            className="object-contain w-full laptop:object-cover min-w-32 laptop:w-72"
             src={direction.image}
             alt="direction"
             // width={48}

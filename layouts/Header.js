@@ -3,7 +3,12 @@ import Divider from '@components/Divider'
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import transliterate from '@helpers/transliterate'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
+import filteredAdditionalBlocksSelector from '@state/selectors/filteredAdditionalBlocksSelector'
+import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
+import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
+import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
 import cn from 'classnames'
 import Link from 'next/link'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
@@ -46,8 +51,12 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 //   { name: 'Контакты', href: '#contacts', key: null },
 // ]
 
-const Header = (props) => {
-  const { loggedUser, additionalBlocks, events, directions, reviews } = props
+const Header = () => {
+  const loggedUser = useRecoilValue(loggedUserAtom)
+  const events = useRecoilValue(filteredEventsSelector)
+  const reviews = useRecoilValue(filteredReviewsSelector)
+  const directions = useRecoilValue(filteredDirectionsSelector)
+  const additionalBlocks = useRecoilValue(filteredAdditionalBlocksSelector)
 
   const menu = [{ name: 'Наши цели', href: '/#about' }]
   if (events?.length > 0) menu.push({ name: 'Мероприятия', href: '/#events' })
@@ -74,11 +83,11 @@ const Header = (props) => {
     // <div className="w-full h-18">
     <div className="sticky top-0 left-0 right-0 z-20 flex flex-col items-center justify-between shadow-md h-18">
       {/* <Header user={user} /> */}
-      <div className="z-10 flex items-center justify-center w-full px-2 py-1 tablet:px-4 h-18 bg-general">
-        <div className="absolute left-0 tablet:hidden ">
+      <div className="z-10 flex items-center justify-end w-full px-2 py-1 tablet:px-4 h-18 bg-general">
+        <div className="flex-1 tablet:hidden ">
           <Burger />
         </div>
-        <div>
+        <div className="absolute z-10 -translate-x-1/2 left-1/2">
           <Link href="/">
             <a>
               <img
@@ -92,9 +101,7 @@ const Header = (props) => {
           </Link>
         </div>
 
-        <div className="absolute right-2">
-          <UserMenu />
-        </div>
+        <UserMenu />
       </div>
       <ul className="items-center justify-center hidden w-full h-[40px] text-lg duration-300 bg-white bg-opacity-75 tablet:flex gap-x-4 hover:bg-opacity-100">
         {menu.map(({ name, href }, index) => {
@@ -109,7 +116,7 @@ const Header = (props) => {
       >
         <div className="pt-20 pb-4 w-60">
           <div className="flex w-full px-2 pb-2 border-b tablet:hidden border-general">
-            {loggedUser ? (
+            {loggedUser?._id ? (
               <Link href="/cabinet">
                 <a className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general">
                   <Avatar user={loggedUser} />

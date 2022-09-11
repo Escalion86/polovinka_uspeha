@@ -240,7 +240,13 @@ const EventsContent = () => {
         isLoggedUserAdmin,
         loggedUserActiveStatus
       ),
-    [loggedUser, isLoggedUserAdmin, loggedUserActiveStatus]
+    [
+      events,
+      eventsLoggedUser,
+      loggedUser,
+      isLoggedUserAdmin,
+      loggedUserActiveStatus,
+    ]
   )
 
   const visibleEventsIds = useMemo(

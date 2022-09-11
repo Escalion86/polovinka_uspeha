@@ -9,7 +9,7 @@ const UserName = ({ user, className, noWrap }) => {
   return (
     <div
       className={cn(
-        'flex gap-x-1',
+        'flex gap-x-1 leading-3',
         noWrap ? 'flex-nowrap' : 'flex-wrap',
         className
       )}

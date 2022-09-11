@@ -91,21 +91,20 @@ function EventPage(props) {
   const [loading, setLoading] = useState(true)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const [loggedUserState, setLoggedUserState] = useRecoilState(loggedUserAtom)
-  const setLoggedUserActiveRole = useSetRecoilState(loggedUserActiveRoleAtom)
+  const setLoggedUserState = useSetRecoilState(loggedUserAtom)
+  const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
+    loggedUserActiveRoleAtom
+  )
   const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
     loggedUserActiveStatusAtom
   )
-  const [eventsState, setEventsState] = useRecoilState(eventsAtom)
-  const [directionsState, setDirectionsState] = useRecoilState(directionsAtom)
-  const [additionalBlocksState, setAdditionalBlocksState] =
-    useRecoilState(additionalBlocksAtom)
+  const setEventsState = useSetRecoilState(eventsAtom)
+  const setDirectionsState = useSetRecoilState(directionsAtom)
+  const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
   const setUsersState = useSetRecoilState(usersAtom)
-  const [reviewsState, setReviewsState] = useRecoilState(reviewsAtom)
+  const setReviewsState = useSetRecoilState(reviewsAtom)
   const setPaymentsState = useSetRecoilState(paymentsAtom)
-  const [eventsUsersState, setEventsUsersState] =
-    useRecoilState(eventsUsersAtom)
+  const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
 
   const setEvent = useSetRecoilState(eventEditSelector)
   const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -130,23 +129,6 @@ function EventPage(props) {
   const setNotLoadingCard = useSetRecoilState(setNotLoadingSelector)
   const setErrorCard = useSetRecoilState(setErrorSelector)
   const setNotErrorCard = useSetRecoilState(setNotErrorSelector)
-
-  const filteredEvents = visibleEventsForUser(
-    eventsState,
-    eventsUsersState,
-    loggedUserState,
-    true,
-    isLoggedUserAdmin,
-    loggedUserActiveStatus
-  )
-
-  const filteredReviews = reviewsState.filter((review) => review.showOnSite)
-  const filteredDirections = directionsState.filter(
-    (direction) => direction.showOnSite
-  )
-  const filteredAdditionalBlocks = additionalBlocksState.filter(
-    (additionalBlock) => additionalBlock.showOnSite
-  )
 
   useEffect(() => {
     if (Object.keys(modalsFunc).length > 0 && !itemsFunc)
@@ -180,9 +162,11 @@ function EventPage(props) {
   }, [modalsFunc])
 
   useEffect(() => {
+    if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
+      setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
+    if (!loggedUserActiveStatus || props.loggedUser?.role !== 'dev')
+      setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
     setLoggedUserState(props.loggedUser)
-    setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
-    setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
@@ -220,13 +204,7 @@ function EventPage(props) {
       ) : (
         <div className="w-full bg-white">
           <DeviceCheck right />
-          <Header
-            events={filteredEvents}
-            directions={filteredDirections}
-            additionalBlocks={filteredAdditionalBlocks}
-            reviews={filteredReviews}
-            loggedUser={loggedUserState}
-          />
+          <Header />
           {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
           <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
             <H2 className="mb-4">Мероприятие</H2>
