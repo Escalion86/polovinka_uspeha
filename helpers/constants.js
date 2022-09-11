@@ -286,6 +286,16 @@ export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
   showOnSite: true,
 })
 
+export const DEFAULT_SITE_SETTINGS = Object.freeze({
+  email: null,
+  phone: null,
+  whatsapp: null,
+  viber: null,
+  telegram: null,
+  instagram: null,
+  vk: null,
+})
+
 export const EVENT_STATUSES = [
   { value: 'active', name: 'Активно', color: 'green-400', icon: faPlay },
   { value: 'canceled', name: 'Отменено', color: 'red-400', icon: faBan },

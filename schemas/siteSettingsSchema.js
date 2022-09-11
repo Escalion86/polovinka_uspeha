@@ -2,6 +2,7 @@ const siteSettingsSchema = {
   email: {
     type: String,
     lowercase: true,
+    default: null,
   },
   phone: {
     type: Number,

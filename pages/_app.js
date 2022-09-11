@@ -4,27 +4,28 @@ import '../styles/global.css'
 import '../styles/burger.css'
 import 'react-medium-image-zoom/dist/styles.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
+import 'react-edit-text/dist/index.css'
 
 import Head from 'next/head'
 import { SessionProvider } from 'next-auth/react'
-import Script from 'next/script'
+// import Script from 'next/script'
 import {
   RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
+  // atom,
+  // selector,
+  // useRecoilState,
+  // useRecoilValue,
 } from 'recoil'
 
 import { ThemeProvider } from '@mui/material/styles'
 
-import { ToastContainer, toast } from 'react-toastify'
+// import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 import { createTheme } from '@mui/material/styles'
 import { red } from '@mui/material/colors'
-import { CssBaseline } from '@mui/material/'
+// import { CssBaseline } from '@mui/material/'
 
 // Create a theme instance.
 const theme = createTheme({

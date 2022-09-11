@@ -100,7 +100,6 @@ const CardButtons = ({
           icon={faUsers}
           onClick={() => {
             setOpen(false)
-            // onUpClick()
             modalsFunc.event.users(item._id)
           }}
           color="green"

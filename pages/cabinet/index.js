@@ -1,7 +1,6 @@
 import { getSession } from 'next-auth/react'
 
 import Head from 'next/head'
-import 'react-edit-text/dist/index.css'
 
 // import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
 

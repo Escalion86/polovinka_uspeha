@@ -1,6 +1,8 @@
 import BlockContainer from '@components/BlockContainer'
 import Masonry from '@components/Masonry'
 import { H2, H3 } from '@components/tags'
+import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
+import { useRecoilValue } from 'recoil'
 
 const Review = ({ review, style }) => (
   <div className="p-3 bg-white rounded-lg" style={style}>
@@ -12,8 +14,9 @@ const Review = ({ review, style }) => (
   </div>
 )
 
-const ReviewsBlock = ({ reviews }) => {
-  if (!reviews || reviews.length === 0) return null
+const ReviewsBlock = () => {
+  const filteredReviews = useRecoilValue(filteredReviewsSelector)
+  if (!filteredReviews || filteredReviews.length === 0) return null
   return (
     <BlockContainer
       id="reviews"
@@ -26,7 +29,7 @@ const ReviewsBlock = ({ reviews }) => {
     >
       <H2>Отзывы</H2>
       <Masonry gap={16}>
-        {reviews.map((review, index) => (
+        {filteredReviews.map((review, index) => (
           <Review key={review._id} review={review} />
         ))}
       </Masonry>
