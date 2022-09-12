@@ -207,11 +207,18 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
           {/* <PriceDiscount event={event} className="hidden tablet:flex" /> */}
           <div className="flex flex-wrap justify-between w-full">
             <div className="text-lg font-bold leading-5 whitespace-nowrap tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
-              {formatDateTime(event.date, false, false, true, false)}
+              {formatDateTime(
+                event.date,
+                false,
+                false,
+                true,
+                false,
+                event.duration
+              )}
             </div>
-            <div className="text-lg font-bold leading-5 text-right whitespace-nowrap min-w-24 laptop:whitespace-pre-wrap text-general">
+            {/* <div className="text-lg font-bold leading-5 text-right whitespace-nowrap min-w-24 laptop:whitespace-pre-wrap text-general">
               {formatMinutes(event.duration ?? 60)}
-            </div>
+            </div> */}
           </div>
         </div>
 

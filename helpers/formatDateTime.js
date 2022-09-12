@@ -76,7 +76,8 @@ function formatDateTime(
   fullMonth = true,
   forComponent = false,
   showDayOfWeek = true,
-  twoLines = false
+  twoLines = false,
+  durationMinutes
 ) {
   if (!dateTime) return undefined
   var d = new Date(dateTime),
@@ -89,6 +90,18 @@ function formatDateTime(
 
   if (minutes.length < 2) minutes = '0' + minutes
   if (hours.length < 2) hours = '0' + hours
+
+  var finishedTime
+  if (durationMinutes) {
+    var dFinish = new Date(
+      new Date(dateTime).getTime() + durationMinutes * 60000
+    )
+    var dFinishMinutes = '' + dFinish.getMinutes()
+    var dFinishHours = '' + dFinish.getHours()
+    if (dFinishMinutes.length < 2) dFinishMinutes = '0' + dFinishMinutes
+    if (dFinishHours.length < 2) dFinishHours = '0' + dFinishHours
+    finishedTime = '-' + dFinishHours + ':' + dFinishMinutes
+  }
 
   if (forComponent) {
     if (day.length < 2) day = '0' + day
@@ -105,7 +118,8 @@ function formatDateTime(
       (showDayOfWeek ? dayOfWeek[week] + ' ' : '') +
       hours +
       ':' +
-      minutes
+      minutes +
+      (finishedTime ?? '')
     )
 }
 
