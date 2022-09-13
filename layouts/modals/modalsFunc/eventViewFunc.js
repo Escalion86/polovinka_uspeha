@@ -64,6 +64,9 @@ const eventViewFunc = (eventId) => {
         </div>
       )
 
+    const finishedDateTime =
+      new Date(event?.date).getTime() + (event?.duration ?? 0) * 60000
+
     return (
       <div className="flex flex-col gap-y-2">
         {event?.images && event.images.length > 0 && (
@@ -130,13 +133,20 @@ const eventViewFunc = (eventId) => {
             <div className="flex items-start leading-5 gap-x-1">
               <span className="font-bold">Начало:</span>
               <div>{formatDateTime(event?.date)}</div>
-              <div className="font-normal">
+              {/* <div className="font-normal">
                 (
                 {eventLoggedUserStatus
                   ? 'началось'
                   : getDaysFromNow(event?.date)}
                 )
-              </div>
+              </div> */}
+            </div>
+            <div className="flex items-start leading-5 gap-x-1">
+              <span className="font-bold">Завершение:</span>
+              <div>{formatDateTime(finishedDateTime)}</div>
+              {/* <div className="font-normal">
+                ({getDaysFromNow(finishedDateTime)})
+              </div> */}
             </div>
             <div className="flex items-start leading-5 gap-x-1">
               <span className="font-bold">Продолжительность:</span>

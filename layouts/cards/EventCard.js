@@ -22,6 +22,7 @@ import formatMinutes from '@helpers/formatMinutes'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import errorAtom from '@state/atoms/errorAtom'
+import DateTimeEvent from '@components/DateTimeEvent'
 
 const EventCard = ({ eventId, noButtons, hidden = false }) => {
   const widthNum = useWindowDimensionsTailwindNum()
@@ -203,10 +204,20 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center py-1 pl-2 pr-1 mt-1 border-t border-gray-300 tablet:items-end">
+        <div className="py-1 pl-2 pr-1 mt-1 border-t border-gray-300">
           {/* <PriceDiscount event={event} className="hidden tablet:flex" /> */}
-          <div className="flex flex-wrap justify-between w-full">
-            <div className="text-lg font-bold leading-5 whitespace-nowrap tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
+          {/* <div className="flex flex-wrap justify-between w-full"> */}
+          <DateTimeEvent
+            wrapperClassName="text-lg font-bold leading-5 justify-center tablet:justify-start"
+            dateClassName="text-general"
+            timeClassName="italic"
+            durationClassName="italic text-base font-normal"
+            event={event}
+            showDayOfWeek
+            fullMonth
+            showDuration
+          />
+          {/* <div className="text-lg font-bold leading-5 whitespace-nowrap tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
               {formatDateTime(
                 event.date,
                 false,
@@ -215,11 +226,11 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
                 false,
                 event.duration
               )}
-            </div>
-            {/* <div className="text-lg font-bold leading-5 text-right whitespace-nowrap min-w-24 laptop:whitespace-pre-wrap text-general">
+            </div> */}
+          {/* <div className="text-lg font-bold leading-5 text-right whitespace-nowrap min-w-24 laptop:whitespace-pre-wrap text-general">
               {formatMinutes(event.duration ?? 60)}
             </div> */}
-          </div>
+          {/* </div> */}
         </div>
 
         {widthNum >= 3 && (
