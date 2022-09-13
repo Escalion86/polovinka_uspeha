@@ -25,6 +25,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import { createTheme } from '@mui/material/styles'
 import { red } from '@mui/material/colors'
+import Script from 'next/script'
 // import { CssBaseline } from '@mui/material/'
 
 // Create a theme instance.
@@ -84,6 +85,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         {/* <Provider store={store}> */}
         <RecoilRoot>
           <ThemeProvider theme={theme}>
+            <Script
+              src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"
+              strategy="beforeInteractive"
+            />
             {/* <CssBaseline /> */}
             <Component {...pageProps} />
           </ThemeProvider>
