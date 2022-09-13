@@ -31,6 +31,7 @@ import isUserAdmin from '@helpers/isUserAdmin'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -52,12 +53,19 @@ const eventViewFunc = (eventId) => {
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
 
+    const eventLoggedUserStatus = useRecoilValue(
+      loggedUserToEventStatusSelector(eventId)
+    )?.isEventInProcess
+
     if (!event || !eventId)
       return (
         <div className="flex justify-center w-full text-lg ">
           ОШИБКА! Мероприятие не найдено!
         </div>
       )
+
+    const finishedDateTime =
+      new Date(event?.date).getTime() + (event?.duration ?? 0) * 60000
 
     return (
       <div className="flex flex-col gap-y-2">
@@ -125,7 +133,20 @@ const eventViewFunc = (eventId) => {
             <div className="flex items-start leading-5 gap-x-1">
               <span className="font-bold">Начало:</span>
               <div>{formatDateTime(event?.date)}</div>
-              <div className="font-normal">({getDaysFromNow(event?.date)})</div>
+              {/* <div className="font-normal">
+                (
+                {eventLoggedUserStatus
+                  ? 'началось'
+                  : getDaysFromNow(event?.date)}
+                )
+              </div> */}
+            </div>
+            <div className="flex items-start leading-5 gap-x-1">
+              <span className="font-bold">Завершение:</span>
+              <div>{formatDateTime(finishedDateTime)}</div>
+              {/* <div className="font-normal">
+                ({getDaysFromNow(finishedDateTime)})
+              </div> */}
             </div>
             <div className="flex items-start leading-5 gap-x-1">
               <span className="font-bold">Продолжительность:</span>

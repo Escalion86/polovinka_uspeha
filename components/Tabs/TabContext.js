@@ -8,8 +8,9 @@ const TabContext = ({ value, children }) => {
   const tabNames = []
   children.forEach((child, index) => {
     // console.log('child ' + index, child)
+    // console.log('child?.props?.tabName', child?.props?.tabName)
     // console.log('child.type.name', child.type.name)
-    if (child.props?.tabName) {
+    if (child?.props?.tabName) {
       tabNames.push(child.props.tabName)
     }
   })

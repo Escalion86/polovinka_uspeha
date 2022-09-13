@@ -52,8 +52,7 @@ export default function Home(props) {
       <Head>
         <title>{`Центр осознанных знакомств - "Половинка успеха"`}</title>
       </Head>
-      <StateLoader {...props}>
-        <DeviceCheck right />
+      <StateLoader className="max-h-screen overflow-y-scroll" {...props}>
         <Header />
         <TitleBlock />
         <AboutBlock />

@@ -1,6 +1,10 @@
 import DevSwitch from '@components/DevSwitch'
 import {
   faHome,
+  faList,
+  faListAlt,
+  faListSquares,
+  faListUl,
   faSign,
   faSignInAlt,
   faSignOutAlt,
@@ -40,6 +44,31 @@ const variants = {
   },
 }
 
+const MenuItem = ({ onClick, icon, title, href }) => {
+  const Component = (
+    <div
+      onClick={onClick}
+      className="flex items-center px-3 py-2 duration-300 bg-white border border-gray-300 cursor-pointer group gap-x-2 hover:bg-gray-500"
+    >
+      <FontAwesomeIcon
+        icon={icon}
+        className="w-5 h-5 text-general group-hover:text-white"
+      />
+      <span className="text-black prevent-select-text whitespace-nowrap group-hover:text-white">
+        {title}
+      </span>
+    </div>
+  )
+
+  if (href)
+    return (
+      <Link href={href}>
+        <a>{Component}</a>
+      </Link>
+    )
+  else return Component
+}
+
 const UserMenu = () => {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
@@ -71,7 +100,7 @@ const UserMenu = () => {
         }, 500)
       }}
     >
-      <div className="relative flex flex-col items-end group mt-2.5 w-12">
+      <div className="relative flex flex-col items-end mt-2.5 w-12">
         <Avatar user={loggedUser} className="z-10" />
         {router && (
           <motion.div
@@ -91,63 +120,72 @@ const UserMenu = () => {
               <span>{loggedUser.secondName}</span>
             </div>
             <DevSwitch />
+            <MenuItem
+              href="/cabinet/questionnaire"
+              icon={faUserAlt}
+              title="Моя анкета"
+            />
+            {/* <Link href="/cabinet/questionnaire">
+              <a>
+                <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
+                  <FontAwesomeIcon
+                    icon={faUserAlt}
+                    className="w-5 h-5 text-general"
+                  />
+                  <span className="prevent-select-text whitespace-nowrap">
+                    {'Моя анкета'}
+                  </span>
+                </div>
+              </a>
+            </Link> */}
             {getParentDir(router.asPath) === 'cabinet' ? (
-              <>
-                <Link href="/cabinet/questionnaire">
-                  <a>
-                    <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
-                      <FontAwesomeIcon
-                        icon={faUserAlt}
-                        className="w-5 h-5 text-general"
-                      />
-                      <span className="prevent-select-text whitespace-nowrap">
-                        {'Моя анкета'}
-                      </span>
-                    </div>
-                  </a>
-                </Link>
-                <Link href="/">
-                  <a>
-                    <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
-                      <FontAwesomeIcon
-                        icon={faHome}
-                        className="w-5 h-5 text-general"
-                      />
-                      <span className="prevent-select-text whitespace-nowrap">
-                        {'Главная страница сайта'}
-                      </span>
-                    </div>
-                  </a>
-                </Link>
-              </>
+              <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
             ) : (
-              <Link href="/cabinet">
-                <a>
-                  <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
-                    <FontAwesomeIcon
-                      icon={faUserAlt}
-                      className="w-5 h-5 text-general"
-                    />
-                    <span className="prevent-select-text whitespace-nowrap">
-                      {'Мой кабинет'}
-                    </span>
-                  </div>
-                </a>
-              </Link>
+              // <Link href="/">
+              //   <a>
+              //     <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
+              //       <FontAwesomeIcon
+              //         icon={faHome}
+              //         className="w-5 h-5 text-general"
+              //       />
+              //       <span className="prevent-select-text whitespace-nowrap">
+              //         {'Главная страница сайта'}
+              //       </span>
+              //     </div>
+              //   </a>
+              // </Link>
+              <MenuItem href="/cabinet" icon={faListAlt} title="Мой кабинет" />
+              // <Link href="/cabinet">
+              //   <a>
+              //     <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
+              //       <FontAwesomeIcon
+              //         icon={faListAlt}
+              //         className="w-5 h-5 text-general"
+              //       />
+              //       <span className="prevent-select-text whitespace-nowrap">
+              //         {'Мой кабинет'}
+              //       </span>
+              //     </div>
+              //   </a>
+              // </Link>
             )}
-
-            <div
+            <MenuItem
               onClick={signOut}
-              className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 hover:bg-gray-500 hover:text-white"
+              icon={faSignOutAlt}
+              title="Выйти из учетной записи"
+            />
+            {/* <div
+              onClick={signOut}
+              className="flex items-center px-3 py-2 duration-300 bg-white border border-gray-300 cursor-pointer group gap-x-2 hover:bg-gray-500"
             >
               <FontAwesomeIcon
                 icon={faSignOutAlt}
-                className="w-5 h-5 text-general"
+                className="w-5 h-5 text-general group-hover:text-white"
               />
-              <span className="prevent-select-text whitespace-nowrap">
+              <span className="text-black prevent-select-text whitespace-nowrap group-hover:text-white">
                 Выйти из учетной записи
               </span>
-            </div>
+            </div> */}
           </motion.div>
         )}
       </div>

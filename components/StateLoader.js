@@ -41,6 +41,8 @@ import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import isSiteLoadingAtom from '@state/atoms/isSiteLoadingAtom'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
+import DeviceCheck from './DeviceCheck'
+import cn from 'classnames'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -140,16 +142,19 @@ const StateLoader = (props) => {
   }, [modalsFunc])
 
   return (
-    <>
+    <div className={cn('', props.className)}>
       {isSiteLoading ? (
         <div className="w-full h-screen">
           <LoadingSpinner size="lg" />
         </div>
       ) : (
-        <div className="w-full bg-white">{props.children}</div>
+        <div className="relative w-full bg-white">
+          <DeviceCheck right />
+          {props.children}
+        </div>
       )}
       <ModalsPortal />
-    </>
+    </div>
   )
 }
 

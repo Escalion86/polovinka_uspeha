@@ -27,6 +27,7 @@ import copyToClipboard from '@helpers/copyToClipboard'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
   <div
@@ -53,6 +54,7 @@ const CardButtons = ({
   className,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
@@ -77,7 +79,7 @@ const CardButtons = ({
       : 0) +
     (showAdminButtons && showOnSiteOnClick ? 1 : 0) +
     (showAdminButtons && typeOfItem === 'event' ? 1 : 0) +
-    (showAdminButtons ? 1 : 0)
+    (isLoggedUserDev ? 1 : 0)
 
   const ItemComponent = numberOfButtons > 3 && isCompact ? MenuItem : CardButton
 
@@ -175,7 +177,7 @@ const CardButtons = ({
           dataTip={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
         />
       )}
-      {showAdminButtons && (
+      {isLoggedUserDev && (
         <ItemComponent
           icon={faTrashAlt}
           onClick={() => {

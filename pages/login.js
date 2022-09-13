@@ -41,14 +41,12 @@ const Input = ({
   return (
     <div
       className={cn(
-        'my-2 py-3 duration-300 overflow-hidden max-h-15',
+        'duration-300 overflow-hidden ',
         className,
-        {
-          'max-h-0 my-0 py-0': hidden,
-        }
+        hidden ? 'max-h-0 my-0 py-0' : 'max-h-15 my-2 py-3 '
       )}
     >
-      <div className={'grid'} style={{ gridTemplateColumns: '7% 93%' }}>
+      <div className="grid" style={{ gridTemplateColumns: '7% 93%' }}>
         <div
           className={cn(
             'relative w-4 flex justify-center duration-300 items-center mx-auto',

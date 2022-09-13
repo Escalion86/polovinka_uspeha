@@ -37,7 +37,7 @@ const ItemContainer = ({
   >
     <div
       className={cn(
-        'absolute flex items-center top-0 bottom-0 left-0 duration-300 bg-green-400',
+        'absolute flex items-center top-0 bottom-0 left-0 overflow-hidden duration-300 bg-green-400',
         active ? 'w-7' : 'w-0'
       )}
     >

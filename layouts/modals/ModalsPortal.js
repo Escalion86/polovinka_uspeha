@@ -23,7 +23,7 @@ function ModalsPortal() {
   )
 
   return (
-    <div className="fixed top-0 z-50 ">
+    <div className="fixed top-0 z-50 w-full">
       {modals.map(({ id, props }) => (
         <Modal {...props} id={id} key={'modal' + id} />
       ))}

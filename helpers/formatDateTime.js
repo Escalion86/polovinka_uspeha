@@ -1,3 +1,4 @@
+import { DAYS_OF_WEEK, MONTHS, MONTHS_FULL } from './constants'
 import getWeek from './getWeek'
 
 /**
@@ -39,44 +40,13 @@ Date.prototype.getWeek = function (dowOffset) {
   return weeknum
 }
 
-const months = [
-  'янв',
-  'фев',
-  'мар',
-  'апр',
-  'май',
-  'июн',
-  'июл',
-  'авг',
-  'сен',
-  'окт',
-  'ноя',
-  'дек',
-]
-
-const monthsFull = [
-  'января',
-  'февраля',
-  'марта',
-  'апреля',
-  'мая',
-  'июня',
-  'июля',
-  'августа',
-  'сентября',
-  'октября',
-  'ноября',
-  'декабря',
-]
-
-const dayOfWeek = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
-
 function formatDateTime(
   dateTime,
   fullMonth = true,
   forComponent = false,
   showDayOfWeek = true,
-  twoLines = false
+  twoLines = false,
+  durationMinutes
 ) {
   if (!dateTime) return undefined
   var d = new Date(dateTime),
@@ -90,6 +60,18 @@ function formatDateTime(
   if (minutes.length < 2) minutes = '0' + minutes
   if (hours.length < 2) hours = '0' + hours
 
+  var finishedTime
+  if (durationMinutes) {
+    var dFinish = new Date(
+      new Date(dateTime).getTime() + durationMinutes * 60000
+    )
+    var dFinishMinutes = '' + dFinish.getMinutes()
+    var dFinishHours = '' + dFinish.getHours()
+    if (dFinishMinutes.length < 2) dFinishMinutes = '0' + dFinishMinutes
+    if (dFinishHours.length < 2) dFinishHours = '0' + dFinishHours
+    finishedTime = '-' + dFinishHours + ':' + dFinishMinutes
+  }
+
   if (forComponent) {
     if (day.length < 2) day = '0' + day
     if (month.length < 2) month = '0' + month
@@ -98,14 +80,15 @@ function formatDateTime(
     return (
       day +
       ' ' +
-      (fullMonth ? monthsFull[month - 1] : months[month - 1]) +
+      (fullMonth ? MONTHS_FULL[month - 1] : MONTHS[month - 1]) +
       ' ' +
       year.toString() + //.substr(2, 2) +
       (twoLines ? `\n` : ' ') +
-      (showDayOfWeek ? dayOfWeek[week] + ' ' : '') +
+      (showDayOfWeek ? DAYS_OF_WEEK[week] + ' ' : '') +
       hours +
       ':' +
-      minutes
+      minutes +
+      (finishedTime ?? '')
     )
 }
 
