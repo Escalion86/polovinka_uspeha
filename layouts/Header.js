@@ -81,9 +81,9 @@ const Header = () => {
   const menuOpen = useRecoilValue(menuOpenAtom)
   return (
     // <div className="w-full h-18">
-    <div className="sticky top-0 left-0 right-0 z-20 flex flex-col items-center justify-between shadow-md h-18">
+    <div className="sticky top-0 left-0 right-0 z-20 flex flex-col items-center justify-between shadow-md h-18 min-h-[4.5rem]">
       {/* <Header user={user} /> */}
-      <div className="z-10 flex items-center justify-end w-full px-2 py-1 tablet:px-4 h-18 bg-general">
+      <div className="z-10 flex items-center justify-end w-full px-2 py-1 tablet:px-4 h-18 min-h-[4.5rem] bg-general">
         <div className="flex-1 tablet:hidden ">
           <Burger />
         </div>
