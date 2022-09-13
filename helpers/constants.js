@@ -186,6 +186,38 @@ const colors = [
   'hover:bg-gray-600',
 ]
 
+export const MONTHS = [
+  'янв',
+  'фев',
+  'мар',
+  'апр',
+  'май',
+  'июн',
+  'июл',
+  'авг',
+  'сен',
+  'окт',
+  'ноя',
+  'дек',
+]
+
+export const MONTHS_FULL = [
+  'января',
+  'февраля',
+  'марта',
+  'апреля',
+  'мая',
+  'июня',
+  'июля',
+  'августа',
+  'сентября',
+  'октября',
+  'ноября',
+  'декабря',
+]
+
+export const DAYS_OF_WEEK = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
+
 export const DEFAULT_USERS_SECURITY = Object.freeze({
   fullSecondName: false,
   fullThirdName: false,

@@ -1,3 +1,4 @@
+import { DAYS_OF_WEEK, MONTHS, MONTHS_FULL } from './constants'
 import getWeek from './getWeek'
 
 /**
@@ -39,38 +40,6 @@ Date.prototype.getWeek = function (dowOffset) {
   return weeknum
 }
 
-const months = [
-  'янв',
-  'фев',
-  'мар',
-  'апр',
-  'май',
-  'июн',
-  'июл',
-  'авг',
-  'сен',
-  'окт',
-  'ноя',
-  'дек',
-]
-
-const monthsFull = [
-  'января',
-  'февраля',
-  'марта',
-  'апреля',
-  'мая',
-  'июня',
-  'июля',
-  'августа',
-  'сентября',
-  'октября',
-  'ноября',
-  'декабря',
-]
-
-const dayOfWeek = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
-
 function formatDateTime(
   dateTime,
   fullMonth = true,
@@ -111,11 +80,11 @@ function formatDateTime(
     return (
       day +
       ' ' +
-      (fullMonth ? monthsFull[month - 1] : months[month - 1]) +
+      (fullMonth ? MONTHS_FULL[month - 1] : MONTHS[month - 1]) +
       ' ' +
       year.toString() + //.substr(2, 2) +
       (twoLines ? `\n` : ' ') +
-      (showDayOfWeek ? dayOfWeek[week] + ' ' : '') +
+      (showDayOfWeek ? DAYS_OF_WEEK[week] + ' ' : '') +
       hours +
       ':' +
       minutes +
