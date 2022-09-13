@@ -18,7 +18,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 // import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import YesNoPicker from '@components/ValuePicker/YesNoPicker'
 import compareObjects from '@helpers/compareObjects'
@@ -26,11 +26,13 @@ import ValuePicker from '@components/ValuePicker/ValuePicker'
 
 import TabPanel from '@components/Tabs/TabPanel'
 import TabContext from '@components/Tabs/TabContext'
+import userEditSelector from '@state/selectors/userEditSelector'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
   // const user = props.loggedUser
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const setUserInUsersState = useSetRecoilState(userEditSelector)
   const [firstName, setFirstName] = useState(
     loggedUser?.firstName ?? DEFAULT_USER.firstName
   )
@@ -154,6 +156,7 @@ const QuestionnaireContent = (props) => {
         },
         (data) => {
           setLoggedUser(data)
+          setUserInUsersState(data)
           setMessage('Данные анкеты обновлены успешно')
           setIsWaitingToResponse(false)
           // refreshPage()
