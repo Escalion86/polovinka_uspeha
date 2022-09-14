@@ -9,7 +9,7 @@ import { CONTENTS } from '@helpers/constants'
 
 import { useEffect } from 'react'
 
-import ModalsPortal from '@layouts/modals/ModalsPortal'
+// import ModalsPortal from '@layouts/modals/ModalsPortal'
 import BurgerLayout from '@layouts/BurgerLayout'
 import DeviceCheck from '@components/DeviceCheck'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
@@ -55,7 +55,7 @@ function CabinetPage(props) {
           <ContentWrapper page={page}>
             <Component {...props} />
           </ContentWrapper>
-          <ModalsPortal />
+          {/* <ModalsPortal /> */}
         </CabinetWrapper>
       </StateLoader>
     </>

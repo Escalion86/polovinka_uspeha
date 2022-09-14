@@ -2,7 +2,7 @@ import { atom } from 'recoil'
 
 const loggedUserActiveRoleAtom = atom({
   key: 'loggedUserActiveRole',
-  default: 'client',
+  default: null,
 })
 
 export default loggedUserActiveRoleAtom
