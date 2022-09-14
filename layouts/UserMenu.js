@@ -120,11 +120,7 @@ const UserMenu = () => {
               <span>{loggedUser.secondName}</span>
             </div>
             <DevSwitch />
-            <MenuItem
-              href="/cabinet/questionnaire"
-              icon={faUserAlt}
-              title="Моя анкета"
-            />
+
             {/* <Link href="/cabinet/questionnaire">
               <a>
                 <div className="flex items-center px-3 py-2 text-black duration-300 bg-white border border-gray-300 cursor-pointer gap-x-2 prevent-select-text hover:bg-gray-500 hover:text-white">
@@ -169,6 +165,11 @@ const UserMenu = () => {
               //   </a>
               // </Link>
             )}
+            <MenuItem
+              href="/cabinet/questionnaire"
+              icon={faUserAlt}
+              title="Моя анкета"
+            />
             <MenuItem
               onClick={signOut}
               icon={faSignOutAlt}
