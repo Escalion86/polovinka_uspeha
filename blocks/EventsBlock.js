@@ -42,7 +42,6 @@ const Button = ({ title, className, href, onClick }) => {
 }
 
 const EventsBlock = ({
-  events,
   maxEvents = null,
   hideBlockOnZeroEvents = false,
   title = 'Ближайшие мероприятия',
@@ -106,10 +105,10 @@ const EventsBlock = ({
           //   <P>Будущих мероприятий не запланировано</P>
           // )
         }
-        {maxEvents && events?.length > maxShowedEvents && (
+        {maxEvents && filteredEvents?.length > maxShowedEvents && (
           <Button title="Посмотреть все" href="/events#events" />
         )}
-        {!maxEvents && events?.length > maxShowedEvents && (
+        {!maxEvents && filteredEvents?.length > maxShowedEvents && (
           <Button
             title="Посмотреть ещё"
             onClick={() => setMaxShowedEvents((state) => state + 10)}
