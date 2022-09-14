@@ -11,6 +11,7 @@ import eventViewFunc from '@layouts/modals/modalsFunc/eventViewFunc'
 import { H2 } from '@components/tags'
 import StateLoader from '@components/StateLoader'
 import { useEffect } from 'react'
+import { useRecoilValue } from 'recoil'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
