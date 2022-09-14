@@ -142,7 +142,7 @@ const StateLoader = (props) => {
   }, [modalsFunc])
 
   return (
-    <div className={cn('', props.className)}>
+    <div className={cn('relative', props.className)}>
       {isSiteLoading ? (
         <div className="w-full h-screen">
           <LoadingSpinner size="lg" />

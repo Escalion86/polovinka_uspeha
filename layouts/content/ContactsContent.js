@@ -77,7 +77,7 @@ const ContactsContent = (props) => {
   }, [props])
 
   return (
-    <div className="flex flex-col flex-1 h-screen px-2 mb-2 gap-y-2">
+    <div className="flex flex-col flex-1 h-screen px-2 my-2 gap-y-2">
       <FormWrapper>
         <FormWrapper twoColumns>
           <PhoneInput
