@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import birthDateToAge from './birthDateToAge'
 import validateEmail from './validateEmail'
 
 const useErrors = () => {
@@ -100,6 +101,10 @@ const useErrors = () => {
       birthday: (data) =>
         !data
           ? setError({ birthday: 'Необходимо ввести дату рождения' })
+          : birthDateToAge(data, false, false, false) < 18
+          ? setError({
+              birthday: 'Нельзя указывать дату возрастом менее 18 лет',
+            })
           : null,
     }
 

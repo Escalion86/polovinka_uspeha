@@ -32,7 +32,7 @@ const birthDateToAge = (
     age = now.getFullYear() - tempBirthDate.getFullYear()
   const result =
     now.setFullYear(1972) < tempBirthDate.setFullYear(1972) ? age - 1 : age
-  const formatedText = result + (showWord ? ' ' + textAge(result) : '')
+  const formatedText = result + (showWord ? ' ' + textAge(result) : 0)
   return showDate
     ? formatDate(birthDate) + (showAge ? ' (' + formatedText + ')' : '')
     : formatedText

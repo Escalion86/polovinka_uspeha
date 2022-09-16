@@ -18,6 +18,7 @@ import MaskedInput from 'react-text-mask'
 import LoadingSpinner from '@components/LoadingSpinner'
 import phoneValidator from '@helpers/phoneValidator'
 import useErrors from '@helpers/useErrors'
+import CheckBox from '@components/CheckBox'
 
 const Input = ({
   className = '',
@@ -203,6 +204,7 @@ const Login = () => {
   const [inputPassword, setInputPassword] = useState('')
   const [inputPinCode, setInputPinCode] = useState('')
   const [inputPasswordRepeat, setInputPasswordRepeat] = useState('')
+  const [checkHave18Years, setCheckHave18Years] = useState(false)
   // const [errors, setErrors] = useState({})
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
   const [needToCheckMail, setNeedToCheckMail] = useState(false)
@@ -418,7 +420,8 @@ const Login = () => {
     !varifyPhone ||
     (!isRegistrationProcess && inputPassword.length === 0) ||
     (isRegistrationProcess &&
-      ((registrationLevel === 2 && inputPinCode.length !== 4) ||
+      ((registrationLevel === 1 && !checkHave18Years) ||
+        (registrationLevel === 2 && inputPinCode.length !== 4) ||
         (registrationLevel === 3 &&
           (inputPassword.length === 0 || inputPasswordRepeat.length === 0))))
 
@@ -566,6 +569,18 @@ const Login = () => {
                   }
                   hidden={!isRegistrationProcess || registrationLevel !== 3}
                   readOnly={waitingResponse}
+                />
+                <CheckBox
+                  checked={checkHave18Years}
+                  labelPos="right"
+                  onChange={(e) => setCheckHave18Years(!checkHave18Years)}
+                  label="Мне исполнилось 18 лет"
+                  wrapperClassName={
+                    isRegistrationProcess && registrationLevel === 1
+                      ? 'max-h-15 my-2 py-3'
+                      : ''
+                  }
+                  hidden={!isRegistrationProcess || registrationLevel !== 1}
                 />
 
                 {Object.values(errors).length > 0 && (

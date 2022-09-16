@@ -32,6 +32,7 @@ import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelecto
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
+import NamesOfUsers from '@components/NamesOfUsers'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -199,33 +200,10 @@ const eventViewFunc = (eventId) => {
                 </div>
               </div>
             )}
-            {eventAssistants &&
-              typeof eventAssistants === 'object' &&
-              eventAssistants.length > 0 && (
-                <div className="flex leading-5 gap-x-1">
-                  <span className="font-bold">
-                    {eventAssistants.length > 1 ? 'Ведущие:' : 'Ведущий:'}
-                  </span>
-                  <div className="flex flex-wrap gap-x-1">
-                    {eventAssistants.map((user, index) => {
-                      if (index < eventAssistants.length - 1) {
-                        return (
-                          <div
-                            className="flex flex-wrap"
-                            key={'assistant' + user._id}
-                          >
-                            <UserName user={user} noWrap />
-                            <span>,</span>
-                          </div>
-                        )
-                      } else
-                        return (
-                          <UserName user={user} key={'assistant' + user._id} />
-                        )
-                    })}
-                  </div>
-                </div>
-              )}
+            <NamesOfUsers
+              users={eventAssistants}
+              title={eventAssistants.length > 1 ? 'Ведущие:' : 'Ведущий:'}
+            />
           </div>
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
             <EventUsersCounterAndAge eventId={eventId} />

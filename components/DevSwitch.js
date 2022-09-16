@@ -35,9 +35,8 @@ const DevSwitch = () => {
         value={loggedUserActiveRole}
         exclusive
         onChange={(event, newRole) => {
-          setLoggedUserActiveRole(newRole)
+          if (newRole !== null) setLoggedUserActiveRole(newRole)
         }}
-        aria-label="Platform"
       >
         <ToggleButton className="flex-1 rounded-none" value="client">
           Клиент
@@ -56,9 +55,8 @@ const DevSwitch = () => {
         value={loggedUserActiveStatus}
         exclusive
         onChange={(event, newStatus) => {
-          setLoggedUserActiveStatus(newStatus)
+          if (newStatus !== null) setLoggedUserActiveStatus(newStatus)
         }}
-        aria-label="Platform"
       >
         <ToggleButton className="flex-1 rounded-none" value="novice">
           Новичок

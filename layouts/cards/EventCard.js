@@ -23,6 +23,8 @@ import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventS
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import errorAtom from '@state/atoms/errorAtom'
 import DateTimeEvent from '@components/DateTimeEvent'
+import TextInRing from '@components/TextInRing'
+import NamesOfUsers from '@components/NamesOfUsers'
 
 const EventCard = ({ eventId, noButtons, hidden = false }) => {
   const widthNum = useWindowDimensionsTailwindNum()
@@ -80,7 +82,15 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
           )}
         </div>
       )} */}
-      {direction?.image && (
+      <div
+        className={cn(
+          'hidden tablet:flex relative justify-center w-full laptop:w-44 h-44 max-h-44',
+          { 'laptop:w-auto': noButtons }
+        )}
+      >
+        <TextInRing text={direction.title} />
+      </div>
+      {/* {direction?.image && (
         <div
           className={cn(
             'hidden tablet:flex relative justify-center flex-1 phoneH:flex-none h-44 max-h-44',
@@ -100,7 +110,7 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
             </div>
           )}
         </div>
-      )}
+      )} */}
       <div className="relative flex flex-col justify-between flex-1 w-full">
         <div className="flex flex-col flex-1">
           <div className="flex pl-2">
@@ -159,20 +169,23 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
                     <UserNameById userId={event.organizerId} noWrap />
                   </div>
                 )} */}
-                {eventAssistants &&
-                  typeof eventAssistants === 'object' &&
-                  eventAssistants.length > 0 && (
+                <NamesOfUsers
+                  users={eventAssistants}
+                  title={eventAssistants.length > 1 ? 'Ведущие:' : 'Ведущий:'}
+                />
+                {/* {eventAssistants &&
+                  eventAssistants?.length > 0 && (
                     <div className="flex leading-5 gap-x-1">
                       <span className="font-bold">
                         {eventAssistants.length > 1 ? 'Ведущие:' : 'Ведущий:'}
                       </span>
-                      <div className="flex flex-wrap gap-x-1">
+                      <div className="flex flex-wrap items-center gap-x-1 ">
                         {eventAssistants.map((user, index) => {
                           if (index < eventAssistants.length - 1) {
                             return (
                               <div
                                 key={'assistant' + user._id}
-                                className="flex flex-nowrap"
+                                className="flex items-center flex-nowrap"
                               >
                                 <UserName user={user} noWrap />
                                 <span>,</span>
@@ -188,7 +201,7 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
                         })}
                       </div>
                     </div>
-                  )}
+                  )} */}
               </div>
             </div>
             <div className="flex flex-col items-center h-full pt-1 pl-2 pr-1">

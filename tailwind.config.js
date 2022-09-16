@@ -67,6 +67,7 @@ module.exports = {
       fontFamily: {
         futuraDemi: ['Futura PT Demi', 'sans-serif'],
         futura: ['Futura PT Book', 'sans-serif'],
+        adlery: ['AdleryProBlockletter', 'sans-serif'],
       },
       width: {
         phoneV: '300px',
@@ -124,6 +125,7 @@ module.exports = {
         32: '8rem',
         36: '9rem',
         40: '10rem',
+        44: '11rem',
         48: '12rem',
         72: '18rem',
         76: '19rem',
@@ -170,6 +172,8 @@ module.exports = {
         6: '1.5rem',
         8: '2rem',
         20: '5rem',
+        44: '11rem',
+        48: '12rem',
         72: '18rem',
         100: '25rem',
         192: '46rem',

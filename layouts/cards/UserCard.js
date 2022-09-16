@@ -14,6 +14,7 @@ import { CardWrapper } from '@components/CardWrapper'
 import Image from 'next/image'
 import Tooltip from '../../components/Tooltip'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
+import Divider from '@components/Divider'
 
 const UserCard = ({ userId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -45,57 +46,63 @@ const UserCard = ({ userId }) => {
             icon={userGender ? userGender.icon : faGenderless}
           />
         </div>
-        <img
-          className="object-cover w-20 h-20 tablet:w-24 tablet:h-24"
-          src={getUserAvatarSrc(user)}
-          alt="user"
-          // width={48}
-          // height={48}
-        />
-        <div className="flex flex-col flex-1 text-xl font-bold">
-          <div className="flex">
-            <div className="flex flex-wrap items-center flex-1 px-2 gap-x-1">
-              {user.status === 'member' && (
-                <Tooltip content="Участник клуба">
-                  <div className="w-6 h-6">
-                    <Image
-                      src="/img/svg_icons/medal.svg"
-                      width="24"
-                      height="24"
-                    />
+        <div className="flex flex-col flex-1 tablet:flex-row">
+          <div className="flex flex-1 border-b tablet:border-b-0">
+            <img
+              className="object-cover w-20 h-20 tablet:w-24 tablet:h-24"
+              src={getUserAvatarSrc(user)}
+              alt="user"
+              // width={48}
+              // height={48}
+            />
+            <div className="flex flex-col flex-1 text-xl font-bold">
+              <div className="flex flex-1">
+                <div className="flex flex-col flex-1">
+                  <div className="flex flex-wrap items-center px-2 py-1 leading-6 gap-x-1">
+                    {user.status === 'member' && (
+                      <Tooltip content="Участник клуба">
+                        <div className="w-6 h-6">
+                          <Image
+                            src="/img/svg_icons/medal.svg"
+                            width="24"
+                            height="24"
+                          />
+                        </div>
+                      </Tooltip>
+                    )}
+                    {user.status === 'ban' && (
+                      <Tooltip content="Забанен">
+                        <div className="w-6 h-6">
+                          <Image
+                            src="/img/svg_icons/ban.svg"
+                            width="24"
+                            height="24"
+                          />
+                        </div>
+                      </Tooltip>
+                    )}
+                    <span>{user.firstName}</span>
+                    {user.secondName && <span>{user.secondName}</span>}
+                    {user.birthday && (
+                      <div className="font-normal whitespace-nowrap">
+                        {user.birthday
+                          ? birthDateToAge(user.birthday) +
+                            ', ' +
+                            getZodiac(user.birthday).name
+                          : ''}
+                      </div>
+                    )}
+                    {user.role === 'admin' && (
+                      <span className="font-normal text-red-400">
+                        АДМИНИСТРАТОР
+                      </span>
+                    )}
                   </div>
-                </Tooltip>
-              )}
-              {user.status === 'ban' && (
-                <Tooltip content="Забанен">
-                  <div className="w-6 h-6">
-                    <Image
-                      src="/img/svg_icons/ban.svg"
-                      width="24"
-                      height="24"
-                    />
-                  </div>
-                </Tooltip>
-              )}
-              <span>{user.firstName}</span>
-              {user.secondName && <span>{user.secondName}</span>}
-              {user.birthday && (
-                <div className="font-normal whitespace-nowrap">
-                  {user.birthday
-                    ? birthDateToAge(user.birthday) +
-                      ', ' +
-                      getZodiac(user.birthday).name
-                    : ''}
                 </div>
-              )}
-              {user.role === 'admin' && (
-                <span className="font-normal text-red-400">АДМИНИСТРАТОР</span>
-              )}
-            </div>
-            <CardButtons item={user} typeOfItem="user" />
-          </div>
-          <div className="flex flex-col justify-between flex-1 px-2 text-sm font-normal">
-            <div className="flex-1">
+                <CardButtons item={user} typeOfItem="user" />
+              </div>
+              {/* <div className="flex-col justify-end flex-1 hidden px-2 tablet:flex"> */}
+              {/* <div className="flex-1"> */}
               {/* {user.about && (
                 <div>
                   <span className="font-bold">Обо мне:</span>
@@ -114,9 +121,15 @@ const UserCard = ({ userId }) => {
                   <span>{user.interests}</span>
                 </div>
               )} */}
+              {/* </div> */}
+              <ContactsIconsButtons
+                className="hidden px-2 tablet:flex"
+                user={user}
+              />
+              {/* </div> */}
             </div>
-            <ContactsIconsButtons user={user} />
           </div>
+          <ContactsIconsButtons className="px-2 tablet:hidden" user={user} />
         </div>
       </div>
     </CardWrapper>

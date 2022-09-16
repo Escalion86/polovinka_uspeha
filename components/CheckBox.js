@@ -12,6 +12,8 @@ const CheckBox = ({
   labelClassName,
   name,
   readOnly = false,
+  hidden = false,
+  wrapperClassName,
 }) => {
   if (readOnly && !checked) return null
 
@@ -20,6 +22,8 @@ const CheckBox = ({
       labelPos={labelPos}
       label={label}
       labelClassName={labelClassName}
+      wrapperClassName={wrapperClassName}
+      hidden={hidden}
     >
       {(!readOnly || checked) && (
         // <div className="flex items-center">

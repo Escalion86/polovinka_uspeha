@@ -186,6 +186,8 @@ const colors = [
   'hover:bg-gray-600',
 ]
 
+export const GRADIENT_COLORS = ['#504436', '#84725A']
+
 export const MONTHS = [
   'янв',
   'фев',
@@ -583,4 +585,10 @@ export const USERS_STATUSES = [
   { value: 'novice', name: 'Новичок', color: 'blue-400' },
   { value: 'member', name: 'Участник клуба', color: 'green-400' },
   { value: 'ban', name: 'Бан', color: 'danger' },
+]
+
+export const USERS_ROLES = [
+  { value: 'client', name: 'Пользователь', color: 'blue-400' },
+  { value: 'admin', name: 'Администратор', color: 'orange-400' },
+  { value: 'dev', name: 'Разработчик', color: 'danger' },
 ]
