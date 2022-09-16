@@ -1,5 +1,5 @@
 import Button from '@components/Button'
-import CheckBox from '@components/CheckBox'
+// import CheckBox from '@components/CheckBox'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -27,11 +27,17 @@ import ValuePicker from '@components/ValuePicker/ValuePicker'
 import TabPanel from '@components/Tabs/TabPanel'
 import TabContext from '@components/Tabs/TabContext'
 import userEditSelector from '@state/selectors/userEditSelector'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import UserRolePicker from '@components/ValuePicker/UserRolePicker'
+import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
   // const user = props.loggedUser
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
   const [firstName, setFirstName] = useState(
     loggedUser?.firstName ?? DEFAULT_USER.firstName
@@ -77,6 +83,11 @@ const QuestionnaireContent = (props) => {
     loggedUser?.security ?? DEFAULT_USER.security
   )
 
+  const [status, setStatus] = useState(
+    loggedUser?.status ?? DEFAULT_USER.status
+  )
+  const [role, setRole] = useState(loggedUser?.role ?? DEFAULT_USER.role)
+
   const toggleSecurytyKey = (key) =>
     setSecurity((state) => {
       return { ...state, [key]: !state[key] }
@@ -114,7 +125,9 @@ const QuestionnaireContent = (props) => {
     !compareArrays(loggedUser?.images, images) ||
     loggedUser?.birthday !== birthday ||
     loggedUser?.haveKids !== haveKids ||
-    !compareObjects(loggedUser?.security, security)
+    !compareObjects(loggedUser?.security, security) ||
+    loggedUser?.status !== status ||
+    loggedUser?.role !== role
 
   const onClickConfirm = async () => {
     setMessage('')
@@ -153,6 +166,8 @@ const QuestionnaireContent = (props) => {
           birthday,
           haveKids,
           security,
+          status,
+          role,
         },
         (data) => {
           setLoggedUser(data)
@@ -281,6 +296,7 @@ const QuestionnaireContent = (props) => {
               label="День рождения"
               value={birthday}
               onChange={setBirthday}
+              error={errors.birthday}
               showYears
               showZodiac
               required
@@ -400,6 +416,26 @@ const QuestionnaireContent = (props) => {
           </FormWrapper>
           {/* </FormWrapper> */}
         </TabPanel>
+        {(isLoggedUserAdmin || isLoggedUserDev) && (
+          <TabPanel tabName="Статус и права" className="flex-1">
+            {isLoggedUserAdmin && (
+              <UserStatusPicker
+                required
+                status={status}
+                onChange={setStatus}
+                error={errors.status}
+              />
+            )}
+            {isLoggedUserDev && (
+              <UserRolePicker
+                required
+                role={role}
+                onChange={setRole}
+                error={errors.role}
+              />
+            )}
+          </TabPanel>
+        )}
       </TabContext>
       <div className="flex flex-col w-full p-1">
         <ErrorsList errors={errors} />

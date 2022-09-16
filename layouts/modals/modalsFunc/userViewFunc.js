@@ -53,7 +53,7 @@ const userViewFunc = (userId, clone = false) => {
             // height={48}
           /> */}
           <div className="flex flex-col flex-1">
-            <div className="flex items-center gap-x-2">
+            <div className="flex items-center gap-x-2 min-h-6">
               {user.status === 'member' && (
                 <Tooltip content="Участник клуба">
                   <div className="w-6 h-6">

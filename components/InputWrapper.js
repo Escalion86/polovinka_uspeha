@@ -55,16 +55,18 @@ const InputWrapper = ({
   labelPos,
   labelContentWidth,
   wrapperClassName,
+  hidden = false,
 }) => (
   <div
     className={cn(
-      'flex gap-y-1 gap-x-2',
+      'duration-300 overflow-hidden flex gap-y-1 gap-x-2',
       // inLine ? '' : 'flex-col laptop:flex-row',
       labelPos === 'top' || labelPos === 'bottom'
         ? 'flex-col'
         : labelPos === 'left' || labelPos === 'right'
         ? 'flex-row items-center'
         : 'flex-col laptop:flex-row laptop:items-center',
+      hidden ? 'max-h-0 my-0 py-0' : '',
       wrapperClassName
     )}
   >
@@ -77,7 +79,7 @@ const InputWrapper = ({
         textPos={labelPos === 'top' ? 'left' : 'right'}
       />
     )}
-    <div className={cn('flex items-center gap-x-1 flex-1', className)}>
+    <div className={cn('flex items-center gap-x-2 flex-1', className)}>
       {children}
       {copyPasteButtons && (
         <>
@@ -98,16 +100,17 @@ const InputWrapper = ({
           )}
         </>
       )}
+
+      {label && (labelPos === 'right' || labelPos === 'bottom') && (
+        <Label
+          text={label}
+          className={labelClassName}
+          required={required}
+          contentWidth
+          textPos={labelPos === 'bottom' ? 'left' : 'right'}
+        />
+      )}
     </div>
-    {label && (labelPos === 'right' || labelPos === 'bottom') && (
-      <Label
-        text={label}
-        className={labelClassName}
-        required={required}
-        contentWidth
-        textPos={labelPos === 'bottom' ? 'left' : 'right'}
-      />
-    )}
   </div>
 )
 

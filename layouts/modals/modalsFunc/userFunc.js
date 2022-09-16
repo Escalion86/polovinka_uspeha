@@ -22,6 +22,8 @@ import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -33,6 +35,7 @@ const userFunc = (userId, clone = false) => {
     setDisableDecline,
   }) => {
     const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
 
@@ -68,6 +71,7 @@ const userFunc = (userId, clone = false) => {
       user?.birthday ?? DEFAULT_USER.birthday
     )
     const [status, setStatus] = useState(user?.status ?? DEFAULT_USER.status)
+    const [role, setRole] = useState(user?.role ?? DEFAULT_USER.role)
 
     const [haveKids, setHaveKids] = useState(
       user?.haveKids ?? DEFAULT_USER.haveKids
@@ -117,6 +121,7 @@ const userFunc = (userId, clone = false) => {
             images,
             birthday,
             status,
+            role,
             haveKids,
           },
           clone
@@ -195,7 +200,8 @@ const userFunc = (userId, clone = false) => {
         !compareArrays(user?.images, images) ||
         user?.birthday !== birthday ||
         user?.haveKids !== haveKids ||
-        user?.status !== status
+        user?.status !== status ||
+        user?.role !== role
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -219,6 +225,7 @@ const userFunc = (userId, clone = false) => {
       images,
       birthday,
       status,
+      role,
       haveKids,
     ])
 
@@ -365,6 +372,14 @@ const userFunc = (userId, clone = false) => {
           onChange={setStatus}
           error={errors.status}
         />
+        {isLoggedUserDev && (
+          <UserRolePicker
+            required
+            role={role}
+            onChange={setRole}
+            error={errors.role}
+          />
+        )}
         <ErrorsList errors={errors} />
       </FormWrapper>
     )
