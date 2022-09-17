@@ -4,9 +4,9 @@ import { H2, H3, H4, P } from '@components/tags'
 import SvgKavichki from 'svg/SvgKavichki'
 
 const AboutBlock = () => (
-  <BlockContainer id="about" className="bg-white">
+  <BlockContainer id="about" title="Наши цели" className="bg-white">
     <div className="flex flex-col gap-4 tablet:gap-6">
-      <H2>Наши цели</H2>
+      {/* <H2 className="sticky top-[6.5rem]">Наши цели</H2> */}
       <ListItem>
         <P>
           Помочь найти пару человеку в возрасте от 30 до 55 лет, который уже

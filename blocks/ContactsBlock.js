@@ -19,8 +19,7 @@ const ContactsBlock = () => {
   const siteSettings = useRecoilValue(siteSettingsAtom)
 
   return (
-    <BlockContainer id="contacts" small>
-      <H2>Контакты</H2>
+    <BlockContainer id="contacts" small title="Контакты">
       <div className="flex w-full justify-evenly">
         {siteSettings?.phone && (
           <ContactImage

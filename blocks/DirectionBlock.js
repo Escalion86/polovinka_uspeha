@@ -1,5 +1,6 @@
 import BlockContainer from '@components/BlockContainer'
 import { H2, H3 } from '@components/tags'
+import TextInRing from '@components/TextInRing'
 import sanitize from '@helpers/sanitize'
 import cn from 'classnames'
 
@@ -21,30 +22,34 @@ const DirectionBlock = ({
       >
         {(title || image) && (
           <div className="flex items-center flex-1 gap-x-4">
-            {title && (
-              <H2
-                className={cn(
-                  'hidden tablet:block laptop:hidden',
-                  image ? 'w-1/2' : 'w-full'
+            {image ? (
+              <>
+                {title && (
+                  <H2
+                    className={cn(
+                      'hidden flex-1 tablet:block laptop:hidden',
+                      image ? 'w-1/2' : 'w-full'
+                    )}
+                  >
+                    {title}
+                  </H2>
                 )}
-              >
-                {title}
-              </H2>
-            )}
-            {image && (
-              <img
-                className="object-contain w-full h-full max-h-100 laptop:max-h-full laptop:h-full tablet:h-60 tablet:w-1/2 laptop:w-full"
-                src={image}
-                alt="direction"
-                // width={48}
-                // height={48}
-              />
+                <img
+                  className="flex-1 object-contain h-full max-h-100 laptop:max-h-full laptop:h-full tablet:h-60"
+                  src={image}
+                  alt="direction"
+                  // width={48}
+                  // height={48}
+                />
+              </>
+            ) : (
+              <TextInRing text={title} />
             )}
           </div>
         )}
 
         <div className="flex-1">
-          {title && (
+          {image && title && (
             <H2 className="mb-4 tablet:hidden laptop:block">{title}</H2>
           )}
           <div

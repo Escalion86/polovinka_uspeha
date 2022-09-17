@@ -87,8 +87,8 @@ const EventsBlock = ({
   if (hideBlockOnZeroEvents && filteredEvents?.length === 0) return null
 
   return (
-    <BlockContainer id="events" altBg>
-      <H2>{title}</H2>
+    <BlockContainer id="events" title={title} altBg>
+      {/* <H2>{title}</H2> */}
       {/* <div className="grid gap-6 tablet:grid-cols-2 laptop:grid-cols-4"> */}
       <div className="flex flex-col items-center w-full gap-4">
         {

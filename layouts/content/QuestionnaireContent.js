@@ -221,7 +221,7 @@ const QuestionnaireContent = (props) => {
   }, [modalsFunc])
 
   return (
-    <div className="flex flex-col w-full h-full max-h-full min-h-full">
+    <div className="flex flex-col flex-1 h-full max-w-full max-h-full min-h-full">
       <TabContext value="Анкета">
         <TabPanel tabName="Анкета" className="flex-1">
           {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}

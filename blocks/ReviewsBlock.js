@@ -26,8 +26,8 @@ const ReviewsBlock = () => {
         // backgroundPosition: 'top 48px right',
         backgroundSize: 'cover',
       }}
+      title="Отзывы"
     >
-      <H2>Отзывы</H2>
       <Masonry gap={16}>
         {filteredReviews.map((review, index) => (
           <Review key={review._id} review={review} />

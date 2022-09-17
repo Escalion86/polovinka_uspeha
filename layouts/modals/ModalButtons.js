@@ -18,7 +18,7 @@ const ModalButtons = ({
   return (
     <>
       <Divider light thin />
-      <div className="flex flex-wrap justify-between">
+      <div className="flex flex-wrap justify-between px-2 tablet:px-3 tablet:pt-1">
         {children}
         <div className="flex justify-end flex-1 gap-x-1 tablet:gap-x-2">
           {showConfirm && (
