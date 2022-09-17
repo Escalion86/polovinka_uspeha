@@ -5,13 +5,26 @@ import TabList from './TabList'
 
 const TabContext = ({ value, children }) => {
   const [tab, setTab] = useState(value)
-  const tabNames = []
+  const tabs = []
   children.forEach((child, index) => {
     // console.log('child ' + index, child)
     // console.log('child?.props?.tabName', child?.props?.tabName)
     // console.log('child.type.name', child.type.name)
     if (child?.props?.tabName) {
-      tabNames.push(child.props.tabName)
+      const tabName = child.props.tabName
+      const tabAddToLabel = child.props.tabAddToLabel
+      tabs.push(
+        <Tab
+          key={tabName}
+          label={
+            <div className="flex flex-col">
+              <div>{tabName}</div>
+              {tabAddToLabel && <div>{tabAddToLabel}</div>}
+            </div>
+          }
+          value={tabName}
+        />
+      )
     }
   })
 
@@ -19,10 +32,14 @@ const TabContext = ({ value, children }) => {
 
   return (
     <MuiTabContext value={tab}>
-      <TabList onChange={setTab}>
-        {tabNames.map((tabName) => (
-          <Tab key={tabName} label={tabName} value={tabName} />
-        ))}
+      <TabList
+        onChange={setTab}
+        variant="scrollable"
+        scrollButtons="auto"
+        allowScrollButtonsMobile
+        className="w-full max-w-[100%]"
+      >
+        {tabs}
       </TabList>
       {children}
     </MuiTabContext>

@@ -70,7 +70,7 @@ const Input = ({
                 (typeof min !== 'number' || value >= min) &&
                 (typeof max !== 'number' || value <= max)
               )
-                onChange(value)
+                onChange(Number(value))
             } else {
               onChange(value)
             }

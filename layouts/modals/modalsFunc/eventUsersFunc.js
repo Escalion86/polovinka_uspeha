@@ -140,7 +140,10 @@ const eventUsersFunc = (eventId) => {
 
     return (
       <TabContext value="Участники">
-        <TabPanel tabName="Участники">
+        <TabPanel
+          tabName="Участники"
+          tabAddToLabel={`(${mansIds.length + womansIds.length})`}
+        >
           <SelectUserList
             label="Участники Мужчины"
             filter={{ gender: 'male' }}
@@ -189,7 +192,10 @@ const eventUsersFunc = (eventId) => {
             <span>чел.</span>
           </div>
         </TabPanel>
-        <TabPanel tabName="Резерв">
+        <TabPanel
+          tabName="Резерв"
+          tabAddToLabel={`(${reservedParticipantsIds.length})`}
+        >
           <SelectUserList
             label="Резерв"
             usersId={reservedParticipantsIds}
@@ -204,7 +210,7 @@ const eventUsersFunc = (eventId) => {
             readOnly={!isLoggedUserAdmin}
           />
         </TabPanel>
-        <TabPanel tabName="Ведущие">
+        <TabPanel tabName="Ведущие" tabAddToLabel={`(${assistantsIds.length})`}>
           <SelectUserList
             label="Ведущие"
             usersId={assistantsIds}
@@ -222,7 +228,10 @@ const eventUsersFunc = (eventId) => {
           />
         </TabPanel>
         {isLoggedUserAdmin && (
-          <TabPanel tabName="Бан">
+          <TabPanel
+            tabName="Бан"
+            tabAddToLabel={`(${bannedParticipantsIds.length})`}
+          >
             <SelectUserList
               label="Блокированные"
               usersId={bannedParticipantsIds}

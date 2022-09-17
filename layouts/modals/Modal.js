@@ -129,8 +129,8 @@ const Modal = ({
       <motion.div
         className={
           cn(
-            'flex flex-col real-screen-height tablet:h-auto relative min-w-84 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 px-2 tablet:px-3 pb-3 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
-            title ? 'py-3' : 'py-12'
+            'flex flex-col real-screen-height tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
+            title ? 'pt-3' : 'pt-12'
           )
           // + (rendered ? '' : ' scale-50')
         }
@@ -190,7 +190,7 @@ const Modal = ({
         {/* {noPropsToChildren
           ? children
           : cloneElement(children, { onClose: closeModal, setBeforeCloseFunc })} */}
-        <div className="flex-1 px-2 overflow-y-auto tablet:px-0">
+        <div className="flex-1 px-2 overflow-y-auto tablet:px-3">
           {Children && (
             <Children
               closeModal={closeModal}

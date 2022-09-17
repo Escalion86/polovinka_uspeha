@@ -145,9 +145,9 @@ const eventFunc = (eventId, clone = false) => {
             address,
             price,
             directionId,
-            maxParticipants: maxParticipantsCheck ? null : maxParticipants,
-            maxMans: maxMansCheck ? null : maxMans,
-            maxWomans: maxWomansCheck ? null : maxWomans,
+            maxParticipants: maxParticipantsCheck ? null : maxParticipants ?? 0,
+            maxMans: maxMansCheck ? null : maxMans ?? 0,
+            maxWomans: maxWomansCheck ? null : maxWomans ?? 0,
             maxMansAge,
             minMansAge,
             maxWomansAge,
@@ -163,6 +163,11 @@ const eventFunc = (eventId, clone = false) => {
     }
 
     useEffect(() => {
+      console.log('event?.maxWomans', event?.maxWomans)
+      console.log(
+        '(maxWomansCheck ? null : maxWomans ?? 0)',
+        maxWomansCheck ? null : maxWomans ?? 0
+      )
       const isFormChanged =
         event?.title !== title ||
         event?.description !== description ||
@@ -173,9 +178,10 @@ const eventFunc = (eventId, clone = false) => {
         !compareObjects(event?.address, address) ||
         event?.price !== price ||
         event?.directionId !== directionId ||
-        event?.maxParticipants !== maxParticipants ||
-        event?.maxMans !== maxMans ||
-        event?.maxWomans !== maxWomans ||
+        event?.maxParticipants !==
+          (maxParticipantsCheck ? null : maxParticipants ?? 0) ||
+        event?.maxMans !== (maxMansCheck ? null : maxMans ?? 0) ||
+        event?.maxWomans !== (maxWomansCheck ? null : maxWomans ?? 0) ||
         event?.minMansAge !== minMansAge ||
         event?.maxMansAge !== maxMansAge ||
         event?.minWomansAge !== minWomansAge ||
@@ -218,7 +224,7 @@ const eventFunc = (eventId, clone = false) => {
     return (
       <>
         <TabContext value="Общие">
-          <TabPanel tabName="Общие">
+          <TabPanel tabName="Общие" className="px-0">
             <FormWrapper>
               <InputImages
                 label="Фотографии"
@@ -310,7 +316,7 @@ const eventFunc = (eventId, clone = false) => {
               <AddressPicker address={address} onChange={setAddress} />
             </FormWrapper>
           </TabPanel>
-          <TabPanel tabName="Доступ и стоимость">
+          <TabPanel tabName="Доступ и стоимость" className="px-0">
             <FormWrapper title="Стоимость, доступ и скидки">
               <PriceInput
                 value={price}
@@ -415,7 +421,7 @@ const eventFunc = (eventId, clone = false) => {
                     label="Макс. участников"
                     type="number"
                     inputClassName="w-16"
-                    value={maxParticipants}
+                    value={maxParticipantsCheck ? null : maxParticipants ?? 0}
                     onChange={setMaxParticipants}
                     // error={errors?.address?.flat}
                     placeholder={maxParticipantsCheck ? '' : '0'}
@@ -426,9 +432,9 @@ const eventFunc = (eventId, clone = false) => {
                   <CheckBox
                     checked={maxParticipantsCheck}
                     labelPos="right"
-                    onClick={() =>
+                    onClick={() => {
                       setMaxParticipantsCheck((checked) => !checked)
-                    }
+                    }}
                     label="Не ограничено"
                   />
                 </FormRow>
@@ -440,7 +446,7 @@ const eventFunc = (eventId, clone = false) => {
                     label="Макс. мужчин"
                     type="number"
                     inputClassName="w-16"
-                    value={maxMans}
+                    value={maxMansCheck ? null : maxMans ?? 0}
                     onChange={setMaxMans}
                     // error={errors?.address?.flat}
                     placeholder={maxMansCheck ? '' : '0'}
@@ -462,7 +468,7 @@ const eventFunc = (eventId, clone = false) => {
                     label="Макс. женщин"
                     type="number"
                     inputClassName="w-16"
-                    value={maxWomans}
+                    value={maxWomansCheck ? null : maxWomans ?? 0}
                     onChange={setMaxWomans}
                     // error={errors?.address?.flat}
                     placeholder={maxWomansCheck ? '' : '0'}
@@ -520,7 +526,7 @@ const eventFunc = (eventId, clone = false) => {
             </FormWrapper>
           </TabPanel>
           {eventId && (
-            <TabPanel tabName="Статус и отчет">
+            <TabPanel tabName="Статус и отчет" className="px-0">
               <FormWrapper>
                 <EventStatusPicker
                   required
