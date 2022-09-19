@@ -4,6 +4,7 @@ import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 
 import ImageGallery from 'react-image-gallery'
+import Zoom from 'react-medium-image-zoom'
 
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
@@ -45,7 +46,7 @@ const eventViewFunc = (eventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const copyLink = useCopyEventLinkToClipboard(item._id)
+    const copyLink = useCopyEventLinkToClipboard(eventId)
     const event = useRecoilValue(eventSelector(eventId))
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
@@ -79,10 +80,20 @@ const eventViewFunc = (eventId) => {
               items={event.images.map((image) => {
                 return {
                   original: image,
-                  originalClass: 'object-contain max-h-60 laptop:max-h-80',
+                  originalClass:
+                    'object-contain flex items-center justify-center max-h-60 laptop:max-h-80 w-full',
                   // sizes: '(max-width: 60px) 30px, (min-width: 60px) 60px',
                 }
               })}
+              renderItem={(e) => (
+                <Zoom zoomMargin={20}>
+                  <img
+                    className={e.originalClass}
+                    src={e.original ?? noImage}
+                    alt="item_image"
+                  />
+                </Zoom>
+              )}
               showPlayButton={false}
               showFullscreenButton={false}
               additionalClass="w-full max-h-60 laptop:max-h-80 max-w-full"
@@ -96,8 +107,7 @@ const eventViewFunc = (eventId) => {
                 icon={faShareAlt}
                 color="blue"
                 onClick={copyLink}
-                tooltip="Скопировать ссылку на мероприятие"
-                popoverText="Ссылка на мероприятие скопирована"
+                tooltipText="Скопировать ссылку на мероприятие"
               />
             </div>
             <div className="flex justify-center w-full text-3xl font-bold">

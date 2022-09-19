@@ -47,7 +47,7 @@ const directionFunc = (directionId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
-      if (!checkErrors({ title, description, image })) {
+      if (!checkErrors({ title, description })) {
         closeModal()
         setDirection(
           {
@@ -104,6 +104,7 @@ const directionFunc = (directionId, clone = false) => {
           directory="directions"
           image={image}
           onChange={setImage}
+          aspect={1}
         />
         <Input
           label="Название"
@@ -134,6 +135,7 @@ const directionFunc = (directionId, clone = false) => {
             removeError('description')
             setDescription(value)
           }}
+          error={errors.description}
         />
         <CheckBox
           checked={showOnSite}

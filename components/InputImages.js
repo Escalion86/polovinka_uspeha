@@ -10,6 +10,8 @@ import Label from './Label'
 import arrayMove from '@helpers/arrayMove'
 import { LayoutGroup, motion } from 'framer-motion'
 import InputWrapper from './InputWrapper'
+import { modalsFuncAtom } from '@state/atoms'
+import { useRecoilValue } from 'recoil'
 
 const InputImages = ({
   images = [],
@@ -20,7 +22,9 @@ const InputImages = ({
   maxImages = 10,
   labelClassName,
   className,
+  aspect,
 }) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
   const addImageClick = () => {
@@ -29,17 +33,34 @@ const InputImages = ({
 
   const onAddImage = async (newImage) => {
     if (newImage) {
-      setAddingImage(true)
-      sendImage(
-        newImage,
-        (imageUrl) => {
-          onChange([...images, imageUrl])
-        },
-        directory
-      )
+      // setImageOld(image)
+      // setAddingImage(true)
+      modalsFunc.cropImage(newImage, aspect, (newImage) => {
+        // setImageOld(image)
+        setAddingImage(true)
+        sendImage(
+          newImage,
+          (imageUrl) => {
+            onChange([...images, imageUrl])
+          },
+          directory
+        )
+      })
     } else {
       onChange(images)
     }
+    // if (newImage) {
+    //   setAddingImage(true)
+    //   sendImage(
+    //     newImage,
+    //     (imageUrl) => {
+    //       onChange([...images, imageUrl])
+    //     },
+    //     directory
+    //   )
+    // } else {
+    //   onChange(images)
+    // }
   }
 
   useEffect(() => setAddingImage(false), [images])

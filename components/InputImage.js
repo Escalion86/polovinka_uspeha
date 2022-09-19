@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import Zoom from 'react-medium-image-zoom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
@@ -7,6 +8,8 @@ import cn from 'classnames'
 import LoadingSpinner from './LoadingSpinner'
 import { motion } from 'framer-motion'
 import Label from './Label'
+import { modalsFuncAtom } from '@state/atoms'
+import { useRecoilValue } from 'recoil'
 
 const InputImage = ({
   label = 'Картинка',
@@ -19,7 +22,9 @@ const InputImage = ({
   imageName = null,
   onDelete = null,
   labelClassName,
+  aspect,
 }) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [isAddingImage, setAddingImage] = useState(false)
   const [imageOld, setImageOld] = useState(image ?? noImage)
   const hiddenFileInput = useRef(null)
@@ -27,24 +32,55 @@ const InputImage = ({
     hiddenFileInput.current.click()
   }
 
+  // function onSelectFile(file) {
+  //   if (file) {
+  //     const reader = new FileReader()
+  //     reader.addEventListener('load', () =>
+  //       setImgSrc(reader.result.toString() || '')
+  //     )
+  //     reader.readAsDataURL(e.target.files[0])
+  //   }
+  // }
+
   const onChangeImage = async (newImage) => {
     if (newImage) {
-      setImageOld(image)
-      setAddingImage(true)
-      if (image) await deleteImages([image])
-      sendImage(
-        newImage,
-        (imageUrl) => {
-          onChange(imageUrl)
-        },
-        directory,
-        imageName
-      )
+      // setImageOld(image)
+      // setAddingImage(true)
+      modalsFunc.cropImage(newImage, aspect, (newImage) => {
+        setImageOld(image)
+        setAddingImage(true)
+        sendImage(
+          newImage,
+          (imageUrl) => {
+            onChange(imageUrl)
+          },
+          directory,
+          imageName
+        )
+      })
     } else {
       if (imageName)
         await deleteImages([(directory ? directory + '/' : '') + imageName])
       onChange(null)
     }
+
+    // if (newImage) {
+    //   setImageOld(image)
+    //   setAddingImage(true)
+    //   if (image) await deleteImages([image])
+    //   sendImage(
+    //     newImage,
+    //     (imageUrl) => {
+    //       onChange(imageUrl)
+    //     },
+    //     directory,
+    //     imageName
+    //   )
+    // } else {
+    //   if (imageName)
+    //     await deleteImages([(directory ? directory + '/' : '') + imageName])
+    //   onChange(null)
+    // }
   }
 
   useEffect(() => setAddingImage(false), [image])
@@ -60,30 +96,63 @@ const InputImage = ({
           required && !image ? ' border-red-700' : ' border-gray-400'
         )}
       >
-        <motion.img
-          className="absolute top-0 bottom-0 left-0 right-0 z-10 object-cover w-20 h-20 duration-1000 bg-white"
-          src={image ?? noImage}
-          alt="item_no_image"
+        <motion.div
+          className="absolute top-0 bottom-0 left-0 right-0 z-10 w-20 h-20 duration-1000 bg-white"
           animate={{ opacity: isAddingImage ? 0 : 1 }}
           initial={{ opacity: 1 }}
-        />
+        >
+          <Zoom zoomMargin={20}>
+            <img
+              className="object-cover w-20 h-20"
+              src={image ?? noImage}
+              alt="item_image"
+            />
+          </Zoom>
+        </motion.div>
         <img
           className="absolute top-0 bottom-0 left-0 right-0 object-cover w-20 h-20 duration-1000"
           src={imageOld}
           alt="item_no_image"
         />
         <LoadingSpinner className="absolute top-0 bottom-0 left-0 right-0 w-20 h-20 bg-opacity-50 border border-gray-300 bg-general" />
-
-        {!isAddingImage && image && (
+        {/* <div className="absolute flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 -top-5 group-hover:top-0 -right-5 group-hover:right-0 hover:scale-125">
           <FontAwesomeIcon
-            className="absolute z-20 w-5 h-5 text-red-700 duration-200 transform cursor-pointer -top-5 group-hover:top-1 -right-5 group-hover:right-1 hover:scale-125"
+            className="h-4 text-red-700"
             icon={faTrash}
-            size="1x"
             onClick={() => {
-              onChangeImage(null)
-              onDelete && onDelete()
+              onChange(images.filter((image, i) => i !== index))
             }}
           />
+        </div>
+        <div
+          className={cn(
+            'absolute flex p-1 duration-200 transform bg-white rounded-br-full cursor-pointer w-7 h-7 hover:scale-125',
+            index === 0
+              ? 'top-0 left-0'
+              : '-top-5 group-hover:top-0 -left-5 group-hover:left-0'
+          )}
+        >
+          <FontAwesomeIcon
+            className="h-4 text-orange-600"
+            icon={faHome}
+            onClick={() => {
+              if (index !== 0) onChange(arrayMove(images, index, 0))
+            }}
+          />
+        </div> */}
+
+        {!isAddingImage && image && (
+          <div className="absolute z-20 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 -top-5 group-hover:top-0 -right-5 group-hover:right-0 hover:scale-125">
+            <FontAwesomeIcon
+              className="h-4 text-red-700"
+              icon={faTrash}
+              size="1x"
+              onClick={() => {
+                onChangeImage(null)
+                onDelete && onDelete()
+              }}
+            />
+          </div>
         )}
         {!image && (
           <FontAwesomeIcon
@@ -94,15 +163,17 @@ const InputImage = ({
           />
         )}
         {!isAddingImage && !noEditButton && image && (
-          <FontAwesomeIcon
-            className="absolute z-20 w-5 h-5 duration-200 transform cursor-pointer -top-5 -left-5 group-hover:top-1 group-hover:left-1 text-primary hover:scale-125"
-            icon={faPencilAlt}
-            size="1x"
-            onClick={() => {
-              // onChange(addImageClick)
-              selectImageClick()
-            }}
-          />
+          <div className="absolute z-20 flex p-1 duration-200 transform bg-white rounded-br-full cursor-pointer w-7 h-7 hover:scale-125 -top-5 group-hover:top-0 -left-5 group-hover:left-0">
+            <FontAwesomeIcon
+              className="h-4 text-orange-600"
+              icon={faPencilAlt}
+              size="1x"
+              onClick={() => {
+                // onChange(addImageClick)
+                selectImageClick()
+              }}
+            />
+          </div>
         )}
         {/* <motion.div
           animate={{ opacity: isAddingImage ? 1 : 0 }}
@@ -117,6 +188,7 @@ const InputImage = ({
         onChange={(e) => {
           if (e.target.files[0]) onChangeImage(e.target.files[0])
         }}
+        value={''}
         style={{ display: 'none' }}
         accept="image/jpeg,image/png"
       />

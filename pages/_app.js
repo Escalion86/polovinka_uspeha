@@ -24,6 +24,8 @@ import { ThemeProvider } from '@mui/material/styles'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-loading-skeleton/dist/skeleton.css'
 
+import 'react-image-crop/dist/ReactCrop.css'
+
 import { createTheme } from '@mui/material/styles'
 import { red } from '@mui/material/colors'
 import Script from 'next/script'

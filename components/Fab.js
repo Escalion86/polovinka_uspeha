@@ -11,10 +11,7 @@ const Fab = ({ onClick = () => {}, show = true }) => {
       )}
     >
       <div
-        // transition={{ ease: 'linear' }}
-        // onBlur={() => setOpened(true)}
-
-        className="relative p-4 rounded-full cursor-pointer w-13 h-13 bg-general group"
+        className="relative p-4 rounded-full cursor-pointer w-13 h-13 bg-general group max-h-13 max-w-13"
         onClick={onClick}
       >
         <FontAwesomeIcon
