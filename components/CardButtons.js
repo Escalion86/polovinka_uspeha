@@ -28,8 +28,10 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import useSnackbar from '@helpers/useSnackbar'
+import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 
-const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
+const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
     className={cn(
       `text-base font-normal px-2 duration-300 flex items-center gap-x-2 h-8 hover:bg-${color}-600 hover:text-white`,
@@ -41,7 +43,7 @@ const MenuItem = ({ active, icon, onClick, color = 'red', dataTip }) => (
     }}
   >
     <FontAwesomeIcon icon={icon} className="w-6 h-6" />
-    <div className="whitespace-nowrap prevent-select-text">{dataTip}</div>
+    <div className="whitespace-nowrap prevent-select-text">{tooltipText}</div>
   </div>
 )
 
@@ -59,6 +61,10 @@ const CardButtons = ({
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
   const device = useWindowDimensionsTailwind()
+
+  const copyLink = useCopyEventLinkToClipboard(item._id)
+
+  // const { info } = useSnackbar()
 
   const [open, setOpen] = useState(false)
 
@@ -90,11 +96,10 @@ const CardButtons = ({
           icon={faShareAlt}
           onClick={() => {
             setOpen(false)
-            copyToClipboard(window.location.origin + '/event/' + item._id)
+            copyLink()
           }}
           color="blue"
-          dataTip="Скопировать ссылку на мероприятие"
-          popoverText="Ссылка на мероприятие скопирована"
+          tooltipText="Скопировать ссылку на мероприятие"
         />
       )}
       {(showAdminButtons || isLoggedUserMember) && typeOfItem === 'event' && (
@@ -105,7 +110,7 @@ const CardButtons = ({
             modalsFunc.event.users(item._id)
           }}
           color="green"
-          dataTip="Участники мероприятия"
+          tooltipText="Участники мероприятия"
         />
       )}
       {showAdminButtons && onUpClick && (
@@ -116,7 +121,7 @@ const CardButtons = ({
             onUpClick()
           }}
           color="gray"
-          dataTip="Переместить выше"
+          tooltipText="Переместить выше"
         />
       )}
       {showAdminButtons && onDownClick && (
@@ -127,7 +132,7 @@ const CardButtons = ({
             onDownClick()
           }}
           color="gray"
-          dataTip="Переместить ниже"
+          tooltipText="Переместить ниже"
         />
       )}
       {showAdminButtons && (
@@ -138,7 +143,7 @@ const CardButtons = ({
             modalsFunc[typeOfItem].edit(item._id)
           }}
           color="orange"
-          dataTip="Редактировать"
+          tooltipText="Редактировать"
         />
       )}
       {showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review' && (
@@ -149,7 +154,7 @@ const CardButtons = ({
             modalsFunc[typeOfItem].add(item._id)
           }}
           color="blue"
-          dataTip="Клонировать"
+          tooltipText="Клонировать"
         />
       )}
       {showAdminButtons && showOnSiteOnClick && (
@@ -161,7 +166,7 @@ const CardButtons = ({
             showOnSiteOnClick()
           }}
           color="purple"
-          dataTip="Показывать на сайте"
+          tooltipText="Показывать на сайте"
         />
       )}
       {showAdminButtons && typeOfItem === 'event' && (
@@ -174,7 +179,7 @@ const CardButtons = ({
             else modalsFunc[typeOfItem].cancel(item._id)
           }}
           color={item.status === 'canceled' ? 'green' : 'red'}
-          dataTip={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
+          tooltipText={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
         />
       )}
       {isLoggedUserDev && (
@@ -185,7 +190,7 @@ const CardButtons = ({
             modalsFunc[typeOfItem].delete(item._id)
           }}
           color="red"
-          dataTip="Удалить"
+          tooltipText="Удалить"
         />
       )}
     </>

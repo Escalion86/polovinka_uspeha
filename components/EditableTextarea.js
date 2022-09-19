@@ -31,12 +31,6 @@ import Button from './Button'
 import InputWrapper from './InputWrapper'
 import sanitize from '@helpers/sanitize'
 
-import {
-  Popover,
-  PopoverHandler,
-  PopoverContent,
-} from '@material-tailwind/react'
-
 const TextareaButton = ({
   icon,
   cmd,
@@ -65,67 +59,6 @@ const GroupButtons = ({ name, children }) => (
     <div className="flex gap-x-1">{children}</div>
   </div>
 )
-
-const CreateLinkButton = ({ setInputFocus }) => {
-  const [showInput, setShowInput] = useState(false)
-  const [inputValue, setInputValue] = useState('')
-
-  return (
-    <Popover
-      animate={{
-        mount: { scale: 1, y: 0 },
-        unmount: { scale: 0, y: 25 },
-      }}
-      placement="bottom"
-      handler={setShowInput}
-      open={showInput}
-    >
-      <PopoverHandler>
-        {/* <PopoverButton variant="gradient"> */}
-        {/* <TextareaButton
-            // cmd="createLink"
-            // arg="https://github.com/lovasoa/react-contenteditable"
-            icon={faNetworkWired}
-            // onMouseDown={() => {}}
-            // onMouseDown={() => document.execCommand("createLink", false, arg)}
-          /> */}
-
-        {/* </PopoverButton> */}
-        <div>
-          <TextareaButton
-            // cmd="createLink"
-            // arg="https://github.com/lovasoa/react-contenteditable"
-            icon={faGlobe}
-            // onMouseDown={() => {}}
-            // onMouseDown={() => document.execCommand("createLink", false, arg)}
-          />
-        </div>
-      </PopoverHandler>
-      <PopoverContent className="z-50 flex">
-        {/* <div className="text-black">131321</div> */}
-        <input
-          value={inputValue}
-          className=""
-          placeholder="http://"
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-        <TextareaButton
-          // cmd="createLink"
-          // arg="https://github.com/lovasoa/react-contenteditable"
-          icon={faCheck}
-          onMouseDown={() => {
-            setShowInput(false)
-            setInputFocus && setInputFocus()
-            // document.execCommand('createLink', false, inputValue)
-          }}
-          // onMouseDown={() => document.execCommand("createLink", false, arg)}
-        />
-      </PopoverContent>
-    </Popover>
-
-    // </div>
-  )
-}
 
 const EditableTextarea = ({
   className,

@@ -12,9 +12,10 @@ import userSelector from '@state/selectors/userSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import Image from 'next/image'
-import Tooltip from '../../components/Tooltip'
+import Tooltip from '@components/Tooltip'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import Divider from '@components/Divider'
+import ZodiacIcon from '@components/ZodiacIcon'
 
 const UserCard = ({ userId }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -60,7 +61,7 @@ const UserCard = ({ userId }) => {
                 <div className="flex flex-col flex-1">
                   <div className="flex flex-wrap items-center px-2 py-1 leading-6 gap-x-1">
                     {user.status === 'member' && (
-                      <Tooltip content="Участник клуба">
+                      <Tooltip title="Участник клуба">
                         <div className="w-6 h-6">
                           <Image
                             src="/img/svg_icons/medal.svg"
@@ -71,7 +72,7 @@ const UserCard = ({ userId }) => {
                       </Tooltip>
                     )}
                     {user.status === 'ban' && (
-                      <Tooltip content="Забанен">
+                      <Tooltip title="Забанен">
                         <div className="w-6 h-6">
                           <Image
                             src="/img/svg_icons/ban.svg"
@@ -84,12 +85,12 @@ const UserCard = ({ userId }) => {
                     <span>{user.firstName}</span>
                     {user.secondName && <span>{user.secondName}</span>}
                     {user.birthday && (
-                      <div className="font-normal whitespace-nowrap">
-                        {user.birthday
-                          ? birthDateToAge(user.birthday) +
-                            ', ' +
-                            getZodiac(user.birthday).name
-                          : ''}
+                      <div className="flex items-center font-normal whitespace-nowrap gap-x-2">
+                        <span>{birthDateToAge(user.birthday)}</span>
+                        <ZodiacIcon
+                          date={user.birthday}
+                          className="w-5 h-5 fill-general"
+                        />
                       </div>
                     )}
                     {user.role === 'admin' && (

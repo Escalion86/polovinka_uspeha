@@ -14,13 +14,9 @@ function ModalsPortal() {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const router = useRouter()
 
-  useEffect(
-    () =>
-      setModalsFunc(
-        modalsFuncGenerator(setModals, itemsFunc, router, loggedUser)
-      ),
-    [loggedUser, itemsFunc]
-  )
+  useEffect(() => {
+    setModalsFunc(modalsFuncGenerator(setModals, itemsFunc, router, loggedUser))
+  }, [loggedUser])
 
   return (
     <div className="fixed top-0 z-50 w-full">

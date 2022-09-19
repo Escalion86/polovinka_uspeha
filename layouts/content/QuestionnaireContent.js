@@ -31,6 +31,7 @@ import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
+import useSnackbar from '@helpers/useSnackbar'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
@@ -98,7 +99,8 @@ const QuestionnaireContent = (props) => {
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
-  const [message, setMessage] = useState('')
+
+  const { success, error } = useSnackbar()
 
   // const router = useRouter()
 
@@ -130,7 +132,6 @@ const QuestionnaireContent = (props) => {
     loggedUser?.role !== role
 
   const onClickConfirm = async () => {
-    setMessage('')
     if (
       !checkErrors({
         firstName,
@@ -172,12 +173,12 @@ const QuestionnaireContent = (props) => {
         (data) => {
           setLoggedUser(data)
           setUserInUsersState(data)
-          setMessage('Данные анкеты обновлены успешно')
+          success('Данные анкеты обновлены успешно')
           setIsWaitingToResponse(false)
           // refreshPage()
         },
         () => {
-          setMessage('')
+          error('Ошибка обновления данных')
           addError({ response: 'Ошибка обновления данных' })
           setIsWaitingToResponse(false)
         }
@@ -445,9 +446,6 @@ const QuestionnaireContent = (props) => {
           onClick={onClickConfirm}
           loading={isWaitingToResponse}
         />
-        {message && !isWaitingToResponse && (
-          <div className="flex flex-col col-span-2 text-success">{message}</div>
-        )}
       </div>
     </div>
   )

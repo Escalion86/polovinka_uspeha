@@ -22,10 +22,11 @@ import errorFunc from './modalsFunc/errorFunc'
 import selectUsersFunc from './modalsFunc/selectUsersFunc'
 import selectDirectionFunc from './modalsFunc/selectDirectionFunc'
 import jsonFunc from './modalsFunc/jsonFunc'
+import cropImageFunc from './modalsFunc/cropImageFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const addModal = (props) =>
+  const addModal = (props) => {
     setModals((modals) => {
       const maxId =
         modals.length > 0
@@ -36,8 +37,9 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           : -1
       // if (props.id && modals.find((modal) => modal.id === props.id))
       //   return modals
-      return [...modals, { id: maxId + 1, props }]
+      return [...modals, { id: maxId < 0 ? 0 : maxId + 1, props }]
     })
+  }
 
   return {
     add: addModal,
@@ -53,6 +55,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
       })
     },
     custom: addModal,
+    cropImage: (...data) => addModal(cropImageFunc(...data)),
     error: (data) => addModal(errorFunc(data)),
     json: (data) => addModal(jsonFunc(data)),
     selectUsers: (itemsId, filter, onChange, exceptedIds, maxUsers) =>

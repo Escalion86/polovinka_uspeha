@@ -4,6 +4,93 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
+const messages = {
+  event: {
+    update: {
+      success: 'Мероприятие обновлено',
+      error: 'Не удалось обновить мероприятие',
+    },
+    add: {
+      success: 'Мероприятие создано',
+      error: 'Не удалось создать мероприятие',
+    },
+    delete: {
+      success: 'Мероприятие удалено',
+      error: 'Не удалось удалить мероприятие',
+    },
+  },
+  direction: {
+    update: {
+      success: 'Направление обновлено',
+      error: 'Не удалось обновить направление',
+    },
+    add: {
+      success: 'Направление создано',
+      error: 'Не удалось создать направление',
+    },
+    delete: {
+      success: 'Направление удалено',
+      error: 'Не удалось удалить направление',
+    },
+  },
+  additionalBlock: {
+    update: {
+      success: 'Дополнительный блок обновлен',
+      error: 'Не удалось обновить дополнительный блок',
+    },
+    add: {
+      success: 'Дополнительный блок создан',
+      error: 'Не удалось создать дополнительный блок',
+    },
+    delete: {
+      success: 'Дополнительный блок удален',
+      error: 'Не удалось удалить дополнительный блок',
+    },
+  },
+  user: {
+    update: {
+      success: 'Пользователь обновлен',
+      error: 'Не удалось обновить пользователя',
+    },
+    add: {
+      success: 'Пользователь создан',
+      error: 'Не удалось создать пользователя',
+    },
+    delete: {
+      success: 'Пользователь удален',
+      error: 'Не удалось удалить пользователя',
+    },
+  },
+  review: {
+    update: {
+      success: 'Отзыв обновлен',
+      error: 'Не удалось обновить отзыв',
+    },
+    add: {
+      success: 'Отзыв создан',
+      error: 'Не удалось создать отзыв',
+    },
+    delete: {
+      success: 'Отзыв удален',
+      error: 'Не удалось удалить отзыв',
+    },
+  },
+  payment: {
+    update: {
+      success: 'Трензакция обновлена',
+      error: 'Не удалось обновить транзакцию',
+    },
+    add: {
+      success: 'Трензакция создана',
+      error: 'Не удалось создать транзакцию',
+    },
+    delete: {
+      success: 'Трензакция удалена',
+      error: 'Не удалось удалить транзакцию',
+    },
+  },
+}
+
 const itemsFuncGenerator = (
   props,
   array = ['event', 'direction', 'additionalBlock', 'user', 'review', 'payment']
@@ -14,8 +101,8 @@ const itemsFuncGenerator = (
     setErrorCard,
     setNotErrorCard,
     modalsFunc,
+    snackbar = {},
   } = props
-
   const obj = {}
   array?.length > 0 &&
     array.forEach((itemName) => {
@@ -28,10 +115,12 @@ const itemsFuncGenerator = (
               item,
               (data) => {
                 setNotLoadingCard(itemName + item._id)
+                snackbar.success(messages[itemName].update.success)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
               (error) => {
+                snackbar.error(messages[itemName].update.error)
                 setErrorCard(itemName + item._id)
                 const data = {
                   errorPlace: 'UPDATE ERROR',
@@ -49,10 +138,12 @@ const itemsFuncGenerator = (
               `/api/${itemName}s`,
               clearedItem,
               (data) => {
+                snackbar.success(messages[itemName].add.success)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
               (error) => {
+                snackbar.error(messages[itemName].add.error)
                 setErrorCard(itemName + item._id)
                 const data = {
                   errorPlace: 'CREATE ERROR',
@@ -70,8 +161,12 @@ const itemsFuncGenerator = (
           setLoadingCard(itemName + itemId)
           return await deleteData(
             `/api/${itemName}s/${itemId}`,
-            () => props['delete' + capitalizeFirstLetter(itemName)](itemId),
+            () => {
+              snackbar.success(messages[itemName].delete.success)
+              props['delete' + capitalizeFirstLetter(itemName)](itemId)
+            },
             (error) => {
+              snackbar.error(messages[itemName].delete.error)
               setErrorCard(itemName + item._id)
               const data = { errorPlace: 'DELETE ERROR', itemName, item, error }
               modalsFunc.error(data)
@@ -99,10 +194,12 @@ const itemsFuncGenerator = (
       `/api/events/${eventId}`,
       { status: 'canceled' },
       (data) => {
+        snackbar.success('Мероприятие отменено')
         setNotLoadingCard('event' + eventId)
         props.setEvent(data)
       },
       (error) => {
+        snackbar.error('Не удалось отменить мероприятие')
         setErrorCard('event' + eventId)
         const data = { errorPlace: 'EVENT CANCEL ERROR', eventId, error }
         modalsFunc.error(data)
@@ -117,10 +214,12 @@ const itemsFuncGenerator = (
       `/api/events/${eventId}`,
       { status: 'active' },
       (data) => {
+        snackbar.success('Мероприятие активировано')
         setNotLoadingCard('event' + eventId)
         props.setEvent(data)
       },
       (error) => {
+        snackbar.error('не удалось активировать мероприятие')
         setErrorCard('event' + eventId)
         const data = { errorPlace: 'EVENT ACTIVE ERROR', eventId, error }
         modalsFunc.error(data)
@@ -135,10 +234,12 @@ const itemsFuncGenerator = (
       `/api/eventsusers`,
       { eventId, userId },
       (data) => {
+        snackbar.success('Запись на мероприятие прошла успешно')
         setNotLoadingCard('event' + eventId)
         props.setEventsUsers(data)
       },
       (error) => {
+        snackbar.error('Не удалось записаться на мероприятие')
         setErrorCard('event' + eventId)
         const data = {
           errorPlace: 'EVENT SIGNUP ERROR',
@@ -160,10 +261,12 @@ const itemsFuncGenerator = (
     return await deleteData(
       `/api/eventsusers`,
       (data) => {
+        snackbar.success('Вы успешно отписались от мероприятия')
         setNotLoadingCard('event' + eventId)
         props.deleteEventsUsers(data._id)
       },
       (error) => {
+        snackbar.error('Не удалось отписаться от мероприятия')
         setErrorCard('event' + eventId)
         const data = {
           errorPlace: 'EVENT SIGNOUT ERROR',
@@ -196,6 +299,7 @@ const itemsFuncGenerator = (
   // }
 
   obj.event.setEventUsers = async (eventId, eventUsersStatuses) => {
+    snackbar.success('Список участников мероприятия успешно обновлен')
     setLoadingCard('event' + eventId)
     return await postData(
       `/api/eventsusers`,
@@ -206,6 +310,7 @@ const itemsFuncGenerator = (
         props.setEventsUsers(data)
       },
       (error) => {
+        snackbar.success('Не удалось обновить список участников мероприятия')
         setErrorCard('event' + eventId)
         const data = {
           errorPlace: 'setEventUsers ERROR',

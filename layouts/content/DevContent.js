@@ -29,6 +29,7 @@ const DevCard = ({ title, data }) => {
 }
 
 const DevContent = () => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
   const users = useRecoilValue(usersAtom)
   const eventsUsers = useRecoilValue(eventsUsersAtom)
@@ -46,6 +47,7 @@ const DevContent = () => {
       <DevCard title="reviews" data={reviews} />
       <DevCard title="additionalBlocks" data={additionalBlocks} />
       <DevCard title="payments" data={payments} />
+      {/* <div onClick={() => modalsFunc.test()}>ТЕСТ</div> */}
     </CardListWrapper>
   )
 }

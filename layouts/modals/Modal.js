@@ -10,8 +10,8 @@ import { modalsAtom, modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import ModalButtons from '@layouts/modals/ModalButtons'
 import { useRouter } from 'next/router'
-import Tooltip from '../../components/Tooltip'
 import cn from 'classnames'
+import Tooltip from '@components/Tooltip'
 
 const Modal = ({
   Children,
@@ -147,16 +147,16 @@ const Modal = ({
             </div>
           </div>
         )}
-        {/* <Tooltip content="Закрыть"> */}
-        <div className="absolute right-3 top-3">
-          <FontAwesomeIcon
-            className="w-6 h-6 text-black duration-200 transform cursor-pointer hover:scale-110"
-            icon={faTimes}
-            size="1x"
-            onClick={onDeclineClick}
-          />
-        </div>
-        {/* </Tooltip> */}
+        <Tooltip title="Закрыть">
+          <div className="absolute right-3 top-3">
+            <FontAwesomeIcon
+              className="w-6 h-6 text-black duration-200 transform cursor-pointer hover:scale-110"
+              icon={faTimes}
+              size="1x"
+              onClick={onDeclineClick}
+            />
+          </div>
+        </Tooltip>
         {title && (
           <div className="mx-10 mb-2 text-lg font-bold leading-6 text-center whitespace-pre-line">
             {title}
