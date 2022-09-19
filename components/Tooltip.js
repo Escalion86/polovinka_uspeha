@@ -1,22 +1,31 @@
 import React from 'react'
-import { Tooltip as MaterialTooltip } from '@material-tailwind/react'
+import { Tooltip as MuiTooltip } from '@mui/material'
 
-const Tooltip = ({ children, content }) => (
-  <MaterialTooltip
-    content={content}
-    // placement="bottom"
-    animate={{
-      mount: {
-        scale: 1,
-        transition: {
-          delay: 1,
-        },
-      },
-      unmount: { scale: 0 },
-    }}
+const Tooltip = ({
+  children,
+  title,
+  onClose,
+  onOpen,
+  open,
+  disableFocusListener,
+  disableHoverListener,
+  disableTouchListener,
+  PopperProps,
+}) => (
+  <MuiTooltip
+    title={title}
+    onClose={onClose}
+    onOpen={onOpen}
+    open={open}
+    disableFocusListener={disableFocusListener}
+    disableHoverListener={disableHoverListener}
+    disableTouchListener={disableTouchListener}
+    PopperProps={PopperProps}
+    placement="top"
+    arrow
   >
     {children}
-  </MaterialTooltip>
+  </MuiTooltip>
 )
 
 export default Tooltip

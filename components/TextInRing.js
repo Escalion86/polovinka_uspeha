@@ -16,6 +16,7 @@ const TextInRing = ({ text }) => {
           layout="responsive"
           height="80%"
           width="80%"
+          priority={text}
         />
         <div
           dangerouslySetInnerHTML={{

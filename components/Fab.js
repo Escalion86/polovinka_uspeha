@@ -14,10 +14,13 @@ const Fab = ({ onClick = () => {}, show = true }) => {
         // transition={{ ease: 'linear' }}
         // onBlur={() => setOpened(true)}
 
-        className="relative p-4 duration-300 rounded-full cursor-pointer bg-general hover:scale-110"
+        className="relative p-4 rounded-full cursor-pointer w-13 h-13 bg-general group"
         onClick={onClick}
       >
-        <FontAwesomeIcon className="z-10 w-5 h-5 text-white" icon={faPlus} />
+        <FontAwesomeIcon
+          className="z-10 w-5 h-5 text-white duration-200 max-w-5 max-h-5 group-hover:scale-150"
+          icon={faPlus}
+        />
       </div>
     </div>
   )

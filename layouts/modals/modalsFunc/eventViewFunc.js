@@ -33,6 +33,8 @@ import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelec
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import NamesOfUsers from '@components/NamesOfUsers'
+import useSnackbar from '@helpers/useSnackbar'
+import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -43,6 +45,7 @@ const eventViewFunc = (eventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    const copyLink = useCopyEventLinkToClipboard(item._id)
     const event = useRecoilValue(eventSelector(eventId))
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
@@ -92,20 +95,8 @@ const eventViewFunc = (eventId) => {
               <CardButton
                 icon={faShareAlt}
                 color="blue"
-                onClick={() => {
-                  copyToClipboard(
-                    window?.location.origin + '/event/' + event._id
-                  )
-                  // window.open(
-                  //   window?.location.origin,
-                  //   'sharer',
-                  //   'status=0,toolbar=0,width=650,height=500'
-                  // )
-                  // if (typeof window !== 'undefined') {
-                  //   console.log('window.location.href', window?.location.origin)
-                  // }
-                }}
-                dataTip="Скопировать ссылку на мероприятие"
+                onClick={copyLink}
+                tooltip="Скопировать ссылку на мероприятие"
                 popoverText="Ссылка на мероприятие скопирована"
               />
             </div>

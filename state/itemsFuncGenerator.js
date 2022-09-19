@@ -4,6 +4,93 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
+const messages = {
+  event: {
+    update: {
+      success: 'Мероприятие обновлено',
+      error: 'Не удалось обновить мероприятие',
+    },
+    add: {
+      success: 'Мероприятие создано',
+      error: 'Не удалось создать мероприятие',
+    },
+    delete: {
+      success: 'Мероприятие удалено',
+      error: 'Не удалось удалить мероприятие',
+    },
+  },
+  direction: {
+    update: {
+      success: 'Направление обновлено',
+      error: 'Не удалось обновить направление',
+    },
+    add: {
+      success: 'Направление создано',
+      error: 'Не удалось создать направление',
+    },
+    delete: {
+      success: 'Направление удалено',
+      error: 'Не удалось удалить направление',
+    },
+  },
+  additionalBlock: {
+    update: {
+      success: 'Дополнительный блок обновлен',
+      error: 'Не удалось обновить дополнительный блок',
+    },
+    add: {
+      success: 'Дополнительный блок создан',
+      error: 'Не удалось создать дополнительный блок',
+    },
+    delete: {
+      success: 'Дополнительный блок удален',
+      error: 'Не удалось удалить дополнительный блок',
+    },
+  },
+  user: {
+    update: {
+      success: 'Пользователь обновлен',
+      error: 'Не удалось обновить пользователя',
+    },
+    add: {
+      success: 'Пользователь создан',
+      error: 'Не удалось создать пользователя',
+    },
+    delete: {
+      success: 'Пользователь удален',
+      error: 'Не удалось удалить пользователя',
+    },
+  },
+  review: {
+    update: {
+      success: 'Отзыв обновлен',
+      error: 'Не удалось обновить отзыв',
+    },
+    add: {
+      success: 'Отзыв создан',
+      error: 'Не удалось создать отзыв',
+    },
+    delete: {
+      success: 'Отзыв удален',
+      error: 'Не удалось удалить отзыв',
+    },
+  },
+  payment: {
+    update: {
+      success: 'Трензакция обновлена',
+      error: 'Не удалось обновить транзакцию',
+    },
+    add: {
+      success: 'Трензакция создана',
+      error: 'Не удалось создать транзакцию',
+    },
+    delete: {
+      success: 'Трензакция удалена',
+      error: 'Не удалось удалить транзакцию',
+    },
+  },
+}
+
 const itemsFuncGenerator = (
   props,
   array = ['event', 'direction', 'additionalBlock', 'user', 'review', 'payment']
@@ -14,7 +101,9 @@ const itemsFuncGenerator = (
     setErrorCard,
     setNotErrorCard,
     modalsFunc,
+    snackbar = {},
   } = props
+  const { success, error, info } = snackbar
 
   const obj = {}
   array?.length > 0 &&
@@ -28,10 +117,12 @@ const itemsFuncGenerator = (
               item,
               (data) => {
                 setNotLoadingCard(itemName + item._id)
+                success(messages[itemName].update.success)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
               (error) => {
+                error(messages[itemName].update.error)
                 setErrorCard(itemName + item._id)
                 const data = {
                   errorPlace: 'UPDATE ERROR',
@@ -49,10 +140,12 @@ const itemsFuncGenerator = (
               `/api/${itemName}s`,
               clearedItem,
               (data) => {
+                success(messages[itemName].add.success)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
               (error) => {
+                error(messages[itemName].add.error)
                 setErrorCard(itemName + item._id)
                 const data = {
                   errorPlace: 'CREATE ERROR',
@@ -70,8 +163,12 @@ const itemsFuncGenerator = (
           setLoadingCard(itemName + itemId)
           return await deleteData(
             `/api/${itemName}s/${itemId}`,
-            () => props['delete' + capitalizeFirstLetter(itemName)](itemId),
+            () => {
+              success(messages[itemName].delete.success)
+              props['delete' + capitalizeFirstLetter(itemName)](itemId)
+            },
             (error) => {
+              error(messages[itemName].delete.error)
               setErrorCard(itemName + item._id)
               const data = { errorPlace: 'DELETE ERROR', itemName, item, error }
               modalsFunc.error(data)

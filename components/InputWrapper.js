@@ -7,14 +7,14 @@ import {
   PopoverHandler,
   PopoverContent,
 } from '@material-tailwind/react'
-import Tooltip from './Tooltip'
+import Tooltip from '@components/Tooltip'
 import Label from './Label'
 import copyToClipboard from '@helpers/copyToClipboard'
 import pasteFromClipboard from '@helpers/pasteFromClipboard'
 
-const SmallIconButton = ({ onClick, icon, dataTip, infoTextOnClick }) => {
+const SmallIconButton = ({ onClick, icon, tooltip, infoTextOnClick }) => {
   return (
-    <Tooltip content={dataTip}>
+    <Tooltip title={tooltip}>
       <div className="relative" onClick={onClick}>
         <Popover>
           <PopoverHandler>
@@ -87,7 +87,7 @@ const InputWrapper = ({
             <SmallIconButton
               onClick={() => copyToClipboard(value)}
               icon={faCopy}
-              dataTip="Копировать"
+              tooltip="Копировать"
               infoTextOnClick="Текст скопирован"
             />
           )}
@@ -95,7 +95,7 @@ const InputWrapper = ({
             <SmallIconButton
               onClick={() => pasteFromClipboard(onChange)}
               icon={faPaste}
-              dataTip="Вставить"
+              tooltip="Вставить"
             />
           )}
         </>

@@ -207,7 +207,7 @@ const Login = () => {
   const [checkHave18Years, setCheckHave18Years] = useState(false)
   // const [errors, setErrors] = useState({})
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
-  const [needToCheckMail, setNeedToCheckMail] = useState(false)
+  // const [needToCheckMail, setNeedToCheckMail] = useState(false)
 
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
@@ -468,7 +468,7 @@ const Login = () => {
                 Авторизация
               </p>
             </div>
-            {needToCheckMail ? (
+            {/* {needToCheckMail ? (
               <div className="flex flex-col items-center mt-6">
                 <SvgMailBox color={generalColor} className="w-60" />
                 <p className="mt-4">
@@ -477,198 +477,198 @@ const Login = () => {
                   Вам было отправлено письмо для завершения регистрации
                 </p>
               </div>
-            ) : (
-              <>
-                <Input
-                  inputRef={inputPhoneRef}
-                  className="mt-0"
-                  type="phone"
-                  name="Телефон"
-                  icon={faUser}
-                  onChange={(event) => {
-                    removeError('phone')
+            ) : ( */}
+            <>
+              <Input
+                inputRef={inputPhoneRef}
+                className="mt-0"
+                type="phone"
+                name="Телефон"
+                icon={faUser}
+                onChange={(event) => {
+                  removeError('phone')
 
-                    const value = event.target.value.replace(/[^0-9]/g, '')
+                  const value = event.target.value.replace(/[^0-9]/g, '')
 
-                    setInputPhone(
-                      !value
-                        ? '7'
-                        : value == '77' || value == '78'
-                        ? '7'
-                        : Number(value)
+                  setInputPhone(
+                    !value
+                      ? '7'
+                      : value == '77' || value == '78'
+                      ? '7'
+                      : Number(value)
+                  )
+                }}
+                value={inputPhone}
+                error={errors.phone}
+                max={9999999999}
+                maxLength="10"
+                tabIndex={
+                  (isRegistrationProcess && registrationLevel === 1) ||
+                  !isRegistrationProcess
+                    ? 0
+                    : -1
+                }
+                hidden={isRegistrationProcess && registrationLevel !== 1}
+                readOnly={waitingResponse}
+              />
+
+              {message && <div className="mt-2">{message}</div>}
+              <Input
+                type="text"
+                name="Последние 4 цифры номера"
+                icon={faLock}
+                onChange={(event) => {
+                  removeError('pinCode')
+                  // updateErrors('pinCode', null)
+                  setInputPinCode(event.target.value)
+                }}
+                value={inputPinCode}
+                error={errors.pinCode}
+                hidden={!isRegistrationProcess || registrationLevel !== 2}
+                tabIndex={
+                  isRegistrationProcess && registrationLevel === 2 ? 0 : -1
+                }
+                readOnly={waitingResponse}
+                maxLength="4"
+              />
+              <Input
+                inputRef={inputPasswordRef}
+                className="mt-0"
+                type="password"
+                name="Пароль"
+                icon={faLock}
+                onChange={(event) => {
+                  removeError('password')
+                  // updateErrors('password', null)
+                  setInputPassword(event.target.value)
+                }}
+                value={inputPassword}
+                error={errors.password}
+                tabIndex={
+                  (isRegistrationProcess && registrationLevel === 3) ||
+                  !isRegistrationProcess
+                    ? 0
+                    : -1
+                }
+                hidden={isRegistrationProcess && registrationLevel !== 3}
+                readOnly={waitingResponse}
+              />
+              <Input
+                type="password"
+                name="Повтор пароля"
+                icon={faLock}
+                onChange={(event) => {
+                  removeError('password')
+                  // updateErrors('password', null)
+                  setInputPasswordRepeat(event.target.value)
+                }}
+                value={inputPasswordRepeat}
+                error={errors.password}
+                tabIndex={
+                  isRegistrationProcess && registrationLevel === 3 ? 0 : -1
+                }
+                hidden={!isRegistrationProcess || registrationLevel !== 3}
+                readOnly={waitingResponse}
+              />
+              <CheckBox
+                checked={checkHave18Years}
+                labelPos="right"
+                onChange={(e) => setCheckHave18Years(!checkHave18Years)}
+                label="Мне исполнилось 18 лет"
+                wrapperClassName={
+                  isRegistrationProcess && registrationLevel === 1
+                    ? 'max-h-15 my-2 py-3'
+                    : ''
+                }
+                hidden={!isRegistrationProcess || registrationLevel !== 1}
+              />
+
+              {Object.values(errors).length > 0 && (
+                <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
+                  {Object.values(errors).map(
+                    (error, index) =>
+                      error && <li key={'error' + error}>{error}</li>
+                  )}
+                </ul>
+              )}
+              {errors.pinCodeCountLimit && registrationLevel === 1 && (
+                <div
+                  className="mb-2 cursor-pointer"
+                  onClick={() => setRegistrationLevel(2)}
+                >
+                  Я знаю код
+                </div>
+              )}
+              {waitingResponse ? (
+                <div
+                  className={cn(
+                    'block border-gray-500 bg-gray-200 w-full h-12 mt-4 text-white uppercase duration-300 border-2 outline-none rounded-3xl'
+                  )}
+                >
+                  <LoadingSpinner size="xxs" />
+                </div>
+              ) : (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    submit()
+                  }}
+                  className={cn(
+                    isButtonDisabled
+                      ? 'bg-gray-200'
+                      : 'bg-gray-500 focus:bg-general focus:border-2 focus:border-black hover:bg-general',
+                    'block w-full h-12 text-white uppercase duration-300  border-0 outline-none  rounded-3xl'
+                  )}
+                  tabIndex={0}
+                  disabled={isButtonDisabled}
+                >
+                  {isRegistrationProcess
+                    ? registrationLevel === 1
+                      ? 'Зарегистрироваться'
+                      : registrationLevel === 2
+                      ? 'Отправить код'
+                      : 'Завершить регистрацию'
+                    : 'Авторизироваться'}
+                </button>
+              )}
+              {isRegistrationProcess && registrationLevel === 2 && (
+                <RepeatCall
+                  onClickRepeat={async () => {
+                    setWaitingResponse(true)
+                    await postData(
+                      `/api/ucaller`,
+                      { phone: inputPhone },
+                      (res) => {
+                        setWaitingResponse(false)
+                        if (res.error) {
+                          addError({ [res.error.type]: res.error.message })
+                          // updateErrors(res.error.type, res.error.message)
+                        }
+                      }
                     )
                   }}
-                  value={inputPhone}
-                  error={errors.phone}
-                  max={9999999999}
-                  maxLength="10"
-                  tabIndex={
-                    (isRegistrationProcess && registrationLevel === 1) ||
-                    !isRegistrationProcess
-                      ? 0
-                      : -1
-                  }
-                  hidden={isRegistrationProcess && registrationLevel !== 1}
-                  readOnly={waitingResponse}
                 />
-
-                {message && <div className="mt-2">{message}</div>}
-                <Input
-                  type="text"
-                  name="Последние 4 цифры номера"
-                  icon={faLock}
-                  onChange={(event) => {
-                    removeError('pinCode')
-                    // updateErrors('pinCode', null)
-                    setInputPinCode(event.target.value)
+              )}
+              <div className="flex justify-between mt-4">
+                <a
+                  tabIndex={0}
+                  onClick={() => {
+                    clearErrors()
+                    setIsRegistrationProcess((state) => !state)
                   }}
-                  value={inputPinCode}
-                  error={errors.pinCode}
-                  hidden={!isRegistrationProcess || registrationLevel !== 2}
-                  tabIndex={
-                    isRegistrationProcess && registrationLevel === 2 ? 0 : -1
-                  }
-                  readOnly={waitingResponse}
-                  maxLength="4"
-                />
-                <Input
-                  inputRef={inputPasswordRef}
-                  className="mt-0"
-                  type="password"
-                  name="Пароль"
-                  icon={faLock}
-                  onChange={(event) => {
-                    removeError('password')
-                    // updateErrors('password', null)
-                    setInputPassword(event.target.value)
-                  }}
-                  value={inputPassword}
-                  error={errors.password}
-                  tabIndex={
-                    (isRegistrationProcess && registrationLevel === 3) ||
-                    !isRegistrationProcess
-                      ? 0
-                      : -1
-                  }
-                  hidden={isRegistrationProcess && registrationLevel !== 3}
-                  readOnly={waitingResponse}
-                />
-                <Input
-                  type="password"
-                  name="Повтор пароля"
-                  icon={faLock}
-                  onChange={(event) => {
-                    removeError('password')
-                    // updateErrors('password', null)
-                    setInputPasswordRepeat(event.target.value)
-                  }}
-                  value={inputPasswordRepeat}
-                  error={errors.password}
-                  tabIndex={
-                    isRegistrationProcess && registrationLevel === 3 ? 0 : -1
-                  }
-                  hidden={!isRegistrationProcess || registrationLevel !== 3}
-                  readOnly={waitingResponse}
-                />
-                <CheckBox
-                  checked={checkHave18Years}
-                  labelPos="right"
-                  onChange={(e) => setCheckHave18Years(!checkHave18Years)}
-                  label="Мне исполнилось 18 лет"
-                  wrapperClassName={
-                    isRegistrationProcess && registrationLevel === 1
-                      ? 'max-h-15 my-2 py-3'
-                      : ''
-                  }
-                  hidden={!isRegistrationProcess || registrationLevel !== 1}
-                />
-
-                {Object.values(errors).length > 0 && (
-                  <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
-                    {Object.values(errors).map(
-                      (error, index) =>
-                        error && <li key={'error' + error}>{error}</li>
-                    )}
-                  </ul>
-                )}
-                {errors.pinCodeCountLimit && registrationLevel === 1 && (
-                  <div
-                    className="mb-2 cursor-pointer"
-                    onClick={() => setRegistrationLevel(2)}
-                  >
-                    Я знаю код
-                  </div>
-                )}
-                {waitingResponse ? (
-                  <div
-                    className={cn(
-                      'block border-gray-500 bg-gray-200 w-full h-12 mt-4 text-white uppercase duration-300 border-2 outline-none rounded-3xl'
-                    )}
-                  >
-                    <LoadingSpinner size="xxs" />
-                  </div>
-                ) : (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      submit()
-                    }}
-                    className={cn(
-                      isButtonDisabled
-                        ? 'bg-gray-200'
-                        : 'bg-gray-500 focus:bg-general focus:border-2 focus:border-black hover:bg-general',
-                      'block w-full h-12 text-white uppercase duration-300  border-0 outline-none  rounded-3xl'
-                    )}
-                    tabIndex={0}
-                    disabled={isButtonDisabled}
-                  >
-                    {isRegistrationProcess
-                      ? registrationLevel === 1
-                        ? 'Зарегистрироваться'
-                        : registrationLevel === 2
-                        ? 'Отправить код'
-                        : 'Завершить регистрацию'
-                      : 'Авторизироваться'}
-                  </button>
-                )}
-                {isRegistrationProcess && registrationLevel === 2 && (
-                  <RepeatCall
-                    onClickRepeat={async () => {
-                      setWaitingResponse(true)
-                      await postData(
-                        `/api/ucaller`,
-                        { phone: inputPhone },
-                        (res) => {
-                          setWaitingResponse(false)
-                          if (res.error) {
-                            addError({ [res.error.type]: res.error.message })
-                            // updateErrors(res.error.type, res.error.message)
-                          }
-                        }
-                      )
-                    }}
-                  />
-                )}
-                <div className="flex justify-between mt-4">
-                  <a
-                    tabIndex={0}
-                    onClick={() => {
-                      clearErrors()
-                      setIsRegistrationProcess((state) => !state)
-                    }}
-                    className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
-                  >
-                    {isRegistrationProcess ? 'Авторизация' : 'Регистрация'}
-                  </a>
-                  {/* TODO Сделать восстановление пароля */}
-                  <a
-                    tabIndex={0}
-                    className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
-                  >
-                    Забыли пароль?
-                  </a>
-                </div>
-                {/* <div className="my-5 text-lg text-gray-700">Или</div>
+                  className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
+                >
+                  {isRegistrationProcess ? 'Авторизация' : 'Регистрация'}
+                </a>
+                {/* TODO Сделать восстановление пароля */}
+                <a
+                  tabIndex={0}
+                  className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
+                >
+                  Забыли пароль?
+                </a>
+              </div>
+              {/* <div className="my-5 text-lg text-gray-700">Или</div>
                 <button
                   onClick={(e) => {
                     e.preventDefault()
@@ -686,16 +686,16 @@ const Login = () => {
                   />
                   <span className="flex-1">Google</span>
                 </button> */}
-                <Link href="/">
-                  <a
-                    tabIndex={0}
-                    className="block py-3 mt-2 mb-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"
-                  >
-                    Вернуться на главную страницу сайта
-                  </a>
-                </Link>
-              </>
-            )}
+              <Link href="/">
+                <a
+                  tabIndex={0}
+                  className="block py-3 mt-2 mb-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"
+                >
+                  Вернуться на главную страницу сайта
+                </a>
+              </Link>
+            </>
+            {/* )} */}
           </form>
         </div>
       </div>

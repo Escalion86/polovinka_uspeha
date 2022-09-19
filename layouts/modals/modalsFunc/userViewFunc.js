@@ -55,7 +55,7 @@ const userViewFunc = (userId, clone = false) => {
           <div className="flex flex-col flex-1">
             <div className="flex items-center gap-x-2 min-h-6">
               {user.status === 'member' && (
-                <Tooltip content="Участник клуба">
+                <Tooltip title="Участник клуба">
                   <div className="w-6 h-6">
                     <Image
                       src="/img/svg_icons/medal.svg"

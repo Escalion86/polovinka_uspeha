@@ -43,10 +43,13 @@ import isSiteLoadingAtom from '@state/atoms/isSiteLoadingAtom'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import DeviceCheck from './DeviceCheck'
 import cn from 'classnames'
+import useSnackbar from '@helpers/useSnackbar'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
     console.log('props.error', props.error)
+
+  const snackbar = useSnackbar()
 
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
 
@@ -137,6 +140,7 @@ const StateLoader = (props) => {
           deleteEventsUsers,
           deleteEventsUsersByEventId,
           setSiteSettings: setSiteSettingsState,
+          snackbar,
         })
       )
   }, [modalsFunc])
