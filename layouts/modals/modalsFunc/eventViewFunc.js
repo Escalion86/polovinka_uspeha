@@ -3,9 +3,6 @@ import React from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 
-import ImageGallery from 'react-image-gallery'
-import Zoom from 'react-medium-image-zoom'
-
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
 import getDaysFromNow from '@helpers/getDaysFromNow'
@@ -36,6 +33,7 @@ import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventS
 import NamesOfUsers from '@components/NamesOfUsers'
 import useSnackbar from '@helpers/useSnackbar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
+import ImageGallery from '@components/ImageGallery'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -74,32 +72,7 @@ const eventViewFunc = (eventId) => {
 
     return (
       <div className="flex flex-col gap-y-2">
-        {event?.images && event.images.length > 0 && (
-          <div className="flex justify-center w-full border border-gray-400 h-60 laptop:h-80">
-            <ImageGallery
-              items={event.images.map((image) => {
-                return {
-                  original: image,
-                  originalClass:
-                    'object-contain flex items-center justify-center max-h-60 laptop:max-h-80 w-full',
-                  // sizes: '(max-width: 60px) 30px, (min-width: 60px) 60px',
-                }
-              })}
-              renderItem={(e) => (
-                <Zoom zoomMargin={20}>
-                  <img
-                    className={e.originalClass}
-                    src={e.original ?? noImage}
-                    alt="item_image"
-                  />
-                </Zoom>
-              )}
-              showPlayButton={false}
-              showFullscreenButton={false}
-              additionalClass="w-full max-h-60 laptop:max-h-80 max-w-full"
-            />
-          </div>
-        )}
+        <ImageGallery images={event?.images} />
         <div className="flex flex-col flex-1">
           <div className="relative flex flex-col flex-1 px-2 py-2">
             <div className="absolute top-2 right-2">

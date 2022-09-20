@@ -10,8 +10,8 @@ import birthDateToAge from '@helpers/birthDateToAge'
 import UserName from '@components/UserName'
 import Tooltip from '@components/Tooltip'
 import Image from 'next/image'
-import ImageGallery from 'react-image-gallery'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import ImageGallery from '@components/ImageGallery'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -28,22 +28,7 @@ const userViewFunc = (userId, clone = false) => {
 
     return (
       <FormWrapper flex className="flex-col">
-        {user?.images && user.images.length > 0 && (
-          <div className="flex justify-center w-full border border-gray-400 h-60 laptop:h-80">
-            <ImageGallery
-              items={user.images.map((image) => {
-                return {
-                  original: image,
-                  originalClass: 'object-contain max-h-60 laptop:max-h-80',
-                  // sizes: '(max-width: 60px) 30px, (min-width: 60px) 60px',
-                }
-              })}
-              showPlayButton={false}
-              showFullscreenButton={false}
-              additionalClass="w-full max-h-60 laptop:max-h-80 max-w-full"
-            />
-          </div>
-        )}
+        <ImageGallery images={user?.images} />
         <div className="flex flex-1 gap-x-2">
           {/* <img
             className="object-cover w-20 h-20 tablet:w-24 tablet:h-24"

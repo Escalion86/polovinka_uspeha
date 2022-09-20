@@ -16,7 +16,7 @@ function ModalsPortal() {
 
   useEffect(() => {
     setModalsFunc(modalsFuncGenerator(setModals, itemsFunc, router, loggedUser))
-  }, [loggedUser])
+  }, [loggedUser, itemsFunc])
 
   return (
     <div className="fixed top-0 z-50 w-full">
