@@ -686,7 +686,7 @@ const Login = () => {
                   />
                   <span className="flex-1">Google</span>
                 </button> */}
-              <Link href="/">
+              <Link href="/" shallow>
                 <a
                   tabIndex={0}
                   className="block py-3 mt-2 mb-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"

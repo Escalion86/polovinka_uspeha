@@ -64,6 +64,7 @@ const TitleBlock = () => {
               pathname: '/login',
               query: { registration: true },
             }}
+            shallow
           >
             <PulseButton
               className="mt-4"

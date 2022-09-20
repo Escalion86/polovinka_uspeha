@@ -8,7 +8,7 @@ const ButtonLink = ({
   disabled = false,
   classBgColor = 'bg-general',
 }) => (
-  <Link href={href}>
+  <Link href={href} shallow>
     <a
       className={cn(
         'flex justify-center items-center px-4 h-10 py-1 text-white border border-gray-200 bg-opacity-90',

@@ -8,6 +8,7 @@ import CabinetHeader from '@layouts/CabinetHeader'
 import { CONTENTS } from '@helpers/constants'
 
 import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 // import ModalsPortal from '@layouts/modals/ModalsPortal'
 import BurgerLayout from '@layouts/BurgerLayout'
@@ -21,7 +22,11 @@ import StateLoader from '@components/StateLoader'
 // TODO Сделать переключение с БД main на dev
 
 function CabinetPage(props) {
-  const { page } = props
+  const router = useRouter()
+  console.log('router.asPath', router.asPath)
+  const page = router.asPath.replace('/cabinet/', '')
+  // const { page } = props
+  console.log('page', page)
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01
