@@ -54,6 +54,7 @@ const CardButtons = ({
   onUpClick,
   onDownClick,
   className,
+  forForm,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
@@ -102,18 +103,20 @@ const CardButtons = ({
           tooltipText="Скопировать ссылку на мероприятие"
         />
       )}
-      {(showAdminButtons || isLoggedUserMember) && typeOfItem === 'event' && (
-        <ItemComponent
-          icon={faUsers}
-          onClick={() => {
-            setOpen(false)
-            modalsFunc.event.users(item._id)
-          }}
-          color="green"
-          tooltipText="Участники мероприятия"
-        />
-      )}
-      {showAdminButtons && onUpClick && (
+      {!forForm &&
+        (showAdminButtons || isLoggedUserMember) &&
+        typeOfItem === 'event' && (
+          <ItemComponent
+            icon={faUsers}
+            onClick={() => {
+              setOpen(false)
+              modalsFunc.event.users(item._id)
+            }}
+            color="green"
+            tooltipText="Участники мероприятия"
+          />
+        )}
+      {!forForm && showAdminButtons && onUpClick && (
         <ItemComponent
           icon={faArrowUp}
           onClick={() => {
@@ -124,7 +127,7 @@ const CardButtons = ({
           tooltipText="Переместить выше"
         />
       )}
-      {showAdminButtons && onDownClick && (
+      {!forForm && showAdminButtons && onDownClick && (
         <ItemComponent
           icon={faArrowDown}
           onClick={() => {
@@ -169,7 +172,7 @@ const CardButtons = ({
           tooltipText="Показывать на сайте"
         />
       )}
-      {showAdminButtons && typeOfItem === 'event' && (
+      {showAdminButtons && typeOfItem === 'event' && item.status && (
         <ItemComponent
           icon={item.status === 'canceled' ? faPlay : faBan}
           onClick={() => {
@@ -198,7 +201,7 @@ const CardButtons = ({
 
   return numberOfButtons > 3 && isCompact ? (
     <div
-      className={cn('relative', className)}
+      className={cn('relative cursor-pointer group', className)}
       onClick={(e) => {
         e.stopPropagation()
         setOpen((state) => !state)
@@ -212,7 +215,7 @@ const CardButtons = ({
       >
         <div className="h-full bg-red-200 border border-gray-200">{items}</div>
       </motion.div>
-      <div className="flex items-center justify-center w-8 h-8 text-general">
+      <div className="flex items-center justify-center w-8 h-8 text-general group-hover:text-toxic group-hover:scale-110">
         <FontAwesomeIcon icon={faEllipsisV} className="w-6 h-6" />
       </div>
     </div>

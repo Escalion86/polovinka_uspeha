@@ -6,8 +6,12 @@ const CardButton = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <Tooltip title={tooltipText}>
     <div
       className={cn(
-        `cursor-pointer text-base font-normal duration-300 flex border items-center justify-center w-8 h-8 hover:bg-${color}-600 border-${color}-500 hover:border-${color}-600 hover:text-white`,
-        active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
+        `cursor-pointer text-base font-normal duration-200 flex items-center justify-center w-9 h-9`,
+        // `text-${color}-500`
+        active ? `bg-${color}-500 text-white` : `text-${color}-500`,
+        `rounded-full hover:text-toxic hover:scale-110`
+        // `rounded-full hover:bg-${color}-600 hover:text-white`
+        // `border border-${color}-500 hover:border-${color}-600 hover:bg-${color}-600 hover:text-white`
       )}
       onClick={(e) => {
         e.stopPropagation()

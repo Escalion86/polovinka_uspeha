@@ -108,7 +108,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   const eventParticipantsCount = eventWomansCount + eventMansCount
 
   const canSignInReserve =
-    event.isReserveActive === undefined ? true : event.isReserveActive
+    event.isReserveActive ?? DEFAULT_EVENT.isReserveActive
 
   if (
     typeof event.maxUsers === 'number' &&

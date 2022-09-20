@@ -12,6 +12,7 @@ import Tooltip from '@components/Tooltip'
 import Image from 'next/image'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import ImageGallery from '@components/ImageGallery'
+import CardButtons from '@components/CardButtons'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -108,6 +109,9 @@ const userViewFunc = (userId, clone = false) => {
     declineButtonName: 'Закрыть',
     closeButtonShow: true,
     Children: UserModal,
+    TopLeftComponent: () => (
+      <CardButtons item={{ _id: userId }} typeOfItem="user" forForm />
+    ),
   }
 }
 

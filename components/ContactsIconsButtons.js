@@ -14,7 +14,7 @@ const { faPhone } = require('@fortawesome/free-solid-svg-icons')
 const ContactIconBtn = ({ url, icon, size = 'lg', className = null }) => (
   <FontAwesomeIcon
     className={cn(
-      'h-6 cursor-pointer hover:text-toxic duration-300 hover:scale-125',
+      'h-6 cursor-pointer hover:text-toxic duration-300 hover:scale-110',
       className
     )}
     icon={icon}

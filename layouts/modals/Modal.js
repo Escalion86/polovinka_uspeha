@@ -34,6 +34,7 @@ const Modal = ({
   showConfirm,
   showDecline,
   closeButtonShow = false,
+  TopLeftComponent,
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
@@ -147,18 +148,23 @@ const Modal = ({
             </div>
           </div>
         )}
+        {TopLeftComponent && (
+          <div className="absolute left-2 top-2">
+            <TopLeftComponent />
+          </div>
+        )}
         <Tooltip title="Закрыть">
-          <div className="absolute right-3 top-3">
+          <div className="absolute right-2 top-2">
             <FontAwesomeIcon
-              className="w-6 h-6 text-black duration-200 transform cursor-pointer hover:scale-110"
+              className="w-8 h-8 text-black duration-200 transform cursor-pointer hover:scale-110"
               icon={faTimes}
-              size="1x"
+              // size="1x"
               onClick={onDeclineClick}
             />
           </div>
         </Tooltip>
         {title && (
-          <div className="mx-10 mb-2 text-lg font-bold leading-6 text-center whitespace-pre-line">
+          <div className="mx-10 mb-3 text-lg font-bold leading-6 text-center whitespace-pre-line">
             {title}
           </div>
         )}

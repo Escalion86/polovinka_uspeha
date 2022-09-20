@@ -29,7 +29,7 @@ const BlockContainer = ({
       {(title || children) && (
         <div
           className={cn(
-            `flex flex-col justify-center items-center tablet:gap-y-6 w-full gap-y-4 px-6 laptop:px-20`,
+            `flex flex-col justify-center tablet:gap-y-6 w-full gap-y-4 px-6 laptop:px-20`,
             small ? 'py-10' : 'py-20',
             altBg ? 'bg-secondary' : 'bg-white',
             className
