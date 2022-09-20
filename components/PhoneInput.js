@@ -5,7 +5,6 @@ import MaskedInput from 'react-text-mask'
 const PhoneInput = ({
   value,
   label,
-  name,
   onChange,
   required = false,
   disabled,
@@ -32,6 +31,7 @@ const PhoneInput = ({
         {required && <span className="text-red-700">*</span>}
       </label> */}
       <MaskedInput
+        disabled={disabled}
         className={cn(
           'text-input w-36 px-1 border rounded outline-none focus:shadow-active',
           required && (!value || value.toString().length !== 11)

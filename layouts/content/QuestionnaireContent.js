@@ -118,7 +118,7 @@ const QuestionnaireContent = (props) => {
     // user?.orientation !== orientation ||
     loggedUser?.gender !== gender ||
     loggedUser?.email !== email ||
-    loggedUser?.phone !== phone ||
+    // loggedUser?.phone !== phone ||
     loggedUser?.whatsapp !== whatsapp ||
     loggedUser?.viber !== viber ||
     loggedUser?.telegram !== telegram ||
@@ -137,7 +137,7 @@ const QuestionnaireContent = (props) => {
         firstName,
         secondName,
         gender,
-        phone,
+        // phone,
         viber,
         whatsapp,
         email,
@@ -157,7 +157,7 @@ const QuestionnaireContent = (props) => {
           // orientation,
           gender,
           email,
-          phone,
+          // phone,
           whatsapp,
           viber,
           telegram,
@@ -195,7 +195,7 @@ const QuestionnaireContent = (props) => {
   }, [props])
 
   useEffect(() => {
-    if (!firstName || !secondName || !phone || !gender) {
+    if (!firstName || !secondName || !gender) {
       typeof modalsFunc.add === 'function' &&
         modalsFunc.add({
           id: 'questionnaireNotFilled',
