@@ -23,10 +23,23 @@ import StateLoader from '@components/StateLoader'
 
 function CabinetPage(props) {
   const router = useRouter()
-  console.log('router.asPath', router.asPath)
   const page = router.asPath.replace('/cabinet/', '')
   // const { page } = props
-  console.log('page', page)
+  const { loggedUser } = props
+
+  let redirect
+  if (!loggedUser) redirect = '/'
+  else if (
+    loggedUser &&
+    ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
+      (!['events', 'questionnaire'].includes(page) && !isUserAdmin(loggedUser)))
+  )
+    redirect = '/cabinet/questionnaire'
+
+  // Ограничиваем пользователям доступ к страницам
+  useEffect(() => {
+    if (redirect) router.push(redirect)
+  }, [redirect])
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01
@@ -51,6 +64,7 @@ function CabinetPage(props) {
         }`}</title>
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
+
       <StateLoader {...props}>
         <CabinetWrapper>
           {/* ----------------------------- HEADER ------------------------------- */}
@@ -58,7 +72,7 @@ function CabinetPage(props) {
           <CabinetHeader title={title} />
           <BurgerLayout />
           <ContentWrapper page={page}>
-            <Component {...props} />
+            {!redirect && <Component {...props} />}
           </ContentWrapper>
           {/* <ModalsPortal /> */}
         </CabinetWrapper>
@@ -129,7 +143,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       ...fetchedProps,
-      page,
+      // page,
       loggedUser: session?.user ?? null,
     },
   }

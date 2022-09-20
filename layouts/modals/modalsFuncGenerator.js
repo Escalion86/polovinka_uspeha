@@ -35,8 +35,10 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
               modals.map((modal) => modal.id)
             )
           : -1
-      // if (props.id && modals.find((modal) => modal.id === props.id))
-      //   return modals
+
+      if (props.uid && modals.find((modal) => modal.props.uid === props.uid))
+        return modals
+
       return [...modals, { id: maxId < 0 ? 0 : maxId + 1, props }]
     })
   }

@@ -195,29 +195,32 @@ const QuestionnaireContent = (props) => {
   }, [props])
 
   useEffect(() => {
-    if (!firstName || !secondName || !gender) {
+    if (
+      modalsFunc &&
       typeof modalsFunc.add === 'function' &&
-        modalsFunc.add({
-          id: 'questionnaireNotFilled',
-          title: 'Необходимо заполнить анкету',
-          text: (
-            <>
-              <span>
-                Для возможности записи на мероприятия необходимо заполнить
-                обязательные поля анкеты:
-              </span>
-              <ul className="ml-4 list-disc">
-                <li>Имя</li>
-                <li>Фамилия</li>
-                <li>Дата рождения</li>
-                <li>Пол</li>
-              </ul>
-            </>
-          ),
-          onConfirm: () => {},
-          confirmButtonName: 'Хорошо',
-          showDecline: false,
-        })
+      (!firstName || !secondName || !gender)
+    ) {
+      modalsFunc.add({
+        uid: 'questionnaireNotFilled',
+        title: 'Необходимо заполнить анкету',
+        text: (
+          <>
+            <span>
+              Для возможности записи на мероприятия необходимо заполнить
+              обязательные поля анкеты:
+            </span>
+            <ul className="ml-4 list-disc">
+              <li>Имя</li>
+              <li>Фамилия</li>
+              <li>Дата рождения</li>
+              <li>Пол</li>
+            </ul>
+          </>
+        ),
+        onConfirm: () => {},
+        confirmButtonName: 'Хорошо',
+        showDecline: false,
+      })
     }
   }, [modalsFunc])
 
