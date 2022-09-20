@@ -55,6 +55,7 @@ const CardButtons = ({
   onDownClick,
   className,
   forForm,
+  direction = 'left',
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
@@ -73,26 +74,32 @@ const CardButtons = ({
 
   const showAdminButtons = isLoggedUserAdmin
 
-  const numberOfButtons =
-    (window?.location?.origin && typeOfItem === 'event' ? 1 : 0) +
-    ((showAdminButtons || isLoggedUserMember) && typeOfItem === 'event'
-      ? 1
-      : 0) +
-    (showAdminButtons && onUpClick ? 1 : 0) +
-    (showAdminButtons && onDownClick ? 1 : 0) +
-    (showAdminButtons ? 1 : 0) +
-    (showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review'
-      ? 1
-      : 0) +
-    (showAdminButtons && showOnSiteOnClick ? 1 : 0) +
-    (showAdminButtons && typeOfItem === 'event' ? 1 : 0) +
-    (isLoggedUserDev ? 1 : 0)
+  const show = {
+    shareBtn: window?.location?.origin && typeOfItem === 'event',
+    eventUsersBtn:
+      !forForm &&
+      (showAdminButtons || isLoggedUserMember) &&
+      typeOfItem === 'event',
+    upBtn: !forForm && showAdminButtons && onUpClick,
+    downBtn: !forForm && showAdminButtons && onDownClick,
+    editBtn: showAdminButtons,
+    cloneBtn:
+      showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review',
+    showOnSiteBtn: showAdminButtons && showOnSiteOnClick,
+    statusBtn: showAdminButtons && typeOfItem === 'event' && item.status,
+    deleteBtn: isLoggedUserDev,
+  }
+
+  const numberOfButtons = Object.keys(show).reduce(
+    (p, c) => p + (show[c] ? 1 : 0),
+    0
+  )
 
   const ItemComponent = numberOfButtons > 3 && isCompact ? MenuItem : CardButton
 
   const items = (
     <>
-      {window?.location?.origin && typeOfItem === 'event' && (
+      {show.shareBtn && (
         <ItemComponent
           icon={faShareAlt}
           onClick={() => {
@@ -103,20 +110,18 @@ const CardButtons = ({
           tooltipText="Скопировать ссылку на мероприятие"
         />
       )}
-      {!forForm &&
-        (showAdminButtons || isLoggedUserMember) &&
-        typeOfItem === 'event' && (
-          <ItemComponent
-            icon={faUsers}
-            onClick={() => {
-              setOpen(false)
-              modalsFunc.event.users(item._id)
-            }}
-            color="green"
-            tooltipText="Участники мероприятия"
-          />
-        )}
-      {!forForm && showAdminButtons && onUpClick && (
+      {show.eventUsersBtn && (
+        <ItemComponent
+          icon={faUsers}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc.event.users(item._id)
+          }}
+          color="green"
+          tooltipText="Участники мероприятия"
+        />
+      )}
+      {show.upBtn && (
         <ItemComponent
           icon={faArrowUp}
           onClick={() => {
@@ -127,7 +132,7 @@ const CardButtons = ({
           tooltipText="Переместить выше"
         />
       )}
-      {!forForm && showAdminButtons && onDownClick && (
+      {show.downBtn && (
         <ItemComponent
           icon={faArrowDown}
           onClick={() => {
@@ -138,7 +143,7 @@ const CardButtons = ({
           tooltipText="Переместить ниже"
         />
       )}
-      {showAdminButtons && (
+      {show.editBtn && (
         <ItemComponent
           icon={faPencilAlt}
           onClick={() => {
@@ -149,7 +154,7 @@ const CardButtons = ({
           tooltipText="Редактировать"
         />
       )}
-      {showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review' && (
+      {show.cloneBtn && (
         <ItemComponent
           icon={faCopy}
           onClick={() => {
@@ -160,7 +165,7 @@ const CardButtons = ({
           tooltipText="Клонировать"
         />
       )}
-      {showAdminButtons && showOnSiteOnClick && (
+      {show.showOnSiteBtn && (
         <ItemComponent
           active={!item.showOnSite}
           icon={item.showOnSite ? faEye : faEyeSlash}
@@ -172,7 +177,7 @@ const CardButtons = ({
           tooltipText="Показывать на сайте"
         />
       )}
-      {showAdminButtons && typeOfItem === 'event' && item.status && (
+      {show.statusBtn && (
         <ItemComponent
           icon={item.status === 'canceled' ? faPlay : faBan}
           onClick={() => {
@@ -185,7 +190,7 @@ const CardButtons = ({
           tooltipText={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
         />
       )}
-      {isLoggedUserDev && (
+      {show.deleteBtn && (
         <ItemComponent
           icon={faTrashAlt}
           onClick={() => {
@@ -208,7 +213,10 @@ const CardButtons = ({
       }}
     >
       <motion.div
-        className="absolute right-0 z-50 overflow-hidden w-min top-8"
+        className={cn(
+          'absolute z-50 overflow-hidden w-min top-8',
+          direction === 'left' ? 'right-0' : 'left-0'
+        )}
         initial={{ height: 0 }}
         animate={{ height: open ? 'auto' : 0 }}
         transition={{ type: 'tween' }}

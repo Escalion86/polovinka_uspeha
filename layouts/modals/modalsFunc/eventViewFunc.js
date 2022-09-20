@@ -203,7 +203,7 @@ const eventViewFunc = (eventId) => {
     confirmButtonName: 'Записаться',
     Children: EventSignUpModal,
     TopLeftComponent: () => (
-      <CardButtons item={{ _id: eventId }} typeOfItem="event" forForm />
+      <CardButtons item={{ _id: eventId }} typeOfItem="event" forForm direction="right" />
     ),
   }
 }
