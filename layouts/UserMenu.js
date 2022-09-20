@@ -62,7 +62,7 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 
   if (href)
     return (
-      <Link href={href}>
+      <Link href={href} shallow>
         <a>{Component}</a>
       </Link>
     )
@@ -143,14 +143,14 @@ const UserMenu = () => {
   ) : (
     <>
       {/* <div className="hidden tablet:block ">
-        <Link href="/login">
+        <Link href="/login" shallow>
           <a className="px-2 py-2 text-white border border-white rounded-lg tablet:px-3 hover:text-general hover:bg-white">
           <FontAwesomeIcon icon={faSignInAlt} className="w-7 h-7" /><span>Авторизоваться</span>
           </a>
         </Link>
       </div> */}
 
-      <Link href="/login">
+      <Link href="/login" shallow>
         <a>
           <div className="flex items-center justify-center h-12 px-2 text-white duration-300 border border-white rounded-lg hover:text-general hover:bg-white">
             <FontAwesomeIcon icon={faSignInAlt} className="w-7 h-7" />

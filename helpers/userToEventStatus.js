@@ -1,4 +1,5 @@
 import birthDateToAge from './birthDateToAge'
+import { DEFAULT_EVENT } from './constants'
 import getMinutesBetween from './getMinutesBetween'
 import isEventExpiredFunc from './isEventExpired'
 import isEventInProcessFunc from './isEventInProcess'
@@ -10,6 +11,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee: false,
       alreadySignIn: false,
       canSignIn: false,
+      canSignInReserve: false,
       canSignOut: false,
       isEventExpired: true,
       isEventInProcess: false,
@@ -25,6 +27,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee: event.usersStatusAccess?.noReg,
       alreadySignIn: false,
       canSignIn: false,
+      canSignInReserve: false,
       canSignOut: false,
       isEventExpired,
       isEventInProcess,
@@ -49,6 +52,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee,
       alreadySignIn,
       canSignIn: false,
+      canSignInReserve: false,
       canSignOut: false,
       isEventExpired,
       isEventInProcess,
@@ -61,6 +65,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee,
       alreadySignIn,
       canSignIn: false,
+      canSignInReserve: false,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -73,6 +78,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee,
       alreadySignIn,
       canSignIn: false,
+      canSignInReserve: false,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -85,6 +91,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee,
       alreadySignIn,
       canSignIn: false,
+      canSignInReserve: false,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -100,6 +107,9 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   ).length
   const eventParticipantsCount = eventWomansCount + eventMansCount
 
+  const canSignInReserve =
+    event.isReserveActive ?? DEFAULT_EVENT.isReserveActive
+
   if (
     typeof event.maxUsers === 'number' &&
     event.maxUsers <= eventParticipantsCount
@@ -108,6 +118,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee,
       alreadySignIn,
       canSignIn: false,
+      canSignInReserve,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -124,6 +135,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee,
       alreadySignIn,
       canSignIn: false,
+      canSignInReserve,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -139,6 +151,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee,
       alreadySignIn,
       canSignIn: false,
+      canSignInReserve,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -160,6 +173,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee,
       alreadySignIn,
       canSignIn: false,
+      canSignInReserve,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -178,6 +192,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSee,
       alreadySignIn,
       canSignIn: false,
+      canSignInReserve,
       canSignOut,
       isEventExpired,
       isEventInProcess,
@@ -189,6 +204,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
     canSee,
     alreadySignIn,
     canSignIn: true,
+    canSignInReserve,
     canSignOut,
     isEventExpired,
     isEventInProcess,

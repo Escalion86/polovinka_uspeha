@@ -286,6 +286,7 @@ export const DEFAULT_EVENT = Object.freeze({
   maxWansAge: 45,
   usersStatusAccess: {},
   usersStatusDiscount: {},
+  isReserveActive: true,
 })
 
 export const DEFAULT_DIRECTION = Object.freeze({

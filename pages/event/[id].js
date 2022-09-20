@@ -12,12 +12,31 @@ import { H2 } from '@components/tags'
 import StateLoader from '@components/StateLoader'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
+import BlockContainer from '@components/BlockContainer'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
 
-const Event = ({ event }) =>
-  event?._id ? eventViewFunc(event._id).Children({}) : null
+const Event = ({ event }) => {
+  if (!event?._id) return <div>Ошибка. Мероприятие не найдено</div>
+  const eventView = eventViewFunc(event._id)
+  const Component = eventView.Children
+  const TopLeftComponent = eventView.TopLeftComponent
+
+  return (
+    <>
+      <div className="relative">
+        {TopLeftComponent && (
+          <div className="absolute right-3">
+            <TopLeftComponent />
+          </div>
+        )}
+        <H2 className="mx-10 mb-4">Мероприятие</H2>
+      </div>
+      <Component />
+    </>
+  )
+}
 
 function EventPage(props) {
   const eventId = props.id
@@ -49,13 +68,13 @@ function EventPage(props) {
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
       <StateLoader {...props}>
-        <DeviceCheck right />
         <Header />
         {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
-        <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
-          <H2 className="mb-4">Мероприятие</H2>
+        <BlockContainer small>
           <Event event={event} />
-        </div>
+        </BlockContainer>
+        {/* <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
+        </div> */}
         <ContactsBlock />
       </StateLoader>
     </>

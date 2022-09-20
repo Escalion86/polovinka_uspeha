@@ -5,7 +5,6 @@ import eventSelector from '@state/selectors/eventSelector'
 
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
-import getDaysFromNow from '@helpers/getDaysFromNow'
 import UserName from '@components/UserName'
 import directionSelector from '@state/selectors/directionSelector'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
@@ -18,22 +17,18 @@ import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import formatMinutes from '@helpers/formatMinutes'
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import sanitize from '@helpers/sanitize'
-// import eventsAtom from '@state/atoms/eventsAtom'
 import CardButton from '@components/CardButton'
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons'
-import copyToClipboard from '@helpers/copyToClipboard'
 import Button from '@components/Button'
 import { modalsFuncAtom } from '@state/atoms'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import isUserAdmin from '@helpers/isUserAdmin'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
+// import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import NamesOfUsers from '@components/NamesOfUsers'
-import useSnackbar from '@helpers/useSnackbar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import ImageGallery from '@components/ImageGallery'
+import CardButtons from '@components/CardButtons'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -49,16 +44,15 @@ const eventViewFunc = (eventId) => {
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
-    // const events = useRecoilValue(eventsAtom)
     const direction = useRecoilValue(directionSelector(event?.directionId))
     const organizer = useRecoilValue(userSelector(event?.organizerId))
     const modalsFunc = useRecoilValue(modalsFuncAtom)
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
 
-    const eventLoggedUserStatus = useRecoilValue(
-      loggedUserToEventStatusSelector(eventId)
-    )?.isEventInProcess
+    // const eventLoggedUserStatus = useRecoilValue(
+    //   loggedUserToEventStatusSelector(eventId)
+    // )?.isEventInProcess
 
     if (!event || !eventId)
       return (
@@ -75,14 +69,14 @@ const eventViewFunc = (eventId) => {
         <ImageGallery images={event?.images} />
         <div className="flex flex-col flex-1">
           <div className="relative flex flex-col flex-1 px-2 py-2">
-            <div className="absolute top-2 right-2">
+            {/* <div className="absolute top-2 right-2">
               <CardButton
                 icon={faShareAlt}
                 color="blue"
                 onClick={copyLink}
                 tooltipText="Скопировать ссылку на мероприятие"
               />
-            </div>
+            </div> */}
             <div className="flex justify-center w-full text-3xl font-bold">
               {event?.title}
             </div>
@@ -208,6 +202,9 @@ const eventViewFunc = (eventId) => {
     title: `Запись на мероприятие`,
     confirmButtonName: 'Записаться',
     Children: EventSignUpModal,
+    TopLeftComponent: () => (
+      <CardButtons item={{ _id: eventId }} typeOfItem="event" forForm />
+    ),
   }
 }
 

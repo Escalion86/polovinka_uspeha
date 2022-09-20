@@ -58,7 +58,7 @@ const menuCfg = (pages, pagesGroups, userActiveRole) => {
 const MenuItem = ({ item, active = false }) => {
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
   return (
-    <Link href={'/cabinet/' + item.href}>
+    <Link href={'/cabinet/' + item.href} shallow>
       <a
         // className="flex items-center justify-between px-3 py-1 mt-2 duration-300 bg-gray-200 rounded-lg cursor-pointer flex-nowrap hover:bg-hover"
         className={cn(
@@ -112,7 +112,7 @@ const Menu = ({ menuCfg, activePage }) => {
           const Component =
             item.items.length === 1
               ? (props) => (
-                  <Link href={props.href}>
+                  <Link href={props.href} shallow>
                     <a {...props} />
                   </Link>
                 )

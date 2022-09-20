@@ -67,7 +67,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
     >
       {title ? (
         <div className="flex items-center flex-1">
-          <Link href="/">
+          <Link href="/" shallow>
             <a className="hidden tablet:block">
               <img
                 className="rounded-full h-14"
@@ -81,7 +81,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
           <div className="flex flex-1">
             <Divider type="vertical" className="hidden tablet:block" />
             {titleLink ? (
-              <Link href={titleLink}>
+              <Link href={titleLink} shallow>
                 <a className="hover:text-gray-300">
                   <h1>{title}</h1>
                 </a>
@@ -93,7 +93,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
         </div>
       ) : (
         <div className="absolute z-10 -translate-x-1/2 left-1/2">
-          <Link href="/">
+          <Link href="/" shallow>
             <a>
               <img
                 className="h-12"

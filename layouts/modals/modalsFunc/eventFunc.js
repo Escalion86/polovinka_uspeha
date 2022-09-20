@@ -118,6 +118,11 @@ const eventFunc = (eventId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       event?.showOnSite ?? DEFAULT_EVENT.showOnSite
     )
+    const [isReserveActive, setIsReserveActive] = useState(
+      event?.isReserveActive ?? DEFAULT_EVENT.isReserveActive
+    )
+    
+
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
@@ -156,6 +161,7 @@ const eventFunc = (eventId, clone = false) => {
             status,
             usersStatusAccess,
             usersStatusDiscount,
+            isReserveActive
           },
           clone
         )
@@ -163,11 +169,6 @@ const eventFunc = (eventId, clone = false) => {
     }
 
     useEffect(() => {
-      console.log('event?.maxWomans', event?.maxWomans)
-      console.log(
-        '(maxWomansCheck ? null : maxWomans ?? 0)',
-        maxWomansCheck ? null : maxWomans ?? 0
-      )
       const isFormChanged =
         event?.title !== title ||
         event?.description !== description ||
@@ -189,7 +190,8 @@ const eventFunc = (eventId, clone = false) => {
         event?.organizerId !== organizerId ||
         event?.status !== status ||
         !compareObjects(event?.usersStatusAccess, usersStatusAccess) ||
-        !compareObjects(event?.usersStatusDiscount, usersStatusDiscount)
+        !compareObjects(event?.usersStatusDiscount, usersStatusDiscount) ||
+        event?.isReserveActive !== isReserveActive
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -219,6 +221,7 @@ const eventFunc = (eventId, clone = false) => {
       status,
       usersStatusAccess,
       usersStatusDiscount,
+      isReserveActive
     ])
 
     return (
@@ -416,6 +419,13 @@ const eventFunc = (eventId, clone = false) => {
               {/* </FormRow> */}
               {/* </FormWrapper> */}
               <FormWrapper title="Ограничения">
+              <CheckBox
+                checked={isReserveActive}
+                labelPos="left"
+                // labelClassName="w-40"
+                onClick={() => setIsReserveActive((checked) => !checked)}
+                label="Если мест нет, то возможно записаться в резерв"
+              />
                 <FormRow>
                   <Input
                     label="Макс. участников"

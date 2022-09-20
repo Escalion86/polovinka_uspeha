@@ -14,6 +14,7 @@ import eventUsersInBanSelector from '@state/selectors/eventUsersInBanSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
+import { DEFAULT_EVENT } from '@helpers/constants'
 
 const eventUsersFunc = (eventId) => {
   const EventModal = ({
@@ -192,24 +193,26 @@ const eventUsersFunc = (eventId) => {
             <span>чел.</span>
           </div>
         </TabPanel>
-        <TabPanel
-          tabName="Резерв"
-          tabAddToLabel={`(${reservedParticipantsIds.length})`}
-        >
-          <SelectUserList
-            label="Резерв"
-            usersId={reservedParticipantsIds}
-            onChange={setReservedParticipantsIds}
-            exceptedIds={[
-              ...assistantsIds,
-              ...mansIds,
-              ...womansIds,
-              ...reservedParticipantsIds,
-              ...bannedParticipantsIds,
-            ]}
-            readOnly={!isLoggedUserAdmin}
-          />
-        </TabPanel>
+        {(event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
+          <TabPanel
+            tabName="Резерв"
+            tabAddToLabel={`(${reservedParticipantsIds.length})`}
+          >
+            <SelectUserList
+              label="Резерв"
+              usersId={reservedParticipantsIds}
+              onChange={setReservedParticipantsIds}
+              exceptedIds={[
+                ...assistantsIds,
+                ...mansIds,
+                ...womansIds,
+                ...reservedParticipantsIds,
+                ...bannedParticipantsIds,
+              ]}
+              readOnly={!isLoggedUserAdmin}
+            />
+          </TabPanel>
+        )}
         <TabPanel tabName="Ведущие" tabAddToLabel={`(${assistantsIds.length})`}>
           <SelectUserList
             label="Ведущие"

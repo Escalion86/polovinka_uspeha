@@ -64,11 +64,14 @@ const TitleBlock = () => {
               pathname: '/login',
               query: { registration: true },
             }}
+            shallow
           >
             <PulseButton
               className="mt-4"
               title="Зарегистрироваться"
-              onClick={() => router.push('./login?registration=true')}
+              onClick={() =>
+                router.push('./login?registration=true', '', { shallow: true })
+              }
             />
           </Link>
         )}

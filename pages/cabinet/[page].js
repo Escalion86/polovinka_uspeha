@@ -8,6 +8,7 @@ import CabinetHeader from '@layouts/CabinetHeader'
 import { CONTENTS } from '@helpers/constants'
 
 import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 // import ModalsPortal from '@layouts/modals/ModalsPortal'
 import BurgerLayout from '@layouts/BurgerLayout'
@@ -16,12 +17,32 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import fetchProps from '@server/fetchProps'
 import isUserAdmin from '@helpers/isUserAdmin'
 import StateLoader from '@components/StateLoader'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import { useRecoilValue } from 'recoil'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
 
 function CabinetPage(props) {
-  const { page } = props
+  const router = useRouter()
+  const page = router.asPath.replace('/cabinet/', '')
+  // const { page } = props
+  // const { loggedUser } = props
+  const loggedUser = useRecoilValue(loggedUserAtom)
+
+  let redirect
+  if (!props.loggedUser) redirect = '/'
+  else if (
+    loggedUser &&
+    ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
+      (!['events', 'questionnaire'].includes(page) && !isUserAdmin(loggedUser)))
+  )
+    redirect = '/cabinet/questionnaire'
+
+  // Ограничиваем пользователям доступ к страницам
+  useEffect(() => {
+    if (redirect) router.push(redirect, '', { shallow: true })
+  }, [redirect])
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01
@@ -46,6 +67,7 @@ function CabinetPage(props) {
         }`}</title>
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
+
       <StateLoader {...props}>
         <CabinetWrapper>
           {/* ----------------------------- HEADER ------------------------------- */}
@@ -53,7 +75,7 @@ function CabinetPage(props) {
           <CabinetHeader title={title} />
           <BurgerLayout />
           <ContentWrapper page={page}>
-            <Component {...props} />
+            {!redirect && <Component {...props} />}
           </ContentWrapper>
           {/* <ModalsPortal /> */}
         </CabinetWrapper>
@@ -124,7 +146,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       ...fetchedProps,
-      page,
+      // page,
       loggedUser: session?.user ?? null,
     },
   }

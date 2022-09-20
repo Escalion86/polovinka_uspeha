@@ -344,7 +344,8 @@ const Login = () => {
                   setWaitingResponse(false)
                   setInputPassword('')
                   addError({ password: 'Телефон или пароль не верны' })
-                } else router.push('/cabinet/questionnaire')
+                } else
+                  router.push('/cabinet/questionnaire', '', { shallow: true })
               })
             }
             // Если код не верный
@@ -372,7 +373,7 @@ const Login = () => {
           setWaitingResponse(false)
           setInputPassword('')
           addError({ password: 'Телефон или пароль не верны' })
-        } else router.push('/cabinet')
+        } else router.push('/cabinet', '', { shallow: true })
       })
     }
   }
@@ -686,7 +687,7 @@ const Login = () => {
                   />
                   <span className="flex-1">Google</span>
                 </button> */}
-              <Link href="/">
+              <Link href="/" shallow>
                 <a
                   tabIndex={0}
                   className="block py-3 mt-2 mb-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"
