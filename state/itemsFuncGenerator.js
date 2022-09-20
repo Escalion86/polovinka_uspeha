@@ -228,18 +228,26 @@ const itemsFuncGenerator = (
     )
   }
 
-  obj.event.signUp = async (eventId, userId) => {
+  obj.event.signUp = async (eventId, userId, status) => {
     setLoadingCard('event' + eventId)
     return await postData(
       `/api/eventsusers`,
-      { eventId, userId },
+      { eventId, userId, status },
       (data) => {
-        snackbar.success('Запись на мероприятие прошла успешно')
+        snackbar.success(
+          `Запись${
+            status === 'reserve' ? ' в резерв' : ''
+          } на мероприятие прошла успешно`
+        )
         setNotLoadingCard('event' + eventId)
         props.setEventsUsers(data)
       },
       (error) => {
-        snackbar.error('Не удалось записаться на мероприятие')
+        snackbar.error(
+          `Не удалось записаться${
+            status === 'reserve' ? ' в резерв' : ''
+          } на мероприятие`
+        )
         setErrorCard('event' + eventId)
         const data = {
           errorPlace: 'EVENT SIGNUP ERROR',
@@ -256,17 +264,25 @@ const itemsFuncGenerator = (
     )
   }
 
-  obj.event.signOut = async (eventId, userId) => {
+  obj.event.signOut = async (eventId, userId, activeStatus) => {
     setLoadingCard('event' + eventId)
     return await deleteData(
       `/api/eventsusers`,
       (data) => {
-        snackbar.success('Вы успешно отписались от мероприятия')
+        snackbar.success(
+          `Вы успешно отписались${
+            activeStatus === 'reserve' ? ' из резерва' : ' от'
+          } мероприятия`
+        )
         setNotLoadingCard('event' + eventId)
         props.deleteEventsUsers(data._id)
       },
       (error) => {
-        snackbar.error('Не удалось отписаться от мероприятия')
+        snackbar.error(
+          `Не удалось отписаться${
+            activeStatus === 'reserve' ? ' из резерва' : ' от'
+          } мероприятия`
+        )
         setErrorCard('event' + eventId)
         const data = {
           errorPlace: 'EVENT SIGNOUT ERROR',

@@ -89,6 +89,10 @@ const eventsSchema = {
     of: Number,
     default: DEFAULT_USERS_STATUS_DISCOUNT,
   },
+  isReserveActive: {
+    type: Boolean,
+    default: true,
+  },
   showOnSite: {
     type: Boolean,
     default: true,

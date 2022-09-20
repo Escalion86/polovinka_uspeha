@@ -344,7 +344,8 @@ const Login = () => {
                   setWaitingResponse(false)
                   setInputPassword('')
                   addError({ password: 'Телефон или пароль не верны' })
-                } else router.push('/cabinet/questionnaire')
+                } else
+                  router.push('/cabinet/questionnaire', '', { shallow: true })
               })
             }
             // Если код не верный
@@ -372,7 +373,7 @@ const Login = () => {
           setWaitingResponse(false)
           setInputPassword('')
           addError({ password: 'Телефон или пароль не верны' })
-        } else router.push('/cabinet')
+        } else router.push('/cabinet', '', { shallow: true })
       })
     }
   }

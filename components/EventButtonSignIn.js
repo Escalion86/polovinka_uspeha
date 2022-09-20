@@ -40,7 +40,9 @@ const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
     (eventLoggedUserStatus.isEventInProcess &&
       eventLoggedUserStatus.canSignOut) ? (
     <div className={cn('text-lg font-bold uppercase text-blue-600', className)}>
-      Записан
+      {eventLoggedUserStatus.userEventStatus === 'reserve'
+        ? 'Записан в резерв'
+        : 'Записан'}
     </div>
   ) : eventLoggedUserStatus.isEventInProcess &&
     (noButtonIfAlreadySignIn || !eventLoggedUserStatus.canSignIn) ? (
@@ -56,13 +58,23 @@ const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
           !loggedUser ||
           (eventLoggedUserStatus.canSignIn &&
             !eventLoggedUserStatus.alreadySignIn)
-        )
+        ) {
           modalsFunc.event.signUp(event._id)
-        else if (!isUserQuestionnaireFilled) {
+        } else if (
+          !eventLoggedUserStatus.canSignIn &&
+          !eventLoggedUserStatus.alreadySignIn &&
+          eventLoggedUserStatus.canSignInReserve
+        ) {
+          modalsFunc.event.signUp(event._id, 'reserve')
+        } else if (!isUserQuestionnaireFilled) {
           closeModal()
-          router.push('/cabinet/questionnaire')
-        } else if (eventLoggedUserStatus.canSignOut)
-          modalsFunc.event.signOut(event._id)
+          router.push('/cabinet/questionnaire', '', { shallow: true })
+        } else if (eventLoggedUserStatus.canSignOut) {
+          modalsFunc.event.signOut(
+            event._id,
+            eventLoggedUserStatus.userEventStatus
+          )
+        }
       }}
       // className={cn(
       //   'px-4 py-1 text-white duration-300 border-t border-l rounded-tl-lg hover:bg-white',
@@ -78,16 +90,23 @@ const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
       )}
       name={
         eventLoggedUserStatus.canSignOut
-          ? 'Отменить запись'
+          ? `Отменить запись${
+              eventLoggedUserStatus.userEventStatus === 'reserve'
+                ? ' в резерв'
+                : ''
+            }`
           : eventLoggedUserStatus.canSignIn || !loggedUser
           ? 'Записаться'
           : isUserQuestionnaireFilled
-          ? 'Мест нет'
+          ? eventLoggedUserStatus.canSignInReserve
+            ? 'Записаться в резерв'
+            : 'Мест нет'
           : 'Заполните свою анкету'
       }
       disabled={
         !eventLoggedUserStatus.canSignOut &&
         !eventLoggedUserStatus.canSignIn &&
+        !eventLoggedUserStatus.canSignInReserve &&
         isUserQuestionnaireFilled
       }
     />

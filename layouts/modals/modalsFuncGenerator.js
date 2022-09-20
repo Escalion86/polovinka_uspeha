@@ -109,41 +109,45 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
       view: (eventId) => addModal(eventViewFunc(eventId)),
-      signUp: (eventId) => {
+      signUp: (eventId, status) => {
         if (!loggedUser?._id)
           addModal({
             title: 'Необходимо зарегистрироваться и авторизироваться',
             text: 'Для записи на мероприятие, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
             confirmButtonName: 'Зарегистрироваться / Авторизироваться',
-            onConfirm: () => router.push('/login'),
+            onConfirm: () => router.push('/login', '', { shallow: true }),
           })
-        else
+        else {
+          const postfixStatus = status === 'reserve' ? ' в резерв' : ''
           addModal({
-            title: 'Запись на мероприятие',
-            text: 'Вы уверены что хотите записаться на мероприятие?',
-            confirmButtonName: 'Записаться',
+            title: `Запись${postfixStatus} на мероприятие`,
+            text: `Вы уверены что хотите записаться${postfixStatus} на мероприятие?`,
+            confirmButtonName: `Записаться${postfixStatus}`,
             onConfirm: () => {
-              itemsFunc.event.signUp(eventId, loggedUser?._id)
+              itemsFunc.event.signUp(eventId, loggedUser?._id, status)
             },
           })
+        }
       },
-      signOut: (eventId) => {
+      signOut: (eventId, activeStatus) => {
         if (!loggedUser?._id)
           addModal({
             title: 'Необходимо зарегистрироваться',
             text: 'Для записи на мероприятие, необходимо сначала авторизироваться на сайте',
             confirmButtonName: 'Авторизироваться',
-            onConfirm: () => router.push('/login'),
+            onConfirm: () => router.push('/login', '', { shallow: true }),
           })
-        else
+        else {
+          const postfixStatus = activeStatus === 'reserve' ? ' в резерв' : ''
           addModal({
-            title: 'Отмена записии на мероприятие',
-            text: 'Вы уверены что хотите отменить запись на мероприятие?',
-            confirmButtonName: 'Отменить запись',
+            title: `Отмена записи${postfixStatus} на мероприятие`,
+            text: `Вы уверены что хотите отменить запись${postfixStatus} на мероприятие?`,
+            confirmButtonName: `Отменить запись${postfixStatus}`,
             onConfirm: () => {
-              itemsFunc.event.signOut(eventId, loggedUser?._id)
+              itemsFunc.event.signOut(eventId, loggedUser?._id, activeStatus)
             },
           })
+        }
       },
     },
     payment: {

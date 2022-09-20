@@ -41,7 +41,7 @@ function CabinetPage(props) {
 
   // Ограничиваем пользователям доступ к страницам
   useEffect(() => {
-    if (redirect) router.push(redirect)
+    if (redirect) router.push(redirect, '', { shallow: true })
   }, [redirect])
 
   useEffect(() => {

@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   if (method === 'POST') {
     try {
       // const { eventId, usersId, userId, eventUsersStatuses } = body
-      const { eventId, eventUsersStatuses, userId } = body
+      const { eventId, eventUsersStatuses, userId, status } = body
 
       if (!eventId)
         return res?.status(400).json({ success: false, data: 'No eventId' })
@@ -45,6 +45,7 @@ export default async function handler(req, res) {
         const newEventUser = await EventsUsers.create({
           eventId,
           userId,
+          status: status ?? 'participant',
         })
 
         if (!newEventUser) {
