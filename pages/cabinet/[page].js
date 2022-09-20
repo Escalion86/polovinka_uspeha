@@ -17,6 +17,8 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import fetchProps from '@server/fetchProps'
 import isUserAdmin from '@helpers/isUserAdmin'
 import StateLoader from '@components/StateLoader'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import { useRecoilValue } from 'recoil'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -25,10 +27,11 @@ function CabinetPage(props) {
   const router = useRouter()
   const page = router.asPath.replace('/cabinet/', '')
   // const { page } = props
-  const { loggedUser } = props
+  // const { loggedUser } = props
+  const loggedUser = useRecoilValue(loggedUserAtom)
 
   let redirect
-  if (!loggedUser) redirect = '/'
+  if (!props.loggedUser) redirect = '/'
   else if (
     loggedUser &&
     ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
