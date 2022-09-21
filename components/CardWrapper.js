@@ -35,37 +35,39 @@ export const CardWrapper = ({
         // marginBottom: hidden ? 0 : '1rem',
       }}
       // initial={{ height: 0 }}
-      layout
+      // layout
     >
-      <div
-        className={cn(
-          'bg-white border-t my-1 border-b border-gray-400 relative w-full flex-col laptop:flex-row items-center laptop:items-stretch duration-300 shadow-sm hover:shadow-medium-active',
-          { 'cursor-pointer': !loading },
-          { flex: flex },
-          { 'gap-x-2': gap },
-          className
-        )}
-      >
-        {error && (
-          <div
-            // onClick={() => modalsFunc.error(error)}
-            className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center text-2xl text-white bg-red-800 bg-opacity-80"
-          >
-            ОШИБКА
-          </div>
-        )}
-        {loading && !error && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center bg-general bg-opacity-80">
-            <LoadingSpinner />
-          </div>
-        )}
-        {!showOnSite && (device === 'phoneV' || device === 'phoneH') && (
-          <FontAwesomeIcon
-            icon={faEyeSlash}
-            className="absolute z-10 w-8 h-8 p-1 text-purple-500 bg-white rounded-full top-2 left-2 "
-          />
-        )}
-        {children}
+      <div className="py-0.5">
+        <div
+          className={cn(
+            'bg-white border-t border-b border-gray-400 relative w-full flex-col laptop:flex-row items-center laptop:items-stretch duration-300 shadow-sm hover:shadow-medium-active',
+            { 'cursor-pointer': !loading },
+            { flex: flex },
+            { 'gap-x-2': gap },
+            className
+          )}
+        >
+          {error && (
+            <div
+              // onClick={() => modalsFunc.error(error)}
+              className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center text-2xl text-white bg-red-800 bg-opacity-80"
+            >
+              ОШИБКА
+            </div>
+          )}
+          {loading && !error && (
+            <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center bg-general bg-opacity-80">
+              <LoadingSpinner />
+            </div>
+          )}
+          {!showOnSite && (device === 'phoneV' || device === 'phoneH') && (
+            <FontAwesomeIcon
+              icon={faEyeSlash}
+              className="absolute z-10 w-8 h-8 p-1 text-purple-500 bg-white rounded-full top-2 left-2 "
+            />
+          )}
+          {children}
+        </div>
       </div>
     </motion.div>
   )
