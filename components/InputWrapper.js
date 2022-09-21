@@ -44,7 +44,7 @@ const InputWrapper = ({
   return (
     <div
       className={cn(
-        'duration-300 overflow-hidden flex gap-y-1 gap-x-2',
+        'duration-300 flex gap-y-1 gap-x-2',
         // inLine ? '' : 'flex-col laptop:flex-row',
         labelPos === 'top' || labelPos === 'bottom'
           ? 'flex-col'
