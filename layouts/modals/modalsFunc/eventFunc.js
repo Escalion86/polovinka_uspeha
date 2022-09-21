@@ -121,7 +121,6 @@ const eventFunc = (eventId, clone = false) => {
     const [isReserveActive, setIsReserveActive] = useState(
       event?.isReserveActive ?? DEFAULT_EVENT.isReserveActive
     )
-    
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -161,7 +160,7 @@ const eventFunc = (eventId, clone = false) => {
             status,
             usersStatusAccess,
             usersStatusDiscount,
-            isReserveActive
+            isReserveActive,
           },
           clone
         )
@@ -221,7 +220,7 @@ const eventFunc = (eventId, clone = false) => {
       status,
       usersStatusAccess,
       usersStatusDiscount,
-      isReserveActive
+      isReserveActive,
     ])
 
     return (
@@ -419,13 +418,13 @@ const eventFunc = (eventId, clone = false) => {
               {/* </FormRow> */}
               {/* </FormWrapper> */}
               <FormWrapper title="Ограничения">
-              <CheckBox
-                checked={isReserveActive}
-                labelPos="left"
-                // labelClassName="w-40"
-                onClick={() => setIsReserveActive((checked) => !checked)}
-                label="Если мест нет, то возможно записаться в резерв"
-              />
+                <CheckBox
+                  checked={isReserveActive}
+                  labelPos="left"
+                  // labelClassName="w-40"
+                  onClick={() => setIsReserveActive((checked) => !checked)}
+                  label="Если мест нет, то возможно записаться в резерв"
+                />
                 <FormRow>
                   <Input
                     label="Макс. участников"
@@ -547,7 +546,7 @@ const eventFunc = (eventId, clone = false) => {
             </TabPanel>
           )}
         </TabContext>
-        {/* <ErrorsList errors={errors} /> */}
+        <ErrorsList errors={errors} />
       </>
     )
   }
