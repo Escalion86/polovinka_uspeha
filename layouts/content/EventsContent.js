@@ -37,6 +37,7 @@ import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import Filter from '@components/Filter'
 import ContentHeader from '@components/ContentHeader'
 import FilterToggleButton from '@components/IconToggleButtons/FilterToggleButton'
+import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
 
 const EventsContent = () => {
   // const classes = useStyles()
@@ -49,11 +50,15 @@ const EventsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const [showFilter, setShowFilter] = useState(false)
-  const [showFinished, setShowFinished] = useState(false)
+  const [filter, setFilter] = useState({
+    status: {
+      active: true,
+      finished: true,
+      canceled: true,
+    },
+  })
+
   const [isSorted, setIsSorted] = useState(true)
-  // const [showedDirections, setShowedDirections] = useState(
-  //   [...directions].map((direction) => direction._id)
-  // )
 
   const eventsLoggedUser = useRecoilValue(
     eventsUsersByUserIdSelector(loggedUser?._id)
@@ -99,13 +104,18 @@ const EventsContent = () => {
   const visibleEventsIds = useMemo(
     () =>
       filteredEvents
-        .filter(
-          (event) =>
-            showFinished === isEventExpiredFunc(event) &&
+        .filter((event) => {
+          const isEventExpired = isEventExpiredFunc(event)
+          const isEventActive = event.status === 'active' || !event.status
+          return (
+            ((isEventActive && filter.status.finished && isEventExpired) ||
+              (isEventActive && filter.status.active && !isEventExpired) ||
+              (!isEventActive && filter.status.canceled)) &&
             filterOptions.directions.includes(event.directionId)
-        )
+          )
+        })
         .map((event) => event._id),
-    [showFinished, filterOptions.directions.length]
+    [filteredEvents, filter, filterOptions.directions.length]
   )
 
   const filteredAndSortedEvents = useMemo(
@@ -121,7 +131,13 @@ const EventsContent = () => {
   return (
     <>
       <ContentHeader>
-        <ButtonGroup
+        <EventStatusToggleButtons
+          value={filter.status}
+          onChange={(value) =>
+            setFilter((state) => ({ ...state, status: value }))
+          }
+        />
+        {/* <ButtonGroup
           className=""
           // variant="contained"
           aria-label="outlined primary button group"
@@ -138,7 +154,7 @@ const EventsContent = () => {
           >
             Завершенные
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounEvents(visibleEventsIds.length)}

@@ -12,30 +12,37 @@ import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
 import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
+import UsersFilter from '@components/Filter/UsersFilter'
 
 const UsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const users = useRecoilValue(usersAtom)
-  const [genderFilter, setGenderFilter] = useState({
-    male: true,
-    famale: true,
-    null: true,
+  const [filter, setFilter] = useState({
+    gender: {
+      male: true,
+      famale: true,
+      null: true,
+    },
+    status: {
+      novice: true,
+      member: true,
+    },
   })
-  const [statusFilter, setStatusFilter] = useState({
-    novice: true,
-    member: true,
-  })
+  // const [statusFilter, setStatusFilter] = useState({
+  //   novice: true,
+  //   member: true,
+  // })
 
   const visibleUsersIds = useMemo(
     () =>
       users
         .filter(
           (user) =>
-            genderFilter[String(user.gender)] &&
-            statusFilter[user.status ?? 'novice']
+            filter.gender[String(user.gender)] &&
+            filter.status[user.status ?? 'novice']
         )
         .map((user) => user._id),
-    [users, genderFilter, statusFilter]
+    [users, filter]
   )
 
   // const options = {
@@ -50,11 +57,12 @@ const UsersContent = () => {
   return (
     <>
       <ContentHeader>
-        <GenderToggleButtons value={genderFilter} onChange={setGenderFilter} />
-        <StatusUserToggleButtons
-          value={statusFilter}
-          onChange={setStatusFilter}
-        />
+        <UsersFilter value={filter} onChange={setFilter} />
+        {/* // <GenderToggleButtons value={genderFilter} onChange={setGenderFilter} />
+        // <StatusUserToggleButtons
+        //   value={statusFilter}
+        //   onChange={setStatusFilter}
+        // /> */}
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounUsers(visibleUsersIds.length)}

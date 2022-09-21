@@ -10,6 +10,7 @@ import cn from 'classnames'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 import UserName from './UserName'
+import UserStatusIcon from './UserStatusIcon'
 
 const ItemContainer = ({
   onClick,
@@ -131,18 +132,7 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
             </div>
           )}
         </div> */}
-        <div>
-          {item.status === 'member' && (
-            <div className="w-6 h-6">
-              <Image src="/img/svg_icons/medal.svg" width="24" height="24" />
-            </div>
-          )}
-          {item.status === 'ban' && (
-            <div className="w-6 h-6">
-              <Image src="/img/svg_icons/ban.svg" width="24" height="24" />
-            </div>
-          )}
-        </div>
+        <UserStatusIcon status={item.status} />
       </div>
     </ItemContainer>
     // </Tooltip>

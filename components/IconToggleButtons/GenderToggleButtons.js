@@ -12,13 +12,11 @@ const GenderToggleButtons = ({ value, onChange }) => {
     <ButtonGroup>
       <Button
         onClick={() =>
-          onChange((state) => {
-            return {
-              famale:
-                !state.male || state.famale || state.null ? state.famale : true,
-              male: !state.male,
-              null: state.null,
-            }
+          onChange({
+            famale:
+              !value.male || value.famale || value.null ? value.famale : true,
+            male: !value.male,
+            null: value.null,
           })
         }
         variant={value.male ? 'contained' : 'outlined'}
@@ -29,13 +27,10 @@ const GenderToggleButtons = ({ value, onChange }) => {
       </Button>
       <Button
         onClick={() =>
-          onChange((state) => {
-            return {
-              male:
-                state.male || !state.famale || state.null ? state.male : true,
-              famale: !state.famale,
-              null: state.null,
-            }
+          onChange({
+            male: value.male || !value.famale || value.null ? value.male : true,
+            famale: !value.famale,
+            null: value.null,
           })
         }
         variant={value.famale ? 'contained' : 'outlined'}
@@ -52,13 +47,10 @@ const GenderToggleButtons = ({ value, onChange }) => {
       </Button>
       <Button
         onClick={() =>
-          onChange((state) => {
-            return {
-              male:
-                state.male || state.famale || !state.null ? state.male : true,
-              famale: state.famale,
-              null: !state.null,
-            }
+          onChange({
+            male: value.male || value.famale || !value.null ? value.male : true,
+            famale: value.famale,
+            null: !value.null,
           })
         }
         variant={value.null ? 'contained' : 'outlined'}

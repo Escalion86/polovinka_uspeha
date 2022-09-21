@@ -14,6 +14,7 @@ import Image from 'next/image'
 import Tooltip from '@components/Tooltip'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import ZodiacIcon from '@components/ZodiacIcon'
+import UserStatusIcon from '@components/UserStatusIcon'
 
 const UserCard = ({ userId, hidden = false }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -59,34 +60,7 @@ const UserCard = ({ userId, hidden = false }) => {
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
                   <div className="flex flex-wrap items-center px-2 py-1 leading-6 gap-x-1">
-                    {user.status === 'novice' && (
-                      <FontAwesomeIcon
-                        className="w-6 h-5 text-green-400"
-                        icon={faUser}
-                      />
-                    )}
-                    {user.status === 'member' && (
-                      <Tooltip title="Участник клуба">
-                        <div className="w-6 h-6">
-                          <Image
-                            src="/img/svg_icons/medal.svg"
-                            width="24"
-                            height="24"
-                          />
-                        </div>
-                      </Tooltip>
-                    )}
-                    {user.status === 'ban' && (
-                      <Tooltip title="Забанен">
-                        <div className="w-6 h-6">
-                          <Image
-                            src="/img/svg_icons/ban.svg"
-                            width="24"
-                            height="24"
-                          />
-                        </div>
-                      </Tooltip>
-                    )}
+                    <UserStatusIcon status={user.status} />
                     <span>{user.firstName}</span>
                     {user.secondName && <span>{user.secondName}</span>}
                     {user.birthday && (
