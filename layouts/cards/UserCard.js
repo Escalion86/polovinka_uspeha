@@ -2,11 +2,10 @@ import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
 import CardButtons from '@components/CardButtons'
 import birthDateToAge from '@helpers/birthDateToAge'
-import getZodiac from '@helpers/getZodiac'
-import { GENDERS, USERS_STATUSES } from '@helpers/constants'
+import { GENDERS } from '@helpers/constants'
 import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGenderless } from '@fortawesome/free-solid-svg-icons'
+import { faGenderless, faUser } from '@fortawesome/free-solid-svg-icons'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import userSelector from '@state/selectors/userSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
@@ -14,10 +13,10 @@ import { CardWrapper } from '@components/CardWrapper'
 import Image from 'next/image'
 import Tooltip from '@components/Tooltip'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
-import Divider from '@components/Divider'
 import ZodiacIcon from '@components/ZodiacIcon'
+import UserStatusIcon from '@components/UserStatusIcon'
 
-const UserCard = ({ userId }) => {
+const UserCard = ({ userId, hidden = false }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const user = useRecoilValue(userSelector(userId))
   const loading = useRecoilValue(loadingAtom('user' + userId))
@@ -34,6 +33,7 @@ const UserCard = ({ userId }) => {
     <CardWrapper
       loading={loading}
       onClick={() => modalsFunc.user.view(user._id)}
+      hidden={hidden}
     >
       <div className="flex w-full">
         <div
@@ -60,28 +60,7 @@ const UserCard = ({ userId }) => {
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
                   <div className="flex flex-wrap items-center px-2 py-1 leading-6 gap-x-1">
-                    {user.status === 'member' && (
-                      <Tooltip title="Участник клуба">
-                        <div className="w-6 h-6">
-                          <Image
-                            src="/img/svg_icons/medal.svg"
-                            width="24"
-                            height="24"
-                          />
-                        </div>
-                      </Tooltip>
-                    )}
-                    {user.status === 'ban' && (
-                      <Tooltip title="Забанен">
-                        <div className="w-6 h-6">
-                          <Image
-                            src="/img/svg_icons/ban.svg"
-                            width="24"
-                            height="24"
-                          />
-                        </div>
-                      </Tooltip>
-                    )}
+                    <UserStatusIcon status={user.status} />
                     <span>{user.firstName}</span>
                     {user.secondName && <span>{user.secondName}</span>}
                     {user.birthday && (

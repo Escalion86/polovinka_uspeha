@@ -20,6 +20,9 @@ export default getNoun
 export const getNounEvents = (number) =>
   getNoun(number, 'мероприятие', 'мероприятия', 'мероприятий')
 
+export const getNounUsers = (number) =>
+  getNoun(number, 'пользователь', 'пользователя', 'пользователей')
+
 export const getNounDirections = (number) =>
   getNoun(number, 'направление', 'направления', 'направлений')
 

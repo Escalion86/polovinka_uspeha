@@ -109,6 +109,14 @@ import ReactCrop, {
 //   return new File([arr], fileName, { type: mime })
 // }
 
+const DEFAULT_CROP = {
+  unit: '%',
+  x: 0,
+  y: 0,
+  width: 100,
+  height: 100,
+}
+
 const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
   const CropImageModal = ({
     closeModal,
@@ -120,14 +128,22 @@ const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
   }) => {
     const [imgSrc, setImgSrc] = useState('')
     const imgRef = useRef(null)
-    const [crop, setCrop] = useState(undefined)
-    const [completedCrop, setCompletedCrop] = useState()
+    const [crop, setCrop] = useState(DEFAULT_CROP)
+    const [completedCrop, setCompletedCrop] = useState(DEFAULT_CROP)
     const [scale, setScale] = useState(1)
     const [rotate, setRotate] = useState(0)
     const [aspect, setAspect] = useState(aspectRatio)
     // const [ready, setReady] = useState()
 
+    // console.log('completedCrop', completedCrop)
+    // console.log('imgRef.current.width', imgRef.current?.width)
+    // console.log('crop', crop)
+
+    // useEffect(()=> setCompletedCrop,[])
+
     const getCroppedImg = (image = imgRef.current, crop = completedCrop) => {
+      if (!crop) return onConfirm(src)
+
       const canvas = document.createElement('canvas')
       const scaleX = image.naturalWidth / image.width
       const scaleY = image.naturalHeight / image.height
@@ -245,7 +261,7 @@ const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
           </div>
         </div> */}
         {Boolean(imgSrc) && (
-          <div className="max-h-[100vh]">
+          <div>
             <ReactCrop
               crop={crop}
               onChange={(_, percentCrop) => setCrop(percentCrop)}
@@ -258,6 +274,7 @@ const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
                 src={imgSrc}
                 style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
                 // onLoad={onImageLoad}
+                className="max-h-[70vh]"
               />
             </ReactCrop>
           </div>

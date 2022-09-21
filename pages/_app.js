@@ -44,6 +44,10 @@ const theme = createTheme({
     error: {
       main: red.A400,
     },
+    red: { main: '#f87171' },
+    blue: { main: '#60a5fa' },
+    green: { main: '#4ade80' },
+    gray: { main: '#9ca3af' },
     // background: {
     //   default: '#FFD600',
     // },
