@@ -34,7 +34,7 @@ import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
     className={cn(
-      `text-base font-normal px-2 duration-300 flex items-center gap-x-2 h-8 hover:bg-${color}-600 hover:text-white`,
+      `text-base font-normal px-2 duration-300 flex items-center gap-x-2 h-9 hover:bg-${color}-600 hover:text-white`,
       active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
     )}
     onClick={(e) => {
@@ -42,7 +42,7 @@ const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
       onClick && onClick()
     }}
   >
-    <FontAwesomeIcon icon={icon} className="w-6 h-6" />
+    <FontAwesomeIcon icon={icon} className="w-7 h-7" />
     <div className="whitespace-nowrap prevent-select-text">{tooltipText}</div>
   </div>
 )
@@ -223,8 +223,8 @@ const CardButtons = ({
       >
         <div className="h-full bg-red-200 border border-gray-200">{items}</div>
       </motion.div>
-      <div className="flex items-center justify-center w-8 h-8 text-general group-hover:text-toxic group-hover:scale-110">
-        <FontAwesomeIcon icon={faEllipsisV} className="w-6 h-6" />
+      <div className="flex items-center justify-center w-9 h-9 text-general group-hover:text-toxic group-hover:scale-110">
+        <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
       </div>
     </div>
   ) : (
