@@ -54,8 +54,8 @@ const EventsContent = () => {
   const [filter, setFilter] = useState({
     status: {
       active: true,
-      finished: true,
-      canceled: true,
+      finished: false,
+      canceled: false,
     },
   })
 

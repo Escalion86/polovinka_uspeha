@@ -109,10 +109,10 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
         alt="user"
       />
       <div className="flex items-center flex-1 py-0.5 px-1">
-        <div className="flex flex-wrap items-center flex-1 max-h-full overflow-hidden text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1">
+        <div className="flex flex-wrap items-center flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1">
           <UserName user={item} className="font-semibold" />
           {item.birthday && (isLoggedUserAdmin || item.security?.showAge) && (
-            <span className="italic leading-3">
+            <span className="overflow-visible italic leading-4 max-h-3">
               {' (' + birthDateToAge(item.birthday) + ')'}
             </span>
           )}

@@ -9,21 +9,25 @@ const UserName = ({ user, className, noWrap }) => {
   return (
     <div
       className={cn(
-        'flex gap-x-1 leading-3',
+        'flex gap-x-1 leading-4 overflow-visible',
         noWrap ? 'flex-nowrap' : 'flex-wrap',
         className
       )}
     >
-      {user?.firstName && <span>{upperCaseFirst(user.firstName)}</span>}
+      {user?.firstName && (
+        <span className="overflow-visible max-h-3">
+          {upperCaseFirst(user.firstName)}
+        </span>
+      )}
       {user?.thirdName && (
-        <span>
+        <span className="overflow-visible max-h-3">
           {isLoggedUserAdmin || user.security?.fullThirdName
             ? upperCaseFirst(user.thirdName)
             : user.thirdName[0].toUpperCase() + '.'}
         </span>
       )}
       {user?.secondName && (
-        <span>
+        <span className="overflow-visible max-h-3">
           {isLoggedUserAdmin || user.security?.fullSecondName
             ? upperCaseFirst(user.secondName)
             : user.secondName[0].toUpperCase() + '.'}
