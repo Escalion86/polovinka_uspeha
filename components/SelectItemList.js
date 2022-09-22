@@ -54,12 +54,12 @@ export const SelectItemList = ({
   showCounter,
   counterPostfix,
   canAddItem = true,
-  filter,
   exceptedIds,
   modalFuncKey,
   maxItems,
   readOnly,
   labelClassName,
+  filter,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 

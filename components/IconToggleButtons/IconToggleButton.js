@@ -5,12 +5,13 @@ const IconToggleButton = ({
   selected,
   onChange,
   color = 'warning',
+  value,
   IconComponent,
 }) => {
   return (
     <ToggleButton
       size="small"
-      // value="filter"
+      value={value}
       selected={selected}
       onChange={onChange}
       color={color}

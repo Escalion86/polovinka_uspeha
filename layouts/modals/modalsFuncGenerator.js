@@ -60,12 +60,14 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
     cropImage: (...data) => addModal(cropImageFunc(...data)),
     error: (data) => addModal(errorFunc(data)),
     json: (data) => addModal(jsonFunc(data)),
-    selectUsers: (itemsId, filter, onChange, exceptedIds, maxUsers) =>
+    selectUsers: (itemsId, filterRules, onChange, exceptedIds, maxUsers) =>
       addModal(
-        selectUsersFunc(itemsId, filter, onChange, exceptedIds, maxUsers)
+        selectUsersFunc(itemsId, filterRules, onChange, exceptedIds, maxUsers)
       ),
-    selectDirection: (itemsId, filter, onChange, exceptedIds) =>
-      addModal(selectDirectionFunc(itemsId, filter, onChange, exceptedIds)),
+    selectDirection: (itemsId, filterRules, onChange, exceptedIds) =>
+      addModal(
+        selectDirectionFunc(itemsId, filterRules, onChange, exceptedIds)
+      ),
     review: {
       add: (reviewId) => addModal(reviewFunc(reviewId, true)),
       edit: (reviewId) => addModal(reviewFunc(reviewId)),
