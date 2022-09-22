@@ -134,8 +134,8 @@ const QuestionnaireContent = (props) => {
   const onClickConfirm = async () => {
     if (
       !checkErrors({
-        firstName,
-        secondName,
+        firstName: firstName.trim(),
+        secondName: secondName.trim(),
         gender,
         // phone,
         viber,
@@ -148,9 +148,9 @@ const QuestionnaireContent = (props) => {
       await putData(
         `/api/users/${loggedUser._id}`,
         {
-          firstName,
-          secondName,
-          thirdName,
+          firstName: firstName.trim(),
+          secondName: secondName.trim(),
+          thirdName: thirdName.trim(),
           // about,
           // interests,
           // profession,
@@ -254,7 +254,7 @@ const QuestionnaireContent = (props) => {
               value={firstName}
               onChange={(value) => {
                 removeError('firstName')
-                setFirstName(value)
+                setFirstName(value.trim())
               }}
               required
               // labelClassName="w-40"
@@ -266,7 +266,7 @@ const QuestionnaireContent = (props) => {
               value={secondName}
               onChange={(value) => {
                 removeError('secondName')
-                setSecondName(value)
+                setSecondName(value.trim())
               }}
               required
               // labelClassName="w-40"
@@ -278,7 +278,7 @@ const QuestionnaireContent = (props) => {
               value={thirdName}
               onChange={(value) => {
                 removeError('thirdName')
-                setThirdName(value)
+                setThirdName(value.trim())
               }}
               // labelClassName="w-40"
               error={errors.thirdName}
