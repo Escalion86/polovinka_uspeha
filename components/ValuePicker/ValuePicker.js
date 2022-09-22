@@ -3,7 +3,7 @@ import Label from '@components/Label'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 
-const ValueItem = ({
+export const ValueItem = ({
   active = false,
   value = 0,
   name = '',
@@ -16,7 +16,7 @@ const ValueItem = ({
       `h-[30px] flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded cursor-pointer gap-x-2 flex-nowrap border-${color}`,
       active ? `text-white bg-${color}` : `text-${color} bg-white`
     )}
-    onClick={() => onClick(value)}
+    onClick={() => onClick && onClick(value)}
   >
     {icon && <FontAwesomeIcon icon={icon} className="h-5" />}
     <div
