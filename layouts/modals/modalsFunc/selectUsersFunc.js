@@ -1,9 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import usersAtom from '@state/atoms/usersAtom'
 import { UserItem } from '@components/ItemCards'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
+import cn from 'classnames'
+import filterItems from '@helpers/filterItems'
 
-const selectUsersFunc = (state, filter, onConfirm, exceptedIds, maxUsers) => {
+const selectUsersFunc = (
+  state,
+  filterRules,
+  onConfirm,
+  exceptedIds,
+  maxUsers
+) => {
   const SelectUsersModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -17,23 +27,33 @@ const selectUsersFunc = (state, filter, onConfirm, exceptedIds, maxUsers) => {
     const [selectedUsers, setSelectedUsers] = useState(state ?? [])
     const [showErrorMax, setShowErrorMax] = useState(false)
 
-    var filteredUsers = filter
-      ? users.filter((user) => {
-          for (const key in filter) {
-            // if (Object.hasOwnProperty.call(filter, key)) {
-            if (filter[key] !== user[key]) return false
+    const [searchText, setSearchText] = useState('')
+    const inputRef = useRef()
 
-            // }
-          }
-          return true
-        })
-      : users
+    const filteredUsers = filterItems(
+      users,
+      searchText,
+      exceptedIds,
+      filterRules
+    )
 
-    if (exceptedIds) {
-      filteredUsers = filteredUsers.filter(
-        (user) => !exceptedIds.includes(user._id)
-      )
-    }
+    // var filteredUsers = filter
+    //   ? users.filter((user) => {
+    //       for (const key in filter) {
+    //         // if (Object.hasOwnProperty.call(filter, key)) {
+    //         if (filter[key] !== user[key]) return false
+
+    //         // }
+    //       }
+    //       return true
+    //     })
+    //   : users
+
+    // if (exceptedIds) {
+    //   filteredUsers = filteredUsers.filter(
+    //     (user) => !exceptedIds.includes(user._id)
+    //   )
+    // }
     const sortedUsers = [...filteredUsers].sort((a, b) =>
       a.firstName && b.firstName
         ? a.firstName.toLocaleLowerCase() < b.firstName.toLocaleLowerCase()
@@ -92,22 +112,61 @@ const selectUsersFunc = (state, filter, onConfirm, exceptedIds, maxUsers) => {
       // bannedParticipantsIds,
     ])
 
-    return (
-      <div>
-        {sortedUsers.map((user) => (
-          <UserItem
-            key={user._id}
-            item={user}
-            active={selectedUsers.includes(user._id)}
-            onClick={() => onClick(user._id)}
-          />
-        ))}
+    useEffect(() => inputRef.current.focus(), [inputRef])
 
-        {showErrorMax && (
-          <div className="text-danger">
-            Выбрано максимальное количество пользователей
-          </div>
-        )}
+    return (
+      <div className="flex flex-col max-h-full">
+        <div
+          className={cn(
+            'flex gap-1 items-center border-gray-700 border p-1 mb-1 rounded'
+            // { hidden: !isMenuOpen }
+          )}
+        >
+          <input
+            ref={inputRef}
+            className="flex-1 bg-transparent outline-none"
+            type="text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <FontAwesomeIcon
+            className={'w-6 h-6 text-gray-700 cursor-pointer'}
+            icon={searchText ? faTimes : faSearch}
+            onClick={
+              searchText
+                ? () => setSearchText('')
+                : () => inputRef.current.focus()
+            }
+          />
+          {/* {moreOneFilterTurnOnExists ? (
+                <div
+                  className={cn(
+                    moreOneFilter ? 'bg-yellow-400' : 'bg-primary',
+                    'hover:bg-toxic text-white flex items-center justify-center font-bold rounded cursor-pointer w-7 h-7'
+                  )}
+                  onClick={() => setMoreOneFilter(!moreOneFilter)}
+                >
+                  {'>0'}
+                </div>
+              ) : null} */}
+        </div>
+
+        <div className="flex-1 overflow-y-auto max-h-200">
+          {sortedUsers.map((user) => (
+            <UserItem
+              key={user._id}
+              item={user}
+              active={selectedUsers.includes(user._id)}
+              onClick={() => onClick(user._id)}
+            />
+          ))}
+
+          {showErrorMax && (
+            <div className="text-danger">
+              Выбрано максимальное количество пользователей
+            </div>
+          )}
+        </div>
       </div>
     )
   }

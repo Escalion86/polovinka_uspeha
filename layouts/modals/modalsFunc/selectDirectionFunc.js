@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil'
 import { DirectionItem, UserItem } from '@components/ItemCards'
 import directionsAtom from '@state/atoms/directionsAtom'
 
-const selectDirectionFunc = (state, filter, onConfirm, exceptedIds) => {
+const selectDirectionFunc = (state, onConfirm, exceptedIds) => {
   const SelectDirectionModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -15,17 +15,15 @@ const selectDirectionFunc = (state, filter, onConfirm, exceptedIds) => {
     const directions = useRecoilValue(directionsAtom)
     const [selectedDirection, setSelectedDirection] = useState(state ?? [])
 
-    var filteredDirections = filter
-      ? directions.filter((direction) => {
-          for (const key in filter) {
-            // if (Object.hasOwnProperty.call(filter, key)) {
-            if (filter[key] !== direction[key]) return false
+    var filteredDirections = filterItems(
+      directions,
+      searchText,
+      exceptedIds,
+      null
+    )
 
-            // }
-          }
-          return true
-        })
-      : directions
+    const [searchText, setSearchText] = useState('')
+    const inputRef = useRef()
 
     if (exceptedIds) {
       filteredDirections = filteredDirections.filter(

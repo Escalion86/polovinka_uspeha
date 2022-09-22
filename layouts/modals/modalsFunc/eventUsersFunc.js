@@ -147,7 +147,7 @@ const eventUsersFunc = (eventId) => {
         >
           <SelectUserList
             label="Участники Мужчины"
-            filter={{ gender: 'male' }}
+            filter={{ gender: { operand: '===', value: 'male' } }}
             usersId={mansIds}
             onChange={(usersIds) => {
               removeIdsFromReserve(usersIds)
@@ -164,7 +164,7 @@ const eventUsersFunc = (eventId) => {
           />
           <SelectUserList
             label="Участники Женщины"
-            filter={{ gender: 'famale' }}
+            filter={{ gender: { operand: '===', value: 'famale' } }}
             usersId={womansIds}
             onChange={(usersIds) => {
               removeIdsFromReserve(usersIds)
@@ -204,9 +204,9 @@ const eventUsersFunc = (eventId) => {
               onChange={setReservedParticipantsIds}
               exceptedIds={[
                 ...assistantsIds,
-                ...mansIds,
-                ...womansIds,
-                ...reservedParticipantsIds,
+                // ...mansIds,
+                // ...womansIds,
+                // ...reservedParticipantsIds,
                 ...bannedParticipantsIds,
               ]}
               readOnly={!isLoggedUserAdmin}
@@ -222,9 +222,9 @@ const eventUsersFunc = (eventId) => {
               setAssistantsIds(usersIds)
             }}
             exceptedIds={[
-              ...assistantsIds,
-              ...mansIds,
-              ...womansIds,
+              // ...assistantsIds,
+              // ...mansIds,
+              // ...womansIds,
               ...bannedParticipantsIds,
             ]}
             readOnly={!isLoggedUserAdmin}

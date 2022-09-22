@@ -38,6 +38,7 @@ import Filter from '@components/Filter'
 import ContentHeader from '@components/ContentHeader'
 import FilterToggleButton from '@components/IconToggleButtons/FilterToggleButton'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
+import SortingButtonMenu from '@components/SortingButtonMenu'
 
 const EventsContent = () => {
   // const classes = useStyles()
@@ -137,6 +138,7 @@ const EventsContent = () => {
             setFilter((state) => ({ ...state, status: value }))
           }
         />
+        {/* <SortingButtonMenu /> */}
         {/* <ButtonGroup
           className=""
           // variant="contained"

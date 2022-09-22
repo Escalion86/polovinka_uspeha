@@ -15,88 +15,9 @@ import { useRecoilValue } from 'recoil'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import { modalsFuncAtom } from '@state/atoms'
-import Label from './Label'
 import InputWrapper from './InputWrapper'
-
-const filteredItems = (
-  items = [],
-  searchText = '',
-  exceptedIds = [],
-  rules = []
-) =>
-  (searchText || exceptedIds?.length || rules?.length
-    ? [...items].filter((item) => {
-        if (Object.entries(rules).length)
-          for (const [key, rule] of Object.entries(rules)) {
-            if (rule[0] === '>') {
-              if (rule[1] === '=') {
-                if (!(item[key] >= parseInt(rule.substr(2)))) return false
-              } else if (!(item[key] > parseInt(rule.substr(1)))) return false
-            }
-            if (rule[0] === '<') {
-              if (rule[1] === '=') {
-                if (!(item[key] <= parseInt(rule.substr(2)))) return false
-              } else if (!(item[key] < parseInt(rule.substr(1)))) return false
-            }
-            if (rule[0] === '=') {
-              if (!(item[key] == parseInt(rule.substr(1)))) return false
-            }
-          }
-        if (searchText) {
-          if (searchText[0] === '>') {
-            if (searchText[1] === '=')
-              return item.price >= parseInt(searchText.substr(2)) * 100
-            return item.price > parseInt(searchText.substr(1)) * 100
-          }
-          if (searchText[0] === '<') {
-            if (searchText[1] === '=')
-              return item.price <= parseInt(searchText.substr(2)) * 100
-            return item.price < parseInt(searchText.substr(1)) * 100
-          }
-          if (searchText[0] === '=') {
-            return item.price == parseInt(searchText.substr(1)) * 100
-          }
-
-          const searchTextLowerCase = searchText.toLowerCase()
-          return (
-            !exceptedIds?.includes(item._id) &&
-            (item.name
-              ?.toString()
-              .toLowerCase()
-              .includes(searchTextLowerCase) ||
-              item.firstName
-                ?.toString()
-                .toLowerCase()
-                .includes(searchTextLowerCase) ||
-              item.secondName
-                ?.toString()
-                .toLowerCase()
-                .includes(searchTextLowerCase) ||
-              item.thirdName
-                ?.toString()
-                .toLowerCase()
-                .includes(searchTextLowerCase) ||
-              item.number?.toString().includes(searchTextLowerCase) ||
-              item.phone?.toString().includes(searchTextLowerCase) ||
-              item.whatsapp?.toString().includes(searchTextLowerCase) ||
-              item.viber?.toString().includes(searchTextLowerCase) ||
-              item.telegram?.toString().includes(searchTextLowerCase) ||
-              item.instagram?.toString().includes(searchTextLowerCase) ||
-              item.vk?.toString().includes(searchTextLowerCase) ||
-              item.price?.toString().includes(searchTextLowerCase))
-          )
-        } else return !exceptedIds?.includes(item._id)
-      })
-    : [...items]
-  ).sort((a, b) => {
-    if (a.name < b.name) {
-      return -1
-    }
-    if (a.name > b.name) {
-      return 1
-    }
-    return 0
-  })
+import filterItems from '@helpers/filterItems'
+import filterWithRules from '@helpers/filterWithRules'
 
 export const SelectItem = ({
   items,
@@ -129,16 +50,32 @@ export const SelectItem = ({
   const Item = itemComponent
 
   const preFilteredItemsArray = isMenuOpen
-    ? filteredItems(items, null, exceptedIds, {})
+    ? filterItems(items, null, exceptedIds, {}).sort((a, b) => {
+        if (a.name < b.name) {
+          return -1
+        }
+        if (a.name > b.name) {
+          return 1
+        }
+        return 0
+      })
     : []
 
   const filteredItemsArray = isMenuOpen
-    ? filteredItems(
+    ? filterItems(
         preFilteredItemsArray,
         searchText,
         [],
         moreOneFilterTurnOnExists && moreOneFilter ? { count: '>0' } : {}
-      )
+      ).sort((a, b) => {
+        if (a.name < b.name) {
+          return -1
+        }
+        if (a.name > b.name) {
+          return 1
+        }
+        return 0
+      })
     : []
 
   const toggleIsMenuOpen = () => {
@@ -378,15 +315,7 @@ export const SelectUser = ({
   const users = useRecoilValue(usersAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
-  const filteredUsers =
-    filter && typeof filter === 'object'
-      ? users.filter((user) => {
-          for (const [key, value] of Object.entries(filter)) {
-            if (user[key] !== value) return false
-          }
-          return true
-        })
-      : users
+  const filteredUsers = filterWithRules(users, filter)
 
   const onClickClearButton =
     selectedId && clearButton
