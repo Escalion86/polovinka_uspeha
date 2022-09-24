@@ -18,6 +18,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import InputWrapper from './InputWrapper'
 import filterItems from '@helpers/filterItems'
 import filterWithRules from '@helpers/filterWithRules'
+import Tooltip from './Tooltip'
 
 export const SelectItem = ({
   items,
@@ -202,20 +203,22 @@ export const SelectItem = ({
   )
 }
 
-const ItemButton = ({ onClick, icon, iconClassName }) => (
+const ItemButton = ({ onClick, icon, iconClassName, tooltip }) => (
   <div className="flex items-center justify-center border-l border-gray-700">
-    <button
-      onClick={onClick}
-      className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
-    >
-      <FontAwesomeIcon
-        className={cn(
-          'w-4 h-4 duration-300 group-hover:scale-125',
-          iconClassName
-        )}
-        icon={icon}
-      />
-    </button>
+    <Tooltip title={tooltip}>
+      <button
+        onClick={onClick}
+        className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
+      >
+        <FontAwesomeIcon
+          className={cn(
+            'w-4 h-4 duration-300 group-hover:scale-125',
+            iconClassName
+          )}
+          icon={icon}
+        />
+      </button>
+    </Tooltip>
   </div>
 )
 
@@ -266,8 +269,9 @@ const SelectItemContainer = ({
     <Container>
       {children}
       {buttons &&
-        buttons.map(({ onClick, icon, iconClassName }, index) => (
+        buttons.map(({ onClick, icon, iconClassName, tooltip }, index) => (
           <ItemButton
+            tooltip={tooltip}
             onClick={() => onClick(selectedId)}
             icon={icon}
             iconClassName={iconClassName}
@@ -275,6 +279,7 @@ const SelectItemContainer = ({
         ))}
       {onEdit && (
         <ItemButton
+          tooltip="Редактировать"
           onClick={onEdit}
           icon={faPencilAlt}
           iconClassName="text-primary"
@@ -282,6 +287,7 @@ const SelectItemContainer = ({
       )}
       {onCreateNew && (
         <ItemButton
+          tooltip="Создать новый"
           onClick={onCreateNew}
           icon={faPlus}
           iconClassName="text-primary"
@@ -289,6 +295,7 @@ const SelectItemContainer = ({
       )}
       {onClickClearButton && (
         <ItemButton
+          tooltip="Удалить из списка"
           onClick={onClickClearButton}
           icon={faTimes}
           iconClassName="text-red-700"

@@ -11,21 +11,24 @@ const Tooltip = ({
   disableHoverListener,
   disableTouchListener,
   PopperProps,
-}) => (
-  <MuiTooltip
-    title={title}
-    onClose={onClose}
-    onOpen={onOpen}
-    open={open}
-    disableFocusListener={disableFocusListener}
-    disableHoverListener={disableHoverListener}
-    disableTouchListener={disableTouchListener}
-    PopperProps={PopperProps}
-    placement="top"
-    arrow
-  >
-    {children}
-  </MuiTooltip>
-)
+}) => {
+  if (!title) return children
+  return (
+    <MuiTooltip
+      title={title}
+      onClose={onClose}
+      onOpen={onOpen}
+      open={open}
+      disableFocusListener={disableFocusListener}
+      disableHoverListener={disableHoverListener}
+      disableTouchListener={disableTouchListener}
+      PopperProps={PopperProps}
+      placement="top"
+      arrow
+    >
+      {children}
+    </MuiTooltip>
+  )
+}
 
 export default Tooltip
