@@ -22,6 +22,9 @@ const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
     loggedUserToEventStatusSelector(eventId)
   )
 
+  if (eventId === '6316e2684918bb1dd6d9c308')
+    console.log('eventLoggedUserStatus', eventLoggedUserStatus)
+
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
   return event.status === 'canceled' ? (

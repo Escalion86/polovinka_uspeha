@@ -29,6 +29,39 @@ const variants = {
   },
 }
 
+const SortItem = ({ title, iconAsc, iconDesc, value }) => {
+  return (
+    <div className="relative flex items-center h-8 bg-white group-scoped">
+      <div className="relative flex items-center justify-center w-8 h-8 cursor-pointer group">
+        <FontAwesomeIcon icon={iconAsc} className="z-10 h-5" />
+        <div
+          className={cn(
+            'absolute top-0 bottom-0 z-0 w-0 h-8 duration-300 rounded-l -right-1',
+            value === 'asc' ? 'w-9 bg-success' : 'bg-blue-300 group-hover:w-9'
+          )}
+        />
+      </div>
+      <div
+        className={cn(
+          'z-10 flex items-center justify-center flex-1 h-8 px-1 text-black rounded whitespace-nowrap',
+          value ? '' : 'group-scoped:bg-blue-300'
+        )}
+      >
+        {title}
+      </div>
+      <div className="relative flex items-center justify-center w-8 h-8 cursor-pointer group">
+        <FontAwesomeIcon icon={iconDesc} className="z-10 h-5" />
+        <div
+          className={cn(
+            'absolute top-0 bottom-0 z-0 w-0 h-8 duration-300 rounded-r -left-1',
+            value === 'desc' ? 'w-9 bg-success' : 'bg-blue-300 group-hover:w-9'
+          )}
+        />
+      </div>
+    </div>
+  )
+}
+
 const SortingButtonMenu = () => {
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
@@ -70,7 +103,13 @@ const SortingButtonMenu = () => {
           initial="hide"
           transition={{ duration: 0.2, type: 'tween' }}
         >
-          <div className="relative flex items-center h-8 bg-white">
+          <SortItem
+            title="по имени"
+            iconAsc={faSortAlphaAsc}
+            iconDesc={faSortAlphaDesc}
+            value={'desc'}
+          />
+          {/* <div className="relative flex items-center h-8 bg-white">
             <div className="relative flex items-center justify-center w-8 h-8 cursor-pointer group">
               <FontAwesomeIcon icon={faSortAlphaAsc} className="z-10 h-5" />
               <div className="absolute top-0 bottom-0 z-0 w-0 h-8 duration-300 bg-blue-300 rounded-l -right-1 group-hover:w-1/2" />
@@ -82,7 +121,7 @@ const SortingButtonMenu = () => {
               <FontAwesomeIcon icon={faSortAlphaDesc} className="z-10 h-5" />
               <div className="absolute top-0 bottom-0 z-0 w-0 h-8 duration-300 bg-blue-300 rounded-r -left-1 group-hover:w-1/2" />
             </div>
-          </div>
+          </div> */}
         </motion.div>
         <button
           className={cn(

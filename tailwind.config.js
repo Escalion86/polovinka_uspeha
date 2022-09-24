@@ -288,7 +288,10 @@ module.exports = {
     scale: ['hover', 'responsive', 'group-hover'],
     translate: ['hover', 'responsive', 'group-hover'],
   },
-  plugins: [require('@tailwindcss/aspect-ratio')],
+  plugins: [
+    require('@tailwindcss/aspect-ratio'),
+    require('tailwindcss-scoped-groups'),
+  ],
   future: {
     purgeLayersByDefault: true,
   },
