@@ -180,9 +180,9 @@ const eventUsersFunc = (eventId) => {
             readOnly={!isLoggedUserAdmin}
           />
           <div className="flex justify-end gap-x-1">
-            <span>Всего:</span>
+            <span>Всего участников:</span>
             <span className="font-bold">
-              {mansIds.length + womansIds.length + assistantsIds.length}
+              {mansIds.length + womansIds.length}
             </span>
             {event.maxUsers ? (
               <>

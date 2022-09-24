@@ -111,8 +111,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
     event.isReserveActive ?? DEFAULT_EVENT.isReserveActive
 
   if (
-    typeof event.maxUsers === 'number' &&
-    event.maxUsers <= eventParticipantsCount
+    typeof event.maxParticipants === 'number' &&
+    event.maxParticipants <= eventParticipantsCount
   )
     return {
       canSee,
@@ -142,6 +142,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       userEventStatus: userEvent?.status,
       status: 'event full of mans',
     }
+
   if (
     user.gender === 'famale' &&
     typeof event.maxWomans === 'number' &&
