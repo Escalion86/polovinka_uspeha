@@ -119,14 +119,14 @@ const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
         >
           <FontAwesomeIcon
             icon={iconAsc}
-            className="w-6 h-5 mr-3 text-white min-w-6"
+            className="w-6 h-6 mr-3 text-white min-w-6"
           />
           {value && (
             <div className="z-20 h-8 absolute right-[calc(100%-2.55rem)] w-2 rounded-l min-w-2 bg-success" />
           )}
         </div>
       </div>
-      <FontAwesomeIcon icon={iconAsc} className="w-6 h-5 ml-1 text-general" />
+      <FontAwesomeIcon icon={iconAsc} className="w-6 h-6 ml-1 text-general" />
       <div
         className={cn(
           'mx-3 px-1 flex items-center justify-center flex-1 h-8 group whitespace-nowrap',
@@ -137,7 +137,7 @@ const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
       >
         {title}
       </div>
-      <FontAwesomeIcon icon={iconDesc} className="w-6 h-5 mr-1 text-general" />
+      <FontAwesomeIcon icon={iconDesc} className="w-6 h-6 mr-1 text-general" />
       <div
         onClick={() => onChange('desc')}
         className="absolute right-0 z-10 flex items-center justify-start w-1/2 h-8 cursor-pointer group"
@@ -155,7 +155,7 @@ const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
           )}
           <FontAwesomeIcon
             icon={iconDesc}
-            className="z-10 w-6 h-5 ml-3 text-white min-w-6"
+            className="z-10 w-6 h-6 ml-3 text-white min-w-6"
           />
         </div>
       </div>
@@ -183,7 +183,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [] }) => {
 
   return (
     <div
-      className="z-10 flex items-start justify-end h-10"
+      className="flex items-start justify-end h-10"
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
       onClick={() => {
