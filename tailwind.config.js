@@ -290,7 +290,9 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/aspect-ratio'),
-    require('tailwindcss-scoped-groups'),
+    require('tailwindcss-scoped-groups')({
+      groups: ['one', 'two'],
+    }),
   ],
   future: {
     purgeLayersByDefault: true,

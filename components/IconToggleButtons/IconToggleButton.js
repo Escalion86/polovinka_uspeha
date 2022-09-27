@@ -6,7 +6,7 @@ const IconToggleButton = ({
   onChange,
   color = 'warning',
   value,
-  IconComponent,
+  children,
 }) => {
   return (
     <ToggleButton
@@ -16,7 +16,7 @@ const IconToggleButton = ({
       onChange={onChange}
       color={color}
     >
-      {IconComponent && <IconComponent />}
+      {children}
     </ToggleButton>
   )
 }
