@@ -7,16 +7,31 @@ import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import { getNounUsers } from '@helpers/getNoun'
 import { useMemo, useState } from 'react'
 import ContentHeader from '@components/ContentHeader'
-import { Button, ButtonGroup } from '@mui/material'
-import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
-import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
 import UsersFilter from '@components/Filter/UsersFilter'
+import SortingButtonMenu from '@components/SortingButtonMenu'
+import { FormControl } from '@mui/material'
+
+const sortFunctions = {
+  date: {
+    asc: (a, b) => (a.date < b.date ? -1 : 1),
+    desc: (a, b) => (a.date > b.date ? -1 : 1),
+  },
+  name: {
+    asc: (a, b) =>
+      a.firstName.toLowerCase() < b.firstName.toLowerCase() ? -1 : 1,
+    desc: (a, b) =>
+      a.firstName.toLowerCase() > b.firstName.toLowerCase() ? -1 : 1,
+  },
+  age: {
+    asc: (a, b) => (a.birthday > b.birthday ? -1 : 1),
+    desc: (a, b) => (a.birthday < b.birthday ? -1 : 1),
+  },
+}
 
 const UsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const users = useRecoilValue(usersAtom)
+  const [sort, setSort] = useState({ name: 'asc' })
   const [filter, setFilter] = useState({
     gender: {
       male: true,
@@ -32,6 +47,12 @@ const UsersContent = () => {
   //   novice: true,
   //   member: true,
   // })
+
+  const sortKey = Object.keys(sort)[0]
+  const sortValue = sort[sortKey]
+  const sortFunc = sortFunctions[sortKey]
+    ? sortFunctions[sortKey][sortValue]
+    : undefined
 
   const visibleUsersIds = useMemo(
     () =>
@@ -67,6 +88,13 @@ const UsersContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounUsers(visibleUsersIds.length)}
           </div>
+          <FormControl size="small">
+            <SortingButtonMenu
+              sort={sort}
+              onChange={setSort}
+              sortKeys={['name', 'age']}
+            />
+          </FormControl>
           {/* <FormControl size="small">
             <FilterToggleButton
               value={isFiltered}
@@ -80,13 +108,15 @@ const UsersContent = () => {
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
       <CardListWrapper>
         {users?.length > 0 ? (
-          users.map((user) => (
-            <UserCard
-              key={user._id}
-              userId={user._id}
-              hidden={!visibleUsersIds.includes(user._id)}
-            />
-          ))
+          [...users]
+            .sort(sortFunc)
+            .map((user) => (
+              <UserCard
+                key={user._id}
+                userId={user._id}
+                hidden={!visibleUsersIds.includes(user._id)}
+              />
+            ))
         ) : (
           <div className="flex justify-center p-2">Нет пользователей</div>
         )}

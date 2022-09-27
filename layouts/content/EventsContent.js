@@ -40,6 +40,21 @@ import FilterToggleButton from '@components/IconToggleButtons/FilterToggleButton
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 
+const sortFunctions = {
+  date: {
+    asc: (a, b) => (a.date < b.date ? -1 : 1),
+    desc: (a, b) => (a.date > b.date ? -1 : 1),
+  },
+  name: {
+    asc: (a, b) => (a.firstName < b.firstName ? -1 : 1),
+    desc: (a, b) => (a.firstName > b.firstName ? -1 : 1),
+  },
+  age: {
+    asc: (a, b) => (a.birthday < b.birthday ? -1 : 1),
+    desc: (a, b) => (a.birthday > b.birthday ? -1 : 1),
+  },
+}
+
 const EventsContent = () => {
   // const classes = useStyles()
 
@@ -50,6 +65,7 @@ const EventsContent = () => {
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
+  const [sort, setSort] = useState({ date: 'asc' })
   const [showFilter, setShowFilter] = useState(false)
   const [filter, setFilter] = useState({
     status: {
@@ -58,8 +74,11 @@ const EventsContent = () => {
       canceled: false,
     },
   })
-
-  const [isSorted, setIsSorted] = useState(true)
+  const sortKey = Object.keys(sort)[0]
+  const sortValue = sort[sortKey]
+  const sortFunc = sortFunctions[sortKey]
+    ? sortFunctions[sortKey][sortValue]
+    : undefined
 
   const eventsLoggedUser = useRecoilValue(
     eventsUsersByUserIdSelector(loggedUser?._id)
@@ -120,11 +139,8 @@ const EventsContent = () => {
   )
 
   const filteredAndSortedEvents = useMemo(
-    () =>
-      [...filteredEvents].sort((a, b) =>
-        (isSorted ? a.date < b.date : a.date > b.date) ? -1 : 1
-      ),
-    [filteredEvents, isSorted]
+    () => [...filteredEvents].sort(sortFunc),
+    [filteredEvents, sort]
   )
 
   const isFiltered = filterOptions.directions.length !== directions.length
@@ -138,7 +154,7 @@ const EventsContent = () => {
             setFilter((state) => ({ ...state, status: value }))
           }
         />
-        {/* <SortingButtonMenu /> */}
+
         {/* <ButtonGroup
           className=""
           // variant="contained"
@@ -161,6 +177,13 @@ const EventsContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounEvents(visibleEventsIds.length)}
           </div>
+          <FormControl size="small">
+            <SortingButtonMenu
+              sort={sort}
+              onChange={setSort}
+              sortKeys={['date']}
+            />
+          </FormControl>
           <FormControl size="small">
             <FilterToggleButton
               value={isFiltered}
