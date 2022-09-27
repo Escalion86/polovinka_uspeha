@@ -62,7 +62,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
 
   return (
     <div
-      className="relative z-10 flex items-center justify-end w-full h-16 px-3 text-white bg-black"
+      className="relative z-20 flex items-center justify-end w-full h-16 px-3 text-white bg-black"
       style={{ gridArea: 'header' }}
     >
       {title ? (

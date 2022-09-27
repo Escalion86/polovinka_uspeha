@@ -173,7 +173,7 @@ const EventsContent = () => {
             Завершенные
           </Button>
         </ButtonGroup> */}
-        <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
+        <div className="z-10 flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounEvents(visibleEventsIds.length)}
           </div>
