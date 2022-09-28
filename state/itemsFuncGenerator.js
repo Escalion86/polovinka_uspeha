@@ -315,18 +315,18 @@ const itemsFuncGenerator = (
   // }
 
   obj.event.setEventUsers = async (eventId, eventUsersStatuses) => {
-    snackbar.success('Список участников мероприятия успешно обновлен')
     setLoadingCard('event' + eventId)
     return await postData(
       `/api/eventsusers`,
       { eventId, eventUsersStatuses },
       (data) => {
+        snackbar.success('Список участников мероприятия успешно обновлен')
         setNotLoadingCard('event' + eventId)
         props.deleteEventsUsersByEventId(eventId)
         props.setEventsUsers(data)
       },
       (error) => {
-        snackbar.success('Не удалось обновить список участников мероприятия')
+        snackbar.error('Не удалось обновить список участников мероприятия')
         setErrorCard('event' + eventId)
         const data = {
           errorPlace: 'setEventUsers ERROR',
