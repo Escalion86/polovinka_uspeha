@@ -19,14 +19,49 @@ export default async function handler(req, res) {
             ?.status(400)
             .json({ success: false, data: 'error eventUsersStatuses data' })
 
-        // Сначала удаляем всех участников мероприятия
-        await EventsUsers.deleteMany({ eventId })
-        const data = []
-        for (let i = 0; i < eventUsersStatuses.length; i++) {
+        // Сравниваем участников что были с теми что пришли
+        const eventUsers = await EventsUsers.find({ eventId })
+        const oldEventUsers = eventUsers.filter((eventUser) =>
+          eventUsersStatuses.find(
+            (data) =>
+              // data.eventId === eventUser.eventId &&
+              data.userId === eventUser.userId &&
+              data.status === eventUser.status
+          )
+        )
+        const newEventUsers = eventUsersStatuses.filter(
+          (eventUser) =>
+            !eventUsers.find(
+              (data) =>
+                // data.eventId === eventUser.eventId &&
+                data.userId === eventUser.userId &&
+                data.status === eventUser.status
+            )
+        )
+        const deletedEventUsers = eventUsers.filter(
+          (eventUser) =>
+            !eventUsersStatuses.find(
+              (data) =>
+                // data.eventId === eventUser.eventId &&
+                data.userId === eventUser.userId &&
+                data.status === eventUser.status
+            )
+        )
+
+        // Удаляем тех кого больше нет
+        for (let i = 0; i < deletedEventUsers.length; i++) {
+          await EventsUsers.deleteOne({
+            eventId,
+            userId: deletedEventUsers[i].userId,
+          })
+        }
+
+        const data = [...oldEventUsers]
+        for (let i = 0; i < newEventUsers.length; i++) {
           const newEventUser = await EventsUsers.create({
             eventId,
-            userId: eventUsersStatuses[i].userId,
-            status: eventUsersStatuses[i].status,
+            userId: newEventUsers[i].userId,
+            status: newEventUsers[i].status,
           })
           data.push(newEventUser)
         }
