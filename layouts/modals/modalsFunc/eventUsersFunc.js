@@ -36,39 +36,48 @@ const eventUsersFunc = (eventId) => {
     const users = useRecoilValue(usersAtom)
 
     const sortUsersIds = (ids) =>
-      users
+      [...users]
         .filter((user) => ids.includes(user._id))
         .sort(sortFunction)
         .map((user) => user._id)
 
-    const eventAssistantsIds = useRecoilValue(eventAssistantsSelector(eventId))
-      .sort(sortFunction)
-      .map((user) => user._id)
-    const eventMansIds = useRecoilValue(eventMansSelector(eventId))
-      .sort(sortFunction)
-      .map((user) => user._id)
-    const eventWomansIds = useRecoilValue(eventWomansSelector(eventId))
-      .sort(sortFunction)
-      .map((user) => user._id)
-    const eventReservedParticipantsIds = useRecoilValue(
-      eventUsersInReserveSelector(eventId)
-    )
-      .sort(sortFunction)
-      .map((user) => user._id)
-    const eventBannedParticipantsIds = useRecoilValue(
-      eventUsersInBanSelector(eventId)
-    )
+    const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
+    const sortedEventAssistantsIds = [...eventAssistants]
       .sort(sortFunction)
       .map((user) => user._id)
 
-    const [assistantsIds, setAssistantsIds] = useState(eventAssistantsIds)
-    const [mansIds, setMansIds] = useState(eventMansIds)
-    const [womansIds, setWomansIds] = useState(eventWomansIds)
+    const eventMans = useRecoilValue(eventMansSelector(eventId))
+    const sortedEventMansIds = [...eventMans]
+      .sort(sortFunction)
+      .map((user) => user._id)
+
+    const eventWomans = useRecoilValue(eventWomansSelector(eventId))
+    const sortedEventWomansIds = [...eventWomans]
+      .sort(sortFunction)
+      .map((user) => user._id)
+
+    const eventReservedParticipants = useRecoilValue(
+      eventUsersInReserveSelector(eventId)
+    )
+    const sortedEventReservedParticipantsIds = [...eventReservedParticipants]
+      .sort(sortFunction)
+      .map((user) => user._id)
+
+    const eventBannedParticipants = useRecoilValue(
+      eventUsersInBanSelector(eventId)
+    )
+    const sortedEventBannedParticipantsIds = [...eventBannedParticipants]
+      .sort(sortFunction)
+      .map((user) => user._id)
+
+    const [assistantsIds, setAssistantsIds] = useState(sortedEventAssistantsIds)
+    const [mansIds, setMansIds] = useState(sortedEventMansIds)
+    const [womansIds, setWomansIds] = useState(sortedEventWomansIds)
     const [reservedParticipantsIds, setReservedParticipantsIds] = useState(
-      eventReservedParticipantsIds
+      sortedEventReservedParticipantsIds
     )
     const [bannedParticipantsIds, setBannedParticipantsIds] = useState(
-      eventBannedParticipantsIds
+      sortedEventBannedParticipantsIds
     )
 
     const onClickConfirm = async () => {
@@ -103,11 +112,14 @@ const eventUsersFunc = (eventId) => {
 
     useEffect(() => {
       const isFormChanged =
-        !compareArrays(assistantsIds, eventAssistantsIds) ||
-        !compareArrays(mansIds, eventMansIds) ||
-        !compareArrays(womansIds, eventWomansIds) ||
-        !compareArrays(reservedParticipantsIds, eventReservedParticipantsIds) ||
-        !compareArrays(bannedParticipantsIds, eventBannedParticipantsIds)
+        !compareArrays(assistantsIds, sortedEventAssistantsIds) ||
+        !compareArrays(mansIds, sortedEventMansIds) ||
+        !compareArrays(womansIds, sortedEventWomansIds) ||
+        !compareArrays(
+          reservedParticipantsIds,
+          sortedEventReservedParticipantsIds
+        ) ||
+        !compareArrays(bannedParticipantsIds, sortedEventBannedParticipantsIds)
 
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
@@ -128,6 +140,19 @@ const eventUsersFunc = (eventId) => {
           tempReservedParticipantsIds.push(reservedParticipantsIds[i])
       }
       setReservedParticipantsIds(tempReservedParticipantsIds)
+    }
+    const removeIdsFromParticipants = (usersIds) => {
+      const tempMansIds = []
+      for (let i = 0; i < mansIds.length; i++) {
+        if (!usersIds.includes(mansIds[i])) tempMansIds.push(mansIds[i])
+      }
+
+      const tempWomansIds = []
+      for (let i = 0; i < womansIds.length; i++) {
+        if (!usersIds.includes(womansIds[i])) tempWomansIds.push(womansIds[i])
+      }
+      setMansIds(tempMansIds)
+      setWomansIds(tempWomansIds)
     }
     const removeIdsFromAllByBan = (bannedUsersIds) => {
       var tempIds = []
@@ -236,6 +261,7 @@ const eventUsersFunc = (eventId) => {
             usersId={assistantsIds}
             onChange={(usersIds) => {
               removeIdsFromReserve(usersIds)
+              removeIdsFromParticipants(usersIds)
               setAssistantsIds(sortUsersIds(usersIds))
             }}
             exceptedIds={[
