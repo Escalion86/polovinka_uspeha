@@ -5,7 +5,9 @@ import { GENDERS } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
+import eventSelector from '@state/selectors/eventSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
@@ -84,6 +86,10 @@ const ItemContainer = ({
 // )
 
 // export const SetItem = (props) => ProductItem(props)
+export const UserItemFromId = ({ userId, onClick = null, active = false }) => {
+  const user = useRecoilValue(userSelector(userId))
+  return <UserItem item={user} active={active} onClick={onClick} />
+}
 
 export const UserItem = ({ item, onClick = null, active = false }) => {
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
@@ -137,6 +143,15 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
     </ItemContainer>
     // </Tooltip>
   )
+}
+
+export const EventItemFromId = ({
+  eventId,
+  onClick = null,
+  active = false,
+}) => {
+  const event = useRecoilValue(eventSelector(eventId))
+  return <EventItem item={event} active={active} onClick={onClick} />
 }
 
 export const EventItem = ({ item, onClick = null, active = false }) => (
