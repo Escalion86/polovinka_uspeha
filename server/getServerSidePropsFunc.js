@@ -5,7 +5,7 @@ const getServerSidePropsFunc = async (context, getSession, fetchProps) => {
   try {
     const session = await getSession({ req: context.req })
 
-    const fetchedProps = await fetchProps()
+    const fetchedProps = await fetchProps(session?.user)
 
     return {
       props: {

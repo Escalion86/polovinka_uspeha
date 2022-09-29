@@ -36,6 +36,7 @@ const DateTimeEvent = ({
   showDayOfWeek,
   fullMonth,
   showDuration,
+  thin,
 }) => {
   const dateTime = event?.date
   if (!dateTime) return undefined
@@ -56,30 +57,59 @@ const DateTimeEvent = ({
 
   return (
     <div
-      className={cn('flex gap-x-1 flex-wrap items-center', wrapperClassName)}
+      className={cn(
+        'flex flex-wrap items-center',
+        thin ? 'gap-x-0.5' : 'gap-x-1',
+        wrapperClassName
+      )}
     >
-      <div className="flex flex-wrap items-center gap-x-1">
-        <div className="flex items-center gap-x-1 flex-nowrap">
-          <span className={cn('whitespace-nowrap', dateClassName)}>
-            {strDateStart}
-          </span>
-          {!event?.duration ||
-            (strDateFinish !== strDateStart && (
-              <span className={timeClassName}>{strTimeStart}</span>
-            ))}
-          {event?.duration && strDateFinish !== strDateStart && <span>-</span>}
-        </div>
-        {event?.duration && strDateFinish === strDateStart && (
-          <div className="flex items-center gap-x-1 flex-nowrap">
-            <span className={timeClassName}>{strTimeStart}</span>
-            <span>-</span>
-            <span className={timeClassName}>{strTimeFinish}</span>
-          </div>
+      {/* <div
+        className={cn(
+          'flex flex-wrap items-center',
+          thin ? 'gap-x-0.5' : 'gap-x-1'
         )}
+      > */}
+      <div
+        className={cn(
+          'flex items-center flex-nowrap',
+          thin ? 'gap-x-0.5' : 'gap-x-1'
+        )}
+      >
+        <span className={cn('whitespace-nowrap', dateClassName)}>
+          {strDateStart}
+        </span>
+        {!event?.duration ||
+          (strDateFinish !== strDateStart && (
+            <span className={timeClassName}>{strTimeStart}</span>
+          ))}
+        {event?.duration && strDateFinish !== strDateStart && <span>-</span>}
       </div>
+      {event?.duration && strDateFinish === strDateStart && (
+        <div
+          className={cn(
+            'flex items-center flex-nowrap',
+            thin ? 'gap-x-0.5' : 'gap-x-1'
+          )}
+        >
+          <span className={timeClassName}>{strTimeStart}</span>
+          <span>-</span>
+          <span className={timeClassName}>{strTimeFinish}</span>
+        </div>
+      )}
+      {/* </div> */}
       {event?.duration && strDateFinish !== strDateStart && (
-        <div className="flex flex-wrap items-center gap-x-1">
-          <div className="flex items-center gap-x-1 flex-nowrap">
+        <div
+          className={cn(
+            'flex flex-wrap items-center',
+            thin ? 'gap-x-0.5' : 'gap-x-1'
+          )}
+        >
+          <div
+            className={cn(
+              'flex items-center flex-nowrap',
+              thin ? 'gap-x-0.5' : 'gap-x-1'
+            )}
+          >
             <span className={cn('whitespace-nowrap', dateClassName)}>
               {strDateFinish}
             </span>

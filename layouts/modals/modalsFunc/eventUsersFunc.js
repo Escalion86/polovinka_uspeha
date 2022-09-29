@@ -15,6 +15,10 @@ import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelecto
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import { DEFAULT_EVENT } from '@helpers/constants'
+import usersAtom from '@state/atoms/usersAtom'
+import compareArrays from '@helpers/compareArrays'
+
+const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
 const eventUsersFunc = (eventId) => {
   const EventModal = ({
@@ -29,31 +33,51 @@ const eventUsersFunc = (eventId) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
+    const users = useRecoilValue(usersAtom)
 
-    const eventAssistantsIds = useRecoilValue(
-      eventAssistantsSelector(eventId)
-    ).map((user) => user._id)
-    const eventMansIds = useRecoilValue(eventMansSelector(eventId)).map(
-      (user) => user._id
-    )
-    const eventWomansIds = useRecoilValue(eventWomansSelector(eventId)).map(
-      (user) => user._id
-    )
-    const eventReservedParticipantsIds = useRecoilValue(
+    const sortUsersIds = (ids) =>
+      [...users]
+        .filter((user) => ids.includes(user._id))
+        .sort(sortFunction)
+        .map((user) => user._id)
+
+    const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
+    const sortedEventAssistantsIds = [...eventAssistants]
+      .sort(sortFunction)
+      .map((user) => user._id)
+
+    const eventMans = useRecoilValue(eventMansSelector(eventId))
+    const sortedEventMansIds = [...eventMans]
+      .sort(sortFunction)
+      .map((user) => user._id)
+
+    const eventWomans = useRecoilValue(eventWomansSelector(eventId))
+    const sortedEventWomansIds = [...eventWomans]
+      .sort(sortFunction)
+      .map((user) => user._id)
+
+    const eventReservedParticipants = useRecoilValue(
       eventUsersInReserveSelector(eventId)
-    ).map((user) => user._id)
-    const eventBannedParticipantsIds = useRecoilValue(
-      eventUsersInBanSelector(eventId)
-    ).map((user) => user._id)
+    )
+    const sortedEventReservedParticipantsIds = [...eventReservedParticipants]
+      .sort(sortFunction)
+      .map((user) => user._id)
 
-    const [assistantsIds, setAssistantsIds] = useState(eventAssistantsIds)
-    const [mansIds, setMansIds] = useState(eventMansIds)
-    const [womansIds, setWomansIds] = useState(eventWomansIds)
+    const eventBannedParticipants = useRecoilValue(
+      eventUsersInBanSelector(eventId)
+    )
+    const sortedEventBannedParticipantsIds = [...eventBannedParticipants]
+      .sort(sortFunction)
+      .map((user) => user._id)
+
+    const [assistantsIds, setAssistantsIds] = useState(sortedEventAssistantsIds)
+    const [mansIds, setMansIds] = useState(sortedEventMansIds)
+    const [womansIds, setWomansIds] = useState(sortedEventWomansIds)
     const [reservedParticipantsIds, setReservedParticipantsIds] = useState(
-      eventReservedParticipantsIds
+      sortedEventReservedParticipantsIds
     )
     const [bannedParticipantsIds, setBannedParticipantsIds] = useState(
-      eventBannedParticipantsIds
+      sortedEventBannedParticipantsIds
     )
 
     const onClickConfirm = async () => {
@@ -88,11 +112,14 @@ const eventUsersFunc = (eventId) => {
 
     useEffect(() => {
       const isFormChanged =
-        assistantsIds !== eventAssistantsIds ||
-        mansIds !== eventMansIds ||
-        womansIds !== eventWomansIds ||
-        reservedParticipantsIds !== eventReservedParticipantsIds ||
-        bannedParticipantsIds !== eventBannedParticipantsIds
+        !compareArrays(assistantsIds, sortedEventAssistantsIds) ||
+        !compareArrays(mansIds, sortedEventMansIds) ||
+        !compareArrays(womansIds, sortedEventWomansIds) ||
+        !compareArrays(
+          reservedParticipantsIds,
+          sortedEventReservedParticipantsIds
+        ) ||
+        !compareArrays(bannedParticipantsIds, sortedEventBannedParticipantsIds)
 
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
@@ -113,6 +140,19 @@ const eventUsersFunc = (eventId) => {
           tempReservedParticipantsIds.push(reservedParticipantsIds[i])
       }
       setReservedParticipantsIds(tempReservedParticipantsIds)
+    }
+    const removeIdsFromParticipants = (usersIds) => {
+      const tempMansIds = []
+      for (let i = 0; i < mansIds.length; i++) {
+        if (!usersIds.includes(mansIds[i])) tempMansIds.push(mansIds[i])
+      }
+
+      const tempWomansIds = []
+      for (let i = 0; i < womansIds.length; i++) {
+        if (!usersIds.includes(womansIds[i])) tempWomansIds.push(womansIds[i])
+      }
+      setMansIds(tempMansIds)
+      setWomansIds(tempWomansIds)
     }
     const removeIdsFromAllByBan = (bannedUsersIds) => {
       var tempIds = []
@@ -151,7 +191,7 @@ const eventUsersFunc = (eventId) => {
             usersId={mansIds}
             onChange={(usersIds) => {
               removeIdsFromReserve(usersIds)
-              setMansIds(usersIds)
+              setMansIds(sortUsersIds(usersIds))
             }}
             maxUsers={event.maxMans}
             canAddItem={
@@ -168,7 +208,7 @@ const eventUsersFunc = (eventId) => {
             usersId={womansIds}
             onChange={(usersIds) => {
               removeIdsFromReserve(usersIds)
-              setWomansIds(usersIds)
+              setWomansIds(sortUsersIds(usersIds))
             }}
             maxUsers={event.maxWomans}
             canAddItem={
@@ -201,7 +241,9 @@ const eventUsersFunc = (eventId) => {
             <SelectUserList
               label="Резерв"
               usersId={reservedParticipantsIds}
-              onChange={setReservedParticipantsIds}
+              onChange={(usersIds) =>
+                setReservedParticipantsIds(sortUsersIds(usersIds))
+              }
               exceptedIds={[
                 ...assistantsIds,
                 // ...mansIds,
@@ -219,7 +261,8 @@ const eventUsersFunc = (eventId) => {
             usersId={assistantsIds}
             onChange={(usersIds) => {
               removeIdsFromReserve(usersIds)
-              setAssistantsIds(usersIds)
+              removeIdsFromParticipants(usersIds)
+              setAssistantsIds(sortUsersIds(usersIds))
             }}
             exceptedIds={[
               // ...assistantsIds,
@@ -240,7 +283,7 @@ const eventUsersFunc = (eventId) => {
               usersId={bannedParticipantsIds}
               onChange={(usersIds) => {
                 removeIdsFromAllByBan(usersIds)
-                setBannedParticipantsIds(usersIds)
+                setBannedParticipantsIds(sortUsersIds(usersIds))
               }}
               // onDelete={(user, onConfirm) => {
               //   console.log('1', 1)

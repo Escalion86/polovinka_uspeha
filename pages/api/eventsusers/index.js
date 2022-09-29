@@ -1,4 +1,5 @@
 import EventsUsers from '@models/EventsUsers'
+import Histories from '@models/Histories'
 import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
 
@@ -19,18 +20,66 @@ export default async function handler(req, res) {
             ?.status(400)
             .json({ success: false, data: 'error eventUsersStatuses data' })
 
-        // Сначала удаляем всех участников мероприятия
-        await EventsUsers.deleteMany({ eventId })
+        // Сравниваем участников что были с теми что пришли
+        const eventUsers = await EventsUsers.find({ eventId })
+        const oldEventUsers = eventUsers.filter((eventUser) =>
+          eventUsersStatuses.find(
+            (data) =>
+              // data.eventId === eventUser.eventId &&
+              data.userId === eventUser.userId &&
+              data.status === eventUser.status
+          )
+        )
+        const newEventUsers = eventUsersStatuses.filter(
+          (eventUser) =>
+            !eventUsers.find(
+              (data) =>
+                // data.eventId === eventUser.eventId &&
+                data.userId === eventUser.userId &&
+                data.status === eventUser.status
+            )
+        )
+        const deletedEventUsers = eventUsers.filter(
+          (eventUser) =>
+            !eventUsersStatuses.find(
+              (data) =>
+                // data.eventId === eventUser.eventId &&
+                data.userId === eventUser.userId &&
+                data.status === eventUser.status
+            )
+        )
+
+        // Удаляем тех кого больше нет
+        for (let i = 0; i < deletedEventUsers.length; i++) {
+          await EventsUsers.deleteOne({
+            eventId,
+            userId: deletedEventUsers[i].userId,
+          })
+        }
+
+        if (deletedEventUsers.length > 0)
+          await Histories.create({
+            schema: 'EventsUsers',
+            action: 'delete',
+            data: deletedEventUsers,
+          })
+
         const data = []
-        for (let i = 0; i < eventUsersStatuses.length; i++) {
+        for (let i = 0; i < newEventUsers.length; i++) {
           const newEventUser = await EventsUsers.create({
             eventId,
-            userId: eventUsersStatuses[i].userId,
-            status: eventUsersStatuses[i].status,
+            userId: newEventUsers[i].userId,
+            status: newEventUsers[i].status,
           })
           data.push(newEventUser)
         }
-        return res?.status(201).json({ success: true, data })
+
+        if (data.length > 0)
+          await Histories.create({ schema: 'EventsUsers', action: 'add', data })
+
+        return res
+          ?.status(201)
+          .json({ success: true, data: [...oldEventUsers, ...data] })
       }
       if (userId) {
         // Сначала проверяем есть ли такой пользователь в мероприятии
@@ -54,6 +103,12 @@ export default async function handler(req, res) {
             data: { error: `Can't create user registration on event` },
           })
         }
+
+        await Histories.create({
+          schema: 'EventsUsers',
+          action: 'add',
+          data: newEventUser,
+        })
 
         return res?.status(201).json({ success: true, data: newEventUser })
       }
@@ -96,6 +151,12 @@ export default async function handler(req, res) {
       await EventsUsers.deleteMany({
         eventId,
         userId,
+      })
+
+      await Histories.create({
+        schema: 'EventsUsers',
+        action: 'delete',
+        data: eventUser,
       })
 
       return res?.status(201).json({ success: true, data: eventUser })

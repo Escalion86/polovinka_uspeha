@@ -5,10 +5,13 @@ import { GENDERS } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
+import eventSelector from '@state/selectors/eventSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
+import DateTimeEvent from './DateTimeEvent'
 import UserName from './UserName'
 import UserStatusIcon from './UserStatusIcon'
 
@@ -84,6 +87,10 @@ const ItemContainer = ({
 // )
 
 // export const SetItem = (props) => ProductItem(props)
+export const UserItemFromId = ({ userId, onClick = null, active = false }) => {
+  const user = useRecoilValue(userSelector(userId))
+  return <UserItem item={user} active={active} onClick={onClick} />
+}
 
 export const UserItem = ({ item, onClick = null, active = false }) => {
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
@@ -109,10 +116,10 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
         alt="user"
       />
       <div className="flex items-center flex-1 py-0.5 px-1">
-        <div className="flex flex-wrap items-center flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1">
-          <UserName user={item} className="font-semibold" />
+        <div className="flex flex-wrap items-center flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1 gap-y-0.5">
+          <UserName user={item} className="font-semibold" thin />
           {item.birthday && (isLoggedUserAdmin || item.security?.showAge) && (
-            <span className="overflow-visible italic leading-4 max-h-3">
+            <span className="overflow-visible italic leading-4 max-h-3 -mt-0.5">
               {' (' + birthDateToAge(item.birthday) + ')'}
             </span>
           )}
@@ -139,18 +146,38 @@ export const UserItem = ({ item, onClick = null, active = false }) => {
   )
 }
 
+export const EventItemFromId = ({
+  eventId,
+  onClick = null,
+  active = false,
+}) => {
+  const event = useRecoilValue(eventSelector(eventId))
+  return <EventItem item={event} active={active} onClick={onClick} />
+}
+
 export const EventItem = ({ item, onClick = null, active = false }) => (
-  <ItemContainer onClick={onClick} active={active} className="justify-between">
-    <div className="h-5 text-xs font-bold text-gray-800 truncate tablet:text-sm">
-      {item.title}
-    </div>
-    <div className="flex items-center text-xs text-gray-600 tablet:text-sm gap-x-2">
+  <ItemContainer
+    onClick={onClick}
+    active={active}
+    className="items-center justify-between text-xs tablet:text-sm"
+  >
+    <div className="font-bold text-gray-800">{item.title}</div>
+    <div className="text-gray-600 gap-x-2">
       {/* <div className="flex-2 whitespace-nowrap">
         Артикул: {item.а || '[нет]'}
       </div> */}
-      <div className="flex-1 whitespace-nowrap">
-        {formatDateTime(item.date, false)}
-      </div>
+      <DateTimeEvent
+        wrapperClassName="flex-1 text-sm font-bold justify-end"
+        dateClassName="text-general"
+        timeClassName="italic"
+        durationClassName="italic text-sm font-normal"
+        event={item}
+        showDayOfWeek
+        fullMonth
+        thin
+        // showDuration
+      />
+      {/* {formatDateTime(item.date, false, false, true, true, true)} */}
       {/* <div className="flex-1 w-10 text-right whitespace-nowrap">
         {item.price ? item.price / 100 : 0} ₽
       </div> */}

@@ -23,13 +23,14 @@ import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
+import Histories from '@models/Histories'
 import Payments from '@models/Payments'
 import Reviews from '@models/Reviews'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
-const fetchProps = async () => {
+const fetchProps = async (user) => {
   try {
     console.log(`start fetchProps`)
     console.time('Loading time')
@@ -90,6 +91,11 @@ const fetchProps = async () => {
     // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     // console.log(`siteSettings`, siteSettings)
     // console.timeEnd('siteSettings')
+    const histories = user
+      ? await Histories.find({
+          createdAt: { $gt: user.prevActivityAt },
+        })
+      : []
     console.timeEnd('Loading time')
     // dbDisconnect()
     // console.log('return result', {
@@ -123,6 +129,7 @@ const fetchProps = async () => {
       eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
       payments: JSON.parse(JSON.stringify(payments)),
       siteSettings: JSON.parse(JSON.stringify(siteSettings[0])),
+      histories: JSON.parse(JSON.stringify(histories)),
     }
   } catch (error) {
     return {
@@ -134,6 +141,7 @@ const fetchProps = async () => {
       eventsUsers: [],
       payments: [],
       siteSettings: {},
+      histories: [],
       error: JSON.parse(JSON.stringify(error)),
     }
   }
