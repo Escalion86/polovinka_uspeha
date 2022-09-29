@@ -44,6 +44,7 @@ import ModalsPortal from '@layouts/modals/ModalsPortal'
 import DeviceCheck from './DeviceCheck'
 import cn from 'classnames'
 import useSnackbar from '@helpers/useSnackbar'
+import historiesAtom from '@state/atoms/historiesAtom'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -71,6 +72,7 @@ const StateLoader = (props) => {
   const setPaymentsState = useSetRecoilState(paymentsAtom)
   const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
   const setSiteSettingsState = useSetRecoilState(siteSettingsAtom)
+  const setHistoriesState = useSetRecoilState(historiesAtom)
 
   const setEvent = useSetRecoilState(eventEditSelector)
   const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -110,6 +112,7 @@ const StateLoader = (props) => {
     setPaymentsState(props.payments)
     setEventsUsersState(props.eventsUsers)
     setSiteSettingsState(props.siteSettings)
+    setHistoriesState(props.histories)
 
     setIsSiteLoading(false)
   }, [])

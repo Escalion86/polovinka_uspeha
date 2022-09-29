@@ -7,6 +7,7 @@ import {
   faComments,
   faCube,
   faGift,
+  faHistory,
   faMars,
   faMarsDouble,
   faPhone,
@@ -56,6 +57,7 @@ import ZodiacScorpio from 'svg/zodiac/ZodiacScorpio'
 import PaymentsContent from '@layouts/content/PaymentsContent'
 import ContactsContent from '@layouts/content/ContactsContent'
 import DevContent from '@layouts/content/DevContent'
+import HistoriesContent from '@layouts/content/HistoriesContent'
 
 const colors = [
   'border-blue-400',
@@ -485,6 +487,7 @@ export const CONTENTS = {
   payments: { Component: PaymentsContent, name: 'Транзакции' },
   contacts: { Component: ContactsContent, name: 'Контакты на сайте' },
   dev: { Component: DevContent, name: 'Разработчик' },
+  histories: { Component: HistoriesContent, name: 'События' },
 }
 
 export const pages = [
@@ -538,12 +541,34 @@ export const pages = [
     icon: faMoneyBill,
   },
   {
+    id: 7,
+    group: 4,
+    name: 'События',
+    href: 'histories',
+    icon: faHistory,
+  },
+  {
     id: 99,
     group: 99,
     name: 'Разработчик',
     href: 'dev',
     icon: faBug,
   },
+]
+
+export const pagesGroups = [
+  { id: 0, name: 'Мероприятия', icon: faCalendarAlt, access: 'all' },
+  { id: 1, name: 'Сайт', icon: faHome, access: 'admin' },
+  { id: 2, name: 'Пользователи', icon: faUser, access: 'admin' },
+  { id: 3, name: 'Транзакции', icon: faMoneyBill, access: 'dev' },
+  { id: 4, name: 'События', icon: faHistory, access: 'admin' },
+  { id: 99, name: 'Разработчик', icon: faBug, access: 'dev' },
+  // { id: 2, name: 'Заказы', icon: faFire },
+  // { id: 1, name: 'Склад', icon: faCubes },
+  // { id: 3, name: 'Клиенты', icon: faUser },
+  // { id: 4, name: 'Оплата', icon: faMoneyBill },
+  // { id: 6, name: 'Настройки', icon: faCog, bottom: true },
+  // { id: 10, name: 'Разработка', icon: faBug, bottom: true },
 ]
 
 export const PAY_TYPES = [
@@ -555,20 +580,6 @@ export const PAY_TYPES = [
     color: 'yellow-400',
     icon: faSignInAlt,
   },
-]
-
-export const pagesGroups = [
-  { id: 0, name: 'Мероприятия', icon: faCalendarAlt, access: 'all' },
-  { id: 1, name: 'Сайт', icon: faHome, access: 'admin' },
-  { id: 2, name: 'Пользователи', icon: faUser, access: 'admin' },
-  { id: 3, name: 'Транзакции', icon: faMoneyBill, access: 'dev' },
-  { id: 99, name: 'Разработчик', icon: faBug, access: 'dev' },
-  // { id: 2, name: 'Заказы', icon: faFire },
-  // { id: 1, name: 'Склад', icon: faCubes },
-  // { id: 3, name: 'Клиенты', icon: faUser },
-  // { id: 4, name: 'Оплата', icon: faMoneyBill },
-  // { id: 6, name: 'Настройки', icon: faCog, bottom: true },
-  // { id: 10, name: 'Разработка', icon: faBug, bottom: true },
 ]
 
 export const DEFAULT_USERS_STATUS_ACCESS = {
