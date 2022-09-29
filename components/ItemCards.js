@@ -11,6 +11,7 @@ import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
+import DateTimeEvent from './DateTimeEvent'
 import UserName from './UserName'
 import UserStatusIcon from './UserStatusIcon'
 
@@ -155,17 +156,28 @@ export const EventItemFromId = ({
 }
 
 export const EventItem = ({ item, onClick = null, active = false }) => (
-  <ItemContainer onClick={onClick} active={active} className="justify-between">
-    <div className="h-5 text-xs font-bold text-gray-800 truncate tablet:text-sm">
-      {item.title}
-    </div>
-    <div className="flex items-center text-xs text-gray-600 tablet:text-sm gap-x-2">
+  <ItemContainer
+    onClick={onClick}
+    active={active}
+    className="items-center justify-between text-xs tablet:text-sm"
+  >
+    <div className="font-bold text-gray-800">{item.title}</div>
+    <div className="text-gray-600 gap-x-2">
       {/* <div className="flex-2 whitespace-nowrap">
         Артикул: {item.а || '[нет]'}
       </div> */}
-      <div className="flex-1 whitespace-nowrap">
-        {formatDateTime(item.date, false)}
-      </div>
+      <DateTimeEvent
+        wrapperClassName="flex-1 text-sm font-bold justify-end"
+        dateClassName="text-general"
+        timeClassName="italic"
+        durationClassName="italic text-sm font-normal"
+        event={item}
+        showDayOfWeek
+        fullMonth
+        thin
+        // showDuration
+      />
+      {/* {formatDateTime(item.date, false, false, true, true, true)} */}
       {/* <div className="flex-1 w-10 text-right whitespace-nowrap">
         {item.price ? item.price / 100 : 0} ₽
       </div> */}

@@ -90,9 +90,9 @@ const HistoriesOfEvent = ({ histories }) => (
       // [`& .${timelineItemClasses.root}`]: {
       //   maxHeight: 8,
       // },
-      [`& .${timelineContentClasses.root}`]: {
-        paddingRight: 0,
-      },
+      // [`& .${timelineContentClasses.root}`]: {
+      //   paddingRight: 0,
+      // },
       // [`& .${timelineDotClasses.root}:before`]: {
       //   padding: 0,
       // },
@@ -107,10 +107,19 @@ const HistoriesOfEvent = ({ histories }) => (
       {formatDateTime(history.createdAt, false, false, false, false)}
     </TimelineOppositeContent> */}
         <TimelineSeparator>
-          <TimelineDot color={dotColors[history.action]} />
+          <TimelineDot color={dotColors[history.action]}>
+            <div className="flex items-center justify-center w-3 h-3 text-sm tablet:w-4 tablet:h-4 tablet:text-base">
+              {history.data.length}
+            </div>
+          </TimelineDot>
           {index < histories.length - 1 && <TimelineConnector />}
         </TimelineSeparator>
-        <TimelineContent>
+        <TimelineContent
+          style={{
+            paddingRight: 0,
+            paddingLeft: 8,
+          }}
+        >
           <div className="">
             {formatDateTime(history.createdAt, false, false, false, false)}
           </div>
@@ -138,14 +147,16 @@ const HistoriesOfEvent = ({ histories }) => (
 const HistoriesOfEvents = ({ eventsHistories }) => {
   return (
     <Timeline
+      style={{ paddingLeft: 8, paddingRight: 8 }}
       sx={{
         [`& .${timelineItemClasses.root}:before`]: {
           flex: 0,
           padding: 0,
         },
-        [`& .${timelineContentClasses.root}`]: {
-          paddingRight: 0,
-        },
+        // [`& .${timelineContentClasses.root}`]: {
+        //   paddingRight: 0,
+        //   paddingLeft: 1.5,
+        // },
       }}
     >
       {/* {Object.keys(eventsHistories).map((key, index) => {
@@ -167,17 +178,27 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
           <TimelineItem key={eventId}>
             <TimelineSeparator>
               <TimelineDot
+                // style={{ paddingLeft: 0, paddingRight: 0 }}
                 color={
                   eventResult === 0
                     ? undefined
                     : dotColors[eventResult > 0 ? 'add' : 'delete']
                 }
-              />
+              >
+                <div className="flex items-center justify-center w-3 h-3 text-sm tablet:w-4 tablet:h-4 tablet:text-base">
+                  {eventResult}
+                </div>
+              </TimelineDot>
               {index < Object.keys(eventsHistories).length - 1 && (
                 <TimelineConnector />
               )}
             </TimelineSeparator>
-            <TimelineContent>
+            <TimelineContent
+              style={{
+                paddingRight: 0,
+                paddingLeft: 8,
+              }}
+            >
               <div className="">
                 {formatDateTime(createdAt, false, false, false, false)}
               </div>
