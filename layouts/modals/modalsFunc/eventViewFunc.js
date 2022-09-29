@@ -39,7 +39,6 @@ const eventViewFunc = (eventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const copyLink = useCopyEventLinkToClipboard(eventId)
     const event = useRecoilValue(eventSelector(eventId))
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
