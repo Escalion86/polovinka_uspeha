@@ -51,15 +51,9 @@ export const SelectItem = ({
   const Item = itemComponent
 
   const preFilteredItemsArray = isMenuOpen
-    ? filterItems(items, null, exceptedIds, {}).sort((a, b) => {
-        if (a.name < b.name) {
-          return -1
-        }
-        if (a.name > b.name) {
-          return 1
-        }
-        return 0
-      })
+    ? [...filterItems(items, null, exceptedIds, {})].sort((a, b) =>
+        a.name < b.name ? -1 : 1
+      )
     : []
 
   const filteredItemsArray = isMenuOpen
@@ -369,12 +363,14 @@ export const SelectEvent = ({
   error,
   bordered = true,
   bottons,
+  disableDropDownList,
 }) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
   return (
     <SelectItemContainer
       required={required}
-      label="Мероприятие"
+      // label="Мероприятие"
       onClickClearButton={
         selectedId && clearButton
           ? onDelete
@@ -394,6 +390,11 @@ export const SelectEvent = ({
         selectedId={selectedId}
         className={
           'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
+        }
+        onClick={
+          disableDropDownList
+            ? (event) => modalsFunc.event.view(event._id)
+            : null
         }
         exceptedIds={exceptedIds}
       />

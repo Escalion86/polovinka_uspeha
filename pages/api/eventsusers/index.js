@@ -1,4 +1,5 @@
 import EventsUsers from '@models/EventsUsers'
+import Histories from '@models/Histories'
 import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
 
@@ -56,7 +57,14 @@ export default async function handler(req, res) {
           })
         }
 
-        const data = [...oldEventUsers]
+        if (deletedEventUsers.length > 0)
+          await Histories.create({
+            schema: 'EventsUsers',
+            action: 'delete',
+            data: deletedEventUsers,
+          })
+
+        const data = []
         for (let i = 0; i < newEventUsers.length; i++) {
           const newEventUser = await EventsUsers.create({
             eventId,
@@ -65,7 +73,13 @@ export default async function handler(req, res) {
           })
           data.push(newEventUser)
         }
-        return res?.status(201).json({ success: true, data })
+
+        if (data.length > 0)
+          await Histories.create({ schema: 'EventsUsers', action: 'add', data })
+
+        return res
+          ?.status(201)
+          .json({ success: true, data: [...oldEventUsers, ...data] })
       }
       if (userId) {
         // Сначала проверяем есть ли такой пользователь в мероприятии
@@ -89,6 +103,12 @@ export default async function handler(req, res) {
             data: { error: `Can't create user registration on event` },
           })
         }
+
+        await Histories.create({
+          schema: 'EventsUsers',
+          action: 'add',
+          data: newEventUser,
+        })
 
         return res?.status(201).json({ success: true, data: newEventUser })
       }
@@ -131,6 +151,12 @@ export default async function handler(req, res) {
       await EventsUsers.deleteMany({
         eventId,
         userId,
+      })
+
+      await Histories.create({
+        schema: 'EventsUsers',
+        action: 'delete',
+        data: eventUser,
       })
 
       return res?.status(201).json({ success: true, data: eventUser })

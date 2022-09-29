@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { SelectItem, SelectUser } from './SelectItem'
+import { SelectEvent, SelectItem, SelectUser } from './SelectItem'
 import cn from 'classnames'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
@@ -228,6 +228,48 @@ export const SelectUserList = ({
       exceptedIds={exceptedIds}
       maxItems={maxUsers}
       modalFuncKey="selectUsers"
+      readOnly={readOnly}
+      labelClassName={labelClassName}
+    />
+  )
+}
+
+export const SelectEventList = ({
+  eventsId = null,
+  onChange = null,
+  onDelete,
+  required = false,
+  label,
+  filter,
+  showCounter = false,
+  canAddItem = false,
+  exceptedIds,
+  buttons,
+  readOnly,
+  labelClassName,
+}) => {
+  return (
+    <SelectItemList
+      itemsId={eventsId}
+      label={label}
+      onChange={onChange}
+      onDelete={onDelete}
+      SelectItemComponent={(props) =>
+        SelectEvent({
+          ...props,
+          bordered: false,
+          filter,
+          disableDropDownList: true,
+          exceptedIds,
+          buttons,
+        })
+      }
+      required={required}
+      filter={filter}
+      showCounter={showCounter}
+      canAddItem={canAddItem}
+      exceptedIds={exceptedIds}
+      modalFuncKey="selectEvents"
       readOnly={readOnly}
       labelClassName={labelClassName}
     />
