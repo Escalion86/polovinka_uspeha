@@ -19,6 +19,7 @@
 //   fetchingUsers,
 // } from '@helpers/fetchers'
 import { fetchingLog } from '@helpers/fetchers'
+import isUserAdmin from '@helpers/isUserAdmin'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
 import Events from '@models/Events'
@@ -91,9 +92,9 @@ const fetchProps = async (user) => {
     // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     // console.log(`siteSettings`, siteSettings)
     // console.timeEnd('siteSettings')
-    const histories = user
+    const histories = isUserAdmin(user)
       ? await Histories.find({
-          createdAt: { $gt: user.prevActivityAt },
+          // createdAt: { $gt: user.prevActivityAt },
         })
       : []
     console.timeEnd('Loading time')

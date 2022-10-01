@@ -29,6 +29,18 @@ import { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent
 import formatDateTime from '@helpers/formatDateTime'
 import { UserItem, UserItemFromId } from '@components/ItemCards'
 import { SelectEventList, SelectUserList } from '@components/SelectItemList'
+import {
+  FormControl,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+} from '@mui/material'
+import SortingButtonMenu from '@components/SortingButtonMenu'
+import { useState } from 'react'
+import ContentHeader from '@components/ContentHeader'
+import getDaysBetween from '@helpers/getDaysBetween'
 
 // const ReviewCard = ({ reviewId }) => {
 //   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -186,7 +198,7 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
                 }
               >
                 <div className="flex items-center justify-center w-3 h-3 text-sm tablet:w-4 tablet:h-4 tablet:text-base">
-                  {eventResult}
+                  {Math.abs(eventResult)}
                 </div>
               </TimelineDot>
               {index < Object.keys(eventsHistories).length - 1 && (
@@ -212,14 +224,35 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
   )
 }
 
+const ITEM_HEIGHT = 48
+const ITEM_PADDING_TOP = 8
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+}
+
 const HistoriesContent = () => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const histories = useRecoilValue(historiesAtom)
-
+  const [periodDays, setPeriodDays] = useState(1)
+  console.log('periodDays', periodDays)
   const eventsHistories = {}
   // const eventsResults = {}
   histories.forEach((history) => {
+    if (getDaysBetween(new Date(), history.createdAt, false) > periodDays)
+      return
+
+    console.log(
+      'getDaysBetween(new Date(), history.createdAt, false) * -1',
+      getDaysBetween(new Date(), history.createdAt, false) * -1
+    )
+
     const eventId = history.data[0].eventId
+
     if (!eventsHistories[eventId]) eventsHistories[eventId] = []
     eventsHistories[eventId].push(history)
     // eventsResults[eventId] =
@@ -228,13 +261,29 @@ const HistoriesContent = () => {
   })
 
   return (
-    <CardListWrapper>
-      {/* {Object.keys(eventsHistories).map((key, index) => {
-        const {action, data, eventId, createdAt} = eventsHistories[key]
-        return 
-      })} */}
-      <HistoriesOfEvents eventsHistories={eventsHistories} />
-    </CardListWrapper>
+    <>
+      <ContentHeader>
+        <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none">
+          <InputLabel id="demo-multiple-name-label">Период</InputLabel>
+          <Select
+            labelId="demo-multiple-name-label"
+            id="demo-multiple-name"
+            value={periodDays}
+            onChange={(e) => setPeriodDays(e.target.value)}
+            input={<OutlinedInput label="Период" />}
+            MenuProps={MenuProps}
+          >
+            <MenuItem value={1}>Сутки</MenuItem>
+            <MenuItem value={3}>3 суток</MenuItem>
+            <MenuItem value={7}>Неделю</MenuItem>
+          </Select>
+        </FormControl>
+        <div className="flex-1" />
+      </ContentHeader>
+      <CardListWrapper>
+        <HistoriesOfEvents eventsHistories={eventsHistories} />
+      </CardListWrapper>
+    </>
   )
 }
 
