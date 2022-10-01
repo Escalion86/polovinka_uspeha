@@ -236,20 +236,14 @@ const MenuProps = {
 }
 
 const HistoriesContent = () => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const histories = useRecoilValue(historiesAtom)
   const [periodDays, setPeriodDays] = useState(1)
-  console.log('periodDays', periodDays)
+
   const eventsHistories = {}
   // const eventsResults = {}
   histories.forEach((history) => {
     if (getDaysBetween(new Date(), history.createdAt, false) > periodDays)
       return
-
-    console.log(
-      'getDaysBetween(new Date(), history.createdAt, false) * -1',
-      getDaysBetween(new Date(), history.createdAt, false) * -1
-    )
 
     const eventId = history.data[0].eventId
 
@@ -263,7 +257,7 @@ const HistoriesContent = () => {
   return (
     <>
       <ContentHeader>
-        <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none">
+        <FormControl sx={{ m: 1, width: 150 }} size="small" margin="none">
           <InputLabel id="demo-multiple-name-label">Период</InputLabel>
           <Select
             labelId="demo-multiple-name-label"
