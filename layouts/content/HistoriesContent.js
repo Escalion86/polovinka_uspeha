@@ -47,6 +47,7 @@ import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusT
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
+import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 
 // const ReviewCard = ({ reviewId }) => {
 //   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -183,7 +184,20 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
       })} */}
       {Object.keys(eventsHistories).map((eventId, index) => {
         const data = eventsHistories[eventId]
-        const createdAt = data[0].createdAt
+        // const firstCreatedAt = data[0].createdAt
+        // const lastCreatedAt = data[data.length - 1].createdAt
+
+        const [firstCreatedAtDate, firstCreatedAtTime] = dateToDateTimeStr(
+          data[0].createdAt,
+          true,
+          false
+        )
+
+        const [lastCreatedAtDate, lastCreatedAtTime] = dateToDateTimeStr(
+          data[data.length - 1].createdAt,
+          true,
+          false
+        )
 
         let eventResult = 0
         for (let i = 0; i < data.length; i++) {
@@ -218,8 +232,14 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
               }}
             >
               <div className="">
-                {formatDateTime(createdAt, false, false, false, false)}
+                {firstCreatedAtDate + ' ' + firstCreatedAtTime}
+                {lastCreatedAtDate !== firstCreatedAtDate
+                  ? ' - ' + lastCreatedAtDate + ' ' + lastCreatedAtTime
+                  : lastCreatedAtTime !== firstCreatedAtTime
+                  ? ' - ' + lastCreatedAtTime
+                  : ''}
               </div>
+
               <SelectEventList eventsId={[eventId]} readOnly />
               <HistoriesOfEvent histories={data} />
             </TimelineContent>
@@ -283,33 +303,41 @@ const HistoriesContent = () => {
   return (
     <>
       <ContentHeader>
-        <EventStatusToggleButtons
-          value={filter.status}
-          onChange={(value) =>
-            setFilter((state) => ({ ...state, status: value }))
-          }
-        />
-        <FormControl sx={{ m: 1, width: 160 }} size="small" margin="none">
-          <InputLabel id="demo-multiple-name-label">Период</InputLabel>
-          <Select
-            value={periodHours}
-            onChange={(e) => setPeriodHours(e.target.value)}
-            input={<OutlinedInput label="Период" />}
-            MenuProps={MenuProps}
-          >
-            <MenuItem value={1}>1 час</MenuItem>
-            <MenuItem value={2}>2 часа</MenuItem>
-            <MenuItem value={3}>3 часа</MenuItem>
-            <MenuItem value={6}>6 часов</MenuItem>
-            <MenuItem value={12}>12 часов</MenuItem>
-            <MenuItem value={24}>Сутки</MenuItem>
-            <MenuItem value={48}>2 суток</MenuItem>
-            <MenuItem value={72}>3 суток</MenuItem>
-            <MenuItem value={168}>Неделю</MenuItem>
-            <MenuItem value={336}>2 недели</MenuItem>
-            <MenuItem value={999999}>За все время</MenuItem>
-          </Select>
-        </FormControl>
+        <div className="flex flex-wrap items-center justify-start flex-1">
+          <div className="flex flex-wrap items-center justify-center gap-y-0.5">
+            <EventStatusToggleButtons
+              value={filter.status}
+              onChange={(value) =>
+                setFilter((state) => ({ ...state, status: value }))
+              }
+            />
+            <FormControl
+              sx={{ mt: 1, ml: 1, mr: 1, mb: 0.5, width: 160 }}
+              size="small"
+              margin="none"
+            >
+              <InputLabel id="demo-multiple-name-label">Период</InputLabel>
+              <Select
+                value={periodHours}
+                onChange={(e) => setPeriodHours(e.target.value)}
+                input={<OutlinedInput label="Период" />}
+                MenuProps={MenuProps}
+              >
+                <MenuItem value={1}>1 час</MenuItem>
+                <MenuItem value={2}>2 часа</MenuItem>
+                <MenuItem value={3}>3 часа</MenuItem>
+                <MenuItem value={6}>6 часов</MenuItem>
+                <MenuItem value={12}>12 часов</MenuItem>
+                <MenuItem value={24}>Сутки</MenuItem>
+                <MenuItem value={48}>2 суток</MenuItem>
+                <MenuItem value={72}>3 суток</MenuItem>
+                <MenuItem value={168}>Неделю</MenuItem>
+                <MenuItem value={336}>2 недели</MenuItem>
+                <MenuItem value={999999}>За все время</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </div>
         {/* <div className="flex-1" /> */}
       </ContentHeader>
       <CardListWrapper>
