@@ -1,10 +1,11 @@
 import { faCheck, faGenderless } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
-import { GENDERS } from '@helpers/constants'
+import { EVENT_STATUSES, GENDERS } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
+import directionSelector from '@state/selectors/directionSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import userSelector from '@state/selectors/userSelector'
@@ -24,7 +25,7 @@ const ItemContainer = ({
 }) => (
   <div
     className={cn(
-      'relative flex w-full max-w-full border-b border-gray-700 last:border-0',
+      'relative flex w-full h-full max-w-full border-b border-gray-700 last:border-0',
       { 'hover:bg-blue-200 cursor-pointer': onClick },
       { 'bg-green-200': active },
       { 'py-0.5 px-1': !noPadding },
@@ -155,35 +156,62 @@ export const EventItemFromId = ({
   return <EventItem item={event} active={active} onClick={onClick} />
 }
 
-export const EventItem = ({ item, onClick = null, active = false }) => (
-  <ItemContainer
-    onClick={onClick}
-    active={active}
-    className="items-center justify-between text-xs tablet:text-sm"
-  >
-    <div className="font-bold text-gray-800">{item.title}</div>
-    <div className="text-gray-600 gap-x-2">
-      {/* <div className="flex-2 whitespace-nowrap">
+export const EventItem = ({ item, onClick = null, active = false }) => {
+  const direction = useRecoilValue(directionSelector(item.directionId))
+
+  const eventStatus = EVENT_STATUSES.find(
+    (eventStatus) => eventStatus.value === item.status
+  )
+  console.log('eventStatus', eventStatus)
+
+  return (
+    <ItemContainer
+      onClick={onClick}
+      active={active}
+      className="flex text-xs tablet:text-sm"
+      noPadding
+    >
+      <div
+        className={cn(
+          'w-7 flex justify-center items-center',
+          eventStatus ? 'bg-' + eventStatus.color : 'bg-gray-400'
+        )}
+      >
+        <FontAwesomeIcon
+          className="w-6 h-6 text-white"
+          icon={eventStatus ? eventStatus.icon : faGenderless}
+        />
+      </div>
+      <div className="flex items-center justify-between flex-1 px-1">
+        <div className="flex flex-col justify-center">
+          <div className="font-bold text-general">{direction.title}</div>
+          <div className="font-bold text-gray-800">{item.title}</div>
+        </div>
+        <div className="text-gray-600 gap-x-2">
+          {/* <div className="flex-2 whitespace-nowrap">
         Артикул: {item.а || '[нет]'}
       </div> */}
-      <DateTimeEvent
-        wrapperClassName="flex-1 text-sm font-bold justify-end"
-        dateClassName="text-general"
-        timeClassName="italic"
-        durationClassName="italic text-sm font-normal"
-        event={item}
-        showDayOfWeek
-        fullMonth
-        thin
-        // showDuration
-      />
-      {/* {formatDateTime(item.date, false, false, true, true, true)} */}
-      {/* <div className="flex-1 w-10 text-right whitespace-nowrap">
+          <DateTimeEvent
+            wrapperClassName="flex-1 text-sm font-bold justify-end"
+            dateClassName="text-general"
+            timeClassName="italic"
+            durationClassName="italic text-sm font-normal"
+            event={item}
+            showDayOfWeek
+            fullMonth
+            thin
+            twoLines
+            // showDuration
+          />
+          {/* {formatDateTime(item.date, false, false, true, true, true)} */}
+          {/* <div className="flex-1 w-10 text-right whitespace-nowrap">
         {item.price ? item.price / 100 : 0} ₽
       </div> */}
-    </div>
-  </ItemContainer>
-)
+        </div>
+      </div>
+    </ItemContainer>
+  )
+}
 
 export const DirectionItem = ({ item, onClick = null, active = false }) => (
   <ItemContainer onClick={onClick} active={active} className="flex gap-x-1">
