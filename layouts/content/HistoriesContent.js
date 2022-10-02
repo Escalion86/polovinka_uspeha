@@ -48,6 +48,7 @@ import isEventExpiredFunc from '@helpers/isEventExpired'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import { EVENT_USER_STATUSES } from '@helpers/constants'
 
 // const ReviewCard = ({ reviewId }) => {
 //   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -88,80 +89,140 @@ const dotColors = {
   delete: 'error',
 }
 
-const HistoriesOfEvent = ({ histories }) => (
-  <Timeline
-    // sx={{
-    //   [`& .${timelineOppositeContentClasses.root}`]: {
-    //     flex: 0.2,
-    //   },
-    // }}
-    style={{ padding: 0 }}
-    sx={{
-      // [`& .${timelineClasses.root}`]: {
-      //   padding: '0px !important',
-      //   margin: 0,
-      // },
-      [`& .${timelineItemClasses.root}:before`]: {
-        flex: 0,
-        padding: 0,
-        // paddingTop: 10,
-      },
-      // [`& .${timelineItemClasses.root}`]: {
-      //   maxHeight: 8,
-      // },
-      // [`& .${timelineContentClasses.root}`]: {
-      //   paddingRight: 0,
-      // },
-      // [`& .${timelineDotClasses.root}:before`]: {
-      //   padding: 0,
-      // },
-      // [`& .${timelineConnectorClasses.root}`]: {
-      //   marginBottom: -1.4,
-      // },
-    }}
-  >
-    {histories.map((history, index) => (
-      <TimelineItem key={history._id}>
-        {/* <TimelineOppositeContent color="text.secondary">
+const EventUsersInTimeLine = ({ createdAt, eventUsers }) => {
+  if (!eventUsers || eventUsers.length === 0) return null
+  const eventUserStatus = EVENT_USER_STATUSES.find(
+    (eventUserStatus) => eventUserStatus.value === eventUsers[0].status
+  )
+  return (
+    <>
+      <div className="flex items-center gap-x-1">
+        <span
+          className={
+            'bg-' +
+            eventUserStatus.color +
+            ' rounded px-1 text-sm flex items-center'
+          }
+        >
+          {eventUserStatus.name}
+        </span>
+        <span>{formatDateTime(createdAt, false, false, false, false)}</span>
+      </div>
+      <SelectUserList
+        // label="Участники Мужчины"
+        usersId={eventUsers.map((eventUser) => eventUser.userId)}
+        showCounter={false}
+        readOnly
+      />
+    </>
+  )
+}
+
+const HistoriesOfEvent = ({ histories }) => {
+  return (
+    <Timeline
+      // sx={{
+      //   [`& .${timelineOppositeContentClasses.root}`]: {
+      //     flex: 0.2,
+      //   },
+      // }}
+      style={{ padding: 0 }}
+      sx={{
+        // [`& .${timelineClasses.root}`]: {
+        //   padding: '0px !important',
+        //   margin: 0,
+        // },
+        [`& .${timelineItemClasses.root}:before`]: {
+          flex: 0,
+          padding: 0,
+          // paddingTop: 10,
+        },
+        // [`& .${timelineItemClasses.root}`]: {
+        //   maxHeight: 8,
+        // },
+        // [`& .${timelineContentClasses.root}`]: {
+        //   paddingRight: 0,
+        // },
+        // [`& .${timelineDotClasses.root}:before`]: {
+        //   padding: 0,
+        // },
+        // [`& .${timelineConnectorClasses.root}`]: {
+        //   marginBottom: -1.4,
+        // },
+      }}
+    >
+      {histories.map((history, index) => {
+        const participants = history.data.filter(
+          (eventUser) => eventUser.status === 'participant'
+        )
+        const reserved = history.data.filter(
+          (eventUser) => eventUser.status === 'reserve'
+        )
+        const baned = history.data.filter(
+          (eventUser) => eventUser.status === 'ban'
+        )
+        const assistants = history.data.filter(
+          (eventUser) => eventUser.status === 'assistant'
+        )
+        return (
+          <TimelineItem key={history._id}>
+            {/* <TimelineOppositeContent color="text.secondary">
       {formatDateTime(history.createdAt, false, false, false, false)}
     </TimelineOppositeContent> */}
-        <TimelineSeparator>
-          <TimelineDot color={dotColors[history.action]}>
-            <div className="flex items-center justify-center w-3 h-3 text-sm tablet:w-4 tablet:h-4 tablet:text-base">
-              {history.data.length}
+            <TimelineSeparator>
+              <TimelineDot color={dotColors[history.action]}>
+                <div className="flex items-center justify-center w-3 h-3 text-sm tablet:w-4 tablet:h-4 tablet:text-base">
+                  {history.data.length}
+                </div>
+              </TimelineDot>
+              {index < histories.length - 1 && <TimelineConnector />}
+            </TimelineSeparator>
+            <TimelineContent
+              style={{
+                paddingRight: 0,
+                paddingLeft: 8,
+              }}
+            >
+              <EventUsersInTimeLine
+                createdAt={history.createdAt}
+                eventUsers={assistants}
+              />
+              <EventUsersInTimeLine
+                createdAt={history.createdAt}
+                eventUsers={participants}
+              />
+              <EventUsersInTimeLine
+                createdAt={history.createdAt}
+                eventUsers={reserved}
+              />
+              <EventUsersInTimeLine
+                createdAt={history.createdAt}
+                eventUsers={baned}
+              />
+            </TimelineContent>
+            {/* <TimelineContent
+            style={{
+              paddingRight: 0,
+              paddingLeft: 8,
+            }}
+          >
+            <div>
+              {formatDateTime(history.createdAt, false, false, false, false)}
+              {history.data.find((eventUser) => eventUser.userId)}
             </div>
-          </TimelineDot>
-          {index < histories.length - 1 && <TimelineConnector />}
-        </TimelineSeparator>
-        <TimelineContent
-          style={{
-            paddingRight: 0,
-            paddingLeft: 8,
-          }}
-        >
-          <div className="">
-            {formatDateTime(history.createdAt, false, false, false, false)}
-          </div>
-          <SelectUserList
-            // label="Участники Мужчины"
-            usersId={history.data.map((eventUser) => eventUser.userId)}
-            showCounter={false}
-            readOnly
-          />
-          {/* {history.data.map((eventUser) => {
-        return (
-          <>
-            <div className="overflow-hidden bg-gray-200 border border-gray-400 rounded cursor-pointer">
-              <UserItemFromId userId={eventUser.userId} />
-            </div>
-          </>
+            <SelectUserList
+              // label="Участники Мужчины"
+              usersId={history.data.map((eventUser) => eventUser.userId)}
+              showCounter={false}
+              readOnly
+            />
+          </TimelineContent> */}
+          </TimelineItem>
         )
-      })} */}
-        </TimelineContent>
-      </TimelineItem>
-    ))}
-  </Timeline>
-)
+      })}
+    </Timeline>
+  )
+}
 
 const HistoriesOfEvents = ({ eventsHistories }) => {
   return (
@@ -178,14 +239,8 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
         // },
       }}
     >
-      {/* {Object.keys(eventsHistories).map((key, index) => {
-        const {action, data, createdAt} = eventsHistories[key]
-        return 
-      })} */}
       {Object.keys(eventsHistories).map((eventId, index) => {
         const data = eventsHistories[eventId]
-        // const firstCreatedAt = data[0].createdAt
-        // const lastCreatedAt = data[data.length - 1].createdAt
 
         const [firstCreatedAtDate, firstCreatedAtTime] = dateToDateTimeStr(
           data[0].createdAt,
