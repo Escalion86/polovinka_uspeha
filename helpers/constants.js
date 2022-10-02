@@ -338,6 +338,13 @@ export const EVENT_STATUSES = [
   { value: 'canceled', name: 'Отменено', color: 'red-400', icon: faBan },
 ]
 
+export const EVENT_USER_STATUSES = [
+  { value: 'participant', name: 'Участник', color: 'green-400' },
+  { value: 'assistant', name: 'Ведущий', color: 'blue-400' },
+  { value: 'reserve', name: 'Резерв', color: 'yellow-400' },
+  { value: 'ban', name: 'Бан', color: 'red-400' },
+]
+
 export const GENDERS = [
   { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },
   { value: 'famale', name: 'Женщина', color: 'red-400', icon: faVenus },
