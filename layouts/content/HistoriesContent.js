@@ -94,9 +94,16 @@ const EventUsersInTimeLine = ({ createdAt, eventUsers }) => {
   const eventUserStatus = EVENT_USER_STATUSES.find(
     (eventUserStatus) => eventUserStatus.value === eventUsers[0].status
   )
+
+  const [createdAtDate, createdAtTime] = dateToDateTimeStr(
+    createdAt,
+    true,
+    false
+  )
+
   return (
     <>
-      <div className="flex items-center gap-x-1">
+      <div className="flex flex-wrap items-center gap-x-1 mb-0.5">
         <span
           className={
             'bg-' +
@@ -106,7 +113,11 @@ const EventUsersInTimeLine = ({ createdAt, eventUsers }) => {
         >
           {eventUserStatus.name}
         </span>
-        <span>{formatDateTime(createdAt, false, false, false, false)}</span>
+        <div className="flex text-sm flex-nowrap tablet:text-base gap-x-1">
+          <span className="whitespace-nowrap">{createdAtDate}</span>
+          <span className="font-bold">{createdAtTime}</span>
+        </div>
+        {/* <span>{formatDateTime(createdAt, false, false, false, false)}</span> */}
       </div>
       <SelectUserList
         // label="Участники Мужчины"
@@ -121,7 +132,7 @@ const EventUsersInTimeLine = ({ createdAt, eventUsers }) => {
 const HistoriesOfEvent = ({ histories }) => {
   return (
     <Timeline
-      className="pt-1 pb-0 pl-2 pr-1 -mt-1 border-b border-l border-r border-gray-600 rounded-b bg-blue-50"
+      className="pt-1 pb-0 pl-2 pr-1 -mt-1 bg-gray-100 border-b border-l border-r border-gray-600 rounded-b"
       // sx={{
       //   [`& .${timelineOppositeContentClasses.root}`]: {
       //     flex: 0.2,
@@ -305,9 +316,7 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
                 )}
               </div>
 
-              <div className="z-10">
-                <SelectEventList eventsId={[eventId]} readOnly />
-              </div>
+              <SelectEventList eventsId={[eventId]} readOnly />
               {/* <div className="h-auto overflow-hidden"> */}
               <HistoriesOfEvent histories={data} />
               {/* </div> */}
