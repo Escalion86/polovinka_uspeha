@@ -162,7 +162,6 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
   const eventStatus = EVENT_STATUSES.find(
     (eventStatus) => eventStatus.value === item.status
   )
-  console.log('eventStatus', eventStatus)
 
   return (
     <ItemContainer
