@@ -286,13 +286,22 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
                 paddingLeft: 8,
               }}
             >
-              <div className="">
-                {firstCreatedAtDate + ' ' + firstCreatedAtTime}
-                {lastCreatedAtDate !== firstCreatedAtDate
-                  ? ' - ' + lastCreatedAtDate + ' ' + lastCreatedAtTime
-                  : lastCreatedAtTime !== firstCreatedAtTime
-                  ? ' - ' + lastCreatedAtTime
-                  : ''}
+              <div className="flex flex-wrap text-sm tablet:text-base gap-x-1">
+                <div className="flex gap-x-1">
+                  <span>{firstCreatedAtDate}</span>
+                  <span className="font-bold">{firstCreatedAtTime}</span>
+                  {(lastCreatedAtDate !== firstCreatedAtDate ||
+                    lastCreatedAtTime !== firstCreatedAtTime) && <span>-</span>}
+                </div>
+                {(lastCreatedAtDate !== firstCreatedAtDate ||
+                  lastCreatedAtTime !== firstCreatedAtTime) && (
+                  <div className="flex gap-x-1">
+                    {lastCreatedAtDate !== firstCreatedAtDate && (
+                      <span>{lastCreatedAtDate}</span>
+                    )}
+                    <span className="font-bold">{lastCreatedAtTime}</span>
+                  </div>
+                )}
               </div>
 
               <SelectEventList eventsId={[eventId]} readOnly />
