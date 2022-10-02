@@ -121,12 +121,13 @@ const EventUsersInTimeLine = ({ createdAt, eventUsers }) => {
 const HistoriesOfEvent = ({ histories }) => {
   return (
     <Timeline
+      className="pt-1 pb-0 pl-2 pr-1 -mt-1 border-b border-l border-r border-gray-600 rounded-b bg-blue-50"
       // sx={{
       //   [`& .${timelineOppositeContentClasses.root}`]: {
       //     flex: 0.2,
       //   },
       // }}
-      style={{ padding: 0 }}
+      // style={{ padding: 0 }}
       sx={{
         // [`& .${timelineClasses.root}`]: {
         //   padding: '0px !important',
@@ -304,8 +305,12 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
                 )}
               </div>
 
-              <SelectEventList eventsId={[eventId]} readOnly />
+              <div className="z-10">
+                <SelectEventList eventsId={[eventId]} readOnly />
+              </div>
+              {/* <div className="h-auto overflow-hidden"> */}
               <HistoriesOfEvent histories={data} />
+              {/* </div> */}
             </TimelineContent>
           </TimelineItem>
         )
