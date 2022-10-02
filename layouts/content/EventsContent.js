@@ -39,6 +39,8 @@ import ContentHeader from '@components/ContentHeader'
 import FilterToggleButton from '@components/IconToggleButtons/FilterToggleButton'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
 import SortingButtonMenu from '@components/SortingButtonMenu'
+import isEventActiveFunc from '@helpers/isEventActive'
+import isEventCanceledFunc from '@helpers/isEventCanceled'
 
 const sortFunctions = {
   date: {
@@ -126,11 +128,12 @@ const EventsContent = () => {
       filteredEvents
         .filter((event) => {
           const isEventExpired = isEventExpiredFunc(event)
-          const isEventActive = event.status === 'active' || !event.status
+          const isEventActive = isEventActiveFunc(event)
+          const isEventCanceled = isEventCanceledFunc(event)
           return (
             ((isEventActive && filter.status.finished && isEventExpired) ||
               (isEventActive && filter.status.active && !isEventExpired) ||
-              (!isEventActive && filter.status.canceled)) &&
+              (isEventCanceled && filter.status.canceled)) &&
             filterOptions.directions.includes(event.directionId)
           )
         })

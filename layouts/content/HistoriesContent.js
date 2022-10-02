@@ -41,6 +41,12 @@ import SortingButtonMenu from '@components/SortingButtonMenu'
 import { useState } from 'react'
 import ContentHeader from '@components/ContentHeader'
 import getDaysBetween from '@helpers/getDaysBetween'
+import getHoursBetween from '@helpers/getHoursBetween'
+import eventsAtom from '@state/atoms/eventsAtom'
+import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
+import isEventExpiredFunc from '@helpers/isEventExpired'
+import isEventActiveFunc from '@helpers/isEventActive'
+import isEventCanceledFunc from '@helpers/isEventCanceled'
 
 // const ReviewCard = ({ reviewId }) => {
 //   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -236,22 +242,36 @@ const MenuProps = {
 }
 
 const HistoriesContent = () => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const histories = useRecoilValue(historiesAtom)
-  const [periodDays, setPeriodDays] = useState(1)
-  console.log('periodDays', periodDays)
+  const [periodHours, setPeriodHours] = useState(24)
+  const events = useRecoilValue(eventsAtom)
+  const [filter, setFilter] = useState({
+    status: {
+      active: true,
+      finished: false,
+      canceled: false,
+    },
+  })
+
   const eventsHistories = {}
   // const eventsResults = {}
   histories.forEach((history) => {
-    if (getDaysBetween(new Date(), history.createdAt, false) > periodDays)
-      return
-
-    console.log(
-      'getDaysBetween(new Date(), history.createdAt, false) * -1',
-      getDaysBetween(new Date(), history.createdAt, false) * -1
-    )
+    if (getHoursBetween(history.createdAt) > periodHours) return
 
     const eventId = history.data[0].eventId
+    const event = events.find((event) => event._id === eventId)
+    if (!event) return
+    const isEventExpired = isEventExpiredFunc(event)
+    const isEventActive = isEventActiveFunc(event)
+    const isEventCanceled = isEventCanceledFunc(event)
+    if (
+      !(
+        (isEventActive && filter.status.finished && isEventExpired) ||
+        (isEventActive && filter.status.active && !isEventExpired) ||
+        (isEventCanceled && filter.status.canceled)
+      )
+    )
+      return
 
     if (!eventsHistories[eventId]) eventsHistories[eventId] = []
     eventsHistories[eventId].push(history)
@@ -263,22 +283,34 @@ const HistoriesContent = () => {
   return (
     <>
       <ContentHeader>
-        <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none">
+        <EventStatusToggleButtons
+          value={filter.status}
+          onChange={(value) =>
+            setFilter((state) => ({ ...state, status: value }))
+          }
+        />
+        <FormControl sx={{ m: 1, width: 160 }} size="small" margin="none">
           <InputLabel id="demo-multiple-name-label">Период</InputLabel>
           <Select
-            labelId="demo-multiple-name-label"
-            id="demo-multiple-name"
-            value={periodDays}
-            onChange={(e) => setPeriodDays(e.target.value)}
+            value={periodHours}
+            onChange={(e) => setPeriodHours(e.target.value)}
             input={<OutlinedInput label="Период" />}
             MenuProps={MenuProps}
           >
-            <MenuItem value={1}>Сутки</MenuItem>
-            <MenuItem value={3}>3 суток</MenuItem>
-            <MenuItem value={7}>Неделю</MenuItem>
+            <MenuItem value={1}>1 час</MenuItem>
+            <MenuItem value={2}>2 часа</MenuItem>
+            <MenuItem value={3}>3 часа</MenuItem>
+            <MenuItem value={6}>6 часов</MenuItem>
+            <MenuItem value={12}>12 часов</MenuItem>
+            <MenuItem value={24}>Сутки</MenuItem>
+            <MenuItem value={48}>2 суток</MenuItem>
+            <MenuItem value={72}>3 суток</MenuItem>
+            <MenuItem value={168}>Неделю</MenuItem>
+            <MenuItem value={336}>2 недели</MenuItem>
+            <MenuItem value={999999}>За все время</MenuItem>
           </Select>
         </FormControl>
-        <div className="flex-1" />
+        {/* <div className="flex-1" /> */}
       </ContentHeader>
       <CardListWrapper>
         <HistoriesOfEvents eventsHistories={eventsHistories} />
