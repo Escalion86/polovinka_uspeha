@@ -1,6 +1,7 @@
 import birthDateToAge from './birthDateToAge'
 import { DEFAULT_EVENT } from './constants'
 import getMinutesBetween from './getMinutesBetween'
+import isEventCanceled from './isEventCanceled'
 import isEventExpiredFunc from './isEventExpired'
 import isEventInProcessFunc from './isEventInProcess'
 import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
@@ -60,7 +61,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'user status is banned',
     }
 
-  if (event.status === 'canceled')
+  if (isEventCanceled(event))
     return {
       canSee,
       alreadySignIn,
