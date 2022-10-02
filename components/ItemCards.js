@@ -1,7 +1,12 @@
 import { faCheck, faGenderless } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
-import { EVENT_STATUSES, GENDERS } from '@helpers/constants'
+import {
+  EVENT_STATUSES,
+  EVENT_STATUSES_WITH_TIME,
+  GENDERS,
+} from '@helpers/constants'
+import eventStatusFunc from '@helpers/eventStatus'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
@@ -159,8 +164,9 @@ export const EventItemFromId = ({
 export const EventItem = ({ item, onClick = null, active = false }) => {
   const direction = useRecoilValue(directionSelector(item.directionId))
 
-  const eventStatus = EVENT_STATUSES.find(
-    (eventStatus) => eventStatus.value === item.status
+  const eventStatus = eventStatusFunc(item)
+  const eventStatusObj = EVENT_STATUSES_WITH_TIME.find(
+    (data) => data.value === eventStatus
   )
 
   return (
@@ -173,12 +179,12 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
       <div
         className={cn(
           'w-7 flex justify-center items-center',
-          eventStatus ? 'bg-' + eventStatus.color : 'bg-gray-400'
+          eventStatusObj ? 'bg-' + eventStatusObj.color : 'bg-gray-400'
         )}
       >
         <FontAwesomeIcon
           className="w-6 h-6 text-white"
-          icon={eventStatus ? eventStatus.icon : faGenderless}
+          icon={eventStatusObj ? eventStatusObj.icon : faGenderless}
         />
       </div>
       <div className="flex items-center justify-between flex-1 px-1">

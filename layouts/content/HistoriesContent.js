@@ -97,7 +97,6 @@ const EventUsersInTimeLine = ({ createdAt, eventUsers }) => {
   return (
     <>
       <div className="flex items-center gap-x-1">
-        <span>{formatDateTime(createdAt, false, false, false, false)}</span>
         <span
           className={
             'bg-' +
@@ -107,6 +106,7 @@ const EventUsersInTimeLine = ({ createdAt, eventUsers }) => {
         >
           {eventUserStatus.name}
         </span>
+        <span>{formatDateTime(createdAt, false, false, false, false)}</span>
       </div>
       <SelectUserList
         // label="Участники Мужчины"

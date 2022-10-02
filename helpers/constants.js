@@ -1,6 +1,7 @@
 import {
   faBan,
   faCalendarDay,
+  faCheck,
   faCheckCircle,
   faCircle,
   faClock,
@@ -336,6 +337,12 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
 export const EVENT_STATUSES = [
   { value: 'active', name: 'Активно', color: 'green-400', icon: faPlay },
   { value: 'canceled', name: 'Отменено', color: 'red-400', icon: faBan },
+]
+
+export const EVENT_STATUSES_WITH_TIME = [
+  ...EVENT_STATUSES,
+  { value: 'finished', name: 'Завершено', color: 'green-400', icon: faCheck },
+  { value: 'inProgress', name: 'В процессе', color: 'blue-400', icon: faClock },
 ]
 
 export const EVENT_USER_STATUSES = [
