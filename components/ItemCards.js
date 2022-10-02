@@ -187,9 +187,18 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
           icon={eventStatusObj ? eventStatusObj.icon : faGenderless}
         />
       </div>
-      <div className="flex items-center justify-between flex-1 px-1">
-        <div className="flex flex-col justify-center">
-          <div className="font-bold text-general">{direction.title}</div>
+      <div className="flex items-center justify-between flex-1 px-1 leading-3">
+        <div className="flex flex-col h-full justify-evenly">
+          <div
+            className="overflow-hidden font-bold text-general"
+            style={{
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: 1,
+            }}
+          >
+            {direction.title}
+          </div>
           <div className="font-bold text-gray-800">{item.title}</div>
         </div>
         <div className="text-gray-600 gap-x-2">
@@ -197,13 +206,13 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
         Артикул: {item.а || '[нет]'}
       </div> */}
           <DateTimeEvent
-            wrapperClassName="flex-1 text-sm font-bold justify-end"
+            wrapperClassName="flex-1 font-bold justify-end"
             dateClassName="text-general"
             timeClassName="italic"
-            durationClassName="italic text-sm font-normal"
+            durationClassName="italic font-normal"
             event={item}
             showDayOfWeek
-            fullMonth
+            // fullMonth
             thin
             twoLines
             // showDuration
