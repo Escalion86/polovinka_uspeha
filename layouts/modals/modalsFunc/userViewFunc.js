@@ -103,19 +103,21 @@ const userViewFunc = (userId, clone = false) => {
           {(isLoggedUserAdmin || user.security?.showContacts) && (
             <ContactsIconsButtons user={user} withTitle grid />
           )}
-          <div className="flex gap-x-2">
-            <span className="font-bold">Посещено мероприятий:</span>
-            <span>{eventUsers.length}</span>
+          <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1 gap-x-2">
+            <div className="flex gap-x-2">
+              <span className="font-bold">Посещено мероприятий:</span>
+              <span>{eventUsers.length}</span>
+            </div>
+            {isLoggedUserAdmin && eventUsers.length > 0 && (
+              <ValueItem
+                name="Посмотреть посещенные мероприятия"
+                color="general"
+                icon={faCalendarAlt}
+                hoverable
+                onClick={() => modalsFunc.user.events(userId)}
+              />
+            )}
           </div>
-          {isLoggedUserAdmin && (
-            <ValueItem
-              name="Посмотреть посещенные мероприятия"
-              color="general"
-              icon={faCalendarAlt}
-              hoverable
-              onClick={() => modalsFunc.user.events(userId)}
-            />
-          )}
         </div>
 
         {/* <SelectEventList
