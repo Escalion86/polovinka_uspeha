@@ -25,6 +25,7 @@ import { faBirthdayCake } from '@fortawesome/free-solid-svg-icons'
 import getDaysFromNow from '@helpers/getDaysFromNow'
 
 var daysBeforeBirthday = (birthday) => {
+  if (!birthday) return undefined
   var today, bday, diff, days
   const [bDate, bTime] = birthday.split('T')
   const day = new Date(bDate).getDate() + (bTime !== '00:00:00.000Z' ? 1 : 0)
