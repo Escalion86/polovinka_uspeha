@@ -190,12 +190,12 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
       <div className="flex items-center justify-between flex-1 px-1 leading-3">
         <div className="flex flex-col h-full justify-evenly">
           <div
-            className="overflow-hidden font-bold text-general"
-            style={{
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 1,
-            }}
+            className="font-bold text-general"
+            // style={{
+            //   display: '-webkit-box',
+            //   WebkitBoxOrient: 'vertical',
+            //   WebkitLineClamp: 1,
+            // }}
           >
             {direction.title}
           </div>
