@@ -13,7 +13,7 @@ const getDaysFromNow = (date1, showNoun = true, showPrefix = true) => {
 
     const prefix = result < 0 ? 'прошло' : 'через'
     return `${prefix} ${result} ${getNoun(
-      result < 0 ? result + 1 : result,
+      result < 0 ? result + 1 : result - 1,
       'день',
       'дня',
       'дней',

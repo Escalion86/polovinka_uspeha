@@ -1,5 +1,6 @@
 import {
   faBan,
+  faBirthdayCake,
   faCalendarDay,
   faCheck,
   faCheckCircle,
@@ -15,6 +16,7 @@ import {
   faPlay,
   faSignInAlt,
   faTimesCircle,
+  faUsers,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
 import isDevMode from './isDevMode'
@@ -59,6 +61,7 @@ import PaymentsContent from '@layouts/content/PaymentsContent'
 import ContactsContent from '@layouts/content/ContactsContent'
 import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
+import BirthdaysContent from '@layouts/content/BirthdaysContent'
 
 const colors = [
   'border-blue-400',
@@ -456,40 +459,6 @@ export const CLOUDINARY_FOLDER = isDevMode
   ? 'polovinka_uspeha'
   : 'polovinka_uspeha'
 
-// import {
-//   BtnAddClient,
-//   BtnAddDevToDo,
-//   BtnAddInvitation,
-//   BtnAddOrder,
-//   BtnAddPayment,
-//   BtnAddProduct,
-//   BtnAddProductCirculation,
-//   BtnAddProductType,
-//   BtnAddSet,
-//   BtnAddSetType,
-//   BtnTest,
-//   BtnAddDistrict,
-// } from '@admincomponents/TitleButtons'
-
-// import {
-//   InvitationsContent,
-//   ProductCirculationsContent,
-//   ProductsContent,
-//   ProductTypesContent,
-//   SetsContent,
-//   SettingsContent,
-//   SetTypesContent,
-//   TestContent,
-//   UserContent,
-//   UsersContent,
-//   OverviewContent,
-//   ClientsContent,
-//   OrdersContent,
-//   PaymentsContent,
-//   DistrictsContent,
-// } from './content'
-// import DevToDoContent from './content/DevToDoContent'
-
 export const CONTENTS = {
   directions: { Component: DirectionsContent, name: 'Сайт / Направления' },
   reviews: { Component: ReviewsContent, name: 'Сайт / Отзывы' },
@@ -503,7 +472,11 @@ export const CONTENTS = {
   payments: { Component: PaymentsContent, name: 'Транзакции' },
   contacts: { Component: ContactsContent, name: 'Контакты на сайте' },
   dev: { Component: DevContent, name: 'Разработчик' },
-  histories: { Component: HistoriesContent, name: 'События' },
+  histories: {
+    Component: HistoriesContent,
+    name: 'События / Участники мероприятий',
+  },
+  birthdays: { Component: BirthdaysContent, name: 'События / Дни рождения' },
 }
 
 export const pages = [
@@ -559,9 +532,16 @@ export const pages = [
   {
     id: 7,
     group: 4,
-    name: 'События',
+    name: 'Участники мероприятий',
     href: 'histories',
-    icon: faHistory,
+    icon: faUsers,
+  },
+  {
+    id: 8,
+    group: 4,
+    name: 'Дни рождения',
+    href: 'birthdays',
+    icon: faBirthdayCake,
   },
   {
     id: 99,
@@ -579,12 +559,6 @@ export const pagesGroups = [
   { id: 3, name: 'Транзакции', icon: faMoneyBill, access: 'dev' },
   { id: 4, name: 'События', icon: faHistory, access: 'admin' },
   { id: 99, name: 'Разработчик', icon: faBug, access: 'dev' },
-  // { id: 2, name: 'Заказы', icon: faFire },
-  // { id: 1, name: 'Склад', icon: faCubes },
-  // { id: 3, name: 'Клиенты', icon: faUser },
-  // { id: 4, name: 'Оплата', icon: faMoneyBill },
-  // { id: 6, name: 'Настройки', icon: faCog, bottom: true },
-  // { id: 10, name: 'Разработка', icon: faBug, bottom: true },
 ]
 
 export const PAY_TYPES = [
