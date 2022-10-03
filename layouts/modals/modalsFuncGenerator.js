@@ -23,6 +23,7 @@ import selectUsersFunc from './modalsFunc/selectUsersFunc'
 import selectDirectionFunc from './modalsFunc/selectDirectionFunc'
 import jsonFunc from './modalsFunc/jsonFunc'
 import cropImageFunc from './modalsFunc/cropImageFunc'
+import userVisitedEventsFunc from './modalsFunc/userVisitedEventsFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -172,6 +173,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           onConfirm: async () => itemsFunc.user.delete(userId),
         }),
       view: (userId) => addModal(userViewFunc(userId)),
+      events: (userId) => addModal(userVisitedEventsFunc(userId)),
     },
     additionalBlock: {
       add: (additionalBlockId) =>
