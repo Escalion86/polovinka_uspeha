@@ -54,16 +54,16 @@ const ContactIconBtnWithTitle = ({
   </div>
 )
 
-const ContactsIconsButtons = ({ user, withTitle, vertical, className }) => {
+const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
   return (
     <div
       className={cn(
-        'flex flex-wrap',
+        ' items-center gap-y-2 my-1',
+        grid
+          ? 'grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3'
+          : 'flex flex-wrap',
         withTitle ? 'gap-x-3' : 'gap-x-2',
-        vertical
-          ? 'gap-y-2 flex-col items-start mx-1'
-          : 'justify-end items-center my-1',
         className
       )}
     >
