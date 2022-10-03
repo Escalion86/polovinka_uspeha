@@ -114,7 +114,7 @@ const BirthdaysContent = () => {
                     </span>
                     <span>({getDaysFromNow(date, true)})</span>
                   </div>
-                  <div className="flex flex-col gap-y-1">
+                  <div className="flex flex-col pb-2 gap-y-1">
                     {users.map((user) => (
                       <div key={user._id}>
                         <div className="flex px-1 text-sm gap-x-1">
