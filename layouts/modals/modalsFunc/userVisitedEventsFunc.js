@@ -69,6 +69,11 @@ const userVisitedEventsFunc = (userId, clone = false) => {
             />
           </div>
         )}
+        {eventsAsParticipant.length + eventsAsAssistant.length === 0 && (
+          <div className="text-center">
+            Пользователь не посетил ни одного мероприятия
+          </div>
+        )}
       </FormWrapper>
     )
   }
