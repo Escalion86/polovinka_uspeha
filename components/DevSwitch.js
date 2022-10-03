@@ -38,13 +38,13 @@ const DevSwitch = () => {
           if (newRole !== null) setLoggedUserActiveRole(newRole)
         }}
       >
-        <ToggleButton className="flex-1 rounded-none" value="client">
+        <ToggleButton className="flex-1 leading-3 rounded-none" value="client">
           Клиент
         </ToggleButton>
-        <ToggleButton className="flex-1 rounded-none" value="admin">
+        <ToggleButton className="flex-1 leading-3 rounded-none" value="admin">
           Админ
         </ToggleButton>
-        <ToggleButton className="flex-1 rounded-none" value="dev">
+        <ToggleButton className="flex-1 leading-3 rounded-none" value="dev">
           DEV
         </ToggleButton>
       </ToggleButtonGroup>
@@ -58,10 +58,10 @@ const DevSwitch = () => {
           if (newStatus !== null) setLoggedUserActiveStatus(newStatus)
         }}
       >
-        <ToggleButton className="flex-1 rounded-none" value="novice">
+        <ToggleButton className="flex-1 leading-3 rounded-none" value="novice">
           Новичок
         </ToggleButton>
-        <ToggleButton className="flex-1 rounded-none" value="member">
+        <ToggleButton className="flex-1 leading-3 rounded-none" value="member">
           Участник клуба
         </ToggleButton>
       </ToggleButtonGroup>
