@@ -1,3 +1,4 @@
+import compareObjects from '@helpers/compareObjects'
 import React, { useState, useRef, useEffect, DependencyList } from 'react'
 
 import ReactCrop, {
@@ -142,7 +143,7 @@ const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
     // useEffect(()=> setCompletedCrop,[])
 
     const getCroppedImg = (image = imgRef.current, crop = completedCrop) => {
-      if (!crop) return onConfirm(src)
+      if (!crop || compareObjects(crop, DEFAULT_CROP)) return onConfirm(src)
 
       const canvas = document.createElement('canvas')
       const scaleX = image.naturalWidth / image.width
