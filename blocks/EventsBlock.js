@@ -41,7 +41,9 @@ const EventsBlock = ({
 }) => {
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
 
-  const filteredEvents = useRecoilValue(filteredEventsSelector)
+  const filteredEvents = useRecoilValue(filteredEventsSelector).filter(
+    (event) => !isEventExpiredFunc(event)
+  )
 
   if (hideBlockOnZeroEvents && filteredEvents?.length === 0) return null
 
@@ -53,7 +55,6 @@ const EventsBlock = ({
         {
           // filteredEvents?.length ? (
           [...filteredEvents]
-            .filter((event) => !isEventExpiredFunc(event))
             .sort((a, b) => (a.date < b.date ? -1 : 1))
             .slice(0, maxShowedEvents)
             .map((event, index) => (
