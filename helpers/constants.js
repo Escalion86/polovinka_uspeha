@@ -290,6 +290,8 @@ export const DEFAULT_EVENT = Object.freeze({
   usersStatusAccess: {},
   usersStatusDiscount: {},
   isReserveActive: true,
+  report: '',
+  reportImages: [],
 })
 
 export const DEFAULT_DIRECTION = Object.freeze({

@@ -97,6 +97,14 @@ const eventsSchema = {
     type: Boolean,
     default: true,
   },
+  report: {
+    type: String,
+    default: '',
+  },
+  reportImages: {
+    type: Array,
+    default: [],
+  },
 }
 
 export default eventsSchema
