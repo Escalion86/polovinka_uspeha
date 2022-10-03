@@ -121,6 +121,10 @@ const eventFunc = (eventId, clone = false) => {
     const [isReserveActive, setIsReserveActive] = useState(
       event?.isReserveActive ?? DEFAULT_EVENT.isReserveActive
     )
+    const [reportImages, setReportImages] = useState(
+      event?.reportImages ?? DEFAULT_EVENT.reportImages
+    )
+    const [report, setReport] = useState(event?.report ?? DEFAULT_EVENT.report)
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -161,6 +165,8 @@ const eventFunc = (eventId, clone = false) => {
             usersStatusAccess,
             usersStatusDiscount,
             isReserveActive,
+            report,
+            reportImages,
           },
           clone
         )
@@ -190,7 +196,9 @@ const eventFunc = (eventId, clone = false) => {
         event?.status !== status ||
         !compareObjects(event?.usersStatusAccess, usersStatusAccess) ||
         !compareObjects(event?.usersStatusDiscount, usersStatusDiscount) ||
-        event?.isReserveActive !== isReserveActive
+        event?.isReserveActive !== isReserveActive ||
+        event?.report !== report ||
+        !compareArrays(event?.reportImages, reportImages)
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -221,6 +229,8 @@ const eventFunc = (eventId, clone = false) => {
       usersStatusAccess,
       usersStatusDiscount,
       isReserveActive,
+      report,
+      reportImages,
     ])
 
     return (
@@ -541,6 +551,29 @@ const eventFunc = (eventId, clone = false) => {
                   required
                   status={status}
                   onChange={setStatus}
+                />
+                <EditableTextarea
+                  label="Отчет"
+                  html={report}
+                  uncontrolled={false}
+                  onChange={(value) => {
+                    removeError('report')
+                    setReport(value)
+                  }}
+                  placeholder="Отчет о мероприятии..."
+                  // required
+                  error={errors.report}
+                />
+                <InputImages
+                  label="Фотографии с мероприятия"
+                  directory="reports"
+                  images={reportImages}
+                  onChange={(images) => {
+                    removeError('reportImages')
+                    setReportImages(images)
+                  }}
+                  // required
+                  error={errors.reportImages}
                 />
               </FormWrapper>
             </TabPanel>
