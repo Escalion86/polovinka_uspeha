@@ -1,34 +1,6 @@
 import InputWrapper from '@components/InputWrapper'
-import Label from '@components/Label'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-
-export const ValueItem = ({
-  active = false,
-  value = 0,
-  name = '',
-  color = 'gray',
-  icon = null,
-  onClick = null,
-}) => (
-  <button
-    className={cn(
-      `h-[30px] flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded cursor-pointer gap-x-2 flex-nowrap border-${color}`,
-      active ? `text-white bg-${color}` : `text-${color} bg-white`
-    )}
-    onClick={() => onClick && onClick(value)}
-  >
-    {icon && <FontAwesomeIcon icon={icon} className="h-5" />}
-    <div
-      className={cn(
-        'whitespace-nowrap duration-300 select-none',
-        active ? 'text-white' : `text-input`
-      )}
-    >
-      {name}
-    </div>
-  </button>
-)
+import ValueItem from './ValueItem'
 
 const ValuePicker = ({
   value = null,

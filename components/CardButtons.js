@@ -77,9 +77,7 @@ const CardButtons = ({
   const show = {
     shareBtn: window?.location?.origin && typeOfItem === 'event',
     eventUsersBtn:
-      !forForm &&
-      (showAdminButtons || isLoggedUserMember) &&
-      typeOfItem === 'event',
+      (showAdminButtons || isLoggedUserMember) && typeOfItem === 'event',
     upBtn: !forForm && showAdminButtons && onUpClick,
     downBtn: !forForm && showAdminButtons && onDownClick,
     editBtn: showAdminButtons,

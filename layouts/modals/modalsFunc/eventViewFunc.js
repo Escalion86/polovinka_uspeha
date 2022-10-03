@@ -18,7 +18,7 @@ import formatMinutes from '@helpers/formatMinutes'
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import sanitize from '@helpers/sanitize'
 import CardButton from '@components/CardButton'
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import { faShareAlt, faUser, faUsers } from '@fortawesome/free-solid-svg-icons'
 import Button from '@components/Button'
 import { modalsFuncAtom } from '@state/atoms'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
@@ -29,6 +29,7 @@ import NamesOfUsers from '@components/NamesOfUsers'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import ImageGallery from '@components/ImageGallery'
 import CardButtons from '@components/CardButtons'
+import ValueItem from '@components/ValuePicker/ValueItem'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -175,8 +176,15 @@ const eventViewFunc = (eventId) => {
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
             <EventUsersCounterAndAge eventId={eventId} />
             {(isLoggedUserMember || isLoggedUserAdmin) && (
-              <Button
+              // <Button
+              //   name="Посмотреть участников"
+              //   onClick={() => modalsFunc.event.users(eventId)}
+              // />
+              <ValueItem
                 name="Посмотреть участников"
+                color="green-500"
+                icon={faUsers}
+                hoverable
                 onClick={() => modalsFunc.event.users(eventId)}
               />
             )}
