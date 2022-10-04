@@ -54,19 +54,17 @@ const Slider = ({
   max = 100,
   required,
   noInputs = false,
-}) => {
-  console.log('value', value)
-  return (
-    <InputWrapper
-      label={label}
-      labelClassName={labelClassName}
-      onChange={onChange}
-      copyPasteButtons={copyPasteButtons}
-      value={value}
-      className={cn('flex-1', wrapperClassName)}
-      required={required}
-    >
-      {/* <div
+}) => (
+  <InputWrapper
+    label={label}
+    labelClassName={labelClassName}
+    onChange={onChange}
+    copyPasteButtons={copyPasteButtons}
+    value={value}
+    className={cn('flex-1', wrapperClassName)}
+    required={required}
+  >
+    {/* <div
         className={cn(
           'flex rounded overflow-hidden bg-white',
           error ? 'border-red-500' : 'border-gray-400',
@@ -74,12 +72,12 @@ const Slider = ({
           noBorder ? '' : 'border'
         )}
       > */}
-      <div className="flex flex-1 px-3 w-max min-w-40 gap-x-4">
-        {!noInputs && (
-          <Select value={value} onChange={onChange} left min={min} max={max} />
-        )}
+    <div className="flex flex-1 w-max min-w-40 gap-x-4">
+      {!noInputs && (
+        <Select value={value} onChange={onChange} left min={min} max={max} />
+      )}
 
-        {/* {!noInputs && (
+      {/* {!noInputs && (
           <input
             className={cn('outline-none px-1 w-12 bg-transparent')}
             type="number"
@@ -96,21 +94,21 @@ const Slider = ({
             }}
           />
         )} */}
-        <SliderMui
-          // getAriaLabel={() => 'Temperature range'}
-          value={value}
-          onChange={(e, value) => onChange && onChange(value)}
-          // valueLabelDisplay="auto"
-          min={min}
-          max={max}
-          // color="#ffffff"
-          // getAriaValueText={valuetext}
-        />
-        {!noInputs && (
-          <Select value={value} onChange={onChange} min={min} max={max} />
-        )}
-      </div>
-      {/* <input
+      <SliderMui
+        // getAriaLabel={() => 'Temperature range'}
+        value={value}
+        onChange={(e, value) => onChange && onChange(value)}
+        // valueLabelDisplay="auto"
+        min={min}
+        max={max}
+        // color="#ffffff"
+        // getAriaValueText={valuetext}
+      />
+      {!noInputs && (
+        <Select value={value} onChange={onChange} min={min} max={max} />
+      )}
+    </div>
+    {/* <input
           className={cn(
             'outline-none px-1 flex-1 min-w-10',
             disabled
@@ -134,9 +132,8 @@ const Slider = ({
           placeholder={placeholder}
           disabled={disabled}
         /> */}
-      {/* </div> */}
-    </InputWrapper>
-  )
-}
+    {/* </div> */}
+  </InputWrapper>
+)
 
 export default Slider
