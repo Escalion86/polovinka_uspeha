@@ -34,6 +34,9 @@ import { SnackbarProvider } from 'notistack'
 
 // Create a theme instance.
 const theme = createTheme({
+  typography: {
+    fontFamily: '',
+  },
   palette: {
     primary: {
       main: '#7a5151',
