@@ -31,6 +31,8 @@ import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import useSnackbar from '@helpers/useSnackbar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 
+import { useDetectClickOutside } from 'react-detect-click-outside'
+
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
     className={cn(
@@ -69,6 +71,20 @@ const CardButtons = ({
   // const { info } = useSnackbar()
 
   const [open, setOpen] = useState(false)
+  const [isTriggered, setIsTriggered] = useState(false)
+  const ref = useDetectClickOutside({
+    onTriggered: () => {
+      if (!isTriggered && open) {
+        setOpen(false)
+        setIsTriggered(true)
+        const timer = setTimeout(() => {
+          setIsTriggered(false)
+          clearTimeout(timer)
+        }, 300)
+      }
+    },
+  })
+  // const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
 
   const isCompact = device === 'phoneV' || device === 'phoneH'
 
@@ -202,24 +218,43 @@ const CardButtons = ({
     </>
   )
 
+  const handleMouseOver = () => {
+    // if (turnOnHandleMouseOver) {
+    // setMenuOpen(false)
+    setOpen(true)
+    // }
+  }
+
+  const handleMouseOut = () => setOpen(false)
+
   return numberOfButtons > 3 && isCompact ? (
     <div
       className={cn('relative cursor-pointer group', className)}
       onClick={(e) => {
         e.stopPropagation()
-        setOpen((state) => !state)
+        if (!isTriggered) setOpen(!open)
+        // setTurnOnHandleMouseOver(false)
+        // setIsUserMenuOpened(!isUserMenuOpened)
+        // const timer = setTimeout(() => {
+        //   setTurnOnHandleMouseOver(true)
+        //   clearTimeout(timer)
+        // }, 300)
       }}
     >
       <motion.div
         className={cn(
-          'absolute z-50 overflow-hidden w-min top-8',
+          'absolute z-50 overflow-hidden w-min top-[2.3rem]',
           direction === 'left' ? 'right-0' : 'left-0'
         )}
         initial={{ height: 0 }}
         animate={{ height: open ? 'auto' : 0 }}
         transition={{ type: 'tween' }}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
       >
-        <div className="h-full bg-red-200 border border-gray-200">{items}</div>
+        <div ref={ref} className="h-full bg-red-200 border border-gray-200">
+          {items}
+        </div>
       </motion.div>
       <div className="flex items-center justify-center w-9 h-9 text-general group-hover:text-toxic group-hover:scale-110">
         <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />

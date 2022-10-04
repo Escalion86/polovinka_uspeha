@@ -208,7 +208,6 @@ const Login = () => {
   // const [errors, setErrors] = useState({})
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
   // const [needToCheckMail, setNeedToCheckMail] = useState(false)
-
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
 
@@ -412,7 +411,11 @@ const Login = () => {
       </>
     ) : isRegistrationProcess && registrationLevel === 3 ? (
       <>
-        Для завершения регистрации создайте пароль для входа введя его два раза.
+        Для завершения регистрации создайте пароль.
+        <br />
+        Пароль должен быть длинной не менее 8 символов, содержать строчные и
+        заглавные буквы, а также минимум одну цифру.
+        <br />
         Ваш логин: <b>+{inputPhone}</b>
       </>
     ) : null
@@ -576,11 +579,12 @@ const Login = () => {
                 labelPos="right"
                 onChange={(e) => setCheckHave18Years(!checkHave18Years)}
                 label="Мне исполнилось 18 лет"
-                wrapperClassName={
+                wrapperClassName={cn(
+                  'overflow-hidden',
                   isRegistrationProcess && registrationLevel === 1
                     ? 'max-h-15 my-2 py-3'
                     : ''
-                }
+                )}
                 hidden={!isRegistrationProcess || registrationLevel !== 1}
               />
 

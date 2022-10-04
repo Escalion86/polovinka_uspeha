@@ -31,6 +31,13 @@ import ImageGallery from '@components/ImageGallery'
 import CardButtons from '@components/CardButtons'
 import ValueItem from '@components/ValuePicker/ValueItem'
 
+const TextLine = ({ label, children }) => (
+  <div className="flex items-center leading-5 gap-x-1">
+    <span className="font-bold">{label + ':'}</span>
+    {children}
+  </div>
+)
+
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
     closeModal,
@@ -87,44 +94,20 @@ const eventViewFunc = (eventId) => {
               dangerouslySetInnerHTML={{ __html: sanitize(event?.description) }}
             />
             <Divider thin light />
-            {isLoggedUserDev && (
-              <div className="flex gap-x-1">
-                <span className="font-bold">ID:</span>
-                <span>{event?._id}</span>
-              </div>
-            )}
+            {isLoggedUserDev && <TextLine label="ID">{event?._id}</TextLine>}
             {direction?.title && (
-              <div className="flex gap-x-1">
-                <span className="font-bold">Направление:</span>
-                <span>{direction.title}</span>
-              </div>
+              <TextLine label="Направление">{direction.title}</TextLine>
             )}
-            <div className="flex items-start leading-5 gap-x-1">
-              <span className="font-bold">Начало:</span>
-              <div>{formatDateTime(event?.date)}</div>
-              {/* <div className="font-normal">
-                (
-                {eventLoggedUserStatus
-                  ? 'началось'
-                  : getDaysFromNow(event?.date)}
-                )
-              </div> */}
-            </div>
-            <div className="flex items-start leading-5 gap-x-1">
-              <span className="font-bold">Завершение:</span>
-              <div>{formatDateTime(finishedDateTime)}</div>
-              {/* <div className="font-normal">
-                ({getDaysFromNow(finishedDateTime)})
-              </div> */}
-            </div>
-            <div className="flex items-start leading-5 gap-x-1">
-              <span className="font-bold">Продолжительность:</span>
-              <div>{formatMinutes(event?.duration ?? 60)}</div>
-            </div>
+            <TextLine label="Начало">{formatDateTime(event?.date)}</TextLine>
+            <TextLine label="Завершение">
+              {formatDateTime(finishedDateTime)}
+            </TextLine>
+            <TextLine label="Продолжительность">
+              {formatMinutes(event?.duration ?? 60)}
+            </TextLine>
 
             {event?.address && (
-              <div className="flex items-start gap-x-1">
-                <span className="font-bold">Адрес:</span>{' '}
+              <TextLine label="Адрес">
                 {formatAddress(event?.address, '[не указан]')}
                 {event.address?.town && event.address?.street && (
                   <>
@@ -157,16 +140,17 @@ const eventViewFunc = (eventId) => {
                     </a>
                   </>
                 )}
-              </div>
+              </TextLine>
             )}
             {event?.organizerId && (
-              <div className="flex items-center leading-5 gap-x-1">
-                <span className="font-bold">Организатор:</span>
-                <div className="flex flex-wrap items-center gap-1">
+              <>
+                <TextLine label="Организатор">
                   <UserName user={organizer} noWrap />
+                </TextLine>
+                <TextLine label="Контакты организатора">
                   <ContactsIconsButtons user={organizer} />
-                </div>
-              </div>
+                </TextLine>
+              </>
             )}
             <NamesOfUsers
               users={eventAssistants}
