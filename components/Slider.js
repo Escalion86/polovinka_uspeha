@@ -19,7 +19,7 @@ const Options = ({ min, max }) => {
 }
 
 const Select = ({ value, onChange, left, min, max }) => (
-  <FormControl className="w-16">
+  <FormControl className="w-20">
     <NativeSelect
       value={typeof value === 'object' ? value[left ? 0 : 1] : value}
       inputProps={{
