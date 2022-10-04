@@ -74,7 +74,7 @@ const Slider = ({
           noBorder ? '' : 'border'
         )}
       > */}
-      <div className="flex flex-1 px-3 w-max min-w-40 gap-x-4">
+      <div className="flex flex-1 w-max min-w-40 gap-x-4">
         {!noInputs && (
           <Select value={value} onChange={onChange} left min={min} max={max} />
         )}
