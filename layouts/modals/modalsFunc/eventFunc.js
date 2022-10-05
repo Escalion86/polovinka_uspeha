@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import useErrors from '@helpers/useErrors'
 
 import { useRecoilValue } from 'recoil'
@@ -33,6 +33,7 @@ import compareObjects from '@helpers/compareObjects'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import FormRow from '@components/FormRow'
+import useFocus from '@helpers/useFocus'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -45,6 +46,9 @@ const eventFunc = (eventId, clone = false) => {
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
+    const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()
+    const [refMansMax, setFocusMansMax] = useFocus()
+    const [refWomansMax, setFocusWomansMax] = useFocus()
 
     const [directionId, setDirectionId] = useState(
       event?.directionId ?? DEFAULT_EVENT.directionId
@@ -232,6 +236,18 @@ const eventFunc = (eventId, clone = false) => {
       report,
       reportImages,
     ])
+
+    const handleFocus = (event) => event.target.select()
+
+    useEffect(() => {
+      if (!maxParticipantsCheck) setFocusPerticipantsMax()
+    }, [maxParticipantsCheck])
+    useEffect(() => {
+      if (!maxMansCheck) setFocusMansMax()
+    }, [maxMansCheck])
+    useEffect(() => {
+      if (!maxWomansCheck) setFocusWomansMax()
+    }, [maxWomansCheck])
 
     return (
       <>
@@ -437,6 +453,7 @@ const eventFunc = (eventId, clone = false) => {
                 />
                 <FormRow>
                   <Input
+                    ref={refPerticipantsMax}
                     label="Макс. участников"
                     type="number"
                     inputClassName="w-16"
@@ -447,6 +464,7 @@ const eventFunc = (eventId, clone = false) => {
                     disabled={maxParticipantsCheck}
                     min={0}
                     labelPos="left"
+                    onFocus={handleFocus}
                   />
                   <CheckBox
                     checked={maxParticipantsCheck}
@@ -462,6 +480,7 @@ const eventFunc = (eventId, clone = false) => {
               <FormWrapper>
                 <FormRow>
                   <Input
+                    ref={refMansMax}
                     label="Макс. мужчин"
                     type="number"
                     inputClassName="w-16"
@@ -472,6 +491,7 @@ const eventFunc = (eventId, clone = false) => {
                     disabled={maxMansCheck}
                     min={0}
                     labelPos="left"
+                    onFocus={handleFocus}
                   />
                   <CheckBox
                     checked={maxMansCheck}
@@ -484,6 +504,7 @@ const eventFunc = (eventId, clone = false) => {
               <FormWrapper> */}
                 <FormRow>
                   <Input
+                    ref={refWomansMax}
                     label="Макс. женщин"
                     type="number"
                     inputClassName="w-16"
@@ -494,6 +515,7 @@ const eventFunc = (eventId, clone = false) => {
                     disabled={maxWomansCheck}
                     min={0}
                     labelPos="left"
+                    onFocus={handleFocus}
                   />
                   <CheckBox
                     checked={maxWomansCheck}
