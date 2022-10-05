@@ -75,15 +75,7 @@ const eventViewFunc = (eventId) => {
       <div className="flex flex-col gap-y-2">
         <ImageGallery images={event?.images} />
         <div className="flex flex-col flex-1">
-          <div className="relative flex flex-col flex-1 px-2 py-2">
-            {/* <div className="absolute top-2 right-2">
-              <CardButton
-                icon={faShareAlt}
-                color="blue"
-                onClick={copyLink}
-                tooltipText="Скопировать ссылку на мероприятие"
-              />
-            </div> */}
+          <div className="flex flex-col flex-1 px-2 py-2">
             <div className="flex justify-center w-full text-3xl font-bold">
               {event?.title}
             </div>
@@ -109,37 +101,37 @@ const eventViewFunc = (eventId) => {
             {event?.address && (
               <TextLine label="Адрес">
                 {formatAddress(event?.address, '[не указан]')}
-                {event.address?.town && event.address?.street && (
-                  <>
-                    <a
-                      data-tip="Открыть адрес в 2ГИС"
-                      href={`https://2gis.ru/search/${event.address.town},%20${
-                        event.address.street
-                      }%20${event.address.house.replaceAll('/', '%2F')}`}
-                    >
-                      <img
-                        className="object-contain w-6 h-6 min-w-6 min-h-6"
-                        src="/img/navigators/2gis.png"
-                        alt="2gis"
-                      />
-                    </a>
-                    <a
-                      className="laptop:hidden"
-                      data-tip="Открыть адрес в Яндекс Навигаторе"
-                      href={`yandexnavi://map_search?text=${
-                        event.address.town
-                      },%20${
-                        event.address.street
-                      }%20${event.address.house.replaceAll('/', '%2F')}`}
-                    >
-                      <img
-                        className="object-contain w-6 h-6 min-w-6 min-h-6"
-                        src="/img/navigators/yandex.png"
-                        alt="2gis"
-                      />
-                    </a>
-                  </>
-                )}
+              </TextLine>
+            )}
+            {event?.address && event.address?.town && event.address?.street && (
+              <TextLine label="Ссылки для навигатора">
+                <a
+                  data-tip="Открыть адрес в 2ГИС"
+                  href={`https://2gis.ru/search/${event.address.town},%20${
+                    event.address.street
+                  }%20${event.address.house.replaceAll('/', '%2F')}`}
+                >
+                  <img
+                    className="object-contain w-6 h-6 min-w-6 min-h-6"
+                    src="/img/navigators/2gis.png"
+                    alt="2gis"
+                  />
+                </a>
+                <a
+                  className="laptop:hidden"
+                  data-tip="Открыть адрес в Яндекс Навигаторе"
+                  href={`yandexnavi://map_search?text=${
+                    event.address.town
+                  },%20${
+                    event.address.street
+                  }%20${event.address.house.replaceAll('/', '%2F')}`}
+                >
+                  <img
+                    className="object-contain w-6 h-6 min-w-6 min-h-6"
+                    src="/img/navigators/yandex.png"
+                    alt="2gis"
+                  />
+                </a>
               </TextLine>
             )}
             {event?.organizerId && (
