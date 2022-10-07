@@ -23,6 +23,7 @@ import CheckBox from '@components/CheckBox'
 const Input = ({
   className = '',
   name,
+  label,
   icon,
   type = 'text',
   onChange,
@@ -74,10 +75,11 @@ const Input = ({
                 : 'text-gray-400'
             )}
           >
-            {name}
+            {label}
           </h5>
           {type === 'phone' ? (
             <MaskedInput
+              name={name}
               disabled={readOnly}
               ref={inputRef}
               className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-1 text-lg text-gray-600"
@@ -115,6 +117,7 @@ const Input = ({
             />
           ) : (
             <input
+              name={name}
               ref={inputRef}
               className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-1 text-lg text-gray-600"
               type={type}
@@ -490,7 +493,8 @@ const Login = () => {
                 inputRef={inputPhoneRef}
                 className="mt-0"
                 type="phone"
-                name="Телефон"
+                label="Телефон"
+                name="phone"
                 icon={faUser}
                 onChange={(event) => {
                   removeError('phone')
@@ -522,7 +526,8 @@ const Login = () => {
               {message && <div className="mt-2">{message}</div>}
               <Input
                 type="text"
-                name="Последние 4 цифры номера"
+                label="Последние 4 цифры номера"
+                name="pinCode"
                 icon={faLock}
                 onChange={(event) => {
                   removeError('pinCode')
@@ -542,7 +547,8 @@ const Login = () => {
                 inputRef={inputPasswordRef}
                 className="mt-0"
                 type="password"
-                name="Пароль"
+                label="Пароль"
+                name="password"
                 icon={faLock}
                 onChange={(event) => {
                   removeError('password')
@@ -562,7 +568,8 @@ const Login = () => {
               />
               <Input
                 type="password"
-                name="Повтор пароля"
+                label="Повтор пароля"
+                name="password2"
                 icon={faLock}
                 onChange={(event) => {
                   removeError('password')
