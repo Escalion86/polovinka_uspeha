@@ -172,9 +172,9 @@ const RepeatCall = ({ onClickRepeat }) => {
     if (timer && secondsLeft <= 0) {
       clearInterval(timer)
     }
-    // return () => {
-    //   if (timer) clearInterval(timer)
-    // }
+    return () => {
+      if (timer) clearInterval(timer)
+    }
   }, [secondsLeft])
 
   return (
