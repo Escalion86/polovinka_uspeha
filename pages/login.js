@@ -159,6 +159,9 @@ const RepeatCall = ({ onClickRepeat }) => {
 
   useEffect(() => {
     if (!timer && secondsLeft === 60) {
+      if (timer) {
+        clearInterval(timer)
+      }
       timer = setInterval(() => {
         setIsSecondsLeft((state) => state - 1)
       }, 1000)
