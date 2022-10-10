@@ -13,14 +13,16 @@ const fetchUcallerCode = async (phone, code) =>
   await fetch(
     `https://api.ucaller.ru/v1.0/initCall?phone=${phone}${
       code ? '&code=' + code : ''
-    }&key=${key}&service_id=${service_id}&voice=${voice ? 'true' : 'false'}`,
+    }&key=${key}&service_id=${service_id}${
+      voice === 'true' ? '&voice=true' : ''
+    }`,
     { method: 'GET' }
   ).then((response) => response.json())
 
 const fetchUcallerCodeRepeat = async (uid) =>
   await fetch(
     `https://api.ucaller.ru/v1.0/initRepeat?uid=${uid}&key=${key}&service_id=${service_id}${
-      voice ? 'true' : 'false'
+      voice === 'true' ? '&voice=true' : ''
     }`,
     { method: 'GET' }
   ).then((response) => response.json())
