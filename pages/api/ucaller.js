@@ -7,18 +7,21 @@ import dbConnect from '@utils/dbConnect'
 
 const key = process.env.UCALLER_KEY
 const service_id = process.env.UCALLER_SERVICE_ID
+const voice = process.env.UCALLER_VOICE
 
 const fetchUcallerCode = async (phone, code) =>
   await fetch(
     `https://api.ucaller.ru/v1.0/initCall?phone=${phone}${
       code ? '&code=' + code : ''
-    }&key=${key}&service_id=${service_id}`,
+    }&key=${key}&service_id=${service_id}${voice ? '&voice=true' : ''}`,
     { method: 'GET' }
   ).then((response) => response.json())
 
 const fetchUcallerCodeRepeat = async (uid) =>
   await fetch(
-    `https://api.ucaller.ru/v1.0/initRepeat?uid=${uid}&key=${key}&service_id=${service_id}`,
+    `https://api.ucaller.ru/v1.0/initRepeat?uid=${uid}&key=${key}&service_id=${service_id}${
+      voice ? '&voice=true' : ''
+    }`,
     { method: 'GET' }
   ).then((response) => response.json())
 
