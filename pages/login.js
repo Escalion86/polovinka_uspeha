@@ -729,7 +729,10 @@ const Login = () => {
                       setWaitingResponse(true)
                       await postData(
                         `/api/ucaller`,
-                        { phone: inputPhone },
+                        {
+                          phone: inputPhone,
+                          forgotPassword: process === 'forgotPassword',
+                        },
                         (res) => {
                           setWaitingResponse(false)
                           if (res.error) {
