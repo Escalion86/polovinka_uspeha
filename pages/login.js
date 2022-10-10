@@ -19,6 +19,7 @@ import LoadingSpinner from '@components/LoadingSpinner'
 import phoneValidator from '@helpers/phoneValidator'
 import useErrors from '@helpers/useErrors'
 import CheckBox from '@components/CheckBox'
+import { UCALLER_VOICE } from '@helpers/constants'
 
 const Input = ({
   className = '',
@@ -451,10 +452,17 @@ const Login = () => {
   const message =
     (process === 'registration' || process === 'forgotPassword') &&
     registrationLevel === 2 ? (
-      <>
-        На телефон <b>+{inputPhone}</b> поступит звонок. Трубку брать не нужно,
-        введите 4 последние цифры номера входящего звонка
-      </>
+      UCALLER_VOICE ? (
+        <>
+          На телефон <b>+{inputPhone}</b> поступит звонок. Возьмите трубку и
+          послушайте 4 цифры которые Вам продиктуют
+        </>
+      ) : (
+        <>
+          На телефон <b>+{inputPhone}</b> поступит звонок. Трубку брать не
+          нужно, введите 4 последние цифры номера входящего звонка
+        </>
+      )
     ) : process === 'registration' && registrationLevel === 3 ? (
       <>
         Для завершения регистрации создайте пароль.

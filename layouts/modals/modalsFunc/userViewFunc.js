@@ -21,6 +21,8 @@ import ValueItem from '@components/ValuePicker/ValueItem'
 import { modalsFuncAtom } from '@state/atoms'
 import ZodiacIcon from '@components/ZodiacIcon'
 import formatDate from '@helpers/formatDate'
+import TextLine from '@components/TextLine'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -33,6 +35,7 @@ const userViewFunc = (userId, clone = false) => {
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
 
     const user = useRecoilValue(userSelector(userId))
 
@@ -59,12 +62,10 @@ const userViewFunc = (userId, clone = false) => {
             <UserName user={user} className="text-lg font-bold" />
           </div>
           {/* <div className="flex text-lg font-bold">{`${user.secondName} ${user.name} ${user.thirdName}`}</div> */}
-          <div className="flex gap-x-2">
-            <span className="font-bold">Пол:</span>
-            <span>
-              {GENDERS.find((item) => item.value === user.gender)?.name}
-            </span>
-          </div>
+          {isLoggedUserDev && <TextLine label="ID">{user?._id}</TextLine>}
+          <TextLine label="Пол">
+            {GENDERS.find((item) => item.value === user.gender)?.name}
+          </TextLine>
           {/* <div className="flex gap-x-2">
               <span className="font-bold">Ориентация:</span>
               <span>
@@ -78,7 +79,7 @@ const userViewFunc = (userId, clone = false) => {
             (isLoggedUserAdmin ||
               user.security?.showBirthday ||
               user.security?.showAge) && (
-              <div className="flex items-center gap-x-2">
+              <div className="flex items-center gap-x-1">
                 <span className="font-bold">Дата рождения:</span>
                 <span>
                   {birthDateToAge(
@@ -91,28 +92,25 @@ const userViewFunc = (userId, clone = false) => {
                 <ZodiacIcon date={user.birthday} />
               </div>
             )}
-          <div className="flex gap-x-2">
-            <span className="font-bold">Дети:</span>
-            <span>
-              {user?.haveKids === true
-                ? 'Есть'
-                : user?.haveKids === false
-                ? 'Нет'
-                : 'Не указано'}
-            </span>
-          </div>
+          <TextLine label="Дети">
+            {user?.haveKids === true
+              ? 'Есть'
+              : user?.haveKids === false
+              ? 'Нет'
+              : 'Не указано'}
+          </TextLine>
           {(isLoggedUserAdmin || user.security?.showContacts) && (
             <ContactsIconsButtons user={user} withTitle grid />
           )}
-          <div className="flex gap-x-2">
-            <span className="font-bold">Дата регистрации:</span>
-            <span>{formatDate(user.createdAt)}</span>
-          </div>
+          <TextLine label="Дата регистрации">
+            {formatDate(user.createdAt)}
+          </TextLine>
+
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1 gap-x-2">
-            <div className="flex gap-x-2">
-              <span className="font-bold">Посещено мероприятий:</span>
-              <span>{eventUsers.length}</span>
-            </div>
+            <TextLine label="Посещено мероприятий">
+              {eventUsers.length}
+            </TextLine>
+
             {isLoggedUserAdmin && eventUsers.length > 0 && (
               <ValueItem
                 name="Посмотреть посещенные мероприятия"
