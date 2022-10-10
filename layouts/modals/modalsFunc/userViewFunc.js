@@ -20,6 +20,7 @@ import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import { modalsFuncAtom } from '@state/atoms'
 import ZodiacIcon from '@components/ZodiacIcon'
+import formatDate from '@helpers/formatDate'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -103,6 +104,10 @@ const userViewFunc = (userId, clone = false) => {
           {(isLoggedUserAdmin || user.security?.showContacts) && (
             <ContactsIconsButtons user={user} withTitle grid />
           )}
+          <div className="flex gap-x-2">
+            <span className="font-bold">Дата регистрации:</span>
+            <span>{formatDate(user.createdAt)}</span>
+          </div>
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1 gap-x-2">
             <div className="flex gap-x-2">
               <span className="font-bold">Посещено мероприятий:</span>
