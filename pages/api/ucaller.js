@@ -13,14 +13,14 @@ const fetchUcallerCode = async (phone, code) =>
   await fetch(
     `https://api.ucaller.ru/v1.0/initCall?phone=${phone}${
       code ? '&code=' + code : ''
-    }&key=${key}&service_id=${service_id}${voice ? '&voice=true' : ''}`,
+    }&key=${key}&service_id=${service_id}&voice=${voice ? 'true' : 'false'}`,
     { method: 'GET' }
   ).then((response) => response.json())
 
 const fetchUcallerCodeRepeat = async (uid) =>
   await fetch(
     `https://api.ucaller.ru/v1.0/initRepeat?uid=${uid}&key=${key}&service_id=${service_id}${
-      voice ? '&voice=true' : ''
+      voice ? 'true' : 'false'
     }`,
     { method: 'GET' }
   ).then((response) => response.json())
@@ -84,7 +84,7 @@ export default async function handler(req, res) {
     try {
       await dbConnect()
 
-      const { phone, code, password } = body
+      const { phone, code, password, forgotPassword } = body
 
       if (!phone)
         return res?.status(200).json({
@@ -110,12 +110,23 @@ export default async function handler(req, res) {
 
       // Сначала проверяем - есть ли уже такой зарегистрированный номер?
       const existingUser = await Users.findOne({ phone })
-      if (existingUser && existingUser.password) {
+      if (!forgotPassword && existingUser && existingUser.password) {
         return res?.status(200).json({
           success: false,
           data: {
             error: {
               message: 'Такой номер телефона уже зарегистрирован',
+              type: 'phone',
+            },
+          },
+        })
+      }
+      if (forgotPassword && !existingUser) {
+        return res?.status(200).json({
+          success: false,
+          data: {
+            error: {
+              message: 'Такой номер телефона не зарегистрирован',
               type: 'phone',
             },
           },
@@ -245,7 +256,7 @@ export default async function handler(req, res) {
         await PhoneConfirms.findOneAndDelete({ phone })
 
         // Проверяем - возможно такой пользователь есть, просто у него не задан пароль
-        if (existingUser && !existingUser.password) {
+        if (existingUser && (!existingUser.password || forgotPassword)) {
           const updatedUser = await Users.findOneAndUpdate(
             { phone },
             { password }
