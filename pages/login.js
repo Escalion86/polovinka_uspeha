@@ -155,27 +155,54 @@ const Input = ({
 const fullConfig = resolveConfig(tailwindConfig)
 const generalColor = fullConfig.theme.colors.general
 
-const RepeatCall = ({ onClickRepeat }) => {
-  const [secondsLeft, setIsSecondsLeft] = useState(60)
+const secondsToWait = 40
 
-  var timer
+const RepeatCall = ({ onClickRepeat }) => {
+  const timer = useRef(null)
+  const [secondsLeft, setIsSecondsLeft] = useState(secondsToWait)
+
+  const stopInterval = () => {
+    if (timer?.current) {
+      clearInterval(timer?.current)
+      // timer?.current = undefined
+    }
+  }
+
+  const startInterval = () => {
+    // if (!timer?.current)
+    stopInterval()
+    timer.current = setInterval(() => {
+      setIsSecondsLeft((state) => state - 1)
+    }, 1000)
+  }
+
+  // useEffect(() => console.log('timer?.current', timer?.current), [secondsLeft])
+
+  // var timer
 
   useEffect(() => {
-    if (!timer && secondsLeft === 60) {
-      if (timer) {
-        clearInterval(timer)
-      }
-      timer = setInterval(() => {
-        setIsSecondsLeft((state) => state - 1)
-      }, 1000)
+    if (secondsLeft === secondsToWait) {
+      startInterval()
+    } else if (timer?.current && secondsLeft <= 0) {
+      stopInterval()
     }
-    if (timer && secondsLeft <= 0) {
-      clearInterval(timer)
-    }
-    return () => {
-      if (timer) clearInterval(timer)
-    }
+    // return () => {
+    //   console.log('Child unmounted')
+    //   if (timer) clearInterval(timer)
+    // }
+    // return () => {
+    //   clearInterval(timer.current)
+    // }
   }, [secondsLeft])
+
+  // useEffect(() => {
+  //   startInterval()
+  //   return () => {
+  //     stopInterval()
+  //   }
+  // }, [])
+
+  // console.log('timer', timer)
 
   return (
     <div className="mt-2">
@@ -187,7 +214,7 @@ const RepeatCall = ({ onClickRepeat }) => {
           <div
             onClick={async () => {
               onClickRepeat && (await onClickRepeat())
-              setIsSecondsLeft(60)
+              setIsSecondsLeft(secondsToWait)
             }}
             className="font-bold cursor-pointer"
           >
