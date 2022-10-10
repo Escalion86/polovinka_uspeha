@@ -41,21 +41,7 @@ import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusT
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
-
-const sortFunctions = {
-  date: {
-    asc: (a, b) => (a.date < b.date ? -1 : 1),
-    desc: (a, b) => (a.date > b.date ? -1 : 1),
-  },
-  name: {
-    asc: (a, b) => (a.firstName < b.firstName ? -1 : 1),
-    desc: (a, b) => (a.firstName > b.firstName ? -1 : 1),
-  },
-  age: {
-    asc: (a, b) => (a.birthday < b.birthday ? -1 : 1),
-    desc: (a, b) => (a.birthday > b.birthday ? -1 : 1),
-  },
-}
+import sortFunctions from '@helpers/sortFunctions'
 
 const EventsContent = () => {
   // const classes = useStyles()

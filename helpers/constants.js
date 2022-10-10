@@ -594,3 +594,5 @@ export const USERS_ROLES = [
   { value: 'admin', name: 'Администратор', color: 'orange-400' },
   { value: 'dev', name: 'Разработчик', color: 'danger' },
 ]
+
+export const UCALLER_VOICE = false

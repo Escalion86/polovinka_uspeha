@@ -10,27 +10,7 @@ import ContentHeader from '@components/ContentHeader'
 import UsersFilter from '@components/Filter/UsersFilter'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import { FormControl } from '@mui/material'
-
-const sortFunctions = {
-  date: {
-    asc: (a, b) => (a.date < b.date ? -1 : 1),
-    desc: (a, b) => (a.date > b.date ? -1 : 1),
-  },
-  name: {
-    asc: (a, b) =>
-      a.firstName.toLowerCase() < b.firstName.toLowerCase() ? -1 : 1,
-    desc: (a, b) =>
-      a.firstName.toLowerCase() > b.firstName.toLowerCase() ? -1 : 1,
-  },
-  age: {
-    asc: (a, b) => (a.birthday > b.birthday ? -1 : 1),
-    desc: (a, b) => (a.birthday < b.birthday ? -1 : 1),
-  },
-  createdAt: {
-    asc: (a, b) => (a.createdAt < b.createdAt ? -1 : 1),
-    desc: (a, b) => (a.createdAt > b.createdAt ? -1 : 1),
-  },
-}
+import sortFunctions from '@helpers/sortFunctions'
 
 const UsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -57,8 +37,6 @@ const UsersContent = () => {
   const sortFunc = sortFunctions[sortKey]
     ? sortFunctions[sortKey][sortValue]
     : undefined
-
-  console.log('sortFunc', sortFunc)
 
   const visibleUsersIds = useMemo(
     () =>
@@ -98,7 +76,7 @@ const UsersContent = () => {
             <SortingButtonMenu
               sort={sort}
               onChange={setSort}
-              sortKeys={['name', 'age', 'createdAt']}
+              sortKeys={['name', 'birthday', 'createdAt']}
             />
           </FormControl>
           {/* <FormControl size="small">

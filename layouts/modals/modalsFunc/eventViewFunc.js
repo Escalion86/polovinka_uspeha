@@ -30,13 +30,7 @@ import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import ImageGallery from '@components/ImageGallery'
 import CardButtons from '@components/CardButtons'
 import ValueItem from '@components/ValuePicker/ValueItem'
-
-const TextLine = ({ label, children }) => (
-  <div className="flex items-center leading-5 gap-x-1">
-    <span className="font-bold">{label + ':'}</span>
-    {children}
-  </div>
-)
+import TextLine from '@components/TextLine'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({

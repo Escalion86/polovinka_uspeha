@@ -99,7 +99,7 @@ const sortParams = [
     type: 'string',
   },
   { key: 'date', title: 'по дате', type: 'number' },
-  { key: 'age', title: 'по возрасту', type: 'number' },
+  { key: 'birthday', title: 'по возрасту', type: 'number' },
   { key: 'createdAt', title: 'по дате регистрации', type: 'number' },
 ]
 
