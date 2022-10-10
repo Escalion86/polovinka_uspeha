@@ -16,6 +16,7 @@ import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import ZodiacIcon from '@components/ZodiacIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
+import formatDate from '@helpers/formatDate'
 
 const UserCard = ({ userId, hidden = false }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -52,7 +53,7 @@ const UserCard = ({ userId, hidden = false }) => {
         <div className="flex flex-col flex-1 tablet:flex-row">
           <div className="flex flex-1 border-b tablet:border-b-0">
             <img
-              className="object-cover w-20 h-20 tablet:w-24 tablet:h-24"
+              className="object-cover w-16 h-16 min-w-16 min-h-16 tablet:w-24 tablet:h-24 tablet:min-w-24 tablet:min-h-24"
               src={getUserAvatarSrc(user)}
               alt="user"
               // width={48}
@@ -77,7 +78,13 @@ const UserCard = ({ userId, hidden = false }) => {
                       </span>
                     )}
                   </div>
-                  <div className="flex text-sm gap-x-2">
+                  <div className="flex text-sm leading-4 gap-x-2 ">
+                    <span className="font-bold">Дата регистрации:</span>
+                    <span className="font-normal">
+                      {formatDate(user.createdAt)}
+                    </span>
+                  </div>
+                  <div className="flex text-sm leading-4 gap-x-2">
                     <span className="font-bold">Посетил мероприятий:</span>
                     <span className="font-normal">{eventUsers.length}</span>
                   </div>
