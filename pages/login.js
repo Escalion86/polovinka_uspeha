@@ -478,9 +478,13 @@ const Login = () => {
   const isButtonDisabled =
     !varifyPhone ||
     (process === 'authorization' && inputPassword.length === 0) ||
-    ((process === 'registration' || process === 'forgotPassword') &&
+    (process === 'registration' &&
       ((registrationLevel === 1 && !checkHave18Years) ||
         (registrationLevel === 2 && inputPinCode.length !== 4) ||
+        (registrationLevel === 3 &&
+          (inputPassword.length === 0 || inputPasswordRepeat.length === 0)))) ||
+    (process === 'forgotPassword' &&
+      ((registrationLevel === 2 && inputPinCode.length !== 4) ||
         (registrationLevel === 3 &&
           (inputPassword.length === 0 || inputPasswordRepeat.length === 0))))
 
