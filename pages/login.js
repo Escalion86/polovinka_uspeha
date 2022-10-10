@@ -230,7 +230,7 @@ const Login = () => {
   const router = useRouter()
   // const { data: session, status } = useSession()
   // const { courseId, lectureId } = router.query
-  const [isRegistrationProcess, setIsRegistrationProcess] = useState(false)
+  const [process, setProcess] = useState('authorization')
   const [registrationLevel, setRegistrationLevel] = useState(1)
   const [waitingResponse, setWaitingResponse] = useState(false)
   const [inputPhone, setInputPhone] = useState('')
@@ -245,7 +245,7 @@ const Login = () => {
   const inputPasswordRef = useRef()
 
   useEffect(() => {
-    if (router.query?.registration === 'true') setIsRegistrationProcess(true)
+    if (router.query?.registration === 'true') setProcess('registration')
   }, [router])
 
   useEffect(() => {
@@ -266,12 +266,12 @@ const Login = () => {
       return addError({ phone: 'Телефон указан не верно' })
     }
 
-    if (!isRegistrationProcess) {
+    if (process === 'authorization') {
       if (inputPassword === '') {
         // newErrors.password = 'Введите пароль'
         return addError({ password: 'Введите пароль' })
       }
-    } else {
+    } else if (process === 'registration' || process === 'forgotPassword') {
       if (registrationLevel === 3) {
         if (!passwordValidator(inputPassword)) {
           return addError({
@@ -293,10 +293,10 @@ const Login = () => {
     //   newErrors.phone = 'Телефон указан не верно'
     // }
 
-    // if (!isRegistrationProcess) {
+    // if (process === 'registration') {
     //   if (inputPassword === '') {
     //     newErrors.password = 'Введите пароль'
-    //   } else if (isRegistrationProcess) {
+    //   } else if (process === 'authorization') {
     //     if (!passwordValidator(inputPassword)) {
     //       newErrors.password =
     //         'Пароль должен содержать строчные и заглавные буквы, а также минимум одну цифру'
@@ -312,26 +312,34 @@ const Login = () => {
     //   clearErrors()
     // }
 
-    if (isRegistrationProcess) {
+    if (process === 'registration' || process === 'forgotPassword') {
       if (registrationLevel === 1) {
         setWaitingResponse(true)
 
-        postData(`/api/ucaller`, { phone: inputPhone }, (res) => {
-          setWaitingResponse(false)
-          if (res.error) {
-            addError({ [res.error.type]: res.error.message })
-            // updateErrors(res.error.type, res.error.message)
-          } else {
-            setRegistrationLevel(2)
+        postData(
+          `/api/ucaller`,
+          { phone: inputPhone, forgotPassword: process === 'forgotPassword' },
+          (res) => {
+            setWaitingResponse(false)
+            if (res.error) {
+              addError({ [res.error.type]: res.error.message })
+              // updateErrors(res.error.type, res.error.message)
+            } else {
+              setRegistrationLevel(2)
+            }
           }
-        })
+        )
       }
       if (registrationLevel === 2) {
         setWaitingResponse(true)
 
         postData(
           `/api/ucaller`,
-          { phone: inputPhone, code: inputPinCode },
+          {
+            phone: inputPhone,
+            code: inputPinCode,
+            forgotPassword: process === 'forgotPassword',
+          },
           (res) => {
             setWaitingResponse(false)
 
@@ -358,7 +366,11 @@ const Login = () => {
 
         postData(
           `/api/ucaller`,
-          { phone: inputPhone, password: inputPassword },
+          {
+            phone: inputPhone,
+            password: inputPassword,
+            forgotPassword: process === 'forgotPassword',
+          },
           (res) => {
             if (res.error) {
               setWaitingResponse(false)
@@ -437,14 +449,24 @@ const Login = () => {
   const varifyPhone = inputPhone?.toString().length === 11
 
   const message =
-    isRegistrationProcess && registrationLevel === 2 ? (
+    (process === 'registration' || process === 'forgotPassword') &&
+    registrationLevel === 2 ? (
       <>
         На телефон <b>+{inputPhone}</b> поступит звонок. Трубку брать не нужно,
         введите 4 последние цифры номера входящего звонка
       </>
-    ) : isRegistrationProcess && registrationLevel === 3 ? (
+    ) : process === 'registration' && registrationLevel === 3 ? (
       <>
         Для завершения регистрации создайте пароль.
+        <br />
+        Пароль должен быть длинной не менее 8 символов, содержать строчные и
+        заглавные буквы, а также минимум одну цифру.
+        <br />
+        Ваш логин: <b>+{inputPhone}</b>
+      </>
+    ) : process === 'forgotPassword' && registrationLevel === 3 ? (
+      <>
+        Создайте новый пароль.
         <br />
         Пароль должен быть длинной не менее 8 символов, содержать строчные и
         заглавные буквы, а также минимум одну цифру.
@@ -455,8 +477,8 @@ const Login = () => {
 
   const isButtonDisabled =
     !varifyPhone ||
-    (!isRegistrationProcess && inputPassword.length === 0) ||
-    (isRegistrationProcess &&
+    (process === 'authorization' && inputPassword.length === 0) ||
+    ((process === 'registration' || process === 'forgotPassword') &&
       ((registrationLevel === 1 && !checkHave18Years) ||
         (registrationLevel === 2 && inputPinCode.length !== 4) ||
         (registrationLevel === 3 &&
@@ -492,17 +514,24 @@ const Login = () => {
             <div className="h-8 overflow-hidden text-2xl text-gray-800">
               <p
                 className={cn('duration-300', {
-                  'opacity-0 -mt-8': !isRegistrationProcess,
+                  'opacity-0 h-0': process !== 'registration',
                 })}
               >
                 Регистрация
               </p>
               <p
                 className={cn('duration-300', {
-                  'opacity-0 mt-8': isRegistrationProcess,
+                  'opacity-0 h-0': process !== 'authorization',
                 })}
               >
                 Авторизация
+              </p>
+              <p
+                className={cn('duration-300', {
+                  'opacity-0 h-0': process !== 'forgotPassword',
+                })}
+              >
+                Смена пароля
               </p>
             </div>
             {/* {needToCheckMail ? (
@@ -541,12 +570,16 @@ const Login = () => {
                 max={9999999999}
                 maxLength="10"
                 tabIndex={
-                  (isRegistrationProcess && registrationLevel === 1) ||
-                  !isRegistrationProcess
+                  (process === 'registration' && registrationLevel === 1) ||
+                  process === 'authorization'
                     ? 0
                     : -1
                 }
-                hidden={isRegistrationProcess && registrationLevel !== 1}
+                hidden={
+                  (process === 'registration' ||
+                    process === 'forgotPassword') &&
+                  registrationLevel !== 1
+                }
                 readOnly={waitingResponse}
               />
 
@@ -563,9 +596,11 @@ const Login = () => {
                 }}
                 value={inputPinCode}
                 error={errors.pinCode}
-                hidden={!isRegistrationProcess || registrationLevel !== 2}
+                hidden={process === 'authorization' || registrationLevel !== 2}
                 tabIndex={
-                  isRegistrationProcess && registrationLevel === 2 ? 0 : -1
+                  process === 'authorization' && registrationLevel === 2
+                    ? 0
+                    : -1
                 }
                 readOnly={waitingResponse}
                 maxLength="4"
@@ -585,12 +620,14 @@ const Login = () => {
                 value={inputPassword}
                 error={errors.password}
                 tabIndex={
-                  (isRegistrationProcess && registrationLevel === 3) ||
-                  !isRegistrationProcess
+                  ((process === 'registration' ||
+                    process === 'forgotPassword') &&
+                    registrationLevel === 3) ||
+                  process === 'authorization'
                     ? 0
                     : -1
                 }
-                hidden={isRegistrationProcess && registrationLevel !== 3}
+                hidden={process !== 'authorization' && registrationLevel !== 3}
                 readOnly={waitingResponse}
               />
               <Input
@@ -606,9 +643,13 @@ const Login = () => {
                 value={inputPasswordRepeat}
                 error={errors.password}
                 tabIndex={
-                  isRegistrationProcess && registrationLevel === 3 ? 0 : -1
+                  (process === 'registration' ||
+                    process === 'forgotPassword') &&
+                  registrationLevel === 3
+                    ? 0
+                    : -1
                 }
-                hidden={!isRegistrationProcess || registrationLevel !== 3}
+                hidden={process === 'authorization' || registrationLevel !== 3}
                 readOnly={waitingResponse}
               />
               <CheckBox
@@ -618,11 +659,11 @@ const Login = () => {
                 label="Мне исполнилось 18 лет"
                 wrapperClassName={cn(
                   'overflow-hidden',
-                  isRegistrationProcess && registrationLevel === 1
+                  process === 'registration' && registrationLevel === 1
                     ? 'max-h-15 my-2 py-3'
                     : ''
                 )}
-                hidden={!isRegistrationProcess || registrationLevel !== 1}
+                hidden={process !== 'registration' || registrationLevel !== 1}
               />
 
               {Object.values(errors).length > 0 && (
@@ -664,48 +705,63 @@ const Login = () => {
                   tabIndex={0}
                   disabled={isButtonDisabled}
                 >
-                  {isRegistrationProcess
-                    ? registrationLevel === 1
+                  {process === 'authorization'
+                    ? 'Авторизироваться'
+                    : registrationLevel === 1
+                    ? process === 'registration'
                       ? 'Зарегистрироваться'
-                      : registrationLevel === 2
-                      ? 'Отправить код'
-                      : 'Завершить регистрацию'
-                    : 'Авторизироваться'}
+                      : 'Сменить пароль'
+                    : registrationLevel === 2
+                    ? 'Отправить код'
+                    : process === 'registration'
+                    ? 'Завершить регистрацию'
+                    : 'Сменить пароль и авторизироваться'}
                 </button>
               )}
-              {isRegistrationProcess && registrationLevel === 2 && (
-                <RepeatCall
-                  onClickRepeat={async () => {
-                    setWaitingResponse(true)
-                    await postData(
-                      `/api/ucaller`,
-                      { phone: inputPhone },
-                      (res) => {
-                        setWaitingResponse(false)
-                        if (res.error) {
-                          addError({ [res.error.type]: res.error.message })
-                          // updateErrors(res.error.type, res.error.message)
+              {(process === 'registration' || process === 'forgotPassword') &&
+                registrationLevel === 2 && (
+                  <RepeatCall
+                    onClickRepeat={async () => {
+                      setWaitingResponse(true)
+                      await postData(
+                        `/api/ucaller`,
+                        { phone: inputPhone },
+                        (res) => {
+                          setWaitingResponse(false)
+                          if (res.error) {
+                            addError({ [res.error.type]: res.error.message })
+                            // updateErrors(res.error.type, res.error.message)
+                          }
                         }
-                      }
-                    )
-                  }}
-                />
-              )}
+                      )
+                    }}
+                  />
+                )}
               <div className="flex justify-between mt-4">
                 <a
                   tabIndex={0}
                   onClick={() => {
                     clearErrors()
-                    setIsRegistrationProcess((state) => !state)
+                    setProcess((state) =>
+                      state === 'authorization'
+                        ? 'registration'
+                        : 'authorization'
+                    )
+                    setRegistrationLevel(1)
                   }}
                   className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
                 >
-                  {isRegistrationProcess ? 'Авторизация' : 'Регистрация'}
+                  {process === 'authorization' ? 'Регистрация' : 'Авторизация'}
                 </a>
                 {/* TODO Сделать восстановление пароля */}
                 <a
                   tabIndex={0}
                   className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
+                  onClick={() => {
+                    clearErrors()
+                    setProcess('forgotPassword')
+                    setRegistrationLevel(1)
+                  }}
                 >
                   Забыли пароль?
                 </a>
