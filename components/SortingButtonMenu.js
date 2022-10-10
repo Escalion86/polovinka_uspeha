@@ -100,6 +100,7 @@ const sortParams = [
   },
   { key: 'date', title: 'по дате', type: 'number' },
   { key: 'age', title: 'по возрасту', type: 'number' },
+  { key: 'createdAt', title: 'по дате регистрации', type: 'number' },
 ]
 
 const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
