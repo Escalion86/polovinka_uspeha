@@ -595,4 +595,4 @@ export const USERS_ROLES = [
   { value: 'dev', name: 'Разработчик', color: 'danger' },
 ]
 
-export const UCALLER_VOICE = false
+export const UCALLER_VOICE = true
