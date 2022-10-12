@@ -13,6 +13,7 @@ import {
   faMars,
   faMarsDouble,
   faPhone,
+  faPieChart,
   faPlay,
   faSignInAlt,
   faTimesCircle,
@@ -62,6 +63,7 @@ import ContactsContent from '@layouts/content/ContactsContent'
 import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
 import BirthdaysContent from '@layouts/content/BirthdaysContent'
+import StatisticsContent from '@layouts/content/StatisticsContent'
 
 const colors = [
   'border-blue-400',
@@ -477,6 +479,7 @@ export const CONTENTS = {
     name: 'События / Участники мероприятий',
   },
   birthdays: { Component: BirthdaysContent, name: 'События / Дни рождения' },
+  statistics: { Component: StatisticsContent, name: 'Статистика' },
 }
 
 export const pages = [
@@ -544,6 +547,13 @@ export const pages = [
     icon: faBirthdayCake,
   },
   {
+    id: 9,
+    group: 5,
+    name: 'Статистика',
+    href: 'statistics',
+    icon: faPieChart,
+  },
+  {
     id: 99,
     group: 99,
     name: 'Разработчик',
@@ -558,6 +568,7 @@ export const pagesGroups = [
   { id: 2, name: 'Пользователи', icon: faUser, access: 'admin' },
   { id: 3, name: 'Транзакции', icon: faMoneyBill, access: 'dev' },
   { id: 4, name: 'События', icon: faHistory, access: 'admin' },
+  { id: 5, name: 'Статистика', icon: faPieChart, access: 'admin' },
   { id: 99, name: 'Разработчик', icon: faBug, access: 'dev' },
 ]
 
