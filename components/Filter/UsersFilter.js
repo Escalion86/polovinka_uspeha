@@ -5,14 +5,22 @@ import React from 'react'
 const UsersFilter = ({ value, onChange }) => {
   return (
     <>
-      <GenderToggleButtons
-        value={value.gender}
-        onChange={(value) => onChange((state) => ({ ...state, gender: value }))}
-      />
-      <StatusUserToggleButtons
-        value={value.status}
-        onChange={(value) => onChange((state) => ({ ...state, status: value }))}
-      />
+      {value?.gender && (
+        <GenderToggleButtons
+          value={value.gender}
+          onChange={(value) =>
+            onChange((state) => ({ ...state, gender: value }))
+          }
+        />
+      )}
+      {value?.status && (
+        <StatusUserToggleButtons
+          value={value.status}
+          onChange={(value) =>
+            onChange((state) => ({ ...state, status: value }))
+          }
+        />
+      )}
     </>
   )
 }

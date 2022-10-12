@@ -76,8 +76,10 @@ const Input = forwardRef(
                 if (
                   (typeof min !== 'number' || value >= min) &&
                   (typeof max !== 'number' || value <= max)
-                )
-                  onChange(Number(value))
+                ) {
+                  // onChange(Number(value))
+                  onChange(String(parseInt(value)))
+                }
               } else {
                 onChange(value)
               }
