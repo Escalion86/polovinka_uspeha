@@ -17,9 +17,7 @@ const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
     : 0
 
   return (
-    <div
-      className={cn('flex flex-wrap items-center flex-1 gap-x-1', className)}
-    >
+    <div className={cn('flex flex-wrap items-center gap-x-1', className)}>
       {event.price ? (
         eventPriceForUser === event.price / 100 ? (
           <div className="flex items-center text-lg font-bold gap-x-1 flex-nowrap">
