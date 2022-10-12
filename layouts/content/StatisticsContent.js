@@ -6,6 +6,8 @@ import UsersFilter from '@components/Filter/UsersFilter'
 import { H3, H4 } from '@components/tags'
 import eventsAtom from '@state/atoms/eventsAtom'
 import eventStatus from '@helpers/eventStatus'
+import ListWrapper from '@layouts/wrappers/ListWrapper'
+import Divider from '@components/Divider'
 
 const StatisticsContent = () => {
   const users = useRecoilValue(usersAtom)
@@ -90,15 +92,16 @@ const StatisticsContent = () => {
     : 'Участники клуба'
 
   return (
-    <div className="flex flex-col items-center w-full my-2 gap-y-4">
+    <ListWrapper className="flex flex-col items-center w-full py-1">
       <div className="flex flex-col items-center w-[300px]">
         <H3>Пользователи</H3>
         <UsersFilter value={filterUsers} onChange={setFilterUsers} />
         <H4>{usersTitle}</H4>
         <PieChart data={usersData} />
       </div>
+      <Divider light />
       <PieChart data={eventsData} title="Мероприятия" />
-    </div>
+    </ListWrapper>
   )
 }
 
