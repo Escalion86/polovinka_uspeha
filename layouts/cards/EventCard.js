@@ -163,31 +163,32 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
               />
             )}
           </div>
-          <div className="flex flex-col flex-1 laptop:flex-row">
-            <div className="flex justify-between flex-1 pl-2 pr-1">
-              <div className="flex-1 text-xl font-bold laptop:hidden">
-                {event.title}
-              </div>
-              <div className="flex-1 hidden laptop:block">
-                {/* <div className="flex flex-1">{event.description}</div> */}
-                {/* <div className="flex flex-1 textarea" dangerouslySetInnerHTML={{ __html: event.description }} /> */}
-                {formatedAddress && (
-                  <div className="flex leading-5 gap-x-1">
-                    <span className="italic font-bold">Адрес:</span>
-                    <span>{formatedAddress}</span>
-                  </div>
-                )}
-                {/* {event.organizerId && (
+          <div className="flex">
+            <div className="flex flex-col flex-1 laptop:flex-row">
+              <div className="flex justify-between flex-1 pl-2 pr-1">
+                <div className="flex-1 text-xl font-bold laptop:hidden">
+                  {event.title}
+                </div>
+                <div className="flex-1 hidden laptop:block">
+                  {/* <div className="flex flex-1">{event.description}</div> */}
+                  {/* <div className="flex flex-1 textarea" dangerouslySetInnerHTML={{ __html: event.description }} /> */}
+                  {formatedAddress && (
+                    <div className="flex leading-5 gap-x-1">
+                      <span className="italic font-bold">Адрес:</span>
+                      <span>{formatedAddress}</span>
+                    </div>
+                  )}
+                  {/* {event.organizerId && (
                   <div className="flex leading-5 gap-x-1">
                     <span className="font-bold">Организатор:</span>
                     <UserNameById userId={event.organizerId} noWrap />
                   </div>
                 )} */}
-                <NamesOfUsers
-                  users={eventAssistants}
-                  title={eventAssistants.length > 1 ? 'Ведущие:' : 'Ведущий:'}
-                />
-                {/* {eventAssistants &&
+                  <NamesOfUsers
+                    users={eventAssistants}
+                    title={eventAssistants.length > 1 ? 'Ведущие:' : 'Ведущий:'}
+                  />
+                  {/* {eventAssistants &&
                   eventAssistants?.length > 0 && (
                     <div className="flex leading-5 gap-x-1">
                       <span className="font-bold">
@@ -216,11 +217,11 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
                       </div>
                     </div>
                   )} */}
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col items-center h-full pt-1 pl-2 pr-1">
-              <PriceDiscount event={event} className="hidden laptop:flex" />
-              {/* <div className="flex justify-between w-full tablet:flex-col">
+              <div className="flex flex-col items-center h-full pt-1 pl-2 pr-1">
+                <PriceDiscount event={event} className="hidden laptop:flex" />
+                {/* <div className="flex justify-between w-full tablet:flex-col">
                 <div className="text-lg font-bold leading-5 whitespace-normal tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
                   {formatDateTime(event.date, false, false, true, false)}
                 </div>
@@ -228,6 +229,13 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
                   {formatMinutes(event.duration ?? 60)}
                 </div>
               </div> */}
+              </div>
+            </div>
+            <div>
+              <PriceDiscount
+                event={event}
+                className="hidden tablet:flex laptop:hidden"
+              />
             </div>
           </div>
         </div>
@@ -277,7 +285,11 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
             eventId={eventId}
             className="flex-1 min-w-full border-t border-b"
           />
-          <PriceDiscount event={event} className="mx-2" prefix="Стоимость:" />
+          <PriceDiscount
+            event={event}
+            className="flex-1 mx-2"
+            prefix="Стоимость:"
+          />
           <EventButtonSignIn
             eventId={eventId}
             className="m-1"
