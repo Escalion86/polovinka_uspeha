@@ -6,9 +6,8 @@ import { faTrash, faPlus, faHome } from '@fortawesome/free-solid-svg-icons'
 import { sendImage } from '@helpers/cloudinary'
 import cn from 'classnames'
 import LoadingSpinner from './LoadingSpinner'
-import Label from './Label'
 import arrayMove from '@helpers/arrayMove'
-import { LayoutGroup, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import InputWrapper from './InputWrapper'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
@@ -33,19 +32,35 @@ const InputImages = ({
 
   const onAddImage = async (newImage) => {
     if (newImage) {
-      // setImageOld(image)
-      // setAddingImage(true)
-      modalsFunc.cropImage(newImage, aspect, (newImage) => {
-        // setImageOld(image)
-        setAddingImage(true)
-        sendImage(
-          newImage,
-          (imageUrl) => {
-            onChange([...images, imageUrl])
-          },
-          directory
-        )
-      })
+      var img = document.createElement('img')
+      // this.state.backgroundImageFile = e.target.files[0];
+
+      img.onload = async () => {
+        // console.log(img.width + ' ' + img.height)
+        if (img.width < 100 || img.height < 100) modalsFunc.minimalSize()
+        else {
+          // const newResizedImage = await resizeFile(newImage)
+          // setImageOld(image)
+          // setAddingImage(true)
+          modalsFunc.cropImage(newImage, aspect, (newImage) => {
+            // setImageOld(image)
+            setAddingImage(true)
+            sendImage(
+              newImage,
+              (imageUrl) => {
+                onChange([...images, imageUrl])
+              },
+              directory
+            )
+          })
+        }
+      }
+
+      var reader = new FileReader()
+      reader.onloadend = function (ended) {
+        img.src = ended.target.result
+      }
+      reader.readAsDataURL(newImage)
     } else {
       onChange(images)
     }
