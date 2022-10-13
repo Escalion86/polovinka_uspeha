@@ -187,6 +187,7 @@ const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
         getCroppedImg(imgRef.current, completedCrop)
         closeModal()
       })
+      // setDisableConfirm(completedCrop.width < 100 || completedCrop.height < 100)
     }, [completedCrop])
 
     // function onImageLoad(e) {
@@ -268,6 +269,8 @@ const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
               onChange={(_, percentCrop) => setCrop(percentCrop)}
               onComplete={(c) => setCompletedCrop(c)}
               aspect={aspect}
+              minHeight={100}
+              minWidth={100}
             >
               <img
                 ref={imgRef}

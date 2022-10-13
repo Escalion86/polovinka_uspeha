@@ -10,6 +10,7 @@ import { motion } from 'framer-motion'
 import Label from './Label'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
+import InputWrapper from './InputWrapper'
 
 const InputImage = ({
   label = 'Картинка',
@@ -22,6 +23,7 @@ const InputImage = ({
   imageName = null,
   onDelete = null,
   labelClassName,
+  className,
   aspect,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -44,20 +46,33 @@ const InputImage = ({
 
   const onChangeImage = async (newImage) => {
     if (newImage) {
-      // setImageOld(image)
-      // setAddingImage(true)
-      modalsFunc.cropImage(newImage, aspect, (newImage) => {
-        setImageOld(image)
-        setAddingImage(true)
-        sendImage(
-          newImage,
-          (imageUrl) => {
-            onChange(imageUrl)
-          },
-          directory,
-          imageName
-        )
-      })
+      var img = document.createElement('img')
+
+      img.onload = async () => {
+        // console.log(img.width + ' ' + img.height)
+        if (img.width < 100 || img.height < 100) modalsFunc.minimalSize()
+        else {
+          // setImageOld(image)
+          // setAddingImage(true)
+          modalsFunc.cropImage(newImage, aspect, (newImage) => {
+            setImageOld(image)
+            setAddingImage(true)
+            sendImage(
+              newImage,
+              (imageUrl) => {
+                onChange(imageUrl)
+              },
+              directory,
+              imageName
+            )
+          })
+        }
+      }
+      var reader = new FileReader()
+      reader.onloadend = function (ended) {
+        img.src = ended.target.result
+      }
+      reader.readAsDataURL(newImage)
     } else {
       if (imageName)
         await deleteImages([(directory ? directory + '/' : '') + imageName])
@@ -88,8 +103,15 @@ const InputImage = ({
   // if (!image) return null
 
   return (
-    <>
-      <Label text={label} className={labelClassName} required={required} />
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      onChange={onChange}
+      value={image}
+      className={cn('flex-1', className)}
+      required={required}
+      // labelPos="top"
+    >
       <div
         className={cn(
           'relative border rounded-sm h-20 w-20 overflow-hidden group',
@@ -192,7 +214,7 @@ const InputImage = ({
         style={{ display: 'none' }}
         accept="image/jpeg,image/png"
       />
-    </>
+    </InputWrapper>
   )
 }
 
