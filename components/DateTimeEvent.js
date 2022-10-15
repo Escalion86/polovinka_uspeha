@@ -1,5 +1,6 @@
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import formatMinutes from '@helpers/formatMinutes'
+import getEventDuration from '@helpers/getEventDuration'
 import cn from 'classnames'
 import React from 'react'
 
@@ -15,22 +16,24 @@ const DateTimeEvent = ({
   thin,
   twoLines,
 }) => {
-  const dateTime = event?.date
-  if (!dateTime) return undefined
+  const dateTimeStart = event?.dateStart
+  if (!dateTimeStart) return undefined
 
-  const finishedDateTime =
-    new Date(dateTime).getTime() + (event?.duration ?? 0) * 60000
+  const dateTimeEnd = event?.dateEnd
+  // new Date(dateTime).getTime() + (event?.duration ?? 0) * 60000
 
   const [strDateStart, strTimeStart] = dateToDateTimeStr(
-    dateTime,
+    dateTimeStart,
     showDayOfWeek,
     fullMonth
   )
   const [strDateFinish, strTimeFinish] = dateToDateTimeStr(
-    finishedDateTime,
+    dateTimeEnd,
     showDayOfWeek,
     fullMonth
   )
+
+  const duration = getEventDuration(event)
 
   return (
     <div
@@ -56,13 +59,13 @@ const DateTimeEvent = ({
         <span className={cn('whitespace-nowrap', dateClassName)}>
           {strDateStart}
         </span>
-        {!event?.duration ||
+        {!duration ||
           (strDateFinish !== strDateStart && (
             <span className={timeClassName}>{strTimeStart}</span>
           ))}
-        {event?.duration && strDateFinish !== strDateStart && <span>-</span>}
+        {duration && strDateFinish !== strDateStart && <span>-</span>}
       </div>
-      {event?.duration && strDateFinish === strDateStart && (
+      {duration && strDateFinish === strDateStart && (
         <div
           className={cn(
             'flex items-center flex-nowrap',
@@ -75,7 +78,7 @@ const DateTimeEvent = ({
         </div>
       )}
       {/* </div> */}
-      {event?.duration && strDateFinish !== strDateStart && (
+      {duration && strDateFinish !== strDateStart && (
         <div
           className={cn(
             'flex flex-wrap items-center',
@@ -97,7 +100,7 @@ const DateTimeEvent = ({
       )}
       {showDuration && (
         <span className={durationClassName}>
-          {'(' + formatMinutes(event.duration ?? 60) + ')'}
+          {'(' + formatMinutes(duration ?? 60) + ')'}
         </span>
       )}
     </div>

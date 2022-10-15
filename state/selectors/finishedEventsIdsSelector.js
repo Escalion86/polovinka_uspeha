@@ -11,7 +11,7 @@ export const finishedEventsIdsSelector = selector({
       (event) => isEventExpired(event) && isEventActive(event)
     )
     const sortedEvents = [...finishedEvents].sort((a, b) =>
-      new Date(a.date) > new Date(b.date) ? 1 : -1
+      new Date(a.dateStart) > new Date(b.dateStart) ? 1 : -1
     )
 
     return sortedEvents.map((event) => event._id)

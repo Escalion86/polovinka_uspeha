@@ -34,6 +34,7 @@ import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import FormRow from '@components/FormRow'
 import useFocus from '@helpers/useFocus'
+import getEventDuration from '@helpers/getEventDuration'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -62,12 +63,21 @@ const eventFunc = (eventId, clone = false) => {
     const [description, setDescription] = useState(
       event?.description ?? DEFAULT_EVENT.description
     )
-    const [date, setDate] = useState(
-      event?.date ?? Date.now() - (Date.now() % 3600000) + 3600000
+
+    const defaultDate =
+      event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000
+    const [dateStart, setDateStart] = useState(defaultDate)
+    const [dateEnd, setDateEnd] = useState(
+      event?.dateEnd ?? Date.now() - (Date.now() % 3600000) + 7200000
     )
-    const [duration, setDuration] = useState(
-      event?.duration ?? DEFAULT_EVENT.duration
-    )
+
+    // const [duration, setDuration] = useState(
+    //   event?.duration ?? DEFAULT_EVENT.duration
+    // )
+    // console.log('dateStart', dateStart)
+    // console.log('duration', duration)
+    // console.log('finishedDate', finishedDate)
+
     const [address, setAddress] = useState(
       event?.address && typeof event.address === 'object'
         ? event.address
@@ -141,7 +151,8 @@ const eventFunc = (eventId, clone = false) => {
           images,
           directionId,
           organizerId,
-          date,
+          dateStart,
+          dateEnd,
         })
       ) {
         closeModal()
@@ -152,8 +163,9 @@ const eventFunc = (eventId, clone = false) => {
             title,
             description,
             showOnSite,
-            date,
-            duration,
+            dateStart,
+            dateEnd,
+            // duration,
             address,
             price,
             directionId,
@@ -182,8 +194,9 @@ const eventFunc = (eventId, clone = false) => {
         event?.title !== title ||
         event?.description !== description ||
         event?.showOnSite !== showOnSite ||
-        event?.date !== date ||
-        event?.duration !== duration ||
+        event?.dateStart !== dateStart ||
+        event?.dateEnd !== dateEnd ||
+        // event?.duration !== duration ||
         !compareArrays(event?.images, images) ||
         !compareObjects(event?.address, address) ||
         event?.price !== price ||
@@ -212,8 +225,9 @@ const eventFunc = (eventId, clone = false) => {
       title,
       description,
       showOnSite,
-      date,
-      duration,
+      dateStart,
+      dateEnd,
+      // duration,
       images,
       address,
       price,
@@ -248,6 +262,8 @@ const eventFunc = (eventId, clone = false) => {
     useEffect(() => {
       if (!maxWomansCheck) setFocusWomansMax()
     }, [maxWomansCheck])
+
+    const duration = getEventDuration({ dateStart, dateEnd })
 
     return (
       <>
@@ -300,16 +316,31 @@ const eventFunc = (eventId, clone = false) => {
               />
               <FormWrapper twoColumns>
                 <DateTimePicker
-                  value={date}
+                  value={dateStart}
                   onChange={(date) => {
-                    removeError('date')
-                    setDate(date)
+                    removeError('dateStart')
+                    setDateStart(date)
                   }}
-                  label="Дата и время"
+                  label="Начало"
                   required
-                  error={errors.date}
+                  error={errors.dateStart}
                 />
-                <TimePicker
+                <div className="flex items-stretch gap-x-1">
+                  <DateTimePicker
+                    value={dateEnd}
+                    onChange={(date) => {
+                      removeError('dateEnd')
+                      setDateEnd(date)
+                    }}
+                    label="Завершение"
+                    required
+                    error={errors.dateEnd}
+                  />
+                  <div className="flex items-end py-0.5 laptop:py-1">
+                    {formatMinutes(duration)}
+                  </div>
+                </div>
+                {/* <TimePicker
                   value={
                     formatMinutes(duration, true)
                     // (Math.ceil(duration / 60) <= 9
@@ -329,7 +360,7 @@ const eventFunc = (eventId, clone = false) => {
                   label="Продолжительность"
                   required
                   error={errors.duration}
-                />
+                /> */}
               </FormWrapper>
               <SelectUser
                 label="Организатор"

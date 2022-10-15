@@ -31,6 +31,7 @@ import ImageGallery from '@components/ImageGallery'
 import CardButtons from '@components/CardButtons'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import TextLine from '@components/TextLine'
+import getEventDuration from '@helpers/getEventDuration'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -51,6 +52,8 @@ const eventViewFunc = (eventId) => {
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
 
+    const duration = getEventDuration(event)
+
     // const eventLoggedUserStatus = useRecoilValue(
     //   loggedUserToEventStatusSelector(eventId)
     // )?.isEventInProcess
@@ -62,8 +65,8 @@ const eventViewFunc = (eventId) => {
         </div>
       )
 
-    const finishedDateTime =
-      new Date(event?.date).getTime() + (event?.duration ?? 0) * 60000
+    // const finishedDateTime =
+    //   new Date(event?.date).getTime() + (event?.duration ?? 0) * 60000
 
     return (
       <div className="flex flex-col gap-y-2">
@@ -84,12 +87,14 @@ const eventViewFunc = (eventId) => {
             {direction?.title && (
               <TextLine label="Направление">{direction.title}</TextLine>
             )}
-            <TextLine label="Начало">{formatDateTime(event?.date)}</TextLine>
+            <TextLine label="Начало">
+              {formatDateTime(event?.dateStart)}
+            </TextLine>
             <TextLine label="Завершение">
-              {formatDateTime(finishedDateTime)}
+              {formatDateTime(event?.dateEnd)}
             </TextLine>
             <TextLine label="Продолжительность">
-              {formatMinutes(event?.duration ?? 60)}
+              {formatMinutes(duration ?? 60)}
             </TextLine>
 
             {event?.address && (

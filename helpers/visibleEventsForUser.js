@@ -9,7 +9,10 @@ const visibleEventsForUser = (
   if (!events) return events
   if (!user) {
     return events.filter((event) => {
-      if (!event.showOnSite || (onlyNew && new Date(event.date) < new Date()))
+      if (
+        !event.showOnSite ||
+        (onlyNew && new Date(event.dateStart) < new Date())
+      )
         return false
 
       return !event.usersStatusAccess || event.usersStatusAccess.novice
@@ -20,7 +23,10 @@ const visibleEventsForUser = (
     const eventsUser = eventsUsers.filter((event) => event.userId === user._id)
 
     return events.filter((event) => {
-      if (!event.showOnSite || (onlyNew && new Date(event.date) < new Date()))
+      if (
+        !event.showOnSite ||
+        (onlyNew && new Date(event.dateStart) < new Date())
+      )
         return false
 
       const eventUser = eventsUser.find(

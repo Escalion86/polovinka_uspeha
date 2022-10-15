@@ -26,6 +26,14 @@ const eventsSchema = {
     type: Date,
     default: null,
   },
+  dateStart: {
+    type: Date,
+    default: null,
+  },
+  dateEnd: {
+    type: Date,
+    default: null,
+  },
   duration: {
     type: Number,
     default: 60, // минут
