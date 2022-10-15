@@ -263,7 +263,7 @@ const eventFunc = (eventId, clone = false) => {
       if (!maxWomansCheck) setFocusWomansMax()
     }, [maxWomansCheck])
 
-    const duration = getEventDuration(event)
+    const duration = getEventDuration({ dateStart, dateEnd })
 
     return (
       <>
