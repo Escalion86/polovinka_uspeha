@@ -55,7 +55,7 @@ const EventsBlock = ({
         {
           // filteredEvents?.length ? (
           [...filteredEvents]
-            .sort((a, b) => (a.date < b.date ? -1 : 1))
+            .sort((a, b) => (a.dateStart < b.dateStart ? -1 : 1))
             .slice(0, maxShowedEvents)
             .map((event, index) => (
               <EventCard key={event._id} eventId={event._id} />

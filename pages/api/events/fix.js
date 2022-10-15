@@ -12,18 +12,19 @@ export default async function handler(req, res) {
       const events = await Events.find({})
       const updatedEvents = await Promise.all(
         events.map(async (event) => {
-          const dateStart = event.date ?? new Date()
-          const dateEnd = new Date(
-            new Date(dateStart).getTime() +
-              (event?.duration ?? DEFAULT_EVENT.duration) * 60000
-          )
-          await Events.findByIdAndUpdate(event._id, { dateStart, dateEnd })
+          if (event?.duration) {
+            const dateStart = event.date ?? new Date()
+            const dateEnd = new Date(
+              new Date(dateStart).getTime() +
+                (event?.duration ?? DEFAULT_EVENT.duration) * 60000
+            )
+            await Events.findByIdAndUpdate(event._id, { dateStart, dateEnd })
+          }
         })
       ).catch((error) => {
         console.log(error)
         return res?.status(400).json({ success: false, error })
       })
-      console.log('updatedEvents', updatedEvents)
       const eventsUpdated = await Events.find({})
       return res?.status(201).json({ success: true, data: eventsUpdated })
     } catch (error) {

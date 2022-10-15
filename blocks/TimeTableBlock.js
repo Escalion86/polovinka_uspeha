@@ -41,7 +41,7 @@ const CardEvent = ({ event }) => (
       </div>
       <div className="flex items-center">
         <div className="flex-1 px-4 text-lg font-bold text-general">
-          {formatDateTime(event.date)}
+          {formatDateTime(event.dateStart)}
         </div>
         <button className="px-4 py-1 text-white duration-300 border-t border-l rounded-tl-lg bg-general hover:text-general hover:bg-white border-general">
           Записаться
@@ -61,7 +61,7 @@ const TimeTableBlock = ({ events }) => {
         {events &&
           events
             .slice(0, 4)
-            .sort((a, b) => (a.date < b.date ? -1 : 1))
+            .sort((a, b) => (a.dateStart < b.dateStart ? -1 : 1))
             .map((event, index) => <CardEvent key={event._id} event={event} />)}
         <Button title="Посмотреть все" />
       </div>
