@@ -17,7 +17,6 @@ import Input from '@components/Input'
 import formatMinutes from '@helpers/formatMinutes'
 
 import {
-  DEFAULT_ADDRESS,
   DEFAULT_EVENT,
   DEFAULT_USERS_STATUS_ACCESS,
   DEFAULT_USERS_STATUS_DISCOUNT,
@@ -26,7 +25,7 @@ import { SelectDirection, SelectUser } from '@components/SelectItem'
 import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import Slider from '@components/Slider'
 
-import TimePicker from '@components/TimePicker'
+// import TimePicker from '@components/TimePicker'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
@@ -74,9 +73,6 @@ const eventFunc = (eventId, clone = false) => {
     // const [duration, setDuration] = useState(
     //   event?.duration ?? DEFAULT_EVENT.duration
     // )
-    // console.log('dateStart', dateStart)
-    // console.log('duration', duration)
-    // console.log('finishedDate', finishedDate)
 
     const [address, setAddress] = useState(
       event?.address && typeof event.address === 'object'

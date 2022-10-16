@@ -22,10 +22,10 @@ const eventsSchema = {
     // ],
     default: 'Описание мероприятия',
   },
-  date: {
-    type: Date,
-    default: null,
-  },
+  // date: {
+  //   type: Date,
+  //   default: null,
+  // },
   dateStart: {
     type: Date,
     default: null,
@@ -34,10 +34,10 @@ const eventsSchema = {
     type: Date,
     default: null,
   },
-  duration: {
-    type: Number,
-    default: 60, // минут
-  },
+  // duration: {
+  //   type: Number,
+  //   default: 60, // минут
+  // },
   address: {
     type: Map,
     of: String,
