@@ -26,6 +26,8 @@ export const getNounUsers = (number) =>
 export const getNounDirections = (number) =>
   getNoun(number, 'направление', 'направления', 'направлений')
 
+export const getNounDays = (number) => getNoun(number, 'день', 'дня', 'дней')
+
 export const getNounHours = (number) => getNoun(number, 'час', 'часа', 'часов')
 
 export const getNounMinutes = (number) =>

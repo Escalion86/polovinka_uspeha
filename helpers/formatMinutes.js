@@ -1,9 +1,10 @@
-import { getNounHours, getNounMinutes } from './getNoun'
+import { getNounDays, getNounHours, getNounMinutes } from './getNoun'
 
 function formatMinutes(time, forComponent = false) {
   if (!time || typeof time !== 'number') return undefined
 
-  const hours = Math.floor(time / 60)
+  const days = Math.floor(time / 1440)
+  const hours = Math.floor(time / 60) % 24
   const minutes = time % 60
 
   if (forComponent)
@@ -14,8 +15,11 @@ function formatMinutes(time, forComponent = false) {
     )
   else
     return (
-      (hours > 0 ? getNounHours(hours) : '') +
-      (minutes > 0 ? (hours > 0 ? ' ' : '') + getNounMinutes(minutes) : '')
+      (days > 0 ? getNounDays(days) : '') +
+      (hours > 0 ? (days > 0 ? ' ' : '') + getNounHours(hours) : '') +
+      (minutes > 0
+        ? (hours > 0 || days > 0 ? ' ' : '') + getNounMinutes(minutes)
+        : '')
     )
 }
 
