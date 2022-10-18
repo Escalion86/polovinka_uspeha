@@ -228,11 +228,16 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
 }
 
 export const DirectionItem = ({ item, onClick = null, active = false }) => (
-  <ItemContainer onClick={onClick} active={active} className="flex gap-x-1">
+  <ItemContainer
+    onClick={onClick}
+    active={active}
+    className="flex gap-x-1 h-[50px]"
+    noPadding
+  >
     {item?.image && (
       // <div className="flex justify-center w-full tablet:w-auto">
       <img
-        className="object-cover w-12 h-12 min-w-12 max-h-12"
+        className="object-cover h-[50px] aspect-1"
         src={item.image}
         alt="direction"
         // width={48}
