@@ -25,6 +25,7 @@ const InputImage = ({
   labelClassName,
   className,
   aspect,
+  error,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [isAddingImage, setAddingImage] = useState(false)
@@ -115,7 +116,7 @@ const InputImage = ({
       <div
         className={cn(
           'relative border rounded-sm h-20 w-20 overflow-hidden group',
-          required && !image ? ' border-red-700' : ' border-gray-400'
+          error ? ' border-red-700' : ' border-gray-400'
         )}
       >
         <motion.div
