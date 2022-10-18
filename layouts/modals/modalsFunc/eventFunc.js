@@ -34,6 +34,7 @@ import TabPanel from '@components/Tabs/TabPanel'
 import FormRow from '@components/FormRow'
 import useFocus from '@helpers/useFocus'
 import getEventDuration from '@helpers/getEventDuration'
+import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -146,17 +147,23 @@ const eventFunc = (eventId, clone = false) => {
       useErrors()
 
     const onClickConfirm = async () => {
-      if (
-        !checkErrors({
-          title,
-          description,
-          images,
-          directionId,
-          organizerId,
-          dateStart,
-          dateEnd,
+      let isErrorsExists = checkErrors({
+        title,
+        description,
+        images,
+        directionId,
+        organizerId,
+        dateStart,
+        dateEnd,
+      })
+      if (getDiffBetweenDates(dateStart, dateEnd) < 0) {
+        addError({
+          dateEnd:
+            'Дата завершения не может быть раньше даты начала мероприятия',
         })
-      ) {
+        isErrorsExists = true
+      }
+      if (!isErrorsExists) {
         closeModal()
         setEvent(
           {
@@ -290,7 +297,7 @@ const eventFunc = (eventId, clone = false) => {
                   setDirectionId(direction._id)
                 }}
                 required
-                error={errors.direction}
+                error={errors.directionId}
               />
               <Input
                 label="Название"
@@ -372,7 +379,7 @@ const eventFunc = (eventId, clone = false) => {
                   setOrganizerId(user._id)
                 }}
                 required
-                error={errors.organizer}
+                error={errors.organizerId}
               />
               <AddressPicker address={address} onChange={setAddress} />
             </FormWrapper>
