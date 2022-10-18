@@ -1,12 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faPencil,
   faPencilAlt,
   faPlus,
-  faSearch,
+  // faSearch,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
-import { useEffect, useRef, useState } from 'react'
-import { Virtuoso } from 'react-virtuoso'
+// import { useEffect, useRef, useState } from 'react'
+// import { Virtuoso } from 'react-virtuoso'
 import { UserItem, EventItem, DirectionItem } from './ItemCards'
 
 import cn from 'classnames'
@@ -16,33 +17,33 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import InputWrapper from './InputWrapper'
-import filterItems from '@helpers/filterItems'
+// import filterItems from '@helpers/filterItems'
 import filterWithRules from '@helpers/filterWithRules'
 import Tooltip from './Tooltip'
 
 export const SelectItem = ({
   items,
   itemComponent,
-  onChange,
+  // onChange,
   selectedId = null,
-  exceptedIds = [],
+  // exceptedIds = [],
   className = '',
-  dropDownList = true,
+  // dropDownList = true,
   onClick = null,
   itemHeight = 40,
-  noSearch = false,
+  // noSearch = false,
   itemWidth = 0,
-  moreOneFilterTurnOn = true,
-  onNoChoose,
+  // moreOneFilterTurnOn = true,
+  // onNoChoose,
 }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(selectedId === '?')
-  const [searchText, setSearchText] = useState('')
-  const [moreOneFilter, setMoreOneFilter] = useState(moreOneFilterTurnOn)
+  // const [isMenuOpen, setIsMenuOpen] = useState(selectedId === '?')
+  // const [searchText, setSearchText] = useState('')
+  // const [moreOneFilter, setMoreOneFilter] = useState(moreOneFilterTurnOn)
 
-  const ref = useRef()
-  const inputRef = useRef()
+  // const ref = useRef()
+  // const inputRef = useRef()
 
-  const moreOneFilterTurnOnExists = items.length && items[0].count !== undefined
+  // const moreOneFilterTurnOnExists = items.length && items[0].count !== undefined
 
   const selectedItem = selectedId
     ? items.find((item) => item._id === selectedId)
@@ -50,73 +51,73 @@ export const SelectItem = ({
 
   const Item = itemComponent
 
-  const preFilteredItemsArray = isMenuOpen
-    ? [...filterItems(items, null, exceptedIds, {})].sort((a, b) =>
-        a.name < b.name ? -1 : 1
-      )
-    : []
+  // const preFilteredItemsArray = isMenuOpen
+  //   ? [...filterItems(items, null, exceptedIds, {})].sort((a, b) =>
+  //       a.name < b.name ? -1 : 1
+  //     )
+  //   : []
 
-  const filteredItemsArray = isMenuOpen
-    ? filterItems(
-        preFilteredItemsArray,
-        searchText,
-        [],
-        moreOneFilterTurnOnExists && moreOneFilter ? { count: '>0' } : {}
-      ).sort((a, b) => {
-        if (a.name < b.name) {
-          return -1
-        }
-        if (a.name > b.name) {
-          return 1
-        }
-        return 0
-      })
-    : []
+  // const filteredItemsArray = isMenuOpen
+  //   ? filterItems(
+  //       preFilteredItemsArray,
+  //       searchText,
+  //       [],
+  //       moreOneFilterTurnOnExists && moreOneFilter ? { count: '>0' } : {}
+  //     ).sort((a, b) => {
+  //       if (a.name < b.name) {
+  //         return -1
+  //       }
+  //       if (a.name > b.name) {
+  //         return 1
+  //       }
+  //       return 0
+  //     })
+  //   : []
 
-  const toggleIsMenuOpen = () => {
-    if (isMenuOpen && onNoChoose) onNoChoose()
-    setIsMenuOpen((state) => !state)
-  }
+  // const toggleIsMenuOpen = () => {
+  //   if (isMenuOpen && onNoChoose) onNoChoose()
+  //   setIsMenuOpen((state) => !state)
+  // }
 
-  const isSearchVisible = !noSearch && preFilteredItemsArray.length > 0
+  // const isSearchVisible = !noSearch && preFilteredItemsArray.length > 0
 
-  useEffect(() => {
-    const checkIfClickedOutside = (e) => {
-      if (
-        !onClick &&
-        dropDownList &&
-        isMenuOpen &&
-        ref.current &&
-        !ref.current.contains(e.target)
-      ) {
-        if (isMenuOpen && onNoChoose) onNoChoose()
-        setIsMenuOpen(false)
-      }
-    }
+  // useEffect(() => {
+  //   const checkIfClickedOutside = (e) => {
+  //     if (
+  //       !onClick &&
+  //       dropDownList &&
+  //       isMenuOpen &&
+  //       ref.current &&
+  //       !ref.current.contains(e.target)
+  //     ) {
+  //       if (isMenuOpen && onNoChoose) onNoChoose()
+  //       setIsMenuOpen(false)
+  //     }
+  //   }
 
-    document.addEventListener('mousedown', checkIfClickedOutside)
+  //   document.addEventListener('mousedown', checkIfClickedOutside)
 
-    if (isMenuOpen && isSearchVisible) inputRef.current.focus()
+  //   if (isMenuOpen && isSearchVisible) inputRef.current.focus()
 
-    return () => {
-      document.removeEventListener('mousedown', checkIfClickedOutside)
-    }
-  }, [onClick, dropDownList, isMenuOpen, ref, inputRef])
+  //   return () => {
+  //     document.removeEventListener('mousedown', checkIfClickedOutside)
+  //   }
+  // }, [onClick, dropDownList, isMenuOpen, ref, inputRef])
 
   return (
     <div
       className={cn(
         className,
-        'relative bg-gray-200 flex justify-center items-center cursor-pointer'
+        'relative bg-gray-100 flex justify-center items-center cursor-pointer'
       )}
       style={{ height: itemHeight, width: itemWidth }}
       onClick={() => {
-        if ((!selectedItem || !onClick) && dropDownList) toggleIsMenuOpen()
+        // if ((!selectedItem || !onClick) && dropDownList) toggleIsMenuOpen()
         if (onClick && selectedItem) onClick(selectedItem)
       }}
-      ref={ref}
+      // ref={ref}
     >
-      {dropDownList && (
+      {/* {dropDownList && (
         <div
           className={cn(
             'absolute border overflow-hidden max-h-64 transform duration-300 ease-out flex flex-col top-full -left-[1px] -right-[1px] bg-white shadow border-gray-700 z-50',
@@ -187,7 +188,7 @@ export const SelectItem = ({
               <div className="text-center bg-red-100">Нет элементов</div>
             ))}
         </div>
-      )}
+      )} */}
       {selectedItem ? (
         <Item item={selectedItem} />
       ) : (
@@ -198,7 +199,7 @@ export const SelectItem = ({
 }
 
 const ItemButton = ({ onClick, icon, iconClassName, tooltip }) => (
-  <div className="flex items-center justify-center border-l border-gray-700">
+  <div className="flex items-center justify-center bg-gray-100 border-l border-gray-700">
     <Tooltip title={tooltip}>
       <button
         onClick={onClick}
@@ -246,7 +247,7 @@ const SelectItemContainer = ({
       </label> */}
       <div
         className={cn(
-          'flex flex-1 rounded',
+          'flex flex-1 rounded overflow-hidden',
           error
             ? 'border border-red-500'
             : bordered
@@ -265,6 +266,7 @@ const SelectItemContainer = ({
       {buttons &&
         buttons.map(({ onClick, icon, iconClassName, tooltip }, index) => (
           <ItemButton
+            key={'button' + selectedId + index}
             tooltip={tooltip}
             onClick={() => onClick(selectedId)}
             icon={icon}
@@ -308,10 +310,11 @@ export const SelectUser = ({
   clearButton = null,
   label,
   filter,
-  disableDropDownList,
+  // disableDropDownList,
   error,
   bordered = true,
-  bottons,
+  modalTitle,
+  // buttons,
 }) => {
   const users = useRecoilValue(usersAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -332,20 +335,52 @@ export const SelectUser = ({
       onClickClearButton={onClickClearButton}
       bordered={bordered}
       error={error}
-      bottons={bottons}
+      // buttons={
+      //   onChange
+      //     ? [
+      //         {
+      //           onClick: () =>
+      //             modalsFunc.selectUsers(
+      //               [selectedId],
+      //               [],
+      //               (data) => onChange(data[0]),
+      //               [],
+      //               1,
+      //               false
+      //             ),
+      //           icon: faPencil,
+      //           iconClassName: 'text-orange-400',
+      //           tooltip: 'Изменить',
+      //         },
+      //       ]
+      //     : null
+      // }
       selectedId={selectedId}
     >
       <SelectItem
         items={filteredUsers}
         itemComponent={(props) => UserItem({ ...props, bordered })}
-        onChange={onChange}
+        // onChange={onChange}
         selectedId={selectedId}
         className={
           'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
         }
         exceptedIds={exceptedIds}
         onClick={
-          disableDropDownList ? (user) => modalsFunc.user.view(user._id) : null
+          // (user) => modalsFunc.user.view(user._id)
+          onChange
+            ? () =>
+                modalsFunc.selectUsers(
+                  [selectedId],
+                  [],
+                  (data) => onChange(data[0]),
+                  [],
+                  1,
+                  false,
+                  modalTitle
+                )
+            : (user) => modalsFunc.user.view(user._id)
+          // disableDropDownList ? (user) => modalsFunc.user.view(user._id) : null
         }
         onNoChoose={onDelete}
       />
@@ -362,15 +397,17 @@ export const SelectEvent = ({
   clearButton = null,
   error,
   bordered = true,
-  bottons,
-  disableDropDownList,
+  // buttons,
+  // disableDropDownList,
+  label,
+  modalTitle,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
   return (
     <SelectItemContainer
       required={required}
-      // label="Мероприятие"
+      label={label}
       onClickClearButton={
         selectedId && clearButton
           ? onDelete
@@ -380,21 +417,55 @@ export const SelectEvent = ({
       }
       error={error}
       bordered={bordered}
-      bottons={bottons}
+      // buttons={
+      //   onChange
+      //     ? [
+      //         {
+      //           onClick: () =>
+      //             modalsFunc.selectEvents(
+      //               [selectedId],
+      //               [],
+      //               (data) => onChange(data[0]),
+      //               [],
+      //               1,
+      //               false
+      //             ),
+      //           icon: faPencil,
+      //           iconClassName: 'text-orange-400',
+      //           tooltip: 'Изменить',
+      //         },
+      //       ]
+      //     : null
+      // }
       selectedId={selectedId}
     >
       <SelectItem
         items={events}
         itemComponent={EventItem}
-        onChange={onChange}
+        // onChange={onChange}
         selectedId={selectedId}
         className={
           'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
         }
+        // onClick={
+        //   (event) => modalsFunc.event.view(event._id)
+        //   // disableDropDownList
+        //   //   ? (event) => modalsFunc.event.view(event._id)
+        //   //   : null
+        // }
         onClick={
-          disableDropDownList
-            ? (event) => modalsFunc.event.view(event._id)
-            : null
+          onChange
+            ? () =>
+                modalsFunc.selectEvents(
+                  [selectedId],
+                  [],
+                  (data) => onChange(data[0]),
+                  [],
+                  1,
+                  false,
+                  modalTitle
+                )
+            : (event) => modalsFunc.event.view(event._id)
         }
         exceptedIds={exceptedIds}
       />
@@ -411,8 +482,10 @@ export const SelectDirection = ({
   clearButton = null,
   error,
   bordered = true,
-  bottons,
+  modalTitle,
+  // buttons,
 }) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const directions = useRecoilValue(directionsAtom)
 
   return (
@@ -428,17 +501,56 @@ export const SelectDirection = ({
       }
       error={error}
       bordered={bordered}
-      bottons={bottons}
+      // buttons={
+      //   onChange
+      //     ? [
+      //         {
+      //           onClick: () =>
+      //             modalsFunc.selectDirections(
+      //               [selectedId],
+      //               [],
+      //               (data) => onChange(data[0]),
+      //               [],
+      //               1,
+      //               false
+      //             ),
+      //           icon: faPencil,
+      //           iconClassName: 'text-orange-400',
+      //           tooltip: 'Изменить',
+      //         },
+      //       ]
+      //     : null
+      // }
       selectedId={selectedId}
     >
       <SelectItem
         items={directions}
         itemComponent={DirectionItem}
         itemHeight={50}
-        onChange={onChange}
+        // onChange={onChange}
         selectedId={selectedId}
         className={
           'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
+        }
+        // onClick={
+        //   (direction) => modalsFunc.direction.view(direction._id)
+        //   // disableDropDownList
+        //   //   ? (direction) => modalsFunc.direction.view(direction._id)
+        //   //   : null
+        // }
+        onClick={
+          onChange
+            ? () =>
+                modalsFunc.selectDirections(
+                  [selectedId],
+                  [],
+                  (data) => onChange(data[0]),
+                  [],
+                  1,
+                  false,
+                  modalTitle
+                )
+            : (direction) => modalsFunc.direction.view(direction._id)
         }
         exceptedIds={exceptedIds}
       />

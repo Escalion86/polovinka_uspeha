@@ -187,6 +187,7 @@ const eventUsersFunc = (eventId) => {
         >
           <SelectUserList
             label="Участники Мужчины"
+            modalTitle="Выбор участников (мужчин)"
             filter={{ gender: { operand: '===', value: 'male' } }}
             usersId={mansIds}
             onChange={(usersIds) => {
@@ -204,6 +205,7 @@ const eventUsersFunc = (eventId) => {
           />
           <SelectUserList
             label="Участники Женщины"
+            modalTitle="Выбор участниц (женщин)"
             filter={{ gender: { operand: '===', value: 'famale' } }}
             usersId={womansIds}
             onChange={(usersIds) => {
@@ -240,6 +242,7 @@ const eventUsersFunc = (eventId) => {
           >
             <SelectUserList
               label="Резерв"
+              modalTitle="Выбор пользователей в резерв"
               usersId={reservedParticipantsIds}
               onChange={(usersIds) =>
                 setReservedParticipantsIds(sortUsersIds(usersIds))
@@ -258,6 +261,7 @@ const eventUsersFunc = (eventId) => {
         <TabPanel tabName="Ведущие" tabAddToLabel={`(${assistantsIds.length})`}>
           <SelectUserList
             label="Ведущие"
+            modalTitle="Выбор ведущих"
             usersId={assistantsIds}
             onChange={(usersIds) => {
               removeIdsFromReserve(usersIds)
@@ -280,6 +284,7 @@ const eventUsersFunc = (eventId) => {
           >
             <SelectUserList
               label="Блокированные"
+              modalTitle="Выбор блокированных пользователей"
               usersId={bannedParticipantsIds}
               onChange={(usersIds) => {
                 removeIdsFromAllByBan(usersIds)

@@ -20,7 +20,8 @@ import paymentFunc from './modalsFunc/paymentFunc'
 import userViewFunc from './modalsFunc/userViewFunc'
 import errorFunc from './modalsFunc/errorFunc'
 import selectUsersFunc from './modalsFunc/selectUsersFunc'
-import selectDirectionFunc from './modalsFunc/selectDirectionFunc'
+import selectDirectionsFunc from './modalsFunc/selectDirectionsFunc'
+import selectEventsFunc from './modalsFunc/selectEventsFunc'
 import jsonFunc from './modalsFunc/jsonFunc'
 import cropImageFunc from './modalsFunc/cropImageFunc'
 import userVisitedEventsFunc from './modalsFunc/userVisitedEventsFunc'
@@ -70,13 +71,65 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
     cropImage: (...data) => addModal(cropImageFunc(...data)),
     error: (data) => addModal(errorFunc(data)),
     json: (data) => addModal(jsonFunc(data)),
-    selectUsers: (itemsId, filterRules, onChange, exceptedIds, maxUsers) =>
+    selectEvents: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      maxEvents,
+      canSelectNone,
+      modalTitle
+    ) =>
       addModal(
-        selectUsersFunc(itemsId, filterRules, onChange, exceptedIds, maxUsers)
+        selectEventsFunc(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          maxEvents,
+          canSelectNone,
+          modalTitle
+        )
       ),
-    selectDirection: (itemsId, filterRules, onChange, exceptedIds) =>
+    selectUsers: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      maxUsers,
+      canSelectNone,
+      modalTitle
+    ) =>
       addModal(
-        selectDirectionFunc(itemsId, filterRules, onChange, exceptedIds)
+        selectUsersFunc(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          maxUsers,
+          canSelectNone,
+          modalTitle
+        )
+      ),
+    selectDirections: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      maxDirections,
+      canSelectNone,
+      modalTitle
+    ) =>
+      addModal(
+        selectDirectionsFunc(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          maxDirections,
+          canSelectNone,
+          modalTitle
+        )
       ),
     review: {
       add: (reviewId) => addModal(reviewFunc(reviewId, true)),

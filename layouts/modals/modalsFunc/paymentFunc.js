@@ -108,12 +108,13 @@ const paymentFunc = (paymentId, clone = false) => {
         <SelectUser
           label="Платильщик"
           selectedId={userId}
-          onChange={(user) => setUserId(user._id)}
+          onChange={(userId) => setUserId(userId)}
           // onDelete={(e) => console.log('e', e)}
         />
         <SelectEvent
+          label="Мероприятие"
           selectedId={eventId}
-          onChange={(event) => setEventId(event._id)}
+          onChange={(eventId) => setEventId(eventId)}
         />
         <PriceInput
           value={sum}

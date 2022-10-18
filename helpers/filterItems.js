@@ -31,10 +31,14 @@ const filterItems = (
               (!exceptedIds ||
                 typeof exceptedIds !== 'object' ||
                 !exceptedIds?.includes(item._id)) &&
-              (item.name
+              (item.title
                 ?.toString()
                 .toLowerCase()
                 .includes(searchTextLowerCase) ||
+                item.name
+                  ?.toString()
+                  .toLowerCase()
+                  .includes(searchTextLowerCase) ||
                 item.firstName
                   ?.toString()
                   .toLowerCase()

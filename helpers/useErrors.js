@@ -33,57 +33,45 @@ const useErrors = () => {
       error = true
     }
     const checks = {
-      title: (data) =>
-        !data ? setError({ title: 'Необходимо ввести название' }) : null,
+      title: (data) => (!data ? setError({ title: 'Введите название' }) : null),
       description: (data) =>
-        !data ? setError({ description: 'Необходимо ввести описание' }) : null,
-      image: (data) =>
-        !image ? setError({ image: 'Необходимо загрузить картинку' }) : null,
+        !data ? setError({ description: 'Введите описание' }) : null,
       images: (data) =>
         !data || data.length === 0
-          ? setError({ images: 'Необходимо загрузить хотябы одно фото' })
+          ? setError({ images: 'Загрузите хотябы одно фото' })
           : null,
       image: (data) =>
-        !data ? setError({ image: 'Необходимо загрузить картинку' }) : null,
+        !data ? setError({ image: 'Загрузите картинку' }) : null,
       directionId: (data) =>
         !data
           ? setError({
-              directionId: 'Необходимо выбрать направление мероприятия',
+              directionId: 'Выберите направление мероприятия',
             })
           : null,
       organizerId: (data) =>
-        !data
-          ? setError({ organizerId: 'Необходимо указать организатора' })
-          : null,
-      date: (data) =>
-        !data ? setError({ date: 'Необходимо ввести дату' }) : null,
+        !data ? setError({ organizerId: 'Выберите организатора' }) : null,
+      date: (data) => (!data ? setError({ date: 'Введите дату' }) : null),
       dateStart: (data) =>
-        !data ? setError({ dateStart: 'Необходимо ввести дату начала' }) : null,
+        !data ? setError({ dateStart: 'Введите дату начала' }) : null,
       dateEnd: (data) =>
-        !data
-          ? setError({ dateEnd: 'Необходимо ввести дату завершения' })
-          : null,
+        !data ? setError({ dateEnd: 'Введите дату завершения' }) : null,
       userId: (data) =>
-        !data ? setError({ userId: 'Необходимо указать пользователя' }) : null,
+        !data ? setError({ userId: 'Выберите пользователя' }) : null,
       eventId: (data) =>
-        !data ? setError({ eventId: 'Необходимо указать мероприятие' }) : null,
-      sum: (data) =>
-        !data ? setError({ sum: 'Необходимо указать сумму' }) : null,
+        !data ? setError({ eventId: 'Выберите мероприятие' }) : null,
+      sum: (data) => (!data ? setError({ sum: 'Введите сумму' }) : null),
       author: (data) =>
-        !data ? setError({ author: 'Необходимо ввести имя автора' }) : null,
+        !data ? setError({ author: 'Введите имя автора' }) : null,
       reviewText: (data) =>
-        !data
-          ? setError({ reviewText: 'Необходимо ввести текст отзыва' })
-          : null,
+        !data ? setError({ reviewText: 'Введите текст отзыва' }) : null,
       firstName: (data) =>
-        !data ? setError({ firstName: 'Необходимо ввести имя' }) : null,
+        !data ? setError({ firstName: 'Введите имя' }) : null,
       secondName: (data) =>
-        !data ? setError({ secondName: 'Необходимо ввести фамилию' }) : null,
-      gender: (data) =>
-        !data ? setError({ gender: 'Необходимо ввести пол' }) : null,
+        !data ? setError({ secondName: 'Введите фамилию' }) : null,
+      gender: (data) => (!data ? setError({ gender: 'Укажите пол' }) : null),
       phone: (data) =>
         !data
-          ? setError({ phone: 'Необходимо ввести номер телефона' })
+          ? setError({ phone: 'Введите номер телефона' })
           : `${data}`.length !== 11
           ? setError({ phone: 'Некорректно введен номер телефона' })
           : null,
@@ -106,10 +94,10 @@ const useErrors = () => {
           : null,
       birthday: (data) =>
         !data
-          ? setError({ birthday: 'Необходимо ввести дату рождения' })
+          ? setError({ birthday: 'Введите дату рождения' })
           : birthDateToAge(data, false, false, false) < 18
           ? setError({
-              birthday: 'Нельзя указывать дату возрастом менее 18 лет',
+              birthday: 'Возраст не может быть менее 18 лет',
             })
           : null,
     }

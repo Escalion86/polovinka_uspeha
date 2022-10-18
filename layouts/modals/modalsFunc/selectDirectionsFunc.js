@@ -1,82 +1,64 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import usersAtom from '@state/atoms/usersAtom'
-import { UserItem } from '@components/ItemCards'
+import { DirectionItem, UserItem } from '@components/ItemCards'
+import directionsAtom from '@state/atoms/directionsAtom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import cn from 'classnames'
 import filterItems from '@helpers/filterItems'
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 
-const selectUsersFunc = (
+const selectDirectionsFunc = (
   state,
   filterRules,
   onConfirm,
   exceptedIds,
-  maxUsers,
+  maxDirections,
   canSelectNone = true,
   title
 ) => {
-  const SelectUsersModal = ({
+  const SelectDirectionsModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
-    setComponentInFooter,
   }) => {
-    const users = useRecoilValue(usersAtom)
-    const [selectedUsers, setSelectedUsers] = useState(state ?? [])
+    const directions = useRecoilValue(directionsAtom)
+    const [selectedDirections, setSelectedDirections] = useState(state ?? [])
     const [showErrorMax, setShowErrorMax] = useState(false)
 
     const [searchText, setSearchText] = useState('')
     const inputRef = useRef()
 
-    const filteredUsers = filterItems(
-      users,
+    var filteredDirections = filterItems(
+      directions,
       searchText,
       exceptedIds,
-      filterRules
+      null
     )
 
-    // var filteredUsers = filter
-    //   ? users.filter((user) => {
-    //       for (const key in filter) {
-    //         // if (Object.hasOwnProperty.call(filter, key)) {
-    //         if (filter[key] !== user[key]) return false
+    if (exceptedIds) {
+      filteredDirections = filteredDirections.filter(
+        (direction) => !exceptedIds.includes(direction._id)
+      )
+    }
 
-    //         // }
-    //       }
-    //       return true
-    //     })
-    //   : users
-
-    // if (exceptedIds) {
-    //   filteredUsers = filteredUsers.filter(
-    //     (user) => !exceptedIds.includes(user._id)
-    //   )
-    // }
-    const sortedUsers = [...filteredUsers].sort((a, b) =>
-      a.firstName && b.firstName
-        ? a.firstName.toLocaleLowerCase() < b.firstName.toLocaleLowerCase()
-          ? -1
-          : 1
-        : -1
-    )
-
-    const onClick = (userId) => {
-      const index = selectedUsers.indexOf(userId)
+    const onClick = (directionId) => {
+      const index = selectedDirections.indexOf(directionId)
       // Клик по уже выбранному зрителю?
       if (index >= 0) {
         setShowErrorMax(false)
-        setSelectedUsers((state) => state.filter((item) => item !== userId)) //state.splice(index, 1)
+        setSelectedDirections((state) =>
+          state.filter((item) => item !== directionId)
+        ) //state.splice(index, 1)
       } else {
-        if (!maxUsers || selectedUsers.length < maxUsers) {
+        if (!maxDirections || selectedDirections.length < maxDirections) {
           setShowErrorMax(false)
-          setSelectedUsers((state) => [...state, userId])
+          setSelectedDirections((state) => [...state, directionId])
         } else {
-          if (maxUsers === 1) {
-            setSelectedUsers([userId])
+          if (maxDirections === 1) {
+            setSelectedDirections([directionId])
           } else setShowErrorMax(true)
         }
       }
@@ -89,29 +71,29 @@ const selectUsersFunc = (
       //   womansIds !== eventWomansIds ||
       //   reservedParticipantsIds !== eventReservedParticipantsIds ||
       //   bannedParticipantsIds !== eventBannedParticipantsIds
-      // maxUsers !== 1 &&
+      // maxDirections !== 1 &&
       setComponentInFooter(
         <div className="flex text-lg gap-x-1 teblet:text-base flex-nowrap">
           <span>Выбрано:</span>
-          <span className="font-bold">{selectedUsers.length}</span>
-          {maxUsers && (
+          <span className="font-bold">{selectedDirections.length}</span>
+          {maxDirections && (
             <>
               <span>/</span>
-              <span>{maxUsers}</span>
+              <span>{maxDirections}</span>
             </>
           )}
-          <span>чел.</span>
+          <span>напрвл.</span>
         </div>
       )
       setOnConfirmFunc(() => {
-        onConfirm(selectedUsers)
+        onConfirm(selectedDirections)
         closeModal()
       })
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       // setDisableConfirm(!isFormChanged)
     }, [
-      selectedUsers,
-      maxUsers,
+      selectedDirections,
+      maxDirections,
       // mansIds,
       // womansIds,
       // assistantsIds,
@@ -122,8 +104,8 @@ const selectUsersFunc = (
     useEffect(() => inputRef.current.focus(), [inputRef])
 
     useEffect(() => {
-      if (!canSelectNone) setDisableConfirm(selectedUsers.length === 0)
-    }, [canSelectNone, selectedUsers])
+      if (!canSelectNone) setDisableConfirm(selectedDirections.length === 0)
+    }, [canSelectNone, selectedDirections])
 
     return (
       <div className="flex flex-col max-h-full">
@@ -150,31 +132,31 @@ const selectUsersFunc = (
             }
           />
           {/* {moreOneFilterTurnOnExists ? (
-                <div
-                  className={cn(
-                    moreOneFilter ? 'bg-yellow-400' : 'bg-primary',
-                    'hover:bg-toxic text-white flex items-center justify-center font-bold rounded cursor-pointer w-7 h-7'
-                  )}
-                  onClick={() => setMoreOneFilter(!moreOneFilter)}
-                >
-                  {'>0'}
-                </div>
-              ) : null} */}
+              <div
+                className={cn(
+                  moreOneFilter ? 'bg-yellow-400' : 'bg-primary',
+                  'hover:bg-toxic text-white flex items-center justify-center font-bold rounded cursor-pointer w-7 h-7'
+                )}
+                onClick={() => setMoreOneFilter(!moreOneFilter)}
+              >
+                {'>0'}
+              </div>
+            ) : null} */}
         </div>
 
         <div className="flex-1 overflow-y-auto max-h-200">
-          {sortedUsers.map((user) => (
-            <UserItem
-              key={user._id}
-              item={user}
-              active={selectedUsers.includes(user._id)}
-              onClick={() => onClick(user._id)}
+          {filteredDirections.map((direction) => (
+            <DirectionItem
+              key={direction._id}
+              item={direction}
+              active={selectedDirections.includes(direction._id)}
+              onClick={() => onClick(direction._id)}
             />
           ))}
 
           {showErrorMax && (
             <div className="text-danger">
-              Выбрано максимальное количество пользователей
+              Выбрано максимальное количество направлений
             </div>
           )}
         </div>
@@ -184,11 +166,12 @@ const selectUsersFunc = (
 
   return {
     title:
-      title ?? (maxUsers === 1 ? `Выбор пользователя` : `Выбор пользователей`),
+      title ??
+      (maxDirections === 1 ? `Выбор направления` : `Выбор направлений`),
     confirmButtonName: 'Применить',
     // showConfirm: true,
-    Children: SelectUsersModal,
+    Children: SelectDirectionsModal,
   }
 }
 
-export default selectUsersFunc
+export default selectDirectionsFunc
