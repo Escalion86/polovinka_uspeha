@@ -12,6 +12,7 @@ const DateTimePicker = ({
   wrapperClassName,
   // className,
   disabled = false,
+  error = false,
 }) => {
   return (
     <InputWrapper
@@ -27,6 +28,7 @@ const DateTimePicker = ({
         className={cn(
           'text-input px-1 border rounded w-44 outline-none focus:shadow-active',
           // required && !value ? ' border-red-700' : ' border-gray-400',
+          error ? 'border-red-500' : 'border-gray-400',
           { 'bg-gray-200  text-disabled': disabled }
         )}
         type="datetime-local"
