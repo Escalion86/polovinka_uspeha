@@ -51,20 +51,20 @@ const selectEventsFunc = (
       //   womansIds !== eventWomansIds ||
       //   reservedParticipantsIds !== eventReservedParticipantsIds ||
       //   bannedParticipantsIds !== eventBannedParticipantsIds
-      maxDirections !== 1 &&
-        setComponentInFooter(
-          <div className="flex text-lg gap-x-1 teblet:text-base flex-nowrap">
-            <span>Выбрано:</span>
-            <span className="font-bold">{selectedDirections.length}</span>
-            {maxDirections && (
-              <>
-                <span>/</span>
-                <span>{maxDirections}</span>
-              </>
-            )}
-            <span>напрвл.</span>
-          </div>
-        )
+      // maxDirections !== 1 &&
+      setComponentInFooter(
+        <div className="flex text-lg gap-x-1 teblet:text-base flex-nowrap">
+          <span>Выбрано:</span>
+          <span className="font-bold">{selectedDirections.length}</span>
+          {maxDirections && (
+            <>
+              <span>/</span>
+              <span>{maxDirections}</span>
+            </>
+          )}
+          <span>напрвл.</span>
+        </div>
+      )
       setOnConfirmFunc(() => {
         onConfirm(selectedDirections)
         closeModal()

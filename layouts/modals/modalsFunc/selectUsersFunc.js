@@ -89,20 +89,20 @@ const selectUsersFunc = (
       //   womansIds !== eventWomansIds ||
       //   reservedParticipantsIds !== eventReservedParticipantsIds ||
       //   bannedParticipantsIds !== eventBannedParticipantsIds
-      maxUsers !== 1 &&
-        setComponentInFooter(
-          <div className="flex text-lg gap-x-1 teblet:text-base flex-nowrap">
-            <span>Выбрано:</span>
-            <span className="font-bold">{selectedUsers.length}</span>
-            {maxUsers && (
-              <>
-                <span>/</span>
-                <span>{maxUsers}</span>
-              </>
-            )}
-            <span>чел.</span>
-          </div>
-        )
+      // maxUsers !== 1 &&
+      setComponentInFooter(
+        <div className="flex text-lg gap-x-1 teblet:text-base flex-nowrap">
+          <span>Выбрано:</span>
+          <span className="font-bold">{selectedUsers.length}</span>
+          {maxUsers && (
+            <>
+              <span>/</span>
+              <span>{maxUsers}</span>
+            </>
+          )}
+          <span>чел.</span>
+        </div>
+      )
       setOnConfirmFunc(() => {
         onConfirm(selectedUsers)
         closeModal()
