@@ -33,6 +33,7 @@ export const SelectItem = ({
   itemHeight,
   // noSearch = false,
   itemWidth,
+  componentHeight,
   // moreOneFilterTurnOn = true,
   // onNoChoose,
 }) => {
@@ -192,7 +193,12 @@ export const SelectItem = ({
       {selectedItem ? (
         <Item item={selectedItem} />
       ) : (
-        <div className="text-sm text-gray-800">Не выбрано</div>
+        <div
+          className="flex items-center justify-center text-sm text-gray-800"
+          style={{ height: componentHeight }}
+        >
+          Не выбрано
+        </div>
       )}
     </div>
   )
@@ -364,6 +370,7 @@ export const SelectUser = ({
       <SelectItem
         items={filteredUsers}
         itemComponent={(props) => UserItem({ ...props, bordered })}
+        componentHeight={40}
         // onChange={onChange}
         selectedId={selectedId}
         className={
@@ -448,6 +455,7 @@ export const SelectEvent = ({
       <SelectItem
         items={events}
         itemComponent={EventItem}
+        componentHeight={40}
         // onChange={onChange}
         selectedId={selectedId}
         className={
@@ -534,6 +542,7 @@ export const SelectDirection = ({
       <SelectItem
         items={directions}
         itemComponent={DirectionItem}
+        componentHeight={50}
         // itemHeight={50}
         // onChange={onChange}
         selectedId={selectedId}
