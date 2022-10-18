@@ -1,6 +1,6 @@
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import Fab from '@components/Fab'
+// import Fab from '@components/Fab'
 import usersAtom from '@state/atoms/usersAtom'
 import UserCard from '@layouts/cards/UserCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
@@ -9,12 +9,15 @@ import { useMemo, useState } from 'react'
 import ContentHeader from '@components/ContentHeader'
 import UsersFilter from '@components/Filter/UsersFilter'
 import SortingButtonMenu from '@components/SortingButtonMenu'
-import { FormControl } from '@mui/material'
 import sortFunctions from '@helpers/sortFunctions'
+import AddButton from '@components/IconToggleButtons/AddButton'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const UsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const users = useRecoilValue(usersAtom)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+
   const [sort, setSort] = useState({ name: 'asc' })
   const [filter, setFilter] = useState({
     gender: {
@@ -72,13 +75,11 @@ const UsersContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounUsers(visibleUsersIds.length)}
           </div>
-          <FormControl size="small">
-            <SortingButtonMenu
-              sort={sort}
-              onChange={setSort}
-              sortKeys={['name', 'birthday', 'createdAt']}
-            />
-          </FormControl>
+          <SortingButtonMenu
+            sort={sort}
+            onChange={setSort}
+            sortKeys={['name', 'birthday', 'createdAt']}
+          />
           {/* <FormControl size="small">
             <FilterToggleButton
               value={isFiltered}
@@ -87,6 +88,9 @@ const UsersContent = () => {
               }}
             />
           </FormControl> */}
+          {isLoggedUserAdmin && (
+            <AddButton onClick={() => modalsFunc.user.edit()} />
+          )}
         </div>
       </ContentHeader>
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
@@ -104,7 +108,7 @@ const UsersContent = () => {
         ) : (
           <div className="flex justify-center p-2">Нет пользователей</div>
         )}
-        <Fab onClick={() => modalsFunc.user.edit()} show />
+        {/* <Fab onClick={() => modalsFunc.user.edit()} show /> */}
       </CardListWrapper>
     </>
   )
