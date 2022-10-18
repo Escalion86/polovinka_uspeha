@@ -23,6 +23,7 @@ const selectDirectionsFunc = (
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setComponentInFooter,
   }) => {
     const directions = useRecoilValue(directionsAtom)
     const [selectedDirections, setSelectedDirections] = useState(state ?? [])
