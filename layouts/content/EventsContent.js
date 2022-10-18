@@ -53,7 +53,7 @@ const EventsContent = () => {
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
-  const [sort, setSort] = useState({ date: 'asc' })
+  const [sort, setSort] = useState({ dateStart: 'asc' })
   const [showFilter, setShowFilter] = useState(false)
   const [filter, setFilter] = useState({
     status: {
@@ -170,7 +170,7 @@ const EventsContent = () => {
             <SortingButtonMenu
               sort={sort}
               onChange={setSort}
-              sortKeys={['date']}
+              sortKeys={['dateStart']}
             />
           </FormControl>
           <FormControl size="small">
