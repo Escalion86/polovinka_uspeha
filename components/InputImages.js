@@ -22,6 +22,7 @@ const InputImages = ({
   labelClassName,
   className,
   aspect,
+  error,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [isAddingImage, setAddingImage] = useState(false)
@@ -94,9 +95,7 @@ const InputImages = ({
         className={cn(
           'flex flex-wrap w-full gap-1 p-0.5 rounded',
 
-          required && !images?.length
-            ? 'border border-red-700'
-            : 'border border-gray-400'
+          error ? 'border border-red-700' : 'border border-gray-400'
         )}
       >
         {images.length > 0 &&
