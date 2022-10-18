@@ -16,25 +16,28 @@ const ItemRow = ({
   index,
   selectedItemsIds,
   SelectItemComponent = SelectItem,
-  dropDownList,
+  // dropDownList,
   readOnly,
 }) => {
-  const onChangeItem = (value) => onChange(value, index)
+  // const onChangeItem = (value) => onChange(value, index)
 
   return (
     <div className={cn('flex', 'border-b border-gray-700 last:border-0')}>
       <SelectItemComponent
-        onChange={readOnly ? null : (item) => onChangeItem(item._id)}
+        // onChange={readOnly ? null : (item) => onChangeItem(item._id)}
         selectedId={selectedId}
         exceptedIds={selectedItemsIds}
-        clearButton={!readOnly && dropDownList && onDelete}
+        clearButton={
+          !readOnly && onDelete
+          // !readOnly && dropDownList && onDelete
+        }
         onDelete={
           !readOnly && onDelete ? (item) => onDelete(index, item) : null
         }
         onCreateNew={!readOnly && onCreateNew ? () => onCreateNew(index) : null}
         onEdit={!readOnly && onEdit ? (item) => onEdit(index, item) : null}
         onClick={onClick ? (item) => onClick(index, item) : null}
-        dropDownList={dropDownList}
+        // dropDownList={dropDownList}
       />
     </div>
   )
@@ -50,7 +53,7 @@ export const SelectItemList = ({
   onDelete = null,
   onClick = null,
   required = false,
-  dropDownList = true,
+  // dropDownList = true,
   showCounter,
   counterPostfix,
   canAddItem = true,
@@ -60,21 +63,31 @@ export const SelectItemList = ({
   readOnly,
   labelClassName,
   filter,
+  modalTitle,
+  canSelectNone,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   if (!itemsId) itemsId = []
 
-  const onChangeItemRow = (id, index) => {
-    if (!onChange) return
-    const tempItemsId = [...itemsId]
-    tempItemsId[index] = id
-    onChange(tempItemsId)
-  }
+  // const onChangeItemRow = (id, index) => {
+  //   if (!onChange) return
+  //   const tempItemsId = [...itemsId]
+  //   tempItemsId[index] = id
+  //   onChange(tempItemsId)
+  // }
 
   const addRow = () => {
     if (modalFuncKey)
-      modalsFunc[modalFuncKey](itemsId, filter, onChange, exceptedIds, maxItems)
+      modalsFunc[modalFuncKey](
+        itemsId,
+        filter,
+        onChange,
+        exceptedIds,
+        maxItems,
+        canSelectNone,
+        modalTitle
+      )
     else {
       if (!onChange) return
       const tempItemsId = [...itemsId]
@@ -95,7 +108,7 @@ export const SelectItemList = ({
   itemsId.forEach((itemId) =>
     itemRows.push(({ index }) => (
       <ItemRow
-        onChange={onChangeItemRow}
+        // onChange={onChangeItemRow}
         onDelete={(index, item) => {
           if (onDelete) onDelete(item, () => deleteRow(index))
           else deleteRow(index)
@@ -107,7 +120,7 @@ export const SelectItemList = ({
         index={index}
         selectedItemsIds={itemsId}
         SelectItemComponent={SelectItemComponent}
-        dropDownList={dropDownList}
+        // dropDownList={dropDownList}
         readOnly={readOnly}
       />
     ))
@@ -158,7 +171,8 @@ export const SelectItemList = ({
           {!readOnly && (
             <div
               onClick={
-                addButtonIsActive ? (dropDownList ? addRow : onCreateNew) : null
+                // addButtonIsActive ? (dropDownList ? addRow : onCreateNew) : null
+                addButtonIsActive ? addRow : null
               }
               className={cn(
                 'group flex items-center justify-center h-6 bg-white',
@@ -201,11 +215,14 @@ export const SelectUserList = ({
   buttons,
   readOnly,
   labelClassName,
+  modalTitle,
+  canSelectNone = true,
 }) => {
   return (
     <SelectItemList
       itemsId={usersId}
       label={label}
+      modalTitle={modalTitle}
       onChange={onChange}
       onDelete={onDelete}
       SelectItemComponent={(props) =>
@@ -213,7 +230,7 @@ export const SelectUserList = ({
           ...props,
           bordered: false,
           filter,
-          disableDropDownList: true,
+          // disableDropDownList: true,
           exceptedIds,
           buttons,
         })
@@ -230,6 +247,7 @@ export const SelectUserList = ({
       modalFuncKey="selectUsers"
       readOnly={readOnly}
       labelClassName={labelClassName}
+      canSelectNone={canSelectNone}
     />
   )
 }
@@ -247,11 +265,14 @@ export const SelectEventList = ({
   buttons,
   readOnly,
   labelClassName,
+  modalTitle,
+  canSelectNone = true,
 }) => {
   return (
     <SelectItemList
       itemsId={eventsId}
       label={label}
+      modalTitle={modalTitle}
       onChange={onChange}
       onDelete={onDelete}
       SelectItemComponent={(props) =>
@@ -259,7 +280,7 @@ export const SelectEventList = ({
           ...props,
           bordered: false,
           filter,
-          disableDropDownList: true,
+          // disableDropDownList: true,
           exceptedIds,
           buttons,
         })
@@ -272,6 +293,7 @@ export const SelectEventList = ({
       modalFuncKey="selectEvents"
       readOnly={readOnly}
       labelClassName={labelClassName}
+      canSelectNone={canSelectNone}
     />
   )
 }

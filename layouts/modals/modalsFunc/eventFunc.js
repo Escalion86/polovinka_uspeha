@@ -292,9 +292,9 @@ const eventFunc = (eventId, clone = false) => {
               />
               <SelectDirection
                 selectedId={directionId}
-                onChange={(direction) => {
+                onChange={(directionId) => {
                   removeError('directionId')
-                  setDirectionId(direction._id)
+                  setDirectionId(directionId)
                 }}
                 required
                 error={errors.directionId}
@@ -373,10 +373,11 @@ const eventFunc = (eventId, clone = false) => {
               </FormWrapper>
               <SelectUser
                 label="Организатор"
+                modalTitle="Выбор организатора"
                 selectedId={organizerId}
-                onChange={(user) => {
+                onChange={(userId) => {
                   removeError('organizerId')
-                  setOrganizerId(user._id)
+                  setOrganizerId(userId)
                 }}
                 required
                 error={errors.organizerId}
