@@ -58,9 +58,11 @@ const useErrors = () => {
       date: (data) =>
         !data ? setError({ date: 'Необходимо ввести дату' }) : null,
       dateStart: (data) =>
-        !data ? setError({ date: 'Необходимо ввести дату начала' }) : null,
+        !data ? setError({ dateStart: 'Необходимо ввести дату начала' }) : null,
       dateEnd: (data) =>
-        !data ? setError({ date: 'Необходимо ввести дату начала' }) : null,
+        !data
+          ? setError({ dateEnd: 'Необходимо ввести дату завершения' })
+          : null,
       userId: (data) =>
         !data ? setError({ userId: 'Необходимо указать пользователя' }) : null,
       eventId: (data) =>
