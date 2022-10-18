@@ -1,23 +1,27 @@
 import React from 'react'
-import { ToggleButton } from '@mui/material'
+import { FormControl, ToggleButton } from '@mui/material'
 
 const IconToggleButton = ({
   selected,
   onChange,
+  onClick,
   color = 'warning',
-  value,
+  value = 'default',
   children,
 }) => {
   return (
-    <ToggleButton
-      size="small"
-      value={value}
-      selected={selected}
-      onChange={onChange}
-      color={color}
-    >
-      {children}
-    </ToggleButton>
+    <FormControl size="small">
+      <ToggleButton
+        size="small"
+        value={value}
+        selected={selected}
+        onChange={onChange}
+        color={color}
+        onClick={onClick}
+      >
+        {children}
+      </ToggleButton>
+    </FormControl>
   )
 }
 

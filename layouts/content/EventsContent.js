@@ -1,38 +1,19 @@
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import Fab from '@components/Fab'
+// import Fab from '@components/Fab'
 import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import EventCard from '@layouts/cards/EventCard'
 import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { useMemo, useState } from 'react'
-import cn from 'classnames'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import directionsAtom from '@state/atoms/directionsAtom'
-import {
-  Checkbox,
-  FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  MenuList,
-  OutlinedInput,
-  Select,
-  ToggleButton,
-  Button,
-  ButtonGroup,
-} from '@mui/material'
-import { Check, FilterAlt, Sort } from '@mui/icons-material'
 
-// import { makeStyles } from '@mui/styles'
-import { getNounDirections, getNounEvents } from '@helpers/getNoun'
-import { motion } from 'framer-motion'
+import { getNounEvents } from '@helpers/getNoun'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import Filter from '@components/Filter'
 import ContentHeader from '@components/ContentHeader'
@@ -42,6 +23,7 @@ import SortingButtonMenu from '@components/SortingButtonMenu'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import sortFunctions from '@helpers/sortFunctions'
+import AddButton from '@components/IconToggleButtons/AddButton'
 
 const EventsContent = () => {
   // const classes = useStyles()
@@ -166,32 +148,20 @@ const EventsContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounEvents(visibleEventsIds.length)}
           </div>
-          <FormControl size="small">
-            <SortingButtonMenu
-              sort={sort}
-              onChange={setSort}
-              sortKeys={['dateStart']}
-            />
-          </FormControl>
-          <FormControl size="small">
-            <FilterToggleButton
-              value={isFiltered}
-              onChange={() => {
-                setShowFilter((state) => !state)
-              }}
-            />
-            {/* <ToggleButton
-              size="small"
-              value="filter"
-              selected={isFiltered}
-              onChange={() => {
-                setShowFilter((state) => !state)
-              }}
-              color="warning"
-            >
-              <FilterAlt />
-            </ToggleButton> */}
-          </FormControl>
+          <SortingButtonMenu
+            sort={sort}
+            onChange={setSort}
+            sortKeys={['dateStart']}
+          />
+          <FilterToggleButton
+            value={isFiltered}
+            onChange={() => {
+              setShowFilter((state) => !state)
+            }}
+          />
+          {isLoggedUserAdmin && (
+            <AddButton onClick={() => modalsFunc.event.add()} />
+          )}
           {/* <FormControl size="small">
             <ToggleButton
               size="small"
@@ -223,9 +193,9 @@ const EventsContent = () => {
         ) : (
           <div className="flex justify-center p-2">{`Нет мероприятий`}</div>
         )}
-        {isLoggedUserAdmin && (
+        {/* {isLoggedUserAdmin && (
           <Fab onClick={() => modalsFunc.event.add()} show />
-        )}
+        )} */}
       </CardListWrapper>
     </>
   )

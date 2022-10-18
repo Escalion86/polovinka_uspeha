@@ -20,11 +20,20 @@ export default getNoun
 export const getNounEvents = (number) =>
   getNoun(number, 'мероприятие', 'мероприятия', 'мероприятий')
 
+export const getNounAdditionalBlocks = (number) =>
+  getNoun(number, 'доп. блок', 'доп. блока', 'доп. блоков')
+
 export const getNounUsers = (number) =>
   getNoun(number, 'пользователь', 'пользователя', 'пользователей')
 
 export const getNounDirections = (number) =>
   getNoun(number, 'направление', 'направления', 'направлений')
+
+export const getNounReviews = (number) =>
+  getNoun(number, 'отзыв', 'отзыва', 'отзывов')
+
+export const getNounPayments = (number) =>
+  getNoun(number, 'транзакция', 'транзакции', 'транзакций')
 
 export const getNounDays = (number) => getNoun(number, 'день', 'дня', 'дней')
 

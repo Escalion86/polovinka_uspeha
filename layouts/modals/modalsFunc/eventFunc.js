@@ -53,9 +53,10 @@ const eventFunc = (eventId, clone = false) => {
     const [directionId, setDirectionId] = useState(
       event?.directionId ?? DEFAULT_EVENT.directionId
     )
-    const [organizerId, setOrganizerId] = useState(
+
+    const defaultOrganizerId =
       event?.organizerId ?? useRecoilValue(loggedUserAtom)._id
-    )
+    const [organizerId, setOrganizerId] = useState(defaultOrganizerId)
 
     const [title, setTitle] = useState(event?.title ?? DEFAULT_EVENT.title)
     const [images, setImages] = useState(event?.images ?? DEFAULT_EVENT.images)
@@ -63,12 +64,12 @@ const eventFunc = (eventId, clone = false) => {
       event?.description ?? DEFAULT_EVENT.description
     )
 
-    const defaultDate =
+    const defaultDateStart =
       event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000
-    const [dateStart, setDateStart] = useState(defaultDate)
-    const [dateEnd, setDateEnd] = useState(
-      event?.dateEnd ?? Date.now() - (Date.now() % 3600000) + 7200000
-    )
+    const defaultDateEnd = event?.dateEnd ?? defaultDateStart + 3600000
+
+    const [dateStart, setDateStart] = useState(defaultDateStart)
+    const [dateEnd, setDateEnd] = useState(defaultDateEnd)
 
     // const [duration, setDuration] = useState(
     //   event?.duration ?? DEFAULT_EVENT.duration
@@ -114,16 +115,21 @@ const eventFunc = (eventId, clone = false) => {
     const [maxWomansAge, setMaxWomansAge] = useState(
       event?.maxWomansAge ?? DEFAULT_EVENT.maxWomansAge
     )
-
-    const [usersStatusAccess, setUsersStatusAccess] = useState({
+    const defaultUsersStatusAccess = {
       ...DEFAULT_USERS_STATUS_ACCESS,
       ...event?.usersStatusAccess,
-    })
+    }
+    const [usersStatusAccess, setUsersStatusAccess] = useState(
+      defaultUsersStatusAccess
+    )
 
-    const [usersStatusDiscount, setUsersStatusDiscount] = useState({
+    const defaultUsersStatusDiscount = {
       ...DEFAULT_USERS_STATUS_DISCOUNT,
       ...(event?.usersStatusDiscount ?? DEFAULT_EVENT.usersStatusDiscount),
-    })
+    }
+    const [usersStatusDiscount, setUsersStatusDiscount] = useState(
+      defaultUsersStatusDiscount
+    )
 
     const [showOnSite, setShowOnSite] = useState(
       event?.showOnSite ?? DEFAULT_EVENT.showOnSite
@@ -190,8 +196,8 @@ const eventFunc = (eventId, clone = false) => {
         event?.title !== title ||
         event?.description !== description ||
         event?.showOnSite !== showOnSite ||
-        event?.dateStart !== dateStart ||
-        event?.dateEnd !== dateEnd ||
+        dateStart !== defaultDateStart ||
+        dateEnd !== defaultDateEnd ||
         // event?.duration !== duration ||
         !compareArrays(event?.images, images) ||
         !compareObjects(event?.address, address) ||
@@ -205,10 +211,10 @@ const eventFunc = (eventId, clone = false) => {
         event?.maxMansAge !== maxMansAge ||
         event?.minWomansAge !== minWomansAge ||
         event?.maxWomansAge !== maxWomansAge ||
-        event?.organizerId !== organizerId ||
+        organizerId !== defaultOrganizerId ||
         event?.status !== status ||
-        !compareObjects(event?.usersStatusAccess, usersStatusAccess) ||
-        !compareObjects(event?.usersStatusDiscount, usersStatusDiscount) ||
+        !compareObjects(defaultUsersStatusAccess, usersStatusAccess) ||
+        !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
         event?.isReserveActive !== isReserveActive ||
         event?.report !== report ||
         !compareArrays(event?.reportImages, reportImages)

@@ -1,8 +1,10 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
-import Fab from '@components/Fab'
+import ContentHeader from '@components/ContentHeader'
+// import Fab from '@components/Fab'
+import AddButton from '@components/IconToggleButtons/AddButton'
 import TextInRing from '@components/TextInRing'
-import { GRADIENT_COLORS } from '@helpers/constants'
+import { getNounDirections } from '@helpers/getNoun'
 import sanitize from '@helpers/sanitize'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
@@ -11,7 +13,8 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
-import Image from 'next/image'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+// import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 
 const DirectionCard = ({ directionId }) => {
@@ -70,18 +73,31 @@ const DirectionCard = ({ directionId }) => {
 const DirectionsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const directions = useRecoilValue(directionsAtom)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   return (
-    <CardListWrapper>
-      {directions?.length > 0 ? (
-        directions.map((direction) => (
-          <DirectionCard key={direction._id} directionId={direction._id} />
-        ))
-      ) : (
-        <div className="flex justify-center p-2">Нет направлений</div>
-      )}
-      <Fab onClick={() => modalsFunc.direction.edit()} show />
-    </CardListWrapper>
+    <>
+      <ContentHeader>
+        <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
+          <div className="text-lg font-bold whitespace-nowrap">
+            {getNounDirections(directions.length)}
+          </div>
+          {isLoggedUserAdmin && (
+            <AddButton onClick={() => modalsFunc.direction.edit()} />
+          )}
+        </div>
+      </ContentHeader>
+      <CardListWrapper>
+        {directions?.length > 0 ? (
+          directions.map((direction) => (
+            <DirectionCard key={direction._id} directionId={direction._id} />
+          ))
+        ) : (
+          <div className="flex justify-center p-2">Нет направлений</div>
+        )}
+        {/* <Fab onClick={() => modalsFunc.direction.edit()} show /> */}
+      </CardListWrapper>
+    </>
   )
 }
 
