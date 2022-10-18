@@ -1,7 +1,7 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import ContentHeader from '@components/ContentHeader'
-import Fab from '@components/Fab'
+// import Fab from '@components/Fab'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -112,7 +112,7 @@ const PaymentsContent = () => {
         ) : (
           <div className="flex justify-center p-2">Нет транзакций</div>
         )}
-        <Fab onClick={() => modalsFunc.payment.edit()} show />
+        {/* <Fab onClick={() => modalsFunc.payment.edit()} show /> */}
       </CardListWrapper>
     </>
   )
