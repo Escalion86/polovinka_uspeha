@@ -113,7 +113,7 @@ export const SelectItem = ({
       style={{ height: itemHeight, width: itemWidth }}
       onClick={() => {
         // if ((!selectedItem || !onClick) && dropDownList) toggleIsMenuOpen()
-        if (onClick && selectedItem) onClick(selectedItem)
+        if (onClick) onClick(selectedItem)
       }}
       // ref={ref}
     >
