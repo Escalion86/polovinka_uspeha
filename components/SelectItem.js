@@ -30,9 +30,9 @@ export const SelectItem = ({
   className = '',
   // dropDownList = true,
   onClick = null,
-  itemHeight = 40,
+  itemHeight,
   // noSearch = false,
-  itemWidth = 0,
+  itemWidth,
   // moreOneFilterTurnOn = true,
   // onNoChoose,
 }) => {
@@ -230,6 +230,7 @@ const SelectItemContainer = ({
   selectedId,
   labelClassName,
   className,
+  rounded = false,
 }) => {
   const Container = ({ children }) => (
     <InputWrapper
@@ -237,7 +238,7 @@ const SelectItemContainer = ({
       labelClassName={labelClassName}
       // onChange={onChange}
       // value={images}
-      wrapperClassName={cn('flex-1', className)}
+      wrapperClassName={cn('flex-1 ', className)}
       required={required}
       // labelPos="top"
     >
@@ -247,7 +248,8 @@ const SelectItemContainer = ({
       </label> */}
       <div
         className={cn(
-          'flex flex-1 rounded overflow-hidden',
+          'flex flex-1',
+          rounded ? 'rounded overflow-hidden' : '',
           error
             ? 'border border-red-500'
             : bordered
@@ -315,6 +317,7 @@ export const SelectUser = ({
   bordered = true,
   modalTitle,
   // buttons,
+  rounded = true,
 }) => {
   const users = useRecoilValue(usersAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -335,6 +338,7 @@ export const SelectUser = ({
       onClickClearButton={onClickClearButton}
       bordered={bordered}
       error={error}
+      rounded={rounded}
       // buttons={
       //   onChange
       //     ? [
@@ -401,6 +405,7 @@ export const SelectEvent = ({
   // disableDropDownList,
   label,
   modalTitle,
+  rounded = true,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
@@ -417,6 +422,7 @@ export const SelectEvent = ({
       }
       error={error}
       bordered={bordered}
+      rounded={rounded}
       // buttons={
       //   onChange
       //     ? [
@@ -483,6 +489,7 @@ export const SelectDirection = ({
   error,
   bordered = true,
   modalTitle,
+  rounded = true,
   // buttons,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -501,6 +508,7 @@ export const SelectDirection = ({
       }
       error={error}
       bordered={bordered}
+      rounded={rounded}
       // buttons={
       //   onChange
       //     ? [
@@ -526,7 +534,7 @@ export const SelectDirection = ({
       <SelectItem
         items={directions}
         itemComponent={DirectionItem}
-        itemHeight={50}
+        // itemHeight={50}
         // onChange={onChange}
         selectedId={selectedId}
         className={
