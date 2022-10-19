@@ -24,7 +24,9 @@ const selectEventsFunc = (
     setComponentInFooter,
   }) => {
     const directions = useRecoilValue(directionsAtom)
-    const [selectedDirections, setSelectedDirections] = useState(state ?? [])
+    const [selectedDirections, setSelectedDirections] = useState(
+      state.filter((item) => typeof item === 'string' && item !== '') ?? []
+    )
     const [searchText, setSearchText] = useState('')
     const inputRef = useRef()
 

@@ -26,7 +26,9 @@ const selectDirectionsFunc = (
     setComponentInFooter,
   }) => {
     const directions = useRecoilValue(directionsAtom)
-    const [selectedDirections, setSelectedDirections] = useState(state ?? [])
+    const [selectedDirections, setSelectedDirections] = useState(
+      state.filter((item) => typeof item === 'string' && item !== '') ?? []
+    )
     const [showErrorMax, setShowErrorMax] = useState(false)
 
     const [searchText, setSearchText] = useState('')

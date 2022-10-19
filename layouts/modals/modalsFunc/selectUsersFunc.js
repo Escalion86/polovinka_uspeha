@@ -26,7 +26,9 @@ const selectUsersFunc = (
     setComponentInFooter,
   }) => {
     const users = useRecoilValue(usersAtom)
-    const [selectedUsers, setSelectedUsers] = useState(state ?? [])
+    const [selectedUsers, setSelectedUsers] = useState(
+      state.filter((item) => typeof item === 'string' && item !== '') ?? []
+    )
     const [showErrorMax, setShowErrorMax] = useState(false)
 
     const [searchText, setSearchText] = useState('')
