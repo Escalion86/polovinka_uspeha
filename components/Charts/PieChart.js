@@ -35,7 +35,7 @@ const PieChart = ({ title, data }) => {
       <Pie
         height={320 + 18 * data.length}
         width={340}
-        data={data}
+        data={data.sort((a, b) => (a.value > b.value ? -1 : 1))}
         margin={{ top: 0, right: 20, bottom: 18 * data.length, left: 20 }}
         innerRadius={0.6}
         enableArcLinkLabels={false}
