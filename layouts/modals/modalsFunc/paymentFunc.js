@@ -35,7 +35,7 @@ const paymentFunc = (paymentId, clone = false) => {
     const [status, setStatus] = useState(
       payment?.status ?? DEFAULT_PAYMENT.status
     )
-    const [payAt, setPayAt] = useState(payment?.payAt ?? DEFAULT_PAYMENT.payAt)
+    const [payAt, setPayAt] = useState(payment?.payAt ?? Date.now())
     const [payType, setPayType] = useState(
       payment?.payType ?? DEFAULT_PAYMENT.payType
     )
@@ -125,7 +125,7 @@ const paymentFunc = (paymentId, clone = false) => {
             removeError('payAt')
             setPayAt(date)
           }}
-          label="Начало"
+          label="Дата проведения"
           required
           error={errors.payAt}
         />

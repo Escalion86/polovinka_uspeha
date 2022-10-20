@@ -51,6 +51,7 @@ const theme = createTheme({
     blue: { main: '#60a5fa' },
     green: { main: '#4ade80' },
     gray: { main: '#9ca3af' },
+    yellow: { main: '#FEE100' },
     // background: {
     //   default: '#FFD600',
     // },

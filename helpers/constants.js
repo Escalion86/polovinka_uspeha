@@ -8,6 +8,7 @@ import {
   faClock,
   faComments,
   faCube,
+  faGenderless,
   faGift,
   faHistory,
   faMars,
@@ -364,6 +365,11 @@ export const EVENT_USER_STATUSES = [
 export const GENDERS = [
   { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },
   { value: 'famale', name: 'Женщина', color: 'red-400', icon: faVenus },
+]
+
+export const GENDERS_WITH_NO_GENDER = [
+  ...GENDERS,
+  { value: 'null', name: 'Не выбрано', color: 'gray-400', icon: faGenderless },
 ]
 
 export const ORIENTATIONS = [

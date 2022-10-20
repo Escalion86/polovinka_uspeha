@@ -12,7 +12,7 @@ import paymentSelector from '@state/selectors/paymentSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 
-const PaymentCard = ({ paymentId }) => {
+const PaymentCard = ({ paymentId, hidden = false }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payment = useRecoilValue(paymentSelector(paymentId))
   const loading = useRecoilValue(loadingAtom('payment' + paymentId))
@@ -27,6 +27,7 @@ const PaymentCard = ({ paymentId }) => {
       onClick={() => !loading && modalsFunc.payment.edit(payment._id)}
       flex={false}
       className="flex items-stretch"
+      hidden={hidden}
     >
       <div
         className={cn(

@@ -63,7 +63,15 @@ const useErrors = () => {
         !data ? setError({ userId: 'Выберите пользователя' }) : null,
       eventId: (data) =>
         !data ? setError({ eventId: 'Выберите мероприятие' }) : null,
-      sum: (data) => (!data ? setError({ sum: 'Введите сумму' }) : null),
+      price: (data) =>
+        Number(data) < 0
+          ? setError({ sum: 'Стоиомсть не может быть отрицательной' })
+          : null,
+
+      sum: (data) =>
+        Number(data) < 0
+          ? setError({ sum: 'Сумма не может быть отрицательной' })
+          : null,
       author: (data) =>
         !data ? setError({ author: 'Введите имя автора' }) : null,
       reviewText: (data) =>
