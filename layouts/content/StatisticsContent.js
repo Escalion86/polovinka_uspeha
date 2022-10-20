@@ -8,10 +8,14 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import eventStatus from '@helpers/eventStatus'
 import ListWrapper from '@layouts/wrappers/ListWrapper'
 import Divider from '@components/Divider'
+import TabContext from '@components/Tabs/TabContext'
+import TabPanel from '@components/Tabs/TabPanel'
+import directionsAtom from '@state/atoms/directionsAtom'
 
 const StatisticsContent = () => {
   const users = useRecoilValue(usersAtom)
   const events = useRecoilValue(eventsAtom)
+  const directions = useRecoilValue(directionsAtom)
 
   const [filterUsers, setFilterUsers] = useState({
     status: {
@@ -33,7 +37,7 @@ const StatisticsContent = () => {
   ).length
   const noGenderCount = filteredUsers.filter((user) => !user.gender).length
 
-  const usersData = [
+  const usersByGenderData = [
     {
       id: 'Мужчины',
       label: 'Мужчины',
@@ -64,7 +68,7 @@ const StatisticsContent = () => {
     (event) => eventStatus(event) === 'canceled'
   ).length
 
-  const eventsData = [
+  const eventsByStatusData = [
     {
       id: 'Завершены',
       label: 'Завершены',
@@ -85,6 +89,18 @@ const StatisticsContent = () => {
     },
   ]
 
+  const eventsByDirectionsData = directions.map((direction) => {
+    const eventsInDirectionCount = events.filter(
+      (event) => event.directionId === direction._id
+    ).length
+    return {
+      id: direction.title,
+      label: direction.title,
+      value: eventsInDirectionCount,
+      // color: '#f87171',
+    }
+  })
+
   const usersTitle = filterUsers.status.novice
     ? filterUsers.status.member
       ? 'Все'
@@ -92,16 +108,27 @@ const StatisticsContent = () => {
     : 'Участники клуба'
 
   return (
-    <ListWrapper className="flex flex-col items-center w-full py-1">
-      <div className="flex flex-col items-center w-[300px]">
-        <H3>Пользователи</H3>
-        <UsersFilter value={filterUsers} onChange={setFilterUsers} />
-        <H4>{usersTitle}</H4>
-        <PieChart data={usersData} />
-      </div>
-      <Divider light />
-      <PieChart data={eventsData} title="Мероприятия" />
-    </ListWrapper>
+    <div className="flex flex-col flex-1 h-full max-w-full max-h-full min-h-full">
+      <TabContext value="Мероприятия">
+        <TabPanel tabName="Мероприятия" className="flex flex-col items-center">
+          {/* <ListWrapper className="flex flex-col items-center w-full py-1"> */}
+          <PieChart data={eventsByStatusData} title="По статусу" />
+          <Divider light />
+          <PieChart data={eventsByDirectionsData} title="По направлениям" />
+          {/* </ListWrapper> */}
+        </TabPanel>
+        <TabPanel tabName="Пользователи" className="flex flex-col items-center">
+          {/* <ListWrapper className="flex flex-col items-center w-full py-1"> */}
+          <div className="flex flex-col items-center w-[300px]">
+            <H3>По полу</H3>
+            <UsersFilter value={filterUsers} onChange={setFilterUsers} />
+            <H4>{usersTitle}</H4>
+            <PieChart data={usersByGenderData} />
+          </div>
+          {/* </ListWrapper> */}
+        </TabPanel>
+      </TabContext>
+    </div>
   )
 }
 
