@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import { DirectionItem, UserItem } from '@components/ItemCards'
-import directionsAtom from '@state/atoms/directionsAtom'
+import { EventItem } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
+import eventsAtom from '@state/atoms/eventsAtom'
+import filterItems from '@helpers/filterItems'
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 const selectEventsFunc = (
   state,
   filterRules,
   onConfirm,
   exceptedIds,
-  maxDirections,
+  maxEvents,
   canSelectNone = true,
   title
 ) => {
-  const SelectDirectionsModal = ({
+  const SelectEventsModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
@@ -23,28 +25,41 @@ const selectEventsFunc = (
     setDisableDecline,
     setComponentInFooter,
   }) => {
-    const directions = useRecoilValue(directionsAtom)
-    const [selectedDirections, setSelectedDirections] = useState(
-      state.filter((item) => typeof item === 'string' && item !== '') ?? []
+    const events = useRecoilValue(eventsAtom)
+    const [selectedEvents, setSelectedEvents] = useState(
+      typeof state === 'object'
+        ? state.filter((item) => typeof item === 'string' && item !== '')
+        : []
     )
+    const [showErrorMax, setShowErrorMax] = useState(false)
+
     const [searchText, setSearchText] = useState('')
     const inputRef = useRef()
 
-    var filteredDirections = filterItems(
-      directions,
-      searchText,
-      exceptedIds,
-      null
-    )
+    var filteredEvents = filterItems(events, searchText, exceptedIds, null)
 
     if (exceptedIds) {
-      filteredDirections = filteredDirections.filter(
-        (direction) => !exceptedIds.includes(direction._id)
+      filteredEvents = filteredEvents.filter(
+        (event) => !exceptedIds.includes(event._id)
       )
     }
 
-    const onClick = (direction) => {
-      setSelectedDirections(direction._id)
+    const onClick = (eventId) => {
+      const index = selectedEvents.indexOf(eventId)
+      // Клик по уже выбранному зрителю?
+      if (index >= 0) {
+        setShowErrorMax(false)
+        setSelectedEvents((state) => state.filter((item) => item !== eventId)) //state.splice(index, 1)
+      } else {
+        if (!maxEvents || selectedEvents.length < maxEvents) {
+          setShowErrorMax(false)
+          setSelectedEvents((state) => [...state, eventId])
+        } else {
+          if (maxEvents === 1) {
+            setSelectedEvents([eventId])
+          } else setShowErrorMax(true)
+        }
+      }
     }
 
     useEffect(() => {
@@ -54,29 +69,29 @@ const selectEventsFunc = (
       //   womansIds !== eventWomansIds ||
       //   reservedParticipantsIds !== eventReservedParticipantsIds ||
       //   bannedParticipantsIds !== eventBannedParticipantsIds
-      // maxDirections !== 1 &&
+      // maxEvents !== 1 &&
       setComponentInFooter(
         <div className="flex text-lg gap-x-1 teblet:text-base flex-nowrap">
           <span>Выбрано:</span>
-          <span className="font-bold">{selectedDirections.length}</span>
-          {maxDirections && (
+          <span className="font-bold">{selectedEvents.length}</span>
+          {maxEvents && (
             <>
               <span>/</span>
-              <span>{maxDirections}</span>
+              <span>{maxEvents}</span>
             </>
           )}
-          <span>напрвл.</span>
+          <span>меропр.</span>
         </div>
       )
       setOnConfirmFunc(() => {
-        onConfirm(selectedDirections)
+        onConfirm(selectedEvents)
         closeModal()
       })
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       // setDisableConfirm(!isFormChanged)
     }, [
-      selectedDirections,
-      maxDirections,
+      selectedEvents,
+      maxEvents,
       // mansIds,
       // womansIds,
       // assistantsIds,
@@ -87,8 +102,8 @@ const selectEventsFunc = (
     useEffect(() => inputRef.current.focus(), [inputRef])
 
     useEffect(() => {
-      if (!canSelectNone) setDisableConfirm(selectedDirections.length === 0)
-    }, [canSelectNone, selectedDirections])
+      if (!canSelectNone) setDisableConfirm(selectedEvents.length === 0)
+    }, [canSelectNone, selectedEvents])
 
     return (
       <div className="flex flex-col max-h-full">
@@ -128,18 +143,18 @@ const selectEventsFunc = (
         </div>
 
         <div className="flex-1 overflow-y-auto max-h-200">
-          {filteredDirections.map((direction) => (
-            <DirectionItem
-              key={direction._id}
-              item={direction}
-              active={selectedDirections.includes(direction._id)}
-              onClick={onClick}
+          {filteredEvents.map((event) => (
+            <EventItem
+              key={event._id}
+              item={event}
+              active={selectedEvents.includes(event._id)}
+              onClick={() => onClick(event._id)}
             />
           ))}
 
           {showErrorMax && (
             <div className="text-danger">
-              Выбрано максимальное количество направлений
+              Выбрано максимальное количество мероприятий
             </div>
           )}
         </div>
@@ -149,11 +164,10 @@ const selectEventsFunc = (
 
   return {
     title:
-      title ??
-      (maxDirections === 1 ? `Выбор направления` : `Выбор направлений`),
+      title ?? (maxEvents === 1 ? `Выбор мероприятия` : `Выбор мероприятий`),
     confirmButtonName: 'Применить',
     // showConfirm: true,
-    Children: SelectDirectionsModal,
+    Children: SelectEventsModal,
   }
 }
 

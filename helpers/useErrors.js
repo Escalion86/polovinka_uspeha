@@ -55,6 +55,10 @@ const useErrors = () => {
         !data ? setError({ dateStart: 'Введите дату начала' }) : null,
       dateEnd: (data) =>
         !data ? setError({ dateEnd: 'Введите дату завершения' }) : null,
+      payAt: (data) =>
+        !data
+          ? setError({ payAt: 'Введите дату совершения транзакции' })
+          : null,
       userId: (data) =>
         !data ? setError({ userId: 'Выберите пользователя' }) : null,
       eventId: (data) =>

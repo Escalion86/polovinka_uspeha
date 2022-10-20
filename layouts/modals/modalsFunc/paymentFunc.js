@@ -11,6 +11,7 @@ import { SelectEvent, SelectUser } from '@components/SelectItem'
 import PriceInput from '@components/PriceInput'
 import PayTypePicker from '@components/ValuePicker/PayTypePicker'
 import { DEFAULT_PAYMENT } from '@helpers/constants'
+import DateTimePicker from '@components/DateTimePicker'
 
 const paymentFunc = (paymentId, clone = false) => {
   const PaymentModal = ({
@@ -110,11 +111,23 @@ const paymentFunc = (paymentId, clone = false) => {
           selectedId={userId}
           onChange={(userId) => setUserId(userId)}
           // onDelete={(e) => console.log('e', e)}
+          required
         />
         <SelectEvent
           label="Мероприятие"
           selectedId={eventId}
           onChange={(eventId) => setEventId(eventId)}
+          required
+        />
+        <DateTimePicker
+          value={payAt}
+          onChange={(date) => {
+            removeError('payAt')
+            setPayAt(date)
+          }}
+          label="Начало"
+          required
+          error={errors.payAt}
         />
         <PriceInput
           value={sum}
@@ -123,7 +136,7 @@ const paymentFunc = (paymentId, clone = false) => {
             setSum(value)
           }}
         />
-        <PayTypePicker payType={payType} onChange={setPayType} />
+        <PayTypePicker payType={payType} onChange={setPayType} required />
         {/* <Input
           label="Сумма"
           type="number"
