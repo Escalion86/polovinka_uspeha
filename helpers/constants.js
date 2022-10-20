@@ -8,6 +8,7 @@ import {
   faClock,
   faComments,
   faCube,
+  faGenderless,
   faGift,
   faHistory,
   faMars,
@@ -344,13 +345,13 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
 })
 
 export const EVENT_STATUSES = [
-  { value: 'active', name: 'Активно', color: 'green-400', icon: faPlay },
+  { value: 'active', name: 'Активно', color: 'blue-400', icon: faPlay },
   { value: 'canceled', name: 'Отменено', color: 'red-400', icon: faBan },
 ]
 
 export const EVENT_STATUSES_WITH_TIME = [
   ...EVENT_STATUSES,
-  { value: 'finished', name: 'Завершено', color: 'green-400', icon: faCheck },
+  { value: 'finished', name: 'Завершено', color: 'general', icon: faCheck },
   { value: 'inProgress', name: 'В процессе', color: 'blue-400', icon: faClock },
 ]
 
@@ -364,6 +365,11 @@ export const EVENT_USER_STATUSES = [
 export const GENDERS = [
   { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },
   { value: 'famale', name: 'Женщина', color: 'red-400', icon: faVenus },
+]
+
+export const GENDERS_WITH_NO_GENDER = [
+  ...GENDERS,
+  { value: 'null', name: 'Не выбрано', color: 'gray-400', icon: faGenderless },
 ]
 
 export const ORIENTATIONS = [

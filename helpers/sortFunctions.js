@@ -21,6 +21,12 @@ const sortFunctions = {
     desc: (a, b) =>
       new Date(a.dateEnd).getTime() > new Date(b.dateEnd).getTime() ? -1 : 1,
   },
+  payAt: {
+    asc: (a, b) =>
+      new Date(a.payAt).getTime() < new Date(b.payAt).getTime() ? -1 : 1,
+    desc: (a, b) =>
+      new Date(a.payAt).getTime() > new Date(b.payAt).getTime() ? -1 : 1,
+  },
   name: {
     asc: (a, b) =>
       a.firstName.toLowerCase() < b.firstName.toLowerCase() ? -1 : 1,

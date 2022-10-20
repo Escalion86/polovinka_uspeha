@@ -8,7 +8,7 @@ import sanitize from '@helpers/sanitize'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
 
-const AdditionalBlockCard = ({ additionalBlockId }) => {
+const AdditionalBlockCard = ({ additionalBlockId, hidden = false }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const additionalBlock = useRecoilValue(
     additionalBlockSelector(additionalBlockId)
@@ -87,6 +87,7 @@ const AdditionalBlockCard = ({ additionalBlockId }) => {
       loading={loading}
       onClick={() => modalsFunc.additionalBlock.edit(additionalBlock._id)}
       showOnSite={additionalBlock.showOnSite}
+      hidden={hidden}
     >
       {additionalBlock?.image && (
         // <div className="flex justify-center w-full tablet:w-auto">

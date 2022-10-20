@@ -58,6 +58,7 @@ const CardButtons = ({
   className,
   forForm,
   direction = 'left',
+  alwaysCompactOnPhone,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
@@ -109,7 +110,10 @@ const CardButtons = ({
     0
   )
 
-  const ItemComponent = numberOfButtons > 3 && isCompact ? MenuItem : CardButton
+  const ItemComponent =
+    (numberOfButtons > 3 || alwaysCompactOnPhone) && isCompact
+      ? MenuItem
+      : CardButton
 
   const items = (
     <>
@@ -227,7 +231,7 @@ const CardButtons = ({
 
   const handleMouseOut = () => setOpen(false)
 
-  return numberOfButtons > 3 && isCompact ? (
+  return (numberOfButtons > 3 || alwaysCompactOnPhone) && isCompact ? (
     <div
       className={cn('relative cursor-pointer group', className)}
       onClick={(e) => {

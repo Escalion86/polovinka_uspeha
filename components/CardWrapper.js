@@ -40,9 +40,12 @@ export const CardWrapper = ({
       <div className="py-0.5">
         <div
           className={cn(
-            'bg-white border-t border-b border-gray-400 relative w-full flex-col laptop:flex-row items-center laptop:items-stretch duration-300 shadow-sm hover:shadow-medium-active',
+            'bg-white border-t border-b border-gray-400 relative w-full duration-300 shadow-sm hover:shadow-medium-active',
             { 'cursor-pointer': !loading },
-            { flex: flex },
+            {
+              'flex flex-col laptop:flex-row items-center laptop:items-stretch':
+                flex,
+            },
             { 'gap-x-2': gap },
             className
           )}

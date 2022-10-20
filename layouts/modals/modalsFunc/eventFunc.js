@@ -393,6 +393,7 @@ const eventFunc = (eventId, clone = false) => {
                   removeError('price')
                   setPrice(value)
                 }}
+                error={errors.price}
                 // labelPos="left"
               />
               {/* <FormWrapper> */}
