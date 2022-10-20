@@ -27,7 +27,9 @@ const selectUsersFunc = (
   }) => {
     const users = useRecoilValue(usersAtom)
     const [selectedUsers, setSelectedUsers] = useState(
-      state.filter((item) => typeof item === 'string' && item !== '') ?? []
+      typeof state === 'object'
+        ? state.filter((item) => typeof item === 'string' && item !== '')
+        : []
     )
     const [showErrorMax, setShowErrorMax] = useState(false)
 
