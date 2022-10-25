@@ -11,6 +11,84 @@ import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
 import mongoose from 'mongoose'
 
+// Оповещение в телеграм
+const telegramNotification = async ({
+  req,
+  eventId,
+  deletedUsersIds = [],
+  addedUsersIds = [],
+}) => {
+  if (process.env.MONGODB_URI && eventId) {
+    await dbConnect()
+
+    const event = await Events.findById(eventId)
+
+    const users = await Users.find({})
+    const deletedUsers = users.filter((user) =>
+      deletedUsersIds.includes(user._id.toString())
+    )
+    const addedUsers = users.filter((user) =>
+      addedUsersIds.includes(user._id.toString())
+    )
+    const deletedUsersNames = deletedUsers.map((user) => getUserFullName(user))
+    const addedUsersNames = addedUsers.map((user) => getUserFullName(user))
+
+    const text = `Изменение списка участников в мероприятии "${
+      event.title
+    }" от ${formatDateTime(event.dateStart)}.${
+      addedUsersNames.length > 0
+        ? `\n\nЗаписались:\n${addedUsersNames
+            .map((name) => `  - ${name}`)
+            .join(',\n')}`
+        : ''
+    }${
+      deletedUsersNames.length > 0
+        ? `\n\nОтписались:\n${deletedUsersNames
+            .map((name) => `  - ${name}`)
+            .join(',\n')}`
+        : ''
+    }`
+    console.log('req.protocol', req.headers.origin.substr(0, 5))
+
+    const usersTelegramIds = users
+      .filter(
+        (user) =>
+          isUserAdmin(user) &&
+          user.notifications?.get('telegram').active &&
+          user.notifications?.get('telegram')?.id
+      )
+      .map((user) => user.notifications?.get('telegram')?.id)
+    await Promise.all(
+      usersTelegramIds.map(async (telegramId) => {
+        await postData(
+          `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+          {
+            chat_id: telegramId,
+            text,
+            parse_mode: 'html',
+            reply_markup:
+              req.headers.origin.substr(0, 5) === 'https'
+                ? JSON.stringify({
+                    inline_keyboard: [
+                      [
+                        {
+                          text: 'Открыть мероприятие',
+                          url: req.headers.origin + '/event/' + eventId,
+                        },
+                      ],
+                    ],
+                  })
+                : undefined,
+          },
+          (data) => console.log('data', data),
+          (data) => console.log('error', data),
+          true
+        )
+      })
+    )
+  }
+}
+
 export default async function handler(req, res) {
   const { query, method, body } = req
 
@@ -93,100 +171,16 @@ export default async function handler(req, res) {
           await Histories.create({ schema: 'EventsUsers', action: 'add', data })
 
         // Оповещение в телеграм
-        if (process.env.MONGODB_URI) {
-          const event = await Events.findById(eventId)
-          const deletedUsersIds = deletedEventUsers.map(
-            (eventUser) => eventUser.userId
-          )
-          const addedUsersIds = newEventUsers.map(
-            (eventUser) => eventUser.userId
-          )
-
-          const users = await Users.find({})
-          const deletedUsers = users.filter((user) =>
-            deletedUsersIds.includes(user._id.toString())
-          )
-          const addedUsers = users.filter((user) =>
-            addedUsersIds.includes(user._id.toString())
-          )
-          const deletedUsersNames = deletedUsers.map((user) =>
-            getUserFullName(user)
-          )
-          const addedUsersNames = addedUsers.map((user) =>
-            getUserFullName(user)
-          )
-          // const isOne = deletedUsersNames.length === 1
-
-          const text = `Изменение списка участников в мероприятии "${
-            event.title
-          }" от ${formatDateTime(event.dateStart)}.${
-            addedUsersNames.length > 0
-              ? `\n\nЗаписались:\n${addedUsersNames
-                  .map((name) => `  - ${name}`)
-                  .join(',\n')}`
-              : ''
-          }${
-            deletedUsersNames.length > 0
-              ? `\n\nОтписались:\n${deletedUsersNames
-                  .map((name) => `  - ${name}`)
-                  .join(',\n')}`
-              : ''
-          }`
-
-          // const text = `Пользовател${
-          //   isOne ? 'ь' : 'и'
-          // } ${deletedUsersNames.join(', ')} отпис${
-          //   isOne ? 'ан' : 'аны'
-          // } с мероприятия "${event.title}".\n${
-          //   req.headers.origin + '/event/' + eventId
-          // }`
-          const usersTelegramIds = users
-            .filter(
-              (user) =>
-                isUserAdmin(user) &&
-                user.notifications?.get('telegram').active &&
-                user.notifications?.get('telegram')?.id
-            )
-            .map((user) => user.notifications?.get('telegram')?.id)
-          await Promise.all(
-            usersTelegramIds.map(async (telegramId) => {
-              console.log('r111', req.headers.origin + '/event/' + eventId)
-              await postData(
-                `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-                {
-                  chat_id: telegramId,
-                  text,
-                  parse_mode: 'html',
-                  reply_markup: JSON.stringify({
-                    inline_keyboard: [
-                      [
-                        {
-                          text: 'Открыть мероприятие',
-                          // url: 'https://www.google.com',
-                          url: req.headers.origin + '/event/' + eventId,
-                        },
-                      ],
-                    ],
-                  }),
-                  // req.headers.origin +
-                  // reply_markup: {
-                  //   inline_keyboard: [
-                  //     [
-                  //       {
-                  //         text: 'Открыть мероприятие',
-                  //         url: req.headers.origin + '/event/' + eventId,
-                  //       },
-                  //     ],
-                  //   ],
-                  // },
-                }
-                // (data) => console.log('data', data),
-                // (data) => console.log('error', data),
-                // true
-              )
-            })
-          )
-        }
+        const deletedUsersIds = deletedEventUsers.map(
+          (eventUser) => eventUser.userId
+        )
+        const addedUsersIds = newEventUsers.map((eventUser) => eventUser.userId)
+        await telegramNotification({
+          req,
+          eventId,
+          deletedUsersIds,
+          addedUsersIds,
+        })
 
         return res
           ?.status(201)
@@ -220,6 +214,9 @@ export default async function handler(req, res) {
           action: 'add',
           data: newEventUser,
         })
+
+        // Оповещение в телеграм
+        await telegramNotification({ req, eventId, addedUsersIds: [userId] })
 
         return res?.status(201).json({ success: true, data: newEventUser })
       }
@@ -269,6 +266,63 @@ export default async function handler(req, res) {
         action: 'delete',
         data: eventUser,
       })
+
+      // Оповещение в телеграм
+      await telegramNotification({ req, eventId, deletedUsersIds: [userId] })
+      // if (process.env.MONGODB_URI) {
+      //   const event = await Events.findById(eventId)
+      //   const deletedUsersIds = [userId]
+
+      //   const users = await Users.find({})
+      //   const deletedUsers = users.filter((user) =>
+      //     deletedUsersIds.includes(user._id.toString())
+      //   )
+      //   const deletedUsersNames = deletedUsers.map((user) =>
+      //     getUserFullName(user)
+      //   )
+
+      //   const text = `Изменение списка участников в мероприятии "${
+      //     event.title
+      //   }" от ${formatDateTime(event.dateStart)}.${
+      //     deletedUsersNames.length > 0
+      //       ? `\n\nОтписались:\n${deletedUsersNames
+      //           .map((name) => `  - ${name}`)
+      //           .join(',\n')}`
+      //       : ''
+      //   }`
+
+      //   const usersTelegramIds = users
+      //     .filter(
+      //       (user) =>
+      //         isUserAdmin(user) &&
+      //         user.notifications?.get('telegram').active &&
+      //         user.notifications?.get('telegram')?.id
+      //     )
+      //     .map((user) => user.notifications?.get('telegram')?.id)
+      //   await Promise.all(
+      //     usersTelegramIds.map(async (telegramId) => {
+      //       await postData(
+      //         `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+      //         {
+      //           chat_id: telegramId,
+      //           text,
+      //           parse_mode: 'html',
+      //           reply_markup: JSON.stringify({
+      //             inline_keyboard: [
+      //               [
+      //                 {
+      //                   text: 'Открыть мероприятие',
+      //                   // url: 'https://www.google.com',
+      //                   url: req.headers.origin + '/event/' + eventId,
+      //                 },
+      //               ],
+      //             ],
+      //           }),
+      //         }
+      //       )
+      //     })
+      //   )
+      // }
 
       return res?.status(201).json({ success: true, data: eventUser })
     } catch (error) {
