@@ -89,8 +89,7 @@ export default async function handler(req, res) {
             } ${deletedUsersNames.join(', ')} отпис${
               isOne ? 'ан' : 'аны'
             } с мероприятия "${event.title}".\n
-              ${req.headers.origin + '/event/' + eventId}
-              `
+              ${req.headers.origin + '/event/' + eventId}`
 
             const usersTelegramIds = users
               .filter(

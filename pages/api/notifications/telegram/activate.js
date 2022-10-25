@@ -10,16 +10,13 @@ export default async function handler(req, res) {
       const { update_id, message } = body
       // console.log('telegram body', body)
       if (message.text === '/activate' || message.text === '/deactivate') {
-        const users = await Users.find({})
-        const userFromReq = users.find((user) => {
-          return (
-            user.notifications?.get('telegram')?.userName &&
-            user.notifications.get('telegram').userName.toLowerCase() ===
-              message.from.username.toLowerCase()
-          )
-        })
-        if (userFromReq) {
-          const data = await Users.findByIdAndUpdate(userFromReq[0]._id, {
+        // const users = await Users.find({})
+        const userFromReq = await Users.findOneAndUpdate(
+          {
+            'notifications.telegram.userName':
+              message.from.username.toLowerCase(),
+          },
+          {
             notifications: {
               ...userFromReq[0].notifications,
               telegram: {
@@ -27,7 +24,24 @@ export default async function handler(req, res) {
                 id: message.text === '/activate' ? message.from.id : null,
               },
             },
-          })
+          }
+        )
+        // const userFromReq = users.find(
+        //   (user) =>
+        //     user.notifications?.get('telegram')?.userName &&
+        //     user.notifications.get('telegram').userName.toLowerCase() ===
+        //       message.from.username.toLowerCase()
+        // )
+        if (userFromReq) {
+          // const data = await Users.findByIdAndUpdate(userFromReq[0]._id, {
+          //   notifications: {
+          //     ...userFromReq[0].notifications,
+          //     telegram: {
+          //       ...userFromReq[0].notifications.telegram,
+          //       id: message.text === '/activate' ? message.from.id : null,
+          //     },
+          //   },
+          // })
           return res?.status(200).json({ success: true, data })
         }
         console.log('Пользователь с таким логином не найден')
