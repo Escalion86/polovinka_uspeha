@@ -17,10 +17,13 @@ export default async function handler(req, res) {
         )
         const userFromReq = users.find((user) => {
           if (user.notifications) {
-            console.log(
-              'user.notifications.telegram.userName.toLowerCase()',
-              user.notifications.telegram.userName.toLowerCase()
-            )
+            console.log('user', user)
+            if (user.notifications?.telegram?.userName) {
+              console.log(
+                'user.notifications.telegram.userName.toLowerCase()',
+                user.notifications?.telegram?.userName.toLowerCase()
+              )
+            }
           }
           return (
             user.notifications?.telegram?.userName &&
