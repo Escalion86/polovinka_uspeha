@@ -1,8 +1,12 @@
 import { postData } from '@helpers/CRUD'
+import getUserFullName from '@helpers/getUserFullName'
+import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
 import Histories from '@models/Histories'
+import Users from '@models/Users'
 import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
+import mongoose from 'mongoose'
 
 export default async function handler(req, res) {
   const { query, method, body } = req
@@ -66,20 +70,49 @@ export default async function handler(req, res) {
             action: 'delete',
             data: deletedEventUsers,
           })
-          await postData(
-            'https://api.telegram.org/bot5754011496:AAHPhp0PilD8Il1s9y2wt4GQRiOjvTnHO0w/sendMessage',
-            {
-              chat_id: 261102161,
-              text: `Пользователь id ${
-                deletedEventUsers[0].userId
-              } удалился с мероприятия.\n
-              ${req.headers.origin + '/event/' + deletedEventUsers[0].eventId}
-              `,
-            },
-            (data) => console.log('data', data),
-            (data) => console.log('error', data),
-            true
-          )
+          if (process.env.MONGODB_URI) {
+            const event = Events.findById(eventId)
+            const usersIds = deletedEventUsers.map(async (eventUser) =>
+              mongoose.Types.ObjectId(eventUser.userId)
+            )
+            // const users = await Users.find({
+            //   _id: { $in: usersIds },
+            // })
+            const users = await Users.find({})
+            const deletedUsersNames = users
+              .filter((user) => usersIds.includes(user._id))
+              .map((user) => getUserFullName(user))
+            const isOne = deletedUsersNames.length === 1
+
+            const text = `Пользовател${
+              isOne ? 'ь' : 'и'
+            } ${deletedUsersNames.join(', ')} отпис${
+              isOne ? 'ан' : 'аны'
+            } с мероприятия "${event.title}".\n
+              ${req.headers.origin + '/event/' + eventId}
+              `
+
+            const usersTelegramIds = users
+              .filter(
+                (user) =>
+                  isUserAdmin(user) && user.notifications?.get('telegram')?.id
+              )
+              .map((user) => user.notifications?.get('telegram')?.id)
+            await Promise.all(
+              usersTelegramIds.map(async (telegramId) => {
+                await postData(
+                  `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+                  {
+                    chat_id: telegramId,
+                    text,
+                  }
+                  // (data) => console.log('data', data),
+                  // (data) => console.log('error', data),
+                  // true
+                )
+              })
+            )
+          }
         }
 
         // await fetch(

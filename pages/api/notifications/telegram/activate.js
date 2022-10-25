@@ -8,30 +8,16 @@ export default async function handler(req, res) {
   if (method === 'POST') {
     try {
       const { update_id, message } = body
-      console.log('telegram body', body)
+      // console.log('telegram body', body)
       if (message.text === '/activate' || message.text === '/deactivate') {
         const users = await Users.find({})
-        console.log(
-          'message.from.username.toLowerCase()',
-          message.from.username.toLowerCase()
-        )
         const userFromReq = users.find((user) => {
-          if (user.notifications) {
-            console.log('user', user)
-            if (user.notifications?.telegram?.userName) {
-              console.log(
-                'user.notifications.telegram.userName.toLowerCase()',
-                user.notifications?.telegram?.userName.toLowerCase()
-              )
-            }
-          }
           return (
-            user.notifications?.telegram?.userName &&
-            user.notifications.telegram.userName.toLowerCase() ===
+            user.notifications?.get('telegram')?.userName &&
+            user.notifications.get('telegram').userName.toLowerCase() ===
               message.from.username.toLowerCase()
           )
         })
-        console.log('userFromReq', userFromReq)
         if (userFromReq) {
           const data = await Users.findByIdAndUpdate(userFromReq[0]._id, {
             notifications: {
@@ -42,7 +28,6 @@ export default async function handler(req, res) {
               },
             },
           })
-          console.log('user updated', data)
           return res?.status(200).json({ success: true, data })
         }
         console.log('Пользователь с таким логином не найден')

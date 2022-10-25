@@ -51,6 +51,11 @@ const fetchProps = async (user) => {
 
     // console.time('users')
     const users = await Users.find({})
+    // console.log('user.notifications?.telegram', user.notifications?.telegram)
+    // console.log(
+    //   'user.notifications?.telegram?.userName',
+    //   user.notifications?.telegram?.userName
+    // )
     // console.log('process.env.NEXTAUTH_SITE', process.env.NEXTAUTH_SITE)
     // const users = await fetchingUsers(process.env.NEXTAUTH_SITE)
     // console.log(`users`, users)
