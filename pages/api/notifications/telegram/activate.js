@@ -7,7 +7,37 @@ export default async function handler(req, res) {
   await dbConnect()
   if (method === 'POST') {
     try {
-      // const { phone, password } = body
+      const { update_id, message } = body
+      console.log('telegram body', body)
+      if (message.text === '/activate' || message.text === '/deactivate') {
+        const users = await Users.find({})
+        console.log('message.from.username', message.from.username)
+        const userFromReq = users.find(
+          (user) =>
+            (user.notifications?.telegram?.userName ?? '').toLowerCase() ===
+            message.from.username.toLowerCase()
+        )
+        console.log('userFromReq', userFromReq)
+        if (userFromReq) {
+          const data = await Users.findByIdAndUpdate(userFromReq._id, {
+            notifications: {
+              ...userFromReq.notifications,
+              telegram: {
+                ...userFromReq.notifications.telegram,
+                id: message.text === '/activate' ? message.from.id : null,
+              },
+            },
+          })
+          console.log('user updated', data)
+          return res?.status(200).json({ success: true, data })
+        }
+        console.log('Пользователь с таким логином не найден')
+        return res?.status(200).json({
+          success: false,
+          error: 'Пользователь с таким логином не найден',
+        })
+      }
+
       // // Сначала проверяем есть ли такой пользователь уже
       // const existingUser = await Users.findOne({ email })
       // if (existingUser) {
@@ -44,8 +74,8 @@ export default async function handler(req, res) {
       // )
 
       // console.log('emailRes', emailRes)
-      console.log(body)
-      return res?.status(201).json({ success: true })
+
+      return res?.status(200).json({ success: true })
     } catch (error) {
       console.log(error)
       return res?.status(400).json({ success: false, error })

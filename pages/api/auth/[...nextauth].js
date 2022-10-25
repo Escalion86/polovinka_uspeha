@@ -151,6 +151,7 @@ export default async function auth(req, res) {
           session.user.images = result.images
           session.user.haveKids = result.haveKids
           session.user.security = result.security
+          session.user.notifications = result.notifications
         }
         //  else {
         //   // если пользователь не зарегистрирован

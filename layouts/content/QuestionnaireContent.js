@@ -133,10 +133,19 @@ const QuestionnaireContent = (props) => {
     loggedUser?.haveKids !== haveKids ||
     !compareObjects(loggedUser?.security, security) ||
     loggedUser?.status !== status ||
-    loggedUser?.role !== role
+    loggedUser?.role !== role ||
+    loggedUser?.notifications?.telegram?.userName !==
+      notifications?.telegram?.userName ||
+    loggedUser?.notifications?.telegram?.active !==
+      notifications?.telegram?.active
 
   const onClickConfirm = async () => {
-    if (
+    if (notifications?.telegram?.active && !notifications?.telegram?.userName) {
+      addError({
+        notificationTelegramUserName:
+          'Введите имя пользователя Telegram для оповещений',
+      })
+    } else if (
       !checkErrors({
         firstName: firstName.trim(),
         secondName: secondName.trim(),
@@ -173,6 +182,7 @@ const QuestionnaireContent = (props) => {
           security,
           status,
           role,
+          notifications,
         },
         (data) => {
           setLoggedUser(data)
@@ -485,17 +495,22 @@ const QuestionnaireContent = (props) => {
                 />
                 <div className="flex gap-x-1">
                   <span>Статус подключения Telegram:</span>
-                  {notifications?.telegram?.userNameConfirmed ? (
-                    <span className="text-success">АКТИВНО</span>
+                  {notifications?.telegram?.id ? (
+                    <>
+                      <span className="text-success">АКТИВНО</span>
+                      <span className="">{`id: ${notifications?.telegram?.id}`}</span>
+                    </>
                   ) : (
                     <span className="text-danger">НЕ АКТИВНО</span>
                   )}
                 </div>
                 <div className="flex flex-col ">
                   <span>
-                    Для активации необходимо пройти по ссылке на чат бота
-                    Telegram. Далее в меню выбрать пункт "Активация оповещений"
-                    и отправить сообщение "/activate" боту
+                    Для активации сначала сохраните введенное имя пользователя
+                    нажав кнопку "Применить" внизу, затем необходимо пройти по
+                    ссылке на чат бота Telegram. Далее в меню выбрать пункт
+                    "Активация оповещений" и отправить сообщение "/activate"
+                    боту
                   </span>
                   <a
                     className="text-general"
