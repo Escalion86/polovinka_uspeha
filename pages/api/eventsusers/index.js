@@ -1,3 +1,4 @@
+import { postData } from '@helpers/CRUD'
 import EventsUsers from '@models/EventsUsers'
 import Histories from '@models/Histories'
 import CRUD from '@server/CRUD'
@@ -57,12 +58,33 @@ export default async function handler(req, res) {
           })
         }
 
-        if (deletedEventUsers.length > 0)
+        // console.log('req', req)
+        // console.log('req.headers', req.headers.origin)
+        if (deletedEventUsers.length > 0) {
           await Histories.create({
             schema: 'EventsUsers',
             action: 'delete',
             data: deletedEventUsers,
           })
+          await postData(
+            'https://api.telegram.org/bot5754011496:AAHPhp0PilD8Il1s9y2wt4GQRiOjvTnHO0w/sendMessage',
+            {
+              chat_id: 261102161,
+              text: `Пользователь id ${
+                deletedEventUsers[0].userId
+              } удалился с мероприятия.\n
+              ${req.headers.origin + '/event/' + deletedEventUsers[0].eventId}
+              `,
+            },
+            (data) => console.log('data', data),
+            (data) => console.log('error', data),
+            true
+          )
+        }
+
+        // await fetch(
+        //   'https://api.telegram.org/bot5754011496:AAHPhp0PilD8Il1s9y2wt4GQRiOjvTnHO0w/sendMessage?chat_id=261102161&text=приветб как ДЕла?'
+        // )
 
         const data = []
         for (let i = 0; i < newEventUsers.length; i++) {

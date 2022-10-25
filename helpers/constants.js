@@ -237,6 +237,10 @@ export const DEFAULT_USERS_SECURITY = Object.freeze({
   showContacts: false,
 })
 
+export const DEFAULT_USERS_NOTIFICATIONS = Object.freeze({
+  telegram: { active: false, userName: null, userNameConfirmed: false },
+})
+
 export const DEFAULT_USER = Object.freeze({
   firstName: '',
   secondName: '',
@@ -262,6 +266,7 @@ export const DEFAULT_USER = Object.freeze({
   archive: false,
   haveKids: null,
   security: DEFAULT_USERS_SECURITY,
+  notifications: DEFAULT_USERS_NOTIFICATIONS,
 })
 
 export const DEFAULT_ADDRESS = Object.freeze({

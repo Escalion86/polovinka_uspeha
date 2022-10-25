@@ -67,7 +67,13 @@ const useErrors = () => {
         Number(data) < 0
           ? setError({ sum: 'Стоиомсть не может быть отрицательной' })
           : null,
-
+      notificationTelegramUserName: (data) =>
+        !data
+          ? setError({
+              notificationTelegramUserName:
+                'Введите имя пользователя Telegram для оповещений',
+            })
+          : null,
       sum: (data) =>
         Number(data) < 0
           ? setError({ sum: 'Сумма не может быть отрицательной' })
