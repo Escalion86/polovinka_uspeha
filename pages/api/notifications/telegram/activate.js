@@ -16,12 +16,17 @@ export default async function handler(req, res) {
           'message.from.username.toLowerCase()',
           message.from.username.toLowerCase()
         )
-        const userFromReq = users.find(
-          (user) =>
-            user.notifications?.telegram?.userName &&
+        const userFromReq = users.find((user) => {
+          if (user.notifications?.telegram?.userName) {
+            console.log(
+              'user.notifications.telegram.userName.toLowerCase()',
+              user.notifications.telegram.userName.toLowerCase()
+            )
+          }
+          user.notifications?.telegram?.userName &&
             user.notifications.telegram.userName.toLowerCase() ===
               message.from.username.toLowerCase()
-        )
+        })
         console.log('userFromReq', userFromReq)
         if (userFromReq) {
           const data = await Users.findByIdAndUpdate(userFromReq._id, {
