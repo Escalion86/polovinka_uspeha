@@ -17,8 +17,15 @@ const telegramNotification = async ({
   eventId,
   deletedUsersIds = [],
   addedUsersIds = [],
+  notificationOnMassiveChange = false,
 }) => {
-  if (process.env.MONGODB_URI && eventId) {
+  if (
+    process.env.MONGODB_URI &&
+    eventId &&
+    (deletedUsersIds.length > 0 || addedUsersIds.length > 0) &&
+    (notificationOnMassiveChange ||
+      addedUsersIds.length + deletedUsersIds.length === 1)
+  ) {
     await dbConnect()
 
     const event = await Events.findById(eventId)
@@ -30,25 +37,42 @@ const telegramNotification = async ({
     const addedUsers = users.filter((user) =>
       addedUsersIds.includes(user._id.toString())
     )
-    const deletedUsersNames = deletedUsers.map((user) => getUserFullName(user))
-    const addedUsersNames = addedUsers.map((user) => getUserFullName(user))
 
-    const text = `Изменение списка участников в мероприятии "${
-      event.title
-    }" от ${formatDateTime(event.dateStart)}.${
-      addedUsersNames.length > 0
-        ? `\n\nЗаписались:\n${addedUsersNames
-            .map((name) => `  - ${name}`)
-            .join(',\n')}`
-        : ''
-    }${
-      deletedUsersNames.length > 0
-        ? `\n\nОтписались:\n${deletedUsersNames
-            .map((name) => `  - ${name}`)
-            .join(',\n')}`
-        : ''
-    }`
-    console.log('req.protocol', req.headers.origin.substr(0, 5))
+    var text
+    // Если зарегистрировался один пользователь
+    if (deletedUsers.length === 1 && addedUsers.length === 0) {
+      const user = deletedUsers[0]
+      text = `Пользователь ${getUserFullName(user)} ${
+        user.gender === 'male' ? 'отписался' : 'отписалась'
+      } от мероприятия "${event.title}" от ${formatDateTime(event.dateStart)}.`
+    } else if (deletedUsers.length === 0 && addedUsers.length === 1) {
+      const user = addedUsers[0]
+      text = `Пользователь ${getUserFullName(user)} ${
+        user.gender === 'male' ? 'записался' : 'записалась'
+      } на мероприятие "${event.title}" от ${formatDateTime(event.dateStart)}.`
+    } else if (notificationOnMassiveChange) {
+      const deletedUsersNames = deletedUsers.map((user) =>
+        getUserFullName(user)
+      )
+      const addedUsersNames = addedUsers.map((user) => getUserFullName(user))
+
+      text = `Изменение списка участников в мероприятии "${
+        event.title
+      }" от ${formatDateTime(event.dateStart)}.${
+        addedUsersNames.length > 0
+          ? `\n\nЗаписались:\n${addedUsersNames
+              .map((name) => `  - ${name}`)
+              .join(',\n')}`
+          : ''
+      }${
+        deletedUsersNames.length > 0
+          ? `\n\nОтписались:\n${deletedUsersNames
+              .map((name) => `  - ${name}`)
+              .join(',\n')}`
+          : ''
+      }`
+    }
+    // console.log('req.protocol', req.headers.origin.substr(0, 5))
 
     const usersTelegramIds = users
       .filter(
