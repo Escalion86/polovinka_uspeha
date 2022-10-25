@@ -1,3 +1,5 @@
+import upperCaseFirst from './upperCaseFirst'
+
 const getUserFullName = (user) => {
   const array = []
   if (user?.firstName) array.push(upperCaseFirst(user.firstName))

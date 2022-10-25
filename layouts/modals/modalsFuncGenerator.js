@@ -25,6 +25,7 @@ import selectEventsFunc from './modalsFunc/selectEventsFunc'
 import jsonFunc from './modalsFunc/jsonFunc'
 import cropImageFunc from './modalsFunc/cropImageFunc'
 import userVisitedEventsFunc from './modalsFunc/userVisitedEventsFunc'
+import notificationsTelegramFunc from './modalsFunc/notificationsTelegramFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -249,6 +250,9 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           onConfirm: async () =>
             itemsFunc.additionalBlock.delete(additionalBlockId),
         }),
+    },
+    notifications: {
+      telegram: () => addModal(notificationsTelegramFunc()),
     },
   }
 }
