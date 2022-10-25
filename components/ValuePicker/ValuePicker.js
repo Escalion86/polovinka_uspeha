@@ -40,11 +40,12 @@ const ValuePicker = ({
         )}
       >
         {error && (
-          <div className="top-0 bottom-0 right-0 left-0 absolute -m-0.5 border border-red-500 rounded" />
+          <div className="z-0 top-0 bottom-0 right-0 left-0 absolute -m-0.5 border border-red-500 rounded" />
         )}
         {valuesArray.map((item) => (
           <ValueItem
             key={name + item.value}
+            className="z-10"
             active={item.value === value}
             value={item.value}
             name={item.name}

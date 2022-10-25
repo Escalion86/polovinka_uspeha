@@ -1,5 +1,7 @@
 import { UCALLER_VOICE } from '@helpers/constants'
+import { postData } from '@helpers/CRUD'
 import getMinutesBetween from '@helpers/getMinutesBetween'
+import isUserAdmin from '@helpers/isUserAdmin'
 import phoneValidator from '@helpers/phoneValidator'
 import pinValidator from '@helpers/pinValidator'
 import PhoneConfirms from '@models/PhoneConfirms'
@@ -267,6 +269,31 @@ export default async function handler(req, res) {
           })
         } else {
           const newUser = await Users.create({ phone, password })
+
+          const users = await Users.find({})
+          const usersTelegramIds = users
+            .filter(
+              (user) =>
+                isUserAdmin(user) &&
+                user.notifications?.get('telegram').active &&
+                user.notifications?.get('telegram')?.id
+            )
+            .map((user) => user.notifications?.get('telegram')?.id)
+          await Promise.all(
+            usersTelegramIds.map(async (telegramId) => {
+              await postData(
+                `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+                {
+                  chat_id: telegramId,
+                  text: `Зарегистрирован новый пользователь с телефонным номером +${phone}`,
+                  parse_mode: 'html',
+                },
+                (data) => console.log('data', data),
+                (data) => console.log('error', data),
+                true
+              )
+            })
+          )
 
           return res?.status(201).json({
             success: true,

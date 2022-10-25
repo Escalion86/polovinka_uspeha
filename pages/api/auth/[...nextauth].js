@@ -108,24 +108,20 @@ export default async function auth(req, res) {
 
         // Если пользователь есть в базе (а он должен быть)
         if (result) {
-          await fetchingLog(
-            {
-              from: 'user finded. update User activity time in nextauth authorize',
-            },
-            process.env.NEXTAUTH_SITE
-          )
           // await fetchingLog(
-          //   { from: 'update User activity time in nextauth authorize' },
+          //   {
+          //     from: 'user finded. update User activity time in nextauth authorize',
+          //   },
           //   process.env.NEXTAUTH_SITE
           // )
           result.prevActivityAt = result.lastActivityAt
           result.lastActivityAt = Date.now()
           result.save()
 
-          await fetchingLog(
-            { from: 'user activity time saved' },
-            process.env.NEXTAUTH_SITE
-          )
+          // await fetchingLog(
+          //   { from: 'user activity time saved' },
+          //   process.env.NEXTAUTH_SITE
+          // )
 
           session.user._id = result._id
           session.user.role = result.role

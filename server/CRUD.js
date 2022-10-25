@@ -1,4 +1,10 @@
-// import Users from '@models/Users'
+import birthDateToAge from '@helpers/birthDateToAge'
+import { postData } from '@helpers/CRUD'
+import formatDate from '@helpers/formatDate'
+import getUserFullName from '@helpers/getUserFullName'
+import isUserAdmin from '@helpers/isUserAdmin'
+import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
+import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
 export default async function handler(Schema, req, res, params = null) {
@@ -66,11 +72,50 @@ export default async function handler(Schema, req, res, params = null) {
           data = await Schema.findById(id)
           if (!data) {
             return res?.status(400).json({ success: false })
-          } else
-            data = await Schema.findByIdAndUpdate(id, body, {
-              new: true,
-              runValidators: true,
-            })
+          }
+          // Если это пользователь обновляет анкету, то после обновления оповестим о результате через телеграм
+          if (Schema === Users && !isUserQuestionnaireFilled(data)) {
+            const users = await Users.find({})
+            const usersTelegramIds = users
+              .filter(
+                (user) =>
+                  isUserAdmin(user) &&
+                  user.notifications?.get('telegram').active &&
+                  user.notifications?.get('telegram')?.id
+              )
+              .map((user) => user.notifications?.get('telegram')?.id)
+            await Promise.all(
+              usersTelegramIds.map(async (telegramId) => {
+                await postData(
+                  `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+                  {
+                    chat_id: telegramId,
+                    text: `Пользователь с номером +${
+                      data.phone
+                    } заполнил анкету:\n - Полное имя: ${getUserFullName(
+                      data
+                    )}\n - Пол: ${
+                      data.gender === 'male' ? 'Мужчина' : 'Женщина'
+                    }\n - Дата рождения: ${birthDateToAge(
+                      data.birthday,
+                      true,
+                      true,
+                      true
+                    )}`,
+                    parse_mode: 'html',
+                  },
+                  (data) => console.log('data', data),
+                  (data) => console.log('error', data),
+                  true
+                )
+              })
+            )
+          }
+
+          data = await Schema.findByIdAndUpdate(id, body, {
+            new: true,
+            runValidators: true,
+          })
           if (!data) {
             return res?.status(400).json({ success: false })
           }

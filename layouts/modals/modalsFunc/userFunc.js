@@ -24,6 +24,7 @@ import ValuePicker from '@components/ValuePicker/ValuePicker'
 import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
+import usersAtom from '@state/atoms/usersAtom'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -38,6 +39,7 @@ const userFunc = (userId, clone = false) => {
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
+    const users = useRecoilValue(usersAtom)
 
     const [firstName, setFirstName] = useState(
       user?.firstName ?? DEFAULT_USER.firstName
@@ -87,6 +89,16 @@ const userFunc = (userId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
+      // Если создаем нового пользователя в ручную, то сначала проверим - нет ли уже такого номера телефона в системе
+      if (!userId && phone) {
+        const existedUser = users.find((user) => user.phone === phone)
+        if (existedUser) {
+          addError({
+            phone: 'Пользователь с таким номером телефона уже существует',
+          })
+          return
+        }
+      }
       if (
         !checkErrors({
           firstName,
