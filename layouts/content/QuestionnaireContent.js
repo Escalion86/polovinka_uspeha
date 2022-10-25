@@ -460,27 +460,26 @@ const QuestionnaireContent = (props) => {
             )}
           </TabPanel>
         )}
-        {isLoggedUserAdmin ||
-          (isLoggedUserDev && (
-            <TabPanel tabName="Оповещения" className="flex-1">
-              <YesNoPicker
-                label="Оповещения в Telegram"
-                // inLine
-                value={notifications?.telegram?.active ?? false}
-                onChange={() => {
-                  removeError('notificationTelegramUserName')
-                  setNotifications((state) => ({
-                    ...state,
-                    telegram: {
-                      ...notifications?.telegram,
-                      active: !notifications?.telegram?.active,
-                    },
-                  }))
-                }}
-              />
-              {notifications?.telegram?.active && (
-                <>
-                  {/* <Input
+        {(isLoggedUserAdmin || isLoggedUserDev) && (
+          <TabPanel tabName="Оповещения" className="flex-1">
+            <YesNoPicker
+              label="Оповещения в Telegram"
+              // inLine
+              value={notifications?.telegram?.active ?? false}
+              onChange={() => {
+                removeError('notificationTelegramUserName')
+                setNotifications((state) => ({
+                  ...state,
+                  telegram: {
+                    ...notifications?.telegram,
+                    active: !notifications?.telegram?.active,
+                  },
+                }))
+              }}
+            />
+            {notifications?.telegram?.active && (
+              <>
+                {/* <Input
                   prefix="@"
                   label="Имя пользователя Telegram"
                   type="text"
@@ -500,41 +499,41 @@ const QuestionnaireContent = (props) => {
                   // labelClassName="w-40"
                   error={errors.notificationTelegramUserName}
                 /> */}
-                  <div className="flex flex-col flex-wrap tablet:items-center tablet:flex-row gap-x-1">
-                    <span className="whitespace-nowrap">
-                      Статус подключения Telegram:
-                    </span>
-                    {notifications?.telegram?.id ? (
-                      <>
-                        <div className="flex gap-x-1">
-                          <span className="text-success">АКТИВНО</span>
-                          <span className="">{`(@${notifications?.telegram?.userName})`}</span>
-                        </div>
-                        <ValueItem
-                          name="Деактивировать"
-                          color="red-500"
-                          icon={faBan}
-                          hoverable
-                          // onClick={() => modalsFunc.notifications.telegram()}
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-danger">НЕ АКТИВНО</span>
-                        <ValueItem
-                          name="Активировать"
-                          color="green-500"
-                          icon={faCheck}
-                          hoverable
-                          onClick={() => modalsFunc.notifications.telegram()}
-                        />
-                      </>
-                    )}
-                  </div>
-                </>
-              )}
-            </TabPanel>
-          ))}
+                <div className="flex flex-col flex-wrap tablet:items-center tablet:flex-row gap-x-1">
+                  <span className="whitespace-nowrap">
+                    Статус подключения Telegram:
+                  </span>
+                  {notifications?.telegram?.id ? (
+                    <>
+                      <div className="flex gap-x-1">
+                        <span className="text-success">АКТИВНО</span>
+                        <span className="">{`(@${notifications?.telegram?.userName})`}</span>
+                      </div>
+                      <ValueItem
+                        name="Деактивировать"
+                        color="red-500"
+                        icon={faBan}
+                        hoverable
+                        // onClick={() => modalsFunc.notifications.telegram()}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-danger">НЕ АКТИВНО</span>
+                      <ValueItem
+                        name="Активировать"
+                        color="green-500"
+                        icon={faCheck}
+                        hoverable
+                        onClick={() => modalsFunc.notifications.telegram()}
+                      />
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </TabPanel>
+        )}
       </TabContext>
       <div className="flex flex-col w-full p-1">
         <ErrorsList errors={errors} />
