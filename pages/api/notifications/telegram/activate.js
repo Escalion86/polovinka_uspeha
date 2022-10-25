@@ -12,10 +12,15 @@ export default async function handler(req, res) {
       if (message.text === '/activate' || message.text === '/deactivate') {
         const users = await Users.find({})
         console.log('message.from.username', message.from.username)
+        console.log(
+          'message.from.username.toLowerCase()',
+          message.from.username.toLowerCase()
+        )
         const userFromReq = users.find(
           (user) =>
-            (user.notifications?.telegram?.userName ?? '').toLowerCase() ===
-            message.from.username.toLowerCase()
+            user.notifications?.telegram?.userName &&
+            user.notifications.telegram.userName.toLowerCase() ===
+              message.from.username.toLowerCase()
         )
         console.log('userFromReq', userFromReq)
         if (userFromReq) {
