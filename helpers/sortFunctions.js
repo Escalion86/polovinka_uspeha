@@ -1,9 +1,17 @@
 const sortFunctions = {
   date: {
     asc: (a, b) =>
-      new Date(a.date).getTime() < new Date(b.date).getTime() ? -1 : 1,
+      !a.date
+        ? -1
+        : new Date(a.date).getTime() < new Date(b.date).getTime()
+        ? -1
+        : 1,
     desc: (a, b) =>
-      new Date(a.date).getTime() > new Date(b.date).getTime() ? -1 : 1,
+      !a.date
+        ? 1
+        : new Date(a.date).getTime() > new Date(b.date).getTime()
+        ? -1
+        : 1,
   },
   dateStart: {
     asc: (a, b) =>
@@ -35,9 +43,17 @@ const sortFunctions = {
   },
   birthday: {
     asc: (a, b) =>
-      new Date(a.birthday).getTime() > new Date(b.birthday).getTime() ? -1 : 1,
+      !a.birthday
+        ? -1
+        : new Date(a.birthday).getTime() > new Date(b.birthday).getTime()
+        ? -1
+        : 1,
     desc: (a, b) =>
-      new Date(a.birthday).getTime() < new Date(b.birthday).getTime() ? -1 : 1,
+      !a.birthday
+        ? 1
+        : new Date(a.birthday).getTime() < new Date(b.birthday).getTime()
+        ? -1
+        : 1,
   },
   createdAt: {
     asc: (a, b) =>
