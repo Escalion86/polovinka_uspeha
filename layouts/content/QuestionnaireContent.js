@@ -84,6 +84,10 @@ const QuestionnaireContent = (props) => {
     loggedUser?.security ?? DEFAULT_USER.security
   )
 
+  const [notifications, setNotifications] = useState(
+    loggedUser?.notifications ?? DEFAULT_USER.notifications
+  )
+
   const [status, setStatus] = useState(
     loggedUser?.status ?? DEFAULT_USER.status
   )
@@ -437,6 +441,70 @@ const QuestionnaireContent = (props) => {
                 onChange={setRole}
                 error={errors.role}
               />
+            )}
+          </TabPanel>
+        )}
+        {isLoggedUserDev && (
+          <TabPanel tabName="Оповещения" className="flex-1">
+            <YesNoPicker
+              label="Оповещения в Telegram"
+              // inLine
+              value={notifications?.telegram?.active ?? false}
+              onChange={() => {
+                removeError('notificationTelegramUserName')
+                setNotifications((state) => ({
+                  ...state,
+                  telegram: {
+                    ...notifications?.telegram,
+                    active: !notifications?.telegram?.active,
+                  },
+                }))
+              }}
+            />
+            {notifications?.telegram?.active && (
+              <>
+                <Input
+                  prefix="@"
+                  label="Имя пользователя Telegram"
+                  type="text"
+                  value={notifications?.telegram?.userName}
+                  onChange={(value) => {
+                    removeError('notificationTelegramUserName')
+                    setNotifications((state) => ({
+                      ...state,
+                      telegram: {
+                        ...notifications?.telegram,
+                        userName: value,
+                      },
+                    }))
+                  }}
+                  copyPasteButtons
+                  required
+                  // labelClassName="w-40"
+                  error={errors.notificationTelegramUserName}
+                />
+                <div className="flex gap-x-1">
+                  <span>Статус подключения Telegram:</span>
+                  {notifications?.telegram?.userNameConfirmed ? (
+                    <span className="text-success">АКТИВНО</span>
+                  ) : (
+                    <span className="text-danger">НЕ АКТИВНО</span>
+                  )}
+                </div>
+                <div className="flex flex-col ">
+                  <span>
+                    Для активации необходимо пройти по ссылке на чат бота
+                    Telegram. Далее в меню выбрать пункт "Активация оповещений"
+                    и отправить сообщение "/activate" боту
+                  </span>
+                  <a
+                    className="text-general"
+                    href="https://t.me/polovinka_uspeha_bot"
+                  >
+                    Перейти в чат бота
+                  </a>
+                </div>
+              </>
             )}
           </TabPanel>
         )}
