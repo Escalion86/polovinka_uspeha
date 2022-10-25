@@ -6,7 +6,8 @@ export const putData = async (
   url,
   form,
   callbackOnSuccess = null,
-  callbackOnError = null
+  callbackOnError = null,
+  resJson = false
 ) => {
   try {
     const res = await fetch(url, {
@@ -23,10 +24,11 @@ export const putData = async (
       throw new Error(res.status)
     }
 
-    const { data } = await res.json()
+    const json = await res.json()
+    const { data } = json
 
-    mutate(url, data, false) // Update the local data without a revalidation
-    if (callbackOnSuccess) callbackOnSuccess(data)
+    // mutate(url, data, false) // Update the local data without a revalidation
+    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
     return data
   } catch (error) {
     console.log('Failed to update (PUT) on ' + url)
@@ -41,7 +43,8 @@ export const postData = async (
   url,
   form,
   callbackOnSuccess = null,
-  callbackOnError = null
+  callbackOnError = null,
+  resJson = false
 ) => {
   try {
     const res = await fetch(url, {
@@ -57,10 +60,11 @@ export const postData = async (
     if (!res.ok) {
       throw new Error(res.status)
     }
-    const { data } = await res.json()
+    const json = await res.json()
+    const { data } = json
+
     // mutate(url, data, false)
-    // console.log(`data`, data)
-    if (callbackOnSuccess) callbackOnSuccess(data)
+    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
   } catch (error) {
     console.log('Failed to add (POST) on ' + url)
     console.log(error)
@@ -72,7 +76,8 @@ export const deleteData = async (
   url,
   callbackOnSuccess = null,
   callbackOnError = null,
-  params = {}
+  params = {},
+  resJson = false
 ) => {
   try {
     const res = await fetch(url, {
@@ -88,9 +93,11 @@ export const deleteData = async (
     if (!res.ok) {
       throw new Error(res.status)
     }
-    const { data } = await res.json()
-    // mutate(url, data, false)
-    if (callbackOnSuccess) callbackOnSuccess(data)
+    const json = await res.json()
+    const { data } = json
+
+    // mutate(url, data, false) // Update the local data without a revalidation
+    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
   } catch (error) {
     console.log('Failed to delete on ' + url)
     console.log(error)
