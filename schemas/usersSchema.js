@@ -1,4 +1,8 @@
-import { DEFAULT_USERS_SECURITY } from '@helpers/constants'
+import {
+  DEFAULT_USERS_NOTIFICATIONS,
+  DEFAULT_USERS_SECURITY,
+} from '@helpers/constants'
+import { Schema } from 'mongoose'
 
 const usersSchema = {
   firstName: {
@@ -119,6 +123,11 @@ const usersSchema = {
     type: Map,
     of: Boolean,
     default: DEFAULT_USERS_SECURITY,
+  },
+  notifications: {
+    type: Map,
+    of: Schema.Types.Mixed,
+    default: DEFAULT_USERS_NOTIFICATIONS,
   },
 }
 
