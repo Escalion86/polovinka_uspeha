@@ -8,13 +8,23 @@ import copyToClipboard from '@helpers/copyToClipboard'
 import pasteFromClipboard from '@helpers/pasteFromClipboard'
 import useSnackbar from '@helpers/useSnackbar'
 
-const SmallIconButton = ({ onClick, icon, tooltip, infoTextOnClick }) => {
+const SmallIconButton = ({ onClick, icon, tooltip, disabled }) => {
   return (
     <Tooltip title={tooltip}>
-      <div className="relative" onClick={onClick}>
-        <div className="flex items-center justify-center p-1 bg-gray-100 border border-gray-400 rounded cursor-pointer group">
+      <div className="relative" onClick={disabled ? null : onClick}>
+        <div
+          className={cn(
+            'flex items-center justify-center p-1 border border-gray-400 rounded group',
+            disabled
+              ? 'text-gray-400 bg-gray-200 cursor-not-allowed'
+              : 'text-general bg-gray-100 cursor-pointer'
+          )}
+        >
           <FontAwesomeIcon
-            className="w-4 h-4 duration-200 text-general group-hover:scale-125"
+            className={cn(
+              'w-4 h-4 duration-200',
+              disabled ? '' : 'group-hover:scale-125'
+            )}
             icon={icon}
             size="1x"
           />
@@ -68,7 +78,7 @@ const InputWrapper = ({
         {children}
         {copyPasteButtons && (
           <>
-            {copyButton && value && (
+            {copyButton && (
               <SmallIconButton
                 onClick={() => {
                   info('Текст скопирован в буфер обмена')
@@ -77,6 +87,7 @@ const InputWrapper = ({
                 icon={faCopy}
                 tooltip="Копировать"
                 infoTextOnClick="Текст скопирован"
+                disabled={!value && value !== 0}
               />
             )}
             {pasteButton && onChange && (
