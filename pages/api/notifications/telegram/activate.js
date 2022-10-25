@@ -7,25 +7,46 @@ export default async function handler(req, res) {
   await dbConnect()
   if (method === 'POST') {
     try {
+      console.log(body)
       const { update_id, message } = body
       // console.log('telegram body', body)
       if (message.text === '/activate' || message.text === '/deactivate') {
+        console.log('message.text', message.text)
         // const users = await Users.find({})
+        console.log('message.from.id', message.from.id)
         const userFromReq = await Users.findOneAndUpdate(
           {
             'notifications.telegram.userName':
               message.from.username.toLowerCase(),
           },
           {
-            notifications: {
-              ...userFromReq[0].notifications,
-              telegram: {
-                ...userFromReq[0].notifications.telegram,
-                id: message.text === '/activate' ? message.from.id : null,
-              },
+            $set: {
+              'notifications.telegram.id':
+                message.text === '/activate' ? message.from.id : null,
+              // $set: {
+              //   'telegram.$.id':
+              //     message.text === '/activate' ? message.from.id : null,
+              // },
             },
+            // notifications: {
+            //   telegram: {
+            //     id: message.text === '/activate' ? message.from.id : null,
+            //   },
+            //   // $set: {
+            //   //   'telegram.$.id':
+            //   //     message.text === '/activate' ? message.from.id : null,
+            //   // },
+            // },
+            // notifications: {
+            //   ...userFromReq[0].notifications,
+            //   telegram: {
+            //     ...userFromReq[0].notifications.telegram,
+            //     id: message.text === '/activate' ? message.from.id : null,
+            //   },
+            // },
           }
         )
+        // console.log('userFromReq', userFromReq)
         // const userFromReq = users.find(
         //   (user) =>
         //     user.notifications?.get('telegram')?.userName &&
@@ -42,7 +63,7 @@ export default async function handler(req, res) {
           //     },
           //   },
           // })
-          return res?.status(200).json({ success: true, data })
+          return res?.status(200).json({ success: true, data: userFromReq })
         }
         console.log('Пользователь с таким логином не найден')
         return res?.status(200).json({
