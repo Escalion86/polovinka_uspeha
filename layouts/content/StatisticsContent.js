@@ -3,14 +3,66 @@ import usersAtom from '@state/atoms/usersAtom'
 import PieChart from '@components/Charts/PieChart'
 import { useMemo, useState } from 'react'
 import UsersFilter from '@components/Filter/UsersFilter'
-import { H3, H4 } from '@components/tags'
+import { H3, H4, P } from '@components/tags'
 import eventsAtom from '@state/atoms/eventsAtom'
 import eventStatus from '@helpers/eventStatus'
-import ListWrapper from '@layouts/wrappers/ListWrapper'
+// import ListWrapper from '@layouts/wrappers/ListWrapper'
 import Divider from '@components/Divider'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import directionsAtom from '@state/atoms/directionsAtom'
+import StreamChart from '@components/Charts/StreamChart'
+import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
+import formatDate from '@helpers/formatDate'
+
+const addDaysToDate = (date, days) => {
+  if (days === 0) return date
+  return new Date(date.getTime() + 1000 * 3600 * 24 * days)
+}
+
+const usersCountByDates = (users = [], days = 91) => {
+  const dateNow = new Date()
+  const dateFinish = new Date(dateNow.getTime())
+  const dateStart = new Date(
+    dateFinish.getTime() -
+      1000 * 3600 * 24 * days -
+      (dateNow.getTime() % (1000 * 3600 * 24))
+  )
+
+  const result = []
+
+  const mans = users.filter((user) => user.gender === 'male')
+  const womans = users.filter((user) => user.gender === 'famale')
+  const noGender = users.filter(
+    (user) => user.gender !== 'male' && user.gender !== 'famale'
+  )
+
+  const mansTest = mans.map((user) => ({
+    createdAt: user.createdAt,
+    dif: getDiffBetweenDates(dateFinish, user.createdAt),
+  }))
+  console.log('mansTest', mansTest)
+
+  for (let i = 0; i <= days; i++) {
+    const date = addDaysToDate(dateStart, i)
+    const mansCount = mans.filter(
+      (user) => getDiffBetweenDates(date, user.createdAt) < 0
+    ).length
+    const womansCount = womans.filter(
+      (user) => getDiffBetweenDates(date, user.createdAt) < 0
+    ).length
+    const noGenderCount = noGender.filter(
+      (user) => getDiffBetweenDates(date, user.createdAt) < 0
+    ).length
+    result.push({
+      mans: mansCount,
+      womans: womansCount,
+      noGender: noGenderCount,
+    })
+  }
+
+  return result
+}
 
 const StatisticsContent = () => {
   const users = useRecoilValue(usersAtom)
@@ -29,6 +81,8 @@ const StatisticsContent = () => {
     [users, filterUsers]
   )
 
+  const usersByDays = usersCountByDates()
+
   const mansCount = filteredUsers.filter(
     (user) => user.gender === 'male'
   ).length
@@ -37,24 +91,28 @@ const StatisticsContent = () => {
   ).length
   const noGenderCount = filteredUsers.filter((user) => !user.gender).length
 
+  const manColor = '#60a5fa'
+  const womanColor = '#f87171'
+  const noGenderColor = '#9ca3af'
+
   const usersByGenderData = [
     {
       id: 'Мужчины',
       label: 'Мужчины',
       value: mansCount,
-      color: '#60a5fa',
+      color: manColor,
     },
     {
       id: 'Женщины',
       label: 'Женщины',
       value: womansCount,
-      color: '#f87171',
+      color: womanColor,
     },
     {
       id: 'Пол не указан',
       label: 'Пол не указан',
       value: noGenderCount,
-      color: '#9ca3af',
+      color: noGenderColor,
     },
   ]
 
@@ -124,6 +182,34 @@ const StatisticsContent = () => {
             <UsersFilter value={filterUsers} onChange={setFilterUsers} />
             <H4>{usersTitle}</H4>
             <PieChart data={usersByGenderData} />
+          </div>
+          <div className="flex flex-col items-center w-full">
+            <H3>Показатели за последние 3 месяца</H3>
+            <P>
+              {`с ${formatDate(
+                new Date(
+                  new Date().getTime() -
+                    1000 * 3600 * 24 * 91 -
+                    (new Date().getTime() % (1000 * 3600 * 24))
+                )
+              )} по ${formatDate(new Date())}`}
+            </P>
+            <StreamChart
+              data={usersCountByDates(users)}
+              colors={{
+                mans: manColor,
+                womans: womanColor,
+                noGender: noGenderColor,
+              }}
+              labels={{
+                mans: 'Мужчины',
+                womans: 'Женщины',
+                noGender: 'Пол не указан',
+              }}
+              axisBottom={false}
+              axisLeft="Пользователей"
+              legend={false}
+            />
           </div>
           {/* </ListWrapper> */}
         </TabPanel>

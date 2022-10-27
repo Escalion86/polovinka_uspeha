@@ -20,6 +20,9 @@ export default getNoun
 export const getNounEvents = (number) =>
   getNoun(number, 'мероприятие', 'мероприятия', 'мероприятий')
 
+export const getNounBirthdays = (number) =>
+  getNoun(number, 'день рождения', 'дня рождения', 'дней рождения')
+
 export const getNounAdditionalBlocks = (number) =>
   getNoun(number, 'доп. блок', 'доп. блока', 'доп. блоков')
 

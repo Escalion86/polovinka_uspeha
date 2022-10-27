@@ -334,7 +334,7 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      // width: 250,
     },
   },
 }
@@ -382,7 +382,7 @@ const HistoriesContent = () => {
     <>
       <ContentHeader>
         <div className="flex flex-wrap items-center justify-start flex-1">
-          <div className="flex flex-wrap items-center justify-center gap-y-0.5">
+          <div className="flex flex-wrap items-center justify-center gap-y-0.5 gap-x-2">
             <EventStatusToggleButtons
               value={filter.status}
               onChange={(value) =>
@@ -390,7 +390,7 @@ const HistoriesContent = () => {
               }
             />
             <FormControl
-              sx={{ mt: 1, ml: 1, mr: 1, mb: 0.5, width: 160 }}
+              sx={{ mt: 1, mb: 0.5, width: 160 }}
               size="small"
               margin="none"
             >

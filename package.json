@@ -23,6 +23,7 @@
     "@next-auth/mongodb-adapter": "1.0.4",
     "@nivo/core": "^0.80.0",
     "@nivo/pie": "^0.80.0",
+    "@nivo/stream": "^0.80.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "array-move": "^4.0.0",
     "classnames": "^2.3.1",
