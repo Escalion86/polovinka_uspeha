@@ -69,16 +69,18 @@ function CabinetPage(props) {
       </Head>
 
       <StateLoader {...props}>
-        <CabinetWrapper>
-          {/* ----------------------------- HEADER ------------------------------- */}
-          <DeviceCheck right />
-          <CabinetHeader title={title} />
-          <BurgerLayout />
-          <ContentWrapper page={page}>
-            {!redirect && <Component {...props} />}
-          </ContentWrapper>
-          {/* <ModalsPortal /> */}
-        </CabinetWrapper>
+        {loggedUser && (
+          <CabinetWrapper>
+            {/* ----------------------------- HEADER ------------------------------- */}
+            <DeviceCheck right />
+            <CabinetHeader title={title} />
+            <BurgerLayout />
+            <ContentWrapper page={page}>
+              {!redirect && <Component {...props} />}
+            </ContentWrapper>
+            {/* <ModalsPortal /> */}
+          </CabinetWrapper>
+        )}
       </StateLoader>
     </>
   )

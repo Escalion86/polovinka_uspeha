@@ -74,6 +74,10 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
+          // Если это пользователь обновляет анкету, то после обновления оповестим о результате через телеграм
+          const afterUpdateNeedToNotificate =
+            Schema === Users && !isUserQuestionnaireFilled(data)
+
           data = await Schema.findByIdAndUpdate(id, body, {
             new: true,
             runValidators: true,
@@ -82,8 +86,7 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
-          // Если это пользователь обновляет анкету, то после обновления оповестим о результате через телеграм
-          if (Schema === Users && !isUserQuestionnaireFilled(data)) {
+          if (afterUpdateNeedToNotificate) {
             const users = await Users.find({})
             const usersTelegramIds = users
               .filter(

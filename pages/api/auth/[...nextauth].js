@@ -30,7 +30,7 @@ export default async function auth(req, res) {
             //   process.env.NEXTAUTH_SITE
             // )
 
-            const fetchedUser = await Users.find({ phone, password })
+            const fetchedUser = await Users.findOne({ phone, password })
             // await Users.findOneAndUpdate(
             //   { phone, password },
             //   {
@@ -39,7 +39,7 @@ export default async function auth(req, res) {
             //   }
             // )
 
-            if (fetchedUser?.length > 0) {
+            if (fetchedUser) {
               return {
                 name: phone,
               }

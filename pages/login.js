@@ -389,8 +389,7 @@ const Login = () => {
                   setWaitingResponse(false)
                   setInputPassword('')
                   addError({ password: 'Телефон или пароль не верны' })
-                } else
-                  router.push('/cabinet/questionnaire', '', { shallow: true })
+                } else router.push('/cabinet/questionnaire')
               })
             }
             // Если код не верный
