@@ -1,5 +1,4 @@
 import { postData } from '@helpers/CRUD'
-import formatDate from '@helpers/formatDate'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserFullName from '@helpers/getUserFullName'
 import isUserAdmin from '@helpers/isUserAdmin'
@@ -9,7 +8,6 @@ import Histories from '@models/Histories'
 import Users from '@models/Users'
 import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
-import mongoose from 'mongoose'
 
 // Оповещение в телеграм
 const telegramNotification = async ({
