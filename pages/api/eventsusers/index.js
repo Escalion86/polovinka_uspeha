@@ -18,7 +18,7 @@ const telegramNotification = async ({
   deletedEventUsers = [],
   addedEventUsers = [],
   itIsSelfRecord = false,
-  notificationOnMassiveChange = true,
+  notificationOnMassiveChange = false,
 }) => {
   if (
     process.env.MONGODB_URI &&
