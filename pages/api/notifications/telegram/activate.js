@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   await dbConnect()
   if (method === 'POST') {
     try {
-      console.log(body)
+      // console.log(body)
       const { update_id, message } = body
       // console.log('telegram body', body)
       if (message.text === '/activate' || message.text === '/deactivate') {

@@ -15,64 +15,160 @@ import mongoose from 'mongoose'
 const telegramNotification = async ({
   req,
   eventId,
-  deletedUsersIds = [],
-  addedUsersIds = [],
-  notificationOnMassiveChange = false,
+  deletedEventUsers = [],
+  addedEventUsers = [],
+  itIsSelfRecord = false,
+  notificationOnMassiveChange = true,
 }) => {
   if (
     process.env.MONGODB_URI &&
     eventId &&
-    (deletedUsersIds.length > 0 || addedUsersIds.length > 0) &&
+    (deletedEventUsers.length > 0 || addedEventUsers.length > 0) &&
     (notificationOnMassiveChange ||
-      addedUsersIds.length + deletedUsersIds.length === 1)
+      addedEventUsers.length + deletedEventUsers.length === 1)
   ) {
     await dbConnect()
 
     const event = await Events.findById(eventId)
+    const eventUsers = await EventsUsers.find({ eventId })
+    const eventUsersIds = eventUsers.map((eventUser) => eventUser.userId)
 
-    const users = await Users.find({})
-    const deletedUsers = users.filter((user) =>
-      deletedUsersIds.includes(user._id.toString())
+    const addedEventUsersIds = addedEventUsers.map(
+      (eventUser) => eventUser.userId
     )
-    const addedUsers = users.filter((user) =>
-      addedUsersIds.includes(user._id.toString())
+    const deletedEventUsersIds = deletedEventUsers.map(
+      (eventUser) => eventUser.userId
     )
+
+    const usersIds = [
+      ...eventUsersIds,
+      // ...addedEventUsersIds,
+      ...deletedEventUsersIds,
+    ]
+
+    const users = await Users.find({ _id: { $in: usersIds } })
+    const eventUsersFull = eventUsers.map((eventUser) => {
+      const user = users.find(
+        (user) => user._id.toString() === eventUser.userId
+      )
+      return { ...eventUser.toJSON(), user }
+    })
+    const deletedEventUsersFull = deletedEventUsers.map((eventUser) => {
+      const user = users.find(
+        (user) => user._id.toString() === eventUser.userId
+      )
+      return { ...eventUser, user }
+    })
+    const addedEventUsersFull = addedEventUsers.map((eventUser) => {
+      const user = users.find(
+        (user) => user._id.toString() === eventUser.userId
+      )
+      return { ...eventUser, user }
+    })
 
     var text
     // Если зарегистрировался один пользователь
-    if (deletedUsers.length === 1 && addedUsers.length === 0) {
-      const user = deletedUsers[0]
+    if (
+      itIsSelfRecord &&
+      deletedEventUsers.length === 1 &&
+      addedEventUsers.length === 0
+    ) {
+      const { user, status } = deletedEventUsersFull[0]
       text = `Пользователь ${getUserFullName(user)} ${
         user.gender === 'male' ? 'отписался' : 'отписалась'
-      } от мероприятия "${event.title}" от ${formatDateTime(event.dateStart)}.`
-    } else if (deletedUsers.length === 0 && addedUsers.length === 1) {
-      const user = addedUsers[0]
+      } ${
+        status === 'reserve' ? 'из резерва мероприятия' : 'от мероприятия'
+      } "${event.title}" от ${formatDateTime(event.dateStart)}.`
+    } else if (
+      itIsSelfRecord &&
+      deletedEventUsers.length === 0 &&
+      addedEventUsers.length === 1
+    ) {
+      const { user, status } = addedEventUsersFull[0]
       text = `Пользователь ${getUserFullName(user)} ${
         user.gender === 'male' ? 'записался' : 'записалась'
-      } на мероприятие "${event.title}" от ${formatDateTime(event.dateStart)}.`
+      } ${status === 'reserve' ? 'в резерв мероприятия' : 'на мероприятие'} "${
+        event.title
+      }" от ${formatDateTime(event.dateStart)}.`
     } else if (notificationOnMassiveChange) {
-      const deletedUsersNames = deletedUsers.map((user) =>
-        getUserFullName(user)
-      )
-      const addedUsersNames = addedUsers.map((user) => getUserFullName(user))
+      // const deletedUsersNames = deletedUsers.map((user) =>
+      //   getUserFullName(user)
+      // )
+      // const addedUsersNames = addedUsers.map((user) => getUserFullName(user))
 
       text = `Изменение списка участников в мероприятии "${
         event.title
       }" от ${formatDateTime(event.dateStart)}.${
-        addedUsersNames.length > 0
-          ? `\n\nЗаписались:\n${addedUsersNames
-              .map((name) => `  - ${name}`)
+        addedEventUsersFull.length > 0
+          ? `\n\nЗаписались:\n${addedEventUsersFull
+              .map(
+                (eventUser) =>
+                  `  - ${getUserFullName(eventUser.user)}${
+                    eventUser.status === 'reserve' ? ' (в резерв)' : ''
+                  }`
+              )
               .join(',\n')}`
           : ''
       }${
-        deletedUsersNames.length > 0
-          ? `\n\nОтписались:\n${deletedUsersNames
-              .map((name) => `  - ${name}`)
+        deletedEventUsersFull.length > 0
+          ? `\n\nОтписались:\n${deletedEventUsersFull
+              .map(
+                (eventUser) =>
+                  `  - ${getUserFullName(eventUser.user)}${
+                    eventUser.status === 'reserve' ? ' (из резерва)' : ''
+                  }`
+              )
               .join(',\n')}`
           : ''
       }`
     }
+    // const newEventUsers = [
+    //   ...eventUsersFull.filter(
+    //     (eventUser) => !deletedEventUsersIds.includes(eventUser.userId)
+    //   ),
+    //   ...addedEventUsersFull,
+    // ]
+
+    // console.log(
+    //   'newEventUsers',
+    //   newEventUsers.map((eventUser) => eventUser.user.gender)
+    // )
+
+    // console.log('eventUsersFull', eventUsersFull)
+
+    const mans = eventUsersFull.filter(
+      (eventUser) => eventUser.user.gender === 'male'
+    )
+    const womans = eventUsersFull.filter(
+      (eventUser) => eventUser.user.gender === 'famale'
+    )
+    const mansParticipantsCount = mans.filter(
+      (eventUser) => eventUser.status === 'participant'
+    ).length
+    const womansParticipantsCount = womans.filter(
+      (eventUser) => eventUser.status === 'participant'
+    ).length
+    const mansReserveCount = mans.filter(
+      (eventUser) => eventUser.status === 'reserve'
+    ).length
+    const womansReserveCount = womans.filter(
+      (eventUser) => eventUser.status === 'reserve'
+    ).length
     // console.log('req.protocol', req.headers.origin.substr(0, 5))
+
+    text +=
+      `\n\nУчастники:  ♂️  ${mansParticipantsCount}${
+        event.maxMans ? ' / ' + event.maxMans : ''
+      }    |    ♀️  ${womansParticipantsCount}${
+        event.maxWomans ? ' / ' + event.maxWomans : ''
+      }    |    Всего: ${mansParticipantsCount + womansParticipantsCount}` +
+      `${
+        event.isReserveActive
+          ? `\nРезерв:  ♂️  ${mansReserveCount}    |    ♀️  ${womansReserveCount}   |   Всего: ${
+              mansReserveCount + womansReserveCount
+            }`
+          : `\nЗапись в резерв закрыта`
+      }`
 
     const usersTelegramIds = users
       .filter(
@@ -140,7 +236,7 @@ export default async function handler(req, res) {
               data.status === eventUser.status
           )
         )
-        const newEventUsers = eventUsersStatuses.filter(
+        const addedEventUsers = eventUsersStatuses.filter(
           (eventUser) =>
             !eventUsers.find(
               (data) =>
@@ -182,11 +278,11 @@ export default async function handler(req, res) {
         // )
 
         const data = []
-        for (let i = 0; i < newEventUsers.length; i++) {
+        for (let i = 0; i < addedEventUsers.length; i++) {
           const newEventUser = await EventsUsers.create({
             eventId,
-            userId: newEventUsers[i].userId,
-            status: newEventUsers[i].status,
+            userId: addedEventUsers[i].userId,
+            status: addedEventUsers[i].status,
           })
           data.push(newEventUser)
         }
@@ -195,15 +291,16 @@ export default async function handler(req, res) {
           await Histories.create({ schema: 'EventsUsers', action: 'add', data })
 
         // Оповещение в телеграм
-        const deletedUsersIds = deletedEventUsers.map(
-          (eventUser) => eventUser.userId
-        )
-        const addedUsersIds = newEventUsers.map((eventUser) => eventUser.userId)
+        // const deletedUsersIds = deletedEventUsers.map(
+        //   (eventUser) => eventUser.userId
+        // )
+        // const addedUsersIds = addedEventUsers.map((eventUser) => eventUser.userId)
         await telegramNotification({
           req,
           eventId,
-          deletedUsersIds,
-          addedUsersIds,
+          deletedEventUsers,
+          addedEventUsers,
+          eventUsers,
         })
 
         return res
@@ -240,7 +337,12 @@ export default async function handler(req, res) {
         })
 
         // Оповещение в телеграм
-        await telegramNotification({ req, eventId, addedUsersIds: [userId] })
+        await telegramNotification({
+          req,
+          eventId,
+          addedEventUsers: [newEventUser.toJSON()],
+          itIsSelfRecord: true,
+        })
 
         return res?.status(201).json({ success: true, data: newEventUser })
       }
@@ -292,7 +394,12 @@ export default async function handler(req, res) {
       })
 
       // Оповещение в телеграм
-      await telegramNotification({ req, eventId, deletedUsersIds: [userId] })
+      await telegramNotification({
+        req,
+        eventId,
+        deletedEventUsers: [eventUser.toJSON()],
+        itIsSelfRecord: true,
+      })
       // if (process.env.MONGODB_URI) {
       //   const event = await Events.findById(eventId)
       //   const deletedUsersIds = [userId]
