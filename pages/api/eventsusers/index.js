@@ -74,9 +74,9 @@ const telegramNotification = async ({
       addedEventUsers.length === 0
     ) {
       const { user, status } = deletedEventUsersFull[0]
-      text = `Пользователь ${getUserFullName(user)} ${
-        user.gender === 'male' ? 'отписался' : 'отписалась'
-      } ${
+      text = `${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
+        user
+      )} ${user.gender === 'male' ? 'отписался' : 'отписалась'} ${
         status === 'reserve' ? 'из резерва мероприятия' : 'от мероприятия'
       } "${event.title}" от ${formatDateTime(event.dateStart)}.`
     } else if (
@@ -85,11 +85,11 @@ const telegramNotification = async ({
       addedEventUsers.length === 1
     ) {
       const { user, status } = addedEventUsersFull[0]
-      text = `Пользователь ${getUserFullName(user)} ${
-        user.gender === 'male' ? 'записался' : 'записалась'
-      } ${status === 'reserve' ? 'в резерв мероприятия' : 'на мероприятие'} "${
-        event.title
-      }" от ${formatDateTime(event.dateStart)}.`
+      text = `${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
+        user
+      )} ${user.gender === 'male' ? 'записался' : 'записалась'} ${
+        status === 'reserve' ? 'в резерв мероприятия' : 'на мероприятие'
+      } "${event.title}" от ${formatDateTime(event.dateStart)}.`
     } else if (notificationOnMassiveChange) {
       // const deletedUsersNames = deletedUsers.map((user) =>
       //   getUserFullName(user)
@@ -103,7 +103,9 @@ const telegramNotification = async ({
           ? `\n\nЗаписались:\n${addedEventUsersFull
               .map(
                 (eventUser) =>
-                  `  - ${getUserFullName(eventUser.user)}${
+                  `  - ${
+                    eventUser.user.gender === 'male' ? '♂️' : '♀️'
+                  } ${getUserFullName(eventUser.user)}${
                     eventUser.status === 'reserve' ? ' (в резерв)' : ''
                   }`
               )
@@ -114,7 +116,9 @@ const telegramNotification = async ({
           ? `\n\nОтписались:\n${deletedEventUsersFull
               .map(
                 (eventUser) =>
-                  `  - ${getUserFullName(eventUser.user)}${
+                  `  - ${
+                    eventUser.user.gender === 'male' ? '♂️' : '♀️'
+                  } ${getUserFullName(eventUser.user)}${
                     eventUser.status === 'reserve' ? ' (из резерва)' : ''
                   }`
               )
