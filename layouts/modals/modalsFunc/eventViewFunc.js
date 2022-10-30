@@ -117,7 +117,7 @@ const eventViewFunc = (eventId) => {
                   />
                 </a>
                 <a
-                  className="laptop:hidden"
+                  // className="laptop:hidden"
                   data-tip="Открыть адрес в Яндекс Навигаторе"
                   href={`yandexnavi://map_search?text=${
                     event.address.town
