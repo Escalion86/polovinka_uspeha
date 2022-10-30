@@ -114,7 +114,7 @@ const InputImages = ({
                 />
               </Zoom>
 
-              <div className="absolute flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 -top-5 group-hover:top-0 -right-5 group-hover:right-0 hover:scale-125">
+              <div className="absolute top-0 right-0 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
                 <FontAwesomeIcon
                   className="h-4 text-red-700"
                   icon={faTrash}
@@ -125,14 +125,17 @@ const InputImages = ({
               </div>
               <div
                 className={cn(
-                  'absolute flex p-1 duration-200 transform bg-white rounded-br-full cursor-pointer w-7 h-7 hover:scale-125',
+                  'absolute flex p-1 duration-200 transform bg-white rounded-br-full w-7 h-7',
                   index === 0
                     ? 'top-0 left-0'
-                    : '-top-5 group-hover:top-0 -left-5 group-hover:left-0'
+                    : 'top-0 left-0 laptop:-top-5 laptop:group-hover:top-0 laptop:-left-5 laptop:group-hover:left-0 cursor-pointer hover:scale-125'
                 )}
               >
                 <FontAwesomeIcon
-                  className="h-4 text-orange-600"
+                  className={cn(
+                    'h-4',
+                    index === 0 ? 'text-success' : 'text-orange-600'
+                  )}
                   icon={faHome}
                   onClick={() => {
                     if (index !== 0) onChange(arrayMove(images, index, 0))

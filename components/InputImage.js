@@ -165,7 +165,7 @@ const InputImage = ({
         </div> */}
 
         {!isAddingImage && image && (
-          <div className="absolute z-20 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 -top-5 group-hover:top-0 -right-5 group-hover:right-0 hover:scale-125">
+          <div className="absolute top-0 right-0 z-20 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
             <FontAwesomeIcon
               className="h-4 text-red-700"
               icon={faTrash}
@@ -186,7 +186,7 @@ const InputImage = ({
           />
         )}
         {!isAddingImage && !noEditButton && image && (
-          <div className="absolute z-20 flex p-1 duration-200 transform bg-white rounded-br-full cursor-pointer w-7 h-7 hover:scale-125 -top-5 group-hover:top-0 -left-5 group-hover:left-0">
+          <div className="absolute top-0 left-0 z-20 flex p-1 duration-200 transform bg-white rounded-br-full cursor-pointer w-7 h-7 hover:scale-125 laptop:-top-5 laptop:group-hover:top-0 laptop:-left-5 laptop:group-hover:left-0">
             <FontAwesomeIcon
               className="h-4 text-orange-600"
               icon={faPencilAlt}
