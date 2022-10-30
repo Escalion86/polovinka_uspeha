@@ -31,9 +31,9 @@ const telegramNotification = async ({
     const eventUsers = await EventsUsers.find({ eventId })
     const eventUsersIds = eventUsers.map((eventUser) => eventUser.userId)
 
-    const addedEventUsersIds = addedEventUsers.map(
-      (eventUser) => eventUser.userId
-    )
+    // const addedEventUsersIds = addedEventUsers.map(
+    //   (eventUser) => eventUser.userId
+    // )
     const deletedEventUsersIds = deletedEventUsers.map(
       (eventUser) => eventUser.userId
     )
@@ -159,20 +159,28 @@ const telegramNotification = async ({
     // console.log('req.protocol', req.headers.origin.substr(0, 5))
 
     text +=
-      `\n\nУчастники:  ♂️  ${mansParticipantsCount}${
+      `\n\nУчастники: ♂️  ${mansParticipantsCount}${
         event.maxMans ? ' / ' + event.maxMans : ''
-      }    |    ♀️  ${womansParticipantsCount}${
+      }  |  ♀️  ${womansParticipantsCount}${
         event.maxWomans ? ' / ' + event.maxWomans : ''
-      }    |    Всего: ${mansParticipantsCount + womansParticipantsCount}` +
+      }  |  Всего: ${mansParticipantsCount + womansParticipantsCount}` +
       `${
         event.isReserveActive
-          ? `\nРезерв:  ♂️  ${mansReserveCount}    |    ♀️  ${womansReserveCount}   |   Всего: ${
+          ? `\nРезерв: ♂️  ${mansReserveCount}  |  ♀️  ${womansReserveCount} | Всего: ${
               mansReserveCount + womansReserveCount
             }`
           : `\nЗапись в резерв закрыта`
       }`
 
-    const usersTelegramIds = users
+    const usersWithTelegramNotificationsON = await Users.find({
+      'notifications.telegram.active': true,
+      'notifications.telegram.id': {
+        $exists: true,
+        $ne: null,
+      },
+    })
+
+    const usersTelegramIds = usersWithTelegramNotificationsON
       .filter(
         (user) =>
           isUserAdmin(user) &&
