@@ -21,11 +21,27 @@ const telegramNotification = async ({
   if (
     process.env.MONGODB_URI &&
     eventId &&
-    (deletedEventUsers.length > 0 || addedEventUsers.length > 0) &&
-    (notificationOnMassiveChange ||
-      addedEventUsers.length + deletedEventUsers.length === 1)
+    ((!itIsSelfRecord &&
+      notificationOnMassiveChange &&
+      deletedEventUsers.length + addedEventUsers.length > 0) ||
+      (itIsSelfRecord &&
+        addedEventUsers.length + deletedEventUsers.length === 1))
   ) {
     await dbConnect()
+
+    // Получаем список подписанных на уведомления, и если их нет, то выходим сразу
+    const usersWithTelegramNotificationsON = await Users.find({
+      'notifications.telegram.active': true,
+      'notifications.telegram.id': {
+        $exists: true,
+        $ne: null,
+      },
+    })
+    if (
+      !usersWithTelegramNotificationsON ||
+      usersWithTelegramNotificationsON?.length === 0
+    )
+      return
 
     const event = await Events.findById(eventId)
     const eventUsers = await EventsUsers.find({ eventId })
@@ -171,14 +187,6 @@ const telegramNotification = async ({
             }`
           : `\nЗапись в резерв закрыта`
       }`
-
-    const usersWithTelegramNotificationsON = await Users.find({
-      'notifications.telegram.active': true,
-      'notifications.telegram.id': {
-        $exists: true,
-        $ne: null,
-      },
-    })
 
     const usersTelegramIds = usersWithTelegramNotificationsON
       .filter(
