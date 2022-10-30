@@ -14,13 +14,14 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import StreamChart from '@components/Charts/StreamChart'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import formatDate from '@helpers/formatDate'
+import getDaysBetween from '@helpers/getDaysBetween'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
   return new Date(date.getTime() + 1000 * 3600 * 24 * days)
 }
 
-const usersCountByDates = (users = [], days = 91) => {
+const usersCountByDates = (users = [], days = 90) => {
   const dateNow = new Date()
   const dateFinish = new Date(dateNow.getTime())
   const dateStart = new Date(
@@ -36,12 +37,6 @@ const usersCountByDates = (users = [], days = 91) => {
   const noGender = users.filter(
     (user) => user.gender !== 'male' && user.gender !== 'famale'
   )
-
-  const mansTest = mans.map((user) => ({
-    createdAt: user.createdAt,
-    dif: getDiffBetweenDates(dateFinish, user.createdAt),
-  }))
-  console.log('mansTest', mansTest)
 
   for (let i = 0; i <= days; i++) {
     const date = addDaysToDate(dateStart, i)
@@ -64,6 +59,38 @@ const usersCountByDates = (users = [], days = 91) => {
   return result
 }
 
+const linesCFG = () => {
+  const today = new Date().setHours(0, 0, 0, 0)
+  const dateToday = new Date(today)
+  // const dateStart = new Date(today - 3600000 * 24)
+  const arr = [{ index: 90 }, { index: 0 }]
+  // const arr = []
+
+  const firstDayOfMonth = new Date(
+    today - (dateToday.getDate() - 1) * 3600000 * 24
+  )
+  const daysBetween = getDaysBetween(firstDayOfMonth, dateToday, false)
+  arr.push({ index: daysBetween + 90, text: formatDate(firstDayOfMonth) })
+
+  do {
+    const prevMonth = firstDayOfMonth.setMonth(firstDayOfMonth.getMonth() - 1)
+    const daysBetween = getDaysBetween(prevMonth, dateToday, false)
+    if (daysBetween < -90) break
+    arr.push({ index: daysBetween + 90, text: formatDate(prevMonth) })
+    if (daysBetween < -62) break
+  } while (true)
+  return arr
+}
+
+const tooltipCaptions = () => {
+  const now = new Date()
+  const arr = []
+  for (let i = -90; i <= 0; i++) {
+    arr.push(formatDate(addDaysToDate(now, i)))
+  }
+  return arr
+}
+
 const StatisticsContent = () => {
   const users = useRecoilValue(usersAtom)
   const events = useRecoilValue(eventsAtom)
@@ -81,7 +108,7 @@ const StatisticsContent = () => {
     [users, filterUsers]
   )
 
-  const usersByDays = usersCountByDates()
+  // const usersByDays = usersCountByDates()
 
   const mansCount = filteredUsers.filter(
     (user) => user.gender === 'male'
@@ -184,18 +211,19 @@ const StatisticsContent = () => {
             <PieChart data={usersByGenderData} />
           </div>
           <div className="flex flex-col items-center w-full">
-            <H3>Показатели за последние 3 месяца</H3>
+            <H4>Показатели за последние 90 дней</H4>
             <P>
               {`с ${formatDate(
                 new Date(
                   new Date().getTime() -
-                    1000 * 3600 * 24 * 91 -
+                    1000 * 3600 * 24 * 89 -
                     (new Date().getTime() % (1000 * 3600 * 24))
                 )
               )} по ${formatDate(new Date())}`}
             </P>
             <StreamChart
               data={usersCountByDates(users)}
+              linesOnX={linesCFG()}
               colors={{
                 mans: manColor,
                 womans: womanColor,
@@ -209,6 +237,7 @@ const StatisticsContent = () => {
               axisBottom={false}
               axisLeft="Пользователей"
               legend={false}
+              tooltipCaptions={tooltipCaptions()}
             />
           </div>
           {/* </ListWrapper> */}

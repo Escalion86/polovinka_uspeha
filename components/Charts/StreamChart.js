@@ -4,6 +4,46 @@ import { ResponsiveStream } from '@nivo/stream'
 import usersAtom from '@state/atoms/usersAtom'
 import { H3 } from '@components/tags'
 
+const GridX = (props) => {
+  const { slices, linesOnX } = props
+
+  return (
+    <>
+      {linesOnX.map((line) => (
+        <>
+          {(line.index === 0 || !!line.index) && (
+            <line
+              x1={slices[line.index].x}
+              y1="300"
+              x2={slices[line.index].x}
+              y2="0"
+              stroke="#7a5151"
+            />
+          )}
+          {!!line?.text && (line.index === 0 || !!line.index) && (
+            <text
+              x={slices[line.index].x}
+              y="310"
+              // className="text-2xl tablet:text-4xl laptop:text-5xl"
+              textAnchor="middle"
+              dominantBaseline="central"
+              font-size="smaller"
+              // font-weight="lighter"
+              fill="#7a5151"
+              // style={{
+              //   fontSize: '36px',
+              // }}
+              // fill="black"
+            >
+              {line.text}
+            </text>
+          )}
+        </>
+      ))}
+    </>
+  )
+}
+
 const StreamChart = ({
   title,
   data,
@@ -12,6 +52,8 @@ const StreamChart = ({
   axisBottom = true,
   axisLeft = true,
   legend = true,
+  linesOnX,
+  tooltipCaptions,
 }) => {
   if (!data || data.length === 0) return null
   const keys = Object.keys(data[0])
@@ -55,13 +97,23 @@ const StreamChart = ({
               }
             : null
         }
-        enableGridX={false}
+        order="reverse"
+        enableGridX={true}
         enableGridY={false}
         offsetType="none"
         colors={(e) => colors[e.id]}
         fillOpacity={0.85}
         borderColor={{ theme: 'background' }}
         label={(e) => labels[e.id]}
+        layers={[
+          'grid',
+          'axes',
+          'layers',
+          'dots',
+          'slices',
+          'legends',
+          ({ slices }) => GridX({ slices, linesOnX }),
+        ]}
         // dotSize={8}
         // dotColor={{ from: 'color' }}
         // dotBorderWidth={2}
@@ -84,6 +136,77 @@ const StreamChart = ({
         //     </strong>
         //   </div>
         // )}
+        // enableStackTooltip={false}
+        stackTooltip={(props) => {
+          // console.log('props', props)
+          const { stack, index } = props.slice
+          const labelsKeys = Object.keys(labels)
+          return (
+            <div
+              style={{
+                backgroundColor: 'white',
+                color: 'inherit',
+                fontSize: 'inherit',
+                borderRadius: 2,
+                boxShadow: 'rgba(0, 0, 0, 0.25) 0px 1px 2px',
+                padding: '5px 9px',
+              }}
+            >
+              <div className="w-full italic font-bold text-center">
+                {tooltipCaptions[index]}
+              </div>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <tbody>
+                  {stack
+                    // .sort((a, b) => {
+                    //   // console.log('a', a)
+                    //   // console.log('labelsKeys', labelsKeys)
+                    //   return labelsKeys.indexOf(a.layerId) >
+                    //     labelsKeys.indexOf(b.layerId)
+                    //     ? 1
+                    //     : -1
+                    // })
+                    .map((item) => (
+                      <tr key={item.layerLabel}>
+                        <td style={{ padding: '3px 5px' }}>
+                          <span
+                            style={{
+                              display: 'block',
+                              width: 12,
+                              height: 12,
+                              backgroundColor: item.color,
+                            }}
+                          ></span>
+                        </td>
+                        <td style={{ padding: '3px 5px' }}>
+                          {item.layerLabel}
+                        </td>
+                        <td style={{ padding: '3px 5px' }}>{item.value}</td>
+                      </tr>
+                    ))}
+                  <tr>
+                    <td style={{ padding: '3px 5px' }}>
+                      <span
+                        style={{
+                          display: 'block',
+                          width: 12,
+                          height: 12,
+                          // backgroundColor: item.color,
+                        }}
+                      ></span>
+                    </td>
+                    <td style={{ padding: '3px 5px', fontWeight: 'bold' }}>
+                      ВСЕГО
+                    </td>
+                    <td style={{ padding: '3px 5px', fontWeight: 'bold' }}>
+                      {stack.reduce((acc, obj) => acc + obj.value, 0)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )
+        }}
         legends={
           legend
             ? [
