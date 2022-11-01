@@ -118,98 +118,99 @@ const BirthdaysContent = () => {
         </div>
         {/* <div className="flex-1" /> */}
       </ContentHeader>
-      {birthdaysCount > 0 ? (
-        <Timeline
-          style={{ paddingLeft: 8, paddingRight: 8 }}
-          sx={{
-            [`& .${timelineItemClasses.root}:before`]: {
-              flex: 0,
-              padding: 0,
-            },
-            // [`& .${timelineContentClasses.root}`]: {
-            //   paddingRight: 0,
-            //   paddingLeft: 1.5,
-            // },
-          }}
-        >
-          {array.map((users, index) => {
-            var date = new Date()
-            date.setDate(date.getDate() + index)
-            return (
-              users.length > 0 && (
-                <TimelineItem key={index}>
-                  <TimelineSeparator>
-                    <TimelineDot
-                      className="flex items-center justify-center w-7 h-7"
-                      style={{
-                        paddingLeft: 0,
-                        paddingRight: 0,
-                        marginTop: 1,
-                      }}
-                      color="success"
-                    >
-                      <div className="flex items-center justify-center w-4 h-4">
-                        <FontAwesomeIcon icon={faBirthdayCake} size="1x" />
-                      </div>
-                    </TimelineDot>
-                    {index < lastIndex && (
-                      <TimelineConnector style={{ marginBottom: 8 }} />
-                    )}
-                  </TimelineSeparator>
-
-                  <TimelineContent
-                    className="flex flex-col"
-                    style={{
-                      paddingRight: 0,
-                      paddingLeft: 8,
-                      paddingTop: 0,
-                      paddingBottom: 0,
-                    }}
-                  >
-                    <div className="flex items-center h-8 gap-x-1">
-                      <span className="font-bold">
-                        {formatDate(date, false, true)}
-                      </span>
-                      <span>({getDaysFromNow(date, true)})</span>
-                    </div>
-                    <div className="flex flex-col pb-2 gap-y-1">
-                      {users.map((user) => (
-                        <div key={user._id}>
-                          <div className="flex px-1 text-sm gap-x-1">
-                            <span>Исполнится</span>
-                            <span>
-                              {birthDateToAge(
-                                user.birthday,
-                                true,
-                                false,
-                                true,
-                                1
-                              )}
-                            </span>
-                          </div>
-
-                          <SelectUserList
-                            // label="Участники Мужчины"
-                            key={user._id}
-                            usersId={[user._id]}
-                            showCounter={false}
-                            readOnly
-                          />
+      <CardListWrapper>
+        {birthdaysCount > 0 ? (
+          <Timeline
+            style={{ paddingLeft: 8, paddingRight: 8 }}
+            sx={{
+              [`& .${timelineItemClasses.root}:before`]: {
+                flex: 0,
+                padding: 0,
+              },
+              // [`& .${timelineContentClasses.root}`]: {
+              //   paddingRight: 0,
+              //   paddingLeft: 1.5,
+              // },
+            }}
+          >
+            {array.map((users, index) => {
+              var date = new Date()
+              date.setDate(date.getDate() + index)
+              return (
+                users.length > 0 && (
+                  <TimelineItem key={index}>
+                    <TimelineSeparator>
+                      <TimelineDot
+                        className="flex items-center justify-center w-7 h-7"
+                        style={{
+                          paddingLeft: 0,
+                          paddingRight: 0,
+                          marginTop: 1,
+                        }}
+                        color="success"
+                      >
+                        <div className="flex items-center justify-center w-4 h-4">
+                          <FontAwesomeIcon icon={faBirthdayCake} size="1x" />
                         </div>
-                      ))}
-                    </div>
-                  </TimelineContent>
-                </TimelineItem>
+                      </TimelineDot>
+                      {index < lastIndex && (
+                        <TimelineConnector style={{ marginBottom: 8 }} />
+                      )}
+                    </TimelineSeparator>
+
+                    <TimelineContent
+                      className="flex flex-col"
+                      style={{
+                        paddingRight: 0,
+                        paddingLeft: 8,
+                        paddingTop: 0,
+                        paddingBottom: 0,
+                      }}
+                    >
+                      <div className="flex items-center h-8 gap-x-1">
+                        <span className="font-bold">
+                          {formatDate(date, false, true)}
+                        </span>
+                        <span>({getDaysFromNow(date, true)})</span>
+                      </div>
+                      <div className="flex flex-col pb-2 gap-y-1">
+                        {users.map((user) => (
+                          <div key={user._id}>
+                            <div className="flex px-1 text-sm gap-x-1">
+                              <span>Исполнится</span>
+                              <span>
+                                {birthDateToAge(
+                                  user.birthday,
+                                  true,
+                                  false,
+                                  true,
+                                  1
+                                )}
+                              </span>
+                            </div>
+
+                            <SelectUserList
+                              // label="Участники Мужчины"
+                              key={user._id}
+                              usersId={[user._id]}
+                              showCounter={false}
+                              readOnly
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </TimelineContent>
+                  </TimelineItem>
+                )
               )
-            )
-          })}
-        </Timeline>
-      ) : (
-        <div className="flex justify-center w-full px-2 text-center">
-          {'В выбранный период дней рождения ни у кого не предвидится'}
-        </div>
-      )}
-      {/* </CardListWrapper> */}
+            })}
+          </Timeline>
+        ) : (
+          <div className="flex justify-center w-full px-2 text-center">
+            {'В выбранный период дней рождения ни у кого не предвидится'}
+          </div>
+        )}
+      </CardListWrapper>
     </>
   )
 }
