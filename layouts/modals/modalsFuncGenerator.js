@@ -26,6 +26,7 @@ import jsonFunc from './modalsFunc/jsonFunc'
 import cropImageFunc from './modalsFunc/cropImageFunc'
 import userVisitedEventsFunc from './modalsFunc/userVisitedEventsFunc'
 import notificationsTelegramFunc from './modalsFunc/notificationsTelegramFunc'
+import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -237,6 +238,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
         }),
       view: (userId) => addModal(userViewFunc(userId)),
       events: (userId) => addModal(userVisitedEventsFunc(userId)),
+      questionare: (userId) => addModal(userQuestionnaireFunc(userId)),
     },
     additionalBlock: {
       add: (additionalBlockId) =>

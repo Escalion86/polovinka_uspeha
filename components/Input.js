@@ -27,6 +27,7 @@ const Input = forwardRef(
       step,
       labelPos,
       onFocus,
+      defaultValue,
     },
     ref
   ) => {
@@ -69,7 +70,7 @@ const Input = forwardRef(
                 : 'bg-transparent'
             )}
             type={type}
-            value={value ?? ''}
+            value={defaultValue !== undefined ? undefined : value ?? ''}
             onChange={(e) => {
               const { value } = e.target
               if (type === 'number') {
@@ -87,6 +88,7 @@ const Input = forwardRef(
             placeholder={placeholder}
             disabled={disabled}
             onFocus={onFocus}
+            defaultValue={defaultValue}
           />
           {postfix && (
             <div

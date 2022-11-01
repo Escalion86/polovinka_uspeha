@@ -385,6 +385,13 @@ const QuestionnaireContent = (props) => {
             />
             <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
           </FormWrapper>
+          {/* <ValueItem
+            name="Доп анкета"
+            color="green-500"
+            icon={faCheck}
+            hoverable
+            onClick={() => modalsFunc.user.questionare()}
+          /> */}
           {/* </div> */}
         </TabPanel>
         <TabPanel tabName="Конфиденциальность" className="flex-1 p-2">
