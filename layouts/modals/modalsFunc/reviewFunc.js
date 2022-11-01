@@ -11,7 +11,7 @@ import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
 import { DEFAULT_REVIEW } from '@helpers/constants'
-import EditableTextarea from '@components/EditableTextarea'
+// import EditableTextarea from '@components/EditableTextarea'
 
 const reviewFunc = (reviewId, clone = false) => {
   const ReviewModal = ({
