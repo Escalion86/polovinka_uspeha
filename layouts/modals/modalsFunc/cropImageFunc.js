@@ -1,12 +1,7 @@
 import compareObjects from '@helpers/compareObjects'
-import React, { useState, useRef, useEffect, DependencyList } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
-import ReactCrop, {
-  centerCrop,
-  makeAspectCrop,
-  Crop,
-  PixelCrop,
-} from 'react-image-crop'
+import ReactCrop from 'react-image-crop'
 
 // function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
 //   return centerCrop(
