@@ -30,6 +30,7 @@ import { createTheme } from '@mui/material/styles'
 import { red } from '@mui/material/colors'
 import Script from 'next/script'
 import { SnackbarProvider } from 'notistack'
+import { useEffect } from 'react'
 // import { CssBaseline } from '@mui/material/'
 
 // Create a theme instance.
@@ -79,6 +80,15 @@ const theme = createTheme({
 // const store = createStore(allReducers, enhancer)
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+  useEffect(() => {
+    let vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+    window.addEventListener('resize', () => {
+      let vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    })
+  }, [])
+
   return (
     <>
       <Head>

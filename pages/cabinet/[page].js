@@ -44,15 +44,6 @@ function CabinetPage(props) {
     if (redirect) router.push(redirect, '', { shallow: true })
   }, [redirect])
 
-  useEffect(() => {
-    let vh = window.innerHeight * 0.01
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
-    window.addEventListener('resize', () => {
-      let vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
-    })
-  }, [])
-
   const Component = CONTENTS[page]
     ? CONTENTS[page].Component
     : (props) => <div className="flex justify-center px-2">Ошибка 404</div>
