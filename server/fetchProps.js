@@ -26,6 +26,8 @@ import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
 import Histories from '@models/Histories'
 import Payments from '@models/Payments'
+import Questionnaires from '@models/Questionnaires'
+import QuestionnairesUsers from '@models/QuestionnairesUsers'
 import Reviews from '@models/Reviews'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
@@ -33,11 +35,11 @@ import dbConnect from '@utils/dbConnect'
 
 const fetchProps = async (user) => {
   try {
-    console.log(`start fetchProps`)
-    console.time('Loading time')
-    console.time('dbConnect')
+    // console.log(`start fetchProps`)
+    // console.time('Loading time')
+    // console.time('dbConnect')
     const db = await dbConnect()
-    console.timeEnd(`dbConnect`)
+    // console.timeEnd(`dbConnect`)
     // await fetchingLog({ from: 'fetchProps', db }, process.env.NEXTAUTH_SITE)
     // console.log('db', db)
     // const users = await Users.find({})
@@ -94,6 +96,8 @@ const fetchProps = async (user) => {
     // console.timeEnd('payments')
     // console.time('siteSettings')
     const siteSettings = await SiteSettings.find({})
+    const questionnaires = await Questionnaires.find({})
+    const questionnairesUsers = await QuestionnairesUsers.find({})
     // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     // console.log(`siteSettings`, siteSettings)
     // console.timeEnd('siteSettings')
@@ -102,7 +106,7 @@ const fetchProps = async (user) => {
           // createdAt: { $gt: user.prevActivityAt },
         })
       : []
-    console.timeEnd('Loading time')
+    // console.timeEnd('Loading time')
     // dbDisconnect()
     // console.log('return result', {
     //   users: JSON.parse(JSON.stringify(users)),
@@ -126,7 +130,7 @@ const fetchProps = async (user) => {
     //   siteSettings,
     // }
 
-    return {
+    const fetchResult = {
       users: JSON.parse(JSON.stringify(users)),
       events: JSON.parse(JSON.stringify(events)),
       directions: JSON.parse(JSON.stringify(directions)),
@@ -136,7 +140,13 @@ const fetchProps = async (user) => {
       payments: JSON.parse(JSON.stringify(payments)),
       siteSettings: JSON.parse(JSON.stringify(siteSettings[0])),
       histories: JSON.parse(JSON.stringify(histories)),
+      questionnaires: JSON.parse(JSON.stringify(questionnaires)),
+      questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
     }
+
+    // console.log('fetchResult', fetchResult)
+
+    return fetchResult
   } catch (error) {
     return {
       users: [],
@@ -148,6 +158,8 @@ const fetchProps = async (user) => {
       payments: [],
       siteSettings: {},
       histories: [],
+      questionnaires: [],
+      questionnairesUsers: [],
       error: JSON.parse(JSON.stringify(error)),
     }
   }

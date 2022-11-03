@@ -238,7 +238,8 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
         }),
       view: (userId) => addModal(userViewFunc(userId)),
       events: (userId) => addModal(userVisitedEventsFunc(userId)),
-      questionare: (userId) => addModal(userQuestionnaireFunc(userId)),
+      questionnaire: (userId, questionnaireId) =>
+        addModal(userQuestionnaireFunc(userId, questionnaireId)),
     },
     additionalBlock: {
       add: (additionalBlockId) =>
