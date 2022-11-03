@@ -8,18 +8,8 @@ import fetchProps from '@server/fetchProps'
 import DeviceCheck from '@components/DeviceCheck'
 import StateLoader from '@components/StateLoader'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
-import { useEffect } from 'react'
 
 export default function Home(props) {
-  useEffect(() => {
-    let vh = window.innerHeight * 0.01
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
-    window.addEventListener('resize', () => {
-      let vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
-    })
-  }, [])
-
   return (
     <>
       <Head>

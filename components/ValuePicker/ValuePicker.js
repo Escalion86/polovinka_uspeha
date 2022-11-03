@@ -1,5 +1,6 @@
 import InputWrapper from '@components/InputWrapper'
 import cn from 'classnames'
+import { useState } from 'react'
 import ValueItem from './ValueItem'
 
 const ValuePicker = ({
@@ -13,7 +14,9 @@ const ValuePicker = ({
   error = false,
   labelClassName,
   className,
+  defaultValue,
 }) => {
+  const [state, setState] = useState(defaultValue)
   return (
     <InputWrapper
       label={label}
@@ -46,16 +49,32 @@ const ValuePicker = ({
           <ValueItem
             key={name + item.value}
             className="z-10"
-            active={item.value === value}
+            active={
+              defaultValue !== undefined
+                ? item.value === state
+                : item.value === value
+            }
             value={item.value}
             name={item.name}
             icon={item.icon}
             color={item.color}
-            onClick={() =>
-              item.value === value
-                ? disselectOnSameClick && onChange(null)
-                : onChange(item.value)
-            }
+            onClick={() => {
+              if (defaultValue !== undefined) {
+                if (item.value === state) {
+                  if (disselectOnSameClick) {
+                    onChange(null)
+                    setState(null)
+                  }
+                } else {
+                  onChange(item.value)
+                  setState(item.value)
+                }
+              } else {
+                item.value === value
+                  ? disselectOnSameClick && onChange(null)
+                  : onChange(item.value)
+              }
+            }}
           />
         ))}
       </div>

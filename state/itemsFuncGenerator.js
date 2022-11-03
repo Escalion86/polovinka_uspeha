@@ -93,7 +93,16 @@ const messages = {
 
 const itemsFuncGenerator = (
   props,
-  array = ['event', 'direction', 'additionalBlock', 'user', 'review', 'payment']
+  array = [
+    'event',
+    'direction',
+    'additionalBlock',
+    'user',
+    'review',
+    'payment',
+    'questionnaire',
+    'questionnairesUser',
+  ]
 ) => {
   const {
     setLoadingCard,

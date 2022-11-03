@@ -1,5 +1,5 @@
 // import dbConnect from '@utils/dbConnect'
-import DeviceCheck from '@components/DeviceCheck'
+// import DeviceCheck from '@components/DeviceCheck'
 // import { H1, H2, H3, H4, P } from '@components/tags'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import {
@@ -28,20 +28,10 @@ import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import { useRecoilValue } from 'recoil'
 import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
-import { useEffect } from 'react'
 
 export default function Home(props) {
   const filteredEvents = useRecoilValue(filteredEventsSelector)
   const filteredDirections = useRecoilValue(filteredDirectionsSelector)
-
-  useEffect(() => {
-    let vh = window.innerHeight * 0.01
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
-    window.addEventListener('resize', () => {
-      let vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
-    })
-  }, [])
 
   const directionsBlocksInverse = filteredEvents.length > 0
   const additionalBlocksInverse =

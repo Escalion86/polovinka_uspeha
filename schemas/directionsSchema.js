@@ -41,6 +41,9 @@ const directionsSchema = {
       type: 'checkbox',
     },
   },
+  questionnaireId: {
+    type: String,
+  },
 }
 
 export default directionsSchema

@@ -45,6 +45,12 @@ import DeviceCheck from './DeviceCheck'
 import cn from 'classnames'
 import useSnackbar from '@helpers/useSnackbar'
 import historiesAtom from '@state/atoms/historiesAtom'
+import questionnairesUsersAtom from '@state/atoms/questionnairesUsersAtom'
+import questionnairesAtom from '@state/atoms/questionnairesAtom'
+import questionnaireEditSelector from '@state/selectors/questionnaireEditSelector'
+import questionnaireDeleteSelector from '@state/selectors/questionnaireDeleteSelector'
+import questionnaireUsersEditSelector from '@state/selectors/questionnaireUsersEditSelector'
+import questionnaireUsersDeleteSelector from '@state/selectors/questionnaireUsersDeleteSelector'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -73,6 +79,8 @@ const StateLoader = (props) => {
   const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
   const setSiteSettingsState = useSetRecoilState(siteSettingsAtom)
   const setHistoriesState = useSetRecoilState(historiesAtom)
+  const setQuestionnairesState = useSetRecoilState(questionnairesAtom)
+  const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
 
   const setEvent = useSetRecoilState(eventEditSelector)
   const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -90,6 +98,14 @@ const StateLoader = (props) => {
   const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
   const deleteEventsUsersByEventId = useSetRecoilState(
     eventsUsersDeleteByEventIdSelector
+  )
+  const setQuestionnaire = useSetRecoilState(questionnaireEditSelector)
+  const deleteQuestionnaire = useSetRecoilState(questionnaireDeleteSelector)
+  const setQuestionnaireUsers = useSetRecoilState(
+    questionnaireUsersEditSelector
+  )
+  const deleteQuestionnaireUsers = useSetRecoilState(
+    questionnaireUsersDeleteSelector
   )
 
   const [itemsFunc, setItemsFunc] = useRecoilState(itemsFuncAtom)
@@ -113,6 +129,8 @@ const StateLoader = (props) => {
     setEventsUsersState(props.eventsUsers)
     setSiteSettingsState(props.siteSettings)
     setHistoriesState(props.histories)
+    setQuestionnairesState(props.questionnaires)
+    setQuestionnairesUsersState(props.questionnairesUsers)
 
     setIsSiteLoading(false)
   }, [])
@@ -143,6 +161,10 @@ const StateLoader = (props) => {
           deleteEventsUsers,
           deleteEventsUsersByEventId,
           setSiteSettings: setSiteSettingsState,
+          setQuestionnaire,
+          deleteQuestionnaire,
+          setQuestionnaireUsers,
+          deleteQuestionnaireUsers,
           snackbar,
         })
       )

@@ -26,39 +26,103 @@ import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import usersAtom from '@state/atoms/usersAtom'
 import { text } from '@fortawesome/fontawesome-svg-core'
+import ValuePicker from '@components/ValuePicker/ValuePicker'
+import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
 
-const userQuestionnaireFunc = (userId) => {
+const userQuestionnaireFunc = (userId, questionnaireId) => {
   const data = [
-    { type: 'text', label: 'Профессия', key: 'profession', defaultValue: '' },
-    { type: 'number', label: 'Возраст', key: 'age', defaultValue: 0 },
-    { type: 'valuePicker', label: 'Пол', key: 'gender', defaultValue: 'male' },
+    {
+      type: 'text',
+      label: 'Профессия',
+      key: 'profession',
+      defaultValue: '',
+      show: true,
+      required: true,
+    },
+    {
+      type: 'number',
+      label: 'Возраст',
+      key: 'age',
+      defaultValue: 0,
+      show: true,
+      required: true,
+      min: 0,
+      max: undefined,
+    },
+    {
+      type: 'valuePicker',
+      label: 'Пол',
+      key: 'gender',
+      defaultValue: 'male',
+      valuesArray: [
+        { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },
+        { value: 'famale', name: 'Женщина', color: 'red-400', icon: faVenus },
+      ],
+      show: true,
+      required: true,
+    },
   ]
   const stateDefault = {}
-  data.forEach((item) => (stateDefault[item.key] = item.defaultValue))
+  data.forEach((item) => {
+    if (item.show) stateDefault[item.key] = item.defaultValue
+  })
 
-  const Q = ({ onChange }) => (
-    <>
-      {data.map((item) => {
-        if (item.type === 'text')
-          return (
-            <Input
-              key={item.key}
-              label={item.label}
-              defaultValue={item.defaultValue}
-              type="text"
-              // value={firstName}
-              onChange={(value) => {
-                onChange({ [item.key]: value })
-              }}
-              // labelClassName="w-40"
-              // error={errors.firstName}
-              // required
-            />
-          )
-        return null
-      })}
-    </>
-  )
+  const Q = ({ onChange }) => {
+    return (
+      <>
+        {data
+          .filter((item) => item.show)
+          .map((item) => {
+            const onItemChange = (value) => onChange({ [item.key]: value })
+            if (item.type === 'text')
+              return (
+                <Input
+                  key={item.key}
+                  label={item.label}
+                  defaultValue={item.defaultValue}
+                  type="text"
+                  // value={firstName}
+                  onChange={onItemChange}
+                  // labelClassName="w-40"
+                  // error={errors.firstName}
+                  required={item.required}
+                />
+              )
+            if (item.type === 'number')
+              return (
+                <Input
+                  key={item.key}
+                  label={item.label}
+                  defaultValue={item.defaultValue}
+                  type="number"
+                  // value={firstName}
+                  onChange={onItemChange}
+                  min={item.min}
+                  max={item.max}
+                  // labelClassName="w-40"
+                  // error={errors.firstName}
+                  // required
+                />
+              )
+            if (item.type === 'valuePicker')
+              return (
+                <ValuePicker
+                  key={item.key}
+                  defaultValue={item.defaultValue}
+                  // value={gender}
+                  valuesArray={item.valuesArray}
+                  label={item.label}
+                  onChange={onItemChange}
+                  // name="gender"
+                  // required={required}
+                  // error={error}
+                />
+              )
+            return null
+          })}
+      </>
+    )
+  }
 
   const UserQuestionnaireFuncModal = ({
     closeModal,
@@ -79,6 +143,8 @@ const userQuestionnaireFunc = (userId) => {
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
+    const updateState = (obj) => setState((state) => ({ ...state, ...obj }))
+
     console.log('state', state)
 
     // const router = useRouter()
@@ -89,17 +155,45 @@ const userQuestionnaireFunc = (userId) => {
 
     const onClickConfirm = async () => {}
 
+    useEffect(() => {
+      // const isFormChanged =
+      //   user?.firstName !== firstName ||
+      //   user?.secondName !== secondName ||
+      //   user?.thirdName !== thirdName ||
+      //   // user?.about !== about ||
+      //   // user?.interests !== interests ||
+      //   // user?.profession !== profession ||
+      //   // user?.orientation !== orientation ||
+      //   user?.gender !== gender ||
+      //   user?.email !== email ||
+      //   user?.phone !== phone ||
+      //   user?.whatsapp !== whatsapp ||
+      //   user?.viber !== viber ||
+      //   user?.telegram !== telegram ||
+      //   user?.instagram !== instagram ||
+      //   user?.vk !== vk ||
+      //   !compareArrays(user?.images, images) ||
+      //   user?.birthday !== birthday ||
+      //   user?.haveKids !== haveKids ||
+      //   user?.status !== status ||
+      //   user?.role !== role
+
+      setOnConfirmFunc(onClickConfirm)
+      // setOnShowOnCloseConfirmDialog(isFormChanged)
+      // setDisableConfirm(!isFormChanged)
+    }, [])
+
     return (
       <FormWrapper>
-        <Q onChange={(e) => console.log('e', e)} />
+        <Q onChange={updateState} />
         <ErrorsList errors={errors} />
       </FormWrapper>
     )
   }
 
   return {
-    title: `${userId && !clone ? 'Редактирование' : 'Создание'} пользователя`,
-    confirmButtonName: userId && !clone ? 'Применить' : 'Создать',
+    title: `Дополнительная анкета пользователя`,
+    confirmButtonName: 'Применить',
     Children: UserQuestionnaireFuncModal,
   }
 }
