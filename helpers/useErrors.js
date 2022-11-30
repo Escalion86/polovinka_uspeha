@@ -118,6 +118,17 @@ const useErrors = () => {
               birthday: 'Возраст не может быть менее 18 лет',
             })
           : null,
+      security: (data) =>
+        typeof data.fullSecondName !== 'boolean' ||
+        typeof data.fullThirdName !== 'boolean' ||
+        typeof data.showBirthday !== 'boolean' ||
+        typeof data.showAge !== 'boolean' ||
+        typeof data.showContacts !== 'boolean'
+          ? setError({
+              security:
+                'Необходимо заполнить все параметры конфиденциальности во вкладке "Конфиденциальность"',
+            })
+          : null,
     }
 
     for (const [key, value] of Object.entries(object)) {

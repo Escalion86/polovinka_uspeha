@@ -68,23 +68,23 @@ export default async function auth(req, res) {
       //   return { ...token, ...user }
       // },
       async session({ session, user, token }) {
-        await fetchingLog(
-          { from: 'nextauth callback session', user: session?.user },
-          process.env.NEXTAUTH_SITE
-        )
+        // await fetchingLog(
+        //   { from: 'nextauth callback session', user: session?.user },
+        //   process.env.NEXTAUTH_SITE
+        // )
 
         const userPhone = session.user.name
 
         // Находим данные пользователя и обновляем время активности
-        await fetchingLog(
-          { from: 'start dbConnect in nextauth' },
-          process.env.NEXTAUTH_SITE
-        )
+        // await fetchingLog(
+        //   { from: 'start dbConnect in nextauth' },
+        //   process.env.NEXTAUTH_SITE
+        // )
         await dbConnect()
-        await fetchingLog(
-          { from: 'finish dbConnect in nextauth' },
-          process.env.NEXTAUTH_SITE
-        )
+        // await fetchingLog(
+        //   { from: 'finish dbConnect in nextauth' },
+        //   process.env.NEXTAUTH_SITE
+        // )
 
         const result = await Users.findOne({ phone: userPhone })
 
