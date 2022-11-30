@@ -41,7 +41,7 @@ const userSignedUpEventsFunc = (userId, clone = false) => {
         (item) => item.event && item.user && item.event.status !== 'canceled'
       )
       .sort((a, b) =>
-        getDiffBetweenDates(a.event.date, b.event.date) > 0 ? -1 : 1
+        getDiffBetweenDates(a.event.dateStart, b.event.dateStart) > 0 ? -1 : 1
       )
 
     const eventsAsParticipant = sortedEventUsers.filter(
