@@ -46,6 +46,7 @@ import EventsContent from '@layouts/content/EventsContent'
 import AdditionalBlocksContent from '@layouts/content/AdditionalBlocksContent'
 import QuestionnaireContent from '@layouts/content/QuestionnaireContent'
 import UsersContent from '@layouts/content/UsersContent'
+import MembersContent from '@layouts/content/MembersContent'
 
 import ZodiacCapricorn from 'svg/zodiac/ZodiacCapricorn'
 import ZodiacTaurus from 'svg/zodiac/ZodiacTaurus'
@@ -307,6 +308,19 @@ export const DEFAULT_EVENT = Object.freeze({
   reportImages: [],
 })
 
+export const DEFAULT_QUESTIONNAIRE = Object.freeze({
+  name: '',
+  data: [],
+})
+
+export const DEFAULT_QUESTIONNAIRE_ITEM = {
+  type: 'text',
+  question: '',
+  key: '',
+  show: true,
+  required: true,
+}
+
 export const DEFAULT_DIRECTION = Object.freeze({
   title: '',
   description: '',
@@ -484,6 +498,7 @@ export const CONTENTS = {
   events: { Component: EventsContent, name: 'Мероприятия' },
   questionnaire: { Component: QuestionnaireContent, name: 'Моя анкета' },
   users: { Component: UsersContent, name: 'Пользователи' },
+  members: { Component: MembersContent, name: 'Участники клуба' },
   payments: { Component: PaymentsContent, name: 'Транзакции' },
   contacts: { Component: ContactsContent, name: 'Контакты на сайте' },
   dev: { Component: DevContent, name: 'Разработчик' },
@@ -567,6 +582,13 @@ export const pages = [
     icon: faPieChart,
   },
   {
+    id: 50,
+    group: 50,
+    name: 'Участники клуба',
+    href: 'members',
+    icon: faCalendar,
+  },
+  {
     id: 99,
     group: 99,
     name: 'Разработчик',
@@ -582,6 +604,7 @@ export const pagesGroups = [
   { id: 3, name: 'Транзакции', icon: faMoneyBill, access: 'dev' },
   { id: 4, name: 'События', icon: faHistory, access: 'admin' },
   { id: 5, name: 'Статистика', icon: faPieChart, access: 'admin' },
+  { id: 50, name: 'Участники клуба', icon: faUser, access: 'member' },
   { id: 99, name: 'Разработчик', icon: faBug, access: 'dev' },
 ]
 

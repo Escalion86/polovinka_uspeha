@@ -11,6 +11,7 @@ const Tooltip = ({
   disableHoverListener,
   disableTouchListener,
   PopperProps,
+  disableInteractive = true,
 }) => {
   if (!title) return children
   return (
@@ -25,6 +26,7 @@ const Tooltip = ({
       PopperProps={PopperProps}
       placement="top"
       arrow
+      disableInteractive={disableInteractive}
     >
       {children}
     </MuiTooltip>

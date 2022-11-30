@@ -17,6 +17,10 @@ import TabPanel from '@components/Tabs/TabPanel'
 import { DEFAULT_EVENT } from '@helpers/constants'
 import usersAtom from '@state/atoms/usersAtom'
 import compareArrays from '@helpers/compareArrays'
+import {
+  faArrowAltCircleLeft,
+  faArrowAltCircleRight,
+} from '@fortawesome/free-regular-svg-icons'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -202,6 +206,21 @@ const eventUsersFunc = (eventId) => {
             }
             exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
             readOnly={!isLoggedUserAdmin}
+            buttons={[
+              {
+                onClick: (id) => {
+                  setMansIds(
+                    sortUsersIds([...mansIds].filter((userId) => userId !== id))
+                  )
+                  setReservedParticipantsIds(
+                    sortUsersIds([...reservedParticipantsIds, id])
+                  )
+                },
+                icon: faArrowAltCircleRight,
+                iconClassName: 'text-general',
+                tooltip: 'Перенести в резерв',
+              },
+            ]}
           />
           <SelectUserList
             label="Участники Женщины"
@@ -220,6 +239,23 @@ const eventUsersFunc = (eventId) => {
             }
             exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
             readOnly={!isLoggedUserAdmin}
+            buttons={[
+              {
+                onClick: (id) => {
+                  setWomansIds(
+                    sortUsersIds(
+                      [...womansIds].filter((userId) => userId !== id)
+                    )
+                  )
+                  setReservedParticipantsIds(
+                    sortUsersIds([...reservedParticipantsIds, id])
+                  )
+                },
+                icon: faArrowAltCircleRight,
+                iconClassName: 'text-general',
+                tooltip: 'Перенести в резерв',
+              },
+            ]}
           />
           <div className="flex justify-end gap-x-1">
             <span>Всего участников:</span>
@@ -244,15 +280,33 @@ const eventUsersFunc = (eventId) => {
               label="Резерв"
               modalTitle="Выбор пользователей в резерв"
               usersId={reservedParticipantsIds}
-              onChange={(usersIds) =>
+              onChange={(usersIds) => {
+                removeIdsFromParticipants(usersIds)
                 setReservedParticipantsIds(sortUsersIds(usersIds))
-              }
+              }}
               exceptedIds={[
                 ...assistantsIds,
                 // ...mansIds,
                 // ...womansIds,
                 // ...reservedParticipantsIds,
                 ...bannedParticipantsIds,
+              ]}
+              buttons={[
+                {
+                  onClick: (id) => {
+                    removeIdsFromReserve([id])
+                    const genderOfUser = users.find(
+                      (user) => user._id === id
+                    ).gender
+                    if (genderOfUser === 'male')
+                      setMansIds(sortUsersIds([...mansIds, id]))
+                    if (genderOfUser === 'famale')
+                      setWomansIds(sortUsersIds([...womansIds, id]))
+                  },
+                  icon: faArrowAltCircleLeft,
+                  iconClassName: 'text-general',
+                  tooltip: 'Перенести в активный состав',
+                },
               ]}
               readOnly={!isLoggedUserAdmin}
             />

@@ -394,6 +394,15 @@ const QuestionnaireContent = (props) => {
               onClick={() => modalsFunc.user.questionnaire()}
             />
           )}
+          {isLoggedUserDev && (
+            <ValueItem
+              name="Конструктор анкет"
+              color="red-500"
+              icon={faCheck}
+              hoverable
+              onClick={() => modalsFunc.questionnaire.edit()}
+            />
+          )}
           {/* </div> */}
         </TabPanel>
         <TabPanel tabName="Конфиденциальность" className="flex-1 p-2">

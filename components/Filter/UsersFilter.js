@@ -2,7 +2,7 @@ import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButto
 import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
 import React from 'react'
 
-const UsersFilter = ({ value, onChange }) => {
+const UsersFilter = ({ value, onChange, hideNullGender }) => {
   return (
     <>
       {value?.gender && (
@@ -11,6 +11,7 @@ const UsersFilter = ({ value, onChange }) => {
           onChange={(value) =>
             onChange((state) => ({ ...state, gender: value }))
           }
+          hideNullGender
         />
       )}
       {value?.status && (

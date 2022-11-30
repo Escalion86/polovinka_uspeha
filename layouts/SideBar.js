@@ -21,13 +21,15 @@ import menuOpenAtom from '@state/atoms/menuOpen'
 import Link from 'next/link'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 
-const menuCfg = (pages, pagesGroups, userActiveRole) => {
+const menuCfg = (pages, pagesGroups, userActiveRole, userActiveStatus) => {
   return pagesGroups
     .filter(
       (pageGroup) =>
         pageGroup.access === 'all' ||
         pageGroup.access === userActiveRole ||
+        pageGroup.access === userActiveStatus ||
         userActiveRole === 'dev'
     )
     .reduce((totalGroups, group) => {
@@ -203,6 +205,8 @@ const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
+  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
+
   const variants = {
     min: { width: '100%' },
     max: { width: 280 },
@@ -251,7 +255,12 @@ const SideBar = ({ page }) => {
       >
         <div className="flex flex-col w-full overflow-x-hidden overflow-y-auto">
           <Menu
-            menuCfg={menuCfg(pages, pagesGroups, loggedUserActiveRole)}
+            menuCfg={menuCfg(
+              pages,
+              pagesGroups,
+              loggedUserActiveRole,
+              loggedUserActiveStatus
+            )}
             activePage={page}
           />
         </div>

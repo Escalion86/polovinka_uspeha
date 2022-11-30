@@ -12,6 +12,7 @@ const IconToggleButton = ({
   return (
     <FormControl size="small">
       <ToggleButton
+        className="flex h-10 min-w-10 gap-x-1"
         size="small"
         value={value}
         selected={selected}

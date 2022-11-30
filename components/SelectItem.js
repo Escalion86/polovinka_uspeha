@@ -322,7 +322,7 @@ export const SelectUser = ({
   error,
   bordered = true,
   modalTitle,
-  // buttons,
+  buttons,
   rounded = true,
 }) => {
   const users = useRecoilValue(usersAtom)
@@ -345,6 +345,7 @@ export const SelectUser = ({
       bordered={bordered}
       error={error}
       rounded={rounded}
+      buttons={buttons}
       // buttons={
       //   onChange
       //     ? [
