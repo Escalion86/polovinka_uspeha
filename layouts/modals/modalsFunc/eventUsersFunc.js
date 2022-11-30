@@ -64,7 +64,7 @@ const eventUsersFunc = (eventId) => {
       eventUsersInReserveSelector(eventId)
     )
     const sortedEventReservedParticipantsIds = [...eventReservedParticipants]
-      .sort(sortFunction)
+      // .sort(sortFunction)
       .map((user) => user._id)
 
     const eventBannedParticipants = useRecoilValue(
