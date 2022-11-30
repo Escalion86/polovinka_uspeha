@@ -1,4 +1,5 @@
 import cn from 'classnames'
+import InputWrapper from './InputWrapper'
 
 const ComboBox = ({
   label,
@@ -6,21 +7,23 @@ const ComboBox = ({
   onChange,
   placeholder,
   items,
-  inLine = true,
   disabled = false,
-  className,
   labelClassName,
   selectClassName,
+  wrapperClassName,
+  hidden,
 }) => {
   const defaultItem = defaultValue
     ? items.find((item) => item.value === defaultValue)
     : null
 
   return (
-    <div className={cn('flex gap-1', { 'flex-col': !inLine }, className)}>
-      <label className={cn('text-text whitespace-nowrap', labelClassName)}>
-        {label}
-      </label>
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      wrapperClassName={wrapperClassName}
+      hidden={hidden}
+    >
       <select
         className={cn(
           'flex-1 px-1 rounded border cursor-pointer outline-none',
@@ -41,7 +44,7 @@ const ComboBox = ({
           </option>
         ))}
       </select>
-    </div>
+    </InputWrapper>
   )
 }
 

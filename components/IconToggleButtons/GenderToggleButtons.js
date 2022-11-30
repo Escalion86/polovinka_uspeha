@@ -1,13 +1,13 @@
 import React from 'react'
 import ToggleButtons from './ToggleButtons'
-import { GENDERS_WITH_NO_GENDER } from '@helpers/constants'
+import { GENDERS, GENDERS_WITH_NO_GENDER } from '@helpers/constants'
 
-const GenderToggleButtons = ({ value, onChange }) => {
+const GenderToggleButtons = ({ value, onChange, hideNullGender }) => {
   return (
     <ToggleButtons
       value={value}
       onChange={onChange}
-      buttonsConfig={GENDERS_WITH_NO_GENDER}
+      buttonsConfig={hideNullGender ? GENDERS : GENDERS_WITH_NO_GENDER}
       iconsOnly
     />
   )

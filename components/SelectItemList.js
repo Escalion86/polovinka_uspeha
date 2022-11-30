@@ -232,7 +232,7 @@ export const SelectUserList = ({
           filter,
           // disableDropDownList: true,
           exceptedIds,
-          buttons,
+          buttons: !readOnly && buttons,
           rounded: false,
         })
       }

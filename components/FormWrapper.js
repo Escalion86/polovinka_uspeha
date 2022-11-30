@@ -7,12 +7,13 @@ const FormWrapper = ({
   // flex = false,
   className,
   title,
+  gapY = 2,
 }) => (
   <div className="flex flex-col w-full">
     {title && <div className="text-lg font-bold text-center">{title}</div>}
     <div
       className={cn(
-        'flex flex-col flex-1 gap-y-2',
+        `flex flex-col flex-1 gap-y-${gapY}`,
         // { flex: flex },
         // { 'laptop:gap-2 laptop:grid laptop:grid-cols-form': grid && !flex },
         // { 'laptop:grid-cols-form2': twoColumns },

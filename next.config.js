@@ -5,6 +5,9 @@ module.exports = {
   //   // config.experiments = { topLevelAwait: true }
   //   return config
   // },
+  experimental: {
+    largePageDataBytes: 512 * 100000,
+  },
   reactStrictMode: true,
   // images: {
   //   domains: ['uniplatform.ru, dev.uniplatform.ru, localhost'],

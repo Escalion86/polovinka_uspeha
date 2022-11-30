@@ -89,6 +89,20 @@ const messages = {
       error: 'Не удалось удалить транзакцию',
     },
   },
+  questionnaire: {
+    update: {
+      success: 'Анкета обновлена',
+      error: 'Не удалось обновить анкету',
+    },
+    add: {
+      success: 'Анкета создана',
+      error: 'Не удалось создать анкету',
+    },
+    delete: {
+      success: 'Анкета удалена',
+      error: 'Не удалось удалить анкету',
+    },
+  },
 }
 
 const itemsFuncGenerator = (
