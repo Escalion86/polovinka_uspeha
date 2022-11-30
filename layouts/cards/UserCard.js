@@ -19,12 +19,13 @@ import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisi
 import formatDate from '@helpers/formatDate'
 import UserName from '@components/UserName'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
 
 const UserCard = ({ userId, hidden = false }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const user = useRecoilValue(userSelector(userId))
   const loading = useRecoilValue(loadingAtom('user' + userId))
-  const eventUsers = useRecoilValue(eventsUsersVisitedByUserIdSelector(userId))
+  const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   // const itemFunc = useRecoilValue(itemsFuncAtom)
 

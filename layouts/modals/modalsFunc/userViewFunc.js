@@ -24,6 +24,7 @@ import formatDate from '@helpers/formatDate'
 import TextLine from '@components/TextLine'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -42,7 +43,7 @@ const userViewFunc = (userId, clone = false) => {
     const user = useRecoilValue(userSelector(userId))
 
     const eventUsers = useRecoilValue(
-      eventsUsersVisitedByUserIdSelector(userId)
+      eventsUsersSignedUpByUserIdSelector(userId)
     )
 
     return (

@@ -21,6 +21,7 @@ import UserNameById from '@components/UserNameById'
 import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
 import eventsUsersFullByUserIdSelector from '@state/selectors/eventsUsersFullByUserIdSelector'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
+import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
 
 const userSignedUpEventsFunc = (userId, clone = false) => {
   const UserSignedUpEventsModal = ({
@@ -35,11 +36,13 @@ const userSignedUpEventsFunc = (userId, clone = false) => {
 
     // const user = useRecoilValue(userSelector(userId))
 
-    const eventUsers = useRecoilValue(eventsUsersFullByUserIdSelector(userId))
+    const eventUsers = useRecoilValue(
+      eventsUsersSignedUpByUserIdSelector(userId)
+    )
     const sortedEventUsers = [...eventUsers]
-      .filter(
-        (item) => item.event && item.user && item.event.status !== 'canceled'
-      )
+      // .filter(
+      //   (item) => item.event && item.user && item.event.status !== 'canceled'
+      // )
       .sort((a, b) =>
         getDiffBetweenDates(a.event.dateStart, b.event.dateStart) > 0 ? -1 : 1
       )
