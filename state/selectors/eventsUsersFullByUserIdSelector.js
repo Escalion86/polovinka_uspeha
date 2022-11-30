@@ -3,8 +3,8 @@ import { selectorFamily } from 'recoil'
 import eventSelector from './eventSelector'
 import userSelector from './userSelector'
 
-export const eventsUsersFullByEventIdSelector = selectorFamily({
-  key: 'eventsUsersFullByEventIdSelector',
+export const eventsUsersFullByUserIdSelector = selectorFamily({
+  key: 'eventsUsersFullByUserIdSelector',
   get:
     (id) =>
     ({ get }) => {
@@ -13,9 +13,7 @@ export const eventsUsersFullByEventIdSelector = selectorFamily({
 
       return eventsUsers
         ? eventsUsers
-            .filter(
-              (item) => item.eventId && item.userId && item.eventId === id
-            )
+            .filter((item) => item.eventId && item.userId && item.userId === id)
             .map((item) => {
               return {
                 ...item,
@@ -25,11 +23,6 @@ export const eventsUsersFullByEventIdSelector = selectorFamily({
             })
         : []
     },
-  // set:
-  //   (id) =>
-  //   ({ set }, event) => {
-  //     set(eventsSelector, event)
-  //   },
 })
 
-export default eventsUsersFullByEventIdSelector
+export default eventsUsersFullByUserIdSelector

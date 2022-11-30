@@ -19,6 +19,8 @@ import { SelectEventList } from '@components/SelectItemList'
 // import ValueItem from '@components/ValuePicker/ValueItem'
 import UserNameById from '@components/UserNameById'
 import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
+import eventsUsersFullByUserIdSelector from '@state/selectors/eventsUsersFullByUserIdSelector'
+import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 
 const userSignedUpEventsFunc = (userId, clone = false) => {
   const UserSignedUpEventsModal = ({
@@ -33,12 +35,19 @@ const userSignedUpEventsFunc = (userId, clone = false) => {
 
     // const user = useRecoilValue(userSelector(userId))
 
-    const eventUsers = useRecoilValue(eventsUsersByUserIdSelector(userId))
+    const eventUsers = useRecoilValue(eventsUsersFullByUserIdSelector(userId))
+    const sortedEventUsers = [...eventUsers]
+      .filter(
+        (item) => item.event && item.user && item.event.status !== 'canceled'
+      )
+      .sort((a, b) =>
+        getDiffBetweenDates(a.event.date, b.event.date) > 0 ? -1 : 1
+      )
 
-    const eventsAsParticipant = eventUsers.filter(
+    const eventsAsParticipant = sortedEventUsers.filter(
       (eventUser) => eventUser.status === 'participant'
     )
-    const eventsAsAssistant = eventUsers.filter(
+    const eventsAsAssistant = sortedEventUsers.filter(
       (eventUser) => eventUser.status === 'assistant'
     )
 

@@ -1,6 +1,8 @@
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import cn from 'classnames'
+import { useRecoilValue } from 'recoil'
 
 const {
   faWhatsapp,
@@ -56,6 +58,11 @@ const ContactIconBtnWithTitle = ({
 
 const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+
+  if (!showForcibly && !isLoggedUserAdmin && !user.security?.showContacts)
+    return null
+
   return (
     <div
       className={cn(
