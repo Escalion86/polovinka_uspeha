@@ -19,6 +19,8 @@ import isUserAdmin from '@helpers/isUserAdmin'
 import StateLoader from '@components/StateLoader'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useRecoilValue } from 'recoil'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -29,13 +31,17 @@ function CabinetPage(props) {
   // const { page } = props
   // const { loggedUser } = props
   const loggedUser = useRecoilValue(loggedUserAtom)
+  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   let redirect
   if (!props.loggedUser) redirect = '/'
   else if (
-    loggedUser &&
-    ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
-      (!['events', 'questionnaire'].includes(page) && !isUserAdmin(loggedUser)))
+    (loggedUser &&
+      ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
+        (!['events', 'questionnaire', 'members'].includes(page) &&
+          !isLoggedUserAdmin))) ||
+    (page === 'members' && !isLoggedUserMember && !isLoggedUserAdmin)
   )
     redirect = '/cabinet/questionnaire'
 

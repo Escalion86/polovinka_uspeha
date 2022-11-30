@@ -78,7 +78,7 @@ const MembersContent = () => {
           <SortingButtonMenu
             sort={sort}
             onChange={setSort}
-            sortKeys={['name', 'birthday', 'createdAt']}
+            sortKeys={['name', 'createdAt']}
           />
           {/* <FormControl size="small">
             <FilterToggleButton

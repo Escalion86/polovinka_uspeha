@@ -29,7 +29,7 @@ const menuCfg = (pages, pagesGroups, userActiveRole, userActiveStatus) => {
       (pageGroup) =>
         pageGroup.access === 'all' ||
         pageGroup.access === userActiveRole ||
-        pageGroup.access === userActiveStatus ||
+        (pageGroup.access === userActiveStatus && userActiveRole !== 'admin') ||
         userActiveRole === 'dev'
     )
     .reduce((totalGroups, group) => {
