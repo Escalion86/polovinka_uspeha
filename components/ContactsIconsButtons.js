@@ -56,7 +56,13 @@ const ContactIconBtnWithTitle = ({
   </div>
 )
 
-const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
+const ContactsIconsButtons = ({
+  user,
+  withTitle,
+  grid,
+  className,
+  showForcibly,
+}) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
