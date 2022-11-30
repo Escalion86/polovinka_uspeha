@@ -11,7 +11,7 @@ const UsersFilter = ({ value, onChange, hideNullGender }) => {
           onChange={(value) =>
             onChange((state) => ({ ...state, gender: value }))
           }
-          hideNullGender
+          hideNullGender={hideNullGender}
         />
       )}
       {value?.status && (
