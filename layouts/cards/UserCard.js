@@ -17,12 +17,15 @@ import ZodiacIcon from '@components/ZodiacIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
 import formatDate from '@helpers/formatDate'
+import UserName from '@components/UserName'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const UserCard = ({ userId, hidden = false }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const user = useRecoilValue(userSelector(userId))
   const loading = useRecoilValue(loadingAtom('user' + userId))
   const eventUsers = useRecoilValue(eventsUsersVisitedByUserIdSelector(userId))
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   // const itemFunc = useRecoilValue(itemsFuncAtom)
 
   const userGender =
@@ -64,14 +67,31 @@ const UserCard = ({ userId, hidden = false }) => {
                 <div className="flex flex-col flex-1 px-2 py-1">
                   <div className="flex flex-wrap items-center leading-6 gap-x-1">
                     <UserStatusIcon status={user.status} />
-                    <span>{user.firstName}</span>
-                    {user.secondName && <span>{user.secondName}</span>}
-                    {user.birthday && (
+                    <UserName user={user} className="text-lg font-bold" />
+                    {/* <span>{user.firstName}</span>
+                    {user.secondName && <span>{user.secondName}</span>} */}
+                    {/* {user.birthday && (
                       <div className="flex items-center font-normal whitespace-nowrap gap-x-2">
                         <span>{birthDateToAge(user.birthday)}</span>
                         <ZodiacIcon date={user.birthday} />
                       </div>
-                    )}
+                    )} */}
+                    {user.birthday &&
+                      (isLoggedUserAdmin ||
+                        user.security?.showBirthday ||
+                        user.security?.showAge) && (
+                        <div className="flex items-center font-normal whitespace-nowrap gap-x-2">
+                          <span>
+                            {birthDateToAge(
+                              user.birthday,
+                              true,
+                              false,
+                              isLoggedUserAdmin || user.security?.showAge
+                            )}
+                          </span>
+                          <ZodiacIcon date={user.birthday} />
+                        </div>
+                      )}
                     {user.role === 'admin' && (
                       <span className="font-normal text-red-400">
                         АДМИНИСТРАТОР

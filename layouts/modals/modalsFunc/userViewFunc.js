@@ -102,9 +102,7 @@ const userViewFunc = (userId, clone = false) => {
               ? 'Нет'
               : 'Не указано'}
           </TextLine>
-          {(isLoggedUserAdmin || user.security?.showContacts) && (
-            <ContactsIconsButtons user={user} withTitle grid />
-          )}
+          <ContactsIconsButtons user={user} withTitle grid />
           <TextLine label="Дата регистрации">
             {formatDate(user.createdAt)}
           </TextLine>
