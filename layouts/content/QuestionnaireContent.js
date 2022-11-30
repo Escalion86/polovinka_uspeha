@@ -99,9 +99,9 @@ const QuestionnaireContent = (props) => {
   )
   const [role, setRole] = useState(loggedUser?.role ?? DEFAULT_USER.role)
 
-  const toggleSecurytyKey = (key) =>
+  const setSecurytyKey = (data) =>
     setSecurity((state) => {
-      return { ...state, [key]: !state[key] }
+      return { ...state, ...data }
     })
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -161,6 +161,7 @@ const QuestionnaireContent = (props) => {
         whatsapp,
         email,
         birthday,
+        security,
       })
     ) {
       setIsWaitingToResponse(true)
@@ -226,8 +227,9 @@ const QuestionnaireContent = (props) => {
         text: (
           <>
             <span>
-              Для возможности записи на мероприятия необходимо заполнить
-              обязательные поля анкеты:
+              {
+                'Для возможности записи на мероприятия необходимо заполнить обязательные поля анкеты:'
+              }
             </span>
             <ul className="ml-4 list-disc">
               <li>Имя</li>
@@ -235,6 +237,11 @@ const QuestionnaireContent = (props) => {
               <li>Дата рождения</li>
               <li>Пол</li>
             </ul>
+            <span>
+              {
+                'Пожалуйста заполните поля честно! Во вкладке "конфиденциальность" вы можете скрыть те данные, которые не хотели бы показывать другим.'
+              }
+            </span>
           </>
         ),
         onConfirm: () => {},
@@ -418,9 +425,10 @@ const QuestionnaireContent = (props) => {
                 },
               ]}
               label="Показывать фамилию"
-              onChange={() => toggleSecurytyKey('fullSecondName')}
+              onChange={(value) => setSecurytyKey({ fullSecondName: value })}
               name="yes_no"
               // inLine
+              required
             />
             <ValuePicker
               value={security.fullThirdName}
@@ -433,27 +441,31 @@ const QuestionnaireContent = (props) => {
                 },
               ]}
               label="Показывать отчество"
-              onChange={() => toggleSecurytyKey('fullThirdName')}
+              onChange={(value) => setSecurytyKey({ fullThirdName: value })}
               name="yes_no"
               // inLine
+              required
             />
             <YesNoPicker
               label="Показывать дату рождения"
               // inLine
               value={security.showBirthday}
-              onChange={() => toggleSecurytyKey('showBirthday')}
+              onChange={(value) => setSecurytyKey({ showBirthday: value })}
+              required
             />
             <YesNoPicker
               label="Показывать возраст"
               // inLine
               value={security.showAge}
-              onChange={() => toggleSecurytyKey('showAge')}
+              onChange={(value) => setSecurytyKey({ showAge: value })}
+              required
             />
             <YesNoPicker
               label="Показывать контакты (телефон и пр.)"
               // inLine
               value={security.showContacts}
-              onChange={() => toggleSecurytyKey('showContacts')}
+              onChange={(value) => setSecurytyKey({ showContacts: value })}
+              required
             />
           </FormWrapper>
           {/* </FormWrapper> */}

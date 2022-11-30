@@ -231,11 +231,11 @@ export const MONTHS_FULL = [
 export const DAYS_OF_WEEK = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
 
 export const DEFAULT_USERS_SECURITY = Object.freeze({
-  fullSecondName: false,
-  fullThirdName: false,
-  showBirthday: false,
-  showAge: false,
-  showContacts: false,
+  fullSecondName: null,
+  fullThirdName: null,
+  showBirthday: null,
+  showAge: null,
+  showContacts: null,
 })
 
 export const DEFAULT_USERS_NOTIFICATIONS = Object.freeze({
