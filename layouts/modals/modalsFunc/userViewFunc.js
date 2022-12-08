@@ -13,9 +13,9 @@ import Image from 'next/image'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import ImageGallery from '@components/ImageGallery'
 import CardButtons from '@components/CardButtons'
-import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
-import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
-import { SelectEventList } from '@components/SelectItemList'
+// import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
+// import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
+// import { SelectEventList } from '@components/SelectItemList'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import { modalsFuncAtom } from '@state/atoms'
@@ -24,7 +24,8 @@ import formatDate from '@helpers/formatDate'
 import TextLine from '@components/TextLine'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
+// import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
+import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -42,8 +43,8 @@ const userViewFunc = (userId, clone = false) => {
 
     const user = useRecoilValue(userSelector(userId))
 
-    const eventUsers = useRecoilValue(
-      eventsUsersSignedUpByUserIdSelector(userId)
+    const eventsUsersSignedUpCount = useRecoilValue(
+      eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
     )
 
     return (
@@ -109,12 +110,18 @@ const userViewFunc = (userId, clone = false) => {
           </TextLine>
 
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1 gap-x-2">
-            <TextLine label="Посещено мероприятий">
-              {eventUsers.length}
-            </TextLine>
+            <div className="flex flex-col">
+              <TextLine label="Посетил мероприятий">
+                {eventsUsersSignedUpCount.finished}
+              </TextLine>
+              <TextLine label="Записан на мероприятия">
+                {eventsUsersSignedUpCount.signUp}
+              </TextLine>
+            </div>
 
             {(isLoggedUserAdmin || isLoggedUserMember) &&
-              eventUsers.length > 0 && (
+              (eventsUsersSignedUpCount.finished > 0 ||
+                eventsUsersSignedUpCount.signUp > 0) && (
                 <ValueItem
                   name="Посмотреть мероприятия с пользователем"
                   color="general"

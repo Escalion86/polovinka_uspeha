@@ -10,23 +10,27 @@ import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import userSelector from '@state/selectors/userSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
 import { CardWrapper } from '@components/CardWrapper'
-import Image from 'next/image'
-import Tooltip from '@components/Tooltip'
+// import Image from 'next/image'
+// import Tooltip from '@components/Tooltip'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import ZodiacIcon from '@components/ZodiacIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
-import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
+// import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
 import formatDate from '@helpers/formatDate'
 import UserName from '@components/UserName'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
+// import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
+import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 
 const UserCard = ({ userId, hidden = false }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const user = useRecoilValue(userSelector(userId))
   const loading = useRecoilValue(loadingAtom('user' + userId))
-  const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
+  // const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const eventsUsersSignedUpCount = useRecoilValue(
+    eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
+  )
   // const itemFunc = useRecoilValue(itemsFuncAtom)
 
   const userGender =
@@ -106,8 +110,14 @@ const UserCard = ({ userId, hidden = false }) => {
                     </span>
                   </div>
                   <div className="flex text-sm leading-4 gap-x-2">
-                    <span className="font-bold">Посетил мероприятий:</span>
-                    <span className="font-normal">{eventUsers.length}</span>
+                    <span className="font-bold">Посетил:</span>
+                    <span className="font-normal">
+                      {eventsUsersSignedUpCount.finished}
+                    </span>
+                    <span className="font-bold">Записан:</span>
+                    <span className="font-normal">
+                      {eventsUsersSignedUpCount.signUp}
+                    </span>
                   </div>
                 </div>
                 <CardButtons item={user} typeOfItem="user" />
