@@ -156,7 +156,7 @@ const Input = ({
 const fullConfig = resolveConfig(tailwindConfig)
 const generalColor = fullConfig.theme.colors.general
 
-const secondsToWait = 40
+const secondsToWait = 60
 
 const RepeatCall = ({ onClickRepeat }) => {
   const timer = useRef(null)

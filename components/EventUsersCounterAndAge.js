@@ -1,8 +1,10 @@
 import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import eventMansReserveSelector from '@state/selectors/eventMansReserveSelector'
 import eventMansSelector from '@state/selectors/eventMansSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+import eventWomansReserveSelector from '@state/selectors/eventWomansReserveSelector'
 import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
@@ -14,6 +16,12 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
   // const eventAssistantsIds = useRecoilValue(eventAssistantsSelector(eventId)).map((user) => user._id)
   const eventMansCount = useRecoilValue(eventMansSelector(eventId)).length
   const eventWomansCount = useRecoilValue(eventWomansSelector(eventId)).length
+  const eventMansReserveCount = useRecoilValue(
+    eventMansReserveSelector(eventId)
+  ).length
+  const eventWomansReserveCount = useRecoilValue(
+    eventWomansReserveSelector(eventId)
+  ).length
   // const eventReservedParticipantsIds = useRecoilValue(eventUsersInReserveSelector(eventId)).map((user) => user._id)
   // const eventBannedParticipantsIds = useRecoilValue(eventUsersInBanSelector(eventId)).map((user) => user._id)
 
@@ -61,6 +69,9 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
                 <span>{event.maxMans}</span>
               </>
             )}
+            {eventMansReserveCount > 0 && (
+              <span className="text-xs">{`+${eventMansReserveCount}`}</span>
+            )}
             <span>чел.</span>
           </div>
         </div>
@@ -81,6 +92,9 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
                 <span>/</span>
                 <span>{event.maxWomans}</span>
               </>
+            )}
+            {eventWomansReserveCount > 0 && (
+              <span className="text-xs">{`+${eventWomansReserveCount}`}</span>
             )}
             <span>чел.</span>
           </div>
