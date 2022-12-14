@@ -5,7 +5,9 @@ const isUserQuestionnaireFilled = (user) =>
     user.secondName &&
     user.phone &&
     user.gender &&
-    user.birthday
+    user.birthday &&
+    user.images &&
+    user.images.length > 0
   )
 
 export default isUserQuestionnaireFilled
