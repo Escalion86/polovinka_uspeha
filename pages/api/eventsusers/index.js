@@ -88,10 +88,12 @@ const telegramNotification = async ({
       addedEventUsers.length === 0
     ) {
       const { user, status } = deletedEventUsersFull[0]
-      text = `${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
+      text = `\u{2796}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
-      )} ${user.gender === 'male' ? 'отписался' : 'отписалась'} ${
-        status === 'reserve' ? 'из резерва мероприятия' : 'от мероприятия'
+      )} <b>${user.gender === 'male' ? 'ОТПИСАЛСЯ' : 'ОТПИСАЛАСЬ'}</b> ${
+        status === 'reserve'
+          ? '<b>ИЗ РЕЗЕРВА</b> мероприятия'
+          : 'от мероприятия'
       } "${event.title}" от ${formatDateTime(event.dateStart)}.`
     } else if (
       itIsSelfRecord &&
@@ -99,10 +101,10 @@ const telegramNotification = async ({
       addedEventUsers.length === 1
     ) {
       const { user, status } = addedEventUsersFull[0]
-      text = `${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
+      text = `\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
-      )} ${user.gender === 'male' ? 'записался' : 'записалась'} ${
-        status === 'reserve' ? 'в резерв мероприятия' : 'на мероприятие'
+      )} <b>${user.gender === 'male' ? `ЗАПИСАЛСЯ` : 'ЗАПИСАЛАСЬ'}</b> ${
+        status === 'reserve' ? '<b>В РЕЗЕРВ</b> мероприятия' : 'на мероприятие'
       } "${event.title}" от ${formatDateTime(event.dateStart)}.`
     } else if (notificationOnMassiveChange) {
       // const deletedUsersNames = deletedUsers.map((user) =>

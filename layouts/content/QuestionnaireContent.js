@@ -162,6 +162,7 @@ const QuestionnaireContent = (props) => {
         email,
         birthday,
         security,
+        images,
       })
     ) {
       setIsWaitingToResponse(true)
@@ -219,7 +220,12 @@ const QuestionnaireContent = (props) => {
     if (
       modalsFunc &&
       typeof modalsFunc.add === 'function' &&
-      (!firstName || !secondName || !gender)
+      (!firstName ||
+        !secondName ||
+        !birthday ||
+        !gender ||
+        !images ||
+        images.length === 0)
     ) {
       modalsFunc.add({
         uid: 'questionnaireNotFilled',
@@ -236,6 +242,7 @@ const QuestionnaireContent = (props) => {
               <li>Фамилия</li>
               <li>Дата рождения</li>
               <li>Пол</li>
+              <li>{'Фотографии (добавьте хотя бы одно фото)'}</li>
             </ul>
             <span>
               {
@@ -272,7 +279,7 @@ const QuestionnaireContent = (props) => {
                 removeError('images')
                 setImages(images)
               }}
-              // required
+              required
               error={errors.images}
             />
             <Input

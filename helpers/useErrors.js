@@ -38,7 +38,7 @@ const useErrors = () => {
         !data ? setError({ description: 'Введите описание' }) : null,
       images: (data) =>
         !data || data.length === 0
-          ? setError({ images: 'Загрузите хотябы одно фото' })
+          ? setError({ images: 'Загрузите хотя бы одно фото' })
           : null,
       image: (data) =>
         !data ? setError({ image: 'Загрузите картинку' }) : null,

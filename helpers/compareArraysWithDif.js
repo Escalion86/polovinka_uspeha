@@ -1,5 +1,10 @@
 const compareArrays = (arrayOld, arrayNew) => {
-  if (typeof arrayOld !== 'object' || typeof arrayNew !== 'object')
+  if (
+    arrayOld === null ||
+    typeof arrayOld !== 'object' ||
+    arrayNew === null ||
+    typeof arrayNew !== 'object'
+  )
     return { same: false }
   let removed = []
   if (arrayOld.length !== 0) {

@@ -1,6 +1,8 @@
 const compareArrays = (arrayOld, arrayNew) => {
   if (
+    arrayOld === null ||
     typeof arrayOld !== 'object' ||
+    arrayNew === null ||
     typeof arrayNew !== 'object' ||
     arrayOld.length !== arrayNew.length
   )
