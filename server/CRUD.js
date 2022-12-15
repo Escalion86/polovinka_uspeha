@@ -98,15 +98,14 @@ export default async function handler(Schema, req, res, params = null) {
               .map((user) => user.notifications?.get('telegram')?.id)
             await Promise.all(
               usersTelegramIds.map(async (telegramId) => {
+                const fullUserName = getUserFullName(data)
                 await postData(
                   `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
                   {
                     chat_id: telegramId,
                     text: `Пользователь с номером +${
                       data.phone
-                    } заполнил анкету:\n - Полное имя: ${getUserFullName(
-                      data
-                    )}\n - Пол: ${
+                    } заполнил анкету:\n - Полное имя: ${fullUserName}\n - Пол: ${
                       data.gender === 'male' ? 'Мужчина' : 'Женщина'
                     }\n - Дата рождения: ${birthDateToAge(
                       data.birthday,
@@ -120,6 +119,32 @@ export default async function handler(Schema, req, res, params = null) {
                   (data) => console.log('error', data),
                   true
                 )
+                if (data.images && data.images[0]) {
+                  await postData(
+                    `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`,
+                    {
+                      chat_id: telegramId,
+                      photo: data.images[0],
+                      caption: fullUserName,
+                      // reply_markup:
+                      //   req.headers.origin.substr(0, 5) === 'https'
+                      //     ? JSON.stringify({
+                      //         inline_keyboard: [
+                      //           [
+                      //             {
+                      //               text: 'Открыть пользователя',
+                      //               url: req.headers.origin + '/user/' + eventId,
+                      //             },
+                      //           ],
+                      //         ],
+                      //       })
+                      //     : undefined,
+                    },
+                    (data) => console.log('data', data),
+                    (data) => console.log('error', data),
+                    true
+                  )
+                }
               })
             )
           }
