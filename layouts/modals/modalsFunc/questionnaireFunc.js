@@ -124,8 +124,6 @@ const questionnaireFunc = (questionnaireId, clone) => {
       )
     }
 
-    console.log('data', data)
-
     // const router = useRouter()
 
     // const refreshPage = () => {

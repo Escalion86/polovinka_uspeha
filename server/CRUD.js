@@ -121,11 +121,19 @@ export default async function handler(Schema, req, res, params = null) {
                 )
                 if (data.images && data.images[0]) {
                   await postData(
-                    `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`,
+                    `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMediaGroup`,
                     {
                       chat_id: telegramId,
-                      photo: data.images[0],
-                      caption: fullUserName,
+                      media: JSON.stringify(
+                        data.images.map((photo) => {
+                          return {
+                            type: 'photo',
+                            media: photo,
+                            // caption: 'Наденька',
+                            // "parse_mode": "optional (you can delete this parameter) the parse mode of the caption"
+                          }
+                        })
+                      ),
                       // reply_markup:
                       //   req.headers.origin.substr(0, 5) === 'https'
                       //     ? JSON.stringify({
@@ -144,6 +152,30 @@ export default async function handler(Schema, req, res, params = null) {
                     (data) => console.log('error', data),
                     true
                   )
+                  // await postData(
+                  //   `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`,
+                  //   {
+                  //     chat_id: telegramId,
+                  //     photo: data.images[0],
+                  //     caption: fullUserName,
+                  //     // reply_markup:
+                  //     //   req.headers.origin.substr(0, 5) === 'https'
+                  //     //     ? JSON.stringify({
+                  //     //         inline_keyboard: [
+                  //     //           [
+                  //     //             {
+                  //     //               text: 'Открыть пользователя',
+                  //     //               url: req.headers.origin + '/user/' + eventId,
+                  //     //             },
+                  //     //           ],
+                  //     //         ],
+                  //     //       })
+                  //     //     : undefined,
+                  //   },
+                  //   (data) => console.log('data', data),
+                  //   (data) => console.log('error', data),
+                  //   true
+                  // )
                 }
               })
             )
