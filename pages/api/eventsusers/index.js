@@ -184,7 +184,7 @@ const telegramNotification = async ({
       }  |  Всего: ${mansParticipantsCount + womansParticipantsCount}` +
       `${
         event.isReserveActive
-          ? `\nРезерв: ♂️  ${mansReserveCount}  |  ♀️  ${womansReserveCount} | Всего: ${
+          ? `\nРезерв: ♂️  ${mansReserveCount}  |  ♀️  ${womansReserveCount}  |  Всего: ${
               mansReserveCount + womansReserveCount
             }`
           : `\nЗапись в резерв закрыта`
