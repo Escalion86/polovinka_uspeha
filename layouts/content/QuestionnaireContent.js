@@ -39,6 +39,7 @@ import {
   faStop,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
+import cn from 'classnames'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
@@ -238,11 +239,23 @@ const QuestionnaireContent = (props) => {
               }
             </span>
             <ul className="ml-4 list-disc">
-              <li>Имя</li>
-              <li>Фамилия</li>
-              <li>Дата рождения</li>
-              <li>Пол</li>
-              <li>{'Фотографии (добавьте хотя бы одно фото)'}</li>
+              {!loggedUser.firstName && (
+                <li className="font-bold text-red-500">Имя</li>
+              )}
+              {!loggedUser.secondName && (
+                <li className="font-bold text-red-500">Фамилия</li>
+              )}
+              {!loggedUser.birthday && (
+                <li className="font-bold text-red-500">Дата рождения</li>
+              )}
+              {!loggedUser.gender && (
+                <li className="font-bold text-red-500">Пол</li>
+              )}
+              {(!loggedUser.images || loggedUser.images.length === 0) && (
+                <li className="font-bold text-red-500">
+                  {'Фотографии (добавьте хотя бы одно фото)'}
+                </li>
+              )}
             </ul>
             <span>
               {
