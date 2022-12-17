@@ -83,9 +83,21 @@ const useErrors = () => {
       reviewText: (data) =>
         !data ? setError({ reviewText: 'Введите текст отзыва' }) : null,
       firstName: (data) =>
-        !data ? setError({ firstName: 'Введите имя' }) : null,
+        !data
+          ? setError({ firstName: 'Введите имя' })
+          : data.length === 1
+          ? setError({ firstName: 'Имя не может содержать одну букву' })
+          : null,
       secondName: (data) =>
-        !data ? setError({ secondName: 'Введите фамилию' }) : null,
+        !data
+          ? setError({ secondName: 'Введите фамилию' })
+          : data.length === 1
+          ? setError({ secondName: 'Фамилия не может содержать одну букву' })
+          : null,
+      thirdName: (data) =>
+        data.length === 1
+          ? setError({ thirdName: 'Отчество не может содержать одну букву' })
+          : null,
       gender: (data) => (!data ? setError({ gender: 'Укажите пол' }) : null),
       phone: (data) =>
         !data
