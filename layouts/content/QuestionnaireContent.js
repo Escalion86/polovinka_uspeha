@@ -156,6 +156,7 @@ const QuestionnaireContent = (props) => {
       !checkErrors({
         firstName: firstName.trim(),
         secondName: secondName.trim(),
+        thirdName: thirdName.trim(),
         gender,
         // phone,
         viber,

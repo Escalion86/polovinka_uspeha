@@ -169,7 +169,7 @@ const eventFunc = (eventId, clone = false) => {
           {
             _id: event?._id,
             images,
-            title,
+            title: title.trim(),
             description,
             showOnSite,
             dateStart,
