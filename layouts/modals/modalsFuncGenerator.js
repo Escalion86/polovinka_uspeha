@@ -29,6 +29,7 @@ import notificationsTelegramFunc from './modalsFunc/notificationsTelegramFunc'
 import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
 import questionnaireFunc from './modalsFunc/questionnaireFunc'
 import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
+import userDeleteFunc from './modalsFunc/userDeleteFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -233,11 +234,14 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
       add: (userId) => addModal(userFunc(userId, true)),
       edit: (userId) => addModal(userFunc(userId)),
       delete: (userId) =>
-        addModal({
-          title: 'Удаление пользователя',
-          text: 'Вы уверены, что хотите удалить пользователя?',
-          onConfirm: async () => itemsFunc.user.delete(userId),
-        }),
+        addModal(
+          userDeleteFunc(userId)
+          //   {
+          //   title: 'Удаление пользователя',
+          //   text: 'Вы уверены, что хотите удалить пользователя?',
+          //   onConfirm: async () => itemsFunc.user.delete(userId),
+          // }
+        ),
       view: (userId) => addModal(userViewFunc(userId)),
       events: (userId) => addModal(userSignedUpEventsFunc(userId)),
       questionnaire: (userId, questionnaireId) =>

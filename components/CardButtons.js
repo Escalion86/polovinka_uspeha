@@ -61,7 +61,7 @@ const CardButtons = ({
   alwaysCompactOnPhone,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+  // const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
@@ -102,7 +102,7 @@ const CardButtons = ({
       showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review',
     showOnSiteBtn: showAdminButtons && showOnSiteOnClick,
     statusBtn: showAdminButtons && typeOfItem === 'event' && item.status,
-    deleteBtn: isLoggedUserDev,
+    deleteBtn: showAdminButtons, // || isLoggedUserDev,
   }
 
   const numberOfButtons = Object.keys(show).reduce(
