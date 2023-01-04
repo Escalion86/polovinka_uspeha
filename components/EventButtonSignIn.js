@@ -53,8 +53,9 @@ const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
     <Button
       stopPropagation
       onClick={() => {
-        // Если анкета заполнена не полностью
-        if (
+        if (loggedUser.status === 'ban') {
+          modalsFunc.event.cantSignUp()
+        } else if (
           !loggedUser ||
           (eventLoggedUserStatus.canSignIn &&
             !eventLoggedUserStatus.alreadySignIn)

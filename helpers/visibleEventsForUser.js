@@ -38,7 +38,8 @@ const visibleEventsForUser = (
         eventUser?.status === 'assistant' ||
         (eventUser?.status !== 'ban' &&
           (!event.usersStatusAccess ||
-            event.usersStatusAccess[userStatus ?? 'novice']))
+            (userStatus === 'member' && event.usersStatusAccess['member']) ||
+            event.usersStatusAccess['novice']))
       )
     })
   }

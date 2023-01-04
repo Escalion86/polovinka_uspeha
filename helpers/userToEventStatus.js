@@ -48,18 +48,18 @@ const userToEventStatus = (event, user, eventUsersFull) => {
     alreadySignIn ||
     (user.status ? event.usersStatusAccess[user.status] : false)
 
-  if (user.status === 'ban' || userEvent?.status === 'ban')
-    return {
-      canSee,
-      alreadySignIn,
-      canSignIn: false,
-      canSignInReserve: false,
-      canSignOut: false,
-      isEventExpired,
-      isEventInProcess,
-      userEventStatus: userEvent?.status,
-      status: 'user status is banned',
-    }
+  // if (user.status === 'ban' || userEvent?.status === 'ban')
+  //   return {
+  //     canSee,
+  //     alreadySignIn,
+  //     canSignIn: false,
+  //     canSignInReserve: false,
+  //     canSignOut: false,
+  //     isEventExpired,
+  //     isEventInProcess,
+  //     userEventStatus: userEvent?.status,
+  //     status: 'user status is banned',
+  //   }
 
   if (isEventCanceled(event))
     return {
