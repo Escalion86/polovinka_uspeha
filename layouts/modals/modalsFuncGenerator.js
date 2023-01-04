@@ -56,22 +56,20 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
       title = 'Отмена изменений',
       text = 'Вы уверены, что хотите закрыть окно без сохранения изменений?',
       onConfirm,
-    }) => {
+    }) =>
       addModal({
         title,
         text,
         onConfirm,
-      })
-    },
-    minimalSize: () => {
+      }),
+    minimalSize: () =>
       addModal({
         title: 'Маленький размер фотографии',
         text: 'Фотография слишком маленькая. Размер должен быть не менее 100x100',
         confirmButtonName: `Понятно`,
         showConfirm: true,
         showDecline: false,
-      })
-    },
+      }),
     custom: addModal,
     cropImage: (...data) => addModal(cropImageFunc(...data)),
     error: (data) => addModal(errorFunc(data)),
@@ -219,6 +217,14 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           })
         }
       },
+      cantSignUp: () =>
+        addModal({
+          title: 'Запись на мероприятие невозможна',
+          text: 'Ваша учетная запись заблокирована, поэтому вы не можете записываться на мероприятия. Пожалуйста обратитесь к администратору.',
+          confirmButtonName: `Понятно`,
+          showConfirm: true,
+          showDecline: false,
+        }),
     },
     payment: {
       add: (paymentId) => addModal(paymentFunc(paymentId, true)),

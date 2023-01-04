@@ -1,4 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
+import { P } from '@components/tags'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import EventCard from '@layouts/cards/EventCard'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
@@ -51,30 +52,36 @@ const EventsBlock = ({
     <BlockContainer id="events" title={title} altBg>
       {/* <H2>{title}</H2> */}
       {/* <div className="grid gap-6 tablet:grid-cols-2 laptop:grid-cols-4"> */}
-      <div className="flex flex-col items-center w-full gap-4">
-        {
-          // filteredEvents?.length ? (
-          [...filteredEvents]
-            .sort((a, b) => (a.dateStart < b.dateStart ? -1 : 1))
-            .slice(0, maxShowedEvents)
-            .map((event, index) => (
-              <EventCard key={event._id} eventId={event._id} />
-            ))
-          // )
-          //  : (
-          //   <P>Будущих мероприятий не запланировано</P>
-          // )
-        }
-        {maxEvents && filteredEvents?.length > maxShowedEvents && (
-          <Button title="Посмотреть все" href="/events#events" />
-        )}
-        {!maxEvents && filteredEvents?.length > maxShowedEvents && (
-          <Button
-            title="Посмотреть ещё"
-            onClick={() => setMaxShowedEvents((state) => state + 10)}
-          />
-        )}
-      </div>
+      {filteredEvents.length > 0 ? (
+        <div className="flex flex-col items-center w-full gap-4">
+          {
+            // filteredEvents?.length ? (
+            [...filteredEvents]
+              .sort((a, b) => (a.dateStart < b.dateStart ? -1 : 1))
+              .slice(0, maxShowedEvents)
+              .map((event, index) => (
+                <EventCard key={event._id} eventId={event._id} />
+              ))
+            // )
+            //  : (
+            //   <P>Будущих мероприятий не запланировано</P>
+            // )
+          }
+          {maxEvents && filteredEvents?.length > maxShowedEvents && (
+            <Button title="Посмотреть все" href="/events#events" />
+          )}
+          {!maxEvents && filteredEvents?.length > maxShowedEvents && (
+            <Button
+              title="Посмотреть ещё"
+              onClick={() => setMaxShowedEvents((state) => state + 10)}
+            />
+          )}
+        </div>
+      ) : (
+        <P className="flex justify-center w-full">
+          {'Мероприятий не запланировано'}
+        </P>
+      )}
     </BlockContainer>
   )
 }

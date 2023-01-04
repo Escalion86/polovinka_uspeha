@@ -590,7 +590,7 @@ const QuestionnaireContent = (props) => {
         <ErrorsList errors={errors} />
         <Button
           name="Применить"
-          disabled={!formChanged}
+          disabled={!formChanged || loggedUser.status === 'ban'}
           onClick={onClickConfirm}
           loading={isWaitingToResponse}
         />
