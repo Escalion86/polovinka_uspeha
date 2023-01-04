@@ -18,7 +18,7 @@ export default function Home(props) {
       <StateLoader {...props}>
         <DeviceCheck right />
         <Header />
-        <TitleBlock />
+        {/* <TitleBlock /> */}
         <EventsBlock />
         <ContactsBlock />
       </StateLoader>

@@ -46,7 +46,7 @@ export default function Home(props) {
         <Header />
         <TitleBlock />
         <AboutBlock />
-        <EventsBlock maxEvents={4} hideBlockOnZeroEvents />
+        <EventsBlock maxEvents={4} />
         <DirectionsBlock startInverse={directionsBlocksInverse} />
         <AdditionalBlocks startInverse={additionalBlocksInverse} />
         <ReviewsBlock />
