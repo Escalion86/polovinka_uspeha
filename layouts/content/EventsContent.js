@@ -91,27 +91,48 @@ const EventsContent = () => {
     ]
   )
 
-  const visibleEventsIds = useMemo(
+  // const visibleEventsIds = useMemo(
+  //   () =>
+  //     filteredEvents
+  //       .filter((event) => {
+  //         const isEventExpired = isEventExpiredFunc(event)
+  //         const isEventActive = isEventActiveFunc(event)
+  //         const isEventCanceled = isEventCanceledFunc(event)
+  //         return (
+  //           ((isEventActive && filter.status.finished && isEventExpired) ||
+  //             (isEventActive && filter.status.active && !isEventExpired) ||
+  //             (isEventCanceled && filter.status.canceled)) &&
+  //           filterOptions.directions.includes(event.directionId)
+  //         )
+  //       })
+  //       .map((event) => event._id),
+  //   [filteredEvents, filter, filterOptions.directions.length]
+  // )
+
+  // const filteredAndSortedEvents = useMemo(
+  //   () => [...filteredEvents].sort(sortFunc),
+  //   [filteredEvents, sort]
+  // )
+
+  const visibleEvents = useMemo(
     () =>
-      filteredEvents
-        .filter((event) => {
-          const isEventExpired = isEventExpiredFunc(event)
-          const isEventActive = isEventActiveFunc(event)
-          const isEventCanceled = isEventCanceledFunc(event)
-          return (
-            ((isEventActive && filter.status.finished && isEventExpired) ||
-              (isEventActive && filter.status.active && !isEventExpired) ||
-              (isEventCanceled && filter.status.canceled)) &&
-            filterOptions.directions.includes(event.directionId)
-          )
-        })
-        .map((event) => event._id),
+      filteredEvents.filter((event) => {
+        const isEventExpired = isEventExpiredFunc(event)
+        const isEventActive = isEventActiveFunc(event)
+        const isEventCanceled = isEventCanceledFunc(event)
+        return (
+          ((isEventActive && filter.status.finished && isEventExpired) ||
+            (isEventActive && filter.status.active && !isEventExpired) ||
+            (isEventCanceled && filter.status.canceled)) &&
+          filterOptions.directions.includes(event.directionId)
+        )
+      }),
     [filteredEvents, filter, filterOptions.directions.length]
   )
 
   const filteredAndSortedEvents = useMemo(
-    () => [...filteredEvents].sort(sortFunc),
-    [filteredEvents, sort]
+    () => [...visibleEvents].sort(sortFunc),
+    [visibleEvents, sort]
   )
 
   const isFiltered = filterOptions.directions.length !== directions.length
@@ -146,7 +167,7 @@ const EventsContent = () => {
         </ButtonGroup> */}
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounEvents(visibleEventsIds.length)}
+            {getNounEvents(visibleEvents.length)}
           </div>
           <SortingButtonMenu
             sort={sort}
@@ -184,7 +205,7 @@ const EventsContent = () => {
             <EventCard
               key={event._id}
               eventId={event._id}
-              hidden={!visibleEventsIds.includes(event._id)}
+              // hidden={!visibleEventsIds.includes(event._id)}
               // noButtons={
               //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
               // }

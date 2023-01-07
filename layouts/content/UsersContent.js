@@ -41,15 +41,25 @@ const UsersContent = () => {
     ? sortFunctions[sortKey][sortValue]
     : undefined
 
-  const visibleUsersIds = useMemo(
+  // const visibleUsersIds = useMemo(
+  //   () =>
+  //     users
+  //       .filter(
+  //         (user) =>
+  //           filter.gender[String(user.gender)] &&
+  //           filter.status[user.status ?? 'novice']
+  //       )
+  //       .map((user) => user._id),
+  //   [users, filter]
+  // )
+
+  const visibleUsers = useMemo(
     () =>
-      users
-        .filter(
-          (user) =>
-            filter.gender[String(user.gender)] &&
-            filter.status[user.status ?? 'novice']
-        )
-        .map((user) => user._id),
+      users.filter(
+        (user) =>
+          filter.gender[String(user.gender)] &&
+          filter.status[user.status ?? 'novice']
+      ),
     [users, filter]
   )
 
@@ -73,7 +83,7 @@ const UsersContent = () => {
         // /> */}
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounUsers(visibleUsersIds.length)}
+            {getNounUsers(visibleUsers.length)}
           </div>
           <SortingButtonMenu
             sort={sort}
@@ -95,16 +105,14 @@ const UsersContent = () => {
       </ContentHeader>
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
       <CardListWrapper>
-        {users?.length > 0 ? (
-          [...users]
-            .sort(sortFunc)
-            .map((user) => (
-              <UserCard
-                key={user._id}
-                userId={user._id}
-                hidden={!visibleUsersIds.includes(user._id)}
-              />
-            ))
+        {visibleUsers?.length > 0 ? (
+          [...visibleUsers].sort(sortFunc).map((user) => (
+            <UserCard
+              key={user._id}
+              userId={user._id}
+              // hidden={!visibleUsersIds.includes(user._id)}
+            />
+          ))
         ) : (
           <div className="flex justify-center p-2">Нет пользователей</div>
         )}
