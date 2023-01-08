@@ -25,8 +25,9 @@ import errorAtom from '@state/atoms/errorAtom'
 import DateTimeEvent from '@components/DateTimeEvent'
 import TextInRing from '@components/TextInRing'
 import NamesOfUsers from '@components/NamesOfUsers'
+import TextLinesLimiter from '@components/TextLinesLimiter'
 
-const EventCard = ({ eventId, noButtons, hidden = false }) => {
+const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
   const widthNum = useWindowDimensionsTailwindNum()
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -59,6 +60,7 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
       showOnSite={event.showOnSite}
       gap={false}
       hidden={hidden}
+      style={style}
     >
       {/* <div className="flex items-stretch"> */}
       {/* {event?.images && event.images.length > 0 && (
@@ -131,7 +133,10 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
         <div className="flex flex-col flex-1">
           <div className="flex pl-2">
             <div className="flex flex-1 text-xl font-bold laptop:hidden text-general">
-              <div className="flex-1">{direction.title}</div>
+              <TextLinesLimiter className="flex-1" lines={1}>
+                {direction.title}
+              </TextLinesLimiter>
+              {/* <div className="flex-1 truncate w-[90%]">{direction.title}</div> */}
               {!noButtons && (
                 <CardButtons
                   item={event}
@@ -146,9 +151,12 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
                 />
               )}
             </div>
-            <div className="flex-1 hidden text-xl font-bold laptop:block">
+            <TextLinesLimiter
+              className="flex-1 hidden text-xl font-bold laptop:block"
+              lines={1}
+            >
               {event.title}
-            </div>
+            </TextLinesLimiter>
             {!noButtons && (
               <CardButtons
                 item={event}
@@ -166,9 +174,12 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
           <div className="flex">
             <div className="flex flex-col flex-1 laptop:flex-row">
               <div className="flex justify-between flex-1 pl-2 pr-1">
-                <div className="flex-1 text-xl font-bold laptop:hidden">
+                <TextLinesLimiter
+                  className="flex-1 text-xl font-bold laptop:hidden"
+                  lines={1}
+                >
                   {event.title}
-                </div>
+                </TextLinesLimiter>
                 <div className="flex-1 hidden laptop:block">
                   {/* <div className="flex flex-1">{event.description}</div> */}
                   {/* <div className="flex flex-1 textarea" dangerouslySetInnerHTML={{ __html: event.description }} /> */}
@@ -250,7 +261,8 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
             event={event}
             showDayOfWeek
             fullMonth
-            showDuration
+            twoLines={widthNum <= 3}
+            showDuration={widthNum > 3}
           />
           {/* <div className="text-lg font-bold leading-5 whitespace-nowrap tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
               {formatDateTime(
@@ -288,7 +300,7 @@ const EventCard = ({ eventId, noButtons, hidden = false }) => {
           <PriceDiscount
             event={event}
             className="flex-1 mx-2"
-            prefix="Стоимость:"
+            // prefix="Стоимость:"
           />
           <EventButtonSignIn
             eventId={eventId}

@@ -25,28 +25,53 @@ const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
   return event.status === 'canceled' ? (
-    <div className={cn('text-lg font-bold uppercase text-danger', className)}>
+    <div
+      className={cn(
+        'text-base tablet:text-lg font-bold uppercase text-danger',
+        className
+      )}
+    >
       Отменено
     </div>
   ) : eventLoggedUserStatus.isEventExpired ? (
-    <div className={cn('text-lg font-bold uppercase text-success', className)}>
+    <div
+      className={cn(
+        'text-base tablet:text-lg font-bold uppercase text-success',
+        className
+      )}
+    >
       Завершено
     </div>
   ) : eventLoggedUserStatus.userEventStatus === 'assistant' ? (
-    <div className={cn('text-lg font-bold uppercase text-general', className)}>
+    <div
+      className={cn(
+        'text-base tablet:text-lg font-bold uppercase text-general',
+        className
+      )}
+    >
       Ведущий
     </div>
   ) : (noButtonIfAlreadySignIn && eventLoggedUserStatus.canSignOut) ||
     (eventLoggedUserStatus.isEventInProcess &&
       eventLoggedUserStatus.canSignOut) ? (
-    <div className={cn('text-lg font-bold uppercase text-blue-600', className)}>
+    <div
+      className={cn(
+        'text-base tablet:text-lg font-bold uppercase text-blue-600',
+        className
+      )}
+    >
       {eventLoggedUserStatus.userEventStatus === 'reserve'
-        ? 'Записан в резерв'
+        ? 'В резерве'
         : 'Записан'}
     </div>
   ) : eventLoggedUserStatus.isEventInProcess &&
     (noButtonIfAlreadySignIn || !eventLoggedUserStatus.canSignIn) ? (
-    <div className={cn('text-lg font-bold uppercase text-general', className)}>
+    <div
+      className={cn(
+        'text-base tablet:text-lg font-bold uppercase text-general',
+        className
+      )}
+    >
       В процессе
     </div>
   ) : (

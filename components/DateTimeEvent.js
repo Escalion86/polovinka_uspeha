@@ -40,7 +40,7 @@ const DateTimeEvent = ({
       className={cn(
         'flex leading-4',
         thin ? 'gap-x-0.5' : 'gap-x-1',
-        twoLines ? 'flex-col items-end' : 'flex-wrap items-center',
+        twoLines ? 'flex-col items-center' : 'flex-wrap items-center',
         wrapperClassName
       )}
     >

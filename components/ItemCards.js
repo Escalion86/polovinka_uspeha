@@ -18,6 +18,7 @@ import cn from 'classnames'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 import DateTimeEvent from './DateTimeEvent'
+import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
 import UserStatusIcon from './UserStatusIcon'
 
@@ -189,17 +190,12 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
       </div>
       <div className="flex items-center justify-between flex-1 px-1 leading-3">
         <div className="flex flex-col h-full justify-evenly">
-          <div
-            className="font-bold text-general"
-            // style={{
-            //   display: '-webkit-box',
-            //   WebkitBoxOrient: 'vertical',
-            //   WebkitLineClamp: 1,
-            // }}
-          >
+          <TextLinesLimiter className="font-bold text-general" lines={1}>
             {direction.title}
-          </div>
-          <div className="font-bold text-gray-800">{item.title}</div>
+          </TextLinesLimiter>
+          <TextLinesLimiter className="font-bold text-gray-800" lines={1}>
+            {item.title}
+          </TextLinesLimiter>
         </div>
         <div className="text-gray-600 gap-x-2">
           {/* <div className="flex-2 whitespace-nowrap">
@@ -256,28 +252,13 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
         {/* <div className="flex-1 whitespace-nowrap">
         {formatDateTime(item.date, false)}
       </div> */}
-        <div
+        <TextLinesLimiter
           dangerouslySetInnerHTML={{
             __html: sanitize(item.description),
           }}
-          className="textarea flex-1 max-w-full overflow-hidden leading-[0.85rem]"
-          style={{
-            display: '-webkit-box',
-            WebkitBoxOrient: 'vertical',
-            WebkitLineClamp: 2,
-          }}
-          // className="flex-1 h-8 max-w-full overflow-hidden text-clip"
+          className="textarea flex-1 max-w-full leading-[0.85rem]"
+          lines={2}
         />
-        {/* <div
-          className="flex-1 max-w-full"
-          style={{
-            display: '-webkit-box',
-            WebkitBoxOrient: 'vertical',
-            WebkitLineClamp: 2,
-          }}
-        >
-          {item.description}
-        </div> */}
       </div>
     </div>
   </ItemContainer>

@@ -21,8 +21,9 @@ import UserName from '@components/UserName'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 // import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
+import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 
-const UserCard = ({ userId, hidden = false }) => {
+const UserCard = ({ userId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const user = useRecoilValue(userSelector(userId))
   const loading = useRecoilValue(loadingAtom('user' + userId))
@@ -31,6 +32,8 @@ const UserCard = ({ userId, hidden = false }) => {
   const eventsUsersSignedUpCount = useRecoilValue(
     eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
   )
+
+  // const widthNum = useWindowDimensionsTailwindNum()
   // const itemFunc = useRecoilValue(itemsFuncAtom)
 
   const userGender =
@@ -45,6 +48,7 @@ const UserCard = ({ userId, hidden = false }) => {
       loading={loading}
       onClick={() => modalsFunc.user.view(user._id)}
       hidden={hidden}
+      style={style}
     >
       <div className="flex w-full">
         <div
@@ -61,7 +65,7 @@ const UserCard = ({ userId, hidden = false }) => {
         <div className="flex flex-col flex-1 tablet:flex-row">
           <div className="flex flex-1 border-b tablet:border-b-0">
             <img
-              className="object-cover w-16 h-16 min-w-16 min-h-16 tablet:w-24 tablet:h-24 tablet:min-w-24 tablet:min-h-24"
+              className="hidden object-cover w-16 h-16 tablet:block min-w-16 min-h-16 tablet:w-28 tablet:h-28 tablet:min-w-28 tablet:min-h-28"
               src={getUserAvatarSrc(user)}
               alt="user"
               // width={48}
@@ -69,10 +73,14 @@ const UserCard = ({ userId, hidden = false }) => {
             />
             <div className="flex flex-col flex-1 text-xl font-bold">
               <div className="flex flex-1">
-                <div className="flex flex-col flex-1 px-2 py-1">
-                  <div className="flex flex-wrap items-center leading-6 gap-x-1">
+                <div className="flex flex-col flex-1">
+                  <div className="flex flex-nowrap items-center px-1 py-0.5 leading-6 gap-x-1">
                     <UserStatusIcon status={user.status} />
-                    <UserName user={user} className="text-lg font-bold" />
+                    <UserName
+                      user={user}
+                      className="h-8 tablet:h-auto text-base font-bold tablet:text-lg -mt-0.5 tablet:mt-0"
+                      // noWrap
+                    />
                     {/* <span>{user.firstName}</span>
                     {user.secondName && <span>{user.secondName}</span>} */}
                     {/* {user.birthday && (
@@ -81,11 +89,12 @@ const UserCard = ({ userId, hidden = false }) => {
                         <ZodiacIcon date={user.birthday} />
                       </div>
                     )} */}
-                    {user.birthday &&
+                    {/* {widthNum > 3 &&
+                      user.birthday &&
                       (isLoggedUserAdmin ||
                         user.security?.showBirthday ||
                         user.security?.showAge) && (
-                        <div className="flex items-center font-normal whitespace-nowrap gap-x-2">
+                        <div className="flex items-center text-base font-normal tablet:text-lg whitespace-nowrap gap-x-2">
                           <span>
                             {birthDateToAge(
                               user.birthday,
@@ -96,31 +105,67 @@ const UserCard = ({ userId, hidden = false }) => {
                           </span>
                           <ZodiacIcon date={user.birthday} />
                         </div>
-                      )}
-                    {user.role === 'admin' && (
+                      )} */}
+                    {/* {user.role === 'admin' && (
                       <span className="font-normal text-red-400">
                         АДМИНИСТРАТОР
                       </span>
-                    )}
+                    )} */}
                   </div>
-                  <div className="flex text-sm leading-4 gap-x-2 ">
-                    <span className="font-bold">Дата регистрации:</span>
-                    <span className="font-normal">
-                      {formatDate(user.createdAt)}
-                    </span>
-                  </div>
-                  <div className="flex text-sm leading-4 gap-x-2">
-                    <span className="font-bold">Посетил:</span>
-                    <span className="font-normal">
-                      {eventsUsersSignedUpCount.finished}
-                    </span>
-                    <span className="font-bold">Записан:</span>
-                    <span className="font-normal">
-                      {eventsUsersSignedUpCount.signUp}
-                    </span>
+                  <div className="flex">
+                    <img
+                      className="object-cover w-14 h-14 min-w-14 min-h-14 tablet:hidden"
+                      src={getUserAvatarSrc(user)}
+                      alt="user"
+                      // width={48}
+                      // height={48}
+                    />
+                    <div className="flex flex-col justify-center px-1">
+                      {user.birthday &&
+                        (isLoggedUserAdmin ||
+                          user.security?.showBirthday ||
+                          user.security?.showAge) && (
+                          <div className="flex text-sm leading-4 gap-x-2 ">
+                            <span className="flex items-center font-bold">
+                              Возраст:
+                            </span>
+                            <div className="flex items-center text-sm font-normal whitespace-nowrap gap-x-2">
+                              <span className="leading-4">
+                                {birthDateToAge(
+                                  user.birthday,
+                                  true,
+                                  false,
+                                  isLoggedUserAdmin || user.security?.showAge
+                                )}
+                              </span>
+                              <ZodiacIcon date={user.birthday} small />
+                            </div>
+                          </div>
+                        )}
+                      <div className="flex text-sm leading-4 gap-x-2 ">
+                        <span className="font-bold">Зарегистрирован:</span>
+                        <span className="font-normal">
+                          {formatDate(user.createdAt)}
+                        </span>
+                      </div>
+                      <div className="flex text-sm leading-4 gap-x-2">
+                        <span className="font-bold">Посетил:</span>
+                        <span className="font-normal">
+                          {eventsUsersSignedUpCount.finished}
+                        </span>
+                        <span className="font-bold">Записан:</span>
+                        <span className="font-normal">
+                          {eventsUsersSignedUpCount.signUp}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <CardButtons item={user} typeOfItem="user" />
+                <CardButtons
+                  item={user}
+                  typeOfItem="user"
+                  alwaysCompactOnPhone
+                />
               </div>
               {/* <div className="flex-col justify-end flex-1 hidden px-2 tablet:flex"> */}
               {/* <div className="flex-1"> */}

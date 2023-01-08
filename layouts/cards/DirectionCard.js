@@ -8,7 +8,7 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import { useRecoilValue } from 'recoil'
 
-const DirectionCard = ({ directionId, hidden = false }) => {
+const DirectionCard = ({ directionId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const direction = useRecoilValue(directionSelector(directionId))
   const loading = useRecoilValue(loadingAtom('direction' + directionId))
@@ -20,6 +20,7 @@ const DirectionCard = ({ directionId, hidden = false }) => {
       onClick={() => !loading && modalsFunc.direction.edit(direction._id)}
       showOnSite={direction.showOnSite}
       hidden={hidden}
+      style={style}
     >
       {direction?.image ? (
         // <div className="flex justify-center w-full tablet:w-auto">

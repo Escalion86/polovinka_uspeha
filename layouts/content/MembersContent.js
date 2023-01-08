@@ -13,6 +13,7 @@ import sortFunctions from '@helpers/sortFunctions'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import membersSelector from '@state/selectors/membersSelector'
+import UsersList from '@layouts/lists/UsersList'
 
 const MembersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -103,7 +104,8 @@ const MembersContent = () => {
         </div>
       </ContentHeader>
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
-      <CardListWrapper>
+      <UsersList users={[...visibleUsers].sort(sortFunc)} />
+      {/* <CardListWrapper>
         {visibleUsers?.length > 0 ? (
           [...visibleUsers].sort(sortFunc).map((user) => (
             <UserCard
@@ -115,8 +117,7 @@ const MembersContent = () => {
         ) : (
           <div className="flex justify-center p-2">Нет пользователей</div>
         )}
-        {/* <Fab onClick={() => modalsFunc.user.edit()} show /> */}
-      </CardListWrapper>
+      </CardListWrapper> */}
     </>
   )
 }
