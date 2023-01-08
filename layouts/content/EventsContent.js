@@ -25,6 +25,12 @@ import isEventCanceledFunc from '@helpers/isEventCanceled'
 import sortFunctions from '@helpers/sortFunctions'
 import AddButton from '@components/IconToggleButtons/AddButton'
 
+import AutoSizer from 'react-virtualized-auto-sizer'
+
+import { FixedSizeList } from 'react-window'
+import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
+import EventsList from '@layouts/lists/EventsList'
+
 const EventsContent = () => {
   // const classes = useStyles()
 
@@ -34,6 +40,7 @@ const EventsContent = () => {
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const windowWidthNum = useWindowDimensionsTailwindNum()
 
   const [sort, setSort] = useState({ dateStart: 'asc' })
   const [showFilter, setShowFilter] = useState(false)
@@ -91,27 +98,48 @@ const EventsContent = () => {
     ]
   )
 
-  const visibleEventsIds = useMemo(
+  // const visibleEventsIds = useMemo(
+  //   () =>
+  //     filteredEvents
+  //       .filter((event) => {
+  //         const isEventExpired = isEventExpiredFunc(event)
+  //         const isEventActive = isEventActiveFunc(event)
+  //         const isEventCanceled = isEventCanceledFunc(event)
+  //         return (
+  //           ((isEventActive && filter.status.finished && isEventExpired) ||
+  //             (isEventActive && filter.status.active && !isEventExpired) ||
+  //             (isEventCanceled && filter.status.canceled)) &&
+  //           filterOptions.directions.includes(event.directionId)
+  //         )
+  //       })
+  //       .map((event) => event._id),
+  //   [filteredEvents, filter, filterOptions.directions.length]
+  // )
+
+  // const filteredAndSortedEvents = useMemo(
+  //   () => [...filteredEvents].sort(sortFunc),
+  //   [filteredEvents, sort]
+  // )
+
+  const visibleEvents = useMemo(
     () =>
-      filteredEvents
-        .filter((event) => {
-          const isEventExpired = isEventExpiredFunc(event)
-          const isEventActive = isEventActiveFunc(event)
-          const isEventCanceled = isEventCanceledFunc(event)
-          return (
-            ((isEventActive && filter.status.finished && isEventExpired) ||
-              (isEventActive && filter.status.active && !isEventExpired) ||
-              (isEventCanceled && filter.status.canceled)) &&
-            filterOptions.directions.includes(event.directionId)
-          )
-        })
-        .map((event) => event._id),
+      filteredEvents.filter((event) => {
+        const isEventExpired = isEventExpiredFunc(event)
+        const isEventActive = isEventActiveFunc(event)
+        const isEventCanceled = isEventCanceledFunc(event)
+        return (
+          ((isEventActive && filter.status.finished && isEventExpired) ||
+            (isEventActive && filter.status.active && !isEventExpired) ||
+            (isEventCanceled && filter.status.canceled)) &&
+          filterOptions.directions.includes(event.directionId)
+        )
+      }),
     [filteredEvents, filter, filterOptions.directions.length]
   )
 
   const filteredAndSortedEvents = useMemo(
-    () => [...filteredEvents].sort(sortFunc),
-    [filteredEvents, sort]
+    () => [...visibleEvents].sort(sortFunc),
+    [visibleEvents, sort]
   )
 
   const isFiltered = filterOptions.directions.length !== directions.length
@@ -146,7 +174,7 @@ const EventsContent = () => {
         </ButtonGroup> */}
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounEvents(visibleEventsIds.length)}
+            {getNounEvents(visibleEvents.length)}
           </div>
           <SortingButtonMenu
             sort={sort}
@@ -178,13 +206,40 @@ const EventsContent = () => {
         </div>
       </ContentHeader>
       <Filter show={showFilter} options={options} onChange={setFilterOptions} />
-      <CardListWrapper>
-        {filteredAndSortedEvents?.length > 0 ? (
+      {/* <CardListWrapper> */}
+      <EventsList events={filteredAndSortedEvents} />
+      {/* <div className="flex-1 w-full bg-opacity-15 bg-general">
+        <AutoSizer>
+          {({ height, width }) => (
+            <FixedSizeList
+              height={height}
+              itemCount={filteredAndSortedEvents.length}
+              itemSize={
+                windowWidthNum > 3 ? 182 : windowWidthNum === 3 ? 151 : 194
+              }
+              width={width}
+            >
+              {({ index, style }) => (
+                <EventCard
+                  style={style}
+                  key={filteredAndSortedEvents[index]._id}
+                  eventId={filteredAndSortedEvents[index]._id}
+                  // hidden={!visibleEventsIds.includes(event._id)}
+                  // noButtons={
+                  //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
+                  // }
+                />
+              )}
+            </FixedSizeList>
+          )}
+        </AutoSizer>
+      </div> */}
+      {/* {filteredAndSortedEvents?.length > 0 ? (
           filteredAndSortedEvents.map((event) => (
             <EventCard
               key={event._id}
               eventId={event._id}
-              hidden={!visibleEventsIds.includes(event._id)}
+              // hidden={!visibleEventsIds.includes(event._id)}
               // noButtons={
               //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
               // }
@@ -192,11 +247,11 @@ const EventsContent = () => {
           ))
         ) : (
           <div className="flex justify-center p-2">{`Нет мероприятий`}</div>
-        )}
-        {/* {isLoggedUserAdmin && (
+        )} */}
+      {/* {isLoggedUserAdmin && (
           <Fab onClick={() => modalsFunc.event.add()} show />
         )} */}
-      </CardListWrapper>
+      {/* </CardListWrapper> */}
     </>
   )
 }

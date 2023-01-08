@@ -12,6 +12,7 @@ import SortingButtonMenu from '@components/SortingButtonMenu'
 import sortFunctions from '@helpers/sortFunctions'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import UsersList from '@layouts/lists/UsersList'
 
 const UsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -41,15 +42,25 @@ const UsersContent = () => {
     ? sortFunctions[sortKey][sortValue]
     : undefined
 
-  const visibleUsersIds = useMemo(
+  // const visibleUsersIds = useMemo(
+  //   () =>
+  //     users
+  //       .filter(
+  //         (user) =>
+  //           filter.gender[String(user.gender)] &&
+  //           filter.status[user.status ?? 'novice']
+  //       )
+  //       .map((user) => user._id),
+  //   [users, filter]
+  // )
+
+  const visibleUsers = useMemo(
     () =>
-      users
-        .filter(
-          (user) =>
-            filter.gender[String(user.gender)] &&
-            filter.status[user.status ?? 'novice']
-        )
-        .map((user) => user._id),
+      users.filter(
+        (user) =>
+          filter.gender[String(user.gender)] &&
+          filter.status[user.status ?? 'novice']
+      ),
     [users, filter]
   )
 
@@ -73,7 +84,7 @@ const UsersContent = () => {
         // /> */}
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounUsers(visibleUsersIds.length)}
+            {getNounUsers(visibleUsers.length)}
           </div>
           <SortingButtonMenu
             sort={sort}
@@ -94,22 +105,20 @@ const UsersContent = () => {
         </div>
       </ContentHeader>
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
-      <CardListWrapper>
-        {users?.length > 0 ? (
-          [...users]
-            .sort(sortFunc)
-            .map((user) => (
-              <UserCard
-                key={user._id}
-                userId={user._id}
-                hidden={!visibleUsersIds.includes(user._id)}
-              />
-            ))
+      <UsersList users={[...visibleUsers].sort(sortFunc)} />
+      {/* <CardListWrapper>
+        {visibleUsers?.length > 0 ? (
+          [...visibleUsers].sort(sortFunc).map((user) => (
+            <UserCard
+              key={user._id}
+              userId={user._id}
+              // hidden={!visibleUsersIds.includes(user._id)}
+            />
+          ))
         ) : (
           <div className="flex justify-center p-2">Нет пользователей</div>
         )}
-        {/* <Fab onClick={() => modalsFunc.user.edit()} show /> */}
-      </CardListWrapper>
+      </CardListWrapper> */}
     </>
   )
 }

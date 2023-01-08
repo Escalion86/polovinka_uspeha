@@ -7,7 +7,7 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { CardWrapper } from '@components/CardWrapper'
 
-const ReviewCard = ({ reviewId, hidden = false }) => {
+const ReviewCard = ({ reviewId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const review = useRecoilValue(reviewSelector(reviewId))
   const loading = useRecoilValue(loadingAtom('review' + reviewId))
@@ -20,6 +20,7 @@ const ReviewCard = ({ reviewId, hidden = false }) => {
       flex={false}
       showOnSite={review.showOnSite}
       hidden={hidden}
+      style={style}
     >
       <div className="flex">
         <div className="flex-1 px-2 py-1 text-xl font-bold">

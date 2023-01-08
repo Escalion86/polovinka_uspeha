@@ -34,16 +34,21 @@ const PaymentsContent = () => {
     ? sortFunctions[sortKey][sortValue]
     : undefined
 
-    const visiblePaymentsIds = useMemo(
-      () =>
-        payments
-          .filter(
-            (payment) =>
-              filter.payType[payment.payType]
-          )
-          .map((payment) => payment._id),
-      [payments, filter]
-    )
+  // const visiblePaymentsIds = useMemo(
+  //   () =>
+  //     payments
+  //       .filter(
+  //         (payment) =>
+  //           filter.payType[payment.payType]
+  //       )
+  //       .map((payment) => payment._id),
+  //   [payments, filter]
+  // )
+
+  const visiblePayments = useMemo(
+    () => payments.filter((payment) => filter.payType[payment.payType]),
+    [payments, filter]
+  )
 
   return (
     <>
@@ -51,7 +56,7 @@ const PaymentsContent = () => {
         <PaymentsFilter value={filter} onChange={setFilter} />
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounPayments(payments.length)}
+            {getNounPayments(visiblePayments.length)}
           </div>
           <SortingButtonMenu
             sort={sort}
@@ -64,12 +69,14 @@ const PaymentsContent = () => {
         </div>
       </ContentHeader>
       <CardListWrapper>
-        {payments?.length > 0 ? (
-          [...payments]
-            .sort(sortFunc)
-            .map((payment) => (
-              <PaymentCard key={payment._id} paymentId={payment._id} hidden={!visiblePaymentsIds.includes(payment._id)} />
-            ))
+        {visiblePayments?.length > 0 ? (
+          [...visiblePayments].sort(sortFunc).map((payment) => (
+            <PaymentCard
+              key={payment._id}
+              paymentId={payment._id}
+              // hidden={!visiblePaymentsIds.includes(payment._id)}
+            />
+          ))
         ) : (
           <div className="flex justify-center p-2">Нет транзакций</div>
         )}

@@ -16,10 +16,12 @@ export const CardWrapper = ({
   showOnSite = true,
   className,
   hidden,
+  style,
 }) => {
   const device = useWindowDimensionsTailwind()
   return (
     <motion.div
+      style={style}
       className={cn(
         'w-full',
 
