@@ -9,7 +9,7 @@ const UsersList = ({ users }) => {
   return (
     <ListWrapper
       itemCount={users.length}
-      itemSize={windowWidthNum > 2 ? 118 : 129}
+      itemSize={windowWidthNum > 2 ? 90 : 97}
     >
       {({ index, style }) => (
         <UserCard

@@ -110,6 +110,8 @@ const CardButtons = ({
     0
   )
 
+  if (numberOfButtons === 0) return null
+
   const ItemComponent =
     (numberOfButtons > 3 || alwaysCompactOnPhone) && isCompact
       ? MenuItem
