@@ -21,7 +21,7 @@ import UserName from '@components/UserName'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 // import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
-import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
+// import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 
 const UserCard = ({ userId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -65,7 +65,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
         <div className="flex flex-col flex-1 tablet:flex-row">
           <div className="flex flex-1 border-b tablet:border-b-0">
             <img
-              className="hidden object-cover w-16 h-16 tablet:block min-w-16 min-h-16 tablet:w-28 tablet:h-28 tablet:min-w-28 tablet:min-h-28"
+              className="hidden object-cover w-[5.25rem] h-[5.25rem] tablet:block min-w-[5.25rem] min-h-[5.25rem]"
               src={getUserAvatarSrc(user)}
               alt="user"
               // width={48}
@@ -188,14 +188,14 @@ const UserCard = ({ userId, hidden = false, style }) => {
                 </div>
               )} */}
               {/* </div> */}
-              <ContactsIconsButtons
+              {/* <ContactsIconsButtons
                 className="hidden px-2 tablet:flex"
                 user={user}
-              />
+              /> */}
               {/* </div> */}
             </div>
           </div>
-          <ContactsIconsButtons className="px-2 tablet:hidden" user={user} />
+          {/* <ContactsIconsButtons className="px-2 tablet:hidden" user={user} /> */}
         </div>
       </div>
     </CardWrapper>
