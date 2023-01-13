@@ -13,6 +13,7 @@ import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import sortFunctions from '@helpers/sortFunctions'
 import SortingButtonMenu from '@components/SortingButtonMenu'
+import PaymentsList from '@layouts/lists/PaymentsList'
 
 const PaymentsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -68,7 +69,8 @@ const PaymentsContent = () => {
           )}
         </div>
       </ContentHeader>
-      <CardListWrapper>
+      <PaymentsList payments={visiblePayments} />
+      {/* <CardListWrapper>
         {visiblePayments?.length > 0 ? (
           [...visiblePayments].sort(sortFunc).map((payment) => (
             <PaymentCard
@@ -80,8 +82,7 @@ const PaymentsContent = () => {
         ) : (
           <div className="flex justify-center p-2">Нет транзакций</div>
         )}
-        {/* <Fab onClick={() => modalsFunc.payment.edit()} show /> */}
-      </CardListWrapper>
+      </CardListWrapper> */}
     </>
   )
 }

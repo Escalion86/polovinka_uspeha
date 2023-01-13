@@ -11,7 +11,12 @@ import { useRouter } from 'next/router'
 import Button from '@components/Button'
 import cn from 'classnames'
 
-const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
+const EventButtonSignIn = ({
+  eventId,
+  className,
+  noButtonIfAlreadySignIn,
+  thin,
+}) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
   const loggedUser = useRecoilValue(loggedUserAtom)
@@ -76,6 +81,7 @@ const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
     </div>
   ) : (
     <Button
+      thin={thin}
       stopPropagation
       onClick={() => {
         if (loggedUser.status === 'ban') {
@@ -110,10 +116,7 @@ const EventButtonSignIn = ({ eventId, className, noButtonIfAlreadySignIn }) => {
       // )}
       classBgColor={eventLoggedUserStatus.canSignOut ? 'bg-danger' : undefined}
       // classHoverBgColor={eventUser ? 'hover:bg-danger' : undefined}
-      className={cn(
-        'px-4 py-1 text-white duration-300 border rounded w-auto',
-        className
-      )}
+      className={cn('border w-auto', className)}
       name={
         eventLoggedUserStatus.canSignOut
           ? `Отменить запись${

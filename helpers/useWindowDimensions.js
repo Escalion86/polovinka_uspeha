@@ -38,6 +38,7 @@ export default function useWindowDimensions() {
 
 export const useWindowDimensionsTailwind = () => {
   const { width } = useWindowDimensions()
+  if (!width) return null
   if (width < 480) return 'phoneV'
   if (width < 640) return 'phoneH'
   if (width < 960) return 'tablet'
@@ -47,6 +48,7 @@ export const useWindowDimensionsTailwind = () => {
 
 export const useWindowDimensionsTailwindNum = () => {
   const { width } = useWindowDimensions()
+  if (!width) return 0
   if (width < 480) return 1
   if (width < 640) return 2
   if (width < 960) return 3

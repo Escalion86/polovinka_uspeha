@@ -51,6 +51,7 @@ import questionnaireEditSelector from '@state/selectors/questionnaireEditSelecto
 import questionnaireDeleteSelector from '@state/selectors/questionnaireDeleteSelector'
 import questionnaireUsersEditSelector from '@state/selectors/questionnaireUsersEditSelector'
 import questionnaireUsersDeleteSelector from '@state/selectors/questionnaireUsersDeleteSelector'
+import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -113,6 +114,19 @@ const StateLoader = (props) => {
   const setNotLoadingCard = useSetRecoilState(setNotLoadingSelector)
   const setErrorCard = useSetRecoilState(setErrorSelector)
   const setNotErrorCard = useSetRecoilState(setNotErrorSelector)
+  const setWindowDimensions = useSetRecoilState(windowDimensionsAtom)
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)

@@ -1,15 +1,18 @@
 import React from 'react'
 
-import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
+// import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 import EventCard from '@layouts/cards/EventCard'
 import ListWrapper from './ListWrapper'
+import { useRecoilValue } from 'recoil'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 
 const EventsList = ({ events }) => {
-  const windowWidthNum = useWindowDimensionsTailwindNum()
+  // const widthNum = useWindowDimensionsTailwindNum()
+  const widthNum = useRecoilValue(windowDimensionsNumSelector)
   return (
     <ListWrapper
       itemCount={events.length}
-      itemSize={windowWidthNum > 3 ? 182 : windowWidthNum === 3 ? 169 : 194}
+      itemSize={widthNum > 3 ? 182 : widthNum === 3 ? 169 : 198}
     >
       {({ index, style }) => (
         <EventCard

@@ -1,6 +1,7 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import DateTimeEvent from '@components/DateTimeEvent'
+import UserNameById from '@components/UserNameById'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PAY_TYPES } from '@helpers/constants'
@@ -9,6 +10,7 @@ import formatDateTime from '@helpers/formatDateTime'
 import { modalsFuncAtom } from '@state/atoms'
 import loadingAtom from '@state/atoms/loadingAtom'
 import paymentSelector from '@state/selectors/paymentSelector'
+import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 
@@ -26,7 +28,7 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
       loading={loading}
       onClick={() => !loading && modalsFunc.payment.edit(payment._id)}
       flex={false}
-      className="flex items-stretch"
+      className="flex items-stretch h-10"
       hidden={hidden}
       style={style}
     >
@@ -38,8 +40,11 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
       >
         <FontAwesomeIcon icon={payType?.icon ?? faQuestion} className="w-6" />
       </div>
-      <div className="flex items-center justify-between flex-1 gap-x-2">
-        <div className="">{formatDateTime(payment.payAt)}</div>
+      <div className="flex flex-col items-start flex-1 h-full text-sm leading-4 overflow-x-clip justify-evenly gap-x-2 phoneH:text-base">
+        <div className="leading-4 whitespace-nowrap">
+          {formatDateTime(payment.payAt)}
+        </div>
+        <UserNameById userId={payment.userId} noWrap />
         {/* <div className="items-center flex-1">
           <div className="flex flex-col flex-wrap justify-between gap-x-4 phoneH:flex-row">
             <div>
@@ -58,7 +63,9 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
         <div className="font-bold">{payment.sum} ₽</div>
       </div> */}
       <div className="flex items-center justify-between">
-        <div className="px-1 font-bold">{payment.sum / 100} ₽</div>
+        <div className="px-1 text-sm font-bold phoneH:text-base">
+          {payment.sum / 100} ₽
+        </div>
         <CardButtons item={payment} typeOfItem="payment" alwaysCompactOnPhone />
       </div>
     </CardWrapper>

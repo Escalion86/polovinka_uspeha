@@ -6,6 +6,7 @@ import cn from 'classnames'
 import eventsAtom from '@state/atoms/eventsAtom'
 import filterItems from '@helpers/filterItems'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
+import sortFunctions from '@helpers/sortFunctions'
 
 const selectEventsFunc = (
   state,
@@ -43,6 +44,8 @@ const selectEventsFunc = (
         (event) => !exceptedIds.includes(event._id)
       )
     }
+
+    const sortedEvents = [...filteredEvents].sort(sortFunctions.dateStart.asc)
 
     const onClick = (eventId) => {
       const index = selectedEvents.indexOf(eventId)
@@ -143,7 +146,7 @@ const selectEventsFunc = (
         </div>
 
         <div className="flex-1 overflow-y-auto max-h-200">
-          {filteredEvents.map((event) => (
+          {sortedEvents.map((event) => (
             <EventItem
               key={event._id}
               item={event}
