@@ -1,9 +1,11 @@
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
+// import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
+import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'
 // import { motion } from 'framer-motion'
 import React from 'react'
+import { useRecoilValue } from 'recoil'
 import LoadingSpinner from './LoadingSpinner'
 
 export const CardWrapper = ({
@@ -18,7 +20,8 @@ export const CardWrapper = ({
   hidden,
   style,
 }) => {
-  const device = useWindowDimensionsTailwind()
+  // const device = useWindowDimensionsTailwind()
+  const device = useRecoilValue(windowDimensionsTailwindSelector)
   return (
     <div
       style={style}

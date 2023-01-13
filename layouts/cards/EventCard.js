@@ -2,7 +2,7 @@ import React from 'react'
 
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import formatDateTime from '@helpers/formatDateTime'
+// import formatDateTime from '@helpers/formatDateTime'
 import CardButtons from '@components/CardButtons'
 import formatAddress from '@helpers/formatAddress'
 import loadingAtom from '@state/atoms/loadingAtom'
@@ -10,25 +10,27 @@ import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import directionSelector from '@state/selectors/directionSelector'
-import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
-import UserNameById from '@components/UserNameById'
+// import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
+// import UserNameById from '@components/UserNameById'
 // import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
-import UserName from '@components/UserName'
+// import UserName from '@components/UserName'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import PriceDiscount from '@components/PriceDiscount'
 import cn from 'classnames'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
-import formatMinutes from '@helpers/formatMinutes'
-import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
+// import formatMinutes from '@helpers/formatMinutes'
+// import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import errorAtom from '@state/atoms/errorAtom'
 import DateTimeEvent from '@components/DateTimeEvent'
 import TextInRing from '@components/TextInRing'
 import NamesOfUsers from '@components/NamesOfUsers'
 import TextLinesLimiter from '@components/TextLinesLimiter'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 
 const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
-  const widthNum = useWindowDimensionsTailwindNum()
+  // const widthNum = useWindowDimensionsTailwindNum()
+  const widthNum = useRecoilValue(windowDimensionsNumSelector)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))

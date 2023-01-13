@@ -18,20 +18,21 @@ import {
   faShareAlt,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
-import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
+// import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
 
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import CardButton from './CardButton'
-import copyToClipboard from '@helpers/copyToClipboard'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+// import copyToClipboard from '@helpers/copyToClipboard'
+// import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import useSnackbar from '@helpers/useSnackbar'
+// import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+// import useSnackbar from '@helpers/useSnackbar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 
 import { useDetectClickOutside } from 'react-detect-click-outside'
+import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -65,7 +66,7 @@ const CardButtons = ({
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
-  const device = useWindowDimensionsTailwind()
+  const device = useRecoilValue(windowDimensionsTailwindSelector)
 
   const copyLink = useCopyEventLinkToClipboard(item._id)
 

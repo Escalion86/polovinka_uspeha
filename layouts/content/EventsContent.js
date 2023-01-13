@@ -28,7 +28,7 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 // import AutoSizer from 'react-virtualized-auto-sizer'
 
 // import { FixedSizeList } from 'react-window'
-import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
+// import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 import EventsList from '@layouts/lists/EventsList'
 
 const EventsContent = () => {
@@ -40,7 +40,7 @@ const EventsContent = () => {
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const windowWidthNum = useWindowDimensionsTailwindNum()
+  // const windowWidthNum = useWindowDimensionsTailwindNum()
 
   const [sort, setSort] = useState({ dateStart: 'asc' })
   const [showFilter, setShowFilter] = useState(false)
