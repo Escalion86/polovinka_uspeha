@@ -15,6 +15,10 @@ import StreamChart from '@components/Charts/StreamChart'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import formatDate from '@helpers/formatDate'
 import getDaysBetween from '@helpers/getDaysBetween'
+import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
+import isEventExpiredFunc from '@helpers/isEventExpired'
+import isEventActiveFunc from '@helpers/isEventActive'
+import isEventCanceledFunc from '@helpers/isEventCanceled'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -103,9 +107,32 @@ const StatisticsContent = () => {
     },
   })
 
+  const [filterEvents, setFilterEvents] = useState({
+    status: {
+      active: false,
+      finished: true,
+      canceled: false,
+    },
+  })
+
   const filteredUsers = useMemo(
     () => users.filter((user) => filterUsers.status[user.status ?? 'novice']),
     [users, filterUsers]
+  )
+
+  const filteredEvents = useMemo(
+    () =>
+      events.filter((event) => {
+        const isEventExpired = isEventExpiredFunc(event)
+        const isEventActive = isEventActiveFunc(event)
+        const isEventCanceled = isEventCanceledFunc(event)
+        return (
+          (isEventActive && filterEvents.status.finished && isEventExpired) ||
+          (isEventActive && filterEvents.status.active && !isEventExpired) ||
+          (isEventCanceled && filterEvents.status.canceled)
+        )
+      }),
+    [events, filterEvents]
   )
 
   // const usersByDays = usersCountByDates()
@@ -155,16 +182,16 @@ const StatisticsContent = () => {
 
   const eventsByStatusData = [
     {
+      id: 'Предстоят',
+      label: 'Предстоят',
+      value: activeEventsCount,
+      color: '#60a5fa',
+    },
+    {
       id: 'Завершены',
       label: 'Завершены',
       value: finishedEventsCount,
       color: '#4ade80',
-    },
-    {
-      id: 'Запланированы',
-      label: 'Запланированы',
-      value: activeEventsCount,
-      color: '#60a5fa',
     },
     {
       id: 'Отменены',
@@ -175,7 +202,7 @@ const StatisticsContent = () => {
   ]
 
   const eventsByDirectionsData = directions.map((direction) => {
-    const eventsInDirectionCount = events.filter(
+    const eventsInDirectionCount = filteredEvents.filter(
       (event) => event.directionId === direction._id
     ).length
     return {
@@ -197,9 +224,21 @@ const StatisticsContent = () => {
       <TabContext value="Мероприятия">
         <TabPanel tabName="Мероприятия" className="flex flex-col items-center">
           {/* <ListWrapper className="flex flex-col items-center w-full py-1"> */}
+
           <PieChart data={eventsByStatusData} title="По статусу" />
           <Divider light />
-          <PieChart data={eventsByDirectionsData} title="По направлениям" />
+          <div className="flex flex-col items-center w-[300px]">
+            <H3>По направлениям</H3>
+            <EventStatusToggleButtons
+              value={filterEvents.status}
+              onChange={(value) =>
+                setFilterEvents((state) => ({ ...state, status: value }))
+              }
+            />
+            {/* <H4>{usersTitle}</H4> */}
+            <PieChart data={eventsByDirectionsData} />
+          </div>
+
           {/* </ListWrapper> */}
         </TabPanel>
         <TabPanel tabName="Пользователи" className="flex flex-col items-center">

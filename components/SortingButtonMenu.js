@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import cn from 'classnames'
-import ValueItem from './ValuePicker/ValueItem'
+// import ValueItem from './ValuePicker/ValueItem'
 import {
   faSort,
   faSortAlphaAsc,

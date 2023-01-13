@@ -1,11 +1,11 @@
 import DevSwitch from '@components/DevSwitch'
 import {
   faHome,
-  faList,
+  // faList,
   faListAlt,
-  faListSquares,
-  faListUl,
-  faSign,
+  // faListSquares,
+  // faListUl,
+  // faSign,
   faSignInAlt,
   faSignOutAlt,
   faUserAlt,
