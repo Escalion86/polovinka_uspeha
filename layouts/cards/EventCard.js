@@ -297,16 +297,19 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
             eventId={eventId}
             className="flex-1 min-w-full border-t border-b"
           />
-          <PriceDiscount
-            event={event}
-            className="flex-1 mx-2"
-            // prefix="Стоимость:"
-          />
-          <EventButtonSignIn
-            eventId={eventId}
-            className="m-1"
-            noButtonIfAlreadySignIn
-          />
+          <div className="flex flex-wrap items-center justify-end flex-1 w-full h-9">
+            <PriceDiscount
+              event={event}
+              className="flex-1 mx-2"
+              // prefix="Стоимость:"
+            />
+            <EventButtonSignIn
+              eventId={eventId}
+              className="mx-1 my-0.5"
+              noButtonIfAlreadySignIn
+              thin
+            />
+          </div>
         </div>
       )}
     </CardWrapper>
