@@ -2,7 +2,7 @@ import { faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 import React from 'react'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -20,7 +20,7 @@ export const CardWrapper = ({
 }) => {
   const device = useWindowDimensionsTailwind()
   return (
-    <motion.div
+    <div
       style={style}
       className={cn(
         'w-full',
@@ -28,16 +28,10 @@ export const CardWrapper = ({
         hidden ? 'overflow-hidden' : ''
       )}
       onClick={onClick}
-      transition={{ duration: 0.3, type: 'just' }}
-      animate={{
-        // overflow: hidden ? 'hidden' : 'visible',
-        height: hidden ? 0 : 'auto',
-        // maxHeight: hidden ? 0 : 9000,
-        // marginTop: hidden ? 0 : '1rem',
-        // marginBottom: hidden ? 0 : '1rem',
-      }}
-      // initial={{ height: 0 }}
-      // layout
+      // transition={{ duration: 0.3, type: 'just' }}
+      // animate={{
+      //   height: hidden ? 0 : 'auto',
+      // }}
     >
       <div className="py-0.5">
         <div
@@ -74,6 +68,6 @@ export const CardWrapper = ({
           {children}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

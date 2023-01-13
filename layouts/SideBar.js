@@ -2,24 +2,24 @@ import React, { useEffect, useRef } from 'react'
 import cn from 'classnames'
 import { useState } from 'react'
 import {
-  faUser,
-  faSignOutAlt,
-  faPlus,
-  faArrowUp,
-  faCross,
-  faTrash,
-  faChartBar,
-  faBars,
+  // faUser,
+  // faSignOutAlt,
+  // faPlus,
+  // faArrowUp,
+  // faCross,
+  // faTrash,
+  // faChartBar,
+  // faBars,
   faAngleDown,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { motion } from 'framer-motion'
 import { pages, pagesGroups } from '@helpers/constants'
-import Burger from '@components/Burger'
+// import Burger from '@components/Burger'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import Link from 'next/link'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+// import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 

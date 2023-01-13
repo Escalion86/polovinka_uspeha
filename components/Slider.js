@@ -3,7 +3,7 @@ import InputWrapper from './InputWrapper'
 import SliderMui from '@mui/material/Slider'
 import FormControl from '@mui/material/FormControl'
 import NativeSelect from '@mui/material/NativeSelect'
-import { InputLabel } from '@mui/material'
+// import { InputLabel } from '@mui/material'
 
 const Options = ({ min, max }) => {
   const array = new Array(max - min + 1).fill(0)

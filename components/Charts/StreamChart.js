@@ -1,46 +1,41 @@
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
+// import { modalsFuncAtom } from '@state/atoms'
+// import { useRecoilValue } from 'recoil'
 import { ResponsiveStream } from '@nivo/stream'
-import usersAtom from '@state/atoms/usersAtom'
+// import usersAtom from '@state/atoms/usersAtom'
 import { H3 } from '@components/tags'
 
 const GridX = (props) => {
   const { slices, linesOnX } = props
 
-  return (
-    <>
-      {linesOnX.map((line) => (
-        <>
-          {(line.index === 0 || !!line.index) && (
-            <line
-              x1={slices[line.index].x}
-              y1="300"
-              x2={slices[line.index].x}
-              y2="0"
-              stroke="#7a5151"
-            />
-          )}
-          {!!line?.text && (line.index === 0 || !!line.index) && (
-            <text
-              x={slices[line.index].x}
-              y="310"
-              // className="text-2xl tablet:text-4xl laptop:text-5xl"
-              textAnchor="middle"
-              dominantBaseline="central"
-              font-size="smaller"
-              // font-weight="lighter"
-              fill="#7a5151"
-              // style={{
-              //   fontSize: '36px',
-              // }}
-              // fill="black"
-            >
-              {line.text}
-            </text>
-          )}
-        </>
-      ))}
-    </>
+  return linesOnX.map((line) =>
+    line.index === 0 || !!line.index ? (
+      <line
+        key={line.index}
+        x1={slices[line.index].x}
+        y1="300"
+        x2={slices[line.index].x}
+        y2="0"
+        stroke="#7a5151"
+      />
+    ) : !!line?.text && (line.index === 0 || !!line.index) ? (
+      <text
+        key={line.index}
+        x={slices[line.index].x}
+        y="310"
+        // className="text-2xl tablet:text-4xl laptop:text-5xl"
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontSize="smaller"
+        // font-weight="lighter"
+        fill="#7a5151"
+        // style={{
+        //   fontSize: '36px',
+        // }}
+        // fill="black"
+      >
+        {line.text}
+      </text>
+    ) : null
   )
 }
 
@@ -140,7 +135,7 @@ const StreamChart = ({
         stackTooltip={(props) => {
           // console.log('props', props)
           const { stack, index } = props.slice
-          const labelsKeys = Object.keys(labels)
+          // const labelsKeys = Object.keys(labels)
           return (
             <div
               style={{
@@ -166,24 +161,27 @@ const StreamChart = ({
                     //     ? 1
                     //     : -1
                     // })
-                    .map((item) => (
-                      <tr key={item.layerLabel}>
-                        <td style={{ padding: '3px 5px' }}>
-                          <span
-                            style={{
-                              display: 'block',
-                              width: 12,
-                              height: 12,
-                              backgroundColor: item.color,
-                            }}
-                          ></span>
-                        </td>
-                        <td style={{ padding: '3px 5px' }}>
-                          {item.layerLabel}
-                        </td>
-                        <td style={{ padding: '3px 5px' }}>{item.value}</td>
-                      </tr>
-                    ))}
+                    .map((item, index) => {
+                      // console.log('item', item)
+                      return (
+                        <tr key={item.layerLabel + item.index + index}>
+                          <td style={{ padding: '3px 5px' }}>
+                            <span
+                              style={{
+                                display: 'block',
+                                width: 12,
+                                height: 12,
+                                backgroundColor: item.color,
+                              }}
+                            ></span>
+                          </td>
+                          <td style={{ padding: '3px 5px' }}>
+                            {item.layerLabel}
+                          </td>
+                          <td style={{ padding: '3px 5px' }}>{item.value}</td>
+                        </tr>
+                      )
+                    })}
                   <tr>
                     <td style={{ padding: '3px 5px' }}>
                       <span

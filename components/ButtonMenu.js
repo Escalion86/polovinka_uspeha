@@ -1,8 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import cn from 'classnames'
-import { motion } from 'framer-motion'
 import { useState } from 'react'
-// import Divider from './Divider'
 import Divider from '@mui/material/Divider'
 import IconToggleButton from './IconToggleButtons/IconToggleButton'
 import Menu from '@mui/material/Menu'
@@ -113,7 +110,7 @@ const IconButtonMenu = ({
       </Menu>
       <IconToggleButton value="button" onClick={handleClick}>
         {/* <div className="w-20">{sortParam.title}</div> */}
-        
+
         <FontAwesomeIcon icon={icon} className="h-6" />
         {!!name && <div>{name}</div>}
       </IconToggleButton>
