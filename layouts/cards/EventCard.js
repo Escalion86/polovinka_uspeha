@@ -300,7 +300,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
           <div className="flex flex-wrap items-center justify-end flex-1 w-full h-9">
             <PriceDiscount
               event={event}
-              className="flex-1 mx-2"
+              className="flex-1 mx-2 еуче "
               // prefix="Стоимость:"
             />
             <EventButtonSignIn
