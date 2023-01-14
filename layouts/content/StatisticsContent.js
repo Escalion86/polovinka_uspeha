@@ -261,7 +261,7 @@ const StatisticsContent = () => {
               )} по ${formatDate(new Date())}`}
             </P>
             <StreamChart
-              data={usersCountByDates(users)}
+              data={usersCountByDates(filteredUsers)}
               linesOnX={linesCFG()}
               colors={{
                 mans: manColor,

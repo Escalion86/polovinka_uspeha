@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import cn from 'classnames'
 import filterItems from '@helpers/filterItems'
+import Search from '@components/Search'
 
 const selectUsersFunc = (
   state,
@@ -34,7 +35,7 @@ const selectUsersFunc = (
     const [showErrorMax, setShowErrorMax] = useState(false)
 
     const [searchText, setSearchText] = useState('')
-    const inputRef = useRef()
+    // const inputRef = useRef()
 
     const filteredUsers = filterItems(
       users,
@@ -123,15 +124,16 @@ const selectUsersFunc = (
       // bannedParticipantsIds,
     ])
 
-    useEffect(() => inputRef.current.focus(), [inputRef])
+    // useEffect(() => inputRef.current.focus(), [inputRef])
 
     useEffect(() => {
       if (!canSelectNone) setDisableConfirm(selectedUsers.length === 0)
     }, [canSelectNone, selectedUsers])
 
     return (
-      <div className="flex flex-col max-h-full">
-        <div
+      <div className="flex flex-col w-full max-h-full gap-y-0.5">
+        <Search searchText={searchText} show={true} onChange={setSearchText} />
+        {/* <div
           className={cn(
             'flex gap-1 items-center border-gray-700 border p-1 mb-1 rounded'
             // { hidden: !isMenuOpen }
@@ -153,18 +155,7 @@ const selectUsersFunc = (
                 : () => inputRef.current.focus()
             }
           />
-          {/* {moreOneFilterTurnOnExists ? (
-                <div
-                  className={cn(
-                    moreOneFilter ? 'bg-yellow-400' : 'bg-primary',
-                    'hover:bg-toxic text-white flex items-center justify-center font-bold rounded cursor-pointer w-7 h-7'
-                  )}
-                  onClick={() => setMoreOneFilter(!moreOneFilter)}
-                >
-                  {'>0'}
-                </div>
-              ) : null} */}
-        </div>
+        </div> */}
 
         <div className="flex-1 overflow-y-auto max-h-200">
           {sortedUsers.map((user) => (

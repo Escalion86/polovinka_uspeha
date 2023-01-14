@@ -30,6 +30,9 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 // import { FixedSizeList } from 'react-window'
 // import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 import EventsList from '@layouts/lists/EventsList'
+import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
+import filterItems from '@helpers/filterItems'
+import Search from '@components/Search'
 
 const EventsContent = () => {
   // const classes = useStyles()
@@ -42,6 +45,7 @@ const EventsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   // const windowWidthNum = useWindowDimensionsTailwindNum()
 
+  const [isSearching, setIsSearching] = useState(false)
   const [sort, setSort] = useState({ dateStart: 'asc' })
   const [showFilter, setShowFilter] = useState(false)
   const [filter, setFilter] = useState({
@@ -51,6 +55,8 @@ const EventsContent = () => {
       canceled: false,
     },
   })
+  const [searchText, setSearchText] = useState('')
+
   const sortKey = Object.keys(sort)[0]
   const sortValue = sort[sortKey]
   const sortFunc = sortFunctions[sortKey]
@@ -121,9 +127,14 @@ const EventsContent = () => {
   //   [filteredEvents, sort]
   // )
 
+  const searchedEvents = useMemo(() => {
+    if (!searchText) return filteredEvents
+    return filterItems(filteredEvents, searchText)
+  }, [filteredEvents, searchText])
+
   const visibleEvents = useMemo(
     () =>
-      filteredEvents.filter((event) => {
+      searchedEvents.filter((event) => {
         const isEventExpired = isEventExpiredFunc(event)
         const isEventActive = isEventActiveFunc(event)
         const isEventCanceled = isEventCanceledFunc(event)
@@ -134,7 +145,7 @@ const EventsContent = () => {
           filterOptions.directions.includes(event.directionId)
         )
       }),
-    [filteredEvents, filter, filterOptions.directions.length]
+    [searchedEvents, filter, filterOptions.directions.length]
   )
 
   const filteredAndSortedEvents = useMemo(
@@ -187,6 +198,13 @@ const EventsContent = () => {
               setShowFilter((state) => !state)
             }}
           />
+          <SearchToggleButton
+            value={isSearching}
+            onChange={() => {
+              setIsSearching((state) => !state)
+              if (isSearching) setSearchText('')
+            }}
+          />
           {isLoggedUserAdmin && (
             <AddButton onClick={() => modalsFunc.event.add()} />
           )}
@@ -205,6 +223,12 @@ const EventsContent = () => {
           </FormControl> */}
         </div>
       </ContentHeader>
+      <Search
+        searchText={searchText}
+        show={isSearching}
+        onChange={setSearchText}
+        className="mx-1 bg-gray-100"
+      />
       <Filter show={showFilter} options={options} onChange={setFilterOptions} />
       {/* <CardListWrapper> */}
       <EventsList events={filteredAndSortedEvents} />

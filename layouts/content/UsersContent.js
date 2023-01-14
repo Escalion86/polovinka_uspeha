@@ -13,12 +13,16 @@ import sortFunctions from '@helpers/sortFunctions'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import UsersList from '@layouts/lists/UsersList'
+import Search from '@components/Search'
+import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
+import filterItems from '@helpers/filterItems'
 
 const UsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const users = useRecoilValue(usersAtom)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
+  const [isSearching, setIsSearching] = useState(false)
   const [sort, setSort] = useState({ name: 'asc' })
   const [filter, setFilter] = useState({
     gender: {
@@ -31,6 +35,7 @@ const UsersContent = () => {
       member: true,
     },
   })
+  const [searchText, setSearchText] = useState('')
   // const [statusFilter, setStatusFilter] = useState({
   //   novice: true,
   //   member: true,
@@ -54,7 +59,7 @@ const UsersContent = () => {
   //   [users, filter]
   // )
 
-  const visibleUsers = useMemo(
+  const filteredUsers = useMemo(
     () =>
       users.filter(
         (user) =>
@@ -63,6 +68,11 @@ const UsersContent = () => {
       ),
     [users, filter]
   )
+
+  const visibleUsers = useMemo(() => {
+    if (!searchText) return filteredUsers
+    return filterItems(filteredUsers, searchText)
+  }, [filteredUsers, searchText])
 
   // const options = {
   //   genders: {
@@ -91,6 +101,13 @@ const UsersContent = () => {
             onChange={setSort}
             sortKeys={['name', 'birthday', 'createdAt']}
           />
+          <SearchToggleButton
+            value={isSearching}
+            onChange={() => {
+              setIsSearching((state) => !state)
+              if (isSearching) setSearchText('')
+            }}
+          />
           {/* <FormControl size="small">
             <FilterToggleButton
               value={isFiltered}
@@ -104,6 +121,12 @@ const UsersContent = () => {
           )}
         </div>
       </ContentHeader>
+      <Search
+        searchText={searchText}
+        show={isSearching}
+        onChange={setSearchText}
+        className="mx-1 bg-gray-100"
+      />
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
       <UsersList users={[...visibleUsers].sort(sortFunc)} />
       {/* <CardListWrapper>

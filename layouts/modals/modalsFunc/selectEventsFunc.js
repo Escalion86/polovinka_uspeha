@@ -7,6 +7,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import filterItems from '@helpers/filterItems'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import sortFunctions from '@helpers/sortFunctions'
+import Search from '@components/Search'
 
 const selectEventsFunc = (
   state,
@@ -35,7 +36,6 @@ const selectEventsFunc = (
     const [showErrorMax, setShowErrorMax] = useState(false)
 
     const [searchText, setSearchText] = useState('')
-    const inputRef = useRef()
 
     var filteredEvents = filterItems(events, searchText, exceptedIds, null)
 
@@ -102,48 +102,13 @@ const selectEventsFunc = (
       // bannedParticipantsIds,
     ])
 
-    useEffect(() => inputRef.current.focus(), [inputRef])
-
     useEffect(() => {
       if (!canSelectNone) setDisableConfirm(selectedEvents.length === 0)
     }, [canSelectNone, selectedEvents])
 
     return (
-      <div className="flex flex-col max-h-full">
-        <div
-          className={cn(
-            'flex gap-1 items-center border-gray-700 border p-1 mb-1 rounded'
-            // { hidden: !isMenuOpen }
-          )}
-        >
-          <input
-            ref={inputRef}
-            className="flex-1 bg-transparent outline-none"
-            type="text"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-          <FontAwesomeIcon
-            className={'w-6 h-6 text-gray-700 cursor-pointer'}
-            icon={searchText ? faTimes : faSearch}
-            onClick={
-              searchText
-                ? () => setSearchText('')
-                : () => inputRef.current.focus()
-            }
-          />
-          {/* {moreOneFilterTurnOnExists ? (
-              <div
-                className={cn(
-                  moreOneFilter ? 'bg-yellow-400' : 'bg-primary',
-                  'hover:bg-toxic text-white flex items-center justify-center font-bold rounded cursor-pointer w-7 h-7'
-                )}
-                onClick={() => setMoreOneFilter(!moreOneFilter)}
-              >
-                {'>0'}
-              </div>
-            ) : null} */}
-        </div>
+      <div className="flex flex-col w-full max-h-full gap-y-0.5">
+        <Search searchText={searchText} show={true} onChange={setSearchText} />
 
         <div className="flex-1 overflow-y-auto max-h-200">
           {sortedEvents.map((event) => (
