@@ -14,12 +14,16 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import membersSelector from '@state/selectors/membersSelector'
 import UsersList from '@layouts/lists/UsersList'
+import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
+import Search from '@components/Search'
+import filterItems from '@helpers/filterItems'
 
 const MembersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const members = useRecoilValue(membersSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
+  const [isSearching, setIsSearching] = useState(false)
   const [sort, setSort] = useState({ name: 'asc' })
   const [filter, setFilter] = useState({
     gender: {
@@ -32,6 +36,7 @@ const MembersContent = () => {
     //   member: true,
     // },
   })
+  const [searchText, setSearchText] = useState('')
   // const [statusFilter, setStatusFilter] = useState({
   //   novice: true,
   //   member: true,
@@ -54,7 +59,7 @@ const MembersContent = () => {
   //   [members, filter]
   // )
 
-  const visibleUsers = useMemo(
+  const filteredUsers = useMemo(
     () =>
       members.filter(
         (user) => filter.gender[String(user.gender)]
@@ -62,6 +67,11 @@ const MembersContent = () => {
       ),
     [members, filter]
   )
+
+  const visibleUsers = useMemo(() => {
+    if (!searchText) return filteredUsers
+    return filterItems(filteredUsers, searchText)
+  }, [filteredUsers, searchText])
 
   // const options = {
   //   genders: {
@@ -90,6 +100,13 @@ const MembersContent = () => {
             onChange={setSort}
             sortKeys={['name', 'createdAt']}
           />
+          <SearchToggleButton
+            value={isSearching}
+            onChange={() => {
+              setIsSearching((state) => !state)
+              if (isSearching) setSearchText('')
+            }}
+          />
           {/* <FormControl size="small">
             <FilterToggleButton
               value={isFiltered}
@@ -103,6 +120,12 @@ const MembersContent = () => {
           )}
         </div>
       </ContentHeader>
+      <Search
+        searchText={searchText}
+        show={isSearching}
+        onChange={setSearchText}
+        className="mx-1 bg-gray-100"
+      />
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
       <UsersList users={[...visibleUsers].sort(sortFunc)} />
       {/* <CardListWrapper>
