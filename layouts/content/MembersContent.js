@@ -17,6 +17,7 @@ import UsersList from '@layouts/lists/UsersList'
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
 import Search from '@components/Search'
 import filterItems from '@helpers/filterItems'
+import upperCaseFirst from '@helpers/upperCaseFirst'
 
 const MembersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -48,49 +49,39 @@ const MembersContent = () => {
     ? sortFunctions[sortKey][sortValue]
     : undefined
 
-  // const visibleUsersIds = useMemo(
-  //   () =>
-  //     members
-  //       .filter(
-  //         (user) => filter.gender[String(user.gender)]
-  //         // && filter.status[user.status ?? 'novice']
-  //       )
-  //       .map((user) => user._id),
-  //   [members, filter]
-  // )
+  const filteredUsers = useMemo(() => {
+    const filteredMembers = members.filter(
+      (user) => filter.gender[String(user.gender)]
+    )
 
-  const filteredUsers = useMemo(
-    () =>
-      members.filter(
-        (user) => filter.gender[String(user.gender)]
-        // && filter.status[user.status ?? 'novice']
-      ),
-    [members, filter]
-  )
+    if (isLoggedUserAdmin) return filteredMembers
+
+    return filteredMembers.map((user) => {
+      return {
+        ...user,
+        secondName: user.secondName
+          ? user.security?.fullSecondName
+            ? user.secondName
+            : user.secondName[0].toUpperCase() + '.'
+          : '',
+        thirdName: user.thirdName
+          ? user.security?.fullThirdName
+            ? user.thirdName
+            : user.thirdName[0].toUpperCase() + '.'
+          : '',
+      }
+    })
+  }, [members, filter, isLoggedUserAdmin])
 
   const visibleUsers = useMemo(() => {
     if (!searchText) return filteredUsers
     return filterItems(filteredUsers, searchText)
   }, [filteredUsers, searchText])
 
-  // const options = {
-  //   genders: {
-  //     type: 'genders',
-  //     value: ['male', 'famale'],
-  //     name: 'Пол',
-  //     items: directions,
-  //   },
-  // }
-
   return (
     <>
       <ContentHeader>
         <UsersFilter value={filter} onChange={setFilter} hideNullGender />
-        {/* // <GenderToggleButtons value={genderFilter} onChange={setGenderFilter} />
-        // <StatusUserToggleButtons
-        //   value={statusFilter}
-        //   onChange={setStatusFilter}
-        // /> */}
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounUsers(visibleUsers.length)}
@@ -107,14 +98,6 @@ const MembersContent = () => {
               if (isSearching) setSearchText('')
             }}
           />
-          {/* <FormControl size="small">
-            <FilterToggleButton
-              value={isFiltered}
-              onChange={() => {
-                setShowFilter((state) => !state)
-              }}
-            />
-          </FormControl> */}
           {isLoggedUserAdmin && (
             <AddButton onClick={() => modalsFunc.user.edit()} />
           )}
@@ -128,19 +111,6 @@ const MembersContent = () => {
       />
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
       <UsersList users={[...visibleUsers].sort(sortFunc)} />
-      {/* <CardListWrapper>
-        {visibleUsers?.length > 0 ? (
-          [...visibleUsers].sort(sortFunc).map((user) => (
-            <UserCard
-              key={user._id}
-              userId={user._id}
-              // hidden={!visibleUsersIds.includes(user._id)}
-            />
-          ))
-        ) : (
-          <div className="flex justify-center p-2">Нет пользователей</div>
-        )}
-      </CardListWrapper> */}
     </>
   )
 }
