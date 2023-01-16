@@ -8,7 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 // import { useEffect, useRef, useState } from 'react'
 // import { Virtuoso } from 'react-virtuoso'
-import { UserItem, EventItem, DirectionItem } from './ItemCards'
+import { UserItem, EventItem, DirectionItem, PaymentItem } from './ItemCards'
 
 import cn from 'classnames'
 import usersAtom from '@state/atoms/usersAtom'
@@ -20,6 +20,7 @@ import InputWrapper from './InputWrapper'
 // import filterItems from '@helpers/filterItems'
 import filterWithRules from '@helpers/filterWithRules'
 import Tooltip from './Tooltip'
+import paymentsAtom from '@state/atoms/paymentsAtom'
 
 export const SelectItem = ({
   items,
@@ -204,20 +205,34 @@ export const SelectItem = ({
   )
 }
 
-const ItemButton = ({ onClick, icon, iconClassName, tooltip }) => (
+const ItemButton = ({
+  onClick,
+  icon,
+  iconClassName,
+  tooltip,
+  text,
+  textClassName,
+  thin,
+}) => (
   <div className="flex items-center justify-center bg-gray-100 border-l border-gray-700">
     <Tooltip title={tooltip}>
       <button
         onClick={onClick}
-        className="flex items-center justify-center w-8 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi"
+        className={cn(
+          'flex items-center justify-center gap-x-0.5 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi',
+          thin ? 'px-1' : 'px-2'
+        )}
       >
-        <FontAwesomeIcon
-          className={cn(
-            'w-4 h-4 duration-300 group-hover:scale-125',
-            iconClassName
-          )}
-          icon={icon}
-        />
+        {icon ? (
+          <FontAwesomeIcon
+            className={cn(
+              'w-4 h-4 duration-300 group-hover:scale-125',
+              iconClassName
+            )}
+            icon={icon}
+          />
+        ) : null}
+        {text ? <div className={cn(textClassName)}>{text}</div> : null}
       </button>
     </Tooltip>
   </div>
@@ -272,15 +287,29 @@ const SelectItemContainer = ({
     <Container>
       {children}
       {buttons &&
-        buttons.map(({ onClick, icon, iconClassName, tooltip }, index) => (
-          <ItemButton
-            key={'button' + selectedId + index}
-            tooltip={tooltip}
-            onClick={() => onClick(selectedId)}
-            icon={icon}
-            iconClassName={iconClassName}
-          />
-        ))}
+        buttons.map((item, index) => {
+          const {
+            onClick,
+            icon,
+            iconClassName,
+            tooltip,
+            text,
+            textClassName,
+            thin,
+          } = item(selectedId)
+          return (
+            <ItemButton
+              key={'button' + selectedId + index}
+              tooltip={tooltip}
+              onClick={onClick}
+              icon={icon}
+              iconClassName={iconClassName}
+              text={text}
+              textClassName={textClassName}
+              thin={thin}
+            />
+          )
+        })}
       {onEdit && (
         <ItemButton
           tooltip="Редактировать"
@@ -570,6 +599,94 @@ export const SelectDirection = ({
                 )
             : (direction) => modalsFunc.direction.view(direction._id)
         }
+        exceptedIds={exceptedIds}
+      />
+    </SelectItemContainer>
+  )
+}
+
+export const SelectPayment = ({
+  onChange,
+  onDelete,
+  selectedId = null,
+  exceptedIds = [],
+  required = false,
+  clearButton = null,
+  error,
+  bordered = true,
+  modalTitle,
+  rounded = true,
+  // buttons,
+}) => {
+  // const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const payments = useRecoilValue(paymentsAtom)
+
+  return (
+    <SelectItemContainer
+      required={required}
+      label="Транзакция"
+      onClickClearButton={
+        selectedId && clearButton
+          ? onDelete
+            ? () => onDelete()
+            : () => onChange(null)
+          : null
+      }
+      error={error}
+      bordered={bordered}
+      rounded={rounded}
+      // buttons={
+      //   onChange
+      //     ? [
+      //         {
+      //           onClick: () =>
+      //             modalsFunc.selectDirections(
+      //               [selectedId],
+      //               [],
+      //               (data) => onChange(data[0]),
+      //               [],
+      //               1,
+      //               false
+      //             ),
+      //           icon: faPencil,
+      //           iconClassName: 'text-orange-400',
+      //           tooltip: 'Изменить',
+      //         },
+      //       ]
+      //     : null
+      // }
+      selectedId={selectedId}
+    >
+      <SelectItem
+        items={payments}
+        itemComponent={PaymentItem}
+        componentHeight={50}
+        // itemHeight={50}
+        // onChange={onChange}
+        selectedId={selectedId}
+        className={
+          'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
+        }
+        // onClick={
+        //   (direction) => modalsFunc.direction.view(direction._id)
+        //   // disableDropDownList
+        //   //   ? (direction) => modalsFunc.direction.view(direction._id)
+        //   //   : null
+        // }
+        // onClick={
+        //   onChange
+        //     ? () =>
+        //         modalsFunc.selectDirections(
+        //           [selectedId],
+        //           [],
+        //           (data) => onChange(data[0]),
+        //           [],
+        //           1,
+        //           false,
+        //           modalTitle
+        //         )
+        //     : (direction) => modalsFunc.direction.view(direction._id)
+        // }
         exceptedIds={exceptedIds}
       />
     </SelectItemContainer>

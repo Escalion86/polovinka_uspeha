@@ -1,6 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { SelectEvent, SelectItem, SelectUser } from './SelectItem'
+import {
+  SelectEvent,
+  SelectItem,
+  SelectUser,
+  SelectPayment,
+} from './SelectItem'
 import cn from 'classnames'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
@@ -232,7 +237,7 @@ export const SelectUserList = ({
           filter,
           // disableDropDownList: true,
           exceptedIds,
-          buttons: !readOnly && buttons,
+          buttons: buttons,
           rounded: false,
         })
       }
@@ -293,6 +298,53 @@ export const SelectEventList = ({
       canAddItem={canAddItem}
       exceptedIds={exceptedIds}
       modalFuncKey="selectEvents"
+      readOnly={readOnly}
+      labelClassName={labelClassName}
+      canSelectNone={canSelectNone}
+    />
+  )
+}
+
+export const SelectPaymentList = ({
+  paymentsId = null,
+  onChange = null,
+  onDelete,
+  required = false,
+  label,
+  filter,
+  showCounter = false,
+  canAddItem = false,
+  exceptedIds,
+  buttons,
+  readOnly,
+  labelClassName,
+  modalTitle,
+  canSelectNone = true,
+}) => {
+  return (
+    <SelectItemList
+      itemsId={paymentsId}
+      label={label}
+      modalTitle={modalTitle}
+      onChange={onChange}
+      onDelete={onDelete}
+      SelectItemComponent={(props) =>
+        SelectPayment({
+          ...props,
+          bordered: false,
+          filter,
+          // disableDropDownList: true,
+          exceptedIds,
+          buttons,
+          rounded: false,
+        })
+      }
+      required={required}
+      filter={filter}
+      showCounter={showCounter}
+      canAddItem={canAddItem}
+      exceptedIds={exceptedIds}
+      modalFuncKey="selectPayments"
       readOnly={readOnly}
       labelClassName={labelClassName}
       canSelectNone={canSelectNone}

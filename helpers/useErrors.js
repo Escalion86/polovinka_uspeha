@@ -59,6 +59,20 @@ const useErrors = () => {
         !data
           ? setError({ payAt: 'Введите дату совершения транзакции' })
           : null,
+      payType: (data) =>
+        !data
+          ? setError({ payType: 'Введите тип оплаты' })
+          : !['card', 'cash', 'remittance'].includes(data)
+          ? setError({ payType: 'Введен некорректный тип оплаты' })
+          : null,
+      payDirection: (data) =>
+        !data
+          ? setError({ payDirection: 'Введите направление транзакции' })
+          : !['toUser', 'fromUser', 'toEvent'].includes(data)
+          ? setError({
+              payDirection: 'Введен некорректное направление транзакции',
+            })
+          : null,
       userId: (data) =>
         !data ? setError({ userId: 'Выберите пользователя' }) : null,
       eventId: (data) =>

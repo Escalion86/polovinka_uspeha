@@ -1,10 +1,17 @@
 const paymentsSchema = {
-  userId: {
+  payDirection: {
     type: String,
     required: [
       true,
-      'Необходимо указать пользователя. А то с кем потом связываться то? С Папой Римским?',
+      'Необходимо указать направление транзакции. Кто кому платит то?',
     ],
+  },
+  userId: {
+    type: String,
+    // required: [
+    //   true,
+    //   'Необходимо указать пользователя. А то с кем потом связываться то? С Папой Римским?',
+    // ],
   },
   eventId: {
     type: String,
@@ -16,7 +23,6 @@ const paymentsSchema = {
       true,
       'Необходимо указать тип оплаты. Не бартером же с тобой расплатились...',
     ],
-    default: 'cash',
   },
   sum: {
     type: Number,
@@ -39,6 +45,10 @@ const paymentsSchema = {
   payAt: {
     type: Date,
     default: () => Date.now(),
+  },
+  comment: {
+    type: String,
+    default: '',
   },
 }
 

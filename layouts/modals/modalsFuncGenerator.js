@@ -30,6 +30,8 @@ import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
 import questionnaireFunc from './modalsFunc/questionnaireFunc'
 import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
 import userDeleteFunc from './modalsFunc/userDeleteFunc'
+import eventUsersPaymentsFunc from './modalsFunc/eventUsersPaymentsFunc'
+import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -158,6 +160,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
       add: (eventId) => addModal(eventFunc(eventId, true)),
       edit: (eventId) => addModal(eventFunc(eventId)),
       users: (eventId) => addModal(eventUsersFunc(eventId)),
+      payments: (eventId) => addModal(eventUsersPaymentsFunc(eventId)),
       cancel: (eventId) =>
         addModal({
           title: 'Отмена события',
@@ -227,7 +230,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
         }),
     },
     payment: {
-      add: (paymentId) => addModal(paymentFunc(paymentId, true)),
+      add: (paymentId, props) => addModal(paymentFunc(paymentId, true, props)),
       edit: (paymentId) => addModal(paymentFunc(paymentId)),
       delete: (paymentId) =>
         addModal({
@@ -235,6 +238,8 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           text: 'Вы уверены, что хотите удалить транзакцию?',
           onConfirm: async () => itemsFunc.payment.delete(paymentId),
         }),
+      userEvent: (userId, eventId) =>
+        addModal(userPaymentsForEventFunc(userId, eventId)),
     },
     user: {
       add: (userId) => addModal(userFunc(userId, true)),
