@@ -7,7 +7,9 @@ import cn from 'classnames'
 const Search = ({ searchText, show, onChange, className }) => {
   const inputRef = useRef()
 
-  useEffect(() => inputRef?.current?.focus(), [inputRef])
+  useEffect(() => {
+    if (show) inputRef?.current?.focus()
+  }, [inputRef, show])
 
   return (
     <motion.div
