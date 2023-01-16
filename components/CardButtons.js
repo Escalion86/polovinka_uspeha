@@ -13,6 +13,7 @@ import {
   faArrowUp,
   faBan,
   faEllipsisV,
+  faMoneyBill,
   faPencilAlt,
   faPlay,
   faShareAlt,
@@ -104,6 +105,7 @@ const CardButtons = ({
     showOnSiteBtn: showAdminButtons && showOnSiteOnClick,
     statusBtn: showAdminButtons && typeOfItem === 'event' && item.status,
     deleteBtn: showAdminButtons, // || isLoggedUserDev,
+    paymentsUsersBtn: showAdminButtons && typeOfItem === 'event',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -140,6 +142,17 @@ const CardButtons = ({
           }}
           color="green"
           tooltipText="Участники мероприятия"
+        />
+      )}
+      {show.paymentsUsersBtn && (
+        <ItemComponent
+          icon={faMoneyBill}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc.event.payments(item._id)
+          }}
+          color="amber"
+          tooltipText="Финансы"
         />
       )}
       {show.upBtn && (

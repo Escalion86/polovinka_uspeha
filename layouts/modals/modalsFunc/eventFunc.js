@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import useErrors from '@helpers/useErrors'
 
 import { useRecoilValue } from 'recoil'
@@ -65,9 +65,15 @@ const eventFunc = (eventId, clone = false) => {
       event?.description ?? DEFAULT_EVENT.description
     )
 
-    const defaultDateStart =
-      event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000
-    const defaultDateEnd = event?.dateEnd ?? defaultDateStart + 3600000
+    const defaultDateStart = useMemo(
+      () => event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000,
+      []
+    )
+
+    const defaultDateEnd = useMemo(
+      () => event?.dateEnd ?? defaultDateStart + 3600000,
+      []
+    )
 
     const [dateStart, setDateStart] = useState(defaultDateStart)
     const [dateEnd, setDateEnd] = useState(defaultDateEnd)

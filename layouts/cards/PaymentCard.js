@@ -1,6 +1,7 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import DateTimeEvent from '@components/DateTimeEvent'
+import EventNameById from '@components/EventNameById'
 import UserNameById from '@components/UserNameById'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -44,7 +45,16 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
         <div className="leading-4 whitespace-nowrap">
           {formatDateTime(payment.payAt)}
         </div>
-        <UserNameById userId={payment.userId} noWrap />
+        {(payment.payDirection === 'toUser' ||
+          payment.payDirection === 'fromUser') && (
+          <UserNameById userId={payment.userId} noWrap className="font-bold" />
+        )}
+        {payment.payDirection === 'toEvent' && (
+          <EventNameById
+            eventId={payment.eventId}
+            className="font-bold text-general"
+          />
+        )}
         {/* <div className="items-center flex-1">
           <div className="flex flex-col flex-wrap justify-between gap-x-4 phoneH:flex-row">
             <div>
@@ -63,8 +73,21 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
         <div className="font-bold">{payment.sum} ₽</div>
       </div> */}
       <div className="flex items-center justify-between">
-        <div className="px-1 text-sm font-bold phoneH:text-base">
-          {payment.sum / 100} ₽
+        <div
+          className={cn(
+            'px-1 text-sm font-bold phoneH:text-base',
+            payment.payDirection === 'toUser' ||
+              payment.payDirection === 'toEvent'
+              ? 'text-danger'
+              : 'text-success'
+          )}
+        >
+          {`${
+            payment.payDirection === 'toUser' ||
+            payment.payDirection === 'toEvent'
+              ? '-'
+              : ''
+          }${payment.sum / 100} ₽`}
         </div>
         <CardButtons item={payment} typeOfItem="payment" alwaysCompactOnPhone />
       </div>

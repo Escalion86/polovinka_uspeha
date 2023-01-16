@@ -8,7 +8,7 @@ const paymentsDeleteSelector = selector({
   set: ({ set, get }, itemId) => {
     const items = get(paymentsAtom)
     const newItemsList = items.filter((item) => item._id !== itemId)
-    set(payments, newItemsList)
+    set(paymentsAtom, newItemsList)
   },
 })
 

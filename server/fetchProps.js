@@ -51,8 +51,26 @@ const fetchProps = async (user) => {
     // const payments = await Payments.find({})
     // const siteSettings = await SiteSettings.find({})
 
+    const isAdmin = isUserAdmin(user)
     // console.time('users')
-    const users = await Users.find({})
+    var users = JSON.parse(JSON.stringify(await Users.find({})))
+    if (!isAdmin) {
+      users = JSON.parse(JSON.stringify(users)).map((user) => {
+        return {
+          ...user,
+          secondName: user.secondName
+            ? user.security?.fullSecondName
+              ? user.secondName
+              : user.secondName[0] + '.'
+            : '',
+          thirdName: user.thirdName
+            ? user.security?.fullThirdName
+              ? user.thirdName
+              : user.thirdName[0] + '.'
+            : '',
+        }
+      })
+    }
     // console.log('user.notifications?.telegram', user.notifications?.telegram)
     // console.log(
     //   'user.notifications?.telegram?.userName',
@@ -101,7 +119,7 @@ const fetchProps = async (user) => {
     // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     // console.log(`siteSettings`, siteSettings)
     // console.timeEnd('siteSettings')
-    const histories = isUserAdmin(user)
+    const histories = isAdmin
       ? await Histories.find({
           // createdAt: { $gt: user.prevActivityAt },
         })
@@ -131,7 +149,7 @@ const fetchProps = async (user) => {
     // }
 
     const fetchResult = {
-      users: JSON.parse(JSON.stringify(users)),
+      users,
       events: JSON.parse(JSON.stringify(events)),
       directions: JSON.parse(JSON.stringify(directions)),
       reviews: JSON.parse(JSON.stringify(reviews)),

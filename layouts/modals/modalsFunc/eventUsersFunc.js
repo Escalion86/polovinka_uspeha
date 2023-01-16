@@ -21,6 +21,10 @@ import {
   faArrowAltCircleLeft,
   faArrowAltCircleRight,
 } from '@fortawesome/free-regular-svg-icons'
+import { faMoneyBill } from '@fortawesome/free-solid-svg-icons'
+import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
+import userSelector from '@state/selectors/userSelector'
+import cn from 'classnames'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -38,6 +42,7 @@ const eventUsersFunc = (eventId) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     const users = useRecoilValue(usersAtom)
+    // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
 
     const sortUsersIds = (ids) =>
       [...users]
@@ -206,21 +211,71 @@ const eventUsersFunc = (eventId) => {
             }
             exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
             readOnly={!isLoggedUserAdmin}
-            buttons={[
-              {
-                onClick: (id) => {
-                  setMansIds(
-                    sortUsersIds([...mansIds].filter((userId) => userId !== id))
-                  )
-                  setReservedParticipantsIds(
-                    sortUsersIds([...reservedParticipantsIds, id])
-                  )
-                },
-                icon: faArrowAltCircleRight,
-                iconClassName: 'text-general',
-                tooltip: 'Перенести в резерв',
-              },
-            ]}
+            buttons={
+              isLoggedUserAdmin
+                ? [
+                    // (id) => {
+                    //   const paymentsOfUser = paymentsOfEvent.filter(
+                    //     (payment) => payment.userId === id
+                    //   )
+
+                    //   const sumOfPayments =
+                    //     paymentsOfUser.reduce((p, c) => p + (c.sum ?? 0), 0) / 100
+
+                    //   return {
+                    //     onClick: () => {},
+                    //     // icon: faMoneyBill,
+                    //     // iconClassName: 'text-general',
+                    //     tooltip: 'Оплата',
+                    //     thin: true,
+                    //     text: (() => {
+                    //       const user = useRecoilValue(userSelector(id))
+                    //       const eventPriceForUser =
+                    //         (event.price -
+                    //           (typeof event.usersStatusDiscount[
+                    //             user.status ?? 'novice'
+                    //           ] === 'number'
+                    //             ? event.usersStatusDiscount[user.status ?? 'novice']
+                    //             : 0)) /
+                    //         100
+                    //       return (
+                    //         <div className="flex flex-col w-12 text-xs leading-4">
+                    //           <span
+                    //             className={cn(
+                    //               sumOfPayments === eventPriceForUser
+                    //                 ? 'text-success'
+                    //                 : sumOfPayments < eventPriceForUser
+                    //                 ? sumOfPayments === 0
+                    //                   ? 'text-danger'
+                    //                   : 'text-orange-500'
+                    //                 : 'text-blue-700'
+                    //             )}
+                    //           >{`${sumOfPayments} ₽`}</span>
+                    //           <span className="border-gray-700 border-t-1">{`${eventPriceForUser} ₽`}</span>
+                    //         </div>
+                    //       )
+                    //     })(),
+                    //     // textClassName: 'w-10',
+                    //   }
+                    // },
+                    (id) => ({
+                      onClick: () => {
+                        setMansIds(
+                          sortUsersIds(
+                            [...mansIds].filter((userId) => userId !== id)
+                          )
+                        )
+                        setReservedParticipantsIds(
+                          sortUsersIds([...reservedParticipantsIds, id])
+                        )
+                      },
+                      icon: faArrowAltCircleRight,
+                      iconClassName: 'text-general',
+                      tooltip: 'Перенести в резерв',
+                    }),
+                  ]
+                : []
+            }
           />
           <SelectUserList
             label="Участники Женщины"
@@ -239,23 +294,75 @@ const eventUsersFunc = (eventId) => {
             }
             exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
             readOnly={!isLoggedUserAdmin}
-            buttons={[
-              {
-                onClick: (id) => {
-                  setWomansIds(
-                    sortUsersIds(
-                      [...womansIds].filter((userId) => userId !== id)
-                    )
-                  )
-                  setReservedParticipantsIds(
-                    sortUsersIds([...reservedParticipantsIds, id])
-                  )
-                },
-                icon: faArrowAltCircleRight,
-                iconClassName: 'text-general',
-                tooltip: 'Перенести в резерв',
-              },
-            ]}
+            buttons={
+              isLoggedUserAdmin
+                ? [
+                    // (id) => {
+                    //   const paymentsOfUser = paymentsOfEvent.filter(
+                    //     (payment) => payment.userId === id
+                    //   )
+
+                    //   const sumOfPayments =
+                    //     paymentsOfUser.reduce((p, c) => p + (c.sum ?? 0), 0) /
+                    //     100
+
+                    //   return {
+                    //     onClick: () => {},
+                    //     // icon: faMoneyBill,
+                    //     // iconClassName: 'text-general',
+                    //     tooltip: 'Оплата',
+
+                    //     thin: true,
+                    //     text: (() => {
+                    //       const user = useRecoilValue(userSelector(id))
+                    //       const eventPriceForUser =
+                    //         (event.price -
+                    //           (typeof event.usersStatusDiscount[
+                    //             user.status ?? 'novice'
+                    //           ] === 'number'
+                    //             ? event.usersStatusDiscount[
+                    //                 user.status ?? 'novice'
+                    //               ]
+                    //             : 0)) /
+                    //         100
+                    //       return (
+                    //         <div className="flex flex-col w-12 text-xs leading-4">
+                    //           <span
+                    //             className={
+                    //               sumOfPayments === eventPriceForUser
+                    //                 ? 'text-success'
+                    //                 : sumOfPayments < eventPriceForUser
+                    //                 ? sumOfPayments === 0
+                    //                   ? 'text-danger'
+                    //                   : 'text-orange-500'
+                    //                 : 'text-blue-700'
+                    //             }
+                    //           >{`${sumOfPayments} ₽`}</span>
+                    //           <span className="border-gray-700 border-t-1">{`${eventPriceForUser} ₽`}</span>
+                    //         </div>
+                    //       )
+                    //     })(),
+                    //     // textClassName: 'w-10',
+                    //   }
+                    // },
+                    (id) => ({
+                      onClick: () => {
+                        setWomansIds(
+                          sortUsersIds(
+                            [...womansIds].filter((userId) => userId !== id)
+                          )
+                        )
+                        setReservedParticipantsIds(
+                          sortUsersIds([...reservedParticipantsIds, id])
+                        )
+                      },
+                      icon: faArrowAltCircleRight,
+                      iconClassName: 'text-general',
+                      tooltip: 'Перенести в резерв',
+                    }),
+                  ]
+                : []
+            }
           />
           <div className="flex justify-end gap-x-1">
             <span>Всего участников:</span>
@@ -292,8 +399,8 @@ const eventUsersFunc = (eventId) => {
                 ...bannedParticipantsIds,
               ]}
               buttons={[
-                {
-                  onClick: (id) => {
+                (id) => ({
+                  onClick: () => {
                     removeIdsFromReserve([id])
                     const genderOfUser = users.find(
                       (user) => user._id === id
@@ -306,7 +413,7 @@ const eventUsersFunc = (eventId) => {
                   icon: faArrowAltCircleLeft,
                   iconClassName: 'text-general',
                   tooltip: 'Перенести в активный состав',
-                },
+                }),
               ]}
               readOnly={!isLoggedUserAdmin}
             />

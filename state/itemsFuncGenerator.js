@@ -190,8 +190,13 @@ const itemsFuncGenerator = (
             },
             (error) => {
               snackbar.error(messages[itemName].delete.error)
-              setErrorCard(itemName + item._id)
-              const data = { errorPlace: 'DELETE ERROR', itemName, item, error }
+              setErrorCard(itemName + itemId)
+              const data = {
+                errorPlace: 'DELETE ERROR',
+                itemName,
+                itemId,
+                error,
+              }
               modalsFunc.error(data)
               console.log(data)
             }

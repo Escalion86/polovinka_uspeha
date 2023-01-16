@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import useErrors from '@helpers/useErrors'
 
 import { useRecoilValue } from 'recoil'
@@ -12,8 +12,10 @@ import PriceInput from '@components/PriceInput'
 import PayTypePicker from '@components/ValuePicker/PayTypePicker'
 import { DEFAULT_PAYMENT } from '@helpers/constants'
 import DateTimePicker from '@components/DateTimePicker'
+import PayDirectionPicker from '@components/ValuePicker/PayDirectionPicker'
+import Input from '@components/Input'
 
-const paymentFunc = (paymentId, clone = false) => {
+const paymentFunc = (paymentId, clone = false, props) => {
   const PaymentModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -25,19 +27,33 @@ const paymentFunc = (paymentId, clone = false) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
 
+    const [payDirection, setPayDirection] = useState(
+      props?.payDirection ??
+        payment?.payDirection ??
+        DEFAULT_PAYMENT.payDirection
+    )
     const [userId, setUserId] = useState(
-      payment?.userId ?? DEFAULT_PAYMENT.userId
+      props?.userId ?? payment?.userId ?? DEFAULT_PAYMENT.userId
     )
     const [eventId, setEventId] = useState(
-      payment?.eventId ?? DEFAULT_PAYMENT.eventId
+      props?.eventId ?? payment?.eventId ?? DEFAULT_PAYMENT.eventId
     )
-    const [sum, setSum] = useState(payment?.sum ?? DEFAULT_PAYMENT.sum)
+    const [sum, setSum] = useState(
+      props?.sum ?? payment?.sum ?? DEFAULT_PAYMENT.sum
+    )
     const [status, setStatus] = useState(
-      payment?.status ?? DEFAULT_PAYMENT.status
+      props?.status ?? payment?.status ?? DEFAULT_PAYMENT.status
     )
-    const [payAt, setPayAt] = useState(payment?.payAt ?? Date.now())
+    const defaultPayAt = useMemo(
+      () => props?.payAt ?? payment?.payAt ?? Date.now(),
+      []
+    )
+    const [payAt, setPayAt] = useState(defaultPayAt)
     const [payType, setPayType] = useState(
-      payment?.payType ?? DEFAULT_PAYMENT.payType
+      props?.payType ?? payment?.payType ?? DEFAULT_PAYMENT.payType
+    )
+    const [comment, setComment] = useState(
+      props?.comment ?? payment?.comment ?? DEFAULT_PAYMENT.comment
     )
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
@@ -50,17 +66,25 @@ const paymentFunc = (paymentId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
-      if (!checkErrors({ userId, eventId, sum })) {
+      const toCheck = { payDirection, eventId, sum, payType }
+      if (payDirection === 'toUser' || payDirection === 'fromUser')
+        toCheck.userId = userId
+      if (!checkErrors(toCheck)) {
         closeModal()
         setPayment(
           {
             _id: payment?._id,
-            userId,
+            payDirection,
+            userId:
+              payDirection === 'toUser' || payDirection === 'fromUser'
+                ? userId
+                : null,
             eventId,
             sum,
             status,
             payType,
             payAt,
+            comment,
           },
           clone
         )
@@ -92,27 +116,40 @@ const paymentFunc = (paymentId, clone = false) => {
 
     useEffect(() => {
       const isFormChanged =
-        payment?.userId !== userId ||
-        payment?.eventId !== eventId ||
-        payment?.sum !== sum ||
-        payment?.status !== status ||
-        payment?.payAt !== payAt ||
-        payment?.payType !== payType
+        (props?.payDirection ?? payment?.payDirection) !== payDirection ||
+        (props?.userId ?? payment?.userId) !== userId ||
+        (props?.eventId ?? payment?.eventId) !== eventId ||
+        (props?.sum ?? payment?.sum) !== sum ||
+        (props?.status ?? payment?.status) !== status ||
+        defaultPayAt !== payAt ||
+        (props?.payType ?? payment?.payType) !== payType ||
+        (props?.comment ?? payment?.comment) !== comment
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-    }, [userId, eventId, sum, status, payAt, payType])
+    }, [payDirection, userId, eventId, sum, status, payAt, payType, comment])
 
     return (
       <FormWrapper>
-        <SelectUser
-          label="Платильщик"
-          selectedId={userId}
-          onChange={(userId) => setUserId(userId)}
-          // onDelete={(e) => console.log('e', e)}
+        <PayDirectionPicker
+          payDirection={payDirection}
+          onChange={(value) => {
+            removeError('payDirection')
+            setPayDirection(value)
+          }}
           required
+          error={errors.payDirection}
         />
+        {(payDirection === 'toUser' || payDirection === 'fromUser') && (
+          <SelectUser
+            label={payDirection === 'toUser' ? 'Получатель' : 'Платильщик'}
+            selectedId={userId}
+            onChange={(userId) => setUserId(userId)}
+            // onDelete={(e) => console.log('e', e)}
+            required
+          />
+        )}
         <SelectEvent
           label="Мероприятие"
           selectedId={eventId}
@@ -130,13 +167,28 @@ const paymentFunc = (paymentId, clone = false) => {
           error={errors.payAt}
         />
         <PriceInput
+          label="Сумма"
           value={sum}
           onChange={(value) => {
             removeError('sum')
             setSum(value)
           }}
         />
-        <PayTypePicker payType={payType} onChange={setPayType} required />
+        <PayTypePicker
+          payType={payType}
+          onChange={(value) => {
+            removeError('payType')
+            setPayType(value)
+          }}
+          required
+          error={errors.payType}
+        />
+        <Input
+          label="Комментарий"
+          type="text"
+          value={comment}
+          onChange={setComment}
+        />
         {/* <Input
           label="Сумма"
           type="number"

@@ -27,6 +27,11 @@ const PaymentsContent = () => {
       cash: true,
       remittance: true,
     },
+    payDirection: {
+      fromUser: true,
+      toUser: true,
+      toEvent: true,
+    },
   })
 
   const sortKey = Object.keys(sort)[0]
@@ -47,7 +52,12 @@ const PaymentsContent = () => {
   // )
 
   const visiblePayments = useMemo(
-    () => payments.filter((payment) => filter.payType[payment.payType]),
+    () =>
+      payments.filter(
+        (payment) =>
+          filter.payType[payment.payType] &&
+          filter.payDirection[payment.payDirection]
+      ),
     [payments, filter]
   )
 
@@ -69,7 +79,7 @@ const PaymentsContent = () => {
           )}
         </div>
       </ContentHeader>
-      <PaymentsList payments={visiblePayments} />
+      <PaymentsList payments={[...visiblePayments].sort(sortFunc)} />
       {/* <CardListWrapper>
         {visiblePayments?.length > 0 ? (
           [...visiblePayments].sort(sortFunc).map((payment) => (

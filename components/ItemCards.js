@@ -5,6 +5,7 @@ import {
   EVENT_STATUSES,
   EVENT_STATUSES_WITH_TIME,
   GENDERS,
+  PAY_TYPES,
 } from '@helpers/constants'
 import eventStatusFunc from '@helpers/eventStatus'
 import formatDateTime from '@helpers/formatDateTime'
@@ -18,8 +19,10 @@ import cn from 'classnames'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 import DateTimeEvent from './DateTimeEvent'
+import EventNameById from './EventNameById'
 import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
+import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
 
 const ItemContainer = ({
@@ -28,13 +31,16 @@ const ItemContainer = ({
   children,
   noPadding = false,
   className,
+  noBorder,
+  checkable = true,
 }) => (
   <div
     className={cn(
-      'relative flex w-full h-full max-w-full border-b border-gray-700 last:border-0',
+      'relative flex w-full h-full max-w-full',
       { 'hover:bg-blue-200 cursor-pointer': onClick },
       { 'bg-green-200': active },
       { 'py-0.5 px-1': !noPadding },
+      { 'border-b border-gray-700 last:border-0': !noBorder },
       className
     )}
     onClick={
@@ -46,14 +52,16 @@ const ItemContainer = ({
         : null
     }
   >
-    <div
-      className={cn(
-        'absolute flex items-center top-0 bottom-0 left-0 overflow-hidden duration-300 bg-green-400',
-        active ? 'w-7' : 'w-0'
-      )}
-    >
-      <FontAwesomeIcon icon={faCheck} className="w-5 h-5 ml-1 text-white" />
-    </div>
+    {checkable && (
+      <div
+        className={cn(
+          'absolute flex items-center top-0 bottom-0 left-0 overflow-hidden duration-300 bg-green-400',
+          active ? 'w-7' : 'w-0'
+        )}
+      >
+        <FontAwesomeIcon icon={faCheck} className="w-5 h-5 ml-1 text-white" />
+      </div>
+    )}
     {children}
   </div>
 )
@@ -99,13 +107,24 @@ export const UserItemFromId = ({ userId, onClick = null, active = false }) => {
   return <UserItem item={user} active={active} onClick={onClick} />
 }
 
-export const UserItem = ({ item, onClick = null, active = false }) => {
+export const UserItem = ({
+  item,
+  onClick = null,
+  active = false,
+  noBorder = false,
+}) => {
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
   return (
-    <ItemContainer onClick={onClick} active={active} noPadding className="flex">
+    <ItemContainer
+      onClick={onClick}
+      active={active}
+      noPadding
+      className="flex"
+      noBorder
+    >
       <div
         className={cn(
           'w-7 flex justify-center items-center',
@@ -263,6 +282,78 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
     </div>
   </ItemContainer>
 )
+
+export const PaymentItem = ({
+  item,
+  onClick = null,
+  active = false,
+  noBorder = false,
+  checkable,
+  className,
+  showUserOrEvent = false,
+}) => {
+  const payType = PAY_TYPES.find(
+    (payTypeItem) => payTypeItem.value === item.payType
+  )
+  return (
+    <ItemContainer
+      onClick={onClick}
+      active={active}
+      // className="flex gap-x-1"
+      noPadding
+      noBorder={noBorder}
+      className={cn('flex h-8', className)}
+      checkable={checkable}
+    >
+      <div
+        className={cn(
+          'flex items-center justify-center w-8 text-white',
+          payType ? 'bg-' + payType.color : 'bg-gray-400'
+        )}
+      >
+        <FontAwesomeIcon icon={payType?.icon ?? faQuestion} className="w-6" />
+      </div>
+      <div className="flex items-center justify-between flex-1 w-full px-1 gap-x-1">
+        <div className="flex flex-col">
+          <div className="text-sm font-bold leading-4 text-gray-800 truncate">
+            {formatDateTime(item.payAt)}
+          </div>
+          {showUserOrEvent &&
+            (item.payDirection === 'toUser' ||
+              item.payDirection === 'fromUser') && (
+              <UserNameById
+                userId={item.userId}
+                noWrap
+                className="font-bold leading-4"
+              />
+            )}
+          {showUserOrEvent && item.payDirection === 'toEvent' && (
+            <EventNameById
+              eventId={item.eventId}
+              className="font-bold leading-4 text-general"
+            />
+          )}
+        </div>
+        <div className="flex items-center text-xs gap-x-2">
+          <div
+            className={cn(
+              'px-1 text-sm font-bold phoneH:text-base',
+              item.payDirection === 'toUser' || item.payDirection === 'toEvent'
+                ? 'text-danger'
+                : 'text-success'
+            )}
+          >
+            {`${
+              item.payDirection === 'toUser' || item.payDirection === 'toEvent'
+                ? '-'
+                : ''
+            }${item.sum / 100} ₽`}
+          </div>
+        </div>
+      </div>
+    </ItemContainer>
+  )
+}
 
 // export const PaymentItem = ({ item, onClick = null, active = false }) => {
 //   const { orders, clients } = useSelector((state) => state)
