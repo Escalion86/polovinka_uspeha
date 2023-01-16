@@ -302,7 +302,7 @@ export const PaymentItem = ({
       // className="flex gap-x-1"
       noPadding
       noBorder={noBorder}
-      className={cn('flex h-8', className)}
+      className={cn('flex h-9', className)}
       checkable={checkable}
     >
       <div
@@ -332,6 +332,9 @@ export const PaymentItem = ({
               eventId={item.eventId}
               className="font-bold leading-4 text-general"
             />
+          )}
+          {item.comment && (
+            <div className="text-sm leading-4">{item.comment}</div>
           )}
         </div>
         <div className="flex items-center text-xs gap-x-2">
