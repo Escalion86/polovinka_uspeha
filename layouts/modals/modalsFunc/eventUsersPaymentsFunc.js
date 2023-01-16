@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
@@ -21,7 +21,7 @@ import TabPanel from '@components/Tabs/TabPanel'
 //   faArrowAltCircleLeft,
 //   faArrowAltCircleRight,
 // } from '@fortawesome/free-regular-svg-icons'
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
 // import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
@@ -30,16 +30,23 @@ import { modalsFuncAtom } from '@state/atoms'
 import { PaymentItem, UserItem } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@components/Button'
+import { motion } from 'framer-motion'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
-const UsersPayments = ({ event, users, defaultPayDirection }) => {
+const UsersPayments = ({
+  event,
+  users,
+  defaultPayDirection,
+  noEventPriceForUser,
+}) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
 
   return (
     <div className="flex flex-col gap-y-1">
       {users.map((user) => {
+        const [isCollapsed, setIsCollapsed] = useState(true)
         const paymentsOfUser = paymentsOfEvent.filter(
           (payment) =>
             payment.userId === user._id &&
@@ -59,15 +66,20 @@ const UsersPayments = ({ event, users, defaultPayDirection }) => {
             0
           ) / 100
 
-        const eventPriceForUser =
-          (event.price -
-            (typeof event.usersStatusDiscount[user.status ?? 'novice'] ===
-            'number'
-              ? event.usersStatusDiscount[user.status ?? 'novice']
-              : 0)) /
-          100
+        const eventPriceForUser = noEventPriceForUser
+          ? 0
+          : (event.price -
+              (typeof event.usersStatusDiscount[user.status ?? 'novice'] ===
+              'number'
+                ? event.usersStatusDiscount[user.status ?? 'novice']
+                : 0)) /
+            100
 
         const sumToPay = eventPriceForUser - sumOfPayments
+
+        useEffect(() => {
+          if (paymentsOfUser.length === 0) setIsCollapsed(true)
+        }, [paymentsOfUser.length])
 
         return (
           <div
@@ -79,10 +91,15 @@ const UsersPayments = ({ event, users, defaultPayDirection }) => {
                 item={user}
                 onClick={() => modalsFunc.user.view(user._id)}
               />
-              <div className="flex flex-col items-center justify-center w-16 px-1 text-sm leading-4 border-l border-gray-700">
+              <div className="flex flex-col items-center justify-center px-1 text-sm leading-4 border-l border-gray-700 min-w-16">
                 <span
                   className={cn(
-                    sumOfPayments === eventPriceForUser
+                    'whitespace-nowrap',
+                    noEventPriceForUser
+                      ? sumOfPayments === 0
+                        ? 'text-success'
+                        : 'text-danger'
+                      : sumOfPayments === eventPriceForUser
                       ? 'text-success'
                       : sumOfPayments < eventPriceForUser
                       ? sumOfPayments === 0
@@ -91,14 +108,16 @@ const UsersPayments = ({ event, users, defaultPayDirection }) => {
                       : 'text-blue-700'
                   )}
                 >{`${sumOfPayments} ₽`}</span>
-                <span className="w-full text-center border-gray-700 border-t-1">{`${eventPriceForUser} ₽`}</span>
+                {!noEventPriceForUser && (
+                  <span className="w-full text-center border-gray-700 border-t-1 whitespace-nowrap">{`${eventPriceForUser} ₽`}</span>
+                )}
               </div>
               <div
                 className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-general"
                 onClick={() => {
                   modalsFunc.payment.add(null, {
                     payDirection: defaultPayDirection,
-                    sum: sumToPay * 100,
+                    sum: noEventPriceForUser ? 0 : sumToPay * 100,
                     userId: user._id,
                     eventId: event._id,
                   })
@@ -109,38 +128,62 @@ const UsersPayments = ({ event, users, defaultPayDirection }) => {
                   className={cn('w-5 h-5 duration-300 group-hover:scale-125')}
                 />
               </div>
+              <div
+                className={cn(
+                  'flex items-center justify-center w-8 border-l border-gray-700',
+                  paymentsOfUser.length > 0
+                    ? 'text-black cursor-pointer'
+                    : 'text-gray-300 cursor-not-allowed'
+                )}
+                onClick={() => {
+                  paymentsOfUser.length > 0 && setIsCollapsed((state) => !state)
+                }}
+              >
+                <div
+                  className={cn('w-4 duration-300 transition-transform', {
+                    'rotate-180': isCollapsed,
+                  })}
+                >
+                  <FontAwesomeIcon icon={faAngleDown} size="lg" />
+                </div>
+              </div>
             </div>
             {paymentsOfUser.length > 0 && (
-              <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded-b bg-general">
-                {paymentsOfUser.map((payment) => (
-                  <div
-                    key={payment._id}
-                    className="flex bg-white border-t border-l border-r border-gray-700 last:border-b-1"
-                  >
-                    <PaymentItem
-                      item={payment}
-                      noBorder
-                      checkable={false}
-                      onClick={() => {
-                        modalsFunc.payment.edit(payment._id)
-                      }}
-                    />
+              <motion.div
+                initial={{ height: 0 }}
+                animate={{ height: isCollapsed ? 0 : 'auto' }}
+              >
+                <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded-b bg-general">
+                  {paymentsOfUser.map((payment) => (
                     <div
-                      className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
-                      onClick={() => {
-                        modalsFunc.payment.delete(payment._id)
-                      }}
+                      key={payment._id}
+                      className="flex bg-white border-t border-l border-r border-gray-700 last:border-b-1"
                     >
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        className={cn(
-                          'w-5 h-5 duration-300 group-hover:scale-125'
-                        )}
+                      <PaymentItem
+                        item={payment}
+                        noBorder
+                        checkable={false}
+                        onClick={() => {
+                          modalsFunc.payment.edit(payment._id)
+                        }}
                       />
+                      <div
+                        className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
+                        onClick={() => {
+                          modalsFunc.payment.delete(payment._id)
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          className={cn(
+                            'w-4 h-4 duration-300 group-hover:scale-125'
+                          )}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </motion.div>
             )}
           </div>
         )
@@ -369,32 +412,35 @@ const eventUsersPaymentsFunc = (eventId) => {
     // }
 
     const TotalFromParticipants = () => (
-      <div className="flex gap-x-1">
+      <div className="flex flex-wrap gap-x-1">
         <span>Всего получено от участников:</span>
-        <span
-          className={cn(
-            'font-bold',
-            sumOfPaymentsOfEventFromParticipants ===
-              paymentsToExpectFromParticipants
-              ? 'text-success'
-              : sumOfPaymentsOfEventFromParticipants <
+        <div className="flex gap-x-0.5 flex-nowrap">
+          <span
+            className={cn(
+              'font-bold whitespace-nowrap',
+              sumOfPaymentsOfEventFromParticipants ===
                 paymentsToExpectFromParticipants
-              ? sumOfPaymentsOfEventFromParticipants === 0
-                ? 'text-danger'
-                : 'text-orange-500'
-              : 'text-blue-700'
-          )}
-        >{`${sumOfPaymentsOfEventFromParticipants} ₽`}</span>
-        <span>/</span>
-        <span className="font-bold">{`${paymentsToExpectFromParticipants} ₽`}</span>
+                ? 'text-success'
+                : sumOfPaymentsOfEventFromParticipants <
+                  paymentsToExpectFromParticipants
+                ? sumOfPaymentsOfEventFromParticipants === 0
+                  ? 'text-danger'
+                  : 'text-orange-500'
+                : 'text-blue-700'
+            )}
+          >{`${sumOfPaymentsOfEventFromParticipants} ₽`}</span>
+          <span>/</span>
+          <span className="font-bold whitespace-nowrap">{`${paymentsToExpectFromParticipants} ₽`}</span>
+        </div>
       </div>
     )
 
     const TotalToAssistants = () => (
-      <div className="flex gap-x-1">
+      <div className="flex flex-wrap gap-x-1">
         <span>Всего затрат на ведущих и ассистентов:</span>
         <span
           className={cn(
+            'whitespace-nowrap',
             'font-bold',
             sumOfPaymentsOfEventToAssistants === 0
               ? 'text-success'
@@ -407,7 +453,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     )
 
     const TotalToEvent = () => (
-      <div className="flex gap-x-1">
+      <div className="flex flex-wrap gap-x-1">
         <span>Всего затрат на расходники и организацию:</span>
         <span
           className={cn(
@@ -428,39 +474,46 @@ const eventUsersPaymentsFunc = (eventId) => {
           tabName="Участники"
           tabAddToLabel={`${sumOfPaymentsOfEventFromParticipants} ₽`}
         >
+          <TotalFromParticipants />
           <UsersPayments
             event={event}
             users={sortedEventParticipants}
             defaultPayDirection="fromUser"
           />
-          <TotalFromParticipants />
         </TabPanel>
         <TabPanel
           tabName="Ведущие"
           tabAddToLabel={`${sumOfPaymentsOfEventToAssistants} ₽`}
         >
+          <TotalToAssistants />
           <UsersPayments
             event={event}
             users={sortedEventAssistants}
             defaultPayDirection="toUser"
+            noEventPriceForUser
           />
-          <TotalToAssistants />
         </TabPanel>
         <TabPanel
           tabName="Прочие затраты"
           tabAddToLabel={`${sumOfPaymentsToEvent} ₽`}
         >
-          <Button
-            name="Добавить затраты"
-            onClick={() =>
-              modalsFunc.payment.add(null, {
-                payDirection: 'toEvent',
-                eventId: event._id,
-              })
-            }
-          />
+          <div className="flex flex-wrap items-center justify-between">
+            <TotalToEvent />
+            <div className="flex justify-end flex-1">
+              <Button
+                name="Добавить затраты"
+                onClick={() =>
+                  modalsFunc.payment.add(null, {
+                    payDirection: 'toEvent',
+                    eventId: event._id,
+                  })
+                }
+                thin
+              />
+            </div>
+          </div>
           {paymentsToEvent.length > 0 && (
-            <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded-b bg-general">
+            <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded bg-general">
               {paymentsToEvent.map((payment) => (
                 <div
                   key={payment._id}
@@ -491,13 +544,12 @@ const eventUsersPaymentsFunc = (eventId) => {
               ))}
             </div>
           )}
-          <TotalToEvent />
         </TabPanel>
         <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
           <TotalFromParticipants />
           <TotalToAssistants />
           <TotalToEvent />
-          <div className="flex gap-x-1">
+          <div className="flex flex-wrap gap-x-1">
             <span>Текущая прибыль:</span>
             <span
               className={cn(
@@ -506,7 +558,7 @@ const eventUsersPaymentsFunc = (eventId) => {
               )}
             >{`${totalIncome} ₽`}</span>
           </div>
-          <div className="flex gap-x-1">
+          <div className="flex flex-wrap gap-x-1">
             <span>Ожидаемая прибыль:</span>
             <span
               className={cn(
