@@ -21,7 +21,12 @@ import TabPanel from '@components/Tabs/TabPanel'
 //   faArrowAltCircleLeft,
 //   faArrowAltCircleRight,
 // } from '@fortawesome/free-regular-svg-icons'
-import { faAngleDown, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import {
+  faAngleDown,
+  faCertificate,
+  faPlus,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
 // import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
@@ -111,7 +116,7 @@ const UsersPayments = ({
                 item={user}
                 onClick={() => modalsFunc.user.view(user._id)}
               />
-              <div className="flex flex-col items-center justify-center px-1 text-sm leading-4 border-l border-gray-700 min-w-16">
+              <div className="flex flex-col items-center justify-center px-1 text-sm leading-4 border-l border-gray-700 min-w-[70px]">
                 <span
                   className={cn(
                     'whitespace-nowrap',
@@ -129,7 +134,19 @@ const UsersPayments = ({
                   )}
                 >{`${sumOfPayments} ₽`}</span>
                 {!noEventPriceForUser && (
-                  <span className="w-full text-center border-gray-700 border-t-1 whitespace-nowrap">{`${eventPriceForUser} ₽`}</span>
+                  <div
+                    className={cn(
+                      'w-full flex gap-x-1 items-center justify-center border-gray-700 border-t-1 whitespace-nowrap',
+                      sumOfCoupons > 0 ? 'text-general' : 'text-black'
+                    )}
+                  >
+                    {sumOfCoupons > 0 && (
+                      <div className="flex items-center justify-center w-3">
+                        <FontAwesomeIcon icon={faCertificate} className="w-3" />
+                      </div>
+                    )}
+                    <span>{`${eventPriceForUser} ₽`}</span>
+                  </div>
                 )}
               </div>
               <div
@@ -248,14 +265,42 @@ const eventUsersPaymentsFunc = (eventId) => {
       (user) => user._id
     )
 
+    const allPaymentsOfEventFromParticipants = paymentsOfEvent.filter(
+      (payment) =>
+        payment.payDirection === 'toUser' || payment.payDirection === 'fromUser'
+    )
+
+    const paymentsOfEventFromParticipants =
+      allPaymentsOfEventFromParticipants.filter(
+        (payment) => payment.payType !== 'coupon'
+      )
+    const couponsOfEventFromParticipants =
+      allPaymentsOfEventFromParticipants.filter(
+        (payment) => payment.payType === 'coupon'
+      )
+
     const sumOfPaymentsOfEventFromParticipants =
-      paymentsOfEvent.reduce((p, payment) => {
-        if (
-          (payment.payDirection !== 'toUser' &&
-            payment.payDirection !== 'fromUser') ||
-          payment.payType === 'coupon'
+      paymentsOfEventFromParticipants.reduce((p, payment) => {
+        // if (
+        //   (payment.payDirection !== 'toUser' &&
+        //     payment.payDirection !== 'fromUser') ||
+        //   payment.payType === 'coupon'
+        // )
+        //   return p
+        const isUserParticipant = sortedEventParticipantsIds.includes(
+          payment.userId
         )
-          return p
+        if (isUserParticipant)
+          return (
+            p +
+            (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
+          )
+
+        return p
+      }, 0) / 100
+
+    const sumOfCouponsOfEventFromParticipants =
+      couponsOfEventFromParticipants.reduce((p, payment) => {
         const isUserParticipant = sortedEventParticipantsIds.includes(
           payment.userId
         )
@@ -303,7 +348,8 @@ const eventUsersPaymentsFunc = (eventId) => {
       (event.price * eventParticipants.length -
         membersOfEventCount * (event.usersStatusDiscount?.member ?? 0) -
         noviceOfEventCount * (event.usersStatusDiscount?.novice ?? 0)) /
-      100
+        100 -
+      sumOfCouponsOfEventFromParticipants
 
     const totalIncome =
       sumOfPaymentsOfEventFromParticipants +
@@ -476,6 +522,9 @@ const eventUsersPaymentsFunc = (eventId) => {
           >{`${sumOfPaymentsOfEventFromParticipants} ₽`}</span>
           <span>/</span>
           <span className="font-bold whitespace-nowrap">{`${paymentsToExpectFromParticipants} ₽`}</span>
+          {sumOfCouponsOfEventFromParticipants > 0 && (
+            <span className="font-bold whitespace-nowrap text-general">{` +${sumOfCouponsOfEventFromParticipants} ₽ купонами`}</span>
+          )}
         </div>
       </div>
     )
