@@ -19,13 +19,8 @@ const PriceInput = ({
   const onChangeUpd = (value, rub = true) => {
     if (!onChange) return
     let newValue
-    console.log('value!!', value)
-    console.log('value!!!', Number((value > 0 ? value : 0) * 100))
     if (rub) newValue = Number((value > 0 ? value : 0) * 100) + cops
     else newValue = rubles * 100 + Number(value > 0 ? value : 0)
-    console.log('newValue', newValue)
-    console.log('String(newValue)', String(newValue))
-    console.log('String(parseInt(newValue))', String(parseInt(newValue)))
     onChange(String(parseInt(newValue)))
   }
 

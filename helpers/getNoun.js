@@ -1,4 +1,5 @@
 const getNoun = (number, one, two, five, withNumber = true) => {
+  if (typeof number !== 'number') return ''
   let n = Math.abs(number)
   let res
   n %= 100
@@ -25,6 +26,9 @@ export const getNounBirthdays = (number) =>
 
 export const getNounAdditionalBlocks = (number) =>
   getNoun(number, 'доп. блок', 'доп. блока', 'доп. блоков')
+
+export const getNounServices = (number) =>
+  getNoun(number, 'услуга', 'услуги', 'услуг')
 
 export const getNounUsers = (number) =>
   getNoun(number, 'пользователь', 'пользователя', 'пользователей')

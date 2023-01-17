@@ -14,6 +14,7 @@ import eventFunc from './modalsFunc/eventFunc'
 import eventUsersFunc from './modalsFunc/eventUsersFunc'
 import userFunc from './modalsFunc/userFunc'
 import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
+import serviceFunc from './modalsFunc/serviceFunc'
 
 import eventViewFunc from './modalsFunc/eventViewFunc'
 import paymentFunc from './modalsFunc/paymentFunc'
@@ -274,6 +275,28 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           text: 'Вы уверены, что хотите удалить дополнительный блок?',
           onConfirm: async () =>
             itemsFunc.additionalBlock.delete(additionalBlockId),
+        }),
+    },
+    service: {
+      add: (serviceId) => addModal(serviceFunc(serviceId, true)),
+      edit: (serviceId) => addModal(serviceFunc(serviceId)),
+      delete: (serviceId) =>
+        addModal({
+          title: 'Удаление услуги',
+          text: 'Вы уверены, что хотите удалить услугу?',
+          onConfirm: async () => itemsFunc.service.delete(serviceId),
+        }),
+      buy: (serviceId, userId) =>
+        addModal({
+          title: 'Покупка услуги',
+          text: 'Вы уверены, что хотите приобрести услугу?',
+          onConfirm: async () => {
+            itemsFunc.service.buy(serviceId, userId)
+            addModal({
+              title: 'Покупка услуги',
+              text: 'Заявка на покупку услуги отправлена! Администратор свяжется с вами в ближайшее время.',
+            })
+          },
         }),
     },
     notifications: {

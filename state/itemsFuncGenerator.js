@@ -103,6 +103,20 @@ const messages = {
       error: 'Не удалось удалить анкету',
     },
   },
+  service: {
+    update: {
+      success: 'Услуга обновлена',
+      error: 'Не удалось обновить услугу',
+    },
+    add: {
+      success: 'Услуга создана',
+      error: 'Не удалось создать услугу',
+    },
+    delete: {
+      success: 'Услуга удалена',
+      error: 'Не удалось удалить услугу',
+    },
+  },
 }
 
 const itemsFuncGenerator = (
@@ -116,6 +130,7 @@ const itemsFuncGenerator = (
     'payment',
     'questionnaire',
     'questionnairesUser',
+    'service',
   ]
 ) => {
   const {
@@ -360,6 +375,31 @@ const itemsFuncGenerator = (
           errorPlace: 'setEventUsers ERROR',
           eventId,
           eventUsersStatuses,
+          error,
+        }
+        modalsFunc.error(data)
+        console.log(data)
+      }
+      // () => props['setAdditionalBlock'](itemId)
+      //  deleteEvent(itemId)
+    )
+  }
+
+  obj.service.buy = async (serviceId, userId) => {
+    return await postData(
+      `/api/service/buy`,
+      { serviceId, userId },
+      (data) => {
+        snackbar.success('Заявка на покупку услуги успешно отправлена')
+        // props.deleteEventsUsersByEventId(eventId)
+        // props.setEventsUsers(data)
+      },
+      (error) => {
+        snackbar.error('Не удалось отправить заявку на покупку услуги')
+        const data = {
+          errorPlace: 'buy ERROR',
+          serviceId,
+          userId,
           error,
         }
         modalsFunc.error(data)

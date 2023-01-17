@@ -26,6 +26,7 @@ const PaymentsContent = () => {
       card: true,
       cash: true,
       remittance: true,
+      coupon: true,
     },
     payDirection: {
       fromUser: true,
