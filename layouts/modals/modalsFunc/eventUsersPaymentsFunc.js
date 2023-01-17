@@ -291,6 +291,28 @@ const eventUsersPaymentsFunc = (eventId) => {
       paymentsToExpectFromParticipants +
       sumOfPaymentsOfEventToAssistants +
       sumOfPaymentsToEvent
+
+    const maxPartisipants =
+      event.maxMans !== null && event.maxWomans !== null
+        ? Math.min(event.maxMans + event.maxWomans, event.maxParticipants)
+        : event.maxParticipants !== null
+        ? event.maxParticipants
+        : null
+
+    const maxPaymentPerParticipant =
+      event.price -
+      Math.min(
+        event.usersStatusDiscount?.member ?? 0,
+        event.usersStatusDiscount?.novice ?? 0
+      )
+
+    const expectedMaxIncome =
+      maxPartisipants !== null
+        ? expectedIncome +
+          ((maxPartisipants - eventParticipants.length) *
+            maxPaymentPerParticipant) /
+            100
+        : null
     // const eventReservedParticipants = useRecoilValue(
     //   eventUsersInReserveSelector(eventId)
     // )
@@ -481,18 +503,20 @@ const eventUsersPaymentsFunc = (eventId) => {
             defaultPayDirection="fromUser"
           />
         </TabPanel>
-        <TabPanel
-          tabName="Ведущие"
-          tabAddToLabel={`${sumOfPaymentsOfEventToAssistants} ₽`}
-        >
-          <TotalToAssistants />
-          <UsersPayments
-            event={event}
-            users={sortedEventAssistants}
-            defaultPayDirection="toUser"
-            noEventPriceForUser
-          />
-        </TabPanel>
+        {sortedEventAssistants.length > 0 && (
+          <TabPanel
+            tabName="Ведущие"
+            tabAddToLabel={`${sumOfPaymentsOfEventToAssistants} ₽`}
+          >
+            <TotalToAssistants />
+            <UsersPayments
+              event={event}
+              users={sortedEventAssistants}
+              defaultPayDirection="toUser"
+              noEventPriceForUser
+            />
+          </TabPanel>
+        )}
         <TabPanel
           tabName="Прочие затраты"
           tabAddToLabel={`${sumOfPaymentsToEvent} ₽`}
@@ -547,7 +571,7 @@ const eventUsersPaymentsFunc = (eventId) => {
         </TabPanel>
         <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
           <TotalFromParticipants />
-          <TotalToAssistants />
+          {sortedEventAssistants.length > 0 && <TotalToAssistants />}
           <TotalToEvent />
           <div className="flex flex-wrap gap-x-1">
             <span>Текущая прибыль:</span>
@@ -559,7 +583,7 @@ const eventUsersPaymentsFunc = (eventId) => {
             >{`${totalIncome} ₽`}</span>
           </div>
           <div className="flex flex-wrap gap-x-1">
-            <span>Ожидаемая прибыль:</span>
+            <span>{'Ожидаемая прибыль:'}</span>
             <span
               className={cn(
                 'font-bold',
@@ -567,6 +591,17 @@ const eventUsersPaymentsFunc = (eventId) => {
               )}
             >{`${expectedIncome} ₽`}</span>
           </div>
+          {expectedMaxIncome !== null && (
+            <div className="flex flex-wrap gap-x-1">
+              <span>{'Максимально возможная прибыль:'}</span>
+              <span
+                className={cn(
+                  'font-bold',
+                  expectedMaxIncome <= 0 ? 'text-danger' : 'text-success'
+                )}
+              >{`${expectedMaxIncome} ₽`}</span>
+            </div>
+          )}
         </TabPanel>
       </TabContext>
     )
