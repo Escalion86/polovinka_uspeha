@@ -29,6 +29,7 @@ import Payments from '@models/Payments'
 import Questionnaires from '@models/Questionnaires'
 import QuestionnairesUsers from '@models/QuestionnairesUsers'
 import Reviews from '@models/Reviews'
+import Services from '@models/Services'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
@@ -124,6 +125,8 @@ const fetchProps = async (user) => {
           // createdAt: { $gt: user.prevActivityAt },
         })
       : []
+
+    const services = await Services.find({})
     // console.timeEnd('Loading time')
     // dbDisconnect()
     // console.log('return result', {
@@ -160,6 +163,7 @@ const fetchProps = async (user) => {
       histories: JSON.parse(JSON.stringify(histories)),
       questionnaires: JSON.parse(JSON.stringify(questionnaires)),
       questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
+      services: JSON.parse(JSON.stringify(services)),
     }
 
     // console.log('fetchResult', fetchResult)
@@ -178,6 +182,7 @@ const fetchProps = async (user) => {
       histories: [],
       questionnaires: [],
       questionnairesUsers: [],
+      services: [],
       error: JSON.parse(JSON.stringify(error)),
     }
   }

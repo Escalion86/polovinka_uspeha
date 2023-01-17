@@ -39,7 +39,11 @@ const ToggleButtons = ({
             key={cfg.value}
             onClick={() => onClick(cfg)}
             variant={value[cfg.value] ? 'contained' : 'outlined'}
-            color={cfg.color.slice(0, cfg.color.indexOf('-'))}
+            color={
+              cfg.color.indexOf('-') > 0
+                ? cfg.color.slice(0, cfg.color.indexOf('-'))
+                : cfg.color
+            }
             className={cn(
               'flex items-center gap-x-1',
               value[cfg.value] ? 'text-white' : `text-${cfg.color}`

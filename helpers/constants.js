@@ -2,6 +2,7 @@ import {
   faBan,
   faBirthdayCake,
   faCalendarDay,
+  faCertificate,
   faCheck,
   faCheckCircle,
   faCircle,
@@ -16,6 +17,8 @@ import {
   faPhone,
   faPieChart,
   faPlay,
+  faShop,
+  faShoppingBag,
   faSignInAlt,
   faTimesCircle,
   faUserAlt,
@@ -41,6 +44,8 @@ import {
   faCalendarAlt,
   faCreditCard,
 } from '@fortawesome/free-regular-svg-icons'
+
+import ServicesContent from '@layouts/content/ServicesContent'
 import DirectionsContent from '@layouts/content/DirectionsContent'
 import ReviewsContent from '@layouts/content/ReviewsContent'
 import EventsContent from '@layouts/content/EventsContent'
@@ -125,6 +130,7 @@ const colors = [
   'border-orange-600',
   'border-gray-600',
   'border-amber-600',
+  'border-amber-700',
   'text-gray-600',
   'text-blue-600',
   'text-yellow-600',
@@ -133,6 +139,7 @@ const colors = [
   'text-orange-600',
   'text-gray-600',
   'text-amber-600',
+  'text-amber-700',
   'bg-blue-600',
   'bg-red-600',
   'bg-yellow-600',
@@ -141,6 +148,7 @@ const colors = [
   'bg-orange-600',
   'bg-gray-600',
   'bg-amber-600',
+  'bg-amber-700',
   'hover:border-blue-400',
   'hover:border-red-400',
   'hover:border-yellow-400',
@@ -181,6 +189,7 @@ const colors = [
   'hover:text-orange-500',
   'hover:text-gray-500',
   'hover:text-amber-500',
+  'hover:text-amber-600',
   'hover:bg-blue-500',
   'hover:bg-red-500',
   'hover:bg-yellow-500',
@@ -197,6 +206,7 @@ const colors = [
   'hover:border-orange-600',
   'hover:border-gray-600',
   'hover:border-amber-600',
+  'hover:border-amber-700',
   'hover:text-red-600',
   'hover:text-blue-600',
   'hover:text-yellow-600',
@@ -205,6 +215,7 @@ const colors = [
   'hover:text-orange-600',
   'hover:text-gray-600',
   'hover:text-amber-600',
+  'hover:text-amber-700',
   'hover:bg-blue-600',
   'hover:bg-red-600',
   'hover:bg-yellow-600',
@@ -213,6 +224,7 @@ const colors = [
   'hover:bg-orange-600',
   'hover:bg-gray-600',
   'hover:bg-amber-600',
+  'hover:bg-amber-700',
 ]
 
 export const GRADIENT_COLORS = ['#504436', '#84725A']
@@ -374,6 +386,16 @@ export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
   showOnSite: true,
 })
 
+export const DEFAULT_SERVICE = Object.freeze({
+  title: '',
+  description: '',
+  image: null,
+  menuName: null,
+  index: null,
+  showOnSite: true,
+  price: 0,
+})
+
 export const DEFAULT_SITE_SETTINGS = Object.freeze({
   email: null,
   phone: null,
@@ -510,6 +532,7 @@ export const CLOUDINARY_FOLDER = isDevMode
   : 'polovinka_uspeha'
 
 export const CONTENTS = {
+  services: { Component: ServicesContent, name: 'Услуги' },
   directions: { Component: DirectionsContent, name: 'Сайт / Направления' },
   reviews: { Component: ReviewsContent, name: 'Сайт / Отзывы' },
   additionalBlocks: {
@@ -535,69 +558,76 @@ export const pages = [
   {
     id: 0,
     group: 0,
+    name: 'Услуги',
+    href: 'services',
+    icon: faShoppingBag,
+  },
+  {
+    id: 2,
+    group: 1,
     name: 'Мероприятия',
     href: 'events',
     icon: faCalendar,
   },
   {
-    id: 1,
-    group: 1,
+    id: 3,
+    group: 2,
     name: 'Направления',
     href: 'directions',
     icon: faHeart,
   },
   {
-    id: 2,
-    group: 1,
+    id: 4,
+    group: 2,
     name: 'Доп. блоки',
     href: 'additionalBlocks',
     icon: faCube,
   },
   {
-    id: 3,
-    group: 1,
+    id: 5,
+    group: 2,
     name: 'Отзывы',
     href: 'reviews',
     icon: faComments,
   },
   {
-    id: 4,
-    group: 1,
+    id: 6,
+    group: 2,
     name: 'Контакты',
     href: 'contacts',
     icon: faPhone,
   },
   {
-    id: 5,
-    group: 2,
+    id: 7,
+    group: 3,
     name: 'Пользователи',
     href: 'users',
     icon: faCalendar,
   },
   {
-    id: 6,
-    group: 3,
+    id: 8,
+    group: 4,
     name: 'Транзакции',
     href: 'payments',
     icon: faMoneyBill,
   },
   {
-    id: 7,
-    group: 4,
+    id: 9,
+    group: 5,
     name: 'Участники мероприятий',
     href: 'histories',
     icon: faUsers,
   },
   {
-    id: 8,
-    group: 4,
+    id: 10,
+    group: 5,
     name: 'Дни рождения',
     href: 'birthdays',
     icon: faBirthdayCake,
   },
   {
-    id: 9,
-    group: 5,
+    id: 11,
+    group: 6,
     name: 'Статистика',
     href: 'statistics',
     icon: faPieChart,
@@ -619,12 +649,13 @@ export const pages = [
 ]
 
 export const pagesGroups = [
-  { id: 0, name: 'Мероприятия', icon: faCalendarAlt, access: 'all' },
-  { id: 1, name: 'Сайт', icon: faHome, access: 'admin' },
-  { id: 2, name: 'Пользователи', icon: faUser, access: 'admin' },
-  { id: 3, name: 'Транзакции', icon: faMoneyBill, access: 'admin' },
-  { id: 4, name: 'События', icon: faHistory, access: 'admin' },
-  { id: 5, name: 'Статистика', icon: faPieChart, access: 'admin' },
+  { id: 0, name: 'Услуги', icon: faShoppingBag, access: 'dev' },
+  { id: 1, name: 'Мероприятия', icon: faCalendarAlt, access: 'all' },
+  { id: 2, name: 'Сайт', icon: faHome, access: 'admin' },
+  { id: 3, name: 'Пользователи', icon: faUser, access: 'admin' },
+  { id: 4, name: 'Транзакции', icon: faMoneyBill, access: 'admin' },
+  { id: 5, name: 'События', icon: faHistory, access: 'admin' },
+  { id: 6, name: 'Статистика', icon: faPieChart, access: 'admin' },
   { id: 50, name: 'Участники клуба', icon: faUser, access: 'member' },
   { id: 99, name: 'Разработчик', icon: faBug, access: 'dev' },
 ]
@@ -637,6 +668,12 @@ export const PAY_TYPES = [
     name: 'Перевод',
     color: 'yellow-400',
     icon: faSignInAlt,
+  },
+  {
+    value: 'coupon',
+    name: 'Купон',
+    color: 'general',
+    icon: faCertificate,
   },
 ]
 

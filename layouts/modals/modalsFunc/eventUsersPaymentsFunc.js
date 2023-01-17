@@ -47,12 +47,31 @@ const UsersPayments = ({
     <div className="flex flex-col gap-y-1">
       {users.map((user) => {
         const [isCollapsed, setIsCollapsed] = useState(true)
-        const paymentsOfUser = paymentsOfEvent.filter(
+        const allPaymentsOfUser = paymentsOfEvent.filter(
           (payment) =>
             payment.userId === user._id &&
             (payment.payDirection === 'toUser' ||
               payment.payDirection === 'fromUser')
         )
+
+        const couponsOfUser = allPaymentsOfUser.filter(
+          (payment) => payment.payType === 'coupon'
+        )
+        const paymentsOfUser = allPaymentsOfUser.filter(
+          (payment) => payment.payType !== 'coupon'
+        )
+
+        const sumOfCoupons =
+          couponsOfUser.reduce(
+            (p, payment) =>
+              p +
+              (payment.sum ?? 0) *
+                (payment.payDirection === 'toUser' ||
+                payment.payDirection === 'toEvent'
+                  ? -1
+                  : 1),
+            0
+          ) / 100
 
         const sumOfPayments =
           paymentsOfUser.reduce(
@@ -73,7 +92,8 @@ const UsersPayments = ({
               'number'
                 ? event.usersStatusDiscount[user.status ?? 'novice']
                 : 0)) /
-            100
+              100 -
+            sumOfCoupons
 
         const sumToPay = eventPriceForUser - sumOfPayments
 
@@ -131,12 +151,13 @@ const UsersPayments = ({
               <div
                 className={cn(
                   'flex items-center justify-center w-8 border-l border-gray-700',
-                  paymentsOfUser.length > 0
+                  allPaymentsOfUser.length > 0
                     ? 'text-black cursor-pointer'
                     : 'text-gray-300 cursor-not-allowed'
                 )}
                 onClick={() => {
-                  paymentsOfUser.length > 0 && setIsCollapsed((state) => !state)
+                  allPaymentsOfUser.length > 0 &&
+                    setIsCollapsed((state) => !state)
                 }}
               >
                 <div
@@ -148,13 +169,13 @@ const UsersPayments = ({
                 </div>
               </div>
             </div>
-            {paymentsOfUser.length > 0 && (
+            {allPaymentsOfUser.length > 0 && (
               <motion.div
                 initial={{ height: 0 }}
                 animate={{ height: isCollapsed ? 0 : 'auto' }}
               >
                 <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded-b bg-general">
-                  {paymentsOfUser.map((payment) => (
+                  {allPaymentsOfUser.map((payment) => (
                     <div
                       key={payment._id}
                       className="flex bg-white border-t border-l border-r border-gray-700 last:border-b-1"
@@ -230,8 +251,9 @@ const eventUsersPaymentsFunc = (eventId) => {
     const sumOfPaymentsOfEventFromParticipants =
       paymentsOfEvent.reduce((p, payment) => {
         if (
-          payment.payDirection !== 'toUser' &&
-          payment.payDirection !== 'fromUser'
+          (payment.payDirection !== 'toUser' &&
+            payment.payDirection !== 'fromUser') ||
+          payment.payType === 'coupon'
         )
           return p
         const isUserParticipant = sortedEventParticipantsIds.includes(
@@ -249,8 +271,9 @@ const eventUsersPaymentsFunc = (eventId) => {
     const sumOfPaymentsOfEventToAssistants =
       paymentsOfEvent.reduce((p, payment) => {
         if (
-          payment.payDirection !== 'toUser' &&
-          payment.payDirection !== 'fromUser'
+          (payment.payDirection !== 'toUser' &&
+            payment.payDirection !== 'fromUser') ||
+          payment.payType === 'coupon'
         )
           return p
         const isUserAssistant = sortedEventAssistantsIds.includes(

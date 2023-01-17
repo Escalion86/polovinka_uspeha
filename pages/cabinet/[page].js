@@ -39,7 +39,7 @@ function CabinetPage(props) {
   else if (
     (loggedUser &&
       ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
-        (!['events', 'questionnaire', 'members'].includes(page) &&
+        (!['events', 'questionnaire', 'members', 'services'].includes(page) &&
           !isLoggedUserAdmin))) ||
     (page === 'members' && !isLoggedUserMember && !isLoggedUserAdmin)
   )
@@ -131,7 +131,8 @@ export const getServerSideProps = async (context) => {
   // Ограничиваем пользователям доступ к страницам
   if (
     (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) ||
-    (!['events', 'questionnaire'].includes(page) && !isUserAdmin(session?.user))
+    (!['events', 'questionnaire', 'members', 'services'].includes(page) &&
+      !isUserAdmin(session?.user))
   ) {
     return {
       redirect: {

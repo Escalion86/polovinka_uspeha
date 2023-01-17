@@ -52,6 +52,9 @@ import questionnaireDeleteSelector from '@state/selectors/questionnaireDeleteSel
 import questionnaireUsersEditSelector from '@state/selectors/questionnaireUsersEditSelector'
 import questionnaireUsersDeleteSelector from '@state/selectors/questionnaireUsersDeleteSelector'
 import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
+import servicesAtom from '@state/atoms/servicesAtom'
+import serviceEditSelector from '@state/selectors/serviceEditSelector'
+import serviceDeleteSelector from '@state/selectors/serviceDeleteSelector'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -82,6 +85,7 @@ const StateLoader = (props) => {
   const setHistoriesState = useSetRecoilState(historiesAtom)
   const setQuestionnairesState = useSetRecoilState(questionnairesAtom)
   const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
+  const setServicesState = useSetRecoilState(servicesAtom)
 
   const setEvent = useSetRecoilState(eventEditSelector)
   const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -108,6 +112,8 @@ const StateLoader = (props) => {
   const deleteQuestionnaireUsers = useSetRecoilState(
     questionnaireUsersDeleteSelector
   )
+  const setService = useSetRecoilState(serviceEditSelector)
+  const deleteService = useSetRecoilState(serviceDeleteSelector)
 
   const [itemsFunc, setItemsFunc] = useRecoilState(itemsFuncAtom)
   const setLoadingCard = useSetRecoilState(setLoadingSelector)
@@ -145,6 +151,7 @@ const StateLoader = (props) => {
     setHistoriesState(props.histories)
     setQuestionnairesState(props.questionnaires)
     setQuestionnairesUsersState(props.questionnairesUsers)
+    setServicesState(props.services)
 
     setIsSiteLoading(false)
   }, [])
@@ -179,6 +186,8 @@ const StateLoader = (props) => {
           deleteQuestionnaire,
           setQuestionnaireUsers,
           deleteQuestionnaireUsers,
+          setService,
+          deleteService,
           snackbar,
         })
       )

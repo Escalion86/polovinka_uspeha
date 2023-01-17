@@ -1,12 +1,12 @@
-import { DEFAULT_ADDITIONAL_BLOCK } from '@helpers/constants'
-import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
+import { DEFAULT_SERIVICE } from '@helpers/constants'
+import servicesAtom from '@state/atoms/servicesAtom'
 import { selector } from 'recoil'
 
-const additionalBlockEditSelector = selector({
-  key: 'additionalBlockEditSelector',
-  get: () => DEFAULT_ADDITIONAL_BLOCK,
+const serviceEditSelector = selector({
+  key: 'serviceEditSelector',
+  get: () => DEFAULT_SERIVICE,
   set: ({ set, get }, newItem) => {
-    const items = get(additionalBlocksAtom)
+    const items = get(servicesAtom)
     if (!newItem?._id) return
     const findedItem = items.find((item) => item._id === newItem._id)
     // Если мы обновляем существующий атом
@@ -15,12 +15,12 @@ const additionalBlockEditSelector = selector({
         if (item._id === newItem._id) return newItem
         return item
       })
-      set(additionalBlocksAtom, newItemsList)
+      set(servicesAtom, newItemsList)
     } else {
       // Если такого атома нет и мы добавляем новый, то просто добавляем атом в список
-      set(additionalBlocksAtom, [...items, newItem])
+      set(servicesAtom, [...items, newItem])
     }
   },
 })
 
-export default additionalBlockEditSelector
+export default serviceEditSelector
