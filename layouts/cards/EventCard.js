@@ -40,6 +40,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
   const loading = useRecoilValue(loadingAtom('event' + eventId))
   const error = useRecoilValue(errorAtom('event' + eventId))
   const itemFunc = useRecoilValue(itemsFuncAtom)
+
   // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
   // const eventLoggedUserStatus = useRecoilValue(
@@ -232,8 +233,8 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
                   )} */}
                 </div>
               </div>
-              <div className="flex flex-col items-center h-full pt-1 pl-2 pr-1">
-                <PriceDiscount event={event} className="hidden laptop:flex" />
+              <div className="flex-col items-center hidden h-full pt-1 pl-2 pr-1 laptop:flex">
+                <PriceDiscount event={event} className="flex" />
                 {/* <div className="flex justify-between w-full tablet:flex-col">
                 <div className="text-lg font-bold leading-5 whitespace-normal tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
                   {formatDateTime(event.date, false, false, true, false)}
