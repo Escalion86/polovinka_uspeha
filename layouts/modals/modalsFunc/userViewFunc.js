@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { useRecoilValue } from 'recoil'
 import userSelector from '@state/selectors/userSelector'
 import { GENDERS } from '@helpers/constants'
@@ -13,9 +12,6 @@ import Image from 'next/image'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import ImageGallery from '@components/ImageGallery'
 import CardButtons from '@components/CardButtons'
-// import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
-// import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
-// import { SelectEventList } from '@components/SelectItemList'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import { modalsFuncAtom } from '@state/atoms'
@@ -24,7 +20,6 @@ import formatDate from '@helpers/formatDate'
 import TextLine from '@components/TextLine'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-// import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 
 const userViewFunc = (userId, clone = false) => {

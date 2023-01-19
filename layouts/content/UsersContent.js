@@ -36,10 +36,6 @@ const UsersContent = () => {
     },
   })
   const [searchText, setSearchText] = useState('')
-  // const [statusFilter, setStatusFilter] = useState({
-  //   novice: true,
-  //   member: true,
-  // })
 
   const sortKey = Object.keys(sort)[0]
   const sortValue = sort[sortKey]
@@ -75,23 +71,8 @@ const UsersContent = () => {
       'firstName',
       'secondName',
       'thirdName',
-      // 'phone',
-      // 'whatsapp',
-      // 'viber',
-      // 'telegram',
-      // 'instagram',
-      // 'vk',
     ])
   }, [filteredUsers, searchText])
-
-  // const options = {
-  //   genders: {
-  //     type: 'genders',
-  //     value: ['male', 'famale'],
-  //     name: 'Пол',
-  //     items: directions,
-  //   },
-  // }
 
   return (
     <>
@@ -139,19 +120,6 @@ const UsersContent = () => {
       />
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
       <UsersList users={[...visibleUsers].sort(sortFunc)} />
-      {/* <CardListWrapper>
-        {visibleUsers?.length > 0 ? (
-          [...visibleUsers].sort(sortFunc).map((user) => (
-            <UserCard
-              key={user._id}
-              userId={user._id}
-              // hidden={!visibleUsersIds.includes(user._id)}
-            />
-          ))
-        ) : (
-          <div className="flex justify-center p-2">Нет пользователей</div>
-        )}
-      </CardListWrapper> */}
     </>
   )
 }

@@ -1,19 +1,17 @@
+import { useRecoilValue } from 'recoil'
+import { modalsFuncAtom } from '@state/atoms'
+import loadingAtom from '@state/atoms/loadingAtom'
+import paymentSelector from '@state/selectors/paymentSelector'
+
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
-import DateTimeEvent from '@components/DateTimeEvent'
 import EventNameById from '@components/EventNameById'
 import UserNameById from '@components/UserNameById'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PAY_TYPES } from '@helpers/constants'
-import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import formatDateTime from '@helpers/formatDateTime'
-import { modalsFuncAtom } from '@state/atoms'
-import loadingAtom from '@state/atoms/loadingAtom'
-import paymentSelector from '@state/selectors/paymentSelector'
-import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
 
 const PaymentCard = ({ paymentId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

@@ -1,12 +1,13 @@
-import CardButtons from '@components/CardButtons'
+import { useRecoilValue } from 'recoil'
+import { modalsFuncAtom } from '@state/atoms'
 import serviceSelector from '@state/selectors/serviceSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { CardWrapper } from '@components/CardWrapper'
 import servicesAtom from '@state/atoms/servicesAtom'
+
+import CardButtons from '@components/CardButtons'
+import { CardWrapper } from '@components/CardWrapper'
 import sanitize from '@helpers/sanitize'
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
 import PriceDiscount from '@components/PriceDiscount'
 import Button from '@components/Button'
 

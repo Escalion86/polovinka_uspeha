@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import useErrors from '@helpers/useErrors'
-
 import { useRecoilValue } from 'recoil'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+
 import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import useSnackbar from '@helpers/useSnackbar'
 import { putData } from '@helpers/CRUD'
 

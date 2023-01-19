@@ -1,12 +1,13 @@
-import CardButtons from '@components/CardButtons'
+import { modalsFuncAtom } from '@state/atoms'
+import { useRecoilValue } from 'recoil'
 import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
 import loadingAtom from '@state/atoms/loadingAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { CardWrapper } from '@components/CardWrapper'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
+
+import CardButtons from '@components/CardButtons'
+import { CardWrapper } from '@components/CardWrapper'
 import sanitize from '@helpers/sanitize'
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
 
 const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

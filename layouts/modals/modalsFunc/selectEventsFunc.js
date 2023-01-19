@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import { EventItem } from '@components/ItemCards'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import cn from 'classnames'
 import eventsAtom from '@state/atoms/eventsAtom'
+
+import { EventItem } from '@components/ItemCards'
 import filterItems from '@helpers/filterItems'
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import sortFunctions from '@helpers/sortFunctions'
 import Search from '@components/Search'
 

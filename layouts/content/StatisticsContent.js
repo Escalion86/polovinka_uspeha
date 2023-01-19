@@ -6,7 +6,6 @@ import UsersFilter from '@components/Filter/UsersFilter'
 import { H3, H4, P } from '@components/tags'
 import eventsAtom from '@state/atoms/eventsAtom'
 import eventStatus from '@helpers/eventStatus'
-// import ListWrapper from '@layouts/wrappers/ListWrapper'
 import Divider from '@components/Divider'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
@@ -235,7 +234,6 @@ const StatisticsContent = () => {
                 setFilterEvents((state) => ({ ...state, status: value }))
               }
             />
-            {/* <H4>{usersTitle}</H4> */}
             <PieChart data={eventsByDirectionsData} />
           </div>
 

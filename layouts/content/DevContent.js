@@ -1,13 +1,14 @@
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
 import usersAtom from '@state/atoms/usersAtom'
-import { CardWrapper } from '@components/CardWrapper'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import paymentsAtom from '@state/atoms/paymentsAtom'
+
+import { CardWrapper } from '@components/CardWrapper'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
 const DevCard = ({ title, data }) => {

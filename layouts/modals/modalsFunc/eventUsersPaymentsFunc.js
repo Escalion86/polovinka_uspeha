@@ -1,26 +1,10 @@
 import React, { useEffect, useState } from 'react'
-
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
-// import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-
-// import { SelectUserList } from '@components/SelectItemList'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
-// import eventMansSelector from '@state/selectors/eventMansSelector'
-// import eventWomansSelector from '@state/selectors/eventWomansSelector'
-// import eventUsersInReserveSelector from '@state/selectors/eventUsersInReserveSelector'
-// import eventUsersInBanSelector from '@state/selectors/eventUsersInBanSelector'
 
-// import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
-// import { DEFAULT_EVENT } from '@helpers/constants'
-// import usersAtom from '@state/atoms/usersAtom'
-// import compareArrays from '@helpers/compareArrays'
-// import {
-//   faArrowAltCircleLeft,
-//   faArrowAltCircleRight,
-// } from '@fortawesome/free-regular-svg-icons'
 import {
   faAngleDown,
   faCertificate,
@@ -28,25 +12,16 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
-// import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import eventParticipantsSelector from '@state/selectors/eventParticipantsSelector'
-// import paymentsOfEventFromAndToUsersSelector from '@state/selectors/paymentsOfEventFromAndToUsersSelector'
 import { modalsFuncAtom } from '@state/atoms'
 import { PaymentItem, UserItem } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@components/Button'
 import { motion } from 'framer-motion'
-// import eventAssistantsIdsSelector from '@state/selectors/eventAssistantsIdsSelector'
-// import eventParticipantsIdsSelector from '@state/selectors/eventParticipantsIdsSelector'
-// import paymentsWithNoCouponsOfEventFromAndToUsersSelector from '@state/selectors/paymentsWithNoCouponsOfEventFromAndToUsersSelector'
-// import couponsOfEventFromUsersSelector from '@state/selectors/couponsOfEventFromUsersSelector'
 import sumOfPaymentsOfEventToAssistantsSelector from '@state/selectors/sumOfPaymentsOfEventToAssistantsSelector'
 import sumOfCouponsOfEventFromParticipantsSelector from '@state/selectors/sumOfCouponsOfEventFromParticipantsSelector'
 import sumOfPaymentsOfEventFromParticipantsSelector from '@state/selectors/sumOfPaymentsOfEventFromParticipantsSelector'
-// import allPaymentsToEvent, {
-//   allPaymentsToEventSelector,
-// } from '@state/selectors/allPaymentsToEventSelector'
 import sumOfPaymentsToEventSelector from '@state/selectors/sumOfPaymentsToEventSelector'
 import paymentsOfEventToEventSelector from '@state/selectors/paymentsOfEventToEventSelector'
 

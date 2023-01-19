@@ -1,9 +1,9 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import useErrors from '@helpers/useErrors'
-
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 import EditableTextarea from '@components/EditableTextarea'
 import FormWrapper from '@components/FormWrapper'
@@ -25,8 +25,6 @@ import { SelectDirection, SelectUser } from '@components/SelectItem'
 import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import Slider from '@components/Slider'
 
-// import TimePicker from '@components/TimePicker'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
 import TabContext from '@components/Tabs/TabContext'

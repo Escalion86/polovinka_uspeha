@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import usersAtom from '@state/atoms/usersAtom'
+
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import UserCard from '@layouts/cards/UserCard'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { SelectUserList } from '@components/SelectItemList'
@@ -24,7 +26,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBirthdayCake } from '@fortawesome/free-solid-svg-icons'
 import getDaysFromNow from '@helpers/getDaysFromNow'
 import ContentHeader from '@components/ContentHeader'
-import { useState } from 'react'
 import {
   FormControl,
   InputLabel,

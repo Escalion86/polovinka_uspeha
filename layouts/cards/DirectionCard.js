@@ -1,12 +1,13 @@
-import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
-import TextInRing from '@components/TextInRing'
-import sanitize from '@helpers/sanitize'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import { useRecoilValue } from 'recoil'
+
+import CardButtons from '@components/CardButtons'
+import { CardWrapper } from '@components/CardWrapper'
+import TextInRing from '@components/TextInRing'
+import sanitize from '@helpers/sanitize'
 
 const DirectionCard = ({ directionId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

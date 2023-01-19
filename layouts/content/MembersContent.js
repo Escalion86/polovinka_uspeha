@@ -38,10 +38,6 @@ const MembersContent = () => {
     // },
   })
   const [searchText, setSearchText] = useState('')
-  // const [statusFilter, setStatusFilter] = useState({
-  //   novice: true,
-  //   member: true,
-  // })
 
   const sortKey = Object.keys(sort)[0]
   const sortValue = sort[sortKey]
@@ -79,12 +75,6 @@ const MembersContent = () => {
       'firstName',
       'secondName',
       'thirdName',
-      // 'phone',
-      // 'whatsapp',
-      // 'viber',
-      // 'telegram',
-      // 'instagram',
-      // 'vk',
     ])
   }, [filteredUsers, searchText])
 
