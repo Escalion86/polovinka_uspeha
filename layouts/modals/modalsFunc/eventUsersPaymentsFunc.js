@@ -103,6 +103,7 @@ const UsersPayments = ({
               <UserItem
                 item={user}
                 onClick={() => modalsFunc.user.view(user._id)}
+                noBorder
               />
               <div className="flex flex-col items-center justify-center px-1 text-sm leading-4 border-l border-gray-700 min-w-[70px]">
                 <span
@@ -535,7 +536,8 @@ const eventUsersPaymentsFunc = (eventId) => {
 
   return {
     title: `Финансы мероприятия`,
-    confirmButtonName: 'Применить',
+    // confirmButtonName: 'Применить',
+    closeButtonShow: true,
     Children: EventUsersPaymentsModal,
   }
 }
