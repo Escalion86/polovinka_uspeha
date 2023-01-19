@@ -55,12 +55,17 @@ import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import serviceEditSelector from '@state/selectors/serviceEditSelector'
 import serviceDeleteSelector from '@state/selectors/serviceDeleteSelector'
+// import snackbarAtom from '@state/atoms/snackbarAtom'
+// import itemsFuncSelector from '@state/itemsFuncGeneratorSelector'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
     console.log('props.error', props.error)
 
   const snackbar = useSnackbar()
+  // const setSnackbar = useSetRecoilState(snackbarAtom)
+
+  // const setItemsFunc = useSetRecoilState(itemsFuncSelector)
 
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
 
@@ -152,12 +157,13 @@ const StateLoader = (props) => {
     setQuestionnairesState(props.questionnaires)
     setQuestionnairesUsersState(props.questionnairesUsers)
     setServicesState(props.services)
-
+    // setSnackbar(snackbar)
     setIsSiteLoading(false)
   }, [])
 
   useEffect(() => {
     if (Object.keys(modalsFunc).length > 0 && !itemsFunc)
+      // setItemsFunc()
       setItemsFunc(
         itemsFuncGenerator({
           setLoading: setIsSiteLoading,
