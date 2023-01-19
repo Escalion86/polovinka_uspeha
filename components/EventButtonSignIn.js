@@ -69,6 +69,15 @@ const EventButtonSignIn = ({
         ? 'В резерве'
         : 'Записан'}
     </div>
+  ) : !eventLoggedUserStatus.canSee ? (
+    <div
+      className={cn(
+        'text-base tablet:text-lg font-bold uppercase text-danger',
+        className
+      )}
+    >
+      Не доступно
+    </div>
   ) : eventLoggedUserStatus.isEventInProcess &&
     (noButtonIfAlreadySignIn || !eventLoggedUserStatus.canSignIn) ? (
     <div
@@ -84,14 +93,14 @@ const EventButtonSignIn = ({
       thin={thin}
       stopPropagation
       onClick={() => {
-        if (loggedUser.status === 'ban') {
-          modalsFunc.event.cantSignUp()
-        } else if (
+        if (
           !loggedUser ||
           (eventLoggedUserStatus.canSignIn &&
             !eventLoggedUserStatus.alreadySignIn)
         ) {
           modalsFunc.event.signUp(event._id)
+        } else if (loggedUser.status === 'ban') {
+          modalsFunc.event.cantSignUp()
         } else if (
           !eventLoggedUserStatus.canSignIn &&
           !eventLoggedUserStatus.alreadySignIn &&

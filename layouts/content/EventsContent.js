@@ -35,8 +35,6 @@ import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
 
 const EventsContent = () => {
-  // const classes = useStyles()
-
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
   const loggedUser = useRecoilValue(loggedUserAtom)
