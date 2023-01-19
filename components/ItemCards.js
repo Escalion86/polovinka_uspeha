@@ -123,7 +123,7 @@ export const UserItem = ({
       active={active}
       noPadding
       className="flex"
-      noBorder
+      noBorder={noBorder}
     >
       <div
         className={cn(
