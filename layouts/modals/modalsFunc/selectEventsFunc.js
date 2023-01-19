@@ -37,7 +37,7 @@ const selectEventsFunc = (
 
     const [searchText, setSearchText] = useState('')
 
-    var filteredEvents = filterItems(events, searchText, exceptedIds, null)
+    var filteredEvents = filterItems(events, searchText, exceptedIds, ['title'])
 
     if (exceptedIds) {
       filteredEvents = filteredEvents.filter(

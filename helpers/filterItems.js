@@ -4,7 +4,8 @@ const filterItems = (
   items = [],
   searchText = '',
   exceptedIds = [],
-  rules = {}
+  rules = {},
+  keys = ['title', 'firstName', 'secondName', 'thirdName']
 ) =>
   // (
   {
@@ -31,34 +32,12 @@ const filterItems = (
               (!exceptedIds ||
                 typeof exceptedIds !== 'object' ||
                 !exceptedIds?.includes(item._id)) &&
-              (item.title
-                ?.toString()
-                .toLowerCase()
-                .includes(searchTextLowerCase) ||
-                item.name
+              keys.find((key) =>
+                item[key]
                   ?.toString()
                   .toLowerCase()
-                  .includes(searchTextLowerCase) ||
-                item.firstName
-                  ?.toString()
-                  .toLowerCase()
-                  .includes(searchTextLowerCase) ||
-                item.secondName
-                  ?.toString()
-                  .toLowerCase()
-                  .includes(searchTextLowerCase) ||
-                item.thirdName
-                  ?.toString()
-                  .toLowerCase()
-                  .includes(searchTextLowerCase) ||
-                item.number?.toString().includes(searchTextLowerCase) ||
-                item.phone?.toString().includes(searchTextLowerCase) ||
-                item.whatsapp?.toString().includes(searchTextLowerCase) ||
-                item.viber?.toString().includes(searchTextLowerCase) ||
-                item.telegram?.toString().includes(searchTextLowerCase) ||
-                item.instagram?.toString().includes(searchTextLowerCase) ||
-                item.vk?.toString().includes(searchTextLowerCase) ||
-                item.price?.toString().includes(searchTextLowerCase))
+                  .includes(searchTextLowerCase)
+              )
             )
           } else
             return (

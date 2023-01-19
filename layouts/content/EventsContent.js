@@ -127,7 +127,7 @@ const EventsContent = () => {
 
   const searchedEvents = useMemo(() => {
     if (!searchText) return filteredEvents
-    return filterItems(filteredEvents, searchText)
+    return filterItems(filteredEvents, searchText, [], {}, ['title'])
   }, [filteredEvents, searchText])
 
   const visibleEvents = useMemo(

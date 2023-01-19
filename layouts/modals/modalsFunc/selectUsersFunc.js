@@ -41,7 +41,8 @@ const selectUsersFunc = (
       users,
       searchText,
       exceptedIds,
-      filterRules
+      filterRules,
+      ['firstName', 'secondName', 'thirdName']
     )
 
     // var filteredUsers = filter

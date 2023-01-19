@@ -75,7 +75,17 @@ const MembersContent = () => {
 
   const visibleUsers = useMemo(() => {
     if (!searchText) return filteredUsers
-    return filterItems(filteredUsers, searchText)
+    return filterItems(filteredUsers, searchText, [], {}, [
+      'firstName',
+      'secondName',
+      'thirdName',
+      // 'phone',
+      // 'whatsapp',
+      // 'viber',
+      // 'telegram',
+      // 'instagram',
+      // 'vk',
+    ])
   }, [filteredUsers, searchText])
 
   return (
