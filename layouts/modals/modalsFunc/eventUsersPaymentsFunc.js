@@ -31,11 +31,24 @@ import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelecto
 // import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import eventParticipantsSelector from '@state/selectors/eventParticipantsSelector'
+// import paymentsOfEventFromAndToUsersSelector from '@state/selectors/paymentsOfEventFromAndToUsersSelector'
 import { modalsFuncAtom } from '@state/atoms'
 import { PaymentItem, UserItem } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@components/Button'
 import { motion } from 'framer-motion'
+// import eventAssistantsIdsSelector from '@state/selectors/eventAssistantsIdsSelector'
+// import eventParticipantsIdsSelector from '@state/selectors/eventParticipantsIdsSelector'
+// import paymentsWithNoCouponsOfEventFromAndToUsersSelector from '@state/selectors/paymentsWithNoCouponsOfEventFromAndToUsersSelector'
+// import couponsOfEventFromUsersSelector from '@state/selectors/couponsOfEventFromUsersSelector'
+import sumOfPaymentsOfEventToAssistantsSelector from '@state/selectors/sumOfPaymentsOfEventToAssistantsSelector'
+import sumOfCouponsOfEventFromParticipantsSelector from '@state/selectors/sumOfCouponsOfEventFromParticipantsSelector'
+import sumOfPaymentsOfEventFromParticipantsSelector from '@state/selectors/sumOfPaymentsOfEventFromParticipantsSelector'
+// import allPaymentsToEvent, {
+//   allPaymentsToEventSelector,
+// } from '@state/selectors/allPaymentsToEventSelector'
+import sumOfPaymentsToEventSelector from '@state/selectors/sumOfPaymentsToEventSelector'
+import paymentsOfEventToEventSelector from '@state/selectors/paymentsOfEventToEventSelector'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -245,8 +258,16 @@ const eventUsersPaymentsFunc = (eventId) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     // const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     // const users = useRecoilValue(usersAtom)
-    const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
-
+    // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
+    const paymentsToEvent = useRecoilValue(
+      paymentsOfEventToEventSelector(eventId)
+    )
+    // const eventAssistantsIds = useRecoilValue(
+    //   eventAssistantsIdsSelector(eventId)
+    // )
+    // const eventParticipantsIds = useRecoilValue(
+    //   eventParticipantsIdsSelector(eventId)
+    // )
     // const sortUsersIds = (ids) =>
     //   [...users]
     //     .filter((user) => ids.includes(user._id))
@@ -254,91 +275,68 @@ const eventUsersPaymentsFunc = (eventId) => {
     //     .map((user) => user._id)
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
-    const sortedEventAssistants = [...eventAssistants].sort(sortFunction)
-    const sortedEventAssistantsIds = sortedEventAssistants.map(
-      (user) => user._id
-    )
-
     const eventParticipants = useRecoilValue(eventParticipantsSelector(eventId))
-    const sortedEventParticipants = [...eventParticipants].sort(sortFunction)
-    const sortedEventParticipantsIds = sortedEventParticipants.map(
-      (user) => user._id
+
+    // const allPaymentsOfEventFromAndToUsers = useRecoilValue(paymentsOfEventFromAndToUsersSelector(eventId))
+
+    // const paymentsOfEventFromAndToUsers = useRecoilValue(
+    //   paymentsWithNoCouponsOfEventFromAndToUsersSelector(eventId)
+    // )
+    // const couponsOfEventFromUsers = useRecoilValue(
+    //   couponsOfEventFromUsersSelector(eventId)
+    // )
+
+    const sumOfPaymentsOfEventFromParticipants = useRecoilValue(
+      sumOfPaymentsOfEventFromParticipantsSelector(eventId)
+    )
+    const sumOfCouponsOfEventFromParticipants = useRecoilValue(
+      sumOfCouponsOfEventFromParticipantsSelector(eventId)
+    )
+    const sumOfPaymentsOfEventToAssistants = useRecoilValue(
+      sumOfPaymentsOfEventToAssistantsSelector(eventId)
     )
 
-    const allPaymentsOfEventFromParticipants = paymentsOfEvent.filter(
-      (payment) =>
-        payment.payDirection === 'toUser' || payment.payDirection === 'fromUser'
+    // const sumOfPaymentsOfEventFromParticipants =
+    //   paymentsOfEventFromAndToUsers.reduce((p, payment) => {
+    //     const isUserParticipant = eventParticipantsIds.includes(payment.userId)
+    //     if (isUserParticipant)
+    //       return (
+    //         p +
+    //         (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
+    //       )
+
+    //     return p
+    //   }, 0) / 100
+
+    // const sumOfCouponsOfEventFromParticipants =
+    //   couponsOfEventFromUsers.reduce((p, payment) => {
+    //     const isUserParticipant = eventParticipantsIds.includes(payment.userId)
+    //     if (isUserParticipant)
+    //       return (
+    //         p +
+    //         (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
+    //       )
+
+    //     return p
+    //   }, 0) / 100
+
+    // const sumOfPaymentsOfEventToAssistants =
+    //   paymentsOfEventFromAndToUsers.reduce((p, payment) => {
+    //     const isUserAssistant = eventAssistantsIds.includes(payment.userId)
+    //     if (isUserAssistant)
+    //       return (
+    //         p +
+    //         (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
+    //       )
+
+    //     return p
+    //   }, 0) / 100
+
+    // const allPaymentsToEvent = useRecoilValue(allPaymentsToEventSelector(eventId))
+
+    const sumOfPaymentsToEvent = useRecoilValue(
+      sumOfPaymentsToEventSelector(eventId)
     )
-
-    const paymentsOfEventFromParticipants =
-      allPaymentsOfEventFromParticipants.filter(
-        (payment) => payment.payType !== 'coupon'
-      )
-    const couponsOfEventFromParticipants =
-      allPaymentsOfEventFromParticipants.filter(
-        (payment) => payment.payType === 'coupon'
-      )
-
-    const sumOfPaymentsOfEventFromParticipants =
-      paymentsOfEventFromParticipants.reduce((p, payment) => {
-        // if (
-        //   (payment.payDirection !== 'toUser' &&
-        //     payment.payDirection !== 'fromUser') ||
-        //   payment.payType === 'coupon'
-        // )
-        //   return p
-        const isUserParticipant = sortedEventParticipantsIds.includes(
-          payment.userId
-        )
-        if (isUserParticipant)
-          return (
-            p +
-            (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
-          )
-
-        return p
-      }, 0) / 100
-
-    const sumOfCouponsOfEventFromParticipants =
-      couponsOfEventFromParticipants.reduce((p, payment) => {
-        const isUserParticipant = sortedEventParticipantsIds.includes(
-          payment.userId
-        )
-        if (isUserParticipant)
-          return (
-            p +
-            (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
-          )
-
-        return p
-      }, 0) / 100
-
-    const sumOfPaymentsOfEventToAssistants =
-      paymentsOfEvent.reduce((p, payment) => {
-        if (
-          (payment.payDirection !== 'toUser' &&
-            payment.payDirection !== 'fromUser') ||
-          payment.payType === 'coupon'
-        )
-          return p
-        const isUserAssistant = sortedEventAssistantsIds.includes(
-          payment.userId
-        )
-        if (isUserAssistant)
-          return (
-            p +
-            (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
-          )
-
-        return p
-      }, 0) / 100
-
-    const paymentsToEvent = paymentsOfEvent.filter(
-      (payment) => payment.payDirection === 'toEvent'
-    )
-
-    const sumOfPaymentsToEvent =
-      paymentsToEvent.reduce((p, payment) => p - (payment.sum ?? 0), 0) / 100
 
     const membersOfEventCount = eventParticipants.filter(
       (user) => user.status === 'member'
@@ -382,125 +380,6 @@ const eventUsersPaymentsFunc = (eventId) => {
             maxPaymentPerParticipant) /
             100
         : null
-    // const eventReservedParticipants = useRecoilValue(
-    //   eventUsersInReserveSelector(eventId)
-    // )
-    // const sortedEventReservedParticipantsIds = [...eventReservedParticipants]
-    //   // .sort(sortFunction)
-    //   .map((user) => user._id)
-
-    // const eventBannedParticipants = useRecoilValue(
-    //   eventUsersInBanSelector(eventId)
-    // )
-    // const sortedEventBannedParticipantsIds = [...eventBannedParticipants]
-    //   .sort(sortFunction)
-    //   .map((user) => user._id)
-
-    // const [assistantsIds, setAssistantsIds] = useState(sortedEventAssistantsIds)
-    // // const [participantsIds, setParticipantsIds] = useState(sortedEventParticipantsIds)
-    // const [reservedParticipantsIds, setReservedParticipantsIds] = useState(
-    //   sortedEventReservedParticipantsIds
-    // )
-    // const [bannedParticipantsIds, setBannedParticipantsIds] = useState(
-    //   sortedEventBannedParticipantsIds
-    // )
-
-    // const onClickConfirm = async () => {
-    //   closeModal()
-    // const filteredAssistantsIds = assistantsIds.filter((user) => user !== '?')
-    // const filteredParticipantsIds = [
-    //   ...mansIds.filter((user) => user !== '?'),
-    //   ...womansIds.filter((user) => user !== '?'),
-    // ]
-    // const filteredReservedParticipantsIds = reservedParticipantsIds.filter(
-    //   (user) => user !== '?'
-    // )
-    // const filteredBannedParticipantsIds = bannedParticipantsIds.filter(
-    //   (user) => user !== '?'
-    // )
-    //   const usersStatuses = [
-    //     ...filteredAssistantsIds.map((userId) => {
-    //       return { userId, status: 'assistant' }
-    //     }),
-    //     ...filteredParticipantsIds.map((userId) => {
-    //       return { userId, status: 'participant' }
-    //     }),
-    //     ...filteredReservedParticipantsIds.map((userId) => {
-    //       return { userId, status: 'reserve' }
-    //     }),
-    //     ...filteredBannedParticipantsIds.map((userId) => {
-    //       return { userId, status: 'ban' }
-    //     }),
-    //   ]
-    //   setEventUsersId(eventId, usersStatuses)
-    // }
-
-    // useEffect(() => {
-    //   const isFormChanged =
-    //     !compareArrays(assistantsIds, sortedEventAssistantsIds) ||
-    //     !compareArrays(usersIds, sortedEventUsersIds) ||
-    //     !compareArrays(
-    //       reservedParticipantsIds,
-    //       sortedEventReservedParticipantsIds
-    //     ) ||
-    //     !compareArrays(bannedParticipantsIds, sortedEventBannedParticipantsIds)
-
-    //   setOnShowOnCloseConfirmDialog(isFormChanged)
-    //   setDisableConfirm(!isFormChanged)
-    //   setOnConfirmFunc(onClickConfirm)
-    //   if (!isLoggedUserAdmin) setOnlyCloseButtonShow(true)
-    // }, [
-    //   usersIds,
-    //   assistantsIds,
-    //   reservedParticipantsIds,
-    //   bannedParticipantsIds,
-    // ])
-
-    // const removeIdsFromReserve = (usersIds) => {
-    //   const tempReservedParticipantsIds = []
-    //   for (let i = 0; i < reservedParticipantsIds.length; i++) {
-    //     if (!usersIds.includes(reservedParticipantsIds[i]))
-    //       tempReservedParticipantsIds.push(reservedParticipantsIds[i])
-    //   }
-    //   setReservedParticipantsIds(tempReservedParticipantsIds)
-    // }
-    // const removeIdsFromParticipants = (usersIds) => {
-    //   const tempMansIds = []
-    //   for (let i = 0; i < mansIds.length; i++) {
-    //     if (!usersIds.includes(mansIds[i])) tempMansIds.push(mansIds[i])
-    //   }
-
-    //   const tempWomansIds = []
-    //   for (let i = 0; i < womansIds.length; i++) {
-    //     if (!usersIds.includes(womansIds[i])) tempWomansIds.push(womansIds[i])
-    //   }
-    //   setMansIds(tempMansIds)
-    //   setWomansIds(tempWomansIds)
-    // }
-    // const removeIdsFromAllByBan = (bannedUsersIds) => {
-    //   var tempIds = []
-    //   for (let i = 0; i < mansIds.length; i++) {
-    //     if (!bannedUsersIds.includes(mansIds[i])) tempIds.push(mansIds[i])
-    //   }
-    //   setMansIds(tempIds)
-    //   tempIds = []
-    //   for (let i = 0; i < womansIds.length; i++) {
-    //     if (!bannedUsersIds.includes(womansIds[i])) tempIds.push(womansIds[i])
-    //   }
-    //   setWomansIds(tempIds)
-    //   tempIds = []
-    //   for (let i = 0; i < assistantsIds.length; i++) {
-    //     if (!bannedUsersIds.includes(assistantsIds[i]))
-    //       tempIds.push(assistantsIds[i])
-    //   }
-    //   setAssistantsIds(tempIds)
-    //   tempIds = []
-    //   for (let i = 0; i < reservedParticipantsIds.length; i++) {
-    //     if (!bannedUsersIds.includes(reservedParticipantsIds[i]))
-    //       tempIds.push(reservedParticipantsIds[i])
-    //   }
-    //   setReservedParticipantsIds(tempIds)
-    // }
 
     const TotalFromParticipants = () => (
       <div className="flex flex-wrap gap-x-1">
@@ -571,11 +450,11 @@ const eventUsersPaymentsFunc = (eventId) => {
           <TotalFromParticipants />
           <UsersPayments
             event={event}
-            users={sortedEventParticipants}
+            users={[...eventParticipants].sort(sortFunction)}
             defaultPayDirection="fromUser"
           />
         </TabPanel>
-        {sortedEventAssistants.length > 0 && (
+        {eventAssistants.length > 0 && (
           <TabPanel
             tabName="Ведущие"
             tabAddToLabel={`${sumOfPaymentsOfEventToAssistants} ₽`}
@@ -583,7 +462,7 @@ const eventUsersPaymentsFunc = (eventId) => {
             <TotalToAssistants />
             <UsersPayments
               event={event}
-              users={sortedEventAssistants}
+              users={[...eventAssistants].sort(sortFunction)}
               defaultPayDirection="toUser"
               noEventPriceForUser
             />
@@ -643,7 +522,7 @@ const eventUsersPaymentsFunc = (eventId) => {
         </TabPanel>
         <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
           <TotalFromParticipants />
-          {sortedEventAssistants.length > 0 && <TotalToAssistants />}
+          {eventAssistants.length > 0 && <TotalToAssistants />}
           <TotalToEvent />
           <div className="flex flex-wrap gap-x-1">
             <span>Текущая прибыль:</span>

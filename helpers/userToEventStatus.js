@@ -44,9 +44,32 @@ const userToEventStatus = (event, user, eventUsersFull) => {
 
   const canSignOut = alreadySignIn && !isEventExpired
 
-  const canSee =
-    alreadySignIn ||
-    (user.status ? event.usersStatusAccess[user.status] : false)
+  const userAge = new Number(birthDateToAge(user.birthday, false, false))
+
+  const isUserTooOld =
+    userAge &&
+    ((user.gender === 'male' &&
+      typeof event.maxMansAge === 'number' &&
+      event.maxMansAge < userAge) ||
+      (user.gender === 'famale' &&
+        typeof event.maxWomansAge === 'number' &&
+        event.maxWomansAge < userAge))
+
+  const isUserTooYoung =
+    userAge &&
+    ((user.gender === 'male' &&
+      typeof event.maxMansAge === 'number' &&
+      event.minMansAge > userAge) ||
+      (user.gender === 'famale' &&
+        typeof event.maxWomansAge === 'number' &&
+        event.minWomansAge > userAge))
+
+  const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
+  const isUserStatusCorrect = user.status
+    ? event.usersStatusAccess[user.status]
+    : false
+
+  const canSee = alreadySignIn || (isAgeOfUserCorrect && isUserStatusCorrect)
 
   // if (user.status === 'ban' || userEvent?.status === 'ban')
   //   return {
@@ -60,6 +83,19 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   //     userEventStatus: userEvent?.status,
   //     status: 'user status is banned',
   //   }
+
+  if (!isUserQuestionnaireFilled(user))
+    return {
+      canSee,
+      alreadySignIn,
+      canSignIn: false,
+      canSignInReserve: false,
+      canSignOut,
+      isEventExpired,
+      isEventInProcess,
+      userEventStatus: userEvent?.status,
+      status: 'user questionnaire not filled',
+    }
 
   if (isEventCanceled(event))
     return {
@@ -87,19 +123,6 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'event expired',
     }
 
-  if (!isUserQuestionnaireFilled(user))
-    return {
-      canSee,
-      alreadySignIn,
-      canSignIn: false,
-      canSignInReserve: false,
-      canSignOut,
-      isEventExpired,
-      isEventInProcess,
-      userEventStatus: userEvent?.status,
-      status: 'user questionnaire not filled',
-    }
-
   const eventMansCount = eventUsersFull.filter(
     (item) => item.user?.gender == 'male' && item.status === 'participant'
   ).length
@@ -109,7 +132,9 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   const eventParticipantsCount = eventWomansCount + eventMansCount
 
   const canSignInReserve =
-    event.isReserveActive ?? DEFAULT_EVENT.isReserveActive
+    (event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) &&
+    isAgeOfUserCorrect &&
+    isUserStatusCorrect
 
   if (
     typeof event.maxParticipants === 'number' &&
@@ -161,51 +186,10 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'event full of womans',
     }
 
-  const userAge = new Number(birthDateToAge(user.birthday, false, false))
-
-  if (
-    (user.gender === 'male' &&
-      typeof event.maxMansAge === 'number' &&
-      event.maxMansAge < userAge) ||
-    (user.gender === 'famale' &&
-      typeof event.maxWomansAge === 'number' &&
-      event.maxWomansAge < userAge)
-  )
-    return {
-      canSee,
-      alreadySignIn,
-      canSignIn: false,
-      canSignInReserve,
-      canSignOut,
-      isEventExpired,
-      isEventInProcess,
-      userEventStatus: userEvent?.status,
-      status: 'user too old',
-    }
-  if (
-    (user.gender === 'male' &&
-      typeof event.maxMansAge === 'number' &&
-      event.minMansAge > userAge) ||
-    (user.gender === 'famale' &&
-      typeof event.maxWomansAge === 'number' &&
-      event.minWomansAge > userAge)
-  )
-    return {
-      canSee,
-      alreadySignIn,
-      canSignIn: false,
-      canSignInReserve,
-      canSignOut,
-      isEventExpired,
-      isEventInProcess,
-      userEventStatus: userEvent?.status,
-      status: 'user too young',
-    }
-
   return {
     canSee,
     alreadySignIn,
-    canSignIn: true,
+    canSignIn: isAgeOfUserCorrect && isUserStatusCorrect,
     canSignInReserve,
     canSignOut,
     isEventExpired,
