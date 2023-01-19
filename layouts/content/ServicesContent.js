@@ -1,6 +1,5 @@
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-// import Fab from '@components/Fab'
 import servicesAtom from '@state/atoms/servicesAtom'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import ContentHeader from '@components/ContentHeader'
@@ -13,8 +12,6 @@ const ServicesContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const services = useRecoilValue(servicesAtom)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  // const sortedAdditionalBlocks = additionalBlocks
-  // .sort((a, b) => (a.index < b.index ? -1 : 1))
 
   return (
     <>
@@ -38,7 +35,6 @@ const ServicesContent = () => {
         ) : (
           <div className="flex justify-center p-2">Нет услуг</div>
         )}
-        {/* <Fab onClick={() => modalsFunc.additionalBlock.edit()} show /> */}
       </CardListWrapper>
     </>
   )

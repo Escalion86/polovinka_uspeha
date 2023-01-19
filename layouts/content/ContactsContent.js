@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react'
+import { useRecoilState } from 'recoil'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+
 import Button from '@components/Button'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -5,10 +9,6 @@ import Input from '@components/Input'
 import PhoneInput from '@components/PhoneInput'
 import { postData, putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const ContactsContent = (props) => {

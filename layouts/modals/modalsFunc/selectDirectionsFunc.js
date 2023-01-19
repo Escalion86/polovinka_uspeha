@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import { DirectionItem, UserItem } from '@components/ItemCards'
 import directionsAtom from '@state/atoms/directionsAtom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import cn from 'classnames'
+
+import { DirectionItem } from '@components/ItemCards'
 import filterItems from '@helpers/filterItems'
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import Search from '@components/Search'
 
 const selectDirectionsFunc = (
@@ -36,12 +34,9 @@ const selectDirectionsFunc = (
 
     const [searchText, setSearchText] = useState('')
 
-    var filteredDirections = filterItems(
-      directions,
-      searchText,
-      exceptedIds,
-      null
-    )
+    var filteredDirections = filterItems(directions, searchText, exceptedIds, [
+      'title',
+    ])
 
     if (exceptedIds) {
       filteredDirections = filteredDirections.filter(

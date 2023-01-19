@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import useErrors from '@helpers/useErrors'
-
 import { useRecoilValue } from 'recoil'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import reviewSelector from '@state/selectors/reviewSelector'
@@ -11,7 +10,6 @@ import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
 import { DEFAULT_REVIEW } from '@helpers/constants'
-// import EditableTextarea from '@components/EditableTextarea'
 
 const reviewFunc = (reviewId, clone = false) => {
   const ReviewModal = ({

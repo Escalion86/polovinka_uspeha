@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import usersAtom from '@state/atoms/usersAtom'
+
 import { UserItem } from '@components/ItemCards'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
-import cn from 'classnames'
 import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
 
@@ -35,13 +33,13 @@ const selectUsersFunc = (
     const [showErrorMax, setShowErrorMax] = useState(false)
 
     const [searchText, setSearchText] = useState('')
-    // const inputRef = useRef()
 
     const filteredUsers = filterItems(
       users,
       searchText,
       exceptedIds,
-      filterRules
+      filterRules,
+      ['firstName', 'secondName', 'thirdName']
     )
 
     // var filteredUsers = filter

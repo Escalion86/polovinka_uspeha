@@ -1,22 +1,18 @@
 import Button from '@components/Button'
-// import CheckBox from '@components/CheckBox'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-// import InputImage from '@components/InputImage'
 import InputImages from '@components/InputImages'
 import PhoneInput from '@components/PhoneInput'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
-// import OrientationPicker from '@components/ValuePicker/OrientationPicker'
 import { putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-// import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
@@ -33,13 +29,7 @@ import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import useSnackbar from '@helpers/useSnackbar'
 import ValueItem from '@components/ValuePicker/ValueItem'
-import {
-  faBan,
-  faCheck,
-  faStop,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons'
-import cn from 'classnames'
+import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {

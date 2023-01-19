@@ -38,10 +38,6 @@ const MembersContent = () => {
     // },
   })
   const [searchText, setSearchText] = useState('')
-  // const [statusFilter, setStatusFilter] = useState({
-  //   novice: true,
-  //   member: true,
-  // })
 
   const sortKey = Object.keys(sort)[0]
   const sortValue = sort[sortKey]
@@ -75,7 +71,11 @@ const MembersContent = () => {
 
   const visibleUsers = useMemo(() => {
     if (!searchText) return filteredUsers
-    return filterItems(filteredUsers, searchText)
+    return filterItems(filteredUsers, searchText, [], {}, [
+      'firstName',
+      'secondName',
+      'thirdName',
+    ])
   }, [filteredUsers, searchText])
 
   return (

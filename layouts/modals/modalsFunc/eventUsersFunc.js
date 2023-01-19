@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -21,10 +20,6 @@ import {
   faArrowAltCircleLeft,
   faArrowAltCircleRight,
 } from '@fortawesome/free-regular-svg-icons'
-import { faMoneyBill } from '@fortawesome/free-solid-svg-icons'
-import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
-import userSelector from '@state/selectors/userSelector'
-import cn from 'classnames'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 

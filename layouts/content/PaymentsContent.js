@@ -1,10 +1,7 @@
 import ContentHeader from '@components/ContentHeader'
 import PaymentsFilter from '@components/Filter/PaymentsFilter'
-// import Fab from '@components/Fab'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import { getNounPayments } from '@helpers/getNoun'
-import PaymentCard from '@layouts/cards/PaymentCard'
-import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 
 import { modalsFuncAtom } from '@state/atoms'
 import paymentsAtom from '@state/atoms/paymentsAtom'
@@ -81,19 +78,6 @@ const PaymentsContent = () => {
         </div>
       </ContentHeader>
       <PaymentsList payments={[...visiblePayments].sort(sortFunc)} />
-      {/* <CardListWrapper>
-        {visiblePayments?.length > 0 ? (
-          [...visiblePayments].sort(sortFunc).map((payment) => (
-            <PaymentCard
-              key={payment._id}
-              paymentId={payment._id}
-              // hidden={!visiblePaymentsIds.includes(payment._id)}
-            />
-          ))
-        ) : (
-          <div className="flex justify-center p-2">Нет транзакций</div>
-        )}
-      </CardListWrapper> */}
     </>
   )
 }
