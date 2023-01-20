@@ -24,6 +24,10 @@ import sumOfCouponsOfEventFromParticipantsSelector from '@state/selectors/sumOfC
 import sumOfPaymentsOfEventFromParticipantsSelector from '@state/selectors/sumOfPaymentsOfEventFromParticipantsSelector'
 import sumOfPaymentsToEventSelector from '@state/selectors/sumOfPaymentsToEventSelector'
 import paymentsOfEventToEventSelector from '@state/selectors/paymentsOfEventToEventSelector'
+import sumOfExpectingPaymentsOfEventFromParticipantsSelector from '@state/selectors/sumOfExpectingPaymentsOfEventFromParticipantsSelector'
+import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
+import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
+import isEventClosedFunc from '@helpers/isEventClosed'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -32,6 +36,7 @@ const UsersPayments = ({
   users,
   defaultPayDirection,
   noEventPriceForUser,
+  readOnly = false,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
@@ -138,22 +143,24 @@ const UsersPayments = ({
                   </div>
                 )}
               </div>
-              <div
-                className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-general"
-                onClick={() => {
-                  modalsFunc.payment.add(null, {
-                    payDirection: defaultPayDirection,
-                    sum: noEventPriceForUser ? 0 : sumToPay * 100,
-                    userId: user._id,
-                    eventId: event._id,
-                  })
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faPlus}
-                  className={cn('w-5 h-5 duration-300 group-hover:scale-125')}
-                />
-              </div>
+              {!readOnly && (
+                <div
+                  className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-general"
+                  onClick={() => {
+                    modalsFunc.payment.add(null, {
+                      payDirection: defaultPayDirection,
+                      sum: noEventPriceForUser ? 0 : sumToPay * 100,
+                      userId: user._id,
+                      eventId: event._id,
+                    })
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    className={cn('w-5 h-5 duration-300 group-hover:scale-125')}
+                  />
+                </div>
+              )}
               <div
                 className={cn(
                   'flex items-center justify-center w-8 border-l border-gray-700',
@@ -190,23 +197,29 @@ const UsersPayments = ({
                         item={payment}
                         noBorder
                         checkable={false}
-                        onClick={() => {
-                          modalsFunc.payment.edit(payment._id)
-                        }}
+                        onClick={
+                          !readOnly
+                            ? () => {
+                                modalsFunc.payment.edit(payment._id)
+                              }
+                            : null
+                        }
                       />
-                      <div
-                        className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
-                        onClick={() => {
-                          modalsFunc.payment.delete(payment._id)
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faTrash}
-                          className={cn(
-                            'w-4 h-4 duration-300 group-hover:scale-125'
-                          )}
-                        />
-                      </div>
+                      {!readOnly && (
+                        <div
+                          className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
+                          onClick={() => {
+                            modalsFunc.payment.delete(payment._id)
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            className={cn(
+                              'w-4 h-4 duration-300 group-hover:scale-125'
+                            )}
+                          />
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -231,6 +244,7 @@ const eventUsersPaymentsFunc = (eventId) => {
   }) => {
     // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
+    const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     // const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     // const users = useRecoilValue(usersAtom)
@@ -314,26 +328,25 @@ const eventUsersPaymentsFunc = (eventId) => {
       sumOfPaymentsToEventSelector(eventId)
     )
 
-    const membersOfEventCount = eventParticipants.filter(
-      (user) => user.status === 'member'
-    ).length
-    const noviceOfEventCount = eventParticipants.length - membersOfEventCount
-    const paymentsToExpectFromParticipants =
-      (event.price * eventParticipants.length -
-        membersOfEventCount * (event.usersStatusDiscount?.member ?? 0) -
-        noviceOfEventCount * (event.usersStatusDiscount?.novice ?? 0)) /
-        100 -
-      sumOfCouponsOfEventFromParticipants
+    // const membersOfEventCount = eventParticipants.filter(
+    //   (user) => user.status === 'member'
+    // ).length
+    // const noviceOfEventCount = eventParticipants.length - membersOfEventCount
+    const paymentsToExpectFromParticipants = useRecoilValue(
+      sumOfExpectingPaymentsOfEventFromParticipantsSelector(eventId)
+    )
+    // const paymentsToExpectFromParticipants =
+    //   (event.price * eventParticipants.length -
+    //     membersOfEventCount * (event.usersStatusDiscount?.member ?? 0) -
+    //     noviceOfEventCount * (event.usersStatusDiscount?.novice ?? 0)) /
+    //     100 -
+    //   sumOfCouponsOfEventFromParticipants
 
-    const totalIncome =
-      sumOfPaymentsOfEventFromParticipants +
-      sumOfPaymentsOfEventToAssistants +
-      sumOfPaymentsToEvent
+    const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
 
-    const expectedIncome =
-      paymentsToExpectFromParticipants +
-      sumOfPaymentsOfEventToAssistants +
-      sumOfPaymentsToEvent
+    const expectedIncome = useRecoilValue(
+      expectedIncomeOfEventSelector(eventId)
+    )
 
     const maxPartisipants =
       event.maxMans !== null && event.maxWomans !== null
@@ -428,6 +441,7 @@ const eventUsersPaymentsFunc = (eventId) => {
             event={event}
             users={[...eventParticipants].sort(sortFunction)}
             defaultPayDirection="fromUser"
+            readOnly={isEventClosed}
           />
         </TabPanel>
         {eventAssistants.length > 0 && (
@@ -441,6 +455,7 @@ const eventUsersPaymentsFunc = (eventId) => {
               users={[...eventAssistants].sort(sortFunction)}
               defaultPayDirection="toUser"
               noEventPriceForUser
+              readOnly={isEventClosed}
             />
           </TabPanel>
         )}
@@ -451,16 +466,18 @@ const eventUsersPaymentsFunc = (eventId) => {
           <div className="flex flex-wrap items-center justify-between">
             <TotalToEvent />
             <div className="flex justify-end flex-1">
-              <Button
-                name="Добавить затраты"
-                onClick={() =>
-                  modalsFunc.payment.add(null, {
-                    payDirection: 'toEvent',
-                    eventId: event._id,
-                  })
-                }
-                thin
-              />
+              {!isEventClosed && (
+                <Button
+                  name="Добавить затраты"
+                  onClick={() =>
+                    modalsFunc.payment.add(null, {
+                      payDirection: 'toEvent',
+                      eventId: event._id,
+                    })
+                  }
+                  thin
+                />
+              )}
             </div>
           </div>
           {paymentsToEvent.length > 0 && (
@@ -474,15 +491,23 @@ const eventUsersPaymentsFunc = (eventId) => {
                     item={payment}
                     noBorder
                     checkable={false}
-                    onClick={() => {
-                      modalsFunc.payment.edit(payment._id)
-                    }}
+                    onClick={
+                      !isEventClosed
+                        ? () => {
+                            modalsFunc.payment.edit(payment._id)
+                          }
+                        : null
+                    }
                   />
                   <div
                     className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
-                    onClick={() => {
-                      modalsFunc.payment.delete(payment._id)
-                    }}
+                    onClick={
+                      !isEventClosed
+                        ? () => {
+                            modalsFunc.payment.delete(payment._id)
+                          }
+                        : null
+                    }
                   >
                     <FontAwesomeIcon
                       icon={faTrash}

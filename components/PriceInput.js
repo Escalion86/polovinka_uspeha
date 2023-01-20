@@ -12,6 +12,7 @@ const PriceInput = ({
   name = 'price',
   labelContentWidth,
   labelPos,
+  disabled,
 }) => {
   const rubles = value ? Math.floor(value / 100) : 0
   const cops = value ? Math.floor(value % 100) : 0
@@ -62,6 +63,7 @@ const PriceInput = ({
           // readOnly={readOnly}
           maxLength={6}
           min={0}
+          disabled={disabled}
         />
         <Input
           step="10"
@@ -81,6 +83,7 @@ const PriceInput = ({
           // readOnly={readOnly}
           maxLength={2}
           min={0}
+          disabled={disabled}
         />
       </div>
     </InputWrapper>

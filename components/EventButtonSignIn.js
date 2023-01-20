@@ -10,6 +10,19 @@ import { useRouter } from 'next/router'
 
 import Button from '@components/Button'
 import cn from 'classnames'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import EventProfit from './EventProfit'
+
+const TextStatus = ({ children, className }) => (
+  <div
+    className={cn(
+      'flex justify-center items-center text-base tablet:text-lg font-bold uppercase px-1',
+      className
+    )}
+  >
+    {children}
+  </div>
+)
 
 const EventButtonSignIn = ({
   eventId,
@@ -20,6 +33,7 @@ const EventButtonSignIn = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
   const loggedUser = useRecoilValue(loggedUserAtom)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   const router = useRouter()
 
@@ -29,65 +43,39 @@ const EventButtonSignIn = ({
 
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
-  return event.status === 'canceled' ? (
-    <div
-      className={cn(
-        'text-base tablet:text-lg font-bold uppercase text-danger',
-        className
-      )}
-    >
-      Отменено
-    </div>
+  return isLoggedUserAdmin && event.status === 'closed' ? (
+    <EventProfit eventId={event._id} className="rounded-tl-lg" />
+  ) : // <div
+  //   className={cn(
+  //     'flex justify-center items-center text-base tablet:text-lg font-bold uppercase text-white bg-success px-3',
+  //     className
+  //   )}
+  // >
+  //   Закрыто
+  // </div>
+  event.status === 'canceled' ? (
+    <TextStatus className={cn('text-danger', className)}>Отменено</TextStatus>
   ) : eventLoggedUserStatus.isEventExpired ? (
-    <div
-      className={cn(
-        'text-base tablet:text-lg font-bold uppercase text-success',
-        className
-      )}
-    >
-      Завершено
-    </div>
+    <TextStatus className={cn('text-success', className)}>Завершено</TextStatus>
   ) : eventLoggedUserStatus.userEventStatus === 'assistant' ? (
-    <div
-      className={cn(
-        'text-base tablet:text-lg font-bold uppercase text-general',
-        className
-      )}
-    >
-      Ведущий
-    </div>
+    <TextStatus className={cn('text-general', className)}>Ведущий</TextStatus>
   ) : (noButtonIfAlreadySignIn && eventLoggedUserStatus.canSignOut) ||
     (eventLoggedUserStatus.isEventInProcess &&
       eventLoggedUserStatus.canSignOut) ? (
-    <div
-      className={cn(
-        'text-base tablet:text-lg font-bold uppercase text-blue-600',
-        className
-      )}
-    >
+    <TextStatus className={cn('text-blue-600', className)}>
       {eventLoggedUserStatus.userEventStatus === 'reserve'
         ? 'В резерве'
         : 'Записан'}
-    </div>
+    </TextStatus>
   ) : !eventLoggedUserStatus.canSee ? (
-    <div
-      className={cn(
-        'text-base tablet:text-lg font-bold uppercase text-danger',
-        className
-      )}
-    >
+    <TextStatus className={cn('text-danger', className)}>
       Не доступно
-    </div>
+    </TextStatus>
   ) : eventLoggedUserStatus.isEventInProcess &&
     (noButtonIfAlreadySignIn || !eventLoggedUserStatus.canSignIn) ? (
-    <div
-      className={cn(
-        'text-base tablet:text-lg font-bold uppercase text-general',
-        className
-      )}
-    >
+    <TextStatus className={cn('text-general', className)}>
       В процессе
-    </div>
+    </TextStatus>
   ) : (
     <Button
       thin={thin}
@@ -125,7 +113,7 @@ const EventButtonSignIn = ({
       // )}
       classBgColor={eventLoggedUserStatus.canSignOut ? 'bg-danger' : undefined}
       // classHoverBgColor={eventUser ? 'hover:bg-danger' : undefined}
-      className={cn('border w-auto', className)}
+      className={cn('border w-auto self-center', className)}
       name={
         eventLoggedUserStatus.canSignOut
           ? `Отменить запись${

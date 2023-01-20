@@ -49,6 +49,7 @@ const DateTimePicker = ({
         // pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
         min="2021-01-01T00:00"
         max="2030-12-31T00:00"
+        disabled={disabled}
       />
     </InputWrapper>
   )

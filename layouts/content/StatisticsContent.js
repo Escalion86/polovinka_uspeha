@@ -169,8 +169,8 @@ const StatisticsContent = () => {
     },
   ]
 
-  const finishedEventsCount = events.filter(
-    (event) => eventStatus(event) === 'finished'
+  const finishedEventsCount = events.filter((event) =>
+    ['finished', 'closed'].includes(eventStatus(event))
   ).length
   const activeEventsCount = events.filter((event) =>
     ['inProgress', 'active'].includes(eventStatus(event))

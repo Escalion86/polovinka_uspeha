@@ -15,6 +15,7 @@ const ValuePicker = ({
   labelClassName,
   className,
   defaultValue,
+  readOnly,
 }) => {
   const [state, setState] = useState(defaultValue)
   return (
@@ -58,23 +59,27 @@ const ValuePicker = ({
             name={item.name}
             icon={item.icon}
             color={item.color}
-            onClick={() => {
-              if (defaultValue !== undefined) {
-                if (item.value === state) {
-                  if (disselectOnSameClick) {
-                    onChange(null)
-                    setState(null)
+            onClick={
+              !readOnly
+                ? () => {
+                    if (defaultValue !== undefined) {
+                      if (item.value === state) {
+                        if (disselectOnSameClick) {
+                          onChange(null)
+                          setState(null)
+                        }
+                      } else {
+                        onChange(item.value)
+                        setState(item.value)
+                      }
+                    } else {
+                      item.value === value
+                        ? disselectOnSameClick && onChange(null)
+                        : onChange(item.value)
+                    }
                   }
-                } else {
-                  onChange(item.value)
-                  setState(item.value)
-                }
-              } else {
-                item.value === value
-                  ? disselectOnSameClick && onChange(null)
-                  : onChange(item.value)
-              }
-            }}
+                : null
+            }
           />
         ))}
       </div>

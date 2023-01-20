@@ -13,12 +13,13 @@ const ValueItem = ({
 }) => (
   <button
     className={cn(
-      `h-[30px] flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded cursor-pointer gap-x-2 flex-nowrap border-${color} group`,
+      `h-[30px] flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded gap-x-2 flex-nowrap border-${color} group`,
       active ? `text-white bg-${color}` : `text-${color} bg-white`,
+      onClick ? 'cursor-pointer' : 'cursor-not-allowed',
       hoverable ? `hover:text-white hover:bg-${color}` : '',
       className
     )}
-    onClick={() => onClick && onClick(value)}
+    onClick={onClick ? () => onClick(value) : null}
   >
     {icon && <FontAwesomeIcon icon={icon} className="h-5" />}
     <div

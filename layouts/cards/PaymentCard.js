@@ -9,14 +9,23 @@ import EventNameById from '@components/EventNameById'
 import UserNameById from '@components/UserNameById'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PAY_TYPES } from '@helpers/constants'
+import { EVENT_STATUSES_WITH_TIME, PAY_TYPES } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import cn from 'classnames'
+import isEventClosedFunc from '@helpers/isEventClosed'
+import eventStatusFunc from '@helpers/eventStatus'
+import eventSelector from '@state/selectors/eventSelector'
 
 const PaymentCard = ({ paymentId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payment = useRecoilValue(paymentSelector(paymentId))
   const loading = useRecoilValue(loadingAtom('payment' + paymentId))
+  const event = useRecoilValue(eventSelector(payment.eventId))
+  const eventStatus = eventStatusFunc(event)
+
+  const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
+    (payTypeItem) => payTypeItem.value === eventStatus
+  )
 
   const payType = PAY_TYPES.find(
     (payTypeItem) => payTypeItem.value === payment.payType
@@ -34,10 +43,13 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
       <div
         className={cn(
           'flex items-center justify-center w-8 text-white',
-          payType ? 'bg-' + payType.color : 'bg-gray-400'
+          eventStatusProps ? 'bg-' + eventStatusProps.color : 'bg-gray-400'
         )}
       >
-        <FontAwesomeIcon icon={payType?.icon ?? faQuestion} className="w-6" />
+        <FontAwesomeIcon
+          icon={eventStatusProps?.icon ?? faQuestion}
+          className="w-6"
+        />
       </div>
       <div className="flex flex-col items-start flex-1 h-full text-sm leading-4 overflow-x-clip justify-evenly gap-x-2 phoneH:text-base">
         <div className="leading-4 whitespace-nowrap">
@@ -73,9 +85,19 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
       <div className="flex items-center justify-between">
         <div
           className={cn(
-            'px-1 text-sm font-bold phoneH:text-base',
-            payment.payDirection === 'toUser' ||
-              payment.payDirection === 'toEvent'
+            'flex items-center justify-center w-5',
+            payType ? 'text-' + payType.color : 'text-gray-400'
+          )}
+        >
+          <FontAwesomeIcon icon={payType?.icon ?? faQuestion} className="w-5" />
+        </div>
+        <div
+          className={cn(
+            'px-1 text-sm text-right font-bold phoneH:text-base min-w-16',
+            payment.payType === 'coupon'
+              ? 'text-general'
+              : payment.payDirection === 'toUser' ||
+                payment.payDirection === 'toEvent'
               ? 'text-danger'
               : 'text-success'
           )}

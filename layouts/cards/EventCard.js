@@ -167,7 +167,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
               />
             )}
           </div>
-          <div className="flex">
+          <div className="flex flex-1">
             <div className="flex flex-col flex-1 laptop:flex-row">
               <div className="flex justify-between flex-1 pl-2 pr-1">
                 <TextLinesLimiter
@@ -226,7 +226,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
                   )} */}
                 </div>
               </div>
-              <div className="flex-col items-center hidden h-full pt-1 pl-2 pr-1 laptop:flex">
+              <div className="flex-col justify-center hidden pt-1 pl-2 pr-1 laptop:flex">
                 <PriceDiscount event={event} className="flex" />
                 {/* <div className="flex justify-between w-full tablet:flex-col">
                 <div className="text-lg font-bold leading-5 whitespace-normal tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
@@ -277,13 +277,9 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
         </div>
 
         {widthNum >= 3 && (
-          <div className="flex items-center justify-between border-t">
+          <div className="flex items-stretch justify-between border-t">
             <EventUsersCounterAndAge eventId={eventId} />
-            <EventButtonSignIn
-              eventId={eventId}
-              className="mx-1"
-              noButtonIfAlreadySignIn
-            />
+            <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn />
           </div>
         )}
       </div>
@@ -293,18 +289,13 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
             eventId={eventId}
             className="flex-1 min-w-full border-t border-b"
           />
-          <div className="flex flex-wrap items-center justify-end flex-1 w-full h-9">
+          <div className="flex flex-wrap items-stretch justify-end flex-1 w-full h-9">
             <PriceDiscount
               event={event}
-              className="flex-1 mx-2 еуче "
+              className="flex-1 mx-2"
               // prefix="Стоимость:"
             />
-            <EventButtonSignIn
-              eventId={eventId}
-              className="mx-1 my-0.5"
-              noButtonIfAlreadySignIn
-              thin
-            />
+            <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn thin />
           </div>
         </div>
       )}

@@ -13,6 +13,9 @@ import { DEFAULT_PAYMENT } from '@helpers/constants'
 import DateTimePicker from '@components/DateTimePicker'
 import PayDirectionPicker from '@components/ValuePicker/PayDirectionPicker'
 import Input from '@components/Input'
+import isEventClosedFunc from '@helpers/isEventClosed'
+import eventSelector from '@state/selectors/eventSelector'
+import { P } from '@components/tags'
 
 const paymentFunc = (paymentId, clone = false, props) => {
   const PaymentModal = ({
@@ -25,6 +28,9 @@ const paymentFunc = (paymentId, clone = false, props) => {
   }) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
+
+    const event = useRecoilValue(eventSelector(payment.eventId))
+    const isEventClosed = isEventClosedFunc(event)
 
     const [payDirection, setPayDirection] = useState(
       props?.payDirection ??
@@ -131,6 +137,12 @@ const paymentFunc = (paymentId, clone = false, props) => {
 
     return (
       <FormWrapper>
+        {isEventClosed && (
+          <P className="text-danger">
+            Мероприятие к которой относится эта транзакция закрыто, поэтому
+            редактирование ее запрещено
+          </P>
+        )}
         <PayDirectionPicker
           payDirection={payDirection}
           onChange={(value) => {
@@ -139,6 +151,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
           }}
           required
           error={errors.payDirection}
+          readOnly={isEventClosed}
         />
         {(payDirection === 'toUser' || payDirection === 'fromUser') && (
           <SelectUser
@@ -147,6 +160,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
             onChange={(userId) => setUserId(userId)}
             // onDelete={(e) => console.log('e', e)}
             required
+            readOnly={isEventClosed}
           />
         )}
         <SelectEvent
@@ -154,6 +168,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
           selectedId={eventId}
           onChange={(eventId) => setEventId(eventId)}
           required
+          readOnly={isEventClosed}
         />
         <DateTimePicker
           value={payAt}
@@ -164,6 +179,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
           label="Дата проведения"
           required
           error={errors.payAt}
+          disabled={isEventClosed}
         />
         <PriceInput
           label="Сумма"
@@ -172,6 +188,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
             removeError('sum')
             setSum(value)
           }}
+          disabled={isEventClosed}
         />
         <PayTypePicker
           payType={payType}
@@ -181,12 +198,14 @@ const paymentFunc = (paymentId, clone = false, props) => {
           }}
           required
           error={errors.payType}
+          readOnly={isEventClosed}
         />
         <Input
           label="Комментарий"
           type="text"
           value={comment}
           onChange={setComment}
+          disabled={isEventClosed}
         />
         {/* <Input
           label="Сумма"

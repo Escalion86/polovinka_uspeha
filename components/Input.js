@@ -66,7 +66,7 @@ const Input = forwardRef(
             className={cn(
               'outline-none px-1 flex-1 min-w-10',
               disabled
-                ? 'cursor-not-allowed bg-gray-200 text-gray-200'
+                ? 'cursor-not-allowed bg-gray-100 text-disabled'
                 : 'bg-transparent'
             )}
             type={type}

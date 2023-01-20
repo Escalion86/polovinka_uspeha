@@ -53,7 +53,10 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
         Участники:
       </div>
       <div className="flex items-center px-2 tablet:border-r gap-x-0.5">
-        <FontAwesomeIcon icon={faMars} className="w-6 h-6 text-blue-600" />
+        <FontAwesomeIcon
+          icon={faMars}
+          className="w-5 h-5 text-blue-600 tablet:w-6 tablet:h-6"
+        />
         <div className="flex flex-col items-center">
           <div className="flex gap-x-0.5 border-b">
             <span>{event.minMansAge ?? 18}</span>
@@ -77,7 +80,10 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
         </div>
       </div>
       <div className="flex items-center px-2 tablet:border-r gap-x-0.5">
-        <FontAwesomeIcon icon={faVenus} className="w-6 h-6 text-red-600" />
+        <FontAwesomeIcon
+          icon={faVenus}
+          className="w-5 h-5 text-red-600 tablet:w-6 tablet:h-6"
+        />
         <div className="flex flex-col items-center">
           <div className="flex gap-x-0.5 border-b">
             <span>{event.minWomansAge ?? 18}</span>
