@@ -110,13 +110,17 @@ export const SelectItem = ({
     <div
       className={cn(
         className,
-        'relative bg-gray-100 flex justify-center items-center cursor-pointer'
+        onClick ? 'cursor-pointer' : 'cursor-not-allowed',
+        'relative bg-gray-100 flex justify-center items-center'
       )}
       style={{ height: itemHeight, width: itemWidth }}
-      onClick={() => {
-        // if ((!selectedItem || !onClick) && dropDownList) toggleIsMenuOpen()
-        if (onClick) onClick(selectedItem)
-      }}
+      onClick={
+        onClick
+          ? () =>
+              // if ((!selectedItem || !onClick) && dropDownList) toggleIsMenuOpen()
+              onClick(selectedItem)
+          : null
+      }
       // ref={ref}
     >
       {/* {dropDownList && (
@@ -353,6 +357,7 @@ export const SelectUser = ({
   modalTitle,
   buttons,
   rounded = true,
+  readOnly,
 }) => {
   const users = useRecoilValue(usersAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -408,19 +413,21 @@ export const SelectUser = ({
         }
         exceptedIds={exceptedIds}
         onClick={
-          // (user) => modalsFunc.user.view(user._id)
-          onChange
-            ? () =>
-                modalsFunc.selectUsers(
-                  [selectedId],
-                  [],
-                  (data) => onChange(data[0]),
-                  [],
-                  1,
-                  false,
-                  modalTitle
-                )
-            : (user) => modalsFunc.user.view(user._id)
+          !readOnly
+            ? // (user) => modalsFunc.user.view(user._id)
+              onChange
+              ? () =>
+                  modalsFunc.selectUsers(
+                    [selectedId],
+                    [],
+                    (data) => onChange(data[0]),
+                    [],
+                    1,
+                    false,
+                    modalTitle
+                  )
+              : (user) => modalsFunc.user.view(user._id)
+            : null
           // disableDropDownList ? (user) => modalsFunc.user.view(user._id) : null
         }
         onNoChoose={onDelete}
@@ -443,6 +450,7 @@ export const SelectEvent = ({
   label,
   modalTitle,
   rounded = true,
+  readOnly,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
@@ -498,18 +506,20 @@ export const SelectEvent = ({
         //   //   : null
         // }
         onClick={
-          onChange
-            ? () =>
-                modalsFunc.selectEvents(
-                  [selectedId],
-                  [],
-                  (data) => onChange(data[0]),
-                  [],
-                  1,
-                  false,
-                  modalTitle
-                )
-            : (event) => modalsFunc.event.view(event._id)
+          !readOnly
+            ? onChange
+              ? () =>
+                  modalsFunc.selectEvents(
+                    [selectedId],
+                    [],
+                    (data) => onChange(data[0]),
+                    [],
+                    1,
+                    false,
+                    modalTitle
+                  )
+              : (event) => modalsFunc.event.view(event._id)
+            : null
         }
         exceptedIds={exceptedIds}
       />

@@ -6,6 +6,7 @@ const PayTypePicker = ({
   onChange = null,
   required = false,
   error,
+  readOnly,
 }) => (
   <ValuePicker
     value={payType}
@@ -15,6 +16,7 @@ const PayTypePicker = ({
     name="paytype"
     required={required}
     error={error}
+    readOnly={readOnly}
   />
 )
 

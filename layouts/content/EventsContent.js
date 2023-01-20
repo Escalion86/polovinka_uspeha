@@ -19,6 +19,7 @@ import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusT
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
+import isEventClosedFunc from '@helpers/isEventClosed'
 import sortFunctions from '@helpers/sortFunctions'
 import AddButton from '@components/IconToggleButtons/AddButton'
 
@@ -43,6 +44,7 @@ const EventsContent = () => {
     status: {
       active: true,
       finished: false,
+      closed: false,
       canceled: false,
     },
   })
@@ -129,8 +131,11 @@ const EventsContent = () => {
         const isEventExpired = isEventExpiredFunc(event)
         const isEventActive = isEventActiveFunc(event)
         const isEventCanceled = isEventCanceledFunc(event)
+        const isEventClosed = isEventClosedFunc(event)
         return (
-          ((isEventActive && filter.status.finished && isEventExpired) ||
+          ((isEventClosed && !isLoggedUserAdmin && filter.status.finished) ||
+            (isEventClosed && isLoggedUserAdmin && filter.status.closed) ||
+            (isEventActive && filter.status.finished && isEventExpired) ||
             (isEventActive && filter.status.active && !isEventExpired) ||
             (isEventCanceled && filter.status.canceled)) &&
           filterOptions.directions.includes(event.directionId)

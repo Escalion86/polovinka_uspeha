@@ -1,17 +1,23 @@
 import React from 'react'
 import { Button, ButtonGroup } from '@mui/material'
+import { useRecoilValue } from 'recoil'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const EventStatusToggleButtons = ({ value, onChange }) => {
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
   return (
-    <ButtonGroup>
+    <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
       <Button
         onClick={() =>
           onChange({
             active: !value.active,
             finished:
-              !value.active || value.finished || value.canceled
+              !value.active || value.finished || value.canceled || value.closed
                 ? value.finished
                 : true,
+            closed: value.closed,
             canceled: value.canceled,
           })
         }
@@ -25,10 +31,11 @@ const EventStatusToggleButtons = ({ value, onChange }) => {
         onClick={() =>
           onChange({
             active:
-              value.active || !value.finished || value.canceled
+              value.active || !value.finished || value.canceled || value.closed
                 ? value.active
                 : true,
             finished: !value.finished,
+            closed: value.closed,
             canceled: value.canceled,
           })
         }
@@ -38,13 +45,37 @@ const EventStatusToggleButtons = ({ value, onChange }) => {
       >
         Завершены
       </Button>
+      {isLoggedUserAdmin && (
+        <Button
+          onClick={() =>
+            onChange({
+              active:
+                value.active ||
+                value.finished ||
+                value.canceled ||
+                !value.closed
+                  ? value.active
+                  : true,
+              finished: value.finished,
+              closed: !value.closed,
+              canceled: value.canceled,
+            })
+          }
+          variant={value.closed ? 'contained' : 'outlined'}
+          color="green"
+          className={value.closed ? 'text-white' : 'text-green-400'}
+        >
+          Закрыты
+        </Button>
+      )}
       <Button
         onClick={() =>
           onChange({
             active:
-              value.active || value.finished || !value.canceled
+              value.active || value.finished || !value.canceled || value.closed
                 ? value.active
                 : true,
+            closed: value.closed,
             finished: value.finished,
             canceled: !value.canceled,
           })

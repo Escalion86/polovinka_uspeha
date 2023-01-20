@@ -409,6 +409,7 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
 export const EVENT_STATUSES = [
   { value: 'active', name: 'Активно', color: 'blue-400', icon: faPlay },
   { value: 'canceled', name: 'Отменено', color: 'red-400', icon: faBan },
+  { value: 'closed', name: 'Закрыто', color: 'green-400', icon: faCheck },
 ]
 
 export const EVENT_STATUSES_WITH_TIME = [
