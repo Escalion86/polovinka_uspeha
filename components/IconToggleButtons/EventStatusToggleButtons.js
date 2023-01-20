@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
-const EventStatusToggleButtons = ({ value, onChange }) => {
+const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
   return (
@@ -45,7 +45,7 @@ const EventStatusToggleButtons = ({ value, onChange }) => {
       >
         Завершены
       </Button>
-      {isLoggedUserAdmin && (
+      {!noClosed && isLoggedUserAdmin && (
         <Button
           onClick={() =>
             onChange({
