@@ -3,10 +3,9 @@ import { H3 } from '@components/tags'
 
 const GridX = ({ slices, linesOnX }) => {
   return linesOnX.map((line) => (
-    <>
+    <g key={'line' + line.index}>
       {(line.index === 0 || !!line.index) && (
         <line
-          key={line.index}
           x1={slices[line.index].x}
           y1="300"
           x2={slices[line.index].x}
@@ -16,7 +15,6 @@ const GridX = ({ slices, linesOnX }) => {
       )}
       {!!line?.text && (line.index === 0 || !!line.index) && (
         <text
-          key={line.index}
           x={slices[line.index].x}
           y="310"
           // className="text-2xl tablet:text-4xl laptop:text-5xl"
@@ -33,7 +31,7 @@ const GridX = ({ slices, linesOnX }) => {
           {line.text}
         </text>
       )}
-    </>
+    </g>
   ))
 }
 
