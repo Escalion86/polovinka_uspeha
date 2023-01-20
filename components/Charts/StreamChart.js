@@ -1,42 +1,40 @@
-// import { modalsFuncAtom } from '@state/atoms'
-// import { useRecoilValue } from 'recoil'
 import { ResponsiveStream } from '@nivo/stream'
-// import usersAtom from '@state/atoms/usersAtom'
 import { H3 } from '@components/tags'
 
-const GridX = (props) => {
-  const { slices, linesOnX } = props
-
-  return linesOnX.map((line) =>
-    line.index === 0 || !!line.index ? (
-      <line
-        key={line.index}
-        x1={slices[line.index].x}
-        y1="300"
-        x2={slices[line.index].x}
-        y2="0"
-        stroke="#7a5151"
-      />
-    ) : !!line?.text && (line.index === 0 || !!line.index) ? (
-      <text
-        key={line.index}
-        x={slices[line.index].x}
-        y="310"
-        // className="text-2xl tablet:text-4xl laptop:text-5xl"
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize="smaller"
-        // font-weight="lighter"
-        fill="#7a5151"
-        // style={{
-        //   fontSize: '36px',
-        // }}
-        // fill="black"
-      >
-        {line.text}
-      </text>
-    ) : null
-  )
+const GridX = ({ slices, linesOnX }) => {
+  return linesOnX.map((line) => (
+    <>
+      {(line.index === 0 || !!line.index) && (
+        <line
+          key={line.index}
+          x1={slices[line.index].x}
+          y1="300"
+          x2={slices[line.index].x}
+          y2="0"
+          stroke="#7a5151"
+        />
+      )}
+      {!!line?.text && (line.index === 0 || !!line.index) && (
+        <text
+          key={line.index}
+          x={slices[line.index].x}
+          y="310"
+          // className="text-2xl tablet:text-4xl laptop:text-5xl"
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize="smaller"
+          // font-weight="lighter"
+          fill="#7a5151"
+          // style={{
+          //   fontSize: '36px',
+          // }}
+          // fill="black"
+        >
+          {line.text}
+        </text>
+      )}
+    </>
+  ))
 }
 
 const StreamChart = ({
