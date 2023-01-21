@@ -29,6 +29,7 @@ const EventButtonSignIn = ({
   className,
   noButtonIfAlreadySignIn,
   thin,
+  classNameProfit,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
@@ -44,7 +45,7 @@ const EventButtonSignIn = ({
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
   return isLoggedUserAdmin && event.status === 'closed' ? (
-    <EventProfit eventId={event._id} className="rounded-tl-lg" />
+    <EventProfit eventId={event._id} className={classNameProfit} />
   ) : // <div
   //   className={cn(
   //     'flex justify-center items-center text-base tablet:text-lg font-bold uppercase text-white bg-success px-3',

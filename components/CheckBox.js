@@ -1,6 +1,5 @@
 import cn from 'classnames'
 import InputWrapper from './InputWrapper'
-import Label from './Label'
 
 const CheckBox = ({
   checked = false,

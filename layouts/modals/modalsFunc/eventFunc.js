@@ -87,7 +87,7 @@ const eventFunc = (eventId, clone = false) => {
     )
     const [price, setPrice] = useState(event?.price ?? DEFAULT_EVENT.proce)
 
-    const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
+    // const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
 
     const [maxParticipants, setMaxParticipants] = useState(
       event?.maxParticipants ?? DEFAULT_EVENT.maxParticipants
@@ -190,7 +190,7 @@ const eventFunc = (eventId, clone = false) => {
             maxWomansAge,
             minWomansAge,
             organizerId,
-            status,
+            // status,
             usersStatusAccess,
             usersStatusDiscount,
             isReserveActive,
@@ -223,7 +223,7 @@ const eventFunc = (eventId, clone = false) => {
         event?.minWomansAge !== minWomansAge ||
         event?.maxWomansAge !== maxWomansAge ||
         organizerId !== defaultOrganizerId ||
-        event?.status !== status ||
+        // event?.status !== status ||
         !compareObjects(defaultUsersStatusAccess, usersStatusAccess) ||
         !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
         event?.isReserveActive !== isReserveActive ||
@@ -256,7 +256,7 @@ const eventFunc = (eventId, clone = false) => {
       maxParticipantsCheck,
       maxMansCheck,
       maxWomansCheck,
-      status,
+      // status,
       usersStatusAccess,
       usersStatusDiscount,
       isReserveActive,
@@ -613,13 +613,13 @@ const eventFunc = (eventId, clone = false) => {
             </FormWrapper>
           </TabPanel>
           {eventId && (
-            <TabPanel tabName="Статус и отчет" className="px-0">
+            <TabPanel tabName="Отчет" className="px-0">
               <FormWrapper>
-                <EventStatusPicker
+                {/* <EventStatusPicker
                   required
                   status={status}
                   onChange={setStatus}
-                />
+                /> */}
                 <EditableTextarea
                   label="Отчет"
                   html={report}

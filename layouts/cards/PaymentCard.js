@@ -109,7 +109,14 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
               : ''
           }${payment.sum / 100} ₽`}
         </div>
-        <CardButtons item={payment} typeOfItem="payment" alwaysCompactOnPhone />
+        <CardButtons
+          item={payment}
+          typeOfItem="payment"
+          // alwaysCompactOnPhone
+          showEditButton={eventStatus !== 'closed'}
+          showDeleteButton={eventStatus !== 'closed'}
+          alwaysCompact
+        />
       </div>
     </CardWrapper>
   )

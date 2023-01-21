@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 
@@ -27,6 +27,7 @@ import CardButtons from '@components/CardButtons'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import TextLine from '@components/TextLine'
 import getEventDuration from '@helpers/getEventDuration'
+import isEventClosedFunc from '@helpers/isEventClosed'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -36,6 +37,7 @@ const eventViewFunc = (eventId) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setTopLeftComponent,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
@@ -49,9 +51,25 @@ const eventViewFunc = (eventId) => {
 
     const duration = getEventDuration(event)
 
+    const isEventClosed = isEventClosedFunc(event)
+
     // const eventLoggedUserStatus = useRecoilValue(
     //   loggedUserToEventStatusSelector(eventId)
     // )?.isEventInProcess
+
+    useEffect(() => {
+      if (isLoggedUserAdmin)
+        setTopLeftComponent(() => (
+          <CardButtons
+            item={{ _id: eventId }}
+            typeOfItem="event"
+            forForm
+            direction="right"
+            showEditButton={!isEventClosed}
+            showDeleteButton={!isEventClosed}
+          />
+        ))
+    }, [])
 
     if (!event || !eventId)
       return (
@@ -179,14 +197,14 @@ const eventViewFunc = (eventId) => {
     title: `Мероприятие`,
     confirmButtonName: 'Записаться',
     Children: EventSignUpModal,
-    TopLeftComponent: () => (
-      <CardButtons
-        item={{ _id: eventId }}
-        typeOfItem="event"
-        forForm
-        direction="right"
-      />
-    ),
+    // TopLeftComponent: () => (
+    //   <CardButtons
+    //     item={{ _id: eventId }}
+    //     typeOfItem="event"
+    //     forForm
+    //     direction="right"
+    //   />
+    // ),
   }
 }
 

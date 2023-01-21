@@ -119,8 +119,6 @@ const UserMenu = () => {
               <span>{loggedUser.firstName}</span>
               <span>{loggedUser.secondName}</span>
             </div>
-            <DevSwitch />
-
             {getParentDir(router.asPath) === 'cabinet' ? (
               <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
             ) : (

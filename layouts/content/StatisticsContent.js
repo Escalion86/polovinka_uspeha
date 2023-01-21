@@ -233,6 +233,7 @@ const StatisticsContent = () => {
               onChange={(value) =>
                 setFilterEvents((state) => ({ ...state, status: value }))
               }
+              noClosed
             />
             <PieChart data={eventsByDirectionsData} />
           </div>

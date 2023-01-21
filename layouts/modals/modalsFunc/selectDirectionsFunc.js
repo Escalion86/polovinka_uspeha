@@ -34,9 +34,13 @@ const selectDirectionsFunc = (
 
     const [searchText, setSearchText] = useState('')
 
-    var filteredDirections = filterItems(directions, searchText, exceptedIds, [
-      'title',
-    ])
+    var filteredDirections = filterItems(
+      directions,
+      searchText,
+      exceptedIds,
+      {},
+      ['title']
+    )
 
     if (exceptedIds) {
       filteredDirections = filteredDirections.filter(

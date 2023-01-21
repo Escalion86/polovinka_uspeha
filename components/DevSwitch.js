@@ -1,9 +1,10 @@
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-// import Switch from '@mui/material/Switch'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+import CheckBox from './CheckBox'
+import showDeviceAtom from '@state/atoms/showDeviceAtom'
 
 const DevSwitch = () => {
   const loggedUser = useRecoilValue(loggedUserAtom)
@@ -14,23 +15,21 @@ const DevSwitch = () => {
     loggedUserActiveStatusAtom
   )
 
+  const [showDevice, setShowDevice] = useRecoilState(showDeviceAtom)
+
   if (loggedUser.role !== 'dev') return null
 
   return (
-    // <div className="flex items-center text-black bg-gray-200 gap-x-1">
-    // {/* <Switch
-    //   // defaultChecked
-    //   checked={loggedUserActiveRole === 'dev'}
-    //   onChange={() =>
-    //     setLoggedUserActiveRole(
-    //       loggedUserActiveRole === 'dev' ? 'client' : 'dev'
-    //     )
-    //   }
-    // /> */}
-    // {/* <div className="prevent-select-text">{'Режим разработчика'}</div> */}
     <>
+      <div className="p-1 bg-gray-100">
+        <CheckBox
+          label="Тип устройства"
+          checked={showDevice}
+          onChange={() => setShowDevice((checked) => !checked)}
+        />
+      </div>
       <ToggleButtonGroup
-        className="flex bg-gray-200 rounded-none"
+        className="flex bg-gray-100 rounded-none"
         color="primary"
         value={loggedUserActiveRole}
         exclusive
@@ -50,7 +49,7 @@ const DevSwitch = () => {
       </ToggleButtonGroup>
       <ToggleButtonGroup
         size="small"
-        className="flex bg-gray-200 rounded-none"
+        className="flex bg-gray-100 rounded-none"
         color="primary"
         value={loggedUserActiveStatus}
         exclusive

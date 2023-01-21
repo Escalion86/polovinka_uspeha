@@ -1,18 +1,19 @@
-// import isDevMode from '@helpers/isDevMode'
+import showDeviceAtom from '@state/atoms/showDeviceAtom'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
-// import { useEffect, useState } from 'react'
 
 const DeviceCheck = ({ textClassName = null }) => {
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+  const showDevice = useRecoilValue(showDeviceAtom)
 
   if (!isLoggedUserDev) return null
 
   return (
     <div
       className={cn(
-        'right-0 flex items-center justify-center text-white border-white border-t-1 border-l-1 border-b-1 fixed z-50 h-24 text-sm leading-3 w-10 top-40 bg-general rounded-l-md transform'
+        'duration-300 pointer-events-none flex items-center justify-center text-white border-white border-t-1 border-l-1 border-b-1 fixed z-50 h-24 text-sm leading-3 w-10 top-40 bg-general rounded-l-md transform',
+        showDevice ? 'right-0' : '-right-10'
       )}
     >
       <div className="-rotate-90">

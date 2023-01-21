@@ -20,6 +20,8 @@ import {
   faArrowAltCircleLeft,
   faArrowAltCircleRight,
 } from '@fortawesome/free-regular-svg-icons'
+import isEventClosedFunc from '@helpers/isEventClosed'
+import { P } from '@components/tags'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -37,6 +39,7 @@ const eventUsersFunc = (eventId) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     const users = useRecoilValue(usersAtom)
+    const isEventClosed = isEventClosedFunc(event)
     // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
 
     const sortUsersIds = (ids) =>
@@ -128,7 +131,7 @@ const eventUsersFunc = (eventId) => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)
-      if (!isLoggedUserAdmin) setOnlyCloseButtonShow(true)
+      if (!isLoggedUserAdmin || isEventClosed) setOnlyCloseButtonShow(true)
     }, [
       mansIds,
       womansIds,
@@ -184,280 +187,295 @@ const eventUsersFunc = (eventId) => {
     }
 
     return (
-      <TabContext value="Участники">
-        <TabPanel
-          tabName="Участники"
-          tabAddToLabel={`(${mansIds.length + womansIds.length})`}
-        >
-          <SelectUserList
-            label="Участники Мужчины"
-            modalTitle="Выбор участников (мужчин)"
-            filter={{ gender: { operand: '===', value: 'male' } }}
-            usersId={mansIds}
-            onChange={(usersIds) => {
-              removeIdsFromReserve(usersIds)
-              setMansIds(sortUsersIds(usersIds))
-            }}
-            maxUsers={event.maxMans}
-            canAddItem={
-              (!event.maxUsers ||
-                mansIds.length + womansIds.length < event.maxUsers) &&
-              (event.maxMans === null || event.maxMans > mansIds.length)
-            }
-            exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-            readOnly={!isLoggedUserAdmin}
-            buttons={
-              isLoggedUserAdmin
-                ? [
-                    // (id) => {
-                    //   const paymentsOfUser = paymentsOfEvent.filter(
-                    //     (payment) => payment.userId === id
-                    //   )
-
-                    //   const sumOfPayments =
-                    //     paymentsOfUser.reduce((p, c) => p + (c.sum ?? 0), 0) / 100
-
-                    //   return {
-                    //     onClick: () => {},
-                    //     // icon: faMoneyBill,
-                    //     // iconClassName: 'text-general',
-                    //     tooltip: 'Оплата',
-                    //     thin: true,
-                    //     text: (() => {
-                    //       const user = useRecoilValue(userSelector(id))
-                    //       const eventPriceForUser =
-                    //         (event.price -
-                    //           (typeof event.usersStatusDiscount[
-                    //             user.status ?? 'novice'
-                    //           ] === 'number'
-                    //             ? event.usersStatusDiscount[user.status ?? 'novice']
-                    //             : 0)) /
-                    //         100
-                    //       return (
-                    //         <div className="flex flex-col w-12 text-xs leading-4">
-                    //           <span
-                    //             className={cn(
-                    //               sumOfPayments === eventPriceForUser
-                    //                 ? 'text-success'
-                    //                 : sumOfPayments < eventPriceForUser
-                    //                 ? sumOfPayments === 0
-                    //                   ? 'text-danger'
-                    //                   : 'text-orange-500'
-                    //                 : 'text-blue-700'
-                    //             )}
-                    //           >{`${sumOfPayments} ₽`}</span>
-                    //           <span className="border-gray-700 border-t-1">{`${eventPriceForUser} ₽`}</span>
-                    //         </div>
-                    //       )
-                    //     })(),
-                    //     // textClassName: 'w-10',
-                    //   }
-                    // },
-                    (id) => ({
-                      onClick: () => {
-                        setMansIds(
-                          sortUsersIds(
-                            [...mansIds].filter((userId) => userId !== id)
-                          )
-                        )
-                        setReservedParticipantsIds(
-                          sortUsersIds([...reservedParticipantsIds, id])
-                        )
-                      },
-                      icon: faArrowAltCircleRight,
-                      iconClassName: 'text-general',
-                      tooltip: 'Перенести в резерв',
-                    }),
-                  ]
-                : []
-            }
-          />
-          <SelectUserList
-            label="Участники Женщины"
-            modalTitle="Выбор участниц (женщин)"
-            filter={{ gender: { operand: '===', value: 'famale' } }}
-            usersId={womansIds}
-            onChange={(usersIds) => {
-              removeIdsFromReserve(usersIds)
-              setWomansIds(sortUsersIds(usersIds))
-            }}
-            maxUsers={event.maxWomans}
-            canAddItem={
-              (!event.maxUsers ||
-                mansIds.length + womansIds.length < event.maxUsers) &&
-              (event.maxWomans === null || event.maxWomans > womansIds.length)
-            }
-            exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-            readOnly={!isLoggedUserAdmin}
-            buttons={
-              isLoggedUserAdmin
-                ? [
-                    // (id) => {
-                    //   const paymentsOfUser = paymentsOfEvent.filter(
-                    //     (payment) => payment.userId === id
-                    //   )
-
-                    //   const sumOfPayments =
-                    //     paymentsOfUser.reduce((p, c) => p + (c.sum ?? 0), 0) /
-                    //     100
-
-                    //   return {
-                    //     onClick: () => {},
-                    //     // icon: faMoneyBill,
-                    //     // iconClassName: 'text-general',
-                    //     tooltip: 'Оплата',
-
-                    //     thin: true,
-                    //     text: (() => {
-                    //       const user = useRecoilValue(userSelector(id))
-                    //       const eventPriceForUser =
-                    //         (event.price -
-                    //           (typeof event.usersStatusDiscount[
-                    //             user.status ?? 'novice'
-                    //           ] === 'number'
-                    //             ? event.usersStatusDiscount[
-                    //                 user.status ?? 'novice'
-                    //               ]
-                    //             : 0)) /
-                    //         100
-                    //       return (
-                    //         <div className="flex flex-col w-12 text-xs leading-4">
-                    //           <span
-                    //             className={
-                    //               sumOfPayments === eventPriceForUser
-                    //                 ? 'text-success'
-                    //                 : sumOfPayments < eventPriceForUser
-                    //                 ? sumOfPayments === 0
-                    //                   ? 'text-danger'
-                    //                   : 'text-orange-500'
-                    //                 : 'text-blue-700'
-                    //             }
-                    //           >{`${sumOfPayments} ₽`}</span>
-                    //           <span className="border-gray-700 border-t-1">{`${eventPriceForUser} ₽`}</span>
-                    //         </div>
-                    //       )
-                    //     })(),
-                    //     // textClassName: 'w-10',
-                    //   }
-                    // },
-                    (id) => ({
-                      onClick: () => {
-                        setWomansIds(
-                          sortUsersIds(
-                            [...womansIds].filter((userId) => userId !== id)
-                          )
-                        )
-                        setReservedParticipantsIds(
-                          sortUsersIds([...reservedParticipantsIds, id])
-                        )
-                      },
-                      icon: faArrowAltCircleRight,
-                      iconClassName: 'text-general',
-                      tooltip: 'Перенести в резерв',
-                    }),
-                  ]
-                : []
-            }
-          />
-          <div className="flex justify-end gap-x-1">
-            <span>Всего участников:</span>
-            <span className="font-bold">
-              {mansIds.length + womansIds.length}
-            </span>
-            {event.maxUsers ? (
-              <>
-                <span>/</span>
-                <span>{event.maxUsers}</span>
-              </>
-            ) : null}
-            <span>чел.</span>
-          </div>
-        </TabPanel>
-        {(event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
+      <>
+        {isLoggedUserAdmin && isEventClosed && (
+          <P className="text-danger">
+            Мероприятие закрыто, поэтому редактирование состава участников
+            запрещено
+          </P>
+        )}
+        <TabContext value="Участники">
           <TabPanel
-            tabName="Резерв"
-            tabAddToLabel={`(${reservedParticipantsIds.length})`}
+            tabName="Участники"
+            tabAddToLabel={`(${mansIds.length + womansIds.length})`}
           >
             <SelectUserList
-              label="Резерв"
-              modalTitle="Выбор пользователей в резерв"
-              usersId={reservedParticipantsIds}
+              label="Участники Мужчины"
+              modalTitle="Выбор участников (мужчин)"
+              filter={{ gender: { operand: '===', value: 'male' } }}
+              usersId={mansIds}
               onChange={(usersIds) => {
+                removeIdsFromReserve(usersIds)
+                setMansIds(sortUsersIds(usersIds))
+              }}
+              maxUsers={event.maxMans}
+              canAddItem={
+                (!event.maxUsers ||
+                  mansIds.length + womansIds.length < event.maxUsers) &&
+                (event.maxMans === null || event.maxMans > mansIds.length)
+              }
+              exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
+              readOnly={!isLoggedUserAdmin || isEventClosed}
+              buttons={
+                isLoggedUserAdmin && !isEventClosed
+                  ? [
+                      // (id) => {
+                      //   const paymentsOfUser = paymentsOfEvent.filter(
+                      //     (payment) => payment.userId === id
+                      //   )
+
+                      //   const sumOfPayments =
+                      //     paymentsOfUser.reduce((p, c) => p + (c.sum ?? 0), 0) / 100
+
+                      //   return {
+                      //     onClick: () => {},
+                      //     // icon: faMoneyBill,
+                      //     // iconClassName: 'text-general',
+                      //     tooltip: 'Оплата',
+                      //     thin: true,
+                      //     text: (() => {
+                      //       const user = useRecoilValue(userSelector(id))
+                      //       const eventPriceForUser =
+                      //         (event.price -
+                      //           (typeof event.usersStatusDiscount[
+                      //             user.status ?? 'novice'
+                      //           ] === 'number'
+                      //             ? event.usersStatusDiscount[user.status ?? 'novice']
+                      //             : 0)) /
+                      //         100
+                      //       return (
+                      //         <div className="flex flex-col w-12 text-xs leading-4">
+                      //           <span
+                      //             className={cn(
+                      //               sumOfPayments === eventPriceForUser
+                      //                 ? 'text-success'
+                      //                 : sumOfPayments < eventPriceForUser
+                      //                 ? sumOfPayments === 0
+                      //                   ? 'text-danger'
+                      //                   : 'text-orange-500'
+                      //                 : 'text-blue-700'
+                      //             )}
+                      //           >{`${sumOfPayments} ₽`}</span>
+                      //           <span className="border-gray-700 border-t-1">{`${eventPriceForUser} ₽`}</span>
+                      //         </div>
+                      //       )
+                      //     })(),
+                      //     // textClassName: 'w-10',
+                      //   }
+                      // },
+                      (id) => ({
+                        onClick: () => {
+                          setMansIds(
+                            sortUsersIds(
+                              [...mansIds].filter((userId) => userId !== id)
+                            )
+                          )
+                          setReservedParticipantsIds(
+                            sortUsersIds([...reservedParticipantsIds, id])
+                          )
+                        },
+                        icon: faArrowAltCircleRight,
+                        iconClassName: 'text-general',
+                        tooltip: 'Перенести в резерв',
+                      }),
+                    ]
+                  : []
+              }
+            />
+            <SelectUserList
+              label="Участники Женщины"
+              modalTitle="Выбор участниц (женщин)"
+              filter={{ gender: { operand: '===', value: 'famale' } }}
+              usersId={womansIds}
+              onChange={(usersIds) => {
+                removeIdsFromReserve(usersIds)
+                setWomansIds(sortUsersIds(usersIds))
+              }}
+              maxUsers={event.maxWomans}
+              canAddItem={
+                (!event.maxUsers ||
+                  mansIds.length + womansIds.length < event.maxUsers) &&
+                (event.maxWomans === null || event.maxWomans > womansIds.length)
+              }
+              exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
+              readOnly={!isLoggedUserAdmin || isEventClosed}
+              buttons={
+                isLoggedUserAdmin && !isEventClosed
+                  ? [
+                      // (id) => {
+                      //   const paymentsOfUser = paymentsOfEvent.filter(
+                      //     (payment) => payment.userId === id
+                      //   )
+
+                      //   const sumOfPayments =
+                      //     paymentsOfUser.reduce((p, c) => p + (c.sum ?? 0), 0) /
+                      //     100
+
+                      //   return {
+                      //     onClick: () => {},
+                      //     // icon: faMoneyBill,
+                      //     // iconClassName: 'text-general',
+                      //     tooltip: 'Оплата',
+
+                      //     thin: true,
+                      //     text: (() => {
+                      //       const user = useRecoilValue(userSelector(id))
+                      //       const eventPriceForUser =
+                      //         (event.price -
+                      //           (typeof event.usersStatusDiscount[
+                      //             user.status ?? 'novice'
+                      //           ] === 'number'
+                      //             ? event.usersStatusDiscount[
+                      //                 user.status ?? 'novice'
+                      //               ]
+                      //             : 0)) /
+                      //         100
+                      //       return (
+                      //         <div className="flex flex-col w-12 text-xs leading-4">
+                      //           <span
+                      //             className={
+                      //               sumOfPayments === eventPriceForUser
+                      //                 ? 'text-success'
+                      //                 : sumOfPayments < eventPriceForUser
+                      //                 ? sumOfPayments === 0
+                      //                   ? 'text-danger'
+                      //                   : 'text-orange-500'
+                      //                 : 'text-blue-700'
+                      //             }
+                      //           >{`${sumOfPayments} ₽`}</span>
+                      //           <span className="border-gray-700 border-t-1">{`${eventPriceForUser} ₽`}</span>
+                      //         </div>
+                      //       )
+                      //     })(),
+                      //     // textClassName: 'w-10',
+                      //   }
+                      // },
+                      (id) => ({
+                        onClick: () => {
+                          setWomansIds(
+                            sortUsersIds(
+                              [...womansIds].filter((userId) => userId !== id)
+                            )
+                          )
+                          setReservedParticipantsIds(
+                            sortUsersIds([...reservedParticipantsIds, id])
+                          )
+                        },
+                        icon: faArrowAltCircleRight,
+                        iconClassName: 'text-general',
+                        tooltip: 'Перенести в резерв',
+                      }),
+                    ]
+                  : []
+              }
+            />
+            <div className="flex justify-end gap-x-1">
+              <span>Всего участников:</span>
+              <span className="font-bold">
+                {mansIds.length + womansIds.length}
+              </span>
+              {event.maxUsers ? (
+                <>
+                  <span>/</span>
+                  <span>{event.maxUsers}</span>
+                </>
+              ) : null}
+              <span>чел.</span>
+            </div>
+          </TabPanel>
+          {(event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
+            <TabPanel
+              tabName="Резерв"
+              tabAddToLabel={`(${reservedParticipantsIds.length})`}
+            >
+              <SelectUserList
+                label="Резерв"
+                modalTitle="Выбор пользователей в резерв"
+                usersId={reservedParticipantsIds}
+                onChange={(usersIds) => {
+                  removeIdsFromParticipants(usersIds)
+                  setReservedParticipantsIds(sortUsersIds(usersIds))
+                }}
+                exceptedIds={[
+                  ...assistantsIds,
+                  // ...mansIds,
+                  // ...womansIds,
+                  // ...reservedParticipantsIds,
+                  ...bannedParticipantsIds,
+                ]}
+                buttons={
+                  isLoggedUserAdmin && !isEventClosed
+                    ? [
+                        (id) => ({
+                          onClick: () => {
+                            removeIdsFromReserve([id])
+                            const genderOfUser = users.find(
+                              (user) => user._id === id
+                            ).gender
+                            if (genderOfUser === 'male')
+                              setMansIds(sortUsersIds([...mansIds, id]))
+                            if (genderOfUser === 'famale')
+                              setWomansIds(sortUsersIds([...womansIds, id]))
+                          },
+                          icon: faArrowAltCircleLeft,
+                          iconClassName: 'text-general',
+                          tooltip: 'Перенести в активный состав',
+                        }),
+                      ]
+                    : []
+                }
+                readOnly={!isLoggedUserAdmin || isEventClosed}
+              />
+            </TabPanel>
+          )}
+          <TabPanel
+            tabName="Ведущие"
+            tabAddToLabel={`(${assistantsIds.length})`}
+          >
+            <SelectUserList
+              label="Ведущие"
+              modalTitle="Выбор ведущих"
+              usersId={assistantsIds}
+              onChange={(usersIds) => {
+                removeIdsFromReserve(usersIds)
                 removeIdsFromParticipants(usersIds)
-                setReservedParticipantsIds(sortUsersIds(usersIds))
+                setAssistantsIds(sortUsersIds(usersIds))
               }}
               exceptedIds={[
-                ...assistantsIds,
+                // ...assistantsIds,
                 // ...mansIds,
                 // ...womansIds,
-                // ...reservedParticipantsIds,
                 ...bannedParticipantsIds,
               ]}
-              buttons={[
-                (id) => ({
-                  onClick: () => {
-                    removeIdsFromReserve([id])
-                    const genderOfUser = users.find(
-                      (user) => user._id === id
-                    ).gender
-                    if (genderOfUser === 'male')
-                      setMansIds(sortUsersIds([...mansIds, id]))
-                    if (genderOfUser === 'famale')
-                      setWomansIds(sortUsersIds([...womansIds, id]))
-                  },
-                  icon: faArrowAltCircleLeft,
-                  iconClassName: 'text-general',
-                  tooltip: 'Перенести в активный состав',
-                }),
-              ]}
-              readOnly={!isLoggedUserAdmin}
+              readOnly={!isLoggedUserAdmin || isEventClosed}
             />
           </TabPanel>
-        )}
-        <TabPanel tabName="Ведущие" tabAddToLabel={`(${assistantsIds.length})`}>
-          <SelectUserList
-            label="Ведущие"
-            modalTitle="Выбор ведущих"
-            usersId={assistantsIds}
-            onChange={(usersIds) => {
-              removeIdsFromReserve(usersIds)
-              removeIdsFromParticipants(usersIds)
-              setAssistantsIds(sortUsersIds(usersIds))
-            }}
-            exceptedIds={[
-              // ...assistantsIds,
-              // ...mansIds,
-              // ...womansIds,
-              ...bannedParticipantsIds,
-            ]}
-            readOnly={!isLoggedUserAdmin}
-          />
-        </TabPanel>
-        {isLoggedUserAdmin && (
-          <TabPanel
-            tabName="Бан"
-            tabAddToLabel={`(${bannedParticipantsIds.length})`}
-          >
-            <SelectUserList
-              label="Блокированные"
-              modalTitle="Выбор блокированных пользователей"
-              usersId={bannedParticipantsIds}
-              onChange={(usersIds) => {
-                removeIdsFromAllByBan(usersIds)
-                setBannedParticipantsIds(sortUsersIds(usersIds))
-              }}
-              // onDelete={(user, onConfirm) => {
-              //   console.log('1', 1)
-              // }}
-              exceptedIds={bannedParticipantsIds}
-              readOnly={!isLoggedUserAdmin}
-            />
-          </TabPanel>
-        )}
-        {/* <ErrorsList errors={errors} /> */}
-        {/* </TabsBody>
+          {isLoggedUserAdmin && (
+            <TabPanel
+              tabName="Бан"
+              tabAddToLabel={`(${bannedParticipantsIds.length})`}
+            >
+              <SelectUserList
+                label="Блокированные"
+                modalTitle="Выбор блокированных пользователей"
+                usersId={bannedParticipantsIds}
+                onChange={(usersIds) => {
+                  removeIdsFromAllByBan(usersIds)
+                  setBannedParticipantsIds(sortUsersIds(usersIds))
+                }}
+                // onDelete={(user, onConfirm) => {
+                //   console.log('1', 1)
+                // }}
+                exceptedIds={bannedParticipantsIds}
+                readOnly={!isLoggedUserAdmin || isEventClosed}
+              />
+            </TabPanel>
+          )}
+          {/* <ErrorsList errors={errors} /> */}
+          {/* </TabsBody>
       </Tabs> */}
-      </TabContext>
+        </TabContext>
+      </>
     )
   }
 
