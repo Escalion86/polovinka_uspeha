@@ -114,6 +114,7 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
           typeOfItem="payment"
           // alwaysCompactOnPhone
           showEditButton={eventStatus !== 'closed'}
+          showDeleteButton={eventStatus !== 'closed'}
           alwaysCompact
         />
       </div>

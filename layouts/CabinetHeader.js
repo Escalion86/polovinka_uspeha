@@ -113,7 +113,9 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
       {loggedUser.role === 'dev' && (
         <Menu
           trigger={
-            <FontAwesomeIcon icon={faBug} className="w-5 h-5 text-white" />
+            <div className="flex items-center justify-center w-6 h-6">
+              <FontAwesomeIcon icon={faBug} className="w-5 h-5 text-white" />
+            </div>
           }
         >
           <DevSwitch />

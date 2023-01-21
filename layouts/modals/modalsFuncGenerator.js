@@ -33,6 +33,7 @@ import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
 import userDeleteFunc from './modalsFunc/userDeleteFunc'
 import eventUsersPaymentsFunc from './modalsFunc/eventUsersPaymentsFunc'
 import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
+import eventStatusEditFunc from './modalsFunc/eventStatusEditFunc'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -161,6 +162,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
       add: (eventId) => addModal(eventFunc(eventId, true)),
       edit: (eventId) => addModal(eventFunc(eventId)),
       users: (eventId) => addModal(eventUsersFunc(eventId)),
+      statusEdit: (eventId) => addModal(eventStatusEditFunc(eventId)),
       payments: (eventId) => addModal(eventUsersPaymentsFunc(eventId)),
       cancel: (eventId) =>
         addModal({

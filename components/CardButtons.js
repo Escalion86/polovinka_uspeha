@@ -34,6 +34,7 @@ import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
+import { EVENT_STATUSES_WITH_TIME } from '@helpers/constants'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -63,6 +64,7 @@ const CardButtons = ({
   alwaysCompact,
   alwaysCompactOnPhone,
   showEditButton = true,
+  showDeleteButton = true,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   // const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
@@ -106,7 +108,10 @@ const CardButtons = ({
       showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review',
     showOnSiteBtn: showAdminButtons && showOnSiteOnClick,
     statusBtn: showAdminButtons && typeOfItem === 'event' && item.status,
-    deleteBtn: showAdminButtons, // || isLoggedUserDev,
+    deleteBtn:
+      showAdminButtons &&
+      showDeleteButton &&
+      (typeOfItem !== 'event' || item.status !== 'closed'),
     paymentsUsersBtn: showAdminButtons && typeOfItem === 'event',
   }
 
@@ -215,19 +220,31 @@ const CardButtons = ({
           tooltipText="Показывать на сайте"
         />
       )}
-      {show.statusBtn && (
-        <ItemComponent
-          icon={item.status === 'canceled' ? faPlay : faBan}
-          onClick={() => {
-            setOpen(false)
-            if (item.status === 'canceled')
-              modalsFunc[typeOfItem].uncancel(item._id)
-            else modalsFunc[typeOfItem].cancel(item._id)
-          }}
-          color={item.status === 'canceled' ? 'green' : 'red'}
-          tooltipText={item.status === 'canceled' ? 'Возобновить' : 'Отменить'}
-        />
-      )}
+      {show.statusBtn
+        ? (() => {
+            const { icon, color, name } = EVENT_STATUSES_WITH_TIME.find(
+              ({ value }) => value === item.status
+            )
+            return (
+              <ItemComponent
+                icon={icon}
+                onClick={() => {
+                  setOpen(false)
+                  modalsFunc[typeOfItem].statusEdit(item._id)
+                  // if (item.status === 'canceled')
+                  //   modalsFunc[typeOfItem].uncancel(item._id)
+                  // else modalsFunc[typeOfItem].cancel(item._id)
+                }}
+                color={
+                  color.indexOf('-') > 0
+                    ? color.slice(0, color.indexOf('-'))
+                    : color
+                }
+                tooltipText={`${name} (изменить статус)`}
+              />
+            )
+          })()
+        : null}
       {show.deleteBtn && (
         <ItemComponent
           icon={faTrashAlt}

@@ -66,6 +66,7 @@ const eventViewFunc = (eventId) => {
             forForm
             direction="right"
             showEditButton={!isEventClosed}
+            showDeleteButton={!isEventClosed}
           />
         ))
     }, [])

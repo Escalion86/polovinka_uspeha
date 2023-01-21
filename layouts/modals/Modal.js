@@ -115,8 +115,6 @@ const Modal = ({
   //   }, 10)
   // }, [])
 
-  console.log('TopLeftComponentState', TopLeftComponentState)
-
   return (
     <motion.div
       className={

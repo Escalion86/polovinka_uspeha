@@ -226,7 +226,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
                   )} */}
                 </div>
               </div>
-              <div className="flex-col justify-center hidden pt-1 pl-2 pr-1 laptop:flex">
+              <div className="flex-col justify-center hidden px-2 pt-1 laptop:flex">
                 <PriceDiscount event={event} className="flex" />
                 {/* <div className="flex justify-between w-full tablet:flex-col">
                 <div className="text-lg font-bold leading-5 whitespace-normal tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
@@ -241,7 +241,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
             <div>
               <PriceDiscount
                 event={event}
-                className="hidden tablet:flex laptop:hidden"
+                className="hidden mr-2 tablet:flex laptop:hidden"
               />
             </div>
           </div>
@@ -282,7 +282,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
             <EventButtonSignIn
               eventId={eventId}
               noButtonIfAlreadySignIn
-              className="rounded-tl-lg"
+              classNameProfit="rounded-tl-lg"
             />
           </div>
         )}
@@ -303,7 +303,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
               eventId={eventId}
               noButtonIfAlreadySignIn
               thin
-              className="rounded-tl-lg"
+              classNameProfit="rounded-tl-lg"
             />
           </div>
         </div>

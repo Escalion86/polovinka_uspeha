@@ -217,7 +217,7 @@ const eventUsersFunc = (eventId) => {
               exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
               readOnly={!isLoggedUserAdmin || isEventClosed}
               buttons={
-                isLoggedUserAdmin
+                isLoggedUserAdmin && !isEventClosed
                   ? [
                       // (id) => {
                       //   const paymentsOfUser = paymentsOfEvent.filter(
@@ -300,7 +300,7 @@ const eventUsersFunc = (eventId) => {
               exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
               readOnly={!isLoggedUserAdmin || isEventClosed}
               buttons={
-                isLoggedUserAdmin
+                isLoggedUserAdmin && !isEventClosed
                   ? [
                       // (id) => {
                       //   const paymentsOfUser = paymentsOfEvent.filter(
@@ -403,23 +403,27 @@ const eventUsersFunc = (eventId) => {
                   // ...reservedParticipantsIds,
                   ...bannedParticipantsIds,
                 ]}
-                buttons={[
-                  (id) => ({
-                    onClick: () => {
-                      removeIdsFromReserve([id])
-                      const genderOfUser = users.find(
-                        (user) => user._id === id
-                      ).gender
-                      if (genderOfUser === 'male')
-                        setMansIds(sortUsersIds([...mansIds, id]))
-                      if (genderOfUser === 'famale')
-                        setWomansIds(sortUsersIds([...womansIds, id]))
-                    },
-                    icon: faArrowAltCircleLeft,
-                    iconClassName: 'text-general',
-                    tooltip: 'Перенести в активный состав',
-                  }),
-                ]}
+                buttons={
+                  isLoggedUserAdmin && !isEventClosed
+                    ? [
+                        (id) => ({
+                          onClick: () => {
+                            removeIdsFromReserve([id])
+                            const genderOfUser = users.find(
+                              (user) => user._id === id
+                            ).gender
+                            if (genderOfUser === 'male')
+                              setMansIds(sortUsersIds([...mansIds, id]))
+                            if (genderOfUser === 'famale')
+                              setWomansIds(sortUsersIds([...womansIds, id]))
+                          },
+                          icon: faArrowAltCircleLeft,
+                          iconClassName: 'text-general',
+                          tooltip: 'Перенести в активный состав',
+                        }),
+                      ]
+                    : []
+                }
                 readOnly={!isLoggedUserAdmin || isEventClosed}
               />
             </TabPanel>
