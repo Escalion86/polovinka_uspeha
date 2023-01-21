@@ -1,5 +1,9 @@
 // import DevSwitch from '@components/DevSwitch'
+import DevSwitch from '@components/DevSwitch'
 import Divider from '@components/Divider'
+import Menu from '@components/Menu'
+import { faBug } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { faUser } from '@fortawesome/free-regular-svg-icons'
 // import {
 //   faHome,
@@ -62,7 +66,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
 
   return (
     <div
-      className="relative z-20 flex items-center justify-end w-full h-16 px-3 text-white bg-black"
+      className="relative z-20 flex items-center justify-end w-full h-16 px-3 text-white bg-black gap-x-2"
       style={{ gridArea: 'header' }}
     >
       {title ? (
@@ -105,6 +109,15 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
             </a>
           </Link>
         </div>
+      )}
+      {loggedUser.role === 'dev' && (
+        <Menu
+          trigger={
+            <FontAwesomeIcon icon={faBug} className="w-5 h-5 text-white" />
+          }
+        >
+          <DevSwitch />
+        </Menu>
       )}
       <UserMenu />
     </div>

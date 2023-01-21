@@ -20,19 +20,8 @@ const DevSwitch = () => {
   if (loggedUser.role !== 'dev') return null
 
   return (
-    // <div className="flex items-center text-black bg-gray-200 gap-x-1">
-    // {/* <Switch
-    //   // defaultChecked
-    //   checked={loggedUserActiveRole === 'dev'}
-    //   onChange={() =>
-    //     setLoggedUserActiveRole(
-    //       loggedUserActiveRole === 'dev' ? 'client' : 'dev'
-    //     )
-    //   }
-    // /> */}
-    // {/* <div className="prevent-select-text">{'Режим разработчика'}</div> */}
     <>
-      <div className="p-1 bg-white">
+      <div className="p-1 bg-gray-100">
         <CheckBox
           label="Тип устройства"
           checked={showDevice}
@@ -40,7 +29,7 @@ const DevSwitch = () => {
         />
       </div>
       <ToggleButtonGroup
-        className="flex bg-gray-200 rounded-none"
+        className="flex bg-gray-100 rounded-none"
         color="primary"
         value={loggedUserActiveRole}
         exclusive
@@ -60,7 +49,7 @@ const DevSwitch = () => {
       </ToggleButtonGroup>
       <ToggleButtonGroup
         size="small"
-        className="flex bg-gray-200 rounded-none"
+        className="flex bg-gray-100 rounded-none"
         color="primary"
         value={loggedUserActiveStatus}
         exclusive
