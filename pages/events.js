@@ -16,7 +16,6 @@ export default function Home(props) {
         <title>{`Мероприятия - ЦОЗ "Половинка успеха"`}</title>
       </Head>
       <StateLoader {...props}>
-        <DeviceCheck right />
         <Header />
         {/* <TitleBlock /> */}
         <EventsBlock />

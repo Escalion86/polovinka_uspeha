@@ -68,8 +68,6 @@ function CabinetPage(props) {
       <StateLoader {...props}>
         {loggedUser && (
           <CabinetWrapper>
-            {/* ----------------------------- HEADER ------------------------------- */}
-            <DeviceCheck right />
             <CabinetHeader title={title} />
             <BurgerLayout />
             <ContentWrapper page={page}>
