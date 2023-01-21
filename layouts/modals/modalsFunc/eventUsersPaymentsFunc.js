@@ -28,6 +28,8 @@ import sumOfExpectingPaymentsOfEventFromParticipantsSelector from '@state/select
 import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
 import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import { P } from '@components/tags'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -242,7 +244,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     setDisableDecline,
     setOnlyCloseButtonShow,
   }) => {
-    // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -431,131 +433,138 @@ const eventUsersPaymentsFunc = (eventId) => {
     )
 
     return (
-      <TabContext value="Участники">
-        <TabPanel
-          tabName="Участники"
-          tabAddToLabel={`${sumOfPaymentsOfEventFromParticipants} ₽`}
-        >
-          <TotalFromParticipants />
-          <UsersPayments
-            event={event}
-            users={[...eventParticipants].sort(sortFunction)}
-            defaultPayDirection="fromUser"
-            readOnly={isEventClosed}
-          />
-        </TabPanel>
-        {eventAssistants.length > 0 && (
+      <>
+        {isLoggedUserAdmin && isEventClosed && (
+          <P className="text-danger">
+            Мероприятие закрыто, поэтому редактирование транзакций запрещено
+          </P>
+        )}
+        <TabContext value="Участники">
           <TabPanel
-            tabName="Ведущие"
-            tabAddToLabel={`${sumOfPaymentsOfEventToAssistants} ₽`}
+            tabName="Участники"
+            tabAddToLabel={`${sumOfPaymentsOfEventFromParticipants} ₽`}
           >
-            <TotalToAssistants />
+            <TotalFromParticipants />
             <UsersPayments
               event={event}
-              users={[...eventAssistants].sort(sortFunction)}
-              defaultPayDirection="toUser"
-              noEventPriceForUser
+              users={[...eventParticipants].sort(sortFunction)}
+              defaultPayDirection="fromUser"
               readOnly={isEventClosed}
             />
           </TabPanel>
-        )}
-        <TabPanel
-          tabName="Прочие затраты"
-          tabAddToLabel={`${sumOfPaymentsToEvent} ₽`}
-        >
-          <div className="flex flex-wrap items-center justify-between">
-            <TotalToEvent />
-            <div className="flex justify-end flex-1">
-              {!isEventClosed && (
-                <Button
-                  name="Добавить затраты"
-                  onClick={() =>
-                    modalsFunc.payment.add(null, {
-                      payDirection: 'toEvent',
-                      eventId: event._id,
-                    })
-                  }
-                  thin
-                />
-              )}
-            </div>
-          </div>
-          {paymentsToEvent.length > 0 && (
-            <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded bg-general">
-              {paymentsToEvent.map((payment) => (
-                <div
-                  key={payment._id}
-                  className="flex bg-white border-t border-l border-r border-gray-700 last:border-b-1"
-                >
-                  <PaymentItem
-                    item={payment}
-                    noBorder
-                    checkable={false}
-                    onClick={
-                      !isEventClosed
-                        ? () => {
-                            modalsFunc.payment.edit(payment._id)
-                          }
-                        : null
-                    }
-                  />
-                  <div
-                    className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
-                    onClick={
-                      !isEventClosed
-                        ? () => {
-                            modalsFunc.payment.delete(payment._id)
-                          }
-                        : null
-                    }
-                  >
-                    <FontAwesomeIcon
-                      icon={faTrash}
-                      className={cn(
-                        'w-5 h-5 duration-300 group-hover:scale-125'
-                      )}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+          {eventAssistants.length > 0 && (
+            <TabPanel
+              tabName="Ведущие"
+              tabAddToLabel={`${sumOfPaymentsOfEventToAssistants} ₽`}
+            >
+              <TotalToAssistants />
+              <UsersPayments
+                event={event}
+                users={[...eventAssistants].sort(sortFunction)}
+                defaultPayDirection="toUser"
+                noEventPriceForUser
+                readOnly={isEventClosed}
+              />
+            </TabPanel>
           )}
-        </TabPanel>
-        <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
-          <TotalFromParticipants />
-          {eventAssistants.length > 0 && <TotalToAssistants />}
-          <TotalToEvent />
-          <div className="flex flex-wrap gap-x-1">
-            <span>Текущая прибыль:</span>
-            <span
-              className={cn(
-                'font-bold',
-                totalIncome <= 0 ? 'text-danger' : 'text-success'
-              )}
-            >{`${totalIncome} ₽`}</span>
-          </div>
-          <div className="flex flex-wrap gap-x-1">
-            <span>{'Ожидаемая прибыль:'}</span>
-            <span
-              className={cn(
-                'font-bold',
-                expectedIncome <= 0 ? 'text-danger' : 'text-success'
-              )}
-            >{`${expectedIncome} ₽`}</span>
-          </div>
-          {expectedMaxIncome !== null && (
+          <TabPanel
+            tabName="Прочие затраты"
+            tabAddToLabel={`${sumOfPaymentsToEvent} ₽`}
+          >
+            <div className="flex flex-wrap items-center justify-between">
+              <TotalToEvent />
+              <div className="flex justify-end flex-1">
+                {!isEventClosed && (
+                  <Button
+                    name="Добавить затраты"
+                    onClick={() =>
+                      modalsFunc.payment.add(null, {
+                        payDirection: 'toEvent',
+                        eventId: event._id,
+                      })
+                    }
+                    thin
+                  />
+                )}
+              </div>
+            </div>
+            {paymentsToEvent.length > 0 && (
+              <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded bg-general">
+                {paymentsToEvent.map((payment) => (
+                  <div
+                    key={payment._id}
+                    className="flex bg-white border-t border-l border-r border-gray-700 last:border-b-1"
+                  >
+                    <PaymentItem
+                      item={payment}
+                      noBorder
+                      checkable={false}
+                      onClick={
+                        !isEventClosed
+                          ? () => {
+                              modalsFunc.payment.edit(payment._id)
+                            }
+                          : null
+                      }
+                    />
+                    <div
+                      className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
+                      onClick={
+                        !isEventClosed
+                          ? () => {
+                              modalsFunc.payment.delete(payment._id)
+                            }
+                          : null
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        className={cn(
+                          'w-5 h-5 duration-300 group-hover:scale-125'
+                        )}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabPanel>
+          <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
+            <TotalFromParticipants />
+            {eventAssistants.length > 0 && <TotalToAssistants />}
+            <TotalToEvent />
             <div className="flex flex-wrap gap-x-1">
-              <span>{'Максимально возможная прибыль:'}</span>
+              <span>Текущая прибыль:</span>
               <span
                 className={cn(
                   'font-bold',
-                  expectedMaxIncome <= 0 ? 'text-danger' : 'text-success'
+                  totalIncome <= 0 ? 'text-danger' : 'text-success'
                 )}
-              >{`${expectedMaxIncome} ₽`}</span>
+              >{`${totalIncome} ₽`}</span>
             </div>
-          )}
-        </TabPanel>
-      </TabContext>
+            <div className="flex flex-wrap gap-x-1">
+              <span>{'Ожидаемая прибыль:'}</span>
+              <span
+                className={cn(
+                  'font-bold',
+                  expectedIncome <= 0 ? 'text-danger' : 'text-success'
+                )}
+              >{`${expectedIncome} ₽`}</span>
+            </div>
+            {expectedMaxIncome !== null && (
+              <div className="flex flex-wrap gap-x-1">
+                <span>{'Максимально возможная прибыль:'}</span>
+                <span
+                  className={cn(
+                    'font-bold',
+                    expectedMaxIncome <= 0 ? 'text-danger' : 'text-success'
+                  )}
+                >{`${expectedMaxIncome} ₽`}</span>
+              </div>
+            )}
+          </TabPanel>
+        </TabContext>
+      </>
     )
   }
 

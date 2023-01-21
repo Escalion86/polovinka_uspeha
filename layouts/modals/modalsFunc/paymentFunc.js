@@ -25,6 +25,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setOnlyCloseButtonShow,
   }) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
@@ -133,6 +134,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
+      if (isEventClosed) setOnlyCloseButtonShow(true)
     }, [payDirection, userId, eventId, sum, status, payAt, payType, comment])
 
     return (

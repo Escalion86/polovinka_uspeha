@@ -50,6 +50,8 @@ const Modal = ({
   const [ComponentInFooter, setComponentInFooter] = useState(null)
   const [onlyCloseButtonShow, setOnlyCloseButtonShow] =
     useState(closeButtonShow)
+  const [TopLeftComponentState, setTopLeftComponentState] =
+    useState(TopLeftComponent)
 
   const closeModal = () => {
     onClose && typeof onClose === 'function' && onClose()
@@ -113,6 +115,8 @@ const Modal = ({
   //   }, 10)
   // }, [])
 
+  console.log('TopLeftComponentState', TopLeftComponentState)
+
   return (
     <motion.div
       className={
@@ -148,10 +152,8 @@ const Modal = ({
             </div>
           </div>
         )}
-        {TopLeftComponent && (
-          <div className="absolute left-2 top-2">
-            <TopLeftComponent />
-          </div>
+        {TopLeftComponentState && (
+          <div className="absolute left-2 top-2">{TopLeftComponentState}</div>
         )}
         <Tooltip title="Закрыть">
           <div className="absolute right-2 top-2">
@@ -211,6 +213,7 @@ const Modal = ({
               setDisableDecline={setDisableDecline}
               setComponentInFooter={setComponentInFooter}
               setOnlyCloseButtonShow={setOnlyCloseButtonShow}
+              setTopLeftComponent={setTopLeftComponentState}
             />
           )}
         </div>

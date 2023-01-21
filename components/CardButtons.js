@@ -60,7 +60,9 @@ const CardButtons = ({
   className,
   forForm,
   direction = 'left',
+  alwaysCompact,
   alwaysCompactOnPhone,
+  showEditButton = true,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   // const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
@@ -87,9 +89,6 @@ const CardButtons = ({
       }
     },
   })
-  // const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
-
-  const isCompact = device === 'phoneV' || device === 'phoneH'
 
   const showAdminButtons = isLoggedUserAdmin
 
@@ -99,7 +98,10 @@ const CardButtons = ({
       (showAdminButtons || isLoggedUserMember) && typeOfItem === 'event',
     upBtn: !forForm && showAdminButtons && onUpClick,
     downBtn: !forForm && showAdminButtons && onDownClick,
-    editBtn: showAdminButtons,
+    editBtn:
+      showAdminButtons &&
+      showEditButton &&
+      (typeOfItem !== 'event' || item.status !== 'closed'),
     cloneBtn:
       showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review',
     showOnSiteBtn: showAdminButtons && showOnSiteOnClick,
@@ -115,10 +117,12 @@ const CardButtons = ({
 
   if (numberOfButtons === 0) return null
 
-  const ItemComponent =
-    (numberOfButtons > 3 || alwaysCompactOnPhone) && isCompact
-      ? MenuItem
-      : CardButton
+  const isCompact =
+    alwaysCompact ||
+    ((numberOfButtons > 3 || alwaysCompactOnPhone) &&
+      (device === 'phoneV' || device === 'phoneH'))
+
+  const ItemComponent = isCompact ? MenuItem : CardButton
 
   const items = (
     <>
@@ -247,7 +251,7 @@ const CardButtons = ({
 
   const handleMouseOut = () => setOpen(false)
 
-  return (numberOfButtons > 3 || alwaysCompactOnPhone) && isCompact ? (
+  return isCompact ? (
     <div
       className={cn('relative cursor-pointer group', className)}
       onClick={(e) => {
