@@ -1,3 +1,3 @@
-const isEventClosed = (event) => event.status === 'closed'
+const isEventClosed = (event) => event?.status === 'closed'
 
 export default isEventClosed
