@@ -11,6 +11,7 @@ import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import directionsAtom from '@state/atoms/directionsAtom'
 import StreamChart from '@components/Charts/StreamChart'
+import LineChart from '@components/Charts/LineChart'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import formatDate from '@helpers/formatDate'
 import getDaysBetween from '@helpers/getDaysBetween'
@@ -19,6 +20,11 @@ import isEventExpiredFunc from '@helpers/isEventExpired'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import paymentsAtom from '@state/atoms/paymentsAtom'
+import allPaymentsForClosedEventsSelector from '@state/selectors/allPaymentsForClosedEventsSelector'
+import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
+import { MONTHS, MONTHS_FULL_1 } from '@helpers/constants'
+import upperCaseFirst from '@helpers/upperCaseFirst'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -99,6 +105,21 @@ const StatisticsContent = () => {
   const users = useRecoilValue(usersAtom)
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
+  // const payments = useRecoilValue(paymentsAtom)
+  // const closedPayments = useRecoilValue(allPaymentsForClosedEventsSelector)
+  // const closedEvents =
+  const incomeByDate = useRecoilValue(
+    arrayOfSumOfPaymentsForClosedEventsByDateSelector
+  )
+
+  const dataOfIncomeByDate = []
+  for (const year in incomeByDate) {
+    const data = incomeByDate[year].map((income, index) => ({
+      x: MONTHS[index],
+      y: income,
+    }))
+    dataOfIncomeByDate.push({ id: year, data })
+  }
 
   const [filterUsers, setFilterUsers] = useState({
     status: {
@@ -282,6 +303,87 @@ const StatisticsContent = () => {
             />
           </div>
           {/* </ListWrapper> */}
+        </TabPanel>
+        <TabPanel tabName="Финансы" className="flex flex-col items-center">
+          <LineChart
+            data={dataOfIncomeByDate}
+            xAxisLegend="Месяц"
+            yAxisLegend="Прибыль, ₽"
+            enableSlices="x"
+            sliceTooltip={({ slice }) => {
+              return (
+                <div
+                  style={{
+                    background: 'white',
+                    padding: '9px 12px',
+                    border: '1px solid #ccc',
+                  }}
+                >
+                  <div>
+                    {upperCaseFirst(
+                      MONTHS_FULL_1[slice.points[slice.points.length - 1].index]
+                    )}
+                  </div>
+                  {slice.points.map((point) => (
+                    <div
+                      key={point.id}
+                      style={{
+                        color: point.serieColor,
+                        padding: '3px 0',
+                      }}
+                    >
+                      <strong>{point.serieId}</strong>
+                      <span className="pl-2 text-black">{`${point.data.yFormatted} ₽`}</span>
+                    </div>
+                  ))}
+                </div>
+              )
+            }}
+            legends={[
+              {
+                anchor: 'bottom-right',
+                direction: 'column',
+                justify: false,
+                translateX: 100,
+                translateY: 0,
+                itemsSpacing: 0,
+                itemDirection: 'left-to-right',
+                itemWidth: 80,
+                itemHeight: 20,
+                itemOpacity: 0.75,
+                symbolSize: 12,
+                symbolShape: 'circle',
+                symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemBackground: 'rgba(0, 0, 0, .03)',
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
+            ]}
+            // yScale={{
+            //   type: 'linear',
+            //   stacked: true,
+            // }}
+            // xScale={{
+            //   type: 'linear',
+            //   min: 0,
+            //   max: 'auto',
+            // }}
+            // axisLeft={{
+            //   legend: 'Прибыль',
+            //   legendOffset: -60,
+            // }}
+            // axisBottom={{
+            //   legend: 'Месяц',
+            //   legendOffset: 30,
+            // }}
+            // curve={select('curve', curveOptions, 'linear')}
+          />
         </TabPanel>
       </TabContext>
     </div>
