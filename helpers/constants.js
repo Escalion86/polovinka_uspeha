@@ -698,6 +698,12 @@ export const PAY_DIRECTIONS = [
     color: 'green-400',
     icon: faUserAlt,
   },
+  {
+    value: 'fromEvent',
+    name: 'Доп. доходы (от мероприятия)',
+    color: 'green-400',
+    icon: faCalendar,
+  },
 ]
 
 export const DEFAULT_USERS_STATUS_ACCESS = {

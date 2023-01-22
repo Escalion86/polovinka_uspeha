@@ -59,7 +59,8 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
           payment.payDirection === 'fromUser') && (
           <UserNameById userId={payment.userId} noWrap className="font-bold" />
         )}
-        {payment.payDirection === 'toEvent' && (
+        {(payment.payDirection === 'toEvent' ||
+          payment.payDirection === 'fromEvent') && (
           <EventNameById
             eventId={payment.eventId}
             className="font-bold text-general"

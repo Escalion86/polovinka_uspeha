@@ -2,8 +2,8 @@ import { selectorFamily } from 'recoil'
 import couponsOfEventFromUsersSelector from './couponsOfEventFromUsersSelector'
 import eventParticipantsIdsSelector from './eventParticipantsIdsSelector'
 
-export const sumOfCouponsOfEventFromParticipantsSelector = selectorFamily({
-  key: 'sumOfCouponsOfEventFromParticipantsSelector',
+export const sumOfCouponsFromParticipantsSelector = selectorFamily({
+  key: 'sumOfCouponsFromParticipantsSelector',
   get:
     (id) =>
     ({ get }) => {
@@ -25,4 +25,4 @@ export const sumOfCouponsOfEventFromParticipantsSelector = selectorFamily({
     },
 })
 
-export default sumOfCouponsOfEventFromParticipantsSelector
+export default sumOfCouponsFromParticipantsSelector

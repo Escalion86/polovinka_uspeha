@@ -1,6 +1,6 @@
 import { selectorFamily } from 'recoil'
-import sumOfExpectingPaymentsOfEventFromParticipantsSelector from './sumOfExpectingPaymentsOfEventFromParticipantsSelector'
-import sumOfPaymentsOfEventToAssistantsSelector from './sumOfPaymentsOfEventToAssistantsSelector'
+import sumOfExpectingPaymentsFromParticipantsSelector from './sumOfExpectingPaymentsFromParticipantsSelector'
+import sumOfPaymentsToAssistantsSelector from './sumOfPaymentsToAssistantsSelector'
 import sumOfPaymentsToEventSelector from './sumOfPaymentsToEventSelector'
 
 export const expectedIncomeOfEventSelector = selectorFamily({
@@ -11,8 +11,8 @@ export const expectedIncomeOfEventSelector = selectorFamily({
       if (!id) return []
 
       return (
-        get(sumOfExpectingPaymentsOfEventFromParticipantsSelector(id)) +
-        get(sumOfPaymentsOfEventToAssistantsSelector(id)) +
+        get(sumOfExpectingPaymentsFromParticipantsSelector(id)) +
+        get(sumOfPaymentsToAssistantsSelector(id)) +
         get(sumOfPaymentsToEventSelector(id))
       )
     },
