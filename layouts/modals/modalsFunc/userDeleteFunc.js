@@ -29,10 +29,13 @@ const userDeleteFunc = (userId) => {
 
     // console.log('isUserHaveActions', isUserHaveActions)
 
-    const onClickConfirm = async () => itemsFunc.user.delete(userId)
+    const onClickConfirm = async () => {
+      closeModal()
+      itemsFunc.user.delete(userId)
+    }
 
     useEffect(() => {
-      if (isUserHaveActions) setOnConfirmFunc(onClickConfirm)
+      if (!isUserHaveActions) setOnConfirmFunc(onClickConfirm)
       // setOnConfirmFunc(onClickConfirm)
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(isUserHaveActions)
