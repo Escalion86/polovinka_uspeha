@@ -18,6 +18,7 @@ import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusT
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
+import isEventClosedFunc from '@helpers/isEventClosed'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -125,7 +126,9 @@ const StatisticsContent = () => {
         const isEventExpired = isEventExpiredFunc(event)
         const isEventActive = isEventActiveFunc(event)
         const isEventCanceled = isEventCanceledFunc(event)
+        const isEventClosed = isEventClosedFunc(event)
         return (
+          (isEventClosed && filterEvents.status.finished) ||
           (isEventActive && filterEvents.status.finished && isEventExpired) ||
           (isEventActive && filterEvents.status.active && !isEventExpired) ||
           (isEventCanceled && filterEvents.status.canceled)
