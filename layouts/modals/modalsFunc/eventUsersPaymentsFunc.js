@@ -19,17 +19,19 @@ import { PaymentItem, UserItem } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@components/Button'
 import { motion } from 'framer-motion'
-import sumOfPaymentsOfEventToAssistantsSelector from '@state/selectors/sumOfPaymentsOfEventToAssistantsSelector'
-import sumOfCouponsOfEventFromParticipantsSelector from '@state/selectors/sumOfCouponsOfEventFromParticipantsSelector'
-import sumOfPaymentsOfEventFromParticipantsSelector from '@state/selectors/sumOfPaymentsOfEventFromParticipantsSelector'
+import sumOfPaymentsToAssistantsSelector from '@state/selectors/sumOfPaymentsToAssistantsSelector'
+import sumOfCouponsFromParticipantsSelector from '@state/selectors/sumOfCouponsFromParticipantsSelector'
+import sumOfPaymentsFromParticipantsSelector from '@state/selectors/sumOfPaymentsFromParticipantsSelector'
 import sumOfPaymentsToEventSelector from '@state/selectors/sumOfPaymentsToEventSelector'
-import paymentsOfEventToEventSelector from '@state/selectors/paymentsOfEventToEventSelector'
-import sumOfExpectingPaymentsOfEventFromParticipantsSelector from '@state/selectors/sumOfExpectingPaymentsOfEventFromParticipantsSelector'
+import paymentsToEventSelector from '@state/selectors/paymentsToEventSelector'
+import sumOfExpectingPaymentsFromParticipantsSelector from '@state/selectors/sumOfExpectingPaymentsFromParticipantsSelector'
 import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
 import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import { P } from '@components/tags'
+import sumOfPaymentsFromEventSelector from '@state/selectors/sumOfPaymentsFromEventSelector'
+import paymentsFromEventSelector from '@state/selectors/paymentsFromEventSelector'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -251,9 +253,8 @@ const eventUsersPaymentsFunc = (eventId) => {
     // const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     // const users = useRecoilValue(usersAtom)
     // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
-    const paymentsToEvent = useRecoilValue(
-      paymentsOfEventToEventSelector(eventId)
-    )
+    const paymentsToEvent = useRecoilValue(paymentsToEventSelector(eventId))
+    const paymentsFromEvent = useRecoilValue(paymentsFromEventSelector(eventId))
     // const eventAssistantsIds = useRecoilValue(
     //   eventAssistantsIdsSelector(eventId)
     // )
@@ -269,23 +270,23 @@ const eventUsersPaymentsFunc = (eventId) => {
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
     const eventParticipants = useRecoilValue(eventParticipantsSelector(eventId))
 
-    // const allPaymentsOfEventFromAndToUsers = useRecoilValue(paymentsOfEventFromAndToUsersSelector(eventId))
+    // const allPaymentsOfEventFromAndToUsers = useRecoilValue(paymentsFromAndToUsersSelector(eventId))
 
     // const paymentsOfEventFromAndToUsers = useRecoilValue(
-    //   paymentsWithNoCouponsOfEventFromAndToUsersSelector(eventId)
+    //   paymentsWithNoCouponsFromAndToUsersSelector(eventId)
     // )
     // const couponsOfEventFromUsers = useRecoilValue(
     //   couponsOfEventFromUsersSelector(eventId)
     // )
 
     const sumOfPaymentsOfEventFromParticipants = useRecoilValue(
-      sumOfPaymentsOfEventFromParticipantsSelector(eventId)
+      sumOfPaymentsFromParticipantsSelector(eventId)
     )
     const sumOfCouponsOfEventFromParticipants = useRecoilValue(
-      sumOfCouponsOfEventFromParticipantsSelector(eventId)
+      sumOfCouponsFromParticipantsSelector(eventId)
     )
     const sumOfPaymentsOfEventToAssistants = useRecoilValue(
-      sumOfPaymentsOfEventToAssistantsSelector(eventId)
+      sumOfPaymentsToAssistantsSelector(eventId)
     )
 
     // const sumOfPaymentsOfEventFromParticipants =
@@ -330,12 +331,16 @@ const eventUsersPaymentsFunc = (eventId) => {
       sumOfPaymentsToEventSelector(eventId)
     )
 
+    const sumOfPaymentsFromEvent = useRecoilValue(
+      sumOfPaymentsFromEventSelector(eventId)
+    )
+
     // const membersOfEventCount = eventParticipants.filter(
     //   (user) => user.status === 'member'
     // ).length
     // const noviceOfEventCount = eventParticipants.length - membersOfEventCount
     const paymentsToExpectFromParticipants = useRecoilValue(
-      sumOfExpectingPaymentsOfEventFromParticipantsSelector(eventId)
+      sumOfExpectingPaymentsFromParticipantsSelector(eventId)
     )
     // const paymentsToExpectFromParticipants =
     //   (event.price * eventParticipants.length -
@@ -432,6 +437,22 @@ const eventUsersPaymentsFunc = (eventId) => {
       </div>
     )
 
+    const TotalFromEvent = () => (
+      <div className="flex flex-wrap gap-x-1">
+        <span>Всего доп. доходов от мероприятия:</span>
+        <span
+          className={cn(
+            'font-bold',
+            sumOfPaymentsFromEvent === 0
+              ? 'text-gray_600'
+              : sumOfPaymentsFromEvent > 0
+              ? 'text-success'
+              : 'text-danger'
+          )}
+        >{`${sumOfPaymentsFromEvent} ₽`}</span>
+      </div>
+    )
+
     return (
       <>
         {isLoggedUserAdmin && isEventClosed && (
@@ -468,12 +489,12 @@ const eventUsersPaymentsFunc = (eventId) => {
             </TabPanel>
           )}
           <TabPanel
-            tabName="Прочие затраты"
-            tabAddToLabel={`${sumOfPaymentsToEvent} ₽`}
+            tabName="Мероприятие"
+            tabAddToLabel={`${sumOfPaymentsToEvent + sumOfPaymentsFromEvent} ₽`}
           >
             <div className="flex flex-wrap items-center justify-between">
               <TotalToEvent />
-              <div className="flex justify-end flex-1">
+              <div className="flex justify-end flex-1 gap-x-1">
                 {!isEventClosed && (
                   <Button
                     name="Добавить затраты"
@@ -483,6 +504,7 @@ const eventUsersPaymentsFunc = (eventId) => {
                         eventId: event._id,
                       })
                     }
+                    classBgColor="bg-danger"
                     thin
                   />
                 )}
@@ -528,11 +550,70 @@ const eventUsersPaymentsFunc = (eventId) => {
                 ))}
               </div>
             )}
+            <div className="flex flex-wrap items-center justify-between">
+              <TotalFromEvent />
+              <div className="flex justify-end flex-1 gap-x-1">
+                {!isEventClosed && (
+                  <Button
+                    name="Добавить доходы"
+                    onClick={() =>
+                      modalsFunc.payment.add(null, {
+                        payDirection: 'fromEvent',
+                        eventId: event._id,
+                      })
+                    }
+                    classBgColor="bg-success"
+                    thin
+                  />
+                )}
+              </div>
+            </div>
+            {paymentsFromEvent.length > 0 && (
+              <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded bg-general">
+                {paymentsFromEvent.map((payment) => (
+                  <div
+                    key={payment._id}
+                    className="flex bg-white border-t border-l border-r border-gray-700 last:border-b-1"
+                  >
+                    <PaymentItem
+                      item={payment}
+                      noBorder
+                      checkable={false}
+                      onClick={
+                        !isEventClosed
+                          ? () => {
+                              modalsFunc.payment.edit(payment._id)
+                            }
+                          : null
+                      }
+                    />
+                    <div
+                      className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
+                      onClick={
+                        !isEventClosed
+                          ? () => {
+                              modalsFunc.payment.delete(payment._id)
+                            }
+                          : null
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        className={cn(
+                          'w-5 h-5 duration-300 group-hover:scale-125'
+                        )}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </TabPanel>
           <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
             <TotalFromParticipants />
             {eventAssistants.length > 0 && <TotalToAssistants />}
             <TotalToEvent />
+            <TotalFromEvent />
             <div className="flex flex-wrap gap-x-1">
               <span>Текущая прибыль:</span>
               <span

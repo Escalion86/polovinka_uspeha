@@ -245,6 +245,21 @@ export const MONTHS = [
   'дек',
 ]
 
+export const MONTHS_FULL_1 = [
+  'январь',
+  'февраль',
+  'март',
+  'апрель',
+  'май',
+  'июнь',
+  'июль',
+  'август',
+  'сентябрь',
+  'октябрь',
+  'ноябрь',
+  'декабрь',
+]
+
 export const MONTHS_FULL = [
   'января',
   'февраля',
@@ -697,6 +712,12 @@ export const PAY_DIRECTIONS = [
     name: 'Организатору (от участника)',
     color: 'green-400',
     icon: faUserAlt,
+  },
+  {
+    value: 'fromEvent',
+    name: 'Доп. доходы (от мероприятия)',
+    color: 'green-400',
+    icon: faCalendar,
   },
 ]
 

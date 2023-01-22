@@ -327,12 +327,14 @@ export const PaymentItem = ({
                 className="font-bold leading-4"
               />
             )}
-          {showUserOrEvent && item.payDirection === 'toEvent' && (
-            <EventNameById
-              eventId={item.eventId}
-              className="font-bold leading-4 text-general"
-            />
-          )}
+          {showUserOrEvent &&
+            (item.payDirection === 'toEvent' ||
+              item.payDirection === 'fromEvent') && (
+              <EventNameById
+                eventId={item.eventId}
+                className="font-bold leading-4 text-general"
+              />
+            )}
           {item.comment && (
             <div className="text-sm leading-4">{item.comment}</div>
           )}
