@@ -1,7 +1,12 @@
+import birthDateToAge from '@helpers/birthDateToAge'
 import { postData } from '@helpers/CRUD'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserFullName from '@helpers/getUserFullName'
+import isEventCanceled from '@helpers/isEventCanceled'
+import isEventClosed from '@helpers/isEventClosed'
+import isEventExpired from '@helpers/isEventExpired'
 import isUserAdmin from '@helpers/isUserAdmin'
+import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
 import Histories from '@models/Histories'
@@ -327,14 +332,162 @@ export default async function handler(req, res) {
           ?.status(201)
           .json({ success: true, data: [...oldEventUsers, ...data] })
       }
-      if (userId) {
+      if (userId && eventId) {
+        // Проверка что пользователь заполнил анкету и вообще существует
+        const user = await Users.findById(userId)
+        if (!user) {
+          return res?.status(400).json({
+            success: false,
+            data: { error: `пользователя не существует` },
+          })
+        }
+        if (!isUserQuestionnaireFilled(user)) {
+          return res?.status(400).json({
+            success: false,
+            data: { error: `анкета пользователя не заполнена` },
+          })
+        }
+
         // Сначала проверяем есть ли такой пользователь в мероприятии
         const eventUser = await EventsUsers.findOne({ eventId, userId })
         if (eventUser) {
-          return res?.status(200).json({
+          return res?.status(202).json({
             success: false,
-            data: { error: 'User already registered' },
+            data: { error: 'вы уже зарегистрированы' },
           })
+        }
+
+        // TODO сделать проверку что пользователь заполнил анкету
+
+        // Теперь проверяем есть ли место
+        const event = await Events.findById(eventId)
+        // Закрыто ли мероприятие?
+        if (isEventClosed(event)) {
+          return res?.status(202).json({
+            success: false,
+            data: {
+              error: `мероприятие закрыто`,
+            },
+          })
+        }
+        if (isEventExpired(event)) {
+          return res?.status(202).json({
+            success: false,
+            data: {
+              error: `мероприятие завершено`,
+            },
+          })
+        }
+        if (isEventCanceled(event)) {
+          return res?.status(202).json({
+            success: false,
+            data: {
+              error: `мероприятие отменено`,
+            },
+          })
+        }
+        // Проверяем параметры пользователя
+        const userAge = new Number(birthDateToAge(user.birthday, false, false))
+
+        const isUserTooOld =
+          userAge &&
+          ((user.gender === 'male' &&
+            typeof event.maxMansAge === 'number' &&
+            event.maxMansAge < userAge) ||
+            (user.gender === 'famale' &&
+              typeof event.maxWomansAge === 'number' &&
+              event.maxWomansAge < userAge))
+
+        const isUserTooYoung =
+          userAge &&
+          ((user.gender === 'male' &&
+            typeof event.maxMansAge === 'number' &&
+            event.minMansAge > userAge) ||
+            (user.gender === 'famale' &&
+              typeof event.maxWomansAge === 'number' &&
+              event.minWomansAge > userAge))
+
+        const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
+
+        if (!isAgeOfUserCorrect) {
+          return res?.status(202).json({
+            success: false,
+            data: {
+              error: `ваш возраст не соответствует требованиям`,
+            },
+          })
+        }
+
+        const isUserStatusCorrect = user.status
+          ? event.usersStatusAccess.get(user.status)
+          : false
+
+        if (!isUserStatusCorrect) {
+          return res?.status(202).json({
+            success: false,
+            data: {
+              error: `ваш статус не имеет допуска на мероприятие`,
+            },
+          })
+        }
+        // Завершили проверку параметров пользователя
+
+        // Если пользователь хочет зарегистрироваться в основной состав, то проверяем есть ли место
+        if (!status || status === 'participant') {
+          const canSignInReserve =
+            event.isReserveActive ?? DEFAULT_EVENT.isReserveActive
+
+          const eventUsersParticipants = await EventsUsers.find({
+            eventId,
+            status: 'participant',
+          })
+          const eventParticipantsIds = eventUsersParticipants.map(
+            (eventUser) => eventUser.userId
+          )
+          const eventParticipants = await Users.find({
+            _id: { $in: eventParticipantsIds },
+          })
+          const eventParticipantsMansCount = eventParticipants.filter(
+            (user) => user.gender === 'male'
+          ).length
+          const eventParticipantsWomansCount = eventParticipants.filter(
+            (user) => user.gender === 'famale'
+          ).length
+          const eventParticipantsCount =
+            eventParticipantsMansCount + eventParticipantsWomansCount
+
+          var errorText
+          // Если мероприятие забито
+          if (
+            typeof event.maxParticipants === 'number' &&
+            event.maxParticipants <= eventParticipantsCount
+          ) {
+            errorText = `мероприятие заполнено`
+          } else if (
+            user.gender === 'male' &&
+            typeof event.maxMans === 'number' &&
+            event.maxMans <= eventParticipantsMansCount
+          ) {
+            errorText = `на мероприятии закончились места для мужчин`
+          }
+
+          if (
+            user.gender === 'famale' &&
+            typeof event.maxWomans === 'number' &&
+            event.maxWomans <= eventParticipantsWomansCount
+          ) {
+            errorText = `на мероприятии закончились места для женщин`
+          }
+
+          if (errorText) {
+            return res?.status(202).json({
+              success: false,
+              data: {
+                error: errorText,
+                solution: canSignInReserve ? 'reserve' : undefined,
+              },
+            })
+          }
         }
 
         const newEventUser = await EventsUsers.create({
@@ -363,7 +516,6 @@ export default async function handler(req, res) {
           addedEventUsers: [newEventUser.toJSON()],
           itIsSelfRecord: true,
         })
-
         return res?.status(201).json({ success: true, data: newEventUser })
       }
 

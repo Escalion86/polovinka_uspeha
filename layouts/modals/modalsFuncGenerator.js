@@ -25,7 +25,6 @@ import selectDirectionsFunc from './modalsFunc/selectDirectionsFunc'
 import selectEventsFunc from './modalsFunc/selectEventsFunc'
 import jsonFunc from './modalsFunc/jsonFunc'
 import cropImageFunc from './modalsFunc/cropImageFunc'
-import userVisitedEventsFunc from './modalsFunc/userVisitedEventsFunc'
 import notificationsTelegramFunc from './modalsFunc/notificationsTelegramFunc'
 import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
 import questionnaireFunc from './modalsFunc/questionnaireFunc'
@@ -52,6 +51,31 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
 
       return [...modals, { id: maxId < 0 ? 0 : maxId + 1, props }]
     })
+  }
+
+  const fixEventStatus = (eventId, status) => {
+    itemsFunc.event.set({ _id: eventId, status }, false, true)
+  }
+
+  const event_signUpToReserveAfterError = (eventId, error) => {
+    // console.log('loggedUser', loggedUser)
+    // if (!loggedUser?._id)
+    //   addModal({
+    //     title: 'Необходимо зарегистрироваться и авторизироваться',
+    //     text: 'Для записи на мероприятие, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
+    //     confirmButtonName: 'Зарегистрироваться / Авторизироваться',
+    //     onConfirm: () => router.push('/login', '', { shallow: true }),
+    //   })
+    // else {
+    addModal({
+      title: `Запись в резерв на мероприятие`,
+      text: `К сожалению не удалось записаться на мероприятие в основной состав, так как ${error}. Однако вы можете записаться на мероприятие в резерв, и как только место освободиться вы будете приняты в основной состав. Записаться в резерв на мероприятие?`,
+      confirmButtonName: `Записаться в резерв`,
+      onConfirm: () => {
+        itemsFunc.event.signUp(eventId, loggedUser?._id, 'reserve')
+      },
+    })
+    // }
   }
 
   return {
@@ -198,11 +222,58 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
             text: `Вы уверены что хотите записаться${postfixStatus} на мероприятие?`,
             confirmButtonName: `Записаться${postfixStatus}`,
             onConfirm: () => {
-              itemsFunc.event.signUp(eventId, loggedUser?._id, status)
+              itemsFunc.event.signUp(
+                eventId,
+                loggedUser?._id,
+                status,
+                (data) => {
+                  if (data.error === 'мероприятие закрыто') {
+                    fixEventStatus(eventId, 'closed')
+                  }
+                  if (data.error === 'мероприятие отменено') {
+                    fixEventStatus(eventId, 'canceled')
+                  }
+                  if (data.solution === 'reserve') {
+                    event_signUpToReserveAfterError(eventId, data.error)
+                    // addModal({
+                    //   title: `Запись в резерв на мероприятие`,
+                    //   text: `К сожалению не удалось записаться на мероприятие в основной состав, так как ${error}. Однако вы можете записаться на мероприятие в резерв, и как только место освободиться вы будете приняты в основной состав. Записаться в резерв на мероприятие?`,
+                    //   confirmButtonName: `Записаться в резерв`,
+                    //   onConfirm: () => {
+                    //     itemsFunc.event.signUp(
+                    //       eventId,
+                    //       loggedUser?._id,
+                    //       'reserve'
+                    //     )
+                    //   },
+                    // })
+                  }
+                }
+              )
             },
           })
         }
       },
+      // signUpToReserveAfterError: (eventId, error) => {
+      //   // console.log('loggedUser', loggedUser)
+      //   // if (!loggedUser?._id)
+      //   //   addModal({
+      //   //     title: 'Необходимо зарегистрироваться и авторизироваться',
+      //   //     text: 'Для записи на мероприятие, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
+      //   //     confirmButtonName: 'Зарегистрироваться / Авторизироваться',
+      //   //     onConfirm: () => router.push('/login', '', { shallow: true }),
+      //   //   })
+      //   // else {
+      //   addModal({
+      //     title: `Запись в резерв на мероприятие`,
+      //     text: `К сожалению не удалось записаться на мероприятие в основной состав, так как ${error}. Однако вы можете записаться на мероприятие в резерв, и как только место освободиться вы будете приняты в основной состав. Записаться в резерв на мероприятие?`,
+      //     confirmButtonName: `Записаться в резерв`,
+      //     onConfirm: () => {
+      //       itemsFunc.event.signUp(eventId, loggedUser?._id, 'reserve')
+      //     },
+      //   })
+      //   // }
+      // },
       signOut: (eventId, activeStatus) => {
         if (!loggedUser?._id)
           addModal({

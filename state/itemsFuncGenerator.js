@@ -145,7 +145,7 @@ const itemsFuncGenerator = (
   array?.length > 0 &&
     array.forEach((itemName) => {
       obj[itemName] = {
-        set: async (item, clone) => {
+        set: async (item, clone, noSnackbar) => {
           if (item?._id && !clone) {
             setLoadingCard(itemName + item._id)
             return await putData(
@@ -153,12 +153,13 @@ const itemsFuncGenerator = (
               item,
               (data) => {
                 setNotLoadingCard(itemName + item._id)
-                snackbar.success(messages[itemName].update.success)
+                if (!noSnackbar)
+                  snackbar.success(messages[itemName].update.success)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
               (error) => {
-                snackbar.error(messages[itemName].update.error)
+                if (!noSnackbar) snackbar.error(messages[itemName].update.error)
                 setErrorCard(itemName + item._id)
                 const data = {
                   errorPlace: 'UPDATE ERROR',
@@ -176,12 +177,13 @@ const itemsFuncGenerator = (
               `/api/${itemName}s`,
               clearedItem,
               (data) => {
-                snackbar.success(messages[itemName].add.success)
+                if (!noSnackbar)
+                  snackbar.success(messages[itemName].add.success)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
               (error) => {
-                snackbar.error(messages[itemName].add.error)
+                if (!noSnackbar) snackbar.error(messages[itemName].add.error)
                 setErrorCard(itemName + item._id)
                 const data = {
                   errorPlace: 'CREATE ERROR',
@@ -271,19 +273,29 @@ const itemsFuncGenerator = (
     )
   }
 
-  obj.event.signUp = async (eventId, userId, status) => {
+  obj.event.signUp = async (eventId, userId, status, ifError) => {
     setLoadingCard('event' + eventId)
     return await postData(
       `/api/eventsusers`,
       { eventId, userId, status },
       (data) => {
-        snackbar.success(
-          `Запись${
-            status === 'reserve' ? ' в резерв' : ''
-          } на мероприятие прошла успешно`
-        )
-        setNotLoadingCard('event' + eventId)
-        props.setEventsUsers(data)
+        console.log('data', data)
+        // Если запрос прошел, но записаться нельзя, так как уже ктото успел записаться
+        if (data.error) {
+          snackbar.error(
+            `Не удалось записаться на мероприятие, так как ${data.error}`
+          )
+          setNotLoadingCard('event' + eventId)
+          ifError(data)
+        } else {
+          snackbar.success(
+            `Запись${
+              status === 'reserve' ? ' в резерв' : ''
+            } на мероприятие прошла успешно`
+          )
+          setNotLoadingCard('event' + eventId)
+          props.setEventsUsers(data)
+        }
       },
       (error) => {
         snackbar.error(
