@@ -462,13 +462,13 @@ export default async function handler(req, res) {
             typeof event.maxParticipants === 'number' &&
             event.maxParticipants <= eventParticipantsCount
           ) {
-            errorText = `мероприятие заполнено`
+            errorText = `свободных мест уже нет`
           } else if (
             user.gender === 'male' &&
             typeof event.maxMans === 'number' &&
             event.maxMans <= eventParticipantsMansCount
           ) {
-            errorText = `на мероприятии закончились места для мужчин`
+            errorText = `свободных мест для мужчин уже нет`
           }
 
           if (
@@ -476,7 +476,7 @@ export default async function handler(req, res) {
             typeof event.maxWomans === 'number' &&
             event.maxWomans <= eventParticipantsWomansCount
           ) {
-            errorText = `на мероприятии закончились места для женщин`
+            errorText = `свободных мест для женщин уже нет`
           }
 
           if (errorText) {
