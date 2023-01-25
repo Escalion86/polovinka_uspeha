@@ -189,6 +189,12 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
       users: (eventId) => addModal(eventUsersFunc(eventId)),
       statusEdit: (eventId) => addModal(eventStatusEditFunc(eventId)),
       payments: (eventId) => addModal(eventUsersPaymentsFunc(eventId)),
+      close: (eventId) =>
+        addModal({
+          title: 'Закрытие мероприятия',
+          text: 'Вы уверены, что хотите закрыть мероприятие?',
+          onConfirm: async () => itemsFunc.event.close(eventId),
+        }),
       cancel: (eventId) =>
         addModal({
           title: 'Отмена события',

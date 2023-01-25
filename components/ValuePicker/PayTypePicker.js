@@ -7,11 +7,12 @@ const PayTypePicker = ({
   required = false,
   error,
   readOnly,
+  label = 'Тип оплаты',
 }) => (
   <ValuePicker
     value={payType}
     valuesArray={PAY_TYPES}
-    label="Тип оплаты"
+    label={label}
     onChange={onChange}
     name="paytype"
     required={required}

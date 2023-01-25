@@ -253,6 +253,26 @@ const itemsFuncGenerator = (
     )
   }
 
+  obj.event.close = async (eventId) => {
+    setLoadingCard('event' + eventId)
+    return await putData(
+      `/api/events/${eventId}`,
+      { status: 'close' },
+      (data) => {
+        snackbar.success('Мероприятие закрыто')
+        setNotLoadingCard('event' + eventId)
+        props.setEvent(data)
+      },
+      (error) => {
+        snackbar.error('Не удалось закрыть мероприятие')
+        setErrorCard('event' + eventId)
+        const data = { errorPlace: 'EVENT CLOSE ERROR', eventId, error }
+        modalsFunc.error(data)
+        console.log(data)
+      }
+    )
+  }
+
   obj.event.uncancel = async (eventId) => {
     setLoadingCard('event' + eventId)
     return await putData(
@@ -422,13 +442,19 @@ const itemsFuncGenerator = (
     )
   }
 
-  obj.payment.autofillPayments = async ({ eventId, payType, payAt }) => {
+  obj.payment.autofillPayments = async ({
+    eventId,
+    payType,
+    payAt,
+    couponForOrganizer,
+  }) => {
     return await postData(
       `/api/payments/autofill`,
       {
         eventId,
         payType,
         payAt,
+        couponForOrganizer,
       },
       (data) => {
         snackbar.success(

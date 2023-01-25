@@ -32,6 +32,7 @@ import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelecto
 import { P } from '@components/tags'
 import sumOfPaymentsFromEventSelector from '@state/selectors/sumOfPaymentsFromEventSelector'
 import paymentsFromEventSelector from '@state/selectors/paymentsFromEventSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -250,11 +251,13 @@ const eventUsersPaymentsFunc = (eventId) => {
     setDisableConfirm,
     setDisableDecline,
     setOnlyCloseButtonShow,
+    setBottomLeftButtonProps,
   }) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
+    const setEvent = useRecoilValue(itemsFuncAtom).event.set
     // const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     // const users = useRecoilValue(usersAtom)
     // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
@@ -381,6 +384,22 @@ const eventUsersPaymentsFunc = (eventId) => {
             maxPaymentPerParticipant) /
             100
         : null
+
+    useEffect(() => {
+      setBottomLeftButtonProps({
+        name:
+          event.status === 'closed'
+            ? 'Активировать мероприятие'
+            : 'Закрыть мероприятие',
+        classBgColor: event.status === 'closed' ? 'bg-general' : 'bg-success',
+        onClick: () =>
+          setEvent({
+            _id: eventId,
+            status: event.status === 'closed' ? 'active' : 'closed',
+          }),
+        disabled: totalIncome < expectedIncome,
+      })
+    }, [totalIncome, expectedIncome, event.status])
 
     const TotalFromParticipants = () => (
       <div className="flex flex-wrap gap-x-1">

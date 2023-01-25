@@ -5,6 +5,9 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
 import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import isEventExpiredFunc from '@helpers/isEventExpired'
+import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
+import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
+import { P } from '@components/tags'
 
 const eventStatusEditFunc = (eventId) => {
   const EventStatusEditModal = ({
@@ -19,6 +22,12 @@ const eventStatusEditFunc = (eventId) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
     const isEventExpired = isEventExpiredFunc(event)
+
+    const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
+    const expectedIncome = useRecoilValue(
+      expectedIncomeOfEventSelector(eventId)
+    )
+    const canSetClosed = totalIncome >= expectedIncome && isEventExpired
 
     const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
 
@@ -49,8 +58,25 @@ const eventStatusEditFunc = (eventId) => {
           required
           status={status}
           onChange={setStatus}
-          disabledValues={isEventExpired ? [] : ['closed']}
+          disabledValues={canSetClosed ? [] : ['closed']}
         />
+        {!canSetClosed && (
+          <>
+            <div className="text-red-500">
+              Закрытие мероприятия не доступно так как:
+            </div>
+            <ul className="ml-4 -mt-2 list-disc">
+              {totalIncome < expectedIncome && (
+                <li className="text-red-500">
+                  финансы мероприятия не полностью заполнены
+                </li>
+              )}
+              {!isEventExpired && (
+                <li className="text-red-500">мероприятие не завершено</li>
+              )}
+            </ul>
+          </>
+        )}
       </div>
     )
   }

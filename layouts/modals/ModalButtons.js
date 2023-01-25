@@ -13,6 +13,7 @@ const ModalButtons = ({
   children,
   closeButtonShow,
   closeModal,
+  bottomLeftButton,
 }) => {
   if (!showConfirm && !showDecline && !closeButtonShow) return null
   return (
@@ -21,6 +22,9 @@ const ModalButtons = ({
       <div className="flex flex-wrap justify-between px-2 tablet:px-3 tablet:pt-1">
         {children}
         <div className="flex justify-end flex-1 gap-x-1 tablet:gap-x-2">
+          {typeof bottomLeftButton === 'object' ? (
+            <div className="flex-1">{<Button {...bottomLeftButton} />}</div>
+          ) : null}
           {showConfirm && (
             <Button
               name={confirmName}

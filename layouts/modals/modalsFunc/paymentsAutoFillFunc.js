@@ -2,20 +2,14 @@ import React, { useEffect, useMemo, useState } from 'react'
 import useErrors from '@helpers/useErrors'
 import { useRecoilValue } from 'recoil'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import paymentSelector from '@state/selectors/paymentSelector'
+import eventSelector from '@state/selectors/eventSelector'
 
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
-import { SelectEvent, SelectUser } from '@components/SelectItem'
-import PriceInput from '@components/PriceInput'
+import { SelectEvent } from '@components/SelectItem'
 import PayTypePicker from '@components/ValuePicker/PayTypePicker'
-import { DEFAULT_PAYMENT } from '@helpers/constants'
 import DateTimePicker from '@components/DateTimePicker'
-import PayDirectionPicker from '@components/ValuePicker/PayDirectionPicker'
-import Input from '@components/Input'
-import isEventClosedFunc from '@helpers/isEventClosed'
-import eventSelector from '@state/selectors/eventSelector'
-import { P } from '@components/tags'
+import CheckBox from '@components/CheckBox'
 
 const paymentsAutoFillFunc = (eventId) => {
   const PaymentsAutoFillModal = ({
@@ -54,6 +48,7 @@ const paymentsAutoFillFunc = (eventId) => {
     const defaultPayAt = useMemo(() => event?.dateStart ?? Date.now(), [])
     const [payAt, setPayAt] = useState(defaultPayAt)
     const [payType, setPayType] = useState(null)
+    const [couponForOrganizer, setCouponForOrganizer] = useState(true)
     // const [comment, setComment] = useState(
     //   props?.comment ?? payment?.comment ?? DEFAULT_PAYMENT.comment
     // )
@@ -74,6 +69,7 @@ const paymentsAutoFillFunc = (eventId) => {
           eventId,
           payType,
           payAt,
+          couponForOrganizer,
         })
         // if (direction && !clone) {
         //   await putData(
@@ -149,7 +145,7 @@ const paymentsAutoFillFunc = (eventId) => {
             removeError('payAt')
             setPayAt(date)
           }}
-          label="Дата проведения транзакции"
+          label="Дата проведения транзакций"
           required
           error={errors.payAt}
           // disabled={isEventClosed}
@@ -164,6 +160,7 @@ const paymentsAutoFillFunc = (eventId) => {
           disabled={isEventClosed}
         /> */}
         <PayTypePicker
+          label="Тип оплаты для всех транзакций"
           payType={payType}
           onChange={(value) => {
             removeError('payType')
@@ -172,6 +169,13 @@ const paymentsAutoFillFunc = (eventId) => {
           required
           error={errors.payType}
           // readOnly={isEventClosed}
+        />
+        <CheckBox
+          checked={couponForOrganizer}
+          labelPos="left"
+          onClick={() => setCouponForOrganizer((state) => !state)}
+          // labelClassName="w-[20%]"
+          label="Если среди участиков есть организатор, то поставить ему купон"
         />
         {/* <Input
           label="Комментарий"
