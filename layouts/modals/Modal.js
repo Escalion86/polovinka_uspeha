@@ -35,6 +35,7 @@ const Modal = ({
   showDecline,
   closeButtonShow = false,
   TopLeftComponent,
+  bottomLeftButtonProps,
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
@@ -52,6 +53,9 @@ const Modal = ({
     useState(closeButtonShow)
   const [TopLeftComponentState, setTopLeftComponentState] =
     useState(TopLeftComponent)
+  const [bottomLeftButton, setBottomLeftButton] = useState(
+    bottomLeftButtonProps
+  )
 
   const closeModal = () => {
     onClose && typeof onClose === 'function' && onClose()
@@ -212,6 +216,7 @@ const Modal = ({
               setComponentInFooter={setComponentInFooter}
               setOnlyCloseButtonShow={setOnlyCloseButtonShow}
               setTopLeftComponent={setTopLeftComponentState}
+              setBottomLeftButtonProps={setBottomLeftButton}
             />
           )}
         </div>
@@ -222,7 +227,8 @@ const Modal = ({
           showDecline ||
           ComponentInFooter ||
           closeButtonShow ||
-          onlyCloseButtonShow) && (
+          onlyCloseButtonShow ||
+          bottomLeftButton) && (
           <ModalButtons
             closeButtonShow={onlyCloseButtonShow}
             confirmName={confirmButtonName}
@@ -234,6 +240,7 @@ const Modal = ({
             disableConfirm={disableConfirm}
             disableDecline={disableDecline}
             closeModal={closeModal}
+            bottomLeftButton={bottomLeftButton}
           >
             {ComponentInFooter}
           </ModalButtons>

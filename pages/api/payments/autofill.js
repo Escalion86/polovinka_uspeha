@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   await dbConnect()
   if (method === 'POST') {
     try {
-      const { eventId, payType, payAt } = body
+      const { eventId, payType, payAt, couponForOrganizer } = body
       const event = await Events.findById(eventId)
       const eventPrice = event.price
       const eventPrices = {
@@ -63,11 +63,12 @@ export default async function handler(req, res) {
           0
         )
         const userNeedToPay = priceForUser - userPaid
+        const isUserOrganizer = userId === event.organizerId
         if (userNeedToPay > 0) {
           needToPayUsers.push({
             eventId,
             userId,
-            payType,
+            payType: couponForOrganizer && isUserOrganizer ? 'coupon' : payType,
             payAt,
             sum: userNeedToPay,
             payDirection: 'fromUser',
