@@ -5,6 +5,7 @@ const EventStatusPicker = ({
   status,
   onChange = null,
   required = false,
+  disabledValues,
   error = false,
 }) => (
   <ValuePicker
@@ -15,6 +16,7 @@ const EventStatusPicker = ({
     name="status"
     required={required}
     error={error}
+    disabledValues={disabledValues}
   />
 )
 

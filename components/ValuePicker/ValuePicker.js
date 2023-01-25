@@ -16,6 +16,7 @@ const ValuePicker = ({
   className,
   defaultValue,
   readOnly,
+  disabledValues = [],
 }) => {
   const [state, setState] = useState(defaultValue)
   return (
@@ -60,7 +61,7 @@ const ValuePicker = ({
             icon={item.icon}
             color={item.color}
             onClick={
-              !readOnly
+              !readOnly && !disabledValues.includes(item.value)
                 ? () => {
                     if (defaultValue !== undefined) {
                       if (item.value === state) {

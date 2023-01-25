@@ -90,9 +90,14 @@ const UsersPayments = ({
         const eventPriceForUser = noEventPriceForUser
           ? 0
           : (event.price -
-              (typeof event.usersStatusDiscount[user.status ?? 'novice'] ===
-              'number'
-                ? event.usersStatusDiscount[user.status ?? 'novice']
+              (typeof event.usersStatusDiscount[
+                !user?.status || user.status === 'ban' ? 'novice' : user.status
+              ] === 'number'
+                ? event.usersStatusDiscount[
+                    !user?.status || user.status === 'ban'
+                      ? 'novice'
+                      : user.status
+                  ]
                 : 0)) /
               100 -
             sumOfCoupons
@@ -465,7 +470,19 @@ const eventUsersPaymentsFunc = (eventId) => {
             tabName="Участники"
             tabAddToLabel={`${sumOfPaymentsOfEventFromParticipants} ₽`}
           >
-            <TotalFromParticipants />
+            <div className="flex flex-wrap items-center justify-between">
+              <TotalFromParticipants />
+              <div className="flex justify-end flex-1 gap-x-1">
+                {!isEventClosed && (
+                  <Button
+                    name="Заполнить автоматически"
+                    onClick={() => modalsFunc.payment.autoFill(eventId)}
+                    classBgColor="bg-general"
+                    thin
+                  />
+                )}
+              </div>
+            </div>
             <UsersPayments
               event={event}
               users={[...eventParticipants].sort(sortFunction)}

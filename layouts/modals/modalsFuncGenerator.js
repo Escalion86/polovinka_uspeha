@@ -18,6 +18,7 @@ import serviceFunc from './modalsFunc/serviceFunc'
 
 import eventViewFunc from './modalsFunc/eventViewFunc'
 import paymentFunc from './modalsFunc/paymentFunc'
+import paymentsAutoFillFunc from './modalsFunc/paymentsAutoFillFunc'
 import userViewFunc from './modalsFunc/userViewFunc'
 import errorFunc from './modalsFunc/errorFunc'
 import selectUsersFunc from './modalsFunc/selectUsersFunc'
@@ -306,6 +307,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
     payment: {
       add: (paymentId, props) => addModal(paymentFunc(paymentId, true, props)),
       edit: (paymentId) => addModal(paymentFunc(paymentId)),
+      autoFill: (eventId) => addModal(paymentsAutoFillFunc(eventId)),
       delete: (paymentId) =>
         addModal({
           title: 'Удаление транзакции',

@@ -422,6 +422,38 @@ const itemsFuncGenerator = (
     )
   }
 
+  obj.payment.autofillPayments = async ({ eventId, payType, payAt }) => {
+    return await postData(
+      `/api/payments/autofill`,
+      {
+        eventId,
+        payType,
+        payAt,
+      },
+      (data) => {
+        snackbar.success(
+          'Автоматическое заполнение транзакций выполнено успешно'
+        )
+        // props.deleteEventsUsersByEventId(eventId)
+        props.addPayments(data)
+      },
+      (error) => {
+        snackbar.error('Не удалось автоматически заполненить транзакции')
+        const data = {
+          errorPlace: 'autofill payments ERROR',
+          eventId,
+          payType,
+          payAt,
+          error,
+        }
+        modalsFunc.error(data)
+        console.log(data)
+      }
+      // () => props['setAdditionalBlock'](itemId)
+      //  deleteEvent(itemId)
+    )
+  }
+
   return obj
 
   // return {
