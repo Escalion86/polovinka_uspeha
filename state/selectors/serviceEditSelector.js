@@ -1,10 +1,10 @@
-import { DEFAULT_SERIVICE } from '@helpers/constants'
+import { DEFAULT_SERVICE } from '@helpers/constants'
 import servicesAtom from '@state/atoms/servicesAtom'
 import { selector } from 'recoil'
 
 const serviceEditSelector = selector({
   key: 'serviceEditSelector',
-  get: () => DEFAULT_SERIVICE,
+  get: () => DEFAULT_SERVICE,
   set: ({ set, get }, newItem) => {
     const items = get(servicesAtom)
     if (!newItem?._id) return
