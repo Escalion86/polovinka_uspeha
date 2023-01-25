@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -11,6 +12,7 @@ const Button = ({
   loading = false,
   stopPropagation,
   thin = false,
+  icon,
 }) => {
   return loading ? (
     <div
@@ -29,7 +31,7 @@ const Button = ({
         onClick && !disabled && onClick()
       }}
       className={cn(
-        'duration-300 px-4 rounded text-white bg-opacity-90 min-w-max prevent-select-text',
+        'flex gap-x-2 items-center duration-300 px-4 rounded text-white bg-opacity-90 min-w-max prevent-select-text',
         thin ? 'h-8 py-0.5' : 'h-9 py-1',
         className,
         disabled
@@ -37,6 +39,7 @@ const Button = ({
           : cn(classHoverBgColor, classBgColor)
       )}
     >
+      {icon && <FontAwesomeIcon icon={icon} className="w-5 h-5" />}
       {name}
     </button>
   )
