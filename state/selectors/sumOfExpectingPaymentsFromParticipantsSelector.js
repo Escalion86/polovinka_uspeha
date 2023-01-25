@@ -15,7 +15,8 @@ export const sumOfExpectingPaymentsFromParticipantsSelector = selectorFamily({
         (user) => user.status === 'member'
       ).length
       const noviceOfEventCount = eventParticipants.filter(
-        (user) => user.status === 'novice'
+        (user) =>
+          !user?.status || user.status === 'novice' || user.status === 'ban'
       ).length
       const sumOfCouponsOfEventFromParticipants = get(
         sumOfCouponsFromParticipantsSelector(id)

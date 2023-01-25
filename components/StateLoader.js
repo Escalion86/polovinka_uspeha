@@ -28,6 +28,7 @@ import userEditSelector from '@state/selectors/userEditSelector'
 import userDeleteSelector from '@state/selectors/userDeleteSelector'
 import reviewEditSelector from '@state/selectors/reviewEditSelector'
 import reviewDeleteSelector from '@state/selectors/reviewDeleteSelector'
+import paymentsAddSelector from '@state/selectors/paymentsAddSelector'
 import paymentEditSelector from '@state/selectors/paymentEditSelector'
 import paymentsDeleteSelector from '@state/selectors/paymentsDeleteSelector'
 import eventsUsersDeleteByEventIdSelector from '@state/selectors/eventsUsersDeleteByEventIdSelector'
@@ -103,6 +104,7 @@ const StateLoader = (props) => {
   const setReview = useSetRecoilState(reviewEditSelector)
   const deleteReview = useSetRecoilState(reviewDeleteSelector)
   const setPayment = useSetRecoilState(paymentEditSelector)
+  const addPayments = useSetRecoilState(paymentsAddSelector)
   const deletePayment = useSetRecoilState(paymentsDeleteSelector)
   const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
   const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
@@ -182,6 +184,7 @@ const StateLoader = (props) => {
           deleteUser,
           setReview,
           deleteReview,
+          addPayments,
           setPayment,
           deletePayment,
           setEventsUsers,

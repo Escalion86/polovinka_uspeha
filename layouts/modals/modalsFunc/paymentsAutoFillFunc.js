@@ -17,8 +17,8 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import eventSelector from '@state/selectors/eventSelector'
 import { P } from '@components/tags'
 
-const paymentFunc = (paymentId, clone = false, props) => {
-  const PaymentModal = ({
+const paymentsAutoFillFunc = (eventId) => {
+  const PaymentsAutoFillModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
@@ -27,40 +27,36 @@ const paymentFunc = (paymentId, clone = false, props) => {
     setDisableDecline,
     setOnlyCloseButtonShow,
   }) => {
-    const payment = useRecoilValue(paymentSelector(paymentId))
-    const setPayment = useRecoilValue(itemsFuncAtom).payment.set
+    // const payment = useRecoilValue(paymentSelector(paymentId))
+    const autofillPayments =
+      useRecoilValue(itemsFuncAtom).payment.autofillPayments
 
-    const event = useRecoilValue(eventSelector(payment.eventId))
-    const isEventClosed = isEventClosedFunc(event)
+    const event = useRecoilValue(eventSelector(eventId))
+    // const isEventClosed = isEventClosedFunc(event)
 
-    const [payDirection, setPayDirection] = useState(
-      props?.payDirection ??
-        payment?.payDirection ??
-        DEFAULT_PAYMENT.payDirection
-    )
-    const [userId, setUserId] = useState(
-      props?.userId ?? payment?.userId ?? DEFAULT_PAYMENT.userId
-    )
-    const [eventId, setEventId] = useState(
-      props?.eventId ?? payment?.eventId ?? DEFAULT_PAYMENT.eventId
-    )
-    const [sum, setSum] = useState(
-      props?.sum ?? payment?.sum ?? DEFAULT_PAYMENT.sum
-    )
-    const [status, setStatus] = useState(
-      props?.status ?? payment?.status ?? DEFAULT_PAYMENT.status
-    )
-    const defaultPayAt = useMemo(
-      () => props?.payAt ?? payment?.payAt ?? Date.now(),
-      []
-    )
+    // const [payDirection, setPayDirection] = useState(
+    //   props?.payDirection ??
+    //     payment?.payDirection ??
+    //     DEFAULT_PAYMENT.payDirection
+    // )
+    // const [userId, setUserId] = useState(
+    //   props?.userId ?? payment?.userId ?? DEFAULT_PAYMENT.userId
+    // )
+    // const [eventId, setEventId] = useState(
+    //   props?.eventId ?? payment?.eventId ?? DEFAULT_PAYMENT.eventId
+    // )
+    // const [sum, setSum] = useState(
+    //   props?.sum ?? payment?.sum ?? DEFAULT_PAYMENT.sum
+    // )
+    // const [status, setStatus] = useState(
+    //   props?.status ?? payment?.status ?? DEFAULT_PAYMENT.status
+    // )
+    const defaultPayAt = useMemo(() => event?.dateStart ?? Date.now(), [])
     const [payAt, setPayAt] = useState(defaultPayAt)
-    const [payType, setPayType] = useState(
-      props?.payType ?? payment?.payType ?? DEFAULT_PAYMENT.payType
-    )
-    const [comment, setComment] = useState(
-      props?.comment ?? payment?.comment ?? DEFAULT_PAYMENT.comment
-    )
+    const [payType, setPayType] = useState(null)
+    // const [comment, setComment] = useState(
+    //   props?.comment ?? payment?.comment ?? DEFAULT_PAYMENT.comment
+    // )
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -72,28 +68,13 @@ const paymentFunc = (paymentId, clone = false, props) => {
     // }
 
     const onClickConfirm = async () => {
-      const toCheck = { payDirection, eventId, sum, payType }
-      if (payDirection === 'toUser' || payDirection === 'fromUser')
-        toCheck.userId = userId
-      if (!checkErrors(toCheck)) {
+      if (!checkErrors({ payType, payAt })) {
         closeModal()
-        setPayment(
-          {
-            _id: payment?._id,
-            payDirection,
-            userId:
-              payDirection === 'toUser' || payDirection === 'fromUser'
-                ? userId
-                : null,
-            eventId,
-            sum,
-            status,
-            payType,
-            payAt,
-            comment,
-          },
-          clone
-        )
+        autofillPayments({
+          eventId,
+          payType,
+          payAt,
+        })
         // if (direction && !clone) {
         //   await putData(
         //     `/api/directions/${direction._id}`,
@@ -121,56 +102,46 @@ const paymentFunc = (paymentId, clone = false, props) => {
     }
 
     useEffect(() => {
-      const isFormChanged =
-        (props?.payDirection ?? payment?.payDirection) !== payDirection ||
-        (props?.userId ?? payment?.userId) !== userId ||
-        (props?.eventId ?? payment?.eventId) !== eventId ||
-        (props?.sum ?? payment?.sum) !== sum ||
-        (props?.status ?? payment?.status) !== status ||
-        defaultPayAt !== payAt ||
-        (props?.payType ?? payment?.payType) !== payType ||
-        (props?.comment ?? payment?.comment) !== comment
+      const isFormChanged = defaultPayAt !== payAt || payType !== null
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-      if (isEventClosed) setOnlyCloseButtonShow(true)
-    }, [payDirection, userId, eventId, sum, status, payAt, payType, comment])
+      // if (isEventClosed) setOnlyCloseButtonShow(true)
+    }, [payAt, payType])
 
     return (
       <FormWrapper>
-        {isEventClosed && (
+        {/* {isEventClosed && (
           <P className="text-danger">
             Мероприятие к которой относится эта транзакция закрыто, поэтому
             редактирование ее запрещено
           </P>
-        )}
-        <PayDirectionPicker
-          payDirection={payDirection}
-          onChange={(value) => {
-            removeError('payDirection')
-            setPayDirection(value)
-          }}
+        )} */}
+        {/* <PayDirectionPicker
+          payDirection="fromUser"
+          // onChange={(value) => {
+          //   removeError('payDirection')
+          //   setPayDirection(value)
+          // }}
           required
-          error={errors.payDirection}
-          readOnly={isEventClosed}
-        />
-        {(payDirection === 'toUser' || payDirection === 'fromUser') && (
-          <SelectUser
-            label={payDirection === 'toUser' ? 'Получатель' : 'Платильщик'}
-            selectedId={userId}
-            onChange={(userId) => setUserId(userId)}
-            // onDelete={(e) => console.log('e', e)}
-            required
-            readOnly={isEventClosed}
-          />
-        )}
+          // error={errors.payDirection}
+          readOnly
+        /> */}
+        {/* <SelectUser
+          label='Платильщик'
+          selectedId={userId}
+          onChange={(userId) => setUserId(userId)}
+          // onDelete={(e) => console.log('e', e)}
+          required
+          readOnly
+          /> */}
         <SelectEvent
           label="Мероприятие"
           selectedId={eventId}
-          onChange={(eventId) => setEventId(eventId)}
+          // onChange={(eventId) => setEventId(eventId)}
           required
-          readOnly={isEventClosed}
+          readOnly
         />
         <DateTimePicker
           value={payAt}
@@ -181,9 +152,9 @@ const paymentFunc = (paymentId, clone = false, props) => {
           label="Дата проведения транзакции"
           required
           error={errors.payAt}
-          disabled={isEventClosed}
+          // disabled={isEventClosed}
         />
-        <PriceInput
+        {/* <PriceInput
           label="Сумма"
           value={sum}
           onChange={(value) => {
@@ -191,7 +162,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
             setSum(value)
           }}
           disabled={isEventClosed}
-        />
+        /> */}
         <PayTypePicker
           payType={payType}
           onChange={(value) => {
@@ -200,15 +171,15 @@ const paymentFunc = (paymentId, clone = false, props) => {
           }}
           required
           error={errors.payType}
-          readOnly={isEventClosed}
+          // readOnly={isEventClosed}
         />
-        <Input
+        {/* <Input
           label="Комментарий"
           type="text"
           value={comment}
           onChange={setComment}
           disabled={isEventClosed}
-        />
+        /> */}
         {/* <Input
           label="Сумма"
           type="number"
@@ -233,10 +204,10 @@ const paymentFunc = (paymentId, clone = false, props) => {
   }
 
   return {
-    title: `${paymentId && !clone ? 'Редактирование' : 'Создание'} транзакции`,
-    confirmButtonName: paymentId && !clone ? 'Применить' : 'Создать',
-    Children: PaymentModal,
+    title: `Автозаполнение транзакций от участников в мероприятии`,
+    confirmButtonName: 'Автоматически заполнить',
+    Children: PaymentsAutoFillModal,
   }
 }
 
-export default paymentFunc
+export default paymentsAutoFillFunc

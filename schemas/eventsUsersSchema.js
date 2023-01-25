@@ -11,6 +11,18 @@ const eventsUsersSchema = {
     type: String,
     default: 'participant',
   },
+  userStatus: {
+    type: String,
+    default: 'novice',
+  },
+  eventSubtypeNum: {
+    type: Number,
+    default: 0,
+  },
+  comment: {
+    type: String,
+    default: '',
+  },
 }
 
 export default eventsUsersSchema

@@ -241,7 +241,14 @@ export default async function handler(req, res) {
   if (method === 'POST') {
     try {
       // const { eventId, usersId, userId, eventUsersStatuses } = body
-      const { eventId, eventUsersStatuses, userId, status } = body
+      const {
+        eventId,
+        eventUsersStatuses,
+        userId,
+        status,
+        eventSubtypeNum,
+        comment,
+      } = body
 
       if (!eventId)
         return res?.status(400).json({ success: false, data: 'No eventId' })
@@ -261,6 +268,7 @@ export default async function handler(req, res) {
               data.status === eventUser.status
           )
         )
+
         const addedEventUsers = eventUsersStatuses.filter(
           (eventUser) =>
             !eventUsers.find(
@@ -270,6 +278,13 @@ export default async function handler(req, res) {
                 data.status === eventUser.status
             )
         )
+
+        const addedUsersIds = eventUsersStatuses.map(
+          (eventUser) => eventUser.userId
+        )
+
+        const addedUsers = await Users.find({ _id: { $in: addedUsersIds } })
+
         const deletedEventUsers = eventUsers.filter(
           (eventUser) =>
             !eventUsersStatuses.find(
@@ -304,10 +319,15 @@ export default async function handler(req, res) {
 
         const data = []
         for (let i = 0; i < addedEventUsers.length; i++) {
+          const user = addedUsers.find(
+            (user) => user._id.toString() === addedEventUsers[i].userId
+          )
           const newEventUser = await EventsUsers.create({
             eventId,
             userId: addedEventUsers[i].userId,
             status: addedEventUsers[i].status,
+            userStatus: user?.status,
+            eventSubtypeNum,
           })
           data.push(newEventUser)
         }
@@ -494,6 +514,8 @@ export default async function handler(req, res) {
           eventId,
           userId,
           status: status ?? 'participant',
+          userStatus: user?.status,
+          eventSubtypeNum,
         })
 
         if (!newEventUser) {
