@@ -8,6 +8,8 @@ import TabPanel from '@components/Tabs/TabPanel'
 import {
   faAngleDown,
   faCertificate,
+  faLock,
+  faPlay,
   faPlus,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
@@ -392,6 +394,7 @@ const eventUsersPaymentsFunc = (eventId) => {
             ? 'Активировать мероприятие'
             : 'Закрыть мероприятие',
         classBgColor: event.status === 'closed' ? 'bg-general' : 'bg-success',
+        icon: event.status === 'closed' ? faPlay : faLock,
         onClick: () =>
           setEvent({
             _id: eventId,
