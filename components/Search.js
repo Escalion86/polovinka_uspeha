@@ -32,7 +32,7 @@ const Search = ({
   return (
     <motion.div
       // initial={{}}
-      animate={{ height: show ? 38 : 0 }}
+      animate={{ height: show ? 38 : 0, minHeight: show ? 38 : 0 }}
       transition={{ type: 'just' }}
       className={cn(
         'relative flex flex-wrap justify-end overflow-hidden',

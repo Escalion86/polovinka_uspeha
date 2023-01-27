@@ -122,7 +122,7 @@ export const UserItem = ({
       onClick={onClick}
       active={active}
       noPadding
-      className="flex"
+      className="flex h-[41px] "
       noBorder={noBorder}
     >
       <div
@@ -193,7 +193,7 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
     <ItemContainer
       onClick={onClick}
       active={active}
-      className="flex text-xs tablet:text-sm"
+      className="flex text-xs tablet:text-sm h-[33px]"
       noPadding
     >
       <div

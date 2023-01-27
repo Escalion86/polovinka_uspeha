@@ -110,7 +110,7 @@ const selectDirectionsFunc = (
     }, [canSelectNone, selectedDirections])
 
     return (
-      <div className="flex flex-col w-full max-h-full gap-y-0.5">
+      <div className="flex flex-col w-full h-full max-h-full gap-y-0.5">
         <Search searchText={searchText} show={true} onChange={setSearchText} />
 
         <div className="flex-1 overflow-y-auto max-h-200">
