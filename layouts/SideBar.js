@@ -22,8 +22,9 @@ import Link from 'next/link'
 // import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+import badgesSelector from '@state/selectors/badgesSelector'
 
-const menuCfg = (pages, pagesGroups, userActiveRole, userActiveStatus) => {
+const menuCfg = (userActiveRole, userActiveStatus) => {
   return pagesGroups
     .filter(
       (pageGroup) =>
@@ -52,6 +53,7 @@ const menuCfg = (pages, pagesGroups, userActiveRole, userActiveStatus) => {
           icon: group.icon,
           items: pagesItems,
           bottom: group.bottom,
+          id: group.id,
         })
       return totalGroups
     }, [])
@@ -97,6 +99,9 @@ const MenuItem = ({ item, active = false, badge }) => {
 const Menu = ({ menuCfg, activePage }) => {
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
+
+  const { itemsBadges, groupsBadges } = useRecoilValue(badgesSelector)
+
   const variants = {
     show: { height: 'auto' },
     hide: { height: 0 },
@@ -169,22 +174,13 @@ const Menu = ({ menuCfg, activePage }) => {
                   >
                     <FontAwesomeIcon icon={item.icon} size="2x" />
                     {item.items.length > 1 &&
-                      (() => {
-                        var badgeNum = null
-                        item.items.forEach((subitem) => {
-                          if (subitem.badge) {
-                            if (badgeNum !== null)
-                              badgeNum = +useRecoilValue(subitem.badge)
-                            else badgeNum = useRecoilValue(subitem.badge)
-                          }
-                        })
-                        if (typeof badgeNum !== 'number') return null
-                        return (
-                          <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
-                            {badgeNum <= 99 ? badgeNum : '!'}
-                          </div>
-                        )
-                      })()}
+                      typeof groupsBadges[item.id] === 'number' && (
+                        <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
+                          {groupsBadges[item.id] <= 99
+                            ? groupsBadges[item.id]
+                            : '!'}
+                        </div>
+                      )}
                   </div>
                   <h3 className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
                     {item.items.length === 1 ? item.items[0].name : item.name}
@@ -207,19 +203,14 @@ const Menu = ({ menuCfg, activePage }) => {
                     animate={openedMenuIndex === index ? 'show' : 'hide'}
                     className="ml-3 mr-2 overflow-hidden"
                   >
-                    {item.items.map((subitem, index) => {
-                      const badge = subitem.badge
-                        ? useRecoilValue(subitem.badge)
-                        : null
-                      return (
-                        <MenuItem
-                          key={'menu' + subitem.id}
-                          item={subitem}
-                          active={activePage === subitem.href}
-                          badge={badge}
-                        />
-                      )
-                    })}
+                    {item.items.map((subitem, index) => (
+                      <MenuItem
+                        key={'menu' + subitem.id}
+                        item={subitem}
+                        active={activePage === subitem.href}
+                        badge={itemsBadges[subitem.id]}
+                      />
+                    ))}
                   </motion.div>
                 )}
               </div>
@@ -285,8 +276,8 @@ const SideBar = ({ page }) => {
         <div className="flex flex-col w-full overflow-x-hidden overflow-y-auto">
           <Menu
             menuCfg={menuCfg(
-              pages,
-              pagesGroups,
+              // pages,
+              // pagesGroups,
               loggedUserActiveRole,
               loggedUserActiveStatus
             )}
