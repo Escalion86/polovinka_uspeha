@@ -17,10 +17,12 @@ export const eventsUsersFullByEventIdSelector = selectorFamily({
               (item) => item.eventId && item.userId && item.eventId === id
             )
             .map((item) => {
+              const user = get(userSelector(item.userId))
+              const event = get(eventSelector(item.eventId))
               return {
                 ...item,
-                user: get(userSelector(item.userId)),
-                event: get(eventSelector(item.eventId)),
+                user: { ...user, status: item.userStatus ?? user.status },
+                event,
               }
             })
         : []
