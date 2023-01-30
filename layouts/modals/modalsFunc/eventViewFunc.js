@@ -58,7 +58,7 @@ const eventViewFunc = (eventId) => {
     // )?.isEventInProcess
 
     useEffect(() => {
-      if (isLoggedUserAdmin)
+      if (isLoggedUserAdmin && setTopLeftComponent)
         setTopLeftComponent(() => (
           <CardButtons
             item={{ _id: eventId }}
@@ -69,7 +69,7 @@ const eventViewFunc = (eventId) => {
             showDeleteButton={!isEventClosed}
           />
         ))
-    }, [])
+    }, [isLoggedUserAdmin, setTopLeftComponent])
 
     if (!event || !eventId)
       return (
