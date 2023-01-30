@@ -16,6 +16,7 @@ import Input from '@components/Input'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import eventSelector from '@state/selectors/eventSelector'
 import { P } from '@components/tags'
+import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 
 const paymentFunc = (paymentId, clone = false, props) => {
   const PaymentModal = ({
@@ -32,6 +33,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
 
     const event = useRecoilValue(eventSelector(payment.eventId))
     const isEventClosed = isEventClosedFunc(event)
+    const eventsUsers = useRecoilValue(eventsUsersAtom)
 
     const [payDirection, setPayDirection] = useState(
       props?.payDirection ??
@@ -120,6 +122,17 @@ const paymentFunc = (paymentId, clone = false, props) => {
       }
     }
 
+    const isUserInEvent = useMemo(
+      () =>
+        userId &&
+        eventId &&
+        eventsUsers.find(
+          (eventUser) =>
+            eventUser.userId === userId && eventUser.eventId === eventId
+        ),
+      [userId, eventId, eventsUsers]
+    )
+
     useEffect(() => {
       const isFormChanged =
         (props?.payDirection ?? payment?.payDirection) !== payDirection ||
@@ -142,8 +155,25 @@ const paymentFunc = (paymentId, clone = false, props) => {
         {isEventClosed && (
           <P className="text-danger">
             Мероприятие к которой относится эта транзакция закрыто, поэтому
-            редактирование ее запрещено
+            редактирование/удаление ее запрещено
           </P>
+        )}
+        {userId && !isUserInEvent && (
+          <>
+            <div className="text-red-500">
+              Пользователь не записан на мероприятие! Для корректности, нужно
+              сделать один из вариантов:
+            </div>
+            <ul className="ml-4 -mt-2 list-disc">
+              <li className="text-red-500">удалить данную транзакцию</li>
+              <li className="text-red-500">
+                записать пользователя на мероприятие
+              </li>
+              <li className="text-red-500">
+                указать другого записанного пользователя
+              </li>
+            </ul>
+          </>
         )}
         <PayDirectionPicker
           payDirection={payDirection}
@@ -159,18 +189,18 @@ const paymentFunc = (paymentId, clone = false, props) => {
           <SelectUser
             label={payDirection === 'toUser' ? 'Получатель' : 'Платильщик'}
             selectedId={userId}
-            onChange={(userId) => setUserId(userId)}
+            onChange={isEventClosed ? null : (userId) => setUserId(userId)}
             // onDelete={(e) => console.log('e', e)}
             required
-            readOnly={isEventClosed}
+            // readOnly={isEventClosed}
           />
         )}
         <SelectEvent
           label="Мероприятие"
           selectedId={eventId}
-          onChange={(eventId) => setEventId(eventId)}
+          onChange={isEventClosed ? null : (eventId) => setEventId(eventId)}
           required
-          readOnly={isEventClosed}
+          // readOnly={isEventClosed}
         />
         <DateTimePicker
           value={payAt}
