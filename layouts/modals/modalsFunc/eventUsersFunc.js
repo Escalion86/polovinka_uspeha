@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -22,6 +22,8 @@ import {
 } from '@fortawesome/free-regular-svg-icons'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import { P } from '@components/tags'
+import { faLock, faPlay } from '@fortawesome/free-solid-svg-icons'
+import isEventCanBeClosedSelector from '@state/selectors/isEventCanBeClosedSelector'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -34,41 +36,53 @@ const eventUsersFunc = (eventId) => {
     setDisableConfirm,
     setDisableDecline,
     setOnlyCloseButtonShow,
+    setBottomLeftButtonProps,
   }) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     const users = useRecoilValue(usersAtom)
     const isEventClosed = isEventClosedFunc(event)
+    const setEvent = useRecoilValue(itemsFuncAtom).event.set
+    const isEventCanBeClosed = useRecoilValue(
+      isEventCanBeClosedSelector(eventId)
+    )
     // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
 
-    const sortUsersIds = (ids) =>
-      [...users]
-        .filter((user) => ids.includes(user._id))
-        .sort(sortFunction)
-        .map((user) => user._id)
+    const sortUsersIds = useCallback(
+      (ids) =>
+        [...users]
+          .filter((user) => ids.includes(user._id))
+          .sort(sortFunction)
+          .map((user) => user._id),
+      [users]
+    )
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
-    const sortedEventAssistantsIds = [...eventAssistants]
-      .sort(sortFunction)
-      .map((user) => user._id)
+    const sortedEventAssistantsIds = useMemo(
+      () => [...eventAssistants].sort(sortFunction).map((user) => user._id),
+      [eventAssistants]
+    )
 
     const eventMans = useRecoilValue(eventMansSelector(eventId))
-    const sortedEventMansIds = [...eventMans]
-      .sort(sortFunction)
-      .map((user) => user._id)
+    const sortedEventMansIds = useMemo(
+      () => [...eventMans].sort(sortFunction).map((user) => user._id),
+      [eventMans]
+    )
 
     const eventWomans = useRecoilValue(eventWomansSelector(eventId))
-    const sortedEventWomansIds = [...eventWomans]
-      .sort(sortFunction)
-      .map((user) => user._id)
+    const sortedEventWomansIds = useMemo(
+      () => [...eventWomans].sort(sortFunction).map((user) => user._id),
+      [eventWomans]
+    )
 
     const eventReservedParticipants = useRecoilValue(
       eventUsersInReserveSelector(eventId)
     )
-    const sortedEventReservedParticipantsIds = [...eventReservedParticipants]
-      // .sort(sortFunction)
-      .map((user) => user._id)
+    const sortedEventReservedParticipantsIds = useMemo(
+      () => [...eventReservedParticipants].map((user) => user._id),
+      [eventReservedParticipants]
+    )
 
     const eventBannedParticipants = useRecoilValue(
       eventUsersInBanSelector(eventId)
@@ -117,28 +131,65 @@ const eventUsersFunc = (eventId) => {
       setEventUsersId(eventId, usersStatuses)
     }
 
-    useEffect(() => {
-      const isFormChanged =
-        !compareArrays(assistantsIds, sortedEventAssistantsIds) ||
-        !compareArrays(mansIds, sortedEventMansIds) ||
-        !compareArrays(womansIds, sortedEventWomansIds) ||
+    const isAssistantsChanged = useMemo(
+      () => !compareArrays(assistantsIds, sortedEventAssistantsIds),
+      [assistantsIds]
+    )
+    const isMansChanged = useMemo(
+      () => !compareArrays(mansIds, sortedEventMansIds),
+      [mansIds]
+    )
+    const isWomansChanged = useMemo(
+      () => !compareArrays(womansIds, sortedEventWomansIds),
+      [womansIds]
+    )
+    const isReservedParticipantsChanged = useMemo(
+      () =>
         !compareArrays(
           reservedParticipantsIds,
           sortedEventReservedParticipantsIds
-        ) ||
-        !compareArrays(bannedParticipantsIds, sortedEventBannedParticipantsIds)
+        ),
+      [assistantsIds]
+    )
+    const isBannedParticipantsIdsChanged = useMemo(
+      () =>
+        !compareArrays(bannedParticipantsIds, sortedEventBannedParticipantsIds),
+      [bannedParticipantsIds]
+    )
 
+    const isFormChanged =
+      isAssistantsChanged ||
+      isMansChanged ||
+      isWomansChanged ||
+      isReservedParticipantsChanged ||
+      isBannedParticipantsIdsChanged
+
+    useEffect(() => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)
       if (!isLoggedUserAdmin || isEventClosed) setOnlyCloseButtonShow(true)
-    }, [
-      mansIds,
-      womansIds,
-      assistantsIds,
-      reservedParticipantsIds,
-      bannedParticipantsIds,
-    ])
+    }, [isFormChanged, isLoggedUserAdmin, isEventClosed])
+
+    useEffect(() => {
+      if (isLoggedUserAdmin) {
+        setBottomLeftButtonProps({
+          name:
+            event.status === 'closed'
+              ? 'Активировать мероприятие'
+              : 'Закрыть мероприятие',
+          classBgColor: event.status === 'closed' ? 'bg-general' : 'bg-success',
+          icon: event.status === 'closed' ? faPlay : faLock,
+          onClick: () =>
+            setEvent({
+              _id: eventId,
+              status: event.status === 'closed' ? 'active' : 'closed',
+            }),
+          disabled:
+            event.status === 'active' && (isFormChanged || !isEventCanBeClosed),
+        })
+      } else setBottomLeftButtonProps(undefined)
+    }, [isEventCanBeClosed, event.status, isLoggedUserAdmin, isFormChanged])
 
     const removeIdsFromReserve = (usersIds) => {
       const tempReservedParticipantsIds = []
