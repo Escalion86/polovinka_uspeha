@@ -4,17 +4,19 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 import { getNounPayments } from '@helpers/getNoun'
 
 import { modalsFuncAtom } from '@state/atoms'
-import paymentsAtom from '@state/atoms/paymentsAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import sortFunctions from '@helpers/sortFunctions'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import PaymentsList from '@layouts/lists/PaymentsList'
+import paymentsWithoutUserWritingToEventSelector from '@state/selectors/paymentsWithoutUserWritingToEventSelector'
 
-const PaymentsContent = () => {
+const PaymentsWithErrorsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const payments = useRecoilValue(paymentsAtom)
+  const paymentsWithoutUserWritingToEvent = useRecoilValue(
+    paymentsWithoutUserWritingToEventSelector
+  )
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   const [sort, setSort] = useState({ payAt: 'asc' })
@@ -28,8 +30,6 @@ const PaymentsContent = () => {
     payDirection: {
       fromUser: true,
       toUser: true,
-      toEvent: true,
-      fromEvent: true,
     },
   })
 
@@ -52,18 +52,22 @@ const PaymentsContent = () => {
 
   const visiblePayments = useMemo(
     () =>
-      payments.filter(
+      paymentsWithoutUserWritingToEvent.filter(
         (payment) =>
           filter.payType[payment.payType] &&
           filter.payDirection[payment.payDirection]
       ),
-    [payments, filter]
+    [paymentsWithoutUserWritingToEvent, filter]
   )
 
   return (
     <>
       <ContentHeader>
-        <PaymentsFilter value={filter} onChange={setFilter} />
+        <PaymentsFilter
+          value={filter}
+          onChange={setFilter}
+          payDirectionValues={['toUser', 'fromUser']}
+        />
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounPayments(visiblePayments.length)}
@@ -73,9 +77,6 @@ const PaymentsContent = () => {
             onChange={setSort}
             sortKeys={['payAt']}
           />
-          {isLoggedUserAdmin && (
-            <AddButton onClick={() => modalsFunc.payment.edit()} />
-          )}
         </div>
       </ContentHeader>
       <PaymentsList payments={[...visiblePayments].sort(sortFunc)} />
@@ -83,4 +84,4 @@ const PaymentsContent = () => {
   )
 }
 
-export default PaymentsContent
+export default PaymentsWithErrorsContent

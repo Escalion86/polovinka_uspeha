@@ -57,7 +57,7 @@ const menuCfg = (pages, pagesGroups, userActiveRole, userActiveStatus) => {
     }, [])
 }
 
-const MenuItem = ({ item, active = false }) => {
+const MenuItem = ({ item, active = false, badge }) => {
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
   return (
     <Link href={'/cabinet/' + item.href} shallow>
@@ -74,7 +74,7 @@ const MenuItem = ({ item, active = false }) => {
         onClick={() => setMenuOpen(false)}
       >
         <div className={cn('flex items-center w-full px-3 py-1 gap-x-2 ')}>
-          <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
+          <FontAwesomeIcon icon={item.icon} className="w-5 h-5 min-w-5" />
           <span className={'text-sm font-medium whitespace-nowrap'}>
             {item.name}
           </span>
@@ -82,6 +82,11 @@ const MenuItem = ({ item, active = false }) => {
             <span className="text-xs font-semibold text-general">
               {item.num}
             </span>
+          )}
+          {typeof badge === 'number' && (
+            <div className="flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger">
+              {badge <= 99 ? badge : '!'}
+            </div>
           )}
         </div>
       </a>
@@ -140,7 +145,7 @@ const Menu = ({ menuCfg, activePage }) => {
               >
                 <Component
                   className={cn(
-                    'flex items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
+                    'flex gap-x-2 items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
                     // groupIsActive ? 'text-ganeral' : 'text-white'
                   )}
                   href={item.items[0].href}
@@ -158,15 +163,33 @@ const Menu = ({ menuCfg, activePage }) => {
                 >
                   <div
                     className={cn(
-                      'flex justify-center min-w-8 max-w-8 min-h-8 max-h-8'
+                      'relative flex justify-center min-w-8 max-w-8 min-h-8 max-h-8'
                       // groupIsActive ? 'text-ganeral' : 'text-white'
                     )}
                   >
                     <FontAwesomeIcon icon={item.icon} size="2x" />
+                    {item.items.length > 1 &&
+                      (() => {
+                        var badgeNum = null
+                        item.items.forEach((subitem) => {
+                          if (subitem.badge) {
+                            if (badgeNum !== null)
+                              badgeNum = +useRecoilValue(subitem.badge)
+                            else badgeNum = useRecoilValue(subitem.badge)
+                          }
+                        })
+                        if (typeof badgeNum !== 'number') return null
+                        return (
+                          <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
+                            {badgeNum <= 99 ? badgeNum : '!'}
+                          </div>
+                        )
+                      })()}
                   </div>
-                  <h3 className="flex-1 ml-5 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
+                  <h3 className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
                     {item.items.length === 1 ? item.items[0].name : item.name}
                   </h3>
+
                   {item.items.length > 1 && (
                     <div
                       className={cn('w-4 duration-300 transition-transform', {
@@ -184,13 +207,19 @@ const Menu = ({ menuCfg, activePage }) => {
                     animate={openedMenuIndex === index ? 'show' : 'hide'}
                     className="ml-3 mr-2 overflow-hidden"
                   >
-                    {item.items.map((subitem, index) => (
-                      <MenuItem
-                        key={'menu' + subitem.id}
-                        item={subitem}
-                        active={activePage === subitem.href}
-                      />
-                    ))}
+                    {item.items.map((subitem, index) => {
+                      const badge = subitem.badge
+                        ? useRecoilValue(subitem.badge)
+                        : null
+                      return (
+                        <MenuItem
+                          key={'menu' + subitem.id}
+                          item={subitem}
+                          active={activePage === subitem.href}
+                          badge={badge}
+                        />
+                      )
+                    })}
                   </motion.div>
                 )}
               </div>
