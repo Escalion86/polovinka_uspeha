@@ -2,7 +2,6 @@ import { getSession } from 'next-auth/react'
 
 import Head from 'next/head'
 
-import DeviceCheck from '@components/DeviceCheck'
 import eventsAtom from '@state/atoms/eventsAtom'
 import fetchProps from '@server/fetchProps'
 import Header from '@layouts/Header'
@@ -13,9 +12,6 @@ import StateLoader from '@components/StateLoader'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import BlockContainer from '@components/BlockContainer'
-
-// TODO Сделать копирование БД с main на dev
-// TODO Сделать переключение с БД main на dev
 
 const Event = ({ event }) => {
   if (!event?._id) return <div>Ошибка. Мероприятие не найдено</div>

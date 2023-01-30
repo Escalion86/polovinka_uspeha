@@ -22,6 +22,7 @@ import {
   faShoppingBag,
   faSignInAlt,
   faTimesCircle,
+  faUnlink,
   faUserAlt,
   faUsers,
   faVenus,
@@ -73,6 +74,8 @@ import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
 import BirthdaysContent from '@layouts/content/BirthdaysContent'
 import StatisticsContent from '@layouts/content/StatisticsContent'
+import PaymentsWithErrorsContent from '@layouts/content/PaymentsWithErrorsContent'
+import badgePaymentsWithErrorsSelector from '@state/selectors/badgePaymentsWithErrorsSelector'
 
 const colors = [
   'border-blue-400',
@@ -561,6 +564,10 @@ export const CONTENTS = {
   users: { Component: UsersContent, name: 'Пользователи' },
   members: { Component: MembersContent, name: 'Участники клуба' },
   payments: { Component: PaymentsContent, name: 'Транзакции' },
+  paymentsWithErrors: {
+    Component: PaymentsWithErrorsContent,
+    name: 'Непривязанные транзакции',
+  },
   contacts: { Component: ContactsContent, name: 'Контакты на сайте' },
   dev: { Component: DevContent, name: 'Разработчик' },
   histories: {
@@ -630,20 +637,28 @@ export const pages = [
   },
   {
     id: 9,
+    group: 4,
+    name: 'Непривязанные транзакции',
+    href: 'paymentsWithErrors',
+    icon: faUnlink,
+    badge: badgePaymentsWithErrorsSelector,
+  },
+  {
+    id: 10,
     group: 5,
     name: 'Участники мероприятий',
     href: 'histories',
     icon: faUsers,
   },
   {
-    id: 10,
+    id: 11,
     group: 5,
     name: 'Дни рождения',
     href: 'birthdays',
     icon: faBirthdayCake,
   },
   {
-    id: 11,
+    id: 12,
     group: 6,
     name: 'Статистика',
     href: 'statistics',

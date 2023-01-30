@@ -2,7 +2,7 @@ import PaymentsPayTypeToggleButtons from '@components/IconToggleButtons/Payments
 import PaymentsPayDirectionToggleButtons from '@components/IconToggleButtons/PaymentsPayDirectionToggleButtons'
 import React from 'react'
 
-const PaymentsFilter = ({ value, onChange }) => {
+const PaymentsFilter = ({ value, onChange, payDirectionValues }) => {
   return (
     <>
       {value?.payType && (
@@ -19,6 +19,7 @@ const PaymentsFilter = ({ value, onChange }) => {
           onChange={(value) =>
             onChange((state) => ({ ...state, payDirection: value }))
           }
+          acceptedValues={payDirectionValues}
         />
       )}
     </>

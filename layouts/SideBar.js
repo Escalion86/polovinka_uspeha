@@ -22,8 +22,9 @@ import Link from 'next/link'
 // import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+import badgesSelector from '@state/selectors/badgesSelector'
 
-const menuCfg = (pages, pagesGroups, userActiveRole, userActiveStatus) => {
+const menuCfg = (userActiveRole, userActiveStatus) => {
   return pagesGroups
     .filter(
       (pageGroup) =>
@@ -52,12 +53,13 @@ const menuCfg = (pages, pagesGroups, userActiveRole, userActiveStatus) => {
           icon: group.icon,
           items: pagesItems,
           bottom: group.bottom,
+          id: group.id,
         })
       return totalGroups
     }, [])
 }
 
-const MenuItem = ({ item, active = false }) => {
+const MenuItem = ({ item, active = false, badge }) => {
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
   return (
     <Link href={'/cabinet/' + item.href} shallow>
@@ -74,7 +76,7 @@ const MenuItem = ({ item, active = false }) => {
         onClick={() => setMenuOpen(false)}
       >
         <div className={cn('flex items-center w-full px-3 py-1 gap-x-2 ')}>
-          <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
+          <FontAwesomeIcon icon={item.icon} className="w-5 h-5 min-w-5" />
           <span className={'text-sm font-medium whitespace-nowrap'}>
             {item.name}
           </span>
@@ -82,6 +84,11 @@ const MenuItem = ({ item, active = false }) => {
             <span className="text-xs font-semibold text-general">
               {item.num}
             </span>
+          )}
+          {typeof badge === 'number' && (
+            <div className="flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger">
+              {badge <= 99 ? badge : '!'}
+            </div>
           )}
         </div>
       </a>
@@ -92,6 +99,9 @@ const MenuItem = ({ item, active = false }) => {
 const Menu = ({ menuCfg, activePage }) => {
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
+
+  const { itemsBadges, groupsBadges } = useRecoilValue(badgesSelector)
+
   const variants = {
     show: { height: 'auto' },
     hide: { height: 0 },
@@ -140,7 +150,7 @@ const Menu = ({ menuCfg, activePage }) => {
               >
                 <Component
                   className={cn(
-                    'flex items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
+                    'flex gap-x-2 items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
                     // groupIsActive ? 'text-ganeral' : 'text-white'
                   )}
                   href={item.items[0].href}
@@ -158,15 +168,24 @@ const Menu = ({ menuCfg, activePage }) => {
                 >
                   <div
                     className={cn(
-                      'flex justify-center min-w-8 max-w-8 min-h-8 max-h-8'
+                      'relative flex justify-center min-w-8 max-w-8 min-h-8 max-h-8'
                       // groupIsActive ? 'text-ganeral' : 'text-white'
                     )}
                   >
                     <FontAwesomeIcon icon={item.icon} size="2x" />
+                    {item.items.length > 1 &&
+                      typeof groupsBadges[item.id] === 'number' && (
+                        <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
+                          {groupsBadges[item.id] <= 99
+                            ? groupsBadges[item.id]
+                            : '!'}
+                        </div>
+                      )}
                   </div>
-                  <h3 className="flex-1 ml-5 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
+                  <h3 className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
                     {item.items.length === 1 ? item.items[0].name : item.name}
                   </h3>
+
                   {item.items.length > 1 && (
                     <div
                       className={cn('w-4 duration-300 transition-transform', {
@@ -189,6 +208,7 @@ const Menu = ({ menuCfg, activePage }) => {
                         key={'menu' + subitem.id}
                         item={subitem}
                         active={activePage === subitem.href}
+                        badge={itemsBadges[subitem.id]}
                       />
                     ))}
                   </motion.div>
@@ -256,8 +276,8 @@ const SideBar = ({ page }) => {
         <div className="flex flex-col w-full overflow-x-hidden overflow-y-auto">
           <Menu
             menuCfg={menuCfg(
-              pages,
-              pagesGroups,
+              // pages,
+              // pagesGroups,
               loggedUserActiveRole,
               loggedUserActiveStatus
             )}
