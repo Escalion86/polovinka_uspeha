@@ -200,6 +200,8 @@ const paymentFunc = (paymentId, clone = false, props) => {
           selectedId={eventId}
           onChange={isEventClosed ? null : (eventId) => setEventId(eventId)}
           required
+          showEventUsersButton
+          showPaymentsButton
           // readOnly={isEventClosed}
         />
         <DateTimePicker
