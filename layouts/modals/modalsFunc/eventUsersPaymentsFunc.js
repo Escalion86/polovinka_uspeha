@@ -209,13 +209,7 @@ const UsersPayments = ({
                         item={payment}
                         noBorder
                         checkable={false}
-                        onClick={
-                          !readOnly
-                            ? () => {
-                                modalsFunc.payment.edit(payment._id)
-                              }
-                            : null
-                        }
+                        onClick={() => modalsFunc.payment.edit(payment._id)}
                       />
                       {!readOnly && (
                         <div
@@ -400,7 +394,7 @@ const eventUsersPaymentsFunc = (eventId) => {
             _id: eventId,
             status: event.status === 'closed' ? 'active' : 'closed',
           }),
-        disabled: totalIncome < expectedIncome,
+        disabled: event.status === 'active' && totalIncome < expectedIncome,
       })
     }, [totalIncome, expectedIncome, event.status])
 
@@ -484,7 +478,8 @@ const eventUsersPaymentsFunc = (eventId) => {
       <>
         {isLoggedUserAdmin && isEventClosed && (
           <P className="text-danger">
-            Мероприятие закрыто, поэтому редактирование транзакций запрещено
+            Мероприятие закрыто, поэтому редактирование/добавление/удаление
+            транзакций запрещено
           </P>
         )}
         <TabContext value="Участники">
@@ -560,31 +555,21 @@ const eventUsersPaymentsFunc = (eventId) => {
                       item={payment}
                       noBorder
                       checkable={false}
-                      onClick={
-                        !isEventClosed
-                          ? () => {
-                              modalsFunc.payment.edit(payment._id)
-                            }
-                          : null
-                      }
+                      onClick={() => modalsFunc.payment.edit(payment._id)}
                     />
-                    <div
-                      className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
-                      onClick={
-                        !isEventClosed
-                          ? () => {
-                              modalsFunc.payment.delete(payment._id)
-                            }
-                          : null
-                      }
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        className={cn(
-                          'w-5 h-5 duration-300 group-hover:scale-125'
-                        )}
-                      />
-                    </div>
+                    {!isEventClosed && (
+                      <div
+                        className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
+                        onClick={() => modalsFunc.payment.delete(payment._id)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          className={cn(
+                            'w-5 h-5 duration-300 group-hover:scale-125'
+                          )}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -618,31 +603,21 @@ const eventUsersPaymentsFunc = (eventId) => {
                       item={payment}
                       noBorder
                       checkable={false}
-                      onClick={
-                        !isEventClosed
-                          ? () => {
-                              modalsFunc.payment.edit(payment._id)
-                            }
-                          : null
-                      }
+                      onClick={() => modalsFunc.payment.edit(payment._id)}
                     />
-                    <div
-                      className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
-                      onClick={
-                        !isEventClosed
-                          ? () => {
-                              modalsFunc.payment.delete(payment._id)
-                            }
-                          : null
-                      }
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        className={cn(
-                          'w-5 h-5 duration-300 group-hover:scale-125'
-                        )}
-                      />
-                    </div>
+                    {!isEventClosed && (
+                      <div
+                        className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
+                        onClick={() => modalsFunc.payment.delete(payment._id)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          className={cn(
+                            'w-5 h-5 duration-300 group-hover:scale-125'
+                          )}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
