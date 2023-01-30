@@ -29,7 +29,7 @@ const DateTimePicker = ({
           'text-input px-1 border rounded w-44 outline-none focus:shadow-active',
           // required && !value ? ' border-red-700' : ' border-gray-400',
           error ? 'border-red-500' : 'border-gray-400',
-          { 'bg-gray-200  text-disabled': disabled }
+          { 'bg-gray-200  text-disabled cursor-not-allowed': disabled }
         )}
         type="datetime-local"
         step="1800"
