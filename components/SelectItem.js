@@ -1,10 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faMoneyBill,
   faPencil,
   faPencilAlt,
   faPlus,
   // faSearch,
   faTimes,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 // import { useEffect, useRef, useState } from 'react'
 // import { Virtuoso } from 'react-virtuoso'
@@ -21,6 +23,7 @@ import InputWrapper from './InputWrapper'
 import filterWithRules from '@helpers/filterWithRules'
 import Tooltip from './Tooltip'
 import paymentsAtom from '@state/atoms/paymentsAtom'
+import CardButtons from './CardButtons'
 
 export const SelectItem = ({
   items,
@@ -408,9 +411,10 @@ export const SelectUser = ({
         componentHeight={40}
         // onChange={onChange}
         selectedId={selectedId}
-        className={
-          'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
-        }
+        className={cn(
+          'flex-1',
+          selectedId && clearButton ? 'rounded-l' : 'rounded'
+        )}
         exceptedIds={exceptedIds}
         onClick={
           !readOnly
@@ -451,6 +455,8 @@ export const SelectEvent = ({
   modalTitle,
   rounded = true,
   readOnly,
+  showPaymentsButton = false,
+  showEventUsersButton = false,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
@@ -496,9 +502,10 @@ export const SelectEvent = ({
         componentHeight={40}
         // onChange={onChange}
         selectedId={selectedId}
-        className={
-          'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
-        }
+        className={cn(
+          'flex-1',
+          selectedId && clearButton ? 'rounded-l' : 'rounded'
+        )}
         // onClick={
         //   (event) => modalsFunc.event.view(event._id)
         //   // disableDropDownList
@@ -523,6 +530,64 @@ export const SelectEvent = ({
         }
         exceptedIds={exceptedIds}
       />
+      {showEventUsersButton && (
+        <div
+          className="flex items-center justify-center w-8 text-green-500 bg-gray-100 border-l border-gray-700 cursor-pointer group"
+          onClick={() => {
+            modalsFunc.event.users(selectedId)
+          }}
+        >
+          <FontAwesomeIcon
+            icon={faUsers}
+            className={cn('w-4 h-4 duration-300 group-hover:scale-125')}
+          />
+        </div>
+      )}
+      {showPaymentsButton && (
+        <div
+          className="flex items-center justify-center w-8 bg-gray-100 border-l border-gray-700 cursor-pointer group text-amber-500"
+          onClick={() => {
+            modalsFunc.event.payments(selectedId)
+          }}
+        >
+          <FontAwesomeIcon
+            icon={faMoneyBill}
+            className={cn('w-4 h-4 duration-300 group-hover:scale-125')}
+          />
+        </div>
+      )}
+      {/* {show.eventUsersBtn && (
+        <ItemComponent
+          icon={faUsers}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc.event.users(item._id)
+          }}
+          color="green"
+          tooltipText="Участники мероприятия"
+        />
+      )}
+      {show.paymentsUsersBtn && (
+        <ItemComponent
+          icon={faMoneyBill}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc.event.payments(item._id)
+          }}
+          color="amber"
+          tooltipText="Финансы"
+        />
+      )}
+      <CardButtons
+        item={{ _id: selectedId }}
+        typeOfItem="event"
+        // forForm
+        // direction="right"
+        alwaysCompact
+        className="bg-gray-100 border-l border-gray-700"
+        // showEditButton={!isEventClosed}
+        // showDeleteButton={!isEventClosed}
+      /> */}
     </SelectItemContainer>
   )
 }
@@ -586,9 +651,10 @@ export const SelectDirection = ({
         // itemHeight={50}
         // onChange={onChange}
         selectedId={selectedId}
-        className={
-          'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
-        }
+        className={cn(
+          'flex-1',
+          selectedId && clearButton ? 'rounded-l' : 'rounded'
+        )}
         // onClick={
         //   (direction) => modalsFunc.direction.view(direction._id)
         //   // disableDropDownList
@@ -674,9 +740,10 @@ export const SelectPayment = ({
         // itemHeight={50}
         // onChange={onChange}
         selectedId={selectedId}
-        className={
-          'flex-1' + (selectedId && clearButton ? ' rounded-l' : ' rounded')
-        }
+        className={cn(
+          'flex-1',
+          selectedId && clearButton ? ' rounded-l' : ' rounded'
+        )}
         // onClick={
         //   (direction) => modalsFunc.direction.view(direction._id)
         //   // disableDropDownList
