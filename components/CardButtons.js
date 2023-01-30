@@ -107,7 +107,7 @@ const CardButtons = ({
     cloneBtn:
       showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review',
     showOnSiteBtn: showAdminButtons && showOnSiteOnClick,
-    statusBtn: showAdminButtons && typeOfItem === 'event' && item.status,
+    statusBtn: showAdminButtons && typeOfItem === 'event',
     deleteBtn:
       showAdminButtons &&
       showDeleteButton &&
@@ -222,8 +222,9 @@ const CardButtons = ({
       )}
       {show.statusBtn
         ? (() => {
+            const status = item.status ?? 'active'
             const { icon, color, name } = EVENT_STATUSES_WITH_TIME.find(
-              ({ value }) => value === item.status
+              ({ value }) => value === status
             )
             return (
               <ItemComponent
