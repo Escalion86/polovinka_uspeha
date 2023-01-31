@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
+import Image from 'next/image'
 
 const ValueItem = ({
   active = false,
@@ -7,6 +8,7 @@ const ValueItem = ({
   name = '',
   color = 'gray',
   icon = null,
+  imageSrc = null,
   onClick = null,
   hoverable,
   className,
@@ -26,6 +28,11 @@ const ValueItem = ({
     onClick={onClick ? () => onClick(value) : null}
   >
     {icon && <FontAwesomeIcon icon={icon} className="h-5" />}
+    {imageSrc && (
+      <div className="w-5 h-5">
+        <Image src={imageSrc} width="20" height="20" />
+      </div>
+    )}
     <div
       className={cn(
         'whitespace-nowrap duration-300 select-none',

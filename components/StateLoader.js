@@ -106,8 +106,8 @@ const StateLoader = (props) => {
   const setPayment = useSetRecoilState(paymentEditSelector)
   const addPayments = useSetRecoilState(paymentsAddSelector)
   const deletePayment = useSetRecoilState(paymentsDeleteSelector)
-  const setEventsUsers = useSetRecoilState(eventsUsersEditSelector)
-  const deleteEventsUsers = useSetRecoilState(eventsUsersDeleteSelector)
+  const setEventsUser = useSetRecoilState(eventsUsersEditSelector)
+  const deleteEventsUser = useSetRecoilState(eventsUsersDeleteSelector)
   const deleteEventsUsersByEventId = useSetRecoilState(
     eventsUsersDeleteByEventIdSelector
   )
@@ -187,8 +187,8 @@ const StateLoader = (props) => {
           addPayments,
           setPayment,
           deletePayment,
-          setEventsUsers,
-          deleteEventsUsers,
+          setEventsUser,
+          deleteEventsUser,
           deleteEventsUsersByEventId,
           setSiteSettings: setSiteSettingsState,
           setQuestionnaire,

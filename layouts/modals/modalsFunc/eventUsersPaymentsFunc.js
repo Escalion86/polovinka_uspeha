@@ -56,6 +56,7 @@ const UsersPayments = ({
     <div className="flex flex-col gap-y-1">
       {eventUsers.map(
         ({
+          _id,
           user,
           // event,
           userStatus,
@@ -136,7 +137,10 @@ const UsersPayments = ({
                     noBorder
                   />
                 </div>
-                <div className="flex flex-col items-center justify-center text-sm leading-4 border-l border-gray-700 min-w-[80px]">
+                <div
+                  className="hover:bg-blue-200 cursor-pointer flex flex-col items-center justify-center text-sm leading-4 border-l border-gray-700 min-w-[80px]"
+                  onClick={() => modalsFunc.eventUser.editStatus(_id)}
+                >
                   <span
                     className={cn(
                       'px-1 whitespace-nowrap',

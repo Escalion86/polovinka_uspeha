@@ -59,6 +59,7 @@ const ValuePicker = ({
             value={item.value}
             name={item.name}
             icon={item.icon}
+            imageSrc={item.imageSrc}
             color={item.color}
             onClick={
               !readOnly && !disabledValues.includes(item.value)

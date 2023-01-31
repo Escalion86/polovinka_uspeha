@@ -117,6 +117,20 @@ const messages = {
       error: 'Не удалось удалить услугу',
     },
   },
+  eventsUser: {
+    update: {
+      success: 'Пользователь на мероприятии обновлен',
+      error: 'Не удалось обновить пользователя на мероприятии',
+    },
+    add: {
+      success: 'Пользователь на мероприятии создан',
+      error: 'Не удалось создать пользователя на мероприятии',
+    },
+    delete: {
+      success: 'Пользователь на мероприятии удален',
+      error: 'Не удалось удалить пользователя на мероприятии',
+    },
+  },
 }
 
 const itemsFuncGenerator = (
@@ -131,6 +145,7 @@ const itemsFuncGenerator = (
     'questionnaire',
     'questionnairesUser',
     'service',
+    'eventsUser',
   ]
 ) => {
   const {
@@ -149,7 +164,7 @@ const itemsFuncGenerator = (
           if (item?._id && !clone) {
             setLoadingCard(itemName + item._id)
             return await putData(
-              `/api/${itemName}s/${item._id}`,
+              `/api/${itemName.toLowerCase()}s/${item._id}`,
               item,
               (data) => {
                 setNotLoadingCard(itemName + item._id)
