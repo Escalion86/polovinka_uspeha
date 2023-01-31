@@ -38,6 +38,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
 import eventAssistantsFullByEventIdSelector from '@state/selectors/eventAssistantsFullByEventIdSelector'
 import UserStatusIcon from '@components/UserStatusIcon'
+import isEventExpiredFunc from '@helpers/isEventExpired'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -279,6 +280,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const isEventClosed = isEventClosedFunc(event)
+    const isEventExpired = isEventExpiredFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
     // const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
@@ -426,7 +428,9 @@ const eventUsersPaymentsFunc = (eventId) => {
             _id: eventId,
             status: event.status === 'closed' ? 'active' : 'closed',
           }),
-        disabled: event.status === 'active' && totalIncome < expectedIncome,
+        disabled:
+          event.status === 'active' &&
+          (totalIncome < expectedIncome || !isEventExpired),
       })
     }, [totalIncome, expectedIncome, event.status])
 
