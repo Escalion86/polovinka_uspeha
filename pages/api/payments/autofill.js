@@ -43,8 +43,12 @@ export default async function handler(req, res) {
 
       participants.forEach((user) => {
         const userId = user._id.toString()
+        const eventUser = eventParticipants.find(
+          (eventUser) => eventUser.userId === userId
+        )
         const userStatus =
-          !user?.status || user.status === 'ban' ? 'novice' : user.status
+          eventUser?.userStatus ??
+          (!user?.status || user.status === 'ban' ? 'novice' : user.status)
         const priceForUser =
           typeof eventPrices[userStatus] === 'number'
             ? eventPrices[userStatus]

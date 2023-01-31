@@ -214,7 +214,7 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
       view: (eventId) => addModal(eventViewFunc(eventId)),
-      signUp: (eventId, status) => {
+      signUp: (eventId, status = 'participant', eventSubtypeNum, comment) => {
         if (!loggedUser?._id)
           addModal({
             title: 'Необходимо зарегистрироваться и авторизироваться',
@@ -230,9 +230,14 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
             confirmButtonName: `Записаться${postfixStatus}`,
             onConfirm: () => {
               itemsFunc.event.signUp(
-                eventId,
-                loggedUser?._id,
-                status,
+                {
+                  eventId,
+                  userId: loggedUser?._id,
+                  status,
+                  userStatus: loggedUser.status,
+                  eventSubtypeNum,
+                  comment,
+                },
                 (data) => {
                   if (data.error === 'мероприятие закрыто') {
                     fixEventStatus(eventId, 'closed')

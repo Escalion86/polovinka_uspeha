@@ -35,12 +35,16 @@ import { P } from '@components/tags'
 import sumOfPaymentsFromEventSelector from '@state/selectors/sumOfPaymentsFromEventSelector'
 import paymentsFromEventSelector from '@state/selectors/paymentsFromEventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
+import eventAssistantsFullByEventIdSelector from '@state/selectors/eventAssistantsFullByEventIdSelector'
+import UserStatusIcon from '@components/UserStatusIcon'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
 const UsersPayments = ({
   event,
   users,
+  eventUsers,
   defaultPayDirection,
   noEventPriceForUser,
   readOnly = false,
@@ -50,190 +54,209 @@ const UsersPayments = ({
 
   return (
     <div className="flex flex-col gap-y-1">
-      {users.map((user) => {
-        const [isCollapsed, setIsCollapsed] = useState(true)
-        const allPaymentsOfUser = paymentsOfEvent.filter(
-          (payment) =>
-            payment.userId === user._id &&
-            (payment.payDirection === 'toUser' ||
-              payment.payDirection === 'fromUser')
-        )
+      {eventUsers.map(
+        ({
+          user,
+          // event,
+          userStatus,
+          eventSubtypeNum,
+          comment,
+        }) => {
+          const [isCollapsed, setIsCollapsed] = useState(true)
+          const allPaymentsOfUser = paymentsOfEvent.filter(
+            (payment) =>
+              payment.userId === user._id &&
+              (payment.payDirection === 'toUser' ||
+                payment.payDirection === 'fromUser')
+          )
 
-        const couponsOfUser = allPaymentsOfUser.filter(
-          (payment) => payment.payType === 'coupon'
-        )
-        const paymentsOfUser = allPaymentsOfUser.filter(
-          (payment) => payment.payType !== 'coupon'
-        )
+          const couponsOfUser = allPaymentsOfUser.filter(
+            (payment) => payment.payType === 'coupon'
+          )
+          const paymentsOfUser = allPaymentsOfUser.filter(
+            (payment) => payment.payType !== 'coupon'
+          )
 
-        const sumOfCoupons =
-          couponsOfUser.reduce(
-            (p, payment) =>
-              p +
-              (payment.sum ?? 0) *
-                (payment.payDirection === 'toUser' ||
-                payment.payDirection === 'toEvent'
-                  ? -1
-                  : 1),
-            0
-          ) / 100
+          const sumOfCoupons =
+            couponsOfUser.reduce(
+              (p, payment) =>
+                p +
+                (payment.sum ?? 0) *
+                  (payment.payDirection === 'toUser' ||
+                  payment.payDirection === 'toEvent'
+                    ? -1
+                    : 1),
+              0
+            ) / 100
 
-        const sumOfPayments =
-          paymentsOfUser.reduce(
-            (p, payment) =>
-              p +
-              (payment.sum ?? 0) *
-                (payment.payDirection === 'toUser' ||
-                payment.payDirection === 'toEvent'
-                  ? -1
-                  : 1),
-            0
-          ) / 100
+          const sumOfPayments =
+            paymentsOfUser.reduce(
+              (p, payment) =>
+                p +
+                (payment.sum ?? 0) *
+                  (payment.payDirection === 'toUser' ||
+                  payment.payDirection === 'toEvent'
+                    ? -1
+                    : 1),
+              0
+            ) / 100
 
-        const eventPriceForUser = noEventPriceForUser
-          ? 0
-          : (event.price -
-              (typeof event.usersStatusDiscount[
-                !user?.status || user.status === 'ban' ? 'novice' : user.status
-              ] === 'number'
-                ? event.usersStatusDiscount[
-                    !user?.status || user.status === 'ban'
-                      ? 'novice'
-                      : user.status
-                  ]
-                : 0)) /
-              100 -
-            sumOfCoupons
+          const userDiscount =
+            event.usersStatusDiscount[
+              userStatus
+                ? userStatus
+                : !user?.status || user.status === 'ban'
+                ? 'novice'
+                : user.status
+            ]
 
-        const sumToPay = eventPriceForUser - sumOfPayments
+          const eventPriceForUser = noEventPriceForUser
+            ? 0
+            : (event.price -
+                (typeof userDiscount === 'number' ? userDiscount : 0)) /
+                100 -
+              sumOfCoupons
 
-        useEffect(() => {
-          if (paymentsOfUser.length === 0) setIsCollapsed(true)
-        }, [paymentsOfUser.length])
+          const sumToPay = eventPriceForUser - sumOfPayments
 
-        return (
-          <div
-            key={user._id}
-            className="overflow-hidden border border-gray-700 rounded"
-          >
-            <div className="flex">
-              <UserItem
-                item={user}
-                onClick={() => modalsFunc.user.view(user._id)}
-                noBorder
-              />
-              <div className="flex flex-col items-center justify-center px-1 text-sm leading-4 border-l border-gray-700 min-w-[70px]">
-                <span
-                  className={cn(
-                    'whitespace-nowrap',
-                    noEventPriceForUser
-                      ? sumOfPayments === 0
-                        ? 'text-success'
-                        : 'text-danger'
-                      : sumOfPayments === eventPriceForUser
-                      ? 'text-success'
-                      : sumOfPayments < eventPriceForUser
-                      ? sumOfPayments === 0
-                        ? 'text-danger'
-                        : 'text-orange-500'
-                      : 'text-blue-700'
-                  )}
-                >{`${sumOfPayments} ₽`}</span>
-                {!noEventPriceForUser && (
-                  <div
-                    className={cn(
-                      'w-full flex gap-x-1 items-center justify-center border-gray-700 border-t-1 whitespace-nowrap',
-                      sumOfCoupons > 0 ? 'text-general' : 'text-black'
-                    )}
-                  >
-                    {sumOfCoupons > 0 && (
-                      <div className="flex items-center justify-center w-3">
-                        <FontAwesomeIcon icon={faCertificate} className="w-3" />
-                      </div>
-                    )}
-                    <span>{`${eventPriceForUser} ₽`}</span>
-                  </div>
-                )}
-              </div>
-              {!readOnly && (
-                <div
-                  className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-general"
-                  onClick={() => {
-                    modalsFunc.payment.add(null, {
-                      payDirection: defaultPayDirection,
-                      sum: noEventPriceForUser ? 0 : sumToPay * 100,
-                      userId: user._id,
-                      eventId: event._id,
-                    })
-                  }}
-                >
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className={cn('w-5 h-5 duration-300 group-hover:scale-125')}
+          useEffect(() => {
+            if (paymentsOfUser.length === 0) setIsCollapsed(true)
+          }, [paymentsOfUser.length])
+
+          return (
+            <div
+              key={user._id}
+              className="overflow-hidden border border-gray-700 rounded"
+            >
+              <div className="flex">
+                <div className="flex-1">
+                  <UserItem
+                    item={user}
+                    onClick={() => modalsFunc.user.view(user._id)}
+                    noBorder
                   />
                 </div>
-              )}
-              <div
-                className={cn(
-                  'flex items-center justify-center w-8 border-l border-gray-700',
-                  allPaymentsOfUser.length > 0
-                    ? 'text-black cursor-pointer'
-                    : 'text-gray-300 cursor-not-allowed'
-                )}
-                onClick={() => {
-                  allPaymentsOfUser.length > 0 &&
-                    setIsCollapsed((state) => !state)
-                }}
-              >
-                <div
-                  className={cn('w-4 duration-300 transition-transform', {
-                    'rotate-180': isCollapsed,
-                  })}
-                >
-                  <FontAwesomeIcon icon={faAngleDown} size="lg" />
-                </div>
-              </div>
-            </div>
-            {allPaymentsOfUser.length > 0 && (
-              <motion.div
-                initial={{ height: 0 }}
-                animate={{ height: isCollapsed ? 0 : 'auto' }}
-              >
-                <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded-b bg-general">
-                  {allPaymentsOfUser.map((payment) => (
+                <div className="flex flex-col items-center justify-center text-sm leading-4 border-l border-gray-700 min-w-[80px]">
+                  <span
+                    className={cn(
+                      'px-1 whitespace-nowrap',
+                      noEventPriceForUser
+                        ? sumOfPayments === 0
+                          ? 'text-success'
+                          : 'text-danger'
+                        : sumOfPayments === eventPriceForUser
+                        ? 'text-success'
+                        : sumOfPayments < eventPriceForUser
+                        ? sumOfPayments === 0
+                          ? 'text-danger'
+                          : 'text-orange-500'
+                        : 'text-blue-700'
+                    )}
+                  >{`${sumOfPayments} ₽`}</span>
+                  {!noEventPriceForUser && (
                     <div
-                      key={payment._id}
-                      className="flex bg-white border-t border-l border-r border-gray-700 last:border-b-1"
+                      className={cn(
+                        'px-1 w-full min-w-min flex gap-x-0.5 items-center justify-center border-gray-700 border-t-1 whitespace-nowrap',
+                        sumOfCoupons > 0 ? 'text-general' : 'text-black'
+                      )}
                     >
-                      <PaymentItem
-                        item={payment}
-                        noBorder
-                        checkable={false}
-                        onClick={() => modalsFunc.payment.edit(payment._id)}
-                      />
-                      {!readOnly && (
-                        <div
-                          className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
-                          onClick={() => {
-                            modalsFunc.payment.delete(payment._id)
-                          }}
-                        >
+                      {sumOfCoupons > 0 && (
+                        <div className="flex items-center justify-center w-3 min-w-3">
                           <FontAwesomeIcon
-                            icon={faTrash}
-                            className={cn(
-                              'w-4 h-4 duration-300 group-hover:scale-125'
-                            )}
+                            icon={faCertificate}
+                            className="w-3 min-w-3"
                           />
                         </div>
                       )}
+                      <div className="min-w-3">
+                        <UserStatusIcon status={userStatus} size="xs" />
+                      </div>
+                      <span>{`${eventPriceForUser} ₽`}</span>
                     </div>
-                  ))}
+                  )}
                 </div>
-              </motion.div>
-            )}
-          </div>
-        )
-      })}
+                {!readOnly && (
+                  <div
+                    className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-general"
+                    onClick={() => {
+                      modalsFunc.payment.add(null, {
+                        payDirection: defaultPayDirection,
+                        sum: noEventPriceForUser ? 0 : sumToPay * 100,
+                        userId: user._id,
+                        eventId: event._id,
+                      })
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      className={cn(
+                        'w-5 h-5 duration-300 group-hover:scale-125'
+                      )}
+                    />
+                  </div>
+                )}
+                <div
+                  className={cn(
+                    'flex items-center justify-center w-8 border-l border-gray-700',
+                    allPaymentsOfUser.length > 0
+                      ? 'text-black cursor-pointer'
+                      : 'text-gray-300 cursor-not-allowed'
+                  )}
+                  onClick={() => {
+                    allPaymentsOfUser.length > 0 &&
+                      setIsCollapsed((state) => !state)
+                  }}
+                >
+                  <div
+                    className={cn('w-4 duration-300 transition-transform', {
+                      'rotate-180': isCollapsed,
+                    })}
+                  >
+                    <FontAwesomeIcon icon={faAngleDown} size="lg" />
+                  </div>
+                </div>
+              </div>
+              {allPaymentsOfUser.length > 0 && (
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: isCollapsed ? 0 : 'auto' }}
+                >
+                  <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded-b bg-general">
+                    {allPaymentsOfUser.map((payment) => (
+                      <div
+                        key={payment._id}
+                        className="flex bg-white border-t border-l border-r border-gray-700 last:border-b-1"
+                      >
+                        <PaymentItem
+                          item={payment}
+                          noBorder
+                          checkable={false}
+                          onClick={() => modalsFunc.payment.edit(payment._id)}
+                        />
+                        {!readOnly && (
+                          <div
+                            className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-danger"
+                            onClick={() => {
+                              modalsFunc.payment.delete(payment._id)
+                            }}
+                          >
+                            <FontAwesomeIcon
+                              icon={faTrash}
+                              className={cn(
+                                'w-4 h-4 duration-300 group-hover:scale-125'
+                              )}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          )
+        }
+      )}
     </div>
   )
 }
@@ -273,7 +296,12 @@ const eventUsersPaymentsFunc = (eventId) => {
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
     const eventParticipants = useRecoilValue(eventParticipantsSelector(eventId))
-
+    const eventParticipantsFull = useRecoilValue(
+      eventParticipantsFullByEventIdSelector(eventId)
+    )
+    const eventAssistantsFull = useRecoilValue(
+      eventAssistantsFullByEventIdSelector(eventId)
+    )
     // const allPaymentsOfEventFromAndToUsers = useRecoilValue(paymentsFromAndToUsersSelector(eventId))
 
     // const paymentsOfEventFromAndToUsers = useRecoilValue(
@@ -505,6 +533,7 @@ const eventUsersPaymentsFunc = (eventId) => {
               users={[...eventParticipants].sort(sortFunction)}
               defaultPayDirection="fromUser"
               readOnly={isEventClosed}
+              eventUsers={eventParticipantsFull}
             />
           </TabPanel>
           {eventAssistants.length > 0 && (
@@ -519,6 +548,7 @@ const eventUsersPaymentsFunc = (eventId) => {
                 defaultPayDirection="toUser"
                 noEventPriceForUser
                 readOnly={isEventClosed}
+                eventUsers={eventAssistantsFull}
               />
             </TabPanel>
           )}

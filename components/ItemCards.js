@@ -122,7 +122,7 @@ export const UserItem = ({
       onClick={onClick}
       active={active}
       noPadding
-      className="flex h-[41px] "
+      className="flex h-[41px]"
       noBorder={noBorder}
     >
       <div

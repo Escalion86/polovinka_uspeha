@@ -1,5 +1,6 @@
 import { selectorFamily } from 'recoil'
-import eventParticipantsSelector from './eventParticipantsSelector'
+import eventParticipantsFullByEventIdSelector from './eventParticipantsFullByEventIdSelector'
+// import eventParticipantsSelector from './eventParticipantsSelector'
 import eventSelector from './eventSelector'
 import sumOfCouponsFromParticipantsSelector from './sumOfCouponsFromParticipantsSelector'
 
@@ -10,20 +11,23 @@ export const sumOfExpectingPaymentsFromParticipantsSelector = selectorFamily({
     ({ get }) => {
       if (!id) return []
       const event = get(eventSelector(id))
-      const eventParticipants = get(eventParticipantsSelector(id))
-      const membersOfEventCount = eventParticipants.filter(
-        (user) => user.status === 'member'
+      // const eventParticipants = get(eventParticipantsSelector(id))
+      const eventParticipantsFull = get(
+        eventParticipantsFullByEventIdSelector(id)
+      )
+      const membersOfEventCount = eventParticipantsFull.filter(
+        ({ userStatus }) => userStatus === 'member'
       ).length
-      const noviceOfEventCount = eventParticipants.filter(
-        (user) =>
-          !user?.status || user.status === 'novice' || user.status === 'ban'
+      const noviceOfEventCount = eventParticipantsFull.filter(
+        ({ userStatus }) =>
+          !userStatus || userStatus === 'novice' || userStatus === 'ban'
       ).length
       const sumOfCouponsOfEventFromParticipants = get(
         sumOfCouponsFromParticipantsSelector(id)
       )
 
       return (
-        (event.price * eventParticipants.length -
+        (event.price * eventParticipantsFull.length -
           membersOfEventCount * (event.usersStatusDiscount?.member ?? 0) -
           noviceOfEventCount * (event.usersStatusDiscount?.novice ?? 0)) /
           100 -

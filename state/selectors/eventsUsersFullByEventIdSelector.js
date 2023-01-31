@@ -21,8 +21,11 @@ export const eventsUsersFullByEventIdSelector = selectorFamily({
               const event = get(eventSelector(item.eventId))
               return {
                 ...item,
-                user: { ...user, status: item.userStatus ?? user.status },
+                user,
                 event,
+                userStatus: item.userStatus ?? user.status,
+                eventSubtypeNum: item.eventSubtypeNum,
+                comment: item.comment,
               }
             })
         : []
