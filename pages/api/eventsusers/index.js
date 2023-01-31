@@ -242,6 +242,7 @@ export default async function handler(req, res) {
     try {
       // const { eventId, usersId, userId, eventUsersStatuses } = body
       const {
+        // _id,
         eventId,
         eventUsersStatuses,
         userId,
@@ -249,6 +250,10 @@ export default async function handler(req, res) {
         eventSubtypeNum,
         comment,
       } = body
+
+      // if (_id) {
+      //   return await CRUD(EventsUsers, req, res)
+      // }
 
       if (!eventId)
         return res?.status(400).json({ success: false, data: 'No eventId' })

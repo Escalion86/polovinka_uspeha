@@ -748,9 +748,14 @@ export const DEFAULT_USERS_STATUS_DISCOUNT = {
 }
 
 export const USERS_STATUSES = [
-  { value: 'novice', name: 'Новичок', color: 'blue-400' },
-  { value: 'member', name: 'Участник клуба', color: 'green-400' },
-  { value: 'ban', name: 'Бан', color: 'danger' },
+  { value: 'novice', name: 'Новичок', color: 'green-400', icon: faUser },
+  {
+    value: 'member',
+    name: 'Участник клуба',
+    color: 'blue-400',
+    imageSrc: '/img/svg_icons/medal.svg',
+  },
+  { value: 'ban', name: 'Бан', color: 'danger', icon: faBan },
 ]
 
 export const USERS_ROLES = [
