@@ -87,9 +87,11 @@ const eventUsersFunc = (eventId) => {
     const eventBannedParticipants = useRecoilValue(
       eventUsersInBanSelector(eventId)
     )
-    const sortedEventBannedParticipantsIds = [...eventBannedParticipants]
-      .sort(sortFunction)
-      .map((user) => user._id)
+    const sortedEventBannedParticipantsIds = useMemo(
+      () =>
+        [...eventBannedParticipants].sort(sortFunction).map((user) => user._id),
+      [eventBannedParticipants]
+    )
 
     const [assistantsIds, setAssistantsIds] = useState(sortedEventAssistantsIds)
     const [mansIds, setMansIds] = useState(sortedEventMansIds)
@@ -149,7 +151,7 @@ const eventUsersFunc = (eventId) => {
           reservedParticipantsIds,
           sortedEventReservedParticipantsIds
         ),
-      [assistantsIds]
+      [reservedParticipantsIds]
     )
     const isBannedParticipantsIdsChanged = useMemo(
       () =>
