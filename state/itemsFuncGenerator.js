@@ -293,13 +293,14 @@ const itemsFuncGenerator = (
     )
   }
 
-  obj.event.signUp = async (eventId, userId, status, ifError) => {
+  obj.event.signUp = async (propsObj, ifError) => {
+    const { eventId, userId, status, userStatus, eventSubtypeNum, comment } =
+      propsObj
     setLoadingCard('event' + eventId)
     return await postData(
       `/api/eventsusers`,
-      { eventId, userId, status },
+      propsObj,
       (data) => {
-        console.log('data', data)
         // Если запрос прошел, но записаться нельзя, так как уже ктото успел записаться
         if (data.error) {
           snackbar.error(
