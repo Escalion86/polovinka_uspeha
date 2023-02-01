@@ -40,7 +40,7 @@ import eventAssistantsFullByEventIdSelector from '@state/selectors/eventAssistan
 import UserStatusIcon from '@components/UserStatusIcon'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 
-const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
+const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
 
 const UsersPayments = ({
   event,
@@ -103,14 +103,14 @@ const UsersPayments = ({
               0
             ) / 100
 
-          const userDiscount =
-            event.usersStatusDiscount[
-              userStatus
-                ? userStatus
-                : !user?.status || user.status === 'ban'
-                ? 'novice'
-                : user.status
-            ]
+          // const userFactStatus = !!userStatus
+          //   ? userStatus
+          //   : !user?.status || user.status === 'ban'
+          //   ? 'novice'
+          //   : user.status
+          const userDiscount = userStatus
+            ? event.usersStatusDiscount[userStatus]
+            : 0
 
           const eventPriceForUser = noEventPriceForUser
             ? 0
@@ -300,14 +300,15 @@ const eventUsersPaymentsFunc = (eventId) => {
     //     .sort(sortFunction)
     //     .map((user) => user._id)
 
-    const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
-    const eventParticipants = useRecoilValue(eventParticipantsSelector(eventId))
+    // const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
+    // const eventParticipants = useRecoilValue(eventParticipantsSelector(eventId))
     const eventParticipantsFull = useRecoilValue(
       eventParticipantsFullByEventIdSelector(eventId)
     )
     const eventAssistantsFull = useRecoilValue(
       eventAssistantsFullByEventIdSelector(eventId)
     )
+
     // const allPaymentsOfEventFromAndToUsers = useRecoilValue(paymentsFromAndToUsersSelector(eventId))
 
     // const paymentsOfEventFromAndToUsers = useRecoilValue(
@@ -410,7 +411,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     const expectedMaxIncome =
       maxPartisipants !== null
         ? expectedIncome +
-          ((maxPartisipants - eventParticipants.length) *
+          ((maxPartisipants - eventParticipantsFull.length) *
             maxPaymentPerParticipant) /
             100
         : null
@@ -538,13 +539,13 @@ const eventUsersPaymentsFunc = (eventId) => {
             </div>
             <UsersPayments
               event={event}
-              users={[...eventParticipants].sort(sortFunction)}
+              // users={[...eventParticipants].sort(sortFunction)}
               defaultPayDirection="fromUser"
               readOnly={isEventClosed}
-              eventUsers={eventParticipantsFull}
+              eventUsers={[...eventParticipantsFull].sort(sortFunction)}
             />
           </TabPanel>
-          {eventAssistants.length > 0 && (
+          {eventAssistantsFull.length > 0 && (
             <TabPanel
               tabName="Ведущие"
               tabAddToLabel={`${sumOfPaymentsOfEventToAssistants} ₽`}
@@ -552,11 +553,11 @@ const eventUsersPaymentsFunc = (eventId) => {
               <TotalToAssistants />
               <UsersPayments
                 event={event}
-                users={[...eventAssistants].sort(sortFunction)}
+                // users={[...eventAssistants].sort(sortFunction)}
                 defaultPayDirection="toUser"
                 noEventPriceForUser
                 readOnly={isEventClosed}
-                eventUsers={eventAssistantsFull}
+                eventUsers={[...eventAssistantsFull].sort(sortFunction)}
               />
             </TabPanel>
           )}
@@ -663,7 +664,7 @@ const eventUsersPaymentsFunc = (eventId) => {
           </TabPanel>
           <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
             <TotalFromParticipants />
-            {eventAssistants.length > 0 && <TotalToAssistants />}
+            {eventAssistantsFull.length > 0 && <TotalToAssistants />}
             <TotalToEvent />
             <TotalFromEvent />
             <div className="flex flex-wrap gap-x-1">

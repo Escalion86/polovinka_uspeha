@@ -330,7 +330,7 @@ const itemsFuncGenerator = (
             } на мероприятие прошла успешно`
           )
           setNotLoadingCard('event' + eventId)
-          props.setEventsUsers(data)
+          props.setEventsUser(data)
         }
       },
       (error) => {
@@ -414,7 +414,7 @@ const itemsFuncGenerator = (
         snackbar.success('Список участников мероприятия успешно обновлен')
         setNotLoadingCard('event' + eventId)
         props.deleteEventsUsersByEventId(eventId)
-        props.setEventsUsers(data)
+        props.setEventsUser(data)
       },
       (error) => {
         snackbar.error('Не удалось обновить список участников мероприятия')
