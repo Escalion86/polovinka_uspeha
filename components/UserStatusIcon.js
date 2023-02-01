@@ -1,4 +1,4 @@
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faQuestion, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import Tooltip from './Tooltip'
@@ -53,13 +53,13 @@ const UserStatusIcon = ({ status, size }) => {
       )
     default:
       return (
-        <Tooltip title="Новичок">
+        <Tooltip title="Статус не указан">
           <FontAwesomeIcon
             className={cn(
               size === 'xs' ? 'min-w-3 w-3 h-3' : 'min-w-6 w-6 h-5',
-              'text-green-400'
+              'text-danger'
             )}
-            icon={faUser}
+            icon={faQuestion}
           />
         </Tooltip>
       )

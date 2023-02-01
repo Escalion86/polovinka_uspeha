@@ -21,9 +21,9 @@ export const eventsUsersFullByUserIdSelector = selectorFamily({
                 ...item,
                 user,
                 event,
-                userStatus: item.userStatus ?? user.status,
-                eventSubtypeNum: item.eventSubtypeNum,
-                comment: item.comment,
+                // userStatus: item.userStatus ?? user.status,
+                // eventSubtypeNum: item.eventSubtypeNum,
+                // comment: item.comment,
               }
             })
         : []

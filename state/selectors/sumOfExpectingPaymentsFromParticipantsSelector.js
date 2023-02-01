@@ -16,12 +16,19 @@ export const sumOfExpectingPaymentsFromParticipantsSelector = selectorFamily({
         eventParticipantsFullByEventIdSelector(id)
       )
       const membersOfEventCount = eventParticipantsFull.filter(
-        ({ userStatus }) => userStatus === 'member'
+        ({ userStatus, user }) => userStatus === 'member'
+        //  || (!userStatus && user.status === 'member')
       ).length
       const noviceOfEventCount = eventParticipantsFull.filter(
-        ({ userStatus }) =>
-          !userStatus || userStatus === 'novice' || userStatus === 'ban'
+        ({ userStatus, user }) => userStatus === 'novice'
+        //  ||
+        // (!userStatus &&
+        //   (!user.status || user.status === 'novice' || user.status === 'ban'))
       ).length
+      // const bannedAndNoStatusUsersOfEventCount = eventParticipantsFull.filter(
+      //   ({ userStatus, user }) =>
+      //     userStatus === 'ban' || !userStatus
+      // ).length
       const sumOfCouponsOfEventFromParticipants = get(
         sumOfCouponsFromParticipantsSelector(id)
       )

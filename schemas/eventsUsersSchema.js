@@ -13,7 +13,7 @@ const eventsUsersSchema = {
   },
   userStatus: {
     type: String,
-    default: 'novice',
+    default: null,
   },
   eventSubtypeNum: {
     type: Number,
