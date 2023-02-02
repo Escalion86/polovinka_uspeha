@@ -16,8 +16,10 @@ export default async function handler(req, res) {
       const event = await Events.findById(eventId)
       const eventPrice = event.price
       const eventPrices = {
+        noStatus: eventPrice,
         novice: eventPrice - (event.usersStatusDiscount?.get('novice') ?? 0),
         member: eventPrice - (event.usersStatusDiscount?.get('member') ?? 0),
+        ban: eventPrice,
       }
 
       const eventParticipants = await EventsUsers.find({
@@ -46,9 +48,8 @@ export default async function handler(req, res) {
         const eventUser = eventParticipants.find(
           (eventUser) => eventUser.userId === userId
         )
-        const userStatus =
-          eventUser?.userStatus ??
-          (!user?.status || user.status === 'ban' ? 'novice' : user.status)
+        const userStatus = eventUser?.userStatus ?? 'noStatus'
+        // (!user?.status || user.status === 'ban' ? 'novice' : user.status)
         const priceForUser =
           typeof eventPrices[userStatus] === 'number'
             ? eventPrices[userStatus]
