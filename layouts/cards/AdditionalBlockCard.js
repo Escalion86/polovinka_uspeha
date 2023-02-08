@@ -124,7 +124,7 @@ const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
         </div>
         {/* <div>{direction.description}</div> */}
         <div
-          className="px-2 py-1 text-sm textarea"
+          className="px-2 py-1 text-sm w-full max-w-full overflow-hidden textarea"
           dangerouslySetInnerHTML={{
             __html: sanitize(additionalBlock.description),
           }}

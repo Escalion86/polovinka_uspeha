@@ -14,7 +14,7 @@ const Label = ({
     <label
       className={cn(
         'flex text-text leading-[0.875rem]',
-        contentWidth ? '' : 'min-w-[14vw]',
+        contentWidth ? '' : 'min-w-label',
         textPos
           ? textPos === 'right' || textPos === 'bottom'
             ? 'laptop:justify-end'

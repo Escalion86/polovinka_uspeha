@@ -112,6 +112,7 @@ module.exports = {
         },
       },
       minWidth: {
+        label: '14vw',
         // 4: '1rem',
         5: '1.25rem',
         6: '1.5rem',
@@ -145,6 +146,7 @@ module.exports = {
         240: '60rem',
       },
       maxWidth: {
+        label: '14vw',
         // 4: '1rem',
         6: '1.5rem',
         8: '2rem',
@@ -232,6 +234,7 @@ module.exports = {
         136: '34rem',
       },
       width: {
+        label: '14vw',
         17: '4.25rem',
         18: '4.5rem',
         22: '5.5rem',

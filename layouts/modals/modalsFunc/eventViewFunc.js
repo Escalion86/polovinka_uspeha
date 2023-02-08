@@ -28,6 +28,7 @@ import ValueItem from '@components/ValuePicker/ValueItem'
 import TextLine from '@components/TextLine'
 import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
+// import ContentEditable from 'react-contenteditable'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -85,16 +86,24 @@ const eventViewFunc = (eventId) => {
       <div className="flex flex-col gap-y-2">
         <ImageGallery images={event?.images} />
         <div className="flex flex-col flex-1">
-          <div className="flex flex-col flex-1 px-2 py-2">
+          <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2">
             <div className="flex justify-center w-full text-3xl font-bold">
               {event?.title}
             </div>
 
             {/* <p className="flex-1">{event.description}</p> */}
             <div
-              className="flex-1 textarea"
+              className="w-full max-w-full overflow-hidden list-disc textarea"
               dangerouslySetInnerHTML={{ __html: sanitize(event?.description) }}
             />
+            {/* <ContentEditable
+              // innerRef={inputRef}
+              className={
+                'w-full max-w-full overflow-hidden textarea px-1 outline-none list-disc my-1'
+              }
+              html={sanitize(event?.description)}
+              // disabled
+            /> */}
             <Divider thin light />
             {isLoggedUserDev && <TextLine label="ID">{event?._id}</TextLine>}
             {direction?.title && (
