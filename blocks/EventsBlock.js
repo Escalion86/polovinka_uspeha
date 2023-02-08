@@ -1,5 +1,6 @@
 import BlockContainer from '@components/BlockContainer'
 import { P } from '@components/tags'
+import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import EventCard from '@layouts/cards/EventCard'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
@@ -42,8 +43,10 @@ const EventsBlock = ({
 }) => {
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
 
-  const filteredEvents = useRecoilValue(filteredEventsSelector).filter(
-    (event) => !isEventExpiredFunc(event)
+  const events = useRecoilValue(filteredEventsSelector)
+
+  const filteredEvents = events.filter(
+    (event) => !isEventExpiredFunc(event) && !isEventCanceledFunc(event)
   )
 
   if (hideBlockOnZeroEvents && filteredEvents?.length === 0) return null
