@@ -275,7 +275,7 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
           dangerouslySetInnerHTML={{
             __html: sanitize(item.description),
           }}
-          className="textarea flex-1 max-w-full leading-[0.85rem]"
+          className="w-full overflow-hidden textarea flex-1 max-w-full leading-[0.85rem]"
           lines={2}
         />
       </div>

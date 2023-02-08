@@ -59,8 +59,9 @@ const UsersContent = () => {
     () =>
       users.filter(
         (user) =>
+          user &&
           filter.gender[String(user.gender)] &&
-          filter.status[user.status ?? 'novice']
+          filter.status[user?.status ?? 'novice']
       ),
     [users, filter]
   )

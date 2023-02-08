@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import userSelector from '@state/selectors/userSelector'
 import { GENDERS } from '@helpers/constants'
@@ -41,6 +41,12 @@ const userViewFunc = (userId, clone = false) => {
     const eventsUsersSignedUpCount = useRecoilValue(
       eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
     )
+
+    useEffect(() => {
+      if (!user) closeModal()
+    }, [user])
+
+    if (!user) return null
 
     return (
       <FormWrapper flex className="flex-col">

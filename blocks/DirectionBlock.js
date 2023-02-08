@@ -53,7 +53,7 @@ const DirectionBlock = ({
             <H2 className="mb-4 tablet:hidden laptop:block">{title}</H2>
           )}
           <div
-            className="textarea"
+            className="w-full max-w-full overflow-hidden textarea"
             dangerouslySetInnerHTML={{ __html: sanitize(description) }}
           />
         </div>

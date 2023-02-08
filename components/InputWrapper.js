@@ -74,7 +74,12 @@ const InputWrapper = ({
           textPos={labelPos === 'top' ? 'left' : 'right'}
         />
       )}
-      <div className={cn('flex items-center gap-x-2 flex-1', className)}>
+      <div
+        className={cn(
+          'flex items-center gap-x-2 flex-1 laptop:max-w-[calc(100%-theme(width.label)-0.5rem)]',
+          className
+        )}
+      >
         {children}
         {copyPasteButtons && (
           <>

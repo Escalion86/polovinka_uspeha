@@ -229,7 +229,7 @@ const EditableTextarea = ({
           <ContentEditable
             // innerRef={inputRef}
             className={cn(
-              'textarea px-1 outline-none list-disc my-1',
+              'w-full max-w-full overflow-hidden textarea px-1 outline-none list-disc my-1',
               className
             )}
             html={uncontrolled ? textHtml : html}

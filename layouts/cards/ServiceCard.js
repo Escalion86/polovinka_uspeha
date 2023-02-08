@@ -120,7 +120,7 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
         </div>
         {/* <div>{direction.description}</div> */}
         <div
-          className="flex-1 px-2 py-1 text-sm textarea"
+          className="flex-1 px-2 py-1 text-sm w-full max-w-full overflow-hidden textarea"
           dangerouslySetInnerHTML={{
             __html: sanitize(service.description),
           }}
