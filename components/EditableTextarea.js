@@ -28,8 +28,10 @@ import cn from 'classnames'
 import ContentEditable from 'react-contenteditable'
 import { Divider, LoadingSpinner } from '.'
 import Button from './Button'
+import Input from './Input'
 import InputWrapper from './InputWrapper'
 import sanitize from '@helpers/sanitize'
+import Menu from '@components/Menu'
 
 const TextareaButton = ({
   icon,
@@ -79,6 +81,8 @@ const EditableTextarea = ({
 }) => {
   const [textHtml, setTextHtml] = useState(html)
   const [isSaveProcess, setIsSaveProcess] = useState(false)
+
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
   // const [inputRef, setInputFocus] = useFocus()
   // const inputRef = useRef(null)
 
@@ -183,21 +187,57 @@ const EditableTextarea = ({
               <TextareaButton cmd="justifyRight" icon={faAlignRight} />
               <TextareaButton cmd="justifyFull" icon={faAlignJustify} />
             </GroupButtons>
-            {/* <GroupButtons name="Тест">
-              // <TextareaButton
+            <GroupButtons name="Тест">
+              {/* // <TextareaButton
               //   cmd="createLink"
               //   arg="https://github.com/lovasoa/react-contenteditable"
               //   icon={faNetworkWired}
               // /> 
               <CreateLinkButton
               // setInputFocus={setInputFocus}
-              />
-            </GroupButtons>*/}
-            {/* <EditButton
-          cmd="createLink"
-          arg="https://github.com/lovasoa/react-contenteditable"
-          name="hyperlink"
-        /> */}
+              /> */}
+              <Menu
+                trigger={
+                  <button
+                    className={
+                      'flex items-center justify-center w-6 h-6 p-1 text-black duration-200 border border-gray-400 rounded max-h-8 max-w-8 hover:text-general'
+                    }
+                    // onMouseDown={(evt) => {
+                    //   evt.preventDefault() // Avoids loosing focus from the editable area
+                    //   if (onMouseDown) onMouseDown(evt)
+                    //   else document.execCommand(cmd, false, arg) // Send the command to the browser
+                    // }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faNetworkWired}
+                      className="w-5 h-5"
+                    />
+                  </button>
+                }
+              >
+                <div className="flex flex-col w-full p-1 gap-y-1">
+                  <div className="flex gap-x-1">
+                    <div>Текст</div>
+                    <div className="flex flex-1 overflow-hidden bg-white border border-gray-400 rounded">
+                      <input className="flex-1" />
+                    </div>
+                  </div>
+                  <div className="flex gap-x-1">
+                    <div>Ссылка</div>
+                    <div className="flex flex-1 overflow-hidden bg-white border border-gray-400 rounded">
+                      <input className="flex-1" />
+                    </div>
+                  </div>
+                </div>
+              </Menu>
+              {/* <TextareaButton
+                cmd="createLink"
+                arg="https://github.com/lovasoa/react-contenteditable"
+                name="hyperlink"
+                icon={faNetworkWired}
+              /> */}
+            </GroupButtons>
+
             {/* <GroupButtons name="Тест">
               <TextareaButton
                 cmd="hiliteColor"
