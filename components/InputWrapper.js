@@ -76,7 +76,14 @@ const InputWrapper = ({
       )}
       <div
         className={cn(
-          'flex items-center gap-x-2 flex-1 laptop:max-w-[calc(100%-theme(width.label)-0.5rem)]',
+          'flex items-center gap-x-2 flex-1',
+          `laptop:max-w-[calc(100%${
+            label &&
+            (!labelPos || labelPos === 'left' || labelPos === 'top') &&
+            !labelContentWidth
+              ? '-theme(width.label)'
+              : ''
+          }-0.5rem)]`,
           className
         )}
       >
