@@ -6,6 +6,8 @@ import '../styles/burger.css'
 import 'react-medium-image-zoom/dist/styles.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import 'react-edit-text/dist/index.css'
+import 'react-quill/dist/quill.snow.css'
+import 'quill-emoji/dist/quill-emoji.css'
 
 import Head from 'next/head'
 import { SessionProvider } from 'next-auth/react'

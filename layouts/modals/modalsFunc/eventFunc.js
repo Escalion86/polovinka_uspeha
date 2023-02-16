@@ -202,6 +202,9 @@ const eventFunc = (eventId, clone = false) => {
       }
     }
 
+    console.log('event?.description', event?.description)
+    console.log('description', description)
+
     useEffect(() => {
       const isFormChanged =
         event?.title !== title ||

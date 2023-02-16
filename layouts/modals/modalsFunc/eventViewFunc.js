@@ -28,7 +28,6 @@ import ValueItem from '@components/ValuePicker/ValueItem'
 import TextLine from '@components/TextLine'
 import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
-// import ContentEditable from 'react-contenteditable'
 
 const eventViewFunc = (eventId) => {
   const EventSignUpModal = ({
@@ -93,7 +92,7 @@ const eventViewFunc = (eventId) => {
 
             {/* <p className="flex-1">{event.description}</p> */}
             <div
-              className="w-full max-w-full overflow-hidden list-disc textarea"
+              className="w-full max-w-full overflow-hidden list-disc ql textarea"
               dangerouslySetInnerHTML={{ __html: sanitize(event?.description) }}
             />
             {/* <ContentEditable

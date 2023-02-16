@@ -16,15 +16,181 @@ body {
   font-family: 'Futura PT', sans-serif;
 }
 
+blockquote {
+  border-left: 4px solid #7a5151 !important;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding-left: 16px;
+}
+
+.ql .ql-align-center {
+  text-align: center;
+}
+
+.ql .ql-align-right {
+  text-align: right;
+}
+
+.ql .ql-align-justify {
+  text-align: justify;
+}
+
+.ql h1 {
+  font-size: 2em;
+}
+
+.ql h2 {
+  font-size: 1.5em;
+}
+
+.ql h3 {
+  font-size: 1.17em;
+}
+
+.ql h4 {
+  font-size: 1em;
+}
+
+.ql h5 {
+  font-size: 0.83em;
+}
+
+.ql h6 {
+  font-size: 0.67em;
+}
+
+.ql ul li, .ql ol li {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.ql ul li,
+.ql-editor ul li {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center; */
+  /* padding-left: 0 !important; */
+  gap: 8px;
+  padding-left: 1.5rem !important;
+}
+
+.ql ul,
+.ql-editor ul {
+  padding-left: 0rem !important;
+}
+
+.ql ul li.ql-align-center,
+.ql-editor ul li.ql-align-center {
+  justify-content: center;
+  text-align: center;
+}
+
+.ql ul li.ql-align-right,
+.ql-editor ul li.ql-align-right {
+  justify-content: end;
+  text-align: right;
+}
+
+/* .ql ul li.ql-align-justify,
+.ql-editor ul li.ql-align-justify {
+  justify-content: start;
+  text-align: justify;
+} */
+
+
+
+
+.ql ul li:before,
+.ql-editor ul li:before {
+  text-align: right;
+  /* display: inline-block; */
+  /* vertical-align: middle; */
+  content: url("/img/logo_heart_24px.png") !important;
+  /* content: ''; */
+  /* margin-left: -0.5rem; */
+  /* width: 30px; */
+
+  /* position: center; */
+  /* padding-left: 1rem;
+  padding-right: 0.5rem; */
+  /* align-self: center; */
+  /* height: '100%'; */
+  /* margin-right: 0.5rem; */
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  margin-right: 0 !important;
+  margin-left: -8px !important;
+  /* display: inline-block;
+  /* background-image: url("/img/logo_heart_24px.png") !important; */
+  /* height: 10;
+  width: 10; */
+  /* background-size: contain;
+  background-repeat: no-repeat;
+  background-size: 6px; */
+}
+
+.ql ol li {
+  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  counter-increment: list-0;
+}
+
+.ql-list-logo {
+  background-image: url("/img/logo_heart_24px.png") !important;
+  background-repeat: no-repeat !important;
+  background-size: 16px !important;
+  background-position: 6px 0px !important;
+}
+
+.ql-container {
+  font-family: 'Futura PT', sans-serif !important;
+  font-size: initial !important;
+}
+
+.ql ol li:before {
+  content: counter(list-0, decimal) '. ';
+  text-align: right;
+  /* margin-left: -1.5em;
+  margin-right: 0.3em; */
+  width: 16px;
+  min-width: 16px;
+  max-width: 16px;
+}
+
+.ql ol li, .ql ul li {
+  padding-left: 1.5em;
+}
+
+/* .ql ol li::before, .ql ul li::before {
+  display: inline-block;
+  white-space: nowrap;
+  width: 24px;
+  min-width: 24px;
+  text-align: right;
+} */
+
+.ql ul>li::before {
+  content: '\2022';
+}
+
 [contenteditable=true]:empty:before {
   content: attr(placeholder);
   /* display: block; */
   color: #aaa;
 }
 
-.textarea a {
+.textarea a,
+.ql-snow a {
   text-decoration: underline;
-  color: #7a5151;
+  color: #7a5151 !important;
+  transition-duration: 300ms;
+}
+
+.textarea a:hover {
+  text-decoration: underline;
+  color: #008800;
 }
 
 .prevent-select-text {

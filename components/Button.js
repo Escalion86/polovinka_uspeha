@@ -13,6 +13,7 @@ const Button = ({
   stopPropagation,
   thin = false,
   icon,
+  ...props
 }) => {
   return loading ? (
     <div
@@ -26,6 +27,7 @@ const Button = ({
     </div>
   ) : (
     <button
+      {...props}
       onClick={(e) => {
         stopPropagation && e.stopPropagation()
         onClick && !disabled && onClick()

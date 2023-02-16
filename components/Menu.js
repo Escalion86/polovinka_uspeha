@@ -23,31 +23,46 @@ const variants = {
   },
 }
 
-const Menu = ({ trigger, triggerWrapperClassName, children }) => {
+const Menu = ({
+  trigger,
+  triggerWrapperClassName,
+  children,
+  openOnHover = true,
+  closeOnClick = true,
+  open,
+}) => {
   const [isMenuOpened, setIsMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
 
   const handleMouseOver = () => {
-    if (turnOnHandleMouseOver) {
+    if (openOnHover && turnOnHandleMouseOver) {
       setIsMenuOpened(true)
     }
   }
 
-  const handleMouseOut = () => setIsMenuOpened(false)
+  const handleMouseOut = () => {
+    if (openOnHover) setIsMenuOpened(false)
+  }
 
   return (
     <div
       className="z-50 flex items-start justify-end"
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
-      onClick={() => {
-        setTurnOnHandleMouseOver(false)
-        setIsMenuOpened(!isMenuOpened)
-        const timer = setTimeout(() => {
-          setTurnOnHandleMouseOver(true)
-          clearTimeout(timer)
-        }, 500)
-      }}
+      onClick={
+        typeof open === 'boolean'
+          ? null
+          : () => {
+              if (closeOnClick) {
+                setTurnOnHandleMouseOver(false)
+                setIsMenuOpened(!isMenuOpened)
+                const timer = setTimeout(() => {
+                  setTurnOnHandleMouseOver(true)
+                  clearTimeout(timer)
+                }, 500)
+              }
+            }
+      }
     >
       <div
         className={cn(
@@ -55,11 +70,29 @@ const Menu = ({ trigger, triggerWrapperClassName, children }) => {
           triggerWrapperClassName
         )}
       >
-        {trigger}
+        <div
+          onClick={
+            typeof open === 'boolean'
+              ? null
+              : () => {
+                  if (!openOnHover) setIsMenuOpened(!isMenuOpened)
+                }
+          }
+        >
+          {trigger}
+        </div>
         <motion.div
           className="absolute overflow-hidden duration-300 bg-white border border-gray-800 top-full"
           variants={variants}
-          animate={isMenuOpened ? 'show' : 'hide'}
+          animate={
+            typeof open === 'boolean'
+              ? open
+                ? 'show'
+                : 'hide'
+              : isMenuOpened
+              ? 'show'
+              : 'hide'
+          }
           initial="hide"
           transition={{ duration: 0.2, type: 'tween' }}
         >
