@@ -202,9 +202,6 @@ const eventFunc = (eventId, clone = false) => {
       }
     }
 
-    console.log('event?.description', event?.description)
-    console.log('description', description)
-
     useEffect(() => {
       const isFormChanged =
         event?.title !== title ||
@@ -618,11 +615,17 @@ const eventFunc = (eventId, clone = false) => {
           {eventId && (
             <TabPanel tabName="Отчет" className="px-0">
               <FormWrapper>
-                {/* <EventStatusPicker
-                  required
-                  status={status}
-                  onChange={setStatus}
-                /> */}
+                <InputImages
+                  label="Фотографии с мероприятия"
+                  directory="reports"
+                  images={reportImages}
+                  onChange={(images) => {
+                    removeError('reportImages')
+                    setReportImages(images)
+                  }}
+                  // required
+                  error={errors.reportImages}
+                />
                 <EditableTextarea
                   label="Отчет"
                   html={report}
@@ -634,17 +637,6 @@ const eventFunc = (eventId, clone = false) => {
                   placeholder="Отчет о мероприятии..."
                   // required
                   error={errors.report}
-                />
-                <InputImages
-                  label="Фотографии с мероприятия"
-                  directory="reports"
-                  images={reportImages}
-                  onChange={(images) => {
-                    removeError('reportImages')
-                    setReportImages(images)
-                  }}
-                  // required
-                  error={errors.reportImages}
                 />
               </FormWrapper>
             </TabPanel>

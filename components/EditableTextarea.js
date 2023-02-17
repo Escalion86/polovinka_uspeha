@@ -1,4 +1,7 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+const Emoji = dynamic(() => import('quill-emoji'), { ssr: false })
 
 const modules = {
   toolbar: {
@@ -90,10 +93,15 @@ const EditableTextarea = ({
   error,
 }) => {
   if (typeof window !== 'object') return null
+
   const ReactQuill = require('react-quill')
-  const Emoji = require('quill-emoji')
+
   // import * as Emoji from 'quill-emoji'
-  ReactQuill.Quill.register('modules/emoji', Emoji)
+  // console.log('ReactQuill.Quill', ReactQuill.Quill)
+  if (!ReactQuill.Quill.imports['modules/emoji'])
+    ReactQuill.Quill.register('modules/emoji', require('quill-emoji'))
+
+  // ReactQuill.Quill.debug('info')
 
   return (
     <ReactQuill
