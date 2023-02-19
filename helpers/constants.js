@@ -356,6 +356,7 @@ export const DEFAULT_EVENT = Object.freeze({
   isReserveActive: true,
   report: '',
   reportImages: [],
+  warning: false,
 })
 
 export const DEFAULT_QUESTIONNAIRE = Object.freeze({

@@ -87,7 +87,8 @@ const EventButtonSignIn = ({
           (eventLoggedUserStatus.canSignIn &&
             !eventLoggedUserStatus.alreadySignIn)
         ) {
-          modalsFunc.event.signUp(event._id)
+          if (event.warning) modalsFunc.event.signUpWithWarning(event._id)
+          else modalsFunc.event.signUp(event._id)
         } else if (loggedUser.status === 'ban') {
           modalsFunc.event.cantSignUp()
         } else if (
@@ -95,7 +96,9 @@ const EventButtonSignIn = ({
           !eventLoggedUserStatus.alreadySignIn &&
           eventLoggedUserStatus.canSignInReserve
         ) {
-          modalsFunc.event.signUp(event._id, 'reserve')
+          if (event.warning)
+            modalsFunc.event.signUpWithWarning(event._id, 'reserve')
+          else modalsFunc.event.signUp(event._id, 'reserve')
         } else if (!isUserQuestionnaireFilled) {
           closeModal()
           router.push('/cabinet/questionnaire', '', { shallow: true })

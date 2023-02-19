@@ -147,6 +147,10 @@ const eventFunc = (eventId, clone = false) => {
     )
     const [report, setReport] = useState(event?.report ?? DEFAULT_EVENT.report)
 
+    const [warning, setWarning] = useState(
+      event?.warning ?? DEFAULT_EVENT.warning
+    )
+
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
@@ -196,6 +200,7 @@ const eventFunc = (eventId, clone = false) => {
             isReserveActive,
             report,
             reportImages,
+            warning,
           },
           clone
         )
@@ -228,7 +233,8 @@ const eventFunc = (eventId, clone = false) => {
         !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
         event?.isReserveActive !== isReserveActive ||
         event?.report !== report ||
-        !compareArrays(event?.reportImages, reportImages)
+        !compareArrays(event?.reportImages, reportImages) ||
+        event?.warning !== warning
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -262,6 +268,7 @@ const eventFunc = (eventId, clone = false) => {
       isReserveActive,
       report,
       reportImages,
+      warning,
     ])
 
     const handleFocus = (event) => event.target.select()
@@ -600,6 +607,14 @@ const eventFunc = (eventId, clone = false) => {
                   // wrapperClassName="flex-1"
                 />
               </FormWrapper>
+
+              <CheckBox
+                checked={warning}
+                labelPos="left"
+                // labelClassName="w-40"
+                onClick={() => setWarning((checked) => !checked)}
+                label="Предупреждение о рисках и травмоопасности на мероприятии"
+              />
 
               {/* <FormWrapper title="Видимость"> */}
               <CheckBox

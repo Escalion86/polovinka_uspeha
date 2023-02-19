@@ -113,6 +113,10 @@ const eventsSchema = {
     type: Array,
     default: [],
   },
+  warning: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 export default eventsSchema

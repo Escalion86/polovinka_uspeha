@@ -13,6 +13,7 @@ const CheckBox = ({
   readOnly = false,
   hidden = false,
   wrapperClassName,
+  error,
 }) => {
   if (readOnly && !checked) return null
 
@@ -32,8 +33,11 @@ const CheckBox = ({
           type="checkbox"
           className={cn(
             readOnly ? 'bg-gray-500' : 'checked:bg-general cursor-pointer',
-            'bg-white border border-gray-400 appearance-none from-blue-900 bg-check checked:border-transparent focus:outline-none',
-            small ? 'w-4 h-4 rounded-sm' : 'w-5 h-5 rounded-md'
+            'bg-white border appearance-none from-blue-900 bg-check checked:border-transparent focus:outline-none',
+            small
+              ? 'min-w-4 min-h-4 w-4 h-4 rounded-sm'
+              : 'min-w-5 min-h-5 w-5 h-5 rounded-md',
+            error ? 'border-danger' : ' border-gray-400'
           )}
           onClick={!readOnly ? onClick : null}
           onChange={!readOnly ? onChange : null}
