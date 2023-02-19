@@ -35,6 +35,7 @@ import eventUsersPaymentsFunc from './modalsFunc/eventUsersPaymentsFunc'
 import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
 import eventStatusEditFunc from './modalsFunc/eventStatusEditFunc'
 import eventUserStatusChangeFunc from './modalsFunc/eventUserStatusChangeFunc'
+import eventSignUpWithWarning from './modalsFunc/eventSignUpWithWarning'
 
 const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -215,6 +216,15 @@ const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
       view: (eventId) => addModal(eventViewFunc(eventId)),
+      signUpWithWarning: (
+        eventId,
+        status = 'participant',
+        eventSubtypeNum,
+        comment
+      ) =>
+        addModal(
+          eventSignUpWithWarning(eventId, status, eventSubtypeNum, comment)
+        ),
       signUp: (eventId, status = 'participant', eventSubtypeNum, comment) => {
         if (!loggedUser?._id)
           addModal({
