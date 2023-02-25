@@ -48,9 +48,7 @@ const InputImages = ({
             setAddingImage(true)
             sendImage(
               newImage,
-              (imageUrl) => {
-                onChange([...images, imageUrl])
-              },
+              (imagesUrls) => onChange([...images, ...imagesUrls]),
               directory
             )
           })
