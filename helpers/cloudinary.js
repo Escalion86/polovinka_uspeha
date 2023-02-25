@@ -44,12 +44,13 @@ export const sendImage = async (
   image,
   callback,
   folder = null,
-  imageName = null
+  imageName = null,
+  project = 'polovinka_uspeha'
 ) => {
   if (typeof image === 'object') {
     const formData = new FormData()
     // console.log('folder', folder)
-    formData.append('project', 'polovinka_uspeha')
+    formData.append('project', project)
     formData.append('folder', folder)
     // formData.append('password', 'cloudtest')
     formData.append('files', image)

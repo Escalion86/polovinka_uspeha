@@ -18,6 +18,7 @@ const InputImages = ({
   required = false,
   label = null,
   directory = null,
+  project,
   maxImages = 10,
   labelClassName,
   className,
@@ -49,7 +50,9 @@ const InputImages = ({
             sendImage(
               newImage,
               (imagesUrls) => onChange([...images, ...imagesUrls]),
-              directory
+              directory,
+              null,
+              project
             )
           })
         }
