@@ -70,7 +70,6 @@ export default async function handler(Schema, req, res, params = null) {
       try {
         if (id) {
           data = await Schema.findById(id)
-          console.log('data', data)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
@@ -83,7 +82,7 @@ export default async function handler(Schema, req, res, params = null) {
             new: true,
             runValidators: true,
           })
-          console.log('data2', data)
+
           if (!data) {
             return res?.status(400).json({ success: false })
           }

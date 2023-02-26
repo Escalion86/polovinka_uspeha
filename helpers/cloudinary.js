@@ -20,22 +20,23 @@ export const deleteImage = async (publicId, resource_type = 'image') => {
   }
 }
 
+// TODO Adding delete not used images
 export const deleteImages = async (arrayOfImagesUrls, callback = null) => {
-  if (arrayOfImagesUrls.length > 0)
-    await Promise.all(
-      arrayOfImagesUrls.map(async (imageUrl) => {
-        if (imageUrl.lastIndexOf(CLOUDINARY_FOLDER + '/') > 0) {
-          await deleteImage(
-            imageUrl.substring(
-              imageUrl.lastIndexOf(CLOUDINARY_FOLDER + '/'),
-              imageUrl.lastIndexOf('.')
-            )
-          )
-        } else if (!imageUrl.includes('https://res.cloudinary.com')) {
-          await deleteImage(CLOUDINARY_FOLDER + '/' + imageUrl)
-        }
-      })
-    )
+  // if (arrayOfImagesUrls.length > 0)
+  //   await Promise.all(
+  //     arrayOfImagesUrls.map(async (imageUrl) => {
+  //       if (imageUrl.lastIndexOf(CLOUDINARY_FOLDER + '/') > 0) {
+  //         await deleteImage(
+  //           imageUrl.substring(
+  //             imageUrl.lastIndexOf(CLOUDINARY_FOLDER + '/'),
+  //             imageUrl.lastIndexOf('.')
+  //           )
+  //         )
+  //       } else if (!imageUrl.includes('https://res.cloudinary.com')) {
+  //         await deleteImage(CLOUDINARY_FOLDER + '/' + imageUrl)
+  //       }
+  //     })
+  //   )
   if (callback) callback()
 }
 
@@ -43,31 +44,43 @@ export const sendImage = async (
   image,
   callback,
   folder = null,
-  imageName = null
+  imageName = null,
+  project = 'polovinka_uspeha'
 ) => {
   if (typeof image === 'object') {
     const formData = new FormData()
-    formData.append('file', image)
-    formData.append(
-      'upload_preset',
-      folder ? CLOUDINARY_FOLDER + '_' + folder : CLOUDINARY_FOLDER
-    )
-
-    if (imageName) formData.append('public_id', imageName)
+    // console.log('folder', folder)
+    formData.append('project', project)
+    formData.append('folder', folder)
+    // formData.append('password', 'cloudtest')
+    formData.append('files', image)
 
     return await fetch(
-      'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
+      // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
+      'https://api.escalioncloud.ru/api',
       {
         method: 'POST',
         body: formData,
+        //  JSON.stringify({
+        //   file: image,
+        //   fileName: imageName ?? 'test.jpg',
+        //   folder: 'events',
+        // })
+        // dataType: 'json',
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // 'Content-Type': "multipart/form-data"
+        // },
       }
     )
       .then((response) => response.json())
       .then((data) => {
-        if (data.secure_url !== '') {
-          if (callback) callback(data.secure_url)
-          return data.secure_url
-        }
+        console.log('data', data)
+        // if (data.secure_url !== '') {
+        // if (callback) callback(data.secure_url)
+        // return data.secure_url
+        // }
+        if (callback) callback(data)
       })
       .catch((err) => console.error('ERROR', err))
   }

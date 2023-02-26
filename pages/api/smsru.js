@@ -13,11 +13,15 @@ const service_id = process.env.UCALLER_SERVICE_ID
 
 const fetchUcallerCode = async (phone, code) =>
   await fetch(
-    `https://api.ucaller.ru/v1.0/initCall?phone=${phone}${
-      code ? '&code=' + code : ''
-    }&key=${key}&service_id=${service_id}${
-      UCALLER_VOICE ? '&voice=true&mix=true' : ''
-    }`,
+    `https://sms.ru/code/call?phone=${phone}${
+      true ? '' : '&ip=33.22.11.55'
+    }&api_id=DD6A852C-F940-9053-474E-3681252BC395`,
+    // `https://api.ucaller.ru/v1.0/initCall?phone=${phone}${
+    //   code ? '&code=' + code : ''
+    // }&key=${key}&service_id=${service_id}${
+    //   UCALLER_VOICE ? '&voice=true&mix=true' : ''
+    // }`
+
     { method: 'GET' }
   ).then((response) => response.json())
 
@@ -53,7 +57,7 @@ const sendCode = async (res, phone, tryNum = 1, update = false, code) => {
         phone,
         status: response.status,
         code: response.code,
-        ucaller_id: response.ucaller_id,
+        ucaller_id: response.call_id,
         confirmed: false,
         tryNum,
       })
@@ -63,7 +67,7 @@ const sendCode = async (res, phone, tryNum = 1, update = false, code) => {
       data: {
         status: response.status,
         phone,
-        ucaller_id: response.ucaller_id,
+        ucaller_id: response.call_id,
         confirmed: false,
         tryNum,
       },

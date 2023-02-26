@@ -10,9 +10,14 @@ import paymentsAtom from '@state/atoms/paymentsAtom'
 
 import { CardWrapper } from '@components/CardWrapper'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
+import InputImages from '@components/InputImages'
+import { useState } from 'react'
+import Input from '@components/Input'
+import FormWrapper from '@components/FormWrapper'
 
 const DevCard = ({ title, data }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+
   return (
     <CardWrapper
       // loading={loading}
@@ -39,8 +44,39 @@ const DevContent = () => {
   const additionalBlocks = useRecoilValue(additionalBlocksAtom)
   const payments = useRecoilValue(paymentsAtom)
 
+  const [images, setImages] = useState([])
+  const [project, setProject] = useState('')
+  const [folder, setFolder] = useState('')
+
   return (
     <CardListWrapper>
+      <FormWrapper>
+        <Input
+          label="Project"
+          type="text"
+          value={project}
+          onChange={(value) => {
+            setProject(value)
+          }}
+        />
+        <Input
+          label="Folder"
+          type="text"
+          value={folder}
+          onChange={(value) => {
+            setFolder(value)
+          }}
+        />
+        <InputImages
+          label="escalioncloud"
+          directory={folder}
+          project={project}
+          images={images}
+          onChange={(images) => {
+            setImages(images)
+          }}
+        />
+      </FormWrapper>
       <DevCard title="users" data={users} />
       <DevCard title="events" data={events} />
       <DevCard title="eventsUsers" data={eventsUsers} />
