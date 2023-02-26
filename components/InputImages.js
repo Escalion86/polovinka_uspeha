@@ -39,12 +39,14 @@ const InputImages = ({
 
       img.onload = async () => {
         // console.log(img.width + ' ' + img.height)
+        // console.log('img', img)
+        // console.log('newImage', newImage)
         if (img.width < 100 || img.height < 100) modalsFunc.minimalSize()
         else {
           // const newResizedImage = await resizeFile(newImage)
           // setImageOld(image)
           // setAddingImage(true)
-          modalsFunc.cropImage(newImage, aspect, (newImage) => {
+          modalsFunc.cropImage(newImage, img, aspect, (newImage) => {
             // setImageOld(image)
             setAddingImage(true)
             sendImage(

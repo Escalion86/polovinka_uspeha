@@ -1,5 +1,6 @@
 import compareObjects from '@helpers/compareObjects'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import { useCallback } from 'react'
 
 import ReactCrop from 'react-image-crop'
 
@@ -105,15 +106,9 @@ import ReactCrop from 'react-image-crop'
 //   return new File([arr], fileName, { type: mime })
 // }
 
-const DEFAULT_CROP = {
-  unit: '%',
-  x: 0,
-  y: 0,
-  width: 100,
-  height: 100,
-}
+const MAX_SIZE = 2400
 
-const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
+const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
   const CropImageModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -122,48 +117,128 @@ const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    console.log('src', src)
     const [imgSrc, setImgSrc] = useState('')
-    const imgRef = useRef(null)
-    const [crop, setCrop] = useState(DEFAULT_CROP)
-    const [completedCrop, setCompletedCrop] = useState(DEFAULT_CROP)
+    // const imgRef = useRef(null)
+    const [ref, setRef] = useState(null)
+    const [crop, setCrop] = useState({
+      unit: '%',
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+    })
+    const [completedCrop, setCompletedCrop] = useState(null)
     const [scale, setScale] = useState(1)
     const [rotate, setRotate] = useState(0)
     const [aspect, setAspect] = useState(aspectRatio)
-    // const [ready, setReady] = useState()
+
+    const onRefChange = useCallback((node) => {
+      if (node === null) {
+        // DOM node referenced by ref has been unmounted
+      } else {
+        // DOM node referenced by ref has changed and exists
+        // imgRef(node)
+        setRef(node)
+        setCompletedCrop({
+          unit: 'px',
+          x: 0,
+          y: 0,
+          width: node.width,
+          height: node.height,
+        })
+      }
+    }, [])
 
     // console.log('completedCrop', completedCrop)
-    // console.log('imgRef.current.width', imgRef.current?.width)
-    // console.log('crop', crop)
+    // const [ready, setReady] = useState()
 
-    // useEffect(()=> setCompletedCrop,[])
+    // if (imgSrc)
+    //   imgSrc.onload = function () {
+    //     alert(this.width + 'x' + this.height)
+    //   }
 
-    const getCroppedImg = (image = imgRef.current, crop = completedCrop) => {
-      if (!crop || compareObjects(crop, DEFAULT_CROP)) return onConfirm(src)
+    // useLayoutEffect(() => {
+    //   // console.log('completedCrop', completedCrop)
+    //   if (imgRef?.current)
+    //     setCompletedCrop({
+    //       ...completedCrop,
+    //       width: imgRef.current.width,
+    //       height: imgRef.current.height,
+    //     })
+    //   // console.log('imgRef.current.width', imgRef.current?.width)
+    //   // console.log('crop', crop)
+    // }, [imgRef?.current])
+
+    const getCroppedImg = (image = ref, crop = completedCrop) => {
+      // console.log('image', image)
+      // console.log('crop', crop)
+
+      // console.log('image.width', imgElement.width)
+      // console.log('image.height', imgElement.height)
+
+      // if (!crop || compareObjects(crop, DEFAULT_CROP)) return onConfirm(src)
 
       const canvas = document.createElement('canvas')
       const scaleX = image.naturalWidth / image.width
       const scaleY = image.naturalHeight / image.height
-      canvas.width = crop.width
-      canvas.height = crop.height
+
+      // canvas.width = crop.width
+      // canvas.height = crop.height
+
+      const aspectFact = imgElement.width / imgElement.height
+      // const maxProportion =
+      //   imgElement.width > 1200 || imgElement.height > 1200
+      //     ? Math.max(imgElement.width, imgElement.height) / 1200
+      //     : 1
+
+      canvas.width =
+        imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
+          ? imgElement.width > imgElement.height
+            ? MAX_SIZE
+            : MAX_SIZE * aspectFact
+          : imgElement.width
+      canvas.height =
+        imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
+          ? imgElement.width < imgElement.height
+            ? MAX_SIZE
+            : MAX_SIZE / aspectFact
+          : imgElement.height
+
+      // console.log('canvas.width', canvas.width)
+      // console.log('canvas.height', canvas.height)
       const ctx = canvas.getContext('2d')
 
       ctx.drawImage(
-        image,
+        imgElement,
         crop.x * scaleX,
         crop.y * scaleY,
         crop.width * scaleX,
         crop.height * scaleY,
         0,
         0,
-        crop.width,
-        crop.height
+        canvas.width,
+        canvas.height
       )
 
+      // canvas.width = crop.width / maxProportion
+      // canvas.height = crop.height / maxProportion
+
       // const reader = new FileReader()
-      canvas.toBlob((blob) => {
-        const file = new File([blob], 'mycanvas.png')
-        onConfirm(file)
-      })
+
+      function blobToFile(theBlob, fileName) {
+        //A Blob() is almost a File() - it's just missing the two properties below which we will add
+        theBlob.lastModifiedDate = new Date()
+        theBlob.name = fileName
+        return theBlob
+      }
+      canvas.toBlob(
+        (blob) => {
+          onConfirm(blobToFile(blob, src.name))
+        },
+        'image/jpeg',
+        0.9
+      )
     }
 
     useEffect(() => {
@@ -179,7 +254,7 @@ const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
 
     useEffect(() => {
       setOnConfirmFunc(() => {
-        getCroppedImg(imgRef.current, completedCrop)
+        getCroppedImg(ref, completedCrop)
         closeModal()
       })
       // setDisableConfirm(completedCrop.width < 100 || completedCrop.height < 100)
@@ -268,7 +343,7 @@ const cropImageFunc = (src = '', aspectRatio, onConfirm) => {
               minWidth={100}
             >
               <img
-                ref={imgRef}
+                ref={onRefChange}
                 alt="Crop me"
                 src={imgSrc}
                 style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
