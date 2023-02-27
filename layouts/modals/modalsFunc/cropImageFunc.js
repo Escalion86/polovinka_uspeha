@@ -170,7 +170,14 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
     //   // console.log('crop', crop)
     // }, [imgRef?.current])
 
-    const getCroppedImg = (image = ref, crop = completedCrop) => {
+    console.log('crop', crop)
+    console.log('completedCrop', completedCrop)
+
+    const getCroppedImg = (
+      image = ref,
+      completedCrop = completedCrop,
+      crop = crop
+    ) => {
       // console.log('image', image)
       // console.log('crop', crop)
 
@@ -193,17 +200,19 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
       //     : 1
 
       canvas.width =
-        imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
+        (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
           ? imgElement.width > imgElement.height
             ? MAX_SIZE
             : MAX_SIZE * aspectFact
-          : imgElement.width
+          : imgElement.width) *
+        (crop.width / 100)
       canvas.height =
-        imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
+        (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
           ? imgElement.width < imgElement.height
             ? MAX_SIZE
             : MAX_SIZE / aspectFact
-          : imgElement.height
+          : imgElement.height) *
+        (crop.height / 100)
 
       // console.log('canvas.width', canvas.width)
       // console.log('canvas.height', canvas.height)
@@ -211,10 +220,10 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
 
       ctx.drawImage(
         imgElement,
-        crop.x * scaleX,
-        crop.y * scaleY,
-        crop.width * scaleX,
-        crop.height * scaleY,
+        completedCrop.x * scaleX,
+        completedCrop.y * scaleY,
+        completedCrop.width * scaleX,
+        completedCrop.height * scaleY,
         0,
         0,
         canvas.width,
@@ -254,7 +263,7 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
 
     useEffect(() => {
       setOnConfirmFunc(() => {
-        getCroppedImg(ref, completedCrop)
+        getCroppedImg(ref, completedCrop, crop)
         closeModal()
       })
       // setDisableConfirm(completedCrop.width < 100 || completedCrop.height < 100)
