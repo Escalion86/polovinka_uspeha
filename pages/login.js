@@ -19,7 +19,7 @@ import LoadingSpinner from '@components/LoadingSpinner'
 import phoneValidator from '@helpers/phoneValidator'
 import useErrors from '@helpers/useErrors'
 import CheckBox from '@components/CheckBox'
-import { UCALLER_VOICE } from '@helpers/constants'
+// import { UCALLER_VOICE, UCALLER_MIX } from '@helpers/constants'
 
 const Input = ({
   className = '',
@@ -318,7 +318,7 @@ const Login = () => {
         setWaitingResponse(true)
 
         postData(
-          `/api/ucaller`,
+          `/api/telefonip`,
           { phone: inputPhone, forgotPassword: process === 'forgotPassword' },
           (res) => {
             setWaitingResponse(false)
@@ -335,7 +335,7 @@ const Login = () => {
         setWaitingResponse(true)
 
         postData(
-          `/api/ucaller`,
+          `/api/telefonip`,
           {
             phone: inputPhone,
             code: inputPinCode,
@@ -366,7 +366,7 @@ const Login = () => {
         setWaitingResponse(true)
 
         postData(
-          `/api/ucaller`,
+          `/api/telefonip`,
           {
             phone: inputPhone,
             password: inputPassword,
@@ -451,18 +451,24 @@ const Login = () => {
   const message =
     (process === 'registration' || process === 'forgotPassword') &&
     registrationLevel === 2 ? (
-      UCALLER_VOICE ? (
-        <>
-          На телефон <b>+{inputPhone}</b> поступит звонок. Возьмите трубку и
-          введите 4 цифры кода которые Вам продиктуют
-        </>
-      ) : (
-        <>
-          На телефон <b>+{inputPhone}</b> поступит звонок. Трубку брать не
-          нужно, введите 4 последние цифры номера входящего звонка
-        </>
-      )
-    ) : process === 'registration' && registrationLevel === 3 ? (
+      // UCALLER_MIX ? (
+      //   <>
+      //     На телефон <b>+{inputPhone}</b> поступит звонок. Введите последние 4
+      //     цифры номера телефона или возьмите трубку и введите 4 цифры кода
+      //     которые Вам продиктуют
+      //   </>
+      // ) : UCALLER_VOICE ? (
+      //   <>
+      //     На телефон <b>+{inputPhone}</b> поступит звонок. Введите 4 цифры кода
+      //     которые Вам продиктуют
+      //   </>
+      // ) : (
+      <>
+        На телефон <b>+{inputPhone}</b> поступит звонок. Трубку брать не нужно,
+        введите 4 последние цифры номера входящего звонка
+      </>
+    ) : // )
+    process === 'registration' && registrationLevel === 3 ? (
       <>
         Для завершения регистрации создайте пароль.
         <br />
@@ -737,7 +743,7 @@ const Login = () => {
                     onClickRepeat={async () => {
                       setWaitingResponse(true)
                       await postData(
-                        `/api/ucaller`,
+                        `/api/telefonip`,
                         {
                           phone: inputPhone,
                           forgotPassword: process === 'forgotPassword',
