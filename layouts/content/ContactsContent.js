@@ -76,8 +76,29 @@ const ContactsContent = (props) => {
     }
   }, [props])
 
+  const buttonDisabled = !formChanged
+
   return (
     <div className="flex flex-col flex-1 h-screen px-2 my-2 gap-y-2">
+      <div className="flex items-center w-full p-1 gap-x-1">
+        <div className="flex flex-row-reverse flex-1">
+          {!buttonDisabled && (
+            <span className="leading-4 text-right tablet:text-lg">
+              Чтобы изменения вступили в силу нажмите:
+            </span>
+          )}
+        </div>
+        <Button
+          name="Применить"
+          disabled={!formChanged}
+          onClick={onClickConfirm}
+          loading={isWaitingToResponse}
+        />
+      </div>
+      <ErrorsList errors={errors} />
+      {message && !isWaitingToResponse && (
+        <div className="flex flex-col col-span-2 text-success">{message}</div>
+      )}
       <FormWrapper>
         <FormWrapper twoColumns>
           <PhoneInput
@@ -135,18 +156,6 @@ const ContactsContent = (props) => {
           copyPasteButtons
         />
       </FormWrapper>
-      <div className="flex flex-col w-full p-1">
-        <ErrorsList errors={errors} />
-        <Button
-          name="Применить"
-          disabled={!formChanged}
-          onClick={onClickConfirm}
-          loading={isWaitingToResponse}
-        />
-        {message && !isWaitingToResponse && (
-          <div className="flex flex-col col-span-2 text-success">{message}</div>
-        )}
-      </div>
     </div>
   )
 }

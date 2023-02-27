@@ -1,7 +1,11 @@
 const phoneConfirmsSchema = {
+  id: {
+    type: Number,
+    required: false,
+  },
   ucaller_id: {
     type: Number,
-    required: true,
+    required: false,
   },
   phone: {
     type: String,

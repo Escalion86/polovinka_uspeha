@@ -1,4 +1,4 @@
-import { UCALLER_VOICE } from '@helpers/constants'
+import { UCALLER_VOICE, UCALLER_MIX } from '@helpers/constants'
 import { postData } from '@helpers/CRUD'
 import getMinutesBetween from '@helpers/getMinutesBetween'
 import isUserAdmin from '@helpers/isUserAdmin'
@@ -15,8 +15,8 @@ const fetchUcallerCode = async (phone, code) =>
   await fetch(
     `https://api.ucaller.ru/v1.0/initCall?phone=${phone}${
       code ? '&code=' + code : ''
-    }&key=${key}&service_id=${service_id}${
-      UCALLER_VOICE ? '&voice=true&mix=true' : ''
+    }&key=${key}&service_id=${service_id}${UCALLER_VOICE ? '&voice=true' : ''}${
+      UCALLER_MIX ? '&mix=true' : ''
     }`,
     { method: 'GET' }
   ).then((response) => response.json())
@@ -24,8 +24,8 @@ const fetchUcallerCode = async (phone, code) =>
 const fetchUcallerCodeRepeat = async (uid) =>
   await fetch(
     `https://api.ucaller.ru/v1.0/initRepeat?uid=${uid}&key=${key}&service_id=${service_id}${
-      UCALLER_VOICE ? '&voice=true&mix=true' : ''
-    }`,
+      UCALLER_VOICE ? '&voice=true' : ''
+    }${UCALLER_MIX ? '&mix=true' : ''}`,
     { method: 'GET' }
   ).then((response) => response.json())
 
