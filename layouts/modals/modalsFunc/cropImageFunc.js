@@ -1,4 +1,7 @@
-import compareObjects from '@helpers/compareObjects'
+// import IconToggleButton from '@components/IconToggleButtons/IconToggleButton'
+import RotateButton from '@components/IconToggleButtons/RotateButton'
+// import compareObjects from '@helpers/compareObjects'
+// import { Square } from '@mui/icons-material'
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { useCallback } from 'react'
 
@@ -107,6 +110,16 @@ import ReactCrop from 'react-image-crop'
 // }
 
 const MAX_SIZE = 2400
+const TO_RADIANS = Math.PI / 180
+
+const cropCorrecting = (crop, aspect) => {
+  if (aspect === 1)
+    return crop.width > crop.height
+      ? { ...crop, width: crop.height }
+      : { ...crop, height: crop.width }
+
+  return crop
+}
 
 const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
   const CropImageModal = ({
@@ -117,7 +130,7 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    console.log('src', src)
+    // console.log('src', src)
     const [imgSrc, setImgSrc] = useState('')
     // const imgRef = useRef(null)
     const [ref, setRef] = useState(null)
@@ -170,70 +183,204 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
     //   // console.log('crop', crop)
     // }, [imgRef?.current])
 
-    console.log('crop', crop)
-    console.log('completedCrop', completedCrop)
+    // console.log('crop', crop)
+    // console.log('completedCrop', completedCrop)
+
+    // const getCroppedImg = (
+    //   image = ref,
+    //   completedCrop = completedCrop,
+    //   crop = crop,
+    //   scale = 1,
+    //   rotate = 0
+    // ) => {
+    //   // console.log('image', image)
+    //   // console.log('crop', crop)
+
+    //   // console.log('image.width', imgElement.width)
+    //   // console.log('image.height', imgElement.height)
+
+    //   // if (!crop || compareObjects(crop, DEFAULT_CROP)) return onConfirm(src)
+
+    //   const canvas = document.createElement('canvas')
+    //   const scaleX = image.naturalWidth / image.width
+    //   const scaleY = image.naturalHeight / image.height
+
+    //   // canvas.width = crop.width
+    //   // canvas.height = crop.height
+
+    //   const aspectFact = imgElement.width / imgElement.height
+    //   // const maxProportion =
+    //   //   imgElement.width > 1200 || imgElement.height > 1200
+    //   //     ? Math.max(imgElement.width, imgElement.height) / 1200
+    //   //     : 1
+
+    //   canvas.width =
+    //     (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
+    //       ? imgElement.width > imgElement.height
+    //         ? MAX_SIZE
+    //         : MAX_SIZE * aspectFact
+    //       : imgElement.width) *
+    //     (crop.width / 100)
+    //   canvas.height =
+    //     (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
+    //       ? imgElement.width < imgElement.height
+    //         ? MAX_SIZE
+    //         : MAX_SIZE / aspectFact
+    //       : imgElement.height) *
+    //     (crop.height / 100)
+
+    //   // console.log('canvas.width', canvas.width)
+    //   // console.log('canvas.height', canvas.height)
+    //   const ctx = canvas.getContext('2d')
+
+    //   const cropX = completedCrop.x * scaleX
+    //   const cropY = completedCrop.y * scaleY
+
+    //   const rotateRads = rotate * TO_RADIANS
+    //   const centerX = image.naturalWidth / 2
+    //   const centerY = image.naturalHeight / 2
+
+    //   // ctx.translate(-cropX, -cropY)
+    //   ctx.translate(centerX, centerY)
+    //   ctx.rotate(rotateRads)
+    //   ctx.translate(-centerX, -centerY)
+
+    //   ctx.drawImage(
+    //     image,
+    //     0,
+    //     0,
+    //     image.naturalWidth,
+    //     image.naturalHeight,
+    //     0,
+    //     0,
+    //     canvas.width,
+    //     canvas.height
+    //   )
+    //   // ctx.drawImage(
+    //   //   imgElement,
+    //   //   0,
+    //   //   0,
+    //   //   // completedCrop.x * scaleX,
+    //   //   // completedCrop.y * scaleY,
+    //   //   completedCrop.width * scaleX,
+    //   //   completedCrop.height * scaleY,
+    //   //   0,
+    //   //   0,
+    //   //   canvas.width,
+    //   //   canvas.height
+    //   // )
+
+    //   // canvas.width = crop.width / maxProportion
+    //   // canvas.height = crop.height / maxProportion
+
+    //   // const reader = new FileReader()
+
+    //   function blobToFile(theBlob, fileName) {
+    //     //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    //     theBlob.lastModifiedDate = new Date()
+    //     theBlob.name = fileName
+    //     return theBlob
+    //   }
+    //   canvas.toBlob(
+    //     (blob) => {
+    //       onConfirm(blobToFile(blob, src.name))
+    //     },
+    //     'image/jpeg',
+    //     0.9
+    //   )
+    // }
 
     const getCroppedImg = (
       image = ref,
       completedCrop = completedCrop,
-      crop = crop
+      crop = crop,
+      scale = 1,
+      rotate = 0
     ) => {
-      // console.log('image', image)
-      // console.log('crop', crop)
-
-      // console.log('image.width', imgElement.width)
-      // console.log('image.height', imgElement.height)
-
-      // if (!crop || compareObjects(crop, DEFAULT_CROP)) return onConfirm(src)
-
       const canvas = document.createElement('canvas')
-      const scaleX = image.naturalWidth / image.width
-      const scaleY = image.naturalHeight / image.height
-
-      // canvas.width = crop.width
-      // canvas.height = crop.height
-
-      const aspectFact = imgElement.width / imgElement.height
-      // const maxProportion =
-      //   imgElement.width > 1200 || imgElement.height > 1200
-      //     ? Math.max(imgElement.width, imgElement.height) / 1200
-      //     : 1
-
-      canvas.width =
-        (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
-          ? imgElement.width > imgElement.height
-            ? MAX_SIZE
-            : MAX_SIZE * aspectFact
-          : imgElement.width) *
-        (crop.width / 100)
-      canvas.height =
-        (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
-          ? imgElement.width < imgElement.height
-            ? MAX_SIZE
-            : MAX_SIZE / aspectFact
-          : imgElement.height) *
-        (crop.height / 100)
-
-      // console.log('canvas.width', canvas.width)
-      // console.log('canvas.height', canvas.height)
       const ctx = canvas.getContext('2d')
 
+      if (!ctx) {
+        throw new Error('No 2d context')
+      }
+
+      const scaleX = image.naturalWidth / image.width
+      const scaleY = image.naturalHeight / image.height
+      // devicePixelRatio slightly increases sharpness on retina devices
+      // at the expense of slightly slower render times and needing to
+      // size the image back down if you want to download/upload and be
+      // true to the images natural size.
+      // const pixelRatio = window.devicePixelRatio
+      const pixelRatio = 1
+      // const aspectFact = imgElement.width / imgElement.height
+
+      // const width =
+      //   (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
+      //     ? imgElement.width > imgElement.height
+      //       ? MAX_SIZE
+      //       : Math.floor(MAX_SIZE * aspectFact)
+      //     : imgElement.width) *
+      //   (crop.width / 100)
+      // const height =
+      //   (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
+      //     ? imgElement.width < imgElement.height
+      //       ? MAX_SIZE
+      //       : Math.floor(MAX_SIZE / aspectFact)
+      //     : imgElement.height) *
+      //   (crop.height / 100)
+
+      canvas.width = Math.floor(completedCrop.width * scaleX * pixelRatio)
+      canvas.height = Math.floor(completedCrop.height * scaleY * pixelRatio)
+      // canvas.width = width
+      // canvas.height = height
+      // console.log('canvas.width', canvas.width)
+      // console.log('canvas.height', canvas.height)
+
+      ctx.scale(pixelRatio, pixelRatio)
+      ctx.imageSmoothingQuality = 'high'
+
+      const cropX = completedCrop.x * scaleX
+      const cropY = completedCrop.y * scaleY
+
+      const rotateRads = rotate * TO_RADIANS
+      const centerX = image.naturalWidth / 2
+      const centerY = image.naturalHeight / 2
+
+      // ctx.save()
+
+      // 5) Move the crop origin to the canvas origin (0,0)
+      ctx.translate(-cropX, -cropY)
+      // 4) Move the origin to the center of the original position
+      ctx.translate(centerX, centerY)
+      // 3) Rotate around the origin
+      ctx.rotate(rotateRads)
+      // 2) Scale the image
+      ctx.scale(scale, scale)
+      // 1) Move the center of the image to the origin (0,0)
+      ctx.translate(-centerX, -centerY)
       ctx.drawImage(
-        imgElement,
-        completedCrop.x * scaleX,
-        completedCrop.y * scaleY,
-        completedCrop.width * scaleX,
-        completedCrop.height * scaleY,
+        image,
         0,
         0,
-        canvas.width,
-        canvas.height
+        image.naturalWidth,
+        image.naturalHeight,
+        0,
+        0,
+        // width,
+        // height
+        image.naturalWidth,
+        image.naturalHeight
       )
 
-      // canvas.width = crop.width / maxProportion
-      // canvas.height = crop.height / maxProportion
+      // console.log('width', width)
+      // console.log('height', height)
+      // canvas.width = width
+      // canvas.height = height
 
-      // const reader = new FileReader()
+      // console.log('image.naturalWidth', image.naturalWidth)
+      // console.log('image.naturalHeight', image.naturalHeight)
+
+      // ctx.restore()
 
       function blobToFile(theBlob, fileName) {
         //A Blob() is almost a File() - it's just missing the two properties below which we will add
@@ -241,6 +388,7 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
         theBlob.name = fileName
         return theBlob
       }
+
       canvas.toBlob(
         (blob) => {
           onConfirm(blobToFile(blob, src.name))
@@ -263,7 +411,7 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
 
     useEffect(() => {
       setOnConfirmFunc(() => {
-        getCroppedImg(ref, completedCrop, crop)
+        getCroppedImg(ref, completedCrop, crop, scale, rotate)
         closeModal()
       })
       // setDisableConfirm(completedCrop.width < 100 || completedCrop.height < 100)
@@ -310,6 +458,45 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
 
     return (
       <div className="App">
+        <div className="flex py-1 mb-1 gap-x-2">
+          <RotateButton
+            direction="left"
+            onClick={() =>
+              setRotate((state) => (state === 0 ? 270 : state - 90))
+            }
+          />
+          <RotateButton
+            direction="right"
+            onClick={() =>
+              setRotate((state) => (state === 270 ? 0 : state + 90))
+            }
+          />
+          {/* <IconToggleButton
+            selected={aspect}
+            onClick={() =>
+              setAspect((state) => {
+                if (state) return undefined
+                else {
+                  setCrop(cropCorrecting(crop, 1))
+                  setCompletedCrop(cropCorrecting(completedCrop, 1))
+                  return 1
+                }
+              })
+            }
+          >
+            <Square />
+          </IconToggleButton> */}
+          {/* <label htmlFor="rotate-input">Rotate: </label>
+          <input
+            id="rotate-input"
+            type="number"
+            value={rotate}
+            disabled={!imgSrc}
+            onChange={(e) =>
+              setRotate(Math.min(180, Math.max(-180, Number(e.target.value))))
+            }
+          /> */}
+        </div>
         {/* <div className="Crop-Controls">
           <input type="file" accept="image/*" onChange={onSelectFile} />
           <div>
