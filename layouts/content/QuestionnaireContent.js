@@ -262,8 +262,27 @@ const QuestionnaireContent = (props) => {
     }
   }, [modalsFunc])
 
+  const buttonDisabled = !formChanged || loggedUser.status === 'ban'
+
   return (
     <div className="flex flex-col flex-1 h-full max-w-full max-h-full min-h-full">
+      <div className="flex items-center w-full p-1 gap-x-1">
+        <div className="flex flex-row-reverse flex-1">
+          {!buttonDisabled && (
+            <span className="leading-4 text-right tablet:text-lg">
+              Чтобы изменения вступили в силу нажмите:
+            </span>
+          )}
+        </div>
+        <Button
+          // classBgColor=""
+          name="Применить"
+          disabled={buttonDisabled}
+          onClick={onClickConfirm}
+          loading={isWaitingToResponse}
+        />
+      </div>
+      <ErrorsList errors={errors} className="px-1" />
       <TabContext value="Анкета">
         <TabPanel tabName="Анкета" className="flex-1">
           {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}
@@ -576,15 +595,6 @@ const QuestionnaireContent = (props) => {
           </TabPanel>
         )}
       </TabContext>
-      <div className="flex flex-col w-full p-1">
-        <ErrorsList errors={errors} />
-        <Button
-          name="Применить"
-          disabled={!formChanged || loggedUser.status === 'ban'}
-          onClick={onClickConfirm}
-          loading={isWaitingToResponse}
-        />
-      </div>
     </div>
   )
 }
