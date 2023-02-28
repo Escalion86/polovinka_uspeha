@@ -13,6 +13,7 @@ import { SessionProvider } from 'next-auth/react'
 // import Script from 'next/script'
 import {
   RecoilRoot,
+  RecoilEnv,
   // atom,
   // selector,
   // useRecoilState,
@@ -33,6 +34,8 @@ import Script from 'next/script'
 import { SnackbarProvider } from 'notistack'
 import { useEffect } from 'react'
 // import { CssBaseline } from '@mui/material/'
+
+RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
 // Create a theme instance.
 const theme = createTheme({
