@@ -318,7 +318,7 @@ const Login = () => {
         setWaitingResponse(true)
 
         postData(
-          `/api/ucaller`,
+          `/api/telefonip`,
           { phone: inputPhone, forgotPassword: process === 'forgotPassword' },
           (res) => {
             setWaitingResponse(false)
@@ -335,7 +335,7 @@ const Login = () => {
         setWaitingResponse(true)
 
         postData(
-          `/api/ucaller`,
+          `/api/telefonip`,
           {
             phone: inputPhone,
             code: inputPinCode,
@@ -366,7 +366,7 @@ const Login = () => {
         setWaitingResponse(true)
 
         postData(
-          `/api/ucaller`,
+          `/api/telefonip`,
           {
             phone: inputPhone,
             password: inputPassword,
@@ -743,7 +743,7 @@ const Login = () => {
                     onClickRepeat={async () => {
                       setWaitingResponse(true)
                       await postData(
-                        `/api/ucaller`,
+                        `/api/telefonip`,
                         {
                           phone: inputPhone,
                           forgotPassword: process === 'forgotPassword',

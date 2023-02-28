@@ -30,7 +30,7 @@ const sendCode = async (res, phone, tryNum = 1, update = false) => {
       },
     })
   const response = await fetchCode(phone)
-  // console.log('response', response)
+  console.log('response', response)
   if (response?.success) {
     if (update) {
       await PhoneConfirms.findOneAndUpdate(
@@ -62,7 +62,7 @@ const sendCode = async (res, phone, tryNum = 1, update = false) => {
       success: false,
       data: {
         error: {
-          message: 'Не удалось отправить код на номер +' + phone,
+          message: `Не удалось отправить код на номер +${phone}. Ответ сервиса: ${response.error}`,
           type: 'pinCode',
         },
       },
