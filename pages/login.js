@@ -1,6 +1,9 @@
 import { getSession, signIn } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
+
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
+
 import SvgWave from 'svg/SvgWave'
 // import SvgLogin from 'svg/SvgLogin'
 // import SvgAvatar from 'svg/SvgAvatar'
@@ -19,6 +22,7 @@ import LoadingSpinner from '@components/LoadingSpinner'
 import phoneValidator from '@helpers/phoneValidator'
 import useErrors from '@helpers/useErrors'
 import CheckBox from '@components/CheckBox'
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 // import { UCALLER_VOICE, UCALLER_MIX } from '@helpers/constants'
 
 const Input = ({
@@ -227,7 +231,31 @@ const RepeatCall = ({ onClickRepeat }) => {
   )
 }
 
-const Login = () => {
+const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
+  fetch('/api/enquiry', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      gRecaptchaToken: gReCaptchaToken,
+    }),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res, 'response from backend')
+      if (res?.status === 'success') {
+        // console.log('responce captcha', res?.message)
+        onSuccess()
+      } else {
+        // console.log('responce captcha', res?.message)
+        onError()
+      }
+    })
+}
+
+const LoginPage = () => {
   const router = useRouter()
   // const { data: session, status } = useSession()
   // const { courseId, lectureId } = router.query
@@ -244,6 +272,23 @@ const Login = () => {
   // const [needToCheckMail, setNeedToCheckMail] = useState(false)
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
+
+  const { executeRecaptcha } = useGoogleReCaptcha()
+
+  // const handleSumitForm = useCallback(
+  //   (e) => {
+  //     e.preventDefault()
+  //     if (!executeRecaptcha) {
+  //       console.log('Execute recaptcha not yet available')
+  //       return
+  //     }
+  //     executeRecaptcha('enquiryFormSubmit').then((gReCaptchaToken) => {
+  //       console.log(gReCaptchaToken, 'response Google reCaptcha server')
+  //       submitEnquiryForm(gReCaptchaToken)
+  //     })
+  //   },
+  //   [executeRecaptcha]
+  // )
 
   useEffect(() => {
     if (router.query?.registration === 'true') setProcess('registration')
@@ -315,21 +360,47 @@ const Login = () => {
 
     if (process === 'registration' || process === 'forgotPassword') {
       if (registrationLevel === 1) {
+        if (!executeRecaptcha) {
+          console.log('Execute recaptcha not yet available')
+          return
+        }
         setWaitingResponse(true)
 
-        postData(
-          `/api/telefonip`,
-          { phone: inputPhone, forgotPassword: process === 'forgotPassword' },
-          (res) => {
-            setWaitingResponse(false)
-            if (res.error) {
-              addError({ [res.error.type]: res.error.message })
-              // updateErrors(res.error.type, res.error.message)
-            } else {
-              setRegistrationLevel(2)
+        executeRecaptcha('enquiryFormSubmit').then((gReCaptchaToken) => {
+          // console.log(gReCaptchaToken, 'response Google reCaptcha server')
+          submitEnquiryForm(
+            gReCaptchaToken,
+            () => {
+              postData(
+                `/api/telefonip`,
+                {
+                  phone: inputPhone,
+                  forgotPassword: process === 'forgotPassword',
+                },
+                (res) => {
+                  setWaitingResponse(false)
+                  if (res.error) {
+                    addError({ [res.error.type]: res.error.message })
+                    // updateErrors(res.error.type, res.error.message)
+                  } else {
+                    setRegistrationLevel(2)
+                  }
+                },
+                (error) => {
+                  setWaitingResponse(false)
+                  addError({ error })
+                }
+              )
+            },
+            () => {
+              addError({
+                captcha:
+                  'Похоже что вы робот, сработала система защиты от спама',
+              })
+              setWaitingResponse(false)
             }
-          }
-        )
+          )
+        })
       }
       if (registrationLevel === 2) {
         setWaitingResponse(true)
@@ -822,6 +893,20 @@ const Login = () => {
     </div>
   )
 }
+
+const Login = () => (
+  <GoogleReCaptchaProvider
+    reCaptchaKey="6Lcw5bwkAAAAAD1qgHYKcEzcbdATVfdI3lIiO5X2"
+    scriptProps={{
+      async: false,
+      defer: false,
+      appendTo: 'body',
+      nonce: undefined,
+    }}
+  >
+    <LoginPage />
+  </GoogleReCaptchaProvider>
+)
 
 export default Login
 
