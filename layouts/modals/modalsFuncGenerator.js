@@ -1,13 +1,3 @@
-// import CheckBox from '@components/CheckBox'
-// import Input from '@components/Input'
-// import { MODES } from '@helpers/constants'
-// import { postData } from '@helpers/CRUD'
-// import emailValidator from '@helpers/emailValidator'
-// import { useEffect, useState } from 'react'
-// import useErrors from '@helpers/useErrors'
-// import { modalsFuncAtom } from '@state/atoms'
-// import { useRecoilValue } from 'recoil'
-
 import reviewFunc from './modalsFunc/reviewFunc'
 import directionFunc from './modalsFunc/directionFunc'
 import eventFunc from './modalsFunc/eventFunc'
@@ -37,25 +27,7 @@ import eventStatusEditFunc from './modalsFunc/eventStatusEditFunc'
 import eventUserStatusChangeFunc from './modalsFunc/eventUserStatusChangeFunc'
 import eventSignUpWithWarning from './modalsFunc/eventSignUpWithWarning'
 
-const modalsFuncGenerator = (setModals, itemsFunc, router, loggedUser) => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const addModal = (props) => {
-    setModals((modals) => {
-      const maxId =
-        modals.length > 0
-          ? Math.max.apply(
-              null,
-              modals.map((modal) => modal.id)
-            )
-          : -1
-
-      if (props.uid && modals.find((modal) => modal.props.uid === props.uid))
-        return modals
-
-      return [...modals, { id: maxId < 0 ? 0 : maxId + 1, props }]
-    })
-  }
-
+const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
   const fixEventStatus = (eventId, status) => {
     itemsFunc.event.set({ _id: eventId, status }, false, true)
   }

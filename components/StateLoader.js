@@ -1,8 +1,6 @@
 // import { getSession } from 'next-auth/react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
-// import fetchProps from '@server/fetchProps'
-
 import { useEffect } from 'react'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -56,21 +54,25 @@ import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import serviceEditSelector from '@state/selectors/serviceEditSelector'
 import serviceDeleteSelector from '@state/selectors/serviceDeleteSelector'
+import { useMemo } from 'react'
+import addModalSelector from '@state/selectors/addModalSelector'
+import addErrorModalSelector from '@state/selectors/addErrorModalSelector'
 // import snackbarAtom from '@state/atoms/snackbarAtom'
 // import itemsFuncSelector from '@state/itemsFuncGeneratorSelector'
+import { useRouter } from 'next/router'
+import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
     console.log('props.error', props.error)
 
   const snackbar = useSnackbar()
-  // const setSnackbar = useSetRecoilState(snackbarAtom)
 
-  // const setItemsFunc = useSetRecoilState(itemsFuncSelector)
+  const router = useRouter()
+
+  const setModalsFunc = useSetRecoilState(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
-
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
@@ -122,12 +124,56 @@ const StateLoader = (props) => {
   const setService = useSetRecoilState(serviceEditSelector)
   const deleteService = useSetRecoilState(serviceDeleteSelector)
 
-  const [itemsFunc, setItemsFunc] = useRecoilState(itemsFuncAtom)
+  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
   const setLoadingCard = useSetRecoilState(setLoadingSelector)
   const setNotLoadingCard = useSetRecoilState(setNotLoadingSelector)
   const setErrorCard = useSetRecoilState(setErrorSelector)
   const setNotErrorCard = useSetRecoilState(setNotErrorSelector)
   const setWindowDimensions = useSetRecoilState(windowDimensionsAtom)
+
+  const addModal = useSetRecoilState(addModalSelector)
+  const addErrorModal = useSetRecoilState(addErrorModalSelector)
+
+  const itemsFunc = useMemo(
+    () =>
+      itemsFuncGenerator({
+        setLoading: setIsSiteLoading,
+        addErrorModal,
+        setLoadingCard,
+        setNotLoadingCard,
+        setErrorCard,
+        setNotErrorCard,
+        setEvent,
+        deleteEvent,
+        setDirection,
+        deleteDirection,
+        setAdditionalBlock,
+        deleteAdditionalBlock,
+        setUser,
+        deleteUser,
+        setReview,
+        deleteReview,
+        addPayments,
+        setPayment,
+        deletePayment,
+        setEventsUser,
+        deleteEventsUser,
+        deleteEventsUsersByEventId,
+        setSiteSettings: setSiteSettingsState,
+        setQuestionnaire,
+        deleteQuestionnaire,
+        setQuestionnaireUsers,
+        deleteQuestionnaireUsers,
+        setService,
+        deleteService,
+        snackbar,
+      }),
+    []
+  )
+
+  useEffect(() => {
+    setModalsFunc(modalsFuncGenerator(addModal, itemsFunc, router, loggedUser))
+  }, [loggedUser])
 
   useEffect(() => {
     function handleResize() {
@@ -142,6 +188,8 @@ const StateLoader = (props) => {
   }, [])
 
   useEffect(() => {
+    setItemsFunc(itemsFunc)
+
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
       setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
     if (!loggedUserActiveStatus || props.loggedUser?.role !== 'dev')
@@ -162,45 +210,6 @@ const StateLoader = (props) => {
     // setSnackbar(snackbar)
     setIsSiteLoading(false)
   }, [])
-
-  useEffect(() => {
-    if (Object.keys(modalsFunc).length > 0 && !itemsFunc)
-      // setItemsFunc()
-      setItemsFunc(
-        itemsFuncGenerator({
-          setLoading: setIsSiteLoading,
-          modalsFunc,
-          setLoadingCard,
-          setNotLoadingCard,
-          setErrorCard,
-          setNotErrorCard,
-          setEvent,
-          deleteEvent,
-          setDirection,
-          deleteDirection,
-          setAdditionalBlock,
-          deleteAdditionalBlock,
-          setUser,
-          deleteUser,
-          setReview,
-          deleteReview,
-          addPayments,
-          setPayment,
-          deletePayment,
-          setEventsUser,
-          deleteEventsUser,
-          deleteEventsUsersByEventId,
-          setSiteSettings: setSiteSettingsState,
-          setQuestionnaire,
-          deleteQuestionnaire,
-          setQuestionnaireUsers,
-          deleteQuestionnaireUsers,
-          setService,
-          deleteService,
-          snackbar,
-        })
-      )
-  }, [modalsFunc])
 
   return (
     <div className={cn('relative', props.className)}>
