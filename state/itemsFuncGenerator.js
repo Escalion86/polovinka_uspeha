@@ -153,7 +153,7 @@ const itemsFuncGenerator = (
     setNotLoadingCard,
     setErrorCard,
     setNotErrorCard,
-    modalsFunc,
+    addErrorModal,
     snackbar = {},
   } = props
   const obj = {}
@@ -182,7 +182,7 @@ const itemsFuncGenerator = (
                   item,
                   error,
                 }
-                modalsFunc.error(data)
+                addErrorModal(data)
               }
             )
           } else {
@@ -206,7 +206,7 @@ const itemsFuncGenerator = (
                   item,
                   error,
                 }
-                modalsFunc.error(data)
+                addErrorModal(data)
                 console.log(data)
               }
             )
@@ -229,7 +229,7 @@ const itemsFuncGenerator = (
                 itemId,
                 error,
               }
-              modalsFunc.error(data)
+              addErrorModal(data)
               console.log(data)
             }
             //  deleteEvent(itemId)
@@ -262,7 +262,7 @@ const itemsFuncGenerator = (
         snackbar.error('Не удалось отменить мероприятие')
         setErrorCard('event' + eventId)
         const data = { errorPlace: 'EVENT CANCEL ERROR', eventId, error }
-        modalsFunc.error(data)
+        addErrorModal(data)
         console.log(data)
       }
     )
@@ -282,7 +282,7 @@ const itemsFuncGenerator = (
         snackbar.error('Не удалось закрыть мероприятие')
         setErrorCard('event' + eventId)
         const data = { errorPlace: 'EVENT CLOSE ERROR', eventId, error }
-        modalsFunc.error(data)
+        addErrorModal(data)
         console.log(data)
       }
     )
@@ -302,7 +302,7 @@ const itemsFuncGenerator = (
         snackbar.error('не удалось активировать мероприятие')
         setErrorCard('event' + eventId)
         const data = { errorPlace: 'EVENT ACTIVE ERROR', eventId, error }
-        modalsFunc.error(data)
+        addErrorModal(data)
         console.log(data)
       }
     )
@@ -346,7 +346,7 @@ const itemsFuncGenerator = (
           userId,
           error,
         }
-        modalsFunc.error(data)
+        addErrorModal(data)
         console.log(data)
       }
 
@@ -381,7 +381,7 @@ const itemsFuncGenerator = (
           userId,
           error,
         }
-        modalsFunc.error(data)
+        addErrorModal(data)
         console.log(data)
       },
       { eventId, userId }
@@ -425,7 +425,7 @@ const itemsFuncGenerator = (
           eventUsersStatuses,
           error,
         }
-        modalsFunc.error(data)
+        addErrorModal(data)
         console.log(data)
       }
       // () => props['setAdditionalBlock'](itemId)
@@ -450,7 +450,7 @@ const itemsFuncGenerator = (
           userId,
           error,
         }
-        modalsFunc.error(data)
+        addErrorModal(data)
         console.log(data)
       }
       // () => props['setAdditionalBlock'](itemId)
@@ -488,7 +488,7 @@ const itemsFuncGenerator = (
           payAt,
           error,
         }
-        modalsFunc.error(data)
+        addErrorModal(data)
         console.log(data)
       }
       // () => props['setAdditionalBlock'](itemId)
