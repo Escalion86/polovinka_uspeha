@@ -77,7 +77,18 @@ export default async function handler(req, res) {
     try {
       await dbConnect()
 
-      const { phone, code, password, forgotPassword } = body
+      const { phone, code, password, forgotPassword, get_balance } = body
+
+      if (get_balance) {
+        const response = await fetch(
+          `https://api.telefon-ip.ru/api/v1/authcalls/${token}/get_balance/`,
+          { method: 'GET' }
+        ).then((response) => response.json())
+        return res?.status(201).json({
+          success: true,
+          data: response,
+        })
+      }
 
       if (!phone)
         return res?.status(200).json({

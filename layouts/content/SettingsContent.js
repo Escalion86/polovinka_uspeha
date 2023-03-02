@@ -11,6 +11,16 @@ import { postData, putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 import { CODE_SEND_SERVICES } from '@helpers/constants'
+import { TextField } from '@mui/material'
+
+const getBalance = async (callback) =>
+  await postData(
+    `/api/telefonip`,
+    {
+      get_balance: true,
+    },
+    callback
+  )
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const SettingsContent = (props) => {
@@ -19,12 +29,22 @@ const SettingsContent = (props) => {
     siteSettings?.codeSendService
   )
 
+  const [codeSendServiceInfo, setCodeSendServiceInfo] = useState(null)
+  console.log('codeSendServiceInfo', codeSendServiceInfo)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
   const [message, setMessage] = useState('')
 
   const formChanged = siteSettings?.codeSendService !== codeSendService
+
+  useEffect(() => {
+    if (codeSendService === 'telefonip')
+      getBalance((response) => {
+        setCodeSendServiceInfo(response.data)
+      })
+    else setCodeSendServiceInfo(null)
+  }, [codeSendService])
 
   const onClickConfirm = async () => {
     // if (
@@ -94,6 +114,26 @@ const SettingsContent = (props) => {
           // required={required}
           // error={error}
         />
+        {codeSendService === 'telefonip' && (
+          <div>
+            <div className="flex gap-x-1">
+              <span className="italic">Стоимость одного звонка:</span>
+              <span>
+                {!codeSendServiceInfo?.price
+                  ? 'загружаем информацию...'
+                  : `${codeSendServiceInfo?.price} ₽`}
+              </span>
+            </div>
+            <div className="flex gap-x-1">
+              <span className="italic">Баланс на счете:</span>
+              <span>
+                {!codeSendServiceInfo?.balance
+                  ? 'загружаем информацию...'
+                  : `${codeSendServiceInfo?.balance} ₽`}
+              </span>
+            </div>
+          </div>
+        )}
       </FormWrapper>
     </div>
   )
