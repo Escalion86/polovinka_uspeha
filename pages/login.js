@@ -23,6 +23,9 @@ import phoneValidator from '@helpers/phoneValidator'
 import useErrors from '@helpers/useErrors'
 import CheckBox from '@components/CheckBox'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
+import fetchSiteSettings from '@server/fetchSiteSettings'
+import { DEFAULT_SITE_SETTINGS } from '@helpers/constants'
 // import { UCALLER_VOICE, UCALLER_MIX } from '@helpers/constants'
 
 const Input = ({
@@ -255,10 +258,11 @@ const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
     })
 }
 
-const LoginPage = () => {
+const LoginPage = (props) => {
   const router = useRouter()
   // const { data: session, status } = useSession()
   // const { courseId, lectureId } = router.query
+  // const [codeSendService, setCodeSendService]
   const [process, setProcess] = useState('authorization')
   const [registrationLevel, setRegistrationLevel] = useState(1)
   const [waitingResponse, setWaitingResponse] = useState(false)
@@ -274,6 +278,10 @@ const LoginPage = () => {
   const inputPasswordRef = useRef()
 
   const { executeRecaptcha } = useGoogleReCaptcha()
+
+  const codeSendService =
+    props?.siteSettings?.codeSendService ??
+    DEFAULT_SITE_SETTINGS.codeSendService
 
   // const handleSumitForm = useCallback(
   //   (e) => {
@@ -372,7 +380,7 @@ const LoginPage = () => {
             gReCaptchaToken,
             () => {
               postData(
-                `/api/telefonip`,
+                `/api/${codeSendService}`,
                 {
                   phone: inputPhone,
                   forgotPassword: process === 'forgotPassword',
@@ -406,7 +414,7 @@ const LoginPage = () => {
         setWaitingResponse(true)
 
         postData(
-          `/api/telefonip`,
+          `/api/${codeSendService}`,
           {
             phone: inputPhone,
             code: inputPinCode,
@@ -437,7 +445,7 @@ const LoginPage = () => {
         setWaitingResponse(true)
 
         postData(
-          `/api/telefonip`,
+          `/api/${codeSendService}`,
           {
             phone: inputPhone,
             password: inputPassword,
@@ -814,7 +822,7 @@ const LoginPage = () => {
                     onClickRepeat={async () => {
                       setWaitingResponse(true)
                       await postData(
-                        `/api/telefonip`,
+                        `/api/${codeSendService}`,
                         {
                           phone: inputPhone,
                           forgotPassword: process === 'forgotPassword',
@@ -894,7 +902,7 @@ const LoginPage = () => {
   )
 }
 
-const Login = () => (
+const Login = (props) => (
   <GoogleReCaptchaProvider
     reCaptchaKey="6Lcw5bwkAAAAAD1qgHYKcEzcbdATVfdI3lIiO5X2"
     scriptProps={{
@@ -904,7 +912,7 @@ const Login = () => (
       nonce: undefined,
     }}
   >
-    <LoginPage />
+    <LoginPage {...props} />
   </GoogleReCaptchaProvider>
 )
 
@@ -920,11 +928,18 @@ export const getServerSideProps = async (context) => {
       },
     }
   }
+  const response = await getServerSidePropsFunc(
+    context,
+    getSession,
+    fetchSiteSettings
+  )
+  console.log('response', response)
+  return response
 
-  return {
-    props: {
-      session,
-    },
-    // notFound: true,
-  }
+  // return {
+  //   props: {
+  //     session,
+  //   },
+  //   // notFound: true,
+  // }
 }

@@ -6,9 +6,19 @@ const getServerSidePropsFunc = async (context, getSession, fetchProps) => {
     const session = await getSession({ req: context.req })
 
     const fetchedProps = await fetchProps(session?.user)
-
     return {
       props: {
+        users: null,
+        events: null,
+        directions: null,
+        reviews: null,
+        additionalBlocks: null,
+        eventsUsers: null,
+        payments: null,
+        siteSettings: null,
+        histories: null,
+        questionnaires: null,
+        questionnairesUsers: null,
         ...fetchedProps,
         loggedUser: session?.user ?? null,
       },
