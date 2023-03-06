@@ -76,6 +76,7 @@ import BirthdaysContent from '@layouts/content/BirthdaysContent'
 import StatisticsContent from '@layouts/content/StatisticsContent'
 import PaymentsWithErrorsContent from '@layouts/content/PaymentsWithErrorsContent'
 import badgePaymentsWithErrorsSelector from '@state/selectors/badgePaymentsWithErrorsSelector'
+import SettingsContent from '@layouts/content/SettingsContent'
 
 const colors = [
   'border-blue-400',
@@ -424,6 +425,7 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   telegram: null,
   instagram: null,
   vk: null,
+  codeSendService: 'telefonip',
 })
 
 export const EVENT_STATUSES = [
@@ -459,6 +461,11 @@ export const ORIENTATIONS = [
   { value: 'getero', name: 'Гетеросексуал', color: 'blue-400' },
   { value: 'bi', name: 'Бисексуал', color: 'purple-400' },
   { value: 'homo', name: 'Гомосексуал', color: 'red-400' },
+]
+
+export const CODE_SEND_SERVICES = [
+  { value: 'telefonip', name: 'TelefonIP', color: 'orange-400' },
+  { value: 'ucaller', name: 'UCaller', color: 'blue-400' },
 ]
 
 export const ZODIAC = [
@@ -577,6 +584,7 @@ export const CONTENTS = {
   },
   birthdays: { Component: BirthdaysContent, name: 'События / Дни рождения' },
   statistics: { Component: StatisticsContent, name: 'Статистика' },
+  settings: { Component: SettingsContent, name: 'Настройки' },
 }
 
 export const pages = [
@@ -667,10 +675,17 @@ export const pages = [
   },
   {
     id: 50,
-    group: 50,
+    group: 7,
     name: 'Участники клуба',
     href: 'members',
     icon: faCalendar,
+  },
+  {
+    id: 13,
+    group: 8,
+    name: 'Настройки',
+    href: 'settings',
+    icon: faCog,
   },
   {
     id: 99,
@@ -689,7 +704,8 @@ export const pagesGroups = [
   { id: 4, name: 'Транзакции', icon: faMoneyBill, access: 'admin' },
   { id: 5, name: 'События', icon: faHistory, access: 'admin' },
   { id: 6, name: 'Статистика', icon: faPieChart, access: 'admin' },
-  { id: 50, name: 'Участники клуба', icon: faUser, access: 'member' },
+  { id: 7, name: 'Участники клуба', icon: faUser, access: 'member' },
+  { id: 8, name: 'Настройки', icon: faCog, access: 'admin' },
   { id: 99, name: 'Разработчик', icon: faBug, access: 'dev' },
 ]
 

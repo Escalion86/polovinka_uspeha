@@ -28,6 +28,10 @@ const siteSettingsSchema = {
     type: String,
     default: null,
   },
+  codeSendService: {
+    type: String,
+    default: 'telefonip',
+  },
 }
 
 export default siteSettingsSchema

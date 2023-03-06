@@ -86,8 +86,11 @@ export default async function auth(req, res) {
         //   process.env.NEXTAUTH_SITE
         // )
 
+        console.log('dbConnect')
+
         const result = await Users.findOne({ phone: userPhone })
 
+        console.log('findedUser', result)
         // const result = await Users.findOneAndUpdate(
         //   { phone: userPhone },
         //   {
@@ -149,6 +152,8 @@ export default async function auth(req, res) {
           session.user.security = result.security
           session.user.notifications = result.notifications
         }
+
+        console.log('session.user', session.user)
         //  else {
         //   // если пользователь не зарегистрирован
         //   await CRUD(Users, {
