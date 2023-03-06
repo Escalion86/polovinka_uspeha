@@ -154,6 +154,7 @@ export default async function auth(req, res) {
         }
 
         console.log('session.user', session.user)
+        console.log('process.env.DOMAIN', process.env.DOMAIN)
         //  else {
         //   // если пользователь не зарегистрирован
         //   await CRUD(Users, {
