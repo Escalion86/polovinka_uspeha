@@ -1,7 +1,5 @@
 import NextAuth from 'next-auth'
 import Users from '@models/Users'
-import CRUD from '@server/CRUD'
-import { fetchingLog, fetchingUserByPhone } from '@helpers/fetchers'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
 
@@ -89,8 +87,6 @@ export default async function auth(req, res) {
         console.log('dbConnect')
 
         const result = await Users.findOne({ phone: userPhone })
-
-        console.log('findedUser', result)
         // const result = await Users.findOneAndUpdate(
         //   { phone: userPhone },
         //   {
@@ -153,7 +149,6 @@ export default async function auth(req, res) {
           session.user.notifications = result.notifications
         }
 
-        console.log('session.user', session.user)
         //  else {
         //   // если пользователь не зарегистрирован
         //   await CRUD(Users, {
