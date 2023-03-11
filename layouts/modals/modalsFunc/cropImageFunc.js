@@ -310,8 +310,8 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
       // at the expense of slightly slower render times and needing to
       // size the image back down if you want to download/upload and be
       // true to the images natural size.
-      // const pixelRatio = window.devicePixelRatio
-      const pixelRatio = 1
+      const pixelRatio = window.devicePixelRatio
+      // const pixelRatio = 1
       // const aspectFact = imgElement.width / imgElement.height
 
       // const width =
@@ -380,7 +380,7 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
       // console.log('image.naturalWidth', image.naturalWidth)
       // console.log('image.naturalHeight', image.naturalHeight)
 
-      // ctx.restore()
+      ctx.restore()
 
       function blobToFile(theBlob, fileName) {
         //A Blob() is almost a File() - it's just missing the two properties below which we will add
