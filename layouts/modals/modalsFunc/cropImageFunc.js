@@ -380,7 +380,7 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
       // console.log('image.naturalWidth', image.naturalWidth)
       // console.log('image.naturalHeight', image.naturalHeight)
 
-      ctx.restore()
+      // ctx.restore()
 
       function blobToFile(theBlob, fileName) {
         //A Blob() is almost a File() - it's just missing the two properties below which we will add
