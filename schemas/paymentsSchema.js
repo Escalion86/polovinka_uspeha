@@ -15,7 +15,7 @@ const paymentsSchema = {
   },
   eventId: {
     type: String,
-    required: [true, 'Необходимо указать мероприятие. '],
+    // required: [true, 'Необходимо указать мероприятие. '],
   },
   payType: {
     type: String,

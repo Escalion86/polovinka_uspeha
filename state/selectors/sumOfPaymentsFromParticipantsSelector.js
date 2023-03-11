@@ -8,12 +8,11 @@ export const sumOfPaymentsFromParticipantsSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return 0
+      const eventParticipants = get(eventParticipantsIdsSelector(id))
       return (
         get(paymentsWithNoCouponsFromAndToUsersSelector(id)).reduce(
           (p, payment) => {
-            const isUserParticipant = get(
-              eventParticipantsIdsSelector(id)
-            ).includes(payment.userId)
+            const isUserParticipant = eventParticipants.includes(payment.userId)
             if (isUserParticipant)
               return (
                 p +

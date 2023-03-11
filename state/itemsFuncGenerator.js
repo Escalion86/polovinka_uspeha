@@ -288,6 +288,55 @@ const itemsFuncGenerator = (
     )
   }
 
+  obj.payment.link = async (paymentId, eventId) => {
+    setLoadingCard('payment' + paymentId)
+    return await putData(
+      `/api/payments/${paymentId}`,
+      { eventId },
+      (data) => {
+        snackbar.success('Транзакция привязана к мероприятию')
+        setNotLoadingCard('payment' + paymentId)
+        props.setPayment(data)
+      },
+      (error) => {
+        snackbar.error('Не удалось привязать транзакцию к мероприятию')
+        setErrorCard('payment' + paymentId)
+        const data = {
+          errorPlace: 'PAYMENT LINK ERROR',
+          paymentId,
+          eventId,
+          error,
+        }
+        addErrorModal(data)
+        console.log(data)
+      }
+    )
+  }
+
+  obj.payment.unlink = async (paymentId) => {
+    setLoadingCard('payment' + paymentId)
+    return await putData(
+      `/api/payments/${paymentId}`,
+      { eventId: null },
+      (data) => {
+        snackbar.success('Транзакция отвязана от мероприятия')
+        setNotLoadingCard('payment' + paymentId)
+        props.setPayment(data)
+      },
+      (error) => {
+        snackbar.error('Не удалось отвязать транзакцию от мероприятия')
+        setErrorCard('payment' + paymentId)
+        const data = {
+          errorPlace: 'PAYMENT UNLINK ERROR',
+          paymentId,
+          error,
+        }
+        addErrorModal(data)
+        console.log(data)
+      }
+    )
+  }
+
   obj.event.uncancel = async (eventId) => {
     setLoadingCard('event' + eventId)
     return await putData(
