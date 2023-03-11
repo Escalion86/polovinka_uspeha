@@ -25,6 +25,7 @@ import {
   faUnlink,
   faUserAlt,
   faUsers,
+  faUserTimes,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
 import isDevMode from './isDevMode'
@@ -74,9 +75,11 @@ import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
 import BirthdaysContent from '@layouts/content/BirthdaysContent'
 import StatisticsContent from '@layouts/content/StatisticsContent'
-import PaymentsWithErrorsContent from '@layouts/content/PaymentsWithErrorsContent'
-import badgePaymentsWithErrorsSelector from '@state/selectors/badgePaymentsWithErrorsSelector'
+import badgePaymentsWithoutEventSelector from '@state/selectors/badgePaymentsWithoutEventSelector'
 import SettingsContent from '@layouts/content/SettingsContent'
+import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
+import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
+import PaymentsNotParticipantsEventContent from '@layouts/content/PaymentsNotParticipantsEventContent'
 
 const colors = [
   'border-blue-400',
@@ -572,9 +575,13 @@ export const CONTENTS = {
   users: { Component: UsersContent, name: 'Пользователи' },
   members: { Component: MembersContent, name: 'Участники клуба' },
   payments: { Component: PaymentsContent, name: 'Транзакции' },
-  paymentsWithErrors: {
-    Component: PaymentsWithErrorsContent,
+  paymentsWithNoEvent: {
+    Component: PaymentsWithoutEventContent,
     name: 'Непривязанные транзакции',
+  },
+  paymentsNotParticipantsEvent: {
+    Component: PaymentsNotParticipantsEventContent,
+    name: 'Не пришли на мероприятие',
   },
   contacts: { Component: ContactsContent, name: 'Контакты на сайте' },
   dev: { Component: DevContent, name: 'Разработчик' },
@@ -648,26 +655,36 @@ export const pages = [
     id: 9,
     group: 4,
     name: 'Непривязанные транзакции',
-    href: 'paymentsWithErrors',
+    href: 'paymentsWithNoEvent',
     icon: faUnlink,
-    badge: badgePaymentsWithErrorsSelector,
+    badge: badgePaymentsWithoutEventSelector,
   },
+
   {
     id: 10,
+    group: 4,
+    name: 'Не пришли на мероприятие',
+    href: 'paymentsNotParticipantsEvent',
+    icon: faUserTimes,
+    badge: badgePaymentsWithoutUserWritingToEventSelector,
+  },
+
+  {
+    id: 11,
     group: 5,
     name: 'Участники мероприятий',
     href: 'histories',
     icon: faUsers,
   },
   {
-    id: 11,
+    id: 12,
     group: 5,
     name: 'Дни рождения',
     href: 'birthdays',
     icon: faBirthdayCake,
   },
   {
-    id: 12,
+    id: 13,
     group: 6,
     name: 'Статистика',
     href: 'statistics',
@@ -725,6 +742,14 @@ export const PAY_TYPES = [
     icon: faCertificate,
   },
 ]
+// var arr = [{key:"11", value:"1100"},{key:"22", value:"2200"}];
+// var object = arr.reduce(
+//   (obj, item) => Object.assign(obj, { [item.key]: item.value }), {})
+
+export const PAY_TYPES_OBJECT = PAY_TYPES.reduce(
+  (obj, item) => Object.assign(obj, { [item.value]: item.name }),
+  {}
+)
 
 export const PAY_DIRECTIONS = [
   {

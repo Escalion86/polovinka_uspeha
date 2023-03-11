@@ -33,7 +33,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
 
     const event = useRecoilValue(eventSelector(payment.eventId))
     const isEventClosed = isEventClosedFunc(event)
-    const eventsUsers = useRecoilValue(eventsUsersAtom)
+    // const eventsUsers = useRecoilValue(eventsUsersAtom)
 
     const [payDirection, setPayDirection] = useState(
       props?.payDirection ??
@@ -74,7 +74,12 @@ const paymentFunc = (paymentId, clone = false, props) => {
     // }
 
     const onClickConfirm = async () => {
-      const toCheck = { payDirection, eventId, sum, payType }
+      const toCheck = {
+        payDirection,
+        // eventId,
+        sum,
+        payType,
+      }
       if (payDirection === 'toUser' || payDirection === 'fromUser')
         toCheck.userId = userId
       if (!checkErrors(toCheck)) {
@@ -122,16 +127,16 @@ const paymentFunc = (paymentId, clone = false, props) => {
       }
     }
 
-    const isUserInEvent = useMemo(
-      () =>
-        userId &&
-        eventId &&
-        eventsUsers.find(
-          (eventUser) =>
-            eventUser.userId === userId && eventUser.eventId === eventId
-        ),
-      [userId, eventId, eventsUsers]
-    )
+    // const isUserInEvent = useMemo(
+    //   () =>
+    //     userId &&
+    //     eventId &&
+    //     eventsUsers.find(
+    //       (eventUser) =>
+    //         eventUser.userId === userId && eventUser.eventId === eventId
+    //     ),
+    //   [userId, eventId, eventsUsers]
+    // )
 
     useEffect(() => {
       const isFormChanged =
@@ -158,7 +163,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
             редактирование/удаление ее запрещено
           </P>
         )}
-        {userId && !isUserInEvent && (
+        {/* {userId && !isUserInEvent && (
           <>
             <div className="text-red-500">
               Пользователь не записан на мероприятие! Для корректности, нужно
@@ -174,7 +179,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
               </li>
             </ul>
           </>
-        )}
+        )} */}
         <PayDirectionPicker
           payDirection={payDirection}
           onChange={(value) => {
@@ -199,9 +204,10 @@ const paymentFunc = (paymentId, clone = false, props) => {
           label="Мероприятие"
           selectedId={eventId}
           onChange={isEventClosed ? null : (eventId) => setEventId(eventId)}
-          required
+          // required
           showEventUsersButton
           showPaymentsButton
+          clearButton={!isEventClosed}
           // readOnly={isEventClosed}
         />
         <DateTimePicker

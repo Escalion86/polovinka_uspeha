@@ -102,9 +102,21 @@ const ItemContainer = ({
 // )
 
 // export const SetItem = (props) => ProductItem(props)
-export const UserItemFromId = ({ userId, onClick = null, active = false }) => {
+export const UserItemFromId = ({
+  userId,
+  onClick = null,
+  active = false,
+  noBorder,
+}) => {
   const user = useRecoilValue(userSelector(userId))
-  return <UserItem item={user} active={active} onClick={onClick} />
+  return (
+    <UserItem
+      item={user}
+      active={active}
+      onClick={onClick}
+      noBorder={noBorder}
+    />
+  )
 }
 
 export const UserItem = ({

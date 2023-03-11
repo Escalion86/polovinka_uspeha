@@ -8,12 +8,11 @@ export const sumOfPaymentsToAssistantsSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return 0
+      const eventAssistants = get(eventAssistantsIdsSelector(id))
       return (
         get(paymentsWithNoCouponsFromAndToUsersSelector(id)).reduce(
           (p, payment) => {
-            const isUserAssistant = get(
-              eventAssistantsIdsSelector(id)
-            ).includes(payment.userId)
+            const isUserAssistant = eventAssistants.includes(payment.userId)
             if (isUserAssistant)
               return (
                 p +

@@ -10,6 +10,7 @@ export const paymentsWithoutUserWritingToEventSelector = selector({
       (payment) =>
         (payment.payDirection === 'toUser' ||
           payment.payDirection === 'fromUser') &&
+        !!payment.eventId &&
         !eventUsers.find(
           (eventUser) =>
             eventUser.eventId === payment.eventId &&

@@ -17,6 +17,27 @@ import ZodiacIcon from '@components/ZodiacIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import formatDate from '@helpers/formatDate'
 import UserName from '@components/UserName'
+import sumOfPaymentsWithoutEventOfUserSelector from '@state/selectors/sumOfPaymentsWithoutEventOfUserSelector'
+
+const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
+  const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
+    sumOfPaymentsWithoutEventOfUserSelector(userId)
+  )
+
+  if (sumOfPaymentsWithoutEventOfUser === 0) return null
+
+  return (
+    <div
+      className={cn(
+        'flex justify-center items-center text-base tablet:text-lg font-bold uppercase text-white px-3 rounded-tl-lg',
+        sumOfPaymentsWithoutEventOfUser > 0 ? 'bg-success' : 'bg-danger',
+        className
+      )}
+    >
+      {`${sumOfPaymentsWithoutEventOfUser} ₽`}
+    </div>
+  )
+}
 
 const UserCard = ({ userId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -156,11 +177,16 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     </div>
                   </div>
                 </div>
-                <CardButtons
-                  item={user}
-                  typeOfItem="user"
-                  alwaysCompactOnPhone
-                />
+                {isLoggedUserAdmin && (
+                  <div className="flex flex-col items-end justify-between">
+                    <CardButtons
+                      item={user}
+                      typeOfItem="user"
+                      alwaysCompactOnPhone
+                    />
+                    <UserSumOfPaymentsWithoutEvent userId={userId} />
+                  </div>
+                )}
               </div>
               {/* <div className="flex-col justify-end flex-1 hidden px-2 tablet:flex"> */}
               {/* <div className="flex-1"> */}

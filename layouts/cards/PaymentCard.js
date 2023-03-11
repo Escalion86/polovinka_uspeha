@@ -7,21 +7,43 @@ import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import EventNameById from '@components/EventNameById'
 import UserNameById from '@components/UserNameById'
-import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCalendarTimes,
+  faQuestion,
+  faUserTimes,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { EVENT_STATUSES_WITH_TIME, PAY_TYPES } from '@helpers/constants'
+import {
+  EVENT_STATUSES_WITH_TIME,
+  PAY_TYPES,
+  PAY_TYPES_OBJECT,
+} from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import cn from 'classnames'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import eventStatusFunc from '@helpers/eventStatus'
 import eventSelector from '@state/selectors/eventSelector'
+import eventsUsersByEventIdSelector from '@state/selectors/eventsUsersByEventIdSelector'
+import Tooltip from '@components/Tooltip'
 
+const Icon = ({ className, icon, tooltip }) => (
+  <Tooltip title={tooltip}>
+    <div className={cn('flex items-center justify-center w-5', className)}>
+      <FontAwesomeIcon icon={icon} className="w-5" />
+    </div>
+  </Tooltip>
+)
 const PaymentCard = ({ paymentId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payment = useRecoilValue(paymentSelector(paymentId))
   const loading = useRecoilValue(loadingAtom('payment' + paymentId))
   const event = useRecoilValue(eventSelector(payment.eventId))
   const eventStatus = eventStatusFunc(event)
+
+  const eventUsers = useRecoilValue(eventsUsersByEventIdSelector(event?._id))
+  const eventUser = eventUsers.find(
+    (eventUser) => eventUser.userId === payment.userId
+  )
 
   const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
     (payTypeItem) => payTypeItem.value === eventStatus
@@ -84,13 +106,21 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
         <div className="font-bold">{payment.sum} ₽</div>
       </div> */}
       <div className="flex items-center justify-between">
-        <div
-          className={cn(
-            'flex items-center justify-center w-5',
-            payType ? 'text-' + payType.color : 'text-gray-400'
+        <div className="flex gap-x-3">
+          {payment.eventId && !eventUser && (
+            <Icon
+              icon={faUserTimes}
+              className="text-danger"
+              tooltip="Участник не пришёл"
+            />
           )}
-        >
-          <FontAwesomeIcon icon={payType?.icon ?? faQuestion} className="w-5" />
+          {!payment.eventId && (
+            <Icon
+              icon={faCalendarTimes}
+              className="text-danger"
+              tooltip="Транзакция не привязана к мероприятию"
+            />
+          )}
         </div>
         <div
           className={cn(
@@ -110,6 +140,11 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
               : ''
           }${payment.sum / 100} ₽`}
         </div>
+        <Icon
+          icon={payType?.icon ?? faQuestion}
+          className={payType ? 'text-' + payType.color : 'text-gray-400'}
+          tooltip={PAY_TYPES_OBJECT[payType.value]}
+        />
         <CardButtons
           item={payment}
           typeOfItem="payment"
