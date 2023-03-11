@@ -85,7 +85,7 @@ const MenuItem = ({ item, active = false, badge }) => {
               {item.num}
             </span>
           )}
-          {typeof badge === 'number' && (
+          {typeof badge === 'number' && badge > 0 && (
             <div className="flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger">
               {badge <= 99 ? badge : '!'}
             </div>
