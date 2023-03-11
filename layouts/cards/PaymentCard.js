@@ -40,11 +40,6 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
   const event = useRecoilValue(eventSelector(payment.eventId))
   const eventStatus = eventStatusFunc(event)
 
-  const eventUsers = useRecoilValue(eventsUsersByEventIdSelector(event?._id))
-  const eventUser = eventUsers.find(
-    (eventUser) => eventUser.userId === payment.userId
-  )
-
   const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
     (payTypeItem) => payTypeItem.value === eventStatus
   )
@@ -106,22 +101,36 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
         <div className="font-bold">{payment.sum} ₽</div>
       </div> */}
       <div className="flex items-center justify-between">
-        <div className="flex gap-x-3">
-          {payment.eventId && !eventUser && (
-            <Icon
-              icon={faUserTimes}
-              className="text-danger"
-              tooltip="Участник не пришёл"
-            />
-          )}
-          {!payment.eventId && (
-            <Icon
-              icon={faCalendarTimes}
-              className="text-danger"
-              tooltip="Транзакция не привязана к мероприятию"
-            />
-          )}
-        </div>
+        {
+          <div className="flex gap-x-3">
+            {(payment.payDirection === 'toUser' ||
+              payment.payDirection === 'fromUser') &&
+              payment.eventId &&
+              (() => {
+                const eventUsers = useRecoilValue(
+                  eventsUsersByEventIdSelector(event?._id)
+                )
+                const eventUser = eventUsers.find(
+                  (eventUser) => eventUser.userId === payment.userId
+                )
+                if (eventUser) return null
+                return (
+                  <Icon
+                    icon={faUserTimes}
+                    className="text-danger"
+                    tooltip="Участник не пришёл"
+                  />
+                )
+              })()}
+            {!payment.eventId && (
+              <Icon
+                icon={faCalendarTimes}
+                className="text-danger"
+                tooltip="Транзакция не привязана к мероприятию"
+              />
+            )}
+          </div>
+        }
         <div
           className={cn(
             'px-1 text-sm text-right font-bold phoneH:text-base min-w-16',
