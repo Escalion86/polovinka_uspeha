@@ -132,7 +132,7 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
   }) => {
     // console.log('src', src)
     const [imgSrc, setImgSrc] = useState('')
-    // const imgRef = useRef(null)
+    // const inputRef = useRef(null)
     const [ref, setRef] = useState(null)
     const [crop, setCrop] = useState({
       unit: '%',
@@ -157,13 +157,15 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
           unit: 'px',
           x: 0,
           y: 0,
-          width: node.width,
-          height: node.height,
+          width: node.width - 1,
+          height: node.height - 1,
         })
       }
     }, [])
 
-    // console.log('completedCrop', completedCrop)
+    useEffect(() => ref?.current?.click(), [])
+    console.log('crop', crop)
+    console.log('completedCrop', completedCrop)
     // const [ready, setReady] = useState()
 
     // if (imgSrc)
@@ -531,6 +533,7 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
         {Boolean(imgSrc) && (
           <div>
             <ReactCrop
+              // innerRef={inputRef}
               crop={crop}
               onChange={(_, percentCrop) => setCrop(percentCrop)}
               onComplete={(c) => setCompletedCrop(c)}
