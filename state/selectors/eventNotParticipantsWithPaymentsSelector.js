@@ -20,7 +20,7 @@ export const eventNotParticipantsWithPaymentsSelector = selectorFamily({
         paymentsUsersIds
       ).added
 
-      return notParticipantsIdsWithPayments
+      return [...new Set(notParticipantsIdsWithPayments)]
     },
 })
 

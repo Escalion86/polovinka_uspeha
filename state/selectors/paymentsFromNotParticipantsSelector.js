@@ -1,7 +1,5 @@
-import compareArrays from '@helpers/compareArraysWithDif'
 import { selectorFamily } from 'recoil'
 import eventNotParticipantsWithPaymentsSelector from './eventNotParticipantsWithPaymentsSelector'
-import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
 import paymentsFromAndToUsersSelector from './paymentsFromAndToUsersSelector'
 
 export const paymentsFromNotParticipantsSelector = selectorFamily({
