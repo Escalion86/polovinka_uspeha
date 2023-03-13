@@ -284,7 +284,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
         </div>
 
         {widthNum >= 3 && (
-          <div className="flex items-stretch justify-between border-t">
+          <div className="flex items-stretch justify-between pr-1 border-t">
             <EventUsersCounterAndAge eventId={eventId} className="h-[42px]" />
             <EventButtonSignIn
               eventId={eventId}
@@ -300,7 +300,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
             eventId={eventId}
             className="flex-1 min-w-full border-t border-b h-[42px]"
           />
-          <div className="flex flex-wrap items-stretch justify-end flex-1 w-full h-9">
+          <div className="flex flex-wrap items-stretch justify-end flex-1 w-full h-9 pr-0.5">
             <PriceDiscount
               event={event}
               className="flex-1 mx-2"
