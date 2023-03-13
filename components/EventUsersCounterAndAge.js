@@ -98,20 +98,30 @@ const Counter = ({
       </div>
     </>
   ) : (
-    <div className="flex gap-x-0.5">
-      <span>{noviceCount + memberCount}</span>
-      {typeof max === 'number' && (
-        <>
-          <span>/</span>
-          <span>{max}</span>
-        </>
+    <div className="flex flex-col items-center">
+      {showAges && (
+        <div className="flex justify-center gap-x-0.5 border-b self-stretch">
+          <span>{minAge ?? 18}</span>
+          <span>-</span>
+          <span>{maxAge ?? 60}</span>
+          <span>лет</span>
+        </div>
       )}
-      {noviceReserveCount + memberReserveCount > 0 && (
-        <span className="text-xs">{`+${
-          noviceReserveCount + memberReserveCount
-        }`}</span>
-      )}
-      <span>чел.</span>
+      <div className="flex gap-x-0.5">
+        <span>{noviceCount + memberCount}</span>
+        {typeof max === 'number' && (
+          <>
+            <span>/</span>
+            <span>{max}</span>
+          </>
+        )}
+        {noviceReserveCount + memberReserveCount > 0 && (
+          <span className="text-xs">{`+${
+            noviceReserveCount + memberReserveCount
+          }`}</span>
+        )}
+        <span>чел.</span>
+      </div>
     </div>
   )
 
