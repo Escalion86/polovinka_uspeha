@@ -48,6 +48,8 @@ import sumOfPaymentsFromNotParticipantsSelector from '@state/selectors/sumOfPaym
 import paymentsWithoutEventOfUserSelector from '@state/selectors/paymentsWithoutEventOfUserSelector'
 import sumOfPaymentsWithoutEventOfUserSelector from '@state/selectors/sumOfPaymentsWithoutEventOfUserSelector'
 import Tooltip from '@components/Tooltip'
+import paymentsWithNoCouponsFromAndToUsersSelector from '@state/selectors/paymentsWithNoCouponsFromAndToUsersSelector'
+import eventAssistantsIdsSelector from '@state/selectors/eventAssistantsIdsSelector'
 
 const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
 
@@ -470,6 +472,17 @@ const eventUsersPaymentsFunc = (eventId) => {
       sumOfPaymentsFromNotParticipantsSelector(eventId)
     )
 
+    const eventParticipantsCount = useRecoilValue(
+      eventParticipantsSelector(eventId)
+    ).length
+    const eventAssistantsCount = useRecoilValue(
+      eventAssistantsSelector(eventId)
+    ).length
+
+    const paymentsFromNotParticipants = useRecoilValue(
+      paymentsFromNotParticipantsSelector(eventId)
+    )
+
     // const sumOfPaymentsOfEventFromParticipants =
     //   paymentsOfEventFromAndToUsers.reduce((p, payment) => {
     //     const isUserParticipant = eventParticipantsIds.includes(payment.userId)
@@ -681,7 +694,7 @@ const eventUsersPaymentsFunc = (eventId) => {
         <TabContext value="Участники">
           <TabPanel
             tabName="Участники"
-            tabAddToLabel={`${sumOfPaymentsOfEventFromParticipants} ₽`}
+            tabAddToLabel={`${eventParticipantsCount} чел. / ${sumOfPaymentsOfEventFromParticipants} ₽`}
           >
             <div className="flex flex-wrap items-center justify-between">
               <TotalFromParticipants />
@@ -707,7 +720,7 @@ const eventUsersPaymentsFunc = (eventId) => {
           {eventAssistantsFull.length > 0 && (
             <TabPanel
               tabName="Ведущие"
-              tabAddToLabel={`${sumOfPaymentsOfEventToAssistants} ₽`}
+              tabAddToLabel={`${eventAssistantsCount} чел. / ${sumOfPaymentsOfEventToAssistants} ₽`}
             >
               <TotalToAssistants />
               <UsersPayments
@@ -720,24 +733,24 @@ const eventUsersPaymentsFunc = (eventId) => {
               />
             </TabPanel>
           )}
-          {eventNotParticipantsWithPayments.length > 0 && (
-            <TabPanel
-              tabName="Оплатили, но не пришли"
-              tabAddToLabel={`${sumOfPaymentsFromNotParticipants} ₽`}
-            >
-              <TotalFromNotParticipants />
-              <UsersPayments
-                event={event}
-                usersIds={eventNotParticipantsWithPayments}
-                defaultPayDirection="toUser"
-                noEventPriceForUser
-                readOnly={isEventClosed}
-                // eventUsers={[...eventNotParticipantsWithPayments].sort(
-                //   sortFunction
-                // )}
-              />
-            </TabPanel>
-          )}
+          {/* {eventNotParticipantsWithPayments.length > 0 && ( */}
+          <TabPanel
+            tabName="Оплатили, но не пришли"
+            tabAddToLabel={`${paymentsFromNotParticipants.length} чел. / ${sumOfPaymentsFromNotParticipants} ₽`}
+          >
+            <TotalFromNotParticipants />
+            <UsersPayments
+              event={event}
+              usersIds={eventNotParticipantsWithPayments}
+              defaultPayDirection="toUser"
+              noEventPriceForUser
+              readOnly={isEventClosed}
+              // eventUsers={[...eventNotParticipantsWithPayments].sort(
+              //   sortFunction
+              // )}
+            />
+          </TabPanel>
+          {/* )} */}
           <TabPanel
             tabName="Мероприятие"
             tabAddToLabel={`${sumOfPaymentsToEvent + sumOfPaymentsFromEvent} ₽`}
