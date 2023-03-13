@@ -2,13 +2,13 @@ import PulseButton from '@components/PulseButton'
 import { H2, H1, H3, H4 } from '@components/tags'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { useRecoilValue } from 'recoil'
 import Svg30Plus from 'svg/Svg30Plus'
 
 const TitleBlock = () => {
   const userIsLogged = !!useRecoilValue(loggedUserAtom)
-  const router = useRouter()
+  // const router = useRouter()
 
   return (
     <div
@@ -69,9 +69,9 @@ const TitleBlock = () => {
             <PulseButton
               className="mt-4"
               title="Зарегистрироваться"
-              onClick={() =>
-                router.push('./login?registration=true', '', { shallow: true })
-              }
+              // onClick={() =>
+              //   router.push('./login?registration=true', '', { shallow: true })
+              // }
             />
           </Link>
         )}
