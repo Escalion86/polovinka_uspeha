@@ -1,3 +1,4 @@
+import errorFunc from '@layouts/modals/modalsFunc/errorFunc'
 import { modalsAtom } from '@state/atoms'
 import { selector } from 'recoil'
 import addModalSelector from './addModalSelector'
