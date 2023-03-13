@@ -152,7 +152,7 @@ const InputImages = ({
             onClick={addImageClick}
             className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer rounded-xl"
           >
-            <div className="flex items-center justify-center w-12 h-12 duration-200 transparent hover:scale-125 ">
+            <div className="flex items-center justify-center w-12 h-12 duration-200 min-w-12 min-h-12 transparent hover:scale-125 ">
               <FontAwesomeIcon
                 className="text-gray-700"
                 icon={faPlus}
@@ -165,6 +165,9 @@ const InputImages = ({
                 type="file"
                 ref={hiddenFileInput}
                 onChange={(e) => onAddImage(e.target.files[0])}
+                onClick={(e) => {
+                  e.target.value = null
+                }}
                 style={{ display: 'none' }}
                 accept="image/jpeg,image/png"
               />
