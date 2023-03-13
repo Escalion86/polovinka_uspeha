@@ -169,9 +169,18 @@ const eventUsersFunc = (eventId) => {
     useEffect(() => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-      setOnConfirmFunc(onClickConfirm)
       if (!isLoggedUserAdmin || isEventClosed) setOnlyCloseButtonShow(true)
     }, [isFormChanged, isLoggedUserAdmin, isEventClosed])
+
+    useEffect(() => {
+      setOnConfirmFunc(onClickConfirm)
+    }, [
+      bannedParticipantsIds,
+      reservedParticipantsIds,
+      womansIds,
+      mansIds,
+      assistantsIds,
+    ])
 
     useEffect(() => {
       if (isLoggedUserAdmin) {
