@@ -71,6 +71,22 @@ const eventsSchema = {
     type: Number,
     default: null,
   },
+  maxMansNovice: {
+    type: Number,
+    default: null,
+  },
+  maxWomansNovice: {
+    type: Number,
+    default: null,
+  },
+  maxMansMember: {
+    type: Number,
+    default: null,
+  },
+  maxWomansMember: {
+    type: Number,
+    default: null,
+  },
   minMansAge: {
     type: Number,
     default: null,

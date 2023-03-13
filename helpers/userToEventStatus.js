@@ -121,13 +121,14 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       userEventStatus: userEvent?.status,
       status: 'event expired',
     }
-
-  const eventMansCount = eventUsersFull.filter(
+  const eventMans = eventUsersFull.filter(
     (item) => item.user?.gender == 'male' && item.status === 'participant'
-  ).length
-  const eventWomansCount = eventUsersFull.filter(
+  )
+  const eventWomans = eventUsersFull.filter(
     (item) => item.user?.gender == 'famale' && item.status === 'participant'
-  ).length
+  )
+  const eventMansCount = eventMans.length
+  const eventWomansCount = eventWomans.length
   const eventParticipantsCount = eventWomansCount + eventMansCount
 
   const canSignInReserve =
@@ -184,6 +185,88 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       userEventStatus: userEvent?.status,
       status: 'event full of womans',
     }
+
+  const eventMansNoviceCount = eventMans.filter(
+    (item) => !item.user?.status || item.user?.status === 'novice'
+  ).length
+  const eventWomansNoviceCount = eventWomans.filter(
+    (item) => !item.user?.status || item.user?.status === 'novice'
+  ).length
+  const eventMansMemberCount = eventMans.filter(
+    (item) => item.user?.status === 'member'
+  ).length
+  const eventWomansMemberCount = eventWomans.filter(
+    (item) => item.user?.status === 'member'
+  ).length
+
+  if (user.gender === 'male') {
+    if (
+      (!user.status || user.status === 'novice') &&
+      typeof event.maxMansNovice === 'number' &&
+      event.maxMansNovice <= eventMansNoviceCount
+    )
+      return {
+        canSee,
+        alreadySignIn,
+        canSignIn: false,
+        canSignInReserve,
+        canSignOut,
+        isEventExpired,
+        isEventInProcess,
+        userEventStatus: userEvent?.status,
+        status: 'event full of novice mans',
+      }
+    if (
+      user.status === 'member' &&
+      typeof event.maxMansMember === 'number' &&
+      event.maxMansMember <= eventMansMemberCount
+    )
+      return {
+        canSee,
+        alreadySignIn,
+        canSignIn: false,
+        canSignInReserve,
+        canSignOut,
+        isEventExpired,
+        isEventInProcess,
+        userEventStatus: userEvent?.status,
+        status: 'event full of member mans',
+      }
+  }
+  if (user.gender === 'famale') {
+    if (
+      (!user.status || user.status === 'novice') &&
+      typeof event.maxWomansNovice === 'number' &&
+      event.maxWomansNovice <= eventWomansNoviceCount
+    )
+      return {
+        canSee,
+        alreadySignIn,
+        canSignIn: false,
+        canSignInReserve,
+        canSignOut,
+        isEventExpired,
+        isEventInProcess,
+        userEventStatus: userEvent?.status,
+        status: 'event full of novice womans',
+      }
+    if (
+      user.status === 'member' &&
+      typeof event.maxWomansMember === 'number' &&
+      event.maxWomansMember <= eventWomansMemberCount
+    )
+      return {
+        canSee,
+        alreadySignIn,
+        canSignIn: false,
+        canSignInReserve,
+        canSignOut,
+        isEventExpired,
+        isEventInProcess,
+        userEventStatus: userEvent?.status,
+        status: 'event full of member womans',
+      }
+  }
 
   return {
     canSee,
