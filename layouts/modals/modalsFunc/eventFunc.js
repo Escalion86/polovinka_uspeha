@@ -617,7 +617,7 @@ const eventFunc = (eventId, clone = false) => {
                     className="w-6 h-6 text-blue-600 tablet:w-6 tablet:h-6"
                   />
                 </div>
-                <FormWrapper className="flex-1 py-2">
+                <FormWrapper className="flex-1 py-2 pl-1">
                   <FormRow>
                     <Input
                       ref={refMansMax}
@@ -719,7 +719,7 @@ const eventFunc = (eventId, clone = false) => {
                     className="w-6 h-6 text-red-600 tablet:w-6 tablet:h-6"
                   />
                 </div>
-                <FormWrapper className="flex-1 py-2">
+                <FormWrapper className="flex-1 py-2 pl-1">
                   <FormRow>
                     <Input
                       ref={refWomansMax}
