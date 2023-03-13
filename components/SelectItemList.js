@@ -60,6 +60,7 @@ export const SelectItemList = ({
   required = false,
   // dropDownList = true,
   showCounter,
+  counterClassName,
   counterPostfix,
   canAddItem = true,
   exceptedIds,
@@ -153,7 +154,7 @@ export const SelectItemList = ({
         {showCounter && (
           <div className="flex gap-x-1">
             <span>Кол-во:</span>
-            <span className="font-bold">{itemRows.length}</span>
+            <span className={counterClassName}>{itemRows.length}</span>
             {counterPostfix ? <span>{counterPostfix}</span> : null}
           </div>
         )}
@@ -214,6 +215,7 @@ export const SelectUserList = ({
   label,
   filter,
   showCounter,
+  counterClassName,
   maxUsers = null,
   canAddItem = true,
   exceptedIds,
@@ -244,6 +246,7 @@ export const SelectUserList = ({
       required={required}
       filter={filter}
       showCounter={showCounter ?? true}
+      counterClassName={counterClassName}
       counterPostfix={
         (typeof maxUsers === 'number' ? ' / ' + maxUsers + ' ' : '') + 'чел.'
       }

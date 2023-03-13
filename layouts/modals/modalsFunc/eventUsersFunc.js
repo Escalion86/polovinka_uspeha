@@ -24,6 +24,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import { P } from '@components/tags'
 import { faLock, faPlay } from '@fortawesome/free-solid-svg-icons'
 import isEventCanBeClosedSelector from '@state/selectors/isEventCanBeClosedSelector'
+import cn from 'classnames'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -270,6 +271,11 @@ const eventUsersFunc = (eventId) => {
                 removeIdsFromReserve(usersIds)
                 setMansIds(sortUsersIds(usersIds))
               }}
+              counterClassName={
+                event.maxMans && mansIds.length >= event.maxMans
+                  ? 'text-danger font-bold'
+                  : ''
+              }
               maxUsers={event.maxMans}
               canAddItem={
                 (!event.maxUsers ||
@@ -353,6 +359,11 @@ const eventUsersFunc = (eventId) => {
                 removeIdsFromReserve(usersIds)
                 setWomansIds(sortUsersIds(usersIds))
               }}
+              counterClassName={
+                event.maxWomans && womansIds.length >= event.maxWomans
+                  ? 'text-danger font-bold'
+                  : ''
+              }
               maxUsers={event.maxWomans}
               canAddItem={
                 (!event.maxUsers ||
@@ -433,13 +444,20 @@ const eventUsersFunc = (eventId) => {
             />
             <div className="flex justify-end gap-x-1">
               <span>Всего участников:</span>
-              <span className="font-bold">
+              <span
+                className={cn(
+                  event.maxParticipants &&
+                    mansIds.length + womansIds.length >= event.maxParticipants
+                    ? 'font-bold text-danger'
+                    : ''
+                )}
+              >
                 {mansIds.length + womansIds.length}
               </span>
-              {event.maxUsers ? (
+              {event.maxParticipants ? (
                 <>
                   <span>/</span>
-                  <span>{event.maxUsers}</span>
+                  <span>{event.maxParticipants}</span>
                 </>
               ) : null}
               <span>чел.</span>
@@ -452,6 +470,7 @@ const eventUsersFunc = (eventId) => {
             >
               <SelectUserList
                 label="Резерв"
+                filter={{ gender: { operand: '!==', value: null } }}
                 modalTitle="Выбор пользователей в резерв"
                 usersId={reservedParticipantsIds}
                 onChange={(usersIds) => {
