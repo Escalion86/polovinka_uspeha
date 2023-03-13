@@ -227,7 +227,7 @@ const ItemButton = ({
         onClick={onClick}
         className={cn(
           'flex items-center justify-center gap-x-0.5 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi',
-          thin ? 'px-1' : 'px-2'
+          thin ? 'px-1' : 'px-1.5'
         )}
       >
         {icon ? (
@@ -457,6 +457,7 @@ export const SelectEvent = ({
   readOnly,
   showPaymentsButton = false,
   showEventUsersButton = false,
+  showEditButton = false,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
@@ -530,9 +531,22 @@ export const SelectEvent = ({
         }
         exceptedIds={exceptedIds}
       />
-      {showEventUsersButton && (
+      {selectedId && showEditButton && (
         <div
-          className="flex items-center justify-center w-8 text-green-500 bg-gray-100 border-l border-gray-700 cursor-pointer group"
+          className="flex items-center justify-center text-orange-500 bg-gray-100 border-l border-gray-700 cursor-pointer w-7 group"
+          onClick={() => {
+            modalsFunc.event.edit(selectedId)
+          }}
+        >
+          <FontAwesomeIcon
+            icon={faPencilAlt}
+            className={cn('w-4 h-4 duration-300 group-hover:scale-125')}
+          />
+        </div>
+      )}
+      {selectedId && showEventUsersButton && (
+        <div
+          className="flex items-center justify-center text-green-500 bg-gray-100 border-l border-gray-700 cursor-pointer w-7 group"
           onClick={() => {
             modalsFunc.event.users(selectedId)
           }}
@@ -543,9 +557,9 @@ export const SelectEvent = ({
           />
         </div>
       )}
-      {showPaymentsButton && (
+      {selectedId && showPaymentsButton && (
         <div
-          className="flex items-center justify-center w-8 bg-gray-100 border-l border-gray-700 cursor-pointer group text-amber-500"
+          className="flex items-center justify-center bg-gray-100 border-l border-gray-700 cursor-pointer w-7 group text-amber-500"
           onClick={() => {
             modalsFunc.event.payments(selectedId)
           }}

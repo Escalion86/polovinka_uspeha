@@ -12,7 +12,9 @@ export const eventNotParticipantsWithPaymentsSelector = selectorFamily({
 
       const usersOfEvent = get(eventsUsersFullByEventIdSelector(id))
       const paymentsOfEvent = get(paymentsFromAndToUsersSelector(id))
-      const usersIdsOfEvent = usersOfEvent.map(({ user }) => user._id)
+      const usersIdsOfEvent = usersOfEvent
+        .filter(({ status }) => status === 'participant')
+        .map(({ user }) => user._id)
       const paymentsUsersIds = paymentsOfEvent.map(({ userId }) => userId)
 
       const notParticipantsIdsWithPayments = compareArrays(

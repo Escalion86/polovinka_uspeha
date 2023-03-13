@@ -109,17 +109,17 @@ import ReactCrop from 'react-image-crop'
 //   return new File([arr], fileName, { type: mime })
 // }
 
-const MAX_SIZE = 2400
+// const MAX_SIZE = 2400
 const TO_RADIANS = Math.PI / 180
 
-const cropCorrecting = (crop, aspect) => {
-  if (aspect === 1)
-    return crop.width > crop.height
-      ? { ...crop, width: crop.height }
-      : { ...crop, height: crop.width }
+// const cropCorrecting = (crop, aspect) => {
+//   if (aspect === 1)
+//     return crop.width > crop.height
+//       ? { ...crop, width: crop.height }
+//       : { ...crop, height: crop.width }
 
-  return crop
-}
+//   return crop
+// }
 
 const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
   const CropImageModal = ({
@@ -165,8 +165,8 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
     }, [])
 
     useEffect(() => ref?.current?.click(), [ref?.current])
-    console.log('crop', crop)
-    console.log('completedCrop', completedCrop)
+    // console.log('crop', crop)
+    // console.log('completedCrop', completedCrop)
     // const [ready, setReady] = useState()
 
     // if (imgSrc)

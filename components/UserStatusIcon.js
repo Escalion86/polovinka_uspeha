@@ -6,7 +6,6 @@ import Image from 'next/image'
 import cn from 'classnames'
 
 const UserStatusIcon = ({ status, size }) => {
-  console.log('size', size)
   var numSize
   switch (size) {
     case 'xs':

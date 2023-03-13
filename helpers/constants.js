@@ -670,7 +670,7 @@ export const pages = [
     name: 'Не пришли на мероприятие',
     href: 'paymentsNotParticipantsEvent',
     icon: faUserTimes,
-    badge: badgePaymentsWithoutUserWritingToEventSelector,
+    // badge: badgePaymentsWithoutUserWritingToEventSelector,
   },
 
   {
