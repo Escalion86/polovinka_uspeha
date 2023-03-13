@@ -12,9 +12,13 @@ import StateLoader from '@components/StateLoader'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import BlockContainer from '@components/BlockContainer'
+import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
+import PulseButton from '@components/PulseButton'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const Event = ({ event }) => {
-  if (!event?._id) return <div>Ошибка. Мероприятие не найдено</div>
   const eventView = eventViewFunc(event._id)
   const Component = eventView.Children
   const TopLeftComponent = eventView.TopLeftComponent
@@ -37,7 +41,13 @@ const Event = ({ event }) => {
 function EventPage(props) {
   const eventId = props.id
 
+  // const router = useRouter()
+
   const eventsState = useRecoilValue(eventsAtom)
+
+  const loggedUser = useRecoilValue(loggedUserAtom)
+
+  const { canSee } = useRecoilValue(loggedUserToEventStatusSelector(eventId))
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01
@@ -67,7 +77,48 @@ function EventPage(props) {
         <Header />
         {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
         <BlockContainer small>
-          <Event event={event} />
+          {event?._id && canSee && <Event event={event} />}
+          <div className="flex flex-col items-center">
+            {!event?._id && (
+              <span className="text-xl">Ошибка. Мероприятие не найдено</span>
+            )}
+            {!canSee && (
+              <span className="text-xl">
+                Мероприятие не доступно для просмотра неавторизированным
+                пользователям, пожалуйста авторизируйтесь
+              </span>
+            )}
+            {!loggedUser && (
+              <>
+                <Link
+                  href={{
+                    pathname: '/login',
+                    query: event?._id ? { event: event._id } : {},
+                  }}
+                  shallow
+                >
+                  <PulseButton
+                    className="mt-4 text-white"
+                    title="Авторизироваться"
+                    // onClick={() => router.push('./login', '', { shallow: true })}
+                  />
+                </Link>
+                <Link
+                  href={{
+                    pathname: '/login',
+                    query: { registration: true },
+                  }}
+                  shallow
+                >
+                  <PulseButton
+                    className="mt-4 text-white"
+                    title="Зарегистрироваться"
+                    // onClick={() => router.push('./login', '', { shallow: true })}
+                  />
+                </Link>
+              </>
+            )}
+          </div>
         </BlockContainer>
         {/* <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
         </div> */}

@@ -496,7 +496,11 @@ const LoginPage = (props) => {
           setWaitingResponse(false)
           setInputPassword('')
           addError({ password: 'Телефон или пароль не верны' })
-        } else router.push('/cabinet', '', { shallow: true })
+        } else {
+          if (router.query?.event)
+            router.push('/event/' + router.query?.event, '', { shallow: true })
+          else router.push('/cabinet', '', { shallow: true })
+        }
       })
     }
   }
@@ -933,7 +937,7 @@ export const getServerSideProps = async (context) => {
     getSession,
     fetchSiteSettings
   )
-  console.log('response', response)
+
   return response
 
   // return {

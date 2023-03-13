@@ -48,6 +48,7 @@ function formatDateTime(
   durationMinutes
 ) {
   if (!dateTime) return undefined
+
   var d = new Date(dateTime),
     minutes = '' + d.getMinutes(),
     hours = '' + d.getHours(),

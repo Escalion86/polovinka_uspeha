@@ -10,7 +10,7 @@ const EventsList = ({ events }) => {
   return (
     <ListWrapper
       itemCount={events.length}
-      itemSize={widthNum > 3 ? 182 : widthNum === 3 ? 165 : 194}
+      itemSize={widthNum > 3 ? 182 : widthNum === 3 ? 165 : 196}
     >
       {({ index, style }) => (
         <EventCard
