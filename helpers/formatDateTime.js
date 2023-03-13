@@ -39,14 +39,6 @@ import { DAYS_OF_WEEK, MONTHS, MONTHS_FULL } from './constants'
 //   return weeknum
 // }
 
-function convertTZ(date, tzString = 'Asia/Krasnoyarsk') {
-  return new Date(
-    (typeof date === 'string' ? new Date(date) : date).toLocaleString('en-US', {
-      timeZone: tzString,
-    })
-  )
-}
-
 function formatDateTime(
   dateTime,
   fullMonth = true,
@@ -56,10 +48,9 @@ function formatDateTime(
   durationMinutes
 ) {
   if (!dateTime) return undefined
-  const d = convertTZ(dateTime)
 
-  // var d = new Date(dateTime)
-  var minutes = '' + d.getMinutes(),
+  var d = new Date(dateTime),
+    minutes = '' + d.getMinutes(),
     hours = '' + d.getHours(),
     month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),

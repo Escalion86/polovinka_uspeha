@@ -1,6 +1,6 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import { postData } from '@helpers/CRUD'
-import formatDateTime from '@helpers/formatDateTime'
+import formatDateTimeFunc from '@helpers/formatDateTime'
 import getUserFullName from '@helpers/getUserFullName'
 import isEventCanceled from '@helpers/isEventCanceled'
 import isEventClosed from '@helpers/isEventClosed'
@@ -13,6 +13,16 @@ import Histories from '@models/Histories'
 import Users from '@models/Users'
 import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
+
+function convertTZ(date, tzString = 'Asia/Krasnoyarsk') {
+  return new Date(
+    (typeof date === 'string' ? new Date(date) : date).toLocaleString('en-US', {
+      timeZone: tzString,
+    })
+  )
+}
+
+const formatDateTime = (date) => formatDateTimeFunc(convertTZ(date))
 
 // Оповещение в телеграм
 const telegramNotification = async ({
