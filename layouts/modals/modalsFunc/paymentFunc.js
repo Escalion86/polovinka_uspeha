@@ -207,6 +207,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
           // required
           showEventUsersButton
           showPaymentsButton
+          showEditButton
           clearButton={!isEventClosed}
           // readOnly={isEventClosed}
         />
