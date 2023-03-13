@@ -38,9 +38,17 @@ const EventButtonSignIn = ({
 
   const router = useRouter()
 
-  const eventLoggedUserStatus = useRecoilValue(
-    loggedUserToEventStatusSelector(eventId)
-  )
+  const {
+    canSee,
+    alreadySignIn,
+    canSignIn,
+    canSignInReserve,
+    canSignOut,
+    isEventExpired,
+    isEventInProcess,
+    userEventStatus,
+    status,
+  } = useRecoilValue(loggedUserToEventStatusSelector(eventId))
 
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
@@ -56,24 +64,25 @@ const EventButtonSignIn = ({
   // </div>
   event.status === 'canceled' ? (
     <TextStatus className={cn('text-danger', className)}>Отменено</TextStatus>
-  ) : eventLoggedUserStatus.isEventExpired ? (
+  ) : isEventExpired ? (
     <TextStatus className={cn('text-success', className)}>Завершено</TextStatus>
-  ) : eventLoggedUserStatus.userEventStatus === 'assistant' ? (
+  ) : userEventStatus === 'assistant' ? (
     <TextStatus className={cn('text-general', className)}>Ведущий</TextStatus>
-  ) : (noButtonIfAlreadySignIn && eventLoggedUserStatus.canSignOut) ||
-    (eventLoggedUserStatus.isEventInProcess &&
-      eventLoggedUserStatus.canSignOut) ? (
+  ) : (noButtonIfAlreadySignIn && canSignOut) ||
+    (isEventInProcess && canSignOut) ? (
     <TextStatus className={cn('text-blue-600', className)}>
-      {eventLoggedUserStatus.userEventStatus === 'reserve'
-        ? 'В резерве'
-        : 'Записан'}
+      {userEventStatus === 'reserve' ? 'В резерве' : 'Записан'}
     </TextStatus>
-  ) : !eventLoggedUserStatus.canSee ? (
+  ) : !canSee ? (
     <TextStatus className={cn('text-danger', className)}>
       Не доступно
     </TextStatus>
-  ) : eventLoggedUserStatus.isEventInProcess &&
-    (noButtonIfAlreadySignIn || !eventLoggedUserStatus.canSignIn) ? (
+  ) : isUserQuestionnaireFilled &&
+    !canSignIn &&
+    !canSignOut &&
+    !canSignInReserve ? (
+    <TextStatus className={cn('text-danger', className)}>Мест нет</TextStatus>
+  ) : isEventInProcess && (noButtonIfAlreadySignIn || !canSignIn) ? (
     <TextStatus className={cn('text-general', className)}>
       В процессе
     </TextStatus>
@@ -82,31 +91,20 @@ const EventButtonSignIn = ({
       thin={thin}
       stopPropagation
       onClick={() => {
-        if (
-          !loggedUser ||
-          (eventLoggedUserStatus.canSignIn &&
-            !eventLoggedUserStatus.alreadySignIn)
-        ) {
+        if (!loggedUser || (canSignIn && !alreadySignIn)) {
           if (event.warning) modalsFunc.event.signUpWithWarning(event._id)
           else modalsFunc.event.signUp(event._id)
         } else if (loggedUser.status === 'ban') {
           modalsFunc.event.cantSignUp()
-        } else if (
-          !eventLoggedUserStatus.canSignIn &&
-          !eventLoggedUserStatus.alreadySignIn &&
-          eventLoggedUserStatus.canSignInReserve
-        ) {
+        } else if (!canSignIn && !alreadySignIn && canSignInReserve) {
           if (event.warning)
             modalsFunc.event.signUpWithWarning(event._id, 'reserve')
           else modalsFunc.event.signUp(event._id, 'reserve')
         } else if (!isUserQuestionnaireFilled) {
           closeModal()
           router.push('/cabinet/questionnaire', '', { shallow: true })
-        } else if (eventLoggedUserStatus.canSignOut) {
-          modalsFunc.event.signOut(
-            event._id,
-            eventLoggedUserStatus.userEventStatus
-          )
+        } else if (canSignOut) {
+          modalsFunc.event.signOut(event._id, userEventStatus)
         }
       }}
       // className={cn(
@@ -115,30 +113,26 @@ const EventButtonSignIn = ({
       //    ? 'bg-success hover:text-success border-success'
       //     : 'bg-general hover:text-general border-general'
       // )}
-      classBgColor={eventLoggedUserStatus.canSignOut ? 'bg-danger' : undefined}
+      classBgColor={canSignOut ? 'bg-danger' : undefined}
       // classHoverBgColor={eventUser ? 'hover:bg-danger' : undefined}
       className={cn('border w-auto self-center', className)}
       name={
-        eventLoggedUserStatus.canSignOut
-          ? `Отменить запись${
-              eventLoggedUserStatus.userEventStatus === 'reserve'
-                ? ' в резерв'
-                : ''
-            }`
-          : eventLoggedUserStatus.canSignIn || !loggedUser
+        canSignOut
+          ? `Отменить запись${userEventStatus === 'reserve' ? ' в резерв' : ''}`
+          : canSignIn || !loggedUser
           ? 'Записаться'
           : isUserQuestionnaireFilled
-          ? eventLoggedUserStatus.canSignInReserve
+          ? canSignInReserve
             ? 'Записаться в резерв'
             : 'Мест нет'
           : 'Заполните свою анкету'
       }
-      disabled={
-        !eventLoggedUserStatus.canSignOut &&
-        !eventLoggedUserStatus.canSignIn &&
-        !eventLoggedUserStatus.canSignInReserve &&
-        isUserQuestionnaireFilled
-      }
+      // disabled={
+      //   !canSignOut &&
+      //   !canSignIn &&
+      //   !canSignInReserve &&
+      //   isUserQuestionnaireFilled
+      // }
     />
   )
 }

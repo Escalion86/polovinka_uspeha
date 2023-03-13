@@ -40,7 +40,15 @@ const Counter = ({
             <div className="flex gap-x-0.5 items-center">
               <UserStatusIcon size="xs" status="novice" />
               <div className="flex tablet:gap-x-0.5">
-                <span>{noviceCount}</span>
+                <span
+                  className={
+                    maxNovice && noviceCount >= maxNovice
+                      ? 'text-danger font-semibold'
+                      : ''
+                  }
+                >
+                  {noviceCount}
+                </span>
                 {typeof maxNovice === 'number' && (
                   <>
                     <span>/</span>
@@ -56,7 +64,15 @@ const Counter = ({
             <div className="flex gap-x-0.5 items-center">
               <UserStatusIcon size="xs" status="member" />
               <div className="flex tablet:gap-x-0.5">
-                <span>{memberCount}</span>
+                <span
+                  className={
+                    maxMember && memberCount >= maxMember
+                      ? 'text-danger font-semibold'
+                      : ''
+                  }
+                >
+                  {memberCount}
+                </span>
                 {typeof maxMember === 'number' && (
                   <>
                     <span>/</span>
@@ -76,13 +92,21 @@ const Counter = ({
               <div className="hidden min-w-[9px] h-[36px] tablet:block w-[9px]">
                 <Image src="/img/other/bracet_left.png" width={9} height={36} />
               </div>
-              <div className="min-w-[8px] h-[32px] tablet:hidden w-[8px]">
-                <Image src="/img/other/bracet_left.png" width={8} height={32} />
+              <div className="min-w-[7px] h-[28px] tablet:hidden w-[8px]">
+                <Image src="/img/other/bracet_left.png" width={7} height={28} />
               </div>
-              <div className="flex flex-col items-center leading-3">
+              <div className="flex flex-col items-center leading-[0.5rem] tablet:leading-3">
                 <span className="text-xs">max</span>
-                <span>{max}</span>
-                <span className="text-xs">чел.</span>
+                <span
+                  className={
+                    max && noviceCount + memberCount >= max
+                      ? 'text-danger font-semibold'
+                      : ''
+                  }
+                >
+                  {max}
+                </span>
+                <span className="text-xs -mt-0.5">чел.</span>
               </div>
 
               {/* {noviceReserveCount + memberReserveCount > 0 && (
@@ -108,7 +132,15 @@ const Counter = ({
         </div>
       )}
       <div className="flex gap-x-0.5">
-        <span>{noviceCount + memberCount}</span>
+        <span
+          className={
+            max && noviceCount + memberCount >= max
+              ? 'text-danger font-semibold'
+              : ''
+          }
+        >
+          {noviceCount + memberCount}
+        </span>
         {typeof max === 'number' && (
           <>
             <span>/</span>
@@ -192,7 +224,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
       <div className="items-center hidden px-2 font-bold tablet:flex gap-x-1">
         Участники:
       </div>
-      <div className="flex items-center px-2 tablet:border-r gap-x-0.5">
+      <div className="flex items-center px-1 tablet:px-2 tablet:border-r gap-x-1">
         <FontAwesomeIcon
           icon={faMars}
           className="w-5 h-5 text-blue-600 tablet:w-6 tablet:h-6"
@@ -210,7 +242,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           memberReserveCount={eventMansMemberReserveCount}
         />
       </div>
-      <div className="flex items-center px-2 tablet:border-r gap-x-0.5">
+      <div className="flex items-center px-1 tablet:px-2 tablet:border-r gap-x-1">
         <FontAwesomeIcon
           icon={faVenus}
           className="w-5 h-5 text-red-600 tablet:w-6 tablet:h-6"
@@ -257,7 +289,16 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
         </div>
         <div className="flex tablet:gap-x-0.5">
           {/* <span className="italic font-bold">Всего:</span> */}
-          <span>{eventParticipantsCount}</span>
+          <span
+            className={
+              event.maxParticipants &&
+              eventParticipantsCount >= event.maxParticipants
+                ? 'text-danger font-semibold'
+                : ''
+            }
+          >
+            {eventParticipantsCount}
+          </span>
           {typeof event.maxParticipants === 'number' && (
             <>
               <span>/</span>

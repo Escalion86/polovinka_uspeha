@@ -298,7 +298,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
         <div className="flex flex-wrap justify-end flex-1 w-full">
           <EventUsersCounterAndAge
             eventId={eventId}
-            className="flex-1 min-w-full border-t border-b h-[42px]"
+            className="flex-1 min-w-full border-t border-b h-[38px] tablet:h-[42px]"
           />
           <div className="flex flex-wrap items-stretch justify-end flex-1 w-full h-9 pr-0.5">
             <PriceDiscount
