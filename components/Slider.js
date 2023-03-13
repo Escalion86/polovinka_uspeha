@@ -18,8 +18,8 @@ const Options = ({ min, max }) => {
   })
 }
 
-const Select = ({ value, onChange, left, min, max }) => (
-  <FormControl className="w-20">
+const Select = ({ value, onChange, left, min, max, className }) => (
+  <FormControl className={cn('w-20', className)}>
     <NativeSelect
       value={typeof value === 'object' ? value[left ? 0 : 1] : value}
       inputProps={{
@@ -74,7 +74,14 @@ const Slider = ({
       > */}
     <div className="flex flex-1 w-max min-w-40 gap-x-4">
       {!noInputs && (
-        <Select value={value} onChange={onChange} left min={min} max={max} />
+        <Select
+          value={value}
+          onChange={onChange}
+          left
+          min={min}
+          max={max}
+          className="min-w-14"
+        />
       )}
 
       {/* {!noInputs && (
@@ -105,7 +112,13 @@ const Slider = ({
         // getAriaValueText={valuetext}
       />
       {!noInputs && (
-        <Select value={value} onChange={onChange} min={min} max={max} />
+        <Select
+          value={value}
+          onChange={onChange}
+          min={min}
+          max={max}
+          className="min-w-14"
+        />
       )}
     </div>
     {/* <input

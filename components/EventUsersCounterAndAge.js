@@ -8,23 +8,153 @@ import eventWomansReserveSelector from '@state/selectors/eventWomansReserveSelec
 import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
+import UserStatusIcon from './UserStatusIcon'
+import Image from 'next/image'
+import SvgSigma from 'svg/SvgSigma'
 
-const EventUsersCounterAndAge = ({ eventId, className }) => {
+const Counter = ({
+  showAges,
+  minAge,
+  maxAge,
+  max,
+  noviceCount,
+  memberCount,
+  maxNovice,
+  maxMember,
+  noviceReserveCount,
+  memberReserveCount,
+}) =>
+  maxNovice || maxMember ? (
+    <>
+      <div className="flex flex-col items-center">
+        {showAges && (
+          <div className="flex justify-center gap-x-0.5 border-b self-stretch">
+            <span>{minAge ?? 18}</span>
+            <span>-</span>
+            <span>{maxAge ?? 60}</span>
+            <span>лет</span>
+          </div>
+        )}
+        <div className="flex items-center gap-x-0.5">
+          <div className="flex flex-col">
+            <div className="flex gap-x-0.5 items-center">
+              <UserStatusIcon size="xs" status="novice" />
+              <div className="flex tablet:gap-x-0.5">
+                <span>{noviceCount}</span>
+                {typeof maxNovice === 'number' && (
+                  <>
+                    <span>/</span>
+                    <span>{maxNovice}</span>
+                  </>
+                )}
+                {noviceReserveCount > 0 && (
+                  <span className="text-xs">{`+${noviceReserveCount}`}</span>
+                )}
+                {/* <span>чел.</span> */}
+              </div>
+            </div>
+            <div className="flex gap-x-0.5 items-center">
+              <UserStatusIcon size="xs" status="member" />
+              <div className="flex tablet:gap-x-0.5">
+                <span>{memberCount}</span>
+                {typeof maxMember === 'number' && (
+                  <>
+                    <span>/</span>
+                    <span>{maxMember}</span>
+                  </>
+                )}
+                {memberReserveCount > 0 && (
+                  <span className="text-xs">{`+${memberReserveCount}`}</span>
+                )}
+                {/* <span>чел.</span> */}
+              </div>
+            </div>
+          </div>
+          {typeof max === 'number' ? (
+            <div className="flex gap-x-0.5 items-center">
+              {/* <span className="text-4xl">{'}'}</span> */}
+              <div className="hidden min-w-[9px] h-[36px] tablet:block w-[9px]">
+                <Image src="/img/other/bracet_left.png" width={9} height={36} />
+              </div>
+              <div className="min-w-[8px] h-[32px] tablet:hidden w-[8px]">
+                <Image src="/img/other/bracet_left.png" width={8} height={32} />
+              </div>
+              <div className="flex flex-col items-center leading-3">
+                <span className="text-xs">max</span>
+                <span>{max}</span>
+                <span className="text-xs">чел.</span>
+              </div>
+
+              {/* {noviceReserveCount + memberReserveCount > 0 && (
+          <span className="text-xs">{`+${
+            noviceReserveCount + memberReserveCount
+          }`}</span>
+        )} */}
+            </div>
+          ) : (
+            <span>чел.</span>
+          )}
+        </div>
+      </div>
+    </>
+  ) : (
+    <div className="flex gap-x-0.5">
+      <span>{noviceCount + memberCount}</span>
+      {typeof max === 'number' && (
+        <>
+          <span>/</span>
+          <span>{max}</span>
+        </>
+      )}
+      {noviceReserveCount + memberReserveCount > 0 && (
+        <span className="text-xs">{`+${
+          noviceReserveCount + memberReserveCount
+        }`}</span>
+      )}
+      <span>чел.</span>
+    </div>
+  )
+
+const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
   const event = useRecoilValue(eventSelector(eventId))
   // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
   // const eventAssistantsIds = useRecoilValue(eventAssistantsSelector(eventId)).map((user) => user._id)
-  const eventMansCount = useRecoilValue(eventMansSelector(eventId)).length
-  const eventWomansCount = useRecoilValue(eventWomansSelector(eventId)).length
-  const eventMansReserveCount = useRecoilValue(
-    eventMansReserveSelector(eventId)
+  const eventMans = useRecoilValue(eventMansSelector(eventId))
+  const eventWomans = useRecoilValue(eventWomansSelector(eventId))
+  const eventMansNoviceCount = eventMans.filter(
+    (user) => !user.status || user.status === 'novice'
   ).length
-  const eventWomansReserveCount = useRecoilValue(
-    eventWomansReserveSelector(eventId)
+  const eventWomansNoviceCount = eventWomans.filter(
+    (user) => !user.status || user.status === 'novice'
   ).length
+  const eventMansMemberCount = eventMans.filter(
+    (user) => !user.status || user.status === 'member'
+  ).length
+  const eventWomansMemberCount = eventWomans.filter(
+    (user) => !user.status || user.status === 'member'
+  ).length
+  const eventMansReserve = useRecoilValue(eventMansReserveSelector(eventId))
+  const eventWomansReserve = useRecoilValue(eventWomansReserveSelector(eventId))
+  const eventMansNoviceReserveCount = eventMansReserve.filter(
+    (user) => !user.status || user.status === 'novice'
+  ).length
+  const eventMansMemberReserveCount = eventMansReserve.filter(
+    (user) => !user.status || user.status === 'member'
+  ).length
+  const eventWomansNoviceReserveCount = eventWomansReserve.filter(
+    (user) => !user.status || user.status === 'novice'
+  ).length
+  const eventWomansMemberReserveCount = eventWomansReserve.filter(
+    (user) => !user.status || user.status === 'member'
+  ).length
+
   // const eventReservedParticipantsIds = useRecoilValue(eventUsersInReserveSelector(eventId)).map((user) => user._id)
   // const eventBannedParticipantsIds = useRecoilValue(eventUsersInBanSelector(eventId)).map((user) => user._id)
-
+  const eventMansCount = eventMans.length
+  const eventWomansCount = eventWomans.length
+  const eventMansReserveCount = eventMansReserve.length
+  const eventWomansReserveCount = eventWomansReserve.length
   // const eventMansCount = eventUsers.filter(
   //   (item) =>
   //     item.user &&
@@ -57,40 +187,45 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
           icon={faMars}
           className="w-5 h-5 text-blue-600 tablet:w-6 tablet:h-6"
         />
-        <div className="flex flex-col items-center">
-          <div className="flex gap-x-0.5 border-b">
-            <span>{event.minMansAge ?? 18}</span>
-            <span>-</span>
-            <span>{event.maxMansAge ?? 60}</span>
-            <span>лет</span>
-          </div>
-          <div className="flex gap-x-0.5">
-            <span>{eventMansCount}</span>
-            {typeof event.maxMans === 'number' && (
-              <>
-                <span>/</span>
-                <span>{event.maxMans}</span>
-              </>
-            )}
-            {eventMansReserveCount > 0 && (
-              <span className="text-xs">{`+${eventMansReserveCount}`}</span>
-            )}
-            <span>чел.</span>
-          </div>
-        </div>
+        <Counter
+          showAges={showAges}
+          minAge={event.minMansAge}
+          maxAge={event.maxMansAge}
+          max={event.maxMans}
+          noviceCount={eventMansNoviceCount}
+          memberCount={eventMansMemberCount}
+          maxNovice={event.maxMansNovice}
+          maxMember={event.maxMansMember}
+          noviceReserveCount={eventMansNoviceReserveCount}
+          memberReserveCount={eventMansMemberReserveCount}
+        />
       </div>
       <div className="flex items-center px-2 tablet:border-r gap-x-0.5">
         <FontAwesomeIcon
           icon={faVenus}
           className="w-5 h-5 text-red-600 tablet:w-6 tablet:h-6"
         />
-        <div className="flex flex-col items-center">
-          <div className="flex gap-x-0.5 border-b">
-            <span>{event.minWomansAge ?? 18}</span>
-            <span>-</span>
-            <span>{event.maxWomansAge ?? 60}</span>
-            <span>лет</span>
-          </div>
+        <Counter
+          showAges={showAges}
+          minAge={event.minWomansAge}
+          maxAge={event.maxWomansAge}
+          max={event.maxWomans}
+          noviceCount={eventWomansNoviceCount}
+          memberCount={eventWomansMemberCount}
+          maxNovice={event.maxWomansNovice}
+          maxMember={event.maxWomansMember}
+          noviceReserveCount={eventWomansNoviceReserveCount}
+          memberReserveCount={eventWomansMemberReserveCount}
+        />
+        {/* <div className="flex flex-col items-center">
+          {showAges && (
+            <div className="flex gap-x-0.5 border-b">
+              <span>{event.minWomansAge ?? 18}</span>
+              <span>-</span>
+              <span>{event.maxWomansAge ?? 60}</span>
+              <span>лет</span>
+            </div>
+          )}
           <div className="flex gap-x-0.5">
             <span>{eventWomansCount}</span>
             {typeof event.maxWomans === 'number' && (
@@ -104,17 +239,23 @@ const EventUsersCounterAndAge = ({ eventId, className }) => {
             )}
             <span>чел.</span>
           </div>
-        </div>
+        </div> */}
       </div>
-      <div className="flex items-center px-2 py-1 gap-x-1">
-        <span className="italic font-bold">Всего:</span>
-        <span>{eventParticipantsCount}</span>
-        {typeof event.maxParticipants === 'number' && (
-          <>
-            <span>/</span>
-            <span>{event.maxParticipants}</span>
-          </>
-        )}
+      <div className="flex items-center px-2 py-1 gap-x-0.5 tablet:gap-x-1">
+        <div className={`min-w-5 w-5 h-5`}>
+          <SvgSigma className="fill-general" />
+        </div>
+        <div className="flex tablet:gap-x-0.5">
+          {/* <span className="italic font-bold">Всего:</span> */}
+          <span>{eventParticipantsCount}</span>
+          {typeof event.maxParticipants === 'number' && (
+            <>
+              <span>/</span>
+              <span>{event.maxParticipants}</span>
+            </>
+          )}
+        </div>
+        <span>чел.</span>
       </div>
     </div>
   )
