@@ -31,7 +31,7 @@ const Search = ({
 
   return (
     <motion.div
-      // initial={{}}
+      initial={{ height: 0, minHeight: 0 }}
       animate={{ height: show ? 38 : 0, minHeight: show ? 38 : 0 }}
       transition={{ type: 'just' }}
       className={cn(
