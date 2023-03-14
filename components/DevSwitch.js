@@ -40,6 +40,9 @@ const DevSwitch = () => {
         <ToggleButton className="flex-1 leading-3 rounded-none" value="client">
           Клиент
         </ToggleButton>
+        <ToggleButton className="flex-1 leading-3 rounded-none" value="moder">
+          Модер
+        </ToggleButton>
         <ToggleButton className="flex-1 leading-3 rounded-none" value="admin">
           Админ
         </ToggleButton>
