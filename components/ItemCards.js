@@ -33,6 +33,7 @@ const ItemContainer = ({
   className,
   noBorder,
   checkable = true,
+  style,
 }) => (
   <div
     className={cn(
@@ -43,6 +44,7 @@ const ItemContainer = ({
       { 'border-b border-gray-700 last:border-0': !noBorder },
       className
     )}
+    style={style}
     onClick={
       onClick
         ? (e) => {
@@ -124,6 +126,7 @@ export const UserItem = ({
   onClick = null,
   active = false,
   noBorder = false,
+  style,
 }) => {
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
@@ -134,12 +137,13 @@ export const UserItem = ({
       onClick={onClick}
       active={active}
       noPadding
-      className="flex h-[41px]"
+      className="flex h-[40px]"
       noBorder={noBorder}
+      style={style}
     >
       <div
         className={cn(
-          'w-7 flex justify-center items-center',
+          'w-7 flex justify-center items-center h-full',
           userGender ? 'bg-' + userGender.color : 'bg-gray-400'
         )}
       >

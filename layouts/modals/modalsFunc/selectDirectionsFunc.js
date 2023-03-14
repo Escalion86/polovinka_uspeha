@@ -111,7 +111,12 @@ const selectDirectionsFunc = (
 
     return (
       <div className="flex flex-col w-full h-full max-h-full gap-y-0.5">
-        <Search searchText={searchText} show={true} onChange={setSearchText} />
+        <Search
+          searchText={searchText}
+          show={true}
+          onChange={setSearchText}
+          className="h-[38px] min-h-[38px]"
+        />
 
         <div className="flex-1 overflow-y-auto max-h-200">
           {filteredDirections.map((direction) => (

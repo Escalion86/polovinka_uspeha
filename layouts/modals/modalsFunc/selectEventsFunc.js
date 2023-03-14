@@ -6,6 +6,7 @@ import { EventItem } from '@components/ItemCards'
 import filterItems from '@helpers/filterItems'
 import sortFunctions from '@helpers/sortFunctions'
 import Search from '@components/Search'
+import ListWrapper from '@layouts/lists/ListWrapper'
 
 const selectEventsFunc = (
   state,
@@ -108,9 +109,36 @@ const selectEventsFunc = (
 
     return (
       <div className="flex flex-col w-full h-full max-h-full gap-y-0.5">
-        <Search searchText={searchText} show={true} onChange={setSearchText} />
+        <Search
+          searchText={searchText}
+          show={true}
+          onChange={setSearchText}
+          className="h-[38px] min-h-[38px]"
+        />
+        <div
+          style={{ height: sortedEvents.length * 34 + 2 }}
+          className={`tablet:flex-none border-gray-700 border-t flex-col tablet:max-h-[calc(100vh-185px)]`}
+        >
+          <ListWrapper itemCount={sortedEvents.length} itemSize={34}>
+            {({ index, style }) => (
+              <div style={style} className="border-b border-gray-700">
+                <EventItem
+                  key={sortedEvents[index]._id}
+                  item={sortedEvents[index]}
+                  active={selectedEvents.includes(sortedEvents[index]._id)}
+                  onClick={() => onClick(sortedEvents[index]._id)}
+                />
+              </div>
+            )}
+          </ListWrapper>
+        </div>
+        {showErrorMax && (
+          <div className="text-danger">
+            Выбрано максимальное количество мероприятий
+          </div>
+        )}
 
-        <div className="flex-1 overflow-y-auto max-h-200">
+        {/* <div className="flex-1 overflow-y-auto max-h-200">
           {sortedEvents.map((event) => (
             <EventItem
               key={event._id}
@@ -125,7 +153,7 @@ const selectEventsFunc = (
               Выбрано максимальное количество мероприятий
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     )
   }
