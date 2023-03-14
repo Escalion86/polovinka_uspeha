@@ -10,7 +10,7 @@ import isEventExpiredFunc from '@helpers/isEventExpired'
 import directionsAtom from '@state/atoms/directionsAtom'
 
 import { getNounEvents } from '@helpers/getNoun'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import Filter from '@components/Filter'
 import ContentHeader from '@components/ContentHeader'
@@ -32,7 +32,7 @@ const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   // const windowWidthNum = useWindowDimensionsTailwindNum()
@@ -85,14 +85,14 @@ const EventsContent = () => {
         eventsLoggedUser,
         loggedUser,
         false,
-        isLoggedUserAdmin,
+        isLoggedUserModer,
         loggedUserActiveStatus
       ),
     [
       events,
       eventsLoggedUser,
       loggedUser,
-      isLoggedUserAdmin,
+      isLoggedUserModer,
       loggedUserActiveStatus,
     ]
   )
@@ -133,8 +133,8 @@ const EventsContent = () => {
         const isEventCanceled = isEventCanceledFunc(event)
         const isEventClosed = isEventClosedFunc(event)
         return (
-          ((isEventClosed && !isLoggedUserAdmin && filter.status.finished) ||
-            (isEventClosed && isLoggedUserAdmin && filter.status.closed) ||
+          ((isEventClosed && !isLoggedUserModer && filter.status.finished) ||
+            (isEventClosed && isLoggedUserModer && filter.status.closed) ||
             (isEventActive && filter.status.finished && isEventExpired) ||
             (isEventActive && filter.status.active && !isEventExpired) ||
             (isEventCanceled && filter.status.canceled)) &&
@@ -201,7 +201,7 @@ const EventsContent = () => {
               if (isSearching) setSearchText('')
             }}
           />
-          {isLoggedUserAdmin && (
+          {isLoggedUserModer && (
             <AddButton onClick={() => modalsFunc.event.add()} />
           )}
           {/* <FormControl size="small">

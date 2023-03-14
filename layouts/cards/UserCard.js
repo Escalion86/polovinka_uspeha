@@ -18,6 +18,7 @@ import UserStatusIcon from '@components/UserStatusIcon'
 import formatDate from '@helpers/formatDate'
 import UserName from '@components/UserName'
 import sumOfPaymentsWithoutEventOfUserSelector from '@state/selectors/sumOfPaymentsWithoutEventOfUserSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
   const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
@@ -45,6 +46,8 @@ const UserCard = ({ userId, hidden = false, style }) => {
   const loading = useRecoilValue(loadingAtom('user' + userId))
   // const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+
   const eventsUsersSignedUpCount = useRecoilValue(
     eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
   )
@@ -138,7 +141,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     />
                     <div className="flex flex-col justify-center px-1">
                       {user.birthday &&
-                        (isLoggedUserAdmin ||
+                        (isLoggedUserModer ||
                           user.security?.showBirthday ||
                           user.security?.showAge) && (
                           <div className="flex text-sm leading-4 gap-x-2 ">
@@ -151,7 +154,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                                   user.birthday,
                                   true,
                                   false,
-                                  isLoggedUserAdmin || user.security?.showAge
+                                  isLoggedUserModer || user.security?.showAge
                                 )}
                               </span>
                               <ZodiacIcon date={user.birthday} small />
@@ -177,14 +180,16 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     </div>
                   </div>
                 </div>
-                {isLoggedUserAdmin && (
+                {isLoggedUserModer && (
                   <div className="flex flex-col items-end justify-between">
                     <CardButtons
                       item={user}
                       typeOfItem="user"
                       alwaysCompactOnPhone
                     />
-                    <UserSumOfPaymentsWithoutEvent userId={userId} />
+                    {isLoggedUserAdmin && (
+                      <UserSumOfPaymentsWithoutEvent userId={userId} />
+                    )}
                   </div>
                 )}
               </div>

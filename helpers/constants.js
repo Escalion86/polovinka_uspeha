@@ -631,7 +631,7 @@ export const CONTENTS = {
   dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
   histories: {
     Component: HistoriesContent,
-    name: 'События / Участники мероприятий',
+    name: 'События / Записи на мероприятия',
     accessRoles: ['moder', 'admin', 'dev'],
   },
   birthdays: {
@@ -729,7 +729,7 @@ export const pages = [
   {
     id: 11,
     group: 5,
-    name: 'Участники мероприятий',
+    name: 'Записи на мероприятия',
     href: 'histories',
     icon: faUsers,
   },

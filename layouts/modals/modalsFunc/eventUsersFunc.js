@@ -25,6 +25,7 @@ import { P } from '@components/tags'
 import { faLock, faPlay } from '@fortawesome/free-solid-svg-icons'
 import isEventCanBeClosedSelector from '@state/selectors/isEventCanBeClosedSelector'
 import cn from 'classnames'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -40,6 +41,7 @@ const eventUsersFunc = (eventId) => {
     setBottomLeftButtonProps,
   }) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+    const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     const users = useRecoilValue(usersAtom)
@@ -170,8 +172,8 @@ const eventUsersFunc = (eventId) => {
     useEffect(() => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-      if (!isLoggedUserAdmin || isEventClosed) setOnlyCloseButtonShow(true)
-    }, [isFormChanged, isLoggedUserAdmin, isEventClosed])
+      if (!isLoggedUserModer || isEventClosed) setOnlyCloseButtonShow(true)
+    }, [isFormChanged, isLoggedUserModer, isEventClosed])
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
@@ -251,7 +253,7 @@ const eventUsersFunc = (eventId) => {
 
     return (
       <>
-        {isLoggedUserAdmin && isEventClosed && (
+        {isLoggedUserModer && isEventClosed && (
           <P className="text-danger">
             Мероприятие закрыто, поэтому редактирование состава участников
             запрещено
@@ -283,9 +285,9 @@ const eventUsersFunc = (eventId) => {
                 (event.maxMans === null || event.maxMans > mansIds.length)
               }
               exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-              readOnly={!isLoggedUserAdmin || isEventClosed}
+              readOnly={!isLoggedUserModer || isEventClosed}
               buttons={
-                isLoggedUserAdmin && !isEventClosed
+                isLoggedUserModer && !isEventClosed
                   ? [
                       // (id) => {
                       //   const paymentsOfUser = paymentsOfEvent.filter(
@@ -371,9 +373,9 @@ const eventUsersFunc = (eventId) => {
                 (event.maxWomans === null || event.maxWomans > womansIds.length)
               }
               exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-              readOnly={!isLoggedUserAdmin || isEventClosed}
+              readOnly={!isLoggedUserModer || isEventClosed}
               buttons={
-                isLoggedUserAdmin && !isEventClosed
+                isLoggedUserModer && !isEventClosed
                   ? [
                       // (id) => {
                       //   const paymentsOfUser = paymentsOfEvent.filter(
@@ -485,7 +487,7 @@ const eventUsersFunc = (eventId) => {
                   ...bannedParticipantsIds,
                 ]}
                 buttons={
-                  isLoggedUserAdmin && !isEventClosed
+                  isLoggedUserModer && !isEventClosed
                     ? [
                         (id) => ({
                           onClick: () => {
@@ -505,7 +507,7 @@ const eventUsersFunc = (eventId) => {
                       ]
                     : []
                 }
-                readOnly={!isLoggedUserAdmin || isEventClosed}
+                readOnly={!isLoggedUserModer || isEventClosed}
               />
             </TabPanel>
           )}
@@ -528,10 +530,10 @@ const eventUsersFunc = (eventId) => {
                 // ...womansIds,
                 ...bannedParticipantsIds,
               ]}
-              readOnly={!isLoggedUserAdmin || isEventClosed}
+              readOnly={!isLoggedUserModer || isEventClosed}
             />
           </TabPanel>
-          {isLoggedUserAdmin && (
+          {isLoggedUserModer && (
             <TabPanel
               tabName="Бан"
               tabAddToLabel={`(${bannedParticipantsIds.length})`}
@@ -548,7 +550,7 @@ const eventUsersFunc = (eventId) => {
                 //   console.log('1', 1)
                 // }}
                 exceptedIds={bannedParticipantsIds}
-                readOnly={!isLoggedUserAdmin || isEventClosed}
+                readOnly={!isLoggedUserModer || isEventClosed}
               />
             </TabPanel>
           )}

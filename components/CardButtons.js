@@ -35,6 +35,7 @@ import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import { EVENT_STATUSES_WITH_TIME } from '@helpers/constants'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -68,6 +69,7 @@ const CardButtons = ({
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   // const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
@@ -92,27 +94,25 @@ const CardButtons = ({
     },
   })
 
-  const showAdminButtons = isLoggedUserAdmin
-
   const show = {
     shareBtn: window?.location?.origin && typeOfItem === 'event',
     eventUsersBtn:
-      (showAdminButtons || isLoggedUserMember) && typeOfItem === 'event',
-    upBtn: !forForm && showAdminButtons && onUpClick,
-    downBtn: !forForm && showAdminButtons && onDownClick,
+      (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'event',
+    upBtn: !forForm && isLoggedUserAdmin && onUpClick,
+    downBtn: !forForm && isLoggedUserAdmin && onDownClick,
     editBtn:
-      showAdminButtons &&
+      isLoggedUserModer &&
       showEditButton &&
       (typeOfItem !== 'event' || item.status !== 'closed'),
     cloneBtn:
-      showAdminButtons && typeOfItem !== 'user' && typeOfItem !== 'review',
-    showOnSiteBtn: showAdminButtons && showOnSiteOnClick,
-    statusBtn: showAdminButtons && typeOfItem === 'event',
+      isLoggedUserModer && typeOfItem !== 'user' && typeOfItem !== 'review',
+    showOnSiteBtn: isLoggedUserModer && showOnSiteOnClick,
+    statusBtn: isLoggedUserAdmin && typeOfItem === 'event',
     deleteBtn:
-      showAdminButtons &&
+      isLoggedUserAdmin &&
       showDeleteButton &&
       (typeOfItem !== 'event' || item.status !== 'closed'),
-    paymentsUsersBtn: showAdminButtons && typeOfItem === 'event',
+    paymentsUsersBtn: isLoggedUserAdmin && typeOfItem === 'event',
   }
 
   const numberOfButtons = Object.keys(show).reduce(

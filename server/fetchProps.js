@@ -18,8 +18,8 @@
 //   fetchingSiteSettings,
 //   fetchingUsers,
 // } from '@helpers/fetchers'
-import { fetchingLog } from '@helpers/fetchers'
-import isUserAdmin from '@helpers/isUserAdmin'
+// import { fetchingLog } from '@helpers/fetchers'
+import isUserModer from '@helpers/isUserModer'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
 import Events from '@models/Events'
@@ -52,10 +52,10 @@ const fetchProps = async (user) => {
     // const payments = await Payments.find({})
     // const siteSettings = await SiteSettings.find({})
 
-    const isAdmin = isUserAdmin(user)
+    const isModer = isUserModer(user)
     // console.time('users')
     var users = JSON.parse(JSON.stringify(await Users.find({})))
-    if (!isAdmin) {
+    if (!isModer) {
       users = JSON.parse(JSON.stringify(users)).map((user) => {
         return {
           ...user,
@@ -120,7 +120,7 @@ const fetchProps = async (user) => {
     // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     // console.log(`siteSettings`, siteSettings)
     // console.timeEnd('siteSettings')
-    const histories = isAdmin
+    const histories = isModer
       ? await Histories.find({
           // createdAt: { $gt: user.prevActivityAt },
         })
