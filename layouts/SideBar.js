@@ -28,10 +28,9 @@ const menuCfg = (userActiveRole, userActiveStatus) => {
   return pagesGroups
     .filter(
       (pageGroup) =>
-        pageGroup.access === 'all' ||
-        pageGroup.access === userActiveRole ||
-        (pageGroup.access === userActiveStatus && userActiveRole !== 'admin') ||
-        userActiveRole === 'dev'
+        pageGroup.accessRoles.includes(userActiveRole) &&
+        (!pageGroup.accessStatuses ||
+          pageGroup.accessStatuses.includes(userActiveStatus))
     )
     .reduce((totalGroups, group) => {
       const pagesItems = pages.reduce((totalPages, page) => {

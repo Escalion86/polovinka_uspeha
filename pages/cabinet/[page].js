@@ -21,6 +21,8 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useRecoilValue } from 'recoil'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -33,17 +35,29 @@ function CabinetPage(props) {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
+  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
 
   let redirect
   if (!props.loggedUser) redirect = '/'
   else if (
-    (loggedUser &&
-      ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
-        (!['events', 'questionnaire', 'members', 'services'].includes(page) &&
-          !isLoggedUserAdmin))) ||
-    (page === 'members' && !isLoggedUserMember && !isLoggedUserAdmin)
+    loggedUser &&
+    ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
+      !CONTENTS[page] ||
+      !CONTENTS[page].accessRoles.includes(loggedUserActiveRole) ||
+      (CONTENTS[page].accessStatuses &&
+        !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus)))
+    //     (!['events', 'questionnaire', 'members', 'services'].includes(page) &&
+    //       !isLoggedUserAdmin))) ||
+    // (page === 'members' && !isLoggedUserMember && !isLoggedUserAdmin
   )
     redirect = '/cabinet/questionnaire'
+
+  //   (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) ||
+  //   !CONTENTS[page] ||
+  //   !CONTENTS[page].accessRoles.includes(loggedUserActiveRole) ||
+  //   (CONTENTS[page].accessStatuses &&
+  //     !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus))
 
   // Ограничиваем пользователям доступ к страницам
   useEffect(() => {
@@ -126,12 +140,8 @@ export const getServerSideProps = async (context) => {
     }
   }
 
-  // Ограничиваем пользователям доступ к страницам
-  if (
-    (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) ||
-    (!['events', 'questionnaire', 'members', 'services'].includes(page) &&
-      !isUserAdmin(session?.user))
-  ) {
+  // Редиректим пользователей незаполнившим анкету
+  if (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) {
     return {
       redirect: {
         destination: `/cabinet/questionnaire`,

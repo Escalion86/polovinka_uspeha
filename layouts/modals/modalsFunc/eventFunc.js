@@ -347,6 +347,8 @@ const eventFunc = (eventId, clone = false) => {
 
     const duration = getEventDuration({ dateStart, dateEnd })
 
+    console.log('dateStart', Date(dateStart))
+    console.log('Date', Date())
     return (
       <>
         <TabContext value="Общие">
@@ -397,16 +399,23 @@ const eventFunc = (eventId, clone = false) => {
                 error={errors.description}
               />
               <FormWrapper twoColumns>
-                <DateTimePicker
-                  value={dateStart}
-                  onChange={(date) => {
-                    removeError('dateStart')
-                    setDateStart(date)
-                  }}
-                  label="Начало"
-                  required
-                  error={errors.dateStart}
-                />
+                <div className="flex items-stretch gap-x-1">
+                  <DateTimePicker
+                    value={dateStart}
+                    onChange={(date) => {
+                      removeError('dateStart')
+                      setDateStart(date)
+                    }}
+                    label="Начало"
+                    required
+                    error={errors.dateStart}
+                  />
+                  {getDiffBetweenDates(dateStart) > 0 && (
+                    <div className="flex items-center pt-[18px] leading-3 laptop:pt-0 text-danger">
+                      Внимание: дата прошла!
+                    </div>
+                  )}
+                </div>
                 <div className="flex items-stretch gap-x-1">
                   <DateTimePicker
                     value={dateEnd}
@@ -418,7 +427,7 @@ const eventFunc = (eventId, clone = false) => {
                     required
                     error={errors.dateEnd}
                   />
-                  <div className="flex items-end py-0.5 laptop:py-1">
+                  <div className="flex items-center pt-[18px] leading-3 laptop:pt-0">
                     {formatMinutes(duration)}
                   </div>
                 </div>

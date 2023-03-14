@@ -13,7 +13,9 @@ export const eventNotParticipantsWithPaymentsSelector = selectorFamily({
       const usersOfEvent = get(eventsUsersFullByEventIdSelector(id))
       const paymentsOfEvent = get(paymentsFromAndToUsersSelector(id))
       const usersIdsOfEvent = usersOfEvent
-        .filter(({ status }) => status === 'participant')
+        .filter(
+          ({ status }) => status === 'participant' || status === 'assistant'
+        )
         .map(({ user }) => user._id)
       const paymentsUsersIds = paymentsOfEvent.map(({ userId }) => userId)
 

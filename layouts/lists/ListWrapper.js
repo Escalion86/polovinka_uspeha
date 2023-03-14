@@ -1,11 +1,12 @@
+import cn from 'classnames'
 import React from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { FixedSizeList } from 'react-window'
 
-const ListWrapper = ({ itemCount, itemSize, children }) => {
+const ListWrapper = ({ itemCount, itemSize, children, className }) => {
   return (
-    <div className="flex-1 w-full bg-opacity-15 bg-general">
+    <div className={cn('flex-1 w-full h-full', className)}>
       <AutoSizer>
         {({ height, width }) => (
           <FixedSizeList

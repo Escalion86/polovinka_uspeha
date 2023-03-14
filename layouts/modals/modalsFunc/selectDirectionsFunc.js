@@ -5,6 +5,7 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import { DirectionItem } from '@components/ItemCards'
 import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
+import ListWrapper from '@layouts/lists/ListWrapper'
 
 const selectDirectionsFunc = (
   state,
@@ -111,9 +112,38 @@ const selectDirectionsFunc = (
 
     return (
       <div className="flex flex-col w-full h-full max-h-full gap-y-0.5">
-        <Search searchText={searchText} show={true} onChange={setSearchText} />
+        <Search
+          searchText={searchText}
+          show={true}
+          onChange={setSearchText}
+          className="h-[38px] min-h-[38px]"
+        />
+        <div
+          style={{ height: filteredDirections.length * 51 + 2 }}
+          className={`tablet:flex-none border-gray-700 border-t flex-col tablet:max-h-[calc(100vh-185px)]`}
+        >
+          <ListWrapper itemCount={filteredDirections.length} itemSize={51}>
+            {({ index, style }) => (
+              <div style={style} className="border-b border-gray-700">
+                <DirectionItem
+                  key={filteredDirections[index]._id}
+                  item={filteredDirections[index]}
+                  active={filteredDirections.includes(
+                    filteredDirections[index]._id
+                  )}
+                  onClick={() => onClick(filteredDirections[index]._id)}
+                />
+              </div>
+            )}
+          </ListWrapper>
+        </div>
+        {showErrorMax && (
+          <div className="text-danger">
+            Выбрано максимальное количество направлений
+          </div>
+        )}
 
-        <div className="flex-1 overflow-y-auto max-h-200">
+        {/* <div className="flex-1 overflow-y-auto max-h-200">
           {filteredDirections.map((direction) => (
             <DirectionItem
               key={direction._id}
@@ -128,7 +158,7 @@ const selectDirectionsFunc = (
               Выбрано максимальное количество направлений
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     )
   }

@@ -8,7 +8,11 @@ import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSel
 const UsersList = ({ users }) => {
   const widthNum = useRecoilValue(windowDimensionsNumSelector)
   return (
-    <ListWrapper itemCount={users.length} itemSize={widthNum > 2 ? 90 : 97}>
+    <ListWrapper
+      itemCount={users.length}
+      itemSize={widthNum > 2 ? 90 : 97}
+      className="bg-opacity-15 bg-general"
+    >
       {({ index, style }) => (
         <UserCard
           style={style}

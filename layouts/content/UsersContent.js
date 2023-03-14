@@ -11,7 +11,7 @@ import UsersFilter from '@components/Filter/UsersFilter'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import sortFunctions from '@helpers/sortFunctions'
 import AddButton from '@components/IconToggleButtons/AddButton'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import UsersList from '@layouts/lists/UsersList'
 import Search from '@components/Search'
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
@@ -20,7 +20,7 @@ import filterItems from '@helpers/filterItems'
 const UsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const users = useRecoilValue(usersAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
   const [isSearching, setIsSearching] = useState(false)
   const [sort, setSort] = useState({ name: 'asc' })
@@ -108,7 +108,7 @@ const UsersContent = () => {
               }}
             />
           </FormControl> */}
-          {isLoggedUserAdmin && (
+          {isLoggedUserModer && (
             <AddButton onClick={() => modalsFunc.user.edit()} />
           )}
         </div>

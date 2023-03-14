@@ -5,7 +5,11 @@ import ListWrapper from './ListWrapper'
 
 const PaymentsList = ({ payments }) => {
   return (
-    <ListWrapper itemCount={payments.length} itemSize={44}>
+    <ListWrapper
+      itemCount={payments.length}
+      itemSize={44}
+      className="bg-opacity-15 bg-general"
+    >
       {({ index, style }) => (
         <PaymentCard
           style={style}

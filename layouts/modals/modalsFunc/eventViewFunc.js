@@ -18,7 +18,7 @@ import EventButtonSignIn from '@components/EventButtonSignIn'
 import sanitize from '@helpers/sanitize'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { modalsFuncAtom } from '@state/atoms'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import NamesOfUsers from '@components/NamesOfUsers'
@@ -41,7 +41,7 @@ const eventViewFunc = (eventId) => {
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+    const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
     const direction = useRecoilValue(directionSelector(event?.directionId))
     const organizer = useRecoilValue(userSelector(event?.organizerId))
@@ -58,7 +58,7 @@ const eventViewFunc = (eventId) => {
     // )?.isEventInProcess
 
     useEffect(() => {
-      if (isLoggedUserAdmin && setTopLeftComponent)
+      if (isLoggedUserModer && setTopLeftComponent)
         setTopLeftComponent(() => (
           <CardButtons
             item={{ _id: eventId }}
@@ -69,7 +69,7 @@ const eventViewFunc = (eventId) => {
             showDeleteButton={!isEventClosed}
           />
         ))
-    }, [isLoggedUserAdmin, setTopLeftComponent])
+    }, [isLoggedUserModer, setTopLeftComponent])
 
     if (!event || !eventId)
       return (
@@ -171,7 +171,7 @@ const eventViewFunc = (eventId) => {
           </div>
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
             <EventUsersCounterAndAge eventId={eventId} showAges />
-            {(isLoggedUserMember || isLoggedUserAdmin) && (
+            {(isLoggedUserMember || isLoggedUserModer) && (
               // <Button
               //   name="Посмотреть участников"
               //   onClick={() => modalsFunc.event.users(eventId)}

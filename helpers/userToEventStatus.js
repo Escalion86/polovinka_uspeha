@@ -24,7 +24,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
 
   if (!user?._id)
     return {
-      canSee: event.usersStatusAccess?.noReg,
+      canSee: event.usersStatusAccess?.noReg && event.showOnSite,
       alreadySignIn: false,
       canSignIn: false,
       canSignInReserve: false,
@@ -68,7 +68,10 @@ const userToEventStatus = (event, user, eventUsersFull) => {
     ? event.usersStatusAccess[user.status]
     : false
 
-  const canSee = alreadySignIn || (isAgeOfUserCorrect && isUserStatusCorrect)
+  const canSee =
+    ['admin', 'moder', 'dev'].includes(user.role) ||
+    (event.showOnSite &&
+      (alreadySignIn || (isAgeOfUserCorrect && isUserStatusCorrect)))
 
   // if (user.status === 'ban' || userEvent?.status === 'ban')
   //   return {

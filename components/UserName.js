@@ -1,10 +1,10 @@
 import upperCaseFirst from '@helpers/upperCaseFirst'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 
 const UserName = ({ user, className, noWrap, thin }) => {
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
   return (
     <div
@@ -22,14 +22,14 @@ const UserName = ({ user, className, noWrap, thin }) => {
       )}
       {user?.thirdName && (
         <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
-          {isLoggedUserAdmin || user.security?.fullThirdName
+          {isLoggedUserModer || user.security?.fullThirdName
             ? upperCaseFirst(user.thirdName)
             : user.thirdName[0].toUpperCase() + '.'}
         </span>
       )}
       {user?.secondName && (
         <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
-          {isLoggedUserAdmin || user.security?.fullSecondName
+          {isLoggedUserModer || user.security?.fullSecondName
             ? upperCaseFirst(user.secondName)
             : user.secondName[0].toUpperCase() + '.'}
         </span>

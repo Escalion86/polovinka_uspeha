@@ -567,35 +567,88 @@ export const CLOUDINARY_FOLDER = isDevMode
   : 'polovinka_uspeha'
 
 export const CONTENTS = {
-  services: { Component: ServicesContent, name: 'Услуги' },
-  directions: { Component: DirectionsContent, name: 'Сайт / Направления' },
-  reviews: { Component: ReviewsContent, name: 'Сайт / Отзывы' },
+  services: {
+    Component: ServicesContent,
+    name: 'Услуги',
+    accessRoles: ['dev'],
+  },
+  directions: {
+    Component: DirectionsContent,
+    name: 'Сайт / Направления',
+    accessRoles: ['admin', 'dev'],
+  },
+  reviews: {
+    Component: ReviewsContent,
+    name: 'Сайт / Отзывы',
+    accessRoles: ['admin', 'dev'],
+  },
   additionalBlocks: {
     Component: AdditionalBlocksContent,
     name: 'Сайт / Доп. блоки',
+    accessRoles: ['admin', 'dev'],
   },
-  events: { Component: EventsContent, name: 'Мероприятия' },
-  questionnaire: { Component: QuestionnaireContent, name: 'Моя анкета' },
-  users: { Component: UsersContent, name: 'Пользователи' },
-  members: { Component: MembersContent, name: 'Участники клуба' },
-  payments: { Component: PaymentsContent, name: 'Транзакции' },
+  events: {
+    Component: EventsContent,
+    name: 'Мероприятия',
+    accessRoles: ['client', 'moder', 'admin', 'dev'],
+  },
+  questionnaire: {
+    Component: QuestionnaireContent,
+    name: 'Моя анкета',
+    accessRoles: ['client', 'moder', 'admin', 'dev'],
+  },
+  users: {
+    Component: UsersContent,
+    name: 'Пользователи',
+    accessRoles: ['moder', 'admin', 'dev'],
+  },
+  members: {
+    Component: MembersContent,
+    name: 'Участники клуба',
+    accessRoles: ['client'],
+    accessStatuses: ['member'],
+  },
+  payments: {
+    Component: PaymentsContent,
+    name: 'Транзакции',
+    accessRoles: ['admin', 'dev'],
+  },
   paymentsWithNoEvent: {
     Component: PaymentsWithoutEventContent,
     name: 'Непривязанные транзакции',
+    accessRoles: ['admin', 'dev'],
   },
   paymentsNotParticipantsEvent: {
     Component: PaymentsNotParticipantsEventContent,
     name: 'Не пришли на мероприятие',
+    accessRoles: ['admin', 'dev'],
   },
-  contacts: { Component: ContactsContent, name: 'Контакты на сайте' },
-  dev: { Component: DevContent, name: 'Разработчик' },
+  contacts: {
+    Component: ContactsContent,
+    name: 'Контакты на сайте',
+    accessRoles: ['admin', 'dev'],
+  },
+  dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
   histories: {
     Component: HistoriesContent,
-    name: 'События / Участники мероприятий',
+    name: 'События / Записи на мероприятия',
+    accessRoles: ['moder', 'admin', 'dev'],
   },
-  birthdays: { Component: BirthdaysContent, name: 'События / Дни рождения' },
-  statistics: { Component: StatisticsContent, name: 'Статистика' },
-  settings: { Component: SettingsContent, name: 'Настройки' },
+  birthdays: {
+    Component: BirthdaysContent,
+    name: 'События / Дни рождения',
+    accessRoles: ['moder', 'admin', 'dev'],
+  },
+  statistics: {
+    Component: StatisticsContent,
+    name: 'Статистика',
+    accessRoles: ['admin', 'dev'],
+  },
+  settings: {
+    Component: SettingsContent,
+    name: 'Настройки',
+    accessRoles: ['admin', 'dev'],
+  },
 }
 
 export const pages = [
@@ -676,7 +729,7 @@ export const pages = [
   {
     id: 11,
     group: 5,
-    name: 'Участники мероприятий',
+    name: 'Записи на мероприятия',
     href: 'histories',
     icon: faUsers,
   },
@@ -718,16 +771,47 @@ export const pages = [
 ]
 
 export const pagesGroups = [
-  { id: 0, name: 'Услуги', icon: faShoppingBag, access: 'dev' },
-  { id: 1, name: 'Мероприятия', icon: faCalendarAlt, access: 'all' },
-  { id: 2, name: 'Сайт', icon: faHome, access: 'admin' },
-  { id: 3, name: 'Пользователи', icon: faUser, access: 'admin' },
-  { id: 4, name: 'Транзакции', icon: faMoneyBill, access: 'admin' },
-  { id: 5, name: 'События', icon: faHistory, access: 'admin' },
-  { id: 6, name: 'Статистика', icon: faPieChart, access: 'admin' },
-  { id: 7, name: 'Участники клуба', icon: faUser, access: 'member' },
-  { id: 8, name: 'Настройки', icon: faCog, access: 'admin' },
-  { id: 99, name: 'Разработчик', icon: faBug, access: 'dev' },
+  { id: 0, name: 'Услуги', icon: faShoppingBag, accessRoles: ['dev'] },
+  {
+    id: 1,
+    name: 'Мероприятия',
+    icon: faCalendarAlt,
+    accessRoles: ['client', 'moder', 'admin', 'dev'],
+  },
+  { id: 2, name: 'Сайт', icon: faHome, accessRoles: ['admin', 'dev'] },
+  {
+    id: 3,
+    name: 'Пользователи',
+    icon: faUser,
+    accessRoles: ['moder', 'admin', 'dev'],
+  },
+  {
+    id: 4,
+    name: 'Транзакции',
+    icon: faMoneyBill,
+    accessRoles: ['admin', 'dev'],
+  },
+  {
+    id: 5,
+    name: 'События',
+    icon: faHistory,
+    accessRoles: ['moder', 'admin', 'dev'],
+  },
+  {
+    id: 6,
+    name: 'Статистика',
+    icon: faPieChart,
+    accessRoles: ['admin', 'dev'],
+  },
+  {
+    id: 7,
+    name: 'Участники клуба',
+    icon: faUser,
+    accessRoles: ['client'],
+    accessStatuses: ['member'],
+  },
+  { id: 8, name: 'Настройки', icon: faCog, accessRoles: ['admin', 'dev'] },
+  { id: 99, name: 'Разработчик', icon: faBug, accessRoles: ['dev'] },
 ]
 
 export const PAY_TYPES = [
@@ -806,6 +890,7 @@ export const USERS_STATUSES = [
 
 export const USERS_ROLES = [
   { value: 'client', name: 'Пользователь', color: 'blue-400' },
+  { value: 'moder', name: 'Модератор', color: 'green-400' },
   { value: 'admin', name: 'Администратор', color: 'orange-400' },
   { value: 'dev', name: 'Разработчик', color: 'danger' },
 ]

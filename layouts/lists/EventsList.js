@@ -11,6 +11,7 @@ const EventsList = ({ events }) => {
     <ListWrapper
       itemCount={events.length}
       itemSize={widthNum > 3 ? 182 : widthNum === 3 ? 165 : 196}
+      className="bg-opacity-15 bg-general"
     >
       {({ index, style }) => (
         <EventCard
