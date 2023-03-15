@@ -155,6 +155,7 @@ const itemsFuncGenerator = (
     setNotErrorCard,
     addErrorModal,
     snackbar = {},
+    loggedUser,
   } = props
   const obj = {}
   array?.length > 0 &&
@@ -183,7 +184,9 @@ const itemsFuncGenerator = (
                   error,
                 }
                 addErrorModal(data)
-              }
+              },
+              false,
+              loggedUser?._id
             )
           } else {
             const clearedItem = { ...item }
@@ -208,7 +211,9 @@ const itemsFuncGenerator = (
                 }
                 addErrorModal(data)
                 console.log(data)
-              }
+              },
+              false,
+              loggedUser?._id
             )
           }
         },
@@ -231,7 +236,9 @@ const itemsFuncGenerator = (
               }
               addErrorModal(data)
               console.log(data)
-            }
+            },
+            false,
+            loggedUser?._id
             //  deleteEvent(itemId)
           )
         },
@@ -264,7 +271,9 @@ const itemsFuncGenerator = (
         const data = { errorPlace: 'EVENT CANCEL ERROR', eventId, error }
         addErrorModal(data)
         console.log(data)
-      }
+      },
+      false,
+      loggedUser?._id
     )
   }
 
@@ -284,7 +293,9 @@ const itemsFuncGenerator = (
         const data = { errorPlace: 'EVENT CLOSE ERROR', eventId, error }
         addErrorModal(data)
         console.log(data)
-      }
+      },
+      false,
+      loggedUser?._id
     )
   }
 
@@ -309,7 +320,9 @@ const itemsFuncGenerator = (
         }
         addErrorModal(data)
         console.log(data)
-      }
+      },
+      false,
+      loggedUser?._id
     )
   }
 
@@ -333,7 +346,9 @@ const itemsFuncGenerator = (
         }
         addErrorModal(data)
         console.log(data)
-      }
+      },
+      false,
+      loggedUser?._id
     )
   }
 
@@ -353,7 +368,9 @@ const itemsFuncGenerator = (
         const data = { errorPlace: 'EVENT ACTIVE ERROR', eventId, error }
         addErrorModal(data)
         console.log(data)
-      }
+      },
+      false,
+      loggedUser?._id
     )
   }
 
@@ -397,7 +414,9 @@ const itemsFuncGenerator = (
         }
         addErrorModal(data)
         console.log(data)
-      }
+      },
+      false,
+      loggedUser?._id
 
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)
@@ -433,7 +452,8 @@ const itemsFuncGenerator = (
         addErrorModal(data)
         console.log(data)
       },
-      { eventId, userId }
+      { eventId, userId },
+      loggedUser?._id
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)
     )
@@ -476,7 +496,9 @@ const itemsFuncGenerator = (
         }
         addErrorModal(data)
         console.log(data)
-      }
+      },
+      false,
+      loggedUser?._id
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)
     )
@@ -501,7 +523,9 @@ const itemsFuncGenerator = (
         }
         addErrorModal(data)
         console.log(data)
-      }
+      },
+      false,
+      loggedUser?._id
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)
     )
@@ -539,7 +563,9 @@ const itemsFuncGenerator = (
         }
         addErrorModal(data)
         console.log(data)
-      }
+      },
+      false,
+      loggedUser?._id
       // () => props['setAdditionalBlock'](itemId)
       //  deleteEvent(itemId)
     )

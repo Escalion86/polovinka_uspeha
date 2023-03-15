@@ -259,7 +259,7 @@ export default async function handler(req, res) {
         status,
         eventSubtypeNum,
         comment,
-      } = body
+      } = body.data
 
       // if (_id) {
       //   return await CRUD(EventsUsers, req, res)
@@ -325,6 +325,7 @@ export default async function handler(req, res) {
             schema: 'EventsUsers',
             action: 'delete',
             data: deletedEventUsers,
+            userId: body.userId,
           })
         }
 
@@ -348,7 +349,12 @@ export default async function handler(req, res) {
         }
 
         if (data.length > 0)
-          await Histories.create({ schema: 'EventsUsers', action: 'add', data })
+          await Histories.create({
+            schema: 'EventsUsers',
+            action: 'add',
+            data,
+            userId: body.userId,
+          })
 
         // Оповещение в телеграм
         // const deletedUsersIds = deletedEventUsers.map(
@@ -544,6 +550,7 @@ export default async function handler(req, res) {
           schema: 'EventsUsers',
           action: 'add',
           data: newEventUser,
+          userId: body.userId,
         })
 
         // Оповещение в телеграм
@@ -600,6 +607,7 @@ export default async function handler(req, res) {
         schema: 'EventsUsers',
         action: 'delete',
         data: eventUser,
+        userId: body.userId,
       })
 
       // Оповещение в телеграм

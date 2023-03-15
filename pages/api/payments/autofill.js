@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   await dbConnect()
   if (method === 'POST') {
     try {
-      const { eventId, payType, payAt, couponForOrganizer } = body
+      const { eventId, payType, payAt, couponForOrganizer } = body.data
       const event = await Events.findById(eventId)
       const eventPrice = event.price
       const eventPrices = {

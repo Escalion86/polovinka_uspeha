@@ -1,36 +1,36 @@
 import { useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
 import Button from '@components/Button'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
-import Input from '@components/Input'
-import PhoneInput from '@components/PhoneInput'
-import { postData, putData } from '@helpers/CRUD'
+import { postData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 import { CODE_SEND_SERVICES } from '@helpers/constants'
-import { TextField } from '@mui/material'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
-const getBalance = async (callback) =>
+const getBalance = async (onSuccess, onError) =>
   await postData(
     `/api/telefonip`,
     {
       get_balance: true,
     },
-    callback
+    onSuccess,
+    onError
   )
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const SettingsContent = (props) => {
+  const loggedUser = useRecoilValue(loggedUserAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
   const [codeSendService, setCodeSendService] = useState(
     siteSettings?.codeSendService
   )
 
   const [codeSendServiceInfo, setCodeSendServiceInfo] = useState(null)
-  console.log('codeSendServiceInfo', codeSendServiceInfo)
+
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
@@ -70,7 +70,9 @@ const SettingsContent = (props) => {
         setMessage('')
         addError({ response: 'Ошибка обновления данных' })
         setIsWaitingToResponse(false)
-      }
+      },
+      false,
+      loggedUser._id
     )
   }
 

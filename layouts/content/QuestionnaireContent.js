@@ -211,7 +211,9 @@ const QuestionnaireContent = (props) => {
           error('Ошибка обновления данных')
           addError({ response: 'Ошибка обновления данных' })
           setIsWaitingToResponse(false)
-        }
+        },
+        false,
+        loggedUser._id
       )
       // setIsWaitingToResponse(false)
     }

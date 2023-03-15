@@ -49,7 +49,9 @@ const notificationsTelegramFunc = () => {
               'Ошибка сохранения имени пользователя для оповещения в Telegram'
             )
             addError({ response: 'Ошибка обновления данных' })
-          }
+          },
+          false,
+          loggedUser._id
         )
         closeModal()
         // setDirection(

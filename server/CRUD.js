@@ -52,7 +52,7 @@ export default async function handler(Schema, req, res, params = null) {
             ?.status(400)
             .json({ success: false, error: 'No need to set Id' })
         } else {
-          const clearedBody = { ...body }
+          const clearedBody = { ...body.data }
           delete clearedBody._id
           data = await Schema.create(clearedBody)
           if (!data) {
@@ -78,7 +78,7 @@ export default async function handler(Schema, req, res, params = null) {
           const afterUpdateNeedToNotificate =
             Schema === Users && !isUserQuestionnaireFilled(data)
 
-          data = await Schema.findByIdAndUpdate(id, body, {
+          data = await Schema.findByIdAndUpdate(id, body.data, {
             new: true,
             runValidators: true,
           })

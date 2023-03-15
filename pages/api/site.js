@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   await dbConnect()
   if (method === 'POST') {
     try {
-      const data = await SiteSettings.findOneAndUpdate({}, body, {
+      const data = await SiteSettings.findOneAndUpdate({}, body.data, {
         new: true,
         upsert: true, // Make this update into an upsert
       })

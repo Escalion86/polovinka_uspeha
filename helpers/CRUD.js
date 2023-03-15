@@ -1,5 +1,3 @@
-import { mutate } from 'swr'
-
 const contentType = 'application/json'
 
 export const putData = async (
@@ -7,7 +5,8 @@ export const putData = async (
   form,
   callbackOnSuccess = null,
   callbackOnError = null,
-  resJson = false
+  resJson = false,
+  userId
 ) => {
   try {
     const res = await fetch(url, {
@@ -16,7 +15,7 @@ export const putData = async (
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ data: form, userId }),
     })
 
     // Throw error with status code in case Fetch API req failed
@@ -44,7 +43,8 @@ export const postData = async (
   form,
   callbackOnSuccess = null,
   callbackOnError = null,
-  resJson = false
+  resJson = false,
+  userId
 ) => {
   try {
     const res = await fetch(url, {
@@ -53,7 +53,7 @@ export const postData = async (
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ data: form, userId }),
     })
 
     // Throw error with status code in case Fetch API req failed
@@ -77,7 +77,8 @@ export const deleteData = async (
   callbackOnSuccess = null,
   callbackOnError = null,
   params = {},
-  resJson = false
+  resJson = false,
+  userId
 ) => {
   try {
     const res = await fetch(url, {
@@ -86,7 +87,7 @@ export const deleteData = async (
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify({ params }),
+      body: JSON.stringify({ params, userId }),
     })
 
     // Throw error with status code in case Fetch API req failed
