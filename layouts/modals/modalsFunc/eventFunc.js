@@ -347,8 +347,6 @@ const eventFunc = (eventId, clone = false) => {
 
     const duration = getEventDuration({ dateStart, dateEnd })
 
-    console.log('dateStart', Date(dateStart))
-    console.log('Date', Date())
     return (
       <>
         <TabContext value="Общие">
