@@ -30,6 +30,20 @@ import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import useSnackbar from '@helpers/useSnackbar'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons'
+import ChipsSelector from '@components/ChipsSelector'
+
+const items = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+]
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
@@ -46,6 +60,8 @@ const QuestionnaireContent = (props) => {
   const [thirdName, setThirdName] = useState(
     loggedUser?.thirdName ?? DEFAULT_USER.thirdName
   )
+
+  const [interests, setInterests] = useState([])
   // const [about, setAbout] = useState(user?.about ?? '')
   // const [interests, setInterests] = useState(user?.interests ?? '')
   // const [profession, setProfession] = useState(user?.profession ?? '')
@@ -421,6 +437,12 @@ const QuestionnaireContent = (props) => {
               copyPasteButtons
             />
             <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
+            <ChipsSelector
+              label="Интересы"
+              items={items}
+              onChange={setInterests}
+              value={interests}
+            />
           </FormWrapper>
           {isLoggedUserDev && (
             <ValueItem
