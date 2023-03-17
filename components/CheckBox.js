@@ -55,7 +55,7 @@ const CheckBox = ({
         />
         <label
           // for="exampleFormControlInput1"
-          className={cn(labelClassName)}
+          className={cn('leading-[0.875rem]', labelClassName)}
         >
           {label}
         </label>

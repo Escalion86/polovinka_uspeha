@@ -395,6 +395,7 @@ const QuestionnaireContent = (props) => {
                 error={errors.phone}
                 copyPasteButtons
                 disabled
+                className="w-48"
               />
               <PhoneInput
                 label="Whatsapp"

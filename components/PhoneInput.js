@@ -79,6 +79,7 @@ const PhoneInput = ({
   disabled,
   labelClassName,
   copyPasteButtons,
+  className,
 }) => {
   // return (
   //   <TextField
@@ -108,7 +109,8 @@ const PhoneInput = ({
       value={value}
       required={required}
       prefix="+7"
-      className="w-40"
+      className={cn('w-48', className)}
+      disabled={disabled}
     >
       {/* <>
       <label

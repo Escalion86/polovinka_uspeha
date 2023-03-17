@@ -172,7 +172,7 @@ const Modal = ({
             {title}
           </div>
         )}
-        {text && <div className="px-2 tablet:px-3">{text}</div>}
+        {text && <div className="px-2 mb-3 leading-3 tablet:px-3">{text}</div>}
         {/* {editMode && onDelete && (
           <FontAwesomeIcon
             className="absolute w-5 h-5 text-red-700 duration-200 transform cursor-pointer top-4 left-4 hover:scale-110"
