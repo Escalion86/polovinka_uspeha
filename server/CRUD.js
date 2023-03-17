@@ -76,7 +76,9 @@ export default async function handler(Schema, req, res, params = null) {
 
           // Если это пользователь обновляет анкету, то после обновления оповестим о результате через телеграм
           const afterUpdateNeedToNotificate =
-            Schema === Users && !isUserQuestionnaireFilled(data)
+            body.userId === id &&
+            bodySchema === Users &&
+            !isUserQuestionnaireFilled(data)
 
           data = await Schema.findByIdAndUpdate(id, body.data, {
             new: true,
