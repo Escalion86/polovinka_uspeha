@@ -693,6 +693,7 @@ const eventUsersPaymentsFunc = (eventId) => {
         )}
         <TabContext value="Участники">
           <TabPanel
+            className="gap-y-1"
             tabName="Участники"
             tabAddToLabel={`${eventParticipantsCount} чел. / ${sumOfPaymentsOfEventFromParticipants} ₽`}
           >
@@ -719,6 +720,7 @@ const eventUsersPaymentsFunc = (eventId) => {
           </TabPanel>
           {eventAssistantsFull.length > 0 && (
             <TabPanel
+              className="gap-y-1"
               tabName="Ведущие"
               tabAddToLabel={`${eventAssistantsCount} чел. / ${sumOfPaymentsOfEventToAssistants} ₽`}
             >
@@ -735,6 +737,7 @@ const eventUsersPaymentsFunc = (eventId) => {
           )}
           {/* {eventNotParticipantsWithPayments.length > 0 && ( */}
           <TabPanel
+            className="gap-y-1"
             tabName="Оплатили, но не пришли"
             tabAddToLabel={`${paymentsFromNotParticipants.length} чел. / ${sumOfPaymentsFromNotParticipants} ₽`}
           >
@@ -752,6 +755,7 @@ const eventUsersPaymentsFunc = (eventId) => {
           </TabPanel>
           {/* )} */}
           <TabPanel
+            className="gap-y-1"
             tabName="Мероприятие"
             tabAddToLabel={`${sumOfPaymentsToEvent + sumOfPaymentsFromEvent} ₽`}
           >
@@ -852,7 +856,11 @@ const eventUsersPaymentsFunc = (eventId) => {
               </div>
             )}
           </TabPanel>
-          <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
+          <TabPanel
+            className="gap-y-1"
+            tabName="Сводка"
+            tabAddToLabel={`${totalIncome} ₽`}
+          >
             <TotalFromParticipants />
             {eventAssistantsFull.length > 0 && <TotalToAssistants />}
             <TotalToEvent />

@@ -9,9 +9,11 @@ import Input from '@components/Input'
 import PhoneInput from '@components/PhoneInput'
 import { postData, putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const ContactsContent = (props) => {
+  const loggedUser = useRecoilValue(loggedUserAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
   const [phone, setPhone] = useState(siteSettings?.phone)
   const [whatsapp, setWhatsapp] = useState(siteSettings?.whatsapp)
@@ -65,7 +67,9 @@ const ContactsContent = (props) => {
           setMessage('')
           addError({ response: 'Ошибка обновления данных' })
           setIsWaitingToResponse(false)
-        }
+        },
+        false,
+        loggedUser?._id
       )
   }
 

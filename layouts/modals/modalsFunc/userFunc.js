@@ -307,6 +307,7 @@ const userFunc = (userId, clone = false) => {
           showZodiac
           required
           error={errors.birthday}
+          className="w-48"
         />
 
         <FormWrapper twoColumns>

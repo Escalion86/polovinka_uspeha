@@ -9,6 +9,9 @@ const historiesSchema = {
     type: [{}],
     default: undefined,
   },
+  userId: {
+    type: String,
+  },
 }
 
 export default historiesSchema

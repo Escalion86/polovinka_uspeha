@@ -92,13 +92,15 @@ const InputImages = ({
       value={images}
       className={cn('flex-1', className)}
       required={required}
+      error={error}
+      paddingY
       // labelPos="top"
     >
       <div
         className={cn(
-          'flex flex-wrap w-full gap-1 p-0.5 rounded',
+          'flex flex-wrap w-full gap-1 p-0.5'
 
-          error ? 'border border-red-700' : 'border border-gray-400'
+          // error ? 'border border-red-700' : 'border border-gray-400'
         )}
       >
         {images.length > 0 &&

@@ -1,6 +1,75 @@
 import cn from 'classnames'
 import InputWrapper from './InputWrapper'
 import MaskedInput from 'react-text-mask'
+import { InputAdornment, TextField } from '@mui/material'
+import { forwardRef } from 'react'
+
+const NumericFormatCustom = forwardRef(function NumericFormatCustom(
+  props,
+  ref
+) {
+  const { onChange, disabled, value, required, ...other } = props
+
+  return (
+    // <NumericFormat
+    //   {...other}
+    //   getInputRef={ref}
+    //   onValueChange={(values) => {
+    //     onChange({
+    //       target: {
+    //         name: props.name,
+    //         value: values.value,
+    //       },
+    //     });
+    //   }}
+    //   thousandSeparator
+    //   valueIsNumericString
+    //   prefix="$"
+    // />
+    <MaskedInput
+      {...other}
+      getInputRef={ref}
+      disabled={disabled}
+      // className={cn(
+      //   'text-input w-36 px-1 border rounded outline-none focus:shadow-active',
+      //   required && (!value || value.toString().length !== 11)
+      //     ? 'border-red-700'
+      //     : 'border-gray-400',
+      //   { 'bg-gray-300  text-disabled': disabled }
+      // )}
+      showMask
+      onChange={(e) => {
+        const value = e?.target?.value.replace(/[^0-9]/g, '')
+
+        onChange(value === '7' || value === '8' ? null : Number(value))
+      }}
+      // keepCharPositions
+      mask={[
+        '(',
+        /[1-9]/,
+        /\d/,
+        /\d/,
+        ')',
+        ' ',
+        /\d/,
+        /\d/,
+        /\d/,
+        '-',
+        /\d/,
+        /\d/,
+        /\d/,
+        /\d/,
+      ]}
+      value={
+        value
+          ? value.toString().substr(0, 1) == '7'
+            ? value.toString().substring(1)
+            : value.toString()
+          : ''
+      }
+    />
+  )
+})
 
 const PhoneInput = ({
   value,
@@ -11,6 +80,23 @@ const PhoneInput = ({
   labelClassName,
   copyPasteButtons,
 }) => {
+  // return (
+  //   <TextField
+  //     // sx={{ paddingX: 0 }}
+  //     label={label}
+  //     value={value}
+  //     onChange={(e) => onChange(e.target.value)}
+  //     size="small"
+  //     InputProps={{
+  //       startAdornment: (
+  //         <InputAdornment sx={{ marginRight: 0.5 }} position="start">
+  //           +7
+  //         </InputAdornment>
+  //       ),
+  //       // inputComponent: NumericFormatCustom,
+  //     }}
+  //   />
+  // )
   return (
     <InputWrapper
       label={label}
@@ -21,6 +107,8 @@ const PhoneInput = ({
       pasteButton={!disabled && copyPasteButtons}
       value={value}
       required={required}
+      prefix="+7"
+      className="w-40"
     >
       {/* <>
       <label
@@ -33,11 +121,11 @@ const PhoneInput = ({
       <MaskedInput
         disabled={disabled}
         className={cn(
-          'text-input w-36 px-1 border rounded outline-none focus:shadow-active',
+          'text-input w-full px-1 focus:outline-none',
           required && (!value || value.toString().length !== 11)
             ? 'border-red-700'
             : 'border-gray-400',
-          { 'bg-gray-300  text-disabled': disabled }
+          { 'text-disabled': disabled }
         )}
         showMask
         onChange={(e) => {
@@ -47,9 +135,9 @@ const PhoneInput = ({
         }}
         // keepCharPositions
         mask={[
-          '+',
-          '7',
-          ' ',
+          // '+',
+          // '7',
+          // ' ',
           '(',
           /[1-9]/,
           /\d/,

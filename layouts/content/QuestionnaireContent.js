@@ -30,6 +30,21 @@ import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import useSnackbar from '@helpers/useSnackbar'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons'
+import ChipsSelector from '@components/ChipsSelector'
+import upperCaseFirst from '@helpers/upperCaseFirst'
+
+const items = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+]
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
@@ -46,6 +61,8 @@ const QuestionnaireContent = (props) => {
   const [thirdName, setThirdName] = useState(
     loggedUser?.thirdName ?? DEFAULT_USER.thirdName
   )
+
+  const [interests, setInterests] = useState([])
   // const [about, setAbout] = useState(user?.about ?? '')
   // const [interests, setInterests] = useState(user?.interests ?? '')
   // const [profession, setProfession] = useState(user?.profession ?? '')
@@ -195,7 +212,9 @@ const QuestionnaireContent = (props) => {
           error('Ошибка обновления данных')
           addError({ response: 'Ошибка обновления данных' })
           setIsWaitingToResponse(false)
-        }
+        },
+        false,
+        loggedUser._id
       )
       // setIsWaitingToResponse(false)
     }
@@ -311,11 +330,13 @@ const QuestionnaireContent = (props) => {
               value={firstName}
               onChange={(value) => {
                 removeError('firstName')
-                setFirstName(value.trim())
+                setFirstName(upperCaseFirst(value.trim()))
               }}
               required
               // labelClassName="w-40"
               error={errors.firstName}
+              showErrorText
+              inputClassName="capitalize"
             />
             <Input
               label="Фамилия"
@@ -323,10 +344,11 @@ const QuestionnaireContent = (props) => {
               value={secondName}
               onChange={(value) => {
                 removeError('secondName')
-                setSecondName(value.trim())
+                setSecondName(upperCaseFirst(value.trim()))
               }}
               required
               // labelClassName="w-40"
+              inputClassName="capitalize"
               error={errors.secondName}
             />
             <Input
@@ -335,9 +357,10 @@ const QuestionnaireContent = (props) => {
               value={thirdName}
               onChange={(value) => {
                 removeError('thirdName')
-                setThirdName(value.trim())
+                setThirdName(upperCaseFirst(value.trim()))
               }}
               // labelClassName="w-40"
+              inputClassName="capitalize"
               error={errors.thirdName}
             />
             <GenderPicker
@@ -421,6 +444,14 @@ const QuestionnaireContent = (props) => {
               copyPasteButtons
             />
             <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
+            {isLoggedUserDev && (
+              <ChipsSelector
+                label="Интересы"
+                items={items}
+                onChange={setInterests}
+                value={interests}
+              />
+            )}
           </FormWrapper>
           {isLoggedUserDev && (
             <ValueItem

@@ -21,11 +21,12 @@ const Textarea = ({
       value={value}
       className={wrapperClassName}
       required={required}
+      error={error}
     >
       <textarea
         className={cn(
-          'px-1 border rounded outline-none flex-1',
-          error ? 'border-red-500' : 'border-gray-400',
+          'px-1 outline-none flex-1',
+          // error ? 'border-red-500' : 'border-gray-400',
           inputClassName
         )}
         rows={rows}

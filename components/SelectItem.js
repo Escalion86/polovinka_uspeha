@@ -260,20 +260,62 @@ const SelectItemContainer = ({
   className,
   rounded = false,
 }) => {
-  const Container = ({ children }) => (
-    <InputWrapper
-      label={label}
-      labelClassName={labelClassName}
-      // onChange={onChange}
-      // value={images}
-      wrapperClassName={cn('flex-1 ', className)}
-      required={required}
-      // labelPos="top"
-    >
-      {/* <label className="flex items-center justify-end leading-4 text-right">
-        {label}
-        {required && <span className="text-red-700">*</span>}
-      </label> */}
+  const Container = ({ children }) => {
+    if (label)
+      return (
+        <InputWrapper
+          label={label}
+          labelClassName={labelClassName}
+          // onChange={onChange}
+          // value={images}
+          wrapperClassName={cn('flex-1 ', className)}
+          required={required}
+          value={selectedId}
+          // paddingX={false}
+          // paddingY={false}
+          // noMargin
+          // noBorder
+          // labelPos="top"
+        >
+          {/* <label className="flex items-center justify-end leading-4 text-right">
+      {label}
+      {required && <span className="text-red-700">*</span>}
+    </label> */}
+          <div
+            className={cn(
+              'flex flex-1',
+              rounded ? 'rounded overflow-hidden' : '',
+              error
+                ? 'border border-red-500'
+                : bordered
+                ? 'border border-gray-700'
+                : ''
+            )}
+          >
+            {children}
+          </div>
+        </InputWrapper>
+      )
+
+    return (
+      // <InputWrapper
+      //   label={label}
+      //   labelClassName={labelClassName}
+      //   // onChange={onChange}
+      //   // value={images}
+      //   wrapperClassName={cn('flex-1 ', className)}
+      //   required={required}
+      //   value={selectedId}
+      //   paddingX={false}
+      //   paddingY={false}
+      //   noMargin
+      //   noBorder
+      //   // labelPos="top"
+      // >
+      // {/* <label className="flex items-center justify-end leading-4 text-right">
+      //   {label}
+      //   {required && <span className="text-red-700">*</span>}
+      // </label> */}
       <div
         className={cn(
           'flex flex-1',
@@ -282,13 +324,15 @@ const SelectItemContainer = ({
             ? 'border border-red-500'
             : bordered
             ? 'border border-gray-700'
-            : ''
+            : '',
+          className
         )}
       >
         {children}
       </div>
-    </InputWrapper>
-  )
+      // {/* </InputWrapper> */}
+    )
+  }
 
   return (
     <Container>

@@ -1,5 +1,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
+import cn from 'classnames'
+import InputWrapper from './InputWrapper'
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 const Emoji = dynamic(() => import('quill-emoji'), { ssr: false })
 
@@ -104,20 +106,35 @@ const EditableTextarea = ({
   // ReactQuill.Quill.debug('info')
 
   return (
-    <ReactQuill
-      modules={modules}
-      // formats={formats}
-      theme="snow"
-      value={uncontrolled ? textHtml : html}
-      onChange={
-        onChange
-        //   (value) => {
-        //   const sanitizedValue = sanitize(value)
-        //   if (uncontrolled) setTextHtml(sanitizedValue)
-        //   else onChange && onChange(sanitizedValue)
-        // }
-      }
-    />
+    <InputWrapper
+      label={label}
+      labelClassName={labelClassName}
+      onChange={onChange}
+      // copyPasteButtons={false}
+      value={html}
+      className={cn('', wrapperClassName)}
+      // paddingY={false}
+      required={required}
+      fullWidth={false}
+      paddingY="small"
+      paddingX={false}
+    >
+      <ReactQuill
+        className="w-full"
+        modules={modules}
+        // formats={formats}
+        theme="snow"
+        value={uncontrolled ? textHtml : html}
+        onChange={
+          onChange
+          //   (value) => {
+          //   const sanitizedValue = sanitize(value)
+          //   if (uncontrolled) setTextHtml(sanitizedValue)
+          //   else onChange && onChange(sanitizedValue)
+          // }
+        }
+      />
+    </InputWrapper>
   )
 }
 

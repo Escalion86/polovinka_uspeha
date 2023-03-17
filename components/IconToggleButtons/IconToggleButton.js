@@ -1,5 +1,6 @@
 import React from 'react'
 import { FormControl, ToggleButton } from '@mui/material'
+import cn from 'classnames'
 
 const IconToggleButton = ({
   selected,
@@ -7,12 +8,16 @@ const IconToggleButton = ({
   onClick,
   color = 'warning',
   value = 'default',
+  size = 'm',
   children,
 }) => {
   return (
     <FormControl size="small">
       <ToggleButton
-        className="flex h-10 min-w-10 gap-x-1"
+        className={cn(
+          'flex gap-x-1',
+          size === 's' ? 'h-9 min-w-9 w-9' : 'h-10 min-w-10 w-10'
+        )}
         size="small"
         value={value}
         selected={selected}

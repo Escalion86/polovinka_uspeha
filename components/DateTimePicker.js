@@ -9,10 +9,12 @@ const DateTimePicker = ({
   onChange,
   required = false,
   labelClassName,
-  wrapperClassName,
-  // className,
+  // wrapperClassName,
+  className,
   disabled = false,
   error = false,
+  postfix,
+  postfixClassName,
 }) => {
   return (
     <InputWrapper
@@ -21,14 +23,19 @@ const DateTimePicker = ({
       onChange={onChange}
       copyPasteButtons={false}
       value={value}
-      className={wrapperClassName}
+      className={cn('', className)}
+      // paddingY={false}
       required={required}
+      fullWidth={false}
+      postfix={postfix}
+      postfixClassName={postfixClassName}
+      paddingY="small"
     >
       <input
         className={cn(
-          'text-input px-1 border rounded w-44 outline-none focus:shadow-active',
+          'text-input px-1 focus:outline-none',
           // required && !value ? ' border-red-700' : ' border-gray-400',
-          error ? 'border-red-500' : 'border-gray-400',
+          // error ? 'border-red-500' : 'border-gray-400',
           { 'bg-gray-200  text-disabled cursor-not-allowed': disabled }
         )}
         type="datetime-local"

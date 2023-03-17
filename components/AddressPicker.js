@@ -21,9 +21,11 @@ const AddressPicker = ({
       value={address}
       className={wrapperClassName}
       required={required}
+      paddingY
     >
-      <div className="flex flex-col flex-1 gap-2 p-1 border border-gray-400 rounded">
-        <FormWrapper twoColumns>
+      <div className="flex flex-col flex-1">
+        {/* <FormWrapper twoColumns> */}
+        <div className="grid grid-cols-2 gap-x-1">
           <Input
             label="Город"
             type="text"
@@ -66,17 +68,18 @@ const AddressPicker = ({
             onChange={(flat) => onChange({ ...address, flat })}
             error={errors?.address?.flat}
           />
-        </FormWrapper>
-        <FormWrapper>
-          <Input
-            // wrapperClassName="col-span-2"
-            label="Уточнения по адресу"
-            type="text"
-            value={address.comment}
-            onChange={(comment) => onChange({ ...address, comment })}
-            error={errors?.address?.comment}
-          />
-        </FormWrapper>
+        </div>
+        {/* </FormWrapper> */}
+        {/* <FormWrapper> */}
+        <Input
+          // wrapperClassName="col-span-2"
+          label="Уточнения по адресу"
+          type="text"
+          value={address.comment}
+          onChange={(comment) => onChange({ ...address, comment })}
+          error={errors?.address?.comment}
+        />
+        {/* </FormWrapper> */}
       </div>
     </InputWrapper>
   )

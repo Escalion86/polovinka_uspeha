@@ -39,6 +39,7 @@ RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
 // Create a theme instance.
 const theme = createTheme({
+  spacing: 4,
   typography: {
     fontFamily: '',
   },
@@ -69,6 +70,13 @@ const theme = createTheme({
     // margin: 0,
     // paddingLeft: 30,
     background: 'rgba(239, 243, 246, 1)',
+  },
+  components: {
+    MuiTextField: {
+      defaultProps: {
+        size: 'small',
+      },
+    },
   },
 })
 

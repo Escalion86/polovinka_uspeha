@@ -167,6 +167,7 @@ const StateLoader = (props) => {
         setService,
         deleteService,
         snackbar,
+        loggedUser,
       }),
     []
   )

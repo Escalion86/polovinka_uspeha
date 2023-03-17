@@ -36,6 +36,9 @@ import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
 import UserStatusIcon from '@components/UserStatusIcon'
+import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleButton'
+import SvgSigma from 'svg/SvgSigma'
+import InputWrapper from '@components/InputWrapper'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -347,91 +350,94 @@ const eventFunc = (eventId, clone = false) => {
 
     const duration = getEventDuration({ dateStart, dateEnd })
 
-    console.log('dateStart', Date(dateStart))
-    console.log('Date', Date())
     return (
       <>
         <TabContext value="Общие">
           <TabPanel tabName="Общие" className="px-0">
-            <FormWrapper>
-              <InputImages
-                label="Фотографии"
-                directory="events"
-                images={images}
-                onChange={(images) => {
-                  removeError('images')
-                  setImages(images)
+            {/* <FormWrapper> */}
+            <InputImages
+              label="Фотографии"
+              directory="events"
+              images={images}
+              onChange={(images) => {
+                removeError('images')
+                setImages(images)
+              }}
+              required
+              error={errors.images}
+            />
+            <SelectDirection
+              selectedId={directionId}
+              onChange={(directionId) => {
+                removeError('directionId')
+                setDirectionId(directionId)
+              }}
+              required
+              error={errors.directionId}
+            />
+            <Input
+              label="Название"
+              type="text"
+              value={title}
+              onChange={(value) => {
+                removeError('title')
+                setTitle(value)
+              }}
+              // labelClassName="w-40"
+              error={errors.title}
+              required
+            />
+            <EditableTextarea
+              label="Описание"
+              html={description}
+              uncontrolled={false}
+              onChange={(value) => {
+                removeError('description')
+                setDescription(value)
+              }}
+              placeholder="Описание мероприятия..."
+              required
+              error={errors.description}
+            />
+            {/* <FormWrapper twoColumns> */}
+            <div className="flex items-stretch gap-x-1">
+              <DateTimePicker
+                value={dateStart}
+                onChange={(date) => {
+                  removeError('dateStart')
+                  setDateStart(date)
                 }}
+                label="Начало"
                 required
-                error={errors.images}
+                error={errors.dateStart}
+                // postfix={
+                //   getDiffBetweenDates(dateStart) > 0 && 'Внимание: дата прошла!'
+                // }
+                // postfixClassName="text-danger"
               />
-              <SelectDirection
-                selectedId={directionId}
-                onChange={(directionId) => {
-                  removeError('directionId')
-                  setDirectionId(directionId)
-                }}
-                required
-                error={errors.directionId}
-              />
-              <Input
-                label="Название"
-                type="text"
-                value={title}
-                onChange={(value) => {
-                  removeError('title')
-                  setTitle(value)
-                }}
-                // labelClassName="w-40"
-                error={errors.title}
-                required
-              />
-              <EditableTextarea
-                label="Описание"
-                html={description}
-                uncontrolled={false}
-                onChange={(value) => {
-                  removeError('description')
-                  setDescription(value)
-                }}
-                placeholder="Описание мероприятия..."
-                required
-                error={errors.description}
-              />
-              <FormWrapper twoColumns>
-                <div className="flex items-stretch gap-x-1">
-                  <DateTimePicker
-                    value={dateStart}
-                    onChange={(date) => {
-                      removeError('dateStart')
-                      setDateStart(date)
-                    }}
-                    label="Начало"
-                    required
-                    error={errors.dateStart}
-                  />
-                  {getDiffBetweenDates(dateStart) > 0 && (
-                    <div className="flex items-center pt-[18px] leading-3 laptop:pt-0 text-danger">
-                      Внимание: дата прошла!
-                    </div>
-                  )}
+              {getDiffBetweenDates(dateStart) > 0 && (
+                <div className="flex items-center pt-[18px] leading-3 laptop:pt-0 text-danger">
+                  Внимание: дата прошла!
                 </div>
-                <div className="flex items-stretch gap-x-1">
-                  <DateTimePicker
-                    value={dateEnd}
-                    onChange={(date) => {
-                      removeError('dateEnd')
-                      setDateEnd(date)
-                    }}
-                    label="Завершение"
-                    required
-                    error={errors.dateEnd}
-                  />
-                  <div className="flex items-center pt-[18px] leading-3 laptop:pt-0">
-                    {formatMinutes(duration)}
-                  </div>
-                </div>
-                {/* <TimePicker
+              )}
+            </div>
+            <div className="flex items-stretch gap-x-1">
+              <DateTimePicker
+                value={dateEnd}
+                onChange={(date) => {
+                  removeError('dateEnd')
+                  setDateEnd(date)
+                }}
+                label="Завершение"
+                required
+                error={errors.dateEnd}
+                // postfix={formatMinutes(duration)}
+              />
+              <div className="flex items-center pt-[18px] leading-3 laptop:pt-0">
+                {formatMinutes(duration)}
+              </div>
+            </div>
+            {/* <TimePicker
                   value={
                     formatMinutes(duration, true)
                     // (Math.ceil(duration / 60) <= 9
@@ -452,39 +458,40 @@ const eventFunc = (eventId, clone = false) => {
                   required
                   error={errors.duration}
                 /> */}
-              </FormWrapper>
-              <SelectUser
-                label="Организатор"
-                modalTitle="Выбор организатора"
-                selectedId={organizerId}
-                onChange={(userId) => {
-                  removeError('organizerId')
-                  setOrganizerId(userId)
-                }}
-                required
-                error={errors.organizerId}
-              />
-              <AddressPicker address={address} onChange={setAddress} />
-              <CheckBox
-                checked={warning}
-                labelPos="left"
-                // labelClassName="w-40"
-                onClick={() => setWarning((checked) => !checked)}
-                label="Предупреждение о рисках и травмоопасности на мероприятии"
-              />
+            {/* </FormWrapper> */}
+            <SelectUser
+              label="Организатор"
+              modalTitle="Выбор организатора"
+              selectedId={organizerId}
+              onChange={(userId) => {
+                removeError('organizerId')
+                setOrganizerId(userId)
+              }}
+              required
+              error={errors.organizerId}
+            />
+            <AddressPicker address={address} onChange={setAddress} />
+            <CheckBox
+              checked={warning}
+              labelPos="left"
+              // labelClassName="w-40"
+              onClick={() => setWarning((checked) => !checked)}
+              label="Предупреждение о рисках и травмоопасности на мероприятии"
+            />
 
-              {/* <FormWrapper title="Видимость"> */}
-              <CheckBox
-                checked={showOnSite}
-                labelPos="left"
-                // labelClassName="w-40"
-                onClick={() => setShowOnSite((checked) => !checked)}
-                label="Показывать на сайте"
-              />
-            </FormWrapper>
+            {/* <FormWrapper title="Видимость"> */}
+            <CheckBox
+              checked={showOnSite}
+              labelPos="left"
+              // labelClassName="w-40"
+              onClick={() => setShowOnSite((checked) => !checked)}
+              label="Показывать на сайте"
+            />
+            {/* </FormWrapper> */}
           </TabPanel>
           <TabPanel tabName="Доступ и стоимость" className="px-0">
             {/* <FormWrapper title="Стоимость, доступ и скидки"> */}
+            {/* <FormRow> */}
             <PriceInput
               value={price}
               onChange={(value) => {
@@ -493,7 +500,9 @@ const eventFunc = (eventId, clone = false) => {
               }}
               error={errors.price}
               // labelPos="left"
+              // fullWidth={false}
             />
+            {/* </FormRow> */}
             {/* <FormWrapper> */}
             <CheckBox
               checked={usersStatusAccess?.noReg}
@@ -585,56 +594,101 @@ const eventFunc = (eventId, clone = false) => {
             {/* </FormWrapper> */}
           </TabPanel>
           <TabPanel tabName="Ограничения" className="px-0">
-            <FormWrapper>
-              <CheckBox
-                checked={isReserveActive}
+            {/* <FormWrapper> */}
+            <CheckBox
+              checked={isReserveActive}
+              labelPos="left"
+              // labelClassName="w-40"
+              onClick={() => setIsReserveActive((checked) => !checked)}
+              label="Если мест нет, то возможно записаться в резерв"
+            />
+            <div className="flex items-end flex-1 gap-x-2">
+              <Input
+                ref={refPerticipantsMax}
+                label={
+                  <div className="flex items-center gap-x-1">
+                    <div className="w-3 h-3 min-w-3">
+                      <SvgSigma className="fill-general" />
+                    </div>
+                    <span>max участников</span>
+                  </div>
+                }
+                type={maxParticipantsCheck ? 'text' : 'number'}
+                className="w-44"
+                inputClassName="w-16"
+                value={
+                  maxParticipantsCheck
+                    ? 'Без ограничений'
+                    : maxParticipants ?? 0
+                }
+                onChange={setMaxParticipants}
+                // error={errors?.address?.flat}
+                placeholder={maxParticipantsCheck ? '' : '0'}
+                disabled={maxParticipantsCheck}
+                min={0}
                 labelPos="left"
-                // labelClassName="w-40"
-                onClick={() => setIsReserveActive((checked) => !checked)}
-                label="Если мест нет, то возможно записаться в резерв"
+                onFocus={handleFocus}
+                fullWidth={false}
               />
-              <FormRow>
-                <Input
-                  ref={refPerticipantsMax}
-                  label="Макс. участников"
-                  type="number"
-                  inputClassName="w-16"
-                  value={maxParticipantsCheck ? null : maxParticipants ?? 0}
-                  onChange={setMaxParticipants}
-                  // error={errors?.address?.flat}
-                  placeholder={maxParticipantsCheck ? '' : '0'}
-                  disabled={maxParticipantsCheck}
-                  min={0}
-                  labelPos="left"
-                  onFocus={handleFocus}
-                />
-                <CheckBox
+              <InfinityToggleButton
+                size="s"
+                value={maxParticipantsCheck}
+                onChange={() => {
+                  setMaxParticipantsCheck((checked) => !checked)
+                }}
+              />
+              {/* <CheckBox
                   checked={maxParticipantsCheck}
                   labelPos="right"
                   onClick={() => {
                     setMaxParticipantsCheck((checked) => !checked)
                   }}
                   label="Не ограничено"
-                />
-              </FormRow>
-            </FormWrapper>
-            <div className="flex flex-col">
-              <div className="flex border-t border-gray-300">
+                /> */}
+            </div>
+            {/* </FormWrapper> */}
+            <div className="flex flex-col gap-y-1">
+              <InputWrapper
+                label={
+                  <FontAwesomeIcon
+                    icon={faMars}
+                    className="w-6 h-6 text-blue-600 tablet:w-6 tablet:h-6"
+                  />
+                }
+                // labelClassName={labelClassName}
+                // onChange={onChange}
+                // copyPasteButtons={false}
+                // value={address}
+                // className={wrapperClassName}
+                // required={required}
+                paddingY
+                paddingX={false}
+                centerLabel
+              >
+                {/* <div className="flex border-t border-gray-300">
                 <div className="flex items-center pr-1 border-r border-gray-300">
                   <FontAwesomeIcon
                     icon={faMars}
                     className="w-6 h-6 text-blue-600 tablet:w-6 tablet:h-6"
                   />
-                </div>
-                <FormWrapper className="flex-1 py-2 pl-1">
-                  <FormRow>
+                </div> */}
+                <div className="flex flex-col flex-1 px-1">
+                  <div className="flex items-end flex-1 gap-x-2">
                     <Input
                       ref={refMansMax}
-                      label="MAX"
-                      type="number"
+                      label={
+                        <div className="flex items-center gap-x-1">
+                          <div className="w-3 h-3 min-w-3">
+                            <SvgSigma className="fill-general" />
+                          </div>
+                          <span>max</span>
+                        </div>
+                      }
+                      type={maxMansCheck ? 'text' : 'number'}
+                      className="w-44"
                       inputClassName="w-16"
-                      labelClassName="w-16 min-w-16 justify-end"
-                      value={maxMansCheck ? null : maxMans ?? 0}
+                      // labelClassName="w-16 min-w-16 justify-end"
+                      value={maxMansCheck ? 'Без ограничений' : maxMans ?? 0}
                       onChange={setMaxMans}
                       // error={errors?.address?.flat}
                       placeholder={maxMansCheck ? '' : '0'}
@@ -642,25 +696,37 @@ const eventFunc = (eventId, clone = false) => {
                       min={0}
                       labelPos="left"
                       onFocus={handleFocus}
+                      fullWidth={false}
                     />
-                    <CheckBox
-                      checked={maxMansCheck}
-                      labelPos="right"
-                      onClick={() => setMaxMansCheck((checked) => !checked)}
-                      label="Не ограничено"
+                    <InfinityToggleButton
+                      size="s"
+                      value={maxMansCheck}
+                      onChange={() => {
+                        setMaxMansCheck((checked) => !checked)
+                      }}
                     />
-                  </FormRow>
-                  <FormRow>
-                    <div className="flex justify-end w-16">
+                  </div>
+                  <div className="flex items-end flex-1 gap-x-2">
+                    {/* <div className="flex justify-end w-16">
                       <UserStatusIcon size="m" status="novice" />
-                    </div>
+                    </div> */}
                     <Input
                       ref={refMansNoviceMax}
-                      // label="MAX"
-                      type="number"
+                      label={
+                        <div className="flex items-center gap-x-1">
+                          <UserStatusIcon size="xs" status="novice" />
+                          <span>max</span>
+                        </div>
+                      }
+                      type={maxMansNoviceCheck ? 'text' : 'number'}
+                      className="w-44"
                       inputClassName="w-16"
                       // labelClassName="w-16 min-w-16"
-                      value={maxMansNoviceCheck ? null : maxMansNovice ?? 0}
+                      value={
+                        maxMansNoviceCheck
+                          ? 'Без ограничений'
+                          : maxMansNovice ?? 0
+                      }
                       onChange={setMaxMansNovice}
                       // error={errors?.address?.flat}
                       placeholder={maxMansNoviceCheck ? '' : '0'}
@@ -668,46 +734,55 @@ const eventFunc = (eventId, clone = false) => {
                       min={0}
                       labelPos="left"
                       onFocus={handleFocus}
+                      fullWidth={false}
                     />
-
-                    <CheckBox
-                      checked={maxMansNoviceCheck}
-                      labelPos="right"
-                      onClick={() =>
+                    <InfinityToggleButton
+                      size="s"
+                      value={maxMansNoviceCheck}
+                      onChange={() => {
                         setMaxMansNoviceCheck((checked) => !checked)
-                      }
-                      label="Не ограничено"
+                      }}
                     />
-                  </FormRow>
-                  <FormRow>
-                    <div className="flex justify-end w-16">
+                  </div>
+                  <div className="flex items-end flex-1 gap-x-2">
+                    {/* <div className="flex justify-end w-16">
                       <UserStatusIcon size="m" status="member" />
-                    </div>
+                    </div> */}
                     <Input
                       ref={refMansMemberMax}
                       // label="MAX"
-                      type="number"
+                      label={
+                        <div className="flex items-center gap-x-1">
+                          <UserStatusIcon size="xs" status="member" />
+                          <span>max</span>
+                        </div>
+                      }
+                      type={maxMansMemberCheck ? 'text' : 'number'}
+                      className="w-44"
                       inputClassName="w-16"
                       // labelClassName="w-16 min-w-16"
-                      value={maxMansMemberCheck ? null : maxMansMember ?? 0}
+                      value={
+                        maxMansMemberCheck
+                          ? 'Без ограничений'
+                          : maxMansMember ?? 0
+                      }
                       onChange={setMaxMansMember}
                       // error={errors?.address?.flat}
                       placeholder={maxMansMemberCheck ? '' : '0'}
                       disabled={maxMansMemberCheck}
                       min={0}
-                      labelPos="left"
+                      // labelPos="left"
                       onFocus={handleFocus}
+                      fullWidth={false}
                     />
-
-                    <CheckBox
-                      checked={maxMansMemberCheck}
-                      labelPos="right"
-                      onClick={() =>
+                    <InfinityToggleButton
+                      size="s"
+                      value={maxMansMemberCheck}
+                      onChange={() => {
                         setMaxMansMemberCheck((checked) => !checked)
-                      }
-                      label="Не ограничено"
+                      }}
                     />
-                  </FormRow>
+                  </div>
                   <Slider
                     value={[minMansAge, maxMansAge]}
                     onChange={([min, max]) => {
@@ -719,24 +794,52 @@ const eventFunc = (eventId, clone = false) => {
                     label="Возраст"
                     labelClassName="w-16 min-w-16"
                   />
-                </FormWrapper>
-              </div>
-              <div className="flex border-t border-b border-gray-300">
+                </div>
+                {/* </div> */}
+              </InputWrapper>
+              <InputWrapper
+                label={
+                  <FontAwesomeIcon
+                    icon={faVenus}
+                    className="w-6 h-6 text-red-600 tablet:w-6 tablet:h-6"
+                  />
+                }
+                // labelClassName={labelClassName}
+                // onChange={onChange}
+                // copyPasteButtons={false}
+                // value={address}
+                // className={wrapperClassName}
+                // required={required}
+                paddingX={false}
+                paddingY
+                centerLabel
+              >
+                {/* <div className="flex border-t border-b border-gray-300">
                 <div className="flex items-center pr-1 border-r border-gray-300">
                   <FontAwesomeIcon
                     icon={faVenus}
                     className="w-6 h-6 text-red-600 tablet:w-6 tablet:h-6"
                   />
-                </div>
-                <FormWrapper className="flex-1 py-2 pl-1">
-                  <FormRow>
+                </div> */}
+                <div className="flex flex-col flex-1 px-1">
+                  <div className="flex items-end flex-1 gap-x-2">
                     <Input
                       ref={refWomansMax}
-                      label="MAX"
-                      type="number"
+                      label={
+                        <div className="flex items-center gap-x-1">
+                          <div className="w-3 h-3 min-w-3">
+                            <SvgSigma className="fill-general" />
+                          </div>
+                          <span>max</span>
+                        </div>
+                      }
+                      type={maxWomansCheck ? 'text' : 'number'}
+                      className="w-44"
                       inputClassName="w-16"
-                      labelClassName="w-16 min-w-16 justify-end"
-                      value={maxWomansCheck ? null : maxWomans ?? 0}
+                      // labelClassName="w-16 min-w-16 justify-end"
+                      value={
+                        maxWomansCheck ? 'Без ограничений' : maxWomans ?? 0
+                      }
                       onChange={setMaxWomans}
                       // error={errors?.address?.flat}
                       placeholder={maxWomansCheck ? '' : '0'}
@@ -744,25 +847,37 @@ const eventFunc = (eventId, clone = false) => {
                       min={0}
                       labelPos="left"
                       onFocus={handleFocus}
+                      fullWidth={false}
                     />
-                    <CheckBox
-                      checked={maxWomansCheck}
-                      labelPos="right"
-                      onClick={() => setMaxWomansCheck((checked) => !checked)}
-                      label="Не ограничено"
+                    <InfinityToggleButton
+                      size="s"
+                      value={maxWomansCheck}
+                      onChange={() => {
+                        setMaxWomansCheck((checked) => !checked)
+                      }}
                     />
-                  </FormRow>
-                  <FormRow>
-                    <div className="flex justify-end w-16">
+                  </div>
+                  <div className="flex items-end flex-1 gap-x-2">
+                    {/* <div className="flex justify-end w-16">
                       <UserStatusIcon size="m" status="novice" />
-                    </div>
+                    </div> */}
                     <Input
                       ref={refWomansNoviceMax}
-                      // label="MAX"
-                      type="number"
+                      label={
+                        <div className="flex items-center gap-x-1">
+                          <UserStatusIcon size="xs" status="novice" />
+                          <span>max</span>
+                        </div>
+                      }
+                      type={maxWomansNoviceCheck ? 'text' : 'number'}
+                      className="w-44"
                       inputClassName="w-16"
                       // labelClassName="w-16 min-w-16"
-                      value={maxWomansNoviceCheck ? null : maxWomansNovice ?? 0}
+                      value={
+                        maxWomansNoviceCheck
+                          ? 'Без ограничений'
+                          : maxWomansNovice ?? 0
+                      }
                       onChange={setMaxWomansNovice}
                       // error={errors?.address?.flat}
                       placeholder={maxWomansNoviceCheck ? '' : '0'}
@@ -770,28 +885,37 @@ const eventFunc = (eventId, clone = false) => {
                       min={0}
                       labelPos="left"
                       onFocus={handleFocus}
+                      fullWidth={false}
                     />
-
-                    <CheckBox
-                      checked={maxWomansNoviceCheck}
-                      labelPos="right"
-                      onClick={() =>
+                    <InfinityToggleButton
+                      size="s"
+                      value={maxWomansNoviceCheck}
+                      onChange={() => {
                         setMaxWomansNoviceCheck((checked) => !checked)
-                      }
-                      label="Не ограничено"
+                      }}
                     />
-                  </FormRow>
-                  <FormRow>
-                    <div className="flex justify-end w-16">
+                  </div>
+                  <div className="flex items-end flex-1 gap-x-2">
+                    {/* <div className="flex justify-end w-16">
                       <UserStatusIcon size="m" status="member" />
-                    </div>
+                    </div> */}
                     <Input
                       ref={refWomansMemberMax}
-                      // label="MAX"
-                      type="number"
+                      label={
+                        <div className="flex items-center gap-x-1">
+                          <UserStatusIcon size="xs" status="member" />
+                          <span>max</span>
+                        </div>
+                      }
+                      type={maxWomansMemberCheck ? 'text' : 'number'}
+                      className="w-44"
                       inputClassName="w-16"
                       // labelClassName="w-16 min-w-16"
-                      value={maxWomansMemberCheck ? null : maxWomansMember ?? 0}
+                      value={
+                        maxWomansMemberCheck
+                          ? 'Без ограничений'
+                          : maxWomansMember ?? 0
+                      }
                       onChange={setMaxWomansMember}
                       // error={errors?.address?.flat}
                       placeholder={maxWomansMemberCheck ? '' : '0'}
@@ -799,17 +923,16 @@ const eventFunc = (eventId, clone = false) => {
                       min={0}
                       labelPos="left"
                       onFocus={handleFocus}
+                      fullWidth={false}
                     />
-
-                    <CheckBox
-                      checked={maxWomansMemberCheck}
-                      labelPos="right"
-                      onClick={() =>
+                    <InfinityToggleButton
+                      size="s"
+                      value={maxWomansMemberCheck}
+                      onChange={() => {
                         setMaxWomansMemberCheck((checked) => !checked)
-                      }
-                      label="Не ограничено"
+                      }}
                     />
-                  </FormRow>
+                  </div>
                   <Slider
                     value={[minWomansAge, maxWomansAge]}
                     onChange={([min, max]) => {
@@ -823,14 +946,15 @@ const eventFunc = (eventId, clone = false) => {
                     // labelClassName="w-[20%]"
                     // wrapperClassName="flex-1"
                   />
-                </FormWrapper>
-              </div>
+                </div>
+                {/* </div> */}
+              </InputWrapper>
             </div>
 
             {/* </FormWrapper> */}
             {/* </FormWrapper> */}
           </TabPanel>
-          {eventId && (
+          {/* {eventId && (
             <TabPanel tabName="Отчет" className="px-0">
               <FormWrapper>
                 <InputImages
@@ -858,7 +982,7 @@ const eventFunc = (eventId, clone = false) => {
                 />
               </FormWrapper>
             </TabPanel>
-          )}
+          )} */}
         </TabContext>
         <ErrorsList errors={errors} />
       </>

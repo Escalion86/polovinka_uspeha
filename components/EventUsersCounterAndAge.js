@@ -284,7 +284,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
         </div> */}
       </div>
       <div className="flex items-center px-2 py-1 gap-x-0.5 tablet:gap-x-1">
-        <div className={`min-w-5 w-5 h-5`}>
+        <div className="w-5 h-5 min-w-5">
           <SvgSigma className="fill-general" />
         </div>
         <div className="flex tablet:gap-x-0.5">
