@@ -4,6 +4,7 @@ import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
 import isUserAdmin from '@helpers/isUserAdmin'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
+import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
@@ -58,6 +59,12 @@ export default async function handler(Schema, req, res, params = null) {
           if (!data) {
             return res?.status(400).json({ success: false })
           }
+          await Histories.create({
+            schema: Schema.collection.collectionName,
+            action: 'add',
+            data,
+            userId: body.userId,
+          })
 
           return res?.status(201).json({ success: true, data })
         }
@@ -70,15 +77,16 @@ export default async function handler(Schema, req, res, params = null) {
       try {
         if (id) {
           data = await Schema.findById(id)
+          console.log('Schema', Schema.collection.collectionName)
+          console.log('typeof', typeof Schema.collection.collectionName)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
 
           // Если это пользователь обновляет анкету, то после обновления оповестим о результате через телеграм
           const afterUpdateNeedToNotificate =
-            body.userId === id &&
-            bodySchema === Users &&
-            !isUserQuestionnaireFilled(data)
+            // body.userId === id &&
+            Schema === Users && !isUserQuestionnaireFilled(data)
 
           data = await Schema.findByIdAndUpdate(id, body.data, {
             new: true,
@@ -88,6 +96,13 @@ export default async function handler(Schema, req, res, params = null) {
           if (!data) {
             return res?.status(400).json({ success: false })
           }
+
+          await Histories.create({
+            schema: Schema.collection.collectionName,
+            action: 'updete',
+            data,
+            userId: body.userId,
+          })
 
           if (afterUpdateNeedToNotificate) {
             const users = await Users.find({})
@@ -200,6 +215,12 @@ export default async function handler(Schema, req, res, params = null) {
           if (!data) {
             return res?.status(400).json({ success: false })
           }
+          await Histories.create({
+            schema: Schema.collection.collectionName,
+            action: 'updete',
+            data,
+            userId: body.userId,
+          })
           return res?.status(200).json({ success: true, data })
         } else if (id) {
           data = await Schema.findById(id)
@@ -212,6 +233,12 @@ export default async function handler(Schema, req, res, params = null) {
           if (!data) {
             return res?.status(400).json({ success: false })
           }
+          await Histories.create({
+            schema: Schema.collection.collectionName,
+            action: 'updete',
+            data,
+            userId: body.userId,
+          })
           return res?.status(200).json({ success: true, data })
         } else if (body?.params) {
           data = await Schema.deleteMany({
@@ -220,6 +247,12 @@ export default async function handler(Schema, req, res, params = null) {
           if (!data) {
             return res?.status(400).json({ success: false })
           }
+          await Histories.create({
+            schema: Schema.collection.collectionName,
+            action: 'updete',
+            data,
+            userId: body.userId,
+          })
           return res?.status(200).json({ success: true, data })
         } else {
           return res?.status(400).json({ success: false })
