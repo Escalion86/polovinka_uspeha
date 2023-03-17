@@ -147,6 +147,13 @@ blockquote {
 .ql-container {
   font-family: 'Futura PT', sans-serif !important;
   font-size: initial !important;
+  border: 0px !important;
+}
+
+.ql-toolbar {
+  border-top: 0px !important;
+  border-left: 0px !important;
+  border-right: 0px !important;
 }
 
 .ql ol li:before {

@@ -5,7 +5,7 @@ import cn from 'classnames'
 const TabPanel = ({ tabName, className, children }) => (
   <MuiTabPanel value={tabName} className="p-0 overflow-y-auto">
     <motion.div
-      className={cn('flex flex-col p-2 gap-y-2', className)}
+      className={cn('flex flex-col p-2', className)}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >

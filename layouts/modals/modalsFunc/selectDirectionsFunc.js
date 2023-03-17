@@ -128,7 +128,7 @@ const selectDirectionsFunc = (
                 <DirectionItem
                   key={filteredDirections[index]._id}
                   item={filteredDirections[index]}
-                  active={filteredDirections.includes(
+                  active={selectedDirections.includes(
                     filteredDirections[index]._id
                   )}
                   onClick={() => onClick(filteredDirections[index]._id)}

@@ -217,10 +217,11 @@ const paymentFunc = (paymentId, clone = false, props) => {
             removeError('payAt')
             setPayAt(date)
           }}
-          label="Дата проведения транзакции"
+          label="Дата проведения"
           required
           error={errors.payAt}
           disabled={isEventClosed}
+          className="w-52"
         />
         <PriceInput
           label="Сумма"

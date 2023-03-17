@@ -27,6 +27,7 @@ const ValuePicker = ({
       value={value}
       className={cn('flex-1', className)}
       required={required}
+      paddingY
     >
       {/* {label && (
         <label

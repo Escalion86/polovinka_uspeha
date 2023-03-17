@@ -11,11 +11,12 @@ const DatePicker = ({
   onChange,
   required = false,
   labelClassName,
-  wrapperClassName,
-  // className,
+  // wrapperClassName,
+  className,
   disabled = false,
   showYears = false,
   showZodiac = false,
+  error,
 }) => {
   return (
     <InputWrapper
@@ -24,14 +25,26 @@ const DatePicker = ({
       onChange={onChange}
       copyPasteButtons={false}
       value={value}
-      className={wrapperClassName}
+      className={cn('', className)}
       required={required}
+      error={error}
+      // postfix={
+      //   value &&
+      //   (showYears || showZodiac) &&
+      //   '(' +
+      //     (showYears ? birthDateToAge(value) : '') +
+      //     (showYears && showZodiac ? ', ' : '') +
+      //     (showZodiac ? getZodiac(value).name : '') +
+      //     ')'
+      // }
+      fullWidth={false}
+      paddingY="small"
     >
       <input
         className={cn(
-          'text-input px-1 border max-w-40 rounded outline-none focus:shadow-active',
+          'text-input px-1 rounded focus:outline-none',
           // required && !value ? ' border-red-700' : ' border-gray-400',
-          { 'bg-gray-200  text-disabled': disabled }
+          { 'text-disabled': disabled }
         )}
         type="date"
         name={name}
@@ -48,7 +61,7 @@ const DatePicker = ({
         // min="2018-01-01"
         // max="2018-12-31"
       />
-      {value && (showYears || showZodiac) && (
+      {/* {value && (showYears || showZodiac) && (
         <div className="ml-2 whitespace-nowrap">
           {'(' +
             (showYears ? birthDateToAge(value) : '') +
@@ -56,7 +69,7 @@ const DatePicker = ({
             (showZodiac ? getZodiac(value).name : '') +
             ')'}
         </div>
-      )}
+      )} */}
     </InputWrapper>
   )
 }

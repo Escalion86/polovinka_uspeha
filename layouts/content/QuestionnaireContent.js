@@ -31,6 +31,7 @@ import useSnackbar from '@helpers/useSnackbar'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons'
 import ChipsSelector from '@components/ChipsSelector'
+import upperCaseFirst from '@helpers/upperCaseFirst'
 
 const items = [
   'Oliver Hansen',
@@ -329,11 +330,13 @@ const QuestionnaireContent = (props) => {
               value={firstName}
               onChange={(value) => {
                 removeError('firstName')
-                setFirstName(value.trim())
+                setFirstName(upperCaseFirst(value.trim()))
               }}
               required
               // labelClassName="w-40"
               error={errors.firstName}
+              showErrorText
+              inputClassName="capitalize"
             />
             <Input
               label="Фамилия"
@@ -341,10 +344,11 @@ const QuestionnaireContent = (props) => {
               value={secondName}
               onChange={(value) => {
                 removeError('secondName')
-                setSecondName(value.trim())
+                setSecondName(upperCaseFirst(value.trim()))
               }}
               required
               // labelClassName="w-40"
+              inputClassName="capitalize"
               error={errors.secondName}
             />
             <Input
@@ -353,9 +357,10 @@ const QuestionnaireContent = (props) => {
               value={thirdName}
               onChange={(value) => {
                 removeError('thirdName')
-                setThirdName(value.trim())
+                setThirdName(upperCaseFirst(value.trim()))
               }}
               // labelClassName="w-40"
+              inputClassName="capitalize"
               error={errors.thirdName}
             />
             <GenderPicker
@@ -439,12 +444,14 @@ const QuestionnaireContent = (props) => {
               copyPasteButtons
             />
             <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
-            <ChipsSelector
-              label="Интересы"
-              items={items}
-              onChange={setInterests}
-              value={interests}
-            />
+            {isLoggedUserDev && (
+              <ChipsSelector
+                label="Интересы"
+                items={items}
+                onChange={setInterests}
+                value={interests}
+              />
+            )}
           </FormWrapper>
           {isLoggedUserDev && (
             <ValueItem
