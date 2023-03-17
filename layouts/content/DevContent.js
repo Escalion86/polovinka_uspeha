@@ -14,6 +14,7 @@ import InputImages from '@components/InputImages'
 import { useState } from 'react'
 import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
+import Button from '@components/Button'
 
 const DevCard = ({ title, data }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -48,6 +49,41 @@ const DevContent = () => {
   const [project, setProject] = useState('')
   const [folder, setFolder] = useState('')
 
+  const usersImages = users
+    .filter((user) => user.images.find((src) => src.includes('cloudinary.com')))
+    .map((user) => ({
+      userName: `${user.secondName} ${user.firstName}`,
+      images: user.images.filter((src) => src.includes('cloudinary.com')),
+    }))
+
+  function toDataURL(url) {
+    return fetch(url)
+      .then((response) => {
+        return response.blob()
+      })
+      .then((blob) => {
+        return URL.createObjectURL(blob)
+      })
+  }
+
+  const download = () => {
+    async function downloadUrl(uri, name) {
+      var link = document.createElement('a')
+      link.href = await toDataURL(uri)
+      link.download = name
+      // link.href = uri
+      link.click()
+    }
+
+    for (let i = 0; i < usersImages.length; i++) {
+      var counter = 0
+      for (let j = 0; j < usersImages[i].images.length; j++) {
+        downloadUrl(usersImages[i].images[j], usersImages[i].userName + counter)
+        counter++
+      }
+    }
+  }
+
   return (
     <CardListWrapper>
       <FormWrapper>
@@ -76,6 +112,7 @@ const DevContent = () => {
             setImages(images)
           }}
         />
+        <Button onClick={download}>Скачать</Button>
       </FormWrapper>
       <DevCard title="users" data={users} />
       <DevCard title="events" data={events} />
