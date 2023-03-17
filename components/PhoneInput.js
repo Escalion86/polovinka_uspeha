@@ -79,7 +79,6 @@ const PhoneInput = ({
   disabled,
   labelClassName,
   copyPasteButtons,
-  className,
 }) => {
   // return (
   //   <TextField
@@ -108,9 +107,8 @@ const PhoneInput = ({
       pasteButton={!disabled && copyPasteButtons}
       value={value}
       required={required}
-      prefix="+7"
-      className={cn('w-48', className)}
-      disabled={disabled}
+      // prefix="+7"
+      className="w-48"
     >
       {/* <>
       <label
@@ -137,9 +135,9 @@ const PhoneInput = ({
         }}
         // keepCharPositions
         mask={[
-          // '+',
-          // '7',
-          // ' ',
+          '+',
+          '7',
+          ' ',
           '(',
           /[1-9]/,
           /\d/,

@@ -50,11 +50,19 @@ const DevContent = () => {
   const [folder, setFolder] = useState('')
 
   const usersImages = users
-    .filter((user) => user.images.find((src) => src.includes('cloudinary.com')))
-    .map((user) => ({
-      userName: `${user.secondName} ${user.firstName}`,
-      images: user.images.filter((src) => src.includes('cloudinary.com')),
-    }))
+    .filter((user) =>
+      user.images.find((src) => {
+        console.log('src', src)
+        return src && src.includes('cloudinary.com')
+      })
+    )
+    .map((user) => {
+      console.log('user.images', user.images)
+      return {
+        userName: `${user.secondName} ${user.firstName}`,
+        images: user.images.filter((src) => src.includes('cloudinary.com')),
+      }
+    })
 
   function toDataURL(url) {
     return fetch(url)
@@ -66,6 +74,10 @@ const DevContent = () => {
       })
   }
 
+  function timeout(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+
   const download = () => {
     async function downloadUrl(uri, name) {
       var link = document.createElement('a')
@@ -73,15 +85,16 @@ const DevContent = () => {
       link.download = name
       // link.href = uri
       link.click()
+      await timeout(500)
     }
-
+    var counter = 0
     for (let i = 0; i < usersImages.length; i++) {
-      var counter = 0
       for (let j = 0; j < usersImages[i].images.length; j++) {
-        downloadUrl(usersImages[i].images[j], usersImages[i].userName + counter)
+        downloadUrl(usersImages[i].images[j], usersImages[i].userName + j)
         counter++
       }
     }
+    console.log('counter', counter)
   }
 
   return (

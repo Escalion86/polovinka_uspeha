@@ -322,7 +322,7 @@ export default async function handler(req, res) {
         // console.log('req.headers', req.headers.origin)
         if (deletedEventUsers.length > 0) {
           await Histories.create({
-            schema: 'EventsUsers',
+            schema: EventsUsers.collection.collectionName,
             action: 'delete',
             data: deletedEventUsers,
             userId: body.userId,
@@ -350,7 +350,7 @@ export default async function handler(req, res) {
 
         if (data.length > 0)
           await Histories.create({
-            schema: 'EventsUsers',
+            schema: EventsUsers.collection.collectionName,
             action: 'add',
             data,
             userId: body.userId,
@@ -547,7 +547,7 @@ export default async function handler(req, res) {
         }
 
         await Histories.create({
-          schema: 'EventsUsers',
+          schema: EventsUsers.collection.collectionName,
           action: 'add',
           data: newEventUser,
           userId: body.userId,
@@ -604,7 +604,7 @@ export default async function handler(req, res) {
       })
 
       await Histories.create({
-        schema: 'EventsUsers',
+        schema: EventsUsers.collection.collectionName,
         action: 'delete',
         data: eventUser,
         userId: body.userId,
