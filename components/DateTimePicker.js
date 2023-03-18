@@ -30,13 +30,14 @@ const DateTimePicker = ({
       postfix={postfix}
       postfixClassName={postfixClassName}
       paddingY="small"
+      disabled={disabled}
     >
       <input
         className={cn(
-          'text-input px-1 focus:outline-none',
+          'text-input px-1 focus:outline-none bg-transparent',
           // required && !value ? ' border-red-700' : ' border-gray-400',
           // error ? 'border-red-500' : 'border-gray-400',
-          { 'bg-gray-200  text-disabled cursor-not-allowed': disabled }
+          { 'text-disabled cursor-not-allowed': disabled }
         )}
         type="datetime-local"
         step="1800"

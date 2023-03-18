@@ -109,6 +109,7 @@ const PhoneInput = ({
       required={required}
       // prefix="+7"
       className="w-48"
+      disabled={disabled}
     >
       {/* <>
       <label
@@ -121,11 +122,11 @@ const PhoneInput = ({
       <MaskedInput
         disabled={disabled}
         className={cn(
-          'text-input w-full px-1 focus:outline-none',
+          'text-input w-full px-1 focus:outline-none bg-transparent',
           required && (!value || value.toString().length !== 11)
             ? 'border-red-700'
             : 'border-gray-400',
-          { 'text-disabled': disabled }
+          { 'text-disabled cursor-not-allowed': disabled }
         )}
         showMask
         onChange={(e) => {

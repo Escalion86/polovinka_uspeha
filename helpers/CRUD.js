@@ -6,7 +6,8 @@ export const putData = async (
   callbackOnSuccess = null,
   callbackOnError = null,
   resJson = false,
-  userId
+  userId,
+  dontAddUserId = false
 ) => {
   try {
     const res = await fetch(url, {
@@ -15,7 +16,9 @@ export const putData = async (
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify({ data: form, userId }),
+      body: dontAddUserId
+        ? JSON.stringify(form)
+        : JSON.stringify({ data: form, userId }),
     })
 
     // Throw error with status code in case Fetch API req failed
@@ -44,7 +47,8 @@ export const postData = async (
   callbackOnSuccess = null,
   callbackOnError = null,
   resJson = false,
-  userId
+  userId,
+  dontAddUserId = false
 ) => {
   try {
     const res = await fetch(url, {
@@ -53,7 +57,9 @@ export const postData = async (
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify({ data: form, userId }),
+      body: dontAddUserId
+        ? JSON.stringify(form)
+        : JSON.stringify({ data: form, userId }),
     })
 
     // Throw error with status code in case Fetch API req failed
@@ -79,6 +85,7 @@ export const deleteData = async (
   params = {},
   resJson = false,
   userId
+  // dontAddUserId = false
 ) => {
   try {
     const res = await fetch(url, {
@@ -88,6 +95,9 @@ export const deleteData = async (
         'Content-Type': contentType,
       },
       body: JSON.stringify({ params, userId }),
+      // body: dontAddUserId
+      //   ? JSON.stringify(form)
+      //   : JSON.stringify({ data: form, userId }),
     })
 
     // Throw error with status code in case Fetch API req failed

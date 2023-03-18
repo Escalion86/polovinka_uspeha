@@ -1,6 +1,6 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import { postData } from '@helpers/CRUD'
-import formatDate from '@helpers/formatDate'
+// import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
 import isUserAdmin from '@helpers/isUserAdmin'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
