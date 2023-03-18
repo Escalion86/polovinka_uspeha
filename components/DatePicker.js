@@ -39,12 +39,13 @@ const DatePicker = ({
       // }
       fullWidth={false}
       paddingY="small"
+      disabled={disabled}
     >
       <input
         className={cn(
-          'text-input px-1 rounded focus:outline-none bg-white',
+          'text-input px-1 rounded focus:outline-none bg-transparent',
           // required && !value ? ' border-red-700' : ' border-gray-400',
-          { 'text-disabled': disabled }
+          { 'text-disabled cursor-not-allowed': disabled }
         )}
         type="date"
         name={name}
