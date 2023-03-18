@@ -237,6 +237,8 @@ const telegramNotification = async ({
           },
           (data) => console.log('data', data),
           (data) => console.log('error', data),
+          true,
+          null,
           true
         )
       })
@@ -260,6 +262,7 @@ export default async function handler(req, res) {
         eventSubtypeNum,
         comment,
       } = body.data
+      // console.log('body.data', body.data)
 
       // if (_id) {
       //   return await CRUD(EventsUsers, req, res)
