@@ -27,6 +27,7 @@ import EventsList from '@layouts/lists/EventsList'
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
 import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
+import EventParticipantToggleButtons from '@components/IconToggleButtons/EventParticipantToggleButtons'
 
 const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
@@ -35,6 +36,9 @@ const EventsContent = () => {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const eventsOfUser = useRecoilValue(
+    eventsUsersByUserIdSelector(loggedUser._id)
+  )
   // const windowWidthNum = useWindowDimensionsTailwindNum()
 
   const [isSearching, setIsSearching] = useState(false)
@@ -47,6 +51,10 @@ const EventsContent = () => {
       closed: false,
       canceled: false,
     },
+    // participant: {
+    //   participant: true,
+    //   notParticipant: true,
+    // },
   })
   const [searchText, setSearchText] = useState('')
 
@@ -97,6 +105,27 @@ const EventsContent = () => {
     ]
   )
 
+  // console.log('filter', filter)
+  // console.log('eventsOfUser', eventsOfUser)
+  // console.log('filteredEvents', filteredEvents)
+  // console.log(
+  //   '!',
+  //   filter.participant.partisipant && filter.participant.notPartisipant
+  // )
+  const filteredEvents2 = filteredEvents
+  // filter.participant.partisipant && filter.participant.notPartisipant
+  //   ? filteredEvents
+  //   : filteredEvents.filter(
+  //       (event) =>
+  //         (filter.participant.participant &&
+  //           eventsOfUser.find(
+  //             (eventUser) => eventUser.eventId === event._id
+  //           )) ||
+  //         (filter.participant.notParticipant &&
+  //           !eventsOfUser.find(
+  //             (eventUser) => eventUser.eventId === event._id
+  //           ))
+  //     )
   // const visibleEventsIds = useMemo(
   //   () =>
   //     filteredEvents
@@ -121,9 +150,9 @@ const EventsContent = () => {
   // )
 
   const searchedEvents = useMemo(() => {
-    if (!searchText) return filteredEvents
-    return filterItems(filteredEvents, searchText, [], {}, ['title'])
-  }, [filteredEvents, searchText])
+    if (!searchText) return filteredEvents2
+    return filterItems(filteredEvents2, searchText, [], {}, ['title'])
+  }, [filteredEvents2, searchText])
 
   const visibleEvents = useMemo(
     () =>
@@ -160,6 +189,12 @@ const EventsContent = () => {
             setFilter((state) => ({ ...state, status: value }))
           }
         />
+        {/* <EventParticipantToggleButtons
+          value={filter.participant}
+          onChange={(value) =>
+            setFilter((state) => ({ ...state, participant: value }))
+          }
+        /> */}
 
         {/* <ButtonGroup
           className=""
