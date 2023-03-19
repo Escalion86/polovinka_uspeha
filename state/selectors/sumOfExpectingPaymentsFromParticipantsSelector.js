@@ -1,3 +1,4 @@
+import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
 import { selectorFamily } from 'recoil'
 import eventParticipantsFullByEventIdSelector from './eventParticipantsFullByEventIdSelector'
 // import eventParticipantsSelector from './eventParticipantsSelector'
@@ -33,10 +34,13 @@ export const sumOfExpectingPaymentsFromParticipantsSelector = selectorFamily({
         sumOfCouponsFromParticipantsSelector(id)
       )
 
+      const eventPrices = eventPricesWithStatus(event)
+      // event.price * eventParticipantsFull.length -
+      // membersOfEventCount * (event.usersStatusDiscount?.member ?? 0) -
+      // noviceOfEventCount * (event.usersStatusDiscount?.novice ?? 0))
       return (
-        (event.price * eventParticipantsFull.length -
-          membersOfEventCount * (event.usersStatusDiscount?.member ?? 0) -
-          noviceOfEventCount * (event.usersStatusDiscount?.novice ?? 0)) /
+        (eventPrices.member * membersOfEventCount +
+          eventPrices.novice * noviceOfEventCount) /
           100 -
         sumOfCouponsOfEventFromParticipants
       )
