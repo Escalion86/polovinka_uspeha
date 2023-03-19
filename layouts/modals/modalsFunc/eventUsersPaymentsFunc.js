@@ -50,6 +50,8 @@ import sumOfPaymentsWithoutEventOfUserSelector from '@state/selectors/sumOfPayme
 import Tooltip from '@components/Tooltip'
 import paymentsWithNoCouponsFromAndToUsersSelector from '@state/selectors/paymentsWithNoCouponsFromAndToUsersSelector'
 import eventAssistantsIdsSelector from '@state/selectors/eventAssistantsIdsSelector'
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
 
 const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
 

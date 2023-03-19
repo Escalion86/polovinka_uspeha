@@ -79,7 +79,9 @@ const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
           </div>
         )
       ) : (
-        <div className="text-lg font-bold whitespace-normal">Бесплатное</div>
+        <div className="text-lg font-bold uppercase whitespace-normal">
+          Бесплатное
+        </div>
       )}
     </div>
   )
