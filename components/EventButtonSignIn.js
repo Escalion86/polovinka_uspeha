@@ -63,7 +63,12 @@ const EventButtonSignIn = ({
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
   const PaymentsFromLoggedUser = () => {
-    if (!userEventStatus || eventPriceForLoggedUser === 0) return null
+    if (
+      !userEventStatus ||
+      userEventStatus !== 'participant' ||
+      eventPriceForLoggedUser === 0
+    )
+      return null
 
     if (sumOfPaymentsFromLoggedUserToEvent * 100 === eventPriceForLoggedUser)
       return (
