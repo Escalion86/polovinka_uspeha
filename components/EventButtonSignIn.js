@@ -91,7 +91,7 @@ const EventButtonSignIn = ({
           </div>
         </div>
       )
-    if (userEventStatus)
+    if (userEventStatus && event.status !== 'canceled')
       return (
         <div className="flex items-center justify-center h-full border-l border-gray-200">
           <div className="flex items-center justify-center px-1 font-bold text-center tablet:text-lg text-danger gap-x-1">
