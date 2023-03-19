@@ -12,32 +12,32 @@ const EventParticipantToggleButtons = ({ value, onChange, noClosed }) => {
       <Button
         onClick={() =>
           onChange({
-            partisipant: !value.partisipant,
-            notPartisipant:
-              !value.notPartisipant || value.partisipant
-                ? value.partisipant
+            participant: !value.participant,
+            notParticipant:
+              !value.notParticipant || value.participant
+                ? value.participant
                 : true,
           })
         }
-        variant={value.partisipant ? 'contained' : 'outlined'}
+        variant={value.participant ? 'contained' : 'outlined'}
         color="green"
-        className={value.partisipant ? 'text-white' : 'text-green-400'}
+        className={value.participant ? 'text-white' : 'text-green-400'}
       >
         Записан
       </Button>
       <Button
         onClick={() =>
           onChange({
-            partisipant:
-              value.partisipant || !value.notPartisipant
-                ? value.partisipant
+            participant:
+              value.participant || !value.notParticipant
+                ? value.participant
                 : true,
-            notPartisipant: !value.notPartisipant,
+            notParticipant: !value.notParticipant,
           })
         }
-        variant={value.notPartisipant ? 'contained' : 'outlined'}
+        variant={value.notParticipant ? 'contained' : 'outlined'}
         color="red"
-        className={value.notPartisipant ? 'text-white' : 'text-red-400'}
+        className={value.notParticipant ? 'text-white' : 'text-red-400'}
       >
         Не записан
       </Button>

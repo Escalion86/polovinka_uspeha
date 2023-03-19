@@ -51,10 +51,10 @@ const EventsContent = () => {
       closed: false,
       canceled: false,
     },
-    // participant: {
-    //   participant: true,
-    //   notParticipant: true,
-    // },
+    participant: {
+      participant: true,
+      notParticipant: true,
+    },
   })
   const [searchText, setSearchText] = useState('')
 
@@ -105,54 +105,10 @@ const EventsContent = () => {
     ]
   )
 
-  // console.log('filter', filter)
-  // console.log('eventsOfUser', eventsOfUser)
-  // console.log('filteredEvents', filteredEvents)
-  // console.log(
-  //   '!',
-  //   filter.participant.partisipant && filter.participant.notPartisipant
-  // )
-  const filteredEvents2 = filteredEvents
-  // filter.participant.partisipant && filter.participant.notPartisipant
-  //   ? filteredEvents
-  //   : filteredEvents.filter(
-  //       (event) =>
-  //         (filter.participant.participant &&
-  //           eventsOfUser.find(
-  //             (eventUser) => eventUser.eventId === event._id
-  //           )) ||
-  //         (filter.participant.notParticipant &&
-  //           !eventsOfUser.find(
-  //             (eventUser) => eventUser.eventId === event._id
-  //           ))
-  //     )
-  // const visibleEventsIds = useMemo(
-  //   () =>
-  //     filteredEvents
-  //       .filter((event) => {
-  //         const isEventExpired = isEventExpiredFunc(event)
-  //         const isEventActive = isEventActiveFunc(event)
-  //         const isEventCanceled = isEventCanceledFunc(event)
-  //         return (
-  //           ((isEventActive && filter.status.finished && isEventExpired) ||
-  //             (isEventActive && filter.status.active && !isEventExpired) ||
-  //             (isEventCanceled && filter.status.canceled)) &&
-  //           filterOptions.directions.includes(event.directionId)
-  //         )
-  //       })
-  //       .map((event) => event._id),
-  //   [filteredEvents, filter, filterOptions.directions.length]
-  // )
-
-  // const filteredAndSortedEvents = useMemo(
-  //   () => [...filteredEvents].sort(sortFunc),
-  //   [filteredEvents, sort]
-  // )
-
   const searchedEvents = useMemo(() => {
-    if (!searchText) return filteredEvents2
-    return filterItems(filteredEvents2, searchText, [], {}, ['title'])
-  }, [filteredEvents2, searchText])
+    if (!searchText) return filteredEvents
+    return filterItems(filteredEvents, searchText, [], {}, ['title'])
+  }, [filteredEvents, searchText])
 
   const visibleEvents = useMemo(
     () =>
@@ -167,7 +123,12 @@ const EventsContent = () => {
             (isEventActive && filter.status.finished && isEventExpired) ||
             (isEventActive && filter.status.active && !isEventExpired) ||
             (isEventCanceled && filter.status.canceled)) &&
-          filterOptions.directions.includes(event.directionId)
+          filterOptions.directions.includes(event.directionId) &&
+          ((filter.participant?.participant &&
+            filter.participant?.notParticipant) ||
+          !!eventsOfUser.find((eventUser) => eventUser.eventId === event._id)
+            ? filter.participant?.participant
+            : filter.participant?.notParticipant)
         )
       }),
     [searchedEvents, filter, filterOptions.directions.length]
@@ -189,12 +150,12 @@ const EventsContent = () => {
             setFilter((state) => ({ ...state, status: value }))
           }
         />
-        {/* <EventParticipantToggleButtons
+        <EventParticipantToggleButtons
           value={filter.participant}
           onChange={(value) =>
             setFilter((state) => ({ ...state, participant: value }))
           }
-        /> */}
+        />
 
         {/* <ButtonGroup
           className=""
