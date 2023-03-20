@@ -64,6 +64,7 @@ const EventButtonSignIn = ({
 
   const PaymentsFromLoggedUser = () => {
     if (
+      !loggedUser ||
       !userEventStatus ||
       userEventStatus !== 'participant' ||
       eventPriceForLoggedUser === 0
