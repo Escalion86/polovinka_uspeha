@@ -9,8 +9,9 @@ export const paymentsFromLoggedUserByEventIdSelector = selectorFamily({
   get:
     (id) =>
     ({ get }) => {
-      if (!id) return DEFAULT_PAYMENT
+      if (!id) return []
       const loggedUser = get(loggedUserAtom)
+      if (!loggedUser) return []
       return get(paymentsByEventIdSelector(id)).filter(
         (item) => item.userId === loggedUser._id
       )
