@@ -397,7 +397,10 @@ const LoginPage = (props) => {
                 (error) => {
                   setWaitingResponse(false)
                   addError({ error })
-                }
+                },
+                false,
+                null,
+                true
               )
             },
             () => {
@@ -438,7 +441,11 @@ const LoginPage = (props) => {
             // if (!res.errorNum && res.confirmed) {
             //   setRegistrationLevel(3)
             // }
-          }
+          },
+          undefined,
+          false,
+          null,
+          true
         )
       }
       if (registrationLevel === 3) {
@@ -481,7 +488,11 @@ const LoginPage = (props) => {
             // }
             // if (res.status) setRegistrationLevel(2)
             // else console.log('Ошибка ответа регистрации')
-          }
+          },
+          undefined,
+          false,
+          null,
+          true
         )
       }
     } else {
@@ -837,7 +848,11 @@ const LoginPage = (props) => {
                             addError({ [res.error.type]: res.error.message })
                             // updateErrors(res.error.type, res.error.message)
                           }
-                        }
+                        },
+                        undefined,
+                        false,
+                        null,
+                        true
                       )
                     }}
                   />

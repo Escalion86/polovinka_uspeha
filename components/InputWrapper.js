@@ -84,6 +84,7 @@ const InputWrapper = forwardRef(
           fullWidth ? 'w-full' : '',
           paddingY === 'small' ? 'pt-1 pb-0.5' : paddingY ? 'pt-2 pb-1.5' : '',
           disabled ? 'cursor-not-allowed' : '',
+          hidden ? 'hidden' : '',
           className
         )}
         ref={ref}
