@@ -76,7 +76,7 @@ export default async function handler(req, res) {
   if (method === 'POST') {
     try {
       await dbConnect()
-
+      console.log('body', body)
       const { phone, code, password, forgotPassword, get_balance } = body
 
       if (get_balance) {

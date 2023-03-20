@@ -31,6 +31,7 @@ const CheckBox = ({
       <div
         className={cn(
           'flex gap-x-1 pl-0.5 my-1 items-center',
+          hidden ? 'hidden' : '',
           wrapperClassName
         )}
       >
