@@ -111,6 +111,8 @@ const InputImage = ({
       value={image}
       className={cn('flex-1', className)}
       required={required}
+      error={error}
+      // paddingY
       // labelPos="top"
     >
       <div
