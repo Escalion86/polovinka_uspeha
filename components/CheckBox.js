@@ -1,5 +1,4 @@
 import cn from 'classnames'
-import InputWrapper from './InputWrapper'
 
 const CheckBox = ({
   checked = false,
@@ -30,7 +29,7 @@ const CheckBox = ({
       // <div className="flex items-center">
       <div
         className={cn(
-          'flex gap-x-1 pl-0.5 my-1 items-center',
+          'flex gap-x-1 pl-1 my-2 items-center',
           hidden ? 'hidden' : '',
           wrapperClassName
         )}
