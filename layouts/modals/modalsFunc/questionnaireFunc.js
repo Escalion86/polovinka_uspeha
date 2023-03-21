@@ -40,11 +40,14 @@ const QuestionnaireItem = ({
   <FormWrapper>
     {index >= 0 && <Divider thin light />}
     <div className="flex items-center gap-x-2">
-      <Label className="font-bold" text={`№${index + 1}.`} />
+      <div
+        className="ml-2 font-bold text-right min-w-10 w-[10%] text-text leading-[0.875rem]"
+        text={`№${index + 1}.`}
+      >{`№${index + 1}.`}</div>
       <span className="flex-1 italic font-bold text-gray-600">{title}</span>
-      <div className="flex justify-end p-1 duration-200 transform cursor-pointer w-7 h-7 hover:scale-125">
+      <div className="flex items-center justify-center p-1 duration-200 transform cursor-pointer w-7 h-7 hover:scale-125">
         <FontAwesomeIcon
-          className="h-4 text-red-700"
+          className="w-4 h-4 text-red-700"
           icon={faTrash}
           size="1x"
           onClick={() => onDelete(index)}
@@ -55,7 +58,7 @@ const QuestionnaireItem = ({
       label="Заголовок (вопрос)"
       value={label}
       onChange={(newValue) => onChange({ label: newValue }, index)}
-      noMargin
+      // noMargin
     />
     {children}
   </FormWrapper>
@@ -72,7 +75,7 @@ const questionnaireFunc = (startData, onConfirm) => {
   }) => {
     // const questionnaire = useRecoilValue(questionnaireSelector(questionnaireId))
     const [questionnaireName, setQuestionnaireName] = useState(
-      startData?.name ?? DEFAULT_QUESTIONNAIRE.name
+      startData?.title ?? DEFAULT_QUESTIONNAIRE.title
     )
     const [data, setData] = useState(
       startData?.data ?? DEFAULT_QUESTIONNAIRE.data
@@ -99,6 +102,8 @@ const questionnaireFunc = (startData, onConfirm) => {
     // const refreshPage = () => {
     //   router.replace(router.asPath)
     // }
+    // console.log('startData', startData)
+    // console.log('onConfirm', onConfirm)
 
     const onClickConfirm = async () => {
       closeModal()
@@ -140,23 +145,23 @@ const questionnaireFunc = (startData, onConfirm) => {
       //   user?.status !== status ||
       //   user?.role !== role
       setOnConfirmFunc(onClickConfirm)
-      setOnDeclineFunc(() => onConfirm(null))
+      // setOnDeclineFunc(() => onConfirm(null))
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(isErrors)
     }, [questionnaireName, data])
 
     return (
       <div className="flex flex-col">
-        <Divider thin light />
+        {/* <Divider thin light /> */}
 
-        <FormWrapper className="pt-2">
+        <FormWrapper className="gap-y-1">
           <Input
             label="Название анкеты"
             value={questionnaireName}
             onChange={setQuestionnaireName}
           />
           <div className="flex pl-10">
-            <span className="flex-1 text-lg font-bold text-center">
+            <span className="flex items-center justify-center flex-1 text-lg font-bold">
               Вопросы
             </span>
             <div>
@@ -194,7 +199,7 @@ const questionnaireFunc = (startData, onConfirm) => {
                   onDelete={deleteItem}
                 >
                   {item.type === 'number' && (
-                    <div className="flex gap-x-1">
+                    <div className="flex mt-2 gap-x-1">
                       <Input
                         label="Минимум"
                         value={item.params?.min}
@@ -213,7 +218,8 @@ const questionnaireFunc = (startData, onConfirm) => {
                           // onChange({ params: { min: newValue } }, index)
                         }
                         type="number"
-                        inputClassName="w-40"
+                        // inputClassName="w-40"
+                        noMargin
                       />
                       <Input
                         label="Максимум"
@@ -233,7 +239,8 @@ const questionnaireFunc = (startData, onConfirm) => {
                           // onChange({ params: { max: newValue } }, index)
                         }
                         type="number"
-                        inputClassName="w-40"
+                        // inputClassName="w-40"
+                        noMargin
                       />
                     </div>
                   )}

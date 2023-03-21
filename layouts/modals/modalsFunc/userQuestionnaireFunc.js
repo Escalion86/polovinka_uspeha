@@ -7,6 +7,7 @@ import ErrorsList from '@components/ErrorsList'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
 import Textarea from '@components/Textarea'
+import { DEFAULT_QUESTIONNAIRE } from '@helpers/constants'
 
 const typesNames = {
   text: 'Текст (строка)',
@@ -61,7 +62,7 @@ const data = [
 ]
 
 const userQuestionnaireFunc = (startData, onConfirm) => {
-  const { title, data } = startData
+  const { title, data } = startData ?? DEFAULT_QUESTIONNAIRE
   const stateDefault = []
   data.forEach((item, index) => {
     stateDefault.push(item.show ? item.defaultValue : undefined)

@@ -368,7 +368,7 @@ export const DEFAULT_EVENT = Object.freeze({
 })
 
 export const DEFAULT_QUESTIONNAIRE = Object.freeze({
-  name: '',
+  title: '',
   data: [],
 })
 
@@ -422,6 +422,7 @@ export const DEFAULT_SERVICE = Object.freeze({
   index: null,
   showOnSite: true,
   price: 0,
+  questionnaire: null,
 })
 
 export const DEFAULT_SITE_SETTINGS = Object.freeze({

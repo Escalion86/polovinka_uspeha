@@ -54,6 +54,10 @@ const servicesSchema = {
     max: [99999999, 'Сумма не может превышать 999999,99 руб'],
     default: null,
   },
+  questionnaire: {
+    type: Map,
+    default: null,
+  },
 }
 
 export default servicesSchema
