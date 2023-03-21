@@ -60,7 +60,8 @@ const data = [
   },
 ]
 
-const userQuestionnaireFunc = ({ title, data }) => {
+const userQuestionnaireFunc = (startData, onConfirm) => {
+  const { title, data } = startData
   const stateDefault = []
   data.forEach((item, index) => {
     stateDefault.push(item.show ? item.defaultValue : undefined)
@@ -173,7 +174,10 @@ const userQuestionnaireFunc = ({ title, data }) => {
     //   router.replace(router.asPath)
     // }
 
-    const onClickConfirm = async () => {}
+    const onClickConfirm = () => {
+      closeModal()
+      onConfirm(state)
+    }
 
     useEffect(() => {
       // const isFormChanged =
@@ -201,7 +205,7 @@ const userQuestionnaireFunc = ({ title, data }) => {
       setOnConfirmFunc(onClickConfirm)
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       // setDisableConfirm(!isFormChanged)
-    }, [])
+    }, [state])
 
     return (
       <FormWrapper>

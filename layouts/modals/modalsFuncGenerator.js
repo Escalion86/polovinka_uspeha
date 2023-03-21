@@ -329,13 +329,14 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
         ),
       view: (userId) => addModal(userViewFunc(userId)),
       events: (userId) => addModal(userSignedUpEventsFunc(userId)),
-      questionnaire: (userId, questionnaireId) =>
-        addModal(userQuestionnaireFunc(userId, questionnaireId)),
     },
     questionnaire: {
-      add: (questionnaireId) =>
-        addModal(questionnaireFunc(questionnaireId, true)),
-      edit: (questionnaireId) => addModal(questionnaireFunc(questionnaireId)),
+      // add: (questionnaireId) =>
+      //   addModal(questionnaireFunc(questionnaireId, true)),
+      open: (data, onConfirm) =>
+        addModal(userQuestionnaireFunc(data, onConfirm)),
+      constructor: (data, onConfirm) =>
+        addModal(questionnaireFunc(data, onConfirm)),
     },
     additionalBlock: {
       add: (additionalBlockId) =>

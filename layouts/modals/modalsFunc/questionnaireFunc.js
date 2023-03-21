@@ -61,7 +61,7 @@ const QuestionnaireItem = ({
   </FormWrapper>
 )
 
-const questionnaireFunc = (onConfirm) => {
+const questionnaireFunc = (startData, onConfirm) => {
   const QuestionnaireFuncModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -72,9 +72,11 @@ const questionnaireFunc = (onConfirm) => {
   }) => {
     // const questionnaire = useRecoilValue(questionnaireSelector(questionnaireId))
     const [questionnaireName, setQuestionnaireName] = useState(
-      DEFAULT_QUESTIONNAIRE.name
+      startData?.name ?? DEFAULT_QUESTIONNAIRE.name
     )
-    const [data, setData] = useState(DEFAULT_QUESTIONNAIRE.data)
+    const [data, setData] = useState(
+      startData?.data ?? DEFAULT_QUESTIONNAIRE.data
+    )
     // const setQuestionnaire = useRecoilValue(itemsFuncAtom).questionnaire.set
 
     const [errors, checkErrors, addError, removeError, clearErrors] =

@@ -470,9 +470,11 @@ const QuestionnaireContent = (props) => {
               icon={faCheck}
               hoverable
               onClick={() =>
-                modalsFunc.questionnaire.edit((data) => {
+                modalsFunc.questionnaire.constructor(null, (data) => {
                   console.log('!!!!', data)
-                  modalsFunc.user.questionnaire(data)
+                  modalsFunc.questionnaire.open(data, (res) =>
+                    console.log('res', res)
+                  )
                 })
               }
             />
