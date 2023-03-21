@@ -74,7 +74,7 @@ const Input = forwardRef(
       <InputWrapper
         label={label}
         labelClassName={labelClassName}
-        value={value}
+        value={value ?? defaultValue}
         className={className}
         required={required}
         floatingLabel={floatingLabel}
@@ -109,6 +109,7 @@ const Input = forwardRef(
           )}
           disabled={disabled}
           value={value}
+          defaultValue={defaultValue}
           onChange={(e) => {
             const { value } = e.target
             if (type === 'number') {

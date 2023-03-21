@@ -30,15 +30,15 @@ const typesNames = {
 }
 
 const QuestionnaireItem = ({
-  question,
+  label,
   onChange,
   title,
   index,
   onDelete,
   children,
 }) => (
-  <FormWrapper gapY={1}>
-    {index > 0 && <Divider thin light />}
+  <FormWrapper>
+    {index >= 0 && <Divider thin light />}
     <div className="flex items-center gap-x-2">
       <Label className="font-bold" text={`№${index + 1}.`} />
       <span className="flex-1 italic font-bold text-gray-600">{title}</span>
@@ -52,15 +52,16 @@ const QuestionnaireItem = ({
       </div>
     </div>
     <Input
-      label="Вопрос"
-      value={question}
-      onChange={(newValue) => onChange({ question: newValue }, index)}
+      label="Заголовок (вопрос)"
+      value={label}
+      onChange={(newValue) => onChange({ label: newValue }, index)}
+      noMargin
     />
     {children}
   </FormWrapper>
 )
 
-const questionnaireFunc = (questionnaireId, clone) => {
+const questionnaireFunc = (onConfirm) => {
   const QuestionnaireFuncModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -69,14 +70,12 @@ const questionnaireFunc = (questionnaireId, clone) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const questionnaire = useRecoilValue(questionnaireSelector(questionnaireId))
+    // const questionnaire = useRecoilValue(questionnaireSelector(questionnaireId))
     const [questionnaireName, setQuestionnaireName] = useState(
-      questionnaire?.name ?? DEFAULT_QUESTIONNAIRE.name
+      DEFAULT_QUESTIONNAIRE.name
     )
-    const [data, setData] = useState(
-      questionnaire?.data ?? DEFAULT_QUESTIONNAIRE.data
-    )
-    const setQuestionnaire = useRecoilValue(itemsFuncAtom).questionnaire.set
+    const [data, setData] = useState(DEFAULT_QUESTIONNAIRE.data)
+    // const setQuestionnaire = useRecoilValue(itemsFuncAtom).questionnaire.set
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -101,21 +100,22 @@ const questionnaireFunc = (questionnaireId, clone) => {
 
     const onClickConfirm = async () => {
       closeModal()
-      setQuestionnaire(
-        {
-          _id: questionnaire?._id,
-          name: questionnaireName,
-          data,
-        },
-        clone
-      )
+      onConfirm({ title: questionnaireName, data })
+      // setQuestionnaire(
+      //   {
+      //     _id: questionnaire?._id,
+      //     name: questionnaireName,
+      //     data,
+      //   },
+      //   clone
+      // )
     }
 
     useEffect(() => {
       const isErrors =
         questionnaireName === '' ||
         data.length === 0 ||
-        data.find((item) => !item.question)
+        data.find((item) => !item.label)
       // const isFormChanged =
       //   user?.firstName !== firstName ||
       //   user?.secondName !== secondName ||
@@ -138,6 +138,7 @@ const questionnaireFunc = (questionnaireId, clone) => {
       //   user?.status !== status ||
       //   user?.role !== role
       setOnConfirmFunc(onClickConfirm)
+      setOnDeclineFunc(() => onConfirm(null))
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(isErrors)
     }, [questionnaireName, data])
@@ -159,7 +160,7 @@ const questionnaireFunc = (questionnaireId, clone) => {
             <div>
               <IconButtonMenu
                 // dense
-                name="Добавить вопрос"
+                // name="Добавить вопрос"
                 icon={faPlus}
                 items={[
                   { name: 'Текст (строка)', value: 'text' },
@@ -184,33 +185,55 @@ const questionnaireFunc = (questionnaireId, clone) => {
               return (
                 <QuestionnaireItem
                   key={index}
-                  question={item.question}
+                  label={item.label}
                   onChange={onChange}
                   title={typesNames[item.type]}
                   index={index}
                   onDelete={deleteItem}
                 >
                   {item.type === 'number' && (
-                    <>
+                    <div className="flex gap-x-1">
                       <Input
                         label="Минимум"
-                        value={item.min}
-                        onChange={(newValue) =>
-                          onChange({ min: newValue }, index)
+                        value={item.params?.min}
+                        onChange={
+                          (newValue) =>
+                            setData((state) =>
+                              state.map((item, i) =>
+                                index === i
+                                  ? {
+                                      ...item,
+                                      params: { ...item.params, min: newValue },
+                                    }
+                                  : item
+                              )
+                            )
+                          // onChange({ params: { min: newValue } }, index)
                         }
                         type="number"
                         inputClassName="w-40"
                       />
                       <Input
                         label="Максимум"
-                        value={item.max}
-                        onChange={(newValue) =>
-                          onChange({ max: newValue }, index)
+                        value={item.params?.max}
+                        onChange={
+                          (newValue) =>
+                            setData((state) =>
+                              state.map((item, i) =>
+                                index === i
+                                  ? {
+                                      ...item,
+                                      params: { ...item.params, max: newValue },
+                                    }
+                                  : item
+                              )
+                            )
+                          // onChange({ params: { max: newValue } }, index)
                         }
                         type="number"
                         inputClassName="w-40"
                       />
-                    </>
+                    </div>
                   )}
                 </QuestionnaireItem>
               )

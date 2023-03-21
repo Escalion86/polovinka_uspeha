@@ -13,6 +13,8 @@ import ErrorsList from '@components/ErrorsList'
 import { DEFAULT_SERVICE } from '@helpers/constants'
 import servicesAtom from '@state/atoms/servicesAtom'
 import PriceInput from '@components/PriceInput'
+import TabPanel from '@components/Tabs/TabPanel'
+import TabContext from '@components/Tabs/TabContext'
 
 const serviceFunc = (serviceId, clone = false) => {
   const ServiceModal = ({
@@ -78,69 +80,82 @@ const serviceFunc = (serviceId, clone = false) => {
     }, [title, description, showOnSite, image, menuName, price])
 
     return (
-      <FormWrapper>
-        <InputImage
-          label="Картинка"
-          directory="services"
-          image={image}
-          onChange={(value) => {
-            removeError('image')
-            setImage(value)
-          }}
-          required
-          error={errors.image}
-        />
-        <Input
-          label="Название"
-          type="text"
-          value={title}
-          onChange={(value) => {
-            removeError('title')
-            setTitle(value)
-          }}
-          error={errors.title}
-          required
-        />
-        <EditableTextarea
-          label="Описание"
-          html={description}
-          uncontrolled={false}
-          onChange={(value) => {
-            removeError('description')
-            setDescription(value)
-          }}
-          error={errors.description}
-          required
-        />
-        <PriceInput
-          value={price}
-          onChange={(value) => {
-            removeError('price')
-            setPrice(value)
-          }}
-          error={errors.price}
-          // labelPos="left"
-        />
-        <Input
-          label="Название в меню"
-          type="text"
-          value={menuName}
-          onChange={(value) => {
-            removeError('menuName')
-            setMenuName(value)
-          }}
-          // labelClassName="w-40"
-          error={errors.menuName}
-        />
-        <CheckBox
-          checked={showOnSite}
-          labelPos="left"
-          // labelClassName="w-40"
-          onClick={() => setShowOnSite((checked) => !checked)}
-          label="Показывать на сайте"
-        />
-        <ErrorsList errors={errors} />
-      </FormWrapper>
+      <TabContext value="Общие">
+        <TabPanel tabName="Общие" className="px-0">
+          <FormWrapper>
+            <InputImage
+              label="Картинка"
+              directory="services"
+              image={image}
+              onChange={(value) => {
+                removeError('image')
+                setImage(value)
+              }}
+              required
+              error={errors.image}
+            />
+            <Input
+              label="Название"
+              type="text"
+              value={title}
+              onChange={(value) => {
+                removeError('title')
+                setTitle(value)
+              }}
+              error={errors.title}
+              required
+            />
+            <EditableTextarea
+              label="Описание"
+              html={description}
+              uncontrolled={false}
+              onChange={(value) => {
+                removeError('description')
+                setDescription(value)
+              }}
+              error={errors.description}
+              required
+            />
+            <PriceInput
+              value={price}
+              onChange={(value) => {
+                removeError('price')
+                setPrice(value)
+              }}
+              error={errors.price}
+              // labelPos="left"
+            />
+            <Input
+              label="Название в меню"
+              type="text"
+              value={menuName}
+              onChange={(value) => {
+                removeError('menuName')
+                setMenuName(value)
+              }}
+              // labelClassName="w-40"
+              error={errors.menuName}
+            />
+            <CheckBox
+              checked={showOnSite}
+              labelPos="left"
+              // labelClassName="w-40"
+              onClick={() => setShowOnSite((checked) => !checked)}
+              label="Показывать на сайте"
+            />
+            <ErrorsList errors={errors} />
+          </FormWrapper>
+        </TabPanel>
+        <TabPanel tabName="Анкета" className="px-0">
+          {/* <CheckBox
+              checked={showOnSite}
+              labelPos="left"
+              // labelClassName="w-40"
+              onClick={() => setShowOnSite((checked) => !checked)}
+              label="Показывать на сайте"
+            /> */}
+        </TabPanel>
+      </TabContext>
     )
   }
 

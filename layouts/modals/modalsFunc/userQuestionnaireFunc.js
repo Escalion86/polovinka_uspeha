@@ -6,55 +6,79 @@ import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
+import Textarea from '@components/Textarea'
 
-const userQuestionnaireFunc = (userId, questionnaireId) => {
-  const data = [
-    {
-      type: 'text',
-      label: 'Профессия',
-      key: 'profession',
-      defaultValue: '',
-      show: true,
-      required: true,
-    },
-    {
-      type: 'number',
-      label: 'Возраст',
-      key: 'age',
-      defaultValue: 0,
-      show: true,
-      required: true,
-      min: 0,
-      max: undefined,
-    },
-    {
-      type: 'valuePicker',
-      label: 'Пол',
-      key: 'gender',
-      defaultValue: 'male',
-      valuesArray: [
-        { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },
-        { value: 'famale', name: 'Женщина', color: 'red-400', icon: faVenus },
-      ],
-      show: true,
-      required: true,
-    },
-  ]
-  const stateDefault = {}
-  data.forEach((item) => {
-    if (item.show) stateDefault[item.key] = item.defaultValue
+const typesNames = {
+  text: 'Текст (строка)',
+  textarea: 'Текст (абзац)',
+  number: 'Число',
+  comboList: 'Один из списка',
+  checkList: 'Несколько из списка',
+  menu: 'Раскрывающийся список',
+  date: 'Дата',
+  time: 'Время',
+  dateTime: 'Дата и время',
+}
+
+const data = [
+  {
+    type: 'text',
+    label: 'Профессия',
+    // key: 'profession',
+    defaultValue: '123',
+    show: true,
+    required: true,
+  },
+  {
+    type: 'textarea',
+    label: 'О себе',
+    // key: 'about',
+    defaultValue: '',
+    show: true,
+    required: false,
+  },
+  {
+    type: 'number',
+    label: 'Возраст',
+    // key: 'age',
+    defaultValue: 1,
+    show: true,
+    required: true,
+    params: { min: 1, max: undefined, step: 5 },
+  },
+  {
+    type: 'valuePicker',
+    label: 'Пол',
+    // key: 'gender',
+    defaultValue: 'male',
+    valuesArray: [
+      { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },
+      { value: 'famale', name: 'Женщина', color: 'red-400', icon: faVenus },
+    ],
+    show: true,
+    required: true,
+  },
+]
+
+const userQuestionnaireFunc = ({ title, data }) => {
+  const stateDefault = []
+  data.forEach((item, index) => {
+    stateDefault.push(item.show ? item.defaultValue : undefined)
   })
 
   const Q = ({ onChange }) => {
     return (
       <>
         {data
-          .filter((item) => item.show)
-          .map((item) => {
-            const onItemChange = (value) => onChange({ [item.key]: value })
+          // .filter((item) => item.show)
+          .map((item, index) => {
+            if (!item.show) return null
+            const onItemChange = (value) => onChange(index, value)
+
             if (item.type === 'text')
               return (
                 <Input
+                  {...item.params}
                   key={item.key}
                   label={item.label}
                   defaultValue={item.defaultValue}
@@ -66,25 +90,37 @@ const userQuestionnaireFunc = (userId, questionnaireId) => {
                   required={item.required}
                 />
               )
-            if (item.type === 'number')
+            if (item.type === 'textarea')
+              return (
+                <Textarea
+                  {...item.params}
+                  label={item.label}
+                  type="text"
+                  defaultValue={item.defaultValue}
+                  onChange={onItemChange}
+                  required={item.required}
+                />
+              )
+            if (item.type === 'number') {
               return (
                 <Input
+                  {...item.params}
                   key={item.key}
                   label={item.label}
                   defaultValue={item.defaultValue}
                   type="number"
                   // value={firstName}
                   onChange={onItemChange}
-                  min={item.min}
-                  max={item.max}
                   // labelClassName="w-40"
                   // error={errors.firstName}
-                  // required
+                  required={item.required}
                 />
               )
+            }
             if (item.type === 'valuePicker')
               return (
                 <ValuePicker
+                  {...item.params}
                   key={item.key}
                   defaultValue={item.defaultValue}
                   // value={gender}
@@ -121,7 +157,13 @@ const userQuestionnaireFunc = (userId, questionnaireId) => {
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
-    const updateState = (obj) => setState((state) => ({ ...state, ...obj }))
+    const updateState = (index, value) => {
+      setState((state) => {
+        const newState = [...state]
+        newState[index] = value
+        return newState
+      })
+    }
 
     console.log('state', state)
 
@@ -170,7 +212,7 @@ const userQuestionnaireFunc = (userId, questionnaireId) => {
   }
 
   return {
-    title: `Дополнительная анкета пользователя`,
+    title,
     confirmButtonName: 'Применить',
     Children: UserQuestionnaireFuncModal,
   }

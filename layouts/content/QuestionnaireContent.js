@@ -469,7 +469,12 @@ const QuestionnaireContent = (props) => {
               color="red-500"
               icon={faCheck}
               hoverable
-              onClick={() => modalsFunc.questionnaire.edit()}
+              onClick={() =>
+                modalsFunc.questionnaire.edit((data) => {
+                  console.log('!!!!', data)
+                  modalsFunc.user.questionnaire(data)
+                })
+              }
             />
           )}
           {/* </div> */}
