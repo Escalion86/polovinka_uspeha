@@ -506,7 +506,7 @@ const itemsFuncGenerator = (
 
   obj.service.buy = async (serviceId, userId) => {
     return await postData(
-      `/api/service/buy`,
+      `/api/services/buy`,
       { serviceId, userId },
       (data) => {
         snackbar.success('Заявка на покупку услуги успешно отправлена')

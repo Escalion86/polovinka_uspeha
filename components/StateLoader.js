@@ -58,7 +58,6 @@ import { useMemo } from 'react'
 import addModalSelector from '@state/selectors/addModalSelector'
 import addErrorModalSelector from '@state/selectors/addErrorModalSelector'
 // import snackbarAtom from '@state/atoms/snackbarAtom'
-// import itemsFuncSelector from '@state/itemsFuncGeneratorSelector'
 import { useRouter } from 'next/router'
 import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 
