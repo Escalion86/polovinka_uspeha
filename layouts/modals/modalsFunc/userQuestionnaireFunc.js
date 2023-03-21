@@ -63,9 +63,10 @@ const data = [
 
 const userQuestionnaireFunc = (startData, onConfirm) => {
   const { title, data } = startData ?? DEFAULT_QUESTIONNAIRE
-  const stateDefault = []
-  data.forEach((item, index) => {
-    stateDefault.push(item.show ? item.defaultValue : undefined)
+  const stateDefault = {}
+  data.forEach((item) => {
+    stateDefault[item.key] = item.defaultValue
+    // stateDefault.push(item.show ? item.defaultValue : undefined)
   })
 
   const Q = ({ onChange }) => {
@@ -73,9 +74,9 @@ const userQuestionnaireFunc = (startData, onConfirm) => {
       <>
         {data
           // .filter((item) => item.show)
-          .map((item, index) => {
+          .map((item) => {
             if (!item.show) return null
-            const onItemChange = (value) => onChange(index, value)
+            const onItemChange = (value) => onChange(item.key, value)
 
             if (item.type === 'text')
               return (
@@ -159,13 +160,16 @@ const userQuestionnaireFunc = (startData, onConfirm) => {
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
-    const updateState = (index, value) => {
-      setState((state) => {
-        const newState = [...state]
-        newState[index] = value
-        return newState
-      })
-    }
+    // const updateState = (index, value) => {
+    //   setState((state) => {
+    //     const newState = [...state]
+    //     newState[index] = value
+    //     return newState
+    //   })
+    // }
+
+    const updateState = (key, value) =>
+      setState((state) => ({ ...state, [key]: value }))
 
     console.log('state', state)
 
@@ -202,8 +206,7 @@ const userQuestionnaireFunc = (startData, onConfirm) => {
       //   user?.haveKids !== haveKids ||
       //   user?.status !== status ||
       //   user?.role !== role
-
-      setOnConfirmFunc(onClickConfirm)
+      if (onConfirm) setOnConfirmFunc(onClickConfirm)
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       // setDisableConfirm(!isFormChanged)
     }, [state])

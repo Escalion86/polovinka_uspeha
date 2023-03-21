@@ -20,7 +20,7 @@ import InputWrapper from '@components/InputWrapper'
 import { modalsFuncAtom } from '@state/atoms'
 import { getNounQuestions } from '@helpers/getNoun'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencil, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 const Questionnaire = ({ data, onChange }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -51,16 +51,14 @@ const Questionnaire = ({ data, onChange }) => {
             <div>{data?.title}</div>
             <div>({getNounQuestions(data?.data.length)})</div>
           </div>
-          {/* <div className="flex items-center justify-center p-1 duration-200 transform cursor-pointer w-7 h-7 hover:scale-125">
+          <div className="flex items-center justify-center p-1 duration-200 transform cursor-pointer w-7 h-7 hover:scale-125">
             <FontAwesomeIcon
-              className="w-4 h-4 text-orange-400"
-              icon={faPencil}
+              className="w-4 h-4 text-purple-400"
+              icon={faEye}
               size="1x"
-              onClick={() =>
-                modalsFunc.questionnaire.constructor(data, onChange)
-              }
+              onClick={() => modalsFunc.questionnaire.open(data)}
             />
-          </div> */}
+          </div>
           {/* <FontAwesomeIcon
             className="w-4 h-4 text-danger"
             icon={faTrash}

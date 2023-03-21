@@ -16,7 +16,7 @@ const IconToggleButton = ({
       <ToggleButton
         className={cn(
           'flex gap-x-1',
-          size === 's' ? 'h-9 min-w-9 w-9' : 'h-10 min-w-10 w-10'
+          size === 's' ? 'h-9 min-w-9' : 'h-10 min-w-10'
         )}
         size="small"
         value={value}

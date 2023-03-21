@@ -374,7 +374,7 @@ export const DEFAULT_QUESTIONNAIRE = Object.freeze({
 
 export const DEFAULT_QUESTIONNAIRE_ITEM = {
   type: 'text',
-  question: '',
+  label: '',
   key: '',
   show: true,
   required: true,
