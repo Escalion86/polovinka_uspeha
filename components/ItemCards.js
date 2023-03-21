@@ -262,7 +262,7 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
   <ItemContainer
     onClick={onClick}
     active={active}
-    className="flex gap-x-1 h-[50px]"
+    className="flex h-[50px]"
     noPadding
   >
     {item?.image && (
@@ -276,7 +276,7 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
       />
       // </div>
     )}
-    <div>
+    <div className="px-1">
       <div className="h-5 text-sm font-bold text-gray-800 truncate">
         {item.title}
       </div>
