@@ -13,6 +13,8 @@ const PriceInput = ({
   labelContentWidth,
   labelPos,
   disabled,
+  paddingY = 'small',
+  noMargin,
 }) => {
   const rubles = value ? Math.floor(value / 100) : 0
   const cops = value ? Math.floor(value % 100) : 0
@@ -36,8 +38,9 @@ const PriceInput = ({
       labelContentWidth={labelContentWidth}
       labelPos={labelPos}
       fullWidth={false}
-      paddingY="small"
+      paddingY={paddingY}
       className="w-min"
+      noMargin={noMargin}
     >
       {/* <div
         className={cn(

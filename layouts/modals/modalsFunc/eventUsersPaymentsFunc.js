@@ -592,8 +592,8 @@ const eventUsersPaymentsFunc = (eventId) => {
       })
     }, [totalIncome, expectedIncome, event.status])
 
-    const TotalFromParticipants = () => (
-      <div className="flex flex-wrap gap-x-1">
+    const TotalFromParticipants = ({ className }) => (
+      <div className={cn('flex flex-wrap gap-x-1', className)}>
         <span>Всего получено от участников:</span>
         <div className="flex gap-x-0.5 flex-nowrap">
           <span
@@ -619,8 +619,8 @@ const eventUsersPaymentsFunc = (eventId) => {
       </div>
     )
 
-    const TotalFromNotParticipants = () => (
-      <div className="flex flex-wrap gap-x-1">
+    const TotalFromNotParticipants = ({ className }) => (
+      <div className={cn('flex flex-wrap gap-x-1', className)}>
         <span>Оплатили, но не пришли:</span>
         <span
           className={cn(
@@ -636,8 +636,8 @@ const eventUsersPaymentsFunc = (eventId) => {
       </div>
     )
 
-    const TotalToAssistants = () => (
-      <div className="flex flex-wrap gap-x-1">
+    const TotalToAssistants = ({ className }) => (
+      <div className={cn('flex flex-wrap gap-x-1', className)}>
         <span>Всего затрат на ведущих и ассистентов:</span>
         <span
           className={cn(
@@ -653,8 +653,8 @@ const eventUsersPaymentsFunc = (eventId) => {
       </div>
     )
 
-    const TotalToEvent = () => (
-      <div className="flex flex-wrap gap-x-1">
+    const TotalToEvent = ({ className }) => (
+      <div className={cn('flex flex-wrap gap-x-1', className)}>
         <span>Всего затрат на расходники и организацию:</span>
         <span
           className={cn(
@@ -669,8 +669,8 @@ const eventUsersPaymentsFunc = (eventId) => {
       </div>
     )
 
-    const TotalFromEvent = () => (
-      <div className="flex flex-wrap gap-x-1">
+    const TotalFromEvent = ({ className }) => (
+      <div className={cn('flex flex-wrap gap-x-1', className)}>
         <span>Всего доп. доходов от мероприятия:</span>
         <span
           className={cn(
@@ -695,11 +695,10 @@ const eventUsersPaymentsFunc = (eventId) => {
         )}
         <TabContext value="Участники">
           <TabPanel
-            className="gap-y-1"
             tabName="Участники"
             tabAddToLabel={`${eventParticipantsCount} чел. / ${sumOfPaymentsOfEventFromParticipants} ₽`}
           >
-            <div className="flex flex-wrap items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between mb-1">
               <TotalFromParticipants />
               <div className="flex justify-end flex-1 gap-x-1">
                 {!isEventClosed && (
@@ -722,11 +721,10 @@ const eventUsersPaymentsFunc = (eventId) => {
           </TabPanel>
           {eventAssistantsFull.length > 0 && (
             <TabPanel
-              className="gap-y-1"
               tabName="Ведущие"
               tabAddToLabel={`${eventAssistantsCount} чел. / ${sumOfPaymentsOfEventToAssistants} ₽`}
             >
-              <TotalToAssistants />
+              <TotalToAssistants className="mb-1" />
               <UsersPayments
                 event={event}
                 // users={[...eventAssistants].sort(sortFunction)}
@@ -739,11 +737,10 @@ const eventUsersPaymentsFunc = (eventId) => {
           )}
           {/* {eventNotParticipantsWithPayments.length > 0 && ( */}
           <TabPanel
-            className="gap-y-1"
             tabName="Оплатили, но не пришли"
             tabAddToLabel={`${paymentsFromNotParticipants.length} чел. / ${sumOfPaymentsFromNotParticipants} ₽`}
           >
-            <TotalFromNotParticipants />
+            <TotalFromNotParticipants className="mb-1" />
             <UsersPayments
               event={event}
               usersIds={eventNotParticipantsWithPayments}
@@ -757,11 +754,10 @@ const eventUsersPaymentsFunc = (eventId) => {
           </TabPanel>
           {/* )} */}
           <TabPanel
-            className="gap-y-1"
             tabName="Мероприятие"
             tabAddToLabel={`${sumOfPaymentsToEvent + sumOfPaymentsFromEvent} ₽`}
           >
-            <div className="flex flex-wrap items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between mb-1">
               <TotalToEvent />
               <div className="flex justify-end flex-1 gap-x-1">
                 {!isEventClosed && (
@@ -810,7 +806,7 @@ const eventUsersPaymentsFunc = (eventId) => {
               </div>
             )}
             <div className="flex flex-wrap items-center justify-between">
-              <TotalFromEvent />
+              <TotalFromEvent className="mb-1" />
               <div className="flex justify-end flex-1 gap-x-1">
                 {!isEventClosed && (
                   <Button
@@ -858,11 +854,7 @@ const eventUsersPaymentsFunc = (eventId) => {
               </div>
             )}
           </TabPanel>
-          <TabPanel
-            className="gap-y-1"
-            tabName="Сводка"
-            tabAddToLabel={`${totalIncome} ₽`}
-          >
+          <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
             <TotalFromParticipants />
             {eventAssistantsFull.length > 0 && <TotalToAssistants />}
             <TotalToEvent />

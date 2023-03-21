@@ -69,20 +69,26 @@ const InputWrapper = forwardRef(
     },
     ref
   ) => {
-    const { info } = useSnackbar()
+    // const { info } = useSnackbar()
     return (
       <div
         className={cn(
           'relative flex items-center',
           paddingX ? 'px-2' : '',
-          noMargin ? '' : 'mt-3',
+          noMargin ? '' : 'mt-3 mb-1',
           noBorder
             ? ''
             : `border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50 ${
                 error ? 'border-danger' : 'border-gray-300'
               }`,
           fullWidth ? 'w-full' : '',
-          paddingY === 'small' ? 'pt-1 pb-0.5' : paddingY ? 'pt-2 pb-1.5' : '',
+          paddingY === 'small'
+            ? 'pt-1 pb-0.5'
+            : paddingY === 'big'
+            ? 'pt-2.5 pb-2'
+            : paddingY
+            ? 'pt-2 pb-1.5'
+            : '',
           disabled ? 'cursor-not-allowed' : '',
           hidden ? 'hidden' : '',
           className
@@ -92,6 +98,7 @@ const InputWrapper = forwardRef(
         <div
           className={cn(
             'relative flex w-full',
+            wrapperClassName,
             disabled ? 'cursor-not-allowed' : ''
           )}
         >
@@ -132,11 +139,19 @@ const InputWrapper = forwardRef(
                 : paddingX
                 ? 'left-0'
                 : 'left-2',
-              paddingY === 'small' ? '-top-4' : paddingY ? '-top-5' : '-top-3',
+              paddingY === 'small'
+                ? '-top-4'
+                : paddingY === 'big'
+                ? '-top-6'
+                : paddingY
+                ? '-top-5'
+                : '-top-3',
               floatingLabel
                 ? `${
                     paddingY === 'small'
                       ? '-top-4 peer-focus:-top-4'
+                      : paddingY === 'big'
+                      ? '-top-6 peer-focus:-top-6'
                       : paddingY
                       ? '-top-5 peer-focus:-top-5'
                       : '-top-3 peer-focus:-top-3'
@@ -156,11 +171,12 @@ const InputWrapper = forwardRef(
           <div
             className={cn(
               'absolute px-1 text-xs bg-white right-1 -top-2.5',
-              error ||
-                value === undefined ||
-                value === null ||
-                (typeof value === 'object' && value.length === 0)
-                ? 'text-danger'
+              error
+                ? // ||
+                  //   value === undefined ||
+                  //   value === null ||
+                  //   (typeof value === 'object' && value.length === 0)
+                  'text-danger'
                 : 'text-gray-400'
             )}
           >
