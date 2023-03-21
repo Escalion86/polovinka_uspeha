@@ -18,7 +18,10 @@ const getBalance = async (onSuccess, onError) =>
       get_balance: true,
     },
     onSuccess,
-    onError
+    onError,
+    false,
+    null,
+    true
   )
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email

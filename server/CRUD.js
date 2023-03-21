@@ -135,6 +135,8 @@ export default async function handler(Schema, req, res, params = null) {
                   },
                   (data) => console.log('data', data),
                   (data) => console.log('error', data),
+                  true,
+                  null,
                   true
                 )
                 if (data.images && data.images[0]) {
@@ -168,6 +170,8 @@ export default async function handler(Schema, req, res, params = null) {
                     },
                     (data) => console.log('data', data),
                     (data) => console.log('error', data),
+                    true,
+                    null,
                     true
                   )
                   // await postData(
