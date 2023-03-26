@@ -60,8 +60,8 @@ const InputImage = ({
             setAddingImage(true)
             sendImage(
               newImage,
-              (imageUrl) => {
-                onChange(imageUrl)
+              (imagesUrls) => {
+                onChange(imagesUrls[0])
               },
               directory,
               imageName
