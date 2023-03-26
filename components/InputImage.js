@@ -55,7 +55,7 @@ const InputImage = ({
         else {
           // setImageOld(image)
           // setAddingImage(true)
-          modalsFunc.cropImage(newImage, aspect, (newImage) => {
+          modalsFunc.cropImage(newImage, img, aspect, (newImage) => {
             setImageOld(image)
             setAddingImage(true)
             sendImage(
