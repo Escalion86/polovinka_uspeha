@@ -31,6 +31,7 @@ import serviceApplyFunc from './modalsFunc/serviceApplyFunc'
 import serviceUserViewFunc from './modalsFunc/serviceUserViewFunc'
 import serviceUserFunc from './modalsFunc/serviceUserFunc'
 import selectServicesFunc from './modalsFunc/selectServicesFunc'
+import serviceUserStatusEditFunc from './modalsFunc/serviceStatusEditFunc'
 
 const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
   const fixEventStatus = (eventId, status) => {
@@ -410,6 +411,8 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
           text: 'Вы уверены, что хотите удалить заявку на услугу?',
           onConfirm: async () => itemsFunc.servicesUser.delete(serviceUserId),
         }),
+      statusEdit: (serviceUserId) =>
+        addModal(serviceUserStatusEditFunc(serviceUserId)),
     },
     notifications: {
       telegram: () => addModal(notificationsTelegramFunc()),

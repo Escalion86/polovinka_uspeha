@@ -63,6 +63,7 @@ const CheckBoxList = ({
           const checked = value.includes(label)
           return (
             <CheckBox
+              key={label}
               onChange={() => {
                 const newValue = checked
                   ? value.filter((item) => item !== label)
@@ -116,6 +117,7 @@ const RadioBoxList = ({
           const checked = value === label
           return (
             <RadioBox
+              key={label}
               onClick={() => {
                 if (!checked) {
                   setValue(label)

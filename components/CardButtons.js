@@ -35,7 +35,11 @@ import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
-import { EVENT_STATUSES_WITH_TIME } from '@helpers/constants'
+import {
+  EVENT_STATUSES,
+  EVENT_STATUSES_WITH_TIME,
+  SERVICE_USER_STATUSES,
+} from '@helpers/constants'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
@@ -105,15 +109,19 @@ const CardButtons = ({
     editBtn:
       isLoggedUserModer &&
       showEditButton &&
-      (typeOfItem !== 'event' || item.status !== 'closed'),
+      (typeOfItem !== 'event' || item.status !== 'closed') &&
+      (typeOfItem !== 'serviceUser' || item.status !== 'closed'),
     cloneBtn:
       isLoggedUserModer && typeOfItem !== 'user' && typeOfItem !== 'review',
     showOnSiteBtn: isLoggedUserModer && showOnSiteOnClick,
-    statusBtn: isLoggedUserAdmin && typeOfItem === 'event',
+    statusBtn:
+      isLoggedUserAdmin &&
+      (typeOfItem === 'event' || typeOfItem === 'serviceUser'),
     deleteBtn:
       isLoggedUserAdmin &&
       showDeleteButton &&
-      (typeOfItem !== 'event' || item.status !== 'closed'),
+      (typeOfItem !== 'event' || item.status !== 'closed') &&
+      (typeOfItem !== 'serviceUser' || item.status !== 'closed'),
     paymentsUsersBtn: isLoggedUserAdmin && typeOfItem === 'event',
   }
 
@@ -233,9 +241,11 @@ const CardButtons = ({
       {show.statusBtn
         ? (() => {
             const status = item.status ?? 'active'
-            const { icon, color, name } = EVENT_STATUSES_WITH_TIME.find(
-              ({ value }) => value === status
-            )
+            const { icon, color, name } = (
+              typeOfItem === 'serviceUser'
+                ? SERVICE_USER_STATUSES
+                : EVENT_STATUSES
+            ).find(({ value }) => value === status)
             return (
               <ItemComponent
                 icon={icon}

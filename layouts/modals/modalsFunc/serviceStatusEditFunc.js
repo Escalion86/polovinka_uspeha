@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
 
-import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
-import isEventExpiredFunc from '@helpers/isEventExpired'
-import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
-import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
-import { DEFAULT_EVENT } from '@helpers/constants'
+import { DEFAULT_SERVICE_USER } from '@helpers/constants'
+import ServiceUserStatusPicker from '@components/ValuePicker/ServiceUserStatusPicker'
 
-const eventStatusEditFunc = (eventId) => {
-  const EventStatusEditModal = ({
+const serviceUserStatusEditFunc = (serviceUserId) => {
+  const ServiceUserStatusEditModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
@@ -19,48 +16,50 @@ const eventStatusEditFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
-    const setEvent = useRecoilValue(itemsFuncAtom).event.set
-    const isEventExpired = isEventExpiredFunc(event)
+    const serviceUser = useRecoilValue(servicesUsersSelector(serviceUserId))
+    const setServiceUser = useRecoilValue(itemsFuncAtom).servicesUser.set
+    // const isEventExpired = isEventExpiredFunc(event)
 
-    const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
-    const expectedIncome = useRecoilValue(
-      expectedIncomeOfEventSelector(eventId)
+    // const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
+    // const expectedIncome = useRecoilValue(
+    //   expectedIncomeOfEventSelector(eventId)
+    // )
+    // const canSetClosed = totalIncome >= expectedIncome && isEventExpired
+
+    const [status, setStatus] = useState(
+      serviceUser?.status ?? DEFAULT_SERVICE_USER.status
     )
-    const canSetClosed = totalIncome >= expectedIncome && isEventExpired
 
-    const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
-
-    if (!event || !eventId)
+    if (!serviceUser || !serviceUserId)
       return (
         <div className="flex justify-center w-full text-lg ">
-          ОШИБКА! Мероприятие не найдено!
+          ОШИБКА! Заявка не найдена!
         </div>
       )
 
     const onClickConfirm = async () => {
       closeModal()
-      setEvent({
-        _id: event?._id,
+      setServiceUser({
+        _id: serviceUser?._id,
         status,
       })
     }
 
     useEffect(() => {
-      const isFormChanged = event?.status !== status
+      const isFormChanged = serviceUser?.status !== status
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)
     }, [status])
 
     return (
       <div className="flex flex-col gap-y-2">
-        <EventStatusPicker
+        <ServiceUserStatusPicker
           required
           status={status}
           onChange={setStatus}
-          disabledValues={canSetClosed ? [] : ['closed']}
+          // disabledValues={canSetClosed ? [] : ['closed']}
         />
-        {!canSetClosed && (
+        {/* {!canSetClosed && (
           <>
             <div className="text-red-500">
               Закрытие мероприятия не доступно так как:
@@ -76,15 +75,15 @@ const eventStatusEditFunc = (eventId) => {
               )}
             </ul>
           </>
-        )}
+        )} */}
       </div>
     )
   }
 
   return {
-    title: `Редактирование статуса мероприятия`,
+    title: `Редактирование статуса заявки`,
     confirmButtonName: 'Применить',
-    Children: EventStatusEditModal,
+    Children: ServiceUserStatusEditModal,
     // TopLeftComponent: () => (
     //   <CardButtons
     //     item={{ _id: eventId }}
@@ -96,4 +95,4 @@ const eventStatusEditFunc = (eventId) => {
   }
 }
 
-export default eventStatusEditFunc
+export default serviceUserStatusEditFunc
