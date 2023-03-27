@@ -792,7 +792,7 @@ export const pages = [
 ]
 
 export const pagesGroups = [
-  { id: 0, name: 'Услуги', icon: faShoppingBag, accessRoles: ['dev'] },
+  { id: 0, name: 'Услуги', icon: faShoppingBag, accessRoles: ['admin', 'dev'] },
   {
     id: 1,
     name: 'Мероприятия',
