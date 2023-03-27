@@ -21,17 +21,19 @@ const AddressPicker = ({
       value={address}
       className={wrapperClassName}
       required={required}
-      paddingY
+      paddingY={false}
+      paddingX="small"
     >
-      <div className="flex flex-col flex-1">
+      <div className="flex-1">
         {/* <FormWrapper twoColumns> */}
-        <div className="grid grid-cols-2 gap-x-1">
+        <FormWrapper className="flex mt-3 mb-1 gap-x-1">
           <Input
             label="Город"
             type="text"
             value={address.town}
             onChange={(town) => onChange({ ...address, town })}
             error={errors?.address?.town}
+            noMargin
           />
           <Input
             label="Улица"
@@ -39,13 +41,17 @@ const AddressPicker = ({
             value={address.street}
             onChange={(street) => onChange({ ...address, street })}
             error={errors?.address?.street}
+            noMargin
           />
+        </FormWrapper>
+        <FormWrapper className="flex mt-3 mb-1 gap-x-1">
           <Input
             label="Дом"
             type="text"
             value={address.house}
             onChange={(house) => onChange({ ...address, house })}
             error={errors?.address?.house}
+            noMargin
           />
           <Input
             label="Подъезд"
@@ -53,13 +59,17 @@ const AddressPicker = ({
             value={address.entrance}
             onChange={(entrance) => onChange({ ...address, entrance })}
             error={errors?.address?.entrance}
+            noMargin
           />
+        </FormWrapper>
+        <FormWrapper className="flex mt-3 mb-1 gap-x-1">
           <Input
             label="Этаж"
             type="text"
             value={address.floor}
             onChange={(floor) => onChange({ ...address, floor })}
             error={errors?.address?.floor}
+            noMargin
           />
           <Input
             label="Кв. / Офис"
@@ -67,8 +77,9 @@ const AddressPicker = ({
             value={address.flat}
             onChange={(flat) => onChange({ ...address, flat })}
             error={errors?.address?.flat}
+            noMargin
           />
-        </div>
+        </FormWrapper>
         {/* </FormWrapper> */}
         {/* <FormWrapper> */}
         <Input

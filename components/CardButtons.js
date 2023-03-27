@@ -4,6 +4,7 @@ import { useRecoilValue } from 'recoil'
 import {
   faCopy,
   faEye,
+  faIdCard,
   faEyeSlash,
   faTrashAlt,
 } from '@fortawesome/free-regular-svg-icons'
@@ -66,6 +67,7 @@ const CardButtons = ({
   alwaysCompactOnPhone,
   showEditButton = true,
   showDeleteButton = true,
+  onEditQuestionnaire,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   // const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
@@ -195,6 +197,14 @@ const CardButtons = ({
           }}
           color="orange"
           tooltipText="Редактировать"
+        />
+      )}
+      {onEditQuestionnaire && (
+        <ItemComponent
+          icon={faIdCard}
+          onClick={onEditQuestionnaire}
+          color="purple"
+          tooltipText="Редактировать анкету"
         />
       )}
       {show.cloneBtn && (

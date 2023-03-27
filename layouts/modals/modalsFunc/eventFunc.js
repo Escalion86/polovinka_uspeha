@@ -400,7 +400,7 @@ const eventFunc = (eventId, clone = false) => {
               error={errors.description}
             />
             {/* <FormWrapper twoColumns> */}
-            <div className="flex items-stretch gap-x-1">
+            <FormRow>
               <DateTimePicker
                 value={dateStart}
                 onChange={(date) => {
@@ -410,6 +410,7 @@ const eventFunc = (eventId, clone = false) => {
                 label="Начало"
                 required
                 error={errors.dateStart}
+                noMargin
                 // postfix={
                 //   getDiffBetweenDates(dateStart) > 0 && 'Внимание: дата прошла!'
                 // }
@@ -420,8 +421,8 @@ const eventFunc = (eventId, clone = false) => {
                   Внимание: дата прошла!
                 </div>
               )}
-            </div>
-            <div className="flex items-stretch gap-x-1">
+            </FormRow>
+            <FormRow>
               <DateTimePicker
                 value={dateEnd}
                 onChange={(date) => {
@@ -431,12 +432,13 @@ const eventFunc = (eventId, clone = false) => {
                 label="Завершение"
                 required
                 error={errors.dateEnd}
+                noMargin
                 // postfix={formatMinutes(duration)}
               />
               <div className="flex items-center pt-[18px] leading-3 laptop:pt-0">
                 {formatMinutes(duration)}
               </div>
-            </div>
+            </FormRow>
             {/* <TimePicker
                   value={
                     formatMinutes(duration, true)

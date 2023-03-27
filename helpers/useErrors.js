@@ -34,8 +34,13 @@ const useErrors = () => {
     }
     const checks = {
       title: (data) => (!data ? setError({ title: 'Введите название' }) : null),
+      shortDescription: (data) =>
+        !data
+          ? setError({ shortDescription: 'Введите короткое описание' })
+          : null,
       description: (data) =>
         !data ? setError({ description: 'Введите описание' }) : null,
+
       images: (data) =>
         !data || data.length === 0
           ? setError({ images: 'Загрузите хотя бы одно фото' })

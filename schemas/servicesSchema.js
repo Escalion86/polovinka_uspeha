@@ -4,10 +4,10 @@ const servicesSchema = {
     // required: [true, 'Введите название курса. Давай включи фантазию!'],
     // maxlength: [100, 'Название блока не может превышать 100 символов'],
     default: 'Новая услуга',
-    formOptions: {
-      name: 'Название',
-      type: 'text',
-    },
+    // formOptions: {
+    //   name: 'Название',
+    //   type: 'text',
+    // },
   },
   description: {
     type: String,
@@ -16,18 +16,22 @@ const servicesSchema = {
     //   'Описание не может превышать 2000 символов. Краткость - сестра таланта!',
     // ],
     default: '',
-    formOptions: {
-      name: 'Описание',
-      type: 'editabletextarea',
-    },
+    // formOptions: {
+    //   name: 'Описание',
+    //   type: 'editabletextarea',
+    // },
+  },
+  shortDescription: {
+    type: String,
+    default: '',
   },
   image: {
     type: String,
     default: '',
-    formOptions: {
-      name: 'Картинка',
-      type: 'image',
-    },
+    // formOptions: {
+    //   name: 'Картинка',
+    //   type: 'image',
+    // },
   },
   index: {
     type: Number,
@@ -36,18 +40,18 @@ const servicesSchema = {
   menuName: {
     type: String,
     default: '',
-    formOptions: {
-      name: 'Название в меню',
-      type: 'menuName',
-    },
+    // formOptions: {
+    //   name: 'Название в меню',
+    //   type: 'menuName',
+    // },
   },
   showOnSite: {
     type: Boolean,
     default: true,
-    formOptions: {
-      name: 'Показывать на сайте',
-      type: 'checkbox',
-    },
+    // formOptions: {
+    //   name: 'Показывать на сайте',
+    //   type: 'checkbox',
+    // },
   },
   price: {
     type: Number,

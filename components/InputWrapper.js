@@ -74,7 +74,7 @@ const InputWrapper = forwardRef(
       <div
         className={cn(
           'relative flex items-center',
-          paddingX ? 'px-2' : '',
+          paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : '',
           noMargin ? '' : 'mt-3 mb-1',
           noBorder
             ? ''
@@ -136,6 +136,8 @@ const InputWrapper = forwardRef(
               'pointer-events-none absolute rounded px-1 text-sm peer-focus:text-general transition-all bg-white text-general',
               centerLabel
                 ? 'left-1/2 -translate-x-1/2'
+                : paddingX === 'small'
+                ? 'left-1'
                 : paddingX
                 ? 'left-0'
                 : 'left-2',
@@ -155,11 +157,11 @@ const InputWrapper = forwardRef(
                       : paddingY
                       ? '-top-5 peer-focus:-top-5'
                       : '-top-3 peer-focus:-top-3'
-                  } text-general peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:top-0.5`
+                  } text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-0.5`
                 : '',
-              error
-                ? 'peer-placeholder-shown:text-danger'
-                : 'peer-placeholder-shown:text-gray-400',
+              // error
+              //   ? 'peer-placeholder-shown:text-danger'
+              //   : 'peer-placeholder-shown:text-gray-400',
               disabled ? 'cursor-not-allowed' : '',
               labelClassName
             )}

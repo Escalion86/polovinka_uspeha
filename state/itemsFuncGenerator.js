@@ -131,6 +131,20 @@ const messages = {
       error: 'Не удалось удалить пользователя на мероприятии',
     },
   },
+  servicesUser: {
+    update: {
+      success: 'Заявка на услугу обновлена',
+      error: 'Не удалось обновить заявку на услугу',
+    },
+    add: {
+      success: 'Заявка на услугу создана',
+      error: 'Не удалось создать заявку на услугу',
+    },
+    delete: {
+      success: 'Заявка на услугу удалена',
+      error: 'Не удалось удалить заявку на услугу',
+    },
+  },
 }
 
 const itemsFuncGenerator = (
@@ -146,6 +160,7 @@ const itemsFuncGenerator = (
     'questionnairesUser',
     'service',
     'eventsUser',
+    'servicesUser',
   ]
 ) => {
   const {
@@ -192,7 +207,7 @@ const itemsFuncGenerator = (
             const clearedItem = { ...item }
             delete clearedItem._id
             return await postData(
-              `/api/${itemName}s`,
+              `/api/${itemName.toLowerCase()}s`,
               clearedItem,
               (data) => {
                 if (!noSnackbar)
@@ -220,7 +235,7 @@ const itemsFuncGenerator = (
         delete: async (itemId) => {
           setLoadingCard(itemName + itemId)
           return await deleteData(
-            `/api/${itemName}s/${itemId}`,
+            `/api/${itemName.toLowerCase()}s/${itemId}`,
             () => {
               snackbar.success(messages[itemName].delete.success)
               props['delete' + capitalizeFirstLetter(itemName)](itemId)

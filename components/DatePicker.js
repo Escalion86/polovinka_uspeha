@@ -17,6 +17,8 @@ const DatePicker = ({
   showYears = false,
   showZodiac = false,
   error,
+  fullWidth,
+  defaultValue,
 }) => {
   return (
     <InputWrapper
@@ -25,7 +27,7 @@ const DatePicker = ({
       onChange={onChange}
       copyPasteButtons={false}
       value={value}
-      className={cn('', className)}
+      className={cn(fullWidth ? '' : 'w-48', className)}
       required={required}
       error={error}
       // postfix={
@@ -37,7 +39,7 @@ const DatePicker = ({
       //     (showZodiac ? getZodiac(value).name : '') +
       //     ')'
       // }
-      fullWidth={false}
+      fullWidth={fullWidth}
       paddingY="small"
       disabled={disabled}
     >
@@ -49,7 +51,8 @@ const DatePicker = ({
         )}
         type="date"
         name={name}
-        defaultValue={formatDate(value, true)}
+        value={value ? formatDate(value, true) : undefined}
+        defaultValue={defaultValue ? formatDate(defaultValue, true) : undefined}
         onChange={(e) => {
           const value = e.target.value
           var year = value.substring(0, 4)

@@ -12,16 +12,18 @@ const PriceDiscount = ({ event, user, className, prefix, vertical }) => {
   const eventPriceForUser = event.price
     ? loggedUserActiveStatus
       ? (event.price -
-          (typeof event.usersStatusDiscount[
-            !loggedUserActiveStatus || loggedUserActiveStatus === 'ban'
-              ? 'novice'
-              : loggedUserActiveStatus
-          ] === 'number'
-            ? event.usersStatusDiscount[
+          (event.usersStatusDiscount
+            ? typeof event.usersStatusDiscount[
                 !loggedUserActiveStatus || loggedUserActiveStatus === 'ban'
                   ? 'novice'
                   : loggedUserActiveStatus
-              ]
+              ] === 'number'
+              ? event.usersStatusDiscount[
+                  !loggedUserActiveStatus || loggedUserActiveStatus === 'ban'
+                    ? 'novice'
+                    : loggedUserActiveStatus
+                ]
+              : 0
             : 0)) /
         100
       : event.price / 100

@@ -84,7 +84,7 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
   return (
     <CardWrapper
       loading={loading}
-      onClick={() => modalsFunc.service.edit(service._id)}
+      onClick={() => modalsFunc.service.view(service._id)}
       showOnSite={service.showOnSite}
       hidden={hidden}
       style={style}
@@ -119,20 +119,18 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
           />
         </div>
         {/* <div>{direction.description}</div> */}
-        <div
-          className="flex-1 px-2 py-1 text-sm w-full max-w-full overflow-hidden textarea"
-          dangerouslySetInnerHTML={{
-            __html: sanitize(service.description),
-          }}
-        />
-        <div className="flex items-center justify-end px-2 py-1 text-lg font-bold gap-x-2 flex-nowrap">
+        <div className="flex-1 w-full max-w-full px-2 py-1 overflow-hidden text-sm textarea">
+          {service.shortDescription}
+        </div>
+        <div className="flex items-center justify-between px-2 py-1 text-lg font-bold border-t gap-x-2 flex-nowrap">
           <span className="whitespace-nowrap">
             {service.price / 100 + ' ₽'}
           </span>
           <Button
-            name="Приобрести"
+            name="Подать заявку"
             stopPropagation
-            onClick={() => modalsFunc.service.buy(service._id)}
+            onClick={() => modalsFunc.service.apply(service._id)}
+            thin
           />
         </div>
       </div>

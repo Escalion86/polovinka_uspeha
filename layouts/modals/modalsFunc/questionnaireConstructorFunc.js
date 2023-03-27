@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import useErrors from '@helpers/useErrors'
-import { useRecoilValue } from 'recoil'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
 import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
@@ -16,24 +14,26 @@ import {
   faAsterisk,
   faEye,
   faEyeSlash,
+  faMinus,
   faPlus,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import IconButtonMenu from '@components/ButtonMenu'
 import Divider from '@components/Divider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { unstable_useId } from '@mui/material'
 import { v4 as uuid } from 'uuid'
 import cn from 'classnames'
 import arrayMove from '@helpers/arrayMove'
+import InputWrapper from '@components/InputWrapper'
+import Button from '@components/Button'
 
 const typesNames = {
   text: 'Текст (строка)',
   textarea: 'Текст (абзац)',
   number: 'Число',
-  comboList: 'Один из списка',
+  comboList: 'Раскрывающийся список',
+  radioList: 'Один из списка',
   checkList: 'Несколько из списка',
-  menu: 'Раскрывающийся список',
   date: 'Дата',
   time: 'Время',
   dateTime: 'Дата и время',
@@ -51,7 +51,7 @@ const QuestionnaireItem = ({
   onClickDown,
 }) => (
   <FormWrapper>
-    {index >= 0 && <Divider thin light />}
+    {index >= 0 && <Divider thin />}
     <div className="flex items-center gap-x-2">
       <div
         className="ml-2 font-bold text-right min-w-10 w-[10%] text-text leading-[0.875rem]"
@@ -110,14 +110,73 @@ const QuestionnaireItem = ({
       label="Заголовок (вопрос)"
       value={item.label}
       onChange={(newValue) => onChange({ key: item.key, label: newValue })}
-      // noMargin
+      className="mt-2 mb-1"
+      noMargin
     />
     {children}
   </FormWrapper>
 )
 
-const questionnaireFunc = (startData, onConfirm) => {
-  const QuestionnaireFuncModal = ({
+const ListConstructor = ({ list = [], onChange }) => {
+  const [listState, setListState] = useState(
+    list.map((item) => ({ key: uuid(), value: item }))
+  )
+
+  return (
+    <InputWrapper
+      paddingY
+      label="Пункты списка"
+      wrapperClassName="flex flex-col items-center gap-x-1 gap-y-1"
+    >
+      <div className="flex flex-col w-full gap-y-1">
+        {listState.map(({ key, value }, index) => (
+          <div key={key} className="flex items-center gap-x-1">
+            <div className="w-6 text-right">{`${index + 1}.`}</div>
+            <input
+              value={value}
+              onChange={(e) => {
+                const newList = listState.map((item) =>
+                  item.key === key ? { ...item, value: e.target.value } : item
+                )
+                onChange(newList.map(({ value }) => value))
+                setListState(newList)
+              }}
+              className="flex-1 px-1 border border-gray-400 rounded"
+            />
+            <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-6 h-6 hover:scale-110">
+              <FontAwesomeIcon
+                className="w-4 h-4 text-danger"
+                icon={faTrash}
+                size="1x"
+                onClick={() => {
+                  const newList = listState.filter((item) => item.key !== key)
+                  onChange(newList.map(({ value }) => value))
+                  setListState(newList)
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="w-full">
+        <Button
+          name="Добавить пункт списка"
+          thin
+          onClick={() => {
+            const newList = [...listState]
+            newList.push({ key: uuid(), value: '' })
+            onChange(newList.map(({ value }) => value))
+            setListState(newList)
+          }}
+          icon={faPlus}
+        />
+      </div>
+    </InputWrapper>
+  )
+}
+
+const questionnaireConstructorFunc = (startData, onConfirm) => {
+  const QuestionnaireConstructorFuncModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
@@ -193,7 +252,6 @@ const questionnaireFunc = (startData, onConfirm) => {
       //   clone
       // )
     }
-    console.log('data', data)
 
     useEffect(() => {
       const isErrors =
@@ -256,8 +314,27 @@ const questionnaireFunc = (startData, onConfirm) => {
                   onClickUp={index > 0 && onClickUp}
                   onClickDown={index < data.length - 1 && onClickDown}
                 >
+                  {(item.type === 'radioList' ||
+                    item.type === 'comboList' ||
+                    item.type === 'checkList') && (
+                    <ListConstructor
+                      list={item.params?.list}
+                      onChange={(newList) =>
+                        setData((state) =>
+                          state.map((item, i) =>
+                            index === i
+                              ? {
+                                  ...item,
+                                  params: { ...item.params, list: newList },
+                                }
+                              : item
+                          )
+                        )
+                      }
+                    />
+                  )}
                   {item.type === 'number' && (
-                    <div className="flex mt-2 gap-x-1">
+                    <div className="flex mt-3 gap-x-1">
                       <Input
                         label="Минимум"
                         value={item.params?.min}
@@ -332,14 +409,14 @@ const questionnaireFunc = (startData, onConfirm) => {
                 { name: 'Текст (абзац)', value: 'textarea' },
                 null,
                 { name: 'Число', value: 'number' },
-                // null,
-                // { name: 'Один из списка', value: 'comboList' },
-                // { name: 'Несколько из списка', value: 'checkList' },
-                // { name: 'Раскрывающийся список', value: 'menu' },
-                // null,
-                // { name: 'Дата', value: 'date' },
-                // { name: 'Время', value: 'time' },
-                // { name: 'Дата и время', value: 'dateTime' },
+                null,
+                { name: 'Один из списка', value: 'radioList' },
+                { name: 'Несколько из списка', value: 'checkList' },
+                // { name: 'Раскрывающийся список', value: 'comboList' },
+                null,
+                { name: 'Дата', value: 'date' },
+                { name: 'Время', value: 'time' },
+                { name: 'Дата и время', value: 'dateTime' },
               ]}
               onChange={addItem}
             />
@@ -353,9 +430,9 @@ const questionnaireFunc = (startData, onConfirm) => {
 
   return {
     title: `Конструктор анкеты`,
-    confirmButtonName: 'Создать',
-    Children: QuestionnaireFuncModal,
+    confirmButtonName: 'Применить',
+    Children: QuestionnaireConstructorFuncModal,
   }
 }
 
-export default questionnaireFunc
+export default questionnaireConstructorFunc

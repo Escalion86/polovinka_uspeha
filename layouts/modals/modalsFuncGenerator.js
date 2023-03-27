@@ -18,7 +18,7 @@ import jsonFunc from './modalsFunc/jsonFunc'
 import cropImageFunc from './modalsFunc/cropImageFunc'
 import notificationsTelegramFunc from './modalsFunc/notificationsTelegramFunc'
 import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
-import questionnaireFunc from './modalsFunc/questionnaireFunc'
+import questionnaireConstructorFunc from './modalsFunc/questionnaireConstructorFunc'
 import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
 import userDeleteFunc from './modalsFunc/userDeleteFunc'
 import eventUsersPaymentsFunc from './modalsFunc/eventUsersPaymentsFunc'
@@ -26,6 +26,11 @@ import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
 import eventStatusEditFunc from './modalsFunc/eventStatusEditFunc'
 import eventUserStatusChangeFunc from './modalsFunc/eventUserStatusChangeFunc'
 import eventSignUpWithWarning from './modalsFunc/eventSignUpWithWarning'
+import serviceViewFunc from './modalsFunc/serviceViewFunc'
+import serviceApplyFunc from './modalsFunc/serviceApplyFunc'
+import serviceUserViewFunc from './modalsFunc/serviceUserViewFunc'
+import serviceUserFunc from './modalsFunc/serviceUserFunc'
+import selectServicesFunc from './modalsFunc/selectServicesFunc'
 
 const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
   const fixEventStatus = (eventId, status) => {
@@ -133,6 +138,26 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
           onChange,
           exceptedIds,
           maxDirections,
+          canSelectNone,
+          modalTitle
+        )
+      ),
+    selectServices: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      maxServices,
+      canSelectNone,
+      modalTitle
+    ) =>
+      addModal(
+        selectServicesFunc(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          maxServices,
           canSelectNone,
           modalTitle
         )
@@ -332,11 +357,11 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
     },
     questionnaire: {
       // add: (questionnaireId) =>
-      //   addModal(questionnaireFunc(questionnaireId, true)),
-      open: (data, onConfirm) =>
-        addModal(userQuestionnaireFunc(data, onConfirm)),
-      constructor: (data, onConfirm) =>
-        addModal(questionnaireFunc(data, onConfirm)),
+      //   addModal(questionnaireConstructorFunc(questionnaireId, true)),
+      open: (questionnaire, value, onConfirm) =>
+        addModal(userQuestionnaireFunc(questionnaire, value, onConfirm)),
+      constructor: (questionnaire, onConfirm) =>
+        addModal(questionnaireConstructorFunc(questionnaire, onConfirm)),
     },
     additionalBlock: {
       add: (additionalBlockId) =>
@@ -354,6 +379,8 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
     service: {
       add: (serviceId) => addModal(serviceFunc(serviceId, true)),
       edit: (serviceId) => addModal(serviceFunc(serviceId)),
+      view: (serviceId) => addModal(serviceViewFunc(serviceId)),
+      apply: (serviceId) => addModal(serviceApplyFunc(serviceId)),
       delete: (serviceId) =>
         addModal({
           title: 'Удаление услуги',
@@ -371,6 +398,17 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
               text: 'Заявка на покупку услуги отправлена! Администратор свяжется с вами в ближайшее время.',
             })
           },
+        }),
+    },
+    serviceUser: {
+      add: (serviceId) => addModal(serviceUserFunc(serviceId, true)),
+      edit: (serviceId) => addModal(serviceUserFunc(serviceId)),
+      view: (serviceUserId) => addModal(serviceUserViewFunc(serviceUserId)),
+      delete: (serviceUserId) =>
+        addModal({
+          title: 'Удаление заявки на услугу',
+          text: 'Вы уверены, что хотите удалить заявку на услугу?',
+          onConfirm: async () => itemsFunc.servicesUser.delete(serviceUserId),
         }),
     },
     notifications: {

@@ -127,6 +127,7 @@ export const UserItem = ({
   active = false,
   noBorder = false,
   style,
+  className,
 }) => {
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
@@ -137,18 +138,18 @@ export const UserItem = ({
       onClick={onClick}
       active={active}
       noPadding
-      className="flex h-[40px]"
+      className={cn('flex h-[40px]', className)}
       noBorder={noBorder}
       style={style}
     >
       <div
         className={cn(
-          'w-7 flex justify-center items-center h-full',
+          'w-6 tablet:w-7 flex justify-center items-center h-full',
           userGender ? 'bg-' + userGender.color : 'bg-gray-400'
         )}
       >
         <FontAwesomeIcon
-          className="w-6 h-6 text-white"
+          className="w-5 h-5 text-white tablet:w-6 tablet:h-6"
           icon={userGender ? userGender.icon : faGenderless}
         />
       </div>
@@ -294,6 +295,49 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
           className="w-full overflow-hidden textarea flex-1 max-w-full leading-[0.85rem]"
           lines={2}
         />
+      </div>
+    </div>
+  </ItemContainer>
+)
+
+export const ServiceItem = ({ item, onClick = null, active = false }) => (
+  <ItemContainer
+    onClick={onClick}
+    active={active}
+    className="flex h-[50px]"
+    noPadding
+  >
+    {item?.image && (
+      // <div className="flex justify-center w-full tablet:w-auto">
+      <img
+        className="object-cover h-[50px] aspect-1"
+        src={item.image}
+        alt="direction"
+        // width={48}
+        // height={48}
+      />
+      // </div>
+    )}
+    <div className="px-1">
+      <div className="h-5 text-sm font-bold text-gray-800 truncate">
+        {item.title}
+      </div>
+      <div className="flex items-center text-xs text-gray-600 gap-x-2">
+        {/* <div className="flex-2 whitespace-nowrap">
+        Артикул: {item.а || '[нет]'}
+      </div> */}
+        {/* <div className="flex-1 whitespace-nowrap">
+        {formatDateTime(item.date, false)}
+      </div> */}
+        <TextLinesLimiter
+          // dangerouslySetInnerHTML={{
+          //   __html: sanitize(item.description),
+          // }}
+          className="w-full overflow-hidden textarea flex-1 max-w-full leading-[0.85rem]"
+          lines={2}
+        >
+          {item.shortDescription}
+        </TextLinesLimiter>
       </div>
     </div>
   </ItemContainer>

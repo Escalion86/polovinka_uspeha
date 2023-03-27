@@ -33,7 +33,7 @@ const Button = ({
         onClick && !disabled && onClick()
       }}
       className={cn(
-        'flex gap-x-2 items-center duration-300 px-4 rounded text-white bg-opacity-90 min-w-max prevent-select-text',
+        'flex gap-x-2 items-center duration-300 px-4 rounded text-white text-base font-normal bg-opacity-90 min-w-max prevent-select-text',
         thin ? 'h-8 py-0.5' : 'h-9 py-1',
         className,
         disabled

@@ -21,6 +21,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import { getNounQuestions } from '@helpers/getNoun'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons'
+import Textarea from '@components/Textarea'
 
 const Questionnaire = ({ data, onChange }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -105,6 +106,9 @@ const serviceFunc = (serviceId, clone = false) => {
     const [description, setDescription] = useState(
       service?.description ?? DEFAULT_SERVICE.description
     )
+    const [shortDescription, setShortDescription] = useState(
+      service?.shortDescription ?? DEFAULT_SERVICE.shortDescription
+    )
     const [image, setImage] = useState(service?.image ?? DEFAULT_SERVICE.image)
     const [menuName, setMenuName] = useState(
       service?.menuName ?? DEFAULT_SERVICE.menuName
@@ -120,18 +124,28 @@ const serviceFunc = (serviceId, clone = false) => {
       useErrors()
 
     const onClickConfirm = async () => {
-      if (!checkErrors({ title, description, image, questionnaire })) {
+      if (
+        !checkErrors({
+          title,
+          description,
+          shortDescription,
+          image,
+          questionnaire,
+        })
+      ) {
         closeModal()
         setService(
           {
             _id: service?._id,
             title,
+            shortDescription,
             description,
             showOnSite,
             image,
             menuName,
             index: service?.index ?? services?.length ?? 0,
             price,
+            questionnaire,
           },
           clone
         )
@@ -142,15 +156,28 @@ const serviceFunc = (serviceId, clone = false) => {
       const isFormChanged =
         service?.title !== title ||
         service?.description !== description ||
+        service?.shortDescription !== shortDescription ||
         service?.showOnSite !== showOnSite ||
         service?.image !== image ||
         service?.menuName !== menuName ||
-        service?.price !== price
+        service?.price !== price ||
+        service?.questionnaire !== questionnaire
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-    }, [title, description, showOnSite, image, menuName, price])
+    }, [
+      title,
+      shortDescription,
+      description,
+      showOnSite,
+      image,
+      menuName,
+      price,
+      questionnaire,
+    ])
+
+    console.log('image', image)
 
     return (
       <>
@@ -179,6 +206,15 @@ const serviceFunc = (serviceId, clone = false) => {
             error={errors.title}
             required
           />
+          <Textarea
+            label="Короткое описание (для карточки)"
+            onChange={(value) => {
+              removeError('shortDescription')
+              setShortDescription(value)
+            }}
+            error={errors.shortDescription}
+            required
+          />
           <EditableTextarea
             label="Описание"
             html={description}
@@ -199,6 +235,7 @@ const serviceFunc = (serviceId, clone = false) => {
             error={errors.price}
             // labelPos="left"
           />
+          <Questionnaire data={questionnaire} onChange={setQuestionnaire} />
           <Input
             label="Название в меню"
             type="text"
@@ -217,7 +254,6 @@ const serviceFunc = (serviceId, clone = false) => {
             onClick={() => setShowOnSite((checked) => !checked)}
             label="Показывать на сайте"
           />
-          <Questionnaire data={questionnaire} onChange={setQuestionnaire} />
         </FormWrapper>
         {/* </TabPanel>
           <TabPanel tabName="Анкета" className="px-0"> */}
