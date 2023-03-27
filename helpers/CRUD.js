@@ -68,7 +68,6 @@ export const postData = async (
     }
     const json = await res.json()
     const { data } = json
-    console.log('data', data)
 
     // mutate(url, data, false)
     if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
