@@ -15,6 +15,7 @@ const CheckBox = ({
   wrapperClassName,
   error,
   type = 'checkbox',
+  noMargin,
 }) => {
   if (readOnly && !checked) return null
 
@@ -30,7 +31,8 @@ const CheckBox = ({
       // <div className="flex items-center">
       <div
         className={cn(
-          'flex gap-x-1 pl-1 my-2 items-center',
+          'flex gap-x-1 pl-1 items-center',
+          noMargin ? '' : 'my-2',
           hidden ? 'hidden' : '',
           wrapperClassName
         )}

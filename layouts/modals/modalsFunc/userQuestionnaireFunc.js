@@ -36,8 +36,18 @@ const CheckBoxList = ({
   defaultValue = [],
   onChange,
   fullWidth,
+  ownItem = false,
 }) => {
-  const [value, setValue] = useState(defaultValue)
+  const [value, setValue] = useState(
+    defaultValue.filter((item) => list.includes(item))
+  )
+  const [ownItemChecked, setOwnItemChecked] = useState(
+    !!defaultValue.find((item) => !list.includes(item))
+  )
+  const [ownItemInput, setOwnItemInput] = useState(
+    defaultValue.find((item) => !list.includes(item)) || ''
+  )
+
   return (
     <InputWrapper
       label={label}
@@ -58,7 +68,7 @@ const CheckBoxList = ({
       // noBorder={noBorder}
       // noMargin
     >
-      <div>
+      <div className="w-full">
         {list.map((label) => {
           const checked = value.includes(label)
           return (
@@ -69,7 +79,8 @@ const CheckBoxList = ({
                   ? value.filter((item) => item !== label)
                   : [...value, label]
                 setValue(newValue)
-                onChange(newValue)
+                if (!ownItemChecked || ownItemInput === '') onChange(newValue)
+                else onChange([...newValue, ownItemInput])
               }}
               checked={checked}
               label={label}
@@ -77,6 +88,32 @@ const CheckBoxList = ({
             />
           )
         })}
+        {ownItem && (
+          <div className="flex items-center w-full mt-2 mb-1 gap-x-1">
+            <CheckBox
+              onChange={() => {
+                if (ownItemChecked || ownItemInput === '') onChange(value)
+                else onChange([...value, ownItemInput])
+                setOwnItemChecked(!ownItemChecked)
+              }}
+              label="Другое:"
+              checked={ownItemChecked}
+              // wrapperClassName="w-full"
+              noMargin
+              labelClassName="text-gray-500"
+            />
+            <input
+              value={ownItemInput}
+              onChange={(e) => {
+                const newValue = e.target.value
+                if (!ownItemChecked || e.target.value === '') onChange(value)
+                else onChange([...value, newValue])
+                setOwnItemInput(e.target.value)
+              }}
+              className="flex-1 py-0 border-b border-gray-400 outline-none"
+            />
+          </div>
+        )}
       </div>
     </InputWrapper>
   )
@@ -90,8 +127,15 @@ const RadioBoxList = ({
   defaultValue = null,
   onChange,
   fullWidth,
+  ownItem = false,
 }) => {
   const [value, setValue] = useState(defaultValue)
+  const [ownItemChecked, setOwnItemChecked] = useState(
+    !list.includes(defaultValue)
+  )
+  const [ownItemInput, setOwnItemInput] = useState(
+    list.includes(defaultValue) ? '' : defaultValue
+  )
   return (
     <InputWrapper
       label={label}
@@ -112,13 +156,14 @@ const RadioBoxList = ({
       // noBorder={noBorder}
       // noMargin
     >
-      <div>
+      <div className="w-full">
         {list.map((label) => {
           const checked = value === label
           return (
             <RadioBox
               key={label}
               onClick={() => {
+                setOwnItemChecked(false)
                 if (!checked) {
                   setValue(label)
                   onChange(label)
@@ -130,6 +175,36 @@ const RadioBoxList = ({
             />
           )
         })}
+        {ownItem && (
+          <div className="flex items-center w-full mt-2 mb-1 gap-x-1">
+            <RadioBox
+              onChange={() => {
+                if (!ownItemChecked) {
+                  setValue(ownItemInput)
+                  onChange(ownItemInput)
+                }
+                setOwnItemChecked(!ownItemChecked)
+              }}
+              label="Другое:"
+              checked={ownItemChecked}
+              // wrapperClassName="w-full"
+              noMargin
+              labelClassName="text-gray-500"
+            />
+            <input
+              value={ownItemInput}
+              onChange={(e) => {
+                const newValue = e.target.value
+                if (ownItemChecked) {
+                  setValue(e.target.value)
+                  onChange(newValue)
+                }
+                setOwnItemInput(e.target.value)
+              }}
+              className="flex-1 py-0 border-b border-gray-400 outline-none"
+            />
+          </div>
+        )}
       </div>
     </InputWrapper>
   )
@@ -137,6 +212,7 @@ const RadioBoxList = ({
 
 const Q = ({ data, state, onChange, errors }) => {
   // console.log('state', state)
+  console.log('state', state)
   return (
     <div>
       {data
