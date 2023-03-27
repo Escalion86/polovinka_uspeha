@@ -11,6 +11,10 @@ const servicesUsersSchema = {
     type: Map,
     default: null,
   },
+  status: {
+    type: String,
+    default: 'active',
+  },
   props: {
     type: Map,
     default: null,

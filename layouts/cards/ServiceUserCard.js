@@ -78,7 +78,7 @@ const ServiceUserCard = ({
             item={serviceUser}
             typeOfItem="serviceUser"
             onEditQuestionnaire={
-              service.questionnaire
+              service.questionnaire && serviceUser.status !== 'closed'
                 ? () =>
                     modalsFunc.questionnaire.open(
                       service.questionnaire,
