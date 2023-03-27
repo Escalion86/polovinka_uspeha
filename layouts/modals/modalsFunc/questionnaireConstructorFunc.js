@@ -26,6 +26,7 @@ import cn from 'classnames'
 import arrayMove from '@helpers/arrayMove'
 import InputWrapper from '@components/InputWrapper'
 import Button from '@components/Button'
+import CheckBox from '@components/CheckBox'
 
 const typesNames = {
   text: 'Текст (строка)',
@@ -123,11 +124,7 @@ const ListConstructor = ({ list = [], onChange }) => {
   )
 
   return (
-    <InputWrapper
-      paddingY
-      label="Пункты списка"
-      wrapperClassName="flex flex-col items-center gap-x-1 gap-y-1"
-    >
+    <>
       <div className="flex flex-col w-full gap-y-1">
         {listState.map(({ key, value }, index) => (
           <div key={key} className="flex items-center gap-x-1">
@@ -171,7 +168,8 @@ const ListConstructor = ({ list = [], onChange }) => {
           icon={faPlus}
         />
       </div>
-    </InputWrapper>
+    </>
+    // </InputWrapper>
   )
 }
 
@@ -317,21 +315,47 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                   {(item.type === 'radioList' ||
                     item.type === 'comboList' ||
                     item.type === 'checkList') && (
-                    <ListConstructor
-                      list={item.params?.list}
-                      onChange={(newList) =>
-                        setData((state) =>
-                          state.map((item, i) =>
-                            index === i
-                              ? {
-                                  ...item,
-                                  params: { ...item.params, list: newList },
-                                }
-                              : item
+                    <InputWrapper
+                      paddingY
+                      label="Пункты списка"
+                      wrapperClassName="flex flex-col items-center gap-x-1 gap-y-1"
+                    >
+                      <ListConstructor
+                        list={item.params?.list}
+                        onChange={(newList) =>
+                          setData((state) =>
+                            state.map((item, i) =>
+                              index === i
+                                ? {
+                                    ...item,
+                                    params: { ...item.params, list: newList },
+                                  }
+                                : item
+                            )
                           )
-                        )
-                      }
-                    />
+                        }
+                      />
+                      <CheckBox
+                        label="Анкетируемый может добавить свой пункт"
+                        checked={item.params?.ownItem}
+                        wrapperClassName="w-full"
+                        onClick={() =>
+                          setData((state) =>
+                            state.map((item, i) =>
+                              index === i
+                                ? {
+                                    ...item,
+                                    params: {
+                                      ...item.params,
+                                      ownItem: !item.params?.ownItem,
+                                    },
+                                  }
+                                : item
+                            )
+                          )
+                        }
+                      />
+                    </InputWrapper>
                   )}
                   {item.type === 'number' && (
                     <div className="flex mt-3 gap-x-1">
