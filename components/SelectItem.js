@@ -278,6 +278,7 @@ const SelectItemContainer = ({
           wrapperClassName={cn('flex-1 ', className)}
           required={required}
           value={selectedId}
+          error={error}
           // paddingX={false}
           // paddingY={false}
           // noMargin
@@ -292,11 +293,10 @@ const SelectItemContainer = ({
             className={cn(
               'flex flex-1',
               rounded ? 'rounded overflow-hidden' : '',
-              error
-                ? 'border border-red-500'
-                : bordered
-                ? 'border border-gray-700'
-                : ''
+              // error
+              //   ? 'border border-red-500'
+              //   :
+              bordered ? 'border border-gray-700' : ''
             )}
           >
             {children}

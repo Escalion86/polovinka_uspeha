@@ -177,8 +177,6 @@ const serviceFunc = (serviceId, clone = false) => {
       questionnaire,
     ])
 
-    console.log('image', image)
-
     return (
       <>
         {/* <TabContext value="Общие">

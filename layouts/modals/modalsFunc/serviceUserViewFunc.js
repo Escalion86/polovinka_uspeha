@@ -13,6 +13,7 @@ import TextLine from '@components/TextLine'
 import InputWrapper from '@components/InputWrapper'
 import CardButton from '@components/CardButton'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
+import cn from 'classnames'
 
 const serviceUserViewFunc = (serviceUserId) => {
   const ServiceUserViewModal = ({
@@ -64,7 +65,7 @@ const serviceUserViewFunc = (serviceUserId) => {
           <InputWrapper label={`Анкета "${service.questionnaire.title}"`}>
             <div className="flex flex-col gap-y-1">
               {service.questionnaire.data.map(
-                ({ type, label, key, show, required }) => {
+                ({ type, label, key, show, required, params }) => {
                   if (!show) return null
                   const userAnswer = serviceUser.answers[key]
                   var formatedAnswer
@@ -77,16 +78,28 @@ const serviceUserViewFunc = (serviceUserId) => {
                       false,
                       false
                     )
-                  else if (type === 'checkList')
-                    formatedAnswer = userAnswer.join(', ')
-                  else formatedAnswer = userAnswer
+                  else if (type === 'checkList') {
+                    const { list } = params
+                    formatedAnswer =
+                      typeof userAnswer === 'object'
+                        ? list
+                            .filter((item) => userAnswer.includes(item))
+                            .join(', ')
+                        : userAnswer
+                  } else formatedAnswer = userAnswer
                   return (
-                    <div className="flex gap-x-1" key={key}>
-                      <div className="font-bold">
+                    <div
+                      className={cn(
+                        'flex gap-x-1',
+                        formatedAnswer ? '' : 'text-gray-400'
+                      )}
+                      key={key}
+                    >
+                      <div className={cn('font-bold')}>
                         {label}
                         {required ? '*' : ''}:
                       </div>
-                      <div>{formatedAnswer}</div>
+                      <div>{formatedAnswer ? formatedAnswer : '-'}</div>
                     </div>
                   )
                 }

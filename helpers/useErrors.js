@@ -80,6 +80,8 @@ const useErrors = () => {
           : null,
       userId: (data) =>
         !data ? setError({ userId: 'Выберите пользователя' }) : null,
+      serviceId: (data) =>
+        !data ? setError({ serviceId: 'Выберите услугу' }) : null,
       eventId: (data) =>
         !data ? setError({ eventId: 'Выберите мероприятие' }) : null,
       price: (data) =>

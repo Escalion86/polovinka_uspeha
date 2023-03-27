@@ -28,7 +28,7 @@ const serviceUserFunc = (serviceUserId, clone = false, props) => {
   }) => {
     const serviceUser = useRecoilValue(servicesUsersSelector(serviceUserId))
     const setServiceUser = useRecoilValue(itemsFuncAtom).servicesUser.set
-    const service = useRecoilValue(serviceSelector(serviceUser.serviceId))
+    const service = useRecoilValue(serviceSelector(serviceUser?.serviceId))
     const modalsFunc = useRecoilValue(modalsFuncAtom)
 
     const [userId, setUserId] = useState(
@@ -47,23 +47,22 @@ const serviceUserFunc = (serviceUserId, clone = false, props) => {
       useErrors()
 
     const onClickConfirm = async () => {
-      // const toCheck = {
-      //   payDirection,
-      //   // eventId,
-      //   sum,
-      //   payType,
-      // }
-      // if (!checkErrors(toCheck)) {
-      closeModal()
-      setServiceUser(
-        {
-          _id: serviceUser?._id,
-          userId,
-          serviceId,
-          answers,
-        },
-        clone
-      )
+      const toCheck = {
+        serviceId,
+        userId,
+      }
+      if (!checkErrors(toCheck)) {
+        closeModal()
+        setServiceUser(
+          {
+            _id: serviceUser?._id,
+            userId,
+            serviceId,
+            answers,
+          },
+          clone
+        )
+      }
     }
 
     useEffect(() => {
@@ -83,20 +82,28 @@ const serviceUserFunc = (serviceUserId, clone = false, props) => {
         <SelectService
           label="Услуга"
           selectedId={serviceId}
-          onChange={setServiceId}
+          onChange={(id) => {
+            removeError('serviceId')
+            setServiceId(id)
+          }}
           // onDelete={(e) => console.log('e', e)}
           required
           // readOnly={isEventClosed}
+          error={errors.serviceId}
         />
         <SelectUser
           label="Покупатель"
           selectedId={userId}
-          onChange={setUserId}
+          onChange={(id) => {
+            removeError('userId')
+            setUserId(id)
+          }}
           // onDelete={(e) => console.log('e', e)}
           required
           // readOnly={isEventClosed}
+          error={errors.userId}
         />
-        {service.questionnaire && (
+        {serviceUserId && service.questionnaire && (
           <InputWrapper
             label={`Анкета "${service.questionnaire.title}"`}
             paddingY={false}
