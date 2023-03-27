@@ -400,7 +400,7 @@ const eventFunc = (eventId, clone = false) => {
               error={errors.description}
             />
             {/* <FormWrapper twoColumns> */}
-            <div className="flex items-stretch gap-x-1">
+            <FormRow>
               <DateTimePicker
                 value={dateStart}
                 onChange={(date) => {
@@ -410,6 +410,7 @@ const eventFunc = (eventId, clone = false) => {
                 label="Начало"
                 required
                 error={errors.dateStart}
+                noMargin
                 // postfix={
                 //   getDiffBetweenDates(dateStart) > 0 && 'Внимание: дата прошла!'
                 // }
@@ -420,8 +421,8 @@ const eventFunc = (eventId, clone = false) => {
                   Внимание: дата прошла!
                 </div>
               )}
-            </div>
-            <div className="flex items-stretch gap-x-1">
+            </FormRow>
+            <FormRow>
               <DateTimePicker
                 value={dateEnd}
                 onChange={(date) => {
@@ -431,12 +432,13 @@ const eventFunc = (eventId, clone = false) => {
                 label="Завершение"
                 required
                 error={errors.dateEnd}
+                noMargin
                 // postfix={formatMinutes(duration)}
               />
               <div className="flex items-center pt-[18px] leading-3 laptop:pt-0">
                 {formatMinutes(duration)}
               </div>
-            </div>
+            </FormRow>
             {/* <TimePicker
                   value={
                     formatMinutes(duration, true)
@@ -548,6 +550,7 @@ const eventFunc = (eventId, clone = false) => {
                       return { ...state, novice: value }
                     })
                   }}
+                  noMargin
                   // labelContentWidth
                   // labelPos="left"
                 />
@@ -582,6 +585,7 @@ const eventFunc = (eventId, clone = false) => {
                       return { ...state, member: value }
                     })
                   }}
+                  noMargin
                   // labelContentWidth
                   // labelPos="left"
                 />
@@ -602,7 +606,7 @@ const eventFunc = (eventId, clone = false) => {
               onClick={() => setIsReserveActive((checked) => !checked)}
               label="Если мест нет, то возможно записаться в резерв"
             />
-            <div className="flex items-end flex-1 gap-x-2">
+            <FormRow>
               <Input
                 ref={refPerticipantsMax}
                 label={
@@ -629,6 +633,7 @@ const eventFunc = (eventId, clone = false) => {
                 labelPos="left"
                 onFocus={handleFocus}
                 fullWidth={false}
+                noMargin
               />
               <InfinityToggleButton
                 size="s"
@@ -645,9 +650,9 @@ const eventFunc = (eventId, clone = false) => {
                   }}
                   label="Не ограничено"
                 /> */}
-            </div>
+            </FormRow>
             {/* </FormWrapper> */}
-            <div className="flex flex-col gap-y-1">
+            <FormRow className="flex-wrap laptop:flex-nowrap">
               <InputWrapper
                 label={
                   <FontAwesomeIcon
@@ -672,8 +677,8 @@ const eventFunc = (eventId, clone = false) => {
                     className="w-6 h-6 text-blue-600 tablet:w-6 tablet:h-6"
                   />
                 </div> */}
-                <div className="flex flex-col flex-1 px-1">
-                  <div className="flex items-end flex-1 gap-x-2">
+                <div className="flex-1 px-1">
+                  <FormRow>
                     <Input
                       ref={refMansMax}
                       label={
@@ -697,6 +702,7 @@ const eventFunc = (eventId, clone = false) => {
                       labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
+                      noMargin
                     />
                     <InfinityToggleButton
                       size="s"
@@ -705,8 +711,8 @@ const eventFunc = (eventId, clone = false) => {
                         setMaxMansCheck((checked) => !checked)
                       }}
                     />
-                  </div>
-                  <div className="flex items-end flex-1 gap-x-2">
+                  </FormRow>
+                  <FormRow>
                     {/* <div className="flex justify-end w-16">
                       <UserStatusIcon size="m" status="novice" />
                     </div> */}
@@ -735,6 +741,7 @@ const eventFunc = (eventId, clone = false) => {
                       labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
+                      noMargin
                     />
                     <InfinityToggleButton
                       size="s"
@@ -743,8 +750,8 @@ const eventFunc = (eventId, clone = false) => {
                         setMaxMansNoviceCheck((checked) => !checked)
                       }}
                     />
-                  </div>
-                  <div className="flex items-end flex-1 gap-x-2">
+                  </FormRow>
+                  <FormRow>
                     {/* <div className="flex justify-end w-16">
                       <UserStatusIcon size="m" status="member" />
                     </div> */}
@@ -774,6 +781,7 @@ const eventFunc = (eventId, clone = false) => {
                       // labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
+                      noMargin
                     />
                     <InfinityToggleButton
                       size="s"
@@ -782,7 +790,7 @@ const eventFunc = (eventId, clone = false) => {
                         setMaxMansMemberCheck((checked) => !checked)
                       }}
                     />
-                  </div>
+                  </FormRow>
                   <Slider
                     value={[minMansAge, maxMansAge]}
                     onChange={([min, max]) => {
@@ -821,8 +829,8 @@ const eventFunc = (eventId, clone = false) => {
                     className="w-6 h-6 text-red-600 tablet:w-6 tablet:h-6"
                   />
                 </div> */}
-                <div className="flex flex-col flex-1 px-1">
-                  <div className="flex items-end flex-1 gap-x-2">
+                <div className="flex-1 px-1">
+                  <FormRow>
                     <Input
                       ref={refWomansMax}
                       label={
@@ -848,6 +856,7 @@ const eventFunc = (eventId, clone = false) => {
                       labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
+                      noMargin
                     />
                     <InfinityToggleButton
                       size="s"
@@ -856,8 +865,8 @@ const eventFunc = (eventId, clone = false) => {
                         setMaxWomansCheck((checked) => !checked)
                       }}
                     />
-                  </div>
-                  <div className="flex items-end flex-1 gap-x-2">
+                  </FormRow>
+                  <FormRow>
                     {/* <div className="flex justify-end w-16">
                       <UserStatusIcon size="m" status="novice" />
                     </div> */}
@@ -886,6 +895,7 @@ const eventFunc = (eventId, clone = false) => {
                       labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
+                      noMargin
                     />
                     <InfinityToggleButton
                       size="s"
@@ -894,8 +904,8 @@ const eventFunc = (eventId, clone = false) => {
                         setMaxWomansNoviceCheck((checked) => !checked)
                       }}
                     />
-                  </div>
-                  <div className="flex items-end flex-1 gap-x-2">
+                  </FormRow>
+                  <FormRow>
                     {/* <div className="flex justify-end w-16">
                       <UserStatusIcon size="m" status="member" />
                     </div> */}
@@ -924,6 +934,7 @@ const eventFunc = (eventId, clone = false) => {
                       labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
+                      noMargin
                     />
                     <InfinityToggleButton
                       size="s"
@@ -932,7 +943,7 @@ const eventFunc = (eventId, clone = false) => {
                         setMaxWomansMemberCheck((checked) => !checked)
                       }}
                     />
-                  </div>
+                  </FormRow>
                   <Slider
                     value={[minWomansAge, maxWomansAge]}
                     onChange={([min, max]) => {
@@ -949,7 +960,7 @@ const eventFunc = (eventId, clone = false) => {
                 </div>
                 {/* </div> */}
               </InputWrapper>
-            </div>
+            </FormRow>
 
             {/* </FormWrapper> */}
             {/* </FormWrapper> */}

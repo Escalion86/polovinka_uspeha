@@ -265,6 +265,7 @@ const eventUsersFunc = (eventId) => {
             tabAddToLabel={`(${mansIds.length + womansIds.length})`}
           >
             <SelectUserList
+              className="mb-1"
               label="Участники Мужчины"
               modalTitle="Выбор участников (мужчин)"
               filter={{ gender: { operand: '===', value: 'male' } }}
@@ -353,6 +354,7 @@ const eventUsersFunc = (eventId) => {
               }
             />
             <SelectUserList
+              className="mb-1"
               label="Участники Женщины"
               modalTitle="Выбор участниц (женщин)"
               filter={{ gender: { operand: '===', value: 'famale' } }}

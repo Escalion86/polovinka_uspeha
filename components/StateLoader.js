@@ -60,6 +60,9 @@ import addErrorModalSelector from '@state/selectors/addErrorModalSelector'
 // import snackbarAtom from '@state/atoms/snackbarAtom'
 import { useRouter } from 'next/router'
 import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
+import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
+import servicesUsersEditSelector from '@state/selectors/servicesUsersEditSelector'
+import servicesUsersDeleteSelector from '@state/selectors/servicesUsersDeleteSelector'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -93,6 +96,7 @@ const StateLoader = (props) => {
   const setQuestionnairesState = useSetRecoilState(questionnairesAtom)
   const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
   const setServicesState = useSetRecoilState(servicesAtom)
+  const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
 
   const setEvent = useSetRecoilState(eventEditSelector)
   const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -122,6 +126,8 @@ const StateLoader = (props) => {
   )
   const setService = useSetRecoilState(serviceEditSelector)
   const deleteService = useSetRecoilState(serviceDeleteSelector)
+  const setServicesUser = useSetRecoilState(servicesUsersEditSelector)
+  const deleteServicesUser = useSetRecoilState(servicesUsersDeleteSelector)
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
   const setLoadingCard = useSetRecoilState(setLoadingSelector)
@@ -165,6 +171,8 @@ const StateLoader = (props) => {
         deleteQuestionnaireUsers,
         setService,
         deleteService,
+        setServicesUser,
+        deleteServicesUser,
         snackbar,
         loggedUser,
       }),
@@ -207,6 +215,7 @@ const StateLoader = (props) => {
     setQuestionnairesState(props.questionnaires)
     setQuestionnairesUsersState(props.questionnairesUsers)
     setServicesState(props.services)
+    setServicesUsersState(props.servicesUsers)
     // setSnackbar(snackbar)
     setIsSiteLoading(false)
   }, [])

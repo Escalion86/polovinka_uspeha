@@ -8,10 +8,13 @@ const TimePicker = ({
   onChange,
   required = false,
   labelClassName,
-  wrapperClassName,
+  className,
   // className,
   disabled = false,
   // inLine = false,
+  fullWidth,
+  defaultValue,
+  error,
 }) => {
   return (
     <InputWrapper
@@ -20,17 +23,21 @@ const TimePicker = ({
       onChange={onChange}
       copyPasteButtons={false}
       value={value}
-      className={wrapperClassName}
+      className={cn(fullWidth ? '' : 'w-48', className)}
       required={required}
+      fullWidth={fullWidth}
+      paddingY="small"
+      disabled={disabled}
+      error={error}
     >
       <input
-        className={cn(
-          'text-input px-1 border max-w-40 rounded outline-none focus:shadow-active',
-          { 'bg-gray-200  text-disabled': disabled }
-        )}
+        className={cn('text-input max-w-40 outline-none', {
+          'text-disabled': disabled,
+        })}
         type="time"
         name={name}
-        defaultValue={value}
+        value={value}
+        defaultValue={defaultValue}
         onChange={(e) => onChange(e.target.value)}
       />
     </InputWrapper>

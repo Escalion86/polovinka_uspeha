@@ -12,7 +12,7 @@ const FormWrapper = ({
     return (
       <div
         className={cn(
-          `flex flex-col w-full`,
+          `w-full`,
           // { flex: flex },
           // { 'laptop:gap-2 laptop:grid laptop:grid-cols-form': grid && !flex },
           // { 'laptop:grid-cols-form2': twoColumns },

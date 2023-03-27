@@ -12,9 +12,12 @@ const DateTimePicker = ({
   // wrapperClassName,
   className,
   disabled = false,
-  error = false,
+  error,
   postfix,
   postfixClassName,
+  fullWidth,
+  noMargin,
+  defaultValue,
 }) => {
   return (
     <InputWrapper
@@ -23,14 +26,16 @@ const DateTimePicker = ({
       onChange={onChange}
       copyPasteButtons={false}
       value={value}
-      className={cn('', className)}
+      className={cn(fullWidth ? '' : 'w-52', className)}
       // paddingY={false}
       required={required}
-      fullWidth={false}
+      fullWidth={fullWidth}
       postfix={postfix}
       postfixClassName={postfixClassName}
       paddingY="small"
       disabled={disabled}
+      noMargin={noMargin}
+      error={error}
     >
       <input
         className={cn(
@@ -42,7 +47,12 @@ const DateTimePicker = ({
         type="datetime-local"
         step="1800"
         name={name}
-        value={formatDateTime(value, false, true, false)}
+        value={value ? formatDateTime(value, false, true, false) : undefined}
+        defaultValue={
+          defaultValue
+            ? formatDateTime(defaultValue, false, true, false)
+            : undefined
+        }
         onChange={(e) => {
           const value = e.target.value
           var year = value.substring(0, 4)

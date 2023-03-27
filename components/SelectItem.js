@@ -10,7 +10,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 // import { useEffect, useRef, useState } from 'react'
 // import { Virtuoso } from 'react-virtuoso'
-import { UserItem, EventItem, DirectionItem, PaymentItem } from './ItemCards'
+import {
+  UserItem,
+  EventItem,
+  DirectionItem,
+  PaymentItem,
+  ServiceItem,
+} from './ItemCards'
 
 import cn from 'classnames'
 import usersAtom from '@state/atoms/usersAtom'
@@ -24,6 +30,7 @@ import filterWithRules from '@helpers/filterWithRules'
 import Tooltip from './Tooltip'
 import paymentsAtom from '@state/atoms/paymentsAtom'
 import CardButtons from './CardButtons'
+import servicesAtom from '@state/atoms/servicesAtom'
 
 export const SelectItem = ({
   items,
@@ -475,6 +482,100 @@ export const SelectUser = ({
                     modalTitle
                   )
               : (user) => modalsFunc.user.view(user._id)
+            : null
+          // disableDropDownList ? (user) => modalsFunc.user.view(user._id) : null
+        }
+        onNoChoose={onDelete}
+      />
+    </SelectItemContainer>
+  )
+}
+
+export const SelectService = ({
+  onChange,
+  onDelete,
+  selectedId = null,
+  exceptedIds = [],
+  required = false,
+  clearButton = null,
+  label,
+  filter,
+  // disableDropDownList,
+  error,
+  bordered = true,
+  modalTitle,
+  buttons,
+  rounded = true,
+  readOnly,
+}) => {
+  const services = useRecoilValue(servicesAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+
+  const filteredServices = filterWithRules(services, filter)
+
+  const onClickClearButton =
+    selectedId && clearButton
+      ? onDelete
+        ? () => onDelete()
+        : () => onChange(null)
+      : null
+
+  return (
+    <SelectItemContainer
+      required={required}
+      label={label}
+      onClickClearButton={onClickClearButton}
+      bordered={bordered}
+      error={error}
+      rounded={rounded}
+      buttons={buttons}
+      // buttons={
+      //   onChange
+      //     ? [
+      //         {
+      //           onClick: () =>
+      //             modalsFunc.selectUsers(
+      //               [selectedId],
+      //               [],
+      //               (data) => onChange(data[0]),
+      //               [],
+      //               1,
+      //               false
+      //             ),
+      //           icon: faPencil,
+      //           iconClassName: 'text-orange-400',
+      //           tooltip: 'Изменить',
+      //         },
+      //       ]
+      //     : null
+      // }
+      selectedId={selectedId}
+    >
+      <SelectItem
+        items={filteredServices}
+        itemComponent={(props) => ServiceItem({ ...props, bordered })}
+        componentHeight={40}
+        // onChange={onChange}
+        selectedId={selectedId}
+        className={cn(
+          'flex-1',
+          selectedId && clearButton ? 'rounded-l' : 'rounded'
+        )}
+        exceptedIds={exceptedIds}
+        onClick={
+          !readOnly
+            ? onChange
+              ? () =>
+                  modalsFunc.selectServices(
+                    [selectedId],
+                    [],
+                    (data) => onChange(data[0]),
+                    [],
+                    1,
+                    false,
+                    modalTitle
+                  )
+              : (user) => modalsFunc.service.view(user._id)
             : null
           // disableDropDownList ? (user) => modalsFunc.user.view(user._id) : null
         }

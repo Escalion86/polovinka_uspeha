@@ -80,6 +80,7 @@ import SettingsContent from '@layouts/content/SettingsContent'
 import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
 import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
 import PaymentsNotParticipantsEventContent from '@layouts/content/PaymentsNotParticipantsEventContent'
+import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
 
 const colors = [
   'border-blue-400',
@@ -368,16 +369,16 @@ export const DEFAULT_EVENT = Object.freeze({
 })
 
 export const DEFAULT_QUESTIONNAIRE = Object.freeze({
-  name: '',
+  title: '',
   data: [],
 })
 
 export const DEFAULT_QUESTIONNAIRE_ITEM = {
   type: 'text',
-  question: '',
+  label: '',
   key: '',
   show: true,
-  required: true,
+  required: false,
 }
 
 export const DEFAULT_DIRECTION = Object.freeze({
@@ -409,7 +410,7 @@ export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
   title: '',
   description: '',
   image: null,
-  menuName: null,
+  menuName: '',
   index: null,
   showOnSite: true,
 })
@@ -417,21 +418,29 @@ export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
 export const DEFAULT_SERVICE = Object.freeze({
   title: '',
   description: '',
+  shortDescription: '',
   image: null,
-  menuName: null,
+  menuName: '',
   index: null,
   showOnSite: true,
   price: 0,
+  questionnaire: null,
+})
+
+export const DEFAULT_SERVICE_USER = Object.freeze({
+  userId: '',
+  serviceId: '',
+  answers: {},
 })
 
 export const DEFAULT_SITE_SETTINGS = Object.freeze({
-  email: null,
-  phone: null,
-  whatsapp: null,
-  viber: null,
-  telegram: null,
-  instagram: null,
-  vk: null,
+  email: '',
+  phone: '',
+  whatsapp: '',
+  viber: '',
+  telegram: '',
+  instagram: '',
+  vk: '',
   codeSendService: 'telefonip',
 })
 
@@ -570,7 +579,12 @@ export const CONTENTS = {
   services: {
     Component: ServicesContent,
     name: 'Услуги',
-    accessRoles: ['dev'],
+    accessRoles: ['admin', 'dev'],
+  },
+  servicesUsers: {
+    Component: ServicesUsersContent,
+    name: 'Заявки на услуги',
+    accessRoles: ['admin', 'dev'],
   },
   directions: {
     Component: DirectionsContent,
@@ -657,6 +671,13 @@ export const pages = [
     group: 0,
     name: 'Услуги',
     href: 'services',
+    icon: faShoppingBag,
+  },
+  {
+    id: 1,
+    group: 0,
+    name: 'Заявки на услуги',
+    href: 'servicesUsers',
     icon: faShoppingBag,
   },
   {

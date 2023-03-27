@@ -30,6 +30,7 @@ import Questionnaires from '@models/Questionnaires'
 import QuestionnairesUsers from '@models/QuestionnairesUsers'
 import Reviews from '@models/Reviews'
 import Services from '@models/Services'
+import ServicesUsers from '@models/ServicesUsers'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
@@ -127,6 +128,7 @@ const fetchProps = async (user) => {
       : []
 
     const services = await Services.find({})
+    const servicesUsers = await ServicesUsers.find({})
     // console.timeEnd('Loading time')
     // dbDisconnect()
     // console.log('return result', {
@@ -164,6 +166,7 @@ const fetchProps = async (user) => {
       questionnaires: JSON.parse(JSON.stringify(questionnaires)),
       questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
       services: JSON.parse(JSON.stringify(services)),
+      servicesUsers: JSON.parse(JSON.stringify(servicesUsers)),
     }
 
     // console.log('fetchResult', fetchResult)
@@ -183,6 +186,7 @@ const fetchProps = async (user) => {
       questionnaires: [],
       questionnairesUsers: [],
       services: [],
+      servicesUsers: [],
       error: JSON.parse(JSON.stringify(error)),
     }
   }

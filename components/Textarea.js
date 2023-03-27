@@ -9,8 +9,9 @@ const Textarea = ({
   labelClassName,
   wrapperClassName,
   error = false,
-  rows = 6,
+  rows = 3,
   required,
+  defaultValue,
 }) => {
   return (
     <InputWrapper
@@ -31,6 +32,7 @@ const Textarea = ({
         )}
         rows={rows}
         value={value}
+        defaultValue={defaultValue}
         onChange={(e) => onChange(e.target.value)}
       />
     </InputWrapper>

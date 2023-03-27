@@ -30,7 +30,7 @@ import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
 
 const eventViewFunc = (eventId) => {
-  const EventSignUpModal = ({
+  const EventViewModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
@@ -204,7 +204,7 @@ const eventViewFunc = (eventId) => {
   return {
     title: `Мероприятие`,
     confirmButtonName: 'Записаться',
-    Children: EventSignUpModal,
+    Children: EventViewModal,
     // TopLeftComponent: () => (
     //   <CardButtons
     //     item={{ _id: eventId }}

@@ -71,6 +71,7 @@ export const SelectItemList = ({
   filter,
   modalTitle,
   canSelectNone,
+  className,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -135,7 +136,7 @@ export const SelectItemList = ({
   const addButtonIsActive = canAddItem && !itemsId.includes('?')
 
   return (
-    <div>
+    <div className={className}>
       <div className="flex items-center justify-between">
         {label && (
           <Label
@@ -224,6 +225,7 @@ export const SelectUserList = ({
   labelClassName,
   modalTitle,
   canSelectNone = true,
+  className,
 }) => {
   return (
     <SelectItemList
@@ -257,6 +259,7 @@ export const SelectUserList = ({
       readOnly={readOnly}
       labelClassName={labelClassName}
       canSelectNone={canSelectNone}
+      className={className}
     />
   )
 }
@@ -276,6 +279,7 @@ export const SelectEventList = ({
   labelClassName,
   modalTitle,
   canSelectNone = true,
+  className,
 }) => {
   return (
     <SelectItemList
@@ -304,6 +308,7 @@ export const SelectEventList = ({
       readOnly={readOnly}
       labelClassName={labelClassName}
       canSelectNone={canSelectNone}
+      className={className}
     />
   )
 }
@@ -323,6 +328,7 @@ export const SelectPaymentList = ({
   labelClassName,
   modalTitle,
   canSelectNone = true,
+  className,
 }) => {
   return (
     <SelectItemList
@@ -351,6 +357,7 @@ export const SelectPaymentList = ({
       readOnly={readOnly}
       labelClassName={labelClassName}
       canSelectNone={canSelectNone}
+      className={className}
     />
   )
 }

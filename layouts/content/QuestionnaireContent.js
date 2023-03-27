@@ -395,7 +395,6 @@ const QuestionnaireContent = (props) => {
                 error={errors.phone}
                 copyPasteButtons
                 disabled
-                className="w-48"
               />
               <PhoneInput
                 label="Whatsapp"
@@ -469,7 +468,14 @@ const QuestionnaireContent = (props) => {
               color="red-500"
               icon={faCheck}
               hoverable
-              onClick={() => modalsFunc.questionnaire.edit()}
+              onClick={() =>
+                modalsFunc.questionnaire.constructor(null, (data) => {
+                  console.log('!!!!', data)
+                  modalsFunc.questionnaire.open(data, (res) =>
+                    console.log('res', res)
+                  )
+                })
+              }
             />
           )}
           {/* </div> */}

@@ -55,13 +55,13 @@ const InputImage = ({
         else {
           // setImageOld(image)
           // setAddingImage(true)
-          modalsFunc.cropImage(newImage, aspect, (newImage) => {
+          modalsFunc.cropImage(newImage, img, aspect, (newImage) => {
             setImageOld(image)
             setAddingImage(true)
             sendImage(
               newImage,
-              (imageUrl) => {
-                onChange(imageUrl)
+              (imagesUrls) => {
+                onChange(imagesUrls[0])
               },
               directory,
               imageName
@@ -111,6 +111,8 @@ const InputImage = ({
       value={image}
       className={cn('flex-1', className)}
       required={required}
+      error={error}
+      // paddingY
       // labelPos="top"
     >
       <div
