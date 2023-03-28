@@ -107,6 +107,8 @@ const Input = forwardRef(
             disabled ? 'cursor-not-allowed' : '',
             inputClassName
           )}
+          min={min}
+          max={max}
           disabled={disabled}
           value={value}
           defaultValue={defaultValue}
@@ -117,7 +119,6 @@ const Input = forwardRef(
                 (typeof min !== 'number' || value >= min) &&
                 (typeof max !== 'number' || value <= max)
               ) {
-                // onChange(Number(value))
                 if (value === '') onChange(value)
                 else onChange(String(parseInt(value)))
               }

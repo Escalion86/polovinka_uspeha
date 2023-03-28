@@ -206,6 +206,7 @@ const serviceFunc = (serviceId, clone = false) => {
           />
           <Textarea
             label="Короткое описание (для карточки)"
+            value={shortDescription}
             onChange={(value) => {
               removeError('shortDescription')
               setShortDescription(value)

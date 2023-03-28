@@ -5,7 +5,7 @@ import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
-import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
+import { faMars, faTrash, faVenus } from '@fortawesome/free-solid-svg-icons'
 import Textarea from '@components/Textarea'
 import { DEFAULT_QUESTIONNAIRE } from '@helpers/constants'
 import DatePicker from '@components/DatePicker'
@@ -15,6 +15,7 @@ import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'
 import CheckBox from '@components/CheckBox'
 import InputWrapper from '@components/InputWrapper'
 import RadioBox from '@components/RadioBox'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const typesNames = {
   text: 'Текст (строка)',
@@ -28,6 +29,44 @@ const typesNames = {
   dateTime: 'Дата и время',
 }
 
+const CheckBoxItem = ({
+  checked,
+  inputValue,
+  onCheckClick,
+  onInputChange,
+  onDelete,
+}) => {
+  return (
+    <div className="flex items-center w-full mt-2 mb-1 gap-x-1">
+      <CheckBox
+        onClick={onCheckClick}
+        label="Другое:"
+        checked={checked}
+        // wrapperClassName="w-full"
+        noMargin
+        labelClassName="text-gray-500"
+      />
+      <input
+        value={inputValue}
+        onChange={(e) => {
+          onInputChange(e.target.value)
+        }}
+        className="flex-1 py-0 border-b border-gray-400 outline-none"
+      />
+      {onDelete && (
+        <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-6 h-6 hover:scale-110">
+          <FontAwesomeIcon
+            className="w-4 h-4 text-danger"
+            icon={faTrash}
+            size="1x"
+            onClick={onDelete}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+var init = false
 const CheckBoxList = ({
   label,
   error,
@@ -37,16 +76,40 @@ const CheckBoxList = ({
   onChange,
   fullWidth,
   ownItem = false,
+  ownItemMax = 1,
 }) => {
   const [value, setValue] = useState(
     defaultValue.filter((item) => list.includes(item))
   )
-  const [ownItemChecked, setOwnItemChecked] = useState(
-    !!defaultValue.find((item) => !list.includes(item))
+
+  const [ownItemsState, setOwnItemsState] = useState(
+    ownItem
+      ? [
+          ...defaultValue
+            .filter((item) => !list.includes(item))
+            .map((item) => ({ checked: true, value: item })),
+          { checked: false, value: '' },
+        ]
+      : []
   )
-  const [ownItemInput, setOwnItemInput] = useState(
-    defaultValue.find((item) => !list.includes(item)) || ''
-  )
+
+  useEffect(() => {
+    if (init)
+      onChange([
+        ...value,
+        ...ownItemsState
+          .filter((item) => item.checked && item.value !== '')
+          .map((item) => item.value),
+      ])
+    init = true
+  }, [value, ownItemsState])
+
+  // const [ownItemChecked, setOwnItemChecked] = useState(
+  //   !!defaultValue.find((item) => !list.includes(item))
+  // )
+  // const [ownItemInput, setOwnItemInput] = useState(
+  //   defaultValue.find((item) => !list.includes(item)) || ''
+  // )
 
   return (
     <InputWrapper
@@ -79,8 +142,10 @@ const CheckBoxList = ({
                   ? value.filter((item) => item !== label)
                   : [...value, label]
                 setValue(newValue)
-                if (!ownItemChecked || ownItemInput === '') onChange(newValue)
-                else onChange([...newValue, ownItemInput])
+                // onChange([
+                //   ...newValue,
+                //   ...ownItemsState.map((item) => item.value),
+                // ])
               }}
               checked={checked}
               label={label}
@@ -88,32 +153,113 @@ const CheckBoxList = ({
             />
           )
         })}
-        {ownItem && (
-          <div className="flex items-center w-full mt-2 mb-1 gap-x-1">
-            <CheckBox
-              onChange={() => {
-                if (ownItemChecked || ownItemInput === '') onChange(value)
-                else onChange([...value, ownItemInput])
-                setOwnItemChecked(!ownItemChecked)
-              }}
-              label="Другое:"
-              checked={ownItemChecked}
-              // wrapperClassName="w-full"
-              noMargin
-              labelClassName="text-gray-500"
-            />
-            <input
-              value={ownItemInput}
-              onChange={(e) => {
-                const newValue = e.target.value
-                if (!ownItemChecked || e.target.value === '') onChange(value)
-                else onChange([...value, newValue])
-                setOwnItemInput(e.target.value)
-              }}
-              className="flex-1 py-0 border-b border-gray-400 outline-none"
-            />
-          </div>
-        )}
+        {ownItemsState.map(({ checked, value }, index) => (
+          <CheckBoxItem
+            checked={checked}
+            inputValue={value}
+            onCheckClick={() => {
+              const newState = ownItemsState.map((item, i) =>
+                i === index ? { ...item, checked: !checked } : item
+              )
+              setOwnItemsState(newState)
+              // onChange([
+              //   ...value,
+              //   ...newState
+              //     .filter((item) => item.checked)
+              //     .map((item) => item.value),
+              // ])
+              // if (checked || value === '') onChange(value)
+              // else onChange([...value, value])
+              // setOwnItemChecked(!checked)
+            }}
+            onInputChange={(newValue) => {
+              const newState = ownItemsState.map((item, i) =>
+                i === index
+                  ? {
+                      checked:
+                        value === '' && newValue !== '' ? true : item.checked,
+                      value: newValue,
+                    }
+                  : item
+              )
+              if (
+                !newState.find((ownItem) => ownItem.value === '') &&
+                ownItemMax > newState.length
+              ) {
+                const newStateWithNewItem = [
+                  ...newState,
+                  { checked: false, value: '' },
+                ]
+                setOwnItemsState(newStateWithNewItem)
+              } else {
+                setOwnItemsState(newState)
+              }
+            }}
+            onDelete={
+              value !== '' ||
+              ownItemsState.filter((item) => item.value === '').length > 1
+                ? () => {
+                    const newState = ownItemsState.filter(
+                      (item, i) => i !== index
+                    )
+
+                    if (
+                      !newState.find((ownItem) => ownItem.value === '') &&
+                      ownItemMax > newState.length
+                    ) {
+                      const newStateWithNewItem = [
+                        ...newState,
+                        { checked: false, value: '' },
+                      ]
+                      setOwnItemsState(newStateWithNewItem)
+                    } else {
+                      setOwnItemsState(newState)
+                    }
+                  }
+                : undefined
+            }
+          />
+        ))}
+        {/* {ownItem && (
+          <CheckBoxItem
+            checked={ownItemChecked}
+            inputValue={ownItemInput}
+            onCheckClick={() => {
+              if (ownItemChecked || ownItemInput === '') onChange(value)
+              else onChange([...value, ownItemInput])
+              setOwnItemChecked(!ownItemChecked)
+            }}
+            onInputChange={(newValue) => {
+              if (!ownItemChecked || newValue === '') onChange(value)
+              else onChange([...value, newValue])
+              setOwnItemInput(newValue)
+            }}
+          />
+          // <div className="flex items-center w-full mt-2 mb-1 gap-x-1">
+          //   <CheckBox
+          //     onChange={() => {
+          //       if (ownItemChecked || ownItemInput === '') onChange(value)
+          //       else onChange([...value, ownItemInput])
+          //       setOwnItemChecked(!ownItemChecked)
+          //     }}
+          //     label="Другое:"
+          //     checked={ownItemChecked}
+          //     // wrapperClassName="w-full"
+          //     noMargin
+          //     labelClassName="text-gray-500"
+          //   />
+          //   <input
+          //     value={ownItemInput}
+          //     onChange={(e) => {
+          //       const newValue = e.target.value
+          //       if (!ownItemChecked || e.target.value === '') onChange(value)
+          //       else onChange([...value, newValue])
+          //       setOwnItemInput(e.target.value)
+          //     }}
+          //     className="flex-1 py-0 border-b border-gray-400 outline-none"
+          //   />
+          // </div>
+        )} */}
       </div>
     </InputWrapper>
   )
@@ -249,6 +395,7 @@ const Q = ({ data, state, onChange, errors }) => {
               />
             )
           if (item.type === 'number') {
+            console.log('item.params', item.params)
             return (
               <Input
                 {...item.params}
@@ -333,7 +480,10 @@ const Q = ({ data, state, onChange, errors }) => {
                 // list={}
                 // value={}
                 defaultValue={state[item.key]}
-                onChange={onItemChange}
+                onChange={(value) => {
+                  console.log('value', value)
+                  onItemChange(value)
+                }}
                 error={errors[item.key]}
                 required={item.required}
                 fullWidth
@@ -435,19 +585,31 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
 
     const checkRequiredFields = () => {
       const errorsArr = {}
-      data.forEach((item) => {
-        const value = state[item.key]
-        if (
-          item.required &&
-          !(
-            value !== undefined &&
-            value !== null &&
-            value !== 'NaN' &&
-            (!typeof value == 'object' || value.length !== 0)
+      data
+        .filter((item) => item.show)
+        .forEach((item, index) => {
+          const value = state[item.key]
+          if (item.type === 'number') {
+            if (item.params.max && parseInt(value) > item.params.max)
+              errorsArr[
+                item.key
+              ] = `Ошибка в поле "${item.label}". Число не может быть больше ${item.params.max}`
+            else if (item.params.min && parseInt(value) < item.params.min)
+              errorsArr[
+                item.key
+              ] = `Ошибка в поле "${item.label}". Число не может быть меньше ${item.params.min}`
+          }
+          if (
+            item.required &&
+            !(
+              value !== undefined &&
+              value !== null &&
+              value !== 'NaN' &&
+              (!typeof value == 'object' || value.length !== 0)
+            )
           )
-        )
-          errorsArr[item.key] = item.label
-      })
+            errorsArr[item.key] = `Поле "${item.label}" не заполнено`
+        })
       return errorsArr
     }
 
@@ -500,7 +662,7 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
     return (
       <FormWrapper>
         <Q data={data} state={state} onChange={updateState} errors={errors} />
-        {/* <ErrorsList errors={errors} /> */}
+        <ErrorsList errors={errors} />
       </FormWrapper>
     )
   }
