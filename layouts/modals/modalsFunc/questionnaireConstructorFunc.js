@@ -27,6 +27,7 @@ import arrayMove from '@helpers/arrayMove'
 import InputWrapper from '@components/InputWrapper'
 import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
+import getNoun from '@helpers/getNoun'
 
 const typesNames = {
   text: 'Текст (строка)',
@@ -312,9 +313,84 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                   onClickUp={index > 0 && onClickUp}
                   onClickDown={index < data.length - 1 && onClickDown}
                 >
-                  {(item.type === 'radioList' ||
-                    item.type === 'comboList' ||
-                    item.type === 'checkList') && (
+                  {item.type === 'checkList' && (
+                    <InputWrapper
+                      paddingY
+                      label="Пункты списка"
+                      wrapperClassName="flex flex-col items-center gap-x-1 gap-y-1"
+                    >
+                      <ListConstructor
+                        list={item.params?.list}
+                        onChange={(newList) =>
+                          setData((state) =>
+                            state.map((item, i) =>
+                              index === i
+                                ? {
+                                    ...item,
+                                    params: { ...item.params, list: newList },
+                                  }
+                                : item
+                            )
+                          )
+                        }
+                      />
+                      <div className="flex flex-wrap w-full gap-x-1 h-[38px] items-center">
+                        <CheckBox
+                          label="Анкетируемый может добавить"
+                          checked={item.params?.ownItem}
+                          // wrapperClassName="w-full"
+                          onClick={() =>
+                            setData((state) =>
+                              state.map((item, i) =>
+                                index === i
+                                  ? {
+                                      ...item,
+                                      params: {
+                                        ...item.params,
+                                        ownItem: !item.params?.ownItem,
+                                      },
+                                    }
+                                  : item
+                              )
+                            )
+                          }
+                        />
+                        <input
+                          value={item.params?.ownItemMax}
+                          onChange={(e) => {
+                            const newValue = e.target.value
+                            setData((state) =>
+                              state.map((item, i) =>
+                                index === i
+                                  ? {
+                                      ...item,
+                                      params: {
+                                        ...item.params,
+                                        ownItemMax: newValue,
+                                      },
+                                    }
+                                  : item
+                              )
+                            )
+                          }}
+                          type="number"
+                          min="1"
+                          placeholder="1"
+                          className="w-12 py-0 text-center border-b border-gray-400 outline-none"
+                        />
+                        <div>
+                          {getNoun(
+                            parseInt(item.params?.ownItemMax || 1),
+                            'пункт',
+                            'пункта',
+                            'пунктов',
+                            false
+                          )}
+                        </div>
+                      </div>
+                    </InputWrapper>
+                  )}
+                  {(item.type === 'radioList' || item.type === 'comboList') && (
                     <InputWrapper
                       paddingY
                       label="Пункты списка"
