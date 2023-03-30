@@ -36,6 +36,7 @@ const typesNames = {
   comboList: 'Раскрывающийся список',
   radioList: 'Один из списка',
   checkList: 'Несколько из списка',
+  customList: 'Список в свободной форме',
   date: 'Дата',
   time: 'Время',
   dateTime: 'Дата и время',
@@ -433,6 +434,53 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                       />
                     </InputWrapper>
                   )}
+                  {item.type === 'customList' && (
+                    <div className="flex mt-3 gap-x-1">
+                      <Input
+                        label="Максимум пунктов"
+                        value={item.params?.maxItems}
+                        onChange={(newValue) =>
+                          setData((state) =>
+                            state.map((item, i) =>
+                              index === i
+                                ? {
+                                    ...item,
+                                    params: {
+                                      ...item.params,
+                                      maxItems: newValue,
+                                    },
+                                  }
+                                : item
+                            )
+                          )
+                        }
+                        type="number"
+                        // inputClassName="w-40"
+                        noMargin
+                      />
+                      <CheckBox
+                        label="С нумерацией"
+                        checked={item.params?.withNumbering ?? true}
+                        wrapperClassName="w-full"
+                        onClick={() =>
+                          setData((state) =>
+                            state.map((item, i) =>
+                              index === i
+                                ? {
+                                    ...item,
+                                    params: {
+                                      ...item.params,
+                                      withNumbering:
+                                        !item.params?.withNumbering,
+                                    },
+                                  }
+                                : item
+                            )
+                          )
+                        }
+                      />
+                    </div>
+                  )}
                   {item.type === 'number' && (
                     <div className="flex mt-3 gap-x-1">
                       <Input
@@ -513,6 +561,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                 { name: 'Один из списка', value: 'radioList' },
                 { name: 'Несколько из списка', value: 'checkList' },
                 // { name: 'Раскрывающийся список', value: 'comboList' },
+                { name: 'Список в свободной форме', value: 'customList' },
                 null,
                 { name: 'Дата', value: 'date' },
                 { name: 'Время', value: 'time' },

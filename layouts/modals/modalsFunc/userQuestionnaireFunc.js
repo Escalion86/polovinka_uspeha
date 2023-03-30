@@ -16,6 +16,7 @@ import CheckBox from '@components/CheckBox'
 import InputWrapper from '@components/InputWrapper'
 import RadioBox from '@components/RadioBox'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import cn from 'classnames'
 
 const typesNames = {
   text: 'Текст (строка)',
@@ -23,6 +24,7 @@ const typesNames = {
   number: 'Число',
   comboList: 'Один из списка',
   checkList: 'Несколько из списка',
+  customList: 'Список в свободной форме',
   menu: 'Раскрывающийся список',
   date: 'Дата',
   time: 'Время',
@@ -220,46 +222,6 @@ const CheckBoxList = ({
             }
           />
         ))}
-        {/* {ownItem && (
-          <CheckBoxItem
-            checked={ownItemChecked}
-            inputValue={ownItemInput}
-            onCheckClick={() => {
-              if (ownItemChecked || ownItemInput === '') onChange(value)
-              else onChange([...value, ownItemInput])
-              setOwnItemChecked(!ownItemChecked)
-            }}
-            onInputChange={(newValue) => {
-              if (!ownItemChecked || newValue === '') onChange(value)
-              else onChange([...value, newValue])
-              setOwnItemInput(newValue)
-            }}
-          />
-          // <div className="flex items-center w-full mt-2 mb-1 gap-x-1">
-          //   <CheckBox
-          //     onChange={() => {
-          //       if (ownItemChecked || ownItemInput === '') onChange(value)
-          //       else onChange([...value, ownItemInput])
-          //       setOwnItemChecked(!ownItemChecked)
-          //     }}
-          //     label="Другое:"
-          //     checked={ownItemChecked}
-          //     // wrapperClassName="w-full"
-          //     noMargin
-          //     labelClassName="text-gray-500"
-          //   />
-          //   <input
-          //     value={ownItemInput}
-          //     onChange={(e) => {
-          //       const newValue = e.target.value
-          //       if (!ownItemChecked || e.target.value === '') onChange(value)
-          //       else onChange([...value, newValue])
-          //       setOwnItemInput(e.target.value)
-          //     }}
-          //     className="flex-1 py-0 border-b border-gray-400 outline-none"
-          //   />
-          // </div>
-        )} */}
       </div>
     </InputWrapper>
   )
@@ -351,6 +313,97 @@ const RadioBoxList = ({
             />
           </div>
         )}
+      </div>
+    </InputWrapper>
+  )
+}
+
+const CustomItem = ({ number, value, onChange, onDelete }) => {
+  return (
+    <div className="flex items-center w-full mt-2 mb-1 gap-x-1">
+      {number && (
+        <div
+          className={cn('w-8 text-right', value !== '' ? '' : 'text-gray-400')}
+        >{`${number}.`}</div>
+      )}
+      <input
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value)
+        }}
+        className="flex-1 py-0 border-b border-gray-400 outline-none"
+      />
+      {onDelete && (
+        <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-6 h-6 hover:scale-110">
+          <FontAwesomeIcon
+            className="w-4 h-4 text-danger"
+            icon={faTrash}
+            size="1x"
+            onClick={onDelete}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+const CustomList = ({
+  label,
+  error,
+  required,
+  defaultValue = [''],
+  onChange,
+  fullWidth,
+  maxItems = 10,
+  withNumbering = true,
+}) => {
+  const [list, setList] = useState(defaultValue)
+
+  // useEffect(() => {
+  //   if (init)
+  //     onChange([
+  //       ...value,
+  //       ...ownItemsState
+  //         .filter((item) => item.checked && item.value !== '')
+  //         .map((item) => item.value),
+  //     ])
+  //   init = true
+  // }, [value, ownItemsState])
+
+  return (
+    <InputWrapper
+      label={label}
+      required={required}
+      error={error}
+      paddingY="small"
+      fullWidth={fullWidth}
+    >
+      <div className="w-full">
+        {list.map((value, index) => (
+          <CustomItem
+            number={withNumbering ? index + 1 : undefined}
+            value={value}
+            onChange={(newValue) => {
+              const newList = list.map((item, i) =>
+                index === i ? newValue : item
+              )
+              if (!newList.includes('') && newList.length < (maxItems ?? 10))
+                newList.push('')
+
+              setList(newList)
+              onChange(newList)
+            }}
+            onDelete={
+              value === ''
+                ? undefined
+                : () => {
+                    const newList = list.filter((item, i) => index !== i)
+                    setList(newList)
+                    onChange(newList)
+                  }
+            }
+          />
+        ))}
       </div>
     </InputWrapper>
   )
@@ -500,6 +553,29 @@ const Q = ({ data, state, onChange, errors }) => {
           if (item.type === 'radioList')
             return (
               <RadioBoxList
+                {...item.params}
+                key={item.key}
+                label={item.label}
+                // list={}
+                // value={}
+                defaultValue={state[item.key]}
+                onChange={onItemChange}
+                error={errors[item.key]}
+                required={item.required}
+                fullWidth
+                // label={item.label}
+                // defaultValue={state[item.key]}
+                // // value={firstName}
+                // onChange={onItemChange}
+                // // labelClassName="w-40"
+                // error={errors[item.key]}
+                // required={item.required}
+                // fullWidth
+              />
+            )
+          if (item.type === 'customList')
+            return (
+              <CustomList
                 {...item.params}
                 key={item.key}
                 label={item.label}
