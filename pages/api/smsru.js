@@ -291,7 +291,7 @@ export default async function handler(req, res) {
                 `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
                 {
                   chat_id: telegramId,
-                  text: `Зарегистрирован новый пользователь с телефонным номером +${phone}`,
+                  text: `Зарегистрирован новый пользователь №${users.length} с телефонным номером +${phone}`,
                   parse_mode: 'html',
                 },
                 (data) => console.log('data', data),
