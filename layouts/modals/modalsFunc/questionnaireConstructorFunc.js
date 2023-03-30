@@ -191,16 +191,31 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
     const [data, setData] = useState(
       startData?.data ?? DEFAULT_QUESTIONNAIRE.data
     )
-    // const setQuestionnaire = useRecoilValue(itemsFuncAtom).questionnaire.set
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
-    const addItem = (type) =>
+    const addItem = (type) => {
+      var params = {}
+      var defaultValue = null
+      if (type === 'customList') {
+        params = { minItems: 1, maxItems: 10, withNumbering: true }
+        defaultValue = []
+      }
+      if (type === 'checkList') {
+        defaultValue = []
+      }
       setData((state) => [
         ...state,
-        { ...DEFAULT_QUESTIONNAIRE_ITEM, type, key: uuid() },
+        {
+          ...DEFAULT_QUESTIONNAIRE_ITEM,
+          type,
+          key: uuid(),
+          defaultValue,
+          params,
+        },
       ])
+    }
 
     // const deleteItem = (index) => {
     //   setData((state) => state.filter((item, i) => i !== index))
@@ -437,6 +452,28 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                   {item.type === 'customList' && (
                     <div className="flex mt-3 gap-x-1">
                       <Input
+                        label="Минимум пунктов"
+                        value={item.params?.minItems}
+                        onChange={(newValue) =>
+                          setData((state) =>
+                            state.map((item, i) =>
+                              index === i
+                                ? {
+                                    ...item,
+                                    params: {
+                                      ...item.params,
+                                      minItems: newValue,
+                                    },
+                                  }
+                                : item
+                            )
+                          )
+                        }
+                        type="number"
+                        // inputClassName="w-40"
+                        noMargin
+                      />
+                      <Input
                         label="Максимум пунктов"
                         value={item.params?.maxItems}
                         onChange={(newValue) =>
@@ -460,7 +497,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                       />
                       <CheckBox
                         label="С нумерацией"
-                        checked={item.params?.withNumbering ?? true}
+                        checked={item.params?.withNumbering}
                         wrapperClassName="w-full"
                         onClick={() =>
                           setData((state) =>
