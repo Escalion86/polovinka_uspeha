@@ -354,22 +354,15 @@ const CustomList = ({
   defaultValue = [''],
   onChange,
   fullWidth,
-  maxItems = 10,
-  withNumbering = true,
+  minItems,
+  maxItems,
+  withNumbering,
 }) => {
-  const [list, setList] = useState(defaultValue)
-
-  // useEffect(() => {
-  //   if (init)
-  //     onChange([
-  //       ...value,
-  //       ...ownItemsState
-  //         .filter((item) => item.checked && item.value !== '')
-  //         .map((item) => item.value),
-  //     ])
-  //   init = true
-  // }, [value, ownItemsState])
-
+  const [list, setList] = useState(
+    defaultValue.length === 0 ? [''] : defaultValue
+  )
+  const onChangeWithFiler = (newList) =>
+    onChange(newList.filter((value) => value !== ''))
   return (
     <InputWrapper
       label={label}
@@ -387,20 +380,27 @@ const CustomList = ({
               const newList = list.map((item, i) =>
                 index === i ? newValue : item
               )
-              if (!newList.includes('') && newList.length < (maxItems ?? 10))
+              if (
+                !newList.includes('') &&
+                (!maxItems || newList.length < maxItems)
+              )
                 newList.push('')
 
               setList(newList)
-              onChange(newList)
+              onChangeWithFiler(newList)
             }}
             onDelete={
-              value === ''
-                ? undefined
-                : () => {
+              (value !== '' ||
+                list.filter((value) => value === '').length > 1) &&
+              (!minItems || list.length > parseInt(minItems) + 1)
+                ? () => {
                     const newList = list.filter((item, i) => index !== i)
+                    if (newList.filter((value) => value === '').length === 0)
+                      newList.push('')
                     setList(newList)
-                    onChange(newList)
+                    onChangeWithFiler(newList)
                   }
+                : undefined
             }
           />
         ))}
@@ -410,8 +410,6 @@ const CustomList = ({
 }
 
 const Q = ({ data, state, onChange, errors }) => {
-  // console.log('state', state)
-  console.log('state', state)
   return (
     <div>
       {data
@@ -427,9 +425,7 @@ const Q = ({ data, state, onChange, errors }) => {
                 label={item.label}
                 defaultValue={state[item.key]}
                 type="text"
-                // value={firstName}
                 onChange={onItemChange}
-                // labelClassName="w-40"
                 error={errors[item.key]}
                 required={item.required}
               />
@@ -448,7 +444,6 @@ const Q = ({ data, state, onChange, errors }) => {
               />
             )
           if (item.type === 'number') {
-            console.log('item.params', item.params)
             return (
               <Input
                 {...item.params}
@@ -456,9 +451,7 @@ const Q = ({ data, state, onChange, errors }) => {
                 label={item.label}
                 defaultValue={state[item.key]}
                 type="number"
-                // value={firstName}
                 onChange={onItemChange}
-                // labelClassName="w-40"
                 error={errors[item.key]}
                 required={item.required}
               />
@@ -470,11 +463,9 @@ const Q = ({ data, state, onChange, errors }) => {
                 {...item.params}
                 key={item.key}
                 defaultValue={state[item.key]}
-                // value={gender}
                 valuesArray={item.valuesArray}
                 label={item.label}
                 onChange={onItemChange}
-                // name="gender"
                 error={errors[item.key]}
                 required={item.required}
               />
@@ -486,9 +477,7 @@ const Q = ({ data, state, onChange, errors }) => {
                 key={item.key}
                 label={item.label}
                 defaultValue={state[item.key]}
-                // value={firstName}
                 onChange={onItemChange}
-                // labelClassName="w-40"
                 error={errors[item.key]}
                 required={item.required}
                 fullWidth
@@ -501,9 +490,7 @@ const Q = ({ data, state, onChange, errors }) => {
                 key={item.key}
                 label={item.label}
                 defaultValue={state[item.key]}
-                // value={firstName}
                 onChange={onItemChange}
-                // labelClassName="w-40"
                 error={errors[item.key]}
                 required={item.required}
                 fullWidth
@@ -516,9 +503,7 @@ const Q = ({ data, state, onChange, errors }) => {
                 key={item.key}
                 label={item.label}
                 defaultValue={state[item.key]}
-                // value={firstName}
                 onChange={onItemChange}
-                // labelClassName="w-40"
                 error={errors[item.key]}
                 required={item.required}
                 fullWidth
@@ -530,24 +515,11 @@ const Q = ({ data, state, onChange, errors }) => {
                 {...item.params}
                 key={item.key}
                 label={item.label}
-                // list={}
-                // value={}
                 defaultValue={state[item.key]}
-                onChange={(value) => {
-                  console.log('value', value)
-                  onItemChange(value)
-                }}
+                onChange={onItemChange}
                 error={errors[item.key]}
                 required={item.required}
                 fullWidth
-                // label={item.label}
-                // defaultValue={state[item.key]}
-                // // value={firstName}
-                // onChange={onItemChange}
-                // // labelClassName="w-40"
-                // error={errors[item.key]}
-                // required={item.required}
-                // fullWidth
               />
             )
           if (item.type === 'radioList')
@@ -556,21 +528,11 @@ const Q = ({ data, state, onChange, errors }) => {
                 {...item.params}
                 key={item.key}
                 label={item.label}
-                // list={}
-                // value={}
                 defaultValue={state[item.key]}
                 onChange={onItemChange}
                 error={errors[item.key]}
                 required={item.required}
                 fullWidth
-                // label={item.label}
-                // defaultValue={state[item.key]}
-                // // value={firstName}
-                // onChange={onItemChange}
-                // // labelClassName="w-40"
-                // error={errors[item.key]}
-                // required={item.required}
-                // fullWidth
               />
             )
           if (item.type === 'customList')
@@ -579,21 +541,11 @@ const Q = ({ data, state, onChange, errors }) => {
                 {...item.params}
                 key={item.key}
                 label={item.label}
-                // list={}
-                // value={}
                 defaultValue={state[item.key]}
                 onChange={onItemChange}
                 error={errors[item.key]}
                 required={item.required}
                 fullWidth
-                // label={item.label}
-                // defaultValue={state[item.key]}
-                // // value={firstName}
-                // onChange={onItemChange}
-                // // labelClassName="w-40"
-                // error={errors[item.key]}
-                // required={item.required}
-                // fullWidth
               />
             )
 
@@ -612,7 +564,9 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
       typeof value === 'object' &&
       value.hasOwnProperty(item.key)
         ? value[item.key]
-        : item.defaultValue
+        : item.defaultValue ?? ['checkList', 'customList'].includes(item.type)
+        ? []
+        : null
     // stateDefault.push(item.show ? item.defaultValue : undefined)
   })
 
@@ -674,6 +628,20 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
               errorsArr[
                 item.key
               ] = `Ошибка в поле "${item.label}". Число не может быть меньше ${item.params.min}`
+          }
+          if (item.type === 'customList') {
+            if (item.params.maxItems && value.length > item.params.maxItems)
+              errorsArr[
+                item.key
+              ] = `Ошибка в поле "${item.label}". Количество заполненных пунктов не может превышать ${item.params.maxItems} шт`
+            else if (
+              item.required &&
+              item.params.minItems &&
+              value.length < item.params.minItems
+            )
+              errorsArr[
+                item.key
+              ] = `Ошибка в поле "${item.label}". Количество заполненных пунктов не может быть меньше ${item.params.minItems}`
           }
           if (
             item.required &&
