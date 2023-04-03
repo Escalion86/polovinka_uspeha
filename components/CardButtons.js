@@ -41,6 +41,7 @@ import {
   SERVICE_USER_STATUSES,
 } from '@helpers/constants'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -81,10 +82,6 @@ const CardButtons = ({
 
   const device = useRecoilValue(windowDimensionsTailwindSelector)
 
-  const copyLink = useCopyEventLinkToClipboard(item._id)
-
-  // const { info } = useSnackbar()
-
   const [open, setOpen] = useState(false)
   const [isTriggered, setIsTriggered] = useState(false)
   const ref = useDetectClickOutside({
@@ -100,8 +97,13 @@ const CardButtons = ({
     },
   })
 
+  const copyEventLink = useCopyEventLinkToClipboard(item._id)
+  const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
+
   const show = {
-    shareBtn: window?.location?.origin && typeOfItem === 'event',
+    shareBtn:
+      (window?.location?.origin && typeOfItem === 'event') ||
+      typeOfItem === 'service',
     eventUsersBtn:
       (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'event',
     upBtn: !forForm && isLoggedUserAdmin && onUpClick,
@@ -146,7 +148,8 @@ const CardButtons = ({
           icon={faShareAlt}
           onClick={() => {
             setOpen(false)
-            copyLink()
+            if (typeOfItem === 'event') copyEventLink()
+            if (typeOfItem === 'service') copyServiceLink()
           }}
           color="blue"
           tooltipText="Скопировать ссылку на мероприятие"
