@@ -199,7 +199,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
       var params = {}
       var defaultValue = null
       if (type === 'customList') {
-        params = { minItems: 1, maxItems: 10, withNumbering: true }
+        params = { minItems: 1, maxItems: 10, withNumbering: false }
         defaultValue = []
       }
       if (type === 'checkList' || type === 'images') {
