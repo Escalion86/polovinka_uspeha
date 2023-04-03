@@ -10,6 +10,7 @@ import UserNameById from '@components/UserNameById'
 import {
   faCalendarTimes,
   faQuestion,
+  faTimesCircle,
   faUserTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -20,11 +21,14 @@ import {
 } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import cn from 'classnames'
-import isEventClosedFunc from '@helpers/isEventClosed'
+// import isEventClosedFunc from '@helpers/isEventClosed'
 import eventStatusFunc from '@helpers/eventStatus'
 import eventSelector from '@state/selectors/eventSelector'
 import eventsUsersByEventIdSelector from '@state/selectors/eventsUsersByEventIdSelector'
 import Tooltip from '@components/Tooltip'
+import paymentSectorFunc from '@helpers/paymentSector'
+import serviceSelector from '@state/selectors/serviceSelector'
+import productSelector from '@state/selectors/productSelector'
 
 const Icon = ({ className, icon, tooltip }) => (
   <Tooltip title={tooltip}>
@@ -37,12 +41,27 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payment = useRecoilValue(paymentSelector(paymentId))
   const loading = useRecoilValue(loadingAtom('payment' + paymentId))
-  const event = useRecoilValue(eventSelector(payment.eventId))
-  const eventStatus = eventStatusFunc(event)
+  const paymentSector = paymentSectorFunc(payment)
+  if (paymentId === '642151c63e530ea42e5735bf')
+    console.log('paymentSector', paymentSector)
+  const selector =
+    paymentSector === 'event'
+      ? eventSelector(payment.eventId)
+      : paymentSector === 'service'
+      ? serviceSelector(payment.serviceId)
+      : paymentSector === 'product'
+      ? productSelector(payment.productId)
+      : null
 
-  const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
-    (payTypeItem) => payTypeItem.value === eventStatus
-  )
+  const item = selector ? useRecoilValue(selector) : null
+  const eventStatus = paymentSector === 'event' ? eventStatusFunc(item) : null
+
+  const eventStatusProps =
+    paymentSector === 'event'
+      ? EVENT_STATUSES_WITH_TIME.find(
+          (payTypeItem) => payTypeItem.value === eventStatus
+        )
+      : null
 
   const payType = PAY_TYPES.find(
     (payTypeItem) => payTypeItem.value === payment.payType
@@ -122,11 +141,11 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
                   />
                 )
               })()}
-            {!payment.eventId && (
+            {!paymentSector && (
               <Icon
-                icon={faCalendarTimes}
+                icon={faTimesCircle}
                 className="text-danger"
-                tooltip="Транзакция не привязана к мероприятию"
+                tooltip="Транзакция не привязана к продукту"
               />
             )}
           </div>

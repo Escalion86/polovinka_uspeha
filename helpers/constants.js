@@ -77,7 +77,7 @@ import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
 import BirthdaysContent from '@layouts/content/BirthdaysContent'
 import StatisticsContent from '@layouts/content/StatisticsContent'
-import badgepaymentsWithoutEventIdSelector from '@state/selectors/badgepaymentsWithoutEventIdSelector'
+import badgePaymentsWithoutEventIdSelector from '@state/selectors/badgePaymentsWithoutEventIdSelector'
 import SettingsContent from '@layouts/content/SettingsContent'
 import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
 import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
@@ -436,6 +436,20 @@ export const DEFAULT_SERVICE = Object.freeze({
   usersStatusDiscount: {},
 })
 
+export const DEFAULT_PRODUCT = Object.freeze({
+  title: '',
+  description: '',
+  shortDescription: '',
+  images: [],
+  menuName: '',
+  index: null,
+  showOnSite: true,
+  price: 0,
+  questionnaire: null,
+  usersStatusAccess: {},
+  usersStatusDiscount: {},
+})
+
 export const DEFAULT_SERVICE_USER = Object.freeze({
   userId: '',
   serviceId: '',
@@ -779,7 +793,7 @@ export const pages = [
     name: 'Непривязанные транзакции',
     href: 'paymentsWithNoEvent',
     icon: faUnlink,
-    badge: badgepaymentsWithoutEventIdSelector,
+    badge: badgePaymentsWithoutEventIdSelector,
     accessRoles: CONTENTS['paymentsWithNoEvent'].accessRoles,
   },
 

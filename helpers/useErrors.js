@@ -73,7 +73,16 @@ const useErrors = () => {
       payDirection: (data) =>
         !data
           ? setError({ payDirection: 'Введите направление транзакции' })
-          : !['toUser', 'fromUser', 'toEvent', 'fromEvent'].includes(data)
+          : ![
+              'toUser',
+              'fromUser',
+              'toEvent',
+              'fromEvent',
+              'toService',
+              'fromService',
+              'toProduct',
+              'fromProduct',
+            ].includes(data)
           ? setError({
               payDirection: 'Введен некорректное направление транзакции',
             })

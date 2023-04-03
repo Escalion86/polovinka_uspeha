@@ -12,7 +12,7 @@ const SectorPicker = ({
   <ValuePicker
     value={sector}
     valuesArray={SECTORS}
-    label="Область"
+    label="Продукт"
     onChange={onChange}
     name="gender"
     required={required}
