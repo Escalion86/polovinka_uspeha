@@ -17,12 +17,12 @@ import ZodiacIcon from '@components/ZodiacIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import formatDate from '@helpers/formatDate'
 import UserName from '@components/UserName'
-import sumOfPaymentsWithoutEventOfUserSelector from '@state/selectors/sumOfPaymentsWithoutEventOfUserSelector'
+import sumOfpaymentsWithoutEventIdByUserIdSelector from '@state/selectors/sumOfpaymentsWithoutEventIdByUserIdSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
   const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
-    sumOfPaymentsWithoutEventOfUserSelector(userId)
+    sumOfpaymentsWithoutEventIdByUserIdSelector(userId)
   )
 
   if (sumOfPaymentsWithoutEventOfUser === 0) return null

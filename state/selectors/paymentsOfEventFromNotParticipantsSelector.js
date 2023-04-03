@@ -1,14 +1,14 @@
 import { selectorFamily } from 'recoil'
 import eventNotParticipantsWithPaymentsSelector from './eventNotParticipantsWithPaymentsSelector'
-import paymentsFromAndToUsersSelector from './paymentsFromAndToUsersSelector'
+import paymentsOfEventFromAndToUsersSelector from './paymentsOfEventFromAndToUsersSelector'
 
-export const paymentsFromNotParticipantsSelector = selectorFamily({
-  key: 'paymentsFromNotParticipantsSelector',
+export const paymentsOfEventFromNotParticipantsSelector = selectorFamily({
+  key: 'paymentsOfEventFromNotParticipantsSelector',
   get:
     (id) =>
     ({ get }) => {
       if (!id) return []
-      const paymentsOfEvent = get(paymentsFromAndToUsersSelector(id))
+      const paymentsOfEvent = get(paymentsOfEventFromAndToUsersSelector(id))
       const notParticipantsIdsWithPayments = get(
         eventNotParticipantsWithPaymentsSelector(id)
       )
@@ -19,4 +19,4 @@ export const paymentsFromNotParticipantsSelector = selectorFamily({
     },
 })
 
-export default paymentsFromNotParticipantsSelector
+export default paymentsOfEventFromNotParticipantsSelector

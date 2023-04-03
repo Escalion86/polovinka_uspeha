@@ -1,6 +1,6 @@
 import { selectorFamily } from 'recoil'
 import eventParticipantsIdsSelector from './eventParticipantsIdsSelector'
-import paymentsWithNoCouponsFromAndToUsersSelector from './paymentsWithNoCouponsFromAndToUsersSelector'
+import paymentsOfEventWithNoCouponsFromAndToUsersSelector from './paymentsOfEventWithNoCouponsFromAndToUsersSelector'
 
 export const sumOfPaymentsFromParticipantsSelector = selectorFamily({
   key: 'sumOfPaymentsFromParticipantsSelector',
@@ -10,7 +10,7 @@ export const sumOfPaymentsFromParticipantsSelector = selectorFamily({
       if (!id) return 0
       const eventParticipants = get(eventParticipantsIdsSelector(id))
       return (
-        get(paymentsWithNoCouponsFromAndToUsersSelector(id)).reduce(
+        get(paymentsOfEventWithNoCouponsFromAndToUsersSelector(id)).reduce(
           (p, payment) => {
             const isUserParticipant = eventParticipants.includes(payment.userId)
             if (isUserParticipant)

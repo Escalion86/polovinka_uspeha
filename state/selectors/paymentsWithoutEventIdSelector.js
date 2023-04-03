@@ -2,11 +2,11 @@ import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import paymentsAtom from '@state/atoms/paymentsAtom'
 import { selector } from 'recoil'
 
-export const paymentsWithoutEventSelector = selector({
-  key: 'paymentsWithoutEventSelector',
+export const paymentsWithoutEventIdSelector = selector({
+  key: 'paymentsWithoutEventIdSelector',
   get: ({ get }) => {
     return get(paymentsAtom).filter((payment) => !payment.eventId)
   },
 })
 
-export default paymentsWithoutEventSelector
+export default paymentsWithoutEventIdSelector

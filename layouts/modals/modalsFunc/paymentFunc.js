@@ -6,7 +6,7 @@ import paymentSelector from '@state/selectors/paymentSelector'
 
 import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
-import { SelectEvent, SelectUser } from '@components/SelectItem'
+import { SelectEvent, SelectService, SelectUser } from '@components/SelectItem'
 import PriceInput from '@components/PriceInput'
 import PayTypePicker from '@components/ValuePicker/PayTypePicker'
 import { DEFAULT_PAYMENT } from '@helpers/constants'
@@ -17,6 +17,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import eventSelector from '@state/selectors/eventSelector'
 import { P } from '@components/tags'
 import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
+import SectorPicker from '@components/ValuePicker/GenderPicker'
 
 const paymentFunc = (paymentId, clone = false, props) => {
   const PaymentModal = ({
@@ -34,7 +35,20 @@ const paymentFunc = (paymentId, clone = false, props) => {
     const event = useRecoilValue(eventSelector(payment.eventId))
     const isEventClosed = isEventClosedFunc(event)
     // const eventsUsers = useRecoilValue(eventsUsersAtom)
-
+    const [sector, setSector] = useState(
+      // props?.sector
+      //   ? props?.sector
+      //   : payment?.sector
+      //   ? payment?.sector
+      //   :
+      props?.eventId ?? payment?.eventId
+        ? 'event'
+        : props?.serviceId ?? payment?.serviceId
+        ? 'service'
+        : props?.productId ?? payment?.productId
+        ? 'product'
+        : DEFAULT_PAYMENT.sector
+    )
     const [payDirection, setPayDirection] = useState(
       props?.payDirection ??
         payment?.payDirection ??
@@ -45,6 +59,12 @@ const paymentFunc = (paymentId, clone = false, props) => {
     )
     const [eventId, setEventId] = useState(
       props?.eventId ?? payment?.eventId ?? DEFAULT_PAYMENT.eventId
+    )
+    const [serviceId, setServiceId] = useState(
+      props?.serviceId ?? payment?.serviceId ?? DEFAULT_PAYMENT.serviceId
+    )
+    const [productId, setProductId] = useState(
+      props?.productId ?? payment?.productId ?? DEFAULT_PAYMENT.productId
     )
     const [sum, setSum] = useState(
       props?.sum ?? payment?.sum ?? DEFAULT_PAYMENT.sum
@@ -77,6 +97,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
       const toCheck = {
         payDirection,
         // eventId,
+        sector,
         sum,
         payType,
       }
@@ -87,12 +108,15 @@ const paymentFunc = (paymentId, clone = false, props) => {
         setPayment(
           {
             _id: payment?._id,
+            // sector,
             payDirection,
             userId:
               payDirection === 'toUser' || payDirection === 'fromUser'
                 ? userId
                 : null,
-            eventId,
+            eventId: sector === 'event' ? eventId : null,
+            serviceId: sector === 'service' ? serviceId : null,
+            productId: sector === 'product' ? productId : null,
             sum,
             status,
             payType,
@@ -140,9 +164,12 @@ const paymentFunc = (paymentId, clone = false, props) => {
 
     useEffect(() => {
       const isFormChanged =
+        // (props?.sector ?? payment?.sector) !== sector ||
         (props?.payDirection ?? payment?.payDirection) !== payDirection ||
         (props?.userId ?? payment?.userId) !== userId ||
         (props?.eventId ?? payment?.eventId) !== eventId ||
+        (props?.serviceId ?? payment?.serviceId) !== serviceId ||
+        (props?.productId ?? payment?.productId) !== productId ||
         (props?.sum ?? payment?.sum) !== sum ||
         (props?.status ?? payment?.status) !== status ||
         defaultPayAt !== payAt ||
@@ -153,7 +180,19 @@ const paymentFunc = (paymentId, clone = false, props) => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       if (isEventClosed) setOnlyCloseButtonShow(true)
-    }, [payDirection, userId, eventId, sum, status, payAt, payType, comment])
+    }, [
+      // sector,
+      payDirection,
+      userId,
+      eventId,
+      serviceId,
+      productId,
+      sum,
+      status,
+      payAt,
+      payType,
+      comment,
+    ])
 
     return (
       <FormWrapper>
@@ -180,6 +219,17 @@ const paymentFunc = (paymentId, clone = false, props) => {
             </ul>
           </>
         )} */}
+        <SectorPicker
+          sector={sector}
+          onChange={(value) => {
+            removeError('sector')
+            setSector(value)
+          }}
+          required
+          error={errors.sector}
+          disabledValues={['product']}
+          readOnly={isEventClosed}
+        />
         <PayDirectionPicker
           payDirection={payDirection}
           onChange={(value) => {
@@ -189,28 +239,45 @@ const paymentFunc = (paymentId, clone = false, props) => {
           required
           error={errors.payDirection}
           readOnly={isEventClosed}
+          sector={sector}
         />
-        {(payDirection === 'toUser' || payDirection === 'fromUser') && (
-          <SelectUser
-            label={payDirection === 'toUser' ? 'Получатель' : 'Платильщик'}
-            selectedId={userId}
-            onChange={isEventClosed ? null : (userId) => setUserId(userId)}
-            // onDelete={(e) => console.log('e', e)}
-            required
+        {sector &&
+          (payDirection === 'toUser' || payDirection === 'fromUser') && (
+            <SelectUser
+              label={payDirection === 'toUser' ? 'Получатель' : 'Платильщик'}
+              selectedId={userId}
+              onChange={isEventClosed ? null : (userId) => setUserId(userId)}
+              // onDelete={(e) => console.log('e', e)}
+              required
+              // readOnly={isEventClosed}
+            />
+          )}
+        {sector === 'event' && (
+          <SelectEvent
+            label="Мероприятие"
+            selectedId={eventId}
+            onChange={isEventClosed ? null : (eventId) => setEventId(eventId)}
+            // required
+            showEventUsersButton
+            showPaymentsButton
+            showEditButton
+            clearButton={!isEventClosed}
             // readOnly={isEventClosed}
           />
         )}
-        <SelectEvent
-          label="Мероприятие"
-          selectedId={eventId}
-          onChange={isEventClosed ? null : (eventId) => setEventId(eventId)}
-          // required
-          showEventUsersButton
-          showPaymentsButton
-          showEditButton
-          clearButton={!isEventClosed}
-          // readOnly={isEventClosed}
-        />
+        {sector === 'service' && (
+          <SelectService
+            label="Услуга"
+            selectedId={serviceId}
+            onChange={setServiceId}
+            // required
+            showEventUsersButton
+            showPaymentsButton
+            showEditButton
+            // clearButton={!isEventClosed}
+            // readOnly={isEventClosed}
+          />
+        )}
         <DateTimePicker
           value={payAt}
           onChange={(date) => {

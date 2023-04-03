@@ -1,7 +1,7 @@
 import compareArrays from '@helpers/compareArraysWithDif'
 import { selectorFamily } from 'recoil'
 import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
-import paymentsFromAndToUsersSelector from './paymentsFromAndToUsersSelector'
+import paymentsOfEventFromAndToUsersSelector from './paymentsOfEventFromAndToUsersSelector'
 
 export const eventNotParticipantsWithPaymentsSelector = selectorFamily({
   key: 'eventNotParticipantsWithPaymentsSelector',
@@ -11,7 +11,7 @@ export const eventNotParticipantsWithPaymentsSelector = selectorFamily({
       if (!id) return []
 
       const usersOfEvent = get(eventsUsersFullByEventIdSelector(id))
-      const paymentsOfEvent = get(paymentsFromAndToUsersSelector(id))
+      const paymentsOfEvent = get(paymentsOfEventFromAndToUsersSelector(id))
       const usersIdsOfEvent = usersOfEvent
         .filter(
           ({ status }) => status === 'participant' || status === 'assistant'

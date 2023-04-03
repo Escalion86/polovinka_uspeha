@@ -78,6 +78,14 @@ const useErrors = () => {
               payDirection: 'Введен некорректное направление транзакции',
             })
           : null,
+      sector: (data) =>
+        !data
+          ? setError({ sector: 'Введите область применения транзакции' })
+          : !['product', 'event', 'service'].includes(data)
+          ? setError({
+              sector: 'Введена некорректная область применения транзакции',
+            })
+          : null,
       userId: (data) =>
         !data ? setError({ userId: 'Выберите пользователя' }) : null,
       serviceId: (data) =>

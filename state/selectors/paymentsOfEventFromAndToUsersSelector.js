@@ -1,7 +1,7 @@
 import { selectorFamily } from 'recoil'
 import paymentsByEventIdSelector from './paymentsByEventIdSelector'
 
-export const paymentsFromAndToUsersSelector = selectorFamily({
+export const paymentsOfEventFromAndToUsersSelector = selectorFamily({
   key: 'paymentsFromAndToUsersSelector',
   get:
     (id) =>
@@ -16,4 +16,4 @@ export const paymentsFromAndToUsersSelector = selectorFamily({
     },
 })
 
-export default paymentsFromAndToUsersSelector
+export default paymentsOfEventFromAndToUsersSelector

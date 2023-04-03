@@ -1,5 +1,5 @@
 import { selectorFamily } from 'recoil'
-import paymentsFromAndToUsersSelector from './paymentsFromAndToUsersSelector'
+import paymentsOfEventFromAndToUsersSelector from './paymentsOfEventFromAndToUsersSelector'
 
 export const couponsOfEventFromUsersSelector = selectorFamily({
   key: 'couponsOfEventFromUsersSelector',
@@ -8,7 +8,7 @@ export const couponsOfEventFromUsersSelector = selectorFamily({
     ({ get }) => {
       if (!id) return []
 
-      return get(paymentsFromAndToUsersSelector(id)).filter(
+      return get(paymentsOfEventFromAndToUsersSelector(id)).filter(
         (payment) => payment.payType === 'coupon'
       )
     },

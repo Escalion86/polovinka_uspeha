@@ -160,8 +160,7 @@ const selectServicesFunc = (
   }
 
   return {
-    title:
-      title ?? (maxServices === 1 ? `Выбор направления` : `Выбор направлений`),
+    title: title ?? (maxServices === 1 ? `Выбор услуги` : `Выбор услуг`),
     confirmButtonName: 'Применить',
     // showConfirm: true,
     Children: SelectServicesModal,

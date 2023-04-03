@@ -1,21 +1,25 @@
-import { GENDERS } from '@helpers/constants'
+import { SECTORS } from '@helpers/constants'
 import ValuePicker from './ValuePicker'
 
-const GenderPicker = ({
-  gender,
+const SectorPicker = ({
+  sector,
   onChange = null,
   required = false,
   error = false,
+  readOnly,
+  disabledValues,
 }) => (
   <ValuePicker
-    value={gender}
-    valuesArray={GENDERS}
-    label="Пол"
+    value={sector}
+    valuesArray={SECTORS}
+    label="Область"
     onChange={onChange}
     name="gender"
     required={required}
     error={error}
+    disabledValues={disabledValues}
+    readOnly={readOnly}
   />
 )
 
-export default GenderPicker
+export default SectorPicker

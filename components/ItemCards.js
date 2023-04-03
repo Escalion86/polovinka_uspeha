@@ -307,11 +307,11 @@ export const ServiceItem = ({ item, onClick = null, active = false }) => (
     className="flex h-[50px]"
     noPadding
   >
-    {item?.image && (
+    {item?.images && item?.images.length > 0 && (
       // <div className="flex justify-center w-full tablet:w-auto">
       <img
         className="object-cover h-[50px] aspect-1"
-        src={item.image}
+        src={item.images[0]}
         alt="direction"
         // width={48}
         // height={48}

@@ -5,17 +5,25 @@ const QuestionnaireAnswersFill = ({
   questionnaireData = [],
   small,
 }) => {
-  if (!answers || questionnaireData.length === 0) return null
+  var hiddenKeys = []
+  const filteredQuestionnaireData = questionnaireData.filter((item) => {
+    if (item.show) return true
+    hiddenKeys.push(item.key)
+    return false
+  })
+  if (!answers || filteredQuestionnaireData.length === 0) return null
+  const filteredAnswers = { ...answers }
+  hiddenKeys.forEach((key) => delete filteredAnswers[key])
 
   const percent = Math.round(
-    (Object.values(answers).filter(
+    (Object.values(filteredAnswers).filter(
       (value) =>
         value !== undefined &&
         value !== null &&
         value !== 'NaN' &&
         (!typeof value == 'object' || value.length !== 0)
     ).length /
-      questionnaireData.length) *
+      filteredQuestionnaireData.length) *
       100
   )
   return (

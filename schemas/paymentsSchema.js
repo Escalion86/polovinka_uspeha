@@ -1,4 +1,11 @@
 const paymentsSchema = {
+  sector: {
+    type: String,
+    required: [
+      true,
+      'Необходимо указать сферу транзакции. Мероприятие, товар или услуга?',
+    ],
+  },
   payDirection: {
     type: String,
     required: [

@@ -10,7 +10,7 @@ import { useRecoilValue } from 'recoil'
 import sortFunctions from '@helpers/sortFunctions'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import PaymentsList from '@layouts/lists/PaymentsList'
-import paymentsWithoutEventSelector from '@state/selectors/paymentsWithoutEventSelector'
+import paymentsWithoutEventIdSelector from '@state/selectors/paymentsWithoutEventIdSelector'
 import paymentsWithoutUserWritingToEventSelector from '@state/selectors/paymentsWithoutUserWritingToEventSelector'
 
 const PaymentsNotParticipantsEventContent = () => {

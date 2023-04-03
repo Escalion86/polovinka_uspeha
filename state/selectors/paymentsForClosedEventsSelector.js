@@ -10,6 +10,7 @@ export const allPaymentsForClosedEventsSelector = selector({
     ({ get }) => {
       if (!id) return null
       return get(paymentsAtom).filter((payment) => {
+        if (!payment.eventId) return false
         const event = get(eventSelector(payment.eventId))
         return isEventClosed(event)
       })
