@@ -13,6 +13,7 @@ import CardButtons from '@components/CardButtons'
 import TextLine from '@components/TextLine'
 import serviceSelector from '@state/selectors/serviceSelector'
 import Button from '@components/Button'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const serviceViewFunc = (serviceId) => {
   const ServiceViewModal = ({
@@ -25,6 +26,7 @@ const serviceViewFunc = (serviceId) => {
     setTopLeftComponent,
   }) => {
     const service = useRecoilValue(serviceSelector(serviceId))
+    const loggedUser = useRecoilValue(loggedUserAtom)
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
@@ -73,12 +75,14 @@ const serviceViewFunc = (serviceId) => {
               className="px-2"
               prefix="Стоимость:"
             />
-            <Button
-              name="Подать заявку"
-              stopPropagation
-              onClick={() => modalsFunc.service.apply(service._id)}
-              thin
-            />
+            {loggedUser && (
+              <Button
+                name="Подать заявку"
+                stopPropagation
+                onClick={() => modalsFunc.service.apply(service._id)}
+                thin
+              />
+            )}
           </div>
         </div>
       </div>
