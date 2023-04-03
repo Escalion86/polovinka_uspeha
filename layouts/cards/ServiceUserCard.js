@@ -13,6 +13,8 @@ import serviceSelector from '@state/selectors/serviceSelector'
 import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'
 import cn from 'classnames'
 import PriceDiscount from '@components/PriceDiscount'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const ServiceUserCard = ({
   serviceUserId,
@@ -21,6 +23,9 @@ const ServiceUserCard = ({
   showUser,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUser = useRecoilValue(loggedUserAtom)
+
   const serviceUser = useRecoilValue(servicesUsersSelector(serviceUserId))
   if (!serviceUser) return null
 
@@ -49,7 +54,9 @@ const ServiceUserCard = ({
             item={serviceUser}
             typeOfItem="serviceUser"
             onEditQuestionnaire={
-              service.questionnaire && serviceUser.status !== 'closed'
+              (isLoggedUserAdmin || loggedUser._id === serviceUser.userId) &&
+              service.questionnaire &&
+              serviceUser.status !== 'closed'
                 ? () =>
                     modalsFunc.questionnaire.open(
                       service.questionnaire,
