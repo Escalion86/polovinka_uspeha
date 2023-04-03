@@ -436,6 +436,20 @@ export const DEFAULT_SERVICE = Object.freeze({
   usersStatusDiscount: {},
 })
 
+export const DEFAULT_PRODUCT = Object.freeze({
+  title: '',
+  description: '',
+  shortDescription: '',
+  images: [],
+  menuName: '',
+  index: null,
+  showOnSite: true,
+  price: 0,
+  questionnaire: null,
+  usersStatusAccess: {},
+  usersStatusDiscount: {},
+})
+
 export const DEFAULT_SERVICE_USER = Object.freeze({
   userId: '',
   serviceId: '',

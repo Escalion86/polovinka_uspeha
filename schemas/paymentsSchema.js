@@ -1,11 +1,11 @@
 const paymentsSchema = {
-  sector: {
-    type: String,
-    required: [
-      true,
-      'Необходимо указать сферу транзакции. Мероприятие, товар или услуга?',
-    ],
-  },
+  // sector: {
+  //   type: String,
+  //   required: [
+  //     true,
+  //     'Необходимо указать сферу транзакции. Мероприятие, товар или услуга?',
+  //   ],
+  // },
   payDirection: {
     type: String,
     required: [
@@ -21,6 +21,14 @@ const paymentsSchema = {
     // ],
   },
   eventId: {
+    type: String,
+    // required: [true, 'Необходимо указать мероприятие. '],
+  },
+  serviceId: {
+    type: String,
+    // required: [true, 'Необходимо указать мероприятие. '],
+  },
+  productId: {
     type: String,
     // required: [true, 'Необходимо указать мероприятие. '],
   },

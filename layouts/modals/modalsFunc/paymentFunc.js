@@ -31,6 +31,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
   }) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
+    console.log('payment', payment)
 
     const event = useRecoilValue(eventSelector(payment.eventId))
     const isEventClosed = isEventClosedFunc(event)
@@ -97,7 +98,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
       const toCheck = {
         payDirection,
         // eventId,
-        sector,
+        // sector,
         sum,
         payType,
       }
@@ -224,6 +225,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
           onChange={(value) => {
             removeError('sector')
             setSector(value)
+            setPayDirection(null)
           }}
           required
           error={errors.sector}
@@ -274,7 +276,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
             showEventUsersButton
             showPaymentsButton
             showEditButton
-            // clearButton={!isEventClosed}
+            clearButton={true}
             // readOnly={isEventClosed}
           />
         )}
