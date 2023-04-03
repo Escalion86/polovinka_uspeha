@@ -28,10 +28,13 @@ const Modal = ({
   // modals = null,
   onClose,
   onConfirm,
+  onConfirm2,
   onDecline,
   confirmButtonName,
+  confirmButtonName2,
   declineButtonName,
   showConfirm,
+  showConfirm2,
   showDecline,
   closeButtonShow = false,
   TopLeftComponent,
@@ -46,6 +49,7 @@ const Modal = ({
   const [onShowOnCloseConfirmDialog, setOnShowOnCloseConfirmDialog] =
     useState(false)
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
+  const [onConfirm2Func, setOnConfirm2Func] = useState(null)
   const [onDeclineFunc, setOnDeclineFunc] = useState(null)
   const setModals = useSetRecoilState(modalsAtom)
   const [close, setClose] = useState(false)
@@ -78,6 +82,12 @@ const Modal = ({
   const onConfirmClick = () => {
     if (onConfirmFunc) return onConfirmFunc(refreshPage)
     onConfirm && typeof onConfirm === 'function' && onConfirm(refreshPage)
+    closeModal()
+  }
+
+  const onConfirm2Click = () => {
+    if (onConfirm2Func) return onConfirm2Func(refreshPage)
+    onConfirm2 && typeof onConfirm2 === 'function' && onConfirm2(refreshPage)
     closeModal()
   }
 
@@ -210,6 +220,9 @@ const Modal = ({
               setOnConfirmFunc={(func) =>
                 setOnConfirmFunc(func ? () => func : null)
               }
+              setOnConfirm2Func={(func) =>
+                setOnConfirm2Func(func ? () => func : null)
+              }
               setOnDeclineFunc={(func) =>
                 setOnDeclineFunc(func ? () => func : null)
               }
@@ -237,10 +250,13 @@ const Modal = ({
           <ModalButtons
             closeButtonShow={onlyCloseButtonShow}
             confirmName={confirmButtonName}
+            confirmName2={confirmButtonName2}
             declineName={declineButtonName}
             onConfirmClick={onConfirmClick}
+            onConfirm2Click={onConfirm2Click}
             onDeclineClick={onDeclineClick}
             showConfirm={!onlyCloseButtonShow && showConfirm}
+            showConfirm2={!onlyCloseButtonShow && showConfirm2}
             showDecline={!onlyCloseButtonShow && showDecline}
             disableConfirm={disableConfirm}
             disableDecline={disableDecline}

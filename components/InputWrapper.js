@@ -1,39 +1,44 @@
 import cn from 'classnames'
-import { faCopy } from '@fortawesome/free-regular-svg-icons'
-import { faBan, faClose, faPaste } from '@fortawesome/free-solid-svg-icons'
+// import { faCopy } from '@fortawesome/free-regular-svg-icons'
+import {
+  faAsterisk,
+  faBan,
+  // faClose,
+  // faPaste,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Tooltip from '@components/Tooltip'
-import Label from './Label'
-import copyToClipboard from '@helpers/copyToClipboard'
-import pasteFromClipboard from '@helpers/pasteFromClipboard'
-import useSnackbar from '@helpers/useSnackbar'
+// import Tooltip from '@components/Tooltip'
+// import Label from './Label'
+// import copyToClipboard from '@helpers/copyToClipboard'
+// import pasteFromClipboard from '@helpers/pasteFromClipboard'
+// import useSnackbar from '@helpers/useSnackbar'
 import { forwardRef } from 'react'
 
-const SmallIconButton = ({ onClick, icon, tooltip, disabled }) => {
-  return (
-    <Tooltip title={tooltip}>
-      <div className="relative" onClick={disabled ? null : onClick}>
-        <div
-          className={cn(
-            'flex items-center justify-center p-1 border border-gray-400 rounded group',
-            disabled
-              ? 'text-gray-400 bg-gray-200 cursor-not-allowed'
-              : 'text-general bg-gray-100 cursor-pointer'
-          )}
-        >
-          <FontAwesomeIcon
-            className={cn(
-              'w-4 h-4 duration-200',
-              disabled ? '' : 'group-hover:scale-125'
-            )}
-            icon={icon}
-            size="1x"
-          />
-        </div>
-      </div>
-    </Tooltip>
-  )
-}
+// const SmallIconButton = ({ onClick, icon, tooltip, disabled }) => {
+//   return (
+//     <Tooltip title={tooltip}>
+//       <div className="relative" onClick={disabled ? null : onClick}>
+//         <div
+//           className={cn(
+//             'flex items-center justify-center p-1 border border-gray-400 rounded group',
+//             disabled
+//               ? 'text-gray-400 bg-gray-200 cursor-not-allowed'
+//               : 'text-general bg-gray-100 cursor-pointer'
+//           )}
+//         >
+//           <FontAwesomeIcon
+//             className={cn(
+//               'w-4 h-4 duration-200',
+//               disabled ? '' : 'group-hover:scale-125'
+//             )}
+//             icon={icon}
+//             size="1x"
+//           />
+//         </div>
+//       </div>
+//     </Tooltip>
+//   )
+// }
 
 const InputWrapper = forwardRef(
   (
@@ -135,13 +140,13 @@ const InputWrapper = forwardRef(
             <label
               // for="exampleFormControlInput1"
               className={cn(
-                'pointer-events-none absolute rounded px-1 text-sm peer-focus:text-general transition-all bg-white text-general',
+                'pointer-events-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[10px] transition-all bg-white text-general',
                 true
-                  ? 'h-5 leading-[10px] peer-placeholder-shown:h-6 peer-placeholder-shown:leading-3'
+                  ? 'h-5 leading-[10px] peer-placeholder-shown:leading-[12px]'
                   : '',
                 true ? 'flex items-center' : '',
                 required
-                  ? 'max-w-[calc(100%-80px)] peer-placeholder-shown:max-w-full'
+                  ? 'tablet:max-w-[calc(100%-72px)] max-w-[calc(100%-16px)] peer-focus:max-w-[calc(100%-16px)] tablet:peer-focus:max-w-[calc(100%-72px)] peer-placeholder-shown:max-w-full'
                   : '',
                 centerLabel
                   ? 'left-1/2 -translate-x-1/2'
@@ -182,17 +187,17 @@ const InputWrapper = forwardRef(
         {required && (
           <div
             className={cn(
-              'absolute px-1 text-xs bg-white right-1 -top-2.5',
-              error
-                ? // ||
-                  //   value === undefined ||
-                  //   value === null ||
-                  //   (typeof value === 'object' && value.length === 0)
-                  'text-danger'
-                : 'text-gray-400'
+              'flex h-4 text-danger items-center absolute px-1 text-xs bg-white right-1 -top-2.5'
             )}
           >
-            Обязательное
+            <span className="hidden tablet:block">Обязательное</span>
+            <span className="tablet:hidden">
+              <FontAwesomeIcon
+                className={cn('w-2.5 h-2.5')}
+                icon={faAsterisk}
+                size="1x"
+              />
+            </span>
           </div>
         )}
         {error && showErrorText && (

@@ -31,7 +31,7 @@ const CheckBoxItem = ({
     <div className="flex items-center w-full mt-2 mb-1 gap-x-1">
       <CheckBox
         onClick={onCheckClick}
-        label="Другое:"
+        // label="Другое:"
         checked={checked}
         // wrapperClassName="w-full"
         noMargin
@@ -42,6 +42,7 @@ const CheckBoxItem = ({
         onChange={(e) => {
           onInputChange(e.target.value)
         }}
+        placeholder="Мой ответ"
         className="flex-1 py-0 border-b border-gray-400 outline-none"
       />
       {onDelete && (
@@ -285,7 +286,7 @@ const RadioBoxList = ({
                 }
                 setOwnItemChecked(!ownItemChecked)
               }}
-              label="Другое:"
+              // label="Другое:"
               checked={ownItemChecked}
               // wrapperClassName="w-full"
               noMargin
@@ -301,6 +302,7 @@ const RadioBoxList = ({
                 }
                 setOwnItemInput(e.target.value)
               }}
+              placeholder="Мой ответ"
               className="flex-1 py-0 border-b border-gray-400 outline-none"
             />
           </div>
@@ -323,6 +325,7 @@ const CustomItem = ({ number, value, onChange, onDelete }) => {
         onChange={(e) => {
           onChange(e.target.value)
         }}
+        placeholder="Мой ответ"
         className="flex-1 py-0 border-b border-gray-400 outline-none"
       />
       {onDelete && (

@@ -91,7 +91,7 @@ const serviceUserViewFunc = (serviceUserId) => {
                   return (
                     <div
                       className={cn(
-                        'flex gap-x-1',
+                        'flex flex-col gap-x-1',
                         formatedAnswer ? '' : 'text-gray-400',
                         type === 'images' ? 'flex-col' : ''
                       )}
@@ -99,7 +99,7 @@ const serviceUserViewFunc = (serviceUserId) => {
                     >
                       <div className={cn('font-bold')}>
                         {label}
-                        {required ? '*' : ''}:
+                        {required ? '*' : ''}
                       </div>
                       {type === 'images' ? (
                         <ImageGallery images={formatedAnswer} />

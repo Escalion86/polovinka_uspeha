@@ -101,6 +101,7 @@ const CardButtons = ({
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
 
   const show = {
+    editQuestionnaire: !!onEditQuestionnaire,
     shareBtn:
       (window?.location?.origin && typeOfItem === 'event') ||
       typeOfItem === 'service',
@@ -210,7 +211,7 @@ const CardButtons = ({
           tooltipText="Редактировать"
         />
       )}
-      {onEditQuestionnaire && (
+      {show.editQuestionnaire && (
         <ItemComponent
           icon={faIdCard}
           onClick={onEditQuestionnaire}

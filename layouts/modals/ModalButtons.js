@@ -3,10 +3,13 @@ import Button from '../../components/Button'
 
 const ModalButtons = ({
   confirmName = 'Подтвердить',
+  confirmName2,
   declineName = 'Отмена',
   onConfirmClick,
+  onConfirm2Click,
   onDeclineClick,
   showConfirm = true,
+  showConfirm2,
   showDecline = true,
   disableConfirm = false,
   disableDecline = false,
@@ -35,6 +38,14 @@ const ModalButtons = ({
               name={confirmName}
               classBgColor="bg-general"
               onClick={onConfirmClick}
+              disabled={disableConfirm}
+            />
+          )}
+          {showConfirm2 && (
+            <Button
+              name={confirmName2}
+              classBgColor="bg-general"
+              onClick={onConfirm2Click}
               disabled={disableConfirm}
             />
           )}
