@@ -14,6 +14,7 @@ import InputWrapper from '@components/InputWrapper'
 import CardButton from '@components/CardButton'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
 import cn from 'classnames'
+import ImageGallery from '@components/ImageGallery'
 
 const serviceUserViewFunc = (serviceUserId) => {
   const ServiceUserViewModal = ({
@@ -50,7 +51,7 @@ const serviceUserViewFunc = (serviceUserId) => {
           />
         </TextLine>
         <TextLine label="Стоимсоть">
-          <PriceDiscount event={service} />
+          <PriceDiscount item={service} priceForStatus={user.status} />
         </TextLine>
         <TextLine label="Покупатель">
           <UserName user={user} noWrap />
@@ -63,7 +64,7 @@ const serviceUserViewFunc = (serviceUserId) => {
         </TextLine>
         {service.questionnaire && (
           <InputWrapper label={`Анкета "${service.questionnaire.title}"`}>
-            <div className="flex flex-col gap-y-1">
+            <div className="flex flex-col w-full gap-y-1">
               {service.questionnaire.data.map(
                 ({ type, label, key, show, required, params }) => {
                   if (!show) return null
@@ -91,7 +92,8 @@ const serviceUserViewFunc = (serviceUserId) => {
                     <div
                       className={cn(
                         'flex gap-x-1',
-                        formatedAnswer ? '' : 'text-gray-400'
+                        formatedAnswer ? '' : 'text-gray-400',
+                        type === 'images' ? 'flex-col' : ''
                       )}
                       key={key}
                     >
@@ -99,7 +101,11 @@ const serviceUserViewFunc = (serviceUserId) => {
                         {label}
                         {required ? '*' : ''}:
                       </div>
-                      <div>{formatedAnswer ? formatedAnswer : '-'}</div>
+                      {type === 'images' ? (
+                        <ImageGallery images={formatedAnswer} />
+                      ) : (
+                        <div>{formatedAnswer ? formatedAnswer : '-'}</div>
+                      )}
                     </div>
                   )
                 }

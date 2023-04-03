@@ -11,6 +11,8 @@ import {
   faCube,
   faGenderless,
   faGift,
+  faHandHoldingHeart,
+  faHeartbeat,
   faHistory,
   faLock,
   faMars,
@@ -81,6 +83,8 @@ import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventCo
 import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
 import PaymentsNotParticipantsEventContent from '@layouts/content/PaymentsNotParticipantsEventContent'
 import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
+import ServicesLoggedUserContent from '@layouts/content/ServicesLoggedUserContent'
+import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTodayCountSelector'
 
 const colors = [
   'border-blue-400',
@@ -582,16 +586,27 @@ export const CLOUDINARY_FOLDER = isDevMode
   ? 'polovinka_uspeha'
   : 'polovinka_uspeha'
 
+export const PRODUCTS = [
+  { name: 'Мероприятие', value: 'event', icon: faCalendar },
+  { name: 'Услуга', value: 'service', icon: faHeart },
+  { name: 'Товар', value: 'product', icon: faShoppingBag },
+]
+
 export const CONTENTS = {
   services: {
     Component: ServicesContent,
     name: 'Услуги',
-    accessRoles: ['admin', 'dev'],
+    accessRoles: ['client', 'admin', 'dev'],
   },
   servicesUsers: {
     Component: ServicesUsersContent,
     name: 'Заявки на услуги',
     accessRoles: ['admin', 'dev'],
+  },
+  myServices: {
+    Component: ServicesLoggedUserContent,
+    name: 'Мои заявки на услуги',
+    accessRoles: ['client', 'dev'],
   },
   directions: {
     Component: DirectionsContent,
@@ -678,102 +693,125 @@ export const pages = [
     group: 0,
     name: 'Услуги',
     href: 'services',
-    icon: faShoppingBag,
+    icon: faHeart,
+    accessRoles: CONTENTS['services'].accessRoles,
   },
   {
     id: 1,
     group: 0,
     name: 'Заявки на услуги',
     href: 'servicesUsers',
-    icon: faShoppingBag,
+    icon: faHandHoldingHeart,
+    accessRoles: CONTENTS['servicesUsers'].accessRoles,
   },
   {
     id: 2,
+    group: 0,
+    name: 'Мои заявки на услуги',
+    href: 'myServices',
+    icon: faHandHoldingHeart,
+    accessRoles: CONTENTS['myServices'].accessRoles,
+  },
+  {
+    id: 3,
     group: 1,
     name: 'Мероприятия',
     href: 'events',
     icon: faCalendar,
-  },
-  {
-    id: 3,
-    group: 2,
-    name: 'Направления',
-    href: 'directions',
-    icon: faHeart,
+    accessRoles: CONTENTS['events'].accessRoles,
   },
   {
     id: 4,
     group: 2,
-    name: 'Доп. блоки',
-    href: 'additionalBlocks',
-    icon: faCube,
+    name: 'Направления',
+    href: 'directions',
+    icon: faHeart,
+    accessRoles: CONTENTS['directions'].accessRoles,
   },
   {
     id: 5,
     group: 2,
-    name: 'Отзывы',
-    href: 'reviews',
-    icon: faComments,
+    name: 'Доп. блоки',
+    href: 'additionalBlocks',
+    icon: faCube,
+    accessRoles: CONTENTS['additionalBlocks'].accessRoles,
   },
   {
     id: 6,
     group: 2,
-    name: 'Контакты',
-    href: 'contacts',
-    icon: faPhone,
+    name: 'Отзывы',
+    href: 'reviews',
+    icon: faComments,
+    accessRoles: CONTENTS['reviews'].accessRoles,
   },
   {
     id: 7,
+    group: 2,
+    name: 'Контакты',
+    href: 'contacts',
+    icon: faPhone,
+    accessRoles: CONTENTS['contacts'].accessRoles,
+  },
+  {
+    id: 8,
     group: 3,
     name: 'Пользователи',
     href: 'users',
     icon: faCalendar,
+    accessRoles: CONTENTS['users'].accessRoles,
   },
   {
-    id: 8,
+    id: 9,
     group: 4,
     name: 'Транзакции',
     href: 'payments',
     icon: faMoneyBill,
+    accessRoles: CONTENTS['payments'].accessRoles,
   },
   {
-    id: 9,
+    id: 10,
     group: 4,
     name: 'Непривязанные транзакции',
     href: 'paymentsWithNoEvent',
     icon: faUnlink,
     badge: badgePaymentsWithoutEventSelector,
+    accessRoles: CONTENTS['paymentsWithNoEvent'].accessRoles,
   },
 
   {
-    id: 10,
+    id: 11,
     group: 4,
     name: 'Не пришли на мероприятие',
     href: 'paymentsNotParticipantsEvent',
     icon: faUserTimes,
     // badge: badgePaymentsWithoutUserWritingToEventSelector,
+    accessRoles: CONTENTS['paymentsNotParticipantsEvent'].accessRoles,
   },
 
   {
-    id: 11,
+    id: 12,
     group: 5,
     name: 'Записи на мероприятия',
     href: 'histories',
     icon: faUsers,
+    accessRoles: CONTENTS['histories'].accessRoles,
   },
   {
-    id: 12,
+    id: 13,
     group: 5,
     name: 'Дни рождения',
     href: 'birthdays',
     icon: faBirthdayCake,
+    accessRoles: CONTENTS['birthdays'].accessRoles,
+    badge: badgeBirthdaysTodayCountSelector,
   },
   {
-    id: 13,
+    id: 14,
     group: 6,
     name: 'Статистика',
     href: 'statistics',
     icon: faPieChart,
+    accessRoles: CONTENTS['statistics'].accessRoles,
   },
   {
     id: 50,
@@ -781,13 +819,15 @@ export const pages = [
     name: 'Участники клуба',
     href: 'members',
     icon: faCalendar,
+    accessRoles: CONTENTS['members'].accessRoles,
   },
   {
-    id: 13,
+    id: 80,
     group: 8,
     name: 'Настройки',
     href: 'settings',
     icon: faCog,
+    accessRoles: CONTENTS['settings'].accessRoles,
   },
   {
     id: 99,
@@ -795,11 +835,17 @@ export const pages = [
     name: 'Разработчик',
     href: 'dev',
     icon: faBug,
+    accessRoles: CONTENTS['dev'].accessRoles,
   },
 ]
 
 export const pagesGroups = [
-  { id: 0, name: 'Услуги', icon: faShoppingBag, accessRoles: ['admin', 'dev'] },
+  {
+    id: 0,
+    name: 'Услуги',
+    icon: faHeart,
+    accessRoles: ['client', 'admin', 'dev'],
+  },
   {
     id: 1,
     name: 'Мероприятия',

@@ -66,6 +66,7 @@ const InputWrapper = forwardRef(
       disabled = false,
       noMargin = false,
       centerLabel = false,
+      showDisabledIcon = true,
     },
     ref
   ) => {
@@ -116,12 +117,12 @@ const InputWrapper = forwardRef(
           {(postfix || disabled) && (
             <div
               className={cn(
-                'text-gray-400 pr-1 flex items-center',
+                'text-gray-400 pr-1 flex items-center gap-x-1',
                 postfixClassName
               )}
             >
               {postfix}
-              {disabled && (
+              {disabled && showDisabledIcon && (
                 <FontAwesomeIcon
                   className="w-4 h-4 text-gray-400"
                   icon={faBan}
@@ -130,44 +131,50 @@ const InputWrapper = forwardRef(
               )}
             </div>
           )}
-          <label
-            // for="exampleFormControlInput1"
-            className={cn(
-              'pointer-events-none absolute rounded px-1 text-sm peer-focus:text-general transition-all bg-white text-general',
-              centerLabel
-                ? 'left-1/2 -translate-x-1/2'
-                : paddingX === 'small'
-                ? 'left-1'
-                : paddingX
-                ? 'left-0'
-                : 'left-2',
-              paddingY === 'small'
-                ? '-top-4'
-                : paddingY === 'big'
-                ? '-top-6'
-                : paddingY
-                ? '-top-5'
-                : '-top-3',
-              floatingLabel
-                ? `${
-                    paddingY === 'small'
-                      ? '-top-4 peer-focus:-top-4'
-                      : paddingY === 'big'
-                      ? '-top-6 peer-focus:-top-6'
-                      : paddingY
-                      ? '-top-5 peer-focus:-top-5'
-                      : '-top-3 peer-focus:-top-3'
-                  } text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-0.5`
-                : '',
-              // error
-              //   ? 'peer-placeholder-shown:text-danger'
-              //   : 'peer-placeholder-shown:text-gray-400',
-              disabled ? 'cursor-not-allowed' : '',
-              labelClassName
-            )}
-          >
-            {label}
-          </label>
+          {label && (
+            <label
+              // for="exampleFormControlInput1"
+              className={cn(
+                'pointer-events-none absolute rounded px-1 text-sm peer-focus:text-general transition-all bg-white text-general',
+                true
+                  ? 'peer-focus:h-5 peer-focus:leading-[10px] peer-placeholder-shown:h-6 peer-placeholder-shown:leading-3'
+                  : '',
+                true ? 'flex items-center' : '',
+                centerLabel
+                  ? 'left-1/2 -translate-x-1/2'
+                  : paddingX === 'small'
+                  ? 'left-1'
+                  : paddingX
+                  ? 'left-0'
+                  : 'left-2',
+                paddingY === 'small'
+                  ? '-top-4'
+                  : paddingY === 'big'
+                  ? '-top-6'
+                  : paddingY
+                  ? '-top-5'
+                  : '-top-3',
+                floatingLabel
+                  ? `${
+                      paddingY === 'small'
+                        ? '-top-4 peer-focus:-top-4'
+                        : paddingY === 'big'
+                        ? '-top-6 peer-focus:-top-6'
+                        : paddingY
+                        ? '-top-5 peer-focus:-top-5'
+                        : '-top-3 peer-focus:-top-3'
+                    } text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-0.5`
+                  : '',
+                // error
+                //   ? 'peer-placeholder-shown:text-danger'
+                //   : 'peer-placeholder-shown:text-gray-400',
+                disabled ? 'cursor-not-allowed' : '',
+                labelClassName
+              )}
+            >
+              {label}
+            </label>
+          )}
         </div>
         {required && (
           <div

@@ -234,7 +234,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
                 </div>
               </div>
               <div className="flex-col justify-center hidden px-2 pt-1 laptop:flex">
-                <PriceDiscount event={event} className="flex" />
+                <PriceDiscount item={event} className="flex" />
                 {/* <div className="flex justify-between w-full tablet:flex-col">
                 <div className="text-lg font-bold leading-5 whitespace-normal tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
                   {formatDateTime(event.date, false, false, true, false)}
@@ -247,7 +247,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
             </div>
             <div>
               <PriceDiscount
-                event={event}
+                item={event}
                 className="hidden mr-2 tablet:flex laptop:hidden"
               />
             </div>

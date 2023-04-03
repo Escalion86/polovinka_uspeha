@@ -11,12 +11,14 @@ import { UserItem } from '@components/ItemCards'
 import userSelector from '@state/selectors/userSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
 import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'
+import cn from 'classnames'
+import PriceDiscount from '@components/PriceDiscount'
 
 const ServiceUserCard = ({
   serviceUserId,
-  noButtons,
   hidden = false,
   style,
+  showUser,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const serviceUser = useRecoilValue(servicesUsersSelector(serviceUserId))
@@ -38,8 +40,8 @@ const ServiceUserCard = ({
       hidden={hidden}
       style={style}
     >
-      <div className="flex flex-col w-full">
-        <div className="flex">
+      <div className={cn('flex flex-col w-full')}>
+        <div className="flex w-full">
           <div className="flex-1 px-2 py-1 text-lg font-bold text-general">
             {service.title}
           </div>
@@ -63,10 +65,17 @@ const ServiceUserCard = ({
           />
         </div>
 
-        <div className="flex items-center pr-1 border-t border-gray-400">
-          <div className="flex-1">
+        {showUser && (
+          <div className="flex-1 border-t border-gray-400">
             <UserItem item={user} />
           </div>
+        )}
+        <div className="flex items-center py-0.5 px-1 border-t border-gray-400">
+          <PriceDiscount
+            item={service}
+            priceForStatus={user.status}
+            className="flex-1"
+          />
           <QuestionnaireAnswersFill
             answers={serviceUser.answers}
             questionnaireData={service.questionnaire?.data}
