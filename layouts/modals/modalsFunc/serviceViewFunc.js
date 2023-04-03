@@ -69,7 +69,7 @@ const serviceViewFunc = (serviceId) => {
           <Divider thin light />
           <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
             <PriceDiscount
-              event={service}
+              item={service}
               className="px-2"
               prefix="Стоимость:"
             />

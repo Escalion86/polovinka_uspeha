@@ -34,7 +34,12 @@ const menuCfg = (userActiveRole, userActiveStatus) => {
     )
     .reduce((totalGroups, group) => {
       const pagesItems = pages.reduce((totalPages, page) => {
-        if (page.group === group.id) {
+        if (
+          page.group === group.id &&
+          page.accessRoles.includes(userActiveRole) &&
+          (!page.accessStatuses ||
+            page.accessStatuses.includes(userActiveStatus))
+        ) {
           totalPages.push(page)
           // if (user.access && page.variable && user.access[page.variable]) {
           //   if (user.access[page.variable].page) totalPages.push(page)
@@ -173,7 +178,8 @@ const Menu = ({ menuCfg, activePage }) => {
                   >
                     <FontAwesomeIcon icon={item.icon} size="2x" />
                     {item.items.length > 1 &&
-                      typeof groupsBadges[item.id] === 'number' && (
+                      typeof groupsBadges[item.id] === 'number' &&
+                      groupsBadges[item.id] > 0 && (
                         <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
                           {groupsBadges[item.id] <= 99
                             ? groupsBadges[item.id]

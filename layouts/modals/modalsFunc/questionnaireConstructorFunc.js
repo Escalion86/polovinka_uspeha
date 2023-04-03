@@ -202,7 +202,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
         params = { minItems: 1, maxItems: 10, withNumbering: true }
         defaultValue = []
       }
-      if (type === 'checkList') {
+      if (type === 'checkList' || type === 'images') {
         defaultValue = []
       }
       setData((state) => [
@@ -518,6 +518,54 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                       />
                     </div>
                   )}
+                  {item.type === 'images' && (
+                    <div className="flex mt-3 gap-x-1">
+                      {/* <Input
+                        label="Минимум фотографий"
+                        value={item.params?.minItems}
+                        onChange={(newValue) =>
+                          setData((state) =>
+                            state.map((item, i) =>
+                              index === i
+                                ? {
+                                    ...item,
+                                    params: {
+                                      ...item.params,
+                                      minItems: newValue,
+                                    },
+                                  }
+                                : item
+                            )
+                          )
+                        }
+                        type="number"
+                        // inputClassName="w-40"
+                        noMargin
+                      /> */}
+                      <Input
+                        label="Максимум фотографий"
+                        value={item.params?.maxImages}
+                        onChange={(newValue) =>
+                          setData((state) =>
+                            state.map((item, i) =>
+                              index === i
+                                ? {
+                                    ...item,
+                                    params: {
+                                      ...item.params,
+                                      maxImages: newValue,
+                                    },
+                                  }
+                                : item
+                            )
+                          )
+                        }
+                        type="number"
+                        // inputClassName="w-40"
+                        noMargin
+                      />
+                    </div>
+                  )}
                   {item.type === 'number' && (
                     <div className="flex mt-3 gap-x-1">
                       <Input
@@ -603,6 +651,8 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                 { name: 'Дата', value: 'date' },
                 { name: 'Время', value: 'time' },
                 { name: 'Дата и время', value: 'dateTime' },
+                null,
+                { name: 'Фотографии / картинки', value: 'images' },
               ]}
               onChange={addItem}
             />

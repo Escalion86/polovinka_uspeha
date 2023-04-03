@@ -123,9 +123,7 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
           {service.shortDescription}
         </div>
         <div className="flex items-center justify-between px-2 py-1 text-lg font-bold border-t gap-x-2 flex-nowrap">
-          <span className="whitespace-nowrap">
-            {service.price / 100 + ' ₽'}
-          </span>
+          <PriceDiscount item={service} className="flex-1" />
           <Button
             name="Подать заявку"
             stopPropagation

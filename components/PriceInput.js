@@ -1,5 +1,4 @@
 import Input from './Input'
-import cn from 'classnames'
 import InputWrapper from './InputWrapper'
 
 const PriceInput = ({
@@ -74,6 +73,7 @@ const PriceInput = ({
         paddingY={false}
         paddingX={false}
         noMargin
+        showDisabledIcon={false}
       />
       <Input
         step="10"

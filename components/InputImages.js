@@ -24,6 +24,7 @@ const InputImages = ({
   className,
   aspect,
   error,
+  fullWidth,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [isAddingImage, setAddingImage] = useState(false)
@@ -94,6 +95,7 @@ const InputImages = ({
       required={required}
       error={error}
       paddingY
+      fullWidth={fullWidth}
       // labelPos="top"
     >
       <div

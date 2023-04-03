@@ -17,19 +17,8 @@ import InputWrapper from '@components/InputWrapper'
 import RadioBox from '@components/RadioBox'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-
-const typesNames = {
-  text: 'Текст (строка)',
-  textarea: 'Текст (абзац)',
-  number: 'Число',
-  comboList: 'Один из списка',
-  checkList: 'Несколько из списка',
-  customList: 'Список в свободной форме',
-  menu: 'Раскрывающийся список',
-  date: 'Дата',
-  time: 'Время',
-  dateTime: 'Дата и время',
-}
+import { v4 as uuid } from 'uuid'
+import InputImages from '@components/InputImages'
 
 const CheckBoxItem = ({
   checked,
@@ -89,8 +78,8 @@ const CheckBoxList = ({
       ? [
           ...defaultValue
             .filter((item) => !list.includes(item))
-            .map((item) => ({ checked: true, value: item })),
-          { checked: false, value: '' },
+            .map((item) => ({ checked: true, value: item, key: uuid() })),
+          { checked: false, value: '', key: uuid() },
         ]
       : []
   )
@@ -134,15 +123,15 @@ const CheckBoxList = ({
       // noMargin
     >
       <div className="w-full">
-        {list.map((label) => {
-          const checked = value.includes(label)
+        {list.map((itemLabel) => {
+          const checked = value.includes(itemLabel)
           return (
             <CheckBox
-              key={label}
+              key={label + itemLabel}
               onChange={() => {
                 const newValue = checked
-                  ? value.filter((item) => item !== label)
-                  : [...value, label]
+                  ? value.filter((item) => item !== itemLabel)
+                  : [...value, itemLabel]
                 setValue(newValue)
                 // onChange([
                 //   ...newValue,
@@ -150,18 +139,19 @@ const CheckBoxList = ({
                 // ])
               }}
               checked={checked}
-              label={label}
+              label={itemLabel}
               wrapperClassName="w-full"
             />
           )
         })}
-        {ownItemsState.map(({ checked, value }, index) => (
+        {ownItemsState.map(({ checked, value, key }) => (
           <CheckBoxItem
+            key={key}
             checked={checked}
             inputValue={value}
             onCheckClick={() => {
-              const newState = ownItemsState.map((item, i) =>
-                i === index ? { ...item, checked: !checked } : item
+              const newState = ownItemsState.map((item) =>
+                item.key === key ? { ...item, checked: !checked } : item
               )
               setOwnItemsState(newState)
               // onChange([
@@ -175,9 +165,10 @@ const CheckBoxList = ({
               // setOwnItemChecked(!checked)
             }}
             onInputChange={(newValue) => {
-              const newState = ownItemsState.map((item, i) =>
-                i === index
+              const newState = ownItemsState.map((item) =>
+                item.key === key
                   ? {
+                      ...item,
                       checked:
                         value === '' && newValue !== '' ? true : item.checked,
                       value: newValue,
@@ -190,7 +181,7 @@ const CheckBoxList = ({
               ) {
                 const newStateWithNewItem = [
                   ...newState,
-                  { checked: false, value: '' },
+                  { checked: false, value: '', key: uuid() },
                 ]
                 setOwnItemsState(newStateWithNewItem)
               } else {
@@ -202,7 +193,7 @@ const CheckBoxList = ({
               ownItemsState.filter((item) => item.value === '').length > 1
                 ? () => {
                     const newState = ownItemsState.filter(
-                      (item, i) => i !== index
+                      (item) => item.key !== key
                     )
 
                     if (
@@ -211,7 +202,7 @@ const CheckBoxList = ({
                     ) {
                       const newStateWithNewItem = [
                         ...newState,
-                        { checked: false, value: '' },
+                        { checked: false, value: '', key: uuid() },
                       ]
                       setOwnItemsState(newStateWithNewItem)
                     } else {
@@ -239,11 +230,12 @@ const RadioBoxList = ({
 }) => {
   const [value, setValue] = useState(defaultValue)
   const [ownItemChecked, setOwnItemChecked] = useState(
-    !list.includes(defaultValue)
+    !list.includes(defaultValue) && !!defaultValue
   )
   const [ownItemInput, setOwnItemInput] = useState(
-    list.includes(defaultValue) ? '' : defaultValue
+    list.includes(defaultValue) ? '' : defaultValue ?? ''
   )
+
   return (
     <InputWrapper
       label={label}
@@ -351,7 +343,7 @@ const CustomList = ({
   label,
   error,
   required,
-  defaultValue = [''],
+  defaultValue = [],
   onChange,
   fullWidth,
   minItems,
@@ -359,10 +351,20 @@ const CustomList = ({
   withNumbering,
 }) => {
   const [list, setList] = useState(
-    defaultValue.length === 0 ? [''] : defaultValue
+    defaultValue.length === 0
+      ? [{ key: uuid(), value: '' }]
+      : defaultValue.map((value) => ({ key: uuid(), value }))
   )
+
+  // const updateList = (key, value) => {
+  //   setList(state => state.map((item) => item.key === key ? {key, value} : item))
+  // }
+
   const onChangeWithFiler = (newList) =>
-    onChange(newList.filter((value) => value !== ''))
+    onChange(
+      newList.filter((item) => item.value !== '').map((item) => item.value)
+    )
+
   return (
     <InputWrapper
       label={label}
@@ -372,31 +374,34 @@ const CustomList = ({
       fullWidth={fullWidth}
     >
       <div className="w-full">
-        {list.map((value, index) => (
+        {list.map(({ key, value }, index) => (
           <CustomItem
+            key={key}
             number={withNumbering ? index + 1 : undefined}
             value={value}
             onChange={(newValue) => {
-              const newList = list.map((item, i) =>
-                index === i ? newValue : item
+              const newList = list.map((item) =>
+                item.key === key ? { key, value: newValue } : item
               )
               if (
-                !newList.includes('') &&
+                !newList.find((item) => item.value === '') &&
                 (!maxItems || newList.length < maxItems)
               )
-                newList.push('')
-
+                newList.push({ key: uuid(), value: '' })
+              // updateList(key, newValue)
               setList(newList)
               onChangeWithFiler(newList)
             }}
             onDelete={
               (value !== '' ||
-                list.filter((value) => value === '').length > 1) &&
+                list.filter((item) => item.value === '').length > 1) &&
               (!minItems || list.length > parseInt(minItems) + 1)
                 ? () => {
-                    const newList = list.filter((item, i) => index !== i)
-                    if (newList.filter((value) => value === '').length === 0)
-                      newList.push('')
+                    const newList = list.filter((item) => item.key !== key)
+                    if (
+                      newList.filter((item) => item.value === '').length === 0
+                    )
+                      newList.push({ key: uuid(), value: '' })
                     setList(newList)
                     onChangeWithFiler(newList)
                   }
@@ -549,6 +554,21 @@ const Q = ({ data, state, onChange, errors }) => {
               />
             )
 
+          if (item.type === 'images')
+            return (
+              <InputImages
+                {...item.params}
+                directory="individualWedding"
+                label={item.label}
+                key={item.key}
+                images={state[item.key]}
+                onChange={onItemChange}
+                error={errors[item.key]}
+                required={item.required}
+                fullWidth
+              />
+            )
+
           return null
         })}
     </div>
@@ -564,7 +584,8 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
       typeof value === 'object' &&
       value.hasOwnProperty(item.key)
         ? value[item.key]
-        : item.defaultValue ?? ['checkList', 'customList'].includes(item.type)
+        : item.defaultValue ??
+          ['checkList', 'customList', 'images'].includes(item.type)
         ? []
         : null
     // stateDefault.push(item.show ? item.defaultValue : undefined)
@@ -602,7 +623,11 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
 
     const updateState = (key, value) => {
       setState((state) => ({ ...state, [key]: value }))
-      setErrors((state) => ({ ...state, [key]: false }))
+      setErrors((state) => {
+        const newErrorState = { ...state }
+        delete newErrorState[key]
+        return newErrorState
+      })
     }
 
     // console.log('state', state)

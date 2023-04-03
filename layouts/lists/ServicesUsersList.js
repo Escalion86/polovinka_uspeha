@@ -1,17 +1,13 @@
 import React from 'react'
 
-import EventCard from '@layouts/cards/EventCard'
 import ListWrapper from './ListWrapper'
-import { useRecoilValue } from 'recoil'
-import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import ServiceUserCard from '@layouts/cards/ServiceUserCard'
 
-const ServicesUsersList = ({ servicesUsers }) => {
-  // const widthNum = useRecoilValue(windowDimensionsNumSelector)
+const ServicesUsersList = ({ servicesUsers, showUser = true }) => {
   return (
     <ListWrapper
       itemCount={servicesUsers.length}
-      itemSize={82}
+      itemSize={showUser ? 123 : 82}
       className="bg-opacity-15 bg-general"
     >
       {({ index, style }) => (
@@ -19,6 +15,7 @@ const ServicesUsersList = ({ servicesUsers }) => {
           style={style}
           key={servicesUsers[index]._id}
           serviceUserId={servicesUsers[index]._id}
+          showUser={showUser}
         />
       )}
     </ListWrapper>

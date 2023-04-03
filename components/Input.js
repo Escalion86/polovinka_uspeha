@@ -1,4 +1,3 @@
-import { InputAdornment, TextField } from '@mui/material'
 import cn from 'classnames'
 import { forwardRef } from 'react'
 import InputWrapper from './InputWrapper'
@@ -24,6 +23,7 @@ const Input = forwardRef(
       noBorder = false,
       placeholder,
       disabled = false,
+      showDisabledIcon = true,
       min,
       max,
       required,
@@ -89,6 +89,7 @@ const Input = forwardRef(
         fullWidth={fullWidth}
         noBorder={noBorder}
         noMargin={noMargin}
+        showDisabledIcon={showDisabledIcon}
       >
         {/* <div
         className={cn(

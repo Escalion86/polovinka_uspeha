@@ -1,3 +1,8 @@
+import {
+  DEFAULT_USERS_STATUS_ACCESS,
+  DEFAULT_USERS_STATUS_DISCOUNT,
+} from '@helpers/constants'
+
 const servicesSchema = {
   title: {
     type: String,
@@ -57,6 +62,16 @@ const servicesSchema = {
     type: Number,
     max: [99999999, 'Сумма не может превышать 999999,99 руб'],
     default: null,
+  },
+  usersStatusAccess: {
+    type: Map,
+    of: Boolean,
+    default: DEFAULT_USERS_STATUS_ACCESS,
+  },
+  usersStatusDiscount: {
+    type: Map,
+    of: Number,
+    default: DEFAULT_USERS_STATUS_DISCOUNT,
   },
   questionnaire: {
     type: Map,

@@ -3,7 +3,7 @@ import getNoun from './getNoun'
 
 const getDaysFromNow = (date1, showNoun = true, showPrefix = true) => {
   if (showPrefix) {
-    const result = getDaysBetween(date1, new Date(), false)
+    const result = getDaysBetween(date1, new Date(), false, true)
     if (result === 2) return 'послезавтра'
     if (result === 1) return 'завтра'
     if (result === 0) return 'сегодня'
