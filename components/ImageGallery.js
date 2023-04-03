@@ -2,7 +2,6 @@ import React from 'react'
 import ReactImageGallery from 'react-image-gallery'
 import Zoom from 'react-medium-image-zoom'
 import cn from 'classnames'
-import { height } from '@mui/system'
 
 const ImageGallery = ({ images, noImage, className }) => {
   if (images?.length === 0 && !noImage) return null
