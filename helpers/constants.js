@@ -423,7 +423,7 @@ export const DEFAULT_SERVICE = Object.freeze({
   title: '',
   description: '',
   shortDescription: '',
-  image: null,
+  images: [],
   menuName: '',
   index: null,
   showOnSite: true,

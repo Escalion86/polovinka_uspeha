@@ -30,13 +30,13 @@ const servicesSchema = {
     type: String,
     default: '',
   },
-  image: {
-    type: String,
-    default: '',
-    // formOptions: {
-    //   name: 'Картинка',
-    //   type: 'image',
-    // },
+  // image: {
+  //   type: String,
+  //   default: '',
+  // },
+  images: {
+    type: Array,
+    default: [],
   },
   index: {
     type: Number,

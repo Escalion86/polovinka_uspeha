@@ -89,11 +89,11 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
       hidden={hidden}
       style={style}
     >
-      {service?.image && (
+      {service?.images && service.images[0] && (
         // <div className="flex justify-center w-full tablet:w-auto">
         <img
           className="object-cover h-full w-36 tablet:w-48 max-h-60 tablet:max-h-72"
-          src={service.image}
+          src={service.images[0]}
           alt="service"
           // width={48}
           // height={48}

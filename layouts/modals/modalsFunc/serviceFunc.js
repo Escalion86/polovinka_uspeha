@@ -28,6 +28,8 @@ import { faEye, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Textarea from '@components/Textarea'
 import FormRow from '@components/FormRow'
 import compareObjects from '@helpers/compareObjects'
+import InputImages from '@components/InputImages'
+import compareArrays from '@helpers/compareArraysWithDif'
 
 const Questionnaire = ({ data, onChange }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -115,7 +117,9 @@ const serviceFunc = (serviceId, clone = false) => {
     const [shortDescription, setShortDescription] = useState(
       service?.shortDescription ?? DEFAULT_SERVICE.shortDescription
     )
-    const [image, setImage] = useState(service?.image ?? DEFAULT_SERVICE.image)
+    const [images, setImages] = useState(
+      service?.images ?? DEFAULT_SERVICE.images
+    )
     const [menuName, setMenuName] = useState(
       service?.menuName ?? DEFAULT_SERVICE.menuName
     )
@@ -151,7 +155,7 @@ const serviceFunc = (serviceId, clone = false) => {
           title,
           description,
           shortDescription,
-          image,
+          images,
           questionnaire,
         })
       ) {
@@ -163,7 +167,7 @@ const serviceFunc = (serviceId, clone = false) => {
             shortDescription,
             description,
             showOnSite,
-            image,
+            images,
             menuName,
             index: service?.index ?? services?.length ?? 0,
             price,
@@ -182,7 +186,7 @@ const serviceFunc = (serviceId, clone = false) => {
         service?.description !== description ||
         service?.shortDescription !== shortDescription ||
         service?.showOnSite !== showOnSite ||
-        service?.image !== image ||
+        !compareArrays(service?.images, images) ||
         service?.menuName !== menuName ||
         service?.price !== price ||
         !compareObjects(defaultUsersStatusAccess, usersStatusAccess) ||
@@ -197,7 +201,7 @@ const serviceFunc = (serviceId, clone = false) => {
       shortDescription,
       description,
       showOnSite,
-      image,
+      images,
       menuName,
       price,
       questionnaire,
@@ -210,7 +214,18 @@ const serviceFunc = (serviceId, clone = false) => {
         <TabContext value="Общие">
           <TabPanel tabName="Общие" className="px-0">
             <FormWrapper>
-              <InputImage
+              <InputImages
+                label="Фотографии"
+                directory="services"
+                images={images}
+                onChange={(images) => {
+                  removeError('images')
+                  setImages(images)
+                }}
+                required
+                error={errors.images}
+              />
+              {/* <InputImage
                 label="Картинка"
                 directory="services"
                 image={image}
@@ -220,7 +235,7 @@ const serviceFunc = (serviceId, clone = false) => {
                 }}
                 required
                 error={errors.image}
-              />
+              /> */}
               <Input
                 label="Название"
                 type="text"
