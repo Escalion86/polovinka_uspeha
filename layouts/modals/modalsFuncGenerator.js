@@ -228,8 +228,12 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
           addModal({
             title: 'Необходимо зарегистрироваться и авторизироваться',
             text: 'Для записи на мероприятие, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
-            confirmButtonName: 'Зарегистрироваться / Авторизироваться',
+            confirmButtonName: 'Авторизироваться',
+            confirmButtonName2: 'Зарегистрироваться',
+            showConfirm2: true,
             onConfirm: () => router.push('/login', '', { shallow: true }),
+            onConfirm2: () =>
+              router.push('/login?registration=true', '', { shallow: true }),
           })
         else {
           const postfixStatus = status === 'reserve' ? ' в резерв' : ''
@@ -301,7 +305,11 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
             title: 'Необходимо зарегистрироваться',
             text: 'Для записи на мероприятие, необходимо сначала авторизироваться на сайте',
             confirmButtonName: 'Авторизироваться',
+            confirmButtonName2: 'Зарегистрироваться',
+            showConfirm2: true,
             onConfirm: () => router.push('/login', '', { shallow: true }),
+            onConfirm2: () =>
+              router.push('/login?registration=true', '', { shallow: true }),
           })
         else {
           const postfixStatus = activeStatus === 'reserve' ? ' в резерв' : ''
@@ -381,7 +389,20 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
       add: (serviceId) => addModal(serviceFunc(serviceId, true)),
       edit: (serviceId) => addModal(serviceFunc(serviceId)),
       view: (serviceId) => addModal(serviceViewFunc(serviceId)),
-      apply: (serviceId) => addModal(serviceApplyFunc(serviceId)),
+      apply: (serviceId) => {
+        if (!loggedUser?._id)
+          addModal({
+            title: 'Необходимо зарегистрироваться и авторизироваться',
+            text: 'Для покупки услуги, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
+            confirmButtonName: 'Авторизироваться',
+            confirmButtonName2: 'Зарегистрироваться',
+            showConfirm2: true,
+            onConfirm: () => router.push('/login', '', { shallow: true }),
+            onConfirm2: () =>
+              router.push('/login?registration=true', '', { shallow: true }),
+          })
+        else addModal(serviceApplyFunc(serviceId))
+      },
       delete: (serviceId) =>
         addModal({
           title: 'Удаление услуги',
