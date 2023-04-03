@@ -510,6 +510,10 @@ const LoginPage = (props) => {
         } else {
           if (router.query?.event)
             router.push('/event/' + router.query?.event, '', { shallow: true })
+          else if (router.query?.service)
+            router.push('/service/' + router.query?.service, '', {
+              shallow: true,
+            })
           else router.push('/cabinet', '', { shallow: true })
         }
       })

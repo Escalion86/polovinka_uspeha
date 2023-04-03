@@ -64,6 +64,7 @@ function EventPage(props) {
       : undefined
 
   const title = event?.title ?? ''
+  const query = event?._id ? { event: event._id } : {}
 
   return (
     <>
@@ -93,7 +94,7 @@ function EventPage(props) {
                 <Link
                   href={{
                     pathname: '/login',
-                    query: event?._id ? { event: event._id } : {},
+                    query,
                   }}
                   shallow
                 >
@@ -106,7 +107,7 @@ function EventPage(props) {
                 <Link
                   href={{
                     pathname: '/login',
-                    query: { registration: true },
+                    query: { ...query, registration: true },
                   }}
                   shallow
                 >

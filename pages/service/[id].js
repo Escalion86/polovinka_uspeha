@@ -62,6 +62,7 @@ function ServicePage(props) {
       : undefined
 
   const title = service?.title ?? ''
+  const query = service?._id ? { service: service._id } : {}
 
   return (
     <>
@@ -94,7 +95,7 @@ function ServicePage(props) {
                 <Link
                   href={{
                     pathname: '/login',
-                    query: service?._id ? { service: service._id } : {},
+                    query,
                   }}
                   shallow
                 >
@@ -107,7 +108,7 @@ function ServicePage(props) {
                 <Link
                   href={{
                     pathname: '/login',
-                    query: { registration: true },
+                    query: { ...query, registration: true },
                   }}
                   shallow
                 >
