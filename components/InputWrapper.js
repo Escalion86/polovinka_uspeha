@@ -137,9 +137,12 @@ const InputWrapper = forwardRef(
               className={cn(
                 'pointer-events-none absolute rounded px-1 text-sm peer-focus:text-general transition-all bg-white text-general',
                 true
-                  ? 'peer-focus:h-5 peer-focus:leading-[10px] peer-placeholder-shown:h-6 peer-placeholder-shown:leading-3'
+                  ? 'h-5 leading-[10px] peer-placeholder-shown:h-6 peer-placeholder-shown:leading-3'
                   : '',
                 true ? 'flex items-center' : '',
+                required
+                  ? 'max-w-[calc(100%-80px)] peer-placeholder-shown:max-w-full'
+                  : '',
                 centerLabel
                   ? 'left-1/2 -translate-x-1/2'
                   : paddingX === 'small'
