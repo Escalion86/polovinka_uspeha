@@ -66,12 +66,17 @@ const UsersContent = () => {
     [users, filter]
   )
 
+  const addSearchProps = isLoggedUserModer
+    ? ['phone', 'whatsapp', 'viber', 'instagram', 'telegram', 'vk', 'email']
+    : []
+
   const visibleUsers = useMemo(() => {
     if (!searchText) return filteredUsers
     return filterItems(filteredUsers, searchText, [], {}, [
       'firstName',
       'secondName',
       'thirdName',
+      ...addSearchProps,
     ])
   }, [filteredUsers, searchText])
 
