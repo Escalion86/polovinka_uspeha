@@ -1,4 +1,8 @@
-import { PAY_DIRECTIONS } from '@helpers/constants'
+import {
+  EVENT_PAY_DIRECTIONS,
+  SERVICE_PAY_DIRECTIONS,
+  PRODUCT_PAY_DIRECTIONS,
+} from '@helpers/constants'
 import ValuePicker from './ValuePicker'
 
 const PayDirectionPicker = ({
@@ -7,17 +11,29 @@ const PayDirectionPicker = ({
   required = false,
   error,
   readOnly,
-}) => (
-  <ValuePicker
-    value={payDirection}
-    valuesArray={PAY_DIRECTIONS}
-    label="Направление"
-    onChange={onChange}
-    name="payDirection"
-    required={required}
-    error={error}
-    readOnly={readOnly}
-  />
-)
+  sector = 'event',
+}) => {
+  if (!sector) return null
+  const valuesArray =
+    sector === 'event'
+      ? EVENT_PAY_DIRECTIONS
+      : sector === 'service'
+      ? SERVICE_PAY_DIRECTIONS
+      : sector === 'product'
+      ? PRODUCT_PAY_DIRECTIONS
+      : []
+  return (
+    <ValuePicker
+      value={payDirection}
+      valuesArray={valuesArray}
+      label="Направление"
+      onChange={onChange}
+      name="payDirection"
+      required={required}
+      error={error}
+      readOnly={readOnly}
+    />
+  )
+}
 
 export default PayDirectionPicker

@@ -24,12 +24,12 @@ import { PaymentItem, UserItem, UserItemFromId } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@components/Button'
 import { motion } from 'framer-motion'
-import sumOfPaymentsToAssistantsSelector from '@state/selectors/sumOfPaymentsToAssistantsSelector'
-import sumOfCouponsFromParticipantsSelector from '@state/selectors/sumOfCouponsFromParticipantsSelector'
+import sumOfPaymentsFromEventToAssistantsSelector from '@state/selectors/sumOfPaymentsFromEventToAssistantsSelector'
+import sumOfCouponsFromParticipantsToEventSelector from '@state/selectors/sumOfCouponsFromParticipantsToEventSelector'
 import sumOfPaymentsFromParticipantsSelector from '@state/selectors/sumOfPaymentsFromParticipantsSelector'
 import sumOfPaymentsToEventSelector from '@state/selectors/sumOfPaymentsToEventSelector'
 import paymentsToEventSelector from '@state/selectors/paymentsToEventSelector'
-import sumOfExpectingPaymentsFromParticipantsSelector from '@state/selectors/sumOfExpectingPaymentsFromParticipantsSelector'
+import sumOfExpectingPaymentsFromParticipantsToEventSelector from '@state/selectors/sumOfExpectingPaymentsFromParticipantsToEventSelector'
 import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
 import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 import isEventClosedFunc from '@helpers/isEventClosed'
@@ -42,10 +42,10 @@ import eventParticipantsFullByEventIdSelector from '@state/selectors/eventPartic
 import eventAssistantsFullByEventIdSelector from '@state/selectors/eventAssistantsFullByEventIdSelector'
 import UserStatusIcon from '@components/UserStatusIcon'
 import isEventExpiredFunc from '@helpers/isEventExpired'
-import paymentsFromNotParticipantsSelector from '@state/selectors/paymentsFromNotParticipantsSelector'
+import paymentsOfEventFromNotParticipantsSelector from '@state/selectors/paymentsOfEventFromNotParticipantsSelector'
 import eventNotParticipantsWithPaymentsSelector from '@state/selectors/eventNotParticipantsWithPaymentsSelector'
-import sumOfPaymentsFromNotParticipantsSelector from '@state/selectors/sumOfPaymentsFromNotParticipantsSelector'
-import paymentsWithoutEventOfUserSelector from '@state/selectors/paymentsWithoutEventOfUserSelector'
+import sumOfPaymentsFromNotParticipantsToEventSelector from '@state/selectors/sumOfPaymentsFromNotParticipantsToEventSelector'
+import paymentsWithoutEventIdByUserIdSelector from '@state/selectors/paymentsWithoutEventIdByUserIdSelector'
 import Tooltip from '@components/Tooltip'
 
 const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
@@ -72,7 +72,7 @@ const UserPayment = ({
   const [isCollapsed, setIsCollapsed] = useState(true)
 
   // const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
-  //   sumOfPaymentsWithoutEventOfUserSelector(user._id)
+  //   sumOfpaymentsWithoutEventIdByUserIdSelector(user._id)
   // )
 
   const allPaymentsOfUser = paymentsOfEvent.filter(
@@ -379,7 +379,7 @@ const UsersPayments = ({
   // const setPaymentLink = itemsFunc.payment.link
   // const setPaymentUnlink = itemsFunc.payment.unlink
   // const paymentsFromNotParticipants = useRecoilValue(
-  //   paymentsFromNotParticipantsSelector(event._id)
+  //   paymentsOfEventFromNotParticipantsSelector(event._id)
   // )
   // console.log('paymentsFromNotParticipants', paymentsFromNotParticipants)
   return (
@@ -395,7 +395,7 @@ const UsersPayments = ({
             // comment,
           } = props
           const paymentsWithoutEventOfUser = useRecoilValue(
-            paymentsWithoutEventOfUserSelector(user._id)
+            paymentsWithoutEventIdByUserIdSelector(user._id)
           )
           // console.log('paymentsWithoutEventOfUser', paymentsWithoutEventOfUser)
           return (
@@ -468,26 +468,17 @@ const eventUsersPaymentsFunc = (eventId) => {
       eventAssistantsFullByEventIdSelector(eventId)
     )
 
-    // const allPaymentsOfEventFromAndToUsers = useRecoilValue(paymentsFromAndToUsersSelector(eventId))
-
-    // const paymentsOfEventFromAndToUsers = useRecoilValue(
-    //   paymentsWithNoCouponsFromAndToUsersSelector(eventId)
-    // )
-    // const couponsOfEventFromUsers = useRecoilValue(
-    //   couponsOfEventFromUsersSelector(eventId)
-    // )
-
     const sumOfPaymentsOfEventFromParticipants = useRecoilValue(
       sumOfPaymentsFromParticipantsSelector(eventId)
     )
     const sumOfCouponsOfEventFromParticipants = useRecoilValue(
-      sumOfCouponsFromParticipantsSelector(eventId)
+      sumOfCouponsFromParticipantsToEventSelector(eventId)
     )
     const sumOfPaymentsOfEventToAssistants = useRecoilValue(
-      sumOfPaymentsToAssistantsSelector(eventId)
+      sumOfPaymentsFromEventToAssistantsSelector(eventId)
     )
     const sumOfPaymentsFromNotParticipants = useRecoilValue(
-      sumOfPaymentsFromNotParticipantsSelector(eventId)
+      sumOfPaymentsFromNotParticipantsToEventSelector(eventId)
     )
 
     const eventParticipantsCount = useRecoilValue(
@@ -498,7 +489,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     ).length
 
     const paymentsFromNotParticipants = useRecoilValue(
-      paymentsFromNotParticipantsSelector(eventId)
+      paymentsOfEventFromNotParticipantsSelector(eventId)
     )
 
     // const sumOfPaymentsOfEventFromParticipants =
@@ -552,7 +543,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     // ).length
     // const noviceOfEventCount = eventParticipants.length - membersOfEventCount
     const paymentsToExpectFromParticipants = useRecoilValue(
-      sumOfExpectingPaymentsFromParticipantsSelector(eventId)
+      sumOfExpectingPaymentsFromParticipantsToEventSelector(eventId)
     )
     // const paymentsToExpectFromParticipants =
     //   (event.price * eventParticipants.length -

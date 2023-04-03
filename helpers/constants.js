@@ -77,7 +77,7 @@ import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
 import BirthdaysContent from '@layouts/content/BirthdaysContent'
 import StatisticsContent from '@layouts/content/StatisticsContent'
-import badgePaymentsWithoutEventSelector from '@state/selectors/badgePaymentsWithoutEventSelector'
+import badgepaymentsWithoutEventIdSelector from '@state/selectors/badgepaymentsWithoutEventIdSelector'
 import SettingsContent from '@layouts/content/SettingsContent'
 import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
 import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
@@ -400,9 +400,12 @@ export const DEFAULT_REVIEW = Object.freeze({
 })
 
 export const DEFAULT_PAYMENT = Object.freeze({
+  sector: null,
   payDirection: null,
   userId: null,
   eventId: null,
+  serviceId: null,
+  productId: null,
   payType: null,
   sum: 0,
   status: 'created',
@@ -429,6 +432,8 @@ export const DEFAULT_SERVICE = Object.freeze({
   showOnSite: true,
   price: 0,
   questionnaire: null,
+  usersStatusAccess: {},
+  usersStatusDiscount: {},
 })
 
 export const DEFAULT_SERVICE_USER = Object.freeze({
@@ -586,10 +591,10 @@ export const CLOUDINARY_FOLDER = isDevMode
   ? 'polovinka_uspeha'
   : 'polovinka_uspeha'
 
-export const PRODUCTS = [
-  { name: 'Мероприятие', value: 'event', icon: faCalendar },
-  { name: 'Услуга', value: 'service', icon: faHeart },
-  { name: 'Товар', value: 'product', icon: faShoppingBag },
+export const SECTORS = [
+  { name: 'Мероприятие', value: 'event', icon: faCalendar, color: 'general' },
+  { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
+  { name: 'Товар', value: 'product', icon: faShoppingBag, color: 'blue-400' },
 ]
 
 export const CONTENTS = {
@@ -774,7 +779,7 @@ export const pages = [
     name: 'Непривязанные транзакции',
     href: 'paymentsWithNoEvent',
     icon: faUnlink,
-    badge: badgePaymentsWithoutEventSelector,
+    badge: badgepaymentsWithoutEventIdSelector,
     accessRoles: CONTENTS['paymentsWithNoEvent'].accessRoles,
   },
 
@@ -937,6 +942,87 @@ export const PAY_DIRECTIONS = [
     name: 'Доп. доходы (от мероприятия)',
     color: 'green-400',
     icon: faCalendar,
+  },
+]
+
+export const EVENT_PAY_DIRECTIONS = [
+  {
+    value: 'toUser',
+    name: 'Пользователю (за помощь / возврат)',
+    color: 'red-400',
+    icon: faUserAlt,
+  },
+  {
+    value: 'toEvent',
+    name: 'Затраты организатора (на мероприятие)',
+    color: 'red-400',
+    icon: faCalendar,
+  },
+  {
+    value: 'fromUser',
+    name: 'Организатору (от участника)',
+    color: 'green-400',
+    icon: faUserAlt,
+  },
+  {
+    value: 'fromEvent',
+    name: 'Доп. доходы (от мероприятия)',
+    color: 'green-400',
+    icon: faCalendar,
+  },
+]
+
+export const SERVICE_PAY_DIRECTIONS = [
+  {
+    value: 'toUser',
+    name: 'Пользователю (возврат)',
+    color: 'red-400',
+    icon: faUserAlt,
+  },
+  {
+    value: 'toService',
+    name: 'Затраты на услугу',
+    color: 'red-400',
+    icon: faHeart,
+  },
+  {
+    value: 'fromUser',
+    name: 'Специалисту за услугу',
+    color: 'green-400',
+    icon: faUserAlt,
+  },
+  {
+    value: 'fromService',
+    name: 'Доп. доходы (от услуги)',
+    color: 'green-400',
+    icon: faHeart,
+  },
+]
+
+export const PRODUCT_PAY_DIRECTIONS = [
+  {
+    value: 'toUser',
+    name: 'Пользователю (возврат)',
+    color: 'red-400',
+    icon: faUserAlt,
+  },
+  {
+    value: 'toService',
+    name: 'Затраты на товар',
+    color: 'red-400',
+    icon: faHeart,
+  },
+  {
+    value: 'fromUser',
+    name: 'От покупателя за товар',
+    color: 'green-400',
+    icon: faUserAlt,
+  },
+  {
+    value: 'fromService',
+    name: 'Доп. доходы (от продажи товара)',
+    color: 'green-400',
+    icon: faHeart,
   },
 ]
 

@@ -81,7 +81,7 @@ const InputWrapper = forwardRef(
         className={cn(
           'relative flex items-center',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : '',
-          noMargin ? '' : 'mt-3 mb-1',
+          noMargin ? '' : 'mt-3.5 mb-1',
           noBorder
             ? ''
             : `border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50 ${
@@ -89,7 +89,7 @@ const InputWrapper = forwardRef(
               }`,
           fullWidth ? 'w-full' : '',
           paddingY === 'small'
-            ? 'pt-1 pb-0.5'
+            ? 'pt-1.5 pb-1'
             : paddingY === 'big'
             ? 'pt-2.5 pb-2'
             : paddingY
@@ -140,9 +140,9 @@ const InputWrapper = forwardRef(
             <label
               // for="exampleFormControlInput1"
               className={cn(
-                'pointer-events-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[10px] transition-all bg-white text-general',
+                'pointer-events-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
                 true
-                  ? 'h-5 leading-[10px] peer-placeholder-shown:leading-[12px]'
+                  ? 'h-5 leading-[12px] peer-placeholder-shown:leading-[14px]'
                   : '',
                 true ? 'flex items-center' : '',
                 required

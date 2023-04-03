@@ -1,8 +1,8 @@
 import { selectorFamily } from 'recoil'
 import sumOfPaymentsFromEventSelector from './sumOfPaymentsFromEventSelector'
-import sumOfPaymentsFromNotParticipantsSelector from './sumOfPaymentsFromNotParticipantsSelector'
+import sumOfPaymentsFromNotParticipantsToEventSelector from './sumOfPaymentsFromNotParticipantsToEventSelector'
 import sumOfPaymentsFromParticipantsSelector from './sumOfPaymentsFromParticipantsSelector'
-import sumOfPaymentsToAssistantsSelector from './sumOfPaymentsToAssistantsSelector'
+import sumOfPaymentsFromEventToAssistantsSelector from './sumOfPaymentsFromEventToAssistantsSelector'
 import sumOfPaymentsToEventSelector from './sumOfPaymentsToEventSelector'
 
 export const totalIncomeOfEventSelector = selectorFamily({
@@ -14,10 +14,10 @@ export const totalIncomeOfEventSelector = selectorFamily({
 
       return (
         get(sumOfPaymentsFromParticipantsSelector(id)) +
-        get(sumOfPaymentsToAssistantsSelector(id)) +
+        get(sumOfPaymentsFromEventToAssistantsSelector(id)) +
         get(sumOfPaymentsToEventSelector(id)) +
         get(sumOfPaymentsFromEventSelector(id)) +
-        get(sumOfPaymentsFromNotParticipantsSelector(id))
+        get(sumOfPaymentsFromNotParticipantsToEventSelector(id))
       )
     },
 })

@@ -1,6 +1,4 @@
-import { DEFAULT_PAYMENT } from '@helpers/constants'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-// import paymentsAtom from '@state/atoms/paymentsAtom'
 import { selectorFamily } from 'recoil'
 import paymentsByEventIdSelector from './paymentsByEventIdSelector'
 

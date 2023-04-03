@@ -79,15 +79,19 @@ const serviceUserViewFunc = (serviceUserId) => {
                       false,
                       false
                     )
-                  else if (type === 'checkList') {
-                    const { list } = params
-                    formatedAnswer =
-                      typeof userAnswer === 'object'
-                        ? list
-                            .filter((item) => userAnswer.includes(item))
-                            .join(', ')
-                        : userAnswer
-                  } else formatedAnswer = userAnswer
+                  else if (typeof userAnswer === 'object')
+                    formatedAnswer = userAnswer.join(', ')
+                  else formatedAnswer = userAnswer
+                  // const { list } = params
+                  // formatedAnswer =
+                  // typeof userAnswer === 'object'
+                  //   ? list
+                  //       .filter((item) => userAnswer.includes(item))
+                  //       .join(', ')
+                  //   :
+                  // userAnswer
+                  // } else
+                  // formatedAnswer = userAnswer
                   return (
                     <div
                       className={cn(
@@ -102,7 +106,7 @@ const serviceUserViewFunc = (serviceUserId) => {
                         {required ? '*' : ''}
                       </div>
                       {type === 'images' ? (
-                        <ImageGallery images={formatedAnswer} />
+                        <ImageGallery images={userAnswer} />
                       ) : (
                         <div>{formatedAnswer ? formatedAnswer : '-'}</div>
                       )}
