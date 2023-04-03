@@ -72,7 +72,7 @@ const UserPayment = ({
   const [isCollapsed, setIsCollapsed] = useState(true)
 
   // const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
-  //   sumOfpaymentsWithoutEventIdByUserIdSelector(user._id)
+  //   sumOfPaymentsWithoutEventIdByUserIdSelector(user._id)
   // )
 
   const allPaymentsOfUser = paymentsOfEvent.filter(
