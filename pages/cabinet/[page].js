@@ -33,8 +33,8 @@ function CabinetPage(props) {
   // const { page } = props
   // const { loggedUser } = props
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  // const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
 

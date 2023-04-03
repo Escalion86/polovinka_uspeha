@@ -231,9 +231,12 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
             confirmButtonName: 'Авторизироваться',
             confirmButtonName2: 'Зарегистрироваться',
             showConfirm2: true,
-            onConfirm: () => router.push('/login', '', { shallow: true }),
+            onConfirm: () =>
+              router.push(`/login?event=${eventId}`, '', { shallow: true }),
             onConfirm2: () =>
-              router.push('/login?registration=true', '', { shallow: true }),
+              router.push(`/login?registration=true&event=${eventId}`, '', {
+                shallow: true,
+              }),
           })
         else {
           const postfixStatus = status === 'reserve' ? ' в резерв' : ''
@@ -307,9 +310,12 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
             confirmButtonName: 'Авторизироваться',
             confirmButtonName2: 'Зарегистрироваться',
             showConfirm2: true,
-            onConfirm: () => router.push('/login', '', { shallow: true }),
+            onConfirm: () =>
+              router.push(`/login?event=${eventId}`, '', { shallow: true }),
             onConfirm2: () =>
-              router.push('/login?registration=true', '', { shallow: true }),
+              router.push(`/login?registration=true&event=${eventId}`, '', {
+                shallow: true,
+              }),
           })
         else {
           const postfixStatus = activeStatus === 'reserve' ? ' в резерв' : ''
@@ -397,9 +403,12 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
             confirmButtonName: 'Авторизироваться',
             confirmButtonName2: 'Зарегистрироваться',
             showConfirm2: true,
-            onConfirm: () => router.push('/login', '', { shallow: true }),
+            onConfirm: () =>
+              router.push(`/login?service=${serviceId}`, '', { shallow: true }),
             onConfirm2: () =>
-              router.push('/login?registration=true', '', { shallow: true }),
+              router.push(`/login?registration=true&service=${serviceId}`, '', {
+                shallow: true,
+              }),
           })
         else addModal(serviceApplyFunc(serviceId))
       },
