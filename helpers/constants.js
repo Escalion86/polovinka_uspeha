@@ -480,9 +480,15 @@ export const SERVICE_USER_STATUSES = [
   { value: 'closed', name: 'Закрыто', color: 'green-400', icon: faLock },
 ]
 
+export const PRODUCT_USER_STATUSES = [
+  { value: 'active', name: 'Активно', color: 'blue-400', icon: faPlay },
+  { value: 'canceled', name: 'Отменено', color: 'red-400', icon: faBan },
+  { value: 'closed', name: 'Закрыто', color: 'green-400', icon: faLock },
+]
+
 export const EVENT_STATUSES_WITH_TIME = [
   ...EVENT_STATUSES,
-  { value: 'finished', name: 'Завершено', color: 'general', icon: faCheck },
+  { value: 'finished', name: 'Завершено', color: 'green-400', icon: faCheck },
   { value: 'inProgress', name: 'В процессе', color: 'blue-400', icon: faClock },
 ]
 

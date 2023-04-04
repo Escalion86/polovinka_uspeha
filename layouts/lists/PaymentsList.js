@@ -7,7 +7,7 @@ const PaymentsList = ({ payments }) => {
   return (
     <ListWrapper
       itemCount={payments.length}
-      itemSize={44}
+      itemSize={52}
       className="bg-opacity-15 bg-general"
     >
       {({ index, style }) => (

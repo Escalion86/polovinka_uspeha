@@ -21,7 +21,7 @@ const DevSwitch = () => {
 
   return (
     <>
-      <div className="p-1 bg-gray-100">
+      <div className="p-1 text-black bg-gray-100">
         <CheckBox
           label="Тип устройства"
           checked={showDevice}
