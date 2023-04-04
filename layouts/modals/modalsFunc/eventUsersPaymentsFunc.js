@@ -812,8 +812,8 @@ const eventUsersPaymentsFunc = (eventId) => {
                 ))}
               </div>
             )}
-            <div className="flex flex-wrap items-center justify-between">
-              <TotalFromEvent className="mb-1" />
+            <div className="flex flex-wrap items-center justify-between my-1">
+              <TotalFromEvent />
               <div className="flex justify-end flex-1 gap-x-1">
                 {!isEventClosed && (
                   <Button
