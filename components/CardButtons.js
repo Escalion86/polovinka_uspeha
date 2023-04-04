@@ -12,34 +12,24 @@ import cn from 'classnames'
 import {
   faArrowDown,
   faArrowUp,
-  faBan,
+  faCalendarAlt,
   faEllipsisV,
   faMoneyBill,
   faPencilAlt,
-  faPlay,
   faShareAlt,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
-// import { useWindowDimensionsTailwind } from '@helpers/useWindowDimensions'
 
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import CardButton from './CardButton'
-// import copyToClipboard from '@helpers/copyToClipboard'
-// import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-// import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-// import useSnackbar from '@helpers/useSnackbar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
-import {
-  EVENT_STATUSES,
-  EVENT_STATUSES_WITH_TIME,
-  SERVICE_USER_STATUSES,
-} from '@helpers/constants'
+import { EVENT_STATUSES, SERVICE_USER_STATUSES } from '@helpers/constants'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 
@@ -75,7 +65,6 @@ const CardButtons = ({
   onEditQuestionnaire,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  // const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
@@ -126,6 +115,8 @@ const CardButtons = ({
       (typeOfItem !== 'event' || item.status !== 'closed') &&
       (typeOfItem !== 'serviceUser' || item.status !== 'closed'),
     paymentsUsersBtn: isLoggedUserAdmin && typeOfItem === 'event',
+    userEvents:
+      (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'user',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -198,6 +189,17 @@ const CardButtons = ({
           }}
           color="gray"
           tooltipText="Переместить ниже"
+        />
+      )}
+      {show.userEvents && (
+        <ItemComponent
+          icon={faCalendarAlt}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc[typeOfItem].events(item._id)
+          }}
+          color="blue"
+          tooltipText="Мероприятия с пользователем"
         />
       )}
       {show.editBtn && (
