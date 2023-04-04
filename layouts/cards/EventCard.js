@@ -302,7 +302,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
           />
           <div className="flex items-stretch justify-end flex-1 w-full h-9 pr-0.5">
             <PriceDiscount
-              event={event}
+              item={event}
               className="flex-1 mx-2"
               // prefix="Стоимость:"
             />
