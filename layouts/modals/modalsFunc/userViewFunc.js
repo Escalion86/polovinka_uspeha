@@ -9,7 +9,6 @@ import birthDateToAge from '@helpers/birthDateToAge'
 import UserName from '@components/UserName'
 import Tooltip from '@components/Tooltip'
 import Image from 'next/image'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import ImageGallery from '@components/ImageGallery'
 import CardButtons from '@components/CardButtons'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
@@ -21,6 +20,7 @@ import TextLine from '@components/TextLine'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -32,7 +32,7 @@ const userViewFunc = (userId, clone = false) => {
     setDisableDecline,
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+    const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
@@ -82,7 +82,7 @@ const userViewFunc = (userId, clone = false) => {
               </span>
             </div> */}
           {user.birthday &&
-            (isLoggedUserAdmin ||
+            (isLoggedUserModer ||
               user.security?.showBirthday ||
               user.security?.showAge) && (
               <div className="flex items-center gap-x-1">
@@ -91,8 +91,8 @@ const userViewFunc = (userId, clone = false) => {
                   {birthDateToAge(
                     user.birthday,
                     true,
-                    isLoggedUserAdmin || user.security?.showBirthday,
-                    isLoggedUserAdmin || user.security?.showAge
+                    isLoggedUserModer || user.security?.showBirthday,
+                    isLoggedUserModer || user.security?.showAge
                   )}
                 </span>
                 <ZodiacIcon date={user.birthday} />
@@ -120,7 +120,7 @@ const userViewFunc = (userId, clone = false) => {
               </TextLine>
             </div>
 
-            {(isLoggedUserAdmin || isLoggedUserMember) &&
+            {(isLoggedUserModer || isLoggedUserMember) &&
               (eventsUsersSignedUpCount.finished > 0 ||
                 eventsUsersSignedUpCount.signUp > 0) && (
                 <ValueItem
