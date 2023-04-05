@@ -16,8 +16,7 @@ import Input from '@components/Input'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import eventSelector from '@state/selectors/eventSelector'
 import { P } from '@components/tags'
-import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
-import SectorPicker from '@components/ValuePicker/GenderPicker'
+import SectorPicker from '@components/ValuePicker/SectorPicker'
 
 const paymentFunc = (paymentId, clone = false, props) => {
   const PaymentModal = ({
