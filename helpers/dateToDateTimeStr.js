@@ -1,6 +1,11 @@
 import { DAYS_OF_WEEK, MONTHS, MONTHS_FULL } from './constants'
 
-const dateToDateTimeStr = (date, showDayOfWeek = true, fullMonth) => {
+const dateToDateTimeStr = (
+  date,
+  showDayOfWeek = true,
+  fullMonth,
+  showYear = true
+) => {
   var d = new Date(date),
     minutes = '' + d.getMinutes(),
     hours = '' + d.getHours(),
@@ -16,8 +21,7 @@ const dateToDateTimeStr = (date, showDayOfWeek = true, fullMonth) => {
     day +
     ' ' +
     (fullMonth ? MONTHS_FULL[month - 1] : MONTHS[month - 1]) +
-    ' ' +
-    year.toString() +
+    (showYear ? ' ' + year.toString() : '') +
     (showDayOfWeek ? ' ' + DAYS_OF_WEEK[week] : '')
 
   const strTimeStart = hours + ':' + minutes

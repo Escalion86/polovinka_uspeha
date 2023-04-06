@@ -24,6 +24,7 @@ import {
   faShoppingBag,
   faSignInAlt,
   faTimesCircle,
+  faTools,
   faUnlink,
   faUserAlt,
   faUsers,
@@ -85,6 +86,7 @@ import PaymentsNotParticipantsEventContent from '@layouts/content/PaymentsNotPar
 import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
 import ServicesLoggedUserContent from '@layouts/content/ServicesLoggedUserContent'
 import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTodayCountSelector'
+import ToolsAnonsContent from '@layouts/content/ToolsAnonsContent'
 
 const colors = [
   'border-blue-400',
@@ -690,6 +692,11 @@ export const CONTENTS = {
     accessRoles: ['admin', 'dev'],
   },
   dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
+  tools: {
+    Component: ToolsAnonsContent,
+    name: 'Инструменты / Генератор анонса',
+    accessRoles: ['dev', 'admin'],
+  },
   histories: {
     Component: HistoriesContent,
     name: 'События / Записи на мероприятия',
@@ -847,8 +854,16 @@ export const pages = [
     accessRoles: CONTENTS['members'].accessRoles,
   },
   {
-    id: 80,
+    id: 70,
     group: 8,
+    name: 'Инструменты',
+    href: 'tools',
+    icon: faTools,
+    accessRoles: CONTENTS['tools'].accessRoles,
+  },
+  {
+    id: 80,
+    group: 9,
     name: 'Настройки',
     href: 'settings',
     icon: faCog,
@@ -909,7 +924,8 @@ export const pagesGroups = [
     accessRoles: ['client'],
     accessStatuses: ['member'],
   },
-  { id: 8, name: 'Настройки', icon: faCog, accessRoles: ['admin', 'dev'] },
+  { id: 8, name: 'Инструменты', icon: faTools, accessRoles: ['admin', 'dev'] },
+  { id: 9, name: 'Настройки', icon: faCog, accessRoles: ['admin', 'dev'] },
   { id: 99, name: 'Разработчик', icon: faBug, accessRoles: ['dev'] },
 ]
 
