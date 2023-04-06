@@ -162,7 +162,6 @@ const EventButtonSignIn = ({
               modalsFunc.event.signUpWithWarning(event._id, 'reserve')
             else modalsFunc.event.signUp(event._id, 'reserve')
           } else if (!isUserQuestionnaireFilled) {
-            closeModal()
             router.push('/cabinet/questionnaire', '', { shallow: true })
           } else if (canSignOut) {
             modalsFunc.event.signOut(event._id, userEventStatus)

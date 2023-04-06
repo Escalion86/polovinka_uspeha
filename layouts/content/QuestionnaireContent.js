@@ -242,13 +242,13 @@ const QuestionnaireContent = (props) => {
         uid: 'questionnaireNotFilled',
         title: 'Необходимо заполнить анкету',
         text: (
-          <>
+          <div className="leading-4">
             <span>
               {
                 'Для возможности записи на мероприятия необходимо заполнить обязательные поля анкеты:'
               }
             </span>
-            <ul className="ml-4 list-disc">
+            <ul className="ml-4 leading-5 list-disc">
               {!loggedUser.firstName && (
                 <li className="font-bold text-red-500">Имя</li>
               )}
@@ -272,7 +272,7 @@ const QuestionnaireContent = (props) => {
                 'Пожалуйста заполните поля честно! Во вкладке "конфиденциальность" вы можете скрыть те данные, которые не хотели бы показывать другим.'
               }
             </span>
-          </>
+          </div>
         ),
         onConfirm: () => {},
         confirmButtonName: 'Хорошо',
