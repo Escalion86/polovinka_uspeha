@@ -1,17 +1,9 @@
 const sortFunctions = {
   date: {
     asc: (a, b) =>
-      !a.date
-        ? -1
-        : new Date(a.date).getTime() < new Date(b.date).getTime()
-        ? -1
-        : 1,
+      new Date(a.date).getTime() < new Date(b.date).getTime() ? -1 : 1,
     desc: (a, b) =>
-      !a.date
-        ? 1
-        : new Date(a.date).getTime() > new Date(b.date).getTime()
-        ? -1
-        : 1,
+      new Date(a.date).getTime() > new Date(b.date).getTime() ? -1 : 1,
   },
   dateStart: {
     asc: (a, b) =>

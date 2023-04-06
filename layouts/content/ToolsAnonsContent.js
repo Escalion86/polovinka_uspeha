@@ -19,6 +19,7 @@ import formatDateTime from '@helpers/formatDateTime'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import ComboBox from '@components/ComboBox'
 import { MONTHS } from '@helpers/constants'
+import sortFunctions from '@helpers/sortFunctions'
 
 const ToolsAnonsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -33,8 +34,6 @@ const ToolsAnonsContent = () => {
   const [month, setMonth] = useState(new Date().getMonth())
   const [year, setYear] = useState(new Date().getFullYear())
 
-  console.log('month', month)
-
   const eventsInMonth = events.filter((event) => {
     const date = new Date(event.dateStart)
     const eventMonth = date.getMonth()
@@ -42,20 +41,22 @@ const ToolsAnonsContent = () => {
     return eventMonth === month && eventYear === year
   })
 
-  const items = eventsInMonth.map((event) => {
-    const dateStart = dateToDateTimeStr(event.dateStart, true, true, false)
-    const dateEnd = dateToDateTimeStr(event.dateEnd, true, true, false)
-    var date = ''
-    if (dateStart[0] === dateEnd[0]) {
-      date = `${dateStart[0]} ${dateStart[1]} - ${dateEnd[1]}`
-    } else {
-      date = `${dateStart[0]} ${dateStart[1]} - ${dateEnd[0]} ${dateEnd[1]}`
-    }
-    return {
-      date,
-      text: event.title,
-    }
-  })
+  const items = [...eventsInMonth]
+    .sort(sortFunctions.dateStart.asc)
+    .map((event) => {
+      const dateStart = dateToDateTimeStr(event.dateStart, true, true, false)
+      const dateEnd = dateToDateTimeStr(event.dateEnd, true, true, false)
+      var date = ''
+      if (dateStart[0] === dateEnd[0]) {
+        date = `${dateStart[0]} ${dateStart[1]} - ${dateEnd[1]}`
+      } else {
+        date = `${dateStart[0]} ${dateStart[1]} - ${dateEnd[0]} ${dateEnd[1]}`
+      }
+      return {
+        date,
+        text: event.title,
+      }
+    })
 
   const startX = 145
   const startY = 480
@@ -270,6 +271,7 @@ const ToolsAnonsContent = () => {
                   ++addedLines
                   return (
                     <text
+                      key={textLine + lineNum}
                       x={startX + 50}
                       y={
                         startY +
