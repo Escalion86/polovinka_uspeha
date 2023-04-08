@@ -15,10 +15,6 @@ const userPaymentsFunc = (userId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-
-    // const user = useRecoilValue(userSelector(userId))
-
     const userPayments = useRecoilValue(paymentsByUserIdSelector(userId))
 
     return (
@@ -28,7 +24,6 @@ const userPaymentsFunc = (userId, clone = false) => {
         </div>
         {userPayments.length > 0 && (
           <div className="">
-            {/* <div>Участник:</div> */}
             <SelectPaymentList
               paymentsId={userPayments.map((payment) => payment._id)}
               readOnly
