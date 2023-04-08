@@ -61,13 +61,15 @@ const UserPayment = ({
   usersIds,
   readOnly,
   defaultPayDirection,
-  paymentsWithoutEventOfUser,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
   const itemsFunc = useRecoilValue(itemsFuncAtom)
   const setPaymentLink = itemsFunc.payment.link
   const setPaymentUnlink = itemsFunc.payment.unlink
+  const paymentsWithoutEventOfUser = useRecoilValue(
+    paymentsWithoutEventIdByUserIdSelector(user._id)
+  )
 
   const [isCollapsed, setIsCollapsed] = useState(true)
 
@@ -394,10 +396,6 @@ const UsersPayments = ({
             // eventSubtypeNum,
             // comment,
           } = props
-          const paymentsWithoutEventOfUser = useRecoilValue(
-            paymentsWithoutEventIdByUserIdSelector(user._id)
-          )
-          // console.log('paymentsWithoutEventOfUser', paymentsWithoutEventOfUser)
           return (
             <UserPayment
               key={user._id}
@@ -411,7 +409,6 @@ const UsersPayments = ({
               usersIds={usersIds}
               readOnly={readOnly}
               defaultPayDirection={defaultPayDirection}
-              paymentsWithoutEventOfUser={paymentsWithoutEventOfUser}
             />
           )
         }
@@ -745,7 +742,7 @@ const eventUsersPaymentsFunc = (eventId) => {
           {/* {eventNotParticipantsWithPayments.length > 0 && ( */}
           <TabPanel
             tabName="Оплатили, но не пришли"
-            tabAddToLabel={`${paymentsFromNotParticipants.length} чел. / ${sumOfPaymentsFromNotParticipants} ₽`}
+            tabAddToLabel={`${eventNotParticipantsWithPayments.length} чел. / ${sumOfPaymentsFromNotParticipants} ₽`}
           >
             <TotalFromNotParticipants className="mb-1" />
             <UsersPayments
@@ -759,7 +756,6 @@ const eventUsersPaymentsFunc = (eventId) => {
               // )}
             />
           </TabPanel>
-          {/* )} */}
           <TabPanel
             tabName="Мероприятие"
             tabAddToLabel={`${sumOfPaymentsToEvent + sumOfPaymentsFromEvent} ₽`}
