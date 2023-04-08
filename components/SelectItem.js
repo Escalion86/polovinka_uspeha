@@ -843,6 +843,7 @@ export const SelectDirection = ({
 export const SelectPayment = ({
   onChange,
   onDelete,
+  label = 'Транзакция',
   selectedId = null,
   exceptedIds = [],
   required = false,
@@ -852,14 +853,15 @@ export const SelectPayment = ({
   modalTitle,
   rounded = true,
   // buttons,
+  readOnly,
 }) => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payments = useRecoilValue(paymentsAtom)
 
   return (
     <SelectItemContainer
       required={required}
-      label="Транзакция"
+      label={label}
       onClickClearButton={
         selectedId && clearButton
           ? onDelete
@@ -903,6 +905,23 @@ export const SelectPayment = ({
           'flex-1',
           selectedId && clearButton ? ' rounded-l' : ' rounded'
         )}
+        onClick={
+          !readOnly
+            ? // onChange
+              //   ? () =>
+              //       modalsFunc.selectPayments(
+              //         [selectedId],
+              //         [],
+              //         (data) => onChange(data[0]),
+              //         [],
+              //         1,
+              //         false,
+              //         modalTitle
+              //       )
+              //   :
+              (payment) => modalsFunc.payment.edit(payment._id)
+            : null
+        }
         // onClick={
         //   (direction) => modalsFunc.direction.view(direction._id)
         //   // disableDropDownList

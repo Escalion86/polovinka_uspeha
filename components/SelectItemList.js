@@ -51,7 +51,7 @@ const ItemRow = ({
 export const SelectItemList = ({
   itemsId = [],
   SelectItemComponent,
-  label = '',
+  label,
   onChange = null,
   onCreateNew = null,
   onEdit = null,
@@ -344,6 +344,7 @@ export const SelectPaymentList = ({
           filter,
           // disableDropDownList: true,
           exceptedIds,
+          label: null,
           buttons,
           rounded: false,
         })

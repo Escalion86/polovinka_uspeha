@@ -180,18 +180,16 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     </div>
                   </div>
                 </div>
-                {isLoggedUserModer && (
-                  <div className="flex flex-col items-end justify-between">
-                    <CardButtons
-                      item={user}
-                      typeOfItem="user"
-                      alwaysCompactOnPhone
-                    />
-                    {isLoggedUserAdmin && (
-                      <UserSumOfPaymentsWithoutEvent userId={userId} />
-                    )}
-                  </div>
-                )}
+                <div className="flex flex-col items-end justify-between">
+                  <CardButtons
+                    item={user}
+                    typeOfItem="user"
+                    alwaysCompactOnPhone
+                  />
+                  {isLoggedUserAdmin && (
+                    <UserSumOfPaymentsWithoutEvent userId={userId} />
+                  )}
+                </div>
               </div>
               {/* <div className="flex-col justify-end flex-1 hidden px-2 tablet:flex"> */}
               {/* <div className="flex-1"> */}
