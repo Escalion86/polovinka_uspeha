@@ -68,7 +68,6 @@ const CardButtons = ({
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
-
   const device = useRecoilValue(windowDimensionsTailwindSelector)
 
   const [open, setOpen] = useState(false)
@@ -117,8 +116,7 @@ const CardButtons = ({
     paymentsUsersBtn: isLoggedUserAdmin && typeOfItem === 'event',
     userEvents:
       (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'user',
-    userPaymentsBtn:
-      (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'user',
+    userPaymentsBtn: isLoggedUserModer && typeOfItem === 'user',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
