@@ -117,6 +117,8 @@ const CardButtons = ({
     paymentsUsersBtn: isLoggedUserAdmin && typeOfItem === 'event',
     userEvents:
       (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'user',
+    userPaymentsBtn:
+      (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'user',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -164,6 +166,17 @@ const CardButtons = ({
           onClick={() => {
             setOpen(false)
             modalsFunc.event.payments(item._id)
+          }}
+          color="amber"
+          tooltipText="Финансы"
+        />
+      )}
+      {show.userPaymentsBtn && (
+        <ItemComponent
+          icon={faMoneyBill}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc.user.payments(item._id)
           }}
           color="amber"
           tooltipText="Финансы"

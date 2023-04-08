@@ -32,6 +32,7 @@ import serviceUserViewFunc from './modalsFunc/serviceUserViewFunc'
 import serviceUserFunc from './modalsFunc/serviceUserFunc'
 import selectServicesFunc from './modalsFunc/selectServicesFunc'
 import serviceUserStatusEditFunc from './modalsFunc/serviceStatusEditFunc'
+import userPaymentsFunc from './modalsFunc/userPaymentsFunc'
 
 const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
   const fixEventStatus = (eventId, status) => {
@@ -159,6 +160,26 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
           onChange,
           exceptedIds,
           maxServices,
+          canSelectNone,
+          modalTitle
+        )
+      ),
+    selectPayments: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      maxPayments,
+      canSelectNone,
+      modalTitle
+    ) =>
+      addModal(
+        selectPaymentsFunc(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          maxPayments,
           canSelectNone,
           modalTitle
         )
@@ -369,6 +390,7 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
         ),
       view: (userId) => addModal(userViewFunc(userId)),
       events: (userId) => addModal(userSignedUpEventsFunc(userId)),
+      payments: (userId) => addModal(userPaymentsFunc(userId)),
     },
     questionnaire: {
       // add: (questionnaireId) =>
