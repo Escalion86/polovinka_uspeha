@@ -33,10 +33,16 @@ import copyToClipboard from '@helpers/copyToClipboard'
 
 const useCopyUserListToClipboard = ({ mans, womans }) => {
   const mansNames = mans.map(
-    (user, index) => `${index + 1}. ${getUserFullName(user)}`
+    (user, index) =>
+      `${index + 1}. ${getUserFullName(user)} (${
+        user.status === 'member' ? 'клуб' : 'центр'
+      })`
   )
   const womansNames = womans.map(
-    (user, index) => `${index + 1}. ${getUserFullName(user)}`
+    (user, index) =>
+      `${index + 1}. ${getUserFullName(user)} (${
+        user.status === 'member' ? 'клуб' : 'центр'
+      })`
   )
   const mansText = mansNames.length > 0 ? `${mansNames.join(`\n`)}` : null
   const womansText = womansNames.length > 0 ? `${womansNames.join(`\n`)}` : null
