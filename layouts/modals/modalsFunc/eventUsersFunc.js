@@ -22,10 +22,31 @@ import {
 } from '@fortawesome/free-regular-svg-icons'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import { P } from '@components/tags'
-import { faLock, faPlay } from '@fortawesome/free-solid-svg-icons'
+import { faListCheck, faLock, faPlay } from '@fortawesome/free-solid-svg-icons'
 import isEventCanBeClosedSelector from '@state/selectors/isEventCanBeClosedSelector'
 import cn from 'classnames'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import CardButton from '@components/CardButton'
+import getUserFullName from '@helpers/getUserFullName'
+import useSnackbar from '@helpers/useSnackbar'
+import copyToClipboard from '@helpers/copyToClipboard'
+
+const useCopyUserListToClipboard = ({ mans, womans }) => {
+  const mansNames = mans.map(
+    (user, index) => `${index + 1}. ${getUserFullName(user)}`
+  )
+  const womansNames = womans.map(
+    (user, index) => `${index + 1}. ${getUserFullName(user)}`
+  )
+  const mansText = mansNames.length > 0 ? `${mansNames.join(`\n`)}` : null
+  const womansText = womansNames.length > 0 ? `${womansNames.join(`\n`)}` : null
+
+  return copyToClipboard(
+    `${mansText ? `Мужчины:\n${mansNames.join(`\n`)}\n\n` : ''}${
+      womansText ? `Женщины:\n${womansNames.join(`\n`)}` : ''
+    }`
+  )
+}
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -39,6 +60,7 @@ const eventUsersFunc = (eventId) => {
     setDisableDecline,
     setOnlyCloseButtonShow,
     setBottomLeftButtonProps,
+    setTopLeftComponent,
   }) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
@@ -50,6 +72,7 @@ const eventUsersFunc = (eventId) => {
     const isEventCanBeClosed = useRecoilValue(
       isEventCanBeClosedSelector(eventId)
     )
+    const { info } = useSnackbar()
     // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
 
     const sortUsersIds = useCallback(
@@ -62,26 +85,39 @@ const eventUsersFunc = (eventId) => {
     )
 
     const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
-    const sortedEventAssistantsIds = useMemo(
-      () => [...eventAssistants].sort(sortFunction).map((user) => user._id),
+    const sortedEventAssistants = useMemo(
+      () => [...eventAssistants].sort(sortFunction),
       [eventAssistants]
+    )
+    const sortedEventAssistantsIds = useMemo(
+      () => sortedEventAssistants.map((user) => user._id),
+      [sortedEventAssistants]
     )
 
     const eventMans = useRecoilValue(eventMansSelector(eventId))
-    const sortedEventMansIds = useMemo(
-      () => [...eventMans].sort(sortFunction).map((user) => user._id),
+    const sortedEventMans = useMemo(
+      () => [...eventMans].sort(sortFunction),
       [eventMans]
+    )
+    const sortedEventMansIds = useMemo(
+      () => sortedEventMans.map((user) => user._id),
+      [sortedEventMans]
     )
 
     const eventWomans = useRecoilValue(eventWomansSelector(eventId))
+    const sortedEventWomans = useMemo(
+      () => [...eventWomans].sort(sortFunction),
+      [eventMans]
+    )
     const sortedEventWomansIds = useMemo(
-      () => [...eventWomans].sort(sortFunction).map((user) => user._id),
-      [eventWomans]
+      () => sortedEventWomans.map((user) => user._id),
+      [sortedEventWomans]
     )
 
     const eventReservedParticipants = useRecoilValue(
       eventUsersInReserveSelector(eventId)
     )
+
     const sortedEventReservedParticipantsIds = useMemo(
       () => [...eventReservedParticipants].map((user) => user._id),
       [eventReservedParticipants]
@@ -105,6 +141,25 @@ const eventUsersFunc = (eventId) => {
     const [bannedParticipantsIds, setBannedParticipantsIds] = useState(
       sortedEventBannedParticipantsIds
     )
+
+    useEffect(() => {
+      if (isLoggedUserModer && setTopLeftComponent)
+        setTopLeftComponent(() => (
+          <CardButton
+            icon={faListCheck}
+            onClick={() => {
+              useCopyUserListToClipboard({
+                mans: users.filter((user) => mansIds.includes(user._id)),
+                womans: users.filter((user) => womansIds.includes(user._id)),
+              })
+
+              info('Список участников скопирован в буфер обмена')
+            }}
+            color="purple"
+            tooltipText="Скопировать в буфер список участников"
+          />
+        ))
+    }, [isLoggedUserModer, setTopLeftComponent, mansIds, womansIds])
 
     const onClickConfirm = async () => {
       closeModal()
