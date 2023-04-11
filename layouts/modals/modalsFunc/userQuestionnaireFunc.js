@@ -19,6 +19,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import { v4 as uuid } from 'uuid'
 import InputImages from '@components/InputImages'
+import { modalsFuncAtom } from '@state/atoms'
+import { useRecoilValue } from 'recoil'
 
 const CheckBoxItem = ({
   checked,
@@ -604,6 +606,7 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
     setBottomLeftButtonProps,
     setBottomLeftComponent,
   }) => {
+    const modalsFunc = useRecoilValue(modalsFuncAtom)
     // const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
     // const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     // const user = useRecoilValue(userSelector(userId))
@@ -691,6 +694,18 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
         closeModal()
         onConfirm(state)
       } else {
+        modalsFunc.add({
+          title: 'Не все обязательные поля заполнены',
+          text: 'Не все обязательные поля заполнены, однако вы можете сохранить текущий результат и дозаполнить поля позже.',
+          confirmButtonName: `Сохранить и закрыть`,
+          declineButtonName: 'Продолжить заполнение',
+          showConfirm: true,
+          showDecline: true,
+          onConfirm: () => {
+            closeModal()
+            onConfirm(state)
+          },
+        })
         setErrors(errorsArr)
       }
     }
