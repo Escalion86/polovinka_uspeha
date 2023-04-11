@@ -21,6 +21,7 @@ import { v4 as uuid } from 'uuid'
 import InputImages from '@components/InputImages'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
+import compareObjects from '@helpers/compareObjects'
 
 const CheckBoxItem = ({
   checked,
@@ -736,7 +737,7 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
       //   user?.status !== status ||
       //   user?.role !== role
       if (onConfirm) setOnConfirmFunc(onClickConfirm)
-      // setOnShowOnCloseConfirmDialog(isFormChanged)
+      setOnShowOnCloseConfirmDialog(!compareObjects(state, stateDefault, true))
       // setDisableConfirm(!isAllRequiredFilled)
     }, [state])
 
