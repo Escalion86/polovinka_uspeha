@@ -25,6 +25,11 @@ const browserVer = () => {
     const str = sUsrAg.substring(sUsrAg.indexOf('Edge') + 5)
     sBrowserVer = str.substring(0, str.indexOf(' '))
     //"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299"
+  } else if (sUsrAg.indexOf('YaBrowser') > -1) {
+    sBrowser = 'Yandex browser'
+    const str = sUsrAg.substring(sUsrAg.indexOf('YaBrowser') + 10)
+    sBrowserVer = str.substring(0, str.indexOf(' '))
+    //Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.5.708 Yowser/2.5 Safari/537.36
   } else if (sUsrAg.indexOf('Chrome') > -1) {
     sBrowser = 'Google Chrome or Chromium'
     const str = sUsrAg.substring(sUsrAg.indexOf('Chrome') + 7)
