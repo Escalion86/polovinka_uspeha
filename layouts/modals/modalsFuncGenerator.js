@@ -80,6 +80,15 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
         showConfirm: true,
         showDecline: false,
       }),
+    browserUpdate: (url) =>
+      addModal({
+        title: 'Устаревшая версия браузера',
+        text: `Необходимо обновить браузер. Некоторые функции сайта могут не работать. Пожалуйста обновите браузер.\n\nТекущая версия браузера: ${navigator.userAgent}`,
+        confirmButtonName: `Обновить`,
+        showConfirm: true,
+        showDecline: true,
+        onConfirm: () => router.push(url, ''),
+      }),
     custom: addModal,
     cropImage: (...data) => addModal(cropImageFunc(...data)),
     error: (data) => addModal(errorFunc(data)),

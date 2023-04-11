@@ -80,20 +80,6 @@ const theme = createTheme({
   },
 })
 
-// import { createStore, applyMiddleware, compose } from 'redux'
-// import thunk from 'redux-thunk'
-
-// import allReducers from 'state/reducers'
-
-// const composeEnhancers =
-//   (typeof window !== 'undefined' &&
-//     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
-//   compose
-
-// const enhancer = composeEnhancers(applyMiddleware(thunk))
-
-// const store = createStore(allReducers, enhancer)
-
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   useEffect(() => {
     let vh = window.innerHeight * 0.01
