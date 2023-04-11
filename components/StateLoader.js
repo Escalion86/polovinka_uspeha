@@ -63,6 +63,8 @@ import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import servicesUsersEditSelector from '@state/selectors/servicesUsersEditSelector'
 import servicesUsersDeleteSelector from '@state/selectors/servicesUsersDeleteSelector'
+import browserVer from '@helpers/browserVer'
+import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -72,7 +74,7 @@ const StateLoader = (props) => {
 
   const router = useRouter()
 
-  const setModalsFunc = useSetRecoilState(modalsFuncAtom)
+  const [modalsFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
 
@@ -219,6 +221,13 @@ const StateLoader = (props) => {
     // setSnackbar(snackbar)
     setIsSiteLoading(false)
   }, [])
+
+  useEffect(() => {
+    if (!isSiteLoading) {
+      const url = isBrowserNeedToBeUpdate()
+      if (url) modalsFunc.browserUpdate(url)
+    }
+  }, [isSiteLoading])
 
   return (
     <div className={cn('relative', props.className)}>
