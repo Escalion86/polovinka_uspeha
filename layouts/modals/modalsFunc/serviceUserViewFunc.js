@@ -15,6 +15,7 @@ import CardButton from '@components/CardButton'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
 import cn from 'classnames'
 import ImageGallery from '@components/ImageGallery'
+import isObject from '@helpers/isObject'
 
 const serviceUserViewFunc = (serviceUserId) => {
   const ServiceUserViewModal = ({
@@ -79,12 +80,12 @@ const serviceUserViewFunc = (serviceUserId) => {
                       false,
                       false
                     )
-                  else if (typeof userAnswer === 'object')
+                  else if (isObject(userAnswer)) {
                     formatedAnswer = userAnswer.join(', ')
-                  else formatedAnswer = userAnswer
+                  } else formatedAnswer = userAnswer
                   // const { list } = params
                   // formatedAnswer =
-                  // typeof userAnswer === 'object'
+                  // isObject(state)
                   //   ? list
                   //       .filter((item) => userAnswer.includes(item))
                   //       .join(', ')

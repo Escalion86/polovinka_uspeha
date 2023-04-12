@@ -6,6 +6,7 @@ import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import servicesAtom from '@state/atoms/servicesAtom'
+import isObject from '@helpers/isObject'
 
 // TODO Доделать функцию
 const selectPaymentsFunc = (
@@ -28,7 +29,7 @@ const selectPaymentsFunc = (
   }) => {
     const services = useRecoilValue(servicesAtom)
     const [selectedServices, setSelectedServices] = useState(
-      typeof state === 'object'
+      isObject(state)
         ? state.filter((item) => typeof item === 'string' && item !== '')
         : []
     )

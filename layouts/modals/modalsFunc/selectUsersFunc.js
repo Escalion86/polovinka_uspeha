@@ -6,6 +6,7 @@ import { UserItem } from '@components/ItemCards'
 import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
 import ListWrapper from '@layouts/lists/ListWrapper'
+import isObject from '@helpers/isObject'
 
 const selectUsersFunc = (
   state,
@@ -27,7 +28,7 @@ const selectUsersFunc = (
   }) => {
     const users = useRecoilValue(usersAtom)
     const [selectedUsers, setSelectedUsers] = useState(
-      typeof state === 'object'
+      isObject(state)
         ? state.filter((item) => typeof item === 'string' && item !== '')
         : []
     )

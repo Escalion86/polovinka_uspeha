@@ -1,4 +1,5 @@
 import { CLOUDINARY_FOLDER } from './constants'
+import isObject from './isObject'
 
 export const deleteImage = async (publicId, resource_type = 'image') => {
   try {
@@ -47,7 +48,7 @@ export const sendImage = async (
   imageName = null,
   project = 'polovinka_uspeha'
 ) => {
-  if (typeof image === 'object') {
+  if (isObject(image)) {
     const formData = new FormData()
     // console.log('folder', folder)
     formData.append('project', project)
@@ -92,7 +93,7 @@ export const sendVideo = async (
   folder = null,
   videoName = null
 ) => {
-  if (typeof video === 'object') {
+  if (isObject(video)) {
     const formData = new FormData()
     formData.append('file', video)
     formData.append(

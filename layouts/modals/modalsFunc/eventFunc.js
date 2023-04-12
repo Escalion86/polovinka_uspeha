@@ -39,6 +39,7 @@ import UserStatusIcon from '@components/UserStatusIcon'
 import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleButton'
 import SvgSigma from 'svg/SvgSigma'
 import InputWrapper from '@components/InputWrapper'
+import isObject from '@helpers/isObject'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -90,7 +91,7 @@ const eventFunc = (eventId, clone = false) => {
     // )
 
     const [address, setAddress] = useState(
-      event?.address && typeof event.address === 'object'
+      event?.address && isObject(event.address)
         ? event.address
         : DEFAULT_EVENT.address
     )
