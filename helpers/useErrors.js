@@ -90,7 +90,9 @@ const useErrors = () => {
       sector: (data) =>
         !data
           ? setError({ sector: 'Введите область применения транзакции' })
-          : !['product', 'event', 'service'].includes(data)
+          : !['product', 'event', 'service', 'project', 'internal'].includes(
+              data
+            )
           ? setError({
               sector: 'Введена некорректная область применения транзакции',
             })

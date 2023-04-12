@@ -1,6 +1,7 @@
 import {
   faBan,
   faBirthdayCake,
+  faBriefcase,
   faCalendarDay,
   faCertificate,
   faCheck,
@@ -617,6 +618,12 @@ export const SECTORS = [
   { name: 'Мероприятие', value: 'event', icon: faCalendar, color: 'general' },
   { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
   { name: 'Товар', value: 'product', icon: faShoppingBag, color: 'blue-400' },
+  {
+    name: 'Внутренние',
+    value: 'internal',
+    icon: faBriefcase,
+    color: 'orange-400',
+  },
 ]
 
 export const CONTENTS = {
@@ -1059,6 +1066,27 @@ export const PRODUCT_PAY_DIRECTIONS = [
     name: 'Доп. доходы (от продажи товара)',
     color: 'green-400',
     icon: faHeart,
+  },
+]
+
+export const PRODUCT_PAY_INTERNAL = [
+  {
+    value: 'toInternal',
+    name: 'Затраты на проект',
+    color: 'red-400',
+    icon: faBriefcase,
+  },
+  {
+    value: 'toUser',
+    name: 'Зарплата работнику',
+    color: 'red-400',
+    icon: faUserAlt,
+  },
+  {
+    value: 'fromInternal',
+    name: 'Доп. доходы (от проекта)',
+    color: 'green-400',
+    icon: faBriefcase,
   },
 ]
 

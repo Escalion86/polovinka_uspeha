@@ -283,6 +283,40 @@ const PaymentProduct = ({ payment }) => {
   )
 }
 
+const PaymentInternal = ({ payment }) => {
+  return (
+    <PayCardWrapper
+      sector="internal"
+      // statusProps={eventStatusProps}
+      payment={payment}
+      // cardButtonsProps={{
+      //   showEditButton: eventStatus !== 'closed',
+      //   showDeleteButton: eventStatus !== 'closed',
+      // }}
+    >
+      {/* {(payment.payDirection === 'toUser' ||
+        payment.payDirection === 'fromUser') &&
+        payment.eventId &&
+        (() => {
+          const eventUsers = useRecoilValue(
+            eventsUsersByEventIdSelector(event?._id)
+          )
+          const eventUser = eventUsers.find(
+            (eventUser) => eventUser.userId === payment.userId
+          )
+          if (eventUser) return null
+          return (
+            <Icon
+              icon={faUserTimes}
+              className="text-danger"
+              tooltip="Участник не пришёл"
+            />
+          )
+        })()} */}
+    </PayCardWrapper>
+  )
+}
+
 const PaymentCard = ({ paymentId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payment = useRecoilValue(paymentSelector(paymentId))
@@ -325,6 +359,7 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
       {paymentSector === 'event' && <PaymentEvent payment={payment} />}
       {paymentSector === 'service' && <PaymentService payment={payment} />}
       {paymentSector === 'product' && <PaymentProduct payment={payment} />}
+      {paymentSector === 'internal' && <PaymentInternal payment={payment} />}
       {!paymentSector && <PayCardWrapper payment={payment} />}
     </CardWrapper>
   )
