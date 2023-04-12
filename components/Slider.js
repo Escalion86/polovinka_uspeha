@@ -3,6 +3,7 @@ import InputWrapper from './InputWrapper'
 import SliderMui from '@mui/material/Slider'
 import FormControl from '@mui/material/FormControl'
 import NativeSelect from '@mui/material/NativeSelect'
+import isObject from '@helpers/isObject'
 // import { InputLabel } from '@mui/material'
 
 const Options = ({ min, max }) => {
@@ -21,7 +22,7 @@ const Options = ({ min, max }) => {
 const Select = ({ value, onChange, left, min, max, className }) => (
   <FormControl className={cn('w-20', className)}>
     <NativeSelect
-      value={typeof value === 'object' ? value[left ? 0 : 1] : value}
+      value={isObject(value) ? value[left ? 0 : 1] : value}
       inputProps={{
         name: 'age',
         id: 'uncontrolled-native',
@@ -35,7 +36,7 @@ const Select = ({ value, onChange, left, min, max, className }) => (
         } else {
           if (newValue < leftValue) leftValue = newValue
         }
-        onChange(typeof value === 'object' ? [leftValue, rightValue] : newValue)
+        onChange(isObject(value) ? [leftValue, rightValue] : newValue)
       }}
     >
       <Options min={min} max={max} />
@@ -88,7 +89,7 @@ const Slider = ({
           <input
             className={cn('outline-none px-1 w-12 bg-transparent')}
             type="number"
-            value={typeof value === 'object' ? value[0] : value}
+            value={isObject(value) ? value[0] : value}
             onChange={(e) => {
               const newValue = e.target.value
               if (
@@ -96,7 +97,7 @@ const Slider = ({
                 (typeof max !== 'number' || newValue <= max)
               )
                 onChange(
-                  typeof value === 'object' ? [newValue, value[1]] : newValue
+                  isObject(value) ? [newValue, value[1]] : newValue
                 )
             }}
           />

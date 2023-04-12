@@ -1,5 +1,6 @@
 import Divider from '../../components/Divider'
 import Button from '../../components/Button'
+import isObject from '@helpers/isObject'
 
 const ModalButtons = ({
   confirmName = 'Подтвердить',
@@ -26,11 +27,10 @@ const ModalButtons = ({
       <div className="flex flex-wrap justify-between px-2 tablet:px-3 tablet:pt-1">
         {children}
         <div className="flex justify-end flex-1 gap-x-1 tablet:gap-x-2">
-          {bottomLeftButton !== null && typeof bottomLeftButton === 'object' ? (
+          {isObject(bottomLeftButton) ? (
             <div className="flex-1">{<Button {...bottomLeftButton} />}</div>
           ) : null}
-          {bottomLeftComponent !== null &&
-          typeof bottomLeftComponent === 'object' ? (
+          {isObject(bottomLeftComponent) ? (
             <div className="flex-1">{bottomLeftComponent}</div>
           ) : null}
           {showConfirm && (

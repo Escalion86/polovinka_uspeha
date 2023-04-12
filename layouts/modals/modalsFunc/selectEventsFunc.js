@@ -7,6 +7,7 @@ import filterItems from '@helpers/filterItems'
 import sortFunctions from '@helpers/sortFunctions'
 import Search from '@components/Search'
 import ListWrapper from '@layouts/lists/ListWrapper'
+import isObject from '@helpers/isObject'
 
 const selectEventsFunc = (
   state,
@@ -28,7 +29,7 @@ const selectEventsFunc = (
   }) => {
     const events = useRecoilValue(eventsAtom)
     const [selectedEvents, setSelectedEvents] = useState(
-      typeof state === 'object'
+      isObject(state)
         ? state.filter((item) => typeof item === 'string' && item !== '')
         : []
     )

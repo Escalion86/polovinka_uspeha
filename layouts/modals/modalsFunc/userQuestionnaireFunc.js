@@ -22,6 +22,7 @@ import InputImages from '@components/InputImages'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
 import compareObjects from '@helpers/compareObjects'
+import isObject from '@helpers/isObject'
 
 const CheckBoxItem = ({
   checked,
@@ -586,9 +587,7 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
   const stateDefault = {}
   data.forEach((item) => {
     stateDefault[item.key] =
-      value !== null &&
-      typeof value === 'object' &&
-      value.hasOwnProperty(item.key)
+      isObject(value) && value.hasOwnProperty(item.key)
         ? value[item.key]
         : item.defaultValue ??
           ['checkList', 'customList', 'images'].includes(item.type)

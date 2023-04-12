@@ -6,6 +6,7 @@ import { DirectionItem } from '@components/ItemCards'
 import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
 import ListWrapper from '@layouts/lists/ListWrapper'
+import isObject from '@helpers/isObject'
 
 const selectDirectionsFunc = (
   state,
@@ -27,7 +28,7 @@ const selectDirectionsFunc = (
   }) => {
     const directions = useRecoilValue(directionsAtom)
     const [selectedDirections, setSelectedDirections] = useState(
-      typeof state === 'object'
+      isObject(state)
         ? state.filter((item) => typeof item === 'string' && item !== '')
         : []
     )
