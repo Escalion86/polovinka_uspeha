@@ -32,12 +32,20 @@ const paymentFunc = (paymentId, clone = false, props) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
 
-    console.log('payment :>> ', payment)
-
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
 
     const event = useRecoilValue(eventSelector(payment.eventId))
     const isEventClosed = isEventClosedFunc(event)
+
+    const {
+      fixedSector,
+      fixedUserId,
+      fixedProductId,
+      fixedEventId,
+      fixedServiceId,
+      fixedPayDirection,
+    } = props
+
     const [sector, setSector] = useState(
       props?.sector ??
         payment?.sector ??
@@ -212,7 +220,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
           required
           error={errors.sector}
           disabledValues={isLoggedUserDev ? undefined : ['product', 'internal']}
-          readOnly={isEventClosed}
+          readOnly={isEventClosed || fixedSector}
         />
         <PayDirectionPicker
           payDirection={payDirection}
@@ -222,7 +230,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
           }}
           required
           error={errors.payDirection}
-          readOnly={isEventClosed}
+          readOnly={isEventClosed || fixedPayDirection}
           sector={sector}
         />
         {sector &&
@@ -234,6 +242,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
               // onDelete={(e) => console.log('e', e)}
               required
               // readOnly={isEventClosed}
+              readOnly={fixedUserId}
             />
           )}
         {sector === 'event' && (
@@ -245,8 +254,9 @@ const paymentFunc = (paymentId, clone = false, props) => {
             showEventUsersButton
             showPaymentsButton
             showEditButton
-            clearButton={!isEventClosed}
+            clearButton={!isEventClosed && !fixedEventId}
             // readOnly={isEventClosed}
+            readOnly={fixedEventId}
           />
         )}
         {sector === 'service' && (
@@ -260,6 +270,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
             showEditButton
             clearButton={true}
             // readOnly={isEventClosed}
+            readOnly={fixedServiceId}
           />
         )}
         <DateTimePicker

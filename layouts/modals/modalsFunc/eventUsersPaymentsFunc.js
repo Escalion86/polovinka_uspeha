@@ -47,6 +47,7 @@ import eventNotParticipantsWithPaymentsSelector from '@state/selectors/eventNotP
 import sumOfPaymentsFromNotParticipantsToEventSelector from '@state/selectors/sumOfPaymentsFromNotParticipantsToEventSelector'
 import paymentsWithoutEventIdByUserIdSelector from '@state/selectors/paymentsWithoutEventIdByUserIdSelector'
 import Tooltip from '@components/Tooltip'
+import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
 
 const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
 
@@ -68,7 +69,7 @@ const UserPayment = ({
   const setPaymentLink = itemsFunc.payment.link
   const setPaymentUnlink = itemsFunc.payment.unlink
   const paymentsWithoutEventOfUser = useRecoilValue(
-    paymentsWithoutEventIdByUserIdSelector(user._id)
+    paymentsOfEventWithoutEventIdByUserIdSelector(user._id)
   )
 
   const [isCollapsed, setIsCollapsed] = useState(true)
@@ -215,10 +216,15 @@ const UserPayment = ({
             className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-general"
             onClick={() => {
               modalsFunc.payment.add(null, {
+                sector: 'event',
                 payDirection: defaultPayDirection,
                 sum: noEventPriceForUser ? 0 : sumToPay * 100,
                 userId: user._id,
                 eventId: event._id,
+                fixedSector: true,
+                fixedUserId: true,
+                fixedEventId: true,
+                fixedPayDirection: true,
               })
             }}
           >
