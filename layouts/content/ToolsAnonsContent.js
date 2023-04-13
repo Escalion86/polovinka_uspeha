@@ -18,66 +18,20 @@ import Button from '@components/Button'
 import formatDateTime from '@helpers/formatDateTime'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import ComboBox from '@components/ComboBox'
-import { MONTHS } from '@helpers/constants'
+import { MONTHS, MONTHS_FULL, MONTHS_FULL_1 } from '@helpers/constants'
 import sortFunctions from '@helpers/sortFunctions'
 
-const ToolsAnonsContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const events = useRecoilValue(eventsAtom)
-  const users = useRecoilValue(usersAtom)
-  const eventsUsers = useRecoilValue(eventsUsersAtom)
-  const directions = useRecoilValue(directionsAtom)
-  const reviews = useRecoilValue(reviewsAtom)
-  const additionalBlocks = useRecoilValue(additionalBlocksAtom)
-  const payments = useRecoilValue(paymentsAtom)
-
-  const [month, setMonth] = useState(new Date().getMonth())
-  const [year, setYear] = useState(new Date().getFullYear())
-
-  const eventsInMonth = events.filter((event) => {
-    const date = new Date(event.dateStart)
-    const eventMonth = date.getMonth()
-    const eventYear = date.getFullYear()
-    return eventMonth === month && eventYear === year
+function loadImage(url) {
+  return new Promise((r) => {
+    let i = new Image()
+    i.onload = () => r(i)
+    i.src = url
   })
+}
 
-  const items = [...eventsInMonth]
-    .sort(sortFunctions.dateStart.asc)
-    .map((event) => {
-      const dateStart = dateToDateTimeStr(event.dateStart, true, true, false)
-      const dateEnd = dateToDateTimeStr(event.dateEnd, true, true, false)
-      var date = ''
-      if (dateStart[0] === dateEnd[0]) {
-        date = `${dateStart[0]} ${dateStart[1]} - ${dateEnd[1]}`
-      } else {
-        date = `${dateStart[0]} ${dateStart[1]} - ${dateEnd[0]} ${dateEnd[1]}`
-      }
-      return {
-        date,
-        text: event.title,
-      }
-    })
-
-  const startX = 145
-  const startY = 480
-  const minGap = 50
-  const maxGap = 120
-  const textLengthMax = 45
-  const dateHeight = 36
-  const dateTextGap = 15
-  const lineHeight = 32
-  const maxHeight = 1100
-
-  function loadImage(url) {
-    return new Promise((r) => {
-      let i = new Image()
-      i.onload = () => r(i)
-      i.src = url
-    })
-  }
-
-  const save = async () => {
-    const input = document.querySelector('#input')
+const save = async (listsCount, bgImage, name) => {
+  for (let i = 0; i < listsCount; i++) {
+    const input = document.querySelector('#input' + i)
     const output = document.querySelector('#output')
 
     const svgData = new XMLSerializer().serializeToString(input)
@@ -86,7 +40,7 @@ const ToolsAnonsContent = () => {
     const svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
 
     const image = new Image()
-    const imgBg = await loadImage('/img/anons/april.jpg')
+    const imgBg = await loadImage(bgImage)
 
     image.addEventListener('load', () => {
       // const width = input.getAttribute('width')
@@ -116,7 +70,12 @@ const ToolsAnonsContent = () => {
       output.src = dataUrl
 
       var link = document.createElement('a')
-      link.setAttribute('download', 'MintyPaper.png')
+      link.setAttribute(
+        'download',
+        `${name}${
+          listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
+        }.png`
+      )
       link.setAttribute(
         'href',
         canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
@@ -130,10 +89,120 @@ const ToolsAnonsContent = () => {
     })
     image.src = svgDataUrl
   }
+}
 
-  var addedLines = 0
+const styles = [
+  {
+    startX: 145,
+    startY: 480,
+    dotGapY: 0,
+    minGap: 35,
+    maxGap: 120,
+    textLengthMax: 45,
+    dateHeight: 36,
+    dateTextGap: 10,
+    lineHeight: 32,
+    maxHeight: 1100,
+  },
+  {
+    startX: 160,
+    startY: 480,
+    dotGapY: 20,
+    minGap: 35,
+    maxGap: 120,
+    textLengthMax: 40,
+    dateHeight: 36,
+    dateTextGap: 10,
+    lineHeight: 32,
+    maxHeight: 1100,
+  },
+]
 
-  const preparedItems = items.map(({ date, text }, index) => {
+const ToolsAnonsContent = () => {
+  // const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const events = useRecoilValue(eventsAtom)
+  // const users = useRecoilValue(usersAtom)
+  // const eventsUsers = useRecoilValue(eventsUsersAtom)
+  // const directions = useRecoilValue(directionsAtom)
+  // const reviews = useRecoilValue(reviewsAtom)
+  // const additionalBlocks = useRecoilValue(additionalBlocksAtom)
+  // const payments = useRecoilValue(paymentsAtom)
+
+  const [month, setMonth] = useState(new Date().getMonth())
+  const [year, setYear] = useState(new Date().getFullYear())
+  const [styleNum, setStyleNum] = useState(0)
+
+  const eventsInMonth = events.filter((event) => {
+    const date = new Date(event.dateStart)
+    const eventMonth = date.getMonth()
+    const eventYear = date.getFullYear()
+    return eventMonth === month && eventYear === year
+  })
+
+  let prevDate
+  const items = [...eventsInMonth]
+    .sort(sortFunctions.dateStart.asc)
+    .map((event) => {
+      const dateStart = dateToDateTimeStr(
+        event.dateStart,
+        true,
+        true,
+        false,
+        true
+      )
+      const dateEnd = dateToDateTimeStr(event.dateEnd, true, true, false, true)
+      var date = ''
+      if (styleNum === 0)
+        if (
+          dateStart[0] === dateEnd[0] &&
+          dateStart[1] === dateEnd[1] &&
+          dateStart[3] === dateEnd[3]
+        ) {
+          date = `${dateStart[0]} ${dateStart[1]} ${dateStart[2]} ${dateStart[4]}:${dateStart[5]} - ${dateEnd[4]}:${dateEnd[5]}`
+        } else {
+          date = `${dateStart[0]} ${dateStart[1]} ${dateStart[2]} ${dateStart[4]}:${dateStart[5]} - ${dateEnd[0]} ${dateEnd[1]} ${dateEnd[2]} ${dateEnd[4]}:${dateEnd[5]}`
+        }
+      if (styleNum === 1)
+        if (
+          dateStart[0] === dateEnd[0] &&
+          dateStart[1] === dateEnd[1] &&
+          dateStart[3] === dateEnd[3]
+        ) {
+          date = `${dateStart[4]}:${dateStart[5]} - ${dateEnd[4]}:${dateEnd[5]}`
+        } else {
+          date = `${dateStart[4]}:${dateStart[5]} - ${dateEnd[0]} ${dateEnd[1]} ${dateEnd[2]} ${dateEnd[4]}:${dateEnd[5]}`
+        }
+      const showDot = styleNum === 0 || prevDate !== dateStart[0] + dateStart[1]
+      prevDate = dateStart[0] + dateStart[1]
+
+      return {
+        date,
+        text: event.title,
+        dot: showDot,
+        day:
+          styleNum === 0
+            ? undefined
+            : dateStart[0] <= 9
+            ? '0' + dateStart[0]
+            : dateStart[0],
+        week: styleNum === 0 ? undefined : dateStart[2],
+      }
+    })
+
+  const {
+    startX,
+    startY,
+    dotGapY,
+    minGap,
+    maxGap,
+    textLengthMax,
+    dateHeight,
+    dateTextGap,
+    lineHeight,
+    maxHeight,
+  } = styles[styleNum]
+
+  const preparedItems = items.map(({ date, text, dot, day, week }, index) => {
     const textSplit = text.split(' ')
 
     var chars = 0
@@ -150,8 +219,29 @@ const ToolsAnonsContent = () => {
       textArray[line] = textArray[line] ? textArray[line] + ' ' + word : word
     })
 
-    return { date, textArray }
+    return { date, textArray, dot, day, week }
   })
+  const listsCount = Math.ceil(preparedItems.length / 10)
+  var itemsLeft = preparedItems.length
+  const elementsOnList = Array(listsCount)
+    .fill(0)
+    .map((value, index) => {
+      const listsLeft = listsCount - index
+      const itemsInListCount = Math.ceil(itemsLeft / listsLeft)
+      itemsLeft = itemsLeft - itemsInListCount
+      return itemsInListCount
+    })
+  console.log('elementsOnList :>> ', elementsOnList)
+  var elementStart = 0
+  const listsWithPreparedItems = elementsOnList.map((elementsCount) => {
+    const tempArray = []
+    for (let i = elementStart; i < elementStart + elementsCount; i++) {
+      tempArray.push(preparedItems[i])
+    }
+    elementStart = elementStart + elementsCount
+    return tempArray
+  })
+  console.log('listsWithPreparedItems :>> ', listsWithPreparedItems)
 
   // preparedItems.push(preparedItems[0])
   // preparedItems.push(preparedItems[0])
@@ -159,26 +249,14 @@ const ToolsAnonsContent = () => {
   // preparedItems.push(preparedItems[0])
 
   // const itemsCount = preparedItems.length
-  const fullHeight = preparedItems.reduce(
-    (total, { date, textArray }) =>
-      total + dateTextGap + lineHeight * textArray.length,
-    0
-  )
 
-  // const fullHeightWithGap =
-  //   preparedItems.length * (dateTextGap + dateHeight) +
-  //   (preparedItems.length - 1) * minGap +
-  //   addedLines * lineHeight
-
-  const gap = Math.min(
-    Math.max(minGap, (maxHeight - fullHeight) / (preparedItems.length - 1)),
-    maxGap
-  )
+  var addedLines
 
   return (
     <div className="px-1">
-      <div>
+      <div className="flex gap-x-1">
         <ComboBox
+          className="max-w-40"
           label="Месяц"
           items={[
             { value: 0, name: 'Январь' },
@@ -197,18 +275,63 @@ const ToolsAnonsContent = () => {
           defaultValue={month}
           onChange={(value) => setMonth(Number(value))}
         />
+        <ComboBox
+          label="Год"
+          className="max-w-30"
+          items={[
+            { value: 2022, name: '2022' },
+            { value: 2023, name: '2023' },
+          ]}
+          defaultValue={year}
+          onChange={(value) => setYear(Number(value))}
+        />
+        <ComboBox
+          label="Стиль"
+          className="max-w-24"
+          items={[
+            { value: 0, name: '1' },
+            { value: 1, name: '2' },
+          ]}
+          defaultValue={styleNum}
+          onChange={(value) => setStyleNum(Number(value))}
+        />
       </div>
-      <div className="max-h-[calc(100vh-124px)] overflow-y-scroll">
-        <Button name="Сохранить" onClick={() => save()} />
-        <svg
-          width="270"
-          height="480"
-          viewBox="0 0 1080 1920"
-          id="input"
-          className="border"
-        >
-          <image href="/img/anons/april.jpg" height="1920" width="1080" />
-          {/* <rect
+      <Button
+        name="Сохранить"
+        onClick={() =>
+          save(
+            listsWithPreparedItems.length,
+            '/img/anons/april.jpg',
+            'Анонс ' + MONTHS_FULL_1[month]
+          )
+        }
+      />
+      <div className="flex overflow-x-scroll gap-x-1 max-h-[calc(100vh-160px)] overflow-y-scroll">
+        {listsWithPreparedItems.map((preparedItems, index) => {
+          addedLines = 0
+          const fullHeight = preparedItems.reduce(
+            (total, { date, textArray }) =>
+              total + dateTextGap + lineHeight * textArray.length,
+            0
+          )
+
+          const gap = Math.min(
+            Math.max(
+              minGap,
+              (maxHeight - fullHeight) / (preparedItems.length - 1)
+            ),
+            maxGap
+          )
+          return (
+            <svg
+              width="270"
+              height="480"
+              viewBox="0 0 1080 1920"
+              id={'input' + index}
+              className="border min-w-[270px]"
+            >
+              <image href="/img/anons/april.jpg" height="1920" width="1080" />
+              {/* <rect
           x="10"
           y="10"
           width="30"
@@ -217,98 +340,144 @@ const ToolsAnonsContent = () => {
           fill="transparent"
           stroke-width="5"
         /> */}
-          {preparedItems.map(({ date, textArray }, index) => {
-            // const textSplit = text.split(' ')
+              {preparedItems.map(
+                ({ date, textArray, dot, day, week }, index) => {
+                  // const textSplit = text.split(' ')
 
-            // var chars = 0
-            // var line = 0
-            // var textArray = []
-            // textSplit.forEach((word) => {
-            //   const wordLength = word.length
-            //   if (chars + wordLength > textLengthMax) {
-            //     ++line
-            //     chars = 0
-            //   }
-            //   chars += wordLength
-            //   textArray[line] = textArray[line]
-            //     ? textArray[line] + ' ' + word
-            //     : word
-            // })
+                  // var chars = 0
+                  // var line = 0
+                  // var textArray = []
+                  // textSplit.forEach((word) => {
+                  //   const wordLength = word.length
+                  //   if (chars + wordLength > textLengthMax) {
+                  //     ++line
+                  //     chars = 0
+                  //   }
+                  //   chars += wordLength
+                  //   textArray[line] = textArray[line]
+                  //     ? textArray[line] + ' ' + word
+                  //     : word
+                  // })
 
-            return (
-              <>
-                <circle
-                  cx={startX}
-                  cy={
-                    startY +
-                    index * gap +
-                    index * dateTextGap +
-                    index * dateHeight +
-                    addedLines * lineHeight
-                  }
-                  r="20"
-                  fill="white"
-                  // stroke-width="5"
-                  // stroke="rgb(150,110,200)"
-                />
-                <text
-                  x={startX + 50}
-                  y={
-                    startY +
-                    index * gap +
-                    index * dateTextGap +
-                    index * dateHeight +
-                    10 +
-                    addedLines * lineHeight
-                  }
-                  fontSize={dateHeight}
-                  fill="white"
-                  fontWeight="bold"
-                >
-                  {date}
-                </text>
-                {textArray.map((textLine, lineNum) => {
-                  ++addedLines
                   return (
-                    <text
-                      key={textLine + lineNum}
-                      x={startX + 50}
-                      y={
-                        startY +
-                        10 +
-                        index * gap +
-                        (index + 1) * dateTextGap +
-                        index * dateHeight +
-                        // 20 +
-                        addedLines * lineHeight
-                        // lineNum * lineHeight
-                      }
-                      fontSize={lineHeight}
-                      fill="white"
-                      width={800}
-                      className="max-w-[800px]"
-                    >
-                      {textLine}
-                    </text>
+                    <>
+                      {dot && (
+                        <circle
+                          cx={startX}
+                          cy={
+                            startY +
+                            dotGapY +
+                            index * gap +
+                            index * dateTextGap +
+                            index * dateHeight +
+                            addedLines * lineHeight
+                          }
+                          r="20"
+                          fill="white"
+                          // stroke-width="5"
+                          // stroke="rgb(150,110,200)"
+                        />
+                      )}
+                      {dot && day && week && (
+                        <>
+                          <text
+                            x={startX - 72}
+                            y={
+                              startY +
+                              index * gap +
+                              index * dateTextGap +
+                              index * dateHeight +
+                              15 +
+                              // 10 +
+                              addedLines * lineHeight
+                            }
+                            fontSize={60}
+                            fill="white"
+                            fontWeight="bold"
+                            textAnchor="middle"
+                          >
+                            {day}
+                          </text>
+                          <text
+                            x={startX - 72}
+                            y={
+                              startY +
+                              index * gap +
+                              index * dateTextGap +
+                              index * dateHeight +
+                              60 +
+                              addedLines * lineHeight
+                            }
+                            fontSize={48}
+                            fill="white"
+                            // fontWeight="bold"
+                            textAnchor="middle"
+                          >
+                            {week}
+                          </text>
+                        </>
+                      )}
+                      <text
+                        x={startX + 50}
+                        y={
+                          startY +
+                          index * gap +
+                          index * dateTextGap +
+                          index * dateHeight +
+                          10 +
+                          addedLines * lineHeight
+                        }
+                        fontSize={dateHeight}
+                        fill="white"
+                        fontWeight="bold"
+                      >
+                        {date}
+                      </text>
+                      {textArray.map((textLine, lineNum) => {
+                        ++addedLines
+                        return (
+                          <text
+                            key={textLine + lineNum}
+                            x={startX + 50}
+                            y={
+                              startY +
+                              10 +
+                              index * gap +
+                              (index + 1) * dateTextGap +
+                              index * dateHeight +
+                              // 20 +
+                              addedLines * lineHeight
+                              // lineNum * lineHeight
+                            }
+                            fontSize={lineHeight}
+                            fill="white"
+                            width={800}
+                            className="max-w-[800px]"
+                          >
+                            {textLine}
+                          </text>
+                        )
+                      })}
+                    </>
                   )
-                })}
-              </>
-            )
-          })}
-          <line
-            x1={startX}
-            y1={startY - 50}
-            x2={startX}
-            y2={
-              startY +
-              preparedItems.length * (dateTextGap + dateHeight) +
-              (preparedItems.length - 1) * gap +
-              addedLines * lineHeight
-            }
-            strokeWidth="3"
-            stroke="white"
-          />
-        </svg>
+                }
+              )}
+              <line
+                x1={startX}
+                y1={startY - 50}
+                x2={startX}
+                y2={
+                  startY +
+                  preparedItems.length * (dateTextGap + dateHeight) +
+                  (preparedItems.length - 1) * gap +
+                  addedLines * lineHeight
+                }
+                strokeWidth="3"
+                stroke="white"
+              />
+            </svg>
+          )
+        })}
         <img
           id="output"
           alt=""

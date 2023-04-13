@@ -4,7 +4,8 @@ const dateToDateTimeStr = (
   date,
   showDayOfWeek = true,
   fullMonth,
-  showYear = true
+  showYear = true,
+  fullSeparete = false
 ) => {
   var d = new Date(date),
     minutes = '' + d.getMinutes(),
@@ -16,6 +17,16 @@ const dateToDateTimeStr = (
 
   if (minutes.length < 2) minutes = '0' + minutes
   if (hours.length < 2) hours = '0' + hours
+
+  if (fullSeparete)
+    return [
+      day,
+      MONTHS_FULL[month - 1],
+      DAYS_OF_WEEK[week],
+      year.toString(),
+      hours,
+      minutes,
+    ]
 
   const strDateStart =
     day +
