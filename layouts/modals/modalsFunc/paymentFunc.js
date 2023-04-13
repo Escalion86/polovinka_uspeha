@@ -19,7 +19,7 @@ import { P } from '@components/tags'
 import SectorPicker from '@components/ValuePicker/SectorPicker'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 
-const paymentFunc = (paymentId, clone = false, props) => {
+const paymentFunc = (paymentId, clone = false, props = {}) => {
   const PaymentModal = ({
     closeModal,
     setOnConfirmFunc,
