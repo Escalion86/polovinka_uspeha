@@ -71,6 +71,7 @@ export default async function handler(req, res) {
         const isUserOrganizer = userId === event.organizerId
         if (userNeedToPay > 0) {
           needToPayUsers.push({
+            sector: 'event',
             eventId,
             userId,
             payType: couponForOrganizer && isUserOrganizer ? 'coupon' : payType,
