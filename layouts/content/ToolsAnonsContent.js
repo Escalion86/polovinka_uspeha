@@ -306,7 +306,7 @@ const ToolsAnonsContent = () => {
           )
         }
       />
-      <div className="flex overflow-x-scroll gap-x-1 max-h-[calc(100vh-160px)] overflow-y-scroll">
+      <div className="flex overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
         {listsWithPreparedItems.map((preparedItems, index) => {
           addedLines = 0
           const fullHeight = preparedItems.reduce(
@@ -324,6 +324,7 @@ const ToolsAnonsContent = () => {
           )
           return (
             <svg
+              key={month + year + index}
               width="270"
               height="480"
               viewBox="0 0 1080 1920"
@@ -360,7 +361,7 @@ const ToolsAnonsContent = () => {
                   // })
 
                   return (
-                    <>
+                    <g key={month + year + date + index}>
                       {dot && (
                         <circle
                           cx={startX}
@@ -458,7 +459,7 @@ const ToolsAnonsContent = () => {
                           </text>
                         )
                       })}
-                    </>
+                    </g>
                   )
                 }
               )}
