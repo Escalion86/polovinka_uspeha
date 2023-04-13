@@ -519,8 +519,6 @@ const eventUsersPaymentsFunc = (eventId) => {
       }
     )
 
-    console.log('isHaveUserWithoutFullPay :>> ', isHaveUserWithoutFullPay)
-
     // const paymentsFromNotParticipants = useRecoilValue(
     //   paymentsOfEventFromNotParticipantsSelector(eventId)
     // )
