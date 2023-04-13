@@ -42,10 +42,10 @@ import eventParticipantsFullByEventIdSelector from '@state/selectors/eventPartic
 import eventAssistantsFullByEventIdSelector from '@state/selectors/eventAssistantsFullByEventIdSelector'
 import UserStatusIcon from '@components/UserStatusIcon'
 import isEventExpiredFunc from '@helpers/isEventExpired'
-import paymentsOfEventFromNotParticipantsSelector from '@state/selectors/paymentsOfEventFromNotParticipantsSelector'
+// import paymentsOfEventFromNotParticipantsSelector from '@state/selectors/paymentsOfEventFromNotParticipantsSelector'
 import eventNotParticipantsWithPaymentsSelector from '@state/selectors/eventNotParticipantsWithPaymentsSelector'
 import sumOfPaymentsFromNotParticipantsToEventSelector from '@state/selectors/sumOfPaymentsFromNotParticipantsToEventSelector'
-import paymentsWithoutEventIdByUserIdSelector from '@state/selectors/paymentsWithoutEventIdByUserIdSelector'
+// import paymentsWithoutEventIdByUserIdSelector from '@state/selectors/paymentsWithoutEventIdByUserIdSelector'
 import Tooltip from '@components/Tooltip'
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
 
@@ -440,9 +440,11 @@ const eventUsersPaymentsFunc = (eventId) => {
     const isEventExpired = isEventExpiredFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
+
+    const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
+
     // const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     // const users = useRecoilValue(usersAtom)
-    // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
     const paymentsToEvent = useRecoilValue(paymentsToEventSelector(eventId))
     const paymentsFromEvent = useRecoilValue(paymentsFromEventSelector(eventId))
 
@@ -487,13 +489,42 @@ const eventUsersPaymentsFunc = (eventId) => {
     const eventParticipantsCount = useRecoilValue(
       eventParticipantsSelector(eventId)
     ).length
+
     const eventAssistantsCount = useRecoilValue(
       eventAssistantsSelector(eventId)
     ).length
 
-    const paymentsFromNotParticipants = useRecoilValue(
-      paymentsOfEventFromNotParticipantsSelector(eventId)
+    const isHaveUserWithoutFullPay = eventParticipantsFull.find(
+      ({ user, status }) => {
+        const allPaymentsOfUser = paymentsOfEvent.filter(
+          (payment) => payment.userId === user._id
+        )
+        const sumOfPayments =
+          allPaymentsOfUser.reduce(
+            (p, payment) =>
+              p +
+              (payment.sum ?? 0) *
+                (payment.payDirection === 'toUser' ||
+                payment.payDirection === 'toEvent'
+                  ? -1
+                  : 1),
+            0
+          ) / 100
+
+        const userDiscount = status ? event.usersStatusDiscount[status] : 0
+
+        const eventPriceForUser =
+          (event.price -
+            (typeof userDiscount === 'number' ? userDiscount : 0)) /
+          100
+        const sumToPay = eventPriceForUser - sumOfPayments
+        return sumToPay > 0
+      }
     )
+
+    // const paymentsFromNotParticipants = useRecoilValue(
+    //   paymentsOfEventFromNotParticipantsSelector(eventId)
+    // )
 
     // const sumOfPaymentsOfEventFromParticipants =
     //   paymentsOfEventFromAndToUsers.reduce((p, payment) => {
@@ -598,9 +629,9 @@ const eventUsersPaymentsFunc = (eventId) => {
           }),
         disabled:
           event.status === 'active' &&
-          (totalIncome < expectedIncome || !isEventExpired),
+          (isHaveUserWithoutFullPay || !isEventExpired),
       })
-    }, [totalIncome, expectedIncome, event.status])
+    }, [isHaveUserWithoutFullPay, event.status])
 
     const TotalFromParticipants = ({ className }) => (
       <div className={cn('flex flex-wrap gap-x-1', className)}>
