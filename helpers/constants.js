@@ -79,7 +79,7 @@ import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
 import BirthdaysContent from '@layouts/content/BirthdaysContent'
 import StatisticsContent from '@layouts/content/StatisticsContent'
-import badgePaymentsWithoutEventIdSelector from '@state/selectors/badgePaymentsWithoutEventIdSelector'
+import badgePaymentsOfEventWithoutEventIdSelector from '@state/selectors/badgePaymentsOfEventWithoutEventIdSelector'
 import SettingsContent from '@layouts/content/SettingsContent'
 import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
 import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
@@ -403,7 +403,7 @@ export const DEFAULT_REVIEW = Object.freeze({
 })
 
 export const DEFAULT_PAYMENT = Object.freeze({
-  sector: null,
+  sector: 'event',
   payDirection: null,
   userId: null,
   eventId: null,
@@ -813,7 +813,7 @@ export const pages = [
     name: 'Непривязанные транзакции',
     href: 'paymentsWithNoEvent',
     icon: faUnlink,
-    badge: badgePaymentsWithoutEventIdSelector,
+    badge: badgePaymentsOfEventWithoutEventIdSelector,
     accessRoles: CONTENTS['paymentsWithNoEvent'].accessRoles,
   },
 

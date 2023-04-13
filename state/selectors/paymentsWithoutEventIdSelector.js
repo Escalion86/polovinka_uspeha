@@ -1,4 +1,3 @@
-import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import paymentsAtom from '@state/atoms/paymentsAtom'
 import { selector } from 'recoil'
 

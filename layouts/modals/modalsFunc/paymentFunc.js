@@ -32,6 +32,8 @@ const paymentFunc = (paymentId, clone = false, props) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
 
+    console.log('payment :>> ', payment)
+
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
 
     const event = useRecoilValue(eventSelector(payment.eventId))

@@ -11,6 +11,7 @@ import { useRecoilValue } from 'recoil'
 import sortFunctions from '@helpers/sortFunctions'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import PaymentsList from '@layouts/lists/PaymentsList'
+import paymentSectorFunc from '@helpers/paymentSector'
 
 const PaymentsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -25,11 +26,17 @@ const PaymentsContent = () => {
       remittance: true,
       coupon: true,
     },
-    payDirection: {
-      fromUser: true,
-      toUser: true,
-      toEvent: true,
-      fromEvent: true,
+    // payDirection: {
+    //   fromUser: true,
+    //   toUser: true,
+    //   toEvent: true,
+    //   fromEvent: true,
+    // },
+    sector: {
+      event: true,
+      service: true,
+      product: true,
+      internal: true,
     },
   })
 
@@ -55,7 +62,9 @@ const PaymentsContent = () => {
       payments.filter(
         (payment) =>
           filter.payType[payment.payType] &&
-          filter.payDirection[payment.payDirection]
+          filter.sector[paymentSectorFunc(payment)]
+        // &&
+        // filter.payDirection[payment.payDirection]
       ),
     [payments, filter]
   )

@@ -46,7 +46,8 @@ function formatDateTime(
   showDayOfWeek = true,
   twoLines = false,
   durationMinutes,
-  showYear = true
+  showYear = true,
+  showTime = true
 ) {
   if (!dateTime) return undefined
 
@@ -85,9 +86,7 @@ function formatDateTime(
       (showYear ? ' ' + year.toString() : '') + //.substr(2, 2) +
       (twoLines ? `\n` : ' ') +
       (showDayOfWeek ? DAYS_OF_WEEK[week] + ' ' : '') +
-      hours +
-      ':' +
-      minutes +
+      (showTime ? hours + ':' + minutes : '') +
       (finishedTime ?? '')
     )
 }

@@ -10,11 +10,14 @@ import { useRecoilValue } from 'recoil'
 import sortFunctions from '@helpers/sortFunctions'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import PaymentsList from '@layouts/lists/PaymentsList'
-import paymentsWithoutEventIdSelector from '@state/selectors/paymentsWithoutEventIdSelector'
+import paymentsOfEventWithoutEventIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdSelector'
+import paymentSectorFunc from '@helpers/paymentSector'
 
 const PaymentsWithoutEventContent = () => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const paymentsWithoutEvent = useRecoilValue(paymentsWithoutEventIdSelector)
+  const paymentsWithoutEvent = useRecoilValue(
+    paymentsOfEventWithoutEventIdSelector
+  )
   // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   const [sort, setSort] = useState({ payAt: 'asc' })
@@ -25,10 +28,16 @@ const PaymentsWithoutEventContent = () => {
       remittance: true,
       coupon: true,
     },
-    payDirection: {
-      fromUser: true,
-      toUser: true,
-    },
+    // sector: {
+    //   event: true,
+    //   service: true,
+    //   product: true,
+    //   internal: true,
+    // },
+    // payDirection: {
+    //   fromUser: true,
+    //   toUser: true,
+    // },
   })
 
   const sortKey = Object.keys(sort)[0]
@@ -51,9 +60,11 @@ const PaymentsWithoutEventContent = () => {
   const visiblePayments = useMemo(
     () =>
       paymentsWithoutEvent.filter(
-        (payment) =>
-          filter.payType[payment.payType] &&
-          filter.payDirection[payment.payDirection]
+        (payment) => filter.payType[payment.payType]
+        //  &&
+        // filter.sector[paymentSectorFunc(payment)]
+        //  &&
+        // filter.payDirection[payment.payDirection]
       ),
     [paymentsWithoutEvent, filter]
   )
