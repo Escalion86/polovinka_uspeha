@@ -12,10 +12,9 @@ import Button from '@components/Button'
 import cn from 'classnames'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import EventProfit from './EventProfit'
-import paymentsFromLoggedUserByEventIdSelector from '@state/selectors/paymentsFromLoggedUserByEventIdSelector'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
-import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+import eventPriceByStatus from '@helpers/eventPriceByStatus'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -43,8 +42,10 @@ const EventButtonSignIn = ({
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
     sumOfPaymentsFromLoggedUserToEventSelector(event._id)
   )
-  const eventPriceForLoggedUser =
-    eventPricesWithStatus(event)[loggedUserActiveStatus]
+  const eventPriceForLoggedUser = eventPriceByStatus(
+    event,
+    loggedUserActiveStatus
+  )
 
   const router = useRouter()
 

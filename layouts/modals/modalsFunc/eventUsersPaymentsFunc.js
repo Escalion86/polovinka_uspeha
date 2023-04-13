@@ -42,11 +42,14 @@ import eventParticipantsFullByEventIdSelector from '@state/selectors/eventPartic
 import eventAssistantsFullByEventIdSelector from '@state/selectors/eventAssistantsFullByEventIdSelector'
 import UserStatusIcon from '@components/UserStatusIcon'
 import isEventExpiredFunc from '@helpers/isEventExpired'
-import paymentsOfEventFromNotParticipantsSelector from '@state/selectors/paymentsOfEventFromNotParticipantsSelector'
+// import paymentsOfEventFromNotParticipantsSelector from '@state/selectors/paymentsOfEventFromNotParticipantsSelector'
 import eventNotParticipantsWithPaymentsSelector from '@state/selectors/eventNotParticipantsWithPaymentsSelector'
 import sumOfPaymentsFromNotParticipantsToEventSelector from '@state/selectors/sumOfPaymentsFromNotParticipantsToEventSelector'
-import paymentsWithoutEventIdByUserIdSelector from '@state/selectors/paymentsWithoutEventIdByUserIdSelector'
+// import paymentsWithoutEventIdByUserIdSelector from '@state/selectors/paymentsWithoutEventIdByUserIdSelector'
 import Tooltip from '@components/Tooltip'
+import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
+import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
+import eventPriceByStatus from '@helpers/eventPriceByStatus'
 
 const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
 
@@ -68,7 +71,7 @@ const UserPayment = ({
   const setPaymentLink = itemsFunc.payment.link
   const setPaymentUnlink = itemsFunc.payment.unlink
   const paymentsWithoutEventOfUser = useRecoilValue(
-    paymentsWithoutEventIdByUserIdSelector(user._id)
+    paymentsOfEventWithoutEventIdByUserIdSelector(user._id)
   )
 
   const [isCollapsed, setIsCollapsed] = useState(true)
@@ -215,10 +218,15 @@ const UserPayment = ({
             className="flex items-center justify-center w-8 border-l border-gray-700 cursor-pointer group text-general"
             onClick={() => {
               modalsFunc.payment.add(null, {
+                sector: 'event',
                 payDirection: defaultPayDirection,
                 sum: noEventPriceForUser ? 0 : sumToPay * 100,
                 userId: user._id,
                 eventId: event._id,
+                fixedSector: true,
+                fixedUserId: true,
+                fixedEventId: true,
+                fixedPayDirection: true,
               })
             }}
           >
@@ -434,9 +442,11 @@ const eventUsersPaymentsFunc = (eventId) => {
     const isEventExpired = isEventExpiredFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
+
+    const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
+
     // const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     // const users = useRecoilValue(usersAtom)
-    // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
     const paymentsToEvent = useRecoilValue(paymentsToEventSelector(eventId))
     const paymentsFromEvent = useRecoilValue(paymentsFromEventSelector(eventId))
 
@@ -481,13 +491,37 @@ const eventUsersPaymentsFunc = (eventId) => {
     const eventParticipantsCount = useRecoilValue(
       eventParticipantsSelector(eventId)
     ).length
+
     const eventAssistantsCount = useRecoilValue(
       eventAssistantsSelector(eventId)
     ).length
 
-    const paymentsFromNotParticipants = useRecoilValue(
-      paymentsOfEventFromNotParticipantsSelector(eventId)
+    const isHaveUserWithoutFullPay = eventParticipantsFull.find(
+      ({ user, userStatus }) => {
+        const allPaymentsOfUser = paymentsOfEvent.filter(
+          (payment) => payment.userId === user._id
+        )
+        const sumOfPayments = allPaymentsOfUser.reduce(
+          (p, payment) =>
+            p +
+            (payment.sum ?? 0) *
+              (payment.payDirection === 'toUser' ||
+              payment.payDirection === 'toEvent'
+                ? -1
+                : 1),
+          0
+        )
+
+        const eventPriceForUser = eventPriceByStatus(event, userStatus)
+
+        const sumToPay = eventPriceForUser - sumOfPayments
+        return sumToPay > 0
+      }
     )
+
+    // const paymentsFromNotParticipants = useRecoilValue(
+    //   paymentsOfEventFromNotParticipantsSelector(eventId)
+    // )
 
     // const sumOfPaymentsOfEventFromParticipants =
     //   paymentsOfEventFromAndToUsers.reduce((p, payment) => {
@@ -592,9 +626,9 @@ const eventUsersPaymentsFunc = (eventId) => {
           }),
         disabled:
           event.status === 'active' &&
-          (totalIncome < expectedIncome || !isEventExpired),
+          (isHaveUserWithoutFullPay || !isEventExpired),
       })
-    }, [totalIncome, expectedIncome, event.status])
+    }, [isHaveUserWithoutFullPay, event.status])
 
     const TotalFromParticipants = ({ className }) => (
       <div className={cn('flex flex-wrap gap-x-1', className)}>

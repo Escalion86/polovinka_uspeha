@@ -1,6 +1,7 @@
 import {
   faBan,
   faBirthdayCake,
+  faBriefcase,
   faCalendarDay,
   faCertificate,
   faCheck,
@@ -78,7 +79,7 @@ import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
 import BirthdaysContent from '@layouts/content/BirthdaysContent'
 import StatisticsContent from '@layouts/content/StatisticsContent'
-import badgePaymentsWithoutEventIdSelector from '@state/selectors/badgePaymentsWithoutEventIdSelector'
+import badgePaymentsOfEventWithoutEventIdSelector from '@state/selectors/badgePaymentsOfEventWithoutEventIdSelector'
 import SettingsContent from '@layouts/content/SettingsContent'
 import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
 import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
@@ -402,7 +403,7 @@ export const DEFAULT_REVIEW = Object.freeze({
 })
 
 export const DEFAULT_PAYMENT = Object.freeze({
-  sector: null,
+  sector: 'event',
   payDirection: null,
   userId: null,
   eventId: null,
@@ -617,6 +618,12 @@ export const SECTORS = [
   { name: 'Мероприятие', value: 'event', icon: faCalendar, color: 'general' },
   { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
   { name: 'Товар', value: 'product', icon: faShoppingBag, color: 'blue-400' },
+  {
+    name: 'Внутренние',
+    value: 'internal',
+    icon: faBriefcase,
+    color: 'orange-400',
+  },
 ]
 
 export const CONTENTS = {
@@ -806,7 +813,7 @@ export const pages = [
     name: 'Непривязанные транзакции',
     href: 'paymentsWithNoEvent',
     icon: faUnlink,
-    badge: badgePaymentsWithoutEventIdSelector,
+    badge: badgePaymentsOfEventWithoutEventIdSelector,
     accessRoles: CONTENTS['paymentsWithNoEvent'].accessRoles,
   },
 
@@ -1059,6 +1066,27 @@ export const PRODUCT_PAY_DIRECTIONS = [
     name: 'Доп. доходы (от продажи товара)',
     color: 'green-400',
     icon: faHeart,
+  },
+]
+
+export const PRODUCT_PAY_INTERNAL = [
+  {
+    value: 'toInternal',
+    name: 'Затраты на проект',
+    color: 'red-400',
+    icon: faBriefcase,
+  },
+  {
+    value: 'toUser',
+    name: 'Зарплата работнику',
+    color: 'red-400',
+    icon: faUserAlt,
+  },
+  {
+    value: 'fromInternal',
+    name: 'Доп. доходы (от проекта)',
+    color: 'green-400',
+    icon: faBriefcase,
   },
 ]
 

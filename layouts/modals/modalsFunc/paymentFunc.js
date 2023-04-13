@@ -17,8 +17,9 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import eventSelector from '@state/selectors/eventSelector'
 import { P } from '@components/tags'
 import SectorPicker from '@components/ValuePicker/SectorPicker'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 
-const paymentFunc = (paymentId, clone = false, props) => {
+const paymentFunc = (paymentId, clone = false, props = {}) => {
   const PaymentModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -31,22 +32,30 @@ const paymentFunc = (paymentId, clone = false, props) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
 
+    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+
     const event = useRecoilValue(eventSelector(payment.eventId))
     const isEventClosed = isEventClosedFunc(event)
-    // const eventsUsers = useRecoilValue(eventsUsersAtom)
+
+    const {
+      fixedSector,
+      fixedUserId,
+      fixedProductId,
+      fixedEventId,
+      fixedServiceId,
+      fixedPayDirection,
+    } = props
+
     const [sector, setSector] = useState(
-      // props?.sector
-      //   ? props?.sector
-      //   : payment?.sector
-      //   ? payment?.sector
-      //   :
-      props?.eventId ?? payment?.eventId
-        ? 'event'
-        : props?.serviceId ?? payment?.serviceId
-        ? 'service'
-        : props?.productId ?? payment?.productId
-        ? 'product'
-        : DEFAULT_PAYMENT.sector
+      props?.sector ??
+        payment?.sector ??
+        (props?.eventId ?? payment?.eventId
+          ? 'event'
+          : props?.serviceId ?? payment?.serviceId
+          ? 'service'
+          : props?.productId ?? payment?.productId
+          ? 'product'
+          : DEFAULT_PAYMENT.sector)
     )
     const [payDirection, setPayDirection] = useState(
       props?.payDirection ??
@@ -96,7 +105,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
       const toCheck = {
         payDirection,
         // eventId,
-        // sector,
+        sector,
         sum,
         payType,
       }
@@ -107,7 +116,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
         setPayment(
           {
             _id: payment?._id,
-            // sector,
+            sector,
             payDirection,
             userId:
               payDirection === 'toUser' || payDirection === 'fromUser'
@@ -163,7 +172,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
 
     useEffect(() => {
       const isFormChanged =
-        // (props?.sector ?? payment?.sector) !== sector ||
+        (props?.sector ?? payment?.sector) !== sector ||
         (props?.payDirection ?? payment?.payDirection) !== payDirection ||
         (props?.userId ?? payment?.userId) !== userId ||
         (props?.eventId ?? payment?.eventId) !== eventId ||
@@ -180,7 +189,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
       setDisableConfirm(!isFormChanged)
       if (isEventClosed) setOnlyCloseButtonShow(true)
     }, [
-      // sector,
+      sector,
       payDirection,
       userId,
       eventId,
@@ -201,23 +210,6 @@ const paymentFunc = (paymentId, clone = false, props) => {
             редактирование/удаление ее запрещено
           </P>
         )}
-        {/* {userId && !isUserInEvent && (
-          <>
-            <div className="text-red-500">
-              Пользователь не записан на мероприятие! Для корректности, нужно
-              сделать один из вариантов:
-            </div>
-            <ul className="ml-4 -mt-2 list-disc">
-              <li className="text-red-500">удалить данную транзакцию</li>
-              <li className="text-red-500">
-                записать пользователя на мероприятие
-              </li>
-              <li className="text-red-500">
-                указать другого записанного пользователя
-              </li>
-            </ul>
-          </>
-        )} */}
         <SectorPicker
           sector={sector}
           onChange={(value) => {
@@ -227,8 +219,8 @@ const paymentFunc = (paymentId, clone = false, props) => {
           }}
           required
           error={errors.sector}
-          disabledValues={['product']}
-          readOnly={isEventClosed}
+          disabledValues={isLoggedUserDev ? undefined : ['product', 'internal']}
+          readOnly={isEventClosed || fixedSector}
         />
         <PayDirectionPicker
           payDirection={payDirection}
@@ -238,7 +230,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
           }}
           required
           error={errors.payDirection}
-          readOnly={isEventClosed}
+          readOnly={isEventClosed || fixedPayDirection}
           sector={sector}
         />
         {sector &&
@@ -250,6 +242,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
               // onDelete={(e) => console.log('e', e)}
               required
               // readOnly={isEventClosed}
+              readOnly={fixedUserId}
             />
           )}
         {sector === 'event' && (
@@ -261,8 +254,9 @@ const paymentFunc = (paymentId, clone = false, props) => {
             showEventUsersButton
             showPaymentsButton
             showEditButton
-            clearButton={!isEventClosed}
+            clearButton={!isEventClosed && !fixedEventId}
             // readOnly={isEventClosed}
+            readOnly={fixedEventId}
           />
         )}
         {sector === 'service' && (
@@ -276,6 +270,7 @@ const paymentFunc = (paymentId, clone = false, props) => {
             showEditButton
             clearButton={true}
             // readOnly={isEventClosed}
+            readOnly={fixedServiceId}
           />
         )}
         <DateTimePicker

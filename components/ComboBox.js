@@ -11,6 +11,7 @@ const ComboBox = ({
   labelClassName,
   selectClassName,
   wrapperClassName,
+  className,
   hidden,
 }) => {
   const defaultItem = defaultValue
@@ -23,6 +24,7 @@ const ComboBox = ({
       labelClassName={labelClassName}
       wrapperClassName={wrapperClassName}
       hidden={hidden}
+      className={className}
     >
       <select
         className={cn(

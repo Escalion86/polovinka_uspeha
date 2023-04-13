@@ -58,6 +58,29 @@ const Status = ({ statusProps }) => {
   )
 }
 
+const EventStatusByEventId = ({ eventId }) => {
+  if (!eventId) return null
+  const event = useRecoilValue(eventSelector(eventId))
+  const eventStatus = eventStatusFunc(event)
+
+  const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
+    (payTypeItem) => payTypeItem.value === eventStatus
+  )
+  return (
+    <div
+      className={cn(
+        'flex items-center justify-center w-4',
+        eventStatusProps ? 'text-' + eventStatusProps.color : 'text-gray-400'
+      )}
+    >
+      <FontAwesomeIcon
+        icon={eventStatusProps?.icon ?? faQuestion}
+        className="w-4 h-4"
+      />
+    </div>
+  )
+}
+
 const PayTypeIcon = ({ payment }) => {
   const payType = PAY_TYPES.find(
     (payTypeItem) => payTypeItem.value === payment.payType
@@ -91,50 +114,66 @@ const PaySum = ({ payment }) => (
   </div>
 )
 
-const PayText = ({ payment }) => (
-  <div className="flex flex-col items-start flex-1 h-full ml-1 text-sm leading-4 overflow-x-clip justify-evenly gap-x-2 phoneH:text-base">
-    <div className="leading-4 whitespace-nowrap">
-      {formatDateTime(payment.payAt)}
+const PayText = ({ payment, sector }) => {
+  return (
+    <div className="flex flex-col items-start flex-1 h-full ml-1 text-sm leading-4 overflow-x-clip justify-evenly gap-x-2 phoneH:text-base">
+      {/* {
+        // (payment.payDirection === 'toUser' ||
+        //   payment.payDirection === 'fromUser')
+        !sector && (
+          <UserNameById userId={payment.userId} noWrap className="font-bold" />
+        )
+      } */}
+      {
+        // (payment.payDirection === 'toEvent' ||
+        //   payment.payDirection === 'fromEvent')
+        sector === 'event' && payment.eventId && (
+          <div className="flex gap-x-1">
+            <EventStatusByEventId eventId={payment.eventId} />
+            <EventNameById
+              eventId={payment.eventId}
+              className="font-bold leading-[14px] text-general"
+            />
+          </div>
+        )
+      }
+      {/* {sector === 'event' && payment.userId && (
+        <UserNameById userId={payment.userId} noWrap className="font-bold" />
+      )} */}
+      {
+        // (payment.payDirection === 'toService' ||
+        //   payment.payDirection === 'fromService')
+        sector === 'service' && payment.serviceId && (
+          <ServiceNameById
+            serviceId={payment.serviceId}
+            className="font-bold leading-[14px] text-general"
+          />
+        )
+      }
+      {
+        // (payment.payDirection === 'toProduct' ||
+        //   payment.payDirection === 'fromProduct')
+        sector === 'product' && payment.productId && (
+          <ProductNameById
+            productId={payment.productId}
+            className="font-bold leading-[14px] text-general"
+          />
+        )
+      }
+      {sector === 'internal' && payment.comment && (
+        <div className="leading-4">{payment.comment}</div>
+      )}
+      {payment.userId && (
+        <UserNameById userId={payment.userId} noWrap className="font-bold" />
+      )}
     </div>
-    {(payment.payDirection === 'toUser' ||
-      payment.payDirection === 'fromUser') && (
-      <UserNameById userId={payment.userId} noWrap className="font-bold" />
-    )}
-    {(payment.payDirection === 'toEvent' ||
-      payment.payDirection === 'fromEvent') && (
-      <EventNameById
-        eventId={payment.eventId}
-        className="font-bold leading-[14px] text-general"
-      />
-    )}
-    {(payment.payDirection === 'toService' ||
-      payment.payDirection === 'fromService') && (
-      <ServiceNameById
-        serviceId={payment.serviceId}
-        className="font-bold leading-[14px] text-general"
-      />
-    )}
-    {(payment.payDirection === 'toProduct' ||
-      payment.payDirection === 'fromProduct') && (
-      <ProductNameById
-        productId={payment.productId}
-        className="font-bold leading-[14px] text-general"
-      />
-    )}
-  </div>
-)
+  )
+}
 
-const PayCardWrapper = ({
-  sector,
-  statusProps,
-  payment,
-  children,
-  cardButtonsProps,
-}) => {
+const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
   return (
     <div className="flex flex-1">
-      <Status statusProps={statusProps} />
-      <PayText payment={payment} />
+      <PayText payment={payment} sector={sector} />
       <div className="flex items-center justify-between">
         <div className="flex gap-x-3">
           {children}
@@ -147,8 +186,24 @@ const PayCardWrapper = ({
           )}
         </div>
 
-        <PaySum payment={payment} />
-        <PayTypeIcon payment={payment} />
+        <div className="flex flex-col items-end">
+          <div className="text-sm leading-4 whitespace-nowrap">
+            {formatDateTime(
+              payment.payAt,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              false
+            )}
+          </div>
+          <div className="flex items-center justify-between">
+            <PaySum payment={payment} />
+            <PayTypeIcon payment={payment} />
+          </div>
+        </div>
         <CardButtons
           item={payment}
           typeOfItem="payment"
@@ -164,14 +219,13 @@ const PaymentEvent = ({ payment }) => {
   const event = useRecoilValue(eventSelector(payment.eventId))
   const eventStatus = eventStatusFunc(event)
 
-  const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
-    (payTypeItem) => payTypeItem.value === eventStatus
-  )
+  // const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
+  //   (payTypeItem) => payTypeItem.value === eventStatus
+  // )
 
   return (
     <PayCardWrapper
       sector="event"
-      statusProps={eventStatusProps}
       payment={payment}
       cardButtonsProps={{
         showEditButton: eventStatus !== 'closed',
@@ -283,6 +337,40 @@ const PaymentProduct = ({ payment }) => {
   )
 }
 
+const PaymentInternal = ({ payment }) => {
+  return (
+    <PayCardWrapper
+      sector="internal"
+      // statusProps={eventStatusProps}
+      payment={payment}
+      // cardButtonsProps={{
+      //   showEditButton: eventStatus !== 'closed',
+      //   showDeleteButton: eventStatus !== 'closed',
+      // }}
+    >
+      {/* {(payment.payDirection === 'toUser' ||
+        payment.payDirection === 'fromUser') &&
+        payment.eventId &&
+        (() => {
+          const eventUsers = useRecoilValue(
+            eventsUsersByEventIdSelector(event?._id)
+          )
+          const eventUser = eventUsers.find(
+            (eventUser) => eventUser.userId === payment.userId
+          )
+          if (eventUser) return null
+          return (
+            <Icon
+              icon={faUserTimes}
+              className="text-danger"
+              tooltip="Участник не пришёл"
+            />
+          )
+        })()} */}
+    </PayCardWrapper>
+  )
+}
+
 const PaymentCard = ({ paymentId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payment = useRecoilValue(paymentSelector(paymentId))
@@ -325,6 +413,7 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
       {paymentSector === 'event' && <PaymentEvent payment={payment} />}
       {paymentSector === 'service' && <PaymentService payment={payment} />}
       {paymentSector === 'product' && <PaymentProduct payment={payment} />}
+      {paymentSector === 'internal' && <PaymentInternal payment={payment} />}
       {!paymentSector && <PayCardWrapper payment={payment} />}
     </CardWrapper>
   )

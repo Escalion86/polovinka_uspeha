@@ -2,6 +2,7 @@ import {
   EVENT_PAY_DIRECTIONS,
   SERVICE_PAY_DIRECTIONS,
   PRODUCT_PAY_DIRECTIONS,
+  PRODUCT_PAY_INTERNAL,
 } from '@helpers/constants'
 import ValuePicker from './ValuePicker'
 
@@ -21,6 +22,8 @@ const PayDirectionPicker = ({
       ? SERVICE_PAY_DIRECTIONS
       : sector === 'product'
       ? PRODUCT_PAY_DIRECTIONS
+      : sector === 'internal'
+      ? PRODUCT_PAY_INTERNAL
       : []
   return (
     <ValuePicker
