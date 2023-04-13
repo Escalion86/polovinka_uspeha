@@ -102,7 +102,7 @@ const styles = [
     dateHeight: 36,
     dateTextGap: 10,
     lineHeight: 32,
-    maxHeight: 1100,
+    maxHeight: 1000,
   },
   {
     startX: 160,
@@ -110,11 +110,11 @@ const styles = [
     dotGapY: 20,
     minGap: 35,
     maxGap: 120,
-    textLengthMax: 40,
+    textLengthMax: 43,
     dateHeight: 36,
     dateTextGap: 10,
     lineHeight: 32,
-    maxHeight: 1100,
+    maxHeight: 1000,
   },
 ]
 
@@ -231,7 +231,7 @@ const ToolsAnonsContent = () => {
       itemsLeft = itemsLeft - itemsInListCount
       return itemsInListCount
     })
-  console.log('elementsOnList :>> ', elementsOnList)
+
   var elementStart = 0
   const listsWithPreparedItems = elementsOnList.map((elementsCount) => {
     const tempArray = []
@@ -241,7 +241,6 @@ const ToolsAnonsContent = () => {
     elementStart = elementStart + elementsCount
     return tempArray
   })
-  console.log('listsWithPreparedItems :>> ', listsWithPreparedItems)
 
   // preparedItems.push(preparedItems[0])
   // preparedItems.push(preparedItems[0])
@@ -322,6 +321,8 @@ const ToolsAnonsContent = () => {
             ),
             maxGap
           )
+
+          console.log('gap :>> ', gap)
           return (
             <svg
               key={month + year + index}
