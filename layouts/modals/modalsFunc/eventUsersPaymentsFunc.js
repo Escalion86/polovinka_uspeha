@@ -48,6 +48,8 @@ import sumOfPaymentsFromNotParticipantsToEventSelector from '@state/selectors/su
 // import paymentsWithoutEventIdByUserIdSelector from '@state/selectors/paymentsWithoutEventIdByUserIdSelector'
 import Tooltip from '@components/Tooltip'
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
+import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
+import eventPriceByStatus from '@helpers/eventPriceByStatus'
 
 const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
 
@@ -495,32 +497,29 @@ const eventUsersPaymentsFunc = (eventId) => {
     ).length
 
     const isHaveUserWithoutFullPay = eventParticipantsFull.find(
-      ({ user, status }) => {
+      ({ user, userStatus }) => {
         const allPaymentsOfUser = paymentsOfEvent.filter(
           (payment) => payment.userId === user._id
         )
-        const sumOfPayments =
-          allPaymentsOfUser.reduce(
-            (p, payment) =>
-              p +
-              (payment.sum ?? 0) *
-                (payment.payDirection === 'toUser' ||
-                payment.payDirection === 'toEvent'
-                  ? -1
-                  : 1),
-            0
-          ) / 100
+        const sumOfPayments = allPaymentsOfUser.reduce(
+          (p, payment) =>
+            p +
+            (payment.sum ?? 0) *
+              (payment.payDirection === 'toUser' ||
+              payment.payDirection === 'toEvent'
+                ? -1
+                : 1),
+          0
+        )
 
-        const userDiscount = status ? event.usersStatusDiscount[status] : 0
+        const eventPriceForUser = eventPriceByStatus(event, userStatus)
 
-        const eventPriceForUser =
-          (event.price -
-            (typeof userDiscount === 'number' ? userDiscount : 0)) /
-          100
         const sumToPay = eventPriceForUser - sumOfPayments
         return sumToPay > 0
       }
     )
+
+    console.log('isHaveUserWithoutFullPay :>> ', isHaveUserWithoutFullPay)
 
     // const paymentsFromNotParticipants = useRecoilValue(
     //   paymentsOfEventFromNotParticipantsSelector(eventId)
