@@ -13,7 +13,6 @@ import cn from 'classnames'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import EventProfit from './EventProfit'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
-import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import eventPriceByStatus from '@helpers/eventPriceByStatus'
 
 const TextStatus = ({ children, className }) => (
@@ -37,7 +36,6 @@ const EventButtonSignIn = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
     sumOfPaymentsFromLoggedUserToEventSelector(event._id)
