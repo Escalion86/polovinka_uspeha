@@ -2,12 +2,15 @@ import React from 'react'
 
 import PaymentCard from '@layouts/cards/PaymentCard'
 import ListWrapper from './ListWrapper'
+import { useRecoilValue } from 'recoil'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 
 const PaymentsList = ({ payments }) => {
+  const widthNum = useRecoilValue(windowDimensionsNumSelector)
   return (
     <ListWrapper
       itemCount={payments.length}
-      itemSize={52}
+      itemSize={widthNum >= 2 ? 68 : 60}
       className="bg-opacity-15 bg-general"
     >
       {({ index, style }) => (

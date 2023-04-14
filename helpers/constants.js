@@ -966,127 +966,127 @@ export const PAY_DIRECTIONS = [
     value: 'toUser',
     name: 'Пользователю (за помощь / возврат)',
     color: 'red-400',
-    icon: faUserAlt,
+    icon: faMoneyBill, // faUserAlt,
   },
   {
     value: 'toEvent',
-    name: 'Затраты организатора (на мероприятие)',
+    name: 'Затраты организатора',
     color: 'red-400',
-    icon: faCalendar,
+    icon: faMoneyBill, //faCalendar,
   },
   {
     value: 'fromUser',
-    name: 'Организатору (от участника)',
+    name: 'Оплата мероприятия',
     color: 'green-400',
-    icon: faUserAlt,
+    icon: faMoneyBill, //faUserAlt,
   },
   {
     value: 'fromEvent',
-    name: 'Доп. доходы (от мероприятия)',
+    name: 'Доп. доходы',
     color: 'green-400',
-    icon: faCalendar,
+    icon: faMoneyBill, //faCalendar,
   },
 ]
 
 export const EVENT_PAY_DIRECTIONS = [
   {
     value: 'toUser',
-    name: 'Пользователю (за помощь / возврат)',
+    name: 'Пользователю (за помощь)',
     color: 'red-400',
-    icon: faUserAlt,
+    icon: faMoneyBill, //faUserAlt,
   },
   {
     value: 'toEvent',
-    name: 'Затраты организатора (на мероприятие)',
+    name: 'Затраты на мероприятие',
     color: 'red-400',
-    icon: faCalendar,
+    icon: faMoneyBill, //faCalendar,
   },
   {
     value: 'fromUser',
-    name: 'Организатору (от участника)',
+    name: 'Оплата мероприятия',
     color: 'green-400',
-    icon: faUserAlt,
+    icon: faMoneyBill, //faUserAlt,
   },
   {
     value: 'fromEvent',
-    name: 'Доп. доходы (от мероприятия)',
+    name: 'Доп. доходы',
     color: 'green-400',
-    icon: faCalendar,
+    icon: faMoneyBill, //faCalendar,
   },
 ]
 
 export const SERVICE_PAY_DIRECTIONS = [
   {
     value: 'toUser',
-    name: 'Пользователю (возврат)',
+    name: 'Специалисту',
     color: 'red-400',
-    icon: faUserAlt,
+    icon: faMoneyBill, //faUserAlt,
   },
   {
     value: 'toService',
     name: 'Затраты на услугу',
     color: 'red-400',
-    icon: faHeart,
+    icon: faMoneyBill, //faHeart,
   },
   {
     value: 'fromUser',
-    name: 'Специалисту за услугу',
+    name: 'Оплата услуги',
     color: 'green-400',
-    icon: faUserAlt,
+    icon: faMoneyBill, //faUserAlt,
   },
   {
     value: 'fromService',
-    name: 'Доп. доходы (от услуги)',
+    name: 'Доп. доходы',
     color: 'green-400',
-    icon: faHeart,
+    icon: faMoneyBill, //faHeart,
   },
 ]
 
 export const PRODUCT_PAY_DIRECTIONS = [
+  // {
+  //   value: 'toUser',
+  //   name: 'Покупателю (возврат)',
+  //   color: 'red-400',
+  //   icon: faUserAlt,
+  // },
   {
-    value: 'toUser',
-    name: 'Пользователю (возврат)',
+    value: 'toProduct',
+    name: 'Затраты на продукт',
     color: 'red-400',
-    icon: faUserAlt,
-  },
-  {
-    value: 'toService',
-    name: 'Затраты на товар',
-    color: 'red-400',
-    icon: faHeart,
+    icon: faMoneyBill, //faHeart,
   },
   {
     value: 'fromUser',
-    name: 'От покупателя за товар',
+    name: 'Оплата товара',
     color: 'green-400',
-    icon: faUserAlt,
+    icon: faMoneyBill, //faUserAlt,
   },
   {
-    value: 'fromService',
-    name: 'Доп. доходы (от продажи товара)',
+    value: 'fromProduct',
+    name: 'Доп. доходы',
     color: 'green-400',
-    icon: faHeart,
+    icon: faMoneyBill, //faHeart,
   },
 ]
 
 export const PRODUCT_PAY_INTERNAL = [
   {
     value: 'toInternal',
-    name: 'Затраты на проект',
+    name: 'Затраты',
     color: 'red-400',
-    icon: faBriefcase,
+    icon: faMoneyBill, //faBriefcase,
   },
   {
     value: 'toUser',
     name: 'Зарплата работнику',
     color: 'red-400',
-    icon: faUserAlt,
+    icon: faMoneyBill, //faUserAlt,
   },
   {
     value: 'fromInternal',
-    name: 'Доп. доходы (от проекта)',
+    name: 'Доп. доходы',
     color: 'green-400',
-    icon: faBriefcase,
+    icon: faMoneyBill, //faBriefcase,
   },
 ]
 

@@ -2,8 +2,9 @@ import upperCaseFirst from '@helpers/upperCaseFirst'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
+import UserStatusIcon from './UserStatusIcon'
 
-const UserName = ({ user, className, noWrap, thin }) => {
+const UserName = ({ user, className, noWrap, thin, showStatus }) => {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
   return (
@@ -15,6 +16,7 @@ const UserName = ({ user, className, noWrap, thin }) => {
         className
       )}
     >
+      {showStatus && <UserStatusIcon status={user.status} size="xs" />}
       {user?.firstName && (
         <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
           {upperCaseFirst(user.firstName)}

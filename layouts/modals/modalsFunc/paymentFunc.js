@@ -243,6 +243,16 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
               required
               // readOnly={isEventClosed}
               readOnly={fixedUserId}
+              filter={
+                sector === 'internal'
+                  ? {
+                      role: {
+                        value: ['dev', 'admin', 'moder'],
+                        operand: 'includes',
+                      },
+                    }
+                  : undefined
+              }
             />
           )}
         {sector === 'event' && (

@@ -28,19 +28,29 @@ const UserStatusIcon = ({ status, size }) => {
     case 'novice':
       return (
         <Tooltip title="Новичок">
-          <FontAwesomeIcon
-            className={cn(
-              `min-w-${numSize} w-${numSize} h-${numSize}`,
-              'text-green-400'
-            )}
-            icon={faUser}
-          />
+          <div
+            className={`flex items-center justify-center min-w-${
+              numSize + 1
+            } w-${numSize + 1} h-${numSize + 1}`}
+          >
+            <FontAwesomeIcon
+              className={cn(
+                `min-w-${numSize} w-${numSize} h-${numSize}`,
+                'text-green-400'
+              )}
+              icon={faUser}
+            />
+          </div>
         </Tooltip>
       )
     case 'member':
       return (
         <Tooltip title="Участник клуба">
-          <div className={`min-w-${numSize} w-${numSize} h-${numSize + 1}`}>
+          <div
+            className={`flex items-center justify-center min-w-${
+              numSize + 1
+            } w-${numSize + 1} h-${numSize + 1}`}
+          >
             <Image
               src="/img/svg_icons/medal.svg"
               width={numSize * 4}
@@ -52,7 +62,11 @@ const UserStatusIcon = ({ status, size }) => {
     case 'ban':
       return (
         <Tooltip title="Забанен">
-          <div className={`min-w-${numSize} w-${numSize}`}>
+          <div
+            className={`flex items-center justify-center min-w-${
+              numSize + 1
+            } w-${numSize + 1} h-${numSize + 1}`}
+          >
             <Image
               // className={`min-w-${numSize} w-${numSize} h-${numSize}`}
               src="/img/svg_icons/ban.svg"
@@ -65,13 +79,19 @@ const UserStatusIcon = ({ status, size }) => {
     default:
       return (
         <Tooltip title="Статус не указан">
-          <FontAwesomeIcon
-            className={cn(
-              `min-w-${numSize} w-${numSize} h-${numSize}`,
-              'text-danger'
-            )}
-            icon={faQuestion}
-          />
+          <div
+            className={`flex items-center justify-center min-w-${
+              numSize + 1
+            } w-${numSize + 1} h-${numSize + 1}`}
+          >
+            <FontAwesomeIcon
+              className={cn(
+                `min-w-${numSize} w-${numSize} h-${numSize}`,
+                'text-danger'
+              )}
+              icon={faQuestion}
+            />
+          </div>
         </Tooltip>
       )
   }

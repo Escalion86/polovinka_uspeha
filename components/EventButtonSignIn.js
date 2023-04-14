@@ -13,7 +13,6 @@ import cn from 'classnames'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import EventProfit from './EventProfit'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
-import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import eventPriceByStatus from '@helpers/eventPriceByStatus'
 
 const TextStatus = ({ children, className }) => (
@@ -37,14 +36,9 @@ const EventButtonSignIn = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
     sumOfPaymentsFromLoggedUserToEventSelector(event._id)
-  )
-  const eventPriceForLoggedUser = eventPriceByStatus(
-    event,
-    loggedUserActiveStatus
   )
 
   const router = useRouter()
@@ -57,9 +51,12 @@ const EventButtonSignIn = ({
     canSignOut,
     isEventExpired,
     isEventInProcess,
+    userStatus,
     userEventStatus,
     status,
   } = useRecoilValue(loggedUserToEventStatusSelector(eventId))
+
+  const eventPriceForLoggedUser = eventPriceByStatus(event, userStatus)
 
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
@@ -202,8 +199,9 @@ const EventButtonSignIn = ({
   return (
     <div className="flex items-center gap-x-1">
       <PaymentsFromLoggedUser />
-      <div className="h-full border-l border-gray-200" />
-      <Status />
+      <div className="flex items-center h-full border-l border-gray-200">
+        <Status />
+      </div>
     </div>
   )
 }

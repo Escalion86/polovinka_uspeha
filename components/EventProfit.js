@@ -11,7 +11,7 @@ const EventProfit = ({ eventId, className }) => {
   return (
     <div
       className={cn(
-        'flex w-28 justify-center items-center text-base tablet:text-lg font-bold uppercase text-white px-3',
+        'flex w-28 justify-center h-full items-center text-base tablet:text-lg font-bold uppercase text-white px-3',
         totalIncome === 0
           ? 'bg-gray-600'
           : totalIncome > 0

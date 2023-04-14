@@ -20,6 +20,7 @@ import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import ComboBox from '@components/ComboBox'
 import { MONTHS, MONTHS_FULL, MONTHS_FULL_1 } from '@helpers/constants'
 import sortFunctions from '@helpers/sortFunctions'
+import CheckBox from '@components/CheckBox'
 
 function loadImage(url) {
   return new Promise((r) => {
@@ -130,7 +131,9 @@ const ToolsAnonsContent = () => {
 
   const [month, setMonth] = useState(new Date().getMonth())
   const [year, setYear] = useState(new Date().getFullYear())
-  const [styleNum, setStyleNum] = useState(0)
+  const [styleNum, setStyleNum] = useState(1)
+  const [dontShowTitleForMemberEvent, setDontShowTitleForMemberEvent] =
+    useState(true)
 
   const eventsInMonth = events.filter((event) => {
     const date = new Date(event.dateStart)
@@ -175,9 +178,15 @@ const ToolsAnonsContent = () => {
       const showDot = styleNum === 0 || prevDate !== dateStart[0] + dateStart[1]
       prevDate = dateStart[0] + dateStart[1]
 
+      const text =
+        dontShowTitleForMemberEvent &&
+        event.directionId === '6301d334e5b7fa785515faac'
+          ? 'Мероприятие закрытого клуба'
+          : event.title
+
       return {
         date,
-        text: event.title,
+        text,
         dot: showDot,
         day:
           styleNum === 0
@@ -221,6 +230,7 @@ const ToolsAnonsContent = () => {
 
     return { date, textArray, dot, day, week }
   })
+
   const listsCount = Math.ceil(preparedItems.length / 10)
   var itemsLeft = preparedItems.length
   const elementsOnList = Array(listsCount)
@@ -253,7 +263,7 @@ const ToolsAnonsContent = () => {
 
   return (
     <div className="px-1">
-      <div className="flex gap-x-1">
+      <div className="flex flex-wrap gap-x-1">
         <ComboBox
           className="max-w-40"
           label="Месяц"
@@ -294,6 +304,12 @@ const ToolsAnonsContent = () => {
           defaultValue={styleNum}
           onChange={(value) => setStyleNum(Number(value))}
         />
+        <CheckBox
+          checked={dontShowTitleForMemberEvent}
+          labelPos="left"
+          onClick={() => setDontShowTitleForMemberEvent((checked) => !checked)}
+          label="Не показывать названия мероприятий клуба"
+        />
       </div>
       <Button
         name="Сохранить"
@@ -322,7 +338,6 @@ const ToolsAnonsContent = () => {
             maxGap
           )
 
-          console.log('gap :>> ', gap)
           return (
             <svg
               key={month + year + index}
@@ -361,9 +376,11 @@ const ToolsAnonsContent = () => {
                   //     : word
                   // })
 
+                  const showDot = dot || index === 0
+
                   return (
                     <g key={month + year + date + index}>
-                      {dot && (
+                      {showDot && (
                         <circle
                           cx={startX}
                           cy={
@@ -380,7 +397,7 @@ const ToolsAnonsContent = () => {
                           // stroke="rgb(150,110,200)"
                         />
                       )}
-                      {dot && day && week && (
+                      {showDot && day && week && (
                         <>
                           <text
                             x={startX - 72}
