@@ -18,6 +18,7 @@ import {
   EVENT_STATUSES_WITH_TIME,
   PAY_TYPES,
   PAY_TYPES_OBJECT,
+  PRODUCT_PAY_INTERNAL,
   PRODUCT_USER_STATUSES,
   SECTORS,
   SERVICE_USER_STATUSES,
@@ -32,9 +33,13 @@ import eventsUsersByEventIdSelector from '@state/selectors/eventsUsersByEventIdS
 import Tooltip from '@components/Tooltip'
 import paymentSectorFunc from '@helpers/paymentSector'
 import serviceSelector from '@state/selectors/serviceSelector'
-import productSelector from '@state/selectors/productSelector'
+// import productSelector from '@state/selectors/productSelector'
 import ServiceNameById from '@components/ServiceNameById'
 import ProductNameById from '@components/ProductNameById'
+import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayDirectionIconText'
+import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
+import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
+import EventPayDirectionIconText from '@components/ValueIconText/EventPayDirectionIconText'
 
 const Icon = ({ className, icon, tooltip }) => (
   <Tooltip title={tooltip}>
@@ -117,54 +122,44 @@ const PaySum = ({ payment }) => (
 const PayText = ({ payment, sector }) => {
   return (
     <div className="flex flex-col items-start flex-1 h-full ml-1 text-sm leading-4 overflow-x-clip justify-evenly gap-x-2 phoneH:text-base">
-      {/* {
-        // (payment.payDirection === 'toUser' ||
-        //   payment.payDirection === 'fromUser')
-        !sector && (
-          <UserNameById userId={payment.userId} noWrap className="font-bold" />
-        )
-      } */}
-      {
-        // (payment.payDirection === 'toEvent' ||
-        //   payment.payDirection === 'fromEvent')
-        sector === 'event' && payment.eventId && (
-          <div className="flex gap-x-1">
-            <EventStatusByEventId eventId={payment.eventId} />
-            <EventNameById
-              eventId={payment.eventId}
-              className="font-bold leading-[14px] text-general"
-            />
-          </div>
-        )
-      }
-      {/* {sector === 'event' && payment.userId && (
-        <UserNameById userId={payment.userId} noWrap className="font-bold" />
-      )} */}
-      {
-        // (payment.payDirection === 'toService' ||
-        //   payment.payDirection === 'fromService')
-        sector === 'service' && payment.serviceId && (
-          <ServiceNameById
-            serviceId={payment.serviceId}
-            className="font-bold leading-[14px] text-general"
-          />
-        )
-      }
-      {
-        // (payment.payDirection === 'toProduct' ||
-        //   payment.payDirection === 'fromProduct')
-        sector === 'product' && payment.productId && (
-          <ProductNameById
-            productId={payment.productId}
-            className="font-bold leading-[14px] text-general"
-          />
-        )
-      }
-      {sector === 'internal' && payment.comment && (
-        <div className="leading-4">{payment.comment}</div>
+      {sector === 'event' && (
+        <EventPayDirectionIconText value={payment.payDirection} />
+      )}
+      {sector === 'event' && payment.eventId && (
+        <EventNameById
+          eventId={payment.eventId}
+          className="font-bold text-general"
+          showStatus
+        />
+      )}
+      {sector === 'service' && (
+        <ServicePayDirectionIconText value={payment.payDirection} />
+      )}
+      {sector === 'service' && payment.serviceId && (
+        <ServiceNameById
+          serviceId={payment.serviceId}
+          className="font-bold text-general"
+        />
+      )}
+      {sector === 'product' && (
+        <ProductPayDirectionIconText value={payment.payDirection} />
+      )}
+      {sector === 'product' && payment.productId && (
+        <ProductNameById
+          productId={payment.productId}
+          className="font-bold text-general"
+        />
+      )}
+      {sector === 'internal' && (
+        <InternalPayDirectionIconText value={payment.payDirection} />
       )}
       {payment.userId && (
-        <UserNameById userId={payment.userId} noWrap className="font-bold" />
+        <UserNameById
+          showStatus
+          userId={payment.userId}
+          noWrap
+          className="font-bold"
+        />
       )}
     </div>
   )
@@ -393,7 +388,7 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
     <CardWrapper
       loading={loading}
       onClick={() => !loading && modalsFunc.payment.edit(payment._id)}
-      className="flex items-stretch h-12"
+      className="flex items-stretch h-14 tablet:h-16"
       flex={false}
       hidden={hidden}
       style={style}

@@ -474,7 +474,7 @@ export const SelectUser = ({
               ? () =>
                   modalsFunc.selectUsers(
                     [selectedId],
-                    [],
+                    filter,
                     (data) => onChange(data[0]),
                     [],
                     1,
@@ -568,7 +568,7 @@ export const SelectService = ({
               ? () =>
                   modalsFunc.selectServices(
                     [selectedId],
-                    [],
+                    filter,
                     (data) => onChange(data[0]),
                     [],
                     1,
@@ -664,7 +664,7 @@ export const SelectEvent = ({
               ? () =>
                   modalsFunc.selectEvents(
                     [selectedId],
-                    [],
+                    filter,
                     (data) => onChange(data[0]),
                     [],
                     1,
