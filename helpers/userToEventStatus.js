@@ -15,6 +15,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignOut: false,
       isEventExpired: true,
       isEventInProcess: false,
+      userStatus: undefined,
       userEventStatus: undefined,
       status: 'no eventId',
     }
@@ -31,6 +32,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignOut: false,
       isEventExpired,
       isEventInProcess,
+      userStatus: undefined,
       userEventStatus: undefined,
       status: 'user not signIn in site',
     }
@@ -40,6 +42,9 @@ const userToEventStatus = (event, user, eventUsersFull) => {
     eventUsersFull.find((eventUser) => eventUser.user?._id === user._id)
 
   const alreadySignIn = !!userEvent
+
+  const userStatus = userEvent?.userStatus
+  const userEventStatus = userEvent?.status
 
   const canSignOut = alreadySignIn && !isEventExpired
 
@@ -95,7 +100,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
-      userEventStatus: userEvent?.status,
+      userStatus,
+      userEventStatus,
       status: 'user questionnaire not filled',
     }
 
@@ -108,7 +114,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
-      userEventStatus: userEvent?.status,
+      userStatus,
+      userEventStatus,
       status: 'event canceled',
     }
 
@@ -121,7 +128,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
-      userEventStatus: userEvent?.status,
+      userStatus,
+      userEventStatus,
       status: 'event expired',
     }
   const eventMans = eventUsersFull.filter(
@@ -151,7 +159,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
-      userEventStatus: userEvent?.status,
+      userStatus,
+      userEventStatus,
       status: 'event full',
     }
 
@@ -168,7 +177,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
-      userEventStatus: userEvent?.status,
+      userStatus,
+      userEventStatus,
       status: 'event full of mans',
     }
 
@@ -185,7 +195,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
-      userEventStatus: userEvent?.status,
+      userStatus,
+      userEventStatus,
       status: 'event full of womans',
     }
 
@@ -216,7 +227,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
         canSignOut,
         isEventExpired,
         isEventInProcess,
-        userEventStatus: userEvent?.status,
+        userStatus,
+        userEventStatus,
         status: 'event full of novice mans',
       }
     if (
@@ -232,7 +244,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
         canSignOut,
         isEventExpired,
         isEventInProcess,
-        userEventStatus: userEvent?.status,
+        userStatus,
+        userEventStatus,
         status: 'event full of member mans',
       }
   }
@@ -250,7 +263,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
         canSignOut,
         isEventExpired,
         isEventInProcess,
-        userEventStatus: userEvent?.status,
+        userStatus,
+        userEventStatus,
         status: 'event full of novice womans',
       }
     if (
@@ -266,7 +280,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
         canSignOut,
         isEventExpired,
         isEventInProcess,
-        userEventStatus: userEvent?.status,
+        userStatus,
+        userEventStatus,
         status: 'event full of member womans',
       }
   }
@@ -279,7 +294,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
     canSignOut,
     isEventExpired,
     isEventInProcess,
-    userEventStatus: userEvent?.status,
+    userStatus,
+    userEventStatus,
     status: 'ok',
   }
 }

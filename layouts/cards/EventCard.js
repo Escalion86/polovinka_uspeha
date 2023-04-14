@@ -284,12 +284,12 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
         </div>
 
         {widthNum >= 3 && (
-          <div className="flex items-stretch justify-between pr-1 border-t">
+          <div className="flex items-stretch justify-between border-t">
             <EventUsersCounterAndAge eventId={eventId} className="h-[42px]" />
             <EventButtonSignIn
               eventId={eventId}
               noButtonIfAlreadySignIn
-              classNameProfit="rounded-tl-lg"
+              // classNameProfit="rounded-tl-lg"
             />
           </div>
         )}
@@ -310,7 +310,7 @@ const EventCard = ({ eventId, noButtons, hidden = false, style }) => {
               eventId={eventId}
               noButtonIfAlreadySignIn
               thin
-              classNameProfit="rounded-tl-lg"
+              // classNameProfit="rounded-tl-lg"
             />
           </div>
         </div>

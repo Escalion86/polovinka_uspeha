@@ -42,10 +42,6 @@ const EventButtonSignIn = ({
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
     sumOfPaymentsFromLoggedUserToEventSelector(event._id)
   )
-  const eventPriceForLoggedUser = eventPriceByStatus(
-    event,
-    loggedUserActiveStatus
-  )
 
   const router = useRouter()
 
@@ -57,9 +53,12 @@ const EventButtonSignIn = ({
     canSignOut,
     isEventExpired,
     isEventInProcess,
+    userStatus,
     userEventStatus,
     status,
   } = useRecoilValue(loggedUserToEventStatusSelector(eventId))
+
+  const eventPriceForLoggedUser = eventPriceByStatus(event, userStatus)
 
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
@@ -202,8 +201,9 @@ const EventButtonSignIn = ({
   return (
     <div className="flex items-center gap-x-1">
       <PaymentsFromLoggedUser />
-      <div className="h-full border-l border-gray-200" />
-      <Status />
+      <div className="flex items-center h-full border-l border-gray-200">
+        <Status />
+      </div>
     </div>
   )
 }
