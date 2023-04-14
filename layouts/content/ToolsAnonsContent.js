@@ -130,7 +130,7 @@ const ToolsAnonsContent = () => {
 
   const [month, setMonth] = useState(new Date().getMonth())
   const [year, setYear] = useState(new Date().getFullYear())
-  const [styleNum, setStyleNum] = useState(0)
+  const [styleNum, setStyleNum] = useState(1)
 
   const eventsInMonth = events.filter((event) => {
     const date = new Date(event.dateStart)
@@ -221,6 +221,7 @@ const ToolsAnonsContent = () => {
 
     return { date, textArray, dot, day, week }
   })
+
   const listsCount = Math.ceil(preparedItems.length / 10)
   var itemsLeft = preparedItems.length
   const elementsOnList = Array(listsCount)
@@ -322,7 +323,6 @@ const ToolsAnonsContent = () => {
             maxGap
           )
 
-          console.log('gap :>> ', gap)
           return (
             <svg
               key={month + year + index}
@@ -361,9 +361,11 @@ const ToolsAnonsContent = () => {
                   //     : word
                   // })
 
+                  const showDot = dot || index === 0
+
                   return (
                     <g key={month + year + date + index}>
-                      {dot && (
+                      {showDot && (
                         <circle
                           cx={startX}
                           cy={
@@ -380,7 +382,7 @@ const ToolsAnonsContent = () => {
                           // stroke="rgb(150,110,200)"
                         />
                       )}
-                      {dot && day && week && (
+                      {showDot && day && week && (
                         <>
                           <text
                             x={startX - 72}
