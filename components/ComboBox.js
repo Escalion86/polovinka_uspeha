@@ -25,11 +25,13 @@ const ComboBox = ({
       wrapperClassName={wrapperClassName}
       hidden={hidden}
       className={className}
+      disabled={disabled}
+      paddingX="small"
+      paddingY="small"
     >
       <select
         className={cn(
-          'flex-1 px-1 rounded border cursor-pointer outline-none',
-          disabled ? 'bg-gray-200' : 'bg-white border-gray-400',
+          'flex-1 cursor-pointer outline-none bg-transparent p-1',
           selectClassName
         )}
         onChange={(e) => !disabled && onChange && onChange(e.target.value)}
