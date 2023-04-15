@@ -119,6 +119,8 @@ const styles = [
   },
 ]
 
+const closedEventsDirectionId = '6253de126daccdbf1ba85874' //6301d334e5b7fa785515faac
+
 const ToolsAnonsContent = () => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
@@ -132,8 +134,7 @@ const ToolsAnonsContent = () => {
   const [month, setMonth] = useState(new Date().getMonth())
   const [year, setYear] = useState(new Date().getFullYear())
   const [styleNum, setStyleNum] = useState(1)
-  const [dontShowTitleForMemberEvent, setDontShowTitleForMemberEvent] =
-    useState(true)
+  const [memberEvent, setMemberEvent] = useState('dontShow')
 
   const eventsInMonth = events.filter((event) => {
     const date = new Date(event.dateStart)
@@ -142,8 +143,13 @@ const ToolsAnonsContent = () => {
     return eventMonth === month && eventYear === year
   })
 
+  const filteredEvents = eventsInMonth.filter(
+    (event) =>
+      memberEvent !== 'hide' || event.directionId !== closedEventsDirectionId
+  )
+
   let prevDate
-  const items = [...eventsInMonth]
+  const items = [...filteredEvents]
     .sort(sortFunctions.dateStart.asc)
     .map((event) => {
       const dateStart = dateToDateTimeStr(
@@ -179,8 +185,8 @@ const ToolsAnonsContent = () => {
       prevDate = dateStart[0] + dateStart[1]
 
       const text =
-        dontShowTitleForMemberEvent &&
-        event.directionId === '6301d334e5b7fa785515faac'
+        memberEvent === 'dontShow' &&
+        event.directionId === closedEventsDirectionId
           ? 'Мероприятие закрытого клуба'
           : event.title
 
@@ -304,12 +310,23 @@ const ToolsAnonsContent = () => {
           defaultValue={styleNum}
           onChange={(value) => setStyleNum(Number(value))}
         />
-        <CheckBox
-          checked={dontShowTitleForMemberEvent}
-          labelPos="left"
-          onClick={() => setDontShowTitleForMemberEvent((checked) => !checked)}
-          label="Не показывать названия мероприятий клуба"
+        <ComboBox
+          label="Мероприятия клуба"
+          className="max-w-60"
+          items={[
+            { value: 'show', name: 'Показывать название' },
+            { value: 'dontShow', name: 'Не показывать название' },
+            { value: 'hide', name: 'Скрыть' },
+          ]}
+          defaultValue={memberEvent}
+          onChange={setMemberEvent}
         />
+        {/* <CheckBox
+          checked={memberEvent}
+          labelPos="left"
+          onClick={() => setMemberEvent((checked) => !checked)}
+          label="Не показывать названия мероприятий клуба"
+        /> */}
       </div>
       <Button
         name="Сохранить"
