@@ -9,7 +9,7 @@ const LineChart = ({ title, data, xAxisLegend, yAxisLegend, ...props }) => {
       {title && <H3>{title}</H3>}
       <ResponsiveLine
         data={data}
-        margin={{ top: 10, right: 10, bottom: 50, left: 60 }}
+        margin={{ top: 10, right: 80, bottom: 60, left: 60 }}
         axisLeft={{
           orient: 'left',
           tickSize: 2,
