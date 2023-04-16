@@ -1,6 +1,6 @@
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 
@@ -56,17 +56,21 @@ const ContactIconBtnWithTitle = ({
   </div>
 )
 
-const ContactsIconsButtons = ({
-  user,
-  withTitle,
-  grid,
-  className,
-  showForcibly,
-}) => {
+const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
-  if (!showForcibly && !isLoggedUserAdmin && !user.security?.showContacts)
+  if (
+    !isLoggedUserModer &&
+    user.security?.showContacts === false &&
+    !user.security?.showPhone &&
+    !user.security?.showWhatsapp &&
+    !user.security?.showViber &&
+    !user.security?.showTelegram &&
+    !user.security?.showInstagram &&
+    !user.security?.showVk &&
+    !user.security?.showEmail
+  )
     return null
 
   return (
@@ -80,62 +84,83 @@ const ContactsIconsButtons = ({
         className
       )}
     >
-      {user?.phone && (
-        <Btn
-          icon={faPhone}
-          className="text-yellow-600"
-          url={'tel:+' + user.phone}
-          title={'+' + user.phone}
-        />
-      )}
-      {user?.whatsapp && (
-        <Btn
-          icon={faWhatsapp}
-          className="text-green-600"
-          url={'https://wa.me/' + user.whatsapp}
-          title={'+' + user.whatsapp}
-        />
-      )}
-      {user?.viber && (
-        <Btn
-          icon={faViber}
-          className="text-purple-600"
-          url={'viber://chat?number=' + user.viber}
-          title={'+' + user.viber}
-        />
-      )}
-      {user?.telegram && (
-        <Btn
-          icon={faTelegramPlane}
-          className="text-blue-600"
-          url={'https://t.me/' + user.telegram}
-          title={'@' + user.telegram}
-        />
-      )}
-      {user?.instagram && (
-        <Btn
-          icon={faInstagram}
-          className="text-yellow-700"
-          url={'https://instagram.com/' + user.instagram}
-          title={'@' + user.instagram}
-        />
-      )}
-      {user?.vk && (
-        <Btn
-          icon={faVk}
-          url={'https://vk.com/' + user.vk}
-          className="text-blue-600"
-          title={'@' + user.vk}
-        />
-      )}
-      {user?.email && (
-        <Btn
-          icon={faEnvelope}
-          className="text-red-400"
-          url={'mailto:' + user.email}
-          title={user.email}
-        />
-      )}
+      {user?.phone &&
+        (user.security?.showContacts ||
+          user.security?.showPhone ||
+          isLoggedUserModer) && (
+          <Btn
+            icon={faPhone}
+            className="text-yellow-600"
+            url={'tel:+' + user.phone}
+            title={'+' + user.phone}
+          />
+        )}
+      {user?.whatsapp &&
+        (user.security?.showContacts ||
+          user.security?.showWhatsapp ||
+          isLoggedUserModer) && (
+          <Btn
+            icon={faWhatsapp}
+            className="text-green-600"
+            url={'https://wa.me/' + user.whatsapp}
+            title={'+' + user.whatsapp}
+          />
+        )}
+      {user?.viber &&
+        (user.security?.showContacts ||
+          user.security?.showViber ||
+          isLoggedUserModer) && (
+          <Btn
+            icon={faViber}
+            className="text-purple-600"
+            url={'viber://chat?number=' + user.viber}
+            title={'+' + user.viber}
+          />
+        )}
+      {user?.telegram &&
+        (user.security?.showContacts ||
+          user.security?.showTelegram ||
+          isLoggedUserModer) && (
+          <Btn
+            icon={faTelegramPlane}
+            className="text-blue-600"
+            url={'https://t.me/' + user.telegram}
+            title={'@' + user.telegram}
+          />
+        )}
+      {user?.instagram &&
+        (user.security?.showContacts ||
+          user.security?.showInstagram ||
+          isLoggedUserModer) && (
+          <Btn
+            icon={faInstagram}
+            className="text-yellow-700"
+            url={'https://instagram.com/' + user.instagram}
+            title={'@' + user.instagram}
+          />
+        )}
+      {user?.vk &&
+        (user.security?.showContacts ||
+          user.security?.showVk ||
+          isLoggedUserModer) && (
+          <Btn
+            icon={faVk}
+            url={'https://vk.com/' + user.vk}
+            className="text-blue-600"
+            title={'@' + user.vk}
+          />
+        )}
+      {user?.email &&
+        (user.security?.showContacts ||
+          user.security?.showEmail ||
+          isLoggedUserModer) && (
+          <Btn
+            icon={faEnvelope}
+            className="text-red-400"
+            url={'mailto:' + user.email}
+            title={user.email}
+          />
+        )}
     </div>
   )
 }

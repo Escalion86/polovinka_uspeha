@@ -173,10 +173,13 @@ const useErrors = () => {
       security: (data) =>
         typeof data.fullSecondName !== 'boolean' ||
         typeof data.fullThirdName !== 'boolean' ||
-        typeof data.showBirthday !== 'boolean' ||
-        typeof data.showAge !== 'boolean' ||
-        typeof data.showContacts !== 'boolean'
-          ? setError({
+        !data.showBirthday ||
+        typeof data.showBirthday !== 'string'
+          ? //  ||
+            // typeof data.showAge !== 'boolean'
+            //  ||
+            // typeof data.showContacts !== 'boolean'
+            setError({
               security:
                 'Необходимо заполнить все параметры конфиденциальности во вкладке "Конфиденциальность"',
             })

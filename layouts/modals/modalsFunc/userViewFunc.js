@@ -83,16 +83,19 @@ const userViewFunc = (userId, clone = false) => {
             </div> */}
           {user.birthday &&
             (isLoggedUserModer ||
-              user.security?.showBirthday ||
-              user.security?.showAge) && (
+              user.security?.showBirthday === true ||
+              user.security?.showBirthday === 'full' ||
+              user.security?.showBirthday === 'noYear') && (
               <div className="flex items-center gap-x-1">
                 <span className="font-bold">Дата рождения:</span>
                 <span>
                   {birthDateToAge(
                     user.birthday,
                     true,
-                    isLoggedUserModer || user.security?.showBirthday,
-                    isLoggedUserModer || user.security?.showAge
+                    true,
+                    isLoggedUserModer ||
+                      user.security?.showBirthday === 'full' ||
+                      user.security?.showBirthday === true
                   )}
                 </span>
                 <ZodiacIcon date={user.birthday} />

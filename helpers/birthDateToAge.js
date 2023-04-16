@@ -36,7 +36,8 @@ const birthDateToAge = (
   const formatedText =
     result + addYears + (showWord ? ' ' + textAge(result + addYears) : 0)
   return showDate
-    ? formatDate(birthDate) + (showAge ? ' (' + formatedText + ')' : '')
+    ? formatDate(birthDate, false, false, false) +
+        (showAge ? ' (' + formatedText + ')' : '')
     : formatedText
 }
 
