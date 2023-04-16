@@ -296,8 +296,15 @@ export const DEFAULT_USERS_SECURITY = Object.freeze({
   fullSecondName: null,
   fullThirdName: null,
   showBirthday: null,
-  showAge: null,
-  showContacts: null,
+  // showAge: null,
+  // showContacts: null,
+  showPhone: null,
+  showWhatsapp: null,
+  showViber: null,
+  showTelegram: null,
+  showInstagram: null,
+  showVk: null,
+  showEmail: null,
 })
 
 export const DEFAULT_USERS_NOTIFICATIONS = Object.freeze({

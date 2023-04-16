@@ -121,7 +121,7 @@ const usersSchema = {
   },
   security: {
     type: Map,
-    of: Boolean,
+    // of: Any,
     default: DEFAULT_USERS_SECURITY,
   },
   notifications: {

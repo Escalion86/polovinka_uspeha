@@ -20,8 +20,6 @@ import isEventExpiredFunc from '@helpers/isEventExpired'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventClosedFunc from '@helpers/isEventClosed'
-import paymentsAtom from '@state/atoms/paymentsAtom'
-import allPaymentsForClosedEventsSelector from '@state/selectors/allPaymentsForClosedEventsSelector'
 import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
 import { MONTHS, MONTHS_FULL_1 } from '@helpers/constants'
 import upperCaseFirst from '@helpers/upperCaseFirst'
@@ -304,13 +302,17 @@ const StatisticsContent = () => {
           </div>
           {/* </ListWrapper> */}
         </TabPanel>
-        <TabPanel tabName="Финансы" className="flex flex-col items-center">
+        <TabPanel
+          tabName="Финансы"
+          className="flex flex-col items-center pt-20"
+        >
           <LineChart
+            onClick={(point, event) => console.log({ point, event })}
             data={dataOfIncomeByDate}
             xAxisLegend="Месяц"
             yAxisLegend="Прибыль, ₽"
-            enableSlices="x"
-            sliceTooltip={({ slice }) => {
+            // enableSlices="x"
+            tooltip={(data) => {
               return (
                 <div
                   style={{
@@ -319,26 +321,51 @@ const StatisticsContent = () => {
                     border: '1px solid #ccc',
                   }}
                 >
-                  <div>
-                    {upperCaseFirst(
-                      MONTHS_FULL_1[slice.points[slice.points.length - 1].index]
-                    )}
+                  <div>{upperCaseFirst(MONTHS_FULL_1[data.point.index])}</div>
+                  {/* {slice.points.map((point) => ( */}
+                  <div
+                    key={data.point.id}
+                    style={{
+                      color: data.point.serieColor,
+                      padding: '3px 0',
+                    }}
+                  >
+                    <strong>{data.point.serieId}</strong>
+                    <span className="pl-2 text-black">{`${data.point.data.yFormatted} ₽`}</span>
                   </div>
-                  {slice.points.map((point) => (
-                    <div
-                      key={point.id}
-                      style={{
-                        color: point.serieColor,
-                        padding: '3px 0',
-                      }}
-                    >
-                      <strong>{point.serieId}</strong>
-                      <span className="pl-2 text-black">{`${point.data.yFormatted} ₽`}</span>
-                    </div>
-                  ))}
+                  {/* ))} */}
                 </div>
               )
             }}
+            // sliceTooltip={({ slice }) => {
+            //   return (
+            //     <div
+            //       style={{
+            //         background: 'white',
+            //         padding: '9px 12px',
+            //         border: '1px solid #ccc',
+            //       }}
+            //     >
+            //       <div>
+            //         {upperCaseFirst(
+            //           MONTHS_FULL_1[slice.points[slice.points.length - 1].index]
+            //         )}
+            //       </div>
+            //       {slice.points.map((point) => (
+            //         <div
+            //           key={point.id}
+            //           style={{
+            //             color: point.serieColor,
+            //             padding: '3px 0',
+            //           }}
+            //         >
+            //           <strong>{point.serieId}</strong>
+            //           <span className="pl-2 text-black">{`${point.data.yFormatted} ₽`}</span>
+            //         </div>
+            //       ))}
+            //     </div>
+            //   )
+            // }}
             legends={[
               {
                 anchor: 'bottom-right',

@@ -19,6 +19,7 @@ const DatePicker = ({
   error,
   fullWidth,
   defaultValue,
+  noMargin,
 }) => {
   return (
     <InputWrapper
@@ -42,6 +43,7 @@ const DatePicker = ({
       fullWidth={fullWidth}
       paddingY="small"
       disabled={disabled}
+      noMargin={noMargin}
     >
       <input
         className={cn(

@@ -160,7 +160,7 @@ const eventViewFunc = (eventId) => {
                   <UserName user={organizer} noWrap />
                 </TextLine>
                 <TextLine label="Контакты организатора">
-                  <ContactsIconsButtons user={organizer} showForcibly />
+                  <ContactsIconsButtons user={organizer} />
                 </TextLine>
               </>
             )}

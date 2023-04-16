@@ -142,8 +142,8 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     <div className="flex flex-col justify-center px-1">
                       {user.birthday &&
                         (isLoggedUserModer ||
-                          user.security?.showBirthday ||
-                          user.security?.showAge) && (
+                          user.security?.showBirthday === true ||
+                          user.security?.showBirthday === 'full') && (
                           <div className="flex text-sm leading-4 gap-x-2 ">
                             <span className="flex items-center font-bold">
                               Возраст:
@@ -154,7 +154,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                                   user.birthday,
                                   true,
                                   false,
-                                  isLoggedUserModer || user.security?.showAge
+                                  true
                                 )}
                               </span>
                               <ZodiacIcon date={user.birthday} small />

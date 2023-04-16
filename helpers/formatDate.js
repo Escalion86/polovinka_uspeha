@@ -1,6 +1,11 @@
 import { DAYS_OF_WEEK } from './constants'
 
-const formatDate = (date, forComponent = false, showWeek = false) => {
+const formatDate = (
+  date,
+  forComponent = false,
+  showWeek = false,
+  showYaer = true
+) => {
   if (!date) return undefined
   var d = new Date(date),
     month = '' + (d.getMonth() + 1),
@@ -12,10 +17,12 @@ const formatDate = (date, forComponent = false, showWeek = false) => {
   if (day.length < 2) day = '0' + day
 
   if (forComponent) return [year, month, day].join('-')
-  else
+  else if (showYaer)
     return (
       [day, month, year].join('.') + (showWeek ? ' ' + DAYS_OF_WEEK[week] : '')
     )
+  else
+    return [day, month].join('.') + (showWeek ? ' ' + DAYS_OF_WEEK[week] : '')
 }
 
 export default formatDate

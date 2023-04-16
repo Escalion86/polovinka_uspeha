@@ -29,9 +29,16 @@ import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import useSnackbar from '@helpers/useSnackbar'
 import ValueItem from '@components/ValuePicker/ValueItem'
-import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBan,
+  faCheck,
+  faEye,
+  faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons'
 import ChipsSelector from '@components/ChipsSelector'
 import upperCaseFirst from '@helpers/upperCaseFirst'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import cn from 'classnames'
 
 const items = [
   'Oliver Hansen',
@@ -45,6 +52,20 @@ const items = [
   'Virginia Andrews',
   'Kelly Snyder',
 ]
+
+const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
+  <div className="flex items-center py-3 pb-0 gap-x-1">
+    {children}
+    <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-7 h-7 hover:scale-110">
+      <FontAwesomeIcon
+        className={cn('w-5 h-5', value ? 'text-purple-500' : 'text-disabled')}
+        icon={value ? faEye : faEyeSlash}
+        size="1x"
+        onClick={() => setSecurytyKey({ [securytyKey]: !value })}
+      />
+    </div>
+  </div>
+)
 
 // TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
@@ -94,8 +115,35 @@ const QuestionnaireContent = (props) => {
     loggedUser?.haveKids ?? DEFAULT_USER.haveKids
   )
 
+  var defaultSecurity = { ...loggedUser?.security }
+  if (
+    loggedUser?.security.showContacts === true ||
+    loggedUser?.security.showContacts === false ||
+    loggedUser?.security.showContacts === null
+  ) {
+    defaultSecurity.showPhone = !!loggedUser?.security.showContacts
+    defaultSecurity.showWhatsapp = !!loggedUser?.security.showContacts
+    defaultSecurity.showViber = !!loggedUser?.security.showContacts
+    defaultSecurity.showTelegram = !!loggedUser?.security.showContacts
+    defaultSecurity.showInstagram = !!loggedUser?.security.showContacts
+    defaultSecurity.showVk = !!loggedUser?.security.showContacts
+    defaultSecurity.showEmail = !!loggedUser?.security.showContacts
+    delete defaultSecurity.showContacts
+  }
+
+  if (loggedUser?.security.showAge === true) {
+    defaultSecurity.showBirthday = 'full'
+    delete defaultSecurity.showAge
+  } else if (
+    loggedUser?.security.showAge === false ||
+    loggedUser?.security.showAge === null
+  ) {
+    defaultSecurity.showBirthday = 'no'
+    delete defaultSecurity.showAge
+  }
+
   const [security, setSecurity] = useState(
-    loggedUser?.security ?? DEFAULT_USER.security
+    defaultSecurity ?? DEFAULT_USER.security
   )
 
   const [notifications, setNotifications] = useState(
@@ -107,10 +155,11 @@ const QuestionnaireContent = (props) => {
   )
   const [role, setRole] = useState(loggedUser?.role ?? DEFAULT_USER.role)
 
-  const setSecurytyKey = (data) =>
+  const setSecurytyKey = (data) => {
     setSecurity((state) => {
       return { ...state, ...data }
     })
+  }
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -304,8 +353,35 @@ const QuestionnaireContent = (props) => {
       <ErrorsList errors={errors} className="px-1" />
       <TabContext value="Анкета">
         <TabPanel tabName="Анкета" className="flex-1">
+          <div className="text-sm">
+            <span>{'Примечание:'}</span>
+            <div className="flex pl-4 leading-4">
+              <FontAwesomeIcon
+                className={cn('w-4 min-w-4 h-4 text-purple-500')}
+                icon={faEye}
+                size="1x"
+              />
+              <span className="ml-1">{'-'}</span>
+              <span className="flex-1 ml-1">
+                {'поле доступно для просмотра пользователям'}
+              </span>
+            </div>
+            <div className="flex pl-4 mt-1 leading-4">
+              <FontAwesomeIcon
+                className={cn('w-4 min-w-4 h-4 text-disabled')}
+                icon={faEyeSlash}
+                size="1x"
+              />
+              <span className="ml-1">{'-'}</span>
+              <span className="flex-1 ml-1">
+                {
+                  'поле скрыто от пользователей и доступно только администратору'
+                }
+              </span>
+            </div>
+          </div>
           {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}
-          <FormWrapper>
+          <FormWrapper className="mt-6">
             {/* <InputImage
           label="Фотография"
           directory="users"
@@ -376,6 +452,11 @@ const QuestionnaireContent = (props) => {
           orientation={orientation}
           onChange={setOrientation}
         /> */}
+            {/* <ShowWrapper
+              securytyKey="showBirthday"
+              value={security.showBirthday}
+              setSecurytyKey={setSecurytyKey}
+            > */}
             <DatePicker
               label="День рождения"
               value={birthday}
@@ -384,65 +465,116 @@ const QuestionnaireContent = (props) => {
               showYears
               showZodiac
               required
+              // noMargin
             />
+            {/* </ShowWrapper> */}
 
             <FormWrapper twoColumns>
-              <PhoneInput
-                required
-                label="Телефон (логин)"
-                value={phone}
-                onChange={setPhone}
-                error={errors.phone}
-                copyPasteButtons
-                disabled
-              />
-              <PhoneInput
-                label="Whatsapp"
-                value={whatsapp}
-                onChange={setWhatsapp}
-                error={errors.whatsapp}
-                copyPasteButtons
-              />
+              <ShowWrapper
+                securytyKey="showPhone"
+                value={security.showPhone}
+                setSecurytyKey={setSecurytyKey}
+              >
+                <PhoneInput
+                  required
+                  label="Телефон (логин)"
+                  value={phone}
+                  onChange={setPhone}
+                  error={errors.phone}
+                  copyPasteButtons
+                  disabled
+                  noMargin
+                />
+              </ShowWrapper>
+              <ShowWrapper
+                securytyKey="showWhatsapp"
+                value={security.showWhatsapp}
+                setSecurytyKey={setSecurytyKey}
+              >
+                <PhoneInput
+                  label="Whatsapp"
+                  value={whatsapp}
+                  onChange={setWhatsapp}
+                  error={errors.whatsapp}
+                  copyPasteButtons
+                  noMargin
+                />
+              </ShowWrapper>
             </FormWrapper>
             <FormWrapper twoColumns>
-              <PhoneInput
-                label="Viber"
-                value={viber}
-                onChange={setViber}
-                error={errors.viber}
-                copyPasteButtons
-              />
-              <Input
-                prefix="@"
-                label="Telegram"
-                value={telegram}
-                onChange={setTelegram}
-                copyPasteButtons
-              />
+              <ShowWrapper
+                securytyKey="showViber"
+                value={security.showViber}
+                setSecurytyKey={setSecurytyKey}
+              >
+                <PhoneInput
+                  label="Viber"
+                  value={viber}
+                  onChange={setViber}
+                  error={errors.viber}
+                  copyPasteButtons
+                  noMargin
+                />
+              </ShowWrapper>
+              <ShowWrapper
+                securytyKey="showTelegram"
+                value={security.showTelegram}
+                setSecurytyKey={setSecurytyKey}
+              >
+                <Input
+                  prefix="@"
+                  label="Telegram"
+                  value={telegram}
+                  onChange={setTelegram}
+                  copyPasteButtons
+                  noMargin
+                />
+              </ShowWrapper>
             </FormWrapper>
             <FormWrapper twoColumns>
-              <Input
-                prefix="@"
-                label="Instagram"
-                value={instagram}
-                onChange={setInstagram}
-                copyPasteButtons
-              />
-              <Input
-                prefix="@"
-                label="Vk"
-                value={vk}
-                onChange={setVk}
-                copyPasteButtons
-              />
+              <ShowWrapper
+                securytyKey="showInstagram"
+                value={security.showInstagram}
+                setSecurytyKey={setSecurytyKey}
+              >
+                <Input
+                  prefix="@"
+                  label="Instagram"
+                  value={instagram}
+                  onChange={setInstagram}
+                  copyPasteButtons
+                  noMargin
+                />
+              </ShowWrapper>
+              <ShowWrapper
+                securytyKey="showVk"
+                value={security.showVk}
+                setSecurytyKey={setSecurytyKey}
+              >
+                <Input
+                  prefix="@"
+                  label="Vk"
+                  value={vk}
+                  onChange={setVk}
+                  copyPasteButtons
+                  noMargin
+                />
+              </ShowWrapper>
             </FormWrapper>
-            <Input
-              label="Email"
-              value={email}
-              onChange={setEmail}
-              error={errors.email}
-              copyPasteButtons
-            />
+            <ShowWrapper
+              securytyKey="showEmail"
+              value={security.showEmail}
+              setSecurytyKey={setSecurytyKey}
+            >
+              <Input
+                label="Email"
+                value={email}
+                onChange={setEmail}
+                error={errors.email}
+                copyPasteButtons
+                noMargin
+              />
+            </ShowWrapper>
             <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
             {isLoggedUserDev && (
               <ChipsSelector
@@ -453,7 +585,7 @@ const QuestionnaireContent = (props) => {
               />
             )}
           </FormWrapper>
-          {isLoggedUserDev && (
+          {/* {isLoggedUserDev && (
             <ValueItem
               name="Доп анкета"
               color="green-500"
@@ -477,7 +609,7 @@ const QuestionnaireContent = (props) => {
                 })
               }
             />
-          )}
+          )} */}
           {/* </div> */}
         </TabPanel>
         <TabPanel tabName="Конфиденциальность" className="flex-1 p-2">
@@ -494,7 +626,7 @@ const QuestionnaireContent = (props) => {
               ]}
               label="Показывать фамилию"
               onChange={(value) => setSecurytyKey({ fullSecondName: value })}
-              name="yes_no"
+              // name="yes_no"
               // inLine
               required
             />
@@ -510,31 +642,56 @@ const QuestionnaireContent = (props) => {
               ]}
               label="Показывать отчество"
               onChange={(value) => setSecurytyKey({ fullThirdName: value })}
-              name="yes_no"
+              // name="yes_no"
               // inLine
               required
             />
-            <YesNoPicker
+            {/* <YesNoPicker
               label="Показывать дату рождения"
               // inLine
               value={security.showBirthday}
               onChange={(value) => setSecurytyKey({ showBirthday: value })}
               required
+            /> */}
+            <ValuePicker
+              value={security.showBirthday}
+              valuesArray={[
+                {
+                  value: 'full',
+                  name: 'Показывать (в том числе возраст)',
+                  color: 'green-400',
+                },
+                {
+                  value: 'noYear',
+                  name: 'Только день и месяц (скрыть возраст)',
+                  color: 'blue-400',
+                },
+                {
+                  value: 'no',
+                  name: 'Не показывать',
+                  color: 'red-400',
+                },
+              ]}
+              label="Показывать дату рождения"
+              onChange={(value) => setSecurytyKey({ showBirthday: value })}
+              // name="yes_no"
+              // inLine
+              required
             />
-            <YesNoPicker
+            {/* <YesNoPicker
               label="Показывать возраст"
               // inLine
               value={security.showAge}
               onChange={(value) => setSecurytyKey({ showAge: value })}
               required
-            />
-            <YesNoPicker
+            /> */}
+            {/* <YesNoPicker
               label="Показывать контакты (телефон и пр.)"
               // inLine
               value={security.showContacts}
               onChange={(value) => setSecurytyKey({ showContacts: value })}
               required
-            />
+            /> */}
           </FormWrapper>
           {/* </FormWrapper> */}
         </TabPanel>
