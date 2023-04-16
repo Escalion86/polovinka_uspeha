@@ -13,7 +13,7 @@ import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import sanitize from '@helpers/sanitize'
 import directionSelector from '@state/selectors/directionSelector'
 import eventSelector from '@state/selectors/eventSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import Image from 'next/image'
@@ -129,7 +129,7 @@ export const UserItem = ({
   style,
   className,
 }) => {
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
@@ -161,11 +161,14 @@ export const UserItem = ({
       <div className="flex items-center flex-1 py-0.5 px-1">
         <div className="flex flex-wrap items-center flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1 gap-y-0.5">
           <UserName user={item} className="font-semibold" thin />
-          {item.birthday && (isLoggedUserAdmin || item.security?.showAge) && (
-            <span className="overflow-visible italic leading-4 max-h-3 -mt-0.5">
-              {' (' + birthDateToAge(item.birthday) + ')'}
-            </span>
-          )}
+          {item.birthday &&
+            (isLoggedUserModer ||
+              item.security?.showBirthday === true ||
+              item.security?.showBirthday === 'full') && (
+              <span className="overflow-visible italic leading-4 max-h-3 -mt-0.5">
+                {' (' + birthDateToAge(item.birthday) + ')'}
+              </span>
+            )}
         </div>
         {/* <div className="flex flex-wrap items-center justify-between flex-1 h-4 overflow-hidden text-xs text-gray-600 max-h-4 gap-x-2">
           <div className="whitespace-nowrap">
