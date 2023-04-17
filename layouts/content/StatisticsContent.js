@@ -23,6 +23,9 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
 import { MONTHS, MONTHS_FULL_1 } from '@helpers/constants'
 import upperCaseFirst from '@helpers/upperCaseFirst'
+import arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector'
+import MonthSelector from '@components/ComboBox/MonthSelector'
+import YearSelector from '@components/ComboBox/YearSelector'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -107,7 +110,7 @@ const StatisticsContent = () => {
   // const closedPayments = useRecoilValue(allPaymentsForClosedEventsSelector)
   // const closedEvents =
   const incomeByDate = useRecoilValue(
-    arrayOfSumOfPaymentsForClosedEventsByDateSelector
+    arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector
   )
 
   const dataOfIncomeByDate = []
@@ -368,8 +371,8 @@ const StatisticsContent = () => {
             // }}
             legends={[
               {
-                anchor: 'bottom-right',
-                direction: 'column',
+                anchor: 'bottom',
+                direction: 'row',
                 justify: false,
                 translateX: 100,
                 translateY: 0,
@@ -411,6 +414,8 @@ const StatisticsContent = () => {
             // }}
             // curve={select('curve', curveOptions, 'linear')}
           />
+          {/* <MonthSelector month={month} onChange={setMonth} />
+          <YearSelector year={year} onChange={setYear} /> */}
         </TabPanel>
       </TabContext>
     </div>

@@ -1,7 +1,7 @@
-const servicesUsersSchema = {
-  serviceId: {
+const productsUsersSchema = {
+  productId: {
     type: String,
-    required: [true, 'Необходимо выбрать услугу'],
+    required: [true, 'Необходимо выбрать продукт'],
   },
   userId: {
     type: String,
@@ -25,4 +25,4 @@ const servicesUsersSchema = {
   },
 }
 
-export default servicesUsersSchema
+export default productsUsersSchema

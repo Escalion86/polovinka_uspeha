@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
 
 import { DEFAULT_SERVICE_USER } from '@helpers/constants'
 import ServiceUserStatusPicker from '@components/ValuePicker/ServiceUserStatusPicker'
+import DateTimePicker from '@components/DateTimePicker'
 
 const serviceUserStatusEditFunc = (serviceUserId) => {
   const ServiceUserStatusEditModal = ({
@@ -30,6 +31,13 @@ const serviceUserStatusEditFunc = (serviceUserId) => {
       serviceUser?.status ?? DEFAULT_SERVICE_USER.status
     )
 
+    const defaultCloseDate = useMemo(
+      () => serviceUser?.closeDate ?? Date.now(),
+      []
+    )
+
+    const [closeDate, setCloseDate] = useState(defaultCloseDate)
+
     if (!serviceUser || !serviceUserId)
       return (
         <div className="flex justify-center w-full text-lg ">
@@ -42,14 +50,16 @@ const serviceUserStatusEditFunc = (serviceUserId) => {
       setServiceUser({
         _id: serviceUser?._id,
         status,
+        closeDate,
       })
     }
 
     useEffect(() => {
-      const isFormChanged = serviceUser?.status !== status
+      const isFormChanged =
+        serviceUser?.status !== status || closeDate !== defaultCloseDate
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)
-    }, [status])
+    }, [status, closeDate])
 
     return (
       <div className="flex flex-col gap-y-2">
@@ -59,6 +69,19 @@ const serviceUserStatusEditFunc = (serviceUserId) => {
           onChange={setStatus}
           // disabledValues={canSetClosed ? [] : ['closed']}
         />
+        {status === 'closed' && (
+          <DateTimePicker
+            value={closeDate}
+            onChange={(date) => {
+              // removeError('closeDate')
+              setCloseDate(date)
+            }}
+            label="Дата закрытия"
+            required
+            // error={errors.closeDate}
+            // postfix={formatMinutes(duration)}
+          />
+        )}
         {/* {!canSetClosed && (
           <>
             <div className="text-red-500">
