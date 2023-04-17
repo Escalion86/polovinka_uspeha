@@ -82,6 +82,8 @@ const useErrors = () => {
               'fromService',
               'toProduct',
               'fromProduct',
+              'toInternal',
+              'fromInternal',
             ].includes(data)
           ? setError({
               payDirection: 'Введен некорректное направление транзакции',
