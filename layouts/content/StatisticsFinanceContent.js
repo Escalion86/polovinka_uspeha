@@ -2,7 +2,6 @@ import { useRecoilValue } from 'recoil'
 import LineChart from '@components/Charts/LineChart'
 import { MONTHS, MONTHS_FULL_1 } from '@helpers/constants'
 import upperCaseFirst from '@helpers/upperCaseFirst'
-import arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import YearSelector from '@components/ComboBox/YearSelector'
 import { useState } from 'react'
@@ -28,8 +27,6 @@ const StatisticsFinanceContent = () => {
   const incomeOfInternalByDate = useRecoilValue(
     arrayOfSumOfPaymentsForInternalByDateSelector
   )
-
-  console.log('incomeOfInternalByDate :>> ', incomeOfInternalByDate)
 
   const incomeByDate = { ...incomeOfEventsByDate }
   for (const year in incomeOfInternalByDate) {
