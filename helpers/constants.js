@@ -88,6 +88,9 @@ import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
 import ServicesLoggedUserContent from '@layouts/content/ServicesLoggedUserContent'
 import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTodayCountSelector'
 import ToolsAnonsContent from '@layouts/content/ToolsAnonsContent'
+import StatisticsFinanceContent from '@layouts/content/StatisticsFinanceContent'
+import StatisticsUsersContent from '@layouts/content/StatisticsUsersContent'
+import StatisticsEventsContent from '@layouts/content/StatisticsEventsContent'
 
 const colors = [
   'border-blue-400',
@@ -721,9 +724,24 @@ export const CONTENTS = {
     name: 'События / Дни рождения',
     accessRoles: ['moder', 'admin', 'dev'],
   },
-  statistics: {
-    Component: StatisticsContent,
-    name: 'Статистика',
+  // statistics: {
+  //   Component: StatisticsContent,
+  //   name: 'Статистика',
+  //   accessRoles: ['admin', 'dev'],
+  // },
+  statisticsFinance: {
+    Component: StatisticsFinanceContent,
+    name: 'Статистика / Финансы',
+    accessRoles: ['admin', 'dev'],
+  },
+  statisticsUsers: {
+    Component: StatisticsUsersContent,
+    name: 'Статистика / Пользователи',
+    accessRoles: ['admin', 'dev'],
+  },
+  statisticsEvents: {
+    Component: StatisticsEventsContent,
+    name: 'Статистика / Мероприятия',
     accessRoles: ['admin', 'dev'],
   },
   settings: {
@@ -803,7 +821,7 @@ export const pages = [
     group: 3,
     name: 'Пользователи',
     href: 'users',
-    icon: faCalendar,
+    icon: faUser,
     accessRoles: CONTENTS['users'].accessRoles,
   },
   {
@@ -851,13 +869,37 @@ export const pages = [
     accessRoles: CONTENTS['birthdays'].accessRoles,
     badge: badgeBirthdaysTodayCountSelector,
   },
+  // {
+  //   id: 14,
+  //   group: 6,
+  //   name: 'Статистика',
+  //   href: 'statistics',
+  //   icon: faPieChart,
+  //   accessRoles: CONTENTS['statistics'].accessRoles,
+  // },
   {
-    id: 14,
+    id: 15,
     group: 6,
-    name: 'Статистика',
-    href: 'statistics',
-    icon: faPieChart,
-    accessRoles: CONTENTS['statistics'].accessRoles,
+    name: 'Мероприятия',
+    href: 'statisticsEvents',
+    icon: faCalendar,
+    accessRoles: CONTENTS['statisticsEvents'].accessRoles,
+  },
+  {
+    id: 16,
+    group: 6,
+    name: 'Пользователи',
+    href: 'statisticsUsers',
+    icon: faUser,
+    accessRoles: CONTENTS['statisticsUsers'].accessRoles,
+  },
+  {
+    id: 17,
+    group: 6,
+    name: 'Финансы',
+    href: 'statisticsFinance',
+    icon: faMoneyBill,
+    accessRoles: CONTENTS['statisticsFinance'].accessRoles,
   },
   {
     id: 50,

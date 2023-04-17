@@ -5,11 +5,11 @@ const LineChart = ({ title, data, xAxisLegend, yAxisLegend, ...props }) => {
   // if (!data || data.length === 0) return null
   // const keys = Object.keys(data[0])
   return (
-    <div className="w-full h-[340px]">
+    <div className="w-full h-[340px] overflow-hidden">
       {title && <H3>{title}</H3>}
       <ResponsiveLine
         data={data}
-        margin={{ top: 10, right: 80, bottom: 60, left: 60 }}
+        margin={{ top: 10, right: 60, bottom: 60, left: 60 }}
         axisLeft={{
           orient: 'left',
           tickSize: 2,

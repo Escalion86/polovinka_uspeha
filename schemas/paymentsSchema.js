@@ -22,15 +22,18 @@ const paymentsSchema = {
   },
   eventId: {
     type: String,
-    // required: [true, 'Необходимо указать мероприятие. '],
   },
   serviceId: {
     type: String,
-    // required: [true, 'Необходимо указать мероприятие. '],
   },
   productId: {
     type: String,
-    // required: [true, 'Необходимо указать мероприятие. '],
+  },
+  serviceUserId: {
+    type: String,
+  },
+  productUserId: {
+    type: String,
   },
   payType: {
     type: String,

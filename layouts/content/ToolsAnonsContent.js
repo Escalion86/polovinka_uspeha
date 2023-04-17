@@ -21,6 +21,8 @@ import ComboBox from '@components/ComboBox'
 import { MONTHS, MONTHS_FULL, MONTHS_FULL_1 } from '@helpers/constants'
 import sortFunctions from '@helpers/sortFunctions'
 import CheckBox from '@components/CheckBox'
+import YearSelector from '@components/ComboBox/YearSelector'
+import MonthSelector from '@components/ComboBox/MonthSelector'
 
 function loadImage(url) {
   return new Promise((r) => {
@@ -270,36 +272,8 @@ const ToolsAnonsContent = () => {
   return (
     <div className="px-1">
       <div className="flex flex-wrap gap-x-1">
-        <ComboBox
-          className="max-w-40"
-          label="Месяц"
-          items={[
-            { value: 0, name: 'Январь' },
-            { value: 1, name: 'Февраль' },
-            { value: 2, name: 'Март' },
-            { value: 3, name: 'Апрель' },
-            { value: 4, name: 'Май' },
-            { value: 5, name: 'Июнь' },
-            { value: 6, name: 'Июль' },
-            { value: 7, name: 'Август' },
-            { value: 8, name: 'Сентябрь' },
-            { value: 9, name: 'Октябрь' },
-            { value: 10, name: 'Ноябрь' },
-            { value: 11, name: 'Декабрь' },
-          ]}
-          defaultValue={month}
-          onChange={(value) => setMonth(Number(value))}
-        />
-        <ComboBox
-          label="Год"
-          className="max-w-30"
-          items={[
-            { value: 2022, name: '2022' },
-            { value: 2023, name: '2023' },
-          ]}
-          defaultValue={year}
-          onChange={(value) => setYear(Number(value))}
-        />
+        <MonthSelector month={month} onChange={setMonth} />
+        <YearSelector year={year} onChange={setYear} />
         <ComboBox
           label="Стиль"
           className="max-w-24"
