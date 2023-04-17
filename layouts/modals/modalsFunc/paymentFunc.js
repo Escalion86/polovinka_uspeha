@@ -219,7 +219,7 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
           }}
           required
           error={errors.sector}
-          disabledValues={isLoggedUserDev ? undefined : ['product', 'internal']}
+          disabledValues={isLoggedUserDev ? undefined : ['product', 'service']}
           readOnly={isEventClosed || fixedSector}
         />
         <PayDirectionPicker
