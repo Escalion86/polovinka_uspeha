@@ -28,7 +28,7 @@ const StatisticsFinanceContent = () => {
     arrayOfSumOfPaymentsForInternalByDateSelector
   )
 
-  const incomeByDate = { ...incomeOfEventsByDate }
+  const incomeByDate = JSON.parse(JSON.stringify(incomeOfEventsByDate))
   for (const year in incomeOfInternalByDate) {
     if (!incomeByDate[year])
       incomeByDate[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
