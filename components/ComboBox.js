@@ -4,6 +4,7 @@ import InputWrapper from './InputWrapper'
 const ComboBox = ({
   label,
   defaultValue,
+  value,
   onChange,
   placeholder,
   items,
@@ -36,6 +37,7 @@ const ComboBox = ({
         )}
         onChange={(e) => !disabled && onChange && onChange(e.target.value)}
         defaultValue={defaultItem ? defaultValue : ''}
+        value={defaultValue ? undefined : value}
       >
         {placeholder && (
           <option disabled value="">
