@@ -169,7 +169,7 @@ const StatisticsFinanceContent = () => {
           руб.
         </div>
         <div>
-          Внутренние расходы:{' '}
+          Внутренние:{' '}
           {incomeOfInternalByDate[year]
             ? incomeOfInternalByDate[year][month]
             : 0}{' '}

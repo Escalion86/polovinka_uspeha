@@ -121,7 +121,7 @@ const styles = [
   },
 ]
 
-const closedEventsDirectionId = '6253de126daccdbf1ba85874' //6301d334e5b7fa785515faac
+const closedEventsDirectionId = '6301d334e5b7fa785515faac' //6301d334e5b7fa785515faac
 
 const ToolsAnonsContent = () => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)

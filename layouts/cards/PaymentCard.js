@@ -157,7 +157,6 @@ const PayText = ({ payment, sector }) => {
         <UserNameById
           showStatus
           userId={payment.userId}
-          noWrap
           className="font-bold"
         />
       )}
