@@ -10,7 +10,7 @@ const PaymentsList = ({ payments }) => {
   return (
     <ListWrapper
       itemCount={payments.length}
-      itemSize={widthNum >= 2 ? 68 : 60}
+      itemSize={widthNum > 2 ? 68 : 60}
       className="bg-opacity-15 bg-general"
     >
       {({ index, style }) => (
