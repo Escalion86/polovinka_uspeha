@@ -40,6 +40,7 @@ import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayD
 import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
 import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
 import EventPayDirectionIconText from '@components/ValueIconText/EventPayDirectionIconText'
+import TextLinesLimiter from '@components/TextLinesLimiter'
 
 const Icon = ({ className, icon, tooltip }) => (
   <Tooltip title={tooltip}>
@@ -153,11 +154,19 @@ const PayText = ({ payment, sector }) => {
       {sector === 'internal' && (
         <InternalPayDirectionIconText value={payment.payDirection} />
       )}
+      {sector === 'internal' &&
+        ['toInternal', 'fromInternal'].includes(payment.payDirection) &&
+        payment.comment && (
+          <TextLinesLimiter lines={2} className="text-xs leading-3">
+            {payment.comment}
+          </TextLinesLimiter>
+        )}
       {payment.userId && (
         <UserNameById
           showStatus
           userId={payment.userId}
           className="font-bold"
+          trunc
         />
       )}
     </div>
@@ -395,13 +404,13 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
     >
       <div
         className={cn(
-          'flex items-center justify-center w-8 text-white',
+          'flex items-center justify-center w-7 tablet:w-8 text-white',
           sectorProps ? 'bg-' + sectorProps.color : 'bg-gray-400'
         )}
       >
         <FontAwesomeIcon
           icon={sectorProps?.icon ?? faQuestion}
-          className="w-6"
+          className="w-5 tablet:w-6"
         />
       </div>
       {paymentSector === 'event' && <PaymentEvent payment={payment} />}
