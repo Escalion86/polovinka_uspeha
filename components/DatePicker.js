@@ -47,7 +47,7 @@ const DatePicker = ({
     >
       <input
         className={cn(
-          'text-input px-1 rounded focus:outline-none bg-transparent',
+          'text-input px-1 rounded focus:outline-none bg-transparent h-[26px] m-0',
           // required && !value ? ' border-red-700' : ' border-gray-400',
           { 'text-disabled cursor-not-allowed': disabled }
         )}
