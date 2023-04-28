@@ -79,7 +79,7 @@ function CabinetPage(props) {
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
 
-      <StateLoader {...props}>
+      <StateLoader {...props} isCabinet>
         {loggedUser && (
           <CabinetWrapper>
             <CabinetHeader title={title} />
