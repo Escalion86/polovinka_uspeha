@@ -1,4 +1,4 @@
-const browserVer = () => {
+const browserVer = (object = false) => {
   var sBrowser,
     sBrowserVer,
     sUsrAg = navigator.userAgent
@@ -18,6 +18,11 @@ const browserVer = () => {
   } else if (sUsrAg.indexOf('Trident') > -1) {
     sBrowser = 'Microsoft Internet Explorer'
     const str = sUsrAg.substring(sUsrAg.indexOf('Trident') + 8)
+    sBrowserVer = str.substring(0, str.indexOf(' '))
+    //"Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; Zoom 3.6.0; wbx 1.0.0; rv:11.0) like Gecko"
+  } else if (sUsrAg.indexOf('SamsungBrowser') > -1) {
+    sBrowser = 'Samsung Browser'
+    const str = sUsrAg.substring(sUsrAg.indexOf('SamsungBrowser') + 15)
     sBrowserVer = str.substring(0, str.indexOf(' '))
     //"Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; Zoom 3.6.0; wbx 1.0.0; rv:11.0) like Gecko"
   } else if (sUsrAg.indexOf('Edge') > -1) {
@@ -46,6 +51,8 @@ const browserVer = () => {
   } else {
     sBrowser = 'unknown'
   }
+  if (object)
+    return { sBrowser, sBrowserVer, sUsrAg, platform: navigator.platform }
   return [sBrowser, sBrowserVer.split('.')]
 }
 

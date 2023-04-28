@@ -32,7 +32,6 @@ import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelec
 export default function Home(props) {
   const filteredEvents = useRecoilValue(filteredEventsSelector)
   const filteredDirections = useRecoilValue(filteredDirectionsSelector)
-
   const directionsBlocksInverse = filteredEvents.length > 0
   const additionalBlocksInverse =
     ((directionsBlocksInverse ? 1 : 0) + filteredDirections.length) % 2 === 0

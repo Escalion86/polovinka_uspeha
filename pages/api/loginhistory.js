@@ -1,0 +1,22 @@
+import LoginHistory from '@models/LoginHistory'
+import dbConnect from '@utils/dbConnect'
+
+export default async function handler(req, res) {
+  const { query, method, body } = req
+
+  await dbConnect()
+  if (method === 'POST') {
+    try {
+      const { userId, browser } = body
+      const newLoginHistory = await LoginHistory.create({
+        userId,
+        browser,
+      })
+
+      return res?.status(201).json({ success: true, data: newLoginHistory })
+    } catch (error) {
+      console.log(error)
+      return res?.status(400).json({ success: false, error })
+    }
+  }
+}

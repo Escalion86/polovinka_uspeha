@@ -63,8 +63,9 @@ import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import servicesUsersEditSelector from '@state/selectors/servicesUsersEditSelector'
 import servicesUsersDeleteSelector from '@state/selectors/servicesUsersDeleteSelector'
-import browserVer from '@helpers/browserVer'
 import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
+import { postData } from '@helpers/CRUD'
+import browserVer from '@helpers/browserVer'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -223,11 +224,28 @@ const StateLoader = (props) => {
   }, [])
 
   useEffect(() => {
-    if (!isSiteLoading) {
+    if (props.isCabinet && !isSiteLoading) {
       const url = isBrowserNeedToBeUpdate()
       if (url) modalsFunc.browserUpdate(url)
     }
-  }, [isSiteLoading])
+  }, [props.isCabinet, isSiteLoading])
+
+  useEffect(() => {
+    if (loggedUser) {
+      postData(
+        `/api/loginhistory`,
+        {
+          userId: loggedUser._id,
+          browser: browserVer(true),
+        },
+        null,
+        null,
+        false,
+        null,
+        true
+      )
+    }
+  }, [loggedUser])
 
   return (
     <div className={cn('relative', props.className)}>
