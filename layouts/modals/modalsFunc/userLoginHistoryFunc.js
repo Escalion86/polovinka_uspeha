@@ -40,8 +40,8 @@ const userLoginHistoryFunc = (userId, clone = false) => {
           <LoadingSpinner text="идет загрузка истории...." />
         </div>
       )
-    if (loginHistories.length === 0) return
-    ;<div>Пользователь ни разу на заходил на сайт</div>
+    if (loginHistories.length === 0)
+      return <div>Пользователь ни разу на заходил на сайт</div>
 
     const unicLogins = loginHistories.filter(
       ({ createdAt, browser }, index, array) => {
