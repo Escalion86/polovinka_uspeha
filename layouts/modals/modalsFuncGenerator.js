@@ -33,6 +33,7 @@ import serviceUserFunc from './modalsFunc/serviceUserFunc'
 import selectServicesFunc from './modalsFunc/selectServicesFunc'
 import serviceUserStatusEditFunc from './modalsFunc/serviceStatusEditFunc'
 import userPaymentsFunc from './modalsFunc/userPaymentsFunc'
+import userLoginHistoryFunc from './modalsFunc/userLoginHistoryFunc'
 
 const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
   const fixEventStatus = (eventId, status) => {
@@ -477,6 +478,9 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
     },
     notifications: {
       telegram: () => addModal(notificationsTelegramFunc()),
+    },
+    loginHistory: {
+      user: (userId) => addModal(userLoginHistoryFunc(userId)),
     },
   }
 }

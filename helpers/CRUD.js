@@ -1,5 +1,47 @@
 const contentType = 'application/json'
 
+export const getData = async (
+  url,
+  form,
+  callbackOnSuccess = null,
+  callbackOnError = null,
+  resJson = false
+) => {
+  const getArray = []
+
+  for (const key in form) {
+    getArray.push(key + '=' + form[key])
+  }
+
+  const actualUrl = url + (getArray.length > 0 ? '?' + getArray.join('&') : '')
+
+  try {
+    const res = await fetch(actualUrl, {
+      method: 'GET',
+      headers: {
+        Accept: contentType,
+        'Content-Type': contentType,
+      },
+    })
+    // Throw error with status code in case Fetch API req failed
+    if (!res.ok) {
+      throw new Error(res.status)
+    }
+
+    const json = await res.json()
+    const { data } = json
+
+    // mutate(url, data, false) // Update the local data without a revalidation
+    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
+    return data
+  } catch (error) {
+    console.log('Failed to update (GET) on ' + actualUrl)
+    console.log(error)
+    if (callbackOnError) callbackOnError(error)
+    return null
+  }
+}
+
 export const putData = async (
   url,
   form,
