@@ -17,6 +17,7 @@ import {
   faMoneyBill,
   faPencilAlt,
   faShareAlt,
+  faSignIn,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -32,6 +33,7 @@ import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsT
 import { EVENT_STATUSES, SERVICE_USER_STATUSES } from '@helpers/constants'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -65,6 +67,7 @@ const CardButtons = ({
   onEditQuestionnaire,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
@@ -117,6 +120,7 @@ const CardButtons = ({
     userEvents:
       (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'user',
     userPaymentsBtn: isLoggedUserModer && typeOfItem === 'user',
+    loginHistory: isLoggedUserDev && typeOfItem === 'user',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -156,6 +160,17 @@ const CardButtons = ({
           }}
           color="green"
           tooltipText="Участники мероприятия"
+        />
+      )}
+      {show.loginHistory && (
+        <ItemComponent
+          icon={faSignIn}
+          onClick={() => {
+            setOpen(false)
+            modalsFunc.loginHistory.user(item._id)
+          }}
+          color="purple"
+          tooltipText="История авторизаций пользователя"
         />
       )}
       {show.paymentsUsersBtn && (
