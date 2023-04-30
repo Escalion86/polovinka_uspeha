@@ -66,6 +66,8 @@ import servicesUsersDeleteSelector from '@state/selectors/servicesUsersDeleteSel
 import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
 import { postData } from '@helpers/CRUD'
 import browserVer from '@helpers/browserVer'
+import modeAtom from '@state/atoms/modeAtom'
+import TopInfo from './TopInfo'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -78,6 +80,8 @@ const StateLoader = (props) => {
   const [modalsFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
+
+  const [mode, setMode] = useRecoilState(modeAtom)
 
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
@@ -219,6 +223,7 @@ const StateLoader = (props) => {
     setQuestionnairesUsersState(props.questionnairesUsers)
     setServicesState(props.services)
     setServicesUsersState(props.servicesUsers)
+    setMode(props.mode ?? 'production')
     // setSnackbar(snackbar)
     setIsSiteLoading(false)
   }, [])
@@ -255,6 +260,7 @@ const StateLoader = (props) => {
         </div>
       ) : (
         <div className="relative w-full bg-white">
+          {mode === 'development' && <TopInfo />}
           <DeviceCheck right />
           {props.children}
         </div>
