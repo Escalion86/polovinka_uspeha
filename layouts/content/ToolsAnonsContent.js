@@ -11,7 +11,7 @@ import paymentsAtom from '@state/atoms/paymentsAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import InputImages from '@components/InputImages'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
 import Button from '@components/Button'
@@ -43,29 +43,17 @@ const save = async (listsCount, bgImage, name) => {
     const svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
 
     const image = new Image()
-    const imgBg = await loadImage(bgImage)
+    // const imgBg = await loadImage(bgImage)
 
     image.addEventListener('load', () => {
-      // const width = input.getAttribute('width')
-      // const height = input.getAttribute('height')
       const canvas = document.createElement('canvas')
 
-      // canvas.setAttribute('width', width)
-      // canvas.setAttribute('height', height)
       canvas.setAttribute('width', 1080)
       canvas.setAttribute('height', 1920)
 
       const context = canvas.getContext('2d')
 
-      context.drawImage(imgBg, 0, 0, 1080, 1920)
-
-      // var img1 = new Image()
-
-      // img1.onload = function () {
-      //   context.drawImage(img1, 0, 0, 1080, 1920)
-      // }
-
-      // img1.src = '/img/anons/april.jpg'
+      // context.drawImage(imgBg, 0, 0, 1080, 1920)
 
       context.drawImage(image, 0, 0, 1080, 1920)
 
@@ -96,8 +84,8 @@ const save = async (listsCount, bgImage, name) => {
 
 const styles = [
   {
-    startX: 145,
-    startY: 480,
+    startXadd: 0,
+    startYadd: 0,
     dotGapY: 0,
     minGap: 35,
     maxGap: 120,
@@ -105,11 +93,11 @@ const styles = [
     dateHeight: 36,
     dateTextGap: 10,
     lineHeight: 32,
-    maxHeight: 1000,
+    // maxHeight: 1000,
   },
   {
-    startX: 160,
-    startY: 480,
+    startXadd: 15,
+    startYadd: 0,
     dotGapY: 20,
     minGap: 35,
     maxGap: 120,
@@ -117,14 +105,62 @@ const styles = [
     dateHeight: 36,
     dateTextGap: 10,
     lineHeight: 32,
-    maxHeight: 1000,
+    // maxHeight: 1000,
   },
 ]
 
 const closedEventsDirectionId = '6301d334e5b7fa785515faac' //6301d334e5b7fa785515faac
 
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader()
+
+    reader.onload = function (e) {
+      $('#blah').attr('src', e.target.result)
+    }
+
+    reader.readAsDataURL(input.files[0])
+  }
+}
+
+const setImage = (image, setSrc) => {
+  // const preview = document.querySelector('#preview')
+  // if (!preview) return
+  var reader = new FileReader()
+  // console.log('preview :>> ', preview)
+
+  // reader.onloadend = function (e) {
+  //   preview.src = e.target.result
+  // }
+
+  reader.addEventListener(
+    'load',
+    () => {
+      setSrc(reader.result.toString() || '')
+      modalsFunc.cropImage(
+        reader.result.toString() || '',
+        null,
+        aspect,
+        (newImage) => {
+          console.log('newImage :>> ', newImage)
+          setSrc(newImage)
+        }
+      )
+    }
+    // setImgSrc(reader.result.toString() || '')
+    // (preview.src = reader.result.toString() || '')
+  )
+  reader.readAsDataURL(image)
+
+  // if (image) {
+  //   reader.readAsDataURL(image)
+  // } else {
+  //   if (preview) preview.src = ''
+  // }
+}
+
 const ToolsAnonsContent = () => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
   // const users = useRecoilValue(usersAtom)
   // const eventsUsers = useRecoilValue(eventsUsersAtom)
@@ -137,6 +173,12 @@ const ToolsAnonsContent = () => {
   const [year, setYear] = useState(new Date().getFullYear())
   const [styleNum, setStyleNum] = useState(1)
   const [memberEvent, setMemberEvent] = useState('dontShow')
+
+  const [src, setSrc] = useState()
+  const [startX, setStartX] = useState(145)
+  const [startY, setStartY] = useState(480)
+  const [maxWidth, setMaxWidth] = useState(1000)
+  const [maxHeight, setMaxHeight] = useState(1000)
 
   const eventsInMonth = events.filter((event) => {
     const date = new Date(event.dateStart)
@@ -207,8 +249,8 @@ const ToolsAnonsContent = () => {
     })
 
   const {
-    startX,
-    startY,
+    startXadd,
+    startYadd,
     dotGapY,
     minGap,
     maxGap,
@@ -216,7 +258,7 @@ const ToolsAnonsContent = () => {
     dateHeight,
     dateTextGap,
     lineHeight,
-    maxHeight,
+    // maxHeight,
   } = styles[styleNum]
 
   const preparedItems = items.map(({ date, text, dot, day, week }, index) => {
@@ -266,11 +308,23 @@ const ToolsAnonsContent = () => {
   // preparedItems.push(preparedItems[0])
 
   // const itemsCount = preparedItems.length
-
+  // useEffect(() => {
+  //   const preview = document.querySelector('#preview1')
+  //   var reader = new FileReader()
   var addedLines
+  //   reader.onloadend = function () {
+  //     preview.src = reader.result
+  //   }
+
+  //   if (inputFile) {
+  //     reader.readAsDataURL(inputFile)
+  //   } else {
+  //     if (preview) preview.src = ''
+  //   }
+  // }, [inputFile])
 
   return (
-    <div className="px-1">
+    <div className="h-full max-h-full px-1 overflow-y-auto">
       <div className="flex flex-wrap gap-x-1">
         <MonthSelector month={month} onChange={setMonth} />
         <YearSelector year={year} onChange={setYear} />
@@ -302,6 +356,72 @@ const ToolsAnonsContent = () => {
           label="Не показывать названия мероприятий клуба"
         /> */}
       </div>
+      <div className="flex flex-wrap gap-x-1">
+        <Input
+          label="Позиция по X"
+          type="number"
+          className="w-28"
+          inputClassName="w-16"
+          value={startX}
+          onChange={(value) => setStartX(parseInt(value))}
+          min={0}
+          max={1080}
+          fullWidth={false}
+          // noMargin
+        />
+        <Input
+          label="Позиция по Y"
+          type="number"
+          className="w-28"
+          inputClassName="w-16"
+          value={startY}
+          onChange={(value) => setStartY(parseInt(value))}
+          min={0}
+          max={1920}
+          fullWidth={false}
+        />
+        <Input
+          label="Макс высота"
+          type="number"
+          className="w-28"
+          inputClassName="w-16"
+          value={maxHeight}
+          onChange={(value) => setMaxHeight(parseInt(value))}
+          min={0}
+          max={1920}
+          fullWidth={false}
+        />
+      </div>
+      <div className="flex items-center mb-1 gap-x-1">
+        <div>Фон:</div>
+        <input
+          type="file"
+          // value={inputFile}
+          onChange={(e) => {
+            // setImage(e.target.files[0], setSrc)
+            // var reader = new FileReader()
+            // reader.addEventListener('load', () => {
+            // setSrc(reader.result.toString() || '')
+            modalsFunc.cropImage(
+              // reader.result.toString() || '',
+              e.target.files[0],
+              null,
+              1080 / 1920,
+              // null,
+              (newImage) => {
+                console.log('newImage :>> ', newImage)
+                setSrc(newImage)
+              },
+              false
+            )
+            // })
+            // reader.readAsDataURL(e.target.files[0])
+          }}
+        />
+      </div>
+      {/* <div style={{ height: 1920, width: 1080 }}>
+        <img src={src} height={1920} width={1080} />
+      </div> */}
       <Button
         name="Сохранить"
         onClick={() =>
@@ -312,6 +432,7 @@ const ToolsAnonsContent = () => {
           )
         }
       />
+      {/* <image id="preview1" height="1920" width="1080" /> */}
       <div className="flex overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
         {listsWithPreparedItems.map((preparedItems, index) => {
           addedLines = 0
@@ -338,7 +459,13 @@ const ToolsAnonsContent = () => {
               id={'input' + index}
               className="border min-w-[270px]"
             >
-              <image href="/img/anons/april.jpg" height="1920" width="1080" />
+              <image
+                id={'preview' + index}
+                // src={src}
+                href={src}
+                height="1920"
+                width="1080"
+              />
               {/* <rect
           x="10"
           y="10"
@@ -373,9 +500,10 @@ const ToolsAnonsContent = () => {
                     <g key={month + year + date + index}>
                       {showDot && (
                         <circle
-                          cx={startX}
+                          cx={startX + startXadd}
                           cy={
                             startY +
+                            startYadd +
                             dotGapY +
                             index * gap +
                             index * dateTextGap +
@@ -391,9 +519,10 @@ const ToolsAnonsContent = () => {
                       {showDot && day && week && (
                         <>
                           <text
-                            x={startX - 72}
+                            x={startX + startXadd - 72}
                             y={
                               startY +
+                              startYadd +
                               index * gap +
                               index * dateTextGap +
                               index * dateHeight +
@@ -409,9 +538,10 @@ const ToolsAnonsContent = () => {
                             {day}
                           </text>
                           <text
-                            x={startX - 72}
+                            x={startX + startXadd - 72}
                             y={
                               startY +
+                              startYadd +
                               index * gap +
                               index * dateTextGap +
                               index * dateHeight +
@@ -428,9 +558,10 @@ const ToolsAnonsContent = () => {
                         </>
                       )}
                       <text
-                        x={startX + 50}
+                        x={startX + startXadd + 50}
                         y={
                           startY +
+                          startYadd +
                           index * gap +
                           index * dateTextGap +
                           index * dateHeight +
@@ -448,9 +579,10 @@ const ToolsAnonsContent = () => {
                         return (
                           <text
                             key={textLine + lineNum}
-                            x={startX + 50}
+                            x={startX + startXadd + 50}
                             y={
                               startY +
+                              startYadd +
                               10 +
                               index * gap +
                               (index + 1) * dateTextGap +
@@ -473,11 +605,12 @@ const ToolsAnonsContent = () => {
                 }
               )}
               <line
-                x1={startX}
-                y1={startY - 50}
-                x2={startX}
+                x1={startX + startXadd}
+                y1={startY + startYadd - 50}
+                x2={startX + startXadd}
                 y2={
                   startY +
+                  startYadd +
                   preparedItems.length * (dateTextGap + dateHeight) +
                   (preparedItems.length - 1) * gap +
                   addedLines * lineHeight
