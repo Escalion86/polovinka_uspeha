@@ -121,7 +121,20 @@ const TO_RADIANS = Math.PI / 180
 //   return crop
 // }
 
-const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
+function blobToFile(theBlob, fileName) {
+  //A Blob() is almost a File() - it's just missing the two properties below which we will add
+  theBlob.lastModifiedDate = new Date()
+  theBlob.name = fileName
+  return theBlob
+}
+
+const cropImageFunc = (
+  src = '',
+  imgElement,
+  aspectRatio,
+  onConfirm,
+  toBlob = true
+) => {
   const CropImageModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -145,7 +158,8 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
     const [completedCrop, setCompletedCrop] = useState(null)
     const [scale, setScale] = useState(1)
     const [rotate, setRotate] = useState(0)
-    const [aspect, setAspect] = useState(aspectRatio)
+    // const [aspect, setAspect] = useState(aspectRatio)
+    // console.log('aspect :>> ', aspect)
 
     const onRefChange = useCallback((node) => {
       if (node === null) {
@@ -154,6 +168,21 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
         // DOM node referenced by ref has changed and exists
         // imgRef(node)
         setRef(node)
+
+        // node.height = 600 => 100
+        // node.width = node.width * (100 / node.height)
+
+        // if (aspectRatio) {
+        //   setCrop({
+        //     unit: '%',
+        //     x: 0,
+        //     y: 0,
+        //     width: aspectRatio < 1 && node.width > node.height
+        //     ? aspectRatio * node.height
+        //     : node.width - 1,
+        //     height: 100,
+        //   })
+        // }
         setCompletedCrop({
           unit: 'px',
           x: 0,
@@ -387,20 +416,17 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
 
       // ctx.restore()
 
-      function blobToFile(theBlob, fileName) {
-        //A Blob() is almost a File() - it's just missing the two properties below which we will add
-        theBlob.lastModifiedDate = new Date()
-        theBlob.name = fileName
-        return theBlob
+      if (toBlob) {
+        canvas.toBlob(
+          (blob) => {
+            onConfirm(blobToFile(blob, src.name))
+          },
+          'image/jpeg',
+          0.9
+        )
+      } else {
+        onConfirm(canvas.toDataURL('image/jpeg'))
       }
-
-      canvas.toBlob(
-        (blob) => {
-          onConfirm(blobToFile(blob, src.name))
-        },
-        'image/jpeg',
-        0.9
-      )
     }
 
     useEffect(() => {
@@ -544,7 +570,7 @@ const cropImageFunc = (src = '', imgElement, aspectRatio, onConfirm) => {
               crop={crop}
               onChange={(_, percentCrop) => setCrop(percentCrop)}
               onComplete={(c) => setCompletedCrop(c)}
-              aspect={aspect}
+              aspect={aspectRatio}
               minHeight={100}
               minWidth={100}
             >
