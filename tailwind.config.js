@@ -10,6 +10,7 @@ module.exports = {
     './layouts/**/*.{js,jsx}',
     './blocks/**/*.{js,jsx}',
     // './public/**/*.{svg}',
+    'node_modules/preline/dist/*.js',
   ],
   darkMode: 'class', // or 'media' or 'class'
   i18n: {
@@ -299,6 +300,7 @@ module.exports = {
     require('tailwindcss-scoped-groups')({
       groups: ['one', 'two'],
     }),
+    require('preline/plugin'),
   ],
   future: {
     purgeLayersByDefault: true,
