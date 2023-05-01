@@ -23,6 +23,7 @@ import sortFunctions from '@helpers/sortFunctions'
 import CheckBox from '@components/CheckBox'
 import YearSelector from '@components/ComboBox/YearSelector'
 import MonthSelector from '@components/ComboBox/MonthSelector'
+import ColorPicker from '@components/ColorPicker'
 
 function loadImage(url) {
   return new Promise((r) => {
@@ -179,6 +180,7 @@ const ToolsAnonsContent = () => {
   const [startY, setStartY] = useState(480)
   const [maxWidth, setMaxWidth] = useState(1000)
   const [maxHeight, setMaxHeight] = useState(1000)
+  const [textColor, setTextColor] = useState('#ffffff')
 
   const eventsInMonth = events.filter((event) => {
     const date = new Date(event.dateStart)
@@ -391,6 +393,11 @@ const ToolsAnonsContent = () => {
           max={1920}
           fullWidth={false}
         />
+        <ColorPicker
+          label="Цвет текста"
+          value={textColor}
+          onChange={setTextColor}
+        />
       </div>
       <div className="flex items-center mb-1 gap-x-1">
         <div>Фон:</div>
@@ -511,7 +518,7 @@ const ToolsAnonsContent = () => {
                             addedLines * lineHeight
                           }
                           r="20"
-                          fill="white"
+                          fill={textColor}
                           // stroke-width="5"
                           // stroke="rgb(150,110,200)"
                         />
@@ -531,7 +538,7 @@ const ToolsAnonsContent = () => {
                               addedLines * lineHeight
                             }
                             fontSize={60}
-                            fill="white"
+                            fill={textColor}
                             fontWeight="bold"
                             textAnchor="middle"
                           >
@@ -549,7 +556,7 @@ const ToolsAnonsContent = () => {
                               addedLines * lineHeight
                             }
                             fontSize={48}
-                            fill="white"
+                            fill={textColor}
                             // fontWeight="bold"
                             textAnchor="middle"
                           >
@@ -569,7 +576,7 @@ const ToolsAnonsContent = () => {
                           addedLines * lineHeight
                         }
                         fontSize={dateHeight}
-                        fill="white"
+                        fill={textColor}
                         fontWeight="bold"
                       >
                         {date}
@@ -592,7 +599,7 @@ const ToolsAnonsContent = () => {
                               // lineNum * lineHeight
                             }
                             fontSize={lineHeight}
-                            fill="white"
+                            fill={textColor}
                             width={800}
                             className="max-w-[800px]"
                           >
@@ -616,7 +623,7 @@ const ToolsAnonsContent = () => {
                   addedLines * lineHeight
                 }
                 strokeWidth="3"
-                stroke="white"
+                stroke={textColor}
               />
             </svg>
           )

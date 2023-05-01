@@ -92,6 +92,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     })
   }, [])
 
+  useEffect(() => {
+    import('preline')
+  }, [])
+
   return (
     <>
       <Head>
