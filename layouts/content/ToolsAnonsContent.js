@@ -11,10 +11,9 @@ import paymentsAtom from '@state/atoms/paymentsAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import InputImages from '@components/InputImages'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Input from '@components/Input'
 import FormWrapper from '@components/FormWrapper'
-import Button from '@components/Button'
 import formatDateTime from '@helpers/formatDateTime'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import ComboBox from '@components/ComboBox'
@@ -24,6 +23,9 @@ import CheckBox from '@components/CheckBox'
 import YearSelector from '@components/ComboBox/YearSelector'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import ColorPicker from '@components/ColorPicker'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import Button from '@components/Button'
 
 function loadImage(url) {
   return new Promise((r) => {
@@ -90,10 +92,10 @@ const styles = [
     dotGapY: 0,
     minGap: 35,
     maxGap: 120,
-    textLengthMax: 45,
+    textLengthMax: 46 * 32,
     dateHeight: 36,
     dateTextGap: 10,
-    lineHeight: 32,
+    // lineHeight: 32,
     // maxHeight: 1000,
   },
   {
@@ -102,10 +104,10 @@ const styles = [
     dotGapY: 20,
     minGap: 35,
     maxGap: 120,
-    textLengthMax: 43,
+    textLengthMax: 44 * 32,
     dateHeight: 36,
     dateTextGap: 10,
-    lineHeight: 32,
+    // lineHeight: 32,
     // maxHeight: 1000,
   },
 ]
@@ -161,6 +163,11 @@ const setImage = (image, setSrc) => {
 }
 
 const ToolsAnonsContent = () => {
+  const hiddenFileInput = useRef(null)
+  const addImageClick = () => {
+    hiddenFileInput.current.click()
+  }
+
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
   // const users = useRecoilValue(usersAtom)
@@ -178,11 +185,17 @@ const ToolsAnonsContent = () => {
   const [src, setSrc] = useState()
   const [startX, setStartX] = useState(145)
   const [startY, setStartY] = useState(480)
-  const [maxWidth, setMaxWidth] = useState(1000)
   const [maxHeight, setMaxHeight] = useState(1000)
   const [textColor, setTextColor] = useState('#ffffff')
+  const [dateColor, setDateColor] = useState('#ffffff')
+  const [dotColor, setDotColor] = useState('#ffffff')
+  const [lineColor, setLineColor] = useState('#ffffff')
+  const [backgroundColor, setBackgroundColor] = useState('#8888ee')
+  const [fontSize, setFontSize] = useState(32)
+  const [maxItemsOnList, setMaxItemsOnList] = useState(10)
 
   const eventsInMonth = events.filter((event) => {
+    if (event.status === 'canceled') return false
     const date = new Date(event.dateStart)
     const eventMonth = date.getMonth()
     const eventYear = date.getFullYear()
@@ -259,7 +272,7 @@ const ToolsAnonsContent = () => {
     textLengthMax,
     dateHeight,
     dateTextGap,
-    lineHeight,
+    // lineHeight,
     // maxHeight,
   } = styles[styleNum]
 
@@ -272,7 +285,7 @@ const ToolsAnonsContent = () => {
 
     textSplit.forEach((word) => {
       const wordLength = word.length
-      if (chars + wordLength > textLengthMax) {
+      if (chars + wordLength > textLengthMax / fontSize) {
         ++line
         chars = 0
       }
@@ -283,7 +296,7 @@ const ToolsAnonsContent = () => {
     return { date, textArray, dot, day, week }
   })
 
-  const listsCount = Math.ceil(preparedItems.length / 10)
+  const listsCount = Math.ceil(preparedItems.length / maxItemsOnList)
   var itemsLeft = preparedItems.length
   const elementsOnList = Array(listsCount)
     .fill(0)
@@ -360,6 +373,30 @@ const ToolsAnonsContent = () => {
       </div>
       <div className="flex flex-wrap gap-x-1">
         <Input
+          label="Макс. мероприятий на странице"
+          type="number"
+          className="w-[146px]"
+          inputClassName="w-16"
+          value={maxItemsOnList}
+          onChange={(value) => setMaxItemsOnList(parseInt(value))}
+          min={1}
+          max={10}
+          fullWidth={false}
+          // noMargin
+        />
+        <Input
+          label="Размер шрифта"
+          type="number"
+          className="w-32"
+          inputClassName="w-16"
+          value={fontSize}
+          onChange={(value) => setFontSize(parseInt(value))}
+          min={6}
+          max={100}
+          fullWidth={false}
+          // noMargin
+        />
+        <Input
           label="Позиция по X"
           type="number"
           className="w-28"
@@ -394,16 +431,43 @@ const ToolsAnonsContent = () => {
           fullWidth={false}
         />
         <ColorPicker
+          label="Цвет даты"
+          value={dateColor}
+          onChange={setDateColor}
+        />
+        <ColorPicker
           label="Цвет текста"
           value={textColor}
           onChange={setTextColor}
         />
+        <ColorPicker
+          label="Цвет линии"
+          value={lineColor}
+          onChange={setLineColor}
+        />
+        <ColorPicker
+          label="Цвет точек"
+          value={dotColor}
+          onChange={setDotColor}
+        />
+        <ColorPicker
+          label="Цвет фона"
+          value={backgroundColor}
+          onChange={setBackgroundColor}
+        />
       </div>
       <div className="flex items-center mb-1 gap-x-1">
         <div>Фон:</div>
+        <Button
+          name={src ? 'Изменить фон' : 'Загрузить фон'}
+          thin
+          onClick={addImageClick}
+        />
         <input
+          ref={hiddenFileInput}
+          className="hidden"
           type="file"
-          // value={inputFile}
+          // value={src?.name || ''}
           onChange={(e) => {
             // setImage(e.target.files[0], setSrc)
             // var reader = new FileReader()
@@ -425,6 +489,14 @@ const ToolsAnonsContent = () => {
             // reader.readAsDataURL(e.target.files[0])
           }}
         />
+        {src && (
+          <FontAwesomeIcon
+            className="w-6 h-6 duration-200 transform cursor-pointer text-danger hover:scale-110"
+            icon={faTimes}
+            // size="1x"
+            onClick={() => setSrc('')}
+          />
+        )}
       </div>
       {/* <div style={{ height: 1920, width: 1080 }}>
         <img src={src} height={1920} width={1080} />
@@ -445,7 +517,7 @@ const ToolsAnonsContent = () => {
           addedLines = 0
           const fullHeight = preparedItems.reduce(
             (total, { date, textArray }) =>
-              total + dateTextGap + lineHeight * textArray.length,
+              total + dateTextGap + fontSize * textArray.length,
             0
           )
 
@@ -466,6 +538,13 @@ const ToolsAnonsContent = () => {
               id={'input' + index}
               className="border min-w-[270px]"
             >
+              <rect
+                fill={backgroundColor}
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+              />
               <image
                 id={'preview' + index}
                 // src={src}
@@ -473,6 +552,7 @@ const ToolsAnonsContent = () => {
                 height="1920"
                 width="1080"
               />
+
               {/* <rect
           x="10"
           y="10"
@@ -515,10 +595,10 @@ const ToolsAnonsContent = () => {
                             index * gap +
                             index * dateTextGap +
                             index * dateHeight +
-                            addedLines * lineHeight
+                            addedLines * fontSize
                           }
                           r="20"
-                          fill={textColor}
+                          fill={dotColor}
                           // stroke-width="5"
                           // stroke="rgb(150,110,200)"
                         />
@@ -535,10 +615,10 @@ const ToolsAnonsContent = () => {
                               index * dateHeight +
                               15 +
                               // 10 +
-                              addedLines * lineHeight
+                              addedLines * fontSize
                             }
                             fontSize={60}
-                            fill={textColor}
+                            fill={dateColor}
                             fontWeight="bold"
                             textAnchor="middle"
                           >
@@ -553,10 +633,10 @@ const ToolsAnonsContent = () => {
                               index * dateTextGap +
                               index * dateHeight +
                               60 +
-                              addedLines * lineHeight
+                              addedLines * fontSize
                             }
                             fontSize={48}
-                            fill={textColor}
+                            fill={dateColor}
                             // fontWeight="bold"
                             textAnchor="middle"
                           >
@@ -573,10 +653,10 @@ const ToolsAnonsContent = () => {
                           index * dateTextGap +
                           index * dateHeight +
                           10 +
-                          addedLines * lineHeight
+                          addedLines * fontSize
                         }
                         fontSize={dateHeight}
-                        fill={textColor}
+                        fill={dateColor}
                         fontWeight="bold"
                       >
                         {date}
@@ -595,10 +675,10 @@ const ToolsAnonsContent = () => {
                               (index + 1) * dateTextGap +
                               index * dateHeight +
                               // 20 +
-                              addedLines * lineHeight
+                              addedLines * fontSize
                               // lineNum * lineHeight
                             }
-                            fontSize={lineHeight}
+                            fontSize={fontSize}
                             fill={textColor}
                             width={800}
                             className="max-w-[800px]"
@@ -620,10 +700,10 @@ const ToolsAnonsContent = () => {
                   startYadd +
                   preparedItems.length * (dateTextGap + dateHeight) +
                   (preparedItems.length - 1) * gap +
-                  addedLines * lineHeight
+                  addedLines * fontSize
                 }
                 strokeWidth="3"
-                stroke={textColor}
+                stroke={lineColor}
               />
             </svg>
           )
