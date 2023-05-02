@@ -27,6 +27,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Button from '@components/Button'
 
+import { saveSvgAsPng } from 'save-svg-as-png'
+// import futuraPtFontBase64 from '@helpers/fontsBase64/futuraPt'
+// import enchantsFontBase64 from '@helpers/fontsBase64/enchants'
+
 // function loadImage(url) {
 //   return new Promise((r) => {
 //     let i = new Image()
@@ -42,7 +46,7 @@ const styles = [
     dotGapY: 0,
     minGap: 35,
     maxGap: 120,
-    textLengthMax: 46 * 32,
+    textLengthMax: 49 * 32,
     // dateHeight: 36,
     dateTextGap: 10,
     // lineHeight: 32,
@@ -54,7 +58,7 @@ const styles = [
     dotGapY: 20,
     minGap: 35,
     maxGap: 120,
-    textLengthMax: 44 * 32,
+    textLengthMax: 48 * 32,
     // dateHeight: 36,
     dateTextGap: 10,
     // lineHeight: 32,
@@ -112,6 +116,66 @@ const closedEventsDirectionId = '6301d334e5b7fa785515faac' //6301d334e5b7fa78551
 //   // }
 // }
 
+const save2 = async (listsCount, name) => {
+  for (let i = 0; i < listsCount; i++) {
+    const input = document.querySelector('#input' + i)
+    const fileName = `${name}${
+      listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
+    }.png`
+    saveSvgAsPng(input, fileName)
+  }
+}
+
+// const save = async (listsCount, name) => {
+//   for (let i = 0; i < listsCount; i++) {
+//     const input = document.querySelector('#input' + i)
+//     const output = document.querySelector('#output')
+
+//     const svgData = new XMLSerializer().serializeToString(input)
+//     const svgDataBase64 = btoa(unescape(encodeURIComponent(svgData)))
+
+//     const svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
+
+//     const image = new Image()
+//     // const imgBg = await loadImage(bgImage)
+
+//     image.addEventListener('load', () => {
+//       const canvas = document.createElement('canvas')
+
+//       canvas.setAttribute('width', 1080)
+//       canvas.setAttribute('height', 1920)
+
+//       const context = canvas.getContext('2d')
+
+//       // context.drawImage(imgBg, 0, 0, 1080, 1920)
+
+//       context.drawImage(image, 0, 0, 1080, 1920)
+
+//       const dataUrl = canvas.toDataURL('image/png')
+//       output.src = dataUrl
+
+//       var link = document.createElement('a')
+//       link.setAttribute(
+//         'download',
+//         `${name}${
+//           listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
+//         }.png`
+//       )
+//       link.setAttribute(
+//         'href',
+//         canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
+//       )
+//       link.click()
+
+//       // var image2 = canvas
+//       //   .toDataURL('image/png')
+//       //   .replace('image/png', 'image/octet-stream')
+//       // window.location.href = image2
+//     })
+//     image.src = svgDataUrl
+//   }
+// }
+
 const ToolsAnonsContent = () => {
   const hiddenFileInput = useRef(null)
   const addImageClick = () => {
@@ -133,8 +197,9 @@ const ToolsAnonsContent = () => {
   const [memberEvent, setMemberEvent] = useState('dontShow')
 
   const [src, setSrc] = useState()
-  const [startX, setStartX] = useState(145)
-  const [startY, setStartY] = useState(480)
+  const [startX, setStartX] = useState(90)
+  const [startY, setStartY] = useState(72)
+  const [titleGap, setTitleGap] = useState(62)
   const [maxHeight, setMaxHeight] = useState(1000)
   const [textColor, setTextColor] = useState('#ffffff')
   const [dateColor, setDateColor] = useState('#ffffff')
@@ -145,58 +210,6 @@ const ToolsAnonsContent = () => {
   const [fontSize, setFontSize] = useState(32)
   const [dateFontSize, setDateFontSize] = useState(36)
   const [maxItemsOnList, setMaxItemsOnList] = useState(10)
-
-  const save = async (listsCount, name) => {
-    for (let i = 0; i < listsCount; i++) {
-      const input = document.querySelector('#input' + i)
-      const output = document.querySelector('#output')
-
-      const svgData = new XMLSerializer().serializeToString(input)
-      const svgDataBase64 = btoa(unescape(encodeURIComponent(svgData)))
-
-      const svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
-
-      const image = new Image()
-      // const imgBg = await loadImage(bgImage)
-
-      image.addEventListener('load', () => {
-        const canvas = document.createElement('canvas')
-
-        canvas.setAttribute('width', 1080)
-        canvas.setAttribute('height', 1920)
-
-        const context = canvas.getContext('2d')
-
-        // context.drawImage(imgBg, 0, 0, 1080, 1920)
-
-        context.drawImage(image, 0, 0, 1080, 1920)
-
-        const dataUrl = canvas.toDataURL('image/png')
-        output.src = dataUrl
-
-        var link = document.createElement('a')
-        link.setAttribute(
-          'download',
-          `${name}${
-            listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
-          }.png`
-        )
-        link.setAttribute(
-          'href',
-          canvas
-            .toDataURL('image/png')
-            .replace('image/png', 'image/octet-stream')
-        )
-        link.click()
-
-        // var image2 = canvas
-        //   .toDataURL('image/png')
-        //   .replace('image/png', 'image/octet-stream')
-        // window.location.href = image2
-      })
-      image.src = svgDataUrl
-    }
-  }
 
   const eventsInMonth = events.filter((event) => {
     if (event.status === 'canceled') return false
@@ -420,7 +433,7 @@ const ToolsAnonsContent = () => {
           value={startX}
           onChange={(value) => setStartX(parseInt(value))}
           min={0}
-          max={1080}
+          max={120}
           fullWidth={false}
           // noMargin
         />
@@ -432,7 +445,7 @@ const ToolsAnonsContent = () => {
           value={startY}
           onChange={(value) => setStartY(parseInt(value))}
           min={0}
-          max={1920}
+          max={1400}
           fullWidth={false}
         />
         <Input
@@ -442,6 +455,17 @@ const ToolsAnonsContent = () => {
           inputClassName="w-16"
           value={maxHeight}
           onChange={(value) => setMaxHeight(parseInt(value))}
+          min={0}
+          max={1920}
+          fullWidth={false}
+        />
+        <Input
+          label="Отступ списка от заголовка"
+          type="number"
+          className="w-28"
+          inputClassName="w-16"
+          value={titleGap}
+          onChange={(value) => setTitleGap(parseInt(value))}
           min={0}
           max={1920}
           fullWidth={false}
@@ -525,7 +549,7 @@ const ToolsAnonsContent = () => {
       <Button
         name="Сохранить"
         onClick={() =>
-          save(listsWithPreparedItems.length, 'Анонс ' + MONTHS_FULL_1[month])
+          save2(listsWithPreparedItems.length, 'Анонс ' + MONTHS_FULL_1[month])
         }
       />
       {/* <image id="preview1" height="1920" width="1080" /> */}
@@ -555,6 +579,18 @@ const ToolsAnonsContent = () => {
               id={'input' + index}
               className="border min-w-[270px]"
             >
+              {/* <defs> */}
+              {/* @font-face {
+                font-family: Enchants;
+                src: url(${enchantsFontBase64})
+            } */}
+              {/* <style> */}
+              {/* {`@font-face {
+              font-family: Futura PT;
+              src: url("${futuraPtFontBase64}")
+          }`} */}
+              {/* </style> */}
+              {/* </defs> */}
               <rect
                 fill={backgroundColor}
                 x="0"
@@ -603,8 +639,8 @@ const ToolsAnonsContent = () => {
                   return (
                     <g key={month + year + date + index}>
                       <text
-                        x={startX - 40}
-                        y={startY - 158}
+                        x={startX + 50}
+                        y={startY + 250}
                         fontSize={250}
                         fill={anonsColor}
                         // fontWeight="bold"
@@ -614,8 +650,8 @@ const ToolsAnonsContent = () => {
                         Анонс
                       </text>
                       <text
-                        x={startX + 640}
-                        y={startY - 318}
+                        x={startX + 730}
+                        y={startY + 90}
                         fontSize={110}
                         fill={anonsColor}
                         fontWeight="300"
@@ -626,17 +662,19 @@ const ToolsAnonsContent = () => {
                       </text>
                       <line
                         x1={0}
-                        y1={startY - 354}
-                        x2={startX + 355}
-                        y2={startY - 354}
+                        y1={startY + 54}
+                        x2={startX + 445}
+                        y2={startY + 54}
                         strokeWidth="5"
                         stroke={anonsColor}
                       />
                       {showDot && (
                         <circle
-                          cx={startX + startXadd}
+                          cx={startX + 90 + startXadd}
                           cy={
                             startY +
+                            340 +
+                            titleGap +
                             startYadd +
                             dotGapY +
                             index * gap +
@@ -653,9 +691,11 @@ const ToolsAnonsContent = () => {
                       {showDot && day && week && (
                         <>
                           <text
-                            x={startX + startXadd - 72}
+                            x={startX + 90 + startXadd - 72}
                             y={
                               startY +
+                              340 +
+                              titleGap +
                               startYadd +
                               index * gap +
                               index * dateTextGap +
@@ -672,9 +712,11 @@ const ToolsAnonsContent = () => {
                             {day}
                           </text>
                           <text
-                            x={startX + startXadd - 72}
+                            x={startX + 90 + startXadd - 72}
                             y={
                               startY +
+                              340 +
+                              titleGap +
                               startYadd +
                               index * gap +
                               index * dateTextGap +
@@ -692,15 +734,18 @@ const ToolsAnonsContent = () => {
                         </>
                       )}
                       <text
-                        x={startX + startXadd + 50}
+                        x={startX + 90 + startXadd + 50}
                         y={
                           startY +
+                          372 +
+                          titleGap +
                           startYadd +
                           index * gap +
                           index * dateTextGap +
                           index * dateFontSize +
                           10 +
-                          addedLines * fontSize
+                          addedLines * fontSize -
+                          30
                         }
                         fontSize={dateFontSize}
                         fill={dateColor}
@@ -713,9 +758,11 @@ const ToolsAnonsContent = () => {
                         return (
                           <text
                             key={textLine + lineNum}
-                            x={startX + startXadd + 50}
+                            x={startX + 90 + startXadd + 50}
                             y={
                               startY +
+                              338 +
+                              titleGap +
                               startYadd +
                               10 +
                               index * gap +
@@ -739,11 +786,13 @@ const ToolsAnonsContent = () => {
                 }
               )}
               <line
-                x1={startX + startXadd}
-                y1={startY + startYadd - 50}
-                x2={startX + startXadd}
+                x1={startX + 90 + startXadd}
+                y1={startY + 340 + startYadd - 50 + titleGap}
+                x2={startX + 90 + startXadd}
                 y2={
                   startY +
+                  340 +
+                  titleGap +
                   startYadd +
                   preparedItems.length * (dateTextGap + dateFontSize) +
                   (preparedItems.length - 1) * gap +
