@@ -190,6 +190,7 @@ const ToolsAnonsContent = () => {
   const [dateColor, setDateColor] = useState('#ffffff')
   const [dotColor, setDotColor] = useState('#ffffff')
   const [lineColor, setLineColor] = useState('#ffffff')
+  const [anonsColor, setAnonsColor] = useState('#ffffff')
   const [backgroundColor, setBackgroundColor] = useState('#8888ee')
   const [fontSize, setFontSize] = useState(32)
   const [maxItemsOnList, setMaxItemsOnList] = useState(10)
@@ -431,6 +432,11 @@ const ToolsAnonsContent = () => {
           fullWidth={false}
         />
         <ColorPicker
+          label="Цвет заголовка"
+          value={anonsColor}
+          onChange={setAnonsColor}
+        />
+        <ColorPicker
           label="Цвет даты"
           value={dateColor}
           onChange={setDateColor}
@@ -585,6 +591,36 @@ const ToolsAnonsContent = () => {
 
                   return (
                     <g key={month + year + date + index}>
+                      <text
+                        x={startX - 40}
+                        y={startY - 158}
+                        fontSize={250}
+                        fill={anonsColor}
+                        // fontWeight="bold"
+                        // textAnchor="middle"
+                        fontFamily="Enchants"
+                      >
+                        Анонс
+                      </text>
+                      <text
+                        x={startX + 640}
+                        y={startY - 318}
+                        fontSize={110}
+                        fill={anonsColor}
+                        fontWeight="300"
+                        textAnchor="middle"
+                        fontFamily="Futura PT"
+                      >
+                        {MONTHS_FULL_1[month].toLocaleUpperCase()}
+                      </text>
+                      <line
+                        x1={0}
+                        y1={startY - 354}
+                        x2={startX + 355}
+                        y2={startY - 354}
+                        strokeWidth="5"
+                        stroke={anonsColor}
+                      />
                       {showDot && (
                         <circle
                           cx={startX + startXadd}

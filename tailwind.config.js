@@ -69,6 +69,8 @@ module.exports = {
         futuraDemi: ['Futura PT Demi', 'sans-serif'],
         futura: ['Futura PT Book', 'sans-serif'],
         adlery: ['AdleryProBlockletter', 'sans-serif'],
+        enchants: ['Enchants', 'sans-serif'],
+        frankinity: ['Frankinity', 'sans-serif'],
       },
       width: {
         phoneV: '300px',
