@@ -93,7 +93,7 @@ const styles = [
     minGap: 35,
     maxGap: 120,
     textLengthMax: 46 * 32,
-    dateHeight: 36,
+    // dateHeight: 36,
     dateTextGap: 10,
     // lineHeight: 32,
     // maxHeight: 1000,
@@ -105,7 +105,7 @@ const styles = [
     minGap: 35,
     maxGap: 120,
     textLengthMax: 44 * 32,
-    dateHeight: 36,
+    // dateHeight: 36,
     dateTextGap: 10,
     // lineHeight: 32,
     // maxHeight: 1000,
@@ -193,6 +193,7 @@ const ToolsAnonsContent = () => {
   const [anonsColor, setAnonsColor] = useState('#ffffff')
   const [backgroundColor, setBackgroundColor] = useState('#8888ee')
   const [fontSize, setFontSize] = useState(32)
+  const [dateFontSize, setDateFontSize] = useState(36)
   const [maxItemsOnList, setMaxItemsOnList] = useState(10)
 
   const eventsInMonth = events.filter((event) => {
@@ -271,7 +272,7 @@ const ToolsAnonsContent = () => {
     minGap,
     maxGap,
     textLengthMax,
-    dateHeight,
+    // dateHeight,
     dateTextGap,
     // lineHeight,
     // maxHeight,
@@ -386,13 +387,25 @@ const ToolsAnonsContent = () => {
           // noMargin
         />
         <Input
-          label="Размер шрифта"
+          label="Размер шрифта мероприятий"
           type="number"
           className="w-32"
           inputClassName="w-16"
           value={fontSize}
           onChange={(value) => setFontSize(parseInt(value))}
-          min={6}
+          min={10}
+          max={100}
+          fullWidth={false}
+          // noMargin
+        />
+        <Input
+          label="Размер шрифта даты"
+          type="number"
+          className="w-32"
+          inputClassName="w-16"
+          value={dateFontSize}
+          onChange={(value) => setDateFontSize(parseInt(value))}
+          min={10}
           max={100}
           fullWidth={false}
           // noMargin
@@ -421,7 +434,7 @@ const ToolsAnonsContent = () => {
           fullWidth={false}
         />
         <Input
-          label="Макс высота"
+          label="Макс высота списка"
           type="number"
           className="w-28"
           inputClassName="w-16"
@@ -630,7 +643,7 @@ const ToolsAnonsContent = () => {
                             dotGapY +
                             index * gap +
                             index * dateTextGap +
-                            index * dateHeight +
+                            index * dateFontSize +
                             addedLines * fontSize
                           }
                           r="20"
@@ -648,7 +661,7 @@ const ToolsAnonsContent = () => {
                               startYadd +
                               index * gap +
                               index * dateTextGap +
-                              index * dateHeight +
+                              index * dateFontSize +
                               15 +
                               // 10 +
                               addedLines * fontSize
@@ -667,7 +680,7 @@ const ToolsAnonsContent = () => {
                               startYadd +
                               index * gap +
                               index * dateTextGap +
-                              index * dateHeight +
+                              index * dateFontSize +
                               60 +
                               addedLines * fontSize
                             }
@@ -687,11 +700,11 @@ const ToolsAnonsContent = () => {
                           startYadd +
                           index * gap +
                           index * dateTextGap +
-                          index * dateHeight +
+                          index * dateFontSize +
                           10 +
                           addedLines * fontSize
                         }
-                        fontSize={dateHeight}
+                        fontSize={dateFontSize}
                         fill={dateColor}
                         fontWeight="bold"
                       >
@@ -709,7 +722,7 @@ const ToolsAnonsContent = () => {
                               10 +
                               index * gap +
                               (index + 1) * dateTextGap +
-                              index * dateHeight +
+                              index * dateFontSize +
                               // 20 +
                               addedLines * fontSize
                               // lineNum * lineHeight
@@ -734,7 +747,7 @@ const ToolsAnonsContent = () => {
                 y2={
                   startY +
                   startYadd +
-                  preparedItems.length * (dateTextGap + dateHeight) +
+                  preparedItems.length * (dateTextGap + dateFontSize) +
                   (preparedItems.length - 1) * gap +
                   addedLines * fontSize
                 }
