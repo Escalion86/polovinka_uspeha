@@ -27,63 +27,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Button from '@components/Button'
 
-function loadImage(url) {
-  return new Promise((r) => {
-    let i = new Image()
-    i.onload = () => r(i)
-    i.src = url
-  })
-}
-
-const save = async (listsCount, bgImage, name) => {
-  for (let i = 0; i < listsCount; i++) {
-    const input = document.querySelector('#input' + i)
-    const output = document.querySelector('#output')
-
-    const svgData = new XMLSerializer().serializeToString(input)
-    const svgDataBase64 = btoa(unescape(encodeURIComponent(svgData)))
-
-    const svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
-
-    const image = new Image()
-    // const imgBg = await loadImage(bgImage)
-
-    image.addEventListener('load', () => {
-      const canvas = document.createElement('canvas')
-
-      canvas.setAttribute('width', 1080)
-      canvas.setAttribute('height', 1920)
-
-      const context = canvas.getContext('2d')
-
-      // context.drawImage(imgBg, 0, 0, 1080, 1920)
-
-      context.drawImage(image, 0, 0, 1080, 1920)
-
-      const dataUrl = canvas.toDataURL('image/png')
-      output.src = dataUrl
-
-      var link = document.createElement('a')
-      link.setAttribute(
-        'download',
-        `${name}${
-          listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
-        }.png`
-      )
-      link.setAttribute(
-        'href',
-        canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
-      )
-      link.click()
-
-      // var image2 = canvas
-      //   .toDataURL('image/png')
-      //   .replace('image/png', 'image/octet-stream')
-      // window.location.href = image2
-    })
-    image.src = svgDataUrl
-  }
-}
+// function loadImage(url) {
+//   return new Promise((r) => {
+//     let i = new Image()
+//     i.onload = () => r(i)
+//     i.src = url
+//   })
+// }
 
 const styles = [
   {
@@ -93,7 +43,7 @@ const styles = [
     minGap: 35,
     maxGap: 120,
     textLengthMax: 46 * 32,
-    dateHeight: 36,
+    // dateHeight: 36,
     dateTextGap: 10,
     // lineHeight: 32,
     // maxHeight: 1000,
@@ -105,7 +55,7 @@ const styles = [
     minGap: 35,
     maxGap: 120,
     textLengthMax: 44 * 32,
-    dateHeight: 36,
+    // dateHeight: 36,
     dateTextGap: 10,
     // lineHeight: 32,
     // maxHeight: 1000,
@@ -114,53 +64,53 @@ const styles = [
 
 const closedEventsDirectionId = '6301d334e5b7fa785515faac' //6301d334e5b7fa785515faac
 
-function readURL(input) {
-  if (input.files && input.files[0]) {
-    var reader = new FileReader()
+// function readURL(input) {
+//   if (input.files && input.files[0]) {
+//     var reader = new FileReader()
 
-    reader.onload = function (e) {
-      $('#blah').attr('src', e.target.result)
-    }
+//     reader.onload = function (e) {
+//       $('#blah').attr('src', e.target.result)
+//     }
 
-    reader.readAsDataURL(input.files[0])
-  }
-}
+//     reader.readAsDataURL(input.files[0])
+//   }
+// }
 
-const setImage = (image, setSrc) => {
-  // const preview = document.querySelector('#preview')
-  // if (!preview) return
-  var reader = new FileReader()
-  // console.log('preview :>> ', preview)
+// const setImage = (image, setSrc) => {
+//   // const preview = document.querySelector('#preview')
+//   // if (!preview) return
+//   var reader = new FileReader()
+//   // console.log('preview :>> ', preview)
 
-  // reader.onloadend = function (e) {
-  //   preview.src = e.target.result
-  // }
+//   // reader.onloadend = function (e) {
+//   //   preview.src = e.target.result
+//   // }
 
-  reader.addEventListener(
-    'load',
-    () => {
-      setSrc(reader.result.toString() || '')
-      modalsFunc.cropImage(
-        reader.result.toString() || '',
-        null,
-        aspect,
-        (newImage) => {
-          console.log('newImage :>> ', newImage)
-          setSrc(newImage)
-        }
-      )
-    }
-    // setImgSrc(reader.result.toString() || '')
-    // (preview.src = reader.result.toString() || '')
-  )
-  reader.readAsDataURL(image)
+//   reader.addEventListener(
+//     'load',
+//     () => {
+//       setSrc(reader.result.toString() || '')
+//       modalsFunc.cropImage(
+//         reader.result.toString() || '',
+//         null,
+//         aspect,
+//         (newImage) => {
+//           console.log('newImage :>> ', newImage)
+//           setSrc(newImage)
+//         }
+//       )
+//     }
+//     // setImgSrc(reader.result.toString() || '')
+//     // (preview.src = reader.result.toString() || '')
+//   )
+//   reader.readAsDataURL(image)
 
-  // if (image) {
-  //   reader.readAsDataURL(image)
-  // } else {
-  //   if (preview) preview.src = ''
-  // }
-}
+//   // if (image) {
+//   //   reader.readAsDataURL(image)
+//   // } else {
+//   //   if (preview) preview.src = ''
+//   // }
+// }
 
 const ToolsAnonsContent = () => {
   const hiddenFileInput = useRef(null)
@@ -193,7 +143,60 @@ const ToolsAnonsContent = () => {
   const [anonsColor, setAnonsColor] = useState('#ffffff')
   const [backgroundColor, setBackgroundColor] = useState('#8888ee')
   const [fontSize, setFontSize] = useState(32)
+  const [dateFontSize, setDateFontSize] = useState(36)
   const [maxItemsOnList, setMaxItemsOnList] = useState(10)
+
+  const save = async (listsCount, name) => {
+    for (let i = 0; i < listsCount; i++) {
+      const input = document.querySelector('#input' + i)
+      const output = document.querySelector('#output')
+
+      const svgData = new XMLSerializer().serializeToString(input)
+      const svgDataBase64 = btoa(unescape(encodeURIComponent(svgData)))
+
+      const svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
+
+      const image = new Image()
+      // const imgBg = await loadImage(bgImage)
+
+      image.addEventListener('load', () => {
+        const canvas = document.createElement('canvas')
+
+        canvas.setAttribute('width', 1080)
+        canvas.setAttribute('height', 1920)
+
+        const context = canvas.getContext('2d')
+
+        // context.drawImage(imgBg, 0, 0, 1080, 1920)
+
+        context.drawImage(image, 0, 0, 1080, 1920)
+
+        const dataUrl = canvas.toDataURL('image/png')
+        output.src = dataUrl
+
+        var link = document.createElement('a')
+        link.setAttribute(
+          'download',
+          `${name}${
+            listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
+          }.png`
+        )
+        link.setAttribute(
+          'href',
+          canvas
+            .toDataURL('image/png')
+            .replace('image/png', 'image/octet-stream')
+        )
+        link.click()
+
+        // var image2 = canvas
+        //   .toDataURL('image/png')
+        //   .replace('image/png', 'image/octet-stream')
+        // window.location.href = image2
+      })
+      image.src = svgDataUrl
+    }
+  }
 
   const eventsInMonth = events.filter((event) => {
     if (event.status === 'canceled') return false
@@ -271,7 +274,7 @@ const ToolsAnonsContent = () => {
     minGap,
     maxGap,
     textLengthMax,
-    dateHeight,
+    // dateHeight,
     dateTextGap,
     // lineHeight,
     // maxHeight,
@@ -386,13 +389,25 @@ const ToolsAnonsContent = () => {
           // noMargin
         />
         <Input
-          label="Размер шрифта"
+          label="Размер шрифта мероприятий"
           type="number"
           className="w-32"
           inputClassName="w-16"
           value={fontSize}
           onChange={(value) => setFontSize(parseInt(value))}
-          min={6}
+          min={10}
+          max={100}
+          fullWidth={false}
+          // noMargin
+        />
+        <Input
+          label="Размер шрифта даты"
+          type="number"
+          className="w-32"
+          inputClassName="w-16"
+          value={dateFontSize}
+          onChange={(value) => setDateFontSize(parseInt(value))}
+          min={10}
           max={100}
           fullWidth={false}
           // noMargin
@@ -421,7 +436,7 @@ const ToolsAnonsContent = () => {
           fullWidth={false}
         />
         <Input
-          label="Макс высота"
+          label="Макс высота списка"
           type="number"
           className="w-28"
           inputClassName="w-16"
@@ -510,11 +525,7 @@ const ToolsAnonsContent = () => {
       <Button
         name="Сохранить"
         onClick={() =>
-          save(
-            listsWithPreparedItems.length,
-            '/img/anons/april.jpg',
-            'Анонс ' + MONTHS_FULL_1[month]
-          )
+          save(listsWithPreparedItems.length, 'Анонс ' + MONTHS_FULL_1[month])
         }
       />
       {/* <image id="preview1" height="1920" width="1080" /> */}
@@ -630,7 +641,7 @@ const ToolsAnonsContent = () => {
                             dotGapY +
                             index * gap +
                             index * dateTextGap +
-                            index * dateHeight +
+                            index * dateFontSize +
                             addedLines * fontSize
                           }
                           r="20"
@@ -648,7 +659,7 @@ const ToolsAnonsContent = () => {
                               startYadd +
                               index * gap +
                               index * dateTextGap +
-                              index * dateHeight +
+                              index * dateFontSize +
                               15 +
                               // 10 +
                               addedLines * fontSize
@@ -667,7 +678,7 @@ const ToolsAnonsContent = () => {
                               startYadd +
                               index * gap +
                               index * dateTextGap +
-                              index * dateHeight +
+                              index * dateFontSize +
                               60 +
                               addedLines * fontSize
                             }
@@ -687,11 +698,11 @@ const ToolsAnonsContent = () => {
                           startYadd +
                           index * gap +
                           index * dateTextGap +
-                          index * dateHeight +
+                          index * dateFontSize +
                           10 +
                           addedLines * fontSize
                         }
-                        fontSize={dateHeight}
+                        fontSize={dateFontSize}
                         fill={dateColor}
                         fontWeight="bold"
                       >
@@ -709,7 +720,7 @@ const ToolsAnonsContent = () => {
                               10 +
                               index * gap +
                               (index + 1) * dateTextGap +
-                              index * dateHeight +
+                              index * dateFontSize +
                               // 20 +
                               addedLines * fontSize
                               // lineNum * lineHeight
@@ -734,7 +745,7 @@ const ToolsAnonsContent = () => {
                 y2={
                   startY +
                   startYadd +
-                  preparedItems.length * (dateTextGap + dateHeight) +
+                  preparedItems.length * (dateTextGap + dateFontSize) +
                   (preparedItems.length - 1) * gap +
                   addedLines * fontSize
                 }
