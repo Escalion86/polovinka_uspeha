@@ -711,8 +711,8 @@ export const CONTENTS = {
   dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
   tools: {
     Component: ToolsAnonsContent,
-    name: 'Инструменты / Генератор анонса',
-    accessRoles: ['dev', 'admin'],
+    name: 'Инструменты / Редактор анонса',
+    accessRoles: ['moder', 'dev', 'admin'],
   },
   histories: {
     Component: HistoriesContent,
@@ -980,7 +980,12 @@ export const pagesGroups = [
     accessRoles: ['client'],
     accessStatuses: ['member'],
   },
-  { id: 8, name: 'Инструменты', icon: faTools, accessRoles: ['admin', 'dev'] },
+  {
+    id: 8,
+    name: 'Инструменты',
+    icon: faTools,
+    accessRoles: ['moder', 'admin', 'dev'],
+  },
   { id: 9, name: 'Настройки', icon: faCog, accessRoles: ['admin', 'dev'] },
   { id: 99, name: 'Разработчик', icon: faBug, accessRoles: ['dev'] },
 ]
