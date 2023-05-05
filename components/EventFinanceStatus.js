@@ -130,7 +130,7 @@ const EventButtonSignIn = ({
           ? eventLoggedUserStatus.canSignInReserve
             ? 'Записаться в резерв'
             : 'Мест нет'
-          : 'Заполните свою анкету'
+          : 'Заполните свой профиль'
       }
       disabled={
         !eventLoggedUserStatus.canSignOut &&

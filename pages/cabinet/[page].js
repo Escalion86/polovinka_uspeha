@@ -140,7 +140,7 @@ export const getServerSideProps = async (context) => {
     }
   }
 
-  // Редиректим пользователей незаполнившим анкету
+  // Редиректим пользователей незаполнившим профиль
   if (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) {
     return {
       redirect: {

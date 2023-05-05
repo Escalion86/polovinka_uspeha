@@ -185,7 +185,7 @@ const EventButtonSignIn = ({
             ? canSignInReserve
               ? 'Записаться в резерв'
               : 'Мест нет'
-            : 'Заполните свою анкету'
+            : 'Заполните свой профиль'
         }
         // disabled={
         //   !canSignOut &&

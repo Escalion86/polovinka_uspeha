@@ -674,7 +674,7 @@ export const CONTENTS = {
   },
   questionnaire: {
     Component: QuestionnaireContent,
-    name: 'Моя анкета',
+    name: 'Мой профиль',
     accessRoles: ['client', 'moder', 'admin', 'dev'],
   },
   users: {

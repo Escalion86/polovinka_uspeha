@@ -253,13 +253,13 @@ const QuestionnaireContent = (props) => {
         (data) => {
           setLoggedUser(data)
           setUserInUsersState(data)
-          success('Данные анкеты обновлены успешно')
+          success('Данные профиля обновлены успешно')
           setIsWaitingToResponse(false)
           // refreshPage()
         },
         () => {
-          error('Ошибка обновления данных')
-          addError({ response: 'Ошибка обновления данных' })
+          error('Ошибка обновления данных профиля')
+          addError({ response: 'Ошибка обновления данных профиля' })
           setIsWaitingToResponse(false)
         },
         false,
@@ -287,12 +287,12 @@ const QuestionnaireContent = (props) => {
     ) {
       modalsFunc.add({
         uid: 'questionnaireNotFilled',
-        title: 'Необходимо заполнить анкету',
+        title: 'Необходимо заполнить профиль',
         text: (
           <div className="leading-4">
             <span>
               {
-                'Для возможности записи на мероприятия необходимо заполнить обязательные поля анкеты:'
+                'Для возможности записи на мероприятия, а также покупки услуг и товаров необходимо заполнить обязательные поля профиля:'
               }
             </span>
             <ul className="ml-4 leading-5 list-disc">
@@ -316,7 +316,7 @@ const QuestionnaireContent = (props) => {
             </ul>
             <span>
               {
-                'Пожалуйста заполните поля честно! Во вкладке "конфиденциальность" вы можете скрыть те данные, которые не хотели бы показывать другим.'
+                'Пожалуйста заполните поля максимально полно и честно! Во вкладке "конфиденциальность" вы можете скрыть те данные, которые не хотели бы показывать другим.'
               }
             </span>
           </div>

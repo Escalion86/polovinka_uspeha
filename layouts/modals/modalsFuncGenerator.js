@@ -34,6 +34,7 @@ import selectServicesFunc from './modalsFunc/selectServicesFunc'
 import serviceUserStatusEditFunc from './modalsFunc/serviceStatusEditFunc'
 import userPaymentsFunc from './modalsFunc/userPaymentsFunc'
 import userLoginHistoryFunc from './modalsFunc/userLoginHistoryFunc'
+import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 
 const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
   const fixEventStatus = (eventId, status) => {
@@ -255,7 +256,7 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
           eventSignUpWithWarning(eventId, status, eventSubtypeNum, comment)
         ),
       signUp: (eventId, status = 'participant', eventSubtypeNum, comment) => {
-        if (!loggedUser?._id)
+        if (!loggedUser?._id) {
           addModal({
             title: 'Необходимо зарегистрироваться и авторизироваться',
             text: 'Для записи на мероприятие, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
@@ -265,9 +266,17 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
             onConfirm: () =>
               router.push(`/login?event=${eventId}`, '', { shallow: true }),
             onConfirm2: () =>
-              router.push(`/login?registration=true&event=${eventId}`, '', {
+              router.push(`/login?registration=true`, '', {
                 shallow: true,
               }),
+          })
+        } else if (!isUserQuestionnaireFilled(loggedUser))
+          addModal({
+            title: 'Необходимо заполнить профиль',
+            text: 'Для записи на мероприятие, необходимо сначала заполнить профиль',
+            confirmButtonName: 'Заполнить',
+            onConfirm: () =>
+              router.push(`/cabinet/questionnaire`, '', { shallow: true }),
           })
         else {
           const postfixStatus = status === 'reserve' ? ' в резерв' : ''
@@ -428,7 +437,7 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
       edit: (serviceId) => addModal(serviceFunc(serviceId)),
       view: (serviceId) => addModal(serviceViewFunc(serviceId)),
       apply: (serviceId) => {
-        if (!loggedUser?._id)
+        if (!loggedUser?._id) {
           addModal({
             title: 'Необходимо зарегистрироваться и авторизироваться',
             text: 'Для покупки услуги, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
@@ -438,9 +447,17 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
             onConfirm: () =>
               router.push(`/login?service=${serviceId}`, '', { shallow: true }),
             onConfirm2: () =>
-              router.push(`/login?registration=true&service=${serviceId}`, '', {
+              router.push(`/login?registration=true`, '', {
                 shallow: true,
               }),
+          })
+        } else if (!isUserQuestionnaireFilled(loggedUser))
+          addModal({
+            title: 'Необходимо заполнить профиль',
+            text: 'Для покупки услуги, необходимо сначала заполнить профиль',
+            confirmButtonName: 'Заполнить',
+            onConfirm: () =>
+              router.push(`/cabinet/questionnaire`, '', { shallow: true }),
           })
         else addModal(serviceApplyFunc(serviceId))
       },

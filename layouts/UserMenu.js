@@ -127,7 +127,7 @@ const UserMenu = () => {
             <MenuItem
               href="/cabinet/questionnaire"
               icon={faUserAlt}
-              title="Моя анкета"
+              title="Мой профиль"
             />
             <MenuItem
               onClick={signOut}

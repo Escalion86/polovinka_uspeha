@@ -82,7 +82,6 @@ const SettingsContent = (props) => {
   useEffect(() => {
     if (isWaitingToResponse) {
       setIsWaitingToResponse(false)
-      // setMessage('Данные анкеты обновлены успешно')
     }
   }, [props])
 

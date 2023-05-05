@@ -40,9 +40,6 @@ const notificationsTelegramFunc = () => {
           },
           (data) => {
             window.open('https://t.me/polovinka_uspeha_bot')
-            // setLoggedUser(data)
-            // setUserInUsersState(data)
-            // success('Данные анкеты обновлены успешно')
           },
           () => {
             error(
