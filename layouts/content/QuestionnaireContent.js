@@ -253,13 +253,13 @@ const QuestionnaireContent = (props) => {
         (data) => {
           setLoggedUser(data)
           setUserInUsersState(data)
-          success('Данные анкеты обновлены успешно')
+          success('Данные профиля обновлены успешно')
           setIsWaitingToResponse(false)
           // refreshPage()
         },
         () => {
-          error('Ошибка обновления данных')
-          addError({ response: 'Ошибка обновления данных' })
+          error('Ошибка обновления данных профиля')
+          addError({ response: 'Ошибка обновления данных профиля' })
           setIsWaitingToResponse(false)
         },
         false,
@@ -287,7 +287,7 @@ const QuestionnaireContent = (props) => {
     ) {
       modalsFunc.add({
         uid: 'questionnaireNotFilled',
-        title: 'Необходимо заполнить анкету',
+        title: 'Необходимо заполнить профиль',
         text: (
           <div className="leading-4">
             <span>

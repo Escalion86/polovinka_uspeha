@@ -83,7 +83,7 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
-          // Если это пользователь обновляет анкету, то после обновления оповестим о результате через телеграм
+          // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
           const afterUpdateNeedToNotificate =
             // body.userId === id &&
             Schema === Users && !isUserQuestionnaireFilled(data)

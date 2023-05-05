@@ -146,7 +146,7 @@ const userViewFunc = (userId, clone = false) => {
   }
 
   return {
-    title: `Анкета пользователя`,
+    title: `Профиль пользователя`,
     declineButtonName: 'Закрыть',
     closeButtonShow: true,
     Children: UserModal,
