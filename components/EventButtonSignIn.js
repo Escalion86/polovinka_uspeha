@@ -41,7 +41,7 @@ const EventButtonSignIn = ({
     sumOfPaymentsFromLoggedUserToEventSelector(event._id)
   )
 
-  const router = useRouter()
+  // const router = useRouter()
 
   const {
     canSee,
@@ -155,12 +155,15 @@ const EventButtonSignIn = ({
             else modalsFunc.event.signUp(event._id)
           } else if (loggedUser.status === 'ban') {
             modalsFunc.event.cantSignUp()
-          } else if (!canSignIn && !alreadySignIn && canSignInReserve) {
+          } else if (
+            (!canSignIn && !alreadySignIn && canSignInReserve) ||
+            !isUserQuestionnaireFilled
+          ) {
             if (event.warning)
               modalsFunc.event.signUpWithWarning(event._id, 'reserve')
             else modalsFunc.event.signUp(event._id, 'reserve')
-          } else if (!isUserQuestionnaireFilled) {
-            router.push('/cabinet/questionnaire', '', { shallow: true })
+            // } else if (!isUserQuestionnaireFilled) {
+            //   router.push('/cabinet/questionnaire', '', { shallow: true })
           } else if (canSignOut) {
             modalsFunc.event.signOut(event._id, userEventStatus)
           }
@@ -185,7 +188,7 @@ const EventButtonSignIn = ({
             ? canSignInReserve
               ? 'Записаться в резерв'
               : 'Мест нет'
-            : 'Заполните свой профиль'
+            : 'Записаться' // 'Заполните свой профиль'
         }
         // disabled={
         //   !canSignOut &&
