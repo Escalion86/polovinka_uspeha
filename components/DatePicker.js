@@ -64,6 +64,7 @@ const DatePicker = ({
           onChange(new Date(year, month - 1, day).toISOString())
         }}
         pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+        placeholder="yyyy-mm-dd"
         // min="2018-01-01"
         // max="2018-12-31"
       />
