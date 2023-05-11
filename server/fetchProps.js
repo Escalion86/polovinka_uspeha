@@ -24,7 +24,7 @@ import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
-import Histories from '@models/Histories'
+// import Histories from '@models/Histories'
 import Payments from '@models/Payments'
 import Questionnaires from '@models/Questionnaires'
 import QuestionnairesUsers from '@models/QuestionnairesUsers'
@@ -121,11 +121,11 @@ const fetchProps = async (user) => {
     // const siteSettings = await fetchingSiteSettings(process.env.NEXTAUTH_SITE)
     // console.log(`siteSettings`, siteSettings)
     // console.timeEnd('siteSettings')
-    const histories = isModer
-      ? await Histories.find({
-          // createdAt: { $gt: user.prevActivityAt },
-        })
-      : []
+    // const histories = isModer
+    //   ? await Histories.find({
+    //       // createdAt: { $gt: user.prevActivityAt },
+    //     })
+    //   : []
 
     const services = await Services.find({})
     const servicesUsers = await ServicesUsers.find({})
@@ -162,7 +162,7 @@ const fetchProps = async (user) => {
       eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
       payments: JSON.parse(JSON.stringify(payments)),
       siteSettings: JSON.parse(JSON.stringify(siteSettings[0])),
-      histories: JSON.parse(JSON.stringify(histories)),
+      // histories: JSON.parse(JSON.stringify(histories)),
       questionnaires: JSON.parse(JSON.stringify(questionnaires)),
       questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
       services: JSON.parse(JSON.stringify(services)),
@@ -182,7 +182,7 @@ const fetchProps = async (user) => {
       eventsUsers: [],
       payments: [],
       siteSettings: {},
-      histories: [],
+      // histories: [],
       questionnaires: [],
       questionnairesUsers: [],
       services: [],

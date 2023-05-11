@@ -9,7 +9,7 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { CardWrapper } from '@components/CardWrapper'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import historiesAtom from '@state/atoms/historiesAtom'
+import historiesAtom, { historiesSelector } from '@state/atoms/historiesAtom'
 import {
   Timeline,
   TimelineConnector,
@@ -49,6 +49,7 @@ import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import { EVENT_USER_STATUSES } from '@helpers/constants'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 // const ReviewCard = ({ reviewId }) => {
 //   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -340,7 +341,7 @@ const MenuProps = {
 }
 
 const HistoriesContent = () => {
-  const histories = useRecoilValue(historiesAtom)
+  const histories = useRecoilValue(historiesSelector)
   const [periodHours, setPeriodHours] = useState(24)
   const events = useRecoilValue(eventsAtom)
   const [filter, setFilter] = useState({
@@ -350,6 +351,16 @@ const HistoriesContent = () => {
       canceled: false,
     },
   })
+  // if (!histories)
+  //   return (
+  //     <React.Suspense
+  //       fallback={
+  //         <div className="z-10 flex items-center justify-center h-full">
+  //           <LoadingSpinner text="идет загрузка истории...." />
+  //         </div>
+  //       }
+  //     />
+  //   )
 
   const eventsHistories = {}
   // const eventsResults = {}

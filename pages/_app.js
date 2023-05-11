@@ -34,7 +34,8 @@ import { createTheme } from '@mui/material/styles'
 import { red } from '@mui/material/colors'
 import Script from 'next/script'
 import { SnackbarProvider } from 'notistack'
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
+import LoadingSpinner from '@components/LoadingSpinner'
 // import { CssBaseline } from '@mui/material/'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
@@ -122,7 +123,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                 strategy="beforeInteractive"
               />
               {/* <CssBaseline /> */}
-              <Component {...pageProps} />
+              <Suspense
+                fallback={
+                  <div className="z-10 flex items-center justify-center w-screen h-screen">
+                    <LoadingSpinner text="идет загрузка...." />
+                  </div>
+                }
+              >
+                <Component {...pageProps} />
+              </Suspense>
             </SnackbarProvider>
           </ThemeProvider>
         </RecoilRoot>

@@ -35,6 +35,7 @@ import serviceUserStatusEditFunc from './modalsFunc/serviceStatusEditFunc'
 import userPaymentsFunc from './modalsFunc/userPaymentsFunc'
 import userLoginHistoryFunc from './modalsFunc/userLoginHistoryFunc'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
+import selectPaymentsFunc from './modalsFunc/selectPaymentsFunc'
 
 const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
   const fixEventStatus = (eventId, status) => {
@@ -60,6 +61,37 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
       },
     })
     // }
+  }
+
+  const checkLoggedUser = (forWhat = 'Для записи на мероприятие', query) => {
+    if (!loggedUser?._id) {
+      addModal({
+        title: 'Необходимо зарегистрироваться и авторизироваться',
+        text: `${forWhat}, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте`,
+        confirmButtonName: 'Авторизироваться',
+        confirmButtonName2: 'Зарегистрироваться',
+        showConfirm2: true,
+        onConfirm: () =>
+          router.push(`/login${query ? `?${query}` : ''}`, '', {
+            shallow: true,
+          }),
+        onConfirm2: () =>
+          router.push(`/login?registration=true`, '', {
+            shallow: true,
+          }),
+      })
+      return false
+    } else if (!isUserQuestionnaireFilled(loggedUser)) {
+      addModal({
+        title: 'Необходимо заполнить профиль',
+        text: `${forWhat}, необходимо сначала заполнить профиль`,
+        confirmButtonName: 'Заполнить',
+        onConfirm: () =>
+          router.push(`/cabinet/questionnaire`, '', { shallow: true }),
+      })
+      return false
+    }
+    return true
   }
 
   return {
@@ -251,34 +283,14 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
         status = 'participant',
         eventSubtypeNum,
         comment
-      ) =>
-        addModal(
-          eventSignUpWithWarning(eventId, status, eventSubtypeNum, comment)
-        ),
+      ) => {
+        if (checkLoggedUser('Для записи на мероприятие', `event=${eventId}`))
+          addModal(
+            eventSignUpWithWarning(eventId, status, eventSubtypeNum, comment)
+          )
+      },
       signUp: (eventId, status = 'participant', eventSubtypeNum, comment) => {
-        if (!loggedUser?._id) {
-          addModal({
-            title: 'Необходимо зарегистрироваться и авторизироваться',
-            text: 'Для записи на мероприятие, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
-            confirmButtonName: 'Авторизироваться',
-            confirmButtonName2: 'Зарегистрироваться',
-            showConfirm2: true,
-            onConfirm: () =>
-              router.push(`/login?event=${eventId}`, '', { shallow: true }),
-            onConfirm2: () =>
-              router.push(`/login?registration=true`, '', {
-                shallow: true,
-              }),
-          })
-        } else if (!isUserQuestionnaireFilled(loggedUser))
-          addModal({
-            title: 'Необходимо заполнить профиль',
-            text: 'Для записи на мероприятие, необходимо сначала заполнить профиль',
-            confirmButtonName: 'Заполнить',
-            onConfirm: () =>
-              router.push(`/cabinet/questionnaire`, '', { shallow: true }),
-          })
-        else {
+        if (checkLoggedUser('Для записи на мероприятие', `event=${eventId}`)) {
           const postfixStatus = status === 'reserve' ? ' в резерв' : ''
           addModal({
             title: `Запись${postfixStatus} на мероприятие`,
@@ -343,31 +355,31 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
       //   // }
       // },
       signOut: (eventId, activeStatus) => {
-        if (!loggedUser?._id)
-          addModal({
-            title: 'Необходимо зарегистрироваться',
-            text: 'Для записи на мероприятие, необходимо сначала авторизироваться на сайте',
-            confirmButtonName: 'Авторизироваться',
-            confirmButtonName2: 'Зарегистрироваться',
-            showConfirm2: true,
-            onConfirm: () =>
-              router.push(`/login?event=${eventId}`, '', { shallow: true }),
-            onConfirm2: () =>
-              router.push(`/login?registration=true&event=${eventId}`, '', {
-                shallow: true,
-              }),
-          })
-        else {
-          const postfixStatus = activeStatus === 'reserve' ? ' в резерв' : ''
-          addModal({
-            title: `Отмена записи${postfixStatus} на мероприятие`,
-            text: `Вы уверены что хотите отменить запись${postfixStatus} на мероприятие?`,
-            confirmButtonName: `Отменить запись${postfixStatus}`,
-            onConfirm: () => {
-              itemsFunc.event.signOut(eventId, loggedUser?._id, activeStatus)
-            },
-          })
-        }
+        // if (!loggedUser?._id)
+        //   addModal({
+        //     title: 'Необходимо зарегистрироваться',
+        //     text: 'Для записи на мероприятие, необходимо сначала авторизироваться на сайте',
+        //     confirmButtonName: 'Авторизироваться',
+        //     confirmButtonName2: 'Зарегистрироваться',
+        //     showConfirm2: true,
+        //     onConfirm: () =>
+        //       router.push(`/login?event=${eventId}`, '', { shallow: true }),
+        //     onConfirm2: () =>
+        //       router.push(`/login?registration=true&event=${eventId}`, '', {
+        //         shallow: true,
+        //       }),
+        //   })
+        // else {
+        const postfixStatus = activeStatus === 'reserve' ? ' в резерв' : ''
+        addModal({
+          title: `Отмена записи${postfixStatus} на мероприятие`,
+          text: `Вы уверены что хотите отменить запись${postfixStatus} на мероприятие?`,
+          confirmButtonName: `Отменить запись${postfixStatus}`,
+          onConfirm: () => {
+            itemsFunc.event.signOut(eventId, loggedUser?._id, activeStatus)
+          },
+        })
+        // }
       },
       cantSignUp: () =>
         addModal({

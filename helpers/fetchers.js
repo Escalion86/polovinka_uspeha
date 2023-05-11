@@ -129,6 +129,14 @@ export async function fetchingSiteSettings(domen = process.env.NEXTAUTH_SITE) {
   return resp
 }
 
+export async function fetchingHistories(domen = process.env.NEXTAUTH_SITE) {
+  const resp = await fetch(`${domen}/api/histories`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+    .catch((error) => console.log('fetchingHistories ERROR:', error))
+  return resp
+}
+
 export async function fetchingLoginHistory(domen = process.env.NEXTAUTH_SITE) {
   const resp = await fetch(`${domen}/api/loginhistory`)
     .then((res) => res.json())
