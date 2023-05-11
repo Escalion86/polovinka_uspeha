@@ -7,7 +7,7 @@ import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 import CabinetHeader from '@layouts/CabinetHeader'
 import { CONTENTS } from '@helpers/constants'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 // import ModalsPortal from '@layouts/modals/ModalsPortal'
@@ -23,6 +23,7 @@ import { useRecoilValue } from 'recoil'
 // import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -85,7 +86,17 @@ function CabinetPage(props) {
             <CabinetHeader title={title} />
             <BurgerLayout />
             <ContentWrapper page={page}>
-              {!redirect && <Component {...props} />}
+              {!redirect && (
+                <Suspense
+                  fallback={
+                    <div className="z-10 flex items-center justify-center w-full h-[calc(100vh-4rem)]">
+                      <LoadingSpinner text="идет загрузка...." />
+                    </div>
+                  }
+                >
+                  <Component {...props} />
+                </Suspense>
+              )}
             </ContentWrapper>
             {/* <ModalsPortal /> */}
           </CabinetWrapper>
