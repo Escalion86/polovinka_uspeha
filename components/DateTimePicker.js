@@ -7,8 +7,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import {
   DateTimePicker as MUIDateTimePicker,
-  MobileDateTimePicker,
+  // MobileDateTimePicker,
 } from '@mui/x-date-pickers'
+import { ruRU } from '@mui/x-date-pickers/locales'
 
 const DateTimePicker = ({
   label = '',
@@ -51,7 +52,13 @@ const DateTimePicker = ({
       disabled={disabled}
       noMargin={noMargin}
     >
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'ru'}>
+      <LocalizationProvider
+        dateAdapter={AdapterDayjs}
+        adapterLocale={'ru'}
+        localeText={
+          ruRU.components.MuiLocalizationProvider.defaultProps.localeText
+        }
+      >
         {/* <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none"> */}
         <MUIDateTimePicker
           // disableFuture
