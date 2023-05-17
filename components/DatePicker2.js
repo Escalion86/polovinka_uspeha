@@ -4,6 +4,7 @@ import cn from 'classnames'
 import getZodiac from '@helpers/getZodiac'
 import InputWrapper from './InputWrapper'
 import 'dayjs/locale/ru'
+import dayjs from 'dayjs'
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -59,7 +60,7 @@ const DatePicker2 = ({
         // renderInput={(params) => <TextField variant="standard" {...params} />}
         openTo="year"
         views={['year', 'month', 'day']}
-        value={value}
+        value={dayjs(value)}
         onChange={onChange}
         // renderInput={(params) => (
         //   <TextField
