@@ -39,6 +39,7 @@ import ChipsSelector from '@components/ChipsSelector'
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
+import DatePicker2 from '@components/DatePicker2'
 
 const items = [
   'Oliver Hansen',
@@ -455,16 +456,18 @@ const QuestionnaireContent = (props) => {
               value={security.showBirthday}
               setSecurytyKey={setSecurytyKey}
             > */}
-            <DatePicker
-              label="День рождения"
-              value={birthday}
-              onChange={setBirthday}
-              error={errors.birthday}
-              showYears
-              showZodiac
-              required
-              // noMargin
-            />
+            <div className="mt-3 mb-2">
+              <DatePicker2
+                label="День рождения"
+                value={birthday}
+                onChange={setBirthday}
+                error={errors.birthday}
+                showYears
+                showZodiac
+                required
+                // noMargin
+              />
+            </div>
             {/* </ShowWrapper> */}
 
             <FormWrapper twoColumns>
