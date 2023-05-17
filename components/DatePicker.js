@@ -5,10 +5,14 @@ import getZodiac from '@helpers/getZodiac'
 import InputWrapper from './InputWrapper'
 import 'dayjs/locale/ru'
 import dayjs from 'dayjs'
+import { ruRU } from '@mui/x-date-pickers/locales'
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker'
+import {
+  DatePicker as MUIDatePicker,
+  // MobileDatePicker,
+} from '@mui/x-date-pickers'
 
 const DatePicker = ({
   label = '',
@@ -51,7 +55,13 @@ const DatePicker = ({
       disabled={disabled}
       noMargin={noMargin}
     >
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'ru'}>
+      <LocalizationProvider
+        dateAdapter={AdapterDayjs}
+        adapterLocale={'ru'}
+        localeText={
+          ruRU.components.MuiLocalizationProvider.defaultProps.localeText
+        }
+      >
         {/* <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none"> */}
         <MUIDatePicker
           // disableFuture
