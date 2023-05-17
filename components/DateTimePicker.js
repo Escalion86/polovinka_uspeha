@@ -1,6 +1,14 @@
-import formatDateTime from '@helpers/formatDateTime'
 import cn from 'classnames'
 import InputWrapper from './InputWrapper'
+import 'dayjs/locale/ru'
+import dayjs from 'dayjs'
+
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import {
+  DateTimePicker as MUIDateTimePicker,
+  MobileDateTimePicker,
+} from '@mui/x-date-pickers'
 
 const DateTimePicker = ({
   label = '',
@@ -12,12 +20,12 @@ const DateTimePicker = ({
   // wrapperClassName,
   className,
   disabled = false,
+  showYears = false,
+  showZodiac = false,
   error,
-  postfix,
-  postfixClassName,
   fullWidth,
-  noMargin,
   defaultValue,
+  noMargin,
 }) => {
   return (
     <InputWrapper
@@ -26,49 +34,109 @@ const DateTimePicker = ({
       onChange={onChange}
       copyPasteButtons={false}
       value={value}
-      className={cn(fullWidth ? '' : 'w-52', className)}
-      // paddingY={false}
+      className={cn(fullWidth ? '' : 'w-48', className)}
       required={required}
+      error={error}
+      // postfix={
+      //   value &&
+      //   (showYears || showZodiac) &&
+      //   '(' +
+      //     (showYears ? birthDateToAge(value) : '') +
+      //     (showYears && showZodiac ? ', ' : '') +
+      //     (showZodiac ? getZodiac(value).name : '') +
+      //     ')'
+      // }
       fullWidth={fullWidth}
-      postfix={postfix}
-      postfixClassName={postfixClassName}
-      paddingY="small"
+      // paddingY="small"
       disabled={disabled}
       noMargin={noMargin}
-      error={error}
     >
-      <input
-        className={cn(
-          'text-input px-1 focus:outline-none bg-transparent',
-          // required && !value ? ' border-red-700' : ' border-gray-400',
-          // error ? 'border-red-500' : 'border-gray-400',
-          { 'text-disabled cursor-not-allowed': disabled }
-        )}
-        type="datetime-local"
-        step="1800"
-        name={name}
-        value={value ? formatDateTime(value, false, true, false) : undefined}
-        defaultValue={
-          defaultValue
-            ? formatDateTime(defaultValue, false, true, false)
-            : undefined
-        }
-        onChange={(e) => {
-          const value = e.target.value
-          var year = value.substring(0, 4)
-          var month = value.substring(5, 7)
-          var day = value.substring(8, 10)
-          var day = value.substring(8, 10)
-          var hours = value.substring(11, 13)
-          var minutes = value.substring(14, 16)
-
-          onChange(new Date(year, month - 1, day, hours, minutes).toISOString())
-        }}
-        // pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-        min="2021-01-01T00:00"
-        max="2030-12-31T00:00"
-        disabled={disabled}
-      />
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'ru'}>
+        {/* <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none"> */}
+        <MUIDateTimePicker
+          // disableFuture
+          // label={label}
+          sx={{
+            boxShadow: 'none',
+            '.MuiOutlinedInput-notchedOutline': { borderStyle: 'none' },
+            '& .MuiInputBase-root': {
+              padding: 0,
+              '& .MuiButtonBase-root': {
+                padding: 0,
+                paddingRight: 3,
+                // paddingLeft: 10
+              },
+              '& .MuiInputBase-input': {
+                padding: 0,
+                paddingLeft: 1,
+              },
+            },
+            disableUnderline: true,
+          }}
+          inputFormat="dd.MM.yyyy HH:mm"
+          // renderInput={(params) => <TextField {...params} />}
+          // renderInput={(params) => <input {...params} />}
+          openTo="year"
+          views={['year', 'month', 'day', 'hours', 'minutes']}
+          // views={['hours', 'minutes']}
+          // value={dayjs(value)}
+          value={value ? dayjs(value) : undefined}
+          defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
+          // slots={{
+          //   switchViewIcon
+          // }}
+          onChange={onChange}
+          // slotProps={{
+          //   // textField: {
+          //   //   // helperText: 'дд.мм.гггг',
+          //   //   style: { padding: 0 },
+          //   // },
+          //   textField: {
+          //     InputProps: {
+          //       style: { padding: 0 },
+          //       // startAdornment: (
+          //       //   <InputAdornment position="start">
+          //       //    ...
+          //       //   </InputAdornment>
+          //       // ),
+          //     },
+          //   },
+          // }}
+          // slots={{
+          //   textField: (params) => (
+          //     <TextField
+          //       sx={{ p: 0 }}
+          //       size="small"
+          //       margin="none"
+          //       {...params}
+          //       // inputProps={{
+          //       //   style: {
+          //       //     padding: 0,
+          //       //   },
+          //       // }}
+          //     />
+          //   ),
+          // }}
+          // renderInput={(params) => (
+          //   <TextField
+          //     // sx={{ m: 6 }}
+          //     slo
+          //     // inputProps={{
+          //     //   style: {
+          //     //     padding: 0,
+          //     //   },
+          //     // }}
+          //     fullWidth
+          //     size="small"
+          //     margin="none"
+          //     {...params}
+          //   />
+          // )}
+          // maxDate={undefined}
+          // minDate={new Date()}
+        />
+        {/* </FormControl> */}
+      </LocalizationProvider>
     </InputWrapper>
   )
 }

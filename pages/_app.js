@@ -36,6 +36,7 @@ import Script from 'next/script'
 import { SnackbarProvider } from 'notistack'
 import { Suspense, useEffect } from 'react'
 import LoadingSpinner from '@components/LoadingSpinner'
+import { renderTimeViewClock } from '@mui/x-date-pickers'
 // import { CssBaseline } from '@mui/material/'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
@@ -80,6 +81,24 @@ const theme = createTheme({
     MuiTextField: {
       defaultProps: {
         size: 'small',
+      },
+    },
+    MuiDesktopTimePicker: {
+      defaultProps: {
+        viewRenderers: {
+          hours: renderTimeViewClock,
+          minutes: renderTimeViewClock,
+          seconds: renderTimeViewClock,
+        },
+      },
+    },
+    MuiDesktopDateTimePicker: {
+      defaultProps: {
+        viewRenderers: {
+          hours: renderTimeViewClock,
+          minutes: renderTimeViewClock,
+          seconds: renderTimeViewClock,
+        },
       },
     },
   },
