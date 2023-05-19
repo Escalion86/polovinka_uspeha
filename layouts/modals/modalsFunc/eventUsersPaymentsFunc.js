@@ -50,6 +50,8 @@ import Tooltip from '@components/Tooltip'
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
 import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
 import eventPriceByStatus from '@helpers/eventPriceByStatus'
+import CardButton from '@components/CardButton'
+import { EVENT_STATUSES } from '@helpers/constants'
 
 const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
 
@@ -435,6 +437,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     setDisableDecline,
     setOnlyCloseButtonShow,
     setBottomLeftButtonProps,
+    setTopLeftComponent,
   }) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
@@ -612,23 +615,49 @@ const eventUsersPaymentsFunc = (eventId) => {
         : null
 
     useEffect(() => {
-      setBottomLeftButtonProps({
-        name:
-          event.status === 'closed'
-            ? 'Активировать мероприятие'
-            : 'Закрыть мероприятие',
-        classBgColor: event.status === 'closed' ? 'bg-general' : 'bg-success',
-        icon: event.status === 'closed' ? faPlay : faLock,
-        onClick: () =>
-          setEvent({
-            _id: eventId,
-            status: event.status === 'closed' ? 'active' : 'closed',
-          }),
-        disabled:
-          event.status === 'active' &&
-          (isHaveUserWithoutFullPay || !isEventExpired),
-      })
-    }, [isHaveUserWithoutFullPay, event.status])
+      if (isLoggedUserAdmin && setTopLeftComponent)
+        setTopLeftComponent(() => (
+          <div className="flex">
+            {(() => {
+              const status = event.status ?? 'active'
+              const { icon, color, name } = EVENT_STATUSES.find(
+                ({ value }) => value === status
+              )
+              return (
+                <CardButton
+                  icon={icon}
+                  onClick={() => modalsFunc.event.statusEdit(event._id)}
+                  color={
+                    color.indexOf('-') > 0
+                      ? color.slice(0, color.indexOf('-'))
+                      : color
+                  }
+                  tooltipText={`${name} (изменить статус)`}
+                />
+              )
+            })()}
+          </div>
+        ))
+    }, [isLoggedUserAdmin, setTopLeftComponent, event])
+
+    // useEffect(() => {
+    //   setBottomLeftButtonProps({
+    //     name:
+    //       event.status === 'closed'
+    //         ? 'Активировать мероприятие'
+    //         : 'Закрыть мероприятие',
+    //     classBgColor: event.status === 'closed' ? 'bg-general' : 'bg-success',
+    //     icon: event.status === 'closed' ? faPlay : faLock,
+    //     onClick: () =>
+    //       setEvent({
+    //         _id: eventId,
+    //         status: event.status === 'closed' ? 'active' : 'closed',
+    //       }),
+    //     disabled:
+    //       event.status === 'active' &&
+    //       (isHaveUserWithoutFullPay || !isEventExpired),
+    //   })
+    // }, [isHaveUserWithoutFullPay, event.status])
 
     const TotalFromParticipants = ({ className }) => (
       <div className={cn('flex flex-wrap gap-x-1', className)}>

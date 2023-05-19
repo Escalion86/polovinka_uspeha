@@ -2,6 +2,8 @@ import cn from 'classnames'
 import InputWrapper from './InputWrapper'
 import 'dayjs/locale/ru'
 import dayjs from 'dayjs'
+import ru from 'dayjs/locale/ru'
+dayjs.locale(ru)
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'

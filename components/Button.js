@@ -13,6 +13,7 @@ const Button = ({
   stopPropagation,
   thin = false,
   icon,
+  collapsing,
   ...props
 }) => {
   return loading ? (
@@ -33,15 +34,18 @@ const Button = ({
         onClick && !disabled && onClick()
       }}
       className={cn(
-        'flex gap-x-2 items-center duration-300 px-4 rounded text-white text-base font-normal bg-opacity-90 min-w-max prevent-select-text',
+        'flex gap-x-2 justify-start items-center whitespace-nowrap duration-300 rounded text-white text-base font-normal bg-opacity-90 prevent-select-text overflow-hidden',
         thin ? 'h-8 py-0.5' : 'h-9 py-1',
         className,
         disabled
           ? 'bg-gray-300 text-white cursor-not-allowed'
-          : cn(classHoverBgColor, classBgColor)
+          : cn(classHoverBgColor, classBgColor),
+        collapsing ? 'px-2' : 'min-w-max px-3'
       )}
     >
-      {icon && <FontAwesomeIcon icon={icon} className="w-5 h-5" />}
+      {icon && (
+        <FontAwesomeIcon icon={icon} className="w-5 h-5 min-w-5 min-h-5" />
+      )}
       {name}
     </button>
   )
