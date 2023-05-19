@@ -13,7 +13,7 @@ import eventUsersInBanSelector from '@state/selectors/eventUsersInBanSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
-import { DEFAULT_EVENT } from '@helpers/constants'
+import { DEFAULT_EVENT, EVENT_STATUSES } from '@helpers/constants'
 import usersAtom from '@state/atoms/usersAtom'
 import compareArrays from '@helpers/compareArrays'
 import {
@@ -30,6 +30,7 @@ import CardButton from '@components/CardButton'
 import getUserFullName from '@helpers/getUserFullName'
 import useSnackbar from '@helpers/useSnackbar'
 import copyToClipboard from '@helpers/copyToClipboard'
+import { modalsFuncAtom } from '@state/atoms'
 
 const useCopyUserListToClipboard = ({ mans, womans }) => {
   const mansNames = mans.map(
@@ -68,6 +69,7 @@ const eventUsersFunc = (eventId) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
+    const modalsFunc = useRecoilValue(modalsFuncAtom)
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
     const event = useRecoilValue(eventSelector(eventId))
@@ -149,23 +151,43 @@ const eventUsersFunc = (eventId) => {
     )
 
     useEffect(() => {
-      if (isLoggedUserModer && setTopLeftComponent)
+      if (isLoggedUserAdmin && setTopLeftComponent)
         setTopLeftComponent(() => (
-          <CardButton
-            icon={faListCheck}
-            onClick={() => {
-              useCopyUserListToClipboard({
-                mans: users.filter((user) => mansIds.includes(user._id)),
-                womans: users.filter((user) => womansIds.includes(user._id)),
-              })
+          <div className="flex">
+            {(() => {
+              const status = event.status ?? 'active'
+              const { icon, color, name } = EVENT_STATUSES.find(
+                ({ value }) => value === status
+              )
+              return (
+                <CardButton
+                  icon={icon}
+                  onClick={() => modalsFunc.event.statusEdit(event._id)}
+                  color={
+                    color.indexOf('-') > 0
+                      ? color.slice(0, color.indexOf('-'))
+                      : color
+                  }
+                  tooltipText={`${name} (изменить статус)`}
+                />
+              )
+            })()}
+            <CardButton
+              icon={faListCheck}
+              onClick={() => {
+                useCopyUserListToClipboard({
+                  mans: users.filter((user) => mansIds.includes(user._id)),
+                  womans: users.filter((user) => womansIds.includes(user._id)),
+                })
 
-              info('Список участников скопирован в буфер обмена')
-            }}
-            color="purple"
-            tooltipText="Скопировать в буфер список участников"
-          />
+                info('Список участников скопирован в буфер обмена')
+              }}
+              color="purple"
+              tooltipText="Скопировать в буфер список участников"
+            />
+          </div>
         ))
-    }, [isLoggedUserModer, setTopLeftComponent, mansIds, womansIds])
+    }, [isLoggedUserModer, setTopLeftComponent, mansIds, womansIds, event])
 
     const onClickConfirm = async () => {
       closeModal()
@@ -246,25 +268,25 @@ const eventUsersFunc = (eventId) => {
       assistantsIds,
     ])
 
-    useEffect(() => {
-      if (isLoggedUserAdmin) {
-        setBottomLeftButtonProps({
-          name:
-            event.status === 'closed'
-              ? 'Активировать мероприятие'
-              : 'Закрыть мероприятие',
-          classBgColor: event.status === 'closed' ? 'bg-general' : 'bg-success',
-          icon: event.status === 'closed' ? faPlay : faLock,
-          onClick: () =>
-            setEvent({
-              _id: eventId,
-              status: event.status === 'closed' ? 'active' : 'closed',
-            }),
-          disabled:
-            event.status === 'active' && (isFormChanged || !isEventCanBeClosed),
-        })
-      } else setBottomLeftButtonProps(undefined)
-    }, [isEventCanBeClosed, event.status, isLoggedUserAdmin, isFormChanged])
+    // useEffect(() => {
+    //   if (isLoggedUserAdmin) {
+    //     setBottomLeftButtonProps({
+    //       name:
+    //         event.status === 'closed'
+    //           ? 'Активировать мероприятие'
+    //           : 'Закрыть мероприятие',
+    //       classBgColor: event.status === 'closed' ? 'bg-general' : 'bg-success',
+    //       icon: event.status === 'closed' ? faPlay : faLock,
+    //       onClick: () =>
+    //         setEvent({
+    //           _id: eventId,
+    //           status: event.status === 'closed' ? 'active' : 'closed',
+    //         }),
+    //       disabled:
+    //         event.status === 'active' && (isFormChanged || !isEventCanBeClosed),
+    //     })
+    //   } else setBottomLeftButtonProps(undefined)
+    // }, [isEventCanBeClosed, event.status, isLoggedUserAdmin, isFormChanged])
 
     const removeIdsFromReserve = (usersIds) => {
       const tempReservedParticipantsIds = []
