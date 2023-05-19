@@ -5,6 +5,8 @@ import getZodiac from '@helpers/getZodiac'
 import InputWrapper from './InputWrapper'
 import 'dayjs/locale/ru'
 import dayjs from 'dayjs'
+import ru from 'dayjs/locale/ru'
+dayjs.locale(ru)
 import { ruRU } from '@mui/x-date-pickers/locales'
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
