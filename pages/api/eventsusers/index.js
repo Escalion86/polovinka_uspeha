@@ -230,15 +230,15 @@ const telegramNotification = async ({
                     inline_keyboard: [
                       [
                         {
-                          text: 'Мероприятие',
+                          text: '\u{1F4C5} Мероприятие',
                           url: req.headers.origin + '/event/' + eventId,
                         },
-                        notificationOnMassiveChange
-                          ? undefined
-                          : {
-                              text: 'Пользователь',
+                        userId
+                          ? {
+                              text: '\u{1F464} Пользователь',
                               url: req.headers.origin + '/user/' + userId,
-                            },
+                            }
+                          : undefined,
                       ],
                     ].filter((botton = botton)),
                   })
