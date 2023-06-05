@@ -51,8 +51,8 @@ const userViewFunc = (userId, clone = false) => {
     return (
       <FormWrapper flex className="flex-col">
         <ImageGallery images={user?.images} />
-        <div className="flex flex-col flex-1">
-          <div className="flex items-center gap-x-2 min-h-6">
+        <div className="flex flex-col flex-1 mt-1">
+          <div className="flex items-center mb-1 gap-x-2 min-h-6">
             {user.status === 'member' && (
               <Tooltip title="Участник клуба">
                 <div className="w-6 h-6">
