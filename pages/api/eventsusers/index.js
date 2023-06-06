@@ -240,7 +240,7 @@ const telegramNotification = async ({
                             }
                           : undefined,
                       ],
-                    ].filter((botton = botton)),
+                    ].filter((botton) => botton),
                   })
                 : undefined,
           },

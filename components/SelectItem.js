@@ -9,7 +9,6 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 // import { useEffect, useRef, useState } from 'react'
-// import { Virtuoso } from 'react-virtuoso'
 import {
   UserItem,
   EventItem,
