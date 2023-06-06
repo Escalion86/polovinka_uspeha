@@ -34,6 +34,7 @@ import { EVENT_STATUSES, SERVICE_USER_STATUSES } from '@helpers/constants'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -90,12 +91,15 @@ const CardButtons = ({
 
   const copyEventLink = useCopyEventLinkToClipboard(item._id)
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
+  const copyUserLink = useCopyUserLinkToClipboard(item._id)
 
   const show = {
     editQuestionnaire: !!onEditQuestionnaire,
     shareBtn:
-      (window?.location?.origin && typeOfItem === 'event') ||
-      typeOfItem === 'service',
+      window?.location?.origin &&
+      (typeOfItem === 'event' ||
+        typeOfItem === 'service' ||
+        typeOfItem === 'user'),
     eventUsersBtn:
       (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'event',
     upBtn: !forForm && isLoggedUserAdmin && onUpClick,
@@ -146,6 +150,7 @@ const CardButtons = ({
             setOpen(false)
             if (typeOfItem === 'event') copyEventLink()
             if (typeOfItem === 'service') copyServiceLink()
+            if (typeOfItem === 'user') copyUserLink()
           }}
           color="blue"
           tooltipText="Скопировать ссылку на мероприятие"

@@ -96,6 +96,7 @@ const telegramNotification = async ({
     })
 
     var text
+    var userId
     // Если зарегистрировался один пользователь
     if (
       itIsSelfRecord &&
@@ -103,6 +104,7 @@ const telegramNotification = async ({
       addedEventUsers.length === 0
     ) {
       const { user, status } = deletedEventUsersFull[0]
+      userId = user._id
       text = `\u{2796}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
       )} <b>${user.gender === 'male' ? 'ОТПИСАЛСЯ' : 'ОТПИСАЛАСЬ'}</b> ${
@@ -116,6 +118,7 @@ const telegramNotification = async ({
       addedEventUsers.length === 1
     ) {
       const { user, status } = addedEventUsersFull[0]
+      userId = user._id
       text = `\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
       )} <b>${user.gender === 'male' ? `ЗАПИСАЛСЯ` : 'ЗАПИСАЛАСЬ'}</b> ${
@@ -227,11 +230,17 @@ const telegramNotification = async ({
                     inline_keyboard: [
                       [
                         {
-                          text: 'Открыть мероприятие',
+                          text: '\u{1F4C5} Мероприятие',
                           url: req.headers.origin + '/event/' + eventId,
                         },
+                        userId
+                          ? {
+                              text: '\u{1F464} Пользователь',
+                              url: req.headers.origin + '/user/' + userId,
+                            }
+                          : undefined,
                       ],
-                    ],
+                    ].filter((botton = botton)),
                   })
                 : undefined,
           },
