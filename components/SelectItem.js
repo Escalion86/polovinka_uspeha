@@ -596,6 +596,7 @@ export const SelectEvent = ({
   // buttons,
   // disableDropDownList,
   label,
+  filter,
   modalTitle,
   rounded = true,
   readOnly,
