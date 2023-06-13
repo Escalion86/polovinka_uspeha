@@ -16,7 +16,7 @@ import eventSelector from '@state/selectors/eventSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-// import Image from 'next/image'
+import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 import DateTimeEvent from './DateTimeEvent'
 import EventNameById from './EventNameById'
@@ -37,7 +37,7 @@ const ItemContainer = ({
 }) => (
   <div
     className={cn(
-      'relative flex w-full max-w-full',
+      'relative flex w-full h-full max-w-full',
       { 'hover:bg-blue-200 cursor-pointer': onClick },
       { 'bg-green-200': active },
       { 'py-0.5 px-1': !noPadding },
@@ -165,7 +165,7 @@ export const UserItem = ({
             (isLoggedUserModer ||
               item.security?.showBirthday === true ||
               item.security?.showBirthday === 'full') && (
-              <span className="overflow-visible italic leading-4 max-h-3 -mt-0.5">
+              <span className="flex items-center overflow-visible italic leading-3 max-h-2">
                 {' (' + birthDateToAge(item.birthday) + ')'}
               </span>
             )}
@@ -365,7 +365,7 @@ export const PaymentItem = ({
       // className="flex gap-x-1"
       noPadding
       noBorder={noBorder}
-      className={cn('flex h-[40px]', className)}
+      className={cn('flex h-9', className)}
       checkable={checkable}
     >
       <div
@@ -399,16 +399,13 @@ export const PaymentItem = ({
               />
             )}
           {item.comment && (
-            <TextLinesLimiter lines={2} className="text-xs leading-3">
-              {item.comment}
-            </TextLinesLimiter>
-            // <div className="text-sm leading-4">{item.comment}</div>
+            <div className="text-sm leading-4">{item.comment}</div>
           )}
         </div>
         <div className="flex items-center text-xs gap-x-2">
           <div
             className={cn(
-              'px-1 text-sm font-bold phoneH:text-base whitespace-nowrap',
+              'px-1 text-sm font-bold phoneH:text-base',
               item.payDirection === 'toUser' || item.payDirection === 'toEvent'
                 ? 'text-danger'
                 : 'text-success'
