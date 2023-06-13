@@ -54,7 +54,7 @@ import questionnairesAtom from '@state/atoms/questionnairesAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 // import serviceEditSelector from '@state/selectors/serviceEditSelector'
 // import serviceDeleteSelector from '@state/selectors/serviceDeleteSelector'
-import { useMemo } from 'react'
+// import { useMemo } from 'react'
 // import addModalSelector from '@state/selectors/addModalSelector'
 // import addErrorModalSelector from '@state/selectors/addErrorModalSelector'
 // import snackbarAtom from '@state/atoms/snackbarAtom'
@@ -69,6 +69,7 @@ import browserVer from '@helpers/browserVer'
 import modeAtom from '@state/atoms/modeAtom'
 import TopInfo from './TopInfo'
 import { useWindowDimensionsRecoil } from '@helpers/useWindowDimensions'
+import { getRecoil, setRecoil } from 'recoil-nexus'
 // import setRecoilFunc from '@helpers/setRecoilFunc'
 
 const StateLoader = (props) => {
@@ -79,7 +80,7 @@ const StateLoader = (props) => {
 
   const router = useRouter()
 
-  const [modalsFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
+  const setModalsFunc = useSetRecoilState(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
 
@@ -147,7 +148,7 @@ const StateLoader = (props) => {
 
   // const addErrorModal = useSetRecoilState(addErrorModalSelector)
 
-  const itemsFunc = useMemo(() => itemsFuncGenerator(snackbar), [])
+  // const itemsFunc = useMemo(() => itemsFuncGenerator(snackbar), [])
 
   // useEffect(() => {
   //   setModalsFunc(modalsFuncGenerator(router))
@@ -156,7 +157,7 @@ const StateLoader = (props) => {
   useWindowDimensionsRecoil()
 
   useEffect(() => {
-    setItemsFunc(itemsFunc)
+    setItemsFunc(itemsFuncGenerator(snackbar))
     setModalsFunc(modalsFuncGenerator(router))
 
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
@@ -185,7 +186,7 @@ const StateLoader = (props) => {
   useEffect(() => {
     if (props.isCabinet && !isSiteLoading) {
       const url = isBrowserNeedToBeUpdate()
-      if (url) modalsFunc.browserUpdate(url)
+      if (!url) getRecoil(modalsFuncAtom).browserUpdate(url)
     }
   }, [props.isCabinet, isSiteLoading])
 
