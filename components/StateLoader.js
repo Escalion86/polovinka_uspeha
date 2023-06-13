@@ -186,7 +186,7 @@ const StateLoader = (props) => {
   useEffect(() => {
     if (props.isCabinet && !isSiteLoading) {
       const url = isBrowserNeedToBeUpdate()
-      if (!url) getRecoil(modalsFuncAtom).browserUpdate(url)
+      if (url) getRecoil(modalsFuncAtom).browserUpdate(url)
     }
   }, [props.isCabinet, isSiteLoading])
 
