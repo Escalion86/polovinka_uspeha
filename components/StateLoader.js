@@ -50,7 +50,7 @@ import questionnairesAtom from '@state/atoms/questionnairesAtom'
 // import questionnaireDeleteSelector from '@state/selectors/questionnaireDeleteSelector'
 // import questionnaireUsersEditSelector from '@state/selectors/questionnaireUsersEditSelector'
 // import questionnaireUsersDeleteSelector from '@state/selectors/questionnaireUsersDeleteSelector'
-import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
+// import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 // import serviceEditSelector from '@state/selectors/serviceEditSelector'
 // import serviceDeleteSelector from '@state/selectors/serviceDeleteSelector'
@@ -68,6 +68,8 @@ import { postData } from '@helpers/CRUD'
 import browserVer from '@helpers/browserVer'
 import modeAtom from '@state/atoms/modeAtom'
 import TopInfo from './TopInfo'
+import { useWindowDimensionsRecoil } from '@helpers/useWindowDimensions'
+// import setRecoilFunc from '@helpers/setRecoilFunc'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -141,7 +143,7 @@ const StateLoader = (props) => {
   // const setNotLoadingCard = useSetRecoilState(setNotLoadingSelector)
   // const setErrorCard = useSetRecoilState(setErrorSelector)
   // const setNotErrorCard = useSetRecoilState(setNotErrorSelector)
-  const setWindowDimensions = useSetRecoilState(windowDimensionsAtom)
+  // const setWindowDimensions = useSetRecoilState(windowDimensionsAtom)
 
   // const addErrorModal = useSetRecoilState(addErrorModalSelector)
 
@@ -151,17 +153,7 @@ const StateLoader = (props) => {
   //   setModalsFunc(modalsFuncGenerator(router))
   // }, [])
 
-  useEffect(() => {
-    function handleResize() {
-      setWindowDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
-    }
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  useWindowDimensionsRecoil()
 
   useEffect(() => {
     setItemsFunc(itemsFunc)

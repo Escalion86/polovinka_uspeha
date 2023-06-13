@@ -1,4 +1,6 @@
+import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import { useState, useEffect } from 'react'
+import setRecoilFunc from './setRecoilFunc'
 
 function getWindowDimensions() {
   if (typeof window !== 'undefined') {
@@ -54,4 +56,22 @@ export const useWindowDimensionsTailwindNum = () => {
   if (width < 960) return 3
   if (width < 1200) return 4
   return 5
+}
+
+export const useWindowDimensionsRecoil = () => {
+  useEffect(() => {
+    function handleResize() {
+      setRecoilFunc(windowDimensionsAtom)({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+      // setWindowDimensions({
+      //   width: window.innerWidth,
+      //   height: window.innerHeight,
+      // })
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 }
