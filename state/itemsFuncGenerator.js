@@ -1,4 +1,38 @@
 import { postData, putData, deleteData } from '@helpers/CRUD'
+import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
+import loggedUserAtom from './atoms/loggedUserAtom'
+
+import { getRecoil, setRecoil } from 'recoil-nexus'
+import addErrorModalSelector from './selectors/addErrorModalSelector'
+import setLoadingSelector from './selectors/setLoadingSelector'
+import setNotLoadingSelector from './selectors/setNotLoadingSelector'
+import setErrorSelector from './selectors/setErrorSelector'
+import setNotErrorSelector from './selectors/setNotErrorSelector'
+import eventEditSelector from './selectors/eventEditSelector'
+import eventDeleteSelector from './selectors/eventDeleteSelector'
+import directionEditSelector from './selectors/directionEditSelector'
+import directionDeleteSelector from './selectors/directionDeleteSelector'
+import additionalBlockEditSelector from './selectors/additionalBlockEditSelector'
+import additionalBlockDeleteSelector from './selectors/additionalBlockDeleteSelector'
+import userDeleteSelector from './selectors/userDeleteSelector'
+import userEditSelector from './selectors/userEditSelector'
+import reviewEditSelector from './selectors/reviewEditSelector'
+import reviewDeleteSelector from './selectors/reviewDeleteSelector'
+import paymentsAddSelector from './selectors/paymentsAddSelector'
+import paymentEditSelector from './selectors/paymentEditSelector'
+import paymentsDeleteSelector from './selectors/paymentsDeleteSelector'
+import eventsUsersEditSelector from './selectors/eventsUsersEditSelector'
+import eventsUsersDeleteSelector from './selectors/eventsUsersDeleteSelector'
+import eventsUsersDeleteByEventIdSelector from './selectors/eventsUsersDeleteByEventIdSelector'
+import siteSettingsAtom from './atoms/siteSettingsAtom'
+import questionnaireEditSelector from './selectors/questionnaireEditSelector'
+import questionnaireDeleteSelector from './selectors/questionnaireDeleteSelector'
+import questionnaireUsersEditSelector from './selectors/questionnaireUsersEditSelector'
+import questionnaireUsersDeleteSelector from './selectors/questionnaireUsersDeleteSelector'
+import serviceEditSelector from './selectors/serviceEditSelector'
+import serviceDeleteSelector from './selectors/serviceDeleteSelector'
+import servicesUsersEditSelector from './selectors/servicesUsersEditSelector'
+import servicesUsersDeleteSelector from './selectors/servicesUsersDeleteSelector'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -147,8 +181,44 @@ const messages = {
   },
 }
 
+const setFunc = (selector) => (value) => setRecoil(selector, value)
+
+const props = {
+  setLoading: setFunc(isSiteLoadingAtom),
+  addErrorModal: setFunc(addErrorModalSelector),
+  setLoadingCard: setFunc(setLoadingSelector),
+  setNotLoadingCard: setFunc(setNotLoadingSelector),
+  setErrorCard: setFunc(setErrorSelector),
+  setNotErrorCard: setFunc(setNotErrorSelector),
+  setEvent: setFunc(eventEditSelector),
+  deleteEvent: setFunc(eventDeleteSelector),
+  setDirection: setFunc(directionEditSelector),
+  deleteDirection: setFunc(directionDeleteSelector),
+  setAdditionalBlock: setFunc(additionalBlockEditSelector),
+  deleteAdditionalBlock: setFunc(additionalBlockDeleteSelector),
+  setUser: setFunc(userEditSelector),
+  deleteUser: setFunc(userDeleteSelector),
+  setReview: setFunc(reviewEditSelector),
+  deleteReview: setFunc(reviewDeleteSelector),
+  addPayments: setFunc(paymentsAddSelector),
+  setPayment: setFunc(paymentEditSelector),
+  deletePayment: setFunc(paymentsDeleteSelector),
+  setEventsUser: setFunc(eventsUsersEditSelector),
+  deleteEventsUser: setFunc(eventsUsersDeleteSelector),
+  deleteEventsUsersByEventId: setFunc(eventsUsersDeleteByEventIdSelector),
+  setSiteSettings: setFunc(siteSettingsAtom),
+  setQuestionnaire: setFunc(questionnaireEditSelector),
+  deleteQuestionnaire: setFunc(questionnaireDeleteSelector),
+  setQuestionnaireUsers: setFunc(questionnaireUsersEditSelector),
+  deleteQuestionnaireUsers: setFunc(questionnaireUsersDeleteSelector),
+  setService: setFunc(serviceEditSelector),
+  deleteService: setFunc(serviceDeleteSelector),
+  setServicesUser: setFunc(servicesUsersEditSelector),
+  deleteServicesUser: setFunc(servicesUsersDeleteSelector),
+}
+
 const itemsFuncGenerator = (
-  props,
+  snackbar,
   array = [
     'event',
     'direction',
@@ -167,11 +237,11 @@ const itemsFuncGenerator = (
     setLoadingCard,
     setNotLoadingCard,
     setErrorCard,
-    setNotErrorCard,
+    // setNotErrorCard,
     addErrorModal,
-    snackbar = {},
-    loggedUser,
+    // snackbar = {},
   } = props
+  const loggedUser = getRecoil(loggedUserAtom)
   const obj = {}
   array?.length > 0 &&
     array.forEach((itemName) => {

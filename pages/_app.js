@@ -21,6 +21,7 @@ import {
   // useRecoilState,
   // useRecoilValue,
 } from 'recoil'
+import RecoilNexus from 'recoil-nexus'
 
 import { ThemeProvider } from '@mui/material/styles'
 
@@ -135,6 +136,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <SessionProvider session={session} refetchInterval={5 * 60}>
         {/* <Provider store={store}> */}
         <RecoilRoot>
+          <RecoilNexus />
           <ThemeProvider theme={theme}>
             <SnackbarProvider maxSnack={4}>
               <Script

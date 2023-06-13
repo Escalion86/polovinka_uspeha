@@ -37,7 +37,16 @@ import userLoginHistoryFunc from './modalsFunc/userLoginHistoryFunc'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import selectPaymentsFunc from './modalsFunc/selectPaymentsFunc'
 
-const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
+import { getRecoil, setRecoil } from 'recoil-nexus'
+import addModalSelector from '@state/selectors/addModalSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+
+const modalsFuncGenerator = (router) => {
+  const addModal = (value) => setRecoil(addModalSelector, value)
+  const itemsFunc = getRecoil(itemsFuncAtom)
+  const loggedUser = getRecoil(loggedUserAtom)
+
   const fixEventStatus = (eventId, status) => {
     itemsFunc.event.set({ _id: eventId, status }, false, true)
   }
@@ -262,19 +271,19 @@ const modalsFuncGenerator = (addModal, itemsFunc, router, loggedUser) => {
       cancel: (eventId) =>
         addModal({
           title: 'Отмена события',
-          text: 'Вы уверены, что хотите отменить событие (это не удалит событие, а лишь изменит его статус на отмененное)?',
+          text: 'Вы уверены, что хотите отменить мероприятие (это не удалит мероприятие, а лишь изменит его статус на отмененное)?',
           onConfirm: async () => itemsFunc.event.cancel(eventId),
         }),
       uncancel: (eventId) =>
         addModal({
           title: 'Возобновление события',
-          text: 'Вы уверены, что хотите возобновить событие?',
+          text: 'Вы уверены, что хотите возобновить мероприятие?',
           onConfirm: async () => itemsFunc.event.uncancel(eventId),
         }),
       delete: (eventId) =>
         addModal({
           title: 'Удаление события',
-          text: 'Вы уверены, что хотите удалить событие?',
+          text: 'Вы уверены, что хотите удалить мероприятие?',
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
       view: (eventId) => addModal(eventViewFunc(eventId)),

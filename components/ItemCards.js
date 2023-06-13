@@ -16,7 +16,7 @@ import eventSelector from '@state/selectors/eventSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 import DateTimeEvent from './DateTimeEvent'
 import EventNameById from './EventNameById'
@@ -37,7 +37,7 @@ const ItemContainer = ({
 }) => (
   <div
     className={cn(
-      'relative flex w-full h-full max-w-full',
+      'relative flex w-full max-w-full',
       { 'hover:bg-blue-200 cursor-pointer': onClick },
       { 'bg-green-200': active },
       { 'py-0.5 px-1': !noPadding },
@@ -365,7 +365,7 @@ export const PaymentItem = ({
       // className="flex gap-x-1"
       noPadding
       noBorder={noBorder}
-      className={cn('flex h-9', className)}
+      className={cn('flex h-[40px]', className)}
       checkable={checkable}
     >
       <div
@@ -399,13 +399,16 @@ export const PaymentItem = ({
               />
             )}
           {item.comment && (
-            <div className="text-sm leading-4">{item.comment}</div>
+            <TextLinesLimiter lines={2} className="text-xs leading-3">
+              {item.comment}
+            </TextLinesLimiter>
+            // <div className="text-sm leading-4">{item.comment}</div>
           )}
         </div>
         <div className="flex items-center text-xs gap-x-2">
           <div
             className={cn(
-              'px-1 text-sm font-bold phoneH:text-base',
+              'px-1 text-sm font-bold phoneH:text-base whitespace-nowrap',
               item.payDirection === 'toUser' || item.payDirection === 'toEvent'
                 ? 'text-danger'
                 : 'text-success'
