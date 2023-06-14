@@ -11,6 +11,7 @@ import { useRecoilValue } from 'recoil'
 import UserStatusIcon from './UserStatusIcon'
 import Image from 'next/image'
 import SvgSigma from 'svg/SvgSigma'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const Counter = ({
   showAges,
@@ -23,6 +24,7 @@ const Counter = ({
   maxMember,
   noviceReserveCount,
   memberReserveCount,
+  showNoviceAndMemberSum,
 }) =>
   maxNovice || maxMember ? (
     <>
@@ -37,56 +39,89 @@ const Counter = ({
         )}
         <div className="flex items-center gap-x-0.5">
           <div className="flex flex-col">
-            <div className="flex gap-x-0.5 items-center">
-              <UserStatusIcon size="xs" status="novice" />
-              <div className="flex tablet:gap-x-0.5">
-                <span
-                  className={
-                    maxNovice && noviceCount >= maxNovice
-                      ? 'text-danger font-semibold'
-                      : ''
-                  }
-                >
-                  {noviceCount}
-                </span>
-                {typeof maxNovice === 'number' && (
-                  <>
-                    <span>/</span>
-                    <span>{maxNovice}</span>
-                  </>
-                )}
-                {noviceReserveCount > 0 && (
-                  <span className="text-xs">{`+${noviceReserveCount}`}</span>
-                )}
-                {/* <span>чел.</span> */}
+            {showNoviceAndMemberSum ? (
+              <div className="flex gap-x-0.5 items-center">
+                {/* <UserStatusIcon size="xs" status="novice" /> */}
+                <div className="flex tablet:gap-x-0.5">
+                  <span
+                    className={
+                      maxNovice + maxMember &&
+                      noviceCount + memberCount >= maxNovice + maxMember
+                        ? 'text-danger font-semibold'
+                        : ''
+                    }
+                  >
+                    {noviceCount + memberCount}
+                  </span>
+                  {(typeof maxNovice === 'number' ||
+                    typeof maxMember === 'number') && (
+                    <>
+                      <span>/</span>
+                      <span>{(maxNovice ?? 0) + (maxMember ?? 0)}</span>
+                    </>
+                  )}
+                  {noviceReserveCount + memberReserveCount > 0 && (
+                    <span className="text-xs">{`+${
+                      noviceReserveCount + memberReserveCount
+                    }`}</span>
+                  )}
+                  {/* <span>чел.</span> */}
+                </div>
               </div>
-            </div>
-            <div className="flex gap-x-0.5 items-center">
-              <UserStatusIcon size="xs" status="member" />
-              <div className="flex tablet:gap-x-0.5">
-                <span
-                  className={
-                    maxMember && memberCount >= maxMember
-                      ? 'text-danger font-semibold'
-                      : ''
-                  }
-                >
-                  {memberCount}
-                </span>
-                {typeof maxMember === 'number' && (
-                  <>
-                    <span>/</span>
-                    <span>{maxMember}</span>
-                  </>
-                )}
-                {memberReserveCount > 0 && (
-                  <span className="text-xs">{`+${memberReserveCount}`}</span>
-                )}
-                {/* <span>чел.</span> */}
-              </div>
-            </div>
+            ) : (
+              <>
+                <div className="flex gap-x-0.5 items-center">
+                  <UserStatusIcon size="xs" status="novice" />
+                  <div className="flex tablet:gap-x-0.5">
+                    <span
+                      className={
+                        maxNovice && noviceCount >= maxNovice
+                          ? 'text-danger font-semibold'
+                          : ''
+                      }
+                    >
+                      {noviceCount}
+                    </span>
+                    {typeof maxNovice === 'number' && (
+                      <>
+                        <span>/</span>
+                        <span>{maxNovice}</span>
+                      </>
+                    )}
+                    {noviceReserveCount > 0 && (
+                      <span className="text-xs">{`+${noviceReserveCount}`}</span>
+                    )}
+                    {/* <span>чел.</span> */}
+                  </div>
+                </div>
+                <div className="flex gap-x-0.5 items-center">
+                  <UserStatusIcon size="xs" status="member" />
+                  <div className="flex tablet:gap-x-0.5">
+                    <span
+                      className={
+                        maxMember && memberCount >= maxMember
+                          ? 'text-danger font-semibold'
+                          : ''
+                      }
+                    >
+                      {memberCount}
+                    </span>
+                    {typeof maxMember === 'number' && (
+                      <>
+                        <span>/</span>
+                        <span>{maxMember}</span>
+                      </>
+                    )}
+                    {memberReserveCount > 0 && (
+                      <span className="text-xs">{`+${memberReserveCount}`}</span>
+                    )}
+                    {/* <span>чел.</span> */}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-          {typeof max === 'number' ? (
+          {!showNoviceAndMemberSum && typeof max === 'number' ? (
             <div className="flex gap-x-0.5 items-center">
               {/* <span className="text-4xl">{'}'}</span> */}
               <div className="hidden min-w-[9px] h-[36px] tablet:block w-[9px]">
@@ -158,6 +193,7 @@ const Counter = ({
   )
 
 const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const event = useRecoilValue(eventSelector(eventId))
   // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
@@ -240,6 +276,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           maxMember={event.maxMansMember}
           noviceReserveCount={eventMansNoviceReserveCount}
           memberReserveCount={eventMansMemberReserveCount}
+          showNoviceAndMemberSum={!isLoggedUserAdmin}
         />
       </div>
       <div className="flex items-center px-1 tablet:px-2 tablet:border-r gap-x-1">
@@ -258,6 +295,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           maxMember={event.maxWomansMember}
           noviceReserveCount={eventWomansNoviceReserveCount}
           memberReserveCount={eventWomansMemberReserveCount}
+          showNoviceAndMemberSum={!isLoggedUserAdmin}
         />
         {/* <div className="flex flex-col items-center">
           {showAges && (
