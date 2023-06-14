@@ -1,6 +1,6 @@
 import { postData, putData, deleteData } from '@helpers/CRUD'
 import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
-import loggedUserAtom from './atoms/loggedUserAtom'
+// import loggedUserAtom from './atoms/loggedUserAtom'
 
 import { getRecoil, setRecoil } from 'recoil-nexus'
 import addErrorModalSelector from './selectors/addErrorModalSelector'
@@ -219,6 +219,7 @@ const props = {
 
 const itemsFuncGenerator = (
   snackbar,
+  loggedUser,
   array = [
     'event',
     'direction',
@@ -241,7 +242,7 @@ const itemsFuncGenerator = (
     addErrorModal,
     // snackbar = {},
   } = props
-  const loggedUser = getRecoil(loggedUserAtom)
+  // const loggedUser = getRecoil(loggedUserAtom)
   const obj = {}
   array?.length > 0 &&
     array.forEach((itemName) => {
