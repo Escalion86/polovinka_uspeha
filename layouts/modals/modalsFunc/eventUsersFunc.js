@@ -550,52 +550,53 @@ const eventUsersFunc = (eventId) => {
               <span>чел.</span>
             </div>
           </TabPanel>
-          {(event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
-            <TabPanel
-              tabName="Резерв"
-              tabAddToLabel={`(${reservedParticipantsIds.length})`}
-            >
-              <SelectUserList
-                label="Резерв"
-                filter={{ gender: { operand: '!==', value: null } }}
-                modalTitle="Выбор пользователей в резерв"
-                usersId={reservedParticipantsIds}
-                onChange={(usersIds) => {
-                  removeIdsFromParticipants(usersIds)
-                  setReservedParticipantsIds(sortUsersIds(usersIds))
-                }}
-                exceptedIds={[
-                  ...assistantsIds,
-                  // ...mansIds,
-                  // ...womansIds,
-                  // ...reservedParticipantsIds,
-                  ...bannedParticipantsIds,
-                ]}
-                buttons={
-                  isLoggedUserModer && !isEventClosed
-                    ? [
-                        (id) => ({
-                          onClick: () => {
-                            removeIdsFromReserve([id])
-                            const genderOfUser = users.find(
-                              (user) => user._id === id
-                            ).gender
-                            if (genderOfUser === 'male')
-                              setMansIds(sortUsersIds([...mansIds, id]))
-                            if (genderOfUser === 'famale')
-                              setWomansIds(sortUsersIds([...womansIds, id]))
-                          },
-                          icon: faArrowAltCircleLeft,
-                          iconClassName: 'text-general',
-                          tooltip: 'Перенести в активный состав',
-                        }),
-                      ]
-                    : []
-                }
-                readOnly={!isLoggedUserModer || isEventClosed}
-              />
-            </TabPanel>
-          )}
+          {isLoggedUserModer &&
+            (event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
+              <TabPanel
+                tabName="Резерв"
+                tabAddToLabel={`(${reservedParticipantsIds.length})`}
+              >
+                <SelectUserList
+                  label="Резерв"
+                  filter={{ gender: { operand: '!==', value: null } }}
+                  modalTitle="Выбор пользователей в резерв"
+                  usersId={reservedParticipantsIds}
+                  onChange={(usersIds) => {
+                    removeIdsFromParticipants(usersIds)
+                    setReservedParticipantsIds(sortUsersIds(usersIds))
+                  }}
+                  exceptedIds={[
+                    ...assistantsIds,
+                    // ...mansIds,
+                    // ...womansIds,
+                    // ...reservedParticipantsIds,
+                    ...bannedParticipantsIds,
+                  ]}
+                  buttons={
+                    isLoggedUserModer && !isEventClosed
+                      ? [
+                          (id) => ({
+                            onClick: () => {
+                              removeIdsFromReserve([id])
+                              const genderOfUser = users.find(
+                                (user) => user._id === id
+                              ).gender
+                              if (genderOfUser === 'male')
+                                setMansIds(sortUsersIds([...mansIds, id]))
+                              if (genderOfUser === 'famale')
+                                setWomansIds(sortUsersIds([...womansIds, id]))
+                            },
+                            icon: faArrowAltCircleLeft,
+                            iconClassName: 'text-general',
+                            tooltip: 'Перенести в активный состав',
+                          }),
+                        ]
+                      : []
+                  }
+                  readOnly={!isLoggedUserModer || isEventClosed}
+                />
+              </TabPanel>
+            )}
           <TabPanel
             tabName="Ведущие"
             tabAddToLabel={`(${assistantsIds.length})`}

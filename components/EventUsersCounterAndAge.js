@@ -12,6 +12,7 @@ import UserStatusIcon from './UserStatusIcon'
 import Image from 'next/image'
 import SvgSigma from 'svg/SvgSigma'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 const Counter = ({
   showAges,
@@ -25,6 +26,7 @@ const Counter = ({
   noviceReserveCount,
   memberReserveCount,
   showNoviceAndMemberSum,
+  showReserve,
 }) =>
   maxNovice || maxMember ? (
     <>
@@ -68,11 +70,12 @@ const Counter = ({
                       </span>
                     </>
                   )}
-                  {noviceReserveCount + memberReserveCount > 0 && (
-                    <span className="text-xs">{`+${
-                      noviceReserveCount + memberReserveCount
-                    }`}</span>
-                  )}
+                  {showReserve &&
+                    noviceReserveCount + memberReserveCount > 0 && (
+                      <span className="text-xs">{`+${
+                        noviceReserveCount + memberReserveCount
+                      }`}</span>
+                    )}
                   {/* <span>чел.</span> */}
                 </div>
               </div>
@@ -96,7 +99,7 @@ const Counter = ({
                         <span>{maxNovice}</span>
                       </>
                     )}
-                    {noviceReserveCount > 0 && (
+                    {showReserve && noviceReserveCount > 0 && (
                       <span className="text-xs">{`+${noviceReserveCount}`}</span>
                     )}
                     {/* <span>чел.</span> */}
@@ -190,7 +193,7 @@ const Counter = ({
             <span>{max}</span>
           </>
         )}
-        {noviceReserveCount + memberReserveCount > 0 && (
+        {showReserve && noviceReserveCount + memberReserveCount > 0 && (
           <span className="text-xs">{`+${
             noviceReserveCount + memberReserveCount
           }`}</span>
@@ -201,7 +204,7 @@ const Counter = ({
   )
 
 const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const event = useRecoilValue(eventSelector(eventId))
   // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
@@ -258,6 +261,13 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
 
   const eventParticipantsCount = eventWomansCount + eventMansCount
 
+  const showReserve = true // isLoggedUserModer
+  const reserveSum =
+    eventMansNoviceReserveCount +
+    eventMansMemberReserveCount +
+    eventWomansNoviceReserveCount +
+    eventWomansMemberReserveCount
+
   return (
     <div
       className={cn(
@@ -284,7 +294,8 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           maxMember={event.maxMansMember}
           noviceReserveCount={eventMansNoviceReserveCount}
           memberReserveCount={eventMansMemberReserveCount}
-          showNoviceAndMemberSum={!isLoggedUserAdmin}
+          showNoviceAndMemberSum={!isLoggedUserModer}
+          showReserve={showReserve}
         />
       </div>
       <div className="flex items-center px-1 tablet:px-2 tablet:border-r gap-x-1">
@@ -303,7 +314,8 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           maxMember={event.maxWomansMember}
           noviceReserveCount={eventWomansNoviceReserveCount}
           memberReserveCount={eventWomansMemberReserveCount}
-          showNoviceAndMemberSum={!isLoggedUserAdmin}
+          showNoviceAndMemberSum={!isLoggedUserModer}
+          showReserve={showReserve}
         />
         {/* <div className="flex flex-col items-center">
           {showAges && (
@@ -350,6 +362,9 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
               <span>/</span>
               <span>{event.maxParticipants}</span>
             </>
+          )}
+          {showReserve && reserveSum > 0 && (
+            <span className="text-xs">{`+${reserveSum}`}</span>
           )}
         </div>
         <span>чел.</span>
