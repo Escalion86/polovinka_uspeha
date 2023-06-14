@@ -46,6 +46,7 @@ const modalsFuncGenerator = (router) => {
   const addModal = (value) => setRecoil(addModalSelector, value)
   const itemsFunc = getRecoil(itemsFuncAtom)
   const loggedUser = getRecoil(loggedUserAtom)
+  console.log('loggedUser :>> ', loggedUser)
 
   const fixEventStatus = (eventId, status) => {
     itemsFunc.event.set({ _id: eventId, status }, false, true)
