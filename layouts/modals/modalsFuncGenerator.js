@@ -39,14 +39,14 @@ import selectPaymentsFunc from './modalsFunc/selectPaymentsFunc'
 
 import { getRecoil, setRecoil } from 'recoil-nexus'
 import addModalSelector from '@state/selectors/addModalSelector'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+// import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+// import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
-const modalsFuncGenerator = (router) => {
+const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
   const addModal = (value) => setRecoil(addModalSelector, value)
-  const itemsFunc = getRecoil(itemsFuncAtom)
-  const loggedUser = getRecoil(loggedUserAtom)
-  console.log('loggedUser :>> ', loggedUser)
+  // const itemsFunc = getRecoil(itemsFuncAtom)
+  // const loggedUser = getRecoil(loggedUserAtom)
+  // console.log('loggedUser :>> ', loggedUser)
 
   const fixEventStatus = (eventId, status) => {
     itemsFunc.event.set({ _id: eventId, status }, false, true)

@@ -157,9 +157,12 @@ const StateLoader = (props) => {
   useWindowDimensionsRecoil()
 
   useEffect(() => {
-    setItemsFunc(itemsFuncGenerator(snackbar))
-    setModalsFunc(modalsFuncGenerator(router))
+    const itemsFunc = itemsFuncGenerator(snackbar, loggedUser)
+    setItemsFunc(itemsFunc)
+    setModalsFunc(modalsFuncGenerator(router, itemsFunc, loggedUser))
+  }, [loggedUser])
 
+  useEffect(() => {
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
       setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
     if (!loggedUserActiveStatus || props.loggedUser?.role !== 'dev')
