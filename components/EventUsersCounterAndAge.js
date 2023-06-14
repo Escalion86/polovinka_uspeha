@@ -54,10 +54,18 @@ const Counter = ({
                     {noviceCount + memberCount}
                   </span>
                   {(typeof maxNovice === 'number' ||
-                    typeof maxMember === 'number') && (
+                    typeof maxMember === 'number' ||
+                    typeof max === 'number') && (
                     <>
                       <span>/</span>
-                      <span>{(maxNovice ?? 0) + (maxMember ?? 0)}</span>
+                      <span>
+                        {typeof maxNovice === 'number' &&
+                        typeof maxMember === 'number'
+                          ? typeof max === 'number'
+                            ? Math.min(maxNovice + maxMember, max)
+                            : maxNovice + maxMember
+                          : max}
+                      </span>
                     </>
                   )}
                   {noviceReserveCount + memberReserveCount > 0 && (
