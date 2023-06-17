@@ -48,12 +48,13 @@ const ServiceUserCard = ({
       <div className={cn('flex flex-col w-full')}>
         <div className="flex w-full">
           <div className="flex-1 px-2 py-1 text-lg font-bold text-general">
-            {service.title}
+            {service?.title ?? '[услуга не найдена]'}
           </div>
           <CardButtons
             item={serviceUser}
             typeOfItem="serviceUser"
             onEditQuestionnaire={
+              service &&
               (isLoggedUserAdmin || loggedUser._id === serviceUser.userId) &&
               service.questionnaire &&
               serviceUser.status !== 'closed'
@@ -77,17 +78,21 @@ const ServiceUserCard = ({
             <UserItem item={user} />
           </div>
         )}
-        <div className="flex items-center py-0.5 px-1 border-t border-gray-400">
-          <PriceDiscount
-            item={service}
-            priceForStatus={user.status}
-            className="flex-1"
-          />
-          <QuestionnaireAnswersFill
-            answers={serviceUser.answers}
-            questionnaireData={service.questionnaire?.data}
-            small
-          />
+        <div className="flex items-center py-0.5 px-1 h-10 border-t border-gray-400">
+          {service && (
+            <>
+              <PriceDiscount
+                item={service}
+                priceForStatus={user.status}
+                className="flex-1"
+              />
+              <QuestionnaireAnswersFill
+                answers={serviceUser.answers}
+                questionnaireData={service.questionnaire?.data}
+                small
+              />
+            </>
+          )}
         </div>
       </div>
     </CardWrapper>

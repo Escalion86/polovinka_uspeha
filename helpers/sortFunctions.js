@@ -1,4 +1,8 @@
 const sortFunctions = {
+  eventsUserCount: {
+    asc: (a, b) => (a.eventsUserCount < b.eventsUserCount ? -1 : 1),
+    desc: (a, b) => (a.eventsUserCount > b.eventsUserCount ? -1 : 1),
+  },
   date: {
     asc: (a, b) =>
       new Date(a.date).getTime() < new Date(b.date).getTime() ? -1 : 1,

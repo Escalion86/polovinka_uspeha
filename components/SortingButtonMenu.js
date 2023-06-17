@@ -102,6 +102,11 @@ const sortParams = [
   { key: 'birthday', title: 'по возрасту', type: 'number' },
   { key: 'createdAt', title: 'по дате регистрации', type: 'number' },
   { key: 'payAt', title: 'по дате события', type: 'number' },
+  {
+    key: 'eventsUserCount',
+    title: 'по кол-ву посещ. мероприятий',
+    type: 'number',
+  },
 ]
 
 const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
