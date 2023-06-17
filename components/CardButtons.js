@@ -148,8 +148,28 @@ const CardButtons = ({
           icon={faShareAlt}
           onClick={() => {
             setOpen(false)
-            if (typeOfItem === 'event') copyEventLink()
-            if (typeOfItem === 'service') copyServiceLink()
+            if (typeOfItem === 'event') {
+              copyEventLink()
+              if (!item.showOnSite)
+                modalsFunc.add({
+                  title: 'Мероприятие скрыто',
+                  text: `Ссылка скопирована, но обратите внимание, что мероприятие скрыто, поэтому переход по ссылке пользователей с обычными правами доступа невозможен!`,
+                  confirmButtonName: 'Ясно',
+                  showConfirm: true,
+                  showDecline: false,
+                })
+            }
+            if (typeOfItem === 'service') {
+              copyServiceLink()
+              if (!item.showOnSite)
+                modalsFunc.add({
+                  title: 'Услуга скрыта',
+                  text: `Ссылка скопирована, но обратите внимание, что услуга скрыта, поэтому переход по ссылке пользователей с обычными правами доступа невозможен!`,
+                  confirmButtonName: 'Ясно',
+                  showConfirm: true,
+                  showDecline: false,
+                })
+            }
             if (typeOfItem === 'user') copyUserLink()
           }}
           color="blue"

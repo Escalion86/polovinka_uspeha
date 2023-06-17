@@ -37,7 +37,7 @@ const ItemContainer = ({
 }) => (
   <div
     className={cn(
-      'relative flex w-full h-full max-w-full',
+      'relative flex w-full max-w-full',
       { 'hover:bg-blue-200 cursor-pointer': onClick },
       { 'bg-green-200': active },
       { 'py-0.5 px-1': !noPadding },
