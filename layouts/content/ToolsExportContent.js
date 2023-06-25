@@ -85,7 +85,7 @@ const ToolsExportContent = () => {
       ...questionnaire.map((data) => ({
         header: data.label,
         key: data.key,
-        width: Math.max(Math.min(data.label.length * 0.66, 80), 15),
+        width: Math.max(Math.min(data.label.length, 80), 15),
       })),
     ]
 
