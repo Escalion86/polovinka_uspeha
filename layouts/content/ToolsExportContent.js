@@ -78,14 +78,14 @@ const ToolsExportContent = () => {
     // sheet.properties.defaultRowHeight = 80
 
     sheet.columns = [
-      { header: 'Фото', key: 'foto', width: 20 },
+      // { header: 'Фото', key: 'foto', width: 20 },
       { header: 'ФИО', key: 'userName', width: 30 },
       { header: 'Пол', key: 'userGender', width: 10 },
       { header: 'Телефон', key: 'userPhone', width: 14 },
       ...questionnaire.map((data) => ({
         header: data.label,
         key: data.key,
-        width: Math.max(Math.min(data.label.length * 0.66, 80), 15),
+        width: Math.max(Math.min(data.label.length, 80), 15),
       })),
     ]
 
@@ -94,24 +94,24 @@ const ToolsExportContent = () => {
 
       const user = users.find((user) => user._id === serviceUser.userId)
       const answers = { ...serviceUser.answers }
-      if (answers['96410c58-3b3b-400d-b209-4fbe1e1a465a']) {
-        const myBase64Image = await getBase64Image(
-          answers['96410c58-3b3b-400d-b209-4fbe1e1a465a'][0]
-        )
-        const imageId2 = workbook.addImage({
-          base64: myBase64Image,
-          // buffer: fs.readFileSync(
-          //   answers['96410c58-3b3b-400d-b209-4fbe1e1a465a'][0]
-          // ),
-          extension: 'jpeg',
-        })
-        sheet.addImage(imageId2, {
-          tl: { col: 0, row: index + 1 },
-          ext: { width: 500, height: 200 },
-          // filename: answers['96410c58-3b3b-400d-b209-4fbe1e1a465a'][0],
-          // extension: 'jpeg',
-        })
-      }
+      // if (answers['96410c58-3b3b-400d-b209-4fbe1e1a465a']) {
+      //   const myBase64Image = await getBase64Image(
+      //     answers['96410c58-3b3b-400d-b209-4fbe1e1a465a'][0]
+      //   )
+      //   const imageId2 = workbook.addImage({
+      //     base64: myBase64Image,
+      //     // buffer: fs.readFileSync(
+      //     //   answers['96410c58-3b3b-400d-b209-4fbe1e1a465a'][0]
+      //     // ),
+      //     extension: 'jpeg',
+      //   })
+      //   sheet.addImage(imageId2, {
+      //     tl: { col: 0, row: index + 1 },
+      //     ext: { width: 500, height: 200 },
+      //     // filename: answers['96410c58-3b3b-400d-b209-4fbe1e1a465a'][0],
+      //     // extension: 'jpeg',
+      //   })
+      // }
       for (const key in answers) {
         const answer = answers[key]
         if (typeof answer === 'object' && answer !== null)
