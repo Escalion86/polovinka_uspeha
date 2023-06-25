@@ -609,11 +609,11 @@ const LoginPage = (props) => {
         color={generalColor}
         className="fixed top-0 left-0 hidden w-auto h-full laptop:block -z-10"
       />
-      <div className="grid w-full h-full grid-cols-1 px-2 bg-transparent laptop:grid-cols-2 gap-7">
-        <div className="items-center hidden text-center laptop:flex">
+      <div className="flex w-full h-full gap-2 px-2 bg-transparent">
+        <div className="items-center justify-center flex-1 hidden pl-4 text-center laptop:flex">
           <SvgLove color={generalColor} className="w-124" />
         </div>
-        <div className="flex items-center justify-center text-center laptop:justify-start">
+        <div className="flex items-center justify-center flex-1 text-center">
           <form className="pt-4 pb-10 w-90">
             <div className="flex justify-center w-full">
               {/* <SvgAvatar color={generalColor} className="w-24" /> */}
