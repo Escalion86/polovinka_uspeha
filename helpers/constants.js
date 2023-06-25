@@ -88,6 +88,7 @@ import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
 import ServicesLoggedUserContent from '@layouts/content/ServicesLoggedUserContent'
 import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTodayCountSelector'
 import ToolsAnonsContent from '@layouts/content/ToolsAnonsContent'
+import ToolsExportContent from '@layouts/content/ToolsExportContent'
 import StatisticsFinanceContent from '@layouts/content/StatisticsFinanceContent'
 import StatisticsUsersContent from '@layouts/content/StatisticsUsersContent'
 import StatisticsEventsContent from '@layouts/content/StatisticsEventsContent'
@@ -620,10 +621,6 @@ export const ZODIAC = [
   },
 ]
 
-export const CLOUDINARY_FOLDER = isDevMode
-  ? 'polovinka_uspeha'
-  : 'polovinka_uspeha'
-
 export const SECTORS = [
   { name: 'Мероприятие', value: 'event', icon: faCalendar, color: 'general' },
   { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
@@ -709,9 +706,14 @@ export const CONTENTS = {
     accessRoles: ['admin', 'dev'],
   },
   dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
-  tools: {
+  toolsAnons: {
     Component: ToolsAnonsContent,
     name: 'Инструменты / Редактор анонса',
+    accessRoles: ['moder', 'dev', 'admin'],
+  },
+  toolsExport: {
+    Component: ToolsExportContent,
+    name: 'Инструменты / Экспорт данных',
     accessRoles: ['moder', 'dev', 'admin'],
   },
   histories: {
@@ -912,10 +914,18 @@ export const pages = [
   {
     id: 70,
     group: 8,
-    name: 'Инструменты',
-    href: 'tools',
+    name: 'Редактор анонса',
+    href: 'toolsAnons',
     icon: faTools,
-    accessRoles: CONTENTS['tools'].accessRoles,
+    accessRoles: CONTENTS['toolsAnons'].accessRoles,
+  },
+  {
+    id: 71,
+    group: 8,
+    name: 'Экспорт даных',
+    href: 'toolsExport',
+    icon: faTools,
+    accessRoles: CONTENTS['toolsExport'].accessRoles,
   },
   {
     id: 80,

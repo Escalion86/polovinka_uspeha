@@ -1,4 +1,3 @@
-// import { CLOUDINARY_FOLDER } from './constants'
 import isObject from './isObject'
 
 // export const deleteImage = async (publicId, resource_type = 'image') => {
