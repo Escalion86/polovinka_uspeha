@@ -111,6 +111,7 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
             set({ backgroundType: value })
           }}
           paddingY="small"
+          fullWidth={false}
         />
         {backgroundType === 'gradient' && (
           <div className="flex gap-x-2">
