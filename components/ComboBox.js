@@ -16,6 +16,7 @@ const ComboBox = ({
   hidden,
   paddingX = 'small',
   paddingY = 'small',
+  fullWidth,
 }) => {
   const defaultItem = defaultValue
     ? items.find((item) => item.value === defaultValue)
@@ -31,6 +32,7 @@ const ComboBox = ({
       disabled={disabled}
       paddingX={paddingX}
       paddingY={paddingY}
+      fullWidth={fullWidth}
     >
       <select
         className={cn(
