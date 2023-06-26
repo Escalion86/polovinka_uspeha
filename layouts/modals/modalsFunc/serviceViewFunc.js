@@ -36,7 +36,7 @@ const serviceViewFunc = (serviceId) => {
       if (isLoggedUserModer && setTopLeftComponent)
         setTopLeftComponent(() => (
           <CardButtons
-            item={{ _id: serviceId }}
+            item={service}
             typeOfItem="service"
             forForm
             direction="right"
