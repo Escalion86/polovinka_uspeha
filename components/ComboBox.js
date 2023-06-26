@@ -14,6 +14,8 @@ const ComboBox = ({
   wrapperClassName,
   className,
   hidden,
+  paddingX = 'small',
+  paddingY = 'small',
 }) => {
   const defaultItem = defaultValue
     ? items.find((item) => item.value === defaultValue)
@@ -27,8 +29,8 @@ const ComboBox = ({
       hidden={hidden}
       className={className}
       disabled={disabled}
-      paddingX="small"
-      paddingY="small"
+      paddingX={paddingX}
+      paddingY={paddingY}
     >
       <select
         className={cn(

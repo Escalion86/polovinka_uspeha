@@ -22,16 +22,17 @@ function calcLuminance(hex) {
 const ColorPicker = ({
   label = '',
   value,
-  name,
   onChange,
   required = false,
   labelClassName,
   className,
   disabled = false,
   error,
-  fullWidth,
+  fullWidth = false,
   noMargin,
   defaultValue,
+  paddingX = 'small',
+  paddingY = 'small',
 }) => {
   return (
     <InputWrapper
@@ -43,8 +44,8 @@ const ColorPicker = ({
       className={cn(fullWidth ? '' : 'w-24', className)}
       required={required}
       fullWidth={fullWidth}
-      paddingY="small"
-      paddingX="small"
+      paddingX={paddingX}
+      paddingY={paddingY}
       disabled={disabled}
       noMargin={noMargin}
       error={error}
@@ -53,7 +54,7 @@ const ColorPicker = ({
         trigger={
           <div
             className={cn(
-              'cursor-pointer flex justify-center items-center w-full h-[24px] border border-gray-200 rounded-lg mt-1',
+              'cursor-pointer flex justify-center items-center w-full h-[26px] border border-gray-200 rounded-lg mt-1',
               calcLuminance(value) < 0.5 ? 'text-white' : 'text-black'
             )}
             style={{ backgroundColor: value }}

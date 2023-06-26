@@ -28,6 +28,10 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Button from '@components/Button'
 
 import { saveSvgAsPng } from 'save-svg-as-png'
+import {
+  SvgBackgroundComponent,
+  SvgBackgroundInput,
+} from '@components/SvgBackground'
 // import futuraPtFontBase64 from '@helpers/fontsBase64/futuraPt'
 // import enchantsFontBase64 from '@helpers/fontsBase64/enchants'
 
@@ -196,7 +200,6 @@ const ToolsAnonsContent = () => {
   const [styleNum, setStyleNum] = useState(1)
   const [memberEvent, setMemberEvent] = useState('dontShow')
 
-  const [src, setSrc] = useState()
   const [startX, setStartX] = useState(90)
   const [startY, setStartY] = useState(72)
   const [titleGap, setTitleGap] = useState(62)
@@ -206,7 +209,7 @@ const ToolsAnonsContent = () => {
   const [dotColor, setDotColor] = useState('#ffffff')
   const [lineColor, setLineColor] = useState('#ffffff')
   const [anonsColor, setAnonsColor] = useState('#ffffff')
-  const [backgroundColor, setBackgroundColor] = useState('#8888ee')
+  const [backgroundProps, setBackgroundProps] = useState()
   const [fontSize, setFontSize] = useState(32)
   const [dateFontSize, setDateFontSize] = useState(36)
   const [maxItemsOnList, setMaxItemsOnList] = useState(10)
@@ -495,54 +498,13 @@ const ToolsAnonsContent = () => {
           value={dotColor}
           onChange={setDotColor}
         />
-        <ColorPicker
-          label="Цвет фона"
-          value={backgroundColor}
-          onChange={setBackgroundColor}
-        />
       </div>
-      <div className="flex items-center mb-1 gap-x-1">
-        <div>Фон:</div>
-        <Button
-          name={src ? 'Изменить фон' : 'Загрузить фон'}
-          thin
-          onClick={addImageClick}
-        />
-        <input
-          ref={hiddenFileInput}
-          className="hidden"
-          type="file"
-          // value={src?.name || ''}
-          onChange={(e) => {
-            // setImage(e.target.files[0], setSrc)
-            // var reader = new FileReader()
-            // reader.addEventListener('load', () => {
-            // setSrc(reader.result.toString() || '')
-            modalsFunc.cropImage(
-              // reader.result.toString() || '',
-              e.target.files[0],
-              null,
-              1080 / 1920,
-              // null,
-              (newImage) => {
-                console.log('newImage :>> ', newImage)
-                setSrc(newImage)
-              },
-              false
-            )
-            // })
-            // reader.readAsDataURL(e.target.files[0])
-          }}
-        />
-        {src && (
-          <FontAwesomeIcon
-            className="w-6 h-6 duration-200 transform cursor-pointer text-danger hover:scale-110"
-            icon={faTimes}
-            // size="1x"
-            onClick={() => setSrc('')}
-          />
-        )}
-      </div>
+
+      <SvgBackgroundInput
+        // value={backgroundProps}
+        onChange={setBackgroundProps}
+        imageAspect={1080 / 1920}
+      />
       {/* <div style={{ height: 1920, width: 1080 }}>
         <img src={src} height={1920} width={1080} />
       </div> */}
@@ -553,7 +515,7 @@ const ToolsAnonsContent = () => {
         }
       />
       {/* <image id="preview1" height="1920" width="1080" /> */}
-      <div className="flex overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
+      <div className="flex overflow-x-auto py-2 gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
         {listsWithPreparedItems.map((preparedItems, index) => {
           addedLines = 0
           const fullHeight = preparedItems.reduce(
@@ -571,42 +533,30 @@ const ToolsAnonsContent = () => {
           )
 
           return (
-            <svg
-              key={month + year + index}
-              width="270"
-              height="480"
-              viewBox="0 0 1080 1920"
-              id={'input' + index}
-              className="border min-w-[270px]"
-            >
-              {/* <defs> */}
-              {/* @font-face {
+            <div className="border-2 border-gray-600">
+              <svg
+                key={month + year + index}
+                width="270"
+                height="480"
+                viewBox="0 0 1080 1920"
+                id={'input' + index}
+                className="min-w-[270px]"
+              >
+                {/* <defs> */}
+                {/* @font-face {
                 font-family: Enchants;
                 src: url(${enchantsFontBase64})
             } */}
-              {/* <style> */}
-              {/* {`@font-face {
+                {/* <style> */}
+                {/* {`@font-face {
               font-family: Futura PT;
               src: url("${futuraPtFontBase64}")
           }`} */}
-              {/* </style> */}
-              {/* </defs> */}
-              <rect
-                fill={backgroundColor}
-                x="0"
-                y="0"
-                width="100%"
-                height="100%"
-              />
-              <image
-                id={'preview' + index}
-                // src={src}
-                href={src}
-                height="1920"
-                width="1080"
-              />
+                {/* </style> */}
+                {/* </defs> */}
+                <SvgBackgroundComponent {...backgroundProps} />
 
-              {/* <rect
+                {/* <rect
           x="10"
           y="10"
           width="30"
@@ -615,193 +565,194 @@ const ToolsAnonsContent = () => {
           fill="transparent"
           stroke-width="5"
         /> */}
-              {preparedItems.map(
-                ({ date, textArray, dot, day, week }, index) => {
-                  // const textSplit = text.split(' ')
+                {preparedItems.map(
+                  ({ date, textArray, dot, day, week }, index) => {
+                    // const textSplit = text.split(' ')
 
-                  // var chars = 0
-                  // var line = 0
-                  // var textArray = []
-                  // textSplit.forEach((word) => {
-                  //   const wordLength = word.length
-                  //   if (chars + wordLength > textLengthMax) {
-                  //     ++line
-                  //     chars = 0
-                  //   }
-                  //   chars += wordLength
-                  //   textArray[line] = textArray[line]
-                  //     ? textArray[line] + ' ' + word
-                  //     : word
-                  // })
+                    // var chars = 0
+                    // var line = 0
+                    // var textArray = []
+                    // textSplit.forEach((word) => {
+                    //   const wordLength = word.length
+                    //   if (chars + wordLength > textLengthMax) {
+                    //     ++line
+                    //     chars = 0
+                    //   }
+                    //   chars += wordLength
+                    //   textArray[line] = textArray[line]
+                    //     ? textArray[line] + ' ' + word
+                    //     : word
+                    // })
 
-                  const showDot = dot || index === 0
+                    const showDot = dot || index === 0
 
-                  return (
-                    <g key={month + year + date + index}>
-                      <text
-                        x={startX + 50}
-                        y={startY + 250}
-                        fontSize={250}
-                        fill={anonsColor}
-                        // fontWeight="bold"
-                        // textAnchor="middle"
-                        fontFamily="Enchants"
-                      >
-                        Анонс
-                      </text>
-                      <text
-                        x={startX + 730}
-                        y={startY + 90}
-                        fontSize={110}
-                        fill={anonsColor}
-                        fontWeight="300"
-                        textAnchor="middle"
-                        fontFamily="Futura PT"
-                      >
-                        {MONTHS_FULL_1[month].toLocaleUpperCase()}
-                      </text>
-                      <line
-                        x1={0}
-                        y1={startY + 54}
-                        x2={startX + 445}
-                        y2={startY + 54}
-                        strokeWidth="5"
-                        stroke={anonsColor}
-                      />
-                      {showDot && (
-                        <circle
-                          cx={startX + 90 + startXadd}
-                          cy={
+                    return (
+                      <g key={month + year + date + index}>
+                        <text
+                          x={startX + 50}
+                          y={startY + 250}
+                          fontSize={250}
+                          fill={anonsColor}
+                          // fontWeight="bold"
+                          // textAnchor="middle"
+                          fontFamily="Enchants"
+                        >
+                          Анонс
+                        </text>
+                        <text
+                          x={startX + 730}
+                          y={startY + 90}
+                          fontSize={110}
+                          fill={anonsColor}
+                          fontWeight="300"
+                          textAnchor="middle"
+                          fontFamily="Futura PT"
+                        >
+                          {MONTHS_FULL_1[month].toLocaleUpperCase()}
+                        </text>
+                        <line
+                          x1={0}
+                          y1={startY + 54}
+                          x2={startX + 445}
+                          y2={startY + 54}
+                          strokeWidth="5"
+                          stroke={anonsColor}
+                        />
+                        {showDot && (
+                          <circle
+                            cx={startX + 90 + startXadd}
+                            cy={
+                              startY +
+                              340 +
+                              titleGap +
+                              startYadd +
+                              dotGapY +
+                              index * gap +
+                              index * dateTextGap +
+                              index * dateFontSize +
+                              addedLines * fontSize
+                            }
+                            r="20"
+                            fill={dotColor}
+                            // stroke-width="5"
+                            // stroke="rgb(150,110,200)"
+                          />
+                        )}
+                        {showDot && day && week && (
+                          <>
+                            <text
+                              x={startX + 90 + startXadd - 72}
+                              y={
+                                startY +
+                                340 +
+                                titleGap +
+                                startYadd +
+                                index * gap +
+                                index * dateTextGap +
+                                index * dateFontSize +
+                                15 +
+                                // 10 +
+                                addedLines * fontSize
+                              }
+                              fontSize={60}
+                              fill={dateColor}
+                              fontWeight="bold"
+                              textAnchor="middle"
+                            >
+                              {day}
+                            </text>
+                            <text
+                              x={startX + 90 + startXadd - 72}
+                              y={
+                                startY +
+                                340 +
+                                titleGap +
+                                startYadd +
+                                index * gap +
+                                index * dateTextGap +
+                                index * dateFontSize +
+                                60 +
+                                addedLines * fontSize
+                              }
+                              fontSize={48}
+                              fill={dateColor}
+                              // fontWeight="bold"
+                              textAnchor="middle"
+                            >
+                              {week}
+                            </text>
+                          </>
+                        )}
+                        <text
+                          x={startX + 90 + startXadd + 50}
+                          y={
                             startY +
-                            340 +
+                            372 +
                             titleGap +
                             startYadd +
-                            dotGapY +
                             index * gap +
                             index * dateTextGap +
                             index * dateFontSize +
-                            addedLines * fontSize
+                            10 +
+                            addedLines * fontSize -
+                            30
                           }
-                          r="20"
-                          fill={dotColor}
-                          // stroke-width="5"
-                          // stroke="rgb(150,110,200)"
-                        />
-                      )}
-                      {showDot && day && week && (
-                        <>
-                          <text
-                            x={startX + 90 + startXadd - 72}
-                            y={
-                              startY +
-                              340 +
-                              titleGap +
-                              startYadd +
-                              index * gap +
-                              index * dateTextGap +
-                              index * dateFontSize +
-                              15 +
-                              // 10 +
-                              addedLines * fontSize
-                            }
-                            fontSize={60}
-                            fill={dateColor}
-                            fontWeight="bold"
-                            textAnchor="middle"
-                          >
-                            {day}
-                          </text>
-                          <text
-                            x={startX + 90 + startXadd - 72}
-                            y={
-                              startY +
-                              340 +
-                              titleGap +
-                              startYadd +
-                              index * gap +
-                              index * dateTextGap +
-                              index * dateFontSize +
-                              60 +
-                              addedLines * fontSize
-                            }
-                            fontSize={48}
-                            fill={dateColor}
-                            // fontWeight="bold"
-                            textAnchor="middle"
-                          >
-                            {week}
-                          </text>
-                        </>
-                      )}
-                      <text
-                        x={startX + 90 + startXadd + 50}
-                        y={
-                          startY +
-                          372 +
-                          titleGap +
-                          startYadd +
-                          index * gap +
-                          index * dateTextGap +
-                          index * dateFontSize +
-                          10 +
-                          addedLines * fontSize -
-                          30
-                        }
-                        fontSize={dateFontSize}
-                        fill={dateColor}
-                        fontWeight="bold"
-                      >
-                        {date}
-                      </text>
-                      {textArray.map((textLine, lineNum) => {
-                        ++addedLines
-                        return (
-                          <text
-                            key={textLine + lineNum}
-                            x={startX + 90 + startXadd + 50}
-                            y={
-                              startY +
-                              338 +
-                              titleGap +
-                              startYadd +
-                              10 +
-                              index * gap +
-                              (index + 1) * dateTextGap +
-                              index * dateFontSize +
-                              // 20 +
-                              addedLines * fontSize
-                              // lineNum * lineHeight
-                            }
-                            fontSize={fontSize}
-                            fill={textColor}
-                            width={800}
-                            className="max-w-[800px]"
-                          >
-                            {textLine}
-                          </text>
-                        )
-                      })}
-                    </g>
-                  )
-                }
-              )}
-              <line
-                x1={startX + 90 + startXadd}
-                y1={startY + 340 + startYadd - 50 + titleGap}
-                x2={startX + 90 + startXadd}
-                y2={
-                  startY +
-                  340 +
-                  titleGap +
-                  startYadd +
-                  preparedItems.length * (dateTextGap + dateFontSize) +
-                  (preparedItems.length - 1) * gap +
-                  addedLines * fontSize
-                }
-                strokeWidth="3"
-                stroke={lineColor}
-              />
-            </svg>
+                          fontSize={dateFontSize}
+                          fill={dateColor}
+                          fontWeight="bold"
+                        >
+                          {date}
+                        </text>
+                        {textArray.map((textLine, lineNum) => {
+                          ++addedLines
+                          return (
+                            <text
+                              key={textLine + lineNum}
+                              x={startX + 90 + startXadd + 50}
+                              y={
+                                startY +
+                                338 +
+                                titleGap +
+                                startYadd +
+                                10 +
+                                index * gap +
+                                (index + 1) * dateTextGap +
+                                index * dateFontSize +
+                                // 20 +
+                                addedLines * fontSize
+                                // lineNum * lineHeight
+                              }
+                              fontSize={fontSize}
+                              fill={textColor}
+                              width={800}
+                              className="max-w-[800px]"
+                            >
+                              {textLine}
+                            </text>
+                          )
+                        })}
+                      </g>
+                    )
+                  }
+                )}
+                <line
+                  x1={startX + 90 + startXadd}
+                  y1={startY + 340 + startYadd - 50 + titleGap}
+                  x2={startX + 90 + startXadd}
+                  y2={
+                    startY +
+                    340 +
+                    titleGap +
+                    startYadd +
+                    preparedItems.length * (dateTextGap + dateFontSize) +
+                    (preparedItems.length - 1) * gap +
+                    addedLines * fontSize
+                  }
+                  strokeWidth="3"
+                  stroke={lineColor}
+                />
+              </svg>
+            </div>
           )
         })}
         <img
