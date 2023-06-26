@@ -61,7 +61,7 @@ const eventViewFunc = (eventId) => {
       if (isLoggedUserModer && setTopLeftComponent)
         setTopLeftComponent(() => (
           <CardButtons
-            item={{ _id: eventId }}
+            item={event}
             typeOfItem="event"
             forForm
             direction="right"

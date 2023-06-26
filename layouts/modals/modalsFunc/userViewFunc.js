@@ -151,12 +151,7 @@ const userViewFunc = (userId, clone = false) => {
     closeButtonShow: true,
     Children: UserModal,
     TopLeftComponent: () => (
-      <CardButtons
-        item={{ _id: userId }}
-        typeOfItem="user"
-        forForm
-        direction="right"
-      />
+      <CardButtons item={user} typeOfItem="user" forForm direction="right" />
     ),
   }
 }

@@ -92,6 +92,7 @@ import ToolsExportContent from '@layouts/content/ToolsExportContent'
 import StatisticsFinanceContent from '@layouts/content/StatisticsFinanceContent'
 import StatisticsUsersContent from '@layouts/content/StatisticsUsersContent'
 import StatisticsEventsContent from '@layouts/content/StatisticsEventsContent'
+import ToolsEventAnonsContent from '@layouts/content/ToolsEventAnonsContent'
 
 const colors = [
   'border-blue-400',
@@ -706,9 +707,14 @@ export const CONTENTS = {
     accessRoles: ['admin', 'dev'],
   },
   dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
+  toolsEventAnons: {
+    Component: ToolsEventAnonsContent,
+    name: 'Инструменты / Редактор анонса мероприятия',
+    accessRoles: ['dev'],
+  },
   toolsAnons: {
     Component: ToolsAnonsContent,
-    name: 'Инструменты / Редактор анонса',
+    name: 'Инструменты / Редактор анонса списка мероприятий',
     accessRoles: ['moder', 'dev', 'admin'],
   },
   toolsExport: {
@@ -914,13 +920,21 @@ export const pages = [
   {
     id: 70,
     group: 8,
-    name: 'Редактор анонса',
+    name: 'Редактор анонса мероприятия',
+    href: 'toolsEventAnons',
+    icon: faTools,
+    accessRoles: CONTENTS['toolsEventAnons'].accessRoles,
+  },
+  {
+    id: 71,
+    group: 8,
+    name: 'Редактор анонса списка мероприятий',
     href: 'toolsAnons',
     icon: faTools,
     accessRoles: CONTENTS['toolsAnons'].accessRoles,
   },
   {
-    id: 71,
+    id: 72,
     group: 8,
     name: 'Экспорт даных',
     href: 'toolsExport',
