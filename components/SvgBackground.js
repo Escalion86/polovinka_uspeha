@@ -96,10 +96,10 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
 
   return (
     <InputWrapper label="Фон" paddingX="small" paddingY={false} centerLabel>
-      <div className="flex items-center flex-1 gap-x-2">
+      <div className="flex flex-wrap items-center flex-1 gap-x-2">
         <ComboBox
           label="Тип фона"
-          className="w-[150px]"
+          className="w-[108px]"
           items={[
             { value: 'color', name: 'Цвет' },
             { value: 'gradient', name: 'Градиент' },
@@ -134,10 +134,10 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
               }}
             />
             <Input
-              label="Угол поворота"
+              label="Угол"
               type="number"
-              className="w-[120px]"
-              inputClassName="w-16"
+              className="w-[70px]"
+              inputClassName="w-[52px]"
               value={angle}
               // onChange={(value) => setAngle(parseInt(value))}
               onChange={(value) => {
