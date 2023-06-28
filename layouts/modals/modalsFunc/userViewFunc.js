@@ -30,6 +30,7 @@ const userViewFunc = (userId, clone = false) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setTopLeftComponent,
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
@@ -45,6 +46,18 @@ const userViewFunc = (userId, clone = false) => {
     useEffect(() => {
       if (!user) closeModal()
     }, [user])
+
+    useEffect(() => {
+      if (setTopLeftComponent)
+        setTopLeftComponent(() => (
+          <CardButtons
+            item={user}
+            typeOfItem="user"
+            forForm
+            direction="right"
+          />
+        ))
+    }, [setTopLeftComponent])
 
     if (!user) return null
 
@@ -150,9 +163,10 @@ const userViewFunc = (userId, clone = false) => {
     declineButtonName: 'Закрыть',
     closeButtonShow: true,
     Children: UserModal,
-    TopLeftComponent: () => (
-      <CardButtons item={user} typeOfItem="user" forForm direction="right" />
-    ),
+    // TopLeftComponent: () => {
+    //   return (
+    //   <CardButtons id={userId} typeOfItem="user" forForm direction="right" />
+    // )},
   }
 }
 
