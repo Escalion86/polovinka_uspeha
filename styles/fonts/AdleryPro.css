@@ -1,6 +1,13 @@
 @font-face {
     font-family: 'AdleryProBlockletter';
-    src: url('AdleryProBlockletter.ttf') format('truetype');
+    src: url('AdleryProBlockletter.otf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AdleryProSwash';
+    src: url('AdleryProSwash.woff') format('truetype');
     font-weight: 500;
     font-style: normal;
 }

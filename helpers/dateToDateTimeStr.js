@@ -1,11 +1,17 @@
-import { DAYS_OF_WEEK, MONTHS, MONTHS_FULL } from './constants'
+import {
+  DAYS_OF_WEEK,
+  DAYS_OF_WEEK_FULL,
+  MONTHS,
+  MONTHS_FULL,
+} from './constants'
 
 const dateToDateTimeStr = (
   date,
   showDayOfWeek = true,
   fullMonth,
   showYear = true,
-  fullSeparete = false
+  fullSeparete = false,
+  dayOfWeekFull = false
 ) => {
   var d = new Date(date),
     minutes = '' + d.getMinutes(),
@@ -22,7 +28,7 @@ const dateToDateTimeStr = (
     return [
       day,
       MONTHS_FULL[month - 1],
-      DAYS_OF_WEEK[week],
+      dayOfWeekFull ? DAYS_OF_WEEK_FULL[week] : DAYS_OF_WEEK[week],
       year.toString(),
       hours,
       minutes,
@@ -33,7 +39,9 @@ const dateToDateTimeStr = (
     ' ' +
     (fullMonth ? MONTHS_FULL[month - 1] : MONTHS[month - 1]) +
     (showYear ? ' ' + year.toString() : '') +
-    (showDayOfWeek ? ' ' + DAYS_OF_WEEK[week] : '')
+    (showDayOfWeek
+      ? ' ' + (dayOfWeekFull ? DAYS_OF_WEEK_FULL[week] : DAYS_OF_WEEK[week])
+      : '')
 
   const strTimeStart = hours + ':' + minutes
   return [strDateStart, strTimeStart]

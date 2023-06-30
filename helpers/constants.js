@@ -297,6 +297,16 @@ export const MONTHS_FULL = [
 
 export const DAYS_OF_WEEK = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
 
+export const DAYS_OF_WEEK_FULL = [
+  'воскресенье',
+  'понедельник',
+  'вторник',
+  'среда',
+  'четверг',
+  'пятница',
+  'суббота',
+]
+
 export const DEFAULT_USERS_SECURITY = Object.freeze({
   fullSecondName: null,
   fullThirdName: null,
@@ -710,7 +720,7 @@ export const CONTENTS = {
   toolsEventAnons: {
     Component: ToolsEventAnonsContent,
     name: 'Инструменты / Редактор анонса мероприятия',
-    accessRoles: ['dev'],
+    accessRoles: ['moder', 'dev', 'admin'],
   },
   toolsAnons: {
     Component: ToolsAnonsContent,

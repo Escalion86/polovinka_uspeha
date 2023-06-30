@@ -215,7 +215,7 @@ const ToolsAnonsContent = () => {
   const [maxItemsOnList, setMaxItemsOnList] = useState(10)
 
   const eventsInMonth = events.filter((event) => {
-    if (event.status === 'canceled') return false
+    if (event.status === 'canceled' || !event.showOnSite) return false
     const date = new Date(event.dateStart)
     const eventMonth = date.getMonth()
     const eventYear = date.getFullYear()

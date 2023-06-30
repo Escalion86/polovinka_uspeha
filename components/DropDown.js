@@ -19,7 +19,7 @@ const DropDown = ({
   return (
     <div
       className={cn(
-        'hs-dropdown relative inline-flex [--placement:bottom] [--auto-close:inside]',
+        'z-50 hs-dropdown relative inline-flex [--placement:bottom] [--auto-close:inside]',
         className
       )}
     >
