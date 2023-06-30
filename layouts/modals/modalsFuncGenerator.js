@@ -39,6 +39,7 @@ import selectPaymentsFunc from './modalsFunc/selectPaymentsFunc'
 
 import { getRecoil, setRecoil } from 'recoil-nexus'
 import addModalSelector from '@state/selectors/addModalSelector'
+import selectSvgFrameFunc from './modalsFunc/selectSvgFrameFunc'
 // import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
@@ -137,6 +138,8 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
     cropImage: (...data) => addModal(cropImageFunc(...data)),
     error: (data) => addModal(errorFunc(data)),
     json: (data) => addModal(jsonFunc(data)),
+    selectSvgFrame: (itemId, onChange) =>
+      addModal(selectSvgFrameFunc(itemId, onChange)),
     selectEvents: (
       itemsId,
       filterRules,

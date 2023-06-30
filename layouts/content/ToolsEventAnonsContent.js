@@ -34,153 +34,14 @@ import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
 } from '@components/SvgBackground'
-// import futuraPtFontBase64 from '@helpers/fontsBase64/futuraPt'
-// import enchantsFontBase64 from '@helpers/fontsBase64/enchants'
 
-// function loadImage(url) {
-//   return new Promise((r) => {
-//     let i = new Image()
-//     i.onload = () => r(i)
-//     i.src = url
-//   })
-// }
+import InputSvgFrame from '@components/InputSvgFrame'
+import frames from '@components/frames/frames'
 
-const styles = [
-  {
-    startXadd: 0,
-    startYadd: 0,
-    dotGapY: 0,
-    minGap: 35,
-    maxGap: 120,
-    textLengthMax: 49 * 32,
-    // dateHeight: 36,
-    dateTextGap: 10,
-    // lineHeight: 32,
-    // maxHeight: 1000,
-  },
-  {
-    startXadd: 15,
-    startYadd: 0,
-    dotGapY: 20,
-    minGap: 35,
-    maxGap: 120,
-    textLengthMax: 48 * 32,
-    // dateHeight: 36,
-    dateTextGap: 10,
-    // lineHeight: 32,
-    // maxHeight: 1000,
-  },
-]
-
-const closedEventsDirectionId = '6301d334e5b7fa785515faac' //6301d334e5b7fa785515faac
-
-// function readURL(input) {
-//   if (input.files && input.files[0]) {
-//     var reader = new FileReader()
-
-//     reader.onload = function (e) {
-//       $('#blah').attr('src', e.target.result)
-//     }
-
-//     reader.readAsDataURL(input.files[0])
-//   }
-// }
-
-// const setImage = (image, setSrc) => {
-//   // const preview = document.querySelector('#preview')
-//   // if (!preview) return
-//   var reader = new FileReader()
-//   // console.log('preview :>> ', preview)
-
-//   // reader.onloadend = function (e) {
-//   //   preview.src = e.target.result
-//   // }
-
-//   reader.addEventListener(
-//     'load',
-//     () => {
-//       setSrc(reader.result.toString() || '')
-//       modalsFunc.cropImage(
-//         reader.result.toString() || '',
-//         null,
-//         aspect,
-//         (newImage) => {
-//           console.log('newImage :>> ', newImage)
-//           setSrc(newImage)
-//         }
-//       )
-//     }
-//     // setImgSrc(reader.result.toString() || '')
-//     // (preview.src = reader.result.toString() || '')
-//   )
-//   reader.readAsDataURL(image)
-
-//   // if (image) {
-//   //   reader.readAsDataURL(image)
-//   // } else {
-//   //   if (preview) preview.src = ''
-//   // }
-// }
-
-const save2 = async (listsCount, name) => {
-  for (let i = 0; i < listsCount; i++) {
-    const input = document.querySelector('#input' + i)
-    const fileName = `${name}${
-      listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
-    }.png`
-    saveSvgAsPng(input, fileName)
-  }
+const save = async (name) => {
+  const input = document.querySelector('#input')
+  saveSvgAsPng(input, name)
 }
-
-// const save = async (listsCount, name) => {
-//   for (let i = 0; i < listsCount; i++) {
-//     const input = document.querySelector('#input' + i)
-//     const output = document.querySelector('#output')
-
-//     const svgData = new XMLSerializer().serializeToString(input)
-//     const svgDataBase64 = btoa(unescape(encodeURIComponent(svgData)))
-
-//     const svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
-
-//     const image = new Image()
-//     // const imgBg = await loadImage(bgImage)
-
-//     image.addEventListener('load', () => {
-//       const canvas = document.createElement('canvas')
-
-//       canvas.setAttribute('width', 1080)
-//       canvas.setAttribute('height', 1920)
-
-//       const context = canvas.getContext('2d')
-
-//       // context.drawImage(imgBg, 0, 0, 1080, 1920)
-
-//       context.drawImage(image, 0, 0, 1080, 1920)
-
-//       const dataUrl = canvas.toDataURL('image/png')
-//       output.src = dataUrl
-
-//       var link = document.createElement('a')
-//       link.setAttribute(
-//         'download',
-//         `${name}${
-//           listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
-//         }.png`
-//       )
-//       link.setAttribute(
-//         'href',
-//         canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
-//       )
-//       link.click()
-
-//       // var image2 = canvas
-//       //   .toDataURL('image/png')
-//       //   .replace('image/png', 'image/octet-stream')
-//       // window.location.href = image2
-//     })
-//     image.src = svgDataUrl
-//   }
-// }
 
 const ToolsEventAnonsContent = () => {
   // const hiddenFileInput = useRef(null)
@@ -189,7 +50,7 @@ const ToolsEventAnonsContent = () => {
   // }
 
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  // const events = useRecoilValue(eventsAtom)
+  const events = useRecoilValue(eventsAtom)
   // const users = useRecoilValue(usersAtom)
   // const eventsUsers = useRecoilValue(eventsUsersAtom)
   // const directions = useRecoilValue(directionsAtom)
@@ -198,20 +59,59 @@ const ToolsEventAnonsContent = () => {
   // const payments = useRecoilValue(paymentsAtom)
 
   const [eventId, setEventId] = useState(null)
+  const [frameId, setFrameId] = useState(null)
+  const [frameColor, setFrameColor] = useState('#ffffff')
 
-  const [startX, setStartX] = useState(90)
-  const [startY, setStartY] = useState(72)
-  const [titleGap, setTitleGap] = useState(62)
-  const [maxHeight, setMaxHeight] = useState(1000)
-  const [textColor, setTextColor] = useState('#ffffff')
+  const [startX, setStartX] = useState(540)
+  const [startY, setStartY] = useState(800)
+  const [dateStartY, setDateStartY] = useState(300)
   const [dateColor, setDateColor] = useState('#ffffff')
-  const [dotColor, setDotColor] = useState('#ffffff')
-  const [lineColor, setLineColor] = useState('#ffffff')
   const [anonsColor, setAnonsColor] = useState('#ffffff')
   const [backgroundProps, setBackgroundProps] = useState()
 
-  const [fontSize, setFontSize] = useState(32)
-  const [dateFontSize, setDateFontSize] = useState(36)
+  const [fontSize, setFontSize] = useState(130)
+  const [dateFontSize, setDateFontSize] = useState(120)
+
+  const Frame = () => null
+  if (frameId) {
+    const frame = frames.find(({ id }) => id === frameId)
+    if (frame) Frame = frame.Frame
+  }
+
+  const event = eventId ? events.find(({ _id }) => _id === eventId) : undefined
+
+  const textSplit = event ? String(event?.title).split(' ') : []
+
+  var chars = 0
+  var line = 0
+  var textArray = []
+
+  textSplit.forEach((word) => {
+    const wordLength = word.length
+    if (chars + wordLength > 1900 / fontSize) {
+      ++line
+      chars = 0
+    }
+    chars += wordLength
+    textArray[line] = textArray[line] ? textArray[line] + ' ' + word : word
+  })
+
+  const [dayStart, monthStart, weekStart] = dateToDateTimeStr(
+    event?.dateStart,
+    true,
+    true,
+    false,
+    true,
+    true
+  )
+  const [dayEnd, monthEnd] = dateToDateTimeStr(
+    event?.dateEnd,
+    true,
+    true,
+    false,
+    true,
+    true
+  )
 
   return (
     <div className="h-full max-h-full px-1 overflow-y-auto">
@@ -228,6 +128,16 @@ const ToolsEventAnonsContent = () => {
           // readOnly={isEventClosed}
           // readOnly={fixedEventId}
         />
+        <div className="flex items-start gap-2">
+          <InputSvgFrame frameId={frameId} onChange={setFrameId} />
+          {frameId && (
+            <ColorPicker
+              label="Цвет рамки"
+              value={frameColor}
+              onChange={setFrameColor}
+            />
+          )}
+        </div>
       </div>
       <div className="flex flex-wrap gap-x-1">
         <SvgBackgroundInput
@@ -236,14 +146,14 @@ const ToolsEventAnonsContent = () => {
           imageAspect={1}
         />
         <Input
-          label="Размер шрифта мероприятий"
+          label="Размер шрифта названия"
           type="number"
           className="w-32"
           inputClassName="w-16"
           value={fontSize}
           onChange={(value) => setFontSize(parseInt(value))}
-          min={10}
-          max={100}
+          min={20}
+          max={200}
           fullWidth={false}
           // noMargin
         />
@@ -254,8 +164,8 @@ const ToolsEventAnonsContent = () => {
           inputClassName="w-16"
           value={dateFontSize}
           onChange={(value) => setDateFontSize(parseInt(value))}
-          min={10}
-          max={100}
+          min={20}
+          max={200}
           fullWidth={false}
           // noMargin
         />
@@ -267,45 +177,34 @@ const ToolsEventAnonsContent = () => {
           value={startX}
           onChange={(value) => setStartX(parseInt(value))}
           min={0}
-          max={120}
+          max={1000}
           fullWidth={false}
           // noMargin
         />
         <Input
-          label="Позиция по Y"
+          label="Позиция по Y названия"
           type="number"
           className="w-28"
           inputClassName="w-16"
           value={startY}
           onChange={(value) => setStartY(parseInt(value))}
           min={0}
-          max={1400}
+          max={1000}
           fullWidth={false}
         />
         <Input
-          label="Макс высота списка"
+          label="Позиция по Y даты"
           type="number"
           className="w-28"
           inputClassName="w-16"
-          value={maxHeight}
-          onChange={(value) => setMaxHeight(parseInt(value))}
+          value={dateStartY}
+          onChange={(value) => setDateStartY(parseInt(value))}
           min={0}
-          max={1920}
-          fullWidth={false}
-        />
-        <Input
-          label="Отступ списка от заголовка"
-          type="number"
-          className="w-28"
-          inputClassName="w-16"
-          value={titleGap}
-          onChange={(value) => setTitleGap(parseInt(value))}
-          min={0}
-          max={1920}
+          max={1000}
           fullWidth={false}
         />
         <ColorPicker
-          label="Цвет заголовка"
+          label="Цвет названия"
           value={anonsColor}
           onChange={setAnonsColor}
         />
@@ -314,28 +213,13 @@ const ToolsEventAnonsContent = () => {
           value={dateColor}
           onChange={setDateColor}
         />
-        <ColorPicker
-          label="Цвет текста"
-          value={textColor}
-          onChange={setTextColor}
-        />
-        <ColorPicker
-          label="Цвет линии"
-          value={lineColor}
-          onChange={setLineColor}
-        />
-        <ColorPicker
-          label="Цвет точек"
-          value={dotColor}
-          onChange={setDotColor}
-        />
       </div>
       {/* <div style={{ height: 1920, width: 1080 }}>
         <img src={src} height={1920} width={1080} />
       </div> */}
       <Button
         name="Сохранить"
-        onClick={() => save2(listsWithPreparedItems.length, 'Анонс')}
+        onClick={() => save('Анонс' + (event?.title ? ' ' + event?.title : ''))}
       />
       {/* <image id="preview1" height="1920" width="1080" /> */}
       <div className="flex py-2 overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
@@ -344,219 +228,125 @@ const ToolsEventAnonsContent = () => {
           width="480"
           height="480"
           viewBox="0 0 1080 1080"
-          // id={'input' + index}
+          id={'input'}
           className="min-w-[270px]"
         >
-          {/* <defs> */}
-          {/* @font-face {
-                font-family: Enchants;
-                src: url(${enchantsFontBase64})
-            } */}
-          {/* <style> */}
-          {/* {`@font-face {
-              font-family: Futura PT;
-              src: url("${futuraPtFontBase64}")
-          }`} */}
-          {/* </style> */}
-          {/* </defs> */}
-          {/* <rect fill={backgroundColor} x="0" y="0" width="100%" height="100%" /> */}
           <SvgBackgroundComponent {...backgroundProps} />
-
-          {/* <rect
-          x="10"
-          y="10"
-          width="30"
-          height="30"
-          stroke="black"
-          fill="transparent"
-          stroke-width="5"
-        /> */}
-          {/* {preparedItems.map(
-                ({ date, textArray, dot, day, week }, index) => {
-                  // const textSplit = text.split(' ')
-
-                  // var chars = 0
-                  // var line = 0
-                  // var textArray = []
-                  // textSplit.forEach((word) => {
-                  //   const wordLength = word.length
-                  //   if (chars + wordLength > textLengthMax) {
-                  //     ++line
-                  //     chars = 0
-                  //   }
-                  //   chars += wordLength
-                  //   textArray[line] = textArray[line]
-                  //     ? textArray[line] + ' ' + word
-                  //     : word
-                  // })
-
-                  const showDot = dot || index === 0
-
-                  return (
-                    <g key={month + year + date + index}>
-                      <text
-                        x={startX + 50}
-                        y={startY + 250}
-                        fontSize={250}
-                        fill={anonsColor}
-                        // fontWeight="bold"
-                        // textAnchor="middle"
-                        fontFamily="Enchants"
-                      >
-                        Анонс
-                      </text>
-                      <text
-                        x={startX + 730}
-                        y={startY + 90}
-                        fontSize={110}
-                        fill={anonsColor}
-                        fontWeight="300"
-                        textAnchor="middle"
-                        fontFamily="Futura PT"
-                      >
-                        {MONTHS_FULL_1[month].toLocaleUpperCase()}
-                      </text>
-                      <line
-                        x1={0}
-                        y1={startY + 54}
-                        x2={startX + 445}
-                        y2={startY + 54}
-                        strokeWidth="5"
-                        stroke={anonsColor}
-                      />
-                      {showDot && (
-                        <circle
-                          cx={startX + 90 + startXadd}
-                          cy={
-                            startY +
-                            340 +
-                            titleGap +
-                            startYadd +
-                            dotGapY +
-                            index * gap +
-                            index * dateTextGap +
-                            index * dateFontSize +
-                            addedLines * fontSize
-                          }
-                          r="20"
-                          fill={dotColor}
-                          // stroke-width="5"
-                          // stroke="rgb(150,110,200)"
-                        />
-                      )}
-                      {showDot && day && week && (
-                        <>
-                          <text
-                            x={startX + 90 + startXadd - 72}
-                            y={
-                              startY +
-                              340 +
-                              titleGap +
-                              startYadd +
-                              index * gap +
-                              index * dateTextGap +
-                              index * dateFontSize +
-                              15 +
-                              // 10 +
-                              addedLines * fontSize
-                            }
-                            fontSize={60}
-                            fill={dateColor}
-                            fontWeight="bold"
-                            textAnchor="middle"
-                          >
-                            {day}
-                          </text>
-                          <text
-                            x={startX + 90 + startXadd - 72}
-                            y={
-                              startY +
-                              340 +
-                              titleGap +
-                              startYadd +
-                              index * gap +
-                              index * dateTextGap +
-                              index * dateFontSize +
-                              60 +
-                              addedLines * fontSize
-                            }
-                            fontSize={48}
-                            fill={dateColor}
-                            // fontWeight="bold"
-                            textAnchor="middle"
-                          >
-                            {week}
-                          </text>
-                        </>
-                      )}
-                      <text
-                        x={startX + 90 + startXadd + 50}
-                        y={
-                          startY +
-                          372 +
-                          titleGap +
-                          startYadd +
-                          index * gap +
-                          index * dateTextGap +
-                          index * dateFontSize +
-                          10 +
-                          addedLines * fontSize -
-                          30
-                        }
-                        fontSize={dateFontSize}
-                        fill={dateColor}
-                        fontWeight="bold"
-                      >
-                        {date}
-                      </text>
-                      {textArray.map((textLine, lineNum) => {
-                        ++addedLines
-                        return (
-                          <text
-                            key={textLine + lineNum}
-                            x={startX + 90 + startXadd + 50}
-                            y={
-                              startY +
-                              338 +
-                              titleGap +
-                              startYadd +
-                              10 +
-                              index * gap +
-                              (index + 1) * dateTextGap +
-                              index * dateFontSize +
-                              // 20 +
-                              addedLines * fontSize
-                              // lineNum * lineHeight
-                            }
-                            fontSize={fontSize}
-                            fill={textColor}
-                            width={800}
-                            className="max-w-[800px]"
-                          >
-                            {textLine}
-                          </text>
-                        )
-                      })}
-                    </g>
-                  )
-                }
-              )}
-              <line
-                x1={startX + 90 + startXadd}
-                y1={startY + 340 + startYadd - 50 + titleGap}
-                x2={startX + 90 + startXadd}
-                y2={
-                  startY +
-                  340 +
-                  titleGap +
-                  startYadd +
-                  preparedItems.length * (dateTextGap + dateFontSize) +
-                  (preparedItems.length - 1) * gap +
-                  addedLines * fontSize
-                }
-                strokeWidth="3"
-                stroke={lineColor}
-              /> */}
+          <Frame fill={frameColor} />
+          {dayStart && monthStart ? (
+            <>
+              <text
+                // key={textLine + lineNum}
+                x={startX}
+                y={dateStartY}
+                fontSize={dateFontSize}
+                fill={dateColor}
+                // fontWeight="bold"
+                textAnchor="middle"
+                fontFamily="AdleryProSwash"
+              >
+                {`${dayStart} ${monthStart}${
+                  dayStart === dayEnd && monthStart === monthEnd ? '' : ' -'
+                }`}
+              </text>
+              <text
+                // key={textLine + lineNum}
+                x={startX}
+                y={dateStartY + dateFontSize}
+                fontSize={dateFontSize}
+                fill={dateColor}
+                // fontWeight="bold"
+                textAnchor="middle"
+                fontFamily="AdleryProSwash"
+              >
+                {dayStart === dayEnd && monthStart === monthEnd
+                  ? `(${weekStart})`
+                  : `${dayEnd} ${monthEnd}`}
+              </text>
+            </>
+          ) : null}
+          {eventId &&
+            textArray.map((textLine, lineNum) => {
+              // ++addedLines
+              return (
+                <text
+                  key={textLine + lineNum}
+                  x={startX}
+                  y={
+                    startY +
+                    lineNum * fontSize -
+                    ((textArray.length - 1) * fontSize) / 2
+                  }
+                  fontSize={fontSize}
+                  fill={anonsColor}
+                  // fontWeight="bold"
+                  textAnchor="middle"
+                  fontFamily="AdleryProBlockletter" //"Enchants"
+                >
+                  {/* {event.title} */}
+                  {/* Катание на лимузине по елкам */}
+                  {textLine}
+                </text>
+                // <text
+                //   key={textLine + lineNum}
+                //   x={startX + 90 + startXadd + 50}
+                //   y={
+                //     startY +
+                //     338 +
+                //     titleGap +
+                //     startYadd +
+                //     10 +
+                //     index * gap +
+                //     (index + 1) * dateTextGap +
+                //     index * dateFontSize +
+                //     // 20 +
+                //     addedLines * fontSize
+                //     // lineNum * lineHeight
+                //   }
+                //   fontSize={fontSize}
+                //   fill={textColor}
+                //   width={800}
+                //   className="max-w-[800px]"
+                // >
+                //   {textLine}
+                // </text>
+              )
+            })}
+          {/* <SvgFrame1 width="1080" height="1080" /> */}
+          {/* <svg
+            version="1.0"
+            xmlns="http://www.w3.org/2000/svg"
+            width="1080"
+            height="1080"
+            viewBox="0 0 1280.000000 1280.000000"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            <g
+              transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"
+              fill="#ffffff"
+              stroke="none"
+            >
+              <path
+                d="M1315 11443 c-269 -38 -511 -226 -622 -483 -69 -161 -64 189 -61
+-4185 3 -3755 4 -3953 21 -4010 87 -294 306 -507 591 -575 79 -19 134 -20
+1994 -20 l1912 0 36 33 c64 58 55 152 -19 197 -31 20 -65 20 -1907 20 -2078 0
+-1948 -4 -2083 67 -130 68 -228 189 -274 338 -17 58 -18 203 -18 3985 l0 3925
+24 73 c60 184 214 327 401 373 46 12 866 14 5095 14 l5040 0 75 -23 c41 -13
+100 -39 131 -58 116 -70 217 -208 250 -344 12 -46 14 -696 14 -3965 0 -3705
+-1 -3913 -18 -3974 -54 -197 -219 -355 -414 -396 -58 -12 -356 -15 -1951 -15
+-1624 0 -1887 -2 -1911 -14 -78 -41 -88 -153 -20 -210 l31 -26 1921 0 c1885 0
+1924 1 2005 20 277 66 503 285 584 566 l23 79 0 3980 0 3980 -32 95 c-87 255
+-268 436 -523 523 l-95 32 -5085 1 c-2797 1 -5098 -1 -5115 -3z"
+              />
+              <path
+                d="M5909 2812 c-275 -91 -360 -415 -180 -684 68 -101 167 -198 361 -353
+171 -137 260 -220 290 -268 l17 -28 38 49 c44 58 98 107 295 264 322 257 432
+418 432 633 0 143 -49 245 -157 327 -110 83 -297 104 -416 45 -67 -32 -133
+-97 -166 -160 l-24 -49 -25 50 c-30 61 -109 136 -172 165 -66 30 -215 34 -293
+9z"
+              />
+            </g>
+          </svg> */}
         </svg>
         <img
           id="output"
