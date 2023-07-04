@@ -32,6 +32,7 @@ import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
 } from '@components/SvgBackground'
+import getNoun from '@helpers/getNoun'
 // import futuraPtFontBase64 from '@helpers/fontsBase64/futuraPt'
 // import enchantsFontBase64 from '@helpers/fontsBase64/enchants'
 
@@ -508,12 +509,25 @@ const ToolsAnonsContent = () => {
       {/* <div style={{ height: 1920, width: 1080 }}>
         <img src={src} height={1920} width={1080} />
       </div> */}
-      <Button
-        name="Сохранить"
-        onClick={() =>
-          save2(listsWithPreparedItems.length, 'Анонс ' + MONTHS_FULL_1[month])
-        }
-      />
+      <div className="flex items-center gap-x-2">
+        <Button
+          name="Сохранить"
+          onClick={() =>
+            save2(
+              listsWithPreparedItems.length,
+              'Анонс ' + MONTHS_FULL_1[month]
+            )
+          }
+        />
+        <div>
+          {getNoun(
+            listsWithPreparedItems?.length,
+            'картинка',
+            'картинки',
+            'картинок'
+          ) + ' 1080х1920'}
+        </div>
+      </div>
       {/* <image id="preview1" height="1920" width="1080" /> */}
       <div className="flex overflow-x-auto py-2 gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
         {listsWithPreparedItems.map((preparedItems, index) => {
