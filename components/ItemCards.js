@@ -24,6 +24,7 @@ import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
 import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 
 const ItemContainer = ({
   onClick,
@@ -129,6 +130,7 @@ export const UserItem = ({
   style,
   className,
 }) => {
+  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
   const userGender =
@@ -166,7 +168,7 @@ export const UserItem = ({
               item.security?.showBirthday === true ||
               item.security?.showBirthday === 'full') && (
               <span className="flex items-center overflow-visible italic leading-3 max-h-2">
-                {' (' + birthDateToAge(item.birthday) + ')'}
+                {' (' + birthDateToAge(item.birthday, serverDate) + ')'}
               </span>
             )}
         </div>

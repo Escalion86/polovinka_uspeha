@@ -37,6 +37,7 @@ import dbConnect from '@utils/dbConnect'
 
 const fetchProps = async (user) => {
   try {
+    const serverDateTime = new Date()
     // console.log(`start fetchProps`)
     // console.time('Loading time')
     // console.time('dbConnect')
@@ -167,6 +168,9 @@ const fetchProps = async (user) => {
       questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
       services: JSON.parse(JSON.stringify(services)),
       servicesUsers: JSON.parse(JSON.stringify(servicesUsers)),
+      serverSettings: {
+        dateTime: JSON.parse(JSON.stringify(serverDateTime)),
+      },
     }
 
     // console.log('fetchResult', fetchResult)
@@ -187,6 +191,9 @@ const fetchProps = async (user) => {
       questionnairesUsers: [],
       services: [],
       servicesUsers: [],
+      serverSettings: {
+        dateTime: JSON.parse(JSON.stringify(serverDateTime)),
+      },
       error: JSON.parse(JSON.stringify(error)),
     }
   }

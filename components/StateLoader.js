@@ -70,6 +70,7 @@ import modeAtom from '@state/atoms/modeAtom'
 import TopInfo from './TopInfo'
 import { useWindowDimensionsRecoil } from '@helpers/useWindowDimensions'
 import { getRecoil, setRecoil } from 'recoil-nexus'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 // import setRecoilFunc from '@helpers/setRecoilFunc'
 
 const StateLoader = (props) => {
@@ -107,6 +108,7 @@ const StateLoader = (props) => {
   const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
   const setServicesState = useSetRecoilState(servicesAtom)
   const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
+  const setServerSettingsState = useSetRecoilState(serverSettingsAtom)
 
   // const setEvent = useSetRecoilState(eventEditSelector)
   // const deleteEvent = useSetRecoilState(eventDeleteSelector)
@@ -181,6 +183,7 @@ const StateLoader = (props) => {
     setQuestionnairesUsersState(props.questionnairesUsers)
     setServicesState(props.services)
     setServicesUsersState(props.servicesUsers)
+    setServerSettingsState(props.serverSettings)
     setMode(props.mode ?? 'production')
     // setSnackbar(snackbar)
     setIsSiteLoading(false)

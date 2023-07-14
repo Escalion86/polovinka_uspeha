@@ -1,4 +1,5 @@
 import getDaysBetween from '@helpers/getDaysBetween'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import { selector } from 'recoil'
 
@@ -6,7 +7,7 @@ export const badgeBirthdaysTodayCountSelector = selector({
   key: 'badgeBirthdaysTodayCountSelector',
   get: ({ get }) => {
     const users = get(usersAtom)
-    const dateNow = new Date()
+    const dateNow = new Date(get(serverSettingsAtom)?.dateTime)
     const monthNow = dateNow.getMonth()
     const dayNow = dateNow.getDate()
     return users.filter((user) => {

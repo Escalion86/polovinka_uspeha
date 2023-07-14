@@ -26,14 +26,14 @@ import upperCaseFirst from '@helpers/upperCaseFirst'
 import arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import YearSelector from '@components/ComboBox/YearSelector'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
   return new Date(date.getTime() + 1000 * 3600 * 24 * days)
 }
 
-const usersCountByDates = (users = [], days = 90) => {
-  const dateNow = new Date()
+const usersCountByDates = (users = [], dateNow = new Date(), days = 90) => {
   const dateFinish = new Date(dateNow.getTime())
   const dateStart = new Date(
     dateFinish.getTime() -
@@ -93,16 +93,16 @@ const linesCFG = () => {
   return arr
 }
 
-const tooltipCaptions = () => {
-  const now = new Date()
+const tooltipCaptions = (dateNow = new Date()) => {
   const arr = []
   for (let i = -90; i <= 0; i++) {
-    arr.push(formatDate(addDaysToDate(now, i)))
+    arr.push(formatDate(addDaysToDate(dateNow, i)))
   }
   return arr
 }
 
 const StatisticsContent = () => {
+  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const users = useRecoilValue(usersAtom)
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
@@ -278,14 +278,14 @@ const StatisticsContent = () => {
             <P>
               {`с ${formatDate(
                 new Date(
-                  new Date().getTime() -
+                  serverDate.getTime() -
                     1000 * 3600 * 24 * 89 -
-                    (new Date().getTime() % (1000 * 3600 * 24))
+                    (serverDate.getTime() % (1000 * 3600 * 24))
                 )
-              )} по ${formatDate(new Date())}`}
+              )} по ${formatDate(serverDate)}`}
             </P>
             <StreamChart
-              data={usersCountByDates(filteredUsers)}
+              data={usersCountByDates(filteredUsers, serverDate)}
               linesOnX={linesCFG()}
               colors={{
                 mans: manColor,
@@ -300,7 +300,7 @@ const StatisticsContent = () => {
               axisBottom={false}
               axisLeft="Пользователей"
               legend={false}
-              tooltipCaptions={tooltipCaptions()}
+              tooltipCaptions={tooltipCaptions(serverDate)}
             />
           </div>
           {/* </ListWrapper> */}

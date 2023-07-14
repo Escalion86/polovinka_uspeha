@@ -22,6 +22,7 @@ function textAge(age) {
 
 const birthDateToAge = (
   birthDate,
+  dateNow = new Date(),
   showWord = true,
   showDate = false,
   showAge = true,
@@ -29,10 +30,9 @@ const birthDateToAge = (
 ) => {
   if (!birthDate) return
   const tempBirthDate = new Date(birthDate)
-  const now = new Date(),
-    age = now.getFullYear() - tempBirthDate.getFullYear()
+  const age = dateNow.getFullYear() - tempBirthDate.getFullYear()
   const result =
-    now.setFullYear(1972) < tempBirthDate.setFullYear(1972) ? age - 1 : age
+    dateNow.setFullYear(1972) < tempBirthDate.setFullYear(1972) ? age - 1 : age
   const formatedText =
     result + addYears + (showWord ? ' ' + textAge(result + addYears) : 0)
   return showDate

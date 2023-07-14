@@ -33,6 +33,7 @@ import {
   SvgBackgroundInput,
 } from '@components/SvgBackground'
 import getNoun from '@helpers/getNoun'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 // import futuraPtFontBase64 from '@helpers/fontsBase64/futuraPt'
 // import enchantsFontBase64 from '@helpers/fontsBase64/enchants'
 
@@ -187,7 +188,8 @@ const ToolsAnonsContent = () => {
     hiddenFileInput.current.click()
   }
 
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
+  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
   // const users = useRecoilValue(usersAtom)
   // const eventsUsers = useRecoilValue(eventsUsersAtom)
@@ -196,8 +198,8 @@ const ToolsAnonsContent = () => {
   // const additionalBlocks = useRecoilValue(additionalBlocksAtom)
   // const payments = useRecoilValue(paymentsAtom)
 
-  const [month, setMonth] = useState(new Date().getMonth())
-  const [year, setYear] = useState(new Date().getFullYear())
+  const [month, setMonth] = useState(serverDate.getMonth())
+  const [year, setYear] = useState(serverDate.getFullYear())
   const [styleNum, setStyleNum] = useState(1)
   const [memberEvent, setMemberEvent] = useState('dontShow')
 

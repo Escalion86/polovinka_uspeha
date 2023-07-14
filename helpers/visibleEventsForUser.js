@@ -1,4 +1,6 @@
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import birthDateToAge from './birthDateToAge'
+import { getRecoil } from 'recoil-nexus'
 
 const visibleEventsForUser = (
   events,
@@ -22,7 +24,10 @@ const visibleEventsForUser = (
   } else {
     if (isUserAdmin) return events
 
-    const userAge = new Number(birthDateToAge(user.birthday, false, false))
+    const serverDate = new Date(getRecoil(serverSettingsAtom)?.dateTime)
+    const userAge = new Number(
+      birthDateToAge(user.birthday, serverDate, false, false)
+    )
     const eventsUser = eventsUsers.filter((event) => event.userId === user._id)
 
     return events.filter((event) => {
