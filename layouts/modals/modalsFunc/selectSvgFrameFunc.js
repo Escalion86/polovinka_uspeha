@@ -29,7 +29,7 @@ const selectSvgFrameFunc = (itemId, onChange) => {
         {frames.map(({ id, Frame }) => (
           <div
             key={id}
-            className="border border-gray-600 cursor-pointer hover:bg-green-300"
+            className="border border-gray-600 cursor-pointer hover:bg-green-300 h-[100px]"
             onClick={() => onSelect(id)}
           >
             <Frame width="100" height="100" />

@@ -6,6 +6,7 @@ const DropDown = ({
   children,
   menuPadding = 'md',
   menuClassName,
+  openOnHover = false,
   className,
 }) => {
   const padding =
@@ -20,6 +21,7 @@ const DropDown = ({
     <div
       className={cn(
         'hs-dropdown relative inline-flex [--placement:bottom] [--auto-close:inside]',
+        openOnHover ? '[--trigger:hover] [--strategy:absolute]' : '',
         className
       )}
     >
@@ -28,7 +30,10 @@ const DropDown = ({
       </div>
       <div
         className={cn(
-          'z-50 hs-dropdown-open:flex items-center justify-center hs-dropdown-menu p-2 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 hidden opacity-0 bg-white shadow-md rounded-lg dark:bg-gray-800 border border-gray-400 dark:border-gray-700 dark:divide-gray-700',
+          'z-50 rounded-lg hs-dropdown-open:flex items-center justify-center hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 hidden opacity-0 bg-white shadow-md dark:bg-gray-800 border border-gray-400 dark:border-gray-700 dark:divide-gray-700',
+          openOnHover
+            ? 'after:h-4 after:absolute after:-bottom-4 after:left-0 after:w-full before:h-4 before:absolute before:-top-4 before:left-0 before:w-full'
+            : '',
           padding,
           menuClassName
         )}

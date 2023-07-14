@@ -54,17 +54,17 @@ const ColorPicker = ({
         trigger={
           <div
             className={cn(
-              'cursor-pointer flex justify-center items-center w-full h-[26px] border border-gray-200 rounded-lg mt-1',
+              'cursor-pointer flex justify-center items-center w-full h-[24px] border border-gray-200 rounded-lg mt-1',
               calcLuminance(value) < 0.5 ? 'text-white' : 'text-black'
             )}
             style={{ backgroundColor: value }}
-            menuPadding="lg"
-            menuClassName="w-[222px] h-[300px]"
           >
             {value}
           </div>
         }
         className="w-full"
+        // menuPadding="lg"
+        // menuClassName="w-[222px] h-[300px]"
       >
         <div className="flex flex-col gap-y-2 w-[200px]">
           <HexColorPicker color={value} onChange={onChange} />

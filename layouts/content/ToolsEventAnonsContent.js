@@ -57,6 +57,10 @@ const ToolsEventAnonsContent = () => {
   // const reviews = useRecoilValue(reviewsAtom)
   // const additionalBlocks = useRecoilValue(additionalBlocksAtom)
   // const payments = useRecoilValue(paymentsAtom)
+  const [customMode, setCustomMode] = useState(false)
+  const [customDate1, setCustomDate1] = useState('')
+  const [customDate2, setCustomDate2] = useState('')
+  const [customText, setCustomText] = useState('')
 
   const [eventId, setEventId] = useState(null)
   const [frameId, setFrameId] = useState(null)
@@ -80,7 +84,11 @@ const ToolsEventAnonsContent = () => {
 
   const event = eventId ? events.find(({ _id }) => _id === eventId) : undefined
 
-  const textSplit = event ? String(event?.title).split(' ') : []
+  const textSplit = customMode
+    ? customText.split(' ')
+    : event
+    ? String(event?.title).split(' ')
+    : []
 
   var chars = 0
   var line = 0
@@ -115,19 +123,64 @@ const ToolsEventAnonsContent = () => {
 
   return (
     <div className="h-full max-h-full px-1 overflow-y-auto">
+      <ComboBox
+        label="Режим"
+        className="max-w-[180px]"
+        items={[
+          { value: 'true', name: 'Ручной ввод' },
+          { value: 'false', name: 'Выбор мероприятия' },
+        ]}
+        defaultValue={customMode ? 'true' : 'false'}
+        onChange={(value) => setCustomMode(value === 'true')}
+      />
       <div className="flex flex-wrap gap-x-1">
-        <SelectEvent
-          label="Мероприятие"
-          selectedId={eventId}
-          onChange={setEventId}
-          // required
-          // showEventUsersButton
-          // showPaymentsButton
-          // showEditButton
-          // clearButton={!isEventClosed && !fixedEventId}
-          // readOnly={isEventClosed}
-          // readOnly={fixedEventId}
-        />
+        {customMode ? (
+          <div className="flex flex-wrap w-full gap-1">
+            <Input
+              label="Дата 1 строка"
+              type="text"
+              className="w-44"
+              // inputClassName="w-16"
+              value={customDate1}
+              onChange={setCustomDate1}
+              fullWidth={false}
+              // noMargin
+            />
+            <Input
+              label="Дата 2 строка"
+              type="text"
+              className="w-44"
+              // inputClassName="w-16"
+              value={customDate2}
+              onChange={setCustomDate2}
+              fullWidth={false}
+              // noMargin
+            />
+            <Input
+              label="Текст"
+              type="text"
+              className="w-60"
+              // inputClassName="w-16"
+              value={customText}
+              onChange={setCustomText}
+              // fullWidth={false}
+              noMargin
+            />
+          </div>
+        ) : (
+          <SelectEvent
+            label="Мероприятие"
+            selectedId={eventId}
+            onChange={setEventId}
+            // required
+            // showEventUsersButton
+            // showPaymentsButton
+            // showEditButton
+            // clearButton={!isEventClosed && !fixedEventId}
+            // readOnly={isEventClosed}
+            // readOnly={fixedEventId}
+          />
+        )}
         <div className="flex items-start gap-2">
           <InputSvgFrame frameId={frameId} onChange={setFrameId} />
           {frameId && (
@@ -146,31 +199,7 @@ const ToolsEventAnonsContent = () => {
           imageAspect={1}
         />
         <Input
-          label="Размер шрифта названия"
-          type="number"
-          className="w-32"
-          inputClassName="w-16"
-          value={fontSize}
-          onChange={(value) => setFontSize(parseInt(value))}
-          min={20}
-          max={200}
-          fullWidth={false}
-          // noMargin
-        />
-        <Input
-          label="Размер шрифта даты"
-          type="number"
-          className="w-32"
-          inputClassName="w-16"
-          value={dateFontSize}
-          onChange={(value) => setDateFontSize(parseInt(value))}
-          min={20}
-          max={200}
-          fullWidth={false}
-          // noMargin
-        />
-        <Input
-          label="Позиция по X"
+          label="Позиция по X текста"
           type="number"
           className="w-28"
           inputClassName="w-16"
@@ -181,46 +210,93 @@ const ToolsEventAnonsContent = () => {
           fullWidth={false}
           // noMargin
         />
-        <Input
-          label="Позиция по Y названия"
-          type="number"
-          className="w-28"
-          inputClassName="w-16"
-          value={startY}
-          onChange={(value) => setStartY(parseInt(value))}
-          min={0}
-          max={1000}
-          fullWidth={false}
-        />
-        <Input
-          label="Позиция по Y даты"
-          type="number"
-          className="w-28"
-          inputClassName="w-16"
-          value={dateStartY}
-          onChange={(value) => setDateStartY(parseInt(value))}
-          min={0}
-          max={1000}
-          fullWidth={false}
-        />
-        <ColorPicker
-          label="Цвет названия"
-          value={anonsColor}
-          onChange={setAnonsColor}
-        />
-        <ColorPicker
-          label="Цвет даты"
-          value={dateColor}
-          onChange={setDateColor}
-        />
+        <InputWrapper
+          label="Дата"
+          paddingX="small"
+          paddingY={false}
+          centerLabel
+        >
+          <div className="flex flex-wrap items-center flex-1 gap-x-2">
+            <Input
+              label="Размер шрифта"
+              type="number"
+              className="w-32"
+              inputClassName="w-16"
+              value={dateFontSize}
+              onChange={(value) => setDateFontSize(parseInt(value))}
+              min={20}
+              max={200}
+              fullWidth={false}
+              // noMargin
+            />
+            <Input
+              label="Позиция по Y"
+              type="number"
+              className="w-28"
+              inputClassName="w-16"
+              value={dateStartY}
+              onChange={(value) => setDateStartY(parseInt(value))}
+              min={0}
+              max={1000}
+              fullWidth={false}
+            />
+            <ColorPicker
+              label="Цвет"
+              value={dateColor}
+              onChange={setDateColor}
+            />
+          </div>
+        </InputWrapper>
+        <InputWrapper
+          label="Название"
+          paddingX="small"
+          paddingY={false}
+          centerLabel
+        >
+          <div className="flex flex-wrap items-center flex-1 gap-x-2">
+            <Input
+              label="Размер шрифта"
+              type="number"
+              className="w-32"
+              inputClassName="w-16"
+              value={fontSize}
+              onChange={(value) => setFontSize(parseInt(value))}
+              min={20}
+              max={200}
+              fullWidth={false}
+              // noMargin
+            />
+            <Input
+              label="Позиция по Y"
+              type="number"
+              className="w-28"
+              inputClassName="w-16"
+              value={startY}
+              onChange={(value) => setStartY(parseInt(value))}
+              min={0}
+              max={1000}
+              fullWidth={false}
+            />
+            <ColorPicker
+              label="Цвет"
+              value={anonsColor}
+              onChange={setAnonsColor}
+            />
+          </div>
+        </InputWrapper>
       </div>
       {/* <div style={{ height: 1920, width: 1080 }}>
         <img src={src} height={1920} width={1080} />
       </div> */}
-      <Button
-        name="Сохранить"
-        onClick={() => save('Анонс' + (event?.title ? ' ' + event?.title : ''))}
-      />
+      <div className="flex items-center gap-x-2">
+        <Button
+          name="Сохранить"
+          onClick={() =>
+            save('Анонс' + (event?.title ? ' ' + event?.title : ''))
+          }
+        />
+        <div>Картинка 1080х1080</div>
+      </div>
       {/* <image id="preview1" height="1920" width="1080" /> */}
       <div className="flex py-2 overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
         <svg
@@ -233,7 +309,7 @@ const ToolsEventAnonsContent = () => {
         >
           <SvgBackgroundComponent {...backgroundProps} />
           <Frame fill={frameColor} />
-          {dayStart && monthStart ? (
+          {customMode || (dayStart && monthStart) ? (
             <>
               <text
                 // key={textLine + lineNum}
@@ -245,27 +321,33 @@ const ToolsEventAnonsContent = () => {
                 textAnchor="middle"
                 fontFamily="AdleryProSwash"
               >
-                {`${dayStart} ${monthStart}${
-                  dayStart === dayEnd && monthStart === monthEnd ? '' : ' -'
-                }`}
+                {customMode
+                  ? customDate1
+                  : `${dayStart} ${monthStart}${
+                      dayStart === dayEnd && monthStart === monthEnd ? '' : ' -'
+                    }`}
               </text>
-              <text
-                // key={textLine + lineNum}
-                x={startX}
-                y={dateStartY + dateFontSize}
-                fontSize={dateFontSize}
-                fill={dateColor}
-                // fontWeight="bold"
-                textAnchor="middle"
-                fontFamily="AdleryProSwash"
-              >
-                {dayStart === dayEnd && monthStart === monthEnd
-                  ? `(${weekStart})`
-                  : `${dayEnd} ${monthEnd}`}
-              </text>
+              {(!customMode || customDate2) && (
+                <text
+                  // key={textLine + lineNum}
+                  x={startX}
+                  y={dateStartY + dateFontSize}
+                  fontSize={dateFontSize}
+                  fill={dateColor}
+                  // fontWeight="bold"
+                  textAnchor="middle"
+                  fontFamily="AdleryProSwash"
+                >
+                  {customMode
+                    ? customDate2
+                    : dayStart === dayEnd && monthStart === monthEnd
+                    ? `(${weekStart})`
+                    : `${dayEnd} ${monthEnd}`}
+                </text>
+              )}
             </>
           ) : null}
-          {eventId &&
+          {(customMode || eventId) &&
             textArray.map((textLine, lineNum) => {
               // ++addedLines
               return (

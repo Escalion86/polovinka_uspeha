@@ -21,20 +21,21 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 import { useState } from 'react'
 import CardButton from './CardButton'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 
-import { useDetectClickOutside } from 'react-detect-click-outside'
+// import { useDetectClickOutside } from 'react-detect-click-outside'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import { EVENT_STATUSES, SERVICE_USER_STATUSES } from '@helpers/constants'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
+import DropDown from './DropDown'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -75,19 +76,19 @@ const CardButtons = ({
   const device = useRecoilValue(windowDimensionsTailwindSelector)
 
   const [open, setOpen] = useState(false)
-  const [isTriggered, setIsTriggered] = useState(false)
-  const ref = useDetectClickOutside({
-    onTriggered: () => {
-      if (!isTriggered && open) {
-        setOpen(false)
-        setIsTriggered(true)
-        const timer = setTimeout(() => {
-          setIsTriggered(false)
-          clearTimeout(timer)
-        }, 300)
-      }
-    },
-  })
+  // const [isTriggered, setIsTriggered] = useState(false)
+  // const ref = useDetectClickOutside({
+  //   onTriggered: () => {
+  //     if (!isTriggered && open) {
+  //       setOpen(false)
+  //       setIsTriggered(true)
+  //       const timer = setTimeout(() => {
+  //         setIsTriggered(false)
+  //         clearTimeout(timer)
+  //       }, 300)
+  //     }
+  //   },
+  // })
 
   const copyEventLink = useCopyEventLinkToClipboard(item._id)
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
@@ -337,49 +338,67 @@ const CardButtons = ({
     </>
   )
 
-  const handleMouseOver = () => {
-    // if (turnOnHandleMouseOver) {
-    // setMenuOpen(false)
-    setOpen(true)
-    // }
-  }
+  // const handleMouseOver = () => {
+  //   // if (turnOnHandleMouseOver) {
+  //   // setMenuOpen(false)
+  //   setOpen(true)
+  //   // }
+  // }
 
-  const handleMouseOut = () => setOpen(false)
+  // const handleMouseOut = () => setOpen(false)
 
   return isCompact ? (
-    <div
-      className={cn('relative cursor-pointer group', className)}
-      onClick={(e) => {
-        e.stopPropagation()
-        if (!isTriggered) setOpen(!open)
-        // setTurnOnHandleMouseOver(false)
-        // setIsUserMenuOpened(!isUserMenuOpened)
-        // const timer = setTimeout(() => {
-        //   setTurnOnHandleMouseOver(true)
-        //   clearTimeout(timer)
-        // }, 300)
-      }}
-    >
-      <motion.div
-        className={cn(
-          'absolute z-50 overflow-hidden w-min top-[2.3rem]',
-          direction === 'left' ? 'right-0' : 'left-0'
-        )}
-        initial={{ height: 0 }}
-        animate={{ height: open ? 'auto' : 0 }}
-        transition={{ type: 'tween' }}
-        onMouseOver={handleMouseOver}
-        onMouseOut={handleMouseOut}
-      >
-        <div ref={ref} className="h-full bg-red-200 border border-gray-200">
-          {items}
+    <DropDown
+      trigger={
+        <div
+          className={cn(
+            'flex items-center justify-center cursor-pointer w-9 h-9 text-general group-hover:text-toxic group-hover:scale-110'
+            // className
+          )}
+        >
+          <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
         </div>
-      </motion.div>
-      <div className="flex items-center justify-center w-9 h-9 text-general group-hover:text-toxic group-hover:scale-110">
-        <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
-      </div>
-    </div>
+      }
+      className={className}
+      menuPadding={false}
+      openOnHover
+      // menuClassName="w-[222px] h-[300px]"
+    >
+      <div className="overflow-hidden rounded-lg">{items}</div>
+    </DropDown>
   ) : (
+    // <div
+    //   className={cn('relative cursor-pointer group', className)}
+    //   onClick={(e) => {
+    //     e.stopPropagation()
+    //     if (!isTriggered) setOpen(!open)
+    //     // setTurnOnHandleMouseOver(false)
+    //     // setIsUserMenuOpened(!isUserMenuOpened)
+    //     // const timer = setTimeout(() => {
+    //     //   setTurnOnHandleMouseOver(true)
+    //     //   clearTimeout(timer)
+    //     // }, 300)
+    //   }}
+    // >
+    //   <motion.div
+    //     className={cn(
+    //       'absolute z-50 overflow-hidden w-min top-[2.3rem]',
+    //       direction === 'left' ? 'right-0' : 'left-0'
+    //     )}
+    //     initial={{ height: 0 }}
+    //     animate={{ height: open ? 'auto' : 0 }}
+    //     transition={{ type: 'tween' }}
+    //     onMouseOver={handleMouseOver}
+    //     onMouseOut={handleMouseOut}
+    //   >
+    //     <div ref={ref} className="h-full bg-red-200 border border-gray-200">
+    //       {items}
+    //     </div>
+    //   </motion.div>
+    //   <div className="flex items-center justify-center w-9 h-9 text-general group-hover:text-toxic group-hover:scale-110">
+    //     <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
+    //   </div>
+    // </div>
     <div className={cn('flex', className)}>{items}</div>
   )
 }
