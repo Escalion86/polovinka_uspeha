@@ -121,8 +121,6 @@ const ToolsEventAnonsContent = () => {
     true
   )
 
-  console.log('textSplit :>> ', textSplit)
-
   return (
     <div className="h-full max-h-full px-1 overflow-y-auto">
       <ComboBox
@@ -201,31 +199,7 @@ const ToolsEventAnonsContent = () => {
           imageAspect={1}
         />
         <Input
-          label="Размер шрифта названия"
-          type="number"
-          className="w-32"
-          inputClassName="w-16"
-          value={fontSize}
-          onChange={(value) => setFontSize(parseInt(value))}
-          min={20}
-          max={200}
-          fullWidth={false}
-          // noMargin
-        />
-        <Input
-          label="Размер шрифта даты"
-          type="number"
-          className="w-32"
-          inputClassName="w-16"
-          value={dateFontSize}
-          onChange={(value) => setDateFontSize(parseInt(value))}
-          min={20}
-          max={200}
-          fullWidth={false}
-          // noMargin
-        />
-        <Input
-          label="Позиция по X"
+          label="Позиция по X текста"
           type="number"
           className="w-28"
           inputClassName="w-16"
@@ -236,38 +210,80 @@ const ToolsEventAnonsContent = () => {
           fullWidth={false}
           // noMargin
         />
-        <Input
-          label="Позиция по Y названия"
-          type="number"
-          className="w-28"
-          inputClassName="w-16"
-          value={startY}
-          onChange={(value) => setStartY(parseInt(value))}
-          min={0}
-          max={1000}
-          fullWidth={false}
-        />
-        <Input
-          label="Позиция по Y даты"
-          type="number"
-          className="w-28"
-          inputClassName="w-16"
-          value={dateStartY}
-          onChange={(value) => setDateStartY(parseInt(value))}
-          min={0}
-          max={1000}
-          fullWidth={false}
-        />
-        <ColorPicker
-          label="Цвет названия"
-          value={anonsColor}
-          onChange={setAnonsColor}
-        />
-        <ColorPicker
-          label="Цвет даты"
-          value={dateColor}
-          onChange={setDateColor}
-        />
+        <InputWrapper
+          label="Дата"
+          paddingX="small"
+          paddingY={false}
+          centerLabel
+        >
+          <div className="flex flex-wrap items-center flex-1 gap-x-2">
+            <Input
+              label="Размер шрифта"
+              type="number"
+              className="w-32"
+              inputClassName="w-16"
+              value={dateFontSize}
+              onChange={(value) => setDateFontSize(parseInt(value))}
+              min={20}
+              max={200}
+              fullWidth={false}
+              // noMargin
+            />
+            <Input
+              label="Позиция по Y"
+              type="number"
+              className="w-28"
+              inputClassName="w-16"
+              value={dateStartY}
+              onChange={(value) => setDateStartY(parseInt(value))}
+              min={0}
+              max={1000}
+              fullWidth={false}
+            />
+            <ColorPicker
+              label="Цвет"
+              value={dateColor}
+              onChange={setDateColor}
+            />
+          </div>
+        </InputWrapper>
+        <InputWrapper
+          label="Название"
+          paddingX="small"
+          paddingY={false}
+          centerLabel
+        >
+          <div className="flex flex-wrap items-center flex-1 gap-x-2">
+            <Input
+              label="Размер шрифта"
+              type="number"
+              className="w-32"
+              inputClassName="w-16"
+              value={fontSize}
+              onChange={(value) => setFontSize(parseInt(value))}
+              min={20}
+              max={200}
+              fullWidth={false}
+              // noMargin
+            />
+            <Input
+              label="Позиция по Y"
+              type="number"
+              className="w-28"
+              inputClassName="w-16"
+              value={startY}
+              onChange={(value) => setStartY(parseInt(value))}
+              min={0}
+              max={1000}
+              fullWidth={false}
+            />
+            <ColorPicker
+              label="Цвет"
+              value={anonsColor}
+              onChange={setAnonsColor}
+            />
+          </div>
+        </InputWrapper>
       </div>
       {/* <div style={{ height: 1920, width: 1080 }}>
         <img src={src} height={1920} width={1080} />

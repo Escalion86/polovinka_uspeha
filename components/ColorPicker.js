@@ -54,7 +54,7 @@ const ColorPicker = ({
         trigger={
           <div
             className={cn(
-              'cursor-pointer flex justify-center items-center w-full h-[26px] border border-gray-200 rounded-lg mt-1',
+              'cursor-pointer flex justify-center items-center w-full h-[24px] border border-gray-200 rounded-lg mt-1',
               calcLuminance(value) < 0.5 ? 'text-white' : 'text-black'
             )}
             style={{ backgroundColor: value }}

@@ -36,7 +36,7 @@ const ComboBox = ({
     >
       <select
         className={cn(
-          'flex-1 cursor-pointer outline-none bg-transparent p-1',
+          'flex-1 cursor-pointer outline-none bg-transparent px-1',
           selectClassName
         )}
         onChange={(e) => !disabled && onChange && onChange(e.target.value)}
