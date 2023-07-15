@@ -35,12 +35,7 @@ const serviceViewFunc = (serviceId) => {
     useEffect(() => {
       if (isLoggedUserModer && setTopLeftComponent)
         setTopLeftComponent(() => (
-          <CardButtons
-            item={service}
-            typeOfItem="service"
-            forForm
-            direction="right"
-          />
+          <CardButtons item={service} typeOfItem="service" forForm />
         ))
     }, [isLoggedUserModer, setTopLeftComponent])
 

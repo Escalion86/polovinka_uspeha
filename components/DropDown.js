@@ -34,11 +34,7 @@ const DropDown = ({
       )}
       data-prevent-parent-click
     >
-      <div
-        id="hs-dropdown"
-        className="w-full hs-dropdown-toggle"
-        data-prevent-parent-click
-      >
+      <div id="hs-dropdown" className="w-full hs-dropdown-toggle">
         {trigger}
       </div>
       <div
@@ -51,7 +47,6 @@ const DropDown = ({
           menuClassName
         )}
         aria-labelledby="hs-dropdown"
-        data-prevent-parent-click
       >
         {children}
       </div>

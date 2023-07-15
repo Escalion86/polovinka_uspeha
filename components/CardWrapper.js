@@ -8,6 +8,12 @@ import React from 'react'
 import { useRecoilValue } from 'recoil'
 import LoadingSpinner from './LoadingSpinner'
 
+const parentHasAttr = (e, attr) => {
+  if (!e.parentNode || e.parentNode.tagName === 'BODY') return false
+  if (e.parentNode.getAttribute('data-prevent-parent-click')) return true
+  return parentHasAttr(e.parentNode, attr)
+}
+
 export const CardWrapper = ({
   onClick,
   loading,
@@ -27,10 +33,7 @@ export const CardWrapper = ({
       style={style}
       className={cn('w-full', hidden ? 'overflow-hidden' : '')}
       onClick={(e) => {
-        if (
-          onClick &&
-          !e.target.parentNode.getAttribute('data-prevent-parent-click')
-        )
+        if (onClick && !parentHasAttr(e.target, 'data-prevent-parent-click'))
           onClick()
       }}
       // transition={{ duration: 0.3, type: 'just' }}

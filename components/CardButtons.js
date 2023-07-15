@@ -15,15 +15,12 @@ import {
   faCalendarAlt,
   faEllipsisV,
   faMoneyBill,
-  faPaste,
   faPencilAlt,
   faShareAlt,
   faSignIn,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 
-// import { motion } from 'framer-motion'
-import { useState } from 'react'
 import CardButton from './CardButton'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
@@ -37,8 +34,6 @@ import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboar
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 import DropDown from './DropDown'
-import Input from './Input'
-import ColorPicker from './ColorPicker'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -47,10 +42,8 @@ const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
       active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
     )}
     onClick={(e) => {
-      // e.stopPropagation()
       onClick && onClick()
     }}
-    data-prevent-parent-click
   >
     <FontAwesomeIcon icon={icon} className="w-7 h-7" />
     <div className="whitespace-nowrap prevent-select-text">{tooltipText}</div>
@@ -65,7 +58,6 @@ const CardButtons = ({
   onDownClick,
   className,
   forForm,
-  direction = 'left',
   alwaysCompact,
   alwaysCompactOnPhone,
   showEditButton = true,
@@ -350,33 +342,23 @@ const CardButtons = ({
   // }
 
   return isCompact ? (
-    <div
-    // onClick={(e) => {
-    //   // e.stopPropagation()
-    //   console.log('!')
-    // }}
-    >
-      <DropDown
-        trigger={
-          <div
-            className={cn(
-              'flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general'
-              // className
-            )}
-            data-prevent-parent-click
-          >
-            <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
-          </div>
-        }
-        className={className}
-        menuPadding={false}
-        openOnHover
-      >
-        <div data-prevent-parent-click className="overflow-hidden rounded-lg">
-          {items}
+    <DropDown
+      trigger={
+        <div
+          className={cn(
+            'flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general'
+            // className
+          )}
+        >
+          <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
         </div>
-      </DropDown>
-    </div>
+      }
+      className={className}
+      menuPadding={false}
+      openOnHover
+    >
+      <div className="overflow-hidden rounded-lg">{items}</div>
+    </DropDown>
   ) : (
     // </div>
     //

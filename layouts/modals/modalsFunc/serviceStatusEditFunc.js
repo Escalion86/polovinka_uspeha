@@ -112,7 +112,6 @@ const serviceUserStatusEditFunc = (serviceUserId) => {
     //     item={{ _id: eventId }}
     //     typeOfItem="event"
     //     forForm
-    //     direction="right"
     //   />
     // ),
   }
