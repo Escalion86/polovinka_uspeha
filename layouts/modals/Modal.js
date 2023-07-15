@@ -158,7 +158,7 @@ const Modal = ({
         animate={{ scale: close ? 0.5 : 1 }}
         transition={{ duration: 0.1 }}
         // onClick={(e) => e?.stopPropagation()}
-        // onMouseDown={(e) => e?.stopPropagation()}
+        onMouseDown={(e) => e?.stopPropagation()}
       >
         {subModalText && (
           <div className="absolute left-0 flex justify-center w-full -top-9">
