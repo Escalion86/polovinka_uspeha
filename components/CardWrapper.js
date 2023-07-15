@@ -25,12 +25,14 @@ export const CardWrapper = ({
   return (
     <div
       style={style}
-      className={cn(
-        'w-full',
-
-        hidden ? 'overflow-hidden' : ''
-      )}
-      onClick={onClick}
+      className={cn('w-full', hidden ? 'overflow-hidden' : '')}
+      onClick={(e) => {
+        if (
+          onClick &&
+          !e.target.parentNode.getAttribute('data-prevent-parent-click')
+        )
+          onClick()
+      }}
       // transition={{ duration: 0.3, type: 'just' }}
       // animate={{
       //   height: hidden ? 0 : 'auto',

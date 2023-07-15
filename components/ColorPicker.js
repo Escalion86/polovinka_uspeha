@@ -10,6 +10,7 @@ import copyToClipboard from '@helpers/copyToClipboard'
 import pasteFromClipboard from '@helpers/pasteFromClipboard'
 
 function calcLuminance(hex) {
+  if (!hex) return
   var c = hex.substring(1)
   var rgb = parseInt(c, 16) // convert rrggbb to decimal
   var r = (rgb >> 16) & 0xff // extract red
@@ -63,6 +64,8 @@ const ColorPicker = ({
           </div>
         }
         className="w-full"
+        turnOffAutoClose="inside"
+        // openOnHover
         // menuPadding="lg"
         // menuClassName="w-[222px] h-[300px]"
       >

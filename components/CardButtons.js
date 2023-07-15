@@ -15,6 +15,7 @@ import {
   faCalendarAlt,
   faEllipsisV,
   faMoneyBill,
+  faPaste,
   faPencilAlt,
   faShareAlt,
   faSignIn,
@@ -36,17 +37,20 @@ import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboar
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 import DropDown from './DropDown'
+import Input from './Input'
+import ColorPicker from './ColorPicker'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
     className={cn(
-      `text-base font-normal px-2 duration-300 flex items-center gap-x-2 h-9 hover:bg-${color}-600 hover:text-white`,
+      `cursor-pointer text-base font-normal px-2 duration-300 flex items-center gap-x-2 h-9 hover:bg-${color}-600 hover:text-white`,
       active ? `bg-${color}-500 text-white` : `bg-white text-${color}-500`
     )}
     onClick={(e) => {
-      e.stopPropagation()
+      // e.stopPropagation()
       onClick && onClick()
     }}
+    data-prevent-parent-click
   >
     <FontAwesomeIcon icon={icon} className="w-7 h-7" />
     <div className="whitespace-nowrap prevent-select-text">{tooltipText}</div>
@@ -75,7 +79,7 @@ const CardButtons = ({
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const device = useRecoilValue(windowDimensionsTailwindSelector)
 
-  const [open, setOpen] = useState(false)
+  // const [open, setOpen] = useState(false)
   // const [isTriggered, setIsTriggered] = useState(false)
   // const ref = useDetectClickOutside({
   //   onTriggered: () => {
@@ -148,7 +152,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faShareAlt}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             if (typeOfItem === 'event') {
               copyEventLink()
               if (!item.showOnSite)
@@ -181,7 +185,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faUsers}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             modalsFunc.event.users(item._id)
           }}
           color="green"
@@ -192,7 +196,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faSignIn}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             modalsFunc.loginHistory.user(item._id)
           }}
           color="purple"
@@ -203,7 +207,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faMoneyBill}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             modalsFunc.event.payments(item._id)
           }}
           color="amber"
@@ -214,7 +218,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faMoneyBill}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             modalsFunc.user.payments(item._id)
           }}
           color="amber"
@@ -225,7 +229,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faArrowUp}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             onUpClick()
           }}
           color="gray"
@@ -236,7 +240,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faArrowDown}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             onDownClick()
           }}
           color="gray"
@@ -247,7 +251,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faCalendarAlt}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             modalsFunc[typeOfItem].events(item._id)
           }}
           color="blue"
@@ -258,7 +262,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faPencilAlt}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             modalsFunc[typeOfItem].edit(item._id)
           }}
           color="orange"
@@ -277,7 +281,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faCopy}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             modalsFunc[typeOfItem].add(item._id)
           }}
           color="blue"
@@ -289,7 +293,7 @@ const CardButtons = ({
           active={!item.showOnSite}
           icon={item.showOnSite ? faEye : faEyeSlash}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             showOnSiteOnClick()
           }}
           color="purple"
@@ -308,7 +312,7 @@ const CardButtons = ({
               <ItemComponent
                 icon={icon}
                 onClick={() => {
-                  setOpen(false)
+                  // setOpen(false)
                   modalsFunc[typeOfItem].statusEdit(item._id)
                   // if (item.status === 'canceled')
                   //   modalsFunc[typeOfItem].uncancel(item._id)
@@ -328,7 +332,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faTrashAlt}
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             modalsFunc[typeOfItem].delete(item._id)
           }}
           color="red"
@@ -345,28 +349,38 @@ const CardButtons = ({
   //   // }
   // }
 
-  // const handleMouseOut = () => setOpen(false)
-
   return isCompact ? (
-    <DropDown
-      trigger={
-        <div
-          className={cn(
-            'flex items-center justify-center cursor-pointer w-9 h-9 text-general group-hover:text-toxic group-hover:scale-110'
-            // className
-          )}
-        >
-          <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
-        </div>
-      }
-      className={className}
-      menuPadding={false}
-      openOnHover
-      // menuClassName="w-[222px] h-[300px]"
+    <div
+    // onClick={(e) => {
+    //   // e.stopPropagation()
+    //   console.log('!')
+    // }}
     >
-      <div className="overflow-hidden rounded-lg">{items}</div>
-    </DropDown>
+      <DropDown
+        trigger={
+          <div
+            className={cn(
+              'flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general'
+              // className
+            )}
+            data-prevent-parent-click
+          >
+            <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
+          </div>
+        }
+        className={className}
+        menuPadding={false}
+        openOnHover
+      >
+        <div data-prevent-parent-click className="overflow-hidden rounded-lg">
+          {items}
+        </div>
+      </DropDown>
+    </div>
   ) : (
+    // </div>
+    //
+    //
     // <div
     //   className={cn('relative cursor-pointer group', className)}
     //   onClick={(e) => {
