@@ -76,17 +76,17 @@ export default async function handler(Schema, req, res, params = null) {
     case 'PUT':
       try {
         if (id) {
-          data = await Schema.findById(id)
+          oldData = await Schema.findById(id)
           console.log('Schema', Schema.collection.collectionName)
           console.log('typeof', typeof Schema.collection.collectionName)
-          if (!data) {
+          if (!oldData) {
             return res?.status(400).json({ success: false })
           }
 
           // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
           const afterUpdateNeedToNotificate =
             // body.userId === id &&
-            Schema === Users && !isUserQuestionnaireFilled(data)
+            Schema === Users && !isUserQuestionnaireFilled(oldData)
 
           data = await Schema.findByIdAndUpdate(id, body.data, {
             new: true,
@@ -132,6 +132,19 @@ export default async function handler(Schema, req, res, params = null) {
                       true
                     )}`,
                     parse_mode: 'html',
+                    reply_markup:
+                      req.headers.origin.substr(0, 5) === 'https'
+                        ? JSON.stringify({
+                            inline_keyboard: [
+                              [
+                                {
+                                  text: '\u{1F464} Пользователь',
+                                  url: req.headers.origin + '/user/' + id,
+                                },
+                              ],
+                            ].filter((botton) => botton),
+                          })
+                        : undefined,
                   },
                   (data) => console.log('data', data),
                   (data) => console.log('error', data),
