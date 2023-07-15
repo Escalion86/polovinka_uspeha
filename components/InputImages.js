@@ -179,7 +179,10 @@ const InputImages = ({
           </div>
         )}
         {isAddingImage && (
-          <LoadingSpinner className="w-20 h-20 border border-gray-300 bg-general bg-opacity-20" />
+          <LoadingSpinner
+            heightClassName="h-20"
+            className="w-20 border border-gray-300 bg-general bg-opacity-20"
+          />
         )}
       </div>
     </InputWrapper>
