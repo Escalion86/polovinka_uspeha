@@ -1,7 +1,12 @@
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 
-export const LoadingSpinner = ({ className, size = 'md', text = null }) => {
+export const LoadingSpinner = ({
+  className,
+  size = 'md',
+  text = null,
+  heightClassName = 'h-full',
+}) => {
   const widthHeight =
     size === 'xxs'
       ? 24
@@ -17,7 +22,8 @@ export const LoadingSpinner = ({ className, size = 'md', text = null }) => {
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center h-full max-h-full',
+        'flex flex-col items-center justify-center max-h-full',
+        heightClassName,
         className
       )}
     >
