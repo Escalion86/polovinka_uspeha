@@ -64,7 +64,6 @@ const eventViewFunc = (eventId) => {
             item={event}
             typeOfItem="event"
             forForm
-            direction="right"
             showEditButton={!isEventClosed}
             showDeleteButton={!isEventClosed}
           />
@@ -210,7 +209,6 @@ const eventViewFunc = (eventId) => {
     //     item={{ _id: eventId }}
     //     typeOfItem="event"
     //     forForm
-    //     direction="right"
     //   />
     // ),
   }

@@ -50,12 +50,7 @@ const userViewFunc = (userId, clone = false) => {
     useEffect(() => {
       if (setTopLeftComponent)
         setTopLeftComponent(() => (
-          <CardButtons
-            item={user}
-            typeOfItem="user"
-            forForm
-            direction="right"
-          />
+          <CardButtons item={user} typeOfItem="user" forForm />
         ))
     }, [setTopLeftComponent])
 
