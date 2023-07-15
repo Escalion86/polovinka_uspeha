@@ -76,7 +76,7 @@ export default async function handler(Schema, req, res, params = null) {
     case 'PUT':
       try {
         if (id) {
-          oldData = await Schema.findById(id)
+          const oldData = await Schema.findById(id)
           console.log('Schema', Schema.collection.collectionName)
           console.log('typeof', typeof Schema.collection.collectionName)
           if (!oldData) {
