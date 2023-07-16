@@ -14,69 +14,69 @@ import Users from '@models/Users'
 import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
 
-const testCalendar = async () => {
-  const fs = require('fs').promises
-  const { authenticate } = require('@google-cloud/local-auth')
-  const { google } = require('googleapis')
+// const testCalendar = async () => {
+//   const fs = require('fs').promises
+//   const { authenticate } = require('@google-cloud/local-auth')
+//   const { google } = require('googleapis')
 
-  const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-  const TOKEN_PATH = path.join(process.cwd(), 'token.json')
-  const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json')
+//   const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+//   const TOKEN_PATH = path.join(process.cwd(), 'token.json')
+//   const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json')
 
-  const CALENDAR_ID =
-    '65a9f251a85bd4119dfb0c1eb49ab899b510b782df95dcf7ea2f5fdcf1632414@group.calendar.google.com'
-  const KEYFILE = 'google_calendar_token.json' // path to JSON with private key been downloaded from Google
-  const SCOPE_CALENDAR = 'https://www.googleapis.com/auth/calendar' // authorization scopes
-  const SCOPE_EVENTS = 'https://www.googleapis.com/auth/calendar.events'
+//   const CALENDAR_ID =
+//     '65a9f251a85bd4119dfb0c1eb49ab899b510b782df95dcf7ea2f5fdcf1632414@group.calendar.google.com'
+//   const KEYFILE = 'google_calendar_token.json' // path to JSON with private key been downloaded from Google
+//   const SCOPE_CALENDAR = 'https://www.googleapis.com/auth/calendar' // authorization scopes
+//   const SCOPE_EVENTS = 'https://www.googleapis.com/auth/calendar.events'
 
-  async function readPrivateKey() {
-    const content = fs.readFileSync(process.cwd() + '/' + KEYFILE)
-    return JSON.parse(content.toString())
-  }
+//   async function readPrivateKey() {
+//     const content = fs.readFileSync(process.cwd() + '/' + KEYFILE)
+//     return JSON.parse(content.toString())
+//   }
 
-  async function authenticate(key) {
-    const jwtClient = new google.auth.JWT(
-      key.client_email,
-      null,
-      key.private_key,
-      [SCOPE_CALENDAR, SCOPE_EVENTS]
-    )
-    await jwtClient.authorize()
-    return jwtClient
-  }
+//   async function authenticate(key) {
+//     const jwtClient = new google.auth.JWT(
+//       key.client_email,
+//       null,
+//       key.private_key,
+//       [SCOPE_CALENDAR, SCOPE_EVENTS]
+//     )
+//     await jwtClient.authorize()
+//     return jwtClient
+//   }
 
-  async function createEvent(auth) {
-    const event = {
-      summary: 'Habr Post Demo',
-      description:
-        'Тест для демонстрации интеграции nodejs-приложения с Google Calendar API.',
-      start: {
-        dateTime: '2023-07-19T16:00:00+02:00',
-        timeZone: 'Europe/Riga',
-      },
-      end: {
-        dateTime: '2023-07-19T18:00:00+02:00',
-        timeZone: 'Europe/Riga',
-      },
-    }
+//   async function createEvent(auth) {
+//     const event = {
+//       summary: 'Habr Post Demo',
+//       description:
+//         'Тест для демонстрации интеграции nodejs-приложения с Google Calendar API.',
+//       start: {
+//         dateTime: '2023-07-19T16:00:00+02:00',
+//         timeZone: 'Europe/Riga',
+//       },
+//       end: {
+//         dateTime: '2023-07-19T18:00:00+02:00',
+//         timeZone: 'Europe/Riga',
+//       },
+//     }
 
-    let calendar = google.calendar('v3')
-    await calendar.events.insert({
-      auth: auth,
-      calendarId: CALENDAR_ID,
-      resource: event,
-    })
-  }
+//     let calendar = google.calendar('v3')
+//     await calendar.events.insert({
+//       auth: auth,
+//       calendarId: CALENDAR_ID,
+//       resource: event,
+//     })
+//   }
 
-  // MAIN
-  try {
-    const key = await readPrivateKey()
-    const auth = await authenticate(key)
-    await createEvent(auth)
-  } catch (e) {
-    console.log('Error: ' + e)
-  }
-}
+//   // MAIN
+//   try {
+//     const key = await readPrivateKey()
+//     const auth = await authenticate(key)
+//     await createEvent(auth)
+//   } catch (e) {
+//     console.log('Error: ' + e)
+//   }
+// }
 
 function convertTZ(date, tzString = 'Asia/Krasnoyarsk') {
   return new Date(
