@@ -418,7 +418,7 @@ const eventFunc = (eventId, clone = false) => {
                 // postfixClassName="text-danger"
               />
               {getDiffBetweenDates(dateStart) > 0 && (
-                <div className="flex items-center pt-[18px] leading-3 laptop:pt-0 text-danger">
+                <div className="flex items-center pt-[4px] leading-3 laptop:pt-0 text-danger">
                   Внимание: дата прошла!
                 </div>
               )}
@@ -436,7 +436,7 @@ const eventFunc = (eventId, clone = false) => {
                 noMargin
                 // postfix={formatMinutes(duration)}
               />
-              <div className="flex items-center pt-[18px] leading-3 laptop:pt-0">
+              <div className="flex items-center pt-[4px] leading-3 laptop:pt-0">
                 {formatMinutes(duration)}
               </div>
             </FormRow>

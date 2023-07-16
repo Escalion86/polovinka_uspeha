@@ -79,7 +79,7 @@ const InputWrapper = forwardRef(
     return (
       <div
         className={cn(
-          'relative flex items-center min-h-[42px]',
+          'relative flex items-center min-h-[28px]',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
           noMargin ? '' : 'mt-3.5 mb-1',
           noBorder

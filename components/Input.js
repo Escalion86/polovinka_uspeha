@@ -33,7 +33,7 @@ const Input = forwardRef(
       defaultValue,
       floatingLabel = true,
       showErrorText = false,
-      fullWidth = true,
+      fullWidth = false,
       paddingY = 'small',
       paddingX = true,
       noMargin = false,

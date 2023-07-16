@@ -26,7 +26,7 @@ const DateTimePicker = ({
   showYears = false,
   showZodiac = false,
   error,
-  fullWidth,
+  fullWidth = false,
   defaultValue,
   noMargin,
 }) => {
