@@ -21,6 +21,7 @@ import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -32,6 +33,7 @@ const userViewFunc = (userId, clone = false) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
+    const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
@@ -99,6 +101,7 @@ const userViewFunc = (userId, clone = false) => {
                 <span>
                   {birthDateToAge(
                     user.birthday,
+                    serverDate,
                     true,
                     true,
                     isLoggedUserModer ||

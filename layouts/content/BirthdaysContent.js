@@ -34,15 +34,15 @@ import {
   Select,
 } from '@mui/material'
 import { getNounBirthdays } from '@helpers/getNoun'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 
-var daysBeforeBirthday = (birthday) => {
+var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
   if (!birthday) return undefined
   var today, bday, diff, days
   const [bDate, bTime] = birthday.split('T')
   const day = new Date(bDate).getDate() + (bTime !== '00:00:00.000Z' ? 1 : 0)
   const month = new Date(bDate).getMonth() + 1
-  var now = new Date()
-  today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  today = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate())
   bday = new Date(today.getFullYear(), month - 1, day)
   if (today.getTime() > bday.getTime()) {
     bday.setFullYear(bday.getFullYear() + 1)
@@ -65,6 +65,7 @@ const MenuProps = {
 
 const BirthdaysContent = () => {
   const users = useRecoilValue(usersAtom)
+  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const [periodDays, setPeriodDays] = useState(90)
 
   // const usersBirthday = users.map((user) => ({
@@ -79,7 +80,7 @@ const BirthdaysContent = () => {
   var birthdaysCount = 0
 
   users.forEach((user) => {
-    const beforeBirthday = daysBeforeBirthday(user.birthday)
+    const beforeBirthday = daysBeforeBirthday(user.birthday, serverDate)
 
     if (beforeBirthday < periodDays) {
       array[beforeBirthday].push(user)
@@ -135,7 +136,7 @@ const BirthdaysContent = () => {
             }}
           >
             {array.map((users, index) => {
-              var date = new Date()
+              var date = serverDate ?? new Date()
               date.setDate(date.getDate() + index)
               return (
                 users.length > 0 && (
@@ -182,6 +183,7 @@ const BirthdaysContent = () => {
                               <span>
                                 {birthDateToAge(
                                   user.birthday,
+                                  serverDate,
                                   true,
                                   false,
                                   true,

@@ -8,10 +8,12 @@ import { useState } from 'react'
 import allClosedEventsSelector from '@state/selectors/allClosedEventsSelector'
 import arrayOfSumOfPaymentsForInternalByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForInternalByDateSelector'
 import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 
 const StatisticsFinanceContent = () => {
-  const [month, setMonth] = useState(new Date().getMonth())
-  const [year, setYear] = useState(new Date().getFullYear())
+  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
+  const [month, setMonth] = useState(serverDate.getMonth())
+  const [year, setYear] = useState(serverDate.getFullYear())
 
   const allClosedEvents = useRecoilValue(allClosedEventsSelector)
   const filteredEvents = allClosedEvents.filter(({ dateStart }) => {

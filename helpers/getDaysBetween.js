@@ -1,7 +1,7 @@
 import getNoun from './getNoun'
 
 const getDaysBetween = (
-  date1,
+  date1 = new Date(),
   date2 = new Date(),
   showNoun = true,
   removeTime = false

@@ -1,9 +1,11 @@
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import birthDateToAge from './birthDateToAge'
 import { DEFAULT_EVENT } from './constants'
 import isEventCanceled from './isEventCanceled'
 import isEventExpiredFunc from './isEventExpired'
 import isEventInProcessFunc from './isEventInProcess'
 import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
+import { getRecoil } from 'recoil-nexus'
 
 const userToEventStatus = (event, user, eventUsersFull) => {
   if (!event?._id)
@@ -48,7 +50,10 @@ const userToEventStatus = (event, user, eventUsersFull) => {
 
   const canSignOut = alreadySignIn && !isEventExpired
 
-  const userAge = new Number(birthDateToAge(user.birthday, false, false))
+  const serverDate = new Date(getRecoil(serverSettingsAtom)?.dateTime)
+  const userAge = new Number(
+    birthDateToAge(user.birthday, serverDate, false, false)
+  )
 
   const isUserTooOld =
     userAge &&

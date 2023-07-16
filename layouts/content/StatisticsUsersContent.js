@@ -8,14 +8,14 @@ import StreamChart from '@components/Charts/StreamChart'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import formatDate from '@helpers/formatDate'
 import getDaysBetween from '@helpers/getDaysBetween'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
   return new Date(date.getTime() + 1000 * 3600 * 24 * days)
 }
 
-const usersCountByDates = (users = [], days = 90) => {
-  const dateNow = new Date()
+const usersCountByDates = (users = [], dateNow = new Date(), days = 90) => {
   const dateFinish = new Date(dateNow.getTime())
   const dateStart = new Date(
     dateFinish.getTime() -
@@ -52,8 +52,8 @@ const usersCountByDates = (users = [], days = 90) => {
   return result
 }
 
-const linesCFG = () => {
-  const today = new Date().setHours(0, 0, 0, 0)
+const linesCFG = (dateNow = new Date()) => {
+  const today = dateNow.setHours(0, 0, 0, 0)
   const dateToday = new Date(today)
 
   const arr = [{ index: 90 }, { index: 0 }]
@@ -74,16 +74,16 @@ const linesCFG = () => {
   return arr
 }
 
-const tooltipCaptions = () => {
-  const now = new Date()
+const tooltipCaptions = (dateNow = new Date()) => {
   const arr = []
   for (let i = -90; i <= 0; i++) {
-    arr.push(formatDate(addDaysToDate(now, i)))
+    arr.push(formatDate(addDaysToDate(dateNow, i)))
   }
   return arr
 }
 
 const StatisticsUsersContent = () => {
+  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const users = useRecoilValue(usersAtom)
 
   const [filterUsers, setFilterUsers] = useState({
@@ -150,14 +150,14 @@ const StatisticsUsersContent = () => {
         <P>
           {`с ${formatDate(
             new Date(
-              new Date().getTime() -
+              serverDate.getTime() -
                 1000 * 3600 * 24 * 89 -
-                (new Date().getTime() % (1000 * 3600 * 24))
+                (serverDate.getTime() % (1000 * 3600 * 24))
             )
-          )} по ${formatDate(new Date())}`}
+          )} по ${formatDate(serverDate)}`}
         </P>
         <StreamChart
-          data={usersCountByDates(filteredUsers)}
+          data={usersCountByDates(filteredUsers, serverDate)}
           linesOnX={linesCFG()}
           colors={{
             mans: manColor,
@@ -172,7 +172,7 @@ const StatisticsUsersContent = () => {
           axisBottom={false}
           axisLeft="Пользователей"
           legend={false}
-          tooltipCaptions={tooltipCaptions()}
+          tooltipCaptions={tooltipCaptions(serverDate)}
         />
       </div>
     </div>

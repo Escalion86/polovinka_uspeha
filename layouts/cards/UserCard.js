@@ -19,6 +19,7 @@ import formatDate from '@helpers/formatDate'
 import UserName from '@components/UserName'
 import sumOfPaymentsWithoutEventIdByUserIdSelector from '@state/selectors/sumOfPaymentsWithoutEventIdByUserIdSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 
 const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
   const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
@@ -41,6 +42,7 @@ const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
 }
 
 const UserCard = ({ userId, hidden = false, style }) => {
+  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const user = useRecoilValue(userSelector(userId))
   const loading = useRecoilValue(loadingAtom('user' + userId))
@@ -152,6 +154,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                               <span className="leading-4">
                                 {birthDateToAge(
                                   user.birthday,
+                                  serverDate,
                                   true,
                                   false,
                                   true
