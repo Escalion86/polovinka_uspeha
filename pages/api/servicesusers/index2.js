@@ -431,7 +431,9 @@ export default async function handler(req, res) {
           })
         }
         // Проверяем параметры пользователя
-        const userAge = new Number(birthDateToAge(user.birthday, false, false))
+        const userAge = new Number(
+          birthDateToAge(user.birthday, new Date(), false, false)
+        )
 
         const isUserTooOld =
           userAge &&
