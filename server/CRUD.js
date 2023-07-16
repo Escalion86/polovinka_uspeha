@@ -127,6 +127,7 @@ export default async function handler(Schema, req, res, params = null) {
                       data.gender === 'male' ? 'Мужчина' : 'Женщина'
                     }\n - Дата рождения: ${birthDateToAge(
                       data.birthday,
+                      new Date(),
                       true,
                       true,
                       true
