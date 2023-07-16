@@ -401,7 +401,7 @@ const eventFunc = (eventId, clone = false) => {
               error={errors.description}
             />
             {/* <FormWrapper twoColumns> */}
-            <FormRow>
+            <FormRow className="flex-wrap">
               <DateTimePicker
                 value={dateStart}
                 onChange={(date) => {
@@ -555,7 +555,7 @@ const eventFunc = (eventId, clone = false) => {
                   // labelContentWidth
                   // labelPos="left"
                 />
-                <div>
+                <div className="flex items-center pt-[4px] leading-3 laptop:pt-0">
                   Итого: {(price - usersStatusDiscount?.novice) / 100} ₽
                 </div>
               </FormRow>
@@ -590,7 +590,7 @@ const eventFunc = (eventId, clone = false) => {
                   // labelContentWidth
                   // labelPos="left"
                 />
-                <div>
+                <div className="flex items-center pt-[4px] leading-3 laptop:pt-0">
                   Итого: {(price - usersStatusDiscount?.member) / 100} ₽
                 </div>
               </FormRow>
@@ -667,6 +667,7 @@ const eventFunc = (eventId, clone = false) => {
                 // value={address}
                 // className={wrapperClassName}
                 // required={required}
+                fullWidth
                 paddingY
                 paddingX={false}
                 centerLabel
@@ -822,6 +823,7 @@ const eventFunc = (eventId, clone = false) => {
                 paddingX={false}
                 paddingY
                 centerLabel
+                fullWidth
               >
                 {/* <div className="flex border-t border-b border-gray-300">
                 <div className="flex items-center pr-1 border-r border-gray-300">
