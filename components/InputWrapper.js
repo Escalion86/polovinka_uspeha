@@ -66,7 +66,7 @@ const InputWrapper = forwardRef(
       labelContentWidth,
       wrapperClassName,
       hidden = false,
-      fullWidth = true,
+      fullWidth = false,
       noBorder = false,
       disabled = false,
       noMargin = false,
