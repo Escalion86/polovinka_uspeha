@@ -146,7 +146,6 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
               }}
               min={0}
               max={359}
-              fullWidth={false}
               // noMargin
             />
           </div>

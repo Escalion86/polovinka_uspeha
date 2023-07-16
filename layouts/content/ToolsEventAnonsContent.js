@@ -143,7 +143,6 @@ const ToolsEventAnonsContent = () => {
               // inputClassName="w-16"
               value={customDate1}
               onChange={setCustomDate1}
-              fullWidth={false}
               // noMargin
             />
             <Input
@@ -153,7 +152,6 @@ const ToolsEventAnonsContent = () => {
               // inputClassName="w-16"
               value={customDate2}
               onChange={setCustomDate2}
-              fullWidth={false}
               // noMargin
             />
             <Input
@@ -163,7 +161,7 @@ const ToolsEventAnonsContent = () => {
               // inputClassName="w-16"
               value={customText}
               onChange={setCustomText}
-              // fullWidth={false}
+              fullWidth
               noMargin
             />
           </div>
@@ -207,7 +205,6 @@ const ToolsEventAnonsContent = () => {
           onChange={(value) => setStartX(parseInt(value))}
           min={0}
           max={1000}
-          fullWidth={false}
           // noMargin
         />
         <InputWrapper
@@ -226,7 +223,6 @@ const ToolsEventAnonsContent = () => {
               onChange={(value) => setDateFontSize(parseInt(value))}
               min={20}
               max={200}
-              fullWidth={false}
               // noMargin
             />
             <Input
@@ -238,7 +234,6 @@ const ToolsEventAnonsContent = () => {
               onChange={(value) => setDateStartY(parseInt(value))}
               min={0}
               max={1000}
-              fullWidth={false}
             />
             <ColorPicker
               label="Цвет"
@@ -263,7 +258,6 @@ const ToolsEventAnonsContent = () => {
               onChange={(value) => setFontSize(parseInt(value))}
               min={20}
               max={200}
-              fullWidth={false}
               // noMargin
             />
             <Input
@@ -275,7 +269,6 @@ const ToolsEventAnonsContent = () => {
               onChange={(value) => setStartY(parseInt(value))}
               min={0}
               max={1000}
-              fullWidth={false}
             />
             <ColorPicker
               label="Цвет"
