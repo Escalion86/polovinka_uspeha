@@ -520,7 +520,8 @@ const itemsFuncGenerator = (
           } мероприятия`
         )
         setNotLoadingCard('event' + eventId)
-        props.deleteEventsUser(data._id)
+        console.log('data :>> ', data)
+        props.deleteEventsUser(data.data._id)
       },
       (error) => {
         snackbar.error(
