@@ -133,6 +133,10 @@ const eventsSchema = {
     type: Boolean,
     default: false,
   },
+  googleCalendarId: {
+    type: String,
+    default: null,
+  },
 }
 
 export default eventsSchema

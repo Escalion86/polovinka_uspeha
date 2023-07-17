@@ -1,12 +1,220 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import { postData } from '@helpers/CRUD'
+import formatAddress from '@helpers/formatAddress'
 // import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
 import isUserAdmin from '@helpers/isUserAdmin'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
+import Events from '@models/Events'
 import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
+
+const { google } = require('googleapis')
+const SCOPES = ['https://www.googleapis.com/auth/calendar']
+const {
+  GOOGLE_PRIVATE_KEY,
+  GOOGLE_CLIENT_EMAIL,
+  GOOGLE_PROJECT_NUMBER,
+  GOOGLE_CALENDAR_ID,
+} = process.env
+
+const connectToGoogleCalendar = () => {
+  const jwtClient = new google.auth.JWT(
+    GOOGLE_CLIENT_EMAIL,
+    null,
+    GOOGLE_PRIVATE_KEY,
+    SCOPES
+  )
+
+  const calendar = google.calendar({
+    version: 'v3',
+    project: GOOGLE_PROJECT_NUMBER,
+    auth: jwtClient,
+  })
+
+  return calendar
+}
+
+const addBlankEventToCalendar = async () => {
+  const calendar = connectToGoogleCalendar()
+
+  const calendarEvent = {
+    summary: '[blank]',
+    description: '',
+    start: {
+      dateTime: new Date(),
+      timeZone: 'Asia/Krasnoyarsk',
+    },
+    end: {
+      dateTime: new Date(),
+      timeZone: 'Asia/Krasnoyarsk',
+    },
+    attendees: [],
+    reminders: {
+      useDefault: false,
+      overrides: [
+        { method: 'email', minutes: 24 * 60 },
+        { method: 'popup', minutes: 10 },
+      ],
+    },
+  }
+
+  const auth = new google.auth.GoogleAuth({
+    keyFile: './google_calendar_token.json',
+    scopes: SCOPES,
+  })
+
+  const authProcess = await auth.getClient()
+
+  const calendarEventData = await new Promise((resolve, reject) => {
+    calendar.events.insert(
+      {
+        auth: authProcess,
+        calendarId: GOOGLE_CALENDAR_ID,
+        resource: calendarEvent,
+      },
+      (error, result) => {
+        if (error) {
+          console.log({ error })
+          reject(error)
+          // res.send(JSON.stringify({ error: error }))
+        } else {
+          if (result) {
+            console.log(result)
+            resolve(result)
+            // res.send(JSON.stringify({ events: result.data.items }))
+          } else {
+            console.log({ message: 'Что-то пошло не так' })
+            reject('Что-то пошло не так')
+            // res.send(JSON.stringify({ message: 'No upcoming events found.' }))
+          }
+        }
+      }
+    )
+  })
+
+  console.log('calendarEventData :>> ', calendarEventData)
+
+  return calendarEventData?.data?.id
+}
+
+const deleteEventFromCalendar = async (googleCalendarId) => {
+  if (!googleCalendarId) return
+
+  const calendar = connectToGoogleCalendar()
+
+  const auth = new google.auth.GoogleAuth({
+    keyFile: './google_calendar_token.json',
+    scopes: SCOPES,
+  })
+
+  const authProcess = await auth.getClient()
+
+  return calendar.events.delete({
+    auth: authProcess,
+    calendarId: GOOGLE_CALENDAR_ID,
+    eventId: googleCalendarId,
+  })
+}
+
+const updateEventInCalendar = async (event) => {
+  const calendar = connectToGoogleCalendar()
+
+  // calendar.events.list(
+  //   {
+  //     calendarId: GOOGLE_CALENDAR_ID,
+  //     timeMin: new Date().toISOString(),
+  //     maxResults: 10,
+  //     singleEvents: true,
+  //     orderBy: 'startTime',
+  //   },
+  //   (error, result) => {
+  //     if (error) {
+  //       console.log({ error })
+  //       // res.send(JSON.stringify({ error: error }))
+  //     } else {
+  //       if (result.data.items.length) {
+  //         console.log({ events: result.data.items })
+  //         // res.send(JSON.stringify({ events: result.data.items }))
+  //       } else {
+  //         console.log({ message: 'No upcoming events found.' })
+  //         // res.send(JSON.stringify({ message: 'No upcoming events found.' }))
+  //       }
+  //     }
+  //   }
+  // )
+
+  const calendarEvent = {
+    summary: `${event.showOnSite ? '' : '[СКРЫТО] '}${
+      event.status === 'canceled' ? '[ОТМЕНЕНО] ' : ''
+    }${event.title}`,
+    description: event.description,
+    start: {
+      dateTime: event.dateStart,
+      timeZone: 'Asia/Krasnoyarsk',
+    },
+    end: {
+      dateTime: event.dateEnd,
+      timeZone: 'Asia/Krasnoyarsk',
+    },
+    location: formatAddress(event.address),
+    attendees: [],
+    reminders: {
+      useDefault: false,
+      overrides: [
+        { method: 'email', minutes: 24 * 60 },
+        { method: 'popup', minutes: 10 },
+      ],
+    },
+    visibility: event.showOnSite ? 'default' : 'private',
+  }
+
+  const auth = new google.auth.GoogleAuth({
+    keyFile: './google_calendar_token.json',
+    scopes: SCOPES,
+  })
+
+  const authProcess = await auth.getClient()
+
+  if (!event.googleCalendarId) {
+    console.log('Создаем новое событие в календаре')
+    const createdCalendarEvent = calendar.events.insert(
+      {
+        auth: authProcess,
+        calendarId: GOOGLE_CALENDAR_ID,
+        resource: calendarEvent,
+      }
+      // function (error, response) {
+      //   if (error) {
+      //     console.log('Something went wrong: ' + error) // If there is an error, log it to the console
+      //     return
+      //   }
+      //   console.log('Event created successfully.')
+      //   console.log('Event details: ', response.data) // Log the event details
+      // }
+    )
+    await dbConnect()
+    await Events.findByIdAndUpdate(
+      event._id,
+      { ...event, googleCalendarId: createdCalendarEvent.id },
+      {
+        new: true,
+        runValidators: true,
+      }
+    )
+
+    return createdCalendarEvent
+  }
+  console.log('Обновляем событие в календаре')
+
+  return calendar.events.update({
+    auth: authProcess,
+    calendarId: GOOGLE_CALENDAR_ID,
+    eventId: event.googleCalendarId ?? undefined,
+    resource: calendarEvent,
+  })
+}
 
 export default async function handler(Schema, req, res, params = null) {
   const { query, method, body } = req
@@ -55,10 +263,22 @@ export default async function handler(Schema, req, res, params = null) {
         } else {
           const clearedBody = { ...body.data }
           delete clearedBody._id
+          var calendarEventId
+          if (Schema === Events) {
+            calendarEventId = await addBlankEventToCalendar()
+            console.log('calendarEventId :>> ', calendarEventId)
+            clearedBody.googleCalendarId = calendarEventId
+          }
+
           data = await Schema.create(clearedBody)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
+          if (Schema === Events) {
+            // console.log('data :>> ', data)
+            const calendarEvent = updateEventInCalendar(data)
+          }
+
           await Histories.create({
             schema: Schema.collection.collectionName,
             action: 'add',
@@ -95,6 +315,10 @@ export default async function handler(Schema, req, res, params = null) {
 
           if (!data) {
             return res?.status(400).json({ success: false })
+          }
+
+          if (Schema === Events) {
+            const calendarEvent = updateEventInCalendar(data)
           }
 
           await Histories.create({
@@ -235,14 +459,14 @@ export default async function handler(Schema, req, res, params = null) {
           }
           await Histories.create({
             schema: Schema.collection.collectionName,
-            action: 'updete',
+            action: 'delete',
             data,
             userId: body.userId,
           })
           return res?.status(200).json({ success: true, data })
         } else if (id) {
-          data = await Schema.findById(id)
-          if (!data) {
+          const existingData = await Schema.findById(id)
+          if (!existingData) {
             return res?.status(400).json({ success: false })
           }
           data = await Schema.deleteOne({
@@ -251,9 +475,14 @@ export default async function handler(Schema, req, res, params = null) {
           if (!data) {
             return res?.status(400).json({ success: false })
           }
+
+          if (Schema === Events) {
+            deleteEventFromCalendar(existingData.googleCalendarId)
+          }
+
           await Histories.create({
             schema: Schema.collection.collectionName,
-            action: 'updete',
+            action: 'delete',
             data,
             userId: body.userId,
           })
@@ -267,7 +496,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
           await Histories.create({
             schema: Schema.collection.collectionName,
-            action: 'updete',
+            action: 'delete',
             data,
             userId: body.userId,
           })
