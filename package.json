@@ -32,7 +32,6 @@
     "dayjs": "^1.11.7",
     "exceljs": "^4.3.0",
     "framer-motion": "^8.4.3",
-    "fs": "^0.0.1-security",
     "googleapis": "^105.0.0",
     "mongodb": "^4.13.0",
     "mongoose": "^6.8.3",
