@@ -42,7 +42,12 @@ var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
   const [bDate, bTime] = birthday.split('T')
   const day = new Date(bDate).getDate() + (bTime !== '00:00:00.000Z' ? 1 : 0)
   const month = new Date(bDate).getMonth() + 1
-  today = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate())
+  const tempDateNow = dateNow
+  today = new Date(
+    tempDateNow.getFullYear(),
+    tempDateNow.getMonth(),
+    tempDateNow.getDate()
+  )
   bday = new Date(today.getFullYear(), month - 1, day)
   if (today.getTime() > bday.getTime()) {
     bday.setFullYear(bday.getFullYear() + 1)
@@ -81,7 +86,6 @@ const BirthdaysContent = () => {
 
   users.forEach((user) => {
     const beforeBirthday = daysBeforeBirthday(user.birthday, serverDate)
-
     if (beforeBirthday < periodDays) {
       array[beforeBirthday].push(user)
       birthdaysCount++
@@ -136,7 +140,7 @@ const BirthdaysContent = () => {
             }}
           >
             {array.map((users, index) => {
-              var date = serverDate ?? new Date()
+              var date = new Date(serverDate)
               date.setDate(date.getDate() + index)
               return (
                 users.length > 0 && (
@@ -183,7 +187,7 @@ const BirthdaysContent = () => {
                               <span>
                                 {birthDateToAge(
                                   user.birthday,
-                                  serverDate,
+                                  date,
                                   true,
                                   false,
                                   true,
