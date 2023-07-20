@@ -39,6 +39,7 @@ import ChipsSelector from '@components/ChipsSelector'
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 const items = [
   'Oliver Hansen',
@@ -72,6 +73,7 @@ const QuestionnaireContent = (props) => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
   const [firstName, setFirstName] = useState(
     loggedUser?.firstName ?? DEFAULT_USER.firstName
@@ -715,7 +717,7 @@ const QuestionnaireContent = (props) => {
             )}
           </TabPanel>
         )}
-        {(isLoggedUserAdmin || isLoggedUserDev) && (
+        {(isLoggedUserModer || isLoggedUserDev) && (
           <TabPanel tabName="Оповещения" className="flex-1">
             <YesNoPicker
               label="Оповещения в Telegram"
