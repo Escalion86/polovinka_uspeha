@@ -111,11 +111,34 @@ const deleteEventFromCalendar = async (googleCalendarId) => {
 
   const authProcess = await auth.getClient()
 
-  return calendar.events.delete({
-    auth: authProcess,
-    calendarId: GOOGLE_CALENDAR_ID,
-    eventId: googleCalendarId,
+  const calendarEventData = await new Promise((resolve, reject) => {
+    calendar.events.delete(
+      {
+        auth: authProcess,
+        calendarId: GOOGLE_CALENDAR_ID,
+        eventId: googleCalendarId,
+      },
+      (error, result) => {
+        if (error) {
+          console.log({ error })
+          reject(error)
+          // res.send(JSON.stringify({ error: error }))
+        } else {
+          if (result) {
+            console.log(result)
+            resolve(result)
+            // res.send(JSON.stringify({ events: result.data.items }))
+          } else {
+            console.log({ message: 'Что-то пошло не так' })
+            reject('Что-то пошло не так')
+            // res.send(JSON.stringify({ message: 'No upcoming events found.' }))
+          }
+        }
+      }
+    )
   })
+
+  return calendarEventData
 }
 
 const updateEventInCalendar = async (event) => {
@@ -179,41 +202,81 @@ const updateEventInCalendar = async (event) => {
 
   if (!event.googleCalendarId) {
     console.log('Создаем новое событие в календаре')
-    const createdCalendarEvent = calendar.events.insert(
-      {
-        auth: authProcess,
-        calendarId: GOOGLE_CALENDAR_ID,
-        resource: calendarEvent,
-      }
-      // function (error, response) {
-      //   if (error) {
-      //     console.log('Something went wrong: ' + error) // If there is an error, log it to the console
-      //     return
-      //   }
-      //   console.log('Event created successfully.')
-      //   console.log('Event details: ', response.data) // Log the event details
-      // }
-    )
+    const createdCalendarEvent = await new Promise((resolve, reject) => {
+      calendar.events.insert(
+        {
+          auth: authProcess,
+          calendarId: GOOGLE_CALENDAR_ID,
+          resource: calendarEvent,
+        },
+        (error, result) => {
+          if (error) {
+            console.log({ error })
+            reject(error)
+            // res.send(JSON.stringify({ error: error }))
+          } else {
+            if (result) {
+              console.log(result)
+              resolve(result)
+              // res.send(JSON.stringify({ events: result.data.items }))
+            } else {
+              console.log({ message: 'Что-то пошло не так' })
+              reject('Что-то пошло не так')
+              // res.send(JSON.stringify({ message: 'No upcoming events found.' }))
+            }
+          }
+        }
+      )
+    })
+
     await dbConnect()
-    await Events.findByIdAndUpdate(
+    console.log(
+      'createdCalendarEvent.data.id :>> ',
+      createdCalendarEvent.data.id
+    )
+    const updatedEvent = await Events.findByIdAndUpdate(
       event._id,
-      { ...event, googleCalendarId: createdCalendarEvent.id },
+      { googleCalendarId: createdCalendarEvent.data.id },
       {
         new: true,
         runValidators: true,
       }
     )
+    console.log('updatedEvent :>> ', updatedEvent)
 
     return createdCalendarEvent
   }
-  console.log('Обновляем событие в календаре')
 
-  return calendar.events.update({
-    auth: authProcess,
-    calendarId: GOOGLE_CALENDAR_ID,
-    eventId: event.googleCalendarId ?? undefined,
-    resource: calendarEvent,
+  console.log('Обновляем событие в календаре')
+  const updatedCalendarEvent = await new Promise((resolve, reject) => {
+    calendar.events.update(
+      {
+        auth: authProcess,
+        calendarId: GOOGLE_CALENDAR_ID,
+        eventId: event.googleCalendarId ?? undefined,
+        resource: calendarEvent,
+      },
+      (error, result) => {
+        if (error) {
+          console.log({ error })
+          reject(error)
+          // res.send(JSON.stringify({ error: error }))
+        } else {
+          if (result) {
+            console.log(result)
+            resolve(result)
+            // res.send(JSON.stringify({ events: result.data.items }))
+          } else {
+            console.log({ message: 'Что-то пошло не так' })
+            reject('Что-то пошло не так')
+            // res.send(JSON.stringify({ message: 'No upcoming events found.' }))
+          }
+        }
+      }
+    )
   })
+
+  return updatedCalendarEvent
 }
 
 export default async function handler(Schema, req, res, params = null) {
@@ -266,7 +329,6 @@ export default async function handler(Schema, req, res, params = null) {
           var calendarEventId
           if (Schema === Events) {
             calendarEventId = await addBlankEventToCalendar()
-            console.log('calendarEventId :>> ', calendarEventId)
             clearedBody.googleCalendarId = calendarEventId
           }
 
@@ -276,7 +338,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
           if (Schema === Events) {
             // console.log('data :>> ', data)
-            const calendarEvent = updateEventInCalendar(data)
+            const calendarEvent = await updateEventInCalendar(data)
           }
 
           await Histories.create({
@@ -297,8 +359,6 @@ export default async function handler(Schema, req, res, params = null) {
       try {
         if (id) {
           const oldData = await Schema.findById(id)
-          console.log('Schema', Schema.collection.collectionName)
-          console.log('typeof', typeof Schema.collection.collectionName)
           if (!oldData) {
             return res?.status(400).json({ success: false })
           }
@@ -318,7 +378,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
 
           if (Schema === Events) {
-            const calendarEvent = updateEventInCalendar(data)
+            const calendarEvent = await updateEventInCalendar(data)
           }
 
           await Histories.create({
