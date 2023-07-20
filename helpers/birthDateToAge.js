@@ -30,8 +30,8 @@ const birthDateToAge = (
 ) => {
   if (!birthDate) return
   const tempBirthDate = new Date(birthDate)
-  const age = dateNow.getFullYear() - tempBirthDate.getFullYear()
   const tempDateNow = dateNow ? new Date(dateNow) : new Date()
+  const age = tempDateNow.getFullYear() - tempBirthDate.getFullYear()
   const result =
     tempDateNow.setFullYear(1972) < tempBirthDate.setFullYear(1972)
       ? age - 1

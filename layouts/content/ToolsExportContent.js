@@ -7,6 +7,8 @@ import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import getUserFullName from '@helpers/getUserFullName'
 import { GENDERS_WITH_NO_GENDER } from '@helpers/constants'
 import usersAtom from '@state/atoms/usersAtom'
+import formatDate from '@helpers/formatDate'
+import birthDateToAge from '@helpers/birthDateToAge'
 
 const getBase64Image = async (imgUrl) => {
   return await new Promise(function (resolve, reject) {
@@ -81,6 +83,8 @@ const ToolsExportContent = () => {
       // { header: 'Фото', key: 'foto', width: 20 },
       { header: 'ФИО', key: 'userName', width: 30 },
       { header: 'Пол', key: 'userGender', width: 10 },
+      { header: 'Дата рождения', key: 'userBirthday', width: 10 },
+      { header: 'Возраст', key: 'userAges', width: 8 },
       { header: 'Телефон', key: 'userPhone', width: 14 },
       ...questionnaire.map((data) => ({
         header: data.label,
@@ -122,9 +126,17 @@ const ToolsExportContent = () => {
         userGender: GENDERS_WITH_NO_GENDER.find(
           (item) => (item.value = user.gender)
         ).name,
+        userBirthday: formatDate(user.birthday),
+        userAges: birthDateToAge(user.birthday, undefined, false, false),
         userPhone: '+' + user.phone,
         ...answers,
       })
+      // const endRow = sheet.lastRow._number + 1
+
+      // sheet.getCell(`D${endRow - 1}`).value = {
+      //   formula: `=ГОД(ТДАТА())-ГОД(C${endRow - 1})`,
+      //   result: undefined,
+      // }
 
       // sheet.addImage(imageId2, {
       //   tl: { col: 0, row: index + 1 },
@@ -147,11 +159,15 @@ const ToolsExportContent = () => {
       },
       to: {
         row: 1,
-        column: questionnaire.length + 3,
+        column: questionnaire.length + 5,
       },
     }
 
     // serviceUsers.map((serviceUser) => sheet.addRow(serviceUser.ansvers))
+
+    // var XLSX_CALC = require('xlsx-calc')
+    // XLSX_CALC(workbook)
+    // XLSX_CALC(workbook, { continue_after_error: true, log_error: true })
 
     workbook.xlsx.writeBuffer().then((data) => {
       const blob = new Blob([data], {
