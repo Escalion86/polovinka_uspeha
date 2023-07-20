@@ -5,7 +5,8 @@ import getUserFullName from '@helpers/getUserFullName'
 import isEventCanceled from '@helpers/isEventCanceled'
 import isEventClosed from '@helpers/isEventClosed'
 import isEventExpired from '@helpers/isEventExpired'
-import isUserAdmin from '@helpers/isUserAdmin'
+// import isUserAdmin from '@helpers/isUserAdmin'
+import isUserModer from '@helpers/isUserModer'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
@@ -211,7 +212,7 @@ const telegramNotification = async ({
     const usersTelegramIds = usersWithTelegramNotificationsON
       .filter(
         (user) =>
-          isUserAdmin(user) &&
+          isUserModer(user) &&
           user.notifications?.get('telegram').active &&
           user.notifications?.get('telegram')?.id
       )
