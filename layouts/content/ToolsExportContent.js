@@ -80,7 +80,6 @@ const ToolsExportContent = () => {
     // sheet.properties.defaultRowHeight = 80
 
     sheet.columns = [
-      // { header: 'Фото', key: 'foto', width: 20 },
       { header: 'ФИО', key: 'userName', width: 30 },
       { header: 'Пол', key: 'userGender', width: 10 },
       { header: 'Дата рождения', key: 'userBirthday', width: 10 },
