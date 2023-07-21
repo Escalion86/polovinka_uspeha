@@ -1,4 +1,4 @@
-import { modalsFuncAtom } from '@state/atoms'
+// import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
 import ExcelJs from 'exceljs'
 import Button from '@components/Button'
@@ -53,7 +53,7 @@ const getBase64Image = async (imgUrl) => {
 // }
 
 const ToolsExportContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const services = useRecoilValue(servicesAtom)
   const users = useRecoilValue(usersAtom)
   const serviceIS = services.find(
@@ -124,7 +124,7 @@ const ToolsExportContent = () => {
       sheet.addRow({
         userName: getUserFullName(user),
         userGender: GENDERS_WITH_NO_GENDER.find(
-          (item) => (item.value = user.gender)
+          (item) => item.value === user.gender
         ).name,
         userBirthday: formatDate(user.birthday),
         userAges: birthDateToAge(user.birthday, undefined, false, false),
