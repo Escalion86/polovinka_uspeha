@@ -230,10 +230,6 @@ const updateEventInCalendar = async (event) => {
     })
 
     await dbConnect()
-    console.log(
-      'createdCalendarEvent.data.id :>> ',
-      createdCalendarEvent.data.id
-    )
     const updatedEvent = await Events.findByIdAndUpdate(
       event._id,
       { googleCalendarId: createdCalendarEvent.data.id },
@@ -242,7 +238,6 @@ const updateEventInCalendar = async (event) => {
         runValidators: true,
       }
     )
-    console.log('updatedEvent :>> ', updatedEvent)
 
     return createdCalendarEvent
   }
