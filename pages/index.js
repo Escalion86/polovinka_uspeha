@@ -28,6 +28,8 @@ import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import { useRecoilValue } from 'recoil'
 import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
+import Fab from '@components/Fab'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 
 export default function Home(props) {
   const filteredEvents = useRecoilValue(filteredEventsSelector)
@@ -50,6 +52,12 @@ export default function Home(props) {
         <AdditionalBlocks startInverse={additionalBlocksInverse} />
         <ReviewsBlock />
         <ContactsBlock />
+        <Fab
+          show
+          icon={faWhatsapp}
+          bgClass="bg-green-700"
+          href="https://wa.me/79504280891"
+        />
         {/* <div className="flex flex-col items-start px-10 py-5 text-sm font-thin text-white bg-black min-h-80 tablet:px-20">
             <div>
               © ИП Белинский Алексей Алексеевич, ИНН 245727560982, ОГРНИП

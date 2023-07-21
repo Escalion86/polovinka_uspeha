@@ -4,7 +4,13 @@ import cn from 'classnames'
 import { useEffect, useRef, useState } from 'react'
 // import { useLongPress } from 'use-long-press'
 
-const Fab = ({ onClick = () => {}, show = true }) => {
+const Fab = ({
+  onClick = () => {},
+  show = true,
+  icon = faPlus,
+  bgClass = 'bg-general',
+  href,
+}) => {
   const wrapperRef = useRef(null)
   const [showing, setShowing] = useState(show)
   // const bind = useLongPress(() => {
@@ -34,21 +40,49 @@ const Fab = ({ onClick = () => {}, show = true }) => {
   return (
     <div
       className={cn(
-        'transition duration-300 flex flex-col justify-end absolute right-8',
-        showing ? 'fab-top' : '-bottom-20'
+        'transition duration-300 flex flex-col justify-end fixed right-8',
+        showing
+          ? // 'fab-top'
+            'bottom-10'
+          : '-bottom-20'
       )}
     >
       <div
-        className="relative p-4 rounded-full cursor-pointer fab w-13 h-13 bg-general group max-h-13 max-w-13"
-        onClick={onClick}
-        ref={wrapperRef}
-        // {...bind()}
-      >
-        <FontAwesomeIcon
-          className="z-10 w-5 h-5 text-white duration-200 max-w-5 max-h-5 group-hover:scale-150"
-          icon={faPlus}
-        />
-      </div>
+        className={cn(
+          'absolute animate-ping w-[52px] h-[52px] max-h-[52px] max-w-[52px] rounded-full',
+          bgClass
+        )}
+      ></div>
+      {href ? (
+        <a
+          className={cn(
+            'relative p-4 rounded-full cursor-pointer fab w-[52px] h-[52px]group max-h-[52px] max-w-[52px]',
+            bgClass
+          )}
+          ref={wrapperRef}
+          href={href}
+          target="_blank"
+        >
+          <FontAwesomeIcon
+            className="z-10 w-5 h-5 text-white duration-200 max-w-5 max-h-5 group-hover:scale-150"
+            icon={icon}
+          />
+        </a>
+      ) : (
+        <div
+          className={cn(
+            'relative p-4 rounded-full cursor-pointer fab w-[52px] h-[52px]group max-h-[52px] max-w-[52px]',
+            bgClass
+          )}
+          onClick={onClick}
+          ref={wrapperRef}
+        >
+          <FontAwesomeIcon
+            className="z-10 w-5 h-5 text-white duration-200 max-w-5 max-h-5 group-hover:scale-150"
+            icon={icon}
+          />
+        </div>
+      )}
     </div>
   )
 }
