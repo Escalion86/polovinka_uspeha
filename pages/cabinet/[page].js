@@ -24,6 +24,8 @@ import { useRecoilValue } from 'recoil'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
+import Fab from '@components/Fab'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -99,6 +101,12 @@ function CabinetPage(props) {
               )}
             </ContentWrapper>
             {/* <ModalsPortal /> */}
+            <Fab
+              show
+              icon={faWhatsapp}
+              bgClass="bg-green-700"
+              href="https://wa.me/79504280891"
+            />
           </CabinetWrapper>
         )}
       </StateLoader>
