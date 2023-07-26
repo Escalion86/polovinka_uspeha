@@ -8,6 +8,8 @@ import fetchProps from '@server/fetchProps'
 import DeviceCheck from '@components/DeviceCheck'
 import StateLoader from '@components/StateLoader'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
+import Fab from '@components/Fab'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 
 export default function Home(props) {
   return (
@@ -20,6 +22,12 @@ export default function Home(props) {
         {/* <TitleBlock /> */}
         <EventsBlock />
         <ContactsBlock />
+        <Fab
+          show
+          icon={faWhatsapp}
+          bgClass="bg-green-700"
+          href="https://wa.me/79504280891"
+        />
       </StateLoader>
     </>
   )

@@ -16,6 +16,19 @@ body {
   font-family: 'Futura PT', sans-serif;
 }
 
+/* Move reCAPTCHA v3 badge to the left */
+
+.grecaptcha-badge {
+  width: 70px !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  left: 4px !important;
+}
+
+.grecaptcha-badge:hover {
+  width: 256px !important;
+}
+
 blockquote {
   border-left: 4px solid #7a5151 !important;
   margin-bottom: 5px;

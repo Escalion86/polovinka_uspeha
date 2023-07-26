@@ -93,6 +93,12 @@ import StatisticsFinanceContent from '@layouts/content/StatisticsFinanceContent'
 import StatisticsUsersContent from '@layouts/content/StatisticsUsersContent'
 import StatisticsEventsContent from '@layouts/content/StatisticsEventsContent'
 import ToolsEventAnonsContent from '@layouts/content/ToolsEventAnonsContent'
+import {
+  faInstagram,
+  faTelegram,
+  faVk,
+  faWhatsapp,
+} from '@fortawesome/free-brands-svg-icons'
 
 const colors = [
   'border-blue-400',
@@ -633,14 +639,54 @@ export const ZODIAC = [
 ]
 
 export const SECTORS = [
-  { name: 'Мероприятие', value: 'event', icon: faCalendar, color: 'general' },
+  {
+    name: 'Мероприятие',
+    value: 'event',
+    icon: faCalendar,
+    color: 'orange-400',
+  },
   { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
   { name: 'Товар', value: 'product', icon: faShoppingBag, color: 'blue-400' },
   {
     name: 'Внутренние',
     value: 'internal',
     icon: faBriefcase,
+    color: 'general',
+  },
+]
+
+export const SECTORS2 = [
+  {
+    name: 'Главная страница',
+    value: 'home',
+    icon: faHome,
+    color: 'general',
+  },
+  {
+    name: 'Мероприятие',
+    value: 'event',
+    icon: faCalendar,
     color: 'orange-400',
+  },
+  { name: 'Пользователь', value: 'user', icon: faUser, color: 'blue-400' },
+  { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
+  // { name: 'Товар', value: 'product', icon: faShoppingBag, color: 'blue-400' },
+]
+
+export const SOCIALS = [
+  { name: 'Whatsapp', value: 'whatsapp', icon: faWhatsapp, color: 'green-500' },
+  { name: 'VK', value: 'vk', icon: faVk, color: 'blue-500' },
+  {
+    name: 'Instagram',
+    value: 'instagram',
+    icon: faInstagram,
+    color: 'general',
+  },
+  {
+    name: 'Telegram',
+    value: 'telegram',
+    icon: faTelegram,
+    color: 'blue-400',
   },
 ]
 

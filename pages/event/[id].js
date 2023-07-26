@@ -41,7 +41,9 @@ const Event = ({ event }) => {
 function EventPage(props) {
   const eventId = props.id
 
-  // const router = useRouter()
+  const router = useRouter()
+  const routerQuery = { ...router.query }
+  delete routerQuery.id
 
   const eventsState = useRecoilValue(eventsAtom)
 
@@ -94,7 +96,7 @@ function EventPage(props) {
                 <Link
                   href={{
                     pathname: '/login',
-                    query,
+                    query: { ...routerQuery, ...query },
                   }}
                   shallow
                 >
@@ -107,7 +109,11 @@ function EventPage(props) {
                 <Link
                   href={{
                     pathname: '/login',
-                    query: { ...query, registration: true },
+                    query: {
+                      ...routerQuery,
+                      ...query,
+                      registration: true,
+                    },
                   }}
                   shallow
                 >
