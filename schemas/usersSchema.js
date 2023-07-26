@@ -129,6 +129,14 @@ const usersSchema = {
     of: Schema.Types.Mixed,
     default: DEFAULT_USERS_NOTIFICATIONS,
   },
+  soctag: {
+    type: String,
+    default: null,
+  },
+  custag: {
+    type: String,
+    default: null,
+  },
 }
 
 export default usersSchema

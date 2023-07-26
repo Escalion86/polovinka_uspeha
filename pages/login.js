@@ -453,12 +453,16 @@ const LoginPage = (props) => {
       if (registrationLevel === 3) {
         setWaitingResponse(true)
 
+        const soctag = router.query.stag
+        const custag = router.query.stag
         postData(
           `/api/${codeSendService}`,
           {
             phone: inputPhone,
             password: inputPassword,
             forgotPassword: process === 'forgotPassword',
+            soctag,
+            custag,
           },
           (res) => {
             if (res.error) {
@@ -616,11 +620,11 @@ const LoginPage = (props) => {
           <SvgLove color={generalColor} className="w-124" />
         </div>
         <div className="flex items-center justify-center flex-1 text-center">
-          <form className="pt-4 pb-10 w-90">
-            <div className="flex justify-center w-full">
+          <form className="w-full mt-4 phoneH:mt-8 mb-4 phoneH:mb-10 max-w-[360px]">
+            <div className="flex justify-center w-full h-48 phoneH:h-60">
               {/* <SvgAvatar color={generalColor} className="w-24" /> */}
               <img
-                className="rounded-full h-1/6"
+                className="rounded-full"
                 src={'/img/logo.webp'}
                 alt="logo"
                 // width={48}
@@ -913,7 +917,7 @@ const LoginPage = (props) => {
               <Link href="/" shallow>
                 <a
                   tabIndex={0}
-                  className="block py-3 mt-2 mb-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"
+                  className="block py-3 mt-2 mb-5 text-sm duration-300 border-t border-gray-400 cursor-pointer phoneH:text-base hover:text-general"
                 >
                   Вернуться на главную страницу сайта
                 </a>
@@ -923,28 +927,30 @@ const LoginPage = (props) => {
           </form>
         </div>
       </div>
-      <Fab
-        show
-        icon={faWhatsapp}
-        bgClass="bg-green-700"
-        href="https://wa.me/79504280891"
-      />
     </div>
   )
 }
 
 const Login = (props) => (
-  <GoogleReCaptchaProvider
-    reCaptchaKey="6Lcw5bwkAAAAAD1qgHYKcEzcbdATVfdI3lIiO5X2"
-    scriptProps={{
-      async: false,
-      defer: false,
-      appendTo: 'body',
-      nonce: undefined,
-    }}
-  >
-    <LoginPage {...props} />
-  </GoogleReCaptchaProvider>
+  <>
+    <GoogleReCaptchaProvider
+      reCaptchaKey="6Lcw5bwkAAAAAD1qgHYKcEzcbdATVfdI3lIiO5X2"
+      scriptProps={{
+        async: false,
+        defer: false,
+        appendTo: 'body',
+        nonce: undefined,
+      }}
+    >
+      <LoginPage {...props} />
+    </GoogleReCaptchaProvider>
+    <Fab
+      show
+      icon={faWhatsapp}
+      bgClass="bg-green-700"
+      href="https://wa.me/79504280891"
+    />
+  </>
 )
 
 export default Login

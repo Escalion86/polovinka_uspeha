@@ -40,7 +40,7 @@ const Fab = ({
   return (
     <div
       className={cn(
-        'transition duration-300 flex flex-col justify-end fixed right-8',
+        'z-10 transition duration-300 flex flex-col justify-end fixed right-8',
         showing
           ? // 'fab-top'
             'bottom-10'

@@ -88,7 +88,7 @@ export default async function handler(req, res) {
     try {
       await dbConnect()
 
-      const { phone, code, password, forgotPassword } = body
+      const { phone, code, password, forgotPassword, soctag, custag } = body
 
       if (!phone)
         return res?.status(200).json({
@@ -263,14 +263,19 @@ export default async function handler(req, res) {
         if (existingUser && (!existingUser.password || forgotPassword)) {
           const updatedUser = await Users.findOneAndUpdate(
             { phone },
-            { password }
+            { password, soctag, custag }
           )
           return res?.status(201).json({
             success: true,
             data: updatedUser,
           })
         } else {
-          const newUser = await Users.create({ phone, password })
+          const newUser = await Users.create({
+            phone,
+            password,
+            soctag,
+            custag,
+          })
 
           const users = await Users.find({})
           const usersTelegramIds = users
