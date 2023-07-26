@@ -26,6 +26,8 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import fetchSiteSettings from '@server/fetchSiteSettings'
 import { DEFAULT_SITE_SETTINGS } from '@helpers/constants'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+import Fab from '@components/Fab'
 // import { UCALLER_VOICE, UCALLER_MIX } from '@helpers/constants'
 
 const Input = ({
@@ -921,6 +923,12 @@ const LoginPage = (props) => {
           </form>
         </div>
       </div>
+      <Fab
+        show
+        icon={faWhatsapp}
+        bgClass="bg-green-700"
+        href="https://wa.me/79504280891"
+      />
     </div>
   )
 }
