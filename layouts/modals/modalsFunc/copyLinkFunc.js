@@ -10,6 +10,7 @@ import copyToClipboard from '@helpers/copyToClipboard'
 import Button from '@components/Button'
 import { SelectEvent, SelectService, SelectUser } from '@components/SelectItem'
 import useSnackbar from '@helpers/useSnackbar'
+import transliterate from '@helpers/transliterate'
 
 const copyLinkFunc = (props) => {
   const CopyLinkModal = ({
@@ -42,34 +43,43 @@ const copyLinkFunc = (props) => {
       const tags = []
       if (social) tags.push('soctag=' + social.toLocaleLowerCase())
       if (custom && custom !== '')
-        tags.push('custag=' + custom.toLocaleLowerCase())
+        tags.push(
+          'custag=' +
+            transliterate(custom.trim().replace(/\//g, '').toLocaleLowerCase())
+        )
       if (tags.length === 0) return ''
       return '?' + tags.join('&')
     }
 
+    const link = encodeURI(
+      linkType === 'event'
+        ? `${window.location.origin}/event/${props.eventId}${tagsStringify()}`
+        : linkType === 'user'
+        ? `${window.location.origin}/user/${props.userId}${tagsStringify()}`
+        : linkType === 'service'
+        ? `${window.location.origin}/service/${
+            props.serviceId
+          }${tagsStringify()}`
+        : `${window.location.origin}${tagsStringify()}`
+    )
+
     const copyToClipboardHome = () => {
-      copyToClipboard(window.location.origin + tagsStringify())
+      copyToClipboard(link)
       info('Ссылка скопирована в буфер обмена')
     }
 
     const copyToClipboardEvent = () => {
-      copyToClipboard(
-        window.location.origin + '/event/' + props.eventId + tagsStringify()
-      )
+      copyToClipboard(link)
       info('Ссылка на мероприятие скопирована в буфер обмена')
     }
 
     const copyToClipboardUser = () => {
-      copyToClipboard(
-        window.location.origin + '/user/' + props.userId + tagsStringify()
-      )
+      copyToClipboard(link)
       info('Ссылка на пользователя скопирована в буфер обмена')
     }
 
     const copyToClipboardService = () => {
-      copyToClipboard(
-        window.location.origin + '/service/' + props.serviceId + tagsStringify()
-      )
+      copyToClipboard(link)
       info('Ссылка на услугу скопирована в буфер обмена')
     }
 
@@ -83,13 +93,25 @@ const copyLinkFunc = (props) => {
       <FormWrapper>
         <LinkTypePicker linkType={linkType} onChange={setLinkType} />
         {linkType === 'event' && (
-          <SelectEvent selectedId={eventId} onChange={setEventId} />
+          <SelectEvent
+            selectedId={eventId}
+            onChange={setEventId}
+            label="Мероприятие"
+          />
         )}
         {linkType === 'user' && (
-          <SelectUser selectedId={userId} onChange={setUserId} />
+          <SelectUser
+            selectedId={userId}
+            onChange={setUserId}
+            label="Пользователь"
+          />
         )}
         {linkType === 'service' && (
-          <SelectService selectedId={serviceId} onChange={setServiceId} />
+          <SelectService
+            selectedId={serviceId}
+            onChange={setServiceId}
+            label="Услуга"
+          />
         )}
         <SocialPicker social={social} onChange={setSocial} />
         <Input
@@ -100,7 +122,19 @@ const copyLinkFunc = (props) => {
             setCustom(value)
           }}
         />
+        <div className="flex flex-col flex-wrap w-full max-w-full phoneH:flex-row gap-x-1">
+          <span>Ссылка:</span>
+          <a
+            style={{ wordBreak: 'break-all' }}
+            target="_blank"
+            className="flex-1 text-general hover:text-success"
+            href={link}
+          >
+            {link}
+          </a>
+        </div>
         <Button
+          className="mt-2"
           name="Скопировать ссылку"
           onClick={() => {
             if (linkType === 'home') return copyToClipboardHome()
@@ -110,6 +144,7 @@ const copyLinkFunc = (props) => {
             return
           }}
         />
+
         {/* <CheckBox
           checked={showOnSite}
           labelPos="left"

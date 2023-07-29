@@ -117,6 +117,8 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 
   useEffect(() => {
     import('preline')
+    var referrer_url = document?.referrer
+    console.log(referrer_url) // вот ваша строка
   }, [])
 
   return (
