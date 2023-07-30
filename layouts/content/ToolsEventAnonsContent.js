@@ -170,6 +170,7 @@ const ToolsEventAnonsContent = () => {
             label="Мероприятие"
             selectedId={eventId}
             onChange={setEventId}
+            className="w-full"
             // required
             // showEventUsersButton
             // showPaymentsButton
@@ -190,7 +191,7 @@ const ToolsEventAnonsContent = () => {
           )}
         </div>
       </div>
-      <div className="flex flex-wrap gap-x-1">
+      <div className="flex flex-wrap items-end gap-x-1">
         <SvgBackgroundInput
           // value={backgroundProps}
           onChange={setBackgroundProps}
