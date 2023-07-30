@@ -99,6 +99,7 @@ import {
   faVk,
   faWhatsapp,
 } from '@fortawesome/free-brands-svg-icons'
+import ToolsTextEventsAnonsContent from '@layouts/content/ToolsTextEventsAnonsContent'
 
 const colors = [
   'border-blue-400',
@@ -763,6 +764,11 @@ export const CONTENTS = {
     accessRoles: ['admin', 'dev'],
   },
   dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
+  toolsTextEventsAnons: {
+    Component: ToolsTextEventsAnonsContent,
+    name: 'Инструменты / Генераотр текста анонса мероприятий',
+    accessRoles: ['moder', 'dev', 'admin'],
+  },
   toolsEventAnons: {
     Component: ToolsEventAnonsContent,
     name: 'Инструменты / Редактор анонса мероприятия',
@@ -976,13 +982,21 @@ export const pages = [
   {
     id: 70,
     group: 8,
+    name: 'Генератор текста анонса мероприятий',
+    href: 'toolsTextEventsAnons',
+    icon: faTools,
+    accessRoles: CONTENTS['toolsTextEventsAnons'].accessRoles,
+  },
+  {
+    id: 71,
+    group: 8,
     name: 'Редактор анонса мероприятия',
     href: 'toolsEventAnons',
     icon: faTools,
     accessRoles: CONTENTS['toolsEventAnons'].accessRoles,
   },
   {
-    id: 71,
+    id: 72,
     group: 8,
     name: 'Редактор анонса списка мероприятий',
     href: 'toolsAnons',
@@ -990,7 +1004,7 @@ export const pages = [
     accessRoles: CONTENTS['toolsAnons'].accessRoles,
   },
   {
-    id: 72,
+    id: 73,
     group: 8,
     name: 'Экспорт даных',
     href: 'toolsExport',
