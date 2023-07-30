@@ -56,7 +56,7 @@ const Fab = ({
       {href ? (
         <a
           className={cn(
-            'relative p-4 rounded-full cursor-pointer fab w-[52px] h-[52px]group max-h-[52px] max-w-[52px]',
+            'relative p-4 rounded-full cursor-pointer w-[52px] h-[52px]group max-h-[52px] max-w-[52px]',
             bgClass
           )}
           ref={wrapperRef}
