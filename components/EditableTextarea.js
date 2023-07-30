@@ -124,7 +124,7 @@ const EditableTextarea = ({
         modules={modules}
         // formats={formats}
         theme="snow"
-        value={uncontrolled ? textHtml : html}
+        value={html}
         onChange={
           onChange
           //   (value) => {
