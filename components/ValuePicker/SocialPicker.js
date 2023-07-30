@@ -4,6 +4,7 @@ import ValuePicker from './ValuePicker'
 const SocialPicker = ({
   social,
   onChange = null,
+  label = 'Соц. сеть',
   required = false,
   error = false,
   readOnly,
@@ -13,7 +14,7 @@ const SocialPicker = ({
   <ValuePicker
     value={social}
     valuesArray={SOCIALS}
-    label="Соц. сеть"
+    label={label}
     onChange={onChange}
     name="social"
     required={required}

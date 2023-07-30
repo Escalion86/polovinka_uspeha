@@ -58,11 +58,11 @@ const ItemContainer = ({
     {checkable && (
       <div
         className={cn(
-          'absolute flex items-center top-0 bottom-0 left-0 overflow-hidden duration-300 bg-green-400',
+          'transition-all absolute flex items-center top-0 bottom-0 left-0 overflow-hidden duration-300 bg-general',
           active ? 'w-7' : 'w-0'
         )}
       >
-        <FontAwesomeIcon icon={faCheck} className="w-5 h-5 ml-1 text-white" />
+        <FontAwesomeIcon icon={faCheck} className="w-6 h-6 ml-0.5 text-white" />
       </div>
     )}
     {children}

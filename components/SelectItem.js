@@ -264,6 +264,7 @@ const SelectItemContainer = ({
   selectedId,
   labelClassName,
   className,
+  wrapperClassName,
   rounded = false,
 }) => {
   const Container = ({ children }) => {
@@ -274,7 +275,8 @@ const SelectItemContainer = ({
           labelClassName={labelClassName}
           // onChange={onChange}
           // value={images}
-          wrapperClassName={cn('flex-1 ', className)}
+          wrapperClassName={cn('flex-1 ', wrapperClassName)}
+          className={className}
           required={required}
           value={selectedId}
           error={error}
@@ -595,6 +597,7 @@ export const SelectEvent = ({
   bordered = true,
   // buttons,
   // disableDropDownList,
+  className,
   label,
   filter,
   modalTitle,
@@ -641,6 +644,7 @@ export const SelectEvent = ({
       //     : null
       // }
       selectedId={selectedId}
+      className={className}
     >
       <SelectItem
         items={events}

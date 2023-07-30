@@ -8,6 +8,8 @@ import sortFunctions from '@helpers/sortFunctions'
 import Search from '@components/Search'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import isObject from '@helpers/isObject'
+import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
+import isEventExpiredFunc from '@helpers/isEventExpired'
 
 const selectEventsFunc = (
   state,
@@ -35,11 +37,30 @@ const selectEventsFunc = (
     )
     const [showErrorMax, setShowErrorMax] = useState(false)
 
+    const [filter, setFilter] = useState({
+      active: true,
+      finished: false,
+      closed: false,
+      canceled: false,
+    })
+
     const [searchText, setSearchText] = useState('')
 
-    var filteredEvents = filterItems(events, searchText, exceptedIds, {}, [
-      'title',
-    ])
+    var filteredEvents = filterItems(
+      events.filter((event) => {
+        const isEventExpired = isEventExpiredFunc(event)
+        if (event.status === 'active') {
+          if (filter.active && !isEventExpired) return true
+          if (filter.finished && isEventExpired) return true
+          return false
+        }
+        return filter[event.status]
+      }),
+      searchText,
+      exceptedIds,
+      {},
+      ['title']
+    )
 
     if (exceptedIds) {
       filteredEvents = filteredEvents.filter(
@@ -110,6 +131,7 @@ const selectEventsFunc = (
 
     return (
       <div className="flex flex-col w-full h-full max-h-full gap-y-0.5">
+        <EventStatusToggleButtons value={filter} onChange={setFilter} />
         <Search
           searchText={searchText}
           show={true}

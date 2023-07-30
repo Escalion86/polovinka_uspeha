@@ -10,26 +10,26 @@ import usersAtom from '@state/atoms/usersAtom'
 import formatDate from '@helpers/formatDate'
 import birthDateToAge from '@helpers/birthDateToAge'
 
-const getBase64Image = async (imgUrl) => {
-  return await new Promise(function (resolve, reject) {
-    var img = new Image()
-    img.src = imgUrl
-    img.setAttribute('crossOrigin', 'anonymous')
+// const getBase64Image = async (imgUrl) => {
+//   return await new Promise(function (resolve, reject) {
+//     var img = new Image()
+//     img.src = imgUrl
+//     img.setAttribute('crossOrigin', 'anonymous')
 
-    img.onload = function () {
-      var canvas = document.createElement('canvas')
-      canvas.width = img.width
-      canvas.height = img.height
-      var ctx = canvas.getContext('2d')
-      ctx.drawImage(img, 0, 0)
-      var dataURL = canvas.toDataURL('image/png')
-      resolve(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''))
-    }
-    img.onerror = function () {
-      reject('The image could not be loaded.')
-    }
-  }).then((data) => data)
-}
+//     img.onload = function () {
+//       var canvas = document.createElement('canvas')
+//       canvas.width = img.width
+//       canvas.height = img.height
+//       var ctx = canvas.getContext('2d')
+//       ctx.drawImage(img, 0, 0)
+//       var dataURL = canvas.toDataURL('image/png')
+//       resolve(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''))
+//     }
+//     img.onerror = function () {
+//       reject('The image could not be loaded.')
+//     }
+//   }).then((data) => data)
+// }
 
 // const getBase64ImageFromUrl = async (imageUrl) => {
 //   var res = await fetch(imageUrl)
