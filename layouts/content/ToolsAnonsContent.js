@@ -373,7 +373,7 @@ const ToolsAnonsContent = () => {
             { value: 0, name: '1' },
             { value: 1, name: '2' },
           ]}
-          defaultValue={styleNum}
+          value={styleNum}
           onChange={(value) => setStyleNum(Number(value))}
         />
         <ComboBox
@@ -384,7 +384,7 @@ const ToolsAnonsContent = () => {
             { value: 'dontShow', name: 'Не показывать название' },
             { value: 'hide', name: 'Скрыть' },
           ]}
-          defaultValue={memberEvent}
+          value={memberEvent}
           onChange={setMemberEvent}
         />
         {/* <CheckBox
@@ -549,9 +549,12 @@ const ToolsAnonsContent = () => {
           )
 
           return (
-            <div className="border-2 border-gray-600">
+            <div
+              key={month + year + index}
+              className="border-2 border-gray-600"
+            >
               <svg
-                key={month + year + index}
+                // key={month + year + index}
                 width="270"
                 height="480"
                 viewBox="0 0 1080 1920"
