@@ -34,8 +34,11 @@ const ToolsTextEventsAnonsContent = () => {
 
   const { info } = useSnackbar()
 
+  console.log('text :>> ', text);
+
   const cleanedUpText = sanitize(
     text
+      .replaceAll('<p><br></p>', '<br>')
       .replaceAll('<blockquote>', '<br><blockquote>')
       .replaceAll('<li>', '<br>\u{2764} <li>')
       .replaceAll('<p>', '<br><p>'),
@@ -48,6 +51,7 @@ const ToolsTextEventsAnonsContent = () => {
   const copyToClipboardText = () => {
     const preparedToCopyText = sanitize(
       text
+        .replaceAll('<p><br></p>', '\n')
         .replaceAll('<blockquote>', '\n<blockquote>')
         .replaceAll('<li>', '\n\u{2764} <li>')
         .replaceAll('<p>', '\n<p>')
