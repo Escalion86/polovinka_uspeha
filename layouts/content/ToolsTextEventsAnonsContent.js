@@ -34,8 +34,6 @@ const ToolsTextEventsAnonsContent = () => {
 
   const { info } = useSnackbar()
 
-  console.log('text :>> ', text);
-
   const cleanedUpText = sanitize(
     text
       .replaceAll('<p><br></p>', '<br>')
