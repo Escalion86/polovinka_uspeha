@@ -229,10 +229,10 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
           icon={eventStatusObj ? eventStatusObj.icon : faGenderless}
         />
       </div>
-      <div className="flex items-center justify-between flex-1 px-1 leading-3">
+      <div className="flex items-center justify-between flex-1 px-1 leading-4">
         <div className="flex flex-col h-full justify-evenly">
-          <TextLinesLimiter className="font-bold text-general" lines={1}>
-            {direction.title}
+          <TextLinesLimiter className="font-bold text-general -mb-[1px]" lines={1}>
+            {direction?.title ?? '[Напривление неизвестно]'}
           </TextLinesLimiter>
           <TextLinesLimiter className="font-bold text-gray-800" lines={1}>
             {item.title}
