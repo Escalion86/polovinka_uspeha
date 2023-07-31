@@ -5,7 +5,9 @@ const filteredDirectionsSelector = selector({
   key: 'filteredDirectionsSelector',
   get: ({ get }) => {
     const directions = get(directionsAtom)
-    return directions.filter((direction) => direction.showOnSite)
+    return directions?.length > 0
+      ? directions.filter((direction) => direction.showOnSite)
+      : []
   },
 })
 

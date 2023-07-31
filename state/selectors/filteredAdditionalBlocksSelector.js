@@ -5,9 +5,9 @@ const filteredAdditionalBlocksSelector = selector({
   key: 'filteredAdditionalBlocksSelector',
   get: ({ get }) => {
     const additionalBlocks = get(additionalBlocksAtom)
-    return additionalBlocks.filter(
-      (additionalBlock) => additionalBlock.showOnSite
-    )
+    return additionalBlocks?.length > 0
+      ? additionalBlocks.filter((additionalBlock) => additionalBlock.showOnSite)
+      : []
   },
 })
 

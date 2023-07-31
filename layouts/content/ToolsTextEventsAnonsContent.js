@@ -5,13 +5,10 @@ import { SelectEventList } from '@components/SelectItemList'
 import SocialPicker from '@components/ValuePicker/SocialPicker'
 import copyToClipboard from '@helpers/copyToClipboard'
 import formatAddress from '@helpers/formatAddress'
-import formatDateTime from '@helpers/formatDateTime'
 import formatEventDateTime from '@helpers/formatEventDateTime'
-import getMinutesBetween from '@helpers/getMinutesBetween'
 import getNoun from '@helpers/getNoun'
 import transliterate from '@helpers/transliterate'
 import useSnackbar from '@helpers/useSnackbar'
-import { modalsFuncAtom } from '@state/atoms'
 import eventsAtom from '@state/atoms/eventsAtom'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import { useEffect, useState } from 'react'
@@ -38,7 +35,7 @@ const ToolsTextEventsAnonsContent = () => {
   const { info } = useSnackbar()
 
   const copyToClipboardText = () => {
-    console.log('text :>> ', text)
+    // console.log('text :>> ', text)
     const cleanedUpText = sanitize(text.replaceAll('<br>', '\n'), {
       allowedTags: [],
       allowedAttributes: {},
@@ -85,7 +82,12 @@ const ToolsTextEventsAnonsContent = () => {
       elementOfTextArray.push(
         `\u{1F465} Количество участников: ${maxParticipants} человек${
           assistants?.length > 0
-            ? `+ ${getNoun(assistants.length, 'ведущий', 'ведущих', 'ведущих')}`
+            ? ` + ${getNoun(
+                assistants.length,
+                'ведущий',
+                'ведущих',
+                'ведущих'
+              )}`
             : ''
         }`
       )
@@ -106,7 +108,7 @@ const ToolsTextEventsAnonsContent = () => {
     setText(tempText)
   }, [tempText])
 
-  // console.log('text :>> ', text)
+  console.log('text :>> ', text)
 
   return (
     <div className="h-full max-h-full px-1 py-1 overflow-y-auto">

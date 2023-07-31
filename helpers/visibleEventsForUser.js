@@ -10,7 +10,7 @@ const visibleEventsForUser = (
   isUserAdmin,
   userStatus
 ) => {
-  if (!events) return events
+  if (!events || events?.length === 0) return []
   if (!user) {
     return events.filter((event) => {
       if (
