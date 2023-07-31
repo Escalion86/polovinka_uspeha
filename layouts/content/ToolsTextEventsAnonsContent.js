@@ -34,9 +34,19 @@ const ToolsTextEventsAnonsContent = () => {
 
   const { info } = useSnackbar()
 
+  const cleanedUpText = sanitize(
+    text
+      .replaceAll('<blockquote>', '<br><blockquote>')
+      .replaceAll('<li>', '<br>\u{2764} <li>')
+      .replaceAll('<p>', '<br><p>'),
+    {
+      allowedTags: ['br'],
+      allowedAttributes: {},
+    }
+  )
+
   const copyToClipboardText = () => {
-    // console.log('text :>> ', text)
-    const cleanedUpText = sanitize(
+    const preparedToCopyText = sanitize(
       text
         .replaceAll('<blockquote>', '\n<blockquote>')
         .replaceAll('<li>', '\n\u{2764} <li>')
@@ -47,7 +57,7 @@ const ToolsTextEventsAnonsContent = () => {
         allowedAttributes: {},
       }
     )
-    copyToClipboard(cleanedUpText)
+    copyToClipboard(preparedToCopyText)
     info('Текст скопирован в буфер обмена')
   }
 
@@ -115,8 +125,6 @@ const ToolsTextEventsAnonsContent = () => {
     setText(tempText)
   }, [tempText])
 
-  console.log('text :>> ', text)
-
   return (
     <div className="h-full max-h-full px-1 py-1 overflow-y-auto">
       <SelectEventList
@@ -152,7 +160,7 @@ const ToolsTextEventsAnonsContent = () => {
       {text ? (
         <div
           className="w-full max-w-full pb-2 overflow-hidden text-sm list-disc ql textarea"
-          dangerouslySetInnerHTML={{ __html: sanitizeCustom(text) }}
+          dangerouslySetInnerHTML={{ __html: cleanedUpText }}
         />
       ) : (
         <div>{'[Выберите хотябы одно мероприятие]'}</div>
