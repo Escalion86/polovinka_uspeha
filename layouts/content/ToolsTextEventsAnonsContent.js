@@ -36,10 +36,17 @@ const ToolsTextEventsAnonsContent = () => {
 
   const copyToClipboardText = () => {
     // console.log('text :>> ', text)
-    const cleanedUpText = sanitize(text.replaceAll('<br>', '\n'), {
-      allowedTags: [],
-      allowedAttributes: {},
-    })
+    const cleanedUpText = sanitize(
+      text
+        .replaceAll('<blockquote>', '\n<blockquote>')
+        .replaceAll('<li>', '\n\u{2764} <li>')
+        .replaceAll('<p>', '\n<p>')
+        .replaceAll('<br>', '\n'),
+      {
+        allowedTags: [],
+        allowedAttributes: {},
+      }
+    )
     copyToClipboard(cleanedUpText)
     info('Текст скопирован в буфер обмена')
   }
