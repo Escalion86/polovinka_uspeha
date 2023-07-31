@@ -20,7 +20,7 @@ const ComboBox = ({
 }) => {
   const defaultItem = defaultValue
     ? items.find((item) => item.value === defaultValue)
-    : null
+    : undefined
 
   return (
     <InputWrapper
@@ -40,7 +40,7 @@ const ComboBox = ({
           selectClassName
         )}
         onChange={(e) => !disabled && onChange && onChange(e.target.value)}
-        defaultValue={defaultItem ? defaultValue : ''}
+        defaultValue={defaultItem ? defaultValue : undefined}
         value={defaultValue ? undefined : value}
       >
         {placeholder && (
