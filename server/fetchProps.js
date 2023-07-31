@@ -36,8 +36,8 @@ import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
 const fetchProps = async (user) => {
+  const serverDateTime = new Date()
   try {
-    const serverDateTime = new Date()
     // console.log(`start fetchProps`)
     // console.time('Loading time')
     // console.time('dbConnect')
@@ -53,9 +53,7 @@ const fetchProps = async (user) => {
     // const eventsUsers = await EventsUsers.find({})
     // const payments = await Payments.find({})
     // const siteSettings = await SiteSettings.find({})
-
     const isModer = isUserModer(user)
-    // console.time('users')
     var users = JSON.parse(JSON.stringify(await Users.find({})))
     if (!isModer) {
       users = JSON.parse(JSON.stringify(users)).map((user) => {
@@ -162,7 +160,9 @@ const fetchProps = async (user) => {
       additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
       eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
       payments: JSON.parse(JSON.stringify(payments)),
-      siteSettings: JSON.parse(JSON.stringify(siteSettings[0])),
+      siteSettings: JSON.parse(
+        JSON.stringify(siteSettings?.length > 0 ? siteSettings[0] : {})
+      ),
       // histories: JSON.parse(JSON.stringify(histories)),
       questionnaires: JSON.parse(JSON.stringify(questionnaires)),
       questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
@@ -172,6 +172,7 @@ const fetchProps = async (user) => {
         dateTime: JSON.parse(JSON.stringify(serverDateTime)),
       },
     }
+    console.log(6)
 
     // console.log('fetchResult', fetchResult)
 

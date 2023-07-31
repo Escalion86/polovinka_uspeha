@@ -2,8 +2,9 @@
 // import fetchProps from './fetchProps'
 
 const getServerSidePropsFunc = async (context, getSession, fetchProps) => {
+  var session
   try {
-    const session = await getSession({ req: context.req })
+    session = await getSession({ req: context.req })
 
     const fetchedProps = await fetchProps(session?.user)
     return {

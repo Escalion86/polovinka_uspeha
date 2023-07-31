@@ -5,13 +5,10 @@ import { SelectEventList } from '@components/SelectItemList'
 import SocialPicker from '@components/ValuePicker/SocialPicker'
 import copyToClipboard from '@helpers/copyToClipboard'
 import formatAddress from '@helpers/formatAddress'
-import formatDateTime from '@helpers/formatDateTime'
 import formatEventDateTime from '@helpers/formatEventDateTime'
-import getMinutesBetween from '@helpers/getMinutesBetween'
 import getNoun from '@helpers/getNoun'
 import transliterate from '@helpers/transliterate'
 import useSnackbar from '@helpers/useSnackbar'
-import { modalsFuncAtom } from '@state/atoms'
 import eventsAtom from '@state/atoms/eventsAtom'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import { useEffect, useState } from 'react'
@@ -37,13 +34,30 @@ const ToolsTextEventsAnonsContent = () => {
 
   const { info } = useSnackbar()
 
-  const copyToClipboardText = () => {
-    console.log('text :>> ', text)
-    const cleanedUpText = sanitize(text.replaceAll('<br>', '\n'), {
-      allowedTags: [],
+  const cleanedUpText = sanitize(
+    text
+      .replaceAll('<blockquote>', '<br><blockquote>')
+      .replaceAll('<li>', '<br>\u{2764} <li>')
+      .replaceAll('<p>', '<br><p>'),
+    {
+      allowedTags: ['br'],
       allowedAttributes: {},
-    })
-    copyToClipboard(cleanedUpText)
+    }
+  )
+
+  const copyToClipboardText = () => {
+    const preparedToCopyText = sanitize(
+      text
+        .replaceAll('<blockquote>', '\n<blockquote>')
+        .replaceAll('<li>', '\n\u{2764} <li>')
+        .replaceAll('<p>', '\n<p>')
+        .replaceAll('<br>', '\n'),
+      {
+        allowedTags: [],
+        allowedAttributes: {},
+      }
+    )
+    copyToClipboard(preparedToCopyText)
     info('Текст скопирован в буфер обмена')
   }
 
@@ -85,7 +99,12 @@ const ToolsTextEventsAnonsContent = () => {
       elementOfTextArray.push(
         `\u{1F465} Количество участников: ${maxParticipants} человек${
           assistants?.length > 0
-            ? `+ ${getNoun(assistants.length, 'ведущий', 'ведущих', 'ведущих')}`
+            ? ` + ${getNoun(
+                assistants.length,
+                'ведущий',
+                'ведущих',
+                'ведущих'
+              )}`
             : ''
         }`
       )
@@ -105,8 +124,6 @@ const ToolsTextEventsAnonsContent = () => {
   useEffect(() => {
     setText(tempText)
   }, [tempText])
-
-  // console.log('text :>> ', text)
 
   return (
     <div className="h-full max-h-full px-1 py-1 overflow-y-auto">
@@ -143,7 +160,7 @@ const ToolsTextEventsAnonsContent = () => {
       {text ? (
         <div
           className="w-full max-w-full pb-2 overflow-hidden text-sm list-disc ql textarea"
-          dangerouslySetInnerHTML={{ __html: sanitizeCustom(text) }}
+          dangerouslySetInnerHTML={{ __html: cleanedUpText }}
         />
       ) : (
         <div>{'[Выберите хотябы одно мероприятие]'}</div>

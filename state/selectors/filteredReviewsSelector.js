@@ -5,7 +5,9 @@ const filteredReviewsSelector = selector({
   key: 'filteredReviewsSelector',
   get: ({ get }) => {
     const reviews = get(reviewsAtom)
-    return reviews.filter((review) => review.showOnSite)
+    return reviews?.length > 0
+      ? reviews.filter((review) => review.showOnSite)
+      : []
   },
 })
 
