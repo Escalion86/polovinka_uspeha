@@ -5,7 +5,8 @@ const filterItems = (
   searchText = '',
   exceptedIds = [],
   rules = {},
-  keys = ['title', 'firstName', 'secondName', 'thirdName']
+  keys = ['title', 'firstName', 'secondName', 'thirdName'],
+  parentKey
 ) =>
   // (
   {
@@ -32,12 +33,20 @@ const filterItems = (
               (!exceptedIds ||
                 typeof exceptedIds !== 'object' ||
                 !exceptedIds?.includes(item._id)) &&
-              keys.find((key) =>
-                item[key]
-                  ?.toString()
-                  .toLowerCase()
-                  .includes(searchTextLowerCase)
-              )
+              ((parentKey &&
+                keys.find((key) =>
+                  item[parentKey][key]
+                    ?.toString()
+                    .toLowerCase()
+                    .includes(searchTextLowerCase)
+                )) ||
+                (!parentKey &&
+                  keys.find((key) =>
+                    item[key]
+                      ?.toString()
+                      .toLowerCase()
+                      .includes(searchTextLowerCase)
+                  )))
             )
           } else
             return (
