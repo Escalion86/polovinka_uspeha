@@ -9,6 +9,15 @@ import Events from '@models/Events'
 import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
+import sanitize from 'sanitize-html'
+
+const linkAReformer = (link) => {
+  const textLink = link.substring(link.indexOf('>') + 1, link.lastIndexOf('<'))
+  const text = link.substring(link.indexOf(`href="`) + 6).split('"')[0]
+  return text === textLink || textLink === 'about:blank' || !textLink
+    ? text
+    : `${textLink} (${text})`
+}
 
 const { google } = require('googleapis')
 const SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -141,7 +150,7 @@ const deleteEventFromCalendar = async (googleCalendarId) => {
   return calendarEventData
 }
 
-const updateEventInCalendar = async (event) => {
+const updateEventInCalendar = async (event, req) => {
   const calendar = connectToGoogleCalendar()
 
   // calendar.events.list(
@@ -167,12 +176,38 @@ const updateEventInCalendar = async (event) => {
   //     }
   //   }
   // )
+  var preparedText = event.description
+  const aTags = event.description.match(/<a[^>]*>([^<]+)<\/a>/g)
+  const linksReformated = []
+  if (aTags?.length > 0) {
+    for (let i = 0; i < aTags.length; i++)
+      preparedText = preparedText.replaceAll(aTags[i], linkAReformer(aTags[i]))
+  }
 
   const calendarEvent = {
     summary: `${event.showOnSite ? '' : '[СКРЫТО] '}${
       event.status === 'canceled' ? '[ОТМЕНЕНО] ' : ''
     }${event.title}`,
-    description: event.description,
+    description:
+      sanitize(
+        preparedText
+          .replaceAll('<p><br></p>', '\n')
+          .replaceAll('</blockquote>', '\n</blockquote>')
+          // .replaceAll('<ul>', '\n<ul>')
+          // .replaceAll('<ol>', '\n<ol>')
+          .replaceAll('<li>', '\u{2764} <li>')
+          .replaceAll('</li>', '\n</li>')
+          .replaceAll('</p>', '\n</p>')
+          .replaceAll('<br>', '\n'),
+        {
+          allowedTags: [],
+          allowedAttributes: {},
+        }
+      ) +
+      `\n\nСсылка на мероприятие:\n${
+        req.headers.origin + '/event/' + event._id
+      }` +
+      `\n\n${event.description}`,
     start: {
       dateTime: event.dateStart,
       timeZone: 'Asia/Krasnoyarsk',
@@ -216,7 +251,7 @@ const updateEventInCalendar = async (event) => {
             // res.send(JSON.stringify({ error: error }))
           } else {
             if (result) {
-              console.log(result)
+              // console.log(result)
               resolve(result)
               // res.send(JSON.stringify({ events: result.data.items }))
             } else {
@@ -333,7 +368,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
           if (Schema === Events) {
             // console.log('data :>> ', data)
-            const calendarEvent = await updateEventInCalendar(data)
+            const calendarEvent = await updateEventInCalendar(data, req)
           }
 
           await Histories.create({
@@ -373,7 +408,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
 
           if (Schema === Events) {
-            const calendarEvent = await updateEventInCalendar(data)
+            const calendarEvent = await updateEventInCalendar(data, req)
           }
 
           await Histories.create({
