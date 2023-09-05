@@ -62,10 +62,10 @@ const ToolsExportContent = () => {
 
   const servicesUsers = useRecoilValue(servicesUsersAtom)
   const serviceUsers = servicesUsers.filter(
-    (serviceUser) => serviceUser.serviceId === serviceIS._id
+    (serviceUser) => serviceUser.serviceId === serviceIS?._id
   )
 
-  const questionnaire = serviceIS.questionnaire.data
+  const questionnaire = serviceIS?.questionnaire?.data
 
   const exportExcelFile = async () => {
     const workbook = new ExcelJs.Workbook()
@@ -183,10 +183,12 @@ const ToolsExportContent = () => {
 
   return (
     <div className="h-full max-h-full p-1 overflow-y-auto">
-      <Button
-        name="Скачать анкеты Индивидуальных свиданий"
-        onClick={exportExcelFile}
-      />
+      {serviceIS && (
+        <Button
+          name="Скачать анкеты Индивидуальных свиданий"
+          onClick={exportExcelFile}
+        />
+      )}
     </div>
   )
 }
