@@ -16,16 +16,12 @@ import { ruRU } from '@mui/x-date-pickers/locales'
 
 const DateTimePicker = ({
   label = '',
-  name,
   value,
   onChange,
   required = false,
   labelClassName,
-  // wrapperClassName,
   className,
   disabled = false,
-  showYears = false,
-  showZodiac = false,
   error,
   fullWidth = false,
   defaultValue,
