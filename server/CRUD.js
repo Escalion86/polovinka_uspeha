@@ -206,8 +206,7 @@ const updateEventInCalendar = async (event, req) => {
       ) +
       `\n\nСсылка на мероприятие:\n${
         req.headers.origin + '/event/' + event._id
-      }` +
-      `\n\n${event.description}`,
+      }`,
     start: {
       dateTime: event.dateStart,
       timeZone: 'Asia/Krasnoyarsk',
