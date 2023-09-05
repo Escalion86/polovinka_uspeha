@@ -13,6 +13,7 @@ import {
   // MobileDateTimePicker,
 } from '@mui/x-date-pickers'
 import { ruRU } from '@mui/x-date-pickers/locales'
+import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 
 const DateTimePicker = ({
   label = '',
@@ -28,6 +29,7 @@ const DateTimePicker = ({
   noMargin,
   startWithYear = false,
 }) => {
+  const widthNum = useWindowDimensionsTailwindNum()
   return (
     <InputWrapper
       label={label}
@@ -80,11 +82,15 @@ const DateTimePicker = ({
             },
             disableUnderline: true,
           }}
-          inputFormat="dd.MM.yyyy"
+          inputFormat={widthNum <= 2 ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'}
           // renderInput={(params) => <TextField {...params} />}
           // renderInput={(params) => <input {...params} />}
           openTo={startWithYear ? 'year' : 'month'}
-          views={['year', 'month', 'day']}
+          views={
+            widthNum <= 2
+              ? ['year', 'month', 'day', 'hours', 'minutes']
+              : ['year', 'month', 'day']
+          }
           // views={['hours', 'minutes']}
           // value={dayjs(value)}
           value={value ? dayjs(value) : undefined}
@@ -142,35 +148,37 @@ const DateTimePicker = ({
           // maxDate={undefined}
           // minDate={new Date()}
         />
-        <MUIDateTimePicker
-          className="w-[10rem] pl-4"
-          sx={{
-            boxShadow: 'none',
-            '.MuiOutlinedInput-notchedOutline': { borderStyle: 'none' },
-            '& .MuiInputBase-root': {
-              padding: 0,
-              '& .MuiButtonBase-root': {
+        {widthNum > 2 && (
+          <MUIDateTimePicker
+            className="w-[10rem] pl-4"
+            sx={{
+              boxShadow: 'none',
+              '.MuiOutlinedInput-notchedOutline': { borderStyle: 'none' },
+              '& .MuiInputBase-root': {
                 padding: 0,
-                paddingRight: 3,
-                // paddingLeft: 10
+                '& .MuiButtonBase-root': {
+                  padding: 0,
+                  paddingRight: 3,
+                  // paddingLeft: 10
+                },
+                '& .MuiInputBase-input': {
+                  padding: 0,
+                  paddingLeft: 1,
+                },
               },
-              '& .MuiInputBase-input': {
-                padding: 0,
-                paddingLeft: 1,
-              },
-            },
-            disableUnderline: true,
-          }}
-          inputFormat="HH:mm"
-          openTo="hours"
-          views={['hours', 'minutes']}
-          value={value ? dayjs(value) : undefined}
-          defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
-          slots={{
-            openPickerIcon: AccessTimeIcon,
-          }}
-          onChange={onChange}
-        />
+              disableUnderline: true,
+            }}
+            inputFormat="HH:mm"
+            openTo="hours"
+            views={['hours', 'minutes']}
+            value={value ? dayjs(value) : undefined}
+            defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
+            slots={{
+              openPickerIcon: AccessTimeIcon,
+            }}
+            onChange={onChange}
+          />
+        )}
       </LocalizationProvider>
     </InputWrapper>
   )
