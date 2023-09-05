@@ -10,8 +10,10 @@ import StateLoader from '@components/StateLoader'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import Fab from '@components/Fab'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 export default function Home(props) {
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   return (
     <>
       <Head>
@@ -23,7 +25,7 @@ export default function Home(props) {
         <EventsBlock />
         <ContactsBlock />
         <Fab
-          show
+          show={!isLoggedUserModer}
           icon={faWhatsapp}
           bgClass="bg-green-700"
           href="https://wa.me/79504280891"
