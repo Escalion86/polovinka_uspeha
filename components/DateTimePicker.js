@@ -3,6 +3,7 @@ import InputWrapper from './InputWrapper'
 import 'dayjs/locale/ru'
 import dayjs from 'dayjs'
 import ru from 'dayjs/locale/ru'
+import AccessTimeIcon from '@mui/icons-material/AccessTime'
 dayjs.locale(ru)
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -15,20 +16,17 @@ import { ruRU } from '@mui/x-date-pickers/locales'
 
 const DateTimePicker = ({
   label = '',
-  name,
   value,
   onChange,
   required = false,
   labelClassName,
-  // wrapperClassName,
   className,
   disabled = false,
-  showYears = false,
-  showZodiac = false,
   error,
   fullWidth = false,
   defaultValue,
   noMargin,
+  startWithYear = false,
 }) => {
   return (
     <InputWrapper
@@ -37,7 +35,7 @@ const DateTimePicker = ({
       onChange={onChange}
       copyPasteButtons={false}
       value={value}
-      className={cn(fullWidth ? '' : 'w-48', className)}
+      className={cn(fullWidth ? '' : 'w-[14.5rem]', className)}
       required={required}
       error={error}
       // postfix={
@@ -82,11 +80,11 @@ const DateTimePicker = ({
             },
             disableUnderline: true,
           }}
-          inputFormat="dd.MM.yyyy HH:mm"
+          inputFormat="dd.MM.yyyy"
           // renderInput={(params) => <TextField {...params} />}
           // renderInput={(params) => <input {...params} />}
-          openTo="year"
-          views={['year', 'month', 'day', 'hours', 'minutes']}
+          openTo={startWithYear ? 'year' : 'month'}
+          views={['year', 'month', 'day']}
           // views={['hours', 'minutes']}
           // value={dayjs(value)}
           value={value ? dayjs(value) : undefined}
@@ -144,7 +142,35 @@ const DateTimePicker = ({
           // maxDate={undefined}
           // minDate={new Date()}
         />
-        {/* </FormControl> */}
+        <MUIDateTimePicker
+          className="w-[10rem] pl-4"
+          sx={{
+            boxShadow: 'none',
+            '.MuiOutlinedInput-notchedOutline': { borderStyle: 'none' },
+            '& .MuiInputBase-root': {
+              padding: 0,
+              '& .MuiButtonBase-root': {
+                padding: 0,
+                paddingRight: 3,
+                // paddingLeft: 10
+              },
+              '& .MuiInputBase-input': {
+                padding: 0,
+                paddingLeft: 1,
+              },
+            },
+            disableUnderline: true,
+          }}
+          inputFormat="HH:mm"
+          openTo="hours"
+          views={['hours', 'minutes']}
+          value={value ? dayjs(value) : undefined}
+          defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
+          slots={{
+            openPickerIcon: AccessTimeIcon,
+          }}
+          onChange={onChange}
+        />
       </LocalizationProvider>
     </InputWrapper>
   )

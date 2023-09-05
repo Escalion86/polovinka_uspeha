@@ -2,7 +2,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { getNounServicesUsers } from '@helpers/getNoun'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
@@ -15,11 +15,26 @@ import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton
 import Search from '@components/Search'
 import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
+import usersAtom from '@state/atoms/usersAtom'
+import filterItems from '@helpers/filterItems'
 
 const ServicesUsersContent = () => {
   const servicesUsers = useRecoilValue(servicesUsersAtom)
+  const users = useRecoilValue(usersAtom)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+
+  // const usersIds = servicesUsers.map((serviceUser) => serviceUser.userId)
+  // const usersWithServices = users.filter((user) => usersIds.includes(user._id))
+
+  const updatedServicesUsers = useMemo(
+    () =>
+      servicesUsers.map((servicesUser) => {
+        const user = users.find((user) => user._id === servicesUser.userId)
+        return { ...servicesUser, user }
+      }),
+    [servicesUsers, users]
+  )
 
   const [isSearching, setIsSearching] = useState(false)
   // const [sort, setSort] = useState({ dateStart: 'asc' })
@@ -43,6 +58,29 @@ const ServicesUsersContent = () => {
   // const sortFunc = sortFunctions[sortKey]
   //   ? sortFunctions[sortKey][sortValue]
   //   : undefined
+
+  const visibleServicesUsers = useMemo(() => {
+    if (!searchText) return updatedServicesUsers
+    return filterItems(
+      updatedServicesUsers,
+      searchText,
+      [],
+      {},
+      [
+        'firstName',
+        'secondName',
+        'thirdName',
+        'phone',
+        'whatsapp',
+        'viber',
+        'instagram',
+        'telegram',
+        'vk',
+        'email',
+      ],
+      'user'
+    )
+  }, [updatedServicesUsers, searchText])
 
   return (
     <>
@@ -71,7 +109,7 @@ const ServicesUsersContent = () => {
       />
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
       {/* <CardListWrapper> */}
-      <ServicesUsersList servicesUsers={servicesUsers} />
+      <ServicesUsersList servicesUsers={visibleServicesUsers} />
     </>
   )
 }

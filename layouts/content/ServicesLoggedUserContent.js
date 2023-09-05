@@ -1,13 +1,13 @@
 import { useRecoilValue } from 'recoil'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
-import { useState } from 'react'
+// import { useState } from 'react'
 
 import { getNounServicesUsers } from '@helpers/getNoun'
 import ContentHeader from '@components/ContentHeader'
 
-import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
-import Search from '@components/Search'
+// import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
+// import Search from '@components/Search'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
 import servicesUsersByUserIdSelector from '@state/selectors/servicesUsersByUserIdSelector'
 
@@ -17,8 +17,8 @@ const ServicesLoggedUserContent = () => {
     servicesUsersByUserIdSelector(loggedUser._id)
   )
 
-  const [isSearching, setIsSearching] = useState(false)
-  const [searchText, setSearchText] = useState('')
+  // const [isSearching, setIsSearching] = useState(false)
+  // const [searchText, setSearchText] = useState('')
 
   return (
     <>
@@ -27,21 +27,21 @@ const ServicesLoggedUserContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounServicesUsers(servicesLoggedUser.length)}
           </div>
-          <SearchToggleButton
+          {/* <SearchToggleButton
             value={isSearching}
             onChange={() => {
               setIsSearching((state) => !state)
               if (isSearching) setSearchText('')
             }}
-          />
+          /> */}
         </div>
       </ContentHeader>
-      <Search
+      {/* <Search
         searchText={searchText}
         show={isSearching}
         onChange={setSearchText}
         className="mx-1 bg-gray-100"
-      />
+      /> */}
       <ServicesUsersList servicesUsers={servicesLoggedUser} showUser={false} />
     </>
   )
