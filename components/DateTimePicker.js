@@ -85,7 +85,7 @@ const DateTimePicker = ({
           inputFormat={widthNum <= 2 ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'}
           // renderInput={(params) => <TextField {...params} />}
           // renderInput={(params) => <input {...params} />}
-          openTo={startWithYear ? 'year' : 'month'}
+          openTo={startWithYear ? 'year' : 'day'}
           views={
             widthNum <= 2
               ? ['year', 'month', 'day', 'hours', 'minutes']
