@@ -26,6 +26,7 @@ import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
 import Fab from '@components/Fab'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
 // TODO Сделать копирование БД с main на dev
 // TODO Сделать переключение с БД main на dev
@@ -40,6 +41,7 @@ function CabinetPage(props) {
   // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
   let redirect
   if (!props.loggedUser) redirect = '/'
@@ -102,7 +104,7 @@ function CabinetPage(props) {
             </ContentWrapper>
             {/* <ModalsPortal /> */}
             <Fab
-              show
+              show={!isLoggedUserModer}
               icon={faWhatsapp}
               bgClass="bg-green-700"
               href="https://wa.me/79504280891"
