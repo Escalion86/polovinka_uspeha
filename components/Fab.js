@@ -40,7 +40,7 @@ const Fab = ({
   return (
     <div
       className={cn(
-        'z-10 transition duration-300 flex flex-col justify-end fixed right-8',
+        'z-10 transition duration-300 flex flex-col justify-end fixed right-7',
         show
           ? // 'fab-top'
             'bottom-10'
@@ -49,14 +49,14 @@ const Fab = ({
     >
       <div
         className={cn(
-          'absolute animate-ping w-[52px] h-[52px] max-h-[52px] max-w-[52px] rounded-full',
+          'absolute animate-ping w-[48px] h-[48px] max-h-[48px] max-w-[48px] rounded-full',
           bgClass
         )}
       ></div>
       {href ? (
         <a
           className={cn(
-            'relative p-4 rounded-full cursor-pointer w-[52px] h-[52px]group max-h-[52px] max-w-[52px]',
+            'relative flex items-center justify-center rounded-full cursor-pointer w-[48px] h-[48px] group max-h-[48px] max-w-[48px]',
             bgClass
           )}
           // ref={wrapperRef}
@@ -64,21 +64,21 @@ const Fab = ({
           target="_blank"
         >
           <FontAwesomeIcon
-            className="z-10 w-5 h-5 text-white duration-200 max-w-5 max-h-5 group-hover:scale-150"
+            className="z-10 w-6 h-6 text-white duration-200 max-w-6 max-h-6 group-hover:scale-125"
             icon={icon}
           />
         </a>
       ) : (
         <div
           className={cn(
-            'relative p-4 rounded-full cursor-pointer fab w-[52px] h-[52px]group max-h-[52px] max-w-[52px]',
+            'relative flex items-center justify-center rounded-full cursor-pointer fab w-[48px] h-[48px] group max-h-[48px] max-w-[48px]',
             bgClass
           )}
           onClick={onClick}
           // ref={wrapperRef}
         >
           <FontAwesomeIcon
-            className="z-10 w-5 h-5 text-white duration-200 max-w-5 max-h-5 group-hover:scale-150"
+            className="z-10 w-6 h-6 text-white duration-200 max-w-6 max-h-6 group-hover:scale-125"
             icon={icon}
           />
         </div>
