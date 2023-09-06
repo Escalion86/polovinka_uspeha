@@ -16,6 +16,7 @@ import { useRecoilValue } from 'recoil'
 import { getRecoil } from 'recoil-nexus'
 import sanitize from 'sanitize-html'
 import sanitizeCustom from '@helpers/sanitize'
+import CheckBox from '@components/CheckBox'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
@@ -27,6 +28,11 @@ const getEventMaxParticipants = (event) => {
 const ToolsTextEventsAnonsContent = () => {
   const [eventsId, setEventsId] = useState([])
   const [text, setText] = useState('')
+  const [showDescription, setShowDescription] = useState(true)
+  const [showAddress, setShowAddress] = useState(true)
+  const [showPrice, setShowPrice] = useState(true)
+  const [showParticipantsCount, setShowParticipantsCount] = useState(true)
+  const [showLink, setShowLink] = useState(true)
   const events = useRecoilValue(eventsAtom)
 
   const [socialTag, setSocialTag] = useState(null)
@@ -87,37 +93,51 @@ const ToolsTextEventsAnonsContent = () => {
       }).toUpperCase()}`
     )
     elementOfTextArray.push(`"${event.title.toUpperCase()}"`)
-    elementOfTextArray.push(`${event.description}`)
-    elementOfTextArray.push(``)
-    const address = formatAddress(event.address)
-    if (address) {
-      elementOfTextArray.push('\u{1F4CD} Место проведения:')
-      elementOfTextArray.push(formatAddress(event.address))
+
+    if (showDescription) {
+      elementOfTextArray.push(`${event.description}`)
+      elementOfTextArray.push(``)
     }
-    elementOfTextArray.push(`\u{1F4B0} Стоимость: ${event.price / 100} руб`)
-    const maxParticipants = getEventMaxParticipants(event)
-    if (maxParticipants) {
-      const assistants = getRecoil(eventAssistantsSelector(event._id))
+
+    if (showAddress) {
+      const address = formatAddress(event.address)
+      if (address) {
+        elementOfTextArray.push('\u{1F4CD} Место проведения:')
+        elementOfTextArray.push(formatAddress(event.address))
+      }
+    }
+
+    if (showPrice)
+      elementOfTextArray.push(`\u{1F4B0} Стоимость: ${event.price / 100} руб`)
+
+    if (showParticipantsCount) {
+      const maxParticipants = getEventMaxParticipants(event)
+      if (maxParticipants) {
+        const assistants = getRecoil(eventAssistantsSelector(event._id))
+        elementOfTextArray.push(
+          `\u{1F465} Количество участников: ${maxParticipants} человек${
+            assistants?.length > 0
+              ? ` + ${getNoun(
+                  assistants.length,
+                  'ведущий',
+                  'ведущих',
+                  'ведущих'
+                )}`
+              : ''
+          }`
+        )
+      }
+    }
+
+    if (showLink) {
+      elementOfTextArray.push(``)
       elementOfTextArray.push(
-        `\u{1F465} Количество участников: ${maxParticipants} человек${
-          assistants?.length > 0
-            ? ` + ${getNoun(
-                assistants.length,
-                'ведущий',
-                'ведущих',
-                'ведущих'
-              )}`
-            : ''
-        }`
+        `\u{1F4DD} Можно записаться ответным сообщением или на сайте по ссылке:`
+      )
+      elementOfTextArray.push(
+        `${window.location.origin}/event/${event._id}${tagsStringify()}`
       )
     }
-    elementOfTextArray.push(``)
-    elementOfTextArray.push(
-      `\u{1F4DD} Можно записаться ответным сообщением или на сайте по ссылке:`
-    )
-    elementOfTextArray.push(
-      `${window.location.origin}/event/${event._id}${tagsStringify()}`
-    )
     textArray.push(elementOfTextArray.join('<br>'))
   }
 
@@ -147,6 +167,31 @@ const ToolsTextEventsAnonsContent = () => {
         onChange={(value) => {
           setCustomTag(value)
         }}
+      />
+      <CheckBox
+        checked={showDescription}
+        onClick={() => setShowDescription((checked) => !checked)}
+        label="Показывать описание"
+      />
+      <CheckBox
+        checked={showAddress}
+        onClick={() => setShowAddress((checked) => !checked)}
+        label="Показывать адрес"
+      />
+      <CheckBox
+        checked={showPrice}
+        onClick={() => setShowPrice((checked) => !checked)}
+        label="Показывать цену"
+      />
+      <CheckBox
+        checked={showParticipantsCount}
+        onClick={() => setShowParticipantsCount((checked) => !checked)}
+        label="Показывать количество участников"
+      />
+      <CheckBox
+        checked={showLink}
+        onClick={() => setShowLink((checked) => !checked)}
+        label="Показывать ссылку"
       />
       <Button name="Скопировать текст" onClick={copyToClipboardText} />
       {/* <EditableTextarea
