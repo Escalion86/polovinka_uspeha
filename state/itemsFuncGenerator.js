@@ -232,6 +232,7 @@ const itemsFuncGenerator = (
     'service',
     'eventsUser',
     'servicesUser',
+    'eventsTag',
   ]
 ) => {
   const {
@@ -255,13 +256,14 @@ const itemsFuncGenerator = (
               item,
               (data) => {
                 setNotLoadingCard(itemName + item._id)
-                if (!noSnackbar)
+                if (!noSnackbar && messages[itemName]?.update?.success)
                   snackbar.success(messages[itemName].update.success)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
               (error) => {
-                if (!noSnackbar) snackbar.error(messages[itemName].update.error)
+                if (!noSnackbar && messages[itemName]?.update?.error)
+                  snackbar.error(messages[itemName].update.error)
                 setErrorCard(itemName + item._id)
                 const data = {
                   errorPlace: 'UPDATE ERROR',
@@ -281,13 +283,14 @@ const itemsFuncGenerator = (
               `/api/${itemName.toLowerCase()}s`,
               clearedItem,
               (data) => {
-                if (!noSnackbar)
+                if (!noSnackbar && messages[itemName]?.add?.success)
                   snackbar.success(messages[itemName].add.success)
                 props['set' + capitalizeFirstLetter(itemName)](data)
                 // setEvent(data)
               },
               (error) => {
-                if (!noSnackbar) snackbar.error(messages[itemName].add.error)
+                if (!noSnackbar && messages[itemName]?.add?.error)
+                  snackbar.error(messages[itemName].add.error)
                 setErrorCard(itemName + item._id)
                 const data = {
                   errorPlace: 'CREATE ERROR',
@@ -308,11 +311,13 @@ const itemsFuncGenerator = (
           return await deleteData(
             `/api/${itemName.toLowerCase()}s/${itemId}`,
             () => {
-              snackbar.success(messages[itemName].delete.success)
+              if (messages[itemName]?.delete?.success)
+                snackbar.success(messages[itemName].delete.success)
               props['delete' + capitalizeFirstLetter(itemName)](itemId)
             },
             (error) => {
-              snackbar.error(messages[itemName].delete.error)
+              if (messages[itemName]?.delete?.error)
+                snackbar.error(messages[itemName].delete.error)
               setErrorCard(itemName + itemId)
               const data = {
                 errorPlace: 'DELETE ERROR',

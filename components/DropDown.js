@@ -10,6 +10,7 @@ const DropDown = ({
   turnOffAutoClose = false,
   strategyAbsolute = true,
   className,
+  placement = 'right',
 }) => {
   const padding =
     menuPadding === 'md'
@@ -19,15 +20,30 @@ const DropDown = ({
       : menuPadding === 'lg'
       ? 'p-3'
       : ''
+  const placementVal =
+    placement === 'right' ? 'right-0' : placement === 'left' ? 'left-0' : ''
+  // const placementVal =
+  //   placement === 'bottom'
+  //     ? '[--placement:bottom]'
+  //     : placement === 'right'
+  //     ? '[--placement:right]'
+  //     : placement === 'right-bottom'
+  //     ? '[--placement:right-bottom]'
+  //     : placement === 'right-top'
+  //     ? '[--placement:right-top]'
+  //     : placement === 'top'
+  //     ? '[--placement:top]'
+  //     : ''
   return (
     <div
       className={cn(
-        'hs-dropdown relative inline-flex [--placement:bottom]',
+        'hs-dropdown relative inline-flex',
         turnOffAutoClose === 'inside'
           ? '[--auto-close:inside]'
           : turnOffAutoClose === 'outside'
           ? '[--auto-close:outside]'
           : '',
+        // placementVal,
         openOnHover ? '[--trigger:hover] ' : '',
         strategyAbsolute ? '[--strategy:absolute]' : '',
         className
@@ -44,6 +60,7 @@ const DropDown = ({
             ? 'after:h-4 after:absolute after:-bottom-4 after:left-0 after:w-full before:h-4 before:absolute before:-top-4 before:left-0 before:w-full'
             : '',
           padding,
+          placementVal,
           menuClassName
         )}
         aria-labelledby="hs-dropdown"

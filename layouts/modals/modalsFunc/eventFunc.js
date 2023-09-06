@@ -282,7 +282,7 @@ const eventFunc = (eventId, clone = false) => {
         !compareArrays(event?.reportImages, reportImages) ||
         event?.warning !== warning
 
-      setOnConfirmFunc(onClickConfirm)
+      // setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)

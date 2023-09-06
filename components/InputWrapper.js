@@ -79,7 +79,7 @@ const InputWrapper = forwardRef(
     return (
       <div
         className={cn(
-          'relative flex items-center min-h-[28px]',
+          'relative flex items-center min-h-[44.4px]',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
           noMargin ? '' : 'mt-3.5 mb-1',
           noBorder
@@ -103,7 +103,7 @@ const InputWrapper = forwardRef(
       >
         <div
           className={cn(
-            'relative flex w-full',
+            'relative flex w-full min-h-[27.2px]',
             wrapperClassName,
             disabled ? 'cursor-not-allowed' : ''
           )}

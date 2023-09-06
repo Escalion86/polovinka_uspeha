@@ -41,6 +41,7 @@ import { getRecoil, setRecoil } from 'recoil-nexus'
 import addModalSelector from '@state/selectors/addModalSelector'
 import selectSvgFrameFunc from './modalsFunc/selectSvgFrameFunc'
 import copyLinkFunc from './modalsFunc/copyLinkFunc'
+import eventsTagsFunc from './modalsFunc/eventsTagsFunc'
 // import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
@@ -261,6 +262,9 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
           text: 'Вы уверены, что хотите удалить направление?',
           onConfirm: async () => itemsFunc.direction.delete(directionId),
         }),
+    },
+    eventsTags: {
+      edit: () => addModal(eventsTagsFunc()),
     },
     event: {
       add: (eventId) => addModal(eventFunc(eventId, true)),
