@@ -11,6 +11,7 @@ import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import Fab from '@components/Fab'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import { useRecoilValue } from 'recoil'
 
 export default function Home(props) {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
