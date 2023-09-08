@@ -10,7 +10,7 @@ const DropDown = ({
   turnOffAutoClose = false,
   strategyAbsolute = true,
   className,
-  placement = 'right',
+  placement,
 }) => {
   const padding =
     menuPadding === 'md'
@@ -37,7 +37,7 @@ const DropDown = ({
   return (
     <div
       className={cn(
-        'hs-dropdown relative inline-flex',
+        'hs-dropdown relative inline-flex [--placement:bottom]',
         turnOffAutoClose === 'inside'
           ? '[--auto-close:inside]'
           : turnOffAutoClose === 'outside'

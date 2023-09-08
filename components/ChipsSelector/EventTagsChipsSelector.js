@@ -1,18 +1,30 @@
 import React from 'react'
 import ChipsSelector from './ChipsSelector'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import { useRecoilValue } from 'recoil'
 
-const EventTagsChipsSelector = ({ tags, onChange }) => {
+const EventTagsChipsSelector = ({
+  tags,
+  onChange,
+  canEditChips,
+  readOnly,
+  noWrapper,
+  className,
+  required,
+}) => {
+  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const eventsTags = siteSettings.eventsTags ?? []
   return (
     <ChipsSelector
       label="Тэги"
-      items={[
-        { text: 'поход', color: '#B6D8F2' },
-        { text: 'природа', color: '#CCD4BF' },
-        { text: 'настолки', color: '#D0BCAC' },
-        { text: 'прогулка', color: '#F4CFDF' },
-      ]}
+      items={eventsTags}
       onChange={onChange}
       value={tags}
+      canEditChips={canEditChips}
+      readOnly={readOnly}
+      noWrapper={noWrapper}
+      className={className}
+      required={required}
     />
   )
 }

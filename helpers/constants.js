@@ -255,6 +255,48 @@ const colors = [
   'hover:bg-amber-700',
 ]
 
+export const PASTEL_COLORS = [
+  '#B6D8F2',
+  '#CCD4BF',
+  '#D0BCAC',
+  '#F4CFDF',
+  '#F7F6CF',
+  // '#5784BA',
+  '#9AC8EB',
+  '#98D4BB',
+  '#E7CBA9',
+  '#EEBAB2',
+  '#F5F3E7',
+  '#F5BFD2',
+  '#E5DB9C',
+  '#F5E2E4',
+  '#D0BCAC',
+  '#BEB4C5',
+  '#E6A57E',
+  // '#218B82',
+  '#9AD9DB',
+  '#E5DBD9',
+  '#EB96AA',
+  '#C6C9D0',
+  // '#C54B6C',
+  '#E5B3BB',
+  '#F9968B',
+  // '#C47482',
+  '#F27348',
+  // '#26474E',
+  '#76CDCD',
+  // '#37667E',
+  '#7B92AA',
+  '#E4CEE0',
+  // '#A15D98',
+  '#DC828F',
+  '#F7CE76',
+  // '#8C7386',
+  // '#9C9359',
+  // '#A57283',
+  '#E8D595',
+]
+
 export const GRADIENT_COLORS = ['#504436', '#84725A']
 
 export const MONTHS = [

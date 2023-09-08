@@ -55,6 +55,7 @@ const ColorPicker = ({
         }
         className="w-full"
         turnOffAutoClose="inside"
+        strategyAbsolute
         // openOnHover
         // menuPadding="lg"
         // menuClassName="w-[222px] h-[300px]"

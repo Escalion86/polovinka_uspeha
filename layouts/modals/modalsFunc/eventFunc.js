@@ -40,6 +40,7 @@ import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleBu
 import SvgSigma from 'svg/SvgSigma'
 import InputWrapper from '@components/InputWrapper'
 import isObject from '@helpers/isObject'
+import EventTagsChipsSelector from '@components/ChipsSelector/EventTagsChipsSelector'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -72,6 +73,9 @@ const eventFunc = (eventId, clone = false) => {
     const [description, setDescription] = useState(
       event?.description ?? DEFAULT_EVENT.description
     )
+
+    const defaultTags = useMemo(() => event?.tags ?? [], [])
+    const [tags, setTags] = useState(defaultTags)
 
     const defaultDateStart = useMemo(
       () => event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000,
@@ -213,6 +217,7 @@ const eventFunc = (eventId, clone = false) => {
             images,
             title: title.trim(),
             description,
+            tags,
             showOnSite,
             dateStart,
             dateEnd,
@@ -249,6 +254,7 @@ const eventFunc = (eventId, clone = false) => {
       const isFormChanged =
         event?.title !== title ||
         event?.description !== description ||
+        !compareArrays(event?.tags, tags) ||
         event?.showOnSite !== showOnSite ||
         dateStart !== defaultDateStart ||
         dateEnd !== defaultDateEnd ||
@@ -289,6 +295,7 @@ const eventFunc = (eventId, clone = false) => {
     }, [
       title,
       description,
+      tags,
       showOnSite,
       dateStart,
       dateEnd,
@@ -324,6 +331,8 @@ const eventFunc = (eventId, clone = false) => {
       reportImages,
       warning,
     ])
+
+    console.log('tags :>> ', tags)
 
     const handleFocus = (event) => event.target.select()
 
@@ -399,6 +408,15 @@ const eventFunc = (eventId, clone = false) => {
               placeholder="Описание мероприятия..."
               required
               error={errors.description}
+            />
+            <EventTagsChipsSelector
+              tags={tags}
+              onChange={setTags}
+              canEditChips
+              required
+              // readOnly
+              // noWrapper
+              // className
             />
             {/* <FormWrapper twoColumns> */}
             <FormRow className="flex-wrap">

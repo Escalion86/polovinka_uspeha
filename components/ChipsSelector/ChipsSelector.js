@@ -100,7 +100,9 @@ const ChipsSelector = forwardRef(
       postfixClassName,
       showErrorText = false,
       floatingLabel = true,
-      editor = true,
+      canEditChips = false,
+      readOnly = false,
+      noWrapper = false,
     },
     ref
   ) => {
@@ -118,58 +120,78 @@ const ChipsSelector = forwardRef(
     //   )
     // }
 
+    const Wrapper = ({ children }) =>
+      noWrapper ? (
+        <div className={cn('flex flex-wrap gap-x-1 gap-y-1', className)}>
+          {children}
+        </div>
+      ) : (
+        <InputWrapper
+          label={label}
+          labelClassName={labelClassName}
+          value={value ?? defaultValue}
+          className={cn(readOnly ? '' : 'cursor-pointer', className)}
+          required={required}
+          floatingLabel={floatingLabel}
+          error={error}
+          showErrorText={showErrorText}
+          paddingY
+          paddingX
+          postfix={postfix}
+          prefix={prefix}
+          ref={ref}
+          disabled={disabled}
+          fullWidth={fullWidth}
+          noBorder={noBorder}
+          noMargin={noMargin}
+          showDisabledIcon={showDisabledIcon}
+          wrapperClassName="gap-x-1 flex-wrap gap-y-1"
+        >
+          {children}
+        </InputWrapper>
+      )
+
+    const Trigger = () => (
+      <Wrapper>
+        {typeof value === 'object' &&
+          value.map((text) => (
+            <Chip
+              text={text}
+              color={items.find((item) => item.text === text)?.color}
+              onClose={
+                readOnly
+                  ? undefined
+                  : () => onChange(value.filter((val) => val !== text))
+              }
+            />
+          ))}
+        {!readOnly && canEditChips && (
+          <div className="flex items-center justify-end flex-1">
+            <div
+              onClick={(e) => {
+                e.stopPropagation()
+                modalsFunc.eventsTags.edit()
+              }}
+              className="flex items-center justify-center p-0.5 cursor-pointer group"
+            >
+              <FontAwesomeIcon
+                icon={faWrench}
+                className="w-4 h-4 text-gray-400 duration-300 group-hover:text-gray-700 group-hover:scale-125"
+              />
+            </div>
+          </div>
+        )}
+      </Wrapper>
+    )
+
+    if (readOnly) return <Trigger />
+
     return (
       <DropDown
-        strategyAbsolute
+        // strategyAbsolute
         // placement="top"
-        menuClassName="mt-6"
-        trigger={
-          <InputWrapper
-            label={label}
-            labelClassName={labelClassName}
-            value={value ?? defaultValue}
-            className={cn('cursor-pointer', className)}
-            required={required}
-            floatingLabel={floatingLabel}
-            error={error}
-            showErrorText={showErrorText}
-            paddingY
-            paddingX
-            postfix={postfix}
-            prefix={prefix}
-            ref={ref}
-            disabled={disabled}
-            fullWidth={fullWidth}
-            noBorder={noBorder}
-            noMargin={noMargin}
-            showDisabledIcon={showDisabledIcon}
-            wrapperClassName="gap-x-1 flex-wrap gap-y-1"
-          >
-            {value.map((text) => (
-              <Chip
-                text={text}
-                color={items.find((item) => item.text === text)?.color}
-                onClose={() => onChange(value.filter((val) => val !== text))}
-              />
-            ))}
-            {editor && (
-              <div className="flex items-center justify-end flex-1">
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    modalsFunc.eventsTags.edit()
-                  }}
-                  className="flex items-center justify-center p-0.5 cursor-pointer group"
-                >
-                  <FontAwesomeIcon
-                    icon={faWrench}
-                    className="w-4 h-4 text-gray-400 duration-300 group-hover:text-gray-700 group-hover:scale-125"
-                  />
-                </div>
-              </div>
-            )}
-          </InputWrapper>
-        }
+        // menuClassName="mt-6"
+        trigger={<Trigger />}
         className="w-full"
         menuPadding={false}
         turnOffAutoClose="inside"

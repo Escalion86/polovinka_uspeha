@@ -140,7 +140,7 @@ const InputWrapper = forwardRef(
             <label
               // for="exampleFormControlInput1"
               className={cn(
-                'pointer-events-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
+                'pointer-events-none select-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
                 true
                   ? 'h-5 leading-[12px] peer-placeholder-shown:leading-[14px]'
                   : '',

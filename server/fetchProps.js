@@ -23,7 +23,6 @@ import isUserModer from '@helpers/isUserModer'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
 import Events from '@models/Events'
-import EventsTags from '@models/EventsTags'
 import EventsUsers from '@models/EventsUsers'
 // import Histories from '@models/Histories'
 import Payments from '@models/Payments'
@@ -130,7 +129,6 @@ const fetchProps = async (user) => {
     const services = await Services.find({})
     const servicesUsers = await ServicesUsers.find({})
 
-    const eventsTags = await EventsTags.find({})
     // console.timeEnd('Loading time')
     // dbDisconnect()
     // console.log('return result', {
@@ -174,7 +172,6 @@ const fetchProps = async (user) => {
       serverSettings: {
         dateTime: JSON.parse(JSON.stringify(serverDateTime)),
       },
-      eventsTags: JSON.parse(JSON.stringify(eventsTags)),
     }
 
     // console.log('fetchResult', fetchResult)
@@ -198,7 +195,6 @@ const fetchProps = async (user) => {
       serverSettings: {
         dateTime: JSON.parse(JSON.stringify(serverDateTime)),
       },
-      eventsTags: [],
       error: JSON.parse(JSON.stringify(error)),
     }
   }
