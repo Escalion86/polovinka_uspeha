@@ -28,6 +28,7 @@ import ValueItem from '@components/ValuePicker/ValueItem'
 import TextLine from '@components/TextLine'
 import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 
 const eventViewFunc = (eventId) => {
   const EventViewModal = ({
@@ -84,14 +85,17 @@ const eventViewFunc = (eventId) => {
       <div className="flex flex-col gap-y-2">
         <ImageGallery images={event?.images} />
         <div className="flex flex-col flex-1">
-          <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2">
+          <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
+            {isLoggedUserModer && event?.tags.length > 0 && (
+              <EventTagsChipsLine tags={event?.tags} className="flex-1" />
+            )}
             <div className="flex justify-center w-full text-3xl font-bold">
               {event?.title}
             </div>
 
             {/* <p className="flex-1">{event.description}</p> */}
             <div
-              className="w-full max-w-full overflow-hidden list-disc ql textarea"
+              className="w-full max-w-full overflow-hidden list-disc textarea"
               dangerouslySetInnerHTML={{ __html: sanitize(event?.description) }}
             />
             {/* <ContentEditable
