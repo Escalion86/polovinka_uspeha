@@ -8,17 +8,7 @@ import { faCopy, faPaste } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import copyToClipboard from '@helpers/copyToClipboard'
 import pasteFromClipboard from '@helpers/pasteFromClipboard'
-
-function calcLuminance(hex) {
-  if (!hex) return
-  var c = hex.substring(1)
-  var rgb = parseInt(c, 16) // convert rrggbb to decimal
-  var r = (rgb >> 16) & 0xff // extract red
-  var g = (rgb >> 8) & 0xff // extract green
-  var b = (rgb >> 0) & 0xff
-
-  return (r * 0.299 + g * 0.587 + b * 0.114) / 256
-}
+import { textColorClassCalc } from '@helpers/calcLuminance'
 
 const ColorPicker = ({
   label = '',
@@ -56,7 +46,7 @@ const ColorPicker = ({
           <div
             className={cn(
               'cursor-pointer flex justify-center items-center w-full h-[24px] border border-gray-200 rounded-lg mt-1',
-              calcLuminance(value) < 0.5 ? 'text-white' : 'text-black'
+              textColorClassCalc(value)
             )}
             style={{ backgroundColor: value }}
           >
@@ -65,6 +55,7 @@ const ColorPicker = ({
         }
         className="w-full"
         turnOffAutoClose="inside"
+        strategyAbsolute
         // openOnHover
         // menuPadding="lg"
         // menuClassName="w-[222px] h-[300px]"

@@ -50,6 +50,10 @@ const eventsSchema = {
     type: Array,
     default: [],
   },
+  tags: {
+    type: Array,
+    default: [String],
+  },
   organizerId: {
     type: String,
     default: null,

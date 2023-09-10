@@ -15,7 +15,6 @@ import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { getRecoil } from 'recoil-nexus'
 import sanitize from 'sanitize-html'
-import sanitizeCustom from '@helpers/sanitize'
 import CheckBox from '@components/CheckBox'
 
 const getEventMaxParticipants = (event) => {
@@ -25,9 +24,36 @@ const getEventMaxParticipants = (event) => {
   return maxMans && maxWomans ? maxMans + maxWomans : maxParticipants
 }
 
+const formatTextConverter = (text, type) => {
+  if (type === 'telegram')
+    return text
+      .replaceAll('<b>', '**')
+      .replaceAll('</b>', '**')
+      .replaceAll('<i>', '__')
+      .replaceAll('</i>', '__')
+      .replaceAll('<s>', '~~')
+      .replaceAll('</s>', '~~')
+  if (type === 'whatsapp')
+    return text
+      .replaceAll('<b>', '*')
+      .replaceAll('</b>', '*')
+      .replaceAll('<i>', '_')
+      .replaceAll('</i>', '_')
+      .replaceAll('<s>', '~')
+      .replaceAll('</s>', '~')
+  return text
+    .replaceAll('<b>', '')
+    .replaceAll('</b>', '')
+    .replaceAll('<i>', '')
+    .replaceAll('</i>', '')
+    .replaceAll('<s>', '')
+    .replaceAll('</s>', '')
+}
+
 const ToolsTextEventsAnonsContent = () => {
   const [eventsId, setEventsId] = useState([])
   const [text, setText] = useState('')
+  const [showTags, setShowTags] = useState(true)
   const [showDescription, setShowDescription] = useState(true)
   const [showAddress, setShowAddress] = useState(true)
   const [showPrice, setShowPrice] = useState(true)
@@ -47,14 +73,14 @@ const ToolsTextEventsAnonsContent = () => {
       .replaceAll('<li>', '<br>\u{2764} <li>')
       .replaceAll('<p>', '<br><p>'),
     {
-      allowedTags: ['br'],
+      allowedTags: ['br', 'i', 'b'],
       allowedAttributes: {},
     }
   )
 
-  const copyToClipboardText = () => {
+  const copyToClipboardText = (type) => {
     const preparedToCopyText = sanitize(
-      text
+      formatTextConverter(text, type)
         .replaceAll('<p><br></p>', '\n')
         .replaceAll('<blockquote>', '\n<blockquote>')
         .replaceAll('<li>', '\n\u{2764} <li>')
@@ -86,36 +112,47 @@ const ToolsTextEventsAnonsContent = () => {
     const elementOfTextArray = []
     const eventId = eventsId[i]
     const event = events.find((event) => event._id === eventId)
+
     elementOfTextArray.push(
       `\u{1F4C5} ${formatEventDateTime(event, {
         fullWeek: true,
         weekInBrackets: true,
       }).toUpperCase()}`
     )
-    elementOfTextArray.push(`"${event.title.toUpperCase()}"`)
+    elementOfTextArray.push(`<b>"${event.title.toUpperCase()}"</b>`)
+    if (showTags && event.tags?.length > 0) {
+      elementOfTextArray.push(`#${event.tags.join(' #')}`)
+    }
 
     if (showDescription) {
-      elementOfTextArray.push(`${event.description}`)
+      elementOfTextArray.push(`<i>${event.description}</i>`)
       elementOfTextArray.push(``)
     }
 
     if (showAddress) {
       const address = formatAddress(event.address)
       if (address) {
-        elementOfTextArray.push('\u{1F4CD} Место проведения:')
+        elementOfTextArray.push('\u{1F4CD} <b>Место проведения</b>:')
         elementOfTextArray.push(formatAddress(event.address))
       }
     }
 
     if (showPrice)
-      elementOfTextArray.push(`\u{1F4B0} Стоимость: ${event.price / 100} руб`)
+      elementOfTextArray.push(
+        `\u{1F4B0} <b>Стоимость</b>: ${event.price / 100} руб`
+      )
 
     if (showParticipantsCount) {
       const maxParticipants = getEventMaxParticipants(event)
       if (maxParticipants) {
         const assistants = getRecoil(eventAssistantsSelector(event._id))
         elementOfTextArray.push(
-          `\u{1F465} Количество участников: ${maxParticipants} человек${
+          `\u{1F465} <b>Количество участников</b>: ${getNoun(
+            maxParticipants,
+            'человек',
+            'человека',
+            'человек'
+          )}${
             assistants?.length > 0
               ? ` + ${getNoun(
                   assistants.length,
@@ -169,6 +206,11 @@ const ToolsTextEventsAnonsContent = () => {
         }}
       />
       <CheckBox
+        checked={showTags}
+        onClick={() => setShowTags((checked) => !checked)}
+        label="Показывать тэги мероприятия"
+      />
+      <CheckBox
         checked={showDescription}
         onClick={() => setShowDescription((checked) => !checked)}
         label="Показывать описание"
@@ -193,7 +235,20 @@ const ToolsTextEventsAnonsContent = () => {
         onClick={() => setShowLink((checked) => !checked)}
         label="Показывать ссылку"
       />
-      <Button name="Скопировать текст" onClick={copyToClipboardText} />
+      <div className="flex flex-wrap gap-x-2 gap-y-1">
+        <Button
+          name="Скопировать текст для телеграм"
+          onClick={() => copyToClipboardText('telegram')}
+        />
+        <Button
+          name="Скопировать текст для whatsapp"
+          onClick={() => copyToClipboardText('whatsapp')}
+        />
+        <Button
+          name="Скопировать текст без форматирования"
+          onClick={copyToClipboardText}
+        />
+      </div>
       {/* <EditableTextarea
         label="Текст"
         html={text}

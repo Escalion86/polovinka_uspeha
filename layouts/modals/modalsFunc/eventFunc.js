@@ -40,6 +40,7 @@ import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleBu
 import SvgSigma from 'svg/SvgSigma'
 import InputWrapper from '@components/InputWrapper'
 import isObject from '@helpers/isObject'
+import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -72,6 +73,9 @@ const eventFunc = (eventId, clone = false) => {
     const [description, setDescription] = useState(
       event?.description ?? DEFAULT_EVENT.description
     )
+
+    const defaultTags = useMemo(() => event?.tags ?? [], [])
+    const [tags, setTags] = useState(defaultTags)
 
     const defaultDateStart = useMemo(
       () => event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000,
@@ -197,6 +201,7 @@ const eventFunc = (eventId, clone = false) => {
         organizerId,
         dateStart,
         dateEnd,
+        tags,
       })
       if (getDiffBetweenDates(dateStart, dateEnd) < 0) {
         addError({
@@ -213,6 +218,7 @@ const eventFunc = (eventId, clone = false) => {
             images,
             title: title.trim(),
             description,
+            tags,
             showOnSite,
             dateStart,
             dateEnd,
@@ -249,6 +255,7 @@ const eventFunc = (eventId, clone = false) => {
       const isFormChanged =
         event?.title !== title ||
         event?.description !== description ||
+        !compareArrays(event?.tags, tags) ||
         event?.showOnSite !== showOnSite ||
         dateStart !== defaultDateStart ||
         dateEnd !== defaultDateEnd ||
@@ -282,13 +289,14 @@ const eventFunc = (eventId, clone = false) => {
         !compareArrays(event?.reportImages, reportImages) ||
         event?.warning !== warning
 
-      setOnConfirmFunc(onClickConfirm)
+      // setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(onClickConfirm)
     }, [
       title,
       description,
+      tags,
       showOnSite,
       dateStart,
       dateEnd,
@@ -399,6 +407,18 @@ const eventFunc = (eventId, clone = false) => {
               placeholder="Описание мероприятия..."
               required
               error={errors.description}
+            />
+            <EventTagsChipsSelector
+              tags={tags}
+              onChange={(value) => {
+                removeError('tags')
+                setTags(value)
+              }}
+              canEditChips
+              required
+              error={errors.tags}
+              // readOnly
+              // className
             />
             {/* <FormWrapper twoColumns> */}
             <FormRow className="flex-wrap">

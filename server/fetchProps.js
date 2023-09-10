@@ -128,6 +128,7 @@ const fetchProps = async (user) => {
 
     const services = await Services.find({})
     const servicesUsers = await ServicesUsers.find({})
+
     // console.timeEnd('Loading time')
     // dbDisconnect()
     // console.log('return result', {
@@ -172,7 +173,6 @@ const fetchProps = async (user) => {
         dateTime: JSON.parse(JSON.stringify(serverDateTime)),
       },
     }
-    console.log(6)
 
     // console.log('fetchResult', fetchResult)
 
