@@ -108,12 +108,12 @@ const EventCard = ({
         )}
 
         {eventStatus === 'canceled' && (
-          <div className="absolute text-3xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
+          <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
             Отменено
           </div>
         )}
         {['finished', 'closed'].includes(eventStatus) && (
-          <div className="absolute text-3xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-success left-1/2 rotate-15 border-success shadow-white2">
+          <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-success left-1/2 rotate-15 border-success shadow-white2">
             Завершено
           </div>
         )}
