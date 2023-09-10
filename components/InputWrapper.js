@@ -72,6 +72,7 @@ const InputWrapper = forwardRef(
       noMargin = false,
       centerLabel = false,
       showDisabledIcon = true,
+      ...props
     },
     ref
   ) => {
@@ -79,7 +80,7 @@ const InputWrapper = forwardRef(
     return (
       <div
         className={cn(
-          'relative flex items-center min-h-[44.4px]',
+          'relative flex items-center min-h-[40px] tablet:min-h-[44.4px]',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
           noMargin ? '' : 'mt-3.5 mb-1',
           noBorder
@@ -100,10 +101,11 @@ const InputWrapper = forwardRef(
           className
         )}
         ref={ref}
+        {...props}
       >
         <div
           className={cn(
-            'relative flex w-full min-h-[27.2px]',
+            'relative flex w-full min-h-[24px] tablet:min-h-[28px]',
             wrapperClassName,
             disabled ? 'cursor-not-allowed' : ''
           )}

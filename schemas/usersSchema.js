@@ -119,6 +119,10 @@ const usersSchema = {
     type: Boolean,
     default: null,
   },
+  interests: {
+    type: [String],
+    default: [],
+  },
   security: {
     type: Map,
     // of: Any,

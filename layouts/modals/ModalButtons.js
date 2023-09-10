@@ -21,7 +21,6 @@ const ModalButtons = ({
   bottomLeftComponent,
 }) => {
   if (!showConfirm && !showDecline && !closeButtonShow) return null
-  console.log('showConfirm :>> ', showConfirm)
   return (
     <>
       <Divider light thin />

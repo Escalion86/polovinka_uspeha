@@ -18,7 +18,7 @@ import eventPriceByStatus from '@helpers/eventPriceByStatus'
 const TextStatus = ({ children, className }) => (
   <div
     className={cn(
-      'flex justify-center items-center text-base tablet:text-lg font-bold uppercase px-1',
+      'flex justify-center items-center text-base tablet:text-lg font-bold uppercase px-1 whitespace-nowrap',
       className
     )}
   >

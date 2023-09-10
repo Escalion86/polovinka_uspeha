@@ -40,7 +40,7 @@ import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleBu
 import SvgSigma from 'svg/SvgSigma'
 import InputWrapper from '@components/InputWrapper'
 import isObject from '@helpers/isObject'
-import EventTagsChipsSelector from '@components/ChipsSelector/EventTagsChipsSelector'
+import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -201,6 +201,7 @@ const eventFunc = (eventId, clone = false) => {
         organizerId,
         dateStart,
         dateEnd,
+        tags,
       })
       if (getDiffBetweenDates(dateStart, dateEnd) < 0) {
         addError({
@@ -332,8 +333,6 @@ const eventFunc = (eventId, clone = false) => {
       warning,
     ])
 
-    console.log('tags :>> ', tags)
-
     const handleFocus = (event) => event.target.select()
 
     useEffect(() => {
@@ -411,11 +410,14 @@ const eventFunc = (eventId, clone = false) => {
             />
             <EventTagsChipsSelector
               tags={tags}
-              onChange={setTags}
+              onChange={(value) => {
+                removeError('tags')
+                setTags(value)
+              }}
               canEditChips
               required
+              error={errors.tags}
               // readOnly
-              // noWrapper
               // className
             />
             {/* <FormWrapper twoColumns> */}

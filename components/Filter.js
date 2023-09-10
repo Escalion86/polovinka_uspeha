@@ -18,6 +18,8 @@ import { Check } from '@mui/icons-material'
 
 import { getNounDirections } from '@helpers/getNoun'
 import { motion } from 'framer-motion'
+import EventTagsChipsSelector from './Chips/EventTagsChipsSelector'
+import ChipsSelector from './Chips/ChipsSelector'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -30,15 +32,16 @@ const MenuProps = {
   },
 }
 
-const Filter = ({ options, show, onChange }) => {
+const Filter = ({ options, show, onChange, filterOptions }) => {
   const onChangeFilter = (key, newValue) => {
     onChange((state) => {
       return { ...state, [key]: newValue }
     })
   }
 
-  const elements = Object.entries(options).map(
-    ([key, { type, value, name, items }]) => {
+  const elements = Object.entries(options)
+    .filter(([key, { type, value, name, items }]) => type !== 'directions')
+    .map(([key, { type, value, name, items }]) => {
       const [componentValue, setComponentValue] = useState(value)
       const onChangeComponent = (key, newValue) => {
         setComponentValue(newValue)
@@ -60,58 +63,69 @@ const Filter = ({ options, show, onChange }) => {
             </ToggleButton>
           </FormControl>
         )
-      } else if (type === 'directions') {
-        const directions = useRecoilValue(directionsAtom)
+      } else if (type === 'tags') {
         return (
           <FormControl
-            sx={{ m: 1, width: 300 }}
             size="small"
-            margin="none"
+            className="max-w-full min-w-full px-1"
             key={key}
           >
-            <InputLabel id="demo-multiple-name-label">Направления</InputLabel>
-            <Select
-              labelId="demo-multiple-name-label"
-              id="demo-multiple-name"
-              multiple
-              value={componentValue}
-              onChange={(e) => onChangeComponent(key, e.target.value)}
-              input={<OutlinedInput label="Направления" />}
-              renderValue={(selected) =>
-                selected.length === directions.length
-                  ? 'Все'
-                  : selected.length === 1
-                  ? directions.find(
-                      (direction) => direction._id === selected[0]
-                    ).title
-                  : getNounDirections(selected.length)
-              }
-              MenuProps={MenuProps}
-            >
-              {directions.map((direction) => (
-                <MenuItem
-                  sx={{ padding: 0 }}
-                  key={direction._id}
-                  value={direction._id}
-                >
-                  <Checkbox
-                    checked={componentValue.indexOf(direction._id) > -1}
-                  />
-                  <ListItemText primary={direction.title} size="small" />
-                  {/* {item.title} */}
-                </MenuItem>
-              ))}
-            </Select>
+            <ChipsSelector
+              label="Тэги"
+              items={items}
+              onChange={(tags) => onChangeComponent(key, tags)}
+              value={filterOptions.tags}
+              canEditChips={false}
+              // noWrapper={false}
+              placeholder="Показывать все тэги"
+              noMargin
+              className="mt-2 mb-1"
+              // className={className}
+            />
           </FormControl>
         )
+        // } else if (type === 'directions') {
+        //   const directions = useRecoilValue(directionsAtom)
+        //   return (
+        //     <FormControl sx={{ width: 300 }} size="small" margin="none" key={key}>
+        //       <InputLabel id="demo-multiple-name-label">Направления</InputLabel>
+        //       <Select
+        //         labelId="demo-multiple-name-label"
+        //         id="demo-multiple-name"
+        //         multiple
+        //         value={componentValue}
+        //         onChange={(e) => onChangeComponent(key, e.target.value)}
+        //         input={<OutlinedInput label="Направления" />}
+        //         renderValue={(selected) =>
+        //           selected.length === directions.length
+        //             ? 'Все'
+        //             : selected.length === 1
+        //             ? directions.find(
+        //                 (direction) => direction._id === selected[0]
+        //               ).title
+        //             : getNounDirections(selected.length)
+        //         }
+        //         MenuProps={MenuProps}
+        //       >
+        //         {directions.map((direction) => (
+        //           <MenuItem
+        //             sx={{ padding: 0 }}
+        //             key={direction._id}
+        //             value={direction._id}
+        //           >
+        //             <Checkbox
+        //               checked={componentValue.indexOf(direction._id) > -1}
+        //             />
+        //             <ListItemText primary={direction.title} size="small" />
+        //             {/* {item.title} */}
+        //           </MenuItem>
+        //         ))}
+        //       </Select>
+        //     </FormControl>
+        //   )
       } else if (type === 'multiselect') {
         return (
-          <FormControl
-            sx={{ m: 1, width: 300 }}
-            size="small"
-            margin="none"
-            key={key}
-          >
+          <FormControl sx={{ width: 300 }} size="small" margin="none" key={key}>
             <InputLabel id="demo-multiple-name-label">{name}</InputLabel>
             <Select
               labelId="demo-multiple-name-label"
@@ -135,19 +149,18 @@ const Filter = ({ options, show, onChange }) => {
             </Select>
           </FormControl>
         )
-      }
-    }
-  )
+      } else return null
+    })
 
   return (
     <motion.div
       // initial={{}}
       animate={{ height: show ? 'auto' : 0 }}
       transition={{ type: 'just' }}
-      className="flex flex-wrap justify-end overflow-hidden bg-gray-100"
+      className="flex flex-wrap justify-end w-full px-1 overflow-hidden"
     >
-      <div>
-        {/* <button
+      {/* <div> */}
+      {/* <button
     className={cn(
       'hover:shadow-active duration-300  flex items-center justify-center h-10 px-2 py-1 text-black border border-gray-400 rounded',
       showFinished ? 'bg-green-200' : 'bg-white'
@@ -161,8 +174,8 @@ const Filter = ({ options, show, onChange }) => {
     Показывать завершенные
     <FontAwesomeIcon icon={icon} className={iconClassName ?? 'w-5 h-5'} />
   </button> */}
-        {elements}
-      </div>
+      {elements}
+      {/* </div> */}
     </motion.div>
   )
 }

@@ -28,6 +28,7 @@ import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton
 import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
 import EventParticipantToggleButtons from '@components/IconToggleButtons/EventParticipantToggleButtons'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
 const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
@@ -39,6 +40,8 @@ const EventsContent = () => {
   const eventsOfUser = useRecoilValue(
     eventsUsersByUserIdSelector(loggedUser._id)
   )
+  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const eventsTags = siteSettings.eventsTags ?? []
   // const windowWidthNum = useWindowDimensionsTailwindNum()
 
   const [isSearching, setIsSearching] = useState(false)
@@ -75,9 +78,16 @@ const EventsContent = () => {
 
   const [filterOptions, setFilterOptions] = useState({
     directions: directionsIds,
+    tags: [],
   })
 
   const options = {
+    tags: {
+      type: 'tags',
+      value: [],
+      name: 'Тэги',
+      items: eventsTags,
+    },
     directions: {
       type: 'directions',
       value: directionsIds,
@@ -117,7 +127,14 @@ const EventsContent = () => {
         const isEventActive = isEventActiveFunc(event)
         const isEventCanceled = isEventCanceledFunc(event)
         const isEventClosed = isEventClosedFunc(event)
+        const haveEventTag =
+          filterOptions.tags?.length === 0
+            ? true
+            : event.tags
+            ? event.tags.find((tag) => filterOptions.tags.includes(tag))
+            : false
         return (
+          haveEventTag &&
           ((isEventClosed && !isLoggedUserModer && filter.status.finished) ||
             (isEventClosed && isLoggedUserModer && filter.status.closed) ||
             (isEventActive && filter.status.finished && isEventExpired) ||
@@ -131,7 +148,7 @@ const EventsContent = () => {
             : filter.participant?.notParticipant)
         )
       }),
-    [searchedEvents, filter, filterOptions.directions.length]
+    [searchedEvents, filter, filterOptions]
   )
 
   const filteredAndSortedEvents = useMemo(
@@ -139,7 +156,9 @@ const EventsContent = () => {
     [visibleEvents, sort]
   )
 
-  const isFiltered = filterOptions.directions.length !== directions.length
+  const isFiltered =
+    filterOptions.directions.length !== directions.length ||
+    filterOptions.tags.length > 0
 
   return (
     <>
@@ -184,12 +203,14 @@ const EventsContent = () => {
             onChange={setSort}
             sortKeys={['dateStart']}
           />
-          <FilterToggleButton
-            value={isFiltered}
-            onChange={() => {
-              setShowFilter((state) => !state)
-            }}
-          />
+          {isLoggedUserModer && (
+            <FilterToggleButton
+              value={isFiltered}
+              onChange={() => {
+                setShowFilter((state) => !state)
+              }}
+            />
+          )}
           <SearchToggleButton
             value={isSearching}
             onChange={() => {
@@ -221,9 +242,20 @@ const EventsContent = () => {
         onChange={setSearchText}
         className="mx-1 bg-gray-100"
       />
-      <Filter show={showFilter} options={options} onChange={setFilterOptions} />
+      <Filter
+        show={showFilter}
+        options={options}
+        onChange={setFilterOptions}
+        filterOptions={filterOptions}
+      />
       {/* <CardListWrapper> */}
-      <EventsList events={filteredAndSortedEvents} />
+      <EventsList
+        events={filteredAndSortedEvents}
+        onTagClick={(tag) => {
+          setFilterOptions((state) => ({ ...state, tags: [tag] }))
+          setShowFilter(true)
+        }}
+      />
       {/* <div className="flex-1 w-full bg-opacity-15 bg-general">
         <AutoSizer>
           {({ height, width }) => (

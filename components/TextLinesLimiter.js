@@ -1,18 +1,28 @@
 import React from 'react'
 import cn from 'classnames'
 
-const TextLinesLimiter = ({ className, lines = 1, children, ...props }) => {
+const TextLinesLimiter = ({
+  className,
+  textClassName,
+  lines = 1,
+  children,
+  ...props
+}) => {
   return (
-    <div
-      className={cn('overflow-hidden', className)}
-      style={{
-        display: '-webkit-box',
-        WebkitBoxOrient: 'vertical',
-        WebkitLineClamp: lines,
-      }}
-      {...props}
-    >
-      {children}
+    <div className={className}>
+      <div className="flex items-center w-full h-full">
+        <div
+          className={cn('w-full overflow-hidden', textClassName)}
+          style={{
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: lines,
+          }}
+          {...props}
+        >
+          {children}
+        </div>
+      </div>
     </div>
   )
 }

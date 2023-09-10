@@ -39,7 +39,7 @@ import upperCaseFirst from '@helpers/upperCaseFirst'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
-import EventTagsChipsSelector from '@components/ChipsSelector/EventTagsChipsSelector'
+import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -72,12 +72,7 @@ const QuestionnaireContent = (props) => {
     loggedUser?.thirdName ?? DEFAULT_USER.thirdName
   )
 
-  const [interests, setInterests] = useState([
-    'поход',
-    'природа',
-    'настолки',
-    'прогулка',
-  ])
+  const [interests, setInterests] = useState(loggedUser?.interests ?? [])
   // const [about, setAbout] = useState(user?.about ?? '')
   // const [interests, setInterests] = useState(user?.interests ?? '')
   // const [profession, setProfession] = useState(user?.profession ?? '')
@@ -188,6 +183,7 @@ const QuestionnaireContent = (props) => {
     !compareArrays(loggedUser?.images, images) ||
     loggedUser?.birthday !== birthday ||
     loggedUser?.haveKids !== haveKids ||
+    !compareObjects(loggedUser?.interests ?? [], interests) ||
     !compareObjects(loggedUser?.security, security) ||
     loggedUser?.status !== status ||
     loggedUser?.role !== role ||
@@ -239,6 +235,7 @@ const QuestionnaireContent = (props) => {
           images,
           birthday,
           haveKids,
+          interests,
           security,
           status,
           role,
@@ -570,12 +567,12 @@ const QuestionnaireContent = (props) => {
               />
             </ShowWrapper>
             <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
-            {isLoggedUserDev && (
-              <EventTagsChipsSelector
-                onChange={setInterests}
-                tags={interests}
-              />
-            )}
+            <EventTagsChipsSelector
+              placeholder="Выберите хотя бы несколько интересов"
+              label="Интересы"
+              onChange={setInterests}
+              tags={interests}
+            />
           </FormWrapper>
           {/* {isLoggedUserDev && (
             <ValueItem

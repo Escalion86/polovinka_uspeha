@@ -134,7 +134,7 @@ const CardButtons = ({
   const isCompact =
     alwaysCompact ||
     ((numberOfButtons > 3 || alwaysCompactOnPhone) &&
-      (device === 'phoneV' || device === 'phoneH'))
+      (device === 'phoneV' || device === 'phoneH' || device === 'tablet'))
 
   const ItemComponent = isCompact ? MenuItem : CardButton
 
