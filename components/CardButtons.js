@@ -102,10 +102,11 @@ const CardButtons = ({
     upBtn: !forForm && isLoggedUserAdmin && onUpClick,
     downBtn: !forForm && isLoggedUserAdmin && onDownClick,
     editBtn:
-      isLoggedUserModer &&
-      showEditButton &&
-      (typeOfItem !== 'event' || item.status !== 'closed') &&
-      (typeOfItem !== 'serviceUser' || item.status !== 'closed'),
+      isLoggedUserDev ||
+      (isLoggedUserModer &&
+        showEditButton &&
+        (typeOfItem !== 'event' || item.status !== 'closed') &&
+        (typeOfItem !== 'serviceUser' || item.status !== 'closed')),
     cloneBtn:
       isLoggedUserModer && typeOfItem !== 'user' && typeOfItem !== 'review',
     showOnSiteBtn: isLoggedUserModer && showOnSiteOnClick,
