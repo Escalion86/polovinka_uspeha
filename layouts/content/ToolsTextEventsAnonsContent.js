@@ -16,6 +16,7 @@ import { useRecoilValue } from 'recoil'
 import { getRecoil } from 'recoil-nexus'
 import sanitize from 'sanitize-html'
 import CheckBox from '@components/CheckBox'
+import RadioBox from '@components/RadioBox'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
@@ -50,51 +51,19 @@ const formatTextConverter = (text, type) => {
     .replaceAll('</s>', '')
 }
 
-const ToolsTextEventsAnonsContent = () => {
-  const [eventsId, setEventsId] = useState([])
-  const [text, setText] = useState('')
-  const [showTags, setShowTags] = useState(true)
-  const [showDescription, setShowDescription] = useState(true)
-  const [showAddress, setShowAddress] = useState(true)
-  const [showPrice, setShowPrice] = useState(true)
-  const [showParticipantsCount, setShowParticipantsCount] = useState(true)
-  const [showLink, setShowLink] = useState(true)
-  const events = useRecoilValue(eventsAtom)
-
-  const [socialTag, setSocialTag] = useState(null)
-  const [customTag, setCustomTag] = useState('')
-
-  const { info } = useSnackbar()
-
-  const cleanedUpText = sanitize(
-    text
-      .replaceAll('<p><br></p>', '<br>')
-      .replaceAll('<blockquote>', '<br><blockquote>')
-      .replaceAll('<li>', '<br>\u{2764} <li>')
-      .replaceAll('<p>', '<br><p>'),
-    {
-      allowedTags: ['br', 'i', 'b'],
-      allowedAttributes: {},
-    }
-  )
-
-  const copyToClipboardText = (type) => {
-    const preparedToCopyText = sanitize(
-      formatTextConverter(text, type)
-        .replaceAll('<p><br></p>', '\n')
-        .replaceAll('<blockquote>', '\n<blockquote>')
-        .replaceAll('<li>', '\n\u{2764} <li>')
-        .replaceAll('<p>', '\n<p>')
-        .replaceAll('<br>', '\n'),
-      {
-        allowedTags: [],
-        allowedAttributes: {},
-      }
-    )
-    copyToClipboard(preparedToCopyText)
-    info('Текст скопирован в буфер обмена')
-  }
-
+const textForming = ({
+  eventsId,
+  events,
+  socialTag,
+  customTag,
+  showTags,
+  showDescription,
+  showAddress,
+  showPrice,
+  showParticipantsCount,
+  showLink,
+  noSlashedPrice,
+}) => {
   const tagsStringify = () => {
     const tags = []
     if (socialTag) tags.push('soctag=' + socialTag.toLocaleLowerCase())
@@ -137,10 +106,39 @@ const ToolsTextEventsAnonsContent = () => {
       }
     }
 
-    if (showPrice)
-      elementOfTextArray.push(
-        `\u{1F4B0} <b>Стоимость</b>: ${event.price / 100} руб`
-      )
+    if (showPrice) {
+      const eventPrice = event.price / 100
+      if (showPrice === 'member') {
+        const eventPriceForMember =
+          (event.price -
+            (event.usersStatusDiscount
+              ? event.usersStatusDiscount['member']
+              : 0)) /
+          100
+        elementOfTextArray.push(
+          `\u{1F4B0} <b>Стоимость</b>: ${
+            !noSlashedPrice && eventPriceForMember !== eventPrice
+              ? `<s>${eventPrice}</s> `
+              : ''
+          }${eventPriceForMember} руб`
+        )
+      }
+      if (showPrice === 'novice') {
+        const eventPriceForNovice =
+          (event.price -
+            (event.usersStatusDiscount
+              ? event.usersStatusDiscount['novice']
+              : 0)) /
+          100
+        elementOfTextArray.push(
+          `\u{1F4B0} <b>Стоимость</b>: ${
+            !noSlashedPrice && eventPriceForNovice !== eventPrice
+              ? `<s>${eventPrice}</s> `
+              : ''
+          }${eventPriceForNovice} руб`
+        )
+      }
+    }
 
     if (showParticipantsCount) {
       const maxParticipants = getEventMaxParticipants(event)
@@ -178,7 +176,71 @@ const ToolsTextEventsAnonsContent = () => {
     textArray.push(elementOfTextArray.join('<br>'))
   }
 
-  const tempText = textArray.join('<br><br><br>')
+  return textArray.join('<br><br><br>')
+}
+
+const ToolsTextEventsAnonsContent = () => {
+  const [eventsId, setEventsId] = useState([])
+  const [text, setText] = useState('')
+  const [showTags, setShowTags] = useState(true)
+  const [showDescription, setShowDescription] = useState(true)
+  const [showAddress, setShowAddress] = useState(true)
+  const [showPrice, setShowPrice] = useState('novice')
+  const [showParticipantsCount, setShowParticipantsCount] = useState(true)
+  const [showLink, setShowLink] = useState(true)
+  const events = useRecoilValue(eventsAtom)
+
+  const [socialTag, setSocialTag] = useState(null)
+  const [customTag, setCustomTag] = useState('')
+
+  const { info } = useSnackbar()
+
+  const textFormatingProps = {
+    eventsId,
+    events,
+    socialTag,
+    customTag,
+    showTags,
+    showDescription,
+    showAddress,
+    showPrice,
+    showParticipantsCount,
+    showLink,
+  }
+
+  const cleanedUpText = sanitize(
+    text
+      .replaceAll('<p><br></p>', '<br>')
+      .replaceAll('<blockquote>', '<br><blockquote>')
+      .replaceAll('<li>', '<br>\u{2764} <li>')
+      .replaceAll('<p>', '<br><p>'),
+    {
+      allowedTags: ['br', 'i', 'b', 's'],
+      allowedAttributes: {},
+    }
+  )
+
+  const copyToClipboardText = (type) => {
+    const preparedToCopyText = sanitize(
+      formatTextConverter(
+        textForming({ ...textFormatingProps, noSlashedPrice: !type }),
+        type
+      )
+        .replaceAll('<p><br></p>', '\n')
+        .replaceAll('<blockquote>', '\n<blockquote>')
+        .replaceAll('<li>', '\n\u{2764} <li>')
+        .replaceAll('<p>', '\n<p>')
+        .replaceAll('<br>', '\n'),
+      {
+        allowedTags: [],
+        allowedAttributes: {},
+      }
+    )
+    copyToClipboard(preparedToCopyText)
+    info('Текст скопирован в буфер обмена')
+  }
+
+  const tempText = textForming(textFormatingProps)
 
   useEffect(() => {
     setText(tempText)
@@ -220,11 +282,23 @@ const ToolsTextEventsAnonsContent = () => {
         onClick={() => setShowAddress((checked) => !checked)}
         label="Показывать адрес"
       />
-      <CheckBox
-        checked={showPrice}
-        onClick={() => setShowPrice((checked) => !checked)}
-        label="Показывать цену"
-      />
+      <div>
+        <RadioBox
+          checked={!showPrice}
+          onClick={() => setShowPrice(false)}
+          label="Не показывать"
+        />
+        <RadioBox
+          checked={showPrice === 'novice'}
+          onClick={() => setShowPrice('novice')}
+          label="Показывать цену центра"
+        />
+        <RadioBox
+          checked={showPrice === 'member'}
+          onClick={() => setShowPrice('member')}
+          label="Показывать цену члена клуба"
+        />
+      </div>
       <CheckBox
         checked={showParticipantsCount}
         onClick={() => setShowParticipantsCount((checked) => !checked)}
