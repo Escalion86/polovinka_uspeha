@@ -63,16 +63,23 @@ export const CardWrapper = ({
             </div>
           )}
           {loading && !error && (
-            <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center bg-general bg-opacity-80">
+            <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex items-center justify-center bg-general bg-opacity-80">
               <LoadingSpinner />
             </div>
           )}
-          {!showOnSite && (device === 'phoneV' || device === 'phoneH') && (
-            <FontAwesomeIcon
-              icon={faEyeSlash}
-              className="absolute z-10 w-8 h-8 p-1 text-purple-500 bg-white rounded-full top-2 left-2 "
-            />
-          )}
+          {!showOnSite &&
+            (device === 'phoneV' ||
+              device === 'phoneH' ||
+              device == 'tablet') && (
+              <div className="absolute top-0 left-0 z-10 w-12 h-12 overflow-hidden">
+                <div className="absolute w-24 h-24 pb-1 pr-1 bg-purple-500 rounded-full pt-[54px] pl-[54px] -left-12 -top-12">
+                  <FontAwesomeIcon
+                    className="text-white w-7 h-7"
+                    icon={faEyeSlash}
+                  />
+                </div>
+              </div>
+            )}
           {children}
         </div>
       </div>
