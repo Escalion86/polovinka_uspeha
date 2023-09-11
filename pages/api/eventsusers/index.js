@@ -212,6 +212,7 @@ const telegramNotification = async ({
       .filter(
         (user) =>
           isUserModer(user) &&
+          user.notifications?.settings?.eventRegistration &&
           user.notifications?.get('telegram').active &&
           user.notifications?.get('telegram')?.id
       )

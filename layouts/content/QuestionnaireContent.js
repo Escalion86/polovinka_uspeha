@@ -40,6 +40,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
+import CheckBox from '@components/CheckBox'
+import InputWrapper from '@components/InputWrapper'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -139,6 +141,15 @@ const QuestionnaireContent = (props) => {
     loggedUser?.notifications ?? DEFAULT_USER.notifications
   )
 
+  const toggleNotificationsSettings = (key) =>
+    setNotifications((state) => ({
+      ...state,
+      settings: {
+        ...notifications?.settings,
+        [key]: notifications?.settings ? !notifications?.settings[key] : true,
+      },
+    }))
+
   const [status, setStatus] = useState(
     loggedUser?.status ?? DEFAULT_USER.status
   )
@@ -187,10 +198,7 @@ const QuestionnaireContent = (props) => {
     !compareObjects(loggedUser?.security, security) ||
     loggedUser?.status !== status ||
     loggedUser?.role !== role ||
-    loggedUser?.notifications?.telegram?.userName !==
-      notifications?.telegram?.userName ||
-    loggedUser?.notifications?.telegram?.active !==
-      notifications?.telegram?.active
+    !compareObjects(loggedUser?.notifications, notifications)
 
   const onClickConfirm = async () => {
     if (notifications?.telegram?.active && !notifications?.telegram?.userName) {
@@ -567,12 +575,6 @@ const QuestionnaireContent = (props) => {
               />
             </ShowWrapper>
             <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
-            <EventTagsChipsSelector
-              placeholder="Выберите хотя бы несколько интересов"
-              label="Интересы"
-              onChange={setInterests}
-              tags={interests}
-            />
           </FormWrapper>
           {/* {isLoggedUserDev && (
             <ValueItem
@@ -711,7 +713,7 @@ const QuestionnaireContent = (props) => {
               // inLine
               value={notifications?.telegram?.active ?? false}
               onChange={() => {
-                removeError('notificationTelegramUserName')
+                // removeError('notificationTelegramUserName')
                 setNotifications((state) => ({
                   ...state,
                   telegram: {
@@ -758,7 +760,18 @@ const QuestionnaireContent = (props) => {
                         color="red-500"
                         icon={faBan}
                         hoverable
-                        // onClick={() => modalsFunc.notifications.telegram()}
+                        onClick={() =>
+                          modalsFunc.notifications.telegram.deactivate(() => {
+                            setNotifications((state) => ({
+                              ...state,
+                              telegram: {
+                                active: false,
+                                userName: undefined,
+                                id: undefined,
+                              },
+                            }))
+                          })
+                        }
                       />
                     </>
                   ) : (
@@ -769,12 +782,48 @@ const QuestionnaireContent = (props) => {
                         color="green-500"
                         icon={faCheck}
                         hoverable
-                        onClick={() => modalsFunc.notifications.telegram()}
+                        onClick={() =>
+                          modalsFunc.notifications.telegram.activate()
+                        }
                       />
                     </>
                   )}
                 </div>
               </>
+            )}
+            <InputWrapper
+              label="Только для модераторов и администраторов"
+              className=""
+            >
+              <div className="w-full">
+                <CheckBox
+                  checked={notifications.settings?.newUserRegistred}
+                  onClick={() => {
+                    toggleNotificationsSettings('newUserRegistred')
+                  }}
+                  label="Регистрации нового пользователя"
+                />
+                <CheckBox
+                  checked={notifications.settings?.eventRegistration}
+                  onClick={() =>
+                    toggleNotificationsSettings('eventRegistration')
+                  }
+                  label="Запись/отписка пользователей на мероприитиях"
+                />
+              </div>
+            </InputWrapper>
+            <CheckBox
+              checked={notifications.settings?.newEventsByTags}
+              onClick={() => toggleNotificationsSettings('newEventsByTags')}
+              label="Новые мероприятия по моим интересам (тэгам)"
+            />
+            {notifications.settings?.newEventsByTags && (
+              <EventTagsChipsSelector
+                placeholder="Мне интересно всё!"
+                label="Интересы"
+                onChange={setInterests}
+                tags={interests}
+              />
             )}
           </TabPanel>
         )}

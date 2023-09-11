@@ -423,6 +423,7 @@ export default async function handler(Schema, req, res, params = null) {
               .filter(
                 (user) =>
                   isUserAdmin(user) &&
+                  user.notifications?.settings?.newUserRegistred &&
                   user.notifications?.get('telegram').active &&
                   user.notifications?.get('telegram')?.id
               )
