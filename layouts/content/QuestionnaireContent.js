@@ -791,6 +791,9 @@ const QuestionnaireContent = (props) => {
                 </div>
               </>
             )}
+            <p className="my-3 text-lg font-bold leading-4">
+              Ниже укажите события о которых Вы хотите получать оповещения
+            </p>
             <InputWrapper
               label="Только для модераторов и администраторов"
               className=""
@@ -815,7 +818,7 @@ const QuestionnaireContent = (props) => {
             <CheckBox
               checked={notifications.settings?.newEventsByTags}
               onClick={() => toggleNotificationsSettings('newEventsByTags')}
-              label="Новые мероприятия по моим интересам (тэгам)"
+              label="Новые мероприятия по интересам (тэгам мероприятий)"
             />
             {notifications.settings?.newEventsByTags && (
               <EventTagsChipsSelector
@@ -825,6 +828,16 @@ const QuestionnaireContent = (props) => {
                 tags={interests}
               />
             )}
+            <CheckBox
+              checked={notifications.settings?.eventUserMoves}
+              onClick={() => toggleNotificationsSettings('eventUserMoves')}
+              label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
+            />
+            <CheckBox
+              checked={notifications.settings?.eventCancel}
+              onClick={() => toggleNotificationsSettings('eventCancel')}
+              label="Отмена мероприятия на которое я записан"
+            />
           </TabPanel>
         )}
       </TabContext>

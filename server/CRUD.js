@@ -3,13 +3,14 @@ import { postData } from '@helpers/CRUD'
 import formatAddress from '@helpers/formatAddress'
 // import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
-import isUserAdmin from '@helpers/isUserAdmin'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import Events from '@models/Events'
 import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 import sanitize from 'sanitize-html'
+import sendTelegramMessage from './sendTelegramMessage'
+import isUserModer from '@helpers/isUserModer'
 
 const linkAReformer = (link) => {
   const textLink = link.substring(link.indexOf('>') + 1, link.lastIndexOf('<'))
@@ -29,6 +30,14 @@ const {
 } = process.env
 
 const connectToGoogleCalendar = () => {
+  if (
+    !GOOGLE_CLIENT_EMAIL ||
+    !GOOGLE_PRIVATE_KEY ||
+    !SCOPES ||
+    !GOOGLE_PROJECT_NUMBER
+  )
+    return undefined
+
   const jwtClient = new google.auth.JWT(
     GOOGLE_CLIENT_EMAIL,
     null,
@@ -47,6 +56,7 @@ const connectToGoogleCalendar = () => {
 
 const addBlankEventToCalendar = async () => {
   const calendar = connectToGoogleCalendar()
+  if (!calendar) return undefined
 
   const calendarEvent = {
     summary: '[blank]',
@@ -103,8 +113,6 @@ const addBlankEventToCalendar = async () => {
     )
   })
 
-  console.log('calendarEventData :>> ', calendarEventData)
-
   return calendarEventData?.data?.id
 }
 
@@ -112,6 +120,7 @@ const deleteEventFromCalendar = async (googleCalendarId) => {
   if (!googleCalendarId) return
 
   const calendar = connectToGoogleCalendar()
+  if (!calendar) return undefined
 
   const auth = new google.auth.GoogleAuth({
     keyFile: './google_calendar_token.json',
@@ -152,6 +161,7 @@ const deleteEventFromCalendar = async (googleCalendarId) => {
 
 const updateEventInCalendar = async (event, req) => {
   const calendar = connectToGoogleCalendar()
+  if (!calendar) return undefined
 
   // calendar.events.list(
   //   {
@@ -392,11 +402,6 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
-          // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
-          const afterUpdateNeedToNotificate =
-            // body.userId === id &&
-            Schema === Users && !isUserQuestionnaireFilled(oldData)
-
           data = await Schema.findByIdAndUpdate(id, body.data, {
             new: true,
             runValidators: true,
@@ -417,118 +422,108 @@ export default async function handler(Schema, req, res, params = null) {
             userId: body.userId,
           })
 
-          if (afterUpdateNeedToNotificate) {
+          // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
+          if (Schema === Users && !isUserQuestionnaireFilled(oldData)) {
             const users = await Users.find({})
             const usersTelegramIds = users
               .filter(
                 (user) =>
-                  isUserAdmin(user) &&
-                  user.notifications?.settings?.newUserRegistred &&
+                  isUserModer(user) &&
+                  user.notifications?.get('settings')?.newUserRegistred &&
                   user.notifications?.get('telegram').active &&
                   user.notifications?.get('telegram')?.id
               )
               .map((user) => user.notifications?.get('telegram')?.id)
-            await Promise.all(
-              usersTelegramIds.map(async (telegramId) => {
-                const fullUserName = getUserFullName(data)
-                await postData(
-                  `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+
+            const text = `Пользователь с номером +${
+              data.phone
+            } заполнил анкету:\n - Полное имя: ${getUserFullName(
+              data
+            )}\n - Пол: ${
+              data.gender === 'male' ? 'Мужчина' : 'Женщина'
+            }\n - Дата рождения: ${birthDateToAge(
+              data.birthday,
+              new Date(),
+              true,
+              true,
+              true
+            )}`
+
+            await sendTelegramMessage({
+              req,
+              telegramIds: usersTelegramIds,
+              text,
+              images: data.images,
+              inline_keyboard: [
+                [
                   {
-                    chat_id: telegramId,
-                    text: `Пользователь с номером +${
-                      data.phone
-                    } заполнил анкету:\n - Полное имя: ${fullUserName}\n - Пол: ${
-                      data.gender === 'male' ? 'Мужчина' : 'Женщина'
-                    }\n - Дата рождения: ${birthDateToAge(
-                      data.birthday,
-                      new Date(),
-                      true,
-                      true,
-                      true
-                    )}`,
-                    parse_mode: 'html',
-                    reply_markup:
-                      req.headers.origin.substr(0, 5) === 'https'
-                        ? JSON.stringify({
-                            inline_keyboard: [
-                              [
-                                {
-                                  text: '\u{1F464} Пользователь',
-                                  url: req.headers.origin + '/user/' + id,
-                                },
-                              ],
-                            ].filter((botton) => botton),
-                          })
-                        : undefined,
+                    text: '\u{1F464} Пользователь',
+                    url: req.headers.origin + '/user/' + id,
                   },
-                  (data) => console.log('data', data),
-                  (data) => console.log('error', data),
-                  true,
-                  null,
-                  true
-                )
-                if (data.images && data.images[0]) {
-                  await postData(
-                    `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMediaGroup`,
-                    {
-                      chat_id: telegramId,
-                      media: JSON.stringify(
-                        data.images.map((photo) => {
-                          return {
-                            type: 'photo',
-                            media: photo,
-                            // caption: 'Наденька',
-                            // "parse_mode": "optional (you can delete this parameter) the parse mode of the caption"
-                          }
-                        })
-                      ),
-                      // reply_markup:
-                      //   req.headers.origin.substr(0, 5) === 'https'
-                      //     ? JSON.stringify({
-                      //         inline_keyboard: [
-                      //           [
-                      //             {
-                      //               text: 'Открыть пользователя',
-                      //               url: req.headers.origin + '/user/' + eventId,
-                      //             },
-                      //           ],
-                      //         ],
-                      //       })
-                      //     : undefined,
-                    },
-                    (data) => console.log('data', data),
-                    (data) => console.log('error', data),
-                    true,
-                    null,
-                    true
-                  )
-                  // await postData(
-                  //   `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`,
-                  //   {
-                  //     chat_id: telegramId,
-                  //     photo: data.images[0],
-                  //     caption: fullUserName,
-                  //     // reply_markup:
-                  //     //   req.headers.origin.substr(0, 5) === 'https'
-                  //     //     ? JSON.stringify({
-                  //     //         inline_keyboard: [
-                  //     //           [
-                  //     //             {
-                  //     //               text: 'Открыть пользователя',
-                  //     //               url: req.headers.origin + '/user/' + eventId,
-                  //     //             },
-                  //     //           ],
-                  //     //         ],
-                  //     //       })
-                  //     //     : undefined,
-                  //   },
-                  //   (data) => console.log('data', data),
-                  //   (data) => console.log('error', data),
-                  //   true
-                  // )
-                }
-              })
-            )
+                ],
+              ],
+            })
+            // await Promise.all(
+            //   usersTelegramIds.map(async (telegramId) => {
+            //     await postData(
+            //       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+            //       {
+            //         chat_id: telegramId,
+            //         text: `Пользователь с номером +${
+            //           data.phone
+            //         } заполнил анкету:\n - Полное имя: ${fullUserName}\n - Пол: ${
+            //           data.gender === 'male' ? 'Мужчина' : 'Женщина'
+            //         }\n - Дата рождения: ${birthDateToAge(
+            //           data.birthday,
+            //           new Date(),
+            //           true,
+            //           true,
+            //           true
+            //         )}`,
+            //         parse_mode: 'html',
+            //         reply_markup:
+            //           req.headers.origin.substr(0, 5) === 'https'
+            //             ? JSON.stringify({
+            //                 inline_keyboard: [
+            //                   [
+            //                     {
+            //                       text: '\u{1F464} Пользователь',
+            //                       url: req.headers.origin + '/user/' + id,
+            //                     },
+            //                   ],
+            //                 ].filter((botton) => botton),
+            //               })
+            //             : undefined,
+            //       },
+            //       (data) => console.log('data', data),
+            //       (data) => console.log('error', data),
+            //       true,
+            //       null,
+            //       true
+            //     )
+            //     if (data.images && data.images[0]) {
+            //       await postData(
+            //         `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMediaGroup`,
+            //         {
+            //           chat_id: telegramId,
+            //           media: JSON.stringify(
+            //             data.images.map((photo) => {
+            //               return {
+            //                 type: 'photo',
+            //                 media: photo,
+            //               }
+            //             })
+            //           ),
+            //         },
+            //         (data) => console.log('data', data),
+            //         (data) => console.log('error', data),
+            //         true,
+            //         null,
+            //         true
+            //       )
+            //     }
+            //   })
+            // )
           }
 
           return res?.status(200).json({ success: true, data })
