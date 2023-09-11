@@ -157,7 +157,10 @@ const EventCard = ({
               <EventTagsChipsLine
                 tags={event.tags}
                 onTagClick={onTagClick}
-                className={cn('flex-1', event.showOnSite ? '' : 'ml-10')}
+                className={cn(
+                  'flex-1',
+                  event.showOnSite ? '' : 'ml-10 laptop:ml-0'
+                )}
                 // noWrap
               />
               {/* <div className="flex-1 truncate w-[90%]">{direction.title}</div> */}
