@@ -195,7 +195,7 @@ const EventCard = ({
               <div className="flex items-center justify-center flex-1 gap-2 pl-2 pr-1">
                 <div className="flex flex-col items-center justify-center flex-1">
                   <TextLinesLimiter
-                    className="flex-1 -mt-1 text-lg font-bold laptop:text-xl text-general laptop:hidden"
+                    className="flex-1 -mt-1 text-lg italic font-bold laptop:text-xl text-general laptop:hidden"
                     // textClassName="leading-5"
                     lines={1}
                   >

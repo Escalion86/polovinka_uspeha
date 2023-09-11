@@ -365,19 +365,60 @@ export default async function handler(Schema, req, res, params = null) {
         } else {
           const clearedBody = { ...body.data }
           delete clearedBody._id
-          var calendarEventId
+
+          // Создаем пустой календарь и получаем его id
           if (Schema === Events) {
-            calendarEventId = await addBlankEventToCalendar()
-            clearedBody.googleCalendarId = calendarEventId
+            clearedBody.googleCalendarId = await addBlankEventToCalendar()
           }
 
           data = await Schema.create(clearedBody)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
+
           if (Schema === Events) {
-            // console.log('data :>> ', data)
+            // Вносим данные в календарь так как теперь мы имеем id мероприятия
             const calendarEvent = await updateEventInCalendar(data, req)
+
+            const intersect = function (arr1, arr2) {
+              return arr1.filter(function (n) {
+                return arr2.indexOf(n) !== -1
+              })
+            }
+            // TODO Проверяем есть ли тэги у мероприятия и если есть, то оповещаем пользователей по их интересам
+            if (data.tags && typeof data.tags === 'object') {
+              const users = await Users.find({})
+              const usersTelegramIds = users
+                .filter(
+                  (user) =>
+                    user.notifications?.get('settings')?.newEventsByTags &&
+                    user.notifications?.get('telegram').active &&
+                    user.notifications?.get('telegram')?.id &&
+                    (!user.eventsTagsNotification ||
+                      user.eventsTagsNotification?.length === 0 ||
+                      user.eventsTagsNotification.find((tag) =>
+                        data.tags.includes(tag)
+                      ))
+                )
+                .map((user) => user.notifications?.get('telegram')?.id)
+
+              const text = `Новое мероприятие!\n<b>${data.title}</b>`
+
+              const inline_keyboard = [
+                [
+                  {
+                    text: '\u{1F4C5} Открыть мероприятие',
+                    url: req.headers.origin + '/event/' + String(data._id),
+                  },
+                ],
+              ]
+              await sendTelegramMessage({
+                req,
+                telegramIds: usersTelegramIds,
+                text,
+                inline_keyboard,
+              })
+            }
           }
 
           await Histories.create({

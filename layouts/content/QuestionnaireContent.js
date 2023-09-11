@@ -74,7 +74,9 @@ const QuestionnaireContent = (props) => {
     loggedUser?.thirdName ?? DEFAULT_USER.thirdName
   )
 
-  const [interests, setInterests] = useState(loggedUser?.interests ?? [])
+  const [eventsTagsNotification, setEventsTagsNotification] = useState(
+    loggedUser?.eventsTagsNotification ?? []
+  )
   // const [about, setAbout] = useState(user?.about ?? '')
   // const [interests, setInterests] = useState(user?.interests ?? '')
   // const [profession, setProfession] = useState(user?.profession ?? '')
@@ -194,7 +196,10 @@ const QuestionnaireContent = (props) => {
     !compareArrays(loggedUser?.images, images) ||
     loggedUser?.birthday !== birthday ||
     loggedUser?.haveKids !== haveKids ||
-    !compareObjects(loggedUser?.interests ?? [], interests) ||
+    !compareObjects(
+      loggedUser?.eventsTagsNotification ?? [],
+      eventsTagsNotification
+    ) ||
     !compareObjects(loggedUser?.security, security) ||
     loggedUser?.status !== status ||
     loggedUser?.role !== role ||
@@ -243,7 +248,7 @@ const QuestionnaireContent = (props) => {
           images,
           birthday,
           haveKids,
-          interests,
+          eventsTagsNotification,
           security,
           status,
           role,
@@ -815,29 +820,33 @@ const QuestionnaireContent = (props) => {
                 />
               </div>
             </InputWrapper>
-            <CheckBox
-              checked={notifications.settings?.newEventsByTags}
-              onClick={() => toggleNotificationsSettings('newEventsByTags')}
-              label="Новые мероприятия по интересам (тэгам мероприятий)"
-            />
-            {notifications.settings?.newEventsByTags && (
-              <EventTagsChipsSelector
-                placeholder="Мне интересно всё!"
-                label="Интересы"
-                onChange={setInterests}
-                tags={interests}
-              />
+            {isLoggedUserDev && (
+              <>
+                <CheckBox
+                  checked={notifications.settings?.newEventsByTags}
+                  onClick={() => toggleNotificationsSettings('newEventsByTags')}
+                  label="Новые мероприятия (по тэгам мероприятий)"
+                />
+                {notifications.settings?.newEventsByTags && (
+                  <EventTagsChipsSelector
+                    placeholder="Мне интересно всё!"
+                    label="Тэги мероприятий которые мне интересны"
+                    onChange={setEventsTagsNotification}
+                    tags={eventsTagsNotification}
+                  />
+                )}
+                <CheckBox
+                  checked={notifications.settings?.eventUserMoves}
+                  onClick={() => toggleNotificationsSettings('eventUserMoves')}
+                  label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
+                />
+                <CheckBox
+                  checked={notifications.settings?.eventCancel}
+                  onClick={() => toggleNotificationsSettings('eventCancel')}
+                  label="Отмена мероприятия на которое я записан"
+                />
+              </>
             )}
-            <CheckBox
-              checked={notifications.settings?.eventUserMoves}
-              onClick={() => toggleNotificationsSettings('eventUserMoves')}
-              label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
-            />
-            <CheckBox
-              checked={notifications.settings?.eventCancel}
-              onClick={() => toggleNotificationsSettings('eventCancel')}
-              label="Отмена мероприятия на которое я записан"
-            />
           </TabPanel>
         )}
       </TabContext>
