@@ -219,9 +219,7 @@ const telegramNotification = async ({
       )
       .map((user) => user.notifications?.get('telegram')?.id)
 
-    console.log('usersTelegramIds :>> ', usersTelegramIds)
-
-    const result = await sendTelegramMessage({
+    await sendTelegramMessage({
       req,
       telegramIds: usersTelegramIds,
       text,
@@ -240,8 +238,6 @@ const telegramNotification = async ({
         ],
       ],
     })
-
-    console.log('result :>> ', result)
 
     // await Promise.all(
     //   usersTelegramIds.map(async (telegramId) => {
