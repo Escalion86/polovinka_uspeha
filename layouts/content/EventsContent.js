@@ -203,14 +203,12 @@ const EventsContent = () => {
             onChange={setSort}
             sortKeys={['dateStart']}
           />
-          {isLoggedUserModer && (
-            <FilterToggleButton
-              value={isFiltered}
-              onChange={() => {
-                setShowFilter((state) => !state)
-              }}
-            />
-          )}
+          <FilterToggleButton
+            value={isFiltered}
+            onChange={() => {
+              setShowFilter((state) => !state)
+            }}
+          />
           <SearchToggleButton
             value={isSearching}
             onChange={() => {

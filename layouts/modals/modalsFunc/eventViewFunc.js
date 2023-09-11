@@ -86,7 +86,7 @@ const eventViewFunc = (eventId) => {
         <ImageGallery images={event?.images} />
         <div className="flex flex-col flex-1">
           <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
-            {isLoggedUserModer && event?.tags.length > 0 && (
+            {event?.tags.length > 0 && (
               <EventTagsChipsLine tags={event?.tags} className="flex-1" />
             )}
             <div className="flex justify-center w-full text-3xl font-bold">
