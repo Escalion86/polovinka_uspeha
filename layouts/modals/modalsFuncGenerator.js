@@ -42,6 +42,7 @@ import addModalSelector from '@state/selectors/addModalSelector'
 import selectSvgFrameFunc from './modalsFunc/selectSvgFrameFunc'
 import copyLinkFunc from './modalsFunc/copyLinkFunc'
 import eventsTagsFunc from './modalsFunc/eventsTagsFunc'
+import notificationsDeativateTelegramFunc from './modalsFunc/notificationsDeativateTelegramFunc'
 // import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
@@ -525,7 +526,11 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
         addModal(serviceUserStatusEditFunc(serviceUserId)),
     },
     notifications: {
-      telegram: () => addModal(notificationsTelegramFunc()),
+      telegram: {
+        activate: () => addModal(notificationsTelegramFunc()),
+        deactivate: (onSuccess) =>
+          addModal(notificationsDeativateTelegramFunc(onSuccess)),
+      },
     },
     loginHistory: {
       user: (userId) => addModal(userLoginHistoryFunc(userId)),

@@ -119,7 +119,7 @@ const usersSchema = {
     type: Boolean,
     default: null,
   },
-  interests: {
+  eventsTagsNotification: {
     type: [String],
     default: [],
   },

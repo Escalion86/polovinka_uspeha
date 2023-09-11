@@ -147,6 +147,7 @@ export default async function auth(req, res) {
           session.user.haveKids = result.haveKids
           session.user.security = result.security
           session.user.notifications = result.notifications
+          session.user.eventsTagsNotification = result.eventsTagsNotification
         }
 
         //  else {

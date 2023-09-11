@@ -12,6 +12,7 @@ import EventsUsers from '@models/EventsUsers'
 import Histories from '@models/Histories'
 import Users from '@models/Users'
 import CRUD from '@server/CRUD'
+import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 
 function convertTZ(date, tzString = 'Asia/Krasnoyarsk') {
@@ -212,46 +213,72 @@ const telegramNotification = async ({
       .filter(
         (user) =>
           isUserModer(user) &&
-          user.notifications?.get('telegram').active &&
+          user.notifications?.get('settings')?.eventRegistration &&
+          user.notifications?.get('telegram')?.active &&
           user.notifications?.get('telegram')?.id
       )
       .map((user) => user.notifications?.get('telegram')?.id)
-    await Promise.all(
-      usersTelegramIds.map(async (telegramId) => {
-        await postData(
-          `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+
+    console.log('usersTelegramIds :>> ', usersTelegramIds)
+
+    const result = await sendTelegramMessage({
+      req,
+      telegramIds: usersTelegramIds,
+      text,
+      inline_keyboard: [
+        [
           {
-            chat_id: telegramId,
-            text,
-            parse_mode: 'html',
-            reply_markup:
-              req.headers.origin.substr(0, 5) === 'https'
-                ? JSON.stringify({
-                    inline_keyboard: [
-                      [
-                        {
-                          text: '\u{1F4C5} Мероприятие',
-                          url: req.headers.origin + '/event/' + eventId,
-                        },
-                        userId
-                          ? {
-                              text: '\u{1F464} Пользователь',
-                              url: req.headers.origin + '/user/' + userId,
-                            }
-                          : undefined,
-                      ],
-                    ].filter((botton) => botton),
-                  })
-                : undefined,
+            text: '\u{1F4C5} Мероприятие',
+            url: req.headers.origin + '/event/' + eventId,
           },
-          (data) => console.log('data', data),
-          (data) => console.log('error', data),
-          true,
-          null,
-          true
-        )
-      })
-    )
+          userId
+            ? {
+                text: '\u{1F464} Пользователь',
+                url: req.headers.origin + '/user/' + userId,
+              }
+            : undefined,
+        ],
+      ],
+    })
+
+    console.log('result :>> ', result)
+
+    // await Promise.all(
+    //   usersTelegramIds.map(async (telegramId) => {
+    //     await postData(
+    //       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+    //       {
+    //         chat_id: telegramId,
+    //         text,
+    //         parse_mode: 'html',
+    //         reply_markup:
+    //           req.headers.origin.substr(0, 5) === 'https'
+    //             ? JSON.stringify({
+    //                 inline_keyboard: [
+    //                   [
+    //                     {
+    //                       text: '\u{1F4C5} Мероприятие',
+    //                       url: req.headers.origin + '/event/' + eventId,
+    //                     },
+    //                     userId
+    //                       ? {
+    //                           text: '\u{1F464} Пользователь',
+    //                           url: req.headers.origin + '/user/' + userId,
+    //                         }
+    //                       : undefined,
+    //                   ],
+    //                 ].filter((botton) => botton),
+    //               })
+    //             : undefined,
+    //       },
+    //       (data) => console.log('data', data),
+    //       (data) => console.log('error', data),
+    //       true,
+    //       null,
+    //       true
+    //     )
+    //   })
+    // )
   }
 }
 
