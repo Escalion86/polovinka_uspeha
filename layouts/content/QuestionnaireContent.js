@@ -73,10 +73,6 @@ const QuestionnaireContent = (props) => {
   const [thirdName, setThirdName] = useState(
     loggedUser?.thirdName ?? DEFAULT_USER.thirdName
   )
-
-  const [eventsTagsNotification, setEventsTagsNotification] = useState(
-    loggedUser?.eventsTagsNotification ?? []
-  )
   // const [about, setAbout] = useState(user?.about ?? '')
   // const [interests, setInterests] = useState(user?.interests ?? '')
   // const [profession, setProfession] = useState(user?.profession ?? '')
@@ -196,10 +192,6 @@ const QuestionnaireContent = (props) => {
     !compareArrays(loggedUser?.images, images) ||
     loggedUser?.birthday !== birthday ||
     loggedUser?.haveKids !== haveKids ||
-    !compareObjects(
-      loggedUser?.eventsTagsNotification ?? [],
-      eventsTagsNotification
-    ) ||
     !compareObjects(loggedUser?.security, security) ||
     loggedUser?.status !== status ||
     loggedUser?.role !== role ||
@@ -248,7 +240,6 @@ const QuestionnaireContent = (props) => {
           images,
           birthday,
           haveKids,
-          eventsTagsNotification,
           security,
           status,
           role,
@@ -831,8 +822,16 @@ const QuestionnaireContent = (props) => {
                   <EventTagsChipsSelector
                     placeholder="Мне интересно всё!"
                     label="Тэги мероприятий которые мне интересны"
-                    onChange={setEventsTagsNotification}
-                    tags={eventsTagsNotification}
+                    onChange={(value) =>
+                      setNotifications((state) => ({
+                        ...state,
+                        settings: {
+                          ...notifications?.settings,
+                          eventsTags: value,
+                        },
+                      }))
+                    }
+                    tags={notifications.settings?.eventsTags}
                   />
                 )}
                 <CheckBox

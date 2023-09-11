@@ -394,11 +394,14 @@ export default async function handler(Schema, req, res, params = null) {
                     user.notifications?.get('settings')?.newEventsByTags &&
                     user.notifications?.get('telegram').active &&
                     user.notifications?.get('telegram')?.id &&
-                    (!user.eventsTagsNotification ||
-                      user.eventsTagsNotification?.length === 0 ||
-                      user.eventsTagsNotification.find((tag) =>
-                        data.tags.includes(tag)
-                      ))
+                    (!user.notifications?.get('settings').eventsTags ||
+                      typeof user.notifications?.get('settings').eventsTags !==
+                        'object' ||
+                      user.notifications?.get('settings').eventsTags?.length ===
+                        0 ||
+                      user.notifications
+                        ?.get('settings')
+                        .eventsTags.find((tag) => data.tags.includes(tag)))
                 )
                 .map((user) => user.notifications?.get('telegram')?.id)
 

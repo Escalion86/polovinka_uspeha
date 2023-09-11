@@ -119,10 +119,6 @@ const usersSchema = {
     type: Boolean,
     default: null,
   },
-  eventsTagsNotification: {
-    type: [String],
-    default: [],
-  },
   security: {
     type: Map,
     // of: Any,
