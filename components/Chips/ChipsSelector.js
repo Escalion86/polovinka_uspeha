@@ -52,12 +52,16 @@ const ChipsSelector = forwardRef(
     //   setChips(chips)
     //   onChange(chips)
     // }
+    const filteredValue =
+      typeof value === 'object' && value.length > 0
+        ? value.filter((text) => text)
+        : []
 
     const Trigger = forwardRef((props, ref) => (
       <InputWrapper
         label={label}
         labelClassName={labelClassName}
-        value={value ?? defaultValue}
+        value={filteredValue ?? defaultValue}
         className={cn(readOnly ? '' : 'cursor-pointer', className)}
         required={required}
         floatingLabel={floatingLabel}
@@ -76,21 +80,19 @@ const ChipsSelector = forwardRef(
         wrapperClassName="gap-x-1 flex-wrap gap-y-1"
         {...props}
       >
-        {typeof value === 'object' && value.length > 0 ? (
-          value
-            .filter((text) => text)
-            .map((text, index) => (
-              <Chip
-                key={'chip' + text}
-                text={text}
-                color={items.find((item) => item.text === text)?.color}
-                onClose={
-                  readOnly
-                    ? undefined
-                    : () => onChange(value.filter((val) => val !== text))
-                }
-              />
-            ))
+        {filteredValue.length > 0 ? (
+          filteredValue.map((text, index) => (
+            <Chip
+              key={'chip' + text}
+              text={text}
+              color={items.find((item) => item.text === text)?.color}
+              onClose={
+                readOnly
+                  ? undefined
+                  : () => onChange(value.filter((val) => val !== text))
+              }
+            />
+          ))
         ) : (
           <div className="text-gray-400">{placeholder}</div>
         )}
@@ -142,7 +144,7 @@ const ChipsSelector = forwardRef(
             // onMouseEnter={() => setCursorInPopover(true)}
           >
             {items.map((item, index) => {
-              const isActive = value.includes(item.text)
+              const isActive = filteredValue.includes(item.text)
               return (
                 <div
                   key={'popover_chip' + item.text}
@@ -158,8 +160,10 @@ const ChipsSelector = forwardRef(
                   }}
                   onClick={() =>
                     isActive
-                      ? onChange(value.filter((text) => text !== item.text))
-                      : onChange([...value, item.text])
+                      ? onChange(
+                          filteredValue.filter((text) => text !== item.text)
+                        )
+                      : onChange([...filteredValue, item.text])
                   }
                 >
                   {item.text}
