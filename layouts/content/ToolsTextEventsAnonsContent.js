@@ -94,7 +94,7 @@ const textForming = ({
     }
 
     if (showDescription) {
-      elementOfTextArray.push(`<i>${event.description}</i>`)
+      elementOfTextArray.push(`${event.description}`)
       elementOfTextArray.push(``)
     }
 

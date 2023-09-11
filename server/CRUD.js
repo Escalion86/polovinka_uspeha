@@ -11,6 +11,7 @@ import dbConnect from '@utils/dbConnect'
 import sanitize from 'sanitize-html'
 import sendTelegramMessage from './sendTelegramMessage'
 import isUserModer from '@helpers/isUserModer'
+import formatEventDateTime from '@helpers/formatEventDateTime'
 
 const linkAReformer = (link) => {
   const textLink = link.substring(link.indexOf('>') + 1, link.lastIndexOf('<'))
@@ -318,6 +319,102 @@ const updateEventInCalendar = async (event, req) => {
   return updatedCalendarEvent
 }
 
+const notificateUsersAboutEvent = async (event, req) => {
+  const users = await Users.find({})
+  const usersToNotificate = users.filter(
+    (user) =>
+      user.notifications?.get('settings')?.newEventsByTags &&
+      user.notifications?.get('telegram').active &&
+      user.notifications?.get('telegram')?.id &&
+      (!user.eventsTagsNotification ||
+        user.eventsTagsNotification?.length === 0 ||
+        user.eventsTagsNotification.find((tag) => event.tags.includes(tag)))
+  )
+
+  const novicesTelegramIds = usersToNotificate
+    .filter((user) => user.status === 'novice' || !user.status)
+    .map((user) => user.notifications?.get('telegram')?.id)
+
+  const membersTelegramIds = usersToNotificate
+    .filter((user) => user.status === 'member')
+    .map((user) => user.notifications?.get('telegram')?.id)
+
+  const eventPrice = event.price / 100
+  const eventPriceForMember =
+    (event.price -
+      (event.usersStatusDiscount
+        ? event.usersStatusDiscount?.get('member')
+        : 0)) /
+    100
+  const eventPriceForNovice =
+    (event.price -
+      (event.usersStatusDiscount
+        ? event.usersStatusDiscount?.get('novice')
+        : 0)) /
+    100
+
+  const address = event.address
+    ? `\n\n\u{1F4CD} <b>Место проведения</b>:\n${formatAddress(
+        JSON.parse(JSON.stringify(event.address))
+      )}`
+    : ''
+
+  const textStart = `\u{1F4C5} ${formatEventDateTime(event, {
+    fullWeek: true,
+    weekInBrackets: true,
+  }).toUpperCase()}\n<b>${event.title}</b>\n${sanitize(
+    event.description
+      .replaceAll('<p><br></p>', '\n')
+      .replaceAll('<blockquote>', '\n<blockquote>')
+      .replaceAll('<li>', '\n\u{2764} <li>')
+      .replaceAll('<p>', '\n<p>')
+      .replaceAll('<br>', '\n'),
+    {
+      allowedTags: [],
+      allowedAttributes: {},
+    }
+  )}${address}`
+
+  const textPriceForNovice = `\n\u{1F4B0} <b>Стоимость</b>: ${
+    eventPriceForNovice !== eventPrice
+      ? `<s>${eventPrice}</s>   <b>${eventPriceForNovice}</b>`
+      : eventPriceForNovice
+  } руб`
+
+  const textPriceForMember = `\n\u{1F4B0} <b>Стоимость</b>: ${
+    eventPriceForMember !== eventPrice
+      ? `<s>${eventPrice}</s>   <b>${eventPriceForMember}</b>`
+      : eventPriceForMember
+  } руб`
+
+  const textEnd = `\n\n#${event.tags.join(' #')}`
+
+  const inline_keyboard = [
+    [
+      {
+        text: '\u{1F4C5} Открыть мероприятие',
+        url: req.headers.origin + '/event/' + String(event._id),
+      },
+    ],
+  ]
+  if (novicesTelegramIds.length > 0) {
+    await sendTelegramMessage({
+      req,
+      telegramIds: novicesTelegramIds,
+      text: textStart + textPriceForNovice + textEnd,
+      inline_keyboard,
+    })
+  }
+  if (membersTelegramIds.length > 0) {
+    await sendTelegramMessage({
+      req,
+      telegramIds: membersTelegramIds,
+      text: textStart + textPriceForMember + textEnd,
+      inline_keyboard,
+    })
+  }
+}
+
 export default async function handler(Schema, req, res, params = null) {
   const { query, method, body } = req
 
@@ -380,44 +477,9 @@ export default async function handler(Schema, req, res, params = null) {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
             const calendarEvent = await updateEventInCalendar(data, req)
 
-            const intersect = function (arr1, arr2) {
-              return arr1.filter(function (n) {
-                return arr2.indexOf(n) !== -1
-              })
-            }
-            // TODO Проверяем есть ли тэги у мероприятия и если есть, то оповещаем пользователей по их интересам
-            if (data.tags && typeof data.tags === 'object') {
-              const users = await Users.find({})
-              const usersTelegramIds = users
-                .filter(
-                  (user) =>
-                    user.notifications?.get('settings')?.newEventsByTags &&
-                    user.notifications?.get('telegram').active &&
-                    user.notifications?.get('telegram')?.id &&
-                    (!user.eventsTagsNotification ||
-                      user.eventsTagsNotification?.length === 0 ||
-                      user.eventsTagsNotification.find((tag) =>
-                        data.tags.includes(tag)
-                      ))
-                )
-                .map((user) => user.notifications?.get('telegram')?.id)
-
-              const text = `Новое мероприятие!\n<b>${data.title}</b>`
-
-              const inline_keyboard = [
-                [
-                  {
-                    text: '\u{1F4C5} Открыть мероприятие',
-                    url: req.headers.origin + '/event/' + String(data._id),
-                  },
-                ],
-              ]
-              await sendTelegramMessage({
-                req,
-                telegramIds: usersTelegramIds,
-                text,
-                inline_keyboard,
-              })
+            // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
+            if (data.showOnSite && data.tags && typeof data.tags === 'object') {
+              await notificateUsersAboutEvent(data, req)
             }
           }
 
@@ -454,6 +516,14 @@ export default async function handler(Schema, req, res, params = null) {
 
           if (Schema === Events) {
             const calendarEvent = await updateEventInCalendar(data, req)
+            if (
+              !oldData.showOnSite &&
+              data.showOnSite &&
+              data.tags &&
+              typeof data.tags === 'object'
+            ) {
+              await notificateUsersAboutEvent(data, req)
+            }
           }
 
           await Histories.create({
