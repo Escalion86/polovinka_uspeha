@@ -117,6 +117,11 @@ const EventCard = ({
             Завершено
           </div>
         )}
+        {!event.showOnSite && (
+          <div className="absolute text-3xl font-bold text-purple-500 -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 border-purple-500 top-1/2 left-1/2 -rotate-15 shadow-white2">
+            Скрыто
+          </div>
+        )}
       </div>
       {/* // ) : (
       //   <div
@@ -152,7 +157,7 @@ const EventCard = ({
               <EventTagsChipsLine
                 tags={event.tags}
                 onTagClick={onTagClick}
-                className="flex-1"
+                className={cn('flex-1', event.showOnSite ? '' : 'ml-10')}
                 // noWrap
               />
               {/* <div className="flex-1 truncate w-[90%]">{direction.title}</div> */}

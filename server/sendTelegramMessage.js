@@ -7,6 +7,7 @@ const sendTelegramMessage = async ({
   images,
   inline_keyboard,
 }) => {
+  if (!telegramIds || typeof telegramIds !== 'object') return undefined
   return await Promise.all(
     telegramIds.map(async (telegramId) => {
       if (images && typeof images === 'object') {

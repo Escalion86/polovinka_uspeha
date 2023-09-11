@@ -215,6 +215,7 @@ module.exports = {
         white2: '0px 0px 8px 8px rgba(255, 255, 255, 0.50)',
       },
       spacing: {
+        13: '3.25rem',
         15: '3.75rem',
         90: '22.5rem',
         100: '25rem',
