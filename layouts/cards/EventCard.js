@@ -259,6 +259,7 @@ const EventCard = ({
               eventId={eventId}
               noButtonIfAlreadySignIn
               // classNameProfit="rounded-tl-lg"
+              className="border-l border-gray-200"
             />
           </div>
         )}
@@ -279,6 +280,7 @@ const EventCard = ({
               eventId={eventId}
               noButtonIfAlreadySignIn
               thin
+              className="border-l border-gray-200"
               // classNameProfit="rounded-tl-lg"
             />
           </div>
