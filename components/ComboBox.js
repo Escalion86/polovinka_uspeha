@@ -17,6 +17,7 @@ const ComboBox = ({
   paddingX = 'small',
   paddingY = 'small',
   fullWidth,
+  activePlaceholder,
 }) => {
   const defaultItem = defaultValue
     ? items.find((item) => item.value === defaultValue)
@@ -44,7 +45,7 @@ const ComboBox = ({
         value={defaultValue ? undefined : value}
       >
         {placeholder && (
-          <option disabled value="">
+          <option disabled={!activePlaceholder} value="">
             {placeholder}
           </option>
         )}

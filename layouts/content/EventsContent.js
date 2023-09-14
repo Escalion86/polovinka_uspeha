@@ -71,15 +71,17 @@ const EventsContent = () => {
     eventsUsersByUserIdSelector(loggedUser?._id)
   )
 
-  const directionsIds = useMemo(
-    () => [...directions].map((direction) => direction._id),
-    [directions]
-  )
+  // const directionsIds = useMemo(
+  //   () => [...directions].map((direction) => direction._id),
+  //   [directions]
+  // )
 
-  const [filterOptions, setFilterOptions] = useState({
-    directions: directionsIds,
+  const defaultFilterValue = {
+    directions: '',
     tags: [],
-  })
+  }
+
+  const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
 
   const options = {
     tags: {
@@ -90,7 +92,7 @@ const EventsContent = () => {
     },
     directions: {
       type: 'directions',
-      value: directionsIds,
+      value: '',
       name: 'Направления',
       items: directions,
     },
@@ -140,7 +142,8 @@ const EventsContent = () => {
             (isEventActive && filter.status.finished && isEventExpired) ||
             (isEventActive && filter.status.active && !isEventExpired) ||
             (isEventCanceled && filter.status.canceled)) &&
-          filterOptions.directions.includes(event.directionId) &&
+          (!filterOptions.directions ||
+            filterOptions.directions === event.directionId) &&
           ((filter.participant?.participant &&
             filter.participant?.notParticipant) ||
           !!eventsOfUser.find((eventUser) => eventUser.eventId === event._id)
@@ -156,9 +159,7 @@ const EventsContent = () => {
     [visibleEvents, sort]
   )
 
-  const isFiltered =
-    filterOptions.directions.length !== directions.length ||
-    filterOptions.tags.length > 0
+  const isFiltered = filterOptions.directions || filterOptions.tags.length > 0
 
   return (
     <>
@@ -245,6 +246,8 @@ const EventsContent = () => {
         options={options}
         onChange={setFilterOptions}
         filterOptions={filterOptions}
+        defaultFilterValue={defaultFilterValue}
+        setShowFilter={setShowFilter}
       />
       {/* <CardListWrapper> */}
       <EventsList

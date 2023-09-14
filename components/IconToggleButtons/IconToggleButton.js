@@ -20,7 +20,7 @@ const IconToggleButton = ({
         )}
         size="small"
         value={value}
-        selected={selected}
+        selected={!!selected}
         onChange={onChange}
         color={color}
         onClick={onClick}

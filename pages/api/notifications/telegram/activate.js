@@ -1,4 +1,5 @@
 import Users from '@models/Users'
+import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 
 export default async function handler(req, res) {
@@ -54,6 +55,11 @@ export default async function handler(req, res) {
         //       message.from.username.toLowerCase()
         // )
         if (userFromReq) {
+          await sendTelegramMessage({
+            req,
+            telegramId: message.from.id,
+            text: 'Активация уведомлений прошла успешно!',
+          })
           // const data = await Users.findByIdAndUpdate(userFromReq[0]._id, {
           //   notifications: {
           //     ...userFromReq[0].notifications,
@@ -65,6 +71,11 @@ export default async function handler(req, res) {
           // })
           return res?.status(200).json({ success: true, data: userFromReq })
         }
+        await sendTelegramMessage({
+          req,
+          telegramId: message.from.id,
+          text: 'Ошибка! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!',
+        })
         console.log('Пользователь с таким логином не найден')
         return res?.status(200).json({
           success: false,

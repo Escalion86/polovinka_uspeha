@@ -1,5 +1,5 @@
 import { useRecoilValue } from 'recoil'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import directionsAtom from '@state/atoms/directionsAtom'
 import {
   Checkbox,
@@ -16,10 +16,14 @@ import {
 } from '@mui/material'
 import { Check } from '@mui/icons-material'
 
+import { FilterAltOff } from '@mui/icons-material'
+
 import { getNounDirections } from '@helpers/getNoun'
 import { motion } from 'framer-motion'
 import EventTagsChipsSelector from './Chips/EventTagsChipsSelector'
 import ChipsSelector from './Chips/ChipsSelector'
+import ComboBox from './ComboBox'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -32,7 +36,15 @@ const MenuProps = {
   },
 }
 
-const Filter = ({ options, show, onChange, filterOptions }) => {
+const Filter = ({
+  options,
+  show,
+  onChange,
+  filterOptions,
+  defaultFilterValue,
+  setShowFilter,
+}) => {
+  const [rerender, setRerender] = useState(false)
   const onChangeFilter = (key, newValue) => {
     onChange((state) => {
       return { ...state, [key]: newValue }
@@ -40,50 +52,76 @@ const Filter = ({ options, show, onChange, filterOptions }) => {
   }
 
   const elements = Object.entries(options)
-    .filter(([key, { type, value, name, items }]) => type !== 'directions')
-    .map(([key, { type, value, name, items }]) => {
+    // .filter(([key, { type, value, name, items }]) => type !== 'directions')
+    .map(([key, { type, value, name, items }], index) => {
       const [componentValue, setComponentValue] = useState(value)
       const onChangeComponent = (key, newValue) => {
         setComponentValue(newValue)
         onChangeFilter(key, newValue)
       }
 
-      if (type === 'toggle') {
+      useEffect(() => {
+        if (componentValue !== value) setComponentValue(value)
+      }, [rerender])
+
+      // if (type === 'toggle') {
+      //   return (
+      //     <FormControl size="small" className="mt-2" key={key}>
+      //       <ToggleButton
+      //         size="small"
+      //         value="check"
+      //         selected={componentValue}
+      //         onChange={() => onChangeComponent(key, !componentValue)}
+      //         color="primary"
+      //       >
+      //         <Check />
+      //         <div>{name}</div>
+      //       </ToggleButton>
+      //     </FormControl>
+      //   )
+      // } else
+      if (type === 'tags') {
         return (
-          <FormControl size="small" className="mt-2" key={key}>
-            <ToggleButton
-              size="small"
-              value="check"
-              selected={componentValue}
-              onChange={() => onChangeComponent(key, !componentValue)}
-              color="primary"
-            >
-              <Check />
-              <div>{name}</div>
-            </ToggleButton>
-          </FormControl>
-        )
-      } else if (type === 'tags') {
-        return (
-          <FormControl
-            size="small"
-            className="max-w-full min-w-full px-1"
+          // <FormControl
+          //   size="small"
+          //   className="max-w-full min-w-full px-1"
+          //   key={key}
+          // >
+          <ChipsSelector
             key={key}
-          >
-            <ChipsSelector
-              label="Тэги"
-              items={items}
-              onChange={(tags) => onChangeComponent(key, tags)}
-              value={filterOptions.tags}
-              canEditChips={false}
-              // noWrapper={false}
-              placeholder="Показывать все тэги"
-              noMargin
-              className="mt-2 mb-1"
-              // className={className}
-            />
-          </FormControl>
+            label="Тэги"
+            items={items}
+            onChange={(tags) => onChangeComponent(key, tags)}
+            value={filterOptions.tags}
+            canEditChips={false}
+            // noWrapper={false}
+            placeholder="Показывать все тэги"
+            noMargin
+            className="mt-2 mb-1"
+            fullWidth
+            // className={className}
+          />
+          // </FormControl>
         )
+      } else if (type === 'directions') {
+        const directions = useRecoilValue(directionsAtom)
+        const items = directions.map((item, index) => ({
+          name: item.title,
+          value: item._id,
+        }))
+        return (
+          <ComboBox
+            key={key}
+            label="Направления"
+            value={componentValue}
+            onChange={(value) => onChangeComponent(key, value)}
+            items={items}
+            placeholder="ВСЕ НАПРАВЛЕНИЯ"
+            activePlaceholder
+            fullWidth
+          />
+        )
+
         // } else if (type === 'directions') {
         //   const directions = useRecoilValue(directionsAtom)
         //   return (
@@ -157,7 +195,7 @@ const Filter = ({ options, show, onChange, filterOptions }) => {
       // initial={{}}
       animate={{ height: show ? 'auto' : 0 }}
       transition={{ type: 'just' }}
-      className="flex flex-wrap justify-end w-full px-1 overflow-hidden"
+      className="w-full px-1 overflow-hidden"
     >
       {/* <div> */}
       {/* <button
@@ -174,7 +212,30 @@ const Filter = ({ options, show, onChange, filterOptions }) => {
     Показывать завершенные
     <FontAwesomeIcon icon={icon} className={iconClassName ?? 'w-5 h-5'} />
   </button> */}
-      {elements}
+      {elements.map((el, index) => {
+        if (defaultFilterValue && index === elements.length - 1)
+          return (
+            <div key={index} className="flex items-center">
+              {el}
+              <div
+                className="flex p-1 mt-2 ml-1 mr-1 cursor-pointer"
+                onClick={() => {
+                  onChange(defaultFilterValue)
+                  setShowFilter && setShowFilter(false)
+                  setRerender((state) => !state)
+                }}
+              >
+                <FilterAltOff className="text-danger" />
+              </div>
+            </div>
+          )
+        return el
+      })}
+      {/* <FontAwesomeIcon
+            className="z-10 w-6 h-6 text-white duration-200 max-w-6 max-h-6 group-hover:scale-125"
+            icon={faFilterRe}
+          /> */}
+
       {/* </div> */}
     </motion.div>
   )
