@@ -32,6 +32,7 @@ const EventButtonSignIn = ({
   noButtonIfAlreadySignIn,
   thin,
   classNameProfit,
+  noBorders,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
@@ -71,7 +72,12 @@ const EventButtonSignIn = ({
 
     if (sumOfPaymentsFromLoggedUserToEvent * 100 === eventPriceForLoggedUser)
       return (
-        <div className="flex items-center justify-center h-full border-l border-gray-200">
+        <div
+          className={cn(
+            'flex items-center justify-center min-h-9',
+            noBorders ? '' : 'border-r border-gray-200'
+          )}
+        >
           <div className="flex items-center justify-center px-1 font-bold tablet:text-lg text-success gap-x-1">
             <span className="leading-4">ОПЛАЧЕНО</span>
             {/* <span>{sumOfPaymentsFromLoggedUserToEvent}</span> */}
@@ -83,7 +89,12 @@ const EventButtonSignIn = ({
       sumOfPaymentsFromLoggedUserToEvent * 100 < eventPriceForLoggedUser
     )
       return (
-        <div className="flex items-center justify-center h-full border-l border-gray-200">
+        <div
+          className={cn(
+            'flex items-center justify-center min-h-9',
+            noBorders ? '' : 'border-r border-gray-200'
+          )}
+        >
           <div className="flex flex-wrap items-center justify-center px-1 font-bold text-orange-600 tablet:text-lg gap-x-1">
             <span className="leading-4">ЗАДАТОК</span>
             <span className="leading-4">{`${sumOfPaymentsFromLoggedUserToEvent} ₽`}</span>
@@ -92,7 +103,12 @@ const EventButtonSignIn = ({
       )
     if (userEventStatus && event.status !== 'canceled')
       return (
-        <div className="flex items-center justify-center h-full border-l border-gray-200">
+        <div
+          className={cn(
+            'flex items-center justify-center min-h-9',
+            noBorders ? '' : 'border-r border-gray-200'
+          )}
+        >
           <div className="flex items-center justify-center px-1 font-bold text-center tablet:text-lg text-danger gap-x-1">
             <span className="leading-4">НЕ ОПЛАЧЕНО</span>
             {/* <span>{sumOfPaymentsFromLoggedUserToEvent}</span> */}
@@ -120,31 +136,25 @@ const EventButtonSignIn = ({
     //   Закрыто
     // </div>
     event.status === 'canceled' ? (
-      <TextStatus className={cn('text-danger', className)}>Отменено</TextStatus>
+      <TextStatus className="text-danger">Отменено</TextStatus>
     ) : isEventExpired ? (
-      <TextStatus className={cn('text-success', className)}>
-        Завершено
-      </TextStatus>
+      <TextStatus className="text-success">Завершено</TextStatus>
     ) : userEventStatus === 'assistant' ? (
-      <TextStatus className={cn('text-general', className)}>Ведущий</TextStatus>
+      <TextStatus className="text-general">Ведущий</TextStatus>
     ) : (noButtonIfAlreadySignIn && canSignOut) ||
       (isEventInProcess && canSignOut) ? (
-      <TextStatus className={cn('text-blue-600', className)}>
+      <TextStatus className="text-blue-600">
         {userEventStatus === 'reserve' ? 'В резерве' : 'Записан'}
       </TextStatus>
     ) : !canSee ? (
-      <TextStatus className={cn('text-danger', className)}>
-        Не доступно
-      </TextStatus>
+      <TextStatus className="text-danger">Не доступно</TextStatus>
     ) : isUserQuestionnaireFilled &&
       !canSignIn &&
       !canSignOut &&
       !canSignInReserve ? (
-      <TextStatus className={cn('text-danger', className)}>Мест нет</TextStatus>
+      <TextStatus className="text-danger">Мест нет</TextStatus>
     ) : isEventInProcess && (noButtonIfAlreadySignIn || !canSignIn) ? (
-      <TextStatus className={cn('text-general', className)}>
-        В процессе
-      </TextStatus>
+      <TextStatus className="text-general">В процессе</TextStatus>
     ) : (
       <Button
         thin={thin}
@@ -200,9 +210,9 @@ const EventButtonSignIn = ({
     )
 
   return (
-    <div className="flex items-center gap-x-1">
+    <div className={cn('flex', className)}>
       <PaymentsFromLoggedUser />
-      <div className="flex items-center h-full border-l border-gray-200">
+      <div className="flex items-center h-full pl-1">
         <Status />
       </div>
     </div>

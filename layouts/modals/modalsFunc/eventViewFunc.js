@@ -197,7 +197,7 @@ const eventViewFunc = (eventId) => {
           <Divider thin light />
           <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
             <PriceDiscount item={event} className="px-2" prefix="Стоимость:" />
-            <EventButtonSignIn eventId={event?._id} />
+            <EventButtonSignIn eventId={event?._id} noBorders />
           </div>
         </div>
       </div>
