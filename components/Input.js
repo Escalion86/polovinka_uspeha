@@ -1,6 +1,8 @@
 import cn from 'classnames'
 import { forwardRef } from 'react'
 import InputWrapper from './InputWrapper'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
 // import * as te from 'tw-elements'
 
 const Input = forwardRef(
@@ -37,6 +39,7 @@ const Input = forwardRef(
       paddingY = 'small',
       paddingX = true,
       noMargin = false,
+      showArrows = true,
     },
     ref
   ) => {
@@ -99,6 +102,27 @@ const Input = forwardRef(
         )}
       >
         <div className="relative flex w-full"> */}
+        {showArrows &&
+          type === 'number' &&
+          !disabled &&
+          typeof value === 'number' && (
+            <div
+              className={cn(
+                'p-1 duration-300',
+                typeof min === 'number' && value <= min
+                  ? 'text-gray-300 cursor-not-allowed'
+                  : 'cursor-pointer text-general hover:text-success'
+              )}
+              onClick={() => {
+                if (typeof min !== 'number' || value > min) onChange(value - 1)
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faArrowDown}
+                className="w-5 h-5 tablet:w-6 tablet:h-6"
+              />
+            </div>
+          )}
 
         <input
           type={type}
@@ -106,8 +130,10 @@ const Input = forwardRef(
           className={cn(
             'flex-1 px-1 text-black placeholder-transparent h-7 peer focus:outline-none bg-transparent',
             disabled ? 'cursor-not-allowed' : '',
+            // type === 'number' ? 'max-w-20' : '',
             inputClassName
           )}
+          onWheel={(e) => e.target.blur()}
           min={min}
           max={max}
           disabled={disabled}
@@ -120,8 +146,8 @@ const Input = forwardRef(
                 (typeof min !== 'number' || value >= min) &&
                 (typeof max !== 'number' || value <= max)
               ) {
-                if (value === '') onChange(value)
-                else onChange(String(parseInt(value)))
+                if (value === '') onChange(parseInt(value))
+                else onChange(parseInt(value))
               }
             } else {
               onChange(value)
@@ -130,6 +156,27 @@ const Input = forwardRef(
           // id="exampleFormControlInput1"
           placeholder={label}
         />
+        {showArrows &&
+          type === 'number' &&
+          !disabled &&
+          typeof value === 'number' && (
+            <div
+              className={cn(
+                'p-1 duration-300',
+                typeof max === 'number' && value >= max
+                  ? 'text-gray-300 cursor-not-allowed'
+                  : 'cursor-pointer text-general hover:text-success'
+              )}
+              onClick={() => {
+                if (typeof max !== 'number' || value < max) onChange(value + 1)
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faArrowUp}
+                className="w-5 h-5 tablet:w-6 tablet:h-6"
+              />
+            </div>
+          )}
         {/* <label
             // for="exampleFormControlInput1"
             className={cn(

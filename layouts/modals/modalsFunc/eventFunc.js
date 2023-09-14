@@ -640,7 +640,7 @@ const eventFunc = (eventId, clone = false) => {
                 }
                 type={maxParticipantsCheck ? 'text' : 'number'}
                 className="w-44"
-                inputClassName="w-16"
+                inputClassName="w-16 text-center"
                 value={
                   maxParticipantsCheck
                     ? 'Без ограничений'
@@ -713,7 +713,7 @@ const eventFunc = (eventId, clone = false) => {
                       }
                       type={maxMansCheck ? 'text' : 'number'}
                       className="w-44"
-                      inputClassName="w-16"
+                      inputClassName="w-16 text-center"
                       // labelClassName="w-16 min-w-16 justify-end"
                       value={maxMansCheck ? 'Без ограничений' : maxMans ?? 0}
                       onChange={setMaxMans}
@@ -748,7 +748,7 @@ const eventFunc = (eventId, clone = false) => {
                       }
                       type={maxMansNoviceCheck ? 'text' : 'number'}
                       className="w-44"
-                      inputClassName="w-16"
+                      inputClassName="w-16 text-center"
                       // labelClassName="w-16 min-w-16"
                       value={
                         maxMansNoviceCheck
@@ -788,7 +788,7 @@ const eventFunc = (eventId, clone = false) => {
                       }
                       type={maxMansMemberCheck ? 'text' : 'number'}
                       className="w-44"
-                      inputClassName="w-16"
+                      inputClassName="w-16 text-center"
                       // labelClassName="w-16 min-w-16"
                       value={
                         maxMansMemberCheck
@@ -866,7 +866,7 @@ const eventFunc = (eventId, clone = false) => {
                       }
                       type={maxWomansCheck ? 'text' : 'number'}
                       className="w-44"
-                      inputClassName="w-16"
+                      inputClassName="w-16 text-center"
                       // labelClassName="w-16 min-w-16 justify-end"
                       value={
                         maxWomansCheck ? 'Без ограничений' : maxWomans ?? 0
@@ -903,7 +903,7 @@ const eventFunc = (eventId, clone = false) => {
                       }
                       type={maxWomansNoviceCheck ? 'text' : 'number'}
                       className="w-44"
-                      inputClassName="w-16"
+                      inputClassName="w-16 text-center"
                       // labelClassName="w-16 min-w-16"
                       value={
                         maxWomansNoviceCheck
@@ -942,7 +942,7 @@ const eventFunc = (eventId, clone = false) => {
                       }
                       type={maxWomansMemberCheck ? 'text' : 'number'}
                       className="w-44"
-                      inputClassName="w-16"
+                      inputClassName="w-16 text-center"
                       // labelClassName="w-16 min-w-16"
                       value={
                         maxWomansMemberCheck
