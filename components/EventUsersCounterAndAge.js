@@ -27,8 +27,16 @@ const Counter = ({
   memberReserveCount,
   showNoviceAndMemberSum,
   showReserve,
-}) =>
-  maxNovice || maxMember ? (
+}) => {
+  const actualMax =
+    typeof maxNovice === 'number' && typeof maxMember === 'number'
+      ? typeof max === 'number'
+        ? Math.min(maxNovice + maxMember, max)
+        : maxNovice + maxMember
+      : typeof max === 'number'
+      ? max
+      : undefined
+  return maxNovice || maxMember ? (
     <>
       <div className="flex flex-col items-center">
         {showAges && (
@@ -46,27 +54,28 @@ const Counter = ({
                 {/* <UserStatusIcon size="xs" status="novice" /> */}
                 <div className="flex tablet:gap-x-0.5">
                   <span
-                    className={
-                      maxNovice + maxMember &&
-                      noviceCount + memberCount >= maxNovice + maxMember
-                        ? 'text-danger font-semibold'
-                        : ''
-                    }
+                  // className={
+                  //   (typeof maxNovice === 'number' &&
+                  //     noviceCount >= maxNovice) ||
+                  //   (typeof maxMember === 'number' &&
+                  //     memberCount >= maxMember)
+                  //     ? 'text-danger font-semibold'
+                  //     : ''
+                  // }
                   >
                     {noviceCount + memberCount}
                   </span>
-                  {(typeof maxNovice === 'number' ||
-                    typeof maxMember === 'number' ||
-                    typeof max === 'number') && (
+                  {typeof actualMax === 'number' && (
                     <>
                       <span>/</span>
-                      <span>
-                        {typeof maxNovice === 'number' &&
-                        typeof maxMember === 'number'
-                          ? typeof max === 'number'
-                            ? Math.min(maxNovice + maxMember, max)
-                            : maxNovice + maxMember
-                          : max}
+                      <span
+                        className={cn(
+                          noviceCount + memberCount >= actualMax
+                            ? 'text-danger font-semibold'
+                            : ''
+                        )}
+                      >
+                        {actualMax}
                       </span>
                     </>
                   )}
@@ -132,7 +141,7 @@ const Counter = ({
               </>
             )}
           </div>
-          {!showNoviceAndMemberSum && typeof max === 'number' ? (
+          {!showNoviceAndMemberSum && typeof actualMax === 'number' ? (
             <div className="flex gap-x-0.5 items-center">
               {/* <span className="text-4xl">{'}'}</span> */}
               <div className="hidden min-w-[9px] h-[36px] tablet:block w-[9px]">
@@ -145,12 +154,12 @@ const Counter = ({
                 <span className="text-xs">max</span>
                 <span
                   className={
-                    max && noviceCount + memberCount >= max
+                    noviceCount + memberCount >= actualMax
                       ? 'text-danger font-semibold'
                       : ''
                   }
                 >
-                  {max}
+                  {actualMax}
                 </span>
                 <span className="text-xs -mt-0.5">чел.</span>
               </div>
@@ -180,17 +189,18 @@ const Counter = ({
       <div className="flex gap-x-0.5">
         <span
           className={
-            max && noviceCount + memberCount >= max
+            typeof actualMax === 'number' &&
+            noviceCount + memberCount >= actualMax
               ? 'text-danger font-semibold'
               : ''
           }
         >
           {noviceCount + memberCount}
         </span>
-        {typeof max === 'number' && (
+        {typeof actualMax === 'number' && (
           <>
             <span>/</span>
-            <span>{max}</span>
+            <span>{actualMax}</span>
           </>
         )}
         {showReserve && noviceReserveCount + memberReserveCount > 0 && (
@@ -202,6 +212,7 @@ const Counter = ({
       </div>
     </div>
   )
+}
 
 const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
