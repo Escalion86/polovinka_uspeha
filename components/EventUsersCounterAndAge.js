@@ -286,7 +286,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
         className
       )}
     >
-      <div className="items-center hidden px-2 font-bold laptop:flex gap-x-1">
+      <div className="items-center hidden pl-2 font-bold laptop:flex gap-x-1">
         Участники:
       </div>
       <div className="flex items-center px-1 tablet:px-2 tablet:border-r gap-x-1">

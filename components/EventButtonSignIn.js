@@ -18,7 +18,7 @@ import eventPriceByStatus from '@helpers/eventPriceByStatus'
 const TextStatus = ({ children, className }) => (
   <div
     className={cn(
-      'flex justify-center items-center text-base tablet:text-lg font-bold uppercase px-1 whitespace-nowrap',
+      'flex justify-center items-center text-base laptop:text-lg font-bold uppercase px-1 whitespace-nowrap',
       className
     )}
   >
@@ -78,7 +78,7 @@ const EventButtonSignIn = ({
             noBorders ? '' : 'border-r border-gray-200'
           )}
         >
-          <div className="flex items-center justify-center px-1 font-bold tablet:text-lg text-success gap-x-1">
+          <div className="flex items-center justify-center px-1 font-bold laptop:text-lg text-success gap-x-1">
             <span className="leading-4">ОПЛАЧЕНО</span>
             {/* <span>{sumOfPaymentsFromLoggedUserToEvent}</span> */}
           </div>
@@ -95,7 +95,7 @@ const EventButtonSignIn = ({
             noBorders ? '' : 'border-r border-gray-200'
           )}
         >
-          <div className="flex flex-wrap items-center justify-center px-1 font-bold text-orange-600 tablet:text-lg gap-x-1">
+          <div className="flex flex-wrap items-center justify-center px-1 font-bold text-orange-600 laptop:text-lg gap-x-1">
             <span className="leading-4">ЗАДАТОК</span>
             <span className="leading-4">{`${sumOfPaymentsFromLoggedUserToEvent} ₽`}</span>
           </div>
@@ -109,7 +109,7 @@ const EventButtonSignIn = ({
             noBorders ? '' : 'border-r border-gray-200'
           )}
         >
-          <div className="flex items-center justify-center px-1 font-bold text-center tablet:text-lg text-danger gap-x-1">
+          <div className="flex items-center justify-center px-1 font-bold text-center laptop:text-lg text-danger gap-x-1">
             <span className="leading-4">НЕ ОПЛАЧЕНО</span>
             {/* <span>{sumOfPaymentsFromLoggedUserToEvent}</span> */}
           </div>
