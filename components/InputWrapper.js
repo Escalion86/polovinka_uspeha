@@ -72,17 +72,20 @@ const InputWrapper = forwardRef(
       noMargin = false,
       centerLabel = false,
       showDisabledIcon = true,
+      smallMargin = false,
       ...props
     },
     ref
   ) => {
     // const { info } = useSnackbar()
+    // const paddingYCalc =
+    //   paddingY === 'small' ? 4 : paddingY === 'big' ? 8 : paddingY ? 6 : 0
     return (
       <div
         className={cn(
           'relative flex items-center min-h-[40px] tablet:min-h-[44.4px]',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
-          noMargin ? '' : 'mt-3.5 mb-1',
+          noMargin ? '' : smallMargin ? 'mt-3' : 'mt-3.5 mb-1',
           noBorder
             ? ''
             : `border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50 ${
@@ -100,6 +103,10 @@ const InputWrapper = forwardRef(
           hidden ? 'hidden' : '',
           className
         )}
+        // style={{
+        //   paddingTop: paddingYCalc === 0 ? 0 : paddingYCalc + 2,
+        //   paddingBottom: paddingYCalc,
+        // }}
         ref={ref}
         {...props}
       >
@@ -157,30 +164,33 @@ const InputWrapper = forwardRef(
                   : paddingX
                   ? 'left-0'
                   : 'left-2',
-                paddingY === 'small'
-                  ? '-top-4'
-                  : paddingY === 'big'
-                  ? '-top-6'
-                  : paddingY
-                  ? '-top-5'
-                  : '-top-3',
+
                 floatingLabel
                   ? `${
                       paddingY === 'small'
-                        ? '-top-4 peer-focus:-top-4'
+                        ? '-top-[18px] peer-focus:-top-[18px]'
                         : paddingY === 'big'
                         ? '-top-6 peer-focus:-top-6'
                         : paddingY
                         ? '-top-5 peer-focus:-top-5'
                         : '-top-3 peer-focus:-top-3'
                     } text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-0.5`
-                  : '',
+                  : paddingY === 'small'
+                  ? '-top-[18px]'
+                  : paddingY === 'big'
+                  ? '-top-[24px]'
+                  : paddingY
+                  ? '-top-[20px]'
+                  : '-top-[12px]',
                 // error
                 //   ? 'peer-placeholder-shown:text-danger'
                 //   : 'peer-placeholder-shown:text-gray-400',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
               )}
+              // style={{
+              //   top: -12 - paddingYCalc * 1.5,
+              // }}
             >
               {label}
             </label>

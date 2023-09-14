@@ -255,7 +255,7 @@ const eventFunc = (eventId, clone = false) => {
       const isFormChanged =
         event?.title !== title ||
         event?.description !== description ||
-        !compareArrays(event?.tags, tags) ||
+        !compareArrays(defaultTags, tags) ||
         event?.showOnSite !== showOnSite ||
         dateStart !== defaultDateStart ||
         dateEnd !== defaultDateEnd ||

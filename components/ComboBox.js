@@ -14,10 +14,12 @@ const ComboBox = ({
   wrapperClassName,
   className,
   hidden,
-  paddingX = 'small',
-  paddingY = 'small',
+  paddingX = true,
+  paddingY = true,
   fullWidth,
   activePlaceholder,
+  noMargin,
+  smallMargin,
 }) => {
   const defaultItem = defaultValue
     ? items.find((item) => item.value === defaultValue)
@@ -34,6 +36,8 @@ const ComboBox = ({
       paddingX={paddingX}
       paddingY={paddingY}
       fullWidth={fullWidth}
+      noMargin={noMargin}
+      smallMargin={smallMargin}
     >
       <select
         className={cn(
