@@ -96,8 +96,9 @@ const Filter = ({
             canEditChips={false}
             // noWrapper={false}
             placeholder="Показывать все тэги"
-            noMargin
-            className="mt-2 mb-1"
+            // noMargin
+            smallMargin
+            // className="mt-2 mb-1"
             fullWidth
             // className={className}
           />
@@ -119,6 +120,8 @@ const Filter = ({
             placeholder="ВСЕ НАПРАВЛЕНИЯ"
             activePlaceholder
             fullWidth
+            smallMargin
+            // noMargin
           />
         )
 
@@ -195,10 +198,11 @@ const Filter = ({
       // initial={{}}
       animate={{ height: show ? 'auto' : 0 }}
       transition={{ type: 'just' }}
-      className="w-full px-1 overflow-hidden"
+      className="w-full overflow-hidden"
     >
-      {/* <div> */}
-      {/* <button
+      <div className="flex flex-col w-full px-1 pb-1 overflow-hidden">
+        {/* <div> */}
+        {/* <button
     className={cn(
       'hover:shadow-active duration-300  flex items-center justify-center h-10 px-2 py-1 text-black border border-gray-400 rounded',
       showFinished ? 'bg-green-200' : 'bg-white'
@@ -212,31 +216,32 @@ const Filter = ({
     Показывать завершенные
     <FontAwesomeIcon icon={icon} className={iconClassName ?? 'w-5 h-5'} />
   </button> */}
-      {elements.map((el, index) => {
-        if (defaultFilterValue && index === elements.length - 1)
-          return (
-            <div key={index} className="flex items-center">
-              {el}
-              <div
-                className="flex p-1 mt-2 ml-1 mr-1 cursor-pointer"
-                onClick={() => {
-                  onChange(defaultFilterValue)
-                  setShowFilter && setShowFilter(false)
-                  setRerender((state) => !state)
-                }}
-              >
-                <FilterAltOff className="text-danger" />
+        {elements.map((el, index) => {
+          if (defaultFilterValue && index === elements.length - 1)
+            return (
+              <div key={index} className="flex items-center">
+                {el}
+                <div
+                  className="flex p-1 mt-3 ml-1 mr-1 cursor-pointer group"
+                  onClick={() => {
+                    onChange(defaultFilterValue)
+                    setShowFilter && setShowFilter(false)
+                    setRerender((state) => !state)
+                  }}
+                >
+                  <FilterAltOff className="transition-all duration-300 text-danger group-hover:scale-125" />
+                </div>
               </div>
-            </div>
-          )
-        return el
-      })}
-      {/* <FontAwesomeIcon
+            )
+          return el
+        })}
+        {/* <FontAwesomeIcon
             className="z-10 w-6 h-6 text-white duration-200 max-w-6 max-h-6 group-hover:scale-125"
             icon={faFilterRe}
           /> */}
 
-      {/* </div> */}
+        {/* </div> */}
+      </div>
     </motion.div>
   )
 }

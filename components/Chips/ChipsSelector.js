@@ -29,6 +29,7 @@ const ChipsSelector = forwardRef(
       defaultValue,
       fullWidth = false,
       noMargin = false,
+      smallMargin = false,
       showDisabledIcon = true,
       prefix,
       prefixClassName,
@@ -78,6 +79,7 @@ const ChipsSelector = forwardRef(
         noMargin={noMargin}
         showDisabledIcon={showDisabledIcon}
         wrapperClassName="gap-x-1 flex-wrap gap-y-1"
+        smallMargin={smallMargin}
         {...props}
       >
         {filteredValue.length > 0 ? (
