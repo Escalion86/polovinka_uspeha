@@ -527,7 +527,8 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
     },
     notifications: {
       telegram: {
-        activate: () => addModal(notificationsTelegramFunc()),
+        activate: (onStartActivate) =>
+          addModal(notificationsTelegramFunc(onStartActivate)),
         deactivate: (onSuccess) =>
           addModal(notificationsDeativateTelegramFunc(onSuccess)),
       },

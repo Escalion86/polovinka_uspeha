@@ -30,11 +30,11 @@ const notificationsDeativateTelegramFunc = (onSuccess) => {
           },
         },
         () => {
-          success('Аккаунт Telegram деактивирован')
+          success('Аккаунт Telegram отключен')
           if (typeof onSuccess === 'function') onSuccess()
         },
         () => {
-          error('Ошибка деактивации аккаунта Telegram')
+          error('Ошибка отключения аккаунта Telegram')
         },
         false,
         loggedUser._id
@@ -50,9 +50,9 @@ const notificationsDeativateTelegramFunc = (onSuccess) => {
       <FormWrapper>
         <div className="flex flex-col ">
           <span>
-            После нажатия кнопки "Деактивировать" ваш аккаунт телеграм будет
-            отвязан! После отвязки аккаунта, можно будет привязать другой
-            аккаунт (или тот же)
+            После нажатия кнопки "Отключить" ваш аккаунт телеграм будет отвязан!
+            После отвязки аккаунта, можно будет привязать другой аккаунт (или
+            тот же)
           </span>
         </div>
       </FormWrapper>
@@ -60,8 +60,8 @@ const notificationsDeativateTelegramFunc = (onSuccess) => {
   }
 
   return {
-    title: `Деактивация уведомлений Telegram`,
-    confirmButtonName: 'Деактивировать',
+    title: `Отключение уведомлений Telegram`,
+    confirmButtonName: 'Отключить',
     Children: NotificationsDeativateTelegramModal,
   }
 }

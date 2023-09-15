@@ -9,7 +9,7 @@ import ErrorsList from '@components/ErrorsList'
 import useSnackbar from '@helpers/useSnackbar'
 import { putData } from '@helpers/CRUD'
 
-const notificationsTelegramFunc = () => {
+const notificationsTelegramFunc = (onStartActivate) => {
   const NotificationsTelegramModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -39,6 +39,7 @@ const notificationsTelegramFunc = () => {
             },
           },
           (data) => {
+            if (typeof onStartActivate === 'function') onStartActivate()
             window.open('https://t.me/polovinka_uspeha_bot')
           },
           () => {
