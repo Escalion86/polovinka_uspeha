@@ -77,9 +77,6 @@ const InputWrapper = forwardRef(
     },
     ref
   ) => {
-    if (label === 'Направление') {
-      console.log(typeof value !== 'object' && value)
-    }
     return (
       <div
         className={cn(
