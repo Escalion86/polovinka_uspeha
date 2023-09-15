@@ -77,9 +77,9 @@ const InputWrapper = forwardRef(
     },
     ref
   ) => {
-    // const { info } = useSnackbar()
-    // const paddingYCalc =
-    //   paddingY === 'small' ? 4 : paddingY === 'big' ? 8 : paddingY ? 6 : 0
+    if (label === 'Направление') {
+      console.log(typeof value !== 'object' && value)
+    }
     return (
       <div
         className={cn(
@@ -112,7 +112,7 @@ const InputWrapper = forwardRef(
       >
         <div
           className={cn(
-            'relative flex items-center w-full min-h-[24px] tablet:min-h-[28px]',
+            'flex items-center w-full min-h-[24px] tablet:min-h-[28px]',
             wrapperClassName,
             disabled ? 'cursor-not-allowed' : ''
           )}
@@ -162,28 +162,22 @@ const InputWrapper = forwardRef(
                   : paddingX === 'small'
                   ? 'left-1'
                   : paddingX
-                  ? 'left-0'
-                  : 'left-2',
+                  ? 'left-2'
+                  : 'left-0',
                 floatingLabel
-                  ? `${
-                      paddingY === 'small'
-                        ? '-top-[18px] peer-focus:-top-[18px]'
-                        : paddingY === 'big'
-                        ? '-top-[22px] peer-focus:-top-[22px]'
-                        : paddingY
-                        ? '-top-[20px] peer-focus:-top-[20px]'
-                        : '-top-[12px] peer-focus:-top-[12px]'
-                    } text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-0.5`
-                  : paddingY === 'small'
-                  ? '-top-[18px]'
-                  : paddingY === 'big'
-                  ? '-top-[22px]'
-                  : paddingY
-                  ? '-top-[20px]'
-                  : '-top-[12px]',
-                // error
-                //   ? 'peer-placeholder-shown:text-danger'
-                //   : 'peer-placeholder-shown:text-gray-400',
+                  ? `${'-top-[12px] peer-focus:-top-[12px]'} text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
+                  : // : paddingY === 'small'
+                    // ? '-top-[18px]'
+                    // : paddingY === 'big'
+                    // ? '-top-[22px]'
+                    // : paddingY
+                    // ? '-top-[20px]'
+                    // : '-top-[12px]',
+
+                    // error
+                    //   ? 'peer-placeholder-shown:text-danger'
+                    //   : 'peer-placeholder-shown:text-gray-400',
+                    '-top-[12px]',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
               )}
@@ -198,7 +192,13 @@ const InputWrapper = forwardRef(
         {required && (
           <div
             className={cn(
-              'flex h-4 text-danger items-center absolute px-1 text-xs bg-white right-1 -top-2.5'
+              'flex h-4 items-center absolute px-1 text-xs bg-white right-1 -top-2.5',
+              (value !== null &&
+                typeof value === 'object' &&
+                value.length > 0) ||
+                (typeof value !== 'object' && value)
+                ? 'text-gray-400'
+                : 'text-danger'
             )}
           >
             <span className="hidden tablet:block">Обязательное</span>
