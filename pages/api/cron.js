@@ -39,14 +39,15 @@ export default async function handler(req, res) {
 
         await dbConnect()
         const users = await Users.find({})
-        console.log('minutesNow :>> ', minutesNow)
-        console.log('hoursNow :>> ', hoursNow)
+        // console.log('minutesNow :>> ', minutesNow)
+        // console.log('hoursNow :>> ', hoursNow)
+
+        const strTimeNow = `${padNum(hoursNow, 2)}:${padNum(minutesNow, 2)}`
 
         const usersToNotificate = users.filter(
           (user) =>
-            // user.notifications?.get('settings')?.time ===
-            //   `${padNum(hoursNow, 2)}:${padNum(minutesNow, 2)}` &&
             isUserModer(user) &&
+            user.notifications?.get('settings')?.time === strTimeNow &&
             user.notifications?.get('settings')?.birthdays &&
             user.notifications?.get('telegram')?.active &&
             user.notifications?.get('telegram')?.id
