@@ -42,6 +42,8 @@ import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelecto
 import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 import CheckBox from '@components/CheckBox'
 import InputWrapper from '@components/InputWrapper'
+import TimePicker from '@components/TimePicker'
+import ComboBox from '@components/ComboBox'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -72,10 +74,6 @@ const QuestionnaireContent = (props) => {
   )
   const [thirdName, setThirdName] = useState(
     loggedUser?.thirdName ?? DEFAULT_USER.thirdName
-  )
-
-  const [eventsTagsNotification, setEventsTagsNotification] = useState(
-    loggedUser?.eventsTagsNotification ?? []
   )
   // const [about, setAbout] = useState(user?.about ?? '')
   // const [interests, setInterests] = useState(user?.interests ?? '')
@@ -196,10 +194,6 @@ const QuestionnaireContent = (props) => {
     !compareArrays(loggedUser?.images, images) ||
     loggedUser?.birthday !== birthday ||
     loggedUser?.haveKids !== haveKids ||
-    !compareObjects(
-      loggedUser?.eventsTagsNotification ?? [],
-      eventsTagsNotification
-    ) ||
     !compareObjects(loggedUser?.security, security) ||
     loggedUser?.status !== status ||
     loggedUser?.role !== role ||
@@ -248,7 +242,6 @@ const QuestionnaireContent = (props) => {
           images,
           birthday,
           haveKids,
-          eventsTagsNotification,
           security,
           status,
           role,
@@ -796,32 +789,108 @@ const QuestionnaireContent = (props) => {
                 </div>
               </>
             )}
-            <p className="my-3 text-lg font-bold leading-4">
+            {/* <p className="my-3 text-lg font-bold leading-4">
               Ниже укажите события о которых Вы хотите получать оповещения
-            </p>
-            <InputWrapper
-              label="Только для модераторов и администраторов"
-              className=""
-            >
+            </p> */}
+            <InputWrapper label="Ежедневные уведомления" className="">
               <div className="w-full">
-                <CheckBox
-                  checked={notifications.settings?.newUserRegistred}
-                  onClick={() => {
-                    toggleNotificationsSettings('newUserRegistred')
-                  }}
-                  label="Регистрации нового пользователя"
-                />
-                <CheckBox
-                  checked={notifications.settings?.eventRegistration}
-                  onClick={() =>
-                    toggleNotificationsSettings('eventRegistration')
+                <ComboBox
+                  label="Время уведомлений"
+                  items={[
+                    '00:00',
+                    '00:30',
+                    '01:00',
+                    '01:30',
+                    '02:00',
+                    '02:30',
+                    '03:00',
+                    '03:30',
+                    '04:00',
+                    '04:30',
+                    '05:00',
+                    '05:30',
+                    '06:00',
+                    '06:30',
+                    '07:00',
+                    '07:30',
+                    '08:00',
+                    '08:30',
+                    '09:00',
+                    '09:30',
+                    '10:00',
+                    '10:30',
+                    '11:00',
+                    '11:30',
+                    '12:00',
+                    '12:30',
+                    '13:00',
+                    '13:30',
+                    '14:00',
+                    '14:30',
+                    '15:00',
+                    '15:30',
+                    '16:00',
+                    '16:30',
+                    '17:00',
+                    '17:30',
+                    '18:00',
+                    '18:30',
+                    '19:00',
+                    '19:30',
+                    '20:00',
+                    '20:30',
+                    '21:00',
+                    '21:30',
+                    '22:00',
+                    '22:30',
+                    '23:00',
+                    '23:30',
+                  ].map((time) => ({ value: time, name: time }))}
+                  value={notifications.settings?.time}
+                  onChange={(time) =>
+                    setNotifications((state) => ({
+                      ...state,
+                      settings: {
+                        ...notifications?.settings,
+                        time,
+                      },
+                    }))
                   }
-                  label="Запись/отписка пользователей на мероприитиях"
+                  className="w-40 mt-2"
+                  required
+                  noMargin
+                  placeholder="Не выбрано"
                 />
+
+                {isLoggedUserModer && (
+                  <CheckBox
+                    checked={notifications.settings?.birthdays}
+                    onClick={() => toggleNotificationsSettings('birthdays')}
+                    label="Напоминания о днях рождениях пользователей (админ)"
+                  />
+                )}
               </div>
             </InputWrapper>
-            {isLoggedUserDev && (
-              <>
+            <InputWrapper label="Уведомления по событиям" className="">
+              <div className="w-full">
+                {isLoggedUserModer && (
+                  <CheckBox
+                    checked={notifications.settings?.newUserRegistred}
+                    onClick={() => {
+                      toggleNotificationsSettings('newUserRegistred')
+                    }}
+                    label="Регистрации нового пользователя (админ)"
+                  />
+                )}
+                {isLoggedUserModer && (
+                  <CheckBox
+                    checked={notifications.settings?.eventRegistration}
+                    onClick={() =>
+                      toggleNotificationsSettings('eventRegistration')
+                    }
+                    label="Запись/отписка пользователей на мероприитиях (админ)"
+                  />
+                )}
                 <CheckBox
                   checked={notifications.settings?.newEventsByTags}
                   onClick={() => toggleNotificationsSettings('newEventsByTags')}
@@ -831,22 +900,36 @@ const QuestionnaireContent = (props) => {
                   <EventTagsChipsSelector
                     placeholder="Мне интересно всё!"
                     label="Тэги мероприятий которые мне интересны"
-                    onChange={setEventsTagsNotification}
-                    tags={eventsTagsNotification}
+                    onChange={(value) =>
+                      setNotifications((state) => ({
+                        ...state,
+                        settings: {
+                          ...notifications?.settings,
+                          eventsTags: value,
+                        },
+                      }))
+                    }
+                    tags={notifications.settings?.eventsTags}
                   />
                 )}
-                <CheckBox
-                  checked={notifications.settings?.eventUserMoves}
-                  onClick={() => toggleNotificationsSettings('eventUserMoves')}
-                  label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
-                />
-                <CheckBox
-                  checked={notifications.settings?.eventCancel}
-                  onClick={() => toggleNotificationsSettings('eventCancel')}
-                  label="Отмена мероприятия на которое я записан"
-                />
-              </>
-            )}
+                {isLoggedUserDev && (
+                  <CheckBox
+                    checked={notifications.settings?.eventUserMoves}
+                    onClick={() =>
+                      toggleNotificationsSettings('eventUserMoves')
+                    }
+                    label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
+                  />
+                )}
+                {isLoggedUserDev && (
+                  <CheckBox
+                    checked={notifications.settings?.eventCancel}
+                    onClick={() => toggleNotificationsSettings('eventCancel')}
+                    label="Отмена мероприятия на которое я записан"
+                  />
+                )}
+              </div>
+            </InputWrapper>
           </TabPanel>
         )}
       </TabContext>
