@@ -21,8 +21,8 @@ import {
   DEFAULT_USERS_STATUS_ACCESS,
   DEFAULT_USERS_STATUS_DISCOUNT,
 } from '@helpers/constants'
-import { SelectDirection, SelectUser } from '@components/SelectItem'
-import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
+import { SelectUser } from '@components/SelectItem'
+// import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import Slider from '@components/Slider'
 
 import compareArrays from '@helpers/compareArrays'

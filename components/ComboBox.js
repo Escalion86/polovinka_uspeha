@@ -20,6 +20,8 @@ const ComboBox = ({
   activePlaceholder,
   noMargin,
   smallMargin,
+  error,
+  required,
 }) => {
   const defaultItem = defaultValue
     ? items.find((item) => item.value === defaultValue)
@@ -38,15 +40,22 @@ const ComboBox = ({
       fullWidth={fullWidth}
       noMargin={noMargin}
       smallMargin={smallMargin}
+      error={error}
+      required={required}
+      value={value}
     >
       <select
         className={cn(
           'flex-1 cursor-pointer outline-none bg-transparent px-1',
           selectClassName
         )}
-        onChange={(e) => !disabled && onChange && onChange(e.target.value)}
+        onChange={(e) =>
+          !disabled &&
+          onChange &&
+          onChange(e.target.value === '' ? null : e.target.value)
+        }
         defaultValue={defaultItem ? defaultValue : undefined}
-        value={defaultValue ? undefined : value}
+        value={defaultValue ? undefined : value ?? ''}
       >
         {placeholder && (
           <option disabled={!activePlaceholder} value="">
