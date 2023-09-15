@@ -10,6 +10,7 @@ const DirectionSelector = ({
   required,
   error,
   activePlaceholder,
+  fullWidth,
 }) => {
   const directions = useRecoilValue(directionsAtom)
   const items = directions.map((item, index) => ({
@@ -27,6 +28,7 @@ const DirectionSelector = ({
       smallMargin
       required={required}
       error={error}
+      fullWidth={fullWidth}
     />
   )
 }
