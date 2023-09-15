@@ -12,7 +12,7 @@ const PriceInput = ({
   labelContentWidth,
   labelPos,
   disabled,
-  paddingY = 'small',
+  paddingY = false,
   noMargin,
 }) => {
   const rubles = value ? Math.floor(value / 100) : 0

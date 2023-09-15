@@ -117,10 +117,7 @@ const Input = forwardRef(
                 if (typeof min !== 'number' || value > min) onChange(value - 1)
               }}
             >
-              <FontAwesomeIcon
-                icon={faArrowDown}
-                className="w-5 h-5 tablet:w-6 tablet:h-6"
-              />
+              <FontAwesomeIcon icon={faArrowDown} className="w-5 h-5" />
             </div>
           )}
 
@@ -171,10 +168,7 @@ const Input = forwardRef(
                 if (typeof max !== 'number' || value < max) onChange(value + 1)
               }}
             >
-              <FontAwesomeIcon
-                icon={faArrowUp}
-                className="w-5 h-5 tablet:w-6 tablet:h-6"
-              />
+              <FontAwesomeIcon icon={faArrowUp} className="w-5 h-5" />
             </div>
           )}
         {/* <label

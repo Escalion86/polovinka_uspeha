@@ -83,12 +83,12 @@ const InputWrapper = forwardRef(
     return (
       <div
         className={cn(
-          'relative flex items-center min-h-[40px] tablet:min-h-[44.4px]',
+          'relative flex items-stretch',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
           noMargin ? '' : smallMargin ? 'mt-3' : 'mt-3.5 mb-1',
           noBorder
-            ? ''
-            : `border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50 ${
+            ? 'min-h-[36px] tablet:min-h-[40px]'
+            : `min-h-[40px] tablet:min-h-[44px] border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50 ${
                 error ? 'border-danger' : 'border-gray-300'
               }`,
           fullWidth ? 'w-full' : '',
@@ -112,7 +112,7 @@ const InputWrapper = forwardRef(
       >
         <div
           className={cn(
-            'relative flex w-full min-h-[24px] tablet:min-h-[28px]',
+            'relative flex items-center w-full min-h-[24px] tablet:min-h-[28px]',
             wrapperClassName,
             disabled ? 'cursor-not-allowed' : ''
           )}
@@ -164,21 +164,20 @@ const InputWrapper = forwardRef(
                   : paddingX
                   ? 'left-0'
                   : 'left-2',
-
                 floatingLabel
                   ? `${
                       paddingY === 'small'
                         ? '-top-[18px] peer-focus:-top-[18px]'
                         : paddingY === 'big'
-                        ? '-top-6 peer-focus:-top-6'
+                        ? '-top-[22px] peer-focus:-top-[22px]'
                         : paddingY
-                        ? '-top-5 peer-focus:-top-5'
-                        : '-top-3 peer-focus:-top-3'
+                        ? '-top-[20px] peer-focus:-top-[20px]'
+                        : '-top-[12px] peer-focus:-top-[12px]'
                     } text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-0.5`
                   : paddingY === 'small'
                   ? '-top-[18px]'
                   : paddingY === 'big'
-                  ? '-top-[24px]'
+                  ? '-top-[22px]'
                   : paddingY
                   ? '-top-[20px]'
                   : '-top-[12px]',

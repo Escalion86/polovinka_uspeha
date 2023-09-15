@@ -24,7 +24,7 @@ const AddressPicker = ({
       paddingY={false}
       paddingX="small"
     >
-      <div className="flex-1">
+      <div className="flex-1 mt-0.5">
         {/* <FormWrapper twoColumns> */}
         <FormWrapper className="flex flex-wrap mt-3 mb-1 gap-x-1 gap-y-3">
           <Input
