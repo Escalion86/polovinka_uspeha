@@ -9,7 +9,7 @@ import GenderPicker from '@components/ValuePicker/GenderPicker'
 import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
-import { putData } from '@helpers/CRUD'
+import { getData, putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
@@ -44,6 +44,7 @@ import CheckBox from '@components/CheckBox'
 import InputWrapper from '@components/InputWrapper'
 import TimePicker from '@components/TimePicker'
 import ComboBox from '@components/ComboBox'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -66,6 +67,12 @@ const QuestionnaireContent = (props) => {
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
+
+  const [
+    waitActivateTelegramNotifications,
+    setWaitActivateTelegramNotifications,
+  ] = useState(false)
+
   const [firstName, setFirstName] = useState(
     loggedUser?.firstName ?? DEFAULT_USER.firstName
   )
@@ -265,6 +272,33 @@ const QuestionnaireContent = (props) => {
       // setIsWaitingToResponse(false)
     }
   }
+
+  useEffect(() => {
+    if (waitActivateTelegramNotifications) {
+      var interval
+      const fetchUser = async () => {
+        const data = await getData(
+          `/api/users/${loggedUser._id}`,
+          {},
+          null,
+          null,
+          true
+        )
+        if (data?.notifications?.telegram?.id) {
+          setNotifications((state) => ({
+            ...state,
+            telegram: data?.notifications?.telegram,
+          }))
+          setWaitActivateTelegramNotifications(false)
+          clearInterval(interval)
+        }
+      }
+
+      interval = setInterval(() => {
+        fetchUser().catch(console.error)
+      }, 5000)
+    }
+  }, [waitActivateTelegramNotifications])
 
   useEffect(() => {
     if (isWaitingToResponse) {
@@ -712,13 +746,26 @@ const QuestionnaireContent = (props) => {
               value={notifications?.telegram?.active ?? false}
               onChange={() => {
                 // removeError('notificationTelegramUserName')
-                setNotifications((state) => ({
-                  ...state,
-                  telegram: {
-                    ...notifications?.telegram,
-                    active: !notifications?.telegram?.active,
-                  },
-                }))
+                if (notifications?.telegram?.id) {
+                  modalsFunc.notifications.telegram.deactivate(() => {
+                    setNotifications((state) => ({
+                      ...state,
+                      telegram: {
+                        active: false,
+                        userName: undefined,
+                        id: undefined,
+                      },
+                    }))
+                  })
+                } else {
+                  setNotifications((state) => ({
+                    ...state,
+                    telegram: {
+                      ...notifications?.telegram,
+                      active: true,
+                    },
+                  }))
+                }
               }}
             />
             {notifications?.telegram?.active && (
@@ -749,7 +796,7 @@ const QuestionnaireContent = (props) => {
                   </span>
                   {notifications?.telegram?.id ? (
                     <>
-                      <div className="flex gap-x-1">
+                      {/* <div className="flex gap-x-1">
                         <span className="text-success">АКТИВНО</span>
                         <span className="">{`(@${notifications?.telegram?.userName})`}</span>
                       </div>
@@ -770,20 +817,33 @@ const QuestionnaireContent = (props) => {
                             }))
                           })
                         }
-                      />
+                      /> */}
                     </>
                   ) : (
                     <>
-                      <span className="text-danger">НЕ АКТИВНО</span>
-                      <ValueItem
-                        name="Активировать"
-                        color="green-500"
-                        icon={faCheck}
-                        hoverable
-                        onClick={() =>
-                          modalsFunc.notifications.telegram.activate()
-                        }
-                      />
+                      {waitActivateTelegramNotifications ? (
+                        <>
+                          <span className="text-orange-400">
+                            ОЖИДАЕМ АКТИВАЦИЮ
+                          </span>
+                          <LoadingSpinner size="xs" className="ml-2" />
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-danger">НЕ АКТИВНО</span>
+                          <ValueItem
+                            name="Активировать"
+                            color="green-500"
+                            icon={faCheck}
+                            hoverable
+                            onClick={() =>
+                              modalsFunc.notifications.telegram.activate(() =>
+                                setWaitActivateTelegramNotifications(true)
+                              )
+                            }
+                          />
+                        </>
+                      )}
                     </>
                   )}
                 </div>
@@ -857,7 +917,7 @@ const QuestionnaireContent = (props) => {
                     }))
                   }
                   className="w-40 mt-2"
-                  required
+                  required={notifications.settings?.birthdays}
                   noMargin
                   placeholder="Не выбрано"
                 />

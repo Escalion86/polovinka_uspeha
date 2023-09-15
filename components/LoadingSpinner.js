@@ -28,15 +28,18 @@ export const LoadingSpinner = ({
       )}
     >
       <div
-        className="relative flex flex-col items-center justify-center h-full"
+        className="relative flex flex-col items-center justify-center"
         style={{
+          height: widthHeight * 1.25,
           maxHeight: widthHeight * 1.25,
           // maxWidth: widthHeight * 1.25,
         }}
       >
         <div
           style={{
+            height: widthHeight * 1.25,
             maxHeight: widthHeight * 1.25,
+            width: widthHeight * 1.25,
             maxWidth: widthHeight * 1.25,
           }}
           className="absolute top-auto bottom-auto left-auto right-auto h-[95%] border-l-2 rounded-full aspect-1 border-general animate-spin"
@@ -48,7 +51,7 @@ export const LoadingSpinner = ({
             repeat: Infinity,
             times: [0, 0.6, 0.7, 0.8, 0.9, 1],
           }}
-          className="flex items-center justify-center h-[86%]"
+          className="flex items-center justify-center h-full"
         >
           <img
             className="object-contain max-h-[80%] aspect-1 h-[70%] w-[70%]"
