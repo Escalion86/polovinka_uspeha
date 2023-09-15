@@ -1,6 +1,5 @@
 import { useRecoilValue } from 'recoil'
 import { useEffect, useState } from 'react'
-import directionsAtom from '@state/atoms/directionsAtom'
 import {
   Checkbox,
   FormControl,
@@ -14,16 +13,12 @@ import {
   Button,
   ButtonGroup,
 } from '@mui/material'
-import { Check } from '@mui/icons-material'
 
 import { FilterAltOff } from '@mui/icons-material'
 
-import { getNounDirections } from '@helpers/getNoun'
 import { motion } from 'framer-motion'
-import EventTagsChipsSelector from './Chips/EventTagsChipsSelector'
 import ChipsSelector from './Chips/ChipsSelector'
-import ComboBox from './ComboBox'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import DirectionSelector from './ComboBox/DirectionSelector'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -105,23 +100,13 @@ const Filter = ({
           // </FormControl>
         )
       } else if (type === 'directions') {
-        const directions = useRecoilValue(directionsAtom)
-        const items = directions.map((item, index) => ({
-          name: item.title,
-          value: item._id,
-        }))
         return (
-          <ComboBox
-            key={key}
-            label="Направления"
+          <DirectionSelector
             value={componentValue}
             onChange={(value) => onChangeComponent(key, value)}
-            items={items}
             placeholder="ВСЕ НАПРАВЛЕНИЯ"
             activePlaceholder
             fullWidth
-            smallMargin
-            // noMargin
           />
         )
 

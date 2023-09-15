@@ -17,12 +17,25 @@ import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
 import usersAtom from '@state/atoms/usersAtom'
 import filterItems from '@helpers/filterItems'
+import UsersFilter from '@components/Filter/UsersFilter'
 
 const ServicesUsersContent = () => {
   const servicesUsers = useRecoilValue(servicesUsersAtom)
   const users = useRecoilValue(usersAtom)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+
+  const [filter, setFilter] = useState({
+    gender: {
+      male: true,
+      famale: true,
+      // null: true,
+    },
+    // status: {
+    //   novice: true,
+    //   member: true,
+    // },
+  })
 
   // const usersIds = servicesUsers.map((serviceUser) => serviceUser.userId)
   // const usersWithServices = users.filter((user) => usersIds.includes(user._id))
@@ -39,18 +52,7 @@ const ServicesUsersContent = () => {
   const [isSearching, setIsSearching] = useState(false)
   // const [sort, setSort] = useState({ dateStart: 'asc' })
   // const [showFilter, setShowFilter] = useState(false)
-  // const [filter, setFilter] = useState({
-  //   status: {
-  //     active: true,
-  //     finished: false,
-  //     closed: false,
-  //     canceled: false,
-  //   },
-  //   participant: {
-  //     participant: true,
-  //     notParticipant: true,
-  //   },
-  // })
+
   const [searchText, setSearchText] = useState('')
 
   // const sortKey = Object.keys(sort)[0]
@@ -59,10 +61,18 @@ const ServicesUsersContent = () => {
   //   ? sortFunctions[sortKey][sortValue]
   //   : undefined
 
+  const filteredServicesUsers = useMemo(
+    () =>
+      updatedServicesUsers.filter(
+        (serviceUser) => filter.gender[serviceUser.user.gender]
+      ),
+    [filter, updatedServicesUsers]
+  )
+
   const visibleServicesUsers = useMemo(() => {
-    if (!searchText) return updatedServicesUsers
+    if (!searchText) return filteredServicesUsers
     return filterItems(
-      updatedServicesUsers,
+      filteredServicesUsers.filter(),
       searchText,
       [],
       {},
@@ -80,11 +90,12 @@ const ServicesUsersContent = () => {
       ],
       'user'
     )
-  }, [updatedServicesUsers, searchText])
+  }, [filteredServicesUsers, searchText])
 
   return (
     <>
       <ContentHeader>
+        <UsersFilter value={filter} onChange={setFilter} hideNullGender />
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounServicesUsers(servicesUsers.length)}

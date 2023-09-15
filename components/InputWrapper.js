@@ -77,18 +77,15 @@ const InputWrapper = forwardRef(
     },
     ref
   ) => {
-    // const { info } = useSnackbar()
-    // const paddingYCalc =
-    //   paddingY === 'small' ? 4 : paddingY === 'big' ? 8 : paddingY ? 6 : 0
     return (
       <div
         className={cn(
-          'relative flex items-center min-h-[40px] tablet:min-h-[44.4px]',
+          'relative flex items-stretch',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
           noMargin ? '' : smallMargin ? 'mt-3' : 'mt-3.5 mb-1',
           noBorder
-            ? ''
-            : `border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50 ${
+            ? 'min-h-[36px] tablet:min-h-[40px]'
+            : `min-h-[40px] tablet:min-h-[44px] border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50 ${
                 error ? 'border-danger' : 'border-gray-300'
               }`,
           fullWidth ? 'w-full' : '',
@@ -112,7 +109,7 @@ const InputWrapper = forwardRef(
       >
         <div
           className={cn(
-            'relative flex w-full min-h-[24px] tablet:min-h-[28px]',
+            'flex items-center w-full min-h-[24px] tablet:min-h-[28px]',
             wrapperClassName,
             disabled ? 'cursor-not-allowed' : ''
           )}
@@ -162,29 +159,22 @@ const InputWrapper = forwardRef(
                   : paddingX === 'small'
                   ? 'left-1'
                   : paddingX
-                  ? 'left-0'
-                  : 'left-2',
-
+                  ? 'left-2'
+                  : 'left-0',
                 floatingLabel
-                  ? `${
-                      paddingY === 'small'
-                        ? '-top-[18px] peer-focus:-top-[18px]'
-                        : paddingY === 'big'
-                        ? '-top-6 peer-focus:-top-6'
-                        : paddingY
-                        ? '-top-5 peer-focus:-top-5'
-                        : '-top-3 peer-focus:-top-3'
-                    } text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-0.5`
-                  : paddingY === 'small'
-                  ? '-top-[18px]'
-                  : paddingY === 'big'
-                  ? '-top-[24px]'
-                  : paddingY
-                  ? '-top-[20px]'
-                  : '-top-[12px]',
-                // error
-                //   ? 'peer-placeholder-shown:text-danger'
-                //   : 'peer-placeholder-shown:text-gray-400',
+                  ? `${'-top-[12px] peer-focus:-top-[12px]'} text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
+                  : // : paddingY === 'small'
+                    // ? '-top-[18px]'
+                    // : paddingY === 'big'
+                    // ? '-top-[22px]'
+                    // : paddingY
+                    // ? '-top-[20px]'
+                    // : '-top-[12px]',
+
+                    // error
+                    //   ? 'peer-placeholder-shown:text-danger'
+                    //   : 'peer-placeholder-shown:text-gray-400',
+                    '-top-[12px]',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
               )}
@@ -199,7 +189,13 @@ const InputWrapper = forwardRef(
         {required && (
           <div
             className={cn(
-              'flex h-4 text-danger items-center absolute px-1 text-xs bg-white right-1 -top-2.5'
+              'flex h-4 items-center absolute px-1 text-xs bg-white right-1 -top-2.5',
+              (value !== null &&
+                typeof value === 'object' &&
+                value.length > 0) ||
+                (typeof value !== 'object' && value)
+                ? 'text-gray-400'
+                : 'text-danger'
             )}
           >
             <span className="hidden tablet:block">Обязательное</span>

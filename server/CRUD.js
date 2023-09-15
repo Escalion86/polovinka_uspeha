@@ -320,6 +320,7 @@ const updateEventInCalendar = async (event, req) => {
 }
 
 const notificateUsersAboutEvent = async (event, req) => {
+  await dbConnect()
   const users = await Users.find({})
   const usersToNotificate = users.filter(
     (user) =>

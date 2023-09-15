@@ -21,8 +21,8 @@ import {
   DEFAULT_USERS_STATUS_ACCESS,
   DEFAULT_USERS_STATUS_DISCOUNT,
 } from '@helpers/constants'
-import { SelectDirection, SelectUser } from '@components/SelectItem'
-import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
+import { SelectUser } from '@components/SelectItem'
+// import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import Slider from '@components/Slider'
 
 import compareArrays from '@helpers/compareArrays'
@@ -41,6 +41,7 @@ import SvgSigma from 'svg/SvgSigma'
 import InputWrapper from '@components/InputWrapper'
 import isObject from '@helpers/isObject'
 import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
+import DirectionSelector from '@components/ComboBox/DirectionSelector'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -375,7 +376,7 @@ const eventFunc = (eventId, clone = false) => {
               required
               error={errors.images}
             />
-            <SelectDirection
+            {/* <SelectDirection
               selectedId={directionId}
               onChange={(directionId) => {
                 removeError('directionId')
@@ -383,7 +384,17 @@ const eventFunc = (eventId, clone = false) => {
               }}
               required
               error={errors.directionId}
+            /> */}
+            <DirectionSelector
+              value={directionId}
+              onChange={(directionId) => {
+                removeError('directionId')
+                setDirectionId(directionId)
+              }}
+              required
+              error={errors.directionId}
             />
+
             <Input
               label="Название"
               type="text"
