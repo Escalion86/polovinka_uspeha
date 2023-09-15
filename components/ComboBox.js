@@ -47,6 +47,7 @@ const ComboBox = ({
       <select
         className={cn(
           'flex-1 cursor-pointer outline-none bg-transparent px-1',
+          !value ? 'text-gray-400' : '',
           selectClassName
         )}
         onChange={(e) =>
@@ -56,14 +57,27 @@ const ComboBox = ({
         }
         defaultValue={defaultItem ? defaultValue : undefined}
         value={defaultValue ? undefined : value ?? ''}
+        style={{
+          WebkitAppearance: 'none',
+          MozAppearance: 'none',
+          appearance: 'none',
+        }}
       >
         {placeholder && (
-          <option disabled={!activePlaceholder} value="">
+          <option
+            className="text-gray-400"
+            disabled={!activePlaceholder}
+            value=""
+          >
             {placeholder}
           </option>
         )}
         {items.map((item, index) => (
-          <option className="cursor-pointer" key={item.name} value={item.value}>
+          <option
+            className="text-black cursor-pointer"
+            key={item.name}
+            value={item.value}
+          >
             {item.name}
           </option>
         ))}

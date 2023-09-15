@@ -142,6 +142,7 @@ const BirthdaysContent = () => {
             {array.map((users, index) => {
               var date = new Date(serverDate)
               date.setDate(date.getDate() + index)
+              const daysFromNow = getDaysFromNow(date, true)
               return (
                 users.length > 0 && (
                   <TimelineItem key={index}>
@@ -177,34 +178,38 @@ const BirthdaysContent = () => {
                         <span className="font-bold">
                           {formatDate(date, false, true)}
                         </span>
-                        <span>({getDaysFromNow(date, true)})</span>
+                        <span>({daysFromNow})</span>
                       </div>
                       <div className="flex flex-col pb-2 gap-y-1">
-                        {users.map((user) => (
-                          <div key={user._id}>
-                            <div className="flex px-1 text-sm gap-x-1">
-                              <span>Исполнится</span>
-                              <span>
-                                {birthDateToAge(
-                                  user.birthday,
-                                  date,
-                                  true,
-                                  false,
-                                  true,
-                                  1
-                                )}
-                              </span>
-                            </div>
+                        {users.map((user) => {
+                          const ages = birthDateToAge(
+                            user.birthday,
+                            date,
+                            true,
+                            false,
+                            true
+                          )
+                          return (
+                            <div key={user._id}>
+                              <div className="flex px-1 text-sm gap-x-1">
+                                <span>
+                                  {daysFromNow === 'сегодня'
+                                    ? 'Исполнилось'
+                                    : 'Исполнится'}
+                                </span>
+                                <span>{ages}</span>
+                              </div>
 
-                            <SelectUserList
-                              // label="Участники Мужчины"
-                              key={user._id}
-                              usersId={[user._id]}
-                              showCounter={false}
-                              readOnly
-                            />
-                          </div>
-                        ))}
+                              <SelectUserList
+                                // label="Участники Мужчины"
+                                key={user._id}
+                                usersId={[user._id]}
+                                showCounter={false}
+                                readOnly
+                              />
+                            </div>
+                          )
+                        })}
                       </div>
                     </TimelineContent>
                   </TimelineItem>

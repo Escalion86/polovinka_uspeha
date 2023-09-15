@@ -152,8 +152,11 @@ const InputWrapper = forwardRef(
                   : '',
                 true ? 'flex items-center' : '',
                 required
-                  ? 'tablet:max-w-[calc(100%-72px)] max-w-[calc(100%-16px)] peer-focus:max-w-[calc(100%-16px)] tablet:peer-focus:max-w-[calc(100%-72px)] peer-placeholder-shown:max-w-full'
+                  ? 'max-w-[calc(100%-16px)] peer-focus:max-w-[calc(100%-16px)] peer-placeholder-shown:max-w-full'
                   : '',
+                // required
+                // ? 'tablet:max-w-[calc(100%-72px)] max-w-[calc(100%-16px)] peer-focus:max-w-[calc(100%-16px)] tablet:peer-focus:max-w-[calc(100%-72px)] peer-placeholder-shown:max-w-full'
+                // : '',
                 centerLabel
                   ? 'left-1/2 -translate-x-1/2'
                   : paddingX === 'small'
@@ -189,7 +192,7 @@ const InputWrapper = forwardRef(
         {required && (
           <div
             className={cn(
-              'flex h-4 items-center absolute px-1 text-xs bg-white right-1 -top-2.5',
+              'flex h-4 items-center absolute px-1 text-xs bg-white right-1 -top-[9px]',
               (value !== null &&
                 typeof value === 'object' &&
                 value.length > 0) ||
@@ -198,14 +201,14 @@ const InputWrapper = forwardRef(
                 : 'text-danger'
             )}
           >
-            <span className="hidden tablet:block">Обязательное</span>
-            <span className="tablet:hidden">
-              <FontAwesomeIcon
-                className={cn('w-2.5 h-2.5')}
-                icon={faAsterisk}
-                size="1x"
-              />
-            </span>
+            {/* <span className="hidden tablet:block">Обязательное</span> */}
+            {/* <span className="tablet:hidden"> */}
+            <FontAwesomeIcon
+              className={cn('w-2.5 h-2.5')}
+              icon={faAsterisk}
+              size="1x"
+            />
+            {/* </span> */}
           </div>
         )}
         {error && showErrorText && (
