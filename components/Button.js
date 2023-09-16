@@ -14,6 +14,7 @@ const Button = ({
   thin = false,
   icon,
   collapsing,
+  rounded = true,
   ...props
 }) => {
   return loading ? (
@@ -21,6 +22,7 @@ const Button = ({
       className={cn(
         'px-4 rounded text-white bg-opacity-90 bg-gray-300 cursor-not-allowed',
         thin ? 'h-8 py-0.5' : 'h-9 py-1',
+        rounded ? 'rounded' : '',
         className
       )}
     >
@@ -34,7 +36,8 @@ const Button = ({
         onClick && !disabled && onClick()
       }}
       className={cn(
-        'flex gap-x-2 justify-start items-center whitespace-nowrap duration-300 rounded text-white text-base font-normal bg-opacity-90 prevent-select-text overflow-hidden',
+        'flex gap-x-2 justify-start items-center whitespace-nowrap duration-300 text-white text-base font-normal bg-opacity-90 prevent-select-text overflow-hidden',
+        rounded ? 'rounded' : '',
         thin ? 'h-8 py-0.5' : 'h-9 py-1',
         className,
         disabled

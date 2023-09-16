@@ -461,6 +461,7 @@ export const DEFAULT_QUESTIONNAIRE_ITEM = {
 
 export const DEFAULT_DIRECTION = Object.freeze({
   title: '',
+  shortDescription: '',
   description: '',
   image: null,
   showOnSite: true,

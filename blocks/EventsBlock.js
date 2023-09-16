@@ -63,7 +63,11 @@ const EventsBlock = ({
               .sort((a, b) => (a.dateStart < b.dateStart ? -1 : 1))
               .slice(0, maxShowedEvents)
               .map((event, index) => (
-                <EventCard key={event._id} eventId={event._id} />
+                <EventCard
+                  key={event._id}
+                  eventId={event._id}
+                  changeStyle="desktop"
+                />
               ))
             // )
             //  : (

@@ -8,6 +8,7 @@ const BlockContainer = ({
   id,
   style,
   className,
+  childrenWrapperClassName,
   children,
   small,
   altBg,
@@ -31,13 +32,13 @@ const BlockContainer = ({
           className={cn(
             `flex flex-col justify-center tablet:gap-y-6 w-full gap-y-4 px-6 laptop:px-20`,
             small ? 'py-10' : 'py-20',
-            altBg ? 'bg-secondary' : 'bg-white',
+            altBg ? 'bg-secondary' : 'bg-gray-100',
             className
           )}
           style={style}
         >
           <BlockTitle title={title} />
-          {children}
+          <div className={cn(childrenWrapperClassName)}>{children}</div>
         </div>
       )}
     </div>

@@ -147,10 +147,8 @@ const InputWrapper = forwardRef(
               // for="exampleFormControlInput1"
               className={cn(
                 'pointer-events-none select-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
-                true
-                  ? 'h-5 leading-[12px] peer-placeholder-shown:leading-[14px]'
-                  : '',
-                true ? 'flex items-center' : '',
+                'h-5 leading-[12px] peer-placeholder-shown:leading-[14px]',
+                'flex items-center',
                 required
                   ? 'max-w-[calc(100%-16px)] peer-focus:max-w-[calc(100%-16px)] peer-placeholder-shown:max-w-full'
                   : '',
@@ -159,13 +157,14 @@ const InputWrapper = forwardRef(
                 // : '',
                 centerLabel
                   ? 'left-1/2 -translate-x-1/2'
-                  : paddingX === 'small'
-                  ? 'left-1'
-                  : paddingX
-                  ? 'left-2'
-                  : 'left-0',
+                  : // : paddingX === 'small'
+                    // ? 'left-1 peer-focus:left-2'
+                    // : paddingX
+                    // ? 'left-2 peer-focus:left-2'
+                    // : 'left-0 peer-focus:left-2',
+                    'left-2',
                 floatingLabel
-                  ? `${'-top-[12px] peer-focus:-top-[12px]'} text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
+                  ? `-top-[12px] peer-focus:-top-[12px] text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
                   : // : paddingY === 'small'
                     // ? '-top-[18px]'
                     // : paddingY === 'big'

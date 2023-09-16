@@ -1,16 +1,19 @@
 import BlockContainer from '@components/BlockContainer'
 import Masonry from '@components/Masonry'
 import { H2, H3 } from '@components/tags'
+import textAge from '@helpers/textAge'
 import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
 import { useRecoilValue } from 'recoil'
 
 const Review = ({ review, style }) => (
-  <div className="p-3 bg-white rounded-lg" style={style}>
+  <div className="p-3 bg-white rounded-lg shadow-xl" style={style}>
     <div className="font-bold">
       {review.author}
-      {review.authorAge ? ', ' + review.authorAge : ''}
+      {review.authorAge
+        ? ', ' + review.authorAge + ' ' + textAge(review.authorAge)
+        : ''}
     </div>
-    <div className="">{review.review}</div>
+    <div className="leading-5">{review.review}</div>
   </div>
 )
 

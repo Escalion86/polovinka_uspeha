@@ -31,14 +31,15 @@ import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelec
 import Fab from '@components/Fab'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import ServicesBlock from '@blocks/ServicesBlock'
 
 export default function Home(props) {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const filteredEvents = useRecoilValue(filteredEventsSelector)
   const filteredDirections = useRecoilValue(filteredDirectionsSelector)
-  const directionsBlocksInverse = filteredEvents.length > 0
-  const additionalBlocksInverse =
-    ((directionsBlocksInverse ? 1 : 0) + filteredDirections.length) % 2 === 0
+  // const directionsBlocksInverse = filteredEvents.length > 0
+  // const additionalBlocksInverse =
+  //   ((directionsBlocksInverse ? 1 : 0) + filteredDirections.length) % 2 === 0
 
   return (
     <>
@@ -50,8 +51,9 @@ export default function Home(props) {
         <TitleBlock />
         <AboutBlock />
         <EventsBlock maxEvents={4} />
-        <DirectionsBlock startInverse={directionsBlocksInverse} />
-        <AdditionalBlocks startInverse={additionalBlocksInverse} />
+        <DirectionsBlock />
+        <ServicesBlock />
+        <AdditionalBlocks />
         <ReviewsBlock />
         <ContactsBlock />
         <Fab

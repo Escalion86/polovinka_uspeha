@@ -119,7 +119,7 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
           />
         </div>
         {/* <div>{direction.description}</div> */}
-        <div className="flex-1 w-full max-w-full px-2 py-1 overflow-hidden text-sm textarea">
+        <div className="flex-1 w-full max-w-full px-2 max-h-[58px] pb-1 overflow-hidden text-sm whitespace-pre-wrap">
           {service.shortDescription}
         </div>
         <div className="flex items-center justify-between px-2 py-1 text-lg font-bold border-t gap-x-2 flex-nowrap">

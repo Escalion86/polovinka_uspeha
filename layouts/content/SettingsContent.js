@@ -120,14 +120,14 @@ const SettingsContent = (props) => {
         />
         {codeSendService === 'telefonip' && (
           <div>
-            <div className="flex gap-x-1">
+            {/* <div className="flex gap-x-1">
               <span className="italic">Стоимость одного звонка:</span>
               <span>
                 {!codeSendServiceInfo?.price
                   ? 'загружаем информацию...'
                   : `${codeSendServiceInfo?.price} ₽`}
               </span>
-            </div>
+            </div> */}
             <div className="flex gap-x-1">
               <span className="italic">Баланс на счете:</span>
               <span>

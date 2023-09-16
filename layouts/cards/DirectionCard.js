@@ -54,11 +54,13 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
             }}
           />
         </div>
-        {/* <div>{direction.description}</div> */}
-        <div
+        <div className="px-2 py-1 whitespace-pre-wrap text-sm">
+          {direction.shortDescription}
+        </div>
+        {/* <div
           className="px-2 py-1 text-sm textarea"
           dangerouslySetInnerHTML={{ __html: sanitize(direction.description) }}
-        />
+        /> */}
       </div>
     </CardWrapper>
   )
