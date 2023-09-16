@@ -41,6 +41,8 @@ const useErrors = () => {
         !data
           ? setError({ shortDescription: 'Введите короткое описание' })
           : null,
+      shortDescription: (data) =>
+        !data ? setError({ description: 'Введите краткое описание' }) : null,
       description: (data) =>
         !data ? setError({ description: 'Введите описание' }) : null,
       tags: (data) =>

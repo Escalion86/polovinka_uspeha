@@ -29,6 +29,7 @@ const EventCard = ({
   hidden = false,
   onTagClick,
   style,
+  changeStyle = 'laptop',
 }) => {
   // const widthNum = useWindowDimensionsTailwindNum()
   const widthNum = useRecoilValue(windowDimensionsNumSelector)
@@ -91,7 +92,8 @@ const EventCard = ({
       )} */}
       <div
         className={cn(
-          'hidden laptop:flex relative justify-center w-full laptop:w-40 h-40 max-h-40',
+          'hidden relative justify-center w-40 h-40 max-h-40',
+          changeStyle === 'laptop' ? 'laptop:flex' : 'desktop:flex',
           { 'laptop:w-auto': noButtons }
         )}
       >
@@ -104,7 +106,7 @@ const EventCard = ({
             // height={48}
           />
         ) : (
-          <TextInRing text={direction.title} />
+          <TextInRing text={direction?.title} />
         )}
 
         {eventStatus === 'canceled' && (
@@ -203,15 +205,30 @@ const EventCard = ({
               <div className="flex items-center justify-center flex-1 gap-2 pl-2 pr-1">
                 <div className="flex flex-col items-center justify-center flex-1">
                   <TextLinesLimiter
-                    className="flex-1 -mt-1 text-lg italic font-bold laptop:text-xl text-general laptop:hidden"
+                    className={cn(
+                      'flex-1 -mt-1 text-lg italic font-bold text-general',
+                      changeStyle === 'laptop'
+                        ? 'laptop:hidden laptop:text-xl'
+                        : 'desktop:hidden desktop:text-xl'
+                    )}
                     // textClassName="leading-5"
                     lines={1}
                   >
-                    {direction.title}
+                    {direction?.title}
                   </TextLinesLimiter>
                   <TextLinesLimiter
-                    className="flex items-center flex-1 min-h-[36px] laptop:min-h-[40px] w-full text-lg font-bold text-center laptop:text-xl"
-                    textClassName="leading-4 laptop:leading-5"
+                    className={cn(
+                      'flex items-center flex-1 min-h-[36px] w-full text-lg font-bold text-center',
+                      changeStyle === 'laptop'
+                        ? 'laptop:hidden laptop:text-xl laptop:min-h-[40px]'
+                        : 'desktop:hidden desktop:text-xl desktop:min-h-[40px]'
+                    )}
+                    textClassName={cn(
+                      'leading-4',
+                      changeStyle === 'laptop'
+                        ? 'laptop:leading-5'
+                        : 'desktop:leading-5'
+                    )}
                     lines={2}
                   >
                     {event.title}

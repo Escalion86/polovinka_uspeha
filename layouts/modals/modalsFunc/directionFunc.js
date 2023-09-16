@@ -11,6 +11,7 @@ import FormWrapper from '@components/FormWrapper'
 import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
 import { DEFAULT_DIRECTION } from '@helpers/constants'
+import Textarea from '@components/Textarea'
 
 const directionFunc = (directionId, clone = false) => {
   const DirectionModal = ({
@@ -26,6 +27,9 @@ const directionFunc = (directionId, clone = false) => {
 
     const [title, setTitle] = useState(
       direction?.title ?? DEFAULT_DIRECTION.title
+    )
+    const [shortDescription, setShortDescription] = useState(
+      direction?.shortDescription ?? DEFAULT_DIRECTION.shortDescription
     )
     const [description, setDescription] = useState(
       direction?.description ?? DEFAULT_DIRECTION.description
@@ -46,13 +50,14 @@ const directionFunc = (directionId, clone = false) => {
     // }
 
     const onClickConfirm = async () => {
-      if (!checkErrors({ title, description })) {
+      if (!checkErrors({ title, shortDescription, description })) {
         closeModal()
         setDirection(
           {
             _id: direction?._id,
             title,
             description,
+            shortDescription,
             showOnSite,
             image,
           },
@@ -88,13 +93,14 @@ const directionFunc = (directionId, clone = false) => {
       const isFormChanged =
         direction?.title !== title ||
         direction?.description !== description ||
+        direction?.shortDescription !== shortDescription ||
         direction?.showOnSite !== showOnSite ||
         direction?.image !== image
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-    }, [title, description, showOnSite, image])
+    }, [title, shortDescription, description, showOnSite, image])
 
     return (
       <FormWrapper>
@@ -126,6 +132,17 @@ const directionFunc = (directionId, clone = false) => {
           labelClassName="w-40"
           error={errors.description}
         /> */}
+        <Textarea
+          label="Короткое описание"
+          onChange={(value) => {
+            removeError('shortDescription')
+            setShortDescription(value)
+          }}
+          value={shortDescription}
+          error={errors.shortDescription}
+          rows={3}
+          required
+        />
         <EditableTextarea
           label="Описание"
           html={description}

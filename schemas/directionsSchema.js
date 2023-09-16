@@ -9,6 +9,14 @@ const directionsSchema = {
       type: 'text',
     },
   },
+  shortDescription: {
+    type: String,
+    default: 'Короткое описание',
+    formOptions: {
+      name: 'Короткое описание',
+      type: 'textarea',
+    },
+  },
   description: {
     type: String,
     // maxlength: [

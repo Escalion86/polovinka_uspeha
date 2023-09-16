@@ -8,6 +8,7 @@ const BlockContainer = ({
   id,
   style,
   className,
+  childrenWrapperClassName,
   children,
   small,
   altBg,
@@ -37,7 +38,7 @@ const BlockContainer = ({
           style={style}
         >
           <BlockTitle title={title} />
-          {children}
+          <div className={cn(childrenWrapperClassName)}>{children}</div>
         </div>
       )}
     </div>
