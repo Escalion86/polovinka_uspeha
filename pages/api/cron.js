@@ -39,8 +39,6 @@ export default async function handler(req, res) {
 
         await dbConnect()
         const users = await Users.find({})
-        // console.log('minutesNow :>> ', minutesNow)
-        // console.log('hoursNow :>> ', hoursNow)
 
         const strTimeNow = `${padNum(hoursNow, 2)}:${padNum(minutesNow, 2)}`
 
@@ -54,10 +52,6 @@ export default async function handler(req, res) {
         )
         if (usersToNotificate.length > 0) {
           const usersWithBirthDayToday = users.filter((user) => {
-            // console.log(
-            //   'daysBeforeBirthday(user.birthday) :>> ',
-            //   daysBeforeBirthday(user.birthday)
-            // )
             return (
               user.birthday &&
               daysBeforeBirthday(user.birthday, dateTimeNow) === 0
@@ -67,7 +61,11 @@ export default async function handler(req, res) {
           var text = '<b>Дни рождения сегодня</b>: '
           if (usersWithBirthDayToday.length > 0) {
             usersWithBirthDayToday.forEach((user) => {
-              text += `\n${getUserFullName(user)} - ${birthDateToAge(
+              text += `\n${
+                user.gender === 'male' ? '♂️' : '♀️'
+              } ${getUserFullName(user)} ${
+                user.status === 'member' ? '(клуб) ' : ''
+              }- ${birthDateToAge(
                 user.birthday,
                 dateTimeNow,
                 true,
@@ -105,15 +103,7 @@ export default async function handler(req, res) {
         console.log(error)
         return res?.status(400).json({ success: false, error })
       }
-
-      // const job = schedule.scheduleJob('/1 * * * *', function () {
-      //   console.log('The answer to life, the universe, and everything!')
-      // })
-      // await dbConnect()
-      // const users = await Users.updateMany({}, { interests: '' })
-      // return users
     }
   }
   return res?.status(400).json({ success: false, error: 'wrong method' })
-  // return await CRUD(Users, req, res)
 }

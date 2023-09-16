@@ -108,7 +108,9 @@ const telegramNotification = async ({
       userId = user._id
       text = `\u{2796}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
-      )} <b>${user.gender === 'male' ? 'ОТПИСАЛСЯ' : 'ОТПИСАЛАСЬ'}</b> ${
+      )} ${user.status === 'member' ? '(клуб) ' : ''}<b>${
+        user.gender === 'male' ? 'ОТПИСАЛСЯ' : 'ОТПИСАЛАСЬ'
+      }</b> ${
         status === 'reserve'
           ? '<b>ИЗ РЕЗЕРВА</b> мероприятия'
           : 'от мероприятия'
