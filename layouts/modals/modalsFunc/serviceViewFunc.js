@@ -60,8 +60,13 @@ const serviceViewFunc = (serviceId) => {
                 __html: sanitize(service?.description),
               }}
             />
-            <Divider thin light />
-            {isLoggedUserDev && <TextLine label="ID">{service?._id}</TextLine>}
+
+            {isLoggedUserDev && (
+              <>
+                <Divider thin light />
+                <TextLine label="ID">{service?._id}</TextLine>
+              </>
+            )}
           </div>
           <Divider thin light />
           <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
