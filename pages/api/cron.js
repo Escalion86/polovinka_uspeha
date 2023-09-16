@@ -5,7 +5,6 @@ import padNum from '@helpers/padNum'
 import Users from '@models/Users'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
-// const schedule = require('node-schedule')
 
 var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
   if (!birthday) return undefined

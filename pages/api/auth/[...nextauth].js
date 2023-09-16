@@ -148,6 +148,8 @@ export default async function auth(req, res) {
           session.user.security = result.security
           session.user.notifications = result.notifications
           session.user.eventsTagsNotification = result.eventsTagsNotification
+          session.user.createdAt = result.createdAt
+          session.user.updatedAt = result.updatedAt
         }
 
         //  else {
