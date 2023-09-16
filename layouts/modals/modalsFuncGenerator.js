@@ -43,6 +43,7 @@ import selectSvgFrameFunc from './modalsFunc/selectSvgFrameFunc'
 import copyLinkFunc from './modalsFunc/copyLinkFunc'
 import eventsTagsFunc from './modalsFunc/eventsTagsFunc'
 import notificationsDeativateTelegramFunc from './modalsFunc/notificationsDeativateTelegramFunc'
+import directionViewFunc from './modalsFunc/directionViewFunc'
 // import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
@@ -263,6 +264,7 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
           text: 'Вы уверены, что хотите удалить направление?',
           onConfirm: async () => itemsFunc.direction.delete(directionId),
         }),
+      view: (directionId) => addModal(directionViewFunc(directionId)),
     },
     eventsTags: {
       edit: () => addModal(eventsTagsFunc()),

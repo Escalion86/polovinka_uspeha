@@ -171,7 +171,7 @@ const Counter = ({
         )} */}
             </div>
           ) : (
-            <span>чел.</span>
+            <span className="hidden laptop:block">чел.</span>
           )}
         </div>
       </div>
@@ -208,7 +208,7 @@ const Counter = ({
             noviceReserveCount + memberReserveCount
           }`}</span>
         )}
-        <span>чел.</span>
+        <span className="hidden laptop:block">чел.</span>
       </div>
     </div>
   )
@@ -378,7 +378,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
             <span className="text-xs">{`+${reserveSum}`}</span>
           )}
         </div>
-        <span>чел.</span>
+        <span className="hidden laptop:block">чел.</span>
       </div>
     </div>
   )

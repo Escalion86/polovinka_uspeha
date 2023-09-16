@@ -6,8 +6,20 @@ import DirectionBlock from './DirectionBlock'
 import sanitize from '@helpers/sanitize'
 import Masonry from '@components/Masonry'
 import TextInRing from '@components/TextInRing'
+import Button from '@components/Button'
+import eventsAtom from '@state/atoms/eventsAtom'
+import { getNounEvents } from '@helpers/getNoun'
+import { modalsFuncAtom } from '@state/atoms'
 
-const DirectionItem = ({ title, shortDescription, image }) => {
+const DirectionItem = ({
+  directionId,
+  title,
+  shortDescription,
+  image,
+  eventsCount,
+}) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  console.log('directionId :>> ', directionId)
   return (
     <div className="flex-col overflow-hidden bg-white rounded-lg shadow-xl gap-y-1">
       {image ? (
@@ -31,8 +43,20 @@ const DirectionItem = ({ title, shortDescription, image }) => {
         className="w-full max-w-full overflow-hidden textarea"
         dangerouslySetInnerHTML={{ __html: sanitize(description) }}
       /> */}
-      <div className="px-3 py-3 text-sm whitespace-pre-wrap laptop:text-base">
+      <div className="px-3 mt-3 mb-1 text-sm whitespace-pre-wrap laptop:text-base">
         {shortDescription}
+      </div>
+      <div className="flex items-center justify-between w-full">
+        <div className="flex ml-3 gap-x-1">
+          <span>Проведено</span>
+          <span>{getNounEvents(eventsCount)}</span>
+        </div>
+        <Button
+          name="Подробнее"
+          rounded={false}
+          className="rounded-tl-lg"
+          onClick={() => modalsFunc.direction.view(directionId)}
+        />
       </div>
     </div>
   )
@@ -40,6 +64,8 @@ const DirectionItem = ({ title, shortDescription, image }) => {
 
 const DirectionsBlock = ({ startInverse = false }) => {
   const filteredDirections = useRecoilValue(filteredDirectionsSelector)
+  const events = useRecoilValue(eventsAtom)
+  const finishedEvents = events.filter((event) => event.status === 'closed')
 
   if (!filteredDirections || filteredDirections.length === 0) return null
   return (
@@ -53,23 +79,29 @@ const DirectionsBlock = ({ startInverse = false }) => {
       >
         {/* <H2 className="sticky pt-20 top-6">{'Направления центра'}</H2> */}
         <Masonry gap={16}>
-          {filteredDirections.map((direction, index) => (
-            // <DirectionBlock
-            //   key={direction._id}
-            //   image={direction.image}
-            //   title={direction.title}
-            //   description={direction.description}
-            //   inverse={index % 2 === (startInverse ? 1 : 0)}
-            // />
-            <DirectionItem
-              key={direction._id}
-              image={direction.image}
-              title={direction.title}
-              description={direction.description}
-              shortDescription={direction.shortDescription}
-              inverse={index % 2 === (startInverse ? 1 : 0)}
-            />
-          ))}
+          {filteredDirections.map((direction, index) => {
+            return (
+              // <DirectionBlock
+              //   key={direction._id}
+              //   image={direction.image}
+              //   title={direction.title}
+              //   description={direction.description}
+              //   inverse={index % 2 === (startInverse ? 1 : 0)}
+              // />
+              <DirectionItem
+                key={direction._id}
+                directionId={direction._id}
+                image={direction.image}
+                title={direction.title}
+                shortDescription={direction.shortDescription}
+                eventsCount={
+                  finishedEvents.filter(
+                    (event) => event.directionId === direction._id
+                  ).length
+                }
+              />
+            )
+          })}
         </Masonry>
       </BlockContainer>
     </>
