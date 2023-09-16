@@ -46,10 +46,12 @@ const DirectionItem = ({
       <div className="px-3 mt-3 mb-1 text-sm whitespace-pre-wrap laptop:text-base">
         {shortDescription}
       </div>
-      <div className="flex items-center justify-between w-full">
-        <div className="flex ml-3 gap-x-1">
+      <div className="flex items-center justify-between w-full text-sm">
+        <div className="flex flex-wrap ml-3 italic leading-[14px] gap-x-1">
           <span>Проведено</span>
-          <span>{getNounEvents(eventsCount)}</span>
+          <span className="whitespace-nowrap">
+            {getNounEvents(eventsCount)}
+          </span>
         </div>
         <Button
           name="Подробнее"
