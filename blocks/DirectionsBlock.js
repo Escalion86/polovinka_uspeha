@@ -74,7 +74,7 @@ const DirectionsBlock = ({ startInverse = false }) => {
         title="Направления центра"
         // className="pb-0 "
         // childrenWrapperClassName="grid grid-cols-1 gap-x-2 gap-y-2 tablet:grid-cols-2 laptop:grid-cols-3"
-        altBg
+        // altBg
       >
         {/* <H2 className="sticky pt-20 top-6">{'Направления центра'}</H2> */}
         <Masonry gap={16}>
