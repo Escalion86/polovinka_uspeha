@@ -19,7 +19,7 @@ const DirectionItem = ({
   eventsCount,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  console.log('directionId :>> ', directionId)
+
   return (
     <div className="flex-col overflow-hidden bg-white rounded-lg shadow-xl gap-y-1">
       {image ? (
