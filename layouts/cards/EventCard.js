@@ -220,8 +220,8 @@ const EventCard = ({
                     className={cn(
                       'flex items-center flex-1 min-h-[36px] w-full text-lg font-bold text-center',
                       changeStyle === 'laptop'
-                        ? 'laptop:hidden laptop:text-xl laptop:min-h-[40px]'
-                        : 'desktop:hidden desktop:text-xl desktop:min-h-[40px]'
+                        ? 'laptop:text-xl laptop:min-h-[40px]'
+                        : 'desktop:text-xl desktop:min-h-[40px]'
                     )}
                     textClassName={cn(
                       'leading-4',
