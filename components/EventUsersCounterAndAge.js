@@ -282,17 +282,17 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
   return (
     <div
       className={cn(
-        'flex text-sm tablet:text-base leading-4 tablet:leading-5 justify-between tablet:justify-start border-gray-300',
+        'flex text-sm laptop:text-base leading-4 laptop:leading-5 justify-between laptop:justify-start border-gray-300',
         className
       )}
     >
       <div className="items-center hidden pl-2 font-bold laptop:flex gap-x-1">
         Участники:
       </div>
-      <div className="flex items-center px-1 tablet:px-2 tablet:border-r gap-x-1">
+      <div className="flex items-center px-1 laptop:px-2 laptop:border-r gap-x-1">
         <FontAwesomeIcon
           icon={faMars}
-          className="w-5 h-5 text-blue-600 tablet:w-6 tablet:h-6"
+          className="w-5 h-5 text-blue-600 laptop:w-6 laptop:h-6"
         />
         <Counter
           showAges={showAges}
@@ -309,10 +309,10 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           showReserve={showReserve}
         />
       </div>
-      <div className="flex items-center px-1 tablet:px-2 tablet:border-r gap-x-1">
+      <div className="flex items-center px-1 laptop:px-2 laptop:border-r gap-x-1">
         <FontAwesomeIcon
           icon={faVenus}
-          className="w-5 h-5 text-red-600 tablet:w-6 tablet:h-6"
+          className="w-5 h-5 text-red-600 laptop:w-6 laptop:h-6"
         />
         <Counter
           showAges={showAges}
@@ -352,11 +352,11 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           </div>
         </div> */}
       </div>
-      <div className="flex items-center px-2 py-1 gap-x-0.5 tablet:gap-x-1">
+      <div className="flex items-center px-2 py-1 gap-x-0.5 laptop:gap-x-1">
         <div className="w-5 h-5 min-w-5">
           <SvgSigma className="fill-general" />
         </div>
-        <div className="flex tablet:gap-x-0.5">
+        <div className="flex laptop:gap-x-0.5">
           {/* <span className="italic font-bold">Всего:</span> */}
           <span
             className={

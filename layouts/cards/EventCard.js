@@ -268,21 +268,11 @@ const EventCard = ({
         <div className="flex flex-wrap justify-end flex-1 w-full">
           <EventUsersCounterAndAge
             eventId={eventId}
-            className="flex-1 min-w-full border-t border-b h-[38px] tablet:h-[42px]"
+            className="flex-1 min-w-full border-t border-b h-[38px] laptop:h-[42px]"
           />
           <div className="flex items-stretch justify-end flex-1 w-full pr-1 h-9">
-            <PriceDiscount
-              item={event}
-              className="flex-1 mx-2"
-              // prefix="Стоимость:"
-            />
-            <EventButtonSignIn
-              eventId={eventId}
-              noButtonIfAlreadySignIn
-              thin
-              // className="border-l border-gray-200"
-              // classNameProfit="rounded-tl-lg"
-            />
+            <PriceDiscount item={event} className="flex-1 mx-2" />
+            <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn thin />
           </div>
         </div>
       )}
