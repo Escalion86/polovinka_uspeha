@@ -214,7 +214,7 @@ const EventCard = ({
                     // textClassName="leading-5"
                     lines={1}
                   >
-                    {direction?.title}
+                    {direction?.title ?? '[неизвестное направление]'}
                   </TextLinesLimiter>
                   <TextLinesLimiter
                     className={cn(
