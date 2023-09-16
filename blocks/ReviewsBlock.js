@@ -6,7 +6,10 @@ import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
 import { useRecoilValue } from 'recoil'
 
 const Review = ({ review, style }) => (
-  <div className="p-3 bg-white rounded-lg shadow-xl" style={style}>
+  <div
+    className="p-3 max-w-[430px] bg-white rounded-lg shadow-xl"
+    style={style}
+  >
     <div className="font-bold">
       {review.author}
       {review.authorAge
