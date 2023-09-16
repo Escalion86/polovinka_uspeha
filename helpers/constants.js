@@ -867,7 +867,7 @@ export const CONTENTS = {
   userStatistics: {
     Component: UserStatisticsContent,
     name: 'Моя статистика',
-    accessRoles: ['dev'],
+    accessRoles: ['admin', 'dev'],
   },
 }
 
@@ -1092,7 +1092,7 @@ export const pagesGroups = [
     id: 0,
     name: 'Моя статистика',
     icon: faTrophy,
-    accessRoles: ['dev'],
+    accessRoles: ['admin', 'dev'],
   },
   {
     id: 1,
