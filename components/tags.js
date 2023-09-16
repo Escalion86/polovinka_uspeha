@@ -29,7 +29,7 @@ export const H2 = ({ className, style, children, bold = true }) => (
 export const H3 = ({ className, style, children, bold = true }) => (
   <h3
     className={cn(
-      'text-lg text-center tablet:text-2xl',
+      'text-lg text-center tablet:text-xl',
       { 'font-bold': bold },
       className
     )}

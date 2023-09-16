@@ -42,12 +42,20 @@ export const getNounReviews = (number) =>
 export const getNounPayments = (number) =>
   getNoun(number, 'транзакция', 'транзакции', 'транзакций')
 
+export const getNounYears = (number) => getNoun(number, 'год', 'года', 'лет')
+
+export const getNounMonths = (number) =>
+  getNoun(number, 'месяц', 'месяца', 'месяцев')
+
 export const getNounDays = (number) => getNoun(number, 'день', 'дня', 'дней')
 
 export const getNounHours = (number) => getNoun(number, 'час', 'часа', 'часов')
 
 export const getNounMinutes = (number) =>
   getNoun(number, 'минута', 'минуты', 'минут')
+
+export const getNounSeconds = (number) =>
+  getNoun(number, 'секунда', 'секунды', 'секунд')
 
 export const getNounAges = (number) => getNoun(number, 'год', 'года', 'лет')
 

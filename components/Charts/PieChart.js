@@ -29,7 +29,7 @@ const CenteredMetric = ({ dataWithArc, centerX, centerY }) => {
 
 const PieChart = ({ title, data }) => {
   return (
-    <div className="w-[340px]">
+    <div className="w-[340px] min-w-[340px]">
       {title && <H3>{title}</H3>}
       {/* <div className="h-80"> */}
       <Pie
