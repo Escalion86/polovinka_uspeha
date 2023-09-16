@@ -18,8 +18,13 @@ const Masonry = ({
   const childrenRef = useRef([])
 
   let columns = 1
-  if (typeof cols === 'number') columns = cols
-  else {
+  if (!children || children?.length === 1) {
+    columns = 1
+  } else if (children?.length === 2) {
+    columns = 2
+  } else if (typeof cols === 'number') {
+    columns = cols
+  } else {
     const sortedKeys = Object.keys(cols).sort((a, b) => (a > b ? -1 : 1))
     const key = sortedKeys.find((key) => key <= width)
     if (key) columns = cols[key]
@@ -28,7 +33,11 @@ const Masonry = ({
   const flexes = []
   for (let i = 0; i < columns; i++) {
     flexes.push(
-      <div key={'flex' + i} className="flex flex-col flex-1" style={{ gap }}>
+      <div
+        key={'flex' + i}
+        className="flex flex-col items-center flex-1"
+        style={{ gap }}
+      >
         {!readyElements
           ? children
               .filter((child, childIndex) => childIndex % columns === i)
