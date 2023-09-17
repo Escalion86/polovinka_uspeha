@@ -28,9 +28,11 @@ const DirectionsContent = () => {
       </ContentHeader>
       <CardListWrapper>
         {directions?.length > 0 ? (
-          directions.map((direction) => (
-            <DirectionCard key={direction._id} directionId={direction._id} />
-          ))
+          [...directions]
+            .sort((a, b) => (a.index < b.index ? -1 : 1))
+            .map((direction) => (
+              <DirectionCard key={direction._id} directionId={direction._id} />
+            ))
         ) : (
           <div className="flex justify-center p-2">Нет направлений</div>
         )}
