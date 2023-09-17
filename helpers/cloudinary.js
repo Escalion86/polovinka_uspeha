@@ -20,7 +20,6 @@ import isObject from './isObject'
 //   }
 // }
 
-// // TODO Adding delete not used images
 export const deleteImages = async (arrayOfImagesUrls, callback = null) => {
   // if (arrayOfImagesUrls.length > 0)
   //   await Promise.all(

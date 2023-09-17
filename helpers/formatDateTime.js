@@ -47,7 +47,8 @@ function formatDateTime(
   twoLines = false,
   durationMinutes,
   showYear = true,
-  showTime = true
+  showTime = true,
+  forUrl = false
 ) {
   if (!dateTime) return undefined
 
@@ -78,6 +79,11 @@ function formatDateTime(
     if (day.length < 2) day = '0' + day
     if (month.length < 2) month = '0' + month
     return [year, month, day].join('-') + 'T' + [hours, minutes].join(':')
+  }
+  if (forUrl) {
+    if (day.length < 2) day = '0' + day
+    if (month.length < 2) month = '0' + month
+    return [year, month, day].join('') + 'T' + [hours, minutes, '00'].join('')
   } else
     return (
       day +

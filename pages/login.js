@@ -883,7 +883,6 @@ const LoginPage = (props) => {
                 >
                   {process === 'authorization' ? 'Регистрация' : 'Авторизация'}
                 </a>
-                {/* TODO Сделать восстановление пароля */}
                 <a
                   tabIndex={0}
                   className="block text-sm text-right duration-300 cursor-pointer hover:text-general"

@@ -161,8 +161,8 @@ const EventButtonSignIn = ({
         stopPropagation
         onClick={() => {
           if (!loggedUser || (canSignIn && !alreadySignIn)) {
-            if (event.warning) modalsFunc.event.signUpWithWarning(event._id)
-            else modalsFunc.event.signUp(event._id)
+            if (event.warning) modalsFunc.event.signUpWithWarning(event)
+            else modalsFunc.event.signUp(event)
           } else if (loggedUser.status === 'ban') {
             modalsFunc.event.cantSignUp()
           } else if (
@@ -170,12 +170,12 @@ const EventButtonSignIn = ({
             !isUserQuestionnaireFilled
           ) {
             if (event.warning)
-              modalsFunc.event.signUpWithWarning(event._id, 'reserve')
-            else modalsFunc.event.signUp(event._id, 'reserve')
+              modalsFunc.event.signUpWithWarning(event, 'reserve')
+            else modalsFunc.event.signUp(event, 'reserve')
             // } else if (!isUserQuestionnaireFilled) {
             //   router.push('/cabinet/questionnaire', '', { shallow: true })
           } else if (canSignOut) {
-            modalsFunc.event.signOut(event._id, userEventStatus)
+            modalsFunc.event.signOut(event, userEventStatus)
           }
         }}
         // className={cn(

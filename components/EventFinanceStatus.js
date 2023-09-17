@@ -91,21 +91,18 @@ const EventButtonSignIn = ({
           (eventLoggedUserStatus.canSignIn &&
             !eventLoggedUserStatus.alreadySignIn)
         ) {
-          modalsFunc.event.signUp(event._id)
+          modalsFunc.event.signUp(event)
         } else if (
           !eventLoggedUserStatus.canSignIn &&
           !eventLoggedUserStatus.alreadySignIn &&
           eventLoggedUserStatus.canSignInReserve
         ) {
-          modalsFunc.event.signUp(event._id, 'reserve')
+          modalsFunc.event.signUp(event, 'reserve')
         } else if (!isUserQuestionnaireFilled) {
           closeModal()
           router.push('/cabinet/questionnaire', '', { shallow: true })
         } else if (eventLoggedUserStatus.canSignOut) {
-          modalsFunc.event.signOut(
-            event._id,
-            eventLoggedUserStatus.userEventStatus
-          )
+          modalsFunc.event.signOut(event, eventLoggedUserStatus.userEventStatus)
         }
       }}
       // className={cn(

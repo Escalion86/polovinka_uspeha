@@ -8,7 +8,6 @@ import ListWrapper from '@layouts/lists/ListWrapper'
 import servicesAtom from '@state/atoms/servicesAtom'
 import isObject from '@helpers/isObject'
 
-// TODO Доделать функцию
 const selectPaymentsFunc = (
   state,
   filterRules,

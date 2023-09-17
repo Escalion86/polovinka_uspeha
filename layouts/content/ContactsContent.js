@@ -11,7 +11,6 @@ import { postData, putData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
-// TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const ContactsContent = (props) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)

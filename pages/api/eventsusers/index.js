@@ -435,8 +435,6 @@ export default async function handler(req, res) {
           })
         }
 
-        // TODO сделать проверку что пользователь заполнил анкету
-
         // Теперь проверяем есть ли место
         const event = await Events.findById(eventId)
         // Закрыто ли мероприятие?
