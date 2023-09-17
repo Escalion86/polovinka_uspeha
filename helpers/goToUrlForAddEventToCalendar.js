@@ -16,7 +16,7 @@ import formatDateTime from './formatDateTime'
 
 const goToUrlForAddEventToCalendar = (event) => {
   const address = event.address
-    ? `\n\n\u{1F4CD} <b>Место проведения</b>:\n${formatAddress(
+    ? `\n\n\u{1F4CD} Место проведения:\n${formatAddress(
         JSON.parse(JSON.stringify(event.address))
       )}`
     : ''
@@ -26,12 +26,14 @@ const goToUrlForAddEventToCalendar = (event) => {
       .replaceAll('<blockquote>', '\n<blockquote>')
       .replaceAll('<li>', '\n\u{2764} <li>')
       .replaceAll('<p>', '\n<p>')
-      .replaceAll('<br>', '\n'),
+      .replaceAll('<br>', '\n')
+      .trim('\n'),
     {
       allowedTags: [],
       allowedAttributes: {},
     }
   )}${address}`
+
   const dateStart = formatDateTime(
     event.dateStart,
     false,
@@ -60,7 +62,6 @@ const goToUrlForAddEventToCalendar = (event) => {
     )}&location&details=${encodeURI(details)}&dates=${dateStart}/${dateEnd}`,
     '_ blank'
   )
-  // router.push('https://calendar.google.com/calendar/u/0/r/eventedit?text=test+add+calendar+event&location&details=test+add+calendar+event&dates=20210510T110000/20210511T120000', '', { shallow: true })
 }
 
 export default goToUrlForAddEventToCalendar

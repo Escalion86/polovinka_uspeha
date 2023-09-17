@@ -230,7 +230,8 @@ const ToolsTextEventsAnonsContent = () => {
         .replaceAll('<blockquote>', '\n<blockquote>')
         .replaceAll('<li>', '\n\u{2764} <li>')
         .replaceAll('<p>', '\n<p>')
-        .replaceAll('<br>', '\n'),
+        .replaceAll('<br>', '\n')
+        .trim('\n'),
       {
         allowedTags: [],
         allowedAttributes: {},
