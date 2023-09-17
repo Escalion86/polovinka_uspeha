@@ -1,6 +1,5 @@
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import Button from '@components/Button'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -14,7 +13,7 @@ import getDataStringBetweenDates from '@helpers/getDataStringBetweenDates'
 import Image from 'next/image'
 import cn from 'classnames'
 import { H3 } from '@components/tags'
-import Tooltip from '@components/Tooltip'
+
 import { Popover, ArrowContainer } from 'react-tiny-popover'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import CheckBox from '@components/CheckBox'
@@ -119,6 +118,7 @@ const UserStatisticsContent = () => {
   const siteSettings = useRecoilValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
   const userEventsIds = eventsUser.map((eventUser) => eventUser.eventId)
+  console.log('eventsUser :>> ', eventsUser)
 
   const [showAllAchivement, setShowAllAchivement] = useState(false)
 
