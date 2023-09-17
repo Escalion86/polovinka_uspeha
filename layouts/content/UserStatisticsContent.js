@@ -198,13 +198,13 @@ const UserStatisticsContent = () => {
     {
       name: 'Эволюционер',
       cause: 'Количество посещенных мероприятий с тэгом "Развитие"',
-      counts: rare[1],
+      counts: rare[0],
       num: eventsTagsWithCount.find(({ text }) => text === 'развитие')?.count,
     },
     {
       name: 'Урбанист',
       cause: 'Количество посещенных мероприятий с тэгом "Город"',
-      counts: rare[4],
+      counts: rare[3],
       num: eventsTagsWithCount.find(({ text }) => text === 'город')?.count,
     },
     {
@@ -266,6 +266,12 @@ const UserStatisticsContent = () => {
       cause: 'Количество посещенных мероприятий с тэгом "Искусство"',
       counts: rare[0],
       num: eventsTagsWithCount.find(({ text }) => text === 'искусство')?.count,
+    },
+    {
+      name: 'Пирушник',
+      cause: 'Количество посещенных мероприятий с тэгом "Застолье"',
+      counts: rare[1],
+      num: eventsTagsWithCount.find(({ text }) => text === 'застолье')?.count,
     },
     // {
     //   name: 'Авенюст',
