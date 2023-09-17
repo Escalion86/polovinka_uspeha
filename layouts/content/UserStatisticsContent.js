@@ -28,20 +28,20 @@ const place = (count, places) => {
     return
   for (let i = 0; i < places.length; i++) {
     const num = places[i]
-    if (num < count) return i + 1
+    if (num <= count) return i
   }
   return
 }
 
 const Cup = ({ place }) => {
-  if (place === 1)
-    return <Image src="/img/achievements/1.svg" width="100%" height="100%" />
-  if (place === 2)
-    return <Image src="/img/achievements/2.svg" width="100%" height="100%" />
-  if (place === 3)
-    return <Image src="/img/achievements/3.svg" width="100%" height="100%" />
-  if (place === 4)
-    return <Image src="/img/achievements/4.svg" width="100%" height="100%" />
+  if (typeof place === 'number')
+    return (
+      <Image
+        src={`/img/achievements/${place <= 4 ? place : 4}.svg`}
+        width="100%"
+        height="100%"
+      />
+    )
   return (
     <Image
       className="opacity-20 grayscale"
@@ -84,7 +84,9 @@ const Achivement = ({ name, place, tooltipText }) => {
         onMouseLeave={() => setIsPopoverOpen(false)}
         className={cn(
           'flex flex-col h-[100px] w-[100px] p-[8px] laptop:h-[120px] laptop:w-[120px] laptop:p-[10px] rounded-lg border-gray-200 border hover:border-general duration-300 cursor-pointer',
-          place === 1
+          place === 0
+            ? 'bg-blue-100'
+            : place === 1
             ? 'bg-yellow-100'
             : place === 2
             ? 'bg-gray-100'
@@ -95,11 +97,11 @@ const Achivement = ({ name, place, tooltipText }) => {
             : 'bg-white'
         )}
       >
-        <Cup place={place ?? 0} />
+        <Cup place={place} />
         <div
           className={cn(
             'text-sm laptop:text-base text-center -mx-[8px]',
-            place ? 'text-general' : 'text-gray-400'
+            place ? 'text-general font-bold' : 'text-gray-400'
           )}
         >
           {name}
@@ -118,7 +120,6 @@ const UserStatisticsContent = () => {
   const siteSettings = useRecoilValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
   const userEventsIds = eventsUser.map((eventUser) => eventUser.eventId)
-  console.log('eventsUser :>> ', eventsUser)
 
   const [showAllAchivement, setShowAllAchivement] = useState(false)
 
@@ -148,13 +149,21 @@ const UserStatisticsContent = () => {
     }
   })
 
+  // const rare = [
+  //   [30, 15, 8, 4, 2],
+  //   [60, 30, 15, 8, 4],
+  //   [80, 40, 20, 10, 5],
+  //   [100, 50, 25, 12, 6],
+  //   [120, 60, 30, 15, 8],
+  //   [150, 80, 40, 20, 10],
+  // ]
   const rare = [
-    [16, 8, 4, 2],
-    [30, 15, 8, 4],
-    [40, 20, 10, 5],
-    [50, 25, 12, 6],
-    [60, 30, 15, 8],
-    [80, 40, 20, 10],
+    [20, 12, 7, 4, 2],
+    [40, 25, 14, 8, 4],
+    [50, 30, 18, 10, 5],
+    [60, 35, 20, 12, 6],
+    [80, 50, 28, 16, 8],
+    [100, 60, 35, 20, 10],
   ]
 
   const achievements = [
@@ -246,7 +255,7 @@ const UserStatisticsContent = () => {
     {
       name: 'Леший',
       cause: 'Количество посещенных мероприятий с тэгом "Природа"',
-      counts: rare[1],
+      counts: rare[3],
       num: eventsTagsWithCount.find(({ text }) => text === 'природа')?.count,
     },
     {
@@ -287,7 +296,9 @@ const UserStatisticsContent = () => {
   }))
 
   const sortedAchievementsWithPlace = [
-    ...achievementsWithPlace.filter(({ place }) => showAllAchivement || place),
+    ...achievementsWithPlace.filter(
+      ({ place }) => showAllAchivement || typeof place === 'number'
+    ),
   ].sort((a, b) => ((a.place ?? 5) > (b.place ?? 5) ? 1 : -1))
 
   return (
@@ -319,11 +330,11 @@ const UserStatisticsContent = () => {
                   name={name}
                   place={place}
                   tooltipText={`${cause}: ${num ?? 0}\n${
-                    place === 1
+                    place === 0
                       ? 'У Вас Высшая награда!'
-                      : !place
+                      : typeof place !== 'number'
                       ? `Для достижения необходимо: ${[...counts].reverse()[0]}`
-                      : `Следующее достижение: ${counts[place - 2]}`
+                      : `Следующее достижение: ${counts[place - 1]}`
                   }`}
                 />
               )
@@ -335,7 +346,7 @@ const UserStatisticsContent = () => {
       </div>
       <PieChart
         data={eventsByDirectionsData}
-        title="Посетил мероприятия по направлениям"
+        title={`Посетил мероприятия по направлениям`}
       />
     </div>
   )
