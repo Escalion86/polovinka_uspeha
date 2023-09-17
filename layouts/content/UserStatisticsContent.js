@@ -285,7 +285,7 @@ const UserStatisticsContent = () => {
   ].sort((a, b) => ((a.place ?? 5) > (b.place ?? 5) ? 1 : -1))
 
   return (
-    <div className="flex flex-col items-center p-2 overflow-y-auto gap-y-3">
+    <div className="flex flex-col items-center p-2 overflow-y-auto gap-y-5">
       <div className="flex items-center leading-4 gap-x-1">
         <div className="font-bold">Зарегистрирован:</div>
         <div className="flex flex-wrap leading-4 gap-x-1">
@@ -297,29 +297,35 @@ const UserStatisticsContent = () => {
           </span>
         </div>
       </div>
-      <H3>Мои достижения</H3>
-      <CheckBox
-        label="Показать не полученные"
-        checked={showAllAchivement}
-        onChange={() => setShowAllAchivement((state) => !state)}
-      />
-      <div className="flex flex-wrap justify-center gap-2">
-        {sortedAchievementsWithPlace.map(
-          ({ name, cause, counts, num, place }) => (
-            <Achivement
-              key={'achive' + name}
-              name={name}
-              place={place}
-              tooltipText={`${cause}: ${num ?? 0}\n${
-                place === 1
-                  ? 'У Вас Высшая награда!'
-                  : !place
-                  ? `Для достижения необходимо: ${[...counts].reverse()[0]}`
-                  : `Следующее достижение: ${counts[place - 2]}`
-              }`}
-            />
-          )
-        )}
+      <div className="flex flex-col items-center gap-y-1">
+        <H3>Мои достижения</H3>
+        <CheckBox
+          label="Показать не полученные"
+          checked={showAllAchivement}
+          onChange={() => setShowAllAchivement((state) => !state)}
+        />
+        <div className="flex flex-wrap justify-center gap-2">
+          {sortedAchievementsWithPlace.length > 0 ? (
+            sortedAchievementsWithPlace.map(
+              ({ name, cause, counts, num, place }) => (
+                <Achivement
+                  key={'achive' + name}
+                  name={name}
+                  place={place}
+                  tooltipText={`${cause}: ${num ?? 0}\n${
+                    place === 1
+                      ? 'У Вас Высшая награда!'
+                      : !place
+                      ? `Для достижения необходимо: ${[...counts].reverse()[0]}`
+                      : `Следующее достижение: ${counts[place - 2]}`
+                  }`}
+                />
+              )
+            )
+          ) : (
+            <div>У вас пока нет достижений</div>
+          )}
+        </div>
       </div>
       <PieChart
         data={eventsByDirectionsData}
