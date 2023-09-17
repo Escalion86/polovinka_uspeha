@@ -57,7 +57,7 @@ const goToUrlForAddEventToCalendar = (event) => {
     true
   )
   window.open(
-    `https://www.google.com/calendar/render?text=${encodeURI(
+    `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURI(
       event.title
     )}&location&details=${encodeURI(details)}&dates=${dateStart}/${dateEnd}`,
     '_ blank'
