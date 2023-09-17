@@ -1,6 +1,5 @@
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import Button from '@components/Button'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
@@ -14,7 +13,7 @@ import getDataStringBetweenDates from '@helpers/getDataStringBetweenDates'
 import Image from 'next/image'
 import cn from 'classnames'
 import { H3 } from '@components/tags'
-import Tooltip from '@components/Tooltip'
+
 import { Popover, ArrowContainer } from 'react-tiny-popover'
 
 const place = (count, places) => {
@@ -104,6 +103,7 @@ const UserStatisticsContent = () => {
   const directions = useRecoilValue(directionsAtom)
   const eventsUser = useRecoilValue(eventsUsersByUserIdSelector(loggedUser._id))
   const userEventsIds = eventsUser.map((eventUser) => eventUser.eventId)
+  console.log('eventsUser :>> ', eventsUser)
 
   const filteredEvents = useMemo(
     () =>
