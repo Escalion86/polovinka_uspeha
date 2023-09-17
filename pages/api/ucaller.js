@@ -168,7 +168,6 @@ export default async function handler(req, res) {
             if (existingPhoneConfirm.tryNum >= 3) {
               // Прошло ли пол часа с момента последней попытки?
               if (minutesBeetween >= 30) {
-                // TODO Удаление старого запроса на код и составление нового
                 await sendCode(res, phone, 1, true)
               } else
                 return res?.status(200).json({
@@ -187,7 +186,6 @@ export default async function handler(req, res) {
                 })
             } else {
               // Если было менее 3 попыток
-              // TODO Повторный запрос кода
 
               // await sendCode(
               //   res,

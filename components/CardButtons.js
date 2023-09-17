@@ -7,6 +7,7 @@ import {
   faIdCard,
   faEyeSlash,
   faTrashAlt,
+  faCalendarPlus,
 } from '@fortawesome/free-regular-svg-icons'
 import cn from 'classnames'
 import {
@@ -34,6 +35,7 @@ import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboar
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 import DropDown from './DropDown'
+import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -97,6 +99,9 @@ const CardButtons = ({
       (typeOfItem === 'event' ||
         typeOfItem === 'service' ||
         typeOfItem === 'user'),
+    addToCalendar:
+      // ADD Убрать только для админа, сделать для всех
+      isLoggedUserAdmin && typeOfItem === 'event',
     eventUsersBtn:
       (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'event',
     upBtn: !forForm && isLoggedUserAdmin && onUpClick,
@@ -180,6 +185,14 @@ const CardButtons = ({
           }}
           color="blue"
           tooltipText="Скопировать ссылку на мероприятие"
+        />
+      )}
+      {show.addToCalendar && (
+        <ItemComponent
+          icon={faCalendarPlus}
+          onClick={() => goToUrlForAddEventToCalendar(item)}
+          color="purple"
+          tooltipText="Добавить в Google календарь"
         />
       )}
       {show.eventUsersBtn && (

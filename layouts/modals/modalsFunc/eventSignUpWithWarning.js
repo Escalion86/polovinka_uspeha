@@ -7,23 +7,27 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import formatDateTime from '@helpers/formatDateTime'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 
-const eventSignUpWithWarning = (eventId, status, eventSubtypeNum, comment) => {
+const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
   const EventSignUpWithWarningModal = ({
     closeModal,
     setOnConfirmFunc,
+    setOnConfirm2Func,
     setOnDeclineFunc,
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
   }) => {
     const loggedUser = useRecoilValue(loggedUserAtom)
-    const event = useRecoilValue(eventSelector(eventId))
+    // const event = useRecoilValue(eventSelector(eventId))
     const itemsFunc = useRecoilValue(itemsFuncAtom)
 
     const [check, setCheck] = useState(false)
 
-    const onClickConfirm = async () => {
+    const eventId = event._id
+
+    const onClickConfirm = async (onSuccess) => {
       closeModal()
       itemsFunc.event.signUp(
         {
@@ -44,12 +48,18 @@ const eventSignUpWithWarning = (eventId, status, eventSubtypeNum, comment) => {
           if (data.solution === 'reserve') {
             event_signUpToReserveAfterError(eventId, data.error)
           }
+        },
+        (data) => {
+          if (typeof onSuccess === 'function') onSuccess()
         }
       )
     }
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
+      setOnConfirm2Func(() =>
+        onClickConfirm(() => goToUrlForAddEventToCalendar(event))
+      )
       setDisableConfirm(!check)
     }, [check])
 
@@ -86,6 +96,9 @@ const eventSignUpWithWarning = (eventId, status, eventSubtypeNum, comment) => {
     title: `Запись${postfixStatus} на мероприятие`,
     text: `Вы уверены что хотите записаться${postfixStatus} на мероприятие?`,
     confirmButtonName: `Записаться${postfixStatus}`,
+    // ADD
+    // showConfirm2: true,
+    confirmButtonName2: `Записаться в резерв и добавить в календарь`,
     Children: EventSignUpWithWarningModal,
   }
 }

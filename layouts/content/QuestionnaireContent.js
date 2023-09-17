@@ -60,7 +60,6 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   </div>
 )
 
-// TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const QuestionnaireContent = (props) => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
@@ -741,6 +740,7 @@ const QuestionnaireContent = (props) => {
             )}
           </TabPanel>
         )}
+        {/* ADD Доступ для участников клуба */}
         {(isLoggedUserModer || isLoggedUserDev) && (
           <TabPanel tabName="Оповещения" className="flex-1">
             <YesNoPicker

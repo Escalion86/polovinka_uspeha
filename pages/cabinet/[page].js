@@ -28,9 +28,6 @@ import Fab from '@components/Fab'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
-// TODO Сделать копирование БД с main на dev
-// TODO Сделать переключение с БД main на dev
-
 function CabinetPage(props) {
   const router = useRouter()
   const page = router.asPath.replace('/cabinet/', '')

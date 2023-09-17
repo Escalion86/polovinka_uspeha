@@ -465,7 +465,7 @@ const itemsFuncGenerator = (
     )
   }
 
-  obj.event.signUp = async (propsObj, ifError) => {
+  obj.event.signUp = async (propsObj, onError, onSuccess) => {
     const { eventId, userId, status, userStatus, eventSubtypeNum, comment } =
       propsObj
     setLoadingCard('event' + eventId)
@@ -479,7 +479,7 @@ const itemsFuncGenerator = (
             `Не удалось записаться на мероприятие, так как ${data.error}`
           )
           setNotLoadingCard('event' + eventId)
-          ifError(data)
+          if (typeof onError === 'function') onError(data)
         } else {
           snackbar.success(
             `Запись${
@@ -488,6 +488,7 @@ const itemsFuncGenerator = (
           )
           setNotLoadingCard('event' + eventId)
           props.setEventsUser(data)
+          if (typeof onSuccess === 'function') onSuccess(data)
         }
       },
       (error) => {

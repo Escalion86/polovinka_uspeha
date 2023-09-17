@@ -24,7 +24,6 @@ const getBalance = async (onSuccess, onError) =>
     true
   )
 
-// TODO Сделать правильное обновление страницы (а не полную перезагрузку), а также добавить редактирование Email
 const SettingsContent = (props) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)

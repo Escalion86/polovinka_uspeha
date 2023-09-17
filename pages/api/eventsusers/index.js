@@ -124,7 +124,9 @@ const telegramNotification = async ({
       userId = user._id
       text = `\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
-      )} <b>${user.gender === 'male' ? `ЗАПИСАЛСЯ` : 'ЗАПИСАЛАСЬ'}</b> ${
+      )} ${user.status === 'member' ? '(клуб) ' : ''}<b>${
+        user.gender === 'male' ? `ЗАПИСАЛСЯ` : 'ЗАПИСАЛАСЬ'
+      }</b> ${
         status === 'reserve' ? '<b>В РЕЗЕРВ</b> мероприятия' : 'на мероприятие'
       } "${event.title}" от ${formatDateTime(event.dateStart)}.`
     } else if (notificationOnMassiveChange) {
@@ -434,8 +436,6 @@ export default async function handler(req, res) {
             data: { error: 'вы уже зарегистрированы' },
           })
         }
-
-        // TODO сделать проверку что пользователь заполнил анкету
 
         // Теперь проверяем есть ли место
         const event = await Events.findById(eventId)
