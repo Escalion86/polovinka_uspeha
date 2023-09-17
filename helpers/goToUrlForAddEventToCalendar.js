@@ -57,7 +57,7 @@ const goToUrlForAddEventToCalendar = (event) => {
     true
   )
   window.open(
-    `https://calendar.google.com/calendar/u/0/r/eventedit?text=${encodeURI(
+    `https://www.google.com/calendar/render?text=${encodeURI(
       event.title
     )}&location&details=${encodeURI(details)}&dates=${dateStart}/${dateEnd}`,
     '_ blank'
