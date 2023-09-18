@@ -12,9 +12,9 @@ export default async function handler(req, res) {
       const { update_id, message } = body
       // console.log('telegram body', body)
       if (message.text === '/activate' || message.text === '/deactivate') {
-        console.log('message.text', message.text)
+        // console.log('message.text', message.text)
         // const users = await Users.find({})
-        console.log('message.from.id', message.from.id)
+        // console.log('message.from.id', message.from.id)
         const userFromReq = await Users.findOneAndUpdate(
           {
             'notifications.telegram.userName':
@@ -24,11 +24,14 @@ export default async function handler(req, res) {
             $set: {
               'notifications.telegram.id':
                 message.text === '/activate' ? message.from.id : null,
+              'notifications.telegram.active':
+                message.text === '/activate' ? true : false,
               // $set: {
               //   'telegram.$.id':
               //     message.text === '/activate' ? message.from.id : null,
               // },
             },
+
             // notifications: {
             //   telegram: {
             //     id: message.text === '/activate' ? message.from.id : null,
@@ -58,7 +61,10 @@ export default async function handler(req, res) {
           await sendTelegramMessage({
             req,
             telegramId: message.from.id,
-            text: 'Активация уведомлений прошла успешно!',
+            text:
+              message.text === '/activate'
+                ? 'Активация уведомлений прошла успешно!'
+                : 'Уведомления отключены!',
           })
           // const data = await Users.findByIdAndUpdate(userFromReq[0]._id, {
           //   notifications: {
@@ -74,7 +80,10 @@ export default async function handler(req, res) {
         await sendTelegramMessage({
           req,
           telegramId: message.from.id,
-          text: 'Ошибка! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!',
+          text:
+            message.text === '/activate'
+              ? 'ОШИБКА! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!'
+              : 'ОШИБКА! Уведомления не отключены. Пожалуйста свяжитесь с администратором! http://t.me/escalion',
         })
         console.log('Пользователь с таким логином не найден')
         return res?.status(200).json({
