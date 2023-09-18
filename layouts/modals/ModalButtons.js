@@ -4,13 +4,13 @@ import isObject from '@helpers/isObject'
 
 const ModalButtons = ({
   confirmName = 'Подтвердить',
-  confirmName2,
+  confirmName2 = 'Действие',
   declineName = 'Отмена',
   onConfirmClick,
   onConfirm2Click,
   onDeclineClick,
-  showConfirm = true,
-  showConfirm2,
+  // showConfirm = true,
+  // showConfirm2,
   showDecline = true,
   disableConfirm = false,
   disableDecline = false,
@@ -20,7 +20,8 @@ const ModalButtons = ({
   bottomLeftButton,
   bottomLeftComponent,
 }) => {
-  if (!showConfirm && !showDecline && !closeButtonShow) return null
+  if (!onConfirmClick && !onConfirm2Click && !showDecline && !closeButtonShow)
+    return null
   return (
     <>
       <Divider light thin />
@@ -33,7 +34,7 @@ const ModalButtons = ({
           {isObject(bottomLeftComponent) ? (
             <div className="flex-1">{bottomLeftComponent}</div>
           ) : null}
-          {showConfirm2 && (
+          {onConfirm2Click && (
             <Button
               name={confirmName2}
               classBgColor="bg-general"
@@ -41,7 +42,7 @@ const ModalButtons = ({
               disabled={disableConfirm}
             />
           )}
-          {showConfirm && (
+          {onConfirmClick && (
             <Button
               name={confirmName}
               classBgColor="bg-general"

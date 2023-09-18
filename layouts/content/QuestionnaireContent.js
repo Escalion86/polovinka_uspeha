@@ -45,6 +45,8 @@ import InputWrapper from '@components/InputWrapper'
 import TimePicker from '@components/TimePicker'
 import ComboBox from '@components/ComboBox'
 import LoadingSpinner from '@components/LoadingSpinner'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -65,7 +67,9 @@ const QuestionnaireContent = (props) => {
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
+  const siteSettings = useRecoilValue(siteSettingsAtom)
 
   const [
     waitActivateTelegramNotifications,
@@ -720,7 +724,7 @@ const QuestionnaireContent = (props) => {
           </FormWrapper>
           {/* </FormWrapper> */}
         </TabPanel>
-        {(isLoggedUserAdmin || isLoggedUserDev) && (
+        {isLoggedUserAdmin && (
           <TabPanel tabName="Статус и права" className="flex-1">
             {isLoggedUserAdmin && (
               <UserStatusPicker
@@ -740,8 +744,9 @@ const QuestionnaireContent = (props) => {
             )}
           </TabPanel>
         )}
-        {/* ADD Доступ для участников клуба */}
-        {(isLoggedUserModer || isLoggedUserDev) && (
+        {/* ADD */}
+        {((siteSettings?.custom?.birthdayUpdate && isLoggedUserMember) ||
+          isLoggedUserModer) && (
           <TabPanel tabName="Оповещения" className="flex-1">
             <YesNoPicker
               label="Оповещения в Telegram"

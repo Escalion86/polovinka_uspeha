@@ -10,6 +10,8 @@ import useErrors from '@helpers/useErrors'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 import { CODE_SEND_SERVICES } from '@helpers/constants'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import CheckBox from '@components/CheckBox'
+import compareObjects from '@helpers/compareObjects'
 
 const getBalance = async (onSuccess, onError) =>
   await postData(
@@ -30,6 +32,7 @@ const SettingsContent = (props) => {
   const [codeSendService, setCodeSendService] = useState(
     siteSettings?.codeSendService
   )
+  const [custom, setCustom] = useState(siteSettings?.custom ?? {})
 
   const [codeSendServiceInfo, setCodeSendServiceInfo] = useState(null)
 
@@ -38,7 +41,9 @@ const SettingsContent = (props) => {
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
   const [message, setMessage] = useState('')
 
-  const formChanged = siteSettings?.codeSendService !== codeSendService
+  const formChanged =
+    siteSettings?.codeSendService !== codeSendService ||
+    !compareObjects(siteSettings?.custom, custom)
 
   useEffect(() => {
     if (codeSendService === 'telefonip')
@@ -61,6 +66,7 @@ const SettingsContent = (props) => {
       `/api/site`,
       {
         codeSendService,
+        custom,
       },
       (data) => {
         setSiteSettings(data)
@@ -137,6 +143,16 @@ const SettingsContent = (props) => {
             </div>
           </div>
         )}
+        <CheckBox
+          label={`Обновление "Нам 2 года!"`}
+          checked={custom?.birthdayUpdate}
+          onChange={() =>
+            setCustom((state) => ({
+              ...state,
+              birthdayUpdate: !custom.birthdayUpdate,
+            }))
+          }
+        />
       </FormWrapper>
     </div>
   )

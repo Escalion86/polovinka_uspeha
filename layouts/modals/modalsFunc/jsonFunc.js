@@ -38,7 +38,6 @@ const jsonFunc = (data) => {
     declineButtonName: 'Закрыть',
     Children: JSONModal,
     showDecline: true,
-    showConfirm: false,
   }
 }
 

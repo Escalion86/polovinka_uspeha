@@ -699,7 +699,6 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
           text: 'Не все обязательные поля заполнены, однако вы можете сохранить текущий результат и дозаполнить поля позже.',
           confirmButtonName: `Сохранить и закрыть`,
           declineButtonName: 'Продолжить заполнение',
-          showConfirm: true,
           showDecline: true,
           onConfirm: () => {
             closeModal()

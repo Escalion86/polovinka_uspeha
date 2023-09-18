@@ -102,7 +102,8 @@ const StateLoader = (props) => {
   const setReviewsState = useSetRecoilState(reviewsAtom)
   const setPaymentsState = useSetRecoilState(paymentsAtom)
   const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
-  const setSiteSettingsState = useSetRecoilState(siteSettingsAtom)
+  const [siteSettingsState, setSiteSettingsState] =
+    useRecoilState(siteSettingsAtom)
   const setHistoriesState = useSetRecoilState(historiesAtom)
   const setQuestionnairesState = useSetRecoilState(questionnairesAtom)
   const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
@@ -161,8 +162,22 @@ const StateLoader = (props) => {
   useEffect(() => {
     const itemsFunc = itemsFuncGenerator(snackbar, loggedUser)
     setItemsFunc(itemsFunc)
-    setModalsFunc(modalsFuncGenerator(router, itemsFunc, loggedUser))
-  }, [loggedUser])
+    setModalsFunc(
+      modalsFuncGenerator(
+        router,
+        itemsFunc,
+        loggedUser,
+        siteSettingsState,
+        loggedUserActiveRole,
+        loggedUserActiveStatus
+      )
+    )
+  }, [
+    loggedUser,
+    siteSettingsState,
+    loggedUserActiveRole,
+    loggedUserActiveStatus,
+  ])
 
   useEffect(() => {
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
