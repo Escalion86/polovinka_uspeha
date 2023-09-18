@@ -1,5 +1,5 @@
 import React from 'react'
-import { Add, FilterAlt } from '@mui/icons-material'
+import Add from '@mui/icons-material/Add'
 import IconToggleButton from './IconToggleButton'
 
 const AddButton = ({ onClick }) => {

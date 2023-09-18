@@ -10,17 +10,12 @@ import { CONTENTS } from '@helpers/constants'
 import { Suspense, useEffect } from 'react'
 import { useRouter } from 'next/router'
 
-// import ModalsPortal from '@layouts/modals/ModalsPortal'
 import BurgerLayout from '@layouts/BurgerLayout'
-// import DeviceCheck from '@components/DeviceCheck'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import fetchProps from '@server/fetchProps'
-// import isUserAdmin from '@helpers/isUserAdmin'
 import StateLoader from '@components/StateLoader'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useRecoilValue } from 'recoil'
-// import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-// import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
@@ -31,11 +26,7 @@ import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelecto
 function CabinetPage(props) {
   const router = useRouter()
   const page = router.asPath.replace('/cabinet/', '')
-  // const { page } = props
-  // const { loggedUser } = props
   const loggedUser = useRecoilValue(loggedUserAtom)
-  // const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
-  // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
@@ -49,22 +40,15 @@ function CabinetPage(props) {
       !CONTENTS[page].accessRoles.includes(loggedUserActiveRole) ||
       (CONTENTS[page].accessStatuses &&
         !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus)))
-    //     (!['events', 'questionnaire', 'members', 'services'].includes(page) &&
-    //       !isLoggedUserAdmin))) ||
-    // (page === 'members' && !isLoggedUserMember && !isLoggedUserAdmin
   )
     redirect = '/cabinet/questionnaire'
-
-  //   (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) ||
-  //   !CONTENTS[page] ||
-  //   !CONTENTS[page].accessRoles.includes(loggedUserActiveRole) ||
-  //   (CONTENTS[page].accessStatuses &&
-  //     !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus))
 
   // Ограничиваем пользователям доступ к страницам
   useEffect(() => {
     if (redirect) router.push(redirect, '', { shallow: true })
   }, [redirect])
+
+  if (redirect) return null
 
   const Component = CONTENTS[page]
     ? CONTENTS[page].Component
@@ -99,7 +83,6 @@ function CabinetPage(props) {
                 </Suspense>
               )}
             </ContentWrapper>
-            {/* <ModalsPortal /> */}
             <Fab
               show={!isLoggedUserModer}
               icon={faWhatsapp}

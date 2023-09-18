@@ -1,5 +1,6 @@
 import React from 'react'
-import { FormControl, ToggleButton } from '@mui/material'
+import FormControl from '@mui/material/FormControl'
+import ToggleButton from '@mui/material/ToggleButton'
 import cn from 'classnames'
 
 const IconToggleButton = ({

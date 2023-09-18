@@ -1,5 +1,5 @@
 import React from 'react'
-import { FilterAlt } from '@mui/icons-material'
+import FilterAlt from '@mui/icons-material/FilterAlt'
 import IconToggleButton from './IconToggleButton'
 
 const FilterToggleButton = ({ value, onChange }) => {

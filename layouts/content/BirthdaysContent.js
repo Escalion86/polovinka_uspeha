@@ -3,7 +3,6 @@ import { useRecoilValue } from 'recoil'
 import usersAtom from '@state/atoms/usersAtom'
 
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import UserCard from '@layouts/cards/UserCard'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { SelectUserList } from '@components/SelectItemList'
 import {
@@ -12,29 +11,23 @@ import {
   TimelineContent,
   TimelineDot,
   TimelineItem,
-  TimelineOppositeContent,
   TimelineSeparator,
 } from '@mui/lab'
-import { timelineClasses } from '@mui/lab/Timeline'
-import { timelineContentClasses } from '@mui/lab/TimelineContent'
-import { timelineConnectorClasses } from '@mui/lab/TimelineConnector'
-import { timelineDotClasses } from '@mui/lab/TimelineDot'
+// import Timeline from '@mui/lab/TimeLine'
+// import TimelineConnector from '@mui/lab/TimelineConnector'
+// import TimelineContent from '@mui/lab/TimelineContent'
+// import TimelineDot from '@mui/lab/TimelineDot'
+// import TimelineItem from '@mui/lab/TimelineItem'
+// import TimelineSeparator from '@mui/lab/TimelineSeparator'
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
-import { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent'
 import formatDate from '@helpers/formatDate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBirthdayCake } from '@fortawesome/free-solid-svg-icons'
 import getDaysFromNow from '@helpers/getDaysFromNow'
 import ContentHeader from '@components/ContentHeader'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from '@mui/material'
 import { getNounBirthdays } from '@helpers/getNoun'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
+import ComboBox from '@components/ComboBox'
 
 var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
   if (!birthday) return undefined
@@ -57,16 +50,16 @@ var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
   return days
 }
 
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      // width: 200,
-    },
-  },
-}
+// const ITEM_HEIGHT = 48
+// const ITEM_PADDING_TOP = 8
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       // width: 200,
+//     },
+//   },
+// }
 
 const BirthdaysContent = () => {
   const users = useRecoilValue(usersAtom)
@@ -98,25 +91,19 @@ const BirthdaysContent = () => {
       <ContentHeader>
         <div className="flex flex-wrap items-center justify-start flex-1">
           <div className="flex flex-1 gap-x-2">
-            <FormControl
-              sx={{ mt: 1, mb: 0.5, width: 200 }}
-              size="small"
-              margin="none"
-            >
-              <InputLabel id="demo-multiple-name-label">Период</InputLabel>
-              <Select
-                value={periodDays}
-                onChange={(e) => setPeriodDays(e.target.value)}
-                input={<OutlinedInput label="Период" />}
-                MenuProps={MenuProps}
-              >
-                <MenuItem value={30}>1 месяц (30 дней)</MenuItem>
-                <MenuItem value={60}>2 месяца (60 дней)</MenuItem>
-                <MenuItem value={90}>3 месяца (90 дней)</MenuItem>
-                <MenuItem value={180}>Пол года (180 дней)</MenuItem>
-                <MenuItem value={365}>Год (365 дней)</MenuItem>
-              </Select>
-            </FormControl>
+            <ComboBox
+              label="Период"
+              value={String(periodDays)}
+              onChange={(value) => setPeriodDays(Number(value))}
+              items={[
+                { name: '1 месяц (30 дней)', value: 30 },
+                { name: '2 месяца (60 дней)', value: 60 },
+                { name: '3 месяца (90 дней)', value: 90 },
+                { name: 'Пол года (180 дней)', value: 180 },
+                { name: 'Год (365 дней)', value: 365 },
+              ]}
+              smallMargin
+            />
           </div>
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounBirthdays(birthdaysCount)}

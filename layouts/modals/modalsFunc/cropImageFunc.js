@@ -1,8 +1,5 @@
-// import IconToggleButton from '@components/IconToggleButtons/IconToggleButton'
 import RotateButton from '@components/IconToggleButtons/RotateButton'
-// import compareObjects from '@helpers/compareObjects'
-// import { Square } from '@mui/icons-material'
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useCallback } from 'react'
 
 import ReactCrop from 'react-image-crop'

@@ -1,12 +1,7 @@
 import React from 'react'
-import { Button, ButtonGroup } from '@mui/material'
-import {
-  faBan,
-  faGenderless,
-  faMars,
-  faUser,
-  faVenus,
-} from '@fortawesome/free-solid-svg-icons'
+import Button from '@mui/material/Button'
+import ButtonGroup from '@mui/material/ButtonGroup'
+import { faBan, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Image from 'next/image'
 

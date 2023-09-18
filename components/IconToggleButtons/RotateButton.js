@@ -1,5 +1,6 @@
 import React from 'react'
-import { RotateLeft, RotateRight } from '@mui/icons-material'
+import RotateLeft from '@mui/icons-material/RotateLeft'
+import RotateRight from '@mui/icons-material/RotateRight'
 import IconToggleButton from './IconToggleButton'
 
 const RotateButton = ({ onClick, direction = 'left' }) => {

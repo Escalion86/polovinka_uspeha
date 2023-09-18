@@ -1,5 +1,5 @@
-import { TabContext as MuiTabContext } from '@mui/lab'
-import { Tab } from '@mui/material'
+import MuiTabContext from '@mui/lab/TabContext'
+import Tab from '@mui/material/Tab'
 import { useState } from 'react'
 import TabList from './TabList'
 

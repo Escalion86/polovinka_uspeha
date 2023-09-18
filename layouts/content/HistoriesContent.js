@@ -1,46 +1,25 @@
-import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import getNoun, { getNounAges } from '@helpers/getNoun'
-import Fab from '@components/Fab'
-import CardButtons from '@components/CardButtons'
-import reviewsAtom from '@state/atoms/reviewsAtom'
-import reviewSelector from '@state/selectors/reviewSelector'
-import loadingAtom from '@state/atoms/loadingAtom'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { CardWrapper } from '@components/CardWrapper'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import historiesAtom, { historiesSelector } from '@state/atoms/historiesAtom'
+import { historiesSelector } from '@state/atoms/historiesAtom'
 import {
   Timeline,
   TimelineConnector,
   TimelineContent,
   TimelineDot,
   TimelineItem,
-  TimelineOppositeContent,
   TimelineSeparator,
 } from '@mui/lab'
+// import Timeline from '@mui/lab/TimeLine'
+// import TimelineConnector from '@mui/lab/TimelineConnector'
+// import TimelineContent from '@mui/lab/TimelineContent'
+// import TimelineDot from '@mui/lab/TimelineDot'
+// import TimelineItem from '@mui/lab/TimelineItem'
+// import TimelineSeparator from '@mui/lab/TimelineSeparator'
 
-import { timelineClasses } from '@mui/lab/Timeline'
-import { timelineContentClasses } from '@mui/lab/TimelineContent'
-import { timelineConnectorClasses } from '@mui/lab/TimelineConnector'
-import { timelineDotClasses } from '@mui/lab/TimelineDot'
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
-import { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent'
-import formatDateTime from '@helpers/formatDateTime'
-import { UserItem, UserItemFromId } from '@components/ItemCards'
 import { SelectEventList, SelectUserList } from '@components/SelectItemList'
-import {
-  FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from '@mui/material'
-import SortingButtonMenu from '@components/SortingButtonMenu'
 import { useState } from 'react'
 import ContentHeader from '@components/ContentHeader'
-import getDaysBetween from '@helpers/getDaysBetween'
 import getHoursBetween from '@helpers/getHoursBetween'
 import eventsAtom from '@state/atoms/eventsAtom'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
@@ -49,7 +28,6 @@ import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import { EVENT_USER_STATUSES } from '@helpers/constants'
-import LoadingSpinner from '@components/LoadingSpinner'
 
 // const ReviewCard = ({ reviewId }) => {
 //   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -329,16 +307,16 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
   )
 }
 
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      // width: 250,
-    },
-  },
-}
+// const ITEM_HEIGHT = 48
+// const ITEM_PADDING_TOP = 8
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       // width: 250,
+//     },
+//   },
+// }
 
 const HistoriesContent = () => {
   const histories = useRecoilValue(historiesSelector)
@@ -400,31 +378,26 @@ const HistoriesContent = () => {
                 setFilter((state) => ({ ...state, status: value }))
               }
             />
-            <FormControl
-              sx={{ mt: 1, mb: 0.5, width: 160 }}
-              size="small"
-              margin="none"
-            >
-              <InputLabel id="demo-multiple-name-label">Период</InputLabel>
-              <Select
-                value={periodHours}
-                onChange={(e) => setPeriodHours(e.target.value)}
-                input={<OutlinedInput label="Период" />}
-                MenuProps={MenuProps}
-              >
-                <MenuItem value={1}>1 час</MenuItem>
-                <MenuItem value={2}>2 часа</MenuItem>
-                <MenuItem value={3}>3 часа</MenuItem>
-                <MenuItem value={6}>6 часов</MenuItem>
-                <MenuItem value={12}>12 часов</MenuItem>
-                <MenuItem value={24}>Сутки</MenuItem>
-                <MenuItem value={48}>2 суток</MenuItem>
-                <MenuItem value={72}>3 суток</MenuItem>
-                <MenuItem value={168}>Неделю</MenuItem>
-                <MenuItem value={336}>2 недели</MenuItem>
-                <MenuItem value={999999}>За все время</MenuItem>
-              </Select>
-            </FormControl>
+            <ComboBox
+              label="Период"
+              value={String(periodHours)}
+              onChange={(value) => setPeriodHours(Number(value))}
+              items={[
+                { name: '1 час', value: 1 },
+                { name: '2 часа', value: 2 },
+                { name: '3 часа', value: 3 },
+                { name: '6 часов', value: 6 },
+                { name: '12 часов', value: 12 },
+                { name: 'Сутки', value: 24 },
+                { name: '2 суток', value: 48 },
+                { name: '3 суток', value: 72 },
+                { name: 'Неделю', value: 168 },
+                { name: '2 недели', value: 336 },
+                { name: '12 часов', value: 12 },
+                { name: 'За все время', value: 999999 },
+              ]}
+              smallMargin
+            />
           </div>
         </div>
         {/* <div className="flex-1" /> */}

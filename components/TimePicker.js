@@ -3,18 +3,12 @@ import InputWrapper from './InputWrapper'
 import 'dayjs/locale/ru'
 import dayjs from 'dayjs'
 import ru from 'dayjs/locale/ru'
-// import AccessTimeIcon from '@mui/icons-material/AccessTime'
 dayjs.locale(ru)
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-// import {
-//   DateTimePicker as MUIDateTimePicker,
-//   // MobileDateTimePicker,
-// } from '@mui/x-date-pickers'
 import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker'
 import { ruRU } from '@mui/x-date-pickers/locales'
-// import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 
 const TimePicker = ({
   label = '',
