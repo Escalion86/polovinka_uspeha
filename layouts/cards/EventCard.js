@@ -18,7 +18,6 @@ import EventButtonSignIn from '@components/EventButtonSignIn'
 import errorAtom from '@state/atoms/errorAtom'
 import DateTimeEvent from '@components/DateTimeEvent'
 import TextInRing from '@components/TextInRing'
-import NamesOfUsers from '@components/NamesOfUsers'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import eventStatusFunc from '@helpers/eventStatus'
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
@@ -54,9 +53,9 @@ const EventCard = ({
   //   .filter((item) => item.user && item.status === 'assistant')
   //   .map((item) => item.user)
 
-  const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
+  // const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
 
-  const formatedAddress = formatAddress(event.address)
+  // const formatedAddress = formatAddress(event.address)
 
   return (
     <CardWrapper

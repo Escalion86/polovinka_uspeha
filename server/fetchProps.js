@@ -2,7 +2,7 @@ import isUserModer from '@helpers/isUserModer'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
 import Events from '@models/Events'
-import EventsUsers from '@models/EventsUsers'
+// import EventsUsers from '@models/EventsUsers'
 // import Histories from '@models/Histories'
 import Payments from '@models/Payments'
 import Questionnaires from '@models/Questionnaires'
@@ -44,7 +44,7 @@ const fetchProps = async (user, pageName = 'cabinet') => {
     const directions = await Directions.find({})
     const reviews = await Reviews.find({})
     const additionalBlocks = await AdditionalBlocks.find({})
-    const eventsUsers = await EventsUsers.find({})
+    // const eventsUsers = await EventsUsers.find({})
     const payments = await Payments.find({})
     const siteSettings = await SiteSettings.find({})
     const questionnaires = await Questionnaires.find({})
@@ -64,7 +64,7 @@ const fetchProps = async (user, pageName = 'cabinet') => {
       directions: JSON.parse(JSON.stringify(directions)),
       reviews: JSON.parse(JSON.stringify(reviews)),
       additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
-      eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
+      // eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
       payments: JSON.parse(JSON.stringify(payments)),
       siteSettings: JSON.parse(
         JSON.stringify(siteSettings?.length > 0 ? siteSettings[0] : {})
@@ -87,7 +87,7 @@ const fetchProps = async (user, pageName = 'cabinet') => {
       directions: [],
       reviews: [],
       additionalBlocks: [],
-      eventsUsers: [],
+      // eventsUsers: [],
       payments: [],
       siteSettings: {},
       // histories: [],

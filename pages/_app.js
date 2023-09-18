@@ -9,6 +9,7 @@ import 'react-medium-image-zoom/dist/styles.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import 'react-quill/dist/quill.snow.css'
 import 'quill-emoji/dist/quill-emoji.css'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import Head from 'next/head'
 import { SessionProvider } from 'next-auth/react'

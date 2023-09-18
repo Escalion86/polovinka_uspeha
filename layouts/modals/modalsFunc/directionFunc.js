@@ -97,7 +97,7 @@ const directionFunc = (directionId, clone = false) => {
         direction?.showOnSite !== showOnSite ||
         direction?.image !== image
 
-      setOnConfirmFunc(onClickConfirm)
+      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
     }, [title, shortDescription, description, showOnSite, image])

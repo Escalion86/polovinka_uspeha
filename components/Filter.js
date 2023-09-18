@@ -175,7 +175,7 @@ const Filter = ({
 
   return (
     <motion.div
-      // initial={{}}
+      initial={{ height: 0 }}
       animate={{ height: show ? 'auto' : 0 }}
       transition={{ type: 'just' }}
       className="w-full overflow-hidden"

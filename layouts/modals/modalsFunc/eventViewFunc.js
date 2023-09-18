@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 
@@ -21,7 +21,6 @@ import { modalsFuncAtom } from '@state/atoms'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import NamesOfUsers from '@components/NamesOfUsers'
 import ImageGallery from '@components/ImageGallery'
 import CardButtons from '@components/CardButtons'
 import ValueItem from '@components/ValuePicker/ValueItem'
@@ -29,6 +28,43 @@ import TextLine from '@components/TextLine'
 import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
+
+const NamesOfUsersAssistantsOfEventComponent = ({ eventId }) => {
+  const users = useRecoilValue(eventAssistantsSelector(eventId))
+  return (
+    users &&
+    users?.length > 0 && (
+      <div className="flex leading-5 gap-x-1">
+        <span className="font-bold">
+          {users?.length > 1 ? 'Ведущие:' : 'Ведущий:'}
+        </span>
+        <div className="flex flex-wrap items-center gap-x-1 ">
+          {users.map((user, index) => {
+            if (index < users.length - 1) {
+              return (
+                <div
+                  key={'nameOfUser' + user._id}
+                  className="flex items-center flex-nowrap"
+                >
+                  <UserName user={user} noWrap />
+                  <span>,</span>
+                </div>
+              )
+            } else return <UserName key={'nameOfUser' + user._id} user={user} />
+          })}
+        </div>
+      </div>
+    )
+  )
+}
+
+const NamesOfUsersAssistantsOfEvent = (props) => {
+  return (
+    <Suspense>
+      <NamesOfUsersAssistantsOfEventComponent {...props} />
+    </Suspense>
+  )
+}
 
 const eventViewFunc = (eventId) => {
   const EventViewModal = ({
@@ -47,8 +83,6 @@ const eventViewFunc = (eventId) => {
     const direction = useRecoilValue(directionSelector(event?.directionId))
     const organizer = useRecoilValue(userSelector(event?.organizerId))
     const modalsFunc = useRecoilValue(modalsFuncAtom)
-
-    const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
 
     const duration = getEventDuration(event)
 
@@ -167,10 +201,7 @@ const eventViewFunc = (eventId) => {
                 </TextLine>
               </>
             )}
-            <NamesOfUsers
-              users={eventAssistants}
-              title={eventAssistants.length > 1 ? 'Ведущие:' : 'Ведущий:'}
-            />
+            <NamesOfUsersAssistantsOfEvent eventId={eventId} />
           </div>
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
             <EventUsersCounterAndAge eventId={eventId} showAges />

@@ -11,7 +11,7 @@ const ModalButtons = ({
   onDeclineClick,
   // showConfirm = true,
   // showConfirm2,
-  showDecline = true,
+  // showDecline,
   disableConfirm = false,
   disableDecline = false,
   children,
@@ -20,8 +20,14 @@ const ModalButtons = ({
   bottomLeftButton,
   bottomLeftComponent,
 }) => {
-  if (!onConfirmClick && !onConfirm2Click && !showDecline && !closeButtonShow)
+  if (
+    !onConfirmClick &&
+    !onConfirm2Click &&
+    !onDeclineClick &&
+    !closeButtonShow
+  )
     return null
+
   return (
     <>
       <Divider light thin />
@@ -50,20 +56,25 @@ const ModalButtons = ({
               disabled={disableConfirm}
             />
           )}
-          {showDecline && (
+          {onConfirmClick || onConfirm2Click || onDeclineClick ? (
             <Button
               name={declineName}
               classBgColor="bg-danger"
-              onClick={onDeclineClick}
+              onClick={
+                typeof onDeclineClick === 'function'
+                  ? onDeclineClick
+                  : closeModal
+              }
               disabled={disableDecline}
             />
-          )}
-          {closeButtonShow && (
-            <Button
-              name="Закрыть"
-              classBgColor="bg-general"
-              onClick={closeModal}
-            />
+          ) : (
+            closeButtonShow && (
+              <Button
+                name="Закрыть"
+                classBgColor="bg-general"
+                onClick={closeModal}
+              />
+            )
           )}
         </div>
       </div>

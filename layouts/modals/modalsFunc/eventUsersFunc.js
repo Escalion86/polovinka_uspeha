@@ -22,8 +22,8 @@ import {
 } from '@fortawesome/free-regular-svg-icons'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import { P } from '@components/tags'
-import { faListCheck, faLock, faPlay } from '@fortawesome/free-solid-svg-icons'
-import isEventCanBeClosedSelector from '@state/selectors/isEventCanBeClosedSelector'
+import { faListCheck } from '@fortawesome/free-solid-svg-icons'
+// import isEventCanBeClosedSelector from '@state/selectors/isEventCanBeClosedSelector'
 import cn from 'classnames'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import CardButton from '@components/CardButton'
@@ -76,10 +76,10 @@ const eventUsersFunc = (eventId) => {
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     const users = useRecoilValue(usersAtom)
     const isEventClosed = isEventClosedFunc(event)
-    const setEvent = useRecoilValue(itemsFuncAtom).event.set
-    const isEventCanBeClosed = useRecoilValue(
-      isEventCanBeClosedSelector(eventId)
-    )
+    // const setEvent = useRecoilValue(itemsFuncAtom).event.set
+    // const isEventCanBeClosed = useRecoilValue(
+    //   isEventCanBeClosedSelector(eventId)
+    // )
     const { info } = useSnackbar()
     // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
 
@@ -245,27 +245,26 @@ const eventUsersFunc = (eventId) => {
       [bannedParticipantsIds]
     )
 
-    const isFormChanged =
-      isAssistantsChanged ||
-      isMansChanged ||
-      isWomansChanged ||
-      isReservedParticipantsChanged ||
-      isBannedParticipantsIdsChanged
-
     useEffect(() => {
+      const isFormChanged =
+        isAssistantsChanged ||
+        isMansChanged ||
+        isWomansChanged ||
+        isReservedParticipantsChanged ||
+        isBannedParticipantsIdsChanged
+
+      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnlyCloseButtonShow(!isLoggedUserModer || isEventClosed)
-    }, [isFormChanged, isLoggedUserModer, isEventClosed])
-
-    useEffect(() => {
-      setOnConfirmFunc(onClickConfirm)
     }, [
-      bannedParticipantsIds,
-      reservedParticipantsIds,
-      womansIds,
-      mansIds,
       assistantsIds,
+      mansIds,
+      womansIds,
+      reservedParticipantsIds,
+      bannedParticipantsIds,
+      isLoggedUserModer,
+      isEventClosed,
     ])
 
     // useEffect(() => {

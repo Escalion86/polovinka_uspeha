@@ -49,7 +49,7 @@ const eventStatusEditFunc = (eventId) => {
     useEffect(() => {
       const isFormChanged = event?.status !== status
       setDisableConfirm(!isFormChanged)
-      setOnConfirmFunc(onClickConfirm)
+      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
     }, [status])
 
     return (

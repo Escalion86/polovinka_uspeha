@@ -33,6 +33,7 @@ import serviceEditSelector from './selectors/serviceEditSelector'
 import serviceDeleteSelector from './selectors/serviceDeleteSelector'
 import servicesUsersEditSelector from './selectors/servicesUsersEditSelector'
 import servicesUsersDeleteSelector from './selectors/servicesUsersDeleteSelector'
+import asyncEventsUsersByEventIdSelector from './asyncSelectors/asyncEventsUsersByEventIdSelector'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -182,6 +183,8 @@ const messages = {
 }
 
 const setFunc = (selector) => (value) => setRecoil(selector, value)
+const setFamilyFunc = (selector) => (id, value) =>
+  setRecoil(selector(id), value)
 
 const props = {
   setLoading: setFunc(isSiteLoadingAtom),
@@ -203,9 +206,10 @@ const props = {
   addPayments: setFunc(paymentsAddSelector),
   setPayment: setFunc(paymentEditSelector),
   deletePayment: setFunc(paymentsDeleteSelector),
-  setEventsUser: setFunc(eventsUsersEditSelector),
+  setEventsUser: setFamilyFunc(asyncEventsUsersByEventIdSelector),
+  // setEventsUser: setFunc(eventsUsersEditSelector),
   deleteEventsUser: setFunc(eventsUsersDeleteSelector),
-  deleteEventsUsersByEventId: setFunc(eventsUsersDeleteByEventIdSelector),
+  // deleteEventsUsersByEventId: setFunc(eventsUsersDeleteByEventIdSelector),
   setSiteSettings: setFunc(siteSettingsAtom),
   setQuestionnaire: setFunc(questionnaireEditSelector),
   deleteQuestionnaire: setFunc(questionnaireDeleteSelector),
@@ -464,7 +468,7 @@ const itemsFuncGenerator = (
       loggedUser?._id
     )
   }
-
+  // FIX
   obj.event.signUp = async (propsObj, onError, onSuccess) => {
     const { eventId, userId, status, userStatus, eventSubtypeNum, comment } =
       propsObj
@@ -574,8 +578,8 @@ const itemsFuncGenerator = (
       (data) => {
         snackbar.success('Список участников мероприятия успешно обновлен')
         setNotLoadingCard('event' + eventId)
-        props.deleteEventsUsersByEventId(eventId)
-        props.setEventsUser(data)
+        // props.deleteEventsUsersByEventId(eventId)
+        props.setEventsUser(eventId, data)
       },
       (error) => {
         snackbar.error('Не удалось обновить список участников мероприятия')

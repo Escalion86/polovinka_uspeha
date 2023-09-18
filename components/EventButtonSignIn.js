@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { useRecoilValue } from 'recoil'
 
 import { modalsFuncAtom } from '@state/atoms'
@@ -14,6 +14,8 @@ import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelecto
 import EventProfit from './EventProfit'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
 import eventPriceByStatus from '@helpers/eventPriceByStatus'
+import LoadingSpinner from './LoadingSpinner'
+import Skeleton from 'react-loading-skeleton'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -26,7 +28,7 @@ const TextStatus = ({ children, className }) => (
   </div>
 )
 
-const EventButtonSignIn = ({
+const EventButtonSignInComponent = ({
   eventId,
   className,
   noButtonIfAlreadySignIn,
@@ -218,5 +220,11 @@ const EventButtonSignIn = ({
     </div>
   )
 }
+
+const EventButtonSignIn = (props) => (
+  <Suspense fallback={<Skeleton className="h-[80%] w-[100px] mr-1" />}>
+    <EventButtonSignInComponent {...props} />
+  </Suspense>
+)
 
 export default EventButtonSignIn
