@@ -17,6 +17,7 @@ const ValuePicker = ({
   defaultValue,
   readOnly,
   disabledValues = [],
+  disabled,
 }) => {
   const [state, setState] = useState(defaultValue)
   return (
@@ -28,6 +29,7 @@ const ValuePicker = ({
       className={cn('flex-1', className)}
       required={required}
       paddingY
+      // disabled={disabled}
     >
       {/* {label && (
         <label

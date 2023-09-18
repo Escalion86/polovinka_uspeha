@@ -213,10 +213,9 @@ const QuestionnaireContent = (props) => {
     !compareObjects(loggedUser?.notifications, notifications)
 
   const onClickConfirm = async () => {
-    if (notifications?.telegram?.active && !notifications?.telegram?.userName) {
+    if (waitActivateTelegramNotifications) {
       addError({
-        notificationTelegramUserName:
-          'Введите имя пользователя Telegram для оповещений',
+        notificationTelegramUserId: 'Завершите активацию!',
       })
     } else if (
       !checkErrors({
@@ -291,6 +290,14 @@ const QuestionnaireContent = (props) => {
           true
         )
         if (data?.notifications?.telegram?.id) {
+          setLoggedUser(data)
+          // setLoggedUser({
+          //   ...data,
+          //   notifications: {
+          //     ...data.notifications,
+          //     telegram: { ...data.notifications.telegram, active: true },
+          //   },
+          // })
           setNotifications((state) => ({
             ...state,
             telegram: data?.notifications?.telegram,
@@ -754,7 +761,7 @@ const QuestionnaireContent = (props) => {
               value={notifications?.telegram?.active ?? false}
               onChange={() => {
                 // removeError('notificationTelegramUserName')
-                if (notifications?.telegram?.id) {
+                if (notifications?.telegram?.active) {
                   modalsFunc.notifications.telegram.deactivate(() => {
                     setNotifications((state) => ({
                       ...state,
@@ -773,89 +780,55 @@ const QuestionnaireContent = (props) => {
                       active: true,
                     },
                   }))
+                  modalsFunc.notifications.telegram.activate(
+                    () => setWaitActivateTelegramNotifications(true),
+                    () =>
+                      setNotifications((state) => ({
+                        ...state,
+                        telegram: {
+                          active: false,
+                          userName: undefined,
+                          id: undefined,
+                        },
+                      }))
+                  )
                 }
               }}
+              readOnly={waitActivateTelegramNotifications}
             />
-            {notifications?.telegram?.active && (
-              <>
-                {/* <Input
-                  prefix="@"
-                  label="Имя пользователя Telegram"
-                  type="text"
-                  value={notifications?.telegram?.userName}
-                  onChange={(value) => {
-                    removeError('notificationTelegramUserName')
+            {waitActivateTelegramNotifications && (
+              <div className="flex items-center gap-x-3">
+                <span className="text-orange-400">ОЖИДАЕМ АКТИВАЦИЮ</span>
+                <LoadingSpinner size="xs" />
+                <Button
+                  name="Отмена"
+                  onClick={async () => {
+                    setWaitActivateTelegramNotifications(false)
                     setNotifications((state) => ({
                       ...state,
                       telegram: {
-                        ...notifications?.telegram,
-                        userName: value,
+                        active: false,
+                        userName: undefined,
+                        id: undefined,
                       },
                     }))
+                    await putData(
+                      `/api/users/${loggedUser._id}`,
+                      {
+                        notifications: {
+                          ...loggedUser.notifications,
+                          telegram: { active: false },
+                        },
+                      },
+                      null,
+                      null,
+                      false,
+                      loggedUser._id
+                    )
                   }}
-                  copyPasteButtons
-                  required
-                  // labelClassName="w-40"
-                  error={errors.notificationTelegramUserName}
-                /> */}
-                <div className="flex flex-col flex-wrap tablet:items-center tablet:flex-row gap-x-1">
-                  {notifications?.telegram?.id ? (
-                    <>
-                      {/* <div className="flex gap-x-1">
-                        <span className="text-success">АКТИВНО</span>
-                        <span className="">{`(@${notifications?.telegram?.userName})`}</span>
-                      </div>
-                      <ValueItem
-                        name="Деактивировать"
-                        color="red-500"
-                        icon={faBan}
-                        hoverable
-                        onClick={() =>
-                          modalsFunc.notifications.telegram.deactivate(() => {
-                            setNotifications((state) => ({
-                              ...state,
-                              telegram: {
-                                active: false,
-                                userName: undefined,
-                                id: undefined,
-                              },
-                            }))
-                          })
-                        }
-                      /> */}
-                    </>
-                  ) : (
-                    <>
-                      <span className="whitespace-nowrap">
-                        Статус подключения Telegram:
-                      </span>
-                      {waitActivateTelegramNotifications ? (
-                        <>
-                          <span className="text-orange-400">
-                            ОЖИДАЕМ АКТИВАЦИЮ
-                          </span>
-                          <LoadingSpinner size="xs" className="ml-2" />
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-danger">НЕ АКТИВНО</span>
-                          <ValueItem
-                            name="Активировать"
-                            color="green-500"
-                            icon={faCheck}
-                            hoverable
-                            onClick={() =>
-                              modalsFunc.notifications.telegram.activate(() =>
-                                setWaitActivateTelegramNotifications(true)
-                              )
-                            }
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
-                </div>
-              </>
+                  thin
+                />
+              </div>
             )}
             {isNotificationActivated && (
               <>

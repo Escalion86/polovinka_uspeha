@@ -13,6 +13,7 @@ const YesNoPicker = ({
   required = false,
   error = false,
   inLine,
+  readOnly,
 }) => (
   <ValuePicker
     value={value}
@@ -23,6 +24,7 @@ const YesNoPicker = ({
     required={required}
     error={error}
     inLine={inLine}
+    readOnly={readOnly}
   />
 )
 

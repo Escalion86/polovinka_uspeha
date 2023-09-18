@@ -598,8 +598,8 @@ const modalsFuncGenerator = (
     },
     notifications: {
       telegram: {
-        activate: (onStartActivate) =>
-          addModal(notificationsTelegramFunc(onStartActivate)),
+        activate: (onStartActivate, onCancel) =>
+          addModal(notificationsTelegramFunc(onStartActivate, onCancel)),
         deactivate: (onSuccess) =>
           addModal(notificationsDeativateTelegramFunc(onSuccess)),
       },

@@ -9,7 +9,7 @@ import ErrorsList from '@components/ErrorsList'
 import useSnackbar from '@helpers/useSnackbar'
 import { putData } from '@helpers/CRUD'
 
-const notificationsTelegramFunc = (onStartActivate) => {
+const notificationsTelegramFunc = (onStartActivate, onCancel) => {
   const NotificationsTelegramModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -125,6 +125,7 @@ const notificationsTelegramFunc = (onStartActivate) => {
   return {
     title: `Активация уведомлений Telegram`,
     confirmButtonName: 'Активаровать',
+    onDecline: onCancel,
     Children: NotificationsTelegramModal,
   }
 }
