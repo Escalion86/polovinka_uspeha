@@ -267,7 +267,7 @@ const SideBar = ({ page }) => {
 
   return (
     <div
-      className="relative top-0 bottom-0 z-50 flex flex-col w-0 tablet:w-16 bg-general"
+      className="relative top-0 bottom-0 z-50 flex flex-col w-0 tablet:min-w-16 tablet:w-16 bg-general"
       style={{ gridArea: 'sidebar' }}
       ref={wrapperRef}
     >
