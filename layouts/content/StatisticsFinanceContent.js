@@ -51,6 +51,7 @@ const StatisticsFinanceContent = () => {
   return (
     <div className="flex flex-col items-center p-2 overflow-y-auto">
       <LineChart
+        title="Чистая прибыль по месяцам"
         onClick={(point, event) => {
           console.log({ point, event })
           setMonth(point.index % 12)
