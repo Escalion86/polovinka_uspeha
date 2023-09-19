@@ -1,8 +1,7 @@
 import { postData, putData, deleteData } from '@helpers/CRUD'
 import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
-// import loggedUserAtom from './atoms/loggedUserAtom'
 
-import { getRecoil, setRecoil } from 'recoil-nexus'
+import { setRecoil } from 'recoil-nexus'
 import addErrorModalSelector from './selectors/addErrorModalSelector'
 import setLoadingSelector from './selectors/setLoadingSelector'
 import setNotLoadingSelector from './selectors/setNotLoadingSelector'
@@ -21,9 +20,6 @@ import reviewDeleteSelector from './selectors/reviewDeleteSelector'
 import paymentsAddSelector from './selectors/paymentsAddSelector'
 import paymentEditSelector from './selectors/paymentEditSelector'
 import paymentsDeleteSelector from './selectors/paymentsDeleteSelector'
-import eventsUsersEditSelector from './selectors/eventsUsersEditSelector'
-import eventsUsersDeleteSelector from './selectors/eventsUsersDeleteSelector'
-import eventsUsersDeleteByEventIdSelector from './selectors/eventsUsersDeleteByEventIdSelector'
 import siteSettingsAtom from './atoms/siteSettingsAtom'
 import questionnaireEditSelector from './selectors/questionnaireEditSelector'
 import questionnaireDeleteSelector from './selectors/questionnaireDeleteSelector'
@@ -33,6 +29,9 @@ import serviceEditSelector from './selectors/serviceEditSelector'
 import serviceDeleteSelector from './selectors/serviceDeleteSelector'
 import servicesUsersEditSelector from './selectors/servicesUsersEditSelector'
 import servicesUsersDeleteSelector from './selectors/servicesUsersDeleteSelector'
+import setEventsUsersSelector from './asyncSelectors/setEventsUsersSelector'
+import signOutUserSelector from './asyncSelectors/signOutUserSelector'
+import signUpUserSelector from './asyncSelectors/signUpUserSelector'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -182,6 +181,8 @@ const messages = {
 }
 
 const setFunc = (selector) => (value) => setRecoil(selector, value)
+const setFamilyFunc = (selector) => (id, value) =>
+  setRecoil(selector(id), value)
 
 const props = {
   setLoading: setFunc(isSiteLoadingAtom),
@@ -203,9 +204,11 @@ const props = {
   addPayments: setFunc(paymentsAddSelector),
   setPayment: setFunc(paymentEditSelector),
   deletePayment: setFunc(paymentsDeleteSelector),
-  setEventsUser: setFunc(eventsUsersEditSelector),
-  deleteEventsUser: setFunc(eventsUsersDeleteSelector),
-  deleteEventsUsersByEventId: setFunc(eventsUsersDeleteByEventIdSelector),
+
+  setEventUsers: setFamilyFunc(setEventsUsersSelector),
+  signOutEventUser: setFunc(signOutUserSelector),
+  signUpEventUser: setFunc(signUpUserSelector),
+
   setSiteSettings: setFunc(siteSettingsAtom),
   setQuestionnaire: setFunc(questionnaireEditSelector),
   deleteQuestionnaire: setFunc(questionnaireDeleteSelector),
@@ -464,7 +467,7 @@ const itemsFuncGenerator = (
       loggedUser?._id
     )
   }
-
+  // FIX
   obj.event.signUp = async (propsObj, onError, onSuccess) => {
     const { eventId, userId, status, userStatus, eventSubtypeNum, comment } =
       propsObj
@@ -487,7 +490,7 @@ const itemsFuncGenerator = (
             } на мероприятие прошла успешно`
           )
           setNotLoadingCard('event' + eventId)
-          props.setEventsUser(data)
+          props.signUpEventUser(data)
           if (typeof onSuccess === 'function') onSuccess(data)
         }
       },
@@ -526,7 +529,7 @@ const itemsFuncGenerator = (
           } мероприятия`
         )
         setNotLoadingCard('event' + eventId)
-        props.deleteEventsUser(data.data._id)
+        props.signOutEventUser(data.data)
       },
       (error) => {
         snackbar.error(
@@ -574,8 +577,8 @@ const itemsFuncGenerator = (
       (data) => {
         snackbar.success('Список участников мероприятия успешно обновлен')
         setNotLoadingCard('event' + eventId)
-        props.deleteEventsUsersByEventId(eventId)
-        props.setEventsUser(data)
+        // props.deleteEventsUsersByEventId(eventId)
+        props.setEventUsers(eventId, data)
       },
       (error) => {
         snackbar.error('Не удалось обновить список участников мероприятия')

@@ -4,7 +4,7 @@ import {
   faTimes,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { motion } from 'framer-motion'
 import { modalsAtom, modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
@@ -12,6 +12,7 @@ import ModalButtons from '@layouts/modals/ModalButtons'
 import { useRouter } from 'next/router'
 import cn from 'classnames'
 import Tooltip from '@components/Tooltip'
+import Skeleton from 'react-loading-skeleton'
 
 const Modal = ({
   Children,
@@ -36,7 +37,8 @@ const Modal = ({
   // showConfirm,
   // showConfirm2,
   showDecline,
-  closeButtonShow = false,
+  closeButtonShow = true,
+  onlyCloseButtonShow,
   TopLeftComponent,
   bottomLeftButtonProps,
   bottomLeftComponent,
@@ -54,8 +56,10 @@ const Modal = ({
   const setModals = useSetRecoilState(modalsAtom)
   const [close, setClose] = useState(false)
   const [ComponentInFooter, setComponentInFooter] = useState(null)
-  const [onlyCloseButtonShow, setOnlyCloseButtonShow] =
+  const [closeButtonShowState, setCloseButtonShowState] =
     useState(closeButtonShow)
+  const [onlyCloseButtonShowState, setOnlyCloseButtonShowState] =
+    useState(onlyCloseButtonShow)
   const [TopLeftComponentState, setTopLeftComponentState] =
     useState(TopLeftComponent)
   const [bottomLeftButton, setBottomLeftButton] = useState(
@@ -111,24 +115,34 @@ const Modal = ({
   //   closeModal()
   // }
 
-  const onDeclineClick = () => {
-    const decline = () => {
-      if (onDeclineFunc) return onDeclineFunc()
-      onDecline && typeof onDecline === 'function' && onDecline()
-      closeModal()
-    }
+  const onDeclineClick =
+    onShowOnCloseConfirmDialog ||
+    typeof onDeclineFunc === 'function' ||
+    typeof onDecline === 'function'
+      ? () => {
+          const decline =
+            typeof onDeclineFunc === 'function'
+              ? () => onDeclineFunc()
+              : typeof onDecline === 'function'
+              ? () => {
+                  onDecline(refreshPage)
+                  closeModal()
+                }
+              : undefined
 
-    if (onShowOnCloseConfirmDialog) {
-      modalsFunc.confirm({
-        onConfirm: () => {
-          decline()
-          setOnShowOnCloseConfirmDialog(false)
-        },
-      })
-    } else {
-      decline()
-    }
-  }
+          if (onShowOnCloseConfirmDialog) {
+            modalsFunc.confirm({
+              onConfirm: () => {
+                if (typeof decline === 'function') decline()
+                else closeModal()
+                // setOnShowOnCloseConfirmDialog(false)
+              },
+            })
+          } else {
+            decline()
+          }
+        }
+      : undefined
 
   // const closeFunc = () => {
   //   setRendered(false)
@@ -164,7 +178,7 @@ const Modal = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: close ? 0 : 1 }}
       transition={{ duration: 0.1 }}
-      onMouseDown={onDeclineClick}
+      onMouseDown={onDeclineClick || closeModal}
     >
       <motion.div
         className={
@@ -196,7 +210,7 @@ const Modal = ({
               className="w-8 h-8 text-black duration-200 transform cursor-pointer hover:scale-110"
               icon={faTimes}
               // size="1x"
-              onClick={onDeclineClick}
+              onClick={onDeclineClick || closeModal}
             />
           </div>
         </Tooltip>
@@ -235,49 +249,55 @@ const Modal = ({
           : cloneElement(children, { onClose: closeModal, setBeforeCloseFunc })} */}
         <div className="flex-1 px-2 overflow-y-auto tablet:px-3">
           {Children && (
-            <Children
-              closeModal={closeModal}
-              setOnConfirmFunc={(func) =>
-                setOnConfirmFunc(func ? () => func : null)
-              }
-              setOnConfirm2Func={(func) =>
-                setOnConfirm2Func(func ? () => func : null)
-              }
-              setOnDeclineFunc={(func) =>
-                setOnDeclineFunc(func ? () => func : null)
-              }
-              setOnShowOnCloseConfirmDialog={setOnShowOnCloseConfirmDialog}
-              setDisableConfirm={setDisableConfirm}
-              setDisableDecline={setDisableDecline}
-              setComponentInFooter={setComponentInFooter}
-              setOnlyCloseButtonShow={setOnlyCloseButtonShow}
-              setTopLeftComponent={setTopLeftComponentState}
-              setBottomLeftButtonProps={setBottomLeftButton}
-              setBottomLeftComponent={setBottomLeftComponent}
-            />
+            <Suspense fallback={<Skeleton count={12} />}>
+              <Children
+                closeModal={closeModal}
+                setOnConfirmFunc={(func) =>
+                  setOnConfirmFunc(func ? () => func : null)
+                }
+                setOnConfirm2Func={(func) =>
+                  setOnConfirm2Func(func ? () => func : null)
+                }
+                setOnDeclineFunc={(func) =>
+                  setOnDeclineFunc(func ? () => func : null)
+                }
+                setOnShowOnCloseConfirmDialog={setOnShowOnCloseConfirmDialog}
+                setDisableConfirm={setDisableConfirm}
+                setDisableDecline={setDisableDecline}
+                setComponentInFooter={setComponentInFooter}
+                setOnlyCloseButtonShow={setOnlyCloseButtonShowState}
+                setTopLeftComponent={setTopLeftComponentState}
+                setBottomLeftButtonProps={setBottomLeftButton}
+                setBottomLeftComponent={setBottomLeftComponent}
+                setCloseButtonShow={setCloseButtonShowState}
+              />
+            </Suspense>
           )}
         </div>
 
         {(onConfirmClick ||
           onConfirm2Click ||
           // showConfirm ||
+          closeButtonShowState ||
           showDecline ||
           ComponentInFooter ||
-          closeButtonShow ||
-          onlyCloseButtonShow ||
+          onlyCloseButtonShowState ||
           bottomLeftButton ||
           bottomLeftComponentState) && (
           <ModalButtons
-            closeButtonShow={onlyCloseButtonShow}
+            closeButtonShow={
+              onlyCloseButtonShowState ||
+              (!onDeclineClick && closeButtonShowState)
+            }
             confirmName={confirmButtonName}
             confirmName2={confirmButtonName2}
             declineName={declineButtonName}
-            onConfirmClick={!onlyCloseButtonShow && onConfirmClick}
-            onConfirm2Click={!onlyCloseButtonShow && onConfirm2Click}
-            onDeclineClick={onDeclineClick}
+            onConfirmClick={!onlyCloseButtonShowState && onConfirmClick}
+            onConfirm2Click={!onlyCloseButtonShowState && onConfirm2Click}
+            onDeclineClick={!onlyCloseButtonShowState && onDeclineClick}
             // showConfirm={!onlyCloseButtonShow && showConfirm}
             // showConfirm2={!onlyCloseButtonShow && showConfirm2}
-            showDecline={!onlyCloseButtonShow && showDecline}
+            // showDecline={!onlyCloseButtonShowState && showDecline}
             disableConfirm={disableConfirm}
             disableDecline={disableDecline}
             closeModal={closeModal}

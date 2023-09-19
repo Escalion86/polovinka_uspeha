@@ -1,21 +1,25 @@
-import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
+// import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import { selectorFamily } from 'recoil'
 import eventSelector from './eventSelector'
 import userSelector from './userSelector'
+import asyncEventsUsersByEventIdAtom from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 
 export const eventsUsersFullByEventIdSelector = selectorFamily({
   key: 'eventsUsersFullByEventIdSelector',
   get:
     (id) =>
-    ({ get }) => {
+    async ({ get }) => {
       if (!id) return []
-      const eventsUsers = get(eventsUsersAtom)
+
+      const eventsUsers = await get(asyncEventsUsersByEventIdAtom(id))
+
+      // const eventsUsers = get(eventsUsersAtom)
 
       return eventsUsers
         ? eventsUsers
-            .filter(
-              (item) => item.eventId && item.userId && item.eventId === id
-            )
+            // .filter(
+            //   (item) => item.eventId && item.userId && item.eventId === id
+            // )
             .map((item) => {
               const user = get(userSelector(item.userId))
               const event = get(eventSelector(item.eventId))

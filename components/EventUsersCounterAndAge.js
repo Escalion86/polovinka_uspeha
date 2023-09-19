@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import eventMansReserveSelector from '@state/selectors/eventMansReserveSelector'
 import eventMansSelector from '@state/selectors/eventMansSelector'
 import eventSelector from '@state/selectors/eventSelector'
-import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+// import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import eventWomansReserveSelector from '@state/selectors/eventWomansReserveSelector'
 import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import cn from 'classnames'
@@ -13,21 +13,56 @@ import Image from 'next/image'
 import SvgSigma from 'svg/SvgSigma'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import { Suspense } from 'react'
+import Skeleton from 'react-loading-skeleton'
 
-const Counter = ({
+const CounterComponent = ({
+  event,
+  gender,
   showAges,
-  minAge,
-  maxAge,
-  max,
-  noviceCount,
-  memberCount,
-  maxNovice,
-  maxMember,
-  noviceReserveCount,
-  memberReserveCount,
+  // minAge,
+  // maxAge,
+  // max,
+  // noviceCount,
+  // memberCount,
+  // maxNovice,
+  // maxMember,
+  // noviceReserveCount,
+  // memberReserveCount,
   showNoviceAndMemberSum,
   showReserve,
 }) => {
+  const eventGenders = useRecoilValue(
+    gender === 'mans'
+      ? eventMansSelector(event._id)
+      : eventWomansSelector(event._id)
+  )
+  const eventGendersNoviceCount = eventGenders.filter(
+    (user) => !user.status || user.status === 'novice'
+  ).length
+  const eventGendersMemberCount = eventGenders.filter(
+    (user) => user.status === 'member'
+  ).length
+
+  const eventGendersReserve = useRecoilValue(
+    gender === 'mans'
+      ? eventMansReserveSelector(event._id)
+      : eventWomansReserveSelector(event._id)
+  )
+
+  const eventGendersNoviceReserveCount = eventGendersReserve.filter(
+    (user) => !user.status || user.status === 'novice'
+  ).length
+  const eventGendersMemberReserveCount = eventGendersReserve.filter(
+    (user) => user.status === 'member'
+  ).length
+
+  const max = gender === 'mans' ? event.maxMans : event.maxWomans
+  const maxNovice =
+    gender === 'mans' ? event.maxMansNovice : event.maxWomansNovice
+  const maxMember =
+    gender === 'mans' ? event.maxMansMember : event.maxWomansMember
+
   const actualMax =
     typeof maxNovice === 'number' && typeof maxMember === 'number'
       ? typeof max === 'number'
@@ -41,9 +76,9 @@ const Counter = ({
       <div className="flex flex-col items-center">
         {showAges && (
           <div className="flex justify-center gap-x-0.5 border-b self-stretch">
-            <span>{minAge ?? 18}</span>
+            <span>{event.minAge ?? 18}</span>
             <span>-</span>
-            <span>{maxAge ?? 60}</span>
+            <span>{event.maxAge ?? 60}</span>
             <span>лет</span>
           </div>
         )}
@@ -63,14 +98,15 @@ const Counter = ({
                   //     : ''
                   // }
                   >
-                    {noviceCount + memberCount}
+                    {eventGendersNoviceCount + eventGendersMemberCount}
                   </span>
                   {typeof actualMax === 'number' && (
                     <>
                       <span>/</span>
                       <span
                         className={cn(
-                          noviceCount + memberCount >= actualMax
+                          eventGendersNoviceCount + eventGendersMemberCount >=
+                            actualMax
                             ? 'text-danger font-semibold'
                             : ''
                         )}
@@ -80,9 +116,12 @@ const Counter = ({
                     </>
                   )}
                   {showReserve &&
-                    noviceReserveCount + memberReserveCount > 0 && (
+                    eventGendersNoviceReserveCount +
+                      eventGendersMemberReserveCount >
+                      0 && (
                       <span className="text-xs">{`+${
-                        noviceReserveCount + memberReserveCount
+                        eventGendersNoviceReserveCount +
+                        eventGendersMemberReserveCount
                       }`}</span>
                     )}
                   {/* <span>чел.</span> */}
@@ -95,12 +134,12 @@ const Counter = ({
                   <div className="flex tablet:gap-x-0.5">
                     <span
                       className={
-                        maxNovice && noviceCount >= maxNovice
+                        maxNovice && eventGendersNoviceCount >= maxNovice
                           ? 'text-danger font-semibold'
                           : ''
                       }
                     >
-                      {noviceCount}
+                      {eventGendersNoviceCount}
                     </span>
                     {typeof maxNovice === 'number' && (
                       <>
@@ -108,8 +147,8 @@ const Counter = ({
                         <span>{maxNovice}</span>
                       </>
                     )}
-                    {showReserve && noviceReserveCount > 0 && (
-                      <span className="text-xs">{`+${noviceReserveCount}`}</span>
+                    {showReserve && eventGendersNoviceReserveCount > 0 && (
+                      <span className="text-xs">{`+${eventGendersNoviceReserveCount}`}</span>
                     )}
                     {/* <span>чел.</span> */}
                   </div>
@@ -119,12 +158,12 @@ const Counter = ({
                   <div className="flex tablet:gap-x-0.5">
                     <span
                       className={
-                        maxMember && memberCount >= maxMember
+                        maxMember && eventGendersMemberCount >= maxMember
                           ? 'text-danger font-semibold'
                           : ''
                       }
                     >
-                      {memberCount}
+                      {eventGendersMemberCount}
                     </span>
                     {typeof maxMember === 'number' && (
                       <>
@@ -132,8 +171,8 @@ const Counter = ({
                         <span>{maxMember}</span>
                       </>
                     )}
-                    {memberReserveCount > 0 && (
-                      <span className="text-xs">{`+${memberReserveCount}`}</span>
+                    {eventGendersMemberReserveCount > 0 && (
+                      <span className="text-xs">{`+${eventGendersMemberReserveCount}`}</span>
                     )}
                     {/* <span>чел.</span> */}
                   </div>
@@ -154,7 +193,8 @@ const Counter = ({
                 <span className="text-xs">max</span>
                 <span
                   className={
-                    noviceCount + memberCount >= actualMax
+                    eventGendersNoviceCount + eventGendersMemberCount >=
+                    actualMax
                       ? 'text-danger font-semibold'
                       : ''
                   }
@@ -180,9 +220,9 @@ const Counter = ({
     <div className="flex flex-col items-center">
       {showAges && (
         <div className="flex justify-center gap-x-0.5 border-b self-stretch">
-          <span>{minAge ?? 18}</span>
+          <span>{event.minAge ?? 18}</span>
           <span>-</span>
-          <span>{maxAge ?? 60}</span>
+          <span>{event.maxAge ?? 60}</span>
           <span>лет</span>
         </div>
       )}
@@ -190,12 +230,12 @@ const Counter = ({
         <span
           className={
             typeof actualMax === 'number' &&
-            noviceCount + memberCount >= actualMax
+            eventGendersNoviceCount + eventGendersMemberCount >= actualMax
               ? 'text-danger font-semibold'
               : ''
           }
         >
-          {noviceCount + memberCount}
+          {eventGendersNoviceCount + eventGendersMemberCount}
         </span>
         {typeof actualMax === 'number' && (
           <>
@@ -203,81 +243,88 @@ const Counter = ({
             <span>{actualMax}</span>
           </>
         )}
-        {showReserve && noviceReserveCount + memberReserveCount > 0 && (
-          <span className="text-xs">{`+${
-            noviceReserveCount + memberReserveCount
-          }`}</span>
-        )}
+        {showReserve &&
+          eventGendersNoviceReserveCount + eventGendersMemberReserveCount >
+            0 && (
+            <span className="text-xs">{`+${
+              eventGendersNoviceReserveCount + eventGendersMemberReserveCount
+            }`}</span>
+          )}
         <span className="hidden laptop:block">чел.</span>
       </div>
     </div>
   )
 }
 
+const Counter = (props) => (
+  <Suspense
+    fallback={
+      <Skeleton className="w-[40px] laptop:w-[65px] h-[16px] laptop:h-[20px]" />
+    }
+  >
+    <CounterComponent {...props} />
+  </Suspense>
+)
+
+const SumCounterComponent = ({ event, showReserve }) => {
+  const eventMansCount = useRecoilValue(eventMansSelector(event._id)).length
+  const eventWomansCount = useRecoilValue(eventWomansSelector(event._id)).length
+  const eventMansReserveCount = useRecoilValue(
+    eventMansReserveSelector(event._id)
+  ).length
+  const eventWomansReserveCount = useRecoilValue(
+    eventWomansReserveSelector(event._id)
+  ).length
+
+  const eventParticipantsCount = eventMansCount + eventWomansCount
+  const eventReserveCount = eventMansReserveCount + eventWomansReserveCount
+
+  return (
+    <>
+      <div className="flex laptop:gap-x-0.5">
+        {/* <span className="italic font-bold">Всего:</span> */}
+        <span
+          className={
+            event.maxParticipants &&
+            eventParticipantsCount >= event.maxParticipants
+              ? 'text-danger font-semibold'
+              : ''
+          }
+        >
+          {eventParticipantsCount}
+        </span>
+        {typeof event.maxParticipants === 'number' && (
+          <>
+            <span>/</span>
+            <span>{event.maxParticipants}</span>
+          </>
+        )}
+        {showReserve && eventReserveCount > 0 && (
+          <span className="text-xs">{`+${eventReserveCount}`}</span>
+        )}
+      </div>
+      <span className="hidden laptop:block">чел.</span>
+    </>
+  )
+}
+
+const SumCounter = (props) => (
+  <Suspense
+    fallback={
+      <Skeleton className="w-[40px] laptop:w-[65px] h-[16px] laptop:h-[20px]" />
+    }
+  >
+    <SumCounterComponent {...props} />
+  </Suspense>
+)
+
 const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const event = useRecoilValue(eventSelector(eventId))
-  // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
-
-  // const eventAssistantsIds = useRecoilValue(eventAssistantsSelector(eventId)).map((user) => user._id)
-  const eventMans = useRecoilValue(eventMansSelector(eventId))
-  const eventWomans = useRecoilValue(eventWomansSelector(eventId))
-  const eventMansNoviceCount = eventMans.filter(
-    (user) => !user.status || user.status === 'novice'
-  ).length
-  const eventWomansNoviceCount = eventWomans.filter(
-    (user) => !user.status || user.status === 'novice'
-  ).length
-  const eventMansMemberCount = eventMans.filter(
-    (user) => !user.status || user.status === 'member'
-  ).length
-  const eventWomansMemberCount = eventWomans.filter(
-    (user) => !user.status || user.status === 'member'
-  ).length
-  const eventMansReserve = useRecoilValue(eventMansReserveSelector(eventId))
-  const eventWomansReserve = useRecoilValue(eventWomansReserveSelector(eventId))
-  const eventMansNoviceReserveCount = eventMansReserve.filter(
-    (user) => !user.status || user.status === 'novice'
-  ).length
-  const eventMansMemberReserveCount = eventMansReserve.filter(
-    (user) => !user.status || user.status === 'member'
-  ).length
-  const eventWomansNoviceReserveCount = eventWomansReserve.filter(
-    (user) => !user.status || user.status === 'novice'
-  ).length
-  const eventWomansMemberReserveCount = eventWomansReserve.filter(
-    (user) => !user.status || user.status === 'member'
-  ).length
-
-  // const eventReservedParticipantsIds = useRecoilValue(eventUsersInReserveSelector(eventId)).map((user) => user._id)
-  // const eventBannedParticipantsIds = useRecoilValue(eventUsersInBanSelector(eventId)).map((user) => user._id)
-  const eventMansCount = eventMans.length
-  const eventWomansCount = eventWomans.length
-  const eventMansReserveCount = eventMansReserve.length
-  const eventWomansReserveCount = eventWomansReserve.length
-  // const eventMansCount = eventUsers.filter(
-  //   (item) =>
-  //     item.user &&
-  //     item.user.gender == 'male' &&
-  //     (!item.status || item.status === '' || item.status === 'participant')
-  // ).length
-  // const eventWomansCount = eventUsers.filter(
-  //   (item) =>
-  //     item.user &&
-  //     item.user.gender == 'famale' &&
-  //     (!item.status || item.status === '' || item.status === 'participant')
-  // ).length
 
   if (!eventId || !event) return null
 
-  const eventParticipantsCount = eventWomansCount + eventMansCount
-
   const showReserve = true // isLoggedUserModer
-  const reserveSum =
-    eventMansNoviceReserveCount +
-    eventMansMemberReserveCount +
-    eventWomansNoviceReserveCount +
-    eventWomansMemberReserveCount
 
   return (
     <div
@@ -295,16 +342,9 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           className="w-5 h-5 text-blue-600 laptop:w-6 laptop:h-6"
         />
         <Counter
+          gender="mans"
+          event={event}
           showAges={showAges}
-          minAge={event.minMansAge}
-          maxAge={event.maxMansAge}
-          max={event.maxMans}
-          noviceCount={eventMansNoviceCount}
-          memberCount={eventMansMemberCount}
-          maxNovice={event.maxMansNovice}
-          maxMember={event.maxMansMember}
-          noviceReserveCount={eventMansNoviceReserveCount}
-          memberReserveCount={eventMansMemberReserveCount}
           showNoviceAndMemberSum={!isLoggedUserModer}
           showReserve={showReserve}
         />
@@ -315,16 +355,9 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           className="w-5 h-5 text-red-600 laptop:w-6 laptop:h-6"
         />
         <Counter
+          gender="womans"
+          event={event}
           showAges={showAges}
-          minAge={event.minWomansAge}
-          maxAge={event.maxWomansAge}
-          max={event.maxWomans}
-          noviceCount={eventWomansNoviceCount}
-          memberCount={eventWomansMemberCount}
-          maxNovice={event.maxWomansNovice}
-          maxMember={event.maxWomansMember}
-          noviceReserveCount={eventWomansNoviceReserveCount}
-          memberReserveCount={eventWomansMemberReserveCount}
           showNoviceAndMemberSum={!isLoggedUserModer}
           showReserve={showReserve}
         />
@@ -352,33 +385,11 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           </div>
         </div> */}
       </div>
-      <div className="flex items-center px-2 py-1 gap-x-0.5 laptop:gap-x-1">
+      <div className="flex items-center px-2 py-1 gap-x-1 laptop:gap-x-1">
         <div className="w-5 h-5 min-w-5">
           <SvgSigma className="fill-general" />
         </div>
-        <div className="flex laptop:gap-x-0.5">
-          {/* <span className="italic font-bold">Всего:</span> */}
-          <span
-            className={
-              event.maxParticipants &&
-              eventParticipantsCount >= event.maxParticipants
-                ? 'text-danger font-semibold'
-                : ''
-            }
-          >
-            {eventParticipantsCount}
-          </span>
-          {typeof event.maxParticipants === 'number' && (
-            <>
-              <span>/</span>
-              <span>{event.maxParticipants}</span>
-            </>
-          )}
-          {showReserve && reserveSum > 0 && (
-            <span className="text-xs">{`+${reserveSum}`}</span>
-          )}
-        </div>
-        <span className="hidden laptop:block">чел.</span>
+        <SumCounter event={event} showReserve={showReserve} />
       </div>
     </div>
   )

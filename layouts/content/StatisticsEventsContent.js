@@ -11,25 +11,10 @@ import isEventExpiredFunc from '@helpers/isEventExpired'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventClosedFunc from '@helpers/isEventClosed'
-import { MONTHS } from '@helpers/constants'
-import arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector'
 
 const StatisticsEventsContent = () => {
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
-
-  const incomeByDate = useRecoilValue(
-    arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector
-  )
-
-  const dataOfIncomeByDate = []
-  for (const year in incomeByDate) {
-    const data = incomeByDate[year].map((income, index) => ({
-      x: MONTHS[index],
-      y: income,
-    }))
-    dataOfIncomeByDate.push({ id: year, data })
-  }
 
   const [filterEvents, setFilterEvents] = useState({
     status: {

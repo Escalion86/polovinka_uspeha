@@ -101,7 +101,7 @@ const StateLoader = (props) => {
   const setUsersState = useSetRecoilState(usersAtom)
   const setReviewsState = useSetRecoilState(reviewsAtom)
   const setPaymentsState = useSetRecoilState(paymentsAtom)
-  const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
+  // const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
   const [siteSettingsState, setSiteSettingsState] =
     useRecoilState(siteSettingsAtom)
   const setHistoriesState = useSetRecoilState(historiesAtom)
@@ -191,7 +191,7 @@ const StateLoader = (props) => {
     setUsersState(props.users)
     setReviewsState(props.reviews)
     setPaymentsState(props.payments)
-    setEventsUsersState(props.eventsUsers)
+    // setEventsUsersState(props.eventsUsers)
     setSiteSettingsState(props.siteSettings)
     setHistoriesState(props.histories)
     setQuestionnairesState(props.questionnaires)

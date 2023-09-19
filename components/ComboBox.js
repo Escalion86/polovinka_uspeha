@@ -15,7 +15,7 @@ const ComboBox = ({
   className,
   hidden,
   paddingX = true,
-  paddingY = true,
+  paddingY = 'small',
   fullWidth,
   activePlaceholder,
   noMargin,

@@ -293,7 +293,7 @@ const eventFunc = (eventId, clone = false) => {
       // setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-      setOnConfirmFunc(onClickConfirm)
+      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
     }, [
       title,
       description,

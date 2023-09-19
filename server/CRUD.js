@@ -431,11 +431,18 @@ export default async function handler(Schema, req, res, params = null) {
   console.log(`params`, params)
   console.log(`id`, id)
   console.log(`body`, body)
+  console.log('query :>> ', query)
 
   switch (method) {
     case 'GET':
       try {
-        if (params) {
+        if (Object.keys(query).length > 0) {
+          data = await Schema.find(query).select({ password: 0 })
+          if (!data) {
+            return res?.status(400).json({ success: false })
+          }
+          return res?.status(200).json({ success: true, data })
+        } else if (params) {
           data = await Schema.find(params).select({ password: 0 })
           if (!data) {
             return res?.status(400).json({ success: false })

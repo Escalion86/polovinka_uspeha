@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
-import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
+// import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
@@ -9,8 +9,8 @@ import {
   faAngleDown,
   faCertificate,
   faLink,
-  faLock,
-  faPlay,
+  // faLock,
+  // faPlay,
   faPlus,
   faTrash,
   faUnlink,
@@ -18,42 +18,64 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
 import cn from 'classnames'
-import eventParticipantsSelector from '@state/selectors/eventParticipantsSelector'
+// import eventParticipantsSelector from '@state/selectors/eventParticipantsSelector'
 import { modalsFuncAtom } from '@state/atoms'
 import { PaymentItem, UserItem, UserItemFromId } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@components/Button'
 import { motion } from 'framer-motion'
-import sumOfPaymentsFromEventToAssistantsSelector from '@state/selectors/sumOfPaymentsFromEventToAssistantsSelector'
-import sumOfCouponsFromParticipantsToEventSelector from '@state/selectors/sumOfCouponsFromParticipantsToEventSelector'
-import sumOfPaymentsFromParticipantsSelector from '@state/selectors/sumOfPaymentsFromParticipantsSelector'
-import sumOfPaymentsToEventSelector from '@state/selectors/sumOfPaymentsToEventSelector'
-import paymentsToEventSelector from '@state/selectors/paymentsToEventSelector'
-import sumOfExpectingPaymentsFromParticipantsToEventSelector from '@state/selectors/sumOfExpectingPaymentsFromParticipantsToEventSelector'
-import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
-import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
+// import sumOfPaymentsFromEventToAssistantsSelector from '@state/selectors/sumOfPaymentsFromEventToAssistantsSelector'
+// import sumOfCouponsFromParticipantsToEventSelector from '@state/selectors/sumOfCouponsFromParticipantsToEventSelector'
+// import sumOfPaymentsFromParticipantsSelector from '@state/selectors/sumOfPaymentsFromParticipantsSelector'
+// import sumOfPaymentsToEventSelector from '@state/selectors/sumOfPaymentsToEventSelector'
+// import paymentsToEventSelector from '@state/selectors/paymentsToEventSelector'
+// import sumOfExpectingPaymentsFromParticipantsToEventSelector from '@state/selectors/sumOfExpectingPaymentsFromParticipantsToEventSelector'
+// import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
+// import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import { P } from '@components/tags'
-import sumOfPaymentsFromEventSelector from '@state/selectors/sumOfPaymentsFromEventSelector'
-import paymentsFromEventSelector from '@state/selectors/paymentsFromEventSelector'
+// import sumOfPaymentsFromEventSelector from '@state/selectors/sumOfPaymentsFromEventSelector'
+// import paymentsFromEventSelector from '@state/selectors/paymentsFromEventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
-import eventAssistantsFullByEventIdSelector from '@state/selectors/eventAssistantsFullByEventIdSelector'
+// import eventParticipantsByEventIdSelector from '@state/selectors/eventParticipantsByEventIdSelector'
+// import eventAssistantsByEventIdSelector from '@state/selectors/eventAssistantsByEventIdSelector'
 import UserStatusIcon from '@components/UserStatusIcon'
-import isEventExpiredFunc from '@helpers/isEventExpired'
+// import isEventExpiredFunc from '@helpers/isEventExpired'
 // import paymentsOfEventFromNotParticipantsSelector from '@state/selectors/paymentsOfEventFromNotParticipantsSelector'
-import eventNotParticipantsWithPaymentsSelector from '@state/selectors/eventNotParticipantsWithPaymentsSelector'
-import sumOfPaymentsFromNotParticipantsToEventSelector from '@state/selectors/sumOfPaymentsFromNotParticipantsToEventSelector'
+// import eventNotParticipantsWithPaymentsSelector from '@state/selectors/eventNotParticipantsWithPaymentsSelector'
+// import sumOfPaymentsFromNotParticipantsToEventSelector from '@state/selectors/sumOfPaymentsFromNotParticipantsToEventSelector'
 // import paymentsWithoutEventIdByUserIdSelector from '@state/selectors/paymentsWithoutEventIdByUserIdSelector'
 import Tooltip from '@components/Tooltip'
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
-import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
-import eventPriceByStatus from '@helpers/eventPriceByStatus'
+// import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
+// import eventPriceByStatus from '@helpers/eventPriceByStatus'
 import CardButton from '@components/CardButton'
 import { EVENT_STATUSES } from '@helpers/constants'
+import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+// import sumOfPaymentsFromNotParticipantsToEventSelector from '@state/selectors/sumOfPaymentsFromNotParticipantsToEventSelector'
+import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
+// import eventAssistantsIdsSelector from '@state/selectors/eventAssistantsIdsSelector'
+// import asyncEventsUsersByEventIdAtom from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 
 const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
+
+const income = (payments) =>
+  payments.reduce(
+    (p, payment) =>
+      p +
+      (payment.sum ?? 0) *
+        ([
+          'toEvent',
+          // 'toService',
+          // 'toProduct',
+          // 'toInternal',
+          'toUser',
+        ].includes(payment.payDirection)
+          ? -1
+          : 1),
+    0
+  ) / 100
 
 const UserPayment = ({
   id,
@@ -95,35 +117,9 @@ const UserPayment = ({
     (payment) => payment.payType !== 'coupon'
   )
 
-  const sumOfCoupons =
-    couponsOfUser.reduce(
-      (p, payment) =>
-        p +
-        (payment.sum ?? 0) *
-          (payment.payDirection === 'toUser' ||
-          payment.payDirection === 'toEvent'
-            ? -1
-            : 1),
-      0
-    ) / 100
+  const sumOfCoupons = income(couponsOfUser)
+  const sumOfPayments = income(paymentsOfUser)
 
-  const sumOfPayments =
-    paymentsOfUser.reduce(
-      (p, payment) =>
-        p +
-        (payment.sum ?? 0) *
-          (payment.payDirection === 'toUser' ||
-          payment.payDirection === 'toEvent'
-            ? -1
-            : 1),
-      0
-    ) / 100
-
-  // const userFactStatus = !!userStatus
-  //   ? userStatus
-  //   : !user?.status || user.status === 'ban'
-  //   ? 'novice'
-  //   : user.status
   const userDiscount = userStatus ? event.usersStatusDiscount[userStatus] : 0
 
   const eventPriceForUser = noEventPriceForUser
@@ -393,7 +389,6 @@ const UsersPayments = ({
   // const paymentsFromNotParticipants = useRecoilValue(
   //   paymentsOfEventFromNotParticipantsSelector(event._id)
   // )
-  // console.log('paymentsFromNotParticipants', paymentsFromNotParticipants)
   return (
     <div className="flex flex-col gap-y-1">
       {(usersIds ? usersIds.map((_id) => ({ user: { _id } })) : eventUsers).map(
@@ -442,177 +437,134 @@ const eventUsersPaymentsFunc = (eventId) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const isEventClosed = isEventClosedFunc(event)
-    const isEventExpired = isEventExpiredFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
     const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
 
-    // const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
-    // const users = useRecoilValue(usersAtom)
-    const paymentsToEvent = useRecoilValue(paymentsToEventSelector(eventId))
-    const paymentsFromEvent = useRecoilValue(paymentsFromEventSelector(eventId))
-
-    const eventNotParticipantsWithPayments = useRecoilValue(
-      eventNotParticipantsWithPaymentsSelector(eventId)
+    const paymentsToEvent = paymentsOfEvent.filter(
+      (payments) => payments.payDirection === 'toEvent'
+    )
+    const paymentsFromEvent = paymentsOfEvent.filter(
+      (payments) => payments.payDirection === 'fromEvent'
     )
 
-    // const eventAssistantsIds = useRecoilValue(
-    //   eventAssistantsIdsSelector(eventId)
+    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+
+    const eventParticipants = eventUsers.filter(
+      ({ status }) => status === 'participant'
+    )
+    const eventAssistants = eventUsers.filter(
+      ({ status }) => status === 'assistant'
+    )
+
+    const eventParticipantsIds = eventParticipants.map(
+      (eventUser) => eventUser.userId
+    )
+    const eventAssistantsIds = eventAssistants.map(
+      (eventUser) => eventUser.userId
+    )
+
+    const paymentsOfEventOfParticipants = paymentsOfEvent.filter(
+      (payment) =>
+        payment.userId && eventParticipantsIds.includes(payment.userId)
+    )
+    const paymentsOfEventOfAssistants = paymentsOfEvent.filter(
+      (payment) => payment.userId && eventAssistantsIds.includes(payment.userId)
+    )
+
+    const paymentsOfEventOfParticipantsWitoutCoupons =
+      paymentsOfEventOfParticipants.filter((item) => item.payType !== 'coupon')
+    const paymentsOfEventOfParticipantsCouponsOnly =
+      paymentsOfEventOfParticipants.filter((item) => item.payType === 'coupon')
+    const paymentsOfEventOfAssistantsWitoutCoupons =
+      paymentsOfEventOfAssistants.filter((item) => item.payType !== 'coupon')
+    // const paymentsOfEventOfAssistantsCouponsOnly =
+    //   paymentsOfEventOfAssistants.filter((item) => item.payType === 'coupon')
+
+    const sumOfPaymentsOfEventFromParticipants = income(
+      paymentsOfEventOfParticipantsWitoutCoupons
+    )
+    const sumOfCouponsOfEventFromParticipants = income(
+      paymentsOfEventOfParticipantsCouponsOnly
+    )
+    const sumOfPaymentsOfEventToAssistants = income(
+      paymentsOfEventOfAssistantsWitoutCoupons
+    )
+    // const sumOfCouponsOfEventToAssistants = income(
+    //   paymentsOfEventOfAssistantsCouponsOnly
     // )
-    // const eventParticipantsIds = useRecoilValue(
-    //   eventParticipantsIdsSelector(eventId)
+
+    const participantsPlusAssistantsIds = [
+      ...eventParticipantsIds,
+      ...eventAssistantsIds,
+    ]
+    const paymentsFromNotParticipants = paymentsOfEvent.filter(
+      ({ userId, payDirection }) =>
+        ['toUser', 'fromUser'].includes(payDirection) &&
+        !participantsPlusAssistantsIds.includes(userId)
+    )
+
+    const sumOfPaymentsFromNotParticipants = income(paymentsFromNotParticipants)
+    const usersNotParticipantsIds = [
+      ...new Set(paymentsFromNotParticipants.map(({ userId }) => userId)),
+    ]
+
+    const sumOfPaymentsToEvent =
+      paymentsToEvent.reduce((p, payment) => p - payment.sum, 0) / 100
+    const sumOfPaymentsFromEvent =
+      paymentsFromEvent.reduce((p, payment) => p + payment.sum, 0) / 100
+
+    // const paymentsToExpectFromParticipants = useRecoilValue(
+    //   sumOfExpectingPaymentsFromParticipantsToEventSelector(eventId)
     // )
-    // const sortUsersIds = (ids) =>
-    //   [...users]
-    //     .filter((user) => ids.includes(user._id))
-    //     .sort(sortFunction)
-    //     .map((user) => user._id)
-
-    // const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
-    // const eventParticipants = useRecoilValue(eventParticipantsSelector(eventId))
-    const eventParticipantsFull = useRecoilValue(
-      eventParticipantsFullByEventIdSelector(eventId)
-    )
-    const eventAssistantsFull = useRecoilValue(
-      eventAssistantsFullByEventIdSelector(eventId)
-    )
-
-    const sumOfPaymentsOfEventFromParticipants = useRecoilValue(
-      sumOfPaymentsFromParticipantsSelector(eventId)
-    )
-    const sumOfCouponsOfEventFromParticipants = useRecoilValue(
-      sumOfCouponsFromParticipantsToEventSelector(eventId)
-    )
-    const sumOfPaymentsOfEventToAssistants = useRecoilValue(
-      sumOfPaymentsFromEventToAssistantsSelector(eventId)
-    )
-    const sumOfPaymentsFromNotParticipants = useRecoilValue(
-      sumOfPaymentsFromNotParticipantsToEventSelector(eventId)
-    )
-
-    const eventParticipantsCount = useRecoilValue(
-      eventParticipantsSelector(eventId)
+    const membersOfEventCount = eventParticipants.filter(
+      ({ userStatus, user }) => userStatus === 'member'
+    ).length
+    const noviceOfEventCount = eventParticipants.filter(
+      ({ userStatus, user }) => userStatus === 'novice'
     ).length
 
-    const eventAssistantsCount = useRecoilValue(
-      eventAssistantsSelector(eventId)
-    ).length
+    const eventPrices = eventPricesWithStatus(event)
 
-    const isHaveUserWithoutFullPay = eventParticipantsFull.find(
-      ({ user, userStatus }) => {
-        const allPaymentsOfUser = paymentsOfEvent.filter(
-          (payment) => payment.userId === user._id
-        )
-        const sumOfPayments = allPaymentsOfUser.reduce(
-          (p, payment) =>
-            p +
-            (payment.sum ?? 0) *
-              (payment.payDirection === 'toUser' ||
-              payment.payDirection === 'toEvent'
-                ? -1
-                : 1),
-          0
-        )
+    const sumOfPaymentsToExpectFromParticipants =
+      (eventPrices.member * membersOfEventCount +
+        eventPrices.novice * noviceOfEventCount) /
+        100 -
+      sumOfCouponsOfEventFromParticipants
 
-        const eventPriceForUser = eventPriceByStatus(event, userStatus)
+    const totalIncome =
+      sumOfPaymentsOfEventFromParticipants +
+      sumOfPaymentsOfEventToAssistants +
+      sumOfPaymentsToEvent +
+      sumOfPaymentsFromEvent +
+      sumOfPaymentsFromNotParticipants
 
-        const sumToPay = eventPriceForUser - sumOfPayments
-        return sumToPay > 0
-      }
-    )
+    const expectedIncome =
+      sumOfPaymentsToExpectFromParticipants +
+      sumOfPaymentsOfEventToAssistants +
+      sumOfPaymentsToEvent
 
-    // const paymentsFromNotParticipants = useRecoilValue(
-    //   paymentsOfEventFromNotParticipantsSelector(eventId)
-    // )
+    // const maxPartisipants =
+    //   event.maxMans !== null && event.maxWomans !== null
+    //     ? Math.min(event.maxMans + event.maxWomans, event.maxParticipants)
+    //     : event.maxParticipants !== null
+    //     ? event.maxParticipants
+    //     : null
 
-    // const sumOfPaymentsOfEventFromParticipants =
-    //   paymentsOfEventFromAndToUsers.reduce((p, payment) => {
-    //     const isUserParticipant = eventParticipantsIds.includes(payment.userId)
-    //     if (isUserParticipant)
-    //       return (
-    //         p +
-    //         (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
-    //       )
+    // const maxPaymentPerParticipant =
+    //   event.price -
+    //   Math.min(
+    //     event.usersStatusDiscount?.member ?? 0,
+    //     event.usersStatusDiscount?.novice ?? 0
+    //   )
 
-    //     return p
-    //   }, 0) / 100
-
-    // const sumOfCouponsOfEventFromParticipants =
-    //   couponsOfEventFromUsers.reduce((p, payment) => {
-    //     const isUserParticipant = eventParticipantsIds.includes(payment.userId)
-    //     if (isUserParticipant)
-    //       return (
-    //         p +
-    //         (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
-    //       )
-
-    //     return p
-    //   }, 0) / 100
-
-    // const sumOfPaymentsOfEventToAssistants =
-    //   paymentsOfEventFromAndToUsers.reduce((p, payment) => {
-    //     const isUserAssistant = eventAssistantsIds.includes(payment.userId)
-    //     if (isUserAssistant)
-    //       return (
-    //         p +
-    //         (payment.sum ?? 0) * (payment.payDirection === 'toUser' ? -1 : 1)
-    //       )
-
-    //     return p
-    //   }, 0) / 100
-
-    // const allPaymentsToEvent = useRecoilValue(allPaymentsToEventSelector(eventId))
-
-    const sumOfPaymentsToEvent = useRecoilValue(
-      sumOfPaymentsToEventSelector(eventId)
-    )
-
-    const sumOfPaymentsFromEvent = useRecoilValue(
-      sumOfPaymentsFromEventSelector(eventId)
-    )
-
-    // const membersOfEventCount = eventParticipants.filter(
-    //   (user) => user.status === 'member'
-    // ).length
-    // const noviceOfEventCount = eventParticipants.length - membersOfEventCount
-    const paymentsToExpectFromParticipants = useRecoilValue(
-      sumOfExpectingPaymentsFromParticipantsToEventSelector(eventId)
-    )
-    // const paymentsToExpectFromParticipants =
-    //   (event.price * eventParticipants.length -
-    //     membersOfEventCount * (event.usersStatusDiscount?.member ?? 0) -
-    //     noviceOfEventCount * (event.usersStatusDiscount?.novice ?? 0)) /
-    //     100 -
-    //   sumOfCouponsOfEventFromParticipants
-
-    const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
-
-    const expectedIncome = useRecoilValue(
-      expectedIncomeOfEventSelector(eventId)
-    )
-
-    const maxPartisipants =
-      event.maxMans !== null && event.maxWomans !== null
-        ? Math.min(event.maxMans + event.maxWomans, event.maxParticipants)
-        : event.maxParticipants !== null
-        ? event.maxParticipants
-        : null
-
-    const maxPaymentPerParticipant =
-      event.price -
-      Math.min(
-        event.usersStatusDiscount?.member ?? 0,
-        event.usersStatusDiscount?.novice ?? 0
-      )
-
-    const expectedMaxIncome =
-      maxPartisipants !== null
-        ? expectedIncome +
-          ((maxPartisipants - eventParticipantsFull.length) *
-            maxPaymentPerParticipant) /
-            100
-        : null
+    // const expectedMaxIncome =
+    //   maxPartisipants !== null
+    //     ? expectedIncome +
+    //       ((maxPartisipants - eventParticipants.length) *
+    //         maxPaymentPerParticipant) /
+    //         100
+    //     : null
 
     useEffect(() => {
       if (isLoggedUserAdmin && setTopLeftComponent)
@@ -667,10 +619,10 @@ const eventUsersPaymentsFunc = (eventId) => {
             className={cn(
               'font-bold whitespace-nowrap',
               sumOfPaymentsOfEventFromParticipants ===
-                paymentsToExpectFromParticipants
+                sumOfPaymentsToExpectFromParticipants
                 ? 'text-success'
                 : sumOfPaymentsOfEventFromParticipants <
-                  paymentsToExpectFromParticipants
+                  sumOfPaymentsToExpectFromParticipants
                 ? sumOfPaymentsOfEventFromParticipants === 0
                   ? 'text-danger'
                   : 'text-orange-500'
@@ -678,7 +630,7 @@ const eventUsersPaymentsFunc = (eventId) => {
             )}
           >{`${sumOfPaymentsOfEventFromParticipants} ₽`}</span>
           <span>/</span>
-          <span className="font-bold whitespace-nowrap">{`${paymentsToExpectFromParticipants} ₽`}</span>
+          <span className="font-bold whitespace-nowrap">{`${sumOfPaymentsToExpectFromParticipants} ₽`}</span>
           {sumOfCouponsOfEventFromParticipants > 0 && (
             <span className="font-bold whitespace-nowrap text-general">{` +${sumOfCouponsOfEventFromParticipants} ₽ купонами`}</span>
           )}
@@ -763,7 +715,7 @@ const eventUsersPaymentsFunc = (eventId) => {
         <TabContext value="Участники">
           <TabPanel
             tabName="Участники"
-            tabAddToLabel={`${eventParticipantsCount} чел. / ${sumOfPaymentsOfEventFromParticipants} ₽`}
+            tabAddToLabel={`${eventParticipants.length} чел. / ${sumOfPaymentsOfEventFromParticipants} ₽`}
           >
             <div className="flex flex-wrap items-center justify-between mb-1">
               <TotalFromParticipants />
@@ -783,13 +735,13 @@ const eventUsersPaymentsFunc = (eventId) => {
               // users={[...eventParticipants].sort(sortFunction)}
               defaultPayDirection="fromUser"
               readOnly={isEventClosed}
-              eventUsers={[...eventParticipantsFull].sort(sortFunction)}
+              eventUsers={[...eventParticipants].sort(sortFunction)}
             />
           </TabPanel>
-          {eventAssistantsFull.length > 0 && (
+          {eventAssistants.length > 0 && (
             <TabPanel
               tabName="Ведущие"
-              tabAddToLabel={`${eventAssistantsCount} чел. / ${sumOfPaymentsOfEventToAssistants} ₽`}
+              tabAddToLabel={`${eventAssistants.length} чел. / ${sumOfPaymentsOfEventToAssistants} ₽`}
             >
               <TotalToAssistants className="mb-1" />
               <UsersPayments
@@ -798,19 +750,18 @@ const eventUsersPaymentsFunc = (eventId) => {
                 defaultPayDirection="toUser"
                 noEventPriceForUser
                 readOnly={isEventClosed}
-                eventUsers={[...eventAssistantsFull].sort(sortFunction)}
+                eventUsers={[...eventAssistants].sort(sortFunction)}
               />
             </TabPanel>
           )}
-          {/* {eventNotParticipantsWithPayments.length > 0 && ( */}
           <TabPanel
             tabName="Оплатили, но не пришли"
-            tabAddToLabel={`${eventNotParticipantsWithPayments.length} чел. / ${sumOfPaymentsFromNotParticipants} ₽`}
+            tabAddToLabel={`${usersNotParticipantsIds.length} чел. / ${sumOfPaymentsFromNotParticipants} ₽`}
           >
             <TotalFromNotParticipants className="mb-1" />
             <UsersPayments
               event={event}
-              usersIds={eventNotParticipantsWithPayments}
+              usersIds={usersNotParticipantsIds}
               defaultPayDirection="toUser"
               noEventPriceForUser
               readOnly={isEventClosed}
@@ -922,7 +873,7 @@ const eventUsersPaymentsFunc = (eventId) => {
           </TabPanel>
           <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
             <TotalFromParticipants />
-            {eventAssistantsFull.length > 0 && <TotalToAssistants />}
+            {eventAssistants.length > 0 && <TotalToAssistants />}
             <TotalToEvent />
             <TotalFromEvent />
             <TotalFromNotParticipants />
@@ -933,9 +884,9 @@ const eventUsersPaymentsFunc = (eventId) => {
                   'font-bold',
                   totalIncome <= 0
                     ? 'text-danger'
-                    : totalIncome > expectedMaxIncome
-                    ? 'text-blue-700'
-                    : 'text-success'
+                    : // : totalIncome > expectedMaxIncome
+                      // ? 'text-blue-700'
+                      'text-success'
                 )}
               >{`${totalIncome} ₽`}</span>
             </div>
@@ -948,7 +899,7 @@ const eventUsersPaymentsFunc = (eventId) => {
                 )}
               >{`${expectedIncome} ₽`}</span>
             </div>
-            {expectedMaxIncome !== null && (
+            {/* {expectedMaxIncome !== null && (
               <div className="flex flex-wrap gap-x-1">
                 <span>{'Максимально возможная прибыль:'}</span>
                 <span
@@ -958,7 +909,7 @@ const eventUsersPaymentsFunc = (eventId) => {
                   )}
                 >{`${expectedMaxIncome} ₽`}</span>
               </div>
-            )}
+            )} */}
           </TabPanel>
         </TabContext>
       </>

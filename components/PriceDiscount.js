@@ -5,7 +5,6 @@ import { useRecoilValue } from 'recoil'
 
 const PriceDiscount = ({
   item,
-  user,
   className,
   prefix,
   vertical,

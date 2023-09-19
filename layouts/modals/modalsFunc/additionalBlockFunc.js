@@ -74,7 +74,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
         additionalBlock?.image !== image ||
         additionalBlock?.menuName !== menuName
 
-      setOnConfirmFunc(onClickConfirm)
+      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
     }, [title, description, showOnSite, image, menuName])

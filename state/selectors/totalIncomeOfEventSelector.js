@@ -1,9 +1,5 @@
 import { selectorFamily } from 'recoil'
-import sumOfPaymentsFromEventSelector from './sumOfPaymentsFromEventSelector'
-import sumOfPaymentsFromNotParticipantsToEventSelector from './sumOfPaymentsFromNotParticipantsToEventSelector'
-import sumOfPaymentsFromParticipantsSelector from './sumOfPaymentsFromParticipantsSelector'
-import sumOfPaymentsFromEventToAssistantsSelector from './sumOfPaymentsFromEventToAssistantsSelector'
-import sumOfPaymentsToEventSelector from './sumOfPaymentsToEventSelector'
+import paymentsByEventIdSelector from './paymentsByEventIdSelector'
 
 export const totalIncomeOfEventSelector = selectorFamily({
   key: 'totalIncomeOfEventSelector',
@@ -11,14 +7,33 @@ export const totalIncomeOfEventSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return []
+      const paymentsOfEvent = get(paymentsByEventIdSelector(id))
+      const income =
+        paymentsOfEvent.reduce(
+          (sum, payment) =>
+            payment.payType === 'coupon'
+              ? sum
+              : [
+                  'toEvent',
+                  // 'toService',
+                  // 'toProduct',
+                  // 'toInternal',
+                  'toUser',
+                ].includes(payment.payDirection)
+              ? sum - payment.sum
+              : sum + payment.sum,
+          0
+        ) / 100
 
-      return (
-        get(sumOfPaymentsFromParticipantsSelector(id)) +
-        get(sumOfPaymentsFromEventToAssistantsSelector(id)) +
-        get(sumOfPaymentsToEventSelector(id)) +
-        get(sumOfPaymentsFromEventSelector(id)) +
-        get(sumOfPaymentsFromNotParticipantsToEventSelector(id))
-      )
+      return income
+
+      // return (
+      //   get(sumOfPaymentsFromParticipantsSelector(id)) +
+      //   get(sumOfPaymentsFromEventToAssistantsSelector(id)) +
+      //   get(sumOfPaymentsToEventSelector(id)) +
+      //   get(sumOfPaymentsFromEventSelector(id)) +
+      //   get(sumOfPaymentsFromNotParticipantsToEventSelector(id))
+      // )
     },
 })
 
