@@ -1,3 +1,5 @@
+import urlQueryGenerator from './urlQueryGenerator'
+
 const contentType = 'application/json'
 
 export const getData = async (
@@ -7,14 +9,7 @@ export const getData = async (
   callbackOnError = null,
   resJson = false
 ) => {
-  const getArray = []
-
-  for (const key in form) {
-    getArray.push(key + '=' + form[key])
-  }
-
-  const actualUrl = url + (getArray.length > 0 ? '?' + getArray.join('&') : '')
-
+  const actualUrl = urlQueryGenerator(url, form)
   try {
     const res = await fetch(actualUrl, {
       method: 'GET',
