@@ -28,6 +28,7 @@ import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import { EVENT_USER_STATUSES } from '@helpers/constants'
+import ComboBox from '@components/ComboBox'
 
 // const ReviewCard = ({ reviewId }) => {
 //   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -393,10 +394,11 @@ const HistoriesContent = () => {
                 { name: '3 суток', value: 72 },
                 { name: 'Неделю', value: 168 },
                 { name: '2 недели', value: 336 },
-                { name: '12 часов', value: 12 },
+                { name: 'Месяц', value: 720 },
                 { name: 'За все время', value: 999999 },
               ]}
-              smallMargin
+              noMargin
+              className="mt-1"
             />
           </div>
         </div>
