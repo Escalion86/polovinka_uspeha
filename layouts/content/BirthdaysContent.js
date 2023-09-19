@@ -102,7 +102,8 @@ const BirthdaysContent = () => {
                 { name: 'Пол года (180 дней)', value: 180 },
                 { name: 'Год (365 дней)', value: 365 },
               ]}
-              smallMargin
+              noMargin
+              className="mt-1"
             />
           </div>
           <div className="text-lg font-bold whitespace-nowrap">
