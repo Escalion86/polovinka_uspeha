@@ -20,7 +20,7 @@ const TextInRing = ({ text, fullHeight = true }) => {
           layout="responsive"
           height="80%"
           width="80%"
-          // priority={text}
+          priority
         />
         {text && (
           <div
