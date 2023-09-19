@@ -284,13 +284,20 @@ const QuestionnaireContent = (props) => {
       const fetchUser = async () => {
         const data = await getData(
           `/api/users/${loggedUser._id}`,
-          {},
+          null,
           null,
           null,
           true
         )
+
         if (data?.notifications?.telegram?.id) {
-          setLoggedUser(data)
+          setLoggedUser({
+            ...data,
+            notifications: {
+              ...data.notifications,
+              telegram: { ...data.notifications.telegram, active: true },
+            },
+          })
           // setLoggedUser({
           //   ...data,
           //   notifications: {
@@ -301,6 +308,7 @@ const QuestionnaireContent = (props) => {
           setNotifications((state) => ({
             ...state,
             telegram: data?.notifications?.telegram,
+            active: true,
           }))
           setWaitActivateTelegramNotifications(false)
           clearInterval(interval)

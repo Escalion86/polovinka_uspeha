@@ -436,7 +436,13 @@ export default async function handler(Schema, req, res, params = null) {
   switch (method) {
     case 'GET':
       try {
-        if (Object.keys(query).length > 0) {
+        if (id) {
+          data = await Schema.findById(id).select({ password: 0 })
+          if (!data) {
+            return res?.status(400).json({ success: false })
+          }
+          return res?.status(200).json({ success: true, data })
+        } else if (Object.keys(query).length > 0) {
           data = await Schema.find(query).select({ password: 0 })
           if (!data) {
             return res?.status(400).json({ success: false })
@@ -444,12 +450,6 @@ export default async function handler(Schema, req, res, params = null) {
           return res?.status(200).json({ success: true, data })
         } else if (params) {
           data = await Schema.find(params).select({ password: 0 })
-          if (!data) {
-            return res?.status(400).json({ success: false })
-          }
-          return res?.status(200).json({ success: true, data })
-        } else if (id) {
-          data = await Schema.findById(id).select({ password: 0 })
           if (!data) {
             return res?.status(400).json({ success: false })
           }
