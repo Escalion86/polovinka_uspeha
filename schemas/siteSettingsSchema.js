@@ -1,3 +1,5 @@
+import { Schema } from 'mongoose'
+
 const siteSettingsSchema = {
   email: {
     type: String,
@@ -35,6 +37,11 @@ const siteSettingsSchema = {
   eventsTags: {
     type: [{ text: String, color: String }],
     default: [],
+  },
+  custom: {
+    type: Map,
+    of: Schema.Types.Mixed,
+    default: {},
   },
 }
 

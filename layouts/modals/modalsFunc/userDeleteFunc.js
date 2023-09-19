@@ -58,7 +58,7 @@ const userDeleteFunc = (userId) => {
     title: 'Удаление пользователя',
     declineButtonName: 'Закрыть',
     confirmButtonName: 'Удалить',
-    showConfirm: true,
+    // onConfirm: true,
     Children: UserDeleteModal,
   }
 }

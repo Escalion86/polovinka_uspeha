@@ -1,6 +1,6 @@
 // import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import ExcelJs from 'exceljs'
+// import ExcelJs from 'exceljs'
 import Button from '@components/Button'
 import servicesAtom from '@state/atoms/servicesAtom'
 import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
@@ -68,6 +68,7 @@ const ToolsExportContent = () => {
   const questionnaire = serviceIS?.questionnaire?.data
 
   const exportExcelFile = async () => {
+    const ExcelJs = await import('exceljs')
     const workbook = new ExcelJs.Workbook()
     const sheet = workbook.addWorksheet('ИС Анкеты')
 

@@ -1,7 +1,7 @@
 import { TabList as MuiTabList } from '@mui/lab'
 import cn from 'classnames'
 
-import { TabScrollButton } from '@mui/material'
+import TabScrollButton from '@mui/material/TabScrollButton'
 // import { styled } from '@mui/styles'
 
 // const MyTabScrollButton = styled(TabScrollButton)({

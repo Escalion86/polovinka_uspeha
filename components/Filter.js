@@ -1,20 +1,15 @@
-import { useRecoilValue } from 'recoil'
 import { useEffect, useState } from 'react'
-import {
-  Checkbox,
-  FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  MenuList,
-  OutlinedInput,
-  Select,
-  ToggleButton,
-  Button,
-  ButtonGroup,
-} from '@mui/material'
+// import {
+//   Checkbox,
+//   FormControl,
+//   InputLabel,
+//   ListItemText,
+//   MenuItem,
+//   OutlinedInput,
+//   Select,
+// } from '@mui/material'
 
-import { FilterAltOff } from '@mui/icons-material'
+import FilterAltOff from '@mui/icons-material/FilterAltOff'
 
 import { motion } from 'framer-motion'
 import ChipsSelector from './Chips/ChipsSelector'
@@ -22,14 +17,14 @@ import DirectionSelector from './ComboBox/DirectionSelector'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-}
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       width: 250,
+//     },
+//   },
+// }
 
 const Filter = ({
   options,
@@ -149,32 +144,32 @@ const Filter = ({
         //       </Select>
         //     </FormControl>
         //   )
-      } else if (type === 'multiselect') {
-        return (
-          <FormControl sx={{ width: 300 }} size="small" margin="none" key={key}>
-            <InputLabel id="demo-multiple-name-label">{name}</InputLabel>
-            <Select
-              labelId="demo-multiple-name-label"
-              id="demo-multiple-name"
-              multiple
-              value={componentValue}
-              onChange={(e) => onChangeComponent(key, e.target.value)}
-              input={<OutlinedInput label={name} />}
-              renderValue={(selected) =>
-                selected.length === items.length ? 'Все' : selected.join(', ')
-              }
-              MenuProps={MenuProps}
-            >
-              {[...items].map((item) => (
-                <MenuItem sx={{ padding: 0 }} key={item._id} value={item._id}>
-                  <Checkbox checked={componentValue.indexOf(item._id) > -1} />
-                  <ListItemText primary={item.title} size="small" />
-                  {/* {item.title} */}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        )
+        // } else if (type === 'multiselect') {
+        //   return (
+        //     <FormControl sx={{ width: 300 }} size="small" margin="none" key={key}>
+        //       <InputLabel id="demo-multiple-name-label">{name}</InputLabel>
+        //       <Select
+        //         labelId="demo-multiple-name-label"
+        //         id="demo-multiple-name"
+        //         multiple
+        //         value={componentValue}
+        //         onChange={(e) => onChangeComponent(key, e.target.value)}
+        //         input={<OutlinedInput label={name} />}
+        //         renderValue={(selected) =>
+        //           selected.length === items.length ? 'Все' : selected.join(', ')
+        //         }
+        //         MenuProps={MenuProps}
+        //       >
+        //         {[...items].map((item) => (
+        //           <MenuItem sx={{ padding: 0 }} key={item._id} value={item._id}>
+        //             <Checkbox checked={componentValue.indexOf(item._id) > -1} />
+        //             <ListItemText primary={item.title} size="small" />
+        //             {/* {item.title} */}
+        //           </MenuItem>
+        //         ))}
+        //       </Select>
+        //     </FormControl>
+        //   )
       } else return null
     })
 

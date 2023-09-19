@@ -23,11 +23,16 @@ import Link from 'next/link'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import badgesSelector from '@state/selectors/badgesSelector'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
-const menuCfg = (userActiveRole, userActiveStatus) => {
+const menuCfg = (userActiveRole, userActiveStatus, disabledGroupsIds) => {
   return pagesGroups
     .filter(
       (pageGroup) =>
+        (!disabledGroupsIds ||
+          typeof disabledGroupsIds !== 'object' ||
+          !disabledGroupsIds.includes(pageGroup.id)) &&
         pageGroup.accessRoles.includes(userActiveRole) &&
         (!pageGroup.accessStatuses ||
           pageGroup.accessStatuses.includes(userActiveStatus))
@@ -229,8 +234,10 @@ const Menu = ({ menuCfg, activePage }) => {
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
+  const siteSettings = useRecoilValue(siteSettingsAtom)
 
   const variants = {
     min: { width: '100%' },
@@ -281,10 +288,11 @@ const SideBar = ({ page }) => {
         <div className="flex flex-col w-full overflow-x-hidden overflow-y-auto">
           <Menu
             menuCfg={menuCfg(
-              // pages,
-              // pagesGroups,
               loggedUserActiveRole,
-              loggedUserActiveStatus
+              loggedUserActiveStatus,
+              isLoggedUserAdmin || siteSettings?.custom?.birthdayUpdate
+                ? undefined
+                : [0]
             )}
             activePage={page}
           />

@@ -1,5 +1,5 @@
 import React from 'react'
-import { AllInclusive } from '@mui/icons-material'
+import AllInclusive from '@mui/icons-material/AllInclusive'
 import IconToggleButton from './IconToggleButton'
 
 const InfinityToggleButton = ({ value, onChange, size }) => {

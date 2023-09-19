@@ -33,8 +33,8 @@ const Modal = ({
   confirmButtonName,
   confirmButtonName2,
   declineButtonName,
-  showConfirm,
-  showConfirm2,
+  // showConfirm,
+  // showConfirm2,
   showDecline,
   closeButtonShow = false,
   TopLeftComponent,
@@ -79,17 +79,37 @@ const Modal = ({
     router.replace(router.asPath)
   }
 
-  const onConfirmClick = () => {
-    if (onConfirmFunc) return onConfirmFunc(refreshPage)
-    onConfirm && typeof onConfirm === 'function' && onConfirm(refreshPage)
-    closeModal()
-  }
+  // const onConfirmClick = () => {
+  //   if (onConfirmFunc) return onConfirmFunc(refreshPage)
+  //   onConfirm && typeof onConfirm === 'function' && onConfirm(refreshPage)
+  //   closeModal()
+  // }
 
-  const onConfirm2Click = () => {
-    if (onConfirm2Func) return onConfirm2Func(refreshPage)
-    onConfirm2 && typeof onConfirm2 === 'function' && onConfirm2(refreshPage)
-    closeModal()
-  }
+  const onConfirmClick =
+    typeof onConfirmFunc === 'function'
+      ? () => onConfirmFunc(refreshPage)
+      : typeof onConfirm === 'function'
+      ? () => {
+          onConfirm(refreshPage)
+          closeModal()
+        }
+      : undefined
+
+  const onConfirm2Click =
+    typeof onConfirm2Func === 'function'
+      ? () => onConfirm2Func(refreshPage)
+      : typeof onConfirm2 === 'function'
+      ? () => {
+          onConfirm2(refreshPage)
+          closeModal()
+        }
+      : undefined
+
+  // const onConfirm2Click = () => {
+  //   if (onConfirm2Func) return onConfirm2Func(refreshPage)
+  //   onConfirm2 && typeof onConfirm2 === 'function' && onConfirm2(refreshPage)
+  //   closeModal()
+  // }
 
   const onDeclineClick = () => {
     const decline = () => {
@@ -238,9 +258,9 @@ const Modal = ({
           )}
         </div>
 
-        {(onConfirm ||
-          onConfirmFunc ||
-          showConfirm ||
+        {(onConfirmClick ||
+          onConfirm2Click ||
+          // showConfirm ||
           showDecline ||
           ComponentInFooter ||
           closeButtonShow ||
@@ -252,11 +272,11 @@ const Modal = ({
             confirmName={confirmButtonName}
             confirmName2={confirmButtonName2}
             declineName={declineButtonName}
-            onConfirmClick={onConfirmClick}
-            onConfirm2Click={onConfirm2Click}
+            onConfirmClick={!onlyCloseButtonShow && onConfirmClick}
+            onConfirm2Click={!onlyCloseButtonShow && onConfirm2Click}
             onDeclineClick={onDeclineClick}
-            showConfirm={!onlyCloseButtonShow && showConfirm}
-            showConfirm2={!onlyCloseButtonShow && showConfirm2}
+            // showConfirm={!onlyCloseButtonShow && showConfirm}
+            // showConfirm2={!onlyCloseButtonShow && showConfirm2}
             showDecline={!onlyCloseButtonShow && showDecline}
             disableConfirm={disableConfirm}
             disableDecline={disableDecline}

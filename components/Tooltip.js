@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tooltip as MuiTooltip } from '@mui/material'
+import MuiTooltip from '@mui/material/Tooltip'
 
 const Tooltip = ({
   children,

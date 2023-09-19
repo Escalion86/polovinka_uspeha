@@ -36,6 +36,7 @@ import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 import DropDown from './DropDown'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -72,6 +73,7 @@ const CardButtons = ({
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const device = useRecoilValue(windowDimensionsTailwindSelector)
+  const siteSettings = useRecoilValue(siteSettingsAtom)
 
   // const [open, setOpen] = useState(false)
   // const [isTriggered, setIsTriggered] = useState(false)
@@ -100,8 +102,10 @@ const CardButtons = ({
         typeOfItem === 'service' ||
         typeOfItem === 'user'),
     addToCalendar:
-      // ADD Убрать только для админа, сделать для всех
-      isLoggedUserAdmin && typeOfItem === 'event',
+      // ADD
+      ((siteSettings?.custom?.birthdayUpdate && isLoggedUserMember) ||
+        isLoggedUserAdmin) &&
+      typeOfItem === 'event',
     eventUsersBtn:
       (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'event',
     upBtn: !forForm && isLoggedUserAdmin && onUpClick,

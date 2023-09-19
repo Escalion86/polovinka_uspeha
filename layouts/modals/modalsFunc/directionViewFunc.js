@@ -48,7 +48,7 @@ const directionViewFunc = (directionId) => {
     title: `Направление`,
     confirmButtonName: 'Закрыть',
     showDecline: false,
-    showConfirm: true,
+    onConfirm: true,
     Children: DirectionViewModal,
     // declineButtonName: 'Закрыть',
     // TopLeftComponent: () => (

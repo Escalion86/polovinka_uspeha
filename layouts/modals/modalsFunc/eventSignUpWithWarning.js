@@ -8,6 +8,8 @@ import eventSelector from '@state/selectors/eventSelector'
 import formatDateTime from '@helpers/formatDateTime'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
 const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
   const EventSignUpWithWarningModal = ({
@@ -22,6 +24,8 @@ const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
     const loggedUser = useRecoilValue(loggedUserAtom)
     // const event = useRecoilValue(eventSelector(eventId))
     const itemsFunc = useRecoilValue(itemsFuncAtom)
+    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+    const siteSettings = useRecoilValue(siteSettingsAtom)
 
     const [check, setCheck] = useState(false)
 
@@ -57,9 +61,11 @@ const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-      setOnConfirm2Func(() =>
-        onClickConfirm(() => goToUrlForAddEventToCalendar(event))
-      )
+      if (siteSettings?.custom?.birthdayUpdate || isLoggedUserAdmin) {
+        setOnConfirm2Func(() =>
+          onClickConfirm(() => goToUrlForAddEventToCalendar(event))
+        )
+      }
       setDisableConfirm(!check)
     }, [check])
 
@@ -97,7 +103,6 @@ const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
     text: `Вы уверены что хотите записаться${postfixStatus} на мероприятие?`,
     confirmButtonName: `Записаться${postfixStatus}`,
     // ADD
-    // showConfirm2: true,
     confirmButtonName2: `Записаться в резерв и добавить в календарь`,
     Children: EventSignUpWithWarningModal,
   }

@@ -25,9 +25,11 @@ const ValuePicker = ({
       labelClassName={labelClassName}
       onChange={onChange}
       value={value}
-      className={cn('flex-1', className)}
+      className={className}
       required={required}
       paddingY
+      fitWidth
+      // disabled={disabled}
     >
       {/* {label && (
         <label

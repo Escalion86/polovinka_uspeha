@@ -32,13 +32,11 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import 'react-image-crop/dist/ReactCrop.css'
 
 import { createTheme } from '@mui/material/styles'
-import { red } from '@mui/material/colors'
 import Script from 'next/script'
 import { SnackbarProvider } from 'notistack'
 import { Suspense, useEffect } from 'react'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { renderTimeViewClock } from '@mui/x-date-pickers'
-// import { CssBaseline } from '@mui/material/'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
@@ -59,7 +57,7 @@ const theme = createTheme({
       main: '#2A323B',
     },
     error: {
-      main: red.A400,
+      main: '#ff1744',
     },
     red: { main: '#f87171' },
     blue: { main: '#60a5fa' },

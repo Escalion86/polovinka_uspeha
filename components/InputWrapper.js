@@ -67,6 +67,7 @@ const InputWrapper = forwardRef(
       wrapperClassName,
       hidden = false,
       fullWidth = false,
+      fitWidth = false,
       noBorder = false,
       disabled = false,
       noMargin = false,
@@ -89,6 +90,7 @@ const InputWrapper = forwardRef(
                 error ? 'border-danger' : 'border-gray-300'
               }`,
           fullWidth ? 'w-full' : '',
+          fitWidth ? 'w-fit' : '',
           paddingY === 'small'
             ? 'pt-1.5 pb-1'
             : paddingY === 'big'

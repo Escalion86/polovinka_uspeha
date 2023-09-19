@@ -45,10 +45,18 @@ import eventsTagsFunc from './modalsFunc/eventsTagsFunc'
 import notificationsDeativateTelegramFunc from './modalsFunc/notificationsDeativateTelegramFunc'
 import directionViewFunc from './modalsFunc/directionViewFunc'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
+import isUserAdmin from '@helpers/isUserAdmin'
 // import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
-const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
+const modalsFuncGenerator = (
+  router,
+  itemsFunc,
+  loggedUser,
+  siteSettings,
+  loggedUserActiveRole,
+  loggedUserActiveStatus
+) => {
   const addModal = (value) => setRecoil(addModalSelector, value)
   // const itemsFunc = getRecoil(itemsFuncAtom)
   // const loggedUser = getRecoil(loggedUserAtom)
@@ -73,22 +81,25 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
       text: `К сожалению не удалось записаться на мероприятие в основной состав, так как ${error}. Однако вы можете записаться на мероприятие в резерв, и как только место освободиться вы будете приняты в основной состав. Записаться в резерв на мероприятие?`,
       confirmButtonName: `Записаться в резерв`,
       // ADD
-      // showConfirm2: true,
       confirmButtonName2: `Записаться в резерв и добавить в календарь`,
-      onConfirm2: () => {
-        itemsFunc.event.signUp(
-          {
-            eventId: event._id,
-            userId: loggedUser?._id,
-            status: 'reserve',
-            userStatus: loggedUser.status,
-            eventSubtypeNum,
-            comment,
-          },
-          undefined,
-          (data) => goToUrlForAddEventToCalendar(event)
-        )
-      },
+      onConfirm2:
+        siteSettings?.custom?.birthdayUpdate ||
+        isUserAdmin(loggedUserActiveRole)
+          ? () => {
+              itemsFunc.event.signUp(
+                {
+                  eventId: event._id,
+                  userId: loggedUser?._id,
+                  status: 'reserve',
+                  userStatus: loggedUser.status,
+                  eventSubtypeNum,
+                  comment,
+                },
+                undefined,
+                (data) => goToUrlForAddEventToCalendar(event)
+              )
+            }
+          : undefined,
       onConfirm: () => {
         itemsFunc.event.signUp({
           eventId: event._id,
@@ -110,7 +121,6 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
         text: `${forWhat}, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте`,
         confirmButtonName: 'Авторизироваться',
         confirmButtonName2: 'Зарегистрироваться',
-        showConfirm2: true,
         onConfirm: () =>
           router.push(`/login${query ? `?${query}` : ''}`, '', {
             shallow: true,
@@ -196,7 +206,7 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
         title: 'Маленький размер фотографии',
         text: 'Фотография слишком маленькая. Размер должен быть не менее 100x100',
         confirmButtonName: `Понятно`,
-        showConfirm: true,
+        onConfirm: true,
         showDecline: false,
       }),
     copyLink: (data) => addModal(copyLinkFunc(data)),
@@ -205,7 +215,7 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
         title: 'Устаревшая версия браузера',
         text: `Необходимо обновить браузер. Некоторые функции сайта могут не работать. Пожалуйста обновите браузер.\n\nТекущая версия браузера: ${navigator.userAgent}`,
         confirmButtonName: `Обновить`,
-        showConfirm: true,
+        onConfirm: true,
         showDecline: true,
         onConfirm: () => router.push(url, ''),
       }),
@@ -391,16 +401,19 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
             text: `Вы уверены что хотите записаться${postfixStatus} на мероприятие?`,
             confirmButtonName: `Записаться${postfixStatus}`,
             // ADD
-            // showConfirm2: true,
             confirmButtonName2: `Записаться${postfixStatus} и добавить в календарь`,
-            onConfirm2: () =>
-              eventSignUp({
-                event,
-                status,
-                eventSubtypeNum,
-                comment,
-                onSuccess: () => goToUrlForAddEventToCalendar(event),
-              }),
+            onConfirm2:
+              siteSettings?.custom?.birthdayUpdate ||
+              isUserAdmin(loggedUserActiveRole)
+                ? () =>
+                    eventSignUp({
+                      event,
+                      status,
+                      eventSubtypeNum,
+                      comment,
+                      onSuccess: () => goToUrlForAddEventToCalendar(event),
+                    })
+                : undefined,
             onConfirm: () => {
               eventSignUp({
                 event,
@@ -465,7 +478,7 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
           title: 'Запись на мероприятие невозможна',
           text: 'Ваша учетная запись заблокирована, поэтому вы не можете записываться на мероприятия. Пожалуйста обратитесь к администратору.',
           confirmButtonName: `Понятно`,
-          showConfirm: true,
+          onConfirm: true,
           showDecline: false,
         }),
     },
@@ -534,7 +547,6 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
             text: 'Для покупки услуги, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
             confirmButtonName: 'Авторизироваться',
             confirmButtonName2: 'Зарегистрироваться',
-            showConfirm2: true,
             onConfirm: () =>
               router.push(`/login?service=${serviceId}`, '', { shallow: true }),
             onConfirm2: () =>
@@ -586,8 +598,8 @@ const modalsFuncGenerator = (router, itemsFunc, loggedUser) => {
     },
     notifications: {
       telegram: {
-        activate: (onStartActivate) =>
-          addModal(notificationsTelegramFunc(onStartActivate)),
+        activate: (onStartActivate, onCancel) =>
+          addModal(notificationsTelegramFunc(onStartActivate, onCancel)),
         deactivate: (onSuccess) =>
           addModal(notificationsDeativateTelegramFunc(onSuccess)),
       },

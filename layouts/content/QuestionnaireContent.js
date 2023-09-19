@@ -45,6 +45,8 @@ import InputWrapper from '@components/InputWrapper'
 import TimePicker from '@components/TimePicker'
 import ComboBox from '@components/ComboBox'
 import LoadingSpinner from '@components/LoadingSpinner'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -65,7 +67,9 @@ const QuestionnaireContent = (props) => {
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
+  const siteSettings = useRecoilValue(siteSettingsAtom)
 
   const [
     waitActivateTelegramNotifications,
@@ -209,10 +213,9 @@ const QuestionnaireContent = (props) => {
     !compareObjects(loggedUser?.notifications, notifications)
 
   const onClickConfirm = async () => {
-    if (notifications?.telegram?.active && !notifications?.telegram?.userName) {
+    if (waitActivateTelegramNotifications) {
       addError({
-        notificationTelegramUserName:
-          'Введите имя пользователя Telegram для оповещений',
+        notificationTelegramUserId: 'Завершите активацию!',
       })
     } else if (
       !checkErrors({
@@ -287,6 +290,14 @@ const QuestionnaireContent = (props) => {
           true
         )
         if (data?.notifications?.telegram?.id) {
+          setLoggedUser(data)
+          // setLoggedUser({
+          //   ...data,
+          //   notifications: {
+          //     ...data.notifications,
+          //     telegram: { ...data.notifications.telegram, active: true },
+          //   },
+          // })
           setNotifications((state) => ({
             ...state,
             telegram: data?.notifications?.telegram,
@@ -720,8 +731,8 @@ const QuestionnaireContent = (props) => {
           </FormWrapper>
           {/* </FormWrapper> */}
         </TabPanel>
-        {(isLoggedUserAdmin || isLoggedUserDev) && (
-          <TabPanel tabName="Статус и права" className="flex-1">
+        {isLoggedUserAdmin && (
+          <TabPanel tabName="Статус и права" className="">
             {isLoggedUserAdmin && (
               <UserStatusPicker
                 required
@@ -740,118 +751,88 @@ const QuestionnaireContent = (props) => {
             )}
           </TabPanel>
         )}
-        {/* ADD Доступ для участников клуба */}
-        {(isLoggedUserModer || isLoggedUserDev) && (
+        {/* ADD */}
+        {((siteSettings?.custom?.birthdayUpdate && isLoggedUserMember) ||
+          isLoggedUserModer) && (
           <TabPanel tabName="Оповещения" className="flex-1">
-            <YesNoPicker
-              label="Оповещения в Telegram"
-              // inLine
-              value={notifications?.telegram?.active ?? false}
-              onChange={() => {
-                // removeError('notificationTelegramUserName')
-                if (notifications?.telegram?.id) {
-                  modalsFunc.notifications.telegram.deactivate(() => {
-                    setNotifications((state) => ({
-                      ...state,
-                      telegram: {
-                        active: false,
-                        userName: undefined,
-                        id: undefined,
-                      },
-                    }))
-                  })
-                } else {
-                  setNotifications((state) => ({
-                    ...state,
-                    telegram: {
-                      ...notifications?.telegram,
-                      active: true,
-                    },
-                  }))
-                }
-              }}
-            />
-            {notifications?.telegram?.active && (
-              <>
-                {/* <Input
-                  prefix="@"
-                  label="Имя пользователя Telegram"
-                  type="text"
-                  value={notifications?.telegram?.userName}
-                  onChange={(value) => {
-                    removeError('notificationTelegramUserName')
+            <div className="flex flex-wrap items-center gap-x-2">
+              <YesNoPicker
+                label="Оповещения в Telegram"
+                // inLine
+                value={notifications?.telegram?.active ?? false}
+                onChange={() => {
+                  // removeError('notificationTelegramUserName')
+                  if (notifications?.telegram?.active) {
+                    modalsFunc.notifications.telegram.deactivate(() => {
+                      setNotifications((state) => ({
+                        ...state,
+                        telegram: {
+                          active: false,
+                          userName: undefined,
+                          id: undefined,
+                        },
+                      }))
+                    })
+                  } else {
                     setNotifications((state) => ({
                       ...state,
                       telegram: {
                         ...notifications?.telegram,
-                        userName: value,
+                        active: true,
                       },
                     }))
-                  }}
-                  copyPasteButtons
-                  required
-                  // labelClassName="w-40"
-                  error={errors.notificationTelegramUserName}
-                /> */}
-                <div className="flex flex-col flex-wrap tablet:items-center tablet:flex-row gap-x-1">
-                  {notifications?.telegram?.id ? (
-                    <>
-                      {/* <div className="flex gap-x-1">
-                        <span className="text-success">АКТИВНО</span>
-                        <span className="">{`(@${notifications?.telegram?.userName})`}</span>
-                      </div>
-                      <ValueItem
-                        name="Деактивировать"
-                        color="red-500"
-                        icon={faBan}
-                        hoverable
-                        onClick={() =>
-                          modalsFunc.notifications.telegram.deactivate(() => {
-                            setNotifications((state) => ({
-                              ...state,
-                              telegram: {
-                                active: false,
-                                userName: undefined,
-                                id: undefined,
-                              },
-                            }))
-                          })
-                        }
-                      /> */}
-                    </>
-                  ) : (
-                    <>
-                      <span className="whitespace-nowrap">
-                        Статус подключения Telegram:
-                      </span>
-                      {waitActivateTelegramNotifications ? (
-                        <>
-                          <span className="text-orange-400">
-                            ОЖИДАЕМ АКТИВАЦИЮ
-                          </span>
-                          <LoadingSpinner size="xs" className="ml-2" />
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-danger">НЕ АКТИВНО</span>
-                          <ValueItem
-                            name="Активировать"
-                            color="green-500"
-                            icon={faCheck}
-                            hoverable
-                            onClick={() =>
-                              modalsFunc.notifications.telegram.activate(() =>
-                                setWaitActivateTelegramNotifications(true)
-                              )
-                            }
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
+                    modalsFunc.notifications.telegram.activate(
+                      () => setWaitActivateTelegramNotifications(true),
+                      () =>
+                        setNotifications((state) => ({
+                          ...state,
+                          telegram: {
+                            active: false,
+                            userName: undefined,
+                            id: undefined,
+                          },
+                        }))
+                    )
+                  }
+                }}
+                readOnly={waitActivateTelegramNotifications}
+              />
+              {waitActivateTelegramNotifications && (
+                <div className="flex items-center mt-3 gap-x-3">
+                  <span className="text-orange-400">ОЖИДАЕМ АКТИВАЦИЮ</span>
+                  <LoadingSpinner size="xs" />
+                  <Button
+                    name="Отмена"
+                    onClick={async () => {
+                      setWaitActivateTelegramNotifications(false)
+                      setNotifications((state) => ({
+                        ...state,
+                        telegram: {
+                          active: false,
+                          userName: undefined,
+                          id: undefined,
+                        },
+                      }))
+                      await putData(
+                        `/api/users/${loggedUser._id}`,
+                        {
+                          notifications: {
+                            ...loggedUser.notifications,
+                            telegram: { active: false },
+                          },
+                        },
+                        null,
+                        null,
+                        false,
+                        loggedUser._id
+                      )
+                    }}
+                    thin
+                  />
                 </div>
-              </>
-            )}
+              )}
+            </div>
+
             {isNotificationActivated && (
               <>
                 <InputWrapper label="Ежедневные уведомления" className="">
