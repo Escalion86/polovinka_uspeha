@@ -2,7 +2,7 @@
 import { selectorFamily } from 'recoil'
 import eventSelector from './eventSelector'
 import userSelector from './userSelector'
-import asyncEventsUsersByEventIdSelector from '@state/asyncSelectors/asyncEventsUsersByEventIdSelector'
+import asyncEventsUsersByEventIdAtom from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 
 export const eventsUsersFullByEventIdSelector = selectorFamily({
   key: 'eventsUsersFullByEventIdSelector',
@@ -11,7 +11,7 @@ export const eventsUsersFullByEventIdSelector = selectorFamily({
     async ({ get }) => {
       if (!id) return []
 
-      const eventsUsers = await get(asyncEventsUsersByEventIdSelector(id))
+      const eventsUsers = await get(asyncEventsUsersByEventIdAtom(id))
 
       // const eventsUsers = get(eventsUsersAtom)
 

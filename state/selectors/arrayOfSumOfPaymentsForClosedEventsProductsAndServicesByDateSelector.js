@@ -1,13 +1,13 @@
-import isEventClosed from '@helpers/isEventClosed'
-import isProductUserClosed from '@helpers/isProductUserClosed'
-import eventsAtom from '@state/atoms/eventsAtom'
-import productsUsersAtom from '@state/atoms/productsUsersAtom'
+// import isEventClosed from '@helpers/isEventClosed'
+// import isProductUserClosed from '@helpers/isProductUserClosed'
+// import eventsAtom from '@state/atoms/eventsAtom'
+// import productsUsersAtom from '@state/atoms/productsUsersAtom'
 import { selector } from 'recoil'
 import allClosedEventsSelector from './allClosedEventsSelector'
 import allPaymentsOfInternalSelector from './allPaymentsOfInternalSelector '
 import totalIncomeOfEventSelector from './totalIncomeOfEventSelector'
-import totalIncomeOfProductUserSelector from './totalIncomeOfProductUserSelector'
-import totalIncomeOfServiceUserSelector from './totalIncomeOfServiceUserSelector'
+// import totalIncomeOfProductUserSelector from './totalIncomeOfProductUserSelector'
+// import totalIncomeOfServiceUserSelector from './totalIncomeOfServiceUserSelector'
 
 export const arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector =
   selector({

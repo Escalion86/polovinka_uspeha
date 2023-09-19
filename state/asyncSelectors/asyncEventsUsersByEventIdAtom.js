@@ -8,8 +8,6 @@ const asyncEventsUsersByEventIdSelector = selectorFamily({
     (eventId) =>
     async ({ get, set }) => {
       const res = await getFetch('/api/eventsusers', { eventId })
-
-      await sleep(1000)
       // // Throw error with status code in case Fetch API req failed
       // if (!res.ok) {
       //   throw new Error(res.status)
@@ -22,7 +20,7 @@ const asyncEventsUsersByEventIdSelector = selectorFamily({
   // set:
   //   (eventId) =>
   //   ({ set, get }, newItem) => {
-  //     set(asyncEventsUsersByEventIdSelector(eventId), newItem)
+  //     set(asyncEventsUsersByEventIdAtom(eventId), newItem)
   //   },
 })
 
