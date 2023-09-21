@@ -426,12 +426,7 @@ export default async function handler(Schema, req, res, params = null) {
   await dbConnect()
 
   let data
-  console.log('Schema', Schema)
-  console.log(`method`, method)
-  console.log(`params`, params)
-  console.log(`id`, id)
-  console.log(`body`, body)
-  console.log('query :>> ', query)
+  console.log('CRUD', { Schema, method, params, id, body, query })
 
   switch (method) {
     case 'GET':
