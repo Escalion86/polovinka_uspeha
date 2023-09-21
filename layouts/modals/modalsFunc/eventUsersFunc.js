@@ -31,19 +31,20 @@ import getUserFullName from '@helpers/getUserFullName'
 import useSnackbar from '@helpers/useSnackbar'
 import copyToClipboard from '@helpers/copyToClipboard'
 import { modalsFuncAtom } from '@state/atoms'
+import birthDateToAge from '@helpers/birthDateToAge'
 
 const useCopyUserListToClipboard = ({ mans, womans }) => {
   const mansNames = mans.map(
     (user, index) =>
-      `${index + 1}. ${getUserFullName(user)} (${
-        user.status === 'member' ? 'клуб' : 'центр'
-      })`
+      `${index + 1}. ${getUserFullName(user)}${
+        user.status === 'member' ? ' (клуб)' : ''
+      } - ${birthDateToAge(user.birthday)}`
   )
   const womansNames = womans.map(
     (user, index) =>
-      `${index + 1}. ${getUserFullName(user)} (${
-        user.status === 'member' ? 'клуб' : 'центр'
-      })`
+      `${index + 1}. ${getUserFullName(user)}${
+        user.status === 'member' ? ' (клуб)' : ''
+      } - ${birthDateToAge(user.birthday)}`
   )
   const mansText = mansNames.length > 0 ? `${mansNames.join(`\n`)}` : null
   const womansText = womansNames.length > 0 ? `${womansNames.join(`\n`)}` : null
