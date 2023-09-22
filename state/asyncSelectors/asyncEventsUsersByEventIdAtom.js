@@ -10,7 +10,7 @@ const asyncEventsUsersByEventIdSelector = selectorFamily({
     async ({ get }) => {
       // const test = get(noWait(asyncEventsUsersAllSelector))
       // console.log('test', test)
-
+      if (!eventId) return undefined
       const res = await getFetch('/api/eventsusers', { eventId })
       // // Throw error with status code in case Fetch API req failed
       // if (!res.ok) {
