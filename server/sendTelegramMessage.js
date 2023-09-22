@@ -63,17 +63,11 @@ const sendTelegramMessage = async ({
 }) => {
   if (
     !telegramIds ||
-    (typeof telegramIds !== 'object' && typeof telegramIds !== 'string')
+    !['object', 'string', 'number'].includes(typeof telegramIds)
   )
     return undefined
 
-  console.log('telegramIds :>> ', telegramIds)
-  console.log(
-    'typeof telegramIds === string :>> ',
-    typeof telegramIds === 'string'
-  )
-
-  if (typeof telegramIds === 'string') {
+  if (['string', 'number'].includes(typeof telegramIds)) {
     return await sendMessageToTelegramId({
       req,
       telegramId: telegramIds,
