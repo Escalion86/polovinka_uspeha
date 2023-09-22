@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import eventSelector from '@state/selectors/eventSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import userSelector from '@state/selectors/userSelector'
-import eventsUsersSelector from '@state/selectors/eventsUsersSelector'
 
 import useErrors from '@helpers/useErrors'
 import ErrorsList from '@components/ErrorsList'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
+import asyncEventsUsersByEventIdAtom from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 
-const eventUserStatusChangeFunc = (eventUserId) => {
+const eventUserStatusChangeFunc = ({ eventId, userId }) => {
   const EventUserStatusChangeModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -20,10 +18,13 @@ const eventUserStatusChangeFunc = (eventUserId) => {
     setOnlyCloseButtonShow,
     setBottomLeftButtonProps,
   }) => {
-    const eventUser = useRecoilValue(eventsUsersSelector(eventUserId))
-    const event = useRecoilValue(eventSelector(eventUser.eventId))
-    const user = useRecoilValue(userSelector(eventUser.userId))
+    const eventUsers = useRecoilValue(asyncEventsUsersByEventIdAtom(eventId))
+    const eventUser = eventUsers.find(
+      (eventUser) => eventUser.userId === userId
+    ) // const event = useRecoilValue(eventSelector(eventId))
+    // const user = useRecoilValue(userSelector(userId))
     const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
+    console.log('eventUser :>> ', eventUser)
 
     const defaultStatus = eventUser.userStatus //  ?? user.status ?? 'novice'
     const [status, setStatus] = useState(defaultStatus)

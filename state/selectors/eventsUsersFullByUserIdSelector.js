@@ -1,4 +1,3 @@
-// import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import { selectorFamily } from 'recoil'
 import eventSelector from './eventSelector'
 import userSelector from './userSelector'
@@ -12,8 +11,6 @@ export const eventsUsersFullByUserIdSelector = selectorFamily({
       if (!id) return []
 
       const eventsUsers = await get(asyncEventsUsersByUserIdAtom(id))
-
-      // const eventsUsers = get(eventsUsersAtom)
 
       return eventsUsers
         ? eventsUsers

@@ -3,7 +3,6 @@ import { useRecoilValue } from 'recoil'
 import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
-import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import { useMemo, useState } from 'react'
 import isEventExpiredFunc from '@helpers/isEventExpired'
@@ -29,6 +28,7 @@ import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
 import EventParticipantToggleButtons from '@components/IconToggleButtons/EventParticipantToggleButtons'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
 
 const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
@@ -37,8 +37,9 @@ const EventsContent = () => {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const eventsOfUser = useRecoilValue(
-    eventsUsersByUserIdSelector(loggedUser._id)
+
+  const eventsLoggedUser = useRecoilValue(
+    asyncEventsUsersByUserIdAtom(loggedUser?._id)
   )
   const siteSettings = useRecoilValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
@@ -66,10 +67,6 @@ const EventsContent = () => {
   const sortFunc = sortFunctions[sortKey]
     ? sortFunctions[sortKey][sortValue]
     : undefined
-
-  const eventsLoggedUser = useRecoilValue(
-    eventsUsersByUserIdSelector(loggedUser?._id)
-  )
 
   // const directionsIds = useMemo(
   //   () => [...directions].map((direction) => direction._id),
@@ -146,7 +143,9 @@ const EventsContent = () => {
             filterOptions.directions === event.directionId) &&
           ((filter.participant?.participant &&
             filter.participant?.notParticipant) ||
-          !!eventsOfUser.find((eventUser) => eventUser.eventId === event._id)
+          !!eventsLoggedUser.find(
+            (eventUser) => eventUser.eventId === event._id
+          )
             ? filter.participant?.participant
             : filter.participant?.notParticipant)
         )

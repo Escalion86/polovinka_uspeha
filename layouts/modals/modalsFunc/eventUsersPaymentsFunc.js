@@ -78,7 +78,7 @@ const income = (payments) =>
   ) / 100
 
 const UserPayment = ({
-  id,
+  // id,
   user,
   event,
   userStatus,
@@ -171,7 +171,15 @@ const UserPayment = ({
             ' flex flex-col items-center justify-center text-sm leading-4 border-l border-gray-700 min-w-[80px]',
             usersIds ? '' : 'hover:bg-blue-200 cursor-pointer'
           )}
-          onClick={usersIds ? null : () => modalsFunc.eventUser.editStatus(id)}
+          onClick={
+            usersIds
+              ? null
+              : () =>
+                  modalsFunc.eventUser.editStatus({
+                    eventId: event._id,
+                    userId: user._id,
+                  })
+          }
         >
           <span
             className={cn(
@@ -404,7 +412,7 @@ const UsersPayments = ({
           return (
             <UserPayment
               key={user._id}
-              id={_id}
+              // id={_id}
               noEventPriceForUser={noEventPriceForUser}
               event={event}
               user={user}

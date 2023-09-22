@@ -483,8 +483,7 @@ const modalsFuncGenerator = (
         }),
     },
     eventUser: {
-      editStatus: (eventUserId) =>
-        addModal(eventUserStatusChangeFunc(eventUserId)),
+      editStatus: (eventUser) => addModal(eventUserStatusChangeFunc(eventUser)),
     },
     payment: {
       add: (paymentId, props) => addModal(paymentFunc(paymentId, true, props)),

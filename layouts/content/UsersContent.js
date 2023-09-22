@@ -16,26 +16,27 @@ import UsersList from '@layouts/lists/UsersList'
 import Search from '@components/Search'
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
 import filterItems from '@helpers/filterItems'
-import eventsUsersNotCanceledAndFinishedSelector from '@state/selectors/eventsUsersNotCanceledAndFinishedSelector'
+// import eventsUsersNotCanceledAndFinishedSelector from '@state/selectors/eventsUsersNotCanceledAndFinishedSelector'
 
 const UsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const users = useRecoilValue(usersAtom)
-  const notCanceledAndFinishedEventsUsers = useRecoilValue(
-    eventsUsersNotCanceledAndFinishedSelector
-  )
 
-  const updatedUsers = useMemo(
-    () =>
-      users.map((user) => {
-        const eventsUser = notCanceledAndFinishedEventsUsers.filter(
-          ({ userId, status }) =>
-            user._id === userId && status !== 'ban' && status !== 'reserve'
-        )
-        return { ...user, eventsUserCount: eventsUser.length }
-      }),
-    [users, notCanceledAndFinishedEventsUsers]
-  )
+  // const notCanceledAndFinishedEventsUsers = useRecoilValue(
+  //   eventsUsersNotCanceledAndFinishedSelector
+  // )
+
+  // const updatedUsers = useMemo(
+  //   () =>
+  //     users.map((user) => {
+  //       const eventsUser = notCanceledAndFinishedEventsUsers.filter(
+  //         ({ userId, status }) =>
+  //           user._id === userId && status !== 'ban' && status !== 'reserve'
+  //       )
+  //       return { ...user, eventsUserCount: eventsUser.length }
+  //     }),
+  //   [users, notCanceledAndFinishedEventsUsers]
+  // )
 
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
@@ -74,7 +75,8 @@ const UsersContent = () => {
 
   const filteredUsers = useMemo(
     () =>
-      updatedUsers.filter(
+      // updatedUsers
+      users.filter(
         (user) =>
           user &&
           (filter.gender[String(user.gender)] ||
@@ -83,7 +85,11 @@ const UsersContent = () => {
               user.gender !== 'famale')) &&
           filter.status[user?.status ?? 'novice']
       ),
-    [updatedUsers, filter]
+    [
+      // updatedUsers,
+      users,
+      filter,
+    ]
   )
 
   const addSearchProps = isLoggedUserModer
@@ -116,7 +122,12 @@ const UsersContent = () => {
           <SortingButtonMenu
             sort={sort}
             onChange={setSort}
-            sortKeys={['name', 'birthday', 'createdAt', 'eventsUserCount']}
+            sortKeys={[
+              'name',
+              'birthday',
+              'createdAt',
+              // 'eventsUserCount'
+            ]}
           />
           <SearchToggleButton
             value={isSearching}

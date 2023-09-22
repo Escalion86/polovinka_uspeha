@@ -1,6 +1,7 @@
 import { noWait, selector } from 'recoil'
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
+// import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 
 const signUpUserSelector = selector({
   key: 'signUpUserSelector',
@@ -10,7 +11,7 @@ const signUpUserSelector = selector({
   set: ({ set, get }, newEventUser) => {
     const { eventId, userId } = newEventUser
     const eventUsers = get(noWait(asyncEventsUsersByEventIdAtom(eventId)))
-    console.log('eventUsers :>> ', eventUsers)
+
     if (eventUsers.state === 'hasValue') {
       const newEventUsers = [...eventUsers.contents, newEventUser]
       set(asyncEventsUsersByEventIdAtom(eventId), newEventUsers)
@@ -21,6 +22,11 @@ const signUpUserSelector = selector({
       const newEventsUser = [...eventsUser.contents, newEventUser]
       set(asyncEventsUsersByUserIdAtom(userId), newEventsUser)
     }
+    // const eventsUsers = get(noWait(asyncEventsUsersAllSelector))
+    // if (eventsUsers.state === 'hasValue') {
+    //   const newEventsUser = [...eventsUsers.contents, newEventUser]
+    //   set(asyncEventsUsersAllSelector, newEventsUser)
+    // }
   },
 })
 

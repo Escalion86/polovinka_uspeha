@@ -1,12 +1,16 @@
 import getFetch from '@helpers/getFetch'
-import sleep from '@helpers/sleep'
-import { atomFamily, selectorFamily } from 'recoil'
+// import sleep from '@helpers/sleep'
+import { atomFamily, noWait, selectorFamily, waitForNone } from 'recoil'
+// import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 
 const asyncEventsUsersByEventIdSelector = selectorFamily({
   key: 'asyncEventsUsersByEventIdSelector',
   get:
     (eventId) =>
-    async ({ get, set }) => {
+    async ({ get }) => {
+      // const test = get(noWait(asyncEventsUsersAllSelector))
+      // console.log('test', test)
+
       const res = await getFetch('/api/eventsusers', { eventId })
       // // Throw error with status code in case Fetch API req failed
       // if (!res.ok) {
