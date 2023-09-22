@@ -66,7 +66,14 @@ const sendTelegramMessage = async ({
     (typeof telegramIds !== 'object' && typeof telegramIds !== 'string')
   )
     return undefined
-  if (typeof telegramIds === 'string')
+
+  console.log('telegramIds :>> ', telegramIds)
+  console.log(
+    'typeof telegramIds === string :>> ',
+    typeof telegramIds === 'string'
+  )
+
+  if (typeof telegramIds === 'string') {
     return await sendMessageToTelegramId({
       req,
       telegramId: telegramIds,
@@ -74,6 +81,8 @@ const sendTelegramMessage = async ({
       images,
       inline_keyboard,
     })
+  }
+
   return await Promise.all(
     telegramIds.map(
       async (telegramId) =>

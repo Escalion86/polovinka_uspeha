@@ -58,6 +58,7 @@ export default async function handler(req, res) {
         //     user.notifications.get('telegram').userName.toLowerCase() ===
         //       message.from.username.toLowerCase()
         // )
+        console.log('userFromReq :>> ', userFromReq)
         if (userFromReq) {
           await sendTelegramMessage({
             req,
@@ -66,6 +67,11 @@ export default async function handler(req, res) {
               ? 'Активация уведомлений прошла успешно!'
               : 'Уведомления отключены!',
           })
+          console.log(
+            isActivation
+              ? 'Активация уведомлений прошла успешно!'
+              : 'Уведомления отключены!'
+          )
           // const data = await Users.findByIdAndUpdate(userFromReq[0]._id, {
           //   notifications: {
           //     ...userFromReq[0].notifications,
@@ -84,7 +90,11 @@ export default async function handler(req, res) {
             ? 'ОШИБКА! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!'
             : 'ОШИБКА! Уведомления не отключены. Пожалуйста свяжитесь с администратором! http://t.me/escalion',
         })
-        console.log('Пользователь с таким логином не найден')
+        console.log(
+          isActivation
+            ? 'ОШИБКА! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!'
+            : 'ОШИБКА! Уведомления не отключены. Пожалуйста свяжитесь с администратором! http://t.me/escalion'
+        )
         return res?.status(200).json({
           success: false,
           error: 'Пользователь с таким логином не найден',

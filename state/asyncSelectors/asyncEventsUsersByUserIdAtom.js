@@ -7,6 +7,7 @@ const asyncEventsUsersByUserIdSelector = selectorFamily({
     (userId) =>
     async ({ get, set }) => {
       // console.log('Get :>> ', userId)
+      if (!userId) return undefined
       const res = await getFetch('/api/eventsusers', { userId })
       // // Throw error with status code in case Fetch API req failed
       // if (!res.ok) {
