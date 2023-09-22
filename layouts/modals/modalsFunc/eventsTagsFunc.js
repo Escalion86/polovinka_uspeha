@@ -91,8 +91,8 @@ const eventsTagsFunc = () => {
     }
 
     useEffect(() => {
-      const isTagsChanged = compareObjects(siteSettings.eventsTags ?? [], tags)
-      setDisableConfirm(isTagsChanged)
+      const isTagsChanged = !compareObjects(siteSettings.eventsTags ?? [], tags)
+      setDisableConfirm(!isTagsChanged)
       setOnConfirmFunc(isTagsChanged ? onClickConfirm : undefined)
     }, [tags])
 

@@ -103,8 +103,7 @@ const CardButtons = ({
         typeOfItem === 'user'),
     addToCalendar:
       // ADD
-      ((siteSettings?.custom?.birthdayUpdate && isLoggedUserMember) ||
-        isLoggedUserAdmin) &&
+      (siteSettings?.custom?.birthdayUpdate || isLoggedUserAdmin) &&
       typeOfItem === 'event',
     eventUsersBtn:
       (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'event',

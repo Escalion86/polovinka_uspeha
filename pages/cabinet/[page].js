@@ -23,6 +23,16 @@ import Fab from '@components/Fab'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 
+const SuspenseChild = () => {
+  // console.log('!! Suspense :>> [page]')
+
+  return (
+    <div className="z-10 flex items-center justify-center w-full h-[calc(100vh-4rem)]">
+      <LoadingSpinner text="идет загрузка...." />
+    </div>
+  )
+}
+
 function CabinetPage(props) {
   const router = useRouter()
   const page = router.asPath.replace('/cabinet/', '')
@@ -72,13 +82,7 @@ function CabinetPage(props) {
             <BurgerLayout />
             <ContentWrapper page={page}>
               {!redirect && (
-                <Suspense
-                  fallback={
-                    <div className="z-10 flex items-center justify-center w-full h-[calc(100vh-4rem)]">
-                      <LoadingSpinner text="идет загрузка...." />
-                    </div>
-                  }
-                >
+                <Suspense fallback={<SuspenseChild />}>
                   <Component {...props} />
                 </Suspense>
               )}

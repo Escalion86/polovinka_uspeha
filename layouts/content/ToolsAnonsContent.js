@@ -1,30 +1,14 @@
-import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import usersAtom from '@state/atoms/usersAtom'
-import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import directionsAtom from '@state/atoms/directionsAtom'
-import reviewsAtom from '@state/atoms/reviewsAtom'
-import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
-import paymentsAtom from '@state/atoms/paymentsAtom'
-
-import { CardWrapper } from '@components/CardWrapper'
-import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import InputImages from '@components/InputImages'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Input from '@components/Input'
-import FormWrapper from '@components/FormWrapper'
-import formatDateTime from '@helpers/formatDateTime'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import ComboBox from '@components/ComboBox'
-import { MONTHS, MONTHS_FULL, MONTHS_FULL_1 } from '@helpers/constants'
+import { MONTHS_FULL_1 } from '@helpers/constants'
 import sortFunctions from '@helpers/sortFunctions'
-import CheckBox from '@components/CheckBox'
 import YearSelector from '@components/ComboBox/YearSelector'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import ColorPicker from '@components/ColorPicker'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Button from '@components/Button'
 
 import { saveSvgAsPng } from 'save-svg-as-png'
@@ -34,16 +18,6 @@ import {
 } from '@components/SvgBackground'
 import getNoun from '@helpers/getNoun'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-// import futuraPtFontBase64 from '@helpers/fontsBase64/futuraPt'
-// import enchantsFontBase64 from '@helpers/fontsBase64/enchants'
-
-// function loadImage(url) {
-//   return new Promise((r) => {
-//     let i = new Image()
-//     i.onload = () => r(i)
-//     i.src = url
-//   })
-// }
 
 const styles = [
   {
@@ -74,54 +48,6 @@ const styles = [
 
 const closedEventsDirectionId = '6301d334e5b7fa785515faac' //6301d334e5b7fa785515faac
 
-// function readURL(input) {
-//   if (input.files && input.files[0]) {
-//     var reader = new FileReader()
-
-//     reader.onload = function (e) {
-//       $('#blah').attr('src', e.target.result)
-//     }
-
-//     reader.readAsDataURL(input.files[0])
-//   }
-// }
-
-// const setImage = (image, setSrc) => {
-//   // const preview = document.querySelector('#preview')
-//   // if (!preview) return
-//   var reader = new FileReader()
-//   // console.log('preview :>> ', preview)
-
-//   // reader.onloadend = function (e) {
-//   //   preview.src = e.target.result
-//   // }
-
-//   reader.addEventListener(
-//     'load',
-//     () => {
-//       setSrc(reader.result.toString() || '')
-//       modalsFunc.cropImage(
-//         reader.result.toString() || '',
-//         null,
-//         aspect,
-//         (newImage) => {
-//           console.log('newImage :>> ', newImage)
-//           setSrc(newImage)
-//         }
-//       )
-//     }
-//     // setImgSrc(reader.result.toString() || '')
-//     // (preview.src = reader.result.toString() || '')
-//   )
-//   reader.readAsDataURL(image)
-
-//   // if (image) {
-//   //   reader.readAsDataURL(image)
-//   // } else {
-//   //   if (preview) preview.src = ''
-//   // }
-// }
-
 const save2 = async (listsCount, name) => {
   for (let i = 0; i < listsCount; i++) {
     const input = document.querySelector('#input' + i)
@@ -132,71 +58,14 @@ const save2 = async (listsCount, name) => {
   }
 }
 
-// const save = async (listsCount, name) => {
-//   for (let i = 0; i < listsCount; i++) {
-//     const input = document.querySelector('#input' + i)
-//     const output = document.querySelector('#output')
-
-//     const svgData = new XMLSerializer().serializeToString(input)
-//     const svgDataBase64 = btoa(unescape(encodeURIComponent(svgData)))
-
-//     const svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
-
-//     const image = new Image()
-//     // const imgBg = await loadImage(bgImage)
-
-//     image.addEventListener('load', () => {
-//       const canvas = document.createElement('canvas')
-
-//       canvas.setAttribute('width', 1080)
-//       canvas.setAttribute('height', 1920)
-
-//       const context = canvas.getContext('2d')
-
-//       // context.drawImage(imgBg, 0, 0, 1080, 1920)
-
-//       context.drawImage(image, 0, 0, 1080, 1920)
-
-//       const dataUrl = canvas.toDataURL('image/png')
-//       output.src = dataUrl
-
-//       var link = document.createElement('a')
-//       link.setAttribute(
-//         'download',
-//         `${name}${
-//           listsCount > 1 ? ` (лист ${i + 1} из ${listsCount})` : ''
-//         }.png`
-//       )
-//       link.setAttribute(
-//         'href',
-//         canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
-//       )
-//       link.click()
-
-//       // var image2 = canvas
-//       //   .toDataURL('image/png')
-//       //   .replace('image/png', 'image/octet-stream')
-//       // window.location.href = image2
-//     })
-//     image.src = svgDataUrl
-//   }
-// }
-
 const ToolsAnonsContent = () => {
   const hiddenFileInput = useRef(null)
-  const addImageClick = () => {
-    hiddenFileInput.current.click()
-  }
+  // const addImageClick = () => {
+  //   hiddenFileInput.current.click()
+  // }
 
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
-  // const users = useRecoilValue(usersAtom)
-  // const eventsUsers = useRecoilValue(eventsUsersAtom)
-  // const directions = useRecoilValue(directionsAtom)
-  // const reviews = useRecoilValue(reviewsAtom)
-  // const additionalBlocks = useRecoilValue(additionalBlocksAtom)
-  // const payments = useRecoilValue(paymentsAtom)
 
   const [month, setMonth] = useState(serverDate.getMonth())
   const [year, setYear] = useState(serverDate.getFullYear())

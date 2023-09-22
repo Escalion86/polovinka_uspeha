@@ -8,17 +8,17 @@ import { CardWrapper } from '@components/CardWrapper'
 import EventNameById from '@components/EventNameById'
 import UserNameById from '@components/UserNameById'
 import {
-  faCalendarTimes,
+  // faCalendarTimes,
   faQuestion,
   faTimesCircle,
   faUserTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  EVENT_STATUSES_WITH_TIME,
+  // EVENT_STATUSES_WITH_TIME,
   PAY_TYPES,
   PAY_TYPES_OBJECT,
-  PRODUCT_PAY_INTERNAL,
+  // PRODUCT_PAY_INTERNAL,
   PRODUCT_USER_STATUSES,
   SECTORS,
   SERVICE_USER_STATUSES,
@@ -29,7 +29,6 @@ import cn from 'classnames'
 import eventStatusFunc from '@helpers/eventStatus'
 import serviceStatusFunc from '@helpers/serviceStatus'
 import eventSelector from '@state/selectors/eventSelector'
-import eventsUsersByEventIdSelector from '@state/selectors/eventsUsersByEventIdSelector'
 import Tooltip from '@components/Tooltip'
 import paymentSectorFunc from '@helpers/paymentSector'
 import serviceSelector from '@state/selectors/serviceSelector'
@@ -41,6 +40,9 @@ import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDir
 import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
 import EventPayDirectionIconText from '@components/ValueIconText/EventPayDirectionIconText'
 import TextLinesLimiter from '@components/TextLinesLimiter'
+import asyncEventsUsersByEventIdAtom from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
+import Skeleton from 'react-loading-skeleton'
+import { Suspense } from 'react'
 
 const Icon = ({ className, icon, tooltip }) => (
   <Tooltip title={tooltip}>
@@ -50,42 +52,42 @@ const Icon = ({ className, icon, tooltip }) => (
   </Tooltip>
 )
 
-const Status = ({ statusProps }) => {
-  if (!statusProps) return null
-  return (
-    <div
-      className={cn(
-        'flex items-center justify-center w-8 text-white',
-        statusProps ? 'bg-' + statusProps.color : 'bg-gray-400'
-      )}
-    >
-      <FontAwesomeIcon icon={statusProps?.icon ?? faQuestion} className="w-6" />
-    </div>
-  )
-}
+// const Status = ({ statusProps }) => {
+//   if (!statusProps) return null
+//   return (
+//     <div
+//       className={cn(
+//         'flex items-center justify-center w-8 text-white',
+//         statusProps ? 'bg-' + statusProps.color : 'bg-gray-400'
+//       )}
+//     >
+//       <FontAwesomeIcon icon={statusProps?.icon ?? faQuestion} className="w-6" />
+//     </div>
+//   )
+// }
 
-const EventStatusByEventId = ({ eventId }) => {
-  if (!eventId) return null
-  const event = useRecoilValue(eventSelector(eventId))
-  const eventStatus = eventStatusFunc(event)
+// const EventStatusByEventId = ({ eventId }) => {
+//   if (!eventId) return null
+//   const event = useRecoilValue(eventSelector(eventId))
+//   const eventStatus = eventStatusFunc(event)
 
-  const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
-    (payTypeItem) => payTypeItem.value === eventStatus
-  )
-  return (
-    <div
-      className={cn(
-        'flex items-center justify-center w-4',
-        eventStatusProps ? 'text-' + eventStatusProps.color : 'text-gray-400'
-      )}
-    >
-      <FontAwesomeIcon
-        icon={eventStatusProps?.icon ?? faQuestion}
-        className="w-4 h-4"
-      />
-    </div>
-  )
-}
+//   const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
+//     (payTypeItem) => payTypeItem.value === eventStatus
+//   )
+//   return (
+//     <div
+//       className={cn(
+//         'flex items-center justify-center w-4',
+//         eventStatusProps ? 'text-' + eventStatusProps.color : 'text-gray-400'
+//       )}
+//     >
+//       <FontAwesomeIcon
+//         icon={eventStatusProps?.icon ?? faQuestion}
+//         className="w-4 h-4"
+//       />
+//     </div>
+//   )
+// }
 
 const PayTypeIcon = ({ payment }) => {
   const payType = PAY_TYPES.find(
@@ -218,6 +220,27 @@ const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
   )
 }
 
+const PaymentEventUserLeftComponent = ({ payment, event }) => {
+  const eventUsers = useRecoilValue(asyncEventsUsersByEventIdAtom(event?._id))
+  const eventUser = eventUsers.find(
+    (eventUser) => eventUser.userId === payment.userId
+  )
+  if (eventUser) return null
+  return (
+    <Icon
+      icon={faUserTimes}
+      className="text-danger"
+      tooltip="Участник не пришёл"
+    />
+  )
+}
+
+const PaymentEventUserLeft = (props) => (
+  <Suspense>
+    <PaymentEventUserLeftComponent {...props} />
+  </Suspense>
+)
+
 const PaymentEvent = ({ payment }) => {
   const event = useRecoilValue(eventSelector(payment.eventId))
   const eventStatus = eventStatusFunc(event)
@@ -237,23 +260,9 @@ const PaymentEvent = ({ payment }) => {
     >
       {(payment.payDirection === 'toUser' ||
         payment.payDirection === 'fromUser') &&
-        payment.eventId &&
-        (() => {
-          const eventUsers = useRecoilValue(
-            eventsUsersByEventIdSelector(event?._id)
-          )
-          const eventUser = eventUsers.find(
-            (eventUser) => eventUser.userId === payment.userId
-          )
-          if (eventUser) return null
-          return (
-            <Icon
-              icon={faUserTimes}
-              className="text-danger"
-              tooltip="Участник не пришёл"
-            />
-          )
-        })()}
+        payment.eventId && (
+          <PaymentEventUserLeft payment={payment} event={event} />
+        )}
     </PayCardWrapper>
   )
 }
@@ -281,7 +290,7 @@ const PaymentService = ({ payment }) => {
         payment.eventId &&
         (() => {
           const eventUsers = useRecoilValue(
-            eventsUsersByEventIdSelector(event?._id)
+            asyncEventsUsersByEventIdAtom(event?._id)
           )
           const eventUser = eventUsers.find(
             (eventUser) => eventUser.userId === payment.userId
@@ -322,7 +331,7 @@ const PaymentProduct = ({ payment }) => {
         payment.eventId &&
         (() => {
           const eventUsers = useRecoilValue(
-            eventsUsersByEventIdSelector(event?._id)
+            asyncEventsUsersByEventIdAtom(event?._id)
           )
           const eventUser = eventUsers.find(
             (eventUser) => eventUser.userId === payment.userId
@@ -356,7 +365,7 @@ const PaymentInternal = ({ payment }) => {
         payment.eventId &&
         (() => {
           const eventUsers = useRecoilValue(
-            eventsUsersByEventIdSelector(event?._id)
+            asyncEventsUsersByEventIdAtom(event?._id)
           )
           const eventUser = eventUsers.find(
             (eventUser) => eventUser.userId === payment.userId

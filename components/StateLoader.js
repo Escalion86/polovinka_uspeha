@@ -13,7 +13,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import itemsFuncGenerator from '@state/itemsFuncGenerator'
 // import eventsUsersEditSelector from '@state/selectors/eventsUsersEditSelector'
 // import eventsUsersDeleteSelector from '@state/selectors/eventsUsersDeleteSelector'
-import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
+// import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
 
 // import eventEditSelector from '@state/selectors/eventEditSelector'

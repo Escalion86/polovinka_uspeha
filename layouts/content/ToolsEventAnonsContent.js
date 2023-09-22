@@ -1,30 +1,11 @@
-import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
-import usersAtom from '@state/atoms/usersAtom'
-import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import directionsAtom from '@state/atoms/directionsAtom'
-import reviewsAtom from '@state/atoms/reviewsAtom'
-import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
-import paymentsAtom from '@state/atoms/paymentsAtom'
 
-import { CardWrapper } from '@components/CardWrapper'
-import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import InputImages from '@components/InputImages'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import Input from '@components/Input'
-import FormWrapper from '@components/FormWrapper'
-import formatDateTime from '@helpers/formatDateTime'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import ComboBox from '@components/ComboBox'
-import { MONTHS, MONTHS_FULL, MONTHS_FULL_1 } from '@helpers/constants'
-import sortFunctions from '@helpers/sortFunctions'
-import CheckBox from '@components/CheckBox'
-import YearSelector from '@components/ComboBox/YearSelector'
-import MonthSelector from '@components/ComboBox/MonthSelector'
 import ColorPicker from '@components/ColorPicker'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Button from '@components/Button'
 
 import { saveSvgAsPng } from 'save-svg-as-png'
@@ -44,19 +25,7 @@ const save = async (name) => {
 }
 
 const ToolsEventAnonsContent = () => {
-  // const hiddenFileInput = useRef(null)
-  // const addImageClick = () => {
-  //   hiddenFileInput.current.click()
-  // }
-
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
-  // const users = useRecoilValue(usersAtom)
-  // const eventsUsers = useRecoilValue(eventsUsersAtom)
-  // const directions = useRecoilValue(directionsAtom)
-  // const reviews = useRecoilValue(reviewsAtom)
-  // const additionalBlocks = useRecoilValue(additionalBlocksAtom)
-  // const payments = useRecoilValue(paymentsAtom)
   const [customMode, setCustomMode] = useState(false)
   const [customDate1, setCustomDate1] = useState('')
   const [customDate2, setCustomDate2] = useState('')

@@ -11,7 +11,11 @@ export default async function handler(req, res) {
       // console.log(body)
       const { update_id, message } = body
       // console.log('telegram body', body)
-      if (message.text === '/activate' || message.text === '/deactivate') {
+      if (
+        message.text === '/start' ||
+        message.text === '/activate' ||
+        message.text === '/deactivate'
+      ) {
         // console.log('message.text', message.text)
         // const users = await Users.find({})
         // console.log('message.from.id', message.from.id)
@@ -60,7 +64,7 @@ export default async function handler(req, res) {
         if (userFromReq) {
           await sendTelegramMessage({
             req,
-            telegramId: message.from.id,
+            telegramIds: message.from.id,
             text:
               message.text === '/activate'
                 ? 'Активация уведомлений прошла успешно!'
@@ -79,7 +83,7 @@ export default async function handler(req, res) {
         }
         await sendTelegramMessage({
           req,
-          telegramId: message.from.id,
+          telegramIds: message.from.id,
           text:
             message.text === '/activate'
               ? 'ОШИБКА! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!'

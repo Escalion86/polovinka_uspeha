@@ -1,6 +1,7 @@
 import { noWait, selector } from 'recoil'
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
+// import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 
 const signOutUserSelector = selector({
   key: 'signOutUserSelector',
@@ -26,6 +27,15 @@ const signOutUserSelector = selector({
 
       set(asyncEventsUsersByUserIdAtom(userId), newEventsUser)
     }
+
+    // const eventsUsers = get(noWait(asyncEventsUsersAllSelector))
+    // if (eventsUsers.state === 'hasValue') {
+    //   const newEventsUser = eventsUsers.contents.filter(
+    //     (eventUser) => eventUser.eventId !== eventId
+    //   )
+
+    //   set(asyncEventsUsersAllSelector, newEventsUser)
+    // }
   },
 })
 

@@ -32,6 +32,7 @@ import servicesUsersDeleteSelector from './selectors/servicesUsersDeleteSelector
 import setEventsUsersSelector from './asyncSelectors/setEventsUsersSelector'
 import signOutUserSelector from './asyncSelectors/signOutUserSelector'
 import signUpUserSelector from './asyncSelectors/signUpUserSelector'
+import setEventUserSelector from './asyncSelectors/setEventUserSelector'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -205,9 +206,10 @@ const props = {
   setPayment: setFunc(paymentEditSelector),
   deletePayment: setFunc(paymentsDeleteSelector),
 
-  setEventUsers: setFamilyFunc(setEventsUsersSelector),
-  signOutEventUser: setFunc(signOutUserSelector),
-  signUpEventUser: setFunc(signUpUserSelector),
+  setEventsUsers: setFamilyFunc(setEventsUsersSelector),
+  deleteEventsUser: setFunc(signOutUserSelector),
+  addEventsUser: setFunc(signUpUserSelector),
+  setEventsUser: setFunc(setEventUserSelector),
 
   setSiteSettings: setFunc(siteSettingsAtom),
   setQuestionnaire: setFunc(questionnaireEditSelector),
@@ -490,7 +492,7 @@ const itemsFuncGenerator = (
             } на мероприятие прошла успешно`
           )
           setNotLoadingCard('event' + eventId)
-          props.signUpEventUser(data)
+          props.addEventsUser(data)
           if (typeof onSuccess === 'function') onSuccess(data)
         }
       },
@@ -529,7 +531,7 @@ const itemsFuncGenerator = (
           } мероприятия`
         )
         setNotLoadingCard('event' + eventId)
-        props.signOutEventUser(data.data)
+        props.deleteEventsUser(data.data)
       },
       (error) => {
         snackbar.error(
@@ -578,7 +580,7 @@ const itemsFuncGenerator = (
         snackbar.success('Список участников мероприятия успешно обновлен')
         setNotLoadingCard('event' + eventId)
         // props.deleteEventsUsersByEventId(eventId)
-        props.setEventUsers(eventId, data)
+        props.setEventsUsers(eventId, data)
       },
       (error) => {
         snackbar.error('Не удалось обновить список участников мероприятия')

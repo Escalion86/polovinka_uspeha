@@ -1,11 +1,12 @@
-import eventsUsersAtom from '@state/atoms/eventsUsersAtom'
+import asyncEventsUsersAllSelector from '@state/asyncSelectors/asyncEventsUsersAllSelector'
 import paymentsAtom from '@state/atoms/paymentsAtom'
 import { selector } from 'recoil'
 
 export const paymentsWithoutUserWritingToEventSelector = selector({
   key: 'paymentsWithoutUserWritingToEventSelector',
-  get: ({ get }) => {
-    const eventUsers = get(eventsUsersAtom)
+  get: async ({ get, set }) => {
+    const eventUsers = get(asyncEventsUsersAllSelector)
+
     return get(paymentsAtom).filter(
       (payment) =>
         (payment.payDirection === 'toUser' ||

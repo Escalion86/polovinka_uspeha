@@ -1,11 +1,10 @@
-import { modalsFuncAtom } from '@state/atoms'
+// import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 
 import isEventClosedFunc from '@helpers/isEventClosed'
-import eventsUsersByUserIdSelector from '@state/selectors/eventsUsersByUserIdSelector'
 import PieChart from '@components/Charts/PieChart'
 import { useMemo, useState } from 'react'
 import formatDate from '@helpers/formatDate'
@@ -17,6 +16,7 @@ import { H3 } from '@components/tags'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import CheckBox from '@components/CheckBox'
+import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
 
 const place = (count, places) => {
   if (
@@ -112,11 +112,13 @@ const Achivement = ({ name, place, tooltipText }) => {
 }
 
 const UserStatisticsContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const loggedUser = useRecoilValue(loggedUserAtom)
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
-  const eventsUser = useRecoilValue(eventsUsersByUserIdSelector(loggedUser._id))
+  const eventsUser = useRecoilValue(
+    asyncEventsUsersByUserIdAtom(loggedUser._id)
+  )
   const siteSettings = useRecoilValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
   const userEventsIds = eventsUser.map((eventUser) => eventUser.eventId)

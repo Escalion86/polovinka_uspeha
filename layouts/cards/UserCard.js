@@ -20,6 +20,8 @@ import UserName from '@components/UserName'
 import sumOfPaymentsWithoutEventIdByUserIdSelector from '@state/selectors/sumOfPaymentsWithoutEventIdByUserIdSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
+import { Suspense } from 'react'
+import Skeleton from 'react-loading-skeleton'
 
 const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
   const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
@@ -41,6 +43,34 @@ const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
   )
 }
 
+const SignedUpCountComponent = ({ userId }) => {
+  const eventsUsersSignedUpCount = useRecoilValue(
+    eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
+  )
+  return <span className="font-normal">{eventsUsersSignedUpCount.signUp}</span>
+}
+
+const FinishedComponent = ({ userId }) => {
+  const eventsUsersSignedUpCount = useRecoilValue(
+    eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
+  )
+  return (
+    <span className="font-normal">{eventsUsersSignedUpCount.finished}</span>
+  )
+}
+
+const SignedUpCount = (props) => (
+  <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
+    <SignedUpCountComponent {...props} />
+  </Suspense>
+)
+
+const FinishedCount = (props) => (
+  <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
+    <FinishedComponent {...props} />
+  </Suspense>
+)
+
 const UserCard = ({ userId, hidden = false, style }) => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -49,10 +79,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
   // const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-
-  const eventsUsersSignedUpCount = useRecoilValue(
-    eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
-  )
+  // console.log('eventsUsersSignedUpCount :>> ', eventsUsersSignedUpCount)
 
   // const widthNum = useWindowDimensionsTailwindNum()
   // const itemFunc = useRecoilValue(itemsFuncAtom)
@@ -172,13 +199,9 @@ const UserCard = ({ userId, hidden = false, style }) => {
                       </div>
                       <div className="flex text-sm leading-4 gap-x-2">
                         <span className="font-bold">Посетил:</span>
-                        <span className="font-normal">
-                          {eventsUsersSignedUpCount.finished}
-                        </span>
+                        <FinishedCount userId={userId} />
                         <span className="font-bold">Записан:</span>
-                        <span className="font-normal">
-                          {eventsUsersSignedUpCount.signUp}
-                        </span>
+                        <SignedUpCount userId={userId} />
                       </div>
                     </div>
                   </div>

@@ -39,6 +39,17 @@ const setEventsUsersSelector = selectorFamily({
           set(asyncEventsUsersByUserIdAtom(newEventUser.userId), newEventsUser)
         }
       }
+
+      // TODO
+      // Также обновляем все eventUsers если необходимо
+      // const eventsUsers = get(noWait(asyncEventsUsersAllAtom))
+      // if (eventsUsers.state === 'hasValue') {
+      //   const updatedEventsUser = eventsUsers.contents.map((eventUser) =>
+      //     eventUser._id === _id ? updateEventUser : eventUser
+      //   )
+
+      //   set(asyncEventsUsersAllAtom, updatedEventsUser)
+      // }
     },
 })
 
