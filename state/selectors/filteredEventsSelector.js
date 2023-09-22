@@ -1,5 +1,5 @@
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
-// import eventsAtom from '@state/atoms/eventsAtom'
+import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { selector } from 'recoil'
