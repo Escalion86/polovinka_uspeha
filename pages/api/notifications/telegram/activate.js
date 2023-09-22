@@ -11,14 +11,11 @@ export default async function handler(req, res) {
       // console.log(body)
       const { update_id, message } = body
       // console.log('telegram body', body)
-      if (
-        message.text === '/start' ||
-        message.text === '/activate' ||
-        message.text === '/deactivate'
-      ) {
+      if (['/start', '/activate', '/deactivate'].includes(message.text)) {
         // console.log('message.text', message.text)
         // const users = await Users.find({})
         // console.log('message.from.id', message.from.id)
+        const isActivation = ['/activate', '/start'].includes(message.text)
         const userFromReq = await Users.findOneAndUpdate(
           {
             'notifications.telegram.userName':
@@ -26,10 +23,10 @@ export default async function handler(req, res) {
           },
           {
             $set: {
-              'notifications.telegram.id':
-                message.text === '/activate' ? message.from.id : null,
-              'notifications.telegram.active':
-                message.text === '/activate' ? true : false,
+              'notifications.telegram.id': isActivation
+                ? message.from.id
+                : undefined,
+              'notifications.telegram.active': isActivation,
               // $set: {
               //   'telegram.$.id':
               //     message.text === '/activate' ? message.from.id : null,
@@ -65,10 +62,9 @@ export default async function handler(req, res) {
           await sendTelegramMessage({
             req,
             telegramIds: message.from.id,
-            text:
-              message.text === '/activate'
-                ? 'Активация уведомлений прошла успешно!'
-                : 'Уведомления отключены!',
+            text: isActivation
+              ? 'Активация уведомлений прошла успешно!'
+              : 'Уведомления отключены!',
           })
           // const data = await Users.findByIdAndUpdate(userFromReq[0]._id, {
           //   notifications: {
@@ -84,10 +80,9 @@ export default async function handler(req, res) {
         await sendTelegramMessage({
           req,
           telegramIds: message.from.id,
-          text:
-            message.text === '/activate'
-              ? 'ОШИБКА! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!'
-              : 'ОШИБКА! Уведомления не отключены. Пожалуйста свяжитесь с администратором! http://t.me/escalion',
+          text: isActivation
+            ? 'ОШИБКА! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!'
+            : 'ОШИБКА! Уведомления не отключены. Пожалуйста свяжитесь с администратором! http://t.me/escalion',
         })
         console.log('Пользователь с таким логином не найден')
         return res?.status(200).json({
