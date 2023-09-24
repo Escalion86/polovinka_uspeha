@@ -1,12 +1,9 @@
-import React from 'react'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
-import { useRecoilValue } from 'recoil'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
-// import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import { useRecoilValue } from 'recoil'
 
 const EventParticipantToggleButtons = ({ value, onChange, noClosed }) => {
-  // const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
   return (
     <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>

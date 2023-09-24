@@ -1,23 +1,17 @@
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-
-import { useMemo, useState } from 'react'
-
-import { getNounServicesUsers } from '@helpers/getNoun'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
-import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import ContentHeader from '@components/ContentHeader'
-import sortFunctions from '@helpers/sortFunctions'
+import UsersFilter from '@components/Filter/UsersFilter'
 import AddButton from '@components/IconToggleButtons/AddButton'
-
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
 import Search from '@components/Search'
-import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
-import ServicesUsersList from '@layouts/lists/ServicesUsersList'
-import usersAtom from '@state/atoms/usersAtom'
 import filterItems from '@helpers/filterItems'
-import UsersFilter from '@components/Filter/UsersFilter'
+import { getNounServicesUsers } from '@helpers/getNoun'
+import ServicesUsersList from '@layouts/lists/ServicesUsersList'
+import { modalsFuncAtom } from '@state/atoms'
+import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
+import usersAtom from '@state/atoms/usersAtom'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import { useMemo, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const ServicesUsersContent = () => {
   const servicesUsers = useRecoilValue(servicesUsersAtom)

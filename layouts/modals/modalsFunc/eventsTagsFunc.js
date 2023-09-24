@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
-
+import Button from '@components/Button'
+import ColorPicker from '@components/ColorPicker'
 import FormWrapper from '@components/FormWrapper'
+import Input from '@components/Input'
 import {
   faPaintBrush,
   faPlus,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import Button from '@components/Button'
-import Input from '@components/Input'
-import ColorPicker from '@components/ColorPicker'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import compareObjects from '@helpers/compareObjects'
-import { postData } from '@helpers/CRUD'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { postData } from '@helpers/CRUD'
+import compareObjects from '@helpers/compareObjects'
 import { PASTEL_COLORS } from '@helpers/constants'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import { useEffect, useState } from 'react'
+import { useRecoilState, useRecoilValue } from 'recoil'
 
 function randomIntFromInterval(min, max) {
   // min and max included

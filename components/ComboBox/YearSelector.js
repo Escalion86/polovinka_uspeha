@@ -1,5 +1,4 @@
 import ComboBox from '@components/ComboBox'
-import React from 'react'
 
 const YearSelector = ({ onChange, year }) => {
   return (

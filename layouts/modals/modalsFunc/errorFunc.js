@@ -1,4 +1,3 @@
-import React from 'react'
 import copyToClipboard from '@helpers/copyToClipboard'
 import useSnackbar from '@helpers/useSnackbar'
 

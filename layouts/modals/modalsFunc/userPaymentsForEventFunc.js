@@ -1,10 +1,8 @@
-import React from 'react'
-import { useRecoilValue } from 'recoil'
-
 import FormWrapper from '@components/FormWrapper'
 import UserName from '@components/UserName'
 import eventSelector from '@state/selectors/eventSelector'
 import userSelector from '@state/selectors/userSelector'
+import { useRecoilValue } from 'recoil'
 
 const userPaymentsForEventFunc = (userId, eventId) => {
   const UserPaymentsForEventModal = ({

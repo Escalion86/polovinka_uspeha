@@ -1,21 +1,17 @@
-import React, { Suspense } from 'react'
-import { useRecoilValue } from 'recoil'
-
+import Button from '@components/Button'
+import eventPriceByStatus from '@helpers/eventPriceByStatus'
+import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
-import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import eventSelector from '@state/selectors/eventSelector'
-import { useRouter } from 'next/router'
-
-import Button from '@components/Button'
-import cn from 'classnames'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import EventProfit from './EventProfit'
+import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
-import eventPriceByStatus from '@helpers/eventPriceByStatus'
-import LoadingSpinner from './LoadingSpinner'
+import cn from 'classnames'
+import { Suspense } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import { useRecoilValue } from 'recoil'
+import EventProfit from './EventProfit'
 
 const TextStatus = ({ children, className }) => (
   <div

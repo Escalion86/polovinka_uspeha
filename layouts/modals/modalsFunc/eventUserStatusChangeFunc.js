@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-
-import useErrors from '@helpers/useErrors'
 import ErrorsList from '@components/ErrorsList'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
+import useErrors from '@helpers/useErrors'
 import asyncEventsUsersByEventIdAtom from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const eventUserStatusChangeFunc = ({ eventId, userId }) => {
   const EventUserStatusChangeModal = ({

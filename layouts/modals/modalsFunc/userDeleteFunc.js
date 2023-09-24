@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-
 import FormWrapper from '@components/FormWrapper'
-import isUserHaveActionsSelector from '@state/selectors/isUserHaveActionsSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import isUserHaveActionsSelector from '@state/selectors/isUserHaveActionsSelector'
+import { useEffect } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const userDeleteFunc = (userId) => {
   const UserDeleteModal = ({

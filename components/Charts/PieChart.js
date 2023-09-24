@@ -1,8 +1,5 @@
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
+import { H3 } from '@components/tags'
 import { Pie } from '@nivo/pie'
-import usersAtom from '@state/atoms/usersAtom'
-import { H2, H3 } from '@components/tags'
 
 const CenteredMetric = ({ dataWithArc, centerX, centerY }) => {
   let total = 0

@@ -1,8 +1,5 @@
 import { getSession } from 'next-auth/react'
-
 import Head from 'next/head'
-
-// import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
 
 function CabinetPage() {
   return (

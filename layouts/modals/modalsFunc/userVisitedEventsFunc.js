@@ -1,10 +1,8 @@
-import React from 'react'
-import { useRecoilValue } from 'recoil'
-
 import FormWrapper from '@components/FormWrapper'
-import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
 import { SelectEventList } from '@components/SelectItemList'
 import UserNameById from '@components/UserNameById'
+import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
+import { useRecoilValue } from 'recoil'
 
 const userVisitedEventsFunc = (userId, clone = false) => {
   const UserVisitedEventsModal = ({

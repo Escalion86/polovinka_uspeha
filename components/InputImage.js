@@ -1,16 +1,14 @@
+import { faPencilAlt, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { deleteImages, sendImage } from '@helpers/cloudinary'
+import { modalsFuncAtom } from '@state/atoms'
+import cn from 'classnames'
+import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import Zoom from 'react-medium-image-zoom'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
-import { deleteImages, sendImage } from '@helpers/cloudinary'
-import cn from 'classnames'
-import LoadingSpinner from './LoadingSpinner'
-import { motion } from 'framer-motion'
-import Label from './Label'
-import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
 import InputWrapper from './InputWrapper'
+import LoadingSpinner from './LoadingSpinner'
 
 const InputImage = ({
   label = 'Картинка',

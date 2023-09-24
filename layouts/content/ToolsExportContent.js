@@ -1,59 +1,14 @@
-// import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
-// import ExcelJs from 'exceljs'
 import Button from '@components/Button'
+import birthDateToAge from '@helpers/birthDateToAge'
+import { GENDERS_WITH_NO_GENDER } from '@helpers/constants'
+import formatDate from '@helpers/formatDate'
+import getUserFullName from '@helpers/getUserFullName'
 import servicesAtom from '@state/atoms/servicesAtom'
 import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
-import getUserFullName from '@helpers/getUserFullName'
-import { GENDERS_WITH_NO_GENDER } from '@helpers/constants'
 import usersAtom from '@state/atoms/usersAtom'
-import formatDate from '@helpers/formatDate'
-import birthDateToAge from '@helpers/birthDateToAge'
-
-// const getBase64Image = async (imgUrl) => {
-//   return await new Promise(function (resolve, reject) {
-//     var img = new Image()
-//     img.src = imgUrl
-//     img.setAttribute('crossOrigin', 'anonymous')
-
-//     img.onload = function () {
-//       var canvas = document.createElement('canvas')
-//       canvas.width = img.width
-//       canvas.height = img.height
-//       var ctx = canvas.getContext('2d')
-//       ctx.drawImage(img, 0, 0)
-//       var dataURL = canvas.toDataURL('image/png')
-//       resolve(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''))
-//     }
-//     img.onerror = function () {
-//       reject('The image could not be loaded.')
-//     }
-//   }).then((data) => data)
-// }
-
-// const getBase64ImageFromUrl = async (imageUrl) => {
-//   var res = await fetch(imageUrl)
-//   var blob = await res.blob()
-
-//   return new Promise((resolve, reject) => {
-//     var reader = new FileReader()
-//     reader.addEventListener(
-//       'load',
-//       function () {
-//         resolve(reader.result)
-//       },
-//       false
-//     )
-
-//     reader.onerror = () => {
-//       return reject(this)
-//     }
-//     reader.readAsDataURL(blob)
-//   })
-// }
+import { useRecoilValue } from 'recoil'
 
 const ToolsExportContent = () => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
   const services = useRecoilValue(servicesAtom)
   const users = useRecoilValue(usersAtom)
   const serviceIS = services.find(
@@ -98,24 +53,6 @@ const ToolsExportContent = () => {
 
       const user = users.find((user) => user._id === serviceUser.userId)
       const answers = { ...serviceUser.answers }
-      // if (answers['96410c58-3b3b-400d-b209-4fbe1e1a465a']) {
-      //   const myBase64Image = await getBase64Image(
-      //     answers['96410c58-3b3b-400d-b209-4fbe1e1a465a'][0]
-      //   )
-      //   const imageId2 = workbook.addImage({
-      //     base64: myBase64Image,
-      //     // buffer: fs.readFileSync(
-      //     //   answers['96410c58-3b3b-400d-b209-4fbe1e1a465a'][0]
-      //     // ),
-      //     extension: 'jpeg',
-      //   })
-      //   sheet.addImage(imageId2, {
-      //     tl: { col: 0, row: index + 1 },
-      //     ext: { width: 500, height: 200 },
-      //     // filename: answers['96410c58-3b3b-400d-b209-4fbe1e1a465a'][0],
-      //     // extension: 'jpeg',
-      //   })
-      // }
       for (const key in answers) {
         const answer = answers[key]
         if (typeof answer === 'object' && answer !== null)

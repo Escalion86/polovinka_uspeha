@@ -1,15 +1,13 @@
-import { useRecoilValue } from 'recoil'
-import { modalsFuncAtom } from '@state/atoms'
-import serviceSelector from '@state/selectors/serviceSelector'
-import loadingAtom from '@state/atoms/loadingAtom'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import servicesAtom from '@state/atoms/servicesAtom'
-
+import Button from '@components/Button'
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
-import sanitize from '@helpers/sanitize'
 import PriceDiscount from '@components/PriceDiscount'
-import Button from '@components/Button'
+import { modalsFuncAtom } from '@state/atoms'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import loadingAtom from '@state/atoms/loadingAtom'
+import servicesAtom from '@state/atoms/servicesAtom'
+import serviceSelector from '@state/selectors/serviceSelector'
+import { useRecoilValue } from 'recoil'
 
 const ServiceCard = ({ serviceId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

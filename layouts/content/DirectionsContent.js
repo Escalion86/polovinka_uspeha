@@ -1,13 +1,12 @@
-import { useRecoilValue } from 'recoil'
-import { modalsFuncAtom } from '@state/atoms'
-import directionsAtom from '@state/atoms/directionsAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-
 import ContentHeader from '@components/ContentHeader'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import { getNounDirections } from '@helpers/getNoun'
 import DirectionCard from '@layouts/cards/DirectionCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
+import { modalsFuncAtom } from '@state/atoms'
+import directionsAtom from '@state/atoms/directionsAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import { useRecoilValue } from 'recoil'
 
 const DirectionsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

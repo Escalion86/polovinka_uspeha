@@ -1,17 +1,16 @@
 import ContentHeader from '@components/ContentHeader'
 import PaymentsFilter from '@components/Filter/PaymentsFilter'
 import AddButton from '@components/IconToggleButtons/AddButton'
+import SortingButtonMenu from '@components/SortingButtonMenu'
 import { getNounPayments } from '@helpers/getNoun'
-
+import paymentSectorFunc from '@helpers/paymentSector'
+import sortFunctions from '@helpers/sortFunctions'
+import PaymentsList from '@layouts/lists/PaymentsList'
 import { modalsFuncAtom } from '@state/atoms'
 import paymentsAtom from '@state/atoms/paymentsAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import sortFunctions from '@helpers/sortFunctions'
-import SortingButtonMenu from '@components/SortingButtonMenu'
-import PaymentsList from '@layouts/lists/PaymentsList'
-import paymentSectorFunc from '@helpers/paymentSector'
 
 const PaymentsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

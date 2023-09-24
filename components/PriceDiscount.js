@@ -1,6 +1,5 @@
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import cn from 'classnames'
-import React from 'react'
 import { useRecoilValue } from 'recoil'
 
 const PriceDiscount = ({

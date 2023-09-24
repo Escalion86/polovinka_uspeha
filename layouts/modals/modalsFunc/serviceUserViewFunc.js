@@ -1,21 +1,18 @@
-import React from 'react'
-import { useRecoilValue } from 'recoil'
-import userSelector from '@state/selectors/userSelector'
+import CardButton from '@components/CardButton'
+import ImageGallery from '@components/ImageGallery'
+import InputWrapper from '@components/InputWrapper'
+import PriceDiscount from '@components/PriceDiscount'
+import TextLine from '@components/TextLine'
+import UserName from '@components/UserName'
+import { faEye } from '@fortawesome/free-regular-svg-icons'
+import formatDateTime from '@helpers/formatDateTime'
+import isObject from '@helpers/isObject'
 import { modalsFuncAtom } from '@state/atoms'
 import serviceSelector from '@state/selectors/serviceSelector'
 import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
-
-import formatDateTime from '@helpers/formatDateTime'
-import UserName from '@components/UserName'
-import PriceDiscount from '@components/PriceDiscount'
-
-import TextLine from '@components/TextLine'
-import InputWrapper from '@components/InputWrapper'
-import CardButton from '@components/CardButton'
-import { faEye } from '@fortawesome/free-regular-svg-icons'
+import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import ImageGallery from '@components/ImageGallery'
-import isObject from '@helpers/isObject'
+import { useRecoilValue } from 'recoil'
 
 const serviceUserViewFunc = (serviceUserId) => {
   const ServiceUserViewModal = ({

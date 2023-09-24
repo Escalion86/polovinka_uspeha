@@ -1,9 +1,5 @@
-import React from 'react'
-import dynamic from 'next/dynamic'
 import cn from 'classnames'
 import InputWrapper from './InputWrapper'
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
-const Emoji = dynamic(() => import('quill-emoji'), { ssr: false })
 
 const modules = {
   toolbar: {
@@ -125,14 +121,7 @@ const EditableTextarea = ({
         // formats={formats}
         theme="snow"
         value={html}
-        onChange={
-          onChange
-          //   (value) => {
-          //   const sanitizedValue = sanitize(value)
-          //   if (uncontrolled) setTextHtml(sanitizedValue)
-          //   else onChange && onChange(sanitizedValue)
-          // }
-        }
+        onChange={onChange}
       />
     </InputWrapper>
   )

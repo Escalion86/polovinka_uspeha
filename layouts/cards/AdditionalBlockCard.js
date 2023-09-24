@@ -1,13 +1,12 @@
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
-import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
-import loadingAtom from '@state/atoms/loadingAtom'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
-
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
-import sanitize from '@helpers/sanitize'
+import { modalsFuncAtom } from '@state/atoms'
+import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import loadingAtom from '@state/atoms/loadingAtom'
+import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
+import DOMPurify from 'dompurify'
+import { useRecoilValue } from 'recoil'
 
 const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -124,9 +123,9 @@ const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
         </div>
         {/* <div>{direction.description}</div> */}
         <div
-          className="px-2 py-1 text-sm w-full max-w-full overflow-hidden textarea"
+          className="px-2 py-1 text-sm w-full max-w-full overflow-hidden textarea ql"
           dangerouslySetInnerHTML={{
-            __html: sanitize(additionalBlock.description),
+            __html: DOMPurify.sanitize(additionalBlock.description),
           }}
         />
       </div>

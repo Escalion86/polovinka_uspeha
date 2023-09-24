@@ -1,15 +1,12 @@
-import React from 'react'
-import { useRecoilValue } from 'recoil'
-
+import Button from '@components/Button'
+import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
-import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import eventSelector from '@state/selectors/eventSelector'
-import { useRouter } from 'next/router'
-
-import Button from '@components/Button'
+import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import cn from 'classnames'
+import { useRouter } from 'next/router'
+import { useRecoilValue } from 'recoil'
 
 const EventButtonSignIn = ({
   eventId,

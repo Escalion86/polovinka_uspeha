@@ -1,7 +1,5 @@
-import React from 'react'
-
-import ListWrapper from './ListWrapper'
 import ServiceUserCard from '@layouts/cards/ServiceUserCard'
+import ListWrapper from './ListWrapper'
 
 const ServicesUsersList = ({ servicesUsers, showUser = true }) => {
   return (

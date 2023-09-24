@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
 import Divider from '@mui/material/Divider'
-import IconToggleButton from './IconToggleButtons/IconToggleButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import { useState } from 'react'
+import IconToggleButton from './IconToggleButtons/IconToggleButton'
 
 const variants = {
   show: {

@@ -1,44 +1,7 @@
-import cn from 'classnames'
-// import { faCopy } from '@fortawesome/free-regular-svg-icons'
-import {
-  faAsterisk,
-  faBan,
-  // faClose,
-  // faPaste,
-} from '@fortawesome/free-solid-svg-icons'
+import { faAsterisk, faBan } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import Tooltip from '@components/Tooltip'
-// import Label from './Label'
-// import copyToClipboard from '@helpers/copyToClipboard'
-// import pasteFromClipboard from '@helpers/pasteFromClipboard'
-// import useSnackbar from '@helpers/useSnackbar'
+import cn from 'classnames'
 import { forwardRef } from 'react'
-
-// const SmallIconButton = ({ onClick, icon, tooltip, disabled }) => {
-//   return (
-//     <Tooltip title={tooltip}>
-//       <div className="relative" onClick={disabled ? null : onClick}>
-//         <div
-//           className={cn(
-//             'flex items-center justify-center p-1 border border-gray-400 rounded group',
-//             disabled
-//               ? 'text-gray-400 bg-gray-200 cursor-not-allowed'
-//               : 'text-general bg-gray-100 cursor-pointer'
-//           )}
-//         >
-//           <FontAwesomeIcon
-//             className={cn(
-//               'w-4 h-4 duration-200',
-//               disabled ? '' : 'group-hover:scale-125'
-//             )}
-//             icon={icon}
-//             size="1x"
-//           />
-//         </div>
-//       </div>
-//     </Tooltip>
-//   )
-// }
 
 const InputWrapper = forwardRef(
   (

@@ -1,6 +1,6 @@
 // import useWindowDimensions from '@helpers/useWindowDimensions'
 import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
 const Masonry = ({

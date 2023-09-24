@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react'
-
-import CheckBox from '@components/CheckBox'
-import Input from '@components/Input'
-import FormWrapper from '@components/FormWrapper'
-import ErrorsList from '@components/ErrorsList'
-import SocialPicker from '@components/ValuePicker/SocialPicker'
-import LinkTypePicker from '@components/ValuePicker/LinkTypePicker'
-import copyToClipboard from '@helpers/copyToClipboard'
 import Button from '@components/Button'
+import FormWrapper from '@components/FormWrapper'
+import Input from '@components/Input'
 import { SelectEvent, SelectService, SelectUser } from '@components/SelectItem'
-import useSnackbar from '@helpers/useSnackbar'
+import LinkTypePicker from '@components/ValuePicker/LinkTypePicker'
+import SocialPicker from '@components/ValuePicker/SocialPicker'
+import copyToClipboard from '@helpers/copyToClipboard'
 import transliterate from '@helpers/transliterate'
+import useSnackbar from '@helpers/useSnackbar'
+import { useState } from 'react'
 
 const copyLinkFunc = (props) => {
   const CopyLinkModal = ({

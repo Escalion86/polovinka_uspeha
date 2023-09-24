@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import useErrors from '@helpers/useErrors'
-import { useRecoilValue } from 'recoil'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-
-import Input from '@components/Input'
-import FormWrapper from '@components/FormWrapper'
 import ErrorsList from '@components/ErrorsList'
-import useSnackbar from '@helpers/useSnackbar'
+import FormWrapper from '@components/FormWrapper'
+import Input from '@components/Input'
 import { putData } from '@helpers/CRUD'
+import useErrors from '@helpers/useErrors'
+import useSnackbar from '@helpers/useSnackbar'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const notificationsTelegramFunc = (onStartActivate, onCancel) => {
   const NotificationsTelegramModal = ({

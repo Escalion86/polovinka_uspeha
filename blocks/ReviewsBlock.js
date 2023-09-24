@@ -1,6 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
 import Masonry from '@components/Masonry'
-import { H2, H3 } from '@components/tags'
 import textAge from '@helpers/textAge'
 import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
 import { useRecoilValue } from 'recoil'

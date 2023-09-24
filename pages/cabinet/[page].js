@@ -1,37 +1,29 @@
-import { getSession } from 'next-auth/react'
-
-import Head from 'next/head'
-
+import Fab from '@components/Fab'
+import LoadingSpinner from '@components/LoadingSpinner'
+import StateLoader from '@components/StateLoader'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+import { CONTENTS } from '@helpers/constants'
+import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
+import BurgerLayout from '@layouts/BurgerLayout'
+import CabinetHeader from '@layouts/CabinetHeader'
 import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
 import ContentWrapper from '@layouts/wrappers/ContentWrapper'
-import CabinetHeader from '@layouts/CabinetHeader'
-import { CONTENTS } from '@helpers/constants'
-
-import { Suspense, useEffect } from 'react'
-import { useRouter } from 'next/router'
-
-import BurgerLayout from '@layouts/BurgerLayout'
-import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import fetchProps from '@server/fetchProps'
-import StateLoader from '@components/StateLoader'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import { useRecoilValue } from 'recoil'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
-import LoadingSpinner from '@components/LoadingSpinner'
-import Fab from '@components/Fab'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import { getSession } from 'next-auth/react'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { Suspense, useEffect } from 'react'
+import { useRecoilValue } from 'recoil'
 
-const SuspenseChild = () => {
-  // console.log('!! Suspense :>> [page]')
-
-  return (
-    <div className="z-10 flex items-center justify-center w-full h-[calc(100vh-4rem)]">
-      <LoadingSpinner text="идет загрузка...." />
-    </div>
-  )
-}
+const SuspenseChild = () => (
+  <div className="z-10 flex items-center justify-center w-full h-[calc(100vh-4rem)]">
+    <LoadingSpinner text="идет загрузка...." />
+  </div>
+)
 
 function CabinetPage(props) {
   const router = useRouter()

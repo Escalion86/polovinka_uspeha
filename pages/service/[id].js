@@ -1,20 +1,18 @@
-import { getSession } from 'next-auth/react'
-
-import Head from 'next/head'
-
-import fetchProps from '@server/fetchProps'
-import Header from '@layouts/Header'
 import ContactsBlock from '@blocks/ContactsBlock'
-import { H2 } from '@components/tags'
-import StateLoader from '@components/StateLoader'
-import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
 import BlockContainer from '@components/BlockContainer'
 import PulseButton from '@components/PulseButton'
-import Link from 'next/link'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import StateLoader from '@components/StateLoader'
+import { H2 } from '@components/tags'
+import Header from '@layouts/Header'
 import serviceViewFunc from '@layouts/modals/modalsFunc/serviceViewFunc'
+import fetchProps from '@server/fetchProps'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
+import { getSession } from 'next-auth/react'
+import Head from 'next/head'
+import Link from 'next/link'
+import { useEffect } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const Service = ({ service }) => {
   const serviceView = serviceViewFunc(service._id)

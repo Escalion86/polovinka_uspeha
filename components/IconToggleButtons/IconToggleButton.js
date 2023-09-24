@@ -1,4 +1,3 @@
-import React from 'react'
 import FormControl from '@mui/material/FormControl'
 import ToggleButton from '@mui/material/ToggleButton'
 import cn from 'classnames'

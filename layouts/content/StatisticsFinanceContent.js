@@ -1,14 +1,14 @@
-import { useRecoilValue } from 'recoil'
 import LineChart from '@components/Charts/LineChart'
-import { MONTHS, MONTHS_FULL_1 } from '@helpers/constants'
-import upperCaseFirst from '@helpers/upperCaseFirst'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import YearSelector from '@components/ComboBox/YearSelector'
-import { useState } from 'react'
-import allClosedEventsSelector from '@state/selectors/allClosedEventsSelector'
-import arrayOfSumOfPaymentsForInternalByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForInternalByDateSelector'
-import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
+import { MONTHS, MONTHS_FULL_1 } from '@helpers/constants'
+import upperCaseFirst from '@helpers/upperCaseFirst'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
+import allClosedEventsSelector from '@state/selectors/allClosedEventsSelector'
+import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
+import arrayOfSumOfPaymentsForInternalByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForInternalByDateSelector'
+import { useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const StatisticsFinanceContent = () => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)

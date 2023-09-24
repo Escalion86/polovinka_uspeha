@@ -1,6 +1,7 @@
 import Button from '@components/Button'
-import EditableTextarea from '@components/EditableTextarea'
+import CheckBox from '@components/CheckBox'
 import Input from '@components/Input'
+import RadioBox from '@components/RadioBox'
 import { SelectEventList } from '@components/SelectItemList'
 import SocialPicker from '@components/ValuePicker/SocialPicker'
 import copyToClipboard from '@helpers/copyToClipboard'
@@ -11,12 +12,10 @@ import transliterate from '@helpers/transliterate'
 import useSnackbar from '@helpers/useSnackbar'
 import eventsAtom from '@state/atoms/eventsAtom'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
+import DOMPurify from 'dompurify'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { getRecoil } from 'recoil-nexus'
-import sanitize from 'sanitize-html'
-import CheckBox from '@components/CheckBox'
-import RadioBox from '@components/RadioBox'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
@@ -208,20 +207,20 @@ const ToolsTextEventsAnonsContent = () => {
     showLink,
   }
 
-  const cleanedUpText = sanitize(
+  const cleanedUpText = DOMPurify.sanitize(
     text
       .replaceAll('<p><br></p>', '<br>')
       .replaceAll('<blockquote>', '<br><blockquote>')
       .replaceAll('<li>', '<br>\u{2764} <li>')
       .replaceAll('<p>', '<br><p>'),
     {
-      allowedTags: ['br', 'i', 'b', 's'],
-      allowedAttributes: {},
+      ALLOWED_TAGS: ['br', 'i', 'b', 's'],
+      ALLOWED_ATTR: [],
     }
   )
 
   const copyToClipboardText = (type) => {
-    const preparedToCopyText = sanitize(
+    const preparedToCopyText = DOMPurify.sanitize(
       formatTextConverter(
         textForming({ ...textFormatingProps, noSlashedPrice: !type }),
         type
@@ -233,8 +232,8 @@ const ToolsTextEventsAnonsContent = () => {
         .replaceAll('<br>', '\n')
         .trim('\n'),
       {
-        allowedTags: [],
-        allowedAttributes: {},
+        ALLOWED_TAGS: [],
+        ALLOWED_ATTR: [],
       }
     )
     copyToClipboard(preparedToCopyText)

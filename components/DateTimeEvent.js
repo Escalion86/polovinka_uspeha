@@ -2,7 +2,6 @@ import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import formatMinutes from '@helpers/formatMinutes'
 import getEventDuration from '@helpers/getEventDuration'
 import cn from 'classnames'
-import React from 'react'
 
 const DateTimeEvent = ({
   event,

@@ -1,15 +1,9 @@
-import { useRecoilValue } from 'recoil'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-
-// import { useState } from 'react'
-
-import { getNounServicesUsers } from '@helpers/getNoun'
 import ContentHeader from '@components/ContentHeader'
-
-// import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
-// import Search from '@components/Search'
+import { getNounServicesUsers } from '@helpers/getNoun'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import servicesUsersByUserIdSelector from '@state/selectors/servicesUsersByUserIdSelector'
+import { useRecoilValue } from 'recoil'
 
 const ServicesLoggedUserContent = () => {
   const loggedUser = useRecoilValue(loggedUserAtom)

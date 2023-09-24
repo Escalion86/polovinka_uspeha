@@ -207,7 +207,6 @@ blockquote {
   min-width: 24px;
   text-align: right;
 } */
-
 .ql ul>li::before {
   content: '\2022';
 }
@@ -218,7 +217,6 @@ blockquote {
   color: #aaa;
 }
 
-.textarea a,
 .ql-snow a {
   text-decoration: underline;
   color: #7a5151 !important;

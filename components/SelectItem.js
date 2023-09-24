@@ -1,35 +1,30 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faMoneyBill,
-  faPencil,
   faPencilAlt,
   faPlus,
   // faSearch,
   faTimes,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
-// import { useEffect, useRef, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import filterWithRules from '@helpers/filterWithRules'
+import { modalsFuncAtom } from '@state/atoms'
+import directionsAtom from '@state/atoms/directionsAtom'
+import eventsAtom from '@state/atoms/eventsAtom'
+import paymentsAtom from '@state/atoms/paymentsAtom'
+import servicesAtom from '@state/atoms/servicesAtom'
+import usersAtom from '@state/atoms/usersAtom'
+import cn from 'classnames'
+import { useRecoilValue } from 'recoil'
+import InputWrapper from './InputWrapper'
 import {
-  UserItem,
-  EventItem,
   DirectionItem,
+  EventItem,
   PaymentItem,
   ServiceItem,
+  UserItem,
 } from './ItemCards'
-
-import cn from 'classnames'
-import usersAtom from '@state/atoms/usersAtom'
-import { useRecoilValue } from 'recoil'
-import eventsAtom from '@state/atoms/eventsAtom'
-import directionsAtom from '@state/atoms/directionsAtom'
-import { modalsFuncAtom } from '@state/atoms'
-import InputWrapper from './InputWrapper'
-// import filterItems from '@helpers/filterItems'
-import filterWithRules from '@helpers/filterWithRules'
 import Tooltip from './Tooltip'
-import paymentsAtom from '@state/atoms/paymentsAtom'
-import CardButtons from './CardButtons'
-import servicesAtom from '@state/atoms/servicesAtom'
 
 export const SelectItem = ({
   items,

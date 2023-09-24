@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import usersAtom from '@state/atoms/usersAtom'
-
 import { UserItem } from '@components/ItemCards'
-import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
-import ListWrapper from '@layouts/lists/ListWrapper'
+import filterItems from '@helpers/filterItems'
 import isObject from '@helpers/isObject'
+import ListWrapper from '@layouts/lists/ListWrapper'
+import usersAtom from '@state/atoms/usersAtom'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const selectUsersFunc = (
   state,

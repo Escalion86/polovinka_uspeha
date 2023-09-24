@@ -1,7 +1,5 @@
 import { getSession } from 'next-auth/react'
-
 import Head from 'next/head'
-
 import usersAtom from '@state/atoms/usersAtom'
 import fetchProps from '@server/fetchProps'
 import Header from '@layouts/Header'
@@ -12,11 +10,6 @@ import StateLoader from '@components/StateLoader'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import BlockContainer from '@components/BlockContainer'
-import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
-import PulseButton from '@components/PulseButton'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 

@@ -1,43 +1,26 @@
-// import 'tailwindcss/tailwind.css'
-import '../styles/fonts/FuturaPT.css'
-import '../styles/fonts/AdleryPro.css'
-import '../styles/fonts/Frankinity.css'
-import '../styles/fonts/Enchants.css'
-import '../styles/global.css'
-import '../styles/burger.css'
-import 'react-medium-image-zoom/dist/styles.css'
-import 'react-image-gallery/styles/css/image-gallery.css'
-import 'react-quill/dist/quill.snow.css'
-import 'quill-emoji/dist/quill-emoji.css'
-import 'react-loading-skeleton/dist/skeleton.css'
-
-import Head from 'next/head'
+import LoadingSpinner from '@components/LoadingSpinner'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { renderTimeViewClock } from '@mui/x-date-pickers'
 import { SessionProvider } from 'next-auth/react'
-// import Script from 'next/script'
-import {
-  RecoilRoot,
-  RecoilEnv,
-  // atom,
-  // selector,
-  // useRecoilState,
-  // useRecoilValue,
-} from 'recoil'
-import RecoilNexus from 'recoil-nexus'
-
-import { ThemeProvider } from '@mui/material/styles'
-
-// import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import 'react-loading-skeleton/dist/skeleton.css'
-
-import 'react-image-crop/dist/ReactCrop.css'
-
-import { createTheme } from '@mui/material/styles'
+import Head from 'next/head'
 import Script from 'next/script'
 import { SnackbarProvider } from 'notistack'
+import 'quill-emoji/dist/quill-emoji.css'
 import { Suspense, useEffect } from 'react'
-import LoadingSpinner from '@components/LoadingSpinner'
-import { renderTimeViewClock } from '@mui/x-date-pickers'
+import 'react-image-crop/dist/ReactCrop.css'
+import 'react-image-gallery/styles/css/image-gallery.css'
+import 'react-loading-skeleton/dist/skeleton.css'
+import 'react-medium-image-zoom/dist/styles.css'
+import 'react-quill/dist/quill.snow.css'
+import 'react-toastify/dist/ReactToastify.css'
+import { RecoilEnv, RecoilRoot } from 'recoil'
+import RecoilNexus from 'recoil-nexus'
+import '../styles/burger.css'
+import '../styles/fonts/AdleryPro.css'
+import '../styles/fonts/Enchants.css'
+import '../styles/fonts/Frankinity.css'
+import '../styles/fonts/FuturaPT.css'
+import '../styles/global.css'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 

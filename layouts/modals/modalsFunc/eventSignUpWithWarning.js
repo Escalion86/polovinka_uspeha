@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-
 import CheckBox from '@components/CheckBox'
 import FormWrapper from '@components/FormWrapper'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import eventSelector from '@state/selectors/eventSelector'
 import formatDateTime from '@helpers/formatDateTime'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
   const EventSignUpWithWarningModal = ({

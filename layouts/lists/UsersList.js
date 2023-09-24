@@ -1,9 +1,7 @@
-import React from 'react'
-
 import UserCard from '@layouts/cards/UserCard'
-import ListWrapper from './ListWrapper'
-import { useRecoilValue } from 'recoil'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
+import { useRecoilValue } from 'recoil'
+import ListWrapper from './ListWrapper'
 
 const UsersList = ({ users }) => {
   const widthNum = useRecoilValue(windowDimensionsNumSelector)

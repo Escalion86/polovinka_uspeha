@@ -1,13 +1,12 @@
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
-import { getNounReviews } from '@helpers/getNoun'
-// import Fab from '@components/Fab'
-import reviewsAtom from '@state/atoms/reviewsAtom'
-import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import AddButton from '@components/IconToggleButtons/AddButton'
 import ContentHeader from '@components/ContentHeader'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import AddButton from '@components/IconToggleButtons/AddButton'
+import { getNounReviews } from '@helpers/getNoun'
 import ReviewCard from '@layouts/cards/ReviewCard'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
+import { modalsFuncAtom } from '@state/atoms'
+import reviewsAtom from '@state/atoms/reviewsAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import { useRecoilValue } from 'recoil'
 
 const ReviewsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

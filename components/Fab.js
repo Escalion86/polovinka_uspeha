@@ -1,8 +1,6 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-// import { useEffect, useRef, useState } from 'react'
-// import { useLongPress } from 'use-long-press'
 
 const Fab = ({
   onClick = () => {},

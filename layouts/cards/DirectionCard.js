@@ -1,14 +1,12 @@
+import CardButtons from '@components/CardButtons'
+import { CardWrapper } from '@components/CardWrapper'
+import TextInRing from '@components/TextInRing'
 import { modalsFuncAtom } from '@state/atoms'
+import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import { useRecoilValue } from 'recoil'
-
-import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
-import TextInRing from '@components/TextInRing'
-// import sanitize from '@helpers/sanitize'
-import directionsAtom from '@state/atoms/directionsAtom'
 
 const DirectionCard = ({ directionId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -123,10 +121,6 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
         <div className="px-2 py-1 text-sm whitespace-pre-wrap">
           {direction.shortDescription}
         </div>
-        {/* <div
-          className="px-2 py-1 text-sm textarea"
-          dangerouslySetInnerHTML={{ __html: sanitize(direction.description) }}
-        /> */}
       </div>
     </CardWrapper>
   )

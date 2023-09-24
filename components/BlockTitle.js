@@ -1,7 +1,6 @@
-import React from 'react'
+import cn from 'classnames'
 import Image from 'next/image'
 import { H2 } from './tags'
-import cn from 'classnames'
 
 const BlockTitle = ({ title, className }) => {
   if (!title) return null

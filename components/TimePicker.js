@@ -1,14 +1,13 @@
-import cn from 'classnames'
-import InputWrapper from './InputWrapper'
-import 'dayjs/locale/ru'
-import dayjs from 'dayjs'
-import ru from 'dayjs/locale/ru'
-dayjs.locale(ru)
-
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { ruRU } from '@mui/x-date-pickers/locales'
+import cn from 'classnames'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
+import ru from 'dayjs/locale/ru'
+import InputWrapper from './InputWrapper'
+dayjs.locale(ru)
 
 const TimePicker = ({
   label = '',

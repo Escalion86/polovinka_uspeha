@@ -1,9 +1,9 @@
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-import cn from 'classnames'
 import { useDebounceEffect } from '@helpers/useDebounceEffect'
+import cn from 'classnames'
+import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 
 const Search = ({
   searchText,

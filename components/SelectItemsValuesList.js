@@ -1,7 +1,7 @@
+import { faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
-import { SelectItem } from './SelectItem'
 import cn from 'classnames'
+import { SelectItem } from './SelectItem'
 
 const ItemRow = ({
   items,

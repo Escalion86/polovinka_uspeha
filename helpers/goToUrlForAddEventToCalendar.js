@@ -1,6 +1,6 @@
-import sanitize from 'sanitize-html'
 import formatAddress from './formatAddress'
 import formatDateTime from './formatDateTime'
+import DOMPurify from 'dompurify'
 
 // function formatDate(date) {
 //   const year = new Date(date).toLocaleString('default', { year: 'numeric' })
@@ -20,7 +20,7 @@ const goToUrlForAddEventToCalendar = (event) => {
         JSON.parse(JSON.stringify(event.address))
       )}`
     : ''
-  const details = `${sanitize(
+  const details = `${DOMPurify.sanitize(
     event.description
       .replaceAll('<p><br></p>', '\n')
       .replaceAll('<blockquote>', '\n<blockquote>')
@@ -29,8 +29,8 @@ const goToUrlForAddEventToCalendar = (event) => {
       .replaceAll('<br>', '\n')
       .trim('\n'),
     {
-      allowedTags: [],
-      allowedAttributes: {},
+      ALLOWED_TAGS: [],
+      ALLOWED_ATTR: [],
     }
   )}${address}`
 

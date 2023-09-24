@@ -1,5 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
-import { H2, H3, H4, P } from '@components/tags'
+import { H2, H4, P } from '@components/tags'
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
 import cn from 'classnames'

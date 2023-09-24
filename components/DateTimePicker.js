@@ -1,19 +1,15 @@
-import cn from 'classnames'
-import InputWrapper from './InputWrapper'
-import 'dayjs/locale/ru'
-import dayjs from 'dayjs'
-import ru from 'dayjs/locale/ru'
+import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
-dayjs.locale(ru)
-
+import { DateTimePicker as MUIDateTimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import {
-  DateTimePicker as MUIDateTimePicker,
-  // MobileDateTimePicker,
-} from '@mui/x-date-pickers'
 import { ruRU } from '@mui/x-date-pickers/locales'
-import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
+import cn from 'classnames'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
+import ru from 'dayjs/locale/ru'
+import InputWrapper from './InputWrapper'
+dayjs.locale(ru)
 
 const DateTimePicker = ({
   label = '',

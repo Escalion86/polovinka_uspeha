@@ -1,4 +1,4 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document'
+import Document, { Head, Html, Main, NextScript } from 'next/document'
 
 const { NODE_ENV } = process.env
 const isProdMode = NODE_ENV === 'production'

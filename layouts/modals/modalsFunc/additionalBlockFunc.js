@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import useErrors from '@helpers/useErrors'
-import { useRecoilValue } from 'recoil'
-import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-
 import CheckBox from '@components/CheckBox'
-import Input from '@components/Input'
 import EditableTextarea from '@components/EditableTextarea'
-import FormWrapper from '@components/FormWrapper'
-import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
+import FormWrapper from '@components/FormWrapper'
+import Input from '@components/Input'
+import InputImage from '@components/InputImage'
 import { DEFAULT_ADDITIONAL_BLOCK } from '@helpers/constants'
+import useErrors from '@helpers/useErrors'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const additionalBlockFunc = (additionalBlockId, clone = false) => {
   const AdditionalBlockModal = ({

@@ -1,5 +1,5 @@
-import { ResponsiveStream } from '@nivo/stream'
 import { H3 } from '@components/tags'
+import { ResponsiveStream } from '@nivo/stream'
 
 const GridX = ({ slices, linesOnX }) => {
   return linesOnX.map((line) => (

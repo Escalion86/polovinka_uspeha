@@ -1,18 +1,14 @@
 import formatDate from '@helpers/formatDate'
-import cn from 'classnames'
-import InputWrapper from './InputWrapper'
-import 'dayjs/locale/ru'
-import dayjs from 'dayjs'
-import ru from 'dayjs/locale/ru'
-dayjs.locale(ru)
-import { ruRU } from '@mui/x-date-pickers/locales'
-
+import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import {
-  DatePicker as MUIDatePicker,
-  // MobileDatePicker,
-} from '@mui/x-date-pickers'
+import { ruRU } from '@mui/x-date-pickers/locales'
+import cn from 'classnames'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
+import ru from 'dayjs/locale/ru'
+import InputWrapper from './InputWrapper'
+dayjs.locale(ru)
 
 const DatePicker = ({
   label = '',

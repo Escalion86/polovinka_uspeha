@@ -1,18 +1,14 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faPencilAlt,
-  faTimes,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
-import { Suspense, useState } from 'react'
-import { motion } from 'framer-motion'
-import { modalsAtom, modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
-import ModalButtons from '@layouts/modals/ModalButtons'
-import { useRouter } from 'next/router'
-import cn from 'classnames'
 import Tooltip from '@components/Tooltip'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ModalButtons from '@layouts/modals/ModalButtons'
+import { modalsAtom, modalsFuncAtom } from '@state/atoms'
+import cn from 'classnames'
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/router'
+import { Suspense, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 const Modal = ({
   Children,

@@ -1,4 +1,3 @@
-import React from 'react'
 import RotateLeft from '@mui/icons-material/RotateLeft'
 import RotateRight from '@mui/icons-material/RotateRight'
 import IconToggleButton from './IconToggleButton'

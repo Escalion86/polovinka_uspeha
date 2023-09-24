@@ -2,7 +2,6 @@ import { faCheck, faGenderless } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import {
-  EVENT_STATUSES,
   EVENT_STATUSES_WITH_TIME,
   GENDERS,
   PAY_TYPES,
@@ -10,13 +9,13 @@ import {
 import eventStatusFunc from '@helpers/eventStatus'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
-import sanitize from '@helpers/sanitize'
+import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import Image from 'next/image'
+import DOMPurify from 'dompurify'
 import { useRecoilValue } from 'recoil'
 import DateTimeEvent from './DateTimeEvent'
 import EventNameById from './EventNameById'
@@ -24,7 +23,6 @@ import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
 import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
-import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 
 const ItemContainer = ({
   onClick,
@@ -231,7 +229,10 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
       </div>
       <div className="flex items-center justify-between flex-1 px-1 leading-4">
         <div className="flex flex-col h-full justify-evenly">
-          <TextLinesLimiter className="font-bold text-general -mb-[1px]" lines={1}>
+          <TextLinesLimiter
+            className="font-bold text-general -mb-[1px]"
+            lines={1}
+          >
             {direction?.title ?? '[Напривление неизвестно]'}
           </TextLinesLimiter>
           <TextLinesLimiter className="font-bold text-gray-800" lines={1}>
@@ -295,9 +296,9 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
       </div> */}
         <TextLinesLimiter
           dangerouslySetInnerHTML={{
-            __html: sanitize(item.description),
+            __html: DOMPurify.sanitize(item.description),
           }}
-          className="w-full overflow-hidden textarea flex-1 max-w-full leading-[0.85rem]"
+          className="w-full overflow-hidden textarea ql flex-1 max-w-full leading-[0.85rem]"
           lines={2}
         />
       </div>
@@ -335,9 +336,6 @@ export const ServiceItem = ({ item, onClick = null, active = false }) => (
         {formatDateTime(item.date, false)}
       </div> */}
         <TextLinesLimiter
-          // dangerouslySetInnerHTML={{
-          //   __html: sanitize(item.description),
-          // }}
           className="w-full overflow-hidden textarea flex-1 max-w-full leading-[0.85rem]"
           lines={2}
         >

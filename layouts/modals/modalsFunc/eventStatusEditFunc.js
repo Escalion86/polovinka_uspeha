@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import eventSelector from '@state/selectors/eventSelector'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-
 import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
-import isEventExpiredFunc from '@helpers/isEventExpired'
-import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
-import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 import { DEFAULT_EVENT } from '@helpers/constants'
+import isEventExpiredFunc from '@helpers/isEventExpired'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import eventSelector from '@state/selectors/eventSelector'
+import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
+import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const eventStatusEditFunc = (eventId) => {
   const EventStatusEditModal = ({

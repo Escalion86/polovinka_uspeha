@@ -1,4 +1,3 @@
-import React from 'react'
 import FilterAlt from '@mui/icons-material/FilterAlt'
 import IconToggleButton from './IconToggleButton'
 

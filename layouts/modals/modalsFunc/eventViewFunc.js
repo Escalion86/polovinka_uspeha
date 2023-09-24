@@ -1,33 +1,31 @@
-import React, { Suspense, useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-import eventSelector from '@state/selectors/eventSelector'
-
+import CardButtons from '@components/CardButtons'
+import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
+import ContactsIconsButtons from '@components/ContactsIconsButtons'
+import Divider from '@components/Divider'
+import EventButtonSignIn from '@components/EventButtonSignIn'
+import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
+import ImageGallery from '@components/ImageGallery'
+import PriceDiscount from '@components/PriceDiscount'
+import TextLine from '@components/TextLine'
+import UserName from '@components/UserName'
+import ValueItem from '@components/ValuePicker/ValueItem'
+import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import formatAddress from '@helpers/formatAddress'
 import formatDateTime from '@helpers/formatDateTime'
-import UserName from '@components/UserName'
-import directionSelector from '@state/selectors/directionSelector'
-import ContactsIconsButtons from '@components/ContactsIconsButtons'
-import userSelector from '@state/selectors/userSelector'
-import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
-import PriceDiscount from '@components/PriceDiscount'
-import Divider from '@components/Divider'
-import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
-
 import formatMinutes from '@helpers/formatMinutes'
-import EventButtonSignIn from '@components/EventButtonSignIn'
-import sanitize from '@helpers/sanitize'
-import { faUsers } from '@fortawesome/free-solid-svg-icons'
-import { modalsFuncAtom } from '@state/atoms'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
-import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import ImageGallery from '@components/ImageGallery'
-import CardButtons from '@components/CardButtons'
-import ValueItem from '@components/ValuePicker/ValueItem'
-import TextLine from '@components/TextLine'
 import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
-import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
+import { modalsFuncAtom } from '@state/atoms'
+import directionSelector from '@state/selectors/directionSelector'
+import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
+import eventSelector from '@state/selectors/eventSelector'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import userSelector from '@state/selectors/userSelector'
+import DOMPurify from 'dompurify'
+import { Suspense, useEffect } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const NamesOfUsersAssistantsOfEventComponent = ({ eventId }) => {
   const users = useRecoilValue(eventAssistantsSelector(eventId))
@@ -129,17 +127,11 @@ const eventViewFunc = (eventId) => {
 
             {/* <p className="flex-1">{event.description}</p> */}
             <div
-              className="w-full max-w-full overflow-hidden list-disc textarea"
-              dangerouslySetInnerHTML={{ __html: sanitize(event?.description) }}
+              className="w-full max-w-full overflow-hidden list-disc textarea ql"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(event?.description),
+              }}
             />
-            {/* <ContentEditable
-              // innerRef={inputRef}
-              className={
-                'w-full max-w-full overflow-hidden textarea px-1 outline-none list-disc my-1'
-              }
-              html={sanitize(event?.description)}
-              // disabled
-            /> */}
             <Divider thin light />
             {isLoggedUserDev && <TextLine label="ID">{event?._id}</TextLine>}
             {direction?.title && (

@@ -1,45 +1,24 @@
-// import dbConnect from '@utils/dbConnect'
-// import DeviceCheck from '@components/DeviceCheck'
-// import { H1, H2, H3, H4, P } from '@components/tags'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import {
-//   fetchingAdditionalBlocks,
-//   fetchingDirections,
-//   fetchingEvents,
-//   fetchingEventsUsers,
-//   fetchingPayments,
-//   fetchingReviews,
-//   fetchingSiteSettings,
-//   fetchingUsers,
-// } from '@helpers/fetchers'
+import AboutBlock from '@blocks/AboutBlock'
+import AdditionalBlocks from '@blocks/AdditionalBlocks'
+import ContactsBlock from '@blocks/ContactsBlock'
+import DirectionsBlock from '@blocks/DirectionsBlock'
+import EventsBlock from '@blocks/EventsBlock'
+import ReviewsBlock from '@blocks/ReviewsBlock'
+import ServicesBlock from '@blocks/ServicesBlock'
+import TitleBlock from '@blocks/TitleBlock'
+import Fab from '@components/Fab'
+import StateLoader from '@components/StateLoader'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import Header from '@layouts/Header'
+import fetchProps from '@server/fetchProps'
+import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
-import DirectionsBlock from '@blocks/DirectionsBlock'
-import ContactsBlock from '@blocks/ContactsBlock'
-import ReviewsBlock from '@blocks/ReviewsBlock'
-import AdditionalBlocks from '@blocks/AdditionalBlocks'
-import EventsBlock from '@blocks/EventsBlock'
-import AboutBlock from '@blocks/AboutBlock'
-import TitleBlock from '@blocks/TitleBlock'
-import fetchProps from '@server/fetchProps'
-import StateLoader from '@components/StateLoader'
-import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
-import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import { useRecoilValue } from 'recoil'
-import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
-import Fab from '@components/Fab'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
-import ServicesBlock from '@blocks/ServicesBlock'
 
 export default function Home(props) {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const filteredEvents = useRecoilValue(filteredEventsSelector)
-  const filteredDirections = useRecoilValue(filteredDirectionsSelector)
-  // const directionsBlocksInverse = filteredEvents.length > 0
-  // const additionalBlocksInverse =
-  //   ((directionsBlocksInverse ? 1 : 0) + filteredDirections.length) % 2 === 0
 
   return (
     <>

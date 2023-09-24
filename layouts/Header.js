@@ -1,5 +1,4 @@
 import Burger from '@components/Burger'
-import Divider from '@components/Divider'
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import transliterate from '@helpers/transliterate'
