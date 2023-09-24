@@ -1,48 +1,41 @@
-import { useRecoilValue } from 'recoil'
-import { modalsFuncAtom } from '@state/atoms'
-import loadingAtom from '@state/atoms/loadingAtom'
-import paymentSelector from '@state/selectors/paymentSelector'
-
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import EventNameById from '@components/EventNameById'
+import ProductNameById from '@components/ProductNameById'
+import ServiceNameById from '@components/ServiceNameById'
+import TextLinesLimiter from '@components/TextLinesLimiter'
+import Tooltip from '@components/Tooltip'
 import UserNameById from '@components/UserNameById'
+import EventPayDirectionIconText from '@components/ValueIconText/EventPayDirectionIconText'
+import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayDirectionIconText'
+import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
+import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
 import {
-  // faCalendarTimes,
   faQuestion,
   faTimesCircle,
   faUserTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  // EVENT_STATUSES_WITH_TIME,
   PAY_TYPES,
   PAY_TYPES_OBJECT,
-  // PRODUCT_PAY_INTERNAL,
   PRODUCT_USER_STATUSES,
   SECTORS,
   SERVICE_USER_STATUSES,
 } from '@helpers/constants'
-import formatDateTime from '@helpers/formatDateTime'
-import cn from 'classnames'
-// import isEventClosedFunc from '@helpers/isEventClosed'
 import eventStatusFunc from '@helpers/eventStatus'
-import serviceStatusFunc from '@helpers/serviceStatus'
-import eventSelector from '@state/selectors/eventSelector'
-import Tooltip from '@components/Tooltip'
+import formatDateTime from '@helpers/formatDateTime'
 import paymentSectorFunc from '@helpers/paymentSector'
-import serviceSelector from '@state/selectors/serviceSelector'
-// import productSelector from '@state/selectors/productSelector'
-import ServiceNameById from '@components/ServiceNameById'
-import ProductNameById from '@components/ProductNameById'
-import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayDirectionIconText'
-import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
-import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
-import EventPayDirectionIconText from '@components/ValueIconText/EventPayDirectionIconText'
-import TextLinesLimiter from '@components/TextLinesLimiter'
+import serviceStatusFunc from '@helpers/serviceStatus'
 import asyncEventsUsersByEventIdAtom from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
-import Skeleton from 'react-loading-skeleton'
+import { modalsFuncAtom } from '@state/atoms'
+import loadingAtom from '@state/atoms/loadingAtom'
+import eventSelector from '@state/selectors/eventSelector'
+import paymentSelector from '@state/selectors/paymentSelector'
+import serviceSelector from '@state/selectors/serviceSelector'
+import cn from 'classnames'
 import { Suspense } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const Icon = ({ className, icon, tooltip }) => (
   <Tooltip title={tooltip}>

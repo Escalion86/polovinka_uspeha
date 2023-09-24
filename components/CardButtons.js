@@ -1,15 +1,11 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
 import {
+  faCalendarPlus,
   faCopy,
   faEye,
-  faIdCard,
   faEyeSlash,
+  faIdCard,
   faTrashAlt,
-  faCalendarPlus,
 } from '@fortawesome/free-regular-svg-icons'
-import cn from 'classnames'
 import {
   faArrowDown,
   faArrowUp,
@@ -21,22 +17,23 @@ import {
   faSignIn,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
-
-import CardButton from './CardButton'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
-
-// import { useDetectClickOutside } from 'react-detect-click-outside'
-import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { EVENT_STATUSES, SERVICE_USER_STATUSES } from '@helpers/constants'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
-import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
-import DropDown from './DropDown'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
+import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
+import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
+import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
+import { modalsFuncAtom } from '@state/atoms'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
+import cn from 'classnames'
+import { useRecoilValue } from 'recoil'
+import CardButton from './CardButton'
+import DropDown from './DropDown'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div

@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion'
 import { TabPanel as MuiTabPanel } from '@mui/lab'
 import cn from 'classnames'
+import { motion } from 'framer-motion'
 
 const TabPanel = ({ tabName, className, children }) => (
   <MuiTabPanel value={tabName} className="p-0 overflow-y-auto">

@@ -1,10 +1,9 @@
 import BlockContainer from '@components/BlockContainer'
-import { useRecoilValue } from 'recoil'
-import Masonry from '@components/Masonry'
 import Button from '@components/Button'
-import eventsAtom from '@state/atoms/eventsAtom'
+import Masonry from '@components/Masonry'
 import { modalsFuncAtom } from '@state/atoms'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
+import { useRecoilValue } from 'recoil'
 
 const ServiceItem = ({ serviceId, title, shortDescription, images }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

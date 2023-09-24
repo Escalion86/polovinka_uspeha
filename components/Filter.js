@@ -1,17 +1,6 @@
-import { useEffect, useState } from 'react'
-// import {
-//   Checkbox,
-//   FormControl,
-//   InputLabel,
-//   ListItemText,
-//   MenuItem,
-//   OutlinedInput,
-//   Select,
-// } from '@mui/material'
-
 import FilterAltOff from '@mui/icons-material/FilterAltOff'
-
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import ChipsSelector from './Chips/ChipsSelector'
 import DirectionSelector from './ComboBox/DirectionSelector'
 

@@ -1,10 +1,7 @@
-import SvgWave from 'svg/SvgWave'
+// import SvgWave from 'svg/SvgWave'
 import SvgLove from 'svg/SvgLove'
-
-import LoadingSpinner from '@components/LoadingSpinner'
-
-import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from 'tailwind.config.js'
+import resolveConfig from 'tailwindcss/resolveConfig'
 
 const Page502 = (props) => {
   const fullConfig = resolveConfig(tailwindConfig)

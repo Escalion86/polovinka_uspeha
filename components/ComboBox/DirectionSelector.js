@@ -1,6 +1,5 @@
 import ComboBox from '@components/ComboBox'
 import directionsAtom from '@state/atoms/directionsAtom'
-import React from 'react'
 import { useRecoilValue } from 'recoil'
 
 const DirectionSelector = ({

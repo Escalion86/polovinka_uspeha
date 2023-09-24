@@ -1,33 +1,31 @@
-import React, { useEffect, useState } from 'react'
-import useErrors from '@helpers/useErrors'
-
-import Input from '@components/Input'
-import FormWrapper from '@components/FormWrapper'
+import Button from '@components/Button'
+import IconButtonMenu from '@components/ButtonMenu'
+import CheckBox from '@components/CheckBox'
+import Divider from '@components/Divider'
 import ErrorsList from '@components/ErrorsList'
-import {
-  DEFAULT_QUESTIONNAIRE_ITEM,
-  DEFAULT_QUESTIONNAIRE,
-} from '@helpers/constants'
+import FormWrapper from '@components/FormWrapper'
+import Input from '@components/Input'
+import InputWrapper from '@components/InputWrapper'
 import {
   faArrowDown,
   faArrowUp,
   faAsterisk,
   faEye,
   faEyeSlash,
-  faMinus,
   faPlus,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import IconButtonMenu from '@components/ButtonMenu'
-import Divider from '@components/Divider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { v4 as uuid } from 'uuid'
-import cn from 'classnames'
 import arrayMove from '@helpers/arrayMove'
-import InputWrapper from '@components/InputWrapper'
-import Button from '@components/Button'
-import CheckBox from '@components/CheckBox'
+import {
+  DEFAULT_QUESTIONNAIRE,
+  DEFAULT_QUESTIONNAIRE_ITEM,
+} from '@helpers/constants'
 import getNoun from '@helpers/getNoun'
+import useErrors from '@helpers/useErrors'
+import cn from 'classnames'
+import { useEffect, useState } from 'react'
+import { v4 as uuid } from 'uuid'
 
 const typesNames = {
   text: 'Текст (строка)',

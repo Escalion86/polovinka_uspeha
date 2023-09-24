@@ -1,19 +1,16 @@
-import React, { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-
-import PriceDiscount from '@components/PriceDiscount'
-import Divider from '@components/Divider'
-
-import sanitize from '@helpers/sanitize'
-import { modalsFuncAtom } from '@state/atoms'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import ImageGallery from '@components/ImageGallery'
-import CardButtons from '@components/CardButtons'
-import TextLine from '@components/TextLine'
-import serviceSelector from '@state/selectors/serviceSelector'
 import Button from '@components/Button'
-// import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import CardButtons from '@components/CardButtons'
+import Divider from '@components/Divider'
+import ImageGallery from '@components/ImageGallery'
+import PriceDiscount from '@components/PriceDiscount'
+import TextLine from '@components/TextLine'
+import { modalsFuncAtom } from '@state/atoms'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import serviceSelector from '@state/selectors/serviceSelector'
+import DOMPurify from 'dompurify'
+import { useEffect } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const serviceViewFunc = (serviceId) => {
   const ServiceViewModal = ({
@@ -57,7 +54,7 @@ const serviceViewFunc = (serviceId) => {
             <div
               className="w-full max-w-full overflow-hidden list-disc ql textarea"
               dangerouslySetInnerHTML={{
-                __html: sanitize(service?.description),
+                __html: DOMPurify.sanitize(service?.description),
               }}
             />
 

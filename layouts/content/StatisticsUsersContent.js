@@ -1,14 +1,14 @@
-import { useRecoilValue } from 'recoil'
-import usersAtom from '@state/atoms/usersAtom'
 import PieChart from '@components/Charts/PieChart'
-import { useMemo, useState } from 'react'
+import StreamChart from '@components/Charts/StreamChart'
 import UsersFilter from '@components/Filter/UsersFilter'
 import { H3, H4, P } from '@components/tags'
-import StreamChart from '@components/Charts/StreamChart'
-import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import formatDate from '@helpers/formatDate'
 import getDaysBetween from '@helpers/getDaysBetween'
+import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
+import usersAtom from '@state/atoms/usersAtom'
+import { useMemo, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date

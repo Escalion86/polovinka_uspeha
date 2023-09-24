@@ -1,6 +1,5 @@
-import getZodiac from '@helpers/getZodiac'
 import Tooltip from '@components/Tooltip'
-import React from 'react'
+import getZodiac from '@helpers/getZodiac'
 import cn from 'classnames'
 
 const ZodiacIcon = ({ date, className, small = false }) => {

@@ -1,10 +1,9 @@
-import cn from 'classnames'
-import InputWrapper from './InputWrapper'
-import SliderMui from '@mui/material/Slider'
+import isObject from '@helpers/isObject'
 import FormControl from '@mui/material/FormControl'
 import NativeSelect from '@mui/material/NativeSelect'
-import isObject from '@helpers/isObject'
-// import InputLabel from '@mui/material/InputLabel'
+import SliderMui from '@mui/material/Slider'
+import cn from 'classnames'
+import InputWrapper from './InputWrapper'
 
 const Options = ({ min, max }) => {
   const array = new Array(max - min + 1).fill(0)

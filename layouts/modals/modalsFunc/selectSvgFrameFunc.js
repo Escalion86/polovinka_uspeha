@@ -1,5 +1,5 @@
 import frames from '@components/frames/frames'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 const selectSvgFrameFunc = (itemId, onChange) => {
   const SelectSvgFrameModal = ({

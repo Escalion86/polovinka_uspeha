@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import eventsAtom from '@state/atoms/eventsAtom'
-
-import { EventItem } from '@components/ItemCards'
-import filterItems from '@helpers/filterItems'
-import sortFunctions from '@helpers/sortFunctions'
-import Search from '@components/Search'
-import ListWrapper from '@layouts/lists/ListWrapper'
-import isObject from '@helpers/isObject'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
+import { EventItem } from '@components/ItemCards'
+import Search from '@components/Search'
+import filterItems from '@helpers/filterItems'
 import isEventExpiredFunc from '@helpers/isEventExpired'
+import isObject from '@helpers/isObject'
+import sortFunctions from '@helpers/sortFunctions'
+import ListWrapper from '@layouts/lists/ListWrapper'
+import eventsAtom from '@state/atoms/eventsAtom'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const selectEventsFunc = (
   state,

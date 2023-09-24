@@ -1,27 +1,11 @@
-// import DevSwitch from '@components/DevSwitch'
 import DevSwitch from '@components/DevSwitch'
 import Divider from '@components/Divider'
 import Menu from '@components/Menu'
 import { faBug } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faUser } from '@fortawesome/free-regular-svg-icons'
-// import {
-//   faHome,
-//   faSignOutAlt,
-//   faUserAlt,
-// } from '@fortawesome/free-solid-svg-icons'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-// import menuOpenAtom from '@state/atoms/menuOpen'
-// import cn from 'classnames'
-// import { motion } from 'framer-motion'
-// import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { useRecoilValue } from 'recoil'
-// import { useRouter } from 'next/router'
-// import { useState } from 'react'
-// import { useRecoilState, useSetRecoilState } from 'recoil'
 import UserMenu from './UserMenu'
 
 const CabinetHeader = ({ title = '', titleLink, icon }) => {

@@ -1,7 +1,6 @@
 import cn from 'classnames'
 import BlockTitle from './BlockTitle'
 import Section from './Section'
-import { H2 } from './tags'
 
 const BlockContainer = ({
   title,

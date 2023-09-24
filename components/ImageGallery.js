@@ -1,7 +1,6 @@
-import React from 'react'
+import cn from 'classnames'
 import ReactImageGallery from 'react-image-gallery'
 import Zoom from 'react-medium-image-zoom'
-import cn from 'classnames'
 
 const ImageGallery = ({ images, noImage, className }) => {
   if (images?.length === 0 && !noImage) return null

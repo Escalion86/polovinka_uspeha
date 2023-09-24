@@ -1,14 +1,12 @@
-import cn from 'classnames'
-import { forwardRef, useRef, useState } from 'react'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faWrench } from '@fortawesome/free-solid-svg-icons'
-import InputWrapper from '@components/InputWrapper'
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
 import Chip from '@components/Chips/Chip'
-
+import InputWrapper from '@components/InputWrapper'
+import { faWrench } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { modalsFuncAtom } from '@state/atoms'
+import cn from 'classnames'
+import { forwardRef, useState } from 'react'
 import { Popover } from 'react-tiny-popover'
+import { useRecoilValue } from 'recoil'
 
 const ChipsSelector = forwardRef(
   (

@@ -1,6 +1,5 @@
-import PaymentsPayTypeToggleButtons from '@components/IconToggleButtons/PaymentsPayTypeToggleButtons'
 import PaymentsPayDirectionToggleButtons from '@components/IconToggleButtons/PaymentsPayDirectionToggleButtons'
-import React from 'react'
+import PaymentsPayTypeToggleButtons from '@components/IconToggleButtons/PaymentsPayTypeToggleButtons'
 import PaymentsSectorToggleButtons from '@components/IconToggleButtons/PaymentsSectorToggleButtons'
 
 const PaymentsFilter = ({

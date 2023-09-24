@@ -1,5 +1,4 @@
 import { PAY_TYPES } from '@helpers/constants'
-import React from 'react'
 import ToggleButtons from './ToggleButtons'
 
 const PaymentsPayTypeToggleButtons = ({ value, onChange }) => {

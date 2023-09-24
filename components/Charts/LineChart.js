@@ -1,5 +1,5 @@
-import { ResponsiveLine } from '@nivo/line'
 import { H3 } from '@components/tags'
+import { ResponsiveLine } from '@nivo/line'
 
 const LineChart = ({ title, data, xAxisLegend, yAxisLegend, ...props }) => {
   // if (!data || data.length === 0) return null

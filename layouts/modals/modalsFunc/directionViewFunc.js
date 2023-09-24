@@ -1,9 +1,6 @@
-import React, { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-
 import directionSelector from '@state/selectors/directionSelector'
-import sanitize from '@helpers/sanitize'
-import ImageGallery from '@components/ImageGallery'
+import DOMPurify from 'dompurify'
+import { useRecoilValue } from 'recoil'
 
 const directionViewFunc = (directionId) => {
   const DirectionViewModal = ({
@@ -33,9 +30,9 @@ const directionViewFunc = (directionId) => {
         <div className="flex flex-col flex-1">
           <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
             <div
-              className="w-full max-w-full overflow-hidden list-disc textarea"
+              className="w-full max-w-full overflow-hidden list-disc textarea ql"
               dangerouslySetInnerHTML={{
-                __html: sanitize(direction?.description),
+                __html: DOMPurify.sanitize(direction?.description),
               }}
             />
           </div>

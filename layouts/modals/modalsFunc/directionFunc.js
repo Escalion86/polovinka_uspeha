@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import useErrors from '@helpers/useErrors'
-import { useRecoilValue } from 'recoil'
-import directionSelector from '@state/selectors/directionSelector'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-
 import CheckBox from '@components/CheckBox'
-import Input from '@components/Input'
 import EditableTextarea from '@components/EditableTextarea'
-import FormWrapper from '@components/FormWrapper'
-import InputImage from '@components/InputImage'
 import ErrorsList from '@components/ErrorsList'
-import { DEFAULT_DIRECTION } from '@helpers/constants'
+import FormWrapper from '@components/FormWrapper'
+import Input from '@components/Input'
+import InputImage from '@components/InputImage'
 import Textarea from '@components/Textarea'
+import { DEFAULT_DIRECTION } from '@helpers/constants'
+import useErrors from '@helpers/useErrors'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import directionSelector from '@state/selectors/directionSelector'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const directionFunc = (directionId, clone = false) => {
   const DirectionModal = ({

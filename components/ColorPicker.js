@@ -1,14 +1,13 @@
+import { faCopy, faPaste } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { textColorClassCalc } from '@helpers/calcLuminance'
+import copyToClipboard from '@helpers/copyToClipboard'
+import pasteFromClipboard from '@helpers/pasteFromClipboard'
 import cn from 'classnames'
-import { useState } from 'react'
-import InputWrapper from './InputWrapper'
 import { HexColorPicker } from 'react-colorful'
 import DropDown from './DropDown'
 import Input from './Input'
-import { faCopy, faPaste } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import copyToClipboard from '@helpers/copyToClipboard'
-import pasteFromClipboard from '@helpers/pasteFromClipboard'
-import { textColorClassCalc } from '@helpers/calcLuminance'
+import InputWrapper from './InputWrapper'
 
 const ColorPicker = ({
   label = '',

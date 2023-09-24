@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-
-import { DirectionItem, ServiceItem } from '@components/ItemCards'
-import filterItems from '@helpers/filterItems'
+import { ServiceItem } from '@components/ItemCards'
 import Search from '@components/Search'
+import filterItems from '@helpers/filterItems'
+import isObject from '@helpers/isObject'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import servicesAtom from '@state/atoms/servicesAtom'
-import isObject from '@helpers/isObject'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const selectPaymentsFunc = (
   state,

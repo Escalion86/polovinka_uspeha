@@ -1,4 +1,3 @@
-import React from 'react'
 import Search from '@mui/icons-material/Search'
 import IconToggleButton from './IconToggleButton'
 

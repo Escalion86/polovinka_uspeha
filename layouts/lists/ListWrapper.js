@@ -1,7 +1,5 @@
 import cn from 'classnames'
-import React from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
-
 import { FixedSizeList } from 'react-window'
 
 const ListWrapper = ({ itemCount, itemSize, children, className }) => {

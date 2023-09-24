@@ -1,20 +1,12 @@
-import React, { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-import userSelector from '@state/selectors/userSelector'
-
-import FormWrapper from '@components/FormWrapper'
-import { modalsFuncAtom } from '@state/atoms'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
-import { getData } from '@helpers/CRUD'
-import { useState } from 'react'
-import formatDate from '@helpers/formatDate'
-import formatDateTime from '@helpers/formatDateTime'
 import LoadingSpinner from '@components/LoadingSpinner'
-import TextLine from '@components/TextLine'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
+import { getData } from '@helpers/CRUD'
+import formatDateTime from '@helpers/formatDateTime'
+import { modalsFuncAtom } from '@state/atoms'
+import userSelector from '@state/selectors/userSelector'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const userLoginHistoryFunc = (userId, clone = false) => {
   const UserLoginHistoryModal = ({

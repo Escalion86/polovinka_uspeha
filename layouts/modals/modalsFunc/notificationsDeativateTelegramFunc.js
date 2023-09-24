@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-
 import FormWrapper from '@components/FormWrapper'
-import ErrorsList from '@components/ErrorsList'
-import useSnackbar from '@helpers/useSnackbar'
 import { putData } from '@helpers/CRUD'
+import useSnackbar from '@helpers/useSnackbar'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import { useEffect } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const notificationsDeativateTelegramFunc = (onSuccess) => {
   const NotificationsDeativateTelegramModal = ({

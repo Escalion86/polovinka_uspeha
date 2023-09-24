@@ -1,12 +1,12 @@
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
-import servicesAtom from '@state/atoms/servicesAtom'
-import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import ContentHeader from '@components/ContentHeader'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import ServiceCard from '@layouts/cards/ServiceCard'
-import { getNounServices } from '@helpers/getNoun'
 import AddButton from '@components/IconToggleButtons/AddButton'
+import { getNounServices } from '@helpers/getNoun'
+import ServiceCard from '@layouts/cards/ServiceCard'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
+import { modalsFuncAtom } from '@state/atoms'
+import servicesAtom from '@state/atoms/servicesAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import { useRecoilValue } from 'recoil'
 
 const ServicesContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

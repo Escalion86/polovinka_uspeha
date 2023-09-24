@@ -1,17 +1,15 @@
 import birthDateToAge from '@helpers/birthDateToAge'
-import { postData } from '@helpers/CRUD'
 import formatAddress from '@helpers/formatAddress'
-// import formatDate from '@helpers/formatDate'
+import formatEventDateTime from '@helpers/formatEventDateTime'
 import getUserFullName from '@helpers/getUserFullName'
+import isUserModer from '@helpers/isUserModer'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import Events from '@models/Events'
 import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
-import sanitize from 'sanitize-html'
+import DOMPurify from 'dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
-import isUserModer from '@helpers/isUserModer'
-import formatEventDateTime from '@helpers/formatEventDateTime'
 
 const linkAReformer = (link) => {
   const textLink = link.substring(link.indexOf('>') + 1, link.lastIndexOf('<'))
@@ -200,7 +198,7 @@ const updateEventInCalendar = async (event, req) => {
       event.status === 'canceled' ? '[ОТМЕНЕНО] ' : ''
     }${event.title}`,
     description:
-      sanitize(
+      DOMPurify.sanitize(
         preparedText
           .replaceAll('<p><br></p>', '\n')
           .replaceAll('</blockquote>', '\n</blockquote>')
@@ -212,8 +210,8 @@ const updateEventInCalendar = async (event, req) => {
           .replaceAll('<br>', '\n')
           .trim('\n'),
         {
-          allowedTags: [],
-          allowedAttributes: {},
+          ALLOWED_TAGS: [],
+          ALLOWED_ATTR: [],
         }
       ) +
       `\n\nСсылка на мероприятие:\n${
@@ -364,7 +362,7 @@ const notificateUsersAboutEvent = async (event, req) => {
   const textStart = `\u{1F4C5} ${formatEventDateTime(event, {
     fullWeek: true,
     weekInBrackets: true,
-  }).toUpperCase()}\n<b>${event.title}</b>\n${sanitize(
+  }).toUpperCase()}\n<b>${event.title}</b>\n${DOMPurify.sanitize(
     event.description
       .replaceAll('<p><br></p>', '\n')
       .replaceAll('<blockquote>', '\n<blockquote>')
@@ -373,8 +371,8 @@ const notificateUsersAboutEvent = async (event, req) => {
       .replaceAll('<br>', '\n')
       .trim('\n'),
     {
-      allowedTags: [],
-      allowedAttributes: {},
+      ALLOWED_TAGS: [],
+      ALLOWED_ATTR: {},
     }
   )}${address}`
 

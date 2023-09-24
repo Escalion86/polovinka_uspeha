@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import serviceSelector from '@state/selectors/serviceSelector'
-import { modalsFuncAtom } from '@state/atoms'
-
 import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'
-import { faIdCard } from '@fortawesome/free-regular-svg-icons'
 import ValueItem from '@components/ValuePicker/ValueItem'
+import { faIdCard } from '@fortawesome/free-regular-svg-icons'
+import { modalsFuncAtom } from '@state/atoms'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import serviceSelector from '@state/selectors/serviceSelector'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const serviceApplyFunc = (serviceId) => {
   const ServiceApplyModal = ({

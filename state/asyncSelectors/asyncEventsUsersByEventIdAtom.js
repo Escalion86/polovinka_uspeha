@@ -1,6 +1,8 @@
 import getFetch from '@helpers/getFetch'
+import isLoadedAtom from '@state/atoms/isLoadedAtom'
 // import sleep from '@helpers/sleep'
-import { atomFamily, noWait, selectorFamily, waitForNone } from 'recoil'
+import { atomFamily, noWait, selectorFamily } from 'recoil'
+import { setRecoil } from 'recoil-nexus'
 // import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 
 const asyncEventsUsersByEventIdSelector = selectorFamily({
@@ -12,6 +14,8 @@ const asyncEventsUsersByEventIdSelector = selectorFamily({
       // console.log('test', test)
       if (!eventId) return undefined
       const res = await getFetch('/api/eventsusers', { eventId })
+      // console.debug('!!!', eventId)
+      setRecoil(isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId), true)
       // // Throw error with status code in case Fetch API req failed
       // if (!res.ok) {
       //   throw new Error(res.status)
@@ -31,6 +35,15 @@ const asyncEventsUsersByEventIdSelector = selectorFamily({
 const asyncEventsUsersByEventIdAtom = atomFamily({
   key: 'asyncEventsUsersByEventIdAtom',
   default: asyncEventsUsersByEventIdSelector,
+  // effects: [
+  //   ({ onSet }) => {
+  //     onSet((newID) => {
+  //       console.debug('onSet asyncEventsUsersByEventIdAtom', newID)
+  //       setRecoil(isLoadedAtom('asyncEventsUsersByEventIdAtom' + newID), true)
+  //     })
+  //   },
+  //   (params) => console.log('params :>> ', params),
+  // ],
 })
 
 export default asyncEventsUsersByEventIdAtom

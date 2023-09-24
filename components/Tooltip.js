@@ -1,4 +1,3 @@
-import React from 'react'
 import MuiTooltip from '@mui/material/Tooltip'
 
 const Tooltip = ({

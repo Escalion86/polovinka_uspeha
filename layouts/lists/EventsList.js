@@ -1,9 +1,7 @@
-import React from 'react'
-
 import EventCard from '@layouts/cards/EventCard'
-import ListWrapper from './ListWrapper'
-import { useRecoilValue } from 'recoil'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
+import { useRecoilValue } from 'recoil'
+import ListWrapper from './ListWrapper'
 
 const EventsList = ({ events, onTagClick }) => {
   const widthNum = useRecoilValue(windowDimensionsNumSelector)

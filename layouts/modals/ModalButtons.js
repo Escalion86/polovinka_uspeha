@@ -1,6 +1,6 @@
-import Divider from '../../components/Divider'
-import Button from '../../components/Button'
 import isObject from '@helpers/isObject'
+import Button from '../../components/Button'
+import Divider from '../../components/Divider'
 
 const ModalButtons = ({
   confirmName = 'Подтвердить',

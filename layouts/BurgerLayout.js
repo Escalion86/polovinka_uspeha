@@ -1,5 +1,4 @@
 import Burger from '@components/Burger'
-import React from 'react'
 
 function BurgerLayout() {
   return (

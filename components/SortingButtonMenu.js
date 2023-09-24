@@ -1,32 +1,23 @@
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import cn from 'classnames'
-// import ValueItem from './ValuePicker/ValueItem'
 import {
-  faSort,
   faSortAlphaAsc,
   faSortAlphaDesc,
   faSortNumericAsc,
   faSortNumericDesc,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import cn from 'classnames'
+import { motion } from 'framer-motion'
+import { useState } from 'react'
 import IconToggleButton from './IconToggleButtons/IconToggleButton'
+
 const variants = {
   show: {
     scale: 1,
-    // width: 'auto',
-    // height: 'auto',
-    // top: 0,
-    // right: 0,
     translateX: 0,
     translateY: 0,
   },
   hide: {
     scale: 0,
-    // top: 0,
-    // right: 0,
-    // width: 0,
-    // height: 0,
     translateX: '50%',
     translateY: '-50%',
   },

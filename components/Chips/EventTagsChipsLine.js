@@ -1,4 +1,3 @@
-import React from 'react'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useRecoilValue } from 'recoil'
 import ChipsLine from './ChipsLine'

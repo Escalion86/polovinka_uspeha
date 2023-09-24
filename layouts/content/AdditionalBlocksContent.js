@@ -1,13 +1,12 @@
+import ContentHeader from '@components/ContentHeader'
+import AddButton from '@components/IconToggleButtons/AddButton'
+import { getNounAdditionalBlocks } from '@helpers/getNoun'
+import AdditionalBlockCard from '@layouts/cards/AdditionalBlockCard'
+import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-
-import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import ContentHeader from '@components/ContentHeader'
-import { getNounAdditionalBlocks } from '@helpers/getNoun'
-import AddButton from '@components/IconToggleButtons/AddButton'
-import AdditionalBlockCard from '@layouts/cards/AdditionalBlockCard'
+import { useRecoilValue } from 'recoil'
 
 const AdditionalBlocksContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

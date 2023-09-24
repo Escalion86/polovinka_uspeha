@@ -1,16 +1,15 @@
+import { faHome, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import arrayMove from '@helpers/arrayMove'
+import { sendImage } from '@helpers/cloudinary'
+import { modalsFuncAtom } from '@state/atoms'
+import cn from 'classnames'
+import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import Zoom from 'react-medium-image-zoom'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faPlus, faHome } from '@fortawesome/free-solid-svg-icons'
-import { sendImage } from '@helpers/cloudinary'
-import cn from 'classnames'
-import LoadingSpinner from './LoadingSpinner'
-import arrayMove from '@helpers/arrayMove'
-import { motion } from 'framer-motion'
-import InputWrapper from './InputWrapper'
-import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
+import InputWrapper from './InputWrapper'
+import LoadingSpinner from './LoadingSpinner'
 
 const InputImages = ({
   images = [],

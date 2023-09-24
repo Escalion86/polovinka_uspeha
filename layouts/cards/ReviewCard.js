@@ -1,12 +1,11 @@
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
-import reviewSelector from '@state/selectors/reviewSelector'
-import loadingAtom from '@state/atoms/loadingAtom'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-
-import { getNounAges } from '@helpers/getNoun'
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
+import { getNounAges } from '@helpers/getNoun'
+import { modalsFuncAtom } from '@state/atoms'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import loadingAtom from '@state/atoms/loadingAtom'
+import reviewSelector from '@state/selectors/reviewSelector'
+import { useRecoilValue } from 'recoil'
 
 const ReviewCard = ({ reviewId, hidden = false, style }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)

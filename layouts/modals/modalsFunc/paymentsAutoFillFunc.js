@@ -1,15 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import useErrors from '@helpers/useErrors'
-import { useRecoilValue } from 'recoil'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventSelector from '@state/selectors/eventSelector'
-
-import FormWrapper from '@components/FormWrapper'
+import CheckBox from '@components/CheckBox'
+import DateTimePicker from '@components/DateTimePicker'
 import ErrorsList from '@components/ErrorsList'
+import FormWrapper from '@components/FormWrapper'
 import { SelectEvent } from '@components/SelectItem'
 import PayTypePicker from '@components/ValuePicker/PayTypePicker'
-import DateTimePicker from '@components/DateTimePicker'
-import CheckBox from '@components/CheckBox'
+import useErrors from '@helpers/useErrors'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import eventSelector from '@state/selectors/eventSelector'
+import { useEffect, useMemo, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const paymentsAutoFillFunc = (eventId) => {
   const PaymentsAutoFillModal = ({

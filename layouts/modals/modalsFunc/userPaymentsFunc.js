@@ -1,10 +1,8 @@
-import React from 'react'
-import { useRecoilValue } from 'recoil'
-
 import FormWrapper from '@components/FormWrapper'
 import { SelectPaymentList } from '@components/SelectItemList'
 import UserNameById from '@components/UserNameById'
 import paymentsByUserIdSelector from '@state/selectors/paymentsByUserIdSelector'
+import { useRecoilValue } from 'recoil'
 
 const userPaymentsFunc = (userId, clone = false) => {
   const UserPaymentsModal = ({

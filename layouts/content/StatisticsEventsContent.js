@@ -1,16 +1,16 @@
-import { useRecoilValue } from 'recoil'
 import PieChart from '@components/Charts/PieChart'
-import { useMemo, useState } from 'react'
-import { H3 } from '@components/tags'
-import eventsAtom from '@state/atoms/eventsAtom'
-import eventStatus from '@helpers/eventStatus'
 import Divider from '@components/Divider'
-import directionsAtom from '@state/atoms/directionsAtom'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
-import isEventExpiredFunc from '@helpers/isEventExpired'
+import { H3 } from '@components/tags'
+import eventStatus from '@helpers/eventStatus'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import isEventExpiredFunc from '@helpers/isEventExpired'
+import directionsAtom from '@state/atoms/directionsAtom'
+import eventsAtom from '@state/atoms/eventsAtom'
+import { useMemo, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const StatisticsEventsContent = () => {
   const events = useRecoilValue(eventsAtom)

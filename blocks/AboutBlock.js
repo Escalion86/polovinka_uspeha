@@ -1,6 +1,6 @@
 import BlockContainer from '@components/BlockContainer'
 import ListItem from '@components/ListItem'
-import { H2, H3, H4, P } from '@components/tags'
+import { H4, P } from '@components/tags'
 import SvgKavichki from 'svg/SvgKavichki'
 
 const AboutBlock = () => (

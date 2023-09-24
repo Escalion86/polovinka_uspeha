@@ -1,5 +1,4 @@
 import BlockContainer from '@components/BlockContainer'
-import { H2, H3 } from '@components/tags'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useRecoilValue } from 'recoil'
 

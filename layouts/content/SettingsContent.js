@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-
 import Button from '@components/Button'
+import CheckBox from '@components/CheckBox'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
-import { postData } from '@helpers/CRUD'
-import useErrors from '@helpers/useErrors'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
-import { CODE_SEND_SERVICES } from '@helpers/constants'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import CheckBox from '@components/CheckBox'
+import { postData } from '@helpers/CRUD'
 import compareObjects from '@helpers/compareObjects'
+import { CODE_SEND_SERVICES } from '@helpers/constants'
+import useErrors from '@helpers/useErrors'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import { useEffect, useState } from 'react'
+import { useRecoilState, useRecoilValue } from 'recoil'
 
 const getBalance = async (onSuccess, onError) =>
   await postData(

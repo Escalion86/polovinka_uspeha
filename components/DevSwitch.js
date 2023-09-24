@@ -1,11 +1,11 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
-import CheckBox from './CheckBox'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import showDeviceAtom from '@state/atoms/showDeviceAtom'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import CheckBox from './CheckBox'
 
 const DevSwitch = () => {
   const loggedUser = useRecoilValue(loggedUserAtom)

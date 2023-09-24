@@ -1,15 +1,15 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { modalsFuncAtom } from '@state/atoms'
+import cn from 'classnames'
+import { useRecoilValue } from 'recoil'
+import Label from './Label'
 import {
   SelectEvent,
   SelectItem,
-  SelectUser,
   SelectPayment,
+  SelectUser,
 } from './SelectItem'
-import cn from 'classnames'
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
-import Label from './Label'
 
 const ItemRow = ({
   // onChange,

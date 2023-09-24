@@ -1,12 +1,12 @@
 import BlockContainer from '@components/BlockContainer'
-import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
-import { useRecoilValue } from 'recoil'
+import Button from '@components/Button'
 import Masonry from '@components/Masonry'
 import TextInRing from '@components/TextInRing'
-import Button from '@components/Button'
-import eventsAtom from '@state/atoms/eventsAtom'
 import { getNounEvents } from '@helpers/getNoun'
 import { modalsFuncAtom } from '@state/atoms'
+import eventsAtom from '@state/atoms/eventsAtom'
+import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
+import { useRecoilValue } from 'recoil'
 
 const DirectionItem = ({
   directionId,
@@ -35,11 +35,6 @@ const DirectionItem = ({
       ) : (
         <TextInRing text={title} fullHeight={false} />
       )}
-
-      {/* <div
-        className="w-full max-w-full overflow-hidden textarea"
-        dangerouslySetInnerHTML={{ __html: sanitize(description) }}
-      /> */}
       <div className="px-3 mt-3 mb-1 text-sm whitespace-pre-wrap laptop:text-base">
         {shortDescription}
       </div>

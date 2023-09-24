@@ -1,23 +1,20 @@
-import { useRecoilValue } from 'recoil'
-import eventsAtom from '@state/atoms/eventsAtom'
-
-import { useState } from 'react'
-import Input from '@components/Input'
-import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
-import ComboBox from '@components/ComboBox'
-import ColorPicker from '@components/ColorPicker'
 import Button from '@components/Button'
-
-import { saveSvgAsPng } from 'save-svg-as-png'
-import { SelectEvent } from '@components/SelectItem'
+import ColorPicker from '@components/ColorPicker'
+import ComboBox from '@components/ComboBox'
+import Input from '@components/Input'
+import InputSvgFrame from '@components/InputSvgFrame'
 import InputWrapper from '@components/InputWrapper'
+import { SelectEvent } from '@components/SelectItem'
 import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
 } from '@components/SvgBackground'
-
-import InputSvgFrame from '@components/InputSvgFrame'
 import frames from '@components/frames/frames'
+import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import eventsAtom from '@state/atoms/eventsAtom'
+import { useState } from 'react'
+import { useRecoilValue } from 'recoil'
+import { saveSvgAsPng } from 'save-svg-as-png'
 
 const save = async (name) => {
   const input = document.querySelector('#input')

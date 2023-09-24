@@ -1,5 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
-import { H2, H3 } from '@components/tags'
+import { H2 } from '@components/tags'
 import TextInRing from '@components/TextInRing'
 import sanitize from '@helpers/sanitize'
 import cn from 'classnames'

@@ -1,7 +1,6 @@
-import React from 'react'
-import ChipsSelector from './ChipsSelector'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useRecoilValue } from 'recoil'
+import ChipsSelector from './ChipsSelector'
 
 const EventTagsChipsSelector = ({
   label = 'Тэги',

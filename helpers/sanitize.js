@@ -1,7 +1,7 @@
-import sanitizeHtml from 'sanitize-html'
+import DOMPurify from 'dompurify'
 
 const sanitizeConf = {
-  allowedTags: [
+  ALLOWED_TAGS: [
     'b',
     'br',
     'i',
@@ -28,43 +28,10 @@ const sanitizeConf = {
     'li',
     'ul',
   ],
-  // selfClosing: ['br'],
-  allowedAttributes: {
-    a: ['href', 'rel', 'target'],
-    div: ['style', 'class'],
-    font: ['size'],
-    span: ['style', 'class'],
-    p: ['style', 'class'],
-    h1: ['style', 'class'],
-    h2: ['style', 'class'],
-    h3: ['style', 'class'],
-    h4: ['style', 'class'],
-    h5: ['style', 'class'],
-    h6: ['style', 'class'],
-    li: ['style'],
-  },
-  // allowedStyles: {
-  // '*': {
-  // Match HEX and RGB
-  // 'color': [/^#(0x)?[0-9a-f]+$/i, /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/],
-  // 'text-align': [/^left$/, /^right$/, /^center$/],
-  // Match any number with px, em, or %
-  // 'font-size': [/^\d+(?:px|em|%)$/]
-  // },
-  // div: {
-  //   // Match HEX and RGB
-  //   // 'color': [/^#(0x)?[0-9a-f]+$/i, /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/],
-  //   'text-align': [/^left$/, /^right$/, /^center$/],
-  //   // Match any number with px, em, or %
-  //   // 'font-size': [/^\d+(?:px|em|%)$/]
-  // },
-  // 'p': {
-  //   'font-size': [/^\d+rem$/]
-  // }
-  // },
+  ALLOWED_ATTR: ['style', 'class', 'href', 'rel', 'target', 'size'],
 }
 
 const sanitize = (html) =>
-  sanitizeHtml(html, sanitizeConf).replaceAll('<br />', '<br>')
+  DOMPurify.sanitize(html, sanitizeConf).replaceAll('<br />', '<br>')
 
 export default sanitize

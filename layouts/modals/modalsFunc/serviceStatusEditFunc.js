@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import DateTimePicker from '@components/DateTimePicker'
+import ServiceUserStatusPicker from '@components/ValuePicker/ServiceUserStatusPicker'
+import { DEFAULT_SERVICE_USER } from '@helpers/constants'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
-
-import { DEFAULT_SERVICE_USER } from '@helpers/constants'
-import ServiceUserStatusPicker from '@components/ValuePicker/ServiceUserStatusPicker'
-import DateTimePicker from '@components/DateTimePicker'
+import { useEffect, useMemo, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const serviceUserStatusEditFunc = (serviceUserId) => {
   const ServiceUserStatusEditModal = ({

@@ -1,10 +1,10 @@
+import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { EVENT_STATUSES_WITH_TIME } from '@helpers/constants'
+import eventStatusFunc from '@helpers/eventStatus'
 import eventSelector from '@state/selectors/eventSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
-import eventStatusFunc from '@helpers/eventStatus'
-import { EVENT_STATUSES_WITH_TIME } from '@helpers/constants'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import TextLinesLimiter from './TextLinesLimiter'
 
 const EventNameById = ({ eventId, showStatus, className }) => {

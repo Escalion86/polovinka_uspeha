@@ -1,5 +1,5 @@
 import PulseButton from '@components/PulseButton'
-import { H2, H1, H3, H4 } from '@components/tags'
+import { H1, H3, H4 } from '@components/tags'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -58,23 +58,22 @@ const TitleBlock = () => {
             для поиска своей второй половинки
           </H3>
         </div>
-        {!userIsLogged && (
-          <Link
-            href={{
-              pathname: '/login',
-              query: { ...router.query, registration: true },
-            }}
-            shallow
-          >
-            <PulseButton
-              className="mt-4"
-              title="Зарегистрироваться"
-              // onClick={() =>
-              //   router.push('./login?registration=true', '', { shallow: true })
-              // }
-            />
-          </Link>
-        )}
+        <Link
+          href={{
+            pathname: userIsLogged ? '/cabinet/events' : '/login',
+            query: !userIsLogged && { ...router.query, registration: true },
+          }}
+          shallow
+        >
+          <PulseButton
+            className="mt-4"
+            title={userIsLogged ? 'Мой кабинет' : 'Зарегистрироваться'}
+            noPulse={userIsLogged}
+            // onClick={() =>
+            //   router.push('./login?registration=true', '', { shallow: true })
+            // }
+          />
+        </Link>
       </div>
     </div>
   )

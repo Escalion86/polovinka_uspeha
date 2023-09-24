@@ -1,9 +1,7 @@
-import React from 'react'
-import { useRecoilValue } from 'recoil'
-import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
-
-import cn from 'classnames'
 import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
+import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
+import cn from 'classnames'
+import { useRecoilValue } from 'recoil'
 
 const EventProfit = ({ eventId, className }) => {
   const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))

@@ -1,6 +1,5 @@
 import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
 import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
-import React from 'react'
 
 const UsersFilter = ({ value, onChange, hideNullGender }) => {
   return (

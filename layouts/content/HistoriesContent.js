@@ -1,6 +1,14 @@
-import { useRecoilValue } from 'recoil'
+import ComboBox from '@components/ComboBox'
+import ContentHeader from '@components/ContentHeader'
+import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
+import { SelectEventList, SelectUserList } from '@components/SelectItemList'
+import { EVENT_USER_STATUSES } from '@helpers/constants'
+import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import getHoursBetween from '@helpers/getHoursBetween'
+import isEventActiveFunc from '@helpers/isEventActive'
+import isEventCanceledFunc from '@helpers/isEventCanceled'
+import isEventExpiredFunc from '@helpers/isEventExpired'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import { historiesSelector } from '@state/atoms/historiesAtom'
 import {
   Timeline,
   TimelineConnector,
@@ -9,60 +17,11 @@ import {
   TimelineItem,
   TimelineSeparator,
 } from '@mui/lab'
-// import Timeline from '@mui/lab/TimeLine'
-// import TimelineConnector from '@mui/lab/TimelineConnector'
-// import TimelineContent from '@mui/lab/TimelineContent'
-// import TimelineDot from '@mui/lab/TimelineDot'
-// import TimelineItem from '@mui/lab/TimelineItem'
-// import TimelineSeparator from '@mui/lab/TimelineSeparator'
-
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
-import { SelectEventList, SelectUserList } from '@components/SelectItemList'
-import { useState } from 'react'
-import ContentHeader from '@components/ContentHeader'
-import getHoursBetween from '@helpers/getHoursBetween'
 import eventsAtom from '@state/atoms/eventsAtom'
-import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
-import isEventExpiredFunc from '@helpers/isEventExpired'
-import isEventActiveFunc from '@helpers/isEventActive'
-import isEventCanceledFunc from '@helpers/isEventCanceled'
-import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
-import { EVENT_USER_STATUSES } from '@helpers/constants'
-import ComboBox from '@components/ComboBox'
-
-// const ReviewCard = ({ reviewId }) => {
-//   const modalsFunc = useRecoilValue(modalsFuncAtom)
-//   const review = useRecoilValue(reviewSelector(reviewId))
-//   const loading = useRecoilValue(loadingAtom('review' + reviewId))
-//   const itemFunc = useRecoilValue(itemsFuncAtom)
-
-//   return (
-//     <CardWrapper
-//       loading={loading}
-//       onClick={() => modalsFunc.review.edit(review._id)}
-//       flex={false}
-//       showOnSite={review.showOnSite}
-//     >
-//       <div className="flex">
-//         <div className="flex-1 px-2 py-1 text-xl font-bold">
-//           {review.author}
-//           {review.authorAge ? ', ' + getNounAges(review.authorAge) : ''}
-//         </div>
-//         <CardButtons
-//           item={review}
-//           typeOfItem="review"
-//           showOnSiteOnClick={() => {
-//             itemFunc.review.set({
-//               _id: review._id,
-//               showOnSite: !review.showOnSite,
-//             })
-//           }}
-//         />
-//       </div>
-//       <div className="px-2 py-1">{review.review}</div>
-//     </CardWrapper>
-//   )
-// }
+import { historiesSelector } from '@state/atoms/historiesAtom'
+import { useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const dotColors = {
   add: 'success',

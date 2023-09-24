@@ -1,11 +1,9 @@
-import React from 'react'
-import { useRecoilValue } from 'recoil'
-
 import FormWrapper from '@components/FormWrapper'
 import { SelectEventList } from '@components/SelectItemList'
 import UserNameById from '@components/UserNameById'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
+import { useRecoilValue } from 'recoil'
 
 const userSignedUpEventsFunc = (userId, clone = false) => {
   const UserSignedUpEventsModal = ({

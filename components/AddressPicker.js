@@ -1,4 +1,3 @@
-import React from 'react'
 import FormWrapper from './FormWrapper'
 import Input from './Input'
 import InputWrapper from './InputWrapper'

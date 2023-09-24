@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import directionsAtom from '@state/atoms/directionsAtom'
-
 import { DirectionItem } from '@components/ItemCards'
-import filterItems from '@helpers/filterItems'
 import Search from '@components/Search'
-import ListWrapper from '@layouts/lists/ListWrapper'
+import filterItems from '@helpers/filterItems'
 import isObject from '@helpers/isObject'
+import ListWrapper from '@layouts/lists/ListWrapper'
+import directionsAtom from '@state/atoms/directionsAtom'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 const selectDirectionsFunc = (
   state,

@@ -1,27 +1,22 @@
-import DevSwitch from '@components/DevSwitch'
 import {
   faHome,
-  // faList,
   faListAlt,
-  // faListSquares,
-  // faListUl,
-  // faSign,
   faSignInAlt,
   faSignOutAlt,
   faUserAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import getParentDir from '@state/atoms/getParentDir'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import menuOpenAtom from '@state/atoms/menuOpen'
+import cn from 'classnames'
+import { motion } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import Avatar from './Avatar'
-import { motion } from 'framer-motion'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { useState } from 'react'
-import menuOpenAtom from '@state/atoms/menuOpen'
-import cn from 'classnames'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import getParentDir from '@state/atoms/getParentDir'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import Avatar from './Avatar'
 
 const variants = {
   show: {

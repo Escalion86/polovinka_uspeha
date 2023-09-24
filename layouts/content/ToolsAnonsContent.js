@@ -1,23 +1,22 @@
-import { useRecoilValue } from 'recoil'
-import eventsAtom from '@state/atoms/eventsAtom'
-import { useRef, useState } from 'react'
-import Input from '@components/Input'
-import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
-import ComboBox from '@components/ComboBox'
-import { MONTHS_FULL_1 } from '@helpers/constants'
-import sortFunctions from '@helpers/sortFunctions'
-import YearSelector from '@components/ComboBox/YearSelector'
-import MonthSelector from '@components/ComboBox/MonthSelector'
-import ColorPicker from '@components/ColorPicker'
 import Button from '@components/Button'
-
-import { saveSvgAsPng } from 'save-svg-as-png'
+import ColorPicker from '@components/ColorPicker'
+import ComboBox from '@components/ComboBox'
+import MonthSelector from '@components/ComboBox/MonthSelector'
+import YearSelector from '@components/ComboBox/YearSelector'
+import Input from '@components/Input'
 import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
 } from '@components/SvgBackground'
+import { MONTHS_FULL_1 } from '@helpers/constants'
+import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import getNoun from '@helpers/getNoun'
+import sortFunctions from '@helpers/sortFunctions'
+import eventsAtom from '@state/atoms/eventsAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
+import { useRef, useState } from 'react'
+import { useRecoilValue } from 'recoil'
+import { saveSvgAsPng } from 'save-svg-as-png'
 
 const styles = [
   {
