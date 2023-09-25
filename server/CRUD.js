@@ -372,7 +372,7 @@ const notificateUsersAboutEvent = async (event, req) => {
       .trim('\n'),
     {
       ALLOWED_TAGS: [],
-      ALLOWED_ATTR: {},
+      ALLOWED_ATTR: [],
     }
   )}${address}`
 
