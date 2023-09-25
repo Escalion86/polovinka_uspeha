@@ -1,5 +1,4 @@
 import Button from '@components/Button'
-import CheckBox from '@components/CheckBox'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
@@ -142,16 +141,6 @@ const SettingsContent = (props) => {
             </div>
           </div>
         )}
-        <CheckBox
-          label={`Обновление "Нам 2 года!"`}
-          checked={custom?.birthdayUpdate}
-          onChange={() =>
-            setCustom((state) => ({
-              ...state,
-              birthdayUpdate: !custom.birthdayUpdate,
-            }))
-          }
-        />
       </FormWrapper>
     </div>
   )

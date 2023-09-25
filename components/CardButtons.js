@@ -24,7 +24,6 @@ import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 import { modalsFuncAtom } from '@state/atoms'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
@@ -70,7 +69,6 @@ const CardButtons = ({
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const device = useRecoilValue(windowDimensionsTailwindSelector)
-  const siteSettings = useRecoilValue(siteSettingsAtom)
 
   // const [open, setOpen] = useState(false)
   // const [isTriggered, setIsTriggered] = useState(false)
@@ -98,10 +96,7 @@ const CardButtons = ({
       (typeOfItem === 'event' ||
         typeOfItem === 'service' ||
         typeOfItem === 'user'),
-    addToCalendar:
-      // ADD
-      (siteSettings?.custom?.birthdayUpdate || isLoggedUserAdmin) &&
-      typeOfItem === 'event',
+    addToCalendar: typeOfItem === 'event',
     eventUsersBtn:
       (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'event',
     upBtn: !forForm && isLoggedUserAdmin && onUpClick,

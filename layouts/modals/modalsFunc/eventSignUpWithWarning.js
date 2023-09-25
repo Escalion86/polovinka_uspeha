@@ -4,8 +4,6 @@ import formatDateTime from '@helpers/formatDateTime'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -20,10 +18,7 @@ const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
     setDisableDecline,
   }) => {
     const loggedUser = useRecoilValue(loggedUserAtom)
-    // const event = useRecoilValue(eventSelector(eventId))
     const itemsFunc = useRecoilValue(itemsFuncAtom)
-    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-    const siteSettings = useRecoilValue(siteSettingsAtom)
 
     const [check, setCheck] = useState(false)
 
@@ -59,11 +54,9 @@ const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-      if (siteSettings?.custom?.birthdayUpdate || isLoggedUserAdmin) {
-        setOnConfirm2Func(() =>
-          onClickConfirm(() => goToUrlForAddEventToCalendar(event))
-        )
-      }
+      setOnConfirm2Func(() =>
+        onClickConfirm(() => goToUrlForAddEventToCalendar(event))
+      )
       setDisableConfirm(!check)
     }, [check])
 

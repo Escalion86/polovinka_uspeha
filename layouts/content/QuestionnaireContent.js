@@ -29,7 +29,6 @@ import useErrors from '@helpers/useErrors'
 import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
@@ -60,7 +59,6 @@ const QuestionnaireContent = (props) => {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
-  const siteSettings = useRecoilValue(siteSettingsAtom)
 
   const [
     waitActivateTelegramNotifications,
@@ -750,9 +748,7 @@ const QuestionnaireContent = (props) => {
             )}
           </TabPanel>
         )}
-        {/* ADD */}
-        {((siteSettings?.custom?.birthdayUpdate && isLoggedUserMember) ||
-          isLoggedUserModer) && (
+        {(isLoggedUserMember || isLoggedUserModer) && (
           <TabPanel tabName="Оповещения" className="flex-1">
             <div className="flex flex-wrap items-center gap-x-2">
               <YesNoPicker
