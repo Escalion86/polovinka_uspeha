@@ -4,9 +4,7 @@ import { pages, pagesGroups } from '@helpers/constants'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import badgesSelector from '@state/selectors/badgesSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -221,10 +219,8 @@ const Menu = ({ menuCfg, activePage }) => {
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
-  const siteSettings = useRecoilValue(siteSettingsAtom)
 
   const variants = {
     min: { width: '100%' },
@@ -274,13 +270,7 @@ const SideBar = ({ page }) => {
       >
         <div className="flex flex-col w-full overflow-x-hidden overflow-y-auto">
           <Menu
-            menuCfg={menuCfg(
-              loggedUserActiveRole,
-              loggedUserActiveStatus,
-              isLoggedUserAdmin || siteSettings?.custom?.birthdayUpdate
-                ? undefined
-                : [0]
-            )}
+            menuCfg={menuCfg(loggedUserActiveRole, loggedUserActiveStatus)}
             activePage={page}
           />
         </div>

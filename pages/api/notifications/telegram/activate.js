@@ -1,5 +1,8 @@
+import formatDateTime from '@helpers/formatDateTime'
+import Events from '@models/Events'
 import Users from '@models/Users'
 import sendTelegramMessage from '@server/sendTelegramMessage'
+import userSignIn from '@server/userSignIn'
 import dbConnect from '@utils/dbConnect'
 
 export default async function handler(req, res) {
@@ -9,85 +12,172 @@ export default async function handler(req, res) {
   if (method === 'POST') {
     try {
       // console.log(body)
-      const { update_id, message } = body
+      const { update_id, message, callback_query } = body
       // console.log('telegram body', body)
-      if (['/start', '/activate', '/deactivate'].includes(message.text)) {
-        // console.log('message.text', message.text)
-        // const users = await Users.find({})
-        // console.log('message.from.id', message.from.id)
-        const isActivation = ['/activate', '/start'].includes(message.text)
-        const userFromReq = await Users.findOneAndUpdate(
-          {
-            'notifications.telegram.userName':
-              message.from.username.toLowerCase(),
-          },
-          {
-            $set: {
-              'notifications.telegram.id': isActivation
-                ? message.from.id
-                : undefined,
-              'notifications.telegram.active': isActivation,
-              // $set: {
-              //   'telegram.$.id':
-              //     message.text === '/activate' ? message.from.id : null,
-              // },
-            },
-
-            // notifications: {
-            //   telegram: {
-            //     id: message.text === '/activate' ? message.from.id : null,
-            //   },
-            //   // $set: {
-            //   //   'telegram.$.id':
-            //   //     message.text === '/activate' ? message.from.id : null,
-            //   // },
-            // },
-            // notifications: {
-            //   ...userFromReq[0].notifications,
-            //   telegram: {
-            //     ...userFromReq[0].notifications.telegram,
-            //     id: message.text === '/activate' ? message.from.id : null,
-            //   },
-            // },
-          }
+      if (callback_query?.data) {
+        const test = JSON.stringify({
+          c: 'eventSignIn',
+          eventId: '6511cf3dde0316d770a00fc1',
+        })
+        console.log('test :>> ', test)
+        console.log('callback_query?.data :>> ', callback_query?.data)
+        console.log('typeof test :>> ', typeof test)
+        console.log(
+          'typeof callback_query?.data :>> ',
+          typeof callback_query?.data
         )
-        // console.log('userFromReq', userFromReq)
-        // const userFromReq = users.find(
-        //   (user) =>
-        //     user.notifications?.get('telegram')?.userName &&
-        //     user.notifications.get('telegram').userName.toLowerCase() ===
-        //       message.from.username.toLowerCase()
-        // )
-        if (userFromReq) {
+        const cmdProps = callback_query.data
+        if (typeof cmdProps === 'object') {
+          const cmd = cmdProps.c
+          if (cmd === 'eventSignIn') {
+            const { eventId } = cmdProps
+            const userTelegramId = callback_query.from.id
+            const user = await Users.findOne({
+              'notifications.telegram.id': userTelegramId,
+            })
+            if (!user)
+              return res
+                ?.status(400)
+                .json({ success: false, error: 'Не найден пользователь' })
+
+            const event = await Events.findOne({ _id: eventId })
+            if (!event)
+              return res
+                ?.status(400)
+                .json({ success: false, error: 'Не найдено мероприятие' })
+
+            const result = await userSignIn({
+              req,
+              res,
+              userId: user._id,
+              eventId,
+              autoReserve: true,
+            })
+            // {
+            //   "success": true,
+            //   "data": {
+            //     "eventId": "6511cf3dde0316d770a00fc1",
+            //     "userId": "6252f733183ed7f8da6baa54",
+            //     "status": "participant",
+            //     "userStatus": "member",
+            //     "eventSubtypeNum": 0,
+            //     "comment": "",
+            //     "_id": "6511d43ede0316d770a0108f",
+            //     "createdAt": "2023-09-25T18:41:02.453Z",
+            //     "updatedAt": "2023-09-25T18:41:02.453Z",
+            //     "__v": 0
+            //   }
+            // }
+            // {
+            //   "success": false,
+            //   "data": {
+            //     "error": "вы уже зарегистрированы"
+            //   }
+            // }
+            let text
+            console.log('result :>> ', result)
+            if (result.success) {
+              text = `Вы успешно зарегистрировались ${
+                result.data?.status === 'reserve' ? 'в РЕЗЕРВ ' : ''
+              }на мероприятие "${event.title}" от ${formatDateTime(
+                event.dateStart
+              )}`
+            } else {
+              text = `ОШИБКА - ${result.data.error}`
+            }
+            await sendTelegramMessage({
+              req,
+              telegramIds: userTelegramId,
+              text,
+            })
+
+            return result
+          }
+        } else {
+          return res
+            ?.status(400)
+            .json({ success: false, error: 'Ошибка команды' })
+        }
+      }
+      if (message?.text) {
+        if (['/start', '/activate', '/deactivate'].includes(message.text)) {
+          // console.log('message.text', message.text)
+          // const users = await Users.find({})
+          // console.log('message.from.id', message.from.id)
+          const isActivation = ['/activate', '/start'].includes(message.text)
+          const userFromReq = await Users.findOneAndUpdate(
+            {
+              'notifications.telegram.userName':
+                message.from.username.toLowerCase(),
+            },
+            {
+              $set: {
+                'notifications.telegram.id': isActivation
+                  ? message.from.id
+                  : undefined,
+                'notifications.telegram.active': isActivation,
+                // $set: {
+                //   'telegram.$.id':
+                //     message.text === '/activate' ? message.from.id : null,
+                // },
+              },
+
+              // notifications: {
+              //   telegram: {
+              //     id: message.text === '/activate' ? message.from.id : null,
+              //   },
+              //   // $set: {
+              //   //   'telegram.$.id':
+              //   //     message.text === '/activate' ? message.from.id : null,
+              //   // },
+              // },
+              // notifications: {
+              //   ...userFromReq[0].notifications,
+              //   telegram: {
+              //     ...userFromReq[0].notifications.telegram,
+              //     id: message.text === '/activate' ? message.from.id : null,
+              //   },
+              // },
+            }
+          )
+          // console.log('userFromReq', userFromReq)
+          // const userFromReq = users.find(
+          //   (user) =>
+          //     user.notifications?.get('telegram')?.userName &&
+          //     user.notifications.get('telegram').userName.toLowerCase() ===
+          //       message.from.username.toLowerCase()
+          // )
+          if (userFromReq) {
+            await sendTelegramMessage({
+              req,
+              telegramIds: message.from.id,
+              text: isActivation
+                ? 'Активация уведомлений прошла успешно!'
+                : 'Уведомления отключены!',
+            })
+            // const data = await Users.findByIdAndUpdate(userFromReq[0]._id, {
+            //   notifications: {
+            //     ...userFromReq[0].notifications,
+            //     telegram: {
+            //       ...userFromReq[0].notifications.telegram,
+            //       id: message.text === '/activate' ? message.from.id : null,
+            //     },
+            //   },
+            // })
+            return res?.status(200).json({ success: true, data: userFromReq })
+          }
           await sendTelegramMessage({
             req,
             telegramIds: message.from.id,
             text: isActivation
-              ? 'Активация уведомлений прошла успешно!'
-              : 'Уведомления отключены!',
+              ? 'ОШИБКА! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!'
+              : 'ОШИБКА! Уведомления не отключены. Пожалуйста свяжитесь с администратором! http://t.me/escalion',
           })
-          // const data = await Users.findByIdAndUpdate(userFromReq[0]._id, {
-          //   notifications: {
-          //     ...userFromReq[0].notifications,
-          //     telegram: {
-          //       ...userFromReq[0].notifications.telegram,
-          //       id: message.text === '/activate' ? message.from.id : null,
-          //     },
-          //   },
-          // })
-          return res?.status(200).json({ success: true, data: userFromReq })
+          return res?.status(200).json({
+            success: false,
+            error: 'Пользователь с таким логином не найден',
+          })
         }
-        await sendTelegramMessage({
-          req,
-          telegramIds: message.from.id,
-          text: isActivation
-            ? 'ОШИБКА! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!'
-            : 'ОШИБКА! Уведомления не отключены. Пожалуйста свяжитесь с администратором! http://t.me/escalion',
-        })
-        return res?.status(200).json({
-          success: false,
-          error: 'Пользователь с таким логином не найден',
-        })
       }
 
       // // Сначала проверяем есть ли такой пользователь уже

@@ -1,5 +1,4 @@
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
-import isUserAdmin from '@helpers/isUserAdmin'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import addModalSelector from '@state/selectors/addModalSelector'
 import { setRecoil } from 'recoil-nexus'
@@ -78,24 +77,20 @@ const modalsFuncGenerator = (
       confirmButtonName: `Записаться в резерв`,
       // ADD
       confirmButtonName2: `Записаться в резерв и добавить в календарь`,
-      onConfirm2:
-        siteSettings?.custom?.birthdayUpdate ||
-        isUserAdmin(loggedUserActiveRole)
-          ? () => {
-              itemsFunc.event.signUp(
-                {
-                  eventId: event._id,
-                  userId: loggedUser?._id,
-                  status: 'reserve',
-                  userStatus: loggedUser.status,
-                  eventSubtypeNum,
-                  comment,
-                },
-                undefined,
-                (data) => goToUrlForAddEventToCalendar(event)
-              )
-            }
-          : undefined,
+      onConfirm2: () => {
+        itemsFunc.event.signUp(
+          {
+            eventId: event._id,
+            userId: loggedUser?._id,
+            status: 'reserve',
+            userStatus: loggedUser.status,
+            eventSubtypeNum,
+            comment,
+          },
+          undefined,
+          (data) => goToUrlForAddEventToCalendar(event)
+        )
+      },
       onConfirm: () => {
         itemsFunc.event.signUp({
           eventId: event._id,
@@ -398,18 +393,14 @@ const modalsFuncGenerator = (
             confirmButtonName: `Записаться${postfixStatus}`,
             // ADD
             confirmButtonName2: `Записаться${postfixStatus} и добавить в календарь`,
-            onConfirm2:
-              siteSettings?.custom?.birthdayUpdate ||
-              isUserAdmin(loggedUserActiveRole)
-                ? () =>
-                    eventSignUp({
-                      event,
-                      status,
-                      eventSubtypeNum,
-                      comment,
-                      onSuccess: () => goToUrlForAddEventToCalendar(event),
-                    })
-                : undefined,
+            onConfirm2: () =>
+              eventSignUp({
+                event,
+                status,
+                eventSubtypeNum,
+                comment,
+                onSuccess: () => goToUrlForAddEventToCalendar(event),
+              }),
             onConfirm: () => {
               eventSignUp({
                 event,

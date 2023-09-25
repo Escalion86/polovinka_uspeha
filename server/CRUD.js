@@ -11,6 +11,59 @@ import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
 
+const test_callback = {
+  update_id: 173172137,
+  callback_query: {
+    id: '1121425242543370968',
+    from: {
+      id: 261102161,
+      is_bot: false,
+      first_name: 'Алексей',
+      last_name: 'Белинский Иллюзионист',
+      username: 'Escalion',
+      language_code: 'ru',
+      is_premium: true,
+    },
+    message: {
+      message_id: 91,
+      from: '[Object]',
+      chat: ' [Object]',
+      date: 1683689196,
+      text: 'Неизвестная команда',
+      reply_markup: '[Object]',
+    },
+    chat_instance: '3955131192076482535',
+    data: '/createTeam',
+  },
+}
+const rtest = {
+  body: {
+    update_id: 173172081,
+    message: {
+      message_id: 14,
+      from: {
+        id: 261102161,
+        is_bot: false,
+        first_name: 'Алексей',
+        last_name: 'Белинский Иллюзионист',
+        username: 'Escalion',
+        language_code: 'ru',
+        is_premium: true,
+      },
+      chat: {
+        id: 261102161,
+        first_name: 'Алексей',
+        last_name: 'Белинский Иллюзионист',
+        username: 'Escalion',
+        type: 'private',
+      },
+      date: 1683645745,
+      text: '/new_team',
+      entities: [{ offset: 0, length: 12, type: 'bot_command' }],
+    },
+  },
+}
+
 const linkAReformer = (link) => {
   const textLink = link.substring(link.indexOf('>') + 1, link.lastIndexOf('<'))
   const text = link.substring(link.indexOf(`href="`) + 6).split('"')[0]
@@ -390,11 +443,19 @@ const notificateUsersAboutEvent = async (event, req) => {
 
   const textEnd = `\n\n#${event.tags.join(' #')}`
 
+  console.log(
+    JSON.stringify({ c: 'eventSignIn', eventId: '6511cf3dde0316d770a00fc1' })
+  )
+
   const inline_keyboard = [
     [
       {
         text: '\u{1F4C5} Открыть мероприятие',
         url: req.headers.origin + '/event/' + String(event._id),
+      },
+      {
+        text: '\u{1F4DD} Записаться',
+        callback_data: JSON.stringify({ c: 'eventSignIn', eventId: event._id }),
       },
     ],
   ]
