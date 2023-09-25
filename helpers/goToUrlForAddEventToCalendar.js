@@ -1,6 +1,6 @@
 import formatAddress from './formatAddress'
 import formatDateTime from './formatDateTime'
-import DOMPurify from 'dompurify'
+import DOMPurify from 'isomorphic-dompurify'
 
 // function formatDate(date) {
 //   const year = new Date(date).toLocaleString('default', { year: 'numeric' })

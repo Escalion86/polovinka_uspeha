@@ -8,7 +8,7 @@ import Events from '@models/Events'
 import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
-import DOMPurify from 'dompurify'
+import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
 
 const linkAReformer = (link) => {

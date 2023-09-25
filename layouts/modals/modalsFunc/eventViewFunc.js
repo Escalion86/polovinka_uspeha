@@ -23,7 +23,7 @@ import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import userSelector from '@state/selectors/userSelector'
-import DOMPurify from 'dompurify'
+import DOMPurify from 'isomorphic-dompurify'
 import { Suspense, useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 

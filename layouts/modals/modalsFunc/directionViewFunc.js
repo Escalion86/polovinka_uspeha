@@ -1,5 +1,5 @@
 import directionSelector from '@state/selectors/directionSelector'
-import DOMPurify from 'dompurify'
+import DOMPurify from 'isomorphic-dompurify'
 import { useRecoilValue } from 'recoil'
 
 const directionViewFunc = (directionId) => {

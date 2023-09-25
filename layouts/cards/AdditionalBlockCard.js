@@ -5,7 +5,7 @@ import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
-import DOMPurify from 'dompurify'
+import DOMPurify from 'isomorphic-dompurify'
 import { useRecoilValue } from 'recoil'
 
 const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
