@@ -8,7 +8,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
-import DOMPurify from 'dompurify'
+import DOMPurify from 'isomorphic-dompurify'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 
