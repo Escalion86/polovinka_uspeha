@@ -19,6 +19,7 @@ const ModalButtons = ({
   closeModal,
   bottomLeftButton,
   bottomLeftComponent,
+  declineButtonBgClassName = 'bg-danger',
 }) => {
   if (
     !onConfirmClick &&
@@ -59,7 +60,7 @@ const ModalButtons = ({
           {onConfirmClick || onConfirm2Click || onDeclineClick ? (
             <Button
               name={declineName}
-              classBgColor="bg-danger"
+              classBgColor={declineButtonBgClassName}
               onClick={
                 typeof onDeclineClick === 'function'
                   ? onDeclineClick

@@ -38,6 +38,7 @@ const Modal = ({
   TopLeftComponent,
   bottomLeftButtonProps,
   bottomLeftComponent,
+  declineButtonBgClassName,
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
@@ -299,6 +300,7 @@ const Modal = ({
             closeModal={closeModal}
             bottomLeftButton={bottomLeftButton}
             bottomLeftComponent={bottomLeftComponentState}
+            declineButtonBgClassName={declineButtonBgClassName}
           >
             {ComponentInFooter}
           </ModalButtons>
