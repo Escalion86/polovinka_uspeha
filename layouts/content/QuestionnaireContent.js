@@ -162,8 +162,9 @@ const QuestionnaireContent = (props) => {
 
   const { success, error } = useSnackbar()
 
-  const isNotificationActivated =
+  const isNotificationActivated = !!(
     notifications?.telegram?.id && notifications?.telegram?.active
+  )
 
   const formChanged =
     loggedUser?.firstName !== firstName ||
@@ -780,6 +781,7 @@ const QuestionnaireContent = (props) => {
                 // readOnly={waitActivateTelegramNotifications}
               />
               <Input
+                type="number"
                 label="Telegram ID"
                 value={notifications?.telegram?.id ?? ''}
                 onChange={(value) => {
@@ -793,6 +795,7 @@ const QuestionnaireContent = (props) => {
                 }}
                 error={errors.email}
                 copyPasteButtons
+                showArrows={false}
                 // noMargin
               />
               {/* {waitActivateTelegramNotifications && (
