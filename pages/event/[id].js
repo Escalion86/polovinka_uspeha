@@ -13,7 +13,7 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 
 const Event = ({ event }) => {
@@ -22,7 +22,7 @@ const Event = ({ event }) => {
   const TopLeftComponent = eventView.TopLeftComponent
 
   return (
-    <>
+    <Suspense>
       <div className="relative">
         {TopLeftComponent && (
           <div className="absolute right-3">
@@ -32,22 +32,75 @@ const Event = ({ event }) => {
         <H2 className="mx-10 mb-4">Мероприятие</H2>
       </div>
       <Component />
-    </>
+    </Suspense>
+  )
+}
+
+const EventBlock = ({ event }) => {
+  const loggedUser = useRecoilValue(loggedUserAtom)
+  const { canSee } = useRecoilValue(loggedUserToEventStatusSelector(event?._id))
+
+  const router = useRouter()
+  const routerQuery = { ...router.query }
+  delete routerQuery.id
+  const query = event?._id ? { event: event._id } : {}
+
+  return (
+    <BlockContainer small>
+      {event?._id && canSee && <Event event={event} />}
+      <div className="flex flex-col items-center">
+        {!event?._id && (
+          <span className="text-xl">Ошибка. Мероприятие не найдено</span>
+        )}
+        {!canSee && (
+          <span className="text-xl">
+            Мероприятие не доступно для просмотра неавторизированным
+            пользователям, пожалуйста авторизируйтесь
+          </span>
+        )}
+        {!loggedUser && (
+          <>
+            <Link
+              href={{
+                pathname: '/login',
+                query: { ...routerQuery, ...query },
+              }}
+              shallow
+            >
+              <PulseButton
+                className="mt-4 text-white"
+                title="Авторизироваться"
+                // onClick={() => router.push('./login', '', { shallow: true })}
+              />
+            </Link>
+            <Link
+              href={{
+                pathname: '/login',
+                query: {
+                  ...routerQuery,
+                  ...query,
+                  registration: true,
+                },
+              }}
+              shallow
+            >
+              <PulseButton
+                className="mt-4 text-white"
+                title="Зарегистрироваться"
+                // onClick={() => router.push('./login', '', { shallow: true })}
+              />
+            </Link>
+          </>
+        )}
+      </div>
+    </BlockContainer>
   )
 }
 
 function EventPage(props) {
   const eventId = props.id
 
-  const router = useRouter()
-  const routerQuery = { ...router.query }
-  delete routerQuery.id
-
   const eventsState = useRecoilValue(eventsAtom)
-
-  const loggedUser = useRecoilValue(loggedUserAtom)
-
-  const { canSee } = useRecoilValue(loggedUserToEventStatusSelector(eventId))
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01
@@ -64,7 +117,6 @@ function EventPage(props) {
       : undefined
 
   const title = event?.title ?? ''
-  const query = event?._id ? { event: event._id } : {}
 
   return (
     <>
@@ -76,55 +128,9 @@ function EventPage(props) {
       </Head>
       <StateLoader {...props}>
         <Header />
+        <EventBlock event={event} />
         {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
-        <BlockContainer small>
-          {event?._id && canSee && <Event event={event} />}
-          <div className="flex flex-col items-center">
-            {!event?._id && (
-              <span className="text-xl">Ошибка. Мероприятие не найдено</span>
-            )}
-            {!canSee && (
-              <span className="text-xl">
-                Мероприятие не доступно для просмотра неавторизированным
-                пользователям, пожалуйста авторизируйтесь
-              </span>
-            )}
-            {!loggedUser && (
-              <>
-                <Link
-                  href={{
-                    pathname: '/login',
-                    query: { ...routerQuery, ...query },
-                  }}
-                  shallow
-                >
-                  <PulseButton
-                    className="mt-4 text-white"
-                    title="Авторизироваться"
-                    // onClick={() => router.push('./login', '', { shallow: true })}
-                  />
-                </Link>
-                <Link
-                  href={{
-                    pathname: '/login',
-                    query: {
-                      ...routerQuery,
-                      ...query,
-                      registration: true,
-                    },
-                  }}
-                  shallow
-                >
-                  <PulseButton
-                    className="mt-4 text-white"
-                    title="Зарегистрироваться"
-                    // onClick={() => router.push('./login', '', { shallow: true })}
-                  />
-                </Link>
-              </>
-            )}
-          </div>
-        </BlockContainer>
+
         {/* <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
         </div> */}
         <ContactsBlock />

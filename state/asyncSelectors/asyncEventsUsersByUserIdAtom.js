@@ -1,4 +1,4 @@
-import getFetch from '@helpers/getFetch'
+import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import { atomFamily, selectorFamily } from 'recoil'
 import { setRecoil } from 'recoil-nexus'
@@ -10,16 +10,22 @@ const asyncEventsUsersByUserIdSelector = selectorFamily({
     async ({ get, set }) => {
       // console.log('Get :>> ', userId)
       if (!userId) return undefined
-      const res = await getFetch('/api/eventsusers', { userId })
+      const res = await getData(
+        '/api/eventsusers',
+        { userId },
+        null,
+        null,
+        true
+      )
       setRecoil(isLoadedAtom('asyncEventsUsersByUserIdAtom' + userId), true)
       // // Throw error with status code in case Fetch API req failed
       // if (!res.ok) {
       //   throw new Error(res.status)
       // }
 
-      const json = await res.json()
-      const { data } = json
-      return data
+      // const json = await res.json()
+      // const { data } = json
+      return res
     },
 })
 

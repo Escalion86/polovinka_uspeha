@@ -88,8 +88,12 @@ const textForming = ({
       }).toUpperCase()}`
     )
     elementOfTextArray.push(`<b>"${event.title.toUpperCase()}"</b>`)
-    if (showTags && event.tags?.length > 0) {
-      elementOfTextArray.push(`#${event.tags.join(' #')}`)
+    const eventTags =
+      typeof event.tags === 'object' && event.tags?.length > 0
+        ? event.tags.filter((tag) => tag)
+        : []
+    if (showTags && eventTags.length > 0) {
+      elementOfTextArray.push(`#${eventTags.join(' #')}`)
     }
 
     if (showDescription) {
@@ -230,6 +234,7 @@ const ToolsTextEventsAnonsContent = () => {
         .replaceAll('<li>', '\n\u{2764} <li>')
         .replaceAll('<p>', '\n<p>')
         .replaceAll('<br>', '\n')
+        .replaceAll('&nbsp;', ' ')
         .trim('\n'),
       {
         ALLOWED_TAGS: [],

@@ -23,7 +23,7 @@ const userLoginHistoryFunc = (userId, clone = false) => {
     const user = useRecoilValue(userSelector(userId))
 
     useEffect(() => {
-      getData(`/api/loginhistory`, { userId }, setLoginHistories)
+      getData(`/api/loginhistory`, { userId }, setLoginHistories, null, true)
     }, [userId])
 
     if (!loginHistories)

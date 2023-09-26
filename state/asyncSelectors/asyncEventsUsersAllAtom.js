@@ -1,4 +1,3 @@
-// import getFetch from '@helpers/getFetch'
 import { atom } from 'recoil'
 import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 // import { setRecoil } from 'recoil-nexus'

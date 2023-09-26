@@ -27,6 +27,7 @@ const goToUrlForAddEventToCalendar = (event) => {
       .replaceAll('<li>', '\n\u{2764} <li>')
       .replaceAll('<p>', '\n<p>')
       .replaceAll('<br>', '\n')
+      .replaceAll('&nbsp;', ' ')
       .trim('\n'),
     {
       ALLOWED_TAGS: [],

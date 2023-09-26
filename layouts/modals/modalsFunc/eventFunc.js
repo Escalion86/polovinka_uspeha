@@ -70,7 +70,11 @@ const eventFunc = (eventId, clone = false) => {
       event?.description ?? DEFAULT_EVENT.description
     )
 
-    const defaultTags = useMemo(() => event?.tags ?? [], [])
+    const defaultTags = useMemo(
+      () =>
+        typeof event?.tags === 'object' ? event?.tags.filter((tag) => tag) : [],
+      []
+    )
     const [tags, setTags] = useState(defaultTags)
 
     const defaultDateStart = useMemo(
