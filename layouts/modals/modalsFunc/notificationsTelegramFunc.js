@@ -72,7 +72,7 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
 
     return (
       <FormWrapper>
-        <Input
+        {/* <Input
           prefix="@"
           label="Имя пользователя Telegram"
           type="text"
@@ -85,7 +85,7 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
           required
           // labelClassName="w-40"
           error={errors.notificationTelegramUserName}
-        />
+        /> */}
         {/* <div className="flex gap-x-1">
                   <span>Статус подключения Telegram:</span>
                   {notifications?.telegram?.id ? (
@@ -97,18 +97,20 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
                     <span className="text-danger">НЕ АКТИВНО</span>
                   )}
                 </div> */}
-        <div className="flex flex-col ">
-          <span>
-            После нажатия кнопки "Активировать" вас перенаправит на телеграм
-            бота. В чате с ботом просто нажмите на кнопку "Старт" внизу
-          </span>
-          {/* <a
-            target="_blank"
-            className="text-general"
-            href="https://t.me/polovinka_uspeha_bot"
-          >
-            Перейти в чат бота
-          </a> */}
+        <div className="flex flex-col gap-y-2">
+          <div>Для активации уведомлений необходимо:</div>
+          <div>
+            1. Авторизироваться в боте оповещений. Для этого нужно открыть бота
+            Telegram и нажать на кнопку "Старт" внизу
+          </div>
+          <div>
+            2. После активации Вам придет сообщение в боте с Вашим Telegram ID,
+            который нужно скопировать и внести на сайте в поле Telegram ID
+          </div>
+          <div>
+            3. Не забудьте сохранить настройки профиля нажав на кнопку
+            "Применить" справа вверху
+          </div>
         </div>
         <ErrorsList errors={errors} />
       </FormWrapper>
@@ -117,7 +119,7 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
 
   return {
     title: `Активация уведомлений Telegram`,
-    confirmButtonName: 'Активаровать',
+    confirmButtonName: 'Открыть бота и получить Telegram ID',
     onDecline: onCancel,
     Children: NotificationsTelegramModal,
   }
