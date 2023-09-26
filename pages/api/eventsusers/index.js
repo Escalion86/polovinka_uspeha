@@ -9,9 +9,9 @@ import dbConnect from '@utils/dbConnect'
 export default async function handler(req, res) {
   const { query, method, body } = req
 
-  await dbConnect()
   if (method === 'POST') {
     try {
+      await dbConnect()
       // const { eventId, usersId, userId, eventUsersStatuses } = body
       const {
         // _id,
@@ -153,6 +153,7 @@ export default async function handler(req, res) {
   }
   if (method === 'DELETE') {
     try {
+      await dbConnect()
       if (!body?.params)
         return res
           ?.status(200)

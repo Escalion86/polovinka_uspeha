@@ -240,7 +240,7 @@ const updateEventInCalendar = async (event, req) => {
   // )
   var preparedText = event.description
   const aTags = event.description.match(/<a[^>]*>([^<]+)<\/a>/g)
-  const linksReformated = []
+  // const linksReformated = []
   if (aTags?.length > 0) {
     for (let i = 0; i < aTags.length; i++)
       preparedText = preparedText.replaceAll(aTags[i], linkAReformer(aTags[i]))
@@ -261,6 +261,7 @@ const updateEventInCalendar = async (event, req) => {
           .replaceAll('</li>', '\n</li>')
           .replaceAll('</p>', '\n</p>')
           .replaceAll('<br>', '\n')
+          .replaceAll('&nbsp;', ' ')
           .trim('\n'),
         {
           ALLOWED_TAGS: [],
@@ -422,6 +423,7 @@ const notificateUsersAboutEvent = async (event, req) => {
       .replaceAll('<li>', '\n\u{2764} <li>')
       .replaceAll('<p>', '\n<p>')
       .replaceAll('<br>', '\n')
+      .replaceAll('&nbsp;', ' ')
       .trim('\n'),
     {
       ALLOWED_TAGS: [],
@@ -441,11 +443,11 @@ const notificateUsersAboutEvent = async (event, req) => {
       : eventPriceForMember
   } руб`
 
-  const textEnd = `\n\n#${event.tags.join(' #')}`
-
-  console.log(
-    JSON.stringify({ c: 'eventSignIn', eventId: '6511cf3dde0316d770a00fc1' })
-  )
+  const eventTags =
+    typeof event.tags === 'object' && event.tags?.length > 0
+      ? event.tags.filter((tag) => tag)
+      : []
+  const textEnd = eventTags.length > 0 ? `\n\n#${eventTags.join(' #')}` : ''
 
   const inline_keyboard = [
     [

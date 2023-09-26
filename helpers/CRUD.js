@@ -10,6 +10,7 @@ export const getData = async (
   resJson = false
 ) => {
   const actualUrl = urlQueryGenerator(url, form)
+  console.log('actualUrl :>> ', actualUrl)
   try {
     const res = await fetch(actualUrl, {
       method: 'GET',

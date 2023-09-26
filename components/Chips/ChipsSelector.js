@@ -16,15 +16,12 @@ const ChipsSelector = forwardRef(
       value,
       items,
       className,
-      inputClassName,
       labelClassName,
       error = false,
-      wrapperClassName,
       noBorder = false,
       placeholder,
       disabled = false,
       required,
-      defaultValue,
       fullWidth = false,
       noMargin = false,
       smallMargin = false,
@@ -60,7 +57,7 @@ const ChipsSelector = forwardRef(
       <InputWrapper
         label={label}
         labelClassName={labelClassName}
-        value={filteredValue ?? defaultValue}
+        value={filteredValue}
         className={cn(readOnly ? '' : 'cursor-pointer', className)}
         required={required}
         floatingLabel={floatingLabel}
@@ -70,6 +67,8 @@ const ChipsSelector = forwardRef(
         paddingX
         postfix={postfix}
         prefix={prefix}
+        prefixClassName={prefixClassName}
+        postfixClassName={postfixClassName}
         ref={ref}
         disabled={disabled}
         fullWidth={fullWidth}
