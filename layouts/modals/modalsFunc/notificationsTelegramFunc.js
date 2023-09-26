@@ -121,7 +121,9 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
   return {
     title: `Активация уведомлений Telegram`,
     confirmButtonName: 'Открыть бота и получить Telegram ID',
-    onDecline: onCancel,
+    // onDecline: onCancel,
+    declineButtonName: 'Закрыть',
+    declineButtonBgClassName: 'bg-general',
     Children: NotificationsTelegramModal,
   }
 }

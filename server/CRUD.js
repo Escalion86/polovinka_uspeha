@@ -600,107 +600,150 @@ export default async function handler(Schema, req, res, params = null) {
           })
 
           // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
-          if (Schema === Users && !isUserQuestionnaireFilled(oldData)) {
-            const users = await Users.find({})
-            const usersTelegramIds = users
-              .filter(
-                (user) =>
-                  isUserModer(user) &&
-                  user.notifications?.get('settings')?.newUserRegistred &&
-                  user.notifications?.get('telegram').active &&
-                  user.notifications?.get('telegram')?.id
-              )
-              .map((user) => user.notifications?.get('telegram')?.id)
+          if (Schema === Users) {
+            // Если Telegram ID был обновлен
+            const oldTelegramId = oldData.notifications?.get('telegram')?.id
+            const newTelegramId = data.notifications?.get('telegram')?.id
+            const oldTelegramActivate =
+              oldData.notifications?.get('telegram')?.active
+            const newTelegramActivate =
+              data.notifications?.get('telegram')?.active
 
-            const text = `Пользователь с номером +${
-              data.phone
-            } заполнил анкету:\n - Полное имя: ${getUserFullName(
-              data
-            )}\n - Пол: ${
-              data.gender === 'male' ? 'Мужчина' : 'Женщина'
-            }\n - Дата рождения: ${birthDateToAge(
-              data.birthday,
-              new Date(),
-              true,
-              true,
-              true
-            )}`
+            if (
+              oldTelegramId !== newTelegramId ||
+              oldTelegramActivate !== newTelegramActivate
+            ) {
+              // Если ID есть и переключили на active или обновили ID
+              if (newTelegramId && newTelegramActivate) {
+                await sendTelegramMessage({
+                  req,
+                  telegramIds: newTelegramId,
+                  text: '\u{2705} Уведомления подключены!',
+                })
+              }
+              // Если выключили уведомления
+              if (
+                oldTelegramActivate &&
+                !newTelegramActivate &&
+                newTelegramId
+              ) {
+                await sendTelegramMessage({
+                  req,
+                  telegramIds: newTelegramId,
+                  text: '\u{26D4} Уведомления отключены!',
+                })
+              }
+              // Если ID удален
+              if (oldTelegramId && !newTelegramId) {
+                await sendTelegramMessage({
+                  req,
+                  telegramIds: oldTelegramId,
+                  text: '\u{26D4} Уведомления отключены!',
+                })
+              }
+            }
+            if (!isUserQuestionnaireFilled(oldData)) {
+              const users = await Users.find({})
+              const usersTelegramIds = users
+                .filter(
+                  (user) =>
+                    isUserModer(user) &&
+                    user.notifications?.get('settings')?.newUserRegistred &&
+                    user.notifications?.get('telegram').active &&
+                    user.notifications?.get('telegram')?.id
+                )
+                .map((user) => user.notifications?.get('telegram')?.id)
 
-            await sendTelegramMessage({
-              req,
-              telegramIds: usersTelegramIds,
-              text,
-              images: data.images,
-              inline_keyboard: [
-                [
-                  {
-                    text: '\u{1F464} Пользователь',
-                    url: req.headers.origin + '/user/' + id,
-                  },
+              const text = `Пользователь с номером +${
+                data.phone
+              } заполнил анкету:\n - Полное имя: ${getUserFullName(
+                data
+              )}\n - Пол: ${
+                data.gender === 'male' ? 'Мужчина' : 'Женщина'
+              }\n - Дата рождения: ${birthDateToAge(
+                data.birthday,
+                new Date(),
+                true,
+                true,
+                true
+              )}`
+
+              await sendTelegramMessage({
+                req,
+                telegramIds: usersTelegramIds,
+                text,
+                images: data.images,
+                inline_keyboard: [
+                  [
+                    {
+                      text: '\u{1F464} Пользователь',
+                      url: req.headers.origin + '/user/' + id,
+                    },
+                  ],
                 ],
-              ],
-            })
-            // await Promise.all(
-            //   usersTelegramIds.map(async (telegramId) => {
-            //     await postData(
-            //       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-            //       {
-            //         chat_id: telegramId,
-            //         text: `Пользователь с номером +${
-            //           data.phone
-            //         } заполнил анкету:\n - Полное имя: ${fullUserName}\n - Пол: ${
-            //           data.gender === 'male' ? 'Мужчина' : 'Женщина'
-            //         }\n - Дата рождения: ${birthDateToAge(
-            //           data.birthday,
-            //           new Date(),
-            //           true,
-            //           true,
-            //           true
-            //         )}`,
-            //         parse_mode: 'html',
-            //         reply_markup:
-            //           req.headers.origin.substr(0, 5) === 'https'
-            //             ? JSON.stringify({
-            //                 inline_keyboard: [
-            //                   [
-            //                     {
-            //                       text: '\u{1F464} Пользователь',
-            //                       url: req.headers.origin + '/user/' + id,
-            //                     },
-            //                   ],
-            //                 ].filter((botton) => botton),
-            //               })
-            //             : undefined,
-            //       },
-            //       (data) => console.log('data', data),
-            //       (data) => console.log('error', data),
-            //       true,
-            //       null,
-            //       true
-            //     )
-            //     if (data.images && data.images[0]) {
-            //       await postData(
-            //         `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMediaGroup`,
-            //         {
-            //           chat_id: telegramId,
-            //           media: JSON.stringify(
-            //             data.images.map((photo) => {
-            //               return {
-            //                 type: 'photo',
-            //                 media: photo,
-            //               }
-            //             })
-            //           ),
-            //         },
-            //         (data) => console.log('data', data),
-            //         (data) => console.log('error', data),
-            //         true,
-            //         null,
-            //         true
-            //       )
-            //     }
-            //   })
-            // )
+              })
+              // await Promise.all(
+              //   usersTelegramIds.map(async (telegramId) => {
+              //     await postData(
+              //       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+              //       {
+              //         chat_id: telegramId,
+              //         text: `Пользователь с номером +${
+              //           data.phone
+              //         } заполнил анкету:\n - Полное имя: ${fullUserName}\n - Пол: ${
+              //           data.gender === 'male' ? 'Мужчина' : 'Женщина'
+              //         }\n - Дата рождения: ${birthDateToAge(
+              //           data.birthday,
+              //           new Date(),
+              //           true,
+              //           true,
+              //           true
+              //         )}`,
+              //         parse_mode: 'html',
+              //         reply_markup:
+              //           req.headers.origin.substr(0, 5) === 'https'
+              //             ? JSON.stringify({
+              //                 inline_keyboard: [
+              //                   [
+              //                     {
+              //                       text: '\u{1F464} Пользователь',
+              //                       url: req.headers.origin + '/user/' + id,
+              //                     },
+              //                   ],
+              //                 ].filter((botton) => botton),
+              //               })
+              //             : undefined,
+              //       },
+              //       (data) => console.log('data', data),
+              //       (data) => console.log('error', data),
+              //       true,
+              //       null,
+              //       true
+              //     )
+              //     if (data.images && data.images[0]) {
+              //       await postData(
+              //         `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMediaGroup`,
+              //         {
+              //           chat_id: telegramId,
+              //           media: JSON.stringify(
+              //             data.images.map((photo) => {
+              //               return {
+              //                 type: 'photo',
+              //                 media: photo,
+              //               }
+              //             })
+              //           ),
+              //         },
+              //         (data) => console.log('data', data),
+              //         (data) => console.log('error', data),
+              //         true,
+              //         null,
+              //         true
+              //       )
+              //     }
+              //   })
+              // )
+            }
           }
 
           return res?.status(200).json({ success: true, data })
