@@ -1,12 +1,12 @@
-import ErrorsList from '@components/ErrorsList'
+// import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
-import Input from '@components/Input'
-import { putData } from '@helpers/CRUD'
-import useErrors from '@helpers/useErrors'
-import useSnackbar from '@helpers/useSnackbar'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+// import Input from '@components/Input'
+// import { putData } from '@helpers/CRUD'
+// import useErrors from '@helpers/useErrors'
+// import useSnackbar from '@helpers/useSnackbar'
+// import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+// import { useRecoilValue } from 'recoil'
 
 const notificationsTelegramFunc = (onStartActivate, onCancel) => {
   const NotificationsTelegramModal = ({
@@ -17,58 +17,59 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
-    const [userName, setUserName] = useState(
-      loggedUser?.notifications?.telegram?.userName ?? ''
-    )
+    // const loggedUser = useRecoilValue(loggedUserAtom)
+    // const [userName, setUserName] = useState(
+    //   loggedUser?.notifications?.telegram?.userName ?? ''
+    // )
 
-    const [errors, checkErrors, addError, removeError, clearErrors] =
-      useErrors()
+    // const [errors, checkErrors, addError, removeError, clearErrors] =
+    //   useErrors()
 
-    const { success, error } = useSnackbar()
+    // const { success, error } = useSnackbar()
 
     const onClickConfirm = async () => {
-      if (!checkErrors({ notificationTelegramUserName: userName })) {
-        await putData(
-          `/api/users/${loggedUser._id}`,
-          {
-            notifications: {
-              ...loggedUser.notifications,
-              telegram: { ...loggedUser.notifications.telegram, userName },
-            },
-          },
-          (data) => {
-            if (typeof onStartActivate === 'function') onStartActivate()
-            window.open('https://t.me/polovinka_uspeha_bot')
-          },
-          () => {
-            error(
-              'Ошибка сохранения имени пользователя для оповещения в Telegram'
-            )
-            addError({ response: 'Ошибка обновления данных' })
-          },
-          false,
-          loggedUser._id
-        )
-        closeModal()
-        // setDirection(
-        //   {
-        //     _id: direction?._id,
-        //     title,
-        //     description,
-        //     showOnSite,
-        //     image,
-        //   },
-        //   clone
-        // )
-      }
+      // if (!checkErrors({ notificationTelegramUserName: userName })) {
+      // await putData(
+      //   `/api/users/${loggedUser._id}`,
+      //   {
+      //     notifications: {
+      //       ...loggedUser.notifications,
+      //       telegram: { ...loggedUser.notifications.telegram, userName },
+      //     },
+      //   },
+      //   (data) => {
+      //     if (typeof onStartActivate === 'function') onStartActivate()
+      //     window.open('https://t.me/polovinka_uspeha_bot')
+      //   },
+      //   () => {
+      //     error(
+      //       'Ошибка сохранения имени пользователя для оповещения в Telegram'
+      //     )
+      //     addError({ response: 'Ошибка обновления данных' })
+      //   },
+      //   false,
+      //   loggedUser._id
+      // )
+      window.open('https://t.me/polovinka_uspeha_bot')
+      closeModal()
+      // setDirection(
+      //   {
+      //     _id: direction?._id,
+      //     title,
+      //     description,
+      //     showOnSite,
+      //     image,
+      //   },
+      //   clone
+      // )
+      // }
     }
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
       // setOnShowOnCloseConfirmDialog(isFormChanged)
-      setDisableConfirm(!userName)
-    }, [userName])
+      // setDisableConfirm(!userName)
+    }, [])
 
     return (
       <FormWrapper>
@@ -112,7 +113,7 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
             "Применить" справа вверху
           </div>
         </div>
-        <ErrorsList errors={errors} />
+        {/* <ErrorsList errors={errors} /> */}
       </FormWrapper>
     )
   }
