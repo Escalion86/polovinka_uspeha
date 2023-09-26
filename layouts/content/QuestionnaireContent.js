@@ -267,48 +267,48 @@ const QuestionnaireContent = (props) => {
     }
   }
 
-  useEffect(() => {
-    if (waitActivateTelegramNotifications) {
-      var interval
-      const fetchUser = async () => {
-        const data = await getData(
-          `/api/users/${loggedUser._id}`,
-          null,
-          null,
-          null,
-          true
-        )
+  // useEffect(() => {
+  //   if (waitActivateTelegramNotifications) {
+  //     var interval
+  //     const fetchUser = async () => {
+  //       const data = await getData(
+  //         `/api/users/${loggedUser._id}`,
+  //         null,
+  //         null,
+  //         null,
+  //         true
+  //       )
 
-        if (data?.notifications?.telegram?.id) {
-          setLoggedUser({
-            ...data,
-            notifications: {
-              ...data.notifications,
-              telegram: { ...data.notifications.telegram, active: true },
-            },
-          })
-          // setLoggedUser({
-          //   ...data,
-          //   notifications: {
-          //     ...data.notifications,
-          //     telegram: { ...data.notifications.telegram, active: true },
-          //   },
-          // })
-          setNotifications((state) => ({
-            ...state,
-            telegram: data?.notifications?.telegram,
-            active: true,
-          }))
-          setWaitActivateTelegramNotifications(false)
-          clearInterval(interval)
-        }
-      }
+  //       if (data?.notifications?.telegram?.id) {
+  //         setLoggedUser({
+  //           ...data,
+  //           notifications: {
+  //             ...data.notifications,
+  //             telegram: { ...data.notifications.telegram, active: true },
+  //           },
+  //         })
+  //         // setLoggedUser({
+  //         //   ...data,
+  //         //   notifications: {
+  //         //     ...data.notifications,
+  //         //     telegram: { ...data.notifications.telegram, active: true },
+  //         //   },
+  //         // })
+  //         setNotifications((state) => ({
+  //           ...state,
+  //           telegram: data?.notifications?.telegram,
+  //           active: true,
+  //         }))
+  //         setWaitActivateTelegramNotifications(false)
+  //         clearInterval(interval)
+  //       }
+  //     }
 
-      interval = setInterval(() => {
-        fetchUser().catch(console.error)
-      }, 5000)
-    }
-  }, [waitActivateTelegramNotifications])
+  //     interval = setInterval(() => {
+  //       fetchUser().catch(console.error)
+  //     }, 5000)
+  //   }
+  // }, [waitActivateTelegramNotifications])
 
   useEffect(() => {
     if (isWaitingToResponse) {
@@ -754,45 +754,64 @@ const QuestionnaireContent = (props) => {
               <YesNoPicker
                 label="Оповещения в Telegram"
                 // inLine
-                value={notifications?.telegram?.active ?? false}
+                value={!!notifications?.telegram?.active}
                 onChange={() => {
-                  // removeError('notificationTelegramUserName')
-                  if (notifications?.telegram?.active) {
-                    modalsFunc.notifications.telegram.deactivate(() => {
-                      setNotifications((state) => ({
-                        ...state,
-                        telegram: {
-                          active: false,
-                          userName: undefined,
-                          id: undefined,
-                        },
-                      }))
-                    })
-                  } else {
-                    setNotifications((state) => ({
-                      ...state,
-                      telegram: {
-                        ...notifications?.telegram,
-                        active: true,
-                      },
-                    }))
-                    modalsFunc.notifications.telegram.activate(
-                      () => setWaitActivateTelegramNotifications(true),
-                      () =>
-                        setNotifications((state) => ({
-                          ...state,
-                          telegram: {
-                            active: false,
-                            userName: undefined,
-                            id: undefined,
-                          },
-                        }))
-                    )
+                  // if (notifications?.telegram?.active) {
+                  //   modalsFunc.notifications.telegram.deactivate(() => {
+                  if (!notifications?.telegram?.active) {
+                    modalsFunc.notifications.telegram.activate()
                   }
+                  setNotifications((state) => ({
+                    ...state,
+                    telegram: {
+                      ...state?.telegram,
+                      active: !state?.telegram?.active,
+                    },
+                  }))
+
+                  // })
+                  // } else {
+                  //   setNotifications((state) => ({
+                  //     ...state,
+                  //     telegram: {
+                  //       ...notifications?.telegram,
+                  //       active: !notifications?.telegram?.active,
+                  //     },
+                  //   }))
+                  //   modalsFunc.notifications.telegram
+                  //     .activate
+                  //     // () => setWaitActivateTelegramNotifications(true),
+                  //     // () =>
+                  //     //   setNotifications((state) => ({
+                  //     //     ...state,
+                  //     //     telegram: {
+                  //     //       active: false,
+                  //     //       userName: undefined,
+                  //     //       id: undefined,
+                  //     //     },
+                  //     //   }))
+                  //     ()
+                  // }
                 }}
-                readOnly={waitActivateTelegramNotifications}
+                // readOnly={waitActivateTelegramNotifications}
               />
-              {waitActivateTelegramNotifications && (
+              <Input
+                label="Telegram ID"
+                value={notifications?.telegram?.id ?? ''}
+                onChange={(value) => {
+                  setNotifications((state) => ({
+                    ...state,
+                    telegram: {
+                      ...notifications?.telegram,
+                      id: value,
+                    },
+                  }))
+                }}
+                error={errors.email}
+                copyPasteButtons
+                // noMargin
+              />
+              {/* {waitActivateTelegramNotifications && (
                 <div className="flex items-center mt-3 gap-x-3">
                   <span className="text-orange-400">ОЖИДАЕМ АКТИВАЦИЮ</span>
                   <LoadingSpinner size="xs" />
@@ -825,7 +844,7 @@ const QuestionnaireContent = (props) => {
                     thin
                   />
                 </div>
-              )}
+              )} */}
             </div>
 
             {isNotificationActivated && (
