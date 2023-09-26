@@ -21,6 +21,9 @@ const userSignIn = async ({
 }) => {
   try {
     await dbConnect()
+    if (autoReserve) {
+      console.log('userSignIn :>> ', { userId, eventId, status })
+    }
     // Проверка что пользователь заполнил анкету и вообще существует
     const user = await Users.findById(userId)
     if (!user) {
@@ -40,6 +43,10 @@ const userSignIn = async ({
       return result
     }
 
+    if (autoReserve) {
+      console.log('userSignIn 2')
+    }
+
     // Сначала проверяем есть ли такой пользователь в мероприятии
     const eventUser = await EventsUsers.findOne({ eventId, userId })
     if (eventUser) {
@@ -49,6 +56,10 @@ const userSignIn = async ({
       }
       res?.status(202).json(result)
       return result
+    }
+
+    if (autoReserve) {
+      console.log('userSignIn 3')
     }
 
     // Теперь проверяем есть ли место
@@ -84,6 +95,11 @@ const userSignIn = async ({
       res?.status(202).json(result)
       return result
     }
+
+    if (autoReserve) {
+      console.log('userSignIn 4')
+    }
+
     // Проверяем параметры пользователя
     const userAge = new Number(
       birthDateToAge(user.birthday, new Date(), false, false)
@@ -109,6 +125,10 @@ const userSignIn = async ({
 
     const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
 
+    if (autoReserve) {
+      console.log('userSignIn isAgeOfUserCorrect', isAgeOfUserCorrect)
+    }
+
     if (!isAgeOfUserCorrect) {
       const result = {
         success: false,
@@ -123,6 +143,10 @@ const userSignIn = async ({
     const isUserStatusCorrect = user.status
       ? event.usersStatusAccess.get(user.status)
       : false
+
+    if (autoReserve) {
+      console.log('userSignIn isUserStatusCorrect', isUserStatusCorrect)
+    }
 
     if (!isUserStatusCorrect) {
       const result = {
@@ -142,6 +166,9 @@ const userSignIn = async ({
     var errorText
     // Если пользователь хочет зарегистрироваться в основной состав, то проверяем есть ли место
     if (!status || status === 'participant') {
+      if (autoReserve) {
+        console.log('userSignIn !status || status === "participant"')
+      }
       const eventUsersParticipants = await EventsUsers.find({
         eventId,
         status: 'participant',
@@ -183,6 +210,10 @@ const userSignIn = async ({
         errorText = `свободных мест для женщин на мероприятии уже нет`
       }
 
+      if (autoReserve) {
+        console.log('userSignIn errorText', errorText)
+      }
+
       if (errorText) {
         if (!autoReserve || !canSignInReserve) {
           const result = {
@@ -205,6 +236,10 @@ const userSignIn = async ({
       canSignInReserve
         ? 'reserve'
         : status
+
+    if (autoReserve) {
+      console.log('userSignIn resultStatus', resultStatus)
+    }
 
     const newEventUser = await EventsUsers.create({
       eventId,
@@ -230,6 +265,10 @@ const userSignIn = async ({
       userId,
     })
 
+    if (autoReserve) {
+      console.log('userSignIn eventUsersTelegramNotification')
+    }
+
     // Оповещение в телеграм
     await eventUsersTelegramNotification({
       req,
@@ -237,6 +276,10 @@ const userSignIn = async ({
       addedEventUsers: [newEventUser.toJSON()],
       itIsSelfRecord: true,
     })
+
+    if (autoReserve) {
+      console.log('userSignIn final')
+    }
 
     const result = { success: true, data: newEventUser }
     res?.status(201).json(result)
