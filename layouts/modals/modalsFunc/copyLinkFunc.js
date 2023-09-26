@@ -89,11 +89,11 @@ const copyLinkFunc = (props) => {
     useEffect(() => {
       setDisableConfirm(!link)
       setOnConfirmFunc(() => {
-        if (linkType === 'home') return copyToClipboardHome()
-        if (linkType === 'event') return copyToClipboardEvent()
-        if (linkType === 'user') return copyToClipboardUser()
-        if (linkType === 'service') return copyToClipboardService()
-        return
+        if (linkType === 'home') copyToClipboardHome()
+        else if (linkType === 'event') copyToClipboardEvent()
+        else if (linkType === 'user') copyToClipboardUser()
+        else if (linkType === 'service') copyToClipboardService()
+        closeModal()
       })
     }, [link])
 

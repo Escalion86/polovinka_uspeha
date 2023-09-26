@@ -22,6 +22,10 @@ import Image from 'next/image'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 
+const CardButtonsComponent = ({ user }) => (
+  <CardButtons item={user} typeOfItem="user" forForm />
+)
+
 const userViewFunc = (userId, clone = false) => {
   const UserModal = ({
     closeModal,
@@ -50,9 +54,7 @@ const userViewFunc = (userId, clone = false) => {
 
     useEffect(() => {
       if (setTopLeftComponent)
-        setTopLeftComponent(() => (
-          <CardButtons item={user} typeOfItem="user" forForm />
-        ))
+        setTopLeftComponent(() => <CardButtonsComponent user={user} />)
     }, [setTopLeftComponent])
 
     if (!user) return null
@@ -61,7 +63,7 @@ const userViewFunc = (userId, clone = false) => {
       <FormWrapper flex className="flex-col">
         <ImageGallery images={user?.images} />
         <div className="flex flex-col flex-1 mt-1">
-          <div className="flex items-center mb-1 gap-x-2 min-h-6">
+          <div className="relative flex items-center mb-1 gap-x-2 min-h-6">
             {user.status === 'member' && (
               <Tooltip title="Участник клуба">
                 <div className="w-6 h-6">
@@ -74,6 +76,11 @@ const userViewFunc = (userId, clone = false) => {
               </Tooltip>
             )}
             <UserName user={user} className="text-lg font-bold" />
+            {!setTopLeftComponent && (
+              <div className="absolute right-0">
+                <CardButtonsComponent user={user} />
+              </div>
+            )}
           </div>
           {/* <div className="flex text-lg font-bold">{`${user.secondName} ${user.name} ${user.thirdName}`}</div> */}
           {isLoggedUserDev && <TextLine label="ID">{user?._id}</TextLine>}

@@ -8,7 +8,6 @@ import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import InputImages from '@components/InputImages'
 import InputWrapper from '@components/InputWrapper'
-import LoadingSpinner from '@components/LoadingSpinner'
 import PhoneInput from '@components/PhoneInput'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
@@ -20,7 +19,7 @@ import ValuePicker from '@components/ValuePicker/ValuePicker'
 import YesNoPicker from '@components/ValuePicker/YesNoPicker'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getData, putData } from '@helpers/CRUD'
+import { putData } from '@helpers/CRUD'
 import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
 import { DEFAULT_USER } from '@helpers/constants'
@@ -59,11 +58,6 @@ const QuestionnaireContent = (props) => {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
-
-  const [
-    waitActivateTelegramNotifications,
-    setWaitActivateTelegramNotifications,
-  ] = useState(false)
 
   const [firstName, setFirstName] = useState(
     loggedUser?.firstName ?? DEFAULT_USER.firstName
@@ -171,12 +165,6 @@ const QuestionnaireContent = (props) => {
   const isNotificationActivated =
     notifications?.telegram?.id && notifications?.telegram?.active
 
-  // const router = useRouter()
-
-  // const refreshPage = () => {
-  //   router.replace(router.asPath)
-  // }
-
   const formChanged =
     loggedUser?.firstName !== firstName ||
     loggedUser?.secondName !== secondName ||
@@ -202,11 +190,7 @@ const QuestionnaireContent = (props) => {
     !compareObjects(loggedUser?.notifications, notifications)
 
   const onClickConfirm = async () => {
-    if (waitActivateTelegramNotifications) {
-      addError({
-        notificationTelegramUserId: 'Завершите активацию!',
-      })
-    } else if (
+    if (
       !checkErrors({
         firstName: firstName.trim(),
         secondName: secondName.trim(),

@@ -179,7 +179,15 @@ const CardButtons = ({
             }
           }}
           color="blue"
-          tooltipText="Скопировать ссылку на мероприятие"
+          tooltipText={`Скопировать ссылку на ${
+            typeOfItem === 'event'
+              ? 'мероприятие'
+              : typeOfItem === 'user'
+              ? 'пользователя'
+              : typeOfItem === 'service'
+              ? 'услугу'
+              : 'продукт'
+          }`}
         />
       )}
       {show.addToCalendar && (

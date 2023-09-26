@@ -12,6 +12,10 @@ import DOMPurify from 'isomorphic-dompurify'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 
+const CardButtonsComponent = ({ service }) => (
+  <CardButtons item={service} typeOfItem="service" forForm />
+)
+
 const serviceViewFunc = (serviceId) => {
   const ServiceViewModal = ({
     closeModal,
@@ -31,10 +35,8 @@ const serviceViewFunc = (serviceId) => {
 
     useEffect(() => {
       if (isLoggedUserModer && setTopLeftComponent)
-        setTopLeftComponent(() => (
-          <CardButtons item={service} typeOfItem="service" forForm />
-        ))
-    }, [isLoggedUserModer, setTopLeftComponent])
+        setTopLeftComponent(() => <CardButtonsComponent service={service} />)
+    }, [service, isLoggedUserModer, setTopLeftComponent])
 
     if (!service || !serviceId)
       return (
@@ -47,10 +49,15 @@ const serviceViewFunc = (serviceId) => {
       <div className="flex flex-col gap-y-2">
         <ImageGallery images={service?.images} />
         <div className="flex flex-col flex-1">
-          <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2">
+          <div className="relative flex flex-col flex-1 w-full max-w-full px-2 py-2">
             <div className="flex justify-center w-full text-3xl font-bold">
               {service?.title}
             </div>
+            {!setTopLeftComponent && (
+              <div className="absolute right-0">
+                <CardButtonsComponent service={service} />
+              </div>
+            )}
             <div
               className="w-full max-w-full overflow-hidden list-disc ql textarea"
               dangerouslySetInnerHTML={{

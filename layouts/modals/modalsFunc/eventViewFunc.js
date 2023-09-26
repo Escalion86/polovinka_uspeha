@@ -64,6 +64,16 @@ const NamesOfUsersAssistantsOfEvent = (props) => {
   )
 }
 
+const CardButtonsComponent = ({ event, isEventClosed }) => (
+  <CardButtons
+    item={event}
+    typeOfItem="event"
+    forForm
+    showEditButton={!isEventClosed}
+    showDeleteButton={!isEventClosed}
+  />
+)
+
 const eventViewFunc = (eventId) => {
   const EventViewModal = ({
     closeModal,
@@ -91,17 +101,12 @@ const eventViewFunc = (eventId) => {
     // )?.isEventInProcess
 
     useEffect(() => {
-      if (isLoggedUserModer && setTopLeftComponent)
+      if (isLoggedUserModer && setTopLeftComponent) {
         setTopLeftComponent(() => (
-          <CardButtons
-            item={event}
-            typeOfItem="event"
-            forForm
-            showEditButton={!isEventClosed}
-            showDeleteButton={!isEventClosed}
-          />
+          <CardButtonsComponent event={event} isEventClosed={isEventClosed} />
         ))
-    }, [isLoggedUserModer, setTopLeftComponent])
+      }
+    }, [isLoggedUserModer, event, isEventClosed, setTopLeftComponent])
 
     if (!event || !eventId)
       return (
@@ -118,9 +123,19 @@ const eventViewFunc = (eventId) => {
         <ImageGallery images={event?.images} />
         <div className="flex flex-col flex-1">
           <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
-            {event?.tags.length > 0 && (
-              <EventTagsChipsLine tags={event?.tags} className="flex-1" />
-            )}
+            <div className="flex w-full">
+              {event?.tags.length > 0 && (
+                <EventTagsChipsLine tags={event?.tags} className="flex-1" />
+              )}
+              {!setTopLeftComponent && (
+                <div className="flex justify-end flex-1">
+                  <CardButtonsComponent
+                    event={event}
+                    isEventClosed={isEventClosed}
+                  />
+                </div>
+              )}
+            </div>
             <div className="flex justify-center w-full text-3xl font-bold">
               {event?.title}
             </div>

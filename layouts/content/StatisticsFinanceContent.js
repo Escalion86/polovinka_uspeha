@@ -39,13 +39,32 @@ const StatisticsFinanceContent = () => {
     }
   }
 
+  const todayYear = new Date().getFullYear()
+  const todayMonth = new Date().getMonth()
+
+  const incomeAverageByYears = {}
   const dataOfIncomeByDate = []
   for (const year in incomeByDate) {
-    const data = incomeByDate[year].map((income, index) => ({
+    const incomeYear = incomeByDate[year]
+    const data = incomeYear.map((income, index) => ({
       x: MONTHS[index],
       y: income,
     }))
     dataOfIncomeByDate.push({ id: year, data })
+
+    var sum, incomeArray
+    if (todayYear == year) {
+      incomeArray = incomeYear.filter(
+        (income, index) => index < todayMonth && income > 0
+      )
+      sum = incomeArray.reduce((a, b) => a + b, 0)
+    } else {
+      incomeArray = incomeYear.filter((income, index) => income > 0)
+      sum = incomeYear.reduce((a, b) => a + b, 0)
+    }
+    const average = incomeArray.length > 0 ? sum / incomeArray.length : 0
+
+    incomeAverageByYears[year] = average
   }
 
   return (
@@ -187,6 +206,9 @@ const StatisticsFinanceContent = () => {
               ? incomeOfEventsByDate[year][month]
               : 0)}{' '}
           руб.
+        </div>
+        <div className="mt-5">
+          Средний доход в месяц в {year} году: {incomeAverageByYears[year]} руб.
         </div>
       </div>
     </div>

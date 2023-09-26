@@ -129,33 +129,35 @@ const InputImages = ({
                   }}
                 />
               </div>
-              <div
-                className={cn(
-                  'absolute flex p-1 duration-200 transform bg-white rounded-br-full w-7 h-7',
-                  index === 0
-                    ? 'top-0 left-0'
-                    : 'top-0 left-0 laptop:-top-5 laptop:group-hover:top-0 laptop:-left-5 laptop:group-hover:left-0 cursor-pointer hover:scale-125'
-                )}
-              >
-                <FontAwesomeIcon
+              {images.length > 1 && (
+                <div
                   className={cn(
-                    'h-4',
-                    index === 0 ? 'text-success' : 'text-orange-600'
+                    'absolute flex p-1 duration-200 transform bg-white rounded-br-full w-7 h-7',
+                    index === 0
+                      ? 'top-0 left-0'
+                      : 'top-0 left-0 laptop:-top-5 laptop:group-hover:top-0 laptop:-left-5 laptop:group-hover:left-0 cursor-pointer hover:scale-125'
                   )}
-                  icon={faHome}
-                  onClick={() => {
-                    if (index !== 0) onChange(arrayMove(images, index, 0))
-                  }}
-                />
-              </div>
+                >
+                  <FontAwesomeIcon
+                    className={cn(
+                      'h-4',
+                      index === 0 ? 'text-success' : 'text-orange-600'
+                    )}
+                    icon={faHome}
+                    onClick={() => {
+                      if (index !== 0) onChange(arrayMove(images, index, 0))
+                    }}
+                  />
+                </div>
+              )}
             </motion.div>
           ))}
         {!isAddingImage && images.length < maxImages && (
           <div
             onClick={addImageClick}
-            className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer rounded-xl"
+            className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer group rounded-xl"
           >
-            <div className="flex items-center justify-center w-12 h-12 duration-200 min-w-12 min-h-12 transparent hover:scale-125 ">
+            <div className="flex items-center justify-center w-12 h-12 duration-200 min-w-12 min-h-12 transparent group-hover:scale-125 ">
               <FontAwesomeIcon
                 className="text-gray-700"
                 icon={faPlus}
