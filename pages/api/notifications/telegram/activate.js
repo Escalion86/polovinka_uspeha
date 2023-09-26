@@ -20,6 +20,10 @@ export default async function handler(req, res) {
           const cmd = cmdProps.c
           if (cmd === 'eventSignIn') {
             const { eventId } = cmdProps
+            console.log(
+              'activate => callback_query.from :>> ',
+              callback_query.from
+            )
             const userTelegramId = callback_query.from.id
             const user = await Users.findOne({
               'notifications.telegram.id': userTelegramId,
@@ -34,6 +38,8 @@ export default async function handler(req, res) {
               return res
                 ?.status(400)
                 .json({ success: false, error: 'Не найдено мероприятие' })
+
+            console.log('activate => userId :>> ', user._id)
 
             const result = await userSignIn({
               req,

@@ -452,7 +452,7 @@ const notificateUsersAboutEvent = async (event, req) => {
   const inline_keyboard = [
     [
       {
-        text: '\u{1F4C5} Открыть мероприятие',
+        text: '\u{1F4C5} На сайте',
         url: req.headers.origin + '/event/' + String(event._id),
       },
       {
