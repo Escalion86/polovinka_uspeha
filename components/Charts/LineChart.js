@@ -7,7 +7,7 @@ const LineChart = ({ title, data, xAxisLegend, yAxisLegend, ...props }) => {
   return (
     <div className="w-full">
       {title && <H3>{title}</H3>}
-      <div className="w-full h-[320px] mt-6">
+      <div className="w-full h-[320px] min-w-[360px] mt-6">
         <ResponsiveLine
           data={data}
           margin={{ top: 10, right: 60, bottom: 60, left: 60 }}

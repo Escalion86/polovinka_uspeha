@@ -7,7 +7,8 @@ import SocialPicker from '@components/ValuePicker/SocialPicker'
 import copyToClipboard from '@helpers/copyToClipboard'
 import transliterate from '@helpers/transliterate'
 import useSnackbar from '@helpers/useSnackbar'
-import { useState } from 'react'
+import cn from 'classnames'
+import { useEffect, useState } from 'react'
 
 const copyLinkFunc = (props) => {
   const CopyLinkModal = ({
@@ -48,17 +49,22 @@ const copyLinkFunc = (props) => {
       return '?' + tags.join('&')
     }
 
-    const link = encodeURI(
-      linkType === 'event'
-        ? `${window.location.origin}/event/${props.eventId}${tagsStringify()}`
-        : linkType === 'user'
-        ? `${window.location.origin}/user/${props.userId}${tagsStringify()}`
-        : linkType === 'service'
-        ? `${window.location.origin}/service/${
-            props.serviceId
-          }${tagsStringify()}`
-        : `${window.location.origin}${tagsStringify()}`
-    )
+    const link =
+      (linkType === 'event' && !eventId) ||
+      (linkType === 'user' && !userId) ||
+      (linkType === 'service' && !serviceId)
+        ? undefined
+        : encodeURI(
+            linkType === 'event'
+              ? `${window.location.origin}/event/${eventId}${tagsStringify()}`
+              : linkType === 'user'
+              ? `${window.location.origin}/user/${userId}${tagsStringify()}`
+              : linkType === 'service'
+              ? `${
+                  window.location.origin
+                }/service/${serviceId}${tagsStringify()}`
+              : `${window.location.origin}${tagsStringify()}`
+          )
 
     const copyToClipboardHome = () => {
       copyToClipboard(link)
@@ -80,11 +86,16 @@ const copyLinkFunc = (props) => {
       info('Ссылка на услугу скопирована в буфер обмена')
     }
 
-    // const router = useRouter()
-
-    // const refreshPage = () => {
-    //   router.replace(router.asPath)
-    // }
+    useEffect(() => {
+      setDisableConfirm(!link)
+      setOnConfirmFunc(() => {
+        if (linkType === 'home') copyToClipboardHome()
+        else if (linkType === 'event') copyToClipboardEvent()
+        else if (linkType === 'user') copyToClipboardUser()
+        else if (linkType === 'service') copyToClipboardService()
+        closeModal()
+      })
+    }, [link])
 
     return (
       <FormWrapper>
@@ -124,13 +135,16 @@ const copyLinkFunc = (props) => {
           <a
             style={{ wordBreak: 'break-all' }}
             target="_blank"
-            className="flex-1 text-general hover:text-success"
+            className={cn(
+              'flex-1 text-general hover:text-success',
+              link ? '' : 'cursor-not-allowed'
+            )}
             href={link}
           >
-            {link}
+            {link ?? '[недостаточно данных]'}
           </a>
         </div>
-        <Button
+        {/* <Button
           className="mt-2"
           name="Скопировать ссылку"
           onClick={() => {
@@ -140,7 +154,7 @@ const copyLinkFunc = (props) => {
             if (linkType === 'service') return copyToClipboardService()
             return
           }}
-        />
+        /> */}
 
         {/* <CheckBox
           checked={showOnSite}
@@ -155,7 +169,7 @@ const copyLinkFunc = (props) => {
 
   return {
     title: `Формирование ссылки`,
-    // confirmButtonName: directionId && !clone ? 'Применить' : 'Создать',
+    confirmButtonName: 'Скопировать ссылку и закрыть',
     Children: CopyLinkModal,
   }
 }
