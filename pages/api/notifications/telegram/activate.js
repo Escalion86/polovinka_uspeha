@@ -28,6 +28,7 @@ export default async function handler(req, res) {
             const user = await Users.findOne({
               'notifications.telegram.id': userTelegramId,
             })
+            console.log('activate => userId :>> ', user._id)
             if (!user)
               return res
                 ?.status(400)
@@ -39,7 +40,7 @@ export default async function handler(req, res) {
                 ?.status(400)
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
-            console.log('activate => userId :>> ', user._id)
+            console.log('activate => eventId :>> ', event._id)
 
             const result = await userSignIn({
               req,
