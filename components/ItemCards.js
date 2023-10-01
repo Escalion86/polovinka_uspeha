@@ -23,6 +23,8 @@ import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
 import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
+import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
+import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 
 const ItemContainer = ({
   onClick,
@@ -108,6 +110,7 @@ export const UserItemFromId = ({
   onClick = null,
   active = false,
   noBorder,
+  ...props
 }) => {
   const user = useRecoilValue(userSelector(userId))
   return (
@@ -116,6 +119,7 @@ export const UserItemFromId = ({
       active={active}
       onClick={onClick}
       noBorder={noBorder}
+      {...props}
     />
   )
 }
@@ -131,6 +135,8 @@ export const UserItem = ({
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
 
+  const device = useRecoilValue(windowDimensionsTailwindSelector)
+
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
   return (
@@ -144,7 +150,7 @@ export const UserItem = ({
     >
       <div
         className={cn(
-          'w-6 tablet:w-7 flex justify-center items-center h-full',
+          'w-6 tablet:w-7 min-w-6 tablet:min-w-7 flex justify-center items-center h-full',
           userGender ? 'bg-' + userGender.color : 'bg-gray-400'
         )}
       >
@@ -160,7 +166,7 @@ export const UserItem = ({
       />
       <div className="flex items-center flex-1 py-0.5 px-1">
         <div className="flex flex-wrap items-center flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1 gap-y-0.5">
-          <UserName user={item} className="font-semibold" thin />
+          <UserName user={item} className="font-semibold" thin trunc={2} />
           {item.birthday &&
             (isLoggedUserModer ||
               item.security?.showBirthday === true ||
@@ -185,7 +191,10 @@ export const UserItem = ({
             </div>
           )}
         </div> */}
-        <UserStatusIcon status={item.status} />
+        <UserStatusIcon
+          status={item.status}
+          size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
+        />
       </div>
     </ItemContainer>
     // </Tooltip>

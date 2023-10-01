@@ -11,6 +11,14 @@ const filterItems = (
   // (
   {
     const filteredWithRules = filterWithRules(items, rules)
+
+    const searchWordsArray = searchText
+      ? searchText
+          .toLowerCase()
+          .split(' ')
+          .filter((word) => word)
+      : []
+
     return searchText || exceptedIds?.length
       ? filteredWithRules.filter((item) => {
           if (searchText) {
@@ -28,26 +36,48 @@ const filterItems = (
               return item.price == parseInt(searchText.substr(1)) * 100
             }
 
-            const searchTextLowerCase = searchText.toLowerCase()
-            return (
-              (!exceptedIds ||
+            if (
+              !(
+                !exceptedIds ||
                 typeof exceptedIds !== 'object' ||
-                !exceptedIds?.includes(item._id)) &&
-              ((parentKey &&
-                keys.find((key) =>
-                  item[parentKey][key]
-                    ?.toString()
-                    .toLowerCase()
-                    .includes(searchTextLowerCase)
-                )) ||
-                (!parentKey &&
-                  keys.find((key) =>
-                    item[key]
-                      ?.toString()
-                      .toLowerCase()
-                      .includes(searchTextLowerCase)
-                  )))
+                !exceptedIds?.includes(item._id)
+              )
             )
+              return false
+
+            if (!parentKey) {
+              const keysTemp = [...keys]
+              return (
+                searchWordsArray.filter((searchWord) => {
+                  const index = keysTemp.findIndex(
+                    (key) =>
+                      item[key]
+                        ?.toString()
+                        .trim()
+                        .toLowerCase()
+                        .indexOf(searchWord) === 0
+                  )
+                  if (index >= 0) keysTemp.splice(index, 1)
+                  return index >= 0
+                }).length === searchWordsArray.length
+              )
+            } else {
+              const keysTemp = [...keys]
+              return (
+                searchWordsArray.filter((searchWord) => {
+                  const index = keysTemp.findIndex(
+                    (key) =>
+                      item[parentKey][key]
+                        ?.toString()
+                        .trim()
+                        .toLowerCase()
+                        .indexOf(searchWord) === 0
+                  )
+                  if (index >= 0) keysTemp.splice(index, 1)
+                  return index >= 0
+                }).length === searchWordsArray.length
+              )
+            }
           } else
             return (
               !exceptedIds ||
