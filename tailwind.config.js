@@ -45,7 +45,7 @@ module.exports = {
         hover: '#C8E3F4',
         text: '#192129',
         input: '#2A323B',
-        disabled: '#555555',
+        disabled: '#9ca3af',
         black: '#1C1D1F',
         // black: colors.black,
         // white: colors.white,

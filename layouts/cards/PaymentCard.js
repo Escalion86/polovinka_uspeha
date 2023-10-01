@@ -71,7 +71,7 @@ const Icon = ({ className, icon, tooltip }) => (
 //     <div
 //       className={cn(
 //         'flex items-center justify-center w-4',
-//         eventStatusProps ? 'text-' + eventStatusProps.color : 'text-gray-400'
+//         eventStatusProps ? 'text-' + eventStatusProps.color : 'text-disabled'
 //       )}
 //     >
 //       <FontAwesomeIcon
@@ -89,7 +89,7 @@ const PayTypeIcon = ({ payment }) => {
   return (
     <Icon
       icon={payType?.icon ?? faQuestion}
-      className={payType ? 'text-' + payType.color : 'text-gray-400'}
+      className={payType ? 'text-' + payType.color : 'text-disabled'}
       tooltip={PAY_TYPES_OBJECT[payType.value]}
     />
   )

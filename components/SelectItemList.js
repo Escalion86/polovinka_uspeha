@@ -195,7 +195,7 @@ export const SelectItemList = ({
                 <FontAwesomeIcon
                   className={
                     'h-5 w-5 ' +
-                    (addButtonIsActive ? 'text-gray-700' : 'text-gray-400')
+                    (addButtonIsActive ? 'text-gray-700' : 'text-disabled')
                   }
                   icon={faPlus}
                 />

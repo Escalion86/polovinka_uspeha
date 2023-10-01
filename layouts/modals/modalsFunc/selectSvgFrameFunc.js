@@ -21,7 +21,7 @@ const selectSvgFrameFunc = (itemId, onChange) => {
     return (
       <div className="flex flex-wrap w-full h-full max-h-full gap-1">
         <div
-          className="flex items-center justify-center text-2xl text-center text-gray-400 border border-gray-600 cursor-pointer w-[100px] h-[100px] hover:bg-green-300"
+          className="flex items-center justify-center text-2xl text-center text-disabled border border-gray-600 cursor-pointer w-[100px] h-[100px] hover:bg-green-300"
           onClick={() => onSelect(null)}
         >
           БЕЗ РАМКИ

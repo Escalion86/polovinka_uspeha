@@ -94,6 +94,7 @@ const PriceInput = ({
         maxLength={2}
         min={0}
         disabled={disabled}
+        showDisabledIcon={false}
         fullWidth={false}
         paddingY={false}
         paddingX={false}

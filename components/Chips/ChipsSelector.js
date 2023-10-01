@@ -93,7 +93,7 @@ const ChipsSelector = forwardRef(
             />
           ))
         ) : (
-          <div className="text-gray-400">{placeholder}</div>
+          <div className="text-disabled">{placeholder}</div>
         )}
         {!readOnly && canEditChips && (
           <div className="flex items-center justify-end flex-1">
@@ -107,7 +107,7 @@ const ChipsSelector = forwardRef(
             >
               <FontAwesomeIcon
                 icon={faWrench}
-                className="w-4 h-4 text-gray-400 duration-300 group-hover:text-gray-700 group-hover:scale-125"
+                className="w-4 h-4 text-disabled duration-300 group-hover:text-gray-700 group-hover:scale-125"
               />
             </div>
           </div>
@@ -150,7 +150,7 @@ const ChipsSelector = forwardRef(
                   className={cn(
                     'px-2 py-1 overflow-hidden uppercase cursor-pointer select-none',
                     // isActive ? textColorClassCalc(item.color) : ''
-                    isActive ? 'text-gray-700' : 'text-gray-400'
+                    isActive ? 'text-gray-700' : 'text-disabled'
                     // 'text-gray-700'
                   )}
                   style={{

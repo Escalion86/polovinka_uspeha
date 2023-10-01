@@ -43,7 +43,7 @@ const ItemRow = ({
               className={
                 count > 1
                   ? 'text-gray-700 transform group-hover:hover:scale-125 duration-200 '
-                  : // : 'text-gray-400'
+                  : // : 'text-disabled'
                     'text-red-700'
               }
               icon={count > 1 ? faMinus : faTrash}
@@ -198,7 +198,7 @@ export const SelectItemsList = ({
             >
               <FontAwesomeIcon
                 className={
-                  addButtonIsActive ? 'text-gray-700' : 'text-gray-400'
+                  addButtonIsActive ? 'text-gray-700' : 'text-disabled'
                 }
                 icon={faPlus}
                 size="1x"

@@ -49,6 +49,7 @@ const DatePicker = ({
       fullWidth={fullWidth}
       // paddingY="small"
       disabled={disabled}
+      showDisabledIcon={false}
       noMargin={noMargin}
     >
       <LocalizationProvider
@@ -87,6 +88,7 @@ const DatePicker = ({
           defaultValue={
             defaultValue ? dayjs(formatDate(defaultValue, true)) : undefined
           }
+          disabled={disabled}
           onChange={onChange}
           // slotProps={{
           //   // textField: {

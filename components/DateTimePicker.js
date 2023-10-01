@@ -33,7 +33,10 @@ const DateTimePicker = ({
       onChange={onChange}
       copyPasteButtons={false}
       value={value}
-      className={cn(fullWidth ? '' : 'w-[14.5rem]', className)}
+      className={cn(
+        fullWidth ? '' : widthNum <= 2 ? 'w-[12rem]' : 'w-[14.5rem]',
+        className
+      )}
       required={required}
       error={error}
       // postfix={
@@ -48,6 +51,7 @@ const DateTimePicker = ({
       fullWidth={fullWidth}
       // paddingY="small"
       disabled={disabled}
+      showDisabledIcon={false}
       noMargin={noMargin}
     >
       <LocalizationProvider
@@ -95,6 +99,8 @@ const DateTimePicker = ({
           //   switchViewIcon
           // }}
           onChange={onChange}
+          disabled={disabled}
+          showDisabledIcon={false}
           // slotProps={{
           //   // textField: {
           //   //   // helperText: 'дд.мм.гггг',
@@ -173,6 +179,8 @@ const DateTimePicker = ({
               openPickerIcon: AccessTimeIcon,
             }}
             onChange={onChange}
+            disabled={disabled}
+            showDisabledIcon={false}
           />
         )}
       </LocalizationProvider>

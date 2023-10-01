@@ -47,7 +47,7 @@ const ComboBox = ({
       <select
         className={cn(
           'flex-1 cursor-pointer outline-none bg-transparent px-1',
-          !value ? 'text-gray-400' : '',
+          !value ? 'text-disabled' : '',
           selectClassName
         )}
         onChange={(e) =>
@@ -65,7 +65,7 @@ const ComboBox = ({
       >
         {placeholder && (
           <option
-            className="text-gray-400"
+            className="text-disabled"
             disabled={!activePlaceholder}
             value=""
           >

@@ -25,7 +25,7 @@ const EventNameById = ({ eventId, showStatus, className }) => {
             'flex items-center justify-center w-4',
             eventStatusProps
               ? 'text-' + eventStatusProps.color
-              : 'text-gray-400'
+              : 'text-disabled'
           )}
         >
           <FontAwesomeIcon

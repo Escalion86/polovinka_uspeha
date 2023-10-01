@@ -319,7 +319,7 @@ const CustomItem = ({ number, value, onChange, onDelete }) => {
     <div className="flex items-center w-full mt-2 mb-1 gap-x-1">
       {number && (
         <div
-          className={cn('w-8 text-right', value !== '' ? '' : 'text-gray-400')}
+          className={cn('w-8 text-right', value !== '' ? '' : 'text-disabled')}
         >{`${number}.`}</div>
       )}
       <input
