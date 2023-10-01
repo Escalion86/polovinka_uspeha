@@ -372,35 +372,37 @@ const UsersPayments = ({
   // const paymentsFromNotParticipants = useRecoilValue(
   //   paymentsOfEventFromNotParticipantsSelector(event._id)
   // )
+  const arrayOfUsers = usersIds
+    ? usersIds.map((_id) => ({ user: { _id } }))
+    : eventUsers
+
   return (
     <div className="flex flex-col gap-y-1">
-      {(usersIds ? usersIds.map((_id) => ({ user: { _id } })) : eventUsers).map(
-        (props) => {
-          const {
-            _id,
-            user,
-            // event,
-            userStatus,
-            // eventSubtypeNum,
-            // comment,
-          } = props
-          return (
-            <UserPayment
-              key={user._id}
-              // id={_id}
-              noEventPriceForUser={noEventPriceForUser}
-              event={event}
-              user={user}
-              userStatus={userStatus}
-              // eventSubtypeNum={eventSubtypeNum}
-              // comment={comment}
-              usersIds={usersIds}
-              readOnly={readOnly}
-              defaultPayDirection={defaultPayDirection}
-            />
-          )
-        }
-      )}
+      {arrayOfUsers.map((props) => {
+        const {
+          _id,
+          user,
+          // event,
+          userStatus,
+          // eventSubtypeNum,
+          // comment,
+        } = props
+        return (
+          <UserPayment
+            key={user._id}
+            // id={_id}
+            noEventPriceForUser={noEventPriceForUser}
+            event={event}
+            user={user}
+            userStatus={userStatus}
+            // eventSubtypeNum={eventSubtypeNum}
+            // comment={comment}
+            usersIds={usersIds}
+            readOnly={readOnly}
+            defaultPayDirection={defaultPayDirection}
+          />
+        )
+      })}
     </div>
   )
 }
@@ -500,12 +502,14 @@ const eventUsersPaymentsFunc = (eventId) => {
     // const paymentsToExpectFromParticipants = useRecoilValue(
     //   sumOfExpectingPaymentsFromParticipantsToEventSelector(eventId)
     // )
-    const membersOfEventCount = eventParticipants.filter(
+    const membersOfEvent = eventParticipants.filter(
       ({ userStatus, user }) => userStatus === 'member'
-    ).length
-    const noviceOfEventCount = eventParticipants.filter(
+    )
+    const noviceOfEvent = eventParticipants.filter(
       ({ userStatus, user }) => userStatus === 'novice'
-    ).length
+    )
+    const membersOfEventCount = membersOfEvent.length
+    const noviceOfEventCount = noviceOfEvent.length
 
     const eventPrices = eventPricesWithStatus(event)
 
@@ -526,6 +530,28 @@ const eventUsersPaymentsFunc = (eventId) => {
       sumOfPaymentsToExpectFromParticipants +
       sumOfPaymentsOfEventToAssistants +
       sumOfPaymentsToEvent
+
+    const noviceFullPaidCount = noviceOfEvent.filter(({ user }) => {
+      const userPayments = paymentsOfEventOfParticipants.filter(
+        ({ userId }) => userId === user._id
+      )
+      const sumOfPayments = userPayments.reduce(
+        (sum, payment) => sum + payment.sum,
+        0
+      )
+      return sumOfPayments >= eventPrices.novice
+    }).length
+
+    const membersFullPaidCount = membersOfEvent.filter(({ user }) => {
+      const userPayments = paymentsOfEventOfParticipants.filter(
+        ({ userId }) => userId === user._id
+      )
+      const sumOfPayments = userPayments.reduce(
+        (sum, payment) => sum + payment.sum,
+        0
+      )
+      return sumOfPayments >= eventPrices.member
+    }).length
 
     // const maxPartisipants =
     //   event.maxMans !== null && event.maxWomans !== null
@@ -701,7 +727,42 @@ const eventUsersPaymentsFunc = (eventId) => {
             tabAddToLabel={`${eventParticipants.length} чел. / ${sumOfPaymentsOfEventFromParticipants} ₽`}
           >
             <div className="flex flex-wrap items-center justify-between mb-1">
-              <TotalFromParticipants />
+              <div>
+                <TotalFromParticipants />
+                <div className="flex flex-wrap items-center gap-x-1">
+                  <span>Оплатили:</span>
+                  <div className="flex items-center gap-x-2">
+                    <div className="flex items-center gap-x-1">
+                      <UserStatusIcon status="member" size="s" />
+                      <span
+                        className={cn(
+                          'font-bold',
+                          membersFullPaidCount === membersOfEventCount
+                            ? 'text-success'
+                            : 'text-danger'
+                        )}
+                      >
+                        {membersFullPaidCount}
+                      </span>{' '}
+                      / {membersOfEventCount} чел
+                    </div>
+                    <div className="flex items-center gap-x-1">
+                      <UserStatusIcon status="novice" size="s" />
+                      <span
+                        className={cn(
+                          'font-bold',
+                          noviceFullPaidCount === noviceOfEventCount
+                            ? 'text-success'
+                            : 'text-danger'
+                        )}
+                      >
+                        {noviceFullPaidCount}
+                      </span>{' '}
+                      / {noviceOfEventCount} чел
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="flex justify-end flex-1 gap-x-1">
                 {!isEventClosed && (
                   <Button

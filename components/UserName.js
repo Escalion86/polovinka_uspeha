@@ -18,9 +18,10 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
     >
       {showStatus && <UserStatusIcon status={user.status} size="xs" />}
       {trunc ? (
-        <TextLinesLimiter className="flex-1" lines={1}>{`${upperCaseFirst(
-          user.firstName
-        )} ${
+        <TextLinesLimiter
+          className="flex-1 leading-[12px]"
+          lines={typeof trunc === 'number' ? trunc : 1}
+        >{`${upperCaseFirst(user.firstName)} ${
           isLoggedUserModer || user.security?.fullThirdName
             ? upperCaseFirst(user.thirdName)
             : user.thirdName[0].toUpperCase() + '.'
