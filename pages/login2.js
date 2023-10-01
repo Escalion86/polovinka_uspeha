@@ -49,7 +49,7 @@ const Input = ({
               ? 'text-red-600'
               : focused || value
               ? 'text-general'
-              : 'text-gray-400'
+              : 'text-disabled'
           )}
         >
           <FontAwesomeIcon icon={icon} />
@@ -65,7 +65,7 @@ const Input = ({
                   : 'text-red-400'
                 : focused || value
                 ? 'text-general'
-                : 'text-gray-400'
+                : 'text-disabled'
             )}
           >
             {label}

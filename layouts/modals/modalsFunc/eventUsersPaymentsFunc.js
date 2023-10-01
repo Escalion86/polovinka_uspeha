@@ -222,7 +222,7 @@ const UserPayment = ({
             'relative flex items-center justify-center w-8 border-l border-gray-700',
             isCollapsingActive
               ? 'text-black cursor-pointer'
-              : 'text-gray-300 cursor-not-allowed'
+              : 'text-disabled cursor-not-allowed'
           )}
           onClick={() => {
             isCollapsingActive && setIsCollapsed((state) => !state)

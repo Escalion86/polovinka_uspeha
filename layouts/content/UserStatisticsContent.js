@@ -98,7 +98,7 @@ const Achivement = ({ name, place, tooltipText }) => {
         <div
           className={cn(
             'text-sm laptop:text-base text-center -mx-[8px]',
-            place ? 'text-general font-bold' : 'text-gray-400'
+            place ? 'text-general font-bold' : 'text-disabled'
           )}
         >
           {name}

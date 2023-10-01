@@ -10,7 +10,7 @@ const ValueIconText = ({ value, array }) => {
     return (
       <div className={`flex items-center justify-center min-w-4 w-4 h-4`}>
         <FontAwesomeIcon
-          className="w-3 h-3 text-gray-400 min-w-3"
+          className="w-3 h-3 text-disabled min-w-3"
           icon={faQuestion}
         />
       </div>

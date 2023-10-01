@@ -62,7 +62,7 @@ const QuestionnaireItem = ({
       {onClickUp && (
         <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-7 h-7 hover:scale-110">
           <FontAwesomeIcon
-            className="w-5 h-5 text-gray-400"
+            className="w-5 h-5 text-disabled"
             icon={faArrowUp}
             size="1x"
             onClick={() => onClickUp(index)}
@@ -72,7 +72,7 @@ const QuestionnaireItem = ({
       {onClickDown && (
         <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-7 h-7 hover:scale-110">
           <FontAwesomeIcon
-            className="w-5 h-5 text-gray-400"
+            className="w-5 h-5 text-disabled"
             icon={faArrowDown}
             size="1x"
             onClick={() => onClickDown(index)}
@@ -83,7 +83,7 @@ const QuestionnaireItem = ({
         <FontAwesomeIcon
           className={cn(
             'w-5 h-5',
-            item.required ? 'text-danger' : 'text-gray-400'
+            item.required ? 'text-danger' : 'text-disabled'
           )}
           icon={faAsterisk}
           size="1x"

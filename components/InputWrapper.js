@@ -82,7 +82,7 @@ const InputWrapper = forwardRef(
           {prefix && (
             <div
               className={cn(
-                'text-gray-400 pl-1 flex items-center',
+                'text-disabled pl-1 flex items-center',
                 prefixClassName
               )}
             >
@@ -93,14 +93,14 @@ const InputWrapper = forwardRef(
           {(postfix || disabled) && (
             <div
               className={cn(
-                'text-gray-400 pr-1 flex items-center gap-x-1',
+                'text-disabled pr-1 flex items-center gap-x-1',
                 postfixClassName
               )}
             >
               {postfix}
               {disabled && showDisabledIcon && (
                 <FontAwesomeIcon
-                  className="w-4 h-4 text-gray-400"
+                  className="w-4 h-4 text-disabled"
                   icon={faBan}
                   size="1x"
                 />
@@ -129,7 +129,7 @@ const InputWrapper = forwardRef(
                     // : 'left-0 peer-focus:left-2',
                     'left-2',
                 floatingLabel
-                  ? `-top-[12px] peer-focus:-top-[12px] text-general peer-focus:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
+                  ? `-top-[12px] peer-focus:-top-[12px] text-general peer-focus:text-sm peer-placeholder-shown:text-disabled peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
                   : // : paddingY === 'small'
                     // ? '-top-[18px]'
                     // : paddingY === 'big'
@@ -140,7 +140,7 @@ const InputWrapper = forwardRef(
 
                     // error
                     //   ? 'peer-placeholder-shown:text-danger'
-                    //   : 'peer-placeholder-shown:text-gray-400',
+                    //   : 'peer-placeholder-shown:text-disabled',
                     '-top-[12px]',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
@@ -161,7 +161,7 @@ const InputWrapper = forwardRef(
                 typeof value === 'object' &&
                 value.length > 0) ||
                 (typeof value !== 'object' && value)
-                ? 'text-gray-400'
+                ? 'text-disabled'
                 : 'text-danger'
             )}
           >

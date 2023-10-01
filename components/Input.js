@@ -68,7 +68,7 @@ const Input = forwardRef(
       //   />
       //   <label
       //     // for="exampleFormControlInput1"
-      //     className="absolute left-0 text-sm text-general bg-white transition-all peer-focus:-top-3.5 peer-focus:text-general peer-focus:text-sm -top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-1"
+      //     className="absolute left-0 text-sm text-general bg-white transition-all peer-focus:-top-3.5 peer-focus:text-general peer-focus:text-sm -top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-disabled peer-placeholder-shown:top-1"
       //   >
       //     {label}
       //   </label>
@@ -109,7 +109,7 @@ const Input = forwardRef(
               className={cn(
                 'p-1 duration-300',
                 typeof min === 'number' && value <= min
-                  ? 'text-gray-300 cursor-not-allowed'
+                  ? 'text-disabled cursor-not-allowed'
                   : 'cursor-pointer text-general hover:text-success'
               )}
               onClick={() => {
@@ -125,7 +125,7 @@ const Input = forwardRef(
           step={step}
           className={cn(
             'flex-1 px-1 text-black placeholder-transparent h-7 peer focus:outline-none bg-transparent',
-            disabled ? 'cursor-not-allowed' : '',
+            disabled ? 'text-disabled cursor-not-allowed' : '',
             // type === 'number' ? 'max-w-20' : '',
             inputClassName
           )}
@@ -160,7 +160,7 @@ const Input = forwardRef(
               className={cn(
                 'p-1 duration-300',
                 typeof max === 'number' && value >= max
-                  ? 'text-gray-300 cursor-not-allowed'
+                  ? 'text-disabled cursor-not-allowed'
                   : 'cursor-pointer text-general hover:text-success'
               )}
               onClick={() => {
@@ -179,7 +179,7 @@ const Input = forwardRef(
                 : '',
               error
                 ? 'peer-placeholder-shown:text-danger'
-                : 'peer-placeholder-shown:text-gray-400',
+                : 'peer-placeholder-shown:text-disabled',
               labelClassName
             )}
           >
@@ -190,7 +190,7 @@ const Input = forwardRef(
           <div
             className={cn(
               'absolute px-1 text-xs bg-white right-1 -top-2.5',
-              error || !value ? 'text-danger' : 'text-gray-400'
+              error || !value ? 'text-danger' : 'text-disabled'
             )}
           >
             Обязательное

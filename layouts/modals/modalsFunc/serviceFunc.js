@@ -42,7 +42,7 @@ const Questionnaire = ({ data, onChange }) => {
           className="flex items-center justify-between flex-1 cursor-pointer h-7 gap-x-1"
           onClick={() => modalsFunc.questionnaire.constructor(data, onChange)}
         >
-          <span className="text-gray-400">{'без анкеты'}</span>
+          <span className="text-disabled">{'без анкеты'}</span>
           {/* <Button
             name="Создать анкету"
             onClick={() => modalsFunc.questionnaire.constructor(data, onChange)}

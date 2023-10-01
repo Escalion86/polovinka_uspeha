@@ -94,7 +94,7 @@ const serviceUserViewFunc = (serviceUserId) => {
                     <div
                       className={cn(
                         'flex flex-col gap-x-1',
-                        formatedAnswer ? '' : 'text-gray-400',
+                        formatedAnswer ? '' : 'text-disabled',
                         type === 'images' ? 'flex-col' : ''
                       )}
                       key={key}

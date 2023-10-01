@@ -21,7 +21,7 @@ const InputSvgFrame = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const Copmponent = () => (
-    <div className="flex items-center justify-center w-20 h-20 leading-4 text-center text-gray-400">
+    <div className="flex items-center justify-center w-20 h-20 leading-4 text-center text-disabled">
       БЕЗ РАМКИ
     </div>
   )
