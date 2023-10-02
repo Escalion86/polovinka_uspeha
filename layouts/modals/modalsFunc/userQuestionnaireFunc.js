@@ -464,6 +464,7 @@ const Q = ({ data, state, onChange, errors }) => {
                 onChange={onItemChange}
                 error={errors[item.key]}
                 required={item.required}
+                showArrows={false}
               />
             )
           }

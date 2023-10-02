@@ -74,6 +74,7 @@ const PriceInput = ({
         paddingX={false}
         noMargin
         showDisabledIcon={false}
+        showArrows
       />
       <Input
         step="10"
@@ -99,6 +100,7 @@ const PriceInput = ({
         paddingY={false}
         paddingX={false}
         noMargin
+        showArrows={false}
       />
       {/* </div> */}
     </InputWrapper>

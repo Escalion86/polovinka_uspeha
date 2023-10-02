@@ -28,7 +28,7 @@ const Input = forwardRef(
       min,
       max,
       required,
-      step,
+      step = 1,
       labelPos,
       onFocus,
       defaultValue,
@@ -101,24 +101,23 @@ const Input = forwardRef(
         )}
       >
         <div className="relative flex w-full"> */}
-        {showArrows &&
-          type === 'number' &&
-          !disabled &&
-          typeof value === 'number' && (
-            <div
-              className={cn(
-                'p-1 duration-300',
-                typeof min === 'number' && value <= min
-                  ? 'text-disabled cursor-not-allowed'
-                  : 'cursor-pointer text-general hover:text-success'
-              )}
-              onClick={() => {
-                if (typeof min !== 'number' || value > min) onChange(value - 1)
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowDown} className="w-5 h-5" />
-            </div>
-          )}
+        {showArrows && type === 'number' && !disabled && (
+          // typeof value === 'number' &&
+          <div
+            className={cn(
+              'p-1 duration-300',
+              typeof min === 'number' && value <= min
+                ? 'text-disabled cursor-not-allowed'
+                : 'cursor-pointer text-general hover:text-success'
+            )}
+            onClick={() => {
+              if (typeof min !== 'number' || value > min)
+                onChange(Number(value) - Number(step))
+            }}
+          >
+            <FontAwesomeIcon icon={faArrowDown} className="w-5 h-5" />
+          </div>
+        )}
 
         <input
           type={type}
@@ -133,7 +132,7 @@ const Input = forwardRef(
           min={min}
           max={max}
           disabled={disabled}
-          value={value ?? ''}
+          value={value}
           defaultValue={defaultValue}
           onChange={(e) => {
             const { value } = e.target
@@ -152,24 +151,23 @@ const Input = forwardRef(
           // id="exampleFormControlInput1"
           placeholder={label}
         />
-        {showArrows &&
-          type === 'number' &&
-          !disabled &&
-          typeof value === 'number' && (
-            <div
-              className={cn(
-                'p-1 duration-300',
-                typeof max === 'number' && value >= max
-                  ? 'text-disabled cursor-not-allowed'
-                  : 'cursor-pointer text-general hover:text-success'
-              )}
-              onClick={() => {
-                if (typeof max !== 'number' || value < max) onChange(value + 1)
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowUp} className="w-5 h-5" />
-            </div>
-          )}
+        {showArrows && type === 'number' && !disabled && (
+          // typeof value === 'number' &&
+          <div
+            className={cn(
+              'p-1 duration-300',
+              typeof max === 'number' && value >= max
+                ? 'text-disabled cursor-not-allowed'
+                : 'cursor-pointer text-general hover:text-success'
+            )}
+            onClick={() => {
+              if (typeof max !== 'number' || value < max)
+                onChange(Number(value) + Number(step))
+            }}
+          >
+            <FontAwesomeIcon icon={faArrowUp} className="w-5 h-5" />
+          </div>
+        )}
         {/* <label
             // for="exampleFormControlInput1"
             className={cn(
