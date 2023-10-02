@@ -50,14 +50,16 @@ export default async function handler(req, res) {
             user.notifications?.get('telegram')?.id
         )
         if (usersToNotificate.length > 0) {
-          const usersWithBirthDayToday = users.filter((user) => {
-            return (
-              user.birthday &&
-              daysBeforeBirthday(user.birthday, dateTimeNow) === 0
-            )
+          const usersWithBirthDayToday = []
+          const usersWithBirthDayTomorow = []
+          users.forEach((user) => {
+            if (!user.birthday) return
+            const days = daysBeforeBirthday(user.birthday, dateTimeNow)
+            if (days === 0) usersWithBirthDayToday.push(user)
+            if (days === 1) usersWithBirthDayTomorow.push(user)
           })
 
-          var text = '<b>Дни рождения сегодня</b>: '
+          var text = '\u{1F382} <b>Дни рождения сегодня</b>: '
           if (usersWithBirthDayToday.length > 0) {
             usersWithBirthDayToday.forEach((user) => {
               text += `\n${
@@ -74,6 +76,25 @@ export default async function handler(req, res) {
             })
           } else {
             text += 'Сегодня нет именинников'
+          }
+
+          text += '\n\n\u{1F382} <b>Дни рождения завтра</b>: '
+          if (usersWithBirthDayTomorow.length > 0) {
+            usersWithBirthDayTomorow.forEach((user) => {
+              text += `\n${
+                user.gender === 'male' ? '♂️' : '♀️'
+              } ${getUserFullName(user)} ${
+                user.status === 'member' ? '(клуб) ' : ''
+              }- ${birthDateToAge(
+                user.birthday,
+                dateTimeNow,
+                true,
+                false,
+                true
+              )}`
+            })
+          } else {
+            text += 'Завтра нет именинников'
           }
           const telegramIds = usersToNotificate.map(
             (user) => user.notifications.get('telegram').id
