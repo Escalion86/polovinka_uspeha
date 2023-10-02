@@ -14,6 +14,19 @@ import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
 import UserStatusIcon from './UserStatusIcon'
 
+const Ages = ({ gender, event }) => (
+  <div className="flex justify-center gap-x-0.5 border-b self-stretch">
+    <span>
+      {(gender === 'mans' ? event.minMansAge : event.minWomansAge) ?? 18}
+    </span>
+    <span>-</span>
+    <span>
+      {(gender === 'mans' ? event.maxMansAge : event.maxWomansAge) ?? 60}
+    </span>
+    <span>лет</span>
+  </div>
+)
+
 const CounterComponent = ({
   event,
   gender,
@@ -69,17 +82,11 @@ const CounterComponent = ({
       : typeof max === 'number'
       ? max
       : undefined
+
   return maxNovice || maxMember ? (
     <>
       <div className="flex flex-col items-center">
-        {showAges && (
-          <div className="flex justify-center gap-x-0.5 border-b self-stretch">
-            <span>{event.minAge ?? 18}</span>
-            <span>-</span>
-            <span>{event.maxAge ?? 60}</span>
-            <span>лет</span>
-          </div>
-        )}
+        {showAges && <Ages gender={gender} event={event} />}
         <div className="flex items-center gap-x-0.5">
           <div className="flex flex-col">
             {showNoviceAndMemberSum ? (
@@ -216,14 +223,7 @@ const CounterComponent = ({
     </>
   ) : (
     <div className="flex flex-col items-center">
-      {showAges && (
-        <div className="flex justify-center gap-x-0.5 border-b self-stretch">
-          <span>{event.minAge ?? 18}</span>
-          <span>-</span>
-          <span>{event.maxAge ?? 60}</span>
-          <span>лет</span>
-        </div>
-      )}
+      {showAges && <Ages gender={gender} event={event} />}
       <div className="flex gap-x-0.5">
         <span
           className={
