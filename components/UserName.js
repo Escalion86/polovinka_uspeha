@@ -21,14 +21,22 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
         <TextLinesLimiter
           className="flex-1 leading-[12px]"
           lines={typeof trunc === 'number' ? trunc : 1}
-        >{`${upperCaseFirst(user.firstName)} ${
-          isLoggedUserModer || user.security?.fullThirdName
-            ? upperCaseFirst(user.thirdName)
-            : user.thirdName[0].toUpperCase() + '.'
-        } ${
-          isLoggedUserModer || user.security?.fullSecondName
-            ? upperCaseFirst(user.secondName)
-            : user.secondName[0].toUpperCase() + '.'
+        >{`${upperCaseFirst(user.firstName)}${
+          user.thirdName
+            ? ` ${
+                isLoggedUserModer || user.security?.fullThirdName
+                  ? upperCaseFirst(user.thirdName)
+                  : user.thirdName[0].toUpperCase() + '.'
+              }`
+            : ''
+        }${
+          user.secondName
+            ? ` ${
+                isLoggedUserModer || user.security?.fullSecondName
+                  ? upperCaseFirst(user.secondName)
+                  : user.secondName[0].toUpperCase() + '.'
+              }`
+            : ''
         }`}</TextLinesLimiter>
       ) : (
         <div
