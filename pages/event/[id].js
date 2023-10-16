@@ -38,7 +38,9 @@ const Event = ({ event }) => {
 
 const EventBlock = ({ event }) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const { canSee } = useRecoilValue(loggedUserToEventStatusSelector(event?._id))
+  const { canSee, isAgeOfUserCorrect, isUserStatusCorrect } = useRecoilValue(
+    loggedUserToEventStatusSelector(event?._id)
+  )
 
   const router = useRouter()
   const routerQuery = { ...router.query }
@@ -52,45 +54,72 @@ const EventBlock = ({ event }) => {
         {!event?._id && (
           <span className="text-xl">Ошибка. Мероприятие не найдено</span>
         )}
-        {!canSee && (
+        {loggedUser && !isUserStatusCorrect ? (
           <span className="text-xl">
-            Мероприятие не доступно для просмотра неавторизированным
-            пользователям, пожалуйста авторизируйтесь
+            {`К сожалению данное мероприятие не доступно для вашего статуса пользователя`}
           </span>
+        ) : loggedUser && isUserStatusCorrect && !isAgeOfUserCorrect ? (
+          <span className="text-xl">
+            {`К сожалению данное мероприятие доступно для возрастной категории ${
+              loggedUser?.gender === 'male'
+                ? `мужчин от ${event.minMansAge} до ${event.maxMansAge} лет`
+                : `женщин от ${event.minWomansAge} до ${event.maxWomansAge} лет`
+            }`}
+          </span>
+        ) : !canSee && isUserStatusCorrect && isAgeOfUserCorrect ? (
+          <span className="text-xl">
+            Мероприятие скрыто, если вы не ошиблись со ссылкой, то пожалуйста
+            обратитесь к администратору
+          </span>
+        ) : (
+          !loggedUser && (
+            <>
+              <span className="text-xl">
+                Мероприятие не доступно для просмотра неавторизированным
+                пользователям, пожалуйста авторизируйтесь
+              </span>
+              <Link
+                href={{
+                  pathname: '/login',
+                  query: { ...routerQuery, ...query },
+                }}
+                shallow
+              >
+                <PulseButton
+                  className="mt-4 text-white"
+                  title="Авторизироваться"
+                  // onClick={() => router.push('./login', '', { shallow: true })}
+                />
+              </Link>
+              <Link
+                href={{
+                  pathname: '/login',
+                  query: {
+                    ...routerQuery,
+                    ...query,
+                    registration: true,
+                  },
+                }}
+                shallow
+              >
+                <PulseButton
+                  className="mt-4 text-white"
+                  title="Зарегистрироваться"
+                  // onClick={() => router.push('./login', '', { shallow: true })}
+                />
+              </Link>
+            </>
+          )
         )}
-        {!loggedUser && (
-          <>
-            <Link
-              href={{
-                pathname: '/login',
-                query: { ...routerQuery, ...query },
-              }}
-              shallow
-            >
-              <PulseButton
-                className="mt-4 text-white"
-                title="Авторизироваться"
-                // onClick={() => router.push('./login', '', { shallow: true })}
-              />
-            </Link>
-            <Link
-              href={{
-                pathname: '/login',
-                query: {
-                  ...routerQuery,
-                  ...query,
-                  registration: true,
-                },
-              }}
-              shallow
-            >
-              <PulseButton
-                className="mt-4 text-white"
-                title="Зарегистрироваться"
-                // onClick={() => router.push('./login', '', { shallow: true })}
-              />
-            </Link>
-          </>
+        {loggedUser && (
+          <Link
+            href={{
+              pathname: '/cabinet/events',
+            }}
+            shallow
+          >
+            <PulseButton className="mt-4 text-white" title="В личный кабинет" />
+          </Link>
         )}
       </div>
     </BlockContainer>
