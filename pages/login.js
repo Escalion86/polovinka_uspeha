@@ -2,7 +2,7 @@ import CheckBox from '@components/CheckBox'
 import Fab from '@components/Fab'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faLock, faTimes, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
 import { DEFAULT_SITE_SETTINGS } from '@helpers/constants'
@@ -12,6 +12,7 @@ import useErrors from '@helpers/useErrors'
 import fetchSiteSettings from '@server/fetchSiteSettings'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import cn from 'classnames'
+import { motion } from 'framer-motion'
 import { getSession, signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -25,6 +26,70 @@ import SvgLove from 'svg/SvgLove'
 import SvgWave from 'svg/SvgWave'
 import tailwindConfig from 'tailwind.config.js'
 import resolveConfig from 'tailwindcss/resolveConfig'
+
+const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
+  // const setModals = useSetRecoilState(modalsAtom)
+  const [close, setClose] = useState(false)
+
+  const closeModal = () => {
+    onClose && typeof onClose === 'function' && onClose()
+    setClose(true)
+    // setTimeout(
+    //   () => setModals((modals) => modals.filter((modal) => modal.id !== id)),
+    //   200
+    // )
+  }
+
+  return (
+    <motion.div
+      className={
+        cn(
+          'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 tablet:items-center justify-center w-full h-screen tablet:overflow-y-auto bg-gray-800',
+          subModalText ? 'tablet:pt-10 tablet:pb-5' : 'tablet:py-5'
+        )
+        //  + (rendered ? ' opacity-100' : ' opacity-0')
+      }
+      initial={{ opacity: 0 }}
+      animate={{ opacity: close ? 0 : 1 }}
+      transition={{ duration: 0.1 }}
+      onMouseDown={closeModal}
+    >
+      <motion.div
+        className={
+          cn(
+            'flex flex-col items-center real-screen-height tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
+            title ? 'pt-3' : 'pt-12'
+          )
+          // + (rendered ? '' : ' scale-50')
+        }
+        initial={{ scale: 0.5 }}
+        animate={{ scale: close ? 0.5 : 1 }}
+        transition={{ duration: 0.1 }}
+        onMouseDown={(e) => e?.stopPropagation()}
+      >
+        {/* <Tooltip title="Закрыть"> */}
+        <div className="absolute right-2 top-2">
+          <FontAwesomeIcon
+            className="w-8 h-8 text-black duration-200 transform cursor-pointer hover:scale-110"
+            icon={faTimes}
+            // size="1x"
+            onClick={closeModal}
+          />
+        </div>
+        {/* </Tooltip> */}
+        {title && (
+          <div className="mx-10 mb-3 text-lg font-bold leading-6 text-center whitespace-pre-line">
+            {title}
+          </div>
+        )}
+        {text && <div className="px-2 mb-3 leading-4 tablet:px-3">{text}</div>}
+        <div className="flex flex-col items-center flex-1 px-2 overflow-y-auto gap-y-5 tablet:px-3">
+          {children}
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
 
 const Input = ({
   className = '',
@@ -163,7 +228,7 @@ const generalColor = fullConfig.theme.colors.general
 
 const secondsToWait = 60
 
-const RepeatCall = ({ onClickRepeat }) => {
+const RepeatCall = ({ onClickRepeat, onClickBackCall }) => {
   const timer = useRef(null)
   const [secondsLeft, setIsSecondsLeft] = useState(secondsToWait)
 
@@ -216,15 +281,20 @@ const RepeatCall = ({ onClickRepeat }) => {
         <>Запросить повторый звонок возможно через {secondsLeft} сек</>
       ) : (
         <>
-          Звонок не поступил?{' '}
-          <div
-            onClick={async () => {
-              onClickRepeat && (await onClickRepeat())
-              setIsSecondsLeft(secondsToWait)
-            }}
-            className="font-bold cursor-pointer"
-          >
-            Повторный звонок
+          Звонок не поступил?
+          <div className="flex flex-col items-center gap-y-3">
+            <div
+              onClick={async () => {
+                onClickRepeat && (await onClickRepeat())
+                setIsSecondsLeft(secondsToWait)
+              }}
+              className="font-bold cursor-pointer"
+            >
+              Повторный звонок
+            </div>
+            <div onClick={onClickBackCall} className="font-bold cursor-pointer">
+              {`Я сам(а) позвоню!`}
+            </div>
           </div>
         </>
       )}
@@ -263,6 +333,8 @@ const LoginPage = (props) => {
   // const [codeSendService, setCodeSendService]
   const [process, setProcess] = useState('authorization')
   const [registrationLevel, setRegistrationLevel] = useState(1)
+  const [backCall, setBackCall] = useState(false)
+  const [backCallRes, setBackCallRes] = useState()
   const [waitingResponse, setWaitingResponse] = useState(false)
   const [inputPhone, setInputPhone] = useState('')
   const [inputPassword, setInputPassword] = useState('')
@@ -306,8 +378,6 @@ const LoginPage = (props) => {
       inputPasswordRef?.current?.focus()
     }
   }, [router, inputPasswordRef.current])
-
-  console.log('registrationLevel :>> ', registrationLevel)
 
   const submit = () => {
     clearErrors()
@@ -524,6 +594,69 @@ const LoginPage = (props) => {
     }
   }
 
+  const onClickBackCall = async () => {
+    setBackCall(true)
+
+    const result = await postData(
+      `/api/telefonip`,
+      {
+        phone: inputPhone,
+        forgotPassword: process === 'forgotPassword',
+        backCall: true,
+      },
+      (res) => {
+        var timer = setInterval(() => {
+          postData(
+            `/api/telefonip`,
+            {
+              phone: inputPhone,
+              checkBackCallId: res.data.id,
+            },
+            (res) => {
+              if (res.data.status === 'expired') {
+                clearInterval(timer)
+                setBackCallRes(res.data)
+              } else if (res.data.status === 'ok') {
+                clearInterval(timer)
+                var phone = String(res.data.phone).substring(1)
+                var phone2 = String(inputPhone).substring(1)
+                if (phone === phone2) {
+                  setBackCall(false)
+                  setBackCallRes()
+                  setRegistrationLevel(3)
+                } else {
+                  setBackCallRes({ ...res.data, status: 'wrong phone' })
+                }
+              }
+            },
+            null,
+            false,
+            null,
+            true
+          )
+        }, 5000)
+
+        setBackCallRes(res.data)
+        // setWaitingResponse(false)
+        // if (res.error) {
+        //   addError({ [res.error.type]: res.error.message })
+        //   // updateErrors(res.error.type, res.error.message)
+        // } else {
+        //   setRegistrationLevel(2)
+        // }
+      },
+      null,
+      // (error) => {
+      //   setWaitingResponse(false)
+      //   addError({ error })
+      // },
+      false,
+      null,
+      true
+    )
+    return result
+  }
+
   // const clearErrors = () => {
   //   if (Object.keys(errors).length > 0) setErrors({})
   // }
@@ -566,8 +699,8 @@ const LoginPage = (props) => {
       //   </>
       // ) : (
       <>
-        На телефон <b>+{inputPhone}</b> поступит звонок. Трубку брать не нужно,
-        введите 4 последние цифры номера входящего звонка
+        В течении минуты на телефон <b>+{inputPhone}</b> поступит звонок. Трубку
+        брать не нужно, введите 4 последние цифры номера входящего звонка
       </>
     ) : // )
     process === 'registration' && registrationLevel === 3 ? (
@@ -849,6 +982,7 @@ const LoginPage = (props) => {
               {(process === 'registration' || process === 'forgotPassword') &&
                 registrationLevel === 2 && (
                   <RepeatCall
+                    onClickBackCall={onClickBackCall}
                     onClickRepeat={async () => {
                       setWaitingResponse(true)
                       await postData(
@@ -931,6 +1065,97 @@ const LoginPage = (props) => {
           </form>
         </div>
       </div>
+      {backCall && (
+        <Modal
+          onClose={() => {
+            setBackCall(false)
+            setBackCallRes()
+          }}
+          // id
+          // title
+          // text
+          // subModalText
+        >
+          {backCallRes?.status === 'wrong phone' && (
+            <>
+              <div className="flex flex-col items-center">
+                <div>
+                  Похоже что вы позвонили с другого номера телефона, который
+                  отличается от того который вы указали
+                </div>
+                <div>
+                  Вы указали телефон:{' '}
+                  <span className="font-bold">+{inputPhone}</span>
+                </div>
+                <div>
+                  Но позвонили с телефона:{' '}
+                  <span className="font-bold">
+                    +7{String(backCallRes.phone).substring(1)}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center mt-2 gap-y-2">
+                  <div
+                    onClick={onClickBackCall}
+                    className="font-bold cursor-pointer"
+                  >
+                    Попробовать еще раз?
+                  </div>
+                  <div
+                    onClick={() => {
+                      setBackCallRes()
+                      setBackCall(false)
+                      setRegistrationLevel(1)
+                    }}
+                    className="font-bold cursor-pointer"
+                  >
+                    Указать другой номер телефона
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+          {backCallRes &&
+            backCallRes?.status !== 'wrong phone' &&
+            backCallRes?.status !== 'expired' && (
+              <>
+                <div className="flex flex-col items-center">
+                  <div>{`Позвоните по номеру телефона (это бесплатно):`}</div>
+                  <a
+                    className="text-2xl font-bold hover:text-general"
+                    href={`+${backCallRes?.auth_phone}`}
+                  >{`+${backCallRes?.auth_phone}`}</a>
+                  <div className="text-sm">{`(Нажмите на номер для звонка)`}</div>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="text-center">
+                    Или если вы зашли на сайт с компьютера, то отсканируйте
+                    штрихкод телефоном для звонка
+                  </div>
+                  <img src={backCallRes?.url_image} />
+                </div>
+              </>
+            )}
+          {backCallRes?.status === 'expired' && (
+            <div className="flex flex-col items-center">
+              <div>Похоже что вы не успели позвонить</div>
+              <div
+                onClick={onClickBackCall}
+                className="font-bold cursor-pointer"
+              >
+                Попробовать еще раз?
+              </div>
+            </div>
+          )}
+          {backCallRes?.status !== 'expired' &&
+            backCallRes?.status !== 'wrong phone' && (
+              <div className="h-[92px] min-w-[90px]">
+                <LoadingSpinner
+                  text={backCallRes ? 'Ждем вашего звонка...' : undefined}
+                />
+              </div>
+            )}
+        </Modal>
+      )}
     </div>
   )
 }

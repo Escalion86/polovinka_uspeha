@@ -77,7 +77,57 @@ export default async function handler(req, res) {
     try {
       await dbConnect()
       console.log('body', body)
-      const { phone, code, password, forgotPassword, get_balance } = body
+      const {
+        phone,
+        code,
+        password,
+        forgotPassword,
+        get_balance,
+        backCall,
+        checkBackCallId,
+      } = body
+
+      if (checkBackCallId) {
+        const response = await fetch(
+          `https://api.telefon-ip.ru/api/v1/authcalls/${token}/reverse_auth_phone_check/${checkBackCallId}`,
+          { method: 'GET' }
+        ).then((response) => response.json())
+
+        if (response?.success) {
+          var phone1 = String(response.data.phone).substring(1)
+          var phone2 = String(phone).substring(1)
+          if (phone1 === phone2) {
+            await PhoneConfirms.findOneAndDelete({ phone })
+          }
+        }
+
+        console.log(response)
+
+        return res?.status(201).json({
+          success: true,
+          data: response,
+        })
+      }
+
+      if (backCall) {
+        const response = await fetch(
+          `https://api.telefon-ip.ru/api/v1/authcalls/${token}/reverse_auth_phone_get/`,
+          { method: 'GET' }
+        ).then((response) => response.json())
+
+        console.log('!!response', response)
+        if (response?.success) {
+          await PhoneConfirms.findOneAndUpdate(
+            { phone },
+            { callId: response.data.id }
+          )
+        }
+
+        return res?.status(201).json({
+          success: true,
+          data: response,
+        })
+      }
 
       if (get_balance) {
         const response = await fetch(
