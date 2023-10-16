@@ -307,6 +307,8 @@ const LoginPage = (props) => {
     }
   }, [router, inputPasswordRef.current])
 
+  console.log('registrationLevel :>> ', registrationLevel)
+
   const submit = () => {
     clearErrors()
 
@@ -664,6 +666,13 @@ const LoginPage = (props) => {
               </div>
             ) : ( */}
             <>
+              {/* <Input
+                label="registrationLevel"
+                value={registrationLevel}
+                onChange={(e) =>
+                  setRegistrationLevel(Number(e.target.value ?? 1))
+                }
+              /> */}
               <Input
                 inputRef={inputPhoneRef}
                 className="mt-0"
