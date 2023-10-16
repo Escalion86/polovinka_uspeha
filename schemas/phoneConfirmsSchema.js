@@ -7,6 +7,10 @@ const phoneConfirmsSchema = {
     type: Number,
     required: false,
   },
+  callId: {
+    type: Number,
+    required: false,
+  },
   phone: {
     type: String,
     required: true,
