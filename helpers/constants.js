@@ -755,12 +755,12 @@ export const CONTENTS = {
   directions: {
     Component: DirectionsContent,
     name: 'Сайт / Направления',
-    accessRoles: ['admin', 'dev'],
+    accessRoles: ['moder', 'admin', 'dev'],
   },
   reviews: {
     Component: ReviewsContent,
     name: 'Сайт / Отзывы',
-    accessRoles: ['admin', 'dev'],
+    accessRoles: ['moder', 'admin', 'dev'],
   },
   additionalBlocks: {
     Component: AdditionalBlocksContent,
@@ -1108,7 +1108,7 @@ export const pagesGroups = [
     icon: faCalendarAlt,
     accessRoles: ['client', 'moder', 'admin', 'dev'],
   },
-  { id: 3, name: 'Сайт', icon: faHome, accessRoles: ['admin', 'dev'] },
+  { id: 3, name: 'Сайт', icon: faHome, accessRoles: ['moder', 'admin', 'dev'] },
   {
     id: 4,
     name: 'Пользователи',
