@@ -236,7 +236,7 @@ const ToolsAnonsContent = () => {
         <YearSelector year={year} onChange={setYear} />
         <ComboBox
           label="Стиль"
-          className="max-w-24"
+          className="min-w-16 max-w-24"
           items={[
             { value: 0, name: '1' },
             { value: 1, name: '2' },
@@ -267,7 +267,7 @@ const ToolsAnonsContent = () => {
           label="Макс. мероприятий на странице"
           type="number"
           className="w-[146px]"
-          inputClassName="w-16"
+          inputClassName="w-[64px]"
           value={maxItemsOnList}
           onChange={(value) => setMaxItemsOnList(parseInt(value))}
           min={1}
@@ -278,8 +278,8 @@ const ToolsAnonsContent = () => {
         <Input
           label="Размер шрифта мероприятий"
           type="number"
-          className="w-32"
-          inputClassName="w-16"
+          className="w-[128px]"
+          inputClassName="w-[64px]"
           value={fontSize}
           onChange={(value) => setFontSize(parseInt(value))}
           min={10}
@@ -290,8 +290,8 @@ const ToolsAnonsContent = () => {
         <Input
           label="Размер шрифта даты"
           type="number"
-          className="w-32"
-          inputClassName="w-16"
+          className="w-[128px]"
+          inputClassName="w-[64px]"
           value={dateFontSize}
           onChange={(value) => setDateFontSize(parseInt(value))}
           min={10}
@@ -302,8 +302,8 @@ const ToolsAnonsContent = () => {
         <Input
           label="Позиция по X"
           type="number"
-          className="w-28"
-          inputClassName="w-16"
+          className="w-[128px]"
+          inputClassName="w-[64px]"
           value={startX}
           onChange={(value) => setStartX(parseInt(value))}
           min={0}
@@ -314,8 +314,8 @@ const ToolsAnonsContent = () => {
         <Input
           label="Позиция по Y"
           type="number"
-          className="w-28"
-          inputClassName="w-16"
+          className="w-[128px]"
+          inputClassName="w-[64px]"
           value={startY}
           onChange={(value) => setStartY(parseInt(value))}
           min={0}
@@ -325,8 +325,8 @@ const ToolsAnonsContent = () => {
         <Input
           label="Макс высота списка"
           type="number"
-          className="w-28"
-          inputClassName="w-16"
+          className="w-[128px]"
+          inputClassName="w-[64px]"
           value={maxHeight}
           onChange={(value) => setMaxHeight(parseInt(value))}
           min={0}
@@ -336,8 +336,8 @@ const ToolsAnonsContent = () => {
         <Input
           label="Отступ списка от заголовка"
           type="number"
-          className="w-28"
-          inputClassName="w-16"
+          className="w-[128px]"
+          inputClassName="w-[64px]"
           value={titleGap}
           onChange={(value) => setTitleGap(parseInt(value))}
           min={0}

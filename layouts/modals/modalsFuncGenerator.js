@@ -43,6 +43,7 @@ import userPaymentsFunc from './modalsFunc/userPaymentsFunc'
 import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
 import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
 import userViewFunc from './modalsFunc/userViewFunc'
+import userSetPasswordFunc from './modalsFunc/userSetPasswordFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -500,6 +501,7 @@ const modalsFuncGenerator = (
       view: (userId) => addModal(userViewFunc(userId)),
       events: (userId) => addModal(userSignedUpEventsFunc(userId)),
       payments: (userId) => addModal(userPaymentsFunc(userId)),
+      setPassword: (userId) => addModal(userSetPasswordFunc(userId)),
     },
     questionnaire: {
       // add: (questionnaireId) =>

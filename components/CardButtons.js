@@ -11,6 +11,7 @@ import {
   faArrowUp,
   faCalendarAlt,
   faEllipsisV,
+  faKey,
   faMoneyBill,
   faPencilAlt,
   faShareAlt,
@@ -91,6 +92,7 @@ const CardButtons = ({
 
   const show = {
     editQuestionnaire: !!onEditQuestionnaire,
+    setPasswordBtn: typeOfItem === 'user' && isLoggedUserAdmin,
     shareBtn:
       window?.location?.origin &&
       (typeOfItem === 'event' ||
@@ -284,6 +286,14 @@ const CardButtons = ({
           }}
           color="orange"
           tooltipText="Редактировать"
+        />
+      )}
+      {show.setPasswordBtn && (
+        <ItemComponent
+          icon={faKey}
+          onClick={() => modalsFunc.user.setPassword(item._id)}
+          color="red"
+          tooltipText="Изменить пароль"
         />
       )}
       {show.editQuestionnaire && (
