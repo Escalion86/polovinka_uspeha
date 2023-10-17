@@ -49,7 +49,6 @@ const filterItems = (
               const stringsTemp = keys
                 .map((key) => item[key]?.toString().trim().toLowerCase())
                 .filter((string) => string)
-              // console.log('stringsTemp :>> ', stringsTemp)
 
               return (
                 searchWordsArray.filter((searchWord) => {
@@ -65,7 +64,6 @@ const filterItems = (
                     }
                     return false
                   })
-                  // if (index >= 0) stringsTemp.splice(index, 1)
                   return findedItem
                 }).length === searchWordsArray.length
               )
@@ -90,7 +88,6 @@ const filterItems = (
                     }
                     return false
                   })
-                  // if (index >= 0) stringsTemp.splice(index, 1)
                   return findedItem
                 }).length === searchWordsArray.length
               )
