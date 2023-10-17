@@ -66,7 +66,7 @@ const ServicesUsersContent = () => {
   const visibleServicesUsers = useMemo(() => {
     if (!searchText) return filteredServicesUsers
     return filterItems(
-      filteredServicesUsers.filter(),
+      filteredServicesUsers,
       searchText,
       [],
       {},
@@ -92,7 +92,7 @@ const ServicesUsersContent = () => {
         <UsersFilter value={filter} onChange={setFilter} hideNullGender />
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounServicesUsers(servicesUsers.length)}
+            {getNounServicesUsers(visibleServicesUsers.length)}
           </div>
           <SearchToggleButton
             value={isSearching}
