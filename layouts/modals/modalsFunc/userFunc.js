@@ -43,6 +43,9 @@ const userFunc = (userId, clone = false) => {
     const [thirdName, setThirdName] = useState(
       user?.thirdName ?? DEFAULT_USER.thirdName
     )
+    const [password, setPassword] = useState(
+      user?.password ?? DEFAULT_USER.password
+    )
     // const [about, setAbout] = useState(user?.about ?? DEFAULT_USER.about)
     // const [interests, setInterests] = useState(user?.interests ?? DEFAULT_USER.interests)
     // const [profession, setProfession] = useState(user?.profession ?? DEFAULT_USER.profession)
@@ -115,6 +118,7 @@ const userFunc = (userId, clone = false) => {
             // interests,
             // profession,
             // orientation,
+            password: userId ? undefined : password,
             gender,
             email,
             phone,
@@ -190,6 +194,7 @@ const userFunc = (userId, clone = false) => {
         user?.firstName !== firstName ||
         user?.secondName !== secondName ||
         user?.thirdName !== thirdName ||
+        user?.password !== password ||
         // user?.about !== about ||
         // user?.interests !== interests ||
         // user?.profession !== profession ||
@@ -215,6 +220,7 @@ const userFunc = (userId, clone = false) => {
       firstName,
       secondName,
       thirdName,
+      password,
       // about,
       // interests,
       // profession,
@@ -285,9 +291,20 @@ const userFunc = (userId, clone = false) => {
             removeError('thirdName')
             setThirdName(value)
           }}
-          // labelClassName="w-40"
           error={errors.thirdName}
         />
+        {!userId && (
+          <Input
+            label="Пароль"
+            type="password"
+            value={password}
+            onChange={(value) => {
+              removeError('password')
+              setPassword(value)
+            }}
+            error={errors.password}
+          />
+        )}
         <GenderPicker
           required
           gender={gender}
