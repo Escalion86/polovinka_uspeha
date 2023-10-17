@@ -216,16 +216,16 @@ const Menu = ({ menuCfg, activePage }) => {
   )
 }
 
+const variants = {
+  min: { width: '100%' },
+  max: { width: 320 },
+}
+
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
-
-  const variants = {
-    min: { width: '100%' },
-    max: { width: 280 },
-  }
 
   useEffect(() => {
     /**
