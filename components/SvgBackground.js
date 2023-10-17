@@ -105,7 +105,7 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
             { value: 'gradient', name: 'Градиент' },
             { value: 'image', name: 'Картинка' },
           ]}
-          defaultValue={backgroundType}
+          value={backgroundType}
           onChange={(value) => {
             setBackgroundType(value)
             set({ backgroundType: value })

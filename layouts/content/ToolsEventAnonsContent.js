@@ -96,7 +96,7 @@ const ToolsEventAnonsContent = () => {
           { value: 'true', name: 'Ручной ввод' },
           { value: 'false', name: 'Выбор мероприятия' },
         ]}
-        defaultValue={customMode ? 'true' : 'false'}
+        value={customMode ? 'true' : 'false'}
         onChange={(value) => setCustomMode(value === 'true')}
       />
       <div className="flex flex-wrap gap-x-1">
@@ -166,8 +166,8 @@ const ToolsEventAnonsContent = () => {
         <Input
           label="Позиция по X текста"
           type="number"
-          className="w-28"
-          inputClassName="w-16"
+          className="w-[128px]"
+          inputClassName="w-[64px]"
           value={startX}
           onChange={(value) => setStartX(parseInt(value))}
           min={0}
@@ -184,8 +184,8 @@ const ToolsEventAnonsContent = () => {
             <Input
               label="Размер шрифта"
               type="number"
-              className="w-32"
-              inputClassName="w-16"
+              className="w-[128px]"
+              inputClassName="w-[64px]"
               value={dateFontSize}
               onChange={(value) => setDateFontSize(parseInt(value))}
               min={20}
@@ -195,8 +195,8 @@ const ToolsEventAnonsContent = () => {
             <Input
               label="Позиция по Y"
               type="number"
-              className="w-28"
-              inputClassName="w-16"
+              className="w-[128px]"
+              inputClassName="w-[64px]"
               value={dateStartY}
               onChange={(value) => setDateStartY(parseInt(value))}
               min={0}
@@ -219,8 +219,8 @@ const ToolsEventAnonsContent = () => {
             <Input
               label="Размер шрифта"
               type="number"
-              className="w-32"
-              inputClassName="w-16"
+              className="w-[128px]"
+              inputClassName="w-[64px]"
               value={fontSize}
               onChange={(value) => setFontSize(parseInt(value))}
               min={20}
@@ -230,8 +230,8 @@ const ToolsEventAnonsContent = () => {
             <Input
               label="Позиция по Y"
               type="number"
-              className="w-28"
-              inputClassName="w-16"
+              className="w-[128px]"
+              inputClassName="w-[64px]"
               value={startY}
               onChange={(value) => setStartY(parseInt(value))}
               min={0}
