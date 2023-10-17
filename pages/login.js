@@ -292,9 +292,9 @@ const RepeatCall = ({ onClickRepeat, onClickBackCall }) => {
             >
               Повторный звонок
             </div>
-            <div onClick={onClickBackCall} className="font-bold cursor-pointer">
+            {/* <div onClick={onClickBackCall} className="font-bold cursor-pointer">
               {`Я сам(а) позвоню!`}
-            </div>
+            </div> */}
           </div>
         </>
       )}
@@ -979,6 +979,7 @@ const LoginPage = (props) => {
                     : 'Сменить пароль и авторизироваться'}
                 </button>
               )}
+
               {(process === 'registration' || process === 'forgotPassword') &&
                 registrationLevel === 2 && (
                   <RepeatCall
@@ -1006,6 +1007,22 @@ const LoginPage = (props) => {
                     }}
                   />
                 )}
+              {((registrationLevel === 1 && Object.values(errors).length > 0) ||
+                registrationLevel === 2) && (
+                <div className="flex justify-center">
+                  <div
+                    onClick={onClickBackCall}
+                    className={cn(
+                      'duration-300 w-full mt-3 font-bold cursor-pointer hover:text-general',
+                      Object.values(errors).length > 0
+                        ? 'text-lg border-2 border-gray-800 rounded-full px-3 py-1 hover:border-general'
+                        : ''
+                    )}
+                  >
+                    {`Я сам(а) позвоню!`}
+                  </div>
+                </div>
+              )}
               <div className="flex justify-between mt-4">
                 <a
                   tabIndex={0}
