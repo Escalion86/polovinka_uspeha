@@ -28,6 +28,7 @@ import {
   faTools,
   faTrophy,
   faUnlink,
+  faUpload,
   faUserAlt,
   faUsers,
   faUserTimes,
@@ -51,6 +52,8 @@ import {
   faCalendar,
   faCalendarAlt,
   faCreditCard,
+  faFileText,
+  faImage,
 } from '@fortawesome/free-regular-svg-icons'
 
 import ServicesContent from '@layouts/content/ServicesContent'
@@ -1043,7 +1046,7 @@ export const pages = [
     group: 9,
     name: 'Генератор текста анонса мероприятий',
     href: 'toolsTextEventsAnons',
-    icon: faTools,
+    icon: faFileText,
     accessRoles: CONTENTS['toolsTextEventsAnons'].accessRoles,
   },
   {
@@ -1051,7 +1054,7 @@ export const pages = [
     group: 9,
     name: 'Редактор анонса мероприятия',
     href: 'toolsEventAnons',
-    icon: faTools,
+    icon: faImage,
     accessRoles: CONTENTS['toolsEventAnons'].accessRoles,
   },
   {
@@ -1059,7 +1062,7 @@ export const pages = [
     group: 9,
     name: 'Редактор анонса списка мероприятий',
     href: 'toolsAnons',
-    icon: faTools,
+    icon: faImage,
     accessRoles: CONTENTS['toolsAnons'].accessRoles,
   },
   {
@@ -1067,7 +1070,7 @@ export const pages = [
     group: 9,
     name: 'Экспорт даных',
     href: 'toolsExport',
-    icon: faTools,
+    icon: faUpload,
     accessRoles: CONTENTS['toolsExport'].accessRoles,
   },
   {
