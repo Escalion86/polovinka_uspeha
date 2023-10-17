@@ -46,35 +46,52 @@ const filterItems = (
               return false
 
             if (!parentKey) {
-              const keysTemp = [...keys]
+              const stringsTemp = keys
+                .map((key) => item[key]?.toString().trim().toLowerCase())
+                .filter((string) => string)
+              // console.log('stringsTemp :>> ', stringsTemp)
+
               return (
                 searchWordsArray.filter((searchWord) => {
-                  const index = keysTemp.findIndex(
-                    (key) =>
-                      item[key]
-                        ?.toString()
-                        .trim()
-                        .toLowerCase()
-                        .indexOf(searchWord) === 0
-                  )
-                  if (index >= 0) keysTemp.splice(index, 1)
-                  return index >= 0
+                  const findedItem = stringsTemp.find((string, i) => {
+                    const tempIndex = string.indexOf(searchWord)
+                    if (tempIndex >= 0) {
+                      if (stringsTemp[i] === searchWord) {
+                        stringsTemp.splice(i, 1)
+                      } else {
+                        stringsTemp[i] = string.replace(searchWord, '')
+                      }
+                      return true
+                    }
+                    return false
+                  })
+                  // if (index >= 0) stringsTemp.splice(index, 1)
+                  return findedItem
                 }).length === searchWordsArray.length
               )
             } else {
-              const keysTemp = [...keys]
+              const stringsTemp = keys
+                .map((key) =>
+                  item[parentKey][key]?.toString().trim().toLowerCase()
+                )
+                .filter((string) => string)
+
               return (
                 searchWordsArray.filter((searchWord) => {
-                  const index = keysTemp.findIndex(
-                    (key) =>
-                      item[parentKey][key]
-                        ?.toString()
-                        .trim()
-                        .toLowerCase()
-                        .indexOf(searchWord) === 0
-                  )
-                  if (index >= 0) keysTemp.splice(index, 1)
-                  return index >= 0
+                  const findedItem = stringsTemp.find((string, i) => {
+                    const tempIndex = string.indexOf(searchWord)
+                    if (tempIndex >= 0) {
+                      if (stringsTemp[i] === searchWord) {
+                        stringsTemp.splice(i, 1)
+                      } else {
+                        stringsTemp[i] = string.replace(searchWord, '')
+                      }
+                      return true
+                    }
+                    return false
+                  })
+                  // if (index >= 0) stringsTemp.splice(index, 1)
+                  return findedItem
                 }).length === searchWordsArray.length
               )
             }
