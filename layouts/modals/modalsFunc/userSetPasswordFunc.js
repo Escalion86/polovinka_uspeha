@@ -54,6 +54,7 @@ const userSetPasswordFunc = (userId) => {
             setError()
             setPassword(value)
           }}
+          autocomplete="one-time-code"
         />
         <Input
           label="Повтор нового пароля"
@@ -63,6 +64,7 @@ const userSetPasswordFunc = (userId) => {
             setError()
             setPassword2(value)
           }}
+          autocomplete="one-time-code"
         />
         <div className="flex flex-col col-span-2 text-red-500">{error}</div>
       </div>
