@@ -39,7 +39,7 @@ const Input = forwardRef(
       paddingX = true,
       noMargin = false,
       showArrows = true,
-      autocomplete,
+      autoComplete,
     },
     ref
   ) => {
@@ -151,7 +151,7 @@ const Input = forwardRef(
           }}
           // id="exampleFormControlInput1"
           placeholder={label}
-          autocomplete={autocomplete}
+          autoComplete={autoComplete}
         />
         {showArrows && type === 'number' && !disabled && (
           // typeof value === 'number' &&
