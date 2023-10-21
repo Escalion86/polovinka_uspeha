@@ -315,7 +315,7 @@ const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res, 'response from backend')
+      // console.log(res, 'response from backend')
       if (res?.status === 'success') {
         // console.log('responce captcha', res?.message)
         onSuccess()
@@ -613,6 +613,7 @@ const LoginPage = (props) => {
               checkBackCallId: res.data.id,
             },
             (res) => {
+              console.log('res :>> ', res)
               if (res.data.status === 'expired') {
                 clearInterval(timer)
                 setBackCallRes(res.data)

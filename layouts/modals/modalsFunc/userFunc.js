@@ -270,6 +270,7 @@ const userFunc = (userId, clone = false) => {
           // labelClassName="w-40"
           error={errors.firstName}
           required
+          autoComplete="one-time-code"
         />
         <Input
           label="Фамилия"
@@ -282,6 +283,7 @@ const userFunc = (userId, clone = false) => {
           // labelClassName="w-40"
           error={errors.secondName}
           required
+          autoComplete="one-time-code"
         />
         <Input
           label="Отчество"
@@ -292,6 +294,7 @@ const userFunc = (userId, clone = false) => {
             setThirdName(value)
           }}
           error={errors.thirdName}
+          autoComplete="one-time-code"
         />
         {!userId && (
           <Input
@@ -303,6 +306,7 @@ const userFunc = (userId, clone = false) => {
               setPassword(value)
             }}
             error={errors.password}
+            autoComplete="one-time-code"
           />
         )}
         <GenderPicker

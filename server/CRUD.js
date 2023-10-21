@@ -462,7 +462,7 @@ const notificateUsersAboutEvent = async (event, req) => {
     ],
   ]
   if (novicesTelegramIds.length > 0) {
-    await sendTelegramMessage({
+    sendTelegramMessage({
       req,
       telegramIds: novicesTelegramIds,
       text: textStart + textPriceForNovice + textEnd,
@@ -470,7 +470,7 @@ const notificateUsersAboutEvent = async (event, req) => {
     })
   }
   if (membersTelegramIds.length > 0) {
-    await sendTelegramMessage({
+    sendTelegramMessage({
       req,
       telegramIds: membersTelegramIds,
       text: textStart + textPriceForMember + textEnd,
@@ -541,11 +541,11 @@ export default async function handler(Schema, req, res, params = null) {
 
           if (Schema === Events) {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
-            const calendarEvent = await updateEventInCalendar(data, req)
+            const calendarEvent = updateEventInCalendar(data, req)
 
             // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
             if (data.showOnSite && data.tags && typeof data.tags === 'object') {
-              await notificateUsersAboutEvent(data, req)
+              notificateUsersAboutEvent(data, req)
             }
           }
 
@@ -581,14 +581,14 @@ export default async function handler(Schema, req, res, params = null) {
           }
 
           if (Schema === Events) {
-            const calendarEvent = await updateEventInCalendar(data, req)
+            const calendarEvent = updateEventInCalendar(data, req)
             if (
               !oldData.showOnSite &&
               data.showOnSite &&
               data.tags &&
               typeof data.tags === 'object'
             ) {
-              await notificateUsersAboutEvent(data, req)
+              notificateUsersAboutEvent(data, req)
             }
           }
 
@@ -615,7 +615,7 @@ export default async function handler(Schema, req, res, params = null) {
             ) {
               // Если ID есть и переключили на active или обновили ID
               if (newTelegramId && newTelegramActivate) {
-                await sendTelegramMessage({
+                sendTelegramMessage({
                   req,
                   telegramIds: newTelegramId,
                   text: '\u{2705} Уведомления подключены!',
@@ -627,7 +627,7 @@ export default async function handler(Schema, req, res, params = null) {
                 !newTelegramActivate &&
                 newTelegramId
               ) {
-                await sendTelegramMessage({
+                sendTelegramMessage({
                   req,
                   telegramIds: newTelegramId,
                   text: '\u{26D4} Уведомления отключены!',
@@ -635,7 +635,7 @@ export default async function handler(Schema, req, res, params = null) {
               }
               // Если ID удален
               if (oldTelegramId && !newTelegramId) {
-                await sendTelegramMessage({
+                sendTelegramMessage({
                   req,
                   telegramIds: oldTelegramId,
                   text: '\u{26D4} Уведомления отключены!',
@@ -668,7 +668,7 @@ export default async function handler(Schema, req, res, params = null) {
                 true
               )}`
 
-              await sendTelegramMessage({
+              sendTelegramMessage({
                 req,
                 telegramIds: usersTelegramIds,
                 text,

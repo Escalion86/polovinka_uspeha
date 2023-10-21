@@ -110,10 +110,11 @@ export default async function handler(req, res) {
       }
 
       if (backCall) {
-        const response = await fetch(
-          `https://api.telefon-ip.ru/api/v1/authcalls/${token}/reverse_auth_phone_get/`,
-          { method: 'GET' }
-        ).then((response) => response.json())
+        var formatedPhone = '8' + String(phone).substring(1)
+        const url = `https://api.telefon-ip.ru/api/v1/authcalls/${token}/reverse_auth_phone_get?phone=${formatedPhone}`
+        const response = await fetch(url, { method: 'GET' }).then((response) =>
+          response.json()
+        )
 
         console.log('!!response', response)
         if (response?.success) {
