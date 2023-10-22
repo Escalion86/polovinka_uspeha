@@ -512,48 +512,7 @@ const cropImageFunc = (
           >
             <Square />
           </IconToggleButton> */}
-          {/* <label htmlFor="rotate-input">Rotate: </label>
-          <input
-            id="rotate-input"
-            type="number"
-            value={rotate}
-            disabled={!imgSrc}
-            onChange={(e) =>
-              setRotate(Math.min(180, Math.max(-180, Number(e.target.value))))
-            }
-          /> */}
         </div>
-        {/* <div className="Crop-Controls">
-          <input type="file" accept="image/*" onChange={onSelectFile} />
-          <div>
-            <label htmlFor="scale-input">Scale: </label>
-            <input
-              id="scale-input"
-              type="number"
-              step="0.1"
-              value={scale}
-              disabled={!imgSrc}
-              onChange={(e) => setScale(Number(e.target.value))}
-            />
-          </div>
-          <div>
-            <label htmlFor="rotate-input">Rotate: </label>
-            <input
-              id="rotate-input"
-              type="number"
-              value={rotate}
-              disabled={!imgSrc}
-              onChange={(e) =>
-                setRotate(Math.min(180, Math.max(-180, Number(e.target.value))))
-              }
-            />
-          </div>
-          <div>
-            <button onClick={handleToggleAspectClick}>
-              Toggle aspect {aspect ? 'off' : 'on'}
-            </button>
-          </div>
-        </div> */}
         {Boolean(imgSrc) && (
           <div
             onClick={() => {

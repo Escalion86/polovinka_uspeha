@@ -148,12 +148,12 @@ export const SelectItemsList = ({
     return (
       <div className="flex flex-col">
         {title && (
-          <label
+          <div
             htmlFor="itemsIds"
             className="border-b-1 border-primary max-w-min whitespace-nowrap"
           >
             {title}:
-          </label>
+          </div>
         )}
         <ItemRows items={items} itemsIdCount={itemsIdCount} />
       </div>
@@ -235,12 +235,11 @@ export const SelectItemsList = ({
 
   return (
     <div className="flex flex-col">
-      <label htmlFor="itemsIds">
+      <div>
         {title}
         {required && <span className="text-red-700">*</span>}
-      </label>
+      </div>
       <div
-        name="itemsIds"
         className={cn(
           'flex flex-col flex-wrap-reverse bg-gray-200 border rounded-lg',
           required &&

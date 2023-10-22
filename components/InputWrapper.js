@@ -108,7 +108,7 @@ const InputWrapper = forwardRef(
             </div>
           )}
           {label && (
-            <label
+            <div
               // for="exampleFormControlInput1"
               className={cn(
                 'pointer-events-none select-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
@@ -150,7 +150,7 @@ const InputWrapper = forwardRef(
               // }}
             >
               {label}
-            </label>
+            </div>
           )}
         </div>
         {required && (

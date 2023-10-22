@@ -44,36 +44,6 @@ const Input = forwardRef(
     ref
   ) => {
     return (
-      // <div class="flex justify-center">
-      //   <div class="relative mb-3 xl:w-96" data-te-input-wrapper-init>
-      //     <input
-      //       type={type}
-      //       class="peer block min-h-[auto] w-full rounded border-0 bg-transparent py-[0.32rem] px-3 leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-      //       id="exampleFormControlInput1"
-      //       placeholder="Example label"
-      //     />
-      //     <label
-      //       for="exampleFormControlInput1"
-      //       class="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-neutral-200"
-      //     >
-      //       {label}
-      //     </label>
-      //   </div>
-      // </div>
-      // <div className="relative mt-3">
-      //   <input
-      //     type={type}
-      //     className="w-full h-8 text-black placeholder-transparent border-b-2 border-gray-300 peer focus:outline-none focus:border-general"
-      //     // id="exampleFormControlInput1"
-      //     placeholder={label}
-      //   />
-      //   <label
-      //     // for="exampleFormControlInput1"
-      //     className="absolute left-0 text-sm text-general bg-white transition-all peer-focus:-top-3.5 peer-focus:text-general peer-focus:text-sm -top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-disabled peer-placeholder-shown:top-1"
-      //   >
-      //     {label}
-      //   </label>
-      // </div>
       <InputWrapper
         label={label}
         labelClassName={labelClassName}
@@ -170,42 +140,6 @@ const Input = forwardRef(
             <FontAwesomeIcon icon={faArrowUp} className="w-5 h-5" />
           </div>
         )}
-        {/* <label
-            // for="exampleFormControlInput1"
-            className={cn(
-              'absolute px-1 text-sm peer-focus:text-general transition-all bg-white left-0 text-general -top-3',
-              floatingLabel
-                ? 'text-general peer-focus:-top-3 peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:top-1'
-                : '',
-              error
-                ? 'peer-placeholder-shown:text-danger'
-                : 'peer-placeholder-shown:text-disabled',
-              labelClassName
-            )}
-          >
-            {label}
-          </label>
-        </div>
-        {required && (
-          <div
-            className={cn(
-              'absolute px-1 text-xs bg-white right-1 -top-2.5',
-              error || !value ? 'text-danger' : 'text-disabled'
-            )}
-          >
-            Обязательное
-          </div>
-        )}
-        {error && showErrorText && (
-          <div
-            className={cn(
-              'absolute px-1 text-xs bg-white left-1 top-7 text-danger'
-            )}
-          >
-            {error}
-          </div>
-        )}
-      </div> */}
       </InputWrapper>
     )
     // return (

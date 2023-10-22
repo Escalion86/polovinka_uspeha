@@ -45,14 +45,6 @@ const PhoneInput = ({
       disabled={disabled}
       noMargin={noMargin}
     >
-      {/* <>
-      <label
-        className="flex items-center justify-end leading-4 "
-        htmlFor={name}
-      >
-        {label}
-        {required && <span className="text-red-700">*</span>}
-      </label> */}
       <MaskedInput
         disabled={disabled}
         className={cn(

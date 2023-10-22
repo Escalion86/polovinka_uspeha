@@ -4,13 +4,13 @@ const Label = ({
   className,
   text,
   required,
-  htmlFor,
+  // htmlFor,
   contentWidth,
   textPos,
 }) => {
   if (!text) return null
   return (
-    <label
+    <div
       className={cn(
         'flex text-text leading-[0.875rem]',
         contentWidth ? '' : 'min-w-label',
@@ -21,7 +21,7 @@ const Label = ({
           : 'laptop:justify-end',
         className
       )}
-      htmlFor={htmlFor}
+      // htmlFor={htmlFor}
     >
       <span className="flex">
         <span className={cn('flex-1', textPos === 'right' ? '' : 'text-right')}>
@@ -29,7 +29,7 @@ const Label = ({
         </span>
         {required && <span className="text-red-700">*</span>}
       </span>
-    </label>
+    </div>
   )
 }
 
