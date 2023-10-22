@@ -62,6 +62,7 @@ const textForming = ({
   showParticipantsCount,
   showLink,
   noSlashedPrice,
+  showTextSignUp,
 }) => {
   const tagsStringify = () => {
     const tags = []
@@ -170,10 +171,17 @@ const textForming = ({
     if (showLink) {
       elementOfTextArray.push(``)
       elementOfTextArray.push(
-        `\u{1F4DD} Можно записаться ответным сообщением или на сайте по ссылке:`
+        `\u{1F4DD} ${
+          showTextSignUp ? 'Можно записаться ответным сообщением или' : 'Запись'
+        } на сайте по ссылке:`
       )
       elementOfTextArray.push(
         `${window.location.origin}/event/${event._id}${tagsStringify()}`
+      )
+    } else if (showTextSignUp) {
+      elementOfTextArray.push(``)
+      elementOfTextArray.push(
+        `\u{1F4DD} Для записи напишите сообщение о желании записаться тут`
       )
     }
     textArray.push(elementOfTextArray.join('<br>'))
@@ -190,6 +198,7 @@ const ToolsTextEventsAnonsContent = () => {
   const [showAddress, setShowAddress] = useState(true)
   const [showPrice, setShowPrice] = useState('novice')
   const [showParticipantsCount, setShowParticipantsCount] = useState(true)
+  const [showTextSignUp, setShowTextSignUp] = useState(true)
   const [showLink, setShowLink] = useState(true)
   const events = useRecoilValue(eventsAtom)
 
@@ -209,6 +218,7 @@ const ToolsTextEventsAnonsContent = () => {
     showPrice,
     showParticipantsCount,
     showLink,
+    showTextSignUp,
   }
 
   const cleanedUpText = DOMPurify.sanitize(
@@ -310,9 +320,14 @@ const ToolsTextEventsAnonsContent = () => {
         label="Показывать количество участников"
       />
       <CheckBox
+        checked={showTextSignUp}
+        onClick={() => setShowTextSignUp((checked) => !checked)}
+        label={`Текст в конце "записаться ответным сообщением"`}
+      />
+      <CheckBox
         checked={showLink}
         onClick={() => setShowLink((checked) => !checked)}
-        label="Показывать ссылку"
+        label="Показывать ссылку на мероприятие"
       />
       <div className="flex flex-wrap gap-x-2 gap-y-1">
         <Button
