@@ -415,7 +415,10 @@ export const PaymentItem = ({
           <div
             className={cn(
               'px-1 text-sm font-bold phoneH:text-base',
-              item.payDirection === 'toUser' || item.payDirection === 'toEvent'
+              item.payType === 'coupon'
+                ? 'text-general'
+                : item.payDirection === 'toUser' ||
+                  item.payDirection === 'toEvent'
                 ? 'text-danger'
                 : 'text-success'
             )}

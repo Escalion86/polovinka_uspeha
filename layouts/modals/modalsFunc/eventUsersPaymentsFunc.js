@@ -488,8 +488,12 @@ const eventUsersPaymentsFunc = (eventId) => {
         ['toUser', 'fromUser'].includes(payDirection) &&
         !participantsPlusAssistantsIds.includes(userId)
     )
+    const paymentsFromNotParticipantsWhisoutCoupons =
+      paymentsFromNotParticipants.filter(({ payType }) => payType !== 'coupon')
 
-    const sumOfPaymentsFromNotParticipants = income(paymentsFromNotParticipants)
+    const sumOfPaymentsFromNotParticipants = income(
+      paymentsFromNotParticipantsWhisoutCoupons
+    )
     const usersNotParticipantsIds = [
       ...new Set(paymentsFromNotParticipants.map(({ userId }) => userId)),
     ]
