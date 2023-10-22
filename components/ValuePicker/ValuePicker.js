@@ -31,16 +31,6 @@ const ValuePicker = ({
       fitWidth
       // disabled={disabled}
     >
-      {/* {label && (
-        <label
-          className="flex items-center justify-end text-right"
-          htmlFor={name}
-        >
-          {label}
-          {required && <span className="text-red-700">*</span>}
-        </label>
-      )} */}
-      {/* <Label text={label} className={labelClassName} required={required} /> */}
       <div
         className={cn(
           'relative flex flex-wrap items-center gap-x-2 gap-y-1 max-w-fit'

@@ -148,10 +148,6 @@ export const SelectItemList = ({
             // textPos={labelPos === 'top' ? 'left' : 'right'}
           />
         )}
-        {/* <label htmlFor="itemsIds">
-          {title}
-          {required && <span className="text-red-700">*</span>}
-        </label> */}
         {showCounter && (
           <div className="flex gap-x-1">
             <span>Кол-во:</span>

@@ -9,7 +9,6 @@ const CheckBox = ({
   label = null,
   labelPos = 'right',
   labelClassName,
-  name,
   readOnly = false,
   hidden = false,
   wrapperClassName,
@@ -62,14 +61,13 @@ const CheckBox = ({
           )}
           onClick={!readOnly ? onClick : null}
           onChange={!readOnly ? onChange : null}
-          name={name}
         />
-        <label
+        <div
           // for="exampleFormControlInput1"
           className={cn('leading-[0.875rem]', labelClassName)}
         >
           {label}
-        </label>
+        </div>
       </div>
       // </div>
     )
