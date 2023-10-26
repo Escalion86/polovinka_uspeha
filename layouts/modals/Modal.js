@@ -30,15 +30,17 @@ const Modal = ({
   confirmButtonName,
   confirmButtonName2,
   declineButtonName,
+  closeButtonName,
   // showConfirm,
   // showConfirm2,
-  showDecline,
+  // showDecline,
   closeButtonShow = true,
   onlyCloseButtonShow,
   TopLeftComponent,
   bottomLeftButtonProps,
   bottomLeftComponent,
   declineButtonBgClassName,
+  crossShow = true,
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
@@ -175,7 +177,7 @@ const Modal = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: close ? 0 : 1 }}
       transition={{ duration: 0.1 }}
-      onMouseDown={onDeclineClick || closeModal}
+      onMouseDown={crossShow ? onDeclineClick || closeModal : undefined}
     >
       <motion.div
         className={
@@ -201,16 +203,18 @@ const Modal = ({
         {TopLeftComponentState && (
           <div className="absolute left-2 top-2">{TopLeftComponentState}</div>
         )}
-        <Tooltip title="Закрыть">
-          <div className="absolute right-2 top-2">
-            <FontAwesomeIcon
-              className="w-8 h-8 text-black duration-200 transform cursor-pointer hover:scale-110"
-              icon={faTimes}
-              // size="1x"
-              onClick={onDeclineClick || closeModal}
-            />
-          </div>
-        </Tooltip>
+        {crossShow && (
+          <Tooltip title="Закрыть">
+            <div className="absolute right-2 top-2">
+              <FontAwesomeIcon
+                className="w-8 h-8 text-black duration-200 transform cursor-pointer hover:scale-110"
+                icon={faTimes}
+                // size="1x"
+                onClick={onDeclineClick || closeModal}
+              />
+            </div>
+          </Tooltip>
+        )}
         {title && (
           <div className="mx-10 mb-3 text-lg font-bold leading-6 text-center whitespace-pre-line">
             {title}
@@ -276,7 +280,7 @@ const Modal = ({
           onConfirm2Click ||
           // showConfirm ||
           closeButtonShowState ||
-          showDecline ||
+          // showDecline ||
           ComponentInFooter ||
           onlyCloseButtonShowState ||
           bottomLeftButton ||
@@ -289,6 +293,7 @@ const Modal = ({
             confirmName={confirmButtonName}
             confirmName2={confirmButtonName2}
             declineName={declineButtonName}
+            closeButtonName={closeButtonName}
             onConfirmClick={!onlyCloseButtonShowState && onConfirmClick}
             onConfirm2Click={!onlyCloseButtonShowState && onConfirm2Click}
             onDeclineClick={!onlyCloseButtonShowState && onDeclineClick}

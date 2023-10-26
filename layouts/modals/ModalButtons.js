@@ -6,6 +6,7 @@ const ModalButtons = ({
   confirmName = 'Подтвердить',
   confirmName2 = 'Действие',
   declineName = 'Отмена',
+  closeButtonName = 'Закрыть',
   onConfirmClick,
   onConfirm2Click,
   onDeclineClick,
@@ -71,7 +72,7 @@ const ModalButtons = ({
           ) : (
             closeButtonShow && (
               <Button
-                name="Закрыть"
+                name={closeButtonName}
                 classBgColor="bg-general"
                 onClick={closeModal}
               />
