@@ -342,14 +342,15 @@ const QuestionnaireContent = (props) => {
             </ul>
             <span>
               {
-                'Пожалуйста заполните поля максимально полно и честно! Во вкладке "конфиденциальность" вы можете скрыть те данные, которые не хотели бы показывать другим.'
+                'Пожалуйста заполните поля максимально полно и честно! Если есть данные которые вы не хотите чтобы видели другие пользователи, то вы можете внести соответствующие настройки в анкете'
               }
             </span>
           </div>
         ),
-        onConfirm: () => {},
-        confirmButtonName: 'Хорошо',
-        showDecline: false,
+        // onConfirm: () => {},
+        closeButtonName: 'Хорошо, я заполню все честно!',
+        crossShow: false,
+        // onDecline: false,
       })
     }
   }, [modalsFunc])
@@ -377,33 +378,6 @@ const QuestionnaireContent = (props) => {
       <ErrorsList errors={errors} className="px-1" />
       <TabContext value="Анкета">
         <TabPanel tabName="Анкета" className="flex-1">
-          <div className="text-sm">
-            <span>{'Примечание:'}</span>
-            <div className="flex pl-4 leading-4">
-              <FontAwesomeIcon
-                className={cn('w-4 min-w-4 h-4 text-purple-500')}
-                icon={faEye}
-                size="1x"
-              />
-              <span className="ml-1">{'-'}</span>
-              <span className="flex-1 ml-1">
-                {'поле доступно для просмотра пользователям'}
-              </span>
-            </div>
-            <div className="flex pl-4 mt-1 leading-4">
-              <FontAwesomeIcon
-                className={cn('w-4 min-w-4 h-4 text-disabled')}
-                icon={faEyeSlash}
-                size="1x"
-              />
-              <span className="ml-1">{'-'}</span>
-              <span className="flex-1 ml-1">
-                {
-                  'поле скрыто от пользователей и доступно только администратору'
-                }
-              </span>
-            </div>
-          </div>
           {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}
           <FormWrapper className="mt-6">
             {/* <InputImage
@@ -463,6 +437,38 @@ const QuestionnaireContent = (props) => {
               inputClassName="capitalize"
               error={errors.thirdName}
             />
+            <ValuePicker
+              value={security.fullSecondName}
+              valuesArray={[
+                { value: true, name: 'Полностью', color: 'green-400' },
+                {
+                  value: false,
+                  name: 'Только первую букву',
+                  color: 'blue-400',
+                },
+              ]}
+              label="Показывать фамилию пользователям"
+              onChange={(value) => setSecurytyKey({ fullSecondName: value })}
+              // name="yes_no"
+              // inLine
+              required
+            />
+            <ValuePicker
+              value={security.fullThirdName}
+              valuesArray={[
+                { value: true, name: 'Полностью', color: 'green-400' },
+                {
+                  value: false,
+                  name: 'Только первую букву',
+                  color: 'blue-400',
+                },
+              ]}
+              label="Показывать отчество пользователям"
+              onChange={(value) => setSecurytyKey({ fullThirdName: value })}
+              // name="yes_no"
+              // inLine
+              required
+            />
             <GenderPicker
               required
               gender={gender}
@@ -481,20 +487,69 @@ const QuestionnaireContent = (props) => {
               value={security.showBirthday}
               setSecurytyKey={setSecurytyKey}
             > */}
-            <div className="mt-3 mb-2">
-              <DatePicker
-                label="День рождения"
-                value={birthday}
-                onChange={setBirthday}
-                error={errors.birthday}
-                showYears
-                showZodiac
-                required
-                // noMargin
-              />
-            </div>
+            {/* <div className="mt-3 mb-2"> */}
+            <DatePicker
+              label="День рождения"
+              value={birthday}
+              onChange={setBirthday}
+              error={errors.birthday}
+              showYears
+              showZodiac
+              required
+              // noMargin
+            />
+            <ValuePicker
+              value={security.showBirthday}
+              valuesArray={[
+                {
+                  value: 'full',
+                  name: 'Показывать (в том числе возраст)',
+                  color: 'green-400',
+                },
+                {
+                  value: 'noYear',
+                  name: 'Только день и месяц (скрыть возраст)',
+                  color: 'blue-400',
+                },
+                {
+                  value: 'no',
+                  name: 'Не показывать',
+                  color: 'red-400',
+                },
+              ]}
+              label="Показывать дату рождения пользователям"
+              onChange={(value) => setSecurytyKey({ showBirthday: value })}
+              // name="yes_no"
+              // inLine
+              required
+            />
+            {/* </div> */}
             {/* </ShowWrapper> */}
-
+            <div className="text-sm">
+              <span>{'Примечание для полей далее:'}</span>
+              <div className="flex pl-4 leading-4">
+                <FontAwesomeIcon
+                  className={cn('w-4 min-w-4 h-4 text-purple-500')}
+                  icon={faEye}
+                  size="1x"
+                />
+                <span className="ml-1">{'-'}</span>
+                <span className="flex-1 ml-1">
+                  {'поле доступно для просмотра пользователям'}
+                </span>
+              </div>
+              <div className="flex pl-4 mt-1 leading-4">
+                <FontAwesomeIcon
+                  className={cn('w-4 min-w-4 h-4 text-disabled')}
+                  icon={faEyeSlash}
+                  size="1x"
+                />
+                <span className="ml-1">{'-'}</span>
+                <span className="flex-1 ml-1">
+                  {'поле скрыто от пользователей'}
+                </span>
+              </div>
+            </div>
             <FormWrapper twoColumns>
               <ShowWrapper
                 securytyKey="showPhone"
@@ -630,7 +685,7 @@ const QuestionnaireContent = (props) => {
           )} */}
           {/* </div> */}
         </TabPanel>
-        <TabPanel tabName="Конфиденциальность" className="flex-1 p-2">
+        {/* <TabPanel tabName="Конфиденциальность" className="flex-1 p-2">
           <FormWrapper>
             <ValuePicker
               value={security.fullSecondName}
@@ -664,13 +719,6 @@ const QuestionnaireContent = (props) => {
               // inLine
               required
             />
-            {/* <YesNoPicker
-              label="Показывать дату рождения"
-              // inLine
-              value={security.showBirthday}
-              onChange={(value) => setSecurytyKey({ showBirthday: value })}
-              required
-            /> */}
             <ValuePicker
               value={security.showBirthday}
               valuesArray={[
@@ -696,23 +744,8 @@ const QuestionnaireContent = (props) => {
               // inLine
               required
             />
-            {/* <YesNoPicker
-              label="Показывать возраст"
-              // inLine
-              value={security.showAge}
-              onChange={(value) => setSecurytyKey({ showAge: value })}
-              required
-            /> */}
-            {/* <YesNoPicker
-              label="Показывать контакты (телефон и пр.)"
-              // inLine
-              value={security.showContacts}
-              onChange={(value) => setSecurytyKey({ showContacts: value })}
-              required
-            /> */}
           </FormWrapper>
-          {/* </FormWrapper> */}
-        </TabPanel>
+        </TabPanel> */}
         {isLoggedUserAdmin && (
           <TabPanel tabName="Статус и права" className="">
             {isLoggedUserAdmin && (
@@ -733,72 +766,71 @@ const QuestionnaireContent = (props) => {
             )}
           </TabPanel>
         )}
-        {(isLoggedUserMember || isLoggedUserModer) && (
-          <TabPanel tabName="Оповещения" className="flex-1">
-            <div className="flex flex-wrap items-center gap-x-2">
-              <YesNoPicker
-                label="Оповещения в Telegram"
-                // inLine
-                value={!!notifications?.telegram?.active}
-                onChange={() => {
-                  // if (notifications?.telegram?.active) {
-                  //   modalsFunc.notifications.telegram.deactivate(() => {
-                  if (!notifications?.telegram?.active) {
-                    modalsFunc.notifications.telegram.activate()
-                  }
-                  setNotifications((state) => ({
-                    ...state,
-                    telegram: {
-                      ...state?.telegram,
-                      active: !state?.telegram?.active,
-                    },
-                  }))
+        <TabPanel tabName="Оповещения" className="flex-1">
+          <div className="flex flex-wrap items-center gap-x-2">
+            <YesNoPicker
+              label="Оповещения в Telegram"
+              // inLine
+              value={!!notifications?.telegram?.active}
+              onChange={() => {
+                // if (notifications?.telegram?.active) {
+                //   modalsFunc.notifications.telegram.deactivate(() => {
+                if (!notifications?.telegram?.active) {
+                  modalsFunc.notifications.telegram.activate()
+                }
+                setNotifications((state) => ({
+                  ...state,
+                  telegram: {
+                    ...state?.telegram,
+                    active: !state?.telegram?.active,
+                  },
+                }))
 
-                  // })
-                  // } else {
-                  //   setNotifications((state) => ({
-                  //     ...state,
-                  //     telegram: {
-                  //       ...notifications?.telegram,
-                  //       active: !notifications?.telegram?.active,
-                  //     },
-                  //   }))
-                  //   modalsFunc.notifications.telegram
-                  //     .activate
-                  //     // () => setWaitActivateTelegramNotifications(true),
-                  //     // () =>
-                  //     //   setNotifications((state) => ({
-                  //     //     ...state,
-                  //     //     telegram: {
-                  //     //       active: false,
-                  //     //       userName: undefined,
-                  //     //       id: undefined,
-                  //     //     },
-                  //     //   }))
-                  //     ()
-                  // }
-                }}
-                // readOnly={waitActivateTelegramNotifications}
-              />
-              <Input
-                type="number"
-                label="Telegram ID"
-                value={notifications?.telegram?.id ?? ''}
-                onChange={(value) => {
-                  setNotifications((state) => ({
-                    ...state,
-                    telegram: {
-                      ...notifications?.telegram,
-                      id: value,
-                    },
-                  }))
-                }}
-                error={errors.email}
-                copyPasteButtons
-                showArrows={false}
-                // noMargin
-              />
-              {/* {waitActivateTelegramNotifications && (
+                // })
+                // } else {
+                //   setNotifications((state) => ({
+                //     ...state,
+                //     telegram: {
+                //       ...notifications?.telegram,
+                //       active: !notifications?.telegram?.active,
+                //     },
+                //   }))
+                //   modalsFunc.notifications.telegram
+                //     .activate
+                //     // () => setWaitActivateTelegramNotifications(true),
+                //     // () =>
+                //     //   setNotifications((state) => ({
+                //     //     ...state,
+                //     //     telegram: {
+                //     //       active: false,
+                //     //       userName: undefined,
+                //     //       id: undefined,
+                //     //     },
+                //     //   }))
+                //     ()
+                // }
+              }}
+              // readOnly={waitActivateTelegramNotifications}
+            />
+            <Input
+              type="number"
+              label="Telegram ID"
+              value={notifications?.telegram?.id ?? ''}
+              onChange={(value) => {
+                setNotifications((state) => ({
+                  ...state,
+                  telegram: {
+                    ...notifications?.telegram,
+                    id: value,
+                  },
+                }))
+              }}
+              error={errors.email}
+              copyPasteButtons
+              showArrows={false}
+              // noMargin
+            />
+            {/* {waitActivateTelegramNotifications && (
                 <div className="flex items-center mt-3 gap-x-3">
                   <span className="text-orange-400">ОЖИДАЕМ АКТИВАЦИЮ</span>
                   <LoadingSpinner size="xs" />
@@ -832,160 +864,155 @@ const QuestionnaireContent = (props) => {
                   />
                 </div>
               )} */}
-            </div>
+          </div>
 
-            {isNotificationActivated && (
-              <>
-                {isLoggedUserModer && (
-                  <InputWrapper label="Ежедневные уведомления" className="">
-                    <div className="w-full">
-                      <ComboBox
-                        label="Время уведомлений"
-                        items={[
-                          '00:00',
-                          '00:30',
-                          '01:00',
-                          '01:30',
-                          '02:00',
-                          '02:30',
-                          '03:00',
-                          '03:30',
-                          '04:00',
-                          '04:30',
-                          '05:00',
-                          '05:30',
-                          '06:00',
-                          '06:30',
-                          '07:00',
-                          '07:30',
-                          '08:00',
-                          '08:30',
-                          '09:00',
-                          '09:30',
-                          '10:00',
-                          '10:30',
-                          '11:00',
-                          '11:30',
-                          '12:00',
-                          '12:30',
-                          '13:00',
-                          '13:30',
-                          '14:00',
-                          '14:30',
-                          '15:00',
-                          '15:30',
-                          '16:00',
-                          '16:30',
-                          '17:00',
-                          '17:30',
-                          '18:00',
-                          '18:30',
-                          '19:00',
-                          '19:30',
-                          '20:00',
-                          '20:30',
-                          '21:00',
-                          '21:30',
-                          '22:00',
-                          '22:30',
-                          '23:00',
-                          '23:30',
-                        ].map((time) => ({ value: time, name: time }))}
-                        value={notifications.settings?.time}
-                        onChange={(time) =>
-                          setNotifications((state) => ({
-                            ...state,
-                            settings: {
-                              ...notifications?.settings,
-                              time,
-                            },
-                          }))
-                        }
-                        className="w-40 mt-2"
-                        required={notifications.settings?.birthdays}
-                        noMargin
-                        placeholder="Не выбрано"
-                      />
-
-                      {isLoggedUserModer && (
-                        <CheckBox
-                          checked={notifications.settings?.birthdays}
-                          onClick={() =>
-                            toggleNotificationsSettings('birthdays')
-                          }
-                          label="Напоминания о днях рождениях пользователей (админ)"
-                        />
-                      )}
-                    </div>
-                  </InputWrapper>
-                )}
-                <InputWrapper label="Уведомления по событиям" className="">
+          {isNotificationActivated && (
+            <>
+              {isLoggedUserModer && (
+                <InputWrapper label="Ежедневные уведомления" className="">
                   <div className="w-full">
-                    {isLoggedUserModer && (
-                      <CheckBox
-                        checked={notifications.settings?.newUserRegistred}
-                        onClick={() => {
-                          toggleNotificationsSettings('newUserRegistred')
-                        }}
-                        label="Регистрации нового пользователя (админ)"
-                      />
-                    )}
-                    {isLoggedUserModer && (
-                      <CheckBox
-                        checked={notifications.settings?.eventRegistration}
-                        onClick={() =>
-                          toggleNotificationsSettings('eventRegistration')
-                        }
-                        label="Запись/отписка пользователей на мероприитиях (админ)"
-                      />
-                    )}
-                    <CheckBox
-                      checked={notifications.settings?.newEventsByTags}
-                      onClick={() =>
-                        toggleNotificationsSettings('newEventsByTags')
+                    <ComboBox
+                      label="Время уведомлений"
+                      items={[
+                        '00:00',
+                        '00:30',
+                        '01:00',
+                        '01:30',
+                        '02:00',
+                        '02:30',
+                        '03:00',
+                        '03:30',
+                        '04:00',
+                        '04:30',
+                        '05:00',
+                        '05:30',
+                        '06:00',
+                        '06:30',
+                        '07:00',
+                        '07:30',
+                        '08:00',
+                        '08:30',
+                        '09:00',
+                        '09:30',
+                        '10:00',
+                        '10:30',
+                        '11:00',
+                        '11:30',
+                        '12:00',
+                        '12:30',
+                        '13:00',
+                        '13:30',
+                        '14:00',
+                        '14:30',
+                        '15:00',
+                        '15:30',
+                        '16:00',
+                        '16:30',
+                        '17:00',
+                        '17:30',
+                        '18:00',
+                        '18:30',
+                        '19:00',
+                        '19:30',
+                        '20:00',
+                        '20:30',
+                        '21:00',
+                        '21:30',
+                        '22:00',
+                        '22:30',
+                        '23:00',
+                        '23:30',
+                      ].map((time) => ({ value: time, name: time }))}
+                      value={notifications.settings?.time}
+                      onChange={(time) =>
+                        setNotifications((state) => ({
+                          ...state,
+                          settings: {
+                            ...notifications?.settings,
+                            time,
+                          },
+                        }))
                       }
-                      label="Новые мероприятия (по тэгам мероприятий)"
+                      className="w-40 mt-2"
+                      required={notifications.settings?.birthdays}
+                      noMargin
+                      placeholder="Не выбрано"
                     />
-                    {notifications.settings?.newEventsByTags && (
-                      <EventTagsChipsSelector
-                        placeholder="Мне интересно всё!"
-                        label="Тэги мероприятий которые мне интересны"
-                        onChange={(value) =>
-                          setNotifications((state) => ({
-                            ...state,
-                            settings: {
-                              ...notifications?.settings,
-                              eventsTags: value,
-                            },
-                          }))
-                        }
-                        tags={notifications.settings?.eventsTags}
-                      />
-                    )}
-                    {isLoggedUserDev && (
+
+                    {isLoggedUserModer && (
                       <CheckBox
-                        checked={notifications.settings?.eventUserMoves}
-                        onClick={() =>
-                          toggleNotificationsSettings('eventUserMoves')
-                        }
-                        label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
-                      />
-                    )}
-                    {isLoggedUserDev && (
-                      <CheckBox
-                        checked={notifications.settings?.eventCancel}
-                        onClick={() =>
-                          toggleNotificationsSettings('eventCancel')
-                        }
-                        label="Отмена мероприятия на которое я записан"
+                        checked={notifications.settings?.birthdays}
+                        onClick={() => toggleNotificationsSettings('birthdays')}
+                        label="Напоминания о днях рождениях пользователей (админ)"
                       />
                     )}
                   </div>
                 </InputWrapper>
-              </>
-            )}
-          </TabPanel>
-        )}
+              )}
+              <InputWrapper label="Уведомления по событиям" className="">
+                <div className="w-full">
+                  {isLoggedUserModer && (
+                    <CheckBox
+                      checked={notifications.settings?.newUserRegistred}
+                      onClick={() => {
+                        toggleNotificationsSettings('newUserRegistred')
+                      }}
+                      label="Регистрации нового пользователя (админ)"
+                    />
+                  )}
+                  {isLoggedUserModer && (
+                    <CheckBox
+                      checked={notifications.settings?.eventRegistration}
+                      onClick={() =>
+                        toggleNotificationsSettings('eventRegistration')
+                      }
+                      label="Запись/отписка пользователей на мероприитиях (админ)"
+                    />
+                  )}
+                  <CheckBox
+                    checked={notifications.settings?.newEventsByTags}
+                    onClick={() =>
+                      toggleNotificationsSettings('newEventsByTags')
+                    }
+                    label="Новые мероприятия (по тэгам мероприятий)"
+                  />
+                  {notifications.settings?.newEventsByTags && (
+                    <EventTagsChipsSelector
+                      placeholder="Мне интересно всё!"
+                      label="Тэги мероприятий которые мне интересны"
+                      onChange={(value) =>
+                        setNotifications((state) => ({
+                          ...state,
+                          settings: {
+                            ...notifications?.settings,
+                            eventsTags: value,
+                          },
+                        }))
+                      }
+                      tags={notifications.settings?.eventsTags}
+                    />
+                  )}
+                  {isLoggedUserDev && (
+                    <CheckBox
+                      checked={notifications.settings?.eventUserMoves}
+                      onClick={() =>
+                        toggleNotificationsSettings('eventUserMoves')
+                      }
+                      label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
+                    />
+                  )}
+                  {isLoggedUserDev && (
+                    <CheckBox
+                      checked={notifications.settings?.eventCancel}
+                      onClick={() => toggleNotificationsSettings('eventCancel')}
+                      label="Отмена мероприятия на которое я записан"
+                    />
+                  )}
+                </div>
+              </InputWrapper>
+            </>
+          )}
+        </TabPanel>
       </TabContext>
     </div>
   )
