@@ -1140,7 +1140,7 @@ const LoginPage = (props) => {
                   <div>{`Позвоните по номеру телефона (это бесплатно):`}</div>
                   <a
                     className="text-2xl font-bold hover:text-general"
-                    href={`+${backCallRes?.auth_phone}`}
+                    href={`tel:+${backCallRes?.auth_phone}`}
                   >{`+${backCallRes?.auth_phone}`}</a>
                   <div className="text-sm">{`(Нажмите на номер для звонка)`}</div>
                 </div>

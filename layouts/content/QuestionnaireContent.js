@@ -549,6 +549,7 @@ const QuestionnaireContent = (props) => {
                   {'поле скрыто от пользователей'}
                 </span>
               </div>
+              <span>{'При клике на иконку можно показать/скрыть'}</span>
             </div>
             <FormWrapper twoColumns>
               <ShowWrapper
