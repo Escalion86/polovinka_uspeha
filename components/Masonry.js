@@ -20,14 +20,12 @@ const Masonry = ({
   let columns = 1
   if (!children || children?.length === 1) {
     columns = 1
-  } else if (children?.length === 2) {
-    columns = 2
   } else if (typeof cols === 'number') {
     columns = cols
   } else {
     const sortedKeys = Object.keys(cols).sort((a, b) => (a > b ? -1 : 1))
     const key = sortedKeys.find((key) => key <= width)
-    if (key) columns = cols[key]
+    if (key) columns = Math.min(cols[key], children?.length)
   }
 
   const flexes = []
