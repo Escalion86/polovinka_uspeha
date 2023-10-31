@@ -8,7 +8,7 @@ import { useRecoilValue } from 'recoil'
 const ServiceItem = ({ serviceId, title, shortDescription, images }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   return (
-    <div className="flex-col max-w-[430px] overflow-hidden bg-white rounded-lg shadow-xl gap-y-1">
+    <div className="flex-col w-full max-w-[430px] overflow-hidden bg-white rounded-lg shadow-xl gap-y-1">
       {images && (
         <img
           className="object-cover w-full max-h-[220px]"
