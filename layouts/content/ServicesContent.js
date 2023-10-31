@@ -6,12 +6,18 @@ import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import { modalsFuncAtom } from '@state/atoms'
 import servicesAtom from '@state/atoms/servicesAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import { useRecoilValue } from 'recoil'
 
 const ServicesContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const services = useRecoilValue(servicesAtom)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+
+  const filteredServices = isLoggedUserModer
+    ? services
+    : services.filter(({ showOnSite }) => showOnSite)
 
   return (
     <>
@@ -26,8 +32,8 @@ const ServicesContent = () => {
         </div>
       </ContentHeader>
       <CardListWrapper>
-        {services?.length > 0 ? (
-          [...services]
+        {filteredServices?.length > 0 ? (
+          [...filteredServices]
             .sort((a, b) => (a.index < b.index ? -1 : 1))
             .map((service) => (
               <ServiceCard key={service._id} serviceId={service._id} />

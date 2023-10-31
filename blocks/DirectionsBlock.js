@@ -18,7 +18,7 @@ const DirectionItem = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   return (
-    <div className="flex-col max-w-[430px] overflow-hidden bg-white rounded-lg shadow-xl gap-y-1">
+    <div className="flex-col w-full max-w-[430px] overflow-hidden bg-white rounded-lg shadow-xl gap-y-1">
       {image ? (
         <>
           <img

@@ -30,7 +30,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+// import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
 import cn from 'classnames'
@@ -56,7 +56,7 @@ const QuestionnaireContent = (props) => {
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  // const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
 
   const [firstName, setFirstName] = useState(
