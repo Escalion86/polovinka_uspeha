@@ -10,6 +10,7 @@ import {
   faClock,
   faComments,
   faCube,
+  faEnvelope,
   faGenderless,
   faGift,
   faHandHoldingHeart,
@@ -105,6 +106,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import ToolsTextEventsAnonsContent from '@layouts/content/ToolsTextEventsAnonsContent'
 import UserStatisticsContent from '@layouts/content/UserStatisticsContent'
+import ToolsNewsletterContent from '@layouts/content/ToolsNewsletterContent'
 
 const colors = [
   'border-blue-400',
@@ -832,6 +834,11 @@ export const CONTENTS = {
     name: 'Инструменты / Экспорт данных',
     accessRoles: ['moder', 'dev', 'admin'],
   },
+  newsletter: {
+    Component: ToolsNewsletterContent,
+    name: 'Инструменты / Рассылка',
+    accessRoles: ['dev'],
+  },
   histories: {
     Component: HistoriesContent,
     name: 'События / Записи на мероприятия',
@@ -1072,6 +1079,14 @@ export const pages = [
     href: 'toolsExport',
     icon: faUpload,
     accessRoles: CONTENTS['toolsExport'].accessRoles,
+  },
+  {
+    id: 74,
+    group: 9,
+    name: 'Рассылки',
+    href: 'newsletter',
+    icon: faEnvelope,
+    accessRoles: CONTENTS['newsletter'].accessRoles,
   },
   {
     id: 80,
