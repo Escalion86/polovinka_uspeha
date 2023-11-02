@@ -115,6 +115,7 @@ const HistoriesOfEvent = ({ histories }) => {
         const assistants = history.data.filter(
           (eventUser) => eventUser.status === 'assistant'
         )
+
         return (
           <TimelineItem key={history._id}>
             {/* <TimelineOppositeContent color="text.secondary">
@@ -280,6 +281,9 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
 
 const HistoriesContent = () => {
   const histories = useRecoilValue(historiesSelector)
+  const eventsUsersHistories = histories.filter(
+    ({ schema }) => schema === 'eventsusers'
+  )
   const [periodHours, setPeriodHours] = useState(24)
   const events = useRecoilValue(eventsAtom)
   const [filter, setFilter] = useState({
@@ -302,7 +306,7 @@ const HistoriesContent = () => {
 
   const eventsHistories = {}
   // const eventsResults = {}
-  histories.forEach((history) => {
+  eventsUsersHistories.forEach((history) => {
     if (getHoursBetween(history.createdAt) > periodHours) return
 
     const eventId = history.data[0].eventId
