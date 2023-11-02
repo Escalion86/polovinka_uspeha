@@ -8,6 +8,7 @@ import getHoursBetween from '@helpers/getHoursBetween'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventExpiredFunc from '@helpers/isEventExpired'
+import isEventClosedFunc from '@helpers/isEventClosed'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import {
   Timeline,
@@ -20,7 +21,7 @@ import {
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { historiesSelector } from '@state/atoms/historiesAtom'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
 const dotColors = {
@@ -281,18 +282,34 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
 
 const HistoriesContent = () => {
   const histories = useRecoilValue(historiesSelector)
-  const eventsUsersHistories = histories.filter(
-    ({ schema }) => schema === 'eventsusers'
-  )
-  const [periodHours, setPeriodHours] = useState(24)
   const events = useRecoilValue(eventsAtom)
+
+  const [periodHours, setPeriodHours] = useState(24)
+
+  const eventsUsersHistoriesWithEvent = useMemo(
+    () =>
+      histories
+        .filter(
+          ({ schema, createdAt }) =>
+            schema === 'eventsusers' && getHoursBetween(createdAt) > periodHours
+        )
+        .map((history) => {
+          const eventId = history.data[0].eventId
+          const event = events.find((event) => event._id === eventId)
+          return { ...history, event }
+        }),
+    [periodHours, histories, events]
+  )
+
   const [filter, setFilter] = useState({
     status: {
       active: true,
       finished: false,
+      closed: false,
       canceled: false,
     },
   })
+  // console.log('filter :>> ', filter)
   // if (!histories)
   //   return (
   //     <React.Suspense
@@ -306,11 +323,8 @@ const HistoriesContent = () => {
 
   const eventsHistories = {}
   // const eventsResults = {}
-  eventsUsersHistories.forEach((history) => {
-    if (getHoursBetween(history.createdAt) > periodHours) return
-
-    const eventId = history.data[0].eventId
-    const event = events.find((event) => event._id === eventId)
+  eventsUsersHistoriesWithEvent.forEach((history, index) => {
+    const { event } = history
     if (!event) return
     const isEventExpired = isEventExpiredFunc(event)
     const isEventActive = isEventActiveFunc(event)
@@ -324,8 +338,8 @@ const HistoriesContent = () => {
     )
       return
 
-    if (!eventsHistories[eventId]) eventsHistories[eventId] = []
-    eventsHistories[eventId].push(history)
+    if (!eventsHistories[event._id]) eventsHistories[event._id] = []
+    eventsHistories[event._id].push(history)
     // eventsResults[eventId] =
     //   (eventsResults[eventId] ?? 0) +
     //   (history.action === 'add' ? 1 : -1) * history.data.length
