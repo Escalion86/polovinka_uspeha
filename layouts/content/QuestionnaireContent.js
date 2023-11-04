@@ -130,18 +130,18 @@ const QuestionnaireContent = (props) => {
     defaultSecurity ?? DEFAULT_USER.security
   )
 
-  const [notifications, setNotifications] = useState(
-    loggedUser?.notifications ?? DEFAULT_USER.notifications
-  )
+  // const [notifications, setNotifications] = useState(
+  //   loggedUser?.notifications ?? DEFAULT_USER.notifications
+  // )
 
-  const toggleNotificationsSettings = (key) =>
-    setNotifications((state) => ({
-      ...state,
-      settings: {
-        ...notifications?.settings,
-        [key]: notifications?.settings ? !notifications?.settings[key] : true,
-      },
-    }))
+  // const toggleNotificationsSettings = (key) =>
+  //   setNotifications((state) => ({
+  //     ...state,
+  //     settings: {
+  //       ...notifications?.settings,
+  //       [key]: notifications?.settings ? !notifications?.settings[key] : true,
+  //     },
+  //   }))
 
   const [status, setStatus] = useState(
     loggedUser?.status ?? DEFAULT_USER.status
@@ -162,9 +162,9 @@ const QuestionnaireContent = (props) => {
 
   const { success, error } = useSnackbar()
 
-  const isNotificationActivated = !!(
-    notifications?.telegram?.id && notifications?.telegram?.active
-  )
+  // const isNotificationActivated = !!(
+  //   notifications?.telegram?.id && notifications?.telegram?.active
+  // )
 
   const formChanged =
     loggedUser?.firstName !== firstName ||
@@ -187,8 +187,9 @@ const QuestionnaireContent = (props) => {
     loggedUser?.haveKids !== haveKids ||
     !compareObjects(loggedUser?.security, security) ||
     loggedUser?.status !== status ||
-    loggedUser?.role !== role ||
-    !compareObjects(loggedUser?.notifications, notifications)
+    loggedUser?.role !== role
+  // ||
+  // !compareObjects(loggedUser?.notifications, notifications)
 
   const onClickConfirm = async () => {
     if (
@@ -231,7 +232,7 @@ const QuestionnaireContent = (props) => {
           security,
           status,
           role,
-          notifications,
+          // notifications,
         },
         (data) => {
           setLoggedUser(data)
@@ -376,290 +377,307 @@ const QuestionnaireContent = (props) => {
         />
       </div>
       <ErrorsList errors={errors} className="px-1" />
-      <TabContext value="Анкета">
-        <TabPanel tabName="Анкета" className="flex-1">
-          {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}
-          <FormWrapper className="mt-6">
-            {/* <InputImage
+      <div className="p-2 overflow-y-auto">
+        {/* <TabContext value="Анкета">
+        <TabPanel tabName="Анкета" className="flex-1"> */}
+        {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}
+        <FormWrapper className="mt-6">
+          {/* <InputImage
           label="Фотография"
           directory="users"
           image={image}
           onChange={setImage}
           noImage={image ?? `/img/users/${gender ?? 'male'}.jpg`}
         /> */}
-            <InputImages
-              label="Фотографии"
-              directory="users"
-              images={images}
-              onChange={(images) => {
-                removeError('images')
-                setImages(images)
-              }}
-              // required
-              error={errors.images}
-            />
-            <Input
-              label="Имя"
-              type="text"
-              value={firstName}
-              onChange={(value) => {
-                removeError('firstName')
-                setFirstName(upperCaseFirst(value.trim()))
-              }}
-              required
-              // labelClassName="w-40"
-              error={errors.firstName}
-              showErrorText
-              inputClassName="capitalize"
-            />
-            <Input
-              label="Фамилия"
-              type="text"
-              value={secondName}
-              onChange={(value) => {
-                removeError('secondName')
-                setSecondName(upperCaseFirst(value.trim()))
-              }}
-              required
-              // labelClassName="w-40"
-              inputClassName="capitalize"
-              error={errors.secondName}
-            />
-            <Input
-              label="Отчество"
-              type="text"
-              value={thirdName}
-              onChange={(value) => {
-                removeError('thirdName')
-                setThirdName(upperCaseFirst(value.trim()))
-              }}
-              // labelClassName="w-40"
-              inputClassName="capitalize"
-              error={errors.thirdName}
-            />
-            <ValuePicker
-              value={security.fullSecondName}
-              valuesArray={[
-                { value: true, name: 'Полностью', color: 'green-400' },
-                {
-                  value: false,
-                  name: 'Только первую букву',
-                  color: 'blue-400',
-                },
-              ]}
-              label="Показывать фамилию пользователям"
-              onChange={(value) => setSecurytyKey({ fullSecondName: value })}
-              // name="yes_no"
-              // inLine
-              required
-            />
-            <ValuePicker
-              value={security.fullThirdName}
-              valuesArray={[
-                { value: true, name: 'Полностью', color: 'green-400' },
-                {
-                  value: false,
-                  name: 'Только первую букву',
-                  color: 'blue-400',
-                },
-              ]}
-              label="Показывать отчество пользователям"
-              onChange={(value) => setSecurytyKey({ fullThirdName: value })}
-              // name="yes_no"
-              // inLine
-              required
-            />
-            <GenderPicker
-              required
-              gender={gender}
-              onChange={(value) => {
-                removeError('gender')
-                setGender(value)
-              }}
-              error={errors.gender}
-            />
-            {/* <OrientationPicker
+          <InputImages
+            label="Фотографии"
+            directory="users"
+            images={images}
+            onChange={(images) => {
+              removeError('images')
+              setImages(images)
+            }}
+            // required
+            error={errors.images}
+          />
+          <Input
+            label="Имя"
+            type="text"
+            value={firstName}
+            onChange={(value) => {
+              removeError('firstName')
+              setFirstName(upperCaseFirst(value.trim()))
+            }}
+            required
+            // labelClassName="w-40"
+            error={errors.firstName}
+            showErrorText
+            inputClassName="capitalize"
+          />
+          <Input
+            label="Фамилия"
+            type="text"
+            value={secondName}
+            onChange={(value) => {
+              removeError('secondName')
+              setSecondName(upperCaseFirst(value.trim()))
+            }}
+            required
+            // labelClassName="w-40"
+            inputClassName="capitalize"
+            error={errors.secondName}
+          />
+          <Input
+            label="Отчество"
+            type="text"
+            value={thirdName}
+            onChange={(value) => {
+              removeError('thirdName')
+              setThirdName(upperCaseFirst(value.trim()))
+            }}
+            // labelClassName="w-40"
+            inputClassName="capitalize"
+            error={errors.thirdName}
+          />
+          <ValuePicker
+            value={security.fullSecondName}
+            valuesArray={[
+              { value: true, name: 'Полностью', color: 'green-400' },
+              {
+                value: false,
+                name: 'Только первую букву',
+                color: 'blue-400',
+              },
+            ]}
+            label="Показывать фамилию пользователям"
+            onChange={(value) => setSecurytyKey({ fullSecondName: value })}
+            // name="yes_no"
+            // inLine
+            required
+          />
+          <ValuePicker
+            value={security.fullThirdName}
+            valuesArray={[
+              { value: true, name: 'Полностью', color: 'green-400' },
+              {
+                value: false,
+                name: 'Только первую букву',
+                color: 'blue-400',
+              },
+            ]}
+            label="Показывать отчество пользователям"
+            onChange={(value) => setSecurytyKey({ fullThirdName: value })}
+            // name="yes_no"
+            // inLine
+            required
+          />
+          <GenderPicker
+            required
+            gender={gender}
+            onChange={(value) => {
+              removeError('gender')
+              setGender(value)
+            }}
+            error={errors.gender}
+          />
+          {/* <OrientationPicker
           orientation={orientation}
           onChange={setOrientation}
         /> */}
-            {/* <ShowWrapper
+          {/* <ShowWrapper
               securytyKey="showBirthday"
               value={security.showBirthday}
               setSecurytyKey={setSecurytyKey}
             > */}
-            {/* <div className="mt-3 mb-2"> */}
-            <DatePicker
-              label="День рождения"
-              value={birthday}
-              onChange={setBirthday}
-              error={errors.birthday}
-              showYears
-              showZodiac
-              required
-              // noMargin
-            />
-            <ValuePicker
-              value={security.showBirthday}
-              valuesArray={[
-                {
-                  value: 'full',
-                  name: 'Показывать (в том числе возраст)',
-                  color: 'green-400',
-                },
-                {
-                  value: 'noYear',
-                  name: 'Только день и месяц (скрыть возраст)',
-                  color: 'blue-400',
-                },
-                {
-                  value: 'no',
-                  name: 'Не показывать',
-                  color: 'red-400',
-                },
-              ]}
-              label="Показывать дату рождения пользователям"
-              onChange={(value) => setSecurytyKey({ showBirthday: value })}
-              // name="yes_no"
-              // inLine
-              required
-            />
-            {/* </div> */}
-            {/* </ShowWrapper> */}
-            <div className="text-sm">
-              <span>{'Примечание для полей далее:'}</span>
-              <div className="flex pl-4 leading-4">
-                <FontAwesomeIcon
-                  className={cn('w-4 min-w-4 h-4 text-purple-500')}
-                  icon={faEye}
-                  size="1x"
-                />
-                <span className="ml-1">{'-'}</span>
-                <span className="flex-1 ml-1">
-                  {'поле доступно для просмотра пользователям'}
-                </span>
-              </div>
-              <div className="flex pl-4 mt-1 leading-4">
-                <FontAwesomeIcon
-                  className={cn('w-4 min-w-4 h-4 text-disabled')}
-                  icon={faEyeSlash}
-                  size="1x"
-                />
-                <span className="ml-1">{'-'}</span>
-                <span className="flex-1 ml-1">
-                  {'поле скрыто от пользователей'}
-                </span>
-              </div>
-              <span>{'При клике на иконку можно показать/скрыть'}</span>
+          {/* <div className="mt-3 mb-2"> */}
+          <DatePicker
+            label="День рождения"
+            value={birthday}
+            onChange={setBirthday}
+            error={errors.birthday}
+            showYears
+            showZodiac
+            required
+            // noMargin
+          />
+          <ValuePicker
+            value={security.showBirthday}
+            valuesArray={[
+              {
+                value: 'full',
+                name: 'Показывать (в том числе возраст)',
+                color: 'green-400',
+              },
+              {
+                value: 'noYear',
+                name: 'Только день и месяц (скрыть возраст)',
+                color: 'blue-400',
+              },
+              {
+                value: 'no',
+                name: 'Не показывать',
+                color: 'red-400',
+              },
+            ]}
+            label="Показывать дату рождения пользователям"
+            onChange={(value) => setSecurytyKey({ showBirthday: value })}
+            // name="yes_no"
+            // inLine
+            required
+          />
+          {/* </div> */}
+          {/* </ShowWrapper> */}
+          <div className="text-sm">
+            <span>{'Примечание для полей далее:'}</span>
+            <div className="flex pl-4 leading-4">
+              <FontAwesomeIcon
+                className={cn('w-4 min-w-4 h-4 text-purple-500')}
+                icon={faEye}
+                size="1x"
+              />
+              <span className="ml-1">{'-'}</span>
+              <span className="flex-1 ml-1">
+                {'поле доступно для просмотра пользователям'}
+              </span>
             </div>
-            <FormWrapper twoColumns>
-              <ShowWrapper
-                securytyKey="showPhone"
-                value={security.showPhone}
-                setSecurytyKey={setSecurytyKey}
-              >
-                <PhoneInput
-                  required
-                  label="Телефон (логин)"
-                  value={phone}
-                  onChange={setPhone}
-                  error={errors.phone}
-                  copyPasteButtons
-                  disabled
-                  noMargin
-                />
-              </ShowWrapper>
-              <ShowWrapper
-                securytyKey="showWhatsapp"
-                value={security.showWhatsapp}
-                setSecurytyKey={setSecurytyKey}
-              >
-                <PhoneInput
-                  label="Whatsapp"
-                  value={whatsapp}
-                  onChange={setWhatsapp}
-                  error={errors.whatsapp}
-                  copyPasteButtons
-                  noMargin
-                />
-              </ShowWrapper>
-            </FormWrapper>
-            <FormWrapper twoColumns>
-              <ShowWrapper
-                securytyKey="showViber"
-                value={security.showViber}
-                setSecurytyKey={setSecurytyKey}
-              >
-                <PhoneInput
-                  label="Viber"
-                  value={viber}
-                  onChange={setViber}
-                  error={errors.viber}
-                  copyPasteButtons
-                  noMargin
-                />
-              </ShowWrapper>
-              <ShowWrapper
-                securytyKey="showTelegram"
-                value={security.showTelegram}
-                setSecurytyKey={setSecurytyKey}
-              >
-                <Input
-                  prefix="@"
-                  label="Telegram"
-                  value={telegram}
-                  onChange={setTelegram}
-                  copyPasteButtons
-                  noMargin
-                />
-              </ShowWrapper>
-            </FormWrapper>
-            <FormWrapper twoColumns>
-              <ShowWrapper
-                securytyKey="showInstagram"
-                value={security.showInstagram}
-                setSecurytyKey={setSecurytyKey}
-              >
-                <Input
-                  prefix="@"
-                  label="Instagram"
-                  value={instagram}
-                  onChange={setInstagram}
-                  copyPasteButtons
-                  noMargin
-                />
-              </ShowWrapper>
-              <ShowWrapper
-                securytyKey="showVk"
-                value={security.showVk}
-                setSecurytyKey={setSecurytyKey}
-              >
-                <Input
-                  prefix="@"
-                  label="Vk"
-                  value={vk}
-                  onChange={setVk}
-                  copyPasteButtons
-                  noMargin
-                />
-              </ShowWrapper>
-            </FormWrapper>
+            <div className="flex pl-4 mt-1 leading-4">
+              <FontAwesomeIcon
+                className={cn('w-4 min-w-4 h-4 text-disabled')}
+                icon={faEyeSlash}
+                size="1x"
+              />
+              <span className="ml-1">{'-'}</span>
+              <span className="flex-1 ml-1">
+                {'поле скрыто от пользователей'}
+              </span>
+            </div>
+            <span>{'При клике на иконку можно показать/скрыть'}</span>
+          </div>
+          <FormWrapper twoColumns>
             <ShowWrapper
-              securytyKey="showEmail"
-              value={security.showEmail}
+              securytyKey="showPhone"
+              value={security.showPhone}
               setSecurytyKey={setSecurytyKey}
             >
-              <Input
-                label="Email"
-                value={email}
-                onChange={setEmail}
-                error={errors.email}
+              <PhoneInput
+                required
+                label="Телефон (логин)"
+                value={phone}
+                onChange={setPhone}
+                error={errors.phone}
+                copyPasteButtons
+                disabled
+                noMargin
+              />
+            </ShowWrapper>
+            <ShowWrapper
+              securytyKey="showWhatsapp"
+              value={security.showWhatsapp}
+              setSecurytyKey={setSecurytyKey}
+            >
+              <PhoneInput
+                label="Whatsapp"
+                value={whatsapp}
+                onChange={setWhatsapp}
+                error={errors.whatsapp}
                 copyPasteButtons
                 noMargin
               />
             </ShowWrapper>
-            <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
           </FormWrapper>
-          {/* {isLoggedUserDev && (
+          <FormWrapper twoColumns>
+            <ShowWrapper
+              securytyKey="showViber"
+              value={security.showViber}
+              setSecurytyKey={setSecurytyKey}
+            >
+              <PhoneInput
+                label="Viber"
+                value={viber}
+                onChange={setViber}
+                error={errors.viber}
+                copyPasteButtons
+                noMargin
+              />
+            </ShowWrapper>
+            <ShowWrapper
+              securytyKey="showTelegram"
+              value={security.showTelegram}
+              setSecurytyKey={setSecurytyKey}
+            >
+              <Input
+                prefix="@"
+                label="Telegram"
+                value={telegram}
+                onChange={setTelegram}
+                copyPasteButtons
+                noMargin
+              />
+            </ShowWrapper>
+          </FormWrapper>
+          <FormWrapper twoColumns>
+            <ShowWrapper
+              securytyKey="showInstagram"
+              value={security.showInstagram}
+              setSecurytyKey={setSecurytyKey}
+            >
+              <Input
+                prefix="@"
+                label="Instagram"
+                value={instagram}
+                onChange={setInstagram}
+                copyPasteButtons
+                noMargin
+              />
+            </ShowWrapper>
+            <ShowWrapper
+              securytyKey="showVk"
+              value={security.showVk}
+              setSecurytyKey={setSecurytyKey}
+            >
+              <Input
+                prefix="@"
+                label="Vk"
+                value={vk}
+                onChange={setVk}
+                copyPasteButtons
+                noMargin
+              />
+            </ShowWrapper>
+          </FormWrapper>
+          <ShowWrapper
+            securytyKey="showEmail"
+            value={security.showEmail}
+            setSecurytyKey={setSecurytyKey}
+          >
+            <Input
+              label="Email"
+              value={email}
+              onChange={setEmail}
+              error={errors.email}
+              copyPasteButtons
+              noMargin
+            />
+          </ShowWrapper>
+          <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
+        </FormWrapper>
+        {isLoggedUserAdmin && (
+          <UserStatusPicker
+            required
+            status={status}
+            onChange={setStatus}
+            error={errors.status}
+          />
+        )}
+        {isLoggedUserDev && (
+          <UserRolePicker
+            required
+            role={role}
+            onChange={setRole}
+            error={errors.role}
+          />
+        )}
+        {/* {isLoggedUserDev && (
             <ValueItem
               name="Доп анкета"
               color="green-500"
@@ -684,8 +702,8 @@ const QuestionnaireContent = (props) => {
               }
             />
           )} */}
-          {/* </div> */}
-        </TabPanel>
+        {/* </div> */}
+        {/* </TabPanel> */}
         {/* <TabPanel tabName="Конфиденциальность" className="flex-1 p-2">
           <FormWrapper>
             <ValuePicker
@@ -747,7 +765,7 @@ const QuestionnaireContent = (props) => {
             />
           </FormWrapper>
         </TabPanel> */}
-        {isLoggedUserAdmin && (
+        {/* {isLoggedUserAdmin && (
           <TabPanel tabName="Статус и права" className="">
             {isLoggedUserAdmin && (
               <UserStatusPicker
@@ -766,16 +784,13 @@ const QuestionnaireContent = (props) => {
               />
             )}
           </TabPanel>
-        )}
-        <TabPanel tabName="Оповещения" className="flex-1">
+        )} */}
+        {/* <TabPanel tabName="Оповещения" className="flex-1">
           <div className="flex flex-wrap items-center gap-x-2">
             <YesNoPicker
               label="Оповещения в Telegram"
-              // inLine
               value={!!notifications?.telegram?.active}
               onChange={() => {
-                // if (notifications?.telegram?.active) {
-                //   modalsFunc.notifications.telegram.deactivate(() => {
                 if (!notifications?.telegram?.active) {
                   modalsFunc.notifications.telegram.activate()
                 }
@@ -786,32 +801,7 @@ const QuestionnaireContent = (props) => {
                     active: !state?.telegram?.active,
                   },
                 }))
-
-                // })
-                // } else {
-                //   setNotifications((state) => ({
-                //     ...state,
-                //     telegram: {
-                //       ...notifications?.telegram,
-                //       active: !notifications?.telegram?.active,
-                //     },
-                //   }))
-                //   modalsFunc.notifications.telegram
-                //     .activate
-                //     // () => setWaitActivateTelegramNotifications(true),
-                //     // () =>
-                //     //   setNotifications((state) => ({
-                //     //     ...state,
-                //     //     telegram: {
-                //     //       active: false,
-                //     //       userName: undefined,
-                //     //       id: undefined,
-                //     //     },
-                //     //   }))
-                //     ()
-                // }
               }}
-              // readOnly={waitActivateTelegramNotifications}
             />
             <Input
               type="number"
@@ -826,45 +816,9 @@ const QuestionnaireContent = (props) => {
                   },
                 }))
               }}
-              error={errors.email}
               copyPasteButtons
               showArrows={false}
-              // noMargin
             />
-            {/* {waitActivateTelegramNotifications && (
-                <div className="flex items-center mt-3 gap-x-3">
-                  <span className="text-orange-400">ОЖИДАЕМ АКТИВАЦИЮ</span>
-                  <LoadingSpinner size="xs" />
-                  <Button
-                    name="Отмена"
-                    onClick={async () => {
-                      setWaitActivateTelegramNotifications(false)
-                      setNotifications((state) => ({
-                        ...state,
-                        telegram: {
-                          active: false,
-                          userName: undefined,
-                          id: undefined,
-                        },
-                      }))
-                      await putData(
-                        `/api/users/${loggedUser._id}`,
-                        {
-                          notifications: {
-                            ...loggedUser.notifications,
-                            telegram: { active: false },
-                          },
-                        },
-                        null,
-                        null,
-                        false,
-                        loggedUser._id
-                      )
-                    }}
-                    thin
-                  />
-                </div>
-              )} */}
           </div>
 
           {isNotificationActivated && (
@@ -1013,8 +967,9 @@ const QuestionnaireContent = (props) => {
               </InputWrapper>
             </>
           )}
-        </TabPanel>
-      </TabContext>
+        </TabPanel> */}
+        {/* </TabContext> */}
+      </div>
     </div>
   )
 }

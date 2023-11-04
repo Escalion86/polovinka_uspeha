@@ -50,7 +50,6 @@ import {
   faHeart,
 } from '@fortawesome/free-solid-svg-icons'
 import {
-  faCalendar,
   faCalendarAlt,
   faCreditCard,
   faFileText,
@@ -107,6 +106,7 @@ import {
 import ToolsTextEventsAnonsContent from '@layouts/content/ToolsTextEventsAnonsContent'
 import UserStatisticsContent from '@layouts/content/UserStatisticsContent'
 import ToolsNewsletterContent from '@layouts/content/ToolsNewsletterContent'
+import LoggedUserNotificationsContent from '@layouts/content/LoggedUserNotificationsContent'
 
 const colors = [
   'border-blue-400',
@@ -693,7 +693,7 @@ export const SECTORS = [
   {
     name: 'Мероприятие',
     value: 'event',
-    icon: faCalendar,
+    icon: faCalendarAlt,
     color: 'orange-400',
   },
   { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
@@ -716,7 +716,7 @@ export const SECTORS2 = [
   {
     name: 'Мероприятие',
     value: 'event',
-    icon: faCalendar,
+    icon: faCalendarAlt,
     color: 'orange-400',
   },
   { name: 'Пользователь', value: 'user', icon: faUser, color: 'blue-400' },
@@ -782,6 +782,11 @@ export const CONTENTS = {
     name: 'Мой профиль',
     accessRoles: ['client', 'moder', 'admin', 'dev'],
   },
+  notifications: {
+    Component: LoggedUserNotificationsContent,
+    name: 'Уведомления',
+    accessRoles: ['client', 'moder', 'admin', 'dev'],
+  },
   users: {
     Component: UsersContent,
     name: 'Пользователи',
@@ -816,7 +821,7 @@ export const CONTENTS = {
   dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
   toolsTextEventsAnons: {
     Component: ToolsTextEventsAnonsContent,
-    name: 'Инструменты / Генераотр текста анонса мероприятий',
+    name: 'Инструменты / Генератор текста анонса мероприятий',
     accessRoles: ['moder', 'dev', 'admin'],
   },
   toolsEventAnons: {
@@ -920,7 +925,7 @@ export const pages = [
     group: 2,
     name: 'Мероприятия',
     href: 'events',
-    icon: faCalendar,
+    icon: faCalendarAlt,
     accessRoles: CONTENTS['events'].accessRoles,
   },
   {
@@ -1021,7 +1026,7 @@ export const pages = [
     group: 7,
     name: 'Мероприятия',
     href: 'statisticsEvents',
-    icon: faCalendar,
+    icon: faCalendarAlt,
     accessRoles: CONTENTS['statisticsEvents'].accessRoles,
   },
   {
@@ -1045,7 +1050,7 @@ export const pages = [
     group: 8,
     name: 'Участники клуба',
     href: 'members',
-    icon: faCalendar,
+    icon: faUser,
     accessRoles: CONTENTS['members'].accessRoles,
   },
   {

@@ -1,4 +1,5 @@
 import {
+  faBell,
   faHome,
   faListAlt,
   faSignInAlt,
@@ -17,6 +18,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import Avatar from './Avatar'
+import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 
 const variants = {
   show: {
@@ -114,16 +116,29 @@ const UserMenu = () => {
               <span>{loggedUser.firstName}</span>
               <span>{loggedUser.secondName}</span>
             </div>
-            {getParentDir(router.asPath) === 'cabinet' ? (
-              <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
-            ) : (
-              <MenuItem href="/cabinet" icon={faListAlt} title="Мой кабинет" />
-            )}
+            <MenuItem
+              href="/cabinet/events"
+              icon={faCalendarAlt}
+              title="Мероприятия"
+            />
             <MenuItem
               href="/cabinet/questionnaire"
               icon={faUserAlt}
-              title="Мой профиль"
+              title="Моя анкета"
             />
+            <MenuItem
+              href="/cabinet/notifications"
+              icon={faBell}
+              title="Настройка уведомлений"
+            />
+            {getParentDir(router.asPath) === 'cabinet' && (
+              <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
+            )}
+            {/* {getParentDir(router.asPath) === 'cabinet' ? (
+              <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
+            ) : (
+              <MenuItem href="/cabinet" icon={faListAlt} title="Мой кабинет" />
+            )} */}
             <MenuItem
               onClick={signOut}
               icon={faSignOutAlt}
