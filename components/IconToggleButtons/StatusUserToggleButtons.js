@@ -18,7 +18,7 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
         }
         variant={value.member ? 'contained' : 'outlined'}
         color="blue"
-        className={value.member ? 'text-white' : 'text-blue-400'}
+        // className={value.member ? 'text-white' : 'text-blue-400'}
       >
         <div className="w-6 h-6">
           <Image src="/img/svg_icons/medal.svg" width="24" height="24" />
@@ -35,8 +35,8 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
           })
         }
         variant={value.novice ? 'contained' : 'outlined'}
-        color="green"
-        className={value.novice ? 'text-white' : 'text-green-400'}
+        color="gray"
+        // className={value.novice ? 'text-white' : 'text-gray-400'}
       >
         {/* <div
           // className={cn(
@@ -44,7 +44,10 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
           //   userGender ? 'bg-' + userGender.color : 'bg-gray-400'
           // )}
         > */}
-        <FontAwesomeIcon className="w-6 h-6" icon={faUser} />
+        <div className="w-6 h-6 grayscale brightness-150 contrast-75 ">
+          <Image src="/img/svg_icons/medal.svg" width="24" height="24" />
+        </div>
+        {/* <FontAwesomeIcon className="w-6 h-6" icon={faUser} /> */}
       </Button>
       <Button
         onClick={() =>
