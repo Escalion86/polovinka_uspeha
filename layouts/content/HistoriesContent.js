@@ -291,7 +291,7 @@ const HistoriesContent = () => {
       histories
         .filter(
           ({ schema, createdAt }) =>
-            schema === 'eventsusers' && getHoursBetween(createdAt) > periodHours
+            schema === 'eventsusers' && getHoursBetween(createdAt) < periodHours
         )
         .map((history) => {
           const eventId = history.data[0].eventId
