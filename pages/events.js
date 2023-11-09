@@ -1,7 +1,6 @@
 import ContactsBlock from '@blocks/ContactsBlock'
 import EventsBlock from '@blocks/EventsBlock'
 import Fab from '@components/Fab'
-import LoadingSpinner from '@components/LoadingSpinner'
 import StateLoader from '@components/StateLoader'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import Header from '@layouts/Header'
@@ -10,28 +9,10 @@ import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 
 export default function Home(props) {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-
-  const router = useRouter()
-
-  let redirect
-  if (props.loggedUser) redirect = '/cabinet/events'
-
-  useEffect(() => {
-    if (redirect) router.push(redirect, '', { shallow: true })
-  }, [redirect])
-
-  if (redirect)
-    return (
-      <div className="w-full h-screen">
-        <LoadingSpinner size="lg" />
-      </div>
-    )
 
   return (
     <>
@@ -54,5 +35,17 @@ export default function Home(props) {
   )
 }
 
-export const getServerSideProps = async (context) =>
-  await getServerSidePropsFunc(context, getSession, fetchProps)
+export const getServerSideProps = async (context) => {
+  const session = await getSession({ req: context.req })
+
+  if (session) {
+    return {
+      redirect: {
+        destination: `/cabinet`,
+      },
+    }
+  }
+  const response = await getServerSidePropsFunc(context, getSession, fetchProps)
+
+  return response
+}

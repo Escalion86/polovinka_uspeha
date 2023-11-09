@@ -131,9 +131,9 @@ const UserMenu = () => {
               icon={faBell}
               title="Настройка уведомлений"
             />
-            {getParentDir(router.asPath) === 'cabinet' && (
+            {/* {getParentDir(router.asPath) === 'cabinet' && (
               <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
-            )}
+            )} */}
             {/* {getParentDir(router.asPath) === 'cabinet' ? (
               <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
             ) : (
