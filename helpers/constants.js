@@ -689,6 +689,38 @@ export const ZODIAC = [
   },
 ]
 
+export const roleRights = {
+  moder: {
+    name: 'Модератор',
+    seeFullUsersNames: true,
+    seeAllContactsOfUsers: true,
+    seeBirthdayOfUsers: true,
+    eventUsersCounterAndAgeFull: true,
+    eventStatusFilterFull: true,
+    seeUserSumOfPaymentsWithoutEvent: false, // admin
+    addEvent: true,
+    addUser: true,
+    addDirection: true,
+    addServiceUser: false,
+    editEventUsers: true,
+    seeEventsUsers: true,
+    seeAllEvents: true,
+    seeAllServices: true,
+    notifications: {
+      option: true,
+      birthdays: true,
+      newUserRegistred: true,
+      eventRegistration: true,
+      newEventsByTags: true,
+      eventUserMoves: false,
+      eventCancel: false,
+    },
+    setSelfStatus: false,
+    setSelfRole: false,
+    fabInCabinet: false,
+  },
+}
+
 export const SECTORS = [
   {
     name: 'Мероприятие',

@@ -13,6 +13,7 @@ import { useRecoilValue } from 'recoil'
 
 export default function Home(props) {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+
   return (
     <>
       <Head>
@@ -34,5 +35,17 @@ export default function Home(props) {
   )
 }
 
-export const getServerSideProps = async (context) =>
-  await getServerSidePropsFunc(context, getSession, fetchProps)
+export const getServerSideProps = async (context) => {
+  const session = await getSession({ req: context.req })
+
+  if (session) {
+    return {
+      redirect: {
+        destination: `/cabinet`,
+      },
+    }
+  }
+  const response = await getServerSidePropsFunc(context, getSession, fetchProps)
+
+  return response
+}
