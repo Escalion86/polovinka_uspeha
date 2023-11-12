@@ -10,6 +10,7 @@ import sortFunctions from '@helpers/sortFunctions'
 import UsersList from '@layouts/lists/UsersList'
 import { modalsFuncAtom } from '@state/atoms'
 import usersAtom from '@state/atoms/usersAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -35,6 +36,7 @@ const UsersContent = () => {
   // )
 
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   const [isSearching, setIsSearching] = useState(false)
   const [sort, setSort] = useState({ name: 'asc' })
@@ -88,9 +90,10 @@ const UsersContent = () => {
     ]
   )
 
-  const addSearchProps = isLoggedUserModer
-    ? ['phone', 'whatsapp', 'viber', 'instagram', 'telegram', 'vk', 'email']
-    : []
+  const addSearchProps =
+    isLoggedUserModer || isLoggedUserAdmin
+      ? ['phone', 'whatsapp', 'viber', 'instagram', 'telegram', 'vk', 'email']
+      : []
 
   const visibleUsers = useMemo(() => {
     if (!searchText) return filteredUsers
@@ -140,7 +143,7 @@ const UsersContent = () => {
               }}
             />
           </FormControl> */}
-          {isLoggedUserModer && (
+          {isLoggedUserAdmin && (
             <AddButton onClick={() => modalsFunc.user.edit()} />
           )}
         </div>
