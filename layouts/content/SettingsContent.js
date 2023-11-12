@@ -115,9 +115,10 @@ const SettingsContent = (props) => {
         <ValuePicker
           value={codeSendService}
           valuesArray={CODE_SEND_SERVICES}
-          label="Сервис получения кода для подтверждения номера телефона"
+          label="Сервис подтверждения номера телефона"
           onChange={setCodeSendService}
           name="codeSendService"
+          disabledValues={['ucaller']}
           // required={required}
           // error={error}
         />
