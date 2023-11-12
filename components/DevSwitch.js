@@ -47,6 +47,12 @@ const DevSwitch = () => {
         <ToggleButton className="flex-1 leading-3 rounded-none" value="admin">
           Админ
         </ToggleButton>
+        <ToggleButton
+          className="flex-1 leading-3 rounded-none"
+          value="supervisor"
+        >
+          Руководитель
+        </ToggleButton>
         <ToggleButton className="flex-1 leading-3 rounded-none" value="dev">
           DEV
         </ToggleButton>

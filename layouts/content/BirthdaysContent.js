@@ -1,5 +1,6 @@
 import ComboBox from '@components/ComboBox'
 import ContentHeader from '@components/ContentHeader'
+import LoadingSpinner from '@components/LoadingSpinner'
 import { SelectUserList } from '@components/SelectItemList'
 import { faBirthdayCake } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -19,7 +20,7 @@ import {
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import usersAtom from '@state/atoms/usersAtom'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
 var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
@@ -54,7 +55,7 @@ var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
 //   },
 // }
 
-const BirthdaysContent = () => {
+const BirthdaysContentComponent = () => {
   const users = useRecoilValue(usersAtom)
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const [periodDays, setPeriodDays] = useState(90)
@@ -207,5 +208,17 @@ const BirthdaysContent = () => {
     </>
   )
 }
+
+const BirthdaysContent = (props) => (
+  <Suspense
+    fallback={
+      <div className="z-10 flex items-center justify-center h-full">
+        <LoadingSpinner text="идет загрузка пользователей...." />
+      </div>
+    }
+  >
+    <BirthdaysContentComponent {...props} />
+  </Suspense>
+)
 
 export default BirthdaysContent

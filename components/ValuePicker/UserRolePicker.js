@@ -6,10 +6,13 @@ const UserRolePicker = ({
   onChange = null,
   required = false,
   error = false,
+  noDev = true,
 }) => (
   <ValuePicker
     value={role}
-    valuesArray={USERS_ROLES}
+    valuesArray={
+      noDev ? USERS_ROLES.filter(({ value }) => value !== 'dev') : USERS_ROLES
+    }
     label="Роль"
     onChange={onChange}
     name="role"

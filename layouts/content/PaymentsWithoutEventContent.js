@@ -13,7 +13,6 @@ const PaymentsWithoutEventContent = () => {
   const paymentsWithoutEvent = useRecoilValue(
     paymentsOfEventWithoutEventIdSelector
   )
-  // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   const [sort, setSort] = useState({ payAt: 'asc' })
   const [filter, setFilter] = useState({

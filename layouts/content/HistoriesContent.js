@@ -21,8 +21,10 @@ import {
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { historiesSelector } from '@state/atoms/historiesAtom'
-import { useMemo, useState } from 'react'
+import React, { Suspense, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import { historiesOfEventUsersSelector } from '@state/atoms/historiesOfEventUsersAtom'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 const dotColors = {
   add: 'success',
@@ -280,8 +282,8 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
 //   },
 // }
 
-const HistoriesContent = () => {
-  const histories = useRecoilValue(historiesSelector)
+const HistoriesContentComponent = () => {
+  const histories = useRecoilValue(historiesOfEventUsersSelector)
   const events = useRecoilValue(eventsAtom)
 
   const [periodHours, setPeriodHours] = useState(24)
@@ -291,7 +293,8 @@ const HistoriesContent = () => {
       histories
         .filter(
           ({ schema, createdAt }) =>
-            schema === 'eventsusers' && getHoursBetween(createdAt) < periodHours
+            // schema === 'eventsusers' &&
+            getHoursBetween(createdAt) < periodHours
         )
         .map((history) => {
           const eventId = history.data[0].eventId
@@ -309,17 +312,6 @@ const HistoriesContent = () => {
       canceled: false,
     },
   })
-  // console.log('filter :>> ', filter)
-  // if (!histories)
-  //   return (
-  //     <React.Suspense
-  //       fallback={
-  //         <div className="z-10 flex items-center justify-center h-full">
-  //           <LoadingSpinner text="идет загрузка истории...." />
-  //         </div>
-  //       }
-  //     />
-  //   )
 
   const eventsHistories = {}
   // const eventsResults = {}
@@ -387,5 +379,17 @@ const HistoriesContent = () => {
     </>
   )
 }
+
+const HistoriesContent = (props) => (
+  <Suspense
+    fallback={
+      <div className="z-10 flex items-center justify-center h-full">
+        <LoadingSpinner text="идет загрузка истории...." />
+      </div>
+    }
+  >
+    <HistoriesContentComponent {...props} />
+  </Suspense>
+)
 
 export default HistoriesContent

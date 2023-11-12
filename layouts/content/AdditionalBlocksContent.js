@@ -5,13 +5,13 @@ import AdditionalBlockCard from '@layouts/cards/AdditionalBlockCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import { modalsFuncAtom } from '@state/atoms'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
 import { useRecoilValue } from 'recoil'
 
 const AdditionalBlocksContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const additionalBlocks = useRecoilValue(additionalBlocksAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
   // const sortedAdditionalBlocks = additionalBlocks
   // .sort((a, b) => (a.index < b.index ? -1 : 1))
 
@@ -22,7 +22,7 @@ const AdditionalBlocksContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounAdditionalBlocks(additionalBlocks.length)}
           </div>
-          {isLoggedUserAdmin && (
+          {isLoggedUserSupervisor && (
             <AddButton onClick={() => modalsFunc.additionalBlock.edit()} />
           )}
         </div>

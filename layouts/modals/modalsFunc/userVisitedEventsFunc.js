@@ -13,10 +13,6 @@ const userVisitedEventsFunc = (userId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-
-    // const user = useRecoilValue(userSelector(userId))
-
     const eventUsers = useRecoilValue(
       eventsUsersVisitedByUserIdSelector(userId)
     )

@@ -103,7 +103,7 @@ const Input = forwardRef(
           min={min}
           max={max}
           disabled={disabled}
-          value={value}
+          value={value === null ? '' : value}
           defaultValue={defaultValue}
           onChange={(e) => {
             const { value } = e.target
