@@ -5,6 +5,7 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { selector } from 'recoil'
 import isLoggedUserAdminSelector from './isLoggedUserAdminSelector'
 import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
+import isLoggedUserModerSelector from './isLoggedUserModerSelector'
 
 const filteredEventsSelector = selector({
   key: 'filteredEventsSelector',
@@ -12,6 +13,7 @@ const filteredEventsSelector = selector({
     const loggedUser = get(loggedUserAtom)
     const loggedUserActiveStatus = get(loggedUserActiveStatusAtom)
     const isLoggedUserAdmin = get(isLoggedUserAdminSelector)
+    const isLoggedUserModer = get(isLoggedUserModerSelector)
     const events = get(eventsAtom)
     const eventsLoggedUser = await get(
       asyncEventsUsersByUserIdAtom(loggedUser?._id)
@@ -22,7 +24,7 @@ const filteredEventsSelector = selector({
       eventsLoggedUser,
       loggedUser,
       false,
-      isLoggedUserAdmin,
+      isLoggedUserAdmin || isLoggedUserModer,
       loggedUserActiveStatus
     )
   },

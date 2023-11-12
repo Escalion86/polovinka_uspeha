@@ -13,20 +13,8 @@ const userDeleteFunc = (userId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // const modalsFunc = useRecoilValue(modalsFuncAtom)
     const itemsFunc = useRecoilValue(itemsFuncAtom)
-    // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-    // const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-    // const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
     const isUserHaveActions = useRecoilValue(isUserHaveActionsSelector(userId))
-
-    // const user = useRecoilValue(userSelector(userId))
-
-    // const eventsUsersSignedUpCount = useRecoilValue(
-    //   eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
-    // )
-
-    // console.log('isUserHaveActions', isUserHaveActions)
 
     const onClickConfirm = async () => {
       closeModal()

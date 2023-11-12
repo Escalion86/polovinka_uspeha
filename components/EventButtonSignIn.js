@@ -4,7 +4,6 @@ import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventSelector from '@state/selectors/eventSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
 import cn from 'classnames'
@@ -12,6 +11,7 @@ import { Suspense } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue } from 'recoil'
 import EventProfit from './EventProfit'
+import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -35,7 +35,7 @@ const EventButtonSignInComponent = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
     sumOfPaymentsFromLoggedUserToEventSelector(event._id)
   )
@@ -123,7 +123,7 @@ const EventButtonSignInComponent = ({
   }
 
   const Status = () =>
-    isLoggedUserAdmin && event.status === 'closed' ? (
+    isLoggedUserSupervisor && event.status === 'closed' ? (
       <EventProfit eventId={event._id} className={classNameProfit} />
     ) : // <div
     //   className={cn(

@@ -269,7 +269,7 @@ const ToolsTextEventsAnonsContent = () => {
         onChange={setEventsId}
         canAddItem
       />
-      <SocialPicker
+      {/* <SocialPicker
         label="Тэг соц. сети в ссылке"
         social={socialTag}
         onChange={setSocialTag}
@@ -281,7 +281,7 @@ const ToolsTextEventsAnonsContent = () => {
         onChange={(value) => {
           setCustomTag(value)
         }}
-      />
+      /> */}
       <CheckBox
         checked={showTags}
         onClick={() => setShowTags((checked) => !checked)}
@@ -333,14 +333,17 @@ const ToolsTextEventsAnonsContent = () => {
         <Button
           name="Скопировать текст для телеграм"
           onClick={() => copyToClipboardText('telegram')}
+          disabled={!eventsId.length}
         />
         <Button
           name="Скопировать текст для whatsapp"
           onClick={() => copyToClipboardText('whatsapp')}
+          disabled={!eventsId.length}
         />
         <Button
           name="Скопировать текст без форматирования"
           onClick={copyToClipboardText}
+          disabled={!eventsId.length}
         />
       </div>
       {/* <EditableTextarea

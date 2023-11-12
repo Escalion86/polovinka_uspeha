@@ -1,5 +1,6 @@
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
@@ -59,9 +60,12 @@ const ContactIconBtnWithTitle = ({
 const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+
+  const isLoggedUserAdminOrModer = isLoggedUserModer || isLoggedUserAdmin
 
   if (
-    !isLoggedUserModer &&
+    !isLoggedUserAdminOrModer &&
     user.security?.showContacts === false &&
     !user.security?.showPhone &&
     !user.security?.showWhatsapp &&
@@ -87,7 +91,7 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
       {user?.phone &&
         (user.security?.showContacts ||
           user.security?.showPhone ||
-          isLoggedUserModer) && (
+          isLoggedUserAdminOrModer) && (
           <Btn
             icon={faPhone}
             className="text-yellow-600"
@@ -98,7 +102,7 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
       {user?.whatsapp &&
         (user.security?.showContacts ||
           user.security?.showWhatsapp ||
-          isLoggedUserModer) && (
+          isLoggedUserAdminOrModer) && (
           <Btn
             icon={faWhatsapp}
             className="text-green-600"
@@ -109,7 +113,7 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
       {user?.viber &&
         (user.security?.showContacts ||
           user.security?.showViber ||
-          isLoggedUserModer) && (
+          isLoggedUserAdminOrModer) && (
           <Btn
             icon={faViber}
             className="text-purple-600"
@@ -120,7 +124,7 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
       {user?.telegram &&
         (user.security?.showContacts ||
           user.security?.showTelegram ||
-          isLoggedUserModer) && (
+          isLoggedUserAdminOrModer) && (
           <Btn
             icon={faTelegramPlane}
             className="text-blue-600"
@@ -131,7 +135,7 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
       {user?.instagram &&
         (user.security?.showContacts ||
           user.security?.showInstagram ||
-          isLoggedUserModer) && (
+          isLoggedUserAdminOrModer) && (
           <Btn
             icon={faInstagram}
             className="text-yellow-700"
@@ -142,7 +146,7 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
       {user?.vk &&
         (user.security?.showContacts ||
           user.security?.showVk ||
-          isLoggedUserModer) && (
+          isLoggedUserAdminOrModer) && (
           <Btn
             icon={faVk}
             url={'https://vk.com/' + user.vk}
@@ -153,7 +157,7 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
       {user?.email &&
         (user.security?.showContacts ||
           user.security?.showEmail ||
-          isLoggedUserModer) && (
+          isLoggedUserAdminOrModer) && (
           <Btn
             icon={faEnvelope}
             className="text-red-400"

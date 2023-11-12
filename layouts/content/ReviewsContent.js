@@ -5,13 +5,13 @@ import ReviewCard from '@layouts/cards/ReviewCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import { modalsFuncAtom } from '@state/atoms'
 import reviewsAtom from '@state/atoms/reviewsAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
 import { useRecoilValue } from 'recoil'
 
 const ReviewsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const reviews = useRecoilValue(reviewsAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
 
   return (
     <>
@@ -20,7 +20,7 @@ const ReviewsContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounReviews(reviews.length)}
           </div>
-          {isLoggedUserAdmin && (
+          {isLoggedUserSupervisor && (
             <AddButton onClick={() => modalsFunc.review.edit()} />
           )}
         </div>

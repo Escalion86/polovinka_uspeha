@@ -10,11 +10,13 @@ import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
+import isUserDev from '@helpers/isUserDev'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -29,6 +31,9 @@ const userFunc = (userId, clone = false) => {
     setDisableDecline,
   }) => {
     const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+    const isLoggedUserSupervisor = useRecoilValue(
+      isLoggedUserSupervisorSelector
+    )
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
@@ -194,7 +199,7 @@ const userFunc = (userId, clone = false) => {
         user?.firstName !== firstName ||
         user?.secondName !== secondName ||
         user?.thirdName !== thirdName ||
-        user?.password !== password ||
+        (!userId && user?.password !== password) ||
         // user?.about !== about ||
         // user?.interests !== interests ||
         // user?.profession !== profession ||
@@ -398,12 +403,13 @@ const userFunc = (userId, clone = false) => {
           onChange={setStatus}
           error={errors.status}
         />
-        {isLoggedUserDev && (
+        {(isLoggedUserDev || (isLoggedUserSupervisor && !isUserDev(user))) && (
           <UserRolePicker
             required
             role={role}
             onChange={setRole}
             error={errors.role}
+            noDev={!isLoggedUserDev}
           />
         )}
         <ErrorsList errors={errors} />

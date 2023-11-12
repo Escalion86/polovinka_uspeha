@@ -14,6 +14,7 @@ import formatDate from '@helpers/formatDate'
 import { modalsFuncAtom } from '@state/atoms'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
@@ -39,6 +40,7 @@ const userViewFunc = (userId, clone = false) => {
     const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
@@ -99,6 +101,7 @@ const userViewFunc = (userId, clone = false) => {
             </div> */}
           {user.birthday &&
             (isLoggedUserModer ||
+              isLoggedUserAdmin ||
               user.security?.showBirthday === true ||
               user.security?.showBirthday === 'full' ||
               user.security?.showBirthday === 'noYear') && (
@@ -111,6 +114,7 @@ const userViewFunc = (userId, clone = false) => {
                     true,
                     true,
                     isLoggedUserModer ||
+                      isLoggedUserAdmin ||
                       user.security?.showBirthday === 'full' ||
                       user.security?.showBirthday === true
                   )}
@@ -140,7 +144,7 @@ const userViewFunc = (userId, clone = false) => {
               </TextLine>
             </div>
 
-            {(isLoggedUserModer || isLoggedUserMember) &&
+            {(isLoggedUserModer || isLoggedUserAdmin || isLoggedUserMember) &&
               (eventsUsersSignedUpCount.finished > 0 ||
                 eventsUsersSignedUpCount.signUp > 0) && (
                 <ValueItem

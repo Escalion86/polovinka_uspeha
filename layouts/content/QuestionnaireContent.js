@@ -28,10 +28,8 @@ import useErrors from '@helpers/useErrors'
 import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-// import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
@@ -54,8 +52,7 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
 const QuestionnaireContent = (props) => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
   // const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
 
@@ -661,7 +658,7 @@ const QuestionnaireContent = (props) => {
           </ShowWrapper>
           <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
         </FormWrapper>
-        {isLoggedUserAdmin && (
+        {isLoggedUserSupervisor && (
           <UserStatusPicker
             required
             status={status}

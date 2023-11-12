@@ -26,6 +26,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
 import cn from 'classnames'
@@ -420,6 +421,9 @@ const eventUsersPaymentsFunc = (eventId) => {
     setTopLeftComponent,
   }) => {
     const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+    const isLoggedUserSupervisor = useRecoilValue(
+      isLoggedUserSupervisorSelector
+    )
     const event = useRecoilValue(eventSelector(eventId))
     const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -580,7 +584,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     //     : null
 
     useEffect(() => {
-      if (isLoggedUserAdmin && setTopLeftComponent)
+      if (isLoggedUserSupervisor && setTopLeftComponent)
         setTopLeftComponent(() => (
           <div className="flex">
             {(() => {
@@ -603,7 +607,7 @@ const eventUsersPaymentsFunc = (eventId) => {
             })()}
           </div>
         ))
-    }, [isLoggedUserAdmin, setTopLeftComponent, event])
+    }, [isLoggedUserSupervisor, setTopLeftComponent, event])
 
     // useEffect(() => {
     //   setBottomLeftButtonProps({

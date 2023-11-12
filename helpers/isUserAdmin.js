@@ -1,6 +1,6 @@
 const isUserAdmin = (user) =>
-  typeof user === 'string'
-    ? user === 'dev' || user === 'admin'
-    : user?.role === 'dev' || user?.role === 'admin'
+  ['supervisor', 'admin', 'dev'].includes(
+    typeof user === 'string' ? user : user?.role
+  )
 
 export default isUserAdmin

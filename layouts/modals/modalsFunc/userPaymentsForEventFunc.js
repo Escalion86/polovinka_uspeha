@@ -13,8 +13,6 @@ const userPaymentsForEventFunc = (userId, eventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-
     const user = useRecoilValue(userSelector(userId))
     const event = useRecoilValue(eventSelector(eventId))
 

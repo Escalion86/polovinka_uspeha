@@ -25,6 +25,7 @@ import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 import { modalsFuncAtom } from '@state/atoms'
+import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
@@ -68,6 +69,7 @@ const CardButtons = ({
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const device = useRecoilValue(windowDimensionsTailwindSelector)
 
@@ -92,7 +94,7 @@ const CardButtons = ({
 
   const show = {
     editQuestionnaire: !!onEditQuestionnaire,
-    setPasswordBtn: typeOfItem === 'user' && isLoggedUserAdmin,
+    setPasswordBtn: typeOfItem === 'user' && isLoggedUserSupervisor,
     shareBtn:
       window?.location?.origin &&
       (typeOfItem === 'event' ||
@@ -100,12 +102,18 @@ const CardButtons = ({
         typeOfItem === 'user'),
     addToCalendar: typeOfItem === 'event',
     eventUsersBtn:
-      (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'event',
-    upBtn: !forForm && isLoggedUserAdmin && onUpClick,
-    downBtn: !forForm && isLoggedUserAdmin && onDownClick,
+      (isLoggedUserModer || isLoggedUserAdmin || isLoggedUserMember) &&
+      typeOfItem === 'event',
+    upBtn: !forForm && isLoggedUserModer && onUpClick,
+    downBtn: !forForm && isLoggedUserModer && onDownClick,
     editBtn:
       isLoggedUserDev ||
-      (isLoggedUserModer &&
+      ((isLoggedUserSupervisor ||
+        (isLoggedUserAdmin && ['event', 'user'].includes(typeOfItem)) ||
+        (isLoggedUserModer &&
+          ['event', 'direction', 'additionalBlock', 'review'].includes(
+            typeOfItem
+          ))) &&
         showEditButton &&
         (typeOfItem !== 'event' || item.status !== 'closed') &&
         (typeOfItem !== 'serviceUser' || item.status !== 'closed')),
@@ -113,17 +121,18 @@ const CardButtons = ({
       isLoggedUserModer && typeOfItem !== 'user' && typeOfItem !== 'review',
     showOnSiteBtn: isLoggedUserModer && showOnSiteOnClick,
     statusBtn:
-      isLoggedUserAdmin &&
+      isLoggedUserSupervisor &&
       (typeOfItem === 'event' || typeOfItem === 'serviceUser'),
     deleteBtn:
-      isLoggedUserAdmin &&
+      isLoggedUserSupervisor &&
       showDeleteButton &&
       (typeOfItem !== 'event' || item.status !== 'closed') &&
       (typeOfItem !== 'serviceUser' || item.status !== 'closed'),
     paymentsUsersBtn: isLoggedUserAdmin && typeOfItem === 'event',
     userEvents:
-      (isLoggedUserModer || isLoggedUserMember) && typeOfItem === 'user',
-    userPaymentsBtn: isLoggedUserModer && typeOfItem === 'user',
+      (isLoggedUserModer || isLoggedUserAdmin || isLoggedUserMember) &&
+      typeOfItem === 'user',
+    userPaymentsBtn: isLoggedUserAdmin && typeOfItem === 'user',
     loginHistory: isLoggedUserDev && typeOfItem === 'user',
   }
 
@@ -149,35 +158,22 @@ const CardButtons = ({
           onClick={() => {
             // setOpen(false)
             if (typeOfItem === 'event') {
-              isLoggedUserModer
-                ? modalsFunc.copyLink({ eventId: item._id })
-                : copyEventLink()
-              // if (!item.showOnSite)
-              //   modalsFunc.add({
-              //     title: 'Мероприятие скрыто',
-              //     text: `Ссылка скопирована, но обратите внимание, что мероприятие скрыто, поэтому переход по ссылке пользователей с обычными правами доступа невозможен!`,
-              //     confirmButtonName: 'Ясно',
-              //     showConfirm: true,
-              //     showDecline: false,
-              //   })
+              // isLoggedUserModer
+              //   ? modalsFunc.copyLink({ eventId: item._id })
+              //   :
+              copyEventLink()
             }
             if (typeOfItem === 'service') {
-              isLoggedUserModer
-                ? modalsFunc.copyLink({ serviceId: item._id })
-                : copyServiceLink()
-              // if (!item.showOnSite)
-              //   modalsFunc.add({
-              //     title: 'Услуга скрыта',
-              //     text: `Ссылка скопирована, но обратите внимание, что услуга скрыта, поэтому переход по ссылке пользователей с обычными правами доступа невозможен!`,
-              //     confirmButtonName: 'Ясно',
-              //     showConfirm: true,
-              //     showDecline: false,
-              //   })
+              // isLoggedUserModer
+              //   ? modalsFunc.copyLink({ serviceId: item._id })
+              //   :
+              copyServiceLink()
             }
             if (typeOfItem === 'user') {
-              isLoggedUserModer
-                ? modalsFunc.copyLink({ userId: item._id })
-                : copyUserLink()
+              // isLoggedUserModer
+              //   ? modalsFunc.copyLink({ userId: item._id })
+              //   :
+              copyUserLink()
             }
           }}
           color="blue"

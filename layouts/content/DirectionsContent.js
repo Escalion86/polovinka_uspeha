@@ -5,13 +5,13 @@ import DirectionCard from '@layouts/cards/DirectionCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
 import { useRecoilValue } from 'recoil'
 
 const DirectionsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const directions = useRecoilValue(directionsAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
 
   return (
     <>
@@ -20,7 +20,7 @@ const DirectionsContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounDirections(directions.length)}
           </div>
-          {isLoggedUserAdmin && (
+          {isLoggedUserSupervisor && (
             <AddButton onClick={() => modalsFunc.direction.edit()} />
           )}
         </div>
