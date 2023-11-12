@@ -6,7 +6,7 @@ import EventsBlock from '@blocks/EventsBlock'
 import ReviewsBlock from '@blocks/ReviewsBlock'
 import ServicesBlock from '@blocks/ServicesBlock'
 import TitleBlock from '@blocks/TitleBlock'
-import Fab from '@components/Fab'
+import FabMenu from '@components/FabMenu'
 import StateLoader from '@components/StateLoader'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import Header from '@layouts/Header'
@@ -35,7 +35,7 @@ export default function Home(props) {
         <AdditionalBlocks />
         <ReviewsBlock />
         <ContactsBlock />
-        <Fab
+        <FabMenu
           show={!isLoggedUserModer}
           icon={faWhatsapp}
           bgClass="bg-green-700"
