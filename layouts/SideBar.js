@@ -250,13 +250,13 @@ const SideBar = ({ page }) => {
 
   return (
     <div
-      className="relative top-0 bottom-0 z-50 flex flex-col w-0 tablet:min-w-16 tablet:w-16 bg-general"
+      className="relative top-0 bottom-0 z-50 flex flex-col w-0 max-h-full tablet:min-w-16 tablet:w-16 bg-general"
       style={{ gridArea: 'sidebar' }}
       ref={wrapperRef}
     >
       <motion.div
         className={
-          'absolute top-0 items-start z-10'
+          'absolute top-0 items-start z-10 max-h-full overflow-y-auto'
           // 'sidepanel fixed laptop:static w-64 h-full pb-15 laptop:pb-0 max-h-screen left-0 top-menu laptop:top-0 z-40 transform duration-300 border-t border-primary laptop:border-t-0 bg-white' +
           // (!menuOpen
           //   ? ' scale-x-0 -translate-x-32 w-0 laptop:w-64 laptop:transform-none'
@@ -268,7 +268,7 @@ const SideBar = ({ page }) => {
         initial={'min'}
         layout
       >
-        <div className="flex flex-col w-full overflow-x-hidden overflow-y-auto">
+        <div className="flex flex-col w-full overflow-x-hidden">
           <Menu
             menuCfg={menuCfg(loggedUserActiveRole, loggedUserActiveStatus)}
             activePage={page}

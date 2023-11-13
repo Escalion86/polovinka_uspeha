@@ -11,6 +11,7 @@ import { DEFAULT_USER } from '@helpers/constants'
 import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
@@ -21,6 +22,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 const LoggedUserNotificationsContent = (props) => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
   const setUserInUsersState = useSetRecoilState(userEditSelector)
 
@@ -134,7 +136,7 @@ const LoggedUserNotificationsContent = (props) => {
 
         {isNotificationActivated && (
           <>
-            {isLoggedUserModer && (
+            {(isLoggedUserModer || isLoggedUserAdmin) && (
               <InputWrapper label="Ежедневные уведомления" className="">
                 <div className="w-full">
                   <ComboBox
@@ -205,11 +207,11 @@ const LoggedUserNotificationsContent = (props) => {
                     placeholder="Не выбрано"
                   />
 
-                  {isLoggedUserModer && (
+                  {(isLoggedUserModer || isLoggedUserAdmin) && (
                     <CheckBox
                       checked={notifications.settings?.birthdays}
                       onClick={() => toggleNotificationsSettings('birthdays')}
-                      label="Напоминания о днях рождениях пользователей (админ)"
+                      label="Напоминания о днях рождениях пользователей (модер/админ)"
                     />
                   )}
                 </div>
@@ -217,22 +219,22 @@ const LoggedUserNotificationsContent = (props) => {
             )}
             <InputWrapper label="Уведомления по событиям" className="">
               <div className="w-full">
-                {isLoggedUserModer && (
+                {(isLoggedUserModer || isLoggedUserAdmin) && (
                   <CheckBox
                     checked={notifications.settings?.newUserRegistred}
                     onClick={() => {
                       toggleNotificationsSettings('newUserRegistred')
                     }}
-                    label="Регистрации нового пользователя (админ)"
+                    label="Регистрации нового пользователя (модер/админ)"
                   />
                 )}
-                {isLoggedUserModer && (
+                {(isLoggedUserModer || isLoggedUserAdmin) && (
                   <CheckBox
                     checked={notifications.settings?.eventRegistration}
                     onClick={() =>
                       toggleNotificationsSettings('eventRegistration')
                     }
-                    label="Запись/отписка пользователей на мероприитиях (админ)"
+                    label="Запись/отписка пользователей на мероприитиях (модер/админ)"
                   />
                 )}
                 <CheckBox
