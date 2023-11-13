@@ -87,15 +87,8 @@ const FabMenu = ({ show = true, ping = true }) => {
   const [isItemsShowing, setIsItemsShowing] = useState(false)
 
   const wrapperRef = useRef(null)
-  // const [showing, setShowing] = useState(show)
-  // const bind = useLongPress(() => {
-  //   setShowing(false)
-  // })
 
   useEffect(() => {
-    /**
-     * Alert if clicked on outside of element
-     */
     function handleClickOutside(event) {
       if (
         wrapperRef.current &&
@@ -104,10 +97,8 @@ const FabMenu = ({ show = true, ping = true }) => {
       )
         setIsItemsShowing(false)
     }
-    // Bind the event listener
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [wrapperRef])
