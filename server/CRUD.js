@@ -644,16 +644,30 @@ export default async function handler(Schema, req, res, params = null) {
               }
             }
             if (!isUserQuestionnaireFilled(oldData)) {
-              const users = await Users.find({})
-              const usersTelegramIds = users
-                .filter(
-                  (user) =>
-                    (isUserModer(user) || isUserAdmin(user)) &&
-                    user.notifications?.get('settings')?.newUserRegistred &&
-                    user.notifications?.get('telegram').active &&
-                    user.notifications?.get('telegram')?.id
-                )
-                .map((user) => user.notifications?.get('telegram')?.id)
+              // const users = await Users.find({})
+              const usersWithTelegramNotificationsOfEventUsersON =
+                await Users.find({
+                  role:
+                    process.env.NODE_ENV === 'development'
+                      ? 'dev'
+                      : { $in: ['admin', 'moder', 'supervisor', 'dev'] },
+                  'notifications.settings.newUserRegistred': true,
+                  'notifications.telegram.active': true,
+                  'notifications.telegram.id': {
+                    $exists: true,
+                    $ne: null,
+                  },
+                })
+              const usersTelegramIds =
+                usersWithTelegramNotificationsOfEventUsersON
+                  // .filter(
+                  //   (user) =>
+                  //     (isUserModer(user) || isUserAdmin(user)) &&
+                  //     user.notifications?.get('settings')?.newUserRegistred &&
+                  //     user.notifications?.get('telegram').active &&
+                  //     user.notifications?.get('telegram')?.id
+                  // )
+                  .map((user) => user.notifications?.get('telegram')?.id)
 
               const text = `Пользователь с номером +${
                 data.phone
