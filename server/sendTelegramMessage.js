@@ -1,4 +1,5 @@
 import { postData } from '@helpers/CRUD'
+import Test from '@models/Test'
 
 export const sendMessageToTelegramId = async ({
   req,
@@ -80,7 +81,7 @@ const sendTelegramMessage = async ({
     })
   }
 
-  return await Promise.all(
+  const result = await Promise.all(
     telegramIds.map(
       async (telegramId) =>
         await sendMessageToTelegramId({
@@ -92,6 +93,8 @@ const sendTelegramMessage = async ({
         })
     )
   )
+
+  await Test.create({ data: result })
 }
 
 export default sendTelegramMessage
