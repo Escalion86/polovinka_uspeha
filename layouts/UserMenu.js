@@ -1,24 +1,24 @@
 import {
   faBell,
-  faHome,
-  faListAlt,
+  // faHome,
+  // faListAlt,
   faSignInAlt,
   faSignOutAlt,
   faUserAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import getParentDir from '@state/atoms/getParentDir'
+// import getParentDir from '@state/atoms/getParentDir'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import Avatar from './Avatar'
-import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
+// import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 
 const variants = {
   show: {
@@ -72,7 +72,7 @@ const UserMenu = () => {
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
 
-  const router = useRouter()
+  // const router = useRouter()
 
   const handleMouseOver = () => {
     if (turnOnHandleMouseOver) {
@@ -99,53 +99,53 @@ const UserMenu = () => {
     >
       <div className="relative flex flex-col items-end mt-2.5 w-12">
         <Avatar user={loggedUser} className="z-10" />
-        {router && (
-          <motion.div
-            className={cn(
-              'absolute overflow-hidden duration-300 border border-gray-800 rounded-tr-3xl'
-              // isUserMenuOpened
-              //   ? 'scale-100 h-auto translate-y-0 translate-x-0 w-auto'
-              //   : 'w-0 h-0 scale-0 translate-x-[40%] -translate-y-1/2'
-            )}
-            variants={variants}
-            animate={isUserMenuOpened ? 'show' : 'hide'}
-            initial="hide"
-            transition={{ duration: 0.2, type: 'tween' }}
-          >
-            <div className="flex flex-col justify-center px-3 py-1 font-bold leading-4 text-white border-b border-gray-800 cursor-default bg-general rounded-tr-3xl h-11">
-              <span>{loggedUser.firstName}</span>
-              <span>{loggedUser.secondName}</span>
-            </div>
-            <MenuItem
+        {/* {router && ( */}
+        <motion.div
+          className={cn(
+            'absolute overflow-hidden duration-300 border border-gray-800 rounded-tr-3xl'
+            // isUserMenuOpened
+            //   ? 'scale-100 h-auto translate-y-0 translate-x-0 w-auto'
+            //   : 'w-0 h-0 scale-0 translate-x-[40%] -translate-y-1/2'
+          )}
+          variants={variants}
+          animate={isUserMenuOpened ? 'show' : 'hide'}
+          initial="hide"
+          transition={{ duration: 0.2, type: 'tween' }}
+        >
+          <div className="flex flex-col justify-center px-3 py-1 font-bold leading-4 text-white border-b border-gray-800 cursor-default bg-general rounded-tr-3xl h-11">
+            <span>{loggedUser.firstName}</span>
+            <span>{loggedUser.secondName}</span>
+          </div>
+          {/* <MenuItem
               href="/cabinet/events"
               icon={faCalendarAlt}
               title="Мероприятия"
-            />
-            <MenuItem
-              href="/cabinet/questionnaire"
-              icon={faUserAlt}
-              title="Моя анкета"
-            />
-            <MenuItem
-              href="/cabinet/notifications"
-              icon={faBell}
-              title="Настройка уведомлений"
-            />
-            {/* {getParentDir(router.asPath) === 'cabinet' && (
+            /> */}
+          <MenuItem
+            href="/cabinet/questionnaire"
+            icon={faUserAlt}
+            title="Моя анкета"
+          />
+          <MenuItem
+            href="/cabinet/notifications"
+            icon={faBell}
+            title="Настройка уведомлений"
+          />
+          {/* {getParentDir(router.asPath) === 'cabinet' && (
               <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
             )} */}
-            {/* {getParentDir(router.asPath) === 'cabinet' ? (
+          {/* {getParentDir(router.asPath) === 'cabinet' ? (
               <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
             ) : (
               <MenuItem href="/cabinet" icon={faListAlt} title="Мой кабинет" />
             )} */}
-            <MenuItem
-              onClick={signOut}
-              icon={faSignOutAlt}
-              title="Выйти из учетной записи"
-            />
-          </motion.div>
-        )}
+          <MenuItem
+            onClick={signOut}
+            icon={faSignOutAlt}
+            title="Выйти из учетной записи"
+          />
+        </motion.div>
+        {/* )} */}
       </div>
     </div>
   ) : (
