@@ -1,4 +1,5 @@
 import Fab from '@components/Fab'
+import FabMenu from '@components/FabMenu'
 import LoadingSpinner from '@components/LoadingSpinner'
 import StateLoader from '@components/StateLoader'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
@@ -79,12 +80,7 @@ function CabinetPage(props) {
                 </Suspense>
               )}
             </ContentWrapper>
-            <Fab
-              show={!isLoggedUserModer}
-              icon={faWhatsapp}
-              bgClass="bg-green-700"
-              href="https://wa.me/79504280891"
-            />
+            <FabMenu show={!isLoggedUserModer} />
           </CabinetWrapper>
         )}
       </StateLoader>

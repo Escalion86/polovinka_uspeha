@@ -3,6 +3,7 @@ import formatAddress from '@helpers/formatAddress'
 import formatEventDateTime from '@helpers/formatEventDateTime'
 import getUserFullName from '@helpers/getUserFullName'
 import isUserModer from '@helpers/isUserModer'
+import isUserAdmin from '@helpers/isUserAdmin'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import Events from '@models/Events'
 import Histories from '@models/Histories'
@@ -647,7 +648,7 @@ export default async function handler(Schema, req, res, params = null) {
               const usersTelegramIds = users
                 .filter(
                   (user) =>
-                    isUserModer(user) &&
+                    (isUserModer(user) || isUserAdmin(user)) &&
                     user.notifications?.get('settings')?.newUserRegistred &&
                     user.notifications?.get('telegram').active &&
                     user.notifications?.get('telegram')?.id
