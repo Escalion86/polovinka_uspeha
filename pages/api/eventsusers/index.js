@@ -186,60 +186,6 @@ export default async function handler(req, res) {
         deletedEventUsers: [eventUser.toJSON()],
         itIsSelfRecord: true,
       })
-      // if (process.env.MONGODB_URI) {
-      //   const event = await Events.findById(eventId)
-      //   const deletedUsersIds = [userId]
-
-      //   const users = await Users.find({})
-      //   const deletedUsers = users.filter((user) =>
-      //     deletedUsersIds.includes(user._id.toString())
-      //   )
-      //   const deletedUsersNames = deletedUsers.map((user) =>
-      //     getUserFullName(user)
-      //   )
-
-      //   const text = `Изменение списка участников в мероприятии "${
-      //     event.title
-      //   }" от ${formatDateTime(event.dateStart)}.${
-      //     deletedUsersNames.length > 0
-      //       ? `\n\nОтписались:\n${deletedUsersNames
-      //           .map((name) => `  - ${name}`)
-      //           .join(',\n')}`
-      //       : ''
-      //   }`
-
-      //   const usersTelegramIds = users
-      //     .filter(
-      //       (user) =>
-      //         isUserModer(user) &&
-      //         user.notifications?.get('telegram').active &&
-      //         user.notifications?.get('telegram')?.id
-      //     )
-      //     .map((user) => user.notifications?.get('telegram')?.id)
-      //   await Promise.all(
-      //     usersTelegramIds.map(async (telegramId) => {
-      //       await postData(
-      //         `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-      //         {
-      //           chat_id: telegramId,
-      //           text,
-      //           parse_mode: 'html',
-      //           reply_markup: JSON.stringify({
-      //             inline_keyboard: [
-      //               [
-      //                 {
-      //                   text: 'Открыть мероприятие',
-      //                   // url: 'https://www.google.com',
-      //                   url: req.headers.origin + '/event/' + eventId,
-      //                 },
-      //               ],
-      //             ],
-      //           }),
-      //         }
-      //       )
-      //     })
-      //   )
-      // }
 
       return res?.status(201).json({ success: true, data: eventUser })
     } catch (error) {

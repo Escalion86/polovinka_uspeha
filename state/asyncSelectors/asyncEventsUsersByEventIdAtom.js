@@ -18,7 +18,7 @@ const asyncEventsUsersByEventIdSelector = selectorFamily({
         { eventId },
         null,
         null,
-        true
+        false
       )
       // console.debug('!!!', eventId)
       setRecoil(isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId), true)

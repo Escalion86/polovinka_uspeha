@@ -7,7 +7,7 @@ export const asyncEventsUsersAllSelector = selector({
   key: 'asyncEventsUsersAllSelector',
   get: async ({ get }) => {
     // console.log('!!! asyncEventsUsersAllSelector ')
-    const res = await getData('/api/eventsusers', null, null, null, true)
+    const res = await getData('/api/eventsusers', null, null, null, false)
     setRecoil(isLoadedAtom('asyncEventsUsersAllAtom'), true)
     // setRecoil(isLoadedAtom('asyncEventsUsersAllSelector'), true)
     // // Throw error with status code in case Fetch API req failed

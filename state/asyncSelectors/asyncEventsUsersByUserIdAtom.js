@@ -15,7 +15,7 @@ const asyncEventsUsersByUserIdSelector = selectorFamily({
         { userId },
         null,
         null,
-        true
+        false
       )
       setRecoil(isLoadedAtom('asyncEventsUsersByUserIdAtom' + userId), true)
       // // Throw error with status code in case Fetch API req failed

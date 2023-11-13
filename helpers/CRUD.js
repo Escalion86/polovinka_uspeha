@@ -24,11 +24,10 @@ export const getData = async (
     }
 
     const json = await res.json()
-    const { data } = json
-
-    // mutate(url, data, false) // Update the local data without a revalidation
-    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
-    return data
+    const result = resJson ? json : json.data
+    // mutate(url, data, false)
+    if (callbackOnSuccess) callbackOnSuccess(result)
+    return result
   } catch (error) {
     console.log('Failed to update (GET) on ' + actualUrl)
     console.log(error)
@@ -64,10 +63,10 @@ export const putData = async (
     }
 
     const json = await res.json()
-    const { data } = json
-
-    // mutate(url, data, false) // Update the local data without a revalidation
-    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
+    const result = resJson ? json : json.data
+    // mutate(url, data, false)
+    if (callbackOnSuccess) callbackOnSuccess(result)
+    return result
     return data
   } catch (error) {
     console.log('Failed to update (PUT) on ' + url)
@@ -104,10 +103,10 @@ export const postData = async (
       throw new Error(res.status)
     }
     const json = await res.json()
-    const { data } = json
-
+    const result = resJson ? json : json.data
     // mutate(url, data, false)
-    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
+    if (callbackOnSuccess) callbackOnSuccess(result)
+    return result
   } catch (error) {
     console.log('Failed to add (POST) on ' + url)
     console.log(error)
@@ -142,10 +141,10 @@ export const deleteData = async (
       throw new Error(res.status)
     }
     const json = await res.json()
-    const { data } = json
-
-    // mutate(url, data, false) // Update the local data without a revalidation
-    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
+    const result = resJson ? json : json.data
+    // mutate(url, data, false)
+    if (callbackOnSuccess) callbackOnSuccess(result)
+    return result
   } catch (error) {
     console.log('Failed to delete on ' + url)
     console.log(error)

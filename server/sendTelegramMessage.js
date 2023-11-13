@@ -22,7 +22,8 @@ export const sendMessageToTelegramId = async ({
         chat_id: telegramId,
         media,
       },
-      (data) => console.log('data', data),
+      null,
+      // (data) => console.log('data', data),
       (data) => console.log('error', data),
       true,
       null,
@@ -37,7 +38,7 @@ export const sendMessageToTelegramId = async ({
           })
         : undefined
 
-    return await postData(
+    const result = await postData(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
       {
         chat_id: telegramId,
@@ -45,12 +46,14 @@ export const sendMessageToTelegramId = async ({
         parse_mode: 'html',
         reply_markup,
       },
-      (data) => console.log('data', data),
+      null,
+      // (data) => console.log('data', data),
       (data) => console.log('error', data),
       true,
       null,
       true
     )
+    return result
   }
 }
 
