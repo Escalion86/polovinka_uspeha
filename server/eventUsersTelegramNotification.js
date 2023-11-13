@@ -1,6 +1,7 @@
 import formatDateTimeFunc from '@helpers/formatDateTime'
 import getUserFullName from '@helpers/getUserFullName'
 import isUserModer from '@helpers/isUserModer'
+import isUserAdmin from '@helpers/isUserAdmin'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
 import Users from '@models/Users'
@@ -208,7 +209,7 @@ const eventUsersTelegramNotification = async ({
     const usersTelegramIds = usersWithTelegramNotificationsON
       .filter(
         (user) =>
-          isUserModer(user) &&
+          (isUserModer(user) || isUserAdmin(user)) &&
           user.notifications?.get('settings')?.eventRegistration &&
           user.notifications?.get('telegram')?.active &&
           user.notifications?.get('telegram')?.id

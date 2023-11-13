@@ -63,13 +63,7 @@ const fabs = [
   },
 ]
 
-const FabMenu = ({
-  onClick = () => {},
-  show = true,
-  icon = faPlus,
-  bgClass = 'bg-general',
-  ping = true,
-}) => {
+const FabMenu = ({ show = true, ping = true }) => {
   return (
     <div
       className={cn(

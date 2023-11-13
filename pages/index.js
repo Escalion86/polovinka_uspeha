@@ -35,12 +35,7 @@ export default function Home(props) {
         <AdditionalBlocks />
         <ReviewsBlock />
         <ContactsBlock />
-        <FabMenu
-          show={!isLoggedUserModer}
-          icon={faWhatsapp}
-          bgClass="bg-green-700"
-          href="https://wa.me/79504280891"
-        />
+        <FabMenu show={!isLoggedUserModer} />
         {/* <div className="flex flex-col items-start px-10 py-5 text-sm font-thin text-white bg-black min-h-80 tablet:px-20">
             <div>
               © ИП Белинский Алексей Алексеевич, ИНН 245727560982, ОГРНИП
