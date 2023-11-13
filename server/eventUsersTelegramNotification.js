@@ -4,7 +4,7 @@ import getUserFullName from '@helpers/getUserFullName'
 // import isUserAdmin from '@helpers/isUserAdmin'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
-import Test from '@models/Test'
+// import Test from '@models/Test'
 import Users from '@models/Users'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
@@ -246,8 +246,6 @@ const eventUsersTelegramNotification = async ({
         ],
       ],
     })
-
-    await Test.create({ data: result })
 
     // await Promise.all(
     //   usersTelegramIds.map(async (telegramId) => {
