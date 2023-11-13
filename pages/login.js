@@ -1,7 +1,8 @@
 import CheckBox from '@components/CheckBox'
-import Fab from '@components/Fab'
+// import Fab from '@components/Fab'
+import FabMenu from '@components/FabMenu'
 import LoadingSpinner from '@components/LoadingSpinner'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+// import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { faLock, faTimes, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
@@ -1191,12 +1192,13 @@ const Login = (props) => (
     >
       <LoginPage {...props} />
     </GoogleReCaptchaProvider>
-    <Fab
+    <FabMenu />
+    {/* <Fab
       show
       icon={faWhatsapp}
       bgClass="bg-green-700"
       href="https://wa.me/79504280891"
-    />
+    /> */}
   </>
 )
 

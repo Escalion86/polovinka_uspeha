@@ -1,8 +1,9 @@
 import ContactsBlock from '@blocks/ContactsBlock'
 import EventsBlock from '@blocks/EventsBlock'
-import Fab from '@components/Fab'
+// import Fab from '@components/Fab'
+import FabMenu from '@components/FabMenu'
 import StateLoader from '@components/StateLoader'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+// import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import Header from '@layouts/Header'
 import fetchProps from '@server/fetchProps'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
@@ -24,12 +25,7 @@ export default function Home(props) {
         {/* <TitleBlock /> */}
         <EventsBlock />
         <ContactsBlock />
-        <Fab
-          show={!isLoggedUserModer}
-          icon={faWhatsapp}
-          bgClass="bg-green-700"
-          href="https://wa.me/79504280891"
-        />
+        <FabMenu show={!isLoggedUserModer} />
       </StateLoader>
     </>
   )

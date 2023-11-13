@@ -2,6 +2,8 @@ import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
+import { motion } from 'framer-motion'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 const FabItem = ({
   href,
@@ -9,19 +11,30 @@ const FabItem = ({
   onClick,
   icon = faPlus,
   bgClass = 'bg-general',
+  show,
 }) => {
-  const Wrapper = (props) =>
-    href ? (
-      <a {...props} href={href} target="_blank" />
-    ) : (
-      <div {...props} onClick={onClick} />
-    )
+  const Wrapper = useCallback(
+    (props) =>
+      href ? (
+        <a {...props} href={href} target="_blank" />
+      ) : (
+        <div {...props} onClick={onClick} />
+      ),
+    [href]
+  )
 
   return (
     <Wrapper className="flex flex-row-reverse items-center pb-4 duration-300 cursor-pointer hover:brightness-125 min-w-[48px]">
-      <div
+      <motion.div
+        initial={{ scale: 0, rotate: -180 }}
+        transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
+        animate={{
+          scale: show ? 1 : 0,
+          rotate: show ? 0 : -180,
+        }}
         className={cn(
-          'z-10 scale-0 group-hover:scale-100 group-hover:delay-0 duration-300 delay-300 relative flex items-center justify-center rounded-full fab w-[48px] h-[48px] group max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
+          'flex items-center justify-center rounded-full w-[48px] h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
+          // show ? 'delay-0 scale-100' : 'scale-0 delay-300',
           bgClass
         )}
       >
@@ -29,15 +42,22 @@ const FabItem = ({
           className="z-10 w-6 h-6 text-white max-w-6 max-h-6"
           icon={icon}
         />
-      </div>
-      <div className="-mr-6 overflow-hidden duration-300 group-hover:delay-200 max-w-0 group-hover:max-w-full">
+      </motion.div>
+      <motion.div
+        initial={{ width: 0 }}
+        transition={{ duration: 0.3, delay: show ? 0.2 : 0 }}
+        animate={{
+          width: show ? 'auto' : 0,
+        }}
+        className={cn('-mr-6 overflow-hidden')}
+      >
         <div className="flex w-full max-w-full bg-white border border-general flex-nowrap rounded-l-md">
           <div className="pl-2 font-bold whitespace-nowrap text-general">
             {text}
           </div>
           <div className="bg-white min-w-8" />
         </div>
-      </div>
+      </motion.div>
     </Wrapper>
   )
 }
@@ -64,22 +84,62 @@ const fabs = [
 ]
 
 const FabMenu = ({ show = true, ping = true }) => {
+  const [isItemsShowing, setIsItemsShowing] = useState(false)
+
+  const wrapperRef = useRef(null)
+  // const [showing, setShowing] = useState(show)
+  // const bind = useLongPress(() => {
+  //   setShowing(false)
+  // })
+
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target) &&
+        !event.target.classList.contains('fab')
+      )
+        setIsItemsShowing(false)
+    }
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [wrapperRef])
+
   return (
     <div
+      ref={wrapperRef}
       className={cn(
-        'select-none z-10 transition duration-300 flex flex-col justify-end fixed right-7 group',
+        'select-none z-10 transition fab duration-300 flex flex-col justify-end fixed right-7 group',
         show
           ? // 'fab-top'
             'bottom-10'
           : '-bottom-20'
       )}
+      onClick={() => setIsItemsShowing((state) => !state)}
     >
       <div className="flex flex-col items-end justify-end max-w-12">
-        <div className="h-0 overflow-hidden transition-all delay-700 group-hover:h-full group-hover:delay-0">
-          {fabs.map((props) => (
-            <FabItem {...props} />
+        <motion.div
+          initial={{ height: 0 }}
+          transition={{ duration: 0.3, delay: isItemsShowing ? 0 : 0.3 }}
+          animate={{
+            height: isItemsShowing ? 'auto' : 0,
+          }}
+          className={cn(
+            'overflow-hidden'
+            // isItemsShowing ? 'h-full delay-0' : 'h-0 delay-700'
+          )}
+        >
+          {fabs.map((props, index) => (
+            <FabItem key={'fab' + index} {...props} show={isItemsShowing} />
           ))}
-        </div>
+        </motion.div>
         <div
           className={cn(
             'relative flex items-center justify-center rounded-full cursor-pointer fab w-[48px] h-[48px] group max-h-[48px] max-w-[48px] bg-general'
