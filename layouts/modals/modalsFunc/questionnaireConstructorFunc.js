@@ -54,10 +54,9 @@ const QuestionnaireItem = ({
   <FormWrapper>
     {index >= 0 && <Divider thin />}
     <div className="flex items-center gap-x-2">
-      <div
-        className="ml-2 font-bold text-right min-w-10 w-[10%] text-text leading-[0.875rem]"
-        text={`№${index + 1}.`}
-      >{`№${index + 1}.`}</div>
+      <div className="ml-2 font-bold text-right min-w-10 w-[10%] text-text leading-[0.875rem]">{`№${
+        index + 1
+      }.`}</div>
       <span className="flex-1 italic font-bold text-gray-600">{title}</span>
       {onClickUp && (
         <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-7 h-7 hover:scale-110">

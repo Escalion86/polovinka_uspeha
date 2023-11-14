@@ -80,7 +80,7 @@ function CabinetPage(props) {
                 </Suspense>
               )}
             </ContentWrapper>
-            <FabMenu show={!isLoggedUserModer} />
+            <FabMenu show={!isLoggedUserModer || page === 'settingsFabMenu'} />
           </CabinetWrapper>
         )}
       </StateLoader>

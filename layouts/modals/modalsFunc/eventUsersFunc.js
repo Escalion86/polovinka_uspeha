@@ -479,7 +479,7 @@ const eventUsersFunc = (eventId) => {
                 !(isLoggedUserModer || isLoggedUserAdmin) || isEventClosed
               }
               buttons={
-                isLoggedUserModer && !isEventClosed
+                (isLoggedUserModer || isLoggedUserAdmin) && !isEventClosed
                   ? [
                       // (id) => {
                       //   const paymentsOfUser = paymentsOfEvent.filter(
@@ -642,7 +642,7 @@ const eventUsersFunc = (eventId) => {
               }
             />
           </TabPanel>
-          {isLoggedUserModer && (
+          {(isLoggedUserAdmin || isLoggedUserModer) && (
             <TabPanel
               tabName="Бан"
               tabAddToLabel={`(${bannedParticipantsIds.length})`}

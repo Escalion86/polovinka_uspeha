@@ -4,28 +4,29 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { useState } from 'react'
 import IconToggleButton from './IconToggleButtons/IconToggleButton'
+import cn from 'classnames'
 
-const variants = {
-  show: {
-    scale: 1,
-    translateX: 0,
-    translateY: 0,
-  },
-  hide: {
-    scale: 0,
-    translateX: '50%',
-    translateY: '-50%',
-  },
-}
+// const variants = {
+//   show: {
+//     scale: 1,
+//     translateX: 0,
+//     translateY: 0,
+//   },
+//   hide: {
+//     scale: 0,
+//     translateX: '50%',
+//     translateY: '-50%',
+//   },
+// }
 
-const Item = ({ name, onClick }) => (
-  <div
-    onClick={onClick}
-    className="hover:bg-general hover:bg-opacity-25 cursor-pointer whitespace-nowrap px-2 py-0.5"
-  >
-    {name}
-  </div>
-)
+// const Item = ({ name, onClick }) => (
+//   <div
+//     onClick={onClick}
+//     className="hover:bg-general hover:bg-opacity-25 cursor-pointer whitespace-nowrap px-2 py-0.5"
+//   >
+//     {name}
+//   </div>
+// )
 
 const IconButtonMenu = ({
   name,
@@ -48,7 +49,7 @@ const IconButtonMenu = ({
 
   return (
     <div
-      className="flex items-start justify-end h-10"
+      className="flex items-start justify-end h-10 w-fit"
       // onClick={toggleMenuOpen}
     >
       {/* <div className="relative z-10 w-10 h-10"> */}
@@ -93,16 +94,24 @@ const IconButtonMenu = ({
       >
         {items.map((item, index) => {
           if (!item) return <Divider key={'divider' + index} />
-          const { name, value } = item
+          const { name, value, icon, iconClassNameColor } = item
           return (
             <MenuItem
               key={item.value}
+              icon={icon}
               onClick={() => {
                 if (onChange) onChange(value)
                 closeMenu()
                 // setIsMenuOpen(false)
               }}
+              className="text-gray-700"
             >
+              {icon && (
+                <FontAwesomeIcon
+                  icon={icon}
+                  className={cn('w-5 h-5 mr-2', iconClassNameColor)}
+                />
+              )}
               {name}
             </MenuItem>
           )
