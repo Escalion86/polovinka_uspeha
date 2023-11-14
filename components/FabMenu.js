@@ -21,8 +21,8 @@ const FabItem = ({ text, whatsapp, telegram, show }) => {
 
   return (
     <div className="relative flex flex-row-reverse gap-x-2 items-center pb-4 min-w-[48px]">
-      <motion.div
-        initial={{ width: 'auto' }}
+      <div
+        // initial={{ width: 'auto' }}
         // transition={{ duration: 0.5, delay: show ? 0 : 0.7 }}
         // animate={{
         //   width: show ? 'auto' : 0,
@@ -76,7 +76,7 @@ const FabItem = ({ text, whatsapp, telegram, show }) => {
             </motion.div>
           </a>
         )}
-      </motion.div>
+      </div>
       <motion.div
         initial={{ width: 0 }}
         transition={{ duration: 0.3, delay: show ? 0.3 : 0 }}
@@ -156,16 +156,16 @@ const FabMenu = ({ show = true, ping = true }) => {
     >
       <div className="flex flex-col items-end justify-end max-w-12">
         <motion.div
-          initial={{ height: 'auto' }}
-          // transition={{ duration: 0.3, delay: isItemsShowing ? 0 : 0.3 }}
-          // animate={{
-          //   height: isItemsShowing ? 'auto' : 0,
-          // }}
-          className={
-            cn()
-            // 'overflow-hidden'
-            // isItemsShowing ? 'h-full delay-0' : 'h-0 delay-700'
-          }
+          initial={{ height: 0 }}
+          transition={{ duration: 0.1, delay: isItemsShowing ? 0 : 0.7 }}
+          animate={{
+            height: isItemsShowing ? 'auto' : 0,
+          }}
+          // className={
+          // cn()
+          // 'overflow-hidden'
+          // isItemsShowing ? 'h-full delay-0' : 'h-0 delay-700'
+          // }
         >
           {fabs.map((props, index) => (
             <FabItem key={'fab' + index} {...props} show={isItemsShowing} />
@@ -173,7 +173,7 @@ const FabMenu = ({ show = true, ping = true }) => {
         </motion.div>
         <div
           className={cn(
-            'relative flex items-center justify-center rounded-full cursor-pointer fab w-[48px] h-[48px] group max-h-[48px] max-w-[48px] bg-general'
+            'z-10 relative flex items-center justify-center rounded-full cursor-pointer fab w-[48px] h-[48px] group max-h-[48px] max-w-[48px] bg-general'
           )}
           // onClick={onClick}
           // ref={wrapperRef}
