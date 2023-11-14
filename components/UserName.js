@@ -4,9 +4,13 @@ import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 import TextLinesLimiter from './TextLinesLimiter'
 import UserStatusIcon from './UserStatusIcon'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+
+  const showFullName = isLoggedUserModer || isLoggedUserAdmin
 
   return (
     <div
@@ -24,7 +28,7 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
         >{`${upperCaseFirst(user.firstName)}${
           user.thirdName
             ? ` ${
-                isLoggedUserModer || user.security?.fullThirdName
+                showFullName || user.security?.fullThirdName
                   ? upperCaseFirst(user.thirdName)
                   : user.thirdName[0].toUpperCase() + '.'
               }`
@@ -32,7 +36,7 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
         }${
           user.secondName
             ? ` ${
-                isLoggedUserModer || user.security?.fullSecondName
+                showFullName || user.security?.fullSecondName
                   ? upperCaseFirst(user.secondName)
                   : user.secondName[0].toUpperCase() + '.'
               }`
@@ -52,14 +56,14 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
           )}
           {user?.thirdName && (
             <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
-              {isLoggedUserModer || user.security?.fullThirdName
+              {showFullName || user.security?.fullThirdName
                 ? upperCaseFirst(user.thirdName)
                 : user.thirdName[0].toUpperCase() + '.'}
             </span>
           )}
           {user?.secondName && (
             <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
-              {isLoggedUserModer || user.security?.fullSecondName
+              {showFullName || user.security?.fullSecondName
                 ? upperCaseFirst(user.secondName)
                 : user.secondName[0].toUpperCase() + '.'}
             </span>
