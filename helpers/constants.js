@@ -22,6 +22,7 @@ import {
   faPhone,
   faPieChart,
   faPlay,
+  faQuestion,
   faShop,
   faShoppingBag,
   faSignInAlt,
@@ -82,11 +83,11 @@ import ContactsContent from '@layouts/content/ContactsContent'
 import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
 import BirthdaysContent from '@layouts/content/BirthdaysContent'
-import StatisticsContent from '@layouts/content/StatisticsContent'
+// import StatisticsContent from '@layouts/content/StatisticsContent'
 import badgePaymentsOfEventWithoutEventIdSelector from '@state/selectors/badgePaymentsOfEventWithoutEventIdSelector'
-import SettingsContent from '@layouts/content/SettingsContent'
+import SettingsCodeSendServiceContent from '@layouts/content/SettingsCodeSendServiceContent'
 import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
-import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
+// import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
 import PaymentsNotParticipantsEventContent from '@layouts/content/PaymentsNotParticipantsEventContent'
 import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
 import ServicesLoggedUserContent from '@layouts/content/ServicesLoggedUserContent'
@@ -107,6 +108,7 @@ import ToolsTextEventsAnonsContent from '@layouts/content/ToolsTextEventsAnonsCo
 import UserStatisticsContent from '@layouts/content/UserStatisticsContent'
 import ToolsNewsletterContent from '@layouts/content/ToolsNewsletterContent'
 import LoggedUserNotificationsContent from '@layouts/content/LoggedUserNotificationsContent'
+import SettingsFabMenuContent from '@layouts/content/SettingsFabMenuContent'
 
 const colors = [
   'border-blue-400',
@@ -850,17 +852,17 @@ export const SOCIALS = [
 export const CONTENTS = {
   services: {
     Component: ServicesContent,
-    name: 'Услуги',
+    name: 'Услуги / Список услуг',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
   },
   servicesUsers: {
     Component: ServicesUsersContent,
-    name: 'Заявки на услуги',
+    name: 'Услуги / Заявки на услуги',
     accessRoles: ['supervisor', 'dev'],
   },
   myServices: {
     Component: ServicesLoggedUserContent,
-    name: 'Мои заявки на услуги',
+    name: 'Услуги / Мои заявки на услуги',
     accessRoles: ['client', 'moder', 'admin', 'dev'],
   },
   directions: {
@@ -906,22 +908,22 @@ export const CONTENTS = {
   },
   payments: {
     Component: PaymentsContent,
-    name: 'Транзакции',
+    name: 'Транзакции / Все транзакции',
     accessRoles: ['supervisor', 'dev'],
   },
   paymentsWithNoEvent: {
     Component: PaymentsWithoutEventContent,
-    name: 'Непривязанные транзакции',
+    name: 'Транзакции / Непривязанные транзакции',
     accessRoles: ['supervisor', 'dev'],
   },
   paymentsNotParticipantsEvent: {
     Component: PaymentsNotParticipantsEventContent,
-    name: 'Не пришли на мероприятие',
+    name: 'Транзакции / Не пришли на мероприятие',
     accessRoles: ['supervisor', 'dev'],
   },
   contacts: {
     Component: ContactsContent,
-    name: 'Контакты на сайте',
+    name: 'Сайт / Контакты на сайте',
     accessRoles: ['supervisor', 'dev'],
   },
   dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
@@ -980,9 +982,14 @@ export const CONTENTS = {
     name: 'Статистика / Мероприятия',
     accessRoles: ['supervisor', 'dev'],
   },
-  settings: {
-    Component: SettingsContent,
-    name: 'Настройки',
+  settingsCodeSendService: {
+    Component: SettingsCodeSendServiceContent,
+    name: 'Настройки / Сервис подтверждения номера',
+    accessRoles: ['supervisor', 'dev'],
+  },
+  settingsFabMenu: {
+    Component: SettingsFabMenuContent,
+    name: 'Настройки / Меню "Вопрос"',
     accessRoles: ['supervisor', 'dev'],
   },
   userStatistics: {
@@ -1202,10 +1209,18 @@ export const pages = [
   {
     id: 80,
     group: 10,
-    name: 'Настройки',
-    href: 'settings',
-    icon: faCog,
-    accessRoles: CONTENTS['settings'].accessRoles,
+    name: 'Сервис подтверждения номера',
+    href: 'settingsCodeSendService',
+    icon: faPhone,
+    accessRoles: CONTENTS['settingsCodeSendService'].accessRoles,
+  },
+  {
+    id: 81,
+    group: 10,
+    name: 'Меню "Вопрос"',
+    href: 'settingsFabMenu',
+    icon: faQuestion,
+    accessRoles: CONTENTS['settingsFabMenu'].accessRoles,
   },
   {
     id: 99,

@@ -1,3 +1,4 @@
+import isUserAdmin from '@helpers/isUserAdmin'
 import isUserModer from '@helpers/isUserModer'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
@@ -19,10 +20,11 @@ const fetchProps = async (user, pageName = 'cabinet') => {
   try {
     const db = await dbConnect()
     const isModer = isUserModer(user)
+    const isAdmin = isUserAdmin(user)
     var users = JSON.parse(
       JSON.stringify(await Users.find({}).select('-password'))
     )
-    if (!isModer) {
+    if (!(isModer || isAdmin)) {
       users = JSON.parse(JSON.stringify(users)).map((user) => {
         return {
           ...user,

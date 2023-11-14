@@ -43,6 +43,10 @@ const siteSettingsSchema = {
     of: Schema.Types.Mixed,
     default: {},
   },
+  fabMenu: {
+    type: [{}],
+    default: [],
+  },
 }
 
 export default siteSettingsSchema

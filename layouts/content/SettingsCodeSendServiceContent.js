@@ -24,7 +24,7 @@ const getBalance = async (onSuccess, onError) =>
     true
   )
 
-const SettingsContent = (props) => {
+const SettingsCodeSendServiceContent = (props) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
   const [codeSendService, setCodeSendService] = useState(
@@ -38,6 +38,8 @@ const SettingsContent = (props) => {
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
   const [message, setMessage] = useState('')
+
+  console.log('siteSettings ', siteSettings)
 
   const formChanged =
     siteSettings?.codeSendService !== codeSendService ||
@@ -147,4 +149,4 @@ const SettingsContent = (props) => {
   )
 }
 
-export default SettingsContent
+export default SettingsCodeSendServiceContent
