@@ -111,7 +111,7 @@ const CardButtons = ({
       ((isLoggedUserSupervisor ||
         (isLoggedUserAdmin && ['event', 'user'].includes(typeOfItem)) ||
         (isLoggedUserModer &&
-          ['event', 'direction', 'additionalBlock', 'review'].includes(
+          ['user', 'event', 'direction', 'additionalBlock', 'review'].includes(
             typeOfItem
           ))) &&
         showEditButton &&
