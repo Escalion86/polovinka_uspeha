@@ -23,6 +23,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -32,6 +33,7 @@ const EventsContent = () => {
   const directions = useRecoilValue(directionsAtom)
   const loggedUser = useRecoilValue(loggedUserAtom)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -99,7 +101,7 @@ const EventsContent = () => {
         eventsLoggedUser,
         loggedUser,
         false,
-        isLoggedUserModer,
+        isLoggedUserModer || isLoggedUserAdmin,
         loggedUserActiveStatus
       ),
     [
@@ -107,6 +109,7 @@ const EventsContent = () => {
       eventsLoggedUser,
       loggedUser,
       isLoggedUserModer,
+      isLoggedUserAdmin,
       loggedUserActiveStatus,
     ]
   )
@@ -131,8 +134,12 @@ const EventsContent = () => {
             : false
         return (
           haveEventTag &&
-          ((isEventClosed && !isLoggedUserModer && filter.status.finished) ||
-            (isEventClosed && isLoggedUserModer && filter.status.closed) ||
+          ((isEventClosed &&
+            !(isLoggedUserModer || isLoggedUserAdmin) &&
+            filter.status.finished) ||
+            (isEventClosed &&
+              (isLoggedUserModer || isLoggedUserAdmin) &&
+              filter.status.closed) ||
             (isEventActive && filter.status.finished && isEventExpired) ||
             (isEventActive && filter.status.active && !isEventExpired) ||
             (isEventCanceled && filter.status.canceled)) &&
