@@ -97,7 +97,8 @@ export default async function handler(req, res) {
           var phone1 = String(response.data.phone).substring(1)
           var phone2 = String(phone).substring(1)
           if (phone1 === phone2) {
-            await PhoneConfirms.findOneAndDelete({ phone })
+            await PhoneConfirms.findOneAndUpdate({ phone }, { confirmed: true })
+            // await PhoneConfirms.findOneAndDelete({ phone })
           }
         }
 
@@ -304,7 +305,7 @@ export default async function handler(req, res) {
         } else {
           const newUser = await Users.create({ phone, password })
 
-          // const users = await Users.find({})
+          const usersCount = await Users.count({})
           const usersWithTelegramNotificationsOfEventUsersON = await Users.find(
             {
               role:
@@ -333,7 +334,7 @@ export default async function handler(req, res) {
                 `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
                 {
                   chat_id: telegramId,
-                  text: `Зарегистрирован новый пользователь №${users.length} с телефонным номером +${phone}`,
+                  text: `Зарегистрирован новый пользователь №${usersCount} с телефонным номером +${phone}`,
                   parse_mode: 'html',
                 },
                 (data) => console.log('data', data),
