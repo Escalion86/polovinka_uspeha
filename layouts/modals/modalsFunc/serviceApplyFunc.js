@@ -44,7 +44,7 @@ const serviceApplyFunc = (serviceId) => {
         //   fixEventStatus(eventId, 'canceled')
         // }
         // if (data.solution === 'reserve') {
-        //   event_signUpToReserveAfterError(eventId, data.error)
+        //   eventSignUpToReserveAfterError(eventId, data.error)
         // }
         // }
       )

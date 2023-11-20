@@ -1,11 +1,41 @@
 import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 // import sleep from '@helpers/sleep'
-import { atomFamily, noWait, selectorFamily } from 'recoil'
+import { atomFamily, noWait, selectorFamily, useRecoilCallback } from 'recoil'
 import { setRecoil } from 'recoil-nexus'
 // import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 
-const asyncEventsUsersByEventIdSelector = selectorFamily({
+export const refreshAsyncEventsUsersByEventIdAtom = (eventId) =>
+  useRecoilCallback(
+    ({ snapshot, set }) =>
+      async (params) => {
+        if (!eventId) return
+
+        // const current = snapshot.valueMayBe(users(params));
+
+        // if (current) {
+        //     return current;
+        // }
+
+        const res = await getData(
+          '/api/eventsusers',
+          { eventId },
+          null,
+          null,
+          false
+        )
+
+        const users = await fetchRemoteUsesrs(params)
+        for (const user of users) {
+          set(users(user.id), user)
+        }
+        // Normalize it to a list of keys
+        return users.map((u) => u.id)
+      },
+    []
+  )
+
+export const asyncEventsUsersByEventIdSelector = selectorFamily({
   key: 'asyncEventsUsersByEventIdSelector',
   get:
     (eventId) =>

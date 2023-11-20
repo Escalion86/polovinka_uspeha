@@ -2,12 +2,23 @@ import CheckBox from '@components/CheckBox'
 import FormWrapper from '@components/FormWrapper'
 import formatDateTime from '@helpers/formatDateTime'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
+// import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import {
+  // useRecoilRefresher_UNSTABLE,
+  useRecoilValue,
+} from 'recoil'
 
-const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
+const eventSignUpWithWarning = (
+  event,
+  status,
+  eventSubtypeNum,
+  comment,
+  fixEventStatus,
+  eventSignUpToReserveAfterError
+) => {
   const EventSignUpWithWarningModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -23,6 +34,10 @@ const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
     const [check, setCheck] = useState(false)
 
     const eventId = event._id
+
+    // const refreshEventState = useRecoilRefresher_UNSTABLE(
+    //   asyncEventsUsersByEventIdSelector(eventId)
+    // )
 
     const onClickConfirm = async (onSuccess) => {
       closeModal()
@@ -43,7 +58,13 @@ const eventSignUpWithWarning = (event, status, eventSubtypeNum, comment) => {
             fixEventStatus(eventId, 'canceled')
           }
           if (data.solution === 'reserve') {
-            event_signUpToReserveAfterError(eventId, data.error)
+            // refreshEventState()
+            eventSignUpToReserveAfterError(
+              event,
+              data.error,
+              eventSubtypeNum,
+              comment
+            )
           }
         },
         (data) => {
