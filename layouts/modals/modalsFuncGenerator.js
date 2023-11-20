@@ -44,6 +44,9 @@ import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
 import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
 import userViewFunc from './modalsFunc/userViewFunc'
 import userSetPasswordFunc from './modalsFunc/userSetPasswordFunc'
+// import { useRecoilRefresher_UNSTABLE } from 'recoil'
+// import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
+import eventSignUpToReserveAfterError from './modalsFunc/eventSignUpToReserveAfterError'
 
 const modalsFuncGenerator = (
   router,
@@ -62,49 +65,108 @@ const modalsFuncGenerator = (
     itemsFunc.event.set({ _id: eventId, status }, false, true)
   }
 
-  const event_signUpToReserveAfterError = (event, error) => {
-    // console.log('loggedUser', loggedUser)
-    // if (!loggedUser?._id)
-    //   addModal({
-    //     title: 'Необходимо зарегистрироваться и авторизироваться',
-    //     text: 'Для записи на мероприятие, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
-    //     confirmButtonName: 'Зарегистрироваться / Авторизироваться',
-    //     onConfirm: () => router.push('/login', '', { shallow: true }),
-    //   })
-    // else {
-    addModal({
-      title: `Запись в резерв на мероприятие`,
-      text: `К сожалению не удалось записаться на мероприятие в основной состав, так как ${error}. Однако вы можете записаться на мероприятие в резерв, и как только место освободиться вы будете приняты в основной состав. Записаться в резерв на мероприятие?`,
-      confirmButtonName: `Записаться в резерв`,
-      // ADD
-      confirmButtonName2: `Записаться в резерв и добавить в календарь`,
-      onConfirm2: () => {
-        itemsFunc.event.signUp(
-          {
-            eventId: event._id,
-            userId: loggedUser?._id,
-            status: 'reserve',
-            userStatus: loggedUser.status,
-            eventSubtypeNum,
-            comment,
-          },
-          undefined,
-          (data) => goToUrlForAddEventToCalendar(event)
-        )
-      },
-      onConfirm: () => {
-        itemsFunc.event.signUp({
-          eventId: event._id,
-          userId: loggedUser?._id,
-          status: 'reserve',
-          userStatus: loggedUser.status,
-          eventSubtypeNum,
-          comment,
-        })
-      },
-    })
-    // }
-  }
+  // const eventSignUpToReserveAfterError = (
+  //   event,
+  //   error,
+  //   eventSubtypeNum,
+  //   comment
+  // ) => {
+  //   const EventSignUpToReserveAfterErrorModal = ({
+  //     closeModal,
+  //     setOnConfirmFunc,
+  //     setOnConfirm2Func,
+  //     setOnDeclineFunc,
+  //     setOnShowOnCloseConfirmDialog,
+  //     setDisableConfirm,
+  //     setDisableDecline,
+  //   }) => {
+  //     // const loggedUser = useRecoilValue(loggedUserAtom)
+  //     // const itemsFunc = useRecoilValue(itemsFuncAtom)
+
+  //     const eventId = event._id
+
+  //     const refreshEventState = useRecoilRefresher_UNSTABLE(
+  //       asyncEventsUsersByEventIdSelector(eventId)
+  //     )
+
+  //     const onClickConfirm = async (onSuccess) => {
+  //       closeModal()
+  //       itemsFunc.event.signUp(
+  //         {
+  //           eventId,
+  //           userId: loggedUser?._id,
+  //           status: 'reserve',
+  //           userStatus: loggedUser.status,
+  //           eventSubtypeNum,
+  //           comment,
+  //         },
+  //         (data) => {
+  //           if (data.error === 'мероприятие закрыто') {
+  //             fixEventStatus(eventId, 'closed')
+  //           }
+  //           if (data.error === 'мероприятие отменено') {
+  //             fixEventStatus(eventId, 'canceled')
+  //           }
+  //           if (data.solution === 'reserve') {
+  //             refreshEventState()
+  //             eventSignUpToReserveAfterError(
+  //               event,
+  //               data.error,
+  //               eventSubtypeNum,
+  //               comment
+  //             )
+  //           }
+  //         },
+  //         (data) => {
+  //           if (typeof onSuccess === 'function') onSuccess()
+  //         }
+  //       )
+  //     }
+
+  //     useEffect(() => {
+  //       setOnConfirmFunc(onClickConfirm)
+  //       setOnConfirm2Func(() =>
+  //         onClickConfirm(() => goToUrlForAddEventToCalendar(event))
+  //       )
+  //     }, [])
+
+  //     return <></>
+  //   }
+
+  //   addModal({
+  //     title: `Запись в резерв на мероприятие`,
+  //     text: `К сожалению не удалось записаться на мероприятие в основной состав, так как ${error}. Однако вы можете записаться на мероприятие в резерв, и как только место освободиться вы будете приняты в основной состав. Записаться в резерв на мероприятие?`,
+  //     confirmButtonName: `Записаться в резерв`,
+  //     // ADD
+  //     confirmButtonName2: `Записаться в резерв и добавить в календарь`,
+  //     Children: EventSignUpToReserveAfterErrorModal,
+  //     // onConfirm2: () => {
+  //     //   itemsFunc.event.signUp(
+  //     //     {
+  //     //       eventId: event._id,
+  //     //       userId: loggedUser?._id,
+  //     //       status: 'reserve',
+  //     //       userStatus: loggedUser.status,
+  //     //       eventSubtypeNum,
+  //     //       comment,
+  //     //     },
+  //     //     undefined,
+  //     //     (data) => goToUrlForAddEventToCalendar(event)
+  //     //   )
+  //     // },
+  //     // onConfirm: () => {
+  //     //   itemsFunc.event.signUp({
+  //     //     eventId: event._id,
+  //     //     userId: loggedUser?._id,
+  //     //     status: 'reserve',
+  //     //     userStatus: loggedUser.status,
+  //     //     eventSubtypeNum,
+  //     //     comment,
+  //     //   })
+  //     // },
+  //   })
+  //   // }
+  // }
 
   const checkLoggedUser = (forWhat = 'Для записи на мероприятие', query) => {
     if (!loggedUser?._id) {
@@ -160,7 +222,14 @@ const modalsFuncGenerator = (
         } else if (data.error === 'мероприятие отменено') {
           fixEventStatus(eventId, 'canceled')
         } else if (data.solution === 'reserve') {
-          event_signUpToReserveAfterError(event, data.error)
+          addModal(
+            eventSignUpToReserveAfterError(
+              event,
+              data.error,
+              eventSubtypeNum,
+              comment
+            )
+          )
           // addModal({
           //   title: `Запись в резерв на мероприятие`,
           //   text: `К сожалению не удалось записаться на мероприятие в основной состав, так как ${error}. Однако вы можете записаться на мероприятие в резерв, и как только место освободиться вы будете приняты в основной состав. Записаться в резерв на мероприятие?`,
@@ -380,7 +449,22 @@ const modalsFuncGenerator = (
       ) => {
         if (checkLoggedUser('Для записи на мероприятие', `event=${event._id}`))
           addModal(
-            eventSignUpWithWarning(event, status, eventSubtypeNum, comment)
+            eventSignUpWithWarning(
+              event,
+              status,
+              eventSubtypeNum,
+              comment,
+              fixEventStatus,
+              (event, error, eventSubtypeNum, comment) =>
+                addModal(
+                  eventSignUpToReserveAfterError(
+                    event,
+                    error,
+                    eventSubtypeNum,
+                    comment
+                  )
+                )
+            )
           )
       },
       signUp: (event, status = 'participant', eventSubtypeNum, comment) => {

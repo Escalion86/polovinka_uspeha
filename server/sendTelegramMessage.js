@@ -81,20 +81,47 @@ const sendTelegramMessage = async ({
     })
   }
 
-  const result = await Promise.all(
-    telegramIds.map(
-      async (telegramId) =>
-        await sendMessageToTelegramId({
-          req,
-          telegramId,
-          text,
-          images,
-          inline_keyboard,
-        })
-    )
-  )
+  let result = []
+  let error = false
+  for (const telegramId of telegramIds) {
+    const res = await sendMessageToTelegramId({
+      req,
+      telegramId,
+      text,
+      images,
+      inline_keyboard,
+    })
+    if (!res) error = true
+    result.push(res)
+  }
 
-  await Test.create({ data: result })
+  // const result = await Promise.all(
+  //   telegramIds.map(
+  //     async (telegramId) =>
+  //       await sendMessageToTelegramId({
+  //         req,
+  //         telegramId,
+  //         text,
+  //         images,
+  //         inline_keyboard,
+  //       })
+  //   )
+  // )
+
+  // const reduceWay = callback => urls.reduce(
+  //   (acc, item) => acc.then(res => fakeFetch(item, res)),
+  //   Promise.resolve())
+  //   .then(result => callback(result))
+
+  // function fakeFetch (url, params='-') {
+  //   // этот вывод в консоль покажет порядок вызовов с их входящими параметрами
+  //   console.log(`fakeFetch to: ${url} with params: ${params}`);
+  //   return new Promise(resolve => {
+  //       setTimeout(() => resolve(`${url} is DONE`), 1000);
+  //   })
+  // };
+
+  await Test.create({ data: result, error })
 }
 
 export default sendTelegramMessage
