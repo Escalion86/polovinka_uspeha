@@ -205,6 +205,8 @@ const userSignIn = async ({
       autoReserve &&
       canSignInReserve
         ? 'reserve'
+        : errorText && canSignInReserve
+        ? 'reserve'
         : status
 
     const newEventUser = await EventsUsers.create({
