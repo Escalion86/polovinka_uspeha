@@ -84,14 +84,19 @@ const sendTelegramMessage = async ({
   let result = []
   let error = false
   for (const telegramId of telegramIds) {
-    const res = await sendMessageToTelegramId({
-      req,
-      telegramId,
-      text,
-      images,
-      inline_keyboard,
-    })
-    if (!res) error = true
+    let i = 0
+    let res
+    do {
+      i = i + 1
+      res = await sendMessageToTelegramId({
+        req,
+        telegramId,
+        text,
+        images,
+        inline_keyboard,
+      })
+    } while (res || i < 5)
+    if (i >= 5) error = true
     result.push(res)
   }
 
