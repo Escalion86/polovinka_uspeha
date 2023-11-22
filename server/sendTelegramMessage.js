@@ -95,7 +95,7 @@ const sendTelegramMessage = async ({
         images,
         inline_keyboard,
       })
-    } while (res || i < 5)
+    } while (!res && i < 5)
     if (i >= 5) error = true
     result.push(res)
   }
