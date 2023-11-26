@@ -19,6 +19,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import directionSelector from '@state/selectors/directionSelector'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import eventSelector from '@state/selectors/eventSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
@@ -87,6 +88,7 @@ const eventViewFunc = (eventId) => {
     const event = useRecoilValue(eventSelector(eventId))
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
     const direction = useRecoilValue(directionSelector(event?.directionId))
     const organizer = useRecoilValue(userSelector(event?.organizerId))
@@ -101,12 +103,18 @@ const eventViewFunc = (eventId) => {
     // )?.isEventInProcess
 
     useEffect(() => {
-      if (isLoggedUserModer && setTopLeftComponent) {
+      if ((isLoggedUserModer || isLoggedUserAdmin) && setTopLeftComponent) {
         setTopLeftComponent(() => (
           <CardButtonsComponent event={event} isEventClosed={isEventClosed} />
         ))
       }
-    }, [isLoggedUserModer, event, isEventClosed, setTopLeftComponent])
+    }, [
+      isLoggedUserModer,
+      isLoggedUserAdmin,
+      event,
+      isEventClosed,
+      setTopLeftComponent,
+    ])
 
     if (!event || !eventId)
       return (
@@ -212,7 +220,7 @@ const eventViewFunc = (eventId) => {
           </div>
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
             <EventUsersCounterAndAge eventId={eventId} showAges />
-            {(isLoggedUserMember || isLoggedUserModer) && (
+            {(isLoggedUserMember || isLoggedUserModer || isLoggedUserAdmin) && (
               // <Button
               //   name="Посмотреть участников"
               //   onClick={() => modalsFunc.event.users(eventId)}

@@ -13,6 +13,7 @@ import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
 import UserStatusIcon from './UserStatusIcon'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const Ages = ({ gender, event }) => (
   <div className="flex justify-center gap-x-0.5 border-b self-stretch">
@@ -318,6 +319,7 @@ const SumCounter = (props) => (
 
 const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const event = useRecoilValue(eventSelector(eventId))
 
   if (!eventId || !event) return null
@@ -343,7 +345,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           gender="mans"
           event={event}
           showAges={showAges}
-          showNoviceAndMemberSum={!isLoggedUserModer}
+          showNoviceAndMemberSum={!(isLoggedUserModer || !isLoggedUserAdmin)}
           showReserve={showReserve}
         />
       </div>
@@ -356,7 +358,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           gender="womans"
           event={event}
           showAges={showAges}
-          showNoviceAndMemberSum={!isLoggedUserModer}
+          showNoviceAndMemberSum={!(isLoggedUserModer || !isLoggedUserAdmin)}
           showReserve={showReserve}
         />
         {/* <div className="flex flex-col items-center">

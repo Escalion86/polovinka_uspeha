@@ -13,6 +13,7 @@ import fetchProps from '@server/fetchProps'
 import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
@@ -33,6 +34,7 @@ function CabinetPage(props) {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   let redirect
   if (!props.loggedUser) redirect = '/'
@@ -80,7 +82,12 @@ function CabinetPage(props) {
                 </Suspense>
               )}
             </ContentWrapper>
-            <FabMenu show={!isLoggedUserModer || page === 'settingsFabMenu'} />
+            <FabMenu
+              show={
+                !(isLoggedUserModer || isLoggedUserAdmin) ||
+                page === 'settingsFabMenu'
+              }
+            />
           </CabinetWrapper>
         )}
       </StateLoader>

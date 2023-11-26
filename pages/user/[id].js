@@ -12,6 +12,7 @@ import { useRecoilValue } from 'recoil'
 import BlockContainer from '@components/BlockContainer'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const User = ({ user }) => {
   const userView = userViewFunc(user._id)
@@ -42,9 +43,10 @@ function UserPage(props) {
 
   // const loggedUser = useRecoilValue(loggedUserAtom)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
-  const canSee = isLoggedUserModer || isLoggedUserMember
+  const canSee = isLoggedUserModer || isLoggedUserAdmin || isLoggedUserMember
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01
