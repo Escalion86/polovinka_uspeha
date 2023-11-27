@@ -5,6 +5,7 @@ import ServiceCard from '@layouts/cards/ServiceCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import { modalsFuncAtom } from '@state/atoms'
 import servicesAtom from '@state/atoms/servicesAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
 import { useRecoilValue } from 'recoil'
@@ -14,17 +15,19 @@ const ServicesContent = () => {
   const services = useRecoilValue(servicesAtom)
   const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
-  const filteredServices = isLoggedUserModer
-    ? services
-    : services.filter(({ showOnSite }) => showOnSite)
+  const filteredServices =
+    isLoggedUserModer || isLoggedUserAdmin
+      ? services
+      : services.filter(({ showOnSite }) => showOnSite)
 
   return (
     <>
       <ContentHeader>
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounServices(services?.length)}
+            {getNounServices(filteredServices?.length)}
           </div>
           {isLoggedUserSupervisor && (
             <AddButton onClick={() => modalsFunc.service.edit()} />

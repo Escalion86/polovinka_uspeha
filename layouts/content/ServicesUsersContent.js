@@ -9,6 +9,7 @@ import ServicesUsersList from '@layouts/lists/ServicesUsersList'
 import { modalsFuncAtom } from '@state/atoms'
 import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import usersAtom from '@state/atoms/usersAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -17,6 +18,7 @@ const ServicesUsersContent = () => {
   const servicesUsers = useRecoilValue(servicesUsersAtom)
   const users = useRecoilValue(usersAtom)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const [filter, setFilter] = useState({
@@ -101,7 +103,7 @@ const ServicesUsersContent = () => {
               if (isSearching) setSearchText('')
             }}
           />
-          {isLoggedUserModer && (
+          {(isLoggedUserModer || isLoggedUserAdmin) && (
             <AddButton onClick={() => modalsFunc.serviceUser.add()} />
           )}
         </div>

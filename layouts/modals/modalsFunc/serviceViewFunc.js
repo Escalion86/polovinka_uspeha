@@ -5,6 +5,7 @@ import ImageGallery from '@components/ImageGallery'
 import PriceDiscount from '@components/PriceDiscount'
 import TextLine from '@components/TextLine'
 import { modalsFuncAtom } from '@state/atoms'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
@@ -30,13 +31,14 @@ const serviceViewFunc = (serviceId) => {
     // const loggedUser = useRecoilValue(loggedUserAtom)
     const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
     const modalsFunc = useRecoilValue(modalsFuncAtom)
 
     useEffect(() => {
-      if (isLoggedUserModer && setTopLeftComponent)
+      if ((isLoggedUserModer || isLoggedUserAdmin) && setTopLeftComponent)
         setTopLeftComponent(() => <CardButtonsComponent service={service} />)
-    }, [service, isLoggedUserModer, setTopLeftComponent])
+    }, [service, isLoggedUserModer, isLoggedUserAdmin, setTopLeftComponent])
 
     if (!service || !serviceId)
       return (

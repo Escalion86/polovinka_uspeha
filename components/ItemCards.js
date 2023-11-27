@@ -25,6 +25,7 @@ import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
 import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const ItemContainer = ({
   onClick,
@@ -134,6 +135,7 @@ export const UserItem = ({
 }) => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   const device = useRecoilValue(windowDimensionsTailwindSelector)
 
@@ -169,6 +171,7 @@ export const UserItem = ({
           <UserName user={item} className="font-semibold" thin trunc={2} />
           {item.birthday &&
             (isLoggedUserModer ||
+              isLoggedUserAdmin ||
               item.security?.showBirthday === true ||
               item.security?.showBirthday === 'full') && (
               <span className="flex items-center overflow-visible italic leading-3 max-h-2">

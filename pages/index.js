@@ -12,6 +12,7 @@ import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import Header from '@layouts/Header'
 import fetchProps from '@server/fetchProps'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
@@ -19,6 +20,7 @@ import { useRecoilValue } from 'recoil'
 
 export default function Home(props) {
   const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
 
   return (
     <>
@@ -35,7 +37,7 @@ export default function Home(props) {
         <AdditionalBlocks />
         <ReviewsBlock />
         <ContactsBlock />
-        <FabMenu show={!isLoggedUserModer} />
+        <FabMenu show={!(isLoggedUserModer || isLoggedUserAdmin)} />
         {/* <div className="flex flex-col items-start px-10 py-5 text-sm font-thin text-white bg-black min-h-80 tablet:px-20">
             <div>
               © ИП Белинский Алексей Алексеевич, ИНН 245727560982, ОГРНИП
