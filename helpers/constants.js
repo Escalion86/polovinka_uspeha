@@ -109,6 +109,7 @@ import UserStatisticsContent from '@layouts/content/UserStatisticsContent'
 import ToolsNewsletterContent from '@layouts/content/ToolsNewsletterContent'
 import LoggedUserNotificationsContent from '@layouts/content/LoggedUserNotificationsContent'
 import SettingsFabMenuContent from '@layouts/content/SettingsFabMenuContent'
+import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
 
 const colors = [
   'border-blue-400',
@@ -691,6 +692,88 @@ export const ZODIAC = [
   },
 ]
 
+export const DEFAULT_ROLE = {
+  name: '',
+  seeFullUsersNames: false,
+  seeAllContactsOfUsers: false,
+  seeBirthdayOfUsers: false,
+  eventUsersCounterAndAgeFull: false,
+  eventStatusFilterFull: false,
+  seeUserSumOfPaymentsWithoutEvent: false,
+  editSiteSettings: false,
+  setSelfStatus: false,
+  setSelfRole: false,
+  fabInCabinet: false,
+  notifications: {
+    option: true,
+    birthdays: true,
+    newUserRegistred: true,
+    eventRegistration: true,
+    newEventsByTags: true,
+    eventUserMoves: false,
+    eventCancel: false,
+  },
+  events: {
+    see: true,
+    seeHidden: false,
+    add: false,
+    edit: false,
+    delete: false,
+  },
+  eventsUsers: {
+    see: true, // member
+    edit: false,
+  },
+  members: {
+    see: false,
+    add: false,
+    edit: false,
+    delete: false,
+  },
+  users: {
+    see: false,
+    add: false,
+    edit: false,
+    delete: false,
+  },
+  directions: {
+    see: true,
+    seeHidden: false,
+    add: false,
+    edit: false,
+    delete: false,
+  },
+  services: {
+    see: true,
+    seeHidden: false,
+    add: false,
+    edit: false,
+    delete: false,
+  },
+  servicesUsers: {
+    see: false,
+    edit: false,
+  },
+  products: {
+    see: false,
+    seeHidden: false,
+    add: false,
+    edit: false,
+    delete: false,
+  },
+  productsUsers: {
+    see: false,
+    edit: false,
+  },
+  additionalBlocks: {
+    see: false,
+    seeHidden: false,
+    add: false,
+    edit: false,
+    delete: false,
+  },
+}
+
 export const roleRights = {
   client: {
     name: 'Пользователь',
@@ -992,6 +1075,11 @@ export const CONTENTS = {
     name: 'Настройки / Меню "Вопрос"',
     accessRoles: ['supervisor', 'dev'],
   },
+  settingsRoles: {
+    Component: SettingsRolesContent,
+    name: 'Настройки / Роли"',
+    accessRoles: ['dev'],
+  },
   userStatistics: {
     Component: UserStatisticsContent,
     name: 'Моя статистика',
@@ -1221,6 +1309,14 @@ export const pages = [
     href: 'settingsFabMenu',
     icon: faQuestion,
     accessRoles: CONTENTS['settingsFabMenu'].accessRoles,
+  },
+  {
+    id: 82,
+    group: 10,
+    name: 'Роли',
+    href: 'settingsRoles',
+    icon: faUsers,
+    accessRoles: CONTENTS['settingsRoles'].accessRoles,
   },
   {
     id: 99,
