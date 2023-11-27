@@ -27,7 +27,7 @@ const ServicesContent = () => {
       <ContentHeader>
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounServices(services?.length)}
+            {getNounServices(filteredServices?.length)}
           </div>
           {isLoggedUserSupervisor && (
             <AddButton onClick={() => modalsFunc.service.edit()} />
