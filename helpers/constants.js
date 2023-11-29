@@ -774,9 +774,11 @@ export const DEFAULT_ROLE = {
   },
 }
 
-export const roleRights = {
-  client: {
-    name: 'Пользователь',
+export const DEFAULT_ROLES = [
+  {
+    id: 'client',
+    canEdit: false,
+    name: 'Новичок',
     seeFullUsersNames: false,
     seeAllContactsOfUsers: false,
     seeBirthdayOfUsers: false,
@@ -856,7 +858,9 @@ export const roleRights = {
       delete: false,
     },
   },
-  moder: {
+  {
+    id: 'moder',
+    canEdit: false,
     name: 'Модератор',
     seeFullUsersNames: true,
     seeAllContactsOfUsers: true,
@@ -878,7 +882,7 @@ export const roleRights = {
       eventCancel: false,
     },
   },
-}
+]
 
 export const SECTORS = [
   {

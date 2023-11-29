@@ -72,6 +72,7 @@ import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import { getRecoil } from 'recoil-nexus'
 import TopInfo from './TopInfo'
 import rolesSettingsAtom from '@state/atoms/rolesSettingsAtom'
+import { DEFAULT_ROLES } from '@helpers/constants'
 // import setRecoilFunc from '@helpers/setRecoilFunc'
 
 const StateLoader = (props) => {
@@ -195,7 +196,10 @@ const StateLoader = (props) => {
     setPaymentsState(props.payments)
     // setEventsUsersState(props.eventsUsers)
     setSiteSettingsState(props.siteSettings)
-    setRolesSettingsState(props.rolesSettings)
+    setRolesSettingsState([
+      ...DEFAULT_ROLES,
+      ...(typeof props.rolesSettings === 'object' ? props.rolesSettings : []),
+    ])
     setHistoriesState(props.histories)
     setQuestionnairesState(props.questionnaires)
     setQuestionnairesUsersState(props.questionnairesUsers)

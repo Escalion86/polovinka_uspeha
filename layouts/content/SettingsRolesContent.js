@@ -24,210 +24,80 @@ import compareObjects from '@helpers/compareObjects'
 // import useErrors from '@helpers/useErrors'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 // import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { v4 as uuid } from 'uuid'
 // import cn from 'classnames'
 // import TelegramIcon from 'svg/TelegramIcon'
 import rolesSettingsAtom from '@state/atoms/rolesSettingsAtom'
 import ComboBox from '@components/ComboBox'
-import { DEFAULT_ROLE } from '@helpers/constants'
+import { DEFAULT_ROLES } from '@helpers/constants'
 import CheckBox from '@components/CheckBox'
-
-const RoleSettings = ({ role, saveRole }) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
-  const [message, setMessage] = useState('')
-
-  const [name, setName] = useState(role?.name ?? '')
-  const [seeFullUsersNames, setSeeFullUsersNames] = useState(
-    role?.seeFullUsersNames
-  )
-  const [seeAllContactsOfUsers, setSeeAllContactsOfUsers] = useState(
-    role?.seeAllContactsOfUsers
-  )
-  const [seeBirthdayOfUsers, setSeeBirthdayOfUsers] = useState(
-    role?.seeBirthdayOfUsers
-  )
-  const [eventUsersCounterAndAgeFull, setEventUsersCounterAndAgeFull] =
-    useState(role?.eventUsersCounterAndAgeFull)
-  const [eventStatusFilterFull, setEventStatusFilterFull] = useState(
-    role?.eventStatusFilterFull
-  )
-  const [
-    seeUserSumOfPaymentsWithoutEvent,
-    setSeeUserSumOfPaymentsWithoutEvent,
-  ] = useState(role?.seeUserSumOfPaymentsWithoutEvent)
-
-  const [notifications, setNotifications] = useState(role?.notifications)
-  const [events, setEvents] = useState(role?.notifeventsications)
-  const [eventsUsers, setEventsUsers] = useState(role?.eventsUsers)
-  const [users, setUsers] = useState(role?.users)
-  const [directions, setDirections] = useState(role?.directions)
-  const [services, setServices] = useState(role?.services)
-  const [servicesUsers, setServicesUsers] = useState(role?.servicesUsers)
-  const [productsUsers, setProductsUsers] = useState(role?.productsUsers)
-  const [additionalBlocks, setAdditionalBlocks] = useState(
-    role?.additionalBlocks
-  )
-  const [editSiteSettings, setEditSiteSettings] = useState(
-    role?.editSiteSettings
-  )
-  const [setSelfStatus, setSetSelfStatus] = useState(role?.setSelfStatus)
-  const [setSelfRole, setSetSelfRole] = useState(role?.setSelfRole)
-  const [fabInCabinet, setFabInCabinet] = useState(role?.fabInCabinet)
-
-  const formChanged = !compareObjects(
-    role?.seeFullUsersNames,
-    seeFullUsersNames
-  )
-
-  const onClickConfirm = async () => {
-    saveRole({
-      name,
-      seeFullUsersNames,
-      seeAllContactsOfUsers,
-      notifications,
-      seeBirthdayOfUsers,
-      eventUsersCounterAndAgeFull,
-      eventStatusFilterFull,
-      seeUserSumOfPaymentsWithoutEvent,
-      events,
-      eventsUsers,
-      users,
-      directions,
-      services,
-      servicesUsers,
-      productsUsers,
-      additionalBlocks,
-      editSiteSettings,
-      setSelfStatus,
-      setSelfRole,
-      fabInCabinet,
-    })
-    // await postData(
-    //   `/api/roles`,
-    //   {
-    //     name,
-    //     seeFullUsersNames,
-    //     seeAllContactsOfUsers,
-    //     notifications,
-    //     seeBirthdayOfUsers,
-    //     eventUsersCounterAndAgeFull,
-    //     seeUserSumOfPaymentsWithoutEvent,
-    //     events,
-    //     eventsUsers,
-    //     users,
-    //     directions,
-    //     services,
-    //     servicesUsers,
-    //     productsUsers,
-    //     additionalBlocks,
-    //     editSiteSettings,
-    //     setSelfStatus,
-    //     setSelfRole,
-    //     fabInCabinet,
-    //   },
-    //   (data) => {
-    //     // setSiteSettings(data)
-    //     setMessage('Данные обновлены успешно')
-    //     // refreshPage()
-    //   },
-    //   () => {
-    //     setMessage('')
-    //     // addError({ response: 'Ошибка обновления данных' })
-    //   },
-    //   false,
-    //   loggedUser._id
-    // )
-  }
-
-  const buttonDisabled = !formChanged
-
-  if (!role) return null
-
-  return (
-    <div className="flex flex-col flex-1 h-screen max-h-screen px-2 my-2 overflow-y-auto gap-y-2">
-      <div className="flex items-center w-full p-1 gap-x-1">
-        <div className="flex flex-row-reverse flex-1">
-          {!buttonDisabled && (
-            <span className="leading-4 text-right tablet:text-lg">
-              Чтобы изменения вступили в силу нажмите:
-            </span>
-          )}
-        </div>
-        <Button
-          name="Применить"
-          disabled={!formChanged}
-          onClick={onClickConfirm}
-          // loading={isWaitingToResponse}
-        />
-      </div>
-      {message && (
-        <div className="flex flex-col col-span-2 text-success">{message}</div>
-      )}
-      <div className="">
-        <FormWrapper>
-          <Input label="Название роли" value={name} onChange={setName} />
-          <CheckBox
-            label="Видит полное ФИО пользователей"
-            checked={seeFullUsersNames}
-            onChange={() => setSeeFullUsersNames((state) => !state)}
-          />
-          <CheckBox
-            label="Видит все контакты пользователей"
-            checked={seeAllContactsOfUsers}
-            onChange={() => setSeeAllContactsOfUsers((state) => !state)}
-          />
-          <CheckBox
-            label="Видит дни рождения пользователей"
-            checked={seeBirthdayOfUsers}
-            onChange={() => setSeeBirthdayOfUsers((state) => !state)}
-          />
-          <CheckBox
-            label="Расширенная сводка по участникам мероприятия на карточке мероприятия"
-            checked={eventUsersCounterAndAgeFull}
-            onChange={() => setEventUsersCounterAndAgeFull((state) => !state)}
-          />
-          <CheckBox
-            label="Расширенный фильтр мероприятий"
-            checked={eventStatusFilterFull}
-            onChange={() => setEventStatusFilterFull((state) => !state)}
-          />
-          <CheckBox
-            label="Видит незакрепленные транзакции пользователей"
-            checked={seeUserSumOfPaymentsWithoutEvent}
-            onChange={() =>
-              setSeeUserSumOfPaymentsWithoutEvent((state) => !state)
-            }
-          />
-        </FormWrapper>
-      </div>
-    </div>
-  )
-}
+import { modalsFuncAtom } from '@state/atoms'
 
 const SettingsRolesContent = (props) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+
   const [rolesSettings, setRolesSettings] = useRecoilState(rolesSettingsAtom)
-  const [rolesTemp, setRolesTemp] = useState(rolesSettings ?? [])
+  const [rolesTemp, setRolesTemp] = useState(rolesSettings)
+  console.log('rolesTemp :>> ', rolesTemp)
+  // const [selectedRoleIndex, setSelectedRoleIndex] = useState(0)
 
-  const [selectedRoleIndex, setSelectedRoleIndex] = useState(0)
+  // const addItem = () => {
+  //   setRolesTemp((state) => [...state, { _id: uuid(), ...DEFAULT_ROLE }])
+  //   setSelectedRoleIndex(rolesTemp?.length ?? 0)
+  // }
 
-  const addItem = () => {
-    setRolesTemp((state) => [...state, { _id: uuid(), ...DEFAULT_ROLE }])
-    setSelectedRoleIndex(rolesTemp?.length ?? 0)
+  // const deleteItem = (index) => {
+  //   setRolesTemp((state) => state.filter((item) => index !== selectedRoleIndex))
+  //   if (selectedRoleIndex > 0 && selectedRoleIndex > rolesTemp?.length - 1)
+  //     setSelectedRoleIndex(selectedRoleIndex - 1)
+  // }
+
+  // const saveItem = (index, newItem) => {
+  //   setRolesTemp((state) =>
+  //     state.map((item, i) => (i === index ? newItem : item))
+  //   )
+  // }
+
+  const toggleItem = (index, key) => {
+    const temp = JSON.parse(JSON.stringify(rolesTemp))
+    temp[index][key] = !temp[index][key]
+    setRolesTemp(temp)
   }
 
-  const deleteItem = (index) => {
-    setRolesTemp((state) => state.filter((item) => index !== selectedRoleIndex))
-    if (selectedRoleIndex > 0 && selectedRoleIndex > rolesTemp?.length - 1)
-      setSelectedRoleIndex(selectedRoleIndex - 1)
+  const addRole = () => {
+    const addRoleFunc = (name) => {
+      setRolesTemp((state) => [...state, { name, id: uuid() }])
+    }
+    modalsFunc.role.add(addRoleFunc)
   }
 
-  const saveItem = (index, newItem) => {
-    setRolesTemp((state) =>
-      state.map((item, i) => (i === index ? newItem : item))
-    )
-  }
+  const RoleItem = useCallback(
+    ({ label, item }) => {
+      return (
+        <div className="flex items-center border-t border-gray-400 gap-x-1">
+          <div className="flex-1 my-1 text-sm leading-3 text-center min-w-40 max-w-80">
+            {label}
+          </div>
+          {rolesTemp.map((role, index) => (
+            <div
+              key={item + index}
+              className="flex justify-center flex-1 min-w-7 max-w-20"
+            >
+              <CheckBox
+                checked={role[item]}
+                onChange={() => toggleItem(index, item)}
+                noMargin
+                wrapperClassName="my-1"
+              />
+            </div>
+          ))}
+        </div>
+      )
+    },
+    [rolesTemp]
+  )
 
   return (
     <div className="flex flex-col flex-1 h-screen max-h-screen overflow-y-auto gap-y-2">
@@ -235,7 +105,7 @@ const SettingsRolesContent = (props) => {
   <div className="flex justify-center"> */}
       <FormWrapper className="flex flex-col gap-y-1">
         <div className="flex px-2 pt-1 gap-x-2">
-          {rolesTemp?.length > 0 && (
+          {/* {rolesTemp?.length > 0 && (
             <ComboBox
               label="Роли"
               value={String(selectedRoleIndex)}
@@ -247,30 +117,134 @@ const SettingsRolesContent = (props) => {
               noMargin
               className="mt-1 min-w-48"
             />
-          )}
+          )} */}
           <div className="flex mt-2 gap-x-2">
-            <Button
-              name={!rolesTemp?.length ? 'Добавить роль' : undefined}
-              icon={faPlus}
-              onClick={addItem}
-            />
-            {rolesTemp?.length > 0 && (
+            <Button name="Добавить роль" icon={faPlus} onClick={addRole} />
+            {/* {rolesTemp?.length > 0 && (
               <Button
                 // name="Удалить роль"
                 icon={faTrash}
                 onClick={deleteItem}
               />
-            )}
+            )} */}
           </div>
         </div>
         <Divider light thin />
-        {typeof selectedRoleIndex === 'number' && (
+        {/* {typeof selectedRoleIndex === 'number' && (
           <RoleSettings
             key={'roleIndex' + selectedRoleIndex}
             role={rolesTemp[selectedRoleIndex]}
             saveRole={(updatedRole) => saveItem(selectedRoleIndex, updatedRole)}
           />
-        )}
+        )} */}
+        <FormWrapper>
+          {/* <Input label="Название роли" value={name} onChange={setName} /> */}
+          <div className="flex flex-col">
+            <div className="flex items-end pb-2 h-28 gap-x-1">
+              <div className="flex-1 text-sm leading-3 text-center min-w-40 max-w-80">
+                {/* Пункт */}
+              </div>
+              {rolesTemp.map(({ name }, index) => (
+                <div
+                  key={'roleName' + index}
+                  className="flex items-end justify-center flex-1 min-w-7 max-w-20"
+                >
+                  <div className="w-7">
+                    <div className="origin-bottom-left -rotate-90 translate-x-[95%]">
+                      {name}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {/* <div className="flex items-end justify-center flex-1 min-w-7 max-w-20">
+                <div className="w-7">
+                  <div className="-rotate-90">Роль1</div>
+                </div>
+              </div>
+              <div className="flex items-end justify-center flex-1 min-w-7 max-w-20">
+                <div className="w-7">
+                  <div className="-rotate-90">Роль2</div>
+                </div>
+              </div>
+              <div className="flex items-end justify-center flex-1 min-w-7 max-w-20">
+                <div className="w-7">
+                  <div className="origin-bottom-left -rotate-90 translate-x-full">
+                    Роль3ghdgd
+                  </div>
+                </div>
+              </div> */}
+            </div>
+            <div className="flex justify-center flex-1 px-2 font-bold bg-gray-200 border-t border-gray-400 text-md">
+              Личное
+            </div>
+            <RoleItem
+              label="Изменение собственного статуса"
+              item="setSelfStatus"
+            />
+            <RoleItem label="Изменение собственной роли" item="setSelfRole" />
+            <RoleItem
+              label='Скрыть кружок "?" справа внизу'
+              item="fabInCabinet"
+            />
+            <div className="flex justify-center flex-1 px-2 font-bold bg-gray-200 border-t border-gray-400 text-md">
+              Пользователи
+            </div>
+            <RoleItem
+              label="Видит полное ФИО пользователей"
+              item="seeFullUsersNames"
+            />
+            <RoleItem
+              label="Видит все контакты пользователей"
+              item="seeAllContactsOfUsers"
+            />
+            <RoleItem
+              label="Видит дни рождения пользователей"
+              item="seeBirthdayOfUsers"
+            />
+            <div className="flex justify-center flex-1 px-2 font-bold bg-gray-200 border-t border-gray-400 text-md">
+              Мероприятия
+            </div>
+            <RoleItem
+              label="Расширенная сводка по участникам на карточке мероприятия"
+              item="eventUsersCounterAndAgeFull"
+            />
+            <RoleItem
+              label="Расширенный фильтр мероприятий"
+              item="eventStatusFilterFull"
+            />
+
+            <div className="flex justify-center flex-1 px-2 font-bold bg-gray-200 border-t border-gray-400 text-md">
+              Финансы
+            </div>
+            <RoleItem
+              label="Видит незакрепленные транзакции пользователей"
+              item="seeUserSumOfPaymentsWithoutEvent"
+            />
+            <div className="flex justify-center flex-1 px-2 font-bold bg-gray-200 border-t border-gray-400 text-md">
+              Настройки сайта
+            </div>
+            <RoleItem
+              label="Настройки сервиса подтверждения номера"
+              item="editPhoneConfirmService"
+            />
+            <RoleItem label='Настройки меню "?"' item="editFabMenu" />
+            <RoleItem label="Редактирование ролей" item="editRoles" />
+
+            {/* // seeAllContactsOfUsers,
+      // notifications,
+      // events,
+      // eventsUsers,
+      // users,
+      // directions,
+      // services,
+      // servicesUsers,
+      // productsUsers,
+      // additionalBlocks, */}
+            {/* editPhoneConfirmService,
+      editFabMenu,
+      editRoles */}
+          </div>
+        </FormWrapper>
       </FormWrapper>
       {/* </div>
   </FormWrapper> */}
