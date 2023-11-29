@@ -8,7 +8,7 @@ import getHoursBetween from '@helpers/getHoursBetween'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventExpiredFunc from '@helpers/isEventExpired'
-import isEventClosedFunc from '@helpers/isEventClosed'
+// import isEventClosedFunc from '@helpers/isEventClosed'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import {
   Timeline,

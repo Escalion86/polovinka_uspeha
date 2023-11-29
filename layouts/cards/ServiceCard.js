@@ -88,15 +88,15 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
       style={style}
     >
       {service?.images && service.images[0] && (
-        // <div className="flex justify-center w-full tablet:w-auto">
-        <img
-          className="object-cover h-full w-36 tablet:w-48 max-h-60 tablet:max-h-72"
-          src={service.images[0]}
-          alt="service"
-          // width={48}
-          // height={48}
-        />
-        // </div>
+        <div className="flex justify-center w-36 min-w-36 tablet:min-w-48 tablet:w-48 max-h-60 tablet:max-h-72">
+          <img
+            className="object-cover w-full h-full"
+            src={service.images[0]}
+            alt="service"
+            // width={48}
+            // height={48}
+          />
+        </div>
       )}
       <div className="flex flex-col w-full">
         <div className="flex">
@@ -117,7 +117,7 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
           />
         </div>
         {/* <div>{direction.description}</div> */}
-        <div className="flex-1 w-full max-w-full px-2 max-h-[58px] pb-1 overflow-hidden text-sm whitespace-pre-wrap">
+        <div className="flex-1 w-full max-w-full px-2 pb-1 overflow-hidden text-sm whitespace-pre-wrap">
           {service.shortDescription}
         </div>
         <div className="flex items-center justify-between px-2 py-1 text-lg font-bold border-t gap-x-2 flex-nowrap">

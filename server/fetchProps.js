@@ -9,6 +9,7 @@ import Payments from '@models/Payments'
 import Questionnaires from '@models/Questionnaires'
 import QuestionnairesUsers from '@models/QuestionnairesUsers'
 import Reviews from '@models/Reviews'
+import Roles from '@models/Roles'
 import Services from '@models/Services'
 import ServicesUsers from '@models/ServicesUsers'
 import SiteSettings from '@models/SiteSettings'
@@ -49,6 +50,7 @@ const fetchProps = async (user, pageName = 'cabinet') => {
     // const eventsUsers = await EventsUsers.find({})
     const payments = await Payments.find({})
     const siteSettings = await SiteSettings.find({})
+    const rolesSettings = await Roles.find({})
     const questionnaires = await Questionnaires.find({})
     const questionnairesUsers = await QuestionnairesUsers.find({})
     // const histories = isModer
@@ -71,6 +73,7 @@ const fetchProps = async (user, pageName = 'cabinet') => {
       siteSettings: JSON.parse(
         JSON.stringify(siteSettings?.length > 0 ? siteSettings[0] : {})
       ),
+      rolesSettings: JSON.parse(JSON.stringify(rolesSettings)),
       // histories: JSON.parse(JSON.stringify(histories)),
       questionnaires: JSON.parse(JSON.stringify(questionnaires)),
       questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
@@ -92,6 +95,7 @@ const fetchProps = async (user, pageName = 'cabinet') => {
       // eventsUsers: [],
       payments: [],
       siteSettings: {},
+      rolesSettings: [],
       // histories: [],
       questionnaires: [],
       questionnairesUsers: [],
