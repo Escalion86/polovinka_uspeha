@@ -345,7 +345,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           gender="mans"
           event={event}
           showAges={showAges}
-          showNoviceAndMemberSum={!(isLoggedUserModer || !isLoggedUserAdmin)}
+          showNoviceAndMemberSum={!(isLoggedUserModer || isLoggedUserAdmin)}
           showReserve={showReserve}
         />
       </div>
@@ -358,7 +358,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           gender="womans"
           event={event}
           showAges={showAges}
-          showNoviceAndMemberSum={!(isLoggedUserModer || !isLoggedUserAdmin)}
+          showNoviceAndMemberSum={!(isLoggedUserModer || isLoggedUserAdmin)}
           showReserve={showReserve}
         />
         {/* <div className="flex flex-col items-center">
