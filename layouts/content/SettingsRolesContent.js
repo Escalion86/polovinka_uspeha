@@ -82,9 +82,10 @@ const SettingsRolesContent = (props) => {
     const preparedRoles = rolesTemp.filter(
       (role, index) => DEFAULT_ROLES.length <= index
     )
-    console.log('preparedRoles :>> ', preparedRoles)
     updateRoles(preparedRoles)
   }
+
+  const filteredRolesTemp = rolesTemp.filter((role) => role._id !== 'dev')
 
   const RoleItem = useCallback(
     ({ label, item, subItem }) => {
@@ -93,7 +94,7 @@ const SettingsRolesContent = (props) => {
           <div className="flex-1 my-1 text-sm leading-3 text-center min-w-40 max-w-80">
             {label}
           </div>
-          {rolesTemp.map((role, index) => {
+          {filteredRolesTemp.map((role, index) => {
             const checked = subItem
               ? typeof role[item] === 'object'
                 ? role[item][subItem]
@@ -120,7 +121,7 @@ const SettingsRolesContent = (props) => {
         </div>
       )
     },
-    [rolesTemp]
+    [filteredRolesTemp]
   )
 
   return (
@@ -145,7 +146,7 @@ const SettingsRolesContent = (props) => {
               <div className="flex-1 text-sm leading-3 text-center min-w-40 max-w-80">
                 {/* Пункт */}
               </div>
-              {rolesTemp.map((role, index) => (
+              {filteredRolesTemp.map((role, index) => (
                 <div
                   key={'roleName' + role._id}
                   className="flex items-end justify-center flex-1 min-w-7 max-w-20"
