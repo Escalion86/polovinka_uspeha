@@ -189,11 +189,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                   </div>
                 </div>
                 <div className="flex flex-col items-end justify-between">
-                  <CardButtons
-                    item={user}
-                    typeOfItem="user"
-                    alwaysCompactOnPhone
-                  />
+                  <CardButtons item={user} typeOfItem="user" />
                   {seeSumOfPaymentsWithoutEventOnCard && (
                     <UserSumOfPaymentsWithoutEvent userId={userId} />
                   )}

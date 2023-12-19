@@ -21,7 +21,7 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
       {showStatus && <UserStatusIcon status={user.status} size="xs" />}
       {trunc ? (
         <TextLinesLimiter
-          className="flex-1 leading-[12px]"
+          className="flex-1 leading-[14px]"
           lines={typeof trunc === 'number' ? trunc : 1}
         >{`${upperCaseFirst(user.firstName)}${
           user.thirdName
@@ -43,7 +43,7 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
       ) : (
         <div
           className={cn(
-            'flex gap-x-1 leading-[12px] flex-1',
+            'flex gap-x-1 leading-[14px] flex-1',
             noWrap ? 'flex-nowrap' : 'flex-wrap'
           )}
         >

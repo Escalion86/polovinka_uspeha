@@ -1340,7 +1340,7 @@ export const CONTENTS = {
     Component: ServicesLoggedUserContent,
     name: 'Услуги / Мои заявки на услуги',
     accessRoles: ['client', 'moder', 'admin', 'dev'],
-    roleAccess: (role) => true,
+    roleAccess: (role) => role?.services?.see,
   },
   directions: {
     Component: DirectionsContent,
