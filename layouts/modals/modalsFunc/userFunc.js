@@ -1,3 +1,4 @@
+import RelationshipSelector from '@components/ComboBox/RelationshipSelector'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -56,6 +57,10 @@ const userFunc = (userId, clone = false) => {
     // const [profession, setProfession] = useState(user?.profession ?? DEFAULT_USER.profession)
     // const [orientation, setOrientation] = useState(user?.orientation ?? DEFAULT_USER.orientation)
     const [gender, setGender] = useState(user?.gender ?? DEFAULT_USER.gender)
+    const [relationship, setRelationship] = useState(
+      user?.relationship ?? DEFAULT_USER.relationship
+    )
+
     const [email, setEmail] = useState(user?.email ?? DEFAULT_USER.email)
     const [phone, setPhone] = useState(user?.phone ?? DEFAULT_USER.phone)
     const [whatsapp, setWhatsapp] = useState(
@@ -110,6 +115,7 @@ const userFunc = (userId, clone = false) => {
           whatsapp,
           email,
           birthday,
+          relationship,
         })
       ) {
         closeModal()
@@ -125,6 +131,7 @@ const userFunc = (userId, clone = false) => {
             // orientation,
             password: userId ? undefined : password,
             gender,
+            relationship,
             email,
             phone,
             whatsapp,
@@ -205,6 +212,7 @@ const userFunc = (userId, clone = false) => {
         // user?.profession !== profession ||
         // user?.orientation !== orientation ||
         user?.gender !== gender ||
+        user?.relationship !== relationship ||
         user?.email !== email ||
         user?.phone !== phone ||
         user?.whatsapp !== whatsapp ||
@@ -231,6 +239,7 @@ const userFunc = (userId, clone = false) => {
       // profession,
       // orientation,
       gender,
+      relationship,
       email,
       phone,
       whatsapp,
@@ -333,7 +342,20 @@ const userFunc = (userId, clone = false) => {
           required
           error={errors.birthday}
         />
-
+        <RelationshipSelector
+          value={relationship}
+          onChange={(value) => {
+            removeError('relationship')
+            setRelationship(value)
+          }}
+          // placeholder={placeholder}
+          // activePlaceholder={activePlaceholder}
+          // smallMargin
+          className="w-80"
+          required
+          error={errors.relationship}
+          // fullWidth={fullWidth}
+        />
         <FormWrapper twoColumns>
           <PhoneInput
             required

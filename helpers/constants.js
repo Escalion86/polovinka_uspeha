@@ -23,6 +23,7 @@ import {
   faPieChart,
   faPlay,
   faQuestion,
+  faRing,
   faShop,
   faShoppingBag,
   faSignInAlt,
@@ -377,19 +378,47 @@ export const DAYS_OF_WEEK_FULL = [
   'суббота',
 ]
 
+export const RELATIONSHIP_VALUES = [
+  {
+    name: 'Присматриваюсь',
+    value: 'looking',
+    imgSrc: '/img/relationships/havePartner.png',
+  },
+  {
+    name: 'Не готов к серьезным отношениям',
+    value: 'recovering',
+    imgSrc: '/img/relationships/havePartner.png',
+  },
+  {
+    name: 'В активном поиске',
+    value: 'active',
+    imgSrc: '/img/relationships/havePartner.png',
+  },
+  {
+    name: 'Все сложно',
+    value: 'complicated',
+    imgSrc: '/img/relationships/havePartner.png',
+  },
+  {
+    name: 'Есть пара',
+    value: 'havePartner',
+    imgSrc: '/img/relationships/havePartner.png',
+  },
+]
+
 export const DEFAULT_USERS_SECURITY = Object.freeze({
-  fullSecondName: null,
-  fullThirdName: null,
-  showBirthday: null,
+  fullSecondName: true,
+  fullThirdName: true,
+  showBirthday: true,
   // showAge: null,
   // showContacts: null,
-  showPhone: null,
-  showWhatsapp: null,
-  showViber: null,
-  showTelegram: null,
-  showInstagram: null,
-  showVk: null,
-  showEmail: null,
+  showPhone: true,
+  showWhatsapp: true,
+  showViber: true,
+  showTelegram: true,
+  showInstagram: true,
+  showVk: true,
+  showEmail: true,
 })
 
 export const DEFAULT_USERS_NOTIFICATIONS = Object.freeze({
@@ -412,9 +441,10 @@ export const DEFAULT_USER = Object.freeze({
   gender: null,
   images: [],
   role: 'client',
-  interests: '',
-  profession: '',
-  orientation: null,
+  // interests: '',
+  // profession: '',
+  // orientation: null,
+  relationship: null,
   status: 'novice',
   lastActivityAt: null,
   prevActivityAt: null,

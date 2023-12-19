@@ -44,7 +44,7 @@ const TitleBlock = () => {
             style={{ textShadow: '1px 1px 2px black' }}
             // style={{ fontSize: '6vw', lineHeight: '5vw' }}
           >
-            Центр осознанных знакомств
+            Центр серьёзных знакомств
           </H1>
           <H4 style={{ textShadow: '1px 1px 2px black' }} bold={false}>
             г.Красноярск

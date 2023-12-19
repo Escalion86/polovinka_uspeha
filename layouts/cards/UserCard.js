@@ -1,6 +1,7 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import UserName from '@components/UserName'
+import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import ZodiacIcon from '@components/ZodiacIcon'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons'
@@ -122,6 +123,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
                   <div className="flex flex-nowrap items-center px-1 py-0.5 leading-6 gap-x-1">
+                    <UserRelationshipIcon relationship={user.relationship} />
                     <UserStatusIcon status={user.status} />
                     <UserName
                       user={user}

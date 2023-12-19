@@ -5,6 +5,8 @@ import ImageGallery from '@components/ImageGallery'
 import TextLine from '@components/TextLine'
 import Tooltip from '@components/Tooltip'
 import UserName from '@components/UserName'
+import UserRelationshipIcon from '@components/UserRelationshipIcon'
+import UserStatusIcon from '@components/UserStatusIcon'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import ZodiacIcon from '@components/ZodiacIcon'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
@@ -65,7 +67,7 @@ const userViewFunc = (userId, clone = false) => {
         <ImageGallery images={user?.images} />
         <div className="flex flex-col flex-1 mt-1">
           <div className="relative flex items-center mb-1 gap-x-2 min-h-6">
-            {user.status === 'member' && (
+            {/* {user.status === 'member' && (
               <Tooltip title="Участник клуба">
                 <div className="w-6 h-6">
                   <Image
@@ -75,7 +77,8 @@ const userViewFunc = (userId, clone = false) => {
                   />
                 </div>
               </Tooltip>
-            )}
+            )} */}
+            <UserStatusIcon status={user?.status} />
             <UserName user={user} className="text-lg font-bold" />
             {!setTopLeftComponent && (
               <div className="absolute right-0">
@@ -118,6 +121,14 @@ const userViewFunc = (userId, clone = false) => {
                 <ZodiacIcon date={user.birthday} />
               </div>
             )}
+          <TextLine label="Отношения">
+            <UserRelationshipIcon
+              size="m"
+              relationship={user.relationship}
+              showName
+            />
+          </TextLine>
+
           <TextLine label="Дети">
             {user?.haveKids === true
               ? 'Есть'

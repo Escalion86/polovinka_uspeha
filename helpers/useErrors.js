@@ -45,6 +45,8 @@ const useErrors = () => {
         !data ? setError({ description: 'Введите краткое описание' }) : null,
       description: (data) =>
         !data ? setError({ description: 'Введите описание' }) : null,
+      relationship: (data) =>
+        !data ? setError({ relationship: 'Введите статус отношений' }) : null,
       tags: (data) =>
         !data || data.length === 0
           ? setError({ tags: 'Укажите хотя бы один тэг' })

@@ -1,4 +1,6 @@
 import Button from '@components/Button'
+import ComboBox from '@components/ComboBox'
+import RelationshipSelector from '@components/ComboBox/RelationshipSelector'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -10,7 +12,11 @@ import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import {
+  faAsterisk,
+  faEye,
+  faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { putData } from '@helpers/CRUD'
 import compareArrays from '@helpers/compareArrays'
@@ -71,6 +77,10 @@ const QuestionnaireContent = (props) => {
   const [gender, setGender] = useState(
     loggedUser?.gender ?? DEFAULT_USER.gender
   )
+  const [relationship, setRelationship] = useState(
+    loggedUser?.relationship ?? DEFAULT_USER.relationship
+  )
+
   const [email, setEmail] = useState(loggedUser?.email ?? DEFAULT_USER.email)
   const [phone, setPhone] = useState(loggedUser?.phone ?? DEFAULT_USER.phone)
   const [whatsapp, setWhatsapp] = useState(
@@ -154,6 +164,7 @@ const QuestionnaireContent = (props) => {
     // user?.profession !== profession ||
     // user?.orientation !== orientation ||
     loggedUser?.gender !== gender ||
+    loggedUser?.relationship !== relationship ||
     loggedUser?.email !== email ||
     // loggedUser?.phone !== phone ||
     loggedUser?.whatsapp !== whatsapp ||
@@ -183,6 +194,7 @@ const QuestionnaireContent = (props) => {
         email,
         birthday,
         security,
+        relationship,
         // images,
       })
     ) {
@@ -198,6 +210,7 @@ const QuestionnaireContent = (props) => {
           // profession,
           // orientation,
           gender,
+          relationship,
           email,
           // phone,
           whatsapp,
@@ -269,6 +282,9 @@ const QuestionnaireContent = (props) => {
               {!loggedUser.gender && (
                 <li className="font-bold text-red-500">Пол</li>
               )}
+              {!loggedUser.relationship && (
+                <li className="font-bold text-red-500">Статус отношений</li>
+              )}
               {/* {(!loggedUser.images || loggedUser.images.length === 0) && (
                 <li className="font-bold text-red-500">
                   {'Фотографии (добавьте хотя бы одно фото)'}
@@ -313,6 +329,18 @@ const QuestionnaireContent = (props) => {
       <ErrorsList errors={errors} className="px-1" />
       <div className="p-2 overflow-y-auto">
         <FormWrapper className="mt-6">
+          <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
+            {/* <div className="flex flex-wrap items-center gap-x-1"> */}
+            <span className="italic font-semibold">Примечание: </span>
+            <span>Поля отмеченные знаком</span>
+            <FontAwesomeIcon
+              className="text-danger w-2.5 h-2.5 inline-block mx-1 mb-1"
+              icon={faAsterisk}
+              size="1x"
+            />
+            <span>обязательны для заполнения</span>
+            {/* </div> */}
+          </div>
           <InputImages
             label="Фотографии"
             directory="users"
@@ -363,6 +391,13 @@ const QuestionnaireContent = (props) => {
             inputClassName="capitalize"
             error={errors.thirdName}
           />
+          <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
+            <span className="italic font-semibold">Примечание: </span>
+            <span>
+              Обратите внимание, что некоторые поля ниже требуют выбрать один из
+              вариантов, для этого нужно нажать на кнопку с вариантом
+            </span>
+          </div>
           <ValuePicker
             value={security.fullSecondName}
             valuesArray={[
@@ -439,11 +474,31 @@ const QuestionnaireContent = (props) => {
             // inLine
             required
           />
+
+          <RelationshipSelector
+            value={relationship}
+            onChange={(value) => {
+              removeError('relationship')
+              setRelationship(value)
+            }}
+            // placeholder={placeholder}
+            // activePlaceholder={activePlaceholder}
+            // smallMargin
+            className="w-80"
+            required
+            error={errors.relationship}
+            // fullWidth={fullWidth}
+          />
+
           {/* </div> */}
           {/* </ShowWrapper> */}
-          <div className="text-sm">
-            <span>{'Примечание для полей далее:'}</span>
-            <div className="flex pl-4 leading-4">
+          <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
+            <span className="italic font-semibold">Примечание: </span>
+            <span>
+              Поля ниже можно скрыть от посторонних глаз, для этого при клике на
+              иконку глаза можно показать/скрыть соответствующее поле
+            </span>
+            <div className="flex pt-1 pl-4">
               <FontAwesomeIcon
                 className={cn('w-4 min-w-4 h-4 text-purple-500')}
                 icon={faEye}
@@ -454,7 +509,7 @@ const QuestionnaireContent = (props) => {
                 {'поле доступно для просмотра пользователям'}
               </span>
             </div>
-            <div className="flex pl-4 mt-1 leading-4">
+            <div className="flex pl-4 mt-1">
               <FontAwesomeIcon
                 className={cn('w-4 min-w-4 h-4 text-disabled')}
                 icon={faEyeSlash}
@@ -465,7 +520,6 @@ const QuestionnaireContent = (props) => {
                 {'поле скрыто от пользователей'}
               </span>
             </div>
-            <span>{'При клике на иконку можно показать/скрыть'}</span>
           </div>
           <FormWrapper twoColumns>
             <ShowWrapper
