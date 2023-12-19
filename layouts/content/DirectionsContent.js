@@ -5,13 +5,14 @@ import DirectionCard from '@layouts/cards/DirectionCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
-import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useRecoilValue } from 'recoil'
 
 const DirectionsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const directions = useRecoilValue(directionsAtom)
-  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const seeAddButton = loggedUserActiveRole?.generalPage?.directions
 
   return (
     <>
@@ -20,7 +21,7 @@ const DirectionsContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounDirections(directions.length)}
           </div>
-          {isLoggedUserSupervisor && (
+          {seeAddButton && (
             <AddButton onClick={() => modalsFunc.direction.edit()} />
           )}
         </div>

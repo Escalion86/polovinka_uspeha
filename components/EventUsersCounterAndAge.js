@@ -5,7 +5,6 @@ import eventMansSelector from '@state/selectors/eventMansSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import eventWomansReserveSelector from '@state/selectors/eventWomansReserveSelector'
 import eventWomansSelector from '@state/selectors/eventWomansSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import cn from 'classnames'
 import Image from 'next/image'
 import { Suspense } from 'react'
@@ -13,7 +12,7 @@ import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
 import UserStatusIcon from './UserStatusIcon'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const Ages = ({ gender, event }) => (
   <div className="flex justify-center gap-x-0.5 border-b self-stretch">
@@ -318,13 +317,15 @@ const SumCounter = (props) => (
 )
 
 const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const event = useRecoilValue(eventSelector(eventId))
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
   if (!eventId || !event) return null
 
-  const showReserve = true // isLoggedUserModer
+  const showNoviceAndMemberSum =
+    loggedUserActiveRole?.events?.eventUsersCounterAndAgeFull
+
+  const showReserve = true
 
   return (
     <div
@@ -345,7 +346,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           gender="mans"
           event={event}
           showAges={showAges}
-          showNoviceAndMemberSum={!(isLoggedUserModer || isLoggedUserAdmin)}
+          showNoviceAndMemberSum={showNoviceAndMemberSum}
           showReserve={showReserve}
         />
       </div>
@@ -358,7 +359,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           gender="womans"
           event={event}
           showAges={showAges}
-          showNoviceAndMemberSum={!(isLoggedUserModer || isLoggedUserAdmin)}
+          showNoviceAndMemberSum={showNoviceAndMemberSum}
           showReserve={showReserve}
         />
         {/* <div className="flex flex-col items-center">

@@ -1,8 +1,9 @@
 import Input from '@components/Input'
 import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
-const addRoleFunc = (onConfirm) => {
-  const AddRoleFuncModal = ({
+const roleFunc = (role, onConfirm) => {
+  const RoleFuncModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
@@ -11,7 +12,7 @@ const addRoleFunc = (onConfirm) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const [text, setText] = useState('')
+    const [text, setText] = useState(role ? role?.name ?? '' : '')
 
     const onClickConfirm = async () => {
       closeModal()
@@ -31,10 +32,10 @@ const addRoleFunc = (onConfirm) => {
   }
 
   return {
-    title: `Добавление роли`,
-    confirmButtonName: 'Добавить',
-    Children: AddRoleFuncModal,
+    title: `${role ? 'Редактирование' : 'Добавление'} роли`,
+    confirmButtonName: role ? 'Применить' : 'Добавить',
+    Children: RoleFuncModal,
   }
 }
 
-export default addRoleFunc
+export default roleFunc

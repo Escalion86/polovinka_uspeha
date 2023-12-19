@@ -2,8 +2,6 @@ import birthDateToAge from '@helpers/birthDateToAge'
 import formatAddress from '@helpers/formatAddress'
 import formatEventDateTime from '@helpers/formatEventDateTime'
 import getUserFullName from '@helpers/getUserFullName'
-import isUserModer from '@helpers/isUserModer'
-import isUserAdmin from '@helpers/isUserAdmin'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import Events from '@models/Events'
 import Histories from '@models/Histories'
@@ -11,59 +9,61 @@ import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
+import { DEFAULT_ROLES } from '@helpers/constants'
+import Roles from '@models/Roles'
 
-const test_callback = {
-  update_id: 173172137,
-  callback_query: {
-    id: '1121425242543370968',
-    from: {
-      id: 261102161,
-      is_bot: false,
-      first_name: 'Алексей',
-      last_name: 'Белинский Иллюзионист',
-      username: 'Escalion',
-      language_code: 'ru',
-      is_premium: true,
-    },
-    message: {
-      message_id: 91,
-      from: '[Object]',
-      chat: ' [Object]',
-      date: 1683689196,
-      text: 'Неизвестная команда',
-      reply_markup: '[Object]',
-    },
-    chat_instance: '3955131192076482535',
-    data: '/createTeam',
-  },
-}
-const rtest = {
-  body: {
-    update_id: 173172081,
-    message: {
-      message_id: 14,
-      from: {
-        id: 261102161,
-        is_bot: false,
-        first_name: 'Алексей',
-        last_name: 'Белинский Иллюзионист',
-        username: 'Escalion',
-        language_code: 'ru',
-        is_premium: true,
-      },
-      chat: {
-        id: 261102161,
-        first_name: 'Алексей',
-        last_name: 'Белинский Иллюзионист',
-        username: 'Escalion',
-        type: 'private',
-      },
-      date: 1683645745,
-      text: '/new_team',
-      entities: [{ offset: 0, length: 12, type: 'bot_command' }],
-    },
-  },
-}
+// const test_callback = {
+//   update_id: 173172137,
+//   callback_query: {
+//     id: '1121425242543370968',
+//     from: {
+//       id: 261102161,
+//       is_bot: false,
+//       first_name: 'Алексей',
+//       last_name: 'Белинский Иллюзионист',
+//       username: 'Escalion',
+//       language_code: 'ru',
+//       is_premium: true,
+//     },
+//     message: {
+//       message_id: 91,
+//       from: '[Object]',
+//       chat: ' [Object]',
+//       date: 1683689196,
+//       text: 'Неизвестная команда',
+//       reply_markup: '[Object]',
+//     },
+//     chat_instance: '3955131192076482535',
+//     data: '/createTeam',
+//   },
+// }
+// const rtest = {
+//   body: {
+//     update_id: 173172081,
+//     message: {
+//       message_id: 14,
+//       from: {
+//         id: 261102161,
+//         is_bot: false,
+//         first_name: 'Алексей',
+//         last_name: 'Белинский Иллюзионист',
+//         username: 'Escalion',
+//         language_code: 'ru',
+//         is_premium: true,
+//       },
+//       chat: {
+//         id: 261102161,
+//         first_name: 'Алексей',
+//         last_name: 'Белинский Иллюзионист',
+//         username: 'Escalion',
+//         type: 'private',
+//       },
+//       date: 1683645745,
+//       text: '/new_team',
+//       entities: [{ offset: 0, length: 12, type: 'bot_command' }],
+//     },
+//   },
+// }
 
 const linkAReformer = (link) => {
   const textLink = link.substring(link.indexOf('>') + 1, link.lastIndexOf('<'))
@@ -645,12 +645,18 @@ export default async function handler(Schema, req, res, params = null) {
             }
             if (!isUserQuestionnaireFilled(oldData)) {
               // const users = await Users.find({})
+              const rolesSettings = await Roles.find({})
+              const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
+              const rolesIdsToNewUserRegistredNotification = allRoles
+                .filter((role) => role?.notifications?.newUserRegistred)
+                .map((role) => role._id)
+
               const usersWithTelegramNotificationsOfEventUsersON =
                 await Users.find({
                   role:
                     process.env.NODE_ENV === 'development'
                       ? 'dev'
-                      : { $in: ['admin', 'moder', 'supervisor', 'dev'] },
+                      : { $in: rolesIdsToNewUserRegistredNotification },
                   'notifications.settings.newUserRegistred': true,
                   'notifications.telegram.active': true,
                   'notifications.telegram.id': {
@@ -659,15 +665,9 @@ export default async function handler(Schema, req, res, params = null) {
                   },
                 })
               const usersTelegramIds =
-                usersWithTelegramNotificationsOfEventUsersON
-                  // .filter(
-                  //   (user) =>
-                  //     (isUserModer(user) || isUserAdmin(user)) &&
-                  //     user.notifications?.get('settings')?.newUserRegistred &&
-                  //     user.notifications?.get('telegram').active &&
-                  //     user.notifications?.get('telegram')?.id
-                  // )
-                  .map((user) => user.notifications?.get('telegram')?.id)
+                usersWithTelegramNotificationsOfEventUsersON.map(
+                  (user) => user.notifications?.get('telegram')?.id
+                )
 
               const text = `Пользователь с номером +${
                 data.phone

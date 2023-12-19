@@ -1,24 +1,24 @@
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import showDeviceAtom from '@state/atoms/showDeviceAtom'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import CheckBox from './CheckBox'
+import loggedUserRealRoleSelector from '@state/selectors/loggedUserRealRoleSelector'
 
 const DevSwitch = () => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
-  const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
-    loggedUserActiveRoleAtom
-  )
+  const loggedUserRealRole = useRecoilValue(loggedUserRealRoleSelector)
+
+  const [loggedUserActiveRoleName, setLoggedUserActiveRoleName] =
+    useRecoilState(loggedUserActiveRoleNameAtom)
   const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
     loggedUserActiveStatusAtom
   )
 
   const [showDevice, setShowDevice] = useRecoilState(showDeviceAtom)
 
-  if (loggedUser.role !== 'dev') return null
+  if (!loggedUserRealRole.dev) return null
 
   return (
     <>
@@ -32,10 +32,10 @@ const DevSwitch = () => {
       <ToggleButtonGroup
         className="flex bg-gray-100 rounded-none"
         color="primary"
-        value={loggedUserActiveRole}
+        value={loggedUserActiveRoleName}
         exclusive
         onChange={(event, newRole) => {
-          if (newRole !== null) setLoggedUserActiveRole(newRole)
+          if (newRole !== null) setLoggedUserActiveRoleName(newRole)
         }}
       >
         <ToggleButton className="flex-1 leading-3 rounded-none" value="client">

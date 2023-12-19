@@ -10,8 +10,6 @@ import {
   faAngleDown,
   faCertificate,
   faLink,
-  // faLock,
-  // faPlay,
   faPlus,
   faTrash,
   faUnlink,
@@ -25,8 +23,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
 import cn from 'classnames'
@@ -420,10 +417,10 @@ const eventUsersPaymentsFunc = (eventId) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
-    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-    const isLoggedUserSupervisor = useRecoilValue(
-      isLoggedUserSupervisorSelector
-    )
+    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const statusEdit = loggedUserActiveRole?.events?.statusEdit
+    const paymentsEdit = loggedUserActiveRole?.events?.paymentsEdit
+
     const event = useRecoilValue(eventSelector(eventId))
     const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -584,30 +581,31 @@ const eventUsersPaymentsFunc = (eventId) => {
     //     : null
 
     useEffect(() => {
-      if (isLoggedUserSupervisor && setTopLeftComponent)
+      if (statusEdit && setTopLeftComponent)
         setTopLeftComponent(() => (
           <div className="flex">
-            {(() => {
-              const status = event.status ?? 'active'
-              const { icon, color, name } = EVENT_STATUSES.find(
-                ({ value }) => value === status
-              )
-              return (
-                <CardButton
-                  icon={icon}
-                  onClick={() => modalsFunc.event.statusEdit(event._id)}
-                  color={
-                    color.indexOf('-') > 0
-                      ? color.slice(0, color.indexOf('-'))
-                      : color
-                  }
-                  tooltipText={`${name} (изменить статус)`}
-                />
-              )
-            })()}
+            {statusEdit &&
+              (() => {
+                const status = event.status ?? 'active'
+                const { icon, color, name } = EVENT_STATUSES.find(
+                  ({ value }) => value === status
+                )
+                return (
+                  <CardButton
+                    icon={icon}
+                    onClick={() => modalsFunc.event.statusEdit(event._id)}
+                    color={
+                      color.indexOf('-') > 0
+                        ? color.slice(0, color.indexOf('-'))
+                        : color
+                    }
+                    tooltipText={`${name} (изменить статус)`}
+                  />
+                )
+              })()}
           </div>
         ))
-    }, [isLoggedUserSupervisor, setTopLeftComponent, event])
+    }, [statusEdit, setTopLeftComponent, event])
 
     // useEffect(() => {
     //   setBottomLeftButtonProps({
@@ -723,7 +721,7 @@ const eventUsersPaymentsFunc = (eventId) => {
 
     return (
       <>
-        {isLoggedUserAdmin && isEventClosed && (
+        {paymentsEdit && isEventClosed && (
           <P className="text-danger">
             Мероприятие закрыто, поэтому редактирование/добавление/удаление
             транзакций запрещено

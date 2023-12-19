@@ -11,7 +11,7 @@ import { Suspense } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue } from 'recoil'
 import EventProfit from './EventProfit'
-import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -35,10 +35,12 @@ const EventButtonSignInComponent = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
     sumOfPaymentsFromLoggedUserToEventSelector(event._id)
   )
+
+  const showProfitOnCard = loggedUserActiveRole?.events?.showProfitOnCard
 
   // const router = useRouter()
 
@@ -123,7 +125,7 @@ const EventButtonSignInComponent = ({
   }
 
   const Status = () =>
-    isLoggedUserSupervisor && event.status === 'closed' ? (
+    showProfitOnCard && event.status === 'closed' ? (
       <EventProfit eventId={event._id} className={classNameProfit} />
     ) : // <div
     //   className={cn(

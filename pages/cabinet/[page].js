@@ -1,8 +1,7 @@
-import Fab from '@components/Fab'
+// import Fab from '@components/Fab'
 import FabMenu from '@components/FabMenu'
 import LoadingSpinner from '@components/LoadingSpinner'
 import StateLoader from '@components/StateLoader'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { CONTENTS } from '@helpers/constants'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import BurgerLayout from '@layouts/BurgerLayout'
@@ -10,11 +9,10 @@ import CabinetHeader from '@layouts/CabinetHeader'
 import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
 import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 import fetchProps from '@server/fetchProps'
-import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+// import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -31,10 +29,10 @@ function CabinetPage(props) {
   const router = useRouter()
   const page = router.asPath.replace('/cabinet/', '')
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  // const loggedUserActiveRoleName = useRecoilValue(loggedUserActiveRoleNameAtom)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
+  const hideFab = loggedUserActiveRole?.hideFab
 
   let redirect
   if (!props.loggedUser) redirect = '/'
@@ -42,9 +40,13 @@ function CabinetPage(props) {
     loggedUser &&
     ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
       !CONTENTS[page] ||
-      !CONTENTS[page].accessRoles.includes(loggedUserActiveRole) ||
-      (CONTENTS[page].accessStatuses &&
-        !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus)))
+      !CONTENTS[page].roleAccess(
+        loggedUserActiveRole,
+        loggedUserActiveStatusName
+      ))
+    // !CONTENTS[page].accessRoles.includes(loggedUserActiveRoleName) ||
+    // (CONTENTS[page].accessStatuses &&
+    //   !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus))
   )
     redirect = '/cabinet/questionnaire'
 
@@ -82,12 +84,7 @@ function CabinetPage(props) {
                 </Suspense>
               )}
             </ContentWrapper>
-            <FabMenu
-              show={
-                !(isLoggedUserModer || isLoggedUserAdmin) ||
-                page === 'settingsFabMenu'
-              }
-            />
+            <FabMenu show={!hideFab || page === 'settingsFabMenu'} />
           </CabinetWrapper>
         )}
       </StateLoader>

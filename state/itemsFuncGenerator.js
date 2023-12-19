@@ -33,6 +33,7 @@ import setEventsUsersSelector from './asyncSelectors/setEventsUsersSelector'
 import signOutUserSelector from './asyncSelectors/signOutUserSelector'
 import signUpUserSelector from './asyncSelectors/signUpUserSelector'
 import setEventUserSelector from './asyncSelectors/setEventUserSelector'
+import rolesAtom from './atoms/rolesAtom'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -220,6 +221,7 @@ const props = {
   deleteService: setFunc(serviceDeleteSelector),
   setServicesUser: setFunc(servicesUsersEditSelector),
   deleteServicesUser: setFunc(servicesUsersDeleteSelector),
+  setRoles: setFunc(rolesAtom),
 }
 
 const itemsFuncGenerator = (
@@ -387,6 +389,25 @@ const itemsFuncGenerator = (
         snackbar.error('Не удалось закрыть мероприятие')
         setErrorCard('event' + eventId)
         const data = { errorPlace: 'EVENT CLOSE ERROR', eventId, error }
+        addErrorModal(data)
+        console.log(data)
+      },
+      false,
+      loggedUser?._id
+    )
+  }
+  obj.roles = {}
+  obj.roles.update = async (roles) => {
+    return await postData(
+      `/api/roles`,
+      roles,
+      (data) => {
+        snackbar.success('Роли обновлены')
+        props.setRoles(data)
+      },
+      (error) => {
+        snackbar.error('Не удалось обновить роли')
+        const data = { errorPlace: 'ROLES UPDATE ERROR', roles, error }
         addErrorModal(data)
         console.log(data)
       },

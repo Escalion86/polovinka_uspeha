@@ -8,14 +8,15 @@ import sortFunctions from '@helpers/sortFunctions'
 import PaymentsList from '@layouts/lists/PaymentsList'
 import { modalsFuncAtom } from '@state/atoms'
 import paymentsAtom from '@state/atoms/paymentsAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
 const PaymentsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payments = useRecoilValue(paymentsAtom)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const addButton = loggedUserActiveRole?.payments?.add
 
   const [sort, setSort] = useState({ payAt: 'asc' })
   const [filter, setFilter] = useState({
@@ -81,9 +82,7 @@ const PaymentsContent = () => {
             onChange={setSort}
             sortKeys={['payAt']}
           />
-          {isLoggedUserAdmin && (
-            <AddButton onClick={() => modalsFunc.payment.edit()} />
-          )}
+          {addButton && <AddButton onClick={() => modalsFunc.payment.edit()} />}
         </div>
       </ContentHeader>
       <PaymentsList payments={[...visiblePayments].sort(sortFunc)} />

@@ -1,9 +1,10 @@
 import { postData } from '@helpers/CRUD'
+import { DEFAULT_ROLES } from '@helpers/constants'
 import getMinutesBetween from '@helpers/getMinutesBetween'
-import isUserAdmin from '@helpers/isUserAdmin'
 import phoneValidator from '@helpers/phoneValidator'
 import pinValidator from '@helpers/pinValidator'
 import PhoneConfirms from '@models/PhoneConfirms'
+import Roles from '@models/Roles'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
@@ -306,12 +307,19 @@ export default async function handler(req, res) {
           const newUser = await Users.create({ phone, password })
 
           const usersCount = await Users.count({})
+
+          const rolesSettings = await Roles.find({})
+          const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
+          const rolesIdsToEventUsersNotification = allRoles
+            .filter((role) => role?.notifications?.newUserRegistred)
+            .map((role) => role._id)
+
           const usersWithTelegramNotificationsOfEventUsersON = await Users.find(
             {
               role:
                 process.env.NODE_ENV === 'development'
                   ? 'dev'
-                  : { $in: ['admin', 'moder', 'supervisor', 'dev'] },
+                  : { $in: rolesIdsToEventUsersNotification },
               'notifications.settings.newUserRegistred': true,
               'notifications.telegram.active': true,
               'notifications.telegram.id': {
@@ -320,14 +328,11 @@ export default async function handler(req, res) {
               },
             }
           )
-          const usersTelegramIds = usersWithTelegramNotificationsOfEventUsersON
-            // .filter(
-            //   (user) =>
-            //     isUserAdmin(user) &&
-            //     user.notifications?.get('telegram').active &&
-            //     user.notifications?.get('telegram')?.id
-            // )
-            .map((user) => user.notifications?.get('telegram')?.id)
+          const usersTelegramIds =
+            usersWithTelegramNotificationsOfEventUsersON.map(
+              (user) => user.notifications?.get('telegram')?.id
+            )
+
           await Promise.all(
             usersTelegramIds.map(async (telegramId) => {
               await postData(

@@ -1,7 +1,6 @@
 import { UCALLER_VOICE, UCALLER_MIX } from '@helpers/constants'
 import { postData } from '@helpers/CRUD'
 import getMinutesBetween from '@helpers/getMinutesBetween'
-import isUserAdmin from '@helpers/isUserAdmin'
 import phoneValidator from '@helpers/phoneValidator'
 import pinValidator from '@helpers/pinValidator'
 import PhoneConfirms from '@models/PhoneConfirms'
@@ -10,6 +9,8 @@ import dbConnect from '@utils/dbConnect'
 
 const key = process.env.UCALLER_KEY
 const service_id = process.env.UCALLER_SERVICE_ID
+
+// TODO ПЕРЕДЕЛАТЬ ПРОВА РОЛЕЙ
 
 const fetchUcallerCode = async (phone, code) =>
   await fetch(
@@ -291,14 +292,10 @@ export default async function handler(req, res) {
             }
           )
 
-          const usersTelegramIds = usersWithTelegramNotificationsOfEventUsersON
-            // .filter(
-            //   (user) =>
-            //     isUserAdmin(user) &&
-            //     user.notifications?.get('telegram').active &&
-            //     user.notifications?.get('telegram')?.id
-            // )
-            .map((user) => user.notifications?.get('telegram')?.id)
+          const usersTelegramIds =
+            usersWithTelegramNotificationsOfEventUsersON.map(
+              (user) => user.notifications?.get('telegram')?.id
+            )
           await Promise.all(
             usersTelegramIds.map(async (telegramId) => {
               await postData(

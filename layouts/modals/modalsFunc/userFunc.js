@@ -10,13 +10,11 @@ import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
-import isUserDev from '@helpers/isUserDev'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import usersAtom from '@state/atoms/usersAtom'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -31,10 +29,12 @@ const userFunc = (userId, clone = false) => {
     setDisableDecline,
   }) => {
     const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
-    const isLoggedUserSupervisor = useRecoilValue(
-      isLoggedUserSupervisorSelector
-    )
-    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+
+    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const isLoggedUserDev = loggedUserActiveRole?.dev
+    const canSetRole = loggedUserActiveRole?.users?.setRole
+    const canSetStatus = loggedUserActiveRole?.users?.setStatus
+
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
     const users = useRecoilValue(usersAtom)
@@ -397,13 +397,15 @@ const userFunc = (userId, clone = false) => {
           label="Есть дети"
         /> */}
         <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
-        <UserStatusPicker
-          required
-          status={status}
-          onChange={setStatus}
-          error={errors.status}
-        />
-        {(isLoggedUserDev || (isLoggedUserSupervisor && !isUserDev(user))) && (
+        {canSetStatus && (
+          <UserStatusPicker
+            required
+            status={status}
+            onChange={setStatus}
+            error={errors.status}
+          />
+        )}
+        {canSetRole && (
           <UserRolePicker
             required
             role={role}

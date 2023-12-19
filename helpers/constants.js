@@ -692,111 +692,24 @@ export const ZODIAC = [
   },
 ]
 
-export const DEFAULT_ROLE = {
-  name: '',
-  seeFullUsersNames: false,
-  seeAllContactsOfUsers: false,
-  seeBirthdayOfUsers: false,
-  eventUsersCounterAndAgeFull: false,
-  eventStatusFilterFull: false,
-  seeUserSumOfPaymentsWithoutEvent: false,
-  editSiteSettings: false,
-  setSelfStatus: false,
-  setSelfRole: false,
-  fabInCabinet: false,
-  notifications: {
-    option: true,
-    birthdays: true,
-    newUserRegistred: true,
-    eventRegistration: true,
-    newEventsByTags: true,
-    eventUserMoves: false,
-    eventCancel: false,
-  },
-  events: {
-    see: true,
-    seeHidden: false,
-    add: false,
-    edit: false,
-    delete: false,
-  },
-  eventsUsers: {
-    see: true, // member
-    edit: false,
-  },
-  members: {
-    see: false,
-    add: false,
-    edit: false,
-    delete: false,
-  },
-  users: {
-    see: false,
-    add: false,
-    edit: false,
-    delete: false,
-  },
-  directions: {
-    see: true,
-    seeHidden: false,
-    add: false,
-    edit: false,
-    delete: false,
-  },
-  services: {
-    see: true,
-    seeHidden: false,
-    add: false,
-    edit: false,
-    delete: false,
-  },
-  servicesUsers: {
-    see: false,
-    edit: false,
-  },
-  products: {
-    see: false,
-    seeHidden: false,
-    add: false,
-    edit: false,
-    delete: false,
-  },
-  productsUsers: {
-    see: false,
-    edit: false,
-  },
-  additionalBlocks: {
-    see: false,
-    seeHidden: false,
-    add: false,
-    edit: false,
-    delete: false,
-  },
-}
-
 export const DEFAULT_ROLES = [
   {
-    id: 'client',
-    canEdit: false,
-    name: 'Новичок',
-    seeFullUsersNames: false,
-    seeAllContactsOfUsers: false,
-    seeBirthdayOfUsers: false,
-    eventUsersCounterAndAgeFull: false,
-    eventStatusFilterFull: false,
-    seeUserSumOfPaymentsWithoutEvent: false,
-    editSiteSettings: false,
+    _id: 'client',
+    name: 'Пользователь',
+    hidden: false,
+    dev: false,
+    seeMyStatistics: false,
     setSelfStatus: false,
     setSelfRole: false,
-    fabInCabinet: false,
+    hideFab: false,
     notifications: {
-      option: true,
-      birthdays: true,
-      newUserRegistred: true,
-      eventRegistration: true,
+      // option: true,
+      birthdays: false,
+      newUserRegistred: false,
+      eventRegistration: false,
       newEventsByTags: true,
-      eventUserMoves: false,
-      eventCancel: false,
+      // eventUserMoves: false,
+      // eventCancel: false,
     },
     events: {
       see: true,
@@ -804,28 +717,31 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
+      statusEdit: false,
+      paymentsEdit: false,
+      showProfitOnCard: false,
+      statusFilterFull: false,
+      eventUsersCounterAndAgeFull: false,
     },
     eventsUsers: {
-      see: true, // member
+      see: false, // member
       edit: false,
-    },
-    members: {
-      see: false,
-      add: false,
-      edit: false,
-      delete: false,
+      copyListToClipboard: false,
     },
     users: {
       see: false,
+      seeMembersOnly: false,
+      seeFullNames: false,
+      seeAllContacts: false,
+      seeBirthday: false,
+      seeUserEvents: false,
+      seeUserPayments: false,
+      setPassword: false,
+      seeSumOfPaymentsWithoutEventOnCard: false,
       add: false,
       edit: false,
-      delete: false,
-    },
-    directions: {
-      see: true,
-      seeHidden: false,
-      add: false,
-      edit: false,
+      setRole: false,
+      setStatus: false,
       delete: false,
     },
     services: {
@@ -837,7 +753,10 @@ export const DEFAULT_ROLES = [
     },
     servicesUsers: {
       see: false,
+      add: false,
       edit: false,
+      delete: false,
+      statusEdit: true,
     },
     products: {
       see: false,
@@ -848,38 +767,506 @@ export const DEFAULT_ROLES = [
     },
     productsUsers: {
       see: false,
+      add: false,
       edit: false,
+      delete: false,
+      statusEdit: true,
     },
-    additionalBlocks: {
+    payments: {
       see: false,
+      add: false,
+      edit: false,
+      delete: false,
+      paymentsNotParticipantsEvent: false,
+      paymentsWithNoEvent: false,
+    },
+    statistics: {
+      events: false,
+      users: false,
+      finances: false,
+    },
+    instruments: {
+      anonsTextGenerator: false,
+      anonsEventImageGenerator: false,
+      anonsEventListImageGenerator: false,
+      export: false,
+      newsletter: false,
+    },
+    generalPage: {
+      directions: false,
+      additionalBlocks: false,
+      reviews: false,
+      contacts: false,
+    },
+    siteSettings: {
+      phoneConfirmService: false,
+      fabMenu: false,
+      roles: false,
+    },
+    notices: {
+      histories: false,
+      birthdays: false,
+    },
+  },
+  {
+    _id: 'moder',
+    name: 'Модератор',
+    hidden: false,
+    dev: false,
+    seeMyStatistics: false,
+    setSelfStatus: false,
+    setSelfRole: false,
+    hideFab: true,
+    notifications: {
+      // option: true,
+      birthdays: false,
+      newUserRegistred: false,
+      eventRegistration: false,
+      newEventsByTags: false,
+      // eventUserMoves: false,
+      // eventCancel: false,
+    },
+    events: {
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: false,
+      statusEdit: false,
+      paymentsEdit: true,
+      showProfitOnCard: false,
+      statusFilterFull: true,
+      eventUsersCounterAndAgeFull: true,
+    },
+    eventsUsers: {
+      see: true, // member
+      edit: true,
+      copyListToClipboard: true,
+    },
+    users: {
+      see: true,
+      seeMembersOnly: false,
+      seeFullNames: true,
+      seeAllContacts: true,
+      seeBirthday: true,
+      seeUserEvents: true,
+      seeUserPayments: false,
+      setPassword: false,
+      seeSumOfPaymentsWithoutEventOnCard: false,
+      add: false,
+      edit: false,
+      setRole: false,
+      setStatus: false,
+      delete: false,
+    },
+    services: {
+      see: true,
+      seeHidden: true,
+      add: false,
+      edit: false,
+      delete: false,
+    },
+    servicesUsers: {
+      see: true,
+      add: false,
+      edit: false,
+      delete: false,
+      statusEdit: false,
+    },
+    products: {
+      see: true,
       seeHidden: false,
       add: false,
       edit: false,
       delete: false,
     },
+    productsUsers: {
+      see: true,
+      add: false,
+      edit: false,
+      delete: false,
+      statusEdit: false,
+    },
+    payments: {
+      see: false,
+      add: false,
+      edit: false,
+      delete: false,
+      paymentsNotParticipantsEvent: false,
+      paymentsWithNoEvent: false,
+    },
+    statistics: {
+      events: false,
+      users: false,
+      finances: false,
+    },
+    instruments: {
+      anonsTextGenerator: true,
+      anonsEventImageGenerator: true,
+      anonsEventListImageGenerator: true,
+      export: false,
+      newsletter: false,
+    },
+    generalPage: {
+      directions: true,
+      additionalBlocks: true,
+      reviews: true,
+      contacts: false,
+    },
+    siteSettings: {
+      phoneConfirmService: false,
+      fabMenu: false,
+      roles: false,
+    },
+    notices: {
+      histories: true,
+      birthdays: true,
+    },
   },
   {
-    id: 'moder',
-    canEdit: false,
-    name: 'Модератор',
-    seeFullUsersNames: true,
-    seeAllContactsOfUsers: true,
-    seeBirthdayOfUsers: true,
-    eventUsersCounterAndAgeFull: true,
-    eventStatusFilterFull: true,
-    seeUserSumOfPaymentsWithoutEvent: false,
-    editSiteSettings: false,
+    _id: 'admin',
+    name: 'Администратор',
+    hidden: false,
+    dev: false,
+    seeMyStatistics: true,
     setSelfStatus: false,
     setSelfRole: false,
-    fabInCabinet: false,
+    hideFab: true,
     notifications: {
-      option: true,
+      // option: true,
       birthdays: true,
       newUserRegistred: true,
       eventRegistration: true,
       newEventsByTags: true,
-      eventUserMoves: false,
-      eventCancel: false,
+      // eventUserMoves: false,
+      // eventCancel: false,
+    },
+    events: {
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: false,
+      statusEdit: false,
+      paymentsEdit: true,
+      showProfitOnCard: false,
+      statusFilterFull: true,
+      eventUsersCounterAndAgeFull: true,
+    },
+    eventsUsers: {
+      see: true, // member
+      edit: true,
+      copyListToClipboard: true,
+    },
+    users: {
+      see: true,
+      seeMembersOnly: false,
+      seeFullNames: true,
+      seeAllContacts: true,
+      seeBirthday: true,
+      seeUserEvents: true,
+      seeUserPayments: true,
+      setPassword: false,
+      seeSumOfPaymentsWithoutEventOnCard: true,
+      add: true,
+      edit: true,
+      setRole: false,
+      setStatus: true,
+      delete: false,
+    },
+    services: {
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: false,
+    },
+    servicesUsers: {
+      see: true,
+      add: true,
+      edit: true,
+      delete: false,
+      statusEdit: true,
+    },
+    products: {
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: false,
+    },
+    productsUsers: {
+      see: true,
+      add: true,
+      edit: true,
+      delete: false,
+      statusEdit: true,
+    },
+    payments: {
+      see: true,
+      add: true,
+      edit: true,
+      delete: true,
+      paymentsNotParticipantsEvent: true,
+      paymentsWithNoEvent: true,
+    },
+    statistics: {
+      events: false,
+      users: false,
+      finances: false,
+    },
+    instruments: {
+      anonsTextGenerator: true,
+      anonsEventImageGenerator: false,
+      anonsEventListImageGenerator: false,
+      export: true,
+      newsletter: false,
+    },
+    generalPage: {
+      directions: true,
+      additionalBlocks: true,
+      reviews: true,
+      contacts: true,
+    },
+    siteSettings: {
+      phoneConfirmService: false,
+      fabMenu: false,
+      roles: false,
+    },
+    notices: {
+      histories: true,
+      birthdays: true,
+    },
+  },
+  {
+    _id: 'supervisor',
+    name: 'Руководитель',
+    hidden: false,
+    dev: false,
+    seeMyStatistics: true,
+    setSelfStatus: true,
+    setSelfRole: false,
+    hideFab: true,
+    notifications: {
+      // option: true,
+      birthdays: true,
+      newUserRegistred: true,
+      eventRegistration: true,
+      newEventsByTags: true,
+      // eventUserMoves: false,
+      // eventCancel: false,
+    },
+    events: {
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: true,
+      statusEdit: true,
+      paymentsEdit: true,
+      showProfitOnCard: true,
+      statusFilterFull: true,
+      eventUsersCounterAndAgeFull: true,
+    },
+    eventsUsers: {
+      see: true, // member
+      edit: true,
+      copyListToClipboard: true,
+    },
+    users: {
+      see: true,
+      seeMembersOnly: false,
+      seeFullNames: true,
+      seeAllContacts: true,
+      seeBirthday: true,
+      seeUserEvents: true,
+      seeUserPayments: true,
+      setPassword: true,
+      seeSumOfPaymentsWithoutEventOnCard: true,
+      add: true,
+      edit: true,
+      setRole: true,
+      setStatus: true,
+      delete: true,
+    },
+    services: {
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: true,
+    },
+    servicesUsers: {
+      see: true,
+      add: true,
+      edit: true,
+      delete: true,
+      statusEdit: true,
+    },
+    products: {
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: true,
+    },
+    productsUsers: {
+      see: true,
+      add: true,
+      edit: true,
+      delete: true,
+      statusEdit: true,
+    },
+    payments: {
+      see: true,
+      add: true,
+      edit: true,
+      delete: true,
+      paymentsNotParticipantsEvent: true,
+      paymentsWithNoEvent: true,
+    },
+    statistics: {
+      events: true,
+      users: true,
+      finances: true,
+    },
+    instruments: {
+      anonsTextGenerator: true,
+      anonsEventImageGenerator: true,
+      anonsEventListImageGenerator: true,
+      export: true,
+      newsletter: false,
+    },
+    generalPage: {
+      directions: true,
+      additionalBlocks: true,
+      reviews: true,
+      contacts: true,
+    },
+    siteSettings: {
+      phoneConfirmService: false,
+      fabMenu: true,
+      roles: true,
+    },
+    notices: {
+      histories: true,
+      birthdays: true,
+    },
+  },
+  {
+    _id: 'dev',
+    name: 'Разработчик',
+    hidden: false,
+    dev: true, //!
+    seeMyStatistics: true, //!
+    setSelfStatus: true, //!
+    setSelfRole: true, //!
+    hideFab: true, //!
+    notifications: {
+      //!
+      // option: true,
+      birthdays: true, //!
+      newUserRegistred: true, //!
+      eventRegistration: true, //!
+      newEventsByTags: true, //!
+      // eventUserMoves: false,
+      // eventCancel: false,
+    },
+    events: {
+      see: true, //!
+      seeHidden: true, //!
+      add: true, //!
+      edit: true, //!
+      delete: true, //!
+      statusEdit: true, //!
+      paymentsEdit: true, //!
+      showProfitOnCard: true, //!
+      statusFilterFull: true, //!
+      eventUsersCounterAndAgeFull: true, //!
+    },
+    eventsUsers: {
+      see: true, // ! member
+      edit: true, //!
+      copyListToClipboard: true, //!
+    },
+    users: {
+      see: true, //!
+      seeMembersOnly: false, //!
+      seeFullNames: true, //!
+      seeAllContacts: true, //!
+      seeBirthday: true, //!
+      seeUserEvents: true,
+      seeUserPayments: true,
+      setPassword: true,
+      seeSumOfPaymentsWithoutEventOnCard: true, //!
+      add: true,
+      edit: true,
+      setRole: true, //!
+      setStatus: true, //!
+      delete: true,
+    },
+    services: {
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: true,
+    },
+    servicesUsers: {
+      see: true,
+      add: true,
+      edit: true, // !
+      delete: true,
+      statusEdit: true,
+    },
+    products: {
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: true,
+    },
+    productsUsers: {
+      see: true,
+      add: true,
+      edit: true,
+      delete: true,
+      statusEdit: true,
+    },
+    payments: {
+      see: true,
+      add: true,
+      edit: true,
+      delete: true,
+      paymentsNotParticipantsEvent: true,
+      paymentsWithNoEvent: true,
+    },
+    statistics: {
+      events: true,
+      users: true,
+      finances: true,
+    },
+    instruments: {
+      anonsTextGenerator: true,
+      anonsEventImageGenerator: true,
+      anonsEventListImageGenerator: true,
+      export: true,
+      newsletter: true,
+    },
+    generalPage: {
+      directions: true, //!
+      additionalBlocks: true, //!
+      reviews: true,
+      contacts: true,
+    },
+    siteSettings: {
+      phoneConfirmService: true,
+      fabMenu: true,
+      roles: true,
+    },
+    notices: {
+      histories: true,
+      birthdays: true,
     },
   },
 ]
@@ -941,113 +1328,146 @@ export const CONTENTS = {
     Component: ServicesContent,
     name: 'Услуги / Список услуг',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.services?.see,
   },
   servicesUsers: {
     Component: ServicesUsersContent,
     name: 'Услуги / Заявки на услуги',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.servicesUsers?.see,
   },
   myServices: {
     Component: ServicesLoggedUserContent,
     name: 'Услуги / Мои заявки на услуги',
     accessRoles: ['client', 'moder', 'admin', 'dev'],
+    roleAccess: (role) => true,
   },
   directions: {
     Component: DirectionsContent,
     name: 'Сайт / Направления',
     accessRoles: ['moder', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.generalPage?.directions,
   },
   reviews: {
     Component: ReviewsContent,
     name: 'Сайт / Отзывы',
     accessRoles: ['moder', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.generalPage?.reviews,
   },
   additionalBlocks: {
     Component: AdditionalBlocksContent,
     name: 'Сайт / Доп. блоки',
     accessRoles: ['moder', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.generalPage?.additionalBlocks,
+  },
+  contacts: {
+    Component: ContactsContent,
+    name: 'Сайт / Контакты на сайте',
+    accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.generalPage?.contacts,
   },
   events: {
     Component: EventsContent,
     name: 'Мероприятия',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.events?.see,
   },
   questionnaire: {
     Component: QuestionnaireContent,
     name: 'Мой профиль',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role) => true,
   },
   notifications: {
     Component: LoggedUserNotificationsContent,
     name: 'Уведомления',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role) =>
+      role?.notifications?.newEventsByTags ||
+      role?.notifications?.birthdays ||
+      role?.notifications?.newUserRegistred ||
+      role?.notifications?.eventRegistration,
   },
   users: {
     Component: UsersContent,
     name: 'Пользователи',
     accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.users?.see && !role?.users?.seeMembersOnly,
   },
   members: {
     Component: MembersContent,
     name: 'Участники клуба',
     accessRoles: ['client'],
     accessStatuses: ['member'],
+    roleAccess: (role, status) =>
+      (role?.users?.see && role?.users?.seeMembersOnly) ||
+      (status === 'member' && !role?.users?.see),
   },
   payments: {
     Component: PaymentsContent,
     name: 'Транзакции / Все транзакции',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.payments?.see,
   },
   paymentsWithNoEvent: {
     Component: PaymentsWithoutEventContent,
     name: 'Транзакции / Непривязанные транзакции',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.payments?.paymentsWithNoEvent,
   },
   paymentsNotParticipantsEvent: {
     Component: PaymentsNotParticipantsEventContent,
     name: 'Транзакции / Не пришли на мероприятие',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.payments?.paymentsNotParticipantsEvent,
   },
-  contacts: {
-    Component: ContactsContent,
-    name: 'Сайт / Контакты на сайте',
-    accessRoles: ['supervisor', 'dev'],
+  dev: {
+    Component: DevContent,
+    name: 'Разработчик',
+    accessRoles: ['dev'],
+    roleAccess: (role) => role?.dev,
   },
-  dev: { Component: DevContent, name: 'Разработчик', accessRoles: ['dev'] },
   toolsTextEventsAnons: {
     Component: ToolsTextEventsAnonsContent,
     name: 'Инструменты / Генератор текста анонса мероприятий',
     accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.instruments?.anonsTextGenerator,
   },
   toolsEventAnons: {
     Component: ToolsEventAnonsContent,
     name: 'Инструменты / Редактор анонса мероприятия',
     accessRoles: ['moder', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.instruments?.anonsEventImageGenerator,
   },
   toolsAnons: {
     Component: ToolsAnonsContent,
     name: 'Инструменты / Редактор анонса списка мероприятий',
     accessRoles: ['moder', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.instruments?.anonsEventListImageGenerator,
   },
   toolsExport: {
     Component: ToolsExportContent,
     name: 'Инструменты / Экспорт данных',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.instruments?.export,
   },
   newsletter: {
     Component: ToolsNewsletterContent,
     name: 'Инструменты / Рассылка',
     accessRoles: ['dev'],
+    roleAccess: (role) => role?.instruments?.newsletter,
   },
   histories: {
     Component: HistoriesContent,
     name: 'События / Записи на мероприятия',
     accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.notices?.histories,
   },
   birthdays: {
     Component: BirthdaysContent,
     name: 'События / Дни рождения',
     accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.notices?.birthdays,
   },
   // statistics: {
   //   Component: StatisticsContent,
@@ -1058,37 +1478,44 @@ export const CONTENTS = {
     Component: StatisticsFinanceContent,
     name: 'Статистика / Финансы',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.statistics?.finances,
   },
   statisticsUsers: {
     Component: StatisticsUsersContent,
     name: 'Статистика / Пользователи',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.statistics?.users,
   },
   statisticsEvents: {
     Component: StatisticsEventsContent,
     name: 'Статистика / Мероприятия',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.statistics?.events,
   },
   settingsCodeSendService: {
     Component: SettingsCodeSendServiceContent,
     name: 'Настройки / Сервис подтверждения номера',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.siteSettings?.phoneConfirmService,
   },
   settingsFabMenu: {
     Component: SettingsFabMenuContent,
     name: 'Настройки / Меню "Вопрос"',
     accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.siteSettings?.fabMenu,
   },
   settingsRoles: {
     Component: SettingsRolesContent,
     name: 'Настройки / Роли"',
     accessRoles: ['dev'],
+    roleAccess: (role) => role?.siteSettings?.roles,
   },
   userStatistics: {
     Component: UserStatisticsContent,
     name: 'Моя статистика',
     accessRoles: ['client', 'admin', 'supervisor', 'dev'],
     accessStatuses: ['member'],
+    roleAccess: (role, status) => role?.seeMyStatistics || status === 'member',
   },
 }
 
@@ -1100,6 +1527,7 @@ export const pages = [
     href: 'userStatistics',
     icon: faTrophy,
     accessRoles: CONTENTS['userStatistics'].accessRoles,
+    roleAccess: CONTENTS['userStatistics'].roleAccess,
   },
   {
     id: 1,
@@ -1108,6 +1536,7 @@ export const pages = [
     href: 'services',
     icon: faHeart,
     accessRoles: CONTENTS['services'].accessRoles,
+    roleAccess: CONTENTS['services'].roleAccess,
   },
   {
     id: 2,
@@ -1116,6 +1545,7 @@ export const pages = [
     href: 'servicesUsers',
     icon: faHandHoldingHeart,
     accessRoles: CONTENTS['servicesUsers'].accessRoles,
+    roleAccess: CONTENTS['servicesUsers'].roleAccess,
   },
   {
     id: 3,
@@ -1124,6 +1554,7 @@ export const pages = [
     href: 'myServices',
     icon: faHandHoldingHeart,
     accessRoles: CONTENTS['myServices'].accessRoles,
+    roleAccess: CONTENTS['myServices'].roleAccess,
   },
   {
     id: 4,
@@ -1132,6 +1563,7 @@ export const pages = [
     href: 'events',
     icon: faCalendarAlt,
     accessRoles: CONTENTS['events'].accessRoles,
+    roleAccess: CONTENTS['events'].roleAccess,
   },
   {
     id: 5,
@@ -1140,6 +1572,7 @@ export const pages = [
     href: 'directions',
     icon: faHeart,
     accessRoles: CONTENTS['directions'].accessRoles,
+    roleAccess: CONTENTS['directions'].roleAccess,
   },
   {
     id: 6,
@@ -1148,6 +1581,7 @@ export const pages = [
     href: 'additionalBlocks',
     icon: faCube,
     accessRoles: CONTENTS['additionalBlocks'].accessRoles,
+    roleAccess: CONTENTS['additionalBlocks'].roleAccess,
   },
   {
     id: 7,
@@ -1156,6 +1590,7 @@ export const pages = [
     href: 'reviews',
     icon: faComments,
     accessRoles: CONTENTS['reviews'].accessRoles,
+    roleAccess: CONTENTS['reviews'].roleAccess,
   },
   {
     id: 8,
@@ -1164,6 +1599,7 @@ export const pages = [
     href: 'contacts',
     icon: faPhone,
     accessRoles: CONTENTS['contacts'].accessRoles,
+    roleAccess: CONTENTS['contacts'].roleAccess,
   },
   {
     id: 9,
@@ -1172,6 +1608,7 @@ export const pages = [
     href: 'users',
     icon: faUser,
     accessRoles: CONTENTS['users'].accessRoles,
+    roleAccess: CONTENTS['users'].roleAccess,
   },
   {
     id: 10,
@@ -1180,6 +1617,7 @@ export const pages = [
     href: 'payments',
     icon: faMoneyBill,
     accessRoles: CONTENTS['payments'].accessRoles,
+    roleAccess: CONTENTS['payments'].roleAccess,
   },
   {
     id: 11,
@@ -1189,6 +1627,7 @@ export const pages = [
     icon: faUnlink,
     badge: badgePaymentsOfEventWithoutEventIdSelector,
     accessRoles: CONTENTS['paymentsWithNoEvent'].accessRoles,
+    roleAccess: CONTENTS['paymentsWithNoEvent'].roleAccess,
   },
 
   {
@@ -1199,6 +1638,7 @@ export const pages = [
     icon: faUserTimes,
     // badge: badgePaymentsWithoutUserWritingToEventSelector,
     accessRoles: CONTENTS['paymentsNotParticipantsEvent'].accessRoles,
+    roleAccess: CONTENTS['paymentsNotParticipantsEvent'].roleAccess,
   },
 
   {
@@ -1208,6 +1648,7 @@ export const pages = [
     href: 'histories',
     icon: faUsers,
     accessRoles: CONTENTS['histories'].accessRoles,
+    roleAccess: CONTENTS['histories'].roleAccess,
   },
   {
     id: 14,
@@ -1217,6 +1658,7 @@ export const pages = [
     icon: faBirthdayCake,
     accessRoles: CONTENTS['birthdays'].accessRoles,
     badge: badgeBirthdaysTodayCountSelector,
+    roleAccess: CONTENTS['birthdays'].roleAccess,
   },
   // {
   //   id: 14,
@@ -1233,6 +1675,7 @@ export const pages = [
     href: 'statisticsEvents',
     icon: faCalendarAlt,
     accessRoles: CONTENTS['statisticsEvents'].accessRoles,
+    roleAccess: CONTENTS['statisticsEvents'].roleAccess,
   },
   {
     id: 16,
@@ -1241,6 +1684,7 @@ export const pages = [
     href: 'statisticsUsers',
     icon: faUser,
     accessRoles: CONTENTS['statisticsUsers'].accessRoles,
+    roleAccess: CONTENTS['statisticsUsers'].roleAccess,
   },
   {
     id: 17,
@@ -1249,6 +1693,7 @@ export const pages = [
     href: 'statisticsFinance',
     icon: faMoneyBill,
     accessRoles: CONTENTS['statisticsFinance'].accessRoles,
+    roleAccess: CONTENTS['statisticsFinance'].roleAccess,
   },
   {
     id: 50,
@@ -1257,6 +1702,7 @@ export const pages = [
     href: 'members',
     icon: faUser,
     accessRoles: CONTENTS['members'].accessRoles,
+    roleAccess: CONTENTS['members'].roleAccess,
   },
   {
     id: 70,
@@ -1265,6 +1711,7 @@ export const pages = [
     href: 'toolsTextEventsAnons',
     icon: faFileText,
     accessRoles: CONTENTS['toolsTextEventsAnons'].accessRoles,
+    roleAccess: CONTENTS['toolsTextEventsAnons'].roleAccess,
   },
   {
     id: 71,
@@ -1273,6 +1720,7 @@ export const pages = [
     href: 'toolsEventAnons',
     icon: faImage,
     accessRoles: CONTENTS['toolsEventAnons'].accessRoles,
+    roleAccess: CONTENTS['toolsEventAnons'].roleAccess,
   },
   {
     id: 72,
@@ -1281,14 +1729,16 @@ export const pages = [
     href: 'toolsAnons',
     icon: faImage,
     accessRoles: CONTENTS['toolsAnons'].accessRoles,
+    roleAccess: CONTENTS['toolsAnons'].roleAccess,
   },
   {
     id: 73,
     group: 9,
-    name: 'Экспорт даных',
+    name: 'Экспорт данных',
     href: 'toolsExport',
     icon: faUpload,
     accessRoles: CONTENTS['toolsExport'].accessRoles,
+    roleAccess: CONTENTS['toolsExport'].roleAccess,
   },
   {
     id: 74,
@@ -1297,6 +1747,7 @@ export const pages = [
     href: 'newsletter',
     icon: faEnvelope,
     accessRoles: CONTENTS['newsletter'].accessRoles,
+    roleAccess: CONTENTS['newsletter'].roleAccess,
   },
   {
     id: 80,
@@ -1305,6 +1756,7 @@ export const pages = [
     href: 'settingsCodeSendService',
     icon: faPhone,
     accessRoles: CONTENTS['settingsCodeSendService'].accessRoles,
+    roleAccess: CONTENTS['settingsCodeSendService'].roleAccess,
   },
   {
     id: 81,
@@ -1313,6 +1765,7 @@ export const pages = [
     href: 'settingsFabMenu',
     icon: faQuestion,
     accessRoles: CONTENTS['settingsFabMenu'].accessRoles,
+    roleAccess: CONTENTS['settingsFabMenu'].roleAccess,
   },
   {
     id: 82,
@@ -1321,6 +1774,7 @@ export const pages = [
     href: 'settingsRoles',
     icon: faUsers,
     accessRoles: CONTENTS['settingsRoles'].accessRoles,
+    roleAccess: CONTENTS['settingsRoles'].roleAccess,
   },
   {
     id: 99,
@@ -1329,6 +1783,7 @@ export const pages = [
     href: 'dev',
     icon: faBug,
     accessRoles: CONTENTS['dev'].accessRoles,
+    roleAccess: CONTENTS['dev'].roleAccess,
   },
 ]
 
@@ -1337,71 +1792,76 @@ export const pagesGroups = [
     id: 0,
     name: 'Моя статистика',
     icon: faTrophy,
-    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
-    accessStatuses: ['member'],
+    // accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+    // accessStatuses: ['member'],
   },
   {
     id: 1,
     name: 'Услуги',
     icon: faHeart,
-    accessRoles: ['client', 'admin', 'supervisor', 'dev'],
+    // accessRoles: ['client', 'admin', 'supervisor', 'dev'],
   },
   {
     id: 2,
     name: 'Мероприятия',
     icon: faCalendarAlt,
-    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+    // accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
   },
   {
     id: 3,
     name: 'Сайт',
     icon: faHome,
-    accessRoles: ['moder', 'supervisor', 'dev'],
+    // accessRoles: ['moder', 'supervisor', 'dev'],
   },
   {
     id: 4,
     name: 'Пользователи',
     icon: faUser,
-    accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
+    // accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
   },
   {
     id: 5,
     name: 'Транзакции',
     icon: faMoneyBill,
-    accessRoles: ['supervisor', 'dev'],
+    // accessRoles: ['supervisor', 'dev'],
   },
   {
     id: 6,
     name: 'События',
     icon: faHistory,
-    accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
+    // accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
   },
   {
     id: 7,
     name: 'Статистика',
     icon: faPieChart,
-    accessRoles: ['supervisor', 'dev'],
+    // accessRoles: ['supervisor', 'dev'],
   },
   {
     id: 8,
     name: 'Участники клуба',
     icon: faUser,
-    accessRoles: ['client'],
-    accessStatuses: ['member'],
+    // accessRoles: ['client'],
+    // accessStatuses: ['member'],
   },
   {
     id: 9,
     name: 'Инструменты',
     icon: faTools,
-    accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
+    // accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
   },
   {
     id: 10,
     name: 'Настройки',
     icon: faCog,
-    accessRoles: ['supervisor', 'dev'],
+    // accessRoles: ['supervisor', 'dev'],
   },
-  { id: 99, name: 'Разработчик', icon: faBug, accessRoles: ['dev'] },
+  {
+    id: 99,
+    name: 'Разработчик',
+    icon: faBug,
+    // accessRoles: ['dev']
+  },
 ]
 
 export const PAY_TYPES = [

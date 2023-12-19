@@ -47,7 +47,7 @@ import userSetPasswordFunc from './modalsFunc/userSetPasswordFunc'
 // import { useRecoilRefresher_UNSTABLE } from 'recoil'
 // import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 import eventSignUpToReserveAfterError from './modalsFunc/eventSignUpToReserveAfterError'
-import addRoleFunc from './modalsFunc/addRoleFunc'
+import roleFunc from './modalsFunc/roleFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -681,7 +681,8 @@ const modalsFuncGenerator = (
       user: (userId) => addModal(userLoginHistoryFunc(userId)),
     },
     role: {
-      add: (onConfirm) => addModal(addRoleFunc(onConfirm)),
+      add: (onConfirm) => addModal(roleFunc(undefined, onConfirm)),
+      edit: (role, onConfirm) => addModal(roleFunc(role, onConfirm)),
     },
   }
 }

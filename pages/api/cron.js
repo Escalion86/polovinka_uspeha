@@ -1,7 +1,8 @@
 import birthDateToAge from '@helpers/birthDateToAge'
+import { DEFAULT_ROLES } from '@helpers/constants'
 import getUserFullName from '@helpers/getUserFullName'
-import isUserModer from '@helpers/isUserModer'
 import padNum from '@helpers/padNum'
+import Roles from '@models/Roles'
 import Users from '@models/Users'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
@@ -37,21 +38,39 @@ export default async function handler(req, res) {
         const hoursNow = dateTimeNow.getHours()
 
         await dbConnect()
-        const users = await Users.find({})
+        const rolesSettings = await Roles.find({})
+        const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
+        const rolesIdsToBirthdayNotification = allRoles
+          .filter((role) => role?.notifications?.birthdays)
+          .map((role) => role._id)
+
+        const usersWithTelegramNotificationsOfBirthday = await Users.find({
+          role:
+            process.env.NODE_ENV === 'development'
+              ? 'dev'
+              : { $in: rolesIdsToBirthdayNotification },
+          'notifications.settings.birthdays': true,
+          'notifications.telegram.active': true,
+          'notifications.telegram.id': {
+            $exists: true,
+            $ne: null,
+          },
+        })
 
         const strTimeNow = `${padNum(hoursNow, 2)}:${padNum(minutesNow, 2)}`
 
-        const usersToNotificate = users.filter(
-          (user) =>
-            isUserModer(user) &&
-            user.notifications?.get('settings')?.time === strTimeNow &&
-            user.notifications?.get('settings')?.birthdays &&
-            user.notifications?.get('telegram')?.active &&
-            user.notifications?.get('telegram')?.id
-        )
+        const usersToNotificate =
+          usersWithTelegramNotificationsOfBirthday.filter(
+            (user) => user.notifications?.get('settings')?.time === strTimeNow
+            //  &&
+            // user.notifications?.get('settings')?.birthdays &&
+            // user.notifications?.get('telegram')?.active &&
+            // user.notifications?.get('telegram')?.id
+          )
         if (usersToNotificate.length > 0) {
           const usersWithBirthDayToday = []
           const usersWithBirthDayTomorow = []
+          const users = await Users.find({})
           users.forEach((user) => {
             if (!user.birthday) return
             const days = daysBeforeBirthday(user.birthday, dateTimeNow)

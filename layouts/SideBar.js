@@ -1,34 +1,42 @@
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { pages, pagesGroups } from '@helpers/constants'
-import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+// import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import badgesSelector from '@state/selectors/badgesSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
-const menuCfg = (userActiveRole, userActiveStatus, disabledGroupsIds) => {
-  return pagesGroups
-    .filter(
-      (pageGroup) =>
-        (!disabledGroupsIds ||
-          typeof disabledGroupsIds !== 'object' ||
-          !disabledGroupsIds.includes(pageGroup.id)) &&
-        pageGroup.accessRoles.includes(userActiveRole) &&
-        (!pageGroup.accessStatuses ||
-          pageGroup.accessStatuses.includes(userActiveStatus))
-    )
+const menuCfg = (
+  userActiveRole,
+  userActiveStatusName
+  // disabledGroupsIds
+) => {
+  // const visiblePages = pages.filter((page) => )
+
+  const result = pagesGroups
+    // .filter(
+    //   (pageGroup) =>
+    //     // (!disabledGroupsIds ||
+    //     //   typeof disabledGroupsIds !== 'object' ||
+    //     //   !disabledGroupsIds.includes(pageGroup.id)) &&
+    //     pageGroup.accessRoles.includes(userActiveRole) &&
+    //     (!pageGroup.accessStatuses ||
+    //       pageGroup.accessStatuses.includes(userActiveStatus))
+    // )
     .reduce((totalGroups, group) => {
       const pagesItems = pages.reduce((totalPages, page) => {
         if (
           page.group === group.id &&
-          page.accessRoles.includes(userActiveRole) &&
-          (!page.accessStatuses ||
-            page.accessStatuses.includes(userActiveStatus))
+          page.roleAccess(userActiveRole, userActiveStatusName)
+          // page.accessRoles.includes(userActiveRole) &&
+          // (!page.accessStatuses ||
+          //   page.accessStatuses.includes(userActiveStatus))
         ) {
           totalPages.push(page)
           // if (user.access && page.variable && user.access[page.variable]) {
@@ -51,6 +59,7 @@ const menuCfg = (userActiveRole, userActiveStatus, disabledGroupsIds) => {
         })
       return totalGroups
     }, [])
+  return result
 }
 
 const MenuItem = ({ item, active = false, badge }) => {
@@ -108,110 +117,114 @@ const Menu = ({ menuCfg, activePage }) => {
   const indexOfActiveGroup = menuCfg.findIndex((item) =>
     item.items.find((item) => item.href === activePage)
   )
-
   return (
     <nav className="flex flex-col w-full h-full px-2 py-3 mt-1 gap-y-2">
       {menuCfg &&
         menuCfg.length > 0 &&
-        menuCfg.map((item, index) => {
-          const groupIsActive = index === indexOfActiveGroup
-          const Component =
-            item.items.length === 1
-              ? (props) => (
-                  <Link href={props.href} shallow>
-                    <a {...props} />
-                  </Link>
-                )
-              : (props) => <button {...props} />
-          return (
-            <div
-              className={cn('z-50 flex flex-col', {
-                'flex-1': item.bottom && !menuCfg[index - 1].bottom,
-              })}
-              key={index}
-            >
-              {item.bottom && !menuCfg[index - 1].bottom && (
-                <div className="flex-1" />
-              )}
+        menuCfg
+          // .filter(({ items }) => {
+          //   console.log('items :>> ', items)
+          //   return true
+          // })
+          .map((item, index) => {
+            const groupIsActive = index === indexOfActiveGroup
+            const Component =
+              item.items.length === 1
+                ? (props) => (
+                    <Link href={props.href} shallow>
+                      <a {...props} />
+                    </Link>
+                  )
+                : (props) => <button {...props} />
+            return (
               <div
-                className={cn(
-                  'duration-300 rounded-lg group',
-                  groupIsActive
-                    ? 'bg-white text-general'
-                    : 'hover:bg-white hover:text-general text-white'
-                )}
-                key={'groupMenu' + index}
+                className={cn('z-50 flex flex-col', {
+                  'flex-1': item.bottom && !menuCfg[index - 1].bottom,
+                })}
+                key={index}
               >
-                <Component
+                {item.bottom && !menuCfg[index - 1].bottom && (
+                  <div className="flex-1" />
+                )}
+                <div
                   className={cn(
-                    'flex gap-x-2 items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
-                    // groupIsActive ? 'text-ganeral' : 'text-white'
+                    'duration-300 rounded-lg group',
+                    groupIsActive
+                      ? 'bg-white text-general'
+                      : 'hover:bg-white hover:text-general text-white'
                   )}
-                  href={item.items[0].href}
-                  onClick={() => {
-                    if (item.items.length === 1) {
-                      // setPageId(item.items[0].id)
-                      setMenuOpen(false)
-                    } else {
-                      setOpenedMenuIndex(
-                        openedMenuIndex === index ? null : index
-                      )
-                      setMenuOpen(true)
-                    }
-                  }}
+                  key={'groupMenu' + index}
                 >
-                  <div
+                  <Component
                     className={cn(
-                      'relative flex justify-center min-w-8 max-w-8 min-h-8 max-h-8'
+                      'flex gap-x-2 items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
                       // groupIsActive ? 'text-ganeral' : 'text-white'
                     )}
+                    href={item.items[0].href}
+                    onClick={() => {
+                      if (item.items.length === 1) {
+                        // setPageId(item.items[0].id)
+                        setMenuOpen(false)
+                      } else {
+                        setOpenedMenuIndex(
+                          openedMenuIndex === index ? null : index
+                        )
+                        setMenuOpen(true)
+                      }
+                    }}
                   >
-                    <FontAwesomeIcon icon={item.icon} size="2x" />
-                    {item.items.length > 1 &&
-                      typeof groupsBadges[item.id] === 'number' &&
-                      groupsBadges[item.id] > 0 && (
-                        <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
-                          {groupsBadges[item.id] <= 99
-                            ? groupsBadges[item.id]
-                            : '!'}
-                        </div>
-                      )}
-                  </div>
-                  <h3 className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
-                    {item.items.length === 1 ? item.items[0].name : item.name}
-                  </h3>
-
-                  {item.items.length > 1 && (
                     <div
-                      className={cn('w-4 duration-300 transition-transform', {
-                        'rotate-180': openedMenuIndex === index,
-                      })}
+                      className={cn(
+                        'relative flex justify-center min-w-8 max-w-8 min-h-8 max-h-8'
+                        // groupIsActive ? 'text-ganeral' : 'text-white'
+                      )}
                     >
-                      <FontAwesomeIcon icon={faAngleDown} size="lg" />
+                      <FontAwesomeIcon icon={item.icon} size="2x" />
+                      {item.items.length > 1 &&
+                        typeof groupsBadges[item.id] === 'number' &&
+                        groupsBadges[item.id] > 0 && (
+                          <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
+                            {groupsBadges[item.id] <= 99
+                              ? groupsBadges[item.id]
+                              : '!'}
+                          </div>
+                        )}
                     </div>
+                    <h3 className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
+                      {item.items.length === 1 ? item.items[0].name : item.name}
+                    </h3>
+
+                    {item.items.length > 1 && (
+                      <div
+                        className={cn('w-4 duration-300 transition-transform', {
+                          'rotate-180': openedMenuIndex === index,
+                        })}
+                      >
+                        <FontAwesomeIcon icon={faAngleDown} size="lg" />
+                      </div>
+                    )}
+                  </Component>
+                  {item.items.length > 1 && (
+                    <motion.div
+                      variants={variants}
+                      initial="hide"
+                      animate={openedMenuIndex === index ? 'show' : 'hide'}
+                      className="ml-3 mr-2 overflow-hidden"
+                    >
+                      {item.items.map((subitem, index) => (
+                        <MenuItem
+                          key={'menu' + subitem.id}
+                          item={subitem}
+                          active={activePage === subitem.href}
+                          badge={itemsBadges[subitem.id]}
+                        />
+                      ))}
+                    </motion.div>
                   )}
-                </Component>
-                {item.items.length > 1 && (
-                  <motion.div
-                    variants={variants}
-                    initial="hide"
-                    animate={openedMenuIndex === index ? 'show' : 'hide'}
-                    className="ml-3 mr-2 overflow-hidden"
-                  >
-                    {item.items.map((subitem, index) => (
-                      <MenuItem
-                        key={'menu' + subitem.id}
-                        item={subitem}
-                        active={activePage === subitem.href}
-                        badge={itemsBadges[subitem.id]}
-                      />
-                    ))}
-                  </motion.div>
-                )}
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
     </nav>
   )
 }
@@ -224,7 +237,8 @@ const variants = {
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleAtom)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  // const loggedUserActiveRoleName = useRecoilValue(loggedUserActiveRoleNameAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
 
   useEffect(() => {

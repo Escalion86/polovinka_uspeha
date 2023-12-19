@@ -9,7 +9,7 @@ import { getNounUsers } from '@helpers/getNoun'
 import sortFunctions from '@helpers/sortFunctions'
 import UsersList from '@layouts/lists/UsersList'
 import { modalsFuncAtom } from '@state/atoms'
-import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import membersSelector from '@state/selectors/membersSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -17,7 +17,9 @@ import { useRecoilValue } from 'recoil'
 const MembersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const members = useRecoilValue(membersSelector)
-  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const addButton = loggedUserActiveRole?.users?.add
+  const seeFullNames = loggedUserActiveRole?.users?.seeFullNames
 
   const [isSearching, setIsSearching] = useState(false)
   const [sort, setSort] = useState({ name: 'asc' })
@@ -45,7 +47,7 @@ const MembersContent = () => {
       (user) => filter.gender[String(user.gender)]
     )
 
-    if (isLoggedUserSupervisor) return filteredMembers
+    if (seeFullNames) return filteredMembers
 
     return filteredMembers.map((user) => {
       return {
@@ -62,7 +64,7 @@ const MembersContent = () => {
           : '',
       }
     })
-  }, [members, filter, isLoggedUserSupervisor])
+  }, [members, filter, seeFullNames])
 
   const visibleUsers = useMemo(() => {
     if (!searchText) return filteredUsers
@@ -93,9 +95,7 @@ const MembersContent = () => {
               if (isSearching) setSearchText('')
             }}
           />
-          {isLoggedUserSupervisor && (
-            <AddButton onClick={() => modalsFunc.user.edit()} />
-          )}
+          {addButton && <AddButton onClick={() => modalsFunc.user.edit()} />}
         </div>
       </ContentHeader>
       <Search

@@ -23,8 +23,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -32,9 +31,13 @@ const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
+  const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+
+  const seeHidden = loggedUserActiveRole?.events?.seeHidden
+  const statusFilterFull = loggedUserActiveRole?.events?.statusFilterFull
+  const seeAddButton = loggedUserActiveRole?.events?.add
+
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const eventsLoggedUser = useRecoilValue(
@@ -101,16 +104,15 @@ const EventsContent = () => {
         eventsLoggedUser,
         loggedUser,
         false,
-        isLoggedUserModer || isLoggedUserAdmin,
-        loggedUserActiveStatus
+        seeHidden,
+        loggedUserActiveStatusName
       ),
     [
       events,
       eventsLoggedUser,
       loggedUser,
-      isLoggedUserModer,
-      isLoggedUserAdmin,
-      loggedUserActiveStatus,
+      seeHidden,
+      loggedUserActiveStatusName,
     ]
   )
 
@@ -134,12 +136,8 @@ const EventsContent = () => {
             : false
         return (
           haveEventTag &&
-          ((isEventClosed &&
-            !(isLoggedUserModer || isLoggedUserAdmin) &&
-            filter.status.finished) ||
-            (isEventClosed &&
-              (isLoggedUserModer || isLoggedUserAdmin) &&
-              filter.status.closed) ||
+          ((isEventClosed && !statusFilterFull && filter.status.finished) ||
+            (isEventClosed && statusFilterFull && filter.status.closed) ||
             (isEventActive && filter.status.finished && isEventExpired) ||
             (isEventActive && filter.status.active && !isEventExpired) ||
             (isEventCanceled && filter.status.canceled)) &&
@@ -220,9 +218,7 @@ const EventsContent = () => {
               if (isSearching) setSearchText('')
             }}
           />
-          {isLoggedUserModer && (
-            <AddButton onClick={() => modalsFunc.event.add()} />
-          )}
+          {seeAddButton && <AddButton onClick={() => modalsFunc.event.add()} />}
           {/* <FormControl size="small">
             <ToggleButton
               size="small"
@@ -299,9 +295,6 @@ const EventsContent = () => {
           ))
         ) : (
           <div className="flex justify-center p-2">{`Нет мероприятий`}</div>
-        )} */}
-      {/* {isLoggedUserAdmin && (
-          <Fab onClick={() => modalsFunc.event.add()} show />
         )} */}
       {/* </CardListWrapper> */}
     </>

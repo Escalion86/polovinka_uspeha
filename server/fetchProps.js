@@ -1,5 +1,5 @@
-import isUserAdmin from '@helpers/isUserAdmin'
-import isUserModer from '@helpers/isUserModer'
+import { DEFAULT_ROLES } from '@helpers/constants'
+import getUserRole from '@helpers/getUserRole'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
 import Events from '@models/Events'
@@ -16,32 +16,31 @@ import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
-const fetchProps = async (user, pageName = 'cabinet') => {
+const fetchProps = async (user) => {
   const serverDateTime = new Date()
   try {
     const db = await dbConnect()
-    const isModer = isUserModer(user)
-    const isAdmin = isUserAdmin(user)
+
     var users = JSON.parse(
       JSON.stringify(await Users.find({}).select('-password'))
     )
-    if (!(isModer || isAdmin)) {
-      users = JSON.parse(JSON.stringify(users)).map((user) => {
-        return {
-          ...user,
-          secondName: user.secondName
-            ? user.security?.fullSecondName
-              ? user.secondName
-              : user.secondName[0] + '.'
-            : '',
-          thirdName: user.thirdName
-            ? user.security?.fullThirdName
-              ? user.thirdName
-              : user.thirdName[0] + '.'
-            : '',
-        }
-      })
-    }
+    // if (!(isModer || isAdmin)) {
+    //   users = JSON.parse(JSON.stringify(users)).map((user) => {
+    //     return {
+    //       ...user,
+    //       secondName: user.secondName
+    //         ? user.security?.fullSecondName
+    //           ? user.secondName
+    //           : user.secondName[0] + '.'
+    //         : '',
+    //       thirdName: user.thirdName
+    //         ? user.security?.fullThirdName
+    //           ? user.thirdName
+    //           : user.thirdName[0] + '.'
+    //         : '',
+    //     }
+    //   })
+    // }
 
     const events = await Events.find({})
     const directions = await Directions.find({})
@@ -61,6 +60,27 @@ const fetchProps = async (user, pageName = 'cabinet') => {
 
     const services = await Services.find({})
     const servicesUsers = await ServicesUsers.find({})
+
+    const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
+    const seeFullNames = userRole?.users?.seeFullNames
+
+    if (!seeFullNames) {
+      users = JSON.parse(JSON.stringify(users)).map((user) => {
+        return {
+          ...user,
+          secondName: user.secondName
+            ? user.security?.fullSecondName
+              ? user.secondName
+              : user.secondName[0] + '.'
+            : '',
+          thirdName: user.thirdName
+            ? user.security?.fullThirdName
+              ? user.thirdName
+              : user.thirdName[0] + '.'
+            : '',
+        }
+      })
+    }
 
     const fetchResult = {
       users,

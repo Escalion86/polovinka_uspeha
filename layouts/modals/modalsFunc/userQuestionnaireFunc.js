@@ -607,7 +607,6 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     // const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
-    // const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     // const user = useRecoilValue(userSelector(userId))
     // const setUser = useRecoilValue(itemsFuncAtom).user.set
     // const users = useRecoilValue(usersAtom)

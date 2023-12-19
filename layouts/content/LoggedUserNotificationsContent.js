@@ -11,19 +11,21 @@ import { DEFAULT_USER } from '@helpers/constants'
 import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
-import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 const LoggedUserNotificationsContent = (props) => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
-  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+
+  const birthdays = loggedUserActiveRole?.notifications?.birthdays
+  const newUserRegistred = loggedUserActiveRole?.notifications?.newUserRegistred
+  const eventRegistration =
+    loggedUserActiveRole?.notifications?.eventRegistration
+  const newEventsByTags = loggedUserActiveRole?.notifications?.newEventsByTags
+  const isLoggedUserDev = loggedUserActiveRole?.dev
   const setUserInUsersState = useSetRecoilState(userEditSelector)
 
   const [notifications, setNotifications] = useState(
@@ -136,7 +138,7 @@ const LoggedUserNotificationsContent = (props) => {
 
         {isNotificationActivated && (
           <>
-            {(isLoggedUserModer || isLoggedUserAdmin) && (
+            {birthdays && (
               <InputWrapper label="Ежедневные уведомления" className="">
                 <div className="w-full">
                   <ComboBox
@@ -207,7 +209,7 @@ const LoggedUserNotificationsContent = (props) => {
                     placeholder="Не выбрано"
                   />
 
-                  {(isLoggedUserModer || isLoggedUserAdmin) && (
+                  {birthdays && (
                     <CheckBox
                       checked={notifications.settings?.birthdays}
                       onClick={() => toggleNotificationsSettings('birthdays')}
@@ -219,7 +221,7 @@ const LoggedUserNotificationsContent = (props) => {
             )}
             <InputWrapper label="Уведомления по событиям" className="">
               <div className="w-full">
-                {(isLoggedUserModer || isLoggedUserAdmin) && (
+                {newUserRegistred && (
                   <CheckBox
                     checked={notifications.settings?.newUserRegistred}
                     onClick={() => {
@@ -228,7 +230,7 @@ const LoggedUserNotificationsContent = (props) => {
                     label="Регистрации нового пользователя (модер/админ)"
                   />
                 )}
-                {(isLoggedUserModer || isLoggedUserAdmin) && (
+                {eventRegistration && (
                   <CheckBox
                     checked={notifications.settings?.eventRegistration}
                     onClick={() =>
@@ -242,7 +244,7 @@ const LoggedUserNotificationsContent = (props) => {
                   onClick={() => toggleNotificationsSettings('newEventsByTags')}
                   label="Новые мероприятия (по тэгам мероприятий)"
                 />
-                {notifications.settings?.newEventsByTags && (
+                {newEventsByTags && notifications.settings?.newEventsByTags && (
                   <EventTagsChipsSelector
                     placeholder="Мне интересно всё!"
                     label="Тэги мероприятий которые мне интересны"

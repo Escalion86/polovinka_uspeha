@@ -19,10 +19,8 @@ import { modalsFuncAtom } from '@state/atoms'
 import directionSelector from '@state/selectors/directionSelector'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import eventSelector from '@state/selectors/eventSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { Suspense, useEffect } from 'react'
@@ -86,10 +84,12 @@ const eventViewFunc = (eventId) => {
     setTopLeftComponent,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
-    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-    const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const canEdit = loggedUserActiveRole?.events?.edit
+    const seeEventsUsers = loggedUserActiveRole?.eventsUsers?.see
+    const isLoggedUserDev = loggedUserActiveRole?.dev
+
     const direction = useRecoilValue(directionSelector(event?.directionId))
     const organizer = useRecoilValue(userSelector(event?.organizerId))
     const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -103,18 +103,12 @@ const eventViewFunc = (eventId) => {
     // )?.isEventInProcess
 
     useEffect(() => {
-      if ((isLoggedUserModer || isLoggedUserAdmin) && setTopLeftComponent) {
+      if (canEdit && setTopLeftComponent) {
         setTopLeftComponent(() => (
           <CardButtonsComponent event={event} isEventClosed={isEventClosed} />
         ))
       }
-    }, [
-      isLoggedUserModer,
-      isLoggedUserAdmin,
-      event,
-      isEventClosed,
-      setTopLeftComponent,
-    ])
+    }, [canEdit, event, isEventClosed, setTopLeftComponent])
 
     if (!event || !eventId)
       return (
@@ -220,7 +214,7 @@ const eventViewFunc = (eventId) => {
           </div>
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
             <EventUsersCounterAndAge eventId={eventId} showAges />
-            {(isLoggedUserMember || isLoggedUserModer || isLoggedUserAdmin) && (
+            {(isLoggedUserMember || seeEventsUsers) && (
               // <Button
               //   name="Посмотреть участников"
               //   onClick={() => modalsFunc.event.users(eventId)}

@@ -10,8 +10,7 @@ import sortFunctions from '@helpers/sortFunctions'
 import UsersList from '@layouts/lists/UsersList'
 import { modalsFuncAtom } from '@state/atoms'
 import usersAtom from '@state/atoms/usersAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -35,8 +34,9 @@ const UsersContent = () => {
   //   [users, notCanceledAndFinishedEventsUsers]
   // )
 
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
+  const addButton = loggedUserActiveRole?.users?.add
 
   const [isSearching, setIsSearching] = useState(false)
   const [sort, setSort] = useState({ name: 'asc' })
@@ -90,10 +90,9 @@ const UsersContent = () => {
     ]
   )
 
-  const addSearchProps =
-    isLoggedUserModer || isLoggedUserAdmin
-      ? ['phone', 'whatsapp', 'viber', 'instagram', 'telegram', 'vk', 'email']
-      : []
+  const addSearchProps = seeAllContacts
+    ? ['phone', 'whatsapp', 'viber', 'instagram', 'telegram', 'vk', 'email']
+    : []
 
   const visibleUsers = useMemo(() => {
     if (!searchText) return filteredUsers
@@ -143,9 +142,7 @@ const UsersContent = () => {
               }}
             />
           </FormControl> */}
-          {isLoggedUserAdmin && (
-            <AddButton onClick={() => modalsFunc.user.edit()} />
-          )}
+          {addButton && <AddButton onClick={() => modalsFunc.user.edit()} />}
         </div>
       </ContentHeader>
       <Search

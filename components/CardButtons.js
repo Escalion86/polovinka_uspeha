@@ -25,16 +25,12 @@ import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 import { modalsFuncAtom } from '@state/atoms'
-import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 import CardButton from './CardButton'
 import DropDown from './DropDown'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -51,6 +47,12 @@ const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   </div>
 )
 
+const typeToKey = (type) => {
+  if (type === 'serviceUser') return 'servicesUsers'
+  if (type === 'productUser') return 'productsUsers'
+  return type + 's'
+}
+
 const CardButtons = ({
   item,
   typeOfItem,
@@ -66,11 +68,7 @@ const CardButtons = ({
   onEditQuestionnaire,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
-  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const device = useRecoilValue(windowDimensionsTailwindSelector)
 
   // const [open, setOpen] = useState(false)
@@ -92,48 +90,51 @@ const CardButtons = ({
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
   const copyUserLink = useCopyUserLinkToClipboard(item._id)
 
+  const rule = loggedUserActiveRole[typeToKey(typeOfItem)]
+
+  const upDownSee =
+    (!forForm &&
+      typeOfItem === 'service' &&
+      loggedUserActiveRole.services.edit) ||
+    (typeOfItem === 'product' && loggedUserActiveRole.products.edit) ||
+    (typeOfItem === 'additionalBlock' &&
+      loggedUserActiveRole.generalPage.additionalBlocks) ||
+    (typeOfItem === 'direction' && loggedUserActiveRole.generalPage.directions)
+
+  const editSee = item.status !== 'closed' && rule?.edit
+  // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
+  // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
+  // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
+  // (typeOfItem === 'serviceUser' && loggedUserActiveRole.servicesUsers.edit) ||
+  // (typeOfItem === 'product' && loggedUserActiveRole.products.edit) ||
+  // (typeOfItem === 'productUser' && loggedUserActiveRole.productsUsers.edit) ||
+  // (typeOfItem === 'payment' && loggedUserActiveRole.payments.edit) ||
+  // (typeOfItem === 'additionalBlock' &&
+  // loggedUserActiveRole.generalPage.additionalBlocks) ||
+  // (typeOfItem === 'direction' && loggedUserActiveRole.generalPage.directions) ||
+  // (typeOfItem === 'review' && loggedUserActiveRole.generalPage.reviews)
+
   const show = {
     editQuestionnaire: !!onEditQuestionnaire,
-    setPasswordBtn: typeOfItem === 'user' && isLoggedUserSupervisor,
+    setPasswordBtn: rule?.setPassword,
+    // typeOfItem === 'user' && isLoggedUserSupervisor,
     shareBtn:
       window?.location?.origin &&
-      (typeOfItem === 'event' ||
-        typeOfItem === 'service' ||
-        typeOfItem === 'user'),
+      ['event', 'service', 'user', 'product'].includes(typeOfItem),
     addToCalendar: typeOfItem === 'event',
     eventUsersBtn:
-      (isLoggedUserModer || isLoggedUserAdmin || isLoggedUserMember) &&
-      typeOfItem === 'event',
-    upBtn: !forForm && isLoggedUserModer && onUpClick,
-    downBtn: !forForm && isLoggedUserModer && onDownClick,
-    editBtn:
-      isLoggedUserDev ||
-      ((isLoggedUserSupervisor ||
-        (isLoggedUserAdmin && ['event', 'user'].includes(typeOfItem)) ||
-        (isLoggedUserModer &&
-          ['user', 'event', 'direction', 'additionalBlock', 'review'].includes(
-            typeOfItem
-          ))) &&
-        showEditButton &&
-        (typeOfItem !== 'event' || item.status !== 'closed') &&
-        (typeOfItem !== 'serviceUser' || item.status !== 'closed')),
-    cloneBtn:
-      isLoggedUserModer && typeOfItem !== 'user' && typeOfItem !== 'review',
-    showOnSiteBtn: isLoggedUserModer && showOnSiteOnClick,
-    statusBtn:
-      isLoggedUserSupervisor &&
-      (typeOfItem === 'event' || typeOfItem === 'serviceUser'),
-    deleteBtn:
-      isLoggedUserSupervisor &&
-      showDeleteButton &&
-      (typeOfItem !== 'event' || item.status !== 'closed') &&
-      (typeOfItem !== 'serviceUser' || item.status !== 'closed'),
-    paymentsUsersBtn: isLoggedUserAdmin && typeOfItem === 'event',
-    userEvents:
-      (isLoggedUserModer || isLoggedUserAdmin || isLoggedUserMember) &&
-      typeOfItem === 'user',
-    userPaymentsBtn: isLoggedUserAdmin && typeOfItem === 'user',
-    loginHistory: isLoggedUserDev && typeOfItem === 'user',
+      loggedUserActiveRole.eventsUsers.see && typeOfItem === 'event',
+    upBtn: onUpClick && upDownSee,
+    downBtn: onDownClick && upDownSee,
+    editBtn: showEditButton && editSee,
+    cloneBtn: !['user', 'review'].includes(typeOfItem) && rule?.edit,
+    showOnSiteBtn: showOnSiteOnClick && rule?.seeHidden && rule?.edit,
+    statusBtn: rule?.statusEdit,
+    deleteBtn: showDeleteButton && item.status !== 'closed' && rule?.delete,
+    paymentsUsersBtn: rule?.paymentsEdit,
+    userEvents: rule?.seeUserEvents,
+    userPaymentsBtn: rule?.seeUserPayments,
+    loginHistory: loggedUserActiveRole.dev && typeOfItem === 'user',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -158,21 +159,12 @@ const CardButtons = ({
           onClick={() => {
             // setOpen(false)
             if (typeOfItem === 'event') {
-              // isLoggedUserModer
-              //   ? modalsFunc.copyLink({ eventId: item._id })
-              //   :
               copyEventLink()
             }
             if (typeOfItem === 'service') {
-              // isLoggedUserModer
-              //   ? modalsFunc.copyLink({ serviceId: item._id })
-              //   :
               copyServiceLink()
             }
             if (typeOfItem === 'user') {
-              // isLoggedUserModer
-              //   ? modalsFunc.copyLink({ userId: item._id })
-              //   :
               copyUserLink()
             }
           }}
