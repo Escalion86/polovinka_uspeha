@@ -1,7 +1,6 @@
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { pages, pagesGroups } from '@helpers/constants'
-// import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import badgesSelector from '@state/selectors/badgesSelector'
@@ -238,7 +237,6 @@ const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  // const loggedUserActiveRoleName = useRecoilValue(loggedUserActiveRoleNameAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
 
   useEffect(() => {

@@ -265,6 +265,17 @@ const colors = [
   'hover:bg-amber-700',
 ]
 
+export const TAILWIND_COLORS = [
+  'blue-400',
+  'green-400',
+  'orange-400',
+  'purple-400',
+  'yellow-400',
+  'amber-400',
+  'general',
+  'danger',
+]
+
 export const PASTEL_COLORS = [
   '#B6D8F2',
   '#CCD4BF',

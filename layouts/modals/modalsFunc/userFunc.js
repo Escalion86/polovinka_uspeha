@@ -408,7 +408,7 @@ const userFunc = (userId, clone = false) => {
         {canSetRole && (
           <UserRolePicker
             required
-            role={role}
+            roleId={role}
             onChange={setRole}
             error={errors.role}
             noDev={!isLoggedUserDev}

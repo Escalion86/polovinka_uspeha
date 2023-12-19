@@ -20,6 +20,7 @@ import upperCaseFirst from '@helpers/upperCaseFirst'
 import useErrors from '@helpers/useErrors'
 import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
+import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
@@ -44,8 +45,13 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
 const QuestionnaireContent = (props) => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const setLoggedUserActiveRoleName = useSetRecoilState(
+    loggedUserActiveRoleNameAtom
+  )
+
   const setSelfStatus = loggedUserActiveRole?.setSelfStatus
   const setSelfRole = loggedUserActiveRole?.setSelfRole
+  const isLoggedUserDev = loggedUserActiveRole?.dev
 
   const setUserInUsersState = useSetRecoilState(userEditSelector)
 
@@ -209,6 +215,7 @@ const QuestionnaireContent = (props) => {
         (data) => {
           setLoggedUser(data)
           setUserInUsersState(data)
+          if (data.role !== 'dev') setLoggedUserActiveRoleName(data.role)
           success('Данные профиля обновлены успешно')
           setIsWaitingToResponse(false)
         },
@@ -579,9 +586,10 @@ const QuestionnaireContent = (props) => {
         {setSelfRole && (
           <UserRolePicker
             required
-            role={role}
+            roleId={role}
             onChange={setRole}
             error={errors.role}
+            noDev={!isLoggedUserDev}
           />
         )}
       </div>

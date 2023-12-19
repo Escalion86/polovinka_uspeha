@@ -70,7 +70,6 @@ const CardButtons = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const device = useRecoilValue(windowDimensionsTailwindSelector)
-
   // const [open, setOpen] = useState(false)
   // const [isTriggered, setIsTriggered] = useState(false)
   // const ref = useDetectClickOutside({

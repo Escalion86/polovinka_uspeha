@@ -9,7 +9,6 @@ import CabinetHeader from '@layouts/CabinetHeader'
 import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
 import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 import fetchProps from '@server/fetchProps'
-// import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -29,7 +28,6 @@ function CabinetPage(props) {
   const router = useRouter()
   const page = router.asPath.replace('/cabinet/', '')
   const loggedUser = useRecoilValue(loggedUserAtom)
-  // const loggedUserActiveRoleName = useRecoilValue(loggedUserActiveRoleNameAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
   const hideFab = loggedUserActiveRole?.hideFab
