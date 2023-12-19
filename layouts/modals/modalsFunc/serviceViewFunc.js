@@ -5,9 +5,7 @@ import ImageGallery from '@components/ImageGallery'
 import PriceDiscount from '@components/PriceDiscount'
 import TextLine from '@components/TextLine'
 import { modalsFuncAtom } from '@state/atoms'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect } from 'react'
@@ -27,18 +25,17 @@ const serviceViewFunc = (serviceId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
+    const modalsFunc = useRecoilValue(modalsFuncAtom)
     const service = useRecoilValue(serviceSelector(serviceId))
     // const loggedUser = useRecoilValue(loggedUserAtom)
-    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-    const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
+    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const isLoggedUserDev = loggedUserActiveRole?.dev
+    const canEdit = loggedUserActiveRole?.services?.edit
 
     useEffect(() => {
-      if ((isLoggedUserModer || isLoggedUserAdmin) && setTopLeftComponent)
+      if (canEdit && setTopLeftComponent)
         setTopLeftComponent(() => <CardButtonsComponent service={service} />)
-    }, [service, isLoggedUserModer, isLoggedUserAdmin, setTopLeftComponent])
+    }, [service, canEdit, setTopLeftComponent])
 
     if (!service || !serviceId)
       return (

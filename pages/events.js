@@ -7,15 +7,14 @@ import StateLoader from '@components/StateLoader'
 import Header from '@layouts/Header'
 import fetchProps from '@server/fetchProps'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRecoilValue } from 'recoil'
 
 export default function Home(props) {
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const hideFab = loggedUserActiveRole?.hideFab
 
   return (
     <>
@@ -27,7 +26,7 @@ export default function Home(props) {
         {/* <TitleBlock /> */}
         <EventsBlock />
         <ContactsBlock />
-        <FabMenu show={!(isLoggedUserModer || isLoggedUserAdmin)} />
+        <FabMenu show={!hideFab} />
       </StateLoader>
     </>
   )

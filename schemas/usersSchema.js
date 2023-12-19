@@ -50,6 +50,10 @@ const usersSchema = {
     type: String,
     default: null,
   },
+  relationship: {
+    type: String,
+    default: null,
+  },
   about: {
     type: String,
     default: '',

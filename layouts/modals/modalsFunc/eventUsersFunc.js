@@ -24,9 +24,7 @@ import eventSelector from '@state/selectors/eventSelector'
 import eventUsersInBanSelector from '@state/selectors/eventUsersInBanSelector'
 import eventUsersInReserveSelector from '@state/selectors/eventUsersInReserveSelector'
 import eventWomansSelector from '@state/selectors/eventWomansSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
-import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -69,11 +67,12 @@ const eventUsersFunc = (eventId) => {
     setTopLeftComponent,
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-    const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-    const isLoggedUserSupervisor = useRecoilValue(
-      isLoggedUserSupervisorSelector
-    )
+    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const statusEdit = loggedUserActiveRole?.events?.statusEdit
+    const canEdit = loggedUserActiveRole?.eventsUsers?.edit
+    const copyListToClipboard =
+      loggedUserActiveRole?.eventsUsers?.copyListToClipboard
+
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     const users = useRecoilValue(usersAtom)
@@ -153,28 +152,29 @@ const eventUsersFunc = (eventId) => {
     )
 
     useEffect(() => {
-      if (isLoggedUserSupervisor && setTopLeftComponent)
+      if ((statusEdit || copyListToClipboard) && setTopLeftComponent)
         setTopLeftComponent(() => (
           <div className="flex">
-            {(() => {
-              const status = event.status ?? 'active'
-              const { icon, color, name } = EVENT_STATUSES.find(
-                ({ value }) => value === status
-              )
-              return (
-                <CardButton
-                  icon={icon}
-                  onClick={() => modalsFunc.event.statusEdit(event._id)}
-                  color={
-                    color.indexOf('-') > 0
-                      ? color.slice(0, color.indexOf('-'))
-                      : color
-                  }
-                  tooltipText={`${name} (изменить статус)`}
-                />
-              )
-            })()}
-            {isLoggedUserAdmin && (
+            {statusEdit &&
+              (() => {
+                const status = event.status ?? 'active'
+                const { icon, color, name } = EVENT_STATUSES.find(
+                  ({ value }) => value === status
+                )
+                return (
+                  <CardButton
+                    icon={icon}
+                    onClick={() => modalsFunc.event.statusEdit(event._id)}
+                    color={
+                      color.indexOf('-') > 0
+                        ? color.slice(0, color.indexOf('-'))
+                        : color
+                    }
+                    tooltipText={`${name} (изменить статус)`}
+                  />
+                )
+              })()}
+            {copyListToClipboard && (
               <CardButton
                 icon={faListCheck}
                 onClick={() => {
@@ -194,8 +194,8 @@ const eventUsersFunc = (eventId) => {
           </div>
         ))
     }, [
-      isLoggedUserSupervisor,
-      isLoggedUserAdmin,
+      statusEdit,
+      copyListToClipboard,
       setTopLeftComponent,
       mansIds,
       womansIds,
@@ -269,39 +269,16 @@ const eventUsersFunc = (eventId) => {
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-      setOnlyCloseButtonShow(
-        !(isLoggedUserModer || isLoggedUserAdmin) || isEventClosed
-      )
+      setOnlyCloseButtonShow(!canEdit || isEventClosed)
     }, [
       assistantsIds,
       mansIds,
       womansIds,
       reservedParticipantsIds,
       bannedParticipantsIds,
-      isLoggedUserModer,
-      isLoggedUserAdmin,
+      canEdit,
       isEventClosed,
     ])
-
-    // useEffect(() => {
-    //   if (isLoggedUserAdmin) {
-    //     setBottomLeftButtonProps({
-    //       name:
-    //         event.status === 'closed'
-    //           ? 'Активировать мероприятие'
-    //           : 'Закрыть мероприятие',
-    //       classBgColor: event.status === 'closed' ? 'bg-general' : 'bg-success',
-    //       icon: event.status === 'closed' ? faPlay : faLock,
-    //       onClick: () =>
-    //         setEvent({
-    //           _id: eventId,
-    //           status: event.status === 'closed' ? 'active' : 'closed',
-    //         }),
-    //       disabled:
-    //         event.status === 'active' && (isFormChanged || !isEventCanBeClosed),
-    //     })
-    //   } else setBottomLeftButtonProps(undefined)
-    // }, [isEventCanBeClosed, event.status, isLoggedUserAdmin, isFormChanged])
 
     const removeIdsFromReserve = (usersIds) => {
       const tempReservedParticipantsIds = []
@@ -351,7 +328,7 @@ const eventUsersFunc = (eventId) => {
 
     return (
       <>
-        {(isLoggedUserModer || isLoggedUserAdmin) && isEventClosed && (
+        {canEdit && isEventClosed && (
           <P className="text-danger">
             Мероприятие закрыто, поэтому редактирование состава участников
             запрещено
@@ -384,11 +361,9 @@ const eventUsersFunc = (eventId) => {
                 (event.maxMans === null || event.maxMans > mansIds.length)
               }
               exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-              readOnly={
-                !(isLoggedUserModer || isLoggedUserAdmin) || isEventClosed
-              }
+              readOnly={!canEdit || isEventClosed}
               buttons={
-                (isLoggedUserModer || isLoggedUserAdmin) && !isEventClosed
+                canEdit && !isEventClosed
                   ? [
                       // (id) => {
                       //   const paymentsOfUser = paymentsOfEvent.filter(
@@ -475,11 +450,9 @@ const eventUsersFunc = (eventId) => {
                 (event.maxWomans === null || event.maxWomans > womansIds.length)
               }
               exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-              readOnly={
-                !(isLoggedUserModer || isLoggedUserAdmin) || isEventClosed
-              }
+              readOnly={!canEdit || isEventClosed}
               buttons={
-                (isLoggedUserModer || isLoggedUserAdmin) && !isEventClosed
+                canEdit && !isEventClosed
                   ? [
                       // (id) => {
                       //   const paymentsOfUser = paymentsOfEvent.filter(
@@ -569,7 +542,7 @@ const eventUsersFunc = (eventId) => {
               <span>чел.</span>
             </div>
           </TabPanel>
-          {(isLoggedUserModer || isLoggedUserAdmin) &&
+          {canEdit &&
             (event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
               <TabPanel
                 tabName="Резерв"
@@ -592,7 +565,7 @@ const eventUsersFunc = (eventId) => {
                     ...bannedParticipantsIds,
                   ]}
                   buttons={
-                    (isLoggedUserModer || isLoggedUserAdmin) && !isEventClosed
+                    canEdit && !isEventClosed
                       ? [
                           (id) => ({
                             onClick: () => {
@@ -612,9 +585,7 @@ const eventUsersFunc = (eventId) => {
                         ]
                       : []
                   }
-                  readOnly={
-                    !(isLoggedUserModer || isLoggedUserAdmin) || isEventClosed
-                  }
+                  readOnly={!canEdit || isEventClosed}
                 />
               </TabPanel>
             )}
@@ -637,12 +608,10 @@ const eventUsersFunc = (eventId) => {
                 // ...womansIds,
                 ...bannedParticipantsIds,
               ]}
-              readOnly={
-                !(isLoggedUserModer || isLoggedUserAdmin) || isEventClosed
-              }
+              readOnly={!canEdit || isEventClosed}
             />
           </TabPanel>
-          {(isLoggedUserAdmin || isLoggedUserModer) && (
+          {canEdit && (
             <TabPanel
               tabName="Бан"
               tabAddToLabel={`(${bannedParticipantsIds.length})`}
@@ -659,15 +628,11 @@ const eventUsersFunc = (eventId) => {
                 //   console.log('1', 1)
                 // }}
                 exceptedIds={bannedParticipantsIds}
-                readOnly={
-                  !(isLoggedUserModer || isLoggedUserAdmin) || isEventClosed
-                }
+                readOnly={!canEdit || isEventClosed}
               />
             </TabPanel>
           )}
           {/* <ErrorsList errors={errors} /> */}
-          {/* </TabsBody>
-      </Tabs> */}
         </TabContext>
       </>
     )

@@ -1,24 +1,26 @@
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import showDeviceAtom from '@state/atoms/showDeviceAtom'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import CheckBox from './CheckBox'
+import loggedUserRealRoleSelector from '@state/selectors/loggedUserRealRoleSelector'
+import rolesAtom from '@state/atoms/rolesAtom'
 
 const DevSwitch = () => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
-  const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
-    loggedUserActiveRoleAtom
-  )
+  const roles = useRecoilValue(rolesAtom)
+  const loggedUserRealRole = useRecoilValue(loggedUserRealRoleSelector)
+
+  const [loggedUserActiveRoleName, setLoggedUserActiveRoleName] =
+    useRecoilState(loggedUserActiveRoleNameAtom)
   const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
     loggedUserActiveStatusAtom
   )
 
   const [showDevice, setShowDevice] = useRecoilState(showDeviceAtom)
 
-  if (loggedUser.role !== 'dev') return null
+  if (!loggedUserRealRole?.dev) return null
 
   return (
     <>
@@ -30,18 +32,25 @@ const DevSwitch = () => {
         />
       </div>
       <ToggleButtonGroup
-        className="flex bg-gray-100 rounded-none"
+        className="flex flex-col bg-gray-100 border-t border-black rounded-none"
         color="primary"
-        value={loggedUserActiveRole}
+        value={loggedUserActiveRoleName}
         exclusive
         onChange={(event, newRole) => {
-          if (newRole !== null) setLoggedUserActiveRole(newRole)
+          if (newRole !== null) setLoggedUserActiveRoleName(newRole)
         }}
       >
-        <ToggleButton className="flex-1 leading-3 rounded-none" value="client">
-          Клиент
-        </ToggleButton>
-        <ToggleButton className="flex-1 leading-3 rounded-none" value="moder">
+        {roles.map(({ _id, name }) => (
+          <ToggleButton
+            key={_id}
+            className="flex-1 leading-3 rounded-none"
+            value={_id}
+          >
+            {name}
+          </ToggleButton>
+        ))}
+
+        {/* <ToggleButton className="flex-1 leading-3 rounded-none" value="moder">
           Модер
         </ToggleButton>
         <ToggleButton className="flex-1 leading-3 rounded-none" value="admin">
@@ -55,11 +64,11 @@ const DevSwitch = () => {
         </ToggleButton>
         <ToggleButton className="flex-1 leading-3 rounded-none" value="dev">
           DEV
-        </ToggleButton>
+        </ToggleButton> */}
       </ToggleButtonGroup>
       <ToggleButtonGroup
         size="small"
-        className="flex bg-gray-100 rounded-none"
+        className="flex bg-gray-100 border-t border-black rounded-none"
         color="primary"
         value={loggedUserActiveStatus}
         exclusive

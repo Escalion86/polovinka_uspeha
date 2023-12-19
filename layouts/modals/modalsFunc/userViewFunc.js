@@ -5,6 +5,8 @@ import ImageGallery from '@components/ImageGallery'
 import TextLine from '@components/TextLine'
 import Tooltip from '@components/Tooltip'
 import UserName from '@components/UserName'
+import UserRelationshipIcon from '@components/UserRelationshipIcon'
+import UserStatusIcon from '@components/UserStatusIcon'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import ZodiacIcon from '@components/ZodiacIcon'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
@@ -14,10 +16,8 @@ import formatDate from '@helpers/formatDate'
 import { modalsFuncAtom } from '@state/atoms'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
 import Image from 'next/image'
 import { useEffect } from 'react'
@@ -39,10 +39,11 @@ const userViewFunc = (userId, clone = false) => {
   }) => {
     const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-    const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const isLoggedUserDev = loggedUserActiveRole?.dev
+    const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
+    const seeUserEvents = loggedUserActiveRole?.users?.seeUserEvents
 
     const user = useRecoilValue(userSelector(userId))
 
@@ -66,7 +67,7 @@ const userViewFunc = (userId, clone = false) => {
         <ImageGallery images={user?.images} />
         <div className="flex flex-col flex-1 mt-1">
           <div className="relative flex items-center mb-1 gap-x-2 min-h-6">
-            {user.status === 'member' && (
+            {/* {user.status === 'member' && (
               <Tooltip title="Участник клуба">
                 <div className="w-6 h-6">
                   <Image
@@ -76,7 +77,8 @@ const userViewFunc = (userId, clone = false) => {
                   />
                 </div>
               </Tooltip>
-            )}
+            )} */}
+            <UserStatusIcon status={user?.status} />
             <UserName user={user} className="text-lg font-bold" />
             {!setTopLeftComponent && (
               <div className="absolute right-0">
@@ -84,7 +86,6 @@ const userViewFunc = (userId, clone = false) => {
               </div>
             )}
           </div>
-          {/* <div className="flex text-lg font-bold">{`${user.secondName} ${user.name} ${user.thirdName}`}</div> */}
           {isLoggedUserDev && <TextLine label="ID">{user?._id}</TextLine>}
           <TextLine label="Пол">
             {GENDERS.find((item) => item.value === user.gender)?.name ??
@@ -100,8 +101,7 @@ const userViewFunc = (userId, clone = false) => {
               </span>
             </div> */}
           {user.birthday &&
-            (isLoggedUserModer ||
-              isLoggedUserAdmin ||
+            (seeBirthday ||
               user.security?.showBirthday === true ||
               user.security?.showBirthday === 'full' ||
               user.security?.showBirthday === 'noYear') && (
@@ -113,8 +113,7 @@ const userViewFunc = (userId, clone = false) => {
                     serverDate,
                     true,
                     true,
-                    isLoggedUserModer ||
-                      isLoggedUserAdmin ||
+                    seeBirthday ||
                       user.security?.showBirthday === 'full' ||
                       user.security?.showBirthday === true
                   )}
@@ -122,6 +121,14 @@ const userViewFunc = (userId, clone = false) => {
                 <ZodiacIcon date={user.birthday} />
               </div>
             )}
+          <TextLine label="Отношения">
+            <UserRelationshipIcon
+              size="m"
+              relationship={user.relationship}
+              showName
+            />
+          </TextLine>
+
           <TextLine label="Дети">
             {user?.haveKids === true
               ? 'Есть'
@@ -144,7 +151,7 @@ const userViewFunc = (userId, clone = false) => {
               </TextLine>
             </div>
 
-            {(isLoggedUserModer || isLoggedUserAdmin || isLoggedUserMember) &&
+            {(seeUserEvents || isLoggedUserMember) &&
               (eventsUsersSignedUpCount.finished > 0 ||
                 eventsUsersSignedUpCount.signUp > 0) && (
                 <ValueItem

@@ -15,6 +15,7 @@ const CheckBox = ({
   error,
   type = 'checkbox',
   noMargin,
+  disabled,
 }) => {
   if (readOnly && !checked) return null
 
@@ -37,13 +38,21 @@ const CheckBox = ({
         )}
       >
         <input
+          disabled={disabled}
           readOnly
           checked={checked}
           type={type}
           className={cn(
             'duration-300 transition-all',
             type === 'checkbox' ? 'bg-check' : 'bg-radio',
-            readOnly ? 'bg-gray-500' : 'checked:bg-general cursor-pointer',
+            disabled
+              ? 'bg-gray-500 cursor-not-allowed checked:bg-gray-400'
+              : '',
+            readOnly
+              ? 'bg-gray-500'
+              : !disabled
+              ? 'checked:bg-general cursor-pointer'
+              : '',
             'bg-white border appearance-none from-blue-900 checked:border-transparent focus:outline-none',
             big
               ? 'min-w-6 min-h-6 w-6 h-6'

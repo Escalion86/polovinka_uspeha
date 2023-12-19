@@ -1,23 +1,22 @@
 import Button from '@components/Button'
-import CheckBox from '@components/CheckBox'
-import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 import ComboBox from '@components/ComboBox'
+import RelationshipSelector from '@components/ComboBox/RelationshipSelector'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import InputImages from '@components/InputImages'
-import InputWrapper from '@components/InputWrapper'
 import PhoneInput from '@components/PhoneInput'
-import TabContext from '@components/Tabs/TabContext'
-import TabPanel from '@components/Tabs/TabPanel'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
-import YesNoPicker from '@components/ValuePicker/YesNoPicker'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import {
+  faAsterisk,
+  faEye,
+  faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { putData } from '@helpers/CRUD'
 import compareArrays from '@helpers/compareArrays'
@@ -27,9 +26,9 @@ import upperCaseFirst from '@helpers/upperCaseFirst'
 import useErrors from '@helpers/useErrors'
 import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
+import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
@@ -51,9 +50,15 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
 
 const QuestionnaireContent = (props) => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
-  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-  const isLoggedUserSupervisor = useRecoilValue(isLoggedUserSupervisorSelector)
-  // const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const setLoggedUserActiveRoleName = useSetRecoilState(
+    loggedUserActiveRoleNameAtom
+  )
+
+  const setSelfStatus = loggedUserActiveRole?.setSelfStatus
+  const setSelfRole = loggedUserActiveRole?.setSelfRole
+  const isLoggedUserDev = loggedUserActiveRole?.dev
+
   const setUserInUsersState = useSetRecoilState(userEditSelector)
 
   const [firstName, setFirstName] = useState(
@@ -72,6 +77,10 @@ const QuestionnaireContent = (props) => {
   const [gender, setGender] = useState(
     loggedUser?.gender ?? DEFAULT_USER.gender
   )
+  const [relationship, setRelationship] = useState(
+    loggedUser?.relationship ?? DEFAULT_USER.relationship
+  )
+
   const [email, setEmail] = useState(loggedUser?.email ?? DEFAULT_USER.email)
   const [phone, setPhone] = useState(loggedUser?.phone ?? DEFAULT_USER.phone)
   const [whatsapp, setWhatsapp] = useState(
@@ -127,19 +136,6 @@ const QuestionnaireContent = (props) => {
     defaultSecurity ?? DEFAULT_USER.security
   )
 
-  // const [notifications, setNotifications] = useState(
-  //   loggedUser?.notifications ?? DEFAULT_USER.notifications
-  // )
-
-  // const toggleNotificationsSettings = (key) =>
-  //   setNotifications((state) => ({
-  //     ...state,
-  //     settings: {
-  //       ...notifications?.settings,
-  //       [key]: notifications?.settings ? !notifications?.settings[key] : true,
-  //     },
-  //   }))
-
   const [status, setStatus] = useState(
     loggedUser?.status ?? DEFAULT_USER.status
   )
@@ -159,10 +155,6 @@ const QuestionnaireContent = (props) => {
 
   const { success, error } = useSnackbar()
 
-  // const isNotificationActivated = !!(
-  //   notifications?.telegram?.id && notifications?.telegram?.active
-  // )
-
   const formChanged =
     loggedUser?.firstName !== firstName ||
     loggedUser?.secondName !== secondName ||
@@ -172,6 +164,7 @@ const QuestionnaireContent = (props) => {
     // user?.profession !== profession ||
     // user?.orientation !== orientation ||
     loggedUser?.gender !== gender ||
+    loggedUser?.relationship !== relationship ||
     loggedUser?.email !== email ||
     // loggedUser?.phone !== phone ||
     loggedUser?.whatsapp !== whatsapp ||
@@ -201,6 +194,7 @@ const QuestionnaireContent = (props) => {
         email,
         birthday,
         security,
+        relationship,
         // images,
       })
     ) {
@@ -216,6 +210,7 @@ const QuestionnaireContent = (props) => {
           // profession,
           // orientation,
           gender,
+          relationship,
           email,
           // phone,
           whatsapp,
@@ -229,14 +224,13 @@ const QuestionnaireContent = (props) => {
           security,
           status,
           role,
-          // notifications,
         },
         (data) => {
           setLoggedUser(data)
           setUserInUsersState(data)
+          if (data.role !== 'dev') setLoggedUserActiveRoleName(data.role)
           success('Данные профиля обновлены успешно')
           setIsWaitingToResponse(false)
-          // refreshPage()
         },
         () => {
           error('Ошибка обновления данных профиля')
@@ -246,52 +240,8 @@ const QuestionnaireContent = (props) => {
         false,
         loggedUser._id
       )
-      // setIsWaitingToResponse(false)
     }
   }
-
-  // useEffect(() => {
-  //   if (waitActivateTelegramNotifications) {
-  //     var interval
-  //     const fetchUser = async () => {
-  //       const data = await getData(
-  //         `/api/users/${loggedUser._id}`,
-  //         null,
-  //         null,
-  //         null,
-  //         true
-  //       )
-
-  //       if (data?.notifications?.telegram?.id) {
-  //         setLoggedUser({
-  //           ...data,
-  //           notifications: {
-  //             ...data.notifications,
-  //             telegram: { ...data.notifications.telegram, active: true },
-  //           },
-  //         })
-  //         // setLoggedUser({
-  //         //   ...data,
-  //         //   notifications: {
-  //         //     ...data.notifications,
-  //         //     telegram: { ...data.notifications.telegram, active: true },
-  //         //   },
-  //         // })
-  //         setNotifications((state) => ({
-  //           ...state,
-  //           telegram: data?.notifications?.telegram,
-  //           active: true,
-  //         }))
-  //         setWaitActivateTelegramNotifications(false)
-  //         clearInterval(interval)
-  //       }
-  //     }
-
-  //     interval = setInterval(() => {
-  //       fetchUser().catch(console.error)
-  //     }, 5000)
-  //   }
-  // }, [waitActivateTelegramNotifications])
 
   useEffect(() => {
     if (isWaitingToResponse) {
@@ -331,6 +281,9 @@ const QuestionnaireContent = (props) => {
               )}
               {!loggedUser.gender && (
                 <li className="font-bold text-red-500">Пол</li>
+              )}
+              {!loggedUser.relationship && (
+                <li className="font-bold text-red-500">Статус отношений</li>
               )}
               {/* {(!loggedUser.images || loggedUser.images.length === 0) && (
                 <li className="font-bold text-red-500">
@@ -375,17 +328,19 @@ const QuestionnaireContent = (props) => {
       </div>
       <ErrorsList errors={errors} className="px-1" />
       <div className="p-2 overflow-y-auto">
-        {/* <TabContext value="Анкета">
-        <TabPanel tabName="Анкета" className="flex-1"> */}
-        {/* <div className="flex flex-col flex-1 max-h-full px-2 mb-2 gap-y-2"> */}
         <FormWrapper className="mt-6">
-          {/* <InputImage
-          label="Фотография"
-          directory="users"
-          image={image}
-          onChange={setImage}
-          noImage={image ?? `/img/users/${gender ?? 'male'}.jpg`}
-        /> */}
+          <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
+            {/* <div className="flex flex-wrap items-center gap-x-1"> */}
+            <span className="italic font-semibold">Примечание: </span>
+            <span>Поля отмеченные знаком</span>
+            <FontAwesomeIcon
+              className="text-danger w-2.5 h-2.5 inline-block mx-1 mb-1"
+              icon={faAsterisk}
+              size="1x"
+            />
+            <span>обязательны для заполнения</span>
+            {/* </div> */}
+          </div>
           <InputImages
             label="Фотографии"
             directory="users"
@@ -436,6 +391,13 @@ const QuestionnaireContent = (props) => {
             inputClassName="capitalize"
             error={errors.thirdName}
           />
+          <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
+            <span className="italic font-semibold">Примечание: </span>
+            <span>
+              Обратите внимание, что некоторые поля ниже требуют выбрать один из
+              вариантов, для этого нужно нажать на кнопку с вариантом
+            </span>
+          </div>
           <ValuePicker
             value={security.fullSecondName}
             valuesArray={[
@@ -477,16 +439,6 @@ const QuestionnaireContent = (props) => {
             }}
             error={errors.gender}
           />
-          {/* <OrientationPicker
-          orientation={orientation}
-          onChange={setOrientation}
-        /> */}
-          {/* <ShowWrapper
-              securytyKey="showBirthday"
-              value={security.showBirthday}
-              setSecurytyKey={setSecurytyKey}
-            > */}
-          {/* <div className="mt-3 mb-2"> */}
           <DatePicker
             label="День рождения"
             value={birthday}
@@ -522,11 +474,31 @@ const QuestionnaireContent = (props) => {
             // inLine
             required
           />
+
+          <RelationshipSelector
+            value={relationship}
+            onChange={(value) => {
+              removeError('relationship')
+              setRelationship(value)
+            }}
+            // placeholder={placeholder}
+            // activePlaceholder={activePlaceholder}
+            // smallMargin
+            className="w-80"
+            required
+            error={errors.relationship}
+            // fullWidth={fullWidth}
+          />
+
           {/* </div> */}
           {/* </ShowWrapper> */}
-          <div className="text-sm">
-            <span>{'Примечание для полей далее:'}</span>
-            <div className="flex pl-4 leading-4">
+          <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
+            <span className="italic font-semibold">Примечание: </span>
+            <span>
+              Поля ниже можно скрыть от посторонних глаз, для этого при клике на
+              иконку глаза можно показать/скрыть соответствующее поле
+            </span>
+            <div className="flex pt-1 pl-4">
               <FontAwesomeIcon
                 className={cn('w-4 min-w-4 h-4 text-purple-500')}
                 icon={faEye}
@@ -537,7 +509,7 @@ const QuestionnaireContent = (props) => {
                 {'поле доступно для просмотра пользователям'}
               </span>
             </div>
-            <div className="flex pl-4 mt-1 leading-4">
+            <div className="flex pl-4 mt-1">
               <FontAwesomeIcon
                 className={cn('w-4 min-w-4 h-4 text-disabled')}
                 icon={faEyeSlash}
@@ -548,7 +520,6 @@ const QuestionnaireContent = (props) => {
                 {'поле скрыто от пользователей'}
               </span>
             </div>
-            <span>{'При клике на иконку можно показать/скрыть'}</span>
           </div>
           <FormWrapper twoColumns>
             <ShowWrapper
@@ -658,7 +629,7 @@ const QuestionnaireContent = (props) => {
           </ShowWrapper>
           <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
         </FormWrapper>
-        {isLoggedUserSupervisor && (
+        {setSelfStatus && (
           <UserStatusPicker
             required
             status={status}
@@ -666,306 +637,15 @@ const QuestionnaireContent = (props) => {
             error={errors.status}
           />
         )}
-        {isLoggedUserDev && (
+        {setSelfRole && (
           <UserRolePicker
             required
-            role={role}
+            roleId={role}
             onChange={setRole}
             error={errors.role}
+            noDev={!isLoggedUserDev}
           />
         )}
-        {/* {isLoggedUserDev && (
-            <ValueItem
-              name="Доп анкета"
-              color="green-500"
-              icon={faCheck}
-              hoverable
-              onClick={() => modalsFunc.user.questionnaire()}
-            />
-          )}
-          {isLoggedUserDev && (
-            <ValueItem
-              name="Конструктор анкет"
-              color="red-500"
-              icon={faCheck}
-              hoverable
-              onClick={() =>
-                modalsFunc.questionnaire.constructor(null, (data) => {
-                  console.log('!!!!', data)
-                  modalsFunc.questionnaire.open(data, (res) =>
-                    console.log('res', res)
-                  )
-                })
-              }
-            />
-          )} */}
-        {/* </div> */}
-        {/* </TabPanel> */}
-        {/* <TabPanel tabName="Конфиденциальность" className="flex-1 p-2">
-          <FormWrapper>
-            <ValuePicker
-              value={security.fullSecondName}
-              valuesArray={[
-                { value: true, name: 'Полностью', color: 'green-400' },
-                {
-                  value: false,
-                  name: 'Только первую букву',
-                  color: 'blue-400',
-                },
-              ]}
-              label="Показывать фамилию"
-              onChange={(value) => setSecurytyKey({ fullSecondName: value })}
-              // name="yes_no"
-              // inLine
-              required
-            />
-            <ValuePicker
-              value={security.fullThirdName}
-              valuesArray={[
-                { value: true, name: 'Полностью', color: 'green-400' },
-                {
-                  value: false,
-                  name: 'Только первую букву',
-                  color: 'blue-400',
-                },
-              ]}
-              label="Показывать отчество"
-              onChange={(value) => setSecurytyKey({ fullThirdName: value })}
-              // name="yes_no"
-              // inLine
-              required
-            />
-            <ValuePicker
-              value={security.showBirthday}
-              valuesArray={[
-                {
-                  value: 'full',
-                  name: 'Показывать (в том числе возраст)',
-                  color: 'green-400',
-                },
-                {
-                  value: 'noYear',
-                  name: 'Только день и месяц (скрыть возраст)',
-                  color: 'blue-400',
-                },
-                {
-                  value: 'no',
-                  name: 'Не показывать',
-                  color: 'red-400',
-                },
-              ]}
-              label="Показывать дату рождения"
-              onChange={(value) => setSecurytyKey({ showBirthday: value })}
-              // name="yes_no"
-              // inLine
-              required
-            />
-          </FormWrapper>
-        </TabPanel> */}
-        {/* {isLoggedUserAdmin && (
-          <TabPanel tabName="Статус и права" className="">
-            {isLoggedUserAdmin && (
-              <UserStatusPicker
-                required
-                status={status}
-                onChange={setStatus}
-                error={errors.status}
-              />
-            )}
-            {isLoggedUserDev && (
-              <UserRolePicker
-                required
-                role={role}
-                onChange={setRole}
-                error={errors.role}
-              />
-            )}
-          </TabPanel>
-        )} */}
-        {/* <TabPanel tabName="Оповещения" className="flex-1">
-          <div className="flex flex-wrap items-center gap-x-2">
-            <YesNoPicker
-              label="Оповещения в Telegram"
-              value={!!notifications?.telegram?.active}
-              onChange={() => {
-                if (!notifications?.telegram?.active) {
-                  modalsFunc.notifications.telegram.activate()
-                }
-                setNotifications((state) => ({
-                  ...state,
-                  telegram: {
-                    ...state?.telegram,
-                    active: !state?.telegram?.active,
-                  },
-                }))
-              }}
-            />
-            <Input
-              type="number"
-              label="Telegram ID"
-              value={notifications?.telegram?.id ?? ''}
-              onChange={(value) => {
-                setNotifications((state) => ({
-                  ...state,
-                  telegram: {
-                    ...notifications?.telegram,
-                    id: value,
-                  },
-                }))
-              }}
-              copyPasteButtons
-              showArrows={false}
-            />
-          </div>
-
-          {isNotificationActivated && (
-            <>
-              {isLoggedUserModer && (
-                <InputWrapper label="Ежедневные уведомления" className="">
-                  <div className="w-full">
-                    <ComboBox
-                      label="Время уведомлений"
-                      items={[
-                        '00:00',
-                        '00:30',
-                        '01:00',
-                        '01:30',
-                        '02:00',
-                        '02:30',
-                        '03:00',
-                        '03:30',
-                        '04:00',
-                        '04:30',
-                        '05:00',
-                        '05:30',
-                        '06:00',
-                        '06:30',
-                        '07:00',
-                        '07:30',
-                        '08:00',
-                        '08:30',
-                        '09:00',
-                        '09:30',
-                        '10:00',
-                        '10:30',
-                        '11:00',
-                        '11:30',
-                        '12:00',
-                        '12:30',
-                        '13:00',
-                        '13:30',
-                        '14:00',
-                        '14:30',
-                        '15:00',
-                        '15:30',
-                        '16:00',
-                        '16:30',
-                        '17:00',
-                        '17:30',
-                        '18:00',
-                        '18:30',
-                        '19:00',
-                        '19:30',
-                        '20:00',
-                        '20:30',
-                        '21:00',
-                        '21:30',
-                        '22:00',
-                        '22:30',
-                        '23:00',
-                        '23:30',
-                      ].map((time) => ({ value: time, name: time }))}
-                      value={notifications.settings?.time}
-                      onChange={(time) =>
-                        setNotifications((state) => ({
-                          ...state,
-                          settings: {
-                            ...notifications?.settings,
-                            time,
-                          },
-                        }))
-                      }
-                      className="w-40 mt-2"
-                      required={notifications.settings?.birthdays}
-                      noMargin
-                      placeholder="Не выбрано"
-                    />
-
-                    {isLoggedUserModer && (
-                      <CheckBox
-                        checked={notifications.settings?.birthdays}
-                        onClick={() => toggleNotificationsSettings('birthdays')}
-                        label="Напоминания о днях рождениях пользователей (админ)"
-                      />
-                    )}
-                  </div>
-                </InputWrapper>
-              )}
-              <InputWrapper label="Уведомления по событиям" className="">
-                <div className="w-full">
-                  {isLoggedUserModer && (
-                    <CheckBox
-                      checked={notifications.settings?.newUserRegistred}
-                      onClick={() => {
-                        toggleNotificationsSettings('newUserRegistred')
-                      }}
-                      label="Регистрации нового пользователя (админ)"
-                    />
-                  )}
-                  {isLoggedUserModer && (
-                    <CheckBox
-                      checked={notifications.settings?.eventRegistration}
-                      onClick={() =>
-                        toggleNotificationsSettings('eventRegistration')
-                      }
-                      label="Запись/отписка пользователей на мероприитиях (админ)"
-                    />
-                  )}
-                  <CheckBox
-                    checked={notifications.settings?.newEventsByTags}
-                    onClick={() =>
-                      toggleNotificationsSettings('newEventsByTags')
-                    }
-                    label="Новые мероприятия (по тэгам мероприятий)"
-                  />
-                  {notifications.settings?.newEventsByTags && (
-                    <EventTagsChipsSelector
-                      placeholder="Мне интересно всё!"
-                      label="Тэги мероприятий которые мне интересны"
-                      onChange={(value) =>
-                        setNotifications((state) => ({
-                          ...state,
-                          settings: {
-                            ...notifications?.settings,
-                            eventsTags: value,
-                          },
-                        }))
-                      }
-                      tags={notifications.settings?.eventsTags}
-                    />
-                  )}
-                  {isLoggedUserDev && (
-                    <CheckBox
-                      checked={notifications.settings?.eventUserMoves}
-                      onClick={() =>
-                        toggleNotificationsSettings('eventUserMoves')
-                      }
-                      label="Перемещение моей записи на мероприятие из резерва в основной состав и наоборот"
-                    />
-                  )}
-                  {isLoggedUserDev && (
-                    <CheckBox
-                      checked={notifications.settings?.eventCancel}
-                      onClick={() => toggleNotificationsSettings('eventCancel')}
-                      label="Отмена мероприятия на которое я записан"
-                    />
-                  )}
-                </div>
-              </InputWrapper>
-            </>
-          )}
-        </TabPanel> */}
-        {/* </TabContext> */}
       </div>
     </div>
   )

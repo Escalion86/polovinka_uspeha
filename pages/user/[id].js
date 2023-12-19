@@ -10,9 +10,7 @@ import StateLoader from '@components/StateLoader'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import BlockContainer from '@components/BlockContainer'
-import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const User = ({ user }) => {
   const userView = userViewFunc(user._id)
@@ -41,12 +39,17 @@ function UserPage(props) {
 
   const usersState = useRecoilValue(usersAtom)
 
-  // const loggedUser = useRecoilValue(loggedUserAtom)
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const seeMembersOnly = loggedUserActiveRole?.users?.seeMembersOnly
 
-  const canSee = isLoggedUserModer || isLoggedUserAdmin || isLoggedUserMember
+  const user =
+    usersState?.length > 0
+      ? usersState.find((user) => user?._id === userId)
+      : undefined
+
+  const canSee =
+    loggedUserActiveRole?.users?.see &&
+    (!seeMembersOnly || user?.status === 'member')
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01
@@ -56,11 +59,6 @@ function UserPage(props) {
       document.documentElement.style.setProperty('--vh', `${vh}px`)
     })
   }, [])
-
-  const user =
-    usersState?.length > 0
-      ? usersState.find((user) => user._id === userId)
-      : undefined
 
   // const title = event?.title ?? ''
   // const query = event?._id ? { event: event._id } : {}

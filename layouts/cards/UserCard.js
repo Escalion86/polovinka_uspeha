@@ -1,6 +1,7 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import UserName from '@components/UserName'
+import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import ZodiacIcon from '@components/ZodiacIcon'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons'
@@ -13,8 +14,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import loadingAtom from '@state/atoms/loadingAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import sumOfPaymentsWithoutEventIdByUserIdSelector from '@state/selectors/sumOfPaymentsWithoutEventIdByUserIdSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
@@ -76,10 +76,11 @@ const UserCard = ({ userId, hidden = false, style }) => {
   const user = useRecoilValue(userSelector(userId))
   const loading = useRecoilValue(loadingAtom('user' + userId))
   // const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  // console.log('eventsUsersSignedUpCount :>> ', eventsUsersSignedUpCount)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
+  const seeBirthday = loggedUserActiveRole?.seeBirthday
+  const seeSumOfPaymentsWithoutEventOnCard =
+    loggedUserActiveRole?.seeSumOfPaymentsWithoutEventOnCard
   // const widthNum = useWindowDimensionsTailwindNum()
   // const itemFunc = useRecoilValue(itemsFuncAtom)
 
@@ -122,6 +123,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
                   <div className="flex flex-nowrap items-center px-1 py-0.5 leading-6 gap-x-1">
+                    <UserRelationshipIcon relationship={user.relationship} />
                     <UserStatusIcon status={user.status} />
                     <UserName
                       user={user}
@@ -136,23 +138,6 @@ const UserCard = ({ userId, hidden = false, style }) => {
                         <ZodiacIcon date={user.birthday} />
                       </div>
                     )} */}
-                    {/* {widthNum > 3 &&
-                      user.birthday &&
-                      (isLoggedUserAdmin ||
-                        user.security?.showBirthday ||
-                        user.security?.showAge) && (
-                        <div className="flex items-center text-base font-normal tablet:text-lg whitespace-nowrap gap-x-2">
-                          <span>
-                            {birthDateToAge(
-                              user.birthday,
-                              true,
-                              false,
-                              isLoggedUserAdmin || user.security?.showAge
-                            )}
-                          </span>
-                          <ZodiacIcon date={user.birthday} />
-                        </div>
-                      )} */}
                     {/* {user.role === 'admin' && (
                       <span className="font-normal text-red-400">
                         АДМИНИСТРАТОР
@@ -169,7 +154,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     />
                     <div className="flex flex-col justify-center px-1">
                       {user.birthday &&
-                        (isLoggedUserModer ||
+                        (seeBirthday ||
                           user.security?.showBirthday === true ||
                           user.security?.showBirthday === 'full') && (
                           <div className="flex text-sm leading-4 gap-x-2 ">
@@ -206,12 +191,8 @@ const UserCard = ({ userId, hidden = false, style }) => {
                   </div>
                 </div>
                 <div className="flex flex-col items-end justify-between">
-                  <CardButtons
-                    item={user}
-                    typeOfItem="user"
-                    alwaysCompactOnPhone
-                  />
-                  {isLoggedUserAdmin && (
+                  <CardButtons item={user} typeOfItem="user" />
+                  {seeSumOfPaymentsWithoutEventOnCard && (
                     <UserSumOfPaymentsWithoutEvent userId={userId} />
                   )}
                 </div>

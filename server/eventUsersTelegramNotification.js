@@ -1,10 +1,9 @@
+import { DEFAULT_ROLES } from '@helpers/constants'
 import formatDateTimeFunc from '@helpers/formatDateTime'
 import getUserFullName from '@helpers/getUserFullName'
-// import isUserModer from '@helpers/isUserModer'
-// import isUserAdmin from '@helpers/isUserAdmin'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
-// import Test from '@models/Test'
+import Roles from '@models/Roles'
 import Users from '@models/Users'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
@@ -38,17 +37,18 @@ const eventUsersTelegramNotification = async ({
         addedEventUsers.length + deletedEventUsers.length === 1))
   ) {
     await dbConnect()
+    const rolesSettings = await Roles.find({})
+    const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
+    const rolesIdsToEventUsersNotification = allRoles
+      .filter((role) => role?.notifications?.eventRegistration)
+      .map((role) => role._id)
 
-    // (isUserModer(user) || isUserAdmin(user)) &&
-    //       user.notifications?.get('settings')?.eventRegistration &&
-    //       user.notifications?.get('telegram')?.active &&
-    //       user.notifications?.get('telegram')?.id
     // Получаем список подписанных на уведомления, и если их нет, то выходим сразу
     const usersWithTelegramNotificationsOfEventUsersON = await Users.find({
       role:
         process.env.NODE_ENV === 'development'
           ? 'dev'
-          : { $in: ['admin', 'moder', 'supervisor', 'dev'] },
+          : { $in: rolesIdsToEventUsersNotification },
       'notifications.settings.eventRegistration': true,
       'notifications.telegram.active': true,
       'notifications.telegram.id': {
@@ -217,15 +217,9 @@ const eventUsersTelegramNotification = async ({
           : `\nЗапись в резерв закрыта`
       }`
 
-    const usersTelegramIds = usersWithTelegramNotificationsOfEventUsersON
-      // .filter(
-      //   (user) =>
-      //     (isUserModer(user) || isUserAdmin(user)) &&
-      //     user.notifications?.get('settings')?.eventRegistration &&
-      //     user.notifications?.get('telegram')?.active &&
-      //     user.notifications?.get('telegram')?.id
-      // )
-      .map((user) => user.notifications?.get('telegram')?.id)
+    const usersTelegramIds = usersWithTelegramNotificationsOfEventUsersON.map(
+      (user) => user.notifications?.get('telegram')?.id
+    )
 
     const result = await sendTelegramMessage({
       req,

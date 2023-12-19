@@ -12,7 +12,6 @@ import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import eventSelector from '@state/selectors/eventSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
@@ -23,9 +22,9 @@ import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
 import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
-import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
+// import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const ItemContainer = ({
   onClick,
@@ -134,13 +133,14 @@ export const UserItem = ({
   className,
 }) => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
+  const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
   const device = useRecoilValue(windowDimensionsTailwindSelector)
 
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
+
   return (
     <ItemContainer
       onClick={onClick}
@@ -170,8 +170,7 @@ export const UserItem = ({
         <div className="flex flex-wrap items-center flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1 gap-y-0.5">
           <UserName user={item} className="font-semibold" thin trunc={2} />
           {item.birthday &&
-            (isLoggedUserModer ||
-              isLoggedUserAdmin ||
+            (seeBirthday ||
               item.security?.showBirthday === true ||
               item.security?.showBirthday === 'full') && (
               <span className="flex items-center overflow-visible italic leading-3 max-h-2">

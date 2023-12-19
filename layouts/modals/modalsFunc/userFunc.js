@@ -1,3 +1,4 @@
+import RelationshipSelector from '@components/ComboBox/RelationshipSelector'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -10,13 +11,11 @@ import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
-import isUserDev from '@helpers/isUserDev'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import usersAtom from '@state/atoms/usersAtom'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import isLoggedUserSupervisorSelector from '@state/selectors/isLoggedUserSupervisorSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -31,10 +30,12 @@ const userFunc = (userId, clone = false) => {
     setDisableDecline,
   }) => {
     const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
-    const isLoggedUserSupervisor = useRecoilValue(
-      isLoggedUserSupervisorSelector
-    )
-    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+
+    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const isLoggedUserDev = loggedUserActiveRole?.dev
+    const canSetRole = loggedUserActiveRole?.users?.setRole
+    const canSetStatus = loggedUserActiveRole?.users?.setStatus
+
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
     const users = useRecoilValue(usersAtom)
@@ -56,6 +57,10 @@ const userFunc = (userId, clone = false) => {
     // const [profession, setProfession] = useState(user?.profession ?? DEFAULT_USER.profession)
     // const [orientation, setOrientation] = useState(user?.orientation ?? DEFAULT_USER.orientation)
     const [gender, setGender] = useState(user?.gender ?? DEFAULT_USER.gender)
+    const [relationship, setRelationship] = useState(
+      user?.relationship ?? DEFAULT_USER.relationship
+    )
+
     const [email, setEmail] = useState(user?.email ?? DEFAULT_USER.email)
     const [phone, setPhone] = useState(user?.phone ?? DEFAULT_USER.phone)
     const [whatsapp, setWhatsapp] = useState(
@@ -110,6 +115,7 @@ const userFunc = (userId, clone = false) => {
           whatsapp,
           email,
           birthday,
+          relationship,
         })
       ) {
         closeModal()
@@ -125,6 +131,7 @@ const userFunc = (userId, clone = false) => {
             // orientation,
             password: userId ? undefined : password,
             gender,
+            relationship,
             email,
             phone,
             whatsapp,
@@ -205,6 +212,7 @@ const userFunc = (userId, clone = false) => {
         // user?.profession !== profession ||
         // user?.orientation !== orientation ||
         user?.gender !== gender ||
+        user?.relationship !== relationship ||
         user?.email !== email ||
         user?.phone !== phone ||
         user?.whatsapp !== whatsapp ||
@@ -231,6 +239,7 @@ const userFunc = (userId, clone = false) => {
       // profession,
       // orientation,
       gender,
+      relationship,
       email,
       phone,
       whatsapp,
@@ -333,7 +342,20 @@ const userFunc = (userId, clone = false) => {
           required
           error={errors.birthday}
         />
-
+        <RelationshipSelector
+          value={relationship}
+          onChange={(value) => {
+            removeError('relationship')
+            setRelationship(value)
+          }}
+          // placeholder={placeholder}
+          // activePlaceholder={activePlaceholder}
+          // smallMargin
+          className="w-80"
+          required
+          error={errors.relationship}
+          // fullWidth={fullWidth}
+        />
         <FormWrapper twoColumns>
           <PhoneInput
             required
@@ -397,16 +419,18 @@ const userFunc = (userId, clone = false) => {
           label="Есть дети"
         /> */}
         <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
-        <UserStatusPicker
-          required
-          status={status}
-          onChange={setStatus}
-          error={errors.status}
-        />
-        {(isLoggedUserDev || (isLoggedUserSupervisor && !isUserDev(user))) && (
+        {canSetStatus && (
+          <UserStatusPicker
+            required
+            status={status}
+            onChange={setStatus}
+            error={errors.status}
+          />
+        )}
+        {canSetRole && (
           <UserRolePicker
             required
-            role={role}
+            roleId={role}
             onChange={setRole}
             error={errors.role}
             noDev={!isLoggedUserDev}

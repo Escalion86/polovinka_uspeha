@@ -1,16 +1,14 @@
 import upperCaseFirst from '@helpers/upperCaseFirst'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 import TextLinesLimiter from './TextLinesLimiter'
 import UserStatusIcon from './UserStatusIcon'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
-  const showFullName = isLoggedUserModer || isLoggedUserAdmin
+  const seeFullNames = loggedUserActiveRole?.users?.seeFullNames
 
   return (
     <div
@@ -23,12 +21,12 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
       {showStatus && <UserStatusIcon status={user.status} size="xs" />}
       {trunc ? (
         <TextLinesLimiter
-          className="flex-1 leading-[12px]"
+          className="flex-1 leading-[14px]"
           lines={typeof trunc === 'number' ? trunc : 1}
         >{`${upperCaseFirst(user.firstName)}${
           user.thirdName
             ? ` ${
-                showFullName || user.security?.fullThirdName
+                seeFullNames || user.security?.fullThirdName
                   ? upperCaseFirst(user.thirdName)
                   : user.thirdName[0].toUpperCase() + '.'
               }`
@@ -36,7 +34,7 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
         }${
           user.secondName
             ? ` ${
-                showFullName || user.security?.fullSecondName
+                seeFullNames || user.security?.fullSecondName
                   ? upperCaseFirst(user.secondName)
                   : user.secondName[0].toUpperCase() + '.'
               }`
@@ -45,7 +43,7 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
       ) : (
         <div
           className={cn(
-            'flex gap-x-1 leading-[12px] flex-1',
+            'flex gap-x-1 leading-[14px] flex-1',
             noWrap ? 'flex-nowrap' : 'flex-wrap'
           )}
         >
@@ -56,14 +54,14 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
           )}
           {user?.thirdName && (
             <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
-              {showFullName || user.security?.fullThirdName
+              {seeFullNames || user.security?.fullThirdName
                 ? upperCaseFirst(user.thirdName)
                 : user.thirdName[0].toUpperCase() + '.'}
             </span>
           )}
           {user?.secondName && (
             <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
-              {showFullName || user.security?.fullSecondName
+              {seeFullNames || user.security?.fullSecondName
                 ? upperCaseFirst(user.secondName)
                 : user.secondName[0].toUpperCase() + '.'}
             </span>

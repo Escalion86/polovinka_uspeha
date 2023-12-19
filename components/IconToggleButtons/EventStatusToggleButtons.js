@@ -1,13 +1,14 @@
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import { useRecoilValue } from 'recoil'
 
 const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+
+  const eventStatusFilterFull = loggedUserActiveRole?.events?.statusFilterFull
+
   const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
   return (
     <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
@@ -47,7 +48,7 @@ const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
       >
         Завершены
       </Button>
-      {!noClosed && (isLoggedUserModer || isLoggedUserAdmin) && (
+      {!noClosed && eventStatusFilterFull && (
         <Button
           onClick={() =>
             onChange({

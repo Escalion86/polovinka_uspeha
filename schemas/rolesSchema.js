@@ -1,39 +1,39 @@
 const rolesSchema = {
-  seeFullUsersNames: {
+  name: {
+    type: String,
+    require: true,
+  },
+  hidden: {
     type: Boolean,
     default: false,
   },
-  seeAllContactsOfUsers: {
+  dev: {
+    type: Boolean,
+    default: false,
+  },
+  seeMyStatistics: { type: Boolean, default: false },
+  setSelfStatus: {
+    type: Boolean,
+    default: false,
+  },
+  setSelfRole: {
+    type: Boolean,
+    default: false,
+  },
+  hideFab: {
     type: Boolean,
     default: false,
   },
   notifications: {
     type: {},
     default: {
-      option: false,
       birthdays: false,
       newUserRegistred: false,
       eventRegistration: false,
       newEventsByTags: false,
-      eventUserMoves: false,
-      eventCancel: false,
+      // eventUserMoves: false,
+      // eventCancel: false,
     },
-  },
-  seeBirthdayOfUsers: {
-    type: Boolean,
-    default: false,
-  },
-  eventUsersCounterAndAgeFull: {
-    type: Boolean,
-    default: false,
-  },
-  eventStatusFilterFull: {
-    type: Boolean,
-    default: false,
-  },
-  seeUserSumOfPaymentsWithoutEvent: {
-    type: Boolean,
-    default: false,
   },
   events: {
     type: {},
@@ -43,32 +43,37 @@ const rolesSchema = {
       add: false,
       edit: false,
       delete: false,
+      statusEdit: false,
+      paymentsEdit: false,
+      showProfitOnCard: false,
+      eventUsersCounterAndAgeFull: false,
     },
   },
   eventsUsers: {
     type: {},
     default: {
-      see: true,
+      see: false,
       edit: false,
+      copyListToClipboard: false,
     },
   },
   users: {
     type: {},
     default: {
       see: false,
+      seeMembersOnly: false,
       add: false,
       edit: false,
+      setRole: false,
+      setStatus: false,
       delete: false,
-    },
-  },
-  directions: {
-    type: {},
-    default: {
-      see: true,
-      seeHidden: false,
-      add: false,
-      edit: false,
-      delete: false,
+      seeFullNames: false,
+      seeAllContacts: false,
+      seeBirthday: false,
+      seeUserEvents: false,
+      seeUserPayments: false,
+      setPassword: false,
+      seeSumOfPaymentsWithoutEventOnCard: false,
     },
   },
   services: {
@@ -84,8 +89,11 @@ const rolesSchema = {
   servicesUsers: {
     type: {},
     default: {
-      see: true,
+      see: false,
+      add: false,
       edit: false,
+      delete: false,
+      statusEdit: false,
     },
   },
   products: {
@@ -101,11 +109,14 @@ const rolesSchema = {
   productsUsers: {
     type: {},
     default: {
-      see: true,
+      see: false,
+      add: false,
       edit: false,
+      delete: false,
+      statusEdit: false,
     },
   },
-  additionalBlocks: {
+  payments: {
     type: {},
     default: {
       see: true,
@@ -113,23 +124,51 @@ const rolesSchema = {
       add: false,
       edit: false,
       delete: false,
+      paymentsNotParticipantsEvent: false,
+      paymentsWithNoEvent: false,
     },
   },
-  editSiteSettings: {
-    type: Boolean,
-    default: false,
+  statistics: {
+    type: {},
+    default: {
+      events: false,
+      users: false,
+      finances: false,
+    },
   },
-  setSelfStatus: {
-    type: Boolean,
-    default: false,
+  instruments: {
+    type: {},
+    default: {
+      anonsTextGenerator: false,
+      anonsEventImageGenerator: false,
+      anonsEventListImageGenerator: false,
+      export: false,
+      newsletter: false,
+    },
   },
-  setSelfRole: {
-    type: Boolean,
-    default: false,
+  generalPage: {
+    type: {},
+    default: {
+      directions: false,
+      additionalBlocks: false,
+      reviews: false,
+      contacts: false,
+    },
   },
-  fabInCabinet: {
-    type: Boolean,
-    default: false,
+  siteSettings: {
+    type: {},
+    default: {
+      phoneConfirmService: false,
+      fabMenu: false,
+      roles: false,
+    },
+  },
+  notices: {
+    type: {},
+    default: {
+      histories: false,
+      birthdays: false,
+    },
   },
 }
 

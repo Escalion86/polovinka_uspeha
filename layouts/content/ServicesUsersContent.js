@@ -9,17 +9,16 @@ import ServicesUsersList from '@layouts/lists/ServicesUsersList'
 import { modalsFuncAtom } from '@state/atoms'
 import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import usersAtom from '@state/atoms/usersAtom'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
-import isLoggedUserModerSelector from '@state/selectors/isLoggedUserModerSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
 const ServicesUsersContent = () => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const servicesUsers = useRecoilValue(servicesUsersAtom)
   const users = useRecoilValue(usersAtom)
-  const isLoggedUserModer = useRecoilValue(isLoggedUserModerSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const addButton = loggedUserActiveRole?.servicesUsers?.add
 
   const [filter, setFilter] = useState({
     gender: {
@@ -103,7 +102,7 @@ const ServicesUsersContent = () => {
               if (isSearching) setSearchText('')
             }}
           />
-          {(isLoggedUserModer || isLoggedUserAdmin) && (
+          {addButton && (
             <AddButton onClick={() => modalsFunc.serviceUser.add()} />
           )}
         </div>

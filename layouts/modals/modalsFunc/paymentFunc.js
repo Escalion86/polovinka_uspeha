@@ -13,7 +13,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventSelector from '@state/selectors/eventSelector'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import paymentSelector from '@state/selectors/paymentSelector'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -31,7 +31,8 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
 
-    const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const isLoggedUserDev = loggedUserActiveRole?.dev
 
     const event = useRecoilValue(eventSelector(payment.eventId))
     const isEventClosed = isEventClosedFunc(event)

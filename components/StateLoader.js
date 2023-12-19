@@ -39,7 +39,7 @@ import ModalsPortal from '@layouts/modals/ModalsPortal'
 import { modalsFuncAtom } from '@state/atoms'
 import historiesAtom from '@state/atoms/historiesAtom'
 import isSiteLoadingAtom from '@state/atoms/isSiteLoadingAtom'
-import loggedUserActiveRoleAtom from '@state/atoms/loggedUserActiveRoleAtom'
+import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import questionnairesAtom from '@state/atoms/questionnairesAtom'
 import questionnairesUsersAtom from '@state/atoms/questionnairesUsersAtom'
@@ -71,7 +71,8 @@ import modeAtom from '@state/atoms/modeAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import { getRecoil } from 'recoil-nexus'
 import TopInfo from './TopInfo'
-import rolesSettingsAtom from '@state/atoms/rolesSettingsAtom'
+import rolesAtom from '@state/atoms/rolesAtom'
+import { DEFAULT_ROLES } from '@helpers/constants'
 // import setRecoilFunc from '@helpers/setRecoilFunc'
 
 const StateLoader = (props) => {
@@ -90,7 +91,7 @@ const StateLoader = (props) => {
 
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
-    loggedUserActiveRoleAtom
+    loggedUserActiveRoleNameAtom
   )
   const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
     loggedUserActiveStatusAtom
@@ -105,7 +106,7 @@ const StateLoader = (props) => {
   // const setEventsUsersState = useSetRecoilState(eventsUsersAtom)
   const [siteSettingsState, setSiteSettingsState] =
     useRecoilState(siteSettingsAtom)
-  const setRolesSettingsState = useSetRecoilState(rolesSettingsAtom)
+  const setRolesSettingsState = useSetRecoilState(rolesAtom)
   const setHistoriesState = useSetRecoilState(historiesAtom)
   const setQuestionnairesState = useSetRecoilState(questionnairesAtom)
   const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
@@ -195,7 +196,10 @@ const StateLoader = (props) => {
     setPaymentsState(props.payments)
     // setEventsUsersState(props.eventsUsers)
     setSiteSettingsState(props.siteSettings)
-    setRolesSettingsState(props.rolesSettings)
+    setRolesSettingsState([
+      ...DEFAULT_ROLES,
+      ...(typeof props.rolesSettings === 'object' ? props.rolesSettings : []),
+    ])
     setHistoriesState(props.histories)
     setQuestionnairesState(props.questionnaires)
     setQuestionnairesUsersState(props.questionnairesUsers)

@@ -7,8 +7,8 @@ const visibleEventsForUser = (
   eventsUsers,
   user,
   onlyNew = false,
-  isUserAdminOrModer,
-  userStatus
+  seeAll,
+  userStatusName
 ) => {
   if (!events || events?.length === 0) return []
   if (!user) {
@@ -22,7 +22,7 @@ const visibleEventsForUser = (
       return !event.usersStatusAccess || event.usersStatusAccess.novice
     })
   } else {
-    if (isUserAdminOrModer) return events
+    if (seeAll) return events
 
     const serverDate = new Date(getRecoil(serverSettingsAtom)?.dateTime)
     const userAge = new Number(
@@ -75,7 +75,7 @@ const visibleEventsForUser = (
       return (
         // (eventUser?.status !== 'ban' &&
         !event.usersStatusAccess ||
-        (userStatus === 'member' && event.usersStatusAccess['member']) ||
+        (userStatusName === 'member' && event.usersStatusAccess['member']) ||
         event.usersStatusAccess['novice']
         // )
       )

@@ -1,6 +1,4 @@
-import isUserAdmin from '@helpers/isUserAdmin'
 import SiteSettings from '@models/SiteSettings'
-import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
 const fetchSiteSettings = async (user) => {
