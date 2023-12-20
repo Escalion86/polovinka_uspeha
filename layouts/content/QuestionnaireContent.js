@@ -48,6 +48,13 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   </div>
 )
 
+const Note = ({ children }) => (
+  <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
+    <span className="italic font-semibold">Примечание: </span>
+    {children}
+  </div>
+)
+
 const QuestionnaireContent = (props) => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -329,9 +336,7 @@ const QuestionnaireContent = (props) => {
       <ErrorsList errors={errors} className="px-1" />
       <div className="p-2 overflow-y-auto">
         <FormWrapper className="mt-6">
-          <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
-            {/* <div className="flex flex-wrap items-center gap-x-1"> */}
-            <span className="italic font-semibold">Примечание: </span>
+          <Note>
             <span>Поля отмеченные знаком</span>
             <FontAwesomeIcon
               className="text-danger w-2.5 h-2.5 inline-block mx-1 mb-1"
@@ -339,8 +344,7 @@ const QuestionnaireContent = (props) => {
               size="1x"
             />
             <span>обязательны для заполнения</span>
-            {/* </div> */}
-          </div>
+          </Note>
           <InputImages
             label="Фотографии"
             directory="users"
@@ -391,13 +395,12 @@ const QuestionnaireContent = (props) => {
             inputClassName="capitalize"
             error={errors.thirdName}
           />
-          <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
-            <span className="italic font-semibold">Примечание: </span>
+          <Note>
             <span>
               Обратите внимание, что некоторые поля ниже требуют выбрать один из
               вариантов, для этого нужно нажать на кнопку с вариантом
             </span>
-          </div>
+          </Note>
           <ValuePicker
             value={security.fullSecondName}
             valuesArray={[
@@ -490,10 +493,7 @@ const QuestionnaireContent = (props) => {
             // fullWidth={fullWidth}
           />
 
-          {/* </div> */}
-          {/* </ShowWrapper> */}
-          <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
-            <span className="italic font-semibold">Примечание: </span>
+          <Note>
             <span>
               Поля ниже можно скрыть от посторонних глаз, для этого при клике на
               иконку глаза можно показать/скрыть соответствующее поле
@@ -520,7 +520,7 @@ const QuestionnaireContent = (props) => {
                 {'поле скрыто от пользователей'}
               </span>
             </div>
-          </div>
+          </Note>
           <FormWrapper twoColumns>
             <ShowWrapper
               securytyKey="showPhone"

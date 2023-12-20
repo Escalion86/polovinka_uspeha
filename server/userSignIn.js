@@ -153,12 +153,14 @@ const userSignIn = async ({
       const eventParticipants = await Users.find({
         _id: { $in: eventParticipantsIds },
       })
-      const eventParticipantsMansCount = eventParticipants.filter(
+      const eventParticipantsMans = eventParticipants.filter(
         (user) => user.gender === 'male'
-      ).length
-      const eventParticipantsWomansCount = eventParticipants.filter(
+      )
+      const eventParticipantsWomans = eventParticipants.filter(
         (user) => user.gender === 'famale'
-      ).length
+      )
+      const eventParticipantsMansCount = eventParticipantsMans.length
+      const eventParticipantsWomansCount = eventParticipantsWomans.length
       const eventParticipantsCount =
         eventParticipantsMansCount + eventParticipantsWomansCount
 
@@ -174,14 +176,54 @@ const userSignIn = async ({
         event.maxMans <= eventParticipantsMansCount
       ) {
         errorText = `свободных мест для мужчин на мероприятии уже нет`
-      }
-
-      if (
+      } else if (
         user.gender === 'famale' &&
         typeof event.maxWomans === 'number' &&
         event.maxWomans <= eventParticipantsWomansCount
       ) {
         errorText = `свободных мест для женщин на мероприятии уже нет`
+      }
+      // Проверям места для клуба/центра
+      if (!errorText) {
+        // Если пользователь мужчина
+        if (user.gender === 'male') {
+          if (!user.status || user.status === 'novice') {
+            const eventParticipantsNoviceMansCount =
+              eventParticipantsMans.filter(
+                (user) => !user.status || user.status === 'novice'
+              ).length
+            if (eventParticipantsNoviceMansCount >= event.maxMansNovice) {
+              errorText = `свободных мест для мужчин из центра уже нет`
+            }
+          } else if (!user.status || user.status === 'member') {
+            const eventParticipantsMemberMansCount =
+              eventParticipantsMans.filter(
+                (user) => user.status === 'member'
+              ).length
+            if (eventParticipantsMemberMansCount >= event.maxMansMemeber) {
+              errorText = `свободных мест для мужчин из клуба уже нет`
+            }
+          }
+          // Если пользователь женщина
+        } else if (user.gender === 'famale') {
+          if (!user.status || user.status === 'novice') {
+            const eventParticipantsNoviceWomansCount =
+              eventParticipantsWomans.filter(
+                (user) => !user.status || user.status === 'novice'
+              ).length
+            if (eventParticipantsNoviceWomansCount >= event.maxWomansNovice) {
+              errorText = `свободных мест для женщин из центра уже нет`
+            }
+          } else if (!user.status || user.status === 'member') {
+            const eventParticipantsMemberWomansCount =
+              eventParticipantsWomans.filter(
+                (user) => user.status === 'member'
+              ).length
+            if (eventParticipantsMemberWomansCount >= event.maxWomansMemeber) {
+              errorText = `свободных мест для женщин из клуба уже нет`
+            }
+          }
+        }
       }
 
       if (errorText) {
