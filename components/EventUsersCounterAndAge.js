@@ -322,7 +322,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
 
   if (!eventId || !event) return null
 
-  const showNoviceAndMemberSum =
+  const eventUsersCounterAndAgeFull =
     loggedUserActiveRole?.events?.eventUsersCounterAndAgeFull
 
   const showReserve = true
@@ -346,7 +346,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           gender="mans"
           event={event}
           showAges={showAges}
-          showNoviceAndMemberSum={showNoviceAndMemberSum}
+          showNoviceAndMemberSum={!eventUsersCounterAndAgeFull}
           showReserve={showReserve}
         />
       </div>
@@ -359,7 +359,7 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           gender="womans"
           event={event}
           showAges={showAges}
-          showNoviceAndMemberSum={showNoviceAndMemberSum}
+          showNoviceAndMemberSum={!eventUsersCounterAndAgeFull}
           showReserve={showReserve}
         />
         {/* <div className="flex flex-col items-center">
