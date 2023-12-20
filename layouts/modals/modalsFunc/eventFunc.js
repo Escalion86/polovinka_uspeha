@@ -16,6 +16,7 @@ import Slider from '@components/Slider'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import UserStatusIcon from '@components/UserStatusIcon'
+import EventRelationshipAccessPicker from '@components/ValuePicker/EventRelationshipAccessPicker'
 import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareArrays from '@helpers/compareArrays'
@@ -174,6 +175,10 @@ const eventFunc = (eventId, clone = false) => {
       defaultUsersStatusDiscount
     )
 
+    const [usersRelationshipAccess, setUsersRelationshipAccess] = useState(
+      event?.usersRelationshipAccess ?? DEFAULT_EVENT.usersRelationshipAccess
+    )
+
     const [showOnSite, setShowOnSite] = useState(
       event?.showOnSite ?? DEFAULT_EVENT.showOnSite
     )
@@ -202,6 +207,7 @@ const eventFunc = (eventId, clone = false) => {
         dateStart,
         dateEnd,
         tags,
+        usersRelationshipAccess,
       })
       if (getDiffBetweenDates(dateStart, dateEnd) < 0) {
         addError({
@@ -241,6 +247,7 @@ const eventFunc = (eventId, clone = false) => {
             // status,
             usersStatusAccess,
             usersStatusDiscount,
+            usersRelationshipAccess,
             isReserveActive,
             report,
             reportImages,
@@ -284,6 +291,7 @@ const eventFunc = (eventId, clone = false) => {
         // event?.status !== status ||
         !compareObjects(defaultUsersStatusAccess, usersStatusAccess) ||
         !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
+        event?.usersRelationshipAccess !== usersRelationshipAccess ||
         event?.isReserveActive !== isReserveActive ||
         event?.report !== report ||
         !compareArrays(event?.reportImages, reportImages) ||
@@ -327,6 +335,7 @@ const eventFunc = (eventId, clone = false) => {
       // status,
       usersStatusAccess,
       usersStatusDiscount,
+      usersRelationshipAccess,
       isReserveActive,
       report,
       reportImages,
@@ -625,6 +634,11 @@ const eventFunc = (eventId, clone = false) => {
                 </div>
               </FormRow>
             )}
+            <EventRelationshipAccessPicker
+              required
+              relationshipStatus={usersRelationshipAccess}
+              onChange={setUsersRelationshipAccess}
+            />
             {/* </FormRow> */}
             {/* </FormWrapper> */}
           </TabPanel>

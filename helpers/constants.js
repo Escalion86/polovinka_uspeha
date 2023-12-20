@@ -491,6 +491,7 @@ export const DEFAULT_EVENT = Object.freeze({
   maxWomansAge: 45,
   usersStatusAccess: {},
   usersStatusDiscount: {},
+  usersRelationshipAccess: 'yes',
   isReserveActive: true,
   report: '',
   reportImages: [],
@@ -593,6 +594,12 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   vk: '',
   codeSendService: 'telefonip',
 })
+
+export const EVENT_RELATIONSHIP_ACCESS = [
+  { value: 'yes', name: 'Всем', color: 'green-400' },
+  { value: 'no', name: 'Без пары', color: 'blue-400' },
+  { value: 'only', name: 'Только с парой', color: 'red-400' },
+]
 
 export const EVENT_STATUSES = [
   { value: 'active', name: 'Активно', color: 'blue-400', icon: faPlay },

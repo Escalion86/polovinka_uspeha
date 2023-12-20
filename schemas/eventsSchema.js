@@ -117,6 +117,10 @@ const eventsSchema = {
     of: Number,
     default: DEFAULT_USERS_STATUS_DISCOUNT,
   },
+  usersRelationshipAccess: {
+    type: String,
+    default: 'no', //no, yes, only
+  },
   isReserveActive: {
     type: Boolean,
     default: true,
