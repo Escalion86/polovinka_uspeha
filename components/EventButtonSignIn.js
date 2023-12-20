@@ -155,7 +155,7 @@ const EventButtonSignInComponent = ({
       <TextStatus className="text-danger">Мест нет</TextStatus>
     ) : isEventInProcess && (noButtonIfAlreadySignIn || !canSignIn) ? (
       <TextStatus className="text-general">В процессе</TextStatus>
-    ) : (
+    ) : event.showOnSite ? (
       <Button
         thin={thin}
         stopPropagation
@@ -207,7 +207,7 @@ const EventButtonSignInComponent = ({
         //   isUserQuestionnaireFilled
         // }
       />
-    )
+    ) : null
 
   return (
     <div className={cn('flex', className)}>
