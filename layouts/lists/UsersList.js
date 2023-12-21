@@ -8,7 +8,7 @@ const UsersList = ({ users }) => {
   return (
     <ListWrapper
       itemCount={users.length}
-      itemSize={widthNum > 2 ? 90 : 97}
+      itemSize={widthNum > 2 ? 98 : 101}
       className="bg-opacity-15 bg-general"
     >
       {({ index, style }) => (

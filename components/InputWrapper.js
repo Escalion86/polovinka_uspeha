@@ -160,7 +160,7 @@ const InputWrapper = forwardRef(
               (value !== null &&
                 typeof value === 'object' &&
                 value.length > 0) ||
-                (typeof value !== 'object' && value)
+                (typeof value !== 'object' && (value || value === false))
                 ? 'text-disabled'
                 : 'text-danger'
             )}

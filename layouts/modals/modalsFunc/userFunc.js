@@ -60,6 +60,9 @@ const userFunc = (userId, clone = false) => {
     const [relationship, setRelationship] = useState(
       user?.relationship ?? DEFAULT_USER.relationship
     )
+    const [personalStatus, setPersonalStatus] = useState(
+      user?.personalStatus ?? DEFAULT_USER.personalStatus
+    )
 
     const [email, setEmail] = useState(user?.email ?? DEFAULT_USER.email)
     const [phone, setPhone] = useState(user?.phone ?? DEFAULT_USER.phone)
@@ -132,6 +135,7 @@ const userFunc = (userId, clone = false) => {
             password: userId ? undefined : password,
             gender,
             relationship,
+            personalStatus,
             email,
             phone,
             whatsapp,
@@ -213,6 +217,7 @@ const userFunc = (userId, clone = false) => {
         // user?.orientation !== orientation ||
         user?.gender !== gender ||
         user?.relationship !== relationship ||
+        user?.personalStatus !== personalStatus ||
         user?.email !== email ||
         user?.phone !== phone ||
         user?.whatsapp !== whatsapp ||
@@ -240,6 +245,7 @@ const userFunc = (userId, clone = false) => {
       // orientation,
       gender,
       relationship,
+      personalStatus,
       email,
       phone,
       whatsapp,
@@ -355,6 +361,12 @@ const userFunc = (userId, clone = false) => {
           required
           error={errors.relationship}
           // fullWidth={fullWidth}
+        />
+        <Input
+          label="Статус (будет виден всем на карточке)"
+          type="text"
+          value={personalStatus}
+          onChange={setPersonalStatus}
         />
         <FormWrapper twoColumns>
           <PhoneInput

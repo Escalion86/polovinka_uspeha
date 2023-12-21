@@ -86,6 +86,11 @@ const userViewFunc = (userId, clone = false) => {
               </div>
             )}
           </div>
+          {user.personalStatus && (
+            <div className="pb-3 pt-1 text-sm italic font-normal leading-[15px] text-general">
+              {user.personalStatus}
+            </div>
+          )}
           {isLoggedUserDev && <TextLine label="ID">{user?._id}</TextLine>}
           <TextLine label="Пол">
             {GENDERS.find((item) => item.value === user.gender)?.name ??

@@ -10,7 +10,7 @@ const UserStatusPicker = ({
   <ValuePicker
     value={status}
     valuesArray={USERS_STATUSES}
-    label="Статус"
+    label="Статус на проекте"
     onChange={onChange}
     name="status"
     required={required}

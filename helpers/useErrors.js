@@ -46,7 +46,9 @@ const useErrors = () => {
       description: (data) =>
         !data ? setError({ description: 'Введите описание' }) : null,
       relationship: (data) =>
-        !data ? setError({ relationship: 'Введите статус отношений' }) : null,
+        typeof data !== 'boolean'
+          ? setError({ relationship: 'Введите статус отношений' })
+          : null,
       usersRelationshipAccess: (data) =>
         !data
           ? setError({

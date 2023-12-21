@@ -1,29 +1,35 @@
-import ComboBox from '@components/ComboBox'
-import { RELATIONSHIP_VALUES } from '@helpers/constants'
+// import ComboBox from '@components/ComboBox'
+// import { RELATIONSHIP_VALUES } from '@helpers/constants'
+
+import ValuePicker from '@components/ValuePicker/ValuePicker'
 
 const RelationshipSelector = ({
   value,
   onChange,
-  placeholder = 'Не выбрано',
   required,
   error,
-  activePlaceholder,
-  fullWidth,
   className,
 }) => {
   return (
-    <ComboBox
-      label="Статус отношений"
-      value={value}
+    <ValuePicker
       className={className}
+      value={value}
+      valuesArray={[
+        {
+          value: true,
+          name: 'Есть пара',
+          color: 'green-400',
+        },
+        {
+          value: false,
+          name: 'Нет пары',
+          color: 'blue-400',
+        },
+      ]}
+      label="Статус отношений"
       onChange={onChange}
-      items={RELATIONSHIP_VALUES}
-      placeholder={placeholder}
-      activePlaceholder={activePlaceholder}
-      smallMargin
       required={required}
       error={error}
-      fullWidth={fullWidth}
     />
   )
 }
