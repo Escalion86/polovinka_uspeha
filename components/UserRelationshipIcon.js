@@ -1,13 +1,19 @@
 import Image from 'next/image'
 import Tooltip from './Tooltip'
-import { RELATIONSHIP_VALUES } from '@helpers/constants'
+// import { RELATIONSHIP_VALUES } from '@helpers/constants'
 
-const UserRelationshipIcon = ({ relationship, size, showName = false }) => {
-  if (!relationship) return null
-  const relation = RELATIONSHIP_VALUES.find(
-    ({ value }) => value === relationship
-  )
-  if (!relation) return null
+const UserRelationshipIcon = ({
+  relationship,
+  size,
+  showName = false,
+  showHavePartnerOnly,
+}) => {
+  // if (!relationship) return null
+  // const relation = RELATIONSHIP_VALUES.find(
+  //   ({ value }) => value === relationship
+  // )
+  const havePartner = relationship === true || relationship === 'havePartner'
+  if (showHavePartnerOnly && !havePartner) return null
 
   var numSize
   switch (size) {
@@ -27,15 +33,22 @@ const UserRelationshipIcon = ({ relationship, size, showName = false }) => {
       numSize = 6
   }
 
+  const name = havePartner ? 'Есть пара' : 'Нет пары'
+
   const Icon = () => (
-    <Tooltip title={relation.name}>
+    <Tooltip title={name}>
       <div
         className={`flex items-center justify-center min-w-${numSize + 1} w-${
           numSize + 1
         } h-${numSize + 1}`}
       >
         <Image
-          src={'/img/relationships/' + relation.value + '.png'}
+          // src={'/img/relationships/' + relation.value + '.png'}
+          src={
+            '/img/relationships/' +
+            (havePartner ? 'havePartner' : 'noPartner') +
+            '.png'
+          }
           width={numSize * 5}
           height={numSize * 5}
         />
@@ -47,7 +60,7 @@ const UserRelationshipIcon = ({ relationship, size, showName = false }) => {
     return (
       <div className="flex items-center gap-x-2">
         <Icon />
-        <span>{relation.name}</span>
+        <span>{name}</span>
       </div>
     )
 

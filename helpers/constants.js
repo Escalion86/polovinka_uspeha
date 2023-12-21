@@ -445,6 +445,7 @@ export const DEFAULT_USER = Object.freeze({
   // profession: '',
   // orientation: null,
   relationship: null,
+  personalStatus: '',
   status: 'novice',
   lastActivityAt: null,
   prevActivityAt: null,

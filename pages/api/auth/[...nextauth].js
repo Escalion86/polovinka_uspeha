@@ -135,6 +135,8 @@ export default async function auth(req, res) {
           session.user.instagram = result.instagram
           session.user.vk = result.vk
           session.user.gender = result.gender
+          session.user.relationship = result.relationship
+          session.user.personalStatus = result.personalStatus
           session.user.birthday = result.birthday
           session.user.lastActivityAt = result.lastActivityAt
           session.user.prevActivityAt = result.prevActivityAt
@@ -151,7 +153,6 @@ export default async function auth(req, res) {
           session.user.createdAt = result.createdAt
           session.user.updatedAt = result.updatedAt
         }
-
         //  else {
         //   // если пользователь не зарегистрирован
         //   await CRUD(Users, {

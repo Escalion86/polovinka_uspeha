@@ -51,8 +51,12 @@ const usersSchema = {
     default: null,
   },
   relationship: {
-    type: String,
+    type: Boolean,
     default: null,
+  },
+  personalStatus: {
+    type: String,
+    default: '',
   },
   about: {
     type: String,

@@ -1,5 +1,6 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
+import TextLinesLimiter from '@components/TextLinesLimiter'
 import UserName from '@components/UserName'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
@@ -113,7 +114,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
         <div className="flex flex-col flex-1 tablet:flex-row">
           <div className="flex flex-1 border-b tablet:border-b-0">
             <img
-              className="hidden object-cover w-[5.25rem] h-[5.25rem] tablet:block min-w-[5.25rem] min-h-[5.25rem]"
+              className="hidden object-cover w-[92px] h-[92px] tablet:block min-w-[92px] min-h-[92px]"
               src={getUserAvatarSrc(user)}
               alt="user"
               // width={48}
@@ -123,7 +124,10 @@ const UserCard = ({ userId, hidden = false, style }) => {
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
                   <div className="flex flex-nowrap items-center px-1 py-0.5 leading-6 gap-x-1">
-                    <UserRelationshipIcon relationship={user.relationship} />
+                    <UserRelationshipIcon
+                      relationship={user.relationship}
+                      showHavePartnerOnly
+                    />
                     <UserStatusIcon status={user.status} />
                     <UserName
                       user={user}
@@ -144,15 +148,24 @@ const UserCard = ({ userId, hidden = false, style }) => {
                       </span>
                     )} */}
                   </div>
-                  <div className="flex">
+                  <div className="flex tablet:h-full">
                     <img
-                      className="object-cover w-14 h-14 min-w-14 min-h-14 tablet:hidden"
+                      className="object-cover w-[60px] h-[60px] min-w-[60px] min-h-[60px] tablet:hidden"
                       src={getUserAvatarSrc(user)}
                       alt="user"
                       // width={48}
                       // height={48}
                     />
-                    <div className="flex flex-col justify-center px-1">
+                    <div className="flex flex-col justify-end h-full px-1">
+                      <div className="flex items-center flex-1">
+                        <TextLinesLimiter
+                          className="text-sm italic font-normal leading-[14px] text-general"
+                          // textClassName="leading-5"
+                          lines={2}
+                        >
+                          {user.personalStatus}
+                        </TextLinesLimiter>
+                      </div>
                       {user.birthday &&
                         (seeBirthday ||
                           user.security?.showBirthday === true ||
@@ -175,12 +188,13 @@ const UserCard = ({ userId, hidden = false, style }) => {
                             </div>
                           </div>
                         )}
-                      <div className="flex text-sm leading-4 gap-x-2 ">
+
+                      {/* <div className="flex text-sm leading-4 gap-x-2 ">
                         <span className="font-bold">Зарегистрирован:</span>
                         <span className="font-normal">
                           {formatDate(user.createdAt)}
                         </span>
-                      </div>
+                      </div> */}
                       <div className="flex text-sm leading-4 gap-x-2">
                         <span className="font-bold">Посетил:</span>
                         <FinishedCount userId={userId} />
