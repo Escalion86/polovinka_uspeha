@@ -31,6 +31,7 @@ import { useRecoilValue } from 'recoil'
 import CardButton from './CardButton'
 import DropDown from './DropDown'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -70,6 +71,7 @@ const CardButtons = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const device = useRecoilValue(windowDimensionsTailwindSelector)
+  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   // const [open, setOpen] = useState(false)
   // const [isTriggered, setIsTriggered] = useState(false)
   // const ref = useDetectClickOutside({
@@ -122,7 +124,8 @@ const CardButtons = ({
       ['event', 'service', 'user', 'product'].includes(typeOfItem),
     addToCalendar: typeOfItem === 'event',
     eventUsersBtn:
-      loggedUserActiveRole.eventsUsers.see && typeOfItem === 'event',
+      (loggedUserActiveRole.eventsUsers.see || isLoggedUserMember) &&
+      typeOfItem === 'event',
     upBtn: onUpClick && upDownSee,
     downBtn: onDownClick && upDownSee,
     editBtn: showEditButton && editSee,
