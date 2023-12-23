@@ -953,7 +953,7 @@ export const DEFAULT_ROLES = [
       anonsTextGenerator: true,
       anonsEventImageGenerator: true,
       anonsEventListImageGenerator: true,
-      export: false,
+      export: true,
       newsletter: false,
     },
     generalPage: {
