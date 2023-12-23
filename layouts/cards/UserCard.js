@@ -79,7 +79,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
   // const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
-  const seeBirthday = loggedUserActiveRole?.seeBirthday
+  const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
   const seeSumOfPaymentsWithoutEventOnCard =
     loggedUserActiveRole?.seeSumOfPaymentsWithoutEventOnCard
   // const widthNum = useWindowDimensionsTailwindNum()
