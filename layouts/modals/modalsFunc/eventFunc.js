@@ -32,6 +32,7 @@ import getEventDuration from '@helpers/getEventDuration'
 import isObject from '@helpers/isObject'
 import useErrors from '@helpers/useErrors'
 import useFocus from '@helpers/useFocus'
+import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventSelector from '@state/selectors/eventSelector'
@@ -49,6 +50,7 @@ const eventFunc = (eventId, clone = false) => {
     setDisableDecline,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
+    const directions = useRecoilValue(directionsAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
     const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()
     const [refMansMax, setFocusMansMax] = useFocus()
@@ -193,6 +195,48 @@ const eventFunc = (eventId, clone = false) => {
     const [warning, setWarning] = useState(
       event?.warning ?? DEFAULT_EVENT.warning
     )
+
+    const direction = useMemo(
+      () => directions.find(({ _id }) => _id === directionId),
+      [directionId]
+    )
+
+    const changeDirectionId = (id) => {
+      const direction = directions.find(({ _id }) => _id === id)
+      const rules = direction.rules
+      if (rules && typeof rules === 'object') {
+        if (rules?.userStatus) {
+          setUsersStatusAccess((state) => {
+            const novice = ['novice', 'any'].includes(rules.userStatus)
+              ? true
+              : rules.userStatus === 'member'
+              ? false
+              : state.novice
+            const member = ['member', 'any'].includes(rules.userStatus)
+              ? true
+              : rules.userStatus === 'novice'
+              ? false
+              : state.member
+            return { ...state, novice, member }
+          })
+        }
+        if (rules?.userRelationship) {
+          setUsersRelationshipAccess((state) => {
+            if (rules.userRelationship === 'any') {
+              return 'yes'
+            }
+            if (rules.userRelationship === 'alone') {
+              return 'no'
+            }
+            if (rules.userRelationship === 'pair') {
+              return 'only'
+            }
+            return state
+          })
+        }
+      }
+      setDirectionId(id)
+    }
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -397,12 +441,19 @@ const eventFunc = (eventId, clone = false) => {
               value={directionId}
               onChange={(directionId) => {
                 removeError('directionId')
-                setDirectionId(directionId)
+                changeDirectionId(directionId)
               }}
               required
               error={errors.directionId}
             />
-
+            {(direction?.rules?.userStatus &&
+              direction?.rules?.userStatus !== 'select') ||
+              (direction?.rules?.userRelationship &&
+                direction?.rules?.userRelationship !== 'select' && (
+                  <div className="pl-2 -mb-2 text-sm text-danger">
+                    Применены ограничения доступа заданные направлением
+                  </div>
+                ))}
             <Input
               label="Название"
               type="text"
@@ -578,6 +629,9 @@ const eventFunc = (eventId, clone = false) => {
               }
               // labelClassName="w-[20%]"
               label="Новичок"
+              disabled={['any', 'novice', 'member'].includes(
+                direction?.rules?.userStatus
+              )}
             />
             {usersStatusAccess?.novice && (
               <FormRow>
@@ -613,6 +667,9 @@ const eventFunc = (eventId, clone = false) => {
               }
               // labelClassName="w-[20%]"
               label="Участник клуба"
+              disabled={['any', 'novice', 'member'].includes(
+                direction?.rules?.userStatus
+              )}
             />
             {usersStatusAccess?.member && (
               <FormRow>
@@ -638,7 +695,19 @@ const eventFunc = (eventId, clone = false) => {
               required
               relationshipStatus={usersRelationshipAccess}
               onChange={setUsersRelationshipAccess}
+              disabled={['any', 'alone', 'pair'].includes(
+                direction?.rules?.userRelationship
+              )}
             />
+            {(direction?.rules?.userStatus &&
+              direction?.rules?.userStatus !== 'select') ||
+              (direction?.rules?.userRelationship &&
+                direction?.rules?.userRelationship !== 'select' && (
+                  <div className="pl-2 -mb-2 text-sm text-danger">
+                    Выбранное направление ограничевает доступ на изменение
+                    некоторых прав
+                  </div>
+                ))}
             {/* </FormRow> */}
             {/* </FormWrapper> */}
           </TabPanel>

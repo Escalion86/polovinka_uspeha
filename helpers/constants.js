@@ -518,6 +518,10 @@ export const DEFAULT_DIRECTION = Object.freeze({
   description: '',
   image: null,
   showOnSite: true,
+  rules: {
+    userStatus: 'select',
+    userRelationship: 'select',
+  },
 })
 
 export const DEFAULT_REVIEW = Object.freeze({

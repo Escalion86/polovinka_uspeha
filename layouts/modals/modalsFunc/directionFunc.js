@@ -3,7 +3,7 @@ import EditableTextarea from '@components/EditableTextarea'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-import InputImage from '@components/InputImage'
+// import InputImage from '@components/InputImage'
 import Textarea from '@components/Textarea'
 import { DEFAULT_DIRECTION } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
@@ -11,6 +11,10 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import TabContext from '@components/Tabs/TabContext'
+import TabPanel from '@components/Tabs/TabPanel'
+import ComboBox from '@components/ComboBox'
+import compareObjects from '@helpers/compareObjects'
 
 const directionFunc = (directionId, clone = false) => {
   const DirectionModal = ({
@@ -39,6 +43,21 @@ const directionFunc = (directionId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       direction?.showOnSite ?? DEFAULT_DIRECTION.showOnSite
     )
+
+    const defaultRules = {
+      ...DEFAULT_DIRECTION.rules,
+      ...direction?.rules,
+    }
+
+    const [rules, setRules] = useState(defaultRules)
+
+    const setRule = (key, value) =>
+      setRules((state) => {
+        const tempState = { ...state }
+        tempState[key] = value
+        return tempState
+      })
+
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
@@ -58,7 +77,8 @@ const directionFunc = (directionId, clone = false) => {
             description,
             shortDescription,
             showOnSite,
-            image,
+            // image,
+            rules,
           },
           clone
         )
@@ -94,34 +114,44 @@ const directionFunc = (directionId, clone = false) => {
         direction?.description !== description ||
         direction?.shortDescription !== shortDescription ||
         direction?.showOnSite !== showOnSite ||
-        direction?.image !== image
+        // || direction?.image !== image
+        !compareObjects(defaultRules, rules)
 
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-    }, [title, shortDescription, description, showOnSite, image])
+    }, [
+      title,
+      shortDescription,
+      description,
+      showOnSite,
+      // image,
+      rules,
+    ])
 
     return (
-      <FormWrapper>
-        <InputImage
+      <TabContext value="Общие">
+        <TabPanel tabName="Общие" className="px-0">
+          <FormWrapper>
+            {/* <InputImage
           label="Картинка"
           directory="directions"
           image={image}
           onChange={setImage}
           aspect={1}
-        />
-        <Input
-          label="Название"
-          type="text"
-          value={title}
-          onChange={(value) => {
-            removeError('title')
-            setTitle(value)
-          }}
-          // labelClassName="w-40"
-          error={errors.title}
-        />
-        {/* <Input
+        /> */}
+            <Input
+              label="Название"
+              type="text"
+              value={title}
+              onChange={(value) => {
+                removeError('title')
+                setTitle(value)
+              }}
+              // labelClassName="w-40"
+              error={errors.title}
+            />
+            {/* <Input
           label="Описание"
           value={description}
           onChange={(e) => {
@@ -131,36 +161,68 @@ const directionFunc = (directionId, clone = false) => {
           labelClassName="w-40"
           error={errors.description}
         /> */}
-        <Textarea
-          label="Короткое описание"
-          onChange={(value) => {
-            removeError('shortDescription')
-            setShortDescription(value)
-          }}
-          value={shortDescription}
-          error={errors.shortDescription}
-          rows={3}
-          required
-        />
-        <EditableTextarea
-          label="Описание"
-          html={description}
-          uncontrolled={false}
-          onChange={(value) => {
-            removeError('description')
-            setDescription(value)
-          }}
-          error={errors.description}
-        />
-        <CheckBox
-          checked={showOnSite}
-          labelPos="left"
-          // labelClassName="w-40"
-          onClick={() => setShowOnSite((checked) => !checked)}
-          label="Показывать на сайте"
-        />
-        <ErrorsList errors={errors} />
-      </FormWrapper>
+            <Textarea
+              label="Короткое описание"
+              onChange={(value) => {
+                removeError('shortDescription')
+                setShortDescription(value)
+              }}
+              value={shortDescription}
+              error={errors.shortDescription}
+              rows={3}
+              required
+            />
+            <EditableTextarea
+              label="Описание"
+              html={description}
+              uncontrolled={false}
+              onChange={(value) => {
+                removeError('description')
+                setDescription(value)
+              }}
+              error={errors.description}
+            />
+            <CheckBox
+              checked={showOnSite}
+              labelPos="left"
+              // labelClassName="w-40"
+              onClick={() => setShowOnSite((checked) => !checked)}
+              label="Показывать на сайте"
+            />
+            <ErrorsList errors={errors} />
+          </FormWrapper>
+        </TabPanel>
+        <TabPanel tabName="Доступ" className="px-0">
+          <ComboBox
+            label="По статусу участника на проекте"
+            // className="w-[108px]"
+            items={[
+              { value: 'select', name: 'Можно выбрать  в мероприятии' },
+              { value: 'any', name: 'Всегда для всех' },
+              { value: 'novice', name: 'Всегда только центру' },
+              { value: 'member', name: 'Всегда только клубным' },
+            ]}
+            value={rules.userStatus}
+            onChange={(value) => setRule('userStatus', value)}
+            paddingY="small"
+            fullWidth={false}
+          />
+          <ComboBox
+            label="По статусу отношений участника"
+            // className="w-[108px]"
+            items={[
+              { value: 'select', name: 'Можно выбрать в мероприятии' },
+              { value: 'any', name: 'Всегда для всех' },
+              { value: 'alone', name: 'Всегда только одиноким' },
+              { value: 'pair', name: 'Всегда только парам' },
+            ]}
+            value={rules.userRelationship}
+            onChange={(value) => setRule('userRelationship', value)}
+            paddingY="small"
+            fullWidth={false}
+          />
+        </TabPanel>
+      </TabContext>
     )
   }
 
