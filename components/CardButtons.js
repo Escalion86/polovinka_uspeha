@@ -91,7 +91,10 @@ const CardButtons = ({
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
   const copyUserLink = useCopyUserLinkToClipboard(item._id)
 
-  const rule = loggedUserActiveRole[typeToKey(typeOfItem)]
+  const key = typeToKey(typeOfItem)
+  const rule = ['additionalBlocks', 'directions', 'reviews'].includes(key)
+    ? loggedUserActiveRole?.generalPage[key]
+    : loggedUserActiveRole[key]
 
   const upDownSee =
     (!forForm &&
@@ -102,7 +105,7 @@ const CardButtons = ({
       loggedUserActiveRole.generalPage.additionalBlocks) ||
     (typeOfItem === 'direction' && loggedUserActiveRole.generalPage.directions)
 
-  const editSee = item.status !== 'closed' && rule?.edit
+  const editSee = item.status !== 'closed' && (rule?.edit || rule === true)
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
   // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
@@ -130,9 +133,13 @@ const CardButtons = ({
     downBtn: onDownClick && upDownSee,
     editBtn: showEditButton && editSee,
     cloneBtn: !['user', 'review'].includes(typeOfItem) && rule?.edit,
-    showOnSiteBtn: showOnSiteOnClick && rule?.seeHidden && rule?.edit,
+    showOnSiteBtn:
+      showOnSiteOnClick && rule?.seeHidden && (rule?.edit || rule === true),
     statusBtn: rule?.statusEdit,
-    deleteBtn: showDeleteButton && item.status !== 'closed' && rule?.delete,
+    deleteBtn:
+      showDeleteButton &&
+      item.status !== 'closed' &&
+      (rule?.delete || rule === true),
     paymentsUsersBtn: rule?.paymentsEdit,
     userEvents: rule?.seeUserEvents,
     userPaymentsBtn: rule?.seeUserPayments,
@@ -148,7 +155,7 @@ const CardButtons = ({
 
   const isCompact =
     alwaysCompact ||
-    ((numberOfButtons > 3 || alwaysCompactOnPhone) &&
+    ((numberOfButtons > 4 || alwaysCompactOnPhone) &&
       ['phoneV', 'phoneH', 'tablet'].includes(device))
 
   const ItemComponent = isCompact ? MenuItem : CardButton

@@ -85,8 +85,7 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
       hidden={hidden}
       style={style}
     >
-      {direction?.image ? (
-        // <div className="flex justify-center w-full tablet:w-auto">
+      {/* {direction?.image ? (
         <img
           className="object-cover h-full max-w-full tablet:w-48 tablet:max-w-48 max-h-60 tablet:max-h-72"
           src={direction.image}
@@ -94,12 +93,11 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
           // width={48}
           // height={48}
         />
-      ) : (
-        // </div>
-        <div className="flex justify-center w-full laptop:w-auto">
-          <TextInRing text={direction.title} />
-        </div>
-      )}
+      ) : ( */}
+      <div className="flex justify-center w-full laptop:w-auto">
+        <TextInRing text={direction.title} />
+      </div>
+      {/* )} */}
       <div className="w-full">
         <div className="flex">
           <div className="flex-1 px-2 py-1 text-xl font-bold ">

@@ -165,8 +165,6 @@ const QuestionnaireContent = (props) => {
 
   const { success, error } = useSnackbar()
 
-  console.log('loggedUser :>> ', loggedUser)
-
   const formChanged =
     loggedUser?.firstName !== firstName ||
     loggedUser?.secondName !== secondName ||

@@ -7,6 +7,7 @@ const EventRelationshipAccessPicker = ({
   required = false,
   disabledValues,
   error = false,
+  disabled,
 }) => (
   <ValuePicker
     value={relationshipStatus}
@@ -17,6 +18,7 @@ const EventRelationshipAccessPicker = ({
     required={required}
     error={error}
     disabledValues={disabledValues}
+    readOnly={disabled}
   />
 )
 

@@ -12,14 +12,14 @@ const DirectionItem = ({
   directionId,
   title,
   shortDescription,
-  image,
+  // image,
   eventsCount,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   return (
     <div className="flex-col w-full max-w-[430px] overflow-hidden bg-white rounded-lg shadow-xl gap-y-1">
-      {image ? (
+      {/* {image ? (
         <>
           <img
             className="object-contain w-full laptop:object-cover min-w-32 laptop:w-72"
@@ -32,9 +32,9 @@ const DirectionItem = ({
             {title}
           </div>
         </>
-      ) : (
-        <TextInRing text={title} fullHeight={false} />
-      )}
+      ) : ( */}
+      <TextInRing text={title} fullHeight={false} />
+      {/* )} */}
       <div className="px-3 mt-3 mb-1 text-sm whitespace-pre-wrap laptop:text-base">
         {shortDescription}
       </div>
@@ -85,7 +85,7 @@ const DirectionsBlock = ({ startInverse = false }) => {
               <DirectionItem
                 key={direction._id}
                 directionId={direction._id}
-                image={direction.image}
+                // image={direction.image}
                 title={direction.title}
                 shortDescription={direction.shortDescription}
                 eventsCount={
