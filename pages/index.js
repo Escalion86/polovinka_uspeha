@@ -23,7 +23,7 @@ export default function Home(props) {
   return (
     <>
       <Head>
-        <title>{`Центр осознанных знакомств - "Половинка успеха"`}</title>
+        <title>{`Центр серьезных знакомств - "Половинка успеха"`}</title>
       </Head>
       <StateLoader className="max-h-screen" {...props}>
         <Header />
