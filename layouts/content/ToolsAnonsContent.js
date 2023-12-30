@@ -14,7 +14,7 @@ import getNoun from '@helpers/getNoun'
 import sortFunctions from '@helpers/sortFunctions'
 import eventsAtom from '@state/atoms/eventsAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import { useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { saveSvgAsPng } from 'save-svg-as-png'
 
@@ -57,12 +57,18 @@ const save2 = async (listsCount, name) => {
   }
 }
 
-const ToolsAnonsContent = () => {
-  const hiddenFileInput = useRef(null)
-  // const addImageClick = () => {
-  //   hiddenFileInput.current.click()
-  // }
+const getEventsYears = (events) => {
+  const tempYears = []
+  events.forEach((event) => {
+    const date = new Date(event.dateStart)
+    const eventYear = date.getFullYear()
+    if (!tempYears.includes(eventYear)) tempYears.push(eventYear)
+  })
+  tempYears.sort((a, b) => a - b)
+  return tempYears
+}
 
+const ToolsAnonsContent = () => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const events = useRecoilValue(eventsAtom)
 
@@ -84,6 +90,8 @@ const ToolsAnonsContent = () => {
   const [fontSize, setFontSize] = useState(32)
   const [dateFontSize, setDateFontSize] = useState(36)
   const [maxItemsOnList, setMaxItemsOnList] = useState(10)
+
+  const years = useMemo(() => getEventsYears(events), [events])
 
   const eventsInMonth = events.filter((event) => {
     if (event.status === 'canceled' || !event.showOnSite) return false
@@ -233,7 +241,7 @@ const ToolsAnonsContent = () => {
     <div className="h-full max-h-full px-1 overflow-y-auto">
       <div className="flex flex-wrap gap-x-1">
         <MonthSelector month={month} onChange={setMonth} />
-        <YearSelector year={year} onChange={setYear} />
+        <YearSelector year={year} onChange={setYear} years={years} />
         <ComboBox
           label="Стиль"
           className="min-w-16 max-w-24"
