@@ -25,6 +25,7 @@ import UserStatusIcon from './UserStatusIcon'
 // import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import UserRelationshipIcon from './UserRelationshipIcon'
 
 const ItemContainer = ({
   onClick,
@@ -166,7 +167,7 @@ export const UserItem = ({
         src={getUserAvatarSrc(item)}
         alt="user"
       />
-      <div className="flex items-center flex-1 py-0.5 px-1">
+      <div className="flex items-center flex-1 py-0.5 px-1 gap-x-0.5">
         <div className="flex flex-wrap items-center flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1 gap-y-0.5">
           <UserName user={item} className="font-semibold" thin trunc={2} />
           {item.birthday &&
@@ -193,6 +194,11 @@ export const UserItem = ({
             </div>
           )}
         </div> */}
+        <UserRelationshipIcon
+          relationship={item.relationship}
+          size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
+          showHavePartnerOnly
+        />
         <UserStatusIcon
           status={item.status}
           size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
