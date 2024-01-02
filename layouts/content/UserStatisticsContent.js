@@ -281,6 +281,14 @@ const UserStatisticsContent = () => {
       counts: rare[1],
       num: eventsTagsWithCount.find(({ text }) => text === 'застолье')?.count,
     },
+    {
+      name: 'Мать Тереза',
+      cause: 'Количество посещенных мероприятий с тэгом "Благотворительность"',
+      counts: rare[0],
+      num: eventsTagsWithCount.find(
+        ({ text }) => text === 'благотворительность'
+      )?.count,
+    },
     // {
     //   name: 'Авенюст',
     //   cause: 'Количество посещенных мероприятий с тэгом "Улица"',

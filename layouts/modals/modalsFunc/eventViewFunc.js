@@ -8,6 +8,7 @@ import ImageGallery from '@components/ImageGallery'
 import PriceDiscount from '@components/PriceDiscount'
 import TextLine from '@components/TextLine'
 import UserName from '@components/UserName'
+import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import formatAddress from '@helpers/formatAddress'
@@ -125,7 +126,14 @@ const eventViewFunc = (eventId) => {
         <ImageGallery images={event?.images} />
         <div className="flex flex-col flex-1">
           <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
-            <div className="flex w-full">
+            <div className="flex items-center w-full gap-x-1">
+              {event.usersRelationshipAccess &&
+                event.usersRelationshipAccess !== 'yes' && (
+                  <UserRelationshipIcon
+                    relationship={event.usersRelationshipAccess === 'only'}
+                    nameForEvent
+                  />
+                )}
               {event?.tags.length > 0 && (
                 <EventTagsChipsLine tags={event?.tags} className="flex-1" />
               )}

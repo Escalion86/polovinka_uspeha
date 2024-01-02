@@ -375,16 +375,68 @@ const updateEventInCalendar = async (event, req) => {
 
 const notificateUsersAboutEvent = async (event, req) => {
   await dbConnect()
-  const users = await Users.find({})
-  const usersToNotificate = users.filter(
-    (user) =>
-      user.notifications?.get('settings')?.newEventsByTags &&
-      user.notifications?.get('telegram').active &&
-      user.notifications?.get('telegram')?.id &&
-      (!user.eventsTagsNotification ||
-        user.eventsTagsNotification?.length === 0 ||
-        user.eventsTagsNotification.find((tag) => event.tags.includes(tag)))
-  )
+  const rolesSettings = await Roles.find({})
+  const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
+  const rolesIdsToNewEventsByTagsNotification = allRoles
+    .filter((role) => role?.notifications?.newEventsByTags)
+    .map((role) => role._id)
+
+  const users = await Users.find({
+    role:
+      process.env.NODE_ENV === 'development'
+        ? 'dev'
+        : { $in: rolesIdsToNewEventsByTagsNotification },
+    'notifications.settings.newEventsByTags': true,
+    'notifications.telegram.active': true,
+    'notifications.telegram.id': {
+      $exists: true,
+      $ne: null,
+    },
+  })
+
+  const usersToNotificate = users.filter((user) => {
+    const userAge = new Number(
+      birthDateToAge(user.birthday, undefined, false, false)
+    )
+
+    const isUserTooOld =
+      userAge &&
+      ((user.gender === 'male' &&
+        typeof event.maxMansAge === 'number' &&
+        event.maxMansAge < userAge) ||
+        (user.gender === 'famale' &&
+          typeof event.maxWomansAge === 'number' &&
+          event.maxWomansAge < userAge))
+    if (isUserTooOld) return false
+
+    const isUserTooYoung =
+      userAge &&
+      ((user.gender === 'male' &&
+        typeof event.maxMansAge === 'number' &&
+        event.minMansAge > userAge) ||
+        (user.gender === 'famale' &&
+          typeof event.maxWomansAge === 'number' &&
+          event.minWomansAge > userAge))
+    if (isUserTooYoung) return false
+
+    const isUserStatusCorrect = user.status
+      ? event.usersStatusAccess[user.status]
+      : event.usersStatusAccess['novice']
+    if (!isUserStatusCorrect) return false
+    const isUserRelationshipCorrect =
+      !event.usersRelationshipAccess ||
+      event.usersRelationshipAccess === 'yes' ||
+      (user.relationship
+        ? event.usersRelationshipAccess === 'only'
+        : event.usersRelationshipAccess === 'no')
+    if (!isUserRelationshipCorrect) return false
+
+    return (
+      !user.eventsTagsNotification ||
+      user.eventsTagsNotification?.length === 0 ||
+      user.eventsTagsNotification.find((tag) => event.tags.includes(tag))
+    )
+  })
 
   const novicesTelegramIds = usersToNotificate
     .filter((user) => user.status === 'novice' || !user.status)

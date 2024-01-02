@@ -7,6 +7,7 @@ const UserRelationshipIcon = ({
   size,
   showName = false,
   showHavePartnerOnly,
+  nameForEvent = false,
 }) => {
   // if (!relationship) return null
   // const relation = RELATIONSHIP_VALUES.find(
@@ -33,7 +34,13 @@ const UserRelationshipIcon = ({
       numSize = 6
   }
 
-  const name = havePartner ? 'Есть пара' : 'Нет пары'
+  const name = nameForEvent
+    ? havePartner
+      ? 'Только для пар'
+      : 'Только для тех у кого нет второй половинки'
+    : havePartner
+    ? 'Есть пара'
+    : 'Нет пары'
 
   const Icon = () => (
     <Tooltip title={name}>
