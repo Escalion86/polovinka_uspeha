@@ -22,6 +22,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'no eventId',
       isAgeOfUserCorrect: undefined,
       isUserStatusCorrect: undefined,
+      isUserRelationshipCorrect: undefined,
     }
 
   const isEventExpired = isEventExpiredFunc(event)
@@ -41,6 +42,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'user not signIn in site',
       isAgeOfUserCorrect: undefined,
       isUserStatusCorrect: undefined,
+      isUserRelationshipCorrect: undefined,
     }
 
   const userEvent =
@@ -81,11 +83,21 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   const isUserStatusCorrect = user.status
     ? event.usersStatusAccess[user.status]
     : event.usersStatusAccess['novice']
+  const isUserRelationshipCorrect =
+    !event.usersRelationshipAccess ||
+    event.usersRelationshipAccess === 'yes' ||
+    (user.relationship
+      ? event.usersRelationshipAccess === 'only'
+      : event.usersRelationshipAccess === 'no')
 
+  // TODO Поправить права роли
   const canSee =
     ['admin', 'moder', 'dev'].includes(user.role) ||
     (event.showOnSite &&
-      (alreadySignIn || (isAgeOfUserCorrect && isUserStatusCorrect)))
+      (alreadySignIn ||
+        (isAgeOfUserCorrect &&
+          isUserStatusCorrect &&
+          isUserRelationshipCorrect)))
 
   // if (user.status === 'ban' || userEvent?.status === 'ban')
   //   return {
@@ -114,6 +126,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'user questionnaire not filled',
       isAgeOfUserCorrect,
       isUserStatusCorrect,
+      isUserRelationshipCorrect,
     }
 
   if (isEventCanceled(event))
@@ -130,6 +143,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'event canceled',
       isAgeOfUserCorrect,
       isUserStatusCorrect,
+      isUserRelationshipCorrect,
     }
 
   if (isEventExpired)
@@ -146,6 +160,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'event expired',
       isAgeOfUserCorrect,
       isUserStatusCorrect,
+      isUserRelationshipCorrect,
     }
   const eventMans = eventUsersFull.filter(
     (item) => item.user?.gender == 'male' && item.status === 'participant'
@@ -160,7 +175,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   const canSignInReserve =
     (event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) &&
     isAgeOfUserCorrect &&
-    isUserStatusCorrect
+    isUserStatusCorrect &&
+    isUserRelationshipCorrect
 
   if (
     typeof event.maxParticipants === 'number' &&
@@ -179,6 +195,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'event full',
       isAgeOfUserCorrect,
       isUserStatusCorrect,
+      isUserRelationshipCorrect,
     }
 
   if (
@@ -199,6 +216,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'event full of mans',
       isAgeOfUserCorrect,
       isUserStatusCorrect,
+      isUserRelationshipCorrect,
     }
 
   if (
@@ -219,6 +237,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       status: 'event full of womans',
       isAgeOfUserCorrect,
       isUserStatusCorrect,
+      isUserRelationshipCorrect,
     }
 
   const eventMansNoviceCount = eventMans.filter(
@@ -253,6 +272,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
         status: 'event full of novice mans',
         isAgeOfUserCorrect,
         isUserStatusCorrect,
+        isUserRelationshipCorrect,
       }
     if (
       user.status === 'member' &&
@@ -272,6 +292,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
         status: 'event full of member mans',
         isAgeOfUserCorrect,
         isUserStatusCorrect,
+        isUserRelationshipCorrect,
       }
   }
   if (user.gender === 'famale') {
@@ -293,6 +314,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
         status: 'event full of novice womans',
         isAgeOfUserCorrect,
         isUserStatusCorrect,
+        isUserRelationshipCorrect,
       }
     if (
       user.status === 'member' &&
@@ -312,13 +334,15 @@ const userToEventStatus = (event, user, eventUsersFull) => {
         status: 'event full of member womans',
         isAgeOfUserCorrect,
         isUserStatusCorrect,
+        isUserRelationshipCorrect,
       }
   }
 
   return {
     canSee,
     alreadySignIn,
-    canSignIn: isAgeOfUserCorrect && isUserStatusCorrect,
+    canSignIn:
+      isAgeOfUserCorrect && isUserStatusCorrect && isUserRelationshipCorrect,
     canSignInReserve,
     canSignOut,
     isEventExpired,
@@ -328,6 +352,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
     status: 'ok',
     isAgeOfUserCorrect,
     isUserStatusCorrect,
+    isUserRelationshipCorrect,
   }
 }
 
