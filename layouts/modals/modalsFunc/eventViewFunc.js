@@ -127,13 +127,6 @@ const eventViewFunc = (eventId) => {
         <div className="flex flex-col flex-1">
           <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
             <div className="flex items-center w-full gap-x-1">
-              {event.usersRelationshipAccess &&
-                event.usersRelationshipAccess !== 'yes' && (
-                  <UserRelationshipIcon
-                    relationship={event.usersRelationshipAccess === 'only'}
-                    nameForEvent
-                  />
-                )}
               {event?.tags.length > 0 && (
                 <EventTagsChipsLine tags={event?.tags} className="flex-1" />
               )}
@@ -146,6 +139,14 @@ const eventViewFunc = (eventId) => {
                 </div>
               )}
             </div>
+            {event.usersRelationshipAccess &&
+              event.usersRelationshipAccess !== 'yes' && (
+                <UserRelationshipIcon
+                  relationship={event.usersRelationshipAccess === 'only'}
+                  nameForEvent
+                  showName
+                />
+              )}
             <div className="flex justify-center w-full text-3xl font-bold">
               {event?.title}
             </div>

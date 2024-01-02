@@ -50,6 +50,10 @@ const UsersContent = () => {
       novice: true,
       member: true,
     },
+    relationship: {
+      havePartner: true,
+      noPartner: true,
+    },
   })
   const [searchText, setSearchText] = useState('')
 
@@ -81,7 +85,10 @@ const UsersContent = () => {
             (filter.gender.null &&
               user.gender !== 'male' &&
               user.gender !== 'famale')) &&
-          filter.status[user?.status ?? 'novice']
+          filter.status[user?.status ?? 'novice'] &&
+          (user.relationship
+            ? filter.relationship.havePartner
+            : filter.relationship.noPartner)
       ),
     [
       // updatedUsers,

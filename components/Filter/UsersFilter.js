@@ -1,4 +1,5 @@
 import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
+import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
 import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
 
 const UsersFilter = ({ value, onChange, hideNullGender }) => {
@@ -18,6 +19,14 @@ const UsersFilter = ({ value, onChange, hideNullGender }) => {
           value={value.status}
           onChange={(value) =>
             onChange((state) => ({ ...state, status: value }))
+          }
+        />
+      )}
+      {value?.relationship && (
+        <RelationshipUserToggleButtons
+          value={value.relationship}
+          onChange={(value) =>
+            onChange((state) => ({ ...state, relationship: value }))
           }
         />
       )}

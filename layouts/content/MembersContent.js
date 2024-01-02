@@ -33,6 +33,10 @@ const MembersContent = () => {
     //   novice: true,
     //   member: true,
     // },
+    relationship: {
+      havePartner: true,
+      noPartner: true,
+    },
   })
   const [searchText, setSearchText] = useState('')
 
@@ -44,7 +48,11 @@ const MembersContent = () => {
 
   const filteredUsers = useMemo(() => {
     const filteredMembers = members.filter(
-      (user) => filter.gender[String(user.gender)]
+      (user) =>
+        filter.gender[String(user.gender)] &&
+        (user.relationship
+          ? filter.relationship.havePartner
+          : filter.relationship.noPartner)
     )
 
     if (seeFullNames) return filteredMembers
