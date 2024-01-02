@@ -7,6 +7,7 @@ import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import PriceDiscount from '@components/PriceDiscount'
 import TextInRing from '@components/TextInRing'
 import TextLinesLimiter from '@components/TextLinesLimiter'
+import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import eventStatusFunc from '@helpers/eventStatus'
 import { modalsFuncAtom } from '@state/atoms'
 import errorAtom from '@state/atoms/errorAtom'
@@ -144,7 +145,14 @@ const EventCard = ({
       <div className="relative flex flex-col justify-between flex-1 w-full">
         <div className="flex flex-col flex-1">
           <div className="flex pl-2">
-            <div className="flex items-center flex-1 h-[36px]">
+            <div className="flex items-center flex-1 h-[36px] gap-x-1">
+              {event.usersRelationshipAccess &&
+                event.usersRelationshipAccess !== 'yes' && (
+                  <UserRelationshipIcon
+                    relationship={event.usersRelationshipAccess === 'only'}
+                    nameForEvent
+                  />
+                )}
               {/* <TextLinesLimiter
                 className="flex-1 text-lg font-bold laptop:text-xl "
                 lines={1}
