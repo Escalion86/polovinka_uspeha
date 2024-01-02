@@ -119,7 +119,7 @@ const eventsSchema = {
   },
   usersRelationshipAccess: {
     type: String,
-    default: 'no', //no, yes, only
+    default: 'yes', //no, yes, only
   },
   isReserveActive: {
     type: Boolean,
