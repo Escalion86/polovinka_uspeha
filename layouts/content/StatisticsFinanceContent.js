@@ -209,7 +209,7 @@ const StatisticsFinanceContent = () => {
         </div>
         <div className="mt-5">
           Средний доход в месяц в {year} году:{' '}
-          {incomeAverageByYears[year].toFixed(2)} руб.
+          {incomeAverageByYears[year]?.toFixed(2)} руб.
         </div>
       </div>
     </div>

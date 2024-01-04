@@ -130,12 +130,21 @@ const UserStatisticsContent = () => {
     [events]
   )
 
-  const eventsTagsWithCount = eventsTags.map(({ text, color }) => {
-    const filteredEventsWithTag = filteredEvents.filter(
-      (event) => event.tags && event.tags.includes(text)
-    )
-    return { text, color, count: filteredEventsWithTag.length }
-  })
+  const eventsTagsWithCount = eventsTags.map(
+    ({
+      text,
+      // , color
+    }) => {
+      const filteredEventsWithTag = filteredEvents.filter(
+        (event) => event.tags && event.tags.includes(text)
+      )
+      return {
+        text,
+        //  color,
+        count: filteredEventsWithTag.length,
+      }
+    }
+  )
 
   const eventsByDirectionsData = directions.map((direction) => {
     const eventsInDirectionCount = filteredEvents.filter(
