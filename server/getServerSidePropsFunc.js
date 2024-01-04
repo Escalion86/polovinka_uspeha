@@ -23,10 +23,10 @@ const getServerSidePropsFunc = async (context, getSession, fetchProps) => {
         questionnairesUsers: null,
         services: null,
         servicesUsers: null,
-        ...fetchedProps,
-        loggedUser: session?.user ?? null,
         mode: process.env.NODE_ENV,
         location: process.env.LOCATION,
+        ...fetchedProps,
+        loggedUser: session?.user ?? null,
       },
     }
   } catch (error) {
@@ -46,9 +46,9 @@ const getServerSidePropsFunc = async (context, getSession, fetchProps) => {
         questionnairesUsers: null,
         services: null,
         servicesUsers: null,
-        loggedUser: session?.user ?? null,
         mode: process.env.NODE_ENV,
         location: process.env.LOCATION,
+        loggedUser: session?.user ?? null,
         error: JSON.parse(JSON.stringify(error)),
       },
     }

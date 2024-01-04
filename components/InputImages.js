@@ -34,7 +34,8 @@ const InputImages = ({
       : location === 'norilsk'
       ? 'polovinka_uspeha_nrsk'
       : 'polovinka_uspeha'
-
+  console.log('location :>> ', location)
+  console.log('project :>> ', project)
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
   const addImageClick = () => {
