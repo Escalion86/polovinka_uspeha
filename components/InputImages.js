@@ -18,7 +18,7 @@ const InputImages = ({
   required = false,
   label = null,
   directory = null,
-  project,
+  // project,
   maxImages = 10,
   labelClassName,
   className,
