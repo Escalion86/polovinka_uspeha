@@ -102,6 +102,8 @@ const fetchProps = async (user) => {
       serverSettings: {
         dateTime: JSON.parse(JSON.stringify(serverDateTime)),
       },
+      mode: process.env.NODE_ENV,
+      location: process.env.LOCATION,
     }
 
     return fetchResult
@@ -124,6 +126,8 @@ const fetchProps = async (user) => {
       serverSettings: {
         dateTime: JSON.parse(JSON.stringify(serverDateTime)),
       },
+      mode: process.env.NODE_ENV,
+      location: process.env.LOCATION,
       error: JSON.parse(JSON.stringify(error)),
     }
   }

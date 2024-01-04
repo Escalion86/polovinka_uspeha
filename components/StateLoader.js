@@ -73,11 +73,14 @@ import { getRecoil } from 'recoil-nexus'
 import TopInfo from './TopInfo'
 import rolesAtom from '@state/atoms/rolesAtom'
 import { DEFAULT_ROLES } from '@helpers/constants'
+import locationAtom from '@state/atoms/locationAtom'
 // import setRecoilFunc from '@helpers/setRecoilFunc'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
     console.log('props.error', props.error)
+
+  console.log('props.location :>> ', props.location)
 
   const snackbar = useSnackbar()
 
@@ -88,6 +91,7 @@ const StateLoader = (props) => {
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
 
   const [mode, setMode] = useRecoilState(modeAtom)
+  const setLocation = useSetRecoilState(locationAtom)
 
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
@@ -207,6 +211,7 @@ const StateLoader = (props) => {
     setServicesUsersState(props.servicesUsers)
     setServerSettingsState(props.serverSettings)
     setMode(props.mode ?? 'production')
+    setLocation(props.location ?? 'krasnoyarsk')
     // setSnackbar(snackbar)
     setIsSiteLoading(false)
   }, [])

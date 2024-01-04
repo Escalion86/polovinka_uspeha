@@ -117,9 +117,9 @@ const QuestionnaireContent = (props) => {
 
   var defaultSecurity = { ...loggedUser?.security }
   if (
-    loggedUser?.security.showContacts === true ||
-    loggedUser?.security.showContacts === false ||
-    loggedUser?.security.showContacts === null
+    loggedUser?.security?.showContacts === true ||
+    loggedUser?.security?.showContacts === false ||
+    loggedUser?.security?.showContacts === null
   ) {
     defaultSecurity.showPhone = !!loggedUser?.security.showContacts
     defaultSecurity.showWhatsapp = !!loggedUser?.security.showContacts
@@ -131,12 +131,12 @@ const QuestionnaireContent = (props) => {
     delete defaultSecurity.showContacts
   }
 
-  if (loggedUser?.security.showAge === true) {
+  if (loggedUser?.security?.showAge === true) {
     defaultSecurity.showBirthday = 'full'
     delete defaultSecurity.showAge
   } else if (
-    loggedUser?.security.showAge === false ||
-    loggedUser?.security.showAge === null
+    loggedUser?.security?.showAge === false ||
+    loggedUser?.security?.showAge === null
   ) {
     defaultSecurity.showBirthday = 'no'
     delete defaultSecurity.showAge
