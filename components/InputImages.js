@@ -29,7 +29,11 @@ const InputImages = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const location = useRecoilValue(locationAtom)
   const project =
-    location === 'norilsk' ? 'polovinka_uspeha_nrsk' : 'polovinka_uspeha'
+    location === 'dev'
+      ? 'polovinka_uspeha_dev'
+      : location === 'norilsk'
+      ? 'polovinka_uspeha_nrsk'
+      : 'polovinka_uspeha'
 
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
