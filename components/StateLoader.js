@@ -80,8 +80,6 @@ const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
     console.log('props.error', props.error)
 
-  console.log('props.location :>> ', props.location)
-
   const snackbar = useSnackbar()
 
   const router = useRouter()

@@ -43,7 +43,7 @@ export const sendImage = async (
   image,
   callback,
   folder = null,
-  imageName = null,
+  // imageName = null,
   project = 'polovinka_uspeha'
 ) => {
   if (isObject(image)) {
