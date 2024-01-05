@@ -34,6 +34,7 @@ import {
   faUpload,
   faUserAlt,
   faUsers,
+  faUserTie,
   faUserTimes,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
@@ -111,6 +112,7 @@ import ToolsNewsletterContent from '@layouts/content/ToolsNewsletterContent'
 import LoggedUserNotificationsContent from '@layouts/content/LoggedUserNotificationsContent'
 import SettingsFabMenuContent from '@layouts/content/SettingsFabMenuContent'
 import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
+import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
 
 const colors = [
   'border-blue-400',
@@ -849,6 +851,7 @@ export const DEFAULT_ROLES = [
       directions: false,
       additionalBlocks: false,
       reviews: false,
+      supervisor: false,
       contacts: false,
     },
     siteSettings: {
@@ -964,6 +967,7 @@ export const DEFAULT_ROLES = [
       directions: true,
       additionalBlocks: true,
       reviews: true,
+      supervisor: false,
       contacts: false,
     },
     siteSettings: {
@@ -1079,6 +1083,7 @@ export const DEFAULT_ROLES = [
       directions: true,
       additionalBlocks: true,
       reviews: true,
+      supervisor: false,
       contacts: true,
     },
     siteSettings: {
@@ -1194,6 +1199,7 @@ export const DEFAULT_ROLES = [
       directions: true,
       additionalBlocks: true,
       reviews: true,
+      supervisor: true,
       contacts: true,
     },
     siteSettings: {
@@ -1310,6 +1316,7 @@ export const DEFAULT_ROLES = [
       directions: true, //!
       additionalBlocks: true, //!
       reviews: true,
+      supervisor: true,
       contacts: true,
     },
     siteSettings: {
@@ -1418,6 +1425,12 @@ export const CONTENTS = {
     name: 'Сайт / Контакты на сайте',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.contacts,
+  },
+  supervisor: {
+    Component: SupervisorBlockContent,
+    name: 'Сайт / Руководитель района',
+    accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.generalPage?.supervisor,
   },
   events: {
     Component: EventsContent,
@@ -1656,6 +1669,15 @@ export const pages = [
   },
   {
     id: 9,
+    group: 3,
+    name: 'Руководитель района',
+    href: 'supervisor',
+    icon: faUserTie,
+    accessRoles: CONTENTS['supervisor'].accessRoles,
+    roleAccess: CONTENTS['supervisor'].roleAccess,
+  },
+  {
+    id: 10,
     group: 4,
     name: 'Пользователи',
     href: 'users',
@@ -1664,7 +1686,7 @@ export const pages = [
     roleAccess: CONTENTS['users'].roleAccess,
   },
   {
-    id: 10,
+    id: 11,
     group: 5,
     name: 'Транзакции',
     href: 'payments',
@@ -1673,7 +1695,7 @@ export const pages = [
     roleAccess: CONTENTS['payments'].roleAccess,
   },
   {
-    id: 11,
+    id: 12,
     group: 5,
     name: 'Непривязанные транзакции',
     href: 'paymentsWithNoEvent',
@@ -1684,7 +1706,7 @@ export const pages = [
   },
 
   {
-    id: 12,
+    id: 13,
     group: 5,
     name: 'Не пришли на мероприятие',
     href: 'paymentsNotParticipantsEvent',
@@ -1695,7 +1717,7 @@ export const pages = [
   },
 
   {
-    id: 13,
+    id: 14,
     group: 6,
     name: 'Записи на мероприятия',
     href: 'histories',
@@ -1704,7 +1726,7 @@ export const pages = [
     roleAccess: CONTENTS['histories'].roleAccess,
   },
   {
-    id: 14,
+    id: 15,
     group: 6,
     name: 'Дни рождения',
     href: 'birthdays',
@@ -1722,7 +1744,7 @@ export const pages = [
   //   accessRoles: CONTENTS['statistics'].accessRoles,
   // },
   {
-    id: 15,
+    id: 16,
     group: 7,
     name: 'Мероприятия',
     href: 'statisticsEvents',
@@ -1731,7 +1753,7 @@ export const pages = [
     roleAccess: CONTENTS['statisticsEvents'].roleAccess,
   },
   {
-    id: 16,
+    id: 17,
     group: 7,
     name: 'Пользователи',
     href: 'statisticsUsers',
@@ -1740,7 +1762,7 @@ export const pages = [
     roleAccess: CONTENTS['statisticsUsers'].roleAccess,
   },
   {
-    id: 17,
+    id: 18,
     group: 7,
     name: 'Финансы',
     href: 'statisticsFinance',

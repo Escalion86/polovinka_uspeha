@@ -5,6 +5,7 @@ import DirectionsBlock from '@blocks/DirectionsBlock'
 import EventsBlock from '@blocks/EventsBlock'
 import ReviewsBlock from '@blocks/ReviewsBlock'
 import ServicesBlock from '@blocks/ServicesBlock'
+import SupervisorBlock from '@blocks/SupervisorBlock'
 import TitleBlock from '@blocks/TitleBlock'
 import FabMenu from '@components/FabMenu'
 import StateLoader from '@components/StateLoader'
@@ -29,6 +30,7 @@ export default function Home(props) {
         <Header />
         <TitleBlock />
         <AboutBlock />
+        <SupervisorBlock />
         <EventsBlock maxEvents={4} />
         <DirectionsBlock />
         <ServicesBlock />

@@ -66,6 +66,13 @@ const useErrors = () => {
           : null,
       image: (data) =>
         !data ? setError({ image: 'Загрузите картинку' }) : null,
+      photo: (data) =>
+        !data ? setError({ image: 'Загрузите фотографию' }) : null,
+      supervisorName: (data) =>
+        !data
+          ? setError({ image: 'Введите имя и фамилию руководителя' })
+          : null,
+      quote: (data) => (!data ? setError({ image: 'Введите цитату' }) : null),
       directionId: (data) =>
         !data
           ? setError({
