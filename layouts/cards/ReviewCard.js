@@ -5,6 +5,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import reviewSelector from '@state/selectors/reviewSelector'
+import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 
 const ReviewCard = ({ reviewId, hidden = false, style }) => {
@@ -23,7 +24,12 @@ const ReviewCard = ({ reviewId, hidden = false, style }) => {
       style={style}
     >
       <div className="flex">
-        <div className="flex-1 px-2 py-1 text-xl font-bold">
+        <div
+          className={cn(
+            'flex-1 pr-2 py-1 text-xl font-bold',
+            review.showOnSite ? 'pl-2' : 'pl-12 laptop:pl-2'
+          )}
+        >
           {review.author}
           {review.authorAge ? ', ' + getNounAges(review.authorAge) : ''}
         </div>
