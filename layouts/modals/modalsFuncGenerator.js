@@ -48,6 +48,7 @@ import userSetPasswordFunc from './modalsFunc/userSetPasswordFunc'
 // import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 import eventSignUpToReserveAfterError from './modalsFunc/eventSignUpToReserveAfterError'
 import roleFunc from './modalsFunc/roleFunc'
+import browseLocationFunc from './modalsFunc/browseLocationFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -684,6 +685,7 @@ const modalsFuncGenerator = (
       add: (onConfirm) => addModal(roleFunc(undefined, onConfirm)),
       edit: (role, onConfirm) => addModal(roleFunc(role, onConfirm)),
     },
+    browseLocation: () => addModal(browseLocationFunc()),
   }
 }
 

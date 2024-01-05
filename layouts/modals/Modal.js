@@ -35,6 +35,7 @@ const Modal = ({
   // showConfirm2,
   // showDecline,
   closeButtonShow = true,
+  declineButtonShow = true,
   onlyCloseButtonShow,
   TopLeftComponent,
   bottomLeftButtonProps,
@@ -57,6 +58,8 @@ const Modal = ({
   const [ComponentInFooter, setComponentInFooter] = useState(null)
   const [closeButtonShowState, setCloseButtonShowState] =
     useState(closeButtonShow)
+  const [declineButtonShowState, setDeclineButtonShowState] =
+    useState(declineButtonShow)
   const [onlyCloseButtonShowState, setOnlyCloseButtonShowState] =
     useState(onlyCloseButtonShow)
   const [TopLeftComponentState, setTopLeftComponentState] =
@@ -271,6 +274,7 @@ const Modal = ({
                 setBottomLeftButtonProps={setBottomLeftButton}
                 setBottomLeftComponent={setBottomLeftComponent}
                 setCloseButtonShow={setCloseButtonShowState}
+                setDeclineButtonShow={setDeclineButtonShowState}
               />
             </Suspense>
           )}
@@ -290,6 +294,7 @@ const Modal = ({
               onlyCloseButtonShowState ||
               (!onDeclineClick && closeButtonShowState)
             }
+            declineButtonShow={declineButtonShowState}
             confirmName={confirmButtonName}
             confirmName2={confirmButtonName2}
             declineName={declineButtonName}
