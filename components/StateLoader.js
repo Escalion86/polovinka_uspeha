@@ -69,7 +69,7 @@ import browserVer from '@helpers/browserVer'
 import { useWindowDimensionsRecoil } from '@helpers/useWindowDimensions'
 import modeAtom from '@state/atoms/modeAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import { getRecoil } from 'recoil-nexus'
+// import { getRecoil } from 'recoil-nexus'
 import TopInfo from './TopInfo'
 import rolesAtom from '@state/atoms/rolesAtom'
 import { DEFAULT_ROLES } from '@helpers/constants'
@@ -84,12 +84,12 @@ const StateLoader = (props) => {
 
   const router = useRouter()
 
-  const setModalsFunc = useSetRecoilState(modalsFuncAtom)
+  const [modalFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
 
   const [mode, setMode] = useRecoilState(modeAtom)
-  const setLocation = useSetRecoilState(locationAtom)
+  const [location, setLocation] = useRecoilState(locationAtom)
 
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
@@ -215,11 +215,24 @@ const StateLoader = (props) => {
   }, [])
 
   useEffect(() => {
-    if (props.isCabinet && !isSiteLoading) {
-      const url = isBrowserNeedToBeUpdate()
-      if (url) getRecoil(modalsFuncAtom).browserUpdate(url)
+    if (modalFunc && !isSiteLoading) {
+      if (props.isCabinet) {
+        const url = isBrowserNeedToBeUpdate()
+        if (url) modalFunc.browserUpdate(url) //getRecoil(modalsFuncAtom).browserUpdate(url)
+      }
+      if (location !== 'dev')
+        if (!props.isCabinet) {
+          if (router.query?.location) {
+            localStorage.setItem('location', router.query?.location)
+          } else {
+            const storagedLocation = localStorage.getItem('location')
+            if (!storagedLocation) {
+              modalFunc.browseLocation()
+            }
+          }
+        }
     }
-  }, [props.isCabinet, isSiteLoading])
+  }, [modalFunc, props.isCabinet, isSiteLoading])
 
   useEffect(() => {
     if (loggedUser) {

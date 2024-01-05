@@ -1,5 +1,7 @@
 import PulseButton from '@components/PulseButton'
 import { H1, H3, H4 } from '@components/tags'
+import { modalsFuncAtom } from '@state/atoms'
+import locationAtom from '@state/atoms/locationAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -8,6 +10,8 @@ import Svg30Plus from 'svg/Svg30Plus'
 
 const TitleBlock = () => {
   const userIsLogged = !!useRecoilValue(loggedUserAtom)
+  const location = useRecoilValue(locationAtom)
+  const modalFunc = useRecoilValue(modalsFuncAtom)
   const router = useRouter()
 
   return (
@@ -46,9 +50,19 @@ const TitleBlock = () => {
           >
             Центр серьёзных знакомств
           </H1>
-          <H4 style={{ textShadow: '1px 1px 2px black' }} bold={false}>
-            г.Красноярск
-          </H4>
+          <div className="text-center">
+            <h4
+              className="px-2 py-1 text-2xl font-bold text-center duration-300 bg-white border cursor-pointer rounded-xl hover:text-white border-general hover:bg-general bg-opacity-20 text-general"
+              // style={{ textShadow: '1px 1px 3px white' }}
+              onClick={() => modalFunc.browseLocation()}
+            >
+              г.{location === 'norilsk' ? 'Норильск' : 'Красноярск'}
+            </h4>
+            <p className="font-sans text-[12px]">
+              *- если это не ваш регион, то пожалуйста нажмите на него, чтобы
+              сменить
+            </p>
+          </div>
           <H3
             // className="font-thin"
             style={{ textShadow: '1px 1px 2px black' }}

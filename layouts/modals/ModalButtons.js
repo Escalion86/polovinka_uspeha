@@ -17,6 +17,7 @@ const ModalButtons = ({
   disableDecline = false,
   children,
   closeButtonShow,
+  declineButtonShow,
   closeModal,
   bottomLeftButton,
   bottomLeftComponent,
@@ -58,7 +59,8 @@ const ModalButtons = ({
               disabled={disableConfirm}
             />
           )}
-          {onConfirmClick || onConfirm2Click || onDeclineClick ? (
+          {declineButtonShow &&
+          (onConfirmClick || onConfirm2Click || onDeclineClick) ? (
             <Button
               name={declineName}
               classBgColor={declineButtonBgClassName}
