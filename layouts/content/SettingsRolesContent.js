@@ -416,6 +416,11 @@ const SettingsRolesContent = (props) => {
               item="generalPage"
               subItem="contacts"
             />
+            <RoleItem
+              label="Редактирование блока руководителя района"
+              item="generalPage"
+              subItem="supervisor"
+            />
             <SubTitle name="Инструменты" />
             <RoleItem
               label="Генератор текста анонса мероприятий"

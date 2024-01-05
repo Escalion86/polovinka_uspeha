@@ -30,7 +30,10 @@ const AboutBlock = () => (
             // height={48}
           />
           <H4 className="italic">
-            Руководитель центра знакомств – Надежда Губина
+            <span className="font-normal">
+              Руководитель центра знакомств –{' '}
+            </span>
+            <span className="whitespace-nowrap">Надежда Губина</span>
           </H4>
         </div>
         <div className="flex items-center">

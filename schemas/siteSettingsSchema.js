@@ -47,6 +47,10 @@ const siteSettingsSchema = {
     type: [{}],
     default: [],
   },
+  supervisor: {
+    type: { name: String, photo: String, quote: String, showOnSite: Boolean },
+    default: {},
+  },
 }
 
 export default siteSettingsSchema
