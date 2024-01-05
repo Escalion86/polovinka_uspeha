@@ -145,7 +145,12 @@ const EventCard = ({
       <div className="relative flex flex-col justify-between flex-1 w-full">
         <div className="flex flex-col flex-1">
           <div className="flex pl-2">
-            <div className="flex items-center flex-1 h-[36px] gap-x-1">
+            <div
+              className={cn(
+                'flex items-center flex-1 h-[36px] gap-x-1',
+                event.showOnSite ? '' : 'pl-10 laptop:pl-0'
+              )}
+            >
               {event.usersRelationshipAccess &&
                 event.usersRelationshipAccess !== 'yes' && (
                   <UserRelationshipIcon
@@ -162,10 +167,7 @@ const EventCard = ({
               <EventTagsChipsLine
                 tags={event.tags}
                 onTagClick={onTagClick}
-                className={cn(
-                  'flex-1',
-                  event.showOnSite ? '' : 'ml-10 laptop:ml-0'
-                )}
+                className="flex-1"
                 // noWrap
               />
               {/* <div className="flex-1 truncate w-[90%]">{direction.title}</div> */}

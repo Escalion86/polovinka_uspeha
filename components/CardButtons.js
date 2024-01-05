@@ -134,7 +134,7 @@ const CardButtons = ({
     editBtn: showEditButton && editSee,
     cloneBtn: !['user', 'review'].includes(typeOfItem) && rule?.edit,
     showOnSiteBtn:
-      showOnSiteOnClick && rule?.seeHidden && (rule?.edit || rule === true),
+      showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true),
     statusBtn: rule?.statusEdit,
     deleteBtn:
       showDeleteButton &&
