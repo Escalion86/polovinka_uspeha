@@ -18,6 +18,7 @@ const Item = ({ towns = [], checked, onClick }) => (
     <div className="flex flex-wrap gap-x-1 gap-y-1">
       {towns.map((town, index) => (
         <div
+          key={town}
           className={cn(
             'flex gap-x-1 leading-4',
             index === 0 ? 'font-bold text-lg' : 'text-gray-600'
@@ -53,7 +54,7 @@ const browseLocationFunc = () => {
     const router = useRouter()
 
     const onClickConfirm = async () => {
-      if (selectedLocation === location || location === 'dev') {
+      if (selectedLocation === location) {
         localStorage.setItem('location', selectedLocation)
         closeModal()
       } else {

@@ -232,7 +232,7 @@ const StateLoader = (props) => {
           }
         }
     }
-  }, [modalFunc, props.isCabinet, isSiteLoading])
+  }, [props.isCabinet, isSiteLoading])
 
   useEffect(() => {
     if (loggedUser) {
