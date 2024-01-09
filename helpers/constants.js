@@ -1155,7 +1155,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: true,
       statusFilterFull: true,
       eventUsersCounterAndAgeFull: true,
-      editHistory: false,
+      editHistory: true,
     },
     eventsUsers: {
       see: true, // member
