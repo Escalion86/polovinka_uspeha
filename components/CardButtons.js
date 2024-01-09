@@ -11,6 +11,7 @@ import {
   faArrowUp,
   faCalendarAlt,
   faEllipsisV,
+  faHistory,
   faKey,
   faMoneyBill,
   faPencilAlt,
@@ -119,6 +120,7 @@ const CardButtons = ({
   // (typeOfItem === 'review' && loggedUserActiveRole.generalPage.reviews)
 
   const show = {
+    history: typeOfItem === 'event' && loggedUserActiveRole.events.editHistory,
     editQuestionnaire: !!onEditQuestionnaire,
     setPasswordBtn: rule?.setPassword,
     // typeOfItem === 'user' && isLoggedUserSupervisor,
@@ -187,6 +189,14 @@ const CardButtons = ({
               ? 'услугу'
               : 'продукт'
           }`}
+        />
+      )}
+      {show.history && (
+        <ItemComponent
+          icon={faHistory}
+          onClick={() => modalsFunc.event.history(item._id)}
+          color="orange"
+          tooltipText="Посмотреть историю изменений"
         />
       )}
       {show.addToCalendar && (
