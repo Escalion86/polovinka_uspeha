@@ -1,8 +1,9 @@
 import PulseButton from '@components/PulseButton'
 import { H1, H3, H4 } from '@components/tags'
+import upperCaseFirst from '@helpers/upperCaseFirst'
 import { modalsFuncAtom } from '@state/atoms'
-import locationAtom from '@state/atoms/locationAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useRecoilValue } from 'recoil'
@@ -10,7 +11,7 @@ import Svg30Plus from 'svg/Svg30Plus'
 
 const TitleBlock = () => {
   const userIsLogged = !!useRecoilValue(loggedUserAtom)
-  const location = useRecoilValue(locationAtom)
+  const { townRu } = useRecoilValue(locationPropsSelector)
   const modalFunc = useRecoilValue(modalsFuncAtom)
   const router = useRouter()
 
@@ -56,7 +57,7 @@ const TitleBlock = () => {
               // style={{ textShadow: '1px 1px 3px white' }}
               onClick={() => modalFunc.browseLocation()}
             >
-              г.{location === 'norilsk' ? 'Норильск' : 'Красноярск'}
+              г.{upperCaseFirst(townRu)}
             </h4>
             <p className="font-sans text-[12px]">
               *- если это не ваш район, то пожалуйста нажмите на него, чтобы

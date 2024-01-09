@@ -10,7 +10,7 @@ import Zoom from 'react-medium-image-zoom'
 import { useRecoilValue } from 'recoil'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
-import locationAtom from '@state/atoms/locationAtom'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
 
 const InputImages = ({
   images = [],
@@ -27,13 +27,7 @@ const InputImages = ({
   fullWidth,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const location = useRecoilValue(locationAtom)
-  const project =
-    location === 'dev'
-      ? 'polovinka_uspeha_dev'
-      : location === 'norilsk'
-      ? 'polovinka_uspeha_nrsk'
-      : 'polovinka_uspeha'
+  const { imageFolder } = useRecoilValue(locationPropsSelector)
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
   const addImageClick = () => {
@@ -62,7 +56,7 @@ const InputImages = ({
               (imagesUrls) => onChange([...images, ...imagesUrls]),
               directory,
               null,
-              project
+              imageFolder
             )
           })
         }

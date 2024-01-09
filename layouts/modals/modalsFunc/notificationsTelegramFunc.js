@@ -1,6 +1,7 @@
 // import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
-import locationAtom from '@state/atoms/locationAtom'
+// import locationAtom from '@state/atoms/locationAtom'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
 // import Input from '@components/Input'
 // import { putData } from '@helpers/CRUD'
 // import useErrors from '@helpers/useErrors'
@@ -19,7 +20,8 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const location = useRecoilValue(locationAtom)
+    // const location = useRecoilValue(locationAtom)
+    const { telegramLink } = useRecoilValue(locationPropsSelector)
 
     // const loggedUser = useRecoilValue(loggedUserAtom)
     // const [userName, setUserName] = useState(
@@ -54,11 +56,11 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
       //   false,
       //   loggedUser._id
       // )
-      const urlTelegramBot =
-        location === 'norilsk'
-          ? 'https://t.me/polovinka_uspeha_nrsk_bot'
-          : 'https://t.me/polovinka_uspeha_bot'
-      window.open(urlTelegramBot)
+      // const urlTelegramBot =
+      //   location === 'norilsk'
+      //     ? 'https://t.me/polovinka_uspeha_nrsk_bot'
+      //     : 'https://t.me/polovinka_uspeha_bot'
+      window.open(telegramLink)
       closeModal()
       // setDirection(
       //   {

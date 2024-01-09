@@ -1,14 +1,15 @@
 import BlockContainer from '@components/BlockContainer'
-import ListItem from '@components/ListItem'
+// import ListItem from '@components/ListItem'
 import { H4, P } from '@components/tags'
-import locationAtom from '@state/atoms/locationAtom'
+import upperCaseFirst from '@helpers/upperCaseFirst'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useRecoilValue } from 'recoil'
 import SvgKavichki from 'svg/SvgKavichki'
 
 const SupervisorBlock = () => {
   const siteSettings = useRecoilValue(siteSettingsAtom)
-  const location = useRecoilValue(locationAtom)
+  const { roditPadeg } = useRecoilValue(locationPropsSelector)
   const showOnSite = siteSettings?.supervisor?.showOnSite
   if (!showOnSite) return null
 
@@ -48,9 +49,7 @@ const SupervisorBlock = () => {
             />
             <H4 className="italic">
               <span className="font-normal">
-                Руководитель{' '}
-                {location === 'norilsk' ? 'Норильского' : 'Красноярского'}{' '}
-                филиала –{' '}
+                Руководитель {upperCaseFirst(roditPadeg)} филиала –{' '}
               </span>
               <span className="whitespace-nowrap">
                 {siteSettings?.supervisor?.name}

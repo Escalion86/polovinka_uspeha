@@ -1,6 +1,7 @@
 import FormWrapper from '@components/FormWrapper'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { LOCATIONS } from '@helpers/constants'
 import locationAtom from '@state/atoms/locationAtom'
 import cn from 'classnames'
 import { useRouter } from 'next/router'
@@ -59,14 +60,18 @@ const browseLocationFunc = () => {
         closeModal()
       } else {
         localStorage.removeItem('location')
-        if (selectedLocation === 'norilsk')
-          router.push('https://nrsk.половинкауспеха.рф?location=norilsk', '', {
+        // if (selectedLocation === 'norilsk')
+        router.push(
+          `${LOCATIONS[selectedLocation].domen}?location=${selectedLocation}`,
+          '',
+          {
             shallow: false,
-          })
-        if (selectedLocation === 'krasnoyarsk')
-          router.push('https://половинкауспеха.рф?location=krasnoyarsk', '', {
-            shallow: false,
-          })
+          }
+        )
+        // if (selectedLocation === 'krasnoyarsk')
+        //   router.push('https://половинкауспеха.рф?location=krasnoyarsk', '', {
+        //     shallow: false,
+        //   })
       }
     }
 
