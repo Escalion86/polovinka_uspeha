@@ -1,3 +1,4 @@
+import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DateTimeEvent from '@components/DateTimeEvent'
 import UserNameById from '@components/UserNameById'
 import {
@@ -9,6 +10,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareObjects from '@helpers/compareObjects'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import formatAddress from '@helpers/formatAddress'
 import { historiesOfEventSelector } from '@state/atoms/historiesOfEventAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import cn from 'classnames'
@@ -103,6 +105,53 @@ const HistoryItem = ({ action, changes, createdAt, userId }) => {
                       __html: DOMPurify.sanitize(value.old),
                     }}
                   />
+                ) : key === 'tags' ? (
+                  <EventTagsChipsLine tags={value.old} className="flex-1" />
+                ) : key === 'address' ? (
+                  formatAddress(value.old, '[не указан]')
+                ) : key === 'usersRelationshipAccess' ? (
+                  value.old === 'no' ? (
+                    'Без пары'
+                  ) : value.old === 'only' ? (
+                    'Только с парой'
+                  ) : (
+                    'Всем'
+                  )
+                ) : key === 'price' ? (
+                  value.old / 100 + ' ₽'
+                ) : key === 'usersStatusAccess' ? (
+                  <div>
+                    <div>Не авторизован: {value.old?.noReg ? 'Да' : 'Нет'}</div>
+                    <div>Новичок: {value.old?.novice ? 'Да' : 'Нет'}</div>
+                    <div>
+                      Участник клуба: {value.old?.member ? 'Да' : 'Нет'}
+                    </div>
+                  </div>
+                ) : key === 'usersStatusDiscount' ? (
+                  <div>
+                    <div>Новичок: {(value.old?.novice ?? 0) / 100 + ' ₽'}</div>
+                    <div>
+                      Участник клуба: {(value.old?.member ?? 0) / 100 + ' ₽'}
+                    </div>
+                  </div>
+                ) : [
+                    'maxParticipants',
+                    'maxMans',
+                    'maxWomans',
+                    'maxMansNovice',
+                    'maxWomansNovice',
+                    'maxMansMember',
+                    'maxWomansMember',
+                    'minMansAge',
+                    'maxMansAge',
+                    'minWomansAge',
+                    'maxWomansAge',
+                  ].includes(key) ? (
+                  typeof value.old === 'number' ? (
+                    value.old + ' чел.'
+                  ) : (
+                    'Без ограничений'
+                  )
                 ) : value.old !== null && typeof value.old === 'object' ? (
                   <pre>{JSON.stringify(value.old)}</pre>
                 ) : typeof value.old === 'boolean' ? (
@@ -126,6 +175,55 @@ const HistoryItem = ({ action, changes, createdAt, userId }) => {
                       __html: DOMPurify.sanitize(value.new),
                     }}
                   />
+                ) : key === 'tags' ? (
+                  <EventTagsChipsLine
+                    tags={value.new}
+                    className="flex-1"
+                    // noWrap
+                  />
+                ) : key === 'address' ? (
+                  formatAddress(value.new, '[не указан]')
+                ) : key === 'usersRelationshipAccess' ? (
+                  value.new === 'no' ? (
+                    'Только '
+                  ) : value.new === 'only' ? (
+                    'Только парам'
+                  ) : (
+                    'Всем'
+                  )
+                ) : key === 'price' ? (
+                  value.new / 100 + ' ₽'
+                ) : key === 'usersStatusAccess' ? (
+                  <div>
+                    <div>Не авторизован: {value.new?.noReg ? 'Да' : 'Нет'}</div>
+                    <div>Новичок: {value.new?.novice ? 'Да' : 'Нет'}</div>
+                    <div>
+                      Участник клуба: {value.new?.member ? 'Да' : 'Нет'}
+                    </div>
+                  </div>
+                ) : key === 'usersStatusDiscount' ? (
+                  <div>
+                    <div>Новичок: {value.new?.novice / 100 + ' ₽'}</div>
+                    <div>Участник клуба: {value.new?.member / 100 + ' ₽'}</div>
+                  </div>
+                ) : [
+                    'maxParticipants',
+                    'maxMans',
+                    'maxWomans',
+                    'maxMansNovice',
+                    'maxWomansNovice',
+                    'maxMansMember',
+                    'maxWomansMember',
+                    'minMansAge',
+                    'maxMansAge',
+                    'minWomansAge',
+                    'maxWomansAge',
+                  ].includes(key) ? (
+                  typeof value.new === 'number' ? (
+                    value.new + ' чел.'
+                  ) : (
+                    'Не ограничено'
+                  )
                 ) : value.new !== null && typeof value.new === 'object' ? (
                   <pre>{JSON.stringify(value.new)}</pre>
                 ) : typeof value.new === 'boolean' ? (
