@@ -39,7 +39,7 @@ export async function fetchingReviews(domen = process.env.NEXTAUTH_SITE) {
 export async function fetchingAdditionalBlocks(
   domen = process.env.NEXTAUTH_SITE
 ) {
-  const resp = await fetch(`${domen}/api/additionalBlocks`)
+  const resp = await fetch(`${domen}/api/additionalblocks`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingAdditionalBlocks ERROR:', error))

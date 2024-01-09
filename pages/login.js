@@ -1009,7 +1009,9 @@ const LoginPage = (props) => {
                     }}
                   />
                 )}
-              {((registrationLevel === 1 && Object.values(errors).length > 0) ||
+              {(((process === 'registration' || process === 'forgotPassword') &&
+                registrationLevel === 1 &&
+                Object.values(errors).length > 0) ||
                 registrationLevel === 2) && (
                 <div className="flex justify-center">
                   <div

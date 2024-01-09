@@ -347,7 +347,7 @@ const itemsFuncGenerator = (
   //   // Сначала получаем список элементов которые можно поднять
   //   toggleLoading('additionalBlock' + itemId)
   //   await putData(
-  //     `/api/additionalBlocks/${itemId}`,
+  //     `/api/additionalblocks/${itemId}`,
   //     () => props['setAdditionalBlock'](itemId)
   //     //  deleteEvent(itemId)
   //   )
