@@ -323,6 +323,33 @@ export const PASTEL_COLORS = [
 
 export const GRADIENT_COLORS = ['#504436', '#84725A']
 
+export const LOCATIONS = {
+  dev: {
+    townRu: 'красноярск',
+    roditPadeg: 'красноярского',
+    domen: 'https://половинкауспеха.рф',
+    short: 'krsk',
+    imageFolder: 'polovinka_uspeha_dev',
+    telegramLink: 'https://t.me/polovinka_uspeha_bot',
+  },
+  krasnoyarsk: {
+    townRu: 'красноярск',
+    roditPadeg: 'красноярского',
+    domen: 'https://половинкауспеха.рф',
+    short: 'krsk',
+    imageFolder: 'polovinka_uspeha',
+    telegramLink: 'https://t.me/polovinka_uspeha_bot',
+  },
+  norilsk: {
+    townRu: 'норильск',
+    roditPadeg: 'норильского',
+    domen: 'https://nrsk.половинкауспеха.рф',
+    short: 'nrsk',
+    imageFolder: 'polovinka_uspeha_nrsk',
+    telegramLink: 'https://t.me/polovinka_uspeha_nrsk_bot',
+  },
+}
+
 export const MONTHS = [
   'янв',
   'фев',
