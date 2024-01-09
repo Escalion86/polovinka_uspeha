@@ -49,6 +49,7 @@ import userSetPasswordFunc from './modalsFunc/userSetPasswordFunc'
 import eventSignUpToReserveAfterError from './modalsFunc/eventSignUpToReserveAfterError'
 import roleFunc from './modalsFunc/roleFunc'
 import browseLocationFunc from './modalsFunc/browseLocationFunc'
+import eventHistoryFunc from './modalsFunc/eventHistoryFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -416,6 +417,7 @@ const modalsFuncGenerator = (
       add: (eventId) => addModal(eventFunc(eventId, true)),
       edit: (eventId) => addModal(eventFunc(eventId)),
       users: (eventId) => addModal(eventUsersFunc(eventId)),
+      history: (eventId) => addModal(eventHistoryFunc(eventId)),
       statusEdit: (eventId) => addModal(eventStatusEditFunc(eventId)),
       payments: (eventId) => addModal(eventUsersPaymentsFunc(eventId)),
       close: (eventId) =>

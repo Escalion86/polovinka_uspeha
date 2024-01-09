@@ -11,6 +11,7 @@ import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import Roles from '@models/Roles'
+import mongoose from 'mongoose'
 
 // const test_callback = {
 //   update_id: 173172137,
@@ -552,6 +553,8 @@ export default async function handler(Schema, req, res, params = null) {
           }
           return res?.status(200).json({ success: true, data })
         } else if (Object.keys(query).length > 0) {
+          if (query['data._id'])
+            query['data._id'] = mongoose.Types.ObjectId(query['data._id'])
           data = await Schema.find(query).select({ password: 0 })
           if (!data) {
             return res?.status(400).json({ success: false })
@@ -647,7 +650,7 @@ export default async function handler(Schema, req, res, params = null) {
 
           await Histories.create({
             schema: Schema.collection.collectionName,
-            action: 'updete',
+            action: 'update',
             data,
             userId: body.userId,
           })

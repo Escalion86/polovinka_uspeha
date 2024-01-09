@@ -20,10 +20,9 @@ const eventUserStatusChangeFunc = ({ eventId, userId }) => {
     const eventUsers = useRecoilValue(asyncEventsUsersByEventIdAtom(eventId))
     const eventUser = eventUsers.find(
       (eventUser) => eventUser.userId === userId
-    ) // const event = useRecoilValue(eventSelector(eventId))
-    // const user = useRecoilValue(userSelector(userId))
+    )
+
     const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
-    console.log('eventUser :>> ', eventUser)
 
     const defaultStatus = eventUser.userStatus //  ?? user.status ?? 'novice'
     const [status, setStatus] = useState(defaultStatus)

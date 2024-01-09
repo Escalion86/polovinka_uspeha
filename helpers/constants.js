@@ -804,6 +804,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: false,
       statusFilterFull: false,
       eventUsersCounterAndAgeFull: false,
+      editHistory: false,
     },
     eventsUsers: {
       see: false, // member
@@ -920,6 +921,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: false,
       statusFilterFull: true,
       eventUsersCounterAndAgeFull: true,
+      editHistory: false,
     },
     eventsUsers: {
       see: true, // member
@@ -1036,6 +1038,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: false,
       statusFilterFull: true,
       eventUsersCounterAndAgeFull: true,
+      editHistory: false,
     },
     eventsUsers: {
       see: true, // member
@@ -1152,6 +1155,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: true,
       statusFilterFull: true,
       eventUsersCounterAndAgeFull: true,
+      editHistory: true,
     },
     eventsUsers: {
       see: true, // member
@@ -1269,6 +1273,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: true, //!
       statusFilterFull: true, //!
       eventUsersCounterAndAgeFull: true, //!
+      editHistory: true,
     },
     eventsUsers: {
       see: true, // ! member
