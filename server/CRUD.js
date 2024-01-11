@@ -410,27 +410,27 @@ const notificateUsersAboutEvent = async (event, req) => {
           event.maxWomansAge < userAge))
     if (isUserTooOld) return false
 
-    // const isUserTooYoung =
-    //   userAge &&
-    //   ((user.gender === 'male' &&
-    //     typeof event.maxMansAge === 'number' &&
-    //     event.minMansAge > userAge) ||
-    //     (user.gender === 'famale' &&
-    //       typeof event.maxWomansAge === 'number' &&
-    //       event.minWomansAge > userAge))
-    // if (isUserTooYoung) return false
+    const isUserTooYoung =
+      userAge &&
+      ((user.gender === 'male' &&
+        typeof event.maxMansAge === 'number' &&
+        event.minMansAge > userAge) ||
+        (user.gender === 'famale' &&
+          typeof event.maxWomansAge === 'number' &&
+          event.minWomansAge > userAge))
+    if (isUserTooYoung) return false
 
-    // const isUserStatusCorrect = user.status
-    //   ? event.usersStatusAccess[user.status]
-    //   : event.usersStatusAccess['novice']
-    // if (!isUserStatusCorrect) return false
-    // const isUserRelationshipCorrect =
-    //   !event.usersRelationshipAccess ||
-    //   event.usersRelationshipAccess === 'yes' ||
-    //   (user.relationship
-    //     ? event.usersRelationshipAccess === 'only'
-    //     : event.usersRelationshipAccess === 'no')
-    // if (!isUserRelationshipCorrect) return false
+    const isUserStatusCorrect = user.status
+      ? event.usersStatusAccess[user.status]
+      : event.usersStatusAccess['novice']
+    if (!isUserStatusCorrect) return false
+    const isUserRelationshipCorrect =
+      !event.usersRelationshipAccess ||
+      event.usersRelationshipAccess === 'yes' ||
+      (user.relationship
+        ? event.usersRelationshipAccess === 'only'
+        : event.usersRelationshipAccess === 'no')
+    if (!isUserRelationshipCorrect) return false
 
     return (
       !user.eventsTagsNotification ||
