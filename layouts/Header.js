@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import Avatar from './Avatar'
 import UserMenu from './UserMenu'
+import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 
 const MenuItem = ({ text, href = '#' }) => (
   <li>
@@ -55,13 +56,15 @@ const Header = () => {
   const events = useRecoilValue(filteredEventsSelector)
   const reviews = useRecoilValue(filteredReviewsSelector)
   const directions = useRecoilValue(filteredDirectionsSelector)
+  const services = useRecoilValue(filteredServicesSelector)
   const additionalBlocks = useRecoilValue(filteredAdditionalBlocksSelector)
 
   const menu = [{ name: 'Наши цели', href: '/#about' }]
-  if (events?.length > 0) menu.push({ name: 'Мероприятия', href: '/#events' })
+  // if (events?.length > 0)
+  menu.push({ name: 'Мероприятия', href: '/#events' })
   if (directions?.length > 0)
     menu.push({ name: 'Направления', href: '/#directions' })
-  if (directions?.length > 0) menu.push({ name: 'Услуги', href: '/#services' })
+  if (services?.length > 0) menu.push({ name: 'Услуги', href: '/#services' })
   if (additionalBlocks?.length > 0)
     additionalBlocks.forEach((additionalBlock) => {
       if (additionalBlock.menuName)
