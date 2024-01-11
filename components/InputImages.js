@@ -25,6 +25,7 @@ const InputImages = ({
   aspect,
   error,
   fullWidth,
+  readOnly = false,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const { imageFolder } = useRecoilValue(locationPropsSelector)
@@ -97,6 +98,7 @@ const InputImages = ({
       error={error}
       paddingY
       fullWidth={fullWidth}
+      noBorder={readOnly}
       // labelPos="top"
     >
       <div
@@ -113,6 +115,7 @@ const InputImages = ({
               className="relative w-20 h-20 overflow-hidden border border-gray-300 group"
               layout
               transition={{ duration: 0.2, type: 'just' }}
+              onClick={(e) => e.stopPropagation()}
             >
               <Zoom zoomMargin={20}>
                 <img
@@ -122,16 +125,18 @@ const InputImages = ({
                 />
               </Zoom>
 
-              <div className="absolute top-0 right-0 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
-                <FontAwesomeIcon
-                  className="h-4 text-red-700"
-                  icon={faTrash}
-                  onClick={() => {
-                    onChange(images.filter((image, i) => i !== index))
-                  }}
-                />
-              </div>
-              {images.length > 1 && (
+              {!readOnly && (
+                <div className="absolute top-0 right-0 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
+                  <FontAwesomeIcon
+                    className="h-4 text-red-700"
+                    icon={faTrash}
+                    onClick={() => {
+                      onChange(images.filter((image, i) => i !== index))
+                    }}
+                  />
+                </div>
+              )}
+              {!readOnly && images.length > 1 && (
                 <div
                   className={cn(
                     'absolute flex p-1 duration-200 transform bg-white rounded-br-full w-7 h-7',
@@ -154,7 +159,7 @@ const InputImages = ({
               )}
             </motion.div>
           ))}
-        {!isAddingImage && images.length < maxImages && (
+        {!readOnly && !isAddingImage && images.length < maxImages && (
           <div
             onClick={addImageClick}
             className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer group rounded-xl"
