@@ -1,5 +1,6 @@
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DateTimeEvent from '@components/DateTimeEvent'
+import InputImages from '@components/InputImages'
 import UserNameById from '@components/UserNameById'
 import {
   faAdd,
@@ -9,8 +10,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareObjects from '@helpers/compareObjects'
+import { EVENT_STATUSES } from '@helpers/constants'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import formatAddress from '@helpers/formatAddress'
+import formatDateTime from '@helpers/formatDateTime'
+import textAge from '@helpers/textAge'
 import { historiesOfEventSelector } from '@state/atoms/historiesOfEventAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import cn from 'classnames'
@@ -53,6 +57,85 @@ const eventKeys = {
   googleCalendarId: 'Google Calendar ID',
 }
 
+// 'dateStart' || key === 'dateEnd' ? (
+//   formatDateTime(value.old)
+// ),
+
+const KeyValueItem = ({ objKey, value }) =>
+  objKey === 'description' ? (
+    <div
+      className="w-full max-w-full overflow-hidden list-disc textarea ql"
+      dangerouslySetInnerHTML={{
+        __html: DOMPurify.sanitize(value),
+      }}
+    />
+  ) : objKey === 'tags' ? (
+    <EventTagsChipsLine tags={value} className="flex-1" />
+  ) : objKey === 'organizerId' ? (
+    <UserNameById userId={value} thin trunc={1} />
+  ) : objKey === 'dateStart' || objKey === 'dateEnd' ? (
+    formatDateTime(value)
+  ) : objKey === 'status' ? (
+    EVENT_STATUSES.find((item) => item.value === value)?.name
+  ) : objKey === 'images' ? (
+    <InputImages images={value} readOnly />
+  ) : objKey === 'address' ? (
+    formatAddress(value, '[не указан]')
+  ) : objKey === 'usersRelationshipAccess' ? (
+    value === 'no' ? (
+      'Без пары'
+    ) : value === 'only' ? (
+      'Только с парой'
+    ) : (
+      'Всем'
+    )
+  ) : objKey === 'price' ? (
+    value / 100 + ' ₽'
+  ) : objKey === 'usersStatusAccess' ? (
+    <div>
+      <div>Не авторизован: {value?.noReg ? 'Да' : 'Нет'}</div>
+      <div>Новичок: {value?.novice ? 'Да' : 'Нет'}</div>
+      <div>Участник клуба: {value?.member ? 'Да' : 'Нет'}</div>
+    </div>
+  ) : objKey === 'usersStatusDiscount' ? (
+    <div>
+      <div>Новичок: {(value?.novice ?? 0) / 100 + ' ₽'}</div>
+      <div>Участник клуба: {(value?.member ?? 0) / 100 + ' ₽'}</div>
+    </div>
+  ) : [
+      'maxParticipants',
+      'maxMans',
+      'maxWomans',
+      'maxMansNovice',
+      'maxWomansNovice',
+      'maxMansMember',
+      'maxWomansMember',
+    ].includes(objKey) ? (
+    typeof value === 'number' ? (
+      value + ' чел.'
+    ) : (
+      'Без ограничений'
+    )
+  ) : ['minMansAge', 'maxMansAge', 'minWomansAge', 'maxWomansAge'].includes(
+      objKey
+    ) ? (
+    typeof value === 'number' ? (
+      `${value} ${textAge(value)}`
+    ) : (
+      'Не задан'
+    )
+  ) : value !== null && typeof value === 'object' ? (
+    <pre>{JSON.stringify(value)}</pre>
+  ) : typeof value === 'boolean' ? (
+    value ? (
+      'Да'
+    ) : (
+      'Нет'
+    )
+  ) : (
+    value
+  )
+
 const HistoryItem = ({ action, changes, createdAt, userId }) => {
   const [isCollapsed, setIsCollapsed] = useState(true)
 
@@ -64,7 +147,6 @@ const HistoryItem = ({ action, changes, createdAt, userId }) => {
 
   const arrayOfChanges = []
   for (const [key, value] of Object.entries(changes)) {
-    console.log('value :>> ', key, value)
     arrayOfChanges.push(
       (() => {
         return (
@@ -95,10 +177,11 @@ const HistoryItem = ({ action, changes, createdAt, userId }) => {
               animate={{ height: isCollapsed ? 0 : 'auto' }}
             >
               <div className="flex mt-1 gap-x-1">
-                <div className="w-12 italic font-bold border-r-2 tablet:w-14 tablet:min-w-14 text-danger min-w-12 border-danger">
+                <div className="italic font-bold border-r-2 w-13 text-danger min-w-13 border-danger">
                   Было
                 </div>
-                {key === 'description' ? (
+                <KeyValueItem objKey={key} value={value.old} />
+                {/* {key === 'description' ? (
                   <div
                     className="w-full max-w-full overflow-hidden list-disc textarea ql"
                     dangerouslySetInnerHTML={{
@@ -107,6 +190,14 @@ const HistoryItem = ({ action, changes, createdAt, userId }) => {
                   />
                 ) : key === 'tags' ? (
                   <EventTagsChipsLine tags={value.old} className="flex-1" />
+                ) : key === 'organizerId' ? (
+                  <UserNameById userId={value.old} thin trunc={1} />
+                ) : key === 'dateStart' || key === 'dateEnd' ? (
+                  formatDateTime(value.old)
+                ) : key === 'status' ? (
+                  EVENT_STATUSES.find((item) => item.value === value.old)?.name
+                ) : key === 'images' ? (
+                  <InputImages images={value.old} readOnly />
                 ) : key === 'address' ? (
                   formatAddress(value.old, '[не указан]')
                 ) : key === 'usersRelationshipAccess' ? (
@@ -162,13 +253,14 @@ const HistoryItem = ({ action, changes, createdAt, userId }) => {
                   )
                 ) : (
                   value.old
-                )}
+                )} */}
               </div>
               <div className="flex pb-1 mt-1 gap-x-1">
-                <div className="w-12 italic font-bold border-r-2 tablet:w-14 tablet:min-w-14 text-success min-w-12 border-success">
+                <div className="italic font-bold border-r-2 w-13 text-success min-w-13 border-success">
                   Стало
                 </div>
-                {key === 'description' ? (
+                <KeyValueItem objKey={key} value={value.new} />
+                {/* {key === 'description' ? (
                   <div
                     className="w-full max-w-full overflow-hidden list-disc textarea ql"
                     dangerouslySetInnerHTML={{
@@ -181,6 +273,14 @@ const HistoryItem = ({ action, changes, createdAt, userId }) => {
                     className="flex-1"
                     // noWrap
                   />
+                ) : key === 'organizerId' ? (
+                  <UserNameById userId={value.new} thin trunc={1} />
+                ) : key === 'dateStart' || key === 'dateEnd' ? (
+                  formatDateTime(value.new)
+                ) : key === 'status' ? (
+                  EVENT_STATUSES.find((item) => item.value === value.new)?.name
+                ) : key === 'images' ? (
+                  <InputImages images={value.new} readOnly />
                 ) : key === 'address' ? (
                   formatAddress(value.new, '[не указан]')
                 ) : key === 'usersRelationshipAccess' ? (
@@ -234,7 +334,7 @@ const HistoryItem = ({ action, changes, createdAt, userId }) => {
                   )
                 ) : (
                   value.new
-                )}
+                )} */}
               </div>
             </motion.div>
           </div>
