@@ -396,6 +396,15 @@ const notificateUsersAboutEvent = async (event, req) => {
   })
 
   const usersToNotificate = users.filter((user) => {
+    if (
+      !(
+        !user.eventsTagsNotification ||
+        user.eventsTagsNotification?.length === 0 ||
+        user.eventsTagsNotification.find((tag) => event.tags.includes(tag))
+      )
+    )
+      return false
+
     const userAge = new Number(
       birthDateToAge(user.birthday, undefined, false, false)
     )
@@ -410,34 +419,33 @@ const notificateUsersAboutEvent = async (event, req) => {
           event.maxWomansAge < userAge))
     if (isUserTooOld) return false
 
-    // const isUserTooYoung =
-    //   userAge &&
-    //   ((user.gender === 'male' &&
-    //     typeof event.maxMansAge === 'number' &&
-    //     event.minMansAge > userAge) ||
-    //     (user.gender === 'famale' &&
-    //       typeof event.maxWomansAge === 'number' &&
-    //       event.minWomansAge > userAge))
-    // if (isUserTooYoung) return false
+    const isUserTooYoung =
+      userAge &&
+      ((user.gender === 'male' &&
+        typeof event.maxMansAge === 'number' &&
+        event.minMansAge > userAge) ||
+        (user.gender === 'famale' &&
+          typeof event.maxWomansAge === 'number' &&
+          event.minWomansAge > userAge))
+    if (isUserTooYoung) return false
 
-    // const isUserStatusCorrect = user.status
-    //   ? event.usersStatusAccess[user.status]
-    //   : event.usersStatusAccess['novice']
-    // if (!isUserStatusCorrect) return false
-    // const isUserRelationshipCorrect =
-    //   !event.usersRelationshipAccess ||
-    //   event.usersRelationshipAccess === 'yes' ||
-    //   (user.relationship
-    //     ? event.usersRelationshipAccess === 'only'
-    //     : event.usersRelationshipAccess === 'no')
-    // if (!isUserRelationshipCorrect) return false
+    const isUserStatusCorrect = user.status
+      ? event.usersStatusAccess.get(user.status)
+      : event.usersStatusAccess.get('novice')
+    if (!isUserStatusCorrect) return false
 
-    return (
-      !user.eventsTagsNotification ||
-      user.eventsTagsNotification?.length === 0 ||
-      user.eventsTagsNotification.find((tag) => event.tags.includes(tag))
-    )
+    const isUserRelationshipCorrect =
+      !event.usersRelationshipAccess ||
+      event.usersRelationshipAccess === 'yes' ||
+      (user.relationship
+        ? event.usersRelationshipAccess === 'only'
+        : event.usersRelationshipAccess === 'no')
+    if (!isUserRelationshipCorrect) return false
+
+    return true
   })
+
+  if (usersToNotificate.length === 0) return
 
   const novicesTelegramIds = usersToNotificate
     .filter((user) => user.status === 'novice' || !user.status)
@@ -600,7 +608,7 @@ export default async function handler(Schema, req, res, params = null) {
             const calendarEvent = updateEventInCalendar(data, req)
 
             // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
-            if (data.showOnSite && data.tags && typeof data.tags === 'object') {
+            if (data.showOnSite) {
               notificateUsersAboutEvent(data, req)
             }
           }
@@ -638,12 +646,7 @@ export default async function handler(Schema, req, res, params = null) {
 
           if (Schema === Events) {
             const calendarEvent = updateEventInCalendar(data, req)
-            if (
-              !oldData.showOnSite &&
-              data.showOnSite &&
-              data.tags &&
-              typeof data.tags === 'object'
-            ) {
+            if (!oldData.showOnSite && data.showOnSite) {
               notificateUsersAboutEvent(data, req)
             }
           }
