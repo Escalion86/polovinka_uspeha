@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
 import ru from 'dayjs/locale/ru'
 import InputWrapper from './InputWrapper'
+import formatDateTime from '@helpers/formatDateTime'
 dayjs.locale(ru)
 
 const DateTimePicker = ({
@@ -93,12 +94,12 @@ const DateTimePicker = ({
           }
           // views={['hours', 'minutes']}
           // value={dayjs(value)}
-          value={value ? dayjs(value) : undefined}
+          value={value === null ? null : value ? dayjs(value) : undefined}
           defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
           // slots={{
           //   switchViewIcon
           // }}
-          onChange={onChange}
+          onChange={(date) => onChange(date.toISOString())}
           disabled={disabled}
           showDisabledIcon={false}
           // slotProps={{
@@ -173,12 +174,12 @@ const DateTimePicker = ({
             inputFormat="HH:mm"
             openTo="hours"
             views={['hours', 'minutes']}
-            value={value ? dayjs(value) : undefined}
+            value={value === null ? null : value ? dayjs(value) : undefined}
             defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
             slots={{
               openPickerIcon: AccessTimeIcon,
             }}
-            onChange={onChange}
+            onChange={(date) => onChange(date.toISOString())}
             disabled={disabled}
             showDisabledIcon={false}
           />

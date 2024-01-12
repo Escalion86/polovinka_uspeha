@@ -27,6 +27,7 @@ import {
   faShop,
   faShoppingBag,
   faSignInAlt,
+  faStar,
   faTimesCircle,
   faTools,
   faTrophy,
@@ -113,6 +114,7 @@ import LoggedUserNotificationsContent from '@layouts/content/LoggedUserNotificat
 import SettingsFabMenuContent from '@layouts/content/SettingsFabMenuContent'
 import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
 import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
+import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
 
 const colors = [
   'border-blue-400',
@@ -886,6 +888,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: false,
       roles: false,
+      dateStartProject: false,
     },
     notices: {
       histories: false,
@@ -1003,6 +1006,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: false,
       roles: false,
+      dateStartProject: false,
     },
     notices: {
       histories: true,
@@ -1120,6 +1124,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: false,
       roles: false,
+      dateStartProject: false,
     },
     notices: {
       histories: true,
@@ -1237,6 +1242,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: true,
       roles: true,
+      dateStartProject: false,
     },
     notices: {
       histories: true,
@@ -1355,6 +1361,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: true,
       fabMenu: true,
       roles: true,
+      dateStartProject: true,
     },
     notices: {
       histories: true,
@@ -1601,6 +1608,12 @@ export const CONTENTS = {
     name: 'Настройки / Меню "Вопрос"',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.fabMenu,
+  },
+  settingsDateStartProject: {
+    Component: SettingsDateStartProjectContent,
+    name: 'Настройки / Дата старта проекта',
+    accessRoles: ['dev'],
+    roleAccess: (role) => role?.siteSettings?.dateStartProject,
   },
   settingsRoles: {
     Component: SettingsRolesContent,
@@ -1882,6 +1895,15 @@ export const pages = [
     icon: faUsers,
     accessRoles: CONTENTS['settingsRoles'].accessRoles,
     roleAccess: CONTENTS['settingsRoles'].roleAccess,
+  },
+  {
+    id: 83,
+    group: 10,
+    name: 'Дата старта проекта',
+    href: 'settingsDateStartProject',
+    icon: faStar,
+    accessRoles: CONTENTS['settingsDateStartProject'].accessRoles,
+    roleAccess: CONTENTS['settingsDateStartProject'].roleAccess,
   },
   {
     id: 99,

@@ -51,6 +51,10 @@ const siteSettingsSchema = {
     type: { name: String, photo: String, quote: String, showOnSite: Boolean },
     default: {},
   },
+  dateStartProject: {
+    type: Date,
+    default: null,
+  },
 }
 
 export default siteSettingsSchema
