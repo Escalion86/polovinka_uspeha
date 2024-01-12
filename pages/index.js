@@ -16,6 +16,8 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRecoilValue } from 'recoil'
+import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
+import BlockContainer from '@components/BlockContainer'
 
 export default function Home(props) {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -29,6 +31,28 @@ export default function Home(props) {
       <StateLoader className="max-h-screen" {...props}>
         <Header />
         <TitleBlock />
+        {/* <BlockContainer className="items-center">
+          <FlipClockCountdown
+            to={new Date().getTime() + 24 * 3600 * 1000 + 5000}
+            labels={['Дни', 'Часы', 'Минуты', 'Секунды']}
+            labelStyle={{
+              fontSize: 10,
+              fontWeight: 500,
+              textTransform: 'uppercase',
+              color: '#7a5151',
+            }}
+            digitBlockStyle={{
+              width: 40,
+              height: 60,
+              fontSize: 30,
+              color: 'black',
+              background: 'white',
+            }}
+            dividerStyle={{ color: 'rgba(0,0,0,0.1)', height: 1 }}
+            separatorStyle={{ color: '#7a5151', size: '5px' }}
+            duration={0.5}
+          />
+        </BlockContainer> */}
         <AboutBlock />
         <SupervisorBlock />
         <EventsBlock maxEvents={4} />

@@ -21,6 +21,7 @@ import '../styles/fonts/Enchants.css'
 import '../styles/fonts/Frankinity.css'
 import '../styles/fonts/FuturaPT.css'
 import '../styles/global.css'
+import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
