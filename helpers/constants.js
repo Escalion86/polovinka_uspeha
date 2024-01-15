@@ -806,7 +806,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: false,
       statusFilterFull: false,
       eventUsersCounterAndAgeFull: false,
-      editHistory: false,
+      seeHistory: false,
     },
     eventsUsers: {
       see: false, // member
@@ -864,6 +864,7 @@ export const DEFAULT_ROLES = [
       delete: false,
       paymentsNotParticipantsEvent: false,
       paymentsWithNoEvent: false,
+      seeHistory: false,
     },
     statistics: {
       events: false,
@@ -924,7 +925,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: false,
       statusFilterFull: true,
       eventUsersCounterAndAgeFull: true,
-      editHistory: false,
+      seeHistory: false,
     },
     eventsUsers: {
       see: true, // member
@@ -941,10 +942,10 @@ export const DEFAULT_ROLES = [
       seeUserPayments: false,
       setPassword: false,
       seeSumOfPaymentsWithoutEventOnCard: false,
-      add: false,
-      edit: false,
+      add: true,
+      edit: true,
       setRole: false,
-      setStatus: false,
+      setStatus: true,
       delete: false,
     },
     services: {
@@ -982,6 +983,7 @@ export const DEFAULT_ROLES = [
       delete: false,
       paymentsNotParticipantsEvent: false,
       paymentsWithNoEvent: false,
+      seeHistory: false,
     },
     statistics: {
       events: false,
@@ -1042,7 +1044,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: false,
       statusFilterFull: true,
       eventUsersCounterAndAgeFull: true,
-      editHistory: false,
+      seeHistory: false,
     },
     eventsUsers: {
       see: true, // member
@@ -1100,6 +1102,7 @@ export const DEFAULT_ROLES = [
       delete: true,
       paymentsNotParticipantsEvent: true,
       paymentsWithNoEvent: true,
+      seeHistory: false,
     },
     statistics: {
       events: false,
@@ -1160,7 +1163,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: true,
       statusFilterFull: true,
       eventUsersCounterAndAgeFull: true,
-      editHistory: true,
+      seeHistory: true,
     },
     eventsUsers: {
       see: true, // member
@@ -1218,6 +1221,7 @@ export const DEFAULT_ROLES = [
       delete: true,
       paymentsNotParticipantsEvent: true,
       paymentsWithNoEvent: true,
+      seeHistory: true,
     },
     statistics: {
       events: true,
@@ -1279,7 +1283,7 @@ export const DEFAULT_ROLES = [
       showProfitOnCard: true, //!
       statusFilterFull: true, //!
       eventUsersCounterAndAgeFull: true, //!
-      editHistory: true,
+      seeHistory: true,
     },
     eventsUsers: {
       see: true, // ! member
@@ -1337,6 +1341,7 @@ export const DEFAULT_ROLES = [
       delete: true,
       paymentsNotParticipantsEvent: true,
       paymentsWithNoEvent: true,
+      seeHistory: true,
     },
     statistics: {
       events: true,

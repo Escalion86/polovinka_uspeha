@@ -50,6 +50,7 @@ import eventSignUpToReserveAfterError from './modalsFunc/eventSignUpToReserveAft
 import roleFunc from './modalsFunc/roleFunc'
 import browseLocationFunc from './modalsFunc/browseLocationFunc'
 import eventHistoryFunc from './modalsFunc/eventHistoryFunc'
+import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -564,6 +565,7 @@ const modalsFuncGenerator = (
     payment: {
       add: (paymentId, props) => addModal(paymentFunc(paymentId, true, props)),
       edit: (paymentId) => addModal(paymentFunc(paymentId)),
+      history: (paymentId) => addModal(paymentHistoryFunc(paymentId)),
       autoFill: (eventId) => addModal(paymentsAutoFillFunc(eventId)),
       delete: (paymentId) =>
         addModal({

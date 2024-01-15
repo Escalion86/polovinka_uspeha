@@ -26,6 +26,7 @@ import UserStatusIcon from './UserStatusIcon'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import UserRelationshipIcon from './UserRelationshipIcon'
+import serviceSelector from '@state/selectors/serviceSelector'
 
 const ItemContainer = ({
   onClick,
@@ -213,12 +214,25 @@ export const EventItemFromId = ({
   eventId,
   onClick = null,
   active = false,
+  bordered = false,
 }) => {
   const event = useRecoilValue(eventSelector(eventId))
-  return <EventItem item={event} active={active} onClick={onClick} />
+  return (
+    <EventItem
+      item={event}
+      active={active}
+      onClick={onClick}
+      bordered={bordered}
+    />
+  )
 }
 
-export const EventItem = ({ item, onClick = null, active = false }) => {
+export const EventItem = ({
+  item,
+  onClick = null,
+  active = false,
+  bordered = false,
+}) => {
   const direction = useRecoilValue(directionSelector(item.directionId))
 
   const eventStatus = eventStatusFunc(item)
@@ -230,8 +244,12 @@ export const EventItem = ({ item, onClick = null, active = false }) => {
     <ItemContainer
       onClick={onClick}
       active={active}
-      className="flex text-xs tablet:text-sm h-[33px]"
+      className={cn(
+        'flex text-xs tablet:text-sm h-[33px]',
+        bordered ? 'border border-gray-500' : ''
+      )}
       noPadding
+      noBorder={bordered}
     >
       <div
         className={cn(
@@ -323,12 +341,35 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
   </ItemContainer>
 )
 
-export const ServiceItem = ({ item, onClick = null, active = false }) => (
+export const ServiceItemFromId = ({
+  serviceId,
+  onClick = null,
+  active = false,
+  bordered = false,
+}) => {
+  const service = useRecoilValue(serviceSelector(serviceId))
+  return (
+    <ServiceItem
+      item={service}
+      active={active}
+      onClick={onClick}
+      bordered={bordered}
+    />
+  )
+}
+
+export const ServiceItem = ({
+  item,
+  onClick = null,
+  active = false,
+  bordered = false,
+}) => (
   <ItemContainer
     onClick={onClick}
     active={active}
-    className="flex h-[50px]"
+    className={cn('flex h-[50px]', bordered ? 'border border-gray-500' : '')}
     noPadding
+    noBorder={bordered}
   >
     {item?.images && item?.images.length > 0 && (
       // <div className="flex justify-center w-full tablet:w-auto">
