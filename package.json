@@ -31,6 +31,7 @@
     "classnames": "^2.3.2",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.11.7",
+    "elevenlabs-js": "^1.2.6",
     "exceljs": "^4.3.0",
     "framer-motion": "^8.4.3",
     "googleapis": "^105.0.0",

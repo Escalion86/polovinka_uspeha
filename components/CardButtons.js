@@ -10,8 +10,10 @@ import {
   faArrowDown,
   faArrowUp,
   faCalendarAlt,
+  faCode,
   faEllipsisV,
   faHistory,
+  faIdBadge,
   faKey,
   faMoneyBill,
   faPencilAlt,
@@ -33,6 +35,7 @@ import CardButton from './CardButton'
 import DropDown from './DropDown'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
+import useCopyToClipboard from '@helpers/useCopyToClipboard'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -91,6 +94,7 @@ const CardButtons = ({
   const copyEventLink = useCopyEventLinkToClipboard(item._id)
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
   const copyUserLink = useCopyUserLinkToClipboard(item._id)
+  const copyId = useCopyToClipboard(item._id, 'ID скопирован в буфер обмена')
 
   const key = typeToKey(typeOfItem)
   const rule = ['additionalBlocks', 'directions', 'reviews'].includes(key)
@@ -107,6 +111,9 @@ const CardButtons = ({
     (typeOfItem === 'direction' && loggedUserActiveRole.generalPage.directions)
 
   const editSee = item.status !== 'closed' && (rule?.edit || rule === true)
+  const seeHistory =
+    (typeOfItem === 'event' && loggedUserActiveRole.events.seeHistory) ||
+    (typeOfItem === 'payment' && loggedUserActiveRole.payments.seeHistory)
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
   // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
@@ -120,7 +127,8 @@ const CardButtons = ({
   // (typeOfItem === 'review' && loggedUserActiveRole.generalPage.reviews)
 
   const show = {
-    history: typeOfItem === 'event' && loggedUserActiveRole.events.editHistory,
+    copyId: loggedUserActiveRole.dev,
+    history: seeHistory,
     editQuestionnaire: !!onEditQuestionnaire,
     setPasswordBtn: rule?.setPassword,
     // typeOfItem === 'user' && isLoggedUserSupervisor,
@@ -164,6 +172,14 @@ const CardButtons = ({
 
   const items = (
     <>
+      {show.copyId && (
+        <ItemComponent
+          icon={faCode}
+          onClick={() => copyId(item._id)}
+          color="blue"
+          tooltipText="Скопировать ID"
+        />
+      )}
       {show.shareBtn && (
         <ItemComponent
           icon={faShareAlt}
@@ -194,7 +210,7 @@ const CardButtons = ({
       {show.history && (
         <ItemComponent
           icon={faHistory}
-          onClick={() => modalsFunc.event.history(item._id)}
+          onClick={() => modalsFunc[typeOfItem].history(item._id)}
           color="orange"
           tooltipText="Посмотреть историю изменений"
         />
