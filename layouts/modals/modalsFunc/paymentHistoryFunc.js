@@ -1,82 +1,12 @@
 import HistoryItem from '@components/HistoryItem'
-import { EventItemFromId, ServiceItemFromId } from '@components/ItemCards'
-import UserNameById from '@components/UserNameById'
+import LoadingSpinner from '@components/LoadingSpinner'
+import { getData } from '@helpers/CRUD'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
-import { PAY_TYPES, SECTORS2 } from '@helpers/constants'
-import formatDateTime from '@helpers/formatDateTime'
-import { historiesOfPaymentSelector } from '@state/atoms/historiesOfPaymentAtom'
 import paymentSelector from '@state/selectors/paymentSelector'
-import { useEffect } from 'react'
-import { useRecoilRefresher_UNSTABLE, useRecoilValue } from 'recoil'
-
-const paymentKeys = {
-  sector: 'Сектор', //
-  payDirection: 'Направление',
-  userId: 'Пользователь', //
-  eventId: 'Мероприятие', //
-  serviceId: 'Услуга', //
-  productId: 'Продукт',
-  serviceUserId: 'Заявка на покупку услуги',
-  productUserId: 'Заявка на покупку товара',
-  payType: 'Тип оплаты', //
-  sum: 'Сумма', //
-  status: 'Статус',
-  payAt: 'Дата и время оплаты', //
-  comment: 'Комментарий', //
-}
-
-const payDirectionObj = {
-  toUser: 'Оплата пользователю',
-  fromUser: 'Оплата от пользователя',
-  toEvent: 'Затраты на мероприятие',
-  fromEvent: 'Доп. доходы с мероприятия',
-  toService: 'Затраты на услугу',
-  fromService: 'Доп. доходы с услуги',
-  toProduct: 'Затраты на продукт',
-  fromProduct: 'Доп. доходы с продукта',
-  toInternal: 'Затраты',
-  fromInternal: 'Доп. доходы с проекта',
-}
-
-const KeyValueItem = ({ objKey, value }) =>
-  value === null || value === undefined ? (
-    '[не указано]'
-  ) : objKey === 'sector' ? (
-    SECTORS2.find((item) => item.value === value)?.name
-  ) : objKey === 'comment' ? (
-    value
-  ) : objKey === 'userId' ? (
-    <UserNameById userId={value} thin trunc={1} />
-  ) : objKey === 'payAt' ? (
-    formatDateTime(value)
-  ) : objKey === 'sum' ? (
-    value / 100 + ' ₽'
-  ) : objKey === 'eventId' ? (
-    <EventItemFromId eventId={value} bordered />
-  ) : objKey === 'serviceId' ? (
-    <ServiceItemFromId serviceId={value} bordered />
-  ) : objKey === 'payDirection' ? (
-    payDirectionObj[value]
-  ) : objKey === 'status' ? (
-    value
-  ) : // objKey=== 'productId' ? (value ? (
-  //   <ProductItemFromId productId={value} bordered />
-  // ) : (
-  // 'не выбрано'
-  // ) :
-  objKey === 'payType' ? (
-    PAY_TYPES.find((item) => item.value === value)?.name
-  ) : typeof value === 'object' ? (
-    <pre>{JSON.stringify(value)}</pre>
-  ) : typeof value === 'boolean' ? (
-    value ? (
-      'Да'
-    ) : (
-      'Нет'
-    )
-  ) : (
-    value
-  )
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
+import PaymentKeyValueItem from './historyKeyValuesItems/PaymentKeyValueItem'
+import { paymentKeys } from './historyKeyValuesItems/keys'
 
 const paymentHistoryFunc = (paymentId) => {
   const PaymentHistoryModal = ({
@@ -89,10 +19,7 @@ const paymentHistoryFunc = (paymentId) => {
     setTopLeftComponent,
   }) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
-    const paymentHistory = useRecoilValue(historiesOfPaymentSelector(paymentId))
-    const refresh = useRecoilRefresher_UNSTABLE(
-      historiesOfPaymentSelector(paymentId)
-    )
+    const [paymentHistory, setPaymentHistory] = useState()
 
     if (!payment || !paymentId)
       return (
@@ -101,7 +28,16 @@ const paymentHistoryFunc = (paymentId) => {
         </div>
       )
 
-    useEffect(refresh, [])
+    useEffect(() => {
+      const fetchData = async () => {
+        const result = await getData(`/api/histories`, {
+          schema: 'payments',
+          'data._id': paymentId,
+        })
+        setPaymentHistory(result)
+      }
+      fetchData().catch(console.error)
+    }, [])
 
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">
@@ -115,30 +51,39 @@ const paymentHistoryFunc = (paymentId) => {
           showDayOfWeek
           fullMonth
         /> */}
-        <div className="flex flex-col w-full gap-y-1">
-          {paymentHistory.map(
-            ({ action, data, userId, createdAt, _id }, index) => {
-              const changes = compareObjectsWithDif(
-                index > 0 ? paymentHistory[index - 1].data[0] : {},
-                data[0]
-              )
+        {paymentHistory ? (
+          <div className="flex flex-col-reverse w-full gap-y-1">
+            {paymentHistory.length === 0
+              ? 'Нет записей'
+              : paymentHistory.map(
+                  (
+                    { action, data, userId, createdAt, _id, difference },
+                    index
+                  ) => {
+                    const changes = difference
+                      ? data[0]
+                      : compareObjectsWithDif(
+                          index > 0 ? paymentHistory[index - 1].data[0] : {},
+                          data[0]
+                        )
 
-              // console.log('changes :>> ', changes)
-
-              return (
-                <HistoryItem
-                  key={_id}
-                  action={action}
-                  changes={changes}
-                  createdAt={createdAt}
-                  userId={userId}
-                  KeyValueItem={KeyValueItem}
-                  keys={paymentKeys}
-                />
-              )
-            }
-          )}
-        </div>
+                    return (
+                      <HistoryItem
+                        key={_id}
+                        action={action}
+                        changes={changes}
+                        createdAt={createdAt}
+                        userId={userId}
+                        KeyValueItem={PaymentKeyValueItem}
+                        keys={paymentKeys}
+                      />
+                    )
+                  }
+                )}
+          </div>
+        ) : (
+          <LoadingSpinner />
+        )}
       </div>
     )
   }

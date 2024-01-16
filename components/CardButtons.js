@@ -130,6 +130,8 @@ const CardButtons = ({
   const show = {
     copyId: loggedUserActiveRole.dev,
     history: seeHistory,
+    userActionsHistory:
+      typeOfItem === 'user' && loggedUserActiveRole.users.seeActionsHistory,
     editQuestionnaire: !!onEditQuestionnaire,
     setPasswordBtn: rule?.setPassword,
     // typeOfItem === 'user' && isLoggedUserSupervisor,
@@ -206,6 +208,14 @@ const CardButtons = ({
               ? 'услугу'
               : 'продукт'
           }`}
+        />
+      )}
+      {show.userActionsHistory && (
+        <ItemComponent
+          icon={faHistory}
+          onClick={() => modalsFunc[typeOfItem].historyActions(item._id)}
+          color="orange"
+          tooltipText="Посмотреть историю действий пользователя"
         />
       )}
       {show.history && (

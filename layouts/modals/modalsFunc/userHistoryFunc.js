@@ -1,100 +1,12 @@
-import CardButton from '@components/CardButton'
 import HistoryItem from '@components/HistoryItem'
-import { faRefresh } from '@fortawesome/free-solid-svg-icons'
+import LoadingSpinner from '@components/LoadingSpinner'
+import { getData } from '@helpers/CRUD'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
-import formatDateTime from '@helpers/formatDateTime'
-import { historiesOfUserSelector } from '@state/atoms/historiesOfUserAtom'
 import userSelector from '@state/selectors/userSelector'
-import { useEffect } from 'react'
-import { useRecoilRefresher_UNSTABLE, useRecoilValue } from 'recoil'
-
-const userKeys = {
-  firstName: 'Имя',
-  secondName: 'Фамилия',
-  thirdName: 'Отчество',
-  email: 'eMail',
-  password: 'Пароль',
-  images: 'Фотографии',
-  gender: 'Пол',
-  relationship: 'Статус отношений',
-  personalStatus: 'Персональный статус',
-  about: 'Обо мне',
-  interests: 'Интересы',
-  profession: 'Профессия',
-  orientation: 'Ориентация',
-  phone: 'Телефон',
-  whatsapp: 'Whatsapp',
-  viber: 'Viber',
-  telegram: 'Telegram',
-  instagram: 'Instagram',
-  vk: 'ВКонтакте',
-  birthday: 'День рождения',
-  role: 'Роль',
-  status: 'Статус в проекте',
-  lastActivityAt: 'Время последней активности',
-  prevActivityAt: 'Время предпоследней активности',
-  archive: 'В архиве',
-  haveKids: 'Есть дети',
-  security: 'Настройки конфиденциальности',
-  notifications: 'Настройки уведомлений',
-  soctag: 'Социальный тэг',
-  custag: 'Кастомный тэг',
-}
-
-const KeyValueItem = ({ objKey, value }) =>
-  value === null || value === undefined ? (
-    '[не указано]'
-  ) : [
-      'firstName',
-      'secondName',
-      'thirdName',
-      'email',
-      'password',
-      'about',
-      'interests',
-      'soctag',
-      'custag',
-      'personalStatus',
-    ].includes(objKey) ? (
-    value
-  ) : ['birthday', 'lastActivityAt', 'prevActivityAt'].includes(objKey) ? (
-    formatDateTime(value)
-  ) : //  : objKey === 'comment' ? (
-  //   value
-  // ) : objKey === 'userId' ? (
-  //   <UserNameById userId={value} thin trunc={1} />
-  // ) : objKey === 'payAt' ? (
-  //   formatDateTime(value)
-  // ) : objKey === 'sum' ? (
-  //   value / 100 + ' ₽'
-  // ) : objKey === 'eventId' ? (
-  //   <EventItemFromId eventId={value} bordered />
-  // ) : objKey === 'serviceId' ? (
-  //   <ServiceItemFromId serviceId={value} bordered />
-  // ) : objKey === 'payDirection' ? (
-  //   payDirectionObj[value]
-  // ) : objKey === 'status' ? (
-  //   value
-  // ) :
-  // objKey=== 'productId' ? (value ? (
-  //   <ProductItemFromId productId={value} bordered />
-  // ) : (
-  // 'не выбрано'
-  // ) :
-  // objKey === 'payType' ? (
-  //   PAY_TYPES.find((item) => item.value === value)?.name
-  // ) :
-  typeof value === 'object' ? (
-    <pre>{JSON.stringify(value)}</pre>
-  ) : typeof value === 'boolean' ? (
-    value ? (
-      'Да'
-    ) : (
-      'Нет'
-    )
-  ) : (
-    value
-  )
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
+import UserKeyValueItem from './historyKeyValuesItems/UserKeyValueItem'
+import { userKeys } from './historyKeyValuesItems/keys'
 
 const userHistoryFunc = (userId) => {
   const UserHistoryModal = ({
@@ -107,8 +19,7 @@ const userHistoryFunc = (userId) => {
     setTopLeftComponent,
   }) => {
     const user = useRecoilValue(userSelector(userId))
-    const userHistory = useRecoilValue(historiesOfUserSelector(userId))
-    const refresh = useRecoilRefresher_UNSTABLE(historiesOfUserSelector(userId))
+    const [userHistory, setUserHistory] = useState()
 
     if (!user || !userId)
       return (
@@ -117,7 +28,16 @@ const userHistoryFunc = (userId) => {
         </div>
       )
 
-    useEffect(refresh, [])
+    useEffect(() => {
+      const fetchData = async () => {
+        const result = await getData(`/api/histories`, {
+          schema: 'users',
+          'data._id': userId,
+        })
+        setUserHistory(result)
+      }
+      fetchData().catch(console.error)
+    }, [])
 
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">
@@ -131,30 +51,39 @@ const userHistoryFunc = (userId) => {
           showDayOfWeek
           fullMonth
         /> */}
-        <div className="flex flex-col w-full gap-y-1">
-          {userHistory.map(
-            ({ action, data, userId, createdAt, _id }, index) => {
-              const changes = compareObjectsWithDif(
-                index > 0 ? userHistory[index - 1].data[0] : {},
-                data[0]
-              )
+        {userHistory ? (
+          <div className="flex flex-col-reverse w-full gap-y-1">
+            {userHistory.length === 0
+              ? 'Нет записей'
+              : userHistory.map(
+                  (
+                    { action, data, userId, createdAt, _id, difference },
+                    index
+                  ) => {
+                    const changes = difference
+                      ? data[0]
+                      : compareObjectsWithDif(
+                          index > 0 ? userHistory[index - 1].data[0] : {},
+                          data[0]
+                        )
 
-              // console.log('changes :>> ', changes)
-
-              return (
-                <HistoryItem
-                  key={_id}
-                  action={action}
-                  changes={changes}
-                  createdAt={createdAt}
-                  userId={userId}
-                  KeyValueItem={KeyValueItem}
-                  keys={userKeys}
-                />
-              )
-            }
-          )}
-        </div>
+                    return (
+                      <HistoryItem
+                        key={_id}
+                        action={action}
+                        changes={changes}
+                        createdAt={createdAt}
+                        userId={userId}
+                        KeyValueItem={UserKeyValueItem}
+                        keys={userKeys}
+                      />
+                    )
+                  }
+                )}
+          </div>
+        ) : (
+          <LoadingSpinner />
+        )}
       </div>
     )
   }

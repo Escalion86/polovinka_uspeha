@@ -829,6 +829,7 @@ export const DEFAULT_ROLES = [
       setStatus: false,
       delete: false,
       seeHistory: false,
+      seeActionsHistory: false,
     },
     services: {
       see: true,
@@ -951,6 +952,7 @@ export const DEFAULT_ROLES = [
       setStatus: true,
       delete: false,
       seeHistory: false,
+      seeActionsHistory: false,
     },
     services: {
       see: true,
@@ -1073,6 +1075,7 @@ export const DEFAULT_ROLES = [
       setStatus: true,
       delete: false,
       seeHistory: false,
+      seeActionsHistory: false,
     },
     services: {
       see: true,
@@ -1195,6 +1198,7 @@ export const DEFAULT_ROLES = [
       setStatus: true,
       delete: true,
       seeHistory: true,
+      seeActionsHistory: true,
     },
     services: {
       see: true,
@@ -1318,6 +1322,7 @@ export const DEFAULT_ROLES = [
       setStatus: true, //!
       delete: true,
       seeHistory: true,
+      seeActionsHistory: true,
     },
     services: {
       see: true,

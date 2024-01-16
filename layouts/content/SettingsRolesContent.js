@@ -219,7 +219,7 @@ const SettingsRolesContent = (props) => {
               subItem="statusFilterFull"
             />
             <RoleItem
-              label="Просмотри истории изменений"
+              label="Просмотр истории изменений"
               item="events"
               subItem="seeHistory"
             />
@@ -289,9 +289,14 @@ const SettingsRolesContent = (props) => {
             />
             <RoleItem label="Удаление" item="users" subItem="delete" />
             <RoleItem
-              label="Просмотри истории изменений"
+              label="Просмотр истории изменений"
               item="users"
               subItem="seeHistory"
+            />
+            <RoleItem
+              label="Просмотр истории действий пользователя"
+              item="users"
+              subItem="seeActionsHistory"
             />
             <SubTitle name="Услуги" />
             <RoleItem label="Видит страницу" item="services" subItem="see" />
@@ -304,7 +309,7 @@ const SettingsRolesContent = (props) => {
             <RoleItem label="Редактирование" item="services" subItem="edit" />
             <RoleItem label="Удаление" item="services" subItem="delete" />
             <RoleItem
-              label="Просмотри истории изменений"
+              label="Просмотр истории изменений"
               item="services"
               subItem="seeHistory"
             />
@@ -337,7 +342,7 @@ const SettingsRolesContent = (props) => {
             <RoleItem label="Редактирование" item="products" subItem="edit" />
             <RoleItem label="Удаление" item="products" subItem="delete" />
             <RoleItem
-              label="Просмотри истории изменений"
+              label="Просмотр истории изменений"
               item="products"
               subItem="seeHistory"
             />
@@ -376,7 +381,7 @@ const SettingsRolesContent = (props) => {
               subItem="paymentsNotParticipantsEvent"
             />
             <RoleItem
-              label="Просмотри истории изменений транзакций"
+              label="Просмотр истории изменений транзакций"
               item="payments"
               subItem="seeHistory"
             />
