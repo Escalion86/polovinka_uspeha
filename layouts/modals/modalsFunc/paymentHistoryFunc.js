@@ -9,23 +9,38 @@ import paymentSelector from '@state/selectors/paymentSelector'
 import { useRecoilValue } from 'recoil'
 
 const paymentKeys = {
-  sector: 'Сектор',
+  sector: 'Сектор', //
   payDirection: 'Направление',
   userId: 'Пользователь', //
-  eventId: 'Мероприятие',
-  serviceId: 'Услуга',
+  eventId: 'Мероприятие', //
+  serviceId: 'Услуга', //
   productId: 'Продукт',
   serviceUserId: 'Заявка на покупку услуги',
   productUserId: 'Заявка на покупку товара',
-  payType: 'Тип оплаты',
+  payType: 'Тип оплаты', //
   sum: 'Сумма', //
   status: 'Статус',
   payAt: 'Дата и время оплаты', //
-  comment: 'Комментарий',
+  comment: 'Комментарий', //
+}
+
+const payDirectionObj = {
+  toUser: 'Оплата пользователю',
+  fromUser: 'Оплата от пользователя',
+  toEvent: 'Затраты на мероприятие',
+  fromEvent: 'Доп. доходы с мероприятия',
+  toService: 'Затраты на услугу',
+  fromService: 'Доп. доходы с услуги',
+  toProduct: 'Затраты на продукт',
+  fromProduct: 'Доп. доходы с продукта',
+  toInternal: 'Затраты',
+  fromInternal: 'Доп. доходы с проекта',
 }
 
 const KeyValueItem = ({ objKey, value }) =>
-  objKey === 'sector' ? (
+  value === null || value === undefined ? (
+    '[не указано]'
+  ) : objKey === 'sector' ? (
     SECTORS2.find((item) => item.value === value)?.name
   ) : objKey === 'comment' ? (
     value
@@ -39,12 +54,18 @@ const KeyValueItem = ({ objKey, value }) =>
     <EventItemFromId eventId={value} bordered />
   ) : objKey === 'serviceId' ? (
     <ServiceItemFromId serviceId={value} bordered />
-  ) : // objKey=== 'productId' ? (
+  ) : objKey === 'payDirection' ? (
+    payDirectionObj[value]
+  ) : objKey === 'status' ? (
+    value
+  ) : // objKey=== 'productId' ? (value ? (
   //   <ProductItemFromId productId={value} bordered />
+  // ) : (
+  // 'не выбрано'
   // ) :
   objKey === 'payType' ? (
     PAY_TYPES.find((item) => item.value === value)?.name
-  ) : value !== null && typeof value === 'object' ? (
+  ) : typeof value === 'object' ? (
     <pre>{JSON.stringify(value)}</pre>
   ) : typeof value === 'boolean' ? (
     value ? (

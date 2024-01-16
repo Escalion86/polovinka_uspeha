@@ -52,7 +52,9 @@ const eventKeys = {
 // ),
 
 const KeyValueItem = ({ objKey, value }) =>
-  objKey === 'description' ? (
+  value === undefined ? (
+    '[не указано]'
+  ) : objKey === 'description' ? (
     <div
       className="w-full max-w-full overflow-hidden list-disc textarea ql"
       dangerouslySetInnerHTML={{
