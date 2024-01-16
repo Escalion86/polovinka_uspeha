@@ -448,7 +448,7 @@ const SettingsRolesContent = (props) => {
               subItem="contacts"
             />
             <RoleItem
-              label="Редактирование блока руководителя района"
+              label="Редактирование блока руководителя региона"
               item="generalPage"
               subItem="supervisor"
             />

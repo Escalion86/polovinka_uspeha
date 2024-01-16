@@ -1492,7 +1492,7 @@ export const CONTENTS = {
   },
   supervisor: {
     Component: SupervisorBlockContent,
-    name: 'Сайт / Руководитель района',
+    name: 'Сайт / Руководитель региона',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.supervisor,
   },
@@ -1740,7 +1740,7 @@ export const pages = [
   {
     id: 9,
     group: 3,
-    name: 'Руководитель района',
+    name: 'Руководитель региона',
     href: 'supervisor',
     icon: faUserTie,
     accessRoles: CONTENTS['supervisor'].accessRoles,
