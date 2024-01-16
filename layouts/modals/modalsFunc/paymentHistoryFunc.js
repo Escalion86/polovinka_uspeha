@@ -6,7 +6,8 @@ import { PAY_TYPES, SECTORS2 } from '@helpers/constants'
 import formatDateTime from '@helpers/formatDateTime'
 import { historiesOfPaymentSelector } from '@state/atoms/historiesOfPaymentAtom'
 import paymentSelector from '@state/selectors/paymentSelector'
-import { useRecoilValue } from 'recoil'
+import { useEffect } from 'react'
+import { useRecoilRefresher_UNSTABLE, useRecoilValue } from 'recoil'
 
 const paymentKeys = {
   sector: 'Сектор', //
@@ -89,12 +90,18 @@ const paymentHistoryFunc = (paymentId) => {
   }) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const paymentHistory = useRecoilValue(historiesOfPaymentSelector(paymentId))
+    const refresh = useRecoilRefresher_UNSTABLE(
+      historiesOfPaymentSelector(paymentId)
+    )
+
     if (!payment || !paymentId)
       return (
         <div className="flex justify-center w-full text-lg ">
           ОШИБКА! Транзакция не найдена!
         </div>
       )
+
+    useEffect(refresh, [])
 
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">

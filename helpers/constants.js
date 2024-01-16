@@ -828,6 +828,7 @@ export const DEFAULT_ROLES = [
       setRole: false,
       setStatus: false,
       delete: false,
+      seeHistory: false,
     },
     services: {
       see: true,
@@ -835,6 +836,7 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
+      seeHistory: false,
     },
     servicesUsers: {
       see: false,
@@ -849,6 +851,7 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
+      seeHistory: false,
     },
     productsUsers: {
       see: false,
@@ -947,6 +950,7 @@ export const DEFAULT_ROLES = [
       setRole: false,
       setStatus: true,
       delete: false,
+      seeHistory: false,
     },
     services: {
       see: true,
@@ -954,6 +958,7 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
+      seeHistory: false,
     },
     servicesUsers: {
       see: true,
@@ -968,6 +973,7 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
+      seeHistory: false,
     },
     productsUsers: {
       see: true,
@@ -1066,6 +1072,7 @@ export const DEFAULT_ROLES = [
       setRole: false,
       setStatus: true,
       delete: false,
+      seeHistory: false,
     },
     services: {
       see: true,
@@ -1073,6 +1080,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: false,
+      seeHistory: false,
     },
     servicesUsers: {
       see: true,
@@ -1087,6 +1095,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: false,
+      seeHistory: false,
     },
     productsUsers: {
       see: true,
@@ -1185,6 +1194,7 @@ export const DEFAULT_ROLES = [
       setRole: true,
       setStatus: true,
       delete: true,
+      seeHistory: true,
     },
     services: {
       see: true,
@@ -1192,6 +1202,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: true,
+      seeHistory: true,
     },
     servicesUsers: {
       see: true,
@@ -1206,6 +1217,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: true,
+      seeHistory: true,
     },
     productsUsers: {
       see: true,
@@ -1305,6 +1317,7 @@ export const DEFAULT_ROLES = [
       setRole: true, //!
       setStatus: true, //!
       delete: true,
+      seeHistory: true,
     },
     services: {
       see: true,
@@ -1312,6 +1325,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: true,
+      seeHistory: true,
     },
     servicesUsers: {
       see: true,
@@ -1326,6 +1340,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: true,
+      seeHistory: true,
     },
     productsUsers: {
       see: true,

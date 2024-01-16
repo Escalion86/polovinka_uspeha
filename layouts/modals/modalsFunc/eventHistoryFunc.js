@@ -1,8 +1,10 @@
+import CardButton from '@components/CardButton'
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DateTimeEvent from '@components/DateTimeEvent'
 import HistoryItem from '@components/HistoryItem'
 import InputImages from '@components/InputImages'
 import UserNameById from '@components/UserNameById'
+import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 import { EVENT_STATUSES } from '@helpers/constants'
 import formatAddress from '@helpers/formatAddress'
@@ -11,7 +13,8 @@ import textAge from '@helpers/textAge'
 import { historiesOfEventSelector } from '@state/atoms/historiesOfEventAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import DOMPurify from 'isomorphic-dompurify'
-import { useRecoilValue } from 'recoil'
+import { useEffect } from 'react'
+import { useRecoilRefresher_UNSTABLE, useRecoilValue } from 'recoil'
 
 const eventKeys = {
   directionId: 'Направление',
@@ -140,6 +143,9 @@ const eventHistoryFunc = (eventId) => {
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const eventHistory = useRecoilValue(historiesOfEventSelector(eventId))
+    const refresh = useRecoilRefresher_UNSTABLE(
+      historiesOfEventSelector(eventId)
+    )
 
     if (!event || !eventId)
       return (
@@ -147,6 +153,8 @@ const eventHistoryFunc = (eventId) => {
           ОШИБКА! Мероприятие не найдено!
         </div>
       )
+
+    useEffect(refresh, [])
 
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">

@@ -218,6 +218,11 @@ const SettingsRolesContent = (props) => {
               item="events"
               subItem="statusFilterFull"
             />
+            <RoleItem
+              label="Просмотри истории изменений"
+              item="events"
+              subItem="seeHistory"
+            />
             {/*  */}
             <SubTitle name="Список участников мероприятия" />
             <RoleItem label="Видит список" item="eventsUsers" subItem="see" />
@@ -283,6 +288,11 @@ const SettingsRolesContent = (props) => {
               subItem="setPassword"
             />
             <RoleItem label="Удаление" item="users" subItem="delete" />
+            <RoleItem
+              label="Просмотри истории изменений"
+              item="users"
+              subItem="seeHistory"
+            />
             <SubTitle name="Услуги" />
             <RoleItem label="Видит страницу" item="services" subItem="see" />
             <RoleItem
@@ -293,6 +303,11 @@ const SettingsRolesContent = (props) => {
             <RoleItem label="Добавление" item="services" subItem="add" />
             <RoleItem label="Редактирование" item="services" subItem="edit" />
             <RoleItem label="Удаление" item="services" subItem="delete" />
+            <RoleItem
+              label="Просмотри истории изменений"
+              item="services"
+              subItem="seeHistory"
+            />
             <SubTitle name="Заявки на услуги" />
             <RoleItem
               label="Видит страницу"
@@ -321,6 +336,12 @@ const SettingsRolesContent = (props) => {
             <RoleItem label="Добавление" item="products" subItem="add" />
             <RoleItem label="Редактирование" item="products" subItem="edit" />
             <RoleItem label="Удаление" item="products" subItem="delete" />
+            <RoleItem
+              label="Просмотри истории изменений"
+              item="products"
+              subItem="seeHistory"
+            />
+
             <SubTitle name="Заявки на продукты" />
             <RoleItem
               label="Видит страницу"
@@ -353,6 +374,11 @@ const SettingsRolesContent = (props) => {
               label="Страница - Непривязанные транзакции"
               item="payments"
               subItem="paymentsNotParticipantsEvent"
+            />
+            <RoleItem
+              label="Просмотри истории изменений транзакций"
+              item="payments"
+              subItem="seeHistory"
             />
             <SubTitle name="Статистика" />
             <RoleItem label="Мероприятия" item="statistics" subItem="events" />

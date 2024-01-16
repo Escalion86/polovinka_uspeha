@@ -113,7 +113,8 @@ const CardButtons = ({
   const editSee = item.status !== 'closed' && (rule?.edit || rule === true)
   const seeHistory =
     (typeOfItem === 'event' && loggedUserActiveRole.events.seeHistory) ||
-    (typeOfItem === 'payment' && loggedUserActiveRole.payments.seeHistory)
+    (typeOfItem === 'payment' && loggedUserActiveRole.payments.seeHistory) ||
+    (typeOfItem === 'user' && loggedUserActiveRole.users.seeHistory)
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
   // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
