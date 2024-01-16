@@ -28,11 +28,12 @@ export const LoadingSpinner = ({
       )}
     >
       <div
-        className="relative flex flex-col items-center justify-center"
+        className="relative flex flex-col items-center justify-center overflow-hidden"
         style={{
           height: widthHeight * 1.25,
           maxHeight: widthHeight * 1.25,
-          // maxWidth: widthHeight * 1.25,
+          width: widthHeight * 1.25,
+          maxWidth: widthHeight * 1.25,
         }}
       >
         <div
@@ -43,7 +44,7 @@ export const LoadingSpinner = ({
             maxWidth: widthHeight * 1.25,
           }}
           className="absolute top-auto bottom-auto left-auto right-auto h-[95%] border-l-2 rounded-full aspect-1 border-general animate-spin"
-        ></div>
+        />
         <motion.div
           animate={{ scale: [1, 1, 1.15, 1.05, 1.15, 1] }}
           transition={{

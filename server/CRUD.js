@@ -12,6 +12,7 @@ import sendTelegramMessage from './sendTelegramMessage'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import Roles from '@models/Roles'
 import mongoose from 'mongoose'
+import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 
 // const test_callback = {
 //   update_id: 173172137,
@@ -337,7 +338,7 @@ const updateEventInCalendar = async (event, req) => {
         new: true,
         runValidators: true,
       }
-    )
+    ).lean()
 
     return createdCalendarEvent
   }
@@ -376,7 +377,7 @@ const updateEventInCalendar = async (event, req) => {
 
 const notificateUsersAboutEvent = async (event, req) => {
   await dbConnect()
-  const rolesSettings = await Roles.find({})
+  const rolesSettings = await Roles.find({}).lean()
   const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
   const rolesIdsToNewEventsByTagsNotification = allRoles
     .filter((role) => role?.notifications?.newEventsByTags)
@@ -393,7 +394,7 @@ const notificateUsersAboutEvent = async (event, req) => {
       $exists: true,
       $ne: null,
     },
-  })
+  }).lean()
 
   const usersToNotificate = users.filter((user) => {
     if (
@@ -430,8 +431,8 @@ const notificateUsersAboutEvent = async (event, req) => {
     if (isUserTooYoung) return false
 
     const isUserStatusCorrect = user.status
-      ? event.usersStatusAccess.get(user.status)
-      : event.usersStatusAccess.get('novice')
+      ? event.usersStatusAccess[user.status]
+      : event.usersStatusAccess.novice
     if (!isUserStatusCorrect) return false
 
     const isUserRelationshipCorrect =
@@ -449,24 +450,20 @@ const notificateUsersAboutEvent = async (event, req) => {
 
   const novicesTelegramIds = usersToNotificate
     .filter((user) => user.status === 'novice' || !user.status)
-    .map((user) => user.notifications?.get('telegram')?.id)
+    .map((user) => user.notifications?.telegram?.id)
 
   const membersTelegramIds = usersToNotificate
     .filter((user) => user.status === 'member')
-    .map((user) => user.notifications?.get('telegram')?.id)
+    .map((user) => user.notifications?.telegram?.id)
 
   const eventPrice = event.price / 100
   const eventPriceForMember =
     (event.price -
-      (event.usersStatusDiscount
-        ? event.usersStatusDiscount?.get('member')
-        : 0)) /
+      (event.usersStatusDiscount ? event.usersStatusDiscount?.member : 0)) /
     100
   const eventPriceForNovice =
     (event.price -
-      (event.usersStatusDiscount
-        ? event.usersStatusDiscount?.get('novice')
-        : 0)) /
+      (event.usersStatusDiscount ? event.usersStatusDiscount?.novice : 0)) /
     100
 
   const address = event.address
@@ -602,25 +599,26 @@ export default async function handler(Schema, req, res, params = null) {
           if (!data) {
             return res?.status(400).json({ success: false })
           }
+          const jsonData = data.toJSON()
 
           if (Schema === Events) {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
-            const calendarEvent = updateEventInCalendar(data, req)
+            const calendarEvent = updateEventInCalendar(jsonData, req)
 
             // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
-            if (data.showOnSite) {
-              notificateUsersAboutEvent(data, req)
+            if (jsonData.showOnSite) {
+              notificateUsersAboutEvent(jsonData, req)
             }
           }
 
           await Histories.create({
             schema: Schema.collection.collectionName,
             action: 'add',
-            data,
+            data: jsonData,
             userId: body.userId,
           })
 
-          return res?.status(201).json({ success: true, data })
+          return res?.status(201).json({ success: true, data: jsonData })
         }
       } catch (error) {
         console.log(error)
@@ -630,7 +628,7 @@ export default async function handler(Schema, req, res, params = null) {
     case 'PUT':
       try {
         if (id) {
-          const oldData = await Schema.findById(id)
+          const oldData = await Schema.findById(id).lean()
           if (!oldData) {
             return res?.status(400).json({ success: false })
           }
@@ -638,7 +636,7 @@ export default async function handler(Schema, req, res, params = null) {
           data = await Schema.findByIdAndUpdate(id, body.data, {
             new: true,
             runValidators: true,
-          })
+          }).lean()
 
           if (!data) {
             return res?.status(400).json({ success: false })
@@ -651,22 +649,24 @@ export default async function handler(Schema, req, res, params = null) {
             }
           }
 
+          const difference = compareObjectsWithDif(oldData, data)
+          difference._id = mongoose.Types.ObjectId(id)
+
           await Histories.create({
             schema: Schema.collection.collectionName,
             action: 'update',
-            data,
+            data: difference,
             userId: body.userId,
+            difference: true,
           })
 
           // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
           if (Schema === Users) {
             // Если Telegram ID был обновлен
-            const oldTelegramId = oldData.notifications?.get('telegram')?.id
-            const newTelegramId = data.notifications?.get('telegram')?.id
-            const oldTelegramActivate =
-              oldData.notifications?.get('telegram')?.active
-            const newTelegramActivate =
-              data.notifications?.get('telegram')?.active
+            const oldTelegramId = oldData.notifications?.telegram?.id
+            const newTelegramId = data.notifications?.telegram?.id
+            const oldTelegramActivate = oldData.notifications?.telegram?.active
+            const newTelegramActivate = data.notifications?.telegram?.active
 
             if (
               oldTelegramId !== newTelegramId ||
@@ -703,7 +703,7 @@ export default async function handler(Schema, req, res, params = null) {
             }
             if (!isUserQuestionnaireFilled(oldData)) {
               // const users = await Users.find({})
-              const rolesSettings = await Roles.find({})
+              const rolesSettings = await Roles.find({}).lean()
               const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
               const rolesIdsToNewUserRegistredNotification = allRoles
                 .filter((role) => role?.notifications?.newUserRegistred)
@@ -721,10 +721,10 @@ export default async function handler(Schema, req, res, params = null) {
                     $exists: true,
                     $ne: null,
                   },
-                })
+                }).lean()
               const usersTelegramIds =
                 usersWithTelegramNotificationsOfEventUsersON.map(
-                  (user) => user.notifications?.get('telegram')?.id
+                  (user) => user.notifications?.telegram?.id
                 )
 
               const text = `Пользователь с номером +${

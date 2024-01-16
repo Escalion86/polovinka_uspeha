@@ -21,9 +21,7 @@ const fetchProps = async (user) => {
   try {
     const db = await dbConnect()
 
-    var users = JSON.parse(
-      JSON.stringify(await Users.find({}).select('-password'))
-    )
+    var users = await Users.find({}).select('-password').lean()
     // if (!(isModer || isAdmin)) {
     //   users = JSON.parse(JSON.stringify(users)).map((user) => {
     //     return {
@@ -42,30 +40,30 @@ const fetchProps = async (user) => {
     //   })
     // }
 
-    const events = await Events.find({})
-    const directions = await Directions.find({})
-    const reviews = await Reviews.find({})
-    const additionalBlocks = await AdditionalBlocks.find({})
-    // const eventsUsers = await EventsUsers.find({})
-    const payments = await Payments.find({})
-    const siteSettings = await SiteSettings.find({})
-    const rolesSettings = await Roles.find({})
-    const questionnaires = await Questionnaires.find({})
-    const questionnairesUsers = await QuestionnairesUsers.find({})
+    const events = await Events.find({}).lean()
+    const directions = await Directions.find({}).lean()
+    const reviews = await Reviews.find({}).lean()
+    const additionalBlocks = await AdditionalBlocks.find({}).lean()
+    // const eventsUsers = await EventsUsers.find({}).lean()
+    const payments = await Payments.find({}).lean()
+    const siteSettings = await SiteSettings.find({}).lean()
+    const rolesSettings = await Roles.find({}).lean()
+    const questionnaires = await Questionnaires.find({}).lean()
+    const questionnairesUsers = await QuestionnairesUsers.find({}).lean()
     // const histories = isModer
     //   ? await Histories.find({
     //       // createdAt: { $gt: user.prevActivityAt },
     //     })
     //   : []
 
-    const services = await Services.find({})
-    const servicesUsers = await ServicesUsers.find({})
+    const services = await Services.find({}).lean()
+    const servicesUsers = await ServicesUsers.find({}).lean()
 
     const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
     const seeFullNames = userRole?.users?.seeFullNames
 
     if (!seeFullNames) {
-      users = JSON.parse(JSON.stringify(users)).map((user) => {
+      users = users.map((user) => {
         return {
           ...user,
           secondName: user.secondName
@@ -83,7 +81,7 @@ const fetchProps = async (user) => {
     }
 
     const fetchResult = {
-      users,
+      users: JSON.parse(JSON.stringify(users)),
       events: JSON.parse(JSON.stringify(events)),
       directions: JSON.parse(JSON.stringify(directions)),
       reviews: JSON.parse(JSON.stringify(reviews)),
@@ -99,9 +97,11 @@ const fetchProps = async (user) => {
       questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
       services: JSON.parse(JSON.stringify(services)),
       servicesUsers: JSON.parse(JSON.stringify(servicesUsers)),
-      serverSettings: {
-        dateTime: JSON.parse(JSON.stringify(serverDateTime)),
-      },
+      serverSettings: JSON.parse(
+        JSON.stringify({
+          dateTime: serverDateTime,
+        })
+      ),
       mode: process.env.NODE_ENV,
       location: process.env.LOCATION,
     }
@@ -123,9 +123,11 @@ const fetchProps = async (user) => {
       questionnairesUsers: [],
       services: [],
       servicesUsers: [],
-      serverSettings: {
-        dateTime: JSON.parse(JSON.stringify(serverDateTime)),
-      },
+      serverSettings: JSON.parse(
+        JSON.stringify({
+          dateTime: serverDateTime,
+        })
+      ),
       mode: process.env.NODE_ENV,
       location: process.env.LOCATION,
       error: JSON.parse(JSON.stringify(error)),

@@ -55,7 +55,7 @@ const eventUsersTelegramNotification = async ({
         $exists: true,
         $ne: null,
       },
-    })
+    }).lean()
 
     if (
       !usersWithTelegramNotificationsOfEventUsersON ||
@@ -63,8 +63,8 @@ const eventUsersTelegramNotification = async ({
     )
       return
 
-    const event = await Events.findById(eventId)
-    const eventUsers = await EventsUsers.find({ eventId })
+    const event = await Events.findById(eventId).lean()
+    const eventUsers = await EventsUsers.find({ eventId }).lean()
     const eventUsersIds = eventUsers.map((eventUser) => eventUser.userId)
 
     // const addedEventUsersIds = addedEventUsers.map(
@@ -80,12 +80,12 @@ const eventUsersTelegramNotification = async ({
       ...deletedEventUsersIds,
     ]
 
-    const users = await Users.find({ _id: { $in: usersIds } })
+    const users = await Users.find({ _id: { $in: usersIds } }).lean()
     const eventUsersFull = eventUsers.map((eventUser) => {
       const user = users.find(
         (user) => user._id.toString() === eventUser.userId
       )
-      return { ...eventUser.toJSON(), user }
+      return { ...eventUser, user }
     })
     const deletedEventUsersFull = deletedEventUsers.map((eventUser) => {
       const user = users.find(
@@ -218,7 +218,7 @@ const eventUsersTelegramNotification = async ({
       }`
 
     const usersTelegramIds = usersWithTelegramNotificationsOfEventUsersON.map(
-      (user) => user.notifications?.get('telegram')?.id
+      (user) => user.notifications?.telegram?.id
     )
 
     const result = await sendTelegramMessage({

@@ -2,7 +2,7 @@ import {
   faAdd,
   faAngleDown,
   faRefresh,
-  faTimes,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
@@ -29,7 +29,16 @@ const HistoryItem = ({
 
   const arrayOfChanges = []
   for (const [key, value] of Object.entries(changes)) {
-    if (!['_id', 'createdAt', 'updatedAt', '__v'].includes(key))
+    if (
+      ![
+        '_id',
+        'createdAt',
+        'updatedAt',
+        '__v',
+        'lastActivityAt',
+        'prevActivityAt',
+      ].includes(key)
+    )
       arrayOfChanges.push(
         (() => {
           return (
@@ -37,7 +46,7 @@ const HistoryItem = ({
               key={key}
               className={cn(
                 'flex flex-col gap-x-1',
-                'border-gray-300  border-t-1'
+                'border-gray-300 border-t-1'
               )}
             >
               <div className="flex-1 font-bold">{keys[key]}</div>
@@ -74,9 +83,9 @@ const HistoryItem = ({
     >
       <div className="flex items-center py-1 gap-x-2">
         <FontAwesomeIcon
-          className="w-5 h-5"
+          className={cn('w-5', action === 'add' ? 'h-5' : 'h-4')}
           icon={
-            action === 'add' ? faAdd : action === 'delete' ? faTimes : faRefresh
+            action === 'add' ? faAdd : action === 'delete' ? faTrash : faRefresh
           }
           color={
             action === 'add' ? 'green' : action === 'delete' ? 'red' : 'blue'

@@ -22,7 +22,7 @@ const userSignIn = async ({
   try {
     await dbConnect()
     // Проверка что пользователь заполнил анкету и вообще существует
-    const user = await Users.findById(userId)
+    const user = await Users.findById(userId).lean()
     if (!user) {
       const result = {
         success: false,
@@ -41,7 +41,7 @@ const userSignIn = async ({
     }
 
     // Сначала проверяем есть ли такой пользователь в мероприятии
-    const eventUser = await EventsUsers.findOne({ eventId, userId })
+    const eventUser = await EventsUsers.findOne({ eventId, userId }).lean()
     if (eventUser) {
       const result = {
         success: false,
@@ -52,7 +52,7 @@ const userSignIn = async ({
     }
 
     // Теперь проверяем есть ли место
-    const event = await Events.findById(eventId)
+    const event = await Events.findById(eventId).lean()
     // Закрыто ли мероприятие?
     if (isEventClosed(event)) {
       const result = {
@@ -122,7 +122,7 @@ const userSignIn = async ({
     }
 
     const isUserStatusCorrect = user.status
-      ? event.usersStatusAccess.get(user.status)
+      ? event.usersStatusAccess[user.status]
       : false
 
     if (!isUserStatusCorrect) {
@@ -276,10 +276,12 @@ const userSignIn = async ({
       return result
     }
 
+    const newEventUserJson = newEventUser.toJSON()
+
     await Histories.create({
       schema: EventsUsers.collection.collectionName,
       action: 'add',
-      data: newEventUser,
+      data: newEventUserJson,
       userId,
     })
 
@@ -287,11 +289,11 @@ const userSignIn = async ({
     await eventUsersTelegramNotification({
       req,
       eventId,
-      addedEventUsers: [newEventUser.toJSON()],
+      addedEventUsers: [newEventUserJson],
       itIsSelfRecord: true,
     })
 
-    const result = { success: true, data: newEventUser }
+    const result = { success: true, data: newEventUserJson }
     res?.status(201).json(result)
     return result
   } catch (error) {

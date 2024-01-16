@@ -113,7 +113,8 @@ const CardButtons = ({
   const editSee = item.status !== 'closed' && (rule?.edit || rule === true)
   const seeHistory =
     (typeOfItem === 'event' && loggedUserActiveRole.events.seeHistory) ||
-    (typeOfItem === 'payment' && loggedUserActiveRole.payments.seeHistory)
+    (typeOfItem === 'payment' && loggedUserActiveRole.payments.seeHistory) ||
+    (typeOfItem === 'user' && loggedUserActiveRole.users.seeHistory)
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
   // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
@@ -129,6 +130,8 @@ const CardButtons = ({
   const show = {
     copyId: loggedUserActiveRole.dev,
     history: seeHistory,
+    userActionsHistory:
+      typeOfItem === 'user' && loggedUserActiveRole.users.seeActionsHistory,
     editQuestionnaire: !!onEditQuestionnaire,
     setPasswordBtn: rule?.setPassword,
     // typeOfItem === 'user' && isLoggedUserSupervisor,
@@ -205,6 +208,14 @@ const CardButtons = ({
               ? 'услугу'
               : 'продукт'
           }`}
+        />
+      )}
+      {show.userActionsHistory && (
+        <ItemComponent
+          icon={faHistory}
+          onClick={() => modalsFunc[typeOfItem].historyActions(item._id)}
+          color="orange"
+          tooltipText="Посмотреть историю действий пользователя"
         />
       )}
       {show.history && (

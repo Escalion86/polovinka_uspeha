@@ -51,6 +51,8 @@ import roleFunc from './modalsFunc/roleFunc'
 import browseLocationFunc from './modalsFunc/browseLocationFunc'
 import eventHistoryFunc from './modalsFunc/eventHistoryFunc'
 import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
+import userHistoryFunc from './modalsFunc/userHistoryFunc'
+import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -579,6 +581,8 @@ const modalsFuncGenerator = (
     user: {
       add: (userId) => addModal(userFunc(userId, true)),
       edit: (userId) => addModal(userFunc(userId)),
+      history: (userId) => addModal(userHistoryFunc(userId)),
+      historyActions: (userId) => addModal(userActionsHistoryFunc(userId)),
       delete: (userId) =>
         addModal(
           userDeleteFunc(userId)

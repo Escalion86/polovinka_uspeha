@@ -5,7 +5,7 @@ const fetchSiteSettings = async (user) => {
   try {
     const db = await dbConnect()
 
-    const siteSettings = await SiteSettings.find({})
+    const siteSettings = await SiteSettings.find({}).lean()
 
     const fetchResult = {
       siteSettings: JSON.parse(JSON.stringify(siteSettings[0])),
@@ -14,7 +14,7 @@ const fetchSiteSettings = async (user) => {
     return fetchResult
   } catch (error) {
     return {
-      siteSettings: [],
+      siteSettings: JSON.parse(JSON.stringify([])),
       error: JSON.parse(JSON.stringify(error)),
     }
   }

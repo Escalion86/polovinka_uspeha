@@ -16,8 +16,6 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRecoilValue } from 'recoil'
-import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
-import BlockContainer from '@components/BlockContainer'
 
 export default function Home(props) {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)

@@ -12,6 +12,10 @@ const historiesSchema = {
   userId: {
     type: String,
   },
+  difference: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 export default historiesSchema

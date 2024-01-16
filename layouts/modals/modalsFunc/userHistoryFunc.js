@@ -1,16 +1,15 @@
-import DateTimeEvent from '@components/DateTimeEvent'
 import HistoryItem from '@components/HistoryItem'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { getData } from '@helpers/CRUD'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
-import eventSelector from '@state/selectors/eventSelector'
+import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
-import { eventKeys } from './historyKeyValuesItems/keys'
+import UserKeyValueItem from './historyKeyValuesItems/UserKeyValueItem'
+import { userKeys } from './historyKeyValuesItems/keys'
 
-const eventHistoryFunc = (eventId) => {
-  const EventHistoryModal = ({
+const userHistoryFunc = (userId) => {
+  const UserHistoryModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
@@ -19,31 +18,31 @@ const eventHistoryFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
-    const [eventHistory, setEventHistory] = useState()
+    const user = useRecoilValue(userSelector(userId))
+    const [userHistory, setUserHistory] = useState()
 
-    if (!event || !eventId)
+    if (!user || !userId)
       return (
         <div className="flex justify-center w-full text-lg ">
-          ОШИБКА! Мероприятие не найдено!
+          ОШИБКА! Пользователь не найден!
         </div>
       )
 
     useEffect(() => {
       const fetchData = async () => {
         const result = await getData(`/api/histories`, {
-          schema: 'events',
-          'data._id': eventId,
+          schema: 'users',
+          'data._id': userId,
         })
-        setEventHistory(result)
+        setUserHistory(result)
       }
       fetchData().catch(console.error)
     }, [])
 
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">
-        <div className="text-lg font-bold">{event.title}</div>
-        <DateTimeEvent
+        {/* <div className="text-lg font-bold">{event.title}</div> */}
+        {/* <DateTimeEvent
           wrapperClassName="text-base laptop:text-lg font-bold leading-4 laptop:leading-5 justify-center laptop:justify-start"
           dateClassName="text-general"
           timeClassName="italic"
@@ -51,12 +50,12 @@ const eventHistoryFunc = (eventId) => {
           event={event}
           showDayOfWeek
           fullMonth
-        />
-        {eventHistory ? (
+        /> */}
+        {userHistory ? (
           <div className="flex flex-col-reverse w-full gap-y-1">
-            {eventHistory.length === 0
+            {userHistory.length === 0
               ? 'Нет записей'
-              : eventHistory.map(
+              : userHistory.map(
                   (
                     { action, data, userId, createdAt, _id, difference },
                     index
@@ -64,7 +63,7 @@ const eventHistoryFunc = (eventId) => {
                     const changes = difference
                       ? data[0]
                       : compareObjectsWithDif(
-                          index > 0 ? eventHistory[index - 1].data[0] : {},
+                          index > 0 ? userHistory[index - 1].data[0] : {},
                           data[0]
                         )
 
@@ -75,8 +74,8 @@ const eventHistoryFunc = (eventId) => {
                         changes={changes}
                         createdAt={createdAt}
                         userId={userId}
-                        keys={eventKeys}
-                        KeyValueItem={EventKeyValueItem}
+                        KeyValueItem={UserKeyValueItem}
+                        keys={userKeys}
                       />
                     )
                   }
@@ -90,11 +89,11 @@ const eventHistoryFunc = (eventId) => {
   }
 
   return {
-    title: `История изменений мероприятия`,
-    Children: EventHistoryModal,
+    title: `История изменений пользователя`,
+    Children: UserHistoryModal,
     declineButtonName: 'Закрыть',
     showDecline: true,
   }
 }
 
-export default eventHistoryFunc
+export default userHistoryFunc

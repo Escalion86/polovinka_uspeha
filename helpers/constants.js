@@ -828,6 +828,8 @@ export const DEFAULT_ROLES = [
       setRole: false,
       setStatus: false,
       delete: false,
+      seeHistory: false,
+      seeActionsHistory: false,
     },
     services: {
       see: true,
@@ -835,6 +837,7 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
+      seeHistory: false,
     },
     servicesUsers: {
       see: false,
@@ -849,6 +852,7 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
+      seeHistory: false,
     },
     productsUsers: {
       see: false,
@@ -947,6 +951,8 @@ export const DEFAULT_ROLES = [
       setRole: false,
       setStatus: true,
       delete: false,
+      seeHistory: false,
+      seeActionsHistory: false,
     },
     services: {
       see: true,
@@ -954,6 +960,7 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
+      seeHistory: false,
     },
     servicesUsers: {
       see: true,
@@ -968,6 +975,7 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
+      seeHistory: false,
     },
     productsUsers: {
       see: true,
@@ -1066,6 +1074,8 @@ export const DEFAULT_ROLES = [
       setRole: false,
       setStatus: true,
       delete: false,
+      seeHistory: false,
+      seeActionsHistory: false,
     },
     services: {
       see: true,
@@ -1073,6 +1083,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: false,
+      seeHistory: false,
     },
     servicesUsers: {
       see: true,
@@ -1087,6 +1098,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: false,
+      seeHistory: false,
     },
     productsUsers: {
       see: true,
@@ -1185,6 +1197,8 @@ export const DEFAULT_ROLES = [
       setRole: true,
       setStatus: true,
       delete: true,
+      seeHistory: true,
+      seeActionsHistory: true,
     },
     services: {
       see: true,
@@ -1192,6 +1206,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: true,
+      seeHistory: true,
     },
     servicesUsers: {
       see: true,
@@ -1206,6 +1221,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: true,
+      seeHistory: true,
     },
     productsUsers: {
       see: true,
@@ -1305,6 +1321,8 @@ export const DEFAULT_ROLES = [
       setRole: true, //!
       setStatus: true, //!
       delete: true,
+      seeHistory: true,
+      seeActionsHistory: true,
     },
     services: {
       see: true,
@@ -1312,6 +1330,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: true,
+      seeHistory: true,
     },
     servicesUsers: {
       see: true,
@@ -1326,6 +1345,7 @@ export const DEFAULT_ROLES = [
       add: true,
       edit: true,
       delete: true,
+      seeHistory: true,
     },
     productsUsers: {
       see: true,
@@ -1472,7 +1492,7 @@ export const CONTENTS = {
   },
   supervisor: {
     Component: SupervisorBlockContent,
-    name: 'Сайт / Руководитель района',
+    name: 'Сайт / Руководитель региона',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.supervisor,
   },
@@ -1720,7 +1740,7 @@ export const pages = [
   {
     id: 9,
     group: 3,
-    name: 'Руководитель района',
+    name: 'Руководитель региона',
     href: 'supervisor',
     icon: faUserTie,
     accessRoles: CONTENTS['supervisor'].accessRoles,
