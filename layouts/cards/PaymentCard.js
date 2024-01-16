@@ -2,7 +2,7 @@ import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import EventNameById from '@components/EventNameById'
 import ProductNameById from '@components/ProductNameById'
-import ServiceNameById from '@components/ServiceNameById'
+import ServiceTitleById from '@components/ServiceTitleById'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import Tooltip from '@components/Tooltip'
 import UserNameById from '@components/UserNameById'
@@ -132,10 +132,9 @@ const PayText = ({ payment, sector }) => {
         <ServicePayDirectionIconText value={payment.payDirection} />
       )}
       {sector === 'service' && payment.serviceId && (
-        <ServiceNameById
-          serviceId={payment.serviceId}
-          className="font-bold text-general"
-        />
+        <div className="font-bold leading-4 text-general">
+          <ServiceTitleById serviceId={payment.serviceId} />
+        </div>
       )}
       {sector === 'product' && (
         <ProductPayDirectionIconText value={payment.payDirection} />

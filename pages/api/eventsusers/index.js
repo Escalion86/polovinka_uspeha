@@ -37,7 +37,7 @@ export default async function handler(req, res) {
             .json({ success: false, data: 'error eventUsersStatuses data' })
 
         // Сравниваем участников что были с теми что пришли
-        const eventUsers = await EventsUsers.find({ eventId })
+        const eventUsers = await EventsUsers.find({ eventId }).lean()
         const oldEventUsers = eventUsers.filter((eventUser) =>
           eventUsersStatuses.find(
             (data) =>
@@ -61,7 +61,9 @@ export default async function handler(req, res) {
           (eventUser) => eventUser.userId
         )
 
-        const addedUsers = await Users.find({ _id: { $in: addedUsersIds } })
+        const addedUsers = await Users.find({
+          _id: { $in: addedUsersIds },
+        }).lean()
 
         const deletedEventUsers = eventUsers.filter(
           (eventUser) =>
@@ -160,7 +162,7 @@ export default async function handler(req, res) {
           .json({ success: false, data: { error: 'No params' } })
       const { eventId, userId } = body.params
       // Сначала проверяем есть ли такой пользователь в мероприятии
-      const eventUser = await EventsUsers.findOne({ eventId, userId })
+      const eventUser = await EventsUsers.findOne({ eventId, userId }).lean()
       if (!eventUser) {
         return res
           ?.status(200)

@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   await dbConnect()
   if (method === 'GET') {
     try {
-      const events = await Events.find({})
+      const events = await Events.find({}).lean()
       const updatedEvents = await Promise.all(
         events.map(async (event) => {
           if (event?.duration) {
@@ -18,14 +18,17 @@ export default async function handler(req, res) {
               new Date(dateStart).getTime() +
                 (event?.duration ?? DEFAULT_EVENT.duration) * 60000
             )
-            await Events.findByIdAndUpdate(event._id, { dateStart, dateEnd })
+            await Events.findByIdAndUpdate(event._id, {
+              dateStart,
+              dateEnd,
+            }).lean()
           }
         })
       ).catch((error) => {
         console.log(error)
         return res?.status(400).json({ success: false, error })
       })
-      const eventsUpdated = await Events.find({})
+      const eventsUpdated = await Events.find({}).lean()
       return res?.status(201).json({ success: true, data: eventsUpdated })
     } catch (error) {
       console.log(error)

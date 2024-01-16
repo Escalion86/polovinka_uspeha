@@ -55,59 +55,56 @@ const HistoryItemContent = ({ data, schema, userId, difference }) => {
   if (schema === 'events')
     for (const [key, value] of Object.entries(data[0]))
       if (!['_id', 'createdAt', 'updatedAt', '__v'].includes(key))
-        if (difference)
-          arrayOfItems.push(
-            <DifferenceComponent
-              objKey={key}
-              value={value}
-              KeyValueItem={EventKeyValueItem}
-            />
-          )
-        else
-          arrayOfItems.push(
-            <div className="flex flex-col gap-y-1">
-              <div className="font-bold">{eventKeys[key]}</div>
+        arrayOfItems.push(
+          <div className="flex flex-col">
+            <div className="font-bold">{eventKeys[key]}</div>
+            {difference ? (
+              <DifferenceComponent
+                objKey={key}
+                value={value}
+                KeyValueItem={EventKeyValueItem}
+              />
+            ) : (
               <EventKeyValueItem objKey={key} value={value} />
-            </div>
-          )
+            )}
+          </div>
+        )
 
   if (schema === 'users')
     for (const [key, value] of Object.entries(data[0]))
       if (!['_id', 'createdAt', 'updatedAt', '__v'].includes(key))
-        if (difference)
-          arrayOfItems.push(
-            <DifferenceComponent
-              objKey={key}
-              value={value}
-              KeyValueItem={UserKeyValueItem}
-            />
-          )
-        else
-          arrayOfItems.push(
-            <div className="flex flex-col gap-y-1">
-              <div className="font-bold">{userKeys[key]}</div>
+        arrayOfItems.push(
+          <div className="flex flex-col">
+            <div className="font-bold">{userKeys[key]}</div>
+            {difference ? (
+              <DifferenceComponent
+                objKey={key}
+                value={value}
+                KeyValueItem={UserKeyValueItem}
+              />
+            ) : (
               <UserKeyValueItem objKey={key} value={value} />
-            </div>
-          )
+            )}
+          </div>
+        )
 
   if (schema === 'payments')
     for (const [key, value] of Object.entries(data[0]))
       if (!['_id', 'createdAt', 'updatedAt', '__v'].includes(key))
-        if (difference)
-          arrayOfItems.push(
-            <DifferenceComponent
-              objKey={key}
-              value={value}
-              KeyValueItem={UserKeyValueItem}
-            />
-          )
-        else
-          arrayOfItems.push(
-            <div className="flex flex-col gap-y-1">
-              <div className="font-bold">{paymentKeys[key]}</div>
+        arrayOfItems.push(
+          <div className="flex flex-col">
+            <div className="font-bold">{paymentKeys[key]}</div>
+            {difference ? (
+              <DifferenceComponent
+                objKey={key}
+                value={value}
+                KeyValueItem={UserKeyValueItem}
+              />
+            ) : (
               <PaymentKeyValueItem objKey={key} value={value} />
-            </div>
-          )
+            )}
+          </div>
+        )
   if (schema === 'eventsusers') {
     arrayOfItems.push(
       <>
@@ -121,7 +118,7 @@ const HistoryItemContent = ({ data, schema, userId, difference }) => {
     )
   }
 
-  return <div className="flex flex-col pb-1 gap-y-1">{arrayOfItems}</div>
+  return <div className="pb-1">{arrayOfItems}</div>
 }
 
 const HistoryActionsItem = ({
