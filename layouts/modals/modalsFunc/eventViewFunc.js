@@ -70,7 +70,7 @@ const CardButtonsComponent = ({ event, isEventClosed }) => (
     typeOfItem="event"
     forForm
     showEditButton={!isEventClosed}
-    showDeleteButton={!isEventClosed}
+    showDeleteButton={false}
   />
 )
 
@@ -135,6 +135,7 @@ const eventViewFunc = (eventId) => {
                   <CardButtonsComponent
                     event={event}
                     isEventClosed={isEventClosed}
+                    showDeleteButton={false}
                   />
                 </div>
               )}

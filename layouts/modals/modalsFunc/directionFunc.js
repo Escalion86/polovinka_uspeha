@@ -15,6 +15,7 @@ import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import ComboBox from '@components/ComboBox'
 import compareObjects from '@helpers/compareObjects'
+import CardButtons from '@components/CardButtons'
 
 const directionFunc = (directionId, clone = false) => {
   const DirectionModal = ({
@@ -24,6 +25,7 @@ const directionFunc = (directionId, clone = false) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setTopLeftComponent,
   }) => {
     const direction = useRecoilValue(directionSelector(directionId))
     const setDirection = useRecoilValue(itemsFuncAtom).direction.set
@@ -128,6 +130,19 @@ const directionFunc = (directionId, clone = false) => {
       // image,
       rules,
     ])
+
+    useEffect(() => {
+      if (setTopLeftComponent)
+        setTopLeftComponent(() => (
+          <CardButtons
+            item={direction}
+            typeOfItem="direction"
+            forForm
+            showEditButton={false}
+            showDeleteButton={false}
+          />
+        ))
+    }, [setTopLeftComponent])
 
     return (
       <TabContext value="Общие">

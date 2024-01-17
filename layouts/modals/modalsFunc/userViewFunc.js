@@ -3,7 +3,6 @@ import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import FormWrapper from '@components/FormWrapper'
 import ImageGallery from '@components/ImageGallery'
 import TextLine from '@components/TextLine'
-import Tooltip from '@components/Tooltip'
 import UserName from '@components/UserName'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
@@ -19,7 +18,6 @@ import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/sele
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
-import Image from 'next/image'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -57,7 +55,14 @@ const userViewFunc = (userId, clone = false) => {
 
     useEffect(() => {
       if (setTopLeftComponent)
-        setTopLeftComponent(() => <CardButtonsComponent user={user} />)
+        setTopLeftComponent(() => (
+          <CardButtons
+            item={user}
+            typeOfItem="user"
+            forForm
+            showDeleteButton={false}
+          />
+        ))
     }, [setTopLeftComponent])
 
     if (!user) return null

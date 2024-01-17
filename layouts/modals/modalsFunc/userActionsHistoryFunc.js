@@ -17,18 +17,23 @@ import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
 import UserKeyValueItem from './historyKeyValuesItems/UserKeyValueItem'
 import PaymentKeyValueItem from './historyKeyValuesItems/PaymentKeyValueItem'
 import { eventKeys, paymentKeys, userKeys } from './historyKeyValuesItems/keys'
-import { EventItemFromId } from '@components/ItemCards'
+import { EventItem, EventItemFromId } from '@components/ItemCards'
 import UserNameById from '@components/UserNameById'
+import UserName from '@components/UserName'
+import ComboBox from '@components/ComboBox'
+import { SelectEventList, SelectPaymentList } from '@components/SelectItemList'
+import DirectionTitleById from '@components/DirectionTitleById'
+import AdditionalBlockTitleById from '@components/AdditionalBlockTitleById'
 
 const schemasNames = {
-  events: 'Мероприятия',
-  users: 'Пользователи',
-  services: 'Услуги',
-  products: 'Товары',
-  payments: 'Транзакции',
-  reviews: 'Отзывы',
-  additionalblocks: 'Дополнительные блоки',
-  directions: 'Направления',
+  events: 'Мероприятие',
+  users: 'Пользователь',
+  services: 'Услуга',
+  products: 'Товар',
+  payments: 'Транзакция',
+  reviews: 'Отзыв',
+  additionalblocks: 'Дополнительный блок',
+  directions: 'Направление',
   eventsusers: 'Запись на мероприятие',
 }
 
@@ -98,23 +103,20 @@ const HistoryItemContent = ({ data, schema, userId, difference }) => {
               <DifferenceComponent
                 objKey={key}
                 value={value}
-                KeyValueItem={UserKeyValueItem}
+                KeyValueItem={PaymentKeyValueItem}
               />
             ) : (
               <PaymentKeyValueItem objKey={key} value={value} />
             )}
           </div>
         )
+
   if (schema === 'eventsusers') {
     arrayOfItems.push(
-      <>
-        {userId === data[0].userId ? (
-          'Себя'
-        ) : (
-          <UserNameById userId={data[0].userId} />
-        )}
-        <EventItemFromId eventId={data[0].eventId} bordered />
-      </>
+      // <div className="flex flex-col gap-y-0.5">
+
+      <EventItemFromId eventId={data[0].eventId} bordered />
+      // </div>
     )
   }
 
@@ -136,6 +138,9 @@ const HistoryActionsItem = ({
     true,
     false
   )
+
+  // console.log('schema :>> ', schema)
+
   return (
     <div
       className="flex flex-col px-1 border border-gray-500 rounded-lg cursor-pointer hover:bg-gray-100"
@@ -143,36 +148,78 @@ const HistoryActionsItem = ({
         setIsCollapsed((state) => !state)
       }}
     >
-      <div className="flex items-center py-1 gap-x-2">
-        <FontAwesomeIcon
-          className={cn('w-5', action === 'add' ? 'h-5' : 'h-4')}
-          icon={
-            action === 'add' ? faAdd : action === 'delete' ? faTrash : faRefresh
-          }
-          color={
-            action === 'add' ? 'green' : action === 'delete' ? 'red' : 'blue'
-          }
-        />
-        <div className="font-bold text-general">
-          {schemasNames[schema] ?? schema}
-        </div>
-        <div className="flex-1 flex gap-y-0.5 gap-x-2 justify-end">
-          <div className="flex items-center gap-x-2">
-            <div className="flex text-sm flex-nowrap tablet:text-base gap-x-1">
-              <span className="whitespace-nowrap">{createdAtDate}</span>
-              <span className="font-bold">{createdAtTime}</span>
+      <div className="flex flex-col">
+        <div className="flex items-center py-1 gap-x-2">
+          <FontAwesomeIcon
+            className={cn('w-5', action === 'add' ? 'h-5' : 'h-4')}
+            icon={
+              action === 'add'
+                ? faAdd
+                : action === 'delete'
+                ? faTrash
+                : faRefresh
+            }
+            color={
+              action === 'add' ? 'green' : action === 'delete' ? 'red' : 'blue'
+            }
+          />
+          <div className="font-bold text-general">
+            {schemasNames[schema] ?? schema}
+          </div>
+          <div className="flex-1 flex gap-y-0.5 gap-x-2 justify-end">
+            <div className="flex items-center gap-x-2">
+              <div className="flex text-sm flex-nowrap tablet:text-base gap-x-1">
+                <span className="whitespace-nowrap">{createdAtDate}</span>
+                <span className="font-bold">{createdAtTime}</span>
+              </div>
             </div>
           </div>
+          <div
+            className={cn(
+              'w-4 duration-300 transition-transform flex items-center justify-center',
+              {
+                'rotate-180': isCollapsed,
+              }
+            )}
+          >
+            <FontAwesomeIcon icon={faAngleDown} size="lg" />
+          </div>
         </div>
-        <div
-          className={cn(
-            'w-4 duration-300 transition-transform flex items-center justify-center',
-            {
-              'rotate-180': isCollapsed,
-            }
+        <div>
+          {schema === 'directions' && (
+            <div className="h-5 -mt-0.5 leading-[14px]">
+              <DirectionTitleById directionId={data[0]._id} />
+            </div>
           )}
-        >
-          <FontAwesomeIcon icon={faAngleDown} size="lg" />
+          {schema === 'additionalblocks' && (
+            <div className="h-5 -mt-0.5 leading-[14px]">
+              <AdditionalBlockTitleById additionalBlockId={data[0]._id} />
+            </div>
+          )}
+          {schema === 'events' && (
+            <SelectEventList eventsId={[data[0]._id]} readOnly />
+          )}
+          {schema === 'payments' && (
+            <SelectPaymentList paymentsId={[data[0]._id]} readOnly />
+          )}
+          {schema === 'users' && (
+            <div className="h-5 -mt-0.5 leading-[14px]">
+              {userId === data[0]._id ? (
+                'Себя'
+              ) : (
+                <UserNameById userId={data[0]._id} trunc={1} />
+              )}
+            </div>
+          )}
+          {schema === 'eventsusers' && (
+            <div className="h-5 -mt-0.5 leading-[14px]">
+              {userId === data[0].userId ? (
+                'Себя'
+              ) : (
+                <UserNameById userId={data[0].userId} trunc={1} />
+              )}
+            </div>
+          )}
         </div>
       </div>
       <motion.div
@@ -230,14 +277,14 @@ const userActionsHistoryFunc = (userId) => {
     const user = useRecoilValue(userSelector(userId))
     const [userActionsHistory, setUserActionsHistory] = useState()
 
+    const [filter, setFilter] = useState(null)
+
     if (!user || !userId)
       return (
         <div className="flex justify-center w-full text-lg ">
           ОШИБКА! Пользователь не найден!
         </div>
       )
-
-    // useEffect(refresh, [])
 
     useEffect(() => {
       const fetchData = async () => {
@@ -249,9 +296,34 @@ const userActionsHistoryFunc = (userId) => {
       fetchData().catch(console.error)
     }, [])
 
+    const filteredUserActionsHistory = filter
+      ? userActionsHistory.filter(({ schema }) => schema === filter)
+      : userActionsHistory
+
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">
-        {/* <div className="text-lg font-bold">{event.title}</div> */}
+        <div className="text-lg font-bold text-general">
+          <UserName user={user} />
+        </div>
+        <ComboBox
+          label="Блоки"
+          value={filter}
+          onChange={setFilter}
+          items={[
+            // { name: 'Все', value: null },
+            ...Object.entries(schemasNames).map(([value, name]) => ({
+              name,
+              value,
+            })),
+          ]}
+          activePlaceholder
+          placeholder="Все"
+          // activePlaceholder={activePlaceholder}
+          smallMargin
+          // required={required}
+          // error={error}
+          // fullWidth={fullWidth}
+        />
         {/* <DateTimeEvent
           wrapperClassName="text-base laptop:text-lg font-bold leading-4 laptop:leading-5 justify-center laptop:justify-start"
           dateClassName="text-general"
@@ -263,9 +335,11 @@ const userActionsHistoryFunc = (userId) => {
         /> */}
         {userActionsHistory ? (
           <div className="flex flex-col-reverse w-full gap-y-1">
-            {userActionsHistory.map((props, index) => (
-              <HistoryActionsItem key={props._id} {...props} />
-            ))}
+            {filteredUserActionsHistory
+              ? filteredUserActionsHistory.map((props, index) => (
+                  <HistoryActionsItem key={props._id} {...props} />
+                ))
+              : 'Нет действий'}
           </div>
         ) : (
           <LoadingSpinner />
@@ -275,7 +349,7 @@ const userActionsHistoryFunc = (userId) => {
   }
 
   return {
-    title: `История изменений пользователя`,
+    title: `История действий пользователя`,
     Children: UserActionsHistoryModal,
     declineButtonName: 'Закрыть',
     showDecline: true,
