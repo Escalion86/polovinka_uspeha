@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Tooltip from './Tooltip'
-// import { RELATIONSHIP_VALUES } from '@helpers/constants'
 
 const UserRelationshipIcon = ({
   relationship,
@@ -9,10 +8,6 @@ const UserRelationshipIcon = ({
   showHavePartnerOnly,
   nameForEvent = false,
 }) => {
-  // if (!relationship) return null
-  // const relation = RELATIONSHIP_VALUES.find(
-  //   ({ value }) => value === relationship
-  // )
   const havePartner = relationship === true || relationship === 'havePartner'
   if (showHavePartnerOnly && !havePartner) return null
 
@@ -50,7 +45,6 @@ const UserRelationshipIcon = ({
         } h-${numSize + 1}`}
       >
         <Image
-          // src={'/img/relationships/' + relation.value + '.png'}
           src={
             '/img/relationships/' +
             (havePartner ? 'havePartner' : 'noPartner') +

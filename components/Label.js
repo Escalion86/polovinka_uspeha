@@ -1,13 +1,6 @@
 import cn from 'classnames'
 
-const Label = ({
-  className,
-  text,
-  required,
-  // htmlFor,
-  contentWidth,
-  textPos,
-}) => {
+const Label = ({ className, text, required, contentWidth, textPos }) => {
   if (!text) return null
   return (
     <div
@@ -21,7 +14,6 @@ const Label = ({
           : 'laptop:justify-end',
         className
       )}
-      // htmlFor={htmlFor}
     >
       <span className="flex">
         <span className={cn('flex-1', textPos === 'right' ? '' : 'text-right')}>

@@ -41,18 +41,10 @@ const TitleBlock = () => {
       style={{
         backgroundImage: `url("/img/bg.webp")`,
         backgroundRepeat: 'no-repeat',
-        // backgroundPosition: 'top 48px right',
         backgroundSize: 'cover',
       }}
     >
       <div className="relative flex flex-col items-center justify-center w-full h-full max-h-[calc(100vh-70px)] px-10 pt-5 tablet:pt-12 pb-8 tablet:pb-10 text-white bg-gray-800 bg-opacity-20 laptop:px-20 ">
-        {/* <img
-          className="absolute w-12 h-12 tablet:w-16 tablet:h-16 top-6 right-6 tablet:top-14 tablet:right-12 laptop:h-20 laptop:w-20"
-          src={'/img/other/30-plus.png'}
-          alt="30+"
-          // width="100%"
-          // height="100%"
-        /> */}
         <Svg30Plus className="absolute w-12 h-12 tablet:w-16 tablet:h-16 top-6 right-6 tablet:top-14 tablet:right-12 laptop:h-20 laptop:w-20 fill-general" />
 
         <div className="flex justify-center flex-1 max-h-[350px] h-[20%]">
@@ -60,8 +52,6 @@ const TitleBlock = () => {
             className="object-contain max-w-[90%] laptop:max-w-[100%] h-full"
             src={'/img/logo.webp'}
             alt="polovinka_uspeha"
-            // width="100%"
-            // height="100%"
           />
         </div>
         {showCoundownTimer && (
@@ -97,16 +87,12 @@ const TitleBlock = () => {
           </div>
         )}
         <div className="flex flex-col justify-between gap-y-2">
-          <H1
-            style={{ textShadow: '1px 1px 2px black' }}
-            // style={{ fontSize: '6vw', lineHeight: '5vw' }}
-          >
+          <H1 style={{ textShadow: '1px 1px 2px black' }}>
             Центр серьёзных знакомств
           </H1>
           <div className="text-center">
             <h4
               className="px-2 py-1 text-2xl font-bold text-center duration-300 bg-white border cursor-pointer rounded-xl hover:text-white border-general hover:bg-general bg-opacity-20 text-general"
-              // style={{ textShadow: '1px 1px 3px white' }}
               onClick={() => modalFunc.browseLocation()}
             >
               г.{upperCaseFirst(townRu)}
@@ -116,10 +102,7 @@ const TitleBlock = () => {
               сменить
             </p>
           </div>
-          <H3
-            // className="font-thin"
-            style={{ textShadow: '1px 1px 2px black' }}
-          >
+          <H3 style={{ textShadow: '1px 1px 2px black' }}>
             Уникальные форматы знакомств
             <br />
             для поиска своей второй половинки
@@ -136,9 +119,6 @@ const TitleBlock = () => {
             className="mt-4"
             title={userIsLogged ? 'Мой кабинет' : 'Зарегистрироваться'}
             noPulse={userIsLogged}
-            // onClick={() =>
-            //   router.push('./login?registration=true', '', { shallow: true })
-            // }
           />
         </Link>
       </div>

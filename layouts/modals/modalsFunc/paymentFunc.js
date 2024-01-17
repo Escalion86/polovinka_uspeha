@@ -48,17 +48,19 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
       fixedPayDirection,
     } = props
 
-    const [sector, setSector] = useState(
+    const defaultSector =
       props?.sector ??
-        payment?.sector ??
-        (props?.eventId ?? payment?.eventId
-          ? 'event'
-          : props?.serviceId ?? payment?.serviceId
-          ? 'service'
-          : props?.productId ?? payment?.productId
-          ? 'product'
-          : DEFAULT_PAYMENT.sector)
-    )
+      payment?.sector ??
+      (props?.eventId ?? payment?.eventId
+        ? 'event'
+        : props?.serviceId ?? payment?.serviceId
+        ? 'service'
+        : props?.productId ?? payment?.productId
+        ? 'product'
+        : DEFAULT_PAYMENT.sector)
+
+    const [sector, setSector] = useState(defaultSector)
+
     const [payDirection, setPayDirection] = useState(
       props?.payDirection ??
         payment?.payDirection ??
@@ -174,22 +176,33 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
 
     useEffect(() => {
       const isFormChanged =
-        (props?.sector ?? payment?.sector) !== sector ||
-        (props?.payDirection ?? payment?.payDirection) !== payDirection ||
-        (props?.userId ?? payment?.userId) !== userId ||
-        (props?.eventId ?? payment?.eventId) !== eventId ||
-        (props?.serviceId ?? payment?.serviceId) !== serviceId ||
-        (props?.productId ?? payment?.productId) !== productId ||
-        (props?.sum ?? payment?.sum) !== sum ||
-        (props?.status ?? payment?.status) !== status ||
+        defaultSector !== sector ||
+        (props?.payDirection ??
+          payment?.payDirection ??
+          DEFAULT_PAYMENT.payDirection) !== payDirection ||
+        (props?.userId ?? payment?.userId ?? DEFAULT_PAYMENT.userId) !==
+          userId ||
+        (props?.eventId ?? payment?.eventId ?? DEFAULT_PAYMENT.eventId) !==
+          eventId ||
+        (props?.serviceId ??
+          payment?.serviceId ??
+          DEFAULT_PAYMENT.serviceId) !== serviceId ||
+        (props?.productId ??
+          payment?.productId ??
+          DEFAULT_PAYMENT.productId) !== productId ||
+        (props?.sum ?? payment?.sum ?? DEFAULT_PAYMENT.sum) !== sum ||
+        (props?.status ?? payment?.status ?? DEFAULT_PAYMENT.status) !==
+          status ||
         defaultPayAt !== payAt ||
-        (props?.payType ?? payment?.payType) !== payType ||
-        (props?.comment ?? payment?.comment) !== comment
+        (props?.payType ?? payment?.payType ?? DEFAULT_PAYMENT.payType) !==
+          payType ||
+        (props?.comment ?? payment?.comment ?? DEFAULT_PAYMENT.comment) !==
+          comment
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-      if (isEventClosed) setOnlyCloseButtonShow(true)
+      setOnlyCloseButtonShow(isEventClosed || !isFormChanged)
     }, [
       sector,
       payDirection,

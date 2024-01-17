@@ -1,6 +1,9 @@
 import PaymentsPayDirectionToggleButtons from '@components/IconToggleButtons/PaymentsPayDirectionToggleButtons'
 import PaymentsPayTypeToggleButtons from '@components/IconToggleButtons/PaymentsPayTypeToggleButtons'
 import PaymentsSectorToggleButtons from '@components/IconToggleButtons/PaymentsSectorToggleButtons'
+import ToggleButtons from '@components/IconToggleButtons/ToggleButtons'
+import { faLink, faUnlink } from '@fortawesome/free-solid-svg-icons'
+import { SECTORS } from '@helpers/constants'
 
 const PaymentsFilter = ({
   value,
@@ -34,6 +37,29 @@ const PaymentsFilter = ({
             onChange((state) => ({ ...state, sector: value }))
           }
           acceptedValues={paySectorValues}
+        />
+      )}
+      {value?.linking && (
+        <ToggleButtons
+          value={value.linking}
+          onChange={(value) =>
+            onChange((state) => ({ ...state, linking: value }))
+          }
+          buttonsConfig={[
+            {
+              name: 'Закрепленные',
+              value: 'linked',
+              icon: faLink,
+              color: 'green-400',
+            },
+            {
+              name: 'Не закрепленные',
+              value: 'unlinked',
+              icon: faUnlink,
+              color: 'red-400',
+            },
+          ]}
+          iconsOnly
         />
       )}
     </>

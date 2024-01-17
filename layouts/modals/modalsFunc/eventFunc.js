@@ -102,7 +102,7 @@ const eventFunc = (eventId, clone = false) => {
         ? event.address
         : DEFAULT_EVENT.address
     )
-    const [price, setPrice] = useState(event?.price ?? DEFAULT_EVENT.proce)
+    const [price, setPrice] = useState(event?.price ?? DEFAULT_EVENT.price)
 
     // const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
 

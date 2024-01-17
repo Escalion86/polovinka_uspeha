@@ -31,15 +31,6 @@ const CounterComponent = ({
   event,
   gender,
   showAges,
-  // minAge,
-  // maxAge,
-  // max,
-  // noviceCount,
-  // memberCount,
-  // maxNovice,
-  // maxMember,
-  // noviceReserveCount,
-  // memberReserveCount,
   showNoviceAndMemberSum,
   showReserve,
 }) => {
@@ -91,18 +82,8 @@ const CounterComponent = ({
           <div className="flex flex-col">
             {showNoviceAndMemberSum ? (
               <div className="flex gap-x-0.5 items-center">
-                {/* <UserStatusIcon size="xs" status="novice" /> */}
                 <div className="flex tablet:gap-x-0.5">
-                  <span
-                  // className={
-                  //   (typeof maxNovice === 'number' &&
-                  //     noviceCount >= maxNovice) ||
-                  //   (typeof maxMember === 'number' &&
-                  //     memberCount >= maxMember)
-                  //     ? 'text-danger font-semibold'
-                  //     : ''
-                  // }
-                  >
+                  <span>
                     {eventGendersNoviceCount + eventGendersMemberCount}
                   </span>
                   {typeof actualMax === 'number' && (
@@ -129,7 +110,6 @@ const CounterComponent = ({
                         eventGendersMemberReserveCount
                       }`}</span>
                     )}
-                  {/* <span>чел.</span> */}
                 </div>
               </div>
             ) : (
@@ -155,7 +135,6 @@ const CounterComponent = ({
                     {showReserve && eventGendersNoviceReserveCount > 0 && (
                       <span className="text-xs">{`+${eventGendersNoviceReserveCount}`}</span>
                     )}
-                    {/* <span>чел.</span> */}
                   </div>
                 </div>
                 <div className="flex gap-x-0.5 items-center">
@@ -179,7 +158,6 @@ const CounterComponent = ({
                     {eventGendersMemberReserveCount > 0 && (
                       <span className="text-xs">{`+${eventGendersMemberReserveCount}`}</span>
                     )}
-                    {/* <span>чел.</span> */}
                   </div>
                 </div>
               </>
@@ -208,12 +186,6 @@ const CounterComponent = ({
                 </span>
                 <span className="text-xs -mt-0.5">чел.</span>
               </div>
-
-              {/* {noviceReserveCount + memberReserveCount > 0 && (
-          <span className="text-xs">{`+${
-            noviceReserveCount + memberReserveCount
-          }`}</span>
-        )} */}
             </div>
           ) : (
             <span className="hidden laptop:block">чел.</span>
@@ -280,7 +252,6 @@ const SumCounterComponent = ({ event, showReserve }) => {
   return (
     <>
       <div className="flex laptop:gap-x-0.5">
-        {/* <span className="italic font-bold">Всего:</span> */}
         <span
           className={
             event.maxParticipants &&
@@ -362,29 +333,6 @@ const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
           showNoviceAndMemberSum={!eventUsersCounterAndAgeFull}
           showReserve={showReserve}
         />
-        {/* <div className="flex flex-col items-center">
-          {showAges && (
-            <div className="flex gap-x-0.5 border-b">
-              <span>{event.minWomansAge ?? 18}</span>
-              <span>-</span>
-              <span>{event.maxWomansAge ?? 60}</span>
-              <span>лет</span>
-            </div>
-          )}
-          <div className="flex gap-x-0.5">
-            <span>{eventWomansCount}</span>
-            {typeof event.maxWomans === 'number' && (
-              <>
-                <span>/</span>
-                <span>{event.maxWomans}</span>
-              </>
-            )}
-            {eventWomansReserveCount > 0 && (
-              <span className="text-xs">{`+${eventWomansReserveCount}`}</span>
-            )}
-            <span>чел.</span>
-          </div>
-        </div> */}
       </div>
       <div className="flex items-center px-2 py-1 gap-x-1 laptop:gap-x-1">
         <div className="w-5 h-5 min-w-5">

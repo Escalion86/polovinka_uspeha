@@ -27,20 +27,6 @@ const QuestionnaireAnswersFill = ({
       100
   )
   return (
-    // <div className="w-10 h-10">
-    //   <div className="flex items-center justify-center w-full h-full bg-red-400 rounded-full">
-    //     <div className="flex items-center justify-center w-8 h-8 text-sm text-black bg-white rounded-full">
-    //       {Math.round(
-    //         (Object.values(answers).filter(
-    //           (value) => value !== undefined && value !== null
-    //         ).length /
-    //           questionnaireData.length) *
-    //           100
-    //       )}
-    //       %
-    //     </div>
-    //   </div>
-    // </div>
     <div className={cn(small ? 'w-9 h-9' : 'w-10 h-10')}>
       <svg viewBox="0 0 36 36" className="stroke-general">
         <path
@@ -59,7 +45,6 @@ const QuestionnaireAnswersFill = ({
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831"
           style={{ animation: 'progress 1s ease-out forwards' }}
-          // animation="progress 1s ease-out forwards"
         />
         <text
           x="18"

@@ -13,7 +13,6 @@ const ImageGallery = ({ images, noImage, className }) => {
             original: image,
             originalClass:
               'object-contain h-60 laptop:h-80 max-h-60 laptop:max-h-80 w-full',
-            // sizes: '(max-width: 60px) 30px, (min-width: 60px) 60px',
           }))}
           renderItem={(e) => (
             <Zoom zoomMargin={20}>

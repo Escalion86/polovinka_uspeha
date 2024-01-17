@@ -1,10 +1,8 @@
 import {
-  faCalendarMinus,
   faCheck,
   faGenderless,
-  faHeartBroken,
-  faShopLock,
-  faTimesCircle,
+  faQuestion,
+  faUnlink,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
@@ -12,6 +10,7 @@ import {
   EVENT_STATUSES_WITH_TIME,
   GENDERS,
   PAY_TYPES,
+  SECTORS,
 } from '@helpers/constants'
 import eventStatusFunc from '@helpers/eventStatus'
 import formatDateTime from '@helpers/formatDateTime'
@@ -29,12 +28,13 @@ import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
 import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
-// import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import UserRelationshipIcon from './UserRelationshipIcon'
 import serviceSelector from '@state/selectors/serviceSelector'
 import IconWithTooltip from './IconWithTooltip'
+import paymentSectorFunc from '@helpers/paymentSector'
+import PayTypeIcon from './PayTypeIcon'
 
 const ItemContainer = ({
   onClick,
@@ -79,42 +79,6 @@ const ItemContainer = ({
   </div>
 )
 
-// export const ProductItem = ({ item, onClick = null, active = false }) => (
-//   // <Tooltip
-//   //   title={
-//   //     <div className="text-xs">
-//   //       {product?.name}
-//   //       <br />
-//   //       Артикул:{' '}
-//   //       {product?.article ? '(' + product.article + ')' : 'отсутствует'}
-//   //       <br />В наличии: {product?.count ? product.count : '0'} шт.
-//   //     </div>
-//   //   }
-//   //   arrow
-//   //   placement="top"
-//   //   // enterDelay={1000}
-//   //   // leaveDelay={0}
-//   // >
-//   <ItemContainer onClick={onClick} active={active}>
-//     <div className="h-5 text-sm font-semibold text-gray-800 truncate">
-//       {item.name}
-//     </div>
-//     <div className="flex items-center text-xs text-gray-600 gap-x-2">
-//       <div className="flex-2 whitespace-nowrap">
-//         Артикул: {item.article || '[нет]'}
-//       </div>
-//       <div className="flex-1 text-center whitespace-nowrap">
-//         {item.count} шт
-//       </div>
-//       <div className="flex-1 text-right whitespace-nowrap">
-//         {item.price / 100} ₽
-//       </div>
-//     </div>
-//   </ItemContainer>
-//   // </Tooltip>
-// )
-
-// export const SetItem = (props) => ProductItem(props)
 export const UserItemFromId = ({
   userId,
   onClick = null,
@@ -188,21 +152,6 @@ export const UserItem = ({
               </span>
             )}
         </div>
-        {/* <div className="flex flex-wrap items-center justify-between flex-1 h-4 overflow-hidden text-xs text-gray-600 max-h-4 gap-x-2">
-          <div className="whitespace-nowrap">
-            Телефон: {item.phone ? '+' + item.phone : '[нет]'}
-          </div>
-          {item.whatsapp && (
-            <div className="whitespace-nowrap">
-              WhatsApp: {item.whatsapp ? '+' + item.whatsapp : '[нет]'}
-            </div>
-          )}
-          {item.email && (
-            <div className="whitespace-nowrap">
-              Email: {item.email || '[нет]'}
-            </div>
-          )}
-        </div> */}
         <UserRelationshipIcon
           relationship={item.relationship}
           size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
@@ -214,7 +163,6 @@ export const UserItem = ({
         />
       </div>
     </ItemContainer>
-    // </Tooltip>
   )
 }
 
@@ -283,9 +231,6 @@ export const EventItem = ({
           </TextLinesLimiter>
         </div>
         <div className="text-gray-600 gap-x-2">
-          {/* <div className="flex-2 whitespace-nowrap">
-        Артикул: {item.а || '[нет]'}
-      </div> */}
           <DateTimeEvent
             wrapperClassName="flex-1 font-bold justify-end"
             dateClassName="text-general"
@@ -293,15 +238,9 @@ export const EventItem = ({
             durationClassName="italic font-normal"
             event={item}
             showDayOfWeek
-            // fullMonth
             thin
             twoLines
-            // showDuration
           />
-          {/* {formatDateTime(item.date, false, false, true, true, true)} */}
-          {/* <div className="flex-1 w-10 text-right whitespace-nowrap">
-        {item.price ? item.price / 100 : 0} ₽
-      </div> */}
         </div>
       </div>
     </ItemContainer>
@@ -316,27 +255,17 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
     noPadding
   >
     {item?.image && (
-      // <div className="flex justify-center w-full tablet:w-auto">
       <img
         className="object-cover h-[50px] aspect-1"
         src={item.image}
         alt="direction"
-        // width={48}
-        // height={48}
       />
-      // </div>
     )}
     <div className="px-1">
       <div className="h-5 text-sm font-bold text-gray-800 truncate">
         {item.title}
       </div>
       <div className="flex items-center text-xs text-gray-600 gap-x-2">
-        {/* <div className="flex-2 whitespace-nowrap">
-        Артикул: {item.а || '[нет]'}
-      </div> */}
-        {/* <div className="flex-1 whitespace-nowrap">
-        {formatDateTime(item.date, false)}
-      </div> */}
         <TextLinesLimiter
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(item.description),
@@ -380,27 +309,17 @@ export const ServiceItem = ({
     noBorder={bordered}
   >
     {item?.images && item?.images.length > 0 && (
-      // <div className="flex justify-center w-full tablet:w-auto">
       <img
         className="object-cover h-[50px] aspect-1"
         src={item.images[0]}
         alt="direction"
-        // width={48}
-        // height={48}
       />
-      // </div>
     )}
     <div className="px-1">
       <div className="h-5 text-sm font-bold text-gray-800 truncate">
         {item.title}
       </div>
       <div className="flex items-center text-xs text-gray-600 gap-x-2">
-        {/* <div className="flex-2 whitespace-nowrap">
-        Артикул: {item.а || '[нет]'}
-      </div> */}
-        {/* <div className="flex-1 whitespace-nowrap">
-        {formatDateTime(item.date, false)}
-      </div> */}
         <TextLinesLimiter
           className="w-full overflow-hidden textarea flex-1 max-w-full leading-[0.85rem]"
           lines={2}
@@ -419,51 +338,53 @@ export const PaymentItem = ({
   noBorder = false,
   checkable,
   className,
-  showUserOrEvent = false,
+  showUser = true,
+  showEvent = true,
+  showSectorIcon = true,
 }) => {
-  const payType = PAY_TYPES.find(
-    (payTypeItem) => payTypeItem.value === item.payType
-  )
+  const paymentSector = paymentSectorFunc(item)
+  const sectorProps = SECTORS.find((sector) => sector.value === paymentSector)
+
   return (
     <ItemContainer
       onClick={onClick}
       active={active}
-      // className="flex gap-x-1"
       noPadding
       noBorder={noBorder}
       className={cn('flex h-9', className)}
       checkable={checkable}
     >
-      <div
-        className={cn(
-          'flex items-center justify-center w-8 text-white',
-          payType ? 'bg-' + payType.color : 'bg-gray-400'
-        )}
-      >
-        <FontAwesomeIcon icon={payType?.icon ?? faQuestion} className="w-6" />
-      </div>
+      {showSectorIcon && (
+        <div
+          className={cn(
+            'flex items-center justify-center w-8 text-white',
+            sectorProps ? 'bg-' + sectorProps.color : 'bg-gray-400'
+          )}
+        >
+          <FontAwesomeIcon
+            icon={sectorProps?.icon ?? faQuestion}
+            className="w-6 h-6"
+          />
+        </div>
+      )}
       <div className="flex items-center justify-between flex-1 w-full px-1 gap-x-1">
         <div className="flex flex-col">
           <div className="text-sm font-bold leading-4 text-gray-800 truncate">
             {formatDateTime(item.payAt)}
           </div>
-          {showUserOrEvent &&
-            (item.payDirection === 'toUser' ||
-              item.payDirection === 'fromUser') && (
-              <UserNameById
-                userId={item.userId}
-                noWrap
-                className="font-bold leading-4"
-              />
-            )}
-          {showUserOrEvent &&
-            (item.payDirection === 'toEvent' ||
-              item.payDirection === 'fromEvent') && (
-              <EventNameById
-                eventId={item.eventId}
-                className="font-bold leading-4 text-general"
-              />
-            )}
+          {showUser && (
+            <UserNameById
+              userId={item.userId}
+              noWrap
+              className="text-sm font-bold leading-4"
+            />
+          )}
+          {showEvent && (
+            <EventNameById
+              eventId={item.eventId}
+              className="text-sm font-bold leading-4 text-general"
+            />
+          )}
           {item.comment && (
             <div className="text-sm leading-4">{item.comment}</div>
           )}
@@ -471,30 +392,30 @@ export const PaymentItem = ({
         <div className="flex justify-end flex-1 gap-x-3">
           {item.sector === 'event' && !item.eventId && (
             <IconWithTooltip
-              icon={faCalendarMinus}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к мероприятию"
             />
           )}
           {item.sector === 'service' && !item.serviceId && (
             <IconWithTooltip
-              icon={faHeartBroken}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к услуге"
             />
           )}
           {item.sector === 'product' && !item.productId && (
             <IconWithTooltip
-              icon={faShopLock}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к продукту"
             />
           )}
         </div>
-        <div className="flex items-center text-xs gap-x-2">
+        <div className="flex items-center text-xs gap-x-1">
           <div
             className={cn(
-              'px-1 text-sm font-bold phoneH:text-base',
+              'px-1 text-sm font-bold phoneH:text-base whitespace-nowrap',
               item.payType === 'coupon'
                 ? 'text-general'
                 : item.payDirection === 'toUser' ||
@@ -509,38 +430,9 @@ export const PaymentItem = ({
                 : ''
             }${item.sum / 100} ₽`}
           </div>
+          <PayTypeIcon payment={item} size="sm" />
         </div>
       </div>
     </ItemContainer>
   )
 }
-
-// export const PaymentItem = ({ item, onClick = null, active = false }) => {
-//   const { orders, clients } = useSelector((state) => state)
-//   const order = item.orderId
-//     ? orders.find((order) => order._id === item.orderId)
-//     : null
-//   const client = item.clientId
-//     ? clients.find((client) => client._id === item.clientId)
-//     : null
-//   return (
-//     <ItemContainer onClick={() => onClick(item)} active={active}>
-//       <div className="flex justify-between h-5 text-sm text-gray-800 truncate">
-//         <div>№ {item.number}</div>
-//         {order && <div>Заказ №{order.number}</div>}
-//         {client && <div>Клиент: {client.name}</div>}
-//       </div>
-//       <div className="flex items-center text-xs text-gray-600 gap-x-2">
-//         <div className="flex-1 whitespace-nowrap">
-//           {formatDateTime(item.payAt, false)}
-//         </div>
-//         <div className="flex-1 text-right whitespace-nowrap">
-//           {item.payType}
-//         </div>
-//         <div className="flex-1 text-right whitespace-nowrap">
-//           {item.sum / 100} ₽
-//         </div>
-//       </div>
-//     </ItemContainer>
-//   )
-// }

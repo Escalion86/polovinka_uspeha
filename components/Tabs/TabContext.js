@@ -7,9 +7,6 @@ const TabContext = ({ value, children }) => {
   const [tab, setTab] = useState(value)
   const tabs = []
   children.forEach((child, index) => {
-    // console.log('child ' + index, child)
-    // console.log('child?.props?.tabName', child?.props?.tabName)
-    // console.log('child.type.name', child.type.name)
     if (child?.props?.tabName) {
       const tabName = child.props.tabName
       const tabAddToLabel = child.props.tabAddToLabel

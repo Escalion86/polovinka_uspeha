@@ -18,11 +18,6 @@ const Search = ({
 
   const debouncedSearchTerm = useDebounceEffect(text, debounceDelay)
 
-  // const onSearchTextChange = (newText) => {
-  //   if (debounceDelay > 0)
-
-  // }
-
   useEffect(() => onChange(debouncedSearchTerm), [debouncedSearchTerm])
 
   useEffect(() => {
@@ -39,12 +34,7 @@ const Search = ({
         className
       )}
     >
-      <div
-        className={cn(
-          'min-h-[34px] h-[34px] absolute bottom-0 left-0 right-0 flex w-full gap-1 items-center border-gray-700 border p-1 bg-white rounded my-0.5'
-          // { hidden: !isMenuOpen }
-        )}
-      >
+      <div className="min-h-[34px] h-[34px] absolute bottom-0 left-0 right-0 flex w-full gap-1 items-center border-gray-700 border p-1 bg-white rounded my-0.5">
         <input
           ref={inputRef}
           className="flex-1 bg-transparent outline-none"

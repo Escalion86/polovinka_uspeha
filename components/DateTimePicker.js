@@ -9,7 +9,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
 import ru from 'dayjs/locale/ru'
 import InputWrapper from './InputWrapper'
-import formatDateTime from '@helpers/formatDateTime'
+
 dayjs.locale(ru)
 
 const DateTimePicker = ({
@@ -62,10 +62,7 @@ const DateTimePicker = ({
           ruRU.components.MuiLocalizationProvider.defaultProps.localeText
         }
       >
-        {/* <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none"> */}
         <MUIDateTimePicker
-          // disableFuture
-          // label={label}
           sx={{
             boxShadow: 'none',
             '.MuiOutlinedInput-notchedOutline': { borderStyle: 'none' },
@@ -84,72 +81,17 @@ const DateTimePicker = ({
             disableUnderline: true,
           }}
           inputFormat={widthNum <= 2 ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'}
-          // renderInput={(params) => <TextField {...params} />}
-          // renderInput={(params) => <input {...params} />}
           openTo={startWithYear ? 'year' : 'day'}
           views={
             widthNum <= 2
               ? ['year', 'month', 'day', 'hours', 'minutes']
               : ['year', 'month', 'day']
           }
-          // views={['hours', 'minutes']}
-          // value={dayjs(value)}
           value={value === null ? null : value ? dayjs(value) : undefined}
           defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
-          // slots={{
-          //   switchViewIcon
-          // }}
           onChange={(date) => onChange(date.toISOString())}
           disabled={disabled}
           showDisabledIcon={false}
-          // slotProps={{
-          //   // textField: {
-          //   //   // helperText: 'дд.мм.гггг',
-          //   //   style: { padding: 0 },
-          //   // },
-          //   textField: {
-          //     InputProps: {
-          //       style: { padding: 0 },
-          //       // startAdornment: (
-          //       //   <InputAdornment position="start">
-          //       //    ...
-          //       //   </InputAdornment>
-          //       // ),
-          //     },
-          //   },
-          // }}
-          // slots={{
-          //   textField: (params) => (
-          //     <TextField
-          //       sx={{ p: 0 }}
-          //       size="small"
-          //       margin="none"
-          //       {...params}
-          //       // inputProps={{
-          //       //   style: {
-          //       //     padding: 0,
-          //       //   },
-          //       // }}
-          //     />
-          //   ),
-          // }}
-          // renderInput={(params) => (
-          //   <TextField
-          //     // sx={{ m: 6 }}
-          //     slo
-          //     // inputProps={{
-          //     //   style: {
-          //     //     padding: 0,
-          //     //   },
-          //     // }}
-          //     fullWidth
-          //     size="small"
-          //     margin="none"
-          //     {...params}
-          //   />
-          // )}
-          // maxDate={undefined}
-          // minDate={new Date()}
         />
         {widthNum > 2 && (
           <MUIDateTimePicker

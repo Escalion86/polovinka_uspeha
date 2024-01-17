@@ -19,7 +19,6 @@ const DateTimeEvent = ({
   if (!dateTimeStart) return undefined
 
   const dateTimeEnd = event?.dateEnd
-  // new Date(dateTime).getTime() + (event?.duration ?? 0) * 60000
 
   const [strDateStart, strTimeStart] = dateToDateTimeStr(
     dateTimeStart,
@@ -43,12 +42,6 @@ const DateTimeEvent = ({
         wrapperClassName
       )}
     >
-      {/* <div
-        className={cn(
-          'flex flex-wrap items-center',
-          thin ? 'gap-x-0.5' : 'gap-x-1'
-        )}
-      > */}
       <div
         className={cn(
           'flex items-center flex-nowrap',
@@ -76,7 +69,6 @@ const DateTimeEvent = ({
           <span className={timeClassName}>{strTimeFinish}</span>
         </div>
       )}
-      {/* </div> */}
       {duration && strDateFinish !== strDateStart && (
         <div
           className={cn(

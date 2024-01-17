@@ -25,6 +25,7 @@ const userPaymentsFunc = (userId, clone = false) => {
             <SelectPaymentList
               paymentsId={userPayments.map((payment) => payment._id)}
               readOnly
+              showUser={false}
             />
           </div>
         )}

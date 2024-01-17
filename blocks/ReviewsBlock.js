@@ -28,7 +28,6 @@ const ReviewsBlock = () => {
       style={{
         backgroundImage: `url("/img/bg.webp")`,
         backgroundRepeat: 'no-repeat',
-        // backgroundPosition: 'top 48px right',
         backgroundSize: 'cover',
       }}
       title="Отзывы"

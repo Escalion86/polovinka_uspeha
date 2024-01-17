@@ -20,15 +20,7 @@ const CheckBox = ({
   if (readOnly && !checked) return null
 
   return (
-    // <InputWrapper
-    //   labelPos={labelPos}
-    //   label={label}
-    //   labelClassName={labelClassName}
-    //   wrapperClassName={wrapperClassName}
-    //   hidden={hidden}
-    // >
     (!readOnly || checked) && (
-      // <div className="flex items-center">
       <div
         className={cn(
           'flex gap-x-1 pl-1 items-center',
@@ -82,9 +74,7 @@ const CheckBox = ({
           {label}
         </div>
       </div>
-      // </div>
     )
-    // </InputWrapper>
   )
 }
 

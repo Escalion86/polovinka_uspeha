@@ -38,6 +38,10 @@ const PaymentsContent = () => {
       product: true,
       internal: true,
     },
+    linking: {
+      linked: true,
+      unlinked: true,
+    },
   })
 
   const sortKey = Object.keys(sort)[0]
@@ -62,7 +66,13 @@ const PaymentsContent = () => {
       payments.filter(
         (payment) =>
           filter.payType[payment.payType] &&
-          filter.sector[paymentSectorFunc(payment)]
+          filter.sector[paymentSectorFunc(payment)] &&
+          (((!payment.sector || payment.sector === 'event') &&
+            !payment.eventId) ||
+          (payment.sector === 'service' && !payment.serviceId) ||
+          (payment.sector === 'product' && !payment.productId)
+            ? filter.linking.unlinked
+            : filter.linking.linked)
         // &&
         // filter.payDirection[payment.payDirection]
       ),

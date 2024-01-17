@@ -18,7 +18,6 @@ const InputImages = ({
   required = false,
   label = null,
   directory = null,
-  // project,
   maxImages = 10,
   labelClassName,
   className,
@@ -38,19 +37,11 @@ const InputImages = ({
   const onAddImage = async (newImage) => {
     if (newImage) {
       var img = document.createElement('img')
-      // this.state.backgroundImageFile = e.target.files[0];
 
       img.onload = async () => {
-        // console.log(img.width + ' ' + img.height)
-        // console.log('img', img)
-        // console.log('newImage', newImage)
         if (img.width < 100 || img.height < 100) modalsFunc.minimalSize()
         else {
-          // const newResizedImage = await resizeFile(newImage)
-          // setImageOld(image)
-          // setAddingImage(true)
           modalsFunc.cropImage(newImage, img, aspect, (newImage) => {
-            // setImageOld(image)
             setAddingImage(true)
             sendImage(
               newImage,
@@ -71,18 +62,6 @@ const InputImages = ({
     } else {
       onChange(images)
     }
-    // if (newImage) {
-    //   setAddingImage(true)
-    //   sendImage(
-    //     newImage,
-    //     (imageUrl) => {
-    //       onChange([...images, imageUrl])
-    //     },
-    //     directory
-    //   )
-    // } else {
-    //   onChange(images)
-    // }
   }
 
   useEffect(() => setAddingImage(false), [images])
@@ -99,15 +78,8 @@ const InputImages = ({
       paddingY
       fullWidth={fullWidth}
       noBorder={readOnly}
-      // labelPos="top"
     >
-      <div
-        className={cn(
-          'flex flex-wrap w-full gap-1 p-0.5'
-
-          // error ? 'border border-red-700' : 'border border-gray-400'
-        )}
-      >
+      <div className="flex flex-wrap w-full gap-1 p-0.5">
         {images.length > 0 &&
           images.map((image, index) => (
             <motion.div
@@ -165,14 +137,7 @@ const InputImages = ({
             className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer group rounded-xl"
           >
             <div className="flex items-center justify-center w-12 h-12 duration-200 min-w-12 min-h-12 transparent group-hover:scale-125 ">
-              <FontAwesomeIcon
-                className="text-gray-700"
-                icon={faPlus}
-                // onClick={() => {
-                //   images.splice(index, 1)
-                //   onChange(images)
-                // }}
-              />
+              <FontAwesomeIcon className="text-gray-700" icon={faPlus} />
               <input
                 type="file"
                 ref={hiddenFileInput}

@@ -19,9 +19,7 @@ const TimePicker = ({
   disabled = false,
   error,
   fullWidth = false,
-  defaultValue,
   noMargin,
-  startWithYear = false,
 }) => {
   return (
     <InputWrapper
@@ -33,17 +31,7 @@ const TimePicker = ({
       className={cn(fullWidth ? '' : 'w-[14.5rem]', className)}
       required={required}
       error={error}
-      // postfix={
-      //   value &&
-      //   (showYears || showZodiac) &&
-      //   '(' +
-      //     (showYears ? birthDateToAge(value) : '') +
-      //     (showYears && showZodiac ? ', ' : '') +
-      //     (showZodiac ? getZodiac(value).name : '') +
-      //     ')'
-      // }
       fullWidth={fullWidth}
-      // paddingY="small"
       disabled={disabled}
       noMargin={noMargin}
     >
@@ -73,14 +61,7 @@ const TimePicker = ({
             },
             disableUnderline: true,
           }}
-          // inputFormat="HH:mm"
-          // openTo="hours"
-          // views={['hours', 'minutes']}
           value={value ? dayjs(value) : undefined}
-          // defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
-          // slots={{
-          //   openPickerIcon: AccessTimeIcon,
-          // }}
           onChange={onChange}
         />
       </LocalizationProvider>

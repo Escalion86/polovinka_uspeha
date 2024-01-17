@@ -8,114 +8,79 @@ import { useEffect, useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import TelegramIcon from 'svg/TelegramIcon'
 
-const FabItem = ({ text, whatsapp, telegram, show }) => {
-  // const Wrapper = useCallback(
-  //   (props) =>
-  //     href ? (
-  //       <a {...props} href={href} target="_blank" />
-  //     ) : (
-  //       <div {...props} onClick={onClick} />
-  //     ),
-  //   [href]
-  // )
-
-  return (
-    <div className="relative flex flex-row-reverse gap-x-2 items-center pb-4 min-w-[48px]">
-      <div
-        // initial={{ width: 'auto' }}
-        // transition={{ duration: 0.5, delay: show ? 0 : 0.7 }}
-        // animate={{
-        //   width: show ? 'auto' : 0,
-        // }}
-        className="flex items-center justify-center gap-x-2"
-      >
-        {whatsapp && (
-          <a
-            className="z-10 duration-300 hover:brightness-125"
-            target="_blank"
-            href={'https://wa.me/' + whatsapp}
-          >
-            <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
-              animate={{
-                scale: show ? 1 : 0,
-                rotate: show ? 0 : -180,
-              }}
-              className={cn(
-                'flex items-center justify-center rounded-full w-[48px] h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
-                'bg-green-700'
-              )}
-            >
-              <FontAwesomeIcon
-                className="z-10 text-white w-7 h-7 max-w-7 max-h-7"
-                icon={faWhatsapp}
-              />
-            </motion.div>
-          </a>
-        )}
-        {telegram && (
-          <a
-            className="z-10 duration-300 hover:brightness-125"
-            target="_blank"
-            href={'https://t.me/' + telegram}
-          >
-            <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
-              animate={{
-                scale: show ? 1 : 0,
-                rotate: show ? 0 : -180,
-              }}
-              className={cn(
-                'flex items-center justify-center rounded-full w-[48px] h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
-                'bg-blue-500'
-              )}
-            >
-              <TelegramIcon width={28} height={28} className="-ml-0.5 mt-0.5" />
-            </motion.div>
-          </a>
-        )}
-      </div>
-      <motion.div
-        initial={{ width: 0 }}
-        transition={{ duration: 0.3, delay: show ? 0.3 : 0 }}
-        animate={{
-          width: show ? 'auto' : 0,
-        }}
-        className={cn('absolute right-6 overflow-hidden')}
-      >
-        <div className="flex w-full max-w-full bg-white border border-general flex-nowrap rounded-l-md">
-          <div className="pl-2 font-bold whitespace-nowrap text-general">
-            {text}
-          </div>
-          <div
+const FabItem = ({ text, whatsapp, telegram, show }) => (
+  <div className="relative flex flex-row-reverse gap-x-2 items-center pb-4 min-w-[48px]">
+    <div className="flex items-center justify-center gap-x-2">
+      {whatsapp && (
+        <a
+          className="z-10 duration-300 hover:brightness-125"
+          target="_blank"
+          href={'https://wa.me/' + whatsapp}
+        >
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
+            animate={{
+              scale: show ? 1 : 0,
+              rotate: show ? 0 : -180,
+            }}
             className={cn(
-              'bg-white',
-              whatsapp && telegram ? 'min-w-22' : 'min-w-8'
+              'flex items-center justify-center rounded-full w-[48px] h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
+              'bg-green-700'
             )}
-          />
-        </div>
-      </motion.div>
+          >
+            <FontAwesomeIcon
+              className="z-10 text-white w-7 h-7 max-w-7 max-h-7"
+              icon={faWhatsapp}
+            />
+          </motion.div>
+        </a>
+      )}
+      {telegram && (
+        <a
+          className="z-10 duration-300 hover:brightness-125"
+          target="_blank"
+          href={'https://t.me/' + telegram}
+        >
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
+            animate={{
+              scale: show ? 1 : 0,
+              rotate: show ? 0 : -180,
+            }}
+            className={cn(
+              'flex items-center justify-center rounded-full w-[48px] h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] min-h-[48px]',
+              'bg-blue-500'
+            )}
+          >
+            <TelegramIcon width={28} height={28} className="-ml-0.5 mt-0.5" />
+          </motion.div>
+        </a>
+      )}
     </div>
-  )
-}
-
-// const fabs = [
-//   {
-//     text: 'Сложности с записью',
-//     whatsapp: '79504280891',
-//   },
-//   {
-//     text: 'Вопросы по мероприятиям',
-//     whatsapp: '79504280891',
-//   },
-//   {
-//     text: 'Технические проблемы',
-//     whatsapp: '79138370020',
-//     telegram: 'escalion',
-//   },
-// ]
+    <motion.div
+      initial={{ width: 0 }}
+      transition={{ duration: 0.3, delay: show ? 0.3 : 0 }}
+      animate={{
+        width: show ? 'auto' : 0,
+      }}
+      className={cn('absolute right-6 overflow-hidden')}
+    >
+      <div className="flex w-full max-w-full bg-white border border-general flex-nowrap rounded-l-md">
+        <div className="pl-2 font-bold whitespace-nowrap text-general">
+          {text}
+        </div>
+        <div
+          className={cn(
+            'bg-white',
+            whatsapp && telegram ? 'min-w-22' : 'min-w-8'
+          )}
+        />
+      </div>
+    </motion.div>
+  </div>
+)
 
 const FabMenu = ({ show = true, ping = true }) => {
   const siteSettings = useRecoilValue(siteSettingsAtom)
@@ -161,11 +126,6 @@ const FabMenu = ({ show = true, ping = true }) => {
           animate={{
             height: isItemsShowing ? 'auto' : 0,
           }}
-          // className={
-          // cn()
-          // 'overflow-hidden'
-          // isItemsShowing ? 'h-full delay-0' : 'h-0 delay-700'
-          // }
         >
           {fabs.map((props, index) => (
             <FabItem key={'fab' + index} {...props} show={isItemsShowing} />
@@ -175,8 +135,6 @@ const FabMenu = ({ show = true, ping = true }) => {
           className={cn(
             'z-10 relative flex items-center justify-center rounded-full cursor-pointer fab w-[48px] h-[48px] group max-h-[48px] max-w-[48px] bg-general'
           )}
-          // onClick={onClick}
-          // ref={wrapperRef}
         >
           <FontAwesomeIcon
             className="z-10 w-6 h-6 text-white duration-200 max-w-6 max-h-6 group-hover:scale-125"

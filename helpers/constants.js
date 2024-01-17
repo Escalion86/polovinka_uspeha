@@ -2,52 +2,36 @@ import {
   faBan,
   faBirthdayCake,
   faBriefcase,
-  faCalendarDay,
   faCertificate,
   faCheck,
-  faCheckCircle,
-  faCircle,
   faClock,
   faComments,
   faCube,
   faEnvelope,
   faGenderless,
-  faGift,
   faHandHoldingHeart,
-  faHeartbeat,
   faHistory,
   faLock,
   faMars,
-  faMarsDouble,
   faPhone,
   faPieChart,
   faPlay,
   faQuestion,
-  faRing,
-  faShop,
   faShoppingBag,
   faSignInAlt,
   faStar,
-  faTimesCircle,
   faTools,
   faTrophy,
-  faUnlink,
   faUpload,
-  faUserAlt,
   faUsers,
   faUserTie,
   faUserTimes,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
-import isDevMode from './isDevMode'
 
 import {
   faBug,
-  faChartBar,
   faCog,
-  faCubes,
-  faFilter,
-  faFire,
   faHome,
   faMoneyBill,
   faUser,
@@ -87,9 +71,9 @@ import DevContent from '@layouts/content/DevContent'
 import HistoriesContent from '@layouts/content/HistoriesContent'
 import BirthdaysContent from '@layouts/content/BirthdaysContent'
 // import StatisticsContent from '@layouts/content/StatisticsContent'
-import badgePaymentsOfEventWithoutEventIdSelector from '@state/selectors/badgePaymentsOfEventWithoutEventIdSelector'
+// import badgePaymentsOfEventWithoutEventIdSelector from '@state/selectors/badgePaymentsOfEventWithoutEventIdSelector'
 import SettingsCodeSendServiceContent from '@layouts/content/SettingsCodeSendServiceContent'
-import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
+// import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
 // import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
 import PaymentsNotParticipantsEventContent from '@layouts/content/PaymentsNotParticipantsEventContent'
 import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
@@ -1539,12 +1523,12 @@ export const CONTENTS = {
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.payments?.see,
   },
-  paymentsWithNoEvent: {
-    Component: PaymentsWithoutEventContent,
-    name: 'Транзакции / Непривязанные транзакции',
-    accessRoles: ['supervisor', 'dev'],
-    roleAccess: (role) => role?.payments?.paymentsWithNoEvent,
-  },
+  // paymentsWithNoEvent: {
+  //   Component: PaymentsWithoutEventContent,
+  //   name: 'Транзакции / Непривязанные транзакции',
+  //   accessRoles: ['supervisor', 'dev'],
+  //   roleAccess: (role) => role?.payments?.paymentsWithNoEvent,
+  // },
   paymentsNotParticipantsEvent: {
     Component: PaymentsNotParticipantsEventContent,
     name: 'Транзакции / Не пришли на мероприятие',
@@ -1764,16 +1748,16 @@ export const pages = [
     accessRoles: CONTENTS['payments'].accessRoles,
     roleAccess: CONTENTS['payments'].roleAccess,
   },
-  {
-    id: 12,
-    group: 5,
-    name: 'Непривязанные транзакции',
-    href: 'paymentsWithNoEvent',
-    icon: faUnlink,
-    badge: badgePaymentsOfEventWithoutEventIdSelector,
-    accessRoles: CONTENTS['paymentsWithNoEvent'].accessRoles,
-    roleAccess: CONTENTS['paymentsWithNoEvent'].roleAccess,
-  },
+  // {
+  //   id: 12,
+  //   group: 5,
+  //   name: 'Непривязанные транзакции',
+  //   href: 'paymentsWithNoEvent',
+  //   icon: faUnlink,
+  //   badge: badgePaymentsOfEventWithoutEventIdSelector,
+  //   accessRoles: CONTENTS['paymentsWithNoEvent'].accessRoles,
+  //   roleAccess: CONTENTS['paymentsWithNoEvent'].roleAccess,
+  // },
 
   {
     id: 13,

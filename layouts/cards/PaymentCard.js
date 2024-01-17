@@ -2,6 +2,7 @@ import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import EventNameById from '@components/EventNameById'
 import IconWithTooltip from '@components/IconWithTooltip'
+import PayTypeIcon from '@components/PayTypeIcon'
 import ProductNameById from '@components/ProductNameById'
 import ServiceTitleById from '@components/ServiceTitleById'
 import TextLinesLimiter from '@components/TextLinesLimiter'
@@ -11,10 +12,9 @@ import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayD
 import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
 import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
 import {
-  faCalendarMinus,
-  faHeartBroken,
   faQuestion,
   faTimesCircle,
+  faUnlink,
   faUserTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -75,19 +75,6 @@ import { useRecoilValue } from 'recoil'
 //     </div>
 //   )
 // }
-
-const PayTypeIcon = ({ payment }) => {
-  const payType = PAY_TYPES.find(
-    (payTypeItem) => payTypeItem.value === payment.payType
-  )
-  return (
-    <IconWithTooltip
-      icon={payType?.icon ?? faQuestion}
-      className={payType ? 'text-' + payType.color : 'text-disabled'}
-      tooltip={PAY_TYPES_OBJECT[payType.value]}
-    />
-  )
-}
 
 const PaySum = ({ payment }) => (
   <div
@@ -177,21 +164,21 @@ const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
           )}
           {sector === 'event' && !payment.eventId && (
             <IconWithTooltip
-              icon={faCalendarMinus}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к мероприятию"
             />
           )}
           {sector === 'service' && !payment.serviceId && (
             <IconWithTooltip
-              icon={faHeartBroken}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к услуге"
             />
           )}
           {sector === 'product' && !payment.productId && (
             <IconWithTooltip
-              icon={faShopLock}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к продукту"
             />

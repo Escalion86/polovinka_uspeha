@@ -39,15 +39,9 @@ const ChipsSelector = forwardRef(
     ref
   ) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
-    // const [chips, setChips] = useState(value)
     const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-    // const [cursorInPopover, setCursorInPopover] = useState(false)
     const [isJustOpened, setIsJustOpened] = useState(false)
 
-    // const onChangeChips = (chips) => {
-    //   setChips(chips)
-    //   onChange(chips)
-    // }
     const filteredValue =
       typeof value === 'object' && value.length > 0
         ? value.filter((text) => text)
@@ -122,7 +116,6 @@ const ChipsSelector = forwardRef(
         ref={ref}
         isOpen={isPopoverOpen}
         containerClassName="z-50"
-        // reposition={false}
         onClickOutside={() => {
           if (!isJustOpened) setIsPopoverOpen(false)
           setIsJustOpened(false)
@@ -139,8 +132,6 @@ const ChipsSelector = forwardRef(
                 ? 'grid-cols-2'
                 : 'grid-cols-3'
             )}
-            // onMouseLeave={() => setCursorInPopover(false)}
-            // onMouseEnter={() => setCursorInPopover(true)}
           >
             {items.map((item, index) => {
               const isActive = filteredValue.includes(item.text)
@@ -149,13 +140,10 @@ const ChipsSelector = forwardRef(
                   key={'popover_chip' + item.text}
                   className={cn(
                     'px-2 py-1 overflow-hidden uppercase cursor-pointer select-none',
-                    // isActive ? textColorClassCalc(item.color) : ''
                     isActive ? 'text-gray-700' : 'text-disabled'
-                    // 'text-gray-700'
                   )}
                   style={{
                     backgroundColor: isActive ? item.color : 'white',
-                    // color: isActive ? undefined : item.color,
                   }}
                   onClick={() =>
                     isActive

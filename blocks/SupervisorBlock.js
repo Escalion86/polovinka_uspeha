@@ -1,6 +1,5 @@
 import BlockContainer from '@components/BlockContainer'
-// import ListItem from '@components/ListItem'
-import { H4, P } from '@components/tags'
+import { H4 } from '@components/tags'
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
@@ -16,19 +15,6 @@ const SupervisorBlock = () => {
   return (
     <BlockContainer className="pt-0 -mt-8 bg-white">
       <div className="flex flex-col gap-4 tablet:gap-6">
-        {/* <ListItem>
-        <P>
-          Помочь найти пару человеку в возрасте от 30 до 55 лет, который уже
-          твердо стоит на ногах, успешен в какой-либо деятельности и
-          заинтересован в построении серьезных отношений.
-        </P>
-      </ListItem>
-      <ListItem>
-        <P>
-          Также помогаем расширить свои личные и деловые связи, через разные
-          интересные форматы знакомств.
-        </P>
-      </ListItem> */}
         <div className="flex flex-col-reverse items-center tablet:grid tablet:grid-col-1 tablet:grid-cols-2 gap-x-4">
           <div className="flex items-center">
             <div className="relative px-6 py-6 tablet:py-10">
@@ -44,8 +30,6 @@ const SupervisorBlock = () => {
               className="object-contain max-h-100"
               src={siteSettings?.supervisor?.photo}
               alt="supervisor"
-              // width={48}
-              // height={48}
             />
             <H4 className="italic">
               <span className="font-normal">

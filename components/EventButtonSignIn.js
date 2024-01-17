@@ -42,8 +42,6 @@ const EventButtonSignInComponent = ({
 
   const showProfitOnCard = loggedUserActiveRole?.events?.showProfitOnCard
 
-  // const router = useRouter()
-
   const {
     canSee,
     alreadySignIn,
@@ -80,7 +78,6 @@ const EventButtonSignInComponent = ({
         >
           <div className="flex items-center justify-center px-1 font-bold laptop:text-lg text-success gap-x-1">
             <span className="leading-4">ОПЛАЧЕНО</span>
-            {/* <span>{sumOfPaymentsFromLoggedUserToEvent}</span> */}
           </div>
         </div>
       )
@@ -111,7 +108,6 @@ const EventButtonSignInComponent = ({
         >
           <div className="flex items-center justify-center px-1 font-bold text-center laptop:text-lg text-danger gap-x-1">
             <span className="leading-4">НЕ ОПЛАЧЕНО</span>
-            {/* <span>{sumOfPaymentsFromLoggedUserToEvent}</span> */}
           </div>
         </div>
         // <Button
@@ -127,15 +123,7 @@ const EventButtonSignInComponent = ({
   const Status = () =>
     showProfitOnCard && event.status === 'closed' ? (
       <EventProfit eventId={event._id} className={classNameProfit} />
-    ) : // <div
-    //   className={cn(
-    //     'flex justify-center items-center text-base tablet:text-lg font-bold uppercase text-white bg-success px-3',
-    //     className
-    //   )}
-    // >
-    //   Закрыто
-    // </div>
-    event.status === 'canceled' ? (
+    ) : event.status === 'canceled' ? (
       <TextStatus className="text-danger">Отменено</TextStatus>
     ) : isEventExpired ? (
       <TextStatus className="text-success">Завершено</TextStatus>
@@ -172,20 +160,11 @@ const EventButtonSignInComponent = ({
             if (event.warning)
               modalsFunc.event.signUpWithWarning(event, 'reserve')
             else modalsFunc.event.signUp(event, 'reserve')
-            // } else if (!isUserQuestionnaireFilled) {
-            //   router.push('/cabinet/questionnaire', '', { shallow: true })
           } else if (canSignOut) {
             modalsFunc.event.signOut(event, userEventStatus)
           }
         }}
-        // className={cn(
-        //   'px-4 py-1 text-white duration-300 border-t border-l rounded-tl-lg hover:bg-white',
-        //   eventUser
-        //    ? 'bg-success hover:text-success border-success'
-        //     : 'bg-general hover:text-general border-general'
-        // )}
         classBgColor={canSignOut ? 'bg-danger' : undefined}
-        // classHoverBgColor={eventUser ? 'hover:bg-danger' : undefined}
         className={cn('border w-auto self-center', className)}
         name={
           canSignOut
@@ -200,12 +179,6 @@ const EventButtonSignInComponent = ({
               : 'Мест нет'
             : 'Записаться' // 'Заполните свой профиль'
         }
-        // disabled={
-        //   !canSignOut &&
-        //   !canSignIn &&
-        //   !canSignInReserve &&
-        //   isUserQuestionnaireFilled
-        // }
       />
     ) : null
 

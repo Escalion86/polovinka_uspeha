@@ -23,19 +23,12 @@ export const SvgBackgroundComponent = ({
       <defs>
         <linearGradient
           id="Gradient2"
-          // x1="0%"
-          // y1="0%"
-          // x2="100%"
-          // y2="0%"
-          // gradientTransform={`rotate(${anglePI})`}
           x1={Math.round(50 + Math.sin(anglePI) * 50) + '%'}
           y1={Math.round(50 + Math.cos(anglePI) * 50) + '%'}
           x2={Math.round(50 + Math.sin(anglePI + Math.PI) * 50) + '%'}
           y2={Math.round(50 + Math.cos(anglePI + Math.PI) * 50) + '%'}
-          // gradientUnits="userSpaceOnUse"
         >
           <stop offset="0%" stopColor={gradient1Color} />
-          {/* <stop offset="50%" stopColor="black" stopOpacity="0" /> */}
           <stop offset="100%" stopColor={gradient2Color} />
         </linearGradient>
       </defs>
@@ -43,8 +36,6 @@ export const SvgBackgroundComponent = ({
         <rect
           x="0"
           y="0"
-          // rx="0"
-          // ry="0"
           width="100%"
           height="100%"
           fill={
@@ -118,7 +109,6 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
             <ColorPicker
               label="Цвет №1"
               value={gradient1Color}
-              // onChange={setGradient1Color}
               onChange={(value) => {
                 setGradient1Color(value)
                 set({ gradient1Color: value })
@@ -127,7 +117,6 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
             <ColorPicker
               label="Цвет №2"
               value={gradient2Color}
-              // onChange={setGradient2Color}
               onChange={(value) => {
                 setGradient2Color(value)
                 set({ gradient2Color: value })
@@ -139,14 +128,12 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
               className="w-[70px]"
               inputClassName="w-[52px]"
               value={angle}
-              // onChange={(value) => setAngle(parseInt(value))}
               onChange={(value) => {
                 setAngle(parseInt(value))
                 set({ angle: parseInt(value) })
               }}
               min={0}
               max={359}
-              // noMargin
             />
           </div>
         )}
@@ -154,7 +141,6 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
           <ColorPicker
             label="Цвет"
             value={backgroundColor}
-            // onChange={setBackgroundColor}
             onChange={(value) => {
               setBackgroundColor(value)
               set({ backgroundColor: value })
@@ -173,34 +159,23 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
               ref={hiddenFileInput}
               className="hidden"
               type="file"
-              // value={src?.name || ''}
               onChange={(e) => {
-                // setImage(e.target.files[0], setSrc)
-                // var reader = new FileReader()
-                // reader.addEventListener('load', () => {
-                // setSrc(reader.result.toString() || '')
                 modalsFunc.cropImage(
-                  // reader.result.toString() || '',
                   e.target.files[0],
                   null,
                   imageAspect,
-                  // imageWidth / imageHeight,
-                  // null,
                   (newImage) => {
                     setSrc(newImage)
                     set({ src: newImage })
                   },
                   false
                 )
-                // })
-                // reader.readAsDataURL(e.target.files[0])
               }}
             />
             {src && (
               <FontAwesomeIcon
                 className="w-6 h-6 duration-200 transform cursor-pointer text-danger hover:scale-110"
                 icon={faTimes}
-                // size="1x"
                 onClick={() => {
                   setSrc('')
                   set({ src: '' })

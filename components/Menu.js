@@ -5,19 +5,13 @@ import { useState } from 'react'
 const variants = {
   show: {
     scale: 1,
-    // width: 'auto',
-    // height: 'auto',
-    // top: 0,
     right: 0,
     translateX: 0,
     translateY: 0,
   },
   hide: {
     scale: 0,
-    // top: 0,
     right: 0,
-    // width: 0,
-    // height: 0,
     translateX: '50%',
     translateY: '-50%',
   },

@@ -24,8 +24,6 @@ const CardEvent = ({ event }) => (
           className="object-cover w-full tablet:w-40 h-70 phoneH:h-80 tablet:h-40"
           src={event.images[0]}
           alt="event"
-          // width={48}
-          // height={48}
         />
       </div>
     )}
@@ -56,7 +54,6 @@ const TimeTableBlock = ({ events }) => {
   return (
     <BlockContainer id="timetable" className="bg-gray-200">
       <H2>Ближайшие мероприятия</H2>
-      {/* <div className="grid gap-6 tablet:grid-cols-2 laptop:grid-cols-4"> */}
       <div className="flex flex-col items-center w-full gap-4">
         {events &&
           events

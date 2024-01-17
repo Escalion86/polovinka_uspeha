@@ -24,7 +24,6 @@ const AddressPicker = ({
       paddingX="small"
     >
       <div className="flex-1 mt-0.5">
-        {/* <FormWrapper twoColumns> */}
         <FormWrapper className="flex flex-wrap mt-3 mb-1 gap-x-1 gap-y-3">
           <Input
             label="Город"
@@ -85,17 +84,13 @@ const AddressPicker = ({
             className="flex-1 min-w-48"
           />
         </FormWrapper>
-        {/* </FormWrapper> */}
-        {/* <FormWrapper> */}
         <Input
-          // wrapperClassName="col-span-2"
           label="Уточнения по адресу"
           type="text"
           value={address.comment}
           onChange={(comment) => onChange({ ...address, comment })}
           error={errors?.address?.comment}
         />
-        {/* </FormWrapper> */}
       </div>
     </InputWrapper>
   )
