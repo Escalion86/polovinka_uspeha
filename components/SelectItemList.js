@@ -325,6 +325,9 @@ export const SelectPaymentList = ({
   modalTitle,
   canSelectNone = true,
   className,
+  showUser,
+  showEvent,
+  showSectorIcon,
 }) => {
   return (
     <SelectItemList
@@ -343,6 +346,9 @@ export const SelectPaymentList = ({
           label: null,
           buttons,
           rounded: false,
+          showUser,
+          showEvent,
+          showSectorIcon,
         })
       }
       required={required}

@@ -845,6 +845,9 @@ export const SelectPayment = ({
   rounded = true,
   // buttons,
   readOnly,
+  showUser,
+  showEvent,
+  showSectorIcon,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const payments = useRecoilValue(paymentsAtom)
@@ -887,7 +890,14 @@ export const SelectPayment = ({
     >
       <SelectItem
         items={payments}
-        itemComponent={PaymentItem}
+        itemComponent={(props) => (
+          <PaymentItem
+            {...props}
+            showUser={showUser}
+            showEvent={showEvent}
+            showSectorIcon={showSectorIcon}
+          />
+        )}
         componentHeight={50}
         // itemHeight={50}
         // onChange={onChange}

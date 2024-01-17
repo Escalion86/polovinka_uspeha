@@ -1,6 +1,7 @@
 import {
   faCheck,
   faGenderless,
+  faQuestion,
   faUnlink,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,6 +10,7 @@ import {
   EVENT_STATUSES_WITH_TIME,
   GENDERS,
   PAY_TYPES,
+  SECTORS,
 } from '@helpers/constants'
 import eventStatusFunc from '@helpers/eventStatus'
 import formatDateTime from '@helpers/formatDateTime'
@@ -32,6 +34,8 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import UserRelationshipIcon from './UserRelationshipIcon'
 import serviceSelector from '@state/selectors/serviceSelector'
 import IconWithTooltip from './IconWithTooltip'
+import paymentSectorFunc from '@helpers/paymentSector'
+import PayTypeIcon from './PayTypeIcon'
 
 const ItemContainer = ({
   onClick,
@@ -416,11 +420,16 @@ export const PaymentItem = ({
   noBorder = false,
   checkable,
   className,
-  showUserOrEvent = false,
+  showUser = true,
+  showEvent = true,
+  showSectorIcon = true,
 }) => {
+  const paymentSector = paymentSectorFunc(item)
   const payType = PAY_TYPES.find(
     (payTypeItem) => payTypeItem.value === item.payType
   )
+  const sectorProps = SECTORS.find((sector) => sector.value === paymentSector)
+
   return (
     <ItemContainer
       onClick={onClick}
@@ -431,36 +440,54 @@ export const PaymentItem = ({
       className={cn('flex h-9', className)}
       checkable={checkable}
     >
-      <div
+      {showSectorIcon && (
+        <div
+          className={cn(
+            'flex items-center justify-center w-8 text-white',
+            sectorProps ? 'bg-' + sectorProps.color : 'bg-gray-400'
+          )}
+        >
+          <FontAwesomeIcon
+            icon={sectorProps?.icon ?? faQuestion}
+            className="w-6 h-6"
+          />
+        </div>
+      )}
+      {/* <div
         className={cn(
           'flex items-center justify-center w-8 text-white',
           payType ? 'bg-' + payType.color : 'bg-gray-400'
         )}
       >
-        <FontAwesomeIcon icon={payType?.icon ?? faQuestion} className="w-6" />
-      </div>
+        <FontAwesomeIcon
+          icon={payType?.icon ?? faQuestion}
+          className="w-6 h-6"
+        />
+      </div> */}
       <div className="flex items-center justify-between flex-1 w-full px-1 gap-x-1">
         <div className="flex flex-col">
           <div className="text-sm font-bold leading-4 text-gray-800 truncate">
             {formatDateTime(item.payAt)}
           </div>
-          {showUserOrEvent &&
-            (item.payDirection === 'toUser' ||
-              item.payDirection === 'fromUser') && (
-              <UserNameById
-                userId={item.userId}
-                noWrap
-                className="font-bold leading-4"
-              />
-            )}
-          {showUserOrEvent &&
-            (item.payDirection === 'toEvent' ||
-              item.payDirection === 'fromEvent') && (
-              <EventNameById
-                eventId={item.eventId}
-                className="font-bold leading-4 text-general"
-              />
-            )}
+          {showUser && (
+            // &&
+            //   (item.payDirection === 'toUser' ||
+            //     item.payDirection === 'fromUser')
+            <UserNameById
+              userId={item.userId}
+              noWrap
+              className="text-sm font-bold leading-4"
+            />
+          )}
+          {showEvent && (
+            //  &&
+            //   (item.payDirection === 'toEvent' ||
+            //     item.payDirection === 'fromEvent')
+            <EventNameById
+              eventId={item.eventId}
+              className="text-sm font-bold leading-4 text-general"
+            />
+          )}
           {item.comment && (
             <div className="text-sm leading-4">{item.comment}</div>
           )}
@@ -488,10 +515,10 @@ export const PaymentItem = ({
             />
           )}
         </div>
-        <div className="flex items-center text-xs gap-x-2">
+        <div className="flex items-center text-xs gap-x-1">
           <div
             className={cn(
-              'px-1 text-sm font-bold phoneH:text-base',
+              'px-1 text-sm font-bold phoneH:text-base whitespace-nowrap',
               item.payType === 'coupon'
                 ? 'text-general'
                 : item.payDirection === 'toUser' ||
@@ -506,6 +533,7 @@ export const PaymentItem = ({
                 : ''
             }${item.sum / 100} ₽`}
           </div>
+          <PayTypeIcon payment={item} size="sm" />
         </div>
       </div>
     </ItemContainer>

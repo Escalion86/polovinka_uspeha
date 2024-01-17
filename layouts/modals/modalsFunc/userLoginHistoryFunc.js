@@ -23,7 +23,13 @@ const userLoginHistoryFunc = (userId, clone = false) => {
     const user = useRecoilValue(userSelector(userId))
 
     useEffect(() => {
-      getData(`/api/loginhistory`, { userId }, setLoginHistories, null, true)
+      getData(
+        `/api/loginhistory`,
+        { userId },
+        ({ data }) => setLoginHistories(data),
+        null,
+        true
+      )
     }, [userId])
 
     if (!loginHistories)
@@ -35,6 +41,7 @@ const userLoginHistoryFunc = (userId, clone = false) => {
     if (loginHistories.length === 0)
       return <div>Пользователь ни разу на заходил на сайт</div>
 
+    console.log('loginHistories :>> ', loginHistories)
     const unicLogins = loginHistories.filter(
       ({ createdAt, browser }, index, array) => {
         return !array.find(
@@ -53,9 +60,12 @@ const userLoginHistoryFunc = (userId, clone = false) => {
             {unicLogins
               .slice(0)
               .reverse()
-              .map(({ createdAt, browser }) => {
+              .map(({ createdAt, browser, _id }) => {
                 return (
-                  <div className="px-1 bg-white border-gray-400 shadow-md border-y-1">
+                  <div
+                    key={_id}
+                    className="px-1 bg-white border-gray-400 shadow-md border-y-1"
+                  >
                     <div className="text-sm font-bold">{browser.platform}</div>
                     <div className="text-sm">{browser.sUsrAg}</div>
                   </div>
@@ -68,9 +78,12 @@ const userLoginHistoryFunc = (userId, clone = false) => {
             {loginHistories
               .slice(0)
               .reverse()
-              .map(({ createdAt, browser }) => {
+              .map(({ createdAt, browser, _id }) => {
                 return (
-                  <div className="px-1 bg-white border-gray-400 shadow-md border-y-1">
+                  <div
+                    key={_id}
+                    className="px-1 bg-white border-gray-400 shadow-md border-y-1"
+                  >
                     <div className="flex justify-between text-sm font-bold gap-x-1">
                       <div>{formatDateTime(createdAt)}</div>
                       <div>{browser.platform}</div>

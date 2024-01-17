@@ -267,6 +267,8 @@ const UserPayment = ({
                       noBorder
                       checkable={false}
                       onClick={() => modalsFunc.payment.edit(payment._id)}
+                      showUser={false}
+                      showEvent={false}
                     />
                     {!readOnly && (
                       <Tooltip title="Привязать транзакцию к этому мероприятию">
@@ -309,6 +311,8 @@ const UserPayment = ({
                       noBorder
                       checkable={false}
                       onClick={() => modalsFunc.payment.edit(payment._id)}
+                      showUser={false}
+                      showEvent={false}
                     />
                     {!readOnly && (
                       <>
@@ -854,6 +858,8 @@ const eventUsersPaymentsFunc = (eventId) => {
                       noBorder
                       checkable={false}
                       onClick={() => modalsFunc.payment.edit(payment._id)}
+                      showUser={false}
+                      showEvent={false}
                     />
                     {!isEventClosed && (
                       <div
@@ -902,6 +908,8 @@ const eventUsersPaymentsFunc = (eventId) => {
                       noBorder
                       checkable={false}
                       onClick={() => modalsFunc.payment.edit(payment._id)}
+                      showUser={false}
+                      showEvent={false}
                     />
                     {!isEventClosed && (
                       <div
