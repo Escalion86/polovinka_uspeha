@@ -11,10 +11,9 @@ import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayD
 import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
 import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
 import {
-  faCalendarMinus,
-  faHeartBroken,
   faQuestion,
   faTimesCircle,
+  faUnlink,
   faUserTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -177,21 +176,21 @@ const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
           )}
           {sector === 'event' && !payment.eventId && (
             <IconWithTooltip
-              icon={faCalendarMinus}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к мероприятию"
             />
           )}
           {sector === 'service' && !payment.serviceId && (
             <IconWithTooltip
-              icon={faHeartBroken}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к услуге"
             />
           )}
           {sector === 'product' && !payment.productId && (
             <IconWithTooltip
-              icon={faShopLock}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к продукту"
             />

@@ -1,10 +1,7 @@
 import {
-  faCalendarMinus,
   faCheck,
   faGenderless,
-  faHeartBroken,
-  faShopLock,
-  faTimesCircle,
+  faUnlink,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
@@ -471,21 +468,21 @@ export const PaymentItem = ({
         <div className="flex justify-end flex-1 gap-x-3">
           {item.sector === 'event' && !item.eventId && (
             <IconWithTooltip
-              icon={faCalendarMinus}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к мероприятию"
             />
           )}
           {item.sector === 'service' && !item.serviceId && (
             <IconWithTooltip
-              icon={faHeartBroken}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к услуге"
             />
           )}
           {item.sector === 'product' && !item.productId && (
             <IconWithTooltip
-              icon={faShopLock}
+              icon={faUnlink}
               className="text-danger"
               tooltip="Транзакция не привязана к продукту"
             />
