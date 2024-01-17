@@ -38,8 +38,6 @@ const DirectionBlock = ({
                   className="flex-1 object-contain h-full max-h-100 laptop:max-h-full laptop:h-full tablet:h-60"
                   src={image}
                   alt="direction"
-                  // width={48}
-                  // height={48}
                 />
               </>
             ) : (

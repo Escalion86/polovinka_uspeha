@@ -1,9 +1,7 @@
 import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
-import Input from '@components/Input'
 import RadioBox from '@components/RadioBox'
 import { SelectEventList } from '@components/SelectItemList'
-import SocialPicker from '@components/ValuePicker/SocialPicker'
 import copyToClipboard from '@helpers/copyToClipboard'
 import formatAddress from '@helpers/formatAddress'
 import formatEventDateTime from '@helpers/formatEventDateTime'
@@ -269,19 +267,6 @@ const ToolsTextEventsAnonsContent = () => {
         onChange={setEventsId}
         canAddItem
       />
-      {/* <SocialPicker
-        label="Тэг соц. сети в ссылке"
-        social={socialTag}
-        onChange={setSocialTag}
-      />
-      <Input
-        label="Свой тэг в ссылке"
-        type="text"
-        value={customTag}
-        onChange={(value) => {
-          setCustomTag(value)
-        }}
-      /> */}
       <CheckBox
         checked={showTags}
         onClick={() => setShowTags((checked) => !checked)}
@@ -346,15 +331,6 @@ const ToolsTextEventsAnonsContent = () => {
           disabled={!eventsId.length}
         />
       </div>
-      {/* <EditableTextarea
-        label="Текст"
-        html={text}
-        // uncontrolled={false}
-        // onChange={(value) => {
-        //   setText(value)
-        // }}
-        readOnly
-      /> */}
       <div className="py-2 font-bold">Результат:</div>
       {text ? (
         <div

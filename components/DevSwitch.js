@@ -49,22 +49,6 @@ const DevSwitch = () => {
             {name}
           </ToggleButton>
         ))}
-
-        {/* <ToggleButton className="flex-1 leading-3 rounded-none" value="moder">
-          Модер
-        </ToggleButton>
-        <ToggleButton className="flex-1 leading-3 rounded-none" value="admin">
-          Админ
-        </ToggleButton>
-        <ToggleButton
-          className="flex-1 leading-3 rounded-none"
-          value="supervisor"
-        >
-          Рук.
-        </ToggleButton>
-        <ToggleButton className="flex-1 leading-3 rounded-none" value="dev">
-          DEV
-        </ToggleButton> */}
       </ToggleButtonGroup>
       <ToggleButtonGroup
         size="small"

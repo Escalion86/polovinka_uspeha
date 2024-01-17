@@ -17,7 +17,6 @@ const DatePicker = ({
   onChange,
   required = false,
   labelClassName,
-  // wrapperClassName,
   className,
   disabled = false,
   showYears = false,

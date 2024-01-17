@@ -16,21 +16,14 @@ const Input = forwardRef(
       labelClassName,
       error = false,
       prefix,
-      prefixClassName,
       postfix,
-      postfixClassName,
-      copyPasteButtons = false,
-      wrapperClassName,
       noBorder = false,
-      placeholder,
       disabled = false,
       showDisabledIcon = true,
       min,
       max,
       required,
       step = 1,
-      labelPos,
-      onFocus,
       defaultValue,
       floatingLabel = true,
       showErrorText = false,
@@ -64,16 +57,7 @@ const Input = forwardRef(
         noMargin={noMargin}
         showDisabledIcon={showDisabledIcon}
       >
-        {/* <div
-        className={cn(
-          'relative flex items-center w-full px-2 py-2 mt-1.5 border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50',
-          error ? 'border-danger' : 'border-gray-300',
-          inputClassName
-        )}
-      >
-        <div className="relative flex w-full"> */}
         {showArrows && type === 'number' && !disabled && (
-          // typeof value === 'number' &&
           <div
             className={cn(
               'p-1 duration-300',
@@ -96,7 +80,6 @@ const Input = forwardRef(
           className={cn(
             'flex-1 px-1 text-black placeholder-transparent h-7 peer focus:outline-none bg-transparent',
             disabled ? 'text-disabled cursor-not-allowed' : '',
-            // type === 'number' ? 'max-w-20' : '',
             inputClassName
           )}
           onWheel={(e) => e.target.blur()}
@@ -119,12 +102,10 @@ const Input = forwardRef(
               onChange(value)
             }
           }}
-          // id="exampleFormControlInput1"
           placeholder={label}
           autoComplete={autoComplete}
         />
         {showArrows && type === 'number' && !disabled && (
-          // typeof value === 'number' &&
           <div
             className={cn(
               'p-1 duration-300',
@@ -142,101 +123,6 @@ const Input = forwardRef(
         )}
       </InputWrapper>
     )
-    // return (
-    //   <TextField
-    //     sx={{ padding: 0, margin: 0 }}
-    //     label={label}
-    //     value={value}
-    //     onChange={(e) => {
-    //       onChange(e.target.value)
-    //     }}
-    //     size="small"
-    //     InputProps={{
-    //       startAdornment: prefix && (
-    //         <InputAdornment sx={{ marginRight: 0.5 }} position="start">
-    //           {prefix}
-    //         </InputAdornment>
-    //       ),
-    //       endAdornment: postfix && (
-    //         <InputAdornment sx={{ marginLeft: 0.5 }} position="end">
-    //           {postfix}
-    //         </InputAdornment>
-    //       ),
-    //     }}
-    //   />
-    // )
-    // return (
-    //   <InputWrapper
-    //     label={label}
-    //     labelClassName={labelClassName}
-    //     onChange={onChange}
-    //     copyPasteButtons={copyPasteButtons}
-    //     value={value}
-    //     className={wrapperClassName}
-    //     required={required}
-    //     labelPos={labelPos}
-    //   >
-    //     <div
-    //       className={cn(
-    //         'flex rounded overflow-hidden bg-white',
-    //         error ? 'border-red-500' : 'border-gray-400',
-    //         inputClassName ? inputClassName : 'w-full',
-    //         noBorder ? '' : 'border'
-    //       )}
-    //     >
-    //       {prefix && (
-    //         <div
-    //           className={cn(
-    //             'px-1 bg-gray-200 border-r border-gray-400',
-    //             prefixClassName
-    //           )}
-    //         >
-    //           {prefix}
-    //         </div>
-    //       )}
-    //       <input
-    //         ref={ref}
-    //         step={step}
-    //         className={cn(
-    //           'outline-none px-1 flex-1 min-w-10',
-    //           disabled
-    //             ? 'cursor-not-allowed bg-gray-100 text-disabled'
-    //             : 'bg-transparent'
-    //         )}
-    //         type={type}
-    //         value={defaultValue !== undefined ? undefined : value ?? ''}
-    //         onChange={(e) => {
-    //           const { value } = e.target
-    //           if (type === 'number') {
-    //             if (
-    //               (typeof min !== 'number' || value >= min) &&
-    //               (typeof max !== 'number' || value <= max)
-    //             ) {
-    //               // onChange(Number(value))
-    //               onChange(String(parseInt(value)))
-    //             }
-    //           } else {
-    //             onChange(value)
-    //           }
-    //         }}
-    //         placeholder={placeholder}
-    //         disabled={disabled}
-    //         onFocus={onFocus}
-    //         defaultValue={defaultValue}
-    //       />
-    //       {postfix && (
-    //         <div
-    //           className={cn(
-    //             'px-1 bg-gray-200 border-l border-gray-400',
-    //             postfixClassName
-    //           )}
-    //         >
-    //           {postfix}
-    //         </div>
-    //       )}
-    //     </div>
-    //   </InputWrapper>
-    // )
   }
 )
 

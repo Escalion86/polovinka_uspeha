@@ -1,4 +1,3 @@
-// import useWindowDimensions from '@helpers/useWindowDimensions'
 import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import { useEffect, useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -13,7 +12,6 @@ const Masonry = ({
 }) => {
   const isInitialMount = useRef(true)
   const [readyElements, setReadyElements] = useState(null)
-  // const { width } = useWindowDimensions()
   const { width } = useRecoilValue(windowDimensionsAtom)
   const childrenRef = useRef([])
 
@@ -68,8 +66,8 @@ const Masonry = ({
         (childRef) => childRef?.offsetHeight
       )
 
-      const colsHeights = Array.from({ length: columns }, () => 0) // [].fill(0, 0, cols)
-      const colsElements = Array.from({ length: columns }, () => null) //[].fill([], 0, cols)
+      const colsHeights = Array.from({ length: columns }, () => 0)
+      const colsElements = Array.from({ length: columns }, () => null)
       for (let i = 0; i < childrenRef.current.length; i++) {
         const minCol = Math.min(...colsHeights)
 

@@ -14,7 +14,7 @@ const ItemRow = ({
 }) => {
   const onChangeCount = (e) =>
     onChange(selectedId, Number(e.target.value), index)
-  // const onChangeItem = (e) => onChange(e.target.value, count, index)
+
   const onChangeItem = (value) =>
     count ? onChange(value, count, index) : onChange(value, index)
   const incCount = () => onChange(selectedId, count + 1, index)
@@ -33,18 +33,14 @@ const ItemRow = ({
       {count !== undefined && (
         <div className="flex items-center justify-between border-l border-gray-700">
           <div
-            className={
-              'flex items-center justify-center h-full px-1 group cursor-pointer'
-              // (count > 0 ? 'cursor-pointer' : 'cursor-not-allowed')
-            }
+            className="flex items-center justify-center h-full px-1 group cursor-pointer"
             onClick={count > 1 ? decCount : () => onDelete(index)}
           >
             <FontAwesomeIcon
               className={
                 count > 1
                   ? 'text-gray-700 transform group-hover:hover:scale-125 duration-200 '
-                  : // : 'text-disabled'
-                    'text-red-700'
+                  : 'text-red-700'
               }
               icon={count > 1 ? faMinus : faTrash}
               size="sm"
@@ -132,11 +128,6 @@ export const SelectItemsList = ({
       }
       onChange(tempItemsIdCount)
     }
-    // const newProductsIdCount = productsIdCount.map((item, index) => {
-    //   if (index === e.index) return { id: e.id, count: e.count }
-    //   return item
-    // })
-    // onChange(newProductsIdCount)
   }
 
   const addRow = () => {
@@ -209,72 +200,3 @@ export const SelectItemsList = ({
     </div>
   )
 }
-
-// export const SelectProductsList = ({
-//   productsIdCount = null,
-//   onChange = () => {},
-//   required = false,
-//   readOnly = false,
-//   title = 'Список товаров',
-//   callbackArray = false,
-// }) => {
-//   const { products } = useSelector((state) => state)
-//   return (
-//     <SelectItemsList
-//       items={products}
-//       itemsIdCount={productsIdCount}
-//       title={title}
-//       onChange={(itemsIdCount) => {
-//         if (callbackArray) {
-//           const tempItemsIdCount = []
-//           for (const [id, count] of Object.entries(itemsIdCount)) {
-//             tempItemsIdCount.push({
-//               product:
-//                 id === '?'
-//                   ? null
-//                   : products.find((product) => product._id === id),
-//               count,
-//             })
-//           }
-//           onChange(tempItemsIdCount)
-//         } else onChange(itemsIdCount)
-//       }}
-//       required={required}
-//       readOnly={readOnly}
-//     />
-//   )
-// }
-
-// export const SelectSetsList = ({
-//   setsIdCount = null,
-//   onChange = () => {},
-//   required = false,
-//   readOnly = false,
-//   title = 'Список наборов',
-//   callbackArray = false,
-// }) => {
-//   const { products, sets } = useSelector((state) => state)
-//   return (
-//     <SelectItemsList
-//       items={sets}
-//       subItems={products}
-//       subItemsIdCountKey="productsIdCount"
-//       itemsIdCount={setsIdCount}
-//       title={title}
-//       onChange={(itemsIdCount) => {
-//         if (callbackArray) {
-//           const tempItemsIdCount = []
-//           for (const [id, count] of Object.entries(itemsIdCount)) {
-//             tempItemsIdCount.push({
-//               set: id === '?' ? null : sets.find((set) => set._id === id),
-//               count,
-//             })
-//           }
-//           onChange(tempItemsIdCount)
-//         } else onChange(itemsIdCount)
-//       }}
-//       required={required}
-//       readOnly={readOnly}
-//     />
-//   )
-// }

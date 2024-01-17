@@ -7,7 +7,6 @@ const PriceBlock = () => (
     style={{
       backgroundImage: `url("/img/other/golden-cup-and-baske.webp")`,
       backgroundRepeat: 'no-repeat',
-      // backgroundPosition: 'top 48px right',
       backgroundSize: 'cover',
     }}
   >

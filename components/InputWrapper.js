@@ -65,10 +65,6 @@ const InputWrapper = forwardRef(
           hidden ? 'hidden' : '',
           className
         )}
-        // style={{
-        //   paddingTop: paddingYCalc === 0 ? 0 : paddingYCalc + 2,
-        //   paddingBottom: paddingYCalc,
-        // }}
         ref={ref}
         {...props}
       >
@@ -109,7 +105,6 @@ const InputWrapper = forwardRef(
           )}
           {label && (
             <div
-              // for="exampleFormControlInput1"
               className={cn(
                 'pointer-events-none select-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
                 'h-5 leading-[12px] peer-placeholder-shown:leading-[14px]',
@@ -117,37 +112,13 @@ const InputWrapper = forwardRef(
                 required
                   ? 'max-w-[calc(100%-16px)] peer-focus:max-w-[calc(100%-16px)] peer-placeholder-shown:max-w-full'
                   : '',
-                // required
-                // ? 'tablet:max-w-[calc(100%-72px)] max-w-[calc(100%-16px)] peer-focus:max-w-[calc(100%-16px)] tablet:peer-focus:max-w-[calc(100%-72px)] peer-placeholder-shown:max-w-full'
-                // : '',
-                centerLabel
-                  ? 'left-1/2 -translate-x-1/2'
-                  : // : paddingX === 'small'
-                    // ? 'left-1 peer-focus:left-2'
-                    // : paddingX
-                    // ? 'left-2 peer-focus:left-2'
-                    // : 'left-0 peer-focus:left-2',
-                    'left-2',
+                centerLabel ? 'left-1/2 -translate-x-1/2' : 'left-2',
                 floatingLabel
                   ? `-top-[12px] peer-focus:-top-[12px] text-general peer-focus:text-sm peer-placeholder-shown:text-disabled peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
-                  : // : paddingY === 'small'
-                    // ? '-top-[18px]'
-                    // : paddingY === 'big'
-                    // ? '-top-[22px]'
-                    // : paddingY
-                    // ? '-top-[20px]'
-                    // : '-top-[12px]',
-
-                    // error
-                    //   ? 'peer-placeholder-shown:text-danger'
-                    //   : 'peer-placeholder-shown:text-disabled',
-                    '-top-[12px]',
+                  : '-top-[12px]',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
               )}
-              // style={{
-              //   top: -12 - paddingYCalc * 1.5,
-              // }}
             >
               {label}
             </div>
@@ -165,14 +136,11 @@ const InputWrapper = forwardRef(
                 : 'text-danger'
             )}
           >
-            {/* <span className="hidden tablet:block">Обязательное</span> */}
-            {/* <span className="tablet:hidden"> */}
             <FontAwesomeIcon
               className={cn('w-2.5 h-2.5')}
               icon={faAsterisk}
               size="1x"
             />
-            {/* </span> */}
           </div>
         )}
         {error && showErrorText && (

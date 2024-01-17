@@ -27,19 +27,6 @@ const UserStatusIcon = ({ status, size }) => {
     case 'novice':
       return (
         <Tooltip title="Новичок">
-          {/* <div
-            className={`flex items-center justify-center min-w-${
-              numSize + 1
-            } w-${numSize + 1} h-${numSize + 1}`}
-          >
-            <FontAwesomeIcon
-              className={cn(
-                `min-w-${numSize} w-${numSize} h-${numSize}`,
-                'text-green-400'
-              )}
-              icon={faUser}
-            />
-          </div> */}
           <div
             className={`grayscale brightness-150 contrast-75 flex items-center justify-center min-w-${
               numSize + 1
@@ -78,7 +65,6 @@ const UserStatusIcon = ({ status, size }) => {
             } w-${numSize + 1} h-${numSize + 1}`}
           >
             <Image
-              // className={`min-w-${numSize} w-${numSize} h-${numSize}`}
               src="/img/svg_icons/ban.svg"
               width={numSize * 4}
               height={numSize * 4}

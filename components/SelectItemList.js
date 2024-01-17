@@ -12,7 +12,6 @@ import {
 } from './SelectItem'
 
 const ItemRow = ({
-  // onChange,
   onDelete,
   onCreateNew,
   onEdit,
@@ -21,32 +20,20 @@ const ItemRow = ({
   index,
   selectedItemsIds,
   SelectItemComponent = SelectItem,
-  // dropDownList,
   readOnly,
-}) => {
-  // const onChangeItem = (value) => onChange(value, index)
-
-  return (
-    <div className="flex border-b border-gray-700 last:border-0">
-      <SelectItemComponent
-        // onChange={readOnly ? null : (item) => onChangeItem(item._id)}
-        selectedId={selectedId}
-        exceptedIds={selectedItemsIds}
-        clearButton={
-          !readOnly && onDelete
-          // !readOnly && dropDownList && onDelete
-        }
-        onDelete={
-          !readOnly && onDelete ? (item) => onDelete(index, item) : null
-        }
-        onCreateNew={!readOnly && onCreateNew ? () => onCreateNew(index) : null}
-        onEdit={!readOnly && onEdit ? (item) => onEdit(index, item) : null}
-        onClick={onClick ? (item) => onClick(index, item) : null}
-        // dropDownList={dropDownList}
-      />
-    </div>
-  )
-}
+}) => (
+  <div className="flex border-b border-gray-700 last:border-0">
+    <SelectItemComponent
+      selectedId={selectedId}
+      exceptedIds={selectedItemsIds}
+      clearButton={!readOnly && onDelete}
+      onDelete={!readOnly && onDelete ? (item) => onDelete(index, item) : null}
+      onCreateNew={!readOnly && onCreateNew ? () => onCreateNew(index) : null}
+      onEdit={!readOnly && onEdit ? (item) => onEdit(index, item) : null}
+      onClick={onClick ? (item) => onClick(index, item) : null}
+    />
+  </div>
+)
 
 export const SelectItemList = ({
   itemsId = [],
@@ -58,7 +45,6 @@ export const SelectItemList = ({
   onDelete = null,
   onClick = null,
   required = false,
-  // dropDownList = true,
   showCounter,
   counterClassName,
   counterPostfix,
@@ -76,13 +62,6 @@ export const SelectItemList = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   if (!itemsId) itemsId = []
-
-  // const onChangeItemRow = (id, index) => {
-  //   if (!onChange) return
-  //   const tempItemsId = [...itemsId]
-  //   tempItemsId[index] = id
-  //   onChange(tempItemsId)
-  // }
 
   const addRow = () => {
     if (modalFuncKey)
@@ -115,7 +94,6 @@ export const SelectItemList = ({
   itemsId.forEach((itemId) =>
     itemRows.push(({ index }) => (
       <ItemRow
-        // onChange={onChangeItemRow}
         onDelete={(index, item) => {
           if (onDelete) onDelete(item, () => deleteRow(index))
           else deleteRow(index)
@@ -127,7 +105,6 @@ export const SelectItemList = ({
         index={index}
         selectedItemsIds={itemsId}
         SelectItemComponent={SelectItemComponent}
-        // dropDownList={dropDownList}
         readOnly={readOnly}
       />
     ))
@@ -144,8 +121,6 @@ export const SelectItemList = ({
             className={labelClassName}
             required={required}
             contentWidth
-            // contentWidth={labelContentWidth || labelPos === 'top'}
-            // textPos={labelPos === 'top' ? 'left' : 'right'}
           />
         )}
         {showCounter && (
@@ -173,10 +148,7 @@ export const SelectItemList = ({
           ))}
           {!readOnly && (
             <div
-              onClick={
-                // addButtonIsActive ? (dropDownList ? addRow : onCreateNew) : null
-                addButtonIsActive ? addRow : null
-              }
+              onClick={addButtonIsActive ? addRow : null}
               className={cn(
                 'group flex items-center justify-center h-6 bg-white',
                 itemRows.length > 0 ? 'rounded-b' : 'rounded',
@@ -235,7 +207,6 @@ export const SelectUserList = ({
           ...props,
           bordered: false,
           filter,
-          // disableDropDownList: true,
           exceptedIds,
           buttons: buttons,
           rounded: false,
@@ -289,7 +260,6 @@ export const SelectEventList = ({
           ...props,
           bordered: false,
           filter,
-          // disableDropDownList: true,
           exceptedIds,
           buttons,
           rounded: false,
@@ -341,7 +311,6 @@ export const SelectPaymentList = ({
           ...props,
           bordered: false,
           filter,
-          // disableDropDownList: true,
           exceptedIds,
           label: null,
           buttons,
@@ -364,36 +333,3 @@ export const SelectPaymentList = ({
     />
   )
 }
-
-// export const SelectPaymentList = ({
-//   paymentsId = null,
-//   onChange = () => {},
-//   onCreateNew = null,
-//   onEdit = null,
-//   onDelete = null,
-//   onClick = null,
-//   required = false,
-//   readOnly = false,
-//   title = 'Транзакции',
-//   callbackArray = false,
-//   dropDownList = true,
-// }) => {
-//   const { payments } = useSelector((state) => state)
-//   return (
-//     <SelectItemList
-//       items={payments}
-//       itemsId={paymentsId}
-//       ItemComponent={PaymentItem}
-//       SelectItemComponent={SelectPayment}
-//       onCreateNew={onCreateNew}
-//       onEdit={onEdit}
-//       onDelete={onDelete}
-//       onClick={onClick}
-//       title={title}
-//       onChange={onChange}
-//       required={required}
-//       readOnly={readOnly}
-//       dropDownList={dropDownList}
-//     />
-//   )
-// }

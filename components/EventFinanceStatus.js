@@ -102,14 +102,7 @@ const EventButtonSignIn = ({
           modalsFunc.event.signOut(event, eventLoggedUserStatus.userEventStatus)
         }
       }}
-      // className={cn(
-      //   'px-4 py-1 text-white duration-300 border-t border-l rounded-tl-lg hover:bg-white',
-      //   eventUser
-      //    ? 'bg-success hover:text-success border-success'
-      //     : 'bg-general hover:text-general border-general'
-      // )}
       classBgColor={eventLoggedUserStatus.canSignOut ? 'bg-danger' : undefined}
-      // classHoverBgColor={eventUser ? 'hover:bg-danger' : undefined}
       className={cn('border w-auto', className)}
       name={
         eventLoggedUserStatus.canSignOut

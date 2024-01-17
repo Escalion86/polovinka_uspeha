@@ -59,8 +59,6 @@ export const LoadingSpinner = ({
             style={{ maxHeight: widthHeight, maxWidth: widthHeight }}
             src="/img/logo_heart.png"
             alt="logo"
-            // width={widthHeight}
-            // height={widthHeight}
           />
         </motion.div>
       </div>

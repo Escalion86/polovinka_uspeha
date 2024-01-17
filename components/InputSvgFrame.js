@@ -7,13 +7,8 @@ import frames from './frames/frames'
 const InputSvgFrame = ({
   label = 'Рамка',
   frameId = null,
-  // noImage = '/img/no_image.png',
   onChange = () => {},
   required = false,
-  noEditButton = false,
-  // directory = null,
-  // imageName = null,
-  // onDelete = null,
   labelClassName,
   className,
   error,
@@ -40,8 +35,6 @@ const InputSvgFrame = ({
       required={required}
       error={error}
       fullWidth={false}
-      // paddingY
-      // labelPos="top"
     >
       <div
         className={cn(

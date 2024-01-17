@@ -23,7 +23,6 @@ export const CardWrapper = ({
   hidden,
   style,
 }) => {
-  // const device = useWindowDimensionsTailwind()
   const device = useRecoilValue(windowDimensionsTailwindSelector)
   return (
     <div
@@ -33,10 +32,6 @@ export const CardWrapper = ({
         if (onClick && !parentHasAttr(e.target, 'data-prevent-parent-click'))
           onClick()
       }}
-      // transition={{ duration: 0.3, type: 'just' }}
-      // animate={{
-      //   height: hidden ? 0 : 'auto',
-      // }}
     >
       <div className="py-0.5">
         <div
@@ -52,10 +47,7 @@ export const CardWrapper = ({
           )}
         >
           {error && (
-            <div
-              // onClick={() => modalsFunc.error(error)}
-              className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center text-2xl text-white bg-red-800 bg-opacity-80"
-            >
+            <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center text-2xl text-white bg-red-800 bg-opacity-80">
               ОШИБКА
             </div>
           )}

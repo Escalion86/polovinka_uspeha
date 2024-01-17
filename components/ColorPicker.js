@@ -20,7 +20,6 @@ const ColorPicker = ({
   error,
   fullWidth = false,
   noMargin,
-  defaultValue,
   paddingX = 'small',
   paddingY = 'small',
 }) => {
@@ -55,9 +54,6 @@ const ColorPicker = ({
         className="w-full"
         turnOffAutoClose="inside"
         strategyAbsolute
-        // openOnHover
-        // menuPadding="lg"
-        // menuClassName="w-[222px] h-[300px]"
       >
         <div className="flex flex-col gap-y-2 w-[200px]">
           <HexColorPicker color={value} onChange={onChange} />
@@ -72,13 +68,11 @@ const ColorPicker = ({
             <FontAwesomeIcon
               className="w-5 h-5 duration-200 transform cursor-pointer text-general hover:scale-110"
               icon={faCopy}
-              // size="1x"
               onClick={() => copyToClipboard(value)}
             />
             <FontAwesomeIcon
               className="w-5 h-5 duration-200 transform cursor-pointer text-general hover:scale-110"
               icon={faPaste}
-              // size="1x"
               onClick={() => pasteFromClipboard(onChange)}
             />
           </div>

@@ -16,13 +16,7 @@ const Chip = ({ text, color, onClose, onClick }) => (
       }
     }}
   >
-    <div
-      className={cn(
-        'tablet:text-[13px] text-[11px] uppercase select-none pr-1 tablet:pr-2',
-        // textColorClassCalc(color)
-        'text-gray-700'
-      )}
-    >
+    <div className="tablet:text-[13px] text-[11px] uppercase select-none pr-1 tablet:pr-2 text-gray-700">
       {text}
     </div>
     {onClose && (
@@ -38,9 +32,7 @@ const Chip = ({ text, color, onClose, onClick }) => (
         <FontAwesomeIcon
           icon={faTimes}
           style={{ color: color }}
-          className={cn(
-            'w-3 h-3 tablet:w-4 tablet:h-4 duration-300 group-hover:scale-125'
-          )}
+          className="w-3 h-3 tablet:w-4 tablet:h-4 duration-300 group-hover:scale-125"
         />
       </div>
     )}

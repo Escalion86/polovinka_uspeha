@@ -8,8 +8,6 @@ const ContactImage = ({ src, href }) => (
       className="object-cover w-12 h-12 tablet:w-24 tablet:h-24"
       src={src}
       alt="contact"
-      // width={48}
-      // height={48}
     />
   </a>
 )

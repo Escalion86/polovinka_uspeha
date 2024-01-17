@@ -14,8 +14,6 @@ const ServiceItem = ({ serviceId, title, shortDescription, images }) => {
           className="object-cover w-full max-h-[220px]"
           src={images[0]}
           alt="service"
-          // width={48}
-          // height={48}
         />
       )}
       <div className="px-3 py-2 text-base font-bold leading-3 text-center border-b border-gray-400 text-general laptop:text-lg laptop:leading-4">
@@ -41,24 +39,10 @@ const ServicesBlock = () => {
   if (!filteredServices || filteredServices.length === 0) return null
   return (
     <>
-      <BlockContainer
-        id="services"
-        title="Наши услуги"
-        // className="pb-0 "
-        // childrenWrapperClassName="grid grid-cols-1 gap-x-2 gap-y-2 tablet:grid-cols-2 laptop:grid-cols-3"
-        altBg
-      >
-        {/* <H2 className="sticky pt-20 top-6">{'Направления центра'}</H2> */}
+      <BlockContainer id="services" title="Наши услуги" altBg>
         <Masonry gap={16}>
           {filteredServices.map((service, index) => {
             return (
-              // <DirectionBlock
-              //   key={direction._id}
-              //   image={direction.image}
-              //   title={direction.title}
-              //   description={direction.description}
-              //   inverse={index % 2 === (startInverse ? 1 : 0)}
-              // />
               <ServiceItem
                 key={service._id}
                 serviceId={service._id}

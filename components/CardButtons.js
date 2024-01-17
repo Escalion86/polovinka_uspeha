@@ -13,7 +13,6 @@ import {
   faCode,
   faEllipsisV,
   faHistory,
-  faIdBadge,
   faKey,
   faMoneyBill,
   faPencilAlt,
@@ -76,20 +75,6 @@ const CardButtons = ({
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const device = useRecoilValue(windowDimensionsTailwindSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
-  // const [open, setOpen] = useState(false)
-  // const [isTriggered, setIsTriggered] = useState(false)
-  // const ref = useDetectClickOutside({
-  //   onTriggered: () => {
-  //     if (!isTriggered && open) {
-  //       setOpen(false)
-  //       setIsTriggered(true)
-  //       const timer = setTimeout(() => {
-  //         setIsTriggered(false)
-  //         clearTimeout(timer)
-  //       }, 300)
-  //     }
-  //   },
-  // })
 
   const copyEventLink = useCopyEventLinkToClipboard(item._id)
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
@@ -134,7 +119,6 @@ const CardButtons = ({
       typeOfItem === 'user' && loggedUserActiveRole.users.seeActionsHistory,
     editQuestionnaire: !!onEditQuestionnaire,
     setPasswordBtn: rule?.setPassword,
-    // typeOfItem === 'user' && isLoggedUserSupervisor,
     shareBtn:
       window?.location?.origin &&
       ['event', 'service', 'user', 'product'].includes(typeOfItem),
@@ -187,7 +171,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faShareAlt}
           onClick={() => {
-            // setOpen(false)
             if (typeOfItem === 'event') {
               copyEventLink()
             }
@@ -238,7 +221,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faUsers}
           onClick={() => {
-            // setOpen(false)
             modalsFunc.event.users(item._id)
           }}
           color="green"
@@ -249,7 +231,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faSignIn}
           onClick={() => {
-            // setOpen(false)
             modalsFunc.loginHistory.user(item._id)
           }}
           color="purple"
@@ -260,7 +241,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faMoneyBill}
           onClick={() => {
-            // setOpen(false)
             modalsFunc.event.payments(item._id)
           }}
           color="amber"
@@ -271,7 +251,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faMoneyBill}
           onClick={() => {
-            // setOpen(false)
             modalsFunc.user.payments(item._id)
           }}
           color="amber"
@@ -282,7 +261,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faArrowUp}
           onClick={() => {
-            // setOpen(false)
             onUpClick()
           }}
           color="gray"
@@ -293,7 +271,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faArrowDown}
           onClick={() => {
-            // setOpen(false)
             onDownClick()
           }}
           color="gray"
@@ -304,7 +281,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faCalendarAlt}
           onClick={() => {
-            // setOpen(false)
             modalsFunc[typeOfItem].events(item._id)
           }}
           color="blue"
@@ -315,7 +291,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faPencilAlt}
           onClick={() => {
-            // setOpen(false)
             modalsFunc[typeOfItem].edit(item._id)
           }}
           color="orange"
@@ -342,7 +317,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faCopy}
           onClick={() => {
-            // setOpen(false)
             modalsFunc[typeOfItem].add(item._id)
           }}
           color="blue"
@@ -354,7 +328,6 @@ const CardButtons = ({
           active={!item.showOnSite}
           icon={item.showOnSite ? faEye : faEyeSlash}
           onClick={() => {
-            // setOpen(false)
             showOnSiteOnClick()
           }}
           color="purple"
@@ -373,11 +346,7 @@ const CardButtons = ({
               <ItemComponent
                 icon={icon}
                 onClick={() => {
-                  // setOpen(false)
                   modalsFunc[typeOfItem].statusEdit(item._id)
-                  // if (item.status === 'canceled')
-                  //   modalsFunc[typeOfItem].uncancel(item._id)
-                  // else modalsFunc[typeOfItem].cancel(item._id)
                 }}
                 color={
                   color.indexOf('-') > 0
@@ -393,7 +362,6 @@ const CardButtons = ({
         <ItemComponent
           icon={faTrashAlt}
           onClick={() => {
-            // setOpen(false)
             modalsFunc[typeOfItem].delete(item._id)
           }}
           color="red"
@@ -403,22 +371,10 @@ const CardButtons = ({
     </>
   )
 
-  // const handleMouseOver = () => {
-  //   // if (turnOnHandleMouseOver) {
-  //   // setMenuOpen(false)
-  //   setOpen(true)
-  //   // }
-  // }
-
   return isCompact ? (
     <DropDown
       trigger={
-        <div
-          className={cn(
-            'flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general'
-            // className
-          )}
-        >
+        <div className="flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general">
           <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
         </div>
       }
@@ -429,41 +385,6 @@ const CardButtons = ({
       <div className="overflow-hidden rounded-lg">{items}</div>
     </DropDown>
   ) : (
-    // </div>
-    //
-    //
-    // <div
-    //   className={cn('relative cursor-pointer group', className)}
-    //   onClick={(e) => {
-    //     e.stopPropagation()
-    //     if (!isTriggered) setOpen(!open)
-    //     // setTurnOnHandleMouseOver(false)
-    //     // setIsUserMenuOpened(!isUserMenuOpened)
-    //     // const timer = setTimeout(() => {
-    //     //   setTurnOnHandleMouseOver(true)
-    //     //   clearTimeout(timer)
-    //     // }, 300)
-    //   }}
-    // >
-    //   <motion.div
-    //     className={cn(
-    //       'absolute z-50 overflow-hidden w-min top-[2.3rem]',
-    //       direction === 'left' ? 'right-0' : 'left-0'
-    //     )}
-    //     initial={{ height: 0 }}
-    //     animate={{ height: open ? 'auto' : 0 }}
-    //     transition={{ type: 'tween' }}
-    //     onMouseOver={handleMouseOver}
-    //     onMouseOut={handleMouseOut}
-    //   >
-    //     <div ref={ref} className="h-full bg-red-200 border border-gray-200">
-    //       {items}
-    //     </div>
-    //   </motion.div>
-    //   <div className="flex items-center justify-center w-9 h-9 text-general group-hover:text-toxic group-hover:scale-110">
-    //     <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
-    //   </div>
-    // </div>
     <div className={cn('flex', className)}>{items}</div>
   )
 }
