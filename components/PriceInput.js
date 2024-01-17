@@ -23,7 +23,7 @@ const PriceInput = ({
     let newValue
     if (rub) newValue = Number((value > 0 ? value : 0) * 100) + cops
     else newValue = rubles * 100 + Number(value > 0 ? value : 0)
-    onChange(String(parseInt(newValue)))
+    onChange(parseInt(newValue))
   }
 
   return (
