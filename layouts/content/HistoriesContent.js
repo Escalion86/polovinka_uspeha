@@ -8,7 +8,6 @@ import getHoursBetween from '@helpers/getHoursBetween'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventExpiredFunc from '@helpers/isEventExpired'
-// import isEventClosedFunc from '@helpers/isEventClosed'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import {
   Timeline,
@@ -20,18 +19,18 @@ import {
 } from '@mui/lab'
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
 import eventsAtom from '@state/atoms/eventsAtom'
-import { historiesSelector } from '@state/atoms/historiesAtom'
 import React, { Suspense, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { historiesOfEventUsersSelector } from '@state/atoms/historiesOfEventUsersAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
+import UserNameById from '@components/UserNameById'
 
 const dotColors = {
   add: 'success',
   delete: 'error',
 }
 
-const EventUsersInTimeLine = ({ createdAt, eventUsers }) => {
+const EventUsersInTimeLine = ({ createdAt, eventUsers, creatorId }) => {
   if (!eventUsers || eventUsers.length === 0) return null
   const eventUserStatus = EVENT_USER_STATUSES.find(
     (eventUserStatus) => eventUserStatus.value === eventUsers[0].status
@@ -59,6 +58,15 @@ const EventUsersInTimeLine = ({ createdAt, eventUsers }) => {
           <span className="whitespace-nowrap">{createdAtDate}</span>
           <span className="font-bold">{createdAtTime}</span>
         </div>
+        {creatorId !== eventUsers[0].userId && (
+          <div className="flex justify-end flex-1 text-sm text-danger">
+            <UserNameById
+              userId={creatorId}
+              noWrap
+              className="text-right whitespace-nowrap"
+            />
+          </div>
+        )}
         {/* <span>{formatDateTime(createdAt, false, false, false, false)}</span> */}
       </div>
       <SelectUserList
@@ -106,6 +114,8 @@ const HistoriesOfEvent = ({ histories }) => {
       }}
     >
       {histories.map((history, index) => {
+        const creatorId = history.userId
+
         const participants = history.data.filter(
           (eventUser) => eventUser.status === 'participant'
         )
@@ -141,18 +151,22 @@ const HistoriesOfEvent = ({ histories }) => {
               <EventUsersInTimeLine
                 createdAt={history.createdAt}
                 eventUsers={assistants}
+                creatorId={creatorId}
               />
               <EventUsersInTimeLine
                 createdAt={history.createdAt}
                 eventUsers={participants}
+                creatorId={creatorId}
               />
               <EventUsersInTimeLine
                 createdAt={history.createdAt}
                 eventUsers={reserved}
+                creatorId={creatorId}
               />
               <EventUsersInTimeLine
                 createdAt={history.createdAt}
                 eventUsers={baned}
+                creatorId={creatorId}
               />
             </TimelineContent>
             {/* <TimelineContent
