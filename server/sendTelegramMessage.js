@@ -58,6 +58,20 @@ export const sendMessageToTelegramId = async ({
   }
 }
 
+const sendMessageWithRepeats = async (body, repeats = 5) => {
+  let result = []
+  let error = false
+  let i = 0
+  let res
+  do {
+    i = i + 1
+    res = await sendMessageToTelegramId(body)
+  } while (!res && i < repeats)
+  if (i >= repeats) error = true
+  result.push(res)
+  return { result, error }
+}
+
 const sendTelegramMessage = async ({
   req,
   telegramIds,
@@ -65,40 +79,42 @@ const sendTelegramMessage = async ({
   images,
   inline_keyboard,
 }) => {
+  await dbConnect()
   if (
     !telegramIds ||
     !['object', 'string', 'number'].includes(typeof telegramIds)
-  )
+  ) {
+    await Test.create({ data: { telegramIds }, error: 'Wrong telegramIds' })
     return undefined
+  }
 
+  let result = []
+  let error = false
   if (['string', 'number'].includes(typeof telegramIds)) {
-    return await sendMessageToTelegramId({
+    const res = await sendMessageWithRepeats({
       req,
       telegramId: telegramIds,
       text,
       images,
       inline_keyboard,
     })
-  }
-
-  let result = []
-  let error = false
-  for (const telegramId of telegramIds) {
-    let i = 0
-    let res
-    do {
-      i = i + 1
-      res = await sendMessageToTelegramId({
+    result.push(res.result)
+    error = res.error
+  } else {
+    for (const telegramId of telegramIds) {
+      const res = await sendMessageWithRepeats({
         req,
         telegramId,
         text,
         images,
         inline_keyboard,
       })
-    } while (!res && i < 5)
-    if (i >= 5) error = true
-    result.push(res)
+      result.push(res.result)
+      if (!error) error = res.error
+    }
   }
+
+  await Test.create({ data: result, error })
 
   // const result = await Promise.all(
   //   telegramIds.map(
@@ -125,8 +141,6 @@ const sendTelegramMessage = async ({
   //       setTimeout(() => resolve(`${url} is DONE`), 1000);
   //   })
   // };
-
-  await Test.create({ data: result, error })
 }
 
 export default sendTelegramMessage
