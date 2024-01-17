@@ -1,3 +1,4 @@
+import CardButtons from '@components/CardButtons'
 import CheckBox from '@components/CheckBox'
 import EditableTextarea from '@components/EditableTextarea'
 import ErrorsList from '@components/ErrorsList'
@@ -20,6 +21,7 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setTopLeftComponent,
   }) => {
     const additionalBlocks = useRecoilValue(additionalBlocksAtom)
 
@@ -77,6 +79,19 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
     }, [title, description, showOnSite, image, menuName])
+
+    useEffect(() => {
+      if (setTopLeftComponent)
+        setTopLeftComponent(() => (
+          <CardButtons
+            item={additionalBlock}
+            typeOfItem="additionalBlock"
+            forForm
+            showEditButton={false}
+            showDeleteButton={false}
+          />
+        ))
+    }, [setTopLeftComponent])
 
     return (
       <FormWrapper>

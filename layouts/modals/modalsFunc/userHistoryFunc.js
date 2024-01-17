@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import UserKeyValueItem from './historyKeyValuesItems/UserKeyValueItem'
 import { userKeys } from './historyKeyValuesItems/keys'
+import UserName from '@components/UserName'
 
 const userHistoryFunc = (userId) => {
   const UserHistoryModal = ({
@@ -41,7 +42,9 @@ const userHistoryFunc = (userId) => {
 
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">
-        {/* <div className="text-lg font-bold">{event.title}</div> */}
+        <div className="text-lg font-bold text-general">
+          <UserName user={user} />
+        </div>
         {/* <DateTimeEvent
           wrapperClassName="text-base laptop:text-lg font-bold leading-4 laptop:leading-5 justify-center laptop:justify-start"
           dateClassName="text-general"

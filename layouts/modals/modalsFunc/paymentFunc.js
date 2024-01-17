@@ -1,3 +1,4 @@
+import CardButtons from '@components/CardButtons'
 import DateTimePicker from '@components/DateTimePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -27,6 +28,7 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     setDisableConfirm,
     setDisableDecline,
     setOnlyCloseButtonShow,
+    setTopLeftComponent,
   }) => {
     const payment = useRecoilValue(paymentSelector(paymentId))
     const setPayment = useRecoilValue(itemsFuncAtom).payment.set
@@ -201,6 +203,19 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
       payType,
       comment,
     ])
+
+    useEffect(() => {
+      if (setTopLeftComponent)
+        setTopLeftComponent(() => (
+          <CardButtons
+            item={payment}
+            typeOfItem="payment"
+            forForm
+            showEditButton={false}
+            showDeleteButton={false}
+          />
+        ))
+    }, [setTopLeftComponent])
 
     return (
       <FormWrapper>

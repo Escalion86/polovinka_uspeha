@@ -1,16 +1,18 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import EventNameById from '@components/EventNameById'
+import IconWithTooltip from '@components/IconWithTooltip'
 import ProductNameById from '@components/ProductNameById'
 import ServiceTitleById from '@components/ServiceTitleById'
 import TextLinesLimiter from '@components/TextLinesLimiter'
-import Tooltip from '@components/Tooltip'
 import UserNameById from '@components/UserNameById'
 import EventPayDirectionIconText from '@components/ValueIconText/EventPayDirectionIconText'
 import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayDirectionIconText'
 import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
 import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
 import {
+  faCalendarMinus,
+  faHeartBroken,
   faQuestion,
   faTimesCircle,
   faUserTimes,
@@ -36,14 +38,6 @@ import serviceSelector from '@state/selectors/serviceSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
 import { useRecoilValue } from 'recoil'
-
-const Icon = ({ className, icon, tooltip }) => (
-  <Tooltip title={tooltip}>
-    <div className={cn('flex items-center justify-center w-5', className)}>
-      <FontAwesomeIcon icon={icon} className="w-5" />
-    </div>
-  </Tooltip>
-)
 
 // const Status = ({ statusProps }) => {
 //   if (!statusProps) return null
@@ -87,7 +81,7 @@ const PayTypeIcon = ({ payment }) => {
     (payTypeItem) => payTypeItem.value === payment.payType
   )
   return (
-    <Icon
+    <IconWithTooltip
       icon={payType?.icon ?? faQuestion}
       className={payType ? 'text-' + payType.color : 'text-disabled'}
       tooltip={PAY_TYPES_OBJECT[payType.value]}
@@ -175,8 +169,29 @@ const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
         <div className="flex gap-x-3">
           {children}
           {!sector && (
-            <Icon
+            <IconWithTooltip
               icon={faTimesCircle}
+              className="text-danger"
+              tooltip="Транзакция не привязана к сектору"
+            />
+          )}
+          {sector === 'event' && !payment.eventId && (
+            <IconWithTooltip
+              icon={faCalendarMinus}
+              className="text-danger"
+              tooltip="Транзакция не привязана к мероприятию"
+            />
+          )}
+          {sector === 'service' && !payment.serviceId && (
+            <IconWithTooltip
+              icon={faHeartBroken}
+              className="text-danger"
+              tooltip="Транзакция не привязана к услуге"
+            />
+          )}
+          {sector === 'product' && !payment.productId && (
+            <IconWithTooltip
+              icon={faShopLock}
               className="text-danger"
               tooltip="Транзакция не привязана к продукту"
             />
@@ -219,7 +234,7 @@ const PaymentEventUserLeftComponent = ({ payment, event }) => {
   )
   if (eventUser) return null
   return (
-    <Icon
+    <IconWithTooltip
       icon={faUserTimes}
       className="text-danger"
       tooltip="Участник не пришёл"

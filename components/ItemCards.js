@@ -1,4 +1,11 @@
-import { faCheck, faGenderless } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCalendarMinus,
+  faCheck,
+  faGenderless,
+  faHeartBroken,
+  faShopLock,
+  faTimesCircle,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import {
@@ -27,6 +34,7 @@ import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsT
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import UserRelationshipIcon from './UserRelationshipIcon'
 import serviceSelector from '@state/selectors/serviceSelector'
+import IconWithTooltip from './IconWithTooltip'
 
 const ItemContainer = ({
   onClick,
@@ -458,6 +466,29 @@ export const PaymentItem = ({
             )}
           {item.comment && (
             <div className="text-sm leading-4">{item.comment}</div>
+          )}
+        </div>
+        <div className="flex justify-end flex-1 gap-x-3">
+          {item.sector === 'event' && !item.eventId && (
+            <IconWithTooltip
+              icon={faCalendarMinus}
+              className="text-danger"
+              tooltip="Транзакция не привязана к мероприятию"
+            />
+          )}
+          {item.sector === 'service' && !item.serviceId && (
+            <IconWithTooltip
+              icon={faHeartBroken}
+              className="text-danger"
+              tooltip="Транзакция не привязана к услуге"
+            />
+          )}
+          {item.sector === 'product' && !item.productId && (
+            <IconWithTooltip
+              icon={faShopLock}
+              className="text-danger"
+              tooltip="Транзакция не привязана к продукту"
+            />
           )}
         </div>
         <div className="flex items-center text-xs gap-x-2">

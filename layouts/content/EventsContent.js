@@ -45,7 +45,6 @@ const EventsContent = () => {
   )
   const siteSettings = useRecoilValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
-  // const windowWidthNum = useWindowDimensionsTailwindNum()
 
   const [isSearching, setIsSearching] = useState(false)
   const [sort, setSort] = useState({ dateStart: 'asc' })
@@ -69,11 +68,6 @@ const EventsContent = () => {
   const sortFunc = sortFunctions[sortKey]
     ? sortFunctions[sortKey][sortValue]
     : undefined
-
-  // const directionsIds = useMemo(
-  //   () => [...directions].map((direction) => direction._id),
-  //   [directions]
-  // )
 
   const defaultFilterValue = {
     directions: '',
@@ -177,25 +171,6 @@ const EventsContent = () => {
             setFilter((state) => ({ ...state, participant: value }))
           }
         />
-
-        {/* <ButtonGroup
-          className=""
-          // variant="contained"
-          aria-label="outlined primary button group"
-        >
-          <Button
-            onClick={() => setShowFinished(false)}
-            variant={!showFinished ? 'contained' : 'outlined'}
-          >
-            Предстоящие
-          </Button>
-          <Button
-            onClick={() => setShowFinished(true)}
-            variant={showFinished ? 'contained' : 'outlined'}
-          >
-            Завершенные
-          </Button>
-        </ButtonGroup> */}
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounEvents(visibleEvents.length)}

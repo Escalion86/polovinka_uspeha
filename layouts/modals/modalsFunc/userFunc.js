@@ -1,3 +1,4 @@
+import CardButtons from '@components/CardButtons'
 import RelationshipSelector from '@components/ComboBox/RelationshipSelector'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
@@ -28,6 +29,7 @@ const userFunc = (userId, clone = false) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setTopLeftComponent,
   }) => {
     const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
 
@@ -259,6 +261,19 @@ const userFunc = (userId, clone = false) => {
       role,
       haveKids,
     ])
+
+    useEffect(() => {
+      if (setTopLeftComponent)
+        setTopLeftComponent(() => (
+          <CardButtons
+            item={user}
+            typeOfItem="user"
+            forForm
+            noEditButton
+            onDelete={closeModal}
+          />
+        ))
+    }, [setTopLeftComponent])
 
     return (
       <FormWrapper>

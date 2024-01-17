@@ -1,3 +1,4 @@
+import CardButtons from '@components/CardButtons'
 import CheckBox from '@components/CheckBox'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -18,6 +19,7 @@ const reviewFunc = (reviewId, clone = false) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setDisableDecline,
+    setTopLeftComponent,
   }) => {
     const review = useRecoilValue(reviewSelector(reviewId))
     const setReview = useRecoilValue(itemsFuncAtom).review.set
@@ -93,6 +95,19 @@ const reviewFunc = (reviewId, clone = false) => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
     }, [author, reviewText, authorAge, showOnSite])
+
+    useEffect(() => {
+      if (setTopLeftComponent)
+        setTopLeftComponent(() => (
+          <CardButtons
+            item={review}
+            typeOfItem="review"
+            forForm
+            showEditButton={false}
+            showDeleteButton={false}
+          />
+        ))
+    }, [setTopLeftComponent])
 
     return (
       // <div className="flex flex-col gap-2">
