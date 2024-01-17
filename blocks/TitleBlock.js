@@ -1,39 +1,20 @@
 import PulseButton from '@components/PulseButton'
-import { H1, H3, H4 } from '@components/tags'
-import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
+import { H1, H3 } from '@components/tags'
 import upperCaseFirst from '@helpers/upperCaseFirst'
-import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
-import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import Svg30Plus from 'svg/Svg30Plus'
+import CountDown from './components/CountDown'
 
 const TitleBlock = () => {
   const userIsLogged = !!useRecoilValue(loggedUserAtom)
   const { townRu } = useRecoilValue(locationPropsSelector)
   const modalFunc = useRecoilValue(modalsFuncAtom)
-  const siteSettings = useRecoilValue(siteSettingsAtom)
   const router = useRouter()
-  const device = useRecoilValue(windowDimensionsTailwindSelector)
-
-  const [showCoundownTimer, setShowCoundownTimer] = useState(
-    siteSettings.dateStartProject &&
-      getDiffBetweenDates(siteSettings.dateStartProject) < 0
-  )
-  const sizeKoef =
-    device === 'phoneV'
-      ? 0.65
-      : device === 'phoneH'
-      ? 0.8
-      : device === 'tablet'
-      ? 1
-      : 1.1
 
   return (
     <div
@@ -54,38 +35,20 @@ const TitleBlock = () => {
             alt="polovinka_uspeha"
           />
         </div>
-        {showCoundownTimer && (
-          <div className="flex flex-col items-center px-6 py-2 bg-white tablet:px-10 gap-y-1 bg-opacity-20 rounded-2xl">
-            <div
-              className="text-xl uppercase tablet:text-2xl"
-              style={{ textShadow: '1px 1px 2px black' }}
-            >
-              Старт проекта через
+
+        <CountDown
+          Wrapper={({ children }) => (
+            <div className="flex flex-col items-center px-6 py-2 bg-white tablet:px-10 gap-y-1 bg-opacity-20 rounded-2xl">
+              <div
+                className="text-xl uppercase tablet:text-2xl"
+                style={{ textShadow: '1px 1px 2px black' }}
+              >
+                Старт проекта через
+              </div>
+              {children}
             </div>
-            <FlipClockCountdown
-              onComplete={() => setShowCoundownTimer(false)}
-              to={siteSettings.dateStartProject}
-              labels={['Дни', 'Часы', 'Минуты', 'Секунды']}
-              labelStyle={{
-                fontSize: 15 * sizeKoef,
-                fontWeight: 500 * sizeKoef,
-                textTransform: 'uppercase',
-                color: 'white',
-                textShadow: '1px 1px 2px black',
-              }}
-              digitBlockStyle={{
-                width: 40 * sizeKoef,
-                height: 60 * sizeKoef,
-                fontSize: 30 * sizeKoef,
-                color: 'black',
-                background: 'white',
-              }}
-              dividerStyle={{ color: 'rgba(0,0,0,0.1)', height: 1 }}
-              separatorStyle={{ color: '#7a5151', size: '5px' }}
-              duration={0.5}
-            />
-          </div>
-        )}
+          )}
+        />
         <div className="flex flex-col justify-between gap-y-2">
           <H1 style={{ textShadow: '1px 1px 2px black' }}>
             Центр серьёзных знакомств

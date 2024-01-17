@@ -26,7 +26,7 @@ const BlockContainer = ({
         style={style}
       >
         <BlockTitle title={title} />
-        <div className={cn(childrenWrapperClassName)}>{children}</div>
+        <div className={childrenWrapperClassName}>{children}</div>
       </div>
     )}
   </div>
