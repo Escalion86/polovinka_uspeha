@@ -8,6 +8,7 @@ import cn from 'classnames'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import CountDown from './components/CountDown'
 
 const Button = ({ title, className, href, onClick }) => {
   if (onClick)
@@ -52,7 +53,7 @@ const EventsBlock = ({
   if (hideBlockOnZeroEvents && filteredEvents?.length === 0) return null
 
   return (
-    <BlockContainer id="events" title={title} altBg>
+    <BlockContainer id="events" title={title} altBg className="items-center">
       {filteredEvents.length > 0 ? (
         <div className="flex flex-col items-center w-full gap-4">
           {[...filteredEvents]
@@ -76,9 +77,11 @@ const EventsBlock = ({
           )}
         </div>
       ) : (
-        <P className="flex justify-center w-full">
-          {'Мероприятий не запланировано'}
-        </P>
+        <CountDown>
+          <P className="flex justify-center w-full">
+            {'Мероприятий не запланировано'}
+          </P>
+        </CountDown>
       )}
     </BlockContainer>
   )
