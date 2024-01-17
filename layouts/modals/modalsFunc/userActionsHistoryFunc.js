@@ -22,6 +22,8 @@ import UserNameById from '@components/UserNameById'
 import UserName from '@components/UserName'
 import ComboBox from '@components/ComboBox'
 import { SelectEventList, SelectPaymentList } from '@components/SelectItemList'
+import DirectionTitleById from '@components/DirectionTitleById'
+import AdditionalBlockTitleById from '@components/AdditionalBlockTitleById'
 
 const schemasNames = {
   events: 'Мероприятие',
@@ -136,6 +138,9 @@ const HistoryActionsItem = ({
     true,
     false
   )
+
+  // console.log('schema :>> ', schema)
+
   return (
     <div
       className="flex flex-col px-1 border border-gray-500 rounded-lg cursor-pointer hover:bg-gray-100"
@@ -181,11 +186,30 @@ const HistoryActionsItem = ({
           </div>
         </div>
         <div>
+          {schema === 'directions' && (
+            <div className="h-5 -mt-0.5 leading-[14px]">
+              <DirectionTitleById directionId={data[0]._id} />
+            </div>
+          )}
+          {schema === 'additionalblocks' && (
+            <div className="h-5 -mt-0.5 leading-[14px]">
+              <AdditionalBlockTitleById additionalBlockId={data[0]._id} />
+            </div>
+          )}
           {schema === 'events' && (
             <SelectEventList eventsId={[data[0]._id]} readOnly />
           )}
           {schema === 'payments' && (
             <SelectPaymentList paymentsId={[data[0]._id]} readOnly />
+          )}
+          {schema === 'users' && (
+            <div className="h-5 -mt-0.5 leading-[14px]">
+              {userId === data[0]._id ? (
+                'Себя'
+              ) : (
+                <UserNameById userId={data[0]._id} trunc={1} />
+              )}
+            </div>
           )}
           {schema === 'eventsusers' && (
             <div className="h-5 -mt-0.5 leading-[14px]">
