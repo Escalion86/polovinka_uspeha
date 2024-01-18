@@ -22,14 +22,10 @@ export default async function handler(req, res) {
         eventSubtypeNum,
         comment,
       } = body.data
-      // console.log('body.data', body.data)
-
-      // if (_id) {
-      //   return await CRUD(EventsUsers, req, res)
-      // }
 
       if (!eventId)
         return res?.status(400).json({ success: false, data: 'No eventId' })
+
       if (eventUsersStatuses) {
         if (typeof eventUsersStatuses !== 'object')
           return res
@@ -83,8 +79,6 @@ export default async function handler(req, res) {
           })
         }
 
-        // console.log('req', req)
-        // console.log('req.headers', req.headers.origin)
         if (deletedEventUsers.length > 0) {
           await Histories.create({
             schema: EventsUsers.collection.collectionName,
@@ -93,10 +87,6 @@ export default async function handler(req, res) {
             userId: body.userId,
           })
         }
-
-        // await fetch(
-        //   'https://api.telegram.org/bot5754011496:AAHPhp0PilD8Il1s9y2wt4GQRiOjvTnHO0w/sendMessage?chat_id=261102161&text=приветб как ДЕла?'
-        // )
 
         const data = []
         for (let i = 0; i < addedEventUsers.length; i++) {
@@ -138,6 +128,7 @@ export default async function handler(req, res) {
           ?.status(201)
           .json({ success: true, data: [...oldEventUsers, ...data] })
       }
+
       if (userId && eventId) {
         return await userSignIn({
           req,
@@ -185,7 +176,7 @@ export default async function handler(req, res) {
       await eventUsersTelegramNotification({
         req,
         eventId,
-        deletedEventUsers: [eventUser.toJSON()],
+        deletedEventUsers: [eventUser],
         itIsSelfRecord: true,
       })
 
