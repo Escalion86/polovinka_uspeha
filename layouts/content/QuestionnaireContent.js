@@ -80,9 +80,9 @@ const QuestionnaireContent = (props) => {
   const [relationship, setRelationship] = useState(
     loggedUser?.relationship ?? DEFAULT_USER.relationship
   )
-  const [personalStatus, setPersonalStatus] = useState(
-    loggedUser?.personalStatus ?? DEFAULT_USER.personalStatus
-  )
+  // const [personalStatus, setPersonalStatus] = useState(
+  //   loggedUser?.personalStatus ?? DEFAULT_USER.personalStatus
+  // )
 
   const [email, setEmail] = useState(loggedUser?.email ?? DEFAULT_USER.email)
   const [phone, setPhone] = useState(loggedUser?.phone ?? DEFAULT_USER.phone)
@@ -168,7 +168,7 @@ const QuestionnaireContent = (props) => {
     // user?.orientation !== orientation ||
     loggedUser?.gender !== gender ||
     loggedUser?.relationship !== relationship ||
-    loggedUser?.personalStatus !== personalStatus ||
+    // loggedUser?.personalStatus !== personalStatus ||
     loggedUser?.email !== email ||
     // loggedUser?.phone !== phone ||
     loggedUser?.whatsapp !== whatsapp ||
@@ -215,7 +215,7 @@ const QuestionnaireContent = (props) => {
           // orientation,
           gender,
           relationship,
-          personalStatus,
+          // personalStatus,
           email,
           // phone,
           whatsapp,
@@ -490,12 +490,12 @@ const QuestionnaireContent = (props) => {
             error={errors.relationship}
             // fullWidth={fullWidth}
           />
-          <Input
+          {/* <Input
             label="Статус (будет виден всем на вашей карточке)"
             type="text"
             value={personalStatus}
             onChange={setPersonalStatus}
-          />
+          /> */}
           <Note>
             <span>
               Поля ниже можно скрыть от посторонних глаз, для этого при клике на

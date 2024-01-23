@@ -405,6 +405,16 @@ const SettingsRolesContent = (props) => {
               item="siteSettings"
               subItem="roles"
             />
+            <RoleItem
+              label="Настройки даты старта проекта"
+              item="siteSettings"
+              subItem="dateStartProject"
+            />
+            <RoleItem
+              label="Информации для вступления в клуб"
+              item="siteSettings"
+              subItem="headerInfo"
+            />
             <SubTitle name="Уведомления" />
             <RoleItem
               label="Новые мероприятия (по тэгам)"
