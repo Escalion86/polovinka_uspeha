@@ -29,7 +29,13 @@ const EventKeyValueItem = ({ objKey, value }) =>
   ) : objKey === 'status' ? (
     EVENT_STATUSES.find((item) => item.value === value)?.name
   ) : objKey === 'images' ? (
-    <InputImages images={value} readOnly />
+    <InputImages
+      images={value}
+      readOnly
+      noMargin
+      paddingY={false}
+      paddingX={false}
+    />
   ) : objKey === 'address' ? (
     formatAddress(value, '[не указан]')
   ) : objKey === 'usersRelationshipAccess' ? (
