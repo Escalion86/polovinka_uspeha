@@ -393,34 +393,6 @@ export const DAYS_OF_WEEK_FULL = [
   'суббота',
 ]
 
-export const RELATIONSHIP_VALUES = [
-  {
-    name: 'Присматриваюсь',
-    value: 'looking',
-    imgSrc: '/img/relationships/havePartner.png',
-  },
-  {
-    name: 'Не готов к серьезным отношениям',
-    value: 'recovering',
-    imgSrc: '/img/relationships/havePartner.png',
-  },
-  {
-    name: 'В активном поиске',
-    value: 'active',
-    imgSrc: '/img/relationships/havePartner.png',
-  },
-  {
-    name: 'Все сложно',
-    value: 'complicated',
-    imgSrc: '/img/relationships/havePartner.png',
-  },
-  {
-    name: 'Есть пара',
-    value: 'havePartner',
-    imgSrc: '/img/relationships/havePartner.png',
-  },
-]
-
 export const DEFAULT_USERS_SECURITY = Object.freeze({
   fullSecondName: true,
   fullThirdName: true,
