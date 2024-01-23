@@ -114,7 +114,7 @@ const InputWrapper = forwardRef(
                   : '',
                 centerLabel ? 'left-1/2 -translate-x-1/2' : 'left-2',
                 floatingLabel
-                  ? `-top-[12px] peer-focus:-top-[12px] text-general peer-focus:text-sm peer-placeholder-shown:text-disabled peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
+                  ? `-top-[12px] peer-focus:-top-[12px] peer-focus:text-sm peer-placeholder-shown:text-disabled peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
                   : '-top-[12px]',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
