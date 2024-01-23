@@ -38,7 +38,7 @@ const HistoryItem = ({
         'lastActivityAt',
         'prevActivityAt',
       ].includes(key)
-    )
+    ) {
       arrayOfChanges.push(
         (() => {
           return (
@@ -49,7 +49,7 @@ const HistoryItem = ({
                 'border-gray-300 border-t-1'
               )}
             >
-              <div className="flex-1 font-bold">{keys[key]}</div>
+              <div className="flex-1 font-bold">{keys[key] ?? key}</div>
               <motion.div
                 className="overflow-hidden"
                 initial={{ height: 0 }}
@@ -72,6 +72,7 @@ const HistoryItem = ({
           )
         })()
       )
+    }
   }
 
   return (

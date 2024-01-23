@@ -14,6 +14,15 @@ import Roles from '@models/Roles'
 import mongoose from 'mongoose'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 
+function isJson(str) {
+  try {
+    JSON.parse(str)
+  } catch (e) {
+    return false
+  }
+  return true
+}
+
 // const test_callback = {
 //   update_id: 173172137,
 //   callback_query: {
@@ -558,9 +567,16 @@ export default async function handler(Schema, req, res, params = null) {
           }
           return res?.status(200).json({ success: true, data })
         } else if (Object.keys(query).length > 0) {
-          if (query['data._id'])
-            query['data._id'] = mongoose.Types.ObjectId(query['data._id'])
-          data = await Schema.find(query).select({ password: 0 })
+          const preparedQuery = { ...query }
+          for (const [key, value] of Object.entries(preparedQuery)) {
+            if (isJson(value)) preparedQuery[key] = JSON.parse(value)
+          }
+          console.log('preparedQuery :>> ', preparedQuery)
+          if (preparedQuery['data._id'])
+            preparedQuery['data._id'] = mongoose.Types.ObjectId(
+              preparedQuery['data._id']
+            )
+          data = await Schema.find(preparedQuery).select({ password: 0 })
           if (!data) {
             return res?.status(400).json({ success: false })
           }

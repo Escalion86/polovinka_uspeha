@@ -17,7 +17,7 @@ import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
 import UserKeyValueItem from './historyKeyValuesItems/UserKeyValueItem'
 import PaymentKeyValueItem from './historyKeyValuesItems/PaymentKeyValueItem'
 import { eventKeys, paymentKeys, userKeys } from './historyKeyValuesItems/keys'
-import { EventItem, EventItemFromId } from '@components/ItemCards'
+import { EventItemFromId } from '@components/ItemCards'
 import UserNameById from '@components/UserNameById'
 import UserName from '@components/UserName'
 import ComboBox from '@components/ComboBox'
@@ -54,69 +54,41 @@ const DifferenceComponent = ({ objKey, value, KeyValueItem }) => (
   </div>
 )
 
+const keysComponents = {
+  events: { KeyValueComponent: EventKeyValueItem, keys: eventKeys },
+  users: { KeyValueComponent: UserKeyValueItem, keys: userKeys },
+  payments: { KeyValueComponent: PaymentKeyValueItem, keys: paymentKeys },
+  // eventsusers: {Component: UserKeyValueItem, keys: userKeys},
+}
+
 const HistoryItemContent = ({ data, schema, userId, difference }) => {
-  // return <div>{data.map((item) => item._id)}</div>
   const arrayOfItems = []
-  if (schema === 'events')
+  if (['events', 'users', 'payments'].includes(schema)) {
     for (const [key, value] of Object.entries(data[0]))
-      if (!['_id', 'createdAt', 'updatedAt', '__v'].includes(key))
+      if (!['_id', 'createdAt', 'updatedAt', '__v'].includes(key)) {
+        const { keys, KeyValueComponent } = keysComponents[schema]
         arrayOfItems.push(
-          <div className="flex flex-col">
-            <div className="font-bold">{eventKeys[key]}</div>
+          <div key={data[0]._id + schema + key} className="flex flex-col">
+            <div className="font-bold">{keys[key]}</div>
             {difference ? (
               <DifferenceComponent
                 objKey={key}
                 value={value}
-                KeyValueItem={EventKeyValueItem}
+                KeyValueItem={KeyValueComponent}
               />
             ) : (
-              <EventKeyValueItem objKey={key} value={value} />
+              <KeyValueComponent objKey={key} value={value} />
             )}
           </div>
         )
-
-  if (schema === 'users')
-    for (const [key, value] of Object.entries(data[0]))
-      if (!['_id', 'createdAt', 'updatedAt', '__v'].includes(key))
-        arrayOfItems.push(
-          <div className="flex flex-col">
-            <div className="font-bold">{userKeys[key]}</div>
-            {difference ? (
-              <DifferenceComponent
-                objKey={key}
-                value={value}
-                KeyValueItem={UserKeyValueItem}
-              />
-            ) : (
-              <UserKeyValueItem objKey={key} value={value} />
-            )}
-          </div>
-        )
-
-  if (schema === 'payments')
-    for (const [key, value] of Object.entries(data[0]))
-      if (!['_id', 'createdAt', 'updatedAt', '__v'].includes(key))
-        arrayOfItems.push(
-          <div className="flex flex-col">
-            <div className="font-bold">{paymentKeys[key]}</div>
-            {difference ? (
-              <DifferenceComponent
-                objKey={key}
-                value={value}
-                KeyValueItem={PaymentKeyValueItem}
-              />
-            ) : (
-              <PaymentKeyValueItem objKey={key} value={value} />
-            )}
-          </div>
-        )
-
-  if (schema === 'eventsusers') {
+      }
+  } else if (schema === 'eventsusers') {
     arrayOfItems.push(
-      // <div className="flex flex-col gap-y-0.5">
-
-      <EventItemFromId eventId={data[0].eventId} bordered />
-      // </div>
+      <EventItemFromId
+        key={data[0]._id + schema}
+        eventId={data[0].eventId}
+        bordered
+      />
     )
   }
 
@@ -276,6 +248,7 @@ const userActionsHistoryFunc = (userId) => {
   }) => {
     const user = useRecoilValue(userSelector(userId))
     const [userActionsHistory, setUserActionsHistory] = useState()
+    const [periodHours, setPeriodHours] = useState(24)
 
     const [filter, setFilter] = useState(null)
 
@@ -288,13 +261,16 @@ const userActionsHistoryFunc = (userId) => {
 
     useEffect(() => {
       const fetchData = async () => {
+        var cutoff = new Date()
+        cutoff.setHours(cutoff.getHours() - periodHours)
         const result = await getData(`/api/histories`, {
           userId,
+          createdAt: { $gte: cutoff },
         })
         setUserActionsHistory(result)
       }
       fetchData().catch(console.error)
-    }, [])
+    }, [periodHours])
 
     const filteredUserActionsHistory = filter
       ? userActionsHistory.filter(({ schema }) => schema === filter)
@@ -305,25 +281,47 @@ const userActionsHistoryFunc = (userId) => {
         <div className="text-lg font-bold text-general">
           <UserName user={user} />
         </div>
-        <ComboBox
-          label="Блоки"
-          value={filter}
-          onChange={setFilter}
-          items={[
-            // { name: 'Все', value: null },
-            ...Object.entries(schemasNames).map(([value, name]) => ({
-              name,
-              value,
-            })),
-          ]}
-          activePlaceholder
-          placeholder="Все"
-          // activePlaceholder={activePlaceholder}
-          smallMargin
-          // required={required}
-          // error={error}
-          // fullWidth={fullWidth}
-        />
+        <div className="flex flex-wrap justify-center gap-x-2">
+          <ComboBox
+            label="Период"
+            value={String(periodHours)}
+            onChange={(value) => setPeriodHours(Number(value))}
+            items={[
+              { name: '1 час', value: 1 },
+              { name: '2 часа', value: 2 },
+              { name: '3 часа', value: 3 },
+              { name: '6 часов', value: 6 },
+              { name: '12 часов', value: 12 },
+              { name: 'Сутки', value: 24 },
+              { name: '2 суток', value: 48 },
+              { name: '3 суток', value: 72 },
+              { name: 'Неделю', value: 168 },
+              { name: '2 недели', value: 336 },
+              { name: 'Месяц', value: 720 },
+              { name: 'За все время', value: 999999 },
+            ]}
+            smallMargin
+          />
+          <ComboBox
+            label="Блоки"
+            value={filter}
+            onChange={setFilter}
+            items={[
+              // { name: 'Все', value: null },
+              ...Object.entries(schemasNames).map(([value, name]) => ({
+                name,
+                value,
+              })),
+            ]}
+            activePlaceholder
+            placeholder="Все"
+            // activePlaceholder={activePlaceholder}
+            smallMargin
+            // required={required}
+            // error={error}
+            // fullWidth={fullWidth}
+          />
+        </div>
         {/* <DateTimeEvent
           wrapperClassName="text-base laptop:text-lg font-bold leading-4 laptop:leading-5 justify-center laptop:justify-start"
           dateClassName="text-general"
@@ -334,9 +332,9 @@ const userActionsHistoryFunc = (userId) => {
           fullMonth
         /> */}
         {userActionsHistory ? (
-          <div className="flex flex-col-reverse w-full gap-y-1">
+          <div className="flex flex-col-reverse flex-1 w-full max-h-[calc(100vh-180px)] tablet:max-h-[calc(100vh-232px)] py-0.5 overflow-y-auto gap-y-1">
             {filteredUserActionsHistory
-              ? filteredUserActionsHistory.map((props, index) => (
+              ? filteredUserActionsHistory.map((props) => (
                   <HistoryActionsItem key={props._id} {...props} />
                 ))
               : 'Нет действий'}

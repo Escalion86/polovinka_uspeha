@@ -7,6 +7,7 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 
 const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  if (!user) return null
 
   const seeFullNames = loggedUserActiveRole?.users?.seeFullNames
 

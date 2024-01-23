@@ -25,6 +25,10 @@ const InputImages = ({
   error,
   fullWidth,
   readOnly = false,
+  noMargin,
+  smallMargin,
+  paddingY = true,
+  paddingX,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const { imageFolder } = useRecoilValue(locationPropsSelector)
@@ -75,9 +79,12 @@ const InputImages = ({
       className={cn('flex-1', className)}
       required={required}
       error={error}
-      paddingY
       fullWidth={fullWidth}
       noBorder={readOnly}
+      noMargin={noMargin}
+      smallMargin={smallMargin}
+      paddingY={paddingY}
+      paddingX={paddingX}
     >
       <div className="flex flex-wrap w-full gap-1 p-0.5">
         {images.length > 0 &&
