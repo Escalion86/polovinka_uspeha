@@ -55,6 +55,22 @@ const siteSettingsSchema = {
     type: Date,
     default: null,
   },
+  headerInfo: {
+    type: {
+      whatsapp: {
+        type: Number,
+        default: null,
+      },
+      telegram: {
+        type: String,
+        default: null,
+      },
+      memberChatLink: {
+        type: String,
+        default: null,
+      },
+    },
+  },
 }
 
 export default siteSettingsSchema

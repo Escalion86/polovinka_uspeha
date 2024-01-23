@@ -1,18 +1,11 @@
 import Button from '@components/Button'
 import Divider from '@components/Divider'
-import IconButtonMenu from '@components/ButtonMenu'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import PhoneInput from '@components/PhoneInput'
 import {
-  faTelegram,
-  faTelegramPlane,
-  faWhatsapp,
-} from '@fortawesome/free-brands-svg-icons'
-import {
   faArrowDown,
   faArrowUp,
-  faPaperPlane,
   faPlus,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
@@ -20,14 +13,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
 import arrayMove from '@helpers/arrayMove'
 import compareObjects from '@helpers/compareObjects'
-import useErrors from '@helpers/useErrors'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { v4 as uuid } from 'uuid'
-import cn from 'classnames'
-import TelegramIcon from 'svg/TelegramIcon'
 
 const ItemMenu = ({
   item,
@@ -93,14 +83,6 @@ const ItemMenu = ({
             />
           </div>
         )}
-        {/* <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-7 h-7 hover:scale-110">
-        <FontAwesomeIcon
-          className="w-5 h-5 text-purple-500"
-          icon={item.show ? faEye : faEyeSlash}
-          size="1x"
-          onClick={() => onChange({ key: item.key, show: !item.show })}
-        />
-      </div> */}
       </div>
     </FormWrapper>
   )

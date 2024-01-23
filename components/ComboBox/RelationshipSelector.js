@@ -1,6 +1,3 @@
-// import ComboBox from '@components/ComboBox'
-// import { RELATIONSHIP_VALUES } from '@helpers/constants'
-
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 
 const RelationshipSelector = ({

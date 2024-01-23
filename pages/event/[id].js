@@ -118,7 +118,10 @@ const EventBlock = ({ event }) => {
             }}
             shallow
           >
-            <PulseButton className="mt-4 text-white" title="В личный кабинет" />
+            <PulseButton
+              className="mt-4 text-white"
+              title="Посмотреть список всех мероприятий"
+            />
           </Link>
         )}
       </div>

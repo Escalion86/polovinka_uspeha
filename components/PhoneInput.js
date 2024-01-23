@@ -12,6 +12,8 @@ const PhoneInput = ({
   copyPasteButtons,
   className,
   noMargin,
+  error,
+  showErrorText,
 }) => (
   <InputWrapper
     label={label}
@@ -25,27 +27,36 @@ const PhoneInput = ({
     className={cn('w-48', className)}
     disabled={disabled}
     noMargin={noMargin}
+    error={error}
+    showErrorText={showErrorText}
   >
+    <div>+7</div>
     <MaskedInput
       disabled={disabled}
+      placeholder={label}
       className={cn(
-        'text-input w-full px-1 focus:outline-none bg-transparent',
+        'text-input w-full px-1 focus:outline-none bg-transparent peer placeholder-transparent',
         required && (!value || value.toString().length !== 11)
           ? 'border-red-700'
           : 'border-gray-400',
         { 'text-disabled cursor-not-allowed': disabled }
       )}
-      showMask
+      guide={false}
+      // showMask={false}
+      // onFocus={(e) => {
+      //   setShowMask(true)
+      // }}
+      // onBlur={() => setShowMask(false)}
       onChange={(e) => {
         const value = e.target.value.replace(/[^0-9]/g, '')
-
-        onChange(value === '7' ? null : Number(value))
+        onChange(!value ? null : Number('7' + value))
+        // onChange(Number('7' + value))
       }}
       // keepCharPositions
       mask={[
-        '+',
-        '7',
-        ' ',
+        // '+',
+        // '7',
+        // ' ',
         '(',
         /[1-9]/,
         /\d/,

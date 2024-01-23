@@ -1,11 +1,11 @@
 import Button from '@components/Button'
-import ComboBox from '@components/ComboBox'
 import RelationshipSelector from '@components/ComboBox/RelationshipSelector'
 import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import InputImages from '@components/InputImages'
+import Note from '@components/Note'
 import PhoneInput from '@components/PhoneInput'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
 import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
@@ -45,13 +45,6 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
         onClick={() => setSecurytyKey({ [securytyKey]: !value })}
       />
     </div>
-  </div>
-)
-
-const Note = ({ children }) => (
-  <div className="p-2 my-2 text-base leading-4 bg-teal-100 border-2 border-teal-400 rounded-lg">
-    <span className="italic font-semibold">Примечание: </span>
-    {children}
   </div>
 )
 

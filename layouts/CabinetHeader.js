@@ -2,7 +2,11 @@ import DevSwitch from '@components/DevSwitch'
 import Divider from '@components/Divider'
 import Menu from '@components/Menu'
 import { faTelegram, faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import { faBug } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBug,
+  faCheck,
+  faCheckCircle,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import Link from 'next/link'
@@ -11,12 +15,29 @@ import UserMenu from './UserMenu'
 import UserStatusIcon from '@components/UserStatusIcon'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import DropDown from '@components/DropDown'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import Button from '@components/Button'
+
+const CheckedItem = ({ children }) => (
+  <li className="flex italic gap-x-1">
+    <FontAwesomeIcon icon={faCheckCircle} className="w-5 h-5 text-success" />
+    {children}
+  </li>
+)
 
 const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
+  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const headerInfo = siteSettings?.headerInfo
+  // const [memberChatLink, setMemberChatLink] = useState(
+  //   siteSettings?.headerInfo?.memberChatLink
+  // )
 
   if (!loggedUser) return null
+
+  const isLoggedUserNovice =
+    !loggedUserActiveStatus || loggedUserActiveStatus === 'novice'
 
   return (
     <div
@@ -83,7 +104,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
         // placement="right"
       >
         <div className="flex flex-col justify-center px-3 py-1 leading-5 text-black cursor-default w-80">
-          {!loggedUserActiveStatus || loggedUserActiveStatus === 'novice' ? (
+          {isLoggedUserNovice ? (
             <>
               <span className="font-bold">Ваш статус: Новичок</span>
               <span>
@@ -98,45 +119,63 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
             <>
               <span className="font-bold">Ваш статус: Участник клуба</span>
               <div className="flex flex-col items-start">
-                <div>Ваши привелегии:</div>{' '}
+                <div>Ваши привелегии:</div>
               </div>
             </>
           )}
-          <div>- Доступ к закрытым мероприятиям</div>
-          <div>- Просмотр других участников клуба</div>
-          <div>- Просмотр участников мероприятий</div>
-          <div>- Страница достижений и личная статистика</div>
-          <div>- Доступ к закрытому чату</div>
-          {!loggedUserActiveStatus ||
-            (loggedUserActiveStatus === 'novice' && (
-              <div className="flex flex-col font-bold">
-                <span>Для вступления в клуб свяжитесь с администратором:</span>
+          <ul className="flex flex-col my-1 gap-y-1">
+            <CheckedItem>Доступ к закрытым мероприятиям</CheckedItem>
+            <CheckedItem>Просмотр других участников клуба</CheckedItem>
+            <CheckedItem>Просмотр участников мероприятий</CheckedItem>
+            <CheckedItem>Страница достижений и личная статистика</CheckedItem>
+            <CheckedItem>Доступ к закрытому чату</CheckedItem>
+          </ul>
+          {isLoggedUserNovice ? (
+            <div className="flex flex-col py-1 font-bold gap-y-1">
+              <span>Для вступления в клуб свяжитесь с администратором:</span>
+              {(headerInfo?.telegram || headerInfo?.whatsapp) && (
                 <div className="flex font-bold gap-x-2">
-                  <a
-                    className="flex items-center px-2 py-1 text-white duration-300 bg-green-500 rounded-md hover:bg-general gap-x-1"
-                    href="https://wa.me/79504280891"
-                    target="_blank"
-                  >
-                    <FontAwesomeIcon
-                      icon={faWhatsapp}
-                      className="w-5 h-5 text-white"
-                    />
-                    <span>WhatsApp</span>
-                  </a>
-                  <a
-                    className="flex items-center px-2 py-1 text-white duration-300 bg-blue-500 rounded-md hover:bg-general gap-x-1"
-                    href="https://t.me/polovinka_krsk"
-                    target="_blank"
-                  >
-                    <FontAwesomeIcon
-                      icon={faTelegram}
-                      className="w-5 h-5 text-white"
-                    />
-                    <span>Telegram</span>
-                  </a>
+                  {headerInfo?.whatsapp && (
+                    <a
+                      className="flex items-center px-2 py-1 text-white duration-300 bg-green-500 rounded-md hover:bg-general gap-x-1"
+                      href={'https://wa.me/' + headerInfo?.whatsapp}
+                      target="_blank"
+                    >
+                      <FontAwesomeIcon
+                        icon={faWhatsapp}
+                        className="w-5 h-5 text-white"
+                      />
+                      <span>WhatsApp</span>
+                    </a>
+                  )}
+                  {headerInfo?.telegram && (
+                    <a
+                      className="flex items-center px-2 py-1 text-white duration-300 bg-blue-500 rounded-md hover:bg-general gap-x-1"
+                      href={'https://t.me/' + headerInfo?.telegram}
+                      target="_blank"
+                    >
+                      <FontAwesomeIcon
+                        icon={faTelegram}
+                        className="w-5 h-5 text-white"
+                      />
+                      <span>Telegram</span>
+                    </a>
+                  )}
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
+          ) : (
+            headerInfo?.memberChatLink && (
+              <a
+                className="flex items-center justify-center px-3 py-2 my-1 text-white duration-300 border rounded-lg gap-x-2 bg-general hover:text-general hover:bg-white border-general"
+                href={'https://t.me/' + headerInfo?.memberChatLink}
+                target="_blank"
+              >
+                <FontAwesomeIcon icon={faTelegram} className="w-5 h-5" />
+                <span>Открыть чат клуба</span>
+              </a>
+            )
+          )}
         </div>
       </DropDown>
       <UserMenu />

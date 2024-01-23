@@ -37,6 +37,8 @@ const InputWrapper = forwardRef(
       centerLabel = false,
       showDisabledIcon = true,
       smallMargin = false,
+      comment,
+      commentClassName,
       ...props
     },
     ref
@@ -63,6 +65,7 @@ const InputWrapper = forwardRef(
             : '',
           disabled ? 'cursor-not-allowed' : '',
           hidden ? 'hidden' : '',
+          (error && showErrorText) || comment ? 'mb-4' : '',
           className
         )}
         ref={ref}
@@ -114,7 +117,7 @@ const InputWrapper = forwardRef(
                   : '',
                 centerLabel ? 'left-1/2 -translate-x-1/2' : 'left-2',
                 floatingLabel
-                  ? `-top-[12px] peer-focus:-top-[12px] text-general peer-focus:text-sm peer-placeholder-shown:text-disabled peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
+                  ? `-top-[12px] peer-focus:-top-[12px] peer-focus:text-sm peer-placeholder-shown:text-disabled peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
                   : '-top-[12px]',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
@@ -146,10 +149,20 @@ const InputWrapper = forwardRef(
         {error && showErrorText && (
           <div
             className={cn(
-              'absolute px-1 text-xs bg-white left-1 top-7 text-danger'
+              'absolute px-1 leading-[12px] text-xs bg-white left-1 -bottom-[15px] text-danger whitespace-nowrap'
             )}
           >
             {error}
+          </div>
+        )}
+        {comment && (
+          <div
+            className={cn(
+              'absolute px-1 leading-[12px] text-xs bg-white right-1 -bottom-[15px] whitespace-nowrap',
+              commentClassName
+            )}
+          >
+            {comment}
           </div>
         )}
       </div>
