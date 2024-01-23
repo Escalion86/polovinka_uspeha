@@ -2,6 +2,7 @@ import Button from '@components/Button'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
+import Note from '@components/Note'
 import PhoneInput from '@components/PhoneInput'
 import { postData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
@@ -84,17 +85,25 @@ const HeaderInfoContactsContent = (props) => {
       {message && !isWaitingToResponse && (
         <div className="flex flex-col col-span-2 text-success">{message}</div>
       )}
+      <Note>
+        <span>
+          Данная информация необходима для выпадающего меню при наведении
+          курсора на медаль в шапке (возле аватара)
+        </span>
+      </Note>
+
       <FormWrapper>
+        <div>Контакты для связи по вопросам вступления в клуб:</div>
         <div className="flex flex-wrap gap-x-2">
           <PhoneInput
-            label="Whatsapp для связи"
+            label="Whatsapp"
             value={whatsapp}
             onChange={setWhatsapp}
             error={errors.whatsapp}
           />
           <Input
             prefix="@"
-            label="Telegram для связи"
+            label="Telegram"
             value={telegram}
             onChange={setTelegram}
           />
