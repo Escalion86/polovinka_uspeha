@@ -30,7 +30,7 @@ function CabinetPage(props) {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
-  const hideFab = loggedUserActiveRole?.hideFab
+  const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
 
   let redirect
   if (!props.loggedUser) redirect = '/'
@@ -82,7 +82,7 @@ function CabinetPage(props) {
                 </Suspense>
               )}
             </ContentWrapper>
-            <FabMenu show={!hideFab || page === 'settingsFabMenu'} />
+            <FabMenu show={showFab} />
           </CabinetWrapper>
         )}
       </StateLoader>

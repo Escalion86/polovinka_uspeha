@@ -13,6 +13,7 @@ import {
   faHistory,
   faLock,
   faMars,
+  faMedal,
   faPhone,
   faPieChart,
   faPlay,
@@ -99,6 +100,7 @@ import SettingsFabMenuContent from '@layouts/content/SettingsFabMenuContent'
 import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
 import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
 import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
+import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
 
 const colors = [
   'border-blue-400',
@@ -491,13 +493,13 @@ export const DEFAULT_QUESTIONNAIRE = Object.freeze({
   data: [],
 })
 
-export const DEFAULT_QUESTIONNAIRE_ITEM = {
+export const DEFAULT_QUESTIONNAIRE_ITEM = Object.freeze({
   type: 'text',
   label: '',
   key: '',
   show: true,
   required: false,
-}
+})
 
 export const DEFAULT_DIRECTION = Object.freeze({
   title: '',
@@ -850,6 +852,7 @@ export const DEFAULT_ROLES = [
       fabMenu: false,
       roles: false,
       dateStartProject: false,
+      headerInfo: false,
     },
     notices: {
       histories: false,
@@ -973,6 +976,7 @@ export const DEFAULT_ROLES = [
       fabMenu: false,
       roles: false,
       dateStartProject: false,
+      headerInfo: false,
     },
     notices: {
       histories: true,
@@ -1096,6 +1100,7 @@ export const DEFAULT_ROLES = [
       fabMenu: false,
       roles: false,
       dateStartProject: false,
+      headerInfo: false,
     },
     notices: {
       histories: true,
@@ -1219,6 +1224,7 @@ export const DEFAULT_ROLES = [
       fabMenu: true,
       roles: true,
       dateStartProject: false,
+      headerInfo: true,
     },
     notices: {
       histories: true,
@@ -1343,6 +1349,7 @@ export const DEFAULT_ROLES = [
       fabMenu: true,
       roles: true,
       dateStartProject: true,
+      headerInfo: true,
     },
     notices: {
       histories: true,
@@ -1403,7 +1410,7 @@ export const SOCIALS = [
   },
 ]
 
-export const CONTENTS = {
+export const CONTENTS = Object.freeze({
   services: {
     Component: ServicesContent,
     name: 'Услуги / Список услуг',
@@ -1598,9 +1605,15 @@ export const CONTENTS = {
   },
   settingsRoles: {
     Component: SettingsRolesContent,
-    name: 'Настройки / Роли"',
+    name: 'Настройки / Роли',
     accessRoles: ['dev'],
     roleAccess: (role) => role?.siteSettings?.roles,
+  },
+  settingsHeaderInfoContacts: {
+    Component: HeaderInfoContactsContent,
+    name: 'Настройки / Информация для вступления в клуб',
+    accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.siteSettings?.headerInfo,
   },
   userStatistics: {
     Component: UserStatisticsContent,
@@ -1609,7 +1622,7 @@ export const CONTENTS = {
     accessStatuses: ['member'],
     roleAccess: (role, status) => role?.seeMyStatistics || status === 'member',
   },
-}
+})
 
 export const pages = [
   {
@@ -1885,6 +1898,15 @@ export const pages = [
     icon: faStar,
     accessRoles: CONTENTS['settingsDateStartProject'].accessRoles,
     roleAccess: CONTENTS['settingsDateStartProject'].roleAccess,
+  },
+  {
+    id: 84,
+    group: 10,
+    name: 'Информация для вступления в клуб',
+    href: 'settingsHeaderInfoContacts',
+    icon: faMedal,
+    accessRoles: CONTENTS['settingsHeaderInfoContacts'].accessRoles,
+    roleAccess: CONTENTS['settingsHeaderInfoContacts'].roleAccess,
   },
   {
     id: 99,
