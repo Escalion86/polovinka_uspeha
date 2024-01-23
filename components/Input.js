@@ -33,6 +33,7 @@ const Input = forwardRef(
       noMargin = false,
       showArrows = true,
       autoComplete,
+      maxLength,
     },
     ref
   ) => {
@@ -56,6 +57,14 @@ const Input = forwardRef(
         noBorder={noBorder}
         noMargin={noMargin}
         showDisabledIcon={showDisabledIcon}
+        comment={
+          maxLength ? `${String(value)?.length} / ${maxLength}` : undefined
+        }
+        commentClassName={
+          maxLength && String(value)?.length >= maxLength
+            ? 'text-danger'
+            : undefined
+        }
       >
         {showArrows && type === 'number' && !disabled && (
           <div
@@ -99,7 +108,9 @@ const Input = forwardRef(
                 else onChange(parseInt(value))
               }
             } else {
-              onChange(value)
+              if (maxLength && value?.length > maxLength)
+                onChange(value.substring(0, maxLength))
+              else onChange(value)
             }
           }}
           placeholder={label}

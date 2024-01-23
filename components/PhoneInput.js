@@ -13,6 +13,7 @@ const PhoneInput = ({
   className,
   noMargin,
   error,
+  showErrorText,
 }) => (
   <InputWrapper
     label={label}
@@ -27,6 +28,7 @@ const PhoneInput = ({
     disabled={disabled}
     noMargin={noMargin}
     error={error}
+    showErrorText={showErrorText}
   >
     <div>+7</div>
     <MaskedInput
