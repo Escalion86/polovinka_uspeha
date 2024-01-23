@@ -135,9 +135,9 @@ const UserMenu = () => {
                 </div>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center px-5 py-2 leading-4 text-center text-general">
+              <div className="flex flex-col items-center justify-center px-5 py-2 text-sm leading-4 text-center text-general">
                 <div className="font-bold">Статус не указан!</div>
-                <div className="text-sm italic">Нажмите, чтобы указать</div>
+                <div className="italic">Нажмите, чтобы указать</div>
               </div>
             )}
           </div>
