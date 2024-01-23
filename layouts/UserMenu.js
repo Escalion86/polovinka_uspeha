@@ -18,6 +18,8 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import Avatar from './Avatar'
+import SvgKavichki from 'svg/SvgKavichki'
+import { modalsFuncAtom } from '@state/atoms'
 // import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 
 const variants = {
@@ -71,6 +73,7 @@ const UserMenu = () => {
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   // const router = useRouter()
 
@@ -115,6 +118,28 @@ const UserMenu = () => {
           <div className="flex flex-col justify-center px-3 py-1 font-bold leading-4 text-white border-b border-gray-800 cursor-default bg-general rounded-tr-3xl h-11">
             <span>{loggedUser.firstName}</span>
             <span>{loggedUser.secondName}</span>
+          </div>
+          <div
+            className="relative bg-white border-b-2 cursor-pointer group border-general"
+            onClick={() => modalsFunc.user.editPersonalStatus(loggedUser._id)}
+          >
+            {loggedUser.personalStatus ? (
+              <>
+                <div className="relative px-5 py-2 text-sm italic leading-4 text-center text-black duration-300 opacity-100 group-hover:opacity-20 border-general">
+                  <SvgKavichki className="absolute w-3 h-3 bottom-1 left-1 fill-general" />
+                  {loggedUser.personalStatus}
+                  <SvgKavichki className="absolute w-3 h-3 rotate-180 top-1 right-1 fill-general" />
+                </div>
+                <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center text-opacity-0 duration-300 group-hover:text-opacity-100 text-general">
+                  Изменить статус
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center px-5 py-2 leading-4 text-center text-general">
+                <div className="font-bold">Статус не указан!</div>
+                <div className="text-sm italic">Нажмите, чтобы указать</div>
+              </div>
+            )}
           </div>
           {/* <MenuItem
               href="/cabinet/events"
