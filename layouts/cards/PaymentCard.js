@@ -19,8 +19,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  PAY_TYPES,
-  PAY_TYPES_OBJECT,
   PRODUCT_USER_STATUSES,
   SECTORS,
   SERVICE_USER_STATUSES,
@@ -76,25 +74,29 @@ import { useRecoilValue } from 'recoil'
 //   )
 // }
 
-const PaySum = ({ payment }) => (
-  <div
-    className={cn(
-      'px-1 text-sm text-right font-bold phoneH:text-base min-w-16',
-      payment.payType === 'coupon'
-        ? 'text-general'
-        : payment.payDirection === 'toUser' ||
-          payment.payDirection === 'toEvent'
-        ? 'text-danger'
-        : 'text-success'
-    )}
-  >
-    {`${
-      payment.payDirection === 'toUser' || payment.payDirection === 'toEvent'
-        ? '-'
-        : ''
-    }${payment.sum / 100} ₽`}
-  </div>
-)
+const PaySum = ({ payment }) => {
+  const isExpenses = [
+    'toUser',
+    'toEvent',
+    'toInternal',
+    'toService',
+    'toProduct',
+  ].includes(payment.payDirection)
+  return (
+    <div
+      className={cn(
+        'px-1 text-sm text-right font-bold phoneH:text-base min-w-16',
+        payment.payType === 'coupon'
+          ? 'text-general'
+          : isExpenses
+          ? 'text-danger'
+          : 'text-success'
+      )}
+    >
+      {`${isExpenses ? '-' : ''}${payment.sum / 100} ₽`}
+    </div>
+  )
+}
 
 const PayText = ({ payment, sector }) => {
   return (
