@@ -95,6 +95,8 @@ const StatisticsFinanceContent = () => {
     arrayOfSumOfPaymentsForClosedEventsByDateSelector
   )
 
+  console.log('incomeOfEventsByDate :>> ', incomeOfEventsByDate)
+
   const incomeOfInternalByDate = useRecoilValue(
     arrayOfSumOfPaymentsForInternalByDateSelector
   )
