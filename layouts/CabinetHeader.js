@@ -1,12 +1,7 @@
 import DevSwitch from '@components/DevSwitch'
-import Divider from '@components/Divider'
 import Menu from '@components/Menu'
 import { faTelegram, faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import {
-  faBug,
-  faCheck,
-  faCheckCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faBug, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import Link from 'next/link'
@@ -16,7 +11,6 @@ import UserStatusIcon from '@components/UserStatusIcon'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import DropDown from '@components/DropDown'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import Button from '@components/Button'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -30,9 +24,6 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const siteSettings = useRecoilValue(siteSettingsAtom)
   const headerInfo = siteSettings?.headerInfo
-  // const [memberChatLink, setMemberChatLink] = useState(
-  //   siteSettings?.headerInfo?.memberChatLink
-  // )
 
   if (!loggedUser) return null
 
@@ -52,13 +43,10 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
                 className="rounded-full h-14"
                 src={icon || '/img/logo_heart.png'}
                 alt="logo"
-                // width={48}
-                // height={48}
               />
             </a>
           </Link>
-          <div className="flex flex-1">
-            <Divider type="vertical" className="hidden tablet:block" />
+          <div className="flex items-center flex-1 leading-4 min-h-[42px] tablet:border-gray-600 tablet:border-l-1 tablet:pl-3 tablet:ml-3">
             {titleLink ? (
               <Link href={titleLink} shallow>
                 <a className="hover:text-gray-300">
@@ -74,13 +62,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
         <div className="absolute z-10 -translate-x-1/2 left-1/2">
           <Link href="/" shallow>
             <a>
-              <img
-                className="h-12"
-                src="/img/logo_horizontal.png"
-                alt="logo"
-                // width={40}
-                // height={40}
-              />
+              <img className="h-12" src="/img/logo_horizontal.png" alt="logo" />
             </a>
           </Link>
         </div>
@@ -98,10 +80,8 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
       )}
       <DropDown
         trigger={<UserStatusIcon status={loggedUserActiveStatus} />}
-        // className={className}
         menuPadding={false}
         openOnHover
-        // placement="right"
       >
         <div className="flex flex-col justify-center px-3 py-1 leading-5 text-black cursor-default w-80">
           {isLoggedUserNovice ? (
