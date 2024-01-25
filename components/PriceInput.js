@@ -50,7 +50,7 @@ const PriceInput = ({
         value={String(rubles)}
         onChange={(value) => onChangeUpd(value, true)}
         postfix="₽"
-        maxLength={6}
+        max={999999}
         min={0}
         disabled={disabled}
         fullWidth={false}
@@ -69,7 +69,7 @@ const PriceInput = ({
         value={String(cops)}
         onChange={(value) => onChangeUpd(value, false)}
         postfix="коп"
-        maxLength={2}
+        max={99}
         min={0}
         disabled={disabled}
         showDisabledIcon={false}

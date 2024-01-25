@@ -126,7 +126,7 @@ const Input = forwardRef(
             )}
             onClick={() => {
               if (typeof max !== 'number' || value < max)
-                onChange(Number(value) + Number(step))
+                onChange(Math.min(Number(value) + Number(step), max))
             }}
           >
             <FontAwesomeIcon icon={faArrowUp} className="w-5 h-5" />

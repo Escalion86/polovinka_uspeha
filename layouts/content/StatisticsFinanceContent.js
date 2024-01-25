@@ -1,39 +1,52 @@
 import LineChart from '@components/Charts/LineChart'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import YearSelector from '@components/ComboBox/YearSelector'
-import { MONTHS, MONTHS_FULL_1 } from '@helpers/constants'
+import {
+  MONTHS,
+  // MONTHS_FULL_1
+} from '@helpers/constants'
+import getEventsYears from '@helpers/getEventsYears'
 import upperCaseFirst from '@helpers/upperCaseFirst'
-import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
+import eventsAtom from '@state/atoms/eventsAtom'
+// import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import allClosedEventsSelector from '@state/selectors/allClosedEventsSelector'
 import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
 import arrayOfSumOfPaymentsForInternalByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForInternalByDateSelector'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
-const StatisticsFinanceContent = () => {
-  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
-  const [month, setMonth] = useState(serverDate.getMonth())
-  const [year, setYear] = useState(serverDate.getFullYear())
+const monthsObj = {
+  янв: { name: 'Январь', index: 0 },
+  фев: { name: 'Февраль', index: 1 },
+  мар: { name: 'Март', index: 2 },
+  апр: { name: 'Апрель', index: 3 },
+  май: { name: 'Май', index: 4 },
+  июн: { name: 'Июнь', index: 5 },
+  июл: { name: 'Июль', index: 6 },
+  авг: { name: 'Август', index: 7 },
+  сен: { name: 'Сентябрь', index: 8 },
+  окт: { name: 'Октябрь', index: 9 },
+  ноя: { name: 'Ноябрь', index: 10 },
+  дек: { name: 'Декабрь', index: 11 },
+}
 
-  const allClosedEvents = useRecoilValue(allClosedEventsSelector)
-  const filteredEvents = allClosedEvents.filter(({ dateStart }) => {
-    const yearOfEvent = new Date(dateStart).getFullYear()
-    const monthOfEvent = new Date(dateStart).getMonth()
-    return monthOfEvent === month && yearOfEvent === year
-  })
+const nivoColors = [
+  '#1f77b4',
+  '#ff7f0e',
+  '#2ca02c',
+  '#d62728',
+  '#9467bd',
+  '#8c564b',
+  '#e377c2',
+  '#7f7f7f',
+  '#bcbd22',
+  '#17becf',
+]
 
-  const incomeOfEventsByDate = useRecoilValue(
-    arrayOfSumOfPaymentsForClosedEventsByDateSelector
-  )
-
-  const incomeOfInternalByDate = useRecoilValue(
-    arrayOfSumOfPaymentsForInternalByDateSelector
-  )
-
+const incomeCalc = (incomeOfEventsByDate, incomeOfInternalByDate) => {
   const incomeByDate = JSON.parse(JSON.stringify(incomeOfEventsByDate))
   for (const year in incomeOfInternalByDate) {
-    if (!incomeByDate[year])
-      incomeByDate[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    if (!incomeByDate[year]) incomeByDate[year] = new Array(12).fill(0)
     for (let i = 0; i < 12; i++) {
       incomeByDate[year][i] += incomeOfInternalByDate[year][i]
     }
@@ -48,7 +61,8 @@ const StatisticsFinanceContent = () => {
     const incomeYear = incomeByDate[year]
     const data = incomeYear.map((income, index) => ({
       x: MONTHS[index],
-      y: income,
+      y: income === 0 ? null : income,
+      year,
     }))
     dataOfIncomeByDate.push({ id: year, data })
 
@@ -66,32 +80,122 @@ const StatisticsFinanceContent = () => {
 
     incomeAverageByYears[year] = average
   }
+  return { incomeAverageByYears, dataOfIncomeByDate }
+}
+
+const StatisticsFinanceContent = () => {
+  const events = useRecoilValue(eventsAtom)
+  // const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
+  const [month, setMonth] = useState()
+  const [year, setYear] = useState()
+
+  const years = useMemo(() => getEventsYears(events), [events])
+
+  const allClosedEvents = useRecoilValue(allClosedEventsSelector)
+  const filteredEvents = allClosedEvents.filter(({ dateStart }) => {
+    const yearOfEvent = new Date(dateStart).getFullYear()
+    const monthOfEvent = new Date(dateStart).getMonth()
+    return monthOfEvent === month && yearOfEvent === year
+  })
+
+  const incomeOfEventsByDate = useRecoilValue(
+    arrayOfSumOfPaymentsForClosedEventsByDateSelector
+  )
+
+  const incomeOfInternalByDate = useRecoilValue(
+    arrayOfSumOfPaymentsForInternalByDateSelector
+  )
+
+  const { incomeAverageByYears, dataOfIncomeByDate } = useMemo(
+    () => incomeCalc(incomeOfEventsByDate, incomeOfInternalByDate),
+    [incomeOfEventsByDate, incomeOfInternalByDate]
+  )
+
+  useEffect(() => {
+    const lastIncomeYearData =
+      dataOfIncomeByDate[dataOfIncomeByDate.length - 1].data
+    const afterLastIncomeIndex = lastIncomeYearData.findIndex(
+      ({ y }) => y === null
+    )
+    const lastIncomeData =
+      lastIncomeYearData[afterLastIncomeIndex ? afterLastIncomeIndex - 1 : 11]
+    setMonth(monthsObj[lastIncomeData.x].index)
+    setYear(Number(lastIncomeData.year))
+  }, [])
 
   return (
     <div className="flex flex-col items-center p-2 overflow-y-auto">
       <LineChart
         title="Чистая прибыль по месяцам"
         onClick={(point, event) => {
-          console.log({ point, event })
-          setMonth(point.index % 12)
+          // console.log({ point, event })
+          setMonth(monthsObj[point.data.x].index)
           setYear(Number(point.serieId))
         }}
+        colors={{ scheme: 'category10' }}
+        pointSymbol={({ borderColor, borderWidth, color, datum, size }) => (
+          <circle
+            r={
+              datum.year == year && datum.x === MONTHS[month] ? size : size / 2
+            }
+            fill={color}
+            stroke={borderColor}
+            strokeWidth={borderWidth}
+            style={{ pointerEvents: 'none' }}
+          />
+        )}
         data={dataOfIncomeByDate}
         // xAxisLegend="Месяц"
         yAxisLegend="Прибыль, ₽"
         // enableSlices="x"
+        markers={dataOfIncomeByDate.map(({ id }, index) => ({
+          axis: 'y',
+          legend: `${incomeAverageByYears[id]?.toFixed(0)} ₽`,
+          // position: 'left',
+          legendOffsetX: -8,
+          legendOffsetY: 0,
+          // legendOrientation: 'vertical',
+          textStyle: {
+            fill: nivoColors[index],
+            fontSize: 12,
+            textAnchor: 'start',
+            // margin: '20 0 0 0',
+          },
+          lineStyle: {
+            stroke: nivoColors[index],
+            strokeWidth: 1,
+            strokeDasharray: '8 6',
+          },
+          value: incomeAverageByYears[id],
+        }))}
         tooltip={(data) => {
+          // console.log('data :>> ', data)
           return (
             <div
+              className="flex flex-col"
               style={{
                 background: 'white',
-                padding: '9px 12px',
-                border: '1px solid #ccc',
+                padding: '5px 10px',
+                border: '1px solid',
+                borderColor: data.point.serieColor,
               }}
             >
-              <div>{upperCaseFirst(MONTHS_FULL_1[data.point.index])}</div>
+              <strong>
+                <span>
+                  {upperCaseFirst(monthsObj[data.point.data.x].name)}{' '}
+                </span>
+                <span
+                  style={{
+                    color: data.point.serieColor,
+                    padding: '3px 0',
+                  }}
+                >
+                  {data.point.serieId}
+                </span>
+              </strong>
+              <div className="text-center text-black">{`${data.point.data.yFormatted} ₽`}</div>
               {/* {slice.points.map((point) => ( */}
-              <div
+              {/* <div
                 key={data.point.id}
                 style={{
                   color: data.point.serieColor,
@@ -100,7 +204,7 @@ const StatisticsFinanceContent = () => {
               >
                 <strong>{data.point.serieId}</strong>
                 <span className="pl-2 text-black">{`${data.point.data.yFormatted} ₽`}</span>
-              </div>
+              </div> */}
               {/* ))} */}
             </div>
           )
@@ -179,23 +283,22 @@ const StatisticsFinanceContent = () => {
         // }}
         // curve={select('curve', curveOptions, 'linear')}
       />
-      <div className="flex gap-x-1">
+      <div className="flex w-full gap-x-1">
         <MonthSelector month={month} onChange={setMonth} />
-        <YearSelector year={year} onChange={setYear} />
+        <YearSelector year={year} onChange={setYear} years={years} />
       </div>
       <div className="w-full">
         <div>Кол-во мероприятий: {filteredEvents.length}</div>
         <div>
           Доход с мероприятий:{' '}
-          {incomeOfEventsByDate[year] ? incomeOfEventsByDate[year][month] : 0}{' '}
-          руб.
+          {incomeOfEventsByDate[year] ? incomeOfEventsByDate[year][month] : 0} ₽
         </div>
         <div>
           Внутренние:{' '}
           {incomeOfInternalByDate[year]
             ? incomeOfInternalByDate[year][month]
             : 0}{' '}
-          руб.
+          ₽
         </div>
         <div>
           ИТОГО:{' '}
@@ -205,11 +308,11 @@ const StatisticsFinanceContent = () => {
             (incomeOfEventsByDate[year]
               ? incomeOfEventsByDate[year][month]
               : 0)}{' '}
-          руб.
+          ₽
         </div>
         <div className="mt-5">
           Средний доход в месяц в {year} году:{' '}
-          {incomeAverageByYears[year]?.toFixed(2)} руб.
+          {incomeAverageByYears[year]?.toFixed(2)} ₽
         </div>
       </div>
     </div>
