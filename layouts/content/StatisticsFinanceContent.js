@@ -109,16 +109,18 @@ const StatisticsFinanceContent = () => {
   // if (dataOfIncomeByDate.length === 0) return 'Для формирования статистики необходимо закрыть хотябы одно мероприятие'
 
   useEffect(() => {
-    const lastIncomeYearData =
-      dataOfIncomeByDate[dataOfIncomeByDate.length - 1].data
-    const afterLastIncomeIndex = lastIncomeYearData.findIndex(
-      ({ y }) => y === null
-    )
-    const lastIncomeData =
-      lastIncomeYearData[afterLastIncomeIndex ? afterLastIncomeIndex - 1 : 11]
-    setMonth(monthsObj[lastIncomeData.x].index)
-    setYear(Number(lastIncomeData.year))
-  }, [])
+    if (years.length > 0) {
+      const lastIncomeYearData =
+        dataOfIncomeByDate[dataOfIncomeByDate.length - 1].data
+      const afterLastIncomeIndex = lastIncomeYearData.findIndex(
+        ({ y }) => y === null
+      )
+      const lastIncomeData =
+        lastIncomeYearData[afterLastIncomeIndex ? afterLastIncomeIndex - 1 : 11]
+      setMonth(monthsObj[lastIncomeData.x].index)
+      setYear(Number(lastIncomeData.year))
+    }
+  }, [years, dataOfIncomeByDate])
 
   return (
     <div className="flex flex-col items-center p-2 overflow-y-auto">
