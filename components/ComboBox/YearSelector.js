@@ -1,6 +1,6 @@
 import ComboBox from '@components/ComboBox'
 
-const YearSelector = ({ onChange, year, years = [2022, 2023] }) => {
+const YearSelector = ({ onChange, year, years = [2022, 2023, 2024] }) => {
   const items = years.map((year) => ({
     value: Number(year),
     name: String(year),

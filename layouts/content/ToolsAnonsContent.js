@@ -10,6 +10,7 @@ import {
 } from '@components/SvgBackground'
 import { MONTHS_FULL_1 } from '@helpers/constants'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import getEventsYears from '@helpers/getEventsYears'
 import getNoun from '@helpers/getNoun'
 import sortFunctions from '@helpers/sortFunctions'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -55,17 +56,6 @@ const save2 = async (listsCount, name) => {
     }.png`
     saveSvgAsPng(input, fileName)
   }
-}
-
-const getEventsYears = (events) => {
-  const tempYears = []
-  events.forEach((event) => {
-    const date = new Date(event.dateStart)
-    const eventYear = date.getFullYear()
-    if (!tempYears.includes(eventYear)) tempYears.push(eventYear)
-  })
-  tempYears.sort((a, b) => a - b)
-  return tempYears
 }
 
 const ToolsAnonsContent = () => {
