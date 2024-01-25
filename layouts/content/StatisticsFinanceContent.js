@@ -2,7 +2,6 @@ import LineChart from '@components/Charts/LineChart'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import YearSelector from '@components/ComboBox/YearSelector'
 import { MONTHS } from '@helpers/constants'
-import getEventsYears from '@helpers/getEventsYears'
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import allClosedEventsSelector from '@state/selectors/allClosedEventsSelector'
 import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
@@ -94,8 +93,6 @@ const StatisticsFinanceContent = () => {
   const incomeOfEventsByDate = useRecoilValue(
     arrayOfSumOfPaymentsForClosedEventsByDateSelector
   )
-
-  console.log('incomeOfEventsByDate :>> ', incomeOfEventsByDate)
 
   const incomeOfInternalByDate = useRecoilValue(
     arrayOfSumOfPaymentsForInternalByDateSelector
