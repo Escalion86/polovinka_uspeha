@@ -114,10 +114,13 @@ const StatisticsFinanceContent = () => {
         ({ y }) => y === null
       )
       const lastIncomeData =
-        lastIncomeYearData[afterLastIncomeIndex ? afterLastIncomeIndex - 1 : 11]
-      console.log('lastIncomeYearData :>> ', lastIncomeYearData)
-      console.log('afterLastIncomeIndex :>> ', afterLastIncomeIndex)
-      console.log('lastIncomeData :>> ', lastIncomeData)
+        lastIncomeYearData[
+          afterLastIncomeIndex > 0
+            ? afterLastIncomeIndex - 1
+            : afterLastIncomeIndex === -1
+            ? 11
+            : 0
+        ]
       setMonth(monthsObj[lastIncomeData.x].index)
       setYear(Number(lastIncomeData.year))
     }
