@@ -106,8 +106,6 @@ const StatisticsFinanceContent = () => {
 
   const years = Object.keys(incomeAverageByYears).sort((a, b) => a - b)
 
-  // if (dataOfIncomeByDate.length === 0) return 'Для формирования статистики необходимо закрыть хотябы одно мероприятие'
-
   useEffect(() => {
     if (years.length > 0) {
       const lastIncomeYearData =
@@ -117,6 +115,9 @@ const StatisticsFinanceContent = () => {
       )
       const lastIncomeData =
         lastIncomeYearData[afterLastIncomeIndex ? afterLastIncomeIndex - 1 : 11]
+      console.log('lastIncomeYearData :>> ', lastIncomeYearData)
+      console.log('afterLastIncomeIndex :>> ', afterLastIncomeIndex)
+      console.log('lastIncomeData :>> ', lastIncomeData)
       setMonth(monthsObj[lastIncomeData.x].index)
       setYear(Number(lastIncomeData.year))
     }
@@ -137,7 +138,7 @@ const StatisticsFinanceContent = () => {
             pointSymbol={({ borderColor, borderWidth, color, datum, size }) => (
               <circle
                 r={
-                  datum.year == year && datum.x === MONTHS[month]
+                  datum.year == year && datum?.x === MONTHS[month]
                     ? size
                     : size / 2
                 }
@@ -324,7 +325,7 @@ const StatisticsFinanceContent = () => {
           </div>
         </>
       ) : (
-        <div>
+        <div className="text-center">
           Для формирования финансовой статистики необходимо завершить и закрыть
           хотябы одно мероприятие
         </div>
