@@ -1,14 +1,9 @@
 import LineChart from '@components/Charts/LineChart'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import YearSelector from '@components/ComboBox/YearSelector'
-import {
-  MONTHS,
-  // MONTHS_FULL_1
-} from '@helpers/constants'
+import { MONTHS } from '@helpers/constants'
 import getEventsYears from '@helpers/getEventsYears'
 import upperCaseFirst from '@helpers/upperCaseFirst'
-import eventsAtom from '@state/atoms/eventsAtom'
-// import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import allClosedEventsSelector from '@state/selectors/allClosedEventsSelector'
 import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
 import arrayOfSumOfPaymentsForInternalByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForInternalByDateSelector'
@@ -59,12 +54,6 @@ const incomeCalc = (incomeOfEventsByDate, incomeOfInternalByDate) => {
   const dataOfIncomeByDate = []
   for (const year in incomeByDate) {
     const incomeYear = incomeByDate[year]
-    const data = incomeYear.map((income, index) => ({
-      x: MONTHS[index],
-      y: income === 0 ? null : income,
-      year,
-    }))
-    dataOfIncomeByDate.push({ id: year, data })
 
     var sum, incomeArray
     if (todayYear == year) {
@@ -78,18 +67,22 @@ const incomeCalc = (incomeOfEventsByDate, incomeOfInternalByDate) => {
     }
     const average = incomeArray.length > 0 ? sum / incomeArray.length : 0
 
-    incomeAverageByYears[year] = average
+    if (average > 0) {
+      const data = incomeYear.map((income, index) => ({
+        x: MONTHS[index],
+        y: income === 0 ? null : income,
+        year,
+      }))
+      dataOfIncomeByDate.push({ id: year, data })
+      incomeAverageByYears[year] = average
+    }
   }
   return { incomeAverageByYears, dataOfIncomeByDate }
 }
 
 const StatisticsFinanceContent = () => {
-  const events = useRecoilValue(eventsAtom)
-  // const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const [month, setMonth] = useState()
   const [year, setYear] = useState()
-
-  const years = useMemo(() => getEventsYears(events), [events])
 
   const allClosedEvents = useRecoilValue(allClosedEventsSelector)
   const filteredEvents = allClosedEvents.filter(({ dateStart }) => {
@@ -111,6 +104,10 @@ const StatisticsFinanceContent = () => {
     [incomeOfEventsByDate, incomeOfInternalByDate]
   )
 
+  const years = Object.keys(incomeAverageByYears).sort((a, b) => a - b)
+
+  // if (dataOfIncomeByDate.length === 0) return 'Для формирования статистики необходимо закрыть хотябы одно мероприятие'
+
   useEffect(() => {
     const lastIncomeYearData =
       dataOfIncomeByDate[dataOfIncomeByDate.length - 1].data
@@ -125,77 +122,81 @@ const StatisticsFinanceContent = () => {
 
   return (
     <div className="flex flex-col items-center p-2 overflow-y-auto">
-      <LineChart
-        title="Чистая прибыль по месяцам"
-        onClick={(point, event) => {
-          // console.log({ point, event })
-          setMonth(monthsObj[point.data.x].index)
-          setYear(Number(point.serieId))
-        }}
-        colors={{ scheme: 'category10' }}
-        pointSymbol={({ borderColor, borderWidth, color, datum, size }) => (
-          <circle
-            r={
-              datum.year == year && datum.x === MONTHS[month] ? size : size / 2
-            }
-            fill={color}
-            stroke={borderColor}
-            strokeWidth={borderWidth}
-            style={{ pointerEvents: 'none' }}
-          />
-        )}
-        data={dataOfIncomeByDate}
-        // xAxisLegend="Месяц"
-        yAxisLegend="Прибыль, ₽"
-        // enableSlices="x"
-        markers={dataOfIncomeByDate.map(({ id }, index) => ({
-          axis: 'y',
-          legend: `${incomeAverageByYears[id]?.toFixed(0)} ₽`,
-          // position: 'left',
-          legendOffsetX: -8,
-          legendOffsetY: 0,
-          // legendOrientation: 'vertical',
-          textStyle: {
-            fill: nivoColors[index],
-            fontSize: 12,
-            textAnchor: 'start',
-            // margin: '20 0 0 0',
-          },
-          lineStyle: {
-            stroke: nivoColors[index],
-            strokeWidth: 1,
-            strokeDasharray: '8 6',
-          },
-          value: incomeAverageByYears[id],
-        }))}
-        tooltip={(data) => {
-          // console.log('data :>> ', data)
-          return (
-            <div
-              className="flex flex-col"
-              style={{
-                background: 'white',
-                padding: '5px 10px',
-                border: '1px solid',
-                borderColor: data.point.serieColor,
-              }}
-            >
-              <strong>
-                <span>
-                  {upperCaseFirst(monthsObj[data.point.data.x].name)}{' '}
-                </span>
-                <span
+      {years.length > 0 ? (
+        <>
+          <LineChart
+            title="Чистая прибыль по месяцам"
+            onClick={(point, event) => {
+              // console.log({ point, event })
+              setMonth(monthsObj[point.data.x].index)
+              setYear(Number(point.serieId))
+            }}
+            colors={{ scheme: 'category10' }}
+            pointSymbol={({ borderColor, borderWidth, color, datum, size }) => (
+              <circle
+                r={
+                  datum.year == year && datum.x === MONTHS[month]
+                    ? size
+                    : size / 2
+                }
+                fill={color}
+                stroke={borderColor}
+                strokeWidth={borderWidth}
+                style={{ pointerEvents: 'none' }}
+              />
+            )}
+            data={dataOfIncomeByDate}
+            // xAxisLegend="Месяц"
+            yAxisLegend="Прибыль, ₽"
+            // enableSlices="x"
+            markers={dataOfIncomeByDate.map(({ id }, index) => ({
+              axis: 'y',
+              legend: `${incomeAverageByYears[id]?.toFixed(0)} ₽`,
+              // position: 'left',
+              legendOffsetX: -8,
+              legendOffsetY: 0,
+              // legendOrientation: 'vertical',
+              textStyle: {
+                fill: nivoColors[index],
+                fontSize: 12,
+                textAnchor: 'start',
+                // margin: '20 0 0 0',
+              },
+              lineStyle: {
+                stroke: nivoColors[index],
+                strokeWidth: 1,
+                strokeDasharray: '8 6',
+              },
+              value: incomeAverageByYears[id],
+            }))}
+            tooltip={(data) => {
+              // console.log('data :>> ', data)
+              return (
+                <div
+                  className="flex flex-col"
                   style={{
-                    color: data.point.serieColor,
-                    padding: '3px 0',
+                    background: 'white',
+                    padding: '5px 10px',
+                    border: '1px solid',
+                    borderColor: data.point.serieColor,
                   }}
                 >
-                  {data.point.serieId}
-                </span>
-              </strong>
-              <div className="text-center text-black">{`${data.point.data.yFormatted} ₽`}</div>
-              {/* {slice.points.map((point) => ( */}
-              {/* <div
+                  <strong>
+                    <span>
+                      {upperCaseFirst(monthsObj[data.point.data.x].name)}{' '}
+                    </span>
+                    <span
+                      style={{
+                        color: data.point.serieColor,
+                        padding: '3px 0',
+                      }}
+                    >
+                      {data.point.serieId}
+                    </span>
+                  </strong>
+                  <div className="text-center text-black">{`${data.point.data.yFormatted} ₽`}</div>
+                  {/* {slice.points.map((point) => ( */}
+                  {/* <div
                 key={data.point.id}
                 style={{
                   color: data.point.serieColor,
@@ -205,116 +206,127 @@ const StatisticsFinanceContent = () => {
                 <strong>{data.point.serieId}</strong>
                 <span className="pl-2 text-black">{`${data.point.data.yFormatted} ₽`}</span>
               </div> */}
-              {/* ))} */}
-            </div>
-          )
-        }}
-        // sliceTooltip={({ slice }) => {
-        //   return (
-        //     <div
-        //       style={{
-        //         background: 'white',
-        //         padding: '9px 12px',
-        //         border: '1px solid #ccc',
-        //       }}
-        //     >
-        //       <div>
-        //         {upperCaseFirst(
-        //           MONTHS_FULL_1[slice.points[slice.points.length - 1].index]
-        //         )}
-        //       </div>
-        //       {slice.points.map((point) => (
-        //         <div
-        //           key={point.id}
-        //           style={{
-        //             color: point.serieColor,
-        //             padding: '3px 0',
-        //           }}
-        //         >
-        //           <strong>{point.serieId}</strong>
-        //           <span className="pl-2 text-black">{`${point.data.yFormatted} ₽`}</span>
-        //         </div>
-        //       ))}
-        //     </div>
-        //   )
-        // }}
-        legends={[
-          {
-            anchor: 'bottom',
-            direction: 'row',
-            justify: false,
-            translateX: 20,
-            translateY: 60,
-            itemsSpacing: 0,
-            itemDirection: 'left-to-right',
-            itemWidth: 80,
-            itemHeight: 20,
-            itemOpacity: 0.75,
-            symbolSize: 12,
-            symbolShape: 'circle',
-            symbolBorderColor: 'rgba(0, 0, 0, .5)',
-            effects: [
+                  {/* ))} */}
+                </div>
+              )
+            }}
+            // sliceTooltip={({ slice }) => {
+            //   return (
+            //     <div
+            //       style={{
+            //         background: 'white',
+            //         padding: '9px 12px',
+            //         border: '1px solid #ccc',
+            //       }}
+            //     >
+            //       <div>
+            //         {upperCaseFirst(
+            //           MONTHS_FULL_1[slice.points[slice.points.length - 1].index]
+            //         )}
+            //       </div>
+            //       {slice.points.map((point) => (
+            //         <div
+            //           key={point.id}
+            //           style={{
+            //             color: point.serieColor,
+            //             padding: '3px 0',
+            //           }}
+            //         >
+            //           <strong>{point.serieId}</strong>
+            //           <span className="pl-2 text-black">{`${point.data.yFormatted} ₽`}</span>
+            //         </div>
+            //       ))}
+            //     </div>
+            //   )
+            // }}
+            legends={[
               {
-                on: 'hover',
-                style: {
-                  itemBackground: 'rgba(0, 0, 0, .03)',
-                  itemOpacity: 1,
-                },
+                anchor: 'bottom',
+                direction: 'row',
+                justify: false,
+                translateX: 20,
+                translateY: 60,
+                itemsSpacing: 0,
+                itemDirection: 'left-to-right',
+                itemWidth: 80,
+                itemHeight: 20,
+                itemOpacity: 0.75,
+                symbolSize: 12,
+                symbolShape: 'circle',
+                symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemBackground: 'rgba(0, 0, 0, .03)',
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
               },
-            ],
-          },
-        ]}
-        // yScale={{
-        //   type: 'linear',
-        //   stacked: true,
-        // }}
-        // xScale={{
-        //   type: 'linear',
-        //   min: 0,
-        //   max: 'auto',
-        // }}
-        // axisLeft={{
-        //   legend: 'Прибыль',
-        //   legendOffset: -60,
-        // }}
-        // axisBottom={{
-        //   legend: 'Месяц',
-        //   legendOffset: 30,
-        // }}
-        // curve={select('curve', curveOptions, 'linear')}
-      />
-      <div className="flex w-full gap-x-1">
-        <MonthSelector month={month} onChange={setMonth} />
-        <YearSelector year={year} onChange={setYear} years={years} />
-      </div>
-      <div className="w-full">
-        <div>Кол-во мероприятий: {filteredEvents.length}</div>
+            ]}
+            // yScale={{
+            //   type: 'linear',
+            //   stacked: true,
+            // }}
+            // xScale={{
+            //   type: 'linear',
+            //   min: 0,
+            //   max: 'auto',
+            // }}
+            // axisLeft={{
+            //   legend: 'Прибыль',
+            //   legendOffset: -60,
+            // }}
+            // axisBottom={{
+            //   legend: 'Месяц',
+            //   legendOffset: 30,
+            // }}
+            // curve={select('curve', curveOptions, 'linear')}
+          />
+
+          <div className="flex w-full gap-x-1">
+            <MonthSelector month={month} onChange={setMonth} />
+            <YearSelector year={year} onChange={setYear} years={years} />
+          </div>
+          <div className="w-full">
+            <div>Кол-во мероприятий: {filteredEvents.length}</div>
+            <div>
+              Доход с мероприятий:{' '}
+              {incomeOfEventsByDate[year]
+                ? incomeOfEventsByDate[year][month]
+                : 0}{' '}
+              ₽
+            </div>
+            <div>
+              Внутренние:{' '}
+              {incomeOfInternalByDate[year]
+                ? incomeOfInternalByDate[year][month]
+                : 0}{' '}
+              ₽
+            </div>
+            <div>
+              ИТОГО:{' '}
+              {(incomeOfInternalByDate[year]
+                ? incomeOfInternalByDate[year][month]
+                : 0) +
+                (incomeOfEventsByDate[year]
+                  ? incomeOfEventsByDate[year][month]
+                  : 0)}{' '}
+              ₽
+            </div>
+            <div className="mt-5">
+              Средний доход в месяц в {year} году:{' '}
+              {incomeAverageByYears[year]?.toFixed(2)} ₽
+            </div>
+          </div>
+        </>
+      ) : (
         <div>
-          Доход с мероприятий:{' '}
-          {incomeOfEventsByDate[year] ? incomeOfEventsByDate[year][month] : 0} ₽
+          Для формирования финансовой статистики необходимо завершить и закрыть
+          хотябы одно мероприятие
         </div>
-        <div>
-          Внутренние:{' '}
-          {incomeOfInternalByDate[year]
-            ? incomeOfInternalByDate[year][month]
-            : 0}{' '}
-          ₽
-        </div>
-        <div>
-          ИТОГО:{' '}
-          {(incomeOfInternalByDate[year]
-            ? incomeOfInternalByDate[year][month]
-            : 0) +
-            (incomeOfEventsByDate[year]
-              ? incomeOfEventsByDate[year][month]
-              : 0)}{' '}
-          ₽
-        </div>
-        <div className="mt-5">
-          Средний доход в месяц в {year} году:{' '}
-          {incomeAverageByYears[year]?.toFixed(2)} ₽
-        </div>
-      </div>
+      )}
     </div>
   )
 }
