@@ -1,5 +1,6 @@
 import ContactsBlock from '@blocks/ContactsBlock'
 import EventsBlock from '@blocks/EventsBlock'
+import FooterBlock from '@blocks/FooterBlock'
 // import Fab from '@components/Fab'
 import FabMenu from '@components/FabMenu'
 import StateLoader from '@components/StateLoader'
@@ -26,6 +27,7 @@ export default function Home(props) {
         {/* <TitleBlock /> */}
         <EventsBlock />
         <ContactsBlock />
+        <FooterBlock />
         <FabMenu show={!hideFab} />
       </StateLoader>
     </>

@@ -1,8 +1,6 @@
 import CheckBox from '@components/CheckBox'
-// import Fab from '@components/Fab'
 import FabMenu from '@components/FabMenu'
 import LoadingSpinner from '@components/LoadingSpinner'
-// import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { faLock, faTimes, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
@@ -29,55 +27,41 @@ import tailwindConfig from 'tailwind.config.js'
 import resolveConfig from 'tailwindcss/resolveConfig'
 
 const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
-  // const setModals = useSetRecoilState(modalsAtom)
   const [close, setClose] = useState(false)
 
   const closeModal = () => {
     onClose && typeof onClose === 'function' && onClose()
     setClose(true)
-    // setTimeout(
-    //   () => setModals((modals) => modals.filter((modal) => modal.id !== id)),
-    //   200
-    // )
   }
 
   return (
     <motion.div
-      className={
-        cn(
-          'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 tablet:items-center justify-center w-full h-screen tablet:overflow-y-auto bg-gray-800',
-          subModalText ? 'tablet:pt-10 tablet:pb-5' : 'tablet:py-5'
-        )
-        //  + (rendered ? ' opacity-100' : ' opacity-0')
-      }
+      className={cn(
+        'absolute transform duration-200 top-0 left-0 bottom-0 right-0 z-50 flex bg-opacity-80 tablet:items-center justify-center tablet:overflow-y-auto bg-gray-800',
+        subModalText ? 'tablet:pt-10 tablet:pb-5' : 'tablet:py-5'
+      )}
       initial={{ opacity: 0 }}
       animate={{ opacity: close ? 0 : 1 }}
       transition={{ duration: 0.1 }}
       onMouseDown={closeModal}
     >
       <motion.div
-        className={
-          cn(
-            'flex flex-col items-center real-screen-height tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
-            title ? 'pt-3' : 'pt-12'
-          )
-          // + (rendered ? '' : ' scale-50')
-        }
+        className={cn(
+          'flex flex-col items-center h-full tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
+          title ? 'pt-3' : 'pt-12'
+        )}
         initial={{ scale: 0.5 }}
         animate={{ scale: close ? 0.5 : 1 }}
         transition={{ duration: 0.1 }}
         onMouseDown={(e) => e?.stopPropagation()}
       >
-        {/* <Tooltip title="Закрыть"> */}
         <div className="absolute right-2 top-2">
           <FontAwesomeIcon
             className="w-8 h-8 text-black duration-200 transform cursor-pointer hover:scale-110"
             icon={faTimes}
-            // size="1x"
             onClick={closeModal}
           />
         </div>
-        {/* </Tooltip> */}
         {title && (
           <div className="mx-10 mb-3 text-lg font-bold leading-6 text-center whitespace-pre-line">
             {title}
@@ -234,23 +218,15 @@ const RepeatCall = ({ onClickRepeat, onClickBackCall }) => {
   const [secondsLeft, setIsSecondsLeft] = useState(secondsToWait)
 
   const stopInterval = () => {
-    if (timer?.current) {
-      clearInterval(timer?.current)
-      // timer?.current = undefined
-    }
+    if (timer?.current) clearInterval(timer?.current)
   }
 
   const startInterval = () => {
-    // if (!timer?.current)
     stopInterval()
     timer.current = setInterval(() => {
       setIsSecondsLeft((state) => state - 1)
     }, 1000)
   }
-
-  // useEffect(() => console.log('timer?.current', timer?.current), [secondsLeft])
-
-  // var timer
 
   useEffect(() => {
     if (secondsLeft === secondsToWait) {
@@ -258,23 +234,7 @@ const RepeatCall = ({ onClickRepeat, onClickBackCall }) => {
     } else if (timer?.current && secondsLeft <= 0) {
       stopInterval()
     }
-    // return () => {
-    //   console.log('Child unmounted')
-    //   if (timer) clearInterval(timer)
-    // }
-    // return () => {
-    //   clearInterval(timer.current)
-    // }
   }, [secondsLeft])
-
-  // useEffect(() => {
-  //   startInterval()
-  //   return () => {
-  //     stopInterval()
-  //   }
-  // }, [])
-
-  // console.log('timer', timer)
 
   return (
     <div className="mt-2">
@@ -293,9 +253,6 @@ const RepeatCall = ({ onClickRepeat, onClickBackCall }) => {
             >
               Повторный звонок
             </div>
-            {/* <div onClick={onClickBackCall} className="font-bold cursor-pointer">
-              {`Я сам(а) позвоню!`}
-            </div> */}
           </div>
         </>
       )}
@@ -329,9 +286,7 @@ const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
 
 const LoginPage = (props) => {
   const router = useRouter()
-  // const { data: session, status } = useSession()
-  // const { courseId, lectureId } = router.query
-  // const [codeSendService, setCodeSendService]
+
   const [process, setProcess] = useState('authorization')
   const [registrationLevel, setRegistrationLevel] = useState(1)
   const [backCall, setBackCall] = useState(false)
@@ -342,9 +297,9 @@ const LoginPage = (props) => {
   const [inputPinCode, setInputPinCode] = useState('')
   const [inputPasswordRepeat, setInputPasswordRepeat] = useState('')
   const [checkHave18Years, setCheckHave18Years] = useState(false)
-  // const [errors, setErrors] = useState({})
+  const [checkAgreement, setCheckAgreement] = useState(false)
+  const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
-  // const [needToCheckMail, setNeedToCheckMail] = useState(false)
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
 
@@ -385,15 +340,12 @@ const LoginPage = (props) => {
 
     if (inputPhone === '') {
       return addError({ phone: 'Укажите телефон' })
-      // newErrors.phone = 'Укажите телефон'
     } else if (!phoneValidator(inputPhone)) {
-      // newErrors.phone = 'Телефон указан не верно'
       return addError({ phone: 'Телефон указан не верно' })
     }
 
     if (process === 'authorization') {
       if (inputPassword === '') {
-        // newErrors.password = 'Введите пароль'
         return addError({ password: 'Введите пароль' })
       }
     } else if (process === 'registration' || process === 'forgotPassword') {
@@ -403,10 +355,8 @@ const LoginPage = (props) => {
             password: 'Пароль должен быть длинной не менее 8 символов',
             // 'Пароль должен быть длинной не менее 8 символов, содержать строчные и заглавные буквы, а также минимум одну цифру',
           })
-          // newErrors.password =
           //   'Пароль должен содержать строчные и заглавные буквы, а также минимум одну цифру'
         } else if (inputPassword !== inputPasswordRepeat) {
-          // newErrors.password = 'Пароли не совпадают'
           return addError({ password: 'Пароли не совпадают' })
         }
       }
@@ -731,7 +681,7 @@ const LoginPage = (props) => {
     !varifyPhone ||
     (process === 'authorization' && inputPassword.length === 0) ||
     (process === 'registration' &&
-      ((registrationLevel === 1 && !checkHave18Years) ||
+      ((registrationLevel === 1 && (!checkHave18Years || !checkAgreement)) ||
         (registrationLevel === 2 && inputPinCode.length !== 4) ||
         (registrationLevel === 3 &&
           (inputPassword.length === 0 || inputPasswordRepeat.length === 0)))) ||
@@ -741,7 +691,7 @@ const LoginPage = (props) => {
           (inputPassword.length === 0 || inputPasswordRepeat.length === 0))))
 
   return (
-    <div className="box-border w-screen h-screen overflow-y-auto">
+    <div className="box-border w-full h-screen overflow-y-auto">
       {/* <Wave /> */}
       {/* <Image src="/public/img/login/wave.svg" width={174} height={84} /> */}
       <SvgWave
@@ -915,19 +865,46 @@ const LoginPage = (props) => {
                 hidden={process === 'authorization' || registrationLevel !== 3}
                 readOnly={waitingResponse}
               />
-              <CheckBox
-                checked={checkHave18Years}
-                labelPos="right"
-                onChange={(e) => setCheckHave18Years(!checkHave18Years)}
-                label="Мне исполнилось 18 лет"
-                wrapperClassName={cn(
-                  'overflow-hidden',
-                  process === 'registration' && registrationLevel === 1
-                    ? 'max-h-15 my-2 py-3'
-                    : ''
-                )}
-                hidden={process !== 'registration' || registrationLevel !== 1}
-              />
+              {process === 'registration' && registrationLevel === 1 && (
+                <>
+                  <CheckBox
+                    checked={checkHave18Years}
+                    labelPos="right"
+                    onChange={(e) => setCheckHave18Years(!checkHave18Years)}
+                    label="Мне исполнилось 18 лет"
+                    wrapperClassName={cn(
+                      'overflow-hidden',
+                      process === 'registration' && registrationLevel === 1
+                        ? 'max-h-15 mb-3 mt-2 py-1'
+                        : ''
+                    )}
+                    // hidden={process !== 'registration' || registrationLevel !== 1}
+                  />
+                  <CheckBox
+                    checked={checkAgreement}
+                    labelPos="right"
+                    onChange={(e) => setCheckAgreement(!checkAgreement)}
+                    label={
+                      <span>
+                        Согласен на{' '}
+                        <span
+                          onClick={() => setShowAgreement(true)}
+                          className="italic duration-300 cursor-pointer text-general hover:text-success"
+                        >
+                          обработку персональных данных
+                        </span>
+                      </span>
+                    }
+                    wrapperClassName={cn(
+                      'overflow-hidden',
+                      process === 'registration' && registrationLevel === 1
+                        ? 'max-h-15 mt-3 py-1 mb-4'
+                        : ''
+                    )}
+                    // hidden={process !== 'registration' || registrationLevel !== 1}
+                  />
+                </>
+              )}
 
               {Object.values(errors).length > 0 && (
                 <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
@@ -1175,6 +1152,113 @@ const LoginPage = (props) => {
                 />
               </div>
             )}
+        </Modal>
+      )}
+      {showAgreement && (
+        <Modal onClose={() => setShowAgreement(false)}>
+          <div className="flex flex-col items-center p-2 tablet:p-4">
+            <div className="text-lg font-bold">
+              Соглашение на обработку персональных данных
+            </div>
+            <div>
+              Настоящим я, во исполнение требований Федерального закона от
+              27.07.2006 г. No 152-ФЗ «О персональных данных» (с изменениями и
+              дополнениями) свободно, своей волей и своем интересе, а также
+              подтверждая свою дееспособность, даю свое согласие Губиной Н.К.
+              руководителю центру серьезных знакомств «Половинка успеха» (ИНН
+              246522509987), зарегистрированной в соответствии с
+              законодательством РФ по адресу: 660098, Красноярский край, г.
+              Красноярск, ул. Урванцева (далее – Центр), сайт Центра:
+              https://половинкауспеха.рф на обработку своих персональных данных
+              со следующими условиям:{' '}
+              <ol>
+                <li>
+                  1. Данное Согласие дается на обработку персональных данных,
+                  как без использования средств автоматизации, так и с их
+                  использованием. Согласие дается на обработку следующих моих
+                  персональных данных: фамилия, имя, отчество; номер телефона;
+                  электронная почта; дата рождения, семейное положение, контакты
+                  соц. сетей, пользовательские данные (сведения о
+                  местоположении, тип и версия ОС, тип и версия Браузера, тип
+                  устройства и разрешение его экрана; источник, откуда пришел на
+                  сайт пользователь; с какого сайта или по какой рекламе; язык
+                  ОС и Браузера; какие страницы открывает и на какие кнопки
+                  нажимает пользователь; ip-адрес), а также иная общедоступная
+                  информация обо мне.
+                </li>
+                <li>
+                  2. Цель обработки персональных данных:
+                  <ul>
+                    <li>
+                      • обработка входящих запросов физических лиц с целью
+                      оказания консультирования по различным вопросам,
+                      относящимся к сфере деятельности Центра;
+                    </li>
+                    <li>
+                      • направление в адрес физических лиц информации, в том
+                      числе рекламной, о мероприятиях/товарах/услугах/работах
+                      Центра;
+                    </li>
+                    <li>
+                      • аналитики действий физического лица на веб-сайте и
+                      функционирования веб-сайта.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  3. Основанием для обработки персональных данных является
+                  статья 24 Конституции Российской Федерации; статья 6
+                  Федерального закона No 152-ФЗ «О персональных данных»;
+                  настоящее Согласие посетителя сайта на обработку персональных
+                  данных.
+                </li>
+                <li>
+                  4. В ходе обработки с персональными данными будут совершены
+                  следующие действия: сбор, запись, систематизация, накопление,
+                  хранение, уточнение (обновление, изменение), извлечение,
+                  использование, передача (распространение, предоставление,
+                  доступ), блокирование, удаление, уничтожение.
+                </li>
+                <li>
+                  5. Настоящим я уведомлен Центром, что предполагаемыми
+                  пользователями персональных данных являются пользователи
+                  Центра.
+                </li>
+                <li>6. Я ознакомлен (а), что:</li>
+                <li>
+                  6.1. настоящее Согласие на обработку моих персональных данных
+                  является бессрочным и может быть отозвано посредством
+                  направления мною уведомления на электронный адрес Центра
+                  polovinka.krsk24@gmail.com.
+                </li>
+                <li>
+                  6.2. имею право на доступ к моим персональным данным,
+                  требовать уточнения (обновление, изменение) моих персональных
+                  данных, а также удаления и уничтожения моих персональных
+                  данных в случае их обработки Центром, нарушающих мои законные
+                  права и интересы, законодательство Российской Федерации.
+                </li>
+                <li>
+                  6.3. в случае отзыва Согласия на обработку персональных данных
+                  Центр вправе продолжить обработку персональных данных без
+                  моего согласия при наличии оснований, указанных в пунктах 2.11
+                  части 1 статьи 6, части 2 статьи 10 и части 2 статьи 11
+                  Федерального закона No152-ФЗ «О персональных данных» от
+                  27.07.2006 г.
+                </li>
+                <li>
+                  7. Настоящим Согласием я подтверждаю, что являюсь субъектом
+                  предоставляемых персональных данных, а также подтверждаю
+                  достоверность предоставляемых данных.
+                </li>
+                <li>
+                  8. Настоящее Согласие действует все время до момента
+                  прекращения обработки персональных данных, согласно п. 6.1
+                  Согласия.
+                </li>
+              </ol>
+            </div>
+          </div>
         </Modal>
       )}
     </div>

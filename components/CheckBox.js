@@ -23,7 +23,7 @@ const CheckBox = ({
     (!readOnly || checked) && (
       <div
         className={cn(
-          'flex gap-x-1 pl-1 items-center',
+          'flex gap-x-1.5 pl-1 items-center',
           noMargin ? '' : 'my-2',
           hidden ? 'hidden' : '',
           wrapperClassName
