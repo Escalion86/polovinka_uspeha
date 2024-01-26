@@ -3,6 +3,7 @@ import AdditionalBlocks from '@blocks/AdditionalBlocks'
 import ContactsBlock from '@blocks/ContactsBlock'
 import DirectionsBlock from '@blocks/DirectionsBlock'
 import EventsBlock from '@blocks/EventsBlock'
+import FooterBlock from '@blocks/FooterBlock'
 import ReviewsBlock from '@blocks/ReviewsBlock'
 import ServicesBlock from '@blocks/ServicesBlock'
 import SupervisorBlock from '@blocks/SupervisorBlock'
@@ -59,6 +60,7 @@ export default function Home(props) {
         <AdditionalBlocks />
         <ReviewsBlock />
         <ContactsBlock />
+        <FooterBlock />
         <FabMenu show={!hideFab} />
         {/* <div className="flex flex-col items-start px-10 py-5 text-sm font-thin text-white bg-black min-h-80 tablet:px-20">
             <div>

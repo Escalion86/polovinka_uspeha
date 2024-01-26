@@ -135,6 +135,7 @@ const FabMenu = ({ show = true, ping = true }) => {
           className={cn(
             'z-10 relative flex items-center justify-center rounded-full cursor-pointer fab w-[48px] h-[48px] group max-h-[48px] max-w-[48px] bg-general'
           )}
+          style={{ boxShadow: '0 0px 5px rgba(255, 255, 255, 1)' }}
         >
           <FontAwesomeIcon
             className="z-10 w-6 h-6 text-white duration-200 max-w-6 max-h-6 group-hover:scale-125"
