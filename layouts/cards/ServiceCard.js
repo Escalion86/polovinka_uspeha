@@ -102,13 +102,7 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
       <div className="flex flex-col w-full">
         <div className="flex">
           <TextLinesLimiter
-            className={cn(
-              'flex-1 px-2 py-1 text-xl font-bold',
-              changeStyle === 'laptop'
-                ? 'laptop:hidden laptop:text-xl'
-                : 'desktop:hidden desktop:text-xl'
-            )}
-            // textClassName="leading-5"
+            className="flex-1 px-2 py-1 text-xl font-bold"
             lines={1}
           >
             {service?.title ?? '[неизвестная услуга]'}
