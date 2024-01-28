@@ -3,6 +3,7 @@ import { CardWrapper } from '@components/CardWrapper'
 import { UserItem } from '@components/ItemCards'
 import PriceDiscount from '@components/PriceDiscount'
 import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'
+import TextLinesLimiter from '@components/TextLinesLimiter'
 import { modalsFuncAtom } from '@state/atoms'
 import errorAtom from '@state/atoms/errorAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -49,9 +50,15 @@ const ServiceUserCard = ({
     >
       <div className={cn('flex flex-col w-full')}>
         <div className="flex w-full">
-          <div className="flex-1 px-2 py-1 text-lg font-bold text-general">
+          <TextLinesLimiter
+            className="flex-1 px-2 py-1 text-base font-bold tablet:text-lg text-general"
+            lines={1}
+          >
+            {service?.title ?? '[неизвестная услуга]'}
+          </TextLinesLimiter>
+          {/* <div className="flex-1 px-2 py-1 text-lg font-bold text-general">
             {service?.title ?? '[услуга не найдена]'}
-          </div>
+          </div> */}
           <CardButtons
             item={serviceUser}
             typeOfItem="serviceUser"
