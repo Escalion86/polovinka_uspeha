@@ -40,7 +40,7 @@ const serviceUserViewFunc = (serviceUserId) => {
     return (
       <div className="flex flex-col gap-y-1">
         <TextLine label="Дата заявки">
-          {formatDateTime(service?.createdAt)}
+          {formatDateTime(serviceUser?.createdAt)}
         </TextLine>
         <TextLine label="Услуга">
           {service.title}

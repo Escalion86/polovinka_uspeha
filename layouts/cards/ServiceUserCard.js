@@ -92,7 +92,7 @@ const ServiceUserCard = ({
           {service && (
             <>
               <div className="flex-1 text-sm">
-                {formatDateTime(service?.createdAt)}
+                {formatDateTime(serviceUser?.createdAt)}
               </div>
               {serviceUser.status === 'active' ? (
                 <QuestionnaireAnswersFill
