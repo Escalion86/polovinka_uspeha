@@ -103,7 +103,10 @@ const StatisticsFinanceContent = () => {
     [incomeOfEventsByDate, incomeOfInternalByDate]
   )
 
-  const years = Object.keys(incomeAverageByYears).sort((a, b) => a - b)
+  const years = useMemo(
+    () => Object.keys(incomeAverageByYears).sort((a, b) => a - b),
+    [incomeAverageByYears]
+  )
 
   useEffect(() => {
     if (years.length > 0) {

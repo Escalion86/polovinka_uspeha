@@ -99,10 +99,6 @@ const eventViewFunc = (eventId) => {
 
     const isEventClosed = isEventClosedFunc(event)
 
-    // const eventLoggedUserStatus = useRecoilValue(
-    //   loggedUserToEventStatusSelector(eventId)
-    // )?.isEventInProcess
-
     useEffect(() => {
       if (canEdit && setTopLeftComponent) {
         setTopLeftComponent(() => (
@@ -117,9 +113,6 @@ const eventViewFunc = (eventId) => {
           ОШИБКА! Мероприятие не найдено!
         </div>
       )
-
-    // const finishedDateTime =
-    //   new Date(event?.date).getTime() + (event?.duration ?? 0) * 60000
 
     return (
       <div className="flex flex-col gap-y-2">
@@ -151,8 +144,6 @@ const eventViewFunc = (eventId) => {
             <div className="flex justify-center w-full text-3xl font-bold">
               {event?.title}
             </div>
-
-            {/* <p className="flex-1">{event.description}</p> */}
             <div
               className="w-full max-w-full overflow-hidden list-disc textarea ql"
               dangerouslySetInnerHTML={{
@@ -194,7 +185,6 @@ const eventViewFunc = (eventId) => {
                   />
                 </a>
                 <a
-                  // className="laptop:hidden"
                   data-tip="Открыть адрес в Яндекс Навигаторе"
                   href={`yandexnavi://map_search?text=${
                     event.address.town
@@ -225,10 +215,6 @@ const eventViewFunc = (eventId) => {
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
             <EventUsersCounterAndAge eventId={eventId} showAges />
             {(isLoggedUserMember || seeEventsUsers) && (
-              // <Button
-              //   name="Посмотреть участников"
-              //   onClick={() => modalsFunc.event.users(eventId)}
-              // />
               <ValueItem
                 name="Посмотреть участников"
                 color="green-500"
@@ -238,12 +224,6 @@ const eventViewFunc = (eventId) => {
               />
             )}
           </div>
-          {/* <Divider thin light /> */}
-
-          {/* <div className="flex flex-wrap justify-center flex-1 px-4 text-lg font-bold gap-x-1 text-general">
-            <div>{formatDateTime(event.date)}</div>
-            <div className="font-normal">({getDaysFromNow(event.date)})</div>
-          </div> */}
           <Divider thin light />
           <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
             <PriceDiscount item={event} className="px-2" prefix="Стоимость:" />
@@ -258,13 +238,6 @@ const eventViewFunc = (eventId) => {
     title: `Мероприятие`,
     confirmButtonName: 'Записаться',
     Children: EventViewModal,
-    // TopLeftComponent: () => (
-    //   <CardButtons
-    //     item={{ _id: eventId }}
-    //     typeOfItem="event"
-    //     forForm
-    //   />
-    // ),
   }
 }
 

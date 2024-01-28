@@ -4,7 +4,7 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import { getNounPayments } from '@helpers/getNoun'
 import paymentSectorFunc from '@helpers/paymentSector'
-import sortFunctions from '@helpers/sortFunctions'
+import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import PaymentsList from '@layouts/lists/PaymentsList'
 import { modalsFuncAtom } from '@state/atoms'
 import paymentsAtom from '@state/atoms/paymentsAtom'
@@ -18,7 +18,6 @@ const PaymentsContent = () => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.payments?.add
 
-  const [sort, setSort] = useState({ payAt: 'asc' })
   const [filter, setFilter] = useState({
     payType: {
       card: true,
@@ -44,11 +43,8 @@ const PaymentsContent = () => {
     },
   })
 
-  const sortKey = Object.keys(sort)[0]
-  const sortValue = sort[sortKey]
-  const sortFunc = sortFunctions[sortKey]
-    ? sortFunctions[sortKey][sortValue]
-    : undefined
+  const [sort, setSort] = useState({ payAt: 'asc' })
+  const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
   // const visiblePaymentsIds = useMemo(
   //   () =>

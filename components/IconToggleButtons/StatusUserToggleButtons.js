@@ -2,11 +2,14 @@ import { faBan } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import Image from 'next/image'
+import { useRecoilValue } from 'recoil'
 
 const StatusUserToggleButtons = ({ value, onChange }) => {
+  const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
   return (
-    <ButtonGroup>
+    <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
       <Button
         onClick={() =>
           onChange({

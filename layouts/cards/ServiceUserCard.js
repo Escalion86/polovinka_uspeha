@@ -3,6 +3,8 @@ import { CardWrapper } from '@components/CardWrapper'
 import { UserItem } from '@components/ItemCards'
 import PriceDiscount from '@components/PriceDiscount'
 import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'
+import TextLinesLimiter from '@components/TextLinesLimiter'
+import formatDateTime from '@helpers/formatDateTime'
 import { modalsFuncAtom } from '@state/atoms'
 import errorAtom from '@state/atoms/errorAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -49,9 +51,15 @@ const ServiceUserCard = ({
     >
       <div className={cn('flex flex-col w-full')}>
         <div className="flex w-full">
-          <div className="flex-1 px-2 py-1 text-lg font-bold text-general">
+          <TextLinesLimiter
+            className="flex-1 px-2 py-1 text-base font-bold tablet:text-lg text-general"
+            lines={1}
+          >
+            {service?.title ?? '[неизвестная услуга]'}
+          </TextLinesLimiter>
+          {/* <div className="flex-1 px-2 py-1 text-lg font-bold text-general">
             {service?.title ?? '[услуга не найдена]'}
-          </div>
+          </div> */}
           <CardButtons
             item={serviceUser}
             typeOfItem="serviceUser"
@@ -80,19 +88,24 @@ const ServiceUserCard = ({
             <UserItem item={user} />
           </div>
         )}
-        <div className="flex items-center py-0.5 px-1 h-10 border-t border-gray-400">
+        <div className="flex gap-x-2 items-center py-0.5 px-1 h-10 border-t border-gray-400">
           {service && (
             <>
-              <PriceDiscount
-                item={service}
-                priceForStatus={user.status}
-                className="flex-1"
-              />
-              <QuestionnaireAnswersFill
-                answers={serviceUser.answers}
-                questionnaireData={service.questionnaire?.data}
-                small
-              />
+              <div className="flex-1 text-sm">
+                {formatDateTime(service?.createdAt)}
+              </div>
+              {serviceUser.status === 'active' ? (
+                <QuestionnaireAnswersFill
+                  answers={serviceUser.answers}
+                  questionnaireData={service.questionnaire?.data}
+                  small
+                />
+              ) : serviceUser.status === 'closed' ? (
+                <div className="font-bold text-success">ИСПОЛНЕНО</div>
+              ) : (
+                <div className="font-bold text-danger">ОТМЕНЕНО</div>
+              )}
+              <PriceDiscount item={service} priceForStatus={user.status} />
             </>
           )}
         </div>

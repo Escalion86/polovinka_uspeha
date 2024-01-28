@@ -1,7 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
+import { useRecoilValue } from 'recoil'
 
 const ToggleButtons = ({
   value,
@@ -10,6 +12,8 @@ const ToggleButtons = ({
   canSelectNone,
   iconsOnly,
 }) => {
+  const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
+
   const onClick = (item) => {
     const result = { ...value, [item.value]: !value[item.value] }
     if (!canSelectNone) {
@@ -32,7 +36,7 @@ const ToggleButtons = ({
   }
 
   return (
-    <ButtonGroup>
+    <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
       {buttonsConfig.map((cfg) => {
         return (
           <Button

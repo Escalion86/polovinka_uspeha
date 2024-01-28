@@ -2,6 +2,7 @@ import Button from '@components/Button'
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import PriceDiscount from '@components/PriceDiscount'
+import TextLinesLimiter from '@components/TextLinesLimiter'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
@@ -100,9 +101,15 @@ const ServiceCard = ({ serviceId, hidden = false, style }) => {
       )}
       <div className="flex flex-col w-full">
         <div className="flex">
-          <div className="flex-1 px-2 py-1 text-xl font-bold ">
+          <TextLinesLimiter
+            className="flex-1 px-2 py-1 text-xl font-bold"
+            lines={1}
+          >
+            {service?.title ?? '[неизвестная услуга]'}
+          </TextLinesLimiter>
+          {/* <div className="flex-1 px-2 py-1 text-xl font-bold ">
             {service.title}
-          </div>
+          </div> */}
           <CardButtons
             item={service}
             typeOfItem="service"

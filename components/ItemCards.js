@@ -299,14 +299,17 @@ export const ServiceItem = ({
   item,
   onClick = null,
   active = false,
-  bordered = false,
+  className,
+  noBorder,
+  style,
 }) => (
   <ItemContainer
     onClick={onClick}
     active={active}
-    className={cn('flex h-[50px]', bordered ? 'border border-gray-500' : '')}
+    className={cn('flex h-[50px]', className)}
     noPadding
-    noBorder={bordered}
+    noBorder={noBorder}
+    style={style}
   >
     {item?.images && item?.images.length > 0 && (
       <img

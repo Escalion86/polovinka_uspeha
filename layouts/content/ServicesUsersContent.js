@@ -2,9 +2,12 @@ import ContentHeader from '@components/ContentHeader'
 import UsersFilter from '@components/Filter/UsersFilter'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
+import ServiceStatusToggleButtons from '@components/IconToggleButtons/ServiceStatusToggleButtons'
 import Search from '@components/Search'
+import SortingButtonMenu from '@components/SortingButtonMenu'
 import filterItems from '@helpers/filterItems'
 import { getNounServicesUsers } from '@helpers/getNoun'
+import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
 import { modalsFuncAtom } from '@state/atoms'
 import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
@@ -26,10 +29,14 @@ const ServicesUsersContent = () => {
       famale: true,
       // null: true,
     },
-    // status: {
-    //   novice: true,
-    //   member: true,
-    // },
+  })
+
+  const [filterService, setFilterService] = useState({
+    status: {
+      active: true,
+      closed: false,
+      canceled: false,
+    },
   })
 
   // const usersIds = servicesUsers.map((serviceUser) => serviceUser.userId)
@@ -45,23 +52,23 @@ const ServicesUsersContent = () => {
   )
 
   const [isSearching, setIsSearching] = useState(false)
-  // const [sort, setSort] = useState({ dateStart: 'asc' })
   // const [showFilter, setShowFilter] = useState(false)
 
   const [searchText, setSearchText] = useState('')
 
-  // const sortKey = Object.keys(sort)[0]
-  // const sortValue = sort[sortKey]
-  // const sortFunc = sortFunctions[sortKey]
-  //   ? sortFunctions[sortKey][sortValue]
-  //   : undefined
+  const [sort, setSort] = useState({ createdAt: 'asc' })
+  const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
   const filteredServicesUsers = useMemo(
     () =>
       updatedServicesUsers.filter(
-        (serviceUser) => filter.gender[serviceUser.user.gender]
+        (serviceUser) =>
+          filter.gender[serviceUser.user.gender] &&
+          (serviceUser.status
+            ? filterService.status[serviceUser.status]
+            : filterService.status.active)
       ),
-    [filter, updatedServicesUsers]
+    [filter, filterService, updatedServicesUsers]
   )
 
   const visibleServicesUsers = useMemo(() => {
@@ -87,14 +94,30 @@ const ServicesUsersContent = () => {
     )
   }, [filteredServicesUsers, searchText])
 
+  const filteredAndSortedServicesUsers = useMemo(
+    () => [...visibleServicesUsers].sort(sortFunc),
+    [visibleServicesUsers, sort]
+  )
+
   return (
     <>
       <ContentHeader>
         <UsersFilter value={filter} onChange={setFilter} hideNullGender />
+        <ServiceStatusToggleButtons
+          value={filterService.status}
+          onChange={(value) =>
+            setFilterService((state) => ({ ...state, status: value }))
+          }
+        />
         <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
           <div className="text-lg font-bold whitespace-nowrap">
-            {getNounServicesUsers(visibleServicesUsers.length)}
+            {getNounServicesUsers(filteredAndSortedServicesUsers.length)}
           </div>
+          <SortingButtonMenu
+            sort={sort}
+            onChange={setSort}
+            sortKeys={['createdAt']}
+          />
           <SearchToggleButton
             value={isSearching}
             onChange={() => {
@@ -115,7 +138,7 @@ const ServicesUsersContent = () => {
       />
       {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
       {/* <CardListWrapper> */}
-      <ServicesUsersList servicesUsers={visibleServicesUsers} />
+      <ServicesUsersList servicesUsers={filteredAndSortedServicesUsers} />
     </>
   )
 }
