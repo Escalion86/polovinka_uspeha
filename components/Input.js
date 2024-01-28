@@ -37,6 +37,7 @@ const Input = forwardRef(
     },
     ref
   ) => {
+    console.log('value :>> ', value)
     return (
       <InputWrapper
         label={label}
@@ -75,8 +76,9 @@ const Input = forwardRef(
                 : 'cursor-pointer text-general hover:text-success'
             )}
             onClick={() => {
-              if (typeof min !== 'number' || value > min)
+              if (typeof min !== 'number')
                 onChange(Number(value) - Number(step))
+              else onChange(Math.max(Number(value) - Number(step), min))
             }}
           >
             <FontAwesomeIcon icon={faArrowDown} className="w-5 h-5" />
@@ -95,7 +97,13 @@ const Input = forwardRef(
           min={min}
           max={max}
           disabled={disabled}
-          value={value === null ? '' : value}
+          value={
+            value === null
+              ? ''
+              : typeof value === 'number'
+              ? String(value)
+              : value
+          }
           defaultValue={defaultValue}
           onChange={(e) => {
             const { value } = e.target
@@ -104,7 +112,7 @@ const Input = forwardRef(
                 (typeof min !== 'number' || value >= min) &&
                 (typeof max !== 'number' || value <= max)
               ) {
-                if (value === '') onChange(parseInt(value))
+                if (value === '') onChange(0)
                 else onChange(parseInt(value))
               }
             } else {
@@ -125,8 +133,9 @@ const Input = forwardRef(
                 : 'cursor-pointer text-general hover:text-success'
             )}
             onClick={() => {
-              if (typeof max !== 'number' || value < max)
-                onChange(Math.min(Number(value) + Number(step), max))
+              if (typeof max !== 'number')
+                onChange(Number(value) + Number(step))
+              else onChange(Math.min(Number(value) + Number(step), max))
             }}
           >
             <FontAwesomeIcon icon={faArrowUp} className="w-5 h-5" />
