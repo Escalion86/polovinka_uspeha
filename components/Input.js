@@ -37,7 +37,6 @@ const Input = forwardRef(
     },
     ref
   ) => {
-    console.log('value :>> ', value)
     return (
       <InputWrapper
         label={label}
