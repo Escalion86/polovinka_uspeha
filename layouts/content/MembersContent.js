@@ -6,7 +6,7 @@ import Search from '@components/Search'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import filterItems from '@helpers/filterItems'
 import { getNounUsers } from '@helpers/getNoun'
-import sortFunctions from '@helpers/sortFunctions'
+import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import UsersList from '@layouts/lists/UsersList'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -22,7 +22,7 @@ const MembersContent = () => {
   const seeFullNames = loggedUserActiveRole?.users?.seeFullNames
 
   const [isSearching, setIsSearching] = useState(false)
-  const [sort, setSort] = useState({ name: 'asc' })
+
   const [filter, setFilter] = useState({
     gender: {
       male: true,
@@ -40,11 +40,8 @@ const MembersContent = () => {
   })
   const [searchText, setSearchText] = useState('')
 
-  const sortKey = Object.keys(sort)[0]
-  const sortValue = sort[sortKey]
-  const sortFunc = sortFunctions[sortKey]
-    ? sortFunctions[sortKey][sortValue]
-    : undefined
+  const [sort, setSort] = useState({ name: 'asc' })
+  const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
   const filteredUsers = useMemo(() => {
     const filteredMembers = members.filter(

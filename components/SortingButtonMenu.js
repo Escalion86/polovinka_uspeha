@@ -42,7 +42,7 @@ const sortParams = [
   },
   { key: 'dateStart', title: 'по дате', type: 'number' },
   { key: 'birthday', title: 'по возрасту', type: 'number' },
-  { key: 'createdAt', title: 'по дате регистрации', type: 'number' },
+  { key: 'createdAt', title: 'по дате создания', type: 'number' },
   { key: 'payAt', title: 'по дате события', type: 'number' },
   {
     key: 'eventsUserCount',
@@ -144,7 +144,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [] }) => {
     >
       <div className="relative">
         <motion.div
-          className="z-0 absolute bg-white flex flex-col top-10 right-0 overflow-hidden duration-300 border border-gray-300 rounded"
+          className="absolute right-0 z-0 flex flex-col overflow-hidden duration-300 bg-white border border-gray-300 rounded top-10"
           variants={variants}
           animate={isUserMenuOpened ? 'show' : 'hide'}
           initial="hide"

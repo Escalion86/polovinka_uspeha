@@ -13,7 +13,7 @@ import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import isEventExpiredFunc from '@helpers/isEventExpired'
-import sortFunctions from '@helpers/sortFunctions'
+import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import EventsList from '@layouts/lists/EventsList'
 import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
@@ -47,7 +47,6 @@ const EventsContent = () => {
   const eventsTags = siteSettings.eventsTags ?? []
 
   const [isSearching, setIsSearching] = useState(false)
-  const [sort, setSort] = useState({ dateStart: 'asc' })
   const [showFilter, setShowFilter] = useState(false)
   const [filter, setFilter] = useState({
     status: {
@@ -63,11 +62,8 @@ const EventsContent = () => {
   })
   const [searchText, setSearchText] = useState('')
 
-  const sortKey = Object.keys(sort)[0]
-  const sortValue = sort[sortKey]
-  const sortFunc = sortFunctions[sortKey]
-    ? sortFunctions[sortKey][sortValue]
-    : undefined
+  const [sort, setSort] = useState({ dateStart: 'asc' })
+  const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
   const defaultFilterValue = {
     directions: '',

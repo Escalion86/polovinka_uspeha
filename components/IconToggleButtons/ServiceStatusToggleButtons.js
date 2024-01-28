@@ -39,7 +39,7 @@ const ServiceStatusToggleButtons = ({ value, onChange }) => {
         color="green"
         className={value.closed ? 'text-white' : 'text-green-400'}
       >
-        Закрыты
+        Исполнены
       </Button>
       <Button
         onClick={() =>

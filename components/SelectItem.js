@@ -252,7 +252,7 @@ export const SelectUser = ({
     >
       <SelectItem
         items={filteredUsers}
-        itemComponent={(props) => UserItem({ ...props, bordered })}
+        itemComponent={UserItem}
         componentHeight={40}
         selectedId={selectedId}
         className={cn(
@@ -323,7 +323,7 @@ export const SelectService = ({
     >
       <SelectItem
         items={filteredServices}
-        itemComponent={(props) => ServiceItem({ ...props, bordered })}
+        itemComponent={ServiceItem}
         componentHeight={40}
         selectedId={selectedId}
         className={cn(

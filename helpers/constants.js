@@ -802,7 +802,7 @@ export const DEFAULT_ROLES = [
       add: false,
       edit: false,
       delete: false,
-      statusEdit: true,
+      statusEdit: false,
     },
     products: {
       see: false,
