@@ -19,7 +19,7 @@ const IconToggleButton = ({
           size === 's' ? 'h-9 min-w-9' : 'h-10 min-w-10'
         )}
         size="small"
-        value={value}
+        value={value ?? ''}
         selected={!!selected}
         onChange={onChange}
         color={color}

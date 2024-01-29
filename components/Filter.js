@@ -1,11 +1,11 @@
 import FilterAltOff from '@mui/icons-material/FilterAltOff'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import ChipsSelector from './Chips/ChipsSelector'
 import DirectionSelector from './ComboBox/DirectionSelector'
+import ServiceSelector from './ComboBox/ServiceSelector'
+import EventTagsChipsSelector from './Chips/EventTagsChipsSelector'
 
 const Filter = ({
-  options,
   show,
   onChange,
   filterOptions,
@@ -19,44 +19,53 @@ const Filter = ({
     })
   }
 
-  const elements = Object.entries(options).map(
-    ([key, { type, value, name, items }], index) => {
-      const [componentValue, setComponentValue] = useState(value)
-      const onChangeComponent = (key, newValue) => {
-        setComponentValue(newValue)
-        onChangeFilter(key, newValue)
-      }
-
-      useEffect(() => {
-        if (componentValue !== value) setComponentValue(value)
-      }, [rerender])
-      if (type === 'tags') {
-        return (
-          <ChipsSelector
-            key={key}
-            label="Тэги"
-            items={items}
-            onChange={(tags) => onChangeComponent(key, tags)}
-            value={filterOptions.tags}
-            canEditChips={false}
-            placeholder="Показывать все тэги"
-            smallMargin
-            fullWidth
-          />
-        )
-      } else if (type === 'directions') {
-        return (
-          <DirectionSelector
-            value={componentValue}
-            onChange={(value) => onChangeComponent(key, value)}
-            placeholder="ВСЕ НАПРАВЛЕНИЯ"
-            activePlaceholder
-            fullWidth
-          />
-        )
-      } else return null
+  const elements = Object.entries(filterOptions).map(([key, value], index) => {
+    const [componentValue, setComponentValue] = useState(value || '')
+    const onChangeComponent = (key, newValue) => {
+      setComponentValue(newValue)
+      onChangeFilter(key, newValue)
     }
-  )
+
+    useEffect(() => {
+      if (componentValue !== value) setComponentValue(value)
+    }, [rerender])
+
+    if (key === 'tags') {
+      return (
+        <EventTagsChipsSelector
+          key="tagsFilter"
+          onChange={(tags) => onChangeComponent(key, tags)}
+          tags={filterOptions.tags}
+          canEditChips={false}
+          placeholder="Показывать все тэги"
+          smallMargin
+          fullWidth
+        />
+      )
+    } else if (key === 'directions') {
+      return (
+        <DirectionSelector
+          key="directionsFilter"
+          value={componentValue}
+          onChange={(value) => onChangeComponent(key, value)}
+          placeholder="ВСЕ НАПРАВЛЕНИЯ"
+          activePlaceholder
+          fullWidth
+        />
+      )
+    } else if (key === 'services') {
+      return (
+        <ServiceSelector
+          key="servicesFilter"
+          value={componentValue}
+          onChange={(value) => onChangeComponent(key, value)}
+          placeholder="ВСЕ УСЛУГИ"
+          activePlaceholder
+          fullWidth
+        />
+      )
+    } else return null
+  })
 
   return (
     <motion.div

@@ -18,18 +18,15 @@ import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import EventsList from '@layouts/lists/EventsList'
 import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
 import { modalsFuncAtom } from '@state/atoms'
-import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
 const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
-  const directions = useRecoilValue(directionsAtom)
   const loggedUser = useRecoilValue(loggedUserAtom)
   const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -43,8 +40,6 @@ const EventsContent = () => {
   const eventsLoggedUser = useRecoilValue(
     asyncEventsUsersByUserIdAtom(loggedUser?._id)
   )
-  const siteSettings = useRecoilValue(siteSettingsAtom)
-  const eventsTags = siteSettings.eventsTags ?? []
 
   const [isSearching, setIsSearching] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
@@ -66,26 +61,11 @@ const EventsContent = () => {
   const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
   const defaultFilterValue = {
-    directions: '',
+    directions: null,
     tags: [],
   }
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
-
-  const options = {
-    tags: {
-      type: 'tags',
-      value: [],
-      name: 'Тэги',
-      items: eventsTags,
-    },
-    directions: {
-      type: 'directions',
-      value: '',
-      name: 'Направления',
-      items: directions,
-    },
-  }
 
   const filteredEvents = useMemo(
     () =>
@@ -213,7 +193,6 @@ const EventsContent = () => {
       />
       <Filter
         show={showFilter}
-        options={options}
         onChange={setFilterOptions}
         filterOptions={filterOptions}
         defaultFilterValue={defaultFilterValue}
