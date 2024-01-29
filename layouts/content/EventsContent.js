@@ -25,6 +25,11 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
+const defaultFilterValue = {
+  directions: null,
+  tags: [],
+}
+
 const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
   const loggedUser = useRecoilValue(loggedUserAtom)
@@ -59,11 +64,6 @@ const EventsContent = () => {
 
   const [sort, setSort] = useState({ dateStart: 'asc' })
   const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
-
-  const defaultFilterValue = {
-    directions: null,
-    tags: [],
-  }
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
 

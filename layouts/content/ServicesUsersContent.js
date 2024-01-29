@@ -18,16 +18,16 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
+const defaultFilterValue = {
+  services: null,
+}
+
 const ServicesUsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const servicesUsers = useRecoilValue(servicesUsersAtom)
   const users = useRecoilValue(usersAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.servicesUsers?.add
-
-  const defaultFilterValue = {
-    services: null,
-  }
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
 
