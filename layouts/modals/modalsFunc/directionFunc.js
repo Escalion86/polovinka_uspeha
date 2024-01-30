@@ -46,12 +46,12 @@ const directionFunc = (directionId, clone = false) => {
       direction?.showOnSite ?? DEFAULT_DIRECTION.showOnSite
     )
 
-    const defaultPlugins = direction?.plugins ?? DEFAULT_DIRECTION.plugins
+    // const defaultPlugins = direction?.plugins ?? DEFAULT_DIRECTION.plugins
 
-    const [plugins, setPlugins] = useState(defaultPlugins)
+    // const [plugins, setPlugins] = useState(defaultPlugins)
 
-    const setStatePlugins = (key, value) =>
-      setPlugins((state) => ({ ...state, [key]: value }))
+    // const setStatePlugins = (key, value) =>
+    //   setPlugins((state) => ({ ...state, [key]: value }))
 
     const defaultRules = {
       ...DEFAULT_DIRECTION.rules,
@@ -88,7 +88,7 @@ const directionFunc = (directionId, clone = false) => {
             showOnSite,
             // image,
             rules,
-            plugins,
+            // plugins,
           },
           clone
         )
@@ -125,8 +125,8 @@ const directionFunc = (directionId, clone = false) => {
         direction?.shortDescription !== shortDescription ||
         direction?.showOnSite !== showOnSite ||
         // || direction?.image !== image
-        !compareObjects(defaultRules, rules) ||
-        !compareObjects(defaultPlugins, plugins)
+        !compareObjects(defaultRules, rules)
+      // || !compareObjects(defaultPlugins, plugins)
 
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -138,7 +138,7 @@ const directionFunc = (directionId, clone = false) => {
       showOnSite,
       // image,
       rules,
-      plugins,
+      // plugins,
     ])
 
     useEffect(() => {
@@ -247,7 +247,7 @@ const directionFunc = (directionId, clone = false) => {
             fullWidth={false}
           />
         </TabPanel>
-        <TabPanel tabName="Плагины" className="px-0">
+        {/* <TabPanel tabName="Плагины" className="px-0">
           <CheckBox
             checked={plugins?.speedDating}
             labelPos="left"
@@ -256,7 +256,7 @@ const directionFunc = (directionId, clone = false) => {
             }
             label="Быстрые свидания (инструмент на карточке мероприятия)"
           />
-        </TabPanel>
+        </TabPanel> */}
       </TabContext>
     )
   }

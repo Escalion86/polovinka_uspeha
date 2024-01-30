@@ -7,7 +7,10 @@ import {
   faArrowAltCircleLeft,
   faArrowAltCircleRight,
 } from '@fortawesome/free-regular-svg-icons'
-import { faListCheck } from '@fortawesome/free-solid-svg-icons'
+import {
+  faHeartCirclePlus,
+  faListCheck,
+} from '@fortawesome/free-solid-svg-icons'
 import birthDateToAge from '@helpers/birthDateToAge'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_EVENT, EVENT_STATUSES } from '@helpers/constants'
@@ -26,6 +29,7 @@ import eventUsersInReserveSelector from '@state/selectors/eventUsersInReserveSel
 import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
+// import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -82,6 +86,11 @@ const eventUsersFunc = (eventId) => {
     //   isEventCanBeClosedSelector(eventId)
     // )
     const { info } = useSnackbar()
+
+    // const router = useRouter()
+
+    const showSpeedDating = loggedUserActiveRole?.instruments?.speedDating
+
     // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
 
     const sortUsersIds = useCallback(
@@ -178,6 +187,7 @@ const eventUsersFunc = (eventId) => {
               <CardButton
                 icon={faListCheck}
                 onClick={() => {
+                  // modalsFunc.event.copyUsersList(event._id)
                   useCopyUserListToClipboard({
                     mans: users.filter((user) => mansIds.includes(user._id)),
                     womans: users.filter((user) =>
@@ -189,6 +199,27 @@ const eventUsersFunc = (eventId) => {
                 }}
                 color="purple"
                 tooltipText="Скопировать в буфер список участников"
+              />
+            )}
+            {showSpeedDating && (
+              <CardButton
+                icon={faHeartCirclePlus}
+                onClick={
+                  () => {
+                    modalsFunc.event.speedDating(event._id)
+                  }
+                  // router.push(
+                  //   '/cabinet/toolsSpeedDating?eventId=' + event._id,
+                  //   '',
+                  //   {
+                  //     shallow: true,
+                  //   }
+                  // )
+                  // closeModal()
+                  // }
+                }
+                color="pink"
+                tooltipText='Калькулятор "Быстрые свидания"'
               />
             )}
           </div>

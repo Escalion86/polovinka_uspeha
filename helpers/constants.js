@@ -102,7 +102,7 @@ import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
 import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
 import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
 import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
-import ToolsSpeedDatingContent from '@layouts/content/ToolsSpeedDatingContent'
+// import ToolsSpeedDatingContent from '@layouts/content/ToolsSpeedDatingContent'
 
 const colors = [
   'border-blue-400',
@@ -1572,12 +1572,12 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.export,
   },
-  toolsSpeedDating: {
-    Component: ToolsSpeedDatingContent,
-    name: 'Инструменты / Калькулятор быстрых свиданий',
-    accessRoles: ['supervisor', 'dev'],
-    roleAccess: (role) => role?.instruments?.speedDating,
-  },
+  // toolsSpeedDating: {
+  //   Component: ToolsSpeedDatingContent,
+  //   name: 'Инструменты / Калькулятор "Быстрые свидания"',
+  //   accessRoles: ['supervisor', 'dev'],
+  //   roleAccess: (role) => role?.instruments?.speedDating,
+  // },
   newsletter: {
     Component: ToolsNewsletterContent,
     name: 'Инструменты / Рассылка',
@@ -1897,15 +1897,15 @@ export const pages = [
     accessRoles: CONTENTS['newsletter'].accessRoles,
     roleAccess: CONTENTS['newsletter'].roleAccess,
   },
-  {
-    id: 75,
-    group: 9,
-    name: 'Калькулятор быстрых свиданий',
-    href: 'toolsSpeedDating',
-    icon: faHeartCirclePlus,
-    accessRoles: CONTENTS['toolsSpeedDating'].accessRoles,
-    roleAccess: CONTENTS['toolsSpeedDating'].roleAccess,
-  },
+  // {
+  //   id: 75,
+  //   group: 9,
+  //   name: 'Калькулятор "Быстрые свидания"',
+  //   href: 'toolsSpeedDating',
+  //   icon: faHeartCirclePlus,
+  //   accessRoles: CONTENTS['toolsSpeedDating'].accessRoles,
+  //   roleAccess: CONTENTS['toolsSpeedDating'].roleAccess,
+  // },
   {
     id: 80,
     group: 10,

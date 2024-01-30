@@ -54,6 +54,8 @@ import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
 import userHistoryFunc from './modalsFunc/userHistoryFunc'
 import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
 import userPersonalStatusEditFunc from './modalsFunc/userPersonalStatusEditFunc'
+import speedDatingFunc from './modalsFunc/speedDatingFunc'
+import copyEventUserListFunc from './modalsFunc/copyEventUserListFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -459,6 +461,8 @@ const modalsFuncGenerator = (
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
       view: (eventId) => addModal(eventViewFunc(eventId)),
+      speedDating: (eventId) => addModal(speedDatingFunc(eventId)),
+      copyUsersList: (eventId) => addModal(copyEventUserListFunc(eventId)),
       signUpWithWarning: (
         event,
         status = 'participant',
