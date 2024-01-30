@@ -12,6 +12,7 @@ const selectServicesFunc = (
   filterRules,
   onConfirm,
   exceptedIds,
+  acceptedIds,
   maxServices,
   canSelectNone = true,
   title

@@ -145,6 +145,10 @@ const eventsSchema = {
     type: String,
     default: null,
   },
+  plugins: {
+    type: {},
+    default: null,
+  },
 }
 
 export default eventsSchema

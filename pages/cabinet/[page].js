@@ -26,7 +26,7 @@ const SuspenseChild = () => (
 
 function CabinetPage(props) {
   const router = useRouter()
-  const page = router.asPath.replace('/cabinet/', '')
+  const page = router.asPath.replace('/cabinet/', '').split('?')[0]
   const loggedUser = useRecoilValue(loggedUserAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)

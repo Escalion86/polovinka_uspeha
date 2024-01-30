@@ -298,6 +298,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxEvents,
       canSelectNone,
       modalTitle
@@ -308,6 +309,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxEvents,
           canSelectNone,
           modalTitle
@@ -318,6 +320,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxUsers,
       canSelectNone,
       modalTitle
@@ -328,6 +331,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxUsers,
           canSelectNone,
           modalTitle
@@ -338,6 +342,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxDirections,
       canSelectNone,
       modalTitle
@@ -348,6 +353,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxDirections,
           canSelectNone,
           modalTitle
@@ -358,6 +364,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxServices,
       canSelectNone,
       modalTitle
@@ -368,6 +375,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxServices,
           canSelectNone,
           modalTitle
@@ -378,6 +386,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxPayments,
       canSelectNone,
       modalTitle
@@ -388,6 +397,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxPayments,
           canSelectNone,
           modalTitle

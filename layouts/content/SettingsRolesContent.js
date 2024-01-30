@@ -484,6 +484,11 @@ const SettingsRolesContent = (props) => {
               subItem="export"
             />
             <RoleItem
+              label="Калькулятор быстрых свиданий"
+              item="instruments"
+              subItem="speedDating"
+            />
+            <RoleItem
               label="Рассылки"
               item="instruments"
               subItem="newsletter"

@@ -12,6 +12,7 @@ const selectPaymentsFunc = (
   filterRules,
   onConfirm,
   exceptedIds,
+  acceptedIds,
   maxServices,
   canSelectNone = true,
   title

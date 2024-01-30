@@ -10,6 +10,7 @@ import {
   faEnvelope,
   faGenderless,
   faHandHoldingHeart,
+  faHeartCirclePlus,
   faHistory,
   faLock,
   faMars,
@@ -101,6 +102,7 @@ import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
 import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
 import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
 import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
+import ToolsSpeedDatingContent from '@layouts/content/ToolsSpeedDatingContent'
 
 const colors = [
   'border-blue-400',
@@ -111,6 +113,7 @@ const colors = [
   'border-orange-400',
   'border-gray-400',
   'border-amber-400',
+  'border-pink-400',
   'text-red-400',
   'text-blue-400',
   'text-yellow-400',
@@ -119,6 +122,7 @@ const colors = [
   'text-orange-400',
   'text-disabled',
   'text-amber-400',
+  'text-pink-400',
   'bg-blue-400',
   'bg-red-400',
   'bg-yellow-400',
@@ -127,6 +131,7 @@ const colors = [
   'bg-orange-400',
   'bg-gray-400',
   'bg-amber-400',
+  'bg-pink-400',
   'border-blue-500',
   'border-red-500',
   'border-yellow-500',
@@ -135,6 +140,7 @@ const colors = [
   'border-orange-500',
   'border-gray-500',
   'border-amber-500',
+  'border-pink-500',
   'text-red-500',
   'text-blue-500',
   'text-yellow-500',
@@ -143,6 +149,7 @@ const colors = [
   'text-orange-500',
   'text-gray-500',
   'text-amber-500',
+  'text-pink-500',
   'bg-blue-500',
   'bg-red-500',
   'bg-yellow-500',
@@ -151,6 +158,7 @@ const colors = [
   'bg-orange-500',
   'bg-gray-500',
   'bg-amber-500',
+  'bg-pink-500',
   'border-blue-600',
   'border-yellow-600',
   'border-red-600',
@@ -159,6 +167,7 @@ const colors = [
   'border-orange-600',
   'border-gray-600',
   'border-amber-600',
+  'border-pink-600',
   'border-amber-700',
   'text-gray-600',
   'text-blue-600',
@@ -168,6 +177,7 @@ const colors = [
   'text-orange-600',
   'text-gray-600',
   'text-amber-600',
+  'text-pink-600',
   'text-amber-700',
   'bg-blue-600',
   'bg-red-600',
@@ -177,6 +187,7 @@ const colors = [
   'bg-orange-600',
   'bg-gray-600',
   'bg-amber-600',
+  'bg-pink-600',
   'bg-amber-700',
   'hover:border-blue-400',
   'hover:border-red-400',
@@ -186,6 +197,7 @@ const colors = [
   'hover:border-orange-400',
   'hover:border-gray-400',
   'hover:border-amber-400',
+  'hover:border-pink-400',
   'hover:text-red-400',
   'hover:text-blue-400',
   'hover:text-yellow-400',
@@ -194,6 +206,7 @@ const colors = [
   'hover:text-orange-400',
   'hover:text-disabled',
   'hover:text-amber-400',
+  'hover:text-pink-400',
   'hover:bg-blue-400',
   'hover:bg-red-400',
   'hover:bg-yellow-400',
@@ -202,6 +215,7 @@ const colors = [
   'hover:bg-orange-400',
   'hover:bg-gray-400',
   'hover:bg-amber-400',
+  'hover:bg-pink-400',
   'hover:border-blue-500',
   'hover:border-red-500',
   'hover:border-yellow-500',
@@ -210,6 +224,7 @@ const colors = [
   'hover:border-orange-500',
   'hover:border-gray-500',
   'hover:border-amber-500',
+  'hover:border-pink-500',
   'hover:text-red-500',
   'hover:text-blue-500',
   'hover:text-yellow-500',
@@ -218,6 +233,7 @@ const colors = [
   'hover:text-orange-500',
   'hover:text-gray-500',
   'hover:text-amber-500',
+  'hover:text-pink-500',
   'hover:text-amber-600',
   'hover:bg-blue-500',
   'hover:bg-red-500',
@@ -227,6 +243,7 @@ const colors = [
   'hover:bg-orange-500',
   'hover:bg-gray-500',
   'hover:bg-amber-500',
+  'hover:bg-pink-500',
   'hover:border-blue-600',
   'hover:border-red-600',
   'hover:border-yellow-600',
@@ -235,6 +252,7 @@ const colors = [
   'hover:border-orange-600',
   'hover:border-gray-600',
   'hover:border-amber-600',
+  'hover:border-pink-600',
   'hover:border-amber-700',
   'hover:text-red-600',
   'hover:text-blue-600',
@@ -244,6 +262,7 @@ const colors = [
   'hover:text-orange-600',
   'hover:text-gray-600',
   'hover:text-amber-600',
+  'hover:text-pink-600',
   'hover:text-amber-700',
   'hover:bg-blue-600',
   'hover:bg-red-600',
@@ -253,6 +272,7 @@ const colors = [
   'hover:bg-orange-600',
   'hover:bg-gray-600',
   'hover:bg-amber-600',
+  'hover:bg-pink-600',
   'hover:bg-amber-700',
 ]
 
@@ -510,6 +530,9 @@ export const DEFAULT_DIRECTION = Object.freeze({
   rules: {
     userStatus: 'select',
     userRelationship: 'select',
+  },
+  plugins: {
+    speedDating: false,
   },
 })
 
@@ -839,6 +862,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: false,
       export: false,
       newsletter: false,
+      speedDating: false,
     },
     generalPage: {
       directions: false,
@@ -963,6 +987,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: true,
       export: true,
       newsletter: false,
+      speedDating: false,
     },
     generalPage: {
       directions: true,
@@ -1087,6 +1112,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: false,
       export: true,
       newsletter: false,
+      speedDating: false,
     },
     generalPage: {
       directions: true,
@@ -1211,6 +1237,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: true,
       export: true,
       newsletter: false,
+      speedDating: true,
     },
     generalPage: {
       directions: true,
@@ -1336,6 +1363,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: true,
       export: true,
       newsletter: true,
+      speedDating: true,
     },
     generalPage: {
       directions: true, //!
@@ -1543,6 +1571,12 @@ export const CONTENTS = Object.freeze({
     name: 'Инструменты / Экспорт данных',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.export,
+  },
+  toolsSpeedDating: {
+    Component: ToolsSpeedDatingContent,
+    name: 'Инструменты / Калькулятор быстрых свиданий',
+    accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.instruments?.speedDating,
   },
   newsletter: {
     Component: ToolsNewsletterContent,
@@ -1862,6 +1896,15 @@ export const pages = [
     icon: faEnvelope,
     accessRoles: CONTENTS['newsletter'].accessRoles,
     roleAccess: CONTENTS['newsletter'].roleAccess,
+  },
+  {
+    id: 75,
+    group: 9,
+    name: 'Калькулятор быстрых свиданий',
+    href: 'toolsSpeedDating',
+    icon: faHeartCirclePlus,
+    accessRoles: CONTENTS['toolsSpeedDating'].accessRoles,
+    roleAccess: CONTENTS['toolsSpeedDating'].roleAccess,
   },
   {
     id: 80,

@@ -12,6 +12,7 @@ import {
   faCalendarAlt,
   faCode,
   faEllipsisV,
+  faHeartCirclePlus,
   faHistory,
   faKey,
   faMoneyBill,
@@ -35,6 +36,7 @@ import DropDown from './DropDown'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import { useRouter } from 'next/router'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -70,11 +72,14 @@ const CardButtons = ({
   showEditButton = true,
   showDeleteButton = true,
   onEditQuestionnaire,
+  showSpeedDatingButton,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const device = useRecoilValue(windowDimensionsTailwindSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+
+  const router = useRouter()
 
   const copyEventLink = useCopyEventLinkToClipboard(item._id)
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
@@ -113,6 +118,8 @@ const CardButtons = ({
   // (typeOfItem === 'review' && loggedUserActiveRole.generalPage.reviews)
 
   const show = {
+    speedDating:
+      showSpeedDatingButton && loggedUserActiveRole.instruments.speedDating,
     copyId: loggedUserActiveRole.dev,
     history: seeHistory,
     userActionsHistory:
@@ -215,6 +222,18 @@ const CardButtons = ({
           onClick={() => goToUrlForAddEventToCalendar(item)}
           color="purple"
           tooltipText="Добавить в Google календарь"
+        />
+      )}
+      {show.speedDating && (
+        <ItemComponent
+          icon={faHeartCirclePlus}
+          onClick={() =>
+            router.push('/cabinet/toolsSpeedDating?eventId=' + item._id, '', {
+              shallow: true,
+            })
+          }
+          color="pink"
+          tooltipText='Инструмент "Быстрые свидания"'
         />
       )}
       {show.eventUsersBtn && (
