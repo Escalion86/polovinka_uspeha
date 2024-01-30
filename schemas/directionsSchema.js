@@ -36,12 +36,12 @@ const directionsSchema = {
     userStatus: { type: String, default: 'select' },
     userRelationship: { type: String, default: 'select' },
   },
-  plugins: {
-    speedDating: {
-      type: Boolean,
-      default: false,
-    },
-  },
+  // plugins: {
+  //   speedDating: {
+  //     type: Boolean,
+  //     default: false,
+  //   },
+  // },
 }
 
 export default directionsSchema

@@ -531,9 +531,9 @@ export const DEFAULT_DIRECTION = Object.freeze({
     userStatus: 'select',
     userRelationship: 'select',
   },
-  plugins: {
-    speedDating: false,
-  },
+  // plugins: {
+  //   speedDating: false,
+  // },
 })
 
 export const DEFAULT_REVIEW = Object.freeze({
