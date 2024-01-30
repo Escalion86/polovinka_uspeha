@@ -15,6 +15,7 @@ const selectEventsFunc = (
   filterRules,
   onConfirm,
   exceptedIds,
+  acceptedIds,
   maxEvents,
   canSelectNone = true,
   title

@@ -1,5 +1,4 @@
 import InputWrapper from '@components/InputWrapper'
-import cn from 'classnames'
 import { useState } from 'react'
 import ValueItem from './ValueItem'
 
@@ -29,14 +28,8 @@ const ValuePicker = ({
       required={required}
       paddingY
       fitWidth
-      // disabled={disabled}
     >
-      <div
-        className={cn(
-          'relative flex flex-wrap items-center gap-x-2 gap-y-1 max-w-fit'
-          // error ? 'border border-red-500 rounded -m-0.5 p-0.5' : ''
-        )}
-      >
+      <div className="relative flex flex-wrap items-center gap-x-2 gap-y-1 max-w-fit">
         {error && (
           <div className="z-0 top-0 bottom-0 right-0 left-0 absolute -m-0.5 border border-red-500 rounded" />
         )}

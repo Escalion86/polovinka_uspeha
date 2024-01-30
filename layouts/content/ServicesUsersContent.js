@@ -1,6 +1,8 @@
 import ContentHeader from '@components/ContentHeader'
+import Filter from '@components/Filter'
 import UsersFilter from '@components/Filter/UsersFilter'
 import AddButton from '@components/IconToggleButtons/AddButton'
+import FilterToggleButton from '@components/IconToggleButtons/FilterToggleButton'
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
 import ServiceStatusToggleButtons from '@components/IconToggleButtons/ServiceStatusToggleButtons'
 import Search from '@components/Search'
@@ -16,12 +18,18 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
+const defaultFilterValue = {
+  services: null,
+}
+
 const ServicesUsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const servicesUsers = useRecoilValue(servicesUsersAtom)
   const users = useRecoilValue(usersAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.servicesUsers?.add
+
+  const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
 
   const [filter, setFilter] = useState({
     gender: {
@@ -52,7 +60,7 @@ const ServicesUsersContent = () => {
   )
 
   const [isSearching, setIsSearching] = useState(false)
-  // const [showFilter, setShowFilter] = useState(false)
+  const [showFilter, setShowFilter] = useState(false)
 
   const [searchText, setSearchText] = useState('')
 
@@ -66,9 +74,11 @@ const ServicesUsersContent = () => {
           filter.gender[serviceUser.user.gender] &&
           (serviceUser.status
             ? filterService.status[serviceUser.status]
-            : filterService.status.active)
+            : filterService.status.active) &&
+          (!filterOptions.services ||
+            filterOptions.services === serviceUser.serviceId)
       ),
-    [filter, filterService, updatedServicesUsers]
+    [filter, filterService, updatedServicesUsers, filterOptions]
   )
 
   const visibleServicesUsers = useMemo(() => {
@@ -99,6 +109,8 @@ const ServicesUsersContent = () => {
     [visibleServicesUsers, sort]
   )
 
+  const isFiltered = filterOptions.services
+
   return (
     <>
       <ContentHeader>
@@ -118,6 +130,12 @@ const ServicesUsersContent = () => {
             onChange={setSort}
             sortKeys={['createdAt']}
           />
+          <FilterToggleButton
+            value={isFiltered}
+            onChange={() => {
+              setShowFilter((state) => !state)
+            }}
+          />
           <SearchToggleButton
             value={isSearching}
             onChange={() => {
@@ -136,8 +154,13 @@ const ServicesUsersContent = () => {
         onChange={setSearchText}
         className="mx-1 bg-gray-100"
       />
-      {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
-      {/* <CardListWrapper> */}
+      <Filter
+        show={showFilter}
+        onChange={setFilterOptions}
+        filterOptions={filterOptions}
+        defaultFilterValue={defaultFilterValue}
+        setShowFilter={setShowFilter}
+      />
       <ServicesUsersList servicesUsers={filteredAndSortedServicesUsers} />
     </>
   )

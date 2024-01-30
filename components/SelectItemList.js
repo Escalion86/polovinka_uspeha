@@ -10,6 +10,7 @@ import {
   SelectPayment,
   SelectUser,
 } from './SelectItem'
+import isObject from '@helpers/isObject'
 
 const ItemRow = ({
   onDelete,
@@ -50,6 +51,7 @@ export const SelectItemList = ({
   counterPostfix,
   canAddItem = true,
   exceptedIds,
+  acceptedIds,
   modalFuncKey,
   maxItems,
   readOnly,
@@ -70,6 +72,7 @@ export const SelectItemList = ({
         filter,
         onChange,
         exceptedIds,
+        acceptedIds,
         maxItems,
         canSelectNone,
         modalTitle
@@ -188,12 +191,14 @@ export const SelectUserList = ({
   maxUsers = null,
   canAddItem = true,
   exceptedIds,
+  acceptedIds,
   buttons,
   readOnly,
   labelClassName,
   modalTitle,
   canSelectNone = true,
   className,
+  activeIds,
 }) => {
   return (
     <SelectItemList
@@ -210,6 +215,9 @@ export const SelectUserList = ({
           exceptedIds,
           buttons: buttons,
           rounded: false,
+          active: isObject(activeIds)
+            ? activeIds.includes(props.selectedId)
+            : false,
         })
       }
       required={required}
@@ -221,6 +229,7 @@ export const SelectUserList = ({
       }
       canAddItem={canAddItem}
       exceptedIds={exceptedIds}
+      acceptedIds={acceptedIds}
       maxItems={maxUsers}
       modalFuncKey="selectUsers"
       readOnly={readOnly}

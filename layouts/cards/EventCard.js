@@ -181,6 +181,7 @@ const EventCard = ({
                       showOnSite: !event.showOnSite,
                     })
                   }}
+                  // showSpeedDatingButton={direction?.plugins?.speedDating}
                   // className="laptop:hidden"
                 />
               )}

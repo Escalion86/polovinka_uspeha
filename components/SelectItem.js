@@ -34,6 +34,7 @@ export const SelectItem = ({
   itemHeight,
   itemWidth,
   componentHeight,
+  active,
 }) => {
   const selectedItem = selectedId
     ? items.find((item) => item._id === selectedId)
@@ -46,7 +47,8 @@ export const SelectItem = ({
       className={cn(
         className,
         onClick ? 'cursor-pointer' : 'cursor-not-allowed',
-        'relative bg-gray-100 flex justify-center items-center'
+        'relative flex justify-center items-center',
+        active ? 'bg-green-200' : 'bg-gray-100'
       )}
       style={{ height: itemHeight, width: itemWidth }}
       onClick={onClick ? () => onClick(selectedItem) : null}
@@ -113,6 +115,7 @@ const SelectItemContainer = ({
   className,
   wrapperClassName,
   rounded = false,
+  active,
 }) => {
   const Container = ({ children }) => {
     if (label)
@@ -226,6 +229,7 @@ export const SelectUser = ({
   buttons,
   rounded = true,
   readOnly,
+  active,
 }) => {
   const users = useRecoilValue(usersAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -259,6 +263,7 @@ export const SelectUser = ({
           'flex-1',
           selectedId && clearButton ? 'rounded-l' : 'rounded'
         )}
+        active={active}
         exceptedIds={exceptedIds}
         onClick={
           !readOnly
@@ -269,6 +274,7 @@ export const SelectUser = ({
                     filter,
                     (data) => onChange(data[0]),
                     [],
+                    null,
                     1,
                     false,
                     modalTitle
@@ -340,6 +346,7 @@ export const SelectService = ({
                     filter,
                     (data) => onChange(data[0]),
                     [],
+                    null,
                     1,
                     false,
                     modalTitle
@@ -410,6 +417,7 @@ export const SelectEvent = ({
                     filter,
                     (data) => onChange(data[0]),
                     [],
+                    null,
                     1,
                     false,
                     modalTitle
@@ -510,6 +518,7 @@ export const SelectDirection = ({
                   [],
                   (data) => onChange(data[0]),
                   [],
+                  null,
                   1,
                   false,
                   modalTitle

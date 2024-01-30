@@ -3,6 +3,7 @@ import InputWrapper from '@components/InputWrapper'
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
 import { forwardRef, useState } from 'react'
 import { Popover } from 'react-tiny-popover'
@@ -101,7 +102,7 @@ const ChipsSelector = forwardRef(
             >
               <FontAwesomeIcon
                 icon={faWrench}
-                className="w-4 h-4 text-disabled duration-300 group-hover:text-gray-700 group-hover:scale-125"
+                className="w-4 h-4 duration-300 text-disabled group-hover:text-gray-700 group-hover:scale-125"
               />
             </div>
           </div>

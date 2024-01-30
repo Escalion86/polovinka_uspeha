@@ -120,12 +120,12 @@ const UserMenu = () => {
             <span>{loggedUser.secondName}</span>
           </div>
           <div
-            className="relative bg-white border-b-2 cursor-pointer group border-general"
+            className="relative bg-white border-b-2 cursor-pointer group border-general min-h-[3rem]"
             onClick={() => modalsFunc.user.editPersonalStatus(loggedUser._id)}
           >
             {loggedUser.personalStatus ? (
               <>
-                <div className="relative px-5 py-2 text-sm italic leading-4 text-center text-black duration-300 opacity-100 group-hover:opacity-20 border-general">
+                <div className="relative flex items-center justify-center px-5 py-2 text-sm italic leading-4 text-center text-black duration-300 opacity-100 group-hover:opacity-20 border-general min-h-[3rem]">
                   <SvgKavichki className="absolute w-3 h-3 bottom-1 left-1 fill-general" />
                   {loggedUser.personalStatus}
                   <SvgKavichki className="absolute w-3 h-3 rotate-180 top-1 right-1 fill-general" />

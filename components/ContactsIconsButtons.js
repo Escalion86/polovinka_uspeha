@@ -11,7 +11,7 @@ const {
   faInstagram,
   faVk,
 } = require('@fortawesome/free-brands-svg-icons')
-const { faPhone } = require('@fortawesome/free-solid-svg-icons')
+const { faPhone, faSms } = require('@fortawesome/free-solid-svg-icons')
 
 const ContactIconBtn = ({ url, icon, size = 'lg', className = null }) => (
   <FontAwesomeIcon
@@ -56,7 +56,15 @@ const ContactIconBtnWithTitle = ({
   </div>
 )
 
-const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
+const ContactsIconsButtons = ({
+  user,
+  withTitle,
+  grid,
+  className,
+  message,
+  smsViaPhone,
+  forceWhatsApp,
+}) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
@@ -75,6 +83,11 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
   )
     return null
 
+  const encodedMessage =
+    message !== undefined || message !== null
+      ? encodeURIComponent(message)
+      : undefined
+
   return (
     <div
       className={cn(
@@ -91,24 +104,43 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
           user.security?.showPhone ||
           canSeeAllContacts) && (
           <Btn
-            icon={faPhone}
+            icon={message || smsViaPhone ? faSms : faPhone}
             className="text-yellow-600"
-            url={'tel:+' + user.phone}
+            url={
+              message
+                ? `sms:+${user.phone}?body=${encodedMessage}`
+                : smsViaPhone
+                ? `sms:+${user.phone}`
+                : `tel:+${user.phone}`
+            }
             title={'+' + user.phone}
           />
         )}
-      {user?.whatsapp &&
-        (user.security?.showContacts ||
-          user.security?.showWhatsapp ||
-          canSeeAllContacts) && (
-          <Btn
-            icon={faWhatsapp}
-            className="text-green-600"
-            url={'https://wa.me/' + user.whatsapp}
-            title={'+' + user.whatsapp}
-          />
-        )}
-      {user?.viber &&
+      {user?.whatsapp
+        ? (user.security?.showContacts ||
+            user.security?.showWhatsapp ||
+            canSeeAllContacts) && (
+            <Btn
+              icon={faWhatsapp}
+              className="text-green-600"
+              url={`https://wa.me/${user.whatsapp}${
+                message ? `?text=${encodedMessage}` : ''
+              }`}
+              title={'+' + user.whatsapp}
+            />
+          )
+        : forceWhatsApp && (
+            <Btn
+              icon={faWhatsapp}
+              className="text-red-400"
+              url={`https://wa.me/${user.phone}${
+                message ? `?text=${encodedMessage}` : ''
+              }`}
+              title={'+' + user.phone}
+            />
+          )}
+      {!message &&
+        user?.viber &&
         (user.security?.showContacts ||
           user.security?.showViber ||
           canSeeAllContacts) && (
@@ -119,18 +151,21 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
             title={'+' + user.viber}
           />
         )}
-      {user?.telegram &&
+
+      {!message &&
+        user?.telegram &&
         (user.security?.showContacts ||
           user.security?.showTelegram ||
           canSeeAllContacts) && (
           <Btn
             icon={faTelegramPlane}
             className="text-blue-600"
-            url={'https://t.me/' + user.telegram}
+            url={`https://t.me/${user.telegram}`}
             title={'@' + user.telegram}
           />
         )}
-      {user?.instagram &&
+      {!message &&
+        user?.instagram &&
         (user.security?.showContacts ||
           user.security?.showInstagram ||
           canSeeAllContacts) && (
@@ -141,7 +176,8 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
             title={'@' + user.instagram}
           />
         )}
-      {user?.vk &&
+      {!message &&
+        user?.vk &&
         (user.security?.showContacts ||
           user.security?.showVk ||
           canSeeAllContacts) && (
@@ -152,7 +188,8 @@ const ContactsIconsButtons = ({ user, withTitle, grid, className }) => {
             title={'@' + user.vk}
           />
         )}
-      {user?.email &&
+      {!message &&
+        user?.email &&
         (user.security?.showContacts ||
           user.security?.showEmail ||
           canSeeAllContacts) && (

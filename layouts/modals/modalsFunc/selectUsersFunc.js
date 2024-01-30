@@ -12,6 +12,7 @@ const selectUsersFunc = (
   filterRules,
   onConfirm,
   exceptedIds,
+  acceptedIds,
   maxUsers,
   canSelectNone = true,
   title
@@ -35,8 +36,15 @@ const selectUsersFunc = (
 
     const [searchText, setSearchText] = useState('')
 
+    const acceptedUsers =
+      typeof acceptedIds === 'object' && acceptedIds !== null
+        ? acceptedIds.length === 0
+          ? []
+          : users.filter(({ _id }) => acceptedIds.includes(_id))
+        : users
+
     const filteredUsers = filterItems(
-      users,
+      acceptedUsers,
       searchText,
       exceptedIds,
       filterRules,

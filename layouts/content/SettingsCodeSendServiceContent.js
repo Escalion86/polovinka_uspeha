@@ -3,7 +3,6 @@ import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
 import { postData } from '@helpers/CRUD'
-import compareObjects from '@helpers/compareObjects'
 import { CODE_SEND_SERVICES } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
@@ -30,7 +29,6 @@ const SettingsCodeSendServiceContent = (props) => {
   const [codeSendService, setCodeSendService] = useState(
     siteSettings?.codeSendService
   )
-  const [custom, setCustom] = useState(siteSettings?.custom ?? {})
 
   const [codeSendServiceInfo, setCodeSendServiceInfo] = useState(null)
 
@@ -39,11 +37,7 @@ const SettingsCodeSendServiceContent = (props) => {
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
   const [message, setMessage] = useState('')
 
-  console.log('siteSettings ', siteSettings)
-
-  const formChanged =
-    siteSettings?.codeSendService !== codeSendService ||
-    !compareObjects(siteSettings?.custom, custom)
+  const formChanged = siteSettings?.codeSendService !== codeSendService
 
   useEffect(() => {
     if (codeSendService === 'telefonip')
@@ -54,25 +48,15 @@ const SettingsCodeSendServiceContent = (props) => {
   }, [codeSendService])
 
   const onClickConfirm = async () => {
-    // if (
-    //   !checkErrors({
-    //     phoneNoRequired: phone,
-    //     viber,
-    //     whatsapp,
-    //     email,
-    //   })
-    // )
     await postData(
       `/api/site`,
       {
         codeSendService,
-        custom,
       },
       (data) => {
         setSiteSettings(data)
         setMessage('Данные обновлены успешно')
         setIsWaitingToResponse(false)
-        // refreshPage()
       },
       () => {
         setMessage('')
@@ -121,19 +105,9 @@ const SettingsCodeSendServiceContent = (props) => {
           onChange={setCodeSendService}
           name="codeSendService"
           disabledValues={['ucaller']}
-          // required={required}
-          // error={error}
         />
         {codeSendService === 'telefonip' && (
           <div>
-            {/* <div className="flex gap-x-1">
-              <span className="italic">Стоимость одного звонка:</span>
-              <span>
-                {!codeSendServiceInfo?.price
-                  ? 'загружаем информацию...'
-                  : `${codeSendServiceInfo?.price} ₽`}
-              </span>
-            </div> */}
             <div className="flex gap-x-1">
               <span className="italic">Баланс на счете:</span>
               <span>

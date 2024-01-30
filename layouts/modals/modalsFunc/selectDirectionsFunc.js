@@ -12,6 +12,7 @@ const selectDirectionsFunc = (
   filterRules,
   onConfirm,
   exceptedIds,
+  acceptedIds,
   maxDirections,
   canSelectNone = true,
   title

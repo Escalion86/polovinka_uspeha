@@ -54,6 +54,8 @@ import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
 import userHistoryFunc from './modalsFunc/userHistoryFunc'
 import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
 import userPersonalStatusEditFunc from './modalsFunc/userPersonalStatusEditFunc'
+import speedDatingFunc from './modalsFunc/speedDatingFunc'
+import copyEventUserListFunc from './modalsFunc/copyEventUserListFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -298,6 +300,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxEvents,
       canSelectNone,
       modalTitle
@@ -308,6 +311,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxEvents,
           canSelectNone,
           modalTitle
@@ -318,6 +322,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxUsers,
       canSelectNone,
       modalTitle
@@ -328,6 +333,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxUsers,
           canSelectNone,
           modalTitle
@@ -338,6 +344,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxDirections,
       canSelectNone,
       modalTitle
@@ -348,6 +355,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxDirections,
           canSelectNone,
           modalTitle
@@ -358,6 +366,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxServices,
       canSelectNone,
       modalTitle
@@ -368,6 +377,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxServices,
           canSelectNone,
           modalTitle
@@ -378,6 +388,7 @@ const modalsFuncGenerator = (
       filterRules,
       onChange,
       exceptedIds,
+      acceptedIds,
       maxPayments,
       canSelectNone,
       modalTitle
@@ -388,6 +399,7 @@ const modalsFuncGenerator = (
           filterRules,
           onChange,
           exceptedIds,
+          acceptedIds,
           maxPayments,
           canSelectNone,
           modalTitle
@@ -449,6 +461,8 @@ const modalsFuncGenerator = (
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
       view: (eventId) => addModal(eventViewFunc(eventId)),
+      speedDating: (eventId) => addModal(speedDatingFunc(eventId)),
+      copyUsersList: (eventId) => addModal(copyEventUserListFunc(eventId)),
       signUpWithWarning: (
         event,
         status = 'participant',

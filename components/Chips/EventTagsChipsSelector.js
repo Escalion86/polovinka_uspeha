@@ -12,6 +12,7 @@ const EventTagsChipsSelector = ({
   required,
   error,
   placeholder,
+  fullWidth,
 }) => {
   const siteSettings = useRecoilValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
@@ -27,6 +28,7 @@ const EventTagsChipsSelector = ({
       required={required}
       error={error}
       placeholder={placeholder}
+      fullWidth={fullWidth}
     />
   )
 }
