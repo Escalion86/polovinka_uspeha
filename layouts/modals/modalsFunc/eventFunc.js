@@ -605,8 +605,7 @@ const eventFunc = (eventId, clone = false) => {
                   return { ...state, noReg: !usersStatusAccess?.noReg }
                 })
               }
-              // labelClassName="w-[20%]"
-              label="Не авторизован"
+              label="Не авторизован (видно на главной странице)"
             />
             {/* <PriceInput
           label="Скидка"

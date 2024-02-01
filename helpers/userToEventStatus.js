@@ -6,6 +6,7 @@ import isEventExpiredFunc from './isEventExpired'
 import isEventInProcessFunc from './isEventInProcess'
 import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
 import { getRecoil } from 'recoil-nexus'
+import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
 
 const userToEventStatus = (event, user, eventUsersFull) => {
   if (!event?._id)
@@ -83,12 +84,10 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   const isUserStatusCorrect = user.status
     ? event.usersStatusAccess[user.status]
     : event.usersStatusAccess['novice']
-  const isUserRelationshipCorrect =
-    !event.usersRelationshipAccess ||
-    event.usersRelationshipAccess === 'yes' ||
-    (user.relationship
-      ? event.usersRelationshipAccess === 'only'
-      : event.usersRelationshipAccess === 'no')
+  const isUserRelationshipCorrect = isUserRelationshipCorrectForEvent(
+    user,
+    event
+  )
 
   // TODO Поправить права роли
   const canSee =

@@ -131,6 +131,9 @@ const userViewFunc = (userId, clone = false) => {
                 <ZodiacIcon date={user.birthday} />
               </div>
             )}
+          <TextLine label="Место проживания">
+            {user.town ?? '[не указано'}
+          </TextLine>
           <TextLine label="Отношения">
             <UserRelationshipIcon
               size="m"

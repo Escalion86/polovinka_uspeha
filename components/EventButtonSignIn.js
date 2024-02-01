@@ -42,6 +42,7 @@ const EventButtonSignInComponent = ({
 
   const showProfitOnCard = loggedUserActiveRole?.events?.showProfitOnCard
 
+  const eventStatus = useRecoilValue(loggedUserToEventStatusSelector(eventId))
   const {
     canSee,
     alreadySignIn,
@@ -53,7 +54,8 @@ const EventButtonSignInComponent = ({
     userStatus,
     userEventStatus,
     status,
-  } = useRecoilValue(loggedUserToEventStatusSelector(eventId))
+    isUserRelationshipCorrect,
+  } = eventStatus
 
   const eventPriceForLoggedUser = eventPriceByStatus(event, userStatus)
 
@@ -140,7 +142,13 @@ const EventButtonSignInComponent = ({
       !canSignIn &&
       !canSignOut &&
       !canSignInReserve ? (
-      <TextStatus className="text-danger">Мест нет</TextStatus>
+      <TextStatus className="text-danger">
+        {isUserRelationshipCorrect
+          ? 'Мест нет'
+          : event.usersRelationshipAccess === 'only'
+          ? 'Для пар'
+          : 'Для одиноких'}
+      </TextStatus>
     ) : isEventInProcess && (noButtonIfAlreadySignIn || !canSignIn) ? (
       <TextStatus className="text-general">В процессе</TextStatus>
     ) : event.showOnSite ? (

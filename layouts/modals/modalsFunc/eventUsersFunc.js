@@ -11,13 +11,13 @@ import {
   faHeartCirclePlus,
   faListCheck,
 } from '@fortawesome/free-solid-svg-icons'
-import birthDateToAge from '@helpers/birthDateToAge'
+// import birthDateToAge from '@helpers/birthDateToAge'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_EVENT, EVENT_STATUSES } from '@helpers/constants'
-import copyToClipboard from '@helpers/copyToClipboard'
-import getUserFullName from '@helpers/getUserFullName'
+// import copyToClipboard from '@helpers/copyToClipboard'
+// import getUserFullName from '@helpers/getUserFullName'
 import isEventClosedFunc from '@helpers/isEventClosed'
-import useSnackbar from '@helpers/useSnackbar'
+// import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import usersAtom from '@state/atoms/usersAtom'
@@ -33,28 +33,28 @@ import cn from 'classnames'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
-const useCopyUserListToClipboard = ({ mans, womans }) => {
-  const mansNames = mans.map(
-    (user, index) =>
-      `${index + 1}. ${getUserFullName(user)}${
-        user.status === 'member' ? ' (клуб)' : ''
-      } - ${birthDateToAge(user.birthday)}`
-  )
-  const womansNames = womans.map(
-    (user, index) =>
-      `${index + 1}. ${getUserFullName(user)}${
-        user.status === 'member' ? ' (клуб)' : ''
-      } - ${birthDateToAge(user.birthday)}`
-  )
-  const mansText = mansNames.length > 0 ? `${mansNames.join(`\n`)}` : null
-  const womansText = womansNames.length > 0 ? `${womansNames.join(`\n`)}` : null
+// const useCopyUserListToClipboard = ({ mans, womans }) => {
+//   const mansNames = mans.map(
+//     (user, index) =>
+//       `${index + 1}. ${getUserFullName(user)}${
+//         user.status === 'member' ? ' (клуб)' : ''
+//       } - ${birthDateToAge(user.birthday)}`
+//   )
+//   const womansNames = womans.map(
+//     (user, index) =>
+//       `${index + 1}. ${getUserFullName(user)}${
+//         user.status === 'member' ? ' (клуб)' : ''
+//       } - ${birthDateToAge(user.birthday)}`
+//   )
+//   const mansText = mansNames.length > 0 ? `${mansNames.join(`\n`)}` : null
+//   const womansText = womansNames.length > 0 ? `${womansNames.join(`\n`)}` : null
 
-  return copyToClipboard(
-    `${mansText ? `Мужчины:\n${mansNames.join(`\n`)}\n\n` : ''}${
-      womansText ? `Женщины:\n${womansNames.join(`\n`)}` : ''
-    }`
-  )
-}
+//   return copyToClipboard(
+//     `${mansText ? `Мужчины:\n${mansNames.join(`\n`)}\n\n` : ''}${
+//       womansText ? `Женщины:\n${womansNames.join(`\n`)}` : ''
+//     }`
+//   )
+// }
 
 const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
 
@@ -85,7 +85,7 @@ const eventUsersFunc = (eventId) => {
     // const isEventCanBeClosed = useRecoilValue(
     //   isEventCanBeClosedSelector(eventId)
     // )
-    const { info } = useSnackbar()
+    // const { info } = useSnackbar()
 
     // const router = useRouter()
 
@@ -187,15 +187,15 @@ const eventUsersFunc = (eventId) => {
               <CardButton
                 icon={faListCheck}
                 onClick={() => {
-                  // modalsFunc.event.copyUsersList(event._id)
-                  useCopyUserListToClipboard({
-                    mans: users.filter((user) => mansIds.includes(user._id)),
-                    womans: users.filter((user) =>
-                      womansIds.includes(user._id)
-                    ),
-                  })
+                  modalsFunc.event.copyUsersList(event._id)
+                  // useCopyUserListToClipboard({
+                  //   mans: users.filter((user) => mansIds.includes(user._id)),
+                  //   womans: users.filter((user) =>
+                  //     womansIds.includes(user._id)
+                  //   ),
+                  // })
 
-                  info('Список участников скопирован в буфер обмена')
+                  // info('Список участников скопирован в буфер обмена')
                 }}
                 color="purple"
                 tooltipText="Скопировать в буфер список участников"

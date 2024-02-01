@@ -1,6 +1,7 @@
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import birthDateToAge from './birthDateToAge'
 import { getRecoil } from 'recoil-nexus'
+import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
 
 const visibleEventsForUser = (
   events,
@@ -14,6 +15,7 @@ const visibleEventsForUser = (
   if (!user) {
     return events.filter((event) => {
       if (
+        !event.usersStatusAccess?.noReg ||
         !event.showOnSite ||
         (onlyNew && new Date(event.dateStart) < new Date())
       )
@@ -33,7 +35,8 @@ const visibleEventsForUser = (
     return events.filter((event) => {
       if (
         !event.showOnSite ||
-        (onlyNew && new Date(event.dateStart) < new Date())
+        (onlyNew && new Date(event.dateStart) < new Date()) ||
+        !isUserRelationshipCorrectForEvent(user, event)
       )
         return false
 

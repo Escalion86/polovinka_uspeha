@@ -1,5 +1,5 @@
 import { selectorFamily } from 'recoil'
-import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
+import eventParticipantsFullByEventIdSelector from './eventParticipantsFullByEventIdSelector'
 
 export const eventWomansSelector = selectorFamily({
   key: 'eventWomansSelector',
@@ -8,11 +8,8 @@ export const eventWomansSelector = selectorFamily({
     ({ get }) => {
       if (!id) return []
 
-      return get(eventsUsersFullByEventIdSelector(id))
-        .filter(
-          (item) =>
-            item.user?.gender == 'famale' && item.status === 'participant'
-        )
+      return get(eventParticipantsFullByEventIdSelector(id))
+        .filter((item) => item.user?.gender == 'famale')
         .map((item) => item.user)
     },
 })

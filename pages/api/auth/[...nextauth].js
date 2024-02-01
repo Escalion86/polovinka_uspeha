@@ -136,6 +136,7 @@ export default async function auth(req, res) {
           session.user.vk = result.vk
           session.user.gender = result.gender
           session.user.relationship = result.relationship
+          session.user.town = result.town
           session.user.personalStatus = result.personalStatus
           session.user.birthday = result.birthday
           session.user.lastActivityAt = result.lastActivityAt
