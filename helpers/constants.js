@@ -339,6 +339,14 @@ export const LOCATIONS = {
     short: 'krsk',
     imageFolder: 'polovinka_uspeha_dev',
     telegramLink: 'https://t.me/polovinka_uspeha_bot',
+    towns: [
+      'Красноярск',
+      'Сосновоборск',
+      'Дивногорск',
+      'Железногорск',
+      'Дрокино',
+      'Емельяново',
+    ],
   },
   krasnoyarsk: {
     townRu: 'красноярск',
@@ -347,6 +355,14 @@ export const LOCATIONS = {
     short: 'krsk',
     imageFolder: 'polovinka_uspeha',
     telegramLink: 'https://t.me/polovinka_uspeha_bot',
+    towns: [
+      'Красноярск',
+      'Сосновоборск',
+      'Дивногорск',
+      'Железногорск',
+      'Дрокино',
+      'Емельяново',
+    ],
   },
   norilsk: {
     townRu: 'норильск',
@@ -355,6 +371,7 @@ export const LOCATIONS = {
     short: 'nrsk',
     imageFolder: 'polovinka_uspeha_nrsk',
     telegramLink: 'https://t.me/polovinka_uspeha_nrsk_bot',
+    towns: ['Норильск', 'Талнах', 'Кайеркан', 'Оганер', 'Дудинка', 'Алыкель'],
   },
 }
 
@@ -454,6 +471,7 @@ export const DEFAULT_USER = Object.freeze({
   // profession: '',
   // orientation: null,
   relationship: null,
+  town: '',
   personalStatus: '',
   status: 'novice',
   lastActivityAt: null,

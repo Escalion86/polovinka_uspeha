@@ -145,6 +145,10 @@ const usersSchema = {
     type: String,
     default: null,
   },
+  town: {
+    type: String,
+    default: null,
+  },
 }
 
 export default usersSchema

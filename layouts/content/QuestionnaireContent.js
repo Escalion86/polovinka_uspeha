@@ -28,6 +28,7 @@ import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
 import cn from 'classnames'
@@ -55,6 +56,8 @@ const QuestionnaireContent = (props) => {
     loggedUserActiveRoleNameAtom
   )
 
+  const { towns } = useRecoilValue(locationPropsSelector)
+
   const setSelfStatus = loggedUserActiveRole?.setSelfStatus
   const setSelfRole = loggedUserActiveRole?.setSelfRole
   const isLoggedUserDev = loggedUserActiveRole?.dev
@@ -80,6 +83,7 @@ const QuestionnaireContent = (props) => {
   const [relationship, setRelationship] = useState(
     loggedUser?.relationship ?? DEFAULT_USER.relationship
   )
+  const [town, setTown] = useState(loggedUser?.town ?? DEFAULT_USER.town)
   // const [personalStatus, setPersonalStatus] = useState(
   //   loggedUser?.personalStatus ?? DEFAULT_USER.personalStatus
   // )
@@ -168,6 +172,7 @@ const QuestionnaireContent = (props) => {
     // user?.orientation !== orientation ||
     loggedUser?.gender !== gender ||
     loggedUser?.relationship !== relationship ||
+    loggedUser?.town !== town ||
     // loggedUser?.personalStatus !== personalStatus ||
     loggedUser?.email !== email ||
     // loggedUser?.phone !== phone ||
@@ -215,6 +220,7 @@ const QuestionnaireContent = (props) => {
           // orientation,
           gender,
           relationship,
+          town,
           // personalStatus,
           email,
           // phone,
@@ -475,7 +481,22 @@ const QuestionnaireContent = (props) => {
             // inLine
             required
           />
-
+          <Input
+            label="Город/Село проживания"
+            type="text"
+            value={town}
+            onChange={(value) => {
+              setTown(value)
+            }}
+            dataList={
+              towns
+                ? {
+                    name: 'town',
+                    list: towns,
+                  }
+                : undefined
+            }
+          />
           <RelationshipSelector
             value={relationship}
             onChange={(value) => {

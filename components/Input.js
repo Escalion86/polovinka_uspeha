@@ -34,6 +34,7 @@ const Input = forwardRef(
       showArrows = true,
       autoComplete,
       maxLength,
+      dataList,
     },
     ref
   ) => {
@@ -122,7 +123,15 @@ const Input = forwardRef(
           }}
           placeholder={label}
           autoComplete={autoComplete}
+          list={dataList?.name}
         />
+        {dataList?.list && (
+          <datalist id={dataList?.name}>
+            {dataList.list.map((item) => (
+              <option key={'list' + item}>{item}</option>
+            ))}
+          </datalist>
+        )}
         {showArrows && type === 'number' && !disabled && (
           <div
             className={cn(
