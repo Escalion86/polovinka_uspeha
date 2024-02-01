@@ -31,6 +31,7 @@ const Input = forwardRef(
       paddingY = 'small',
       paddingX = true,
       noMargin = false,
+      smallMargin = false,
       showArrows = true,
       autoComplete,
       maxLength,
@@ -57,6 +58,7 @@ const Input = forwardRef(
         fullWidth={fullWidth}
         noBorder={noBorder}
         noMargin={noMargin}
+        smallMargin={smallMargin}
         showDisabledIcon={showDisabledIcon}
         comment={
           maxLength ? `${String(value)?.length} / ${maxLength}` : undefined

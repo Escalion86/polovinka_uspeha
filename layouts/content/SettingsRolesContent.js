@@ -489,6 +489,11 @@ const SettingsRolesContent = (props) => {
               subItem="speedDating"
             />
             <RoleItem
+              label="Конструктор картинок"
+              item="instruments"
+              subItem="imageConstructor"
+            />
+            <RoleItem
               label="Рассылки"
               item="instruments"
               subItem="newsletter"

@@ -102,6 +102,7 @@ import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
 import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
 import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
 import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
+import ToolsImageConstructorContent from '@layouts/content/ToolsImageConstructorContent'
 // import ToolsSpeedDatingContent from '@layouts/content/ToolsSpeedDatingContent'
 
 const colors = [
@@ -539,6 +540,12 @@ export const DEFAULT_QUESTIONNAIRE_ITEM = Object.freeze({
   required: false,
 })
 
+export const DEFAULT_IMAGE_CONSTRUCTOR_ITEM = Object.freeze({
+  type: 'text',
+  key: '',
+  show: true,
+})
+
 export const DEFAULT_DIRECTION = Object.freeze({
   title: '',
   shortDescription: '',
@@ -881,6 +888,7 @@ export const DEFAULT_ROLES = [
       export: false,
       newsletter: false,
       speedDating: false,
+      imageConstructor: false,
     },
     generalPage: {
       directions: false,
@@ -1006,6 +1014,7 @@ export const DEFAULT_ROLES = [
       export: true,
       newsletter: false,
       speedDating: false,
+      imageConstructor: false,
     },
     generalPage: {
       directions: true,
@@ -1131,6 +1140,7 @@ export const DEFAULT_ROLES = [
       export: true,
       newsletter: false,
       speedDating: false,
+      imageConstructor: false,
     },
     generalPage: {
       directions: true,
@@ -1256,6 +1266,7 @@ export const DEFAULT_ROLES = [
       export: true,
       newsletter: false,
       speedDating: true,
+      imageConstructor: false,
     },
     generalPage: {
       directions: true,
@@ -1382,6 +1393,7 @@ export const DEFAULT_ROLES = [
       export: true,
       newsletter: true,
       speedDating: true,
+      imageConstructor: true,
     },
     generalPage: {
       directions: true, //!
@@ -1583,6 +1595,12 @@ export const CONTENTS = Object.freeze({
     name: 'Инструменты / Редактор анонса списка мероприятий',
     accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.anonsEventListImageGenerator,
+  },
+  toolsImageConstructor: {
+    Component: ToolsImageConstructorContent,
+    name: 'Инструменты / Конструктор картинок',
+    accessRoles: ['dev'],
+    roleAccess: (role) => role?.instruments?.imageConstructor,
   },
   toolsExport: {
     Component: ToolsExportContent,
@@ -1915,6 +1933,16 @@ export const pages = [
     accessRoles: CONTENTS['newsletter'].accessRoles,
     roleAccess: CONTENTS['newsletter'].roleAccess,
   },
+  {
+    id: 75,
+    group: 9,
+    name: 'Конструктор картинок',
+    href: 'toolsImageConstructor',
+    icon: faImage,
+    accessRoles: CONTENTS['toolsImageConstructor'].accessRoles,
+    roleAccess: CONTENTS['toolsImageConstructor'].roleAccess,
+  },
+
   // {
   //   id: 75,
   //   group: 9,
