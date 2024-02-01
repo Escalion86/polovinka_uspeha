@@ -132,7 +132,7 @@ const userViewFunc = (userId, clone = false) => {
               </div>
             )}
           <TextLine label="Место проживания">
-            {user.town ?? '[не указано'}
+            {user.town ?? '[не указано]'}
           </TextLine>
           <TextLine label="Отношения">
             <UserRelationshipIcon
