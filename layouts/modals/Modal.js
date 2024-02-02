@@ -45,9 +45,14 @@ const Modal = ({
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
+  const [titleState, setTitleState] = useState(title)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [disableConfirm, setDisableConfirm] = useState(false)
   const [disableDecline, setDisableDecline] = useState(false)
+  const [confirmButtonNameState, setConfirmButtonNameState] =
+    useState(confirmButtonName)
+  const [confirmButtonName2State, setConfirmButtonName2State] =
+    useState(confirmButtonName2)
   const [onShowOnCloseConfirmDialog, setOnShowOnCloseConfirmDialog] =
     useState(false)
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
@@ -186,7 +191,7 @@ const Modal = ({
         className={
           cn(
             'flex flex-col real-screen-height tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
-            title ? 'pt-3' : 'pt-12'
+            titleState ? 'pt-3' : 'pt-12'
           )
           // + (rendered ? '' : ' scale-50')
         }
@@ -218,9 +223,9 @@ const Modal = ({
             </div>
           </Tooltip>
         )}
-        {title && (
+        {titleState && (
           <div className="mx-10 mb-3 text-lg font-bold leading-6 text-center whitespace-pre-line">
-            {title}
+            {titleState}
           </div>
         )}
         {text && <div className="px-2 mb-3 leading-4 tablet:px-3">{text}</div>}
@@ -275,6 +280,9 @@ const Modal = ({
                 setBottomLeftComponent={setBottomLeftComponent}
                 setCloseButtonShow={setCloseButtonShowState}
                 setDeclineButtonShow={setDeclineButtonShowState}
+                setConfirmButtonName={setConfirmButtonNameState}
+                setConfirmButtonName2={setConfirmButtonName2State}
+                setTitle={setTitleState}
               />
             </Suspense>
           )}
@@ -295,8 +303,8 @@ const Modal = ({
               (!onDeclineClick && closeButtonShowState)
             }
             declineButtonShow={declineButtonShowState}
-            confirmName={confirmButtonName}
-            confirmName2={confirmButtonName2}
+            confirmName={confirmButtonNameState}
+            confirmName2={confirmButtonName2State}
             declineName={declineButtonName}
             closeButtonName={closeButtonName}
             onConfirmClick={!onlyCloseButtonShowState && onConfirmClick}

@@ -1,9 +1,9 @@
 import { SelectEvent } from '@components/SelectItem'
-import SpeedDatingEditor from '@components/SpeedDatingEditor'
+import LikesEditor from '@components/LikesEditor'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-const ToolsSpeedDatingContent = (props) => {
+const ToolsLikesEditorContent = (props) => {
   const router = useRouter()
   const [eventId, setEventId] = useState(router.query.eventId)
   return (
@@ -15,9 +15,9 @@ const ToolsSpeedDatingContent = (props) => {
           onChange={setEventId}
         />
       </div>
-      {eventId && <SpeedDatingEditor eventId={eventId} />}
+      {eventId && <LikesEditor eventId={eventId} />}
     </div>
   )
 }
 
-export default ToolsSpeedDatingContent
+export default ToolsLikesEditorContent

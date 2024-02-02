@@ -34,6 +34,7 @@ import signOutUserSelector from './asyncSelectors/signOutUserSelector'
 import signUpUserSelector from './asyncSelectors/signUpUserSelector'
 import setEventUserSelector from './asyncSelectors/setEventUserSelector'
 import rolesAtom from './atoms/rolesAtom'
+import updateEventsUsersSelector from './asyncSelectors/updateEventsUsersSelector'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -208,6 +209,7 @@ const props = {
   deletePayment: setFunc(paymentsDeleteSelector),
 
   setEventsUsers: setFamilyFunc(setEventsUsersSelector),
+  updateEventsUsers: setFamilyFunc(updateEventsUsersSelector),
   deleteEventsUser: setFunc(signOutUserSelector),
   addEventsUser: setFunc(signUpUserSelector),
   setEventsUser: setFunc(setEventUserSelector),
@@ -610,6 +612,35 @@ const itemsFuncGenerator = (
           errorPlace: 'setEventUsers ERROR',
           eventId,
           eventUsersStatuses,
+          error,
+        }
+        addErrorModal(data)
+        console.log(data)
+      },
+      false,
+      loggedUser?._id
+      // () => props['setAdditionalBlock'](itemId)
+      //  deleteEvent(itemId)
+    )
+  }
+
+  obj.event.setLikes = async (eventId, likes) => {
+    setLoadingCard('event' + eventId)
+    return await putData(
+      `/api/eventsusers`,
+      { eventId, data: { likes } },
+      (data) => {
+        snackbar.success('Лайки участников мероприятия обновлены')
+        setNotLoadingCard('event' + eventId)
+        props.updateEventsUsers(eventId, data)
+      },
+      (error) => {
+        snackbar.error('Не удалось обновить лайки участников мероприятия')
+        setErrorCard('event' + eventId)
+        const data = {
+          errorPlace: 'setLikes ERROR',
+          eventId,
+          likes,
           error,
         }
         addErrorModal(data)

@@ -23,6 +23,12 @@ const eventsUsersSchema = {
     type: String,
     default: '',
   },
+  likes: {
+    type: Array,
+    default: () => {
+      return null
+    },
+  },
 }
 
 export default eventsUsersSchema

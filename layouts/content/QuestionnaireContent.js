@@ -338,8 +338,8 @@ const QuestionnaireContent = (props) => {
         />
       </div>
       <ErrorsList errors={errors} className="px-1" />
-      <div className="p-2 overflow-y-auto">
-        <FormWrapper className="mt-6">
+      <div className="px-2 pb-2 overflow-y-auto">
+        <FormWrapper>
           <Note>
             <span>Поля отмеченные знаком</span>
             <FontAwesomeIcon

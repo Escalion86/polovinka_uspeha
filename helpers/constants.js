@@ -102,7 +102,7 @@ import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
 import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
 import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
 import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
-// import ToolsSpeedDatingContent from '@layouts/content/ToolsSpeedDatingContent'
+import ToolsImageConstructorContent from '@layouts/content/ToolsImageConstructorContent'
 
 const colors = [
   'border-blue-400',
@@ -524,6 +524,8 @@ export const DEFAULT_EVENT = Object.freeze({
   report: '',
   reportImages: [],
   warning: false,
+  likes: false,
+  likesProcessActive: true,
 })
 
 export const DEFAULT_QUESTIONNAIRE = Object.freeze({
@@ -539,6 +541,12 @@ export const DEFAULT_QUESTIONNAIRE_ITEM = Object.freeze({
   required: false,
 })
 
+export const DEFAULT_IMAGE_CONSTRUCTOR_ITEM = Object.freeze({
+  type: 'text',
+  key: '',
+  show: true,
+})
+
 export const DEFAULT_DIRECTION = Object.freeze({
   title: '',
   shortDescription: '',
@@ -549,9 +557,6 @@ export const DEFAULT_DIRECTION = Object.freeze({
     userStatus: 'select',
     userRelationship: 'select',
   },
-  // plugins: {
-  //   speedDating: false,
-  // },
 })
 
 export const DEFAULT_REVIEW = Object.freeze({
@@ -804,8 +809,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: false,
       showProfitOnCard: false,
       statusFilterFull: false,
+      seeReserveOnCard: false,
       eventUsersCounterAndAgeFull: false,
       seeHistory: false,
+      editLikes: false,
     },
     eventsUsers: {
       see: false, // member
@@ -880,7 +887,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: false,
       export: false,
       newsletter: false,
-      speedDating: false,
+      imageConstructor: false,
     },
     generalPage: {
       directions: false,
@@ -929,8 +936,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: true,
       showProfitOnCard: false,
       statusFilterFull: true,
+      seeReserveOnCard: true,
       eventUsersCounterAndAgeFull: true,
       seeHistory: false,
+      editLikes: false,
     },
     eventsUsers: {
       see: true, // member
@@ -1005,7 +1014,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: true,
       export: true,
       newsletter: false,
-      speedDating: false,
+      imageConstructor: false,
     },
     generalPage: {
       directions: true,
@@ -1054,8 +1063,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: true,
       showProfitOnCard: false,
       statusFilterFull: true,
+      seeReserveOnCard: true,
       eventUsersCounterAndAgeFull: true,
       seeHistory: false,
+      editLikes: false,
     },
     eventsUsers: {
       see: true, // member
@@ -1130,7 +1141,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: false,
       export: true,
       newsletter: false,
-      speedDating: false,
+      imageConstructor: false,
     },
     generalPage: {
       directions: true,
@@ -1179,8 +1190,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: true,
       showProfitOnCard: true,
       statusFilterFull: true,
+      seeReserveOnCard: true,
       eventUsersCounterAndAgeFull: true,
       seeHistory: true,
+      editLikes: true,
     },
     eventsUsers: {
       see: true, // member
@@ -1255,7 +1268,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: true,
       export: true,
       newsletter: false,
-      speedDating: true,
+      imageConstructor: false,
     },
     generalPage: {
       directions: true,
@@ -1305,8 +1318,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: true, //!
       showProfitOnCard: true, //!
       statusFilterFull: true, //!
+      seeReserveOnCard: true,
       eventUsersCounterAndAgeFull: true, //!
       seeHistory: true,
+      editLikes: true,
     },
     eventsUsers: {
       see: true, // ! member
@@ -1381,7 +1396,7 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: true,
       export: true,
       newsletter: true,
-      speedDating: true,
+      imageConstructor: true,
     },
     generalPage: {
       directions: true, //!
@@ -1584,18 +1599,18 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.anonsEventListImageGenerator,
   },
+  toolsImageConstructor: {
+    Component: ToolsImageConstructorContent,
+    name: 'Инструменты / Конструктор картинок',
+    accessRoles: ['dev'],
+    roleAccess: (role) => role?.instruments?.imageConstructor,
+  },
   toolsExport: {
     Component: ToolsExportContent,
     name: 'Инструменты / Экспорт данных',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.export,
   },
-  // toolsSpeedDating: {
-  //   Component: ToolsSpeedDatingContent,
-  //   name: 'Инструменты / Калькулятор "Быстрые свидания"',
-  //   accessRoles: ['supervisor', 'dev'],
-  //   roleAccess: (role) => role?.instruments?.speedDating,
-  // },
   newsletter: {
     Component: ToolsNewsletterContent,
     name: 'Инструменты / Рассылка',
@@ -1915,15 +1930,15 @@ export const pages = [
     accessRoles: CONTENTS['newsletter'].accessRoles,
     roleAccess: CONTENTS['newsletter'].roleAccess,
   },
-  // {
-  //   id: 75,
-  //   group: 9,
-  //   name: 'Калькулятор "Быстрые свидания"',
-  //   href: 'toolsSpeedDating',
-  //   icon: faHeartCirclePlus,
-  //   accessRoles: CONTENTS['toolsSpeedDating'].accessRoles,
-  //   roleAccess: CONTENTS['toolsSpeedDating'].roleAccess,
-  // },
+  {
+    id: 75,
+    group: 9,
+    name: 'Конструктор картинок',
+    href: 'toolsImageConstructor',
+    icon: faImage,
+    accessRoles: CONTENTS['toolsImageConstructor'].accessRoles,
+    roleAccess: CONTENTS['toolsImageConstructor'].roleAccess,
+  },
   {
     id: 80,
     group: 10,

@@ -125,8 +125,8 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
             <Input
               label="Угол"
               type="number"
-              className="w-[70px]"
-              inputClassName="w-[52px]"
+              // className="w-[70px]"
+              inputClassName="w-[36px]"
               value={angle}
               onChange={(value) => {
                 setAngle(parseInt(value))

@@ -144,6 +144,42 @@ export default async function handler(req, res) {
       return res?.status(400).json({ success: false, error })
     }
   }
+  if (method === 'PUT') {
+    try {
+      await dbConnect()
+      const { eventId, data } = body.data
+
+      if (!eventId)
+        return res?.status(400).json({ success: false, data: 'No eventId' })
+      if (!data)
+        return res?.status(400).json({ success: false, data: 'No data' })
+
+      if (typeof data !== 'object')
+        return res
+          ?.status(400)
+          .json({ success: false, data: 'error data not an object' })
+
+      const dataKeys = Object.keys(data)
+      const result = []
+      for (const key of dataKeys) {
+        for (const [id, value] of Object.entries(data[key])) {
+          const updatedEventUser = await EventsUsers.findByIdAndUpdate(
+            id,
+            {
+              [key]: value,
+            },
+            { new: true }
+          )
+          result.push(updatedEventUser)
+        }
+      }
+
+      return res?.status(201).json({ success: true, data: result })
+    } catch (error) {
+      console.log(error)
+      return res?.status(400).json({ success: false, error })
+    }
+  }
   if (method === 'DELETE') {
     try {
       await dbConnect()

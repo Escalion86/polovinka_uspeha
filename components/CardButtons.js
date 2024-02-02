@@ -12,6 +12,7 @@ import {
   faCalendarAlt,
   faCode,
   faEllipsisV,
+  faHeartCirclePlus,
   faHistory,
   faKey,
   faMoneyBill,
@@ -89,17 +90,18 @@ const CardButtons = ({
   const upDownSee =
     (!forForm &&
       typeOfItem === 'service' &&
-      loggedUserActiveRole.services.edit) ||
-    (typeOfItem === 'product' && loggedUserActiveRole.products.edit) ||
+      loggedUserActiveRole?.services?.edit) ||
+    (typeOfItem === 'product' && loggedUserActiveRole?.products?.edit) ||
     (typeOfItem === 'additionalBlock' &&
-      loggedUserActiveRole.generalPage.additionalBlocks) ||
-    (typeOfItem === 'direction' && loggedUserActiveRole.generalPage.directions)
+      loggedUserActiveRole?.generalPage?.additionalBlocks) ||
+    (typeOfItem === 'direction' &&
+      loggedUserActiveRole?.generalPage?.directions)
 
   const editSee = item.status !== 'closed' && (rule?.edit || rule === true)
   const seeHistory =
-    (typeOfItem === 'event' && loggedUserActiveRole.events.seeHistory) ||
-    (typeOfItem === 'payment' && loggedUserActiveRole.payments.seeHistory) ||
-    (typeOfItem === 'user' && loggedUserActiveRole.users.seeHistory)
+    (typeOfItem === 'event' && loggedUserActiveRole?.events?.seeHistory) ||
+    (typeOfItem === 'payment' && loggedUserActiveRole?.payments?.seeHistory) ||
+    (typeOfItem === 'user' && loggedUserActiveRole?.users?.seeHistory)
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
   // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
@@ -113,10 +115,14 @@ const CardButtons = ({
   // (typeOfItem === 'review' && loggedUserActiveRole.generalPage.reviews)
 
   const show = {
-    copyId: loggedUserActiveRole.dev,
+    likes:
+      typeOfItem === 'event' &&
+      item.likes &&
+      loggedUserActiveRole?.events?.editLikes,
+    copyId: loggedUserActiveRole?.dev,
     history: seeHistory,
     userActionsHistory:
-      typeOfItem === 'user' && loggedUserActiveRole.users.seeActionsHistory,
+      typeOfItem === 'user' && loggedUserActiveRole?.users?.seeActionsHistory,
     editQuestionnaire: !!onEditQuestionnaire,
     setPasswordBtn: rule?.setPassword,
     shareBtn:
@@ -124,7 +130,7 @@ const CardButtons = ({
       ['event', 'service', 'user', 'product'].includes(typeOfItem),
     addToCalendar: typeOfItem === 'event',
     eventUsersBtn:
-      (loggedUserActiveRole.eventsUsers.see || isLoggedUserMember) &&
+      (loggedUserActiveRole?.eventsUsers?.see || isLoggedUserMember) &&
       typeOfItem === 'event',
     upBtn: onUpClick && upDownSee,
     downBtn: onDownClick && upDownSee,
@@ -140,7 +146,7 @@ const CardButtons = ({
     paymentsUsersBtn: rule?.paymentsEdit,
     userEvents: rule?.seeUserEvents,
     userPaymentsBtn: rule?.seeUserPayments,
-    loginHistory: loggedUserActiveRole.dev && typeOfItem === 'user',
+    loginHistory: loggedUserActiveRole?.dev && typeOfItem === 'user',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -225,6 +231,14 @@ const CardButtons = ({
           }}
           color="green"
           tooltipText="Участники мероприятия"
+        />
+      )}
+      {show.likes && (
+        <ItemComponent
+          icon={faHeartCirclePlus}
+          onClick={() => modalsFunc.event.editLikes(item._id)}
+          color="pink"
+          tooltipText="Лайки участников"
         />
       )}
       {show.loginHistory && (

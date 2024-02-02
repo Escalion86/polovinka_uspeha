@@ -247,16 +247,6 @@ const directionFunc = (directionId, clone = false) => {
             fullWidth={false}
           />
         </TabPanel>
-        {/* <TabPanel tabName="Плагины" className="px-0">
-          <CheckBox
-            checked={plugins?.speedDating}
-            labelPos="left"
-            onClick={() =>
-              setStatePlugins('speedDating', !plugins?.speedDating)
-            }
-            label="Быстрые свидания (инструмент на карточке мероприятия)"
-          />
-        </TabPanel> */}
       </TabContext>
     )
   }

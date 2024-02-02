@@ -219,11 +219,20 @@ const SettingsRolesContent = (props) => {
               subItem="statusFilterFull"
             />
             <RoleItem
+              label="Показывать кол-во в резерве на карте"
+              item="events"
+              subItem="seeReserveOnCard"
+            />
+            <RoleItem
               label="Просмотр истории изменений"
               item="events"
               subItem="seeHistory"
             />
-            {/*  */}
+            <RoleItem
+              label="Редактирование лайков"
+              item="events"
+              subItem="editLikes"
+            />
             <SubTitle name="Список участников мероприятия" />
             <RoleItem label="Видит список" item="eventsUsers" subItem="see" />
             <RoleItem
@@ -484,9 +493,9 @@ const SettingsRolesContent = (props) => {
               subItem="export"
             />
             <RoleItem
-              label="Калькулятор быстрых свиданий"
+              label="Конструктор картинок"
               item="instruments"
-              subItem="speedDating"
+              subItem="imageConstructor"
             />
             <RoleItem
               label="Рассылки"

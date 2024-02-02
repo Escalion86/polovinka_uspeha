@@ -12,6 +12,7 @@ import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue } from 'recoil'
 import EventProfit from './EventProfit'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import { faHeart } from '@fortawesome/free-solid-svg-icons'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -127,15 +128,43 @@ const EventButtonSignInComponent = ({
       <EventProfit eventId={event._id} className={classNameProfit} />
     ) : event.status === 'canceled' ? (
       <TextStatus className="text-danger">Отменено</TextStatus>
+    ) : event.likes &&
+      userEventStatus === 'participant' &&
+      !loggedUser.relationship &&
+      (isEventInProcess || isEventExpired) &&
+      event.status !== 'closed' &&
+      alreadySignIn ? (
+      <Button
+        thin={thin}
+        stopPropagation
+        classBgColor="bg-pink-500"
+        className={cn('border w-auto self-center', className)}
+        name={event.likesProcessActive ? 'Поставить' : 'Совпадения'}
+        onClick={() =>
+          event.likesProcessActive
+            ? modalsFunc.eventUser.editLike({
+                eventId: event._id,
+                userId: loggedUser._id,
+              })
+            : modalsFunc.eventUser.likesResult({
+                eventId: event._id,
+                userId: loggedUser._id,
+              })
+        }
+        icon={faHeart}
+        iconRight
+      />
     ) : isEventExpired ? (
       <TextStatus className="text-success">Завершено</TextStatus>
     ) : userEventStatus === 'assistant' ? (
       <TextStatus className="text-general">Ведущий</TextStatus>
-    ) : (noButtonIfAlreadySignIn && canSignOut) ||
-      (isEventInProcess && canSignOut) ? (
+    ) : (noButtonIfAlreadySignIn && canSignOut && !event.likes) ||
+      (isEventInProcess && canSignOut && !event.likes) ? (
       <TextStatus className="text-blue-600">
         {userEventStatus === 'reserve' ? 'В резерве' : 'Записан'}
       </TextStatus>
+    ) : !event.showOnSite ? (
+      <TextStatus className="text-purple-500">Скрыто</TextStatus>
     ) : !canSee ? (
       <TextStatus className="text-danger">Не доступно</TextStatus>
     ) : isUserQuestionnaireFilled &&
@@ -151,7 +180,7 @@ const EventButtonSignInComponent = ({
       </TextStatus>
     ) : isEventInProcess && (noButtonIfAlreadySignIn || !canSignIn) ? (
       <TextStatus className="text-general">В процессе</TextStatus>
-    ) : event.showOnSite ? (
+    ) : (
       <Button
         thin={thin}
         stopPropagation
@@ -188,7 +217,7 @@ const EventButtonSignInComponent = ({
             : 'Записаться' // 'Заполните свой профиль'
         }
       />
-    ) : null
+    )
 
   return (
     <div className={cn('flex', className)}>

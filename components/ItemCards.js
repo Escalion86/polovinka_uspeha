@@ -42,7 +42,7 @@ const ItemContainer = ({
   children,
   noPadding = false,
   className,
-  noBorder,
+  noBorder = false,
   checkable = true,
   style,
 }) => (
@@ -105,6 +105,7 @@ export const UserItem = ({
   noBorder = false,
   style,
   className,
+  hideGender,
 }) => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -124,17 +125,19 @@ export const UserItem = ({
       noBorder={noBorder}
       style={style}
     >
-      <div
-        className={cn(
-          'w-6 tablet:w-7 min-w-6 tablet:min-w-7 flex justify-center items-center h-full',
-          userGender ? 'bg-' + userGender.color : 'bg-gray-400'
-        )}
-      >
-        <FontAwesomeIcon
-          className="w-5 h-5 text-white tablet:w-6 tablet:h-6"
-          icon={userGender ? userGender.icon : faGenderless}
-        />
-      </div>
+      {!hideGender && (
+        <div
+          className={cn(
+            'w-6 tablet:w-7 min-w-6 tablet:min-w-7 flex justify-center items-center h-full',
+            userGender ? 'bg-' + userGender.color : 'bg-gray-400'
+          )}
+        >
+          <FontAwesomeIcon
+            className="w-5 h-5 text-white tablet:w-6 tablet:h-6"
+            icon={userGender ? userGender.icon : faGenderless}
+          />
+        </div>
+      )}
       <img
         className="object-cover h-10 aspect-1"
         src={getUserAvatarSrc(item)}

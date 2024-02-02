@@ -25,7 +25,7 @@ const CardButtonsComponent = ({ user }) => (
   <CardButtons item={user} typeOfItem="user" forForm />
 )
 
-const userViewFunc = (userId, clone = false) => {
+const userViewFunc = (userId, params = {}) => {
   const UserModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -149,7 +149,12 @@ const userViewFunc = (userId, clone = false) => {
               ? 'Нет'
               : 'Не указано'}
           </TextLine>
-          <ContactsIconsButtons user={user} withTitle grid />
+          <ContactsIconsButtons
+            user={user}
+            withTitle
+            grid
+            forceShowAll={params?.showContacts}
+          />
           <TextLine label="Дата регистрации">
             {formatDate(user.createdAt)}
           </TextLine>

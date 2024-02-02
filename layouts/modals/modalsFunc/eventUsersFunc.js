@@ -89,7 +89,7 @@ const eventUsersFunc = (eventId) => {
 
     // const router = useRouter()
 
-    const showSpeedDating = loggedUserActiveRole?.instruments?.speedDating
+    const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
 
     // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
 
@@ -201,23 +201,10 @@ const eventUsersFunc = (eventId) => {
                 tooltipText="Скопировать в буфер список участников"
               />
             )}
-            {showSpeedDating && (
+            {showLikes && (
               <CardButton
                 icon={faHeartCirclePlus}
-                onClick={
-                  () => {
-                    modalsFunc.event.speedDating(event._id)
-                  }
-                  // router.push(
-                  //   '/cabinet/toolsSpeedDating?eventId=' + event._id,
-                  //   '',
-                  //   {
-                  //     shallow: true,
-                  //   }
-                  // )
-                  // closeModal()
-                  // }
-                }
+                onClick={() => modalsFunc.event.editLikes(event._id)}
                 color="pink"
                 tooltipText='Калькулятор "Быстрые свидания"'
               />

@@ -19,6 +19,7 @@ const Button = forwardRef(
       icon,
       collapsing,
       rounded = true,
+      iconRight = false,
       ...props
     },
     ref
@@ -52,6 +53,7 @@ const Button = forwardRef(
         className={cn(
           'flex gap-x-2 justify-center items-center whitespace-nowrap duration-300 text-white text-base font-normal bg-opacity-90 prevent-select-text overflow-hidden',
           rounded ? (big ? 'rounded-lg' : 'rounded') : '',
+          iconRight ? 'flex-row-reverse' : '',
           big ? 'text-xl py-2' : thin ? 'h-8 py-0.5' : 'h-9 py-1',
           className,
           disabled

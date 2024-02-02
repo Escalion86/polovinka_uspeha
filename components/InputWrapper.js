@@ -46,7 +46,7 @@ const InputWrapper = forwardRef(
     return (
       <div
         className={cn(
-          'relative flex items-stretch',
+          'relative flex items-stretch h-fit',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
           noMargin ? '' : smallMargin ? 'mt-3' : 'mt-3.5 mb-1',
           noBorder
