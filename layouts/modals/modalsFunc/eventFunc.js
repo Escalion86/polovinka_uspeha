@@ -6,6 +6,7 @@ import DateTimePicker from '@components/DateTimePicker'
 import EditableTextarea from '@components/EditableTextarea'
 import ErrorsList from '@components/ErrorsList'
 import FormRow from '@components/FormRow'
+import IconCheckBox from '@components/IconCheckBox'
 import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleButton'
 import Input from '@components/Input'
 import InputImages from '@components/InputImages'
@@ -17,7 +18,15 @@ import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import UserStatusIcon from '@components/UserStatusIcon'
 import EventRelationshipAccessPicker from '@components/ValuePicker/EventRelationshipAccessPicker'
-import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
+import {
+  faEye,
+  faEyeSlash,
+  faHeart,
+  faHeartBroken,
+  faMars,
+  faTriangleExclamation,
+  faVenus,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
@@ -36,6 +45,7 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventSelector from '@state/selectors/eventSelector'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
@@ -49,6 +59,7 @@ const eventFunc = (eventId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    const { short } = useRecoilValue(locationPropsSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const directions = useRecoilValue(directionsAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
@@ -196,6 +207,8 @@ const eventFunc = (eventId, clone = false) => {
       event?.warning ?? DEFAULT_EVENT.warning
     )
 
+    const [likes, setLikes] = useState(event?.likes ?? DEFAULT_EVENT.likes)
+
     const direction = useMemo(
       () => directions.find(({ _id }) => _id === directionId),
       [directionId]
@@ -296,6 +309,7 @@ const eventFunc = (eventId, clone = false) => {
             report,
             reportImages,
             warning,
+            likes,
           },
           clone
         )
@@ -339,7 +353,8 @@ const eventFunc = (eventId, clone = false) => {
         event?.isReserveActive !== isReserveActive ||
         event?.report !== report ||
         !compareArrays(event?.reportImages, reportImages) ||
-        event?.warning !== warning
+        event?.warning !== warning ||
+        event?.likes !== likes
 
       // setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -384,6 +399,7 @@ const eventFunc = (eventId, clone = false) => {
       report,
       reportImages,
       warning,
+      likes,
     ])
 
     const handleFocus = (event) => event.target.select()
@@ -564,22 +580,43 @@ const eventFunc = (eventId, clone = false) => {
               error={errors.organizerId}
             />
             <AddressPicker address={address} onChange={setAddress} />
-            <CheckBox
+            {/* <CheckBox
               checked={warning}
               labelPos="left"
               // labelClassName="w-40"
               onClick={() => setWarning((checked) => !checked)}
               label="Предупреждение о рисках и травмоопасности на мероприятии"
+            /> */}
+            <IconCheckBox
+              checked={warning}
+              onClick={() => setWarning((checked) => !checked)}
+              label="Предупреждение о рисках и травмоопасности на мероприятии"
+              checkedIcon={faTriangleExclamation}
+              checkedIconColor="#AA0000"
+              big
             />
 
             {/* <FormWrapper title="Видимость"> */}
-            <CheckBox
+            <IconCheckBox
               checked={showOnSite}
-              labelPos="left"
-              // labelClassName="w-40"
               onClick={() => setShowOnSite((checked) => !checked)}
               label="Показывать на сайте"
+              checkedIcon={faEye}
+              uncheckedIcon={faEyeSlash}
+              checkedIconColor="#A855F7"
+              big
             />
+            {short === 'krsk' && (
+              <IconCheckBox
+                checked={likes}
+                onClick={() => setLikes((checked) => !checked)}
+                label="Участники ставят лайки другим участникам во время и после мероприятия"
+                checkedIcon={faHeart}
+                uncheckedIcon={faHeartBroken}
+                checkedIconColor="#EC4899"
+                big
+              />
+            )}
             {/* </FormWrapper> */}
           </TabPanel>
           <TabPanel tabName="Доступ и стоимость" className="px-0">

@@ -54,8 +54,9 @@ import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
 import userHistoryFunc from './modalsFunc/userHistoryFunc'
 import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
 import userPersonalStatusEditFunc from './modalsFunc/userPersonalStatusEditFunc'
-import speedDatingFunc from './modalsFunc/speedDatingFunc'
+import likesEditFunc from './modalsFunc/likesEditFunc'
 import copyEventUserListFunc from './modalsFunc/copyEventUserListFunc'
+import likeEditFunc from './modalsFunc/likeEditFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -461,7 +462,7 @@ const modalsFuncGenerator = (
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
       view: (eventId) => addModal(eventViewFunc(eventId)),
-      speedDating: (eventId) => addModal(speedDatingFunc(eventId)),
+      editLikes: (eventId) => addModal(likesEditFunc(eventId)),
       copyUsersList: (eventId) => addModal(copyEventUserListFunc(eventId)),
       signUpWithWarning: (
         event,
@@ -578,6 +579,8 @@ const modalsFuncGenerator = (
     },
     eventUser: {
       editStatus: (eventUser) => addModal(eventUserStatusChangeFunc(eventUser)),
+      editLike: (eventUser) => addModal(likeEditFunc(eventUser)),
+      likesResult: (eventUser) => addModal(likeEditFunc(eventUser)),
     },
     payment: {
       add: (paymentId, props) => addModal(paymentFunc(paymentId, true, props)),
@@ -609,7 +612,7 @@ const modalsFuncGenerator = (
           //   onConfirm: async () => itemsFunc.user.delete(userId),
           // }
         ),
-      view: (userId) => addModal(userViewFunc(userId)),
+      view: (userId, params) => addModal(userViewFunc(userId, params)),
       events: (userId) => addModal(userSignedUpEventsFunc(userId)),
       payments: (userId) => addModal(userPaymentsFunc(userId)),
       setPassword: (userId) => addModal(userSetPasswordFunc(userId)),

@@ -6,7 +6,7 @@ const Note = ({ children }) => (
   //   </div>
   //   {children}
   // </div>
-  <div className="text-teal-900 pt-2.5 pb-2 px-2 mb-2 mt-4 text-base leading-4 italic bg-teal-100 border-l-4 border-teal-400 rounded-[4px]">
+  <div className="text-teal-900 pt-2.5 pb-2 px-2 my-2 text-base leading-4 italic bg-teal-100 border-l-4 border-teal-400 rounded-[4px]">
     {children}
   </div>
 )

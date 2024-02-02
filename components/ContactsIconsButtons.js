@@ -64,11 +64,13 @@ const ContactsIconsButtons = ({
   message,
   smsViaPhone,
   forceWhatsApp,
+  forceShowAll,
 }) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
-  const canSeeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
+  const canSeeAllContacts =
+    forceShowAll || loggedUserActiveRole?.users?.seeAllContacts
 
   if (
     !canSeeAllContacts &&

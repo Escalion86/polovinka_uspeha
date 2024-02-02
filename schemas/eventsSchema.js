@@ -149,6 +149,14 @@ const eventsSchema = {
     type: {},
     default: null,
   },
+  likes: {
+    type: Boolean,
+    default: false,
+  },
+  likesProcessActive: {
+    type: Boolean,
+    default: true,
+  },
 }
 
 export default eventsSchema

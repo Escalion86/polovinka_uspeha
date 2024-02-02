@@ -23,17 +23,13 @@ const setEventsUsersSelector = selectorFamily({
           const isLoadedUserId = getRecoil(
             isLoadedAtom('asyncEventsUsersByUserIdAtom' + oldEventUser.userId)
           )
-          // console.log(
-          //   'isLoadedUserId oldEventUser :>> ',
-          //   isLoadedUserId,
-          //   oldEventUser.userId
-          // )
+
           if (isLoadedUserId) {
             const eventsUser = get(
               asyncEventsUsersByUserIdAtom(oldEventUser.userId)
             )
             const newEventsUser = eventsUser.filter(
-              (eventUser) => eventUser.eventId === eventId
+              (eventUser) => eventUser.eventId !== eventId
             )
             set(
               asyncEventsUsersByUserIdAtom(oldEventUser.userId),

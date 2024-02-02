@@ -13,6 +13,7 @@ import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
 import UserStatusIcon from './UserStatusIcon'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 
 const Ages = ({ gender, event }) => (
   <div className="flex justify-center gap-x-0.5 border-b self-stretch">
@@ -155,7 +156,7 @@ const CounterComponent = ({
                         <span>{maxMember}</span>
                       </>
                     )}
-                    {eventGendersMemberReserveCount > 0 && (
+                    {showReserve && eventGendersMemberReserveCount > 0 && (
                       <span className="text-xs">{`+${eventGendersMemberReserveCount}`}</span>
                     )}
                   </div>
@@ -290,13 +291,14 @@ const SumCounter = (props) => (
 const EventUsersCounterAndAge = ({ eventId, className, showAges }) => {
   const event = useRecoilValue(eventSelector(eventId))
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  const showReserve =
+    loggedUserActiveRole?.events?.seeReserveOnCard || isLoggedUserMember
 
   if (!eventId || !event) return null
 
   const eventUsersCounterAndAgeFull =
     loggedUserActiveRole?.events?.eventUsersCounterAndAgeFull
-
-  const showReserve = true
 
   return (
     <div

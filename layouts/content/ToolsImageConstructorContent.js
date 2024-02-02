@@ -154,7 +154,6 @@ const ListConstructor = ({ list = [], onChange }) => {
 const ToolsImageConstructorContent = () => {
   const [templateName, setTemplateName] = useState('')
   const [size, setSize] = useState({ w: 480, h: 480 })
-  // const [color, setColor] = useState('#ffffff')
   const [data, setData] = useState([])
   const [backgroundProps, setBackgroundProps] = useState()
   console.log('data :>> ', data)

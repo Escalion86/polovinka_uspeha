@@ -103,7 +103,6 @@ import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
 import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
 import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
 import ToolsImageConstructorContent from '@layouts/content/ToolsImageConstructorContent'
-// import ToolsSpeedDatingContent from '@layouts/content/ToolsSpeedDatingContent'
 
 const colors = [
   'border-blue-400',
@@ -525,6 +524,8 @@ export const DEFAULT_EVENT = Object.freeze({
   report: '',
   reportImages: [],
   warning: false,
+  likes: false,
+  likesProcessActive: true,
 })
 
 export const DEFAULT_QUESTIONNAIRE = Object.freeze({
@@ -556,9 +557,6 @@ export const DEFAULT_DIRECTION = Object.freeze({
     userStatus: 'select',
     userRelationship: 'select',
   },
-  // plugins: {
-  //   speedDating: false,
-  // },
 })
 
 export const DEFAULT_REVIEW = Object.freeze({
@@ -811,8 +809,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: false,
       showProfitOnCard: false,
       statusFilterFull: false,
+      seeReserveOnCard: false,
       eventUsersCounterAndAgeFull: false,
       seeHistory: false,
+      editLikes: false,
     },
     eventsUsers: {
       see: false, // member
@@ -887,7 +887,6 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: false,
       export: false,
       newsletter: false,
-      speedDating: false,
       imageConstructor: false,
     },
     generalPage: {
@@ -937,8 +936,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: true,
       showProfitOnCard: false,
       statusFilterFull: true,
+      seeReserveOnCard: true,
       eventUsersCounterAndAgeFull: true,
       seeHistory: false,
+      editLikes: false,
     },
     eventsUsers: {
       see: true, // member
@@ -1013,7 +1014,6 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: true,
       export: true,
       newsletter: false,
-      speedDating: false,
       imageConstructor: false,
     },
     generalPage: {
@@ -1063,8 +1063,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: true,
       showProfitOnCard: false,
       statusFilterFull: true,
+      seeReserveOnCard: true,
       eventUsersCounterAndAgeFull: true,
       seeHistory: false,
+      editLikes: false,
     },
     eventsUsers: {
       see: true, // member
@@ -1139,7 +1141,6 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: false,
       export: true,
       newsletter: false,
-      speedDating: false,
       imageConstructor: false,
     },
     generalPage: {
@@ -1189,8 +1190,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: true,
       showProfitOnCard: true,
       statusFilterFull: true,
+      seeReserveOnCard: true,
       eventUsersCounterAndAgeFull: true,
       seeHistory: true,
+      editLikes: true,
     },
     eventsUsers: {
       see: true, // member
@@ -1265,7 +1268,6 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: true,
       export: true,
       newsletter: false,
-      speedDating: true,
       imageConstructor: false,
     },
     generalPage: {
@@ -1316,8 +1318,10 @@ export const DEFAULT_ROLES = [
       paymentsEdit: true, //!
       showProfitOnCard: true, //!
       statusFilterFull: true, //!
+      seeReserveOnCard: true,
       eventUsersCounterAndAgeFull: true, //!
       seeHistory: true,
+      editLikes: true,
     },
     eventsUsers: {
       see: true, // ! member
@@ -1392,7 +1396,6 @@ export const DEFAULT_ROLES = [
       anonsEventListImageGenerator: true,
       export: true,
       newsletter: true,
-      speedDating: true,
       imageConstructor: true,
     },
     generalPage: {
@@ -1608,12 +1611,6 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.export,
   },
-  // toolsSpeedDating: {
-  //   Component: ToolsSpeedDatingContent,
-  //   name: 'Инструменты / Калькулятор "Быстрые свидания"',
-  //   accessRoles: ['supervisor', 'dev'],
-  //   roleAccess: (role) => role?.instruments?.speedDating,
-  // },
   newsletter: {
     Component: ToolsNewsletterContent,
     name: 'Инструменты / Рассылка',
@@ -1942,16 +1939,6 @@ export const pages = [
     accessRoles: CONTENTS['toolsImageConstructor'].accessRoles,
     roleAccess: CONTENTS['toolsImageConstructor'].roleAccess,
   },
-
-  // {
-  //   id: 75,
-  //   group: 9,
-  //   name: 'Калькулятор "Быстрые свидания"',
-  //   href: 'toolsSpeedDating',
-  //   icon: faHeartCirclePlus,
-  //   accessRoles: CONTENTS['toolsSpeedDating'].accessRoles,
-  //   roleAccess: CONTENTS['toolsSpeedDating'].roleAccess,
-  // },
   {
     id: 80,
     group: 10,
