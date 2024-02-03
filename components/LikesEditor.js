@@ -5,36 +5,36 @@ import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import UserLikesItem from './UserLikesItem'
 
-const getLikesObjects = (eventUsers) => {
-  const eventMans = eventUsers.filter(({ user }) => user.gender === 'male')
-  const eventWomans = eventUsers.filter(({ user }) => user.gender === 'famale')
-
-  const mansLikes = eventMans.reduce(
-    (a, { userId, likes }) => ({ ...a, [userId]: likes ?? [] }),
-    {}
-  )
-  const womansLikes = eventWomans.reduce(
-    (a, { userId, likes }) => ({ ...a, [userId]: likes ?? [] }),
-    {}
-  )
-  return [mansLikes, womansLikes]
-}
+const getLikesObject = (eventUsers) =>
+  eventUsers.reduce((a, { userId, likes }) => ({ ...a, [userId]: likes }), {})
 
 const LikesEditor = ({ eventId, readOnly }) => {
   const eventUsers = useRecoilValue(
     eventParticipantsFullByEventIdSelector(eventId)
   )
 
-  const eventMans = eventUsers.filter(
-    ({ user }) => !user.relationship && user.gender === 'male'
+  const eventMans = useMemo(
+    () =>
+      eventUsers.filter(
+        ({ user }) => !user.relationship && user.gender === 'male'
+      ),
+    [eventUsers]
   )
-  const eventWomans = eventUsers.filter(
-    ({ user }) => !user.relationship && user.gender === 'famale'
+  const eventWomans = useMemo(
+    () =>
+      eventUsers.filter(
+        ({ user }) => !user.relationship && user.gender === 'famale'
+      ),
+    [eventUsers]
   )
 
-  const [defaultMansSelections, defaultWomansSelections] = useMemo(
-    () => getLikesObjects(eventUsers),
-    [eventUsers]
+  const defaultMansSelections = useMemo(
+    () => getLikesObject(eventMans),
+    [eventMans]
+  )
+  const defaultWomansSelections = useMemo(
+    () => getLikesObject(eventWomans),
+    [eventWomans]
   )
 
   const [mansSelections, setMansSelections] = useState(defaultMansSelections)
@@ -64,23 +64,25 @@ const LikesEditor = ({ eventId, readOnly }) => {
   const mansResult = {}
   const womansResult = {}
   for (const [manId, value] of Object.entries(mansSelections)) {
-    value.forEach((womanId) => {
-      if (
-        womansSelections[womanId] &&
-        womansSelections[womanId].includes(manId)
-      ) {
-        if (!mansResult[manId]) {
-          mansResult[manId] = [womanId]
-        } else {
-          mansResult[manId].push(womanId)
+    if (value !== null && typeof value === 'object') {
+      value.forEach((womanId) => {
+        if (
+          womansSelections[womanId] &&
+          womansSelections[womanId].includes(manId)
+        ) {
+          if (!mansResult[manId]) {
+            mansResult[manId] = [womanId]
+          } else {
+            mansResult[manId].push(womanId)
+          }
+          if (!womansResult[womanId]) {
+            womansResult[womanId] = [manId]
+          } else {
+            womansResult[womanId].push(manId)
+          }
         }
-        if (!womansResult[womanId]) {
-          womansResult[womanId] = [manId]
-        } else {
-          womansResult[womanId].push(manId)
-        }
-      }
-    })
+      })
+    }
   }
 
   const saveResult = () => {

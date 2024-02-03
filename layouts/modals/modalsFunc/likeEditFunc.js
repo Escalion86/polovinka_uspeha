@@ -100,17 +100,15 @@ const likeEditFunc = ({ eventId, userId }) => {
       eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
     )
 
-    console.log(
-      'participantsWithoutRelationship :>> ',
-      participantsWithoutRelationship
-    )
-
     const setEventLikes = useRecoilValue(itemsFuncAtom).event.setLikes
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
     if (!eventUser)
       return 'Произошла ошибка. Или вы не можете ставить лайки. Обратитесь к администратору!'
-    if (!eventUser?.likes || eventUser?.likes.length === 0)
+    if (
+      !event.likesProcessActive &&
+      (!eventUser?.likes || eventUser?.likes.length === 0)
+    )
       return 'Вы не поставили ни одного лайка'
 
     const userGender = user.gender

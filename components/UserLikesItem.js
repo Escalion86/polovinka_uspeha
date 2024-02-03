@@ -1,12 +1,18 @@
 import { SelectUserList } from '@components/SelectItemList'
 import UserName from '@components/UserName'
-import { faCopy, faGenderless } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheck,
+  faCheckSquare,
+  faCopy,
+  faGenderless,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GENDERS } from '@helpers/constants'
 import cn from 'classnames'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import birthDateToAge from '@helpers/birthDateToAge'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import { faSquare } from '@fortawesome/free-regular-svg-icons'
 
 const dayTimeText = () => {
   var date = new Date()
@@ -82,6 +88,17 @@ const UserLikesItem = ({
       key={user._id}
     >
       <div className="flex items-center h-10">
+        <div
+          className={cn(
+            'w-6 min-w-6 tablet:w-8 tablet:min-w-8 flex justify-center items-center',
+            selectedIds === null ? 'text-gray-400' : 'text-success'
+          )}
+        >
+          <FontAwesomeIcon
+            className="w-6 h-6"
+            icon={selectedIds === null ? faGenderless : faCheck}
+          />
+        </div>
         <div
           className={cn(
             'w-6 min-w-6 tablet:w-8 tablet:min-w-8 flex justify-center items-center',
