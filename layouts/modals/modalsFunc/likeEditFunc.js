@@ -105,6 +105,7 @@ const likeEditFunc = ({ eventId, userId }) => {
 
     if (!eventUser)
       return 'Произошла ошибка. Или вы не можете ставить лайки. Обратитесь к администратору!'
+
     if (
       !event.likesProcessActive &&
       (!eventUser?.likes || eventUser?.likes.length === 0)
