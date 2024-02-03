@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareArrays from '@helpers/compareArrays'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
@@ -95,26 +96,38 @@ const likeEditFunc = ({ eventId, userId }) => {
     const eventUser = eventUsers.find(
       (eventUser) => eventUser.userId === userId
     )
+    const participantsWithoutRelationship = useRecoilValue(
+      eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
+    )
+
+    console.log(
+      'participantsWithoutRelationship :>> ',
+      participantsWithoutRelationship
+    )
+
     const setEventLikes = useRecoilValue(itemsFuncAtom).event.setLikes
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
-    if (!eventUser) return 'Произошла ошибка'
+    if (!eventUser)
+      return 'Произошла ошибка. Или вы не можете ставить лайки. Обратитесь к администратору!'
     if (!eventUser?.likes || eventUser?.likes.length === 0)
       return 'Вы не поставили ни одного лайка'
 
-    const eventUsersOtherGenderWithCoincidences = eventUsers
-      .filter((eventUser2) =>
-        eventUser2.user?.gender === 'male'
+    const userGender = user.gender
+    const otherGenderEventUsers = participantsWithoutRelationship.filter(
+      ({ user }) =>
+        userGender === 'male'
           ? user.gender === 'famale'
           : user.gender === 'male'
-      )
-      .map((eventUser2) => {
-        return {
-          ...eventUser2,
-          coincidence: eventUser2.likes.includes(eventUser.userId),
-          like: eventUser.likes.includes(eventUser2.userId),
-        }
+    )
+
+    const eventUsersOtherGenderWithCoincidences = otherGenderEventUsers.map(
+      (eventUser2) => ({
+        ...eventUser2,
+        coincidence: eventUser2.likes?.includes(eventUser.userId),
+        like: eventUser.likes?.includes(eventUser2.userId),
       })
+    )
 
     const coincidences = eventUsersOtherGenderWithCoincidences.filter(
       (eventUser) => eventUser.coincidence
@@ -134,16 +147,6 @@ const likeEditFunc = ({ eventId, userId }) => {
     }
 
     const [likes, setLikes] = useState(eventUser.likes ?? [])
-
-    const userGender = user.gender
-    const altGenderEventUsers = eventUsers.filter(
-      ({ user, status }) =>
-        !user.relationship &&
-        status === 'participant' &&
-        (userGender === 'male'
-          ? user.gender === 'famale'
-          : user.gender === 'male')
-    )
 
     useEffect(() => {
       const isFormChanged = !compareArrays(eventUser.likes ?? [], likes)
@@ -201,7 +204,7 @@ const likeEditFunc = ({ eventId, userId }) => {
         )}
         {event.likesProcessActive ? (
           <div className="flex flex-col gap-y-0.5">
-            {altGenderEventUsers.map(({ user }) => {
+            {otherGenderEventUsers.map(({ user }) => {
               const checked = likes.includes(user._id)
               return (
                 <div
