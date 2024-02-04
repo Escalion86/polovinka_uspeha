@@ -2,7 +2,6 @@ import { SelectUserList } from '@components/SelectItemList'
 import UserName from '@components/UserName'
 import {
   faCheck,
-  faCheckSquare,
   faCopy,
   faGenderless,
 } from '@fortawesome/free-solid-svg-icons'
@@ -12,7 +11,6 @@ import cn from 'classnames'
 import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import birthDateToAge from '@helpers/birthDateToAge'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
-import { faSquare } from '@fortawesome/free-regular-svg-icons'
 
 const dayTimeText = () => {
   var date = new Date()

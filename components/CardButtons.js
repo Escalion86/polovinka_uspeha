@@ -236,7 +236,7 @@ const CardButtons = ({
       {show.likes && (
         <ItemComponent
           icon={faHeartCirclePlus}
-          onClick={() => modalsFunc.event.editLikes(item._id)}
+          onClick={() => modalsFunc.event.viewLikes(item._id)}
           color="pink"
           tooltipText="Лайки участников"
         />

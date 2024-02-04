@@ -57,6 +57,7 @@ import userPersonalStatusEditFunc from './modalsFunc/userPersonalStatusEditFunc'
 import likesEditFunc from './modalsFunc/likesEditFunc'
 import copyEventUserListFunc from './modalsFunc/copyEventUserListFunc'
 import likeEditFunc from './modalsFunc/likeEditFunc'
+import likesViewFunc from './modalsFunc/likesViewFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -463,6 +464,7 @@ const modalsFuncGenerator = (
         }),
       view: (eventId) => addModal(eventViewFunc(eventId)),
       editLikes: (eventId) => addModal(likesEditFunc(eventId)),
+      viewLikes: (eventId) => addModal(likesViewFunc(eventId)),
       copyUsersList: (eventId) => addModal(copyEventUserListFunc(eventId)),
       signUpWithWarning: (
         event,
@@ -579,7 +581,8 @@ const modalsFuncGenerator = (
     },
     eventUser: {
       editStatus: (eventUser) => addModal(eventUserStatusChangeFunc(eventUser)),
-      editLike: (eventUser) => addModal(likeEditFunc(eventUser)),
+      editLike: (eventUser, adminView) =>
+        addModal(likeEditFunc(eventUser, adminView)),
       likesResult: (eventUser) => addModal(likeEditFunc(eventUser)),
     },
     payment: {

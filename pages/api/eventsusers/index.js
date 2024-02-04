@@ -148,7 +148,6 @@ export default async function handler(req, res) {
     try {
       await dbConnect()
       const { eventId, data } = body.data
-
       if (!eventId)
         return res?.status(400).json({ success: false, data: 'No eventId' })
       if (!data)
@@ -163,6 +162,7 @@ export default async function handler(req, res) {
       const result = []
       for (const key of dataKeys) {
         for (const [id, value] of Object.entries(data[key])) {
+          console.log('object :>> ', { id, key, value })
           const updatedEventUser = await EventsUsers.findByIdAndUpdate(
             id,
             {
@@ -173,6 +173,7 @@ export default async function handler(req, res) {
           result.push(updatedEventUser)
         }
       }
+      console.log('result :>> ', result)
 
       return res?.status(201).json({ success: true, data: result })
     } catch (error) {

@@ -276,12 +276,7 @@ const EventCard = ({
         {widthNum >= 3 && (
           <div className="flex items-stretch justify-between border-t">
             <EventUsersCounterAndAge eventId={eventId} className="h-[42px]" />
-            <EventButtonSignIn
-              eventId={eventId}
-              noButtonIfAlreadySignIn
-              // classNameProfit="rounded-tl-lg"
-              // className="border-l border-gray-200"
-            />
+            <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn />
           </div>
         )}
       </div>

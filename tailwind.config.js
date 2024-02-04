@@ -30,7 +30,7 @@ module.exports = {
       backgroundImage: (theme) => ({
         check: "url('/icons/check.svg')",
         radio: "url('/icons/radio.svg')",
-        landscape: "url('/images/landscape/2.jpg')",
+        hearts: "url('/img/hearts_texture.jpg')",
       }),
       colors: {
         header: '#4D9DC4',
