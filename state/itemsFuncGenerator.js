@@ -624,32 +624,32 @@ const itemsFuncGenerator = (
     )
   }
 
-  obj.event.setLikes = async (eventId, likes) => {
+  obj.event.setData = async (eventId, data, dontShowSnackBar) => {
     setLoadingCard('event' + eventId)
     return await putData(
       `/api/eventsusers`,
-      { eventId, data: { likes } },
-      (data) => {
-        snackbar.success('Лайки участников мероприятия обновлены')
+      { eventId, data },
+      (res) => {
+        !dontShowSnackBar &&
+          snackbar.success('Лайки участников мероприятия обновлены')
         setNotLoadingCard('event' + eventId)
-        props.updateEventsUsers(eventId, data)
+        props.updateEventsUsers(eventId, res)
       },
       (error) => {
-        snackbar.error('Не удалось обновить лайки участников мероприятия')
+        !dontShowSnackBar &&
+          snackbar.error('Не удалось обновить лайки участников мероприятия')
         setErrorCard('event' + eventId)
-        const data = {
+        const res = {
           errorPlace: 'setLikes ERROR',
           eventId,
-          likes,
+          data,
           error,
         }
-        addErrorModal(data)
-        console.log(data)
+        addErrorModal(res)
+        console.log(res)
       },
       false,
       loggedUser?._id
-      // () => props['setAdditionalBlock'](itemId)
-      //  deleteEvent(itemId)
     )
   }
 

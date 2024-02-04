@@ -1,25 +1,21 @@
 import CheckBox from '@components/CheckBox'
 import FormWrapper from '@components/FormWrapper'
 import formatDateTime from '@helpers/formatDateTime'
-import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
-// import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useEffect, useState } from 'react'
-import {
-  // useRecoilRefresher_UNSTABLE,
-  useRecoilValue,
-} from 'recoil'
+import { useRecoilValue } from 'recoil'
 
-const eventSignUpWithWarning = (
+const eventSignUpFunc = (
   event,
   status,
   eventSubtypeNum,
   comment,
   fixEventStatus,
-  eventSignUpToReserveAfterError
+  eventSignUpToReserveAfterError,
+  onSuccess
 ) => {
-  const EventSignUpWithWarningModal = ({
+  const EventSignUpModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnConfirm2Func,
@@ -35,11 +31,7 @@ const eventSignUpWithWarning = (
 
     const eventId = event._id
 
-    // const refreshEventState = useRecoilRefresher_UNSTABLE(
-    //   asyncEventsUsersByEventIdSelector(eventId)
-    // )
-
-    const onClickConfirm = async (onSuccess) => {
+    const onClickConfirm = async () => {
       closeModal()
       itemsFunc.event.signUp(
         {
@@ -58,7 +50,6 @@ const eventSignUpWithWarning = (
             fixEventStatus(eventId, 'canceled')
           }
           if (data.solution === 'reserve') {
-            // refreshEventState()
             eventSignUpToReserveAfterError(
               event,
               data.error,
@@ -75,11 +66,10 @@ const eventSignUpWithWarning = (
 
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
-      setOnConfirm2Func(() =>
-        onClickConfirm(() => goToUrlForAddEventToCalendar(event))
-      )
-      setDisableConfirm(!check)
-    }, [check])
+      setDisableConfirm(event.warning && !check)
+    }, [check, event.warning])
+
+    if (!event.warning) return null
 
     return (
       <FormWrapper className="gap-y-2">
@@ -93,7 +83,6 @@ const eventSignUpWithWarning = (
         )} является тем видом активности, который может повлечь получение серьёзных травм.`}</div>
         <CheckBox
           checked={check}
-          // labelPos="left"
           onClick={() => setCheck((checked) => !checked)}
           label="Я сознательно и добровольно беру на себя ответственность за эти риски - как известные, так и неизвестные, в том числе риски, возникшие по причине халатности со стороны лиц, освобождённых от ответственности или иных лиц, и принимаю на себя полную ответственность за мое участие в этом мероприятии"
           required
@@ -114,10 +103,8 @@ const eventSignUpWithWarning = (
     title: `Запись${postfixStatus} на мероприятие`,
     text: `Вы уверены что хотите записаться${postfixStatus} на мероприятие?`,
     confirmButtonName: `Записаться${postfixStatus}`,
-    // ADD
-    confirmButtonName2: `Записаться в резерв и добавить в календарь`,
-    Children: EventSignUpWithWarningModal,
+    Children: EventSignUpModal,
   }
 }
 
-export default eventSignUpWithWarning
+export default eventSignUpFunc

@@ -1,6 +1,7 @@
 import DateTimeEvent from '@components/DateTimeEvent'
 import { UserItem } from '@components/ItemCards'
 import Note from '@components/Note'
+import UserName from '@components/UserName'
 import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareArrays from '@helpers/compareArrays'
@@ -67,13 +68,13 @@ const CoincidenceItem = ({ user, coincidence, like }) => {
         }
         noBorder
         hideGender
-        className={coincidence ? 'bg-pink-100' : ''}
+        className={coincidence ? 'bg-hearts hover:bg-none' : ''}
       />
     </div>
   )
 }
 
-const likeEditFunc = ({ eventId, userId }) => {
+const likeEditFunc = ({ eventId, userId }, adminView) => {
   const LikeEditModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -100,17 +101,21 @@ const likeEditFunc = ({ eventId, userId }) => {
       eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
     )
 
-    const setEventLikes = useRecoilValue(itemsFuncAtom).event.setLikes
+    const setEventUserData = useRecoilValue(itemsFuncAtom).event.setData
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
     if (!eventUser)
-      return 'Произошла ошибка. Или вы не можете ставить лайки. Обратитесь к администратору!'
+      return adminView
+        ? 'Произошла ошибка. Не найдена запись пользователя'
+        : 'Произошла ошибка. Или вы не можете ставить лайки. Обратитесь к администратору!'
 
     if (
       !event.likesProcessActive &&
       (!eventUser?.likes || eventUser?.likes.length === 0)
     )
-      return 'Вы не поставили ни одного лайка'
+      return adminView
+        ? 'Этот пользователь не поставил ни одного лайка'
+        : 'Вы не поставили ни одного лайка'
 
     const userGender = user.gender
     const otherGenderEventUsers = participantsWithoutRelationship.filter(
@@ -119,6 +124,8 @@ const likeEditFunc = ({ eventId, userId }) => {
           ? user.gender === 'famale'
           : user.gender === 'male'
     )
+
+    const NoteComponent = (props) => (adminView ? null : <Note {...props} />)
 
     const eventUsersOtherGenderWithCoincidences = otherGenderEventUsers.map(
       (eventUser2) => ({
@@ -139,13 +146,29 @@ const likeEditFunc = ({ eventId, userId }) => {
     )
 
     const onClickConfirm = () => {
-      setEventLikes(eventId, {
-        [eventUser._id]: likes,
+      setEventUserData(eventId, {
+        likes: {
+          [eventUser._id]: likes,
+        },
       })
       closeModal()
     }
 
     const [likes, setLikes] = useState(eventUser.likes ?? [])
+
+    useEffect(() => {
+      if (!adminView && !eventUser.seeLikesResult) {
+        setEventUserData(
+          eventId,
+          {
+            seeLikesResult: {
+              [eventUser._id]: true,
+            },
+          },
+          true
+        )
+      }
+    }, [eventUser.seeLikesResult, adminView])
 
     useEffect(() => {
       const isFormChanged = !compareArrays(eventUser.likes ?? [], likes)
@@ -154,6 +177,8 @@ const likeEditFunc = ({ eventId, userId }) => {
           ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
           : eventUser.likes && !isFormChanged
           ? 'Оставить как было'
+          : adminView
+          ? 'Сохранить выбор'
           : 'Отправить мой выбор'
       )
       // setDisableConfirm(eventUser.likes && !isFormChanged)
@@ -165,7 +190,7 @@ const likeEditFunc = ({ eventId, userId }) => {
           : onClickConfirm
       )
       setCloseButtonShow(!event.likesProcessActive)
-      setDeclineButtonShow(false)
+      setDeclineButtonShow(adminView)
       if (!event.likesProcessActive)
         setTitle(
           `Совпадения лайков с участни${user.gender === 'male' ? 'ц' : 'к'}ами`
@@ -186,19 +211,24 @@ const likeEditFunc = ({ eventId, userId }) => {
           showDayOfWeek
           fullMonth
         />
+        {adminView && (
+          <div className="flex justify-center w-full mt-1 mb-2 text-lg font-bold">
+            <UserName user={user} />
+          </div>
+        )}
         {event.likesProcessActive && (
           <div>
-            <Note>
+            <NoteComponent>
               Поставьте понравившемся участни
               {user.gender === 'male' ? 'ц' : 'к'}
               ам лайки (клик по сердечку), после того как все участники сделают
               свой выбор - Вы сможете посмотреть есть ли у Вас совпадения!
-            </Note>
-            <Note>
+            </NoteComponent>
+            <NoteComponent>
               <strong>ВАЖНО!</strong> В случае совпадения Вам будут доступны
               контакты (телефон, whatsApp и т.п.) совпавшего человека, но также
               и ему будут доступны указанные в вашей анкете контакты!
-            </Note>
+            </NoteComponent>
           </div>
         )}
         {event.likesProcessActive ? (
@@ -261,16 +291,21 @@ const likeEditFunc = ({ eventId, userId }) => {
                   </div>
                   <Heart small />
                 </div>
-                {coincidences.map((props) => (
-                  <CoincidenceItem {...props} />
+                {coincidences.map(({ user, coincidence, like }) => (
+                  <CoincidenceItem
+                    key={'coincidence' + user._id}
+                    user={user}
+                    coincidence={coincidence}
+                    like={like}
+                  />
                 ))}
               </>
             ) : (
-              <Note>
+              <NoteComponent>
                 К сожалению на этом мероприятии у Вас нет совпадений, но не
                 расстраивайтесь, постарайтесь на будущих мероприятиях немного
                 лучше проявлять себя, и тогда Вас точно заметят!
-              </Note>
+              </NoteComponent>
             )}
             {notCoincidences.length > 0 ? (
               <>
@@ -281,32 +316,42 @@ const likeEditFunc = ({ eventId, userId }) => {
                   </div>
                   <Heart small broken gray />
                 </div>
-                {notCoincidences.map((props) => (
-                  <CoincidenceItem {...props} />
+                {notCoincidences.map(({ user, coincidence, like }) => (
+                  <CoincidenceItem
+                    key={'noCoincidence' + user._id}
+                    user={user}
+                    coincidence={coincidence}
+                    like={like}
+                  />
                 ))}
               </>
             ) : (
-              <Note>
+              <NoteComponent>
                 {eventUser.likes.length === 1
                   ? 'Вы поставили всего один лайк и он совпал! Судьба?'
                   : 'Очень здорово, что все поставленные Вами симпатии (лайки) оказались взаимными! Вероятно вы очень хорошо чувствуете людей и это взаимно!'}
-              </Note>
+              </NoteComponent>
             )}
             {other.length > 0 ? (
               <>
                 <div className="flex items-center justify-center px-3 mt-3 text-xl font-bold text-center text-gray-700">
                   ВЫ НЕ ПОСТАВИЛИ ЛАЙК
                 </div>
-                {other.map((props) => (
-                  <CoincidenceItem {...props} />
+                {other.map(({ user, coincidence, like }) => (
+                  <CoincidenceItem
+                    key={'noLikes' + user._id}
+                    user={user}
+                    coincidence={coincidence}
+                    like={like}
+                  />
                 ))}
               </>
             ) : (
-              <Note className="mt-3">
+              <NoteComponent className="mt-3">
                 С одной стороны очень здорово, что на этом мероприятии Вы
                 абсолютно всем поставили лайк, но всетаки рекомендуем Вам,
                 ставить лайки более избирательно
-              </Note>
+              </NoteComponent>
             )}
           </div>
         )}

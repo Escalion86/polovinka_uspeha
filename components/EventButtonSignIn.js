@@ -186,17 +186,14 @@ const EventButtonSignInComponent = ({
         stopPropagation
         onClick={() => {
           if (!loggedUser || (canSignIn && !alreadySignIn)) {
-            if (event.warning) modalsFunc.event.signUpWithWarning(event)
-            else modalsFunc.event.signUp(event)
+            modalsFunc.event.signUp(event)
           } else if (loggedUser.status === 'ban') {
             modalsFunc.event.cantSignUp()
           } else if (
             (!canSignIn && !alreadySignIn && canSignInReserve) ||
             !isUserQuestionnaireFilled
           ) {
-            if (event.warning)
-              modalsFunc.event.signUpWithWarning(event, 'reserve')
-            else modalsFunc.event.signUp(event, 'reserve')
+            if (event.warning) modalsFunc.event.signUp(event, 'reserve')
           } else if (canSignOut) {
             modalsFunc.event.signOut(event, userEventStatus)
           }

@@ -29,6 +29,10 @@ const eventsUsersSchema = {
       return null
     },
   },
+  seeLikesResult: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 export default eventsUsersSchema

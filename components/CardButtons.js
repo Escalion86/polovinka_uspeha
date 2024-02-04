@@ -158,7 +158,7 @@ const CardButtons = ({
 
   const isCompact =
     alwaysCompact ||
-    ((numberOfButtons > 4 || alwaysCompactOnPhone) &&
+    ((numberOfButtons > 3 || alwaysCompactOnPhone) &&
       ['phoneV', 'phoneH', 'tablet'].includes(device))
 
   const ItemComponent = isCompact ? MenuItem : CardButton
@@ -236,7 +236,7 @@ const CardButtons = ({
       {show.likes && (
         <ItemComponent
           icon={faHeartCirclePlus}
-          onClick={() => modalsFunc.event.editLikes(item._id)}
+          onClick={() => modalsFunc.event.viewLikes(item._id)}
           color="pink"
           tooltipText="Лайки участников"
         />

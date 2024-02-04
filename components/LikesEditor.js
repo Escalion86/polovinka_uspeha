@@ -124,6 +124,7 @@ const LikesEditor = ({ eventId, readOnly }) => {
           showContacts={isResultSaved}
           otherUsersData={womans}
           readOnly={readOnly}
+          eventId={eventId}
         />
       ))}
       {womans.map((user) => (
@@ -137,6 +138,7 @@ const LikesEditor = ({ eventId, readOnly }) => {
           showContacts={isResultSaved}
           otherUsersData={mans}
           readOnly={readOnly}
+          eventId={eventId}
         />
       ))}
       {/* {!isResultSaved && (
