@@ -71,6 +71,7 @@ module.exports = {
         adlery: ['AdleryProBlockletter', 'sans-serif'],
         enchants: ['Enchants', 'sans-serif'],
         frankinity: ['Frankinity', 'sans-serif'],
+        lora: ['Lora', 'sans-serif'],
       },
       width: {
         phoneV: '300px',
