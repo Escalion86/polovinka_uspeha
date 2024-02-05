@@ -103,6 +103,7 @@ import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
 import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
 import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
 import ToolsImageConstructorContent from '@layouts/content/ToolsImageConstructorContent'
+import ToolsEventAnonsVkContent from '@layouts/content/ToolsEventAnonsVkContent'
 
 const colors = [
   'border-blue-400',
@@ -1589,7 +1590,13 @@ export const CONTENTS = Object.freeze({
   },
   toolsEventAnons: {
     Component: ToolsEventAnonsContent,
-    name: 'Инструменты / Редактор анонса мероприятия',
+    name: 'Инструменты / Редактор анонса в Instagram',
+    accessRoles: ['moder', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.instruments?.anonsEventImageGenerator,
+  },
+  toolsEventAnonsVk: {
+    Component: ToolsEventAnonsVkContent,
+    name: 'Инструменты / Редактор анонса в VK',
     accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.anonsEventImageGenerator,
   },
@@ -1897,7 +1904,7 @@ export const pages = [
   {
     id: 71,
     group: 9,
-    name: 'Редактор анонса мероприятия',
+    name: 'Редактор анонса в Instagram',
     href: 'toolsEventAnons',
     icon: faImage,
     accessRoles: CONTENTS['toolsEventAnons'].accessRoles,
@@ -1906,6 +1913,15 @@ export const pages = [
   {
     id: 72,
     group: 9,
+    name: 'Редактор анонса в Vk',
+    href: 'toolsEventAnonsVk',
+    icon: faImage,
+    accessRoles: CONTENTS['toolsEventAnonsVk'].accessRoles,
+    roleAccess: CONTENTS['toolsEventAnonsVk'].roleAccess,
+  },
+  {
+    id: 73,
+    group: 9,
     name: 'Редактор анонса списка мероприятий',
     href: 'toolsAnons',
     icon: faImage,
@@ -1913,7 +1929,7 @@ export const pages = [
     roleAccess: CONTENTS['toolsAnons'].roleAccess,
   },
   {
-    id: 73,
+    id: 74,
     group: 9,
     name: 'Экспорт данных',
     href: 'toolsExport',
@@ -1922,7 +1938,7 @@ export const pages = [
     roleAccess: CONTENTS['toolsExport'].roleAccess,
   },
   {
-    id: 74,
+    id: 75,
     group: 9,
     name: 'Рассылки',
     href: 'newsletter',
@@ -1931,7 +1947,7 @@ export const pages = [
     roleAccess: CONTENTS['newsletter'].roleAccess,
   },
   {
-    id: 75,
+    id: 76,
     group: 9,
     name: 'Конструктор картинок',
     href: 'toolsImageConstructor',

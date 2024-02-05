@@ -163,7 +163,7 @@ const ToolsEventAnonsContent = () => {
           onChange={setBackgroundProps}
           imageAspect={1}
         />
-        <Input
+        {/* <Input
           label="Позиция по X текста"
           type="number"
           className="w-[128px]"
@@ -173,7 +173,7 @@ const ToolsEventAnonsContent = () => {
           min={0}
           max={1000}
           // noMargin
-        />
+        /> */}
         <InputWrapper
           label="Дата"
           paddingX="small"
@@ -264,7 +264,7 @@ const ToolsEventAnonsContent = () => {
           width="480"
           height="480"
           viewBox="0 0 1080 1080"
-          id={'input'}
+          id="input"
           className="min-w-[270px]"
         >
           <SvgBackgroundComponent {...backgroundProps} />
@@ -393,7 +393,7 @@ const ToolsEventAnonsContent = () => {
         <img
           id="output"
           alt=""
-          width="270"
+          width="480"
           height="480"
           className="max-w-[270px] max-h-[270px] hidden"
         />
