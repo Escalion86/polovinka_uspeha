@@ -15,6 +15,8 @@ const eventSignUpFunc = (
   eventSignUpToReserveAfterError,
   onSuccess
 ) => {
+  const isReserve = status === 'reserve'
+
   const EventSignUpModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -97,11 +99,25 @@ const eventSignUpFunc = (
     )
   }
 
-  const postfixStatus = status === 'reserve' ? ' в резерв' : ''
+  const postfixStatus = isReserve ? ' в резерв' : ''
 
   return {
     title: `Запись${postfixStatus} на мероприятие`,
-    text: `Вы уверены что хотите записаться${postfixStatus} на мероприятие?`,
+    text: (
+      <div className="flex flex-col gap-y-2">
+        {isReserve && (
+          <div>
+            К сожалению, на текущий момент, мест на мероприятии нет, но не
+            расстраивайтесь, довольно часто места на мероприятия освобождаются и
+            как только появится свободное место - с Вами свяжется администратор
+            по актуальности записи!
+          </div>
+        )}
+        <div>
+          Вы уверены что хотите записаться{postfixStatus} на мероприятие?
+        </div>
+      </div>
+    ),
     confirmButtonName: `Записаться${postfixStatus}`,
     Children: EventSignUpModal,
   }

@@ -1,21 +1,14 @@
 import Button from '@components/Button'
-import CheckBox from '@components/CheckBox'
 import DateTimeEvent from '@components/DateTimeEvent'
 import FormWrapper from '@components/FormWrapper'
 import Note from '@components/Note'
 import { faCalendarPlus } from '@fortawesome/free-regular-svg-icons'
-import formatDateTime from '@helpers/formatDateTime'
+
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
-// import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import { useEffect, useState } from 'react'
-import {
-  // useRecoilRefresher_UNSTABLE,
-  useRecoilValue,
-} from 'recoil'
 
 const eventAfterSignUpMessageFunc = (event, status) => {
+  const isReserve = status === 'reserve'
+
   const EventAfterSignUpMessageModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -51,10 +44,21 @@ const eventAfterSignUpMessageFunc = (event, status) => {
           showDayOfWeek
           fullMonth
         />
-        <div>
-          За несколько дней до начала мероприятия с Вами свяжется администратор
-          по вопросам оплаты и организации!
-        </div>
+        {isReserve ? (
+          <div>
+            Вы записались в резерв мероприятия, а это значит, что на текущий
+            момент мест на мероприятии нет, но не расстраивайтесь, довольно
+            часто места на мероприятия освобождаются и как только появится
+            свободное место - с Вами свяжется администратор по актуальности
+            записи, а также вопросам оплаты и организации!
+          </div>
+        ) : (
+          <div>
+            За несколько дней до начала мероприятия с Вами свяжется
+            администратор по вопросам оплаты и организации!
+          </div>
+        )}
+
         <Note>
           {`Вы можете добавить это мероприятие в Google календарь, для этого кликните по
           кнопке ниже`}
@@ -68,7 +72,7 @@ const eventAfterSignUpMessageFunc = (event, status) => {
     )
   }
 
-  const postfixStatus = status === 'reserve' ? ' в резерв' : ''
+  const postfixStatus = isReserve ? ' в резерв' : ''
 
   return {
     title: `Успешная запись ${postfixStatus} на мероприятие`,
