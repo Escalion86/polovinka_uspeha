@@ -193,7 +193,7 @@ const EventButtonSignInComponent = ({
             (!canSignIn && !alreadySignIn && canSignInReserve) ||
             !isUserQuestionnaireFilled
           ) {
-            if (event.warning) modalsFunc.event.signUp(event, 'reserve')
+            modalsFunc.event.signUp(event, 'reserve')
           } else if (canSignOut) {
             modalsFunc.event.signOut(event, userEventStatus)
           }
