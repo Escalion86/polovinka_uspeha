@@ -102,6 +102,7 @@ module.exports = {
       animation: {
         'pulse-light': 'pulse-light 2s ease-in-out infinite',
         'ping-light': 'ping-light 1s cubic-bezier(0, 0, 0.2, 1) infinite',
+        'shadow-pulse': 'shadow-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite',
       },
       keyframes: {
         'pulse-light': {
@@ -112,6 +113,14 @@ module.exports = {
           '75%, 100%': {
             transform: 'scale(1.4)',
             opacity: 0,
+          },
+        },
+        'shadow-pulse': {
+          '0%': {
+            boxShadow: '0 0 0 0 rgba(0,0,0,0.1)',
+          },
+          '50%': {
+            boxShadow: '0 0 3px 3px rgba(0,0,0,0.1)',
           },
         },
       },

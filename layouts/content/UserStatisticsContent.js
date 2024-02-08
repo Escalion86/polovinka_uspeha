@@ -11,9 +11,11 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowContainer, Popover } from 'react-tiny-popover'
 import { useRecoilValue } from 'recoil'
+import Tilt from 'react-parallax-tilt'
+// import { FlipTilt } from 'react-flip-tilt'
 
 const place = (count, places) => {
   if (
@@ -30,10 +32,11 @@ const place = (count, places) => {
   return
 }
 
-const Cup = ({ place }) => {
+const Cup = ({ place, className }) => {
   if (typeof place === 'number')
     return (
       <Image
+        className={className}
         src={`/img/achievements/${place <= 4 ? place : 4}.svg`}
         width="100%"
         height="100%"
@@ -41,7 +44,7 @@ const Cup = ({ place }) => {
     )
   return (
     <Image
-      className="opacity-20 grayscale"
+      className={cn('opacity-20 grayscale', className)}
       src="/img/achievements/4.svg"
       width="100%"
       height="100%"
@@ -51,36 +54,28 @@ const Cup = ({ place }) => {
 
 const Achivement = ({ name, place, tooltipText }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const refFlip = useRef()
+  // const flip = async () => {
+  //   await refFlip?.current?.flip()
+  //   // console.log('refFlip?.current?.flip() :>> ', refFlip?.current?.flip())
+  // }
+
+  useEffect(() => {
+    if (refFlip.current) {
+      //do something else with the ref
+      setInterval(() => {
+        refFlip.current.flip()
+      }, 1000)
+    }
+  }, [])
 
   return (
-    <Popover
-      // ref={ref}
-      isOpen={isPopoverOpen}
-      containerClassName="z-50"
-      align="center"
-      positions={['top']} // preferred positions by priority
-      content={({ position, childRect, popoverRect }) => (
-        <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
-          position={position}
-          childRect={childRect}
-          popoverRect={popoverRect}
-          arrowColor={'#e5e7eb'}
-          arrowSize={10}
-          arrowStyle={{ opacity: 0.7 }}
-          className="popover-arrow-container"
-          arrowClassName="popover-arrow"
-        >
-          <div className="p-2 text-sm text-center whitespace-pre-wrap bg-gray-100 border border-gray-200 rounded-lg tablet:text-base">
-            {tooltipText}
-          </div>
-        </ArrowContainer>
-      )}
-    >
-      <div
-        onMouseEnter={() => setIsPopoverOpen(true)}
-        onMouseLeave={() => setIsPopoverOpen(false)}
+    <>
+      {/* //   <div> */}
+      <Tilt
         className={cn(
-          'flex flex-col h-[100px] w-[100px] p-[8px] laptop:h-[120px] laptop:w-[120px] laptop:p-[10px] rounded-lg border-gray-200 border hover:border-general duration-300 cursor-pointer',
+          'tilt',
+          'rounded-lg border-gray-200 border hover:border-general duration-300 cursor-pointer',
           place === 0
             ? 'bg-blue-100'
             : place === 1
@@ -93,18 +88,115 @@ const Achivement = ({ name, place, tooltipText }) => {
             ? 'bg-green-100'
             : 'bg-white'
         )}
+        glareEnable
+        tiltReverse
+        perspective={500}
+        glareMaxOpacity={0.75}
+        glarePosition="all"
+        scale={1.02}
+        onMouseEnter={() => setIsPopoverOpen(true)}
+        onMouseLeave={() => setIsPopoverOpen(false)}
+        // trackOnWindow={true}
+        // glareBorderRadius="60"
+        // className="h-[100px] w-[100px] p-0 m-0"
       >
-        <Cup place={place} />
-        <div
-          className={cn(
-            'text-sm laptop:text-base text-center -mx-[8px]',
-            place ? 'text-general font-bold' : 'text-disabled'
+        <Popover
+          // ref={ref}
+          isOpen={isPopoverOpen}
+          containerClassName="z-50"
+          align="center"
+          positions={['top']} // preferred positions by priority
+          content={({ position, childRect, popoverRect }) => (
+            <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
+              position={position}
+              childRect={childRect}
+              popoverRect={popoverRect}
+              arrowColor={'#e5e7eb'}
+              arrowSize={10}
+              arrowStyle={{ opacity: 0.7 }}
+              className="popover-arrow-container"
+              arrowClassName="popover-arrow"
+            >
+              <div className="p-2 text-sm text-center whitespace-pre-wrap bg-gray-100 border border-gray-200 rounded-lg tablet:text-base">
+                {tooltipText}
+              </div>
+            </ArrowContainer>
           )}
         >
-          {name}
-        </div>
-      </div>
-    </Popover>
+          <div
+            onMouseEnter={() => setIsPopoverOpen(true)}
+            onMouseLeave={() => setIsPopoverOpen(false)}
+            className={cn(
+              'flex flex-col h-[100px] w-[100px] laptop:h-[120px] laptop:w-[120px] rounded-lg border-gray-200 border hover:border-general duration-300 cursor-pointer',
+              // "inner-element"
+              // 'track-on-window'
+              // 'animate-shadow-pulse'
+              'tilt'
+            )}
+          >
+            <div
+              className={cn(
+                'flex flex-col h-[100px] w-[100px] p-[8px] laptop:h-[120px] laptop:w-[120px] laptop:p-[10px]',
+                'tilt-element'
+              )}
+            >
+              <Cup place={place} />
+              <div
+                className={cn(
+                  'text-sm laptop:text-base text-center -mx-[8px]',
+                  typeof place === 'number'
+                    ? 'text-general font-bold'
+                    : 'text-disabled'
+                )}
+              >
+                {name}
+              </div>
+            </div>
+          </div>
+        </Popover>
+      </Tilt>
+      {/* <div className="p-1">
+        <FlipTilt
+          onMouseEnter={() => setIsPopoverOpen(true)}
+          onMouseLeave={() => setIsPopoverOpen(false)}
+          // ref={async (r) => {
+          //   if (r) {
+          //     console.log(`isFlipped = ${r.isFlipped()}`)
+          //     await r.flip()
+          //     console.log(`isFlipped = ${r.isFlipped()}`)
+          //     refFlip.current = r
+          //   }
+          // }}
+          // flipped={false}
+          // onClick={flip}
+          // onFlipBack={(l) => console.log('l :>> ', l?.target)}
+          // onFlip={(m) => console.log('m :>> ', m?.target)}
+          back={
+            <div
+              className={cn(
+                'flex flex-col h-[100px] w-[100px] laptop:h-[120px] laptop:w-[120px]'
+              )}
+            >
+              <div className="flex flex-col tilt-element h-[100px] w-[100px] p-[8px] laptop:h-[120px] laptop:w-[120px] laptop:p-[10px]">
+                <Cup place={place} />
+                <div
+                  className={cn(
+                    'text-sm laptop:text-base text-center -mx-[8px]',
+                    typeof place === 'number'
+                      ? 'text-general font-bold'
+                      : 'text-disabled'
+                  )}
+                >
+                  {name}
+                </div>
+              </div>
+            </div>
+          }
+          front={<div>Тестdsdsdsd</div>}
+        />
+      </div> */}
+      {/* </Popover> */}
+    </>
   )
 }
 
@@ -157,14 +249,6 @@ const UserStatisticsContent = () => {
     }
   })
 
-  // const rare = [
-  //   [30, 15, 8, 4, 2],
-  //   [60, 30, 15, 8, 4],
-  //   [80, 40, 20, 10, 5],
-  //   [100, 50, 25, 12, 6],
-  //   [120, 60, 30, 15, 8],
-  //   [150, 80, 40, 20, 10],
-  // ]
   const rare = [
     [20, 12, 7, 4, 2],
     [40, 25, 14, 8, 4],
@@ -173,6 +257,9 @@ const UserStatisticsContent = () => {
     [80, 50, 28, 16, 8],
     [100, 60, 35, 20, 10],
   ]
+
+  const tagEventsCount = (tag) =>
+    eventsTagsWithCount.find(({ text }) => text === tag)?.count
 
   const achievements = [
     {
@@ -185,110 +272,109 @@ const UserStatisticsContent = () => {
       name: 'Лудоман',
       cause: 'Количество посещенных мероприятий с тэгом "Азарт"',
       counts: rare[2],
-      num: eventsTagsWithCount.find(({ text }) => text === 'азарт')?.count,
+      num: tagEventsCount('азарт'),
     },
     {
       name: 'Путешественник',
       cause: 'Количество посещенных мероприятий с тэгом "Путешествие"',
       counts: rare[0],
-      num: eventsTagsWithCount.find(({ text }) => text === 'путешествие')
-        ?.count,
+      num: tagEventsCount('путешествие'),
     },
     {
       name: 'Турист',
       cause: 'Количество посещенных мероприятий с тэгом "Поход"',
       counts: rare[0],
-      num: eventsTagsWithCount.find(({ text }) => text === 'поход')?.count,
+      num: tagEventsCount('поход'),
     },
     {
       name: 'ЗОЖник',
       cause: 'Количество посещенных мероприятий с тэгом "Здоровье"',
       counts: rare[2],
-      num: eventsTagsWithCount.find(({ text }) => text === 'здоровье')?.count,
+      num: tagEventsCount('здоровье'),
     },
     {
       name: 'Настольщик',
       cause: 'Количество посещенных мероприятий с тэгом "Настолки"',
       counts: rare[2],
-      num: eventsTagsWithCount.find(({ text }) => text === 'настолки')?.count,
+      num: tagEventsCount('настолки'),
     },
     {
       name: 'Эволюционер',
       cause: 'Количество посещенных мероприятий с тэгом "Развитие"',
       counts: rare[0],
-      num: eventsTagsWithCount.find(({ text }) => text === 'развитие')?.count,
+      num: tagEventsCount('развитие'),
     },
     {
       name: 'Урбанист',
       cause: 'Количество посещенных мероприятий с тэгом "Город"',
       counts: rare[3],
-      num: eventsTagsWithCount.find(({ text }) => text === 'город')?.count,
+      num: tagEventsCount('город'),
     },
     {
       name: 'Рандевушник',
       cause: 'Количество посещенных мероприятий с тэгом "Свидание"',
       counts: rare[0],
-      num: eventsTagsWithCount.find(({ text }) => text === 'свидание')?.count,
+      num: tagEventsCount('свидание'),
     },
     {
       name: 'Загадочник',
       cause: 'Количество посещенных мероприятий с тэгом "Квест"',
       counts: rare[0],
-      num: eventsTagsWithCount.find(({ text }) => text === 'квест')?.count,
+      num: tagEventsCount('квест'),
     },
     {
       name: 'Спортсмен',
       cause: 'Количество посещенных мероприятий с тэгом "Спорт"',
       counts: rare[1],
-      num: eventsTagsWithCount.find(({ text }) => text === 'спорт')?.count,
+      num: tagEventsCount('спорт'),
     },
     {
       name: 'Тусовщик',
       cause: 'Количество посещенных мероприятий с тэгом "Вечеринка"',
       counts: rare[0],
-      num: eventsTagsWithCount.find(({ text }) => text === 'вечеринка')?.count,
+      num: tagEventsCount('вечеринка'),
     },
     {
       name: 'Парильщик',
       cause: 'Количество посещенных мероприятий с тэгом "Баня"',
       counts: rare[1],
-      num: eventsTagsWithCount.find(({ text }) => text === 'баня')?.count,
+      num: tagEventsCount('баня'),
     },
     {
       name: 'Гулёна',
       cause: 'Количество посещенных мероприятий с тэгом "Прогулка"',
       counts: rare[1],
-      num: eventsTagsWithCount.find(({ text }) => text === 'прогулка')?.count,
+      num: tagEventsCount('прогулка'),
     },
     {
       name: 'Леший',
       cause: 'Количество посещенных мероприятий с тэгом "Природа"',
       counts: rare[3],
-      num: eventsTagsWithCount.find(({ text }) => text === 'природа')?.count,
+      num: tagEventsCount('природа'),
     },
     {
       name: 'Экстрасенс',
       cause: 'Количество посещенных мероприятий с тэгом "Эзотерика"',
       counts: rare[0],
-      num: eventsTagsWithCount.find(({ text }) => text === 'эзотерика')?.count,
+      num: tagEventsCount('эзотерика'),
     },
     {
       name: 'Кинокритик',
       cause: 'Количество посещенных мероприятий с тэгом "Кино"',
       counts: rare[0],
-      num: eventsTagsWithCount.find(({ text }) => text === 'кино')?.count,
+      num: tagEventsCount('кино'),
     },
     {
       name: 'АРТист',
       cause: 'Количество посещенных мероприятий с тэгом "Искусство"',
       counts: rare[0],
-      num: eventsTagsWithCount.find(({ text }) => text === 'искусство')?.count,
+      num: tagEventsCount('искусство'),
     },
     {
       name: 'Пирушник',
       cause: 'Количество посещенных мероприятий с тэгом "Застолье"',
       counts: rare[1],
-      num: eventsTagsWithCount.find(({ text }) => text === 'застолье')?.count,
+      num: tagEventsCount('застолье'),
     },
     {
       name: 'Мать Тереза',
@@ -296,14 +382,20 @@ const UserStatisticsContent = () => {
       counts: rare[0],
       num: eventsTagsWithCount.find(
         ({ text }) => text === 'благотворительность'
-      )?.count,
+      ),
     },
-    // {
-    //   name: 'Авенюст',
-    //   cause: 'Количество посещенных мероприятий с тэгом "Улица"',
-    //   counts: rare[0],
-    //   num: eventsTagsWithCount.find(({ text }) => text === 'улица')?.count,
-    // },
+    {
+      name: 'Зигмунд Фрейд',
+      cause: 'Количество посещенных мероприятий с тэгом "Психология"',
+      counts: rare[0],
+      num: tagEventsCount('психология'),
+    },
+    {
+      name: 'Гений',
+      cause: 'Количество посещенных мероприятий с тэгом "Квиз"',
+      counts: rare[1],
+      num: eventsTagsWithCount.find(({ text }) => text === 'квиз'),
+    },
   ]
 
   const achievementsWithPlace = achievements.map((achive) => ({
