@@ -704,12 +704,16 @@ const LoginPage = (props) => {
       {/* <Wave /> */}
       {/* <Image src="/public/img/login/wave.svg" width={174} height={84} /> */}
       <SvgWave
-        color={generalColor}
-        className="fixed top-0 left-0 hidden w-auto h-full laptop:block -z-10"
+        color="#ffd6d6"
+        className="fixed bottom-0 left-0 z-10 h-[30%] laptop:h-full laptop:block"
       />
-      <div className="flex w-full h-full gap-2 px-2 bg-transparent">
+      <SvgWave
+        color="#ffd6d6"
+        className="fixed top-0 right-0 z-10 laptop:block -scale-100 h-[40%]"
+      />
+      <div className="relative z-20 flex w-full h-full gap-2 px-6 bg-transparent laptop:px-10">
         <div className="items-center justify-center flex-1 hidden pl-4 text-center laptop:flex">
-          <SvgLove color={generalColor} className="w-124" />
+          <SvgLove color={generalColor} className="z-20 w-124" />
         </div>
         <div className="flex items-center justify-center flex-1 text-center">
           <form className="w-full mt-4 phoneH:mt-8 mb-4 phoneH:mb-10 max-w-[360px]">
