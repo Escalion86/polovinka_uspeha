@@ -3,8 +3,6 @@ import Document, { Head, Html, Main, NextScript } from 'next/document'
 const { NODE_ENV } = process.env
 const isProdMode = NODE_ENV === 'production'
 
-console.log('isProdMode :>> ', isProdMode)
-
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const initialProps = await Document.getInitialProps(ctx)
@@ -33,6 +31,7 @@ class MyDocument extends Document {
             href="https://cdn.jsdelivr.net/npm/@tailwindcss/custom-forms@0.2.1/dist/custom-forms.css"
             rel="stylesheet"
           />
+          <link rel="apple-touch-icon" href="/icon-512x512.png" />
           <link rel="shortcut icon" href="/favicon.ico" />
           <link rel="manifest" href="/manifest.webmanifest" />
         </Head>

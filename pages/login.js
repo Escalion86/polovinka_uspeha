@@ -300,6 +300,9 @@ const LoginPage = (props) => {
   const [checkAgreement, setCheckAgreement] = useState(false)
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
+
+  const [isPWA, setIsPWA] = useState(true)
+
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
 
@@ -327,6 +330,12 @@ const LoginPage = (props) => {
   useEffect(() => {
     if (router.query?.registration === 'true') setProcess('registration')
   }, [router])
+
+  useEffect(() => {
+    window
+      .matchMedia('(display-mode: standalone)')
+      .addEventListener('change', ({ matches }) => setIsPWA(matches))
+  }, [])
 
   useEffect(() => {
     if (router.query?.phone && inputPasswordRef.current) {
@@ -1050,14 +1059,16 @@ const LoginPage = (props) => {
                   />
                   <span className="flex-1">Google</span>
                 </button> */}
-              <Link href="/" shallow>
-                <a
-                  tabIndex={0}
-                  className="block py-3 mt-2 mb-5 text-sm duration-300 border-t border-gray-400 cursor-pointer phoneH:text-base hover:text-general"
-                >
-                  Вернуться на главную страницу сайта
-                </a>
-              </Link>
+              {!isPWA && (
+                <Link href="/" shallow>
+                  <a
+                    tabIndex={0}
+                    className="block py-3 mt-2 mb-5 text-sm duration-300 border-t border-gray-400 cursor-pointer phoneH:text-base hover:text-general"
+                  >
+                    Вернуться на главную страницу сайта
+                  </a>
+                </Link>
+              )}
             </>
             {/* )} */}
           </form>

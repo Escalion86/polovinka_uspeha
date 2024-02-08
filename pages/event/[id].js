@@ -1,5 +1,6 @@
 import ContactsBlock from '@blocks/ContactsBlock'
 import BlockContainer from '@components/BlockContainer'
+import FabMenu from '@components/FabMenu'
 import PulseButton from '@components/PulseButton'
 import StateLoader from '@components/StateLoader'
 import { H2 } from '@components/tags'
@@ -7,7 +8,9 @@ import Header from '@layouts/Header'
 import eventViewFunc from '@layouts/modals/modalsFunc/eventViewFunc'
 import fetchProps from '@server/fetchProps'
 import eventsAtom from '@state/atoms/eventsAtom'
+import isPWAAtom from '@state/atoms/isPWAAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
@@ -131,8 +134,11 @@ const EventBlock = ({ event }) => {
 
 function EventPage(props) {
   const eventId = props.id
-
   const eventsState = useRecoilValue(eventsAtom)
+
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const hideFab = loggedUserActiveRole?.hideFab
+  const isPWA = useRecoilValue(isPWAAtom)
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01
@@ -159,13 +165,14 @@ function EventPage(props) {
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
       <StateLoader {...props}>
-        <Header />
+        <Header noMenu={isPWA} />
         <EventBlock event={event} />
         {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
 
         {/* <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
         </div> */}
-        <ContactsBlock />
+        {!isPWA && <ContactsBlock />}
+        <FabMenu show={!hideFab} />
       </StateLoader>
     </>
   )
