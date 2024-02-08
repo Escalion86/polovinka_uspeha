@@ -55,26 +55,9 @@ const copyEventUserListFunc = (eventId) => {
 
     var formatedText = ''
     if (splitByGender) {
-      // const assistantsMans = showAssistants
-      //   ? assistants
-      //       .filter((user) => user.gender === 'male')
-      //       .map((user) => ({ ...user, assistant: true }))
-      //   : []
-      // const assistantsWomans = showAssistants
-      //   ? assistants
-      //       .filter((user) => user.gender === 'famale')
-      //       .map((user) => ({ ...user, assistant: true }))
-      //   : []
-
-      // const sortedMans = [...mans, ...assistantsMans].sort((a, b) =>
-      //   a[sort] > b[sort] ? 1 : -1
-      // )
-      // const sortedWomans = [...womans, ...assistantsWomans].sort((a, b) =>
-      //   a[sort] > b[sort] ? 1 : -1
-      // )
       const mans = eventUsersSorted.filter(({ user }) => user.gender === 'male')
       const womans = eventUsersSorted.filter(
-        ({ user }) => user.gender === 'female'
+        ({ user }) => user.gender === 'famale'
       )
 
       const mansNames = mans.map(
