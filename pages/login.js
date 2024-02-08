@@ -701,8 +701,6 @@ const LoginPage = (props) => {
 
   return (
     <div className="box-border w-full h-screen overflow-y-auto">
-      {/* <Wave /> */}
-      {/* <Image src="/public/img/login/wave.svg" width={174} height={84} /> */}
       <SvgWave
         color="#ffd6d6"
         className="fixed bottom-0 left-0 z-10 h-[30%] laptop:h-full laptop:block"
@@ -727,9 +725,6 @@ const LoginPage = (props) => {
                 // height={48}
               />
             </div>
-            {/* <h2 className="my-4 text-4xl text-gray-900 uppercase">
-              Добро пожаловать
-            </h2> */}
             <div className="h-8 overflow-hidden text-2xl text-gray-800">
               <p
                 className={cn('duration-300', {
