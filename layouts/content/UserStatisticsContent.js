@@ -55,10 +55,6 @@ const Cup = ({ place, className }) => {
 const Achivement = ({ name, place, tooltipText }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const refFlip = useRef()
-  // const flip = async () => {
-  //   await refFlip?.current?.flip()
-  //   // console.log('refFlip?.current?.flip() :>> ', refFlip?.current?.flip())
-  // }
 
   useEffect(() => {
     if (refFlip.current) {

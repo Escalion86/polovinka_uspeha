@@ -123,7 +123,8 @@ export default CabinetPage
 
 export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
-
+  console.log('query :>> ', context.query)
+  console.log('params :>> ', context.params)
   const { params } = context
   const { page } = params
 

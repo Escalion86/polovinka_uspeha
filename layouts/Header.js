@@ -51,7 +51,7 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 //   { name: 'Контакты', href: '#contacts', key: null },
 // ]
 
-const Header = () => {
+const Header = ({ noMenu }) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
   const events = useRecoilValue(filteredEventsSelector)
   const reviews = useRecoilValue(filteredReviewsSelector)
@@ -106,48 +106,56 @@ const Header = () => {
 
         <UserMenu />
       </div>
-      <ul className="items-center justify-center hidden w-full h-[40px] text-lg duration-300 bg-white bg-opacity-75 laptop:flex gap-x-4 hover:bg-opacity-100">
-        {menu.map(({ name, href }, index) => {
-          return <MenuItem key={'menuItem' + name} text={name} href={href} />
-        })}
-      </ul>
-      <div
-        className={cn(
-          'overflow-hidden laptop:hidden absolute z-0 left-0 top-0 bg-white rounded-br-3xl border-r border-b shadow-2xl border-general duration-300',
-          menuOpen ? 'w-60' : 'w-0'
-        )}
-      >
-        <div className="pt-20 pb-4 w-60">
-          <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
-            {loggedUser?._id ? (
-              <Link href="/cabinet" shallow>
-                <a className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general">
-                  <Avatar user={loggedUser} />
-                  <span className="prevent-select-text">Мой кабинет</span>
-                </a>
-              </Link>
-            ) : (
-              <Link href="/login" shallow>
-                <a className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general">
-                  <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
-                  <span className="prevent-select-text">Авторизоваться</span>
-                </a>
-              </Link>
+      {!noMenu && (
+        <>
+          <ul className="items-center justify-center hidden w-full h-[40px] text-lg duration-300 bg-white bg-opacity-75 laptop:flex gap-x-4 hover:bg-opacity-100">
+            {menu.map(({ name, href }, index) => {
+              return (
+                <MenuItem key={'menuItem' + name} text={name} href={href} />
+              )
+            })}
+          </ul>
+          <div
+            className={cn(
+              'overflow-hidden laptop:hidden absolute z-0 left-0 top-0 bg-white rounded-br-3xl border-r border-b shadow-2xl border-general duration-300',
+              menuOpen ? 'w-60' : 'w-0'
             )}
+          >
+            <div className="pt-20 pb-4 w-60">
+              <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
+                {loggedUser?._id ? (
+                  <Link href="/cabinet" shallow>
+                    <a className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general">
+                      <Avatar user={loggedUser} />
+                      <span className="prevent-select-text">Мой кабинет</span>
+                    </a>
+                  </Link>
+                ) : (
+                  <Link href="/login" shallow>
+                    <a className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general">
+                      <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
+                      <span className="prevent-select-text">
+                        Авторизоваться
+                      </span>
+                    </a>
+                  </Link>
+                )}
+              </div>
+              <div className="px-2 py-2 w-60 laptop:py-0">
+                <ul className="flex flex-col gap-y-2">
+                  {menu.map(({ name, href }, index) => (
+                    <BurgerMenuItem
+                      key={'burgerMenuItem' + index}
+                      text={name}
+                      href={href}
+                    />
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
-          <div className="px-2 py-2 w-60 laptop:py-0">
-            <ul className="flex flex-col gap-y-2">
-              {menu.map(({ name, href }, index) => (
-                <BurgerMenuItem
-                  key={'burgerMenuItem' + index}
-                  text={name}
-                  href={href}
-                />
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
     // </div>
   )

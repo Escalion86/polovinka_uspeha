@@ -1,4 +1,4 @@
-const SvgLove = ({ color = '#9563ff', className }) => (
+const SvgLove = ({ color = '#fff', className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 684.76331 506.49355"

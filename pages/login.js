@@ -300,6 +300,9 @@ const LoginPage = (props) => {
   const [checkAgreement, setCheckAgreement] = useState(false)
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
+
+  const [isPWA, setIsPWA] = useState(true)
+
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
 
@@ -327,6 +330,12 @@ const LoginPage = (props) => {
   useEffect(() => {
     if (router.query?.registration === 'true') setProcess('registration')
   }, [router])
+
+  useEffect(() => {
+    window
+      .matchMedia('(display-mode: standalone)')
+      .addEventListener('change', ({ matches }) => setIsPWA(matches))
+  }, [])
 
   useEffect(() => {
     if (router.query?.phone && inputPasswordRef.current) {
@@ -695,12 +704,16 @@ const LoginPage = (props) => {
       {/* <Wave /> */}
       {/* <Image src="/public/img/login/wave.svg" width={174} height={84} /> */}
       <SvgWave
-        color={generalColor}
-        className="fixed top-0 left-0 hidden w-auto h-full laptop:block -z-10"
+        color="#ffd6d6"
+        className="fixed bottom-0 left-0 z-10 h-[30%] laptop:h-full laptop:block"
       />
-      <div className="flex w-full h-full gap-2 px-2 bg-transparent">
+      <SvgWave
+        color="#ffd6d6"
+        className="fixed top-0 right-0 z-10 laptop:block -scale-100 h-[40%]"
+      />
+      <div className="relative z-20 flex w-full h-full gap-2 px-6 bg-transparent laptop:px-10">
         <div className="items-center justify-center flex-1 hidden pl-4 text-center laptop:flex">
-          <SvgLove color={generalColor} className="w-124" />
+          <SvgLove color={generalColor} className="z-20 w-124" />
         </div>
         <div className="flex items-center justify-center flex-1 text-center">
           <form className="w-full mt-4 phoneH:mt-8 mb-4 phoneH:mb-10 max-w-[360px]">
@@ -1050,14 +1063,16 @@ const LoginPage = (props) => {
                   />
                   <span className="flex-1">Google</span>
                 </button> */}
-              <Link href="/" shallow>
-                <a
-                  tabIndex={0}
-                  className="block py-3 mt-2 mb-5 text-sm duration-300 border-t border-gray-400 cursor-pointer phoneH:text-base hover:text-general"
-                >
-                  Вернуться на главную страницу сайта
-                </a>
-              </Link>
+              {!isPWA && (
+                <Link href="/" shallow>
+                  <a
+                    tabIndex={0}
+                    className="block py-3 mt-2 mb-5 text-sm duration-300 border-t border-gray-400 cursor-pointer phoneH:text-base hover:text-general"
+                  >
+                    Вернуться на главную страницу сайта
+                  </a>
+                </Link>
+              )}
             </>
             {/* )} */}
           </form>

@@ -1,13 +1,16 @@
 import ContactsBlock from '@blocks/ContactsBlock'
 import BlockContainer from '@components/BlockContainer'
+import FabMenu from '@components/FabMenu'
 import PulseButton from '@components/PulseButton'
 import StateLoader from '@components/StateLoader'
 import { H2 } from '@components/tags'
 import Header from '@layouts/Header'
 import serviceViewFunc from '@layouts/modals/modalsFunc/serviceViewFunc'
 import fetchProps from '@server/fetchProps'
+import isPWAAtom from '@state/atoms/isPWAAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -43,6 +46,10 @@ function ServicePage(props) {
 
   const loggedUser = useRecoilValue(loggedUserAtom)
 
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const hideFab = loggedUserActiveRole?.hideFab
+  const isPWA = useRecoilValue(isPWAAtom)
+
   // const { canSee } = useRecoilValue(loggedUserToEventStatusSelector(serviceId))
 
   useEffect(() => {
@@ -71,7 +78,7 @@ function ServicePage(props) {
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
       <StateLoader {...props}>
-        <Header />
+        <Header noMenu={isPWA} />
         {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
         <BlockContainer small>
           {service?._id && (
@@ -122,7 +129,8 @@ function ServicePage(props) {
         </BlockContainer>
         {/* <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
         </div> */}
-        <ContactsBlock />
+        {!isPWA && <ContactsBlock />}
+        <FabMenu show={!hideFab} />
       </StateLoader>
     </>
   )

@@ -1,4 +1,4 @@
-const SvgWave = ({ color = '#9563ff', className }) => (
+const SvgWave = ({ color = '#fff', className }) => (
   <svg
     viewBox="0 0 436 662"
     fill="none"
