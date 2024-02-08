@@ -15,6 +15,12 @@ class MyDocument extends Document {
     return (
       <Html className="scroll-smooth">
         <Head>
+          <meta
+            name="application-name"
+            content='Приложение "Половинка успеха"'
+          />
+          <meta name="theme-color" content="#7a5151" />
+          <meta name="mobile-web-app-capable" content="yes" />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
@@ -27,6 +33,8 @@ class MyDocument extends Document {
             href="https://cdn.jsdelivr.net/npm/@tailwindcss/custom-forms@0.2.1/dist/custom-forms.css"
             rel="stylesheet"
           />
+          <link rel="shortcut icon" href="/favicon.ico" />
+          <link rel="manifest" href="/manifest.webmanifest" />
         </Head>
         <body>
           <Main />

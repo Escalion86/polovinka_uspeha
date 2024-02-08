@@ -1,4 +1,10 @@
-module.exports = {
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+})
+
+module.exports = withPWA({
   // webpack: (config) => {
   //   // config.experiments = { topLevelAwait: true }
   //   return config
@@ -40,4 +46,4 @@ module.exports = {
 
   //   return config
   // },
-}
+})
