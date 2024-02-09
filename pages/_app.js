@@ -13,7 +13,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import 'react-medium-image-zoom/dist/styles.css'
 import 'react-quill/dist/quill.snow.css'
 import 'react-toastify/dist/ReactToastify.css'
-import { RecoilEnv, RecoilRoot } from 'recoil'
+import { RecoilEnv, RecoilRoot, useSetRecoilState } from 'recoil'
 import RecoilNexus from 'recoil-nexus'
 import '../styles/burger.css'
 import '../styles/fonts/AdleryPro.css'
@@ -22,6 +22,7 @@ import '../styles/fonts/Frankinity.css'
 import '../styles/fonts/FuturaPT.css'
 import '../styles/global.css'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
+import isPWAAtom from '@state/atoms/isPWAAtom'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
@@ -88,6 +89,23 @@ const theme = createTheme({
   },
 })
 
+const PWAChecker = ({ children }) => {
+  const setIsPWA = useSetRecoilState(isPWAAtom)
+
+  useEffect(() => {
+    window
+      .matchMedia('(display-mode: standalone)')
+      .addEventListener('change', ({ matches }) => setIsPWA(matches))
+    setIsPWA(window.matchMedia('(display-mode: standalone)').matches)
+    // setInterval(() => {
+    //   const test = window.matchMedia('(display-mode: standalone)').matches
+    //   console.log('test :>> ', test)
+    // }, 1000)
+  }, [])
+
+  return children
+}
+
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   useEffect(() => {
     let vh = window.innerHeight * 0.01
@@ -129,6 +147,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                 strategy="beforeInteractive"
               />
               {/* <CssBaseline /> */}
+
               <Suspense
                 fallback={
                   <div className="z-10 flex items-center justify-center w-screen h-screen">
@@ -136,7 +155,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                   </div>
                 }
               >
-                <Component {...pageProps} />
+                <PWAChecker>
+                  <Component {...pageProps} />
+                </PWAChecker>
               </Suspense>
             </SnackbarProvider>
           </ThemeProvider>

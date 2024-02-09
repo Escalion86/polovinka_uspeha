@@ -341,6 +341,7 @@ const LoginPage = (props) => {
   console.log('inputLocation :>> ', inputLocation)
 
   const isPWA = useRecoilValue(isPWAAtom)
+  console.log('isPWA :>> ', isPWA)
 
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()

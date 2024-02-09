@@ -38,7 +38,6 @@ import TopInfo from './TopInfo'
 import rolesAtom from '@state/atoms/rolesAtom'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import locationAtom from '@state/atoms/locationAtom'
-import isPWAAtom from '@state/atoms/isPWAAtom'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -81,8 +80,6 @@ const StateLoader = (props) => {
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
 
-  const setIsPWA = useSetRecoilState(isPWAAtom)
-
   useWindowDimensionsRecoil()
 
   useEffect(() => {
@@ -104,12 +101,6 @@ const StateLoader = (props) => {
     loggedUserActiveRole,
     loggedUserActiveStatus,
   ])
-
-  useEffect(() => {
-    window
-      .matchMedia('(display-mode: standalone)')
-      .addEventListener('change', ({ matches }) => setIsPWA(matches))
-  }, [])
 
   useEffect(() => {
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
