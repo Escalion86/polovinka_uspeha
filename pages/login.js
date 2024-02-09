@@ -1,12 +1,18 @@
 import CheckBox from '@components/CheckBox'
 import FabMenu from '@components/FabMenu'
 import LoadingSpinner from '@components/LoadingSpinner'
-import { faLock, faTimes, faUser } from '@fortawesome/free-solid-svg-icons'
+import {
+  faHouse,
+  faLock,
+  faTimes,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
-import { DEFAULT_SITE_SETTINGS } from '@helpers/constants'
+import { DEFAULT_SITE_SETTINGS, LOCATIONS } from '@helpers/constants'
 import passwordValidator from '@helpers/passwordValidator'
 import phoneValidator from '@helpers/phoneValidator'
+import upperCaseFirst from '@helpers/upperCaseFirst'
 import useErrors from '@helpers/useErrors'
 import fetchSiteSettings from '@server/fetchSiteSettings'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
@@ -112,7 +118,7 @@ const Input = ({
             'relative w-4 flex justify-center duration-300 items-center mx-auto',
             error
               ? 'text-red-600'
-              : focused || value
+              : focused || value || type === 'location'
               ? 'text-general'
               : 'text-disabled'
           )}
@@ -123,19 +129,44 @@ const Input = ({
           <h5
             className={cn(
               'absolute left-3 -translate-y-1/2 duration-300',
-              focused || value ? 'text-sm top-0' : 'text-lg top-1/2',
+              focused || value || type === 'location'
+                ? 'text-sm top-0'
+                : 'text-lg top-1/2',
               error
                 ? focused
                   ? 'text-red-600'
                   : 'text-red-400'
-                : focused || value
+                : focused || value || type === 'location'
                 ? 'text-general'
                 : 'text-disabled'
             )}
           >
             {label}
           </h5>
-          {type === 'phone' ? (
+          {type === 'location' ? (
+            <select
+              className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-3 text-lg text-gray-600"
+              style={{
+                WebkitAppearance: 'none',
+                MozAppearance: 'none',
+                appearance: 'none',
+              }}
+              name={name}
+              onChange={onChange}
+            >
+              {Object.keys(LOCATIONS)
+                .filter((key) => key !== 'dev')
+                .map((key) => (
+                  <option
+                    className="text-black cursor-pointer"
+                    key={LOCATIONS[key].townRu}
+                    value={key}
+                  >
+                    {upperCaseFirst(LOCATIONS[key].townRu)}
+                  </option>
+                ))}
+            </select>
+          ) : type === 'phone' ? (
             <MaskedInput
               name={name}
               disabled={readOnly}
@@ -178,7 +209,7 @@ const Input = ({
               name={name}
               ref={inputRef}
               className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-1 text-lg text-gray-600"
-              type={type}
+              type={type === 'location' ? 'text' : type}
               onFocus={onFocus}
               onBlur={onBlur}
               value={value}
@@ -294,6 +325,9 @@ const LoginPage = (props) => {
   const [backCall, setBackCall] = useState(false)
   const [backCallRes, setBackCallRes] = useState()
   const [waitingResponse, setWaitingResponse] = useState(false)
+  const [inputLocation, setInputLocation] = useState(
+    props?.location ?? 'krasnoyarsk'
+  )
   const [inputPhone, setInputPhone] = useState('')
   const [inputPassword, setInputPassword] = useState('')
   const [inputPinCode, setInputPinCode] = useState('')
@@ -302,6 +336,8 @@ const LoginPage = (props) => {
   const [checkAgreement, setCheckAgreement] = useState(false)
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
+  console.log('props?.location :>> ', props?.location)
+  console.log('inputLocation :>> ', inputLocation)
 
   const isPWA = useRecoilValue(isPWAAtom)
 
@@ -328,6 +364,26 @@ const LoginPage = (props) => {
   //   },
   //   [executeRecaptcha]
   // )
+
+  useEffect(() => {
+    if (inputLocation === props?.location) {
+      localStorage.setItem('location', inputLocation)
+    } else {
+      localStorage.removeItem('location')
+      // if (selectedLocation === 'norilsk')
+      router.push(
+        `${LOCATIONS[inputLocation].domen}/login?location=${inputLocation}`,
+        '',
+        {
+          shallow: false,
+        }
+      )
+      // if (selectedLocation === 'krasnoyarsk')
+      //   router.push('https://половинкауспеха.рф?location=krasnoyarsk', '', {
+      //     shallow: false,
+      //   })
+    }
+  }, [inputLocation])
 
   useEffect(() => {
     if (router.query?.registration === 'true') setProcess('registration')
@@ -762,6 +818,23 @@ const LoginPage = (props) => {
                   setRegistrationLevel(Number(e.target.value ?? 1))
                 }
               /> */}
+              <Input
+                type="location"
+                label="Регион"
+                name="location"
+                icon={faHouse}
+                onChange={(event) => {
+                  setInputLocation(event.target.value)
+                }}
+                value={inputLocation}
+                hidden={process === 'registration' && registrationLevel === 0}
+                tabIndex={
+                  process === 'authorization' && registrationLevel === 2
+                    ? 0
+                    : -1
+                }
+                readOnly={waitingResponse}
+              />
               <Input
                 inputRef={inputPhoneRef}
                 className="mt-0"
