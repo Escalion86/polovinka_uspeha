@@ -26,6 +26,8 @@ export default function Home(props) {
   const isPWA = useRecoilValue(isPWAAtom)
   const router = useRouter()
 
+  console.log('isPWA :>> ', isPWA)
+
   if (isPWA) {
     router.push('/login', '', { shallow: true })
     return null

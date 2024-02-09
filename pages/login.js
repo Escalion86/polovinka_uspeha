@@ -10,6 +10,7 @@ import phoneValidator from '@helpers/phoneValidator'
 import useErrors from '@helpers/useErrors'
 import fetchSiteSettings from '@server/fetchSiteSettings'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
+import isPWAAtom from '@state/atoms/isPWAAtom'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { getSession, signIn } from 'next-auth/react'
@@ -21,6 +22,7 @@ import {
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
 import MaskedInput from 'react-text-mask'
+import { useRecoilValue } from 'recoil'
 import SvgLove from 'svg/SvgLove'
 import SvgWave from 'svg/SvgWave'
 import tailwindConfig from 'tailwind.config.js'
@@ -301,7 +303,7 @@ const LoginPage = (props) => {
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
-  const [isPWA, setIsPWA] = useState(true)
+  const isPWA = useRecoilValue(isPWAAtom)
 
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
@@ -330,12 +332,6 @@ const LoginPage = (props) => {
   useEffect(() => {
     if (router.query?.registration === 'true') setProcess('registration')
   }, [router])
-
-  useEffect(() => {
-    window
-      .matchMedia('(display-mode: standalone)')
-      .addEventListener('change', ({ matches }) => setIsPWA(matches))
-  }, [])
 
   useEffect(() => {
     if (router.query?.phone && inputPasswordRef.current) {

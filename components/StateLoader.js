@@ -81,8 +81,6 @@ const StateLoader = (props) => {
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
 
-  const setIsPWA = useSetRecoilState(isPWAAtom)
-
   useWindowDimensionsRecoil()
 
   useEffect(() => {
@@ -104,12 +102,6 @@ const StateLoader = (props) => {
     loggedUserActiveRole,
     loggedUserActiveStatus,
   ])
-
-  useEffect(() => {
-    window
-      .matchMedia('(display-mode: standalone)')
-      .addEventListener('change', ({ matches }) => setIsPWA(matches))
-  }, [])
 
   useEffect(() => {
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
