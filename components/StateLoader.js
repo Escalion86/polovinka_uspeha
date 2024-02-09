@@ -38,7 +38,6 @@ import TopInfo from './TopInfo'
 import rolesAtom from '@state/atoms/rolesAtom'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import locationAtom from '@state/atoms/locationAtom'
-import isPWAAtom from '@state/atoms/isPWAAtom'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)

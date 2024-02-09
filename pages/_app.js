@@ -96,7 +96,11 @@ const PWAChecker = ({ children }) => {
     window
       .matchMedia('(display-mode: standalone)')
       .addEventListener('change', ({ matches }) => setIsPWA(matches))
-    // return window.removeEventListener('change')
+    setIsPWA(window.matchMedia('(display-mode: standalone)').matches)
+    // setInterval(() => {
+    //   const test = window.matchMedia('(display-mode: standalone)').matches
+    //   console.log('test :>> ', test)
+    // }, 1000)
   }, [])
 
   return children
@@ -143,17 +147,18 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                 strategy="beforeInteractive"
               />
               {/* <CssBaseline /> */}
-              <PWAChecker>
-                <Suspense
-                  fallback={
-                    <div className="z-10 flex items-center justify-center w-screen h-screen">
-                      <LoadingSpinner text="идет загрузка...." />
-                    </div>
-                  }
-                >
+
+              <Suspense
+                fallback={
+                  <div className="z-10 flex items-center justify-center w-screen h-screen">
+                    <LoadingSpinner text="идет загрузка...." />
+                  </div>
+                }
+              >
+                <PWAChecker>
                   <Component {...pageProps} />
-                </Suspense>
-              </PWAChecker>
+                </PWAChecker>
+              </Suspense>
             </SnackbarProvider>
           </ThemeProvider>
         </RecoilRoot>
