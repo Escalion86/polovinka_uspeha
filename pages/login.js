@@ -153,6 +153,7 @@ const Input = ({
               }}
               name={name}
               onChange={onChange}
+              value={value}
             >
               {Object.keys(LOCATIONS)
                 .filter((key) => key !== 'dev')
