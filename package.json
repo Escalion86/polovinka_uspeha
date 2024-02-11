@@ -35,7 +35,6 @@
     "exceljs": "^4.3.0",
     "framer-motion": "^8.4.3",
     "googleapis": "^105.0.0",
-    "i": "^0.3.7",
     "isomorphic-dompurify": "^1.8.0",
     "mongodb": "^4.13.0",
     "mongoose": "^6.8.3",
