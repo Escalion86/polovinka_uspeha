@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 
 const ValueItem = ({
   active = false,
@@ -19,8 +19,8 @@ const ValueItem = ({
       active
         ? `text-white bg-${color}`
         : onClick
-        ? `text-${color} bg-white`
-        : `text-gray-500 bg-gray-200`,
+          ? `text-${color} bg-white`
+          : `text-gray-500 bg-gray-200`,
       onClick ? 'cursor-pointer' : 'cursor-not-allowed',
       hoverable ? `hover:text-white hover:bg-${color}` : '',
       className

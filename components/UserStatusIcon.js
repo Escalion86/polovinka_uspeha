@@ -1,7 +1,7 @@
 import { faQuestion, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import Tooltip from './Tooltip'
 
 const UserStatusIcon = ({ status, size }) => {

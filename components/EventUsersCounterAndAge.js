@@ -6,7 +6,7 @@ import eventSelector from '@state/selectors/eventSelector'
 import eventWomansReserveSelector from '@state/selectors/eventWomansReserveSelector'
 import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import cn from 'classnames'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import { Suspense } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue } from 'recoil'
@@ -72,8 +72,8 @@ const CounterComponent = ({
         ? Math.min(maxNovice + maxMember, max)
         : maxNovice + maxMember
       : typeof max === 'number'
-      ? max
-      : undefined
+        ? max
+        : undefined
 
   return maxNovice || maxMember ? (
     <>

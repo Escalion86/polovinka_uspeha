@@ -37,21 +37,17 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
     >
       {title ? (
         <div className="flex items-center flex-1">
-          <Link href="/" shallow>
-            <a className="hidden tablet:block">
-              <img
-                className="rounded-full h-14"
-                src={icon || '/img/logo_heart.png'}
-                alt="logo"
-              />
-            </a>
+          <Link href="/" shallow className="hidden tablet:block">
+            <img
+              className="rounded-full h-14"
+              src={icon || '/img/logo_heart.png'}
+              alt="logo"
+            />
           </Link>
           <div className="flex items-center flex-1 leading-4 min-h-[42px] tablet:border-gray-600 tablet:border-l-1 tablet:pl-3 tablet:ml-3">
             {titleLink ? (
-              <Link href={titleLink} shallow>
-                <a className="hover:text-gray-300">
-                  <h1>{title}</h1>
-                </a>
+              <Link href={titleLink} shallow className="hover:text-gray-300">
+                <h1>{title}</h1>
               </Link>
             ) : (
               <h1>{title}</h1>
@@ -61,9 +57,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
       ) : (
         <div className="absolute z-10 -translate-x-1/2 left-1/2">
           <Link href="/" shallow>
-            <a>
-              <img className="h-12" src="/img/logo_horizontal.png" alt="logo" />
-            </a>
+            <img className="h-12" src="/img/logo_horizontal.png" alt="logo" />
           </Link>
         </div>
       )}

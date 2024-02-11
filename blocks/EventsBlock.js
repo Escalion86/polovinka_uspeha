@@ -24,15 +24,15 @@ const Button = ({ title, className, href, onClick }) => {
       </button>
     )
   return (
-    <Link href={href} shallow>
-      <a
-        className={cn(
-          'px-4 py-2 text-xl text-white duration-300 border rounded-lg bg-general border-general tablet:w-auto hover:text-general hover:bg-white hover:border-general',
-          className
-        )}
-      >
-        {title}
-      </a>
+    <Link
+      href={href}
+      shallow
+      className={cn(
+        'px-4 py-2 text-xl text-white duration-300 border rounded-lg bg-general border-general tablet:w-auto hover:text-general hover:bg-white hover:border-general',
+        className
+      )}
+    >
+      {title}
     </Link>
   )
 }

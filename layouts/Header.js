@@ -92,15 +92,13 @@ const Header = ({ noMenu }) => {
         </div>
         <div className="absolute z-10 -translate-x-1/2 left-1/2">
           <Link href="/" shallow>
-            <a>
-              <img
-                className="object-contain h-16 laptop:min-w-min"
-                src={'/img/logo_horizontal.png'}
-                alt="logo"
-                // width={48}
-                // height={48}
-              />
-            </a>
+            <img
+              className="object-contain h-16 laptop:min-w-min"
+              src={'/img/logo_horizontal.png'}
+              alt="logo"
+              // width={48}
+              // height={48}
+            />
           </Link>
         </div>
 
@@ -124,20 +122,22 @@ const Header = ({ noMenu }) => {
             <div className="pt-20 pb-4 w-60">
               <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
                 {loggedUser?._id ? (
-                  <Link href="/cabinet" shallow>
-                    <a className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general">
-                      <Avatar user={loggedUser} />
-                      <span className="prevent-select-text">Мой кабинет</span>
-                    </a>
+                  <Link
+                    href="/cabinet"
+                    shallow
+                    className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general"
+                  >
+                    <Avatar user={loggedUser} />
+                    <span className="prevent-select-text">Мой кабинет</span>
                   </Link>
                 ) : (
-                  <Link href="/login" shallow>
-                    <a className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general">
-                      <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
-                      <span className="prevent-select-text">
-                        Авторизоваться
-                      </span>
-                    </a>
+                  <Link
+                    href="/login"
+                    shallow
+                    className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general"
+                  >
+                    <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
+                    <span className="prevent-select-text">Авторизоваться</span>
                   </Link>
                 )}
               </div>

@@ -48,8 +48,8 @@ const Input = ({
             error
               ? 'text-red-600'
               : focused || value
-              ? 'text-general'
-              : 'text-disabled'
+                ? 'text-general'
+                : 'text-disabled'
           )}
         >
           <FontAwesomeIcon icon={icon} />
@@ -64,8 +64,8 @@ const Input = ({
                   ? 'text-red-600'
                   : 'text-red-400'
                 : focused || value
-                ? 'text-general'
-                : 'text-disabled'
+                  ? 'text-general'
+                  : 'text-disabled'
             )}
           >
             {label}
@@ -283,13 +283,13 @@ const Login = ({ users }) => {
                   submit({ phone: user.phone, password: user.password })
                 }}
               />
-              <Link href="/" shallow>
-                <a
-                  tabIndex={0}
-                  className="block py-3 mt-2 mb-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"
-                >
-                  Вернуться на главную страницу сайта
-                </a>
+              <Link
+                href="/"
+                shallow
+                tabIndex={0}
+                className="block py-3 mt-2 mb-5 duration-300 border-t border-gray-400 cursor-pointer hover:text-general"
+              >
+                Вернуться на главную страницу сайта
               </Link>
             </>
             {/* )} */}
