@@ -337,11 +337,8 @@ const LoginPage = (props) => {
   const [checkAgreement, setCheckAgreement] = useState(false)
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
-  console.log('props?.location :>> ', props?.location)
-  console.log('inputLocation :>> ', inputLocation)
 
   const isPWA = useRecoilValue(isPWAAtom)
-  console.log('isPWA :>> ', isPWA)
 
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
@@ -374,7 +371,7 @@ const LoginPage = (props) => {
       localStorage.removeItem('location')
       // if (selectedLocation === 'norilsk')
       router.push(
-        `${LOCATIONS[inputLocation].domen}/login?location=${inputLocation}`,
+        `${LOCATIONS[inputLocation].domen}/login?location=${inputLocation}${process === 'registration' ? '&registration=true' : ''}`,
         '',
         {
           shallow: false,
