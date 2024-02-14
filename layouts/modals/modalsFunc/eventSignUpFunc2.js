@@ -2,8 +2,6 @@ import CheckBox from '@components/CheckBox'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import FormWrapper from '@components/FormWrapper'
 import PriceDiscount from '@components/PriceDiscount'
-import SubEvent from '@components/SubEvent'
-import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons'
 import { faCancel, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import formatDateTime from '@helpers/formatDateTime'
@@ -46,7 +44,6 @@ const eventSignUpFunc = (
     const [subEventId, setSubEventId] = useState(
       event.subEvents.length > 1 ? undefined : event.subEvents[0].id
     )
-    console.log('subEventId :>> ', subEventId)
 
     const eventId = event._id
 
