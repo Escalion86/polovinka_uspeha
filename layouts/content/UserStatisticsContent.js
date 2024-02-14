@@ -10,7 +10,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowContainer, Popover } from 'react-tiny-popover'
 import { useRecoilValue } from 'recoil'
@@ -75,14 +75,14 @@ const Achivement = ({ name, place, tooltipText }) => {
           place === 0
             ? 'bg-blue-100'
             : place === 1
-            ? 'bg-yellow-100'
-            : place === 2
-            ? 'bg-gray-100'
-            : place === 3
-            ? 'bg-amber-100'
-            : place === 4
-            ? 'bg-green-100'
-            : 'bg-white'
+              ? 'bg-yellow-100'
+              : place === 2
+                ? 'bg-gray-100'
+                : place === 3
+                  ? 'bg-amber-100'
+                  : place === 4
+                    ? 'bg-green-100'
+                    : 'bg-white'
         )}
         glareEnable
         tiltReverse
@@ -437,8 +437,8 @@ const UserStatisticsContent = () => {
                     place === 0
                       ? 'У Вас Высшая награда!'
                       : typeof place !== 'number'
-                      ? `Для достижения необходимо: ${[...counts].reverse()[0]}`
-                      : `Следующее достижение: ${counts[place - 1]}`
+                        ? `Для достижения необходимо: ${[...counts].reverse()[0]}`
+                        : `Следующее достижение: ${counts[place - 1]}`
                   }`}
                 />
               )

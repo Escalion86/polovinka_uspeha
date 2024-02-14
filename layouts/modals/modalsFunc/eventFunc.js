@@ -1,5 +1,6 @@
 import AddressPicker from '@components/AddressPicker'
-import CheckBox from '@components/CheckBox'
+import Ages from '@components/Ages'
+import Button from '@components/Button'
 import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 import DirectionSelector from '@components/ComboBox/DirectionSelector'
 import DateTimePicker from '@components/DateTimePicker'
@@ -7,23 +8,24 @@ import EditableTextarea from '@components/EditableTextarea'
 import ErrorsList from '@components/ErrorsList'
 import FormRow from '@components/FormRow'
 import IconCheckBox from '@components/IconCheckBox'
-import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleButton'
 import Input from '@components/Input'
 import InputImages from '@components/InputImages'
 import InputWrapper from '@components/InputWrapper'
-import PriceInput from '@components/PriceInput'
 import { SelectUser } from '@components/SelectItem'
-import Slider from '@components/Slider'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
+import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
-import EventRelationshipAccessPicker from '@components/ValuePicker/EventRelationshipAccessPicker'
 import {
+  faCopy,
   faEye,
   faEyeSlash,
   faHeart,
   faHeartBroken,
+  faInfinity,
   faMars,
+  faPlus,
+  faTrash,
   faTriangleExclamation,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
@@ -32,23 +34,306 @@ import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
 import {
   DEFAULT_EVENT,
-  DEFAULT_USERS_STATUS_ACCESS,
   DEFAULT_USERS_STATUS_DISCOUNT,
 } from '@helpers/constants'
 import formatMinutes from '@helpers/formatMinutes'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import getEventDuration from '@helpers/getEventDuration'
 import isObject from '@helpers/isObject'
+import subEventsSummator from '@helpers/subEventsSummator'
 import useErrors from '@helpers/useErrors'
-import useFocus from '@helpers/useFocus'
+import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventSelector from '@state/selectors/eventSelector'
-import locationPropsSelector from '@state/selectors/locationPropsSelector'
+import cn from 'classnames'
+import Image from 'next/legacy/image'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
+import { uid } from 'uid'
+
+const SubEvent = ({ id, onItemChange, deleteItem, addItem, ...props }) => {
+  const modalFunc = useRecoilValue(modalsFuncAtom)
+
+  return (
+    <InputWrapper
+      label={props.title} //title
+      paddingX="small"
+      paddingY={false}
+      centerLabel
+      className="relative"
+    >
+      <div
+        className={cn(
+          'flex items-center w-full pb-2 pt-3 gap-x-1',
+          onItemChange ? 'cursor-pointer' : ''
+        )}
+        onClick={
+          id && onItemChange
+            ? () =>
+                modalFunc.event.subEventEdit(props, (data) =>
+                  onItemChange(id, data)
+                )
+            : undefined
+        }
+      >
+        {id && deleteItem && (
+          <div className="absolute bg-white rounded-full right-1 -top-3">
+            <FontAwesomeIcon
+              className="h-6 p-1 text-red-700 duration-300 cursor-pointer hover:scale-125"
+              icon={faTrash}
+              onClick={(e) => {
+                e.stopPropagation()
+                deleteItem(id)
+              }}
+            />
+          </div>
+        )}
+        {id && addItem && (
+          <div className="absolute bg-white rounded-full right-7 -top-3">
+            <FontAwesomeIcon
+              className="h-6 p-1 text-blue-500 duration-300 cursor-pointer hover:scale-125"
+              icon={faCopy}
+              onClick={(e) => {
+                e.stopPropagation()
+                modalFunc.event.subEventEdit(props, addItem)
+              }}
+            />
+          </div>
+        )}
+        <div className="flex flex-col text-sm gap-x-1 laptop:text-base">
+          <div className="flex gap-x-0.5 items-center">
+            <UserStatusIcon size="xs" status="novice" />
+            <div className="text-center min-w-20 whitespace-nowrap">
+              {props.usersStatusDiscountResult?.noviceFrom && 'от '}
+              {Math.floor(
+                (typeof props.usersStatusDiscountResult?.novice === 'number'
+                  ? props.usersStatusDiscountResult.novice
+                  : (props.price ?? 0) -
+                    (props.usersStatusDiscount?.novice ?? 0)) / 100
+              )}{' '}
+              ₽
+            </div>
+          </div>
+          <div className="flex gap-x-0.5 items-center">
+            <UserStatusIcon size="xs" status="member" />
+            <div className="text-center min-w-20 whitespace-nowrap">
+              {props.usersStatusDiscountResult?.memberFrom && 'от '}
+              {Math.floor(
+                (typeof props.usersStatusDiscountResult?.member === 'number'
+                  ? props.usersStatusDiscountResult.member
+                  : (props.price ?? 0) -
+                    (props.usersStatusDiscount?.member ?? 0)) / 100
+              )}{' '}
+              ₽
+            </div>
+          </div>
+        </div>
+        <LimitsAndAge {...props} />
+        {props.usersRelationshipAccess &&
+          props.usersRelationshipAccess !== 'yes' && (
+            <div className="absolute bg-white rounded-full left-1 -top-3">
+              <UserRelationshipIcon
+                relationship={props.usersRelationshipAccess === 'only'}
+                nameForEvent
+                size="s"
+              />
+            </div>
+          )}
+      </div>
+    </InputWrapper>
+  )
+}
+
+const DEFAULT_SUBEVENT_ITEM = {
+  title: '',
+  description: '',
+  price: 0,
+  maxParticipants: null,
+  maxMans: null,
+  maxWomans: null,
+  maxMansNovice: null,
+  maxWomansNovice: null,
+  maxMansMember: null,
+  maxWomansMember: null,
+  minMansAge: 35,
+  minWomansAge: 30,
+  maxMansAge: 50,
+  maxWomansAge: 45,
+  usersStatusAccess: {},
+  usersStatusDiscount: {},
+  usersRelationshipAccess: 'yes',
+  isReserveActive: true,
+}
+
+const SubEvents = ({ subEvents, onChange }) => {
+  const modalFunc = useRecoilValue(modalsFuncAtom)
+
+  const addItem = (props) => {
+    const newItem = { ...(props ?? DEFAULT_SUBEVENT_ITEM), id: uid(24) }
+    onChange((state) => [...state, newItem])
+  }
+
+  const deleteItem = (id) =>
+    onChange((state) => state.filter((item) => item.id !== id))
+
+  const onItemChange = (id, keyValue) =>
+    onChange((state) =>
+      state.map((item) => (item.id === id ? { ...item, ...keyValue } : item))
+    )
+
+  const summary = subEventsSummator(subEvents)
+
+  return (
+    <div className="flex flex-col items-stretch">
+      {subEvents?.map((props) => (
+        <SubEvent
+          key={props.id}
+          onItemChange={onItemChange}
+          deleteItem={deleteItem}
+          addItem={addItem}
+          {...props}
+        />
+      ))}
+      <Button
+        name="Добавить вариант"
+        icon={faPlus}
+        onClick={() =>
+          modalFunc.event.subEventEdit(
+            {
+              id: uid(24),
+              ...DEFAULT_SUBEVENT_ITEM,
+            },
+            addItem
+          )
+        }
+      />
+      {subEvents?.length > 1 && <SubEvent {...summary} />}
+    </div>
+  )
+}
+const Infinity = () => (
+  <FontAwesomeIcon icon={faInfinity} className="w-4 h-3 text-gray-600" />
+)
+
+const Counter = ({ gender, maxNovice, maxMember, max, minAge, maxAge }) => {
+  return (
+    <div className="flex flex-col items-center">
+      <Ages minAge={minAge} maxAge={maxAge} />
+      {typeof maxNovice === 'number' || typeof maxMember === 'number' ? (
+        <div className="flex items-center gap-x-0.5">
+          <div className="flex flex-col">
+            <div className="flex gap-x-0.5 items-center">
+              <UserStatusIcon size="xs" status="novice" />
+              <div className="flex tablet:gap-x-0.5">
+                {maxNovice ?? <Infinity />}
+              </div>
+            </div>
+            <div className="flex gap-x-0.5 items-center">
+              <UserStatusIcon size="xs" status="member" />
+              <div className="flex tablet:gap-x-0.5">
+                {maxMember ?? <Infinity />}
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-x-0.5 items-center">
+            <div className="hidden min-w-[9px] h-[36px] tablet:block w-[9px]">
+              <Image src="/img/other/bracet_left.png" width={9} height={36} />
+            </div>
+            <div className="min-w-[7px] h-[28px] tablet:hidden w-[8px]">
+              <Image src="/img/other/bracet_left.png" width={7} height={28} />
+            </div>
+            <div className="flex flex-col items-center leading-[0.5rem] tablet:leading-3">
+              <span className="text-xs">max</span>
+              <span>{max ?? <Infinity />}</span>
+              <span className="text-xs -mt-0.5">чел.</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="flex gap-x-0.5 items-center">
+          {max ?? <Infinity className="h-5" />} чел.
+        </div>
+      )}
+    </div>
+  )
+}
+
+const LimitsAndAge = ({
+  maxParticipants,
+  maxMans,
+  maxWomans,
+  maxMansNovice,
+  maxWomansNovice,
+  maxMansMember,
+  maxWomansMember,
+  minMansAge,
+  maxMansAge,
+  minWomansAge,
+  maxWomansAge,
+}) => {
+  const actualMaxMans =
+    typeof maxMansNovice === 'number' && typeof maxMansMember === 'number'
+      ? typeof maxMans === 'number'
+        ? Math.min(maxMansNovice + maxMansMember, maxMans)
+        : maxMansNovice + maxMansMember
+      : typeof maxMans === 'number'
+        ? maxMans
+        : undefined
+
+  const actualMaxWomans =
+    typeof maxWomansNovice === 'number' && typeof maxWomansMember === 'number'
+      ? typeof maxWomans === 'number'
+        ? Math.min(maxWomansNovice + maxWomansMember, maxWomans)
+        : maxWomansNovice + maxWomansMember
+      : typeof maxWomans === 'number'
+        ? maxWomans
+        : undefined
+
+  return (
+    <div className="flex justify-between text-sm leading-4 border-gray-300 laptop:text-base laptop:leading-5 laptop:justify-start">
+      <div className="flex items-center px-1 border-l border-r laptop:px-2 gap-x-1">
+        <FontAwesomeIcon
+          icon={faMars}
+          className="w-5 h-5 text-blue-600 laptop:w-6 laptop:h-6"
+        />
+        <Counter
+          gender="mans"
+          maxNovice={maxMansNovice}
+          maxMember={maxMansMember}
+          minAge={minMansAge}
+          maxAge={maxMansAge}
+          max={actualMaxMans}
+        />
+      </div>
+      <div className="flex items-center px-1 border-r laptop:px-2 gap-x-1">
+        <FontAwesomeIcon
+          icon={faVenus}
+          className="w-5 h-5 text-red-600 laptop:w-6 laptop:h-6"
+        />
+        <Counter
+          gender="womans"
+          maxNovice={maxWomansNovice}
+          maxMember={maxWomansMember}
+          minAge={minWomansAge}
+          maxAge={maxWomansAge}
+          max={actualMaxWomans}
+        />
+      </div>
+      <div className="flex items-center px-2 py-1 gap-x-1 laptop:gap-x-1">
+        <div className="w-5 h-5 min-w-5">
+          <SvgSigma className="fill-general" />
+        </div>
+        <div className="flex laptop:gap-x-0.5">
+          <span>{maxParticipants ?? <Infinity />}</span>
+        </div>
+        <span className="hidden laptop:block">чел.</span>
+      </div>
+    </div>
+  )
+}
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -59,17 +344,16 @@ const eventFunc = (eventId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const { short } = useRecoilValue(locationPropsSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const directions = useRecoilValue(directionsAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
-    const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()
-    const [refMansMax, setFocusMansMax] = useFocus()
-    const [refWomansMax, setFocusWomansMax] = useFocus()
-    const [refMansNoviceMax, setFocusMansNoviceMax] = useFocus()
-    const [refWomansNoviceMax, setFocusWomansNoviceMax] = useFocus()
-    const [refMansMemberMax, setFocusMansMemberMax] = useFocus()
-    const [refWomansMemberMax, setFocusWomansMemberMax] = useFocus()
+    // const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()
+    // const [refMansMax, setFocusMansMax] = useFocus()
+    // const [refWomansMax, setFocusWomansMax] = useFocus()
+    // const [refMansNoviceMax, setFocusMansNoviceMax] = useFocus()
+    // const [refWomansNoviceMax, setFocusWomansNoviceMax] = useFocus()
+    // const [refMansMemberMax, setFocusMansMemberMax] = useFocus()
+    // const [refWomansMemberMax, setFocusWomansMemberMax] = useFocus()
     const [directionId, setDirectionId] = useState(
       event?.directionId ?? DEFAULT_EVENT.directionId
     )
@@ -113,80 +397,105 @@ const eventFunc = (eventId, clone = false) => {
         ? event.address
         : DEFAULT_EVENT.address
     )
-    const [price, setPrice] = useState(event?.price ?? DEFAULT_EVENT.price)
-
-    // const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
-
-    const [maxParticipants, setMaxParticipants] = useState(
-      event?.maxParticipants ?? DEFAULT_EVENT.maxParticipants
-    )
-    const [maxMans, setMaxMans] = useState(
-      event?.maxMans ?? DEFAULT_EVENT.maxMans
-    )
-    const [maxWomans, setMaxWomans] = useState(
-      event?.maxWomans ?? DEFAULT_EVENT.maxWomans
-    )
-    const [maxParticipantsCheck, setMaxParticipantsCheck] = useState(
-      typeof event?.maxParticipants !== 'number'
-    )
-    const [maxMansCheck, setMaxMansCheck] = useState(
-      typeof event?.maxMans !== 'number'
-    )
-    const [maxWomansCheck, setMaxWomansCheck] = useState(
-      typeof event?.maxWomans !== 'number'
-    )
-    const [maxMansNovice, setMaxMansNovice] = useState(
-      event?.maxMansNovice ?? DEFAULT_EVENT.maxMansNovice
-    )
-    const [maxMansMember, setMaxMansMember] = useState(
-      event?.maxMansMember ?? DEFAULT_EVENT.maxMansMember
-    )
-    const [maxWomansNovice, setMaxWomansNovice] = useState(
-      event?.maxWomansNovice ?? DEFAULT_EVENT.maxWomansNovice
-    )
-    const [maxWomansMember, setMaxWomansMember] = useState(
-      event?.maxWomansMember ?? DEFAULT_EVENT.maxWomansMember
-    )
-    const [maxMansNoviceCheck, setMaxMansNoviceCheck] = useState(
-      typeof event?.maxMansNovice !== 'number'
-    )
-    const [maxMansMemberCheck, setMaxMansMemberCheck] = useState(
-      typeof event?.maxMansMember !== 'number'
-    )
-    const [maxWomansNoviceCheck, setMaxWomansNoviceCheck] = useState(
-      typeof event?.maxWomansNovice !== 'number'
-    )
-    const [maxWomansMemberCheck, setMaxWomansMemberCheck] = useState(
-      typeof event?.maxWomansMember !== 'number'
+    // const [price, setPrice] = useState(event?.price ?? DEFAULT_EVENT.price)
+    const [subEvents, setSubEvents] = useState(
+      event?.subEvents
+        ? event.subEvents
+        : eventId
+          ? []
+          : [
+              {
+                id: uid(24),
+                title: '',
+                price: 0,
+                usersStatusDiscount: { ...DEFAULT_USERS_STATUS_DISCOUNT },
+                maxParticipants: null,
+                maxMans: null,
+                maxWomans: null,
+                maxMansNovice: null,
+                maxWomansNovice: null,
+                maxMansMember: null,
+                maxWomansMember: null,
+                minMansAge: 35,
+                minWomansAge: 30,
+                maxMansAge: 50,
+                maxWomansAge: 45,
+                usersStatusAccess: {},
+                usersRelationshipAccess: 'yes',
+              },
+            ]
     )
 
-    const [minMansAge, setMinMansAge] = useState(
-      event?.minMansAge ?? DEFAULT_EVENT.minMansAge
-    )
-    const [minWomansAge, setMinWomansAge] = useState(
-      event?.minWomansAge ?? DEFAULT_EVENT.minWomansAge
-    )
-    const [maxMansAge, setMaxMansAge] = useState(
-      event?.maxMansAge ?? DEFAULT_EVENT.maxMansAge
-    )
-    const [maxWomansAge, setMaxWomansAge] = useState(
-      event?.maxWomansAge ?? DEFAULT_EVENT.maxWomansAge
-    )
-    const defaultUsersStatusAccess = {
-      ...DEFAULT_USERS_STATUS_ACCESS,
-      ...event?.usersStatusAccess,
-    }
-    const [usersStatusAccess, setUsersStatusAccess] = useState(
-      defaultUsersStatusAccess
-    )
+    // const [maxParticipants, setMaxParticipants] = useState(
+    //   event?.maxParticipants ?? DEFAULT_EVENT.maxParticipants
+    // )
+    // const [maxMans, setMaxMans] = useState(
+    //   event?.maxMans ?? DEFAULT_EVENT.maxMans
+    // )
+    // const [maxWomans, setMaxWomans] = useState(
+    //   event?.maxWomans ?? DEFAULT_EVENT.maxWomans
+    // )
+    // const [maxParticipantsCheck, setMaxParticipantsCheck] = useState(
+    //   typeof event?.maxParticipants !== 'number'
+    // )
+    // const [maxMansCheck, setMaxMansCheck] = useState(
+    //   typeof event?.maxMans !== 'number'
+    // )
+    // const [maxWomansCheck, setMaxWomansCheck] = useState(
+    //   typeof event?.maxWomans !== 'number'
+    // )
+    // const [maxMansNovice, setMaxMansNovice] = useState(
+    //   event?.maxMansNovice ?? DEFAULT_EVENT.maxMansNovice
+    // )
+    // const [maxMansMember, setMaxMansMember] = useState(
+    //   event?.maxMansMember ?? DEFAULT_EVENT.maxMansMember
+    // )
+    // const [maxWomansNovice, setMaxWomansNovice] = useState(
+    //   event?.maxWomansNovice ?? DEFAULT_EVENT.maxWomansNovice
+    // )
+    // const [maxWomansMember, setMaxWomansMember] = useState(
+    //   event?.maxWomansMember ?? DEFAULT_EVENT.maxWomansMember
+    // )
+    // const [maxMansNoviceCheck, setMaxMansNoviceCheck] = useState(
+    //   typeof event?.maxMansNovice !== 'number'
+    // )
+    // const [maxMansMemberCheck, setMaxMansMemberCheck] = useState(
+    //   typeof event?.maxMansMember !== 'number'
+    // )
+    // const [maxWomansNoviceCheck, setMaxWomansNoviceCheck] = useState(
+    //   typeof event?.maxWomansNovice !== 'number'
+    // )
+    // const [maxWomansMemberCheck, setMaxWomansMemberCheck] = useState(
+    //   typeof event?.maxWomansMember !== 'number'
+    // )
 
-    const defaultUsersStatusDiscount = {
-      ...DEFAULT_USERS_STATUS_DISCOUNT,
-      ...(event?.usersStatusDiscount ?? DEFAULT_EVENT.usersStatusDiscount),
-    }
-    const [usersStatusDiscount, setUsersStatusDiscount] = useState(
-      defaultUsersStatusDiscount
-    )
+    // const [minMansAge, setMinMansAge] = useState(
+    //   event?.minMansAge ?? DEFAULT_EVENT.minMansAge
+    // )
+    // const [minWomansAge, setMinWomansAge] = useState(
+    //   event?.minWomansAge ?? DEFAULT_EVENT.minWomansAge
+    // )
+    // const [maxMansAge, setMaxMansAge] = useState(
+    //   event?.maxMansAge ?? DEFAULT_EVENT.maxMansAge
+    // )
+    // const [maxWomansAge, setMaxWomansAge] = useState(
+    //   event?.maxWomansAge ?? DEFAULT_EVENT.maxWomansAge
+    // )
+    // const defaultUsersStatusAccess = {
+    //   ...DEFAULT_USERS_STATUS_ACCESS,
+    //   ...event?.usersStatusAccess,
+    // }
+    // const [usersStatusAccess, setUsersStatusAccess] = useState(
+    //   defaultUsersStatusAccess
+    // )
+
+    // const defaultUsersStatusDiscount = {
+    //   ...DEFAULT_USERS_STATUS_DISCOUNT,
+    //   ...(event?.usersStatusDiscount ?? DEFAULT_EVENT.usersStatusDiscount),
+    // }
+    // const [usersStatusDiscount, setUsersStatusDiscount] = useState(
+    //   defaultUsersStatusDiscount
+    // )
 
     const [usersRelationshipAccess, setUsersRelationshipAccess] = useState(
       event?.usersRelationshipAccess ?? DEFAULT_EVENT.usersRelationshipAccess
@@ -195,9 +504,9 @@ const eventFunc = (eventId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       event?.showOnSite ?? DEFAULT_EVENT.showOnSite
     )
-    const [isReserveActive, setIsReserveActive] = useState(
-      event?.isReserveActive ?? DEFAULT_EVENT.isReserveActive
-    )
+    // const [isReserveActive, setIsReserveActive] = useState(
+    //   event?.isReserveActive ?? DEFAULT_EVENT.isReserveActive
+    // )
     const [reportImages, setReportImages] = useState(
       event?.reportImages ?? DEFAULT_EVENT.reportImages
     )
@@ -214,42 +523,42 @@ const eventFunc = (eventId, clone = false) => {
       [directionId]
     )
 
-    const changeDirectionId = (id) => {
-      const direction = directions.find(({ _id }) => _id === id)
-      const rules = direction.rules
-      if (rules && typeof rules === 'object') {
-        if (rules?.userStatus) {
-          setUsersStatusAccess((state) => {
-            const novice = ['novice', 'any'].includes(rules.userStatus)
-              ? true
-              : rules.userStatus === 'member'
-              ? false
-              : state.novice
-            const member = ['member', 'any'].includes(rules.userStatus)
-              ? true
-              : rules.userStatus === 'novice'
-              ? false
-              : state.member
-            return { ...state, novice, member }
-          })
-        }
-        if (rules?.userRelationship) {
-          setUsersRelationshipAccess((state) => {
-            if (rules.userRelationship === 'any') {
-              return 'yes'
-            }
-            if (rules.userRelationship === 'alone') {
-              return 'no'
-            }
-            if (rules.userRelationship === 'pair') {
-              return 'only'
-            }
-            return state
-          })
-        }
-      }
-      setDirectionId(id)
-    }
+    // const changeDirectionId = (id) => {
+    //   const direction = directions.find(({ _id }) => _id === id)
+    //   const rules = direction.rules
+    //   if (rules && typeof rules === 'object') {
+    //     if (rules?.userStatus) {
+    //       setUsersStatusAccess((state) => {
+    //         const novice = ['novice', 'any'].includes(rules.userStatus)
+    //           ? true
+    //           : rules.userStatus === 'member'
+    //             ? false
+    //             : state.novice
+    //         const member = ['member', 'any'].includes(rules.userStatus)
+    //           ? true
+    //           : rules.userStatus === 'novice'
+    //             ? false
+    //             : state.member
+    //         return { ...state, novice, member }
+    //       })
+    //     }
+    //     if (rules?.userRelationship) {
+    //       setUsersRelationshipAccess((state) => {
+    //         if (rules.userRelationship === 'any') {
+    //           return 'yes'
+    //         }
+    //         if (rules.userRelationship === 'alone') {
+    //           return 'no'
+    //         }
+    //         if (rules.userRelationship === 'pair') {
+    //           return 'only'
+    //         }
+    //         return state
+    //       })
+    //     }
+    //   }
+    //   setDirectionId(id)
+    // }
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -287,25 +596,26 @@ const eventFunc = (eventId, clone = false) => {
             dateEnd,
             // duration,
             address,
-            price,
+            // price,
+            subEvents,
             directionId,
-            maxParticipants: maxParticipantsCheck ? null : maxParticipants ?? 0,
-            maxMans: maxMansCheck ? null : maxMans ?? 0,
-            maxWomans: maxWomansCheck ? null : maxWomans ?? 0,
-            maxMansNovice: maxMansNoviceCheck ? null : maxMansNovice ?? 0,
-            maxWomansNovice: maxWomansNoviceCheck ? null : maxWomansNovice ?? 0,
-            maxMansMember: maxMansMemberCheck ? null : maxMansMember ?? 0,
-            maxWomansMember: maxWomansMemberCheck ? null : maxWomansMember ?? 0,
-            maxMansAge,
-            minMansAge,
-            maxWomansAge,
-            minWomansAge,
+            // maxParticipants: maxParticipantsCheck ? null : maxParticipants ?? 0,
+            // maxMans: maxMansCheck ? null : maxMans ?? 0,
+            // maxWomans: maxWomansCheck ? null : maxWomans ?? 0,
+            // maxMansNovice: maxMansNoviceCheck ? null : maxMansNovice ?? 0,
+            // maxWomansNovice: maxWomansNoviceCheck ? null : maxWomansNovice ?? 0,
+            // maxMansMember: maxMansMemberCheck ? null : maxMansMember ?? 0,
+            // maxWomansMember: maxWomansMemberCheck ? null : maxWomansMember ?? 0,
+            // maxMansAge,
+            // minMansAge,
+            // maxWomansAge,
+            // minWomansAge,
             organizerId,
             // status,
-            usersStatusAccess,
-            usersStatusDiscount,
-            usersRelationshipAccess,
-            isReserveActive,
+            // usersStatusAccess,
+            // usersStatusDiscount,
+            // usersRelationshipAccess,
+            // isReserveActive,
             report,
             reportImages,
             warning,
@@ -327,30 +637,31 @@ const eventFunc = (eventId, clone = false) => {
         // event?.duration !== duration ||
         !compareArrays(event?.images, images) ||
         !compareObjects(event?.address, address) ||
-        event?.price !== price ||
+        // event?.price !== price ||
+        !compareObjects(event?.subEvents, subEvents) ||
         event?.directionId !== directionId ||
-        event?.maxParticipants !==
-          (maxParticipantsCheck ? null : maxParticipants ?? 0) ||
-        event?.maxMans !== (maxMansCheck ? null : maxMans ?? 0) ||
-        event?.maxWomans !== (maxWomansCheck ? null : maxWomans ?? 0) ||
-        event?.maxMansNovice !==
-          (maxMansNoviceCheck ? null : maxMansNovice ?? 0) ||
-        event?.maxWomansNovice !==
-          (maxWomansNoviceCheck ? null : maxWomansNovice ?? 0) ||
-        event?.maxMansMember !==
-          (maxMansMemberCheck ? null : maxMansMember ?? 0) ||
-        event?.maxWomansMember !==
-          (maxWomansMemberCheck ? null : maxWomansMember ?? 0) ||
-        event?.minMansAge !== minMansAge ||
-        event?.maxMansAge !== maxMansAge ||
-        event?.minWomansAge !== minWomansAge ||
-        event?.maxWomansAge !== maxWomansAge ||
+        // event?.maxParticipants !==
+        //   (maxParticipantsCheck ? null : maxParticipants ?? 0) ||
+        // event?.maxMans !== (maxMansCheck ? null : maxMans ?? 0) ||
+        // event?.maxWomans !== (maxWomansCheck ? null : maxWomans ?? 0) ||
+        // event?.maxMansNovice !==
+        //   (maxMansNoviceCheck ? null : maxMansNovice ?? 0) ||
+        // event?.maxWomansNovice !==
+        //   (maxWomansNoviceCheck ? null : maxWomansNovice ?? 0) ||
+        // event?.maxMansMember !==
+        //   (maxMansMemberCheck ? null : maxMansMember ?? 0) ||
+        // event?.maxWomansMember !==
+        //   (maxWomansMemberCheck ? null : maxWomansMember ?? 0) ||
+        // event?.minMansAge !== minMansAge ||
+        // event?.maxMansAge !== maxMansAge ||
+        // event?.minWomansAge !== minWomansAge ||
+        // event?.maxWomansAge !== maxWomansAge ||
         organizerId !== defaultOrganizerId ||
         // event?.status !== status ||
-        !compareObjects(defaultUsersStatusAccess, usersStatusAccess) ||
-        !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
-        event?.usersRelationshipAccess !== usersRelationshipAccess ||
-        event?.isReserveActive !== isReserveActive ||
+        // !compareObjects(defaultUsersStatusAccess, usersStatusAccess) ||
+        // !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
+        // event?.usersRelationshipAccess !== usersRelationshipAccess ||
+        // event?.isReserveActive !== isReserveActive ||
         event?.report !== report ||
         !compareArrays(event?.reportImages, reportImages) ||
         event?.warning !== warning ||
@@ -370,61 +681,38 @@ const eventFunc = (eventId, clone = false) => {
       // duration,
       images,
       address,
-      price,
+      // price,
+      subEvents,
       directionId,
-      maxParticipants,
-      maxMans,
-      maxWomans,
-      maxMansNovice,
-      maxWomansNovice,
-      maxMansMember,
-      maxWomansMember,
-      maxMansAge,
-      minMansAge,
-      maxWomansAge,
-      minWomansAge,
+      // maxParticipants,
+      // maxMans,
+      // maxWomans,
+      // maxMansNovice,
+      // maxWomansNovice,
+      // maxMansMember,
+      // maxWomansMember,
+      // maxMansAge,
+      // minMansAge,
+      // maxWomansAge,
+      // minWomansAge,
       organizerId,
-      maxParticipantsCheck,
-      maxMansCheck,
-      maxWomansCheck,
-      maxMansNoviceCheck,
-      maxWomansNoviceCheck,
-      maxMansMemberCheck,
-      maxWomansMemberCheck,
+      // maxParticipantsCheck,
+      // maxMansCheck,
+      // maxWomansCheck,
+      // maxMansNoviceCheck,
+      // maxWomansNoviceCheck,
+      // maxMansMemberCheck,
+      // maxWomansMemberCheck,
       // status,
-      usersStatusAccess,
-      usersStatusDiscount,
-      usersRelationshipAccess,
-      isReserveActive,
+      // usersStatusAccess,
+      // usersStatusDiscount,
+      // usersRelationshipAccess,
+      // isReserveActive,
       report,
       reportImages,
       warning,
       likes,
     ])
-
-    const handleFocus = (event) => event.target.select()
-
-    useEffect(() => {
-      if (!maxParticipantsCheck) setFocusPerticipantsMax()
-    }, [maxParticipantsCheck])
-    useEffect(() => {
-      if (!maxMansCheck) setFocusMansMax()
-    }, [maxMansCheck])
-    useEffect(() => {
-      if (!maxWomansCheck) setFocusWomansMax()
-    }, [maxWomansCheck])
-    useEffect(() => {
-      if (!maxMansNoviceCheck) setFocusMansNoviceMax()
-    }, [maxMansNoviceCheck])
-    useEffect(() => {
-      if (!maxWomansNoviceCheck) setFocusWomansNoviceMax()
-    }, [maxWomansNoviceCheck])
-    useEffect(() => {
-      if (!maxMansMemberCheck) setFocusMansMemberMax()
-    }, [maxMansMemberCheck])
-    useEffect(() => {
-      if (!maxWomansMemberCheck) setFocusWomansMemberMax()
-    }, [maxWomansMemberCheck])
 
     const duration = getEventDuration({ dateStart, dateEnd })
 
@@ -457,7 +745,8 @@ const eventFunc = (eventId, clone = false) => {
               value={directionId}
               onChange={(directionId) => {
                 removeError('directionId')
-                changeDirectionId(directionId)
+                // changeDirectionId(directionId)
+                setDirectionId(id)
               }}
               required
               error={errors.directionId}
@@ -596,7 +885,6 @@ const eventFunc = (eventId, clone = false) => {
               big
             />
 
-            {/* <FormWrapper title="Видимость"> */}
             <IconCheckBox
               checked={showOnSite}
               onClick={() => setShowOnSite((checked) => !checked)}
@@ -606,34 +894,26 @@ const eventFunc = (eventId, clone = false) => {
               checkedIconColor="#A855F7"
               big
             />
-            {short === 'krsk' && (
-              <IconCheckBox
-                checked={likes}
-                onClick={() => setLikes((checked) => !checked)}
-                label="Участники ставят лайки другим участникам во время и после мероприятия"
-                checkedIcon={faHeart}
-                uncheckedIcon={faHeartBroken}
-                checkedIconColor="#EC4899"
-                big
-              />
-            )}
-            {/* </FormWrapper> */}
+            <IconCheckBox
+              checked={likes}
+              onClick={() => setLikes((checked) => !checked)}
+              label="Участники ставят лайки другим участникам во время и после мероприятия"
+              checkedIcon={faHeart}
+              uncheckedIcon={faHeartBroken}
+              checkedIconColor="#EC4899"
+              big
+            />
           </TabPanel>
-          <TabPanel tabName="Доступ и стоимость" className="px-0">
-            {/* <FormWrapper title="Стоимость, доступ и скидки"> */}
-            {/* <FormRow> */}
-            <PriceInput
+          <TabPanel tabName="Варианты участия" className="px-0">
+            <SubEvents subEvents={subEvents} onChange={setSubEvents} />
+            {/* <PriceInput
               value={price}
               onChange={(value) => {
                 removeError('price')
                 setPrice(value)
               }}
               error={errors.price}
-              // labelPos="left"
-              // fullWidth={false}
             />
-            {/* </FormRow> */}
-            {/* <FormWrapper> */}
             <CheckBox
               checked={usersStatusAccess?.noReg}
               labelPos="left"
@@ -644,17 +924,6 @@ const eventFunc = (eventId, clone = false) => {
               }
               label="Не авторизован (видно на главной странице)"
             />
-            {/* <PriceInput
-          label="Скидка"
-          value={price}
-          onChange={(value) => {
-            // removeError('price')
-            setPrice(value)
-          }} */}
-            {/* /> */}
-            {/* </FormWrapper> */}
-            {/* <FormWrapper className="min-h-[26px]"> */}
-            {/* <FormRow className="tablet:min-h-[26px]"> */}
             <CheckBox
               checked={usersStatusAccess?.novice}
               labelPos="left"
@@ -663,7 +932,6 @@ const eventFunc = (eventId, clone = false) => {
                   return { ...state, novice: !usersStatusAccess?.novice }
                 })
               }
-              // labelClassName="w-[20%]"
               label="Новичок"
               disabled={['any', 'novice', 'member'].includes(
                 direction?.rules?.userStatus
@@ -675,24 +943,17 @@ const eventFunc = (eventId, clone = false) => {
                   label="Скидка новичкам"
                   value={usersStatusDiscount?.novice ?? 0}
                   onChange={(value) => {
-                    // removeError('price')
                     setUsersStatusDiscount((state) => {
                       return { ...state, novice: value }
                     })
                   }}
                   noMargin
-                  // labelContentWidth
-                  // labelPos="left"
                 />
                 <div className="flex items-center pt-[4px] leading-3 laptop:pt-0">
                   Итого: {(price - usersStatusDiscount?.novice) / 100} ₽
                 </div>
               </FormRow>
             )}
-            {/* </FormRow> */}
-            {/* </FormWrapper> */}
-            {/* <FormWrapper className="min-h-[26px] flex-wrap"> */}
-            {/* <FormRow className="tablet:min-h-[26px]"> */}
             <CheckBox
               checked={usersStatusAccess?.member}
               labelPos="left"
@@ -701,7 +962,6 @@ const eventFunc = (eventId, clone = false) => {
                   return { ...state, member: !usersStatusAccess?.member }
                 })
               }
-              // labelClassName="w-[20%]"
               label="Участник клуба"
               disabled={['any', 'novice', 'member'].includes(
                 direction?.rules?.userStatus
@@ -713,14 +973,11 @@ const eventFunc = (eventId, clone = false) => {
                   label="Скидка участникам клуба"
                   value={usersStatusDiscount?.member ?? 0}
                   onChange={(value) => {
-                    // removeError('price')
                     setUsersStatusDiscount((state) => {
                       return { ...state, member: value }
                     })
                   }}
                   noMargin
-                  // labelContentWidth
-                  // labelPos="left"
                 />
                 <div className="flex items-center pt-[4px] leading-3 laptop:pt-0">
                   Итого: {(price - usersStatusDiscount?.member) / 100} ₽
@@ -743,16 +1000,12 @@ const eventFunc = (eventId, clone = false) => {
                     Выбранное направление ограничевает доступ на изменение
                     некоторых прав
                   </div>
-                ))}
-            {/* </FormRow> */}
-            {/* </FormWrapper> */}
+                ))} */}
           </TabPanel>
-          <TabPanel tabName="Ограничения" className="px-0">
-            {/* <FormWrapper> */}
+          {/* <TabPanel tabName="Ограничения" className="px-0">
             <CheckBox
               checked={isReserveActive}
               labelPos="left"
-              // labelClassName="w-40"
               onClick={() => setIsReserveActive((checked) => !checked)}
               label="Если мест нет, то возможно записаться в резерв"
             />
@@ -792,16 +1045,7 @@ const eventFunc = (eventId, clone = false) => {
                   setMaxParticipantsCheck((checked) => !checked)
                 }}
               />
-              {/* <CheckBox
-                  checked={maxParticipantsCheck}
-                  labelPos="right"
-                  onClick={() => {
-                    setMaxParticipantsCheck((checked) => !checked)
-                  }}
-                  label="Не ограничено"
-                /> */}
             </FormRow>
-            {/* </FormWrapper> */}
             <FormRow className="flex-wrap laptop:flex-nowrap">
               <InputWrapper
                 label={
@@ -810,24 +1054,11 @@ const eventFunc = (eventId, clone = false) => {
                     className="w-6 h-6 text-blue-600 tablet:w-6 tablet:h-6"
                   />
                 }
-                // labelClassName={labelClassName}
-                // onChange={onChange}
-                // copyPasteButtons={false}
-                // value={address}
-                // className={wrapperClassName}
-                // required={required}
                 fullWidth
                 paddingY
                 paddingX={false}
                 centerLabel
               >
-                {/* <div className="flex border-t border-gray-300">
-                <div className="flex items-center pr-1 border-r border-gray-300">
-                  <FontAwesomeIcon
-                    icon={faMars}
-                    className="w-6 h-6 text-blue-600 tablet:w-6 tablet:h-6"
-                  />
-                </div> */}
                 <div className="flex-1 px-1">
                   <FormRow>
                     <Input
@@ -843,10 +1074,8 @@ const eventFunc = (eventId, clone = false) => {
                       type={maxMansCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      // labelClassName="w-16 min-w-16 justify-end"
                       value={maxMansCheck ? 'Без ограничений' : maxMans ?? 0}
                       onChange={setMaxMans}
-                      // error={errors?.address?.flat}
                       placeholder={maxMansCheck ? '' : '0'}
                       disabled={maxMansCheck}
                       min={0}
@@ -864,9 +1093,6 @@ const eventFunc = (eventId, clone = false) => {
                     />
                   </FormRow>
                   <FormRow>
-                    {/* <div className="flex justify-end w-16">
-                      <UserStatusIcon size="m" status="novice" />
-                    </div> */}
                     <Input
                       ref={refMansNoviceMax}
                       label={
@@ -878,14 +1104,12 @@ const eventFunc = (eventId, clone = false) => {
                       type={maxMansNoviceCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      // labelClassName="w-16 min-w-16"
                       value={
                         maxMansNoviceCheck
                           ? 'Без ограничений'
                           : maxMansNovice ?? 0
                       }
                       onChange={setMaxMansNovice}
-                      // error={errors?.address?.flat}
                       placeholder={maxMansNoviceCheck ? '' : '0'}
                       disabled={maxMansNoviceCheck}
                       min={0}
@@ -903,12 +1127,8 @@ const eventFunc = (eventId, clone = false) => {
                     />
                   </FormRow>
                   <FormRow>
-                    {/* <div className="flex justify-end w-16">
-                      <UserStatusIcon size="m" status="member" />
-                    </div> */}
                     <Input
                       ref={refMansMemberMax}
-                      // label="MAX"
                       label={
                         <div className="flex items-center gap-x-1">
                           <UserStatusIcon size="xs" status="member" />
@@ -918,18 +1138,15 @@ const eventFunc = (eventId, clone = false) => {
                       type={maxMansMemberCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      // labelClassName="w-16 min-w-16"
                       value={
                         maxMansMemberCheck
                           ? 'Без ограничений'
                           : maxMansMember ?? 0
                       }
                       onChange={setMaxMansMember}
-                      // error={errors?.address?.flat}
                       placeholder={maxMansMemberCheck ? '' : '0'}
                       disabled={maxMansMemberCheck}
                       min={0}
-                      // labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
@@ -954,7 +1171,6 @@ const eventFunc = (eventId, clone = false) => {
                     labelClassName="w-16 min-w-16"
                   />
                 </div>
-                {/* </div> */}
               </InputWrapper>
               <InputWrapper
                 label={
@@ -963,24 +1179,11 @@ const eventFunc = (eventId, clone = false) => {
                     className="w-6 h-6 text-red-600 tablet:w-6 tablet:h-6"
                   />
                 }
-                // labelClassName={labelClassName}
-                // onChange={onChange}
-                // copyPasteButtons={false}
-                // value={address}
-                // className={wrapperClassName}
-                // required={required}
                 paddingX={false}
                 paddingY
                 centerLabel
                 fullWidth
               >
-                {/* <div className="flex border-t border-b border-gray-300">
-                <div className="flex items-center pr-1 border-r border-gray-300">
-                  <FontAwesomeIcon
-                    icon={faVenus}
-                    className="w-6 h-6 text-red-600 tablet:w-6 tablet:h-6"
-                  />
-                </div> */}
                 <div className="flex-1 px-1">
                   <FormRow>
                     <Input
@@ -996,12 +1199,10 @@ const eventFunc = (eventId, clone = false) => {
                       type={maxWomansCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      // labelClassName="w-16 min-w-16 justify-end"
                       value={
                         maxWomansCheck ? 'Без ограничений' : maxWomans ?? 0
                       }
                       onChange={setMaxWomans}
-                      // error={errors?.address?.flat}
                       placeholder={maxWomansCheck ? '' : '0'}
                       disabled={maxWomansCheck}
                       min={0}
@@ -1019,9 +1220,6 @@ const eventFunc = (eventId, clone = false) => {
                     />
                   </FormRow>
                   <FormRow>
-                    {/* <div className="flex justify-end w-16">
-                      <UserStatusIcon size="m" status="novice" />
-                    </div> */}
                     <Input
                       ref={refWomansNoviceMax}
                       label={
@@ -1033,14 +1231,12 @@ const eventFunc = (eventId, clone = false) => {
                       type={maxWomansNoviceCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      // labelClassName="w-16 min-w-16"
                       value={
                         maxWomansNoviceCheck
                           ? 'Без ограничений'
                           : maxWomansNovice ?? 0
                       }
                       onChange={setMaxWomansNovice}
-                      // error={errors?.address?.flat}
                       placeholder={maxWomansNoviceCheck ? '' : '0'}
                       disabled={maxWomansNoviceCheck}
                       min={0}
@@ -1058,9 +1254,6 @@ const eventFunc = (eventId, clone = false) => {
                     />
                   </FormRow>
                   <FormRow>
-                    {/* <div className="flex justify-end w-16">
-                      <UserStatusIcon size="m" status="member" />
-                    </div> */}
                     <Input
                       ref={refWomansMemberMax}
                       label={
@@ -1072,7 +1265,6 @@ const eventFunc = (eventId, clone = false) => {
                       type={maxWomansMemberCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      // labelClassName="w-16 min-w-16"
                       value={
                         maxWomansMemberCheck
                           ? 'Без ограничений'
@@ -1106,17 +1298,12 @@ const eventFunc = (eventId, clone = false) => {
                     max={60}
                     label="Возраст"
                     labelClassName="w-16 min-w-16"
-                    // labelClassName="w-[20%]"
-                    // wrapperClassName="flex-1"
                   />
                 </div>
-                {/* </div> */}
               </InputWrapper>
             </FormRow>
 
-            {/* </FormWrapper> */}
-            {/* </FormWrapper> */}
-          </TabPanel>
+          </TabPanel> */}
           {/* {eventId && (
             <TabPanel tabName="Отчет" className="px-0">
               <FormWrapper>

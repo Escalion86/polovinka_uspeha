@@ -1,5 +1,6 @@
 import Button from '@components/Button'
 import CardButton from '@components/CardButton'
+import InputWrapper from '@components/InputWrapper'
 import { PaymentItem, UserItem, UserItemFromId } from '@components/ItemCards'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
@@ -28,10 +29,8 @@ import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelecto
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-
-const sortFunction = (a, b) => (a.user.firstName < b.user.firstName ? -1 : 1)
 
 const income = (payments) =>
   payments.reduce(
@@ -54,6 +53,7 @@ const UserPayment = ({
   // id,
   user,
   event,
+  subEvent,
   userStatus,
   // eventSubtypeNum,
   // comment,
@@ -93,11 +93,14 @@ const UserPayment = ({
   const sumOfCoupons = income(couponsOfUser)
   const sumOfPayments = income(paymentsOfUser)
 
-  const userDiscount = userStatus ? event.usersStatusDiscount[userStatus] : 0
+  const userDiscount = userStatus
+    ? (subEvent ?? event).usersStatusDiscount[userStatus]
+    : 0
 
   const eventPriceForUser = noEventPriceForUser
     ? 0
-    : (event.price - (typeof userDiscount === 'number' ? userDiscount : 0)) /
+    : ((subEvent ?? event).price -
+        (typeof userDiscount === 'number' ? userDiscount : 0)) /
         100 -
       sumOfCoupons
 
@@ -162,12 +165,12 @@ const UserPayment = ({
                   ? 'text-success'
                   : 'text-danger'
                 : sumOfPayments === eventPriceForUser
-                ? 'text-success'
-                : sumOfPayments < eventPriceForUser
-                ? sumOfPayments === 0
-                  ? 'text-danger'
-                  : 'text-orange-500'
-                : 'text-blue-700'
+                  ? 'text-success'
+                  : sumOfPayments < eventPriceForUser
+                    ? sumOfPayments === 0
+                      ? 'text-danger'
+                      : 'text-orange-500'
+                    : 'text-blue-700'
             )}
           >{`${sumOfPayments} ₽`}</span>
           {!noEventPriceForUser && (
@@ -360,6 +363,7 @@ const UserPayment = ({
 
 const UsersPayments = ({
   event,
+  subEvent,
   usersIds,
   eventUsers,
   defaultPayDirection,
@@ -395,6 +399,7 @@ const UsersPayments = ({
             // id={_id}
             noEventPriceForUser={noEventPriceForUser}
             event={event}
+            subEvent={subEvent}
             user={user}
             userStatus={userStatus}
             // eventSubtypeNum={eventSubtypeNum}
@@ -408,6 +413,19 @@ const UsersPayments = ({
     </div>
   )
 }
+
+const sortByFirstNameAndGenderFunctionEventUser = (a, b) =>
+  a.user?.gender === 'male'
+    ? b.user?.gender === 'male'
+      ? a.user?.firstName < b.user?.firstName
+        ? -1
+        : 1
+      : -1
+    : b.user?.gender === 'male'
+      ? 1
+      : a.user?.firstName < b.user?.firstName
+        ? -1
+        : 1
 
 const eventUsersPaymentsFunc = (eventId) => {
   const EventUsersPaymentsModal = ({
@@ -440,11 +458,19 @@ const eventUsersPaymentsFunc = (eventId) => {
 
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
-    const eventParticipants = eventUsers.filter(
-      ({ status }) => status === 'participant'
+    const eventParticipants = useMemo(
+      () =>
+        [...eventUsers.filter(({ status }) => status === 'participant')].sort(
+          sortByFirstNameAndGenderFunctionEventUser
+        ),
+      [eventUsers]
     )
-    const eventAssistants = eventUsers.filter(
-      ({ status }) => status === 'assistant'
+    const eventAssistants = useMemo(
+      () =>
+        [...eventUsers.filter(({ status }) => status === 'assistant')].sort(
+          sortByFirstNameAndGenderFunctionEventUser
+        ),
+      [eventUsers]
     )
 
     const eventParticipantsIds = eventParticipants.map(
@@ -468,8 +494,6 @@ const eventUsersPaymentsFunc = (eventId) => {
       paymentsOfEventOfParticipants.filter((item) => item.payType === 'coupon')
     const paymentsOfEventOfAssistantsWitoutCoupons =
       paymentsOfEventOfAssistants.filter((item) => item.payType !== 'coupon')
-    // const paymentsOfEventOfAssistantsCouponsOnly =
-    //   paymentsOfEventOfAssistants.filter((item) => item.payType === 'coupon')
 
     const sumOfPaymentsOfEventFromParticipants = income(
       paymentsOfEventOfParticipantsWitoutCoupons
@@ -480,9 +504,6 @@ const eventUsersPaymentsFunc = (eventId) => {
     const sumOfPaymentsOfEventToAssistants = income(
       paymentsOfEventOfAssistantsWitoutCoupons
     )
-    // const sumOfCouponsOfEventToAssistants = income(
-    //   paymentsOfEventOfAssistantsCouponsOnly
-    // )
 
     const participantsPlusAssistantsIds = [
       ...eventParticipantsIds,
@@ -508,23 +529,30 @@ const eventUsersPaymentsFunc = (eventId) => {
     const sumOfPaymentsFromEvent =
       paymentsFromEvent.reduce((p, payment) => p + payment.sum, 0) / 100
 
-    // const paymentsToExpectFromParticipants = useRecoilValue(
-    //   sumOfExpectingPaymentsFromParticipantsToEventSelector(eventId)
-    // )
     const membersOfEvent = eventParticipants.filter(
-      ({ userStatus, user }) => userStatus === 'member'
+      ({ userStatus }) => userStatus === 'member'
     )
     const noviceOfEvent = eventParticipants.filter(
-      ({ userStatus, user }) => userStatus === 'novice'
+      ({ userStatus }) => userStatus === 'novice'
     )
     const membersOfEventCount = membersOfEvent.length
     const noviceOfEventCount = noviceOfEvent.length
 
-    const eventPrices = eventPricesWithStatus(event)
+    const eventPrices = {}
+    event.subEvents.forEach(
+      (subEvent) => (eventPrices[subEvent.id] = eventPricesWithStatus(subEvent))
+    )
 
     const sumOfPaymentsToExpectFromParticipants =
-      (eventPrices.member * membersOfEventCount +
-        eventPrices.novice * noviceOfEventCount) /
+      event.subEvents.reduce((sum, { id }) => {
+        const res =
+          eventPrices[id].member *
+            membersOfEvent.filter(({ subEventId }) => subEventId === id)
+              .length +
+          eventPrices[id].novice *
+            noviceOfEvent.filter(({ subEventId }) => subEventId === id).length
+        return sum + res
+      }, 0) /
         100 -
       sumOfCouponsOfEventFromParticipants
 
@@ -641,11 +669,11 @@ const eventUsersPaymentsFunc = (eventId) => {
                 sumOfPaymentsToExpectFromParticipants
                 ? 'text-success'
                 : sumOfPaymentsOfEventFromParticipants <
-                  sumOfPaymentsToExpectFromParticipants
-                ? sumOfPaymentsOfEventFromParticipants === 0
-                  ? 'text-danger'
-                  : 'text-orange-500'
-                : 'text-blue-700'
+                    sumOfPaymentsToExpectFromParticipants
+                  ? sumOfPaymentsOfEventFromParticipants === 0
+                    ? 'text-danger'
+                    : 'text-orange-500'
+                  : 'text-blue-700'
             )}
           >{`${sumOfPaymentsOfEventFromParticipants} ₽`}</span>
           <span>/</span>
@@ -667,8 +695,8 @@ const eventUsersPaymentsFunc = (eventId) => {
             sumOfPaymentsFromNotParticipants === 0
               ? 'text-success'
               : sumOfPaymentsFromNotParticipants > 0
-              ? 'text-blue-700'
-              : 'text-danger'
+                ? 'text-blue-700'
+                : 'text-danger'
           )}
         >{`${sumOfPaymentsFromNotParticipants} ₽`}</span>
       </div>
@@ -684,8 +712,8 @@ const eventUsersPaymentsFunc = (eventId) => {
             sumOfPaymentsOfEventToAssistants === 0
               ? 'text-success'
               : sumOfPaymentsOfEventToAssistants > 0
-              ? 'text-blue-700'
-              : 'text-danger'
+                ? 'text-blue-700'
+                : 'text-danger'
           )}
         >{`${sumOfPaymentsOfEventToAssistants} ₽`}</span>
       </div>
@@ -700,8 +728,8 @@ const eventUsersPaymentsFunc = (eventId) => {
             sumOfPaymentsToEvent === 0
               ? 'text-success'
               : sumOfPaymentsToEvent > 0
-              ? 'text-blue-700'
-              : 'text-danger'
+                ? 'text-blue-700'
+                : 'text-danger'
           )}
         >{`${sumOfPaymentsToEvent} ₽`}</span>
       </div>
@@ -716,11 +744,29 @@ const eventUsersPaymentsFunc = (eventId) => {
             sumOfPaymentsFromEvent === 0
               ? 'text-gray_600'
               : sumOfPaymentsFromEvent > 0
-              ? 'text-success'
-              : 'text-danger'
+                ? 'text-success'
+                : 'text-danger'
           )}
         >{`${sumOfPaymentsFromEvent} ₽`}</span>
       </div>
+    )
+
+    const Wrapper = useMemo(
+      () =>
+        event.subEvents.length > 1
+          ? ({ children, label }) => (
+              <InputWrapper
+                label={label}
+                paddingX="small"
+                noMargin
+                centerLabel
+                wrapperClassName="flex flex-col items-stretch"
+              >
+                {children}
+              </InputWrapper>
+            )
+          : ({ children }) => children,
+      [event]
     )
 
     return (
@@ -784,13 +830,29 @@ const eventUsersPaymentsFunc = (eventId) => {
                 )}
               </div>
             </div>
-            <UsersPayments
-              event={event}
-              // users={[...eventParticipants].sort(sortFunction)}
-              defaultPayDirection="fromUser"
-              readOnly={isEventClosed}
-              eventUsers={[...eventParticipants].sort(sortFunction)}
-            />
+            <div className="flex flex-col mt-2 gap-y-5">
+              {event.subEvents.map((subEvent) => {
+                const { id, title } = subEvent
+
+                return (
+                  <Wrapper
+                    key={'Участники' + id}
+                    label={title || 'Основной тип участия'}
+                  >
+                    <UsersPayments
+                      event={event}
+                      subEvent={subEvent}
+                      // users={[...eventParticipants].sort(sortFunction)}
+                      defaultPayDirection="fromUser"
+                      readOnly={isEventClosed}
+                      eventUsers={eventParticipants.filter(
+                        ({ subEventId }) => subEventId === id
+                      )}
+                    />
+                  </Wrapper>
+                )
+              })}
+            </div>
           </TabPanel>
           {eventAssistants.length > 0 && (
             <TabPanel
@@ -804,7 +866,7 @@ const eventUsersPaymentsFunc = (eventId) => {
                 defaultPayDirection="toUser"
                 noEventPriceForUser
                 readOnly={isEventClosed}
-                eventUsers={[...eventAssistants].sort(sortFunction)}
+                eventUsers={eventAssistants}
               />
             </TabPanel>
           )}

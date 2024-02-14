@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import { H2 } from './tags'
 
 const BlockTitle = ({ title, className }) => {

@@ -8,7 +8,7 @@ import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
 import { getRecoil } from 'recoil-nexus'
 import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
 
-const userToEventStatus = (event, user, eventUsersFull) => {
+const userToEventStatus = (event, user, eventUsersFull, subEventSum) => {
   if (!event?._id)
     return {
       canSee: false,
@@ -31,7 +31,7 @@ const userToEventStatus = (event, user, eventUsersFull) => {
 
   if (!user?._id)
     return {
-      canSee: event.usersStatusAccess?.noReg && event.showOnSite,
+      canSee: subEventSum.usersStatusAccess?.noReg && event.showOnSite,
       alreadySignIn: false,
       canSignIn: false,
       canSignInReserve: false,
@@ -65,28 +65,28 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   const isUserTooOld =
     userAge &&
     ((user.gender === 'male' &&
-      typeof event.maxMansAge === 'number' &&
-      event.maxMansAge < userAge) ||
+      typeof subEventSum.maxMansAge === 'number' &&
+      subEventSum.maxMansAge < userAge) ||
       (user.gender === 'famale' &&
-        typeof event.maxWomansAge === 'number' &&
-        event.maxWomansAge < userAge))
+        typeof subEventSum.maxWomansAge === 'number' &&
+        subEventSum.maxWomansAge < userAge))
 
   const isUserTooYoung =
     userAge &&
     ((user.gender === 'male' &&
-      typeof event.maxMansAge === 'number' &&
-      event.minMansAge > userAge) ||
+      typeof subEventSum.maxMansAge === 'number' &&
+      subEventSum.minMansAge > userAge) ||
       (user.gender === 'famale' &&
-        typeof event.maxWomansAge === 'number' &&
-        event.minWomansAge > userAge))
+        typeof subEventSum.maxWomansAge === 'number' &&
+        subEventSum.minWomansAge > userAge))
 
   const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
   const isUserStatusCorrect = user.status
-    ? event.usersStatusAccess[user.status]
-    : event.usersStatusAccess['novice']
+    ? subEventSum.usersStatusAccess[user.status]
+    : subEventSum.usersStatusAccess['novice']
   const isUserRelationshipCorrect = isUserRelationshipCorrectForEvent(
     user,
-    event
+    subEventSum
   )
 
   // TODO Поправить права роли
@@ -172,14 +172,14 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   const eventParticipantsCount = eventWomansCount + eventMansCount
 
   const canSignInReserve =
-    (event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) &&
+    (subEventSum.isReserveActive ?? DEFAULT_EVENT.isReserveActive) &&
     isAgeOfUserCorrect &&
     isUserStatusCorrect &&
     isUserRelationshipCorrect
 
   if (
-    typeof event.maxParticipants === 'number' &&
-    event.maxParticipants <= eventParticipantsCount
+    typeof subEventSum.maxParticipants === 'number' &&
+    subEventSum.maxParticipants <= eventParticipantsCount
   )
     return {
       canSee,
@@ -199,8 +199,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
 
   if (
     user.gender === 'male' &&
-    typeof event.maxMans === 'number' &&
-    event.maxMans <= eventMansCount
+    typeof subEventSum.maxMans === 'number' &&
+    subEventSum.maxMans <= eventMansCount
   )
     return {
       canSee,
@@ -220,8 +220,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
 
   if (
     user.gender === 'famale' &&
-    typeof event.maxWomans === 'number' &&
-    event.maxWomans <= eventWomansCount
+    typeof subEventSum.maxWomans === 'number' &&
+    subEventSum.maxWomans <= eventWomansCount
   )
     return {
       canSee,
@@ -255,8 +255,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   if (user.gender === 'male') {
     if (
       (!user.status || user.status === 'novice') &&
-      typeof event.maxMansNovice === 'number' &&
-      event.maxMansNovice <= eventMansNoviceCount
+      typeof subEventSum.maxMansNovice === 'number' &&
+      subEventSum.maxMansNovice <= eventMansNoviceCount
     )
       return {
         canSee,
@@ -275,8 +275,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       }
     if (
       user.status === 'member' &&
-      typeof event.maxMansMember === 'number' &&
-      event.maxMansMember <= eventMansMemberCount
+      typeof subEventSum.maxMansMember === 'number' &&
+      subEventSum.maxMansMember <= eventMansMemberCount
     )
       return {
         canSee,
@@ -297,8 +297,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
   if (user.gender === 'famale') {
     if (
       (!user.status || user.status === 'novice') &&
-      typeof event.maxWomansNovice === 'number' &&
-      event.maxWomansNovice <= eventWomansNoviceCount
+      typeof subEventSum.maxWomansNovice === 'number' &&
+      subEventSum.maxWomansNovice <= eventWomansNoviceCount
     )
       return {
         canSee,
@@ -317,8 +317,8 @@ const userToEventStatus = (event, user, eventUsersFull) => {
       }
     if (
       user.status === 'member' &&
-      typeof event.maxWomansMember === 'number' &&
-      event.maxWomansMember <= eventWomansMemberCount
+      typeof subEventSum.maxWomansMember === 'number' &&
+      subEventSum.maxWomansMember <= eventWomansMemberCount
     )
       return {
         canSee,

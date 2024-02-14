@@ -509,6 +509,7 @@ export const DEFAULT_EVENT = Object.freeze({
   showOnSite: true,
   // duration: 60,
   price: 0,
+  prices: [],
   maxParticipants: null,
   maxMans: null,
   maxWomans: null,

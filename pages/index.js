@@ -86,6 +86,8 @@ export default function Home(props) {
 
 export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
+  console.log('context :>> ', Object.keys(context))
+  console.log('query', context.query)
 
   if (session) {
     return {

@@ -9,7 +9,7 @@ import { useRecoilValue } from 'recoil'
 const eventSignUpFunc = (
   event,
   status,
-  eventSubtypeNum,
+  subTypeId,
   comment,
   fixEventStatus,
   eventSignUpToReserveAfterError,
@@ -41,7 +41,7 @@ const eventSignUpFunc = (
           userId: loggedUser?._id,
           status,
           userStatus: loggedUser.status,
-          eventSubtypeNum,
+          subTypeId,
           comment,
         },
         (data) => {
@@ -55,7 +55,7 @@ const eventSignUpFunc = (
             eventSignUpToReserveAfterError(
               event,
               data.error,
-              eventSubtypeNum,
+              subTypeId,
               comment
             )
           }

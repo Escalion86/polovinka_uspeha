@@ -119,8 +119,8 @@ const Input = ({
             error
               ? 'text-red-600'
               : focused || value || type === 'location'
-              ? 'text-general'
-              : 'text-disabled'
+                ? 'text-general'
+                : 'text-disabled'
           )}
         >
           <FontAwesomeIcon icon={icon} />
@@ -137,8 +137,8 @@ const Input = ({
                   ? 'text-red-600'
                   : 'text-red-400'
                 : focused || value || type === 'location'
-                ? 'text-general'
-                : 'text-disabled'
+                  ? 'text-general'
+                  : 'text-disabled'
             )}
           >
             {label}
@@ -337,11 +337,8 @@ const LoginPage = (props) => {
   const [checkAgreement, setCheckAgreement] = useState(false)
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
-  console.log('props?.location :>> ', props?.location)
-  console.log('inputLocation :>> ', inputLocation)
 
   const isPWA = useRecoilValue(isPWAAtom)
-  console.log('isPWA :>> ', isPWA)
 
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()
@@ -374,7 +371,7 @@ const LoginPage = (props) => {
       localStorage.removeItem('location')
       // if (selectedLocation === 'norilsk')
       router.push(
-        `${LOCATIONS[inputLocation].domen}/login?location=${inputLocation}`,
+        `${LOCATIONS[inputLocation].domen}/login?location=${inputLocation}${process === 'registration' ? '&registration=true' : ''}`,
         '',
         {
           shallow: false,
@@ -853,8 +850,8 @@ const LoginPage = (props) => {
                     !value
                       ? '7'
                       : value == '77' || value == '78'
-                      ? '7'
-                      : Number(value)
+                        ? '7'
+                        : Number(value)
                   )
                 }}
                 value={inputPhone}
@@ -961,10 +958,9 @@ const LoginPage = (props) => {
                   />
                   <CheckBox
                     checked={checkAgreement}
-                    labelPos="right"
                     onChange={(e) => setCheckAgreement(!checkAgreement)}
                     label={
-                      <span>
+                      <div className="text-left">
                         Согласен на{' '}
                         <span
                           onClick={() => setShowAgreement(true)}
@@ -972,7 +968,7 @@ const LoginPage = (props) => {
                         >
                           обработку персональных данных
                         </span>
-                      </span>
+                      </div>
                     }
                     wrapperClassName={cn(
                       'overflow-hidden',
@@ -1027,14 +1023,14 @@ const LoginPage = (props) => {
                   {process === 'authorization'
                     ? 'Авторизироваться'
                     : registrationLevel === 1
-                    ? process === 'registration'
-                      ? 'Зарегистрироваться'
-                      : 'Сменить пароль'
-                    : registrationLevel === 2
-                    ? 'Отправить код'
-                    : process === 'registration'
-                    ? 'Завершить регистрацию'
-                    : 'Сменить пароль и авторизироваться'}
+                      ? process === 'registration'
+                        ? 'Зарегистрироваться'
+                        : 'Сменить пароль'
+                      : registrationLevel === 2
+                        ? 'Отправить код'
+                        : process === 'registration'
+                          ? 'Завершить регистрацию'
+                          : 'Сменить пароль и авторизироваться'}
                 </button>
               )}
 
@@ -1130,13 +1126,13 @@ const LoginPage = (props) => {
                   <span className="flex-1">Google</span>
                 </button> */}
               {!isPWA && (
-                <Link href="/" shallow>
-                  <a
-                    tabIndex={0}
-                    className="block py-3 mt-2 mb-5 text-sm duration-300 border-t border-gray-400 cursor-pointer phoneH:text-base hover:text-general"
-                  >
-                    Вернуться на главную страницу сайта
-                  </a>
+                <Link
+                  href="/"
+                  shallow
+                  tabIndex={0}
+                  className="block py-3 mt-2 mb-5 text-sm duration-300 border-t border-gray-400 cursor-pointer phoneH:text-base hover:text-general"
+                >
+                  Вернуться на главную страницу сайта
                 </Link>
               )}
             </>

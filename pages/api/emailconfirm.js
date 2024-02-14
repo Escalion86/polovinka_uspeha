@@ -2,7 +2,7 @@ import emailSend from '@helpers/emailSend'
 import EmailConfirmations from '@models/EmailConfirmations'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
-import { v4 as uuid } from 'uuid'
+import { uid } from 'uid'
 
 export default async function handler(req, res) {
   const { query, method, body } = req
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       const newEmailConfirmation = await EmailConfirmations.create({
         email,
         password,
-        token: uuid(),
+        token: uid(24),
       })
       if (!newEmailConfirmation) {
         return res?.status(400).json({

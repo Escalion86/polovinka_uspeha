@@ -42,7 +42,7 @@ const ToolsEventAnonsContent = () => {
   const [fontSize, setFontSize] = useState(130)
   const [dateFontSize, setDateFontSize] = useState(120)
 
-  const Frame = () => null
+  var Frame = () => null
   if (frameId) {
     const frame = frames.find(({ id }) => id === frameId)
     if (frame) Frame = frame.Frame
@@ -53,8 +53,8 @@ const ToolsEventAnonsContent = () => {
   const textSplit = customMode
     ? customText.split(' ')
     : event
-    ? String(event?.title).split(' ')
-    : []
+      ? String(event?.title).split(' ')
+      : []
 
   var chars = 0
   var line = 0
@@ -301,8 +301,8 @@ const ToolsEventAnonsContent = () => {
                   {customMode
                     ? customDate2
                     : dayStart === dayEnd && monthStart === monthEnd
-                    ? `(${weekStart})`
-                    : `${dayEnd} ${monthEnd}`}
+                      ? `(${weekStart})`
+                      : `${dayEnd} ${monthEnd}`}
                 </text>
               )}
             </>

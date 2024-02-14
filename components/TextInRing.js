@@ -1,6 +1,6 @@
 import { GRADIENT_COLORS } from '@helpers/constants'
 import cn from 'classnames'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 
 const TextInRing = ({ text, fullHeight = true }) => {
   return (

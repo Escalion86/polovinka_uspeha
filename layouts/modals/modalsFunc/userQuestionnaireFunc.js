@@ -20,7 +20,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import { v4 as uuid } from 'uuid'
+import { uid } from 'uid'
 
 const CheckBoxItem = ({
   checked,
@@ -81,8 +81,8 @@ const CheckBoxList = ({
       ? [
           ...defaultValue
             .filter((item) => !list.includes(item))
-            .map((item) => ({ checked: true, value: item, key: uuid() })),
-          { checked: false, value: '', key: uuid() },
+            .map((item) => ({ checked: true, value: item, key: uid(24) })),
+          { checked: false, value: '', key: uid(24) },
         ]
       : []
   )
@@ -184,7 +184,7 @@ const CheckBoxList = ({
               ) {
                 const newStateWithNewItem = [
                   ...newState,
-                  { checked: false, value: '', key: uuid() },
+                  { checked: false, value: '', key: uid(24) },
                 ]
                 setOwnItemsState(newStateWithNewItem)
               } else {
@@ -205,7 +205,7 @@ const CheckBoxList = ({
                     ) {
                       const newStateWithNewItem = [
                         ...newState,
-                        { checked: false, value: '', key: uuid() },
+                        { checked: false, value: '', key: uid(24) },
                       ]
                       setOwnItemsState(newStateWithNewItem)
                     } else {
@@ -357,8 +357,8 @@ const CustomList = ({
 }) => {
   const [list, setList] = useState(
     defaultValue.length === 0
-      ? [{ key: uuid(), value: '' }]
-      : defaultValue.map((value) => ({ key: uuid(), value }))
+      ? [{ key: uid(24), value: '' }]
+      : defaultValue.map((value) => ({ key: uid(24), value }))
   )
 
   // const updateList = (key, value) => {
@@ -392,7 +392,7 @@ const CustomList = ({
                 !newList.find((item) => item.value === '') &&
                 (!maxItems || newList.length < maxItems)
               )
-                newList.push({ key: uuid(), value: '' })
+                newList.push({ key: uid(24), value: '' })
               // updateList(key, newValue)
               setList(newList)
               onChangeWithFiler(newList)
@@ -406,7 +406,7 @@ const CustomList = ({
                     if (
                       newList.filter((item) => item.value === '').length === 0
                     )
-                      newList.push({ key: uuid(), value: '' })
+                      newList.push({ key: uid(24), value: '' })
                     setList(newList)
                     onChangeWithFiler(newList)
                   }
@@ -589,9 +589,9 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
       isObject(value) && value.hasOwnProperty(item.key)
         ? value[item.key]
         : item.defaultValue ??
-          ['checkList', 'customList', 'images'].includes(item.type)
-        ? []
-        : null
+            ['checkList', 'customList', 'images'].includes(item.type)
+          ? []
+          : null
     // stateDefault.push(item.show ? item.defaultValue : undefined)
   })
 
@@ -650,27 +650,23 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
           const value = state[item.key]
           if (item.type === 'number') {
             if (item.params.max && parseInt(value) > item.params.max)
-              errorsArr[
-                item.key
-              ] = `Ошибка в поле "${item.label}". Число не может быть больше ${item.params.max}`
+              errorsArr[item.key] =
+                `Ошибка в поле "${item.label}". Число не может быть больше ${item.params.max}`
             else if (item.params.min && parseInt(value) < item.params.min)
-              errorsArr[
-                item.key
-              ] = `Ошибка в поле "${item.label}". Число не может быть меньше ${item.params.min}`
+              errorsArr[item.key] =
+                `Ошибка в поле "${item.label}". Число не может быть меньше ${item.params.min}`
           }
           if (item.type === 'customList') {
             if (item.params.maxItems && value.length > item.params.maxItems)
-              errorsArr[
-                item.key
-              ] = `Ошибка в поле "${item.label}". Количество заполненных пунктов не может превышать ${item.params.maxItems} шт`
+              errorsArr[item.key] =
+                `Ошибка в поле "${item.label}". Количество заполненных пунктов не может превышать ${item.params.maxItems} шт`
             else if (
               item.required &&
               item.params.minItems &&
               value.length < item.params.minItems
             )
-              errorsArr[
-                item.key
-              ] = `Ошибка в поле "${item.label}". Количество заполненных пунктов не может быть меньше ${item.params.minItems}`
+              errorsArr[item.key] =
+                `Ошибка в поле "${item.label}". Количество заполненных пунктов не может быть меньше ${item.params.minItems}`
           }
           if (
             item.required &&

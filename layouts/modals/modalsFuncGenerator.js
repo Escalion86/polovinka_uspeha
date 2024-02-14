@@ -9,7 +9,7 @@ import directionFunc from './modalsFunc/directionFunc'
 import directionViewFunc from './modalsFunc/directionViewFunc'
 import errorFunc from './modalsFunc/errorFunc'
 import eventFunc from './modalsFunc/eventFunc'
-import eventSignUpFunc from './modalsFunc/eventSignUpFunc'
+import eventSignUpFunc from './modalsFunc/eventSignUpFunc2'
 import eventStatusEditFunc from './modalsFunc/eventStatusEditFunc'
 import eventUserStatusChangeFunc from './modalsFunc/eventUserStatusChangeFunc'
 import eventUsersFunc from './modalsFunc/eventUsersFunc'
@@ -59,6 +59,7 @@ import copyEventUserListFunc from './modalsFunc/copyEventUserListFunc'
 import likeEditFunc from './modalsFunc/likeEditFunc'
 import likesViewFunc from './modalsFunc/likesViewFunc'
 import eventAfterSignUpMessageFunc from './modalsFunc/eventAfterSignUpMessageFunc'
+import subEventFunc from './modalsFunc/subEventFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -435,6 +436,8 @@ const modalsFuncGenerator = (
     event: {
       add: (eventId) => addModal(eventFunc(eventId, true)),
       edit: (eventId) => addModal(eventFunc(eventId)),
+      subEventEdit: (props, onChange) =>
+        addModal(subEventFunc(props, onChange)),
       users: (eventId) => addModal(eventUsersFunc(eventId)),
       history: (eventId) => addModal(eventHistoryFunc(eventId)),
       statusEdit: (eventId) => addModal(eventStatusEditFunc(eventId)),
@@ -467,22 +470,21 @@ const modalsFuncGenerator = (
       editLikes: (eventId) => addModal(likesEditFunc(eventId)),
       viewLikes: (eventId) => addModal(likesViewFunc(eventId)),
       copyUsersList: (eventId) => addModal(copyEventUserListFunc(eventId)),
-      signUp: (event, status = 'participant', eventSubtypeNum, comment) => {
+      signUp: (event, status = 'participant', comment) => {
         if (checkLoggedUser('Для записи на мероприятие', `event=${event._id}`))
           addModal(
             eventSignUpFunc(
               event,
               status,
-              eventSubtypeNum,
               comment,
               fixEventStatus,
-              (event, error, eventSubtypeNum, comment) =>
+              (event, error, comment, subEventId) =>
                 addModal(
                   eventSignUpToReserveAfterError(
                     event,
                     error,
-                    eventSubtypeNum,
-                    comment
+                    comment,
+                    subEventId
                   )
                 ),
               () => addModal(eventAfterSignUpMessageFunc(event, status))

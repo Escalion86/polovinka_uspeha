@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import Tooltip from './Tooltip'
 
 const UserRelationshipIcon = ({
@@ -34,8 +34,8 @@ const UserRelationshipIcon = ({
       ? 'Только для пар'
       : 'Только для тех у кого нет второй половинки'
     : havePartner
-    ? 'Есть пара'
-    : 'Нет пары'
+      ? 'Есть пара'
+      : 'Нет пары'
 
   const Icon = () => (
     <Tooltip title={name}>
