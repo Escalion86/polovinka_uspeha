@@ -30,9 +30,6 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
-/public/sw.js
-/public/sw.js.map
-/public/workbox-*
 
 #pwa
 /public/sw.js
@@ -50,3 +47,6 @@ REST
 requests.rest
 
 google_calendar_token.json
+
+#temp
+/app2
