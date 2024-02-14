@@ -961,10 +961,9 @@ const LoginPage = (props) => {
                   />
                   <CheckBox
                     checked={checkAgreement}
-                    labelPos="right"
                     onChange={(e) => setCheckAgreement(!checkAgreement)}
                     label={
-                      <span>
+                      <div className="text-left">
                         Согласен на{' '}
                         <span
                           onClick={() => setShowAgreement(true)}
@@ -972,7 +971,7 @@ const LoginPage = (props) => {
                         >
                           обработку персональных данных
                         </span>
-                      </span>
+                      </div>
                     }
                     wrapperClassName={cn(
                       'overflow-hidden',

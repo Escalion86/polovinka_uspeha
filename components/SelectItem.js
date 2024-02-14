@@ -149,8 +149,8 @@ const SelectItemContainer = ({
           error
             ? 'border border-red-500'
             : bordered
-            ? 'border border-gray-700'
-            : '',
+              ? 'border border-gray-700'
+              : '',
           className
         )}
       >
@@ -163,29 +163,31 @@ const SelectItemContainer = ({
     <Container>
       {children}
       {buttons &&
-        buttons.map((item, index) => {
-          const {
-            onClick,
-            icon,
-            iconClassName,
-            tooltip,
-            text,
-            textClassName,
-            thin,
-          } = item(selectedId)
-          return (
-            <ItemButton
-              key={'button' + selectedId + index}
-              tooltip={tooltip}
-              onClick={onClick}
-              icon={icon}
-              iconClassName={iconClassName}
-              text={text}
-              textClassName={textClassName}
-              thin={thin}
-            />
-          )
-        })}
+        buttons
+          .filter((item) => item)
+          .map((item, index) => {
+            const {
+              onClick,
+              icon,
+              iconClassName,
+              tooltip,
+              text,
+              textClassName,
+              thin,
+            } = item(selectedId)
+            return (
+              <ItemButton
+                key={'button' + selectedId + index}
+                tooltip={tooltip}
+                onClick={onClick}
+                icon={icon}
+                iconClassName={iconClassName}
+                text={text}
+                textClassName={textClassName}
+                thin={thin}
+              />
+            )
+          })}
       {onEdit && (
         <ItemButton
           tooltip="Редактировать"

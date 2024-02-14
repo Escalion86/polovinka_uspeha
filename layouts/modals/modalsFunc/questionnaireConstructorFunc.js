@@ -25,7 +25,7 @@ import getNoun from '@helpers/getNoun'
 import useErrors from '@helpers/useErrors'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
-import { v4 as uuid } from 'uuid'
+import { uid } from 'uid'
 
 const typesNames = {
   text: 'Текст (строка)',
@@ -119,7 +119,7 @@ const QuestionnaireItem = ({
 
 const ListConstructor = ({ list = [], onChange }) => {
   const [listState, setListState] = useState(
-    list.map((item) => ({ key: uuid(), value: item }))
+    list.map((item) => ({ key: uid(24), value: item }))
   )
 
   return (
@@ -160,7 +160,7 @@ const ListConstructor = ({ list = [], onChange }) => {
           thin
           onClick={() => {
             const newList = [...listState]
-            newList.push({ key: uuid(), value: '' })
+            newList.push({ key: uid(24), value: '' })
             onChange(newList.map(({ value }) => value))
             setListState(newList)
           }}
@@ -207,7 +207,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
         {
           ...DEFAULT_QUESTIONNAIRE_ITEM,
           type,
-          key: uuid(),
+          key: uid(24),
           defaultValue,
           params,
         },

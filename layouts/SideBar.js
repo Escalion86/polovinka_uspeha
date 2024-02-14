@@ -69,16 +69,15 @@ const menuCfg = (
 const MenuItem = ({ item, active = false, badge }) => {
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
   return (
-    <Link
-      href={'/cabinet/' + item.href}
-      shallow
-      className={cn(
-        'flex items-center justify-between mb-1 rounded-lg cursor-pointer flex-nowrap ',
-        active ? 'bg-general text-white' : '',
-        'hover:bg-general hover:text-white'
-      )}
-    >
-      <a onClick={() => setMenuOpen(false)}>
+    <Link href={'/cabinet/' + item.href} shallow legacyBehavior>
+      <a
+        onClick={() => setMenuOpen(false)}
+        className={cn(
+          'flex items-center justify-between mb-1 rounded-lg cursor-pointer flex-nowrap ',
+          active ? 'bg-general text-white' : '',
+          'hover:bg-general hover:text-white'
+        )}
+      >
         <div className={cn('flex items-center w-full px-3 py-1 gap-x-2 ')}>
           <FontAwesomeIcon icon={item.icon} className="w-5 h-5 min-w-5" />
           <span className={'text-sm font-medium whitespace-nowrap'}>

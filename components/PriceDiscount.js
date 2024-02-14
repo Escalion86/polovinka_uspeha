@@ -13,6 +13,11 @@ const PriceDiscount = ({
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   if (!item) return null
 
+  const fixedUserStatus =
+    !loggedUserActiveStatus || loggedUserActiveStatus === 'ban'
+      ? 'novice'
+      : loggedUserActiveStatus
+
   const eventPriceForUser = item.price
     ? priceForStatus
       ? (item.price -
@@ -21,29 +26,22 @@ const PriceDiscount = ({
             : 0)) /
         100
       : loggedUserActiveStatus
-      ? (item.price -
-          (item.usersStatusDiscount
-            ? typeof item.usersStatusDiscount[
-                !loggedUserActiveStatus || loggedUserActiveStatus === 'ban'
-                  ? 'novice'
-                  : loggedUserActiveStatus
-              ] === 'number'
-              ? item.usersStatusDiscount[
-                  !loggedUserActiveStatus || loggedUserActiveStatus === 'ban'
-                    ? 'novice'
-                    : loggedUserActiveStatus
-                ]
-              : 0
-            : 0)) /
-        100
-      : item.price / 100
+        ? (item.usersStatusDiscountResult
+            ? item.usersStatusDiscountResult[fixedUserStatus]
+            : item.price -
+              (item.usersStatusDiscount
+                ? typeof item.usersStatusDiscount[fixedUserStatus] === 'number'
+                  ? item.usersStatusDiscount[fixedUserStatus]
+                  : 0
+                : 0)) / 100
+        : item.price / 100
     : 0
 
   return (
     <div className={cn('flex flex-wrap items-center gap-x-1', className)}>
       {item.price ? (
         eventPriceForUser === item.price / 100 ? (
-          <div className="flex items-center text-base font-bold laptop:text-lg gap-x-1 flex-nowrap">
+          <div className="flex items-center text-lg font-bold laptop:text-xl gap-x-1 flex-nowrap">
             {prefix && <span className="font-bold tablet:block">{prefix}</span>}
             <span className="whitespace-nowrap">{item.price / 100 + ' ₽'}</span>
           </div>
@@ -70,27 +68,32 @@ const PriceDiscount = ({
                 mobileVertical ? 'relative' : ''
               )}
             >
-              {!priceForStatus && (
-                <div
-                  className={cn(
-                    'text-sm laptop:text-base text-center whitespace-normal',
-                    {
-                      'absolute top-0 left-0 right-0': vertical,
-                    },
-                    mobileVertical
-                      ? 'absolute laptop:block top-0 left-0 right-0 laptop:top-auto laptop:left-auto laptop:right-auto laptop:relative'
-                      : ''
-                  )}
-                >
-                  <div className="relative">
-                    <div className="whitespace-nowrap">
-                      {item.price / 100 + ' ₽'}
+              {item.usersStatusDiscountResult &&
+              item.usersStatusDiscountResult[
+                fixedUserStatus === 'member' ? 'memberFrom' : 'noviceFrom'
+              ]
+                ? ' от'
+                : !priceForStatus && (
+                    <div
+                      className={cn(
+                        'text-sm laptop:text-base text-center whitespace-normal',
+                        {
+                          'absolute top-0 left-0 right-0': vertical,
+                        },
+                        mobileVertical
+                          ? 'absolute laptop:block top-0 left-0 right-0 laptop:top-auto laptop:left-auto laptop:right-auto laptop:relative'
+                          : ''
+                      )}
+                    >
+                      <div className="relative">
+                        <div className="whitespace-nowrap">
+                          {item.price / 100 + ' ₽'}
+                        </div>
+                        <div className="absolute top-[9px] laptop:top-[11px] left-0 right-0 transform rotate-15 border-b-1 laptop:border-b-2 border-danger" />
+                        <div className="absolute top-[9px] laptop:top-[11px] left-0 right-0 transform -rotate-15 border-b-1 laptop:border-b-2 border-danger" />
+                      </div>
                     </div>
-                    <div className="absolute top-[9px] laptop:top-[11px] left-0 right-0 transform rotate-15 border-b-1 laptop:border-b-2 border-danger" />
-                    <div className="absolute top-[9px] laptop:top-[11px] left-0 right-0 transform -rotate-15 border-b-1 laptop:border-b-2 border-danger" />
-                  </div>
-                </div>
-              )}
+                  )}
               <div
                 className={cn(
                   'whitespace-nowrap text-lg laptop:text-xl font-bold',
@@ -107,7 +110,7 @@ const PriceDiscount = ({
         )
       ) : (
         <div className="text-lg font-bold uppercase whitespace-normal">
-          Бесплатное
+          Бесплатно
         </div>
       )}
     </div>

@@ -1,4 +1,6 @@
 import CardButton from '@components/CardButton'
+import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
+import InputWrapper from '@components/InputWrapper'
 import { SelectUserList } from '@components/SelectItemList'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
@@ -11,63 +13,198 @@ import {
   faHeartCirclePlus,
   faListCheck,
 } from '@fortawesome/free-solid-svg-icons'
-// import birthDateToAge from '@helpers/birthDateToAge'
-import compareArrays from '@helpers/compareArrays'
-import { DEFAULT_EVENT, EVENT_STATUSES } from '@helpers/constants'
-// import copyToClipboard from '@helpers/copyToClipboard'
-// import getUserFullName from '@helpers/getUserFullName'
+import { arrayToObjectArray } from '@helpers/arrayToObject'
+// import compareArrays from '@helpers/compareArrays'
+import compareObjects from '@helpers/compareObjects'
+import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
-// import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import usersAtom from '@state/atoms/usersAtom'
-import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
-import eventMansSelector from '@state/selectors/eventMansSelector'
 import eventSelector from '@state/selectors/eventSelector'
-import eventUsersInBanSelector from '@state/selectors/eventUsersInBanSelector'
-import eventUsersInReserveSelector from '@state/selectors/eventUsersInReserveSelector'
-import eventWomansSelector from '@state/selectors/eventWomansSelector'
+import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import cn from 'classnames'
-// import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
-// const useCopyUserListToClipboard = ({ mans, womans }) => {
-//   const mansNames = mans.map(
-//     (user, index) =>
-//       `${index + 1}. ${getUserFullName(user)}${
-//         user.status === 'member' ? ' (клуб)' : ''
-//       } - ${birthDateToAge(user.birthday)}`
-//   )
-//   const womansNames = womans.map(
-//     (user, index) =>
-//       `${index + 1}. ${getUserFullName(user)}${
-//         user.status === 'member' ? ' (клуб)' : ''
-//       } - ${birthDateToAge(user.birthday)}`
-//   )
-//   const mansText = mansNames.length > 0 ? `${mansNames.join(`\n`)}` : null
-//   const womansText = womansNames.length > 0 ? `${womansNames.join(`\n`)}` : null
+const EventsUsers = ({
+  event,
+  label,
+  modalTitle,
+  selectedIds = [],
+  setSelectedIds,
+  exceptedIds,
+  canEdit,
+  toReserveFunc,
+  fromReserveFunc,
+}) => {
+  const isEventClosed = isEventClosedFunc(event)
 
-//   return copyToClipboard(
-//     `${mansText ? `Мужчины:\n${mansNames.join(`\n`)}\n\n` : ''}${
-//       womansText ? `Женщины:\n${womansNames.join(`\n`)}` : ''
-//     }`
-//   )
-// }
+  return (
+    <>
+      <SelectUserList
+        showCounter={false}
+        className="w-full"
+        filter={{ gender: { operand: '!==', value: null } }}
+        label={label}
+        modalTitle={modalTitle}
+        usersId={selectedIds}
+        onChange={setSelectedIds}
+        exceptedIds={exceptedIds}
+        readOnly={!canEdit || isEventClosed}
+        buttons={
+          canEdit && !isEventClosed
+            ? [
+                toReserveFunc
+                  ? (id) => ({
+                      onClick: () => {
+                        setSelectedIds(
+                          selectedIds.filter((userId) => userId !== id)
+                        )
+                        toReserveFunc(id)
+                        // setReservedParticipantsIds(
+                        //   sortUsersIds([...reservedParticipantsIds, id])
+                        // )
+                      },
+                      icon: faArrowAltCircleRight,
+                      iconClassName: 'text-general',
+                      tooltip: 'Перенести в резерв',
+                    })
+                  : undefined,
+                fromReserveFunc
+                  ? (id) => ({
+                      onClick: () => {
+                        fromReserveFunc(id)
+                        // setSelectedIds([...selectedIds, id])
+                        setSelectedIds(
+                          selectedIds.filter((userId) => userId !== id)
+                        )
+                      },
+                      icon: faArrowAltCircleLeft,
+                      iconClassName: 'text-general',
+                      tooltip: 'Перенести в активный состав',
+                    })
+                  : undefined,
+              ]
+            : []
+        }
+      />
+      {/* <SelectUserList
+        className="mb-1"
+        label={labelWoman}
+        modalTitle={modalTitleWoman}
+        filter={{ gender: { operand: '===', value: 'famale' } }}
+        usersId={womansIds}
+        onChange={setWomansIds}
+        counterClassName={
+          event.maxWomans && womansIds.length >= event.maxWomans
+            ? 'text-danger font-bold'
+            : ''
+        }
+        maxUsers={event.maxWomans}
+        canAddItem={
+          (!event.maxUsers ||
+            mansIds.length + womansIds.length < event.maxUsers) &&
+          (event.maxWomans === null || event.maxWomans > womansIds.length)
+        }
+        exceptedIds={exceptedIds}
+        readOnly={!canEdit || isEventClosed}
+        buttons={
+          canEdit && !isEventClosed
+            ? [
+                (id) => ({
+                  onClick: () => {
+                    setWomansIds(
+                      sortUsersIds(
+                        [...womansIds].filter((userId) => userId !== id)
+                      )
+                    )
+                    setReservedParticipantsIds(
+                      sortUsersIds([...reservedParticipantsIds, id])
+                    )
+                  },
+                  icon: faArrowAltCircleRight,
+                  iconClassName: 'text-general',
+                  tooltip: 'Перенести в резерв',
+                }),
+              ]
+            : []
+        }
+      />
+      <div className="flex justify-end gap-x-1">
+        <span>Всего участников:</span>
+        <span
+          className={cn(
+            event.maxParticipants &&
+              mansIds.length + womansIds.length >= event.maxParticipants
+              ? 'font-bold text-danger'
+              : ''
+          )}
+        >
+          {mansIds.length + womansIds.length}
+        </span>
+        {event.maxParticipants ? (
+          <>
+            <span>/</span>
+            <span>{event.maxParticipants}</span>
+          </>
+        ) : null}
+        <span>чел.</span>
+      </div> */}
+    </>
+  )
+}
 
-const sortFunction = (a, b) => (a.firstName < b.firstName ? -1 : 1)
+const sortFunctionEventUser = (a, b) =>
+  a.user?.firstName < b.user?.firstName ? -1 : 1
+
+const sortByFirstNameAndGenderFunctionEventUser = (a, b) =>
+  a.user?.gender === 'male'
+    ? b.user?.gender === 'male'
+      ? a.user?.firstName < b.user?.firstName
+        ? -1
+        : 1
+      : -1
+    : b.user?.gender === 'male'
+      ? 1
+      : a.user?.firstName < b.user?.firstName
+        ? -1
+        : 1
+
+const sortByFirstNameAndGenderFunction = (a, b) =>
+  a.gender === 'male'
+    ? b.gender === 'male'
+      ? a.firstName < b.firstName
+        ? -1
+        : 1
+      : -1
+    : b.gender === 'male'
+      ? 1
+      : a.firstName < b.firstName
+        ? -1
+        : 1
+
+const genderSplitAndSort = (eventUsers) =>
+  genderSplitAndSort?.length === 0
+    ? [[], []]
+    : [
+        [...eventUsers.filter(({ user }) => user.gender === 'male')].sort(
+          sortFunctionEventUser
+        ),
+        [...eventUsers.filter(({ user }) => user.gender === 'famale')].sort(
+          sortFunctionEventUser
+        ),
+      ]
+
+// const getIds = (eventUsers) => eventUsers.map(({ user }) => user._id)
 
 const eventUsersFunc = (eventId) => {
   const EventModal = ({
     closeModal,
     setOnConfirmFunc,
-    setOnDeclineFunc,
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
-    setDisableDecline,
     setOnlyCloseButtonShow,
-    setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -81,84 +218,141 @@ const eventUsersFunc = (eventId) => {
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     const users = useRecoilValue(usersAtom)
     const isEventClosed = isEventClosedFunc(event)
-    // const setEvent = useRecoilValue(itemsFuncAtom).event.set
-    // const isEventCanBeClosed = useRecoilValue(
-    //   isEventCanBeClosedSelector(eventId)
-    // )
-    // const { info } = useSnackbar()
-
-    // const router = useRouter()
 
     const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
 
-    // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(eventId))
-
-    const sortUsersIds = useCallback(
-      (ids) =>
-        [...users]
-          .filter((user) => ids.includes(user._id))
-          .sort(sortFunction)
-          .map((user) => user._id),
+    const sortedUsers = useMemo(
+      () => [...users].sort(sortByFirstNameAndGenderFunction),
       [users]
     )
 
-    const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
-    const sortedEventAssistants = useMemo(
-      () => [...eventAssistants].sort(sortFunction),
-      [eventAssistants]
-    )
-    const sortedEventAssistantsIds = useMemo(
-      () => sortedEventAssistants.map((user) => user._id),
-      [sortedEventAssistants]
+    // const sortUsersIds = useCallback(
+    //   (ids) =>
+    //     sortedUsers
+    //       .filter((user) => ids.includes(user._id))
+    //       .map((user) => user._id),
+    //   [sortedUsers]
+    // )
+
+    const sortUsersByIds = useCallback(
+      (ids) =>
+        // .map((user) => user._id),
+        sortedUsers.filter((user) => ids.includes(user._id)),
+      [sortedUsers]
     )
 
-    const eventMans = useRecoilValue(eventMansSelector(eventId))
-    const sortedEventMans = useMemo(
-      () => [...eventMans].sort(sortFunction),
-      [eventMans]
-    )
-    const sortedEventMansIds = useMemo(
-      () => sortedEventMans.map((user) => user._id),
-      [sortedEventMans]
-    )
+    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    // const [sortedEventMans, sortedEventWomans] = useMemo(
+    //   () =>
+    //     genderSplitAndSort(
+    //       eventUsers.filter(({ status }) => status === 'participant')
+    //     ),
+    //   [eventUsers]
+    // )
 
-    const eventWomans = useRecoilValue(eventWomansSelector(eventId))
-    const sortedEventWomans = useMemo(
-      () => [...eventWomans].sort(sortFunction),
-      [eventMans]
-    )
-    const sortedEventWomansIds = useMemo(
-      () => sortedEventWomans.map((user) => user._id),
-      [sortedEventWomans]
-    )
-
-    const eventReservedParticipants = useRecoilValue(
-      eventUsersInReserveSelector(eventId)
-    )
-
-    const sortedEventReservedParticipantsIds = useMemo(
-      () => [...eventReservedParticipants].map((user) => user._id),
-      [eventReservedParticipants]
-    )
-
-    const eventBannedParticipants = useRecoilValue(
-      eventUsersInBanSelector(eventId)
-    )
-    const sortedEventBannedParticipantsIds = useMemo(
+    const sortedEventUsersParticipants = useMemo(
       () =>
-        [...eventBannedParticipants].sort(sortFunction).map((user) => user._id),
-      [eventBannedParticipants]
+        [...eventUsers.filter(({ status }) => status === 'participant')].sort(
+          sortByFirstNameAndGenderFunctionEventUser
+        ),
+      [eventUsers]
     )
 
-    const [assistantsIds, setAssistantsIds] = useState(sortedEventAssistantsIds)
-    const [mansIds, setMansIds] = useState(sortedEventMansIds)
-    const [womansIds, setWomansIds] = useState(sortedEventWomansIds)
-    const [reservedParticipantsIds, setReservedParticipantsIds] = useState(
-      sortedEventReservedParticipantsIds
+    const sortedEventUsersReserve = useMemo(
+      () =>
+        [...eventUsers.filter(({ status }) => status === 'reserve')].sort(
+          sortByFirstNameAndGenderFunctionEventUser
+        ),
+      [eventUsers]
     )
-    const [bannedParticipantsIds, setBannedParticipantsIds] = useState(
-      sortedEventBannedParticipantsIds
+
+    const sortedEventUsersAssistants = useMemo(
+      () =>
+        [...eventUsers.filter(({ status }) => status === 'assistant')].sort(
+          sortByFirstNameAndGenderFunctionEventUser
+        ),
+      [eventUsers]
     )
+
+    const sortedEventUsersBanned = useMemo(
+      () =>
+        [...eventUsers.filter(({ status }) => status === 'ban')].sort(
+          sortByFirstNameAndGenderFunctionEventUser
+        ),
+      [eventUsers]
+    )
+
+    // const sortedEventAssistantsIds = useMemo(
+    //   () => getIds(sortedEventUsersAssistants),
+    //   [sortedEventUsersAssistants]
+    // )
+
+    // const sortedEventMansIds = useMemo(
+    //   () => getIds(sortedEventMans),
+    //   [sortedEventMans]
+    // )
+
+    // const sortedEventWomansIds = useMemo(
+    //   () => getIds(sortedEventWomans),
+    //   [sortedEventWomans]
+    // )
+
+    // const sortedEventReservedParticipantsIds = useMemo(
+    //   () => getIds(sortedEventUsersReserve),
+    //   [sortedEventUsersReserve]
+    // )
+
+    // const sortedEventBannedParticipantsIds = useMemo(
+    //   () => getIds(sortedEventUsersBanned),
+    //   [sortedEventUsersBanned]
+    // )
+
+    const objParticipants = arrayToObjectArray(
+      sortedEventUsersParticipants,
+      'subEventId',
+      true,
+      event._id,
+      ({ user }) => user
+    )
+
+    const objReserve = arrayToObjectArray(
+      sortedEventUsersReserve,
+      'subEventId',
+      true,
+      event._id,
+      ({ user }) => user
+    )
+
+    const objAssistants = arrayToObjectArray(
+      sortedEventUsersAssistants,
+      'subEventId',
+      true,
+      event._id,
+      ({ user }) => user
+    )
+
+    const objBanned = arrayToObjectArray(
+      sortedEventUsersBanned,
+      'subEventId',
+      true,
+      event._id,
+      ({ user }) => user
+    )
+
+    const [participants, setParticipants] = useState(objParticipants)
+    const [reserve, setReserve] = useState(objReserve)
+    const [assistants, setAssistants] = useState(objAssistants)
+    const [banned, setBanned] = useState(objBanned)
+
+    // const [assistantsIds, setAssistantsIds] = useState(sortedEventAssistantsIds)
+    // const [mansIds, setMansIds] = useState(sortedEventMansIds)
+    // const [womansIds, setWomansIds] = useState(sortedEventWomansIds)
+    // const [reservedParticipantsIds, setReservedParticipantsIds] = useState(
+    //   sortedEventReservedParticipantsIds
+    // )
+    // const [bannedParticipantsIds, setBannedParticipantsIds] = useState(
+    //   sortedEventBannedParticipantsIds
+    // )
 
     useEffect(() => {
       if ((statusEdit || copyListToClipboard) && setTopLeftComponent)
@@ -215,134 +409,271 @@ const eventUsersFunc = (eventId) => {
       statusEdit,
       copyListToClipboard,
       setTopLeftComponent,
-      mansIds,
-      womansIds,
+      participants,
+      reserve,
+      assistants,
+      banned,
       event,
     ])
 
     const onClickConfirm = async () => {
       closeModal()
-      const filteredAssistantsIds = assistantsIds.filter((user) => user !== '?')
-      const filteredParticipantsIds = [
-        ...mansIds.filter((user) => user !== '?'),
-        ...womansIds.filter((user) => user !== '?'),
-      ]
-      const filteredReservedParticipantsIds = reservedParticipantsIds.filter(
-        (user) => user !== '?'
-      )
-      const filteredBannedParticipantsIds = bannedParticipantsIds.filter(
-        (user) => user !== '?'
-      )
-      const usersStatuses = [
-        ...filteredAssistantsIds.map((userId) => {
-          return { userId, status: 'assistant' }
-        }),
-        ...filteredParticipantsIds.map((userId) => {
-          return { userId, status: 'participant' }
-        }),
-        ...filteredReservedParticipantsIds.map((userId) => {
-          return { userId, status: 'reserve' }
-        }),
-        ...filteredBannedParticipantsIds.map((userId) => {
-          return { userId, status: 'ban' }
-        }),
-      ]
+      // const filteredAssistantsIds = assistantsIds.filter((user) => user !== '?')
+      // const filteredParticipantsIds = [
+      //   ...mansIds.filter((user) => user !== '?'),
+      //   ...womansIds.filter((user) => user !== '?'),
+      // ]
+      // const filteredReservedParticipantsIds = reservedParticipantsIds.filter(
+      //   (user) => user !== '?'
+      // )
+      // const filteredBannedParticipantsIds = bannedParticipantsIds.filter(
+      //   (user) => user !== '?'
+      // )
+      // const usersStatuses = [
+      //   ...filteredAssistantsIds.map((userId) => {
+      //     return { userId, status: 'assistant' }
+      //   }),
+      //   ...filteredParticipantsIds.map((userId) => {
+      //     return { userId, status: 'participant' }
+      //   }),
+      //   ...filteredReservedParticipantsIds.map((userId) => {
+      //     return { userId, status: 'reserve' }
+      //   }),
+      //   ...filteredBannedParticipantsIds.map((userId) => {
+      //     return { userId, status: 'ban' }
+      //   }),
+      // ]
+      const usersStatuses = []
+      event.subEvents.forEach(({ id }) => {
+        if (participants[id])
+          participants[id].forEach((user) =>
+            usersStatuses.push({
+              userId: user._id,
+              status: 'participant',
+              subEventId: id,
+            })
+          )
+        if (reserve[id])
+          reserve[id].forEach((user) =>
+            usersStatuses.push({
+              userId: user._id,
+              status: 'reserve',
+              subEventId: id,
+            })
+          )
+        if (assistants[id])
+          assistants[id].forEach((user) =>
+            usersStatuses.push({
+              userId: user._id,
+              status: 'assistant',
+              subEventId: id,
+            })
+          )
+        if (banned[id])
+          banned[id].forEach((user) =>
+            usersStatuses.push({
+              userId: user._id,
+              status: 'ban',
+              subEventId: id,
+            })
+          )
+      })
+
       setEventUsersId(eventId, usersStatuses)
     }
 
+    const isParticipantsChanged = useMemo(
+      () => !compareObjects(participants, objParticipants),
+      [participants]
+    )
     const isAssistantsChanged = useMemo(
-      () => !compareArrays(assistantsIds, sortedEventAssistantsIds),
-      [assistantsIds]
+      () => !compareObjects(assistants, objAssistants),
+      [assistants]
     )
-    const isMansChanged = useMemo(
-      () => !compareArrays(mansIds, sortedEventMansIds),
-      [mansIds]
+    const isReserveChanged = useMemo(
+      () => !compareObjects(reserve, objReserve),
+      [reserve]
     )
-    const isWomansChanged = useMemo(
-      () => !compareArrays(womansIds, sortedEventWomansIds),
-      [womansIds]
-    )
-    const isReservedParticipantsChanged = useMemo(
-      () =>
-        !compareArrays(
-          reservedParticipantsIds,
-          sortedEventReservedParticipantsIds
-        ),
-      [reservedParticipantsIds]
-    )
-    const isBannedParticipantsIdsChanged = useMemo(
-      () =>
-        !compareArrays(bannedParticipantsIds, sortedEventBannedParticipantsIds),
-      [bannedParticipantsIds]
+    const isBannedChanged = useMemo(
+      () => !compareObjects(banned, objBanned),
+      [banned]
     )
 
     useEffect(() => {
       const isFormChanged =
         isAssistantsChanged ||
-        isMansChanged ||
-        isWomansChanged ||
-        isReservedParticipantsChanged ||
-        isBannedParticipantsIdsChanged
+        isParticipantsChanged ||
+        isReserveChanged ||
+        isBannedChanged
 
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnlyCloseButtonShow(!canEdit || isEventClosed)
     }, [
-      assistantsIds,
-      mansIds,
-      womansIds,
-      reservedParticipantsIds,
-      bannedParticipantsIds,
+      isAssistantsChanged,
+      isParticipantsChanged,
+      isReserveChanged,
+      isBannedChanged,
       canEdit,
       isEventClosed,
     ])
 
-    const removeIdsFromReserve = (usersIds) => {
-      const tempReservedParticipantsIds = []
-      for (let i = 0; i < reservedParticipantsIds.length; i++) {
-        if (!usersIds.includes(reservedParticipantsIds[i]))
-          tempReservedParticipantsIds.push(reservedParticipantsIds[i])
-      }
-      setReservedParticipantsIds(tempReservedParticipantsIds)
-    }
-    const removeIdsFromParticipants = (usersIds) => {
-      const tempMansIds = []
-      for (let i = 0; i < mansIds.length; i++) {
-        if (!usersIds.includes(mansIds[i])) tempMansIds.push(mansIds[i])
-      }
+    // const removeIdsFromReserve = (usersIds) => {
+    //   const tempReservedParticipantsIds = []
+    //   for (let i = 0; i < reservedParticipantsIds.length; i++) {
+    //     if (!usersIds.includes(reservedParticipantsIds[i]))
+    //       tempReservedParticipantsIds.push(reservedParticipantsIds[i])
+    //   }
+    //   setReservedParticipantsIds(tempReservedParticipantsIds)
+    // }
+    // const removeIdsFromParticipants = (usersIds) => {
+    //   const tempMansIds = []
+    //   for (let i = 0; i < mansIds.length; i++) {
+    //     if (!usersIds.includes(mansIds[i])) tempMansIds.push(mansIds[i])
+    //   }
 
-      const tempWomansIds = []
-      for (let i = 0; i < womansIds.length; i++) {
-        if (!usersIds.includes(womansIds[i])) tempWomansIds.push(womansIds[i])
-      }
-      setMansIds(tempMansIds)
-      setWomansIds(tempWomansIds)
+    //   const tempWomansIds = []
+    //   for (let i = 0; i < womansIds.length; i++) {
+    //     if (!usersIds.includes(womansIds[i])) tempWomansIds.push(womansIds[i])
+    //   }
+    //   setMansIds(tempMansIds)
+    //   setWomansIds(tempWomansIds)
+    // }
+    // const removeIdsFromAllByBan = (bannedUsersIds) => {
+    //   var tempIds = []
+    //   for (let i = 0; i < mansIds.length; i++) {
+    //     if (!bannedUsersIds.includes(mansIds[i])) tempIds.push(mansIds[i])
+    //   }
+    //   setMansIds(tempIds)
+    //   tempIds = []
+    //   for (let i = 0; i < womansIds.length; i++) {
+    //     if (!bannedUsersIds.includes(womansIds[i])) tempIds.push(womansIds[i])
+    //   }
+    //   setWomansIds(tempIds)
+    //   tempIds = []
+    //   for (let i = 0; i < assistantsIds.length; i++) {
+    //     if (!bannedUsersIds.includes(assistantsIds[i]))
+    //       tempIds.push(assistantsIds[i])
+    //   }
+    //   setAssistantsIds(tempIds)
+    //   tempIds = []
+    //   for (let i = 0; i < reservedParticipantsIds.length; i++) {
+    //     if (!bannedUsersIds.includes(reservedParticipantsIds[i]))
+    //       tempIds.push(reservedParticipantsIds[i])
+    //   }
+    //   setReservedParticipantsIds(tempIds)
+    // }
+
+    const setParticipantsState = (subEventId, ids) => {
+      setParticipants((state) => ({
+        ...state,
+        [subEventId]: sortUsersByIds(ids),
+      }))
     }
-    const removeIdsFromAllByBan = (bannedUsersIds) => {
-      var tempIds = []
-      for (let i = 0; i < mansIds.length; i++) {
-        if (!bannedUsersIds.includes(mansIds[i])) tempIds.push(mansIds[i])
-      }
-      setMansIds(tempIds)
-      tempIds = []
-      for (let i = 0; i < womansIds.length; i++) {
-        if (!bannedUsersIds.includes(womansIds[i])) tempIds.push(womansIds[i])
-      }
-      setWomansIds(tempIds)
-      tempIds = []
-      for (let i = 0; i < assistantsIds.length; i++) {
-        if (!bannedUsersIds.includes(assistantsIds[i]))
-          tempIds.push(assistantsIds[i])
-      }
-      setAssistantsIds(tempIds)
-      tempIds = []
-      for (let i = 0; i < reservedParticipantsIds.length; i++) {
-        if (!bannedUsersIds.includes(reservedParticipantsIds[i]))
-          tempIds.push(reservedParticipantsIds[i])
-      }
-      setReservedParticipantsIds(tempIds)
+
+    const setReserveState = (subEventId, ids) => {
+      setReserve((state) => ({
+        ...state,
+        [subEventId]: sortUsersByIds(ids),
+      }))
     }
+
+    const setAssistantsState = (subEventId, ids) => {
+      setAssistants((state) => ({
+        ...state,
+        [subEventId]: sortUsersByIds(ids),
+      }))
+    }
+
+    const setBannedState = (subEventId, ids) => {
+      setBanned((state) => ({
+        ...state,
+        [subEventId]: sortUsersByIds(ids),
+      }))
+    }
+
+    const participantsCount = Object.keys(participants).reduce(
+      (sum, subEventId) => sum + participants[subEventId]?.length ?? 0,
+      0
+    )
+
+    const reserveCount = Object.keys(reserve).reduce(
+      (sum, subEventId) => sum + reserve[subEventId]?.length ?? 0,
+      0
+    )
+
+    const assistantsCount = Object.keys(assistants).reduce(
+      (sum, subEventId) => sum + assistants[subEventId]?.length ?? 0,
+      0
+    )
+
+    const bannedCount = Object.keys(banned).reduce(
+      (sum, subEventId) => sum + banned[subEventId]?.length ?? 0,
+      0
+    )
+    const participantsIds = {}
+    const reserveIds = {}
+    const assistantsIds = {}
+    const bannedIds = {}
+    const eventUsersToUse = {}
+
+    event.subEvents.forEach(({ id }) => {
+      const participantsSubEvent = participants[id] ?? []
+      const reserveSubEvent = reserve[id] ?? []
+      const assistantsSubEvent = assistants[id] ?? []
+      const bannedSubEvent = banned[id] ?? []
+
+      participantsIds[id] = participantsSubEvent.map(({ _id }) => _id)
+      reserveIds[id] = reserveSubEvent.map(({ _id }) => _id)
+      assistantsIds[id] = assistantsSubEvent.map(({ _id }) => _id)
+      bannedIds[id] = bannedSubEvent.map(({ _id }) => _id)
+
+      eventUsersToUse[id] = [
+        ...participantsSubEvent.map((user) => ({
+          user,
+          status: 'participant',
+          userStatus: user.status,
+          subEventId: id,
+        })),
+        ...assistantsSubEvent.map((user) => ({
+          user,
+          status: 'assistant',
+          userStatus: user.status,
+          subEventId: id,
+        })),
+        ...reserveSubEvent.map((user) => ({
+          user,
+          status: 'reserve',
+          userStatus: user.status,
+          subEventId: id,
+        })),
+        ...bannedSubEvent.map((user) => ({
+          user,
+          status: 'ban',
+          userStatus: user.status,
+          subEventId: id,
+        })),
+      ]
+    })
+
+    const Wrapper = useMemo(
+      () =>
+        event.subEvents.length > 1
+          ? ({ children, label }) => (
+              <InputWrapper
+                label={label}
+                paddingX="small"
+                noMargin
+                centerLabel
+                wrapperClassName="flex flex-col items-stretch"
+              >
+                {children}
+              </InputWrapper>
+            )
+          : ({ children }) => children,
+      [event]
+    )
 
     return (
       <>
@@ -355,212 +686,149 @@ const eventUsersFunc = (eventId) => {
         <TabContext value="Участники">
           <TabPanel
             tabName="Участники"
-            tabAddToLabel={`(${mansIds.length + womansIds.length})`}
+            tabAddToLabel={`(${participantsCount})`}
+            className="flex flex-col mt-2 gap-y-5"
           >
-            <SelectUserList
-              className="mb-1"
-              label="Участники Мужчины"
-              modalTitle="Выбор участников (мужчин)"
-              filter={{ gender: { operand: '===', value: 'male' } }}
-              usersId={mansIds}
-              onChange={(usersIds) => {
-                removeIdsFromReserve(usersIds)
-                setMansIds(sortUsersIds(usersIds))
-              }}
-              counterClassName={
-                event.maxMans && mansIds.length >= event.maxMans
-                  ? 'text-danger font-bold'
-                  : ''
-              }
-              maxUsers={event.maxMans}
-              canAddItem={
-                (!event.maxUsers ||
-                  mansIds.length + womansIds.length < event.maxUsers) &&
-                (event.maxMans === null || event.maxMans > mansIds.length)
-              }
-              exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-              readOnly={!canEdit || isEventClosed}
-              buttons={
-                canEdit && !isEventClosed
-                  ? [
-                      // (id) => {
-                      //   const paymentsOfUser = paymentsOfEvent.filter(
-                      //     (payment) => payment.userId === id
-                      //   )
+            {event.subEvents.map((subEvent) => {
+              const { id, title } = subEvent
 
-                      //   const sumOfPayments =
-                      //     paymentsOfUser.reduce((p, c) => p + (c.sum ?? 0), 0) / 100
-
-                      //   return {
-                      //     onClick: () => {},
-                      //     // icon: faMoneyBill,
-                      //     // iconClassName: 'text-general',
-                      //     tooltip: 'Оплата',
-                      //     thin: true,
-                      //     text: (() => {
-                      //       const user = useRecoilValue(userSelector(id))
-                      //       const eventPriceForUser =
-                      //         (event.price -
-                      //           (typeof event.usersStatusDiscount[
-                      //             user.status ?? 'novice'
-                      //           ] === 'number'
-                      //             ? event.usersStatusDiscount[user.status ?? 'novice']
-                      //             : 0)) /
-                      //         100
-                      //       return (
-                      //         <div className="flex flex-col w-12 text-xs leading-4">
-                      //           <span
-                      //             className={cn(
-                      //               sumOfPayments === eventPriceForUser
-                      //                 ? 'text-success'
-                      //                 : sumOfPayments < eventPriceForUser
-                      //                 ? sumOfPayments === 0
-                      //                   ? 'text-danger'
-                      //                   : 'text-orange-500'
-                      //                 : 'text-blue-700'
-                      //             )}
-                      //           >{`${sumOfPayments} ₽`}</span>
-                      //           <span className="border-gray-700 border-t-1">{`${eventPriceForUser} ₽`}</span>
-                      //         </div>
-                      //       )
-                      //     })(),
-                      //     // textClassName: 'w-10',
-                      //   }
-                      // },
-                      (id) => ({
-                        onClick: () => {
-                          setMansIds(
-                            sortUsersIds(
-                              [...mansIds].filter((userId) => userId !== id)
-                            )
-                          )
-                          setReservedParticipantsIds(
-                            sortUsersIds([...reservedParticipantsIds, id])
-                          )
-                        },
-                        icon: faArrowAltCircleRight,
-                        iconClassName: 'text-general',
-                        tooltip: 'Перенести в резерв',
-                      }),
-                    ]
-                  : []
-              }
-            />
-            <SelectUserList
-              className="mb-1"
-              label="Участники Женщины"
-              modalTitle="Выбор участниц (женщин)"
-              filter={{ gender: { operand: '===', value: 'famale' } }}
-              usersId={womansIds}
-              onChange={(usersIds) => {
-                removeIdsFromReserve(usersIds)
-                setWomansIds(sortUsersIds(usersIds))
-              }}
-              counterClassName={
-                event.maxWomans && womansIds.length >= event.maxWomans
-                  ? 'text-danger font-bold'
-                  : ''
-              }
-              maxUsers={event.maxWomans}
-              canAddItem={
-                (!event.maxUsers ||
-                  mansIds.length + womansIds.length < event.maxUsers) &&
-                (event.maxWomans === null || event.maxWomans > womansIds.length)
-              }
-              exceptedIds={[...assistantsIds, ...bannedParticipantsIds]}
-              readOnly={!canEdit || isEventClosed}
-              buttons={
-                canEdit && !isEventClosed
-                  ? [
-                      // (id) => {
-                      //   const paymentsOfUser = paymentsOfEvent.filter(
-                      //     (payment) => payment.userId === id
-                      //   )
-
-                      //   const sumOfPayments =
-                      //     paymentsOfUser.reduce((p, c) => p + (c.sum ?? 0), 0) /
-                      //     100
-
-                      //   return {
-                      //     onClick: () => {},
-                      //     // icon: faMoneyBill,
-                      //     // iconClassName: 'text-general',
-                      //     tooltip: 'Оплата',
-
-                      //     thin: true,
-                      //     text: (() => {
-                      //       const user = useRecoilValue(userSelector(id))
-                      //       const eventPriceForUser =
-                      //         (event.price -
-                      //           (typeof event.usersStatusDiscount[
-                      //             user.status ?? 'novice'
-                      //           ] === 'number'
-                      //             ? event.usersStatusDiscount[
-                      //                 user.status ?? 'novice'
-                      //               ]
-                      //             : 0)) /
-                      //         100
-                      //       return (
-                      //         <div className="flex flex-col w-12 text-xs leading-4">
-                      //           <span
-                      //             className={
-                      //               sumOfPayments === eventPriceForUser
-                      //                 ? 'text-success'
-                      //                 : sumOfPayments < eventPriceForUser
-                      //                 ? sumOfPayments === 0
-                      //                   ? 'text-danger'
-                      //                   : 'text-orange-500'
-                      //                 : 'text-blue-700'
-                      //             }
-                      //           >{`${sumOfPayments} ₽`}</span>
-                      //           <span className="border-gray-700 border-t-1">{`${eventPriceForUser} ₽`}</span>
-                      //         </div>
-                      //       )
-                      //     })(),
-                      //     // textClassName: 'w-10',
-                      //   }
-                      // },
-                      (id) => ({
-                        onClick: () => {
-                          setWomansIds(
-                            sortUsersIds(
-                              [...womansIds].filter((userId) => userId !== id)
-                            )
-                          )
-                          setReservedParticipantsIds(
-                            sortUsersIds([...reservedParticipantsIds, id])
-                          )
-                        },
-                        icon: faArrowAltCircleRight,
-                        iconClassName: 'text-general',
-                        tooltip: 'Перенести в резерв',
-                      }),
-                    ]
-                  : []
-              }
-            />
-            <div className="flex justify-end gap-x-1">
-              <span>Всего участников:</span>
-              <span
-                className={cn(
-                  event.maxParticipants &&
-                    mansIds.length + womansIds.length >= event.maxParticipants
-                    ? 'font-bold text-danger'
-                    : ''
-                )}
-              >
-                {mansIds.length + womansIds.length}
-              </span>
-              {event.maxParticipants ? (
-                <>
-                  <span>/</span>
-                  <span>{event.maxParticipants}</span>
-                </>
-              ) : null}
-              <span>чел.</span>
-            </div>
+              return (
+                <Wrapper
+                  key={'Участники' + id}
+                  label={title || 'Основной тип участия'}
+                >
+                  {canEdit && (
+                    <div className="flex justify-center mb-1">
+                      <EventUsersCounterAndAge
+                        event={event}
+                        subEvent={subEvent}
+                        eventUsersToUse={eventUsersToUse[id] ?? []}
+                        // showNoviceAndMemberSum
+                        showAges={false}
+                        dontShowLabel
+                      />
+                    </div>
+                  )}
+                  <EventsUsers
+                    event={event}
+                    modalTitle="Выбор участников"
+                    selectedIds={participantsIds[id]}
+                    setSelectedIds={(ids) => setParticipantsState(id, ids)}
+                    exceptedIds={[
+                      ...reserveIds[id],
+                      ...assistantsIds[id],
+                      ...bannedIds[id],
+                    ]}
+                    canEdit={canEdit}
+                    toReserveFunc={(newId) => {
+                      setReserveState(id, [...reserveIds[id], newId])
+                    }}
+                  />
+                </Wrapper>
+              )
+            })}
           </TabPanel>
           {canEdit &&
+            (event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
+              <TabPanel
+                tabName="Резерв"
+                tabAddToLabel={`(${reserveCount})`}
+                className="flex flex-col mt-2 gap-y-5"
+              >
+                {event.subEvents.map((subEvent) => {
+                  const { id, title } = subEvent
+
+                  return (
+                    <Wrapper
+                      key={'Резерв' + id}
+                      label={title || 'Основной тип участия'}
+                    >
+                      <EventsUsers
+                        event={event}
+                        modalTitle="Выбор резерва"
+                        selectedIds={reserveIds[id]}
+                        setSelectedIds={(ids) => setReserveState(id, ids)}
+                        exceptedIds={[
+                          ...participantsIds[id],
+                          ...assistantsIds[id],
+                          ...bannedIds[id],
+                        ]}
+                        canEdit={canEdit}
+                        fromReserveFunc={
+                          (newId) =>
+                            setParticipantsState(id, [
+                              ...participantsIds[id],
+                              newId,
+                            ])
+                          // setReserveState(sortUsersByIds([...reserveIds[id], id]))
+                        }
+                      />
+                    </Wrapper>
+                  )
+                })}
+              </TabPanel>
+            )}
+          <TabPanel
+            tabName="Ведущие"
+            tabAddToLabel={`(${assistantsCount})`}
+            className="flex flex-col mt-2 gap-y-5"
+          >
+            {event.subEvents.map((subEvent) => {
+              const { id, title } = subEvent
+
+              return (
+                <Wrapper
+                  key={'Ведущие' + id}
+                  label={title || 'Основной тип участия'}
+                >
+                  <EventsUsers
+                    event={event}
+                    modalTitle="Выбор ведущих"
+                    selectedIds={assistantsIds[id]}
+                    setSelectedIds={(ids) => setAssistantsState(id, ids)}
+                    exceptedIds={[
+                      ...participantsIds[id],
+                      ...reserveIds[id],
+                      ...bannedIds[id],
+                    ]}
+                    canEdit={canEdit}
+                  />
+                </Wrapper>
+              )
+            })}
+          </TabPanel>
+          {canEdit && (
+            <TabPanel
+              tabName="Бан"
+              tabAddToLabel={`(${bannedCount})`}
+              className="flex flex-col mt-2 gap-y-5"
+            >
+              {event.subEvents.map((subEvent) => {
+                const { id, title } = subEvent
+
+                return (
+                  <Wrapper
+                    key={'Бан' + id}
+                    label={title || 'Основной тип участия'}
+                  >
+                    <EventsUsers
+                      event={event}
+                      modalTitle="Выбор забаненых участников"
+                      selectedIds={bannedIds[id]}
+                      setSelectedIds={(ids) => setBannedState(id, ids)}
+                      exceptedIds={[
+                        ...participantsIds[id],
+                        ...reserveIds[id],
+                        ...assistantsIds[id],
+                      ]}
+                      canEdit={canEdit}
+                    />
+                  </Wrapper>
+                )
+              })}
+            </TabPanel>
+          )}
+          {/* {canEdit &&
             (event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
               <TabPanel
                 tabName="Резерв"
@@ -649,7 +917,7 @@ const eventUsersFunc = (eventId) => {
                 readOnly={!canEdit || isEventClosed}
               />
             </TabPanel>
-          )}
+          )} */}
           {/* <ErrorsList errors={errors} /> */}
         </TabContext>
       </>

@@ -15,6 +15,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import eventSelector from '@state/selectors/eventSelector'
+import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
@@ -39,6 +40,7 @@ const EventCard = ({
   const loading = useRecoilValue(loadingAtom('event' + eventId))
   const error = useRecoilValue(errorAtom('event' + eventId))
   const itemFunc = useRecoilValue(itemsFuncAtom)
+  const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
 
   // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 
@@ -238,7 +240,10 @@ const EventCard = ({
                     {event.title}
                   </TextLinesLimiter>
                 </div>
-                <PriceDiscount item={event} className="hidden tablet:flex" />
+                <PriceDiscount
+                  item={subEventSum}
+                  className="hidden tablet:flex"
+                />
               </div>
             </div>
           </div>
@@ -275,7 +280,7 @@ const EventCard = ({
 
         {widthNum >= 3 && (
           <div className="flex items-stretch justify-between border-t">
-            <EventUsersCounterAndAge eventId={eventId} className="h-[42px]" />
+            <EventUsersCounterAndAge event={event} className="h-[42px]" />
             <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn />
           </div>
         )}
@@ -283,11 +288,11 @@ const EventCard = ({
       {widthNum <= 2 && (
         <div className="flex flex-wrap justify-end flex-1 w-full">
           <EventUsersCounterAndAge
-            eventId={eventId}
+            event={event}
             className="flex-1 min-w-full border-t border-b h-[38px] laptop:h-[42px]"
           />
           <div className="flex items-stretch justify-end flex-1 w-full pr-1 h-9">
-            <PriceDiscount item={event} className="flex-1 mx-2" />
+            <PriceDiscount item={subEventSum} className="flex-1 mx-2" />
             <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn thin />
           </div>
         </div>

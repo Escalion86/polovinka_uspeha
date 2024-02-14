@@ -494,8 +494,9 @@ const itemsFuncGenerator = (
   }
   // FIX
   obj.event.signUp = async (propsObj, onError, onSuccess) => {
-    const { eventId, userId, status, userStatus, eventSubtypeNum, comment } =
+    const { eventId, userId, status, userStatus, subEventId, comment } =
       propsObj
+
     setLoadingCard('event' + eventId)
     return await postData(
       `/api/eventsusers`,

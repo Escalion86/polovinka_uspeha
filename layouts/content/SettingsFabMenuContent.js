@@ -17,7 +17,7 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { v4 as uuid } from 'uuid'
+import { uid } from 'uid'
 
 const ItemMenu = ({
   item,
@@ -132,7 +132,7 @@ const SettingsFabMenuContent = (props) => {
     setFabMenu((state) => [
       ...state,
       {
-        key: uuid(),
+        key: uid(24),
         text: '',
         telegram: '',
         whatsapp: '',

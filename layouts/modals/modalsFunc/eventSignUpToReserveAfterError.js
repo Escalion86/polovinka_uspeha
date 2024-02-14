@@ -5,12 +5,7 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useEffect } from 'react'
 import { useRecoilRefresher_UNSTABLE, useRecoilValue } from 'recoil'
 
-const eventSignUpToReserveAfterError = (
-  event,
-  error,
-  eventSubtypeNum,
-  comment
-) => {
+const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
   const EventSignUpToReserveAfterErrorModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -37,8 +32,8 @@ const eventSignUpToReserveAfterError = (
           userId: loggedUser?._id,
           status: 'reserve',
           userStatus: loggedUser.status,
-          eventSubtypeNum,
           comment,
+          subEventId,
         },
         (data) => {
           if (data.error === 'мероприятие закрыто') {
@@ -48,7 +43,7 @@ const eventSignUpToReserveAfterError = (
             fixEventStatus(eventId, 'canceled')
           }
         },
-        (data) => {
+        () => {
           if (typeof onSuccess === 'function') onSuccess()
         }
       )

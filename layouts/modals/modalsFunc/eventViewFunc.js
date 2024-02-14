@@ -213,7 +213,7 @@ const eventViewFunc = (eventId) => {
             <NamesOfUsersAssistantsOfEvent eventId={eventId} />
           </div>
           <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1">
-            <EventUsersCounterAndAge eventId={eventId} showAges />
+            <EventUsersCounterAndAge event={event} showAges />
             {(isLoggedUserMember || seeEventsUsers) && (
               <ValueItem
                 name="Посмотреть участников"

@@ -44,7 +44,7 @@ const PriceInput = ({
       <Input
         step="100"
         noBorder
-        inputClassName="w-20"
+        inputClassName="w-16"
         type="number"
         name={name + '₽'}
         value={String(rubles)}
@@ -63,7 +63,7 @@ const PriceInput = ({
       <Input
         step="10"
         noBorder
-        inputClassName="w-12"
+        inputClassName="w-8"
         type="number"
         name={name + 'коп'}
         value={String(cops)}

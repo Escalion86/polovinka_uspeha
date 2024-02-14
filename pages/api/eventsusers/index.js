@@ -19,13 +19,14 @@ export default async function handler(req, res) {
         eventUsersStatuses,
         userId,
         status,
-        eventSubtypeNum,
+        subEventId,
         comment,
       } = body.data
 
       if (!eventId)
         return res?.status(400).json({ success: false, data: 'No eventId' })
 
+      // Пакетное изменение
       if (eventUsersStatuses) {
         if (typeof eventUsersStatuses !== 'object')
           return res
@@ -39,7 +40,8 @@ export default async function handler(req, res) {
             (data) =>
               // data.eventId === eventUser.eventId &&
               data.userId === eventUser.userId &&
-              data.status === eventUser.status
+              data.status === eventUser.status &&
+              data.subEventId === eventUser.subEventId
           )
         )
 
@@ -49,7 +51,8 @@ export default async function handler(req, res) {
               (data) =>
                 // data.eventId === eventUser.eventId &&
                 data.userId === eventUser.userId &&
-                data.status === eventUser.status
+                data.status === eventUser.status &&
+                data.subEventId === eventUser.subEventId
             )
         )
 
@@ -67,7 +70,8 @@ export default async function handler(req, res) {
               (data) =>
                 // data.eventId === eventUser.eventId &&
                 data.userId === eventUser.userId &&
-                data.status === eventUser.status
+                data.status === eventUser.status &&
+                data.subEventId === eventUser.subEventId
             )
         )
 
@@ -98,7 +102,7 @@ export default async function handler(req, res) {
             userId: addedEventUsers[i].userId,
             status: addedEventUsers[i].status,
             userStatus: user?.status,
-            eventSubtypeNum,
+            subEventId: addedEventUsers[i].subEventId,
           })
           data.push(newEventUser)
         }
@@ -128,7 +132,7 @@ export default async function handler(req, res) {
           ?.status(201)
           .json({ success: true, data: [...oldEventUsers, ...data] })
       }
-
+      // Пользователь регистрируется лично
       if (userId && eventId) {
         return await userSignIn({
           req,
@@ -136,7 +140,7 @@ export default async function handler(req, res) {
           userId,
           eventId,
           status,
-          eventSubtypeNum,
+          subEventId,
         })
       }
     } catch (error) {

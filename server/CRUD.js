@@ -523,10 +523,11 @@ const notificateUsersAboutEvent = async (event, req) => {
         text: '\u{1F4C5} На сайте',
         url: req.headers.origin + '/event/' + String(event._id),
       },
-      {
-        text: '\u{1F4DD} Записаться',
-        callback_data: JSON.stringify({ c: 'eventSignIn', eventId: event._id }),
-      },
+      // TODO Исправить запись через телеграм
+      // {
+      //   text: '\u{1F4DD} Записаться',
+      //   callback_data: JSON.stringify({ c: 'eventSignIn', eventId: event._id }),
+      // },
     ],
   ]
   if (novicesTelegramIds.length > 0) {

@@ -15,10 +15,6 @@ const eventsUsersSchema = {
     type: String,
     default: null,
   },
-  eventSubtypeNum: {
-    type: Number,
-    default: 0,
-  },
   comment: {
     type: String,
     default: '',
@@ -32,6 +28,10 @@ const eventsUsersSchema = {
   seeLikesResult: {
     type: Boolean,
     default: false,
+  },
+  subEventId: {
+    type: String,
+    default: null,
   },
 }
 
