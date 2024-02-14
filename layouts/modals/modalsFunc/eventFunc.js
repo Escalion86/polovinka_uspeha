@@ -1,30 +1,22 @@
 import AddressPicker from '@components/AddressPicker'
 import Ages from '@components/Ages'
 import Button from '@components/Button'
-// import CheckBox from '@components/CheckBox'
 import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 import DirectionSelector from '@components/ComboBox/DirectionSelector'
 import DateTimePicker from '@components/DateTimePicker'
 import EditableTextarea from '@components/EditableTextarea'
 import ErrorsList from '@components/ErrorsList'
-// import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import FormRow from '@components/FormRow'
 import IconCheckBox from '@components/IconCheckBox'
-// import IconToggleButton from '@components/IconToggleButtons/IconToggleButton'
-// import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleButton'
 import Input from '@components/Input'
 import InputImages from '@components/InputImages'
 import InputWrapper from '@components/InputWrapper'
-// import PriceInput from '@components/PriceInput'
 import { SelectUser } from '@components/SelectItem'
-// import Slider from '@components/Slider'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
-// import EventRelationshipAccessPicker from '@components/ValuePicker/EventRelationshipAccessPicker'
 import {
-  // faAdd,
   faCopy,
   faEye,
   faEyeSlash,
@@ -32,7 +24,6 @@ import {
   faHeartBroken,
   faInfinity,
   faMars,
-  // faPencil,
   faPlus,
   faTrash,
   faTriangleExclamation,
@@ -43,7 +34,6 @@ import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
 import {
   DEFAULT_EVENT,
-  DEFAULT_USERS_STATUS_ACCESS,
   DEFAULT_USERS_STATUS_DISCOUNT,
 } from '@helpers/constants'
 import formatMinutes from '@helpers/formatMinutes'
@@ -52,13 +42,11 @@ import getEventDuration from '@helpers/getEventDuration'
 import isObject from '@helpers/isObject'
 import subEventsSummator from '@helpers/subEventsSummator'
 import useErrors from '@helpers/useErrors'
-// import useFocus from '@helpers/useFocus'
 import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventSelector from '@state/selectors/eventSelector'
-import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import cn from 'classnames'
 import Image from 'next/legacy/image'
 import { useEffect, useMemo, useState } from 'react'
@@ -356,7 +344,6 @@ const eventFunc = (eventId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const { short } = useRecoilValue(locationPropsSelector)
     const event = useRecoilValue(eventSelector(eventId))
     const directions = useRecoilValue(directionsAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
@@ -494,10 +481,10 @@ const eventFunc = (eventId, clone = false) => {
     // const [maxWomansAge, setMaxWomansAge] = useState(
     //   event?.maxWomansAge ?? DEFAULT_EVENT.maxWomansAge
     // )
-    const defaultUsersStatusAccess = {
-      ...DEFAULT_USERS_STATUS_ACCESS,
-      ...event?.usersStatusAccess,
-    }
+    // const defaultUsersStatusAccess = {
+    //   ...DEFAULT_USERS_STATUS_ACCESS,
+    //   ...event?.usersStatusAccess,
+    // }
     // const [usersStatusAccess, setUsersStatusAccess] = useState(
     //   defaultUsersStatusAccess
     // )
@@ -898,7 +885,6 @@ const eventFunc = (eventId, clone = false) => {
               big
             />
 
-            {/* <FormWrapper title="Видимость"> */}
             <IconCheckBox
               checked={showOnSite}
               onClick={() => setShowOnSite((checked) => !checked)}
@@ -908,18 +894,15 @@ const eventFunc = (eventId, clone = false) => {
               checkedIconColor="#A855F7"
               big
             />
-            {short === 'krsk' && (
-              <IconCheckBox
-                checked={likes}
-                onClick={() => setLikes((checked) => !checked)}
-                label="Участники ставят лайки другим участникам во время и после мероприятия"
-                checkedIcon={faHeart}
-                uncheckedIcon={faHeartBroken}
-                checkedIconColor="#EC4899"
-                big
-              />
-            )}
-            {/* </FormWrapper> */}
+            <IconCheckBox
+              checked={likes}
+              onClick={() => setLikes((checked) => !checked)}
+              label="Участники ставят лайки другим участникам во время и после мероприятия"
+              checkedIcon={faHeart}
+              uncheckedIcon={faHeartBroken}
+              checkedIconColor="#EC4899"
+              big
+            />
           </TabPanel>
           <TabPanel tabName="Варианты участия" className="px-0">
             <SubEvents subEvents={subEvents} onChange={setSubEvents} />
