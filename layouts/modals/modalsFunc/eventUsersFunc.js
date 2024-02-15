@@ -307,36 +307,52 @@ const eventUsersFunc = (eventId) => {
     //   [sortedEventUsersBanned]
     // )
 
-    const objParticipants = arrayToObjectArray(
-      sortedEventUsersParticipants,
-      'subEventId',
-      true,
-      event._id,
-      ({ user }) => user
+    const objParticipants = useMemo(
+      () =>
+        arrayToObjectArray(
+          sortedEventUsersParticipants,
+          'subEventId',
+          true,
+          event._id,
+          ({ user }) => user
+        ),
+      [sortedEventUsersParticipants]
     )
 
-    const objReserve = arrayToObjectArray(
-      sortedEventUsersReserve,
-      'subEventId',
-      true,
-      event._id,
-      ({ user }) => user
+    const objReserve = useMemo(
+      () =>
+        arrayToObjectArray(
+          sortedEventUsersReserve,
+          'subEventId',
+          true,
+          event._id,
+          ({ user }) => user
+        ),
+      [sortedEventUsersReserve]
     )
 
-    const objAssistants = arrayToObjectArray(
-      sortedEventUsersAssistants,
-      'subEventId',
-      true,
-      event._id,
-      ({ user }) => user
+    const objAssistants = useMemo(
+      () =>
+        arrayToObjectArray(
+          sortedEventUsersAssistants,
+          'subEventId',
+          true,
+          event._id,
+          ({ user }) => user
+        ),
+      [sortedEventUsersAssistants]
     )
 
-    const objBanned = arrayToObjectArray(
-      sortedEventUsersBanned,
-      'subEventId',
-      true,
-      event._id,
-      ({ user }) => user
+    const objBanned = useMemo(
+      () =>
+        arrayToObjectArray(
+          sortedEventUsersBanned,
+          'subEventId',
+          true,
+          event._id,
+          ({ user }) => user
+        ),
+      [sortedEventUsersBanned]
     )
 
     const [participants, setParticipants] = useState(objParticipants)
@@ -479,45 +495,23 @@ const eventUsersFunc = (eventId) => {
           )
       })
 
+      console.log('usersStatuses :>> ', usersStatuses)
+
       setEventUsersId(eventId, usersStatuses)
     }
 
-    const isParticipantsChanged = useMemo(
-      () => !compareObjects(participants, objParticipants),
-      [participants]
-    )
-    const isAssistantsChanged = useMemo(
-      () => !compareObjects(assistants, objAssistants),
-      [assistants]
-    )
-    const isReserveChanged = useMemo(
-      () => !compareObjects(reserve, objReserve),
-      [reserve]
-    )
-    const isBannedChanged = useMemo(
-      () => !compareObjects(banned, objBanned),
-      [banned]
-    )
-
     useEffect(() => {
       const isFormChanged =
-        isAssistantsChanged ||
-        isParticipantsChanged ||
-        isReserveChanged ||
-        isBannedChanged
+        !compareObjects(participants, objParticipants) ||
+        !compareObjects(assistants, objAssistants) ||
+        !compareObjects(reserve, objReserve) ||
+        !compareObjects(banned, objBanned)
 
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnlyCloseButtonShow(!canEdit || isEventClosed)
-    }, [
-      isAssistantsChanged,
-      isParticipantsChanged,
-      isReserveChanged,
-      isBannedChanged,
-      canEdit,
-      isEventClosed,
-    ])
+    }, [participants, assistants, reserve, banned, canEdit, isEventClosed])
 
     // const removeIdsFromReserve = (usersIds) => {
     //   const tempReservedParticipantsIds = []
