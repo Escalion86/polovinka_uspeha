@@ -34,6 +34,7 @@ import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
 import {
   DEFAULT_EVENT,
+  DEFAULT_SUBEVENT,
   DEFAULT_USERS_STATUS_DISCOUNT,
 } from '@helpers/constants'
 import formatMinutes from '@helpers/formatMinutes'
@@ -54,8 +55,9 @@ import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
 import { uid } from 'uid'
 
-const SubEvent = ({ id, onItemChange, deleteItem, addItem, ...props }) => {
+const SubEvent = ({ onItemChange, deleteItem, addItem, ...props }) => {
   const modalFunc = useRecoilValue(modalsFuncAtom)
+  const { id } = props
 
   return (
     <InputWrapper
@@ -147,32 +149,11 @@ const SubEvent = ({ id, onItemChange, deleteItem, addItem, ...props }) => {
   )
 }
 
-const DEFAULT_SUBEVENT_ITEM = {
-  title: '',
-  description: '',
-  price: 0,
-  maxParticipants: null,
-  maxMans: null,
-  maxWomans: null,
-  maxMansNovice: null,
-  maxWomansNovice: null,
-  maxMansMember: null,
-  maxWomansMember: null,
-  minMansAge: 35,
-  minWomansAge: 30,
-  maxMansAge: 50,
-  maxWomansAge: 45,
-  usersStatusAccess: {},
-  usersStatusDiscount: {},
-  usersRelationshipAccess: 'yes',
-  isReserveActive: true,
-}
-
 const SubEvents = ({ subEvents, onChange }) => {
   const modalFunc = useRecoilValue(modalsFuncAtom)
 
   const addItem = (props) => {
-    const newItem = { ...(props ?? DEFAULT_SUBEVENT_ITEM), id: uid(24) }
+    const newItem = { ...(props ?? DEFAULT_SUBEVENT), id: uid(24) }
     onChange((state) => [...state, newItem])
   }
 
@@ -204,7 +185,7 @@ const SubEvents = ({ subEvents, onChange }) => {
           modalFunc.event.subEventEdit(
             {
               id: uid(24),
-              ...DEFAULT_SUBEVENT_ITEM,
+              ...DEFAULT_SUBEVENT,
             },
             addItem
           )
@@ -497,9 +478,9 @@ const eventFunc = (eventId, clone = false) => {
     //   defaultUsersStatusDiscount
     // )
 
-    const [usersRelationshipAccess, setUsersRelationshipAccess] = useState(
-      event?.usersRelationshipAccess ?? DEFAULT_EVENT.usersRelationshipAccess
-    )
+    // const [usersRelationshipAccess, setUsersRelationshipAccess] = useState(
+    //   event?.usersRelationshipAccess ?? DEFAULT_EVENT.usersRelationshipAccess
+    // )
 
     const [showOnSite, setShowOnSite] = useState(
       event?.showOnSite ?? DEFAULT_EVENT.showOnSite
@@ -573,7 +554,6 @@ const eventFunc = (eventId, clone = false) => {
         dateStart,
         dateEnd,
         tags,
-        usersRelationshipAccess,
       })
       if (getDiffBetweenDates(dateStart, dateEnd) < 0) {
         addError({
@@ -746,7 +726,7 @@ const eventFunc = (eventId, clone = false) => {
               onChange={(directionId) => {
                 removeError('directionId')
                 // changeDirectionId(directionId)
-                setDirectionId(id)
+                setDirectionId(directionId)
               }}
               required
               error={errors.directionId}

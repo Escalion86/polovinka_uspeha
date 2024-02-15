@@ -500,16 +500,23 @@ export const DEFAULT_EVENT = Object.freeze({
   organizerId: null,
   title: '',
   description: '',
-  // date: null,
   dateStart: null,
   dateEnd: null,
   address: DEFAULT_ADDRESS,
   status: 'active',
   images: [],
   showOnSite: true,
-  // duration: 60,
+  report: '',
+  reportImages: [],
+  warning: false,
+  likes: false,
+  likesProcessActive: true,
+})
+
+export const DEFAULT_SUBEVENT = Object.freeze({
+  title: '',
+  description: '',
   price: 0,
-  prices: [],
   maxParticipants: null,
   maxMans: null,
   maxWomans: null,
@@ -525,11 +532,6 @@ export const DEFAULT_EVENT = Object.freeze({
   usersStatusDiscount: {},
   usersRelationshipAccess: 'yes',
   isReserveActive: true,
-  report: '',
-  reportImages: [],
-  warning: false,
-  likes: false,
-  likesProcessActive: true,
 })
 
 export const DEFAULT_QUESTIONNAIRE = Object.freeze({
