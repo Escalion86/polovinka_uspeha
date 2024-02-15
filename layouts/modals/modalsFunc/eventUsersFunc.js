@@ -398,7 +398,7 @@ const eventUsersFunc = (eventId) => {
             {showLikes && (
               <CardButton
                 icon={faHeartCirclePlus}
-                onClick={() => modalsFunc.event.editLikes(event._id)}
+                onClick={() => modalsFunc.event.viewLikes(event._id)}
                 color="pink"
                 tooltipText='Калькулятор "Быстрые свидания"'
               />

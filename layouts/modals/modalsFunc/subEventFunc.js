@@ -15,7 +15,7 @@ import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareObjects from '@helpers/compareObjects'
 import {
-  DEFAULT_EVENT,
+  DEFAULT_SUBEVENT,
   DEFAULT_USERS_STATUS_ACCESS,
   DEFAULT_USERS_STATUS_DISCOUNT,
 } from '@helpers/constants'
@@ -48,21 +48,21 @@ const subEventFunc = (props, onChange) => {
       ? directions.find(({ _id }) => _id === props.directionId)
       : undefined
 
-    const [title, setTitle] = useState(props?.title ?? DEFAULT_EVENT.title)
+    const [title, setTitle] = useState(props?.title ?? DEFAULT_SUBEVENT.title)
     const [description, setDescription] = useState(
-      props?.description ?? DEFAULT_EVENT.description
+      props?.description ?? DEFAULT_SUBEVENT.description
     )
 
-    const [price, setPrice] = useState(props?.price ?? DEFAULT_EVENT.price)
+    const [price, setPrice] = useState(props?.price ?? DEFAULT_SUBEVENT.price)
 
     const [maxParticipants, setMaxParticipants] = useState(
-      props?.maxParticipants ?? DEFAULT_EVENT.maxParticipants
+      props?.maxParticipants ?? DEFAULT_SUBEVENT.maxParticipants
     )
     const [maxMans, setMaxMans] = useState(
-      props?.maxMans ?? DEFAULT_EVENT.maxMans
+      props?.maxMans ?? DEFAULT_SUBEVENT.maxMans
     )
     const [maxWomans, setMaxWomans] = useState(
-      props?.maxWomans ?? DEFAULT_EVENT.maxWomans
+      props?.maxWomans ?? DEFAULT_SUBEVENT.maxWomans
     )
     const [maxParticipantsCheck, setMaxParticipantsCheck] = useState(
       typeof props?.maxParticipants !== 'number'
@@ -74,16 +74,16 @@ const subEventFunc = (props, onChange) => {
       typeof props?.maxWomans !== 'number'
     )
     const [maxMansNovice, setMaxMansNovice] = useState(
-      props?.maxMansNovice ?? DEFAULT_EVENT.maxMansNovice
+      props?.maxMansNovice ?? DEFAULT_SUBEVENT.maxMansNovice
     )
     const [maxMansMember, setMaxMansMember] = useState(
-      props?.maxMansMember ?? DEFAULT_EVENT.maxMansMember
+      props?.maxMansMember ?? DEFAULT_SUBEVENT.maxMansMember
     )
     const [maxWomansNovice, setMaxWomansNovice] = useState(
-      props?.maxWomansNovice ?? DEFAULT_EVENT.maxWomansNovice
+      props?.maxWomansNovice ?? DEFAULT_SUBEVENT.maxWomansNovice
     )
     const [maxWomansMember, setMaxWomansMember] = useState(
-      props?.maxWomansMember ?? DEFAULT_EVENT.maxWomansMember
+      props?.maxWomansMember ?? DEFAULT_SUBEVENT.maxWomansMember
     )
     const [maxMansNoviceCheck, setMaxMansNoviceCheck] = useState(
       typeof props?.maxMansNovice !== 'number'
@@ -99,16 +99,16 @@ const subEventFunc = (props, onChange) => {
     )
 
     const [minMansAge, setMinMansAge] = useState(
-      props?.minMansAge ?? DEFAULT_EVENT.minMansAge
+      props?.minMansAge ?? DEFAULT_SUBEVENT.minMansAge
     )
     const [minWomansAge, setMinWomansAge] = useState(
-      props?.minWomansAge ?? DEFAULT_EVENT.minWomansAge
+      props?.minWomansAge ?? DEFAULT_SUBEVENT.minWomansAge
     )
     const [maxMansAge, setMaxMansAge] = useState(
-      props?.maxMansAge ?? DEFAULT_EVENT.maxMansAge
+      props?.maxMansAge ?? DEFAULT_SUBEVENT.maxMansAge
     )
     const [maxWomansAge, setMaxWomansAge] = useState(
-      props?.maxWomansAge ?? DEFAULT_EVENT.maxWomansAge
+      props?.maxWomansAge ?? DEFAULT_SUBEVENT.maxWomansAge
     )
     const defaultUsersStatusAccess = {
       ...DEFAULT_USERS_STATUS_ACCESS,
@@ -120,18 +120,18 @@ const subEventFunc = (props, onChange) => {
 
     const defaultUsersStatusDiscount = {
       ...DEFAULT_USERS_STATUS_DISCOUNT,
-      ...(props?.usersStatusDiscount ?? DEFAULT_EVENT.usersStatusDiscount),
+      ...(props?.usersStatusDiscount ?? DEFAULT_SUBEVENT.usersStatusDiscount),
     }
     const [usersStatusDiscount, setUsersStatusDiscount] = useState(
       defaultUsersStatusDiscount
     )
 
     const [usersRelationshipAccess, setUsersRelationshipAccess] = useState(
-      props?.usersRelationshipAccess ?? DEFAULT_EVENT.usersRelationshipAccess
+      props?.usersRelationshipAccess ?? DEFAULT_SUBEVENT.usersRelationshipAccess
     )
 
     const [isReserveActive, setIsReserveActive] = useState(
-      props?.isReserveActive ?? DEFAULT_EVENT.isReserveActive
+      props?.isReserveActive ?? DEFAULT_SUBEVENT.isReserveActive
     )
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
@@ -170,7 +170,7 @@ const subEventFunc = (props, onChange) => {
     useEffect(() => {
       const isFormChanged =
         props?.title !== title ||
-        props?.description !== description ||
+        (props?.description ?? DEFAULT_SUBEVENT.description) !== description ||
         props?.maxParticipants !==
           (maxParticipantsCheck ? null : maxParticipants ?? 0) ||
         props?.maxMans !== (maxMansCheck ? null : maxMans ?? 0) ||

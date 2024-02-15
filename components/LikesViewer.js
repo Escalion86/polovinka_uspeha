@@ -34,13 +34,13 @@ const Contacts = ({ user, coincidencUsers }) => {
   var message =
     `${dayTimeText()}!\n` +
     (coincidencUsers.length > 0
-      ? `Поздравляем у вас есть совпадения:${coincidencUsers.map(
-          ({ firstName, secondName, birthday, phone }) =>
-            `\n- ${firstName} ${
-              secondName ? ` ${secondName[0].toUpperCase() + '.'}` : ''
-            } (${birthDateToAge(birthday)}) +${phone}`
-        )}`
-      : `К сожалению вчера у вас не с кем симпатии не совпали.\u{1F64C}`)
+      ? `Поздравляем у вас есть совпадения:${coincidencUsers.map(({ user }) => {
+          const { firstName, secondName, birthday, phone } = user
+          return `\n- ${firstName} ${
+            secondName ? ` ${secondName[0].toUpperCase() + '.'}` : ''
+          } (${birthDateToAge(birthday)}) +${phone}`
+        })}`
+      : `К сожалению вчера у вас ни с кем симпатии не совпали.\u{1F64C}`)
 
   const copyMessage = useCopyToClipboard(
     message,
@@ -219,10 +219,11 @@ const UserLikesItem = ({
           user={user}
           coincidencUsers={
             activeIds
-              ? otherUsersData
-                  .filter(({ user }) => activeIds.includes(user._id))
-                  .map(({ user }) => user._id)
-              : []
+              ? otherUsersData.filter(({ user }) =>
+                  activeIds.includes(user._id)
+                )
+              : // .map(({ user }) => user._id)
+                []
           }
         />
       )}

@@ -54,7 +54,7 @@ import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
 import userHistoryFunc from './modalsFunc/userHistoryFunc'
 import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
 import userPersonalStatusEditFunc from './modalsFunc/userPersonalStatusEditFunc'
-import likesEditFunc from './modalsFunc/likesEditFunc'
+// import likesEditFunc from './modalsFunc/likesEditFunc'
 import copyEventUserListFunc from './modalsFunc/copyEventUserListFunc'
 import likeEditFunc from './modalsFunc/likeEditFunc'
 import likesViewFunc from './modalsFunc/likesViewFunc'
@@ -467,7 +467,7 @@ const modalsFuncGenerator = (
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
       view: (eventId) => addModal(eventViewFunc(eventId)),
-      editLikes: (eventId) => addModal(likesEditFunc(eventId)),
+      // editLikes: (eventId) => addModal(likesEditFunc(eventId)),
       viewLikes: (eventId) => addModal(likesViewFunc(eventId)),
       copyUsersList: (eventId) => addModal(copyEventUserListFunc(eventId)),
       signUp: (event, status = 'participant', comment) => {
