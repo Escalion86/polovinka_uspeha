@@ -568,7 +568,7 @@ const eventUsersPaymentsFunc = (eventId) => {
       sumOfPaymentsOfEventToAssistants +
       sumOfPaymentsToEvent
 
-    const noviceFullPaidCount = noviceOfEvent.filter(({ user }) => {
+    const noviceFullPaidCount = noviceOfEvent.filter(({ user, subEventId }) => {
       const userPayments = paymentsOfEventOfParticipants.filter(
         ({ userId }) => userId === user._id
       )
@@ -576,19 +576,21 @@ const eventUsersPaymentsFunc = (eventId) => {
         (sum, payment) => sum + payment.sum,
         0
       )
-      return sumOfPayments >= eventPrices.novice
+      return sumOfPayments >= eventPrices[subEventId].novice
     }).length
 
-    const membersFullPaidCount = membersOfEvent.filter(({ user }) => {
-      const userPayments = paymentsOfEventOfParticipants.filter(
-        ({ userId }) => userId === user._id
-      )
-      const sumOfPayments = userPayments.reduce(
-        (sum, payment) => sum + payment.sum,
-        0
-      )
-      return sumOfPayments >= eventPrices.member
-    }).length
+    const membersFullPaidCount = membersOfEvent.filter(
+      ({ user, subEventId }) => {
+        const userPayments = paymentsOfEventOfParticipants.filter(
+          ({ userId }) => userId === user._id
+        )
+        const sumOfPayments = userPayments.reduce(
+          (sum, payment) => sum + payment.sum,
+          0
+        )
+        return sumOfPayments >= eventPrices[subEventId].member
+      }
+    ).length
 
     // const maxPartisipants =
     //   event.maxMans !== null && event.maxWomans !== null
