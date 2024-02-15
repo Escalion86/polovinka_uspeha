@@ -58,11 +58,11 @@ const eventsSchema = {
     type: String,
     default: null,
   },
-  price: {
-    type: Number,
-    max: [99999999, 'Сумма не может превышать 999999,99 руб'],
-    default: null,
-  },
+  // price: {
+  //   type: Number,
+  //   max: [99999999, 'Сумма не может превышать 999999,99 руб'],
+  //   default: null,
+  // },
   subEvents: {
     type: [
       {
@@ -140,68 +140,68 @@ const eventsSchema = {
     ],
     default: [],
   },
-  maxParticipants: {
-    type: Number,
-    default: null,
-  },
-  maxMans: {
-    type: Number,
-    default: null,
-  },
-  maxWomans: {
-    type: Number,
-    default: null,
-  },
-  maxMansNovice: {
-    type: Number,
-    default: null,
-  },
-  maxWomansNovice: {
-    type: Number,
-    default: null,
-  },
-  maxMansMember: {
-    type: Number,
-    default: null,
-  },
-  maxWomansMember: {
-    type: Number,
-    default: null,
-  },
-  minMansAge: {
-    type: Number,
-    default: null,
-  },
-  maxMansAge: {
-    type: Number,
-    default: null,
-  },
-  minWomansAge: {
-    type: Number,
-    default: null,
-  },
-  maxWomansAge: {
-    type: Number,
-    default: null,
-  },
-  usersStatusAccess: {
-    type: Map,
-    of: Boolean,
-    default: DEFAULT_USERS_STATUS_ACCESS,
-  },
-  usersStatusDiscount: {
-    type: Map,
-    of: Number,
-    default: DEFAULT_USERS_STATUS_DISCOUNT,
-  },
-  usersRelationshipAccess: {
-    type: String,
-    default: 'yes', //no, yes, only
-  },
-  isReserveActive: {
-    type: Boolean,
-    default: true,
-  },
+  // maxParticipants: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // maxMans: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // maxWomans: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // maxMansNovice: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // maxWomansNovice: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // maxMansMember: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // maxWomansMember: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // minMansAge: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // maxMansAge: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // minWomansAge: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // maxWomansAge: {
+  //   type: Number,
+  //   default: null,
+  // },
+  // usersStatusAccess: {
+  //   type: Map,
+  //   of: Boolean,
+  //   default: DEFAULT_USERS_STATUS_ACCESS,
+  // },
+  // usersStatusDiscount: {
+  //   type: Map,
+  //   of: Number,
+  //   default: DEFAULT_USERS_STATUS_DISCOUNT,
+  // },
+  // usersRelationshipAccess: {
+  //   type: String,
+  //   default: 'yes', //no, yes, only
+  // },
+  // isReserveActive: {
+  //   type: Boolean,
+  //   default: true,
+  // },
   showOnSite: {
     type: Boolean,
     default: true,
