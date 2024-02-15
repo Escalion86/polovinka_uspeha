@@ -2,6 +2,7 @@ import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import birthDateToAge from './birthDateToAge'
 import { getRecoil } from 'recoil-nexus'
 import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
+import subEventsSummator from './subEventsSummator'
 
 const visibleEventsForUser = (
   events,
@@ -14,14 +15,18 @@ const visibleEventsForUser = (
   if (!events || events?.length === 0) return []
   if (!user) {
     return events.filter((event) => {
+      const subEventsSum = subEventsSummator(event.subEvents)
       if (
-        !event.usersStatusAccess?.noReg ||
+        // !event.usersStatusAccess?.noReg ||
         !event.showOnSite ||
-        (onlyNew && new Date(event.dateStart) < new Date())
+        (onlyNew && new Date(event.dateStart) < new Date()) ||
+        !subEventsSum?.usersStatusAccess?.noReg
       )
         return false
 
-      return !event.usersStatusAccess || event.usersStatusAccess.novice
+      return (
+        !subEventsSum.usersStatusAccess || subEventsSum.usersStatusAccess.novice
+      )
     })
   } else {
     if (seeAll) return events
@@ -33,10 +38,12 @@ const visibleEventsForUser = (
     const eventsUser = eventsUsers.filter((event) => event.userId === user._id)
 
     return events.filter((event) => {
+      const subEventsSum = subEventsSummator(event.subEvents)
+
       if (
         !event.showOnSite ||
         (onlyNew && new Date(event.dateStart) < new Date()) ||
-        !isUserRelationshipCorrectForEvent(user, event)
+        !isUserRelationshipCorrectForEvent(user, subEventsSum)
       )
         return false
 
@@ -55,31 +62,32 @@ const visibleEventsForUser = (
         if (
           userAge &&
           ((user.gender === 'male' &&
-            typeof event.maxMansAge === 'number' &&
-            event.maxMansAge < userAge) ||
+            typeof subEventsSum.maxMansAge === 'number' &&
+            subEventsSum.maxMansAge < userAge) ||
             (user.gender === 'famale' &&
-              typeof event.maxWomansAge === 'number' &&
-              event.maxWomansAge < userAge))
+              typeof subEventsSum.maxWomansAge === 'number' &&
+              subEventsSum.maxWomansAge < userAge))
         )
           return false
 
         if (
           userAge &&
           ((user.gender === 'male' &&
-            typeof event.maxMansAge === 'number' &&
-            event.minMansAge > userAge) ||
+            typeof subEventsSum.maxMansAge === 'number' &&
+            subEventsSum.minMansAge > userAge) ||
             (user.gender === 'famale' &&
-              typeof event.maxWomansAge === 'number' &&
-              event.minWomansAge > userAge))
+              typeof subEventsSum.maxWomansAge === 'number' &&
+              subEventsSum.minWomansAge > userAge))
         )
           return false
       }
 
       return (
         // (eventUser?.status !== 'ban' &&
-        !event.usersStatusAccess ||
-        (userStatusName === 'member' && event.usersStatusAccess['member']) ||
-        event.usersStatusAccess['novice']
+        !subEventsSum.usersStatusAccess ||
+        (userStatusName === 'member' &&
+          subEventsSum.usersStatusAccess['member']) ||
+        subEventsSum.usersStatusAccess['novice']
         // )
       )
     })
