@@ -81,28 +81,32 @@ const SubEvent = ({ onItemChange, deleteItem, addItem, ...props }) => {
             : undefined
         }
       >
-        {id && deleteItem && (
-          <div className="absolute bg-white rounded-full right-1 -top-3">
-            <FontAwesomeIcon
-              className="h-6 p-1 text-red-700 duration-300 cursor-pointer hover:scale-125"
-              icon={faTrash}
-              onClick={(e) => {
-                e.stopPropagation()
-                deleteItem(id)
-              }}
-            />
-          </div>
-        )}
-        {id && addItem && (
-          <div className="absolute bg-white rounded-full right-7 -top-3">
-            <FontAwesomeIcon
-              className="h-6 p-1 text-blue-500 duration-300 cursor-pointer hover:scale-125"
-              icon={faCopy}
-              onClick={(e) => {
-                e.stopPropagation()
-                modalFunc.event.subEventEdit(props, addItem)
-              }}
-            />
+        {id && (deleteItem || addItem) && (
+          <div className="absolute flex items-center bg-white rounded-full gap-x-1 right-1 -top-3">
+            {addItem && (
+              <div className="bg-white rounded-full">
+                <FontAwesomeIcon
+                  className="h-6 p-1 text-blue-500 duration-300 cursor-pointer hover:scale-125"
+                  icon={faCopy}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    modalFunc.event.subEventEdit(props, addItem)
+                  }}
+                />
+              </div>
+            )}
+            {deleteItem && (
+              <div className="bg-white rounded-full">
+                <FontAwesomeIcon
+                  className="h-6 p-1 text-red-700 duration-300 cursor-pointer hover:scale-125"
+                  icon={faTrash}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    deleteItem(id)
+                  }}
+                />
+              </div>
+            )}
           </div>
         )}
         <div className="flex flex-col text-sm gap-x-1 laptop:text-base">
@@ -173,7 +177,7 @@ const SubEvents = ({ subEvents, onChange }) => {
         <SubEvent
           key={props.id}
           onItemChange={onItemChange}
-          deleteItem={deleteItem}
+          deleteItem={subEvents?.length > 1 ? deleteItem : undefined}
           addItem={addItem}
           {...props}
         />
@@ -184,8 +188,9 @@ const SubEvents = ({ subEvents, onChange }) => {
         onClick={() =>
           modalFunc.event.subEventEdit(
             {
-              id: uid(24),
               ...DEFAULT_SUBEVENT,
+              id: uid(24),
+              title: `Вариант участия №${(subEvents?.length ?? 1) + 1}`,
             },
             addItem
           )

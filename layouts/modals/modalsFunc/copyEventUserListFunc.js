@@ -30,12 +30,12 @@ const copyEventUserListFunc = (eventId) => {
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
-    const assistants = useRecoilValue(eventAssistantsSelector(eventId))
-    const participants = useRecoilValue(
-      eventParticipantsFullByEventIdSelector(eventId)
-    )
-    const mans = useRecoilValue(eventMansSelector(eventId))
-    const womans = useRecoilValue(eventWomansSelector(eventId))
+    // const assistants = useRecoilValue(eventAssistantsSelector(eventId))
+    // const participants = useRecoilValue(
+    //   eventParticipantsFullByEventIdSelector(eventId)
+    // )
+    // const mans = useRecoilValue(eventMansSelector(eventId))
+    // const womans = useRecoilValue(eventWomansSelector(eventId))
     const { info } = useSnackbar()
 
     const [showSecondName, setShowSecondName] = useState(true)
@@ -44,54 +44,64 @@ const copyEventUserListFunc = (eventId) => {
     const [showAges, setShowAges] = useState(true)
     const [splitByGender, setSplitByGender] = useState(true)
     const [showAssistants, setShowAssistants] = useState(false)
+    const [showReserve, setShowReserve] = useState(false)
     const [sort, setSort] = useState('firstName')
 
-    const eventUsersPrepared = showAssistants
-      ? eventUsers
-      : eventUsers.filter(({ status }) => status !== 'assistant')
-    const eventUsersSorted = [...eventUsersPrepared].sort((a, b) =>
-      a.user[sort] > b.user[sort] ? 1 : -1
-    )
+    const textFormer = ({ user, status }, index) =>
+      `${index + 1}. ${
+        status === 'assistant'
+          ? `[Ведущий] `
+          : status === 'reserve'
+            ? '[Резерв] '
+            : ''
+      }${getUserFullName(user, showSecondName, showThirdName)}${
+        showMember && user.status === 'member' ? ' (клуб)' : ''
+      }${showAges ? ` - ${birthDateToAge(user.birthday)}` : ''}`
 
     var formatedText = ''
-    if (splitByGender) {
-      const mans = eventUsersSorted.filter(({ user }) => user.gender === 'male')
-      const womans = eventUsersSorted.filter(
-        ({ user }) => user.gender === 'famale'
+
+    event.subEvents.forEach((subEvent, index) => {
+      if (index > 0) formatedText += `\n\n`
+      if (event.subEvents.length > 1)
+        formatedText += `--- ${subEvent.title} ---\n`
+      const eventUsersOfSubEvent = eventUsers.filter(
+        ({ subEventId }) => subEventId === subEvent.id
+      )
+      const eventUsersPrepared =
+        showAssistants && showReserve
+          ? eventUsersOfSubEvent
+          : eventUsersOfSubEvent.filter(
+              ({ status }) =>
+                (showAssistants || status !== 'assistant') &&
+                (showReserve || status !== 'reserve')
+            )
+
+      const eventUsersSorted = [...eventUsersPrepared].sort((a, b) =>
+        a.user[sort] > b.user[sort] ? 1 : -1
       )
 
-      const mansNames = mans.map(
-        ({ user, status }, index) =>
-          `${index + 1}. ${
-            status === 'assistant' ? `[Ведущий] ` : ''
-          }${getUserFullName(user, showSecondName, showThirdName)}${
-            showMember && user.status === 'member' ? ' (клуб)' : ''
-          }${showAges ? ` - ${birthDateToAge(user.birthday)}` : ''}`
-      )
-      const womansNames = womans.map(
-        ({ user, status }, index) =>
-          `${index + 1}. ${
-            status === 'assistant' ? `[Ведущий] ` : ''
-          }${getUserFullName(user, showSecondName, showThirdName)}${
-            user.status === 'member' ? ' (клуб)' : ''
-          } - ${birthDateToAge(user.birthday)}`
-      )
-      const mansText = mansNames.length > 0 ? `${mansNames.join(`\n`)}` : 'нет'
-      const womansText =
-        womansNames.length > 0 ? `${womansNames.join(`\n`)}` : 'нет'
+      if (splitByGender) {
+        const mans = eventUsersSorted.filter(
+          ({ user }) => user.gender === 'male'
+        )
+        const womans = eventUsersSorted.filter(
+          ({ user }) => user.gender === 'famale'
+        )
 
-      formatedText = `Мужчины:\n${mansText}\n\nЖенщины:\n${womansText}`
-    } else {
-      const names = eventUsersSorted.map(
-        ({ user, status }, index) =>
-          `${index + 1}. ${
-            status === 'assistant' ? `[Ведущий] ` : ''
-          }${getUserFullName(user, showSecondName, showThirdName)}${
-            showMember && user.status === 'member' ? ' (клуб)' : ''
-          }${showAges ? ` - ${birthDateToAge(user.birthday)}` : ''}`
-      )
-      formatedText = names.length > 0 ? `${names.join(`\n`)}` : 'нет'
-    }
+        const mansNames = mans.map(textFormer)
+        const womansNames = womans.map(textFormer)
+        const mansText =
+          mansNames.length > 0 ? `${mansNames.join(`\n`)}` : 'нет'
+        const womansText =
+          womansNames.length > 0 ? `${womansNames.join(`\n`)}` : 'нет'
+
+        formatedText += `Мужчины:\n${mansText}\nЖенщины:\n${womansText}`
+      } else {
+        const names = eventUsersSorted.map(textFormer)
+        formatedText += names.length > 0 ? `${names.join(`\n`)}` : 'нет'
+      }
+    })
+
     const copyText = () => {
       copyToClipboard(formatedText)
       info('Список участников скопирован в буфер обмена')
@@ -147,6 +157,12 @@ const copyEventUserListFunc = (eventId) => {
             labelPos="left"
             onClick={() => setShowAssistants((checked) => !checked)}
             label="Показывать Ведущих в списке (если есть)"
+          />
+          <CheckBox
+            checked={showReserve}
+            labelPos="left"
+            onClick={() => setShowReserve((checked) => !checked)}
+            label="Показывать Резервных в списке (если есть)"
           />
           <ComboBox
             label="Сортировка"
