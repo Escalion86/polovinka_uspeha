@@ -1,3 +1,4 @@
+import eventPricesWithStatus from './eventPricesWithStatus'
 import isObject from './isObject'
 
 const subEventsSummator = (subEvents) => {
@@ -10,10 +11,7 @@ const subEventsSummator = (subEvents) => {
         usersStatusAccess: subEvent.usersStatusAccess
           ? { ...subEvent.usersStatusAccess }
           : { novice: false, member: false },
-        usersStatusDiscountResult: {
-          novice: subEvent.price - (subEvent.usersStatusDiscount?.novice ?? 0),
-          member: subEvent.price - (subEvent.usersStatusDiscount?.member ?? 0),
-        },
+        usersStatusDiscountResult: eventPricesWithStatus(subEvent),
         title: 'Суммарный результат',
       }
     else {
@@ -22,10 +20,7 @@ const subEventsSummator = (subEvents) => {
           ? null
           : sum[key] + subEvent[key]
 
-      const usersStatusDiscountResultNovice =
-        subEvent.price - (subEvent.usersStatusDiscount?.novice ?? 0)
-      const usersStatusDiscountResultMember =
-        subEvent.price - (subEvent.usersStatusDiscount?.member ?? 0)
+      const usersStatusDiscountResult = eventPricesWithStatus(subEvent)
 
       return {
         ...sum,
@@ -65,20 +60,20 @@ const subEventsSummator = (subEvents) => {
         usersStatusDiscountResult: {
           novice: Math.min(
             sum.usersStatusDiscountResult?.novice,
-            usersStatusDiscountResultNovice
+            usersStatusDiscountResult.novice
           ),
           noviceFrom:
             sum.usersStatusDiscountResult.noviceFrom ||
             sum.usersStatusDiscountResult?.novice !==
-              usersStatusDiscountResultNovice,
+              usersStatusDiscountResult.novice,
           member: Math.min(
             sum.usersStatusDiscountResult?.member,
-            usersStatusDiscountResultMember
+            usersStatusDiscountResult.member
           ),
           memberFrom:
             sum.usersStatusDiscountResult.memberFrom ||
             sum.usersStatusDiscountResult?.member !==
-              usersStatusDiscountResultMember,
+              usersStatusDiscountResult.member,
         },
       }
     }
