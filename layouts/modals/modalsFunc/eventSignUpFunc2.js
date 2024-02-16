@@ -2,6 +2,7 @@ import CheckBox from '@components/CheckBox'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import FormWrapper from '@components/FormWrapper'
 import PriceDiscount from '@components/PriceDiscount'
+import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import { faCancel, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import formatDateTime from '@helpers/formatDateTime'
@@ -165,6 +166,17 @@ const eventSignUpFunc = (
                     <div className="flex-1 px-2 py-2 text-lg font-bold text-center text-general tablet:text-xl">
                       {props.title ? props.title : 'Основной тип участия'}
                     </div>
+                    {props.usersRelationshipAccess &&
+                      props.usersRelationshipAccess !== 'yes' && (
+                        <div className="flex items-center justify-center w-12 h-12 border-l border-gray-300 min-w-10 min-h-10">
+                          <UserRelationshipIcon
+                            relationship={
+                              props.usersRelationshipAccess === 'only'
+                            }
+                            nameForEvent
+                          />
+                        </div>
+                      )}
                   </div>
                   {props?.description && (
                     <div
