@@ -123,7 +123,7 @@ const serviceFunc = (serviceId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       service?.showOnSite ?? DEFAULT_SERVICE.setShowOnSite
     )
-    const [price, setPrice] = useState(service?.price ?? DEFAULT_SERVICE.proce)
+    const [price, setPrice] = useState(service?.price ?? DEFAULT_SERVICE.price)
     const [questionnaire, setQuestionnaire] = useState(
       service?.questionnaire ?? DEFAULT_SERVICE.questionnaire
     )
@@ -137,7 +137,7 @@ const serviceFunc = (serviceId, clone = false) => {
 
     const defaultUsersStatusDiscount = {
       ...DEFAULT_USERS_STATUS_DISCOUNT,
-      ...(service?.usersStatusDiscount ?? DEFAULT_EVENT.usersStatusDiscount),
+      ...(service?.usersStatusDiscount ?? DEFAULT_SERVICE.usersStatusDiscount),
     }
     const [usersStatusDiscount, setUsersStatusDiscount] = useState(
       defaultUsersStatusDiscount
