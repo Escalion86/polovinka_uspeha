@@ -61,7 +61,7 @@ const SubEvent = ({ onItemChange, deleteItem, addItem, ...props }) => {
 
   return (
     <InputWrapper
-      label={props.title} //title
+      label={props.title}
       paddingX="small"
       paddingY={false}
       centerLabel
