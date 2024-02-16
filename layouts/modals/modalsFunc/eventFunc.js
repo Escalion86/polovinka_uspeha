@@ -61,7 +61,7 @@ const SubEvent = ({ onItemChange, deleteItem, addItem, ...props }) => {
 
   return (
     <InputWrapper
-      label={props.title} //title
+      label={props.title}
       paddingX="small"
       paddingY={false}
       centerLabel
@@ -392,7 +392,7 @@ const eventFunc = (eventId, clone = false) => {
           : [
               {
                 id: uid(24),
-                title: '',
+                title: 'Вариант участия №1',
                 price: 0,
                 usersStatusDiscount: { ...DEFAULT_USERS_STATUS_DISCOUNT },
                 maxParticipants: null,

@@ -6,6 +6,7 @@ import copyToClipboard from '@helpers/copyToClipboard'
 import formatAddress from '@helpers/formatAddress'
 import formatEventDateTime from '@helpers/formatEventDateTime'
 import getNoun from '@helpers/getNoun'
+import subEventsSummator from '@helpers/subEventsSummator'
 import transliterate from '@helpers/transliterate'
 import useSnackbar from '@helpers/useSnackbar'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -109,41 +110,26 @@ const textForming = ({
     }
 
     if (showPrice) {
-      const eventPrice = event.price / 100
-      if (showPrice === 'member') {
-        const eventPriceForMember =
-          (event.price -
-            (event.usersStatusDiscount
-              ? event.usersStatusDiscount['member']
-              : 0)) /
-          100
-        elementOfTextArray.push(
-          `\u{1F4B0} <b>Стоимость</b>: ${
-            !noSlashedPrice && eventPriceForMember !== eventPrice
-              ? `<s>${eventPrice}</s> `
-              : ''
-          }${eventPriceForMember} руб`
-        )
-      }
-      if (showPrice === 'novice') {
-        const eventPriceForNovice =
-          (event.price -
-            (event.usersStatusDiscount
-              ? event.usersStatusDiscount['novice']
-              : 0)) /
-          100
-        elementOfTextArray.push(
-          `\u{1F4B0} <b>Стоимость</b>: ${
-            !noSlashedPrice && eventPriceForNovice !== eventPrice
-              ? `<s>${eventPrice}</s> `
-              : ''
-          }${eventPriceForNovice} руб`
-        )
-      }
+      event.subEvents.forEach(
+        ({ price, usersStatusDiscount, title }, index) => {
+          const eventPriceForStatus =
+            ((price ?? 0) - (usersStatusDiscount[showPrice] ?? 0)) / 100
+
+          elementOfTextArray.push(
+            `${index === 0 ? `\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '<br>' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${
+              !noSlashedPrice && usersStatusDiscount[showPrice] > 0
+                ? `<s>${price / 100}</s> `
+                : ''
+            }${eventPriceForStatus} руб`
+          )
+        }
+      )
     }
 
     if (showParticipantsCount) {
-      const maxParticipants = getEventMaxParticipants(event)
+      const subEventSum = subEventsSummator(event.subEvents)
+      const maxParticipants = getEventMaxParticipants(subEventSum)
+
       if (maxParticipants) {
         const assistants = getRecoil(eventAssistantsSelector(event._id))
         elementOfTextArray.push(
@@ -302,7 +288,7 @@ const ToolsTextEventsAnonsContent = () => {
       <CheckBox
         checked={showParticipantsCount}
         onClick={() => setShowParticipantsCount((checked) => !checked)}
-        label="Показывать количество участников"
+        label="Показывать количество участников (если ограничено)"
       />
       <CheckBox
         checked={showTextSignUp}

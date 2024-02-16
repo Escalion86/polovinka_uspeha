@@ -22,6 +22,7 @@ import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import userSelector from '@state/selectors/userSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { Suspense, useEffect } from 'react'
@@ -85,6 +86,7 @@ const eventViewFunc = (eventId) => {
     setTopLeftComponent,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
+    const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
     const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
     const canEdit = loggedUserActiveRole?.events?.edit
@@ -226,7 +228,11 @@ const eventViewFunc = (eventId) => {
           </div>
           <Divider thin light />
           <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
-            <PriceDiscount item={event} className="px-2" prefix="Стоимость:" />
+            <PriceDiscount
+              item={subEventSum}
+              className="px-2"
+              prefix="Стоимость:"
+            />
             <EventButtonSignIn eventId={event?._id} noBorders />
           </div>
         </div>

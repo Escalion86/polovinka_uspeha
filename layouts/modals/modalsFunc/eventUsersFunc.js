@@ -18,6 +18,7 @@ import { arrayToObjectArray } from '@helpers/arrayToObject'
 import compareObjects from '@helpers/compareObjects'
 import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import subEventsSummator from '@helpers/subEventsSummator'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import usersAtom from '@state/atoms/usersAtom'
@@ -722,46 +723,45 @@ const eventUsersFunc = (eventId) => {
               )
             })}
           </TabPanel>
-          {canEdit &&
-            (event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
-              <TabPanel
-                tabName="Резерв"
-                tabAddToLabel={`(${reserveCount})`}
-                className="flex flex-col mt-2 gap-y-5"
-              >
-                {event.subEvents.map((subEvent) => {
-                  const { id, title } = subEvent
+          {canEdit && subEventsSummator(event.subEvents)?.isReserveActive && (
+            <TabPanel
+              tabName="Резерв"
+              tabAddToLabel={`(${reserveCount})`}
+              className="flex flex-col mt-2 gap-y-5"
+            >
+              {event.subEvents.map((subEvent) => {
+                const { id, title } = subEvent
 
-                  return (
-                    <Wrapper
-                      key={'Резерв' + id}
-                      label={title || 'Основной тип участия'}
-                    >
-                      <EventsUsers
-                        event={event}
-                        modalTitle="Выбор резерва"
-                        selectedIds={reserveIds[id]}
-                        setSelectedIds={(ids) => setReserveState(id, ids)}
-                        exceptedIds={[
-                          ...participantsIds[id],
-                          ...assistantsIds[id],
-                          ...bannedIds[id],
-                        ]}
-                        canEdit={canEdit}
-                        fromReserveFunc={
-                          (newId) =>
-                            setParticipantsState(id, [
-                              ...participantsIds[id],
-                              newId,
-                            ])
-                          // setReserveState(sortUsersByIds([...reserveIds[id], id]))
-                        }
-                      />
-                    </Wrapper>
-                  )
-                })}
-              </TabPanel>
-            )}
+                return (
+                  <Wrapper
+                    key={'Резерв' + id}
+                    label={title || 'Основной тип участия'}
+                  >
+                    <EventsUsers
+                      event={event}
+                      modalTitle="Выбор резерва"
+                      selectedIds={reserveIds[id]}
+                      setSelectedIds={(ids) => setReserveState(id, ids)}
+                      exceptedIds={[
+                        ...participantsIds[id],
+                        ...assistantsIds[id],
+                        ...bannedIds[id],
+                      ]}
+                      canEdit={canEdit}
+                      fromReserveFunc={
+                        (newId) =>
+                          setParticipantsState(id, [
+                            ...participantsIds[id],
+                            newId,
+                          ])
+                        // setReserveState(sortUsersByIds([...reserveIds[id], id]))
+                      }
+                    />
+                  </Wrapper>
+                )
+              })}
+            </TabPanel>
+          )}
           <TabPanel
             tabName="Ведущие"
             tabAddToLabel={`(${assistantsCount})`}
