@@ -14,73 +14,88 @@ export default async function handler(req, res) {
     try {
       const { eventId, payType, payAt, couponForOrganizer } = body.data
       const event = await Events.findById(eventId)
-      const eventPrice = event.price
-      const eventPrices = {
-        noStatus: eventPrice,
-        novice: eventPrice - (event.usersStatusDiscount?.get('novice') ?? 0),
-        member: eventPrice - (event.usersStatusDiscount?.get('member') ?? 0),
-        ban: eventPrice,
-      }
 
       const eventParticipants = await EventsUsers.find({
         eventId,
         status: 'participant',
       })
 
-      const eventParticipantsIds = eventParticipants.map(
+      const participantsIds = eventParticipants.map(
         (eventUser) => eventUser.userId
       )
-
       const participants = await Users.find({
-        _id: { $in: eventParticipantsIds },
+        _id: { $in: participantsIds },
       })
 
       const paymentsFromAndToParticipantsOfEvent = await Payments.find({
         eventId,
         payDirection: { $in: ['fromUser', 'toUser'] },
-        userId: { $in: eventParticipantsIds },
+        userId: { $in: participantsIds },
       })
 
       const needToPayUsers = []
 
-      participants.forEach((user) => {
-        const userId = user._id.toString()
-        const eventUser = eventParticipants.find(
-          (eventUser) => eventUser.userId === userId
+      for (let i = 0; i < event.subEvents.length; i++) {
+        const subEvent = event.subEvents[i]
+        const subEventParticipants = eventParticipants.filter(
+          ({ subEventId }) => subEventId === subEvent.id
         )
-        const userStatus = eventUser?.userStatus ?? 'noStatus'
-        // (!user?.status || user.status === 'ban' ? 'novice' : user.status)
-        const priceForUser =
-          typeof eventPrices[userStatus] === 'number'
-            ? eventPrices[userStatus]
-            : 0
-        const userPayments = paymentsFromAndToParticipantsOfEvent.filter(
-          (payment) => payment.userId === userId
+        const subEventParticipantsIds = subEventParticipants.map(
+          (eventUser) => eventUser.userId
         )
-        const userPaid = userPayments.reduce(
-          (total, payment) =>
-            total +
-            (payment.sum ?? 0) *
-              (payment.payDirection === 'toUser' ||
-              payment.payDirection === 'toEvent'
-                ? -1
-                : 1),
-          0
-        )
-        const userNeedToPay = priceForUser - userPaid
-        const isUserOrganizer = userId === event.organizerId
-        if (userNeedToPay > 0) {
-          needToPayUsers.push({
-            sector: 'event',
-            eventId,
-            userId,
-            payType: couponForOrganizer && isUserOrganizer ? 'coupon' : payType,
-            payAt,
-            sum: userNeedToPay,
-            payDirection: 'fromUser',
-          })
+
+        const subEventPrice = subEvent.price
+        const subEventPrices = {
+          noStatus: subEventPrice,
+          novice:
+            subEventPrice - (subEvent.usersStatusDiscount?.get('novice') ?? 0),
+          member:
+            subEventPrice - (subEvent.usersStatusDiscount?.get('member') ?? 0),
+          ban: subEventPrice,
         }
-      })
+
+        participants.forEach((user) => {
+          const userId = user._id.toString()
+          if (subEventParticipantsIds.includes(userId)) {
+            const eventUser = eventParticipants.find(
+              (eventUser) => eventUser.userId === userId
+            )
+            const userStatus = eventUser?.userStatus ?? 'noStatus'
+            // (!user?.status || user.status === 'ban' ? 'novice' : user.status)
+            const priceForUser =
+              typeof subEventPrices[userStatus] === 'number'
+                ? subEventPrices[userStatus]
+                : 0
+            const userPayments = paymentsFromAndToParticipantsOfEvent.filter(
+              (payment) => payment.userId === userId
+            )
+            const userPaid = userPayments.reduce(
+              (total, payment) =>
+                total +
+                (payment.sum ?? 0) *
+                  (payment.payDirection === 'toUser' ||
+                  payment.payDirection === 'toEvent'
+                    ? -1
+                    : 1),
+              0
+            )
+            const userNeedToPay = priceForUser - userPaid
+            const isUserOrganizer = userId === event.organizerId
+            if (userNeedToPay > 0) {
+              needToPayUsers.push({
+                sector: 'event',
+                eventId,
+                userId,
+                payType:
+                  couponForOrganizer && isUserOrganizer ? 'coupon' : payType,
+                payAt,
+                sum: userNeedToPay,
+                payDirection: 'fromUser',
+              })
+            }
+          }
+        })
+      }
 
       const payments =
         needToPayUsers.length > 0
