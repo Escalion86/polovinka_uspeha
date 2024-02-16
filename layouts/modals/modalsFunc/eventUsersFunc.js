@@ -8,6 +8,7 @@ import { P } from '@components/tags'
 import {
   faArrowAltCircleLeft,
   faArrowAltCircleRight,
+  faArrowAltCircleUp,
 } from '@fortawesome/free-regular-svg-icons'
 import {
   faHeartCirclePlus,
@@ -39,6 +40,8 @@ const EventsUsers = ({
   toReserveFunc,
   fromReserveFunc,
 }) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+
   const isEventClosed = isEventClosedFunc(event)
 
   return (
@@ -53,8 +56,26 @@ const EventsUsers = ({
         onChange={setSelectedIds}
         exceptedIds={exceptedIds}
         readOnly={!canEdit || isEventClosed}
-        buttons={
-          canEdit && !isEventClosed
+        buttons={[
+          (id) => ({
+            onClick: () => {
+              modalsFunc.eventUser.editSubEvent({
+                eventId: event._id,
+                userId: id,
+              })
+              // setSelectedIds(
+              //   selectedIds.filter((userId) => userId !== id)
+              // )
+              // toReserveFunc(id)
+              // setReservedParticipantsIds(
+              //   sortUsersIds([...reservedParticipantsIds, id])
+              // )
+            },
+            icon: faArrowAltCircleUp,
+            iconClassName: 'text-general',
+            tooltip: 'Изменить вариант участия',
+          }),
+          ...(canEdit && !isEventClosed
             ? [
                 toReserveFunc
                   ? (id) => ({
@@ -87,8 +108,8 @@ const EventsUsers = ({
                     })
                   : undefined,
               ]
-            : []
-        }
+            : []),
+        ]}
       />
       {/* <SelectUserList
         className="mb-1"

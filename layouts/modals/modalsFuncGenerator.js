@@ -60,6 +60,7 @@ import likeEditFunc from './modalsFunc/likeEditFunc'
 import likesViewFunc from './modalsFunc/likesViewFunc'
 import eventAfterSignUpMessageFunc from './modalsFunc/eventAfterSignUpMessageFunc'
 import subEventFunc from './modalsFunc/subEventFunc'
+import eventUserSubEventChangeFunc from './modalsFunc/eventUserSubEventChangeFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -580,6 +581,8 @@ const modalsFuncGenerator = (
     },
     eventUser: {
       editStatus: (eventUser) => addModal(eventUserStatusChangeFunc(eventUser)),
+      editSubEvent: (eventUser, onConfirm) =>
+        addModal(eventUserSubEventChangeFunc(eventUser, onConfirm)),
       editLike: (eventUser, adminView) =>
         addModal(likeEditFunc(eventUser, adminView)),
       likesResult: (eventUser) => addModal(likeEditFunc(eventUser)),
