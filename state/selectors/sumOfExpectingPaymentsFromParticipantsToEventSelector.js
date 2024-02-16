@@ -13,37 +13,32 @@ export const sumOfExpectingPaymentsFromParticipantsToEventSelector =
       ({ get }) => {
         if (!id) return []
         const event = get(eventSelector(id))
-        // const eventParticipants = get(eventParticipantsSelector(id))
         const eventParticipantsFull = get(
           eventParticipantsFullByEventIdSelector(id)
         )
-        const membersOfEventCount = eventParticipantsFull.filter(
-          ({ userStatus, user }) => userStatus === 'member'
-          //  || (!userStatus && user.status === 'member')
-        ).length
-        const noviceOfEventCount = eventParticipantsFull.filter(
-          ({ userStatus, user }) => userStatus === 'novice'
-          //  ||
-          // (!userStatus &&
-          //   (!user.status || user.status === 'novice' || user.status === 'ban'))
-        ).length
-        // const bannedAndNoStatusUsersOfEventCount = eventParticipantsFull.filter(
-        //   ({ userStatus, user }) =>
-        //     userStatus === 'ban' || !userStatus
-        // ).length
+
         const sumOfCouponsOfEventFromParticipants = get(
           sumOfCouponsFromParticipantsToEventSelector(id)
         )
 
-        const eventPrices = eventPricesWithStatus(event)
+        const sumOfExpectingPayments = 0
+        event.subEvents.forEach((subEvent) => {
+          const subEventPrices = eventPricesWithStatus(subEvent)
+          eventParticipantsFull.forEach(({ userStatus, subEventId }) => {
+            if (subEvent.id === subEventId && userStatus !== 'ban')
+              sumOfExpectingPayments +=
+                userStatus === 'member'
+                  ? subEventPrices.member
+                  : subEventPrices.novice
+          })
+        })
+
+        // const eventPrices = eventPricesWithStatus(event)
         // event.price * eventParticipantsFull.length -
         // membersOfEventCount * (event.usersStatusDiscount?.member ?? 0) -
         // noviceOfEventCount * (event.usersStatusDiscount?.novice ?? 0))
         return (
-          (eventPrices.member * membersOfEventCount +
-            eventPrices.novice * noviceOfEventCount) /
-            100 -
-          sumOfCouponsOfEventFromParticipants
+          sumOfExpectingPayments / 100 - sumOfCouponsOfEventFromParticipants
         )
       },
   })
