@@ -13,6 +13,7 @@ import {
 import {
   faHeartCirclePlus,
   faListCheck,
+  faStreetView,
 } from '@fortawesome/free-solid-svg-icons'
 import { arrayToObjectArray } from '@helpers/arrayToObject'
 // import compareArrays from '@helpers/compareArrays'
@@ -57,24 +58,19 @@ const EventsUsers = ({
         exceptedIds={exceptedIds}
         readOnly={!canEdit || isEventClosed}
         buttons={[
-          (id) => ({
-            onClick: () => {
-              modalsFunc.eventUser.editSubEvent({
-                eventId: event._id,
-                userId: id,
+          event.subEvents.length > 1
+            ? (id) => ({
+                onClick: () => {
+                  modalsFunc.eventUser.editSubEvent({
+                    eventId: event._id,
+                    userId: id,
+                  })
+                },
+                icon: faStreetView,
+                iconClassName: 'text-blue-600',
+                tooltip: 'Изменить вариант участия',
               })
-              // setSelectedIds(
-              //   selectedIds.filter((userId) => userId !== id)
-              // )
-              // toReserveFunc(id)
-              // setReservedParticipantsIds(
-              //   sortUsersIds([...reservedParticipantsIds, id])
-              // )
-            },
-            icon: faArrowAltCircleUp,
-            iconClassName: 'text-general',
-            tooltip: 'Изменить вариант участия',
-          }),
+            : undefined,
           ...(canEdit && !isEventClosed
             ? [
                 toReserveFunc
@@ -382,6 +378,15 @@ const eventUsersFunc = (eventId) => {
     const [assistants, setAssistants] = useState(objAssistants)
     const [banned, setBanned] = useState(objBanned)
 
+    useEffect(() => {
+      if (!compareObjects(participants, objParticipants))
+        setParticipants(objParticipants)
+    }, [objParticipants])
+
+    useEffect(() => {
+      if (!compareObjects(reserve, objReserve)) setReserve(objReserve)
+    }, [objReserve])
+
     // const [assistantsIds, setAssistantsIds] = useState(sortedEventAssistantsIds)
     // const [mansIds, setMansIds] = useState(sortedEventMansIds)
     // const [womansIds, setWomansIds] = useState(sortedEventWomansIds)
@@ -516,8 +521,6 @@ const eventUsersFunc = (eventId) => {
             })
           )
       })
-
-      console.log('usersStatuses :>> ', usersStatuses)
 
       setEventUsersId(eventId, usersStatuses)
     }

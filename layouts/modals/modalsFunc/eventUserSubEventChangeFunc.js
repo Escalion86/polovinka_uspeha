@@ -1,14 +1,10 @@
-import ErrorsList from '@components/ErrorsList'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import FormWrapper from '@components/FormWrapper'
 import PriceDiscount from '@components/PriceDiscount'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
-import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import { faCancel, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import useErrors from '@helpers/useErrors'
 import userToEventStatus from '@helpers/userToEventStatus'
-import asyncEventsUsersByEventIdAtom from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
@@ -21,12 +17,8 @@ const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
   const EventUserSubEventChangeModal = ({
     closeModal,
     setOnConfirmFunc,
-    setOnDeclineFunc,
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
-    setDisableDecline,
-    setOnlyCloseButtonShow,
-    setBottomLeftButtonProps,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const user = useRecoilValue(userSelector(userId))
