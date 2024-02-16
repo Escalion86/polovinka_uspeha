@@ -21,7 +21,7 @@ export const sumOfExpectingPaymentsFromParticipantsToEventSelector =
           sumOfCouponsFromParticipantsToEventSelector(id)
         )
 
-        const sumOfExpectingPayments = 0
+        var sumOfExpectingPayments = 0
         event.subEvents.forEach((subEvent) => {
           const subEventPrices = eventPricesWithStatus(subEvent)
           eventParticipantsFull.forEach(({ userStatus, subEventId }) => {
