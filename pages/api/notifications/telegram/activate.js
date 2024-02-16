@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         if (typeof cmdProps === 'object') {
           const cmd = cmdProps.c
           if (cmd === 'eventSignIn') {
-            const { eventId, subEventId } = cmdProps
+            const { eventId, subEventNum } = cmdProps
             const userTelegramId = callback_query.from.id
             const user = await Users.findOne({
               'notifications.telegram.id': userTelegramId,
@@ -35,15 +35,15 @@ export default async function handler(req, res) {
                 ?.status(400)
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
-            if (!subEventId && event.subEvents.length > 1) {
+            if (!subEventNum && event.subEvents.length > 1) {
               const inline_keyboard = [
-                event.subEvents.map(({ title, id }) => [
+                event.subEvents.map(({ title, id }, index) => [
                   {
                     text: title,
                     callback_data: JSON.stringify({
                       c: 'eventSignIn',
                       eventId: event._id,
-                      subEventId: id,
+                      subEventNum: index,
                     }),
                   },
                 ]),
@@ -60,8 +60,8 @@ export default async function handler(req, res) {
               return res?.status(201).json({ success: true, data: result })
             }
 
-            const subEvent = subEventId
-              ? event.subEvents.find(({ id }) => subEventId === id)
+            const subEvent = subEventNum
+              ? event.subEvents[subEventNum]
               : event.subEvents[0]
 
             const result = await userSignIn({

@@ -1,6 +1,7 @@
 import { DEFAULT_ROLES } from '@helpers/constants'
 import formatDateTimeFunc from '@helpers/formatDateTime'
 import getUserFullName from '@helpers/getUserFullName'
+import subEventsSummator from '@helpers/subEventsSummator'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
 import Roles from '@models/Roles'
@@ -66,6 +67,7 @@ const eventUsersTelegramNotification = async ({
     const event = await Events.findById(eventId).lean()
     const eventUsers = await EventsUsers.find({ eventId }).lean()
     const eventUsersIds = eventUsers.map((eventUser) => eventUser.userId)
+    const subEventSum = subEventsSummator(event.subEvents)
 
     // const addedEventUsersIds = addedEventUsers.map(
     //   (eventUser) => eventUser.userId
@@ -205,12 +207,12 @@ const eventUsersTelegramNotification = async ({
 
     text +=
       `\n\nУчастники: ♂️  ${mansParticipantsCount}${
-        event.maxMans ? ' / ' + event.maxMans : ''
+        subEventSum.maxMans ? ' / ' + subEventSum.maxMans : ''
       }  |  ♀️  ${womansParticipantsCount}${
-        event.maxWomans ? ' / ' + event.maxWomans : ''
+        subEventSum.maxWomans ? ' / ' + subEventSum.maxWomans : ''
       }  |  Всего: ${mansParticipantsCount + womansParticipantsCount}` +
       `${
-        event.isReserveActive
+        subEventSum.isReserveActive
           ? `\nРезерв: ♂️  ${mansReserveCount}  |  ♀️  ${womansReserveCount}  |  Всего: ${
               mansReserveCount + womansReserveCount
             }`
