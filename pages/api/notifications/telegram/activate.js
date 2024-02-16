@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         if (typeof cmdProps === 'object') {
           const cmd = cmdProps.c
           if (cmd === 'eventSignIn') {
-            const { eventId } = cmdProps
+            const { eventId, subEventId } = cmdProps
             const userTelegramId = callback_query.from.id
             const user = await Users.findOne({
               'notifications.telegram.id': userTelegramId,
@@ -35,11 +35,41 @@ export default async function handler(req, res) {
                 ?.status(400)
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
+            if (!subEventId && event.subEvents.length > 1) {
+              const inline_keyboard = [
+                event.subEvents.map(({ title, id }) => [
+                  {
+                    text: title,
+                    callback_data: JSON.stringify({
+                      c: 'eventSignIn',
+                      eventId: event._id,
+                      subEventId: id,
+                    }),
+                  },
+                ]),
+              ]
+              const text =
+                'На мероприятие возможно записаться разными вариантами. Выберите вариант:'
+              const result = await sendTelegramMessage({
+                req,
+                telegramIds: userTelegramId,
+                text,
+                inline_keyboard,
+              })
+
+              return res?.status(201).json({ success: true, data: result })
+            }
+
+            const subEvent = subEventId
+              ? event.subEvents.find(({ id }) => subEventId === id)
+              : event.subEvents[0]
+
             const result = await userSignIn({
               req,
               res,
               userId: user._id,
               eventId,
+              subEventId: subEvent.id,
               autoReserve: true,
             })
             // {
@@ -69,17 +99,18 @@ export default async function handler(req, res) {
                 result.data?.status === 'reserve' ? 'в РЕЗЕРВ ' : ''
               }на мероприятие "${event.title}" от ${formatDateTime(
                 event.dateStart
-              )}`
+              )}${event.subEvents.length > 1 ? `Вариант участия: ${subEvent.title}` : ''}`
             } else {
               text = `ОШИБКА - ${result.data.error}`
             }
+
             await sendTelegramMessage({
               req,
               telegramIds: userTelegramId,
               text,
             })
 
-            return result
+            return res?.status(201).json({ success: true, data: result })
           }
         } else {
           return res
