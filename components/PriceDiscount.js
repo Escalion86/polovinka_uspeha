@@ -47,25 +47,25 @@ const PriceDiscount = ({
           </div>
         ) : (
           <div
-            className={cn('flex gap-x-1', {
-              'items-center': vertical,
-            })}
+            className={cn(
+              'flex gap-x-1',
+              vertical ? 'items-center' : 'items-end'
+            )}
           >
             {prefix && (
               <span
-                className={cn('text-base font-bold', {
-                  'mt-3.5': vertical,
-                })}
+                className={cn(
+                  'text-base font-bold flex items-center',
+                  vertical ? 'mt-3.5' : 'h-7'
+                )}
               >
                 {prefix}
               </span>
             )}
             <div
               className={cn(
-                vertical
-                  ? 'relative'
-                  : 'flex items-center gap-x-1 laptop:gap-x-2',
-                mobileVertical ? 'relative' : ''
+                vertical ? '' : 'flex items-center gap-x-1 laptop:gap-x-2',
+                mobileVertical || vertical ? 'relative' : ''
               )}
             >
               {item.usersStatusDiscountResult &&
