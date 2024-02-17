@@ -39,13 +39,44 @@ import rolesAtom from '@state/atoms/rolesAtom'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import locationAtom from '@state/atoms/locationAtom'
 
+import { useHasNewDeploy } from 'next-deploy-notifications'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRefresh } from '@fortawesome/free-solid-svg-icons'
+
 const StateLoader = (props) => {
+  let { hasNewDeploy } = useHasNewDeploy()
+
   if (props.error && Object.keys(props.error).length > 0)
     console.log('props.error', props.error)
 
   const snackbar = useSnackbar()
 
   const router = useRouter()
+
+  useEffect(() => {
+    if (hasNewDeploy)
+      snackbar.warning('Необходимо обновить сайт', {
+        autoHideDuration: null,
+        SnackbarProps: {
+          onClick: () => {
+            router.reload()
+          },
+        },
+        className: 'cursor-pointer',
+        action: (
+          // <div className="w-8 -ml-2">
+          <FontAwesomeIcon
+            // onClick={() => {
+            //   router.reload()
+            // }}
+            icon={faRefresh}
+            className="w-6 h-6 cursor-pointer"
+          />
+          // </div>
+        ),
+        preventDuplicate: true,
+      })
+  }, [])
 
   const [modalFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
 
