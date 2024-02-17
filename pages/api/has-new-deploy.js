@@ -14,5 +14,7 @@ console.log('gitVersion1 :>> ', gitVersion())
 
 export default APIRoute.configure({
   // Return your app's version here.
-  version: gitVersion,
+  version: () => gitVersion(),
 })
+
+// git commit -m "Trigger useHasNewDeploy!" --allow-empty
