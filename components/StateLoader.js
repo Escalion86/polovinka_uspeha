@@ -76,7 +76,7 @@ const StateLoader = (props) => {
         ),
         preventDuplicate: true,
       })
-  }, [])
+  }, [hasNewDeploy])
 
   const [modalFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
 
