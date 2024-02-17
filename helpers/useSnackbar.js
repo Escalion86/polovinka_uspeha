@@ -8,14 +8,15 @@ const useSnackbar = () => {
   const variants = ['default', 'error', 'success', 'warning', 'info']
   const result = {}
   variants.forEach((variant) => {
-    result[variant] = (text) => {
+    result[variant] = (text, props = {}) => {
       const key = enqueueSnackbar(text, {
+        open: true,
         variant,
         // onClick: () => {
         //   closeSnackbar(key)
         // },
         className: 'flex flex-nowrap',
-        // autoHideDuration: 100000,
+        // autoHideDuration,
         action: (
           // <div className="w-8 -ml-2">
           <FontAwesomeIcon
@@ -27,6 +28,7 @@ const useSnackbar = () => {
           />
           // </div>
         ),
+        ...props,
       })
     }
   })
