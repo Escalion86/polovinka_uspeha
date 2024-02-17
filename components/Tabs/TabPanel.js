@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 const TabPanel = ({ tabName, className, children }) => (
   <MuiTabPanel value={tabName} className="p-0 overflow-y-auto">
     <motion.div
-      className={cn('p-2', className)}
+      className={cn('py-2', className)}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
