@@ -10,7 +10,7 @@ let gitVersion = () => {
     .trim()
 }
 
-console.log('gitVersion :>> ', gitVersion())
+console.log('gitVersion1 :>> ', gitVersion())
 
 export default APIRoute.configure({
   // Return your app's version here.
