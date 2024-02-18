@@ -24,6 +24,8 @@ const LoggedUserNotificationsContent = (props) => {
   const newUserRegistred = loggedUserActiveRole?.notifications?.newUserRegistred
   const eventRegistration =
     loggedUserActiveRole?.notifications?.eventRegistration
+  const serviceRegistration =
+    loggedUserActiveRole?.notifications?.serviceRegistration
   const newEventsByTags = loggedUserActiveRole?.notifications?.newEventsByTags
   const isLoggedUserDev = loggedUserActiveRole?.dev
   const setUserInUsersState = useSetRecoilState(userEditSelector)
@@ -237,6 +239,15 @@ const LoggedUserNotificationsContent = (props) => {
                       toggleNotificationsSettings('eventRegistration')
                     }
                     label="Запись/отписка пользователей на мероприитиях (модер/админ)"
+                  />
+                )}
+                {serviceRegistration && (
+                  <CheckBox
+                    checked={notifications.settings?.serviceRegistration}
+                    onClick={() =>
+                      toggleNotificationsSettings('serviceRegistration')
+                    }
+                    label="Подача заявок пользователей на услуги (модер/админ)"
                   />
                 )}
                 <CheckBox

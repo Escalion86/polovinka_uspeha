@@ -29,7 +29,6 @@ const eventUsersTelegramNotification = async ({
   notificationOnMassiveChange = false,
 }) => {
   if (
-    process.env.MONGODB_URI &&
     eventId &&
     ((!itIsSelfRecord &&
       notificationOnMassiveChange &&
@@ -242,6 +241,8 @@ const eventUsersTelegramNotification = async ({
         ],
       ],
     })
+
+    return result
 
     // await Promise.all(
     //   usersTelegramIds.map(async (telegramId) => {

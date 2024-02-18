@@ -100,8 +100,8 @@ const SettingsRolesContent = (props) => {
                 ? role[item][subItem]
                 : false
               : typeof role[item] === 'boolean'
-              ? role[item]
-              : false
+                ? role[item]
+                : false
 
             return (
               <div
@@ -444,6 +444,11 @@ const SettingsRolesContent = (props) => {
               label="Регистрации на мероприятия"
               item="notifications"
               subItem="eventRegistration"
+            />
+            <RoleItem
+              label="Новые заявки на услуги"
+              item="notifications"
+              subItem="serviceRegistration"
             />
             <SubTitle name="Главная страница сайта" />
             <RoleItem

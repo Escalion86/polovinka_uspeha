@@ -2,6 +2,7 @@ import formatDateTime from '@helpers/formatDateTime'
 import Events from '@models/Events'
 import Users from '@models/Users'
 import sendTelegramMessage from '@server/sendTelegramMessage'
+import { telegramCmdToIndex, telegramIndexToCmd } from '@server/telegramCmd'
 import userSignIn from '@server/userSignIn'
 import dbConnect from '@utils/dbConnect'
 
@@ -17,7 +18,7 @@ export default async function handler(req, res) {
       if (callback_query?.data) {
         const cmdProps = JSON.parse(callback_query.data)
         if (typeof cmdProps === 'object') {
-          const cmd = cmdProps.c
+          const cmd = telegramIndexToCmd(cmdProps.c)
           if (cmd === 'eventSignIn') {
             const { eventId, s } = cmdProps
             const userTelegramId = callback_query.from.id
@@ -41,7 +42,7 @@ export default async function handler(req, res) {
                   {
                     text: title,
                     callback_data: JSON.stringify({
-                      c: 'eventSignIn',
+                      c: telegramCmdToIndex('eventSignIn'),
                       eventId: event._id,
                       s: index,
                     }),
