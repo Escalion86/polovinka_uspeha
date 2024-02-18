@@ -801,6 +801,7 @@ export const DEFAULT_ROLES = [
       birthdays: false,
       newUserRegistred: false,
       eventRegistration: false,
+      serviceRegistration: false,
       newEventsByTags: true,
       // eventUserMoves: false,
       // eventCancel: false,
@@ -928,6 +929,7 @@ export const DEFAULT_ROLES = [
       birthdays: false,
       newUserRegistred: false,
       eventRegistration: false,
+      serviceRegistration: false,
       newEventsByTags: false,
       // eventUserMoves: false,
       // eventCancel: false,
@@ -1055,6 +1057,7 @@ export const DEFAULT_ROLES = [
       birthdays: true,
       newUserRegistred: true,
       eventRegistration: true,
+      serviceRegistration: true,
       newEventsByTags: true,
       // eventUserMoves: false,
       // eventCancel: false,
@@ -1182,6 +1185,7 @@ export const DEFAULT_ROLES = [
       birthdays: true,
       newUserRegistred: true,
       eventRegistration: true,
+      serviceRegistration: true,
       newEventsByTags: true,
       // eventUserMoves: false,
       // eventCancel: false,
@@ -1299,55 +1303,55 @@ export const DEFAULT_ROLES = [
     _id: 'dev',
     name: 'Разработчик',
     hidden: false,
-    dev: true, //!
-    seeMyStatistics: true, //!
-    setSelfStatus: true, //!
-    setSelfRole: true, //!
-    hideFab: true, //!
+    dev: true,
+    seeMyStatistics: true,
+    setSelfStatus: true,
+    setSelfRole: true,
+    hideFab: true,
     notifications: {
-      //!
       // option: true,
-      birthdays: true, //!
-      newUserRegistred: true, //!
-      eventRegistration: true, //!
-      newEventsByTags: true, //!
+      birthdays: true,
+      newUserRegistred: true,
+      eventRegistration: true,
+      serviceRegistration: true,
+      newEventsByTags: true,
       // eventUserMoves: false,
       // eventCancel: false,
     },
     events: {
-      see: true, //!
-      seeHidden: true, //!
-      add: true, //!
-      edit: true, //!
-      delete: true, //!
-      statusEdit: true, //!
-      paymentsEdit: true, //!
-      showProfitOnCard: true, //!
-      statusFilterFull: true, //!
+      see: true,
+      seeHidden: true,
+      add: true,
+      edit: true,
+      delete: true,
+      statusEdit: true,
+      paymentsEdit: true,
+      showProfitOnCard: true,
+      statusFilterFull: true,
       seeReserveOnCard: true,
-      eventUsersCounterAndAgeFull: true, //!
+      eventUsersCounterAndAgeFull: true,
       seeHistory: true,
       editLikes: true,
     },
     eventsUsers: {
       see: true, // ! member
-      edit: true, //!
-      copyListToClipboard: true, //!
+      edit: true,
+      copyListToClipboard: true,
     },
     users: {
-      see: true, //!
-      seeMembersOnly: false, //!
-      seeFullNames: true, //!
-      seeAllContacts: true, //!
-      seeBirthday: true, //!
+      see: true,
+      seeMembersOnly: false,
+      seeFullNames: true,
+      seeAllContacts: true,
+      seeBirthday: true,
       seeUserEvents: true,
       seeUserPayments: true,
       setPassword: true,
-      seeSumOfPaymentsWithoutEventOnCard: true, //!
+      seeSumOfPaymentsWithoutEventOnCard: true,
       add: true,
       edit: true,
-      setRole: true, //!
-      setStatus: true, //!
+      setRole: true,
+      setStatus: true,
       delete: true,
       seeHistory: true,
       seeActionsHistory: true,
@@ -1405,8 +1409,8 @@ export const DEFAULT_ROLES = [
       imageConstructor: true,
     },
     generalPage: {
-      directions: true, //!
-      additionalBlocks: true, //!
+      directions: true,
+      additionalBlocks: true,
       reviews: true,
       supervisor: true,
       contacts: true,

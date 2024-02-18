@@ -14,6 +14,8 @@ import Roles from '@models/Roles'
 import mongoose from 'mongoose'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 import subEventsSummator from '@helpers/subEventsSummator'
+import ServicesUsers from '@models/ServicesUsers'
+import serviceUserTelegramNotification from './serviceUserTelegramNotification'
 
 function isJson(str) {
   try {
@@ -555,7 +557,10 @@ const notificateUsersAboutEvent = async (event, req) => {
       // TODO Исправить запись через телеграм
       {
         text: '\u{1F4DD} Записаться',
-        callback_data: JSON.stringify({ c: 'eventSignIn', eventId: event._id }),
+        callback_data: JSON.stringify({
+          c: telegramCmdToIndex('eventSignIn'),
+          eventId: event._id,
+        }),
       },
     ],
   ]
@@ -654,6 +659,14 @@ export default async function handler(Schema, req, res, params = null) {
             if (jsonData.showOnSite) {
               notificateUsersAboutEvent(jsonData, req)
             }
+          }
+
+          if (Schema === ServicesUsers) {
+            serviceUserTelegramNotification({
+              userId: jsonData.userId,
+              serviceId: jsonData.serviceId,
+              req,
+            })
           }
 
           await Histories.create({
