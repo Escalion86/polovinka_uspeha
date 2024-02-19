@@ -169,7 +169,7 @@ const StateLoader = (props) => {
   }, [loggedUser])
 
   return (
-    <div className={cn('relative', props.className)}>
+    <div className={cn('relative overflow-hidden', props.className)}>
       {isSiteLoading ? (
         <div className="w-full h-screen">
           <LoadingSpinner size="lg" />
