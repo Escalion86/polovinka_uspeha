@@ -111,7 +111,7 @@ const eventUsersTelegramNotification = async ({
     ) {
       const { user, status } = deletedEventUsersFull[0]
       userId = user._id
-      text = `\u{2796}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
+      text = `\u{1F4C5}\u{2796}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
       )} ${user.status === 'member' ? '(клуб) ' : ''}<b>${
         user.gender === 'male' ? 'ОТПИСАЛСЯ' : 'ОТПИСАЛАСЬ'
@@ -127,7 +127,7 @@ const eventUsersTelegramNotification = async ({
     ) {
       const { user, status } = addedEventUsersFull[0]
       userId = user._id
-      text = `\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
+      text = `\u{1F4C5}\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
       )} ${user.status === 'member' ? '(клуб) ' : ''}<b>${
         user.gender === 'male' ? `ЗАПИСАЛСЯ` : 'ЗАПИСАЛАСЬ'
@@ -140,7 +140,7 @@ const eventUsersTelegramNotification = async ({
       // )
       // const addedUsersNames = addedUsers.map((user) => getUserFullName(user))
 
-      text = `Изменение списка участников в мероприятии "${
+      text = `\u{1F4C5} Изменение списка участников в мероприятии "${
         event.title
       }" от ${formatDateTime(event.dateStart)}.${
         addedEventUsersFull.length > 0

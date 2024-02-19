@@ -39,11 +39,11 @@ const serviceUserTelegramNotification = async ({ req, serviceId, userId }) => {
     const service = await Services.findById(serviceId).lean()
     const user = await Users.findById(userId).lean()
 
-    const text = `\u{2796}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
+    const text = `\u{1F91D}\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
       user
     )} ${user.status === 'member' ? '(клуб) ' : ''}<b>подал${
       user.gender === 'male' ? '' : 'а'
-    }заявку</b> на услугу "${service.title}".`
+    } заявку</b> на услугу "${service.title}".`
 
     const usersTelegramIds = usersWithTelegramNotificationsOfServiceUsersON.map(
       (user) => user.notifications?.telegram?.id
