@@ -57,7 +57,7 @@ const eventSignUpFunc = (
           status,
           userStatus: loggedUser.status,
           comment,
-          subEventId: subEventId,
+          subEventId,
         },
         (data) => {
           if (data.error === 'мероприятие закрыто') {
@@ -76,7 +76,7 @@ const eventSignUpFunc = (
           }
         },
         (data) => {
-          if (typeof onSuccess === 'function') onSuccess()
+          if (typeof onSuccess === 'function') onSuccess(data)
         }
       )
     }

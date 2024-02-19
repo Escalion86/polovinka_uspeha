@@ -159,43 +159,44 @@ const userSignIn = async ({
     var errorText
     // // Если пользователь хочет зарегистрироваться в основной состав, то проверяем есть ли место
     if (!status || status === 'participant') {
-      const eventUsersParticipants = await EventsUsers.find({
+      const subEventUsersParticipants = await EventsUsers.find({
         eventId,
         status: 'participant',
+        subEventId: subEvent.id,
       })
-      const eventParticipantsIds = eventUsersParticipants.map(
+      const subEventParticipantsIds = subEventUsersParticipants.map(
         (eventUser) => eventUser.userId
       )
-      const eventParticipants = await Users.find({
-        _id: { $in: eventParticipantsIds },
+      const subEventParticipants = await Users.find({
+        _id: { $in: subEventParticipantsIds },
       })
-      const eventParticipantsMans = eventParticipants.filter(
+      const subEventParticipantsMans = subEventParticipants.filter(
         (user) => user.gender === 'male'
       )
-      const eventParticipantsWomans = eventParticipants.filter(
+      const subEventParticipantsWomans = subEventParticipants.filter(
         (user) => user.gender === 'famale'
       )
-      const eventParticipantsMansCount = eventParticipantsMans.length
-      const eventParticipantsWomansCount = eventParticipantsWomans.length
-      const eventParticipantsCount =
-        eventParticipantsMansCount + eventParticipantsWomansCount
+      const subEventParticipantsMansCount = subEventParticipantsMans.length
+      const subEventParticipantsWomansCount = subEventParticipantsWomans.length
+      const subEventParticipantsCount =
+        subEventParticipantsMansCount + subEventParticipantsWomansCount
 
       // Если мероприятие забито
       if (
         typeof subEvent.maxParticipants === 'number' &&
-        subEvent.maxParticipants <= eventParticipantsCount
+        subEvent.maxParticipants <= subEventParticipantsCount
       ) {
         errorText = `свободных мест на мероприятии уже нет`
       } else if (
         user.gender === 'male' &&
         typeof subEvent.maxMans === 'number' &&
-        subEvent.maxMans <= eventParticipantsMansCount
+        subEvent.maxMans <= subEventParticipantsMansCount
       ) {
         errorText = `свободных мест для мужчин на мероприятии уже нет`
       } else if (
         user.gender === 'famale' &&
         typeof subEvent.maxWomans === 'number' &&
-        subEvent.maxWomans <= eventParticipantsWomansCount
+        subEvent.maxWomans <= subEventParticipantsWomansCount
       ) {
         errorText = `свободных мест для женщин на мероприятии уже нет`
       }
@@ -206,21 +207,25 @@ const userSignIn = async ({
         if (user.gender === 'male') {
           if (!user.status || user.status === 'novice') {
             if (typeof subEvent.maxMansNovice === 'number') {
-              const eventParticipantsNoviceMansCount =
-                eventParticipantsMans.filter(
+              const subEventParticipantsNoviceMansCount =
+                subEventParticipantsMans.filter(
                   (user) => !user.status || user.status === 'novice'
                 ).length
-              if (eventParticipantsNoviceMansCount >= subEvent.maxMansNovice) {
+              if (
+                subEventParticipantsNoviceMansCount >= subEvent.maxMansNovice
+              ) {
                 errorText = `свободных мест для мужчин из центра уже нет`
               }
             }
           } else if (!user.status || user.status === 'member') {
             if (typeof subEvent.maxMansMember === 'number') {
-              const eventParticipantsMemberMansCount =
-                eventParticipantsMans.filter(
+              const subEventParticipantsMemberMansCount =
+                subEventParticipantsMans.filter(
                   (user) => user.status === 'member'
                 ).length
-              if (eventParticipantsMemberMansCount >= subEvent.maxMansMember) {
+              if (
+                subEventParticipantsMemberMansCount >= subEvent.maxMansMember
+              ) {
                 errorText = `свободных мест для мужчин из клуба уже нет`
               }
             }
@@ -229,24 +234,26 @@ const userSignIn = async ({
         } else if (user.gender === 'famale') {
           if (!user.status || user.status === 'novice') {
             if (typeof subEvent.maxWomansNovice === 'number') {
-              const eventParticipantsNoviceWomansCount =
-                eventParticipantsWomans.filter(
+              const subEventParticipantsNoviceWomansCount =
+                subEventParticipantsWomans.filter(
                   (user) => !user.status || user.status === 'novice'
                 ).length
               if (
-                eventParticipantsNoviceWomansCount >= subEvent.maxWomansNovice
+                subEventParticipantsNoviceWomansCount >=
+                subEvent.maxWomansNovice
               ) {
                 errorText = `свободных мест для женщин из центра уже нет`
               }
             }
           } else if (!user.status || user.status === 'member') {
             if (typeof subEvent.maxWomansMember === 'number') {
-              const eventParticipantsMemberWomansCount =
-                eventParticipantsWomans.filter(
+              const subEventParticipantsMemberWomansCount =
+                subEventParticipantsWomans.filter(
                   (user) => user.status === 'member'
                 ).length
               if (
-                eventParticipantsMemberWomansCount >= subEvent.maxWomansMember
+                subEventParticipantsMemberWomansCount >=
+                subEvent.maxWomansMember
               ) {
                 errorText = `свободных мест для женщин из клуба уже нет`
               }
