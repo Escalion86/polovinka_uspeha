@@ -40,6 +40,7 @@ const EventsUsers = ({
   canEdit,
   toReserveFunc,
   fromReserveFunc,
+  noButtons,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -57,22 +58,22 @@ const EventsUsers = ({
         onChange={setSelectedIds}
         exceptedIds={exceptedIds}
         readOnly={!canEdit || isEventClosed}
-        buttons={[
-          event.subEvents.length > 1
-            ? (id) => ({
-                onClick: () => {
-                  modalsFunc.eventUser.editSubEvent({
-                    eventId: event._id,
-                    userId: id,
-                  })
-                },
-                icon: faStreetView,
-                iconClassName: 'text-blue-600',
-                tooltip: 'Изменить вариант участия',
-              })
-            : undefined,
-          ...(canEdit && !isEventClosed
+        buttons={
+          !noButtons && canEdit && !isEventClosed
             ? [
+                event.subEvents.length > 1
+                  ? (id) => ({
+                      onClick: () => {
+                        modalsFunc.eventUser.editSubEvent({
+                          eventId: event._id,
+                          userId: id,
+                        })
+                      },
+                      icon: faStreetView,
+                      iconClassName: 'text-blue-600',
+                      tooltip: 'Изменить вариант участия',
+                    })
+                  : undefined,
                 toReserveFunc
                   ? (id) => ({
                       onClick: () => {
@@ -104,8 +105,8 @@ const EventsUsers = ({
                     })
                   : undefined,
               ]
-            : []),
-        ]}
+            : []
+        }
       />
       {/* <SelectUserList
         className="mb-1"
@@ -349,6 +350,9 @@ const eventUsersFunc = (eventId) => {
       [sortedEventUsersReserve]
     )
 
+    const arrayAssistants = sortedEventUsersAssistants.map(({ user }) => user)
+    const arrayBanned = sortedEventUsersBanned.map(({ user }) => user)
+
     const objAssistants = useMemo(
       () =>
         arrayToObjectArray(
@@ -375,8 +379,8 @@ const eventUsersFunc = (eventId) => {
 
     const [participants, setParticipants] = useState(objParticipants)
     const [reserve, setReserve] = useState(objReserve)
-    const [assistants, setAssistants] = useState(objAssistants)
-    const [banned, setBanned] = useState(objBanned)
+    const [assistants, setAssistants] = useState(arrayAssistants)
+    const [banned, setBanned] = useState(arrayBanned)
 
     useEffect(() => {
       if (!compareObjects(participants, objParticipants))
@@ -504,23 +508,23 @@ const eventUsersFunc = (eventId) => {
               subEventId: id,
             })
           )
-        if (assistants[id])
-          assistants[id].forEach((user) =>
-            usersStatuses.push({
-              userId: user._id,
-              status: 'assistant',
-              subEventId: id,
-            })
-          )
-        if (banned[id])
-          banned[id].forEach((user) =>
-            usersStatuses.push({
-              userId: user._id,
-              status: 'ban',
-              subEventId: id,
-            })
-          )
       })
+      if (assistants)
+        assistants.forEach((user) =>
+          usersStatuses.push({
+            userId: user._id,
+            status: 'assistant',
+            subEventId: null,
+          })
+        )
+      if (banned)
+        banned.forEach((user) =>
+          usersStatuses.push({
+            userId: user._id,
+            status: 'ban',
+            subEventId: null,
+          })
+        )
 
       setEventUsersId(eventId, usersStatuses)
     }
@@ -528,9 +532,9 @@ const eventUsersFunc = (eventId) => {
     useEffect(() => {
       const isFormChanged =
         !compareObjects(participants, objParticipants) ||
-        !compareObjects(assistants, objAssistants) ||
+        !compareObjects(assistants, arrayAssistants) ||
         !compareObjects(reserve, objReserve) ||
-        !compareObjects(banned, objBanned)
+        !compareObjects(banned, arrayBanned)
 
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -598,19 +602,22 @@ const eventUsersFunc = (eventId) => {
       }))
     }
 
-    const setAssistantsState = (subEventId, ids) => {
-      setAssistants((state) => ({
-        ...state,
-        [subEventId]: sortUsersByIds(ids),
-      }))
-    }
+    // const setAssistantsState = (subEventId, ids) => {
+    // setAssistants((state) => ({
+    //   ...state,
+    //   [subEventId]: sortUsersByIds(ids),
+    // }))
+    // }
+    const setAssistantsState = (ids) => setAssistants(sortUsersByIds(ids))
 
-    const setBannedState = (subEventId, ids) => {
-      setBanned((state) => ({
-        ...state,
-        [subEventId]: sortUsersByIds(ids),
-      }))
-    }
+    // const setBannedState = (subEventId, ids) => {
+    //   setBanned((state) => ({
+    //     ...state,
+    //     [subEventId]: sortUsersByIds(ids),
+    //   }))
+    // }
+
+    const setBannedState = (ids) => setBanned(sortUsersByIds(ids))
 
     const participantsCount = Object.keys(participants).reduce(
       (sum, subEventId) => sum + participants[subEventId]?.length ?? 0,
@@ -622,31 +629,40 @@ const eventUsersFunc = (eventId) => {
       0
     )
 
-    const assistantsCount = Object.keys(assistants).reduce(
-      (sum, subEventId) => sum + assistants[subEventId]?.length ?? 0,
-      0
-    )
+    const assistantsCount = assistants?.length ?? 0
+    const bannedCount = banned?.length ?? 0
 
-    const bannedCount = Object.keys(banned).reduce(
-      (sum, subEventId) => sum + banned[subEventId]?.length ?? 0,
-      0
-    )
+    // const assistantsCount = Object.keys(assistants).reduce(
+    //   (sum, subEventId) => sum + assistants[subEventId]?.length ?? 0,
+    //   0
+    // )
+
+    // const bannedCount = Object.keys(banned).reduce(
+    //   (sum, subEventId) => sum + banned[subEventId]?.length ?? 0,
+    //   0
+    // )
     const participantsIds = {}
     const reserveIds = {}
-    const assistantsIds = {}
-    const bannedIds = {}
+    var participantsIdsAll = []
+    var reserveIdsAll = []
+    const assistantsIds = assistants.map(({ _id }) => _id)
+    const bannedIds = banned.map(({ _id }) => _id)
+    // const assistantsIds = []
+    // const bannedIds = []
     const eventUsersToUse = {}
 
     event.subEvents.forEach(({ id }) => {
       const participantsSubEvent = participants[id] ?? []
       const reserveSubEvent = reserve[id] ?? []
-      const assistantsSubEvent = assistants[id] ?? []
-      const bannedSubEvent = banned[id] ?? []
+      // const assistantsSubEvent = assistants[id] ?? []
+      // const bannedSubEvent = banned[id] ?? []
 
       participantsIds[id] = participantsSubEvent.map(({ _id }) => _id)
       reserveIds[id] = reserveSubEvent.map(({ _id }) => _id)
-      assistantsIds[id] = assistantsSubEvent.map(({ _id }) => _id)
-      bannedIds[id] = bannedSubEvent.map(({ _id }) => _id)
+      participantsIdsAll = [...participantsIdsAll, ...participantsIds[id]]
+      reserveIdsAll = [...reserveIdsAll, ...reserveIds[id]]
+      // assistantsIds[id] = assistantsSubEvent.map(({ _id }) => _id)
+      // bannedIds[id] = bannedSubEvent.map(({ _id }) => _id)
 
       eventUsersToUse[id] = [
         ...participantsSubEvent.map((user) => ({
@@ -655,24 +671,24 @@ const eventUsersFunc = (eventId) => {
           userStatus: user.status,
           subEventId: id,
         })),
-        ...assistantsSubEvent.map((user) => ({
-          user,
-          status: 'assistant',
-          userStatus: user.status,
-          subEventId: id,
-        })),
+        // ...assistantsSubEvent.map((user) => ({
+        //   user,
+        //   status: 'assistant',
+        //   userStatus: user.status,
+        //   subEventId: id,
+        // })),
         ...reserveSubEvent.map((user) => ({
           user,
           status: 'reserve',
           userStatus: user.status,
           subEventId: id,
         })),
-        ...bannedSubEvent.map((user) => ({
-          user,
-          status: 'ban',
-          userStatus: user.status,
-          subEventId: id,
-        })),
+        // ...bannedSubEvent.map((user) => ({
+        //   user,
+        //   status: 'ban',
+        //   userStatus: user.status,
+        //   subEventId: id,
+        // })),
       ]
     })
 
@@ -710,7 +726,14 @@ const eventUsersFunc = (eventId) => {
           >
             {event.subEvents.map((subEvent) => {
               const { id, title } = subEvent
-
+              const otherSubEventsPartisipantsIds = event.subEvents.reduce(
+                (sum, { id }) => {
+                  if (id !== subEvent.id)
+                    return [...sum, ...participantsIds[id]]
+                  return sum
+                },
+                []
+              )
               return (
                 <Wrapper
                   key={'Участники' + id}
@@ -734,9 +757,10 @@ const eventUsersFunc = (eventId) => {
                     selectedIds={participantsIds[id]}
                     setSelectedIds={(ids) => setParticipantsState(id, ids)}
                     exceptedIds={[
-                      ...reserveIds[id],
-                      ...assistantsIds[id],
-                      ...bannedIds[id],
+                      ...reserveIdsAll,
+                      ...assistantsIds,
+                      ...bannedIds,
+                      ...otherSubEventsPartisipantsIds,
                     ]}
                     canEdit={canEdit}
                     toReserveFunc={(newId) => {
@@ -756,6 +780,14 @@ const eventUsersFunc = (eventId) => {
               {event.subEvents.map((subEvent) => {
                 const { id, title } = subEvent
 
+                const otherSubEventsReserveIds = event.subEvents.reduce(
+                  (sum, { id }) => {
+                    if (id !== subEvent.id) return [...sum, ...reserveIds[id]]
+                    return sum
+                  },
+                  []
+                )
+
                 return (
                   <Wrapper
                     key={'Резерв' + id}
@@ -767,9 +799,10 @@ const eventUsersFunc = (eventId) => {
                       selectedIds={reserveIds[id]}
                       setSelectedIds={(ids) => setReserveState(id, ids)}
                       exceptedIds={[
-                        ...participantsIds[id],
-                        ...assistantsIds[id],
-                        ...bannedIds[id],
+                        ...participantsIdsAll,
+                        ...assistantsIds,
+                        ...bannedIds,
+                        ...otherSubEventsReserveIds,
                       ]}
                       canEdit={canEdit}
                       fromReserveFunc={
@@ -791,7 +824,20 @@ const eventUsersFunc = (eventId) => {
             tabAddToLabel={`(${assistantsCount})`}
             className="flex flex-col mt-2 gap-y-5"
           >
-            {event.subEvents.map((subEvent) => {
+            <EventsUsers
+              event={event}
+              modalTitle="Выбор ведущих"
+              selectedIds={assistantsIds}
+              setSelectedIds={setAssistantsState}
+              exceptedIds={[
+                ...participantsIdsAll,
+                ...reserveIdsAll,
+                ...bannedIds,
+              ]}
+              canEdit={canEdit}
+              noButtons
+            />
+            {/* {event.subEvents.map((subEvent) => {
               const { id, title } = subEvent
 
               return (
@@ -813,7 +859,7 @@ const eventUsersFunc = (eventId) => {
                   />
                 </Wrapper>
               )
-            })}
+            })} */}
           </TabPanel>
           {canEdit && (
             <TabPanel
@@ -821,7 +867,20 @@ const eventUsersFunc = (eventId) => {
               tabAddToLabel={`(${bannedCount})`}
               className="flex flex-col mt-2 gap-y-5"
             >
-              {event.subEvents.map((subEvent) => {
+              <EventsUsers
+                event={event}
+                modalTitle="Выбор забаненых участников"
+                selectedIds={bannedIds}
+                setSelectedIds={setBannedState}
+                exceptedIds={[
+                  ...participantsIdsAll,
+                  ...reserveIdsAll,
+                  ...assistantsIds,
+                ]}
+                canEdit={canEdit}
+                noButtons
+              />
+              {/* {event.subEvents.map((subEvent) => {
                 const { id, title } = subEvent
 
                 return (
@@ -843,7 +902,7 @@ const eventUsersFunc = (eventId) => {
                     />
                   </Wrapper>
                 )
-              })}
+              })} */}
             </TabPanel>
           )}
           {/* {canEdit &&
