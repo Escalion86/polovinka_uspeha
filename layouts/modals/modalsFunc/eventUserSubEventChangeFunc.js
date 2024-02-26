@@ -39,7 +39,7 @@ const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
         _id: eventUser?._id,
         subEventId,
       })
-      onConfirm({ eventId, userId, subEventId })
+      if (onConfirm) onConfirm({ eventId, userId, subEventId })
     }
 
     const eventUsersWithOutOurUser = eventUsers.filter(
