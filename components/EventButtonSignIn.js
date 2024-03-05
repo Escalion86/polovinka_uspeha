@@ -13,6 +13,7 @@ import { useRecoilValue } from 'recoil'
 import EventProfit from './EventProfit'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
+import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -38,7 +39,7 @@ const EventButtonSignInComponent = ({
   const loggedUser = useRecoilValue(loggedUserAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
-    sumOfPaymentsFromLoggedUserToEventSelector(event._id)
+    sumOfPaymentsFromLoggedUserToEventSelector(eventId)
   )
 
   const showProfitOnCard = loggedUserActiveRole?.events?.showProfitOnCard
@@ -58,18 +59,26 @@ const EventButtonSignInComponent = ({
     isUserRelationshipCorrect,
   } = eventStatus
 
-  const eventPriceForLoggedUser = eventPriceByStatus(event, userStatus)
-
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
   const PaymentsFromLoggedUser = () => {
+    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    const eventUser = eventUsers.find(({ userId }) => userId === loggedUser._id)
+
     if (
       !loggedUser ||
       !userEventStatus ||
-      userEventStatus !== 'participant' ||
-      eventPriceForLoggedUser === 0
+      !eventUser ||
+      userEventStatus !== 'participant'
     )
       return null
+
+    const subEvent = event.subEvents.find(
+      ({ id }) => id === eventUser.subEventId
+    )
+    const eventPriceForLoggedUser = eventPriceByStatus(subEvent, userStatus)
+
+    if (eventPriceForLoggedUser === 0) return null
 
     if (sumOfPaymentsFromLoggedUserToEvent * 100 === eventPriceForLoggedUser)
       return (
@@ -175,8 +184,8 @@ const EventButtonSignInComponent = ({
         {isUserRelationshipCorrect
           ? 'Мест нет'
           : event.usersRelationshipAccess === 'only'
-          ? 'Для пар'
-          : 'Для одиноких'}
+            ? 'Для пар'
+            : 'Для одиноких'}
       </TextStatus>
     ) : isEventInProcess && (noButtonIfAlreadySignIn || !canSignIn) ? (
       <TextStatus className="text-general">В процессе</TextStatus>
@@ -206,12 +215,12 @@ const EventButtonSignInComponent = ({
                 userEventStatus === 'reserve' ? ' в резерв' : ''
               }`
             : canSignIn || !loggedUser
-            ? 'Записаться'
-            : isUserQuestionnaireFilled
-            ? canSignInReserve
-              ? 'Записаться в резерв'
-              : 'Мест нет'
-            : 'Записаться' // 'Заполните свой профиль'
+              ? 'Записаться'
+              : isUserQuestionnaireFilled
+                ? canSignInReserve
+                  ? 'Записаться в резерв'
+                  : 'Мест нет'
+                : 'Записаться' // 'Заполните свой профиль'
         }
       />
     )
