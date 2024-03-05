@@ -62,16 +62,14 @@ const EventButtonSignInComponent = ({
   const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
 
   const PaymentsFromLoggedUser = () => {
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
-    const eventUser = eventUsers.find(({ userId }) => userId === loggedUser._id)
-
-    if (
-      !loggedUser ||
-      !userEventStatus ||
-      !eventUser ||
-      userEventStatus !== 'participant'
-    )
+    if (!loggedUser || !userEventStatus || userEventStatus !== 'participant')
       return null
+
+    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    const eventUser = eventUsers.find(
+      ({ userId }) => userId === loggedUser?._id
+    )
+    if (!eventUser) return null
 
     const subEvent = event.subEvents.find(
       ({ id }) => id === eventUser.subEventId
