@@ -16,6 +16,7 @@ import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 import subEventsSummator from '@helpers/subEventsSummator'
 import ServicesUsers from '@models/ServicesUsers'
 import serviceUserTelegramNotification from './serviceUserTelegramNotification'
+import { telegramCmdToIndex } from './telegramCmd'
 
 function isJson(str) {
   try {
