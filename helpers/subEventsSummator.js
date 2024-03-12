@@ -38,6 +38,8 @@ const subEventsSummator = (subEvents) => {
         // if (!sum.usersStatusAccess)
         //   sum.usersStatusAccess = { novice: false, member: false }
         usersStatusAccess: {
+          noReg:
+            sum.usersStatusAccess?.noReg || subEvent.usersStatusAccess?.noReg,
           novice:
             sum.usersStatusAccess?.novice || subEvent.usersStatusAccess?.novice,
           member:
