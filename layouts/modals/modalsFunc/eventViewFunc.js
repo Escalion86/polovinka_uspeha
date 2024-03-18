@@ -122,7 +122,7 @@ const eventViewFunc = (eventId) => {
         <div className="flex flex-col flex-1">
           <div className="flex flex-col flex-1 w-full max-w-full px-2 py-2 gap-y-1">
             <div className="flex items-center w-full gap-x-1">
-              {event?.tags.length > 0 && (
+              {typeof event?.tags === 'object' && event?.tags.length > 0 && (
                 <EventTagsChipsLine tags={event?.tags} className="flex-1" />
               )}
               {!setTopLeftComponent && (
