@@ -1042,7 +1042,7 @@ const LoginPage = (props) => {
               {process === 'authorization' && (
                 <TelegramLoginButton
                   dataOnauth={handleTelegramResponse}
-                  botName="polovinka_uspeha_bot"
+                  botName="polovinkauspeha_autorization_bot"
                 />
               )}
               {(process === 'registration' || process === 'forgotPassword') &&
