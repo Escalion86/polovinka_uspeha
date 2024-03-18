@@ -99,7 +99,7 @@ const MenuItem = ({ item, active = false, badge }) => {
   )
 }
 
-const Menu = ({ menuCfg, activePage }) => {
+const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
 
@@ -111,7 +111,10 @@ const Menu = ({ menuCfg, activePage }) => {
   }
 
   useEffect(() => {
-    if (!menuOpen) setOpenedMenuIndex(null)
+    if (!menuOpen) {
+      setOpenedMenuIndex(null)
+      onChangeMenuIndex(null)
+    }
   }, [menuOpen])
 
   const indexOfActiveGroup = menuCfg.findIndex((item) =>
@@ -163,6 +166,9 @@ const Menu = ({ menuCfg, activePage }) => {
                         setMenuOpen(false)
                       } else {
                         setOpenedMenuIndex(
+                          openedMenuIndex === index ? null : index
+                        )
+                        onChangeMenuIndex(
                           openedMenuIndex === index ? null : index
                         )
                         setMenuOpen(true)
@@ -230,6 +236,8 @@ const variants = {
   max: { width: 320 },
 }
 
+var handler
+
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const menuRef = useRef(null)
@@ -239,6 +247,14 @@ const SideBar = ({ page }) => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const { height } = useRecoilValue(windowDimensionsAtom)
+  const [menuIndex, setMenuIndex] = useState()
+
+  const onChangeMenuIndex = (index) => {
+    if (handler) clearTimeout(handler)
+    handler = setTimeout(() => {
+      setMenuIndex(index)
+    }, 500)
+  }
 
   const handleScrollPosition = (scrollAmount) => {
     var newPos
@@ -310,6 +326,7 @@ const SideBar = ({ page }) => {
           <Menu
             menuCfg={menuCfg(loggedUserActiveRole, loggedUserActiveStatus)}
             activePage={page}
+            onChangeMenuIndex={onChangeMenuIndex}
           />
         </div>
       </motion.div>
@@ -324,9 +341,13 @@ const SideBar = ({ page }) => {
       {scrollable && (
         <>
           {scrollPos > 0 && (
-            <div
-              onClick={() => handleScrollPosition(-120)}
-              className="absolute top-0 left-0 right-0 z-50 w-full h-10 border-t cursor-pointer bg-general rounded-b-2xl"
+            <motion.div
+              variants={variants}
+              animate={!menuOpen ? 'min' : 'max'}
+              transition={{ duration: 0.5, type: 'tween' }}
+              initial={!menuOpen ? 'min' : 'max'}
+              onClick={() => handleScrollPosition(-140)}
+              className="absolute top-0 left-0 z-50 h-10 border-t cursor-pointer bg-general rounded-b-2xl"
             >
               <div className="flex items-center justify-center w-full h-full border-b border-white rounded-2xl">
                 <FontAwesomeIcon
@@ -334,14 +355,18 @@ const SideBar = ({ page }) => {
                   className="w-6 h-6 text-white"
                 />
               </div>
-            </div>
+            </motion.div>
           )}
           {(menuRef.current?.scrollHeight ?? 0) -
             (menuRef.current?.clientHeight ?? 0) >
             scrollPos && (
-            <div
-              onClick={() => handleScrollPosition(120)}
-              className="absolute bottom-0 left-0 right-0 z-50 w-full h-10 border-b cursor-pointer bg-general rounded-t-2xl"
+            <motion.div
+              variants={variants}
+              animate={!menuOpen ? 'min' : 'max'}
+              transition={{ duration: 0.5, type: 'tween' }}
+              initial={!menuOpen ? 'min' : 'max'}
+              onClick={() => handleScrollPosition(140)}
+              className="absolute bottom-0 left-0 z-50 h-10 border-b cursor-pointer bg-general rounded-t-2xl"
             >
               <div className="flex items-center justify-center w-full h-full border-t border-white rounded-2xl">
                 <FontAwesomeIcon
@@ -349,7 +374,7 @@ const SideBar = ({ page }) => {
                   className="w-6 h-6 text-white"
                 />
               </div>
-            </div>
+            </motion.div>
           )}
         </>
       )}
