@@ -28,7 +28,7 @@ export default async function auth(req, res) {
             //   process.env.NEXTAUTH_SITE
             // )
 
-            const fetchedUser = await Users.findOne({ phone, password })
+            const fetchedUser = await Users.findOne({ phone, password }).lean()
             // await Users.findOneAndUpdate(
             //   { phone, password },
             //   {
@@ -39,10 +39,59 @@ export default async function auth(req, res) {
 
             if (fetchedUser) {
               return {
-                name: phone,
+                name: fetchedUser._id,
               }
             } else {
               return null
+            }
+          } else {
+            return null
+          }
+        },
+      }),
+      CredentialsProvider({
+        id: 'telegram',
+        name: 'telegram',
+        credentials: {
+          telegramId: { label: 'TelegramId', type: 'number', placeholder: '' },
+          first_name: { label: 'first_name', type: 'text', placeholder: '' },
+          last_name: { label: 'last_name', type: 'text', placeholder: '' },
+          photo_url: { label: 'photo_url', type: 'text', placeholder: '' },
+          username: { label: 'username', type: 'text', placeholder: '' },
+        },
+        authorize: async (credentials, req) => {
+          const { telegramId, first_name, last_name, photo_url, username } =
+            credentials
+          if (telegramId) {
+            await dbConnect()
+
+            const fetchedUser = await Users.findOne({
+              'notifications.telegram.id': Number(telegramId),
+            }).lean()
+            console.log('fetchedUser :>> ', fetchedUser)
+            if (fetchedUser) {
+              return {
+                name: fetchedUser._id,
+              }
+            } else {
+              console.log('!')
+              const newUser = await Users.create({
+                notifications: {
+                  telegram: {
+                    id: Number(telegramId),
+                    active: false,
+                    userName: username,
+                  },
+                },
+                firstName: first_name,
+                secondName: last_name,
+                images: [photo_url],
+                registrationType: 'telegram',
+              })
+              console.log('newUser :>> ', newUser)
+              return {
+                name: newUser._id,
+              }
             }
           } else {
             return null
@@ -71,7 +120,7 @@ export default async function auth(req, res) {
         //   process.env.NEXTAUTH_SITE
         // )
 
-        const userPhone = session.user.name
+        const userId = session.user.name
 
         // Находим данные пользователя и обновляем время активности
         // await fetchingLog(
@@ -86,7 +135,8 @@ export default async function auth(req, res) {
 
         console.log('dbConnect')
 
-        const result = await Users.findOne({ phone: userPhone })
+        const result = await Users.findById(userId)
+        console.log('result :>> ', result)
         // const result = await Users.findOneAndUpdate(
         //   { phone: userPhone },
         //   {
@@ -151,6 +201,7 @@ export default async function auth(req, res) {
           session.user.security = result.security
           session.user.notifications = result.notifications
           session.user.eventsTagsNotification = result.eventsTagsNotification
+          session.user.registrationType = result.registrationType
           session.user.createdAt = result.createdAt
           session.user.updatedAt = result.updatedAt
         }

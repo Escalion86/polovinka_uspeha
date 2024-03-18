@@ -296,6 +296,9 @@ const QuestionnaireContent = (props) => {
               {!loggedUser.relationship && (
                 <li className="font-bold text-red-500">Статус отношений</li>
               )}
+              {!loggedUser.phone && (
+                <li className="font-bold text-red-500">Телефон</li>
+              )}
               {/* {(!loggedUser.images || loggedUser.images.length === 0) && (
                 <li className="font-bold text-red-500">
                   {'Фотографии (добавьте хотя бы одно фото)'}
@@ -553,12 +556,12 @@ const QuestionnaireContent = (props) => {
             >
               <PhoneInput
                 required
-                label="Телефон (логин)"
+                label="Телефон"
                 value={phone}
                 onChange={setPhone}
                 error={errors.phone}
                 copyPasteButtons
-                disabled
+                // disabled
                 noMargin
               />
             </ShowWrapper>

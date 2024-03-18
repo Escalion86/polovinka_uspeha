@@ -35,6 +35,8 @@ import tailwindConfig from 'tailwind.config.js'
 import resolveConfig from 'tailwindcss/resolveConfig'
 
 import TelegramLoginButton from 'react-telegram-login'
+import Divider from '@components/Divider'
+import Button from '@components/Button'
 
 const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
   const [close, setClose] = useState(false)
@@ -351,9 +353,82 @@ const LoginPage = (props) => {
     props?.siteSettings?.codeSendService ??
     DEFAULT_SITE_SETTINGS.codeSendService
 
-  const handleTelegramResponse = (response) => {
-    console.log(response)
+  const handleTelegramResponse = ({
+    id,
+    first_name,
+    last_name,
+    photo_url,
+    username,
+  }) => {
+    // console.log(response)
+    if (process === 'authorization') {
+      setWaitingResponse(true)
+      // Если это авторизация
+      signIn('telegram', {
+        redirect: false,
+        telegramId: id,
+        first_name,
+        last_name,
+        photo_url,
+        username,
+      }).then((res) => {
+        if (res.error === 'CredentialsSignin') {
+          setWaitingResponse(false)
+          setInputPassword('')
+          addError({
+            telegram:
+              'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
+          })
+        } else {
+          if (router.query?.event)
+            router.push('/event/' + router.query?.event, '', { shallow: true })
+          else if (router.query?.service)
+            router.push('/service/' + router.query?.service, '', {
+              shallow: true,
+            })
+          else router.push('/cabinet', '', { shallow: true })
+        }
+      })
+    }
   }
+
+  // const test = () => {
+  //   handleTelegramResponse({
+  //     // auth_date: 1710790148,
+  //     first_name: 'Алексей',
+  //     // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
+  //     id: 261102161,
+  //     username: 'escalion',
+  //     last_name: 'Белинский Иллюзионист',
+  //     photo_url:
+  //       'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
+  //   })
+  // }
+
+  // const test2 = () => {
+  //   setWaitingResponse(true)
+  //   // Если это авторизация
+  //   signIn('credentials', {
+  //     redirect: false,
+  //     phone: '79138370020',
+  //     password: 'Magister86',
+  //   }).then((res) => {
+  //     console.log('res :>> ', res)
+  //     if (res?.error === 'CredentialsSignin') {
+  //       setWaitingResponse(false)
+  //       setInputPassword('')
+  //       addError({ password: 'Телефон или пароль не верны' })
+  //     } else {
+  //       if (router.query?.event)
+  //         router.push('/event/' + router.query?.event, '', { shallow: true })
+  //       else if (router.query?.service)
+  //         router.push('/service/' + router.query?.service, '', {
+  //           shallow: true,
+  //         })
+  //       else router.push('/cabinet', '', { shallow: true })
+  //     }
+  //   })
+  // }
 
   // const handleSumitForm = useCallback(
   //   (e) => {
@@ -594,7 +669,8 @@ const LoginPage = (props) => {
         phone: inputPhone,
         password: inputPassword,
       }).then((res) => {
-        if (res.error === 'CredentialsSignin') {
+        console.log('res :>> ', res)
+        if (res?.error === 'CredentialsSignin') {
           setWaitingResponse(false)
           setInputPassword('')
           addError({ password: 'Телефон или пароль не верны' })
@@ -1040,10 +1116,21 @@ const LoginPage = (props) => {
                 </button>
               )}
               {process === 'authorization' && (
-                <TelegramLoginButton
-                  dataOnauth={handleTelegramResponse}
-                  botName="polovinkauspeha_autorization_bot"
-                />
+                <>
+                  <div className="flex items-center text-gray-600 gap-x-2">
+                    <div className="flex-1 h-0 border-t border-gray-600" />
+                    <div className="mb-1">или</div>
+                    <div className="flex-1 h-0 border-t border-gray-600" />
+                  </div>
+                  {/* <Button name="test" onClick={test} preventDefault />
+                  <Button name="test2" onClick={test2} preventDefault /> */}
+                  <div className="flex justify-center">
+                    <TelegramLoginButton
+                      dataOnauth={handleTelegramResponse}
+                      botName="polovinka_uspeha_bot"
+                    />
+                  </div>
+                </>
               )}
               {(process === 'registration' || process === 'forgotPassword') &&
                 registrationLevel === 2 && (
@@ -1119,14 +1206,17 @@ const LoginPage = (props) => {
                 </a>
               </div>
               {!isPWA && (
-                <Link
-                  href="/"
-                  shallow
-                  tabIndex={0}
-                  className="block py-3 mt-2 mb-5 text-sm duration-300 border-t border-gray-400 cursor-pointer phoneH:text-base hover:text-general"
-                >
-                  Вернуться на главную страницу сайта
-                </Link>
+                <>
+                  <Divider />
+                  <Link
+                    href="/"
+                    shallow
+                    tabIndex={0}
+                    className="block py-1 mb-5 text-sm duration-300 cursor-pointer phoneH:text-base hover:text-general"
+                  >
+                    Вернуться на главную страницу сайта
+                  </Link>
+                </>
               )}
             </>
             {/* )} */}

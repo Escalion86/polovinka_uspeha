@@ -76,8 +76,12 @@ const usersSchema = {
   },
   phone: {
     type: Number,
-    required: [true, 'Введите Телефон'],
+    // required: [true, 'Введите Телефон'],
     default: null,
+  },
+  registrationType: {
+    type: String,
+    default: 'phone',
   },
   whatsapp: {
     type: Number,

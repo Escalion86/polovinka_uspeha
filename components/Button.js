@@ -14,6 +14,7 @@ const Button = forwardRef(
       classHoverBgColor = 'hover:bg-green-600',
       loading = false,
       stopPropagation,
+      preventDefault,
       thin = false,
       big = false,
       icon,
@@ -46,6 +47,7 @@ const Button = forwardRef(
           onClick && !disabled
             ? (e) => {
                 stopPropagation && e.stopPropagation()
+                preventDefault && e.preventDefault()
                 onClick()
               }
             : undefined
