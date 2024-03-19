@@ -27,6 +27,7 @@ import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullBy
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
+import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
@@ -70,6 +71,9 @@ const UserPayment = ({
   const paymentsWithoutEventOfUser = useRecoilValue(
     paymentsOfEventWithoutEventIdByUserIdSelector(user._id)
   )
+  const subEventSum = subEvent
+    ? subEvent
+    : useRecoilValue(subEventsSumOfEventSelector(event._id))
 
   const [isCollapsed, setIsCollapsed] = useState(true)
 
@@ -94,12 +98,12 @@ const UserPayment = ({
   const sumOfPayments = income(paymentsOfUser)
 
   const userDiscount = userStatus
-    ? (subEvent ?? event).usersStatusDiscount[userStatus]
+    ? subEventSum.usersStatusDiscount[userStatus]
     : 0
 
   const eventPriceForUser = noEventPriceForUser
     ? 0
-    : ((subEvent ?? event).price -
+    : (subEventSum.price -
         (typeof userDiscount === 'number' ? userDiscount : 0)) /
         100 -
       sumOfCoupons
