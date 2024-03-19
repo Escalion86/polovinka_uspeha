@@ -21,7 +21,7 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
     setDisableDecline,
   }) => {
     // const location = useRecoilValue(locationAtom)
-    const { telegramLink } = useRecoilValue(locationPropsSelector)
+    const { telegramBotName } = useRecoilValue(locationPropsSelector)
 
     // const loggedUser = useRecoilValue(loggedUserAtom)
     // const [userName, setUserName] = useState(
@@ -60,7 +60,7 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
       //   location === 'norilsk'
       //     ? 'https://t.me/polovinka_uspeha_nrsk_bot'
       //     : 'https://t.me/polovinka_uspeha_bot'
-      window.open(telegramLink)
+      window.open('https://t.me/' + telegramBotName)
       closeModal()
       // setDirection(
       //   {

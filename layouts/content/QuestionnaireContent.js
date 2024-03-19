@@ -175,7 +175,7 @@ const QuestionnaireContent = (props) => {
     loggedUser?.town !== town ||
     // loggedUser?.personalStatus !== personalStatus ||
     loggedUser?.email !== email ||
-    // loggedUser?.phone !== phone ||
+    loggedUser?.phone !== phone ||
     loggedUser?.whatsapp !== whatsapp ||
     loggedUser?.viber !== viber ||
     loggedUser?.telegram !== telegram ||
@@ -197,7 +197,7 @@ const QuestionnaireContent = (props) => {
         secondName: secondName.trim(),
         thirdName: thirdName.trim(),
         gender,
-        // phone,
+        phone,
         viber,
         whatsapp,
         email,
@@ -223,7 +223,7 @@ const QuestionnaireContent = (props) => {
           town,
           // personalStatus,
           email,
-          // phone,
+          phone,
           whatsapp,
           viber,
           telegram,

@@ -36,7 +36,8 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 
 import TelegramLoginButton from 'react-telegram-login'
 import Divider from '@components/Divider'
-import Button from '@components/Button'
+// import Button from '@components/Button'
+// import TelegramLoginButton from '@components/TelegramLoginButton'
 
 const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
   const [close, setClose] = useState(false)
@@ -342,6 +343,10 @@ const LoginPage = (props) => {
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
+  const telegramBotName = LOCATIONS[inputLocation]
+    ? LOCATIONS[inputLocation].telegramBotName
+    : LOCATIONS['krasnoyarsk'].telegramBotName
+
   const isPWA = useRecoilValue(isPWAAtom)
 
   const inputPhoneRef = useRef()
@@ -361,35 +366,35 @@ const LoginPage = (props) => {
     username,
   }) => {
     // console.log(response)
-    if (process === 'authorization') {
-      setWaitingResponse(true)
-      // Если это авторизация
-      signIn('telegram', {
-        redirect: false,
-        telegramId: id,
-        first_name,
-        last_name,
-        photo_url,
-        username,
-      }).then((res) => {
-        if (res.error === 'CredentialsSignin') {
-          setWaitingResponse(false)
-          setInputPassword('')
-          addError({
-            telegram:
-              'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
+    // if (process === 'authorization') {
+    setWaitingResponse(true)
+    // Если это авторизация
+    signIn('telegram', {
+      redirect: false,
+      telegramId: id,
+      first_name,
+      last_name,
+      photo_url,
+      username,
+    }).then((res) => {
+      if (res.error === 'CredentialsSignin') {
+        setWaitingResponse(false)
+        setInputPassword('')
+        addError({
+          telegram:
+            'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
+        })
+      } else {
+        if (router.query?.event)
+          router.push('/event/' + router.query?.event, '', { shallow: true })
+        else if (router.query?.service)
+          router.push('/service/' + router.query?.service, '', {
+            shallow: true,
           })
-        } else {
-          if (router.query?.event)
-            router.push('/event/' + router.query?.event, '', { shallow: true })
-          else if (router.query?.service)
-            router.push('/service/' + router.query?.service, '', {
-              shallow: true,
-            })
-          else router.push('/cabinet', '', { shallow: true })
-        }
-      })
-    }
+        else router.push('/cabinet', '', { shallow: true })
+      }
+    })
+    // }
   }
 
   // const test = () => {
@@ -1124,11 +1129,22 @@ const LoginPage = (props) => {
                   </div>
                   {/* <Button name="test" onClick={test} preventDefault />
                   <Button name="test2" onClick={test2} preventDefault /> */}
-                  <div className="flex justify-center">
-                    <TelegramLoginButton
-                      dataOnauth={handleTelegramResponse}
-                      botName="polovinka_uspeha_bot"
-                    />
+                  <div className="flex justify-center w-full">
+                    {waitingResponse ? (
+                      <div
+                        className={cn(
+                          'block border-gray-500 bg-gray-200 w-full h-12 mt-4 text-white uppercase duration-300 border-2 outline-none rounded-3xl'
+                        )}
+                      >
+                        <LoadingSpinner size="xxs" />
+                      </div>
+                    ) : (
+                      <TelegramLoginButton
+                        dataOnauth={handleTelegramResponse}
+                        botName={telegramBotName}
+                        lang="ru"
+                      />
+                    )}
                   </div>
                 </>
               )}
