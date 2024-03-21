@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { EVENT_STATUSES } from '@helpers/constants'
 import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import subEventsSummator from '@helpers/subEventsSummator'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventSelector from '@state/selectors/eventSelector'
@@ -451,6 +452,8 @@ const eventUsersPaymentsFunc = (eventId) => {
     const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
 
+    const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
+
     const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
 
     const paymentsToEvent = paymentsOfEvent.filter(
@@ -560,6 +563,36 @@ const eventUsersPaymentsFunc = (eventId) => {
         100 -
       sumOfCouponsOfEventFromParticipants
 
+    console.log('subEventSum :>> ', subEventSum)
+
+    const maxSumOfPaymentsToExpectFromParticipants =
+      subEventSum.realMaxNovice && subEventSum.realMaxMembers
+        ? event.subEvents.reduce((sum, subEvent) => {
+            const subEventWithReal = subEventsSummator([subEvent])
+            const biggestPrice = Math.max(
+              eventPrices[subEvent.id].member,
+              eventPrices[subEvent.id].novice
+            )
+            const smallestPrice = Math.min(
+              eventPrices[subEvent.id].member,
+              eventPrices[subEvent.id].novice
+            )
+            const res =
+              eventPrices[subEvent.id].member *
+                subEventWithReal.realMaxMembers +
+              eventPrices[subEvent.id].novice * subEventWithReal.realMaxNovice
+            if (
+              typeof subEventSum.maxParticipants === 'number' &&
+              res > biggestPrice * subEventSum.maxParticipants
+            ) {
+              return sum + biggestPrice * subEventSum.maxParticipants
+            }
+            return sum + res
+          }, 0) /
+            100 -
+          sumOfCouponsOfEventFromParticipants
+        : null
+
     const totalIncome =
       sumOfPaymentsOfEventFromParticipants +
       sumOfPaymentsOfEventToAssistants +
@@ -567,10 +600,11 @@ const eventUsersPaymentsFunc = (eventId) => {
       sumOfPaymentsFromEvent +
       sumOfPaymentsFromNotParticipants
 
-    const expectedIncome =
-      sumOfPaymentsToExpectFromParticipants +
-      sumOfPaymentsOfEventToAssistants +
-      sumOfPaymentsToEvent
+    const expectedIncome = maxSumOfPaymentsToExpectFromParticipants
+      ? maxSumOfPaymentsToExpectFromParticipants +
+        sumOfPaymentsOfEventToAssistants +
+        sumOfPaymentsToEvent
+      : null
 
     const noviceFullPaidCount = noviceOfEvent.filter(({ user, subEventId }) => {
       const userPayments = paymentsOfEventOfParticipants.filter(
@@ -1021,9 +1055,15 @@ const eventUsersPaymentsFunc = (eventId) => {
               <span
                 className={cn(
                   'font-bold',
-                  expectedIncome <= 0 ? 'text-danger' : 'text-success'
+                  expectedIncome
+                    ? expectedIncome <= 0
+                      ? 'text-danger'
+                      : 'text-success'
+                    : 'text-gray-800'
                 )}
-              >{`${expectedIncome} ₽`}</span>
+              >
+                {expectedIncome ? `${expectedIncome} ₽` : 'неизвестно'}
+              </span>
             </div>
             {/* {expectedMaxIncome !== null && (
               <div className="flex flex-wrap gap-x-1">

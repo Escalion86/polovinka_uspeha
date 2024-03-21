@@ -561,7 +561,10 @@ const QuestionnaireContent = (props) => {
                 onChange={setPhone}
                 error={errors.phone}
                 copyPasteButtons
-                // disabled
+                disabled={
+                  !loggedUser?.registrationType ||
+                  loggedUser?.registrationType === 'phone'
+                }
                 noMargin
               />
             </ShowWrapper>
