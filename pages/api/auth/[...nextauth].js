@@ -58,40 +58,52 @@ export default async function auth(req, res) {
           last_name: { label: 'last_name', type: 'text', placeholder: '' },
           photo_url: { label: 'photo_url', type: 'text', placeholder: '' },
           username: { label: 'username', type: 'text', placeholder: '' },
+          registration: {
+            label: 'registration',
+            type: 'text',
+            placeholder: 'false',
+          },
         },
         authorize: async (credentials, req) => {
-          const { telegramId, first_name, last_name, photo_url, username } =
-            credentials
+          const {
+            telegramId,
+            first_name,
+            last_name,
+            photo_url,
+            username,
+            registration,
+          } = credentials
           if (telegramId) {
             await dbConnect()
 
             const fetchedUser = await Users.findOne({
               'notifications.telegram.id': Number(telegramId),
             }).lean()
-            console.log('fetchedUser :>> ', fetchedUser)
+
             if (fetchedUser) {
               return {
                 name: fetchedUser._id,
               }
             } else {
-              console.log('!')
-              const newUser = await Users.create({
-                notifications: {
-                  telegram: {
-                    id: Number(telegramId),
-                    active: false,
-                    userName: username,
+              if (registration === 'true') {
+                const newUser = await Users.create({
+                  notifications: {
+                    telegram: {
+                      id: Number(telegramId),
+                      active: false,
+                      userName: username,
+                    },
                   },
-                },
-                firstName: first_name,
-                secondName: last_name,
-                images: [photo_url],
-                registrationType: 'telegram',
-              })
-              console.log('newUser :>> ', newUser)
-              return {
-                name: newUser._id,
+                  firstName: first_name,
+                  secondName: last_name,
+                  images: [photo_url],
+                  registrationType: 'telegram',
+                })
+                return {
+                  name: newUser._id,
+                }
               }
+              return null
             }
           } else {
             return null
@@ -136,7 +148,7 @@ export default async function auth(req, res) {
         console.log('dbConnect')
 
         const result = await Users.findById(userId)
-        console.log('result :>> ', result)
+        console.log('userId :>> ', userId)
         // const result = await Users.findOneAndUpdate(
         //   { phone: userPhone },
         //   {
