@@ -1195,15 +1195,17 @@ const LoginPage = (props) => {
                       <div
                         className={cn(
                           'relative',
-                          !checkAgreement || !checkHave18Years
+                          process === 'registration' &&
+                            (!checkAgreement || !checkHave18Years)
                             ? 'grayscale cursor-not-allowed'
                             : ''
                         )}
                       >
-                        <Button name="test" onClick={test} preventDefault />
-                        {(!checkAgreement || !checkHave18Years) && (
-                          <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
-                        )}
+                        {/* <Button name="test" onClick={test} preventDefault /> */}
+                        {process === 'registration' &&
+                          (!checkAgreement || !checkHave18Years) && (
+                            <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
+                          )}
                         <TelegramLoginButton
                           dataOnauth={handleTelegramResponse}
                           botName={telegramBotName}
