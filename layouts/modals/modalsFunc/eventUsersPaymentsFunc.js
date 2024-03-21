@@ -582,10 +582,10 @@ const eventUsersPaymentsFunc = (eventId) => {
                 subEventWithReal.realMaxMembers +
               eventPrices[subEvent.id].novice * subEventWithReal.realMaxNovice
             if (
-              typeof subEventSum.maxParticipants === 'number' &&
-              res > biggestPrice * subEventSum.maxParticipants
+              typeof subEventWithReal.maxParticipants === 'number' &&
+              res > biggestPrice * subEventWithReal.maxParticipants
             ) {
-              return sum + biggestPrice * subEventSum.maxParticipants
+              return sum + biggestPrice * subEventWithReal.maxParticipants
             }
             return sum + res
           }, 0) /

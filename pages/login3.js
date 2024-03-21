@@ -879,7 +879,7 @@ const LoginPage = (props) => {
             </div>
             <div
               className={cn(
-                process === 'registration' && type ? 'h-12' : 'h-8',
+                type ? 'h-12' : 'h-8',
                 'overflow-hidden text-2xl text-gray-800'
               )}
             >
@@ -889,18 +889,6 @@ const LoginPage = (props) => {
                 })}
               >
                 Регистрация
-              </p>
-              <p
-                className={cn('leading-[14px] duration-300 text-base', {
-                  'opacity-0 h-0': process !== 'registration' || !type,
-                })}
-              >
-                в регионе{' '}
-                {upperCaseFirst(
-                  LOCATIONS[inputLocation]
-                    ? LOCATIONS[inputLocation].townRu
-                    : LOCATIONS['krasnoyarsk'].townRu
-                )}
               </p>
               <p
                 className={cn('duration-300', {
@@ -915,6 +903,18 @@ const LoginPage = (props) => {
                 })}
               >
                 Смена пароля
+              </p>
+              <p
+                className={cn('leading-[14px] duration-300 text-base', {
+                  'opacity-0 h-0': !type,
+                })}
+              >
+                в регионе{' '}
+                {upperCaseFirst(
+                  LOCATIONS[inputLocation]
+                    ? LOCATIONS[inputLocation].townRu
+                    : LOCATIONS['krasnoyarsk'].townRu
+                )}
               </p>
             </div>
             {/* {needToCheckMail ? (
