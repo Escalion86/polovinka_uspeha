@@ -14,13 +14,17 @@ import {
   faHeartCirclePlus,
   faListCheck,
   faStreetView,
+  faTimes,
+  faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { arrayToObjectArray } from '@helpers/arrayToObject'
 // import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
 import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
+import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import usersAtom from '@state/atoms/usersAtom'
@@ -28,7 +32,7 @@ import eventSelector from '@state/selectors/eventSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilRefresher_UNSTABLE, useRecoilValue } from 'recoil'
 
 const EventsUsers = ({
   event,
@@ -218,13 +222,14 @@ const genderSplitAndSort = (eventUsers) =>
 // const getIds = (eventUsers) => eventUsers.map(({ user }) => user._id)
 
 const eventUsersFunc = (eventId) => {
-  const EventModal = ({
+  const EventUsersModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
     setOnlyCloseButtonShow,
     setTopLeftComponent,
+    isDataChanged,
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -232,6 +237,8 @@ const eventUsersFunc = (eventId) => {
     const canEdit = loggedUserActiveRole?.eventsUsers?.edit
     const copyListToClipboard =
       loggedUserActiveRole?.eventsUsers?.copyListToClipboard
+
+    const [dataChanged, setDataChanged] = useState(isDataChanged)
 
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
@@ -261,6 +268,7 @@ const eventUsersFunc = (eventId) => {
     )
 
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+
     // const [sortedEventMans, sortedEventWomans] = useMemo(
     //   () =>
     //     genderSplitAndSort(
@@ -353,29 +361,29 @@ const eventUsersFunc = (eventId) => {
     const arrayAssistants = sortedEventUsersAssistants.map(({ user }) => user)
     const arrayBanned = sortedEventUsersBanned.map(({ user }) => user)
 
-    const objAssistants = useMemo(
-      () =>
-        arrayToObjectArray(
-          sortedEventUsersAssistants,
-          'subEventId',
-          true,
-          event._id,
-          ({ user }) => user
-        ),
-      [sortedEventUsersAssistants]
-    )
+    // const objAssistants = useMemo(
+    //   () =>
+    //     arrayToObjectArray(
+    //       sortedEventUsersAssistants,
+    //       'subEventId',
+    //       true,
+    //       event._id,
+    //       ({ user }) => user
+    //     ),
+    //   [sortedEventUsersAssistants]
+    // )
 
-    const objBanned = useMemo(
-      () =>
-        arrayToObjectArray(
-          sortedEventUsersBanned,
-          'subEventId',
-          true,
-          event._id,
-          ({ user }) => user
-        ),
-      [sortedEventUsersBanned]
-    )
+    // const objBanned = useMemo(
+    //   () =>
+    //     arrayToObjectArray(
+    //       sortedEventUsersBanned,
+    //       'subEventId',
+    //       true,
+    //       event._id,
+    //       ({ user }) => user
+    //     ),
+    //   [sortedEventUsersBanned]
+    // )
 
     const [participants, setParticipants] = useState(objParticipants)
     const [reserve, setReserve] = useState(objReserve)
@@ -718,6 +726,21 @@ const eventUsersFunc = (eventId) => {
             запрещено
           </P>
         )}
+        {canEdit && dataChanged && (
+          <div
+            className="flex items-center px-1 leading-[14px] cursor-pointer select-none gap-x-1 text-success"
+            onClick={() => setDataChanged(false)}
+          >
+            <div>
+              Обратите внимание! Данные были изменены с момента предыдущей
+              загрузки. Отображены актуальные данные.
+            </div>
+            <FontAwesomeIcon
+              className="w-4 h-4 min-w-4 min-h-4"
+              icon={faTimesCircle}
+            />
+          </div>
+        )}
         <TabContext value="Участники">
           <TabPanel
             tabName="Участники"
@@ -1001,10 +1024,28 @@ const eventUsersFunc = (eventId) => {
     )
   }
 
+  const ModalRefresher = (props) => {
+    const [isRefreshed, setIsRefreshed] = useState(false)
+    const data = useRecoilValue(asyncEventsUsersByEventIdSelector(eventId))
+    const [prevData, setPravData] = useState(data)
+    const refreshEventState = useRecoilRefresher_UNSTABLE(
+      asyncEventsUsersByEventIdSelector(eventId)
+    )
+    useEffect(() => {
+      refreshEventState()
+      setIsRefreshed(true)
+    }, [])
+
+    const isDataChanged = JSON.stringify(prevData) !== JSON.stringify(data)
+    return isRefreshed ? (
+      <EventUsersModal {...props} isDataChanged={isDataChanged} />
+    ) : null
+  }
+
   return {
     title: `Участники мероприятия`,
     confirmButtonName: 'Применить',
-    Children: EventModal,
+    Children: ModalRefresher,
   }
 }
 
