@@ -569,25 +569,52 @@ const eventUsersPaymentsFunc = (eventId) => {
       subEventSum.realMaxNovice && subEventSum.realMaxMembers
         ? event.subEvents.reduce((sum, subEvent) => {
             const subEventWithReal = subEventsSummator([subEvent])
-            const biggestPrice = Math.max(
-              eventPrices[subEvent.id].member,
-              eventPrices[subEvent.id].novice
-            )
-            const smallestPrice = Math.min(
-              eventPrices[subEvent.id].member,
-              eventPrices[subEvent.id].novice
-            )
-            const res =
-              eventPrices[subEvent.id].member *
-                subEventWithReal.realMaxMembers +
-              eventPrices[subEvent.id].novice * subEventWithReal.realMaxNovice
+
             if (
               typeof subEventWithReal.maxParticipants === 'number' &&
-              res > biggestPrice * subEventWithReal.maxParticipants
+              subEventWithReal.realMaxMembers + subEventWithReal.realMaxNovice >
+                subEventWithReal.maxParticipants
             ) {
-              return sum + biggestPrice * subEventWithReal.maxParticipants
+              const statusWithBiggestPrice =
+                eventPrices[subEvent.id].novice >
+                eventPrices[subEvent.id].member
+                  ? 'novice'
+                  : 'member'
+              const statusWithSmallestPrice =
+                statusWithBiggestPrice === 'member' ? 'novice' : 'member'
+
+              const biggestPrice =
+                eventPrices[subEvent.id][statusWithBiggestPrice]
+              const smallestPrice =
+                eventPrices[subEvent.id][statusWithSmallestPrice]
+
+              let res = 0
+              for (let i = 1; i <= subEventWithReal.maxParticipants; i++) {
+                if (
+                  i <=
+                  subEventWithReal[
+                    statusWithBiggestPrice === 'member'
+                      ? 'realMaxMembers'
+                      : 'realMaxNovice'
+                  ]
+                )
+                  res += biggestPrice
+                else res += smallestPrice
+              }
+              return sum + res
+            } else {
+              const res =
+                eventPrices[subEvent.id].member *
+                  subEventWithReal.realMaxMembers +
+                eventPrices[subEvent.id].novice * subEventWithReal.realMaxNovice
+              // if (
+              //   typeof subEventWithReal.maxParticipants === 'number' &&
+              //   res > biggestPrice * subEventWithReal.maxParticipants
+              // ) {
+              //   return sum + biggestPrice * subEventWithReal.maxParticipants
+              // }
+              return sum + res
             }
-            return sum + res
           }, 0) /
             100 -
           sumOfCouponsOfEventFromParticipants
