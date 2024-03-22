@@ -826,7 +826,7 @@ const LoginPage = (props) => {
                   setInputLocation(event.target.value)
                 }}
                 value={inputLocation}
-                hidden={process === 'registration' && registrationLevel === 0}
+                hidden={process === 'registration' && registrationLevel > 1}
                 tabIndex={
                   process === 'authorization' && registrationLevel === 2
                     ? 0

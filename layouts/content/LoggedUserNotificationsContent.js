@@ -2,23 +2,27 @@ import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
 import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
 import ComboBox from '@components/ComboBox'
-import Input from '@components/Input'
+// import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
 import YesNoPicker from '@components/ValuePicker/YesNoPicker'
 import { putData } from '@helpers/CRUD'
 import compareObjects from '@helpers/compareObjects'
 import { DEFAULT_USER } from '@helpers/constants'
 import useSnackbar from '@helpers/useSnackbar'
-import { modalsFuncAtom } from '@state/atoms'
+// import { modalsFuncAtom } from '@state/atoms'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import TelegramLoginButton from 'react-telegram-login'
+import Note from '@components/Note'
 
 const LoggedUserNotificationsContent = (props) => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const { telegramBotName } = useRecoilValue(locationPropsSelector)
 
   const birthdays = loggedUserActiveRole?.notifications?.birthdays
   const newUserRegistred = loggedUserActiveRole?.notifications?.newUserRegistred
@@ -34,6 +38,23 @@ const LoggedUserNotificationsContent = (props) => {
     loggedUser?.notifications ?? DEFAULT_USER.notifications
   )
 
+  const handleTelegramResponse = ({
+    id,
+    // first_name,
+    // last_name,
+    // photo_url,
+    username,
+  }) => {
+    setNotifications((state) => ({
+      ...state,
+      telegram: {
+        id,
+        username,
+        active: true,
+      },
+    }))
+  }
+
   const toggleNotificationsSettings = (key) =>
     setNotifications((state) => ({
       ...state,
@@ -43,7 +64,7 @@ const LoggedUserNotificationsContent = (props) => {
       },
     }))
 
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  // const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
 
@@ -104,23 +125,37 @@ const LoggedUserNotificationsContent = (props) => {
       </div>
       <div className="p-2">
         <div className="flex flex-wrap items-center gap-x-2">
-          <YesNoPicker
-            label="Оповещения в Telegram"
-            value={!!notifications?.telegram?.active}
-            onChange={() => {
-              if (!notifications?.telegram?.active) {
-                modalsFunc.notifications.telegram.activate()
-              }
-              setNotifications((state) => ({
-                ...state,
-                telegram: {
-                  ...state?.telegram,
-                  active: !state?.telegram?.active,
-                },
-              }))
-            }}
-          />
-          <Input
+          {notifications?.telegram?.id ? (
+            <YesNoPicker
+              label="Оповещения в Telegram"
+              value={!!notifications?.telegram?.active}
+              onChange={() => {
+                // if (!notifications?.telegram?.active) {
+                //   modalsFunc.notifications.telegram.activate()
+                // }
+                setNotifications((state) => ({
+                  ...state,
+                  telegram: {
+                    ...state?.telegram,
+                    active: !state?.telegram?.active,
+                  },
+                }))
+              }}
+            />
+          ) : (
+            <>
+              <Note>
+                Для подключения оповещений через Телеграм - нажмите на кнопку
+                ниже и авторизируйтесь
+              </Note>
+              <TelegramLoginButton
+                dataOnauth={handleTelegramResponse}
+                botName={telegramBotName}
+                lang="ru"
+              />
+            </>
+          )}
+          {/* <Input
             type="number"
             label="Telegram ID"
             value={notifications?.telegram?.id ?? ''}
@@ -135,7 +170,7 @@ const LoggedUserNotificationsContent = (props) => {
             }}
             copyPasteButtons
             showArrows={false}
-          />
+          /> */}
         </div>
 
         {isNotificationActivated && (

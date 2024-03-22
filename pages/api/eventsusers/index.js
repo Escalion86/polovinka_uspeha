@@ -177,7 +177,6 @@ export default async function handler(req, res) {
           result.push(updatedEventUser)
         }
       }
-      console.log('result :>> ', result)
 
       return res?.status(201).json({ success: true, data: result })
     } catch (error) {

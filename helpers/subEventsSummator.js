@@ -5,8 +5,9 @@ const subEventsSummator = (subEvents) => {
   if (!isObject(subEvents)) return
 
   return subEvents.reduce((sum, subEvent) => {
+    let result
     if (Object.keys(sum).length === 0)
-      return {
+      result = {
         ...subEvent,
         usersStatusAccess: subEvent.usersStatusAccess
           ? { ...subEvent.usersStatusAccess }
@@ -22,7 +23,7 @@ const subEventsSummator = (subEvents) => {
 
       const usersStatusDiscountResult = eventPricesWithStatus(subEvent)
 
-      return {
+      result = {
         ...sum,
         maxParticipants: summator('maxParticipants'),
         maxMans: summator('maxMans'),
@@ -78,6 +79,44 @@ const subEventsSummator = (subEvents) => {
               usersStatusDiscountResult.member,
         },
       }
+    }
+
+    const realMaxMembers = Math.min(
+      typeof result?.maxParticipants === 'number'
+        ? result.maxParticipants
+        : 9999,
+      Math.min(
+        typeof result?.maxMansMember === 'number' ? result.maxMansMember : 9999,
+        typeof result?.maxMans === 'number' ? result.maxMans : 9999
+      ) +
+        Math.min(
+          typeof result?.maxWomansMember === 'number'
+            ? result.maxWomansMember
+            : 9999,
+          typeof result?.maxWomans === 'number' ? result.maxWomans : 9999
+        )
+    )
+
+    const realMaxNovice = Math.min(
+      typeof result?.maxParticipants === 'number'
+        ? result.maxParticipants
+        : 9999,
+      Math.min(
+        typeof result?.maxMansNovice === 'number' ? result.maxMansNovice : 9999,
+        typeof result?.maxMans === 'number' ? result.maxMans : 9999
+      ) +
+        Math.min(
+          typeof result?.maxWomansNovice === 'number'
+            ? result.maxWomansNovice
+            : 9999,
+          typeof result?.maxWomans === 'number' ? result.maxWomans : 9999
+        )
+    )
+
+    return {
+      ...result,
+      realMaxMembers: realMaxMembers >= 9999 ? null : realMaxMembers,
+      realMaxNovice: realMaxNovice >= 9999 ? null : realMaxNovice,
     }
   }, {})
 }

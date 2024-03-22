@@ -175,7 +175,7 @@ const QuestionnaireContent = (props) => {
     loggedUser?.town !== town ||
     // loggedUser?.personalStatus !== personalStatus ||
     loggedUser?.email !== email ||
-    // loggedUser?.phone !== phone ||
+    loggedUser?.phone !== phone ||
     loggedUser?.whatsapp !== whatsapp ||
     loggedUser?.viber !== viber ||
     loggedUser?.telegram !== telegram ||
@@ -197,7 +197,7 @@ const QuestionnaireContent = (props) => {
         secondName: secondName.trim(),
         thirdName: thirdName.trim(),
         gender,
-        // phone,
+        phone,
         viber,
         whatsapp,
         email,
@@ -223,7 +223,7 @@ const QuestionnaireContent = (props) => {
           town,
           // personalStatus,
           email,
-          // phone,
+          phone,
           whatsapp,
           viber,
           telegram,
@@ -295,6 +295,9 @@ const QuestionnaireContent = (props) => {
               )}
               {!loggedUser.relationship && (
                 <li className="font-bold text-red-500">Статус отношений</li>
+              )}
+              {!loggedUser.phone && (
+                <li className="font-bold text-red-500">Телефон</li>
               )}
               {/* {(!loggedUser.images || loggedUser.images.length === 0) && (
                 <li className="font-bold text-red-500">
@@ -553,12 +556,15 @@ const QuestionnaireContent = (props) => {
             >
               <PhoneInput
                 required
-                label="Телефон (логин)"
+                label="Телефон"
                 value={phone}
                 onChange={setPhone}
                 error={errors.phone}
                 copyPasteButtons
-                disabled
+                disabled={
+                  !loggedUser?.registrationType ||
+                  loggedUser?.registrationType === 'phone'
+                }
                 noMargin
               />
             </ShowWrapper>

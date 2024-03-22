@@ -12,14 +12,21 @@ const Button = forwardRef(
       disabled = false,
       classBgColor = 'bg-general',
       classHoverBgColor = 'hover:bg-green-600',
+      classOutlineColor = 'border-general',
+      classTextColor = 'text-white',
+      classOutlineTextColor = 'text-general',
+      classHoverOutlineColor = 'hover:border-green-600',
+      classHoverOutlineTextColor = 'hover:text-green-600',
       loading = false,
       stopPropagation,
+      preventDefault,
       thin = false,
       big = false,
       icon,
       collapsing,
       rounded = true,
       iconRight = false,
+      outline = false,
       ...props
     },
     ref
@@ -46,19 +53,29 @@ const Button = forwardRef(
           onClick && !disabled
             ? (e) => {
                 stopPropagation && e.stopPropagation()
+                preventDefault && e.preventDefault()
                 onClick()
               }
             : undefined
         }
         className={cn(
-          'flex gap-x-2 justify-center items-center whitespace-nowrap duration-300 text-white text-base font-normal bg-opacity-90 prevent-select-text overflow-hidden',
+          'flex gap-x-2 justify-center items-center whitespace-nowrap duration-300 text-base font-normal prevent-select-text overflow-hidden',
+
           rounded ? (big ? 'rounded-lg' : 'rounded') : '',
           iconRight ? 'flex-row-reverse' : '',
           big ? 'text-xl py-2' : thin ? 'h-8 py-0.5' : 'h-9 py-1',
           className,
           disabled
             ? 'bg-gray-300 text-white cursor-not-allowed'
-            : cn(classHoverBgColor, classBgColor),
+            : outline
+              ? cn(
+                  'bg-white border',
+                  classOutlineColor,
+                  classOutlineTextColor,
+                  classHoverOutlineColor,
+                  classHoverOutlineTextColor
+                )
+              : cn(classTextColor, classHoverBgColor, classBgColor),
           collapsing ? 'px-2' : 'min-w-max px-3'
         )}
       >

@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { EVENT_STATUSES } from '@helpers/constants'
 import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import subEventsSummator from '@helpers/subEventsSummator'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventSelector from '@state/selectors/eventSelector'
@@ -27,6 +28,7 @@ import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullBy
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
+import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
@@ -70,6 +72,9 @@ const UserPayment = ({
   const paymentsWithoutEventOfUser = useRecoilValue(
     paymentsOfEventWithoutEventIdByUserIdSelector(user._id)
   )
+  const subEventSum = subEvent
+    ? subEvent
+    : useRecoilValue(subEventsSumOfEventSelector(event._id))
 
   const [isCollapsed, setIsCollapsed] = useState(true)
 
@@ -94,12 +99,12 @@ const UserPayment = ({
   const sumOfPayments = income(paymentsOfUser)
 
   const userDiscount = userStatus
-    ? (subEvent ?? event).usersStatusDiscount[userStatus]
+    ? subEventSum.usersStatusDiscount[userStatus]
     : 0
 
   const eventPriceForUser = noEventPriceForUser
     ? 0
-    : ((subEvent ?? event).price -
+    : (subEventSum.price -
         (typeof userDiscount === 'number' ? userDiscount : 0)) /
         100 -
       sumOfCoupons
@@ -447,6 +452,8 @@ const eventUsersPaymentsFunc = (eventId) => {
     const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
 
+    const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
+
     const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
 
     const paymentsToEvent = paymentsOfEvent.filter(
@@ -556,6 +563,63 @@ const eventUsersPaymentsFunc = (eventId) => {
         100 -
       sumOfCouponsOfEventFromParticipants
 
+    console.log('subEventSum :>> ', subEventSum)
+
+    const maxSumOfPaymentsToExpectFromParticipants =
+      subEventSum.realMaxNovice && subEventSum.realMaxMembers
+        ? event.subEvents.reduce((sum, subEvent) => {
+            const subEventWithReal = subEventsSummator([subEvent])
+
+            if (
+              typeof subEventWithReal.maxParticipants === 'number' &&
+              subEventWithReal.realMaxMembers + subEventWithReal.realMaxNovice >
+                subEventWithReal.maxParticipants
+            ) {
+              const statusWithBiggestPrice =
+                eventPrices[subEvent.id].novice >
+                eventPrices[subEvent.id].member
+                  ? 'novice'
+                  : 'member'
+              const statusWithSmallestPrice =
+                statusWithBiggestPrice === 'member' ? 'novice' : 'member'
+
+              const biggestPrice =
+                eventPrices[subEvent.id][statusWithBiggestPrice]
+              const smallestPrice =
+                eventPrices[subEvent.id][statusWithSmallestPrice]
+
+              let res = 0
+              for (let i = 1; i <= subEventWithReal.maxParticipants; i++) {
+                if (
+                  i <=
+                  subEventWithReal[
+                    statusWithBiggestPrice === 'member'
+                      ? 'realMaxMembers'
+                      : 'realMaxNovice'
+                  ]
+                )
+                  res += biggestPrice
+                else res += smallestPrice
+              }
+              return sum + res
+            } else {
+              const res =
+                eventPrices[subEvent.id].member *
+                  subEventWithReal.realMaxMembers +
+                eventPrices[subEvent.id].novice * subEventWithReal.realMaxNovice
+              // if (
+              //   typeof subEventWithReal.maxParticipants === 'number' &&
+              //   res > biggestPrice * subEventWithReal.maxParticipants
+              // ) {
+              //   return sum + biggestPrice * subEventWithReal.maxParticipants
+              // }
+              return sum + res
+            }
+          }, 0) /
+            100 -
+          sumOfCouponsOfEventFromParticipants
+        : null
+
     const totalIncome =
       sumOfPaymentsOfEventFromParticipants +
       sumOfPaymentsOfEventToAssistants +
@@ -563,10 +627,11 @@ const eventUsersPaymentsFunc = (eventId) => {
       sumOfPaymentsFromEvent +
       sumOfPaymentsFromNotParticipants
 
-    const expectedIncome =
-      sumOfPaymentsToExpectFromParticipants +
-      sumOfPaymentsOfEventToAssistants +
-      sumOfPaymentsToEvent
+    const expectedIncome = maxSumOfPaymentsToExpectFromParticipants
+      ? maxSumOfPaymentsToExpectFromParticipants +
+        sumOfPaymentsOfEventToAssistants +
+        sumOfPaymentsToEvent
+      : null
 
     const noviceFullPaidCount = noviceOfEvent.filter(({ user, subEventId }) => {
       const userPayments = paymentsOfEventOfParticipants.filter(
@@ -1017,9 +1082,15 @@ const eventUsersPaymentsFunc = (eventId) => {
               <span
                 className={cn(
                   'font-bold',
-                  expectedIncome <= 0 ? 'text-danger' : 'text-success'
+                  expectedIncome
+                    ? expectedIncome <= 0
+                      ? 'text-danger'
+                      : 'text-success'
+                    : 'text-gray-800'
                 )}
-              >{`${expectedIncome} ₽`}</span>
+              >
+                {expectedIncome ? `${expectedIncome} ₽` : 'неизвестно'}
+              </span>
             </div>
             {/* {expectedMaxIncome !== null && (
               <div className="flex flex-wrap gap-x-1">
