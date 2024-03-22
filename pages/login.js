@@ -2,8 +2,10 @@ import CheckBox from '@components/CheckBox'
 import FabMenu from '@components/FabMenu'
 import LoadingSpinner from '@components/LoadingSpinner'
 import {
+  faCheck,
   faHouse,
   faLock,
+  faPhone,
   faTimes,
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
@@ -33,6 +35,11 @@ import SvgLove from 'svg/SvgLove'
 import SvgWave from 'svg/SvgWave'
 import tailwindConfig from 'tailwind.config.js'
 import resolveConfig from 'tailwindcss/resolveConfig'
+
+import TelegramLoginButton from 'react-telegram-login'
+import Divider from '@components/Divider'
+import Button from '@components/Button'
+// import TelegramLoginButton from '@components/TelegramLoginButton'
 
 const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
   const [close, setClose] = useState(false)
@@ -76,7 +83,7 @@ const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
           </div>
         )}
         {text && <div className="px-2 mb-3 leading-4 tablet:px-3">{text}</div>}
-        <div className="flex flex-col items-center flex-1 px-2 overflow-y-auto gap-y-5 tablet:px-3">
+        <div className="flex flex-col items-center flex-1 px-2 overflow-y-auto tablet:text-lg gap-y-5 tablet:px-3">
           {children}
         </div>
       </motion.div>
@@ -322,9 +329,12 @@ const LoginPage = (props) => {
   const router = useRouter()
 
   const [process, setProcess] = useState('authorization')
+  const [type, setType] = useState()
   const [registrationLevel, setRegistrationLevel] = useState(1)
   const [backCall, setBackCall] = useState(false)
   const [backCallRes, setBackCallRes] = useState()
+  const [telegramRegistrationConfirm, setTelegramRegistrationConfirm] =
+    useState(false)
   const [waitingResponse, setWaitingResponse] = useState(false)
   const [inputLocation, setInputLocation] = useState(
     props?.location ?? 'krasnoyarsk'
@@ -338,6 +348,10 @@ const LoginPage = (props) => {
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
+  const telegramBotName = LOCATIONS[inputLocation]
+    ? LOCATIONS[inputLocation].telegramBotName
+    : LOCATIONS['krasnoyarsk'].telegramBotName
+
   const isPWA = useRecoilValue(isPWAAtom)
 
   const inputPhoneRef = useRef()
@@ -348,6 +362,92 @@ const LoginPage = (props) => {
   const codeSendService =
     props?.siteSettings?.codeSendService ??
     DEFAULT_SITE_SETTINGS.codeSendService
+
+  const handleTelegramResponse = ({
+    id,
+    first_name,
+    last_name,
+    photo_url,
+    username,
+    forceReg = false,
+  }) => {
+    // console.log(response)
+    // if (process === 'authorization') {
+    setWaitingResponse(true)
+    // Если это авторизация
+    signIn('telegram', {
+      redirect: false,
+      telegramId: id,
+      first_name,
+      last_name,
+      photo_url,
+      username,
+      registration: forceReg || process === 'registration' ? 'true' : 'false',
+    }).then((res) => {
+      if (res.error === 'CredentialsSignin') {
+        setWaitingResponse(false)
+        setInputPassword('')
+        // addError({
+        //   telegram:
+        //     'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
+        // })
+        setTelegramRegistrationConfirm({
+          id,
+          first_name,
+          last_name,
+          photo_url,
+          username,
+        })
+      } else {
+        if (router.query?.event)
+          router.push('/event/' + router.query?.event, '', { shallow: true })
+        else if (router.query?.service)
+          router.push('/service/' + router.query?.service, '', {
+            shallow: true,
+          })
+        else router.push('/cabinet', '', { shallow: true })
+      }
+    })
+    // }
+  }
+
+  const test = () => {
+    handleTelegramResponse({
+      // auth_date: 1710790148,
+      first_name: 'Алексей',
+      // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
+      id: 261102161,
+      username: 'escalion',
+      last_name: 'Белинский Иллюзионист',
+      photo_url:
+        'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
+    })
+  }
+
+  // const test2 = () => {
+  //   setWaitingResponse(true)
+  //   // Если это авторизация
+  //   signIn('credentials', {
+  //     redirect: false,
+  //     phone: '79138370020',
+  //     password: 'Magister86',
+  //   }).then((res) => {
+  //     console.log('res :>> ', res)
+  //     if (res?.error === 'CredentialsSignin') {
+  //       setWaitingResponse(false)
+  //       setInputPassword('')
+  //       addError({ password: 'Телефон или пароль не верны' })
+  //     } else {
+  //       if (router.query?.event)
+  //         router.push('/event/' + router.query?.event, '', { shallow: true })
+  //       else if (router.query?.service)
+  //         router.push('/service/' + router.query?.service, '', {
+  //           shallow: true,
+  //         })
+  //       else router.push('/cabinet', '', { shallow: true })
+  //     }
+  //   })
+  // }
 
   // const handleSumitForm = useCallback(
   //   (e) => {
@@ -588,7 +688,8 @@ const LoginPage = (props) => {
         phone: inputPhone,
         password: inputPassword,
       }).then((res) => {
-        if (res.error === 'CredentialsSignin') {
+        console.log('res :>> ', res)
+        if (res?.error === 'CredentialsSignin') {
           setWaitingResponse(false)
           setInputPassword('')
           addError({ password: 'Телефон или пароль не верны' })
@@ -776,7 +877,12 @@ const LoginPage = (props) => {
                 // height={48}
               />
             </div>
-            <div className="h-8 overflow-hidden text-2xl text-gray-800">
+            <div
+              className={cn(
+                type ? 'h-12' : 'h-8',
+                'overflow-hidden text-2xl text-gray-800'
+              )}
+            >
               <p
                 className={cn('duration-300', {
                   'opacity-0 h-0': process !== 'registration',
@@ -797,6 +903,18 @@ const LoginPage = (props) => {
                 })}
               >
                 Смена пароля
+              </p>
+              <p
+                className={cn('leading-[14px] duration-300 text-base', {
+                  'opacity-0 h-0': !type,
+                })}
+              >
+                в регионе{' '}
+                {upperCaseFirst(
+                  LOCATIONS[inputLocation]
+                    ? LOCATIONS[inputLocation].townRu
+                    : LOCATIONS['krasnoyarsk'].townRu
+                )}
               </p>
             </div>
             {/* {needToCheckMail ? (
@@ -826,11 +944,13 @@ const LoginPage = (props) => {
                   setInputLocation(event.target.value)
                 }}
                 value={inputLocation}
-                hidden={process === 'registration' && registrationLevel > 1}
+                hidden={
+                  type || (process === 'registration' && registrationLevel > 1)
+                }
                 tabIndex={
-                  process === 'authorization' && registrationLevel === 2
-                    ? 0
-                    : -1
+                  type || (process === 'registration' && registrationLevel > 1)
+                    ? -1
+                    : 0
                 }
                 readOnly={waitingResponse}
               />
@@ -859,15 +979,18 @@ const LoginPage = (props) => {
                 max={9999999999}
                 maxLength="10"
                 tabIndex={
-                  (process === 'registration' && registrationLevel === 1) ||
-                  process === 'authorization'
-                    ? 0
-                    : -1
+                  type !== 'phone' ||
+                  ((process === 'registration' ||
+                    process === 'forgotPassword') &&
+                    registrationLevel !== 1)
+                    ? -1
+                    : 0
                 }
                 hidden={
-                  (process === 'registration' ||
+                  type !== 'phone' ||
+                  ((process === 'registration' ||
                     process === 'forgotPassword') &&
-                  registrationLevel !== 1
+                    registrationLevel !== 1)
                 }
                 readOnly={waitingResponse}
               />
@@ -885,11 +1008,17 @@ const LoginPage = (props) => {
                 }}
                 value={inputPinCode}
                 error={errors.pinCode}
-                hidden={process === 'authorization' || registrationLevel !== 2}
+                hidden={
+                  type !== 'phone' ||
+                  process === 'authorization' ||
+                  registrationLevel !== 2
+                }
                 tabIndex={
-                  process === 'authorization' && registrationLevel === 2
-                    ? 0
-                    : -1
+                  type !== 'phone' ||
+                  process === 'authorization' ||
+                  registrationLevel !== 2
+                    ? -1
+                    : 0
                 }
                 readOnly={waitingResponse}
                 maxLength="4"
@@ -909,14 +1038,17 @@ const LoginPage = (props) => {
                 value={inputPassword}
                 error={errors.password}
                 tabIndex={
-                  ((process === 'registration' ||
-                    process === 'forgotPassword') &&
-                    registrationLevel === 3) ||
-                  process === 'authorization'
-                    ? 0
-                    : -1
+                  type !== 'phone' &&
+                  ((process === 'registration' && registrationLevel !== 3) ||
+                    process === 'authorization')
+                    ? -1
+                    : 0
                 }
-                hidden={process !== 'authorization' && registrationLevel !== 3}
+                hidden={
+                  type !== 'phone' &&
+                  ((process === 'registration' && registrationLevel !== 3) ||
+                    process === 'authorization')
+                }
                 readOnly={waitingResponse}
               />
               <Input
@@ -932,55 +1064,67 @@ const LoginPage = (props) => {
                 value={inputPasswordRepeat}
                 error={errors.password}
                 tabIndex={
-                  (process === 'registration' ||
-                    process === 'forgotPassword') &&
-                  registrationLevel === 3
-                    ? 0
-                    : -1
+                  process === 'authorization' || registrationLevel !== 3
+                    ? -1
+                    : 0
                 }
                 hidden={process === 'authorization' || registrationLevel !== 3}
                 readOnly={waitingResponse}
               />
-              {process === 'registration' && registrationLevel === 1 && (
-                <>
-                  <CheckBox
-                    checked={checkHave18Years}
-                    labelPos="right"
-                    onChange={(e) => setCheckHave18Years(!checkHave18Years)}
-                    label="Мне исполнилось 18 лет"
-                    wrapperClassName={cn(
-                      'overflow-hidden',
-                      process === 'registration' && registrationLevel === 1
-                        ? 'max-h-15 mb-3 mt-2 py-1'
-                        : ''
-                    )}
-                    // hidden={process !== 'registration' || registrationLevel !== 1}
-                  />
-                  <CheckBox
-                    checked={checkAgreement}
-                    onChange={(e) => setCheckAgreement(!checkAgreement)}
-                    label={
-                      <div className="text-left">
-                        Согласен на{' '}
-                        <span
-                          onClick={() => setShowAgreement(true)}
-                          className="italic duration-300 cursor-pointer text-general hover:text-success"
-                        >
-                          обработку персональных данных
-                        </span>
-                      </div>
-                    }
-                    wrapperClassName={cn(
-                      'overflow-hidden',
-                      process === 'registration' && registrationLevel === 1
-                        ? 'max-h-15 mt-3 py-1 mb-4'
-                        : ''
-                    )}
-                    // hidden={process !== 'registration' || registrationLevel !== 1}
-                  />
-                </>
+              {!type &&
+                process === 'registration' &&
+                registrationLevel === 1 && (
+                  <>
+                    <CheckBox
+                      checked={checkHave18Years}
+                      labelPos="right"
+                      onChange={(e) => setCheckHave18Years(!checkHave18Years)}
+                      label="Мне исполнилось 18 лет"
+                      wrapperClassName={cn(
+                        'overflow-hidden',
+                        process === 'registration' && registrationLevel === 1
+                          ? 'max-h-15 mb-3 mt-2 py-1'
+                          : ''
+                      )}
+                      // hidden={process !== 'registration' || registrationLevel !== 1}
+                    />
+                    <CheckBox
+                      checked={checkAgreement}
+                      onChange={(e) => setCheckAgreement(!checkAgreement)}
+                      label={
+                        <div className="text-left">
+                          Согласен на{' '}
+                          <span
+                            onClick={() => setShowAgreement(true)}
+                            className="italic duration-300 cursor-pointer text-general hover:text-success"
+                          >
+                            обработку персональных данных
+                          </span>
+                        </div>
+                      }
+                      wrapperClassName={cn(
+                        'overflow-hidden',
+                        process === 'registration' && registrationLevel === 1
+                          ? 'max-h-15 mt-3 py-1 mb-4'
+                          : ''
+                      )}
+                      // hidden={process !== 'registration' || registrationLevel !== 1}
+                    />
+                  </>
+                )}
+              {!type && (
+                <Button
+                  name="По номеру телефона"
+                  outline
+                  className="w-full"
+                  icon={faPhone}
+                  onClick={() => setType('phone')}
+                  disabled={
+                    process === 'registration' &&
+                    (!checkAgreement || !checkHave18Years)
+                  }
+                />
               )}
-
               {Object.values(errors).length > 0 && (
                 <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
                   {Object.values(errors).map(
@@ -997,43 +1141,93 @@ const LoginPage = (props) => {
                   Я знаю код
                 </div>
               )}
-              {waitingResponse ? (
-                <div
-                  className={cn(
-                    'block border-gray-500 bg-gray-200 w-full h-12 mt-4 text-white uppercase duration-300 border-2 outline-none rounded-3xl'
-                  )}
-                >
-                  <LoadingSpinner size="xxs" />
-                </div>
+              {type === 'phone' &&
+                (waitingResponse ? (
+                  <div
+                    className={cn(
+                      'block border-gray-500 bg-gray-200 w-full h-12 mt-4 text-white uppercase duration-300 border-2 outline-none rounded-3xl'
+                    )}
+                  >
+                    <LoadingSpinner size="xxs" />
+                  </div>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      submit()
+                    }}
+                    className={cn(
+                      isButtonDisabled
+                        ? 'bg-gray-200'
+                        : 'bg-gray-500 focus:bg-general focus:border-2 focus:border-black hover:bg-general',
+                      'block w-full h-12 text-white uppercase duration-300  border-0 outline-none  rounded-3xl'
+                    )}
+                    tabIndex={0}
+                    disabled={isButtonDisabled}
+                  >
+                    {process === 'authorization'
+                      ? 'Авторизироваться'
+                      : registrationLevel === 1
+                        ? process === 'registration'
+                          ? 'Зарегистрироваться'
+                          : 'Сменить пароль'
+                        : registrationLevel === 2
+                          ? 'Отправить код'
+                          : process === 'registration'
+                            ? 'Завершить регистрацию'
+                            : 'Сменить пароль и авторизироваться'}
+                  </button>
+                ))}
+              {!type ? (
+                <>
+                  <div className="flex items-center text-gray-600 gap-x-2">
+                    <div className="flex-1 h-0 border-t border-gray-600" />
+                    <div className="mb-1">или</div>
+                    <div className="flex-1 h-0 border-t border-gray-600" />
+                  </div>
+                  {/* <Button name="test2" onClick={test2} preventDefault /> */}
+                  <div className="flex justify-center w-full">
+                    {waitingResponse ? (
+                      <div className={cn('w-full h-10')}>
+                        <LoadingSpinner size="xxs" />
+                      </div>
+                    ) : (
+                      <div
+                        className={cn(
+                          'relative',
+                          process === 'registration' &&
+                            (!checkAgreement || !checkHave18Years)
+                            ? 'grayscale cursor-not-allowed'
+                            : ''
+                        )}
+                      >
+                        {/* <Button name="test" onClick={test} preventDefault /> */}
+                        {process === 'registration' &&
+                          (!checkAgreement || !checkHave18Years) && (
+                            <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
+                          )}
+                        <TelegramLoginButton
+                          dataOnauth={handleTelegramResponse}
+                          botName={telegramBotName}
+                          lang="ru"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </>
               ) : (
-                <button
-                  onClick={(e) => {
-                    e.preventDefault()
-                    submit()
+                <div
+                  className="mt-2 leading-4 text-gray-600 duration-300 cursor-pointer hover:text-success"
+                  onClick={() => {
+                    setType()
+                    setRegistrationLevel(1)
                   }}
-                  className={cn(
-                    isButtonDisabled
-                      ? 'bg-gray-200'
-                      : 'bg-gray-500 focus:bg-general focus:border-2 focus:border-black hover:bg-general',
-                    'block w-full h-12 text-white uppercase duration-300  border-0 outline-none  rounded-3xl'
-                  )}
-                  tabIndex={0}
-                  disabled={isButtonDisabled}
                 >
-                  {process === 'authorization'
-                    ? 'Авторизироваться'
-                    : registrationLevel === 1
-                      ? process === 'registration'
-                        ? 'Зарегистрироваться'
-                        : 'Сменить пароль'
-                      : registrationLevel === 2
-                        ? 'Отправить код'
-                        : process === 'registration'
-                          ? 'Завершить регистрацию'
-                          : 'Сменить пароль и авторизироваться'}
-                </button>
+                  Изменить способ{' '}
+                  {process === 'registration' ? 'регистрации' : 'авторизации'}{' '}
+                  или регион
+                </div>
               )}
-
               {(process === 'registration' || process === 'forgotPassword') &&
                 registrationLevel === 2 && (
                   <RepeatCall
@@ -1090,6 +1284,7 @@ const LoginPage = (props) => {
                         : 'authorization'
                     )
                     setRegistrationLevel(1)
+                    setType()
                   }}
                   className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
                 >
@@ -1107,39 +1302,63 @@ const LoginPage = (props) => {
                   Забыли пароль?
                 </a>
               </div>
-              {/* <div className="my-5 text-lg text-gray-700">Или</div>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault()
-                    signIn('google')
-                  }}
-                  // style={{
-                  //   backgroundImage:
-                  //     'linear-gradient(to right, #32be8f, #38d39f, #32be8f)',
-                  // }}
-                  className="flex items-center w-full h-12 px-4 text-lg text-black duration-300 bg-white border-2 border-gray-500 outline-none focus:border-general group hover:border-general rounded-3xl"
-                >
-                  <img
-                    className="group-hover:animate-spin"
-                    src="/img/google.png"
-                  />
-                  <span className="flex-1">Google</span>
-                </button> */}
               {!isPWA && (
-                <Link
-                  href="/"
-                  shallow
-                  tabIndex={0}
-                  className="block py-3 mt-2 mb-5 text-sm duration-300 border-t border-gray-400 cursor-pointer phoneH:text-base hover:text-general"
-                >
-                  Вернуться на главную страницу сайта
-                </Link>
+                <>
+                  <Divider />
+                  <Link
+                    href="/"
+                    shallow
+                    tabIndex={0}
+                    className="block py-1 mb-5 text-sm duration-300 cursor-pointer phoneH:text-base hover:text-general"
+                  >
+                    Вернуться на главную страницу сайта
+                  </Link>
+                </>
               )}
             </>
             {/* )} */}
           </form>
         </div>
       </div>
+      {telegramRegistrationConfirm && (
+        <Modal
+          onClose={() => {
+            setTelegramRegistrationConfirm(false)
+          }}
+          // id
+          // title
+          // text
+          // subModalText
+        >
+          {' '}
+          <div className="flex flex-col items-center gap-y-2">
+            <div>
+              Данный аккаунт телеграм не зарегистрирован. Хотите
+              зарегистрировать новый аккаунт?
+            </div>
+            <div className="flex justify-between gap-x-2">
+              <Button
+                name="Да"
+                icon={faCheck}
+                classBgColor="bg-success"
+                onClick={() => {
+                  handleTelegramResponse({
+                    ...telegramRegistrationConfirm,
+                    forceReg: true,
+                  })
+                  setTelegramRegistrationConfirm(false)
+                }}
+              />
+              <Button
+                name="Нет"
+                icon={faTimes}
+                classBgColor="bg-danger"
+                onClick={() => setTelegramRegistrationConfirm(false)}
+              />
+            </div>
+          </div>
+        </Modal>
+      )}
       {backCall && (
         <Modal
           onClose={() => {
