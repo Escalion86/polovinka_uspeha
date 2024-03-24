@@ -143,7 +143,7 @@ const eventViewFunc = (eventId) => {
                   showName
                 />
               )}
-            <div className="flex justify-center w-full text-3xl font-bold">
+            <div className="flex justify-center w-full text-3xl font-bold text-center">
               {event?.title}
             </div>
             <div
