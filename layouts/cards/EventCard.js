@@ -153,10 +153,12 @@ const EventCard = ({
                 event.showOnSite ? '' : 'pl-10 laptop:pl-0'
               )}
             >
-              {event.usersRelationshipAccess &&
-                event.usersRelationshipAccess !== 'yes' && (
+              {subEventSum.usersRelationshipAccess &&
+                subEventSum.usersRelationshipAccess !== 'yes' && (
                   <UserRelationshipIcon
-                    relationship={event.usersRelationshipAccess === 'only'}
+                    relationship={
+                      subEventSum.usersRelationshipAccess === 'only'
+                    }
                     nameForEvent
                   />
                 )}
