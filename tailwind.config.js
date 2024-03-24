@@ -321,7 +321,6 @@ module.exports = {
       groups: ['one', 'two'],
     }),
     require('preline/plugin'),
-    require('@tailwindcss/line-clamp'),
   ],
   future: {
     purgeLayersByDefault: true,
