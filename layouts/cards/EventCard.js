@@ -208,11 +208,18 @@ const EventCard = ({
           </div>
           <div className="flex flex-1 min-h-[32px] h-[32px]">
             <div className="flex flex-col flex-1 laptop:flex-row">
-              <div className="flex items-center justify-center flex-1 gap-2 pl-2 pr-1">
-                <div className="flex flex-col items-center justify-center flex-1">
+              <div className="flex items-center justify-center flex-1 gap-2 px-1">
+                <div
+                  className={cn(
+                    'flex min-h-[64px] flex-col items-stretch justify-center flex-1',
+                    changeStyle === 'laptop'
+                      ? 'laptop:min-h-[40px]'
+                      : 'desktop:min-h-[40px]'
+                  )}
+                >
                   <TextLinesLimiter
                     className={cn(
-                      'flex-1 -mt-1 text-lg italic font-bold text-general',
+                      'text-lg italic font-bold text-general',
                       changeStyle === 'laptop'
                         ? 'laptop:hidden laptop:text-xl'
                         : 'desktop:hidden desktop:text-xl'
@@ -224,13 +231,13 @@ const EventCard = ({
                   </TextLinesLimiter>
                   <TextLinesLimiter
                     className={cn(
-                      'flex items-center flex-1 min-h-[36px] w-full text-lg font-bold text-center',
+                      'flex-1 text-lg font-bold flex items-center justify-center',
                       changeStyle === 'laptop'
-                        ? 'laptop:text-xl laptop:min-h-[40px]'
-                        : 'desktop:text-xl desktop:min-h-[40px]'
+                        ? 'laptop:text-xl'
+                        : 'desktop:text-xl'
                     )}
                     textClassName={cn(
-                      'leading-4',
+                      'leading-[20px]',
                       changeStyle === 'laptop'
                         ? 'laptop:leading-5'
                         : 'desktop:leading-5'

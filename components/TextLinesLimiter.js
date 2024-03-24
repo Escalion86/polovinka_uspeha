@@ -8,8 +8,19 @@ const TextLinesLimiter = ({
   ...props
 }) => {
   return (
-    <div className={className}>
-      <div className="flex items-center w-full h-full">
+    <div className={className} {...props}>
+      <div
+        className={cn(
+          'text-center',
+          lines === 1
+            ? 'line-clamp-1'
+            : lines === 2
+              ? 'line-clamp-2'
+              : 'line-clamp-3',
+          textClassName
+        )}
+      >
+        {/* <div className="flex items-center w-full h-full">
         <div
           className={cn('w-full overflow-hidden', textClassName)}
           style={{
@@ -18,9 +29,10 @@ const TextLinesLimiter = ({
             WebkitLineClamp: lines,
           }}
           {...props}
-        >
-          {children}
-        </div>
+        > */}
+        {children}
+        {/* </div>
+      </div> */}
       </div>
     </div>
   )

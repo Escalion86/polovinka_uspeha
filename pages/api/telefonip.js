@@ -1,11 +1,9 @@
-import { postData } from '@helpers/CRUD'
-import { DEFAULT_ROLES } from '@helpers/constants'
 import getMinutesBetween from '@helpers/getMinutesBetween'
 import phoneValidator from '@helpers/phoneValidator'
 import pinValidator from '@helpers/pinValidator'
 import PhoneConfirms from '@models/PhoneConfirms'
-import Roles from '@models/Roles'
 import Users from '@models/Users'
+import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
 import dbConnect from '@utils/dbConnect'
 
 const token = process.env.TELEFONIP
@@ -305,51 +303,7 @@ export default async function handler(req, res) {
           })
         } else {
           const newUser = await Users.create({ phone, password })
-
-          const usersCount = await Users.count({})
-
-          const rolesSettings = await Roles.find({})
-          const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
-          const rolesIdsToEventUsersNotification = allRoles
-            .filter((role) => role?.notifications?.newUserRegistred)
-            .map((role) => role._id)
-
-          const usersWithTelegramNotificationsOfEventUsersON = await Users.find(
-            {
-              role:
-                process.env.NODE_ENV === 'development'
-                  ? 'dev'
-                  : { $in: rolesIdsToEventUsersNotification },
-              'notifications.settings.newUserRegistred': true,
-              'notifications.telegram.active': true,
-              'notifications.telegram.id': {
-                $exists: true,
-                $ne: null,
-              },
-            }
-          )
-          const usersTelegramIds =
-            usersWithTelegramNotificationsOfEventUsersON.map(
-              (user) => user.notifications?.get('telegram')?.id
-            )
-
-          await Promise.all(
-            usersTelegramIds.map(async (telegramId) => {
-              await postData(
-                `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-                {
-                  chat_id: telegramId,
-                  text: `Зарегистрирован новый пользователь №${usersCount} с телефонным номером +${phone}`,
-                  parse_mode: 'html',
-                },
-                (data) => console.log('data', data),
-                (data) => console.log('error', data),
-                true,
-                null,
-                true
-              )
-            })
-          )
+          await userRegisterTelegramNotification({ phone })
 
           return res?.status(201).json({
             success: true,
