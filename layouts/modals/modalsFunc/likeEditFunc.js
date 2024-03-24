@@ -126,23 +126,23 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     )
 
     const NoteComponent = (props) => (adminView ? null : <Note {...props} />)
-
+    console.log('eventUser.likes :>> ', eventUser.likes)
     const eventUsersOtherGenderWithCoincidences = otherGenderEventUsers.map(
       (eventUser2) => ({
         ...eventUser2,
-        coincidence: eventUser2.likes?.includes(eventUser.userId),
-        like: eventUser.likes?.includes(eventUser2.userId),
+        likeToMe: eventUser2.likes?.includes(eventUser.userId),
+        iLike: eventUser.likes?.includes(eventUser2.userId),
       })
     )
 
     const coincidences = eventUsersOtherGenderWithCoincidences.filter(
-      (eventUser) => eventUser.coincidence
+      (eventUser) => eventUser.likeToMe && eventUser.iLike
     )
     const notCoincidences = eventUsersOtherGenderWithCoincidences.filter(
-      (eventUser) => !eventUser.coincidence && eventUser.like
+      (eventUser) => !eventUser.likeToMe && eventUser.iLike
     )
     const other = eventUsersOtherGenderWithCoincidences.filter(
-      (eventUser) => !eventUser.coincidence && !eventUser.like
+      (eventUser) => !eventUser.iLike
     )
 
     const onClickConfirm = () => {
@@ -176,18 +176,18 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
         !likes || likes?.length === 0
           ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
           : eventUser.likes && !isFormChanged
-          ? 'Оставить как было'
-          : adminView
-          ? 'Сохранить выбор'
-          : 'Отправить мой выбор'
+            ? 'Оставить как было'
+            : adminView
+              ? 'Сохранить выбор'
+              : 'Отправить мой выбор'
       )
       // setDisableConfirm(eventUser.likes && !isFormChanged)
       setOnConfirmFunc(
         !event.likesProcessActive
           ? undefined
           : eventUser.likes && !isFormChanged
-          ? closeModal
-          : onClickConfirm
+            ? closeModal
+            : onClickConfirm
       )
       setCloseButtonShow(!event.likesProcessActive)
       setDeclineButtonShow(adminView)
@@ -291,12 +291,12 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                   </div>
                   <Heart small />
                 </div>
-                {coincidences.map(({ user, coincidence, like }) => (
+                {coincidences.map(({ user, iLike, likeToMe }) => (
                   <CoincidenceItem
                     key={'coincidence' + user._id}
                     user={user}
-                    coincidence={coincidence}
-                    like={like}
+                    coincidence={likeToMe && iLike}
+                    like={iLike}
                   />
                 ))}
               </>
@@ -316,12 +316,12 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                   </div>
                   <Heart small broken gray />
                 </div>
-                {notCoincidences.map(({ user, coincidence, like }) => (
+                {notCoincidences.map(({ user, iLike, likeToMe }) => (
                   <CoincidenceItem
                     key={'noCoincidence' + user._id}
                     user={user}
-                    coincidence={coincidence}
-                    like={like}
+                    coincidence={likeToMe && iLike}
+                    like={iLike}
                   />
                 ))}
               </>
@@ -337,12 +337,12 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                 <div className="flex items-center justify-center px-3 mt-3 text-xl font-bold text-center text-gray-700">
                   ВЫ НЕ ПОСТАВИЛИ ЛАЙК
                 </div>
-                {other.map(({ user, coincidence, like }) => (
+                {other.map(({ user, iLike, likeToMe }) => (
                   <CoincidenceItem
                     key={'noLikes' + user._id}
                     user={user}
-                    coincidence={coincidence}
-                    like={like}
+                    coincidence={likeToMe && iLike}
+                    like={iLike}
                   />
                 ))}
               </>
