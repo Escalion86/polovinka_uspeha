@@ -29,6 +29,18 @@ const usersSchema = {
     ],
     default: '',
   },
+  firstname: {
+    type: String,
+    default: '',
+  },
+  secondname: {
+    type: String,
+    default: '',
+  },
+  thirdname: {
+    type: String,
+    default: '',
+  },
   email: {
     type: String,
     lowercase: true,

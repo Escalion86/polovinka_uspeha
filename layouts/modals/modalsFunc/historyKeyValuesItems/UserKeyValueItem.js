@@ -11,7 +11,6 @@ const UserKeyValueItem = ({ objKey, value }) =>
       'thirdName',
       'email',
       'about',
-      'interests',
       'soctag',
       'custag',
       'personalStatus',

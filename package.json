@@ -33,7 +33,7 @@
     "dayjs": "^1.11.7",
     "elevenlabs-js": "^1.2.6",
     "exceljs": "^4.3.0",
-    "framer-motion": "^8.4.3",
+    "framer-motion": "^11.0.20",
     "fs": "^0.0.1-security",
     "googleapis": "^105.0.0",
     "isomorphic-dompurify": "^1.8.0",
