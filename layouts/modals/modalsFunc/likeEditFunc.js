@@ -157,7 +157,11 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     const [likes, setLikes] = useState(eventUser.likes ?? [])
 
     useEffect(() => {
-      if (!adminView && !eventUser.seeLikesResult) {
+      if (
+        !adminView &&
+        !event.likesProcessActive &&
+        !eventUser.seeLikesResult
+      ) {
         setEventUserData(
           eventId,
           {
@@ -168,7 +172,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
           true
         )
       }
-    }, [eventUser.seeLikesResult, adminView])
+    }, [eventUser.seeLikesResult, event.likesProcessActive, adminView])
 
     useEffect(() => {
       const isFormChanged = !compareArrays(eventUser.likes ?? [], likes)
