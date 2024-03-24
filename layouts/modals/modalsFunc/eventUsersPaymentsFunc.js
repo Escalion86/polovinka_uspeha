@@ -1,5 +1,6 @@
 import Button from '@components/Button'
 import CardButton from '@components/CardButton'
+import Divider from '@components/Divider'
 import InputWrapper from '@components/InputWrapper'
 import { PaymentItem, UserItem, UserItemFromId } from '@components/ItemCards'
 import TabContext from '@components/Tabs/TabContext'
@@ -33,6 +34,13 @@ import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+
+const TotalItem = ({ title, className, valueClassName, value }) => (
+  <div className={cn('flex flex-wrap gap-x-1', className)}>
+    <span>{title}:</span>
+    <span className={cn('font-bold', valueClassName)}>{value}</span>
+  </div>
+)
 
 const income = (payments) =>
   payments.reduce(
@@ -563,8 +571,6 @@ const eventUsersPaymentsFunc = (eventId) => {
         100 -
       sumOfCouponsOfEventFromParticipants
 
-    console.log('subEventSum :>> ', subEventSum)
-
     const maxSumOfPaymentsToExpectFromParticipants =
       subEventSum.realMaxNovice && subEventSum.realMaxMembers
         ? event.subEvents.reduce((sum, subEvent) => {
@@ -620,14 +626,16 @@ const eventUsersPaymentsFunc = (eventId) => {
           sumOfCouponsOfEventFromParticipants
         : null
 
-    const totalIncome =
-      sumOfPaymentsOfEventFromParticipants +
-      sumOfPaymentsOfEventToAssistants +
-      sumOfPaymentsToEvent +
+    const cashReceipts =
       sumOfPaymentsFromEvent +
-      sumOfPaymentsFromNotParticipants
+      sumOfPaymentsFromNotParticipants +
+      sumOfPaymentsOfEventFromParticipants
 
-    const expectedIncome = maxSumOfPaymentsToExpectFromParticipants
+    const outcome = sumOfPaymentsOfEventToAssistants + sumOfPaymentsToEvent
+
+    const totalIncome = cashReceipts + outcome
+
+    const maxPossibleIncome = maxSumOfPaymentsToExpectFromParticipants
       ? maxSumOfPaymentsToExpectFromParticipants +
         sumOfPaymentsOfEventToAssistants +
         sumOfPaymentsToEvent
@@ -673,7 +681,7 @@ const eventUsersPaymentsFunc = (eventId) => {
 
     // const expectedMaxIncome =
     //   maxPartisipants !== null
-    //     ? expectedIncome +
+    //     ? maxPossibleIncome +
     //       ((maxPartisipants - eventParticipants.length) *
     //         maxPaymentPerParticipant) /
     //         100
@@ -752,71 +760,130 @@ const eventUsersPaymentsFunc = (eventId) => {
       </div>
     )
 
-    const TotalFromNotParticipants = ({ className }) => (
-      <div className={cn('flex flex-wrap gap-x-1', className)}>
-        <span>Оплатили, но не пришли:</span>
-        <span
-          className={cn(
+    const TotalFromNotParticipants = ({ className }) =>
+      usersNotParticipantsIds.length > 0 ? (
+        <TotalItem
+          title="Оплатили, но не пришли"
+          className={className}
+          valueClassName={cn(
             'whitespace-nowrap',
-            'font-bold',
             sumOfPaymentsFromNotParticipants === 0
-              ? 'text-success'
+              ? 'text-gray-600'
               : sumOfPaymentsFromNotParticipants > 0
                 ? 'text-blue-700'
                 : 'text-danger'
           )}
-        >{`${sumOfPaymentsFromNotParticipants} ₽`}</span>
-      </div>
-    )
+          value={`${sumOfPaymentsFromNotParticipants} ₽`}
+        />
+      ) : null
 
-    const TotalToAssistants = ({ className }) => (
-      <div className={cn('flex flex-wrap gap-x-1', className)}>
-        <span>Всего затрат на ведущих и ассистентов:</span>
-        <span
-          className={cn(
+    const TotalToAssistants = ({ className }) =>
+      eventAssistantsIds.length > 0 ? (
+        <TotalItem
+          title="Всего затрат на ведущих и ассистентов"
+          className={className}
+          valueClassName={cn(
             'whitespace-nowrap',
-            'font-bold',
             sumOfPaymentsOfEventToAssistants === 0
               ? 'text-success'
               : sumOfPaymentsOfEventToAssistants > 0
                 ? 'text-blue-700'
                 : 'text-danger'
           )}
-        >{`${sumOfPaymentsOfEventToAssistants} ₽`}</span>
-      </div>
-    )
+          value={`${sumOfPaymentsOfEventToAssistants} ₽`}
+        />
+      ) : null
 
     const TotalToEvent = ({ className }) => (
-      <div className={cn('flex flex-wrap gap-x-1', className)}>
-        <span>Всего затрат на расходники и организацию:</span>
-        <span
-          className={cn(
-            'font-bold',
-            sumOfPaymentsToEvent === 0
-              ? 'text-success'
-              : sumOfPaymentsToEvent > 0
-                ? 'text-blue-700'
-                : 'text-danger'
-          )}
-        >{`${sumOfPaymentsToEvent} ₽`}</span>
-      </div>
+      <TotalItem
+        title="Всего затрат на расходники и организацию"
+        className={className}
+        valueClassName={
+          sumOfPaymentsToEvent === 0
+            ? 'text-success'
+            : sumOfPaymentsToEvent > 0
+              ? 'text-blue-700'
+              : 'text-danger'
+        }
+        value={`${sumOfPaymentsToEvent} ₽`}
+      />
     )
 
-    const TotalFromEvent = ({ className }) => (
-      <div className={cn('flex flex-wrap gap-x-1', className)}>
-        <span>Всего доп. доходов от мероприятия:</span>
-        <span
-          className={cn(
-            'font-bold',
+    const TotalFromEvent = ({ className }) =>
+      paymentsFromEvent.length > 0 ? (
+        <TotalItem
+          title="Всего доп. доходов от мероприятия"
+          className={className}
+          valueClassName={
             sumOfPaymentsFromEvent === 0
-              ? 'text-gray_600'
+              ? 'text-gray-600'
               : sumOfPaymentsFromEvent > 0
                 ? 'text-success'
                 : 'text-danger'
-          )}
-        >{`${sumOfPaymentsFromEvent} ₽`}</span>
-      </div>
-    )
+          }
+          value={`${sumOfPaymentsFromEvent} ₽`}
+        />
+      ) : null
+
+    const TotalExpect = ({ className }) => {
+      const expect = sumOfPaymentsToExpectFromParticipants + outcome
+      return (
+        <TotalItem
+          title="Ожидаемая прибыль"
+          valueClassName={
+            expect <= 0
+              ? 'text-danger'
+              : // : totalIncome > expectedMaxIncome
+                // ? 'text-blue-700'
+                'text-success'
+          }
+          value={`${expect} ₽`}
+        />
+      )
+    }
+
+    const TotalMargin = ({ className }) => {
+      const margin = cashReceipts > 0 ? totalIncome / cashReceipts : null
+
+      return (
+        <TotalItem
+          title="Маржа"
+          className={className}
+          valueClassName={
+            !margin
+              ? 'text-gray-600'
+              : margin > 0
+                ? 'text-success'
+                : 'text-danger'
+          }
+          value={margin ? `${(margin * 100).toFixed(0)} %` : 'нет поступлений'}
+        />
+      )
+    }
+
+    const TotalEfficiency = ({ className }) => {
+      const efficiency =
+        maxPossibleIncome > 0 ? totalIncome / maxPossibleIncome : null
+
+      return (
+        <TotalItem
+          title="Финансовая эффективность мероприятия"
+          className={className}
+          valueClassName={
+            !efficiency
+              ? 'text-gray-600'
+              : efficiency > 0
+                ? 'text-success'
+                : 'text-danger'
+          }
+          value={
+            efficiency
+              ? `${(efficiency * 100).toFixed(0)} %`
+              : 'нет поступлений'
+          }
+        />
+      )
+    }
 
     const Wrapper = useMemo(
       () =>
@@ -937,22 +1004,24 @@ const eventUsersPaymentsFunc = (eventId) => {
               />
             </TabPanel>
           )}
-          <TabPanel
-            tabName="Оплатили, но не пришли"
-            tabAddToLabel={`${usersNotParticipantsIds.length} чел. / ${sumOfPaymentsFromNotParticipants} ₽`}
-          >
-            <TotalFromNotParticipants className="mb-1" />
-            <UsersPayments
-              event={event}
-              usersIds={usersNotParticipantsIds}
-              defaultPayDirection="toUser"
-              noEventPriceForUser
-              readOnly={isEventClosed}
-              // eventUsers={[...eventNotParticipantsWithPayments].sort(
-              //   sortFunction
-              // )}
-            />
-          </TabPanel>
+          {usersNotParticipantsIds.length > 0 && (
+            <TabPanel
+              tabName="Оплатили, но не пришли"
+              tabAddToLabel={`${usersNotParticipantsIds.length} чел. / ${sumOfPaymentsFromNotParticipants} ₽`}
+            >
+              <TotalFromNotParticipants className="mb-1" />
+              <UsersPayments
+                event={event}
+                usersIds={usersNotParticipantsIds}
+                defaultPayDirection="toUser"
+                noEventPriceForUser
+                readOnly={isEventClosed}
+                // eventUsers={[...eventNotParticipantsWithPayments].sort(
+                //   sortFunction
+                // )}
+              />
+            </TabPanel>
+          )}
           <TabPanel
             tabName="Мероприятие"
             tabAddToLabel={`${sumOfPaymentsToEvent + sumOfPaymentsFromEvent} ₽`}
@@ -1060,38 +1129,38 @@ const eventUsersPaymentsFunc = (eventId) => {
           </TabPanel>
           <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
             <TotalFromParticipants />
+            <TotalFromNotParticipants />
             {eventAssistants.length > 0 && <TotalToAssistants />}
             <TotalToEvent />
             <TotalFromEvent />
-            <TotalFromNotParticipants />
-            <div className="flex flex-wrap gap-x-1">
-              <span>Текущая прибыль:</span>
-              <span
-                className={cn(
-                  'font-bold',
-                  totalIncome <= 0
+            <TotalItem
+              title="Текущая прибыль"
+              valueClassName={
+                totalIncome
+                  ? totalIncome < 0
                     ? 'text-danger'
-                    : // : totalIncome > expectedMaxIncome
-                      // ? 'text-blue-700'
-                      'text-success'
-                )}
-              >{`${totalIncome} ₽`}</span>
-            </div>
-            <div className="flex flex-wrap gap-x-1">
-              <span>{'Ожидаемая прибыль:'}</span>
-              <span
-                className={cn(
-                  'font-bold',
-                  expectedIncome
-                    ? expectedIncome <= 0
-                      ? 'text-danger'
-                      : 'text-success'
-                    : 'text-gray-800'
-                )}
-              >
-                {expectedIncome ? `${expectedIncome} ₽` : 'неизвестно'}
-              </span>
-            </div>
+                    : 'text-success'
+                  : 'text-gray-600'
+              }
+              value={`${totalIncome} ₽`}
+            />
+            <TotalExpect />
+            <TotalMargin />
+            <Divider />
+            <TotalItem
+              title="Максимально возможная прибыль"
+              valueClassName={
+                maxPossibleIncome
+                  ? maxPossibleIncome < 0
+                    ? 'text-danger'
+                    : 'text-success'
+                  : 'text-gray-600'
+              }
+              value={
+                maxPossibleIncome ? `${maxPossibleIncome} ₽` : 'не ограничено'
+              }
+            />
+            <TotalEfficiency />
             {/* {expectedMaxIncome !== null && (
               <div className="flex flex-wrap gap-x-1">
                 <span>{'Максимально возможная прибыль:'}</span>
