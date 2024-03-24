@@ -2,7 +2,6 @@ import NextAuth from 'next-auth'
 import Users from '@models/Users'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
-import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
 
 export default async function auth(req, res) {
   return await NextAuth(req, res, {
@@ -99,12 +98,6 @@ export default async function auth(req, res) {
                   secondName: last_name,
                   images: [photo_url],
                   registrationType: 'telegram',
-                })
-                await userRegisterTelegramNotification({
-                  telegramId,
-                  first_name,
-                  last_name,
-                  images,
                 })
                 return {
                   name: newUser._id,
@@ -211,9 +204,9 @@ export default async function auth(req, res) {
           session.user.lastActivityAt = result.lastActivityAt
           session.user.prevActivityAt = result.prevActivityAt
           session.user.orientation = result.orientation
-          session.user.profession = result.profession
-          session.user.interests = result.interests
-          session.user.about = result.about
+          // session.user.profession = result.profession
+          // session.user.interests = result.interests
+          // session.user.about = result.about
           session.user.status = result.status
           session.user.images = result.images
           session.user.haveKids = result.haveKids
