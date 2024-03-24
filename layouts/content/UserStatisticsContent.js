@@ -15,7 +15,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowContainer, Popover } from 'react-tiny-popover'
 import { useRecoilValue } from 'recoil'
 import Tilt from 'react-parallax-tilt'
-// import { FlipTilt } from 'react-flip-tilt'
 
 const place = (count, places) => {
   if (
