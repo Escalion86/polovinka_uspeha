@@ -1,5 +1,5 @@
 import userToEventStatus from '@helpers/userToEventStatus'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { selectorFamily } from 'recoil'
 import eventSelector from './eventSelector'
 import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
@@ -11,10 +11,10 @@ export const loggedUserToEventStatusSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       const event = get(eventSelector(id))
-      const loggedUser = get(loggedUserAtom)
+      const loggedUserActive = get(loggedUserActiveAtom)
       const eventUsers = get(eventsUsersFullByEventIdSelector(id))
       const subEventSum = get(subEventsSumOfEventSelector(id))
-      return userToEventStatus(event, loggedUser, eventUsers, subEventSum)
+      return userToEventStatus(event, loggedUserActive, eventUsers, subEventSum)
     },
 })
 

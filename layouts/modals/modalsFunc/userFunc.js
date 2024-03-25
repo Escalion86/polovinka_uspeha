@@ -14,7 +14,7 @@ import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
@@ -31,7 +31,8 @@ const userFunc = (userId, clone = false) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+    const [loggedUserActive, setLoggedUserActive] =
+      useRecoilState(loggedUserActiveAtom)
 
     const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
@@ -154,8 +155,8 @@ const userFunc = (userId, clone = false) => {
           clone
         )
 
-        if (user?._id && loggedUser?._id === result?._id) {
-          setLoggedUser(result)
+        if (user?._id && loggedUserActive?._id === result?._id) {
+          setLoggedUserActive(result)
         }
         // if (user && !clone) {
         //   await putData(

@@ -1,7 +1,7 @@
 import FormWrapper from '@components/FormWrapper'
 import { putData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -14,16 +14,16 @@ const notificationsDeativateTelegramFunc = (onSuccess) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
+    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
 
     const { success, error } = useSnackbar()
 
     const onClickConfirm = async () => {
       await putData(
-        `/api/users/${loggedUser._id}`,
+        `/api/users/${loggedUserActive._id}`,
         {
           notifications: {
-            ...loggedUser.notifications,
+            ...loggedUserActive.notifications,
             telegram: { active: false, id: undefined, userName: undefined },
           },
         },
@@ -35,7 +35,7 @@ const notificationsDeativateTelegramFunc = (onSuccess) => {
           error('Ошибка отключения аккаунта Telegram')
         },
         false,
-        loggedUser._id
+        loggedUserActive._id
       )
       closeModal()
     }

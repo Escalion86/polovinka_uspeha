@@ -3,7 +3,7 @@ import Menu from '@components/Menu'
 import { faTelegram, faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { faBug, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import Link from 'next/link'
 import { useRecoilValue } from 'recoil'
 import UserMenu from './UserMenu'
@@ -11,6 +11,7 @@ import UserStatusIcon from '@components/UserStatusIcon'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import DropDown from '@components/DropDown'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -21,11 +22,12 @@ const CheckedItem = ({ children }) => (
 
 const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const siteSettings = useRecoilValue(siteSettingsAtom)
   const headerInfo = siteSettings?.headerInfo
 
-  if (!loggedUser) return null
+  if (!loggedUserActive) return null
 
   const isLoggedUserNovice =
     !loggedUserActiveStatus || loggedUserActiveStatus === 'novice'

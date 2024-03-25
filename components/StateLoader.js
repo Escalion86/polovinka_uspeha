@@ -39,6 +39,7 @@ import rolesAtom from '@state/atoms/rolesAtom'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import locationAtom from '@state/atoms/locationAtom'
 import CheckSiteUpdateNotification from './CheckSiteUpdateNotification'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -56,6 +57,8 @@ const StateLoader = (props) => {
   const [location, setLocation] = useRecoilState(locationAtom)
 
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const [loggedUserActive, setLoggedUserActive] =
+    useRecoilState(loggedUserActiveAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
     loggedUserActiveRoleNameAtom
   )
@@ -84,20 +87,20 @@ const StateLoader = (props) => {
   useWindowDimensionsRecoil()
 
   useEffect(() => {
-    const itemsFunc = itemsFuncGenerator(snackbar, loggedUser)
+    const itemsFunc = itemsFuncGenerator(snackbar, loggedUserActive)
     setItemsFunc(itemsFunc)
     setModalsFunc(
       modalsFuncGenerator(
         router,
         itemsFunc,
-        loggedUser,
+        loggedUserActive,
         siteSettingsState,
         loggedUserActiveRole,
         loggedUserActiveStatus
       )
     )
   }, [
-    loggedUser,
+    loggedUserActive,
     siteSettingsState,
     loggedUserActiveRole,
     loggedUserActiveStatus,
@@ -108,6 +111,7 @@ const StateLoader = (props) => {
       setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
     if (!loggedUserActiveStatus || props.loggedUser?.role !== 'dev')
       setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
+    setLoggedUserActive(props.loggedUser)
     setLoggedUser(props.loggedUser)
     setEventsState(props.events)
     setDirectionsState(props.directions)
@@ -129,7 +133,7 @@ const StateLoader = (props) => {
     setMode(props.mode ?? 'production')
     setLocation(props.location ?? 'krasnoyarsk')
     setIsSiteLoading(false)
-  }, [])
+  }, [props.loggedUser])
 
   useEffect(() => {
     if (modalFunc && !isSiteLoading) {

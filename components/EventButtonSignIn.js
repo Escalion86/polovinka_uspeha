@@ -2,7 +2,6 @@ import Button from '@components/Button'
 import eventPriceByStatus from '@helpers/eventPriceByStatus'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import { modalsFuncAtom } from '@state/atoms'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
@@ -14,6 +13,7 @@ import EventProfit from './EventProfit'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -36,7 +36,7 @@ const EventButtonSignInComponent = ({
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
     sumOfPaymentsFromLoggedUserToEventSelector(eventId)
@@ -59,15 +59,20 @@ const EventButtonSignInComponent = ({
     isUserRelationshipCorrect,
   } = eventStatus
 
-  const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
+  const isUserQuestionnaireFilled =
+    isUserQuestionnaireFilledFunc(loggedUserActive)
 
   const PaymentsFromLoggedUser = () => {
-    if (!loggedUser || !userEventStatus || userEventStatus !== 'participant')
+    if (
+      !loggedUserActive ||
+      !userEventStatus ||
+      userEventStatus !== 'participant'
+    )
       return null
 
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = eventUsers.find(
-      ({ userId }) => userId === loggedUser?._id
+      ({ userId }) => userId === loggedUserActive?._id
     )
     if (!eventUser) return null
 
@@ -137,7 +142,7 @@ const EventButtonSignInComponent = ({
       <TextStatus className="text-danger">Отменено</TextStatus>
     ) : event.likes &&
       userEventStatus === 'participant' &&
-      !loggedUser.relationship &&
+      !loggedUserActive.relationship &&
       (isEventInProcess || isEventExpired) &&
       event.status !== 'closed' &&
       alreadySignIn ? (
@@ -151,11 +156,11 @@ const EventButtonSignInComponent = ({
           event.likesProcessActive
             ? modalsFunc.eventUser.editLike({
                 eventId: event._id,
-                userId: loggedUser._id,
+                userId: loggedUserActive._id,
               })
             : modalsFunc.eventUser.likesResult({
                 eventId: event._id,
-                userId: loggedUser._id,
+                userId: loggedUserActive._id,
               })
         }
         icon={faHeart}
@@ -192,9 +197,9 @@ const EventButtonSignInComponent = ({
         thin={thin}
         stopPropagation
         onClick={() => {
-          if (!loggedUser || (canSignIn && !alreadySignIn)) {
+          if (!loggedUserActive || (canSignIn && !alreadySignIn)) {
             modalsFunc.event.signUp(event)
-          } else if (loggedUser.status === 'ban') {
+          } else if (loggedUserActive.status === 'ban') {
             modalsFunc.event.cantSignUp()
           } else if (
             (!canSignIn && !alreadySignIn && canSignInReserve) ||
@@ -212,7 +217,7 @@ const EventButtonSignInComponent = ({
             ? `Отменить запись${
                 userEventStatus === 'reserve' ? ' в резерв' : ''
               }`
-            : canSignIn || !loggedUser
+            : canSignIn || !loggedUserActive
               ? 'Записаться'
               : isUserQuestionnaireFilled
                 ? canSignInReserve

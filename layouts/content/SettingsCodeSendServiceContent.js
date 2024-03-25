@@ -5,7 +5,7 @@ import ValuePicker from '@components/ValuePicker/ValuePicker'
 import { postData } from '@helpers/CRUD'
 import { CODE_SEND_SERVICES } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -24,7 +24,7 @@ const getBalance = async (onSuccess, onError) =>
   )
 
 const SettingsCodeSendServiceContent = (props) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
   const [codeSendService, setCodeSendService] = useState(
     siteSettings?.codeSendService
@@ -64,7 +64,7 @@ const SettingsCodeSendServiceContent = (props) => {
         setIsWaitingToResponse(false)
       },
       false,
-      loggedUser._id
+      loggedUserActive._id
     )
   }
 

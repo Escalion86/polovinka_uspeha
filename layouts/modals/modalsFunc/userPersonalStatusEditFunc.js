@@ -1,7 +1,7 @@
 import Input from '@components/Input'
 import Note from '@components/Note'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -16,7 +16,8 @@ const userPersonalStatusEditFunc = (userId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+    const [loggedUserActive, setLoggedUserActive] =
+      useRecoilState(loggedUserActiveAtom)
     const user = useRecoilValue(userSelector(userId))
     const setUser = useRecoilValue(itemsFuncAtom).user.set
 
@@ -36,8 +37,8 @@ const userPersonalStatusEditFunc = (userId) => {
         personalStatus,
       })
 
-      if (user?._id && loggedUser?._id === result?._id) {
-        setLoggedUser(result)
+      if (user?._id && loggedUserActive?._id === result?._id) {
+        setLoggedUserActive(result)
       }
     }
 

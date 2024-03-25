@@ -10,7 +10,7 @@ import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
 import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 import fetchProps from '@server/fetchProps'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
@@ -27,7 +27,7 @@ const SuspenseChild = () => (
 function CabinetPage(props) {
   const router = useRouter()
   const page = router.asPath.replace('/cabinet/', '').split('?')[0]
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
   const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
@@ -35,8 +35,9 @@ function CabinetPage(props) {
   let redirect
   if (!props.loggedUser) redirect = '/'
   else if (
-    loggedUser &&
-    ((page !== 'questionnaire' && !isUserQuestionnaireFilled(loggedUser)) ||
+    loggedUserActive &&
+    ((page !== 'questionnaire' &&
+      !isUserQuestionnaireFilled(loggedUserActive)) ||
       !CONTENTS[page] ||
       !CONTENTS[page].roleAccess(
         loggedUserActiveRole,
@@ -71,7 +72,7 @@ function CabinetPage(props) {
       </Head>
 
       <StateLoader {...props} isCabinet>
-        {loggedUser && (
+        {loggedUserActive && (
           <CabinetWrapper>
             <CabinetHeader title={title} />
             <BurgerLayout />

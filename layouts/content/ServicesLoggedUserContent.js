@@ -1,14 +1,14 @@
 import ContentHeader from '@components/ContentHeader'
 import { getNounServicesUsers } from '@helpers/getNoun'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import servicesUsersByUserIdSelector from '@state/selectors/servicesUsersByUserIdSelector'
 import { useRecoilValue } from 'recoil'
 
 const ServicesLoggedUserContent = () => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const servicesLoggedUser = useRecoilValue(
-    servicesUsersByUserIdSelector(loggedUser._id)
+    servicesUsersByUserIdSelector(loggedUserActive._id)
   )
 
   // const [isSearching, setIsSearching] = useState(false)

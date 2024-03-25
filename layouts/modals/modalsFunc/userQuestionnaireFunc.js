@@ -606,7 +606,6 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
     setBottomLeftComponent,
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
-    // const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
     // const user = useRecoilValue(userSelector(userId))
     // const setUser = useRecoilValue(itemsFuncAtom).user.set
     // const users = useRecoilValue(usersAtom)

@@ -8,7 +8,7 @@ import Header from '@layouts/Header'
 import serviceViewFunc from '@layouts/modals/modalsFunc/serviceViewFunc'
 import fetchProps from '@server/fetchProps'
 import isPWAAtom from '@state/atoms/isPWAAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { getSession } from 'next-auth/react'
@@ -44,7 +44,7 @@ function ServicePage(props) {
 
   const servicesState = useRecoilValue(servicesAtom)
 
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
 
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const hideFab = loggedUserActiveRole?.hideFab
@@ -95,7 +95,7 @@ function ServicePage(props) {
                 пользователям, пожалуйста авторизируйтесь
               </span>
             )} */}
-            {!loggedUser && (
+            {!loggedUserActive && (
               <>
                 <Link
                   href={{

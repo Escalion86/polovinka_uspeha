@@ -10,7 +10,7 @@ import compareObjects from '@helpers/compareObjects'
 import { DEFAULT_USER } from '@helpers/constants'
 import useSnackbar from '@helpers/useSnackbar'
 // import { modalsFuncAtom } from '@state/atoms'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
@@ -20,7 +20,8 @@ import TelegramLoginButton from 'react-telegram-login'
 import Note from '@components/Note'
 
 const LoggedUserNotificationsContent = (props) => {
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const [loggedUserActive, setLoggedUserActive] =
+    useRecoilState(loggedUserActiveAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const { telegramBotName } = useRecoilValue(locationPropsSelector)
 
@@ -35,7 +36,7 @@ const LoggedUserNotificationsContent = (props) => {
   const setUserInUsersState = useSetRecoilState(userEditSelector)
 
   const [notifications, setNotifications] = useState(
-    loggedUser?.notifications ?? DEFAULT_USER.notifications
+    loggedUserActive?.notifications ?? DEFAULT_USER.notifications
   )
 
   const handleTelegramResponse = ({
@@ -77,12 +78,12 @@ const LoggedUserNotificationsContent = (props) => {
   const onClickConfirm = async () => {
     setIsWaitingToResponse(true)
     await putData(
-      `/api/users/${loggedUser._id}`,
+      `/api/users/${loggedUserActive._id}`,
       {
         notifications,
       },
       (data) => {
-        setLoggedUser(data)
+        setLoggedUserActive(data)
         setUserInUsersState(data)
         success('Данные уведомлений обновлены успешно')
         setIsWaitingToResponse(false)
@@ -92,7 +93,7 @@ const LoggedUserNotificationsContent = (props) => {
         setIsWaitingToResponse(false)
       },
       false,
-      loggedUser._id
+      loggedUserActive._id
     )
   }
 
@@ -102,7 +103,10 @@ const LoggedUserNotificationsContent = (props) => {
     }
   }, [props])
 
-  const formChanged = !compareObjects(loggedUser?.notifications, notifications)
+  const formChanged = !compareObjects(
+    loggedUserActive?.notifications,
+    notifications
+  )
 
   const buttonDisabled = !formChanged
 

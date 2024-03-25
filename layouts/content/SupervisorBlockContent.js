@@ -6,13 +6,13 @@ import Input from '@components/Input'
 import InputImage from '@components/InputImage'
 import { postData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 const SupervisorBlockContent = (props) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
   const [photo, setPhoto] = useState(siteSettings?.supervisor?.photo)
   const [quote, setQuote] = useState(siteSettings?.supervisor?.quote)
@@ -57,7 +57,7 @@ const SupervisorBlockContent = (props) => {
           setIsWaitingToResponse(false)
         },
         false,
-        loggedUser?._id
+        loggedUserActive?._id
       )
   }
 

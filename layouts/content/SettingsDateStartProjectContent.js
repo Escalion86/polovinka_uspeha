@@ -2,13 +2,13 @@ import Button from '@components/Button'
 import DateTimePicker from '@components/DateTimePicker'
 import FormWrapper from '@components/FormWrapper'
 import { postData } from '@helpers/CRUD'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 const SettingsDateStartProjectContent = (props) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
   const [dateStartProject, setDateStartProject] = useState(
     siteSettings?.dateStartProject ?? null
@@ -38,7 +38,7 @@ const SettingsDateStartProjectContent = (props) => {
         setIsWaitingToResponse(false)
       },
       false,
-      loggedUser._id
+      loggedUserActive._id
     )
   }
 

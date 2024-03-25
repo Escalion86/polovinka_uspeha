@@ -8,7 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import getParentDir from '@state/atoms/getParentDir'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
@@ -69,7 +69,7 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 }
 
 const UserMenu = () => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
@@ -86,7 +86,7 @@ const UserMenu = () => {
 
   const handleMouseOut = () => setIsUserMenuOpened(false)
 
-  return loggedUser ? (
+  return loggedUserActive ? (
     <div
       className="z-50 flex items-start justify-end h-16"
       onMouseOver={handleMouseOver}
@@ -101,7 +101,7 @@ const UserMenu = () => {
       }}
     >
       <div className="relative flex flex-col items-end mt-2.5 w-12">
-        <Avatar user={loggedUser} className="z-10" />
+        <Avatar user={loggedUserActive} className="z-10" />
         {/* {router && ( */}
         <motion.div
           className={cn(
@@ -116,18 +116,20 @@ const UserMenu = () => {
           transition={{ duration: 0.2, type: 'tween' }}
         >
           <div className="flex flex-col justify-center px-3 py-1 font-bold leading-4 text-white border-b border-gray-800 cursor-default bg-general rounded-tr-3xl h-11">
-            <span>{loggedUser.firstName}</span>
-            <span>{loggedUser.secondName}</span>
+            <span>{loggedUserActive.firstName}</span>
+            <span>{loggedUserActive.secondName}</span>
           </div>
           <div
             className="relative bg-white border-b-2 cursor-pointer group border-general min-h-[3rem]"
-            onClick={() => modalsFunc.user.editPersonalStatus(loggedUser._id)}
+            onClick={() =>
+              modalsFunc.user.editPersonalStatus(loggedUserActive._id)
+            }
           >
-            {loggedUser.personalStatus ? (
+            {loggedUserActive.personalStatus ? (
               <>
                 <div className="relative flex items-center justify-center px-5 py-2 text-sm italic leading-4 text-center text-black duration-300 opacity-100 group-hover:opacity-20 border-general min-h-[3rem]">
                   <SvgKavichki className="absolute w-3 h-3 bottom-1 left-1 fill-general" />
-                  {loggedUser.personalStatus}
+                  {loggedUserActive.personalStatus}
                   <SvgKavichki className="absolute w-3 h-3 rotate-180 top-1 right-1 fill-general" />
                 </div>
                 <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center text-opacity-0 duration-300 group-hover:text-opacity-100 text-general">

@@ -12,7 +12,7 @@ const userRegisterTelegramNotification = async ({
   images,
 }) => {
   await dbConnect()
-  const usersCount = await Users.count({})
+  const usersCount = await Users.countDocuments({})
 
   const rolesSettings = await Roles.find({})
   const allRoles = [...DEFAULT_ROLES, ...rolesSettings]

@@ -1,10 +1,18 @@
-import { faQuestion, faUser } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCrop,
+  faDotCircle,
+  faQuestion,
+  faSignOut,
+  faSignOutAlt,
+  faSnowman,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import Image from 'next/legacy/image'
 import Tooltip from './Tooltip'
 
-const UserStatusIcon = ({ status, size }) => {
+const UserStatusIcon = ({ status, size, slashed = false }) => {
   var numSize
   switch (size) {
     case 'xs':
@@ -26,67 +34,120 @@ const UserStatusIcon = ({ status, size }) => {
   switch (status) {
     case 'novice':
       return (
-        <Tooltip title="Новичок">
-          <div
-            className={`grayscale brightness-150 contrast-75 flex items-center justify-center min-w-${
-              numSize + 1
-            } w-${numSize + 1} h-${numSize + 1}`}
-          >
-            <Image
-              src="/img/svg_icons/medal.svg"
-              width={numSize * 4}
-              height={(numSize + 1) * 4}
-            />
+        <Tooltip title={'Новичок' + (slashed ? ' (запрещено)' : '')}>
+          <div className="relative">
+            <div
+              className={`grayscale brightness-150 contrast-75 flex items-center justify-center min-w-${
+                numSize + 1
+              } w-${numSize + 1} h-${numSize + 1}`}
+            >
+              <Image
+                src="/img/svg_icons/medal.svg"
+                width={numSize * 4}
+                height={(numSize + 1) * 4}
+              />
+            </div>
+            {slashed && (
+              <div
+                className={`absolute -left-0.5 w-${numSize + 2} h-0 border rotate-[30deg] top-1/2 border-danger`}
+              />
+            )}
           </div>
         </Tooltip>
       )
     case 'member':
       return (
-        <Tooltip title="Участник клуба">
-          <div
-            className={`flex items-center justify-center min-w-${
-              numSize + 1
-            } w-${numSize + 1} h-${numSize + 1}`}
-          >
-            <Image
-              src="/img/svg_icons/medal.svg"
-              width={numSize * 4}
-              height={(numSize + 1) * 4}
-            />
+        <Tooltip title={'Участник клуба' + (slashed ? ' (запрещено)' : '')}>
+          <div className="relative">
+            <div
+              className={`flex items-center justify-center min-w-${
+                numSize + 1
+              } w-${numSize + 1} h-${numSize + 1}`}
+            >
+              <Image
+                src="/img/svg_icons/medal.svg"
+                width={numSize * 4}
+                height={(numSize + 1) * 4}
+              />
+            </div>
+            {slashed && (
+              <div
+                className={`absolute -left-0.5 w-${numSize + 2} h-0 border rotate-[30deg] top-1/2 border-danger`}
+              />
+            )}
           </div>
         </Tooltip>
       )
     case 'ban':
       return (
-        <Tooltip title="Забанен">
-          <div
-            className={`flex items-center justify-center min-w-${
-              numSize + 1
-            } w-${numSize + 1} h-${numSize + 1}`}
-          >
-            <Image
-              src="/img/svg_icons/ban.svg"
-              width={numSize * 4}
-              height={numSize * 4}
-            />
+        <Tooltip title={'Забанен' + (slashed ? ' (запрещено)' : '')}>
+          <div className="relative">
+            <div
+              className={`flex items-center justify-center min-w-${
+                numSize + 1
+              } w-${numSize + 1} h-${numSize + 1}`}
+            >
+              <Image
+                src="/img/svg_icons/ban.svg"
+                width={numSize * 4}
+                height={numSize * 4}
+              />
+            </div>
+            {slashed && (
+              <div
+                className={`absolute -left-0.5 w-${numSize + 2} h-0 border rotate-[30deg] top-1/2 border-danger`}
+              />
+            )}
+          </div>
+        </Tooltip>
+      )
+    case 'signout':
+      return (
+        <Tooltip title={'Не зарегистрирован' + (slashed ? ' (запрещено)' : '')}>
+          <div className="relative">
+            <div
+              className={`flex items-center justify-center min-w-${
+                numSize + 1
+              } w-${numSize + 1} h-${numSize + 1}`}
+            >
+              <FontAwesomeIcon
+                className={cn(
+                  `min-w-${numSize} w-${numSize} h-${numSize}`,
+                  'text-blue-600'
+                )}
+                icon={faSignOutAlt}
+              />
+            </div>
+            {slashed && (
+              <div
+                className={`absolute -left-0.5 w-${numSize + 2} h-0 border rotate-[30deg] top-1/2 border-danger`}
+              />
+            )}
           </div>
         </Tooltip>
       )
     default:
       return (
         <Tooltip title="Статус не указан">
-          <div
-            className={`flex items-center justify-center min-w-${
-              numSize + 1
-            } w-${numSize + 1} h-${numSize + 1}`}
-          >
-            <FontAwesomeIcon
-              className={cn(
-                `min-w-${numSize} w-${numSize} h-${numSize}`,
-                'text-danger'
-              )}
-              icon={faQuestion}
-            />
+          <div className="relative">
+            <div
+              className={`flex items-center justify-center min-w-${
+                numSize + 1
+              } w-${numSize + 1} h-${numSize + 1}`}
+            >
+              <FontAwesomeIcon
+                className={cn(
+                  `min-w-${numSize} w-${numSize} h-${numSize}`,
+                  'text-danger'
+                )}
+                icon={faQuestion}
+              />
+            </div>
+            {slashed && (
+              <div
+                className={`absolute -left-0.5 w-${numSize + 2} h-0 border rotate-[30deg] top-1/2 border-danger`}
+              />
+            )}
           </div>
         </Tooltip>
       )

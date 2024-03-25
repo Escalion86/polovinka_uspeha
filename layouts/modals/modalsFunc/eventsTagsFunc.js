@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
 import compareObjects from '@helpers/compareObjects'
 import { PASTEL_COLORS } from '@helpers/constants'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -30,7 +30,7 @@ const eventsTagsFunc = () => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
+    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
     const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
     // const setEventsTags = useRecoilValue(itemsFuncAtom).eventsTags.set
     const [tags, setTags] = useState(siteSettings.eventsTags ?? [])
@@ -85,7 +85,7 @@ const eventsTagsFunc = () => {
         },
         null,
         false,
-        loggedUser._id
+        loggedUserActive._id
       )
     }
 

@@ -7,10 +7,20 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import CheckBox from './CheckBox'
 import loggedUserRealRoleSelector from '@state/selectors/loggedUserRealRoleSelector'
 import rolesAtom from '@state/atoms/rolesAtom'
+import Button from './Button'
+import { modalsFuncAtom } from '@state/atoms'
+import usersAtom from '@state/atoms/usersAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const DevSwitch = () => {
   const roles = useRecoilValue(rolesAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const users = useRecoilValue(usersAtom)
   const loggedUserRealRole = useRecoilValue(loggedUserRealRoleSelector)
+  const loggedUser = useRecoilValue(loggedUserAtom)
+  const [loggedUserActive, setLoggedUserActive] =
+    useRecoilState(loggedUserActiveAtom)
 
   const [loggedUserActiveRoleName, setLoggedUserActiveRoleName] =
     useRecoilState(loggedUserActiveRoleNameAtom)
@@ -67,6 +77,38 @@ const DevSwitch = () => {
           Участник клуба
         </ToggleButton>
       </ToggleButtonGroup>
+      <Button
+        name="Выбрать аккаунт"
+        onClick={() =>
+          modalsFunc.selectUsers(
+            [loggedUserActive._id],
+            {},
+            (ids) => {
+              const selectedUser = users.find(({ _id }) => _id === ids[0])
+              setLoggedUserActive(selectedUser)
+              setLoggedUserActiveRoleName(selectedUser.role)
+              setLoggedUserActiveStatus(selectedUser.status)
+            },
+            [],
+            undefined,
+            1,
+            false,
+            'Выберите аккаунт под которым хотите зайти'
+          )
+        }
+        className="w-full mt-0.5"
+      />
+      {loggedUser._id !== loggedUserActive._id && (
+        <Button
+          name="Вернуться в свой аккаунт"
+          onClick={() => {
+            setLoggedUserActive(loggedUser)
+            setLoggedUserActiveRoleName(loggedUser.role)
+            setLoggedUserActiveStatus(loggedUser.status)
+          }}
+          className="w-full mt-0.5"
+        />
+      )}
     </>
     // </div>
   )

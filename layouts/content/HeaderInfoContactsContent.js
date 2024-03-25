@@ -6,13 +6,13 @@ import Note from '@components/Note'
 import PhoneInput from '@components/PhoneInput'
 import { postData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 const HeaderInfoContactsContent = (props) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
   const [whatsapp, setWhatsapp] = useState(siteSettings?.headerInfo?.whatsapp)
   const [telegram, setTelegram] = useState(siteSettings?.headerInfo?.telegram)
@@ -52,7 +52,7 @@ const HeaderInfoContactsContent = (props) => {
           setIsWaitingToResponse(false)
         },
         false,
-        loggedUser?._id
+        loggedUserActive?._id
       )
   }
 

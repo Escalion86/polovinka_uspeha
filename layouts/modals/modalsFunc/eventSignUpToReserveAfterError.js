@@ -1,7 +1,7 @@
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect } from 'react'
 import { useRecoilRefresher_UNSTABLE, useRecoilValue } from 'recoil'
 
@@ -15,7 +15,7 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
+    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
     const itemsFunc = useRecoilValue(itemsFuncAtom)
 
     const eventId = event._id
@@ -29,9 +29,9 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
       itemsFunc.event.signUp(
         {
           eventId,
-          userId: loggedUser?._id,
+          userId: loggedUserActive?._id,
           status: 'reserve',
-          userStatus: loggedUser.status,
+          userStatus: loggedUserActive.status,
           comment,
           subEventId,
         },

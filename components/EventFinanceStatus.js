@@ -1,7 +1,7 @@
 import Button from '@components/Button'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import { modalsFuncAtom } from '@state/atoms'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import cn from 'classnames'
@@ -16,7 +16,7 @@ const EventButtonSignIn = ({
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
 
   const router = useRouter()
 
@@ -24,7 +24,8 @@ const EventButtonSignIn = ({
     loggedUserToEventStatusSelector(eventId)
   )
 
-  const isUserQuestionnaireFilled = isUserQuestionnaireFilledFunc(loggedUser)
+  const isUserQuestionnaireFilled =
+    isUserQuestionnaireFilledFunc(loggedUserActive)
 
   return event.status === 'canceled' ? (
     <div
@@ -81,10 +82,10 @@ const EventButtonSignIn = ({
       thin={thin}
       stopPropagation
       onClick={() => {
-        if (loggedUser.status === 'ban') {
+        if (loggedUserActive.status === 'ban') {
           modalsFunc.event.cantSignUp()
         } else if (
-          !loggedUser ||
+          !loggedUserActive ||
           (eventLoggedUserStatus.canSignIn &&
             !eventLoggedUserStatus.alreadySignIn)
         ) {
@@ -111,13 +112,13 @@ const EventButtonSignIn = ({
                 ? ' в резерв'
                 : ''
             }`
-          : eventLoggedUserStatus.canSignIn || !loggedUser
-          ? 'Записаться'
-          : isUserQuestionnaireFilled
-          ? eventLoggedUserStatus.canSignInReserve
-            ? 'Записаться в резерв'
-            : 'Мест нет'
-          : 'Заполните свой профиль'
+          : eventLoggedUserStatus.canSignIn || !loggedUserActive
+            ? 'Записаться'
+            : isUserQuestionnaireFilled
+              ? eventLoggedUserStatus.canSignInReserve
+                ? 'Записаться в резерв'
+                : 'Мест нет'
+              : 'Заполните свой профиль'
       }
       disabled={
         !eventLoggedUserStatus.canSignOut &&

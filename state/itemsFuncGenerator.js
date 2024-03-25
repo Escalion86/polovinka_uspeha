@@ -252,7 +252,6 @@ const itemsFuncGenerator = (
     addErrorModal,
     // snackbar = {},
   } = props
-  // const loggedUser = getRecoil(loggedUserAtom)
   const obj = {}
   array?.length > 0 &&
     array.forEach((itemName) => {

@@ -1,4 +1,4 @@
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { selectorFamily } from 'recoil'
 import paymentsByEventIdSelector from './paymentsByEventIdSelector'
 
@@ -8,10 +8,10 @@ export const paymentsFromLoggedUserByEventIdSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return []
-      const loggedUser = get(loggedUserAtom)
-      if (!loggedUser) return []
+      const loggedUserActive = get(loggedUserActiveAtom)
+      if (!loggedUserActive) return []
       return get(paymentsByEventIdSelector(id)).filter(
-        (item) => item.userId === loggedUser._id
+        (item) => item.userId === loggedUserActive._id
       )
     },
 })

@@ -9,7 +9,7 @@ import eventViewFunc from '@layouts/modals/modalsFunc/eventViewFunc'
 import fetchProps from '@server/fetchProps'
 import eventsAtom from '@state/atoms/eventsAtom'
 import isPWAAtom from '@state/atoms/isPWAAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import { getSession } from 'next-auth/react'
@@ -40,7 +40,7 @@ const Event = ({ event }) => {
 }
 
 const EventBlock = ({ event }) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const { canSee, isAgeOfUserCorrect, isUserStatusCorrect } = useRecoilValue(
     loggedUserToEventStatusSelector(event?._id)
   )
@@ -57,14 +57,14 @@ const EventBlock = ({ event }) => {
         {!event?._id && (
           <span className="text-xl">Ошибка. Мероприятие не найдено</span>
         )}
-        {loggedUser && !isUserStatusCorrect ? (
+        {loggedUserActive && !isUserStatusCorrect ? (
           <span className="text-xl">
             {`К сожалению данное мероприятие не доступно для вашего статуса пользователя`}
           </span>
-        ) : loggedUser && isUserStatusCorrect && !isAgeOfUserCorrect ? (
+        ) : loggedUserActive && isUserStatusCorrect && !isAgeOfUserCorrect ? (
           <span className="text-xl">
             {`К сожалению данное мероприятие доступно для возрастной категории ${
-              loggedUser?.gender === 'male'
+              loggedUserActive?.gender === 'male'
                 ? `мужчин от ${event.minMansAge} до ${event.maxMansAge} лет`
                 : `женщин от ${event.minWomansAge} до ${event.maxWomansAge} лет`
             }`}
@@ -75,7 +75,7 @@ const EventBlock = ({ event }) => {
             обратитесь к администратору
           </span>
         ) : (
-          !loggedUser && (
+          !loggedUserActive && (
             <>
               <span className="text-xl">
                 Мероприятие не доступно для просмотра неавторизированным
@@ -114,7 +114,7 @@ const EventBlock = ({ event }) => {
             </>
           )
         )}
-        {loggedUser && (
+        {loggedUserActive && (
           <Link
             href={{
               pathname: '/cabinet/events',

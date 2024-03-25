@@ -20,7 +20,7 @@ import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsers
 import { modalsFuncAtom } from '@state/atoms'
 import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -32,7 +32,7 @@ const defaultFilterValue = {
 
 const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
@@ -43,7 +43,7 @@ const EventsContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const eventsLoggedUser = useRecoilValue(
-    asyncEventsUsersByUserIdAtom(loggedUser?._id)
+    asyncEventsUsersByUserIdAtom(loggedUserActive?._id)
   )
 
   const [isSearching, setIsSearching] = useState(false)
@@ -72,7 +72,7 @@ const EventsContent = () => {
       visibleEventsForUser(
         events,
         eventsLoggedUser,
-        loggedUser,
+        loggedUserActive,
         false,
         seeHidden,
         loggedUserActiveStatusName
@@ -80,7 +80,7 @@ const EventsContent = () => {
     [
       events,
       eventsLoggedUser,
-      loggedUser,
+      loggedUserActive,
       seeHidden,
       loggedUserActiveStatusName,
     ]
@@ -102,8 +102,8 @@ const EventsContent = () => {
           filterOptions.tags?.length === 0
             ? true
             : event.tags
-            ? event.tags.find((tag) => filterOptions.tags.includes(tag))
-            : false
+              ? event.tags.find((tag) => filterOptions.tags.includes(tag))
+              : false
         return (
           haveEventTag &&
           ((isEventClosed && !statusFilterFull && filter.status.finished) ||
@@ -224,7 +224,7 @@ const EventsContent = () => {
                   eventId={filteredAndSortedEvents[index]._id}
                   // hidden={!visibleEventsIds.includes(event._id)}
                   // noButtons={
-                  //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
+                  //   loggedUserActive?.role !== 'admin' && loggedUserActive?.role !== 'dev'
                   // }
                 />
               )}
@@ -239,7 +239,7 @@ const EventsContent = () => {
               eventId={event._id}
               // hidden={!visibleEventsIds.includes(event._id)}
               // noButtons={
-              //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
+              //   loggedUserActive?.role !== 'admin' && loggedUserActive?.role !== 'dev'
               // }
             />
           ))
