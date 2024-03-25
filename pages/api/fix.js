@@ -8,7 +8,6 @@ export default async function handler(req, res) {
   if (method === 'GET') {
     if (query.test) {
       await dbConnect()
-      console.log('! :>> ')
       const users = await Users.updateMany(
         {},
         {
@@ -22,7 +21,6 @@ export default async function handler(req, res) {
           },
         }
       )
-      console.log('users :>> ', users)
       // console.log(
       //   '!! :>> ',
       //   users.map(({ interests }) => interests)
