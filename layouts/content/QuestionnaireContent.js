@@ -27,7 +27,7 @@ import useErrors from '@helpers/useErrors'
 import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
@@ -50,7 +50,8 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
 )
 
 const QuestionnaireContent = (props) => {
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const [loggedUserActive, setLoggedUserActive] =
+    useRecoilState(loggedUserActiveAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const setLoggedUserActiveRoleName = useSetRecoilState(
     loggedUserActiveRoleNameAtom
@@ -65,75 +66,81 @@ const QuestionnaireContent = (props) => {
   const setUserInUsersState = useSetRecoilState(userEditSelector)
 
   const [firstName, setFirstName] = useState(
-    loggedUser?.firstName ?? DEFAULT_USER.firstName
+    loggedUserActive?.firstName ?? DEFAULT_USER.firstName
   )
   const [secondName, setSecondName] = useState(
-    loggedUser?.secondName ?? DEFAULT_USER.secondName
+    loggedUserActive?.secondName ?? DEFAULT_USER.secondName
   )
   const [thirdName, setThirdName] = useState(
-    loggedUser?.thirdName ?? DEFAULT_USER.thirdName
+    loggedUserActive?.thirdName ?? DEFAULT_USER.thirdName
   )
   // const [about, setAbout] = useState(user?.about ?? '')
   // const [interests, setInterests] = useState(user?.interests ?? '')
   // const [profession, setProfession] = useState(user?.profession ?? '')
   // const [orientation, setOrientation] = useState(user?.orientation ?? DEFAULT_USER.orientation)
   const [gender, setGender] = useState(
-    loggedUser?.gender ?? DEFAULT_USER.gender
+    loggedUserActive?.gender ?? DEFAULT_USER.gender
   )
   const [relationship, setRelationship] = useState(
-    loggedUser?.relationship ?? DEFAULT_USER.relationship
+    loggedUserActive?.relationship ?? DEFAULT_USER.relationship
   )
-  const [town, setTown] = useState(loggedUser?.town ?? DEFAULT_USER.town)
+  const [town, setTown] = useState(loggedUserActive?.town ?? DEFAULT_USER.town)
   // const [personalStatus, setPersonalStatus] = useState(
-  //   loggedUser?.personalStatus ?? DEFAULT_USER.personalStatus
+  //   loggedUserActive?.personalStatus ?? DEFAULT_USER.personalStatus
   // )
 
-  const [email, setEmail] = useState(loggedUser?.email ?? DEFAULT_USER.email)
-  const [phone, setPhone] = useState(loggedUser?.phone ?? DEFAULT_USER.phone)
-  const [whatsapp, setWhatsapp] = useState(
-    loggedUser?.whatsapp ?? DEFAULT_USER.whatsapp
+  const [email, setEmail] = useState(
+    loggedUserActive?.email ?? DEFAULT_USER.email
   )
-  const [viber, setViber] = useState(loggedUser?.viber ?? DEFAULT_USER.viber)
+  const [phone, setPhone] = useState(
+    loggedUserActive?.phone ?? DEFAULT_USER.phone
+  )
+  const [whatsapp, setWhatsapp] = useState(
+    loggedUserActive?.whatsapp ?? DEFAULT_USER.whatsapp
+  )
+  const [viber, setViber] = useState(
+    loggedUserActive?.viber ?? DEFAULT_USER.viber
+  )
   const [telegram, setTelegram] = useState(
-    loggedUser?.telegram ?? DEFAULT_USER.telegram
+    loggedUserActive?.telegram ?? DEFAULT_USER.telegram
   )
   const [instagram, setInstagram] = useState(
-    loggedUser?.instagram ?? DEFAULT_USER.instagram
+    loggedUserActive?.instagram ?? DEFAULT_USER.instagram
   )
-  const [vk, setVk] = useState(loggedUser?.vk ?? DEFAULT_USER.vk)
+  const [vk, setVk] = useState(loggedUserActive?.vk ?? DEFAULT_USER.vk)
   const [images, setImages] = useState(
-    loggedUser?.images ?? DEFAULT_USER.images
+    loggedUserActive?.images ?? DEFAULT_USER.images
   )
   const [birthday, setBirthday] = useState(
-    loggedUser?.birthday ?? DEFAULT_USER.birthday
+    loggedUserActive?.birthday ?? DEFAULT_USER.birthday
   )
 
   const [haveKids, setHaveKids] = useState(
-    loggedUser?.haveKids ?? DEFAULT_USER.haveKids
+    loggedUserActive?.haveKids ?? DEFAULT_USER.haveKids
   )
 
-  var defaultSecurity = { ...loggedUser?.security }
+  var defaultSecurity = { ...loggedUserActive?.security }
   if (
-    loggedUser?.security?.showContacts === true ||
-    loggedUser?.security?.showContacts === false ||
-    loggedUser?.security?.showContacts === null
+    loggedUserActive?.security?.showContacts === true ||
+    loggedUserActive?.security?.showContacts === false ||
+    loggedUserActive?.security?.showContacts === null
   ) {
-    defaultSecurity.showPhone = !!loggedUser?.security.showContacts
-    defaultSecurity.showWhatsapp = !!loggedUser?.security.showContacts
-    defaultSecurity.showViber = !!loggedUser?.security.showContacts
-    defaultSecurity.showTelegram = !!loggedUser?.security.showContacts
-    defaultSecurity.showInstagram = !!loggedUser?.security.showContacts
-    defaultSecurity.showVk = !!loggedUser?.security.showContacts
-    defaultSecurity.showEmail = !!loggedUser?.security.showContacts
+    defaultSecurity.showPhone = !!loggedUserActive?.security.showContacts
+    defaultSecurity.showWhatsapp = !!loggedUserActive?.security.showContacts
+    defaultSecurity.showViber = !!loggedUserActive?.security.showContacts
+    defaultSecurity.showTelegram = !!loggedUserActive?.security.showContacts
+    defaultSecurity.showInstagram = !!loggedUserActive?.security.showContacts
+    defaultSecurity.showVk = !!loggedUserActive?.security.showContacts
+    defaultSecurity.showEmail = !!loggedUserActive?.security.showContacts
     delete defaultSecurity.showContacts
   }
 
-  if (loggedUser?.security?.showAge === true) {
+  if (loggedUserActive?.security?.showAge === true) {
     defaultSecurity.showBirthday = 'full'
     delete defaultSecurity.showAge
   } else if (
-    loggedUser?.security?.showAge === false ||
-    loggedUser?.security?.showAge === null
+    loggedUserActive?.security?.showAge === false ||
+    loggedUserActive?.security?.showAge === null
   ) {
     defaultSecurity.showBirthday = 'no'
     delete defaultSecurity.showAge
@@ -144,9 +151,9 @@ const QuestionnaireContent = (props) => {
   )
 
   const [status, setStatus] = useState(
-    loggedUser?.status ?? DEFAULT_USER.status
+    loggedUserActive?.status ?? DEFAULT_USER.status
   )
-  const [role, setRole] = useState(loggedUser?.role ?? DEFAULT_USER.role)
+  const [role, setRole] = useState(loggedUserActive?.role ?? DEFAULT_USER.role)
 
   const setSecurytyKey = (data) => {
     setSecurity((state) => {
@@ -163,32 +170,32 @@ const QuestionnaireContent = (props) => {
   const { success, error } = useSnackbar()
 
   const formChanged =
-    loggedUser?.firstName !== firstName ||
-    loggedUser?.secondName !== secondName ||
-    loggedUser?.thirdName !== thirdName ||
+    loggedUserActive?.firstName !== firstName ||
+    loggedUserActive?.secondName !== secondName ||
+    loggedUserActive?.thirdName !== thirdName ||
     // user?.about !== about ||
     // user?.interests !== interests ||
     // user?.profession !== profession ||
     // user?.orientation !== orientation ||
-    loggedUser?.gender !== gender ||
-    loggedUser?.relationship !== relationship ||
-    loggedUser?.town !== town ||
-    // loggedUser?.personalStatus !== personalStatus ||
-    loggedUser?.email !== email ||
-    loggedUser?.phone !== phone ||
-    loggedUser?.whatsapp !== whatsapp ||
-    loggedUser?.viber !== viber ||
-    loggedUser?.telegram !== telegram ||
-    loggedUser?.instagram !== instagram ||
-    loggedUser?.vk !== vk ||
-    !compareArrays(loggedUser?.images, images) ||
-    loggedUser?.birthday !== birthday ||
-    loggedUser?.haveKids !== haveKids ||
-    !compareObjects(loggedUser?.security, security) ||
-    loggedUser?.status !== status ||
-    loggedUser?.role !== role
+    loggedUserActive?.gender !== gender ||
+    loggedUserActive?.relationship !== relationship ||
+    loggedUserActive?.town !== town ||
+    // loggedUserActive?.personalStatus !== personalStatus ||
+    loggedUserActive?.email !== email ||
+    loggedUserActive?.phone !== phone ||
+    loggedUserActive?.whatsapp !== whatsapp ||
+    loggedUserActive?.viber !== viber ||
+    loggedUserActive?.telegram !== telegram ||
+    loggedUserActive?.instagram !== instagram ||
+    loggedUserActive?.vk !== vk ||
+    !compareArrays(loggedUserActive?.images, images) ||
+    loggedUserActive?.birthday !== birthday ||
+    loggedUserActive?.haveKids !== haveKids ||
+    !compareObjects(loggedUserActive?.security, security) ||
+    loggedUserActive?.status !== status ||
+    loggedUserActive?.role !== role
   // ||
-  // !compareObjects(loggedUser?.notifications, notifications)
+  // !compareObjects(loggedUserActive?.notifications, notifications)
 
   const onClickConfirm = async () => {
     if (
@@ -209,7 +216,7 @@ const QuestionnaireContent = (props) => {
     ) {
       setIsWaitingToResponse(true)
       await putData(
-        `/api/users/${loggedUser._id}`,
+        `/api/users/${loggedUserActive._id}`,
         {
           firstName: firstName.trim(),
           secondName: secondName.trim(),
@@ -237,7 +244,7 @@ const QuestionnaireContent = (props) => {
           role,
         },
         (data) => {
-          setLoggedUser(data)
+          setLoggedUserActive(data)
           setUserInUsersState(data)
           if (data.role !== 'dev') setLoggedUserActiveRoleName(data.role)
           success('Данные профиля обновлены успешно')
@@ -249,7 +256,7 @@ const QuestionnaireContent = (props) => {
           setIsWaitingToResponse(false)
         },
         false,
-        loggedUser._id
+        loggedUserActive._id
       )
     }
   }
@@ -281,25 +288,25 @@ const QuestionnaireContent = (props) => {
               }
             </span>
             <ul className="ml-4 leading-5 list-disc">
-              {!loggedUser.firstName && (
+              {!loggedUserActive.firstName && (
                 <li className="font-bold text-red-500">Имя</li>
               )}
-              {!loggedUser.secondName && (
+              {!loggedUserActive.secondName && (
                 <li className="font-bold text-red-500">Фамилия</li>
               )}
-              {!loggedUser.birthday && (
+              {!loggedUserActive.birthday && (
                 <li className="font-bold text-red-500">Дата рождения</li>
               )}
-              {!loggedUser.gender && (
+              {!loggedUserActive.gender && (
                 <li className="font-bold text-red-500">Пол</li>
               )}
-              {!loggedUser.relationship && (
+              {!loggedUserActive.relationship && (
                 <li className="font-bold text-red-500">Статус отношений</li>
               )}
-              {!loggedUser.phone && (
+              {!loggedUserActive.phone && (
                 <li className="font-bold text-red-500">Телефон</li>
               )}
-              {/* {(!loggedUser.images || loggedUser.images.length === 0) && (
+              {/* {(!loggedUserActive.images || loggedUserActive.images.length === 0) && (
                 <li className="font-bold text-red-500">
                   {'Фотографии (добавьте хотя бы одно фото)'}
                 </li>
@@ -320,7 +327,7 @@ const QuestionnaireContent = (props) => {
     }
   }, [modalsFunc])
 
-  const buttonDisabled = !formChanged || loggedUser.status === 'ban'
+  const buttonDisabled = !formChanged || loggedUserActive.status === 'ban'
 
   return (
     <div className="flex flex-col flex-1 h-full max-w-full max-h-full min-h-full">
@@ -562,8 +569,8 @@ const QuestionnaireContent = (props) => {
                 error={errors.phone}
                 copyPasteButtons
                 disabled={
-                  !loggedUser?.registrationType ||
-                  loggedUser?.registrationType === 'phone'
+                  !loggedUserActive?.registrationType ||
+                  loggedUserActive?.registrationType === 'phone'
                 }
                 noMargin
               />

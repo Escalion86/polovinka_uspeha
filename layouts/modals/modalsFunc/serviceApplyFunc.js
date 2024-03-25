@@ -3,7 +3,7 @@ import ValueItem from '@components/ValuePicker/ValueItem'
 import { faIdCard } from '@fortawesome/free-regular-svg-icons'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import serviceSelector from '@state/selectors/serviceSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -17,7 +17,7 @@ const serviceApplyFunc = (serviceId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
+    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
     const service = useRecoilValue(serviceSelector(serviceId))
     const itemsFunc = useRecoilValue(itemsFuncAtom)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -29,9 +29,9 @@ const serviceApplyFunc = (serviceId) => {
       itemsFunc.servicesUser.set(
         {
           serviceId,
-          userId: loggedUser?._id,
+          userId: loggedUserActive?._id,
           // status,
-          // userStatus: loggedUser.status,
+          // userStatus: loggedUserActive.status,
           // eventSubtypeNum,
           answers,
           // comment,

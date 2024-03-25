@@ -6,7 +6,6 @@ import locationPropsSelector from '@state/selectors/locationPropsSelector'
 // import { putData } from '@helpers/CRUD'
 // import useErrors from '@helpers/useErrors'
 // import useSnackbar from '@helpers/useSnackbar'
-// import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 // import { useRecoilValue } from 'recoil'
@@ -23,7 +22,6 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
     // const location = useRecoilValue(locationAtom)
     const { telegramBotName } = useRecoilValue(locationPropsSelector)
 
-    // const loggedUser = useRecoilValue(loggedUserAtom)
     // const [userName, setUserName] = useState(
     //   loggedUser?.notifications?.telegram?.userName ?? ''
     // )

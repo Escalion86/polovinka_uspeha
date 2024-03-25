@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import formatDateTime from '@helpers/formatDateTime'
 import userToEventStatus from '@helpers/userToEventStatus'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
@@ -35,7 +35,7 @@ const eventSignUpFunc = (
     setDisableDecline,
     setConfirmButtonName,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
+    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
     const itemsFunc = useRecoilValue(itemsFuncAtom)
     const eventUsers = useRecoilValue(
       eventsUsersFullByEventIdSelector(event._id)
@@ -53,9 +53,9 @@ const eventSignUpFunc = (
       itemsFunc.event.signUp(
         {
           eventId,
-          userId: loggedUser?._id,
+          userId: loggedUserActive?._id,
           status,
-          userStatus: loggedUser.status,
+          userStatus: loggedUserActive.status,
           comment,
           subEventId,
         },
@@ -89,7 +89,7 @@ const eventSignUpFunc = (
         id: subEvent.id,
         userStatus: userToEventStatus(
           event,
-          loggedUser,
+          loggedUserActive,
           eventUsersOfSubEvent,
           subEvent
         ),

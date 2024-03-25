@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
 import arrayMove from '@helpers/arrayMove'
 import compareObjects from '@helpers/compareObjects'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -89,7 +89,7 @@ const ItemMenu = ({
 }
 
 const SettingsFabMenuContent = (props) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
   const [fabMenu, setFabMenu] = useState(siteSettings?.fabMenu ?? [])
 
@@ -113,7 +113,7 @@ const SettingsFabMenuContent = (props) => {
         // addError({ response: 'Ошибка обновления данных' })
       },
       false,
-      loggedUser._id
+      loggedUserActive._id
     )
   }
 

@@ -7,7 +7,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
 import Image from 'next/legacy/image'
@@ -197,11 +197,11 @@ const Achivement = ({ name, place, tooltipText }) => {
 
 const UserStatisticsContent = () => {
   // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
   const eventsUser = useRecoilValue(
-    asyncEventsUsersByUserIdAtom(loggedUser._id)
+    asyncEventsUsersByUserIdAtom(loggedUserActive._id)
   )
   const siteSettings = useRecoilValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
@@ -410,10 +410,10 @@ const UserStatisticsContent = () => {
         <div className="font-bold">Зарегистрирован:</div>
         <div className="flex flex-wrap leading-4 gap-x-1">
           <span className="font-normal">
-            {formatDate(loggedUser.createdAt)} -
+            {formatDate(loggedUserActive.createdAt)} -
           </span>
           <span className="font-normal">
-            {getDataStringBetweenDates(loggedUser.createdAt)}
+            {getDataStringBetweenDates(loggedUserActive.createdAt)}
           </span>
         </div>
       </div>

@@ -27,7 +27,6 @@ const serviceViewFunc = (serviceId) => {
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const service = useRecoilValue(serviceSelector(serviceId))
-    // const loggedUser = useRecoilValue(loggedUserAtom)
     const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
     const canEdit = loggedUserActiveRole?.services?.edit

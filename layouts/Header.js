@@ -6,7 +6,7 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import filteredAdditionalBlocksSelector from '@state/selectors/filteredAdditionalBlocksSelector'
 import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
-import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
+// import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
 import cn from 'classnames'
 import Link from 'next/link'
@@ -53,7 +53,7 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 
 const Header = ({ noMenu }) => {
   const loggedUser = useRecoilValue(loggedUserAtom)
-  const events = useRecoilValue(filteredEventsSelector)
+  // const events = useRecoilValue(filteredEventsSelector)
   const reviews = useRecoilValue(filteredReviewsSelector)
   const directions = useRecoilValue(filteredDirectionsSelector)
   const services = useRecoilValue(filteredServicesSelector)

@@ -72,8 +72,6 @@ const modalsFuncGenerator = (
 ) => {
   const addModal = (value) => setRecoil(addModalSelector, value)
   // const itemsFunc = getRecoil(itemsFuncAtom)
-  // const loggedUser = getRecoil(loggedUserAtom)
-  // console.log('loggedUser :>> ', loggedUser)
 
   const fixEventStatus = (eventId, status) => {
     itemsFunc.event.set({ _id: eventId, status }, false, true)
@@ -94,7 +92,6 @@ const modalsFuncGenerator = (
   //     setDisableConfirm,
   //     setDisableDecline,
   //   }) => {
-  //     // const loggedUser = useRecoilValue(loggedUserAtom)
   //     // const itemsFunc = useRecoilValue(itemsFuncAtom)
 
   //     const eventId = event._id

@@ -14,8 +14,10 @@ import InputWrapper from '@components/InputWrapper'
 import { SelectUser } from '@components/SelectItem'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
+import Tooltip from '@components/Tooltip'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
+import { faResearchgate } from '@fortawesome/free-brands-svg-icons'
 import {
   faCopy,
   faEye,
@@ -25,6 +27,8 @@ import {
   faInfinity,
   faMars,
   faPlus,
+  faRandom,
+  faRegistered,
   faTrash,
   faTriangleExclamation,
   faVenus,
@@ -46,7 +50,7 @@ import useErrors from '@helpers/useErrors'
 import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import cn from 'classnames'
 import Image from 'next/legacy/image'
@@ -111,7 +115,11 @@ const SubEvent = ({ onItemChange, deleteItem, addItem, ...props }) => {
         )}
         <div className="flex flex-col text-sm gap-x-1 laptop:text-base">
           <div className="flex gap-x-0.5 items-center">
-            <UserStatusIcon size="xs" status="novice" />
+            <UserStatusIcon
+              size="xs"
+              status="novice"
+              slashed={!props.usersStatusAccess?.novice}
+            />
             <div className="text-center min-w-20 whitespace-nowrap">
               {props.usersStatusDiscountResult?.noviceFrom && 'от '}
               {Math.floor(
@@ -124,7 +132,11 @@ const SubEvent = ({ onItemChange, deleteItem, addItem, ...props }) => {
             </div>
           </div>
           <div className="flex gap-x-0.5 items-center">
-            <UserStatusIcon size="xs" status="member" />
+            <UserStatusIcon
+              size="xs"
+              status="member"
+              slashed={!props.usersStatusAccess?.member}
+            />
             <div className="text-center min-w-20 whitespace-nowrap">
               {props.usersStatusDiscountResult?.memberFrom && 'от '}
               {Math.floor(
@@ -138,7 +150,7 @@ const SubEvent = ({ onItemChange, deleteItem, addItem, ...props }) => {
           </div>
         </div>
         <LimitsAndAge {...props} />
-        {props.usersRelationshipAccess &&
+        {/* {props.usersRelationshipAccess &&
           props.usersRelationshipAccess !== 'yes' && (
             <div className="absolute bg-white rounded-full left-1 -top-3">
               <UserRelationshipIcon
@@ -147,7 +159,37 @@ const SubEvent = ({ onItemChange, deleteItem, addItem, ...props }) => {
                 size="s"
               />
             </div>
+          )} */}
+        <div className="absolute flex items-center px-1 bg-white rounded-full gap-x-2 left-1 -top-3">
+          {props.usersRelationshipAccess &&
+            props.usersRelationshipAccess !== 'yes' && (
+              <UserRelationshipIcon
+                relationship={props.usersRelationshipAccess === 'only'}
+                nameForEvent
+                size="s"
+              />
+            )}
+          {!props.usersStatusAccess?.noReg && (
+            <UserStatusIcon size="xs" status="signout" slashed />
           )}
+          {!props.isReserveActive && (
+            <Tooltip title="Запись в резерв закрыта">
+              <div className="relative">
+                <div
+                  className={`flex items-center justify-center min-w-4 w-4 h-4`}
+                >
+                  <FontAwesomeIcon
+                    className={cn(`min-w-4 w-4 h-4`, 'text-purple-500')}
+                    icon={faRegistered}
+                  />
+                </div>
+                <div
+                  className={`absolute -left-0.5 w-5 h-0 border rotate-[30deg] top-1/2 border-danger`}
+                />
+              </div>
+            </Tooltip>
+          )}
+        </div>
       </div>
     </InputWrapper>
   )
@@ -345,7 +387,7 @@ const eventFunc = (eventId, clone = false) => {
     )
 
     const defaultOrganizerId =
-      event?.organizerId ?? useRecoilValue(loggedUserAtom)._id
+      event?.organizerId ?? useRecoilValue(loggedUserActiveAtom)._id
     const [organizerId, setOrganizerId] = useState(defaultOrganizerId)
 
     const [title, setTitle] = useState(event?.title ?? DEFAULT_EVENT.title)
@@ -408,6 +450,7 @@ const eventFunc = (eventId, clone = false) => {
                 maxWomansAge: 45,
                 usersStatusAccess: {},
                 usersRelationshipAccess: 'yes',
+                isReserveActive: true,
               },
             ]
     )

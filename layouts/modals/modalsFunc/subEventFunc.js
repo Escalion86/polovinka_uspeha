@@ -2,6 +2,7 @@ import CheckBox from '@components/CheckBox'
 import EditableTextarea from '@components/EditableTextarea'
 import ErrorsList from '@components/ErrorsList'
 import FormRow from '@components/FormRow'
+import IconCheckBox from '@components/IconCheckBox'
 import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleButton'
 import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
@@ -11,7 +12,11 @@ import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import UserStatusIcon from '@components/UserStatusIcon'
 import EventRelationshipAccessPicker from '@components/ValuePicker/EventRelationshipAccessPicker'
-import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
+import {
+  faMars,
+  faRegistered,
+  faVenus,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareObjects from '@helpers/compareObjects'
 import {
@@ -290,7 +295,12 @@ const subEventFunc = (props, onChange) => {
                   return { ...state, noReg: !usersStatusAccess?.noReg }
                 })
               }
-              label="Не авторизован (видно на главной странице)"
+              label={
+                <div className="flex items-center gap-x-1">
+                  <UserStatusIcon size="s" status="signout" />
+                  {'Не авторизован (видно на главной странице)'}
+                </div>
+              }
             />
             <CheckBox
               checked={usersStatusAccess?.novice}
@@ -300,7 +310,12 @@ const subEventFunc = (props, onChange) => {
                   return { ...state, novice: !usersStatusAccess?.novice }
                 })
               }
-              label="Новичок"
+              label={
+                <div className="flex items-center gap-x-1">
+                  <UserStatusIcon size="s" status="novice" />
+                  {'Новичок'}
+                </div>
+              }
               disabled={['any', 'novice', 'member'].includes(
                 direction?.rules?.userStatus
               )}
@@ -330,7 +345,12 @@ const subEventFunc = (props, onChange) => {
                   return { ...state, member: !usersStatusAccess?.member }
                 })
               }
-              label="Участник клуба"
+              label={
+                <div className="flex items-center gap-x-1">
+                  <UserStatusIcon size="s" status="member" />
+                  {'Участник клуба'}
+                </div>
+              }
               disabled={['any', 'novice', 'member'].includes(
                 direction?.rules?.userStatus
               )}
@@ -371,12 +391,20 @@ const subEventFunc = (props, onChange) => {
                 ))}
           </TabPanel>
           <TabPanel tabName="Ограничения" className="px-0">
-            <CheckBox
+            <IconCheckBox
+              checked={isReserveActive}
+              onClick={() => setIsReserveActive((checked) => !checked)}
+              label="Если мест нет, то возможно записаться в резерв"
+              checkedIcon={faRegistered}
+              checkedIconColor="#a855f7"
+              big
+            />
+            {/* <CheckBox
               checked={isReserveActive}
               labelPos="left"
               onClick={() => setIsReserveActive((checked) => !checked)}
               label="Если мест нет, то возможно записаться в резерв"
-            />
+            /> */}
             <FormRow>
               <Input
                 ref={refPerticipantsMax}

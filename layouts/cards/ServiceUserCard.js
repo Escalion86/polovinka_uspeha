@@ -9,7 +9,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import errorAtom from '@state/atoms/errorAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
 import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
@@ -28,7 +28,7 @@ const ServiceUserCard = ({
 
   const servicesUsersEdit = loggedUserActiveRole?.servicesUsers?.edit
 
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
 
   const serviceUser = useRecoilValue(servicesUsersSelector(serviceUserId))
   if (!serviceUser) return null
@@ -65,7 +65,8 @@ const ServiceUserCard = ({
             typeOfItem="serviceUser"
             onEditQuestionnaire={
               service &&
-              (servicesUsersEdit || loggedUser._id === serviceUser.userId) &&
+              (servicesUsersEdit ||
+                loggedUserActive._id === serviceUser.userId) &&
               service.questionnaire &&
               serviceUser.status !== 'closed'
                 ? () =>
