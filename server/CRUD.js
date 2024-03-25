@@ -608,7 +608,7 @@ export default async function handler(Schema, req, res, params = null) {
             if (isJson(value)) preparedQuery[key] = JSON.parse(value)
           }
           if (preparedQuery['data._id'])
-            preparedQuery['data._id'] = mongoose.Types.ObjectId(
+            preparedQuery['data._id'] = new mongoose.Types.ObjectId(
               preparedQuery['data._id']
             )
           data = await Schema.find(preparedQuery).select({ password: 0 })
@@ -709,7 +709,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
 
           const difference = compareObjectsWithDif(oldData, data)
-          difference._id = mongoose.Types.ObjectId(id)
+          difference._id = new mongoose.Types.ObjectId(id)
 
           await Histories.create({
             schema: Schema.collection.collectionName,
