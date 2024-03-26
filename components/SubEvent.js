@@ -1,20 +1,21 @@
-import Ages from '@components/Ages'
 import InputWrapper from '@components/InputWrapper'
+import Tooltip from '@components/Tooltip'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import {
   faCopy,
   faInfinity,
   faMars,
+  faRegistered,
   faTrash,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
-import Image from 'next/legacy/image'
 import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
+import Ages from './Ages'
 
 const Infinity = () => (
   <FontAwesomeIcon icon={faInfinity} className="w-4 h-3 text-gray-600" />
@@ -137,16 +138,26 @@ const LimitsAndAge = ({
   )
 }
 
-const SubEvent = ({ id, onItemChange, deleteItem, addItem, ...props }) => {
+const SubEvent = ({
+  onItemChange,
+  deleteItem,
+  addItem,
+  noMargin,
+  smallMargin,
+  ...props
+}) => {
   const modalFunc = useRecoilValue(modalsFuncAtom)
+  const { id } = props
 
   return (
     <InputWrapper
-      label={props.title} //title
+      label={props.title}
       paddingX="small"
       paddingY={false}
       centerLabel
       className="relative"
+      noMargin={noMargin}
+      smallMargin={smallMargin}
     >
       <div
         className={cn(
@@ -162,33 +173,41 @@ const SubEvent = ({ id, onItemChange, deleteItem, addItem, ...props }) => {
             : undefined
         }
       >
-        {id && deleteItem && (
-          <div className="absolute bg-white rounded-full right-1 -top-3">
-            <FontAwesomeIcon
-              className="h-6 p-1 text-red-700 duration-300 cursor-pointer hover:scale-125"
-              icon={faTrash}
-              onClick={(e) => {
-                e.stopPropagation()
-                deleteItem(id)
-              }}
-            />
-          </div>
-        )}
-        {id && addItem && (
-          <div className="absolute bg-white rounded-full right-7 -top-3">
-            <FontAwesomeIcon
-              className="h-6 p-1 text-blue-500 duration-300 cursor-pointer hover:scale-125"
-              icon={faCopy}
-              onClick={(e) => {
-                e.stopPropagation()
-                modalFunc.event.subEventEdit(props, addItem)
-              }}
-            />
+        {id && (deleteItem || addItem) && (
+          <div className="absolute flex items-center bg-white rounded-full gap-x-1 right-1 -top-3">
+            {addItem && (
+              <div className="bg-white rounded-full">
+                <FontAwesomeIcon
+                  className="h-6 p-1 text-blue-500 duration-300 cursor-pointer hover:scale-125"
+                  icon={faCopy}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    modalFunc.event.subEventEdit(props, addItem)
+                  }}
+                />
+              </div>
+            )}
+            {deleteItem && (
+              <div className="bg-white rounded-full">
+                <FontAwesomeIcon
+                  className="h-6 p-1 text-red-700 duration-300 cursor-pointer hover:scale-125"
+                  icon={faTrash}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    deleteItem(id)
+                  }}
+                />
+              </div>
+            )}
           </div>
         )}
         <div className="flex flex-col text-sm gap-x-1 laptop:text-base">
           <div className="flex gap-x-0.5 items-center">
-            <UserStatusIcon size="xs" status="novice" />
+            <UserStatusIcon
+              size="xs"
+              status="novice"
+              slashed={!props.usersStatusAccess?.novice}
+            />
             <div className="text-center min-w-20 whitespace-nowrap">
               {props.usersStatusDiscountResult?.noviceFrom && 'от '}
               {Math.floor(
@@ -201,7 +220,11 @@ const SubEvent = ({ id, onItemChange, deleteItem, addItem, ...props }) => {
             </div>
           </div>
           <div className="flex gap-x-0.5 items-center">
-            <UserStatusIcon size="xs" status="member" />
+            <UserStatusIcon
+              size="xs"
+              status="member"
+              slashed={!props.usersStatusAccess?.member}
+            />
             <div className="text-center min-w-20 whitespace-nowrap">
               {props.usersStatusDiscountResult?.memberFrom && 'от '}
               {Math.floor(
@@ -215,7 +238,7 @@ const SubEvent = ({ id, onItemChange, deleteItem, addItem, ...props }) => {
           </div>
         </div>
         <LimitsAndAge {...props} />
-        {props.usersRelationshipAccess &&
+        {/* {props.usersRelationshipAccess &&
           props.usersRelationshipAccess !== 'yes' && (
             <div className="absolute bg-white rounded-full left-1 -top-3">
               <UserRelationshipIcon
@@ -224,7 +247,37 @@ const SubEvent = ({ id, onItemChange, deleteItem, addItem, ...props }) => {
                 size="s"
               />
             </div>
+          )} */}
+        <div className="absolute flex items-center px-1 bg-white rounded-full gap-x-2 left-1 -top-3">
+          {props.usersRelationshipAccess &&
+            props.usersRelationshipAccess !== 'yes' && (
+              <UserRelationshipIcon
+                relationship={props.usersRelationshipAccess === 'only'}
+                nameForEvent
+                size="s"
+              />
+            )}
+          {!props.usersStatusAccess?.noReg && (
+            <UserStatusIcon size="xs" status="signout" slashed />
           )}
+          {!props.isReserveActive && (
+            <Tooltip title="Запись в резерв закрыта">
+              <div className="relative">
+                <div
+                  className={`flex items-center justify-center min-w-4 w-4 h-4`}
+                >
+                  <FontAwesomeIcon
+                    className={cn(`min-w-4 w-4 h-4`, 'text-purple-500')}
+                    icon={faRegistered}
+                  />
+                </div>
+                <div
+                  className={`absolute -left-0.5 w-5 h-0 border rotate-[30deg] top-1/2 border-danger`}
+                />
+              </div>
+            </Tooltip>
+          )}
+        </div>
       </div>
     </InputWrapper>
   )
