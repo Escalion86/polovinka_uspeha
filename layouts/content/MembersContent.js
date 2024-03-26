@@ -72,13 +72,13 @@ const MembersContent = () => {
   }, [members, filter, seeFullNames])
 
   const visibleUsers = useMemo(() => {
-    if (!searchText) return filteredUsers
+    if (!isSearching || !searchText) return filteredUsers
     return filterItems(filteredUsers, searchText, [], {}, [
       'firstName',
       'secondName',
       'thirdName',
     ])
-  }, [filteredUsers, searchText])
+  }, [filteredUsers, searchText, isSearching])
 
   return (
     <>
@@ -97,7 +97,7 @@ const MembersContent = () => {
             value={isSearching}
             onChange={() => {
               setIsSearching((state) => !state)
-              if (isSearching) setSearchText('')
+              // if (isSearching) setSearchText('')
             }}
           />
           {addButton && <AddButton onClick={() => modalsFunc.user.edit()} />}

@@ -18,7 +18,9 @@ const Search = ({
 
   const debouncedSearchTerm = useDebounceEffect(text, debounceDelay)
 
-  useEffect(() => onChange(debouncedSearchTerm), [debouncedSearchTerm])
+  useEffect(() => {
+    onChange(debouncedSearchTerm)
+  }, [debouncedSearchTerm])
 
   useEffect(() => {
     if (show) inputRef?.current?.focus()

@@ -87,9 +87,9 @@ const EventsContent = () => {
   )
 
   const searchedEvents = useMemo(() => {
-    if (!searchText) return filteredEvents
+    if (!isSearching || !searchText) return filteredEvents
     return filterItems(filteredEvents, searchText, [], {}, ['title'])
-  }, [filteredEvents, searchText])
+  }, [filteredEvents, searchText, isSearching])
 
   const visibleEvents = useMemo(
     () =>
@@ -166,7 +166,7 @@ const EventsContent = () => {
             value={isSearching}
             onChange={() => {
               setIsSearching((state) => !state)
-              if (isSearching) setSearchText('')
+              // if (isSearching) setSearchText('')
             }}
           />
           {seeAddButton && <AddButton onClick={() => modalsFunc.event.add()} />}
