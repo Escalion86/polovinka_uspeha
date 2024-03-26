@@ -98,14 +98,14 @@ const UsersContent = () => {
     : []
 
   const visibleUsers = useMemo(() => {
-    if (!searchText) return filteredUsers
+    if (!isSearching || !searchText) return filteredUsers
     return filterItems(filteredUsers, searchText, [], {}, [
       'firstName',
       'secondName',
       'thirdName',
       ...addSearchProps,
     ])
-  }, [filteredUsers, searchText])
+  }, [filteredUsers, searchText, isSearching])
 
   return (
     <>
@@ -134,7 +134,7 @@ const UsersContent = () => {
             value={isSearching}
             onChange={() => {
               setIsSearching((state) => !state)
-              if (isSearching) setSearchText('')
+              // if (isSearching) setSearchText('')
             }}
           />
           {/* <FormControl size="small">

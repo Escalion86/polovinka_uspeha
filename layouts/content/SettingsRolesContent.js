@@ -307,6 +307,11 @@ const SettingsRolesContent = (props) => {
               item="users"
               subItem="seeActionsHistory"
             />
+            <RoleItem
+              label="Иконка подключенных оповещений на карточке"
+              item="users"
+              subItem="seeNotificationIconOnCard"
+            />
             <SubTitle name="Услуги" />
             <RoleItem label="Видит страницу" item="services" subItem="see" />
             <RoleItem

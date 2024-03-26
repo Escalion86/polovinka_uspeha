@@ -26,7 +26,9 @@ const ValueIconText = ({ value, array }) => {
           />
         </div>
       </Tooltip>
-      <TextLinesLimiter lines={1}>{item.name}</TextLinesLimiter>
+      <TextLinesLimiter lines={1} textCenter={false}>
+        {item.name}
+      </TextLinesLimiter>
     </div>
   )
 }

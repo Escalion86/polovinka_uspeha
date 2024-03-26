@@ -5,13 +5,14 @@ const TextLinesLimiter = ({
   textClassName,
   lines = 1,
   children,
+  textCenter = true,
   ...props
 }) => {
   return (
     <div className={className} {...props}>
       <div
         className={cn(
-          'text-center',
+          textCenter ? 'text-center' : '',
           lines === 1
             ? 'line-clamp-1'
             : lines === 2

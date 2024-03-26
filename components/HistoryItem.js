@@ -18,6 +18,7 @@ const HistoryItem = ({
   userId,
   KeyValueItem,
   keys,
+  onClickRedo,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true)
 
@@ -46,7 +47,7 @@ const HistoryItem = ({
               key={key}
               className={cn(
                 'flex flex-col gap-x-1',
-                'border-gray-300 border-t-1'
+                arrayOfChanges.length > 0 ? 'border-gray-300 border-t-1' : ''
               )}
             >
               <div className="flex-1 font-bold">{keys[key] ?? key}</div>
@@ -76,51 +77,67 @@ const HistoryItem = ({
   }
 
   return (
-    <div
-      className="px-1 border border-gray-500 rounded-lg cursor-pointer hover:bg-gray-100"
-      onClick={() => {
-        setIsCollapsed((state) => !state)
-      }}
-    >
-      <div className="flex items-center py-1 gap-x-2">
-        <FontAwesomeIcon
-          className={cn('w-5', action === 'add' ? 'h-5' : 'h-4')}
-          icon={
-            action === 'add' ? faAdd : action === 'delete' ? faTrash : faRefresh
-          }
-          color={
-            action === 'add' ? 'green' : action === 'delete' ? 'red' : 'blue'
-          }
-        />
-        <div className="flex flex-col flex-1 gap-y-0.5 gap-x-2 tablet:items-center tablet:flex-row">
-          <div className="flex items-center gap-x-2">
-            <div className="flex text-sm flex-nowrap tablet:text-base gap-x-1">
-              <span className="whitespace-nowrap">{createdAtDate}</span>
-              <span className="font-bold">{createdAtTime}</span>
-            </div>
-          </div>
-          <UserNameById
-            userId={userId}
-            className="flex-1 font-semibold text-general"
-            thin
-            trunc={1}
+    <div className="overflow-hidden border border-gray-500 rounded-lg hover:bg-gray-100">
+      <div className="flex items-center border-b border-gray-500 gap-x-2">
+        <div
+          className={cn(
+            'flex items-center self-stretch justify-center p-1 duration-300 border-r border-gray-500',
+            onClickRedo
+              ? 'cursor-pointer hover:bg-green-500 hover:text-white'
+              : '',
+            action === 'add'
+              ? 'text-green-600'
+              : action === 'delete'
+                ? 'text-red-600'
+                : 'text-blue-600'
+          )}
+          onClick={onClickRedo}
+        >
+          <FontAwesomeIcon
+            className={cn('w-5', action === 'add' ? 'h-5' : 'h-4')}
+            icon={
+              action === 'add'
+                ? faAdd
+                : action === 'delete'
+                  ? faTrash
+                  : faRefresh
+            }
           />
         </div>
-        {(action === 'update' || action === 'updete') && (
-          <div
-            className={cn(
-              'w-4 duration-300 transition-transform flex items-center justify-center',
-              {
-                'rotate-180': isCollapsed,
-              }
-            )}
-          >
-            <FontAwesomeIcon icon={faAngleDown} size="lg" />
+        <div className="flex items-center flex-1 py-1 pr-1 gap-x-2">
+          <div className="flex flex-col flex-1 gap-y-0.5 gap-x-2 tablet:items-center tablet:flex-row">
+            <div className="flex items-center gap-x-2">
+              <div className="flex text-sm flex-nowrap tablet:text-base gap-x-1">
+                <span className="whitespace-nowrap">{createdAtDate}</span>
+                <span className="font-bold">{createdAtTime}</span>
+              </div>
+            </div>
+            <UserNameById
+              userId={userId}
+              className="flex-1 font-semibold text-general"
+              thin
+              trunc={1}
+            />
           </div>
-        )}
+          {(action === 'update' || action === 'updete') && (
+            <div
+              className={cn(
+                'cursor-pointer w-6 self-stretch duration-300 transition-transform flex items-center justify-center',
+                {
+                  'rotate-180': isCollapsed,
+                }
+              )}
+              onClick={() => {
+                setIsCollapsed((state) => !state)
+              }}
+            >
+              <FontAwesomeIcon icon={faAngleDown} size="lg" />
+            </div>
+          )}
+        </div>
       </div>
       {(action === 'update' || action === 'updete') && (
-        <div>{arrayOfChanges}</div>
+        <div className="px-1">{arrayOfChanges}</div>
       )}
     </div>
   )

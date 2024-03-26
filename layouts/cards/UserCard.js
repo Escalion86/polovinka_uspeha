@@ -5,7 +5,13 @@ import UserName from '@components/UserName'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import ZodiacIcon from '@components/ZodiacIcon'
-import { faGenderless } from '@fortawesome/free-solid-svg-icons'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons'
+import {
+  faGenderless,
+  faVolumeHigh,
+  faVolumeMute,
+  faVolumeOff,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
@@ -79,6 +85,8 @@ const UserCard = ({ userId, hidden = false, style }) => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
   const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
+  const seeNotificationIcon =
+    loggedUserActiveRole?.users?.seeNotificationIconOnCard
   const seeSumOfPaymentsWithoutEventOnCard =
     loggedUserActiveRole?.seeSumOfPaymentsWithoutEventOnCard
   // const widthNum = useWindowDimensionsTailwindNum()
@@ -122,17 +130,19 @@ const UserCard = ({ userId, hidden = false, style }) => {
             <div className="flex flex-col flex-1 text-xl font-bold">
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
-                  <div className="flex flex-nowrap items-center px-1 py-0.5 leading-6 gap-x-1">
-                    <UserRelationshipIcon
-                      relationship={user.relationship}
-                      showHavePartnerOnly
-                    />
-                    <UserStatusIcon status={user.status} />
-                    <UserName
-                      user={user}
-                      className="h-8 tablet:h-auto text-base font-bold tablet:text-lg -mt-0.5 tablet:mt-0"
-                      // noWrap
-                    />
+                  <div className="flex h-8 max-h-8 flex-nowrap items-start pl-1 py-0.5 leading-6 gap-x-1">
+                    <div className="flex items-start flex-1 h-8 max-h-8 flex-nowrap">
+                      <UserRelationshipIcon
+                        relationship={user.relationship}
+                        showHavePartnerOnly
+                      />
+                      <UserStatusIcon status={user.status} />
+                      <UserName
+                        user={user}
+                        className="h-8 text-base font-bold tablet:text-lg -mt-0.5 tablet:mt-0"
+                        // noWrap
+                      />
+                    </div>
                     {/* <span>{user.firstName}</span>
                     {user.secondName && <span>{user.secondName}</span>} */}
                     {/* {user.birthday && (
@@ -146,6 +156,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                         АДМИНИСТРАТОР
                       </span>
                     )} */}
+                    <CardButtons item={user} typeOfItem="user" />
                   </div>
                   <div className="flex tablet:h-full">
                     <img
@@ -161,6 +172,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                           className="text-sm italic font-normal leading-[14px] text-general"
                           // textClassName="leading-5"
                           lines={2}
+                          textCenter={false}
                         >
                           {user.personalStatus}
                         </TextLinesLimiter>
@@ -201,14 +213,44 @@ const UserCard = ({ userId, hidden = false, style }) => {
                         <SignedUpCount userId={userId} />
                       </div>
                     </div>
+                    <div className="flex items-end justify-end flex-1 py-1 pr-1 gap-x-1">
+                      {seeNotificationIcon && (
+                        <div className="flex items-center justify-end gap-x-1">
+                          {user.notifications?.telegram?.id &&
+                          user.notifications?.telegram?.active ? (
+                            <>
+                              <FontAwesomeIcon
+                                className="h-3 text-gray-800"
+                                icon={faVolumeHigh}
+                                size="xs"
+                              />
+                              <FontAwesomeIcon
+                                className="h-5 text-blue-600"
+                                icon={faTelegram}
+                                size="xs"
+                              />
+                            </>
+                          ) : (
+                            <FontAwesomeIcon
+                              className="h-3 text-gray-800"
+                              icon={faVolumeMute}
+                              size="xs"
+                            />
+                          )}
+                        </div>
+                      )}
+                      {seeSumOfPaymentsWithoutEventOnCard && (
+                        <UserSumOfPaymentsWithoutEvent userId={userId} />
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-col items-end justify-between">
+                {/* <div className="flex flex-col items-end justify-between">
                   <CardButtons item={user} typeOfItem="user" />
                   {seeSumOfPaymentsWithoutEventOnCard && (
                     <UserSumOfPaymentsWithoutEvent userId={userId} />
                   )}
-                </div>
+                </div> */}
               </div>
               {/* <div className="flex-col justify-end flex-1 hidden px-2 tablet:flex"> */}
               {/* <div className="flex-1"> */}

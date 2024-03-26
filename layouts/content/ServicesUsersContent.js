@@ -82,7 +82,7 @@ const ServicesUsersContent = () => {
   )
 
   const visibleServicesUsers = useMemo(() => {
-    if (!searchText) return filteredServicesUsers
+    if (!isSearching || !searchText) return filteredServicesUsers
     return filterItems(
       filteredServicesUsers,
       searchText,
@@ -102,7 +102,7 @@ const ServicesUsersContent = () => {
       ],
       'user'
     )
-  }, [filteredServicesUsers, searchText])
+  }, [filteredServicesUsers, searchText, isSearching])
 
   const filteredAndSortedServicesUsers = useMemo(
     () => [...visibleServicesUsers].sort(sortFunc),
@@ -140,7 +140,7 @@ const ServicesUsersContent = () => {
             value={isSearching}
             onChange={() => {
               setIsSearching((state) => !state)
-              if (isSearching) setSearchText('')
+              // if (isSearching) setSearchText('')
             }}
           />
           {addButton && (

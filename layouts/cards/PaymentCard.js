@@ -89,8 +89,8 @@ const PaySum = ({ payment }) => {
         payment.payType === 'coupon'
           ? 'text-general'
           : isExpenses
-          ? 'text-danger'
-          : 'text-success'
+            ? 'text-danger'
+            : 'text-success'
       )}
     >
       {`${isExpenses ? '-' : ''}${payment.sum / 100} ₽`}
@@ -134,7 +134,11 @@ const PayText = ({ payment, sector }) => {
       {sector === 'internal' &&
         ['toInternal', 'fromInternal'].includes(payment.payDirection) &&
         payment.comment && (
-          <TextLinesLimiter lines={2} className="text-xs leading-3">
+          <TextLinesLimiter
+            lines={2}
+            className="text-xs leading-3"
+            textCenter={false}
+          >
             {payment.comment}
           </TextLinesLimiter>
         )}
