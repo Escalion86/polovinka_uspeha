@@ -85,6 +85,8 @@ const UserCard = ({ userId, hidden = false, style }) => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
   const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
+  const seeNotificationIcon =
+    loggedUserActiveRole?.users?.seeNotificationIconOnCard
   const seeSumOfPaymentsWithoutEventOnCard =
     loggedUserActiveRole?.seeSumOfPaymentsWithoutEventOnCard
   // const widthNum = useWindowDimensionsTailwindNum()
@@ -212,29 +214,31 @@ const UserCard = ({ userId, hidden = false, style }) => {
                       </div>
                     </div>
                     <div className="flex items-end justify-end flex-1 py-1 pr-1 gap-x-1">
-                      <div className="flex items-center justify-end gap-x-1">
-                        {user.notifications?.telegram?.id &&
-                        user.notifications?.telegram?.active ? (
-                          <>
+                      {seeNotificationIcon && (
+                        <div className="flex items-center justify-end gap-x-1">
+                          {user.notifications?.telegram?.id &&
+                          user.notifications?.telegram?.active ? (
+                            <>
+                              <FontAwesomeIcon
+                                className="h-3 text-gray-800"
+                                icon={faVolumeHigh}
+                                size="xs"
+                              />
+                              <FontAwesomeIcon
+                                className="h-5 text-blue-600"
+                                icon={faTelegram}
+                                size="xs"
+                              />
+                            </>
+                          ) : (
                             <FontAwesomeIcon
                               className="h-3 text-gray-800"
-                              icon={faVolumeHigh}
+                              icon={faVolumeMute}
                               size="xs"
                             />
-                            <FontAwesomeIcon
-                              className="h-5 text-blue-600"
-                              icon={faTelegram}
-                              size="xs"
-                            />
-                          </>
-                        ) : (
-                          <FontAwesomeIcon
-                            className="h-3 text-gray-800"
-                            icon={faVolumeMute}
-                            size="xs"
-                          />
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      )}
                       {seeSumOfPaymentsWithoutEventOnCard && (
                         <UserSumOfPaymentsWithoutEvent userId={userId} />
                       )}

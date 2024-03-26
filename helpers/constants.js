@@ -843,6 +843,7 @@ export const DEFAULT_ROLES = [
       delete: false,
       seeHistory: false,
       seeActionsHistory: false,
+      seeNotificationIconOnCard: false,
     },
     services: {
       see: true,
@@ -971,6 +972,7 @@ export const DEFAULT_ROLES = [
       delete: false,
       seeHistory: false,
       seeActionsHistory: false,
+      seeNotificationIconOnCard: true,
     },
     services: {
       see: true,
@@ -1099,6 +1101,7 @@ export const DEFAULT_ROLES = [
       delete: false,
       seeHistory: false,
       seeActionsHistory: false,
+      seeNotificationIconOnCard: true,
     },
     services: {
       see: true,
@@ -1227,6 +1230,7 @@ export const DEFAULT_ROLES = [
       delete: true,
       seeHistory: true,
       seeActionsHistory: true,
+      seeNotificationIconOnCard: true,
     },
     services: {
       see: true,
@@ -1355,6 +1359,7 @@ export const DEFAULT_ROLES = [
       delete: true,
       seeHistory: true,
       seeActionsHistory: true,
+      seeNotificationIconOnCard: true,
     },
     services: {
       see: true,
