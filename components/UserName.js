@@ -23,6 +23,7 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
       {trunc ? (
         <TextLinesLimiter
           className="flex-1 leading-[14px]"
+          textCenter={false}
           lines={typeof trunc === 'number' ? trunc : 1}
         >{`${upperCaseFirst(user.firstName)}${
           user.thirdName

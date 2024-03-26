@@ -54,6 +54,7 @@ const ServiceUserCard = ({
           <TextLinesLimiter
             className="flex-1 px-2 py-1 text-base font-bold tablet:text-lg text-general"
             lines={1}
+            textCenter={false}
           >
             {service?.title ?? '[неизвестная услуга]'}
           </TextLinesLimiter>

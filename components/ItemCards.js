@@ -225,11 +225,16 @@ export const EventItem = ({
         <div className="flex flex-col h-full justify-evenly">
           <TextLinesLimiter
             className="font-bold text-general -mb-[1px]"
+            textCenter={false}
             lines={1}
           >
             {direction?.title ?? '[Напривление неизвестно]'}
           </TextLinesLimiter>
-          <TextLinesLimiter className="font-bold text-gray-800" lines={1}>
+          <TextLinesLimiter
+            className="font-bold text-gray-800"
+            lines={1}
+            textCenter={false}
+          >
             {item.title}
           </TextLinesLimiter>
         </div>
@@ -275,6 +280,7 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
           }}
           className="w-full overflow-hidden textarea ql flex-1 max-w-full leading-[0.85rem]"
           lines={2}
+          textCenter={false}
         />
       </div>
     </div>
@@ -329,6 +335,7 @@ export const ServiceItem = ({
         <TextLinesLimiter
           className="w-full overflow-hidden textarea flex-1 max-w-full leading-[0.85rem]"
           lines={2}
+          textCenter={false}
         >
           {item.shortDescription}
         </TextLinesLimiter>
@@ -425,9 +432,9 @@ export const PaymentItem = ({
               item.payType === 'coupon'
                 ? 'text-general'
                 : item.payDirection === 'toUser' ||
-                  item.payDirection === 'toEvent'
-                ? 'text-danger'
-                : 'text-success'
+                    item.payDirection === 'toEvent'
+                  ? 'text-danger'
+                  : 'text-success'
             )}
           >
             {`${
