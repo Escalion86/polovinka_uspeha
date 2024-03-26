@@ -16,6 +16,7 @@ import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
 import Ages from './Ages'
+import Image from 'next/legacy/image'
 
 const Infinity = () => (
   <FontAwesomeIcon icon={faInfinity} className="w-4 h-3 text-gray-600" />

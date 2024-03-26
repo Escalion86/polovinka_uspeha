@@ -8,18 +8,15 @@ import { P } from '@components/tags'
 import {
   faArrowAltCircleLeft,
   faArrowAltCircleRight,
-  faArrowAltCircleUp,
 } from '@fortawesome/free-regular-svg-icons'
 import {
   faHeartCirclePlus,
   faListCheck,
   faStreetView,
-  faTimes,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { arrayToObjectArray } from '@helpers/arrayToObject'
-// import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
 import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
@@ -112,68 +109,6 @@ const EventsUsers = ({
             : []
         }
       />
-      {/* <SelectUserList
-        className="mb-1"
-        label={labelWoman}
-        modalTitle={modalTitleWoman}
-        filter={{ gender: { operand: '===', value: 'famale' } }}
-        usersId={womansIds}
-        onChange={setWomansIds}
-        counterClassName={
-          event.maxWomans && womansIds.length >= event.maxWomans
-            ? 'text-danger font-bold'
-            : ''
-        }
-        maxUsers={event.maxWomans}
-        canAddItem={
-          (!event.maxUsers ||
-            mansIds.length + womansIds.length < event.maxUsers) &&
-          (event.maxWomans === null || event.maxWomans > womansIds.length)
-        }
-        exceptedIds={exceptedIds}
-        readOnly={!canEdit || isEventClosed}
-        buttons={
-          canEdit && !isEventClosed
-            ? [
-                (id) => ({
-                  onClick: () => {
-                    setWomansIds(
-                      sortUsersIds(
-                        [...womansIds].filter((userId) => userId !== id)
-                      )
-                    )
-                    setReservedParticipantsIds(
-                      sortUsersIds([...reservedParticipantsIds, id])
-                    )
-                  },
-                  icon: faArrowAltCircleRight,
-                  iconClassName: 'text-general',
-                  tooltip: 'Перенести в резерв',
-                }),
-              ]
-            : []
-        }
-      />
-      <div className="flex justify-end gap-x-1">
-        <span>Всего участников:</span>
-        <span
-          className={cn(
-            event.maxParticipants &&
-              mansIds.length + womansIds.length >= event.maxParticipants
-              ? 'font-bold text-danger'
-              : ''
-          )}
-        >
-          {mansIds.length + womansIds.length}
-        </span>
-        {event.maxParticipants ? (
-          <>
-            <span>/</span>
-            <span>{event.maxParticipants}</span>
-          </>
-        ) : null}
-        <span>чел.</span>
-      </div> */}
     </>
   )
 }
@@ -252,30 +187,12 @@ const eventUsersFunc = (eventId) => {
       [users]
     )
 
-    // const sortUsersIds = useCallback(
-    //   (ids) =>
-    //     sortedUsers
-    //       .filter((user) => ids.includes(user._id))
-    //       .map((user) => user._id),
-    //   [sortedUsers]
-    // )
-
     const sortUsersByIds = useCallback(
-      (ids) =>
-        // .map((user) => user._id),
-        sortedUsers.filter((user) => ids.includes(user._id)),
+      (ids) => sortedUsers.filter((user) => ids.includes(user._id)),
       [sortedUsers]
     )
 
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
-
-    // const [sortedEventMans, sortedEventWomans] = useMemo(
-    //   () =>
-    //     genderSplitAndSort(
-    //       eventUsers.filter(({ status }) => status === 'participant')
-    //     ),
-    //   [eventUsers]
-    // )
 
     const sortedEventUsersParticipants = useMemo(
       () =>
@@ -309,31 +226,6 @@ const eventUsersFunc = (eventId) => {
       [eventUsers]
     )
 
-    // const sortedEventAssistantsIds = useMemo(
-    //   () => getIds(sortedEventUsersAssistants),
-    //   [sortedEventUsersAssistants]
-    // )
-
-    // const sortedEventMansIds = useMemo(
-    //   () => getIds(sortedEventMans),
-    //   [sortedEventMans]
-    // )
-
-    // const sortedEventWomansIds = useMemo(
-    //   () => getIds(sortedEventWomans),
-    //   [sortedEventWomans]
-    // )
-
-    // const sortedEventReservedParticipantsIds = useMemo(
-    //   () => getIds(sortedEventUsersReserve),
-    //   [sortedEventUsersReserve]
-    // )
-
-    // const sortedEventBannedParticipantsIds = useMemo(
-    //   () => getIds(sortedEventUsersBanned),
-    //   [sortedEventUsersBanned]
-    // )
-
     const objParticipants = useMemo(
       () =>
         arrayToObjectArray(
@@ -361,30 +253,6 @@ const eventUsersFunc = (eventId) => {
     const arrayAssistants = sortedEventUsersAssistants.map(({ user }) => user)
     const arrayBanned = sortedEventUsersBanned.map(({ user }) => user)
 
-    // const objAssistants = useMemo(
-    //   () =>
-    //     arrayToObjectArray(
-    //       sortedEventUsersAssistants,
-    //       'subEventId',
-    //       true,
-    //       event._id,
-    //       ({ user }) => user
-    //     ),
-    //   [sortedEventUsersAssistants]
-    // )
-
-    // const objBanned = useMemo(
-    //   () =>
-    //     arrayToObjectArray(
-    //       sortedEventUsersBanned,
-    //       'subEventId',
-    //       true,
-    //       event._id,
-    //       ({ user }) => user
-    //     ),
-    //   [sortedEventUsersBanned]
-    // )
-
     const [participants, setParticipants] = useState(objParticipants)
     const [reserve, setReserve] = useState(objReserve)
     const [assistants, setAssistants] = useState(arrayAssistants)
@@ -398,16 +266,6 @@ const eventUsersFunc = (eventId) => {
     useEffect(() => {
       if (!compareObjects(reserve, objReserve)) setReserve(objReserve)
     }, [objReserve])
-
-    // const [assistantsIds, setAssistantsIds] = useState(sortedEventAssistantsIds)
-    // const [mansIds, setMansIds] = useState(sortedEventMansIds)
-    // const [womansIds, setWomansIds] = useState(sortedEventWomansIds)
-    // const [reservedParticipantsIds, setReservedParticipantsIds] = useState(
-    //   sortedEventReservedParticipantsIds
-    // )
-    // const [bannedParticipantsIds, setBannedParticipantsIds] = useState(
-    //   sortedEventBannedParticipantsIds
-    // )
 
     useEffect(() => {
       if ((statusEdit || copyListToClipboard) && setTopLeftComponent)
@@ -473,31 +331,7 @@ const eventUsersFunc = (eventId) => {
 
     const onClickConfirm = async () => {
       closeModal()
-      // const filteredAssistantsIds = assistantsIds.filter((user) => user !== '?')
-      // const filteredParticipantsIds = [
-      //   ...mansIds.filter((user) => user !== '?'),
-      //   ...womansIds.filter((user) => user !== '?'),
-      // ]
-      // const filteredReservedParticipantsIds = reservedParticipantsIds.filter(
-      //   (user) => user !== '?'
-      // )
-      // const filteredBannedParticipantsIds = bannedParticipantsIds.filter(
-      //   (user) => user !== '?'
-      // )
-      // const usersStatuses = [
-      //   ...filteredAssistantsIds.map((userId) => {
-      //     return { userId, status: 'assistant' }
-      //   }),
-      //   ...filteredParticipantsIds.map((userId) => {
-      //     return { userId, status: 'participant' }
-      //   }),
-      //   ...filteredReservedParticipantsIds.map((userId) => {
-      //     return { userId, status: 'reserve' }
-      //   }),
-      //   ...filteredBannedParticipantsIds.map((userId) => {
-      //     return { userId, status: 'ban' }
-      //   }),
-      // ]
+
       const usersStatuses = []
       event.subEvents.forEach(({ id }) => {
         if (participants[id])
@@ -550,52 +384,6 @@ const eventUsersFunc = (eventId) => {
       setOnlyCloseButtonShow(!canEdit || isEventClosed)
     }, [participants, assistants, reserve, banned, canEdit, isEventClosed])
 
-    // const removeIdsFromReserve = (usersIds) => {
-    //   const tempReservedParticipantsIds = []
-    //   for (let i = 0; i < reservedParticipantsIds.length; i++) {
-    //     if (!usersIds.includes(reservedParticipantsIds[i]))
-    //       tempReservedParticipantsIds.push(reservedParticipantsIds[i])
-    //   }
-    //   setReservedParticipantsIds(tempReservedParticipantsIds)
-    // }
-    // const removeIdsFromParticipants = (usersIds) => {
-    //   const tempMansIds = []
-    //   for (let i = 0; i < mansIds.length; i++) {
-    //     if (!usersIds.includes(mansIds[i])) tempMansIds.push(mansIds[i])
-    //   }
-
-    //   const tempWomansIds = []
-    //   for (let i = 0; i < womansIds.length; i++) {
-    //     if (!usersIds.includes(womansIds[i])) tempWomansIds.push(womansIds[i])
-    //   }
-    //   setMansIds(tempMansIds)
-    //   setWomansIds(tempWomansIds)
-    // }
-    // const removeIdsFromAllByBan = (bannedUsersIds) => {
-    //   var tempIds = []
-    //   for (let i = 0; i < mansIds.length; i++) {
-    //     if (!bannedUsersIds.includes(mansIds[i])) tempIds.push(mansIds[i])
-    //   }
-    //   setMansIds(tempIds)
-    //   tempIds = []
-    //   for (let i = 0; i < womansIds.length; i++) {
-    //     if (!bannedUsersIds.includes(womansIds[i])) tempIds.push(womansIds[i])
-    //   }
-    //   setWomansIds(tempIds)
-    //   tempIds = []
-    //   for (let i = 0; i < assistantsIds.length; i++) {
-    //     if (!bannedUsersIds.includes(assistantsIds[i]))
-    //       tempIds.push(assistantsIds[i])
-    //   }
-    //   setAssistantsIds(tempIds)
-    //   tempIds = []
-    //   for (let i = 0; i < reservedParticipantsIds.length; i++) {
-    //     if (!bannedUsersIds.includes(reservedParticipantsIds[i]))
-    //       tempIds.push(reservedParticipantsIds[i])
-    //   }
-    //   setReservedParticipantsIds(tempIds)
-    // }
-
     const setParticipantsState = (subEventId, ids) => {
       setParticipants((state) => ({
         ...state,
@@ -610,20 +398,7 @@ const eventUsersFunc = (eventId) => {
       }))
     }
 
-    // const setAssistantsState = (subEventId, ids) => {
-    // setAssistants((state) => ({
-    //   ...state,
-    //   [subEventId]: sortUsersByIds(ids),
-    // }))
-    // }
     const setAssistantsState = (ids) => setAssistants(sortUsersByIds(ids))
-
-    // const setBannedState = (subEventId, ids) => {
-    //   setBanned((state) => ({
-    //     ...state,
-    //     [subEventId]: sortUsersByIds(ids),
-    //   }))
-    // }
 
     const setBannedState = (ids) => setBanned(sortUsersByIds(ids))
 
@@ -640,37 +415,22 @@ const eventUsersFunc = (eventId) => {
     const assistantsCount = assistants?.length ?? 0
     const bannedCount = banned?.length ?? 0
 
-    // const assistantsCount = Object.keys(assistants).reduce(
-    //   (sum, subEventId) => sum + assistants[subEventId]?.length ?? 0,
-    //   0
-    // )
-
-    // const bannedCount = Object.keys(banned).reduce(
-    //   (sum, subEventId) => sum + banned[subEventId]?.length ?? 0,
-    //   0
-    // )
     const participantsIds = {}
     const reserveIds = {}
     var participantsIdsAll = []
     var reserveIdsAll = []
     const assistantsIds = assistants.map(({ _id }) => _id)
     const bannedIds = banned.map(({ _id }) => _id)
-    // const assistantsIds = []
-    // const bannedIds = []
     const eventUsersToUse = {}
 
     event.subEvents.forEach(({ id }) => {
       const participantsSubEvent = participants[id] ?? []
       const reserveSubEvent = reserve[id] ?? []
-      // const assistantsSubEvent = assistants[id] ?? []
-      // const bannedSubEvent = banned[id] ?? []
 
       participantsIds[id] = participantsSubEvent.map(({ _id }) => _id)
       reserveIds[id] = reserveSubEvent.map(({ _id }) => _id)
       participantsIdsAll = [...participantsIdsAll, ...participantsIds[id]]
       reserveIdsAll = [...reserveIdsAll, ...reserveIds[id]]
-      // assistantsIds[id] = assistantsSubEvent.map(({ _id }) => _id)
-      // bannedIds[id] = bannedSubEvent.map(({ _id }) => _id)
 
       eventUsersToUse[id] = [
         ...participantsSubEvent.map((user) => ({
@@ -679,24 +439,12 @@ const eventUsersFunc = (eventId) => {
           userStatus: user.status,
           subEventId: id,
         })),
-        // ...assistantsSubEvent.map((user) => ({
-        //   user,
-        //   status: 'assistant',
-        //   userStatus: user.status,
-        //   subEventId: id,
-        // })),
         ...reserveSubEvent.map((user) => ({
           user,
           status: 'reserve',
           userStatus: user.status,
           subEventId: id,
         })),
-        // ...bannedSubEvent.map((user) => ({
-        //   user,
-        //   status: 'ban',
-        //   userStatus: user.status,
-        //   subEventId: id,
-        // })),
       ]
     })
 
@@ -860,29 +608,6 @@ const eventUsersFunc = (eventId) => {
               canEdit={canEdit}
               noButtons
             />
-            {/* {event.subEvents.map((subEvent) => {
-              const { id, title } = subEvent
-
-              return (
-                <Wrapper
-                  key={'Ведущие' + id}
-                  label={title || 'Основной тип участия'}
-                >
-                  <EventsUsers
-                    event={event}
-                    modalTitle="Выбор ведущих"
-                    selectedIds={assistantsIds[id]}
-                    setSelectedIds={(ids) => setAssistantsState(id, ids)}
-                    exceptedIds={[
-                      ...participantsIds[id],
-                      ...reserveIds[id],
-                      ...bannedIds[id],
-                    ]}
-                    canEdit={canEdit}
-                  />
-                </Wrapper>
-              )
-            })} */}
           </TabPanel>
           {canEdit && (
             <TabPanel
@@ -903,122 +628,8 @@ const eventUsersFunc = (eventId) => {
                 canEdit={canEdit}
                 noButtons
               />
-              {/* {event.subEvents.map((subEvent) => {
-                const { id, title } = subEvent
-
-                return (
-                  <Wrapper
-                    key={'Бан' + id}
-                    label={title || 'Основной тип участия'}
-                  >
-                    <EventsUsers
-                      event={event}
-                      modalTitle="Выбор забаненых участников"
-                      selectedIds={bannedIds[id]}
-                      setSelectedIds={(ids) => setBannedState(id, ids)}
-                      exceptedIds={[
-                        ...participantsIds[id],
-                        ...reserveIds[id],
-                        ...assistantsIds[id],
-                      ]}
-                      canEdit={canEdit}
-                    />
-                  </Wrapper>
-                )
-              })} */}
             </TabPanel>
           )}
-          {/* {canEdit &&
-            (event.isReserveActive ?? DEFAULT_EVENT.isReserveActive) && (
-              <TabPanel
-                tabName="Резерв"
-                tabAddToLabel={`(${reservedParticipantsIds.length})`}
-              >
-                <SelectUserList
-                  label="Резерв"
-                  filter={{ gender: { operand: '!==', value: null } }}
-                  modalTitle="Выбор пользователей в резерв"
-                  usersId={reservedParticipantsIds}
-                  onChange={(usersIds) => {
-                    removeIdsFromParticipants(usersIds)
-                    setReservedParticipantsIds(sortUsersIds(usersIds))
-                  }}
-                  exceptedIds={[
-                    ...assistantsIds,
-                    // ...mansIds,
-                    // ...womansIds,
-                    // ...reservedParticipantsIds,
-                    ...bannedParticipantsIds,
-                  ]}
-                  buttons={
-                    canEdit && !isEventClosed
-                      ? [
-                          (id) => ({
-                            onClick: () => {
-                              removeIdsFromReserve([id])
-                              const genderOfUser = users.find(
-                                (user) => user._id === id
-                              ).gender
-                              if (genderOfUser === 'male')
-                                setMansIds(sortUsersIds([...mansIds, id]))
-                              if (genderOfUser === 'famale')
-                                setWomansIds(sortUsersIds([...womansIds, id]))
-                            },
-                            icon: faArrowAltCircleLeft,
-                            iconClassName: 'text-general',
-                            tooltip: 'Перенести в активный состав',
-                          }),
-                        ]
-                      : []
-                  }
-                  readOnly={!canEdit || isEventClosed}
-                />
-              </TabPanel>
-            )}
-          <TabPanel
-            tabName="Ведущие"
-            tabAddToLabel={`(${assistantsIds.length})`}
-          >
-            <SelectUserList
-              label="Ведущие"
-              modalTitle="Выбор ведущих"
-              usersId={assistantsIds}
-              onChange={(usersIds) => {
-                removeIdsFromReserve(usersIds)
-                removeIdsFromParticipants(usersIds)
-                setAssistantsIds(sortUsersIds(usersIds))
-              }}
-              exceptedIds={[
-                // ...assistantsIds,
-                // ...mansIds,
-                // ...womansIds,
-                ...bannedParticipantsIds,
-              ]}
-              readOnly={!canEdit || isEventClosed}
-            />
-          </TabPanel>
-          {canEdit && (
-            <TabPanel
-              tabName="Бан"
-              tabAddToLabel={`(${bannedParticipantsIds.length})`}
-            >
-              <SelectUserList
-                label="Блокированные"
-                modalTitle="Выбор блокированных пользователей"
-                usersId={bannedParticipantsIds}
-                onChange={(usersIds) => {
-                  removeIdsFromAllByBan(usersIds)
-                  setBannedParticipantsIds(sortUsersIds(usersIds))
-                }}
-                // onDelete={(user, onConfirm) => {
-                //   console.log('1', 1)
-                // }}
-                exceptedIds={bannedParticipantsIds}
-                readOnly={!canEdit || isEventClosed}
-              />
-            </TabPanel>
-          )} */}
-          {/* <ErrorsList errors={errors} /> */}
         </TabContext>
       </>
     )
@@ -1031,10 +642,15 @@ const eventUsersFunc = (eventId) => {
     const refreshEventState = useRecoilRefresher_UNSTABLE(
       asyncEventsUsersByEventIdSelector(eventId)
     )
+    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const canEdit = loggedUserActiveRole?.eventsUsers?.edit
+
     useEffect(() => {
-      refreshEventState()
-      setIsRefreshed(true)
-    }, [])
+      if (canEdit) {
+        refreshEventState()
+        setIsRefreshed(true)
+      }
+    }, [canEdit])
 
     const isDataChanged = JSON.stringify(prevData) !== JSON.stringify(data)
     return isRefreshed ? (
