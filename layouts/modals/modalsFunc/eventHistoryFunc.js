@@ -9,6 +9,8 @@ import { useRecoilValue } from 'recoil'
 import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
 import { eventKeys } from './historyKeyValuesItems/keys'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import { modalsFuncAtom } from '@state/atoms'
+import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 
 const eventHistoryFunc = (eventId) => {
   const EventHistoryModal = ({
@@ -20,6 +22,7 @@ const eventHistoryFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
+    const modalFunc = useRecoilValue(modalsFuncAtom)
     const event = useRecoilValue(eventSelector(eventId))
     const [eventHistory, setEventHistory] = useState()
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
@@ -87,8 +90,6 @@ const eventHistoryFunc = (eventId) => {
                       })
                     }
 
-                    // console.log('redoChanges :>> ', redoChanges)
-
                     return (
                       <HistoryItem
                         key={_id}
@@ -100,7 +101,15 @@ const eventHistoryFunc = (eventId) => {
                         KeyValueItem={EventKeyValueItem}
                         onClickRedo={
                           // () => console.log('redoChanges :>> ', redoChanges)
-                          () => setEvent({ ...redoChanges, _id: event._id })
+                          () =>
+                            modalFunc.confirm({
+                              title: 'Откат изменений мероприятия',
+                              text:
+                                'Подтверждение отката внесет изменения в мероприятие, преведя его к виду на момент последнего изменения от ' +
+                                dateToDateTimeStr(createdAt, true, false),
+                              onConfirm: () =>
+                                setEvent({ ...redoChanges, _id: event._id }),
+                            })
                         }
                       />
                     )
