@@ -82,7 +82,7 @@ const userHistoryFunc = (userId) => {
           fullMonth
         /> */}
         {userHistory ? (
-          <div className="flex flex-col-reverse flex-1 w-full max-h-[calc(100vh-180px)] tablet:max-h-[calc(100vh-232px)] py-0.5 overflow-y-auto gap-y-1">
+          <div className="flex flex-col-reverse w-full gap-y-1">
             {userHistory.length === 0
               ? 'Нет записей'
               : userHistory.map(

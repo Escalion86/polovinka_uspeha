@@ -46,6 +46,7 @@ export const eventKeys = {
   reportImages: 'Картинки в отчете',
   warning: 'Предупреждение об опасности',
   googleCalendarId: 'Google Calendar ID',
+  subEvents: 'Варианты участия',
 }
 
 export const userKeys = {

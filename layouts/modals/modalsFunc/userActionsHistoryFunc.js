@@ -128,8 +128,8 @@ const HistoryActionsItem = ({
               action === 'add'
                 ? faAdd
                 : action === 'delete'
-                ? faTrash
-                : faRefresh
+                  ? faTrash
+                  : faRefresh
             }
             color={
               action === 'add' ? 'green' : action === 'delete' ? 'red' : 'blue'

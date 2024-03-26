@@ -1,6 +1,7 @@
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DirectionTitleById from '@components/DirectionTitleById'
 import InputImages from '@components/InputImages'
+import SubEvent from '@components/SubEvent'
 import UserNameById from '@components/UserNameById'
 import { EVENT_STATUSES } from '@helpers/constants'
 import formatAddress from '@helpers/formatAddress'
@@ -18,6 +19,17 @@ const EventKeyValueItem = ({ objKey, value }) =>
         __html: DOMPurify.sanitize(value),
       }}
     />
+  ) : objKey === 'subEvents' ? (
+    value.map((props) => (
+      <SubEvent
+        key={props.id}
+        smallMargin
+        // onItemChange={onItemChange}
+        // deleteItem={subEvents?.length > 1 ? deleteItem : undefined}
+        // addItem={addItem}
+        {...props}
+      />
+    ))
   ) : objKey === 'directionId' ? (
     <DirectionTitleById directionId={value} className="flex-1" />
   ) : objKey === 'tags' ? (

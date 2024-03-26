@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
 import { eventKeys } from './historyKeyValuesItems/keys'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
 const eventHistoryFunc = (eventId) => {
   const EventHistoryModal = ({
@@ -21,6 +22,7 @@ const eventHistoryFunc = (eventId) => {
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const [eventHistory, setEventHistory] = useState()
+    const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
     if (!event || !eventId)
       return (
@@ -67,6 +69,25 @@ const eventHistoryFunc = (eventId) => {
                           index > 0 ? eventHistory[index - 1].data[0] : {},
                           data[0]
                         )
+                    // console.log('index :>> ', index)
+                    // console.log('data[0] :>> ', data[0])
+                    const redoChanges = {}
+                    for (let i = eventHistory.length - 1; i >= index; i--) {
+                      // console.log('i :>> ', i)
+                      const { data, difference } = eventHistory[i]
+                      const changes = difference
+                        ? data[0]
+                        : compareObjectsWithDif(
+                            index > 0 ? eventHistory[index - 1].data[0] : {},
+                            data[0]
+                          )
+                      Object.keys(changes).forEach((key) => {
+                        redoChanges[key] =
+                          i === index ? changes[key].new : changes[key].old
+                      })
+                    }
+
+                    // console.log('redoChanges :>> ', redoChanges)
 
                     return (
                       <HistoryItem
@@ -77,6 +98,10 @@ const eventHistoryFunc = (eventId) => {
                         userId={userId}
                         keys={eventKeys}
                         KeyValueItem={EventKeyValueItem}
+                        onClickRedo={
+                          // () => console.log('redoChanges :>> ', redoChanges)
+                          () => setEvent({ ...redoChanges, _id: event._id })
+                        }
                       />
                     )
                   }
