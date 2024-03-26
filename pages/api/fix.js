@@ -1,5 +1,8 @@
 // import Events from '@models/Events'
 // import EventsUsers from '@models/EventsUsers'
+import Events from '@models/Events'
+import EventsUsers from '@models/EventsUsers'
+import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
@@ -8,19 +11,78 @@ export default async function handler(req, res) {
   if (method === 'GET') {
     if (query.test) {
       await dbConnect()
-      const users = await Users.updateMany(
-        {},
-        {
-          $unset: {
-            interests: '',
-            firstname: '',
-            secondname: '',
-            thirdname: '',
-            about: '',
-            profession: '',
-          },
+      const histories = await Histories.find({
+        createdAt: { $gt: new Date('2024-03-26') },
+      })
+      console.log('histories.length :>> ', histories.length)
+      // console.log('histories[0] :>> ', histories[0])
+
+      let eventsAdded = 0,
+        eventsUpdated = 0,
+        eventUsersAdded = 0,
+        eventUsersDeleted = 0,
+        other = 0
+      for (let i = 0; i < histories.length; i++) {
+        const { data, schema, action } = histories[i]
+
+        if (schema === 'eventsusers') {
+          if (action === 'add') {
+            for (let j = 0; j < data.length; j++) {
+              const el = data[j]
+              await EventsUsers.create(el)
+              ++eventUsersAdded
+              console.log('add Event')
+            }
+          }
+          if (action === 'delete') {
+            for (let j = 0; j < data.length; j++) {
+              const el = data[j]
+              await EventsUsers.findByIdAndDelete(el._id)
+              ++eventUsersDeleted
+            }
+          }
+        } else if (schema === 'events') {
+          if (action === 'add') {
+            const el = data[0]
+            await Events.create(el)
+            ++eventsAdded
+          }
+          if (action === 'update') {
+            const el = data[0]
+            const id = el._id
+            delete el._id
+            const newData = {}
+            for (const [key, value] of Object.entries(el)) {
+              newData[key] = el[key].new
+            }
+            await Events.findByIdAndUpdate(id, newData)
+            ++eventsUpdated
+          }
+        } else {
+          ++other
         }
-      )
+      }
+      console.log({
+        eventsAdded,
+        eventsUpdated,
+        eventUsersAdded,
+        eventUsersDeleted,
+        other,
+      })
+      // const users = await Users.updateMany(
+      //   {},
+      //   {
+      //     $unset: {
+      //       interests: '',
+      //       firstname: '',
+      //       secondname: '',
+      //       thirdname: '',
+      //       about: '',
+      //       profession: '',
+      //     },
+      //   }
+      // )
+
       // console.log(
       //   '!! :>> ',
       //   users.map(({ interests }) => interests)
@@ -87,7 +149,16 @@ export default async function handler(req, res) {
       //   { status: 'closed' }
       // )
       // return { updatedEvents }
-      return res?.status(201).json({ success: true, data: 'ok' })
+      return res?.status(201).json({
+        success: true,
+        data: {
+          eventsAdded,
+          eventsUpdated,
+          eventUsersAdded,
+          eventUsersDeleted,
+          other,
+        },
+      })
     }
   }
   // return await CRUD(Users, req, res)
