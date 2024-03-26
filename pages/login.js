@@ -411,18 +411,18 @@ const LoginPage = (props) => {
     // }
   }
 
-  const test = () => {
-    handleTelegramResponse({
-      // auth_date: 1710790148,
-      first_name: 'Алексей',
-      // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
-      id: 261102161,
-      username: 'escalion',
-      last_name: 'Белинский Иллюзионист',
-      photo_url:
-        'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
-    })
-  }
+  // const test = () => {
+  //   handleTelegramResponse({
+  //     // auth_date: 1710790148,
+  //     first_name: 'Алексей',
+  //     // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
+  //     id: 261102161,
+  //     username: 'escalion',
+  //     last_name: 'Белинский Иллюзионист',
+  //     photo_url:
+  //       'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
+  //   })
+  // }
 
   // const test2 = () => {
   //   setWaitingResponse(true)
