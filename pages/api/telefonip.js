@@ -1,6 +1,7 @@
 import getMinutesBetween from '@helpers/getMinutesBetween'
 import phoneValidator from '@helpers/phoneValidator'
 import pinValidator from '@helpers/pinValidator'
+import Histories from '@models/Histories'
 import PhoneConfirms from '@models/PhoneConfirms'
 import Users from '@models/Users'
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
@@ -303,6 +304,12 @@ export default async function handler(req, res) {
           })
         } else {
           const newUser = await Users.create({ phone, password })
+          await Histories.create({
+            schema: 'users',
+            action: 'add',
+            data: newUser,
+            userId: newUser._id,
+          })
           await userRegisterTelegramNotification({ phone })
 
           return res?.status(201).json({

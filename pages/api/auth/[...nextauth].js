@@ -2,6 +2,7 @@ import NextAuth from 'next-auth'
 import Users from '@models/Users'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
+import Histories from '@models/Histories'
 
 export default async function auth(req, res) {
   return await NextAuth(req, res, {
@@ -98,6 +99,12 @@ export default async function auth(req, res) {
                   secondName: last_name,
                   images: [photo_url],
                   registrationType: 'telegram',
+                })
+                await Histories.create({
+                  schema: 'users',
+                  action: 'add',
+                  data: newUser,
+                  userId: newUser._id,
                 })
                 return {
                   name: newUser._id,
