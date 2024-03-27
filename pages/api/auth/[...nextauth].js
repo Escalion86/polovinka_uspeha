@@ -3,6 +3,7 @@ import Users from '@models/Users'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
 import Histories from '@models/Histories'
+import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
 
 export default async function auth(req, res) {
   return await NextAuth(req, res, {
@@ -105,6 +106,12 @@ export default async function auth(req, res) {
                   action: 'add',
                   data: newUser,
                   userId: newUser._id,
+                })
+                await userRegisterTelegramNotification({
+                  telegramId,
+                  first_name,
+                  last_name,
+                  images: [photo_url],
                 })
                 return {
                   name: newUser._id,
