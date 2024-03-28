@@ -39,8 +39,18 @@ const fetchProps = async (user) => {
     //     }
     //   })
     // }
+    //1570383
 
-    const events = await Events.find({}).lean()
+    const events = await Events.find({})
+      .select({
+        description: 0,
+        address: 0,
+        images: 0,
+        organizerId: 0,
+        warning: 0,
+        googleCalendarId: 0,
+      })
+      .lean()
     const directions = await Directions.find({}).lean()
     const reviews = await Reviews.find({}).lean()
     const additionalBlocks = await AdditionalBlocks.find({}).lean()
@@ -79,6 +89,26 @@ const fetchProps = async (user) => {
         }
       })
     }
+    // console.log('')
+    // console.log('')
+    // console.log('-----------------------------')
+    // console.log('users :>> ', JSON.stringify(users).length)
+    // console.log('events :>> ', JSON.stringify(events).length)
+    // console.log('directions :>> ', JSON.stringify(directions).length)
+    // console.log('reviews :>> ', JSON.stringify(reviews).length)
+    // console.log(
+    //   'additionalBlocks :>> ',
+    //   JSON.stringify(additionalBlocks).length
+    // )
+    // console.log('payments :>> ', JSON.stringify(users).payments)
+    // console.log('siteSettings :>> ', JSON.stringify(siteSettings).length)
+    // console.log('questionnaires :>> ', JSON.stringify(questionnaires).length)
+    // console.log(
+    //   'questionnairesUsers :>> ',
+    //   JSON.stringify(questionnairesUsers).length
+    // )
+    // console.log('rolesSettservicesings :>> ', JSON.stringify(services).length)
+    // console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
 
     const fetchResult = {
       users: JSON.parse(JSON.stringify(users)),

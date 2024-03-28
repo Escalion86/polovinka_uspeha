@@ -11,77 +11,122 @@ export default async function handler(req, res) {
   if (method === 'GET') {
     if (query.test) {
       await dbConnect()
-      const histories = await Histories.find({
-        createdAt: { $gt: new Date('2024-03-26') },
-      })
-      console.log('histories.length :>> ', histories.length)
-      // console.log('histories[0] :>> ', histories[0])
 
-      let eventsAdded = 0,
-        eventsUpdated = 0,
-        eventUsersAdded = 0,
-        eventUsersDeleted = 0,
-        other = 0
-      for (let i = 0; i < histories.length; i++) {
-        const { data, schema, action } = histories[i]
+      // Восстановление из истории
+      // const histories = await Histories.find({
+      //   createdAt: { $gt: new Date('2024-03-26') },
+      // })
+      // console.log('histories.length :>> ', histories.length)
+      // // console.log('histories[0] :>> ', histories[0])
 
-        if (schema === 'eventsusers') {
-          if (action === 'add') {
-            for (let j = 0; j < data.length; j++) {
-              const el = data[j]
-              await EventsUsers.create(el)
-              ++eventUsersAdded
-              console.log('add Event')
-            }
-          }
-          if (action === 'delete') {
-            for (let j = 0; j < data.length; j++) {
-              const el = data[j]
-              await EventsUsers.findByIdAndDelete(el._id)
-              ++eventUsersDeleted
-            }
-          }
-        } else if (schema === 'events') {
-          if (action === 'add') {
-            const el = data[0]
-            await Events.create(el)
-            ++eventsAdded
-          }
-          if (action === 'update') {
-            const el = data[0]
-            const id = el._id
-            delete el._id
-            const newData = {}
-            for (const [key, value] of Object.entries(el)) {
-              newData[key] = el[key].new
-            }
-            await Events.findByIdAndUpdate(id, newData)
-            ++eventsUpdated
-          }
-        } else {
-          ++other
-        }
-      }
-      console.log({
-        eventsAdded,
-        eventsUpdated,
-        eventUsersAdded,
-        eventUsersDeleted,
-        other,
-      })
-      // const users = await Users.updateMany(
-      //   {},
-      //   {
-      //     $unset: {
-      //       interests: '',
-      //       firstname: '',
-      //       secondname: '',
-      //       thirdname: '',
-      //       about: '',
-      //       profession: '',
-      //     },
+      // let eventsAdded = 0,
+      //   eventsUpdated = 0,
+      //   eventUsersAdded = 0,
+      //   eventUsersDeleted = 0,
+      //   other = 0
+      // for (let i = 0; i < histories.length; i++) {
+      //   const { data, schema, action } = histories[i]
+
+      //   if (schema === 'eventsusers') {
+      //     if (action === 'add') {
+      //       for (let j = 0; j < data.length; j++) {
+      //         const el = data[j]
+      //         await EventsUsers.create(el)
+      //         ++eventUsersAdded
+      //         console.log('add Event')
+      //       }
+      //     }
+      //     if (action === 'delete') {
+      //       for (let j = 0; j < data.length; j++) {
+      //         const el = data[j]
+      //         await EventsUsers.findByIdAndDelete(el._id)
+      //         ++eventUsersDeleted
+      //       }
+      //     }
+      //   } else if (schema === 'events') {
+      //     if (action === 'add') {
+      //       const el = data[0]
+      //       await Events.create(el)
+      //       ++eventsAdded
+      //     }
+      //     if (action === 'update') {
+      //       const el = data[0]
+      //       const id = el._id
+      //       delete el._id
+      //       const newData = {}
+      //       for (const [key, value] of Object.entries(el)) {
+      //         newData[key] = el[key].new
+      //       }
+      //       await Events.findByIdAndUpdate(id, newData)
+      //       ++eventsUpdated
+      //     }
+      //   } else {
+      //     ++other
       //   }
-      // )
+      // }
+      // console.log({
+      //   eventsAdded,
+      //   eventsUpdated,
+      //   eventUsersAdded,
+      //   eventUsersDeleted,
+      //   other,
+      // })
+      // return res?.status(201).json({
+      //   success: true,
+      //   data: {
+      //     eventsAdded,
+      //     eventsUpdated,
+      //     eventUsersAdded,
+      //     eventUsersDeleted,
+      //     other,
+      //   },
+      // })
+
+      console.log('1 :>> ', 1)
+
+      const users = await Users.updateMany(
+        {},
+        {
+          $unset: {
+            image: '',
+            interests: '',
+            firstname: '',
+            secondname: '',
+            thirdname: '',
+            about: '',
+            profession: '',
+          },
+        }
+      )
+
+      console.log('users :>> ', users)
+
+      const events = await Events.updateMany(
+        {},
+        {
+          $unset: {
+            duration: '',
+            date: '',
+            price: '',
+            maxParticipants: '',
+            maxMans: '',
+            maxWomans: '',
+            minMansAge: '',
+            maxMansAge: '',
+            minWomansAge: '',
+            maxWomansAge: '',
+            usersStatusAccess: '',
+            usersStatusDiscount: '',
+            isReserveActive: '',
+            maxMansMember: '',
+            maxMansNovice: '',
+            maxWomansMember: '',
+            maxWomansNovice: '',
+          },
+        }
+      )
+
+      console.log('events :>> ', events)
 
       // console.log(
       //   '!! :>> ',
@@ -151,13 +196,7 @@ export default async function handler(req, res) {
       // return { updatedEvents }
       return res?.status(201).json({
         success: true,
-        data: {
-          eventsAdded,
-          eventsUpdated,
-          eventUsersAdded,
-          eventUsersDeleted,
-          other,
-        },
+        data: 'ok',
       })
     }
   }

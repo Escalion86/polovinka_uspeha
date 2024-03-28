@@ -1,14 +1,17 @@
+import { getData } from '@helpers/CRUD'
 import { DEFAULT_EVENT } from '@helpers/constants'
-import eventsAtom from '@state/atoms/eventsAtom'
+// import eventsAtom from '@state/atoms/eventsAtom'
 import { selectorFamily } from 'recoil'
 
 export const eventSelector = selectorFamily({
   key: 'eventsSelector',
   get:
     (id) =>
-    ({ get }) => {
+    async ({ get }) => {
       if (!id) return DEFAULT_EVENT
-      return get(eventsAtom).find((item) => item._id === id)
+      const res = await getData('/api/events/' + id, {}, null, null, false)
+      return res
+      // return get(eventsAtom).find((item) => item._id === id)
     },
   // set:
   //   (id) =>

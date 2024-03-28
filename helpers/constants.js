@@ -106,6 +106,7 @@ import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartP
 import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
 import ToolsImageConstructorContent from '@layouts/content/ToolsImageConstructorContent'
 import ToolsEventAnonsVkContent from '@layouts/content/ToolsEventAnonsVkContent'
+import { uid } from 'uid'
 
 const colors = [
   'border-blue-400',
@@ -2266,6 +2267,27 @@ export const DEFAULT_USERS_STATUS_DISCOUNT = {
   novice: 0,
   member: 0,
 }
+
+export const DEFAULT_SUBEVENT_GENERATOR = () => ({
+  id: uid(24),
+  title: 'Вариант участия №1',
+  price: 0,
+  usersStatusDiscount: { ...DEFAULT_USERS_STATUS_DISCOUNT },
+  maxParticipants: null,
+  maxMans: null,
+  maxWomans: null,
+  maxMansNovice: null,
+  maxWomansNovice: null,
+  maxMansMember: null,
+  maxWomansMember: null,
+  minMansAge: 18,
+  minWomansAge: 18,
+  maxMansAge: 60,
+  maxWomansAge: 60,
+  usersStatusAccess: { ...DEFAULT_USERS_STATUS_ACCESS },
+  usersRelationshipAccess: 'yes',
+  isReserveActive: true,
+})
 
 export const USERS_STATUSES = [
   { value: 'novice', name: 'Новичок', color: 'green-400', icon: faUser },
