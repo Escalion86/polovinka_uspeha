@@ -55,7 +55,11 @@ const fetchProps = async (user) => {
     const reviews = await Reviews.find({}).lean()
     const additionalBlocks = await AdditionalBlocks.find({}).lean()
     // const eventsUsers = await EventsUsers.find({}).lean()
-    const payments = await Payments.find({}).lean()
+    const payments = await Payments.find({})
+      .select({
+        status: 0,
+      })
+      .lean()
     const siteSettings = await SiteSettings.find({}).lean()
     const rolesSettings = await Roles.find({}).lean()
     const questionnaires = await Questionnaires.find({}).lean()
@@ -89,26 +93,26 @@ const fetchProps = async (user) => {
         }
       })
     }
-    // console.log('')
-    // console.log('')
-    // console.log('-----------------------------')
-    // console.log('users :>> ', JSON.stringify(users).length)
-    // console.log('events :>> ', JSON.stringify(events).length)
-    // console.log('directions :>> ', JSON.stringify(directions).length)
-    // console.log('reviews :>> ', JSON.stringify(reviews).length)
-    // console.log(
-    //   'additionalBlocks :>> ',
-    //   JSON.stringify(additionalBlocks).length
-    // )
-    // console.log('payments :>> ', JSON.stringify(users).payments)
-    // console.log('siteSettings :>> ', JSON.stringify(siteSettings).length)
-    // console.log('questionnaires :>> ', JSON.stringify(questionnaires).length)
-    // console.log(
-    //   'questionnairesUsers :>> ',
-    //   JSON.stringify(questionnairesUsers).length
-    // )
-    // console.log('rolesSettservicesings :>> ', JSON.stringify(services).length)
-    // console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
+    console.log('')
+    console.log('')
+    console.log('-----------------------------')
+    console.log('users :>> ', JSON.stringify(users).length)
+    console.log('events :>> ', JSON.stringify(events).length)
+    console.log('directions :>> ', JSON.stringify(directions).length)
+    console.log('reviews :>> ', JSON.stringify(reviews).length)
+    console.log(
+      'additionalBlocks :>> ',
+      JSON.stringify(additionalBlocks).length
+    )
+    console.log('payments :>> ', JSON.stringify(payments).length)
+    console.log('siteSettings :>> ', JSON.stringify(siteSettings).length)
+    console.log('questionnaires :>> ', JSON.stringify(questionnaires).length)
+    console.log(
+      'questionnairesUsers :>> ',
+      JSON.stringify(questionnairesUsers).length
+    )
+    console.log('rolesSettservicesings :>> ', JSON.stringify(services).length)
+    console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
 
     const fetchResult = {
       users: JSON.parse(JSON.stringify(users)),
