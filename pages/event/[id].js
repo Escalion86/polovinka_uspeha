@@ -11,11 +11,11 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import isPWAAtom from '@state/atoms/isPWAAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
+// import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -41,81 +41,11 @@ const Event = ({ event }) => {
 
 const EventBlock = ({ event }) => {
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const { canSee, isAgeOfUserCorrect, isUserStatusCorrect } = useRecoilValue(
-    loggedUserToEventStatusSelector(event?._id)
-  )
-
-  const router = useRouter()
-  const routerQuery = { ...router.query }
-  delete routerQuery.id
-  const query = event?._id ? { event: event._id } : {}
 
   return (
     <BlockContainer small>
-      {event?._id && canSee && <Event event={event} />}
+      <Event event={event} />
       <div className="flex flex-col items-center">
-        {!event?._id && (
-          <span className="text-xl">Ошибка. Мероприятие не найдено</span>
-        )}
-        {loggedUserActive && !isUserStatusCorrect ? (
-          <span className="text-xl">
-            {`К сожалению данное мероприятие не доступно для вашего статуса пользователя`}
-          </span>
-        ) : loggedUserActive && isUserStatusCorrect && !isAgeOfUserCorrect ? (
-          <span className="text-xl">
-            {`К сожалению данное мероприятие доступно для возрастной категории ${
-              loggedUserActive?.gender === 'male'
-                ? `мужчин от ${event.minMansAge} до ${event.maxMansAge} лет`
-                : `женщин от ${event.minWomansAge} до ${event.maxWomansAge} лет`
-            }`}
-          </span>
-        ) : !canSee && isUserStatusCorrect && isAgeOfUserCorrect ? (
-          <span className="text-xl">
-            Мероприятие скрыто, если вы не ошиблись со ссылкой, то пожалуйста
-            обратитесь к администратору
-          </span>
-        ) : (
-          !loggedUserActive && (
-            <>
-              <span className="text-xl">
-                Мероприятие не доступно для просмотра неавторизированным
-                пользователям, пожалуйста авторизируйтесь
-              </span>
-              <Link
-                className="max-w-[76%]"
-                href={{
-                  pathname: '/login',
-                  query: { ...routerQuery, ...query },
-                }}
-                shallow
-              >
-                <PulseButton
-                  className="mt-4 text-white"
-                  title="Авторизироваться"
-                  // onClick={() => router.push('./login', '', { shallow: true })}
-                />
-              </Link>
-              <Link
-                className="max-w-[76%]"
-                href={{
-                  pathname: '/login',
-                  query: {
-                    ...routerQuery,
-                    ...query,
-                    registration: true,
-                  },
-                }}
-                shallow
-              >
-                <PulseButton
-                  className="mt-4 text-white"
-                  title="Зарегистрироваться"
-                  // onClick={() => router.push('./login', '', { shallow: true })}
-                />
-              </Link>
-            </>
-          )
-        )}
         {loggedUserActive && (
           <Link
             className="max-w-[76%]"
