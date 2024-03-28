@@ -82,6 +82,7 @@ const EventBlock = ({ event }) => {
                 пользователям, пожалуйста авторизируйтесь
               </span>
               <Link
+                className="max-w-[76%]"
                 href={{
                   pathname: '/login',
                   query: { ...routerQuery, ...query },
@@ -95,6 +96,7 @@ const EventBlock = ({ event }) => {
                 />
               </Link>
               <Link
+                className="max-w-[76%]"
                 href={{
                   pathname: '/login',
                   query: {
@@ -116,6 +118,7 @@ const EventBlock = ({ event }) => {
         )}
         {loggedUserActive && (
           <Link
+            className="max-w-[76%]"
             href={{
               pathname: '/cabinet/events',
             }}
