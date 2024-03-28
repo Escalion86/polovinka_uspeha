@@ -26,7 +26,7 @@ import compareObjects from '@helpers/compareObjects'
 import {
   DEFAULT_EVENT,
   DEFAULT_SUBEVENT,
-  DEFAULT_USERS_STATUS_DISCOUNT,
+  DEFAULT_SUBEVENT_GENERATOR,
 } from '@helpers/constants'
 import formatMinutes from '@helpers/formatMinutes'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
@@ -159,28 +159,7 @@ const eventFunc = (eventId, clone = false) => {
         ? event.subEvents
         : eventId
           ? []
-          : [
-              {
-                id: uid(24),
-                title: 'Вариант участия №1',
-                price: 0,
-                usersStatusDiscount: { ...DEFAULT_USERS_STATUS_DISCOUNT },
-                maxParticipants: null,
-                maxMans: null,
-                maxWomans: null,
-                maxMansNovice: null,
-                maxWomansNovice: null,
-                maxMansMember: null,
-                maxWomansMember: null,
-                minMansAge: 35,
-                minWomansAge: 30,
-                maxMansAge: 50,
-                maxWomansAge: 45,
-                usersStatusAccess: {},
-                usersRelationshipAccess: 'yes',
-                isReserveActive: true,
-              },
-            ]
+          : [DEFAULT_SUBEVENT_GENERATOR()]
     )
 
     // const [maxParticipants, setMaxParticipants] = useState(
