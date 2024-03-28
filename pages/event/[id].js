@@ -18,6 +18,7 @@ import Link from 'next/link'
 // import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
+import Skeleton from 'react-loading-skeleton'
 
 const Event = ({ event }) => {
   const eventView = eventViewFunc(event._id)
@@ -25,17 +26,50 @@ const Event = ({ event }) => {
   const TopLeftComponent = eventView.TopLeftComponent
 
   return (
-    <Suspense>
+    <>
       <div className="relative">
         {TopLeftComponent && (
           <div className="absolute right-3">
-            <TopLeftComponent />
+            <Suspense fallback={<Skeleton count={1} height={28} width={60} />}>
+              <TopLeftComponent />
+            </Suspense>
           </div>
         )}
         <H2 className="mx-10 mb-4">Мероприятие</H2>
       </div>
-      <Component />
-    </Suspense>
+      <Suspense
+        fallback={
+          <div className="flex flex-col gap-y-4">
+            <Skeleton
+              count={1}
+              className="h-60 laptop:h-80 max-h-60 laptop:max-h-80"
+            />
+            <div className="flex justify-between">
+              <Skeleton
+                count={1}
+                height={28}
+                containerClassName="w-[120px] max-w-[45%]"
+              />
+              <Skeleton
+                count={1}
+                height={28}
+                containerClassName="w-[120px] max-w-[45%]"
+              />
+            </div>
+            <div className="flex justify-center">
+              <Skeleton
+                count={1}
+                height={36}
+                containerClassName="w-[300px] max-w-full"
+              />
+            </div>
+            <Skeleton count={12} />
+          </div>
+        }
+      >
+        <Component />
+      </Suspense>
+    </>
   )
 }
 
