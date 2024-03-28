@@ -112,7 +112,7 @@ module.exports = {
         },
         'ping-light': {
           '75%, 100%': {
-            transform: 'scale(1.4)',
+            transform: 'scale(1.3)',
             opacity: 0,
           },
         },

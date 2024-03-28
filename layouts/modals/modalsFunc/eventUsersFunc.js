@@ -21,6 +21,7 @@ import compareObjects from '@helpers/compareObjects'
 import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
+import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 // import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -30,6 +31,7 @@ import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullBy
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
+  useRecoilRefresher_UNSTABLE,
   // useRecoilRefresher_UNSTABLE,
   useRecoilValue,
 } from 'recoil'
@@ -167,7 +169,7 @@ const eventUsersFunc = (eventId) => {
     setDisableConfirm,
     setOnlyCloseButtonShow,
     setTopLeftComponent,
-    // isDataChanged,
+    isDataChanged,
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
     const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -176,7 +178,7 @@ const eventUsersFunc = (eventId) => {
     const copyListToClipboard =
       loggedUserActiveRole?.eventsUsers?.copyListToClipboard
 
-    // const [dataChanged, setDataChanged] = useState(isDataChanged)
+    const [dataChanged, setDataChanged] = useState(isDataChanged)
 
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
@@ -477,9 +479,7 @@ const eventUsersFunc = (eventId) => {
             запрещено
           </P>
         )}
-        {/* {canEdit
-         && dataChanged
-         && (
+        {canEdit && dataChanged && (
           <div
             className="flex items-center px-1 leading-[14px] cursor-pointer select-none gap-x-1 text-success"
             onClick={() => setDataChanged(false)}
@@ -493,7 +493,7 @@ const eventUsersFunc = (eventId) => {
               icon={faTimesCircle}
             />
           </div>
-        )} */}
+        )}
         <TabContext value="Участники">
           <TabPanel
             tabName="Участники"
@@ -640,34 +640,33 @@ const eventUsersFunc = (eventId) => {
     )
   }
 
-  // const ModalRefresher = (props) => {
-  //   const [isRefreshed, setIsRefreshed] = useState(false)
-  //   const data = useRecoilValue(asyncEventsUsersByEventIdSelector(eventId))
-  //   const [prevData, setPravData] = useState(data)
-  //   const refreshEventState = useRecoilRefresher_UNSTABLE(
-  //     asyncEventsUsersByEventIdSelector(eventId)
-  //   )
-  //   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  //   const canEdit = loggedUserActiveRole?.eventsUsers?.edit
+  const ModalRefresher = (props) => {
+    const [isRefreshed, setIsRefreshed] = useState(false)
+    const data = useRecoilValue(asyncEventsUsersByEventIdSelector(eventId))
+    const [prevData, setPravData] = useState(data)
+    const refreshEventState = useRecoilRefresher_UNSTABLE(
+      asyncEventsUsersByEventIdSelector(eventId)
+    )
+    // const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    // const canEdit = loggedUserActiveRole?.eventsUsers?.edit
 
-  //   useEffect(() => {
-  //     if (canEdit) {
-  //       refreshEventState()
-  //       setIsRefreshed(true)
-  //     }
-  //   }, [canEdit])
+    useEffect(() => {
+      refreshEventState()
+      setIsRefreshed(true)
+    }, [])
 
-  //   const isDataChanged = JSON.stringify(prevData) !== JSON.stringify(data)
-  //   return isRefreshed ? (
-  //     <EventUsersModal {...props} isDataChanged={isDataChanged} />
-  //   ) : null
-  // }
+    const isDataChanged = JSON.stringify(prevData) !== JSON.stringify(data)
+    return isRefreshed ? (
+      <EventUsersModal {...props} isDataChanged={isDataChanged} />
+    ) : null
+  }
 
   return {
     title: `Участники мероприятия`,
     confirmButtonName: 'Применить',
-    Children: EventUsersModal,
-    // ModalRefresher,
+    Children:
+      // EventUsersModal,
+      ModalRefresher,
   }
 }
 

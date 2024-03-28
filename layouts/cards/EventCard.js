@@ -233,7 +233,7 @@ const EventCard = ({
                   </TextLinesLimiter>
                   <TextLinesLimiter
                     className={cn(
-                      'flex-1 text-lg font-bold flex items-center justify-center',
+                      'flex-1 text-lg font-bold flex items-center justify-center max-h-[36px]',
                       changeStyle === 'laptop'
                         ? 'laptop:text-xl'
                         : 'desktop:text-xl'
@@ -257,21 +257,22 @@ const EventCard = ({
             </div>
           </div>
         </div>
-        <div className="flex justify-center py-1 pl-2 pr-1 mt-1 border-t border-gray-300">
-          {/* <PriceDiscount event={event} className="hidden tablet:flex" /> */}
-          {/* <div className="flex flex-wrap justify-between w-full"> */}
-          <DateTimeEvent
-            wrapperClassName="text-base laptop:text-lg font-bold leading-4 laptop:leading-5 justify-center laptop:justify-start"
-            dateClassName="text-general"
-            timeClassName="italic"
-            durationClassName="italic text-base font-normal"
-            event={event}
-            showDayOfWeek
-            fullMonth
-            twoLines={widthNum <= 2}
-            showDuration={widthNum > 3}
-          />
-          {/* <div className="text-lg font-bold leading-5 whitespace-nowrap tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
+        <div className="flex justify-center w-full mt-1">
+          <div className="w-full py-1 pl-2 pr-1 border-t">
+            {/* <PriceDiscount event={event} className="hidden tablet:flex" /> */}
+            {/* <div className="flex flex-wrap justify-between w-full"> */}
+            <DateTimeEvent
+              wrapperClassName="text-base laptop:text-lg font-bold leading-4 laptop:leading-5 justify-center laptop:justify-start"
+              dateClassName="text-general"
+              timeClassName="italic"
+              durationClassName="italic text-base font-normal"
+              event={event}
+              showDayOfWeek
+              fullMonth
+              twoLines={widthNum <= 2}
+              showDuration={widthNum > 3}
+            />
+            {/* <div className="text-lg font-bold leading-5 whitespace-nowrap tablet:text-right min-w-24 laptop:whitespace-pre-wrap text-general">
               {formatDateTime(
                 event.date,
                 false,
@@ -281,16 +282,19 @@ const EventCard = ({
                 event.duration
               )}
             </div> */}
-          {/* <div className="text-lg font-bold leading-5 text-right whitespace-nowrap min-w-24 laptop:whitespace-pre-wrap text-general">
+            {/* <div className="text-lg font-bold leading-5 text-right whitespace-nowrap min-w-24 laptop:whitespace-pre-wrap text-general">
               {formatMinutes(event.duration ?? 60)}
             </div> */}
-          {/* </div> */}
+            {/* </div> */}
+          </div>
         </div>
 
         {widthNum >= 3 && (
-          <div className="flex items-stretch justify-between border-t">
-            <EventUsersCounterAndAge event={event} className="h-[42px]" />
-            <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn />
+          <div className="max-h-[42px]">
+            <div className="flex items-stretch justify-between border-t">
+              <EventUsersCounterAndAge event={event} className="h-[42px]" />
+              <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn />
+            </div>
           </div>
         )}
       </div>
