@@ -2,6 +2,7 @@ import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
 import RadioBox from '@components/RadioBox'
 import { SelectEventList } from '@components/SelectItemList'
+import { getData } from '@helpers/CRUD'
 import copyToClipboard from '@helpers/copyToClipboard'
 import formatAddress from '@helpers/formatAddress'
 import formatEventDateTime from '@helpers/formatEventDateTime'
@@ -76,10 +77,9 @@ const textForming = ({
   }
 
   var textArray = []
-  for (let i = 0; i < eventsId.length; i++) {
+  for (let i = 0; i < events.length; i++) {
     const elementOfTextArray = []
-    const eventId = eventsId[i]
-    const event = events.find((event) => event._id === eventId)
+    const event = events[i]
 
     elementOfTextArray.push(
       `\u{1F4C5} ${formatEventDateTime(event, {
@@ -185,15 +185,26 @@ const ToolsTextEventsAnonsContent = () => {
   const [showTextSignUp, setShowTextSignUp] = useState(true)
   const [showLink, setShowLink] = useState(true)
   const events = useRecoilValue(eventsAtom)
+  const [eventsFull, setEventsFull] = useState([])
 
   const [socialTag, setSocialTag] = useState(null)
   const [customTag, setCustomTag] = useState('')
 
   const { info } = useSnackbar()
 
+  const getEvents = async (eventsId) => {
+    const eventsFullRes = []
+    const filteredEvents = events.filter(({ _id }) => eventsId.includes(_id))
+    for (let i = 0; i < filteredEvents.length; i++) {
+      const eventId = filteredEvents[i]._id
+      const res = await getData('/api/events/' + eventId, {}, null, null, false)
+      eventsFullRes.push(res)
+    }
+    setEventsFull(eventsFullRes)
+  }
+
   const textFormatingProps = {
-    eventsId,
-    events,
+    events: eventsFull,
     socialTag,
     customTag,
     showTags,
@@ -250,7 +261,10 @@ const ToolsTextEventsAnonsContent = () => {
       <SelectEventList
         label="Мероприятия"
         eventsId={eventsId}
-        onChange={setEventsId}
+        onChange={(value) => {
+          setEventsId(value)
+          getEvents(value)
+        }}
         canAddItem
       />
       <CheckBox
