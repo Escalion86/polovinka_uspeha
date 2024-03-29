@@ -412,18 +412,18 @@ const LoginPage = (props) => {
     // }
   }
 
-  const test = () => {
-    handleTelegramResponse({
-      // auth_date: 1710790148,
-      first_name: 'Алексей',
-      // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
-      id: 26110216111,
-      username: 'escalion',
-      last_name: 'Белинский Иллюзионист',
-      photo_url:
-        'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
-    })
-  }
+  // const test = () => {
+  //   handleTelegramResponse({
+  //     // auth_date: 1710790148,
+  //     first_name: 'Алексей',
+  //     // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
+  //     id: 26110216111,
+  //     username: 'escalion',
+  //     last_name: 'Белинский Иллюзионист',
+  //     photo_url:
+  //       'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
+  //   })
+  // }
 
   // const test2 = () => {
   //   setWaitingResponse(true)
@@ -1113,7 +1113,7 @@ const LoginPage = (props) => {
                     />
                   </>
                 )}
-              {/* {!type && (
+              {!type && (
                 <Button
                   name="По номеру телефона"
                   outline
@@ -1125,7 +1125,7 @@ const LoginPage = (props) => {
                     (!checkAgreement || !checkHave18Years)
                   }
                 />
-              )} */}
+              )}
               {Object.values(errors).length > 0 && (
                 <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
                   {Object.values(errors).map(
@@ -1202,7 +1202,7 @@ const LoginPage = (props) => {
                             : ''
                         )}
                       >
-                        <Button name="test" onClick={test} preventDefault />
+                        {/* <Button name="test" onClick={test} preventDefault /> */}
                         {process === 'registration' &&
                           (!checkAgreement || !checkHave18Years) && (
                             <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
