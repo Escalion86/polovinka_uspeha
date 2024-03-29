@@ -1113,7 +1113,7 @@ const LoginPage = (props) => {
                     />
                   </>
                 )}
-              {!type && (
+              {/* {!type && (
                 <Button
                   name="По номеру телефона"
                   outline
@@ -1125,7 +1125,7 @@ const LoginPage = (props) => {
                     (!checkAgreement || !checkHave18Years)
                   }
                 />
-              )}
+              )} */}
               {Object.values(errors).length > 0 && (
                 <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
                   {Object.values(errors).map(
