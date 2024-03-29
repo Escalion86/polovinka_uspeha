@@ -344,6 +344,7 @@ const LoginPage = (props) => {
   const [inputPinCode, setInputPinCode] = useState('')
   const [inputPasswordRepeat, setInputPasswordRepeat] = useState('')
   const [checkHave18Years, setCheckHave18Years] = useState(false)
+  const [checkHaveNoAccounts, setCheckHaveNoAccounts] = useState(false)
   const [checkAgreement, setCheckAgreement] = useState(false)
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
@@ -411,18 +412,18 @@ const LoginPage = (props) => {
     // }
   }
 
-  // const test = () => {
-  //   handleTelegramResponse({
-  //     // auth_date: 1710790148,
-  //     first_name: 'Алексей',
-  //     // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
-  //     id: 261102161,
-  //     username: 'escalion',
-  //     last_name: 'Белинский Иллюзионист',
-  //     photo_url:
-  //       'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
-  //   })
-  // }
+  const test = () => {
+    handleTelegramResponse({
+      // auth_date: 1710790148,
+      first_name: 'Алексей',
+      // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
+      id: 26110216111,
+      username: 'escalion',
+      last_name: 'Белинский Иллюзионист',
+      photo_url:
+        'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
+    })
+  }
 
   // const test2 = () => {
   //   setWaitingResponse(true)
@@ -1201,7 +1202,7 @@ const LoginPage = (props) => {
                             : ''
                         )}
                       >
-                        {/* <Button name="test" onClick={test} preventDefault /> */}
+                        <Button name="test" onClick={test} preventDefault />
                         {process === 'registration' &&
                           (!checkAgreement || !checkHave18Years) && (
                             <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
@@ -1324,36 +1325,90 @@ const LoginPage = (props) => {
         <Modal
           onClose={() => {
             setTelegramRegistrationConfirm(false)
+            setCheckHave18Years(false)
+            setCheckAgreement(false)
+            setCheckHaveNoAccounts(false)
           }}
-          // id
-          // title
-          // text
-          // subModalText
         >
-          {' '}
           <div className="flex flex-col items-center gap-y-2">
             <div>
-              Данный аккаунт телеграм не зарегистрирован. Хотите
-              зарегистрировать новый аккаунт?
+              {telegramRegistrationConfirm === 'shure' ? (
+                <>
+                  <span>
+                    Если у Вас уже есть аккаунт <i>"Половинки успеха"</i>{' '}
+                    созданный по номеру телефона, то создание нового аккаунта
+                    приведет к задвоению!
+                    <br />
+                    Вы <b>точно уверены</b> что у Вас нет аккаунта{' '}
+                    <i>"Половинки успеха"</i> и вы хотите создать новый?
+                  </span>
+                  <CheckBox
+                    checked={checkHaveNoAccounts}
+                    labelPos="right"
+                    onChange={(e) =>
+                      setCheckHaveNoAccounts(!checkHaveNoAccounts)
+                    }
+                    label={'У меня нет других аккаунтов "Половинки успеха"'}
+                  />
+                  <CheckBox
+                    checked={checkHave18Years}
+                    labelPos="right"
+                    onChange={(e) => setCheckHave18Years(!checkHave18Years)}
+                    label="Мне исполнилось 18 лет"
+                  />
+                  <CheckBox
+                    checked={checkAgreement}
+                    onChange={(e) => setCheckAgreement(!checkAgreement)}
+                    label={
+                      <div className="text-left">
+                        Согласен на{' '}
+                        <span
+                          onClick={() => setShowAgreement(true)}
+                          className="italic duration-300 cursor-pointer text-general hover:text-success"
+                        >
+                          обработку персональных данных
+                        </span>
+                      </div>
+                    }
+                  />
+                </>
+              ) : (
+                <span>
+                  Данный аккаунт телеграм не зарегистрирован!
+                  <br />
+                  Хотите зарегистрировать новый аккаунт?
+                </span>
+              )}
             </div>
-            <div className="flex justify-between gap-x-2">
+            <div className="flex flex-col justify-between gap-y-4">
               <Button
-                name="Да"
+                name="Создать НОВЫЙ аккаунт"
                 icon={faCheck}
                 classBgColor="bg-success"
                 onClick={() => {
-                  handleTelegramResponse({
-                    ...telegramRegistrationConfirm,
-                    forceReg: true,
-                  })
-                  setTelegramRegistrationConfirm(false)
+                  if (telegramRegistrationConfirm === 'shure') {
+                    handleTelegramResponse({
+                      ...telegramRegistrationConfirm,
+                      forceReg: true,
+                    })
+                    setTelegramRegistrationConfirm(false)
+                  } else setTelegramRegistrationConfirm('shure')
                 }}
+                disabled={
+                  telegramRegistrationConfirm === 'shure' &&
+                  (!checkHave18Years || !checkAgreement || !checkHaveNoAccounts)
+                }
               />
               <Button
-                name="Нет"
+                name="Отмена"
                 icon={faTimes}
                 classBgColor="bg-danger"
-                onClick={() => setTelegramRegistrationConfirm(false)}
+                onClick={() => {
+                  setTelegramRegistrationConfirm(false)
+                  setCheckHave18Years(false)
+                  setCheckAgreement(false)
+                  setCheckHaveNoAccounts(false)
+                }}
               />
             </div>
           </div>
