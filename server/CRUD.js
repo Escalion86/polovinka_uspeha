@@ -304,7 +304,7 @@ const updateEventInCalendar = async (event, req) => {
         { method: 'popup', minutes: 10 },
       ],
     },
-    visibility: event.showOnSite ? 'default' : 'private',
+    // visibility: event.showOnSite ? 'default' : 'private',
   }
 
   const auth = new google.auth.GoogleAuth({
