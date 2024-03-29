@@ -380,7 +380,7 @@ const LoginPage = (props) => {
       redirect: false,
       telegramId: id,
       first_name,
-      last_name,
+      last_name: last_name === 'undefined' ? undefined : last_name,
       photo_url,
       username,
       registration: forceReg || process === 'registration' ? 'true' : 'false',
@@ -395,7 +395,7 @@ const LoginPage = (props) => {
         setTelegramRegistrationConfirm({
           id,
           first_name,
-          last_name,
+          last_name: last_name === 'undefined' ? undefined : last_name,
           photo_url,
           username,
         })
