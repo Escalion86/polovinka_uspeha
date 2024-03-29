@@ -17,7 +17,7 @@ import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import directionSelector from '@state/selectors/directionSelector'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
@@ -175,7 +175,7 @@ export const EventItemFromId = ({
   active = false,
   bordered = false,
 }) => {
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useRecoilValue(eventAtom(eventId))
   return (
     <EventItem
       item={event}

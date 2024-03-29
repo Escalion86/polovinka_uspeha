@@ -29,12 +29,12 @@ import serviceEditSelector from './selectors/serviceEditSelector'
 import serviceDeleteSelector from './selectors/serviceDeleteSelector'
 import servicesUsersEditSelector from './selectors/servicesUsersEditSelector'
 import servicesUsersDeleteSelector from './selectors/servicesUsersDeleteSelector'
-import setEventsUsersSelector from './asyncSelectors/setEventsUsersSelector'
-import signOutUserSelector from './asyncSelectors/signOutUserSelector'
-import signUpUserSelector from './asyncSelectors/signUpUserSelector'
-import setEventUserSelector from './asyncSelectors/setEventUserSelector'
+import setEventsUsersSelector from './async/setEventsUsersSelector'
+import signOutUserSelector from './async/signOutUserSelector'
+import signUpUserSelector from './async/signUpUserSelector'
+import setEventUserSelector from './async/setEventUserSelector'
 import rolesAtom from './atoms/rolesAtom'
-import updateEventsUsersSelector from './asyncSelectors/updateEventsUsersSelector'
+import updateEventsUsersSelector from './async/updateEventsUsersSelector'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)

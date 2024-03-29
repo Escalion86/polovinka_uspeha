@@ -24,7 +24,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
@@ -456,7 +456,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     const statusEdit = loggedUserActiveRole?.events?.statusEdit
     const paymentsEdit = loggedUserActiveRole?.events?.paymentsEdit
 
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useRecoilValue(eventAtom(eventId))
     const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
 

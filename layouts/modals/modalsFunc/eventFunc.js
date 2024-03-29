@@ -38,7 +38,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { uid } from 'uid'
@@ -100,7 +100,7 @@ const eventFunc = (eventId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useRecoilValue(eventAtom(eventId))
     const directions = useRecoilValue(directionsAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
     // const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()

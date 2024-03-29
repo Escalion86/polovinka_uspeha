@@ -2,7 +2,7 @@ import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import eventMansReserveSelector from '@state/selectors/eventMansReserveSelector'
 // import eventMansSelector from '@state/selectors/eventMansSelector'
-import eventSelector from '@state/selectors/eventSelector'
+// import eventAtom from '@state/async/eventAtom'
 // import eventWomansReserveSelector from '@state/selectors/eventWomansReserveSelector'
 // import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import cn from 'classnames'
@@ -18,6 +18,7 @@ import Ages from './Ages'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 // import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
+import eventAtom from '@state/async/eventAtom'
 
 const CounterComponent = ({
   event,
@@ -353,7 +354,7 @@ export const EventUsersCounterAndAgeByEventId = ({
   showAges,
   dontShowLabel,
 }) => {
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useRecoilValue(eventAtom(eventId))
   if (!eventId || !event) return null
   return (
     <EventUsersCounterAndAge
@@ -374,7 +375,6 @@ const EventUsersCounterAndAge = ({
   showNoviceAndMemberSum,
   eventUsersToUse,
 }) => {
-  // const event = useRecoilValue(eventSelector(eventId))
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const showReserve =

@@ -1,6 +1,6 @@
 import FormWrapper from '@components/FormWrapper'
 import UserName from '@components/UserName'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import userSelector from '@state/selectors/userSelector'
 import { useRecoilValue } from 'recoil'
 
@@ -14,7 +14,7 @@ const userPaymentsForEventFunc = (userId, eventId) => {
     setDisableDecline,
   }) => {
     const user = useRecoilValue(userSelector(userId))
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useRecoilValue(eventAtom(eventId))
 
     // const eventUsers = useRecoilValue(
     //   eventsUsersSignedUpByUserIdSelector(userId)

@@ -1,7 +1,7 @@
 import Button from '@components/Button'
 import { CardWrapper } from '@components/CardWrapper'
-import asyncEventsUsersAllAtom from '@state/asyncSelectors/asyncEventsUsersAllAtom'
-import asyncEventsUsersAllSelector from '@state/asyncSelectors/asyncEventsUsersAllSelector'
+import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
+import asyncEventsUsersAllSelector from '@state/async/asyncEventsUsersAllSelector'
 import { modalsFuncAtom } from '@state/atoms'
 import eventsAtom from '@state/atoms/eventsAtom'
 import {

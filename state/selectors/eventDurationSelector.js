@@ -3,7 +3,7 @@ import getEventDuration from '@helpers/getEventDuration'
 import getMinutesBetween from '@helpers/getMinutesBetween'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { selectorFamily } from 'recoil'
-import eventSelector from './eventSelector'
+import eventAtom from '@state/async/eventAtom'
 
 export const eventDurationSelector = selectorFamily({
   key: 'eventDurationSelector',
@@ -11,7 +11,7 @@ export const eventDurationSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return null
-      const event = get(eventSelector(id))
+      const event = get(eventAtom(id))
       return getEventDuration(event)
     },
   // set:
