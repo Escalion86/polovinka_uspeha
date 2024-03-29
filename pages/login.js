@@ -380,7 +380,7 @@ const LoginPage = (props) => {
       redirect: false,
       telegramId: id,
       first_name,
-      last_name,
+      last_name: last_name === 'undefined' ? undefined : last_name,
       photo_url,
       username,
       registration: forceReg || process === 'registration' ? 'true' : 'false',
@@ -395,7 +395,7 @@ const LoginPage = (props) => {
         setTelegramRegistrationConfirm({
           id,
           first_name,
-          last_name,
+          last_name: last_name === 'undefined' ? undefined : last_name,
           photo_url,
           username,
         })
@@ -1113,7 +1113,7 @@ const LoginPage = (props) => {
                     />
                   </>
                 )}
-              {!type && (
+              {/* {!type && (
                 <Button
                   name="По номеру телефона"
                   outline
@@ -1125,7 +1125,7 @@ const LoginPage = (props) => {
                     (!checkAgreement || !checkHave18Years)
                   }
                 />
-              )}
+              )} */}
               {Object.values(errors).length > 0 && (
                 <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
                   {Object.values(errors).map(

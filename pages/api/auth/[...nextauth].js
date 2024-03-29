@@ -97,7 +97,7 @@ export default async function auth(req, res) {
                     },
                   },
                   firstName: first_name,
-                  secondName: last_name,
+                  secondName: last_name === 'undefined' ? undefined : last_name,
                   images: [photo_url],
                   registrationType: 'telegram',
                 })
@@ -110,7 +110,7 @@ export default async function auth(req, res) {
                 await userRegisterTelegramNotification({
                   telegramId,
                   first_name,
-                  last_name,
+                  last_name: last_name === 'undefined' ? undefined : last_name,
                   images: [photo_url],
                 })
                 return {
