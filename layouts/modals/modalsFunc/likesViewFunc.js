@@ -12,11 +12,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import { useRecoilValue } from 'recoil'
 
 const LikesToggle = ({ eventId }) => {
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useRecoilValue(eventAtom(eventId))
   const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
   const onClick = () => {
@@ -53,7 +53,7 @@ const likesViewFunc = (eventId) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useRecoilValue(eventAtom(eventId))
 
     return (
       <div className="flex flex-col">

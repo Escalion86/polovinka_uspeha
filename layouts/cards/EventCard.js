@@ -14,7 +14,7 @@ import errorAtom from '@state/atoms/errorAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
@@ -34,7 +34,7 @@ const EventCard = ({
   const widthNum = useRecoilValue(windowDimensionsNumSelector)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useRecoilValue(eventAtom(eventId))
   if (!event) return null
   const eventStatus = eventStatusFunc(event)
 

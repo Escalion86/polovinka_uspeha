@@ -3,7 +3,7 @@ import HistoryItem from '@components/HistoryItem'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { getData } from '@helpers/CRUD'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
@@ -23,7 +23,7 @@ const eventHistoryFunc = (eventId) => {
     setTopLeftComponent,
   }) => {
     const modalFunc = useRecoilValue(modalsFuncAtom)
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useRecoilValue(eventAtom(eventId))
     const [eventHistory, setEventHistory] = useState()
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
 

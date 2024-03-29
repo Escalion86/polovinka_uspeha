@@ -18,7 +18,7 @@ import useCopyToClipboard from '@helpers/useCopyToClipboard'
 import birthDateToAge from '@helpers/birthDateToAge'
 import cn from 'classnames'
 import UserName from './UserName'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
 
 const dayTimeText = () => {
@@ -79,7 +79,7 @@ const UserLikesItem = ({
   eventId,
   seeLikes,
 }) => {
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useRecoilValue(eventAtom(eventId))
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const userGender =
     user.gender && GENDERS.find((gender) => gender.value === user.gender)

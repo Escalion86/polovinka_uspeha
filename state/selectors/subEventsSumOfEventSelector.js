@@ -1,5 +1,5 @@
 import { selectorFamily } from 'recoil'
-import eventSelector from './eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import subEventsSummator from '@helpers/subEventsSummator'
 import { DEFAULT_SUBEVENT_GENERATOR } from '@helpers/constants'
 
@@ -9,7 +9,7 @@ export const subEventsSumOfEventSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return []
-      const event = get(eventSelector(id))
+      const event = get(eventAtom(id))
       return event?.subEvents
         ? subEventsSummator(event.subEvents)
         : subEventsSummator([DEFAULT_SUBEVENT_GENERATOR()])

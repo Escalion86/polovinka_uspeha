@@ -1,4 +1,4 @@
-// import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
+// import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { selectorFamily } from 'recoil'
 import eventsUsersFullByUserIdSelector from './eventsUsersFullByUserIdSelector'

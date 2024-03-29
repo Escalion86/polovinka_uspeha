@@ -1,4 +1,4 @@
-import asyncEventsUsersAllSelector from '@state/asyncSelectors/asyncEventsUsersAllSelector'
+import asyncEventsUsersAllSelector from '@state/async/asyncEventsUsersAllSelector'
 import paymentsAtom from '@state/atoms/paymentsAtom'
 import { selector } from 'recoil'
 

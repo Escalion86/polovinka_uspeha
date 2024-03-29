@@ -2,7 +2,7 @@ import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
 import { selectorFamily } from 'recoil'
 import eventParticipantsFullByEventIdSelector from './eventParticipantsFullByEventIdSelector'
 // import eventParticipantsSelector from './eventParticipantsSelector'
-import eventSelector from './eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import sumOfCouponsFromParticipantsToEventSelector from './sumOfCouponsFromParticipantsToEventSelector'
 
 export const sumOfExpectingPaymentsFromParticipantsToEventSelector =
@@ -12,7 +12,7 @@ export const sumOfExpectingPaymentsFromParticipantsToEventSelector =
       (id) =>
       ({ get }) => {
         if (!id) return []
-        const event = get(eventSelector(id))
+        const event = get(eventAtom(id))
         const eventParticipantsFull = get(
           eventParticipantsFullByEventIdSelector(id)
         )

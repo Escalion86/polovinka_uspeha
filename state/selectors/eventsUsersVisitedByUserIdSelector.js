@@ -1,6 +1,6 @@
 import { selectorFamily } from 'recoil'
 import finishedEventsIdsSelector from './finishedEventsIdsSelector'
-import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
+import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
 
 export const eventsUsersVisitedByUserIdSelector = selectorFamily({
   key: 'eventsUsersVisitedByUserIdSelector',

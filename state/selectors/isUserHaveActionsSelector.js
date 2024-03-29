@@ -1,4 +1,4 @@
-import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
+import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
 import { selectorFamily } from 'recoil'
 
 const isUserHaveActionsSelector = selectorFamily({

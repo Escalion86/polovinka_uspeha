@@ -21,7 +21,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
@@ -91,7 +91,7 @@ const EventViewModal = ({
   setTopLeftComponent,
 }) => {
   const { eventId } = data
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useRecoilValue(eventAtom(eventId))
   const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -244,7 +244,7 @@ const EventViewModal = ({
 
 const EventViewPre = (props) => {
   const { eventId } = props.data
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useRecoilValue(eventAtom(eventId))
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const { canSee, isAgeOfUserCorrect, isUserStatusCorrect } = useRecoilValue(
     loggedUserToEventStatusSelector(event?._id)

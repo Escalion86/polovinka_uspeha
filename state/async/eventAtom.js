@@ -1,7 +1,7 @@
 import { getData } from '@helpers/CRUD'
 import { DEFAULT_EVENT } from '@helpers/constants'
 // import eventsAtom from '@state/atoms/eventsAtom'
-import { selectorFamily } from 'recoil'
+import { atomFamily, selectorFamily } from 'recoil'
 
 export const eventSelector = selectorFamily({
   key: 'eventsSelector',
@@ -13,11 +13,11 @@ export const eventSelector = selectorFamily({
       return res
       // return get(eventsAtom).find((item) => item._id === id)
     },
-  // set:
-  //   (id) =>
-  //   ({ set }, event) => {
-  //     set(eventsSelector, event)
-  //   },
 })
 
-export default eventSelector
+const eventAtom = atomFamily({
+  key: 'eventAtom',
+  default: eventSelector,
+})
+
+export default eventAtom

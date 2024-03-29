@@ -2,7 +2,7 @@ import Button from '@components/Button'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import cn from 'classnames'
 import { useRouter } from 'next/router'
@@ -15,7 +15,7 @@ const EventButtonSignIn = ({
   thin,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useRecoilValue(eventAtom(eventId))
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
 
   const router = useRouter()

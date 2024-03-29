@@ -13,7 +13,7 @@ import { DEFAULT_PAYMENT } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventSelector from '@state/selectors/eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import paymentSelector from '@state/selectors/paymentSelector'
 import { useEffect, useMemo, useState } from 'react'
@@ -36,7 +36,7 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
 
-    const event = useRecoilValue(eventSelector(payment.eventId))
+    const event = useRecoilValue(eventAtom(payment.eventId))
     const isEventClosed = isEventClosedFunc(event)
 
     const {
@@ -54,10 +54,10 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
       (props?.eventId ?? payment?.eventId
         ? 'event'
         : props?.serviceId ?? payment?.serviceId
-        ? 'service'
-        : props?.productId ?? payment?.productId
-        ? 'product'
-        : DEFAULT_PAYMENT.sector)
+          ? 'service'
+          : props?.productId ?? payment?.productId
+            ? 'product'
+            : DEFAULT_PAYMENT.sector)
 
     const [sector, setSector] = useState(defaultSector)
 

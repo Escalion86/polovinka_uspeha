@@ -1,7 +1,7 @@
 import { selectorFamily } from 'recoil'
-import eventSelector from './eventSelector'
+import eventAtom from '@state/async/eventAtom'
 import userSelector from './userSelector'
-import asyncEventsUsersByEventIdAtom from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
+import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 
 export const eventsUsersFullByEventIdSelector = selectorFamily({
   key: 'eventsUsersFullByEventIdSelector',
@@ -19,7 +19,7 @@ export const eventsUsersFullByEventIdSelector = selectorFamily({
             // )
             .map((item) => {
               const user = get(userSelector(item.userId))
-              const event = get(eventSelector(item.eventId))
+              const event = get(eventAtom(item.eventId))
               return {
                 ...item,
                 user,
