@@ -182,7 +182,7 @@ const UserMenu = () => {
       className="flex items-center justify-center h-12 px-2 text-white duration-300 border border-white rounded-lg hover:text-general hover:bg-white"
     >
       <FontAwesomeIcon icon={faSignInAlt} className="w-7 h-7" />
-      <span className="hidden ml-2 tablet:block">Авторизоваться</span>
+      <span className="ml-2 tablet:block">Авторизоваться</span>
     </Link>
   )
 }

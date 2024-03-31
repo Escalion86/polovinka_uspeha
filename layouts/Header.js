@@ -90,7 +90,7 @@ const Header = ({ noMenu }) => {
         <div className="flex-1 laptop:hidden ">
           <Burger />
         </div>
-        <div className="absolute z-10 -translate-x-1/2 left-1/2">
+        <div className="absolute z-10 hidden -translate-x-1/2 tablet:block left-1/2">
           <Link href="/" shallow>
             <img
               className="object-contain h-16 laptop:min-w-min"
