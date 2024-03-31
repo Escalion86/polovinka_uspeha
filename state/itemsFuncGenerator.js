@@ -231,6 +231,7 @@ const itemsFuncGenerator = (
   loggedUser,
   array = [
     'event',
+    'eventsUser',
     'direction',
     'additionalBlock',
     'user',

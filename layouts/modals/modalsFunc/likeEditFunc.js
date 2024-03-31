@@ -24,7 +24,7 @@ const Heart = ({ small, broken, gray }) => (
   />
 )
 
-const CoincidenceItem = ({ user, coincidence, like }) => {
+const CoincidenceItem = ({ user, coincidence, like, likeSortNum }) => {
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -54,6 +54,11 @@ const CoincidenceItem = ({ user, coincidence, like }) => {
             icon={faHeart}
             // color="#EC4899"
           />
+        </div>
+      )}
+      {typeof likeSortNum === 'number' && (
+        <div className="flex items-center justify-center w-10 h-10 border-l min-w-8 min-h-8">
+          №{likeSortNum + 1}
         </div>
       )}
       <UserItem
@@ -125,15 +130,24 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
           : user.gender === 'male'
     )
 
+    const sortedOtherGenderEventUsers =
+      !event.likesNumSort ||
+      otherGenderEventUsers.find(
+        ({ likeSortNum }) => typeof likeSortNum !== 'number'
+      )
+        ? otherGenderEventUsers
+        : [...otherGenderEventUsers].sort((a, b) =>
+            a.likeSortNum > b.likeSortNum ? 1 : -1
+          )
+
     const NoteComponent = (props) => (adminView ? null : <Note {...props} />)
-    console.log('eventUser.likes :>> ', eventUser.likes)
-    const eventUsersOtherGenderWithCoincidences = otherGenderEventUsers.map(
-      (eventUser2) => ({
+
+    const eventUsersOtherGenderWithCoincidences =
+      sortedOtherGenderEventUsers.map((eventUser2) => ({
         ...eventUser2,
         likeToMe: eventUser2.likes?.includes(eventUser.userId),
         iLike: eventUser.likes?.includes(eventUser2.userId),
-      })
-    )
+      }))
 
     const coincidences = eventUsersOtherGenderWithCoincidences.filter(
       (eventUser) => eventUser.likeToMe && eventUser.iLike
@@ -237,8 +251,9 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
         )}
         {event.likesProcessActive ? (
           <div className="flex flex-col gap-y-0.5">
-            {otherGenderEventUsers.map(({ user }) => {
+            {sortedOtherGenderEventUsers.map(({ user, likeSortNum }) => {
               const checked = likes.includes(user._id)
+
               return (
                 <div
                   key={'like' + user._id}
@@ -269,6 +284,11 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                       color={checked ? '#EC4899' : '#9ca3af'}
                     />
                   </div>
+                  {event.likesNumSort && typeof likeSortNum === 'number' && (
+                    <div className="flex items-center justify-center w-10 h-10 border-l min-w-8 min-h-8">
+                      №{likeSortNum + 1}
+                    </div>
+                  )}
                   <UserItem
                     item={user}
                     onClick={
@@ -295,12 +315,17 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                   </div>
                   <Heart small />
                 </div>
-                {coincidences.map(({ user, iLike, likeToMe }) => (
+                {coincidences.map(({ user, iLike, likeToMe, likeSortNum }) => (
                   <CoincidenceItem
                     key={'coincidence' + user._id}
                     user={user}
                     coincidence={likeToMe && iLike}
                     like={iLike}
+                    likeSortNum={
+                      event.likesNumSort && typeof likeSortNum === 'number'
+                        ? likeSortNum
+                        : undefined
+                    }
                   />
                 ))}
               </>
@@ -320,14 +345,21 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                   </div>
                   <Heart small broken gray />
                 </div>
-                {notCoincidences.map(({ user, iLike, likeToMe }) => (
-                  <CoincidenceItem
-                    key={'noCoincidence' + user._id}
-                    user={user}
-                    coincidence={likeToMe && iLike}
-                    like={iLike}
-                  />
-                ))}
+                {notCoincidences.map(
+                  ({ user, iLike, likeToMe, likeSortNum }) => (
+                    <CoincidenceItem
+                      key={'noCoincidence' + user._id}
+                      user={user}
+                      coincidence={likeToMe && iLike}
+                      like={iLike}
+                      likeSortNum={
+                        event.likesNumSort && typeof likeSortNum === 'number'
+                          ? likeSortNum
+                          : undefined
+                      }
+                    />
+                  )
+                )}
               </>
             ) : (
               <NoteComponent>
@@ -341,12 +373,17 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                 <div className="flex items-center justify-center px-3 mt-3 text-xl font-bold text-center text-gray-700">
                   ВЫ НЕ ПОСТАВИЛИ ЛАЙК
                 </div>
-                {other.map(({ user, iLike, likeToMe }) => (
+                {other.map(({ user, iLike, likeToMe, likeSortNum }) => (
                   <CoincidenceItem
                     key={'noLikes' + user._id}
                     user={user}
                     coincidence={likeToMe && iLike}
                     like={iLike}
+                    likeSortNum={
+                      event.likesNumSort && typeof likeSortNum === 'number'
+                        ? likeSortNum
+                        : undefined
+                    }
                   />
                 ))}
               </>

@@ -234,6 +234,10 @@ const eventsSchema = {
     type: Boolean,
     default: true,
   },
+  likesNumSort: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 export default eventsSchema

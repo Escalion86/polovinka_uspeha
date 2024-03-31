@@ -29,6 +29,10 @@ const eventsUsersSchema = {
     type: Boolean,
     default: false,
   },
+  likeSortNum: {
+    type: Number,
+    default: null,
+  },
   subEventId: {
     type: String,
     default: null,
