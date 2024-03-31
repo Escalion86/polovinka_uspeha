@@ -738,6 +738,7 @@ const LoginPage = (props) => {
                   setBackCall(false)
                   setBackCallRes()
                   setRegistrationLevel(3)
+                  clearErrors()
                 } else {
                   setBackCallRes({ ...res.data, status: 'wrong phone' })
                 }
