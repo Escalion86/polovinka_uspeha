@@ -14,6 +14,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventAtom from '@state/async/eventAtom'
 import { useRecoilValue } from 'recoil'
+import CheckBox from '@components/CheckBox'
+import { useState } from 'react'
+import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
 
 const LikesToggle = ({ eventId }) => {
   const event = useRecoilValue(eventAtom(eventId))
@@ -31,9 +34,7 @@ const LikesToggle = ({ eventId }) => {
       <Button
         classBgColor={event.likesProcessActive ? 'bg-pink-500' : 'bg-general'}
         // classHoverBgColor="bg-success"
-        name={
-          event.likesProcessActive ? 'Закрыть и отправить результат' : 'Открыть'
-        }
+        name={event.likesProcessActive ? 'Закрыть' : 'Открыть'}
         icon={event.likesProcessActive ? faHeart : faLock}
         onClick={onClick}
       />
@@ -54,6 +55,48 @@ const likesViewFunc = (eventId) => {
     setTopLeftComponent,
   }) => {
     const event = useRecoilValue(eventAtom(eventId))
+    // const [likesNumSort, setLikesNumSort] = useState(event.likesNumSort)
+    const likesNumSort = event.likesNumSort
+    const eventUsers = useRecoilValue(
+      eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
+    )
+    const setEvent = useRecoilValue(itemsFuncAtom).event.set
+    const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
+
+    const likesNumSortToggle = () => {
+      if (!likesNumSort) {
+        // setLikesNumSort(true)
+        // Везде ли есть likesNumSort
+        if (
+          eventUsers.find(({ likeSortNum }) => typeof likeSortNum !== 'number')
+        ) {
+          const eventUsersMans = eventUsers.filter(
+            ({ user }) => user.gender === 'male'
+          )
+          const eventUsersWomans = eventUsers.filter(
+            ({ user }) => user.gender === 'famale'
+          )
+          for (let i = 0; i < eventUsersMans.length; i++) {
+            const eventUser = eventUsersMans[i]
+            setEventUser({ ...eventUser, likeSortNum: i })
+          }
+          for (let i = 0; i < eventUsersWomans.length; i++) {
+            const eventUser = eventUsersWomans[i]
+            setEventUser({ ...eventUser, likeSortNum: i })
+          }
+        }
+        setEvent({
+          _id: eventId,
+          likesNumSort: true,
+        })
+      } else {
+        // setLikesNumSort(false)
+        setEvent({
+          _id: eventId,
+          likesNumSort: false,
+        })
+      }
+    }
 
     return (
       <div className="flex flex-col">
@@ -113,6 +156,13 @@ const likesViewFunc = (eventId) => {
               </div>
             </Note>
           </>
+        )}
+        {event.likesProcessActive && (
+          <CheckBox
+            checked={likesNumSort}
+            label="Включить нумерацию и сортировку участников"
+            onChange={likesNumSortToggle}
+          />
         )}
         <LikesViewer eventId={eventId} readOnly={!event.likesProcessActive} />
       </div>

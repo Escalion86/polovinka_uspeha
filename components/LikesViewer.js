@@ -1,11 +1,12 @@
 import {
+  faArrowDown,
+  faArrowUp,
   faCheck,
   faCopy,
   faEye,
   faEyeSlash,
   faGenderless,
   faHeart,
-  faHeartBroken,
   faPencil,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -20,6 +21,9 @@ import cn from 'classnames'
 import UserName from './UserName'
 import eventAtom from '@state/async/eventAtom'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
+import arrayToObject from '@helpers/arrayToObject'
+import CardButton from './CardButton'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
 const dayTimeText = () => {
   var date = new Date()
@@ -78,25 +82,39 @@ const UserLikesItem = ({
   readOnly,
   eventId,
   seeLikes,
+  onUpClick,
+  onDownClick,
+  likeSortNum,
 }) => {
   const event = useRecoilValue(eventAtom(eventId))
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const userGender =
-    user.gender && GENDERS.find((gender) => gender.value === user.gender)
+  // const userGender =
+  //   user.gender && GENDERS.find((gender) => gender.value === user.gender)
 
   const coincidenceCount = activeIds?.length ?? 0
 
   return (
     <div
       className={cn(
-        'flex flex-col px-1 pb-1 border rounded-lg',
+        'relative flex flex-col px-1 pb-1 border rounded-lg overflow-hidden',
         user.gender == 'male'
           ? 'bg-blue-100 border-blue-500'
           : 'bg-red-100 border-red-500'
       )}
       key={user._id}
     >
+      {event.likesNumSort && typeof likeSortNum === 'number' && (
+        <div
+          className={cn(
+            'bg-white absolute top-0 left-0 w-8 h-8 text-lg font-bold flex items-center justify-center border-r border-b rounded-br-lg',
+            user.gender == 'male' ? 'border-blue-500' : 'border-red-500'
+          )}
+        >
+          {likeSortNum + 1}
+        </div>
+      )}
       <div className="flex items-center h-10 gap-x-0.5">
+        {typeof likeSortNum === 'number' && <div className="w-7" />}
         {!event.likesProcessActive && (
           <div
             className={cn(
@@ -121,7 +139,7 @@ const UserLikesItem = ({
             icon={selectedIds === null ? faGenderless : faCheck}
           />
         </div>
-        <div
+        {/* <div
           className={cn(
             'w-6 min-w-6 tablet:w-8 tablet:min-w-8 flex justify-center items-center',
             userGender ? 'text-' + userGender.color : 'text-gray-400'
@@ -131,7 +149,7 @@ const UserLikesItem = ({
             className="w-6 h-6"
             icon={userGender ? userGender.icon : faGenderless}
           />
-        </div>
+        </div> */}
         <UserName
           user={user}
           className="text-base font-bold tablet:text-lg text-general"
@@ -139,6 +157,30 @@ const UserLikesItem = ({
         <div className="flex flex-wrap justify-end flex-1 text-sm leading-4 tablet:pr-1 tablet:text-base">
           {/* <div>Совпадений:</div> */}
           <div className="flex items-center whitespace-nowrap gap-x-1">
+            {event.likesProcessActive && (
+              <div className="flex items-center">
+                {onUpClick && (
+                  <CardButton
+                    icon={faArrowUp}
+                    onClick={() => {
+                      onUpClick()
+                    }}
+                    color="gray"
+                    tooltipText="Переместить выше"
+                  />
+                )}
+                {onDownClick && (
+                  <CardButton
+                    icon={faArrowDown}
+                    onClick={() => {
+                      onDownClick()
+                    }}
+                    color="gray"
+                    tooltipText="Переместить ниже"
+                  />
+                )}
+              </div>
+            )}
             {/* <span
               className={cn(
                 'pl-1 font-bold',
@@ -234,10 +276,103 @@ const UserLikesItem = ({
 const getLikesObject = (eventUsers) =>
   eventUsers.reduce((a, { userId, likes }) => ({ ...a, [userId]: likes }), {})
 
+const setUp = (array, key, clickedIndex) => {
+  if (!clickedIndex || clickedIndex === 0) return []
+
+  var movedUp = false
+  var movedDown = false
+  const itemsToChange = array
+    .map((item) => {
+      if (!item[key] && item[key] === 0)
+        Object.keys(array).reduce((key, v) => (array[v] < array[key] ? v : key))
+
+      if (item[key] === clickedIndex)
+        if (!movedUp) {
+          movedUp = true
+          return { ...item, [key]: item[key] - 1 }
+        }
+
+      if (item[key] === clickedIndex - 1)
+        if (!movedDown) {
+          movedDown = true
+          return { ...item, [key]: item[key] + 1 }
+        }
+    })
+    .filter((item) => item)
+
+  console.log('itemsToChange :>> ', itemsToChange)
+
+  return itemsToChange
+  // await Promise.all(
+  //   itemsToChange.map(async (item) => {
+  //     if (item)
+  //       await itemFunc.direction.set({
+  //         _id: item._id,
+  //         index: item.index,
+  //       })
+  //   })
+  // )
+}
+
+const setDown = (array, key, clickedIndex) => {
+  if (clickedIndex >= array.length - 1) return []
+  console.log('clickedIndex :>> ', clickedIndex)
+  console.log('array[clickedIndex] :>> ', array[clickedIndex])
+
+  var movedUp = false
+  var movedDown = false
+  const itemsToChange = array
+    .map((item) => {
+      if (item[key] === clickedIndex)
+        if (!movedDown) {
+          movedDown = true
+          return { ...item, [key]: item[key] + 1 }
+        }
+      if (item[key] === clickedIndex + 1)
+        if (!movedUp) {
+          movedUp = true
+          return { ...item, [key]: item[key] - 1 }
+        }
+    })
+    .filter((item) => item)
+
+  console.log('itemsToChange :>> ', itemsToChange)
+
+  return itemsToChange
+  // await Promise.all(
+  //   itemsToChange.map(async (item) => {
+  //     if (item)
+  //       await itemFunc.direction.set({
+  //         _id: item._id,
+  //         index: item.index,
+  //       })
+  //   })
+  // )
+}
+
 const LikesViewer = ({ eventId, readOnly }) => {
+  const event = useRecoilValue(eventAtom(eventId))
+  const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
   const eventUsers = useRecoilValue(
     eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
   )
+
+  const onDownClick = async (array, key, clickedIndex) => {
+    const resultToChange = setDown(array, key, clickedIndex)
+    console.log('resultToChange :>> ', resultToChange)
+    for (let i = 0; i < resultToChange.length; i++) {
+      const eventUser = resultToChange[i]
+      setEventUser({ _id: eventUser._id, likeSortNum: eventUser.likeSortNum })
+    }
+  }
+
+  const onUpClick = async (array, key, clickedIndex) => {
+    const resultToChange = setUp(array, key, clickedIndex)
+    for (let i = 0; i < resultToChange.length; i++) {
+      const eventUser = resultToChange[i]
+      setEventUser({ _id: eventUser._id, likeSortNum: eventUser.likeSortNum })
+    }
+  }
 
   const eventMans = eventUsers.filter(({ user }) => user.gender === 'male')
   const eventWomans = eventUsers.filter(({ user }) => user.gender === 'famale')
@@ -272,11 +407,35 @@ const LikesViewer = ({ eventId, readOnly }) => {
   if (eventMans.length === 0 || eventWomans.length === 0)
     return <div>Похоже что в мероприятии недостаточно участников</div>
 
+  const sortedEventMans =
+    !event.likesNumSort ||
+    eventUsers.find(({ likeSortNum }) => typeof likeSortNum !== 'number')
+      ? eventMans
+      : [...eventMans].sort((a, b) => (a.likeSortNum > b.likeSortNum ? 1 : -1))
+
+  const sortedEventWomans =
+    !event.likesNumSort ||
+    eventUsers.find(({ likeSortNum }) => typeof likeSortNum !== 'number')
+      ? eventWomans
+      : [...eventWomans].sort((a, b) =>
+          a.likeSortNum > b.likeSortNum ? 1 : -1
+        )
+
+  const userGendersObject = arrayToObject(GENDERS, 'value')
+
   return (
     <div className="flex flex-col gap-y-1">
-      <div></div>
+      <div className="flex items-center justify-center w-full gap-x-1">
+        <div className={'text-' + userGendersObject.male.color}>
+          <FontAwesomeIcon
+            className="w-6 h-6"
+            icon={userGendersObject.male.icon}
+          />
+        </div>
+        <div>Мужчины</div>
+      </div>
       <div className="flex flex-col gap-y-2">
-        {eventMans.map(({ user, seeLikesResult }) => (
+        {sortedEventMans.map(({ user, seeLikesResult, likeSortNum }) => (
           <UserLikesItem
             key={eventId + user._id}
             user={user}
@@ -286,9 +445,31 @@ const LikesViewer = ({ eventId, readOnly }) => {
             readOnly={readOnly}
             eventId={eventId}
             seeLikes={seeLikesResult}
+            likeSortNum={event.likesNumSort ? likeSortNum : undefined}
+            onUpClick={
+              event.likesNumSort && likeSortNum > 0
+                ? () => onUpClick(sortedEventMans, 'likeSortNum', likeSortNum)
+                : undefined
+            }
+            onDownClick={
+              event.likesNumSort && likeSortNum < sortedEventMans.length - 1
+                ? () => onDownClick(sortedEventMans, 'likeSortNum', likeSortNum)
+                : undefined
+            }
           />
         ))}
-        {eventWomans.map(({ user, seeLikesResult }) => (
+      </div>
+      <div className="flex items-center justify-center w-full mt-3 gap-x-1">
+        <div className={'text-' + userGendersObject.famale.color}>
+          <FontAwesomeIcon
+            className="w-6 h-6"
+            icon={userGendersObject.famale.icon}
+          />
+        </div>
+        <div>Женщины</div>
+      </div>
+      <div className="flex flex-col gap-y-2">
+        {sortedEventWomans.map(({ user, seeLikesResult, likeSortNum }) => (
           <UserLikesItem
             key={eventId + user._id}
             user={user}
@@ -298,6 +479,18 @@ const LikesViewer = ({ eventId, readOnly }) => {
             readOnly={readOnly}
             eventId={eventId}
             seeLikes={seeLikesResult}
+            likeSortNum={event.likesNumSort ? likeSortNum : undefined}
+            onUpClick={
+              event.likesNumSort && likeSortNum > 0
+                ? () => onUpClick(sortedEventWomans, 'likeSortNum', likeSortNum)
+                : undefined
+            }
+            onDownClick={
+              event.likesNumSort && likeSortNum < sortedEventWomans.length - 1
+                ? () =>
+                    onDownClick(sortedEventWomans, 'likeSortNum', likeSortNum)
+                : undefined
+            }
           />
         ))}
       </div>
