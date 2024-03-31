@@ -738,6 +738,7 @@ const LoginPage = (props) => {
                   setBackCall(false)
                   setBackCallRes()
                   setRegistrationLevel(3)
+                  clearErrors()
                 } else {
                   setBackCallRes({ ...res.data, status: 'wrong phone' })
                 }
@@ -1046,9 +1047,11 @@ const LoginPage = (props) => {
                     : 0
                 }
                 hidden={
-                  type !== 'phone' &&
-                  ((process === 'registration' && registrationLevel !== 3) ||
-                    process === 'authorization')
+                  type !== 'phone' ||
+                  (process !== 'authorization' &&
+                    (process === 'forgotPassword' ||
+                      process === 'registration') &&
+                    registrationLevel !== 3)
                 }
                 readOnly={waitingResponse}
               />
@@ -1072,6 +1075,25 @@ const LoginPage = (props) => {
                 hidden={process === 'authorization' || registrationLevel !== 3}
                 readOnly={waitingResponse}
               />
+              {process === 'authorization' && type === 'phone' && (
+                <a
+                  tabIndex={0}
+                  className={cn(
+                    'block mb-2 -mt-2.5 text-right duration-300 cursor-pointer hover:text-general',
+                    errors.password
+                      ? 'font-bold text-base text-danger'
+                      : 'text-sm'
+                  )}
+                  onClick={() => {
+                    clearErrors()
+                    setProcess('forgotPassword')
+                    setRegistrationLevel(1)
+                    setType('phone')
+                  }}
+                >
+                  Забыли пароль?
+                </a>
+              )}
               {!type &&
                 process === 'registration' &&
                 registrationLevel === 1 && (
@@ -1222,6 +1244,9 @@ const LoginPage = (props) => {
                   onClick={() => {
                     setType()
                     setRegistrationLevel(1)
+                    clearErrors()
+                    if (process === 'forgotPassword')
+                      setProcess('authorization')
                   }}
                 >
                   Изменить способ{' '}
@@ -1274,7 +1299,7 @@ const LoginPage = (props) => {
                   </div>
                 </div>
               )}
-              <div className="flex justify-between mt-4">
+              <div className="flex justify-center mt-4">
                 <a
                   tabIndex={0}
                   onClick={() => {
@@ -1289,18 +1314,9 @@ const LoginPage = (props) => {
                   }}
                   className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
                 >
-                  {process === 'authorization' ? 'Регистрация' : 'Авторизация'}
-                </a>
-                <a
-                  tabIndex={0}
-                  className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
-                  onClick={() => {
-                    clearErrors()
-                    setProcess('forgotPassword')
-                    setRegistrationLevel(1)
-                  }}
-                >
-                  Забыли пароль?
+                  {process === 'authorization'
+                    ? 'Я не зарегистрирован'
+                    : 'Я уже зарегистрирован'}
                 </a>
               </div>
               {!isPWA && (
