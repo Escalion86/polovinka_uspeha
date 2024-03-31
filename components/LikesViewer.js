@@ -34,16 +34,18 @@ const dayTimeText = () => {
   return 'Доброй ночи'
 }
 
-const Contacts = ({ user, coincidencUsers }) => {
+const Contacts = ({ user, coincidencUsers, eventLikesNumSort }) => {
   var message =
     `${dayTimeText()}!\n` +
     (coincidencUsers.length > 0
-      ? `Поздравляем у вас есть совпадения:${coincidencUsers.map(({ user }) => {
-          const { firstName, secondName, birthday, phone } = user
-          return `\n- ${firstName} ${
-            secondName ? ` ${secondName[0].toUpperCase() + '.'}` : ''
-          } (${birthDateToAge(birthday)}) +${phone}`
-        })}`
+      ? `Поздравляем у вас есть совпадения:${coincidencUsers.map(
+          ({ user, likeSortNum }) => {
+            const { firstName, secondName, birthday, phone } = user
+            return `\n- ${eventLikesNumSort && typeof likeSortNum === 'number' ? `№${likeSortNum + 1} ` : ''}${firstName} ${
+              secondName ? ` ${secondName[0].toUpperCase() + '.'}` : ''
+            } (${birthDateToAge(birthday)}) +${phone}`
+          }
+        )}`
       : `К сожалению вчера у вас ни с кем симпатии не совпали.\u{1F64C}`)
 
   const copyMessage = useCopyToClipboard(
@@ -114,7 +116,9 @@ const UserLikesItem = ({
         </div>
       )}
       <div className="flex items-center h-10 gap-x-0.5">
-        {typeof likeSortNum === 'number' && <div className="w-7" />}
+        {event.likesNumSort && typeof likeSortNum === 'number' && (
+          <div className="w-7" />
+        )}
         {!event.likesProcessActive && (
           <div
             className={cn(
@@ -267,6 +271,7 @@ const UserLikesItem = ({
               : // .map(({ user }) => user._id)
                 []
           }
+          eventLikesNumSort={event.likesNumSort}
         />
       )}
     </div>
