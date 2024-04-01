@@ -19,11 +19,12 @@ import useCopyToClipboard from '@helpers/useCopyToClipboard'
 import birthDateToAge from '@helpers/birthDateToAge'
 import cn from 'classnames'
 import UserName from './UserName'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
 import arrayToObject from '@helpers/arrayToObject'
 import CardButton from './CardButton'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import eventSelector from '@state/selectors/eventSelector'
 
 const dayTimeText = () => {
   var date = new Date()
@@ -88,7 +89,7 @@ const UserLikesItem = ({
   onDownClick,
   likeSortNum,
 }) => {
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   // const userGender =
   //   user.gender && GENDERS.find((gender) => gender.value === user.gender)
@@ -356,7 +357,7 @@ const setDown = (array, key, clickedIndex) => {
 }
 
 const LikesViewer = ({ eventId, readOnly }) => {
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
   const eventUsers = useRecoilValue(
     eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)

@@ -26,7 +26,7 @@ import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsers
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import usersAtom from '@state/atoms/usersAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -35,6 +35,7 @@ import {
   // useRecoilRefresher_UNSTABLE,
   useRecoilValue,
 } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const EventsUsers = ({
   event,
@@ -180,7 +181,7 @@ const eventUsersFunc = (eventId) => {
 
     const [dataChanged, setDataChanged] = useState(isDataChanged)
 
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     const users = useRecoilValue(usersAtom)
     const isEventClosed = isEventClosedFunc(event)

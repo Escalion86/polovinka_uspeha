@@ -1,9 +1,10 @@
-import { DEFAULT_EVENT } from '@helpers/constants'
+// import { DEFAULT_EVENT } from '@helpers/constants'
 import getEventDuration from '@helpers/getEventDuration'
-import getMinutesBetween from '@helpers/getMinutesBetween'
-import eventsAtom from '@state/atoms/eventsAtom'
+// import getMinutesBetween from '@helpers/getMinutesBetween'
+// import eventsAtom from '@state/atoms/eventsAtom'
 import { selectorFamily } from 'recoil'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+import eventSelector from './eventSelector'
 
 export const eventDurationSelector = selectorFamily({
   key: 'eventDurationSelector',
@@ -11,7 +12,7 @@ export const eventDurationSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return null
-      const event = get(eventAtom(id))
+      const event = get(eventSelector(id))
       return getEventDuration(event)
     },
   // set:

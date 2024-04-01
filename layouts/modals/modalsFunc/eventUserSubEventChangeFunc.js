@@ -6,12 +6,13 @@ import { faCancel, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import userToEventStatus from '@helpers/userToEventStatus'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
   const EventUserSubEventChangeModal = ({
@@ -20,7 +21,7 @@ const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
   }) => {
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const user = useRecoilValue(userSelector(userId))
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = eventUsers.find(

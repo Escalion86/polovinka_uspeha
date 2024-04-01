@@ -2,7 +2,7 @@ import Button from '@components/Button'
 import eventPriceByStatus from '@helpers/eventPriceByStatus'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import { modalsFuncAtom } from '@state/atoms'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
 import cn from 'classnames'
@@ -14,6 +14,7 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import eventSelector from '@state/selectors/eventSelector'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -35,7 +36,7 @@ const EventButtonSignInComponent = ({
   noBorders,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(

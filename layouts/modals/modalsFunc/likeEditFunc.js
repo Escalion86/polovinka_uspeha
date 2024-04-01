@@ -8,13 +8,14 @@ import compareArrays from '@helpers/compareArrays'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const Heart = ({ small, broken, gray }) => (
   <FontAwesomeIcon
@@ -96,7 +97,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     setTitle,
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const user = useRecoilValue(userSelector(userId))
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = eventUsers.find(

@@ -24,7 +24,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
@@ -34,6 +34,7 @@ import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const TotalItem = ({ title, className, valueClassName, value }) => (
   <div className={cn('flex flex-wrap gap-x-1', className)}>
@@ -456,7 +457,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     const statusEdit = loggedUserActiveRole?.events?.statusEdit
     const paymentsEdit = loggedUserActiveRole?.events?.paymentsEdit
 
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
 

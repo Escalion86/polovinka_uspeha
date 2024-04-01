@@ -1,5 +1,5 @@
 import { DEFAULT_EVENT } from '@helpers/constants'
-import eventAtom from '@state/async/eventAtom'
+import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { selector } from 'recoil'
 
@@ -16,7 +16,7 @@ const eventEditSelector = selector({
         if (event._id === newItem._id) return newItem
         return event
       })
-      set(eventAtom(newItem._id), newItem)
+      set(eventFullAtomAsync(newItem._id), newItem)
       set(eventsAtom, newItemsList)
     } else {
       // Если такого атома нет и мы добавляем новый, то просто добавляем атом в список

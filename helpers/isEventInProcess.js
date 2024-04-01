@@ -2,6 +2,7 @@ import getDiffBetweenDates from './getDiffBetweenDates'
 import getMinutesBetween from './getMinutesBetween'
 
 const isEventInProcess = (event) => {
+  if (!event) return
   // const minutesBetween = getMinutesBetween(event.date)
   return (
     getDiffBetweenDates(event.dateStart) >= 0 &&

@@ -6,9 +6,10 @@ import { SelectEvent } from '@components/SelectItem'
 import PayTypePicker from '@components/ValuePicker/PayTypePicker'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const paymentsAutoFillFunc = (eventId) => {
   const PaymentsAutoFillModal = ({
@@ -24,7 +25,7 @@ const paymentsAutoFillFunc = (eventId) => {
     const autofillPayments =
       useRecoilValue(itemsFuncAtom).payment.autofillPayments
 
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     // const isEventClosed = isEventClosedFunc(event)
 
     // const [payDirection, setPayDirection] = useState(

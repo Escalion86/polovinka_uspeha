@@ -2,11 +2,12 @@ import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import { DEFAULT_EVENT } from '@helpers/constants'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const eventStatusEditFunc = (eventId) => {
   const EventStatusEditModal = ({
@@ -18,7 +19,7 @@ const eventStatusEditFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
     const isEventExpired = isEventExpiredFunc(event)
 

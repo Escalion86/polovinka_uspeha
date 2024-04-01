@@ -726,7 +726,6 @@ const LoginPage = (props) => {
               checkBackCallId: res.data.id,
             },
             (res) => {
-              console.log('res :>> ', res)
               if (res.data.status === 'expired') {
                 clearInterval(timer)
                 setBackCallRes(res.data)

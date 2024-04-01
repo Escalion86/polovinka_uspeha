@@ -21,7 +21,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
-import eventAtom from '@state/async/eventAtom'
+import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
@@ -91,7 +91,7 @@ const EventViewModal = ({
   setTopLeftComponent,
 }) => {
   const { eventId } = data
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventFullAtomAsync(eventId))
   const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -244,7 +244,7 @@ const EventViewModal = ({
 
 const EventViewPre = (props) => {
   const { eventId } = props.data
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventFullAtomAsync(eventId))
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const { canSee, isAgeOfUserCorrect, isUserStatusCorrect } = useRecoilValue(
     loggedUserToEventStatusSelector(event?._id)
@@ -255,74 +255,73 @@ const EventViewPre = (props) => {
   delete routerQuery.id
   const query = event?._id ? { event: event._id } : {}
 
-  return (
-    <>
-      {event?._id && canSee && <EventViewModal {...props} />}
-      <div className="flex flex-col items-center">
-        {!event?._id && (
-          <span className="text-xl">Ошибка. Мероприятие не найдено</span>
-        )}
-        {loggedUserActive && !isUserStatusCorrect ? (
-          <span className="text-xl">
-            {`К сожалению данное мероприятие не доступно для вашего статуса пользователя`}
-          </span>
-        ) : loggedUserActive && isUserStatusCorrect && !isAgeOfUserCorrect ? (
-          <span className="text-xl">
-            {`К сожалению данное мероприятие доступно для возрастной категории ${
-              loggedUserActive?.gender === 'male'
-                ? `мужчин от ${event.minMansAge} до ${event.maxMansAge} лет`
-                : `женщин от ${event.minWomansAge} до ${event.maxWomansAge} лет`
-            }`}
-          </span>
-        ) : !canSee && isUserStatusCorrect && isAgeOfUserCorrect ? (
-          <span className="text-xl">
-            Мероприятие скрыто, если вы не ошиблись со ссылкой, то пожалуйста
-            обратитесь к администратору
-          </span>
-        ) : (
-          !loggedUserActive && (
-            <>
-              <span className="text-xl">
-                Мероприятие не доступно для просмотра неавторизированным
-                пользователям, пожалуйста авторизируйтесь
-              </span>
-              <Link
-                className="max-w-[76%]"
-                href={{
-                  pathname: '/login',
-                  query: { ...routerQuery, ...query },
-                }}
-                shallow
-              >
-                <PulseButton
-                  className="mt-4 text-white"
-                  title="Авторизироваться"
-                  // onClick={() => router.push('./login', '', { shallow: true })}
-                />
-              </Link>
-              <Link
-                className="max-w-[76%]"
-                href={{
-                  pathname: '/login',
-                  query: {
-                    ...routerQuery,
-                    ...query,
-                    registration: true,
-                  },
-                }}
-                shallow
-              >
-                <PulseButton
-                  className="mt-4 text-white"
-                  title="Зарегистрироваться"
-                  // onClick={() => router.push('./login', '', { shallow: true })}
-                />
-              </Link>
-            </>
-          )
-        )}
-      </div>
-    </>
+  if (!event?._id)
+    return <div className="text-xl">Ошибка. Мероприятие не найдено</div>
+
+  return event?._id && canSee ? (
+    <EventViewModal {...props} />
+  ) : (
+    <div className="flex flex-col items-center">
+      {loggedUserActive && !isUserStatusCorrect ? (
+        <span className="text-xl">
+          {`К сожалению данное мероприятие не доступно для вашего статуса пользователя`}
+        </span>
+      ) : loggedUserActive && isUserStatusCorrect && !isAgeOfUserCorrect ? (
+        <span className="text-xl">
+          {`К сожалению данное мероприятие доступно для возрастной категории ${
+            loggedUserActive?.gender === 'male'
+              ? `мужчин от ${event.minMansAge} до ${event.maxMansAge} лет`
+              : `женщин от ${event.minWomansAge} до ${event.maxWomansAge} лет`
+          }`}
+        </span>
+      ) : !canSee && isUserStatusCorrect && isAgeOfUserCorrect ? (
+        <span className="text-xl">
+          Мероприятие скрыто, если вы не ошиблись со ссылкой, то пожалуйста
+          обратитесь к администратору
+        </span>
+      ) : (
+        !loggedUserActive && (
+          <>
+            <span className="text-xl">
+              Мероприятие не доступно для просмотра неавторизированным
+              пользователям, пожалуйста авторизируйтесь
+            </span>
+            <Link
+              className="max-w-[76%]"
+              href={{
+                pathname: '/login',
+                query: { ...routerQuery, ...query },
+              }}
+              shallow
+            >
+              <PulseButton
+                className="mt-4 text-white"
+                title="Авторизироваться"
+                // onClick={() => router.push('./login', '', { shallow: true })}
+              />
+            </Link>
+            <Link
+              className="max-w-[76%]"
+              href={{
+                pathname: '/login',
+                query: {
+                  ...routerQuery,
+                  ...query,
+                  registration: true,
+                },
+              }}
+              shallow
+            >
+              <PulseButton
+                className="mt-4 text-white"
+                title="Зарегистрироваться"
+                // onClick={() => router.push('./login', '', { shallow: true })}
+              />
+            </Link>
+          </>
+        )
+      )}
+    </div>
   )
 }
 

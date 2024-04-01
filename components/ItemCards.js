@@ -17,7 +17,7 @@ import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import directionSelector from '@state/selectors/directionSelector'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
@@ -35,6 +35,7 @@ import serviceSelector from '@state/selectors/serviceSelector'
 import IconWithTooltip from './IconWithTooltip'
 import paymentSectorFunc from '@helpers/paymentSector'
 import PayTypeIcon from './PayTypeIcon'
+import eventSelector from '@state/selectors/eventSelector'
 
 const ItemContainer = ({
   onClick,
@@ -175,7 +176,7 @@ export const EventItemFromId = ({
   active = false,
   bordered = false,
 }) => {
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   return (
     <EventItem
       item={event}

@@ -12,14 +12,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useRecoilValue } from 'recoil'
 import CheckBox from '@components/CheckBox'
-import { useState } from 'react'
+// import { useState } from 'react'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
+import eventSelector from '@state/selectors/eventSelector'
 
 const LikesToggle = ({ eventId }) => {
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
   const onClick = () => {
@@ -54,7 +55,7 @@ const likesViewFunc = (eventId) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     // const [likesNumSort, setLikesNumSort] = useState(event.likesNumSort)
     const likesNumSort = event.likesNumSort
     const eventUsers = useRecoilValue(
