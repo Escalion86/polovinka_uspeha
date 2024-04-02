@@ -13,7 +13,6 @@ export const eventFullSelectorAsync = selectorFamily({
       if (!id) return DEFAULT_EVENT
       const res = await getData('/api/events/' + id, {}, null, null, false)
       setRecoil(isLoadedAtom('eventFullAtomAsync' + id), true)
-      console.log('eventFullSelectorAsync :>> ', id)
       return res
       // return get(eventsAtom).find((item) => item._id === id)
     },
