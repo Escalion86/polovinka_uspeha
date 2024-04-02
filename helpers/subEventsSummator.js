@@ -4,7 +4,7 @@ import isObject from './isObject'
 const subEventsSummator = (subEvents) => {
   if (!isObject(subEvents)) return
 
-  return subEvents.reduce((sum, subEvent) => {
+  const sum = subEvents.reduce((sum, subEvent) => {
     let result
     if (Object.keys(sum).length === 0)
       result = {
@@ -119,6 +119,12 @@ const subEventsSummator = (subEvents) => {
       realMaxNovice: realMaxNovice >= 9999 ? null : realMaxNovice,
     }
   }, {})
+
+  delete sum.id
+  delete sum._id
+  delete sum.description
+
+  return sum
 }
 
 export default subEventsSummator
