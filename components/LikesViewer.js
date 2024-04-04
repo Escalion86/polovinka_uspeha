@@ -356,19 +356,24 @@ const setDown = (array, key, clickedIndex) => {
   // )
 }
 
-const LikesViewer = ({ eventId, readOnly }) => {
+const LikesViewer = ({ eventId }) => {
   const event = useRecoilValue(eventSelector(eventId))
   const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
   const eventUsers = useRecoilValue(
     eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
   )
 
+  const readOnly = !event.likesProcessActive
+
   const onDownClick = async (array, key, clickedIndex) => {
     const resultToChange = setDown(array, key, clickedIndex)
-    console.log('resultToChange :>> ', resultToChange)
     for (let i = 0; i < resultToChange.length; i++) {
       const eventUser = resultToChange[i]
-      setEventUser({ _id: eventUser._id, likeSortNum: eventUser.likeSortNum })
+      setEventUser(
+        { _id: eventUser._id, likeSortNum: eventUser.likeSortNum },
+        false,
+        true
+      )
     }
   }
 
@@ -376,7 +381,11 @@ const LikesViewer = ({ eventId, readOnly }) => {
     const resultToChange = setUp(array, key, clickedIndex)
     for (let i = 0; i < resultToChange.length; i++) {
       const eventUser = resultToChange[i]
-      setEventUser({ _id: eventUser._id, likeSortNum: eventUser.likeSortNum })
+      setEventUser(
+        { _id: eventUser._id, likeSortNum: eventUser.likeSortNum },
+        false,
+        true
+      )
     }
   }
 

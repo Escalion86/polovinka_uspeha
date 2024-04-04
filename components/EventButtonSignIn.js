@@ -15,6 +15,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import eventSelector from '@state/selectors/eventSelector'
+import eventLoggedUserByEventIdSelector from '@state/selectors/eventLoggedUserByEventIdSelector'
 
 const TextStatus = ({ children, className }) => (
   <div
@@ -71,10 +72,7 @@ const EventButtonSignInComponent = ({
     )
       return null
 
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
-    const eventUser = eventUsers.find(
-      ({ userId }) => userId === loggedUserActive?._id
-    )
+    const eventUser = useRecoilValue(eventLoggedUserByEventIdSelector(eventId))
     if (!eventUser) return null
 
     const subEvent = event.subEvents.find(
@@ -136,8 +134,10 @@ const EventButtonSignInComponent = ({
     return null
   }
 
-  const Status = () =>
-    showProfitOnCard && event.status === 'closed' ? (
+  const Status = () => {
+    const eventUser = useRecoilValue(eventLoggedUserByEventIdSelector(eventId))
+
+    return showProfitOnCard && event.status === 'closed' ? (
       <EventProfit eventId={event._id} className={classNameProfit} />
     ) : event.status === 'canceled' ? (
       <TextStatus className="text-danger">Отменено</TextStatus>
@@ -152,7 +152,13 @@ const EventButtonSignInComponent = ({
         stopPropagation
         classBgColor="bg-pink-500"
         className={cn('border w-auto self-center', className)}
-        name={event.likesProcessActive ? 'Поставить' : 'Совпадения'}
+        name={
+          event.likesProcessActive
+            ? eventUser.likes === null
+              ? 'Поставить'
+              : `Поставлено ${eventUser.likes.length}`
+            : 'Совпадения'
+        }
         onClick={() =>
           event.likesProcessActive
             ? modalsFunc.eventUser.editLike({
@@ -228,6 +234,7 @@ const EventButtonSignInComponent = ({
         }
       />
     )
+  }
 
   return (
     <div className={cn('flex', className)}>

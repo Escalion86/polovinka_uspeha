@@ -49,6 +49,8 @@ const Modal = ({
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [disableConfirm, setDisableConfirm] = useState(false)
   const [disableDecline, setDisableDecline] = useState(false)
+  const [closeButtonNameState, setCloseButtonNameState] =
+    useState(closeButtonName)
   const [confirmButtonNameState, setConfirmButtonNameState] =
     useState(confirmButtonName)
   const [confirmButtonName2State, setConfirmButtonName2State] =
@@ -100,21 +102,21 @@ const Modal = ({
     typeof onConfirmFunc === 'function'
       ? () => onConfirmFunc(refreshPage)
       : typeof onConfirm === 'function'
-      ? () => {
-          onConfirm(refreshPage)
-          closeModal()
-        }
-      : undefined
+        ? () => {
+            onConfirm(refreshPage)
+            closeModal()
+          }
+        : undefined
 
   const onConfirm2Click =
     typeof onConfirm2Func === 'function'
       ? () => onConfirm2Func(refreshPage)
       : typeof onConfirm2 === 'function'
-      ? () => {
-          onConfirm2(refreshPage)
-          closeModal()
-        }
-      : undefined
+        ? () => {
+            onConfirm2(refreshPage)
+            closeModal()
+          }
+        : undefined
 
   // const onConfirm2Click = () => {
   //   if (onConfirm2Func) return onConfirm2Func(refreshPage)
@@ -131,11 +133,11 @@ const Modal = ({
             typeof onDeclineFunc === 'function'
               ? () => onDeclineFunc()
               : typeof onDecline === 'function'
-              ? () => {
-                  onDecline(refreshPage)
-                  closeModal()
-                }
-              : undefined
+                ? () => {
+                    onDecline(refreshPage)
+                    closeModal()
+                  }
+                : undefined
 
           if (onShowOnCloseConfirmDialog) {
             modalsFunc.confirm({
@@ -282,6 +284,7 @@ const Modal = ({
                 setDeclineButtonShow={setDeclineButtonShowState}
                 setConfirmButtonName={setConfirmButtonNameState}
                 setConfirmButtonName2={setConfirmButtonName2State}
+                setCloseButtonName={setCloseButtonNameState}
                 setTitle={setTitleState}
               />
             </Suspense>
@@ -306,7 +309,7 @@ const Modal = ({
             confirmName={confirmButtonNameState}
             confirmName2={confirmButtonName2State}
             declineName={declineButtonName}
-            closeButtonName={closeButtonName}
+            closeButtonName={closeButtonNameState}
             onConfirmClick={!onlyCloseButtonShowState && onConfirmClick}
             onConfirm2Click={!onlyCloseButtonShowState && onConfirm2Click}
             onDeclineClick={!onlyCloseButtonShowState && onDeclineClick}

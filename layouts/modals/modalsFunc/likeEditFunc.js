@@ -92,6 +92,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
     setConfirmButtonName,
+    setCloseButtonName,
     setCloseButtonShow,
     setDeclineButtonShow,
     setTitle,
@@ -107,7 +108,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
     )
 
-    const setEventUserData = useRecoilValue(itemsFuncAtom).event.setData
+    const setEventUserData = useRecoilValue(itemsFuncAtom).eventsUser.setData
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
     if (!eventUser)
@@ -160,16 +161,20 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       (eventUser) => !eventUser.iLike
     )
 
-    const onClickConfirm = () => {
-      setEventUserData(eventId, {
-        likes: {
-          [eventUser._id]: likes,
-        },
-      })
-      closeModal()
-    }
-
     const [likes, setLikes] = useState(eventUser.likes ?? [])
+
+    // const onClickConfirm = () => {
+    //   setEventUserData(
+    //     eventId,
+    //     {
+    //       likes: {
+    //         [eventUser._id]: likes,
+    //       },
+    //     },
+    //     true
+    //   )
+    //   closeModal()
+    // }
 
     useEffect(() => {
       if (
@@ -190,25 +195,30 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     }, [eventUser.seeLikesResult, event.likesProcessActive, adminView])
 
     useEffect(() => {
-      const isFormChanged = !compareArrays(eventUser.likes ?? [], likes)
-      setConfirmButtonName(
-        !likes || likes?.length === 0
-          ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
-          : eventUser.likes && !isFormChanged
-            ? 'Оставить как было'
-            : adminView
-              ? 'Сохранить выбор'
-              : 'Отправить мой выбор'
-      )
+      // const isFormChanged = !compareArrays(eventUser.likes ?? [], likes)
+      // setConfirmButtonName(
+      //   !likes || likes?.length === 0
+      //     ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
+      //     : eventUser.likes && !isFormChanged
+      //       ? 'Оставить как было'
+      //       : adminView
+      //         ? 'Сохранить выбор'
+      //         : 'Отправить мой выбор'
+      // )
       // setDisableConfirm(eventUser.likes && !isFormChanged)
-      setOnConfirmFunc(
-        !event.likesProcessActive
-          ? undefined
-          : eventUser.likes && !isFormChanged
-            ? closeModal
-            : onClickConfirm
+      // setOnConfirmFunc(
+      //   !event.likesProcessActive
+      //     ? undefined
+      //     : eventUser.likes && !isFormChanged
+      //       ? closeModal
+      //       : onClickConfirm
+      // )
+      // setCloseButtonShow(!event.likesProcessActive)
+      setCloseButtonName(
+        event.likesProcessActive && likes?.length === 0
+          ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
+          : 'Закрыть'
       )
-      setCloseButtonShow(!event.likesProcessActive)
       setDeclineButtonShow(adminView)
       if (!event.likesProcessActive)
         setTitle(
@@ -268,11 +278,23 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                     onClick={
                       event.likesProcessActive
                         ? () =>
-                            setLikes((state) =>
-                              checked
+                            setLikes((state) => {
+                              const likesResult = checked
                                 ? state.filter((id) => id !== user._id)
                                 : [...state, user._id]
-                            )
+
+                              setEventUserData(
+                                eventId,
+                                {
+                                  likes: {
+                                    [eventUser._id]: likesResult,
+                                  },
+                                },
+                                true
+                              )
+
+                              return likesResult
+                            })
                         : undefined
                     }
                   >

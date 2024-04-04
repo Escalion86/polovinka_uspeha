@@ -165,7 +165,7 @@ const likesViewFunc = (eventId) => {
             onChange={likesNumSortToggle}
           />
         )}
-        <LikesViewer eventId={eventId} readOnly={!event.likesProcessActive} />
+        <LikesViewer eventId={eventId} />
       </div>
     )
   }

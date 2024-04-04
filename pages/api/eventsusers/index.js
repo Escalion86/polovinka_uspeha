@@ -151,9 +151,7 @@ export default async function handler(req, res) {
   if (method === 'PUT') {
     try {
       await dbConnect()
-      const { eventId, data } = body.data
-      if (!eventId)
-        return res?.status(400).json({ success: false, data: 'No eventId' })
+      const { data } = body.data
       if (!data)
         return res?.status(400).json({ success: false, data: 'No data' })
 
@@ -166,7 +164,6 @@ export default async function handler(req, res) {
       const result = []
       for (const key of dataKeys) {
         for (const [id, value] of Object.entries(data[key])) {
-          console.log('object :>> ', { id, key, value })
           const updatedEventUser = await EventsUsers.findByIdAndUpdate(
             id,
             {
