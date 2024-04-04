@@ -15,11 +15,13 @@ const variants = {
     scale: 1,
     translateX: 0,
     translateY: 0,
+    opacity: 1,
   },
   hide: {
     scale: 0,
     translateX: '50%',
     translateY: '-50%',
+    opacity: 0,
   },
 }
 
@@ -117,7 +119,7 @@ const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
   )
 }
 
-const SortingButtonMenu = ({ sort, onChange, sortKeys = [] }) => {
+const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
 
@@ -153,7 +155,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [] }) => {
           variants={variants}
           animate={isUserMenuOpened ? 'show' : 'hide'}
           initial="hide"
-          transition={{ duration: 0.2, type: 'tween' }}
+          transition={{ duration: 0.1, type: 'tween' }}
         >
           {sortParams
             .filter((sortParam) => sortKeys.includes(sortParam.key))
@@ -169,6 +171,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [] }) => {
             ))}
         </motion.div>
         <IconToggleButton value="sort">
+          {showTitle ? sortParam.title : null}
           <FontAwesomeIcon
             icon={sortIcons[sortParam.type][sortValue]}
             className="h-6"

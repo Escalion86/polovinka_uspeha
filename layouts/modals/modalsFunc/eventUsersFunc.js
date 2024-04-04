@@ -487,6 +487,7 @@ const eventUsersFunc = (eventId) => {
             sort={sort}
             onChange={setSort}
             sortKeys={['firstNameAndGender', 'createdAt']}
+            showTitle
           />
         </div>
         {canEdit && isEventClosed && (
@@ -532,7 +533,7 @@ const eventUsersFunc = (eventId) => {
                   label={title || 'Основной тип участия'}
                 >
                   {canEdit && (
-                    <div className="flex justify-center mb-1">
+                    <div className="flex justify-center">
                       <EventUsersCounterAndAge
                         event={event}
                         subEvent={subEvent}
