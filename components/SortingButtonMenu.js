@@ -40,6 +40,11 @@ const sortParams = [
     title: 'по имени',
     type: 'string',
   },
+  {
+    key: 'firstNameAndGender',
+    title: 'по имени и полу',
+    type: 'string',
+  },
   { key: 'dateStart', title: 'по дате', type: 'number' },
   { key: 'birthday', title: 'по возрасту', type: 'number' },
   { key: 'createdAt', title: 'по дате создания', type: 'number' },

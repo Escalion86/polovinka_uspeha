@@ -36,6 +36,9 @@ import {
   useRecoilValue,
 } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
+import sortFunctions from '@helpers/sortFunctions'
+import sortFuncGenerator from '@helpers/sortFuncGenerator'
+import SortingButtonMenu from '@components/SortingButtonMenu'
 
 const EventsUsers = ({
   event,
@@ -148,6 +151,8 @@ const sortByFirstNameAndGenderFunction = (a, b) =>
         ? -1
         : 1
 
+const sortByCreateAtFunction = sortFunctions.createdAt.asc
+
 const genderSplitAndSort = (eventUsers) =>
   genderSplitAndSort?.length === 0
     ? [[], []]
@@ -180,6 +185,9 @@ const eventUsersFunc = (eventId) => {
       loggedUserActiveRole?.eventsUsers?.copyListToClipboard
 
     const [dataChanged, setDataChanged] = useState(isDataChanged)
+    // const [sortType, setSortType] = useState('name')
+    const [sort, setSort] = useState({ firstNameAndGender: 'asc' })
+    const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
@@ -189,7 +197,7 @@ const eventUsersFunc = (eventId) => {
     const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
 
     const sortedUsers = useMemo(
-      () => [...users].sort(sortByFirstNameAndGenderFunction),
+      () => [...users].sort(sortFunctions.firstNameAndGender.asc),
       [users]
     )
 
@@ -203,33 +211,33 @@ const eventUsersFunc = (eventId) => {
     const sortedEventUsersParticipants = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'participant')].sort(
-          sortByFirstNameAndGenderFunctionEventUser
+          sort.createdAt ? sortFunc : (a, b) => sortFunc(a.user, b.user)
         ),
-      [eventUsers]
+      [eventUsers, sort]
     )
 
     const sortedEventUsersReserve = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'reserve')].sort(
-          sortByFirstNameAndGenderFunctionEventUser
+          sort.createdAt ? sortFunc : (a, b) => sortFunc(a.user, b.user)
         ),
-      [eventUsers]
+      [eventUsers, sort]
     )
 
     const sortedEventUsersAssistants = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'assistant')].sort(
-          sortByFirstNameAndGenderFunctionEventUser
+          sort.createdAt ? sortFunc : (a, b) => sortFunc(a.user, b.user)
         ),
-      [eventUsers]
+      [eventUsers, sort]
     )
 
     const sortedEventUsersBanned = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'ban')].sort(
-          sortByFirstNameAndGenderFunctionEventUser
+          sort.createdAt ? sortFunc : (a, b) => sortFunc(a.user, b.user)
         ),
-      [eventUsers]
+      [eventUsers, sort]
     )
 
     const objParticipants = useMemo(
@@ -474,6 +482,13 @@ const eventUsersFunc = (eventId) => {
 
     return (
       <>
+        <div className="absolute z-50 top-1 right-11">
+          <SortingButtonMenu
+            sort={sort}
+            onChange={setSort}
+            sortKeys={['firstNameAndGender', 'createdAt']}
+          />
+        </div>
         {canEdit && isEventClosed && (
           <P className="text-danger">
             Мероприятие закрыто, поэтому редактирование состава участников
