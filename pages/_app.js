@@ -11,7 +11,10 @@ import 'react-image-crop/dist/ReactCrop.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import 'react-loading-skeleton/dist/skeleton.css'
 import 'react-medium-image-zoom/dist/styles.css'
-import 'react-quill/dist/quill.snow.css'
+// import 'react-quill/dist/quill.snow.css'
+// import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.bubble.css'
+import 'quill/dist/quill.snow.css'
 import 'react-toastify/dist/ReactToastify.css'
 import { RecoilEnv, RecoilRoot, useSetRecoilState } from 'recoil'
 import RecoilNexus from 'recoil-nexus'
@@ -146,6 +149,8 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                 src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"
                 strategy="beforeInteractive"
               />
+              <Script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.4/dist/quill.js"></Script>
+              {/* <Script src="https://cdn.jsdelivr.net/npm/quill-emoji@0.2.0/dist/quill-emoji.js"></Script> */}
               {/* <CssBaseline /> */}
 
               <Suspense

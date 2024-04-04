@@ -148,14 +148,22 @@ blockquote {
 } */
 
 
-
+li[data-list="bullet"] span.ql-ui:before {
+  text-align: right;
+  content: url("/img/logo_heart_16x20px.png") !important;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  margin-right: 0 !important;
+  margin-left: -36px !important;
+}
 
 .ql ul li:before,
 .ql-editor ul li:before {
   text-align: right;
   /* display: inline-block; */
   /* vertical-align: middle; */
-  content: url("/img/logo_heart_24px.png") !important;
+  content: url("/img/logo_heart_16x20px.png") !important;
   /* content: ''; */
   /* margin-left: -0.5rem; */
   /* width: 30px; */
@@ -186,10 +194,10 @@ blockquote {
 }
 
 .ql-list-logo {
-  background-image: url("/img/logo_heart_24px.png") !important;
+  background-image: url("/img/logo_heart_16x20px.png") !important;
   background-repeat: no-repeat !important;
   background-size: 16px !important;
-  background-position: 6px 0px !important;
+  background-position: 6px 1px !important;
 }
 
 .ql-container {
@@ -197,6 +205,13 @@ blockquote {
   font-size: initial !important;
   border: 0px !important;
 }
+
+/* .ql-polovinkauspeha {
+  background-image: url("/img/logo_heart_16x20px.png") !important;
+  background-repeat: no-repeat !important;
+  background-size: 16px !important;
+  background-position: 6px 1px !important;
+} */
 
 .ql-toolbar {
   border-top: 0px !important;
