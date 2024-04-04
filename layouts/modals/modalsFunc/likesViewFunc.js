@@ -79,23 +79,31 @@ const likesViewFunc = (eventId) => {
           )
           for (let i = 0; i < eventUsersMans.length; i++) {
             const eventUser = eventUsersMans[i]
-            setEventUser({ ...eventUser, likeSortNum: i })
+            setEventUser({ ...eventUser, likeSortNum: i }, false, true)
           }
           for (let i = 0; i < eventUsersWomans.length; i++) {
             const eventUser = eventUsersWomans[i]
-            setEventUser({ ...eventUser, likeSortNum: i })
+            setEventUser({ ...eventUser, likeSortNum: i }, false, true)
           }
         }
-        setEvent({
-          _id: eventId,
-          likesNumSort: true,
-        })
+        setEvent(
+          {
+            _id: eventId,
+            likesNumSort: true,
+          },
+          false,
+          true
+        )
       } else {
         // setLikesNumSort(false)
-        setEvent({
-          _id: eventId,
-          likesNumSort: false,
-        })
+        setEvent(
+          {
+            _id: eventId,
+            likesNumSort: false,
+          },
+          false,
+          true
+        )
       }
     }
 
