@@ -73,6 +73,12 @@ module.exports = {
         enchants: ['Enchants', 'sans-serif'],
         frankinity: ['Frankinity', 'sans-serif'],
         lora: ['Lora', 'sans-serif'],
+        // futuraDemi: 'var(--font-futuraDemi)',
+        // futura: 'var(--font-futura)',
+        // adlery: 'var(--font-adlery)',
+        // enchants: 'var(--font-enchants)',
+        // frankinity: 'var(--font-frankinity)',
+        // lora: 'var(--font-lora)',
       },
       width: {
         phoneV: '300px',

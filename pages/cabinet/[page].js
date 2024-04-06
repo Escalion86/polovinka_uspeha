@@ -1,13 +1,20 @@
 // import Fab from '@components/Fab'
-import FabMenu from '@components/FabMenu'
+
 import LoadingSpinner from '@components/LoadingSpinner'
 import StateLoader from '@components/StateLoader'
 import { CONTENTS } from '@helpers/constants'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
-import BurgerLayout from '@layouts/BurgerLayout'
-import CabinetHeader from '@layouts/CabinetHeader'
-import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
-import ContentWrapper from '@layouts/wrappers/ContentWrapper'
+import dynamic from 'next/dynamic'
+const FabMenu = dynamic(() => import('@components/FabMenu'))
+const BurgerLayout = dynamic(() => import('@layouts/BurgerLayout'))
+const CabinetHeader = dynamic(() => import('@layouts/CabinetHeader'))
+const CabinetWrapper = dynamic(() => import('@layouts/wrappers/CabinetWrapper'))
+const ContentWrapper = dynamic(() => import('@layouts/wrappers/ContentWrapper'))
+// import FabMenu from '@components/FabMenu'
+// import BurgerLayout from '@layouts/BurgerLayout'
+// import CabinetHeader from '@layouts/CabinetHeader'
+// import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
+// import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 import fetchProps from '@server/fetchProps'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
@@ -83,7 +90,7 @@ function CabinetPage(props) {
                 </Suspense>
               )}
             </ContentWrapper>
-            <FabMenu show={showFab} />
+            {showFab && <FabMenu show={showFab} />}
           </CabinetWrapper>
         )}
       </StateLoader>

@@ -12,6 +12,7 @@ import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import DropDown from '@components/DropDown'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import Image from 'next/legacy/image'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -39,11 +40,13 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
     >
       {title ? (
         <div className="flex items-center flex-1">
-          <Link href="/" shallow className="hidden tablet:block">
-            <img
-              className="rounded-full h-14"
+          <Link href="/" shallow className="hidden tablet:block h-[56px]">
+            <Image
+              className="rounded-full"
               src={icon || '/img/logo_heart.png'}
               alt="logo"
+              height={56}
+              width={44.33}
             />
           </Link>
           <div className="flex items-center flex-1 leading-4 min-h-[42px] tablet:border-gray-600 tablet:border-l-1 tablet:pl-3 tablet:ml-3">

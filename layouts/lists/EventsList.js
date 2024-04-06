@@ -1,4 +1,6 @@
-import EventCard from '@layouts/cards/EventCard'
+// import EventCard from '@layouts/cards/EventCard'
+import dynamic from 'next/dynamic'
+const EventCard = dynamic(() => import('@layouts/cards/EventCard'))
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import { useRecoilValue } from 'recoil'
 import ListWrapper from './ListWrapper'

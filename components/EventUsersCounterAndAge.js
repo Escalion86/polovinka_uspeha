@@ -200,10 +200,20 @@ const CounterComponent = ({
           <div className="flex gap-x-0.5 items-center">
             {/* <span className="text-4xl">{'}'}</span> */}
             <div className="hidden min-w-[9px] h-[36px] tablet:block w-[9px]">
-              <Image src="/img/other/bracet_left.png" width={9} height={36} />
+              <Image
+                alt="bracet_left"
+                src="/img/other/bracet_left.png"
+                width={9}
+                height={36}
+              />
             </div>
             <div className="min-w-[7px] h-[28px] tablet:hidden w-[8px]">
-              <Image src="/img/other/bracet_left.png" width={7} height={28} />
+              <Image
+                alt="bracet_left"
+                src="/img/other/bracet_left.png"
+                width={7}
+                height={28}
+              />
             </div>
             <div className="flex flex-col items-center leading-[0.5rem] tablet:leading-3">
               <span className="text-xs">max</span>

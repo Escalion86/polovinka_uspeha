@@ -1,4 +1,6 @@
-import PaymentCard from '@layouts/cards/PaymentCard'
+// import PaymentCard from '@layouts/cards/PaymentCard'
+import dynamic from 'next/dynamic'
+const PaymentCard = dynamic(() => import('@layouts/cards/PaymentCard'))
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import { useRecoilValue } from 'recoil'
 import ListWrapper from './ListWrapper'

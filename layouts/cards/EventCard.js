@@ -93,41 +93,46 @@ const EventCard = ({
           )}
         </div>
       )} */}
-      <div
-        className={cn(
-          'hidden relative justify-center w-40 h-40 max-h-40',
-          changeStyle === 'laptop' ? 'laptop:flex' : 'desktop:flex',
-          { 'laptop:w-auto': noButtons }
-        )}
-      >
-        {direction?.image ? (
-          <img
-            className="object-contain w-full laptop:object-cover min-w-32 laptop:w-72"
-            src={direction.image}
-            alt="direction"
-            // width={48}
-            // height={48}
-          />
-        ) : (
-          <TextInRing text={direction?.title} />
-        )}
+      {((changeStyle === 'laptop' && widthNum >= 4) ||
+        (changeStyle === 'desktop' && widthNum >= 5)) && (
+        <div
+          className={cn(
+            'relative justify-center w-40 h-40 max-h-40',
+            // 'hidden',
+            // changeStyle === 'laptop' ? 'laptop:flex' : 'desktop:flex',
+            'flex',
+            { 'laptop:w-auto': noButtons }
+          )}
+        >
+          {direction?.image ? (
+            <img
+              className="object-contain w-full laptop:object-cover min-w-32 laptop:w-72"
+              src={direction.image}
+              alt="direction"
+              // width={48}
+              // height={48}
+            />
+          ) : (
+            <TextInRing text={direction?.title} />
+          )}
 
-        {eventStatus === 'canceled' && (
-          <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
-            Отменено
-          </div>
-        )}
-        {['finished', 'closed'].includes(eventStatus) && (
-          <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-success left-1/2 rotate-15 border-success shadow-white2">
-            Завершено
-          </div>
-        )}
-        {!event.showOnSite && (
-          <div className="absolute text-3xl font-bold text-purple-500 -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 border-purple-500 top-1/2 left-1/2 -rotate-15 shadow-white2">
-            Скрыто
-          </div>
-        )}
-      </div>
+          {eventStatus === 'canceled' && (
+            <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
+              Отменено
+            </div>
+          )}
+          {['finished', 'closed'].includes(eventStatus) && (
+            <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-success left-1/2 rotate-15 border-success shadow-white2">
+              Завершено
+            </div>
+          )}
+          {!event.showOnSite && (
+            <div className="absolute text-3xl font-bold text-purple-500 -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 border-purple-500 top-1/2 left-1/2 -rotate-15 shadow-white2">
+              Скрыто
+            </div>
+          )}
+        </div>
+      )}
       {/* // ) : (
       //   <div
       //     className={cn(

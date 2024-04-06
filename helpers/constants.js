@@ -47,15 +47,31 @@ import {
   faFileText,
   faImage,
 } from '@fortawesome/free-regular-svg-icons'
-
-import ServicesContent from '@layouts/content/ServicesContent'
-import DirectionsContent from '@layouts/content/DirectionsContent'
-import ReviewsContent from '@layouts/content/ReviewsContent'
-import EventsContent from '@layouts/content/EventsContent'
-import AdditionalBlocksContent from '@layouts/content/AdditionalBlocksContent'
-import QuestionnaireContent from '@layouts/content/QuestionnaireContent'
-import UsersContent from '@layouts/content/UsersContent'
-import MembersContent from '@layouts/content/MembersContent'
+import dynamic from 'next/dynamic'
+const ServicesContent = dynamic(
+  () => import('@layouts/content/ServicesContent')
+)
+const DirectionsContent = dynamic(
+  () => import('@layouts/content/DirectionsContent')
+)
+const ReviewsContent = dynamic(() => import('@layouts/content/ReviewsContent'))
+const EventsContent = dynamic(() => import('@layouts/content/EventsContent'))
+const AdditionalBlocksContent = dynamic(
+  () => import('@layouts/content/AdditionalBlocksContent')
+)
+const QuestionnaireContent = dynamic(
+  () => import('@layouts/content/QuestionnaireContent')
+)
+const UsersContent = dynamic(() => import('@layouts/content/UsersContent'))
+const MembersContent = dynamic(() => import('@layouts/content/MembersContent'))
+// import ServicesContent from '@layouts/content/ServicesContent'
+// import DirectionsContent from '@layouts/content/DirectionsContent'
+// import ReviewsContent from '@layouts/content/ReviewsContent'
+// import EventsContent from '@layouts/content/EventsContent'
+// import AdditionalBlocksContent from '@layouts/content/AdditionalBlocksContent'
+// import QuestionnaireContent from '@layouts/content/QuestionnaireContent'
+// import UsersContent from '@layouts/content/UsersContent'
+// import MembersContent from '@layouts/content/MembersContent'
 
 import ZodiacCapricorn from 'svg/zodiac/ZodiacCapricorn'
 import ZodiacTaurus from 'svg/zodiac/ZodiacTaurus'
@@ -69,43 +85,120 @@ import ZodiacAquarius from 'svg/zodiac/ZodiacAquarius'
 import ZodiacPisces from 'svg/zodiac/ZodiacPisces'
 import ZodiacVirgo from 'svg/zodiac/ZodiacVirgo'
 import ZodiacScorpio from 'svg/zodiac/ZodiacScorpio'
-import PaymentsContent from '@layouts/content/PaymentsContent'
-import ContactsContent from '@layouts/content/ContactsContent'
-import DevContent from '@layouts/content/DevContent'
-import HistoriesContent from '@layouts/content/HistoriesContent'
-import BirthdaysContent from '@layouts/content/BirthdaysContent'
+// import PaymentsContent from '@layouts/content/PaymentsContent'
+// import ContactsContent from '@layouts/content/ContactsContent'
+// import DevContent from '@layouts/content/DevContent'
+// import HistoriesContent from '@layouts/content/HistoriesContent'
+// import BirthdaysContent from '@layouts/content/BirthdaysContent'
 // import StatisticsContent from '@layouts/content/StatisticsContent'
 // import badgePaymentsOfEventWithoutEventIdSelector from '@state/selectors/badgePaymentsOfEventWithoutEventIdSelector'
-import SettingsCodeSendServiceContent from '@layouts/content/SettingsCodeSendServiceContent'
+// import SettingsCodeSendServiceContent from '@layouts/content/SettingsCodeSendServiceContent'
 // import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
 // import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
-import PaymentsNotParticipantsEventContent from '@layouts/content/PaymentsNotParticipantsEventContent'
-import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
-import ServicesLoggedUserContent from '@layouts/content/ServicesLoggedUserContent'
+// import PaymentsNotParticipantsEventContent from '@layouts/content/PaymentsNotParticipantsEventContent'
+// import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
+// import ServicesLoggedUserContent from '@layouts/content/ServicesLoggedUserContent'
 import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTodayCountSelector'
-import ToolsAnonsContent from '@layouts/content/ToolsAnonsContent'
-import ToolsExportContent from '@layouts/content/ToolsExportContent'
-import StatisticsFinanceContent from '@layouts/content/StatisticsFinanceContent'
-import StatisticsUsersContent from '@layouts/content/StatisticsUsersContent'
-import StatisticsEventsContent from '@layouts/content/StatisticsEventsContent'
-import ToolsEventAnonsContent from '@layouts/content/ToolsEventAnonsContent'
+// import ToolsAnonsContent from '@layouts/content/ToolsAnonsContent'
+// import ToolsExportContent from '@layouts/content/ToolsExportContent'
+// import StatisticsFinanceContent from '@layouts/content/StatisticsFinanceContent'
+// import StatisticsUsersContent from '@layouts/content/StatisticsUsersContent'
+// import StatisticsEventsContent from '@layouts/content/StatisticsEventsContent'
+// import ToolsEventAnonsContent from '@layouts/content/ToolsEventAnonsContent'
 import {
   faInstagram,
   faTelegram,
   faVk,
   faWhatsapp,
 } from '@fortawesome/free-brands-svg-icons'
-import ToolsTextEventsAnonsContent from '@layouts/content/ToolsTextEventsAnonsContent'
-import UserStatisticsContent from '@layouts/content/UserStatisticsContent'
-import ToolsNewsletterContent from '@layouts/content/ToolsNewsletterContent'
-import LoggedUserNotificationsContent from '@layouts/content/LoggedUserNotificationsContent'
-import SettingsFabMenuContent from '@layouts/content/SettingsFabMenuContent'
-import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
-import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
-import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
-import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
-import ToolsImageConstructorContent from '@layouts/content/ToolsImageConstructorContent'
-import ToolsEventAnonsVkContent from '@layouts/content/ToolsEventAnonsVkContent'
+// import ToolsTextEventsAnonsContent from '@layouts/content/ToolsTextEventsAnonsContent'
+// import UserStatisticsContent from '@layouts/content/UserStatisticsContent'
+// import ToolsNewsletterContent from '@layouts/content/ToolsNewsletterContent'
+// import LoggedUserNotificationsContent from '@layouts/content/LoggedUserNotificationsContent'
+// import SettingsFabMenuContent from '@layouts/content/SettingsFabMenuContent'
+// import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
+// import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
+// import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
+// import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
+// import ToolsImageConstructorContent from '@layouts/content/ToolsImageConstructorContent'
+// import ToolsEventAnonsVkContent from '@layouts/content/ToolsEventAnonsVkContent'const SettingsCodeSendServiceContent = dynamic(() => import('@layouts/content/SettingsCodeSendServiceContent'))
+const PaymentsContent = dynamic(
+  () => import('@layouts/content/PaymentsContent')
+)
+const DevContent = dynamic(() => import('@layouts/content/DevContent'))
+const ContactsContent = dynamic(
+  () => import('@layouts/content/ContactsContent')
+)
+const HistoriesContent = dynamic(
+  () => import('@layouts/content/HistoriesContent')
+)
+const BirthdaysContent = dynamic(
+  () => import('@layouts/content/BirthdaysContent')
+)
+const SettingsCodeSendServiceContent = dynamic(
+  () => import('@layouts/content/SettingsCodeSendServiceContent')
+)
+const PaymentsNotParticipantsEventContent = dynamic(
+  () => import('@layouts/content/PaymentsNotParticipantsEventContent')
+)
+const ServicesUsersContent = dynamic(
+  () => import('@layouts/content/ServicesUsersContent')
+)
+const ServicesLoggedUserContent = dynamic(
+  () => import('@layouts/content/ServicesLoggedUserContent')
+)
+const ToolsAnonsContent = dynamic(
+  () => import('@layouts/content/ToolsAnonsContent')
+)
+const ToolsExportContent = dynamic(
+  () => import('@layouts/content/ToolsExportContent')
+)
+const StatisticsFinanceContent = dynamic(
+  () => import('@layouts/content/StatisticsFinanceContent')
+)
+const StatisticsUsersContent = dynamic(
+  () => import('@layouts/content/StatisticsUsersContent')
+)
+const StatisticsEventsContent = dynamic(
+  () => import('@layouts/content/StatisticsEventsContent')
+)
+const ToolsEventAnonsContent = dynamic(
+  () => import('@layouts/content/ToolsEventAnonsContent')
+)
+const ToolsTextEventsAnonsContent = dynamic(
+  () => import('@layouts/content/ToolsTextEventsAnonsContent')
+)
+const UserStatisticsContent = dynamic(
+  () => import('@layouts/content/UserStatisticsContent')
+)
+const ToolsNewsletterContent = dynamic(
+  () => import('@layouts/content/ToolsNewsletterContent')
+)
+const LoggedUserNotificationsContent = dynamic(
+  () => import('@layouts/content/LoggedUserNotificationsContent')
+)
+const SettingsFabMenuContent = dynamic(
+  () => import('@layouts/content/SettingsFabMenuContent')
+)
+const SettingsRolesContent = dynamic(
+  () => import('@layouts/content/SettingsRolesContent')
+)
+const SupervisorBlockContent = dynamic(
+  () => import('@layouts/content/SupervisorBlockContent')
+)
+
+const SettingsDateStartProjectContent = dynamic(
+  () => import('@layouts/content/SettingsDateStartProjectContent')
+)
+const HeaderInfoContactsContent = dynamic(
+  () => import('@layouts/content/HeaderInfoContactsContent')
+)
+const ToolsImageConstructorContent = dynamic(
+  () => import('@layouts/content/ToolsImageConstructorContent')
+)
+const ToolsEventAnonsVkContent = dynamic(
+  () => import('@layouts/content/ToolsEventAnonsVkContent')
+)
 import { uid } from 'uid'
 
 const colors = [
@@ -173,6 +266,7 @@ const colors = [
   'border-amber-600',
   'border-pink-600',
   'border-amber-700',
+  'border-orange-700',
   'text-gray-600',
   'text-blue-600',
   'text-yellow-600',
@@ -183,6 +277,7 @@ const colors = [
   'text-amber-600',
   'text-pink-600',
   'text-amber-700',
+  'text-orange-700',
   'bg-blue-600',
   'bg-red-600',
   'bg-yellow-600',
@@ -193,6 +288,7 @@ const colors = [
   'bg-amber-600',
   'bg-pink-600',
   'bg-amber-700',
+  'bg-orange-700',
   'hover:border-blue-400',
   'hover:border-red-400',
   'hover:border-yellow-400',
@@ -258,6 +354,7 @@ const colors = [
   'hover:border-amber-600',
   'hover:border-pink-600',
   'hover:border-amber-700',
+  'hover:border-orange-700',
   'hover:text-red-600',
   'hover:text-blue-600',
   'hover:text-yellow-600',
@@ -268,6 +365,7 @@ const colors = [
   'hover:text-amber-600',
   'hover:text-pink-600',
   'hover:text-amber-700',
+  'hover:text-orange-700',
   'hover:bg-blue-600',
   'hover:bg-red-600',
   'hover:bg-yellow-600',
@@ -278,6 +376,7 @@ const colors = [
   'hover:bg-amber-600',
   'hover:bg-pink-600',
   'hover:bg-amber-700',
+  'hover:bg-orange-700',
 ]
 
 export const TAILWIND_COLORS = [

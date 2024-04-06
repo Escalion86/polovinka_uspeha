@@ -64,7 +64,7 @@ const PaymentsFromLoggedUser = ({ event, eventStatus, noBorders }) => {
         </div>
       ) : sumOfPaymentsFromLoggedUserToEvent > 0 &&
         sumOfPaymentsFromLoggedUserToEvent * 100 < eventPriceForLoggedUser ? (
-        <div className="flex flex-wrap items-center justify-center px-1 font-bold text-orange-600 laptop:text-lg gap-x-1">
+        <div className="flex flex-wrap items-center justify-center px-1 font-bold text-orange-700 laptop:text-lg gap-x-1">
           <span className="leading-4">ЗАДАТОК</span>
           <span className="leading-4">{`${sumOfPaymentsFromLoggedUserToEvent} ₽`}</span>
         </div>

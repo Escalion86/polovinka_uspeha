@@ -42,6 +42,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
               } w-${numSize + 1} h-${numSize + 1}`}
             >
               <Image
+                alt="member"
                 src="/img/svg_icons/medal.svg"
                 width={numSize * 4}
                 height={(numSize + 1) * 4}
@@ -65,6 +66,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
               } w-${numSize + 1} h-${numSize + 1}`}
             >
               <Image
+                alt="member"
                 src="/img/svg_icons/medal.svg"
                 width={numSize * 4}
                 height={(numSize + 1) * 4}

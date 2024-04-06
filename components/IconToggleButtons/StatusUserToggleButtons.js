@@ -23,7 +23,12 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
         color="blue"
       >
         <div className="w-6 h-6">
-          <Image src="/img/svg_icons/medal.svg" width="24" height="24" />
+          <Image
+            alt="member"
+            src="/img/svg_icons/medal.svg"
+            width="24"
+            height="24"
+          />
         </div>
       </Button>
       <Button
@@ -39,7 +44,12 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
         color="gray"
       >
         <div className="w-6 h-6 grayscale brightness-150 contrast-75 ">
-          <Image src="/img/svg_icons/medal.svg" width="24" height="24" />
+          <Image
+            alt="member"
+            src="/img/svg_icons/medal.svg"
+            width="24"
+            height="24"
+          />
         </div>
       </Button>
       <Button

@@ -1,5 +1,6 @@
 import cn from 'classnames'
 import { motion } from 'framer-motion'
+import Image from 'next/legacy/image'
 
 export const LoadingSpinner = ({
   className,
@@ -11,14 +12,14 @@ export const LoadingSpinner = ({
     size === 'xxs'
       ? 24
       : size === 'xs'
-      ? 30
-      : size === 'sm'
-      ? 40
-      : size === 'md'
-      ? 50
-      : size === 'lg'
-      ? 100
-      : 60
+        ? 30
+        : size === 'sm'
+          ? 40
+          : size === 'md'
+            ? 50
+            : size === 'lg'
+              ? 100
+              : 60
   return (
     <div
       className={cn(
@@ -54,11 +55,13 @@ export const LoadingSpinner = ({
           }}
           className="flex items-center justify-center h-full"
         >
-          <img
+          <Image
             className="object-contain max-h-[80%] aspect-1 h-[70%] w-[70%]"
-            style={{ maxHeight: widthHeight, maxWidth: widthHeight }}
+            // style={{ maxHeight: widthHeight, maxWidth: widthHeight }}
             src="/img/logo_heart.png"
             alt="logo"
+            width={widthHeight}
+            height={widthHeight}
           />
         </motion.div>
       </div>
