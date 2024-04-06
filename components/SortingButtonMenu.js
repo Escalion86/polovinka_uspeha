@@ -6,7 +6,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useState } from 'react'
 import IconToggleButton from './IconToggleButtons/IconToggleButton'
 
@@ -150,7 +150,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
       }}
     >
       <div className="relative">
-        <motion.div
+        <m.div
           className="absolute right-0 z-0 flex flex-col overflow-hidden duration-300 bg-white border border-gray-300 rounded top-10"
           variants={variants}
           animate={isUserMenuOpened ? 'show' : 'hide'}
@@ -169,7 +169,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
                 onChange={(value) => onChange({ [sortParam.key]: value })}
               />
             ))}
-        </motion.div>
+        </m.div>
         <IconToggleButton value="sort">
           {showTitle ? sortParam.title : null}
           <FontAwesomeIcon

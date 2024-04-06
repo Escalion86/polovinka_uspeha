@@ -31,7 +31,7 @@ import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelecto
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
@@ -258,7 +258,7 @@ const UserPayment = ({
         </div>
       </div>
       {isCollapsingActive && (
-        <motion.div
+        <m.div
           initial={{ height: 0 }}
           animate={{ height: isCollapsed ? 0 : 'auto' }}
         >
@@ -369,7 +369,7 @@ const UserPayment = ({
               </>
             )}
           </div>
-        </motion.div>
+        </m.div>
       )}
     </div>
   )

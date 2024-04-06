@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useState } from 'react'
 
 const variants = {
@@ -75,7 +75,7 @@ const Menu = ({
         >
           {trigger}
         </div>
-        <motion.div
+        <m.div
           className="absolute overflow-hidden duration-300 bg-white border border-gray-800 top-full"
           variants={variants}
           animate={
@@ -84,14 +84,14 @@ const Menu = ({
                 ? 'show'
                 : 'hide'
               : isMenuOpened
-              ? 'show'
-              : 'hide'
+                ? 'show'
+                : 'hide'
           }
           initial="hide"
           transition={{ duration: 0.2, type: 'tween' }}
         >
           {children}
-        </motion.div>
+        </m.div>
       </div>
     </div>
   )

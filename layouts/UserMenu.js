@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 // import { useRouter } from 'next/router'
@@ -103,7 +103,7 @@ const UserMenu = () => {
       <div className="relative flex flex-col items-end mt-2.5 w-12">
         <Avatar user={loggedUserActive} className="z-10" />
         {/* {router && ( */}
-        <motion.div
+        <m.div
           className={cn(
             'absolute overflow-hidden duration-300 border border-gray-800 rounded-tr-3xl'
             // isUserMenuOpened
@@ -171,7 +171,7 @@ const UserMenu = () => {
             icon={faSignOutAlt}
             title="Выйти из учетной записи"
           />
-        </motion.div>
+        </m.div>
         {/* )} */}
       </div>
     </div>

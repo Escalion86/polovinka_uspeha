@@ -11,7 +11,7 @@ import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import badgesSelector from '@state/selectors/badgesSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
@@ -207,7 +207,7 @@ const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
                     )}
                   </Component>
                   {item.items.length > 1 && (
-                    <motion.div
+                    <m.div
                       variants={variants}
                       initial="hide"
                       animate={openedMenuIndex === index ? 'show' : 'hide'}
@@ -221,7 +221,7 @@ const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
                           badge={itemsBadges[subitem.id]}
                         />
                       ))}
-                    </motion.div>
+                    </m.div>
                   )}
                 </div>
               </div>
@@ -306,7 +306,7 @@ const SideBar = ({ page }) => {
       style={{ gridArea: 'sidebar' }}
       ref={wrapperRef}
     >
-      <motion.div
+      <m.div
         ref={menuRef}
         className={
           'absolute top-0 items-start z-10 max-h-full overflow-y-hidden'
@@ -329,8 +329,8 @@ const SideBar = ({ page }) => {
             onChangeMenuIndex={onChangeMenuIndex}
           />
         </div>
-      </motion.div>
-      <motion.div
+      </m.div>
+      <m.div
         variants={variants}
         animate={!menuOpen ? 'min' : 'max'}
         transition={{ duration: 0.5, type: 'tween' }}
@@ -341,7 +341,7 @@ const SideBar = ({ page }) => {
       {scrollable && (
         <>
           {scrollPos > 0 && (
-            <motion.div
+            <m.div
               variants={variants}
               animate={!menuOpen ? 'min' : 'max'}
               transition={{ duration: 0.5, type: 'tween' }}
@@ -355,12 +355,12 @@ const SideBar = ({ page }) => {
                   className="w-6 h-6 text-white"
                 />
               </div>
-            </motion.div>
+            </m.div>
           )}
           {(menuRef.current?.scrollHeight ?? 0) -
             (menuRef.current?.clientHeight ?? 0) >
             scrollPos && (
-            <motion.div
+            <m.div
               variants={variants}
               animate={!menuOpen ? 'min' : 'max'}
               transition={{ duration: 0.5, type: 'tween' }}
@@ -374,7 +374,7 @@ const SideBar = ({ page }) => {
                   className="w-6 h-6 text-white"
                 />
               </div>
-            </motion.div>
+            </m.div>
           )}
         </>
       )}

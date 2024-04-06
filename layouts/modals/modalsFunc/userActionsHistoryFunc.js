@@ -10,7 +10,7 @@ import { getData } from '@helpers/CRUD'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
@@ -194,7 +194,7 @@ const HistoryActionsItem = ({
           )}
         </div>
       </div>
-      <motion.div
+      <m.div
         className="overflow-hidden"
         initial={{ height: 0 }}
         animate={{ height: isCollapsed ? 0 : 'auto' }}
@@ -207,7 +207,7 @@ const HistoryActionsItem = ({
             difference={difference}
           />
         )}
-      </motion.div>
+      </m.div>
     </div>
   )
 

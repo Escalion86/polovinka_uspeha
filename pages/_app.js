@@ -26,6 +26,7 @@ import '../styles/fonts/FuturaPT.css'
 import '../styles/global.css'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 import isPWAAtom from '@state/atoms/isPWAAtom'
+import { LazyMotion, domAnimation } from 'framer-motion'
 // import localFont from '@next/font/local'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
@@ -245,18 +246,19 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
               <Script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.4/dist/quill.js"></Script>
               {/* <Script src="https://cdn.jsdelivr.net/npm/quill-emoji@0.2.0/dist/quill-emoji.js"></Script> */}
               {/* <CssBaseline /> */}
-
-              <Suspense
-                fallback={
-                  <div className="z-10 flex items-center justify-center w-screen h-screen">
-                    <LoadingSpinner text="идет загрузка...." />
-                  </div>
-                }
-              >
-                <PWAChecker>
-                  <Component {...pageProps} />
-                </PWAChecker>
-              </Suspense>
+              <LazyMotion features={domAnimation}>
+                <Suspense
+                  fallback={
+                    <div className="z-10 flex items-center justify-center w-screen h-screen">
+                      <LoadingSpinner text="идет загрузка...." />
+                    </div>
+                  }
+                >
+                  <PWAChecker>
+                    <Component {...pageProps} />
+                  </PWAChecker>
+                </Suspense>
+              </LazyMotion>
             </SnackbarProvider>
             {/* </div> */}
           </ThemeProvider>

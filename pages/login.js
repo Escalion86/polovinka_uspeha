@@ -20,7 +20,7 @@ import fetchSiteSettings from '@server/fetchSiteSettings'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import isPWAAtom from '@state/atoms/isPWAAtom'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { getSession, signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -50,7 +50,7 @@ const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
   }
 
   return (
-    <motion.div
+    <m.div
       className={cn(
         'absolute transform duration-200 top-0 left-0 bottom-0 right-0 z-50 flex bg-opacity-80 tablet:items-center justify-center tablet:overflow-y-auto bg-gray-800',
         subModalText ? 'tablet:pt-10 tablet:pb-5' : 'tablet:py-5'
@@ -60,7 +60,7 @@ const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
       transition={{ duration: 0.1 }}
       onMouseDown={closeModal}
     >
-      <motion.div
+      <m.div
         className={cn(
           'flex flex-col items-center h-full tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
           title ? 'pt-3' : 'pt-12'
@@ -86,8 +86,8 @@ const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
         <div className="flex flex-col items-center flex-1 px-2 overflow-y-auto tablet:text-lg gap-y-5 tablet:px-3">
           {children}
         </div>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   )
 }
 

@@ -1,9 +1,9 @@
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 
 const ListWrapper = ({ children, className }) => {
   return (
-    <motion.div
+    <m.div
       className={cn(
         'flex-1 w-full overflow-y-scroll overflow-x-hidden',
         className
@@ -11,7 +11,7 @@ const ListWrapper = ({ children, className }) => {
       layoutScroll
     >
       {children}
-    </motion.div>
+    </m.div>
   )
 }
 

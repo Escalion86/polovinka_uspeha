@@ -4,7 +4,7 @@ import arrayMove from '@helpers/arrayMove'
 import { sendImage } from '@helpers/cloudinary'
 import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import Zoom from 'react-medium-image-zoom'
 import { useRecoilValue } from 'recoil'
@@ -90,7 +90,7 @@ const InputImages = ({
       <div className="flex flex-wrap w-full gap-1 p-0.5">
         {images.length > 0 &&
           images.map((image, index) => (
-            <motion.div
+            <m.div
               key={image}
               className="relative w-20 h-20 overflow-hidden border border-gray-300 group"
               layout
@@ -139,7 +139,7 @@ const InputImages = ({
                   />
                 </div>
               )}
-            </motion.div>
+            </m.div>
           ))}
         {!readOnly && !isAddingImage && images.length < maxImages && (
           <div

@@ -1,5 +1,5 @@
 import FilterAltOff from '@mui/icons-material/FilterAltOff'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import DirectionSelector from './ComboBox/DirectionSelector'
 import ServiceSelector from './ComboBox/ServiceSelector'
@@ -68,7 +68,7 @@ const Filter = ({
   })
 
   return (
-    <motion.div
+    <m.div
       initial={{ height: 0 }}
       animate={{ height: show ? 'auto' : 0 }}
       transition={{ type: 'just' }}
@@ -95,7 +95,7 @@ const Filter = ({
           return el
         })}
       </div>
-    </motion.div>
+    </m.div>
   )
 }
 

@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import Image from 'next/legacy/image'
 
 export const LoadingSpinner = ({
@@ -46,7 +46,7 @@ export const LoadingSpinner = ({
           }}
           className="absolute top-auto bottom-auto left-auto right-auto h-[95%] border-l-2 rounded-full aspect-1 border-general animate-spin"
         />
-        <motion.div
+        <m.div
           animate={{ scale: [1, 1, 1.15, 1.05, 1.15, 1] }}
           transition={{
             duration: 1.3,
@@ -63,7 +63,7 @@ export const LoadingSpinner = ({
             width={widthHeight}
             height={widthHeight}
           />
-        </motion.div>
+        </m.div>
       </div>
       {text && <div className="text-lg font-bold animate-pulse">{text}</div>}
     </div>

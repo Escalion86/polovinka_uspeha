@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ModalButtons from '@layouts/modals/ModalButtons'
 import { modalsAtom, modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 import { Suspense, useState } from 'react'
@@ -278,7 +278,7 @@ const Modal = ({
   // }, [])
 
   return (
-    <motion.div
+    <m.div
       className={
         cn(
           'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 tablet:items-center justify-center w-full h-screen tablet:overflow-y-auto bg-gray-800',
@@ -291,7 +291,7 @@ const Modal = ({
       transition={{ duration: 0.1 }}
       onMouseDown={crossShow ? onDeclineClick || closeModal : undefined}
     >
-      <motion.div
+      <m.div
         className={
           cn(
             'flex flex-col real-screen-height tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
@@ -428,8 +428,8 @@ const Modal = ({
             {ComponentInFooter}
           </ModalButtons>
         )}
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   )
 }
 
