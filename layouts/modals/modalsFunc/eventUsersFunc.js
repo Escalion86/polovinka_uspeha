@@ -21,9 +21,7 @@ import compareObjects from '@helpers/compareObjects'
 import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
-import asyncEventsUsersByEventIdAtom, {
-  asyncEventsUsersByEventIdSelector,
-} from '@state/async/asyncEventsUsersByEventIdAtom'
+import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 // import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -39,10 +37,8 @@ import {
 } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 import sortFunctions from '@helpers/sortFunctions'
-import sortFuncGenerator from '@helpers/sortFuncGenerator'
-import SortingButtonMenu from '@components/SortingButtonMenu'
-import formatDate from '@helpers/formatDate'
 import formatDateTime from '@helpers/formatDateTime'
+import Note from '@components/Note'
 
 const EventsUsers = ({
   event,
@@ -587,8 +583,11 @@ const eventUsersFunc = (eventId) => {
             <TabPanel
               tabName="Резерв"
               tabAddToLabel={`(${reserveCount})`}
-              className="flex flex-col mt-2 gap-y-5"
+              className="flex flex-col"
             >
+              <Note className="mb-2" noMargin>
+                Резерв отсортирован по дате создания заявки
+              </Note>
               {event.subEvents.map((subEvent) => {
                 const { id, title } = subEvent
 
@@ -632,8 +631,8 @@ const eventUsersFunc = (eventId) => {
                                 ({ userId }) => userId === user._id
                               )
                               return (
-                                <div className="max-h-[14px] flex justify-center items-end w-full text-xs font-normal tablet:text-sm">
-                                  <div className="max-h-[14px] leading-[14px] border-t border-r border-l rounded-t-md px-2 border-gray-700 bg-white">
+                                <div className="max-h-[14px] flex justify-center items-end w-full text-xs font-normal">
+                                  <div className="max-h-[14px] leading-[14px] border-t border-r border-l rounded-t-md px-2 border-gray-700 bg-teal-50">
                                     {formatDateTime(eventUser.createdAt)}
                                   </div>
                                 </div>
