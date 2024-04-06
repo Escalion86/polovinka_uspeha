@@ -42,7 +42,6 @@ import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { uid } from 'uid'
-import Quill from '@components/Quill'
 
 const SubEvents = ({ subEvents, onChange }) => {
   const modalFunc = useRecoilValue(modalsFuncAtom)
@@ -507,19 +506,7 @@ const eventFunc = (eventId, clone = false) => {
               error={errors.title}
               required
             />
-            {/* <EditableTextarea
-              label="Описание"
-              html={description}
-              uncontrolled={false}
-              onChange={(value) => {
-                removeError('description')
-                setDescription(value)
-              }}
-              placeholder="Описание мероприятия..."
-              required
-              error={errors.description}
-            /> */}
-            <Quill
+            <EditableTextarea
               label="Описание"
               html={description}
               uncontrolled={false}
