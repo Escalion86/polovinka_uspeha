@@ -21,7 +21,9 @@ import compareObjects from '@helpers/compareObjects'
 import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
-import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
+import asyncEventsUsersByEventIdAtom, {
+  asyncEventsUsersByEventIdSelector,
+} from '@state/async/asyncEventsUsersByEventIdAtom'
 // import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -39,6 +41,8 @@ import eventSelector from '@state/selectors/eventSelector'
 import sortFunctions from '@helpers/sortFunctions'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import SortingButtonMenu from '@components/SortingButtonMenu'
+import formatDate from '@helpers/formatDate'
+import formatDateTime from '@helpers/formatDateTime'
 
 const EventsUsers = ({
   event,
@@ -51,6 +55,7 @@ const EventsUsers = ({
   toReserveFunc,
   fromReserveFunc,
   noButtons,
+  itemChildren,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -68,6 +73,7 @@ const EventsUsers = ({
         onChange={setSelectedIds}
         exceptedIds={exceptedIds}
         readOnly={!canEdit || isEventClosed}
+        itemChildren={itemChildren}
         buttons={
           !noButtons && canEdit && !isEventClosed
             ? [
@@ -186,8 +192,8 @@ const eventUsersFunc = (eventId) => {
 
     const [dataChanged, setDataChanged] = useState(isDataChanged)
     // const [sortType, setSortType] = useState('name')
-    const [sort, setSort] = useState({ firstNameAndGender: 'asc' })
-    const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
+    // const [sort, setSort] = useState({ firstNameAndGender: 'asc' })
+    // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
@@ -211,33 +217,33 @@ const eventUsersFunc = (eventId) => {
     const sortedEventUsersParticipants = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'participant')].sort(
-          sort.createdAt ? sortFunc : (a, b) => sortFunc(a.user, b.user)
+          (a, b) => sortFunctions.firstNameAndGender.asc(a.user, b.user)
         ),
-      [eventUsers, sort]
+      [eventUsers]
     )
 
     const sortedEventUsersReserve = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'reserve')].sort(
-          sort.createdAt ? sortFunc : (a, b) => sortFunc(a.user, b.user)
+          sortFunctions.createdAt.asc
         ),
-      [eventUsers, sort]
+      [eventUsers]
     )
 
-    const sortedEventUsersAssistants = useMemo(
+    const arrayAssistants = useMemo(
       () =>
-        [...eventUsers.filter(({ status }) => status === 'assistant')].sort(
-          sort.createdAt ? sortFunc : (a, b) => sortFunc(a.user, b.user)
-        ),
-      [eventUsers, sort]
+        [...eventUsers.filter(({ status }) => status === 'assistant')]
+          .sort((a, b) => sortFunctions.firstNameAndGender.asc(a.user, b.user))
+          .map(({ user }) => user),
+      [eventUsers]
     )
 
-    const sortedEventUsersBanned = useMemo(
+    const arrayBanned = useMemo(
       () =>
-        [...eventUsers.filter(({ status }) => status === 'ban')].sort(
-          sort.createdAt ? sortFunc : (a, b) => sortFunc(a.user, b.user)
-        ),
-      [eventUsers, sort]
+        [...eventUsers.filter(({ status }) => status === 'ban')]
+          .sort((a, b) => sortFunctions.firstNameAndGender.asc(a.user, b.user))
+          .map(({ user }) => user),
+      [eventUsers]
     )
 
     const objParticipants = useMemo(
@@ -263,9 +269,6 @@ const eventUsersFunc = (eventId) => {
         ),
       [sortedEventUsersReserve]
     )
-
-    const arrayAssistants = sortedEventUsersAssistants.map(({ user }) => user)
-    const arrayBanned = sortedEventUsersBanned.map(({ user }) => user)
 
     const [participants, setParticipants] = useState(objParticipants)
     const [reserve, setReserve] = useState(objReserve)
@@ -336,11 +339,11 @@ const eventUsersFunc = (eventId) => {
       statusEdit,
       copyListToClipboard,
       setTopLeftComponent,
-      participants,
-      reserve,
-      assistants,
-      banned,
-      event,
+      // participants,
+      // reserve,
+      // assistants,
+      // banned,
+      // event,
     ])
 
     const onClickConfirm = async () => {
@@ -482,14 +485,14 @@ const eventUsersFunc = (eventId) => {
 
     return (
       <>
-        <div className="absolute z-50 top-1 right-11">
+        {/* <div className="absolute z-50 top-1 right-11">
           <SortingButtonMenu
             sort={sort}
             onChange={setSort}
             sortKeys={['firstNameAndGender', 'createdAt']}
             showTitle
           />
-        </div>
+        </div> */}
         {canEdit && isEventClosed && (
           <P className="text-danger">
             Мероприятие закрыто, поэтому редактирование состава участников
@@ -559,6 +562,22 @@ const eventUsersFunc = (eventId) => {
                     toReserveFunc={(newId) => {
                       setReserveState(id, [...reserveIds[id], newId])
                     }}
+                    // itemChildren={
+                    //   eventUsers
+                    //     ? (user) => {
+                    //         const eventUser = eventUsers.find(
+                    //           ({ userId }) => userId === user._id
+                    //         )
+                    //         return (
+                    //           <div className="text-xs font-normal tablet:text-sm">
+                    //             <div className="leading-[14px]">
+                    //               {formatDateTime(eventUser.createdAt)}
+                    //             </div>
+                    //           </div>
+                    //         )
+                    //       }
+                    //     : undefined
+                    // }
                   />
                 </Wrapper>
               )
@@ -605,6 +624,22 @@ const eventUsersFunc = (eventId) => {
                             newId,
                           ])
                         // setReserveState(sortUsersByIds([...reserveIds[id], id]))
+                      }
+                      itemChildren={
+                        eventUsers
+                          ? (user) => {
+                              const eventUser = eventUsers.find(
+                                ({ userId }) => userId === user._id
+                              )
+                              return (
+                                <div className="max-h-[14px] flex justify-center items-end w-full text-xs font-normal tablet:text-sm">
+                                  <div className="max-h-[14px] leading-[14px] border-t border-r border-l rounded-t-md px-2 border-gray-700 bg-white">
+                                    {formatDateTime(eventUser.createdAt)}
+                                  </div>
+                                </div>
+                              )
+                            }
+                          : undefined
                       }
                     />
                   </Wrapper>
@@ -659,10 +694,10 @@ const eventUsersFunc = (eventId) => {
 
   const ModalRefresher = (props) => {
     const [isRefreshed, setIsRefreshed] = useState(false)
-    const data = useRecoilValue(asyncEventsUsersByEventIdSelector(eventId))
+    const data = useRecoilValue(asyncEventsUsersByEventIdAtom(eventId))
     const [prevData, setPravData] = useState(data)
     const refreshEventState = useRecoilRefresher_UNSTABLE(
-      asyncEventsUsersByEventIdSelector(eventId)
+      asyncEventsUsersByEventIdAtom(eventId)
     )
     // const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
     // const canEdit = loggedUserActiveRole?.eventsUsers?.edit

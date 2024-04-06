@@ -232,6 +232,7 @@ export const SelectUser = ({
   rounded = true,
   readOnly,
   active,
+  itemChildren,
 }) => {
   const users = useRecoilValue(usersAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -258,7 +259,11 @@ export const SelectUser = ({
     >
       <SelectItem
         items={filteredUsers}
-        itemComponent={UserItem}
+        itemComponent={
+          itemChildren
+            ? (props) => <UserItem children={itemChildren} {...props} />
+            : UserItem
+        }
         componentHeight={40}
         selectedId={selectedId}
         className={cn(

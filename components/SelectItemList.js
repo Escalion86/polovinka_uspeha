@@ -199,6 +199,7 @@ export const SelectUserList = ({
   canSelectNone = true,
   className,
   activeIds,
+  itemChildren,
 }) => {
   return (
     <SelectItemList
@@ -218,6 +219,7 @@ export const SelectUserList = ({
           active: isObject(activeIds)
             ? activeIds.includes(props.selectedId)
             : false,
+          itemChildren,
         })
       }
       required={required}
