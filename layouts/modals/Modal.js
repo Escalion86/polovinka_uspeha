@@ -90,7 +90,7 @@ const Modal = ({
       200
     )
     // window.history.back()
-    if (routerBack) router.back()
+    // if (routerBack) router.back()
   }
 
   const refreshPage = () => {
