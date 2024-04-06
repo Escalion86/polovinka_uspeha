@@ -1,8 +1,8 @@
 import isEventClosed from '@helpers/isEventClosed'
-import paymentsAtom from '@state/atoms/paymentsAtom'
 import { selector } from 'recoil'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventSelector from './eventSelector'
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 
 export const allPaymentsForClosedEventsSelector = selector({
   key: 'paymentsForClosedEventsSelector',
@@ -10,7 +10,7 @@ export const allPaymentsForClosedEventsSelector = selector({
     (id) =>
     ({ get }) => {
       if (!id) return null
-      return get(paymentsAtom).filter((payment) => {
+      return get(asyncPaymentsAtom).filter((payment) => {
         if (!payment.eventId) return false
         const event = get(eventSelector(payment.eventId))
         return isEventClosed(event)

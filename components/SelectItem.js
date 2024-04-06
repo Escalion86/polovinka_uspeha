@@ -10,7 +10,6 @@ import filterWithRules from '@helpers/filterWithRules'
 import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import paymentsAtom from '@state/atoms/paymentsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import cn from 'classnames'
@@ -24,6 +23,7 @@ import {
   UserItem,
 } from './ItemCards'
 import Tooltip from './Tooltip'
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 
 export const SelectItem = ({
   items,
@@ -555,7 +555,7 @@ export const SelectPayment = ({
   showSectorIcon,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const payments = useRecoilValue(paymentsAtom)
+  const payments = useRecoilValue(asyncPaymentsAtom)
 
   return (
     <SelectItemContainer

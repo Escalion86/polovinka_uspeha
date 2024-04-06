@@ -1,10 +1,10 @@
-import paymentsAtom from '@state/atoms/paymentsAtom'
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 import { selector } from 'recoil'
 
 export const paymentsOfEventWithoutEventIdSelector = selector({
   key: 'paymentsOfEventWithoutEventIdSelector',
   get: ({ get }) => {
-    return get(paymentsAtom).filter(
+    return get(asyncPaymentsAtom).filter(
       (payment) =>
         (!payment.sector || payment.sector === 'event') &&
         !payment.eventId &&

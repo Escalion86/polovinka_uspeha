@@ -55,11 +55,11 @@ const fetchProps = async (user) => {
     const reviews = await Reviews.find({}).lean()
     const additionalBlocks = await AdditionalBlocks.find({}).lean()
     // const eventsUsers = await EventsUsers.find({}).lean()
-    const payments = await Payments.find({})
-      .select({
-        status: 0,
-      })
-      .lean()
+    // const payments = await Payments.find({})
+    //   .select({
+    //     status: 0,
+    //   })
+    //   .lean()
     const siteSettings = await SiteSettings.find({}).lean()
     const rolesSettings = await Roles.find({}).lean()
     const questionnaires = await Questionnaires.find({}).lean()
@@ -104,7 +104,7 @@ const fetchProps = async (user) => {
       'additionalBlocks :>> ',
       JSON.stringify(additionalBlocks).length
     )
-    console.log('payments :>> ', JSON.stringify(payments).length)
+    // console.log('payments :>> ', JSON.stringify(payments).length)
     console.log('siteSettings :>> ', JSON.stringify(siteSettings).length)
     console.log('questionnaires :>> ', JSON.stringify(questionnaires).length)
     console.log(
@@ -121,7 +121,7 @@ const fetchProps = async (user) => {
       reviews: JSON.parse(JSON.stringify(reviews)),
       additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
       // eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
-      payments: JSON.parse(JSON.stringify(payments)),
+      // payments: JSON.parse(JSON.stringify(payments)),
       siteSettings: JSON.parse(
         JSON.stringify(siteSettings?.length > 0 ? siteSettings[0] : {})
       ),

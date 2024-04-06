@@ -21,7 +21,6 @@ const paymentsAutoFillFunc = (eventId) => {
     setDisableDecline,
     setOnlyCloseButtonShow,
   }) => {
-    // const payment = useRecoilValue(paymentSelector(paymentId))
     const autofillPayments =
       useRecoilValue(itemsFuncAtom).payment.autofillPayments
 

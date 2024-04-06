@@ -1,5 +1,5 @@
 import { DEFAULT_PAYMENT } from '@helpers/constants'
-import paymentsAtom from '@state/atoms/paymentsAtom'
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 import { selectorFamily } from 'recoil'
 
 export const paymentsByServiceIdSelector = selectorFamily({
@@ -8,7 +8,7 @@ export const paymentsByServiceIdSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return DEFAULT_PAYMENT
-      return get(paymentsAtom).filter((item) => item.serviceId === id)
+      return get(asyncPaymentsAtom).filter((item) => item.serviceId === id)
     },
 })
 

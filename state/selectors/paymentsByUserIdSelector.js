@@ -1,6 +1,7 @@
 import { DEFAULT_PAYMENT } from '@helpers/constants'
-import paymentsAtom from '@state/atoms/paymentsAtom'
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 import { selectorFamily } from 'recoil'
+// import paymentsOfLoggedUserSelector from './paymentsOfLoggedUserSelector'
 
 export const paymentsByUserIdSelector = selectorFamily({
   key: 'paymentsByUserIdSelector',
@@ -8,7 +9,8 @@ export const paymentsByUserIdSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return DEFAULT_PAYMENT
-      return get(paymentsAtom).filter((item) => item.userId === id)
+      // if (id === 'all') return get(paymentsOfLoggedUserSelector)
+      return get(asyncPaymentsAtom).filter((item) => item.userId === id)
     },
 })
 

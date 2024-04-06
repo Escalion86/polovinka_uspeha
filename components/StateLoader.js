@@ -5,7 +5,6 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import paymentsAtom from '@state/atoms/paymentsAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import itemsFuncGenerator from '@state/itemsFuncGenerator'
@@ -71,7 +70,6 @@ const StateLoader = (props) => {
   const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
   const setUsersState = useSetRecoilState(usersAtom)
   const setReviewsState = useSetRecoilState(reviewsAtom)
-  const setPaymentsState = useSetRecoilState(paymentsAtom)
   const [siteSettingsState, setSiteSettingsState] =
     useRecoilState(siteSettingsAtom)
   const setRolesSettingsState = useSetRecoilState(rolesAtom)
@@ -118,7 +116,7 @@ const StateLoader = (props) => {
     setAdditionalBlocksState(props.additionalBlocks)
     setUsersState(props.users)
     setReviewsState(props.reviews)
-    setPaymentsState(props.payments)
+    // setPaymentsState(props.payments)
     setSiteSettingsState(props.siteSettings)
     setRolesSettingsState([
       ...DEFAULT_ROLES,
