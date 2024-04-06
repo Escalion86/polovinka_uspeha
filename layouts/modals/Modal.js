@@ -6,6 +6,7 @@ import { modalsAtom, modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
+import { useEffect, useRef } from 'react'
 import { Suspense, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
@@ -45,6 +46,8 @@ const Modal = ({
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
+  const effectRan = useRef(false)
+  const modals = useRecoilValue(modalsAtom)
   const [titleState, setTitleState] = useState(title)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [disableConfirm, setDisableConfirm] = useState(false)
@@ -77,20 +80,92 @@ const Modal = ({
   const [bottomLeftComponentState, setBottomLeftComponent] =
     useState(bottomLeftComponent)
 
-  const closeModal = () => {
+  const router = useRouter()
+
+  const closeModal = (routerBack = true) => {
     onClose && typeof onClose === 'function' && onClose()
     setClose(true)
     setTimeout(
       () => setModals((modals) => modals.filter((modal) => modal.id !== id)),
       200
     )
+    // window.history.back()
+    if (routerBack) router.back()
   }
-
-  const router = useRouter()
 
   const refreshPage = () => {
     router.replace(router.asPath)
   }
+
+  // useEffect(() => {
+  //   console.log('modals :>> ', modals)
+  //   const currentPath = router.asPath
+  //   if (id === modals.length) window.history.pushState(null, '', currentPath)
+
+  //   router.beforePopState(({ url, as, options }) => {
+  //     // console.log('as :>> ', as)
+  //     // console.log('currentPath :>> ', currentPath)
+  //     // alert(currentPath + ' --- ' + as)
+  //     alert(currentPath + ' --- ' + as)
+  //     if (as !== currentPath) {
+  //       alert('!')
+  //       //   console.log(
+  //       //     `currentPath + '?modal=' + id :>> `,
+  //       //     currentPath + '?modal=' + id
+  //       //   )
+  //       // Will run when leaving the current page; on back/forward actions
+  //       // Add your logic here, like toggling the modal state
+  //       // for example
+  //       // if(confirm("Are you sure?") return true;
+  //       // else {
+  //       if (onDeclineClick) onDeclineClick()
+  //       else if (closeModal) closeModal()
+  //       window.history.pushState(null, '', currentPath)
+  //       return false
+  //     }
+  //     return false
+  //     // }
+  //     // return true
+  //   })
+
+  //   return id === 0
+  //     ? () => {
+  //         return router.beforePopState(() => true)
+  //       }
+  //     : () => {
+  //         return undefined
+  //       }
+
+  //   // console.log('window.history. :>> ', window.history.state)
+
+  //   // console.log('id :>> ', id)
+  //   // return () => {
+  //   //   router.beforePopState(() => true)
+  //   //   if (modals.length > 1) window.history.pushState(null, '', currentPath)
+  //   // }
+  //   // console.log('1modals.length :>> ', modals.length)
+  //   // const onClose = () => {
+  //   //   // console.log('2modals.length :>> ', modals.length)
+  //   //   if (id === 0) {
+  //   //     // window.history.pushState(null, '', currentPath + '?modal=' + id)
+  //   //     // return router.beforePopState(() => true)
+  //   //   } else return
+  //   // }
+
+  //   // return onClose
+  // }, [modals, router])
+  //   router.beforePopState(({ as }) => {
+  //     if (as !== router.asPath) {
+  //       if (onDeclineClick) onDeclineClick()
+  //       else if (closeModal) closeModal()
+  //     }
+  //     return true
+  //   })
+
+  //   return () => {
+  //     router.beforePopState(() => true)
+  //   }
+  // }, [router])
 
   // const onConfirmClick = () => {
   //   if (onConfirmFunc) return onConfirmFunc(refreshPage)
@@ -128,14 +203,14 @@ const Modal = ({
     onShowOnCloseConfirmDialog ||
     typeof onDeclineFunc === 'function' ||
     typeof onDecline === 'function'
-      ? () => {
+      ? (routerBack) => {
           const decline =
             typeof onDeclineFunc === 'function'
               ? () => onDeclineFunc()
               : typeof onDecline === 'function'
                 ? () => {
                     onDecline(refreshPage)
-                    closeModal()
+                    closeModal(routerBack)
                   }
                 : undefined
 
@@ -143,7 +218,7 @@ const Modal = ({
             modalsFunc.confirm({
               onConfirm: () => {
                 if (typeof decline === 'function') decline()
-                else closeModal()
+                else closeModal(routerBack)
                 // setOnShowOnCloseConfirmDialog(false)
               },
             })
@@ -152,6 +227,33 @@ const Modal = ({
           }
         }
       : undefined
+
+  useEffect(() => {
+    const onBackButtonEvent = (e) => {
+      e.preventDefault()
+      // window.history.pushState(null, null, window.location.pathname)
+      if (id === modals.length - 1) {
+        // window.history.pushState(null, null, window.location.pathname)
+        if (typeof onDeclineClick === 'function') onDeclineClick(false)
+        else closeModal(false)
+      }
+    }
+
+    window.addEventListener('popstate', onBackButtonEvent)
+
+    return () => {
+      window.removeEventListener('popstate', onBackButtonEvent)
+    }
+  }, [modals])
+
+  useEffect(() => {
+    if (!effectRan.current) {
+      window.history.pushState(null, null, window.location.pathname)
+    }
+    return () => {
+      effectRan.current = true
+    }
+  }, [])
 
   // const closeFunc = () => {
   //   setRendered(false)
