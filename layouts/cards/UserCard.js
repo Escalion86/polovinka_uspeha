@@ -5,13 +5,10 @@ import UserName from '@components/UserName'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import ZodiacIcon from '@components/ZodiacIcon'
-import { faTelegram } from '@fortawesome/free-brands-svg-icons'
-import {
-  faGenderless,
-  faVolumeHigh,
-  faVolumeMute,
-  faVolumeOff,
-} from '@fortawesome/free-solid-svg-icons'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
+import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons/faVolumeHigh'
+import { faVolumeMute } from '@fortawesome/free-solid-svg-icons/faVolumeMute'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'

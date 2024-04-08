@@ -12,11 +12,9 @@ import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import ValuePicker from '@components/ValuePicker/ValuePicker'
-import {
-  faAsterisk,
-  faEye,
-  faEyeSlash,
-} from '@fortawesome/free-solid-svg-icons'
+import { faAsterisk } from '@fortawesome/free-solid-svg-icons/faAsterisk'
+import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { putData } from '@helpers/CRUD'
 import compareArrays from '@helpers/compareArrays'

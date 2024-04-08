@@ -1,4 +1,4 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
@@ -199,6 +199,7 @@ export const SelectUserList = ({
   canSelectNone = true,
   className,
   activeIds,
+  itemChildren,
 }) => {
   return (
     <SelectItemList
@@ -218,6 +219,7 @@ export const SelectUserList = ({
           active: isObject(activeIds)
             ? activeIds.includes(props.selectedId)
             : false,
+          itemChildren,
         })
       }
       required={required}

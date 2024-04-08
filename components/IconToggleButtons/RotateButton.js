@@ -4,7 +4,10 @@ import IconToggleButton from './IconToggleButton'
 
 const RotateButton = ({ onClick, direction = 'left' }) => {
   return (
-    <IconToggleButton onClick={onClick}>
+    <IconToggleButton
+      onClick={onClick}
+      aria-label={`Rotate${direction === 'left' ? 'Left' : 'Right'}`}
+    >
       {direction === 'left' ? <RotateLeft /> : <RotateRight />}
     </IconToggleButton>
   )

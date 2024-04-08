@@ -11,12 +11,10 @@ import EventPayDirectionIconText from '@components/ValueIconText/EventPayDirecti
 import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayDirectionIconText'
 import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
 import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
-import {
-  faQuestion,
-  faTimesCircle,
-  faUnlink,
-  faUserTimes,
-} from '@fortawesome/free-solid-svg-icons'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
+import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
+import { faUserTimes } from '@fortawesome/free-solid-svg-icons/faUserTimes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   PRODUCT_USER_STATUSES,
@@ -30,12 +28,13 @@ import serviceStatusFunc from '@helpers/serviceStatus'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import loadingAtom from '@state/atoms/loadingAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import paymentSelector from '@state/selectors/paymentSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 // const Status = ({ statusProps }) => {
 //   if (!statusProps) return null
@@ -53,7 +52,7 @@ import { useRecoilValue } from 'recoil'
 
 // const EventStatusByEventId = ({ eventId }) => {
 //   if (!eventId) return null
-//   const event = useRecoilValue(eventAtom(eventId))
+//   const event = useRecoilValue(eventFullAtomAsync(eventId))
 //   const eventStatus = eventStatusFunc(event)
 
 //   const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
@@ -242,7 +241,7 @@ const PaymentEventUserLeft = (props) => (
 )
 
 const PaymentEvent = ({ payment }) => {
-  const event = useRecoilValue(eventAtom(payment.eventId))
+  const event = useRecoilValue(eventSelector(payment.eventId))
   const eventStatus = eventStatusFunc(event)
 
   // const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
@@ -390,7 +389,7 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
   const paymentSector = paymentSectorFunc(payment)
   // const selector =
   //   paymentSector === 'event'
-  //     ? eventAtom(payment.eventId)
+  //     ? eventFullAtomAsync(payment.eventId)
   //     : paymentSector === 'service'
   //     ? serviceSelector(payment.serviceId)
   //     : paymentSector === 'product'

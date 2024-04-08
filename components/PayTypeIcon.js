@@ -1,4 +1,4 @@
-import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { PAY_TYPES, PAY_TYPES_OBJECT } from '@helpers/constants'
 import IconWithTooltip from './IconWithTooltip'
 

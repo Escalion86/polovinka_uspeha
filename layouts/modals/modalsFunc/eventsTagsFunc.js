@@ -2,11 +2,9 @@ import Button from '@components/Button'
 import ColorPicker from '@components/ColorPicker'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-import {
-  faPaintBrush,
-  faPlus,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
+import { faPaintBrush } from '@fortawesome/free-solid-svg-icons/faPaintBrush'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
 import compareObjects from '@helpers/compareObjects'

@@ -1,23 +1,16 @@
-import {
-  faCheck,
-  faGenderless,
-  faQuestion,
-  faUnlink,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
+import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
-import {
-  EVENT_STATUSES_WITH_TIME,
-  GENDERS,
-  PAY_TYPES,
-  SECTORS,
-} from '@helpers/constants'
+import { EVENT_STATUSES_WITH_TIME, GENDERS, SECTORS } from '@helpers/constants'
 import eventStatusFunc from '@helpers/eventStatus'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import directionSelector from '@state/selectors/directionSelector'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
@@ -35,6 +28,7 @@ import serviceSelector from '@state/selectors/serviceSelector'
 import IconWithTooltip from './IconWithTooltip'
 import paymentSectorFunc from '@helpers/paymentSector'
 import PayTypeIcon from './PayTypeIcon'
+import eventSelector from '@state/selectors/eventSelector'
 
 const ItemContainer = ({
   onClick,
@@ -106,11 +100,17 @@ export const UserItem = ({
   style,
   className,
   hideGender,
+  children,
 }) => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
-  const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
+  const seeBirthday =
+    item.birthday &&
+    (loggedUserActiveRole?.users?.seeBirthday ||
+      item.security?.showBirthday === true ||
+      item.security?.showBirthday === 'full')
+
   const device = useRecoilValue(windowDimensionsTailwindSelector)
 
   const userGender =
@@ -121,39 +121,51 @@ export const UserItem = ({
       onClick={onClick}
       active={active}
       noPadding
-      className={cn('flex h-[40px]', className)}
+      className={cn('flex h-[42px]', className)}
       noBorder={noBorder}
       style={style}
     >
       {!hideGender && (
         <div
           className={cn(
-            'w-6 tablet:w-7 min-w-6 tablet:min-w-7 flex justify-center items-center h-full',
+            'w-6 tablet:w-7 min-w-6 tablet:min-w-7 flex flex-col gap-y-1 justify-center items-center h-full',
             userGender ? 'bg-' + userGender.color : 'bg-gray-400'
           )}
         >
           <FontAwesomeIcon
-            className="w-5 h-5 text-white tablet:w-6 tablet:h-6"
+            className="w-[18px] h-[18px] text-white"
             icon={userGender ? userGender.icon : faGenderless}
           />
+          {seeBirthday && (
+            <span className="text-sm leading-3 text-white whitespace-nowrap">
+              {birthDateToAge(item.birthday, serverDate, false, false, true)}
+            </span>
+          )}
         </div>
       )}
       <img
-        className="object-cover h-10 aspect-1"
+        className="object-cover h-[42px] aspect-1"
         src={getUserAvatarSrc(item)}
         alt="user"
       />
       <div className="flex items-center flex-1 py-0.5 px-1 gap-x-0.5">
-        <div className="flex flex-wrap items-center flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1 gap-y-0.5">
-          <UserName user={item} className="font-semibold" thin trunc={2} />
-          {item.birthday &&
-            (seeBirthday ||
-              item.security?.showBirthday === true ||
-              item.security?.showBirthday === 'full') && (
-              <span className="flex items-center overflow-visible italic leading-3 max-h-2">
-                {' (' + birthDateToAge(item.birthday, serverDate) + ')'}
-              </span>
-            )}
+        <div className="flex flex-col flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1">
+          <UserName
+            user={item}
+            className="flex-1 inline min-h-[28px] font-bold"
+            thin
+            trunc={2}
+            children={
+              <>
+                {hideGender && seeBirthday && (
+                  <span className="font-normal whitespace-nowrap">
+                    {`(${birthDateToAge(item.birthday, serverDate)})`}
+                  </span>
+                )}
+              </>
+            }
+          />
+          {children && children(item)}
         </div>
         <UserRelationshipIcon
           relationship={item.relationship}
@@ -175,7 +187,7 @@ export const EventItemFromId = ({
   active = false,
   bordered = false,
 }) => {
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   return (
     <EventItem
       item={event}

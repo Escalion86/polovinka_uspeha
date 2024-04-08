@@ -1,16 +1,13 @@
-import {
-  faMoneyBill,
-  faPencilAlt,
-  faPlus,
-  faTimes,
-  faUsers,
-} from '@fortawesome/free-solid-svg-icons'
+import { faMoneyBill } from '@fortawesome/free-solid-svg-icons/faMoneyBill'
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
+import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import filterWithRules from '@helpers/filterWithRules'
 import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import paymentsAtom from '@state/atoms/paymentsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import cn from 'classnames'
@@ -24,6 +21,7 @@ import {
   UserItem,
 } from './ItemCards'
 import Tooltip from './Tooltip'
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 
 export const SelectItem = ({
   items,
@@ -232,6 +230,7 @@ export const SelectUser = ({
   rounded = true,
   readOnly,
   active,
+  itemChildren,
 }) => {
   const users = useRecoilValue(usersAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -258,7 +257,11 @@ export const SelectUser = ({
     >
       <SelectItem
         items={filteredUsers}
-        itemComponent={UserItem}
+        itemComponent={
+          itemChildren
+            ? (props) => <UserItem children={itemChildren} {...props} />
+            : UserItem
+        }
         componentHeight={40}
         selectedId={selectedId}
         className={cn(
@@ -550,7 +553,7 @@ export const SelectPayment = ({
   showSectorIcon,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const payments = useRecoilValue(paymentsAtom)
+  const payments = useRecoilValue(asyncPaymentsAtom)
 
   return (
     <SelectItemContainer

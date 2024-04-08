@@ -3,7 +3,7 @@ import IconToggleButton from './IconToggleButton'
 
 const AddButton = ({ onClick }) => {
   return (
-    <IconToggleButton onClick={onClick}>
+    <IconToggleButton onClick={onClick} aria-label="Add">
       <Add />
     </IconToggleButton>
   )

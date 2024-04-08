@@ -1,4 +1,4 @@
-import { faEyeSlash } from '@fortawesome/free-regular-svg-icons'
+import { faEyeSlash } from '@fortawesome/free-regular-svg-icons/faEyeSlash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'

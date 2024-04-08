@@ -5,7 +5,15 @@ import TextLinesLimiter from './TextLinesLimiter'
 import UserStatusIcon from './UserStatusIcon'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
-const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
+const UserName = ({
+  user,
+  className,
+  noWrap,
+  thin,
+  showStatus,
+  trunc,
+  children,
+}) => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   if (!user) return null
 
@@ -25,23 +33,26 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
           className="flex-1 leading-[14px]"
           textCenter={false}
           lines={typeof trunc === 'number' ? trunc : 1}
-        >{`${upperCaseFirst(user.firstName)}${
-          user.thirdName
-            ? ` ${
-                seeFullNames || user.security?.fullThirdName
-                  ? upperCaseFirst(user.thirdName)
-                  : user.thirdName[0].toUpperCase() + '.'
-              }`
-            : ''
-        }${
-          user.secondName
-            ? ` ${
-                seeFullNames || user.security?.fullSecondName
-                  ? upperCaseFirst(user.secondName)
-                  : user.secondName[0].toUpperCase() + '.'
-              }`
-            : ''
-        }`}</TextLinesLimiter>
+        >
+          {`${upperCaseFirst(user.firstName)}${
+            user.thirdName
+              ? ` ${
+                  seeFullNames || user.security?.fullThirdName
+                    ? upperCaseFirst(user.thirdName)
+                    : user.thirdName[0].toUpperCase() + '.'
+                }`
+              : ''
+          }${
+            user.secondName
+              ? ` ${
+                  seeFullNames || user.security?.fullSecondName
+                    ? upperCaseFirst(user.secondName)
+                    : user.secondName[0].toUpperCase() + '.'
+                }`
+              : ''
+          }`}
+          {children}
+        </TextLinesLimiter>
       ) : (
         <div
           className={cn(
@@ -68,6 +79,7 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
                 : user.secondName[0].toUpperCase() + '.'}
             </span>
           )}
+          {children}
         </div>
       )}
     </div>

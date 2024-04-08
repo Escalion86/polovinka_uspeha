@@ -1,4 +1,4 @@
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 
@@ -32,7 +32,7 @@ const Chip = ({ text, color, onClose, onClick }) => (
         <FontAwesomeIcon
           icon={faTimes}
           style={{ color: color }}
-          className="w-3 h-3 tablet:w-4 tablet:h-4 duration-300 group-hover:scale-125"
+          className="w-3 h-3 duration-300 tablet:w-4 tablet:h-4 group-hover:scale-125"
         />
       </div>
     )}

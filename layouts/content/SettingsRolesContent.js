@@ -1,12 +1,10 @@
 import Button from '@components/Button'
 import Divider from '@components/Divider'
 import FormWrapper from '@components/FormWrapper'
-import {
-  faPencilAlt,
-  faPlus,
-  faSave,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faSave } from '@fortawesome/free-solid-svg-icons/faSave'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import compareObjects from '@helpers/compareObjects'
 import { useCallback, useState } from 'react'
 import { useRecoilValue } from 'recoil'

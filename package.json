@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "NODE_OPTIONS='--max-old-space-size=2048' next build",
-    "start": "next start"
+    "start": "next start",
+    "analyze": "ANALYZE=true npm run build"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -20,6 +21,7 @@
     "@mui/lab": "^5.0.0-alpha.97",
     "@mui/material": "^5.11.4",
     "@mui/x-date-pickers": "^6.12.0",
+    "@next/bundle-analyzer": "^14.1.4",
     "@nivo/core": "^0.80.0",
     "@nivo/line": "^0.80.0",
     "@nivo/pie": "^0.80.0",
@@ -44,6 +46,7 @@
     "nodemailer": "^6.9.0",
     "notistack": "^3.0.1",
     "preline": "^1.8.0",
+    "quill": "^2.0.0-rc.5",
     "quill-emoji": "^0.2.0",
     "react": "^18.2.0",
     "react-colorful": "^5.6.1",

@@ -1,4 +1,4 @@
-import { faBan } from '@fortawesome/free-solid-svg-icons'
+import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
@@ -21,9 +21,15 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
         }
         variant={value.member ? 'contained' : 'outlined'}
         color="blue"
+        aria-label="novice"
       >
         <div className="w-6 h-6">
-          <Image src="/img/svg_icons/medal.svg" width="24" height="24" />
+          <Image
+            alt="member"
+            src="/img/svg_icons/medal.svg"
+            width="24"
+            height="24"
+          />
         </div>
       </Button>
       <Button
@@ -37,9 +43,15 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
         }
         variant={value.novice ? 'contained' : 'outlined'}
         color="gray"
+        aria-label="member"
       >
         <div className="w-6 h-6 grayscale brightness-150 contrast-75 ">
-          <Image src="/img/svg_icons/medal.svg" width="24" height="24" />
+          <Image
+            alt="member"
+            src="/img/svg_icons/medal.svg"
+            width="24"
+            height="24"
+          />
         </div>
       </Button>
       <Button
@@ -54,6 +66,7 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
         variant={value.ban ? 'contained' : 'outlined'}
         color="red"
         className={value.ban ? 'text-white' : 'text-red-400'}
+        aria-label="ban"
       >
         <FontAwesomeIcon className="w-6 h-6" icon={faBan} />
       </Button>

@@ -1,16 +1,19 @@
-import { faHome, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faHome } from '@fortawesome/free-solid-svg-icons/faHome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import arrayMove from '@helpers/arrayMove'
 import { sendImage } from '@helpers/cloudinary'
 import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import Zoom from 'react-medium-image-zoom'
 import { useRecoilValue } from 'recoil'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
+import Image from 'next/legacy/image'
 
 const InputImages = ({
   images = [],
@@ -89,7 +92,7 @@ const InputImages = ({
       <div className="flex flex-wrap w-full gap-1 p-0.5">
         {images.length > 0 &&
           images.map((image, index) => (
-            <motion.div
+            <m.div
               key={image}
               className="relative w-20 h-20 overflow-hidden border border-gray-300 group"
               layout
@@ -97,10 +100,12 @@ const InputImages = ({
               onClick={(e) => e.stopPropagation()}
             >
               <Zoom zoomMargin={20}>
-                <img
-                  className="object-cover w-20 h-20"
+                <Image
+                  className="object-cover"
                   src={image}
                   alt="item_image"
+                  width={80}
+                  height={80}
                 />
               </Zoom>
 
@@ -127,7 +132,7 @@ const InputImages = ({
                   <FontAwesomeIcon
                     className={cn(
                       'h-4',
-                      index === 0 ? 'text-success' : 'text-orange-600'
+                      index === 0 ? 'text-success' : 'text-orange-700'
                     )}
                     icon={faHome}
                     onClick={() => {
@@ -136,7 +141,7 @@ const InputImages = ({
                   />
                 </div>
               )}
-            </motion.div>
+            </m.div>
           ))}
         {!readOnly && !isAddingImage && images.length < maxImages && (
           <div

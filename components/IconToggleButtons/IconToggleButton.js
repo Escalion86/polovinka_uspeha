@@ -10,6 +10,7 @@ const IconToggleButton = ({
   value = 'default',
   size = 'm',
   children,
+  ...props
 }) => {
   return (
     <FormControl size="small">
@@ -24,6 +25,7 @@ const IconToggleButton = ({
         onChange={onChange}
         color={color}
         onClick={onClick}
+        {...props}
       >
         {children}
       </ToggleButton>

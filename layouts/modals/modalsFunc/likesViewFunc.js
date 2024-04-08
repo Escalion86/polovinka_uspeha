@@ -2,24 +2,23 @@ import Button from '@components/Button'
 import DateTimeEvent from '@components/DateTimeEvent'
 import LikesViewer from '@components/LikesViewer'
 import Note from '@components/Note'
-import {
-  faCheck,
-  faEye,
-  faEyeSlash,
-  faGenderless,
-  faHeart,
-  faLock,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
+import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useRecoilValue } from 'recoil'
 import CheckBox from '@components/CheckBox'
-import { useState } from 'react'
+// import { useState } from 'react'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
+import eventSelector from '@state/selectors/eventSelector'
 
 const LikesToggle = ({ eventId }) => {
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   const setEvent = useRecoilValue(itemsFuncAtom).event.set
 
   const onClick = () => {
@@ -54,7 +53,7 @@ const likesViewFunc = (eventId) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     // const [likesNumSort, setLikesNumSort] = useState(event.likesNumSort)
     const likesNumSort = event.likesNumSort
     const eventUsers = useRecoilValue(
@@ -78,23 +77,31 @@ const likesViewFunc = (eventId) => {
           )
           for (let i = 0; i < eventUsersMans.length; i++) {
             const eventUser = eventUsersMans[i]
-            setEventUser({ ...eventUser, likeSortNum: i })
+            setEventUser({ ...eventUser, likeSortNum: i }, false, true)
           }
           for (let i = 0; i < eventUsersWomans.length; i++) {
             const eventUser = eventUsersWomans[i]
-            setEventUser({ ...eventUser, likeSortNum: i })
+            setEventUser({ ...eventUser, likeSortNum: i }, false, true)
           }
         }
-        setEvent({
-          _id: eventId,
-          likesNumSort: true,
-        })
+        setEvent(
+          {
+            _id: eventId,
+            likesNumSort: true,
+          },
+          false,
+          true
+        )
       } else {
         // setLikesNumSort(false)
-        setEvent({
-          _id: eventId,
-          likesNumSort: false,
-        })
+        setEvent(
+          {
+            _id: eventId,
+            likesNumSort: false,
+          },
+          false,
+          true
+        )
       }
     }
 
@@ -164,7 +171,7 @@ const likesViewFunc = (eventId) => {
             onChange={likesNumSortToggle}
           />
         )}
-        <LikesViewer eventId={eventId} readOnly={!event.likesProcessActive} />
+        <LikesViewer eventId={eventId} />
       </div>
     )
   }

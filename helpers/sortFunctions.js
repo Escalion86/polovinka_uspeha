@@ -1,4 +1,30 @@
 const sortFunctions = {
+  firstNameAndGender: {
+    asc: (a, b) =>
+      a.gender === 'male'
+        ? b.gender === 'male'
+          ? a.firstName < b.firstName
+            ? -1
+            : 1
+          : -1
+        : b.gender === 'male'
+          ? 1
+          : a.firstName < b.firstName
+            ? -1
+            : 1,
+    desc: (a, b) =>
+      a.gender === 'male'
+        ? b.gender === 'male'
+          ? a.firstName > b.firstName
+            ? -1
+            : 1
+          : -1
+        : b.gender === 'male'
+          ? 1
+          : a.firstName > b.firstName
+            ? -1
+            : 1,
+  },
   eventsUserCount: {
     asc: (a, b) => (a.eventsUserCount < b.eventsUserCount ? -1 : 1),
     desc: (a, b) => (a.eventsUserCount > b.eventsUserCount ? -1 : 1),
@@ -42,14 +68,14 @@ const sortFunctions = {
       !a.birthday
         ? -1
         : new Date(a.birthday).getTime() > new Date(b.birthday).getTime()
-        ? -1
-        : 1,
+          ? -1
+          : 1,
     desc: (a, b) =>
       !a.birthday
         ? 1
         : new Date(a.birthday).getTime() < new Date(b.birthday).getTime()
-        ? -1
-        : 1,
+          ? -1
+          : 1,
   },
   createdAt: {
     asc: (a, b) =>

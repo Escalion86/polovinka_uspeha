@@ -7,14 +7,15 @@ import birthDateToAge from '@helpers/birthDateToAge'
 import copyToClipboard from '@helpers/copyToClipboard'
 import getUserFullName from '@helpers/getUserFullName'
 import useSnackbar from '@helpers/useSnackbar'
-import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
-import eventMansSelector from '@state/selectors/eventMansSelector'
-import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
-import eventAtom from '@state/async/eventAtom'
-import eventWomansSelector from '@state/selectors/eventWomansSelector'
+// import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
+// import eventMansSelector from '@state/selectors/eventMansSelector'
+// import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+// import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const copyEventUserListFunc = (eventId) => {
   const CopyEventUserListModal = ({
@@ -28,7 +29,7 @@ const copyEventUserListFunc = (eventId) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
     // const assistants = useRecoilValue(eventAssistantsSelector(eventId))
     // const participants = useRecoilValue(

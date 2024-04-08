@@ -103,7 +103,6 @@ const StatisticsContent = () => {
   const users = useRecoilValue(usersAtom)
   const events = useRecoilValue(eventsAtom)
   const directions = useRecoilValue(directionsAtom)
-  // const payments = useRecoilValue(paymentsAtom)
   // const closedPayments = useRecoilValue(allPaymentsForClosedEventsSelector)
   // const closedEvents =
   const incomeByDate = useRecoilValue(

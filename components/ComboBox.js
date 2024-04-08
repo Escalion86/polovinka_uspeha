@@ -62,6 +62,7 @@ const ComboBox = ({
           MozAppearance: 'none',
           appearance: 'none',
         }}
+        aria-label={label}
       >
         {placeholder && (
           <option

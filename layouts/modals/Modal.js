@@ -1,11 +1,12 @@
 import Tooltip from '@components/Tooltip'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ModalButtons from '@layouts/modals/ModalButtons'
 import { modalsAtom, modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useRouter } from 'next/router'
+import { useEffect, useRef } from 'react'
 import { Suspense, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
@@ -45,10 +46,14 @@ const Modal = ({
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
+  const effectRan = useRef(false)
+  const modals = useRecoilValue(modalsAtom)
   const [titleState, setTitleState] = useState(title)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [disableConfirm, setDisableConfirm] = useState(false)
   const [disableDecline, setDisableDecline] = useState(false)
+  const [closeButtonNameState, setCloseButtonNameState] =
+    useState(closeButtonName)
   const [confirmButtonNameState, setConfirmButtonNameState] =
     useState(confirmButtonName)
   const [confirmButtonName2State, setConfirmButtonName2State] =
@@ -75,20 +80,92 @@ const Modal = ({
   const [bottomLeftComponentState, setBottomLeftComponent] =
     useState(bottomLeftComponent)
 
-  const closeModal = () => {
+  const router = useRouter()
+
+  const closeModal = (routerBack = true) => {
     onClose && typeof onClose === 'function' && onClose()
     setClose(true)
     setTimeout(
       () => setModals((modals) => modals.filter((modal) => modal.id !== id)),
       200
     )
+    // window.history.back()
+    // if (routerBack) router.back()
   }
-
-  const router = useRouter()
 
   const refreshPage = () => {
     router.replace(router.asPath)
   }
+
+  // useEffect(() => {
+  //   console.log('modals :>> ', modals)
+  //   const currentPath = router.asPath
+  //   if (id === modals.length) window.history.pushState(null, '', currentPath)
+
+  //   router.beforePopState(({ url, as, options }) => {
+  //     // console.log('as :>> ', as)
+  //     // console.log('currentPath :>> ', currentPath)
+  //     // alert(currentPath + ' --- ' + as)
+  //     alert(currentPath + ' --- ' + as)
+  //     if (as !== currentPath) {
+  //       alert('!')
+  //       //   console.log(
+  //       //     `currentPath + '?modal=' + id :>> `,
+  //       //     currentPath + '?modal=' + id
+  //       //   )
+  //       // Will run when leaving the current page; on back/forward actions
+  //       // Add your logic here, like toggling the modal state
+  //       // for example
+  //       // if(confirm("Are you sure?") return true;
+  //       // else {
+  //       if (onDeclineClick) onDeclineClick()
+  //       else if (closeModal) closeModal()
+  //       window.history.pushState(null, '', currentPath)
+  //       return false
+  //     }
+  //     return false
+  //     // }
+  //     // return true
+  //   })
+
+  //   return id === 0
+  //     ? () => {
+  //         return router.beforePopState(() => true)
+  //       }
+  //     : () => {
+  //         return undefined
+  //       }
+
+  //   // console.log('window.history. :>> ', window.history.state)
+
+  //   // console.log('id :>> ', id)
+  //   // return () => {
+  //   //   router.beforePopState(() => true)
+  //   //   if (modals.length > 1) window.history.pushState(null, '', currentPath)
+  //   // }
+  //   // console.log('1modals.length :>> ', modals.length)
+  //   // const onClose = () => {
+  //   //   // console.log('2modals.length :>> ', modals.length)
+  //   //   if (id === 0) {
+  //   //     // window.history.pushState(null, '', currentPath + '?modal=' + id)
+  //   //     // return router.beforePopState(() => true)
+  //   //   } else return
+  //   // }
+
+  //   // return onClose
+  // }, [modals, router])
+  //   router.beforePopState(({ as }) => {
+  //     if (as !== router.asPath) {
+  //       if (onDeclineClick) onDeclineClick()
+  //       else if (closeModal) closeModal()
+  //     }
+  //     return true
+  //   })
+
+  //   return () => {
+  //     router.beforePopState(() => true)
+  //   }
+  // }, [router])
 
   // const onConfirmClick = () => {
   //   if (onConfirmFunc) return onConfirmFunc(refreshPage)
@@ -100,21 +177,21 @@ const Modal = ({
     typeof onConfirmFunc === 'function'
       ? () => onConfirmFunc(refreshPage)
       : typeof onConfirm === 'function'
-      ? () => {
-          onConfirm(refreshPage)
-          closeModal()
-        }
-      : undefined
+        ? () => {
+            onConfirm(refreshPage)
+            closeModal()
+          }
+        : undefined
 
   const onConfirm2Click =
     typeof onConfirm2Func === 'function'
       ? () => onConfirm2Func(refreshPage)
       : typeof onConfirm2 === 'function'
-      ? () => {
-          onConfirm2(refreshPage)
-          closeModal()
-        }
-      : undefined
+        ? () => {
+            onConfirm2(refreshPage)
+            closeModal()
+          }
+        : undefined
 
   // const onConfirm2Click = () => {
   //   if (onConfirm2Func) return onConfirm2Func(refreshPage)
@@ -126,22 +203,22 @@ const Modal = ({
     onShowOnCloseConfirmDialog ||
     typeof onDeclineFunc === 'function' ||
     typeof onDecline === 'function'
-      ? () => {
+      ? (routerBack) => {
           const decline =
             typeof onDeclineFunc === 'function'
               ? () => onDeclineFunc()
               : typeof onDecline === 'function'
-              ? () => {
-                  onDecline(refreshPage)
-                  closeModal()
-                }
-              : undefined
+                ? () => {
+                    onDecline(refreshPage)
+                    closeModal(routerBack)
+                  }
+                : undefined
 
           if (onShowOnCloseConfirmDialog) {
             modalsFunc.confirm({
               onConfirm: () => {
                 if (typeof decline === 'function') decline()
-                else closeModal()
+                else closeModal(routerBack)
                 // setOnShowOnCloseConfirmDialog(false)
               },
             })
@@ -150,6 +227,33 @@ const Modal = ({
           }
         }
       : undefined
+
+  useEffect(() => {
+    const onBackButtonEvent = (e) => {
+      e.preventDefault()
+      // window.history.pushState(null, null, window.location.pathname)
+      if (id === modals.length - 1) {
+        // window.history.pushState(null, null, window.location.pathname)
+        if (typeof onDeclineClick === 'function') onDeclineClick(false)
+        else closeModal(false)
+      }
+    }
+
+    window.addEventListener('popstate', onBackButtonEvent)
+
+    return () => {
+      window.removeEventListener('popstate', onBackButtonEvent)
+    }
+  }, [modals])
+
+  useEffect(() => {
+    if (!effectRan.current) {
+      window.history.pushState(null, null, window.location.pathname)
+    }
+    return () => {
+      effectRan.current = true
+    }
+  }, [])
 
   // const closeFunc = () => {
   //   setRendered(false)
@@ -174,7 +278,7 @@ const Modal = ({
   // }, [])
 
   return (
-    <motion.div
+    <m.div
       className={
         cn(
           'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 tablet:items-center justify-center w-full h-screen tablet:overflow-y-auto bg-gray-800',
@@ -187,7 +291,7 @@ const Modal = ({
       transition={{ duration: 0.1 }}
       onMouseDown={crossShow ? onDeclineClick || closeModal : undefined}
     >
-      <motion.div
+      <m.div
         className={
           cn(
             'flex flex-col real-screen-height tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
@@ -224,7 +328,7 @@ const Modal = ({
           </Tooltip>
         )}
         {titleState && (
-          <div className="mx-12 mb-3 text-lg font-bold leading-6 text-center whitespace-pre-line">
+          <div className="mx-10 mt-8 mb-1 text-lg font-bold leading-6 text-center whitespace-pre-line tablet:mb-3 tablet:mt-0 tablet:mx-24">
             {titleState}
           </div>
         )}
@@ -282,6 +386,7 @@ const Modal = ({
                 setDeclineButtonShow={setDeclineButtonShowState}
                 setConfirmButtonName={setConfirmButtonNameState}
                 setConfirmButtonName2={setConfirmButtonName2State}
+                setCloseButtonName={setCloseButtonNameState}
                 setTitle={setTitleState}
               />
             </Suspense>
@@ -306,7 +411,7 @@ const Modal = ({
             confirmName={confirmButtonNameState}
             confirmName2={confirmButtonName2State}
             declineName={declineButtonName}
-            closeButtonName={closeButtonName}
+            closeButtonName={closeButtonNameState}
             onConfirmClick={!onlyCloseButtonShowState && onConfirmClick}
             onConfirm2Click={!onlyCloseButtonShowState && onConfirm2Click}
             onDeclineClick={!onlyCloseButtonShowState && onDeclineClick}
@@ -323,8 +428,8 @@ const Modal = ({
             {ComponentInFooter}
           </ModalButtons>
         )}
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   )
 }
 

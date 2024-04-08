@@ -5,7 +5,6 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import paymentsAtom from '@state/atoms/paymentsAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import itemsFuncGenerator from '@state/itemsFuncGenerator'
@@ -26,7 +25,7 @@ import cn from 'classnames'
 import DeviceCheck from './DeviceCheck'
 import servicesAtom from '@state/atoms/servicesAtom'
 import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
-import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
+// import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import { useRouter } from 'next/router'
 import { postData } from '@helpers/CRUD'
 import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
@@ -71,7 +70,6 @@ const StateLoader = (props) => {
   const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
   const setUsersState = useSetRecoilState(usersAtom)
   const setReviewsState = useSetRecoilState(reviewsAtom)
-  const setPaymentsState = useSetRecoilState(paymentsAtom)
   const [siteSettingsState, setSiteSettingsState] =
     useRecoilState(siteSettingsAtom)
   const setRolesSettingsState = useSetRecoilState(rolesAtom)
@@ -79,7 +77,7 @@ const StateLoader = (props) => {
   const setQuestionnairesState = useSetRecoilState(questionnairesAtom)
   const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
   const setServicesState = useSetRecoilState(servicesAtom)
-  const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
+  // const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
   const setServerSettingsState = useSetRecoilState(serverSettingsAtom)
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
@@ -118,7 +116,7 @@ const StateLoader = (props) => {
     setAdditionalBlocksState(props.additionalBlocks)
     setUsersState(props.users)
     setReviewsState(props.reviews)
-    setPaymentsState(props.payments)
+    // setPaymentsState(props.payments)
     setSiteSettingsState(props.siteSettings)
     setRolesSettingsState([
       ...DEFAULT_ROLES,
@@ -128,7 +126,7 @@ const StateLoader = (props) => {
     setQuestionnairesState(props.questionnaires)
     setQuestionnairesUsersState(props.questionnairesUsers)
     setServicesState(props.services)
-    setServicesUsersState(props.servicesUsers)
+    // setServicesUsersState(props.servicesUsers)
     setServerSettingsState(props.serverSettings)
     setMode(props.mode ?? 'production')
     setLocation(props.location ?? 'krasnoyarsk')

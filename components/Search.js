@@ -1,8 +1,9 @@
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDebounceEffect } from '@helpers/useDebounceEffect'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 
 const Search = ({
@@ -27,7 +28,7 @@ const Search = ({
   }, [inputRef, show])
 
   return (
-    <motion.div
+    <m.div
       initial={{ height: 0, minHeight: 0 }}
       animate={{ height: show ? 38 : 0, minHeight: show ? 38 : 0 }}
       transition={{ type: 'just' }}
@@ -43,6 +44,7 @@ const Search = ({
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          aria-label="Search"
         />
         <FontAwesomeIcon
           className={'w-6 h-6 text-gray-700 cursor-pointer'}
@@ -50,7 +52,7 @@ const Search = ({
           onClick={text ? () => setText('') : () => inputRef.current.focus()}
         />
       </div>
-    </motion.div>
+    </m.div>
   )
 }
 

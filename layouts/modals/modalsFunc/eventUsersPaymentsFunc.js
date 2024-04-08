@@ -8,15 +8,13 @@ import TabPanel from '@components/Tabs/TabPanel'
 import Tooltip from '@components/Tooltip'
 import UserStatusIcon from '@components/UserStatusIcon'
 import { P } from '@components/tags'
-import {
-  faAngleDown,
-  faCertificate,
-  faLink,
-  faPlus,
-  faTrash,
-  faUnlink,
-  faWarning,
-} from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
+import { faCertificate } from '@fortawesome/free-solid-svg-icons/faCertificate'
+import { faLink } from '@fortawesome/free-solid-svg-icons/faLink'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
+import { faWarning } from '@fortawesome/free-solid-svg-icons/faWarning'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { EVENT_STATUSES } from '@helpers/constants'
 import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
@@ -24,16 +22,17 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import paymentsByEventIdSelector from '@state/selectors/paymentsByEventIdSelector'
 import paymentsOfEventWithoutEventIdByUserIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdByUserIdSelector'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const TotalItem = ({ title, className, valueClassName, value }) => (
   <div className={cn('flex flex-wrap gap-x-1', className)}>
@@ -257,7 +256,7 @@ const UserPayment = ({
         </div>
       </div>
       {isCollapsingActive && (
-        <motion.div
+        <m.div
           initial={{ height: 0 }}
           animate={{ height: isCollapsed ? 0 : 'auto' }}
         >
@@ -368,7 +367,7 @@ const UserPayment = ({
               </>
             )}
           </div>
-        </motion.div>
+        </m.div>
       )}
     </div>
   )
@@ -456,7 +455,7 @@ const eventUsersPaymentsFunc = (eventId) => {
     const statusEdit = loggedUserActiveRole?.events?.statusEdit
     const paymentsEdit = loggedUserActiveRole?.events?.paymentsEdit
 
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const isEventClosed = isEventClosedFunc(event)
     const modalsFunc = useRecoilValue(modalsFuncAtom)
 

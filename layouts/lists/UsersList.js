@@ -1,4 +1,6 @@
-import UserCard from '@layouts/cards/UserCard'
+// import UserCard from '@layouts/cards/UserCard'
+import dynamic from 'next/dynamic'
+const UserCard = dynamic(() => import('@layouts/cards/UserCard'))
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import { useRecoilValue } from 'recoil'
 import ListWrapper from './ListWrapper'

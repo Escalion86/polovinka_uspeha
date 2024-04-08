@@ -1,4 +1,5 @@
-import { faAsterisk, faBan } from '@fortawesome/free-solid-svg-icons'
+import { faAsterisk } from '@fortawesome/free-solid-svg-icons/faAsterisk'
+import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import { forwardRef } from 'react'
@@ -59,10 +60,10 @@ const InputWrapper = forwardRef(
           paddingY === 'small'
             ? 'pt-1.5 pb-1'
             : paddingY === 'big'
-            ? 'pt-2.5 pb-2'
-            : paddingY
-            ? 'pt-2 pb-1.5'
-            : '',
+              ? 'pt-2.5 pb-2'
+              : paddingY
+                ? 'pt-2 pb-1.5'
+                : '',
           disabled ? 'cursor-not-allowed' : '',
           hidden ? 'hidden' : '',
           (error && showErrorText) || comment ? 'mb-4' : '',

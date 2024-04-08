@@ -8,6 +8,7 @@ const InfinityToggleButton = ({ value, onChange, size }) => {
       selected={value}
       onChange={onChange}
       size={size}
+      aria-label="Infinity"
     >
       <AllInclusive />
     </IconToggleButton>

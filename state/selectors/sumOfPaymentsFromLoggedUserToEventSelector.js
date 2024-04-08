@@ -1,5 +1,5 @@
 import { selectorFamily } from 'recoil'
-import paymentsFromLoggedUserByEventIdSelector from './paymentsFromLoggedUserByEventIdSelector'
+import paymentsOfLoggedUserByEventIdSelector from './paymentsOfLoggedUserByEventIdSelector'
 
 export const sumOfPaymentsFromLoggedUserToEventSelector = selectorFamily({
   key: 'sumOfPaymentsFromLoggedUserToEventSelector',
@@ -8,7 +8,7 @@ export const sumOfPaymentsFromLoggedUserToEventSelector = selectorFamily({
     ({ get }) => {
       if (!id) return 0
       return (
-        get(paymentsFromLoggedUserByEventIdSelector(id)).reduce(
+        get(paymentsOfLoggedUserByEventIdSelector(id)).reduce(
           (p, payment) => p + (payment.sum ?? 0),
           0
         ) / 100

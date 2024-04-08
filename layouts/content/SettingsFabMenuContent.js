@@ -3,12 +3,10 @@ import Divider from '@components/Divider'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import PhoneInput from '@components/PhoneInput'
-import {
-  faArrowDown,
-  faArrowUp,
-  faPlus,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
 import arrayMove from '@helpers/arrayMove'

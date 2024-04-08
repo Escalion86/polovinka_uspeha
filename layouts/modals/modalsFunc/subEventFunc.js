@@ -12,11 +12,9 @@ import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import UserStatusIcon from '@components/UserStatusIcon'
 import EventRelationshipAccessPicker from '@components/ValuePicker/EventRelationshipAccessPicker'
-import {
-  faMars,
-  faRegistered,
-  faVenus,
-} from '@fortawesome/free-solid-svg-icons'
+import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
+import { faRegistered } from '@fortawesome/free-solid-svg-icons/faRegistered'
+import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareObjects from '@helpers/compareObjects'
 import {

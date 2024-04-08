@@ -1,12 +1,5 @@
-import {
-  faCrop,
-  faDotCircle,
-  faQuestion,
-  faSignOut,
-  faSignOutAlt,
-  faSnowman,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import Image from 'next/legacy/image'
@@ -42,6 +35,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
               } w-${numSize + 1} h-${numSize + 1}`}
             >
               <Image
+                alt="member"
                 src="/img/svg_icons/medal.svg"
                 width={numSize * 4}
                 height={(numSize + 1) * 4}
@@ -65,6 +59,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
               } w-${numSize + 1} h-${numSize + 1}`}
             >
               <Image
+                alt="member"
                 src="/img/svg_icons/medal.svg"
                 width={numSize * 4}
                 height={(numSize + 1) * 4}

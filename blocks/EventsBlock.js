@@ -2,13 +2,14 @@ import BlockContainer from '@components/BlockContainer'
 import { P } from '@components/tags'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventExpiredFunc from '@helpers/isEventExpired'
-import EventCard from '@layouts/cards/EventCard'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import cn from 'classnames'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import CountDown from './components/CountDown'
+import dynamic from 'next/dynamic'
+const EventCardLight = dynamic(() => import('@layouts/cards/EventCardLight'))
 
 const Button = ({ title, className, href, onClick }) => {
   if (onClick)
@@ -60,11 +61,7 @@ const EventsBlock = ({
             .sort((a, b) => (a.dateStart < b.dateStart ? -1 : 1))
             .slice(0, maxShowedEvents)
             .map((event, index) => (
-              <EventCard
-                key={event._id}
-                eventId={event._id}
-                changeStyle="desktop"
-              />
+              <EventCardLight key={event._id} eventId={event._id} />
             ))}
           {maxEvents && filteredEvents?.length > maxShowedEvents && (
             <Button title="Посмотреть все" href="/events#events" />

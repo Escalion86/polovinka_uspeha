@@ -11,7 +11,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html className="scroll-smooth">
+      <Html className="scroll-smooth" lang="ru">
         <Head>
           <meta
             name="application-name"
@@ -19,18 +19,18 @@ class MyDocument extends Document {
           />
           <meta name="theme-color" content="#7a5151" />
           <meta name="mobile-web-app-capable" content="yes" />
-          <link
+          {/* <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-          />
-          <link
+          /> */}
+          {/* <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          />
-          <link
+          /> */}
+          {/* <link
             href="https://cdn.jsdelivr.net/npm/@tailwindcss/custom-forms@0.2.1/dist/custom-forms.css"
             rel="stylesheet"
-          />
+          /> */}
           <link rel="apple-touch-icon" href="/icon-512x512.png" />
           <link rel="shortcut icon" href="/favicon.ico" />
           <link rel="manifest" href="/manifest.webmanifest" />

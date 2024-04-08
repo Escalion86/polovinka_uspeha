@@ -1,4 +1,5 @@
-import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import { forwardRef } from 'react'
@@ -103,8 +104,8 @@ const Input = forwardRef(
             value === null
               ? ''
               : typeof value === 'number'
-              ? String(value)
-              : value
+                ? String(value)
+                : value
           }
           defaultValue={defaultValue}
           onChange={(e) => {

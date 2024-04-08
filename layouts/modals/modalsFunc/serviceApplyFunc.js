@@ -1,6 +1,6 @@
 import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'
 import ValueItem from '@components/ValuePicker/ValueItem'
-import { faIdCard } from '@fortawesome/free-regular-svg-icons'
+import { faIdCard } from '@fortawesome/free-regular-svg-icons/faIdCard'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'

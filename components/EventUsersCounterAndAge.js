@@ -1,8 +1,8 @@
-import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
+import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
+import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import eventMansReserveSelector from '@state/selectors/eventMansReserveSelector'
 // import eventMansSelector from '@state/selectors/eventMansSelector'
-// import eventAtom from '@state/async/eventAtom'
 // import eventWomansReserveSelector from '@state/selectors/eventWomansReserveSelector'
 // import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import cn from 'classnames'
@@ -18,7 +18,8 @@ import Ages from './Ages'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 // import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+import eventSelector from '@state/selectors/eventSelector'
 
 const CounterComponent = ({
   event,
@@ -200,10 +201,20 @@ const CounterComponent = ({
           <div className="flex gap-x-0.5 items-center">
             {/* <span className="text-4xl">{'}'}</span> */}
             <div className="hidden min-w-[9px] h-[36px] tablet:block w-[9px]">
-              <Image src="/img/other/bracet_left.png" width={9} height={36} />
+              <Image
+                alt="bracet_left"
+                src="/img/other/bracet_left.png"
+                width={9}
+                height={36}
+              />
             </div>
             <div className="min-w-[7px] h-[28px] tablet:hidden w-[8px]">
-              <Image src="/img/other/bracet_left.png" width={7} height={28} />
+              <Image
+                alt="bracet_left"
+                src="/img/other/bracet_left.png"
+                width={7}
+                height={28}
+              />
             </div>
             <div className="flex flex-col items-center leading-[0.5rem] tablet:leading-3">
               <span className="text-xs">max</span>
@@ -354,7 +365,7 @@ export const EventUsersCounterAndAgeByEventId = ({
   showAges,
   dontShowLabel,
 }) => {
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   if (!eventId || !event) return null
   return (
     <EventUsersCounterAndAge

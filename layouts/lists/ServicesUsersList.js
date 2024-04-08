@@ -1,4 +1,6 @@
-import ServiceUserCard from '@layouts/cards/ServiceUserCard'
+// import ServiceUserCard from '@layouts/cards/ServiceUserCard'
+import dynamic from 'next/dynamic'
+const ServiceUserCard = dynamic(() => import('@layouts/cards/ServiceUserCard'))
 import ListWrapper from './ListWrapper'
 
 const ServicesUsersList = ({ servicesUsers, showUser = true }) => {

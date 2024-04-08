@@ -1,4 +1,4 @@
-import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
+import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 import { selectorFamily } from 'recoil'
 
 export const servicesUsersSelector = selectorFamily({
@@ -7,7 +7,7 @@ export const servicesUsersSelector = selectorFamily({
     (id) =>
     ({ get }) => {
       if (!id) return null
-      return get(servicesUsersAtom).find((item) => item._id === id)
+      return get(asyncServicesUsersAtom).find((item) => item._id === id)
     },
   // set:
   //   (id) =>

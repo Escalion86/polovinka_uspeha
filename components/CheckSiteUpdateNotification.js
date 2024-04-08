@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 
 import { useHasNewDeploy } from 'next-deploy-notifications'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRefresh } from '@fortawesome/free-solid-svg-icons'
+import { faRefresh } from '@fortawesome/free-solid-svg-icons/faRefresh'
 
 const CheckSiteUpdateNotification = () => {
   let { hasNewDeploy } = useHasNewDeploy()

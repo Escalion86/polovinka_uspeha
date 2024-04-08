@@ -1,26 +1,19 @@
-import {
-  faBell,
-  // faHome,
-  // faListAlt,
-  faSignInAlt,
-  faSignOutAlt,
-  faUserAlt,
-} from '@fortawesome/free-solid-svg-icons'
+import { faBell } from '@fortawesome/free-solid-svg-icons/faBell'
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
+import { faUserAlt } from '@fortawesome/free-solid-svg-icons/faUserAlt'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import getParentDir from '@state/atoms/getParentDir'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
-// import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import Avatar from './Avatar'
 import SvgKavichki from 'svg/SvgKavichki'
 import { modalsFuncAtom } from '@state/atoms'
-// import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 
 const variants = {
   show: {
@@ -103,7 +96,7 @@ const UserMenu = () => {
       <div className="relative flex flex-col items-end mt-2.5 w-12">
         <Avatar user={loggedUserActive} className="z-10" />
         {/* {router && ( */}
-        <motion.div
+        <m.div
           className={cn(
             'absolute overflow-hidden duration-300 border border-gray-800 rounded-tr-3xl'
             // isUserMenuOpened
@@ -171,7 +164,7 @@ const UserMenu = () => {
             icon={faSignOutAlt}
             title="Выйти из учетной записи"
           />
-        </motion.div>
+        </m.div>
         {/* )} */}
       </div>
     </div>

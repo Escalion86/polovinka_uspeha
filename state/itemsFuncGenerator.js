@@ -625,11 +625,11 @@ const itemsFuncGenerator = (
     )
   }
 
-  obj.event.setData = async (eventId, data, dontShowSnackBar) => {
+  obj.eventsUser.setData = async (eventId, data, dontShowSnackBar) => {
     setLoadingCard('event' + eventId)
     return await putData(
       `/api/eventsusers`,
-      { eventId, data },
+      { data },
       (res) => {
         !dontShowSnackBar &&
           snackbar.success('Лайки участников мероприятия обновлены')

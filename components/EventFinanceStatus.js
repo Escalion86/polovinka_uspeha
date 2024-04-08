@@ -2,11 +2,12 @@ import Button from '@components/Button'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import cn from 'classnames'
 import { useRouter } from 'next/router'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const EventButtonSignIn = ({
   eventId,
@@ -15,7 +16,7 @@ const EventButtonSignIn = ({
   thin,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
 
   const router = useRouter()

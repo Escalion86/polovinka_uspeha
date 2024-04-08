@@ -2,14 +2,12 @@ import InputWrapper from '@components/InputWrapper'
 import Tooltip from '@components/Tooltip'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
-import {
-  faCopy,
-  faInfinity,
-  faMars,
-  faRegistered,
-  faTrash,
-  faVenus,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
+import { faInfinity } from '@fortawesome/free-solid-svg-icons/faInfinity'
+import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
+import { faRegistered } from '@fortawesome/free-solid-svg-icons/faRegistered'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'

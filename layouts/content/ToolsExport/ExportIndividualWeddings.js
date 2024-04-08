@@ -1,11 +1,11 @@
 import Button from '@components/Button'
-import { faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS_WITH_NO_GENDER } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
+import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
-import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import { useRecoilValue } from 'recoil'
 
@@ -16,7 +16,7 @@ const ExportIndividualWeddings = () => {
     (service) => service.title === 'Индивидуальные свидания'
   )
 
-  const servicesUsers = useRecoilValue(servicesUsersAtom)
+  const servicesUsers = useRecoilValue(asyncServicesUsersAtom)
   const serviceUsers = servicesUsers.filter(
     (serviceUser) => serviceUser.serviceId === serviceIS?._id
   )

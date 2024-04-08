@@ -1,13 +1,11 @@
-import {
-  faAdd,
-  faAngleDown,
-  faRefresh,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { faAdd } from '@fortawesome/free-solid-svg-icons/faAdd'
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
+import { faRefresh } from '@fortawesome/free-solid-svg-icons/faRefresh'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useState } from 'react'
 import UserNameById from './UserNameById'
 
@@ -51,7 +49,7 @@ const HistoryItem = ({
               )}
             >
               <div className="flex-1 font-bold">{keys[key] ?? key}</div>
-              <motion.div
+              <m.div
                 className="overflow-hidden"
                 initial={{ height: 0 }}
                 animate={{ height: isCollapsed ? 0 : 'auto' }}
@@ -68,7 +66,7 @@ const HistoryItem = ({
                   </div>
                   <KeyValueItem objKey={key} value={value.new} />
                 </div>
-              </motion.div>
+              </m.div>
             </div>
           )
         })()

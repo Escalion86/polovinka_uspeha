@@ -52,6 +52,7 @@ const ToggleButtons = ({
               'flex items-center gap-x-1',
               value[cfg.value] ? 'text-white' : `text-${cfg.color}`
             )}
+            aria-label={cfg.value}
           >
             {cfg.icon && (
               <FontAwesomeIcon className="w-6 h-6" icon={cfg.icon} />

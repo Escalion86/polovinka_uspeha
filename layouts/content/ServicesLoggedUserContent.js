@@ -1,14 +1,14 @@
 import ContentHeader from '@components/ContentHeader'
 import { getNounServicesUsers } from '@helpers/getNoun'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
+import asyncServicesUsersByUserIdSelector from '@state/async/asyncServicesUsersByUserIdSelector'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import servicesUsersByUserIdSelector from '@state/selectors/servicesUsersByUserIdSelector'
 import { useRecoilValue } from 'recoil'
 
 const ServicesLoggedUserContent = () => {
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const servicesLoggedUser = useRecoilValue(
-    servicesUsersByUserIdSelector(loggedUserActive._id)
+    asyncServicesUsersByUserIdSelector(loggedUserActive._id)
   )
 
   // const [isSearching, setIsSearching] = useState(false)

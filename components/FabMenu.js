@@ -1,9 +1,9 @@
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import TelegramIcon from 'svg/TelegramIcon'
@@ -17,7 +17,7 @@ const FabItem = ({ text, whatsapp, telegram, show }) => (
           target="_blank"
           href={'https://wa.me/' + whatsapp}
         >
-          <motion.div
+          <m.div
             initial={{ scale: 0, rotate: -180 }}
             transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
             animate={{
@@ -33,7 +33,7 @@ const FabItem = ({ text, whatsapp, telegram, show }) => (
               className="z-10 text-white w-7 h-7 max-w-7 max-h-7"
               icon={faWhatsapp}
             />
-          </motion.div>
+          </m.div>
         </a>
       )}
       {telegram && (
@@ -42,7 +42,7 @@ const FabItem = ({ text, whatsapp, telegram, show }) => (
           target="_blank"
           href={'https://t.me/' + telegram}
         >
-          <motion.div
+          <m.div
             initial={{ scale: 0, rotate: -180 }}
             transition={{ duration: 0.5, delay: show ? 0 : 0.3 }}
             animate={{
@@ -55,11 +55,11 @@ const FabItem = ({ text, whatsapp, telegram, show }) => (
             )}
           >
             <TelegramIcon width={28} height={28} className="-ml-0.5 mt-0.5" />
-          </motion.div>
+          </m.div>
         </a>
       )}
     </div>
-    <motion.div
+    <m.div
       initial={{ width: 0 }}
       transition={{ duration: 0.3, delay: show ? 0.3 : 0 }}
       animate={{
@@ -78,7 +78,7 @@ const FabItem = ({ text, whatsapp, telegram, show }) => (
           )}
         />
       </div>
-    </motion.div>
+    </m.div>
   </div>
 )
 
@@ -120,7 +120,7 @@ const FabMenu = ({ show = true, ping = true }) => {
       onClick={() => setIsItemsShowing((state) => !state)}
     >
       <div className="flex flex-col items-end justify-end max-w-12">
-        <motion.div
+        <m.div
           initial={{ height: 0 }}
           transition={{ duration: 0.1, delay: isItemsShowing ? 0 : 0.7 }}
           animate={{
@@ -130,7 +130,7 @@ const FabMenu = ({ show = true, ping = true }) => {
           {fabs.map((props, index) => (
             <FabItem key={'fab' + index} {...props} show={isItemsShowing} />
           ))}
-        </motion.div>
+        </m.div>
         <div
           className={cn(
             'z-10 relative flex items-center justify-center rounded-full cursor-pointer fab w-[48px] h-[48px] group max-h-[48px] max-w-[48px] bg-general'

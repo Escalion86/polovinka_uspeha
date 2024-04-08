@@ -1,62 +1,121 @@
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import addModalSelector from '@state/selectors/addModalSelector'
 import { setRecoil } from 'recoil-nexus'
-import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
-import copyLinkFunc from './modalsFunc/copyLinkFunc'
-import cropImageFunc from './modalsFunc/cropImageFunc'
-import directionFunc from './modalsFunc/directionFunc'
-import directionViewFunc from './modalsFunc/directionViewFunc'
-import errorFunc from './modalsFunc/errorFunc'
-import eventFunc from './modalsFunc/eventFunc'
-import eventSignUpFunc from './modalsFunc/eventSignUpFunc'
-import eventStatusEditFunc from './modalsFunc/eventStatusEditFunc'
-import eventUserStatusChangeFunc from './modalsFunc/eventUserStatusChangeFunc'
-import eventUsersFunc from './modalsFunc/eventUsersFunc'
-import eventUsersPaymentsFunc from './modalsFunc/eventUsersPaymentsFunc'
-import eventViewFunc from './modalsFunc/eventViewFunc'
-import eventsTagsFunc from './modalsFunc/eventsTagsFunc'
-import jsonFunc from './modalsFunc/jsonFunc'
-import notificationsDeativateTelegramFunc from './modalsFunc/notificationsDeativateTelegramFunc'
-import notificationsTelegramFunc from './modalsFunc/notificationsTelegramFunc'
-import paymentFunc from './modalsFunc/paymentFunc'
-import paymentsAutoFillFunc from './modalsFunc/paymentsAutoFillFunc'
-import questionnaireConstructorFunc from './modalsFunc/questionnaireConstructorFunc'
-import reviewFunc from './modalsFunc/reviewFunc'
-import selectDirectionsFunc from './modalsFunc/selectDirectionsFunc'
-import selectEventsFunc from './modalsFunc/selectEventsFunc'
-import selectPaymentsFunc from './modalsFunc/selectPaymentsFunc'
-import selectServicesFunc from './modalsFunc/selectServicesFunc'
-import selectSvgFrameFunc from './modalsFunc/selectSvgFrameFunc'
-import selectUsersFunc from './modalsFunc/selectUsersFunc'
-import serviceApplyFunc from './modalsFunc/serviceApplyFunc'
-import serviceFunc from './modalsFunc/serviceFunc'
-import serviceUserStatusEditFunc from './modalsFunc/serviceStatusEditFunc'
-import serviceUserFunc from './modalsFunc/serviceUserFunc'
-import serviceUserViewFunc from './modalsFunc/serviceUserViewFunc'
-import serviceViewFunc from './modalsFunc/serviceViewFunc'
-import userDeleteFunc from './modalsFunc/userDeleteFunc'
-import userFunc from './modalsFunc/userFunc'
-import userLoginHistoryFunc from './modalsFunc/userLoginHistoryFunc'
-import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
-import userPaymentsFunc from './modalsFunc/userPaymentsFunc'
-import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
-import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
-import userViewFunc from './modalsFunc/userViewFunc'
-import userSetPasswordFunc from './modalsFunc/userSetPasswordFunc'
-import eventSignUpToReserveAfterError from './modalsFunc/eventSignUpToReserveAfterError'
-import roleFunc from './modalsFunc/roleFunc'
-import browseLocationFunc from './modalsFunc/browseLocationFunc'
-import eventHistoryFunc from './modalsFunc/eventHistoryFunc'
-import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
-import userHistoryFunc from './modalsFunc/userHistoryFunc'
-import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
-import userPersonalStatusEditFunc from './modalsFunc/userPersonalStatusEditFunc'
-import copyEventUserListFunc from './modalsFunc/copyEventUserListFunc'
-import likeEditFunc from './modalsFunc/likeEditFunc'
-import likesViewFunc from './modalsFunc/likesViewFunc'
-import eventAfterSignUpMessageFunc from './modalsFunc/eventAfterSignUpMessageFunc'
-import subEventFunc from './modalsFunc/subEventFunc'
-import eventUserSubEventChangeFunc from './modalsFunc/eventUserSubEventChangeFunc'
+
+// import dynamic from 'next/dynamic'
+// const additionalBlockFunc = dynamic(
+//   () => import('./modalsFunc/additionalBlockFunc')
+// )
+// const copyLinkFunc = dynamic(() => import('./modalsFunc/copyLinkFunc'))
+// const cropImageFunc = dynamic(() => import('./modalsFunc/cropImageFunc'))
+// const directionFunc = dynamic(() => import('./modalsFunc/directionFunc'))
+// const directionViewFunc = dynamic(
+//   () => import('./modalsFunc/directionViewFunc')
+// )
+// const errorFunc = dynamic(() => import('./modalsFunc/errorFunc'))
+// const eventFunc = dynamic(() => import('./modalsFunc/eventFunc'))
+// const eventSignUpFunc = dynamic(() => import('./modalsFunc/eventSignUpFunc'))
+// const eventStatusEditFunc = dynamic(
+//   () => import('./modalsFunc/eventStatusEditFunc')
+// )
+// const eventUserStatusChangeFunc = dynamic(
+//   () => import('./modalsFunc/eventUserStatusChangeFunc')
+// )
+// const eventUsersFunc = dynamic(() => import('./modalsFunc/eventUsersFunc'))
+// const eventUsersPaymentsFunc = dynamic(
+//   () => import('./modalsFunc/eventUsersPaymentsFunc')
+// )
+// const eventViewFunc = dynamic(() => import('./modalsFunc/eventViewFunc'))
+// const eventsTagsFunc = dynamic(() => import('./modalsFunc/eventsTagsFunc'))
+// const jsonFunc = dynamic(() => import('./modalsFunc/jsonFunc'))
+// const notificationsDeativateTelegramFunc = dynamic(
+//   () => import('./modalsFunc/notificationsDeativateTelegramFunc')
+// )
+// const notificationsTelegramFunc = dynamic(
+//   () => import('./modalsFunc/notificationsTelegramFunc')
+// )
+// const paymentFunc = dynamic(() => import('./modalsFunc/paymentFunc'))
+// const paymentsAutoFillFunc = dynamic(
+//   () => import('./modalsFunc/paymentsAutoFillFunc')
+// )
+// const questionnaireConstructorFunc = dynamic(
+//   () => import('./modalsFunc/questionnaireConstructorFunc')
+// )
+// const reviewFunc = dynamic(() => import('./modalsFunc/reviewFunc'))
+// const selectDirectionsFunc = dynamic(
+//   () => import('./modalsFunc/selectDirectionsFunc')
+// )
+// const selectEventsFunc = dynamic(() => import('./modalsFunc/selectEventsFunc'))
+// const selectPaymentsFunc = dynamic(
+//   () => import('./modalsFunc/selectPaymentsFunc')
+// )
+// const selectServicesFunc = dynamic(
+//   () => import('./modalsFunc/selectServicesFunc')
+// )
+// const selectSvgFrameFunc = dynamic(
+//   () => import('./modalsFunc/selectSvgFrameFunc')
+// )
+// const selectUsersFunc = dynamic(() => import('./modalsFunc/selectUsersFunc'))
+// const serviceApplyFunc = dynamic(() => import('./modalsFunc/serviceApplyFunc'))
+// const serviceFunc = dynamic(() => import('./modalsFunc/serviceFunc'))
+// const serviceUserStatusEditFunc = dynamic(
+//   () => import('./modalsFunc/serviceUserStatusEditFunc')
+// )
+
+// const serviceUserFunc = dynamic(() => import('./modalsFunc/serviceUserFunc'))
+// const serviceUserViewFunc = dynamic(
+//   () => import('./modalsFunc/serviceUserViewFunc')
+// )
+// const serviceViewFunc = dynamic(() => import('./modalsFunc/serviceViewFunc'))
+// const userDeleteFunc = dynamic(() => import('./modalsFunc/userDeleteFunc'))
+// const userFunc = dynamic(() => import('./modalsFunc/userFunc'))
+// const userLoginHistoryFunc = dynamic(
+//   () => import('./modalsFunc/userLoginHistoryFunc')
+// )
+// const userPaymentsForEventFunc = dynamic(
+//   () => import('./modalsFunc/userPaymentsForEventFunc')
+// )
+// const userPaymentsFunc = dynamic(() => import('./modalsFunc/userPaymentsFunc'))
+// const userQuestionnaireFunc = dynamic(
+//   () => import('./modalsFunc/userQuestionnaireFunc')
+// )
+// const userSignedUpEventsFunc = dynamic(
+//   () => import('./modalsFunc/userSignedUpEventsFunc')
+// )
+// const userViewFunc = dynamic(() => import('./modalsFunc/userViewFunc'))
+// const userSetPasswordFunc = dynamic(
+//   () => import('./modalsFunc/userSetPasswordFunc')
+// )
+// const eventSignUpToReserveAfterError = dynamic(
+//   () => import('./modalsFunc/eventSignUpToReserveAfterError')
+// )
+// const roleFunc = dynamic(() => import('./modalsFunc/roleFunc'))
+// const browseLocationFunc = dynamic(
+//   () => import('./modalsFunc/browseLocationFunc')
+// )
+// const eventHistoryFunc = dynamic(() => import('./modalsFunc/eventHistoryFunc'))
+// const paymentHistoryFunc = dynamic(
+//   () => import('./modalsFunc/paymentHistoryFunc')
+// )
+// const userHistoryFunc = dynamic(() => import('./modalsFunc/userHistoryFunc'))
+// const userActionsHistoryFunc = dynamic(
+//   () => import('./modalsFunc/userActionsHistoryFunc')
+// )
+// const userPersonalStatusEditFunc = dynamic(
+//   () => import('./modalsFunc/userPersonalStatusEditFunc')
+// )
+// const copyEventUserListFunc = dynamic(
+//   () => import('./modalsFunc/copyEventUserListFunc')
+// )
+// const likeEditFunc = dynamic(() => import('./modalsFunc/likeEditFunc'))
+// const likesViewFunc = dynamic(() => import('./modalsFunc/likesViewFunc'))
+// const eventAfterSignUpMessageFunc = dynamic(
+//   () => import('./modalsFunc/eventAfterSignUpMessageFunc')
+// )
+// const subEventFunc = dynamic(() => import('./modalsFunc/subEventFunc'))
+// const eventUserSubEventChangeFunc = dynamic(
+//   () => import('./modalsFunc/eventUserSubEventChangeFunc')
+// )
 
 const modalsFuncGenerator = (
   router,
@@ -122,7 +181,8 @@ const modalsFuncGenerator = (
         onConfirm: true,
         showDecline: false,
       }),
-    copyLink: (data) => addModal(copyLinkFunc(data)),
+    copyLink: (data) =>
+      addModal(require('./modalsFunc/copyLinkFunc').default(data)),
     browserUpdate: (url) =>
       addModal({
         title: 'Устаревшая версия браузера',
@@ -133,11 +193,14 @@ const modalsFuncGenerator = (
         onConfirm: () => router.push(url, ''),
       }),
     custom: addModal,
-    cropImage: (...data) => addModal(cropImageFunc(...data)),
-    error: (data) => addModal(errorFunc(data)),
-    json: (data) => addModal(jsonFunc(data)),
+    cropImage: (...data) =>
+      addModal(require('./modalsFunc/cropImageFunc').default(...data)),
+    error: (data) => addModal(require('./modalsFunc/errorFunc').default(data)),
+    json: (data) => addModal(require('./modalsFunc/jsonFunc').default(data)),
     selectSvgFrame: (itemId, onChange) =>
-      addModal(selectSvgFrameFunc(itemId, onChange)),
+      addModal(
+        require('./modalsFunc/selectSvgFrameFunc').default(itemId, onChange)
+      ),
     selectEvents: (
       itemsId,
       filterRules,
@@ -149,7 +212,7 @@ const modalsFuncGenerator = (
       modalTitle
     ) =>
       addModal(
-        selectEventsFunc(
+        require('./modalsFunc/selectEventsFunc').default(
           itemsId,
           filterRules,
           onChange,
@@ -171,7 +234,7 @@ const modalsFuncGenerator = (
       modalTitle
     ) =>
       addModal(
-        selectUsersFunc(
+        require('./modalsFunc/selectUsersFunc').default(
           itemsId,
           filterRules,
           onChange,
@@ -193,7 +256,7 @@ const modalsFuncGenerator = (
       modalTitle
     ) =>
       addModal(
-        selectDirectionsFunc(
+        require('./modalsFunc/selectDirectionsFunc').default(
           itemsId,
           filterRules,
           onChange,
@@ -215,7 +278,7 @@ const modalsFuncGenerator = (
       modalTitle
     ) =>
       addModal(
-        selectServicesFunc(
+        require('./modalsFunc/selectServicesFunc').default(
           itemsId,
           filterRules,
           onChange,
@@ -237,7 +300,7 @@ const modalsFuncGenerator = (
       modalTitle
     ) =>
       addModal(
-        selectPaymentsFunc(
+        require('./modalsFunc/selectPaymentsFunc').default(
           itemsId,
           filterRules,
           onChange,
@@ -249,8 +312,10 @@ const modalsFuncGenerator = (
         )
       ),
     review: {
-      add: (reviewId) => addModal(reviewFunc(reviewId, true)),
-      edit: (reviewId) => addModal(reviewFunc(reviewId)),
+      add: (reviewId) =>
+        addModal(require('./modalsFunc/reviewFunc').default(reviewId, true)),
+      edit: (reviewId) =>
+        addModal(require('./modalsFunc/reviewFunc').default(reviewId)),
       delete: (reviewId) =>
         addModal({
           title: 'Удаление отзыва',
@@ -259,28 +324,43 @@ const modalsFuncGenerator = (
         }),
     },
     direction: {
-      add: (directionId) => addModal(directionFunc(directionId, true)),
-      edit: (directionId) => addModal(directionFunc(directionId)),
+      add: (directionId) =>
+        addModal(
+          require('./modalsFunc/directionFunc').default(directionId, true)
+        ),
+      edit: (directionId) =>
+        addModal(require('./modalsFunc/directionFunc').default(directionId)),
       delete: (directionId) =>
         addModal({
           title: 'Удаление направления',
           text: 'Вы уверены, что хотите удалить направление?',
           onConfirm: async () => itemsFunc.direction.delete(directionId),
         }),
-      view: (directionId) => addModal(directionViewFunc(directionId)),
+      view: (directionId) =>
+        addModal(
+          require('./modalsFunc/directionViewFunc').default(directionId)
+        ),
     },
     eventsTags: {
-      edit: () => addModal(eventsTagsFunc()),
+      edit: () => addModal(require('./modalsFunc/eventsTagsFunc').default()),
     },
     event: {
-      add: (eventId) => addModal(eventFunc(eventId, true)),
-      edit: (eventId) => addModal(eventFunc(eventId)),
+      add: (eventId) =>
+        addModal(require('./modalsFunc/eventFunc').default(eventId, true)),
+      edit: (eventId) =>
+        addModal(require('./modalsFunc/eventFunc').default(eventId)),
       subEventEdit: (props, onChange) =>
-        addModal(subEventFunc(props, onChange)),
-      users: (eventId) => addModal(eventUsersFunc(eventId)),
-      history: (eventId) => addModal(eventHistoryFunc(eventId)),
-      statusEdit: (eventId) => addModal(eventStatusEditFunc(eventId)),
-      payments: (eventId) => addModal(eventUsersPaymentsFunc(eventId)),
+        addModal(require('./modalsFunc/subEventFunc').default(props, onChange)),
+      users: (eventId) =>
+        addModal(require('./modalsFunc/eventUsersFunc').default(eventId)),
+      history: (eventId) =>
+        addModal(require('./modalsFunc/eventHistoryFunc').default(eventId)),
+      statusEdit: (eventId) =>
+        addModal(require('./modalsFunc/eventStatusEditFunc').default(eventId)),
+      payments: (eventId) =>
+        addModal(
+          require('./modalsFunc/eventUsersPaymentsFunc').default(eventId)
+        ),
       close: (eventId) =>
         addModal({
           title: 'Закрытие мероприятия',
@@ -305,28 +385,39 @@ const modalsFuncGenerator = (
           text: 'Вы уверены, что хотите удалить мероприятие?',
           onConfirm: async () => itemsFunc.event.delete(eventId),
         }),
-      view: (eventId) => addModal(eventViewFunc(eventId)),
-      // editLikes: (eventId) => addModal(likesEditFunc(eventId)),
-      viewLikes: (eventId) => addModal(likesViewFunc(eventId)),
-      copyUsersList: (eventId) => addModal(copyEventUserListFunc(eventId)),
+      view: (eventId) =>
+        addModal(require('./modalsFunc/eventViewFunc').default(eventId)),
+      // editLikes: (eventId) => addModal(require('./modalsFunc/likesEditFunc').default(eventId)),
+      viewLikes: (eventId) =>
+        addModal(require('./modalsFunc/likesViewFunc').default(eventId)),
+      copyUsersList: (eventId) =>
+        addModal(
+          require('./modalsFunc/copyEventUserListFunc').default(eventId)
+        ),
       signUp: (event, status = 'participant', comment) => {
         if (checkLoggedUser('Для записи на мероприятие', `event=${event._id}`))
           addModal(
-            eventSignUpFunc(
+            require('./modalsFunc/eventSignUpFunc').default(
               event,
               status,
               comment,
               fixEventStatus,
               (event, error, comment, subEventId) =>
                 addModal(
-                  eventSignUpToReserveAfterError(
+                  require('./modalsFunc/eventSignUpToReserveAfterError').default(
                     event,
                     error,
                     comment,
                     subEventId
                   )
                 ),
-              () => addModal(eventAfterSignUpMessageFunc(event, status))
+              () =>
+                addModal(
+                  require('./modalsFunc/eventAfterSignUpMessageFunc').default(
+                    event,
+                    status
+                  )
+                )
             )
           )
       },
@@ -352,18 +443,35 @@ const modalsFuncGenerator = (
         }),
     },
     eventUser: {
-      editStatus: (eventUser) => addModal(eventUserStatusChangeFunc(eventUser)),
+      editStatus: (eventUser) =>
+        addModal(
+          require('./modalsFunc/eventUserStatusChangeFunc').default(eventUser)
+        ),
       editSubEvent: (eventUser, onConfirm) =>
-        addModal(eventUserSubEventChangeFunc(eventUser, onConfirm)),
+        addModal(
+          require('./modalsFunc/eventUserSubEventChangeFunc').default(
+            eventUser,
+            onConfirm
+          )
+        ),
       editLike: (eventUser, adminView) =>
-        addModal(likeEditFunc(eventUser, adminView)),
-      likesResult: (eventUser) => addModal(likeEditFunc(eventUser)),
+        addModal(
+          require('./modalsFunc/likeEditFunc').default(eventUser, adminView)
+        ),
+      likesResult: (eventUser) =>
+        addModal(require('./modalsFunc/likeEditFunc').default(eventUser)),
     },
     payment: {
-      add: (paymentId, props) => addModal(paymentFunc(paymentId, true, props)),
-      edit: (paymentId) => addModal(paymentFunc(paymentId)),
-      history: (paymentId) => addModal(paymentHistoryFunc(paymentId)),
-      autoFill: (eventId) => addModal(paymentsAutoFillFunc(eventId)),
+      add: (paymentId, props) =>
+        addModal(
+          require('./modalsFunc/paymentFunc').default(paymentId, true, props)
+        ),
+      edit: (paymentId) =>
+        addModal(require('./modalsFunc/paymentFunc').default(paymentId)),
+      history: (paymentId) =>
+        addModal(require('./modalsFunc/paymentHistoryFunc').default(paymentId)),
+      autoFill: (eventId) =>
+        addModal(require('./modalsFunc/paymentsAutoFillFunc').default(eventId)),
       delete: (paymentId) =>
         addModal({
           title: 'Удаление транзакции',
@@ -371,42 +479,79 @@ const modalsFuncGenerator = (
           onConfirm: async () => itemsFunc.payment.delete(paymentId),
         }),
       userEvent: (userId, eventId) =>
-        addModal(userPaymentsForEventFunc(userId, eventId)),
+        addModal(
+          require('./modalsFunc/userPaymentsForEventFunc').default(
+            userId,
+            eventId
+          )
+        ),
     },
     user: {
-      add: (userId) => addModal(userFunc(userId, true)),
-      edit: (userId) => addModal(userFunc(userId)),
-      history: (userId) => addModal(userHistoryFunc(userId)),
-      historyActions: (userId) => addModal(userActionsHistoryFunc(userId)),
+      add: (userId) =>
+        addModal(require('./modalsFunc/userFunc').default(userId, true)),
+      edit: (userId) =>
+        addModal(require('./modalsFunc/userFunc').default(userId)),
+      history: (userId) =>
+        addModal(require('./modalsFunc/userHistoryFunc').default(userId)),
+      historyActions: (userId) =>
+        addModal(
+          require('./modalsFunc/userActionsHistoryFunc').default(userId)
+        ),
       editPersonalStatus: (userId) =>
-        addModal(userPersonalStatusEditFunc(userId)),
+        addModal(
+          require('./modalsFunc/userPersonalStatusEditFunc').default(userId)
+        ),
       delete: (userId) =>
         addModal(
-          userDeleteFunc(userId)
+          require('./modalsFunc/userDeleteFunc').default(userId)
           //   {
           //   title: 'Удаление пользователя',
           //   text: 'Вы уверены, что хотите удалить пользователя?',
           //   onConfirm: async () => itemsFunc.user.delete(userId),
           // }
         ),
-      view: (userId, params) => addModal(userViewFunc(userId, params)),
-      events: (userId) => addModal(userSignedUpEventsFunc(userId)),
-      payments: (userId) => addModal(userPaymentsFunc(userId)),
-      setPassword: (userId) => addModal(userSetPasswordFunc(userId)),
+      view: (userId, params) =>
+        addModal(require('./modalsFunc/userViewFunc').default(userId, params)),
+      events: (userId) =>
+        addModal(
+          require('./modalsFunc/userSignedUpEventsFunc').default(userId)
+        ),
+      payments: (userId) =>
+        addModal(require('./modalsFunc/userPaymentsFunc').default(userId)),
+      setPassword: (userId) =>
+        addModal(require('./modalsFunc/userSetPasswordFunc').default(userId)),
     },
     questionnaire: {
       // add: (questionnaireId) =>
-      //   addModal(questionnaireConstructorFunc(questionnaireId, true)),
+      //   addModal(require('./modalsFunc/questionnaireConstructorFunc').default(questionnaireId, true)),
       open: (questionnaire, value, onConfirm) =>
-        addModal(userQuestionnaireFunc(questionnaire, value, onConfirm)),
+        addModal(
+          require('./modalsFunc/userQuestionnaireFunc').default(
+            questionnaire,
+            value,
+            onConfirm
+          )
+        ),
       constructor: (questionnaire, onConfirm) =>
-        addModal(questionnaireConstructorFunc(questionnaire, onConfirm)),
+        addModal(
+          require('./modalsFunc/questionnaireConstructorFunc').default(
+            questionnaire,
+            onConfirm
+          )
+        ),
     },
     additionalBlock: {
       add: (additionalBlockId) =>
-        addModal(additionalBlockFunc(additionalBlockId, true)),
+        addModal(
+          require('./modalsFunc/additionalBlockFunc').default(
+            additionalBlockId,
+            true
+          )
+        ),
       edit: (additionalBlockId) =>
-        addModal(additionalBlockFunc(additionalBlockId)),
+        addModal(
+          require('./modalsFunc/additionalBlockFunc').default(additionalBlockId)
+        ),
       delete: (additionalBlockId) =>
         addModal({
           title: 'Удаление дополнительного блока',
@@ -416,9 +561,12 @@ const modalsFuncGenerator = (
         }),
     },
     service: {
-      add: (serviceId) => addModal(serviceFunc(serviceId, true)),
-      edit: (serviceId) => addModal(serviceFunc(serviceId)),
-      view: (serviceId) => addModal(serviceViewFunc(serviceId)),
+      add: (serviceId) =>
+        addModal(require('./modalsFunc/serviceFunc').default(serviceId, true)),
+      edit: (serviceId) =>
+        addModal(require('./modalsFunc/serviceFunc').default(serviceId)),
+      view: (serviceId) =>
+        addModal(require('./modalsFunc/serviceViewFunc').default(serviceId)),
       apply: (serviceId) => {
         if (!loggedUser?._id) {
           addModal({
@@ -441,7 +589,8 @@ const modalsFuncGenerator = (
             onConfirm: () =>
               router.push(`/cabinet/questionnaire`, '', { shallow: true }),
           })
-        else addModal(serviceApplyFunc(serviceId))
+        else
+          addModal(require('./modalsFunc/serviceApplyFunc').default(serviceId))
       },
       delete: (serviceId) =>
         addModal({
@@ -463,9 +612,16 @@ const modalsFuncGenerator = (
         }),
     },
     serviceUser: {
-      add: (serviceId) => addModal(serviceUserFunc(serviceId, true)),
-      edit: (serviceId) => addModal(serviceUserFunc(serviceId)),
-      view: (serviceUserId) => addModal(serviceUserViewFunc(serviceUserId)),
+      add: (serviceId) =>
+        addModal(
+          require('./modalsFunc/serviceUserFunc').default(serviceId, true)
+        ),
+      edit: (serviceId) =>
+        addModal(require('./modalsFunc/serviceUserFunc').default(serviceId)),
+      view: (serviceUserId) =>
+        addModal(
+          require('./modalsFunc/serviceUserViewFunc').default(serviceUserId)
+        ),
       delete: (serviceUserId) =>
         addModal({
           title: 'Удаление заявки на услугу',
@@ -473,24 +629,43 @@ const modalsFuncGenerator = (
           onConfirm: async () => itemsFunc.servicesUser.delete(serviceUserId),
         }),
       statusEdit: (serviceUserId) =>
-        addModal(serviceUserStatusEditFunc(serviceUserId)),
+        addModal(
+          require('./modalsFunc/serviceUserStatusEditFunc').default(
+            serviceUserId
+          )
+        ),
     },
     notifications: {
       telegram: {
         activate: (onStartActivate, onCancel) =>
-          addModal(notificationsTelegramFunc(onStartActivate, onCancel)),
+          addModal(
+            require('./modalsFunc/notificationsTelegramFunc').default(
+              onStartActivate,
+              onCancel
+            )
+          ),
         deactivate: (onSuccess) =>
-          addModal(notificationsDeativateTelegramFunc(onSuccess)),
+          addModal(
+            require('./modalsFunc/notificationsDeativateTelegramFunc').default(
+              onSuccess
+            )
+          ),
       },
     },
     loginHistory: {
-      user: (userId) => addModal(userLoginHistoryFunc(userId)),
+      user: (userId) =>
+        addModal(require('./modalsFunc/userLoginHistoryFunc').default(userId)),
     },
     role: {
-      add: (onConfirm) => addModal(roleFunc(undefined, onConfirm)),
-      edit: (role, onConfirm) => addModal(roleFunc(role, onConfirm)),
+      add: (onConfirm) =>
+        addModal(
+          require('./modalsFunc/roleFunc').default(undefined, onConfirm)
+        ),
+      edit: (role, onConfirm) =>
+        addModal(require('./modalsFunc/roleFunc').default(role, onConfirm)),
     },
-    browseLocation: () => addModal(browseLocationFunc()),
+    browseLocation: () =>
+      addModal(require('./modalsFunc/browseLocationFunc').default()),
   }
 }
 

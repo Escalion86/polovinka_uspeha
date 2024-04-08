@@ -8,7 +8,7 @@ import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import ZodiacIcon from '@components/ZodiacIcon'
-import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
@@ -72,17 +72,6 @@ const userViewFunc = (userId, params = {}) => {
         <ImageGallery images={user?.images} />
         <div className="flex flex-col flex-1 mt-1">
           <div className="relative flex items-center mb-1 gap-x-2 min-h-6">
-            {/* {user.status === 'member' && (
-              <Tooltip title="Участник клуба">
-                <div className="w-6 h-6">
-                  <Image
-                    src="/img/svg_icons/medal.svg"
-                    width="24"
-                    height="24"
-                  />
-                </div>
-              </Tooltip>
-            )} */}
             <UserStatusIcon status={user?.status} />
             <UserName user={user} className="text-lg font-bold" />
             {!setTopLeftComponent && (
@@ -146,8 +135,8 @@ const userViewFunc = (userId, params = {}) => {
             {user?.haveKids === true
               ? 'Есть'
               : user?.haveKids === false
-              ? 'Нет'
-              : 'Не указано'}
+                ? 'Нет'
+                : 'Не указано'}
           </TextLine>
           <ContactsIconsButtons
             user={user}

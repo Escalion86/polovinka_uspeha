@@ -2,19 +2,20 @@ import DateTimeEvent from '@components/DateTimeEvent'
 import { UserItem } from '@components/ItemCards'
 import Note from '@components/Note'
 import UserName from '@components/UserName'
-import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons'
+import { faHeartBroken } from '@fortawesome/free-solid-svg-icons/faHeartBroken'
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import compareArrays from '@helpers/compareArrays'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const Heart = ({ small, broken, gray }) => (
   <FontAwesomeIcon
@@ -91,12 +92,13 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
     setConfirmButtonName,
+    setCloseButtonName,
     setCloseButtonShow,
     setDeclineButtonShow,
     setTitle,
   }) => {
     const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const user = useRecoilValue(userSelector(userId))
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = eventUsers.find(
@@ -106,7 +108,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
     )
 
-    const setEventUserData = useRecoilValue(itemsFuncAtom).event.setData
+    const setEventUserData = useRecoilValue(itemsFuncAtom).eventsUser.setData
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
     if (!eventUser)
@@ -159,16 +161,20 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       (eventUser) => !eventUser.iLike
     )
 
-    const onClickConfirm = () => {
-      setEventUserData(eventId, {
-        likes: {
-          [eventUser._id]: likes,
-        },
-      })
-      closeModal()
-    }
-
     const [likes, setLikes] = useState(eventUser.likes ?? [])
+
+    // const onClickConfirm = () => {
+    //   setEventUserData(
+    //     eventId,
+    //     {
+    //       likes: {
+    //         [eventUser._id]: likes,
+    //       },
+    //     },
+    //     true
+    //   )
+    //   closeModal()
+    // }
 
     useEffect(() => {
       if (
@@ -189,25 +195,30 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     }, [eventUser.seeLikesResult, event.likesProcessActive, adminView])
 
     useEffect(() => {
-      const isFormChanged = !compareArrays(eventUser.likes ?? [], likes)
-      setConfirmButtonName(
-        !likes || likes?.length === 0
-          ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
-          : eventUser.likes && !isFormChanged
-            ? 'Оставить как было'
-            : adminView
-              ? 'Сохранить выбор'
-              : 'Отправить мой выбор'
-      )
+      // const isFormChanged = !compareArrays(eventUser.likes ?? [], likes)
+      // setConfirmButtonName(
+      //   !likes || likes?.length === 0
+      //     ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
+      //     : eventUser.likes && !isFormChanged
+      //       ? 'Оставить как было'
+      //       : adminView
+      //         ? 'Сохранить выбор'
+      //         : 'Отправить мой выбор'
+      // )
       // setDisableConfirm(eventUser.likes && !isFormChanged)
-      setOnConfirmFunc(
-        !event.likesProcessActive
-          ? undefined
-          : eventUser.likes && !isFormChanged
-            ? closeModal
-            : onClickConfirm
+      // setOnConfirmFunc(
+      //   !event.likesProcessActive
+      //     ? undefined
+      //     : eventUser.likes && !isFormChanged
+      //       ? closeModal
+      //       : onClickConfirm
+      // )
+      // setCloseButtonShow(!event.likesProcessActive)
+      setCloseButtonName(
+        event.likesProcessActive && likes?.length === 0
+          ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
+          : 'Закрыть'
       )
-      setCloseButtonShow(!event.likesProcessActive)
       setDeclineButtonShow(adminView)
       if (!event.likesProcessActive)
         setTitle(
@@ -267,11 +278,23 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                     onClick={
                       event.likesProcessActive
                         ? () =>
-                            setLikes((state) =>
-                              checked
+                            setLikes((state) => {
+                              const likesResult = checked
                                 ? state.filter((id) => id !== user._id)
                                 : [...state, user._id]
-                            )
+
+                              setEventUserData(
+                                eventId,
+                                {
+                                  likes: {
+                                    [eventUser._id]: likesResult,
+                                  },
+                                },
+                                true
+                              )
+
+                              return likesResult
+                            })
                         : undefined
                     }
                   >

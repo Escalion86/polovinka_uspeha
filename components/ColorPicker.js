@@ -1,4 +1,5 @@
-import { faCopy, faPaste } from '@fortawesome/free-solid-svg-icons'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
+import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { textColorClassCalc } from '@helpers/calcLuminance'
 import copyToClipboard from '@helpers/copyToClipboard'

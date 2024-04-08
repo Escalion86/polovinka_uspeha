@@ -2,16 +2,18 @@ import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import FormWrapper from '@components/FormWrapper'
 import PriceDiscount from '@components/PriceDiscount'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
-import { faCancel, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faCancel } from '@fortawesome/free-solid-svg-icons/faCancel'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import userToEventStatus from '@helpers/userToEventStatus'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
 
 const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
   const EventUserSubEventChangeModal = ({
@@ -20,7 +22,7 @@ const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
   }) => {
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const user = useRecoilValue(userSelector(userId))
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = eventUsers.find(

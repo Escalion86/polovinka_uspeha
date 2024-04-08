@@ -1,12 +1,10 @@
-import {
-  faSortAlphaAsc,
-  faSortAlphaDesc,
-  faSortNumericAsc,
-  faSortNumericDesc,
-} from '@fortawesome/free-solid-svg-icons'
+import { faSortAlphaAsc } from '@fortawesome/free-solid-svg-icons/faSortAlphaAsc'
+import { faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons/faSortAlphaDesc'
+import { faSortNumericAsc } from '@fortawesome/free-solid-svg-icons/faSortNumericAsc'
+import { faSortNumericDesc } from '@fortawesome/free-solid-svg-icons/faSortNumericDesc'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useState } from 'react'
 import IconToggleButton from './IconToggleButtons/IconToggleButton'
 
@@ -15,11 +13,13 @@ const variants = {
     scale: 1,
     translateX: 0,
     translateY: 0,
+    opacity: 1,
   },
   hide: {
     scale: 0,
     translateX: '50%',
     translateY: '-50%',
+    opacity: 0,
   },
 }
 
@@ -38,6 +38,11 @@ const sortParams = [
   {
     key: 'name',
     title: 'по имени',
+    type: 'string',
+  },
+  {
+    key: 'firstNameAndGender',
+    title: 'по имени и полу',
     type: 'string',
   },
   { key: 'dateStart', title: 'по дате', type: 'number' },
@@ -112,7 +117,7 @@ const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
   )
 }
 
-const SortingButtonMenu = ({ sort, onChange, sortKeys = [] }) => {
+const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
 
@@ -143,12 +148,12 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [] }) => {
       }}
     >
       <div className="relative">
-        <motion.div
+        <m.div
           className="absolute right-0 z-0 flex flex-col overflow-hidden duration-300 bg-white border border-gray-300 rounded top-10"
           variants={variants}
           animate={isUserMenuOpened ? 'show' : 'hide'}
           initial="hide"
-          transition={{ duration: 0.2, type: 'tween' }}
+          transition={{ duration: 0.1, type: 'tween' }}
         >
           {sortParams
             .filter((sortParam) => sortKeys.includes(sortParam.key))
@@ -162,8 +167,9 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [] }) => {
                 onChange={(value) => onChange({ [sortParam.key]: value })}
               />
             ))}
-        </motion.div>
-        <IconToggleButton value="sort">
+        </m.div>
+        <IconToggleButton value="sort" aria-label="Sorting">
+          {showTitle ? sortParam.title : null}
           <FontAwesomeIcon
             icon={sortIcons[sortParam.type][sortValue]}
             className="h-6"

@@ -1,14 +1,11 @@
-import {
-  faArrowDown,
-  faArrowUp,
-  faCheck,
-  faCopy,
-  faEye,
-  faEyeSlash,
-  faGenderless,
-  faHeart,
-  faPencil,
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
+import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
+import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GENDERS } from '@helpers/constants'
 import { modalsFuncAtom } from '@state/atoms'
@@ -19,11 +16,12 @@ import useCopyToClipboard from '@helpers/useCopyToClipboard'
 import birthDateToAge from '@helpers/birthDateToAge'
 import cn from 'classnames'
 import UserName from './UserName'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
 import arrayToObject from '@helpers/arrayToObject'
 import CardButton from './CardButton'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import eventSelector from '@state/selectors/eventSelector'
 
 const dayTimeText = () => {
   var date = new Date()
@@ -88,7 +86,7 @@ const UserLikesItem = ({
   onDownClick,
   likeSortNum,
 }) => {
-  const event = useRecoilValue(eventAtom(eventId))
+  const event = useRecoilValue(eventSelector(eventId))
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   // const userGender =
   //   user.gender && GENDERS.find((gender) => gender.value === user.gender)
@@ -355,19 +353,24 @@ const setDown = (array, key, clickedIndex) => {
   // )
 }
 
-const LikesViewer = ({ eventId, readOnly }) => {
-  const event = useRecoilValue(eventAtom(eventId))
+const LikesViewer = ({ eventId }) => {
+  const event = useRecoilValue(eventSelector(eventId))
   const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
   const eventUsers = useRecoilValue(
     eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
   )
 
+  const readOnly = !event.likesProcessActive
+
   const onDownClick = async (array, key, clickedIndex) => {
     const resultToChange = setDown(array, key, clickedIndex)
-    console.log('resultToChange :>> ', resultToChange)
     for (let i = 0; i < resultToChange.length; i++) {
       const eventUser = resultToChange[i]
-      setEventUser({ _id: eventUser._id, likeSortNum: eventUser.likeSortNum })
+      setEventUser(
+        { _id: eventUser._id, likeSortNum: eventUser.likeSortNum },
+        false,
+        true
+      )
     }
   }
 
@@ -375,7 +378,11 @@ const LikesViewer = ({ eventId, readOnly }) => {
     const resultToChange = setUp(array, key, clickedIndex)
     for (let i = 0; i < resultToChange.length; i++) {
       const eventUser = resultToChange[i]
-      setEventUser({ _id: eventUser._id, likeSortNum: eventUser.likeSortNum })
+      setEventUser(
+        { _id: eventUser._id, likeSortNum: eventUser.likeSortNum },
+        false,
+        true
+      )
     }
   }
 

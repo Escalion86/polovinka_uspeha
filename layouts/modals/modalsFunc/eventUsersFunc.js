@@ -5,28 +5,24 @@ import { SelectUserList } from '@components/SelectItemList'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import { P } from '@components/tags'
-import {
-  faArrowAltCircleLeft,
-  faArrowAltCircleRight,
-} from '@fortawesome/free-regular-svg-icons'
-import {
-  faHeartCirclePlus,
-  faListCheck,
-  faStreetView,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowAltCircleLeft } from '@fortawesome/free-regular-svg-icons/faArrowAltCircleLeft'
+import { faArrowAltCircleRight } from '@fortawesome/free-regular-svg-icons/faArrowAltCircleRight'
+import { faHeartCirclePlus } from '@fortawesome/free-solid-svg-icons/faHeartCirclePlus'
+import { faListCheck } from '@fortawesome/free-solid-svg-icons/faListCheck'
+import { faStreetView } from '@fortawesome/free-solid-svg-icons/faStreetView'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { arrayToObjectArray } from '@helpers/arrayToObject'
 import compareObjects from '@helpers/compareObjects'
 import { EVENT_STATUSES } from '@helpers/constants'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
-import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
+import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 // import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import usersAtom from '@state/atoms/usersAtom'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -35,6 +31,10 @@ import {
   // useRecoilRefresher_UNSTABLE,
   useRecoilValue,
 } from 'recoil'
+import eventSelector from '@state/selectors/eventSelector'
+import sortFunctions from '@helpers/sortFunctions'
+import formatDateTime from '@helpers/formatDateTime'
+import Note from '@components/Note'
 
 const EventsUsers = ({
   event,
@@ -47,6 +47,7 @@ const EventsUsers = ({
   toReserveFunc,
   fromReserveFunc,
   noButtons,
+  itemChildren,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -64,6 +65,7 @@ const EventsUsers = ({
         onChange={setSelectedIds}
         exceptedIds={exceptedIds}
         readOnly={!canEdit || isEventClosed}
+        itemChildren={itemChildren}
         buttons={
           !noButtons && canEdit && !isEventClosed
             ? [
@@ -147,6 +149,8 @@ const sortByFirstNameAndGenderFunction = (a, b) =>
         ? -1
         : 1
 
+const sortByCreateAtFunction = sortFunctions.createdAt.asc
+
 const genderSplitAndSort = (eventUsers) =>
   genderSplitAndSort?.length === 0
     ? [[], []]
@@ -179,8 +183,11 @@ const eventUsersFunc = (eventId) => {
       loggedUserActiveRole?.eventsUsers?.copyListToClipboard
 
     const [dataChanged, setDataChanged] = useState(isDataChanged)
+    // const [sortType, setSortType] = useState('name')
+    // const [sort, setSort] = useState({ firstNameAndGender: 'asc' })
+    // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
     const users = useRecoilValue(usersAtom)
     const isEventClosed = isEventClosedFunc(event)
@@ -188,7 +195,7 @@ const eventUsersFunc = (eventId) => {
     const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
 
     const sortedUsers = useMemo(
-      () => [...users].sort(sortByFirstNameAndGenderFunction),
+      () => [...users].sort(sortFunctions.firstNameAndGender.asc),
       [users]
     )
 
@@ -202,7 +209,7 @@ const eventUsersFunc = (eventId) => {
     const sortedEventUsersParticipants = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'participant')].sort(
-          sortByFirstNameAndGenderFunctionEventUser
+          (a, b) => sortFunctions.firstNameAndGender.asc(a.user, b.user)
         ),
       [eventUsers]
     )
@@ -210,24 +217,24 @@ const eventUsersFunc = (eventId) => {
     const sortedEventUsersReserve = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'reserve')].sort(
-          sortByFirstNameAndGenderFunctionEventUser
+          sortFunctions.createdAt.asc
         ),
       [eventUsers]
     )
 
-    const sortedEventUsersAssistants = useMemo(
+    const arrayAssistants = useMemo(
       () =>
-        [...eventUsers.filter(({ status }) => status === 'assistant')].sort(
-          sortByFirstNameAndGenderFunctionEventUser
-        ),
+        [...eventUsers.filter(({ status }) => status === 'assistant')]
+          .sort((a, b) => sortFunctions.firstNameAndGender.asc(a.user, b.user))
+          .map(({ user }) => user),
       [eventUsers]
     )
 
-    const sortedEventUsersBanned = useMemo(
+    const arrayBanned = useMemo(
       () =>
-        [...eventUsers.filter(({ status }) => status === 'ban')].sort(
-          sortByFirstNameAndGenderFunctionEventUser
-        ),
+        [...eventUsers.filter(({ status }) => status === 'ban')]
+          .sort((a, b) => sortFunctions.firstNameAndGender.asc(a.user, b.user))
+          .map(({ user }) => user),
       [eventUsers]
     )
 
@@ -254,9 +261,6 @@ const eventUsersFunc = (eventId) => {
         ),
       [sortedEventUsersReserve]
     )
-
-    const arrayAssistants = sortedEventUsersAssistants.map(({ user }) => user)
-    const arrayBanned = sortedEventUsersBanned.map(({ user }) => user)
 
     const [participants, setParticipants] = useState(objParticipants)
     const [reserve, setReserve] = useState(objReserve)
@@ -327,11 +331,11 @@ const eventUsersFunc = (eventId) => {
       statusEdit,
       copyListToClipboard,
       setTopLeftComponent,
-      participants,
-      reserve,
-      assistants,
-      banned,
-      event,
+      // participants,
+      // reserve,
+      // assistants,
+      // banned,
+      // event,
     ])
 
     const onClickConfirm = async () => {
@@ -473,6 +477,14 @@ const eventUsersFunc = (eventId) => {
 
     return (
       <>
+        {/* <div className="absolute z-50 top-1 right-11">
+          <SortingButtonMenu
+            sort={sort}
+            onChange={setSort}
+            sortKeys={['firstNameAndGender', 'createdAt']}
+            showTitle
+          />
+        </div> */}
         {canEdit && isEventClosed && (
           <P className="text-danger">
             Мероприятие закрыто, поэтому редактирование состава участников
@@ -516,7 +528,7 @@ const eventUsersFunc = (eventId) => {
                   label={title || 'Основной тип участия'}
                 >
                   {canEdit && (
-                    <div className="flex justify-center mb-1">
+                    <div className="flex justify-center">
                       <EventUsersCounterAndAge
                         event={event}
                         subEvent={subEvent}
@@ -542,6 +554,22 @@ const eventUsersFunc = (eventId) => {
                     toReserveFunc={(newId) => {
                       setReserveState(id, [...reserveIds[id], newId])
                     }}
+                    // itemChildren={
+                    //   eventUsers
+                    //     ? (user) => {
+                    //         const eventUser = eventUsers.find(
+                    //           ({ userId }) => userId === user._id
+                    //         )
+                    //         return (
+                    //           <div className="text-xs font-normal tablet:text-sm">
+                    //             <div className="leading-[14px]">
+                    //               {formatDateTime(eventUser.createdAt)}
+                    //             </div>
+                    //           </div>
+                    //         )
+                    //       }
+                    //     : undefined
+                    // }
                   />
                 </Wrapper>
               )
@@ -551,8 +579,11 @@ const eventUsersFunc = (eventId) => {
             <TabPanel
               tabName="Резерв"
               tabAddToLabel={`(${reserveCount})`}
-              className="flex flex-col mt-2 gap-y-5"
+              className="flex flex-col"
             >
+              <Note className="mb-2" noMargin>
+                Резерв отсортирован по дате создания заявки
+              </Note>
               {event.subEvents.map((subEvent) => {
                 const { id, title } = subEvent
 
@@ -588,6 +619,22 @@ const eventUsersFunc = (eventId) => {
                             newId,
                           ])
                         // setReserveState(sortUsersByIds([...reserveIds[id], id]))
+                      }
+                      itemChildren={
+                        eventUsers
+                          ? (user) => {
+                              const eventUser = eventUsers.find(
+                                ({ userId }) => userId === user._id
+                              )
+                              return (
+                                <div className="max-h-[14px] flex justify-center items-end w-full text-xs font-normal">
+                                  <div className="max-h-[14px] leading-[14px] border-t border-r border-l rounded-t-md px-2 border-gray-700 bg-teal-50">
+                                    {formatDateTime(eventUser.createdAt)}
+                                  </div>
+                                </div>
+                              )
+                            }
+                          : undefined
                       }
                     />
                   </Wrapper>
@@ -642,10 +689,10 @@ const eventUsersFunc = (eventId) => {
 
   const ModalRefresher = (props) => {
     const [isRefreshed, setIsRefreshed] = useState(false)
-    const data = useRecoilValue(asyncEventsUsersByEventIdSelector(eventId))
+    const data = useRecoilValue(asyncEventsUsersByEventIdAtom(eventId))
     const [prevData, setPravData] = useState(data)
     const refreshEventState = useRecoilRefresher_UNSTABLE(
-      asyncEventsUsersByEventIdSelector(eventId)
+      asyncEventsUsersByEventIdAtom(eventId)
     )
     // const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
     // const canEdit = loggedUserActiveRole?.eventsUsers?.edit

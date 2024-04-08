@@ -1,4 +1,4 @@
-import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
+import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 import { selector } from 'recoil'
 
 const servicesUsersDeleteSelector = selector({
@@ -7,9 +7,9 @@ const servicesUsersDeleteSelector = selector({
     return null
   },
   set: ({ set, get }, itemId) => {
-    const items = get(servicesUsersAtom)
+    const items = get(asyncServicesUsersAtom)
     const newItemsList = items.filter((item) => item._id !== itemId)
-    set(servicesUsersAtom, newItemsList)
+    set(asyncServicesUsersAtom, newItemsList)
   },
 })
 

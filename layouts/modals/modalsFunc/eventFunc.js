@@ -13,14 +13,12 @@ import { SelectUser } from '@components/SelectItem'
 import SubEvent from '@components/SubEvent'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
-import {
-  faEye,
-  faEyeSlash,
-  faHeart,
-  faHeartBroken,
-  faPlus,
-  faTriangleExclamation,
-} from '@fortawesome/free-solid-svg-icons'
+import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
+import { faHeartBroken } from '@fortawesome/free-solid-svg-icons/faHeartBroken'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons/faTriangleExclamation'
 import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
 import {
@@ -38,7 +36,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import eventAtom from '@state/async/eventAtom'
+import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { uid } from 'uid'
@@ -100,7 +98,7 @@ const eventFunc = (eventId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const event = useRecoilValue(eventAtom(eventId))
+    const event = useRecoilValue(eventFullAtomAsync(eventId))
     const directions = useRecoilValue(directionsAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
     // const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()

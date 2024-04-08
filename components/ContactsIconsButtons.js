@@ -1,17 +1,16 @@
-import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 
-const {
-  faWhatsapp,
-  faViber,
-  faTelegramPlane,
-  faInstagram,
-  faVk,
-} = require('@fortawesome/free-brands-svg-icons')
-const { faPhone, faSms } = require('@fortawesome/free-solid-svg-icons')
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope } from '@fortawesome/free-regular-svg-icons/faEnvelope'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
+import { faViber } from '@fortawesome/free-brands-svg-icons/faViber'
+import { faTelegramPlane } from '@fortawesome/free-brands-svg-icons/faTelegramPlane'
+import { faInstagram } from '@fortawesome/free-brands-svg-icons/faInstagram'
+import { faVk } from '@fortawesome/free-brands-svg-icons/faVk'
+import { faPhone } from '@fortawesome/free-solid-svg-icons/faPhone'
+import { faSms } from '@fortawesome/free-solid-svg-icons/faSms'
 
 const ContactIconBtn = ({ url, icon, size = 'lg', className = null }) => (
   <FontAwesomeIcon
@@ -112,8 +111,8 @@ const ContactsIconsButtons = ({
               message
                 ? `sms:+${user.phone}?body=${encodedMessage}`
                 : smsViaPhone
-                ? `sms:+${user.phone}`
-                : `tel:+${user.phone}`
+                  ? `sms:+${user.phone}`
+                  : `tel:+${user.phone}`
             }
             title={'+' + user.phone}
           />

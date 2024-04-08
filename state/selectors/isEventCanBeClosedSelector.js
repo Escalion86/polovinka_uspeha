@@ -2,7 +2,8 @@ import { selectorFamily } from 'recoil'
 import expectedIncomeOfEventSelector from './expectedIncomeOfEventSelector'
 import totalIncomeOfEventSelector from './totalIncomeOfEventSelector'
 import isEventExpiredFunc from '@helpers/isEventExpired'
-import eventAtom from '@state/async/eventAtom'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+import eventSelector from './eventSelector'
 
 const isEventCanBeClosedSelector = selectorFamily({
   key: 'isEventCanBeClosedSelector',
@@ -11,7 +12,7 @@ const isEventCanBeClosedSelector = selectorFamily({
     ({ get }) => {
       const totalIncome = get(totalIncomeOfEventSelector(id))
       const expectedIncome = get(expectedIncomeOfEventSelector(id))
-      const isEventExpired = isEventExpiredFunc(get(eventAtom(id)))
+      const isEventExpired = isEventExpiredFunc(get(eventSelector(id)))
 
       return totalIncome >= expectedIncome && isEventExpired
     },
