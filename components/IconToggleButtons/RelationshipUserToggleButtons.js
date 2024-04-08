@@ -18,6 +18,7 @@ const RelationshipUserToggleButtons = ({ value, onChange }) => {
         }
         variant={value.noPartner ? 'contained' : 'outlined'}
         color="blue"
+        aria-label="noPartner"
       >
         <div className="w-6 h-6">
           <Image
@@ -38,6 +39,7 @@ const RelationshipUserToggleButtons = ({ value, onChange }) => {
         }
         variant={value.havePartner ? 'contained' : 'outlined'}
         color="green"
+        aria-label="havePartner"
       >
         <div className="w-6 h-6">
           <Image

@@ -21,6 +21,7 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
         }
         variant={value.member ? 'contained' : 'outlined'}
         color="blue"
+        aria-label="novice"
       >
         <div className="w-6 h-6">
           <Image
@@ -42,6 +43,7 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
         }
         variant={value.novice ? 'contained' : 'outlined'}
         color="gray"
+        aria-label="member"
       >
         <div className="w-6 h-6 grayscale brightness-150 contrast-75 ">
           <Image
@@ -64,6 +66,7 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
         variant={value.ban ? 'contained' : 'outlined'}
         color="red"
         className={value.ban ? 'text-white' : 'text-red-400'}
+        aria-label="ban"
       >
         <FontAwesomeIcon className="w-6 h-6" icon={faBan} />
       </Button>

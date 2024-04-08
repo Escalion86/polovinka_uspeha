@@ -15,6 +15,7 @@ module.exports = withBundleAnalyzer(
     //   // config.experiments = { topLevelAwait: true }
     //   return config
     // },
+    swcMinify: false,
     experimental: {
       largePageDataBytes: 512 * 100000,
     },

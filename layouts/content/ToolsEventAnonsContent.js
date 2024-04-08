@@ -323,7 +323,8 @@ const ToolsEventAnonsContent = () => {
                   fill={anonsColor}
                   // fontWeight="bold"
                   textAnchor="middle"
-                  fontFamily="AdleryProBlockletter" //"Enchants"
+                  className="font-adlery"
+                  // fontFamily="AdleryProBlockletter" //"Enchants"
                 >
                   {/* {event.title} */}
                   {/* Катание на лимузине по елкам */}
