@@ -210,29 +210,30 @@ const userFunc = (userId, clone = false) => {
 
     useEffect(() => {
       const isFormChanged =
-        user?.firstName !== firstName ||
-        user?.secondName !== secondName ||
-        user?.thirdName !== thirdName ||
+        (user?.firstName ?? DEFAULT_USER.firstName) !== firstName ||
+        (user?.secondName ?? DEFAULT_USER.secondName) !== secondName ||
+        (user?.thirdName ?? DEFAULT_USER.thirdName) !== thirdName ||
         (!userId && user?.password !== password) ||
         // user?.about !== about ||
         // user?.interests !== interests ||
         // user?.profession !== profession ||
         // user?.orientation !== orientation ||
-        user?.gender !== gender ||
-        user?.relationship !== relationship ||
-        user?.personalStatus !== personalStatus ||
-        user?.email !== email ||
-        user?.phone !== phone ||
-        user?.whatsapp !== whatsapp ||
-        user?.viber !== viber ||
-        user?.telegram !== telegram ||
-        user?.instagram !== instagram ||
-        user?.vk !== vk ||
-        !compareArrays(user?.images, images) ||
-        user?.birthday !== birthday ||
-        user?.haveKids !== haveKids ||
-        user?.status !== status ||
-        user?.role !== role
+        (user?.gender ?? DEFAULT_USER.gender) !== gender ||
+        (user?.relationship ?? DEFAULT_USER.relationship) !== relationship ||
+        (user?.personalStatus ?? DEFAULT_USER.personalStatus) !==
+          personalStatus ||
+        (user?.email ?? DEFAULT_USER.email) !== email ||
+        (user?.phone ?? DEFAULT_USER.phone) !== phone ||
+        (user?.whatsapp ?? DEFAULT_USER.whatsapp) !== whatsapp ||
+        (user?.viber ?? DEFAULT_USER.viber) !== viber ||
+        (user?.telegram ?? DEFAULT_USER.telegram) !== telegram ||
+        (user?.instagram ?? DEFAULT_USER.instagram) !== instagram ||
+        (user?.vk ?? DEFAULT_USER.vk) !== vk ||
+        !compareArrays(user?.images ?? DEFAULT_USER.images, images) ||
+        (user?.birthday ?? DEFAULT_USER.birthday) !== birthday ||
+        (user?.haveKids ?? DEFAULT_USER.haveKids) !== haveKids ||
+        (user?.status ?? DEFAULT_USER.status) !== status ||
+        (user?.role ?? DEFAULT_USER.role) !== role
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)

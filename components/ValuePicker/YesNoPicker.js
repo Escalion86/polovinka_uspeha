@@ -1,4 +1,5 @@
-import { faCheck, faBan } from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
 import ValuePicker from './ValuePicker'
 
 export const YES_NO = [

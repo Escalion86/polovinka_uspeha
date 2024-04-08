@@ -1,10 +1,8 @@
-import {
-  faMoneyBill,
-  faPencilAlt,
-  faPlus,
-  faTimes,
-  faUsers,
-} from '@fortawesome/free-solid-svg-icons'
+import { faMoneyBill } from '@fortawesome/free-solid-svg-icons/faMoneyBill'
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
+import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import filterWithRules from '@helpers/filterWithRules'
 import { modalsFuncAtom } from '@state/atoms'

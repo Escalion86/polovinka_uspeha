@@ -1,9 +1,7 @@
-import {
-  faSortAlphaAsc,
-  faSortAlphaDesc,
-  faSortNumericAsc,
-  faSortNumericDesc,
-} from '@fortawesome/free-solid-svg-icons'
+import { faSortAlphaAsc } from '@fortawesome/free-solid-svg-icons/faSortAlphaAsc'
+import { faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons/faSortAlphaDesc'
+import { faSortNumericAsc } from '@fortawesome/free-solid-svg-icons/faSortNumericAsc'
+import { faSortNumericDesc } from '@fortawesome/free-solid-svg-icons/faSortNumericDesc'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import { m } from 'framer-motion'
@@ -170,7 +168,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
               />
             ))}
         </m.div>
-        <IconToggleButton value="sort">
+        <IconToggleButton value="sort" aria-label="Sorting">
           {showTitle ? sortParam.title : null}
           <FontAwesomeIcon
             icon={sortIcons[sortParam.type][sortValue]}

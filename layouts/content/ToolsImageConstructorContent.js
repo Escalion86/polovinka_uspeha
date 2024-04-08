@@ -1,29 +1,22 @@
 import Button from '@components/Button'
 import IconButtonMenu from '@components/ButtonMenu'
-import CheckBox from '@components/CheckBox'
 import ColorPicker from '@components/ColorPicker'
 import Divider from '@components/Divider'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-import InputWrapper from '@components/InputWrapper'
 import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
 } from '@components/SvgBackground'
-import {
-  faArrowDown,
-  faArrowUp,
-  faAsterisk,
-  faEye,
-  faEyeSlash,
-  faPlus,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
+import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import arrayMove from '@helpers/arrayMove'
 import { DEFAULT_IMAGE_CONSTRUCTOR_ITEM } from '@helpers/constants'
-import getNoun from '@helpers/getNoun'
-import cn from 'classnames'
 import { useState } from 'react'
 import { uid } from 'uid'
 

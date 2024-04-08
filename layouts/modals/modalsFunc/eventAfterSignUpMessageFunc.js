@@ -2,7 +2,7 @@ import Button from '@components/Button'
 import DateTimeEvent from '@components/DateTimeEvent'
 import FormWrapper from '@components/FormWrapper'
 import Note from '@components/Note'
-import { faCalendarPlus } from '@fortawesome/free-regular-svg-icons'
+import { faCalendarPlus } from '@fortawesome/free-regular-svg-icons/faCalendarPlus'
 
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 

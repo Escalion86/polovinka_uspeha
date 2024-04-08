@@ -1,4 +1,4 @@
-import { faBan } from '@fortawesome/free-solid-svg-icons'
+import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'

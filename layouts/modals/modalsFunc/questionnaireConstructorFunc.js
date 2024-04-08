@@ -6,15 +6,13 @@ import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
-import {
-  faArrowDown,
-  faArrowUp,
-  faAsterisk,
-  faEye,
-  faEyeSlash,
-  faPlus,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
+import { faAsterisk } from '@fortawesome/free-solid-svg-icons/faAsterisk'
+import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import arrayMove from '@helpers/arrayMove'
 import {

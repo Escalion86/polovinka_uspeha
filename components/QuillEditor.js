@@ -8,10 +8,14 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import dynamic from 'next/dynamic'
+// import dynamic from 'next/dynamic'
+// import Script from 'next/script'
+import Quill from 'quill'
+// const Quill = dynamic(() => import('quill'), { ssr: false }).default
 // import * as Emoji from 'quill-emoji'
 // Editor is an uncontrolled React component
 // import Quill from 'quill/core'
+// const Quill = dynamic(() => import('quill'), { ssr: false }).default
 // const Emoji = dynamic(() => import('quill-emoji'), { ssr: false })
 // import Quill from 'quill'
 
@@ -111,7 +115,9 @@ const QuillEditor = forwardRef(
     // )
 
     // console.log('Quill :>> ', Quill)
-    // const Quill = require('quill')
+    // const Quill = require('quill').default
+    // const Quill = import('quill').default
+
     // if (!Quill.imports['modules/emoji'])
     // useEffect(() => {
     // Quill.register('modules/emoji', require('quill-emoji'))
@@ -126,9 +132,9 @@ const QuillEditor = forwardRef(
       onChangeRef.current = onChange
     })
 
-    useEffect(() => {
-      ref.current?.enable(!readOnly)
-    }, [ref, readOnly])
+    // useEffect(() => {
+    //   ref?.current?.enable(!readOnly)
+    // }, [ref, readOnly])
 
     // useEffect(() => {
     //   if (typeof window !== 'undefined') {
@@ -182,7 +188,7 @@ const QuillEditor = forwardRef(
           // console.log('quill :>> ', quill)
           // Quill.register({ 'modules/emoji': require('quill-emoji') })
 
-          ref.current = quill
+          // ref.current = quill
 
           // console.log('quill :>> ', quill)
           // quill.set
@@ -207,7 +213,7 @@ const QuillEditor = forwardRef(
           })
 
           return () => {
-            ref.current = null
+            // ref.current = null
             // container.innerHTML = ''
           }
           // }

@@ -1,4 +1,6 @@
-import { faHome, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faHome } from '@fortawesome/free-solid-svg-icons/faHome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import arrayMove from '@helpers/arrayMove'
 import { sendImage } from '@helpers/cloudinary'

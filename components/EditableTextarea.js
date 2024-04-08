@@ -1,9 +1,10 @@
-import React, { useRef } from 'react'
-import QuillEditor from './QuillEditor'
+import React from 'react'
+import dynamic from 'next/dynamic'
+const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
+// import QuillEditor from './QuillEditor'
 import InputWrapper from './InputWrapper'
 import cn from 'classnames'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { Suspense } from 'react'
 
 // const Delta = Quill.import('delta')
 
@@ -23,17 +24,11 @@ const EditableTextarea = ({
   required,
   error,
 }) => {
-  const [Q, setQ] = useState()
   // const [range, setRange] = useState()
   // const [lastChange, setLastChange] = useState()
   // const [readOnly, setReadOnly] = useState(false)
 
   // Use a ref to access the quill instance directly
-  const quillRef = useRef()
-
-  useEffect(() => {
-    setQ(QuillEditor)
-  }, [])
 
   return (
     <InputWrapper
@@ -50,16 +45,16 @@ const EditableTextarea = ({
       paddingX={false}
       disabled={disabled}
     >
-      {Q && (
-        <Q
-          ref={quillRef}
+      {/* <Script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.5/dist/quill.js"></Script> */}
+      <Suspense>
+        <QuillEditor
           readOnly={disabled}
           defaultValue={html}
           // onSelectionChange={setRange}
           // onTextChange={setLastChange}
           onChange={onChange}
         />
-      )}
+      </Suspense>
       {/* <div class="controls">
         <label>
           Read Only:{' '}

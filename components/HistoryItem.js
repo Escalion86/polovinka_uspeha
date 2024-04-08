@@ -1,9 +1,7 @@
-import {
-  faAdd,
-  faAngleDown,
-  faRefresh,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { faAdd } from '@fortawesome/free-solid-svg-icons/faAdd'
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
+import { faRefresh } from '@fortawesome/free-solid-svg-icons/faRefresh'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import cn from 'classnames'

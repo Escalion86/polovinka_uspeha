@@ -2,8 +2,8 @@ import PaymentsPayDirectionToggleButtons from '@components/IconToggleButtons/Pay
 import PaymentsPayTypeToggleButtons from '@components/IconToggleButtons/PaymentsPayTypeToggleButtons'
 import PaymentsSectorToggleButtons from '@components/IconToggleButtons/PaymentsSectorToggleButtons'
 import ToggleButtons from '@components/IconToggleButtons/ToggleButtons'
-import { faLink, faUnlink } from '@fortawesome/free-solid-svg-icons'
-import { SECTORS } from '@helpers/constants'
+import { faLink } from '@fortawesome/free-solid-svg-icons/faLink'
+import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
 
 const PaymentsFilter = ({
   value,

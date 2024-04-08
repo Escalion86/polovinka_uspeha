@@ -1,5 +1,5 @@
 import Tooltip from '@components/Tooltip'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ModalButtons from '@layouts/modals/ModalButtons'
 import { modalsAtom, modalsFuncAtom } from '@state/atoms'

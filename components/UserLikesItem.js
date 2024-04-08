@@ -1,10 +1,8 @@
 import { SelectUserList } from '@components/SelectItemList'
 import UserName from '@components/UserName'
-import {
-  faCheck,
-  faCopy,
-  faGenderless,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GENDERS } from '@helpers/constants'
 import cn from 'classnames'

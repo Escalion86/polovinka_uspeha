@@ -1,14 +1,12 @@
 import CheckBox from '@components/CheckBox'
 import FabMenu from '@components/FabMenu'
 import LoadingSpinner from '@components/LoadingSpinner'
-import {
-  faCheck,
-  faHouse,
-  faLock,
-  faPhone,
-  faTimes,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faHouse } from '@fortawesome/free-solid-svg-icons/faHouse'
+import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
+import { faPhone } from '@fortawesome/free-solid-svg-icons/faPhone'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
+import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { postData } from '@helpers/CRUD'
 import { DEFAULT_SITE_SETTINGS, LOCATIONS } from '@helpers/constants'

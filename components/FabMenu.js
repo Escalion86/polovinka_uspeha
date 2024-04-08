@@ -1,5 +1,5 @@
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'

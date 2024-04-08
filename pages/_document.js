@@ -11,7 +11,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html className="scroll-smooth">
+      <Html className="scroll-smooth" lang="ru">
         <Head>
           <meta
             name="application-name"

@@ -5,16 +5,12 @@ import { SelectUserList } from '@components/SelectItemList'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import { P } from '@components/tags'
-import {
-  faArrowAltCircleLeft,
-  faArrowAltCircleRight,
-} from '@fortawesome/free-regular-svg-icons'
-import {
-  faHeartCirclePlus,
-  faListCheck,
-  faStreetView,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowAltCircleLeft } from '@fortawesome/free-regular-svg-icons/faArrowAltCircleLeft'
+import { faArrowAltCircleRight } from '@fortawesome/free-regular-svg-icons/faArrowAltCircleRight'
+import { faHeartCirclePlus } from '@fortawesome/free-solid-svg-icons/faHeartCirclePlus'
+import { faListCheck } from '@fortawesome/free-solid-svg-icons/faListCheck'
+import { faStreetView } from '@fortawesome/free-solid-svg-icons/faStreetView'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { arrayToObjectArray } from '@helpers/arrayToObject'
 import compareObjects from '@helpers/compareObjects'

@@ -1,9 +1,8 @@
 import Chip from '@components/Chips/Chip'
 import InputWrapper from '@components/InputWrapper'
-import { faWrench } from '@fortawesome/free-solid-svg-icons'
+import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
 import { forwardRef, useState } from 'react'
 import { Popover } from 'react-tiny-popover'
@@ -130,8 +129,8 @@ const ChipsSelector = forwardRef(
               items.length <= 8
                 ? 'grid-cols-1'
                 : items.length <= 16
-                ? 'grid-cols-2'
-                : 'grid-cols-3'
+                  ? 'grid-cols-2'
+                  : 'grid-cols-3'
             )}
           >
             {items.map((item, index) => {

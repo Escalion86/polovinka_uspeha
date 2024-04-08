@@ -1,4 +1,4 @@
-import { faCheckCircle } from '@fortawesome/free-regular-svg-icons'
+import { faCheckCircle } from '@fortawesome/free-regular-svg-icons/faCheckCircle'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const ListItem = ({ children }) => (

@@ -1,8 +1,5 @@
-import {
-  faAngleDown,
-  faAngleUp,
-  faArrowUp,
-} from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
+import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { pages, pagesGroups } from '@helpers/constants'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
@@ -192,9 +189,9 @@ const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
                           </div>
                         )}
                     </div>
-                    <h3 className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
+                    <div className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
                       {item.items.length === 1 ? item.items[0].name : item.name}
-                    </h3>
+                    </div>
 
                     {item.items.length > 1 && (
                       <div

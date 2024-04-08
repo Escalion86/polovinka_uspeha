@@ -24,6 +24,7 @@ const RelationshipUserToggleButtons = ({ value, onChange }) => {
             src="/img/relationships/noPartner.png"
             width="24"
             height="24"
+            alt="noPartner"
           />
         </div>
       </Button>
@@ -43,6 +44,7 @@ const RelationshipUserToggleButtons = ({ value, onChange }) => {
             src="/img/relationships/havePartner.png"
             width="24"
             height="24"
+            alt="havePartner"
           />
         </div>
       </Button>

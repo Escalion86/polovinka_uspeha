@@ -11,12 +11,10 @@ import EventPayDirectionIconText from '@components/ValueIconText/EventPayDirecti
 import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayDirectionIconText'
 import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
 import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
-import {
-  faQuestion,
-  faTimesCircle,
-  faUnlink,
-  faUserTimes,
-} from '@fortawesome/free-solid-svg-icons'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
+import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
+import { faUserTimes } from '@fortawesome/free-solid-svg-icons/faUserTimes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   PRODUCT_USER_STATUSES,

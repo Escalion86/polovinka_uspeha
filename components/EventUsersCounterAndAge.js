@@ -1,4 +1,5 @@
-import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
+import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
+import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import eventMansReserveSelector from '@state/selectors/eventMansReserveSelector'
 // import eventMansSelector from '@state/selectors/eventMansSelector'

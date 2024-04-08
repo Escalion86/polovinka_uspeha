@@ -8,15 +8,13 @@ import TabPanel from '@components/Tabs/TabPanel'
 import Tooltip from '@components/Tooltip'
 import UserStatusIcon from '@components/UserStatusIcon'
 import { P } from '@components/tags'
-import {
-  faAngleDown,
-  faCertificate,
-  faLink,
-  faPlus,
-  faTrash,
-  faUnlink,
-  faWarning,
-} from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
+import { faCertificate } from '@fortawesome/free-solid-svg-icons/faCertificate'
+import { faLink } from '@fortawesome/free-solid-svg-icons/faLink'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
+import { faWarning } from '@fortawesome/free-solid-svg-icons/faWarning'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { EVENT_STATUSES } from '@helpers/constants'
 import eventPricesWithStatus from '@helpers/eventPricesWithStatus'

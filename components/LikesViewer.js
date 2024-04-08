@@ -1,14 +1,11 @@
-import {
-  faArrowDown,
-  faArrowUp,
-  faCheck,
-  faCopy,
-  faEye,
-  faEyeSlash,
-  faGenderless,
-  faHeart,
-  faPencil,
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
+import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
+import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GENDERS } from '@helpers/constants'
 import { modalsFuncAtom } from '@state/atoms'

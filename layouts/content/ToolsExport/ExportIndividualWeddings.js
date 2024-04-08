@@ -1,5 +1,5 @@
 import Button from '@components/Button'
-import { faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS_WITH_NO_GENDER } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'

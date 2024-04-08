@@ -1,12 +1,5 @@
-import {
-  faCrop,
-  faDotCircle,
-  faQuestion,
-  faSignOut,
-  faSignOutAlt,
-  faSnowman,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import Image from 'next/legacy/image'

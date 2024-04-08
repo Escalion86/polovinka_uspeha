@@ -1,4 +1,4 @@
-import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { EVENT_STATUSES_WITH_TIME } from '@helpers/constants'
 import eventStatusFunc from '@helpers/eventStatus'

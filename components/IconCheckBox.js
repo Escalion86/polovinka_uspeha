@@ -1,4 +1,4 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 
@@ -40,8 +40,8 @@ const IconCheckBox = ({
             big
               ? 'min-w-6 min-h-6 w-6 h-6'
               : small
-              ? 'min-w-4 min-h-4 w-4 h-4'
-              : 'min-w-5 min-h-5 w-5 h-5',
+                ? 'min-w-4 min-h-4 w-4 h-4'
+                : 'min-w-5 min-h-5 w-5 h-5',
             iconClassName
           )}
           icon={checked || !uncheckedIcon ? checkedIcon : uncheckedIcon}
@@ -49,8 +49,8 @@ const IconCheckBox = ({
             disabled
               ? '#9ca3af'
               : checked
-              ? checkedIconColor
-              : uncheckedIconColor
+                ? checkedIconColor
+                : uncheckedIconColor
           }
           onClick={!readOnly || disabled ? onClick : null}
         />

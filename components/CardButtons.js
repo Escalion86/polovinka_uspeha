@@ -1,26 +1,22 @@
-import {
-  faCalendarPlus,
-  faCopy,
-  faEye,
-  faEyeSlash,
-  faIdCard,
-  faTrashAlt,
-} from '@fortawesome/free-regular-svg-icons'
-import {
-  faArrowDown,
-  faArrowUp,
-  faCalendarAlt,
-  faCode,
-  faEllipsisV,
-  faHeartCirclePlus,
-  faHistory,
-  faKey,
-  faMoneyBill,
-  faPencilAlt,
-  faShareAlt,
-  faSignIn,
-  faUsers,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCalendarPlus } from '@fortawesome/free-regular-svg-icons/faCalendarPlus'
+import { faCopy } from '@fortawesome/free-regular-svg-icons/faCopy'
+import { faEye } from '@fortawesome/free-regular-svg-icons/faEye'
+import { faEyeSlash } from '@fortawesome/free-regular-svg-icons/faEyeSlash'
+import { faIdCard } from '@fortawesome/free-regular-svg-icons/faIdCard'
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons/faTrashAlt'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
+import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt'
+import { faCode } from '@fortawesome/free-solid-svg-icons/faCode'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV'
+import { faHeartCirclePlus } from '@fortawesome/free-solid-svg-icons/faHeartCirclePlus'
+import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
+import { faKey } from '@fortawesome/free-solid-svg-icons/faKey'
+import { faMoneyBill } from '@fortawesome/free-solid-svg-icons/faMoneyBill'
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
+import { faShareAlt } from '@fortawesome/free-solid-svg-icons/faShareAlt'
+import { faSignIn } from '@fortawesome/free-solid-svg-icons/faSignIn'
+import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { EVENT_STATUSES, SERVICE_USER_STATUSES } from '@helpers/constants'
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
@@ -192,10 +188,10 @@ const CardButtons = ({
             typeOfItem === 'event'
               ? 'мероприятие'
               : typeOfItem === 'user'
-              ? 'пользователя'
-              : typeOfItem === 'service'
-              ? 'услугу'
-              : 'продукт'
+                ? 'пользователя'
+                : typeOfItem === 'service'
+                  ? 'услугу'
+                  : 'продукт'
           }`}
         />
       )}

@@ -15,10 +15,10 @@ const DropDown = ({
     menuPadding === 'md'
       ? 'p-2'
       : menuPadding === 'sm'
-      ? 'p-1'
-      : menuPadding === 'lg'
-      ? 'p-3'
-      : ''
+        ? 'p-1'
+        : menuPadding === 'lg'
+          ? 'p-3'
+          : ''
   const placementVal =
     placement === 'right' ? 'right-0' : placement === 'left' ? 'left-0' : ''
   // const placementVal =
@@ -40,8 +40,8 @@ const DropDown = ({
         turnOffAutoClose === 'inside'
           ? '[--auto-close:inside]'
           : turnOffAutoClose === 'outside'
-          ? '[--auto-close:outside]'
-          : '',
+            ? '[--auto-close:outside]'
+            : '',
         // placementVal,
         openOnHover ? '[--trigger:hover] ' : '',
         strategyAbsolute ? '[--strategy:absolute]' : '',

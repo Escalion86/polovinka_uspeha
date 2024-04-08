@@ -1,17 +1,10 @@
-import {
-  faCheck,
-  faGenderless,
-  faQuestion,
-  faUnlink,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
+import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
-import {
-  EVENT_STATUSES_WITH_TIME,
-  GENDERS,
-  PAY_TYPES,
-  SECTORS,
-} from '@helpers/constants'
+import { EVENT_STATUSES_WITH_TIME, GENDERS, SECTORS } from '@helpers/constants'
 import eventStatusFunc from '@helpers/eventStatus'
 import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'

@@ -1,4 +1,6 @@
-import { faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import { SelectItem } from './SelectItem'
@@ -33,7 +35,7 @@ const ItemRow = ({
       {count !== undefined && (
         <div className="flex items-center justify-between border-l border-gray-700">
           <div
-            className="flex items-center justify-center h-full px-1 group cursor-pointer"
+            className="flex items-center justify-center h-full px-1 cursor-pointer group"
             onClick={count > 1 ? decCount : () => onDelete(index)}
           >
             <FontAwesomeIcon

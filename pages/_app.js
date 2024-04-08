@@ -243,7 +243,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                 src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"
                 strategy="beforeInteractive"
               /> */}
-              <Script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.4/dist/quill.js"></Script>
+              {/* <Script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.5/dist/quill.js"></Script> */}
               {/* <Script src="https://cdn.jsdelivr.net/npm/quill-emoji@0.2.0/dist/quill-emoji.js"></Script> */}
               {/* <CssBaseline /> */}
               <LazyMotion features={domAnimation}>

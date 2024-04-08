@@ -65,6 +65,7 @@ const CheckBox = ({
           )}
           onClick={!readOnly ? onClick : null}
           onChange={!readOnly ? onChange : null}
+          aria-label="CheckBox"
         />
         <div
           // for="exampleFormControlInput1"

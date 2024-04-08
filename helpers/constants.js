@@ -1,52 +1,50 @@
-import {
-  faBan,
-  faBirthdayCake,
-  faBriefcase,
-  faCertificate,
-  faCheck,
-  faClock,
-  faComments,
-  faCube,
-  faEnvelope,
-  faGenderless,
-  faHandHoldingHeart,
-  faHands,
-  faHandshake,
-  faHeartCirclePlus,
-  faHistory,
-  faLock,
-  faMars,
-  faMedal,
-  faPhone,
-  faPieChart,
-  faPlay,
-  faQuestion,
-  faShoppingBag,
-  faSignInAlt,
-  faStar,
-  faTools,
-  faTrophy,
-  faUpload,
-  faUsers,
-  faUserTie,
-  faUserTimes,
-  faVenus,
-} from '@fortawesome/free-solid-svg-icons'
+import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
+import { faBirthdayCake } from '@fortawesome/free-solid-svg-icons/faBirthdayCake'
+import { faBriefcase } from '@fortawesome/free-solid-svg-icons/faBriefcase'
+import { faCertificate } from '@fortawesome/free-solid-svg-icons/faCertificate'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faClock } from '@fortawesome/free-solid-svg-icons/faClock'
+import { faComments } from '@fortawesome/free-solid-svg-icons/faComments'
+import { faCube } from '@fortawesome/free-solid-svg-icons/faCube'
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
+import { faHands } from '@fortawesome/free-solid-svg-icons/faHands'
+import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
+import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
+import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
+import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
+import { faMedal } from '@fortawesome/free-solid-svg-icons/faMedal'
+import { faPhone } from '@fortawesome/free-solid-svg-icons/faPhone'
+import { faPieChart } from '@fortawesome/free-solid-svg-icons/faPieChart'
+import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
+import { faShoppingBag } from '@fortawesome/free-solid-svg-icons/faShoppingBag'
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
+import { faStar } from '@fortawesome/free-solid-svg-icons/faStar'
+import { faTools } from '@fortawesome/free-solid-svg-icons/faTools'
+import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy'
+import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload'
+import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
+import { faUserTie } from '@fortawesome/free-solid-svg-icons/faUserTie'
+import { faUserTimes } from '@fortawesome/free-solid-svg-icons/faUserTimes'
+import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
+import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
+import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
+import { faHome } from '@fortawesome/free-solid-svg-icons/faHome'
+import { faMoneyBill } from '@fortawesome/free-solid-svg-icons/faMoneyBill'
+import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 
-import {
-  faBug,
-  faCog,
-  faHome,
-  faMoneyBill,
-  faUser,
-  faHeart,
-} from '@fortawesome/free-solid-svg-icons'
-import {
-  faCalendarAlt,
-  faCreditCard,
-  faFileText,
-  faImage,
-} from '@fortawesome/free-regular-svg-icons'
+import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons/faCalendarAlt'
+import { faCreditCard } from '@fortawesome/free-regular-svg-icons/faCreditCard'
+import { faFileText } from '@fortawesome/free-regular-svg-icons/faFileText'
+import { faImage } from '@fortawesome/free-regular-svg-icons/faImage'
+
+import { faInstagram } from '@fortawesome/free-brands-svg-icons/faInstagram'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
+import { faVk } from '@fortawesome/free-brands-svg-icons/faVk'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
+
 import dynamic from 'next/dynamic'
 const ServicesContent = dynamic(
   () => import('@layouts/content/ServicesContent')
@@ -105,12 +103,7 @@ import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTod
 // import StatisticsUsersContent from '@layouts/content/StatisticsUsersContent'
 // import StatisticsEventsContent from '@layouts/content/StatisticsEventsContent'
 // import ToolsEventAnonsContent from '@layouts/content/ToolsEventAnonsContent'
-import {
-  faInstagram,
-  faTelegram,
-  faVk,
-  faWhatsapp,
-} from '@fortawesome/free-brands-svg-icons'
+
 // import ToolsTextEventsAnonsContent from '@layouts/content/ToolsTextEventsAnonsContent'
 // import UserStatisticsContent from '@layouts/content/UserStatisticsContent'
 // import ToolsNewsletterContent from '@layouts/content/ToolsNewsletterContent'

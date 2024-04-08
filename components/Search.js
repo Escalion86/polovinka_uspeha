@@ -1,4 +1,5 @@
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDebounceEffect } from '@helpers/useDebounceEffect'
 import cn from 'classnames'
@@ -43,6 +44,7 @@ const Search = ({
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          aria-label="Search"
         />
         <FontAwesomeIcon
           className={'w-6 h-6 text-gray-700 cursor-pointer'}

@@ -2,14 +2,12 @@ import Button from '@components/Button'
 import DateTimeEvent from '@components/DateTimeEvent'
 import LikesViewer from '@components/LikesViewer'
 import Note from '@components/Note'
-import {
-  faCheck,
-  faEye,
-  faEyeSlash,
-  faGenderless,
-  faHeart,
-  faLock,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faEye } from '@fortawesome/free-solid-svg-icons/faEye'
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
+import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
+import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'

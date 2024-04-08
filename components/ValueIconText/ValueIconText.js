@@ -1,6 +1,6 @@
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import Tooltip from '@components/Tooltip'
-import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const ValueIconText = ({ value, array }) => {
