@@ -38,7 +38,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          {isProdMode ? (
+          {/* {isProdMode ? (
             <>
               <script
                 type="text/javascript"
@@ -67,7 +67,7 @@ class MyDocument extends Document {
                 </div>
               </noscript>
             </>
-          ) : null}
+          ) : null} */}
         </body>
       </Html>
     )
