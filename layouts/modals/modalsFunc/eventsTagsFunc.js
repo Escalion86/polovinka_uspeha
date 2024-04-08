@@ -2,7 +2,7 @@ import Button from '@components/Button'
 import ColorPicker from '@components/ColorPicker'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-import { faPaintBrush } from '@fortawesome/free-solid-svg-icons/faPaintBrush'
+import { faPaintbrush } from '@fortawesome/free-solid-svg-icons/faPaintbrush'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -115,7 +115,7 @@ const eventsTagsFunc = () => {
               className="mt-3 flex items-center justify-center p-0.5 cursor-pointer group"
             >
               <FontAwesomeIcon
-                icon={faPaintBrush}
+                icon={faPaintbrush}
                 className="w-4 h-4 duration-300 text-general group-hover:scale-125"
               />
             </div>
