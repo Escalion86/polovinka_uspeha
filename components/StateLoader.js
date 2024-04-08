@@ -25,7 +25,7 @@ import cn from 'classnames'
 import DeviceCheck from './DeviceCheck'
 import servicesAtom from '@state/atoms/servicesAtom'
 import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
-import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
+// import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import { useRouter } from 'next/router'
 import { postData } from '@helpers/CRUD'
 import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
@@ -77,7 +77,7 @@ const StateLoader = (props) => {
   const setQuestionnairesState = useSetRecoilState(questionnairesAtom)
   const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
   const setServicesState = useSetRecoilState(servicesAtom)
-  const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
+  // const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
   const setServerSettingsState = useSetRecoilState(serverSettingsAtom)
 
   const setItemsFunc = useSetRecoilState(itemsFuncAtom)
@@ -126,7 +126,7 @@ const StateLoader = (props) => {
     setQuestionnairesState(props.questionnaires)
     setQuestionnairesUsersState(props.questionnairesUsers)
     setServicesState(props.services)
-    setServicesUsersState(props.servicesUsers)
+    // setServicesUsersState(props.servicesUsers)
     setServerSettingsState(props.serverSettings)
     setMode(props.mode ?? 'production')
     setLocation(props.location ?? 'krasnoyarsk')

@@ -11,8 +11,8 @@ import filterItems from '@helpers/filterItems'
 import { getNounServicesUsers } from '@helpers/getNoun'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
+import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 import { modalsFuncAtom } from '@state/atoms'
-import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
@@ -24,7 +24,7 @@ const defaultFilterValue = {
 
 const ServicesUsersContent = () => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const servicesUsers = useRecoilValue(servicesUsersAtom)
+  const servicesUsers = useRecoilValue(asyncServicesUsersAtom)
   const users = useRecoilValue(usersAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.servicesUsers?.add

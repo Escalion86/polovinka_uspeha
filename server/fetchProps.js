@@ -5,13 +5,13 @@ import Directions from '@models/Directions'
 import Events from '@models/Events'
 // import EventsUsers from '@models/EventsUsers'
 // import Histories from '@models/Histories'
-import Payments from '@models/Payments'
+// import Payments from '@models/Payments'
 import Questionnaires from '@models/Questionnaires'
 import QuestionnairesUsers from '@models/QuestionnairesUsers'
 import Reviews from '@models/Reviews'
 import Roles from '@models/Roles'
 import Services from '@models/Services'
-import ServicesUsers from '@models/ServicesUsers'
+// import ServicesUsers from '@models/ServicesUsers'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
@@ -71,7 +71,7 @@ const fetchProps = async (user) => {
     //   : []
 
     const services = await Services.find({}).lean()
-    const servicesUsers = await ServicesUsers.find({}).lean()
+    // const servicesUsers = await ServicesUsers.find({}).lean()
 
     const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
     const seeFullNames = userRole?.users?.seeFullNames
@@ -112,7 +112,7 @@ const fetchProps = async (user) => {
       JSON.stringify(questionnairesUsers).length
     )
     console.log('rolesSettservicesings :>> ', JSON.stringify(services).length)
-    console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
+    // console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
 
     const fetchResult = {
       users: JSON.parse(JSON.stringify(users)),
@@ -130,7 +130,7 @@ const fetchProps = async (user) => {
       questionnaires: JSON.parse(JSON.stringify(questionnaires)),
       questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
       services: JSON.parse(JSON.stringify(services)),
-      servicesUsers: JSON.parse(JSON.stringify(servicesUsers)),
+      // servicesUsers: JSON.parse(JSON.stringify(servicesUsers)),
       serverSettings: JSON.parse(
         JSON.stringify({
           dateTime: serverDateTime,
@@ -149,14 +149,14 @@ const fetchProps = async (user) => {
       reviews: [],
       additionalBlocks: [],
       // eventsUsers: [],
-      payments: [],
+      // payments: [],
       siteSettings: {},
       rolesSettings: [],
       // histories: [],
       questionnaires: [],
       questionnairesUsers: [],
       services: [],
-      servicesUsers: [],
+      // servicesUsers: [],
       serverSettings: JSON.parse(
         JSON.stringify({
           dateTime: serverDateTime,
