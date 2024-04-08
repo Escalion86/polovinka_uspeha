@@ -233,8 +233,8 @@ const EventCard = ({
                     className={cn(
                       'text-lg italic font-bold text-general',
                       changeStyle === 'laptop'
-                        ? 'laptop:hidden laptop:text-xl'
-                        : 'desktop:hidden desktop:text-xl'
+                        ? 'laptop:hidden'
+                        : 'desktop:hidden'
                     )}
                     // textClassName="leading-5"
                     lines={1}
