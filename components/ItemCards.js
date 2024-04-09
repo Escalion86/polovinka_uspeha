@@ -101,6 +101,7 @@ export const UserItem = ({
   className,
   hideGender,
   children,
+  nameFieldWrapperClassName,
 }) => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -148,34 +149,41 @@ export const UserItem = ({
         src={getUserAvatarSrc(item)}
         alt="user"
       />
-      <div className="flex items-center flex-1 py-0.5 px-1 gap-x-0.5">
-        <div className="flex flex-col flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1">
-          <UserName
-            user={item}
-            className="flex-1 inline min-h-[28px] font-bold"
-            thin
-            trunc={2}
-            children={
-              <>
-                {hideGender && seeBirthday && (
-                  <span className="font-normal whitespace-nowrap">
-                    {`(${birthDateToAge(item.birthday, serverDate)})`}
-                  </span>
-                )}
-              </>
-            }
+      <div className="relative flex-1 flex items-center py-0.5 px-1 gap-x-0.5">
+        <div
+          className={cn(
+            'flex items-center flex-1 max-h-full',
+            nameFieldWrapperClassName
+          )}
+        >
+          <div className="flex flex-col flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1">
+            <UserName
+              user={item}
+              className="flex-1 inline min-h-[28px] font-bold"
+              thin
+              trunc={2}
+              children={
+                <>
+                  {hideGender && seeBirthday && (
+                    <span className="font-normal whitespace-nowrap">
+                      {`(${birthDateToAge(item.birthday, serverDate)})`}
+                    </span>
+                  )}
+                </>
+              }
+            />
+          </div>
+          <UserRelationshipIcon
+            relationship={item.relationship}
+            size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
+            showHavePartnerOnly
           />
-          {children && children(item)}
+          <UserStatusIcon
+            status={item.status}
+            size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
+          />
         </div>
-        <UserRelationshipIcon
-          relationship={item.relationship}
-          size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
-          showHavePartnerOnly
-        />
-        <UserStatusIcon
-          status={item.status}
-          size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
-        />
+        {children && children(item)}
       </div>
     </ItemContainer>
   )

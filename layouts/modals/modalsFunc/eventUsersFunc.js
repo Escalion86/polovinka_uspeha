@@ -35,6 +35,7 @@ import eventSelector from '@state/selectors/eventSelector'
 import sortFunctions from '@helpers/sortFunctions'
 import formatDateTime from '@helpers/formatDateTime'
 import Note from '@components/Note'
+import cn from 'classnames'
 
 const EventsUsers = ({
   event,
@@ -48,6 +49,7 @@ const EventsUsers = ({
   fromReserveFunc,
   noButtons,
   itemChildren,
+  nameFieldWrapperClassName,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -66,6 +68,7 @@ const EventsUsers = ({
         exceptedIds={exceptedIds}
         readOnly={!canEdit || isEventClosed}
         itemChildren={itemChildren}
+        nameFieldWrapperClassName={nameFieldWrapperClassName}
         buttons={
           !noButtons && canEdit && !isEventClosed
             ? [
@@ -123,34 +126,6 @@ const EventsUsers = ({
 const sortFunctionEventUser = (a, b) =>
   a.user?.firstName < b.user?.firstName ? -1 : 1
 
-const sortByFirstNameAndGenderFunctionEventUser = (a, b) =>
-  a.user?.gender === 'male'
-    ? b.user?.gender === 'male'
-      ? a.user?.firstName < b.user?.firstName
-        ? -1
-        : 1
-      : -1
-    : b.user?.gender === 'male'
-      ? 1
-      : a.user?.firstName < b.user?.firstName
-        ? -1
-        : 1
-
-const sortByFirstNameAndGenderFunction = (a, b) =>
-  a.gender === 'male'
-    ? b.gender === 'male'
-      ? a.firstName < b.firstName
-        ? -1
-        : 1
-      : -1
-    : b.gender === 'male'
-      ? 1
-      : a.firstName < b.firstName
-        ? -1
-        : 1
-
-const sortByCreateAtFunction = sortFunctions.createdAt.asc
-
 const genderSplitAndSort = (eventUsers) =>
   genderSplitAndSort?.length === 0
     ? [[], []]
@@ -205,6 +180,22 @@ const eventUsersFunc = (eventId) => {
     )
 
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+
+    const sortUsersByCreatedAt = useCallback(
+      (ids) => {
+        const filteredUsers = sortedUsers.filter((user) =>
+          ids.includes(user._id)
+        )
+        const filteredEventUsers = filteredUsers.map(
+          (user) =>
+            eventUsers.find(({ userId }) => userId === user._id) || { user }
+        )
+        filteredEventUsers.sort(sortFunctions.createdAt.asc)
+        const result = filteredEventUsers.map(({ user }) => user)
+        return result
+      },
+      [sortedUsers]
+    )
 
     const sortedEventUsersParticipants = useMemo(
       () =>
@@ -403,7 +394,7 @@ const eventUsersFunc = (eventId) => {
     const setReserveState = (subEventId, ids) => {
       setReserve((state) => ({
         ...state,
-        [subEventId]: sortUsersByIds(ids),
+        [subEventId]: sortUsersByCreatedAt(ids),
       }))
     }
 
@@ -620,6 +611,7 @@ const eventUsersFunc = (eventId) => {
                           ])
                         // setReserveState(sortUsersByIds([...reserveIds[id], id]))
                       }
+                      nameFieldWrapperClassName="pb-2 laptop:pb-0"
                       itemChildren={
                         eventUsers
                           ? (user) => {
@@ -627,9 +619,18 @@ const eventUsersFunc = (eventId) => {
                                 ({ userId }) => userId === user._id
                               )
                               return (
-                                <div className="max-h-[14px] flex justify-center items-end w-full text-xs font-normal">
-                                  <div className="max-h-[14px] leading-[14px] border-t border-r border-l rounded-t-md px-2 border-gray-700 bg-teal-50">
-                                    {formatDateTime(eventUser.createdAt)}
+                                <div className="absolute bottom-0 max-h-[13px] flex justify-center items-end w-full text-xs font-normal">
+                                  <div
+                                    className={cn(
+                                      'max-h-[13px] leading-[13px] border-t border-r border-l rounded-t-md px-2 border-gray-700',
+                                      eventUser?.createdAt
+                                        ? 'bg-teal-50'
+                                        : 'bg-red-50'
+                                    )}
+                                  >
+                                    {eventUser?.createdAt
+                                      ? formatDateTime(eventUser.createdAt)
+                                      : 'Запись еще не создана'}
                                   </div>
                                 </div>
                               )
