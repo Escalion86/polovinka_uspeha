@@ -242,7 +242,7 @@ const EventViewModal = ({
   )
 }
 
-const EventViewPre = (props) => {
+const EventView = (props) => {
   const { eventId } = props.data
   const event = useRecoilValue(eventFullAtomAsync(eventId))
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
@@ -331,7 +331,7 @@ const eventViewFunc = (eventId) => {
   return {
     title: `Мероприятие`,
     confirmButtonName: 'Записаться',
-    Children: (props) => <EventViewPre {...props} data={data} />,
+    Children: (props) => <EventView {...props} data={data} />,
   }
 }
 

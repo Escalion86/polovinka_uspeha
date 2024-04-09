@@ -9,6 +9,8 @@ export const eventLoggedUserByEventIdSelector = selectorFamily({
     async ({ get }) => {
       if (!id) return []
       const loggedUser = get(loggedUserAtom)
+      if (!loggedUser) return
+
       const eventsUser = await get(asyncEventsUsersByUserIdAtom(loggedUser._id))
       const eventUser = eventsUser.find(({ eventId }) => eventId === id)
 
