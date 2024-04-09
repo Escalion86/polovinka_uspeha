@@ -31,20 +31,19 @@ const TextStatus = ({ children, className }) => (
 const PaymentsFromLoggedUser = ({ event, eventStatus, noBorders }) => {
   const { userStatus, userEventStatus } = eventStatus
 
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  if (
-    !loggedUserActive ||
-    !userEventStatus ||
-    userEventStatus !== 'participant'
-  )
-    return null
-
   const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
     sumOfPaymentsFromLoggedUserToEventSelector(event._id)
   )
 
   const eventUser = useRecoilValue(eventLoggedUserByEventIdSelector(event._id))
-  if (!eventUser) return null
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+  if (
+    !eventUser ||
+    !loggedUserActive ||
+    !userEventStatus ||
+    userEventStatus !== 'participant'
+  )
+    return null
 
   const subEvent = event.subEvents.find(({ id }) => id === eventUser.subEventId)
   const eventPriceForLoggedUser = eventPriceByStatus(subEvent, userStatus)
