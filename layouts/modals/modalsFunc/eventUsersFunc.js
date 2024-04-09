@@ -501,7 +501,7 @@ const eventUsersFunc = (eventId) => {
           <TabPanel
             tabName="Участники"
             tabAddToLabel={`(${participantsCount})`}
-            className="flex flex-col mt-2 gap-y-5"
+            className="flex flex-col mt-1 gap-y-5"
           >
             {event.subEvents.map((subEvent) => {
               const { id, title } = subEvent
@@ -570,11 +570,9 @@ const eventUsersFunc = (eventId) => {
             <TabPanel
               tabName="Резерв"
               tabAddToLabel={`(${reserveCount})`}
-              className="flex flex-col"
+              className="flex flex-col gap-y-5"
             >
-              <Note className="mb-2" noMargin>
-                Резерв отсортирован по дате создания заявки
-              </Note>
+              <Note noMargin>Резерв отсортирован по дате создания заявки</Note>
               {event.subEvents.map((subEvent) => {
                 const { id, title } = subEvent
 
