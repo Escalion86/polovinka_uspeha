@@ -79,13 +79,21 @@ const sortFunctions = {
   },
   createdAt: {
     asc: (a, b) =>
-      new Date(a.createdAt).getTime() < new Date(b.createdAt).getTime()
-        ? -1
-        : 1,
+      !a.createdAt
+        ? 1
+        : !b.createdAt
+          ? -1
+          : new Date(a.createdAt).getTime() < new Date(b.createdAt).getTime()
+            ? -1
+            : 1,
     desc: (a, b) =>
-      new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
+      !a.createdAt
         ? -1
-        : 1,
+        : !b.createdAt
+          ? 1
+          : new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
+            ? -1
+            : 1,
   },
 }
 

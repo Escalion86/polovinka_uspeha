@@ -200,6 +200,7 @@ export const SelectUserList = ({
   className,
   activeIds,
   itemChildren,
+  nameFieldWrapperClassName,
 }) => {
   return (
     <SelectItemList
@@ -220,6 +221,7 @@ export const SelectUserList = ({
             ? activeIds.includes(props.selectedId)
             : false,
           itemChildren,
+          nameFieldWrapperClassName,
         })
       }
       required={required}
