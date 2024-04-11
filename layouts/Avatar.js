@@ -1,6 +1,6 @@
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import cn from 'classnames'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 
 const Avatar = ({ user, className }) => (
   <Image

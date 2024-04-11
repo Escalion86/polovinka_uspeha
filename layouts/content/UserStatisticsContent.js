@@ -12,7 +12,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowContainer, Popover } from 'react-tiny-popover'
 import { useRecoilValue } from 'recoil'
@@ -37,18 +37,26 @@ const Cup = ({ place, className }) => {
   if (typeof place === 'number')
     return (
       <Image
-        className={className}
+        className={cn(
+          'w-[65px] h-[65px] laptop:w-[77px] laptop:h-[77px]',
+          className
+        )}
         src={`/img/achievements/${place <= 4 ? place : 4}.svg`}
-        width="100%"
-        height="100%"
+        width="0"
+        height="0"
+        sizes="77px"
       />
     )
   return (
     <Image
-      className={cn('opacity-20 grayscale', className)}
+      className={cn(
+        'w-[65px] h-[65px] laptop:w-[77px] laptop:h-[77px] opacity-20 grayscale',
+        className
+      )}
       src="/img/achievements/4.svg"
-      width="100%"
-      height="100%"
+      width="0"
+      height="0"
+      sizes="77px"
     />
   )
 }
@@ -133,7 +141,7 @@ const Achivement = ({ name, place, tooltipText }) => {
           >
             <div
               className={cn(
-                'flex flex-col h-[100px] w-[100px] p-[8px] laptop:h-[120px] laptop:w-[120px] laptop:p-[10px]',
+                'flex items-center flex-col h-[100px] w-[100px] p-[8px] laptop:h-[120px] laptop:w-[120px] laptop:p-[10px]',
                 'tilt-element'
               )}
             >

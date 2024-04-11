@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 
 const ValueItem = ({
   active = false,

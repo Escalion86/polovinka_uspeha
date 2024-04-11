@@ -13,7 +13,7 @@ import { useRecoilValue } from 'recoil'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 
 const InputImages = ({
   images = [],
@@ -101,11 +101,12 @@ const InputImages = ({
             >
               <Zoom zoomMargin={20}>
                 <Image
-                  className="object-cover"
+                  className="object-cover w-20 h-20"
                   src={image}
                   alt="item_image"
-                  width={80}
-                  height={80}
+                  width="0"
+                  height="0"
+                  sizes="100vw"
                 />
               </Zoom>
 
