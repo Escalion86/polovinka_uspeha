@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@components/Button'
 import DateTimePicker from '@components/DateTimePicker'
 import FormWrapper from '@components/FormWrapper'

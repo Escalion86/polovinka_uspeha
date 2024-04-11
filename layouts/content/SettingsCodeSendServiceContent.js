@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@components/Button'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'

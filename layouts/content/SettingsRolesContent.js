@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@components/Button'
 import Divider from '@components/Divider'
 import FormWrapper from '@components/FormWrapper'

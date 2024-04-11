@@ -1,3 +1,5 @@
+'use client'
+
 import ComboBox from '@components/ComboBox'
 import ContentHeader from '@components/ContentHeader'
 import LoadingSpinner from '@components/LoadingSpinner'

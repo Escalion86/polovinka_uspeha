@@ -1,3 +1,5 @@
+'use client'
+
 import ContentHeader from '@components/ContentHeader'
 import UsersFilter from '@components/Filter/UsersFilter'
 import AddButton from '@components/IconToggleButtons/AddButton'

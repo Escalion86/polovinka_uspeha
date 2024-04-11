@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
 import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'

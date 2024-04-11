@@ -42,8 +42,7 @@ const visibleEventsForUser = (
 
       if (
         !event.showOnSite ||
-        (onlyNew && new Date(event.dateStart) < new Date()) ||
-        !isUserRelationshipCorrectForEvent(user, subEventsSum)
+        (onlyNew && new Date(event.dateStart) < new Date())
       )
         return false
 
@@ -53,43 +52,51 @@ const visibleEventsForUser = (
 
       if (eventUser?.status === 'ban') return false
 
+      // Если пользователь записан, то показываем
+      if (eventUser) return true
+
       // Если пользователь не записан
+      // if (
+      //   !['participant', 'assistant', 'reserve'].includes(eventUser?.status)
+      // ) {
+      // Подходит ли по статусу отношений
+      if (!isUserRelationshipCorrectForEvent(user, subEventsSum)) return false
+
+      // Подходит ли по возрасту
       if (
-        eventUser?.status !== 'participant' &&
-        eventUser?.status !== 'assistant' &&
-        eventUser?.status !== 'reserve'
-      ) {
-        if (
-          userAge &&
-          ((user.gender === 'male' &&
-            typeof subEventsSum.maxMansAge === 'number' &&
-            subEventsSum.maxMansAge < userAge) ||
-            (user.gender === 'famale' &&
-              typeof subEventsSum.maxWomansAge === 'number' &&
-              subEventsSum.maxWomansAge < userAge))
-        )
-          return false
-
-        if (
-          userAge &&
-          ((user.gender === 'male' &&
-            typeof subEventsSum.maxMansAge === 'number' &&
-            subEventsSum.minMansAge > userAge) ||
-            (user.gender === 'famale' &&
-              typeof subEventsSum.maxWomansAge === 'number' &&
-              subEventsSum.minWomansAge > userAge))
-        )
-          return false
-      }
-
-      return (
-        // (eventUser?.status !== 'ban' &&
-        !subEventsSum.usersStatusAccess ||
-        (userStatusName === 'member' &&
-          subEventsSum.usersStatusAccess['member']) ||
-        subEventsSum.usersStatusAccess['novice']
-        // )
+        userAge &&
+        ((user.gender === 'male' &&
+          typeof subEventsSum.maxMansAge === 'number' &&
+          (subEventsSum.maxMansAge < userAge ||
+            subEventsSum.minMansAge > userAge)) ||
+          (user.gender === 'famale' &&
+            typeof subEventsSum.maxWomansAge === 'number' &&
+            (subEventsSum.maxWomansAge < userAge ||
+              subEventsSum.minWomansAge > userAge)))
       )
+        return false
+      // }
+
+      // Подходит ли по статусу
+      if (
+        !subEventsSum.usersStatusAccess ||
+        !subEventsSum.usersStatusAccess[userStatusName ?? 'novice']
+      )
+        return false
+
+      // Нет ли ограничений по статусу
+      if (
+        userStatusName === 'member'
+          ? user.gender === 'male'
+            ? subEventsSum.maxMansMember === 0
+            : subEventsSum.maxWomansMember === 0
+          : user.gender === 'male'
+            ? subEventsSum.maxMansNovice === 0
+            : subEventsSum.maxWomansNovice === 0
+      )
+        return false
+
+      return true
     })
   }
 }

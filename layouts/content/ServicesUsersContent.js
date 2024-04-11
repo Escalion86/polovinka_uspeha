@@ -1,3 +1,5 @@
+'use client'
+
 import ContentHeader from '@components/ContentHeader'
 import Filter from '@components/Filter'
 import UsersFilter from '@components/Filter/UsersFilter'

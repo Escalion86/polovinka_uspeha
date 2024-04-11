@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@components/Button'
 import RelationshipSelector from '@components/ComboBox/RelationshipSelector'
 import DatePicker from '@components/DatePicker'

@@ -28,6 +28,14 @@ const toolbarOptions = {
   // handlers: { emoji: function () {} },
 
   handlers: {
+    link: function (value) {
+      if (value) {
+        const href = prompt('Введите адрес ссылки')
+        this.quill.format('link', href)
+      } else {
+        this.quill.format('link', false)
+      }
+    },
     //   // handlers object will be merged with default handlers object
     //   link: function (value) {
     //     if (value) {

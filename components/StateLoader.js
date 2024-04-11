@@ -107,7 +107,10 @@ const StateLoader = (props) => {
   useEffect(() => {
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
       setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
-    if (!loggedUserActiveStatus || props.loggedUser?.role !== 'dev')
+    if (
+      !loggedUserActiveStatus ||
+      props.loggedUser?.status !== loggedUser?.status
+    )
       setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
     setLoggedUserActive(props.loggedUser)
     setLoggedUser(props.loggedUser)

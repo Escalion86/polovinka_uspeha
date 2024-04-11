@@ -1,3 +1,5 @@
+'use client'
+
 import ContentHeader from '@components/ContentHeader'
 import { getNounServicesUsers } from '@helpers/getNoun'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'

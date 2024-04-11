@@ -27,6 +27,7 @@ import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 import isPWAAtom from '@state/atoms/isPWAAtom'
 import { LazyMotion, domAnimation } from 'framer-motion'
 import localFont from 'next/font/local'
+import PWAChecker from '@components/PWAChecker'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
@@ -92,23 +93,6 @@ const theme = createTheme({
     },
   },
 })
-
-const PWAChecker = ({ children }) => {
-  const setIsPWA = useSetRecoilState(isPWAAtom)
-
-  useEffect(() => {
-    window
-      .matchMedia('(display-mode: standalone)')
-      .addEventListener('change', ({ matches }) => setIsPWA(matches))
-    setIsPWA(window.matchMedia('(display-mode: standalone)').matches)
-    // setInterval(() => {
-    //   const test = window.matchMedia('(display-mode: standalone)').matches
-    //   console.log('test :>> ', test)
-    // }, 1000)
-  }, [])
-
-  return children
-}
 
 const futura = localFont({
   src: [

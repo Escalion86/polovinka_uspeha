@@ -1,3 +1,5 @@
+'use client'
+
 import ExportIndividualWeddings from './ToolsExport/ExportIndividualWeddings'
 import ExportUsers from './ToolsExport/ExportUsers'
 

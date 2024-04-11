@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@components/Button'
 import ColorPicker from '@components/ColorPicker'
 import ComboBox from '@components/ComboBox'
@@ -146,8 +148,8 @@ const ToolsAnonsContent = () => {
           styleNum === 0
             ? undefined
             : dateStart[0] <= 9
-            ? '0' + dateStart[0]
-            : dateStart[0],
+              ? '0' + dateStart[0]
+              : dateStart[0],
         week: styleNum === 0 ? undefined : dateStart[2],
       }
     })
