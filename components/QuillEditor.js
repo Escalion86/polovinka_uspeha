@@ -31,9 +31,14 @@ const toolbarOptions = {
     link: function (value) {
       if (value) {
         const href = prompt('Введите адрес ссылки')
-        this.quill.format('link', href)
+        if (href) {
+          this.quill.format('link', href)
+          this.quill.format('color', false)
+        }
       } else {
         this.quill.format('link', false)
+        // this.quill.format('color', false)
+        // this.quill.format('underline', false)
       }
     },
     //   // handlers object will be merged with default handlers object
