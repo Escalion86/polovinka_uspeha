@@ -1,3 +1,5 @@
+'use client'
+
 import PieChart from '@components/Charts/PieChart'
 import CheckBox from '@components/CheckBox'
 import { H3 } from '@components/tags'

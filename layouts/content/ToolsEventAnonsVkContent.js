@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@components/Button'
 import ColorPicker from '@components/ColorPicker'
 import ComboBox from '@components/ComboBox'

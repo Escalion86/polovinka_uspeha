@@ -1,3 +1,5 @@
+'use client'
+
 import ContentHeader from '@components/ContentHeader'
 import PaymentsFilter from '@components/Filter/PaymentsFilter'
 import SortingButtonMenu from '@components/SortingButtonMenu'

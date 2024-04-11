@@ -1,3 +1,5 @@
+'use client'
+
 import PieChart from '@components/Charts/PieChart'
 import Divider from '@components/Divider'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'

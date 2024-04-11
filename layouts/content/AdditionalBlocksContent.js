@@ -1,3 +1,5 @@
+'use client'
+
 import ContentHeader from '@components/ContentHeader'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import { getNounAdditionalBlocks } from '@helpers/getNoun'

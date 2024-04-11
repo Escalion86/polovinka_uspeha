@@ -1,10 +1,9 @@
-import Button from '@components/Button'
-import ComboBox from '@components/ComboBox'
+'use client'
 
-import Input from '@components/Input'
-import { postData } from '@helpers/CRUD'
+import Button from '@components/Button'
+
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 // text/html; charset=UTF-8
 var requestOptions = {

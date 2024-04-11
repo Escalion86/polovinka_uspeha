@@ -1,3 +1,5 @@
+'use client'
+
 import LineChart from '@components/Charts/LineChart'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import YearSelector from '@components/ComboBox/YearSelector'
@@ -120,8 +122,8 @@ const StatisticsFinanceContent = () => {
           afterLastIncomeIndex > 0
             ? afterLastIncomeIndex - 1
             : afterLastIncomeIndex === -1
-            ? 11
-            : 0
+              ? 11
+              : 0
         ]
       setMonth(monthsObj[lastIncomeData.x].index)
       setYear(Number(lastIncomeData.year))

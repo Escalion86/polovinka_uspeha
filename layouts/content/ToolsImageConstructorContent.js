@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@components/Button'
 import IconButtonMenu from '@components/ButtonMenu'
 import ColorPicker from '@components/ColorPicker'

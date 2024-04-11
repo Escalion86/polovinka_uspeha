@@ -1,3 +1,5 @@
+'use client'
+
 import PieChart from '@components/Charts/PieChart'
 import StreamChart from '@components/Charts/StreamChart'
 import UsersFilter from '@components/Filter/UsersFilter'

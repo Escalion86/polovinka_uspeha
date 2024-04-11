@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@components/Button'
 import { CardWrapper } from '@components/CardWrapper'
 import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'

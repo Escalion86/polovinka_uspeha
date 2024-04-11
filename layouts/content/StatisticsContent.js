@@ -1,3 +1,5 @@
+'use client'
+
 import LineChart from '@components/Charts/LineChart'
 import PieChart from '@components/Charts/PieChart'
 import StreamChart from '@components/Charts/StreamChart'

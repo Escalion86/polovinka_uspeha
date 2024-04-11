@@ -1,3 +1,5 @@
+'use client'
+
 import { SelectEvent } from '@components/SelectItem'
 import LikesEditor from '@components/LikesEditor'
 import { useRouter } from 'next/router'
