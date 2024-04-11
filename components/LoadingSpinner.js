@@ -1,6 +1,6 @@
 import cn from 'classnames'
 import { m } from 'framer-motion'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 
 export const LoadingSpinner = ({
   className,

@@ -201,7 +201,8 @@ li[data-list="bullet"] span.ql-ui:before {
 }
 
 .ql-container {
-  font-family: 'Futura PT', sans-serif !important;
+  /* font-family: 'Futura PT', sans-serif !important; */
+  font-family: var(--font-futura) !important;
   font-size: initial !important;
   border: 0px !important;
 }
@@ -250,15 +251,16 @@ li[data-list="bullet"] span.ql-ui:before {
   color: #aaa;
 }
 
+.ql a,
 .ql-snow a {
-  text-decoration: underline;
-  color: #7a5151 !important;
+  text-decoration: underline !important;
+  color: #7a5151;
   transition-duration: 300ms;
 }
 
 .textarea a:hover {
   text-decoration: underline;
-  color: #008800;
+  color: #008800 !important;
 }
 
 .prevent-select-text {

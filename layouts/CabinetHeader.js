@@ -14,7 +14,7 @@ import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import DropDown from '@components/DropDown'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">

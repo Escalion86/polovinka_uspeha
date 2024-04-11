@@ -2,7 +2,7 @@ import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import Tooltip from './Tooltip'
 
 const UserStatusIcon = ({ status, size, slashed = false }) => {

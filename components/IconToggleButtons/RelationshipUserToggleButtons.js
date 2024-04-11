@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 
 const RelationshipUserToggleButtons = ({ value, onChange }) => {

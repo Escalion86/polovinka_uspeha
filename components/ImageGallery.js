@@ -1,4 +1,5 @@
 import cn from 'classnames'
+import Image from 'next/image'
 import ReactImageGallery from 'react-image-gallery'
 import Zoom from 'react-medium-image-zoom'
 
@@ -16,7 +17,14 @@ const ImageGallery = ({ images, noImage, className }) => {
           }))}
           renderItem={(e) => (
             <Zoom zoomMargin={20}>
-              <img className={e.originalClass} src={e.original} alt="image" />
+              <Image
+                alt="image"
+                src={e.original}
+                width="0"
+                height="0"
+                sizes="100vw"
+                className={e.originalClass}
+              />
             </Zoom>
           )}
           showPlayButton={false}
@@ -28,7 +36,14 @@ const ImageGallery = ({ images, noImage, className }) => {
         />
       ) : (
         <Zoom zoomMargin={20}>
-          <img className={className} src={noImage} alt="item_image" />
+          <Image
+            alt="noImage"
+            src={noImage}
+            width="0"
+            height="0"
+            sizes="100vw"
+            className={className}
+          />
         </Zoom>
       )}
     </div>
