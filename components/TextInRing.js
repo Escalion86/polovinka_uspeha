@@ -15,11 +15,16 @@ const TextInRing = ({ text, fullHeight = true }) => {
     >
       <div className="relative h-[110px] laptop:h-[150px] aspect-1">
         <Image
+          className="w-full h-full"
+          alt="text_ring"
           src="/img/ring160px.png"
-          layout="responsive"
-          height="80%"
-          width="80%"
-          priority
+          // layout="responsive"
+          // height="80%"
+          // width="80%"
+          // priority
+          width="0"
+          height="0"
+          sizes="100vw"
         />
         {text && (
           <div
