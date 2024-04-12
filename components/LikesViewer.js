@@ -22,6 +22,7 @@ import arrayToObject from '@helpers/arrayToObject'
 import CardButton from './CardButton'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventSelector from '@state/selectors/eventSelector'
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 
 const dayTimeText = () => {
   var date = new Date()
