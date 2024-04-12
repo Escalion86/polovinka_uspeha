@@ -1,4 +1,4 @@
-import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons/faQuoteLeft'
+import { faQuoteRight } from '@fortawesome/free-solid-svg-icons/faQuoteRight'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 
@@ -19,7 +19,7 @@ const Note = ({ children, noMargin, className }) => (
   >
     {children}
     <FontAwesomeIcon
-      icon={faQuoteLeft}
+      icon={faQuoteRight}
       className="absolute w-2.5 h-2.5 text-teal-600 right-1 top-1"
     />
   </div>
