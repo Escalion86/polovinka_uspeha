@@ -1198,7 +1198,7 @@ const LoginPage = (props) => {
                             : 'Сменить пароль и авторизироваться'}
                   </button>
                 ))}
-              {!type ? (
+              {false && !type ? (
                 <>
                   <div className="flex items-center text-gray-600 gap-x-2">
                     <div className="flex-1 h-0 border-t border-gray-600" />
@@ -1236,20 +1236,22 @@ const LoginPage = (props) => {
                   </div>
                 </>
               ) : (
-                <div
-                  className="mt-2 leading-4 text-gray-600 duration-300 cursor-pointer hover:text-success"
-                  onClick={() => {
-                    setType()
-                    setRegistrationLevel(1)
-                    clearErrors()
-                    if (process === 'forgotPassword')
-                      setProcess('authorization')
-                  }}
-                >
-                  Изменить способ{' '}
-                  {process === 'registration' ? 'регистрации' : 'авторизации'}{' '}
-                  или регион
-                </div>
+                false && (
+                  <div
+                    className="mt-2 leading-4 text-gray-600 duration-300 cursor-pointer hover:text-success"
+                    onClick={() => {
+                      setType()
+                      setRegistrationLevel(1)
+                      clearErrors()
+                      if (process === 'forgotPassword')
+                        setProcess('authorization')
+                    }}
+                  >
+                    Изменить способ{' '}
+                    {process === 'registration' ? 'регистрации' : 'авторизации'}{' '}
+                    или регион
+                  </div>
+                )
               )}
               {(process === 'registration' || process === 'forgotPassword') &&
                 registrationLevel === 2 && (
