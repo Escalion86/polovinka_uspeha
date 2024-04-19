@@ -57,7 +57,7 @@ const PaymentsFromLoggedUser = ({ event, eventStatus, noBorders }) => {
         noBorders ? '' : 'border-r border-gray-200'
       )}
     >
-      {sumOfPaymentsFromLoggedUserToEvent * 100 === eventPriceForLoggedUser ? (
+      {sumOfPaymentsFromLoggedUserToEvent * 100 >= eventPriceForLoggedUser ? (
         <div className="flex items-center justify-center px-1 font-bold laptop:text-lg text-success gap-x-1">
           <span className="leading-4">ОПЛАЧЕНО</span>
         </div>
