@@ -362,7 +362,7 @@ const LoginPage = (props) => {
     props?.siteSettings?.codeSendService ??
     DEFAULT_SITE_SETTINGS.codeSendService
 
-  const handleTelegramResponse = ({
+  const handleTelegramResponse = async ({
     id,
     first_name,
     last_name,
@@ -370,58 +370,66 @@ const LoginPage = (props) => {
     username,
     forceReg = false,
   }) => {
-    // console.log(response)
-    // if (process === 'authorization') {
-    setWaitingResponse(true)
-    // Если это авторизация
-    signIn('telegram', {
-      redirect: false,
-      telegramId: id,
-      first_name,
-      last_name: last_name === 'undefined' ? undefined : last_name,
-      photo_url,
-      username,
-      registration: forceReg || process === 'registration' ? 'true' : 'false',
-    }).then((res) => {
-      if (res.error === 'CredentialsSignin') {
-        setWaitingResponse(false)
-        setInputPassword('')
-        // addError({
-        //   telegram:
-        //     'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
-        // })
-        setTelegramRegistrationConfirm({
-          id,
-          first_name,
-          last_name: last_name === 'undefined' ? undefined : last_name,
-          photo_url,
-          username,
-        })
-      } else {
-        if (router.query?.event)
-          router.push('/event/' + router.query?.event, '', { shallow: true })
-        else if (router.query?.service)
-          router.push('/service/' + router.query?.service, '', {
-            shallow: true,
+    if (typeof id === 'number') {
+      // console.log(response)
+      // if (process === 'authorization') {
+      setWaitingResponse(true)
+      // Если это авторизация
+      await signIn('telegram', {
+        redirect: false,
+        telegramId: id,
+        first_name: first_name === 'undefined' ? undefined : first_name,
+        last_name: last_name === 'undefined' ? undefined : last_name,
+        photo_url,
+        username: username === 'undefined' ? undefined : username,
+        registration: forceReg || process === 'registration' ? 'true' : 'false',
+      }).then((res) => {
+        if (res.error === 'CredentialsSignin') {
+          setWaitingResponse(false)
+          setInputPassword('')
+          // addError({
+          //   telegram:
+          //     'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
+          // })
+          setTelegramRegistrationConfirm({
+            id,
+            first_name: first_name === 'undefined' ? undefined : first_name,
+            last_name: last_name === 'undefined' ? undefined : last_name,
+            photo_url,
+            username: username === 'undefined' ? undefined : username,
           })
-        else router.push('/cabinet', '', { shallow: true })
-      }
-    })
+        } else {
+          if (router.query?.event)
+            router.push('/event/' + router.query?.event, '', { shallow: true })
+          else if (router.query?.service)
+            router.push('/service/' + router.query?.service, '', {
+              shallow: true,
+            })
+          else router.push('/cabinet', '', { shallow: true })
+        }
+      })
+    }
     // }
+    else {
+      addError({
+        telegram:
+          'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
+      })
+    }
   }
 
-  // const test = () => {
-  //   handleTelegramResponse({
-  //     // auth_date: 1710790148,
-  //     first_name: 'Алексей',
-  //     // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
-  //     id: 26110216111,
-  //     username: 'escalion',
-  //     last_name: 'Белинский Иллюзионист',
-  //     photo_url:
-  //       'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
-  //   })
-  // }
+  const test = () => {
+    handleTelegramResponse({
+      // auth_date: 1710790148,
+      first_name: 'Алексей',
+      // hash: '6dd930091c860b17da17602a10be7c14ec8bd69c0bcb58b2ae33da5328d63b99',
+      id: 'undefined', //26110216111,
+      username: 'escalion',
+      last_name: 'Белинский Иллюзионист',
+      photo_url:
+        'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
+    })
+  }
 
   // const test2 = () => {
   //   setWaitingResponse(true)
@@ -482,6 +490,14 @@ const LoginPage = (props) => {
       //   })
     }
   }, [inputLocation])
+
+  useEffect(() => {
+    if (telegramRegistrationConfirm)
+      console.log(
+        'telegramRegistrationConfirm :>> ',
+        telegramRegistrationConfirm
+      )
+  }, [telegramRegistrationConfirm])
 
   useEffect(() => {
     if (router.query?.registration === 'true') setProcess('registration')
@@ -1138,7 +1154,10 @@ const LoginPage = (props) => {
                   outline
                   className="w-full"
                   icon={faPhone}
-                  onClick={() => setType('phone')}
+                  onClick={() => {
+                    setType('phone')
+                    clearErrors()
+                  }}
                   disabled={
                     process === 'registration' &&
                     (!checkAgreement || !checkHave18Years)
@@ -1198,7 +1217,7 @@ const LoginPage = (props) => {
                             : 'Сменить пароль и авторизироваться'}
                   </button>
                 ))}
-              {false && !type ? (
+              {!type ? (
                 <>
                   <div className="flex items-center text-gray-600 gap-x-2">
                     <div className="flex-1 h-0 border-t border-gray-600" />
@@ -1221,7 +1240,7 @@ const LoginPage = (props) => {
                             : ''
                         )}
                       >
-                        {/* <Button name="test" onClick={test} preventDefault /> */}
+                        <Button name="test" onClick={test} preventDefault />
                         {process === 'registration' &&
                           (!checkAgreement || !checkHave18Years) && (
                             <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
@@ -1236,22 +1255,20 @@ const LoginPage = (props) => {
                   </div>
                 </>
               ) : (
-                false && (
-                  <div
-                    className="mt-2 leading-4 text-gray-600 duration-300 cursor-pointer hover:text-success"
-                    onClick={() => {
-                      setType()
-                      setRegistrationLevel(1)
-                      clearErrors()
-                      if (process === 'forgotPassword')
-                        setProcess('authorization')
-                    }}
-                  >
-                    Изменить способ{' '}
-                    {process === 'registration' ? 'регистрации' : 'авторизации'}{' '}
-                    или регион
-                  </div>
-                )
+                <div
+                  className="mt-2 leading-4 text-gray-600 duration-300 cursor-pointer hover:text-success"
+                  onClick={() => {
+                    setType()
+                    setRegistrationLevel(1)
+                    clearErrors()
+                    if (process === 'forgotPassword')
+                      setProcess('authorization')
+                  }}
+                >
+                  Изменить способ{' '}
+                  {process === 'registration' ? 'регистрации' : 'авторизации'}{' '}
+                  или регион
+                </div>
               )}
               {(process === 'registration' || process === 'forgotPassword') &&
                 registrationLevel === 2 && (

@@ -76,10 +76,15 @@ export default async function auth(req, res) {
             registration,
           } = credentials
           if (telegramId) {
+            const telegramIdNum = parseInt(telegramId)
+            if (!telegramIdNum) {
+              return null
+            }
+
             await dbConnect()
 
             const fetchedUser = await Users.findOne({
-              'notifications.telegram.id': Number(telegramId),
+              'notifications.telegram.id': telegramIdNum,
             }).lean()
 
             if (fetchedUser) {
@@ -91,7 +96,7 @@ export default async function auth(req, res) {
                 const newUser = await Users.create({
                   notifications: {
                     telegram: {
-                      id: Number(telegramId),
+                      id: telegramIdNum,
                       active: false,
                       userName: username,
                     },
@@ -108,7 +113,7 @@ export default async function auth(req, res) {
                   userId: newUser._id,
                 })
                 await userRegisterTelegramNotification({
-                  telegramId,
+                  telegramId: telegramIdNum,
                   first_name,
                   last_name: last_name === 'undefined' ? undefined : last_name,
                   images: [photo_url],
