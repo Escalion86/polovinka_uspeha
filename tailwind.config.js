@@ -77,6 +77,7 @@ module.exports = {
         // futuraBook: 'var(--font-futuraBook)',
         futura: 'var(--font-futura)',
         adlery: 'var(--font-adlery)',
+        adleryProSwash: 'var(--font-adleryProSwash)',
         // enchants: 'var(--font-enchants)',
         // frankinity: 'var(--font-frankinity)',
         lora: 'var(--font-lora)',

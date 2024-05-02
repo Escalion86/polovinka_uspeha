@@ -94,37 +94,37 @@ const useErrors = () => {
         !data
           ? setError({ payType: 'Введите тип оплаты' })
           : !['card', 'cash', 'remittance', 'coupon'].includes(data)
-          ? setError({ payType: 'Введен некорректный тип оплаты' })
-          : null,
+            ? setError({ payType: 'Введен некорректный тип оплаты' })
+            : null,
       payDirection: (data) =>
         !data
           ? setError({ payDirection: 'Введите направление транзакции' })
           : ![
-              'toUser',
-              'fromUser',
-              'toEvent',
-              'fromEvent',
-              'toService',
-              'fromService',
-              'toProduct',
-              'fromProduct',
-              'toInternal',
-              'fromInternal',
-            ].includes(data)
-          ? setError({
-              payDirection: 'Введен некорректное направление транзакции',
-            })
-          : null,
+                'toUser',
+                'fromUser',
+                'toEvent',
+                'fromEvent',
+                'toService',
+                'fromService',
+                'toProduct',
+                'fromProduct',
+                'toInternal',
+                'fromInternal',
+              ].includes(data)
+            ? setError({
+                payDirection: 'Введен некорректное направление транзакции',
+              })
+            : null,
       sector: (data) =>
         !data
           ? setError({ sector: 'Введите область применения транзакции' })
           : !['product', 'event', 'service', 'project', 'internal'].includes(
-              data
-            )
-          ? setError({
-              sector: 'Введена некорректная область применения транзакции',
-            })
-          : null,
+                data
+              )
+            ? setError({
+                sector: 'Введена некорректная область применения транзакции',
+              })
+            : null,
       userId: (data) =>
         !data ? setError({ userId: 'Выберите пользователя' }) : null,
       serviceId: (data) =>
@@ -154,14 +154,14 @@ const useErrors = () => {
         !data
           ? setError({ firstName: 'Введите имя' })
           : data.length === 1
-          ? setError({ firstName: 'Имя не может содержать одну букву' })
-          : null,
+            ? setError({ firstName: 'Имя не может содержать одну букву' })
+            : null,
       secondName: (data) =>
         !data
           ? setError({ secondName: 'Введите фамилию' })
           : data.length === 1
-          ? setError({ secondName: 'Фамилия не может содержать одну букву' })
-          : null,
+            ? setError({ secondName: 'Фамилия не может содержать одну букву' })
+            : null,
       thirdName: (data) =>
         data.length === 1
           ? setError({ thirdName: 'Отчество не может содержать одну букву' })
@@ -171,8 +171,8 @@ const useErrors = () => {
         !data
           ? setError({ phone: 'Введите номер телефона' })
           : `${data}`.length !== 11
-          ? setError({ phone: 'Некорректно введен номер телефона' })
-          : null,
+            ? setError({ phone: 'Некорректно введен номер телефона' })
+            : null,
       phoneNoRequired: (data) =>
         data && `${data}`.length !== 11
           ? setError({ phone: 'Некорректно введен номер телефона' })
@@ -194,10 +194,10 @@ const useErrors = () => {
         !data
           ? setError({ birthday: 'Введите дату рождения' })
           : birthDateToAge(data, serverDate, false, false, false) < 18
-          ? setError({
-              birthday: 'Возраст не может быть менее 18 лет',
-            })
-          : null,
+            ? setError({
+                birthday: 'Возраст не может быть менее 18 лет',
+              })
+            : null,
       security: (data) =>
         typeof data.fullSecondName !== 'boolean' ||
         typeof data.fullThirdName !== 'boolean' ||
@@ -208,8 +208,11 @@ const useErrors = () => {
             //  ||
             // typeof data.showContacts !== 'boolean'
             setError({
-              security:
-                'Необходимо заполнить все параметры конфиденциальности во вкладке "Конфиденциальность"',
+              security: `Вы не заполнили поля конфиденциальности:${typeof data.fullSecondName !== 'boolean' ? '\n - "Показывать фамилию пользователям"' : ''}${typeof data.fullThirdName !== 'boolean' ? '\n - "Показывать отчество пользователям"' : ''}${
+                !data.showBirthday || typeof data.showBirthday !== 'string'
+                  ? '\n - "Показывать дату рождения пользователям"'
+                  : ''
+              }`,
             })
           : null,
     }

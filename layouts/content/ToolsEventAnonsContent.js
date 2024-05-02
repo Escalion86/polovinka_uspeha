@@ -281,7 +281,8 @@ const ToolsEventAnonsContent = () => {
                 fill={dateColor}
                 // fontWeight="bold"
                 textAnchor="middle"
-                fontFamily="AdleryProSwash"
+                // fontFamily="AdleryProSwash"
+                className="font-adleryProSwash"
               >
                 {customMode
                   ? customDate1
@@ -298,7 +299,8 @@ const ToolsEventAnonsContent = () => {
                   fill={dateColor}
                   // fontWeight="bold"
                   textAnchor="middle"
-                  fontFamily="AdleryProSwash"
+                  // fontFamily="AdleryProSwash"
+                  className="font-adleryProSwash"
                 >
                   {customMode
                     ? customDate2
