@@ -40,7 +40,7 @@ const ToolsEventAnonsVkContent = () => {
   const [lineColor, setLineColor] = useState('#C7A082')
   const [anonsColor, setAnonsColor] = useState('#000000')
   const [backgroundProps, setBackgroundProps] = useState()
-
+  console.log('backgroundProps :>> ', backgroundProps)
   const [fontSize, setFontSize] = useState(112)
   const [dateFontSize, setDateFontSize] = useState(100)
   const [timeFontSize, setTimeFontSize] = useState(100)
@@ -124,7 +124,7 @@ const ToolsEventAnonsVkContent = () => {
         <SvgBackgroundInput
           // value={backgroundProps}
           onChange={setBackgroundProps}
-          // imageAspect={2028 / 1536}
+          imageAspect={2028 / 1536}
         />
         {/* <Input
           label="Позиция по X текста"
@@ -275,7 +275,7 @@ const ToolsEventAnonsVkContent = () => {
       <div className="flex py-2 overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
         <div className="border-2 border-gray-600">
           <svg
-            width="512"
+            width="507"
             height="384"
             viewBox="0 0 2028 1536"
             id="input"
@@ -362,7 +362,7 @@ const ToolsEventAnonsVkContent = () => {
           id="output"
           alt=""
           width="270"
-          height="480"
+          height="270"
           className="max-w-[270px] max-h-[270px] hidden"
         />
       </div>

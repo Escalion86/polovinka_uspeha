@@ -179,12 +179,19 @@ const adlery = localFont({
       weight: '500',
       style: 'normal',
     },
-    // {
-    //   path: 'styles/fonts/AdleryProSwash.woff',
-    //   weight: '500'
-    // },
   ],
   variable: '--font-adlery',
+})
+
+const adleryProSwash = localFont({
+  src: [
+    {
+      path: '../styles/fonts/AdleryProSwash.woff',
+      weight: '500',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-adleryProSwash',
 })
 
 // const enchants = localFont({
@@ -265,7 +272,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
           <RecoilNexus />
           <ThemeProvider theme={theme}>
             <div
-              className={`${lora.variable} ${adlery.variable} ${futura.variable} ${futuraDemi.variable} font-futura`} // ${enchants.variable} ${frankinity.variable}
+              className={`${lora.variable} ${adlery.variable} ${adleryProSwash.variable} ${futura.variable} ${futuraDemi.variable} font-futura`} // ${enchants.variable} ${frankinity.variable}
             >
               {/* <div
               className={`${futura.variable} ${adlery.variable} font-futura`}
