@@ -1,6 +1,11 @@
 import RotateButton from '@components/IconToggleButtons/RotateButton'
+import { useRef } from 'react'
 import { useCallback, useEffect, useState } from 'react'
-import ReactCrop from 'react-image-crop'
+import ReactCrop, {
+  centerCrop,
+  convertToPixelCrop,
+  makeAspectCrop,
+} from 'react-image-crop'
 
 // function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
 //   return centerCrop(
@@ -138,193 +143,22 @@ const cropImageFunc = (
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // console.log('src', src)
     const [imgSrc, setImgSrc] = useState('')
-    const [isCropClicked, setIsCropClicked] = useState(false)
-    // const inputRef = useRef(null)
-    const [ref, setRef] = useState(null)
-    const [crop, setCrop] = useState({
-      unit: '%',
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
-    })
+    const [firstInit, setFirstInit] = useState(true)
+    const ref = useRef()
+    const [crop, setCrop] = useState()
     const [completedCrop, setCompletedCrop] = useState(null)
     const [scale, setScale] = useState(1)
     const [rotate, setRotate] = useState(0)
-    // const [aspect, setAspect] = useState(aspectRatio)
-    // console.log('aspect :>> ', aspect)
-
-    const onRefChange = useCallback((node) => {
-      if (node === null) {
-        // DOM node referenced by ref has been unmounted
-      } else {
-        // DOM node referenced by ref has changed and exists
-        // imgRef(node)
-        setRef(node)
-
-        // node.height = 600 => 100
-        // node.width = node.width * (100 / node.height)
-
-        // if (aspectRatio) {
-        //   setCrop({
-        //     unit: '%',
-        //     x: 0,
-        //     y: 0,
-        //     width: aspectRatio < 1 && node.width > node.height
-        //     ? aspectRatio * node.height
-        //     : node.width - 1,
-        //     height: 100,
-        //   })
-        // }
-        setCompletedCrop({
-          unit: 'px',
-          x: 0,
-          y: 0,
-          width: node.width - 1,
-          height: node.height - 1,
-        })
-      }
-    }, [])
-
-    useEffect(() => ref?.current?.click(), [ref?.current])
-    // console.log('crop', crop)
-    // console.log('completedCrop', completedCrop)
-    // const [ready, setReady] = useState()
-
-    // if (imgSrc)
-    //   imgSrc.onload = function () {
-    //     alert(this.width + 'x' + this.height)
-    //   }
-
-    // useLayoutEffect(() => {
-    //   // console.log('completedCrop', completedCrop)
-    //   if (imgRef?.current)
-    //     setCompletedCrop({
-    //       ...completedCrop,
-    //       width: imgRef.current.width,
-    //       height: imgRef.current.height,
-    //     })
-    //   // console.log('imgRef.current.width', imgRef.current?.width)
-    //   // console.log('crop', crop)
-    // }, [imgRef?.current])
-
-    // console.log('crop', crop)
-    // console.log('completedCrop', completedCrop)
-
-    // const getCroppedImg = (
-    //   image = ref,
-    //   completedCrop = completedCrop,
-    //   crop = crop,
-    //   scale = 1,
-    //   rotate = 0
-    // ) => {
-    //   // console.log('image', image)
-    //   // console.log('crop', crop)
-
-    //   // console.log('image.width', imgElement.width)
-    //   // console.log('image.height', imgElement.height)
-
-    //   // if (!crop || compareObjects(crop, DEFAULT_CROP)) return onConfirm(src)
-
-    //   const canvas = document.createElement('canvas')
-    //   const scaleX = image.naturalWidth / image.width
-    //   const scaleY = image.naturalHeight / image.height
-
-    //   // canvas.width = crop.width
-    //   // canvas.height = crop.height
-
-    //   const aspectFact = imgElement.width / imgElement.height
-    //   // const maxProportion =
-    //   //   imgElement.width > 1200 || imgElement.height > 1200
-    //   //     ? Math.max(imgElement.width, imgElement.height) / 1200
-    //   //     : 1
-
-    //   canvas.width =
-    //     (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
-    //       ? imgElement.width > imgElement.height
-    //         ? MAX_SIZE
-    //         : MAX_SIZE * aspectFact
-    //       : imgElement.width) *
-    //     (crop.width / 100)
-    //   canvas.height =
-    //     (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
-    //       ? imgElement.width < imgElement.height
-    //         ? MAX_SIZE
-    //         : MAX_SIZE / aspectFact
-    //       : imgElement.height) *
-    //     (crop.height / 100)
-
-    //   // console.log('canvas.width', canvas.width)
-    //   // console.log('canvas.height', canvas.height)
-    //   const ctx = canvas.getContext('2d')
-
-    //   const cropX = completedCrop.x * scaleX
-    //   const cropY = completedCrop.y * scaleY
-
-    //   const rotateRads = rotate * TO_RADIANS
-    //   const centerX = image.naturalWidth / 2
-    //   const centerY = image.naturalHeight / 2
-
-    //   // ctx.translate(-cropX, -cropY)
-    //   ctx.translate(centerX, centerY)
-    //   ctx.rotate(rotateRads)
-    //   ctx.translate(-centerX, -centerY)
-
-    //   ctx.drawImage(
-    //     image,
-    //     0,
-    //     0,
-    //     image.naturalWidth,
-    //     image.naturalHeight,
-    //     0,
-    //     0,
-    //     canvas.width,
-    //     canvas.height
-    //   )
-    //   // ctx.drawImage(
-    //   //   imgElement,
-    //   //   0,
-    //   //   0,
-    //   //   // completedCrop.x * scaleX,
-    //   //   // completedCrop.y * scaleY,
-    //   //   completedCrop.width * scaleX,
-    //   //   completedCrop.height * scaleY,
-    //   //   0,
-    //   //   0,
-    //   //   canvas.width,
-    //   //   canvas.height
-    //   // )
-
-    //   // canvas.width = crop.width / maxProportion
-    //   // canvas.height = crop.height / maxProportion
-
-    //   // const reader = new FileReader()
-
-    //   function blobToFile(theBlob, fileName) {
-    //     //A Blob() is almost a File() - it's just missing the two properties below which we will add
-    //     theBlob.lastModifiedDate = new Date()
-    //     theBlob.name = fileName
-    //     return theBlob
-    //   }
-    //   canvas.toBlob(
-    //     (blob) => {
-    //       onConfirm(blobToFile(blob, src.name))
-    //     },
-    //     'image/jpeg',
-    //     0.9
-    //   )
-    // }
 
     const getCroppedImg = (
-      image = ref,
+      image,
       completedCrop = completedCrop,
       crop = crop,
       scale = 1,
       rotate = 0
     ) => {
-      if (!isCropClicked) onConfirm(imgElement)
+      // if (!isCropClicked) onConfirm(imgElement)
 
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
@@ -343,27 +177,8 @@ const cropImageFunc = (
       // const pixelRatio = 1
       // const aspectFact = imgElement.width / imgElement.height
 
-      // const width =
-      //   (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
-      //     ? imgElement.width > imgElement.height
-      //       ? MAX_SIZE
-      //       : Math.floor(MAX_SIZE * aspectFact)
-      //     : imgElement.width) *
-      //   (crop.width / 100)
-      // const height =
-      //   (imgElement.width > MAX_SIZE || imgElement.height > MAX_SIZE
-      //     ? imgElement.width < imgElement.height
-      //       ? MAX_SIZE
-      //       : Math.floor(MAX_SIZE / aspectFact)
-      //     : imgElement.height) *
-      //   (crop.height / 100)
-
       canvas.width = Math.floor(completedCrop.width * scaleX * pixelRatio)
       canvas.height = Math.floor(completedCrop.height * scaleY * pixelRatio)
-      // canvas.width = width
-      // canvas.height = height
-      // console.log('canvas.width', canvas.width)
-      // console.log('canvas.height', canvas.height)
 
       ctx.scale(pixelRatio, pixelRatio)
       ctx.imageSmoothingQuality = 'high'
@@ -428,59 +243,61 @@ const cropImageFunc = (
       if (!imgSrc) {
         // setCrop(undefined) // Makes crop preview update between images.
         const reader = new FileReader()
-        reader.addEventListener('load', () =>
-          setImgSrc(reader.result.toString() || '')
-        )
+        reader.addEventListener('load', (e) => {
+          // const imageElement = new Image()
+          const imageUrl = reader.result?.toString() || ''
+          // imageElement.src = imageUrl
+
+          // imageElement.addEventListener('load', (e) => {
+          //   // if (error) setError("");
+          //   const { naturalWidth, naturalHeight } = e.currentTarget
+          //   console.log('naturalWidth :>> ', naturalWidth)
+          //   console.log('naturalHeight :>> ', naturalHeight)
+          //   // if (naturalWidth < MIN_DIMENSION || naturalHeight < MIN_DIMENSION) {
+          //   //   setError("Image must be at least 150 x 150 pixels.");
+          //   //   return setImgSrc("");
+          //   // }
+          // })
+          setImgSrc(imageUrl)
+        })
         reader.readAsDataURL(src)
       }
     }, [imgSrc])
 
     useEffect(() => {
       setOnConfirmFunc(() => {
-        getCroppedImg(ref, completedCrop, crop, scale, rotate)
+        getCroppedImg(ref.current, completedCrop, crop, scale, rotate)
         closeModal()
       })
       // setDisableConfirm(completedCrop.width < 100 || completedCrop.height < 100)
     }, [completedCrop])
 
-    // function onImageLoad(e) {
-    //   if (aspect) {
-    //     const { width, height } = e.currentTarget
-    //     setCrop(centerAspectCrop(width, height, aspect))
-    //   }
-    // }
+    const onImageLoad = (e) => {
+      const { width, height } = e.currentTarget
+      const newCrop = aspectRatio
+        ? makeAspectCrop(
+            {
+              unit: '%',
+              width,
+              height,
+            },
+            aspectRatio,
+            width,
+            height
+          )
+        : {
+            unit: '%',
+            width: 100,
+            height: 100,
+            x: 0,
+            y: 0,
+          }
+      const pixelCrop = convertToPixelCrop(newCrop, width, height)
+      setCompletedCrop(pixelCrop)
+      setCrop(newCrop)
+    }
 
-    // useDebounceEffect(
-    //   async () => {
-    //     if (
-    //       completedCrop?.width &&
-    //       completedCrop?.height &&
-    //       imgRef.current &&
-    //       previewCanvasRef.current
-    //     ) {
-    //       // We use canvasPreview as it's much faster than imgPreview.
-    //       canvasPreview(
-    //         imgRef.current,
-    //         previewCanvasRef.current,
-    //         completedCrop,
-    //         scale,
-    //         rotate
-    //       )
-    //     }
-    //   },
-    //   100,
-    //   [completedCrop, scale, rotate]
-    // )
-
-    // function handleToggleAspectClick() {
-    //   if (aspect) {
-    //     setAspect(undefined)
-    //   } else if (imgRef.current) {
-    //     const { width, height } = imgRef.current
-    //     setAspect(16 / 9)
-    //     setCrop(centerAspectCrop(width, height, 16 / 9))
-    //   }
-    // }
+    if (!Boolean(imgSrc)) return null
 
     return (
       <div className="App">
@@ -513,46 +330,27 @@ const cropImageFunc = (
             <Square />
           </IconToggleButton> */}
         </div>
-        {Boolean(imgSrc) && (
-          <div
-            onClick={() => {
-              if (!isCropClicked) setIsCropClicked(true)
-            }}
-          >
-            <ReactCrop
-              // innerRef={inputRef}
-              crop={crop}
-              onChange={(_, percentCrop) => setCrop(percentCrop)}
-              onComplete={(c) => setCompletedCrop(c)}
-              aspect={aspectRatio}
-              minHeight={100}
-              minWidth={100}
-            >
-              <img
-                ref={onRefChange}
-                alt="Crop me"
-                src={imgSrc}
-                style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
-                // onLoad={onImageLoad}
-                className="max-h-[70vh]"
-              />
-            </ReactCrop>
-          </div>
-        )}
-        {/* <div>
-          {Boolean(completedCrop) && (
-            <canvas
-              ref={previewCanvasRef}
-              style={{
-                border: '1px solid black',
-                objectFit: 'contain',
-                width: completedCrop.width,
-                height: completedCrop.height,
-              }}
-            />
-          )}
-        </div> */}
-        {/* <div onClick={() => getCroppedImg()}>Отправить</div> */}
+        <ReactCrop
+          // innerRef={inputRef}
+          crop={crop}
+          onChange={(_, percentCrop) => setCrop(percentCrop)}
+          onComplete={(c) => {
+            if (firstInit) return setFirstInit(false)
+            setCompletedCrop(c)
+          }}
+          aspect={aspectRatio}
+          minHeight={100}
+          minWidth={100}
+        >
+          <img
+            ref={ref}
+            alt="Crop me"
+            src={imgSrc}
+            style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
+            className="max-h-[70vh]"
+            onLoad={onImageLoad}
+          />
+        </ReactCrop>
       </div>
     )
   }
@@ -561,9 +359,6 @@ const cropImageFunc = (
     title: `Обрезка картинки`,
     declineButtonName: 'Закрыть',
     Children: CropImageModal,
-    // onConfirm: () => getCroppedImg(),
-    // showDecline: true,
-    // showConfirm: false,
   }
 }
 
