@@ -313,8 +313,9 @@ const ToolsEventAnonsVkContent = () => {
                   fontSize={dateFontSize}
                   fill={dateColor}
                   textAnchor="middle"
-                  // fontFamily="Lora"
-                  className="font-bold uppercase font-lora"
+                  fontFamily="Lora"
+                  className="font-bold uppercase"
+                  // className="font-bold uppercase font-lora"
                 >
                   {customMode
                     ? customDate
@@ -326,8 +327,9 @@ const ToolsEventAnonsVkContent = () => {
                   fontSize={timeFontSize}
                   fill={timeColor}
                   textAnchor="middle"
-                  // fontFamily="Lora"
-                  className="font-bold uppercase font-lora"
+                  fontFamily="Lora"
+                  className="font-bold uppercase"
+                  // className="font-bold uppercase font-lora"
                 >
                   {customMode
                     ? customTime
@@ -349,8 +351,9 @@ const ToolsEventAnonsVkContent = () => {
                     fontSize={fontSize}
                     fill={anonsColor}
                     textAnchor="middle"
-                    // fontFamily="Lora" //"Enchants"
-                    className="font-bold uppercase font-lora"
+                    fontFamily="Lora"
+                    className="font-bold uppercase"
+                    // className="font-bold uppercase font-lora"
                   >
                     {textLine}
                   </text>
