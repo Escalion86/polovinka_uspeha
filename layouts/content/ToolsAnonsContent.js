@@ -10,6 +10,7 @@ import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
 } from '@components/SvgBackground'
+import Templates from '@components/Templates'
 import { MONTHS_FULL_1 } from '@helpers/constants'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import getEventsYears from '@helpers/getEventsYears'
@@ -19,7 +20,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import { saveSvgAsPng } from 'save-svg-as-png'
+import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 
 const styles = [
   {
@@ -50,6 +51,14 @@ const styles = [
 
 const closedEventsDirectionId = '6301d334e5b7fa785515faac' //6301d334e5b7fa785515faac
 
+const getPreview = async () => {
+  const input = document.querySelector('#input0')
+  const response = await svgAsPngUri(input, {
+    scale: 0.3,
+  })
+  return response
+}
+
 const save2 = async (listsCount, name) => {
   for (let i = 0; i < listsCount; i++) {
     const input = document.querySelector('#input' + i)
@@ -63,6 +72,9 @@ const save2 = async (listsCount, name) => {
 const ToolsAnonsContent = () => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const events = useRecoilValue(eventsAtom)
+
+  const [rerenderState, setRerenderState] = useState(false)
+  const rerender = () => setRerenderState((state) => !state)
 
   const [month, setMonth] = useState(serverDate.getMonth())
   const [year, setYear] = useState(serverDate.getFullYear())
@@ -262,6 +274,47 @@ const ToolsAnonsContent = () => {
           label="Не показывать названия мероприятий клуба"
         /> */}
       </div>
+      <Templates
+        tool="anonsevents"
+        onSelect={(template) => {
+          if (template) {
+            setStartX(template.startX)
+            setStartY(template.startY)
+            setTitleGap(template.titleGap)
+            setMaxHeight(template.maxHeight)
+            setTextColor(template.textColor)
+            setDateColor(template.dateColor)
+            setDotColor(template.dotColor)
+            setLineColor(template.lineColor)
+            setAnonsColor(template.anonsColor)
+            setBackgroundProps(template.backgroundProps)
+            setFontSize(template.fontSize)
+            setDateFontSize(template.dateFontSize)
+            setMaxItemsOnList(template.maxItemsOnList)
+            rerender()
+          }
+        }}
+        templateFunc={async () => {
+          const preview =
+            listsWithPreparedItems.length > 0 ? await getPreview() : undefined
+          return {
+            startX,
+            startY,
+            titleGap,
+            maxHeight,
+            textColor,
+            dateColor,
+            dotColor,
+            lineColor,
+            anonsColor,
+            backgroundProps,
+            fontSize,
+            dateFontSize,
+            maxItemsOnList,
+            preview,
+          }
+        }}
+      />
       <div className="flex flex-wrap gap-x-1">
         <Input
           label="Макс. мероприятий на странице"
@@ -372,9 +425,10 @@ const ToolsAnonsContent = () => {
       </div>
 
       <SvgBackgroundInput
-        // value={backgroundProps}
+        value={backgroundProps}
         onChange={setBackgroundProps}
         imageAspect={1080 / 1920}
+        rerender={rerenderState}
       />
       {/* <div style={{ height: 1920, width: 1080 }}>
         <img src={src} height={1920} width={1080} />

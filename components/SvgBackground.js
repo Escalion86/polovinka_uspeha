@@ -8,6 +8,7 @@ import ColorPicker from './ColorPicker'
 import ComboBox from './ComboBox'
 import Input from './Input'
 import InputWrapper from './InputWrapper'
+import { useEffect } from 'react'
 
 export const SvgBackgroundComponent = ({
   backgroundType = 'color',
@@ -50,7 +51,12 @@ export const SvgBackgroundComponent = ({
   )
 }
 
-export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
+export const SvgBackgroundInput = ({
+  value,
+  onChange,
+  imageAspect,
+  rerender,
+}) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const hiddenFileInput = useRef(null)
@@ -84,6 +90,15 @@ export const SvgBackgroundInput = ({ value, onChange, imageAspect }) => {
       ...value,
     })
   }
+
+  useEffect(() => {
+    setBackgroundType(value?.backgroundType ?? 'color')
+    setBackgroundColor(value?.backgroundColor ?? '#7a5151')
+    setGradient1Color(value?.gradient1Color ?? '#7a6a53')
+    setGradient2Color(value?.gradient2Color ?? '#504436')
+    setAngle(value?.angle ?? 45)
+    setSrc(value?.src ?? '')
+  }, [rerender])
 
   return (
     <InputWrapper label="Фон" paddingX="small" paddingY={false} centerLabel>

@@ -10,11 +10,20 @@ import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
 } from '@components/SvgBackground'
+import Templates from '@components/Templates'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import { saveSvgAsPng } from 'save-svg-as-png'
+import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
+
+const getPreview = async () => {
+  const input = document.querySelector('#input')
+  const response = await svgAsPngUri(input, {
+    scale: 0.2,
+  })
+  return response
+}
 
 const save = async (name) => {
   const input = document.querySelector('#input')
@@ -23,6 +32,10 @@ const save = async (name) => {
 
 const ToolsEventAnonsVkContent = () => {
   const events = useRecoilValue(eventsAtom)
+
+  const [rerenderState, setRerenderState] = useState(false)
+  const rerender = () => setRerenderState((state) => !state)
+
   const [customMode, setCustomMode] = useState(false)
   const [customDate, setCustomDate] = useState('')
   const [customTime, setCustomTime] = useState('')
@@ -40,7 +53,6 @@ const ToolsEventAnonsVkContent = () => {
   const [lineColor, setLineColor] = useState('#C7A082')
   const [anonsColor, setAnonsColor] = useState('#000000')
   const [backgroundProps, setBackgroundProps] = useState()
-  console.log('backgroundProps :>> ', backgroundProps)
   const [fontSize, setFontSize] = useState(112)
   const [dateFontSize, setDateFontSize] = useState(100)
   const [timeFontSize, setTimeFontSize] = useState(100)
@@ -84,6 +96,7 @@ const ToolsEventAnonsVkContent = () => {
         value={customMode ? 'true' : 'false'}
         onChange={(value) => setCustomMode(value === 'true')}
       />
+
       <div className="flex flex-wrap gap-x-1">
         {customMode ? (
           <div className="flex flex-wrap w-full gap-1">
@@ -120,11 +133,67 @@ const ToolsEventAnonsVkContent = () => {
           />
         )}
       </div>
+      <Templates
+        tool="anonsvk"
+        onSelect={(template) => {
+          if (template) {
+            setStartX(template.startX)
+            setStartY(template.startY)
+            setDateStartY(template.dateStartY)
+            setDateColor(template.dateColor)
+            setTimeStartY(template.timeStartY)
+            setTimeColor(template.timeColor)
+            setLineStartY(template.lineStartY)
+            setLineColor(template.lineColor)
+            setAnonsColor(template.anonsColor)
+            setBackgroundProps(template.backgroundProps)
+            setFontSize(template.fontSize)
+            setDateFontSize(template.dateFontSize)
+            setTimeFontSize(template.timeFontSize)
+            rerender()
+          }
+        }}
+        templateFunc={async () => {
+          const preview = await getPreview()
+          return {
+            startX,
+            startY,
+            dateStartY,
+            dateColor,
+            timeStartY,
+            timeColor,
+            lineStartY,
+            lineColor,
+            anonsColor,
+            backgroundProps,
+            fontSize,
+            dateFontSize,
+            timeFontSize,
+            preview,
+          }
+        }}
+        // template={{
+        //   startX,
+        //   startY,
+        //   dateStartY,
+        //   dateColor,
+        //   timeStartY,
+        //   timeColor,
+        //   lineStartY,
+        //   lineColor,
+        //   anonsColor,
+        //   backgroundProps,
+        //   fontSize,
+        //   dateFontSize,
+        //   timeFontSize,
+        // }}
+      />
       <div className="flex flex-wrap items-end gap-x-1">
         <SvgBackgroundInput
-          // value={backgroundProps}
+          value={backgroundProps}
           onChange={setBackgroundProps}
           imageAspect={2028 / 1536}
+          rerender={rerenderState}
         />
         {/* <Input
           label="Позиция по X текста"
