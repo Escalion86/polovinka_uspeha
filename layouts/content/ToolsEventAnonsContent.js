@@ -11,12 +11,21 @@ import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
 } from '@components/SvgBackground'
+import Templates from '@components/Templates'
 import frames from '@components/frames/frames'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import { saveSvgAsPng } from 'save-svg-as-png'
+import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
+
+const getPreview = async () => {
+  const input = document.querySelector('#input')
+  const response = await svgAsPngUri(input, {
+    scale: 0.3,
+  })
+  return response
+}
 
 const save = async (name) => {
   const input = document.querySelector('#input')
@@ -25,6 +34,10 @@ const save = async (name) => {
 
 const ToolsEventAnonsContent = () => {
   const events = useRecoilValue(eventsAtom)
+
+  const [rerenderState, setRerenderState] = useState(false)
+  const rerender = () => setRerenderState((state) => !state)
+
   const [customMode, setCustomMode] = useState(false)
   const [customDate1, setCustomDate1] = useState('')
   const [customDate2, setCustomDate2] = useState('')
@@ -148,22 +161,69 @@ const ToolsEventAnonsContent = () => {
             // readOnly={fixedEventId}
           />
         )}
-        <div className="flex items-start gap-2">
-          <InputSvgFrame frameId={frameId} onChange={setFrameId} />
-          {frameId && (
-            <ColorPicker
-              label="Цвет рамки"
-              value={frameColor}
-              onChange={setFrameColor}
-            />
-          )}
-        </div>
+        <Templates
+          tool="anonsinstagram"
+          onSelect={(template) => {
+            if (template) {
+              setFrameId(template.frameId)
+              setFrameColor(template.frameColor)
+              setStartX(template.startX)
+              setStartY(template.startY)
+              setDateStartY(template.dateStartY)
+              setDateColor(template.dateColor)
+              setAnonsColor(template.anonsColor)
+              setBackgroundProps(template.backgroundProps)
+              setFontSize(template.fontSize)
+              setDateFontSize(template.dateFontSize)
+              rerender()
+            }
+          }}
+          templateFunc={async () => {
+            const preview = await getPreview()
+            return {
+              frameId,
+              frameColor,
+              startX,
+              startY,
+              dateStartY,
+              dateColor,
+              anonsColor,
+              backgroundProps,
+              fontSize,
+              dateFontSize,
+              preview,
+            }
+          }}
+          // template={{
+          //   frameId,
+          //   frameColor,
+          //   startX,
+          //   startY,
+          //   dateStartY,
+          //   dateColor,
+          //   anonsColor,
+          //   backgroundProps,
+          //   fontSize,
+          //   dateFontSize,
+          // }}
+        />
+      </div>
+      <div className="flex items-start gap-2">
+        <InputSvgFrame frameId={frameId} onChange={setFrameId} />
+        {frameId && (
+          <ColorPicker
+            label="Цвет рамки"
+            value={frameColor}
+            onChange={setFrameColor}
+          />
+        )}
       </div>
       <div className="flex flex-wrap items-end gap-x-1">
         <SvgBackgroundInput
-          // value={backgroundProps}
+          value={backgroundProps}
           onChange={setBackgroundProps}
           imageAspect={1}
+          rerender={rerenderState}
         />
         {/* <Input
           label="Позиция по X текста"

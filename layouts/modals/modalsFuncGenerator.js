@@ -664,6 +664,21 @@ const modalsFuncGenerator = (
       edit: (role, onConfirm) =>
         addModal(require('./modalsFunc/roleFunc').default(role, onConfirm)),
     },
+    template: {
+      select: (tool, onSelect) =>
+        addModal(
+          require('./modalsFunc/selectTemplateFunc').default(tool, onSelect)
+        ),
+      save: (tool, template, onConfirm) => {
+        addModal(
+          require('./modalsFunc/saveTemplateFunc').default(
+            tool,
+            template,
+            onConfirm
+          )
+        )
+      },
+    },
     browseLocation: () =>
       addModal(require('./modalsFunc/browseLocationFunc').default()),
   }

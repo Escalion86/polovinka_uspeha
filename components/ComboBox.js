@@ -76,7 +76,7 @@ const ComboBox = ({
         {items.map((item, index) => (
           <option
             className="text-black cursor-pointer"
-            key={item.name}
+            key={item.value}
             value={item.value}
           >
             {item.name}
