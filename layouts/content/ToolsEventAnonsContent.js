@@ -281,8 +281,8 @@ const ToolsEventAnonsContent = () => {
                 fill={dateColor}
                 // fontWeight="bold"
                 textAnchor="middle"
-                // fontFamily="AdleryProSwash"
-                className="font-adleryProSwash"
+                fontFamily="AdleryProSwash"
+                // className="font-adleryProSwash"
               >
                 {customMode
                   ? customDate1
@@ -299,8 +299,8 @@ const ToolsEventAnonsContent = () => {
                   fill={dateColor}
                   // fontWeight="bold"
                   textAnchor="middle"
-                  // fontFamily="AdleryProSwash"
-                  className="font-adleryProSwash"
+                  fontFamily="AdleryProSwash"
+                  // className="font-adleryProSwash"
                 >
                   {customMode
                     ? customDate2
@@ -327,8 +327,8 @@ const ToolsEventAnonsContent = () => {
                   fill={anonsColor}
                   // fontWeight="bold"
                   textAnchor="middle"
-                  className="font-adlery"
-                  // fontFamily="AdleryProBlockletter" //"Enchants"
+                  // className="font-adlery"
+                  fontFamily="AdleryProBlockletter" //"Enchants"
                 >
                   {/* {event.title} */}
                   {/* Катание на лимузине по елкам */}

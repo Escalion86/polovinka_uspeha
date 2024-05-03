@@ -1,7 +1,7 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document'
 
-const { NODE_ENV } = process.env
-const isProdMode = NODE_ENV === 'production'
+// const { NODE_ENV } = process.env
+// const isProdMode = NODE_ENV === 'production'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
