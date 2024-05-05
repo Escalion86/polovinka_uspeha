@@ -10,6 +10,7 @@ export const getData = async (
   resJson = false
 ) => {
   const actualUrl = urlQueryGenerator(url, form)
+
   try {
     const res = await fetch(actualUrl, {
       method: 'GET',
@@ -18,6 +19,7 @@ export const getData = async (
         'Content-Type': contentType,
       },
     })
+    console.log('res :>> ', res)
     // Throw error with status code in case Fetch API req failed
     if (!res.ok) {
       throw new Error(res.status)

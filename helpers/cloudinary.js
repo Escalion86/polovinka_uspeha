@@ -39,18 +39,65 @@ export const deleteImages = async (arrayOfImagesUrls, callback = null) => {
   if (callback) callback()
 }
 
+export const getImages = async (
+  directory,
+  callback,
+  project = 'polovinka_uspeha'
+) => {
+  if (directory) {
+    const query = {
+      directory,
+    }
+
+    const queryString = new URLSearchParams(query).toString()
+    const urlWithQuery = `https://api.escalioncloud.ru/api/files?${project}/${queryString}`
+
+    return await fetch(
+      // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
+      urlWithQuery,
+      {
+        method: 'GET',
+        // body: formData,
+        //  JSON.stringify({
+        //   file: image,
+        //   fileName: imageName ?? 'test.jpg',
+        //   folder: 'events',
+        // })
+        // dataType: 'json',
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // 'Content-Type': "multipart/form-data"
+        // },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('data', data)
+        // if (data.secure_url !== '') {
+        // if (callback) callback(data.secure_url)
+        // return data.secure_url
+        // }
+        if (callback) callback(data)
+        return data
+      })
+      .catch((err) => console.error('ERROR', err))
+  }
+}
+
 export const sendImage = async (
   image,
   callback,
-  folder = null,
-  // imageName = null,
+  folder,
+  imageName = null,
   project = 'polovinka_uspeha'
 ) => {
+  console.log('test image :>> ', image)
   if (isObject(image)) {
     const formData = new FormData()
     // console.log('folder', folder)
-    formData.append('project', project)
-    formData.append('folder', folder)
+    formData.append('project', project ?? 'polovinka_uspeha')
+
+    formData.append('folder', folder ?? 'temp')
     // formData.append('password', 'cloudtest')
     formData.append('files', image)
 
@@ -80,6 +127,7 @@ export const sendImage = async (
         // return data.secure_url
         // }
         if (callback) callback(data)
+        return data
       })
       .catch((err) => console.error('ERROR', err))
   }

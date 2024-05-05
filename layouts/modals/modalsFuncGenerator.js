@@ -201,6 +201,10 @@ const modalsFuncGenerator = (
       addModal(
         require('./modalsFunc/selectSvgFrameFunc').default(itemId, onChange)
       ),
+    selectImage: (directory, onSelect) =>
+      addModal(
+        require('./modalsFunc/selectImageFunc').default(directory, onSelect)
+      ),
     selectEvents: (
       itemsId,
       filterRules,

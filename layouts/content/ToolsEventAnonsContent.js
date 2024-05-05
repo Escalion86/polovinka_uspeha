@@ -13,8 +13,13 @@ import {
 } from '@components/SvgBackground'
 import Templates from '@components/Templates'
 import frames from '@components/frames/frames'
+import base64ToBlob from '@helpers/base64ToBlob'
+import { sendImage } from '@helpers/cloudinary'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import { modalsFuncAtom } from '@state/atoms'
 import eventsAtom from '@state/atoms/eventsAtom'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
@@ -22,7 +27,7 @@ import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 const getPreview = async () => {
   const input = document.querySelector('#input')
   const response = await svgAsPngUri(input, {
-    scale: 0.3,
+    scale: 240 / 1080,
   })
   return response
 }
@@ -33,7 +38,11 @@ const save = async (name) => {
 }
 
 const ToolsEventAnonsContent = () => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
+  const { imageFolder } = useRecoilValue(locationPropsSelector)
+
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
   const rerender = () => setRerenderState((state) => !state)
@@ -161,6 +170,16 @@ const ToolsEventAnonsContent = () => {
             // readOnly={fixedEventId}
           />
         )}
+        {loggedUserActiveRole?.dev && (
+          <Button
+            name="Test"
+            onClick={() => {
+              modalsFunc.selectImage('templates/anonsinstagram', (imageUrl) => {
+                console.log('imageUrl :>> ', imageUrl)
+              })
+            }}
+          />
+        )}
         <Templates
           tool="anonsinstagram"
           onSelect={(template) => {
@@ -179,7 +198,18 @@ const ToolsEventAnonsContent = () => {
             }
           }}
           templateFunc={async () => {
-            const preview = await getPreview()
+            const base64String = await getPreview()
+            const blob = base64String
+              ? base64ToBlob(base64String.split(',')[1], 'image/png')
+              : undefined
+
+            const preview = await sendImage(
+              blob,
+              undefined,
+              'templates/anonsinstagram/preview',
+              null,
+              imageFolder
+            )
             return {
               frameId,
               frameColor,
@@ -224,6 +254,7 @@ const ToolsEventAnonsContent = () => {
           onChange={setBackgroundProps}
           imageAspect={1}
           rerender={rerenderState}
+          imagesFolder="templates/anonsinstagram"
         />
         {/* <Input
           label="Позиция по X текста"
