@@ -1,21 +1,18 @@
-import { faHome } from '@fortawesome/free-solid-svg-icons/faHome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import arrayMove from '@helpers/arrayMove'
 import { sendImage } from '@helpers/cloudinary'
 import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import Zoom from 'react-medium-image-zoom'
 import { useRecoilValue } from 'recoil'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import Image from 'next/image'
 
-const InputImages = ({
+const SelectImage = ({
   images = [],
   onChange = () => {},
   required = false,
@@ -32,7 +29,6 @@ const InputImages = ({
   smallMargin,
   paddingY = true,
   paddingX,
-  noBorder,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const { imageFolder } = useRecoilValue(locationPropsSelector)
@@ -74,6 +70,8 @@ const InputImages = ({
 
   useEffect(() => setAddingImage(false), [images])
 
+  useEffect(() => {}, [])
+
   return (
     <InputWrapper
       label={label}
@@ -84,7 +82,7 @@ const InputImages = ({
       required={required}
       error={error}
       fullWidth={fullWidth}
-      noBorder={readOnly || noBorder}
+      noBorder={readOnly}
       noMargin={noMargin}
       smallMargin={smallMargin}
       paddingY={paddingY}
@@ -100,16 +98,14 @@ const InputImages = ({
               transition={{ duration: 0.2, type: 'just' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <Zoom zoomMargin={20}>
-                <Image
-                  className="object-cover w-20 h-20"
-                  src={image}
-                  alt="item_image"
-                  width="0"
-                  height="0"
-                  sizes="100vw"
-                />
-              </Zoom>
+              <Image
+                className="object-cover w-20 h-20"
+                src={image}
+                alt="item_image"
+                width="0"
+                height="0"
+                sizes="100vw"
+              />
 
               {!readOnly && (
                 <div className="absolute top-0 right-0 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
@@ -122,49 +118,30 @@ const InputImages = ({
                   />
                 </div>
               )}
-              {!readOnly && images.length > 1 && (
-                <div
-                  className={cn(
-                    'absolute flex p-1 duration-200 transform bg-white rounded-br-full w-7 h-7',
-                    index === 0
-                      ? 'top-0 left-0'
-                      : 'top-0 left-0 laptop:-top-5 laptop:group-hover:top-0 laptop:-left-5 laptop:group-hover:left-0 cursor-pointer hover:scale-125'
-                  )}
-                >
-                  <FontAwesomeIcon
-                    className={cn(
-                      'h-4',
-                      index === 0 ? 'text-success' : 'text-orange-700'
-                    )}
-                    icon={faHome}
-                    onClick={() => {
-                      if (index !== 0) onChange(arrayMove(images, index, 0))
-                    }}
-                  />
-                </div>
-              )}
             </m.div>
           ))}
-        {!readOnly && !isAddingImage && images.length < maxImages && (
-          <div
-            onClick={addImageClick}
-            className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer group rounded-xl"
-          >
-            <div className="flex items-center justify-center w-12 h-12 duration-200 min-w-12 min-h-12 transparent group-hover:scale-125 ">
-              <FontAwesomeIcon className="text-gray-700" icon={faPlus} />
-              <input
-                type="file"
-                ref={hiddenFileInput}
-                onChange={(e) => onAddImage(e.target.files[0])}
-                onClick={(e) => {
-                  e.target.value = null
-                }}
-                style={{ display: 'none' }}
-                accept="image/jpeg,image/png"
-              />
+        {!readOnly &&
+          !isAddingImage &&
+          (!maxImages || images.length < maxImages) && (
+            <div
+              onClick={addImageClick}
+              className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer group rounded-xl"
+            >
+              <div className="flex items-center justify-center w-12 h-12 duration-200 min-w-12 min-h-12 transparent group-hover:scale-125 ">
+                <FontAwesomeIcon className="text-gray-700" icon={faPlus} />
+                <input
+                  type="file"
+                  ref={hiddenFileInput}
+                  onChange={(e) => onAddImage(e.target.files[0])}
+                  onClick={(e) => {
+                    e.target.value = null
+                  }}
+                  style={{ display: 'none' }}
+                  accept="image/jpeg,image/png"
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
         {isAddingImage && (
           <LoadingSpinner
             heightClassName="h-20"
@@ -176,4 +153,4 @@ const InputImages = ({
   )
 }
 
-export default InputImages
+export default SelectImage

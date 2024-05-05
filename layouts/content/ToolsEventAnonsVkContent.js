@@ -11,8 +11,11 @@ import {
   SvgBackgroundInput,
 } from '@components/SvgBackground'
 import Templates from '@components/Templates'
+import base64ToBlob from '@helpers/base64ToBlob'
+import { sendImage } from '@helpers/cloudinary'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import eventsAtom from '@state/atoms/eventsAtom'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
@@ -20,7 +23,7 @@ import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 const getPreview = async () => {
   const input = document.querySelector('#input')
   const response = await svgAsPngUri(input, {
-    scale: 0.2,
+    scale: 240 / 2028,
   })
   return response
 }
@@ -32,6 +35,7 @@ const save = async (name) => {
 
 const ToolsEventAnonsVkContent = () => {
   const events = useRecoilValue(eventsAtom)
+  const { imageFolder } = useRecoilValue(locationPropsSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
   const rerender = () => setRerenderState((state) => !state)
@@ -154,7 +158,18 @@ const ToolsEventAnonsVkContent = () => {
           }
         }}
         templateFunc={async () => {
-          const preview = await getPreview()
+          const base64String = await getPreview()
+          const blob = base64String
+            ? base64ToBlob(base64String.split(',')[1], 'image/png')
+            : undefined
+
+          const preview = await sendImage(
+            blob,
+            undefined,
+            'templates/anonsvk/preview',
+            null,
+            imageFolder
+          )
           return {
             startX,
             startY,
@@ -194,6 +209,7 @@ const ToolsEventAnonsVkContent = () => {
           onChange={setBackgroundProps}
           imageAspect={2028 / 1536}
           rerender={rerenderState}
+          imagesFolder="templates/anonsvk"
         />
         {/* <Input
           label="Позиция по X текста"

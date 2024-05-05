@@ -1,14 +1,45 @@
-import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import Button from './Button'
+// import Button from './Button'
 import ColorPicker from './ColorPicker'
 import ComboBox from './ComboBox'
 import Input from './Input'
 import InputWrapper from './InputWrapper'
 import { useEffect } from 'react'
+import InputImage from './InputImage'
+
+// function urlToBase64(url) {
+//   return fetch(url)
+//     .then((response) => response.blob())
+//     .then(
+//       (blob) =>
+//         new Promise((resolve, reject) => {
+//           const reader = new FileReader()
+//           reader.onloadend = () => resolve(reader.result)
+//           reader.onerror = reject
+//           reader.readAsDataURL(blob)
+//         })
+//     )
+//     .then((dataUrl) => dataUrl.split(',')[1])
+// }
+
+function urlToBase64(url, callback) {
+  var img = new Image()
+  img.crossOrigin = 'Anonymous' // Allow cross-origin images
+  img.onload = function () {
+    var canvas = document.createElement('canvas')
+    var ctx = canvas.getContext('2d')
+    canvas.width = img.width
+    canvas.height = img.height
+    ctx.drawImage(img, 0, 0)
+    var dataURL = canvas.toDataURL('image/png')
+    callback(dataURL)
+  }
+  img.src = url
+}
 
 export const SvgBackgroundComponent = ({
   backgroundType = 'color',
@@ -18,7 +49,56 @@ export const SvgBackgroundComponent = ({
   gradient2Color = '#7a6a53',
   src = '',
 }) => {
+  const [srcBase64, setBase64] = useState(src)
   var anglePI = angle * (Math.PI / 180)
+
+  // const onLoad = (e) => {
+  //   if (src && !srcBase64) {
+  //     console.log('! :>> ')
+  //     function getBase64Image(img) {
+  //       var canvas = document.createElement('canvas')
+  //       canvas.width = img.width
+  //       canvas.height = img.height
+  //       var ctx = canvas.getContext('2d')
+  //       ctx.drawImage(img, 0, 0)
+  //       var dataURL = canvas.toDataURL('image/png')
+  //       return dataURL.replace(/^data:image\/?[A-z]*;base64,/)
+  //     }
+
+  //     var base64 = getBase64Image(document.getElementById('preview'))
+  //     setBase64(base64)
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   if (src) {
+  //     function getBase64Image(img) {
+  //       var canvas = document.createElement('canvas')
+  //       canvas.width = img.width
+  //       canvas.height = img.height
+  //       var ctx = canvas.getContext('2d')
+  //       ctx.drawImage(img, 0, 0)
+  //       var dataURL = canvas.toDataURL('image/png')
+  //       return dataURL.replace(/^data:image\/?[A-z]*;base64,/)
+  //     }
+  //     var img = document.createElement('img')
+  //     var base64 = getBase64Image(img)
+  //     setBase64(base64)
+  //   }
+  // }, [src])
+
+  useEffect(() => {
+    if (src) {
+      // urlToBase64(src)
+      //   .then((base64) => setBase64(base64))
+      //   .catch((error) => console.error(error))
+      urlToBase64(src, function (base64) {
+        // console.log(base64);
+        setBase64(base64)
+      })
+    }
+  }, [src])
+
   return (
     <>
       <defs>
@@ -45,7 +125,13 @@ export const SvgBackgroundComponent = ({
         />
       )}
       {backgroundType === 'image' && (
-        <image id={'preview'} href={src} height="100%" width="100%" />
+        <image
+          id={'preview'}
+          href={src ? srcBase64 : undefined}
+          height="100%"
+          width="100%"
+          // onLoad={onLoad}
+        />
       )}
     </>
   )
@@ -56,13 +142,14 @@ export const SvgBackgroundInput = ({
   onChange,
   imageAspect,
   rerender,
+  imagesFolder,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  // const modalsFunc = useRecoilValue(modalsFuncAtom)
 
-  const hiddenFileInput = useRef(null)
-  const addImageClick = () => {
-    hiddenFileInput.current.click()
-  }
+  // const hiddenFileInput = useRef(null)
+  // const addImageClick = () => {
+  //   hiddenFileInput.current.click()
+  // }
 
   const [backgroundType, setBackgroundType] = useState(
     value?.backgroundType ?? 'color'
@@ -101,7 +188,13 @@ export const SvgBackgroundInput = ({
   }, [rerender])
 
   return (
-    <InputWrapper label="Фон" paddingX="small" paddingY={false} centerLabel>
+    <InputWrapper
+      label="Фон"
+      paddingX="small"
+      paddingY={false}
+      centerLabel
+      fitWidth
+    >
       <div className="flex flex-wrap items-center flex-1 gap-x-2">
         <ComboBox
           label="Тип фона"
@@ -163,41 +256,52 @@ export const SvgBackgroundInput = ({
           />
         )}
         {backgroundType === 'image' && (
-          <div className="flex items-center mt-4 mb-1 gap-x-1">
-            <div>Фон:</div>
-            <Button
-              name={src ? 'Изменить фон' : 'Загрузить фон'}
-              thin
-              onClick={addImageClick}
-            />
-            <input
-              ref={hiddenFileInput}
-              className="hidden"
-              type="file"
-              onChange={(e) => {
-                modalsFunc.cropImage(
-                  e.target.files[0],
-                  null,
-                  imageAspect,
-                  (newImage) => {
-                    setSrc(newImage)
-                    set({ src: newImage })
-                  },
-                  false
-                )
-              }}
-            />
-            {src && (
-              <FontAwesomeIcon
-                className="w-6 h-6 duration-200 transform cursor-pointer text-danger hover:scale-110"
-                icon={faTimes}
-                onClick={() => {
-                  setSrc('')
-                  set({ src: '' })
-                }}
-              />
-            )}
-          </div>
+          // <div className="flex items-center gap-x-1">
+          // {/* <div>Фон:</div> */}
+          // {/* <Button
+          //   name={src ? 'Изменить фон' : 'Загрузить фон'}
+          //   thin
+          //   onClick={addImageClick}
+          // /> */}
+          <InputImage
+            image={src}
+            onChange={(newImage) => {
+              setSrc(newImage)
+              set({ src: newImage })
+            }}
+            noBorder
+            noMargin
+            aspect={imageAspect}
+            directory={imagesFolder}
+          />
+          //   {/* <input
+          //     ref={hiddenFileInput}
+          //     className="hidden"
+          //     type="file"
+          //     onChange={(e) => {
+          //       modalsFunc.cropImage(
+          //         e.target.files[0],
+          //         null,
+          //         imageAspect,
+          //         (newImage) => {
+          //           setSrc(newImage)
+          //           set({ src: newImage })
+          //         },
+          //         false
+          //       )
+          //     }}
+          //   /> */}
+          // //   {src && (
+          // //     <FontAwesomeIcon
+          // //       className="w-6 h-6 duration-200 transform cursor-pointer text-danger hover:scale-110"
+          // //       icon={faTimes}
+          // //       onClick={() => {
+          // //         setSrc('')
+          // //         set({ src: '' })
+          // //       }}
+          // //     />
+          // //   )}
+          // // </div>
         )}
       </div>
     </InputWrapper>

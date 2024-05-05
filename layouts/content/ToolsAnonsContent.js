@@ -11,6 +11,8 @@ import {
   SvgBackgroundInput,
 } from '@components/SvgBackground'
 import Templates from '@components/Templates'
+import base64ToBlob from '@helpers/base64ToBlob'
+import { sendImage } from '@helpers/cloudinary'
 import { MONTHS_FULL_1 } from '@helpers/constants'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import getEventsYears from '@helpers/getEventsYears'
@@ -18,9 +20,10 @@ import getNoun from '@helpers/getNoun'
 import sortFunctions from '@helpers/sortFunctions'
 import eventsAtom from '@state/atoms/eventsAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
+import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
+import { saveSvgAsPng, svgAsPngUri, uriToBlob } from 'save-svg-as-png'
 
 const styles = [
   {
@@ -54,7 +57,7 @@ const closedEventsDirectionId = '6301d334e5b7fa785515faac' //6301d334e5b7fa78551
 const getPreview = async () => {
   const input = document.querySelector('#input0')
   const response = await svgAsPngUri(input, {
-    scale: 0.3,
+    scale: 240 / 1920,
   })
   return response
 }
@@ -72,6 +75,7 @@ const save2 = async (listsCount, name) => {
 const ToolsAnonsContent = () => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
   const events = useRecoilValue(eventsAtom)
+  const { imageFolder } = useRecoilValue(locationPropsSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
   const rerender = () => setRerenderState((state) => !state)
@@ -295,8 +299,20 @@ const ToolsAnonsContent = () => {
           }
         }}
         templateFunc={async () => {
-          const preview =
+          const base64String =
             listsWithPreparedItems.length > 0 ? await getPreview() : undefined
+          const blob = base64String
+            ? base64ToBlob(base64String.split(',')[1], 'image/png')
+            : undefined
+
+          const preview = await sendImage(
+            blob,
+            undefined,
+            'templates/anonsevents/preview',
+            null,
+            imageFolder
+          )
+
           return {
             startX,
             startY,
@@ -429,6 +445,7 @@ const ToolsAnonsContent = () => {
         onChange={setBackgroundProps}
         imageAspect={1080 / 1920}
         rerender={rerenderState}
+        imagesFolder="templates/anonsevents"
       />
       {/* <div style={{ height: 1920, width: 1080 }}>
         <img src={src} height={1920} width={1080} />
