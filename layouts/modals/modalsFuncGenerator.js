@@ -201,9 +201,13 @@ const modalsFuncGenerator = (
       addModal(
         require('./modalsFunc/selectSvgFrameFunc').default(itemId, onChange)
       ),
-    selectImage: (directory, onSelect) =>
+    selectImage: (directory, aspect, onSelect) =>
       addModal(
-        require('./modalsFunc/selectImageFunc').default(directory, onSelect)
+        require('./modalsFunc/selectImageFunc').default(
+          directory,
+          aspect,
+          onSelect
+        )
       ),
     selectEvents: (
       itemsId,
@@ -669,9 +673,13 @@ const modalsFuncGenerator = (
         addModal(require('./modalsFunc/roleFunc').default(role, onConfirm)),
     },
     template: {
-      select: (tool, onSelect) =>
+      select: (tool, aspect, onSelect) =>
         addModal(
-          require('./modalsFunc/selectTemplateFunc').default(tool, onSelect)
+          require('./modalsFunc/selectTemplateFunc').default(
+            tool,
+            aspect,
+            onSelect
+          )
         ),
       save: (tool, template, onConfirm) => {
         addModal(

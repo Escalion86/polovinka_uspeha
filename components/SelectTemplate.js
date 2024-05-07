@@ -1,25 +1,16 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
-// import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { sendImage } from '@helpers/cloudinary'
-import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import { m } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useEffect, useState } from 'react'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
-import locationPropsSelector from '@state/selectors/locationPropsSelector'
-// import Image from 'next/image'
 import { getData } from '@helpers/CRUD'
 
-const SelectImage = ({
-  selectedImage,
+const SelectTemplate = ({
+  selectedTemplate,
   onSelect,
   required = false,
   label = null,
-  directory,
-  maxImages = 10,
+  tool,
   labelClassName,
   className,
   aspect,
@@ -31,80 +22,29 @@ const SelectImage = ({
   paddingY = true,
   paddingX,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const { imageFolder } = useRecoilValue(locationPropsSelector)
-  const [isAddingImage, setAddingImage] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  const [images, setImages] = useState([])
-
-  console.log('aspect :>> ', aspect)
+  const [templates, setTemplates] = useState([])
 
   useEffect(() => {
-    const loadImages = async () =>
-      await getData(
-        'https://api.escalioncloud.ru/api/files',
-        { directory: `${imageFolder}/${directory}`, noFolders: true },
-        (response) => {
-          setImages(
-            response.map(
-              (imageName) =>
-                `https://escalioncloud.ru/uploads/${imageFolder}/${directory}/${imageName}`
-            ) || []
-          )
-          setIsLoading(false)
-        },
-        (error) => console.log('error :>> ', error),
-        true
-      )
-    loadImages()
+    const loadTemplates = async () => {
+      const response = await getData('/api/templates', { tool })
+      setTemplates(response)
+      setIsLoading(false)
+    }
+    loadTemplates()
   }, [])
 
-  const hiddenFileInput = useRef(null)
-  const addImageClick = () => {
-    hiddenFileInput.current.click()
-  }
-
-  const onAddImage = async (newImage) => {
-    if (newImage) {
-      var img = document.createElement('img')
-
-      img.onload = async () => {
-        if (img.width < 100 || img.height < 100) modalsFunc.minimalSize()
-        else {
-          modalsFunc.cropImage(newImage, img, aspect, (newImage) => {
-            setAddingImage(true)
-            sendImage(
-              newImage,
-              (imagesUrls) => setImages([...images, ...imagesUrls]),
-              directory,
-              null,
-              imageFolder
-            )
-          })
-        }
-      }
-
-      var reader = new FileReader()
-      reader.onloadend = function (ended) {
-        img.src = ended.target.result
-      }
-      reader.readAsDataURL(newImage)
-    } else {
-      onChange(images)
-    }
-  }
-
-  useEffect(() => setAddingImage(false), [images])
-
   if (isLoading) return <LoadingSpinner />
+
+  if (templates?.length === 0) return <div>Нет сохраненных шаблонов</div>
 
   return (
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
       // onChange={onChange}
-      value={images}
+      value={selectedTemplate}
       className={cn('flex-1', className)}
       required={required}
       error={error}
@@ -116,22 +56,21 @@ const SelectImage = ({
       paddingX={paddingX}
     >
       <div className="flex flex-wrap w-full gap-1 p-0.5">
-        {images?.length > 0 &&
-          images.map((image, index) => (
+        {templates?.length > 0 &&
+          templates.map((template, index) => (
             <m.div
-              key={image}
+              key={template._id}
               className={cn(
-                'relative w-24 overflow-hidden group border-2 cursor-pointer',
-                selectedImage === image
+                'flex items-center justify-center flex-col relative w-40 overflow-hidden group border-2 cursor-pointer',
+                selectedTemplate?._id === template._id
                   ? 'border-general shadow-medium-active'
                   : 'border-gray-300'
               )}
-              style={{ aspectRatio: aspect || 1 }}
               layout
               transition={{ duration: 0.2, type: 'just' }}
               onClick={(e) => {
                 e.stopPropagation()
-                if (onSelect) onSelect(image)
+                if (onSelect) onSelect(template)
               }}
             >
               {/* <Image
@@ -143,9 +82,10 @@ const SelectImage = ({
                 sizes="100vw"
               /> */}
               <img
-                src={image}
+                src={template.template.preview}
                 alt="item_image"
-                className="w-24 h-full object-fit max-w-24"
+                className="w-40 h-full object-fit max-w-40"
+                style={{ aspectRatio: aspect || 1 }}
               />
               {/* {!readOnly && (
                 <div className="absolute top-0 right-0 z-10 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
@@ -158,9 +98,12 @@ const SelectImage = ({
                   />
                 </div>
               )} */}
+              <div className="text-sm border-t border-gray-300">
+                {template.name}
+              </div>
             </m.div>
           ))}
-        {!readOnly &&
+        {/* {!readOnly &&
           !isAddingImage &&
           (!maxImages || images?.length < maxImages) && (
             <div
@@ -188,10 +131,10 @@ const SelectImage = ({
             heightClassName="h-20"
             className="w-20 border border-gray-300 bg-general bg-opacity-20"
           />
-        )}
+        )} */}
       </div>
     </InputWrapper>
   )
 }
 
-export default SelectImage
+export default SelectTemplate

@@ -245,6 +245,8 @@ const ToolsAnonsContent = () => {
   //   }
   // }, [inputFile])
 
+  const aspect = 1080 / 1920
+
   return (
     <div className="h-full max-h-full px-1 overflow-y-auto">
       <div className="flex flex-wrap gap-x-1">
@@ -279,8 +281,9 @@ const ToolsAnonsContent = () => {
         /> */}
       </div>
       <Templates
+        aspect={aspect}
         tool="anonsevents"
-        onSelect={(template) => {
+        onSelect={({ template }) => {
           if (template) {
             setStartX(template.startX)
             setStartY(template.startY)
@@ -443,7 +446,7 @@ const ToolsAnonsContent = () => {
       <SvgBackgroundInput
         value={backgroundProps}
         onChange={setBackgroundProps}
-        imageAspect={1080 / 1920}
+        imageAspect={aspect}
         rerender={rerenderState}
         imagesFolder="templates/anonsevents"
       />
