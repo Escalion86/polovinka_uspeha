@@ -88,6 +88,8 @@ const ToolsEventAnonsVkContent = () => {
   const [dayEnd, monthEnd, weekEnd, yearEnd, hourEnd, minuteEnd] =
     dateToDateTimeStr(event?.dateEnd, true, true, false, true, true)
 
+  const aspect = 2028 / 1536
+
   return (
     <div className="h-full max-h-full px-1 overflow-y-auto">
       <ComboBox
@@ -138,8 +140,9 @@ const ToolsEventAnonsVkContent = () => {
         )}
       </div>
       <Templates
+        aspect={aspect}
         tool="anonsvk"
-        onSelect={(template) => {
+        onSelect={({ template }) => {
           if (template) {
             setStartX(template.startX)
             setStartY(template.startY)
@@ -207,7 +210,7 @@ const ToolsEventAnonsVkContent = () => {
         <SvgBackgroundInput
           value={backgroundProps}
           onChange={setBackgroundProps}
-          imageAspect={2028 / 1536}
+          imageAspect={aspect}
           rerender={rerenderState}
           imagesFolder="templates/anonsvk"
         />

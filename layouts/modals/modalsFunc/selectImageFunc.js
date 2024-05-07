@@ -1,17 +1,12 @@
-import ComboBox from '@components/ComboBox'
-import FormWrapper from '@components/FormWrapper'
-import InputWrapper from '@components/InputWrapper'
 import SelectImage from '@components/SelectImage'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { deleteData, getData } from '@helpers/CRUD'
+import { getData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import { modalsFuncAtom } from '@state/atoms'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
-const selectImageFunc = (directory, onSelect) => {
+const selectImageFunc = (directory, aspect, onSelect) => {
   const SelectImageFuncModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -20,53 +15,63 @@ const selectImageFunc = (directory, onSelect) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const { imageFolder } = useRecoilValue(locationPropsSelector)
-    const snackbar = useSnackbar()
+    // const modalsFunc = useRecoilValue(modalsFuncAtom)
+    // const { imageFolder } = useRecoilValue(locationPropsSelector)
+    // const snackbar = useSnackbar()
 
     const [selectedImage, setSelectedImage] = useState()
-    const [imagesNames, setImagesNames] = useState([])
-    console.log('imagesNames', imagesNames)
-
-    useEffect(() => {
-      const loadImages = async () => {
-        console.log(
-          `https://api.escalioncloud.ru/api/files?directory=${imageFolder}/${directory}`
-        )
-        const response = await getData(
-          'https://api.escalioncloud.ru/api/files',
-          { directory: `${imageFolder}/${directory}` },
-          (response) => setImagesNames(response || [])
-        )
-        // console.log({ response })
-        // setImagesNames(response)
-      }
-      loadImages()
-    }, [])
+    // const [imagesNames, setImagesNames] = useState([])
+    // console.log('imagesNames', imagesNames)
 
     // useEffect(() => {
-    //   setOnConfirmFunc(
-    //     selectedTemplateId
-    //       ? () => {
-    //           const template = templates.find(
-    //             ({ _id }) => _id === selectedTemplateId
-    //           )
-    //           onSelect(template.template)
-    //           closeModal()
-    //         }
-    //       : undefined
-    //   )
-    // }, [selectedTemplateId])
+    //   const loadImages = async () => {
+    //     // console.log(
+    //     //   `https://api.escalioncloud.ru/api/files?directory=${imageFolder}/${directory}`
+    //     // )
+    //     // const response = await getData(
+    //     //   'https://api.escalioncloud.ru/api/files',
+    //     //   { directory: `${imageFolder}/${directory}` },
+    //     //   (response) => setImagesNames(response || [])
+    //     // )
+
+    //     const response = await getData(
+    //       'https://api.escalioncloud.ru/api/files',
+    //       { directory: `${imageFolder}/${directory}/preview` },
+    //       (response) => setImagesNames(response || []),
+    //       (error) => console.log('error :>> ', error),
+    //       true
+    //     )
+
+    //     console.log({ response })
+    //     // setImagesNames(response)
+    //   }
+    //   loadImages()
+    // }, [])
+
+    useEffect(() => {
+      setOnConfirmFunc(
+        selectedImage
+          ? () => {
+              onSelect && onSelect(selectedImage)
+              closeModal()
+            }
+          : undefined
+      )
+    }, [selectedImage])
 
     // if (!imagesNames.length)
     //   return <div>К сожалению не найдено сохраненных картинок</div>
 
     return (
       <SelectImage
-        images={imagesNames.map(
-          (imageName) =>
-            `https://escalioncloud.ru/uploads/${directory}/${imageName}`
-        )}
+        selectedImage={selectedImage}
+        onSelect={setSelectedImage}
+        directory={directory}
+        aspect={aspect}
+        // images={imagesNames.map(
+        //   (imageName) =>
+        //     `https://escalioncloud.ru/uploads/${imageFolder}/${directory}/preview/${imageName}`
+        // )}
       />
     )
   }

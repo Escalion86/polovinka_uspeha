@@ -16,10 +16,8 @@ import frames from '@components/frames/frames'
 import base64ToBlob from '@helpers/base64ToBlob'
 import { sendImage } from '@helpers/cloudinary'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
-import { modalsFuncAtom } from '@state/atoms'
 import eventsAtom from '@state/atoms/eventsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
-import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
@@ -38,11 +36,8 @@ const save = async (name) => {
 }
 
 const ToolsEventAnonsContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
   const { imageFolder } = useRecoilValue(locationPropsSelector)
-
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
   const rerender = () => setRerenderState((state) => !state)
@@ -111,6 +106,8 @@ const ToolsEventAnonsContent = () => {
     true
   )
 
+  const aspect = 1
+
   return (
     <div className="h-full max-h-full px-1 overflow-y-auto">
       <ComboBox
@@ -170,19 +167,10 @@ const ToolsEventAnonsContent = () => {
             // readOnly={fixedEventId}
           />
         )}
-        {loggedUserActiveRole?.dev && (
-          <Button
-            name="Test"
-            onClick={() => {
-              modalsFunc.selectImage('templates/anonsinstagram', (imageUrl) => {
-                console.log('imageUrl :>> ', imageUrl)
-              })
-            }}
-          />
-        )}
         <Templates
+          aspect={aspect}
           tool="anonsinstagram"
-          onSelect={(template) => {
+          onSelect={({ template }) => {
             if (template) {
               setFrameId(template.frameId)
               setFrameColor(template.frameColor)
@@ -252,7 +240,7 @@ const ToolsEventAnonsContent = () => {
         <SvgBackgroundInput
           value={backgroundProps}
           onChange={setBackgroundProps}
-          imageAspect={1}
+          imageAspect={aspect}
           rerender={rerenderState}
           imagesFolder="templates/anonsinstagram"
         />
@@ -352,40 +340,23 @@ const ToolsEventAnonsContent = () => {
       </div>
       {/* <image id="preview1" height="1920" width="1080" /> */}
       <div className="flex py-2 overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
-        <svg
-          // key={month + year + index}
-          width="480"
-          height="480"
-          viewBox="0 0 1080 1080"
-          id="input"
-          className="min-w-[270px]"
-        >
-          <SvgBackgroundComponent {...backgroundProps} />
-          <Frame fill={frameColor} />
-          {customMode || (dayStart && monthStart) ? (
-            <>
-              <text
-                // key={textLine + lineNum}
-                x={startX}
-                y={dateStartY}
-                fontSize={dateFontSize}
-                fill={dateColor}
-                // fontWeight="bold"
-                textAnchor="middle"
-                fontFamily="AdleryProSwash"
-                // className="font-adleryProSwash"
-              >
-                {customMode
-                  ? customDate1
-                  : `${dayStart} ${monthStart}${
-                      dayStart === dayEnd && monthStart === monthEnd ? '' : ' -'
-                    }`}
-              </text>
-              {(!customMode || customDate2) && (
+        <div className="border-2 border-gray-600">
+          <svg
+            // key={month + year + index}
+            width="480"
+            height="480"
+            viewBox="0 0 1080 1080"
+            id="input"
+            className="min-w-[270px]"
+          >
+            <SvgBackgroundComponent {...backgroundProps} />
+            <Frame fill={frameColor} />
+            {customMode || (dayStart && monthStart) ? (
+              <>
                 <text
                   // key={textLine + lineNum}
                   x={startX}
-                  y={dateStartY + dateFontSize}
+                  y={dateStartY}
                   fontSize={dateFontSize}
                   fill={dateColor}
                   // fontWeight="bold"
@@ -394,64 +365,84 @@ const ToolsEventAnonsContent = () => {
                   // className="font-adleryProSwash"
                 >
                   {customMode
-                    ? customDate2
-                    : dayStart === dayEnd && monthStart === monthEnd
-                      ? `(${weekStart})`
-                      : `${dayEnd} ${monthEnd}`}
+                    ? customDate1
+                    : `${dayStart} ${monthStart}${
+                        dayStart === dayEnd && monthStart === monthEnd
+                          ? ''
+                          : ' -'
+                      }`}
                 </text>
-              )}
-            </>
-          ) : null}
-          {(customMode || eventId) &&
-            textArray.map((textLine, lineNum) => {
-              // ++addedLines
-              return (
-                <text
-                  key={textLine + lineNum}
-                  x={startX}
-                  y={
-                    startY +
-                    lineNum * fontSize -
-                    ((textArray.length - 1) * fontSize) / 2
-                  }
-                  fontSize={fontSize}
-                  fill={anonsColor}
-                  // fontWeight="bold"
-                  textAnchor="middle"
-                  // className="font-adlery"
-                  fontFamily="AdleryProBlockletter" //"Enchants"
-                >
-                  {/* {event.title} */}
-                  {/* Катание на лимузине по елкам */}
-                  {textLine}
-                </text>
-                // <text
-                //   key={textLine + lineNum}
-                //   x={startX + 90 + startXadd + 50}
-                //   y={
-                //     startY +
-                //     338 +
-                //     titleGap +
-                //     startYadd +
-                //     10 +
-                //     index * gap +
-                //     (index + 1) * dateTextGap +
-                //     index * dateFontSize +
-                //     // 20 +
-                //     addedLines * fontSize
-                //     // lineNum * lineHeight
-                //   }
-                //   fontSize={fontSize}
-                //   fill={textColor}
-                //   width={800}
-                //   className="max-w-[800px]"
-                // >
-                //   {textLine}
-                // </text>
-              )
-            })}
-          {/* <SvgFrame1 width="1080" height="1080" /> */}
-          {/* <svg
+                {(!customMode || customDate2) && (
+                  <text
+                    // key={textLine + lineNum}
+                    x={startX}
+                    y={dateStartY + dateFontSize}
+                    fontSize={dateFontSize}
+                    fill={dateColor}
+                    // fontWeight="bold"
+                    textAnchor="middle"
+                    fontFamily="AdleryProSwash"
+                    // className="font-adleryProSwash"
+                  >
+                    {customMode
+                      ? customDate2
+                      : dayStart === dayEnd && monthStart === monthEnd
+                        ? `(${weekStart})`
+                        : `${dayEnd} ${monthEnd}`}
+                  </text>
+                )}
+              </>
+            ) : null}
+            {(customMode || eventId) &&
+              textArray.map((textLine, lineNum) => {
+                // ++addedLines
+                return (
+                  <text
+                    key={textLine + lineNum}
+                    x={startX}
+                    y={
+                      startY +
+                      lineNum * fontSize -
+                      ((textArray.length - 1) * fontSize) / 2
+                    }
+                    fontSize={fontSize}
+                    fill={anonsColor}
+                    // fontWeight="bold"
+                    textAnchor="middle"
+                    // className="font-adlery"
+                    fontFamily="AdleryProBlockletter" //"Enchants"
+                  >
+                    {/* {event.title} */}
+                    {/* Катание на лимузине по елкам */}
+                    {textLine}
+                  </text>
+                  // <text
+                  //   key={textLine + lineNum}
+                  //   x={startX + 90 + startXadd + 50}
+                  //   y={
+                  //     startY +
+                  //     338 +
+                  //     titleGap +
+                  //     startYadd +
+                  //     10 +
+                  //     index * gap +
+                  //     (index + 1) * dateTextGap +
+                  //     index * dateFontSize +
+                  //     // 20 +
+                  //     addedLines * fontSize
+                  //     // lineNum * lineHeight
+                  //   }
+                  //   fontSize={fontSize}
+                  //   fill={textColor}
+                  //   width={800}
+                  //   className="max-w-[800px]"
+                  // >
+                  //   {textLine}
+                  // </text>
+                )
+              })}
+            {/* <SvgFrame1 width="1080" height="1080" /> */}
+            {/* <svg
             version="1.0"
             xmlns="http://www.w3.org/2000/svg"
             width="1080"
@@ -485,7 +476,8 @@ const ToolsEventAnonsContent = () => {
               />
             </g>
           </svg> */}
-        </svg>
+          </svg>
+        </div>
         <img
           id="output"
           alt=""

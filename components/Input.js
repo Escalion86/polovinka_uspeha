@@ -117,7 +117,8 @@ const Input = forwardRef(
               ) {
                 if (value === '') onChange(0)
                 else onChange(parseInt(value))
-              }
+              } else if (typeof min === 'number' && value < min) onChange(min)
+              else if (typeof max === 'number' && value > max) onChange(max)
             } else {
               if (maxLength && value?.length > maxLength)
                 onChange(value.substring(0, maxLength))

@@ -4,7 +4,7 @@ const { modalsFuncAtom } = require('@state/atoms')
 const { default: Button } = require('./Button')
 const { default: InputWrapper } = require('./InputWrapper')
 
-const Templates = ({ tool, onSelect, template, templateFunc }) => {
+const Templates = ({ tool, onSelect, template, aspect, templateFunc }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   return (
@@ -18,7 +18,7 @@ const Templates = ({ tool, onSelect, template, templateFunc }) => {
     >
       <Button
         name="Загрузить шаблон"
-        onClick={() => modalsFunc.template.select(tool, onSelect)}
+        onClick={() => modalsFunc.template.select(tool, aspect, onSelect)}
       />
       <Button
         name="Сохранить шаблон"

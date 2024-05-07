@@ -1,7 +1,7 @@
 // import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 // import Button from './Button'
 import ColorPicker from './ColorPicker'
@@ -9,7 +9,11 @@ import ComboBox from './ComboBox'
 import Input from './Input'
 import InputWrapper from './InputWrapper'
 import { useEffect } from 'react'
-import InputImage from './InputImage'
+// import InputImage from './InputImage'
+// import locationPropsSelector from '@state/selectors/locationPropsSelector'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import cn from 'classnames'
 
 // function urlToBase64(url) {
 //   return fetch(url)
@@ -144,7 +148,8 @@ export const SvgBackgroundInput = ({
   rerender,
   imagesFolder,
 }) => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  // const { imageFolder } = useRecoilValue(locationPropsSelector)
 
   // const hiddenFileInput = useRef(null)
   // const addImageClick = () => {
@@ -263,17 +268,59 @@ export const SvgBackgroundInput = ({
           //   thin
           //   onClick={addImageClick}
           // /> */}
-          <InputImage
-            image={src}
-            onChange={(newImage) => {
-              setSrc(newImage)
-              set({ src: newImage })
+          // <InputImage
+          //   image={src}
+          //   onChange={(newImage) => {
+          //     setSrc(newImage)
+          //     set({ src: newImage })
+          //   }}
+          //   noBorder
+          //   noMargin
+          //   aspect={imageAspect}
+          //   directory={imagesFolder}
+          // />
+          <div
+            onClick={() => {
+              modalsFunc.selectImage(imagesFolder, imageAspect, (newImage) => {
+                setSrc(newImage)
+                set({ src: newImage })
+              })
             }}
-            noBorder
-            noMargin
-            aspect={imageAspect}
-            directory={imagesFolder}
-          />
+            className={cn('w-fit my-1 bg-white cursor-pointer group')}
+            // style={{ aspectRatio: imageAspect || 1 }}
+          >
+            {src ? (
+              <div className="relative overflow-hidden border-2 border-gray-500 w-fit">
+                <img
+                  src={src}
+                  className="w-24 object-fit"
+                  style={{ aspectRatio: imageAspect || 1 }}
+                />
+                <div className="absolute top-0 right-0 z-10 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
+                  <FontAwesomeIcon
+                    className="h-4 text-red-700"
+                    icon={faTrash}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSrc('')
+                      set({ src: '' })
+                    }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="relative border-2 border-gray-500 rounded-xl w-fit">
+                <div
+                  className="relative flex items-center justify-center w-24 overflow-hidden"
+                  style={{ aspectRatio: imageAspect || 1 }}
+                >
+                  <div className="flex items-center justify-center duration-200 w-14 aspect-1 min-w-14 transparent group-hover:scale-125 ">
+                    <FontAwesomeIcon className="text-gray-700" icon={faPlus} />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
           //   {/* <input
           //     ref={hiddenFileInput}
           //     className="hidden"
