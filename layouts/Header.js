@@ -2,7 +2,7 @@ import Burger from '@components/Burger'
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import transliterate from '@helpers/transliterate'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import filteredAdditionalBlocksSelector from '@state/selectors/filteredAdditionalBlocksSelector'
 import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
@@ -52,7 +52,7 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 // ]
 
 const Header = ({ noMenu }) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   // const events = useRecoilValue(filteredEventsSelector)
   const reviews = useRecoilValue(filteredReviewsSelector)
   const directions = useRecoilValue(filteredDirectionsSelector)
@@ -121,13 +121,13 @@ const Header = ({ noMenu }) => {
           >
             <div className="pt-20 pb-4 w-60">
               <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
-                {loggedUser?._id ? (
+                {loggedUserActive?._id ? (
                   <Link
                     href="/cabinet"
                     shallow
                     className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general"
                   >
-                    <Avatar user={loggedUser} />
+                    <Avatar user={loggedUserActive} />
                     <span className="prevent-select-text">Мой кабинет</span>
                   </Link>
                 ) : (

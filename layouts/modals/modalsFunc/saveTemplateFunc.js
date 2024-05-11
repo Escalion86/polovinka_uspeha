@@ -2,7 +2,7 @@ import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import { postData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -15,7 +15,7 @@ const saveTemplateFunc = (tool, template, onConfirm) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
+    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
     const [name, setName] = useState('')
     const snackbar = useSnackbar()
 
