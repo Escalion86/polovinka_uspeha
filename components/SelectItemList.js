@@ -60,6 +60,7 @@ export const SelectItemList = ({
   modalTitle,
   canSelectNone,
   className,
+  showCountNumber,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -75,7 +76,8 @@ export const SelectItemList = ({
         acceptedIds,
         maxItems,
         canSelectNone,
-        modalTitle
+        modalTitle,
+        showCountNumber
       )
     else {
       if (!onChange) return
@@ -260,6 +262,7 @@ export const SelectEventList = ({
   modalTitle,
   canSelectNone = true,
   className,
+  showCountNumber,
 }) => {
   return (
     <SelectItemList
@@ -288,6 +291,7 @@ export const SelectEventList = ({
       labelClassName={labelClassName}
       canSelectNone={canSelectNone}
       className={className}
+      showCountNumber={showCountNumber}
     />
   )
 }

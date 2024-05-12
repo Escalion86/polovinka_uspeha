@@ -112,6 +112,7 @@ const Status = ({
   ) : event.status === 'canceled' ? (
     <TextStatus className="text-danger">Отменено</TextStatus>
   ) : event.likes &&
+    eventUser &&
     userEventStatus === 'participant' &&
     !loggedUserActive.relationship &&
     (isEventInProcess || isEventExpired) &&
@@ -124,9 +125,9 @@ const Status = ({
       className={cn('border w-auto self-center', className)}
       name={
         event.likesProcessActive
-          ? eventUser.likes === null
+          ? eventUser?.likes === null
             ? 'Поставить'
-            : `Поставлено ${eventUser.likes.length}`
+            : `Поставлено ${eventUser?.likes.length || 0}`
           : 'Совпадения'
       }
       onClick={() =>

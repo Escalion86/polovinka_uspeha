@@ -66,7 +66,16 @@ const ItemContainer = ({
           active ? 'w-7' : 'w-0'
         )}
       >
-        <FontAwesomeIcon icon={faCheck} className="w-6 h-6 ml-0.5 text-white" />
+        {typeof active === 'boolean' ? (
+          <FontAwesomeIcon
+            icon={faCheck}
+            className="w-6 h-6 ml-0.5 text-white"
+          />
+        ) : (
+          <div className="w-6 h-6 text-lg flex items-center justify-center ml-0.5 text-white">
+            {active}
+          </div>
+        )}
       </div>
     )}
     {children}

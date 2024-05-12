@@ -217,7 +217,8 @@ const modalsFuncGenerator = (
       acceptedIds,
       maxEvents,
       canSelectNone,
-      modalTitle
+      modalTitle,
+      showCountNumber
     ) =>
       addModal(
         require('./modalsFunc/selectEventsFunc').default(
@@ -228,7 +229,8 @@ const modalsFuncGenerator = (
           acceptedIds,
           maxEvents,
           canSelectNone,
-          modalTitle
+          modalTitle,
+          showCountNumber
         )
       ),
     selectUsers: (
@@ -239,7 +241,8 @@ const modalsFuncGenerator = (
       acceptedIds,
       maxUsers,
       canSelectNone,
-      modalTitle
+      modalTitle,
+      showCountNumber
     ) =>
       addModal(
         require('./modalsFunc/selectUsersFunc').default(
@@ -250,7 +253,8 @@ const modalsFuncGenerator = (
           acceptedIds,
           maxUsers,
           canSelectNone,
-          modalTitle
+          modalTitle,
+          showCountNumber
         )
       ),
     selectDirections: (
@@ -261,7 +265,8 @@ const modalsFuncGenerator = (
       acceptedIds,
       maxDirections,
       canSelectNone,
-      modalTitle
+      modalTitle,
+      showCountNumber
     ) =>
       addModal(
         require('./modalsFunc/selectDirectionsFunc').default(
@@ -272,7 +277,8 @@ const modalsFuncGenerator = (
           acceptedIds,
           maxDirections,
           canSelectNone,
-          modalTitle
+          modalTitle,
+          showCountNumber
         )
       ),
     selectServices: (
@@ -283,7 +289,8 @@ const modalsFuncGenerator = (
       acceptedIds,
       maxServices,
       canSelectNone,
-      modalTitle
+      modalTitle,
+      showCountNumber
     ) =>
       addModal(
         require('./modalsFunc/selectServicesFunc').default(
@@ -294,7 +301,8 @@ const modalsFuncGenerator = (
           acceptedIds,
           maxServices,
           canSelectNone,
-          modalTitle
+          modalTitle,
+          showCountNumber
         )
       ),
     selectPayments: (
@@ -305,7 +313,8 @@ const modalsFuncGenerator = (
       acceptedIds,
       maxPayments,
       canSelectNone,
-      modalTitle
+      modalTitle,
+      showCountNumber
     ) =>
       addModal(
         require('./modalsFunc/selectPaymentsFunc').default(
@@ -316,7 +325,8 @@ const modalsFuncGenerator = (
           acceptedIds,
           maxPayments,
           canSelectNone,
-          modalTitle
+          modalTitle,
+          showCountNumber
         )
       ),
     review: {

@@ -15,7 +15,8 @@ const selectServicesFunc = (
   acceptedIds,
   maxServices,
   canSelectNone = true,
-  title
+  title,
+  showCountNumber
 ) => {
   const SelectServicesModal = ({
     closeModal,

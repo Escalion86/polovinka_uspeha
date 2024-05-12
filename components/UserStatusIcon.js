@@ -38,7 +38,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
                 alt="member"
                 src="/img/svg_icons/medal.svg"
                 width={numSize * 4}
-                height={(numSize + 1) * 4}
+                height={numSize * 4}
               />
             </div>
             {slashed && (
@@ -62,7 +62,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
                 alt="member"
                 src="/img/svg_icons/medal.svg"
                 width={numSize * 4}
-                height={(numSize + 1) * 4}
+                height={numSize * 4}
               />
             </div>
             {slashed && (
