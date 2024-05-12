@@ -15,7 +15,8 @@ const selectUsersFunc = (
   acceptedIds,
   maxUsers,
   canSelectNone = true,
-  title
+  title,
+  showCountNumber
 ) => {
   const SelectUsersModal = ({
     closeModal,

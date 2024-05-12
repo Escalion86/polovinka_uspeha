@@ -53,7 +53,6 @@ const formatTextConverter = (text, type) => {
 }
 
 const textForming = ({
-  eventsId,
   events,
   socialTag,
   customTag,
@@ -196,7 +195,10 @@ const ToolsTextEventsAnonsContent = () => {
 
   const getEvents = async (eventsId) => {
     const eventsFullRes = []
-    const filteredEvents = events.filter(({ _id }) => eventsId.includes(_id))
+    // const filteredEvents = events.filter(({ _id }) => eventsId.includes(_id))
+    const filteredEvents = eventsId.map((id) =>
+      events.find(({ _id }) => id === _id)
+    )
     for (let i = 0; i < filteredEvents.length; i++) {
       const eventId = filteredEvents[i]._id
       const res = await getData('/api/events/' + eventId, {}, null, null, false)
@@ -268,6 +270,7 @@ const ToolsTextEventsAnonsContent = () => {
           getEvents(value)
         }}
         canAddItem
+        showCountNumber
       />
       <CheckBox
         checked={showTags}

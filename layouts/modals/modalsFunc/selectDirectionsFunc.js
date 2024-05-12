@@ -15,7 +15,8 @@ const selectDirectionsFunc = (
   acceptedIds,
   maxDirections,
   canSelectNone = true,
-  title
+  title,
+  showCountNumber
 ) => {
   const SelectDirectionsModal = ({
     closeModal,

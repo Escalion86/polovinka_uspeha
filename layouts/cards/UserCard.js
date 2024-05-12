@@ -128,12 +128,12 @@ const UserCard = ({ userId, hidden = false, style }) => {
               <div className="flex flex-1">
                 <div className="flex flex-col flex-1">
                   <div className="flex h-8 max-h-8 flex-nowrap items-start pl-1 py-0.5 leading-6 gap-x-1">
-                    <div className="flex items-start flex-1 h-8 max-h-8 flex-nowrap">
+                    <div className="flex items-center flex-1 h-7 max-h-7 flex-nowrap">
                       <UserRelationshipIcon
                         relationship={user.relationship}
                         showHavePartnerOnly
                       />
-                      <UserStatusIcon status={user.status} />
+                      <UserStatusIcon status={user.status} size="m" />
                       <UserName
                         user={user}
                         className="h-8 text-base font-bold tablet:text-lg -mt-0.5 tablet:mt-0"
@@ -213,24 +213,26 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     <div className="flex items-end justify-end flex-1 py-1 pr-1 gap-x-1">
                       {seeNotificationIcon && (
                         <div className="flex items-center justify-end gap-x-1">
-                          {user.notifications?.telegram?.id &&
-                          user.notifications?.telegram?.active ? (
-                            <>
-                              <FontAwesomeIcon
-                                className="h-3 text-gray-800"
-                                icon={faVolumeHigh}
-                                size="xs"
-                              />
-                              <FontAwesomeIcon
-                                className="h-5 text-blue-600"
-                                icon={faTelegram}
-                                size="xs"
-                              />
-                            </>
-                          ) : (
+                          <FontAwesomeIcon
+                            className={cn(
+                              'h-3',
+                              user.notifications?.telegram?.active &&
+                                user.notifications?.telegram?.id
+                                ? 'text-success'
+                                : 'text-gray-800'
+                            )}
+                            icon={
+                              user.notifications?.telegram?.active &&
+                              user.notifications?.telegram?.id
+                                ? faVolumeHigh
+                                : faVolumeMute
+                            }
+                            size="xs"
+                          />
+                          {user.notifications?.telegram?.id && (
                             <FontAwesomeIcon
-                              className="h-3 text-gray-800"
-                              icon={faVolumeMute}
+                              className="h-5 text-blue-600"
+                              icon={faTelegram}
                               size="xs"
                             />
                           )}

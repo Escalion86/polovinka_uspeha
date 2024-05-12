@@ -18,7 +18,8 @@ const selectEventsFunc = (
   acceptedIds,
   maxEvents,
   canSelectNone = true,
-  title
+  title,
+  showCountNumber
 ) => {
   const SelectEventsModal = ({
     closeModal,
@@ -148,7 +149,11 @@ const selectEventsFunc = (
                 <EventItem
                   key={sortedEvents[index]._id}
                   item={sortedEvents[index]}
-                  active={selectedEvents.includes(sortedEvents[index]._id)}
+                  active={
+                    showCountNumber
+                      ? selectedEvents.indexOf(sortedEvents[index]._id) + 1
+                      : selectedEvents.includes(sortedEvents[index]._id)
+                  }
                   onClick={() => onClick(sortedEvents[index]._id)}
                 />
               </div>

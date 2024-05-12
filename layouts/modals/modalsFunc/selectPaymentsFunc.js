@@ -15,7 +15,8 @@ const selectPaymentsFunc = (
   acceptedIds,
   maxServices,
   canSelectNone = true,
-  title
+  title,
+  showCountNumber
 ) => {
   const SelectPaymentsModal = ({
     closeModal,
