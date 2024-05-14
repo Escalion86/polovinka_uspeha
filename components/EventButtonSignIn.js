@@ -116,7 +116,7 @@ const Status = ({
     userEventStatus === 'participant' &&
     !loggedUserActive.relationship &&
     (isEventInProcess || isEventExpired) &&
-    event.status !== 'closed' &&
+    // event.status !== 'closed' &&
     alreadySignIn ? (
     <Button
       thin={thin}
