@@ -27,7 +27,7 @@ const saveTemplateFunc = (tool, template, onConfirm) => {
                 tool,
                 name,
                 template,
-                creatorId: loggedUser._id,
+                creatorId: loggedUserActive._id,
               })
               if (response) {
                 snackbar.success('Шаблон сохранен')
