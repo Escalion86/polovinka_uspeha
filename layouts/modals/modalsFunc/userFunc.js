@@ -10,8 +10,6 @@ import GenderPicker from '@components/ValuePicker/GenderPicker'
 import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
-import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
-import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
@@ -22,10 +20,6 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import cn from 'classnames'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Tooltip from '@components/Tooltip'
-import pastePhoneFromClipboard from '@helpers/pastePhoneFromClipboard'
 import CopyPasteButtons from '@components/CopyPasteButtons'
 
 const userFunc = (userId, clone = false) => {
@@ -403,7 +397,7 @@ const userFunc = (userId, clone = false) => {
             />
             <CopyPasteButtons
               onPaste={setPhone}
-              copyText={`+${phone}`}
+              copyText={phone ? `+${phone}` : undefined}
               pastePhone
             />
           </div>
@@ -416,7 +410,7 @@ const userFunc = (userId, clone = false) => {
             />
             <CopyPasteButtons
               onPaste={setWhatsapp}
-              copyText={`+${whatsapp}`}
+              copyText={whatsapp ? `+${whatsapp}` : undefined}
               pastePhone
             />
           </div>
@@ -431,7 +425,7 @@ const userFunc = (userId, clone = false) => {
             />
             <CopyPasteButtons
               onPaste={setViber}
-              copyText={`+${viber}`}
+              copyText={viber ? `+${viber}` : undefined}
               pastePhone
             />
           </div>
