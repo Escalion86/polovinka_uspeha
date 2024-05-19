@@ -31,8 +31,6 @@ const DateTimePicker = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
-      copyPasteButtons={false}
       value={value}
       className={cn(
         fullWidth ? '' : widthNum <= 2 ? 'w-[12rem]' : 'w-[14.5rem]',

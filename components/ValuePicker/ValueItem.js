@@ -30,7 +30,7 @@ const ValueItem = ({
     {icon && <FontAwesomeIcon icon={icon} className="h-5" />}
     {imageSrc && (
       <div className="w-5 h-5">
-        <Image src={imageSrc} width="20" height="20" />
+        <Image src={imageSrc} width="20" height="20" alt={value} />
       </div>
     )}
     <div

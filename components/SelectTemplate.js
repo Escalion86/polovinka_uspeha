@@ -43,7 +43,6 @@ const SelectTemplate = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      // onChange={onChange}
       value={selectedTemplate}
       className={cn('flex-1', className)}
       required={required}

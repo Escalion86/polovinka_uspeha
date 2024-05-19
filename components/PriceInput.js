@@ -31,7 +31,6 @@ const PriceInput = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
       value={value}
       labelContentWidth={labelContentWidth}
       labelPos={labelPos}

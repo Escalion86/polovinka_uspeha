@@ -107,7 +107,7 @@ const UserLikesItem = ({
       {event.likesNumSort && typeof likeSortNum === 'number' && (
         <div
           className={cn(
-            'bg-white absolute top-0 left-0 w-8 h-8 text-lg font-bold flex items-center justify-center border-r border-b rounded-br-lg',
+            'bg-white absolute top-0 left-0 w-7 h-7 tablet:w-8 tablet:h-8 text-base tablet:text-lg font-bold flex items-center justify-center border-r border-b rounded-br-lg',
             user.gender == 'male' ? 'border-blue-500' : 'border-red-500'
           )}
         >
@@ -116,7 +116,7 @@ const UserLikesItem = ({
       )}
       <div className="flex items-center h-10 gap-x-0.5">
         {event.likesNumSort && typeof likeSortNum === 'number' && (
-          <div className="w-7" />
+          <div className="w-6 min-w-6 tablet:w-7 tablet:min-w-7" />
         )}
         {!event.likesProcessActive && (
           <div
@@ -126,7 +126,7 @@ const UserLikesItem = ({
             )}
           >
             <FontAwesomeIcon
-              className="w-6 h-6"
+              className="w-5 h-5 tablet:w-6 tablet:min-w-6"
               icon={seeLikes ? faEye : faEyeSlash}
             />
           </div>
@@ -138,7 +138,7 @@ const UserLikesItem = ({
           )}
         >
           <FontAwesomeIcon
-            className="w-6 h-6"
+            className="w-5 h-5 tablet:w-6 tablet:min-w-6"
             icon={selectedIds === null ? faGenderless : faCheck}
           />
         </div>
@@ -155,7 +155,8 @@ const UserLikesItem = ({
         </div> */}
         <UserName
           user={user}
-          className="text-base font-bold tablet:text-lg text-general"
+          className="text-sm font-bold phoneH:text-base tablet:text-lg text-general"
+          leadingClass="leading-3 tablet:leading-[14px]"
         />
         <div className="flex flex-wrap justify-end flex-1 text-sm leading-4 tablet:pr-1 tablet:text-base">
           {/* <div>Совпадений:</div> */}

@@ -48,7 +48,6 @@ const Slider = ({
   onChange,
   value,
   labelClassName,
-  copyPasteButtons = false,
   wrapperClassName,
   min = 0,
   max = 100,
@@ -58,8 +57,6 @@ const Slider = ({
   <InputWrapper
     label={label}
     labelClassName={labelClassName}
-    onChange={onChange}
-    copyPasteButtons={copyPasteButtons}
     value={value}
     className={cn('flex-1', wrapperClassName)}
     required={required}

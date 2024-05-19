@@ -29,7 +29,6 @@ const InputSvgFrame = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
       value={frameId}
       className={cn('flex-1 max-w-[100px]', className)}
       required={required}

@@ -78,7 +78,6 @@ const InputImages = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
       value={images}
       className={cn('flex-1', className)}
       required={required}

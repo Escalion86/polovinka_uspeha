@@ -174,7 +174,6 @@ const LoggedUserNotificationsContent = (props) => {
                 },
               }))
             }}
-            copyPasteButtons
             showArrows={false}
           /> */}
         </div>

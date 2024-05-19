@@ -34,8 +34,6 @@ const EditableTextarea = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
-      // copyPasteButtons={false}
       value={html}
       className={cn('', wrapperClassName)}
       // paddingY={false}

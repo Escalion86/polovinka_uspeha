@@ -13,6 +13,7 @@ const UserName = ({
   showStatus,
   trunc,
   children,
+  leadingClass = 'leading-[14px]',
 }) => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   if (!user) return null
@@ -30,7 +31,7 @@ const UserName = ({
       {showStatus && <UserStatusIcon status={user.status} size="xs" />}
       {trunc ? (
         <TextLinesLimiter
-          className="flex-1 leading-[14px]"
+          className={cn('flex-1', leadingClass)}
           textCenter={false}
           lines={typeof trunc === 'number' ? trunc : 1}
         >
@@ -56,8 +57,9 @@ const UserName = ({
       ) : (
         <div
           className={cn(
-            'flex gap-x-1 leading-[14px] flex-1',
-            noWrap ? 'flex-nowrap' : 'flex-wrap'
+            'flex gap-x-1 flex-1',
+            noWrap ? 'flex-nowrap' : 'flex-wrap',
+            leadingClass
           )}
         >
           {user?.firstName && (

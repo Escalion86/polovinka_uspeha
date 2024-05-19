@@ -15,8 +15,6 @@ const AddressPicker = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
-      copyPasteButtons={false}
       value={address}
       className={wrapperClassName}
       required={required}
