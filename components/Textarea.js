@@ -17,8 +17,6 @@ const Textarea = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
-      copyPasteButtons={false}
       value={value}
       className={wrapperClassName}
       required={required}

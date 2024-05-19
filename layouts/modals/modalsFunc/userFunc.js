@@ -10,6 +10,8 @@ import GenderPicker from '@components/ValuePicker/GenderPicker'
 import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
+import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
 import compareArrays from '@helpers/compareArrays'
 import { DEFAULT_USER } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
@@ -20,6 +22,11 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
+import cn from 'classnames'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Tooltip from '@components/Tooltip'
+import pastePhoneFromClipboard from '@helpers/pastePhoneFromClipboard'
+import CopyPasteButtons from '@components/CopyPasteButtons'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -276,7 +283,7 @@ const userFunc = (userId, clone = false) => {
           />
         ))
     }, [setTopLeftComponent])
-
+    console.log('phone :>> ', phone)
     return (
       <FormWrapper>
         {/* <InputImage
@@ -386,36 +393,53 @@ const userFunc = (userId, clone = false) => {
           onChange={setPersonalStatus}
         />
         <FormWrapper twoColumns>
-          <PhoneInput
-            required
-            label="Телефон"
-            value={phone}
-            onChange={setPhone}
-            error={errors.phone}
-            copyPasteButtons
-          />
-          <PhoneInput
-            label="Whatsapp"
-            value={whatsapp}
-            onChange={setWhatsapp}
-            error={errors.whatsapp}
-            copyPasteButtons
-          />
+          <div className="flex items-center gap-x-1">
+            <PhoneInput
+              required
+              label="Телефон"
+              value={phone}
+              onChange={setPhone}
+              error={errors.phone}
+            />
+            <CopyPasteButtons
+              onPaste={setPhone}
+              copyText={`+${phone}`}
+              pastePhone
+            />
+          </div>
+          <div className="flex items-center gap-x-1">
+            <PhoneInput
+              label="Whatsapp"
+              value={whatsapp}
+              onChange={setWhatsapp}
+              error={errors.whatsapp}
+            />
+            <CopyPasteButtons
+              onPaste={setWhatsapp}
+              copyText={`+${whatsapp}`}
+              pastePhone
+            />
+          </div>
         </FormWrapper>
         <FormWrapper twoColumns>
-          <PhoneInput
-            label="Viber"
-            value={viber}
-            onChange={setViber}
-            error={errors.viber}
-            copyPasteButtons
-          />
+          <div className="flex items-center gap-x-1">
+            <PhoneInput
+              label="Viber"
+              value={viber}
+              onChange={setViber}
+              error={errors.viber}
+            />
+            <CopyPasteButtons
+              onPaste={setViber}
+              copyText={`+${viber}`}
+              pastePhone
+            />
+          </div>
           <Input
             prefix="@"
             label="Telegram"
             value={telegram}
             onChange={setTelegram}
-            copyPasteButtons
           />
         </FormWrapper>
         <FormWrapper twoColumns>
@@ -424,22 +448,14 @@ const userFunc = (userId, clone = false) => {
             label="Instagram"
             value={instagram}
             onChange={setInstagram}
-            copyPasteButtons
           />
-          <Input
-            prefix="@"
-            label="Vk"
-            value={vk}
-            onChange={setVk}
-            copyPasteButtons
-          />
+          <Input prefix="@" label="Vk" value={vk} onChange={setVk} />
         </FormWrapper>
         <Input
           label="Email"
           value={email}
           onChange={setEmail}
           error={errors.email}
-          copyPasteButtons
         />
         {/* <CheckBox
           checked={haveKids}

@@ -30,8 +30,6 @@ const DatePicker = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
-      copyPasteButtons={false}
       value={value}
       className={cn(fullWidth ? '' : 'w-48', className)}
       required={required}

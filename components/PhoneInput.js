@@ -9,7 +9,6 @@ const PhoneInput = ({
   required = false,
   disabled,
   labelClassName,
-  copyPasteButtons,
   className,
   noMargin,
   error,
@@ -18,10 +17,6 @@ const PhoneInput = ({
   <InputWrapper
     label={label}
     labelClassName={labelClassName}
-    onChange={onChange}
-    copyPasteButtons={copyPasteButtons}
-    copyButton={copyPasteButtons}
-    pasteButton={!disabled && copyPasteButtons}
     value={value}
     required={required}
     className={cn('w-48', className)}

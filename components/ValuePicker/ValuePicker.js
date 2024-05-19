@@ -22,7 +22,6 @@ const ValuePicker = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
       value={value}
       className={className}
       required={required}

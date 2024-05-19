@@ -28,8 +28,6 @@ const ColorPicker = ({
     <InputWrapper
       label={label}
       labelClassName={labelClassName}
-      onChange={onChange}
-      copyPasteButtons={false}
       value={value}
       className={cn(fullWidth ? '' : 'w-24', className)}
       required={required}
