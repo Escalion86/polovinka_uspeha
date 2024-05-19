@@ -198,21 +198,9 @@ export const UserItem = ({
   )
 }
 
-export const EventItemFromId = ({
-  eventId,
-  onClick = null,
-  active = false,
-  bordered = false,
-}) => {
+export const EventItemFromId = ({ eventId, ...props }) => {
   const event = useRecoilValue(eventSelector(eventId))
-  return (
-    <EventItem
-      item={event}
-      active={active}
-      onClick={onClick}
-      bordered={bordered}
-    />
-  )
+  return <EventItem item={event} {...props} />
 }
 
 export const EventItem = ({
@@ -220,6 +208,8 @@ export const EventItem = ({
   onClick = null,
   active = false,
   bordered = false,
+  className,
+  noBorder,
 }) => {
   const direction = useRecoilValue(directionSelector(item.directionId))
 
@@ -234,10 +224,11 @@ export const EventItem = ({
       active={active}
       className={cn(
         'flex text-xs tablet:text-sm h-[33px]',
-        bordered ? 'border border-gray-500' : ''
+        bordered ? 'border border-gray-500' : '',
+        className
       )}
       noPadding
-      noBorder={bordered}
+      noBorder={noBorder || bordered}
     >
       <div
         className={cn(

@@ -104,7 +104,7 @@ const EventCard = ({
             { 'laptop:w-auto': noButtons }
           )}
         >
-          {direction?.image ? (
+          {/* {direction?.image ? (
             <img
               className="object-contain w-full laptop:object-cover min-w-32 laptop:w-72"
               src={direction.image}
@@ -112,9 +112,9 @@ const EventCard = ({
               // width={48}
               // height={48}
             />
-          ) : (
-            <TextInRing text={direction?.title} />
-          )}
+          ) : ( */}
+          <TextInRing text={direction?.title} />
+          {/* // )} */}
 
           {eventStatus === 'canceled' && (
             <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">

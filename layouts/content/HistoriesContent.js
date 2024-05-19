@@ -3,7 +3,7 @@
 import ComboBox from '@components/ComboBox'
 import ContentHeader from '@components/ContentHeader'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
-import { SelectEventList, SelectUserList } from '@components/SelectItemList'
+import { SelectUserList } from '@components/SelectItemList'
 import { EVENT_USER_STATUSES } from '@helpers/constants'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import getHoursBetween from '@helpers/getHoursBetween'
@@ -26,6 +26,11 @@ import { useRecoilValue } from 'recoil'
 import { historiesOfEventUsersSelector } from '@state/atoms/historiesOfEventUsersAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
 import UserNameById from '@components/UserNameById'
+import { EventItemFromId } from '@components/ItemCards'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
+import cn from 'classnames'
+import { m } from 'framer-motion'
 
 const dotColors = {
   add: 'success',
@@ -84,7 +89,7 @@ const EventUsersInTimeLine = ({ createdAt, eventUsers, creatorId }) => {
 const HistoriesOfEvent = ({ histories }) => {
   return (
     <Timeline
-      className="pt-1 pb-0 pl-2 pr-1 -mt-1 bg-gray-100 border-b border-l border-r border-gray-600 rounded-b"
+      className="pt-1 pb-0 pl-2 pr-1"
       // sx={{
       //   [`& .${timelineOppositeContentClasses.root}`]: {
       //     flex: 0.2,
@@ -195,7 +200,112 @@ const HistoriesOfEvent = ({ histories }) => {
   )
 }
 
+const HistoryEventItem = ({ data, eventId, isLast }) => {
+  const [isCollapsed, setIsCollapsed] = useState(true)
+  const [firstCreatedAtDate, firstCreatedAtTime] = useMemo(
+    () => dateToDateTimeStr(data[0].createdAt, true, false),
+    [data]
+  )
+
+  const [lastCreatedAtDate, lastCreatedAtTime] = useMemo(
+    () => dateToDateTimeStr(data[data.length - 1].createdAt, true, false),
+    [data]
+  )
+
+  const eventResult = useMemo(
+    () =>
+      data.reduce((sum, event) => {
+        return sum + (event.action === 'add' ? 1 : -1) * event.data.length
+      }, 0),
+    [data]
+  )
+
+  return (
+    <TimelineItem key={eventId}>
+      <TimelineSeparator>
+        <TimelineDot
+          // style={{ paddingLeft: 0, paddingRight: 0 }}
+          color={
+            eventResult === 0
+              ? undefined
+              : dotColors[eventResult > 0 ? 'add' : 'delete']
+          }
+        >
+          <div className="flex items-center justify-center w-3 h-3 text-sm tablet:w-4 tablet:h-4 tablet:text-base">
+            {Math.abs(eventResult)}
+          </div>
+        </TimelineDot>
+        {!isLast && <TimelineConnector />}
+      </TimelineSeparator>
+      <TimelineContent
+        style={{
+          paddingRight: 0,
+          paddingLeft: 8,
+        }}
+      >
+        <div className="flex flex-wrap text-sm tablet:text-base gap-x-1">
+          <div className="flex gap-x-1">
+            <span>{firstCreatedAtDate}</span>
+            <span className="font-bold">{firstCreatedAtTime}</span>
+            {(lastCreatedAtDate !== firstCreatedAtDate ||
+              lastCreatedAtTime !== firstCreatedAtTime) && <span>-</span>}
+          </div>
+          {(lastCreatedAtDate !== firstCreatedAtDate ||
+            lastCreatedAtTime !== firstCreatedAtTime) && (
+            <div className="flex gap-x-1">
+              {lastCreatedAtDate !== firstCreatedAtDate && (
+                <span>{lastCreatedAtDate}</span>
+              )}
+              <span className="font-bold">{lastCreatedAtTime}</span>
+            </div>
+          )}
+        </div>
+        {/* <SelectEventList eventsId={[eventId]} readOnly /> */}
+        {/* <div className="h-auto overflow-hidden"> */}
+        <div className="flex flex-col items-stretch overflow-hidden bg-gray-200 border border-gray-700 rounded">
+          <div className="flex items-stretch overflow-hidden -mb-[1px] border-b border-gray-700 flex-nowrap rouded-b">
+            <EventItemFromId
+              eventId={eventId}
+              noBorder
+              // className="rounded-t last:border-0"
+            />
+            <div
+              className={cn(
+                'cursor-pointer hover:bg-gray-300 duration-300 flex items-center justify-center w-6 px-1 border-l border-gray-700',
+                {
+                  // 'rotate-180': isCollapsed,
+                }
+              )}
+              onClick={() => setIsCollapsed((state) => !state)}
+            >
+              <div
+                className={cn('w-4 duration-300 transition-transform', {
+                  'rotate-180': isCollapsed,
+                })}
+              >
+                <FontAwesomeIcon icon={faAngleDown} size="lg" />
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              transition: 'grid-template-rows 0.3s ease-in-out',
+              gridTemplateRows: isCollapsed ? '0fr' : '1fr',
+            }}
+          >
+            <div className="overflow-hidden">
+              <HistoriesOfEvent histories={data} />
+            </div>
+          </div>
+        </div>
+      </TimelineContent>
+    </TimelineItem>
+  )
+}
+
 const HistoriesOfEvents = ({ eventsHistories }) => {
+  const eventsHistoriesKeys = Object.keys(eventsHistories)
   return (
     <Timeline
       style={{ paddingLeft: 8, paddingRight: 8 }}
@@ -210,77 +320,14 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
         // },
       }}
     >
-      {Object.keys(eventsHistories).map((eventId, index) => {
+      {eventsHistoriesKeys.map((eventId, index) => {
         const data = eventsHistories[eventId]
-
-        const [firstCreatedAtDate, firstCreatedAtTime] = dateToDateTimeStr(
-          data[0].createdAt,
-          true,
-          false
-        )
-
-        const [lastCreatedAtDate, lastCreatedAtTime] = dateToDateTimeStr(
-          data[data.length - 1].createdAt,
-          true,
-          false
-        )
-
-        let eventResult = 0
-        for (let i = 0; i < data.length; i++) {
-          eventResult =
-            eventResult +
-            (data[i].action === 'add' ? 1 : -1) * data[i].data.length
-        }
-
         return (
-          <TimelineItem key={eventId}>
-            <TimelineSeparator>
-              <TimelineDot
-                // style={{ paddingLeft: 0, paddingRight: 0 }}
-                color={
-                  eventResult === 0
-                    ? undefined
-                    : dotColors[eventResult > 0 ? 'add' : 'delete']
-                }
-              >
-                <div className="flex items-center justify-center w-3 h-3 text-sm tablet:w-4 tablet:h-4 tablet:text-base">
-                  {Math.abs(eventResult)}
-                </div>
-              </TimelineDot>
-              {index < Object.keys(eventsHistories).length - 1 && (
-                <TimelineConnector />
-              )}
-            </TimelineSeparator>
-            <TimelineContent
-              style={{
-                paddingRight: 0,
-                paddingLeft: 8,
-              }}
-            >
-              <div className="flex flex-wrap text-sm tablet:text-base gap-x-1">
-                <div className="flex gap-x-1">
-                  <span>{firstCreatedAtDate}</span>
-                  <span className="font-bold">{firstCreatedAtTime}</span>
-                  {(lastCreatedAtDate !== firstCreatedAtDate ||
-                    lastCreatedAtTime !== firstCreatedAtTime) && <span>-</span>}
-                </div>
-                {(lastCreatedAtDate !== firstCreatedAtDate ||
-                  lastCreatedAtTime !== firstCreatedAtTime) && (
-                  <div className="flex gap-x-1">
-                    {lastCreatedAtDate !== firstCreatedAtDate && (
-                      <span>{lastCreatedAtDate}</span>
-                    )}
-                    <span className="font-bold">{lastCreatedAtTime}</span>
-                  </div>
-                )}
-              </div>
-
-              <SelectEventList eventsId={[eventId]} readOnly />
-              {/* <div className="h-auto overflow-hidden"> */}
-              <HistoriesOfEvent histories={data} />
-              {/* </div> */}
-            </TimelineContent>
-          </TimelineItem>
+          <HistoryEventItem
+            data={data}
+            eventId={eventId}
+            isLast={index >= eventsHistoriesKeys.length - 1}
+          />
         )
       })}
     </Timeline>
