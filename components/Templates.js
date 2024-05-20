@@ -5,7 +5,14 @@ const { modalsFuncAtom } = require('@state/atoms')
 const { default: Button } = require('./Button')
 const { default: InputWrapper } = require('./InputWrapper')
 
-const Templates = ({ tool, onSelect, template, aspect, templateFunc }) => {
+const Templates = ({
+  tool,
+  onSelect,
+  onSave,
+  template,
+  aspect,
+  templateFunc,
+}) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [loadingTemplate, setLoadingTemplate] = useState(false)
 
@@ -27,10 +34,10 @@ const Templates = ({ tool, onSelect, template, aspect, templateFunc }) => {
         onClick={async () => {
           if (templateFunc) {
             setLoadingTemplate(true)
-            modalsFunc.template.save(tool, await templateFunc())
+            modalsFunc.template.save(tool, await templateFunc(), onSave, aspect)
             setLoadingTemplate(false)
           } else {
-            modalsFunc.template.save(tool, template)
+            modalsFunc.template.save(tool, template, onSave, aspect)
           }
         }}
         loading={loadingTemplate}

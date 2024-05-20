@@ -114,16 +114,16 @@ const SelectImage = ({
       paddingY={paddingY}
       paddingX={paddingX}
     >
-      <div className="flex flex-wrap w-full gap-1 p-0.5">
+      <div className="grid grid-cols-2 phoneH:grid-cols-3 tablet:grid-cols-4 laptop:grid-cols-5 w-full gap-1 p-0.5">
         {images?.length > 0 &&
           images.map((image, index) => (
             <m.div
               key={image}
               className={cn(
-                'relative w-24 overflow-hidden group border-2 cursor-pointer',
+                'relative overflow-hidden group border-2 cursor-pointer',
                 selectedImage === image
                   ? 'border-general shadow-medium-active'
-                  : 'border-gray-300'
+                  : 'border-gray-300 hover:shadow-active'
               )}
               style={{ aspectRatio: aspect || 1 }}
               layout
@@ -144,7 +144,7 @@ const SelectImage = ({
               <img
                 src={image}
                 alt="item_image"
-                className="w-24 h-full object-fit max-w-24"
+                className="w-full h-full object-fit"
               />
               {/* {!readOnly && (
                 <div className="absolute top-0 right-0 z-10 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
@@ -164,11 +164,15 @@ const SelectImage = ({
           (!maxImages || images?.length < maxImages) && (
             <div
               onClick={addImageClick}
-              className="flex items-center justify-center w-24 bg-white border-2 border-gray-500 cursor-pointer group rounded-xl"
+              className="flex items-center justify-center bg-white border-2 border-gray-500 cursor-pointer group rounded-xl hover:shadow-active"
               style={{ aspectRatio: aspect || 1 }}
             >
-              <div className="flex items-center justify-center duration-200 w-14 aspect-1 min-w-12 transparent group-hover:scale-125 ">
-                <FontAwesomeIcon className="text-gray-700" icon={faPlus} />
+              <div className="flex flex-col items-center justify-center duration-200 transparent group-hover:scale-110">
+                <FontAwesomeIcon
+                  className="w-12 h-12 text-gray-700 min-w-12 min-h-12"
+                  icon={faPlus}
+                />
+                <div className="text-center">Загрузить новую картинку</div>
                 <input
                   type="file"
                   ref={hiddenFileInput}

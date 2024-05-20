@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
 import { getData } from '@helpers/CRUD'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { modalsFuncAtom } from '@state/atoms'
+import { useRecoilValue } from 'recoil'
 
 const SelectTemplate = ({
   selectedTemplate,
@@ -21,7 +25,10 @@ const SelectTemplate = ({
   smallMargin,
   paddingY = true,
   paddingX,
+  templateToCreateNew,
+  onSave,
 }) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [isLoading, setIsLoading] = useState(true)
 
   const [templates, setTemplates] = useState([])
@@ -54,13 +61,13 @@ const SelectTemplate = ({
       paddingY={paddingY}
       paddingX={paddingX}
     >
-      <div className="flex flex-wrap w-full gap-1 p-0.5">
+      <div className="grid grid-cols-2 phoneH:grid-cols-3 tablet:grid-cols-4 laptop:grid-cols-5 w-full gap-1 p-0.5">
         {templates?.length > 0 &&
           templates.map((template, index) => (
             <m.div
               key={template._id}
               className={cn(
-                'flex items-center justify-center flex-col relative w-40 overflow-hidden group border-2 cursor-pointer',
+                'flex items-center justify-center flex-col relative overflow-hidden group border-2 cursor-pointer',
                 selectedTemplate?._id === template._id
                   ? 'border-general shadow-medium-active'
                   : 'border-gray-300'
@@ -83,7 +90,7 @@ const SelectTemplate = ({
               <img
                 src={template.template.preview}
                 alt="item_image"
-                className="w-40 h-full object-fit max-w-40"
+                className="w-full object-fit"
                 style={{ aspectRatio: aspect || 1 }}
               />
               {/* {!readOnly && (
@@ -102,6 +109,23 @@ const SelectTemplate = ({
               </div>
             </m.div>
           ))}
+        {templateToCreateNew && (
+          <div
+            onClick={() =>
+              modalsFunc.template.add(tool, templateToCreateNew, onSave)
+            }
+            className="flex items-center justify-center bg-white border-2 border-gray-500 cursor-pointer group rounded-xl"
+            style={{ aspectRatio: aspect || 1 }}
+          >
+            <div className="flex flex-col items-center justify-center duration-200 min-w-12 min-h-12 transparent group-hover:scale-110 ">
+              <FontAwesomeIcon
+                className="w-12 h-12 text-gray-700 min-w-12 min-h-12"
+                icon={faPlus}
+              />
+              <div>Новый шаблон</div>
+            </div>
+          </div>
+        )}
         {/* {!readOnly &&
           !isAddingImage &&
           (!maxImages || images?.length < maxImages) && (

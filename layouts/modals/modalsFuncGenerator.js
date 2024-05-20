@@ -693,12 +693,22 @@ const modalsFuncGenerator = (
             onSelect
           )
         ),
-      save: (tool, template, onConfirm) => {
+      save: (tool, template, onSave, aspect) => {
         addModal(
           require('./modalsFunc/saveTemplateFunc').default(
             tool,
             template,
-            onConfirm
+            onSave,
+            aspect
+          )
+        )
+      },
+      add: (tool, template, onSave) => {
+        addModal(
+          require('./modalsFunc/newTemplateFunc').default(
+            tool,
+            template,
+            onSave
           )
         )
       },
