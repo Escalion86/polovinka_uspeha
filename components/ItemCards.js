@@ -175,7 +175,7 @@ export const UserItem = ({
                 <>
                   {hideGender && seeBirthday && (
                     <span className="font-normal whitespace-nowrap">
-                      {`(${birthDateToAge(item.birthday, serverDate)})`}
+                      {` (${birthDateToAge(item.birthday, serverDate)})`}
                     </span>
                   )}
                 </>
