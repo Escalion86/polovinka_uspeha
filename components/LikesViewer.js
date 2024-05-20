@@ -195,13 +195,13 @@ const UserLikesItem = ({
             </span> */}
             <div className="relative">
               <FontAwesomeIcon
-                className="w-7 h-7"
+                className="mt-0.5 tablet:mt-1 w-7 h-7 tablet:w-8 tablet:h-8"
                 icon={faHeart}
                 color={coincidenceCount > 0 ? '#EC4899' : '#9ca3af'}
               />
               {coincidenceCount > 0 && (
                 <FontAwesomeIcon
-                  className="absolute top-0 bottom-0 left-0 right-0 w-7 h-7 animate-ping"
+                  className="absolute bottom-0 left-0 right-0 top-1 w-7 h-7 tablet:w-8 tablet:h-8 animate-ping"
                   icon={faHeart}
                   color="#EC4899"
                 />
@@ -234,7 +234,7 @@ const UserLikesItem = ({
         )}
       </div>
       {selectedIds?.length > 0 ? (
-        <div className="z-10 flex flex-col items-center pl-1 overflow-hidden border border-gray-500 rounded gap-x-1">
+        <div className="z-10 flex flex-col items-center overflow-hidden border border-gray-500 rounded gap-x-1">
           {otherUsersData
             .filter(({ user }) => selectedIds.includes(user._id))
             .map(({ user }, index) => (
