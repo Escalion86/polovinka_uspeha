@@ -36,6 +36,7 @@ import sortFunctions from '@helpers/sortFunctions'
 import formatDateTime from '@helpers/formatDateTime'
 import Note from '@components/Note'
 import cn from 'classnames'
+import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
 
 const EventsUsers = ({
   event,
@@ -308,6 +309,14 @@ const eventUsersFunc = (eventId) => {
                 tooltipText="Скопировать в буфер список участников"
               />
             )}
+            <CardButton
+              icon={faHistory}
+              onClick={() => {
+                modalsFunc.event.historyEventUsers(event._id)
+              }}
+              color="orange"
+              tooltipText="История записей"
+            />
             {showLikes && (
               <CardButton
                 icon={faHeartCirclePlus}

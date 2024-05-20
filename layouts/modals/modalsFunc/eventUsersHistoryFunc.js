@@ -1,0 +1,79 @@
+import DateTimeEvent from '@components/DateTimeEvent'
+import HistoryItem from '@components/HistoryItem'
+import LoadingSpinner from '@components/LoadingSpinner'
+import { getData } from '@helpers/CRUD'
+import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
+// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
+import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
+import { eventKeys } from './historyKeyValuesItems/keys'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import { modalsFuncAtom } from '@state/atoms'
+import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import eventSelector from '@state/selectors/eventSelector'
+import HistoriesOfEvent from '@layouts/content/HistoriesComponents/HistoriesOfEvent'
+
+const eventUsersHistoryFunc = (eventId) => {
+  const EventUsersHistoryFuncModal = ({
+    closeModal,
+    setOnConfirmFunc,
+    setOnDeclineFunc,
+    setOnShowOnCloseConfirmDialog,
+    setDisableConfirm,
+    setDisableDecline,
+    setTopLeftComponent,
+  }) => {
+    // const modalFunc = useRecoilValue(modalsFuncAtom)
+    const event = useRecoilValue(eventSelector(eventId))
+    const [eventUsersHistory, setEventUsersHistory] = useState()
+
+    if (!event || !eventId)
+      return (
+        <div className="flex justify-center w-full text-lg ">
+          ОШИБКА! Мероприятие не найдено!
+        </div>
+      )
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const result = await getData(`/api/histories`, {
+          schema: 'eventsusers',
+          // data: { $in: [{ eventId }] },
+          'data.eventId': eventId,
+        })
+        setEventUsersHistory(result)
+      }
+      fetchData().catch(console.error)
+    }, [])
+
+    return (
+      <div className="flex flex-col items-center flex-1 gap-y-2">
+        <div className="text-lg font-bold">{event.title}</div>
+        <DateTimeEvent
+          wrapperClassName="text-base laptop:text-lg font-bold leading-4 laptop:leading-5 justify-center laptop:justify-start"
+          dateClassName="text-general"
+          timeClassName="italic"
+          durationClassName="italic text-base font-normal"
+          event={event}
+          showDayOfWeek
+          fullMonth
+        />
+        {eventUsersHistory ? (
+          <HistoriesOfEvent histories={eventUsersHistory} className="w-full" />
+        ) : (
+          <LoadingSpinner />
+        )}
+      </div>
+    )
+  }
+
+  return {
+    title: `История записей на мероприятие`,
+    Children: EventUsersHistoryFuncModal,
+    declineButtonName: 'Закрыть',
+    showDecline: true,
+  }
+}
+
+export default eventUsersHistoryFunc

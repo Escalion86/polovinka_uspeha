@@ -377,6 +377,10 @@ const modalsFuncGenerator = (
         addModal(require('./modalsFunc/eventHistoryFunc').default(eventId)),
       statusEdit: (eventId) =>
         addModal(require('./modalsFunc/eventStatusEditFunc').default(eventId)),
+      historyEventUsers: (eventId) =>
+        addModal(
+          require('./modalsFunc/eventUsersHistoryFunc').default(eventId)
+        ),
       payments: (eventId) =>
         addModal(
           require('./modalsFunc/eventUsersPaymentsFunc').default(eventId)

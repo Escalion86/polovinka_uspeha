@@ -3,13 +3,12 @@
 import ComboBox from '@components/ComboBox'
 import ContentHeader from '@components/ContentHeader'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
-import { SelectUserList } from '@components/SelectItemList'
-import { EVENT_USER_STATUSES } from '@helpers/constants'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import getHoursBetween from '@helpers/getHoursBetween'
 import isEventActiveFunc from '@helpers/isEventActive'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventExpiredFunc from '@helpers/isEventExpired'
+import isEventClosedFunc from '@helpers/isEventClosed'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
 import {
   Timeline,
@@ -25,182 +24,20 @@ import React, { Suspense, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { historiesOfEventUsersSelector } from '@state/atoms/historiesOfEventUsersAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
-import UserNameById from '@components/UserNameById'
 import { EventItemFromId } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import cn from 'classnames'
-import { m } from 'framer-motion'
+import { modalsFuncAtom } from '@state/atoms'
+import HistoriesOfEvent from './HistoriesComponents/HistoriesOfEvent'
 
 const dotColors = {
   add: 'success',
   delete: 'error',
 }
 
-const EventUsersInTimeLine = ({ createdAt, eventUsers, creatorId }) => {
-  if (!eventUsers || eventUsers.length === 0) return null
-  const eventUserStatus = EVENT_USER_STATUSES.find(
-    (eventUserStatus) => eventUserStatus.value === eventUsers[0].status
-  )
-
-  const [createdAtDate, createdAtTime] = dateToDateTimeStr(
-    createdAt,
-    true,
-    false
-  )
-
-  return (
-    <>
-      <div className="flex flex-wrap items-center gap-x-1 mb-0.5">
-        <span
-          className={
-            'bg-' +
-            eventUserStatus.color +
-            ' rounded px-1 text-sm flex items-center'
-          }
-        >
-          {eventUserStatus.name}
-        </span>
-        <div className="flex text-sm flex-nowrap tablet:text-base gap-x-1">
-          <span className="whitespace-nowrap">{createdAtDate}</span>
-          <span className="font-bold">{createdAtTime}</span>
-        </div>
-        {creatorId !== eventUsers[0].userId && (
-          <div className="flex justify-end flex-1 text-sm text-danger">
-            <UserNameById
-              userId={creatorId}
-              noWrap
-              className="text-right whitespace-nowrap"
-            />
-          </div>
-        )}
-        {/* <span>{formatDateTime(createdAt, false, false, false, false)}</span> */}
-      </div>
-      <SelectUserList
-        // label="Участники Мужчины"
-        usersId={eventUsers.map((eventUser) => eventUser.userId)}
-        showCounter={false}
-        readOnly
-      />
-    </>
-  )
-}
-
-const HistoriesOfEvent = ({ histories }) => {
-  return (
-    <Timeline
-      className="pt-1 pb-0 pl-2 pr-1"
-      // sx={{
-      //   [`& .${timelineOppositeContentClasses.root}`]: {
-      //     flex: 0.2,
-      //   },
-      // }}
-      // style={{ padding: 0 }}
-      sx={{
-        // [`& .${timelineClasses.root}`]: {
-        //   padding: '0px !important',
-        //   margin: 0,
-        // },
-        [`& .${timelineItemClasses.root}:before`]: {
-          flex: 0,
-          padding: 0,
-          // paddingTop: 10,
-        },
-        // [`& .${timelineItemClasses.root}`]: {
-        //   maxHeight: 8,
-        // },
-        // [`& .${timelineContentClasses.root}`]: {
-        //   paddingRight: 0,
-        // },
-        // [`& .${timelineDotClasses.root}:before`]: {
-        //   padding: 0,
-        // },
-        // [`& .${timelineConnectorClasses.root}`]: {
-        //   marginBottom: -1.4,
-        // },
-      }}
-    >
-      {histories.map((history, index) => {
-        const creatorId = history.userId
-
-        const participants = history.data.filter(
-          (eventUser) => eventUser.status === 'participant'
-        )
-        const reserved = history.data.filter(
-          (eventUser) => eventUser.status === 'reserve'
-        )
-        const baned = history.data.filter(
-          (eventUser) => eventUser.status === 'ban'
-        )
-        const assistants = history.data.filter(
-          (eventUser) => eventUser.status === 'assistant'
-        )
-
-        return (
-          <TimelineItem key={history._id}>
-            {/* <TimelineOppositeContent color="text.secondary">
-      {formatDateTime(history.createdAt, false, false, false, false)}
-    </TimelineOppositeContent> */}
-            <TimelineSeparator>
-              <TimelineDot color={dotColors[history.action]}>
-                <div className="flex items-center justify-center w-3 h-3 text-sm tablet:w-4 tablet:h-4 tablet:text-base">
-                  {history.data.length}
-                </div>
-              </TimelineDot>
-              {index < histories.length - 1 && <TimelineConnector />}
-            </TimelineSeparator>
-            <TimelineContent
-              style={{
-                paddingRight: 0,
-                paddingLeft: 8,
-              }}
-            >
-              <EventUsersInTimeLine
-                createdAt={history.createdAt}
-                eventUsers={assistants}
-                creatorId={creatorId}
-              />
-              <EventUsersInTimeLine
-                createdAt={history.createdAt}
-                eventUsers={participants}
-                creatorId={creatorId}
-              />
-              <EventUsersInTimeLine
-                createdAt={history.createdAt}
-                eventUsers={reserved}
-                creatorId={creatorId}
-              />
-              <EventUsersInTimeLine
-                createdAt={history.createdAt}
-                eventUsers={baned}
-                creatorId={creatorId}
-              />
-            </TimelineContent>
-            {/* <TimelineContent
-            style={{
-              paddingRight: 0,
-              paddingLeft: 8,
-            }}
-          >
-            <div>
-              {formatDateTime(history.createdAt, false, false, false, false)}
-              {history.data.find((eventUser) => eventUser.userId)}
-            </div>
-            <SelectUserList
-              // label="Участники Мужчины"
-              usersId={history.data.map((eventUser) => eventUser.userId)}
-              showCounter={false}
-              readOnly
-            />
-          </TimelineContent> */}
-          </TimelineItem>
-        )
-      })}
-    </Timeline>
-  )
-}
-
 const HistoryEventItem = ({ data, eventId, isLast }) => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const [isCollapsed, setIsCollapsed] = useState(true)
   const [firstCreatedAtDate, firstCreatedAtTime] = useMemo(
     () => dateToDateTimeStr(data[0].createdAt, true, false),
@@ -267,11 +104,12 @@ const HistoryEventItem = ({ data, eventId, isLast }) => {
             <EventItemFromId
               eventId={eventId}
               noBorder
+              onClick={() => modalsFunc.event.view(eventId)}
               // className="rounded-t last:border-0"
             />
             <div
               className={cn(
-                'cursor-pointer hover:bg-gray-300 duration-300 flex items-center justify-center w-6 px-1 border-l border-gray-700',
+                'cursor-pointer hover:bg-gray-300 duration-300 flex items-center justify-center w-7 tablet:w-8 px-1 border-l border-gray-700',
                 {
                   // 'rotate-180': isCollapsed,
                 }
@@ -324,6 +162,7 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
         const data = eventsHistories[eventId]
         return (
           <HistoryEventItem
+            key={eventId}
             data={data}
             eventId={eventId}
             isLast={index >= eventsHistoriesKeys.length - 1}
@@ -384,10 +223,12 @@ const HistoriesContentComponent = () => {
     const isEventExpired = isEventExpiredFunc(event)
     const isEventActive = isEventActiveFunc(event)
     const isEventCanceled = isEventCanceledFunc(event)
+    const isEventClosed = isEventClosedFunc(event)
     if (
       !(
         (isEventActive && filter.status.finished && isEventExpired) ||
         (isEventActive && filter.status.active && !isEventExpired) ||
+        (isEventClosed && filter.status.closed) ||
         (isEventCanceled && filter.status.canceled)
       )
     )
@@ -404,7 +245,7 @@ const HistoriesContentComponent = () => {
     <>
       <ContentHeader>
         <div className="flex flex-wrap items-center justify-start flex-1">
-          <div className="flex flex-wrap items-center justify-center gap-y-0.5 gap-x-2">
+          <div className="flex flex-wrap items-center justify-center gap-y-2.5 gap-x-2">
             <EventStatusToggleButtons
               value={filter.status}
               onChange={(value) =>
@@ -427,6 +268,7 @@ const HistoriesContentComponent = () => {
                 { name: 'Неделю', value: 168 },
                 { name: '2 недели', value: 336 },
                 { name: 'Месяц', value: 720 },
+                { name: '3 месяца', value: 2160 },
                 { name: 'За все время', value: 999999 },
               ]}
               noMargin
