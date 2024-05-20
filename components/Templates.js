@@ -1,11 +1,20 @@
+import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
 const { modalsFuncAtom } = require('@state/atoms')
 const { default: Button } = require('./Button')
 const { default: InputWrapper } = require('./InputWrapper')
 
-const Templates = ({ tool, onSelect, template, aspect, templateFunc }) => {
+const Templates = ({
+  tool,
+  onSelect,
+  onSave,
+  template,
+  aspect,
+  templateFunc,
+}) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const [loadingTemplate, setLoadingTemplate] = useState(false)
 
   return (
     <InputWrapper
@@ -22,12 +31,16 @@ const Templates = ({ tool, onSelect, template, aspect, templateFunc }) => {
       />
       <Button
         name="Сохранить шаблон"
-        onClick={async () =>
-          modalsFunc.template.save(
-            tool,
-            templateFunc ? await templateFunc() : template
-          )
-        }
+        onClick={async () => {
+          if (templateFunc) {
+            setLoadingTemplate(true)
+            modalsFunc.template.save(tool, await templateFunc(), onSave, aspect)
+            setLoadingTemplate(false)
+          } else {
+            modalsFunc.template.save(tool, template, onSave, aspect)
+          }
+        }}
+        loading={loadingTemplate}
       />
     </InputWrapper>
   )

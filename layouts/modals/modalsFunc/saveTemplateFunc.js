@@ -1,12 +1,14 @@
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-import { postData } from '@helpers/CRUD'
+import SelectTemplate from '@components/SelectTemplate'
+import { postData, putData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
+import { modalsFuncAtom } from '@state/atoms'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
-const saveTemplateFunc = (tool, template, onConfirm) => {
+const saveTemplateFunc = (tool, template, onSave, aspect) => {
   const SaveTemplateFuncModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -15,36 +17,65 @@ const saveTemplateFunc = (tool, template, onConfirm) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    const modalsFunc = useRecoilValue(modalsFuncAtom)
     const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-    const [name, setName] = useState('')
+    const [selectedTemplate, setSelectedTemplate] = useState()
     const snackbar = useSnackbar()
 
+    // useEffect(() => {
+    //   setOnConfirmFunc(
+    //     template
+    //       ? () => {
+    //           onSave && onSave(template)
+    //           closeModal()
+    //         }
+    //       : undefined
+    //   )
+    // }, [template])
     useEffect(() => {
       setOnConfirmFunc(
-        name
-          ? async () => {
-              const response = await postData('/api/templates', {
-                tool,
-                name,
-                template,
-                creatorId: loggedUserActive._id,
-              })
-              if (response) {
-                snackbar.success('Шаблон сохранен')
-                onConfirm && onConfirm(response)
-                closeModal()
-              } else {
-                snackbar.error('Не удалось сохранить шаблон')
-              }
-            }
+        selectedTemplate
+          ? modalsFunc.add({
+              title: 'Замена шаблона',
+              text: 'Вы уверены что хотите заменить шаблон?',
+              onConfirm: async () => {
+                const response = await putData(
+                  '/api/templates/' + selectedTemplate._id,
+                  {
+                    tool,
+                    name: selectedTemplate.name,
+                    template,
+                    creatorId: loggedUserActive._id,
+                  }
+                )
+                if (response) {
+                  snackbar.success('Шаблон сохранен')
+                  onSave && onSave(response)
+                  closeModal()
+                } else {
+                  snackbar.error('Не удалось сохранить шаблон')
+                }
+              },
+            })
           : undefined
       )
-    }, [name])
+    }, [selectedTemplate])
 
     return (
-      <FormWrapper flex className="flex-col">
-        <Input label="Название шаблона" value={name} onChange={setName} />
-      </FormWrapper>
+      <SelectTemplate
+        tool={tool}
+        selectedTemplate={selectedTemplate}
+        onSelect={setSelectedTemplate}
+        aspect={aspect}
+        templateToCreateNew={template}
+        onSave={(data) => {
+          onSave && onSave(data)
+          closeModal()
+        }}
+      />
+      // <FormWrapper flex className="flex-col">
+      //   <Input label="Название шаблона" value={name} onChange={setName} />
+      // </FormWrapper>
     )
   }
 

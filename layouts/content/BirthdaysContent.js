@@ -99,7 +99,7 @@ const BirthdaysContentComponent = () => {
                 { name: 'Год (365 дней)', value: 365 },
               ]}
               noMargin
-              className="mt-1"
+              className="mt-1.5"
             />
           </div>
           <div className="text-lg font-bold whitespace-nowrap">

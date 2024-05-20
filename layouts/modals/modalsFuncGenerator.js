@@ -377,6 +377,10 @@ const modalsFuncGenerator = (
         addModal(require('./modalsFunc/eventHistoryFunc').default(eventId)),
       statusEdit: (eventId) =>
         addModal(require('./modalsFunc/eventStatusEditFunc').default(eventId)),
+      historyEventUsers: (eventId) =>
+        addModal(
+          require('./modalsFunc/eventUsersHistoryFunc').default(eventId)
+        ),
       payments: (eventId) =>
         addModal(
           require('./modalsFunc/eventUsersPaymentsFunc').default(eventId)
@@ -693,12 +697,22 @@ const modalsFuncGenerator = (
             onSelect
           )
         ),
-      save: (tool, template, onConfirm) => {
+      save: (tool, template, onSave, aspect) => {
         addModal(
           require('./modalsFunc/saveTemplateFunc').default(
             tool,
             template,
-            onConfirm
+            onSave,
+            aspect
+          )
+        )
+      },
+      add: (tool, template, onSave) => {
+        addModal(
+          require('./modalsFunc/newTemplateFunc').default(
+            tool,
+            template,
+            onSave
           )
         )
       },

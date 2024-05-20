@@ -36,6 +36,7 @@ import sortFunctions from '@helpers/sortFunctions'
 import formatDateTime from '@helpers/formatDateTime'
 import Note from '@components/Note'
 import cn from 'classnames'
+import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
 
 const EventsUsers = ({
   event,
@@ -154,6 +155,7 @@ const eventUsersFunc = (eventId) => {
     const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
     const statusEdit = loggedUserActiveRole?.events?.statusEdit
     const canEdit = loggedUserActiveRole?.eventsUsers?.edit
+    const seeHistory = loggedUserActiveRole?.eventsUsers?.seeHistory
     const copyListToClipboard =
       loggedUserActiveRole?.eventsUsers?.copyListToClipboard
 
@@ -306,6 +308,16 @@ const eventUsersFunc = (eventId) => {
                 }}
                 color="purple"
                 tooltipText="Скопировать в буфер список участников"
+              />
+            )}
+            {seeHistory && (
+              <CardButton
+                icon={faHistory}
+                onClick={() => {
+                  modalsFunc.event.historyEventUsers(event._id)
+                }}
+                color="orange"
+                tooltipText="История записей"
               />
             )}
             {showLikes && (
