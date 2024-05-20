@@ -367,8 +367,10 @@ const modalsFuncGenerator = (
         addModal(require('./modalsFunc/eventFunc').default(eventId, true)),
       edit: (eventId) =>
         addModal(require('./modalsFunc/eventFunc').default(eventId)),
-      subEventEdit: (props, onChange) =>
-        addModal(require('./modalsFunc/subEventFunc').default(props, onChange)),
+      subEventEdit: (props, onChange, rules) =>
+        addModal(
+          require('./modalsFunc/subEventFunc').default(props, onChange, rules)
+        ),
       users: (eventId) =>
         addModal(require('./modalsFunc/eventUsersFunc').default(eventId)),
       history: (eventId) =>

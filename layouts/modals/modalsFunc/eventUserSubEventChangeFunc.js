@@ -24,6 +24,9 @@ const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const user = useRecoilValue(userSelector(userId))
+    const direction = useRecoilValue(directionSelector(event.directionId))
+    const rules = direction?.rules
+
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = eventUsers.find(
       (eventUser) => eventUser.userId === userId
@@ -64,7 +67,8 @@ const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
           event,
           user,
           eventUsersOfSubEvent,
-          subEvent
+          subEvent,
+          rules
         ),
       }
     })

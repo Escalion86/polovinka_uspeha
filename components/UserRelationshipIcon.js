@@ -45,6 +45,7 @@ const UserRelationshipIcon = ({
         } h-${numSize + 1}`}
       >
         <Image
+          alt={havePartner ? 'havePartnerIcon' : 'noPartnerIcon'}
           src={
             '/img/relationships/' +
             (havePartner ? 'havePartner' : 'noPartner') +

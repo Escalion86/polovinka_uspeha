@@ -10,8 +10,6 @@ const PriceInput = ({
   className,
   labelClassName,
   name = 'price',
-  labelContentWidth,
-  labelPos,
   disabled,
   paddingY = false,
   noMargin,
@@ -32,8 +30,6 @@ const PriceInput = ({
       label={label}
       labelClassName={labelClassName}
       value={value}
-      labelContentWidth={labelContentWidth}
-      labelPos={labelPos}
       fullWidth={false}
       paddingY={paddingY}
       className={cn('w-min', className)}

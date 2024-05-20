@@ -5,6 +5,7 @@ import { selectorFamily } from 'recoil'
 import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
 import subEventsSumOfEventSelector from './subEventsSumOfEventSelector'
 import eventSelector from './eventSelector'
+import directionSelector from './directionSelector'
 
 export const loggedUserToEventStatusSelector = selectorFamily({
   key: 'loggedUserToEventStatusSelector',
@@ -15,7 +16,15 @@ export const loggedUserToEventStatusSelector = selectorFamily({
       const loggedUserActive = get(loggedUserActiveAtom)
       const eventUsers = get(eventsUsersFullByEventIdSelector(id))
       const subEventSum = get(subEventsSumOfEventSelector(id))
-      return userToEventStatus(event, loggedUserActive, eventUsers, subEventSum)
+      const direction = get(directionSelector(event.directionId))
+      const rules = direction?.rules
+      return userToEventStatus(
+        event,
+        loggedUserActive,
+        eventUsers,
+        subEventSum,
+        rules
+      )
     },
 })
 

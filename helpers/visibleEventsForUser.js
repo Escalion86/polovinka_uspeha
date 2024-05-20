@@ -3,6 +3,7 @@ import birthDateToAge from './birthDateToAge'
 import { getRecoil } from 'recoil-nexus'
 import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
 import subEventsSummator from './subEventsSummator'
+import directionSelector from '@state/selectors/directionSelector'
 
 const visibleEventsForUser = (
   events,
@@ -39,6 +40,8 @@ const visibleEventsForUser = (
 
     return events.filter((event) => {
       const subEventsSum = subEventsSummator(event.subEvents)
+      const direction = getRecoil(directionSelector)
+      const rules = direction?.rules
 
       if (
         !event.showOnSite ||
@@ -60,7 +63,8 @@ const visibleEventsForUser = (
       //   !['participant', 'assistant', 'reserve'].includes(eventUser?.status)
       // ) {
       // Подходит ли по статусу отношений
-      if (!isUserRelationshipCorrectForEvent(user, subEventsSum)) return false
+      if (!isUserRelationshipCorrectForEvent(user, subEventsSum, rules))
+        return false
 
       // Подходит ли по возрасту
       if (

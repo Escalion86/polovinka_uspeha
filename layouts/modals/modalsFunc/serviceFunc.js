@@ -363,7 +363,6 @@ const serviceFunc = (serviceId, clone = false) => {
                     })
                   }}
                   noMargin
-                  // labelContentWidth
                   // labelPos="left"
                 />
                 <div>
