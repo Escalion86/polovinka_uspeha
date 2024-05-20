@@ -233,6 +233,7 @@ const SettingsRolesContent = (props) => {
               item="events"
               subItem="editLikes"
             />
+            {/*  */}
             <SubTitle name="Список участников мероприятия" />
             <RoleItem label="Видит список" item="eventsUsers" subItem="see" />
             <RoleItem
@@ -244,6 +245,11 @@ const SettingsRolesContent = (props) => {
               label="Копирование списка в буфер"
               item="eventsUsers"
               subItem="copyListToClipboard"
+            />
+            <RoleItem
+              label="Просмотр истории записей"
+              item="eventsUsers"
+              subItem="seeHistory"
             />
             {/*  */}
             <SubTitle name="Пользователи" />

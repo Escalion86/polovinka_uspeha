@@ -45,6 +45,8 @@ import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
 import { faVk } from '@fortawesome/free-brands-svg-icons/faVk'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
 
+import { faImages } from '@fortawesome/free-solid-svg-icons/faImages'
+
 import dynamic from 'next/dynamic'
 const ServicesContent = dynamic(
   () => import('@layouts/content/ServicesContent')
@@ -193,6 +195,7 @@ const ToolsEventAnonsVkContent = dynamic(
   () => import('@layouts/content/ToolsEventAnonsVkContent')
 )
 import { uid } from 'uid'
+import ImagesServerContent from '@layouts/content/ImagesServerContent'
 
 const colors = [
   'border-blue-400',
@@ -918,6 +921,7 @@ export const DEFAULT_ROLES = [
       see: false, // member
       edit: false,
       copyListToClipboard: false,
+      seeHistory: false,
     },
     users: {
       see: false,
@@ -1047,6 +1051,7 @@ export const DEFAULT_ROLES = [
       see: true, // member
       edit: true,
       copyListToClipboard: true,
+      seeHistory: true,
     },
     users: {
       see: true,
@@ -1176,6 +1181,7 @@ export const DEFAULT_ROLES = [
       see: true, // member
       edit: true,
       copyListToClipboard: true,
+      seeHistory: true,
     },
     users: {
       see: true,
@@ -1305,6 +1311,7 @@ export const DEFAULT_ROLES = [
       see: true, // member
       edit: true,
       copyListToClipboard: true,
+      seeHistory: true,
     },
     users: {
       see: true,
@@ -1434,6 +1441,7 @@ export const DEFAULT_ROLES = [
       see: true, // ! member
       edit: true,
       copyListToClipboard: true,
+      seeHistory: true,
     },
     users: {
       see: true,
@@ -1803,6 +1811,12 @@ export const CONTENTS = Object.freeze({
     accessStatuses: ['member'],
     roleAccess: (role, status) => role?.seeMyStatistics || status === 'member',
   },
+  imagesServer: {
+    Component: ImagesServerContent,
+    name: 'Сервер картинок',
+    accessRoles: ['dev'],
+    roleAccess: (role) => role?.dev,
+  },
 })
 
 export const pages = [
@@ -2108,11 +2122,20 @@ export const pages = [
     roleAccess: CONTENTS['settingsHeaderInfoContacts'].roleAccess,
   },
   {
-    id: 99,
+    id: 98,
     group: 99,
-    name: 'Разработчик',
+    name: 'Тестирование',
     href: 'dev',
     icon: faBug,
+    accessRoles: CONTENTS['dev'].accessRoles,
+    roleAccess: CONTENTS['dev'].roleAccess,
+  },
+  {
+    id: 99,
+    group: 99,
+    name: 'Сервер картинок',
+    href: 'imagesServer',
+    icon: faImages,
     accessRoles: CONTENTS['dev'].accessRoles,
     roleAccess: CONTENTS['dev'].roleAccess,
   },

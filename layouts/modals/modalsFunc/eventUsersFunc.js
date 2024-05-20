@@ -155,6 +155,7 @@ const eventUsersFunc = (eventId) => {
     const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
     const statusEdit = loggedUserActiveRole?.events?.statusEdit
     const canEdit = loggedUserActiveRole?.eventsUsers?.edit
+    const seeHistory = loggedUserActiveRole?.eventsUsers?.seeHistory
     const copyListToClipboard =
       loggedUserActiveRole?.eventsUsers?.copyListToClipboard
 
@@ -309,14 +310,16 @@ const eventUsersFunc = (eventId) => {
                 tooltipText="Скопировать в буфер список участников"
               />
             )}
-            <CardButton
-              icon={faHistory}
-              onClick={() => {
-                modalsFunc.event.historyEventUsers(event._id)
-              }}
-              color="orange"
-              tooltipText="История записей"
-            />
+            {seeHistory && (
+              <CardButton
+                icon={faHistory}
+                onClick={() => {
+                  modalsFunc.event.historyEventUsers(event._id)
+                }}
+                color="orange"
+                tooltipText="История записей"
+              />
+            )}
             {showLikes && (
               <CardButton
                 icon={faHeartCirclePlus}
