@@ -40,7 +40,7 @@ const visibleEventsForUser = (
 
     return events.filter((event) => {
       const subEventsSum = subEventsSummator(event.subEvents)
-      const direction = getRecoil(directionSelector)
+      const direction = getRecoil(directionSelector(event.directionId))
       const rules = direction?.rules
 
       if (

@@ -88,8 +88,8 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
         ? rules?.userStatus === 'any'
           ? true
           : user.status
-            ? rules?.userStatus[user.status]
-            : rules?.userStatus['novice']
+            ? rules?.userStatus === user.status
+            : rules?.userStatus === 'novice'
         : user.status
           ? subEventSum.usersStatusAccess[user.status]
           : subEventSum.usersStatusAccess['novice']
