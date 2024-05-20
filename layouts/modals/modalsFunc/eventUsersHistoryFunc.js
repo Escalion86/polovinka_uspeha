@@ -1,16 +1,8 @@
 import DateTimeEvent from '@components/DateTimeEvent'
-import HistoryItem from '@components/HistoryItem'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { getData } from '@helpers/CRUD'
-import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
-// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
-import { eventKeys } from './historyKeyValuesItems/keys'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { modalsFuncAtom } from '@state/atoms'
-import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import eventSelector from '@state/selectors/eventSelector'
 import HistoriesOfEvent from '@layouts/content/HistoriesComponents/HistoriesOfEvent'
 
@@ -24,7 +16,6 @@ const eventUsersHistoryFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    // const modalFunc = useRecoilValue(modalsFuncAtom)
     const event = useRecoilValue(eventSelector(eventId))
     const [eventUsersHistory, setEventUsersHistory] = useState()
 
