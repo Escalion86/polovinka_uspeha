@@ -11,6 +11,7 @@ import formatDateTime from '@helpers/formatDateTime'
 import userToEventStatus from '@helpers/userToEventStatus'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import directionSelector from '@state/selectors/directionSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
@@ -47,6 +48,8 @@ const eventSignUpFunc = (
     const [subEventId, setSubEventId] = useState(
       event.subEvents.length > 1 ? undefined : event.subEvents[0].id
     )
+    const direction = useRecoilValue(directionSelector(event.directionId))
+    const rules = direction?.rules
 
     const eventId = event._id
 
@@ -93,7 +96,8 @@ const eventSignUpFunc = (
           event,
           loggedUserActive,
           eventUsersOfSubEvent,
-          subEvent
+          subEvent,
+          rules
         ),
       }
     })

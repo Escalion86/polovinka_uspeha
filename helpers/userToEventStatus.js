@@ -8,7 +8,7 @@ import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
 import { getRecoil } from 'recoil-nexus'
 import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
 
-const userToEventStatus = (event, user, eventUsersFull, subEventSum) => {
+const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
   if (!event?._id)
     return {
       canSee: false,
@@ -81,12 +81,22 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum) => {
         subEventSum.minWomansAge > userAge))
 
   const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
-  const isUserStatusCorrect = user.status
-    ? subEventSum.usersStatusAccess[user.status]
-    : subEventSum.usersStatusAccess['novice']
+  const isUserStatusCorrect =
+    user.status === 'ban'
+      ? false
+      : rules?.userStatus
+        ? rules?.userStatus === 'any'
+          ? true
+          : user.status
+            ? rules?.userStatus[user.status]
+            : rules?.userStatus['novice']
+        : user.status
+          ? subEventSum.usersStatusAccess[user.status]
+          : subEventSum.usersStatusAccess['novice']
   const isUserRelationshipCorrect = isUserRelationshipCorrectForEvent(
     user,
-    subEventSum
+    subEventSum,
+    rules
   )
 
   // TODO Поправить права роли

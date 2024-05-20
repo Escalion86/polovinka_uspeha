@@ -24,12 +24,12 @@ import {
 } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import useFocus from '@helpers/useFocus'
-import directionsAtom from '@state/atoms/directionsAtom'
-import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+// import directionsAtom from '@state/atoms/directionsAtom'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+// import { useRecoilValue } from 'recoil'
 import SvgSigma from 'svg/SvgSigma'
 
-const subEventFunc = (props, onChange) => {
+const subEventFunc = (props, onChange, rules) => {
   const SubEventModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -38,7 +38,7 @@ const subEventFunc = (props, onChange) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const directions = useRecoilValue(directionsAtom)
+    // const directions = useRecoilValue(directionsAtom)
     const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()
     const [refMansMax, setFocusMansMax] = useFocus()
     const [refWomansMax, setFocusWomansMax] = useFocus()
@@ -47,9 +47,9 @@ const subEventFunc = (props, onChange) => {
     const [refMansMemberMax, setFocusMansMemberMax] = useFocus()
     const [refWomansMemberMax, setFocusWomansMemberMax] = useFocus()
 
-    const direction = props?.directionId
-      ? directions.find(({ _id }) => _id === props.directionId)
-      : undefined
+    // const direction = props?.directionId
+    //   ? directions.find(({ _id }) => _id === props.directionId)
+    //   : undefined
 
     const [title, setTitle] = useState(props?.title ?? DEFAULT_SUBEVENT.title)
     const [description, setDescription] = useState(
@@ -113,24 +113,53 @@ const subEventFunc = (props, onChange) => {
     const [maxWomansAge, setMaxWomansAge] = useState(
       props?.maxWomansAge ?? DEFAULT_SUBEVENT.maxWomansAge
     )
-    const defaultUsersStatusAccess = {
-      ...DEFAULT_USERS_STATUS_ACCESS,
-      ...props?.usersStatusAccess,
-    }
+    const rulesStatusAccess = useCallback(() => {
+      if (!rules?.userStatus) return {}
+      const novice = ['novice', 'any'].includes(rules?.userStatus)
+      const member = ['member', 'any'].includes(rules?.userStatus)
+      return { novice, member }
+    }, [rules])
+
+    const defaultUsersStatusAccess = useMemo(
+      () => ({
+        ...DEFAULT_USERS_STATUS_ACCESS,
+        ...props?.usersStatusAccess,
+        ...rulesStatusAccess(),
+      }),
+      [props, rules]
+    )
+
     const [usersStatusAccess, setUsersStatusAccess] = useState(
       defaultUsersStatusAccess
     )
 
-    const defaultUsersStatusDiscount = {
-      ...DEFAULT_USERS_STATUS_DISCOUNT,
-      ...(props?.usersStatusDiscount ?? DEFAULT_SUBEVENT.usersStatusDiscount),
-    }
+    const defaultUsersStatusDiscount = useMemo(
+      () => ({
+        ...DEFAULT_USERS_STATUS_DISCOUNT,
+        ...(props?.usersStatusDiscount ?? DEFAULT_SUBEVENT.usersStatusDiscount),
+      }),
+      [props]
+    )
+
     const [usersStatusDiscount, setUsersStatusDiscount] = useState(
       defaultUsersStatusDiscount
     )
 
+    const defaultRelationshipAccess = useMemo(
+      () =>
+        rules?.userRelationship === 'any'
+          ? 'yes'
+          : rules?.userRelationship === 'alone'
+            ? 'no'
+            : rules?.userRelationship === 'pair'
+              ? 'only'
+              : props?.usersRelationshipAccess ??
+                DEFAULT_SUBEVENT.usersRelationshipAccess,
+      [props, rules]
+    )
+
     const [usersRelationshipAccess, setUsersRelationshipAccess] = useState(
-      props?.usersRelationshipAccess ?? DEFAULT_SUBEVENT.usersRelationshipAccess
+      defaultRelationshipAccess
     )
 
     const [isReserveActive, setIsReserveActive] = useState(
@@ -192,7 +221,7 @@ const subEventFunc = (props, onChange) => {
         props?.maxWomansAge !== maxWomansAge ||
         !compareObjects(defaultUsersStatusAccess, usersStatusAccess) ||
         !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
-        props?.usersRelationshipAccess !== usersRelationshipAccess ||
+        props?.usersRelationshipAccess !== defaultRelationshipAccess ||
         props?.isReserveActive !== isReserveActive ||
         props?.price !== price
 
@@ -277,6 +306,12 @@ const subEventFunc = (props, onChange) => {
             />
           </TabPanel>
           <TabPanel tabName="Доступ и стоимость" className="px-0">
+            {['any', 'novice', 'member'].includes(rules?.userStatus) ||
+            ['any', 'alone', 'pair'].includes(rules?.userRelationship) ? (
+              <div className="pl-2 -mb-2 text-sm text-danger">
+                Применены ограничения доступа заданные направлением
+              </div>
+            ) : null}
             <PriceInput
               value={price}
               onChange={(value) => {
@@ -314,9 +349,7 @@ const subEventFunc = (props, onChange) => {
                   {'Новичок'}
                 </div>
               }
-              disabled={['any', 'novice', 'member'].includes(
-                direction?.rules?.userStatus
-              )}
+              disabled={['any', 'novice', 'member'].includes(rules?.userStatus)}
             />
             {usersStatusAccess?.novice && (
               <FormRow>
@@ -349,9 +382,7 @@ const subEventFunc = (props, onChange) => {
                   {'Участник клуба'}
                 </div>
               }
-              disabled={['any', 'novice', 'member'].includes(
-                direction?.rules?.userStatus
-              )}
+              disabled={['any', 'novice', 'member'].includes(rules?.userStatus)}
             />
             {usersStatusAccess?.member && (
               <FormRow>
@@ -375,13 +406,12 @@ const subEventFunc = (props, onChange) => {
               relationshipStatus={usersRelationshipAccess}
               onChange={setUsersRelationshipAccess}
               disabled={['any', 'alone', 'pair'].includes(
-                direction?.rules?.userRelationship
+                rules?.userRelationship
               )}
             />
-            {(direction?.rules?.userStatus &&
-              direction?.rules?.userStatus !== 'select') ||
-              (direction?.rules?.userRelationship &&
-                direction?.rules?.userRelationship !== 'select' && (
+            {(rules?.userStatus && rules?.userStatus !== 'select') ||
+              (rules?.userRelationship &&
+                rules?.userRelationship !== 'select' && (
                   <div className="pl-2 -mb-2 text-sm text-danger">
                     Выбранное направление ограничевает доступ на изменение
                     некоторых прав
@@ -426,7 +456,6 @@ const subEventFunc = (props, onChange) => {
                 placeholder={maxParticipantsCheck ? '' : '0'}
                 disabled={maxParticipantsCheck}
                 min={0}
-                labelPos="left"
                 onFocus={handleFocus}
                 fullWidth={false}
                 noMargin
@@ -472,7 +501,6 @@ const subEventFunc = (props, onChange) => {
                       placeholder={maxMansCheck ? '' : '0'}
                       disabled={maxMansCheck}
                       min={0}
-                      labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
@@ -506,7 +534,6 @@ const subEventFunc = (props, onChange) => {
                       placeholder={maxMansNoviceCheck ? '' : '0'}
                       disabled={maxMansNoviceCheck}
                       min={0}
-                      labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
@@ -599,7 +626,6 @@ const subEventFunc = (props, onChange) => {
                       placeholder={maxWomansCheck ? '' : '0'}
                       disabled={maxWomansCheck}
                       min={0}
-                      labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
@@ -633,7 +659,6 @@ const subEventFunc = (props, onChange) => {
                       placeholder={maxWomansNoviceCheck ? '' : '0'}
                       disabled={maxWomansNoviceCheck}
                       min={0}
-                      labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
@@ -667,7 +692,6 @@ const subEventFunc = (props, onChange) => {
                       placeholder={maxWomansMemberCheck ? '' : '0'}
                       disabled={maxWomansMemberCheck}
                       min={0}
-                      labelPos="left"
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
