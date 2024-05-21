@@ -14,6 +14,7 @@ import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
+import directionSelector from '@state/selectors/directionSelector'
 
 const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
   const EventUserSubEventChangeModal = ({
