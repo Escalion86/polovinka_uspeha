@@ -3,13 +3,14 @@
 import { modalsFuncAtom } from '@state/atoms'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useRecoilValue } from 'recoil'
-import { EventItem } from '@components/ItemCards'
+import { EventItem, UserItemFromId } from '@components/ItemCards'
 import eventsLoggedUserWithLikesSelector from '@state/selectors/eventsLoggedUserWithLikesSelector'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import cn from 'classnames'
 import Note from '@components/Note'
+import { SelectUserList } from '@components/SelectItemList'
 
 const EventLikesItem = ({ eventWithEventUsers, className }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -38,7 +39,7 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
   return (
     <div
       className={cn(
-        'flex cursor-pointer hover:shadow-medium-active bg-gray-100',
+        'flex cursor-pointer hover:bg-blue-100 duration-300 hover:shadow-medium-active bg-gray-100 min-h-[36px] h-[36px] tablet:h-10 tablet:min-h-10',
         className
       )}
       onClick={
@@ -54,7 +55,7 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
         item={eventWithEventUsers}
         bordered={false}
         noBorder
-        classNameHeight="h-[36px] tablet:h-10"
+        classNameHeight="min-h-[36px] h-[36px] tablet:h-10 tablet:min-h-10"
         noStatusIcon
       />
       {coincidenceCount !== null && !eventLoggedUser.seeLikesResult ? (
@@ -80,7 +81,7 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
           />
           {coincidenceCount > 0 && eventLoggedUser.seeLikesResult && (
             <FontAwesomeIcon
-              className="absolute left-1 top-1 w-7 h-7 tablet:w-8 tablet:h-8 animate-ping"
+              className="absolute left-1 top-1 w-7 h-7 tablet:w-8 tablet:h-8 animate-ping-light"
               icon={faHeart}
               color="#EC4899"
             />
@@ -97,7 +98,30 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
 }
 
 const LikesContent = () => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const eventsWithLikes = useRecoilValue(eventsLoggedUserWithLikesSelector)
+
+  const usersWithLikesCoincidences = eventsWithLikes.reduce(
+    (acc, { likesProcessActive, eventUsers }) => {
+      if (likesProcessActive) return acc
+      const eventLoggedUser = eventUsers.find(
+        ({ userId }) => userId === loggedUserActive._id
+      )
+      if (!eventLoggedUser.seeLikesResult) return acc
+      return eventUsers.reduce((acc2, { userId, likes }) => {
+        if (
+          likes &&
+          likes.includes(loggedUserActive._id) &&
+          !acc.includes(userId)
+        )
+          return [...acc2, userId]
+
+        return acc2
+      }, acc)
+    },
+    []
+  )
 
   const eventsWithWaitingLikes = eventsWithLikes.filter(
     ({ likesProcessActive }) => likesProcessActive
@@ -107,7 +131,7 @@ const LikesContent = () => {
   )
 
   return (
-    <div className="flex flex-col m-1">
+    <div className="flex flex-col px-1 pb-2 overflow-y-auto">
       <Note>
         <b>Что такое лайки?</b> Лайки - это символ симпатии в виде сердечка.
         <br />
@@ -133,13 +157,20 @@ const LikesContent = () => {
             <br />
             Пока прием лайков не закрыт вы можете отредактировать свой выбор
           </Note>
-          <div className="flex flex-col items-stretch w-full overflow-hidden border border-gray-700 rounded">
+          <div className="flex flex-col items-stretch w-full border border-gray-700 rounded">
             {eventsWithWaitingLikes.map((eventWithEventUsers, index) => (
-              <EventLikesItem
-                key={eventWithEventUsers._id}
-                eventWithEventUsers={eventWithEventUsers}
-                className={index > 0 ? 'border-t border-gray-700' : ''}
-              />
+              <div key={eventWithEventUsers._id} className="overflow-hidden">
+                <EventLikesItem
+                  eventWithEventUsers={eventWithEventUsers}
+                  className={cn(
+                    index > 0 ? 'border-t border-gray-700' : '',
+                    index === 0 ? 'rounded-t' : '',
+                    index === eventsWithWaitingLikes.length - 1
+                      ? 'rounded-b'
+                      : ''
+                  )}
+                />
+              </div>
             ))}
           </div>
         </>
@@ -154,15 +185,68 @@ const LikesContent = () => {
             <br />
             Для просмотра результата кликните по мероприятию
           </Note>
-          <div className="flex flex-col items-stretch w-full overflow-hidden border border-gray-700 rounded">
+          <div className="flex flex-col items-stretch w-full border border-gray-700 rounded">
             {eventsWithSettedLikes.map((eventWithEventUsers, index) => (
-              <EventLikesItem
-                key={eventWithEventUsers._id}
-                eventWithEventUsers={eventWithEventUsers}
-                className={index > 0 ? 'border-t border-gray-700' : ''}
-              />
+              <div key={eventWithEventUsers._id} className="overflow-hidden">
+                <EventLikesItem
+                  eventWithEventUsers={eventWithEventUsers}
+                  className={cn(
+                    index > 0 ? 'border-t border-gray-700' : '',
+                    index === 0 ? 'rounded-t' : '',
+                    index === eventsWithSettedLikes.length - 1
+                      ? 'rounded-b'
+                      : ''
+                  )}
+                />
+              </div>
             ))}
           </div>
+        </>
+      )}
+      {usersWithLikesCoincidences.length > 0 && (
+        <>
+          <div className="w-full mt-5 text-lg font-bold text-center">
+            Участники с которыми у Вас есть совпадения
+          </div>
+          <div className="flex flex-col items-stretch w-full border border-gray-700 rounded">
+            {usersWithLikesCoincidences.map((userId, index) => (
+              <div key={userId} className="overflow-hidden">
+                <UserItemFromId
+                  userId={userId}
+                  onClick={() =>
+                    modalsFunc.user.view(userId, {
+                      showContacts: true,
+                    })
+                  }
+                  noBorder
+                  hideGender
+                  className={cn(
+                    'bg-hearts hover:bg-none overflow-hidden',
+                    index > 0 ? 'border-t border-gray-700' : '',
+                    index === 0 ? 'rounded-t' : '',
+                    index === usersWithLikesCoincidences.length - 1
+                      ? 'rounded-b'
+                      : ''
+                  )}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* // )} */}
+          {/* <SelectUserList
+            showCounter={false}
+            className="w-full"
+            // filter={{ gender: { operand: '!==', value: null } }}
+            // label="Участники с которыми у Вас есть совпадения"
+            // modalTitle={modalTitle}
+            usersId={usersWithLikesCoincidences}
+            // onChange={setSelectedIds}
+            // exceptedIds={exceptedIds}
+            readOnly
+            // itemChildren={itemChildren}
+            // nameFieldWrapperClassName={nameFieldWrapperClassName}
+          /> */}
         </>
       )}
     </div>
