@@ -108,11 +108,12 @@ const LikesContent = () => {
       const eventLoggedUser = eventUsers.find(
         ({ userId }) => userId === loggedUserActive._id
       )
-      if (!eventLoggedUser.seeLikesResult) return acc
+      if (!eventLoggedUser.seeLikesResult || !eventLoggedUser.likes) return acc
       return eventUsers.reduce((acc2, { userId, likes }) => {
         if (
           likes &&
           likes.includes(loggedUserActive._id) &&
+          eventLoggedUser.likes.includes(userId) &&
           !acc.includes(userId)
         )
           return [...acc2, userId]
