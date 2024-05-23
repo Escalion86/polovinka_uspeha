@@ -209,7 +209,9 @@ export const EventItem = ({
   active = false,
   bordered = false,
   className,
+  classNameHeight = 'h-[33px]',
   noBorder,
+  noStatusIcon,
 }) => {
   const direction = useRecoilValue(directionSelector(item.directionId))
 
@@ -223,24 +225,27 @@ export const EventItem = ({
       onClick={onClick}
       active={active}
       className={cn(
-        'flex text-xs tablet:text-sm h-[33px]',
+        'flex text-xs tablet:text-sm',
+        classNameHeight,
         bordered ? 'border border-gray-500' : '',
         className
       )}
       noPadding
       noBorder={noBorder || bordered}
     >
-      <div
-        className={cn(
-          'w-7 flex justify-center items-center',
-          eventStatusObj ? 'bg-' + eventStatusObj.color : 'bg-gray-400'
-        )}
-      >
-        <FontAwesomeIcon
-          className="w-6 h-6 text-white"
-          icon={eventStatusObj ? eventStatusObj.icon : faGenderless}
-        />
-      </div>
+      {!noStatusIcon && (
+        <div
+          className={cn(
+            'w-7 flex justify-center items-center',
+            eventStatusObj ? 'bg-' + eventStatusObj.color : 'bg-gray-400'
+          )}
+        >
+          <FontAwesomeIcon
+            className="w-6 h-6 text-white"
+            icon={eventStatusObj ? eventStatusObj.icon : faGenderless}
+          />
+        </div>
+      )}
       <div className="flex items-center justify-between flex-1 px-1 leading-4">
         <div className="flex flex-col h-full justify-evenly">
           <TextLinesLimiter

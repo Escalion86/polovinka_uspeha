@@ -5,11 +5,12 @@ import { pages, pagesGroups } from '@helpers/constants'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
-import badgesSelector from '@state/selectors/badgesSelector'
+import badgesGroupSelector from '@state/selectors/badgesGroupSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
@@ -63,7 +64,7 @@ const menuCfg = (
   return result
 }
 
-const MenuItem = ({ item, active = false, badge }) => {
+const MenuItem = ({ item, active = false, badgeNum }) => {
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
   return (
     <Link href={'/cabinet/' + item.href} shallow legacyBehavior>
@@ -85,9 +86,9 @@ const MenuItem = ({ item, active = false, badge }) => {
               {item.num}
             </span>
           )}
-          {typeof badge === 'number' && badge > 0 && (
+          {typeof badgeNum === 'number' && badgeNum > 0 && (
             <div className="flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger">
-              {badge <= 99 ? badge : '!'}
+              {badgeNum <= 99 ? badgeNum : '!'}
             </div>
           )}
         </div>
@@ -96,137 +97,166 @@ const MenuItem = ({ item, active = false, badge }) => {
   )
 }
 
+const Group = ({
+  menuCfg,
+  item,
+  index,
+  active,
+  openedMenuIndex,
+  setOpenedMenuIndex,
+  setMenuOpen,
+  activePage,
+}) => {
+  const { groupHidden, pages, groupBadge } = useRecoilValue(
+    badgesGroupSelector(item.id)
+  )
+  // const items = item.items.filter(({ id }) => !hiddenMenus.includes(id))
+
+  if (groupHidden) return null
+  const items = pages
+  const Component =
+    items.length === 1
+      ? (props) => <Link {...props} shallow />
+      : (props) => <button {...props} />
+
+  return (
+    <div
+      className={cn('z-50 flex flex-col', {
+        'flex-1': item.bottom && !menuCfg[index - 1].bottom,
+      })}
+      key={item.id}
+    >
+      {item.bottom && !menuCfg[index - 1].bottom && <div className="flex-1" />}
+      <div
+        className={cn(
+          'duration-300 rounded-lg group',
+          active
+            ? 'bg-white text-general'
+            : 'hover:bg-white hover:text-general text-white'
+        )}
+        key={'groupMenu' + index}
+      >
+        <Component
+          className={cn(
+            'flex gap-x-2 items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
+            // active ? 'text-ganeral' : 'text-white'
+          )}
+          href={items[0].href}
+          onClick={() => {
+            if (items.length === 1) {
+              // setPageId(item.items[0].id)
+              setMenuOpen(false)
+            } else {
+              setOpenedMenuIndex(openedMenuIndex === index ? null : index)
+              // onChangeMenuIndex(
+              //   openedMenuIndex === index ? null : index
+              // )
+              setMenuOpen(true)
+            }
+          }}
+        >
+          <div
+            className={cn(
+              'relative flex justify-center min-w-8 max-w-8 min-h-8 max-h-8'
+              // groupIsActive ? 'text-ganeral' : 'text-white'
+            )}
+          >
+            <FontAwesomeIcon icon={item.icon} size="2x" />
+            {typeof groupBadge === 'number' && groupBadge > 0 && (
+              <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
+                {groupBadge <= 99 ? groupBadge : '!'}
+              </div>
+            )}
+          </div>
+          <div className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
+            {items.length === 1 ? items[0].name : item.name}
+          </div>
+
+          {items.length > 1 && (
+            <div
+              className={cn('w-4 duration-300 transition-transform', {
+                'rotate-180': openedMenuIndex === index,
+              })}
+            >
+              <FontAwesomeIcon icon={faAngleDown} size="lg" />
+            </div>
+          )}
+        </Component>
+        {items.length > 1 && (
+          <m.div
+            variants={{ show: { height: 'auto' }, hide: { height: 0 } }}
+            initial="hide"
+            animate={openedMenuIndex === index ? 'show' : 'hide'}
+            className="ml-3 mr-2 overflow-hidden"
+          >
+            {items.map((subitem, index) => (
+              <MenuItem
+                key={'menu' + subitem.id}
+                item={subitem}
+                active={activePage === subitem.href}
+                // badge={itemsBadges[subitem.id]}
+              />
+            ))}
+          </m.div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+const GroupSuspence = (props) => (
+  <Suspense
+  // fallback={
+  //   <div className="flex items-center w-full px-2 py-2 overflow-hidden gap-x-2 min-w-12 min-h-12" />
+  // }
+  >
+    <Group {...props} />
+  </Suspense>
+)
+
 const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
 
-  const { itemsBadges, groupsBadges } = useRecoilValue(badgesSelector)
-
-  const variants = {
-    show: { height: 'auto' },
-    hide: { height: 0 },
-  }
-
   useEffect(() => {
     if (!menuOpen) {
       setOpenedMenuIndex(null)
-      onChangeMenuIndex(null)
+      // onChangeMenuIndex(null)
     }
   }, [menuOpen])
 
   const indexOfActiveGroup = menuCfg.findIndex((item) =>
     item.items.find((item) => item.href === activePage)
   )
+
   return (
     <nav className="flex flex-col w-full h-full px-2 py-3 mt-1 gap-y-2">
       {menuCfg &&
         menuCfg.length > 0 &&
         menuCfg
-          // .filter(({ items }) => {
-          //   console.log('items :>> ', items)
-          //   return true
-          // })
-          .map((item, index) => {
-            const groupIsActive = index === indexOfActiveGroup
-            const Component =
-              item.items.length === 1
-                ? (props) => <Link {...props} shallow />
-                : (props) => <button {...props} />
-            return (
-              <div
-                className={cn('z-50 flex flex-col', {
-                  'flex-1': item.bottom && !menuCfg[index - 1].bottom,
-                })}
-                key={index}
-              >
-                {item.bottom && !menuCfg[index - 1].bottom && (
-                  <div className="flex-1" />
-                )}
-                <div
-                  className={cn(
-                    'duration-300 rounded-lg group',
-                    groupIsActive
-                      ? 'bg-white text-general'
-                      : 'hover:bg-white hover:text-general text-white'
-                  )}
-                  key={'groupMenu' + index}
-                >
-                  <Component
-                    className={cn(
-                      'flex gap-x-2 items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
-                      // groupIsActive ? 'text-ganeral' : 'text-white'
-                    )}
-                    href={item.items[0].href}
-                    onClick={() => {
-                      if (item.items.length === 1) {
-                        // setPageId(item.items[0].id)
-                        setMenuOpen(false)
-                      } else {
-                        setOpenedMenuIndex(
-                          openedMenuIndex === index ? null : index
-                        )
-                        onChangeMenuIndex(
-                          openedMenuIndex === index ? null : index
-                        )
-                        setMenuOpen(true)
-                      }
-                    }}
-                  >
-                    <div
-                      className={cn(
-                        'relative flex justify-center min-w-8 max-w-8 min-h-8 max-h-8'
-                        // groupIsActive ? 'text-ganeral' : 'text-white'
-                      )}
-                    >
-                      <FontAwesomeIcon icon={item.icon} size="2x" />
-                      {item.items.length > 1 &&
-                        typeof groupsBadges[item.id] === 'number' &&
-                        groupsBadges[item.id] > 0 && (
-                          <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
-                            {groupsBadges[item.id] <= 99
-                              ? groupsBadges[item.id]
-                              : '!'}
-                          </div>
-                        )}
-                    </div>
-                    <div className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
-                      {item.items.length === 1 ? item.items[0].name : item.name}
-                    </div>
-
-                    {item.items.length > 1 && (
-                      <div
-                        className={cn('w-4 duration-300 transition-transform', {
-                          'rotate-180': openedMenuIndex === index,
-                        })}
-                      >
-                        <FontAwesomeIcon icon={faAngleDown} size="lg" />
-                      </div>
-                    )}
-                  </Component>
-                  {item.items.length > 1 && (
-                    <m.div
-                      variants={variants}
-                      initial="hide"
-                      animate={openedMenuIndex === index ? 'show' : 'hide'}
-                      className="ml-3 mr-2 overflow-hidden"
-                    >
-                      {item.items.map((subitem, index) => (
-                        <MenuItem
-                          key={'menu' + subitem.id}
-                          item={subitem}
-                          active={activePage === subitem.href}
-                          badge={itemsBadges[subitem.id]}
-                        />
-                      ))}
-                    </m.div>
-                  )}
-                </div>
-              </div>
-            )
-          })}
+          // .filter(({ id }) => !hiddenGroups.includes(id))
+          .map((item, index) => (
+            <GroupSuspence
+              key={item.id}
+              menuCfg={menuCfg}
+              item={item}
+              index={index}
+              active={index === indexOfActiveGroup}
+              openedMenuIndex={openedMenuIndex}
+              setOpenedMenuIndex={setOpenedMenuIndex}
+              setMenuOpen={setMenuOpen}
+              activePage={activePage}
+            />
+          ))}
     </nav>
   )
 }
+
+const MenuSuspense = (props) => (
+  <Suspense fallback={<nav className="w-full h-full px-2 py-3 mt-1" />}>
+    <Menu {...props} />
+  </Suspense>
+)
 
 const variants = {
   min: { width: '100%' },
@@ -244,14 +274,14 @@ const SideBar = ({ page }) => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const { height } = useRecoilValue(windowDimensionsAtom)
-  const [menuIndex, setMenuIndex] = useState()
+  // const [menuIndex, setMenuIndex] = useState()
 
-  const onChangeMenuIndex = (index) => {
-    if (handler) clearTimeout(handler)
-    handler = setTimeout(() => {
-      setMenuIndex(index)
-    }, 500)
-  }
+  // const onChangeMenuIndex = (index) => {
+  //   if (handler) clearTimeout(handler)
+  //   handler = setTimeout(() => {
+  //     setMenuIndex(index)
+  //   }, 500)
+  // }
 
   const handleScrollPosition = (scrollAmount) => {
     var newPos
@@ -320,10 +350,10 @@ const SideBar = ({ page }) => {
         layout
       >
         <div className="flex flex-col w-full overflow-x-hidden">
-          <Menu
+          <MenuSuspense
             menuCfg={menuCfg(loggedUserActiveRole, loggedUserActiveStatus)}
             activePage={page}
-            onChangeMenuIndex={onChangeMenuIndex}
+            // onChangeMenuIndex={onChangeMenuIndex}
           />
         </div>
       </m.div>
