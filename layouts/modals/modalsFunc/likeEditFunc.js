@@ -12,7 +12,7 @@ import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullBy
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 
@@ -100,15 +100,40 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     const event = useRecoilValue(eventSelector(eventId))
     const user = useRecoilValue(userSelector(userId))
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
-    const eventUser = eventUsers.find(
-      (eventUser) => eventUser.userId === userId
+    const eventUser = useMemo(
+      () => eventUsers.find((eventUser) => eventUser.userId === userId),
+      [eventUsers]
     )
+
+    const [likes, setLikes] = useState(eventUser?.likes ?? [])
+
     const participantsWithoutRelationship = useRecoilValue(
       eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
     )
 
     const setEventUserData = useRecoilValue(itemsFuncAtom).eventsUser.setData
     const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+
+    useEffect(() => {
+      if (
+        eventUser?._id &&
+        !adminView &&
+        !event.likesProcessActive &&
+        !eventUser?.seeLikesResult
+      ) {
+        setTimeout(() => {
+          setEventUserData(
+            eventId,
+            {
+              seeLikesResult: {
+                [eventUser._id]: true,
+              },
+            },
+            true
+          )
+        }, 500)
+      }
+    }, [eventUser?.seeLikesResult, event?.likesProcessActive, adminView])
 
     if (!eventUser)
       return adminView
@@ -146,21 +171,19 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     const eventUsersOtherGenderWithCoincidences =
       sortedOtherGenderEventUsers.map((eventUser2) => ({
         ...eventUser2,
-        likeToMe: eventUser2.likes?.includes(eventUser.userId),
-        iLike: eventUser.likes?.includes(eventUser2.userId),
+        likeToMe: eventUser2.likes?.includes(eventUser?.userId),
+        iLike: eventUser?.likes?.includes(eventUser2.userId),
       }))
 
     const coincidences = eventUsersOtherGenderWithCoincidences.filter(
-      (eventUser) => eventUser.likeToMe && eventUser.iLike
+      (eventUser) => eventUser?.likeToMe && eventUser?.iLike
     )
     const notCoincidences = eventUsersOtherGenderWithCoincidences.filter(
-      (eventUser) => !eventUser.likeToMe && eventUser.iLike
+      (eventUser) => !eventUser?.likeToMe && eventUser?.iLike
     )
     const other = eventUsersOtherGenderWithCoincidences.filter(
-      (eventUser) => !eventUser.iLike
+      (eventUser) => !eventUser?.iLike
     )
-
-    const [likes, setLikes] = useState(eventUser.likes ?? [])
 
     // const onClickConfirm = () => {
     //   setEventUserData(
@@ -174,24 +197,6 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     //   )
     //   closeModal()
     // }
-
-    useEffect(() => {
-      if (
-        !adminView &&
-        !event.likesProcessActive &&
-        !eventUser.seeLikesResult
-      ) {
-        setEventUserData(
-          eventId,
-          {
-            seeLikesResult: {
-              [eventUser._id]: true,
-            },
-          },
-          true
-        )
-      }
-    }, [eventUser.seeLikesResult, event.likesProcessActive, adminView])
 
     useEffect(() => {
       // const isFormChanged = !compareArrays(eventUser.likes ?? [], likes)
@@ -213,7 +218,25 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       //       : onClickConfirm
       // )
       // setCloseButtonShow(!event.likesProcessActive)
-      setCloseButtonName(
+
+      setOnConfirmFunc(
+        eventUser?._id && event.likesProcessActive && likes?.length === 0
+          ? () => {
+              setEventUserData(
+                eventId,
+                {
+                  likes: {
+                    [eventUser._id]: [],
+                  },
+                },
+                true
+              )
+              closeModal()
+            }
+          : undefined
+      )
+      // setCloseButtonShow(!event.likesProcessActive)
+      setConfirmButtonName(
         event.likesProcessActive && likes?.length === 0
           ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
           : 'Закрыть'
@@ -282,15 +305,16 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                                 ? state.filter((id) => id !== user._id)
                                 : [...state, user._id]
 
-                              setEventUserData(
-                                eventId,
-                                {
-                                  likes: {
-                                    [eventUser._id]: likesResult,
+                              if (eventUser?._id)
+                                setEventUserData(
+                                  eventId,
+                                  {
+                                    likes: {
+                                      [eventUser._id]: likesResult,
+                                    },
                                   },
-                                },
-                                true
-                              )
+                                  true
+                                )
 
                               return likesResult
                             })
@@ -385,7 +409,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
               </>
             ) : (
               <NoteComponent>
-                {eventUser.likes.length === 1
+                {eventUser?.likes?.length === 1
                   ? 'Вы поставили всего один лайк и он совпал! Судьба?'
                   : 'Очень здорово, что все поставленные Вами симпатии (лайки) оказались взаимными! Вероятно вы очень хорошо чувствуете людей и это взаимно!'}
               </NoteComponent>
@@ -435,6 +459,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     title: `Лайки участникам мероприятия`,
     // declineButtonName: 'Оставить как было',
     // confirmButtonName: 'Применить',
+    // closeButtonShow: false,
     Children: LikeEditModal,
   }
 }

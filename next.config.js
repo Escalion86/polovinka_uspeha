@@ -25,7 +25,7 @@ module.exports = withBundleAnalyzer(
       RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED: 'false',
     },
     images: {
-      domains: ['localhost', 'escalioncloud.ru'],
+      domains: ['localhost', 'escalioncloud.ru', 't.me'],
     },
     // webpack(config, options) {
     //   config.module.rules.push({
