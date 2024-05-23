@@ -263,7 +263,7 @@ const variants = {
   max: { width: 320 },
 }
 
-var handler
+// var handler
 
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
