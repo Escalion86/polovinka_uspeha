@@ -1,4 +1,4 @@
-import getDiffBetweenDates from './getDiffBetweenDates'
+import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 
 const isEventStartedOrExpired = (event) => {
   if (!event) return
