@@ -37,16 +37,14 @@ export default async function handler(req, res) {
 
             if (!s && event.subEvents.length > 1) {
               const inline_keyboard = event.subEvents.map(
-                ({ title, id }, index) => [
-                  {
-                    text: title,
-                    callback_data: JSON.stringify({
-                      c: telegramCmdToIndex('eventSignIn'),
-                      eventId: event._id,
-                      s: index,
-                    }),
-                  },
-                ]
+                ({ title, id }, index) => ({
+                  text: title,
+                  callback_data: JSON.stringify({
+                    c: telegramCmdToIndex('eventSignIn'),
+                    eventId: event._id,
+                    s: index,
+                  }),
+                })
               )
 
               console.log('inline_keyboard :>> ', inline_keyboard)
