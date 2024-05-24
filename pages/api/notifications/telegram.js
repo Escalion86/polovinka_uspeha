@@ -37,6 +37,7 @@ export default async function handler(req, res) {
                 ?.status(400)
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
+            console.log('subEventId :>> ', subEventId)
             if (!subEventId && event.subEvents.length > 1) {
               const inline_keyboard = event.subEvents.map(
                 ({ title, id }, index) => [
@@ -88,7 +89,7 @@ export default async function handler(req, res) {
               res,
               userId: user._id,
               eventId: event._id,
-              subEventId: subEventId ?? event.subEvents[0],
+              subEventId: subEventId ? subEventId : event.subEvents[0].id,
               autoReserve: true,
             })
             // {

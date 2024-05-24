@@ -89,6 +89,8 @@ const userSignIn = async ({
       ? event.subEvents.find(({ id }) => subEventId === id)
       : event.subEvents[0]
 
+    console.log('subEvent :>> ', subEvent)
+
     if (!subEvent) {
       const result = {
         success: false,
@@ -105,6 +107,7 @@ const userSignIn = async ({
     const userAge = new Number(
       birthDateToAge(user.birthday, new Date(), false, false)
     )
+    console.log('userAge :>> ', userAge)
 
     const isUserTooOld =
       userAge &&
@@ -125,7 +128,7 @@ const userSignIn = async ({
           subEvent.minWomansAge > userAge))
 
     const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
-
+    console.log('isAgeOfUserCorrect :>> ', isAgeOfUserCorrect)
     if (!isAgeOfUserCorrect) {
       const result = {
         success: false,
@@ -140,6 +143,8 @@ const userSignIn = async ({
     const isUserStatusCorrect = user.status
       ? subEvent.usersStatusAccess[user.status]
       : false
+
+    console.log('isUserStatusCorrect :>> ', isUserStatusCorrect)
 
     if (!isUserStatusCorrect) {
       const result = {
@@ -277,15 +282,15 @@ const userSignIn = async ({
       }
     }
 
-    const resultStatus =
-      (!status || status === 'participant') &&
-      errorText &&
-      autoReserve &&
-      canSignInReserve
-        ? 'reserve'
-        : errorText && canSignInReserve
-          ? 'reserve'
-          : status
+    // const resultStatus =
+    //   (!status || status === 'participant') &&
+    //   errorText &&
+    //   autoReserve &&
+    //   canSignInReserve
+    //     ? 'reserve'
+    //     : errorText && canSignInReserve
+    //       ? 'reserve'
+    //       : status
 
     const newEventUser = await EventsUsers.create({
       eventId,
