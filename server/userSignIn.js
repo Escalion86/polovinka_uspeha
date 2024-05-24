@@ -1,7 +1,6 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import isEventCanceled from '@helpers/isEventCanceled'
 import isEventClosed from '@helpers/isEventClosed'
-import isEventExpired from '@helpers/isEventExpired'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
@@ -9,6 +8,7 @@ import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 import eventUsersTelegramNotification from './eventUsersTelegramNotification'
+import isEventExpired from './isEventExpired'
 
 const userSignIn = async ({
   req,
