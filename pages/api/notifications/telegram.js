@@ -36,25 +36,20 @@ export default async function handler(req, res) {
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
             if (!s && event.subEvents.length > 1) {
-              const callback_data = JSON.stringify({
-                c: telegramCmdToIndex('eventSignIn'),
-                eventId: event._id,
-                s: 1,
-              })
-              console.log('callback_data :>> ', callback_data.length)
-              const callback_data2 = JSON.stringify({
-                c: telegramCmdToIndex('eventSignIn'),
-                subEventId: event._id,
-              })
-              console.log('callback_data2 :>> ', callback_data2.length)
               const inline_keyboard = event.subEvents.map(
                 ({ title, id }, index) => [
                   {
                     text: title,
-                    callback_data,
+                    callback_data: JSON.stringify({
+                      c: telegramCmdToIndex('eventSignIn'),
+                      eventId: event._id,
+                      s: index,
+                    }),
                   },
                 ]
               )
+
+              console.log('inline_keyboard :>> ', inline_keyboard)
 
               const text =
                 'На мероприятие возможно записаться разными вариантами. Выберите вариант:'
