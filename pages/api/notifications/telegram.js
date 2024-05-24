@@ -39,7 +39,7 @@ export default async function handler(req, res) {
               const callback_data = JSON.stringify({
                 c: telegramCmdToIndex('eventSignIn'),
                 eventId: event._id,
-                s: index,
+                s: 1,
               })
               console.log('callback_data :>> ', callback_data.length)
               const callback_data2 = JSON.stringify({
