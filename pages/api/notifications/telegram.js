@@ -43,7 +43,7 @@ export default async function handler(req, res) {
                     callback_data: JSON.stringify({
                       c: telegramCmdToIndex('eventSignIn'),
                       eventId: event._id,
-                      // s: index,
+                      s: index,
                     }),
                   },
                 ]
