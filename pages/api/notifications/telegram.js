@@ -36,44 +36,46 @@ export default async function handler(req, res) {
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
             if (!s && event.subEvents.length > 1) {
-              // const inline_keyboard = event.subEvents.map(
-              //   ({ title, id }, index) => ({
-              //     text: title,
-              //     callback_data: JSON.stringify({
-              //       c: telegramCmdToIndex('eventSignIn'),
-              //       eventId: event._id,
-              //       s: index,
-              //     }),
-              //   })
-              // )
-
-              const inline_keyboard = [
-                [
+              const inline_keyboard = event.subEvents.map(
+                ({ title, id }, index) => [
                   {
-                    text: '\u{1F4C5} На сайте',
-                    url: req.headers.origin + '/event/' + String(event._id),
-                  },
-                  // TODO Исправить запись через телеграм
-                  {
-                    text: '\u{1F4DD} Записаться',
+                    text: title,
                     callback_data: JSON.stringify({
                       c: telegramCmdToIndex('eventSignIn'),
                       eventId: event._id,
+                      // s: index,
                     }),
                   },
-                ],
-              ]
+                ]
+              )
+
+              // const inline_keyboard = [
+              //   [
+              //     {
+              //       text: '\u{1F4C5} На сайте',
+              //       url: req.headers.origin + '/event/' + String(event._id),
+              //     },
+              //     // TODO Исправить запись через телеграм
+              //     {
+              //       text: '\u{1F4DD} Записаться',
+              //       callback_data: JSON.stringify({
+              //         c: telegramCmdToIndex('eventSignIn'),
+              //         eventId: event._id,
+              //       }),
+              //     },
+              //   ],
+              // ]
 
               const text =
                 'На мероприятие возможно записаться разными вариантами. Выберите вариант:'
-              const result = await sendTelegramMessage({
+              sendTelegramMessage({
                 req,
                 telegramIds: userTelegramId,
                 text,
                 inline_keyboard,
               })
 
-              return res?.status(201).json({ success: true, data: result })
+              return res?.status(201).json({ success: true })
             }
 
             const subEvent = s ? event.subEvents[s] : event.subEvents[0]
@@ -116,8 +118,6 @@ export default async function handler(req, res) {
             } else {
               text = `ОШИБКА - ${result.data.error}`
             }
-
-            console.log('text :>> ', text)
 
             await sendTelegramMessage({
               req,
