@@ -14,57 +14,44 @@ export default async function handler(req, res) {
     try {
       // console.log(body)
       const { update_id, message, callback_query } = body
-      console.log('telegram body', body)
       if (callback_query?.data) {
         const cmdProps = JSON.parse(callback_query.data)
-        console.log('cmdProps :>> ', cmdProps)
         if (typeof cmdProps === 'object') {
           const cmd = telegramIndexToCmd(cmdProps.c)
           if (cmd === 'eventSignIn') {
-            console.log('cmd === eventSignIn')
-            const { eventId, s } = cmdProps
+            const { eventId, subEventId, s } = cmdProps
             const userTelegramId = callback_query.from.id
             const user = await Users.findOne({
               'notifications.telegram.id': userTelegramId,
             })
-            console.log('user :>> ', user)
             if (!user)
               return res
                 ?.status(400)
                 .json({ success: false, error: 'Не найден пользователь' })
 
             const event = await Events.findOne({ _id: eventId })
-            console.log('event :>> ', event)
             if (!event)
               return res
                 ?.status(400)
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
             if (!s && event.subEvents.length > 1) {
-              console.log('1 :>> ')
-              // [
-              //   {
-              //     text: '\u{1F4C5} На сайте',
-              //     url: req.headers.origin + '/event/' + String(event._id),
-              //   },
-              //   // TODO Исправить запись через телеграм
-              //   {
-              //     text: '\u{1F4DD} Записаться',
-              //     callback_data: JSON.stringify({
-              //       c: telegramCmdToIndex('eventSignIn'),
-              //       eventId: event._id,
-              //     }),
-              //   },
-              // ]
+              const callback_data = JSON.stringify({
+                c: telegramCmdToIndex('eventSignIn'),
+                eventId: event._id,
+                s: index,
+              })
+              console.log('callback_data :>> ', callback_data.length)
+              const callback_data2 = JSON.stringify({
+                c: telegramCmdToIndex('eventSignIn'),
+                subEventId: event._id,
+              })
+              console.log('callback_data2 :>> ', callback_data2.length)
               const inline_keyboard = event.subEvents.map(
                 ({ title, id }, index) => [
                   {
                     text: title,
-                    callback_data: JSON.stringify({
-                      c: telegramCmdToIndex('eventSignIn'),
-                      eventId: event._id,
-                      s: index,
-                    }),
+                    callback_data,
                   },
                 ]
               )
@@ -77,13 +64,11 @@ export default async function handler(req, res) {
                 text,
                 inline_keyboard,
               })
-              console.log('2 :>> ')
 
               return res?.status(201).json({ success: true, data: result })
             }
 
             const subEvent = s ? event.subEvents[s] : event.subEvents[0]
-            console.log('subEvent :>> ', subEvent)
             const result = await userSignIn({
               req,
               res,
@@ -92,7 +77,6 @@ export default async function handler(req, res) {
               subEventId: subEvent.id,
               autoReserve: true,
             })
-            console.log('result :>> ', result)
             // {
             //   "success": true,
             //   "data": {
