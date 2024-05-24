@@ -81,7 +81,9 @@ export default async function handler(req, res) {
               return res?.status(201).json({ success: true })
             }
 
-            // const subEvent = subEventId ? event.subEvents[subEventId] : event.subEvents[0]
+            const subEvent = subEventId
+              ? event.subEvents.find(({ id }) => subEventId === id)
+              : event.subEvents[0]
             // console.log('subEventId :>> ', subEventId)
             // console.log('subEvent :>> ', subEvent)
             const result = await userSignIn({
@@ -89,7 +91,7 @@ export default async function handler(req, res) {
               res,
               userId: user._id,
               eventId: event._id,
-              subEventId: subEventId ? subEventId : event.subEvents[0].id,
+              subEventId: subEvent.id,
               autoReserve: true,
             })
             // {
