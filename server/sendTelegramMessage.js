@@ -33,12 +33,11 @@ export const sendMessageToTelegramId = async ({
     )
   }
   if (text && typeof text === 'string') {
-    const reply_markup =
-      inline_keyboard && req?.headers?.origin?.substr(0, 5) === 'https'
-        ? JSON.stringify({
-            inline_keyboard: inline_keyboard.filter((botton) => botton),
-          })
-        : undefined
+    const reply_markup = inline_keyboard // && req?.headers?.origin?.substr(0, 5) === 'https'
+      ? JSON.stringify({
+          inline_keyboard: inline_keyboard.filter((button) => button),
+        })
+      : undefined
 
     const result = await postData(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
