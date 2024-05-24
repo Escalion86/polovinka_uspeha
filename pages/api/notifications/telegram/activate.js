@@ -14,29 +14,34 @@ export default async function handler(req, res) {
     try {
       // console.log(body)
       const { update_id, message, callback_query } = body
-      // console.log('telegram body', body)
+      console.log('telegram body', body)
       if (callback_query?.data) {
         const cmdProps = JSON.parse(callback_query.data)
+        console.log('cmdProps :>> ', cmdProps)
         if (typeof cmdProps === 'object') {
           const cmd = telegramIndexToCmd(cmdProps.c)
           if (cmd === 'eventSignIn') {
+            console.log('cmd === eventSignIn')
             const { eventId, s } = cmdProps
             const userTelegramId = callback_query.from.id
             const user = await Users.findOne({
               'notifications.telegram.id': userTelegramId,
             })
+            console.log('user :>> ', user)
             if (!user)
               return res
                 ?.status(400)
                 .json({ success: false, error: 'Не найден пользователь' })
 
             const event = await Events.findOne({ _id: eventId })
+            console.log('event :>> ', event)
             if (!event)
               return res
                 ?.status(400)
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
             if (!s && event.subEvents.length > 1) {
+              console.log('1 :>> ')
               const inline_keyboard = [
                 event.subEvents.map(({ title, id }, index) => [
                   {
@@ -57,12 +62,13 @@ export default async function handler(req, res) {
                 text,
                 inline_keyboard,
               })
+              console.log('2 :>> ')
 
               return res?.status(201).json({ success: true, data: result })
             }
 
             const subEvent = s ? event.subEvents[s] : event.subEvents[0]
-
+            console.log('subEvent :>> ', subEvent)
             const result = await userSignIn({
               req,
               res,
@@ -71,6 +77,7 @@ export default async function handler(req, res) {
               subEventId: subEvent.id,
               autoReserve: true,
             })
+            console.log('result :>> ', result)
             // {
             //   "success": true,
             //   "data": {
@@ -102,6 +109,8 @@ export default async function handler(req, res) {
             } else {
               text = `ОШИБКА - ${result.data.error}`
             }
+
+            console.log('text :>> ', text)
 
             await sendTelegramMessage({
               req,
