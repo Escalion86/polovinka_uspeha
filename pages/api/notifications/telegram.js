@@ -79,6 +79,8 @@ export default async function handler(req, res) {
             }
 
             const subEvent = s ? event.subEvents[s] : event.subEvents[0]
+            console.log('s :>> ', s)
+            console.log('subEvent :>> ', subEvent)
             const result = await userSignIn({
               req,
               res,

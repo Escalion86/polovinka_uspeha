@@ -33,10 +33,6 @@ export const sendMessageToTelegramId = async ({
     )
   }
   if (text && typeof text === 'string') {
-    console.log(
-      'req?.headers?.origin?.substr(0, 5) :>> ',
-      req?.headers?.origin?.substr(0, 5)
-    )
     const reply_markup = inline_keyboard // && req?.headers?.origin?.substr(0, 5) === 'https'
       ? JSON.stringify({
           inline_keyboard: inline_keyboard.filter((button) => button),
