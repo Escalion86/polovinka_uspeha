@@ -2,8 +2,8 @@ import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventI
 import { selector } from 'recoil'
 import eventsOfLoggedUserSelector from './eventsOfLoggedUserSelector'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import isEventExpired from '@helpers/isEventExpired'
 import isEventActive from '@helpers/isEventActive'
+import isEventStartedOrExpired from '@helpers/isEventStartedOrExpired'
 
 export const eventsLoggedUserWithLikesSelector = selector({
   key: 'eventsLoggedUserWithLikesSelector',
@@ -11,7 +11,7 @@ export const eventsLoggedUserWithLikesSelector = selector({
     const loggedUser = get(loggedUserActiveAtom)
     const eventsOfLoggedUser = get(eventsOfLoggedUserSelector)
     const activeAndStartedEventsOfLoggedUser = eventsOfLoggedUser.filter(
-      (event) => isEventExpired(event) && isEventActive(event)
+      (event) => isEventStartedOrExpired(event) && isEventActive(event)
     )
     const eventsWithLikes = activeAndStartedEventsOfLoggedUser.filter(
       (event) => event?.likes

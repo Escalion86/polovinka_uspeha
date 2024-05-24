@@ -217,7 +217,9 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       //       ? closeModal
       //       : onClickConfirm
       // )
-      // setCloseButtonShow(!event.likesProcessActive)
+      setCloseButtonShow(
+        !(eventUser?._id && event.likesProcessActive && likes?.length === 0)
+      )
 
       setOnConfirmFunc(
         eventUser?._id && event.likesProcessActive && likes?.length === 0
@@ -237,7 +239,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       )
       // setCloseButtonShow(!event.likesProcessActive)
       setConfirmButtonName(
-        event.likesProcessActive && likes?.length === 0
+        eventUser?._id && event.likesProcessActive && likes?.length === 0
           ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
           : 'Закрыть'
       )
