@@ -36,18 +36,33 @@ export default async function handler(req, res) {
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
             if (!s && event.subEvents.length > 1) {
-              const inline_keyboard = event.subEvents.map(
-                ({ title, id }, index) => ({
-                  text: title,
-                  callback_data: JSON.stringify({
-                    c: telegramCmdToIndex('eventSignIn'),
-                    eventId: event._id,
-                    s: index,
-                  }),
-                })
-              )
+              // const inline_keyboard = event.subEvents.map(
+              //   ({ title, id }, index) => ({
+              //     text: title,
+              //     callback_data: JSON.stringify({
+              //       c: telegramCmdToIndex('eventSignIn'),
+              //       eventId: event._id,
+              //       s: index,
+              //     }),
+              //   })
+              // )
 
-              console.log('inline_keyboard :>> ', inline_keyboard)
+              const inline_keyboard = [
+                [
+                  {
+                    text: '\u{1F4C5} На сайте',
+                    url: req.headers.origin + '/event/' + String(event._id),
+                  },
+                  // TODO Исправить запись через телеграм
+                  {
+                    text: '\u{1F4DD} Записаться',
+                    callback_data: JSON.stringify({
+                      c: telegramCmdToIndex('eventSignIn'),
+                      eventId: event._id,
+                    }),
+                  },
+                ],
+              ]
 
               const text =
                 'На мероприятие возможно записаться разными вариантами. Выберите вариант:'
