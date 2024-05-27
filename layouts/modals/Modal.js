@@ -328,7 +328,7 @@ const Modal = ({
           </Tooltip>
         )}
         {titleState && (
-          <div className="mx-10 mt-8 mb-1 text-lg font-bold leading-6 text-center whitespace-pre-line tablet:mb-3 tablet:mt-0 tablet:mx-24">
+          <div className="mx-10 mb-2 text-lg font-bold leading-4 text-center whitespace-pre-line mt-9 tablet:mb-3 tablet:mt-0 tablet:mx-24">
             {titleState}
           </div>
         )}

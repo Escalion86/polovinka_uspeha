@@ -178,7 +178,7 @@ const LikesContent = () => {
       )}
       {eventsWithSettedLikes?.length > 0 && (
         <>
-          <div className="w-full mt-5 text-lg font-bold text-center">
+          <div className="w-full mt-4 mb-1 text-lg font-bold leading-4 text-center">
             Мероприятия с результатами лайков
           </div>
           <Note>
@@ -206,7 +206,7 @@ const LikesContent = () => {
       )}
       {usersWithLikesCoincidences.length > 0 && (
         <>
-          <div className="w-full mt-5 text-lg font-bold text-center">
+          <div className="w-full mb-3 text-lg font-bold leading-4 text-center mt-7">
             Участники с которыми у Вас есть совпадения
           </div>
           <div className="flex flex-col items-stretch w-full border border-gray-700 rounded">
