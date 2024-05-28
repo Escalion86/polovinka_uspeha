@@ -11,9 +11,6 @@ const ImagesServerContent = () => {
   const [selectedFile, setSelectedFile] = useState()
   const [filesCount, setFilesCount] = useState()
 
-  console.log('directory :>> ', directory)
-  console.log('selectedFile :>> ', selectedFile)
-
   const goBack = () => {
     const parts = directory.split('/')
     const newDirectory = parts.slice(0, -1).join('/')
@@ -21,19 +18,21 @@ const ImagesServerContent = () => {
   }
 
   return (
-    <div className="flex flex-col gap-y-0.5 max-h-full">
+    <div className="flex flex-col gap-y-0.5 max-h-full min-h-full">
       <div className="flex items-center p-1 gap-x-2">
         <BackButton onClick={goBack} disabled={!directory} />
         <div className="flex-1">/{directory}</div>
         <div>{filesCount} шт.</div>
       </div>
-      <div className="max-h-[calc(100%-50px)] h-[calc(100%-50px)] overflow-scroll">
+      <div className="flex-1 overflow-y-scroll">
         <SelectFile
           selectedFile={selectedFile}
           onSelectFile={setSelectedFile}
           onSelectDir={setDirectory}
           directory={directory}
           setFilesCount={setFilesCount}
+          canDeleteFile
+          // onDeleteFile={onDeleteFile}
           // aspect={aspect}
           // images={imagesNames.map(
           //   (imageName) =>

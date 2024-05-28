@@ -15,6 +15,10 @@ import { getData } from '@helpers/CRUD'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder } from '@fortawesome/free-regular-svg-icons/faFolder'
 import Zoom from 'react-medium-image-zoom'
+import TextLinesLimiter from './TextLinesLimiter'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { modalsFuncAtom } from '@state/atoms'
+import { useRecoilValue } from 'recoil'
 
 function isFileFunc(pathname) {
   return pathname.split('/').pop().indexOf('.') > -1
@@ -27,6 +31,7 @@ const SelectFile = ({
   onSelectFile,
   onSelectDir,
   setFilesCount,
+  // onDeleteFile,
   required = false,
   label = null,
   directory,
@@ -40,12 +45,41 @@ const SelectFile = ({
   smallMargin,
   paddingY = true,
   paddingX,
+  canDeleteFile,
 }) => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   // const { imageFolder } = useRecoilValue(locationPropsSelector)
   const [isLoading, setIsLoading] = useState(true)
 
   const [files, setFiles] = useState([])
+
+  const onDeleteFile = async (filePath) => {
+    await getData(
+      'https://api.escalioncloud.ru/api/deleteFile',
+      { filePath },
+      (response) => {
+        //{status: 'ok', message: 'File deleted!'}
+        if (response?.status === 'ok') {
+          console.log('response :>> ', response)
+          setFiles((state) =>
+            state.filter(
+              (file) => file !== `https://escalioncloud.ru/uploads/${filePath}`
+            )
+          )
+        } else console.log('error response :>> ', response)
+        // setFiles(
+        //   response.map(
+        //     (fileName) =>
+        //       `https://escalioncloud.ru/uploads/${directory ? directory + '/' : ''}${fileName}`
+        //   ) || []
+        // )
+        // setFilesCount(response.length)
+        // setIsLoading(false)
+      },
+      (error) => console.log('error :>> ', error),
+      true
+    )
+  }
 
   useEffect(() => {
     const loadImages = async () =>
@@ -89,7 +123,9 @@ const SelectFile = ({
       {files?.length > 0 &&
         files.map((file, index) => {
           const isFile = isFileFunc(file)
-          const fileName = getFileName(file)
+          const fileNameWithExtArray = getFileName(file).split('.')
+          const fileName = fileNameWithExtArray[0]
+          const ext = fileNameWithExtArray[1]
           return (
             <m.div
               key={file}
@@ -125,7 +161,7 @@ const SelectFile = ({
                 height="0"
                 sizes="100vw"
               /> */}
-              <div className="flex flex-col items-center justify-center w-full h-full">
+              <div className="relative flex flex-col items-center justify-center w-full h-full">
                 <div className="flex items-center justify-center flex-1">
                   {isFile ? (
                     <Zoom zoomMargin={20}>
@@ -142,9 +178,34 @@ const SelectFile = ({
                     />
                   )}
                 </div>
-                <div className="flex items-center justify-center w-full h-10 text-sm text-center border-t min-h-10 tablet:text-base">
+                <TextLinesLimiter
+                  lines={2}
+                  className="flex items-center justify-center w-full h-10 text-sm leading-4 text-center border-t border-gray-400 tablet:leading-5 min-h-10 tablet:text-base"
+                >
                   {fileName}
+                </TextLinesLimiter>
+                <div className="text-lg font-bold text-general tablet:text-xl ">
+                  {ext}
                 </div>
+                {canDeleteFile && isFile && (
+                  <div className="absolute top-0 right-0 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
+                    <FontAwesomeIcon
+                      className="h-4 text-red-700"
+                      icon={faTrash}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        modalsFunc.confirm({
+                          title: 'Удаление файла',
+                          text: `Вы уверены что хотите удалить файл "${fileName}${ext ? `.${ext}` : ''}"`,
+                          onConfirm: () =>
+                            onDeleteFile(
+                              `${directory ? directory + '/' : ''}${fileName}${ext ? `.${ext}` : ''}`
+                            ),
+                        })
+                      }}
+                    />
+                  </div>
+                )}
               </div>
               {/* {!readOnly && (
                 <div className="absolute top-0 right-0 z-10 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">

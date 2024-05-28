@@ -91,7 +91,6 @@ export const sendImage = async (
   imageName = null,
   project = 'polovinka_uspeha'
 ) => {
-  console.log('test image :>> ', image)
   if (isObject(image)) {
     const formData = new FormData()
     // console.log('folder', folder)
@@ -99,7 +98,58 @@ export const sendImage = async (
 
     formData.append('folder', folder ?? 'temp')
     // formData.append('password', 'cloudtest')
+    formData.append('fileType', 'image')
     formData.append('files', image)
+    formData.append('fileName', imageName)
+
+    return await fetch(
+      // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
+      'https://api.escalioncloud.ru/api',
+      {
+        method: 'POST',
+        body: formData,
+        //  JSON.stringify({
+        //   file: image,
+        //   fileName: imageName ?? 'test.jpg',
+        //   folder: 'events',
+        // })
+        // dataType: 'json',
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // 'Content-Type': "multipart/form-data"
+        // },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('data', data)
+        // if (data.secure_url !== '') {
+        // if (callback) callback(data.secure_url)
+        // return data.secure_url
+        // }
+        if (callback) callback(data)
+        return data
+      })
+      .catch((err) => console.error('ERROR', err))
+  }
+}
+
+export const sendFile = async (
+  file,
+  callback,
+  folder,
+  fileName = null,
+  project = 'polovinka_uspeha'
+) => {
+  if (isObject(file)) {
+    const formData = new FormData()
+    formData.append('project', project ?? 'polovinka_uspeha')
+
+    formData.append('folder', folder ?? 'temp')
+    // formData.append('password', 'cloudtest')
+    formData.append('fileType', 'file')
+    formData.append('files', file)
+    formData.append('fileName', fileName)
 
     return await fetch(
       // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
