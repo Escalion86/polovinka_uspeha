@@ -146,7 +146,7 @@ const SubEvent = ({
   rules,
   ...props
 }) => {
-  const modalFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const { id } = props
 
   return (
@@ -167,7 +167,7 @@ const SubEvent = ({
         onClick={
           id && onItemChange
             ? () =>
-                modalFunc.event.subEventEdit(
+                modalsFunc.event.subEventEdit(
                   props,
                   (data) => onItemChange(id, data),
                   rules
@@ -184,7 +184,7 @@ const SubEvent = ({
                   icon={faCopy}
                   onClick={(e) => {
                     e.stopPropagation()
-                    modalFunc.event.subEventEdit(props, addItem, rules)
+                    modalsFunc.event.subEventEdit(props, addItem, rules)
                   }}
                 />
               </div>

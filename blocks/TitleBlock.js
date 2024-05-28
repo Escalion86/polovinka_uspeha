@@ -13,7 +13,7 @@ import CountDown from './components/CountDown'
 const TitleBlock = () => {
   const userIsLogged = !!useRecoilValue(loggedUserAtom)
   const { townRu } = useRecoilValue(locationPropsSelector)
-  const modalFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const router = useRouter()
 
   return (
@@ -56,7 +56,7 @@ const TitleBlock = () => {
           <div className="text-center">
             <h4
               className="px-2 py-1 text-2xl font-bold text-center duration-300 bg-white border cursor-pointer rounded-xl hover:text-white border-general hover:bg-general bg-opacity-20 text-general"
-              onClick={() => modalFunc.browseLocation()}
+              onClick={() => modalsFunc.browseLocation()}
             >
               г.{upperCaseFirst(townRu)}
             </h4>
