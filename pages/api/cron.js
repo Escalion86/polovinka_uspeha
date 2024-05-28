@@ -34,11 +34,16 @@ export default async function handler(req, res) {
     if (query.start) {
       try {
         const dateTimeNow = new Date()
-        const minutesNow = dateTimeNow.getMinutes()
-        const hoursNow = dateTimeNow.getHours()
+        const minutesNow = padNum(dateTimeNow.getMinutes(), 2)
+        if (minutesNow !== '00' || minutesNow !== '30')
+          return res
+            ?.status(200)
+            .json({ success: true, data: 'minutes must be 00 or 30' })
+
+        const hoursNow = padNum(dateTimeNow.getHours(), 2)
 
         await dbConnect()
-        const rolesSettings = await Roles.find({})
+        const rolesSettings = await Roles.find({}).lean()
         const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
         const rolesIdsToBirthdayNotification = allRoles
           .filter((role) => role?.notifications?.birthdays)
@@ -55,13 +60,12 @@ export default async function handler(req, res) {
             $exists: true,
             $ne: null,
           },
-        })
+        }).lean()
 
-        const strTimeNow = `${padNum(hoursNow, 2)}:${padNum(minutesNow, 2)}`
-
+        const strTimeNow = `${hoursNow}:${minutesNow}`
         const usersToNotificate =
           usersWithTelegramNotificationsOfBirthday.filter(
-            (user) => user.notifications?.get('settings')?.time === strTimeNow
+            (user) => user.notifications?.settings?.time === strTimeNow
             //  &&
             // user.notifications?.get('settings')?.birthdays &&
             // user.notifications?.get('telegram')?.active &&
@@ -70,7 +74,7 @@ export default async function handler(req, res) {
         if (usersToNotificate.length > 0) {
           const usersWithBirthDayToday = []
           const usersWithBirthDayTomorow = []
-          const users = await Users.find({})
+          const users = await Users.find({}).lean()
           users.forEach((user) => {
             if (!user.birthday) return
             const days = daysBeforeBirthday(user.birthday, dateTimeNow)
@@ -116,7 +120,7 @@ export default async function handler(req, res) {
             text += 'Завтра нет именинников'
           }
           const telegramIds = usersToNotificate.map(
-            (user) => user.notifications.get('telegram').id
+            (user) => user.notifications.telegram.id
           )
 
           const inline_keyboard = [
