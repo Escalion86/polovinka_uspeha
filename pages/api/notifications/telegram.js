@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         if (typeof cmdProps === 'object') {
           const cmd = telegramIndexToCmd(cmdProps.c)
           if (cmd === 'eventSignIn') {
-            const { eventId, subEventId, s } = cmdProps
+            const { eventId, subEventId } = cmdProps
             const userTelegramId = callback_query.from.id
             const user = await Users.findOne({
               'notifications.telegram.id': userTelegramId,
@@ -29,51 +29,68 @@ export default async function handler(req, res) {
                 ?.status(400)
                 .json({ success: false, error: 'Не найден пользователь' })
 
-            const event = await Events.findOne({ _id: eventId })
+            const event = await Events.findOne(
+              subEventId ? { 'subEvents.id': subEventId } : { _id: eventId }
+            )
             if (!event)
               return res
                 ?.status(400)
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
-            if (!s && event.subEvents.length > 1) {
-              const callback_data = JSON.stringify({
-                c: telegramCmdToIndex('eventSignIn'),
-                eventId: event._id,
-                s: index,
-              })
-              console.log('callback_data :>> ', callback_data.length)
-              const callback_data2 = JSON.stringify({
-                c: telegramCmdToIndex('eventSignIn'),
-                subEventId: event._id,
-              })
-              console.log('callback_data2 :>> ', callback_data2.length)
+            console.log('subEventId :>> ', subEventId)
+            if (!subEventId && event.subEvents.length > 1) {
               const inline_keyboard = event.subEvents.map(
                 ({ title, id }, index) => [
                   {
                     text: title,
-                    callback_data,
+                    callback_data: JSON.stringify({
+                      c: telegramCmdToIndex('eventSignIn'),
+                      // eventId: event._id,
+                      subEventId: id,
+                    }),
                   },
                 ]
               )
 
+              // const inline_keyboard = [
+              //   [
+              //     {
+              //       text: '\u{1F4C5} На сайте',
+              //       url: req.headers.origin + '/event/' + String(event._id),
+              //     },
+              //     // TODO Исправить запись через телеграм
+              //     {
+              //       text: '\u{1F4DD} Записаться',
+              //       callback_data: JSON.stringify({
+              //         c: telegramCmdToIndex('eventSignIn'),
+              //         eventId: event._id,
+              //       }),
+              //     },
+              //   ],
+              // ]
+
               const text =
                 'На мероприятие возможно записаться разными вариантами. Выберите вариант:'
-              const result = await sendTelegramMessage({
+              sendTelegramMessage({
                 req,
                 telegramIds: userTelegramId,
                 text,
                 inline_keyboard,
               })
 
-              return res?.status(201).json({ success: true, data: result })
+              return res?.status(201).json({ success: true })
             }
 
-            const subEvent = s ? event.subEvents[s] : event.subEvents[0]
+            const subEvent = subEventId
+              ? event.subEvents.find(({ id }) => subEventId === id)
+              : event.subEvents[0]
+            // console.log('subEventId :>> ', subEventId)
+            // console.log('subEvent :>> ', subEvent)
             const result = await userSignIn({
               req,
               res,
               userId: user._id,
-              eventId,
+              eventId: event._id,
               subEventId: subEvent.id,
               autoReserve: true,
             })
@@ -102,14 +119,12 @@ export default async function handler(req, res) {
             if (result.success) {
               text = `Вы успешно зарегистрировались ${
                 result.data?.status === 'reserve' ? 'в РЕЗЕРВ ' : ''
-              }на мероприятие "${event.title}" от ${formatDateTime(
+              }на мероприятие\n"<b>${event.title}</b>" от ${formatDateTime(
                 event.dateStart
-              )}${event.subEvents.length > 1 ? `Вариант участия: ${subEvent.title}` : ''}`
+              )}${event.subEvents.length > 1 ? `\n<b>Вариант участия</b>: ${subEvent.title}` : ''}`
             } else {
               text = `ОШИБКА - ${result.data.error}`
             }
-
-            console.log('text :>> ', text)
 
             await sendTelegramMessage({
               req,

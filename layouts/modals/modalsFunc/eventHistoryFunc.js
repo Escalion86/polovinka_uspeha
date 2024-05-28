@@ -23,7 +23,7 @@ const eventHistoryFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const modalFunc = useRecoilValue(modalsFuncAtom)
+    const modalsFunc = useRecoilValue(modalsFuncAtom)
     const event = useRecoilValue(eventSelector(eventId))
     const [eventHistory, setEventHistory] = useState()
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
@@ -103,7 +103,7 @@ const eventHistoryFunc = (eventId) => {
                         onClickRedo={
                           // () => console.log('redoChanges :>> ', redoChanges)
                           () =>
-                            modalFunc.confirm({
+                            modalsFunc.confirm({
                               title: 'Откат изменений мероприятия',
                               text:
                                 'Подтверждение отката внесет изменения в мероприятие, преведя его к виду на момент последнего изменения от ' +

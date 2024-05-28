@@ -48,7 +48,7 @@ const StateLoader = (props) => {
 
   const router = useRouter()
 
-  const [modalFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
+  const [modalsFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
 
@@ -137,10 +137,10 @@ const StateLoader = (props) => {
   }, [props.loggedUser])
 
   useEffect(() => {
-    if (modalFunc && !isSiteLoading) {
+    if (modalsFunc && !isSiteLoading) {
       if (props.isCabinet) {
         const url = isBrowserNeedToBeUpdate()
-        if (url) modalFunc.browserUpdate(url) //getRecoil(modalsFuncAtom).browserUpdate(url)
+        if (url) modalsFunc.browserUpdate(url) //getRecoil(modalsFuncAtom).browserUpdate(url)
       }
       if (location !== 'dev')
         if (!props.isCabinet) {
@@ -149,7 +149,7 @@ const StateLoader = (props) => {
           } else {
             const storagedLocation = localStorage.getItem('location')
             if (!storagedLocation) {
-              modalFunc.browseLocation()
+              modalsFunc.browseLocation()
             }
           }
         }

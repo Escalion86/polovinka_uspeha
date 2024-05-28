@@ -252,11 +252,11 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
 
     return (
       <div className="flex flex-col">
-        <div className="text-lg font-bold text-center text-general">
+        <div className="text-lg font-bold leading-4 text-center text-general">
           {event.title}
         </div>
         <DateTimeEvent
-          wrapperClassName="mb-1 text-base laptop:text-lg font-bold justify-center"
+          wrapperClassName="my-2  text-base laptop:text-lg font-bold justify-center"
           dateClassName="text-general"
           timeClassName="italic"
           durationClassName="italic text-base font-normal"

@@ -1,7 +1,6 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import isEventCanceled from '@helpers/isEventCanceled'
 import isEventClosed from '@helpers/isEventClosed'
-import isEventExpired from '@helpers/isEventExpired'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
@@ -9,6 +8,7 @@ import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 import eventUsersTelegramNotification from './eventUsersTelegramNotification'
+import isEventExpired from './isEventExpired'
 
 const userSignIn = async ({
   req,
@@ -125,7 +125,6 @@ const userSignIn = async ({
           subEvent.minWomansAge > userAge))
 
     const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
-
     if (!isAgeOfUserCorrect) {
       const result = {
         success: false,
@@ -277,15 +276,15 @@ const userSignIn = async ({
       }
     }
 
-    const resultStatus =
-      (!status || status === 'participant') &&
-      errorText &&
-      autoReserve &&
-      canSignInReserve
-        ? 'reserve'
-        : errorText && canSignInReserve
-          ? 'reserve'
-          : status
+    // const resultStatus =
+    //   (!status || status === 'participant') &&
+    //   errorText &&
+    //   autoReserve &&
+    //   canSignInReserve
+    //     ? 'reserve'
+    //     : errorText && canSignInReserve
+    //       ? 'reserve'
+    //       : status
 
     const newEventUser = await EventsUsers.create({
       eventId,

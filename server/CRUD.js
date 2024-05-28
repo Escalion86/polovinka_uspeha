@@ -565,6 +565,7 @@ const notificateUsersAboutEvent = async (event, req) => {
       },
     ],
   ]
+
   if (novicesTelegramIds.length > 0) {
     sendTelegramMessage({
       req,

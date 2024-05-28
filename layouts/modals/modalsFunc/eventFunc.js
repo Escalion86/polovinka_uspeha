@@ -42,7 +42,7 @@ import { useRecoilValue } from 'recoil'
 import { uid } from 'uid'
 
 const SubEvents = ({ subEvents, onChange, rules }) => {
-  const modalFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
 
   const addItem = (props) => {
     const newItem = { ...(props ?? DEFAULT_SUBEVENT), id: uid(24) }
@@ -75,7 +75,7 @@ const SubEvents = ({ subEvents, onChange, rules }) => {
         name="Добавить вариант"
         icon={faPlus}
         onClick={() =>
-          modalFunc.event.subEventEdit(
+          modalsFunc.event.subEventEdit(
             {
               ...DEFAULT_SUBEVENT,
               id: uid(24),

@@ -106,6 +106,7 @@ const Group = ({
   setOpenedMenuIndex,
   setMenuOpen,
   activePage,
+  onChangeMenuIndex,
 }) => {
   const { groupHidden, pages, groupBadge } = useRecoilValue(
     badgesGroupSelector(item.id)
@@ -148,9 +149,7 @@ const Group = ({
               setMenuOpen(false)
             } else {
               setOpenedMenuIndex(openedMenuIndex === index ? null : index)
-              // onChangeMenuIndex(
-              //   openedMenuIndex === index ? null : index
-              // )
+              onChangeMenuIndex(openedMenuIndex === index ? null : index)
               setMenuOpen(true)
             }
           }}
@@ -221,7 +220,7 @@ const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
   useEffect(() => {
     if (!menuOpen) {
       setOpenedMenuIndex(null)
-      // onChangeMenuIndex(null)
+      onChangeMenuIndex(null)
     }
   }, [menuOpen])
 
@@ -246,6 +245,7 @@ const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
               setOpenedMenuIndex={setOpenedMenuIndex}
               setMenuOpen={setMenuOpen}
               activePage={activePage}
+              onChangeMenuIndex={onChangeMenuIndex}
             />
           ))}
     </nav>
@@ -263,7 +263,7 @@ const variants = {
   max: { width: 320 },
 }
 
-// var handler
+var handler
 
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
@@ -274,14 +274,14 @@ const SideBar = ({ page }) => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const { height } = useRecoilValue(windowDimensionsAtom)
-  // const [menuIndex, setMenuIndex] = useState()
+  const [menuIndex, setMenuIndex] = useState()
 
-  // const onChangeMenuIndex = (index) => {
-  //   if (handler) clearTimeout(handler)
-  //   handler = setTimeout(() => {
-  //     setMenuIndex(index)
-  //   }, 500)
-  // }
+  const onChangeMenuIndex = (index) => {
+    if (handler) clearTimeout(handler)
+    handler = setTimeout(() => {
+      setMenuIndex(index)
+    }, 500)
+  }
 
   const handleScrollPosition = (scrollAmount) => {
     var newPos
@@ -353,7 +353,7 @@ const SideBar = ({ page }) => {
           <MenuSuspense
             menuCfg={menuCfg(loggedUserActiveRole, loggedUserActiveStatus)}
             activePage={page}
-            // onChangeMenuIndex={onChangeMenuIndex}
+            onChangeMenuIndex={onChangeMenuIndex}
           />
         </div>
       </m.div>
