@@ -610,6 +610,7 @@ export const DEFAULT_EVENT = Object.freeze({
   warning: false,
   likes: false,
   likesProcessActive: true,
+  blank: false,
 })
 
 export const DEFAULT_SUBEVENT = Object.freeze({

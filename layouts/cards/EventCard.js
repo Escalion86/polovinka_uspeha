@@ -22,6 +22,8 @@ import { Suspense } from 'react'
 import { useRecoilValue } from 'recoil'
 import EventCardSkeleton from './Skeletons/EventCardSkeleton'
 import eventSelector from '@state/selectors/eventSelector'
+import Venzel1 from 'svg/venzels/1'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const EventCard = ({
   eventId,
@@ -44,8 +46,29 @@ const EventCard = ({
   const error = useRecoilValue(errorAtom('event' + eventId))
   const itemFunc = useRecoilValue(itemsFuncAtom)
   const subEventSum = useRecoilValue(subEventsSumOfEventSelector(eventId))
+  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const canEdit = loggedUserActiveRole?.events?.edit
 
   if (!event) return null
+
+  if (event.blank)
+    return (
+      <div
+        style={style}
+        className={cn(
+          'flex flex-col items-center w-full justify-evenly',
+          canEdit ? 'cursor-pointer' : ''
+        )}
+        onClick={canEdit ? () => modalsFunc.event.edit(event._id) : undefined}
+      >
+        <Venzel1 className="h-10" />
+        <div className="flex items-center justify-center py-5 mx-4 text-xl font-bold leading-5 text-center text-black line-clamp-4">
+          {/* // border-t-4 border-b-4 border-general"> */}
+          {event.title}
+        </div>
+        <Venzel1 className="h-10 rotate-180" />
+      </div>
+    )
 
   // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
 

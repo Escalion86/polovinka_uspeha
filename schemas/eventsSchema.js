@@ -238,6 +238,10 @@ const eventsSchema = {
     type: Boolean,
     default: false,
   },
+  blank: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 export default eventsSchema

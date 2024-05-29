@@ -40,6 +40,8 @@ import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { uid } from 'uid'
+import { faComment as faCommentRegular } from '@fortawesome/free-regular-svg-icons/faComment'
+import { faComment } from '@fortawesome/free-solid-svg-icons/faComment'
 
 const SubEvents = ({ subEvents, onChange, rules }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -167,6 +169,8 @@ const eventFunc = (eventId, clone = false) => {
       event?.warning ?? DEFAULT_EVENT.warning
     )
 
+    const [blank, setBlank] = useState(event?.blank ?? DEFAULT_EVENT.blank)
+
     const [likes, setLikes] = useState(event?.likes ?? DEFAULT_EVENT.likes)
 
     const direction = useMemo(
@@ -215,16 +219,21 @@ const eventFunc = (eventId, clone = false) => {
       useErrors()
 
     const onClickConfirm = async () => {
-      let isErrorsExists = checkErrors({
-        title,
-        description,
-        images,
-        directionId,
-        organizerId,
-        dateStart,
-        dateEnd,
-        tags,
-      })
+      let isErrorsExists = !blank
+        ? checkErrors({
+            title,
+            description,
+            images,
+            directionId,
+            organizerId,
+            dateStart,
+            dateEnd,
+            tags,
+          })
+        : checkErrors({
+            title,
+            dateStart,
+          })
       if (getDiffBetweenDates(dateStart, dateEnd) < 0) {
         addError({
           dateEnd:
@@ -270,6 +279,7 @@ const eventFunc = (eventId, clone = false) => {
             reportImages,
             warning,
             likes,
+            blank,
           },
           clone
         )
@@ -315,7 +325,8 @@ const eventFunc = (eventId, clone = false) => {
         event?.report !== report ||
         !compareArrays(event?.reportImages, reportImages) ||
         event?.warning !== warning ||
-        event?.likes !== likes
+        event?.likes !== likes ||
+        event?.blank !== blank
 
       // setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -362,6 +373,7 @@ const eventFunc = (eventId, clone = false) => {
       reportImages,
       warning,
       likes,
+      blank,
     ])
 
     const duration = getEventDuration({ dateStart, dateEnd })
@@ -381,37 +393,41 @@ const eventFunc = (eventId, clone = false) => {
         <TabContext value="Общие">
           <TabPanel tabName="Общие" className="px-0">
             {/* <FormWrapper> */}
-            <InputImages
-              label="Фотографии"
-              directory="events"
-              images={images}
-              onChange={(images) => {
-                removeError('images')
-                setImages(images)
-              }}
-              required
-              error={errors.images}
+            <IconCheckBox
+              checked={blank}
+              onClick={() => setBlank((checked) => !checked)}
+              label="Пустое мероприятие, отображается в виде текста между мероприятиями"
+              checkedIcon={faComment}
+              uncheckedIcon={faCommentRegular}
+              checkedIconColor="#0000AA"
+              big
             />
-            {/* <SelectDirection
-              selectedId={directionId}
-              onChange={(directionId) => {
-                removeError('directionId')
-                setDirectionId(directionId)
-              }}
-              required
-              error={errors.directionId}
-            /> */}
-            <DirectionSelector
-              value={directionId}
-              onChange={(directionId) => {
-                removeError('directionId')
-                // changeDirectionId(directionId)
-                setDirectionId(directionId)
-              }}
-              required
-              error={errors.directionId}
-            />
-            <WarningAccess />
+            {!blank && (
+              <>
+                <InputImages
+                  label="Фотографии"
+                  directory="events"
+                  images={images}
+                  onChange={(images) => {
+                    removeError('images')
+                    setImages(images)
+                  }}
+                  required
+                  error={errors.images}
+                />
+                <DirectionSelector
+                  value={directionId}
+                  onChange={(directionId) => {
+                    removeError('directionId')
+                    // changeDirectionId(directionId)
+                    setDirectionId(directionId)
+                  }}
+                  required
+                  error={errors.directionId}
+                />
+                <WarningAccess />
+              </>
+            )}
             <Input
               label="Название"
               type="text"
@@ -424,30 +440,34 @@ const eventFunc = (eventId, clone = false) => {
               error={errors.title}
               required
             />
-            <EditableTextarea
-              label="Описание"
-              html={description}
-              uncontrolled={false}
-              onChange={(value) => {
-                removeError('description')
-                setDescription(value)
-              }}
-              placeholder="Описание мероприятия..."
-              required
-              error={errors.description}
-            />
-            <EventTagsChipsSelector
-              tags={tags}
-              onChange={(value) => {
-                removeError('tags')
-                setTags(value)
-              }}
-              canEditChips
-              required
-              error={errors.tags}
-              // readOnly
-              // className
-            />
+            {!blank && (
+              <>
+                <EditableTextarea
+                  label="Описание"
+                  html={description}
+                  uncontrolled={false}
+                  onChange={(value) => {
+                    removeError('description')
+                    setDescription(value)
+                  }}
+                  placeholder="Описание мероприятия..."
+                  required
+                  error={errors.description}
+                />
+                <EventTagsChipsSelector
+                  tags={tags}
+                  onChange={(value) => {
+                    removeError('tags')
+                    setTags(value)
+                  }}
+                  canEditChips
+                  required
+                  error={errors.tags}
+                  // readOnly
+                  // className
+                />
+              </>
+            )}
             {/* <FormWrapper twoColumns> */}
             <FormRow className="flex-wrap">
               <DateTimePicker
@@ -510,61 +530,67 @@ const eventFunc = (eventId, clone = false) => {
                   error={errors.duration}
                 /> */}
             {/* </FormWrapper> */}
-            <SelectUser
-              label="Организатор"
-              modalTitle="Выбор организатора"
-              selectedId={organizerId}
-              onChange={(userId) => {
-                removeError('organizerId')
-                setOrganizerId(userId)
-              }}
-              required
-              error={errors.organizerId}
-            />
-            <AddressPicker address={address} onChange={setAddress} />
-            {/* <CheckBox
+            {!blank && (
+              <>
+                <SelectUser
+                  label="Организатор"
+                  modalTitle="Выбор организатора"
+                  selectedId={organizerId}
+                  onChange={(userId) => {
+                    removeError('organizerId')
+                    setOrganizerId(userId)
+                  }}
+                  required
+                  error={errors.organizerId}
+                />
+                <AddressPicker address={address} onChange={setAddress} />
+                {/* <CheckBox
               checked={warning}
               labelPos="left"
               // labelClassName="w-40"
               onClick={() => setWarning((checked) => !checked)}
               label="Предупреждение о рисках и травмоопасности на мероприятии"
             /> */}
-            <IconCheckBox
-              checked={warning}
-              onClick={() => setWarning((checked) => !checked)}
-              label="Предупреждение о рисках и травмоопасности на мероприятии"
-              checkedIcon={faTriangleExclamation}
-              checkedIconColor="#AA0000"
-              big
-            />
+                <IconCheckBox
+                  checked={warning}
+                  onClick={() => setWarning((checked) => !checked)}
+                  label="Предупреждение о рисках и травмоопасности на мероприятии"
+                  checkedIcon={faTriangleExclamation}
+                  checkedIconColor="#AA0000"
+                  big
+                />
 
-            <IconCheckBox
-              checked={showOnSite}
-              onClick={() => setShowOnSite((checked) => !checked)}
-              label="Показывать на сайте"
-              checkedIcon={faEye}
-              uncheckedIcon={faEyeSlash}
-              checkedIconColor="#A855F7"
-              big
-            />
-            <IconCheckBox
-              checked={likes}
-              onClick={() => setLikes((checked) => !checked)}
-              label="Участники ставят лайки другим участникам во время и после мероприятия"
-              checkedIcon={faHeart}
-              uncheckedIcon={faHeartBroken}
-              checkedIconColor="#EC4899"
-              big
-            />
+                <IconCheckBox
+                  checked={showOnSite}
+                  onClick={() => setShowOnSite((checked) => !checked)}
+                  label="Показывать на сайте"
+                  checkedIcon={faEye}
+                  uncheckedIcon={faEyeSlash}
+                  checkedIconColor="#A855F7"
+                  big
+                />
+                <IconCheckBox
+                  checked={likes}
+                  onClick={() => setLikes((checked) => !checked)}
+                  label="Участники ставят лайки другим участникам во время и после мероприятия"
+                  checkedIcon={faHeart}
+                  uncheckedIcon={faHeartBroken}
+                  checkedIconColor="#EC4899"
+                  big
+                />
+              </>
+            )}
           </TabPanel>
-          <TabPanel tabName="Варианты участия" className="px-0">
-            <WarningAccess />
-            <SubEvents
-              subEvents={subEvents}
-              onChange={setSubEvents}
-              rules={direction?.rules}
-            />
-          </TabPanel>
+          {!blank && (
+            <TabPanel tabName="Варианты участия" className="px-0">
+              <WarningAccess />
+              <SubEvents
+                subEvents={subEvents}
+                onChange={setSubEvents}
+                rules={direction?.rules}
+              />
+            </TabPanel>
+          )}
         </TabContext>
         <ErrorsList errors={errors} />
       </>
