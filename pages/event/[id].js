@@ -75,10 +75,15 @@ const Event = ({ event }) => {
 
 const EventBlock = ({ event }) => {
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+  if (event?.blank) return
 
   return (
     <BlockContainer small>
-      <Event event={event} />
+      {!event.blank ? (
+        <Event event={event} />
+      ) : (
+        <H2>Мероприятие отсутствует</H2>
+      )}
       <div className="flex flex-col items-center">
         {loggedUserActive && (
           <Link

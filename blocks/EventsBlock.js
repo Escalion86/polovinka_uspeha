@@ -48,7 +48,8 @@ const EventsBlock = ({
   const events = useRecoilValue(filteredEventsSelector)
 
   const filteredEvents = events.filter(
-    (event) => !isEventExpiredFunc(event) && !isEventCanceledFunc(event)
+    (event) =>
+      !isEventExpiredFunc(event) && !isEventCanceledFunc(event) && !event.blank
   )
 
   if (hideBlockOnZeroEvents && filteredEvents?.length === 0) return null
