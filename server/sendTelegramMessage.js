@@ -56,6 +56,7 @@ export const sendMessageToTelegramId = async ({
       null,
       true
     )
+    console.log('result :>> ', result)
     return result
   }
 }
