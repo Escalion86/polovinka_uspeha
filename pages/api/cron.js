@@ -35,10 +35,10 @@ export default async function handler(req, res) {
       try {
         const dateTimeNow = new Date()
         const minutesNow = padNum(dateTimeNow.getMinutes(), 2)
-        if (minutesNow !== '00' || minutesNow !== '30')
-          return res
-            ?.status(200)
-            .json({ success: true, data: 'minutes must be 00 or 30' })
+        // if (minutesNow !== '00' || minutesNow !== '30')
+        //   return res
+        //     ?.status(200)
+        //     .json({ success: true, data: 'minutes must be 00 or 30' })
 
         const hoursNow = padNum(dateTimeNow.getHours(), 2)
 
