@@ -285,7 +285,7 @@ const updateEventInCalendar = async (event, req) => {
         }
       ) +
       `\n\nСсылка на мероприятие:\n${
-        req.headers.origin + '/event/' + event._id
+        process.env.DOMAIN + '/event/' + event._id
       }`,
     start: {
       dateTime: event.dateStart,
@@ -554,7 +554,7 @@ const notificateUsersAboutEvent = async (event, req) => {
     [
       {
         text: '\u{1F4C5} На сайте',
-        url: req.headers.origin + '/event/' + String(event._id),
+        url: process.env.DOMAIN + '/event/' + String(event._id),
       },
       // TODO Исправить запись через телеграм
       {
@@ -811,7 +811,7 @@ export default async function handler(Schema, req, res, params = null) {
                   [
                     {
                       text: '\u{1F464} Пользователь',
-                      url: req.headers.origin + '/user/' + id,
+                      url: process.env.DOMAIN + '/user/' + id,
                     },
                   ],
                 ],
@@ -835,13 +835,13 @@ export default async function handler(Schema, req, res, params = null) {
               //         )}`,
               //         parse_mode: 'html',
               //         reply_markup:
-              //           req.headers.origin.substr(0, 5) === 'https'
+              //           process.env.DOMAIN.substr(0, 5) === 'https'
               //             ? JSON.stringify({
               //                 inline_keyboard: [
               //                   [
               //                     {
               //                       text: '\u{1F464} Пользователь',
-              //                       url: req.headers.origin + '/user/' + id,
+              //                       url: process.env.DOMAIN + '/user/' + id,
               //                     },
               //                   ],
               //                 ].filter((botton) => botton),

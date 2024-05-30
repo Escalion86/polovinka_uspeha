@@ -56,7 +56,7 @@ export default async function handler(req, res) {
               //   [
               //     {
               //       text: '\u{1F4C5} На сайте',
-              //       url: req.headers.origin + '/event/' + String(event._id),
+              //       url: process.env.DOMAIN + '/event/' + String(event._id),
               //     },
               //     // TODO Исправить запись через телеграм
               //     {

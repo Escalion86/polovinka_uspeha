@@ -202,7 +202,7 @@ const eventUsersTelegramNotification = async ({
     const womansReserveCount = womans.filter(
       (eventUser) => eventUser.status === 'reserve'
     ).length
-    // console.log('req.protocol', req.headers.origin.substr(0, 5))
+    // console.log('req.protocol', process.env.DOMAIN.substr(0, 5))
 
     text +=
       `\n\nУчастники: ♂️  ${mansParticipantsCount}${
@@ -230,12 +230,12 @@ const eventUsersTelegramNotification = async ({
         [
           {
             text: '\u{1F4C5} Мероприятие',
-            url: req.headers.origin + '/event/' + eventId,
+            url: process.env.DOMAIN + '/event/' + eventId,
           },
           userId
             ? {
                 text: '\u{1F464} Пользователь',
-                url: req.headers.origin + '/user/' + userId,
+                url: process.env.DOMAIN + '/user/' + userId,
               }
             : undefined,
         ],
@@ -253,18 +253,18 @@ const eventUsersTelegramNotification = async ({
     //         text,
     //         parse_mode: 'html',
     //         reply_markup:
-    //           req.headers.origin.substr(0, 5) === 'https'
+    //           process.env.DOMAIN.substr(0, 5) === 'https'
     //             ? JSON.stringify({
     //                 inline_keyboard: [
     //                   [
     //                     {
     //                       text: '\u{1F4C5} Мероприятие',
-    //                       url: req.headers.origin + '/event/' + eventId,
+    //                       url: process.env.DOMAIN + '/event/' + eventId,
     //                     },
     //                     userId
     //                       ? {
     //                           text: '\u{1F464} Пользователь',
-    //                           url: req.headers.origin + '/user/' + userId,
+    //                           url: process.env.DOMAIN + '/user/' + userId,
     //                         }
     //                       : undefined,
     //                   ],

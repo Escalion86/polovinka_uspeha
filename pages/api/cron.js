@@ -127,7 +127,7 @@ export default async function handler(req, res) {
             [
               {
                 text: '\u{1F382} Посмотреть дни рождения на сайте',
-                url: req.headers.origin + '/cabinet/birthdays',
+                url: process.env.DOMAIN + '/cabinet/birthdays', // req.headers.origin
               },
             ],
           ]
