@@ -389,6 +389,7 @@ const updateEventInCalendar = async (event, req) => {
 }
 
 const notificateUsersAboutEvent = async (event, req) => {
+  if (!event || event.blank) return
   await dbConnect()
   const rolesSettings = await Roles.find({}).lean()
   const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
