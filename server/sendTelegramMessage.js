@@ -39,8 +39,6 @@ export const sendMessageToTelegramId = async ({
         })
       : undefined
 
-    console.log('reply_markup :>> ', reply_markup)
-
     const result = await postData(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
       {
@@ -56,7 +54,6 @@ export const sendMessageToTelegramId = async ({
       null,
       true
     )
-    console.log('result :>> ', result)
     return result
   }
 }
