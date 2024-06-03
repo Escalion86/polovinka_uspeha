@@ -25,7 +25,24 @@ module.exports = withBundleAnalyzer(
       RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED: 'false',
     },
     images: {
-      domains: ['localhost', 'escalioncloud.ru', 't.me'],
+      // domains: ['localhost', 'escalioncloud.ru', 't.me'],
+      remotePatterns: [
+        {
+          protocol: 'http',
+          hostname: 'localhost',
+          port: '3000',
+        },
+        {
+          protocol: 'https',
+          hostname: 'escalioncloud.ru',
+          port: '',
+        },
+        {
+          protocol: 'https',
+          hostname: 't.me',
+          port: '',
+        },
+      ],
     },
     // webpack(config, options) {
     //   config.module.rules.push({
