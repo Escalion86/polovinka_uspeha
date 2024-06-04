@@ -114,9 +114,9 @@ const subEventFunc = (props, onChange, rules) => {
       props?.maxWomansAge ?? DEFAULT_SUBEVENT.maxWomansAge
     )
     const rulesStatusAccess = useCallback(() => {
-      if (!rules?.userStatus) return {}
+      if (!rules?.userStatus || rules?.userStatus === 'select') return {}
       const novice = ['novice', 'any'].includes(rules?.userStatus)
-      const member = ['member', 'any'].includes(rules?.userStatus)
+      const member = ['member', 'any'].includes(rules?.userStatus) //select
       return { novice, member }
     }, [rules])
 
