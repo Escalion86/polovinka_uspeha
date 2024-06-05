@@ -84,15 +84,11 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
   const isUserStatusCorrect =
     user.status === 'ban'
       ? false
-      : rules?.userStatus
-        ? rules?.userStatus === 'any'
-          ? true
-          : user.status
-            ? rules?.userStatus === user.status
-            : rules?.userStatus === 'novice'
-        : user.status
-          ? subEventSum.usersStatusAccess[user.status]
-          : subEventSum.usersStatusAccess['novice']
+      : rules?.userStatus === 'any' ||
+          rules?.userStatus === (user.status || 'novice')
+        ? true
+        : subEventSum.usersStatusAccess[user.status || 'novice']
+
   const isUserRelationshipCorrect = isUserRelationshipCorrectForEvent(
     user,
     subEventSum,
