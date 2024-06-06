@@ -35,7 +35,7 @@ const save = async (name) => {
   saveSvgAsPng(input, name)
 }
 
-const ToolsEventAnonsContent = () => {
+const ToolsEventAnonsInstagramContent = () => {
   const events = useRecoilValue(eventsAtom)
   const { imageFolder } = useRecoilValue(locationPropsSelector)
 
@@ -339,15 +339,15 @@ const ToolsEventAnonsContent = () => {
         <div>Картинка 1080х1080</div>
       </div>
       {/* <image id="preview1" height="1920" width="1080" /> */}
-      <div className="flex py-2 overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
-        <div className="border-2 border-gray-600">
+      <div className="flex py-2 overflow-x-auto gap-x-1">
+        <div className="border-2 border-gray-600 min-w-[274px] w-full max-w-[484px] aspect-1">
           <svg
             // key={month + year + index}
-            width="480"
-            height="480"
+            // width="480"
+            // height="480"
             viewBox="0 0 1080 1080"
             id="input"
-            className="min-w-[270px]"
+            className="w-full aspect-1"
           >
             <SvgBackgroundComponent {...backgroundProps} />
             <Frame fill={frameColor} />
@@ -490,4 +490,4 @@ const ToolsEventAnonsContent = () => {
   )
 }
 
-export default ToolsEventAnonsContent
+export default ToolsEventAnonsInstagramContent

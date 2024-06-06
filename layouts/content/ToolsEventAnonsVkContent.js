@@ -360,14 +360,16 @@ const ToolsEventAnonsVkContent = () => {
         />
         <div>Картинка 2028х1536</div>
       </div>
-      <div className="flex py-2 overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
-        <div className="border-2 border-gray-600">
+      {/* <div className="flex py-2 overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
+        <div className="border-2 border-gray-600"> */}
+      <div className="flex py-2 overflow-x-auto gap-x-1">
+        <div className="border-2 border-gray-600 min-w-[278px] w-full max-w-[511px] aspect-[511/388]">
           <svg
             width="507"
             height="384"
             viewBox="0 0 2028 1536"
             id="input"
-            className="min-w-[270px]"
+            className="w-full aspect-[507/384] h-full"
           >
             {/* <image
               // id="preview"
