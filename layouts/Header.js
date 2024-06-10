@@ -59,7 +59,7 @@ const Header = ({ noMenu }) => {
   const services = useRecoilValue(filteredServicesSelector)
   const additionalBlocks = useRecoilValue(filteredAdditionalBlocksSelector)
 
-  const menu = [{ name: 'Наши цели', href: '/#about' }]
+  const menu = [{ name: 'Миссия и цели', href: '/#about' }]
   // if (events?.length > 0)
   menu.push({ name: 'Мероприятия', href: '/#events' })
   if (directions?.length > 0)

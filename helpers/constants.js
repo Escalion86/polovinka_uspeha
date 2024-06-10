@@ -104,7 +104,7 @@ import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTod
 // import StatisticsFinanceContent from '@layouts/content/StatisticsFinanceContent'
 // import StatisticsUsersContent from '@layouts/content/StatisticsUsersContent'
 // import StatisticsEventsContent from '@layouts/content/StatisticsEventsContent'
-// import ToolsEventAnonsContent from '@layouts/content/ToolsEventAnonsContent'
+// import ToolsEventAnonsInstagramContent from '@layouts/content/ToolsEventAnonsInstagramContent'
 
 // import ToolsTextEventsAnonsContent from '@layouts/content/ToolsTextEventsAnonsContent'
 // import UserStatisticsContent from '@layouts/content/UserStatisticsContent'
@@ -157,8 +157,8 @@ const StatisticsUsersContent = dynamic(
 const StatisticsEventsContent = dynamic(
   () => import('@layouts/content/StatisticsEventsContent')
 )
-const ToolsEventAnonsContent = dynamic(
-  () => import('@layouts/content/ToolsEventAnonsContent')
+const ToolsEventAnonsInstagramContent = dynamic(
+  () => import('@layouts/content/ToolsEventAnonsInstagramContent')
 )
 const ToolsTextEventsAnonsContent = dynamic(
   () => import('@layouts/content/ToolsTextEventsAnonsContent')
@@ -592,6 +592,10 @@ export const DEFAULT_ADDRESS = Object.freeze({
   floor: '',
   flat: '',
   comment: '',
+  link2Gis: '',
+  linkYandexNavigator: '',
+  link2GisShow: true,
+  linkYandexShow: true,
 })
 
 export const DEFAULT_EVENT = Object.freeze({
@@ -1708,7 +1712,7 @@ export const CONTENTS = Object.freeze({
     roleAccess: (role) => role?.instruments?.anonsTextGenerator,
   },
   toolsEventAnons: {
-    Component: ToolsEventAnonsContent,
+    Component: ToolsEventAnonsInstagramContent,
     name: 'Инструменты / Редактор анонса в Instagram',
     accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.anonsEventImageGenerator,

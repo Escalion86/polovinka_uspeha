@@ -396,7 +396,7 @@ const eventFunc = (eventId, clone = false) => {
             <IconCheckBox
               checked={blank}
               onClick={() => setBlank((checked) => !checked)}
-              label="Пустое мероприятие, отображается в виде текста между мероприятиями"
+              label="Пустое мероприятие (отображается в виде текста между мероприятиями)"
               checkedIcon={faComment}
               uncheckedIcon={faCommentRegular}
               checkedIconColor="#0000AA"
