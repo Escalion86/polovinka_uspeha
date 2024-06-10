@@ -39,8 +39,19 @@ const eventsSchema = {
   //   default: 60, // минут
   // },
   address: {
-    type: Map,
-    of: String,
+    type: {
+      town: { type: String, default: '' },
+      street: { type: String, default: '' },
+      house: { type: String, default: '' },
+      entrance: { type: String, default: '' },
+      floor: { type: String, default: '' },
+      flat: { type: String, default: '' },
+      comment: { type: String, default: '' },
+      link2Gis: { type: String, default: '' },
+      linkYandexNavigator: { type: String, default: '' },
+      link2GisShow: { type: Boolean, default: true },
+      linkYandexShow: { type: Boolean, default: true },
+    },
   },
   status: {
     type: String,

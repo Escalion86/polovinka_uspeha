@@ -592,6 +592,10 @@ export const DEFAULT_ADDRESS = Object.freeze({
   floor: '',
   flat: '',
   comment: '',
+  link2Gis: '',
+  linkYandexNavigator: '',
+  link2GisShow: true,
+  linkYandexShow: true,
 })
 
 export const DEFAULT_EVENT = Object.freeze({

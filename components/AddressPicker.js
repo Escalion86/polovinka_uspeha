@@ -1,6 +1,10 @@
+import Button from './Button'
+import CheckBox from './CheckBox'
 import FormWrapper from './FormWrapper'
+import ImageCheckBox from './ImageCheckBox'
 import Input from './Input'
 import InputWrapper from './InputWrapper'
+import Note from './Note'
 
 const AddressPicker = ({
   address,
@@ -89,6 +93,95 @@ const AddressPicker = ({
           onChange={(comment) => onChange({ ...address, comment })}
           error={errors?.address?.comment}
         />
+        <div className="flex flex-wrap items-end justify-between gap-x-2">
+          <ImageCheckBox
+            checked={address.link2GisShow}
+            onClick={() =>
+              onChange({ ...address, link2GisShow: !address.link2GisShow })
+            }
+            label="Показывать ссылку 2ГИС"
+            src="/img/navigators/2gis.png"
+            big
+          />
+          {address.link2GisShow &&
+            (address.link2Gis || (address?.town && address?.street)) && (
+              <div className="flex justify-end flex-1">
+                <a
+                  data-tip="Открыть адрес в 2ГИС"
+                  href={
+                    address.link2Gis ||
+                    `https://2gis.ru/search/${address.town},%20${
+                      address.street
+                    }%20${address.house.replaceAll('/', '%2F')}`
+                  }
+                  className="text-sm underline whitespace-nowrap"
+                  target="_blank"
+                >
+                  Проверить ссылку
+                </a>
+              </div>
+            )}
+        </div>
+        {address.link2GisShow && (
+          <Input
+            label="Ссылка 2ГИС"
+            type="link"
+            value={address.link2Gis}
+            onChange={(link2Gis) => onChange({ ...address, link2Gis })}
+            error={errors?.address?.link2Gis}
+            noMargin
+            className="mt-0.5"
+          />
+        )}
+        <div className="flex flex-wrap items-end justify-between gap-x-2">
+          <ImageCheckBox
+            checked={address.linkYandexShow}
+            onClick={() =>
+              onChange({ ...address, linkYandexShow: !address.linkYandexShow })
+            }
+            label="Показывать ссылку Yandex Navigator"
+            src="/img/navigators/yandex.png"
+            big
+          />
+          {address.linkYandexShow &&
+            (address.linkYandexNavigator ||
+              (address?.town && address?.street)) && (
+              <div className="flex justify-end flex-1">
+                <a
+                  data-tip="Открыть адрес в 2ГИС"
+                  href={
+                    address.linkYandexNavigator ||
+                    `yandexnavi://map_search?text=${address.town},%20${
+                      address.street
+                    }%20${address.house.replaceAll('/', '%2F')}`
+                  }
+                  className="text-sm underline whitespace-nowrap"
+                  target="_blank"
+                >
+                  Проверить ссылку
+                </a>
+              </div>
+            )}
+        </div>
+        {address.linkYandexShow && (
+          <Input
+            label="Ссылка Yandex Navigator"
+            type="link"
+            value={address.linkYandexNavigator}
+            onChange={(linkYandexNavigator) =>
+              onChange({ ...address, linkYandexNavigator })
+            }
+            error={errors?.address?.linkYandexNavigator}
+            noMargin
+            className="mt-0.5"
+          />
+        )}
+        {(address.linkYandexShow || address.link2GisShow) && (
+          <Note>
+            Если ссылка не указана, то будет сгенерирована автоматически исходя
+            из данных адреса
+          </Note>
+        )}
       </div>
     </InputWrapper>
   )

@@ -176,34 +176,47 @@ const EventViewModal = ({
               {formatAddress(event?.address, '[не указан]')}
             </TextLine>
           )}
-          {event?.address && event.address?.town && event.address?.street && (
-            <TextLine label="Ссылки для навигатора">
-              <a
-                data-tip="Открыть адрес в 2ГИС"
-                href={`https://2gis.ru/search/${event.address.town},%20${
-                  event.address.street
-                }%20${event.address.house.replaceAll('/', '%2F')}`}
-              >
-                <img
-                  className="object-contain w-6 h-6 min-w-6 min-h-6"
-                  src="/img/navigators/2gis.png"
-                  alt="2gis"
-                />
-              </a>
-              <a
-                data-tip="Открыть адрес в Яндекс Навигаторе"
-                href={`yandexnavi://map_search?text=${event.address.town},%20${
-                  event.address.street
-                }%20${event.address.house.replaceAll('/', '%2F')}`}
-              >
-                <img
-                  className="object-contain w-6 h-6 min-w-6 min-h-6"
-                  src="/img/navigators/yandex.png"
-                  alt="2gis"
-                />
-              </a>
-            </TextLine>
-          )}
+          {event?.address &&
+            (event.address?.link2GisShow || event.address?.linkYandexShow) && (
+              <TextLine label="Ссылки для навигатора">
+                {event.address?.link2GisShow && (
+                  <a
+                    data-tip="Открыть адрес в 2ГИС"
+                    href={
+                      event.address?.link2Gis ||
+                      `https://2gis.ru/search/${event.address.town},%20${
+                        event.address.street
+                      }%20${event.address.house.replaceAll('/', '%2F')}`
+                    }
+                    target="_blank"
+                  >
+                    <img
+                      className="object-contain w-6 h-6 min-w-6 min-h-6"
+                      src="/img/navigators/2gis.png"
+                      alt="2gis"
+                    />
+                  </a>
+                )}
+                {event.address?.linkYandexShow && (
+                  <a
+                    data-tip="Открыть адрес в Яндекс Навигаторе"
+                    href={
+                      event.address?.linkYandexNavigator ||
+                      `yandexnavi://map_search?text=${event.address.town},%20${
+                        event.address.street
+                      }%20${event.address.house.replaceAll('/', '%2F')}`
+                    }
+                    target="_blank"
+                  >
+                    <img
+                      className="object-contain w-6 h-6 min-w-6 min-h-6"
+                      src="/img/navigators/yandex.png"
+                      alt="2gis"
+                    />
+                  </a>
+                )}
+              </TextLine>
+            )}
           {event?.organizerId && (
             <>
               <TextLine label="Организатор">
