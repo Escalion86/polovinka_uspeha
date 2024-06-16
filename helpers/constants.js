@@ -1829,7 +1829,7 @@ export const CONTENTS = Object.freeze({
     Component: LikesContent,
     name: 'Лайки',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
-    roleAccess: (role, status) => status === 'member',
+    roleAccess: (role, status) => true,
   },
 })
 
