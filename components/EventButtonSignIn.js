@@ -46,6 +46,7 @@ const PaymentsFromLoggedUser = ({ event, eventStatus, noBorders }) => {
     return null
 
   const subEvent = event.subEvents.find(({ id }) => id === eventUser.subEventId)
+  // TODO СДЕЛАТЬ ПРОВЕРКУ НА ТО ЧТО ВАРИАНТ УЧАСТИЯ СУЩЕСТВУЕТ, иначе вылетает ошибка
   const eventPriceForLoggedUser = eventPriceByStatus(subEvent, userStatus)
 
   if (eventPriceForLoggedUser === 0) return null
