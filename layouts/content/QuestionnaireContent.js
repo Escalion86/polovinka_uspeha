@@ -63,6 +63,8 @@ const QuestionnaireContent = (props) => {
   const setSelfRole = loggedUserActiveRole?.setSelfRole
   const isLoggedUserDev = loggedUserActiveRole?.dev
 
+  const [isImageLoading, setIsImageLoading] = useState(false)
+
   const setUserInUsersState = useSetRecoilState(userEditSelector)
 
   const [firstName, setFirstName] = useState(
@@ -327,15 +329,20 @@ const QuestionnaireContent = (props) => {
     }
   }, [modalsFunc])
 
-  const buttonDisabled = !formChanged || loggedUserActive.status === 'ban'
+  const buttonDisabled =
+    !formChanged || loggedUserActive.status === 'ban' || isImageLoading
 
   return (
     <div className="flex flex-col flex-1 h-full max-w-full max-h-full min-h-full">
       <div className="flex items-center w-full p-1 gap-x-1">
         <div className="flex flex-row-reverse flex-1">
-          {!buttonDisabled && (
+          {!buttonDisabled ? (
             <span className="leading-4 text-right tablet:text-lg">
               Чтобы изменения вступили в силу нажмите:
+            </span>
+          ) : (
+            <span className="leading-4 text-right text-gray-500 tablet:text-lg">
+              Идет загрузка фотографии...
             </span>
           )}
         </div>
@@ -369,6 +376,8 @@ const QuestionnaireContent = (props) => {
             }}
             // required
             error={errors.images}
+            onLoading={() => setIsImageLoading(true)}
+            onLoaded={() => setIsImageLoading(false)}
           />
           <Input
             label="Имя"
