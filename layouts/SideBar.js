@@ -87,9 +87,12 @@ const MenuItem = ({ item, active = false, badgeNum }) => {
             </span>
           )}
           {typeof badgeNum === 'number' && badgeNum > 0 && (
-            <div className="flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger">
-              {badgeNum <= 99 ? badgeNum : '!'}
-            </div>
+            <>
+              <div className="flex-1" />
+              <div className="flex items-center justify-center w-5 h-5 -mr-2 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger">
+                {badgeNum <= 99 ? badgeNum : '!'}
+              </div>
+            </>
           )}
         </div>
       </a>
@@ -108,13 +111,19 @@ const Group = ({
   activePage,
   onChangeMenuIndex,
 }) => {
-  const { groupHidden, pages, groupBadge } = useRecoilValue(
+  const { groupHidden, pagesIdsWithBadge } = useRecoilValue(
     badgesGroupSelector(item.id)
   )
   // const items = item.items.filter(({ id }) => !hiddenMenus.includes(id))
 
   if (groupHidden) return null
-  const items = pages
+  console.log('pagesIdsWithBadge :>> ', pagesIdsWithBadge)
+  const items = item.items
+  console.log('items :>> ', items)
+  const groupBadge = items.reduce((total, { id }) => {
+    if (pagesIdsWithBadge[id]) return total + pagesIdsWithBadge[id]
+    return total
+  }, 0)
   const Component =
     items.length === 1
       ? (props) => <Link {...props} shallow />
@@ -193,7 +202,7 @@ const Group = ({
                 key={'menu' + subitem.id}
                 item={subitem}
                 active={activePage === subitem.href}
-                // badge={itemsBadges[subitem.id]}
+                badgeNum={pagesIdsWithBadge[subitem.id]}
               />
             ))}
           </m.div>

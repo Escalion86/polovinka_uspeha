@@ -1256,8 +1256,8 @@ export const DEFAULT_ROLES = [
     },
     instruments: {
       anonsTextGenerator: true,
-      anonsEventImageGenerator: false,
-      anonsEventListImageGenerator: false,
+      anonsEventImageGenerator: true,
+      anonsEventListImageGenerator: true,
       export: true,
       newsletter: false,
       imageConstructor: false,
@@ -1711,7 +1711,7 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.anonsTextGenerator,
   },
-  toolsEventAnons: {
+  toolsEventAnonsInstagram: {
     Component: ToolsEventAnonsInstagramContent,
     name: 'Инструменты / Редактор анонса в Instagram',
     accessRoles: ['moder', 'supervisor', 'dev'],
@@ -2049,10 +2049,10 @@ export const pages = [
     id: 71,
     group: 10,
     name: 'Редактор анонса в Instagram',
-    href: 'toolsEventAnons',
+    href: 'toolsEventAnonsInstagram',
     icon: faImage,
-    accessRoles: CONTENTS['toolsEventAnons'].accessRoles,
-    roleAccess: CONTENTS['toolsEventAnons'].roleAccess,
+    accessRoles: CONTENTS['toolsEventAnonsInstagram'].accessRoles,
+    roleAccess: CONTENTS['toolsEventAnonsInstagram'].roleAccess,
   },
   {
     id: 72,
