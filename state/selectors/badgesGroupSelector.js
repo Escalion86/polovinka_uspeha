@@ -6,25 +6,48 @@ export const badgesGroupSelector = selectorFamily({
   get:
     (groupId) =>
     ({ get }) => {
-      const groupPages = pages.filter(({ group }) => groupId === group)
+      // const groupPages = pages.filter(({ group }) => groupId === group)
 
-      let groupBadge = 0
+      // let groupBadge = 0
+      const pagesIdsWithBadge = {}
 
-      const groupPagesWithBadgesNum = groupPages
-        .filter(({ hidden }) => !hidden || !get(hidden))
-        .map((page) => {
-          if (page.badge) {
-            const pageBadge = get(page.badge)
-            groupBadge += pageBadge
-            return { ...page, badgeNum: pageBadge }
-          }
-          return page
-        })
+      const groupPagesWithBadgesNum = pages.filter(
+        ({ group, hidden }) => groupId === group && (!hidden || !get(hidden))
+      )
+      // .map((page) => {
+      //   if (page.badge) {
+      //     const pageBadge = get(page.badge)
+      //     pagesIdsWithBadge[page.id] = pageBadge
+      //     // groupBadge += pageBadge
+      //     return { ...page, badgeNum: pageBadge }
+      //   }
+      //   return page
+      // })
+
+      groupPagesWithBadgesNum.forEach((page) => {
+        if (page.badge) {
+          const pageBadge = get(page.badge)
+          pagesIdsWithBadge[page.id] = pageBadge
+          // groupBadge += pageBadge
+          // return { ...page, badgeNum: pageBadge }
+        }
+        // return page
+      })
 
       if (groupPagesWithBadgesNum.length === 0)
-        return { groupHidden: true, pages: [], groupBadge }
+        return {
+          groupHidden: true,
+          // pages: [],
+          // groupBadge,
+          pagesIdsWithBadge,
+        }
 
-      return { groupHidden: false, pages: groupPagesWithBadgesNum, groupBadge }
+      return {
+        groupHidden: false,
+        // pages: groupPagesWithBadgesNum,
+        // groupBadge,
+        pagesIdsWithBadge,
+      }
       // const groupsBadges = {}
       // pagesGroups.forEach(({ id, name, icon, access }) => {
       //   groupsBadges[id] = groups[id].reduce((result, id) => {

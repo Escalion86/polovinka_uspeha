@@ -20,16 +20,18 @@ const EventKeyValueItem = ({ objKey, value }) =>
       }}
     />
   ) : objKey === 'subEvents' ? (
-    value.map((props) => (
-      <SubEvent
-        key={props.id}
-        smallMargin
-        // onItemChange={onItemChange}
-        // deleteItem={subEvents?.length > 1 ? deleteItem : undefined}
-        // addItem={addItem}
-        {...props}
-      />
-    ))
+    <div className="flex flex-col">
+      {value.map((props) => (
+        <SubEvent
+          key={props.id}
+          smallMargin
+          // onItemChange={onItemChange}
+          // deleteItem={subEvents?.length > 1 ? deleteItem : undefined}
+          // addItem={addItem}
+          {...props}
+        />
+      ))}
+    </div>
   ) : objKey === 'directionId' ? (
     <DirectionTitleById directionId={value} className="flex-1" />
   ) : objKey === 'tags' ? (

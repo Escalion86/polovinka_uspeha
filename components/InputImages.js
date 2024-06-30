@@ -33,6 +33,8 @@ const InputImages = ({
   paddingY = true,
   paddingX,
   noBorder,
+  onLoading,
+  onLoaded,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const { imageFolder } = useRecoilValue(locationPropsSelector)
@@ -51,6 +53,7 @@ const InputImages = ({
         else {
           modalsFunc.cropImage(newImage, img, aspect, (newImage) => {
             setAddingImage(true)
+            if (typeof onLoading === 'function') onLoading()
             sendImage(
               newImage,
               (imagesUrls) => onChange([...images, ...imagesUrls]),
@@ -72,7 +75,10 @@ const InputImages = ({
     }
   }
 
-  useEffect(() => setAddingImage(false), [images])
+  useEffect(() => {
+    setAddingImage(false)
+    if (typeof onLoaded === 'function') onLoaded()
+  }, [images])
 
   return (
     <InputWrapper
