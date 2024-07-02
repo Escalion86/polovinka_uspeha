@@ -435,11 +435,13 @@ const modalsFuncGenerator = (
                     subEventId
                   )
                 ),
-              () =>
+              (event, status, comment, subEventId) =>
                 addModal(
                   require('./modalsFunc/eventAfterSignUpMessageFunc').default(
                     event,
-                    status
+                    status,
+                    comment,
+                    subEventId
                   )
                 )
             )

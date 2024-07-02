@@ -6,7 +6,7 @@ import { faCalendarPlus } from '@fortawesome/free-regular-svg-icons/faCalendarPl
 
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 
-const eventAfterSignUpMessageFunc = (event, status) => {
+const eventAfterSignUpMessageFunc = (event, status, comment, subEventId) => {
   const isReserve = status === 'reserve'
 
   const EventAfterSignUpMessageModal = ({
@@ -28,6 +28,10 @@ const eventAfterSignUpMessageFunc = (event, status) => {
     // }, [check, event.warning])
 
     // if (!event.warning) return null
+    const subEvent =
+      event?.subEvents?.length > 1 && subEventId
+        ? event?.subEvents.find(({ id }) => id === subEventId)
+        : undefined
 
     return (
       <FormWrapper>
@@ -44,6 +48,11 @@ const eventAfterSignUpMessageFunc = (event, status) => {
           showDayOfWeek
           fullMonth
         />
+        {subEvent && (
+          <div>
+            Вариант записи на мероприятие: <strong>{subEvent.title}</strong>
+          </div>
+        )}
         {isReserve ? (
           <div>
             Вы записались в резерв мероприятия, а это значит, что на текущий
