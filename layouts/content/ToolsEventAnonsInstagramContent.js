@@ -16,9 +16,11 @@ import frames from '@components/frames/frames'
 import base64ToBlob from '@helpers/base64ToBlob'
 import { sendImage } from '@helpers/cloudinary'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import textArrayFunc from '@helpers/textArrayFunc'
+import { modalsFuncAtom } from '@state/atoms'
 import eventsAtom from '@state/atoms/eventsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 
@@ -36,18 +38,17 @@ const save = async (name) => {
 }
 
 const ToolsEventAnonsInstagramContent = () => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
   const { imageFolder } = useRecoilValue(locationPropsSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
   const rerender = () => setRerenderState((state) => !state)
 
-  const [customMode, setCustomMode] = useState(false)
-  const [customDate1, setCustomDate1] = useState('')
-  const [customDate2, setCustomDate2] = useState('')
-  const [customText, setCustomText] = useState('')
+  const [date1, setDate1] = useState('')
+  const [date2, setDate2] = useState('')
+  const [text, setText] = useState('')
 
-  const [eventId, setEventId] = useState(null)
   const [frameId, setFrameId] = useState(null)
   const [frameColor, setFrameColor] = useState('#ffffff')
 
@@ -67,50 +68,16 @@ const ToolsEventAnonsInstagramContent = () => {
     if (frame) Frame = frame.Frame
   }
 
-  const event = eventId ? events.find(({ _id }) => _id === eventId) : undefined
-
-  const textSplit = customMode
-    ? customText.split(' ')
-    : event
-      ? String(event?.title).split(' ')
-      : []
-
-  var chars = 0
-  var line = 0
-  var textArray = []
-
-  textSplit.forEach((word) => {
-    const wordLength = word.length
-    if (chars + wordLength > 1900 / fontSize) {
-      ++line
-      chars = 0
-    }
-    chars += wordLength
-    textArray[line] = textArray[line] ? textArray[line] + ' ' + word : word
-  })
-
-  const [dayStart, monthStart, weekStart] = dateToDateTimeStr(
-    event?.dateStart,
-    true,
-    true,
-    false,
-    true,
-    true
-  )
-  const [dayEnd, monthEnd] = dateToDateTimeStr(
-    event?.dateEnd,
-    true,
-    true,
-    false,
-    true,
-    true
+  var textArray = useMemo(
+    () => textArrayFunc(text, fontSize, 1900),
+    [text, fontSize]
   )
 
   const aspect = 1
 
   return (
-    <div className="h-full max-h-full px-1 overflow-y-auto">
-      <ComboBox
+    <div className="h-full max-h-full px-1 py-1 overflow-y-auto">
+      {/* <ComboBox
         label="Режим"
         className="max-w-[180px]"
         items={[
@@ -119,54 +86,90 @@ const ToolsEventAnonsInstagramContent = () => {
         ]}
         value={customMode ? 'true' : 'false'}
         onChange={(value) => setCustomMode(value === 'true')}
+      /> */}
+      <Button
+        name="Заполнить из мероприятия"
+        onClick={() =>
+          modalsFunc.selectEvents(
+            [],
+            {},
+            (data) => {
+              const event = data
+                ? events.find(({ _id }) => _id === data[0])
+                : undefined
+
+              const [dayStart, monthStart, weekStart] = dateToDateTimeStr(
+                event?.dateStart,
+                true,
+                true,
+                false,
+                true,
+                true
+              )
+              const [dayEnd, monthEnd] = dateToDateTimeStr(
+                event?.dateEnd,
+                true,
+                true,
+                false,
+                true,
+                true
+              )
+
+              setText(String(event?.title))
+              setDate1(
+                `${dayStart} ${monthStart}${
+                  dayStart === dayEnd && monthStart === monthEnd ? '' : ' -'
+                }`
+              )
+              setDate2(
+                dayStart === dayEnd && monthStart === monthEnd
+                  ? `(${weekStart})`
+                  : `${dayEnd} ${monthEnd}`
+              )
+              // setTime(
+              //   dayStart === dayEnd && monthStart === monthEnd
+              //     ? `${hourStart}:${minuteStart} - ${hourEnd}:${minuteEnd}`
+              //     : `${getDaysBetween(event?.dateEnd, event?.dateStart, true, false, true, 1)}`
+              // )
+            },
+            null,
+            null,
+            1,
+            false
+          )
+        }
       />
       <div className="flex flex-wrap gap-x-1">
-        {customMode ? (
-          <div className="flex flex-wrap w-full gap-1">
-            <Input
-              label="Дата 1 строка"
-              type="text"
-              className="w-44"
-              // inputClassName="w-16"
-              value={customDate1}
-              onChange={setCustomDate1}
-              // noMargin
-            />
-            <Input
-              label="Дата 2 строка"
-              type="text"
-              className="w-44"
-              // inputClassName="w-16"
-              value={customDate2}
-              onChange={setCustomDate2}
-              // noMargin
-            />
-            <Input
-              label="Текст"
-              type="text"
-              className="w-60"
-              // inputClassName="w-16"
-              value={customText}
-              onChange={setCustomText}
-              fullWidth
-              noMargin
-            />
-          </div>
-        ) : (
-          <SelectEvent
-            label="Мероприятие"
-            selectedId={eventId}
-            onChange={setEventId}
-            className="w-full"
-            // required
-            // showEventUsersButton
-            // showPaymentsButton
-            // showEditButton
-            // clearButton={!isEventClosed && !fixedEventId}
-            // readOnly={isEventClosed}
-            // readOnly={fixedEventId}
+        <div className="flex flex-wrap w-full gap-x-1 gap-y-1.5">
+          <Input
+            label="Дата 1 строка"
+            type="text"
+            className="w-44"
+            // inputClassName="w-16"
+            value={date1}
+            onChange={setDate1}
+            // noMargin
           />
-        )}
+          <Input
+            label="Дата 2 строка"
+            type="text"
+            className="w-44"
+            // inputClassName="w-16"
+            value={date2}
+            onChange={setDate2}
+            // noMargin
+          />
+          <Input
+            label="Текст"
+            type="text"
+            className="w-60"
+            // inputClassName="w-16"
+            value={text}
+            onChange={setText}
+            fullWidth
+            noMargin
+          />
+        </div>
         <Templates
           aspect={aspect}
           tool="anonsinstagram"
@@ -332,9 +335,7 @@ const ToolsEventAnonsInstagramContent = () => {
       <div className="flex items-center gap-x-2">
         <Button
           name="Сохранить"
-          onClick={() =>
-            save('Анонс' + (event?.title ? ' ' + event?.title : ''))
-          }
+          onClick={() => save('Анонс' + (text ? ' ' + text : ''))}
         />
         <div>Картинка 1080х1080</div>
       </div>
@@ -351,96 +352,81 @@ const ToolsEventAnonsInstagramContent = () => {
           >
             <SvgBackgroundComponent {...backgroundProps} />
             <Frame fill={frameColor} />
-            {customMode || (dayStart && monthStart) ? (
-              <>
+            <text
+              // key={textLine + lineNum}
+              x={startX}
+              y={dateStartY}
+              fontSize={dateFontSize}
+              fill={dateColor}
+              // fontWeight="bold"
+              textAnchor="middle"
+              fontFamily="AdleryProSwash"
+              // className="font-adleryProSwash"
+            >
+              {date1}
+            </text>
+            {date2 && (
+              <text
+                // key={textLine + lineNum}
+                x={startX}
+                y={dateStartY + dateFontSize}
+                fontSize={dateFontSize}
+                fill={dateColor}
+                // fontWeight="bold"
+                textAnchor="middle"
+                fontFamily="AdleryProSwash"
+                // className="font-adleryProSwash"
+              >
+                {date2}
+              </text>
+            )}
+            {textArray.map((textLine, lineNum) => {
+              // ++addedLines
+              return (
                 <text
-                  // key={textLine + lineNum}
+                  key={textLine + lineNum}
                   x={startX}
-                  y={dateStartY}
-                  fontSize={dateFontSize}
-                  fill={dateColor}
+                  y={
+                    startY +
+                    lineNum * fontSize -
+                    ((textArray.length - 1) * fontSize) / 2
+                  }
+                  fontSize={fontSize}
+                  fill={anonsColor}
                   // fontWeight="bold"
                   textAnchor="middle"
-                  fontFamily="AdleryProSwash"
-                  // className="font-adleryProSwash"
+                  // className="font-adlery"
+                  fontFamily="AdleryProBlockletter" //"Enchants"
                 >
-                  {customMode
-                    ? customDate1
-                    : `${dayStart} ${monthStart}${
-                        dayStart === dayEnd && monthStart === monthEnd
-                          ? ''
-                          : ' -'
-                      }`}
+                  {/* {event.title} */}
+                  {/* Катание на лимузине по елкам */}
+                  {textLine}
                 </text>
-                {(!customMode || customDate2) && (
-                  <text
-                    // key={textLine + lineNum}
-                    x={startX}
-                    y={dateStartY + dateFontSize}
-                    fontSize={dateFontSize}
-                    fill={dateColor}
-                    // fontWeight="bold"
-                    textAnchor="middle"
-                    fontFamily="AdleryProSwash"
-                    // className="font-adleryProSwash"
-                  >
-                    {customMode
-                      ? customDate2
-                      : dayStart === dayEnd && monthStart === monthEnd
-                        ? `(${weekStart})`
-                        : `${dayEnd} ${monthEnd}`}
-                  </text>
-                )}
-              </>
-            ) : null}
-            {(customMode || eventId) &&
-              textArray.map((textLine, lineNum) => {
-                // ++addedLines
-                return (
-                  <text
-                    key={textLine + lineNum}
-                    x={startX}
-                    y={
-                      startY +
-                      lineNum * fontSize -
-                      ((textArray.length - 1) * fontSize) / 2
-                    }
-                    fontSize={fontSize}
-                    fill={anonsColor}
-                    // fontWeight="bold"
-                    textAnchor="middle"
-                    // className="font-adlery"
-                    fontFamily="AdleryProBlockletter" //"Enchants"
-                  >
-                    {/* {event.title} */}
-                    {/* Катание на лимузине по елкам */}
-                    {textLine}
-                  </text>
-                  // <text
-                  //   key={textLine + lineNum}
-                  //   x={startX + 90 + startXadd + 50}
-                  //   y={
-                  //     startY +
-                  //     338 +
-                  //     titleGap +
-                  //     startYadd +
-                  //     10 +
-                  //     index * gap +
-                  //     (index + 1) * dateTextGap +
-                  //     index * dateFontSize +
-                  //     // 20 +
-                  //     addedLines * fontSize
-                  //     // lineNum * lineHeight
-                  //   }
-                  //   fontSize={fontSize}
-                  //   fill={textColor}
-                  //   width={800}
-                  //   className="max-w-[800px]"
-                  // >
-                  //   {textLine}
-                  // </text>
-                )
-              })}
+                // <text
+                //   key={textLine + lineNum}
+                //   x={startX + 90 + startXadd + 50}
+                //   y={
+                //     startY +
+                //     338 +
+                //     titleGap +
+                //     startYadd +
+                //     10 +
+                //     index * gap +
+                //     (index + 1) * dateTextGap +
+                //     index * dateFontSize +
+                //     // 20 +
+                //     addedLines * fontSize
+                //     // lineNum * lineHeight
+                //   }
+                //   fontSize={fontSize}
+                //   fill={textColor}
+                //   width={800}
+                //   className="max-w-[800px]"
+                // >
+                //   {textLine}
+                // </text>
+              )
+            })}
             {/* <SvgFrame1 width="1080" height="1080" /> */}
             {/* <svg
             version="1.0"
