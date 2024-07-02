@@ -81,7 +81,8 @@ const eventSignUpFunc = (
           }
         },
         (data) => {
-          if (typeof onSuccess === 'function') onSuccess(data)
+          if (typeof onSuccess === 'function')
+            onSuccess(event, status, comment, subEventId)
         }
       )
     }

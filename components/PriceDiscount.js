@@ -71,7 +71,8 @@ const PriceDiscount = ({
           ]
             ? ' от'
             : !priceForStatus &&
-              !!item.price && (
+              !!item.price &&
+              item.price / 100 !== eventPriceForUser && (
                 <div
                   className={cn(
                     'text-sm laptop:text-base text-center whitespace-normal',

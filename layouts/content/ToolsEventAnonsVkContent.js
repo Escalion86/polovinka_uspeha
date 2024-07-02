@@ -2,10 +2,8 @@
 
 import Button from '@components/Button'
 import ColorPicker from '@components/ColorPicker'
-import ComboBox from '@components/ComboBox'
 import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
-import { SelectEvent } from '@components/SelectItem'
 import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
@@ -14,9 +12,12 @@ import Templates from '@components/Templates'
 import base64ToBlob from '@helpers/base64ToBlob'
 import { sendImage } from '@helpers/cloudinary'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import getDaysBetween from '@helpers/getDaysBetween'
+import textArrayFunc from '@helpers/textArrayFunc'
+import { modalsFuncAtom } from '@state/atoms'
 import eventsAtom from '@state/atoms/eventsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 
@@ -34,26 +35,25 @@ const save = async (name) => {
 }
 
 const ToolsEventAnonsVkContent = () => {
+  const modalsFunc = useRecoilValue(modalsFuncAtom)
   const events = useRecoilValue(eventsAtom)
   const { imageFolder } = useRecoilValue(locationPropsSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
   const rerender = () => setRerenderState((state) => !state)
 
-  const [customMode, setCustomMode] = useState(false)
-  const [customDate, setCustomDate] = useState('')
-  const [customTime, setCustomTime] = useState('')
-  const [customText, setCustomText] = useState('')
-
-  const [eventId, setEventId] = useState(null)
+  const [date1, setDate1] = useState('')
+  const [date2, setDate2] = useState('')
+  const [time, setTime] = useState('')
+  const [text, setText] = useState('')
 
   const [startX, setStartX] = useState(1014)
-  const [startY, setStartY] = useState(780)
+  const [startY, setStartY] = useState(800)
   const [dateStartY, setDateStartY] = useState(500)
   const [dateColor, setDateColor] = useState('#C7A082')
-  const [timeStartY, setTimeStartY] = useState(1110)
+  const [timeStartY, setTimeStartY] = useState(1120)
   const [timeColor, setTimeColor] = useState('#C7A082')
-  const [lineStartY, setLineStartY] = useState(1000)
+  const [lineStartY, setLineStartY] = useState(1010)
   const [lineColor, setLineColor] = useState('#C7A082')
   const [anonsColor, setAnonsColor] = useState('#000000')
   const [backgroundProps, setBackgroundProps] = useState()
@@ -61,83 +61,114 @@ const ToolsEventAnonsVkContent = () => {
   const [dateFontSize, setDateFontSize] = useState(100)
   const [timeFontSize, setTimeFontSize] = useState(100)
 
-  const event = eventId ? events.find(({ _id }) => _id === eventId) : undefined
-
-  const textSplit = customMode
-    ? customText.split(' ')
-    : event
-      ? String(event?.title).split(' ')
-      : []
-
-  var chars = 0
-  var line = 0
-  var textArray = []
-
-  textSplit.forEach((word) => {
-    const wordLength = word.length
-    if (chars + wordLength > 2000 / fontSize) {
-      ++line
-      chars = 0
-    }
-    chars += wordLength
-    textArray[line] = textArray[line] ? textArray[line] + ' ' + word : word
-  })
-
-  const [dayStart, monthStart, weekStart, yearStart, hourStart, minuteStart] =
-    dateToDateTimeStr(event?.dateStart, true, true, false, true, true)
-  const [dayEnd, monthEnd, weekEnd, yearEnd, hourEnd, minuteEnd] =
-    dateToDateTimeStr(event?.dateEnd, true, true, false, true, true)
+  var textArray = useMemo(
+    () => textArrayFunc(text, fontSize, 2000),
+    [text, fontSize]
+  )
 
   const aspect = 2028 / 1536
 
   return (
-    <div className="h-full max-h-full px-1 overflow-y-auto">
-      <ComboBox
-        label="Режим"
-        className="max-w-[180px]"
-        items={[
-          { value: 'true', name: 'Ручной ввод' },
-          { value: 'false', name: 'Выбор мероприятия' },
-        ]}
-        value={customMode ? 'true' : 'false'}
-        onChange={(value) => setCustomMode(value === 'true')}
-      />
-
+    <div className="h-full max-h-full px-1 py-1 overflow-y-auto">
       <div className="flex flex-wrap gap-x-1">
-        {customMode ? (
-          <div className="flex flex-wrap w-full gap-1">
-            <Input
-              label="Дата"
-              type="text"
-              className="w-44"
-              value={customDate}
-              onChange={setCustomDate}
-            />
-            <Input
-              label="Время"
-              type="text"
-              className="w-44"
-              value={customTime}
-              onChange={setCustomTime}
-            />
-            <Input
-              label="Текст"
-              type="text"
-              className="w-60"
-              value={customText}
-              onChange={setCustomText}
-              fullWidth
-              noMargin
-            />
-          </div>
-        ) : (
-          <SelectEvent
-            label="Мероприятие"
-            selectedId={eventId}
-            onChange={setEventId}
-            className="w-full"
+        <Button
+          name="Заполнить из мероприятия"
+          onClick={() =>
+            modalsFunc.selectEvents(
+              [],
+              {},
+              (data) => {
+                const event = data
+                  ? events.find(({ _id }) => _id === data[0])
+                  : undefined
+
+                const [
+                  dayStart,
+                  monthStart,
+                  weekStart,
+                  yearStart,
+                  hourStart,
+                  minuteStart,
+                ] = dateToDateTimeStr(
+                  event?.dateStart,
+                  true,
+                  true,
+                  false,
+                  true,
+                  false
+                )
+                const [dayEnd, monthEnd, weekEnd, yearEnd, hourEnd, minuteEnd] =
+                  dateToDateTimeStr(
+                    event?.dateEnd,
+                    true,
+                    true,
+                    false,
+                    true,
+                    false
+                  )
+
+                setText(String(event?.title))
+                setDate1(
+                  `${dayStart}${monthStart === monthEnd && dayStart !== dayEnd ? '' : ` ${monthStart}`}${
+                    dayStart === dayEnd && monthStart === monthEnd
+                      ? ` (${weekStart})`
+                      : ` - ${dayEnd} ${monthEnd} (${weekStart} - ${weekEnd})`
+                  }`
+                )
+                setDate2('')
+                setTime(
+                  dayStart === dayEnd && monthStart === monthEnd
+                    ? `${hourStart}:${minuteStart} - ${hourEnd}:${minuteEnd}`
+                    : `${getDaysBetween(event?.dateEnd, event?.dateStart, true, false, true, 1)}`
+                )
+              },
+              null,
+              null,
+              1,
+              false
+            )
+          }
+        />
+        <div className="flex flex-wrap w-full gap-x-1 gap-y-1.5">
+          <Input
+            label="Дата 1 строка"
+            type="text"
+            className="w-44"
+            value={date1}
+            onChange={setDate1}
           />
-        )}
+          <Input
+            label="Дата 2 строка"
+            type="text"
+            className="w-44"
+            value={date2}
+            onChange={setDate2}
+          />
+          <Input
+            label="Строка внизу"
+            type="text"
+            className="w-44"
+            value={time}
+            onChange={setTime}
+          />
+          <Input
+            label="Текст"
+            type="text"
+            className="w-60"
+            value={text}
+            onChange={setText}
+            fullWidth
+            noMargin
+          />
+        </div>
+        {/* ) : ( */}
+        {/* <SelectEvent
+          label="Мероприятие"
+          selectedId={eventId}
+          onChange={setEventId}
+          className="w-full"
+        /> */}
+        {/* )} */}
       </div>
       <Templates
         aspect={aspect}
@@ -354,9 +385,7 @@ const ToolsEventAnonsVkContent = () => {
       <div className="flex items-center gap-x-2">
         <Button
           name="Сохранить"
-          onClick={() =>
-            save('Анонс' + (event?.title ? ' ' + event?.title : ''))
-          }
+          onClick={() => save('Анонс' + (text ? ' ' + text : ''))}
         />
         <div>Картинка 2028х1536</div>
       </div>
@@ -395,60 +424,65 @@ const ToolsEventAnonsVkContent = () => {
               strokeWidth={4}
             />
             {/* <SvgBackgroundComponent {...backgroundProps} /> */}
-            {customMode || (dayStart && monthStart) ? (
-              <>
+            <text
+              x={startX}
+              y={dateStartY - (date2 ? 50 : 0)}
+              fontSize={dateFontSize}
+              fill={dateColor}
+              textAnchor="middle"
+              fontFamily="Lora"
+              className="font-bold uppercase"
+              // className="font-bold uppercase font-lora"
+            >
+              {date1}
+            </text>
+            <text
+              x={startX}
+              y={timeStartY}
+              fontSize={timeFontSize}
+              fill={timeColor}
+              textAnchor="middle"
+              fontFamily="Lora"
+              className="font-bold uppercase"
+              // className="font-bold uppercase font-lora"
+            >
+              {time}
+            </text>
+            {date2 && (
+              <text
+                x={startX}
+                y={dateStartY + 50}
+                fontSize={dateFontSize}
+                fill={dateColor}
+                textAnchor="middle"
+                fontFamily="Lora"
+                className="font-bold uppercase"
+                // className="font-bold uppercase font-lora"
+              >
+                {date2}
+              </text>
+            )}
+            {textArray.map((textLine, lineNum) => {
+              return (
                 <text
+                  key={textLine + lineNum}
                   x={startX}
-                  y={dateStartY}
-                  fontSize={dateFontSize}
-                  fill={dateColor}
+                  y={
+                    startY +
+                    lineNum * fontSize -
+                    ((textArray.length - 1) * fontSize) / 2
+                  }
+                  fontSize={fontSize}
+                  fill={anonsColor}
                   textAnchor="middle"
                   fontFamily="Lora"
                   className="font-bold uppercase"
                   // className="font-bold uppercase font-lora"
                 >
-                  {customMode
-                    ? customDate
-                    : `${dayStart} ${monthStart} (${weekStart})`}
+                  {textLine}
                 </text>
-                <text
-                  x={startX}
-                  y={timeStartY}
-                  fontSize={timeFontSize}
-                  fill={timeColor}
-                  textAnchor="middle"
-                  fontFamily="Lora"
-                  className="font-bold uppercase"
-                  // className="font-bold uppercase font-lora"
-                >
-                  {customMode
-                    ? customTime
-                    : `${hourStart}:${minuteStart} - ${hourEnd}:${minuteEnd}`}
-                </text>
-              </>
-            ) : null}
-            {(customMode || eventId) &&
-              textArray.map((textLine, lineNum) => {
-                return (
-                  <text
-                    key={textLine + lineNum}
-                    x={startX}
-                    y={
-                      startY +
-                      lineNum * fontSize -
-                      ((textArray.length - 1) * fontSize) / 2
-                    }
-                    fontSize={fontSize}
-                    fill={anonsColor}
-                    textAnchor="middle"
-                    fontFamily="Lora"
-                    className="font-bold uppercase"
-                    // className="font-bold uppercase font-lora"
-                  >
-                    {textLine}
-                  </text>
-                )
-              })}
+              )
+            })}
           </svg>
         </div>
         <img

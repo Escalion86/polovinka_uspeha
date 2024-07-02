@@ -32,6 +32,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
+import eventLoggedUserByEventIdSelector from '@state/selectors/eventLoggedUserByEventIdSelector'
 
 const NamesOfUsersAssistantsOfEventComponent = ({ eventId }) => {
   const users = useRecoilValue(eventAssistantsSelector(eventId))
@@ -92,6 +93,7 @@ const EventViewModal = ({
 }) => {
   const { eventId } = data
   const event = useRecoilValue(eventFullAtomAsync(eventId))
+  const eventUser = useRecoilValue(eventLoggedUserByEventIdSelector(eventId))
   const subEventSum = useRecoilValue(subEventsSumOfEventSelector(eventId))
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
@@ -121,6 +123,10 @@ const EventViewModal = ({
         ОШИБКА! Мероприятие не найдено!
       </div>
     )
+
+  const subEvent = eventUser?.subEventId
+    ? event?.subEvents.find(({ id }) => id === eventUser?.subEventId)
+    : undefined
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -243,11 +249,26 @@ const EventViewModal = ({
         </div>
         <Divider thin light />
         <div className="flex flex-col items-center w-full phoneH:justify-between phoneH:flex-row">
-          <PriceDiscount
-            item={subEventSum}
-            className="px-2"
-            prefix="Стоимость:"
-          />
+          {subEvent ? (
+            <>
+              {event?.subEvents?.length > 1 && (
+                <div>
+                  Вариант записи на мероприятие:{' '}
+                  <strong>{subEvent.title}</strong>
+                </div>
+              )}
+              <div className="flex gap-x-1">
+                <div>Стоимость:</div>
+                <PriceDiscount item={subEvent} />
+              </div>
+            </>
+          ) : (
+            <PriceDiscount
+              item={subEventSum}
+              className="px-2"
+              prefix="Стоимость:"
+            />
+          )}
           <EventButtonSignIn eventId={event?._id} noBorders />
         </div>
       </div>

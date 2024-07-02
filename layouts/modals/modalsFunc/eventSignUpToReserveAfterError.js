@@ -44,7 +44,8 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
           }
         },
         () => {
-          if (typeof onSuccess === 'function') onSuccess()
+          if (typeof onSuccess === 'function')
+            onSuccess(event, 'reserve', comment, subEventId)
         }
       )
     }
@@ -58,7 +59,21 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
 
     useEffect(() => refreshEventState(), [])
 
-    return <></>
+    const subEvent =
+      event?.subEvents?.length > 1 && subEventId
+        ? event?.subEvents.find(({ id }) => id === subEventId)
+        : undefined
+
+    return (
+      <>
+        {subEvent && (
+          <div>
+            Выбран вариант записи на мероприятие:{' '}
+            <strong>{subEvent.title}</strong>
+          </div>
+        )}
+      </>
+    )
   }
 
   return {
