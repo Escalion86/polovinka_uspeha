@@ -8,6 +8,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
+import { faPencil } from '@fortawesome/free-solid-svg-icons'
 
 const SelectTemplate = ({
   selectedTemplate,
@@ -106,6 +107,26 @@ const SelectTemplate = ({
               )} */}
               <div className="text-sm border-t border-gray-300">
                 {template.name}
+              </div>
+              <div className="absolute top-0 right-0 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
+                <FontAwesomeIcon
+                  className="h-4 text-orange-500"
+                  icon={faPencil}
+                  onClick={() => {
+                    modalsFunc.template.rename(
+                      template._id,
+                      template.name,
+                      (renamedTemplate) =>
+                        setTemplates((state) =>
+                          state.map((template) =>
+                            template._id === renamedTemplate._id
+                              ? renamedTemplate
+                              : template
+                          )
+                        )
+                    )
+                  }}
+                />
               </div>
             </m.div>
           ))}

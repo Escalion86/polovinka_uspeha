@@ -718,6 +718,15 @@ const modalsFuncGenerator = (
           )
         )
       },
+      rename: (templateId, oldName, onSuccess) => {
+        addModal(
+          require('./modalsFunc/renameTemplateFunc').default(
+            templateId,
+            oldName,
+            onSuccess
+          )
+        )
+      },
     },
     browseLocation: () =>
       addModal(require('./modalsFunc/browseLocationFunc').default()),

@@ -72,6 +72,9 @@ const saveTemplateFunc = (tool, template, onSave, aspect) => {
           onSave && onSave(data)
           closeModal()
         }}
+        onRename={(data) => {
+          setSelectedTemplate(data)
+        }}
       />
       // <FormWrapper flex className="flex-col">
       //   <Input label="Название шаблона" value={name} onChange={setName} />

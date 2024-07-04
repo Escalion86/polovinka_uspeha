@@ -494,12 +494,12 @@ const SettingsRolesContent = (props) => {
               subItem="anonsTextGenerator"
             />
             <RoleItem
-              label="Редактор анонса мероприятия"
+              label="Редактор картинки анонса мероприятия"
               item="instruments"
               subItem="anonsEventImageGenerator"
             />
             <RoleItem
-              label="Редактор анонса списка мероприятий"
+              label="Редактор картинки анонса списка мероприятий"
               item="instruments"
               subItem="anonsEventListImageGenerator"
             />
