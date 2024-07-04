@@ -3,11 +3,14 @@ import { m } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
-import { getData } from '@helpers/CRUD'
+import { deleteData, getData } from '@helpers/CRUD'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
 import { useRecoilValue } from 'recoil'
+import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import useSnackbar from '@helpers/useSnackbar'
 
 const SelectTemplate = ({
   selectedTemplate,
@@ -29,6 +32,8 @@ const SelectTemplate = ({
   onSave,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const snackbar = useSnackbar()
+
   const [isLoading, setIsLoading] = useState(true)
 
   const [templates, setTemplates] = useState([])
@@ -106,6 +111,49 @@ const SelectTemplate = ({
               )} */}
               <div className="text-sm border-t border-gray-300">
                 {template.name}
+              </div>
+              <div className="absolute top-0 right-0 flex justify-end p-1 duration-200 transform bg-white rounded-bl-full cursor-pointer w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-right-5 laptop:group-hover:right-0 hover:scale-125">
+                <FontAwesomeIcon
+                  className="h-4 text-orange-500"
+                  icon={faPencil}
+                  onClick={() => {
+                    modalsFunc.template.rename(
+                      template._id,
+                      template.name,
+                      (renamedTemplate) =>
+                        setTemplates((state) =>
+                          state.map((template) =>
+                            template._id === renamedTemplate._id
+                              ? renamedTemplate
+                              : template
+                          )
+                        )
+                    )
+                  }}
+                />
+              </div>
+              <div className="absolute top-0 left-0 flex p-1 duration-200 transform bg-white rounded-br-full cursor-pointer w-7 h-7 laptop:-top-5 laptop:group-hover:top-0 laptop:-left-5 laptop:group-hover:left-0 hover:scale-125">
+                <FontAwesomeIcon
+                  className="h-4 text-danger"
+                  icon={faTrash}
+                  onClick={() =>
+                    modalsFunc.add({
+                      title: 'Удаление шаблона',
+                      text: `Вы действительно хотите удалить шаблон "${template.name}"?`,
+                      onConfirm: async () =>
+                        await deleteData(
+                          '/api/templates/' + template._id,
+                          () => {
+                            snackbar.success('Шаблон удален')
+                            setTemplates((state) =>
+                              state.filter(({ _id }) => template._id !== _id)
+                            )
+                          },
+                          () => snackbar.error('Не удалось удалить шаблон')
+                        ),
+                    })
+                  }
+                />
               </div>
             </m.div>
           ))}
