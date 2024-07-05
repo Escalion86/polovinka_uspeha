@@ -1,5 +1,6 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import { DEFAULT_ROLES } from '@helpers/constants'
+import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
 import padNum from '@helpers/padNum'
 import RemindDates from '@models/RemindDates'
@@ -156,7 +157,7 @@ export default async function handler(req, res) {
                 remindDatesToday
                   .map(
                     ({ name, date, comment }) =>
-                      `\n${name} (${date}) ${comment ? `(${comment})` : ''}`
+                      `\n${name} (${formatDate(date)}) ${comment ? `(${comment})` : ''}`
                   )
                   .join('')
             )
@@ -166,7 +167,7 @@ export default async function handler(req, res) {
                 remindDatesTomorow
                   .map(
                     ({ name, date, comment }) =>
-                      `\n${name} (${date}) ${comment ? `(${comment})` : ''}`
+                      `\n${name ? name : '[без названия]'} (${formatDate(date)}) ${comment ? `(${comment})` : ''}`
                   )
                   .join('')
             )
