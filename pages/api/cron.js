@@ -32,6 +32,11 @@ var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
   return days
 }
 
+const yearsBeetwenDates = (date1, date2) => {
+  const diff = new Date(date2) - new Date(date1)
+  return Math.abs(new Date(diff).getUTCFullYear() - 1969)
+}
+
 export default async function handler(req, res) {
   const { query, method, body } = req
   if (method === 'GET') {
@@ -145,9 +150,9 @@ export default async function handler(req, res) {
           const remindDates = await RemindDates.find({}).lean()
           remindDates.forEach((remindDate) => {
             const days = daysBeforeBirthday(remindDate.date, dateTimeNow)
-            console.log('days :>> ', days)
-            if (days === 0) remindDatesToday.push(remindDate)
-            if (days === 1) remindDatesTomorow.push(remindDate)
+            const years = yearsBeetwenDates(remindDate.date, dateTimeNow)
+            if (days === 0) remindDatesToday.push({ ...remindDate, years })
+            if (days === 1) remindDatesTomorow.push({ ...remindDate, years })
           })
 
           const remindDatesTextArray = []
@@ -156,8 +161,8 @@ export default async function handler(req, res) {
               '\u{2728} <b>События Половинки успеха сегодня</b>: ' +
                 remindDatesToday
                   .map(
-                    ({ name, date, comment }) =>
-                      `\n${name} (${formatDate(date)}) ${comment ? `(${comment})` : ''}`
+                    ({ name, date, comment, years }) =>
+                      `\n${name} (${textAge(years)} назад)${comment ? ` ${comment}` : ''}`
                   )
                   .join('')
             )
