@@ -144,6 +144,7 @@ export default async function handler(req, res) {
           const remindDates = await RemindDates.find({}).lean()
           remindDates.forEach((remindDate) => {
             const days = daysBeforeBirthday(remindDate.date, dateTimeNow)
+            console.log('days :>> ', days)
             if (days === 0) remindDatesToday.push(remindDate)
             if (days === 1) remindDatesTomorow.push(remindDate)
           })
@@ -152,19 +153,24 @@ export default async function handler(req, res) {
           if (remindDatesToday.length > 0)
             remindDatesTextArray.push(
               '\u{2728} <b>События Половинки успеха сегодня</b>: ' +
-                remindDatesToday.map(
-                  ({ name, date, comment }) =>
-                    `\n${name} (${date}) ${comment ? `(${comment})` : ''}`
-                )
+                remindDatesToday
+                  .map(
+                    ({ name, date, comment }) =>
+                      `\n${name} (${date}) ${comment ? `(${comment})` : ''}`
+                  )
+                  .join('')
             )
           if (remindDatesTomorow.length > 0)
             remindDatesTextArray.push(
               '\u{2728} <b>События Половинки успеха завтра</b>: ' +
-                remindDatesTomorow.map(
-                  ({ name, date, comment }) =>
-                    `\n${name} (${date}) ${comment ? `(${comment})` : ''}`
-                )
+                remindDatesTomorow
+                  .map(
+                    ({ name, date, comment }) =>
+                      `\n${name} (${date}) ${comment ? `(${comment})` : ''}`
+                  )
+                  .join('')
             )
+          console.log('remindDatesTextArray :>> ', remindDatesTextArray)
 
           const remindDatesText = remindDatesTextArray.join('\n\n')
 
