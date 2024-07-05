@@ -2,9 +2,12 @@ import birthDateToAge from '@helpers/birthDateToAge'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import getUserFullName from '@helpers/getUserFullName'
 import padNum from '@helpers/padNum'
+import RemindDates from '@models/RemindDates'
 import Roles from '@models/Roles'
 import Users from '@models/Users'
-import sendTelegramMessage from '@server/sendTelegramMessage'
+import sendTelegramMessage, {
+  sendMessageWithRepeats,
+} from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 
 var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
@@ -35,26 +38,36 @@ export default async function handler(req, res) {
       try {
         const dateTimeNow = new Date()
         const minutesNow = padNum(dateTimeNow.getMinutes(), 2)
-        if (!['00', '30'].includes(minutesNow))
-          return res
-            ?.status(200)
-            .json({ success: true, data: 'minutes must be 00 or 30' })
+        // if (!['00', '30'].includes(minutesNow))
+        //   return res
+        //     ?.status(200)
+        //     .json({ success: true, data: 'minutes must be 00 or 30' })
 
         const hoursNow = padNum(dateTimeNow.getHours(), 2)
+
+        const strTimeNow = `${hoursNow}:${minutesNow}`
 
         await dbConnect()
         const rolesSettings = await Roles.find({}).lean()
         const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
-        const rolesIdsToBirthdayNotification = allRoles
-          .filter((role) => role?.notifications?.birthdays)
+        const rolesIdsToNotification = allRoles
+          .filter(
+            (role) =>
+              role?.notifications?.birthdays || role?.notifications?.remindDates
+          )
           .map((role) => role._id)
 
-        const usersWithTelegramNotificationsOfBirthday = await Users.find({
+        const usersToNotificate = await Users.find({
           role:
             process.env.NODE_ENV === 'development'
               ? 'dev'
-              : { $in: rolesIdsToBirthdayNotification },
-          'notifications.settings.birthdays': true,
+              : { $in: rolesIdsToNotification },
+
+          $or: [
+            { 'notifications.settings.birthdays': true },
+            { 'notifications.settings.remindDates': true },
+          ],
+          'notifications.settings.time': strTimeNow,
           'notifications.telegram.active': true,
           'notifications.telegram.id': {
             $exists: true,
@@ -62,15 +75,14 @@ export default async function handler(req, res) {
           },
         }).lean()
 
-        const strTimeNow = `${hoursNow}:${minutesNow}`
-        const usersToNotificate =
-          usersWithTelegramNotificationsOfBirthday.filter(
-            (user) => user.notifications?.settings?.time === strTimeNow
-            //  &&
-            // user.notifications?.get('settings')?.birthdays &&
-            // user.notifications?.get('telegram')?.active &&
-            // user.notifications?.get('telegram')?.id
-          )
+        // const usersToNotificate =
+        //   usersWithTelegramNotificationsOfBirthday.filter(
+        //     (user) => user.notifications?.settings?.time === strTimeNow
+        //     //  &&
+        //     // user.notifications?.get('settings')?.birthdays &&
+        //     // user.notifications?.get('telegram')?.active &&
+        //     // user.notifications?.get('telegram')?.id
+        //   )
         if (usersToNotificate.length > 0) {
           const usersWithBirthDayToday = []
           const usersWithBirthDayTomorow = []
@@ -82,10 +94,10 @@ export default async function handler(req, res) {
             if (days === 1) usersWithBirthDayTomorow.push(user)
           })
 
-          var text = '\u{1F382} <b>Дни рождения сегодня</b>: '
+          var birthdayText = '\u{1F382} <b>Дни рождения сегодня</b>: '
           if (usersWithBirthDayToday.length > 0) {
             usersWithBirthDayToday.forEach((user) => {
-              text += `\n${
+              birthdayText += `\n${
                 user.gender === 'male' ? '♂️' : '♀️'
               } ${getUserFullName(user)} ${
                 user.status === 'member' ? '(клуб) ' : ''
@@ -98,13 +110,13 @@ export default async function handler(req, res) {
               )}`
             })
           } else {
-            text += 'Сегодня нет именинников'
+            birthdayText += 'Сегодня нет именинников'
           }
 
-          text += '\n\n\u{1F382} <b>Дни рождения завтра</b>: '
+          birthdayText += '\n\n\u{1F382} <b>Дни рождения завтра</b>: '
           if (usersWithBirthDayTomorow.length > 0) {
             usersWithBirthDayTomorow.forEach((user) => {
-              text += `\n${
+              birthdayText += `\n${
                 user.gender === 'male' ? '♂️' : '♀️'
               } ${getUserFullName(user)} ${
                 user.status === 'member' ? '(клуб) ' : ''
@@ -117,26 +129,77 @@ export default async function handler(req, res) {
               )}`
             })
           } else {
-            text += 'Завтра нет именинников'
+            birthdayText += 'Завтра нет именинников'
           }
-          const telegramIds = usersToNotificate.map(
-            (user) => user.notifications.telegram.id
-          )
 
-          const inline_keyboard = [
-            [
-              {
-                text: '\u{1F382} Посмотреть дни рождения на сайте',
-                url: process.env.DOMAIN + '/cabinet/birthdays', // req.headers.origin
-              },
-            ],
+          const birthdayButton = [
+            {
+              text: '\u{1F382} Посмотреть дни рождения на сайте',
+              url: process.env.DOMAIN + '/cabinet/birthdays', // req.headers.origin
+            },
           ]
-          const data = await sendTelegramMessage({
-            req,
-            telegramIds,
-            text,
-            inline_keyboard,
+
+          const remindDatesToday = []
+          const remindDatesTomorow = []
+          const remindDates = await RemindDates.find({}).lean()
+          remindDates.forEach((remindDate) => {
+            const days = daysBeforeBirthday(remindDate.date, dateTimeNow)
+            if (days === 0) remindDatesToday.push(remindDate)
+            if (days === 1) remindDatesTomorow.push(remindDate)
           })
+
+          const remindDatesTextArray = []
+          if (remindDatesToday.length > 0)
+            remindDatesTextArray.push(
+              '\u{2728} <b>События Половинки успеха сегодня</b>: ' +
+                remindDatesToday.map(
+                  ({ name, date, comment }) =>
+                    `\n${name} (${date}) ${comment ? `(${comment})` : ''}`
+                )
+            )
+          if (remindDatesTomorow.length > 0)
+            remindDatesTextArray.push(
+              '\u{2728} <b>События Половинки успеха завтра</b>: ' +
+                remindDatesTomorow.map(
+                  ({ name, date, comment }) =>
+                    `\n${name} (${date}) ${comment ? `(${comment})` : ''}`
+                )
+            )
+
+          const remindDatesText = remindDatesTextArray.join('\n\n')
+
+          // const telegramIds = usersToNotificate.map(
+          //   (user) => user.notifications.telegram.id
+          // )
+
+          for (let index = 0; index < usersToNotificate.length; index++) {
+            const { notifications } = usersToNotificate[index]
+            const inline_keyboard = notifications.settings.birthdays
+              ? [birthdayButton]
+              : undefined
+            const textArray = []
+            if (notifications.settings.birthdays && birthdayText)
+              textArray.push(birthdayText)
+            if (notifications.settings.remindDates && remindDatesText)
+              textArray.push(remindDatesText)
+            const text = textArray.join('\n\n')
+            if (textArray.length > 0) {
+              const res = await sendMessageWithRepeats({
+                req,
+                telegramId: notifications.telegram.id,
+                text,
+                // images,
+                inline_keyboard,
+              })
+            }
+          }
+
+          // const data = await sendTelegramMessage({
+          //   req,
+          //   telegramIds,
+          //   text,
+          //   inline_keyboard,
+          // })
           return res?.status(200).json({ success: true })
         }
         return res

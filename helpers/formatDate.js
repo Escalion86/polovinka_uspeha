@@ -4,7 +4,7 @@ const formatDate = (
   date,
   forComponent = false,
   showWeek = false,
-  showYaer = true
+  showYear = true
 ) => {
   if (!date) return undefined
   var d = new Date(date),
@@ -17,7 +17,7 @@ const formatDate = (
   if (day.length < 2) day = '0' + day
 
   if (forComponent) return [year, month, day].join('-')
-  else if (showYaer)
+  else if (showYear)
     return (
       [day, month, year].join('.') + (showWeek ? ' ' + DAYS_OF_WEEK[week] : '')
     )
