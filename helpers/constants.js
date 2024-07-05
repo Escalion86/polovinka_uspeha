@@ -199,7 +199,7 @@ import ImagesServerContent from '@layouts/content/ImagesServerContent'
 import LikesContent from '@layouts/content/LikesContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import menuHiddenLoggedUserLikesSelector from '@state/selectors/menuHiddenLoggedUserLikesSelector'
-
+import RemindDatesContent from '@layouts/content/RemindDatesContent'
 const colors = [
   'border-blue-400',
   'border-red-400',
@@ -598,6 +598,12 @@ export const DEFAULT_ADDRESS = Object.freeze({
   linkYandexShow: true,
 })
 
+export const DEFAULT_REMIND_DATE = Object.freeze({
+  name: '',
+  date: null,
+  comment: '',
+})
+
 export const DEFAULT_EVENT = Object.freeze({
   directionId: null,
   organizerId: null,
@@ -907,6 +913,7 @@ export const DEFAULT_ROLES = [
       eventRegistration: false,
       serviceRegistration: false,
       newEventsByTags: true,
+      remindDates: false,
       // eventUserMoves: false,
       // eventCancel: false,
     },
@@ -1015,6 +1022,7 @@ export const DEFAULT_ROLES = [
       roles: false,
       dateStartProject: false,
       headerInfo: false,
+      remindDatesEdit: false,
     },
     notices: {
       histories: false,
@@ -1037,6 +1045,7 @@ export const DEFAULT_ROLES = [
       eventRegistration: false,
       serviceRegistration: false,
       newEventsByTags: false,
+      remindDates: true,
       // eventUserMoves: false,
       // eventCancel: false,
     },
@@ -1145,6 +1154,7 @@ export const DEFAULT_ROLES = [
       roles: false,
       dateStartProject: false,
       headerInfo: false,
+      remindDatesEdit: false,
     },
     notices: {
       histories: true,
@@ -1167,6 +1177,7 @@ export const DEFAULT_ROLES = [
       eventRegistration: true,
       serviceRegistration: true,
       newEventsByTags: true,
+      remindDates: true,
       // eventUserMoves: false,
       // eventCancel: false,
     },
@@ -1275,6 +1286,7 @@ export const DEFAULT_ROLES = [
       roles: false,
       dateStartProject: false,
       headerInfo: false,
+      remindDatesEdit: true,
     },
     notices: {
       histories: true,
@@ -1297,6 +1309,7 @@ export const DEFAULT_ROLES = [
       eventRegistration: true,
       serviceRegistration: true,
       newEventsByTags: true,
+      remindDates: true,
       // eventUserMoves: false,
       // eventCancel: false,
     },
@@ -1405,6 +1418,7 @@ export const DEFAULT_ROLES = [
       roles: true,
       dateStartProject: false,
       headerInfo: true,
+      remindDatesEdit: true,
     },
     notices: {
       histories: true,
@@ -1427,6 +1441,7 @@ export const DEFAULT_ROLES = [
       eventRegistration: true,
       serviceRegistration: true,
       newEventsByTags: true,
+      remindDates: true,
       // eventUserMoves: false,
       // eventCancel: false,
     },
@@ -1535,6 +1550,7 @@ export const DEFAULT_ROLES = [
       roles: true,
       dateStartProject: true,
       headerInfo: true,
+      remindDatesEdit: true,
     },
     notices: {
       histories: true,
@@ -1830,6 +1846,12 @@ export const CONTENTS = Object.freeze({
     name: 'Лайки',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role, status) => true,
+  },
+  remindDates: {
+    Component: RemindDatesContent,
+    name: 'Особые даты ПУ',
+    accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role, status) => role?.siteSettings?.remindDatesEdit,
   },
 })
 
@@ -2143,6 +2165,15 @@ export const pages = [
     icon: faMedal,
     accessRoles: CONTENTS['settingsHeaderInfoContacts'].accessRoles,
     roleAccess: CONTENTS['settingsHeaderInfoContacts'].roleAccess,
+  },
+  {
+    id: 85,
+    group: 11,
+    name: 'Особые даты ПУ',
+    href: 'remindDates',
+    icon: faCalendarAlt,
+    accessRoles: CONTENTS['remindDates'].accessRoles,
+    roleAccess: CONTENTS['remindDates'].roleAccess,
   },
   {
     id: 98,

@@ -28,6 +28,7 @@ const LoggedUserNotificationsContent = (props) => {
   const { telegramBotName } = useRecoilValue(locationPropsSelector)
 
   const birthdays = loggedUserActiveRole?.notifications?.birthdays
+  const remindDates = loggedUserActiveRole?.notifications?.remindDates
   const newUserRegistred = loggedUserActiveRole?.notifications?.newUserRegistred
   const eventRegistration =
     loggedUserActiveRole?.notifications?.eventRegistration
@@ -180,7 +181,7 @@ const LoggedUserNotificationsContent = (props) => {
 
         {isNotificationActivated && (
           <>
-            {birthdays && (
+            {(birthdays || remindDates) && (
               <InputWrapper label="Ежедневные уведомления" className="">
                 <div className="w-full">
                   <ComboBox
@@ -256,6 +257,13 @@ const LoggedUserNotificationsContent = (props) => {
                       checked={notifications.settings?.birthdays}
                       onClick={() => toggleNotificationsSettings('birthdays')}
                       label="Напоминания о днях рождениях пользователей (модер/админ)"
+                    />
+                  )}
+                  {remindDates && (
+                    <CheckBox
+                      checked={notifications.settings?.remindDates}
+                      onClick={() => toggleNotificationsSettings('remindDates')}
+                      label="Напоминания об особых днях Половинки Успеха (список дней редактируется в настройках сайта)"
                     />
                   )}
                 </div>

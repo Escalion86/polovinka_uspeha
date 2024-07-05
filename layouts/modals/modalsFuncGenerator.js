@@ -730,6 +730,10 @@ const modalsFuncGenerator = (
     },
     browseLocation: () =>
       addModal(require('./modalsFunc/browseLocationFunc').default()),
+    remindDate: (remindDate, onAdd) =>
+      addModal(
+        require('./modalsFunc/remindDateFunc').default(remindDate, onAdd)
+      ),
   }
 }
 

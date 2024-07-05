@@ -58,7 +58,7 @@ export const sendMessageToTelegramId = async ({
   }
 }
 
-const sendMessageWithRepeats = async (body, repeats = 5) => {
+export const sendMessageWithRepeats = async (body, repeats = 5) => {
   let result = []
   let error = false
   let i = 0

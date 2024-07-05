@@ -447,6 +447,11 @@ const SettingsRolesContent = (props) => {
               subItem="birthdays"
             />
             <RoleItem
+              label="События Половинки успеха"
+              item="notifications"
+              subItem="remindDates"
+            />
+            <RoleItem
               label="Регистрация новых пользователей на сайте"
               item="notifications"
               subItem="newUserRegistred"
@@ -525,6 +530,7 @@ const SettingsRolesContent = (props) => {
               subItem="histories"
             />
             <RoleItem label="Дни рождения" item="notices" subItem="birthdays" />
+
             {/* // seeAllContactsOfUsers,
       // notifications,
       // events,
