@@ -1,5 +1,5 @@
-function textAge(age) {
-  if (age === 0) return 'лет'
+function textAge(age, showNumber = false) {
+  if (age === 0) return (showNumber ? `${age} ` : '') + 'лет'
   if (!age) return
   var txt,
     count = age % 100
@@ -15,7 +15,7 @@ function textAge(age) {
       txt = 'лет'
     }
   }
-  return txt
+  return (showNumber ? `${age} ` : '') + txt
 }
 
 export default textAge
