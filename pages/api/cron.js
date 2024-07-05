@@ -163,7 +163,7 @@ export default async function handler(req, res) {
                 remindDatesToday
                   .map(
                     ({ name, date, comment, years }) =>
-                      `\n${name ? name : '[без названия]'} (${textAge(years, true)} назад)${comment ? ` ${comment}` : ''}`
+                      `\n${name ? name : '[без названия]'} (${textAge(years, true)} назад)${comment ? ` - ${comment}` : ''}`
                   )
                   .join('')
             )
@@ -173,7 +173,7 @@ export default async function handler(req, res) {
                 remindDatesTomorow
                   .map(
                     ({ name, date, comment }) =>
-                      `\n${name ? name : '[без названия]'} (${textAge(years, true)} назад)${comment ? ` ${comment}` : ''}`
+                      `\n${name ? name : '[без названия]'} (${textAge(years, true)} назад)${comment ? ` - ${comment}` : ''}`
                   )
                   .join('')
             )
