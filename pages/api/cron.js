@@ -172,7 +172,7 @@ export default async function handler(req, res) {
               '\u{2728} <b>События Половинки успеха завтра</b>: ' +
                 remindDatesTomorow
                   .map(
-                    ({ name, date, comment }) =>
+                    ({ name, date, comment, years }) =>
                       `\n${name ? name : '[без названия]'} (${textAge(years, true)} назад)${comment ? ` - ${comment}` : ''}`
                   )
                   .join('')
