@@ -49,7 +49,8 @@ const SelectTemplate = ({
 
   if (isLoading) return <LoadingSpinner />
 
-  if (templates?.length === 0) return <div>Нет сохраненных шаблонов</div>
+  if (templates?.length === 0 && !templateToCreateNew)
+    return <div>Нет сохраненных шаблонов</div>
 
   return (
     <InputWrapper
