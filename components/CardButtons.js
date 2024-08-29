@@ -390,7 +390,7 @@ const CardButtons = ({
           </div>
         }
         className={className}
-        menuPadding={false}
+        // menuPadding={false}
         openOnHover
       >
         <div className="overflow-hidden rounded-lg">{items}</div>

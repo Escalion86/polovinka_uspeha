@@ -51,8 +51,8 @@ const ColorPicker = ({
           </div>
         }
         className="w-full"
-        turnOffAutoClose="inside"
-        strategyAbsolute
+        // turnOffAutoClose="inside"
+        // strategyAbsolute
       >
         <div className="flex flex-col gap-y-2 w-[200px]">
           <HexColorPicker color={value} onChange={onChange} />
