@@ -1,5 +1,6 @@
 import cn from 'classnames'
-
+import { Dropdown } from 'flowbite-react'
+import { useRef } from 'react'
 const DropDown = ({
   trigger,
   children,
@@ -11,6 +12,7 @@ const DropDown = ({
   className,
   placement,
 }) => {
+  const ref = useRef()
   const padding =
     menuPadding === 'md'
       ? 'p-2'
@@ -33,6 +35,26 @@ const DropDown = ({
   //     : placement === 'top'
   //     ? '[--placement:top]'
   //     : ''
+  return (
+    <Dropdown
+      ref={ref}
+      // trigger="hover"
+      // label="Dropdown button"
+      // dismissOnClick={false}
+      renderTrigger={() => trigger}
+      className="p-0 m-0"
+      theme={{ content: '' }}
+    >
+      {/* <div onClick={() => ref.current.hide()}> */}
+      {/* <Dropdown.Item>Dashboard</Dropdown.Item>
+      <Dropdown.Item>Settings</Dropdown.Item>
+      <Dropdown.Item>Earnings</Dropdown.Item>
+      <Dropdown.Item>Sign out</Dropdown.Item> */}
+      <Dropdown.Item className="p-0">{children}</Dropdown.Item>
+      {/* </div> */}
+    </Dropdown>
+  )
+
   return (
     <div
       className={cn(

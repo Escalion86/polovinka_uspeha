@@ -11,6 +11,7 @@ module.exports = {
     './blocks/**/*.{js,jsx}',
     // './public/**/*.{svg}',
     'node_modules/preline/dist/*.js',
+    './node_modules/flowbite-react/lib/**/*.js',
   ],
   darkMode: 'class', // or 'media' or 'class'
   i18n: {
@@ -329,6 +330,7 @@ module.exports = {
       groups: ['one', 'two'],
     }),
     require('preline/plugin'),
+    require('flowbite/plugin'),
   ],
   future: {
     purgeLayersByDefault: true,
