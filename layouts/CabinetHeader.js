@@ -81,7 +81,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
       )}
       <DropDown
         trigger={<UserStatusIcon status={loggedUserActiveStatus} />}
-        menuPadding={false}
+        // menuPadding={false}
         openOnHover
       >
         <div className="flex flex-col justify-center px-3 py-1 leading-5 text-black cursor-default w-80">

@@ -10,7 +10,8 @@ module.exports = {
     './layouts/**/*.{js,jsx}',
     './blocks/**/*.{js,jsx}',
     // './public/**/*.{svg}',
-    'node_modules/preline/dist/*.js',
+    // 'node_modules/preline/dist/*.js',
+    './node_modules/flowbite-react/lib/**/*.js',
   ],
   darkMode: 'class', // or 'media' or 'class'
   i18n: {
@@ -328,7 +329,8 @@ module.exports = {
     require('tailwindcss-scoped-groups')({
       groups: ['one', 'two'],
     }),
-    require('preline/plugin'),
+    // require('preline/plugin'),
+    require('flowbite/plugin'),
   ],
   future: {
     purgeLayersByDefault: true,

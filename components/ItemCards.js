@@ -424,7 +424,7 @@ export const PaymentItem = ({
             />
           )}
           {item.comment && (
-            <div className="text-sm leading-4">{item.comment}</div>
+            <div className="text-sm leading-4 line-clamp-1">{item.comment}</div>
           )}
         </div>
         <div className="flex justify-end flex-1 gap-x-3">

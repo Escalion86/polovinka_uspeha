@@ -18,6 +18,7 @@ import Input from '@components/Input'
 import { GENDERS } from '@helpers/constants'
 import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import FormData from 'form-data'
 
 const DevCard = ({ title, data }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -108,8 +109,61 @@ const DevContent = () => {
 
   // useEffect(() => {}, [])
 
+  const kad = async () => {
+    const formData = new FormData()
+    formData.append('model_id', 4)
+    formData.append(
+      'params',
+      JSON.stringify({
+        type: 'GENERATE',
+        style: 'KANDINSKY',
+        width: 1024,
+        height: 1024,
+        num_images: 1,
+        negativePromptUnclip: 'яркие цвета, кислотность, высокая контрастность',
+        generateParams: {
+          query: 'Пушистый кот в очках',
+        },
+      })
+    )
+
+    await fetch('https://api-key.fusionbrain.ai/key/api/v1/text2image/run', {
+      method: 'POST',
+      body: formData,
+      // body: JSON.stringify({
+      //   type: 'GENERATE',
+      //   style: 'string',
+      //   width: 1024,
+      //   height: 1024,
+      //   num_images: 1,
+      //   negativePromptUnclip: 'яркие цвета, кислотность, высокая контрастность',
+      //   generateParams: {
+      //     query: 'Пушистый кот в очках',
+      //   },
+      // }),
+      // dataType: 'json',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'X-Key': 'Key 562BA6392208E2488E142AD3CDA0E68A',
+        'X-Secret': 'Secret 2AC0016C0754E4BC9D8CC64B2D7B0472',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('data', data)
+        // if (data.secure_url !== '') {
+        // if (callback) callback(data.secure_url)
+        // return data.secure_url
+        // }
+        // if (callback) callback(data)
+        return data
+      })
+      .catch((err) => console.error('ERROR', err))
+  }
+
   return (
     <div className="flex flex-col gap-y-0.5">
+      <Button name="kad" onClick={() => kad()} />
       <Button name="test" onClick={() => getVKUsers()} />
       <Input name="input" onChange={setInput} value={input} />
       {test &&

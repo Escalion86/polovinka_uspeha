@@ -382,18 +382,20 @@ const CardButtons = ({
   )
 
   return isCompact ? (
-    <DropDown
-      trigger={
-        <div className="flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general">
-          <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
-        </div>
-      }
-      className={className}
-      menuPadding={false}
-      openOnHover
-    >
-      <div className="overflow-hidden rounded-lg">{items}</div>
-    </DropDown>
+    <div onClick={(e) => e.stopPropagation()}>
+      <DropDown
+        trigger={
+          <div className="flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general">
+            <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
+          </div>
+        }
+        className={className}
+        // menuPadding={false}
+        openOnHover
+      >
+        <div className="overflow-hidden rounded-lg">{items}</div>
+      </DropDown>
+    </div>
   ) : (
     <div className={cn('flex', className)}>{items}</div>
   )
