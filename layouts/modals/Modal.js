@@ -289,7 +289,13 @@ const Modal = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: close ? 0 : 1 }}
       transition={{ duration: 0.1 }}
-      onMouseDown={crossShow ? onDeclineClick || closeModal : undefined}
+      onMouseDown={(e) => {
+        if (e.clientX >= e.target.clientWidth) return
+        if (crossShow) {
+          if (typeof onDeclineClick === 'function') onDeclineClick()
+          else if (typeof closeModal === 'function') closeModal()
+        }
+      }}
     >
       <m.div
         className={
