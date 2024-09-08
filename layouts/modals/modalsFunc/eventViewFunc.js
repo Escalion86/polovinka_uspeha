@@ -283,6 +283,7 @@ const EventView = (props) => {
   const { canSee, isAgeOfUserCorrect, isUserStatusCorrect } = useRecoilValue(
     loggedUserToEventStatusSelector(event?._id)
   )
+  const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
 
   const router = useRouter()
   const routerQuery = { ...router.query }
@@ -304,8 +305,8 @@ const EventView = (props) => {
         <span className="text-xl">
           {`К сожалению данное мероприятие доступно для возрастной категории ${
             loggedUserActive?.gender === 'male'
-              ? `мужчин от ${event.minMansAge} до ${event.maxMansAge} лет`
-              : `женщин от ${event.minWomansAge} до ${event.maxWomansAge} лет`
+              ? `мужчин от ${subEventSum.minMansAge} до ${subEventSum.maxMansAge} лет`
+              : `женщин от ${subEventSum.minWomansAge} до ${subEventSum.maxWomansAge} лет`
           }`}
         </span>
       ) : !canSee && isUserStatusCorrect && isAgeOfUserCorrect ? (

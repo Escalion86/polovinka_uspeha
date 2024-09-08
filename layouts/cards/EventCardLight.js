@@ -25,12 +25,7 @@ const parentHasAttr = (e, attr) => {
   return parentHasAttr(e.parentNode, attr)
 }
 
-const EventCardLight = ({
-  eventId,
-  onTagClick,
-  style,
-  changeStyle = 'laptop',
-}) => {
+const EventCardLight = ({ eventId, onTagClick, style }) => {
   const widthNum = useRecoilValue(windowDimensionsNumSelector)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
