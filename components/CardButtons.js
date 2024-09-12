@@ -56,6 +56,7 @@ const typeToKey = (type) => {
 
 const CardButtons = ({
   item,
+  itemProps, //For clone
   typeOfItem,
   showOnSiteOnClick,
   onUpClick,
@@ -327,7 +328,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faCopy}
           onClick={() => {
-            modalsFunc[typeOfItem].add(item._id)
+            modalsFunc[typeOfItem].add(item._id, itemProps)
           }}
           color="blue"
           tooltipText="Клонировать"

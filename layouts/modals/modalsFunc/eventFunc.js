@@ -93,7 +93,7 @@ const SubEvents = ({ subEvents, onChange, rules }) => {
   )
 }
 
-const eventFunc = (eventId, clone = false) => {
+const eventFunc = (eventId, clone = false, props = {}) => {
   const EventModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -106,33 +106,46 @@ const eventFunc = (eventId, clone = false) => {
     const directions = useRecoilValue(directionsAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
     const [directionId, setDirectionId] = useState(
-      event?.directionId ?? DEFAULT_EVENT.directionId
+      props?.directionId ?? event?.directionId ?? DEFAULT_EVENT.directionId
     )
 
     const defaultOrganizerId =
-      event?.organizerId ?? useRecoilValue(loggedUserActiveAtom)._id
+      props?.organizerId ??
+      event?.organizerId ??
+      useRecoilValue(loggedUserActiveAtom)._id
     const [organizerId, setOrganizerId] = useState(defaultOrganizerId)
 
-    const [title, setTitle] = useState(event?.title ?? DEFAULT_EVENT.title)
-    const [images, setImages] = useState(event?.images ?? DEFAULT_EVENT.images)
+    const [title, setTitle] = useState(
+      props?.title ?? event?.title ?? DEFAULT_EVENT.title
+    )
+    const [images, setImages] = useState(
+      props?.images ?? event?.images ?? DEFAULT_EVENT.images
+    )
     const [description, setDescription] = useState(
-      event?.description ?? DEFAULT_EVENT.description
+      props?.description ?? event?.description ?? DEFAULT_EVENT.description
     )
 
     const defaultTags = useMemo(
       () =>
-        typeof event?.tags === 'object' ? event?.tags.filter((tag) => tag) : [],
+        typeof props?.tags === 'object'
+          ? props.tags
+          : typeof event?.tags === 'object'
+            ? event.tags.filter((tag) => tag)
+            : [],
       []
     )
     const [tags, setTags] = useState(defaultTags)
 
     const defaultDateStart = useMemo(
-      () => event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000,
+      () =>
+        props?.dateStart ??
+        event?.dateStart ??
+        Date.now() - (Date.now() % 3600000) + 3600000,
       []
     )
 
     const defaultDateEnd = useMemo(
-      () => event?.dateEnd ?? defaultDateStart + 3600000,
+      () => props?.dateEnd ?? event?.dateEnd ?? defaultDateStart + 3600000,
       []
     )
 
@@ -144,13 +157,15 @@ const eventFunc = (eventId, clone = false) => {
     // )
 
     const [address, setAddress] = useState(
-      event?.address && isObject(event.address)
-        ? event.address
-        : DEFAULT_EVENT.address
+      isObject(props?.address)
+        ? props.address
+        : isObject(event?.address)
+          ? event.address
+          : DEFAULT_EVENT.address
     )
     // const [price, setPrice] = useState(event?.price ?? DEFAULT_EVENT.price)
     const [subEvents, setSubEvents] = useState(
-      event?.subEvents
+      props?.subEvents ?? event?.subEvents
         ? event.subEvents
         : eventId
           ? []
@@ -158,20 +173,26 @@ const eventFunc = (eventId, clone = false) => {
     )
 
     const [showOnSite, setShowOnSite] = useState(
-      event?.showOnSite ?? DEFAULT_EVENT.showOnSite
+      props?.showOnSite ?? event?.showOnSite ?? DEFAULT_EVENT.showOnSite
     )
     const [reportImages, setReportImages] = useState(
-      event?.reportImages ?? DEFAULT_EVENT.reportImages
+      props?.reportImages ?? event?.reportImages ?? DEFAULT_EVENT.reportImages
     )
-    const [report, setReport] = useState(event?.report ?? DEFAULT_EVENT.report)
+    const [report, setReport] = useState(
+      props?.report ?? event?.report ?? DEFAULT_EVENT.report
+    )
 
     const [warning, setWarning] = useState(
-      event?.warning ?? DEFAULT_EVENT.warning
+      props?.warning ?? event?.warning ?? DEFAULT_EVENT.warning
     )
 
-    const [blank, setBlank] = useState(event?.blank ?? DEFAULT_EVENT.blank)
+    const [blank, setBlank] = useState(
+      props?.blank ?? event?.blank ?? DEFAULT_EVENT.blank
+    )
 
-    const [likes, setLikes] = useState(event?.likes ?? DEFAULT_EVENT.likes)
+    const [likes, setLikes] = useState(
+      props?.likes ?? event?.likes ?? DEFAULT_EVENT.likes
+    )
 
     const direction = useMemo(
       () => directions.find(({ _id }) => _id === directionId),

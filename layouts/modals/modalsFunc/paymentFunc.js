@@ -220,7 +220,12 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     ])
 
     useEffect(() => {
-      if (setTopLeftComponent)
+      console.log('isEventClosed :>> ', isEventClosed)
+      if (setTopLeftComponent) {
+        console.log('{ ...payment, eventId: null } :>> ', {
+          ...payment,
+          eventId: null,
+        })
         setTopLeftComponent(() => (
           <CardButtons
             item={payment}
@@ -228,9 +233,11 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
             forForm
             showEditButton={false}
             showDeleteButton={false}
+            itemProps={{ eventId: null }}
           />
         ))
-    }, [setTopLeftComponent])
+      }
+    }, [setTopLeftComponent, isEventClosed])
 
     return (
       <FormWrapper>
