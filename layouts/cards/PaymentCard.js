@@ -35,6 +35,7 @@ import cn from 'classnames'
 import { Suspense } from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
+import isEventClosedFunc from '@helpers/isEventClosed'
 
 // const Status = ({ statusProps }) => {
 //   if (!statusProps) return null
@@ -244,6 +245,8 @@ const PaymentEvent = ({ payment }) => {
   const event = useRecoilValue(eventSelector(payment.eventId))
   const eventStatus = eventStatusFunc(event)
 
+  const isEventClosed = isEventClosedFunc(event)
+
   // const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
   //   (payTypeItem) => payTypeItem.value === eventStatus
   // )
@@ -255,6 +258,7 @@ const PaymentEvent = ({ payment }) => {
       cardButtonsProps={{
         showEditButton: eventStatus !== 'closed',
         showDeleteButton: eventStatus !== 'closed',
+        itemProps: isEventClosed ? { eventId: null } : undefined,
       }}
     >
       {(payment.payDirection === 'toUser' ||

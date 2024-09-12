@@ -249,7 +249,7 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
 
     useEffect(() => {
       if (setTopLeftComponent) {
-        setTopLeftComponent(() => (
+        setTopLeftComponent(clone ? undefined : () => (
           <CardButtons
             item={payment}
             typeOfItem="payment"
@@ -260,7 +260,7 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
           />
         ))
       }
-    }, [setTopLeftComponent, isEventClosed])
+    }, [setTopLeftComponent, isEventClosed, clone])
 
     return (
       <FormWrapper>
