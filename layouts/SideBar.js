@@ -117,9 +117,9 @@ const Group = ({
   // const items = item.items.filter(({ id }) => !hiddenMenus.includes(id))
 
   if (groupHidden) return null
-  console.log('pagesIdsWithBadge :>> ', pagesIdsWithBadge)
+  // console.log('pagesIdsWithBadge :>> ', pagesIdsWithBadge)
   const items = item.items
-  console.log('items :>> ', items)
+  // console.log('items :>> ', items)
   const groupBadge = items.reduce((total, { id }) => {
     if (pagesIdsWithBadge[id]) return total + pagesIdsWithBadge[id]
     return total
