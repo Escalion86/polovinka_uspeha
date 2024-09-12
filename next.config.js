@@ -34,6 +34,11 @@ module.exports = withBundleAnalyzer(
         },
         {
           protocol: 'https',
+          hostname: 'res.cloudinary.com',
+          port: '',
+        },
+        {
+          protocol: 'https',
           hostname: 'escalioncloud.ru',
           port: '',
         },

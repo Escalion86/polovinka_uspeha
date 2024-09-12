@@ -1,6 +1,6 @@
 // import cn from 'classnames'
 import { Dropdown } from 'flowbite-react'
-import { useRef } from 'react'
+// import { useRef } from 'react'
 const DropDown = ({
   trigger,
   children,
@@ -12,7 +12,7 @@ const DropDown = ({
   className,
   // placement,
 }) => {
-  const ref = useRef()
+  // const ref = useRef()
   // const padding =
   //   menuPadding === 'md'
   //     ? 'p-2'
@@ -37,7 +37,7 @@ const DropDown = ({
   //     : ''
   return (
     <Dropdown
-      ref={ref}
+      // ref={ref}
       trigger={openOnHover ? 'hover' : 'click'}
       // label="Dropdown button"
       // dismissOnClick={false}

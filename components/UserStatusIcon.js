@@ -4,8 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import Image from 'next/image'
 import Tooltip from './Tooltip'
+import { forwardRef } from 'react'
 
-const UserStatusIcon = ({ status, size, slashed = false }) => {
+const UserStatusIcon = forwardRef(({ status, size, slashed = false }, ref) => {
   var numSize
   switch (size) {
     case 'xs':
@@ -28,7 +29,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
     case 'novice':
       return (
         <Tooltip title={'Новичок' + (slashed ? ' (запрещено)' : '')}>
-          <div className="relative">
+          <div ref={ref} className="relative">
             <div
               className={`grayscale brightness-150 contrast-75 flex items-center justify-center min-w-${
                 numSize + 1
@@ -52,7 +53,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
     case 'member':
       return (
         <Tooltip title={'Участник клуба' + (slashed ? ' (запрещено)' : '')}>
-          <div className="relative">
+          <div ref={ref} className="relative">
             <div
               className={`flex items-center justify-center min-w-${
                 numSize + 1
@@ -76,7 +77,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
     case 'ban':
       return (
         <Tooltip title={'Забанен' + (slashed ? ' (запрещено)' : '')}>
-          <div className="relative">
+          <div ref={ref} className="relative">
             <div
               className={`flex items-center justify-center min-w-${
                 numSize + 1
@@ -99,7 +100,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
     case 'signout':
       return (
         <Tooltip title={'Не зарегистрирован' + (slashed ? ' (запрещено)' : '')}>
-          <div className="relative">
+          <div ref={ref} className="relative">
             <div
               className={`flex items-center justify-center min-w-${
                 numSize + 1
@@ -124,7 +125,7 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
     default:
       return (
         <Tooltip title="Статус не указан">
-          <div className="relative">
+          <div ref={ref} className="relative">
             <div
               className={`flex items-center justify-center min-w-${
                 numSize + 1
@@ -147,6 +148,6 @@ const UserStatusIcon = ({ status, size, slashed = false }) => {
         </Tooltip>
       )
   }
-}
+})
 
 export default UserStatusIcon
