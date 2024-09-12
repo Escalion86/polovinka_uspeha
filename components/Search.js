@@ -40,11 +40,12 @@ const Search = ({
       <div className="min-h-[34px] h-[34px] absolute bottom-0 left-0 right-0 flex w-full gap-1 items-center border-gray-700 border p-1 bg-white rounded my-0.5">
         <input
           ref={inputRef}
-          className="flex-1 bg-transparent outline-none"
+          className="flex-1 bg-transparent"
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          aria-label="Search"
+          // style={{ outline: 'none' }}
+          // aria-label="Search"
         />
         <FontAwesomeIcon
           className={'w-6 h-6 text-gray-700 cursor-pointer'}

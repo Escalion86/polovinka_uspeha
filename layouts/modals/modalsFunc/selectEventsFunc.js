@@ -1,5 +1,6 @@
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
 import { EventItem } from '@components/ItemCards'
+import Note from '@components/Note'
 import Search from '@components/Search'
 import filterItems from '@helpers/filterItems'
 import isEventExpiredFunc from '@helpers/isEventExpired'
@@ -132,7 +133,14 @@ const selectEventsFunc = (
 
     return (
       <div className="flex flex-col w-full h-full max-h-full gap-y-0.5">
-        <EventStatusToggleButtons value={filter} onChange={setFilter} />
+        {filterRules?.noClosedEvents && (
+          <Note>Закрытые мероприятия выбирать нельзя</Note>
+        )}
+        <EventStatusToggleButtons
+          value={filter}
+          onChange={setFilter}
+          noClosed={filterRules?.noClosedEvents}
+        />
         <Search
           searchText={searchText}
           show={true}

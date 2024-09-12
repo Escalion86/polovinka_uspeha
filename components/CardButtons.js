@@ -56,6 +56,7 @@ const typeToKey = (type) => {
 
 const CardButtons = ({
   item,
+  itemProps, //For clone
   typeOfItem,
   showOnSiteOnClick,
   onUpClick,
@@ -66,6 +67,7 @@ const CardButtons = ({
   alwaysCompactOnPhone,
   showEditButton = true,
   showDeleteButton = true,
+  showCloneButton = true,
   onEditQuestionnaire,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
@@ -131,7 +133,8 @@ const CardButtons = ({
     upBtn: onUpClick && upDownSee,
     downBtn: onDownClick && upDownSee,
     editBtn: showEditButton && editSee,
-    cloneBtn: !['user', 'review'].includes(typeOfItem) && rule?.edit,
+    cloneBtn:
+      showCloneButton && !['user', 'review'].includes(typeOfItem) && rule?.edit,
     showOnSiteBtn:
       showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true),
     statusBtn: rule?.statusEdit,
@@ -327,7 +330,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faCopy}
           onClick={() => {
-            modalsFunc[typeOfItem].add(item._id)
+            modalsFunc[typeOfItem].add(item._id, itemProps)
           }}
           color="blue"
           tooltipText="Клонировать"

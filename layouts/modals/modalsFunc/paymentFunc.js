@@ -37,7 +37,11 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
 
-    const event = useRecoilValue(eventSelector(payment.eventId))
+    const event = useRecoilValue(
+      eventSelector(
+        props?.eventId !== undefined ? props.eventId : payment?.eventId
+      )
+    )
 
     const isEventClosed = isEventClosedFunc(event)
 
@@ -64,38 +68,53 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     const [sector, setSector] = useState(defaultSector)
 
     const [payDirection, setPayDirection] = useState(
-      props?.payDirection ??
-        payment?.payDirection ??
-        DEFAULT_PAYMENT.payDirection
+      props?.payDirection !== undefined
+        ? props.payDirection
+        : payment?.payDirection ?? DEFAULT_PAYMENT.payDirection
     )
     const [userId, setUserId] = useState(
-      props?.userId ?? payment?.userId ?? DEFAULT_PAYMENT.userId
+      props?.userId !== undefined
+        ? props.userId
+        : payment?.userId ?? DEFAULT_PAYMENT.userId
     )
     const [eventId, setEventId] = useState(
-      props?.eventId ?? payment?.eventId ?? DEFAULT_PAYMENT.eventId
+      props?.eventId !== undefined
+        ? props.eventId
+        : payment?.eventId ?? DEFAULT_PAYMENT.eventId
     )
     const [serviceId, setServiceId] = useState(
-      props?.serviceId ?? payment?.serviceId ?? DEFAULT_PAYMENT.serviceId
+      props?.serviceId !== undefined
+        ? props.serviceId
+        : payment?.serviceId ?? DEFAULT_PAYMENT.serviceId
     )
     const [productId, setProductId] = useState(
-      props?.productId ?? payment?.productId ?? DEFAULT_PAYMENT.productId
+      props?.productId !== undefined
+        ? props.productId
+        : payment?.productId ?? DEFAULT_PAYMENT.productId
     )
     const [sum, setSum] = useState(
-      props?.sum ?? payment?.sum ?? DEFAULT_PAYMENT.sum
+      props?.sum !== undefined ? props.sum : payment?.sum ?? DEFAULT_PAYMENT.sum
     )
     const [status, setStatus] = useState(
-      props?.status ?? payment?.status ?? DEFAULT_PAYMENT.status
+      props?.status !== undefined
+        ? props.status
+        : payment?.status ?? DEFAULT_PAYMENT.status
     )
     const defaultPayAt = useMemo(
-      () => props?.payAt ?? payment?.payAt ?? Date.now(),
+      () =>
+        props?.payAt !== undefined ? props.payAt : payment?.payAt ?? Date.now(),
       []
     )
     const [payAt, setPayAt] = useState(defaultPayAt)
     const [payType, setPayType] = useState(
-      props?.payType ?? payment?.payType ?? DEFAULT_PAYMENT.payType
+      props?.payType !== undefined
+        ? props.payType
+        : payment?.payType ?? DEFAULT_PAYMENT.payType
     )
     const [comment, setComment] = useState(
-      props?.comment ?? payment?.comment ?? DEFAULT_PAYMENT.comment
+      props?.comment !== undefined
+        ? props.comment
+        : payment?.comment ?? DEFAULT_PAYMENT.comment
     )
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
@@ -179,27 +198,35 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     useEffect(() => {
       const isFormChanged =
         defaultSector !== sector ||
-        (props?.payDirection ??
-          payment?.payDirection ??
-          DEFAULT_PAYMENT.payDirection) !== payDirection ||
-        (props?.userId ?? payment?.userId ?? DEFAULT_PAYMENT.userId) !==
-          userId ||
-        (props?.eventId ?? payment?.eventId ?? DEFAULT_PAYMENT.eventId) !==
-          eventId ||
-        (props?.serviceId ??
-          payment?.serviceId ??
-          DEFAULT_PAYMENT.serviceId) !== serviceId ||
-        (props?.productId ??
-          payment?.productId ??
-          DEFAULT_PAYMENT.productId) !== productId ||
-        (props?.sum ?? payment?.sum ?? DEFAULT_PAYMENT.sum) !== sum ||
-        (props?.status ?? payment?.status ?? DEFAULT_PAYMENT.status) !==
-          status ||
+        (props?.payDirection !== undefined
+          ? props.payDirection
+          : payment?.payDirection ?? DEFAULT_PAYMENT.payDirection) !==
+          payDirection ||
+        (props?.userId !== undefined
+          ? props.userId
+          : payment?.userId ?? DEFAULT_PAYMENT.userId) !== userId ||
+        (props?.eventId !== undefined
+          ? props.eventId
+          : payment?.eventId ?? DEFAULT_PAYMENT.eventId) !== eventId ||
+        (props?.serviceId !== undefined
+          ? props.serviceId
+          : payment?.serviceId ?? DEFAULT_PAYMENT.serviceId) !== serviceId ||
+        (props?.productId !== undefined
+          ? props.productId
+          : payment?.productId ?? DEFAULT_PAYMENT.productId) !== productId ||
+        (props?.sum !== undefined
+          ? props.sum
+          : payment?.sum ?? DEFAULT_PAYMENT.sum) !== sum ||
+        (props?.status !== undefined
+          ? props.status
+          : payment?.status ?? DEFAULT_PAYMENT.status) !== status ||
         defaultPayAt !== payAt ||
-        (props?.payType ?? payment?.payType ?? DEFAULT_PAYMENT.payType) !==
-          payType ||
-        (props?.comment ?? payment?.comment ?? DEFAULT_PAYMENT.comment) !==
-          comment
+        (props?.payType !== undefined
+          ? props.payType
+          : payment?.payType ?? DEFAULT_PAYMENT.payType) !== payType ||
+        (props?.comment !== undefined
+          ? props.comment
+          : payment?.comment ?? DEFAULT_PAYMENT.comment) !== comment
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -217,20 +244,23 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
       payAt,
       payType,
       comment,
+      props,
     ])
 
     useEffect(() => {
-      if (setTopLeftComponent)
-        setTopLeftComponent(() => (
+      if (setTopLeftComponent) {
+        setTopLeftComponent(clone ? undefined : () => (
           <CardButtons
             item={payment}
             typeOfItem="payment"
             forForm
             showEditButton={false}
             showDeleteButton={false}
+            itemProps={isEventClosed ? { eventId: null } : undefined}
           />
         ))
-    }, [setTopLeftComponent])
+      }
+    }, [setTopLeftComponent, isEventClosed, clone])
 
     return (
       <FormWrapper>
@@ -290,6 +320,7 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
             label="Мероприятие"
             selectedId={eventId}
             onChange={isEventClosed ? null : (eventId) => setEventId(eventId)}
+            filter={{ noClosedEvents: true }}
             // required
             showEventUsersButton
             showPaymentsButton
