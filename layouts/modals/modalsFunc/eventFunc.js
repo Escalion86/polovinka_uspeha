@@ -106,23 +106,31 @@ const eventFunc = (eventId, clone = false, props = {}) => {
     const directions = useRecoilValue(directionsAtom)
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
     const [directionId, setDirectionId] = useState(
-      props?.directionId ?? event?.directionId ?? DEFAULT_EVENT.directionId
+      props?.directionId !== undefined
+        ? props.directionId
+        : event?.directionId ?? DEFAULT_EVENT.directionId
     )
 
     const defaultOrganizerId =
-      props?.organizerId ??
-      event?.organizerId ??
-      useRecoilValue(loggedUserActiveAtom)._id
+      props?.organizerId !== undefined
+        ? props.organizerId
+        : event?.organizerId ?? useRecoilValue(loggedUserActiveAtom)._id
     const [organizerId, setOrganizerId] = useState(defaultOrganizerId)
 
     const [title, setTitle] = useState(
-      props?.title ?? event?.title ?? DEFAULT_EVENT.title
+      props?.title !== undefined
+        ? props.title
+        : event?.title ?? DEFAULT_EVENT.title
     )
     const [images, setImages] = useState(
-      props?.images ?? event?.images ?? DEFAULT_EVENT.images
+      props?.images !== undefined
+        ? props.images
+        : event?.images ?? DEFAULT_EVENT.images
     )
     const [description, setDescription] = useState(
-      props?.description ?? event?.description ?? DEFAULT_EVENT.description
+      props?.description !== undefined
+        ? props.description
+        : event?.description ?? DEFAULT_EVENT.description
     )
 
     const defaultTags = useMemo(
@@ -138,14 +146,17 @@ const eventFunc = (eventId, clone = false, props = {}) => {
 
     const defaultDateStart = useMemo(
       () =>
-        props?.dateStart ??
-        event?.dateStart ??
-        Date.now() - (Date.now() % 3600000) + 3600000,
+        props?.dateStart !== undefined
+          ? props.dateStart
+          : event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000,
       []
     )
 
     const defaultDateEnd = useMemo(
-      () => props?.dateEnd ?? event?.dateEnd ?? defaultDateStart + 3600000,
+      () =>
+        props?.dateEnd !== undefined
+          ? props.dateEnd
+          : event?.dateEnd ?? defaultDateStart + 3600000,
       []
     )
 
@@ -165,33 +176,47 @@ const eventFunc = (eventId, clone = false, props = {}) => {
     )
     // const [price, setPrice] = useState(event?.price ?? DEFAULT_EVENT.price)
     const [subEvents, setSubEvents] = useState(
-      props?.subEvents ?? event?.subEvents
-        ? event.subEvents
-        : eventId
-          ? []
-          : [DEFAULT_SUBEVENT_GENERATOR()]
+      props?.subEvents !== undefined
+        ? props.subEvents
+        : event?.subEvents
+          ? event.subEvents
+          : eventId
+            ? []
+            : [DEFAULT_SUBEVENT_GENERATOR()]
     )
 
     const [showOnSite, setShowOnSite] = useState(
-      props?.showOnSite ?? event?.showOnSite ?? DEFAULT_EVENT.showOnSite
+      props?.showOnSite !== undefined
+        ? props.showOnSite
+        : event?.showOnSite ?? DEFAULT_EVENT.showOnSite
     )
     const [reportImages, setReportImages] = useState(
-      props?.reportImages ?? event?.reportImages ?? DEFAULT_EVENT.reportImages
+      props?.reportImages !== undefined
+        ? props.reportImages
+        : event?.reportImages ?? DEFAULT_EVENT.reportImages
     )
     const [report, setReport] = useState(
-      props?.report ?? event?.report ?? DEFAULT_EVENT.report
+      props?.report !== undefined
+        ? props.report
+        : event?.report ?? DEFAULT_EVENT.report
     )
 
     const [warning, setWarning] = useState(
-      props?.warning ?? event?.warning ?? DEFAULT_EVENT.warning
+      props?.warning !== undefined
+        ? props.warning
+        : event?.warning ?? DEFAULT_EVENT.warning
     )
 
     const [blank, setBlank] = useState(
-      props?.blank ?? event?.blank ?? DEFAULT_EVENT.blank
+      props?.blank !== undefined
+        ? props.blank
+        : event?.blank ?? DEFAULT_EVENT.blank
     )
 
     const [likes, setLikes] = useState(
-      props?.likes ?? event?.likes ?? DEFAULT_EVENT.likes
+      props?.likes !== undefined
+        ? props.likes
+        : event?.likes ?? DEFAULT_EVENT.likes
     )
 
     const direction = useMemo(
@@ -309,18 +334,33 @@ const eventFunc = (eventId, clone = false, props = {}) => {
 
     useEffect(() => {
       const isFormChanged =
-        event?.title !== title ||
-        event?.description !== description ||
+        (props?.title !== undefined ? props.title : event?.title) !== title ||
+        (props?.description !== undefined
+          ? props.description
+          : event?.description) !== description ||
         !compareArrays(defaultTags, tags) ||
-        event?.showOnSite !== showOnSite ||
+        (props?.showOnSite !== undefined
+          ? props.showOnSite
+          : event?.showOnSite) !== showOnSite ||
         dateStart !== defaultDateStart ||
         dateEnd !== defaultDateEnd ||
         // event?.duration !== duration ||
-        !compareArrays(event?.images, images) ||
-        !compareObjects(event?.address, address) ||
+        !compareArrays(
+          props?.images !== undefined ? props.images : event?.images,
+          images
+        ) ||
+        !compareObjects(
+          props?.address !== undefined ? props.address : event?.address,
+          address
+        ) ||
         // event?.price !== price ||
-        !compareObjects(event?.subEvents, subEvents) ||
-        event?.directionId !== directionId ||
+        !compareObjects(
+          props?.subEvents !== undefined ? props.subEvents : event?.subEvents,
+          subEvents
+        ) ||
+        (props?.directionId !== undefined
+          ? props.directionId
+          : event?.directionId) !== directionId ||
         // event?.maxParticipants !==
         //   (maxParticipantsCheck ? null : maxParticipants ?? 0) ||
         // event?.maxMans !== (maxMansCheck ? null : maxMans ?? 0) ||
@@ -343,11 +383,18 @@ const eventFunc = (eventId, clone = false, props = {}) => {
         // !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
         // event?.usersRelationshipAccess !== usersRelationshipAccess ||
         // event?.isReserveActive !== isReserveActive ||
-        event?.report !== report ||
-        !compareArrays(event?.reportImages, reportImages) ||
-        event?.warning !== warning ||
-        event?.likes !== likes ||
-        event?.blank !== blank
+        (props?.report !== undefined ? props.report : event?.report) !==
+          report ||
+        !compareArrays(
+          props?.reportImages !== undefined
+            ? props.reportImages
+            : event?.reportImages,
+          reportImages
+        ) ||
+        (props?.warning !== undefined ? props.warning : event?.warning) !==
+          warning ||
+        (props?.likes !== undefined ? props.likes : event?.likes) !== likes ||
+        (props?.blank !== undefined ? props.blank : event?.blank) !== blank
 
       // setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -395,6 +442,7 @@ const eventFunc = (eventId, clone = false, props = {}) => {
       warning,
       likes,
       blank,
+      props,
     ])
 
     const duration = getEventDuration({ dateStart, dateEnd })

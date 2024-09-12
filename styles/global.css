@@ -16,6 +16,16 @@ body {
   /* font-family: 'Futura PT', sans-serif; */
 }
 
+input {
+  border-color: transparent;
+  border-width: 0 !important;
+  outline: none !important;
+}
+
+* {
+  outline: none !important;
+}
+
 .tilt {
   transform-style: preserve-3d;
 }

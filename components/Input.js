@@ -92,7 +92,7 @@ const Input = forwardRef(
           type={type}
           step={step}
           className={cn(
-            'flex-1 px-1 text-black placeholder-transparent h-7 peer focus:outline-none bg-transparent',
+            'flex-1 px-1 text-black placeholder-transparent h-7 peer bg-transparent',
             disabled ? 'text-disabled cursor-not-allowed' : '',
             inputClassName
           )}
