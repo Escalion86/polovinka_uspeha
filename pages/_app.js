@@ -139,6 +139,7 @@ const futura = localFont({
     },
   ],
   variable: '--font-futura',
+  preload: true,
 })
 
 // const futuraBook = localFont({
@@ -171,6 +172,7 @@ const futuraDemi = localFont({
     },
   ],
   variable: '--font-futuraDemi',
+  preload: true,
 })
 
 const adlery = localFont({
@@ -182,6 +184,7 @@ const adlery = localFont({
     },
   ],
   variable: '--font-adlery',
+  preload: true,
 })
 
 const adleryProSwash = localFont({
@@ -193,6 +196,7 @@ const adleryProSwash = localFont({
     },
   ],
   variable: '--font-adleryProSwash',
+  preload: true,
 })
 
 // const enchants = localFont({
@@ -231,6 +235,7 @@ const lora = localFont({
     },
   ],
   variable: '--font-lora',
+  preload: true,
 })
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
