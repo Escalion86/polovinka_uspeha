@@ -1,10 +1,5 @@
 import SelectImage from '@components/SelectImage'
-import { getData } from '@helpers/CRUD'
-import useSnackbar from '@helpers/useSnackbar'
-import { modalsFuncAtom } from '@state/atoms'
-import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
 
 const selectImageFunc = (directory, aspect, onSelect) => {
   const SelectImageFuncModal = ({
