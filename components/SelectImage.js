@@ -19,7 +19,7 @@ const SelectImage = ({
   required = false,
   label = null,
   directory,
-  maxImages = 10,
+  maxImages,
   labelClassName,
   className,
   aspect,
