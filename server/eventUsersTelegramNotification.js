@@ -111,8 +111,8 @@ const eventUsersTelegramNotification = async ({
       const { user, status, subEventId } = deletedEventUsersFull[0]
       const subEventName =
         subEventId && event.subEvents?.length > 1
-          ? event.subEvents.find(({ id }) => id === subEventId)?.name
-          : title
+          ? event.subEvents.find(({ id }) => id === subEventId)?.title
+          : undefined
       userId = user._id
       text = `\u{1F4C5}\u{2796}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
