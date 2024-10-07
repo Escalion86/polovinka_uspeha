@@ -35,20 +35,20 @@ const UserName = ({
           textCenter={false}
           lines={typeof trunc === 'number' ? trunc : 1}
         >
-          {`${upperCaseFirst(user.firstName)}${
+          {`${upperCaseFirst(user.firstName.trim())}${
             user.thirdName
               ? ` ${
                   seeFullNames || user.security?.fullThirdName
-                    ? upperCaseFirst(user.thirdName)
-                    : user.thirdName[0].toUpperCase() + '.'
+                    ? upperCaseFirst(user.thirdName.trim())
+                    : user.thirdName[0].trim().toUpperCase() + '.'
                 }`
               : ''
           }${
             user.secondName
               ? ` ${
                   seeFullNames || user.security?.fullSecondName
-                    ? upperCaseFirst(user.secondName)
-                    : user.secondName[0].toUpperCase() + '.'
+                    ? upperCaseFirst(user.secondName.trim())
+                    : user.secondName[0].trim().toUpperCase() + '.'
                 }`
               : ''
           }`}
@@ -64,21 +64,21 @@ const UserName = ({
         >
           {user?.firstName && (
             <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
-              {upperCaseFirst(user.firstName)}
+              {upperCaseFirst(user.firstName.trim())}
             </span>
           )}
           {user?.thirdName && (
             <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
               {seeFullNames || user.security?.fullThirdName
-                ? upperCaseFirst(user.thirdName)
-                : user.thirdName[0].toUpperCase() + '.'}
+                ? upperCaseFirst(user.thirdName.trim())
+                : user.thirdName[0].trim().toUpperCase() + '.'}
             </span>
           )}
           {user?.secondName && (
             <span className={cn(thin ? 'overflow-visible max-h-3' : '')}>
               {seeFullNames || user.security?.fullSecondName
-                ? upperCaseFirst(user.secondName)
-                : user.secondName[0].toUpperCase() + '.'}
+                ? upperCaseFirst(user.secondName.trim())
+                : user.secondName[0].trim().toUpperCase() + '.'}
             </span>
           )}
           {children}
