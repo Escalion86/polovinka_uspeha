@@ -66,7 +66,6 @@ const eventUsersTelegramNotification = async ({
     const event = await Events.findById(eventId).lean()
     const eventUsers = await EventsUsers.find({ eventId }).lean()
     const eventUsersIds = eventUsers.map((eventUser) => eventUser.userId)
-    const subEventSum = subEventsSummator(event.subEvents)
 
     // const addedEventUsersIds = addedEventUsers.map(
     //   (eventUser) => eventUser.userId
@@ -109,7 +108,11 @@ const eventUsersTelegramNotification = async ({
       deletedEventUsers.length === 1 &&
       addedEventUsers.length === 0
     ) {
-      const { user, status } = deletedEventUsersFull[0]
+      const { user, status, subEventId } = deletedEventUsersFull[0]
+      const subEventName =
+        subEventId && event.subEvents?.length > 1
+          ? event.subEvents.find(({ id }) => id === subEventId)?.name
+          : title
       userId = user._id
       text = `\u{1F4C5}\u{2796}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
@@ -119,13 +122,17 @@ const eventUsersTelegramNotification = async ({
         status === 'reserve'
           ? '<b>ИЗ РЕЗЕРВА</b> мероприятия'
           : 'от мероприятия'
-      } "${event.title}" от ${formatDateTime(event.dateStart)}.`
+      } "${event.title}" от ${formatDateTime(event.dateStart)}${subEventName ? ` (${subEventName})` : ''}.`
     } else if (
       itIsSelfRecord &&
       deletedEventUsers.length === 0 &&
       addedEventUsers.length === 1
     ) {
-      const { user, status } = addedEventUsersFull[0]
+      const { user, status, subEventId } = addedEventUsersFull[0]
+      const subEventName =
+        subEventId && event.subEvents?.length > 1
+          ? event.subEvents.find(({ id }) => id === subEventId)?.name
+          : title
       userId = user._id
       text = `\u{1F4C5}\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
         user
@@ -133,7 +140,7 @@ const eventUsersTelegramNotification = async ({
         user.gender === 'male' ? `ЗАПИСАЛСЯ` : 'ЗАПИСАЛАСЬ'
       }</b> ${
         status === 'reserve' ? '<b>В РЕЗЕРВ</b> мероприятия' : 'на мероприятие'
-      } "${event.title}" от ${formatDateTime(event.dateStart)}.`
+      } "${event.title}" от ${formatDateTime(event.dateStart)}${subEventName ? ` (${subEventName})` : ''}.`
     } else if (notificationOnMassiveChange) {
       // const deletedUsersNames = deletedUsers.map((user) =>
       //   getUserFullName(user)
@@ -204,14 +211,62 @@ const eventUsersTelegramNotification = async ({
     ).length
     // console.log('req.protocol', process.env.DOMAIN.substr(0, 5))
 
+    text += `\n`
+
+    if (event.subEvents?.length > 1) {
+      for (let i = 0; i < event.subEvents.length; i++) {
+        const subEvent = event.subEvents[i]
+        const subEventSum = subEventsSummator([subEvent])
+        const mansInSubEvent = eventUsersFull.filter(
+          (eventUser) =>
+            eventUser.user.gender === 'male' &&
+            eventUser.subEventId === subEvent.id
+        )
+        const womansInSubEvent = eventUsersFull.filter(
+          (eventUser) =>
+            eventUser.user.gender === 'famale' &&
+            eventUser.subEventId === subEvent.id
+        )
+
+        const mansParticipantsInSubEventCount = mansInSubEvent.filter(
+          (eventUser) => eventUser.status === 'participant'
+        ).length
+        const womansParticipantsInSubEventCount = womansInSubEvent.filter(
+          (eventUser) => eventUser.status === 'participant'
+        ).length
+        const mansReserveInSubEventCount = mansInSubEvent.filter(
+          (eventUser) => eventUser.status === 'reserve'
+        ).length
+        const womansReserveInSubEventCount = womansInSubEvent.filter(
+          (eventUser) => eventUser.status === 'reserve'
+        ).length
+
+        text +=
+          `\n<b>${subEvent.title}</b>:\nУчастники: ♂️  ${mansParticipantsInSubEventCount}${
+            subEventSum.maxMans ? ' / ' + subEventSum.maxMans : ''
+          }  |  ♀️  ${womansParticipantsInSubEventCount}${
+            subEventSum.maxWomans ? ' / ' + subEventSum.maxWomans : ''
+          }  |  Всего: ${mansParticipantsInSubEventCount + womansParticipantsInSubEventCount}` +
+          `${
+            subEventSum.isReserveActive
+              ? `\nРезерв: ♂️  ${mansReserveInSubEventCount}  |  ♀️  ${womansReserveInSubEventCount}  |  Всего: ${
+                  mansReserveCount + womansReserveInSubEventCount
+                }`
+              : `\nЗапись в резерв закрыта`
+          }`
+      }
+    }
+
+    const subEventsSum = subEventsSummator(event.subEvents)
+
     text +=
-      `\n\nУчастники: ♂️  ${mansParticipantsCount}${
-        subEventSum.maxMans ? ' / ' + subEventSum.maxMans : ''
+      `\n${event.subEvents?.length > 1 ? `<b>ИТОГО</b>:\n` : ''}Участники: ♂️  ${mansParticipantsCount}${
+        subEventsSum.maxMans ? ' / ' + subEventsSum.maxMans : ''
       }  |  ♀️  ${womansParticipantsCount}${
-        subEventSum.maxWomans ? ' / ' + subEventSum.maxWomans : ''
+        subEventsSum.maxWomans ? ' / ' + subEventsSum.maxWomans : ''
       }  |  Всего: ${mansParticipantsCount + womansParticipantsCount}` +
       `${
-        subEventSum.isReserveActive
+        subEventsSum.isReserveActive
           ? `\nРезерв: ♂️  ${mansReserveCount}  |  ♀️  ${womansReserveCount}  |  Всего: ${
               mansReserveCount + womansReserveCount
             }`
