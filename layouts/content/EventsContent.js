@@ -108,10 +108,14 @@ const EventsContent = () => {
               : false
         return (
           haveEventTag &&
-          ((isEventClosed && !statusFilterFull && filter.status.finished) ||
-            (isEventClosed && statusFilterFull && filter.status.closed) ||
-            (isEventActive && filter.status.finished && isEventExpired) ||
-            (isEventActive && filter.status.active && !isEventExpired) ||
+          ((isEventClosed &&
+            (statusFilterFull
+              ? filter.status.closed
+              : filter.status.finished)) ||
+            (isEventActive &&
+              (isEventExpired
+                ? filter.status.finished
+                : filter.status.active)) ||
             (isEventCanceled && filter.status.canceled)) &&
           (!filterOptions.directions ||
             filterOptions.directions === event.directionId) &&
