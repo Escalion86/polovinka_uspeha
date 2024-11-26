@@ -25,9 +25,9 @@ const sortFunctions = {
             ? -1
             : 1,
   },
-  eventsUserCount: {
-    asc: (a, b) => (a.eventsUserCount < b.eventsUserCount ? -1 : 1),
-    desc: (a, b) => (a.eventsUserCount > b.eventsUserCount ? -1 : 1),
+  signedUpEventsCount: {
+    asc: (a, b) => (a.signedUpEventsCount < b.signedUpEventsCount ? -1 : 1),
+    desc: (a, b) => (a.signedUpEventsCount > b.signedUpEventsCount ? -1 : 1),
   },
   date: {
     asc: (a, b) =>

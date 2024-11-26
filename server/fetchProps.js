@@ -1,8 +1,10 @@
 import { DEFAULT_ROLES } from '@helpers/constants'
 import getUserRole from '@helpers/getUserRole'
+import isUserAdmin from '@helpers/isUserAdmin'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
 import Events from '@models/Events'
+import EventsUsers from '@models/EventsUsers'
 // import EventsUsers from '@models/EventsUsers'
 // import Histories from '@models/Histories'
 // import Payments from '@models/Payments'
@@ -22,6 +24,7 @@ const fetchProps = async (user) => {
     const db = await dbConnect()
 
     var users = await Users.find({}).select('-password').lean()
+
     // if (!(isModer || isAdmin)) {
     //   users = JSON.parse(JSON.stringify(users)).map((user) => {
     //     return {
@@ -51,6 +54,7 @@ const fetchProps = async (user) => {
         googleCalendarId: 0,
       })
       .lean()
+
     const directions = await Directions.find({}).lean()
     const reviews = await Reviews.find({}).lean()
     const additionalBlocks = await AdditionalBlocks.find({}).lean()
@@ -75,6 +79,35 @@ const fetchProps = async (user) => {
 
     const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
     const seeFullNames = userRole?.users?.seeFullNames
+    const isAdmin = isUserAdmin(user)
+
+    if (isAdmin) {
+      const canceledEventsIds = events
+        .filter(({ status }) => status === 'canceled')
+        .map(({ _id }) => String(_id))
+
+      const res = await EventsUsers.aggregate([
+        {
+          $match: {
+            eventId: { $nin: canceledEventsIds },
+            status: { $nin: ['reserve', 'ban'] },
+          },
+        },
+        {
+          $group: { _id: '$userId', total: { $sum: 1 } },
+        },
+      ])
+
+      const preparedRes = res.reduce(function (result, { _id, total }) {
+        result[_id] = total
+        return result
+      }, {})
+
+      users = users.map((user) => ({
+        ...user,
+        signedUpEventsCount: preparedRes[user._id] || 0,
+      }))
+    }
 
     if (!seeFullNames) {
       users = users.map((user) => {

@@ -50,8 +50,8 @@ const sortParams = [
   { key: 'createdAt', title: 'по дате создания', type: 'number' },
   { key: 'payAt', title: 'по дате события', type: 'number' },
   {
-    key: 'eventsUserCount',
-    title: 'по кол-ву посещ. мероприятий',
+    key: 'signedUpEventsCount',
+    title: 'по кол-ву записей',
     type: 'number',
   },
 ]
