@@ -16,13 +16,13 @@ import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import { modalsFuncAtom } from '@state/atoms'
 import loadingAtom from '@state/atoms/loadingAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
+// import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import sumOfPaymentsWithoutEventIdByUserIdSelector from '@state/selectors/sumOfPaymentsWithoutEventIdByUserIdSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import { Suspense } from 'react'
-import Skeleton from 'react-loading-skeleton'
+// import { Suspense } from 'react'
+// import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue } from 'recoil'
 
 const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
@@ -45,33 +45,33 @@ const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
   )
 }
 
-const SignedUpCountComponent = ({ userId }) => {
-  const eventsUsersSignedUpCount = useRecoilValue(
-    eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
-  )
-  return <span className="font-normal">{eventsUsersSignedUpCount.signUp}</span>
-}
+// const SignedUpCountComponent = ({ userId }) => {
+//   const eventsUsersSignedUpCount = useRecoilValue(
+//     eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
+//   )
+//   return <span className="font-normal">{eventsUsersSignedUpCount.signUp}</span>
+// }
 
-const FinishedComponent = ({ userId }) => {
-  const eventsUsersSignedUpCount = useRecoilValue(
-    eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
-  )
-  return (
-    <span className="font-normal">{eventsUsersSignedUpCount.finished}</span>
-  )
-}
+// const FinishedComponent = ({ userId }) => {
+//   const eventsUsersSignedUpCount = useRecoilValue(
+//     eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
+//   )
+//   return (
+//     <span className="font-normal">{eventsUsersSignedUpCount.finished}</span>
+//   )
+// }
 
-const SignedUpCount = (props) => (
-  <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
-    <SignedUpCountComponent {...props} />
-  </Suspense>
-)
+// const SignedUpCount = (props) => (
+//   <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
+//     <SignedUpCountComponent {...props} />
+//   </Suspense>
+// )
 
-const FinishedCount = (props) => (
-  <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
-    <FinishedComponent {...props} />
-  </Suspense>
-)
+// const FinishedCount = (props) => (
+//   <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
+//     <FinishedComponent {...props} />
+//   </Suspense>
+// )
 
 const UserCard = ({ userId, hidden = false, style }) => {
   const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
@@ -203,12 +203,19 @@ const UserCard = ({ userId, hidden = false, style }) => {
                           {formatDate(user.createdAt)}
                         </span>
                       </div> */}
-                      <div className="flex text-sm leading-4 gap-x-2">
-                        <span className="font-bold">Посетил:</span>
-                        <FinishedCount userId={userId} />
-                        <span className="font-bold">Записан:</span>
-                        <SignedUpCount userId={userId} />
-                      </div>
+                      {typeof user.signedUpEventsCount === 'number' && (
+                        <div className="flex text-sm leading-4 gap-x-2">
+                          <span className="font-bold">
+                            Записей на мероприятия:
+                          </span>
+                          {/* <FinishedCount userId={userId} /> */}
+                          <span className="font-normal">
+                            {user.signedUpEventsCount}
+                          </span>
+                          {/* <span className="font-bold">Записан:</span> */}
+                          {/* <SignedUpCount userId={userId} /> */}
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-end justify-end flex-1 py-1 pr-1 gap-x-1">
                       {seeNotificationIcon && (

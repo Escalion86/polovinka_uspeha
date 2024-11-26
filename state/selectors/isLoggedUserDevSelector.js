@@ -1,9 +1,9 @@
-import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import { selector } from 'recoil'
+import loggedUserActiveRoleSelector from './loggedUserActiveRoleSelector'
 
 const isLoggedUserDevSelector = selector({
   key: 'isLoggedUserDevSelector',
-  get: ({ get }) => get(loggedUserActiveRoleNameAtom) === 'dev',
+  get: ({ get }) => get(loggedUserActiveRoleSelector)?.dev,
 })
 
 export default isLoggedUserDevSelector

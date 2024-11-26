@@ -12,6 +12,8 @@ import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import UsersList from '@layouts/lists/UsersList'
 import { modalsFuncAtom } from '@state/atoms'
 import usersAtom from '@state/atoms/usersAtom'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -37,6 +39,8 @@ const UsersContent = () => {
   // )
 
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
+  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
   const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
   const addButton = loggedUserActiveRole?.users?.add
 
@@ -98,6 +102,7 @@ const UsersContent = () => {
   const addSearchProps = seeAllContacts
     ? ['phone', 'whatsapp', 'viber', 'instagram', 'telegram', 'vk', 'email']
     : []
+  const addDevSearchProps = isLoggedUserDev ? ['_id'] : []
 
   const visibleUsers = useMemo(() => {
     if (!isSearching || !searchText) return filteredUsers
@@ -106,6 +111,7 @@ const UsersContent = () => {
       'secondName',
       'thirdName',
       ...addSearchProps,
+      ...addDevSearchProps,
     ])
   }, [filteredUsers, searchText, isSearching])
 
@@ -129,6 +135,7 @@ const UsersContent = () => {
               'name',
               'birthday',
               'createdAt',
+              ...(isLoggedUserAdmin ? ['signedUpEventsCount'] : []),
               // 'eventsUserCount'
             ]}
           />
