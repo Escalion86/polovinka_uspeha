@@ -148,7 +148,7 @@ const Group = ({
       >
         <Component
           className={cn(
-            'flex gap-x-2 items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
+            'flex gap-x-2 cursor-pointer items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
             // active ? 'text-ganeral' : 'text-white'
           )}
           href={items[0].href}
