@@ -51,6 +51,7 @@ const EventsUsers = ({
   noButtons,
   itemChildren,
   nameFieldWrapperClassName,
+  createdAtObject,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
 
@@ -68,8 +69,27 @@ const EventsUsers = ({
         onChange={setSelectedIds}
         exceptedIds={exceptedIds}
         readOnly={!canEdit || isEventClosed}
-        itemChildren={itemChildren}
-        nameFieldWrapperClassName={nameFieldWrapperClassName}
+        itemChildren={
+          createdAtObject
+            ? (user) => {
+                return (
+                  <div className="absolute bottom-0 max-h-[13px] flex justify-center items-end w-full text-xs font-normal">
+                    <div
+                      className={cn(
+                        'max-h-[13px] leading-[13px] border-t border-r border-l rounded-t-md px-2 border-gray-700',
+                        createdAtObject[user._id] ? 'bg-teal-50' : 'bg-red-50'
+                      )}
+                    >
+                      {createdAtObject[user._id]
+                        ? formatDateTime(createdAtObject[user._id])
+                        : 'Запись еще не создана'}
+                    </div>
+                  </div>
+                )
+              }
+            : undefined
+        }
+        nameFieldWrapperClassName={createdAtObject ? 'pb-2' : undefined}
         buttons={
           !noButtons && canEdit && !isEventClosed
             ? [
@@ -182,6 +202,14 @@ const eventUsersFunc = (eventId) => {
     )
 
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    const eventUsersCreatedAtObject = useMemo(
+      () =>
+        eventUsers.reduce((acc, { createdAt, userId }) => {
+          acc[userId] = createdAt
+          return acc
+        }, {}),
+      [eventUsers]
+    )
 
     const sortUsersByCreatedAt = useCallback(
       (ids) => {
@@ -469,12 +497,16 @@ const eventUsersFunc = (eventId) => {
                 paddingX="small"
                 noMargin
                 centerLabel
-                wrapperClassName="flex flex-col items-stretch"
+                wrapperClassName="flex flex-col items-stretch gap-y-1.5"
               >
                 {children}
               </InputWrapper>
             )
-          : ({ children }) => children,
+          : ({ children }) => (
+              <div className="flex flex-col items-stretch gap-y-1.5">
+                {children}
+              </div>
+            ),
       [event]
     )
 
@@ -530,18 +562,16 @@ const eventUsersFunc = (eventId) => {
                   key={'Участники' + id}
                   label={title || 'Основной тип участия'}
                 >
-                  {canEdit && (
-                    <div className="flex justify-center">
-                      <EventUsersCounterAndAge
-                        event={event}
-                        subEvent={subEvent}
-                        eventUsersToUse={eventUsersToUse[id] ?? []}
-                        // showNoviceAndMemberSum
-                        showAges={false}
-                        dontShowLabel
-                      />
-                    </div>
-                  )}
+                  <div className="flex justify-center">
+                    <EventUsersCounterAndAge
+                      event={event}
+                      subEvent={subEvent}
+                      eventUsersToUse={eventUsersToUse[id] ?? []}
+                      // showNoviceAndMemberSum
+                      showAges={false}
+                      dontShowLabel
+                    />
+                  </div>
                   <EventsUsers
                     event={event}
                     modalTitle="Выбор участников"
@@ -557,22 +587,9 @@ const eventUsersFunc = (eventId) => {
                     toReserveFunc={(newId) => {
                       setReserveState(id, [...reserveIds[id], newId])
                     }}
-                    // itemChildren={
-                    //   eventUsers
-                    //     ? (user) => {
-                    //         const eventUser = eventUsers.find(
-                    //           ({ userId }) => userId === user._id
-                    //         )
-                    //         return (
-                    //           <div className="text-xs font-normal tablet:text-sm">
-                    //             <div className="leading-[14px]">
-                    //               {formatDateTime(eventUser.createdAt)}
-                    //             </div>
-                    //           </div>
-                    //         )
-                    //       }
-                    //     : undefined
-                    // }
+                    createdAtObject={
+                      canEdit ? eventUsersCreatedAtObject : undefined
+                    }
                   />
                 </Wrapper>
               )
@@ -621,32 +638,7 @@ const eventUsersFunc = (eventId) => {
                           ])
                         // setReserveState(sortUsersByIds([...reserveIds[id], id]))
                       }
-                      nameFieldWrapperClassName="pb-2 laptop:pb-0"
-                      itemChildren={
-                        eventUsers
-                          ? (user) => {
-                              const eventUser = eventUsers.find(
-                                ({ userId }) => userId === user._id
-                              )
-                              return (
-                                <div className="absolute bottom-0 max-h-[13px] flex justify-center items-end w-full text-xs font-normal">
-                                  <div
-                                    className={cn(
-                                      'max-h-[13px] leading-[13px] border-t border-r border-l rounded-t-md px-2 border-gray-700',
-                                      eventUser?.createdAt
-                                        ? 'bg-teal-50'
-                                        : 'bg-red-50'
-                                    )}
-                                  >
-                                    {eventUser?.createdAt
-                                      ? formatDateTime(eventUser.createdAt)
-                                      : 'Запись еще не создана'}
-                                  </div>
-                                </div>
-                              )
-                            }
-                          : undefined
-                      }
+                      createdAtObject={eventUsersCreatedAtObject}
                     />
                   </Wrapper>
                 )
