@@ -152,4 +152,6 @@ const UserStatusIcon = forwardRef(({ status, size, slashed = false }, ref) => {
   }
 })
 
+UserStatusIcon.displayName = 'UserStatusIcon'
+
 export default UserStatusIcon

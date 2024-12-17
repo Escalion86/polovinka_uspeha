@@ -171,4 +171,6 @@ const ChipsSelector = forwardRef(
   }
 )
 
+ChipsSelector.displayName = 'ChipsSelector'
+
 export default ChipsSelector

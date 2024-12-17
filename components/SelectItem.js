@@ -264,10 +264,11 @@ export const SelectUser = ({
           itemChildren
             ? (props) => (
                 <UserItem
-                  children={itemChildren}
                   nameFieldWrapperClassName={nameFieldWrapperClassName}
                   {...props}
-                />
+                >
+                  {itemChildren}
+                </UserItem>
               )
             : UserItem
         }

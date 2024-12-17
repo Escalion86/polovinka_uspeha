@@ -20,4 +20,6 @@ const PulseButton = forwardRef(
   )
 )
 
+PulseButton.displayName = 'PulseButton'
+
 export default PulseButton
