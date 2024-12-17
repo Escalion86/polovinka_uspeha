@@ -23,10 +23,10 @@ const copyLinkFunc = (props) => {
       props.eventId
         ? 'event'
         : props.userId
-        ? 'user'
-        : props.serviceId
-        ? 'service'
-        : 'home'
+          ? 'user'
+          : props.serviceId
+            ? 'service'
+            : 'home'
     )
     const [eventId, setEventId] = useState(props.eventId)
     const [userId, setUserId] = useState(props.userId)
@@ -58,12 +58,12 @@ const copyLinkFunc = (props) => {
             linkType === 'event'
               ? `${window.location.origin}/event/${eventId}${tagsStringify()}`
               : linkType === 'user'
-              ? `${window.location.origin}/user/${userId}${tagsStringify()}`
-              : linkType === 'service'
-              ? `${
-                  window.location.origin
-                }/service/${serviceId}${tagsStringify()}`
-              : `${window.location.origin}${tagsStringify()}`
+                ? `${window.location.origin}/user/${userId}${tagsStringify()}`
+                : linkType === 'service'
+                  ? `${
+                      window.location.origin
+                    }/service/${serviceId}${tagsStringify()}`
+                  : `${window.location.origin}${tagsStringify()}`
           )
 
     const copyToClipboardHome = () => {
@@ -99,7 +99,12 @@ const copyLinkFunc = (props) => {
 
     return (
       <FormWrapper>
-        <LinkTypePicker linkType={linkType} onChange={setLinkType} />
+        <Link
+          prefetch={false}
+          TypePicker
+          linkType={linkType}
+          onChange={setLinkType}
+        />
         {linkType === 'event' && (
           <SelectEvent
             selectedId={eventId}

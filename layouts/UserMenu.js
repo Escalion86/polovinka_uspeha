@@ -54,7 +54,7 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 
   if (href)
     return (
-      <Link href={href} shallow>
+      <Link prefetch={false} href={href} shallow>
         {Component}
       </Link>
     )
@@ -170,6 +170,7 @@ const UserMenu = () => {
     </div>
   ) : (
     <Link
+      prefetch={false}
       href="/login"
       shallow
       className="flex items-center justify-center h-12 px-2 text-white duration-300 border border-white rounded-lg hover:text-general hover:bg-white"

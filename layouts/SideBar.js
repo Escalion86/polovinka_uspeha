@@ -67,7 +67,12 @@ const menuCfg = (
 const MenuItem = ({ item, active = false, badgeNum }) => {
   const setMenuOpen = useSetRecoilState(menuOpenAtom)
   return (
-    <Link href={'/cabinet/' + item.href} shallow legacyBehavior>
+    <Link
+      prefetch={false}
+      href={'/cabinet/' + item.href}
+      shallow
+      legacyBehavior
+    >
       <a
         onClick={() => setMenuOpen(false)}
         className={cn(
@@ -126,7 +131,7 @@ const Group = ({
   }, 0)
   const Component =
     items.length === 1
-      ? (props) => <Link {...props} shallow />
+      ? (props) => <Link prefetch={false} {...props} shallow />
       : (props) => <button {...props} />
 
   return (

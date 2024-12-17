@@ -98,6 +98,7 @@ function ServicePage(props) {
             {!loggedUserActive && (
               <>
                 <Link
+                  prefetch={false}
                   href={{
                     pathname: '/login',
                     query,
@@ -111,6 +112,7 @@ function ServicePage(props) {
                   />
                 </Link>
                 <Link
+                  prefetch={false}
                   href={{
                     pathname: '/login',
                     query: { ...query, registration: true },

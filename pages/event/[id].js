@@ -87,6 +87,7 @@ const EventBlock = ({ event }) => {
       <div className="flex flex-col items-center">
         {loggedUserActive && (
           <Link
+            prefetch={false}
             className="max-w-[76%]"
             href={{
               pathname: '/cabinet/events',

@@ -46,7 +46,7 @@ const ComboBox = ({
     >
       <select
         className={cn(
-          'flex-1 cursor-pointer outline-hidden bg-transparent px-1',
+          'flex-1 cursor-pointer outline-hidden border-0 bg-transparent px-1',
           value === null || value === undefined ? 'text-disabled' : '',
           selectClassName
         )}
@@ -56,7 +56,7 @@ const ComboBox = ({
           onChange(e.target.value === '' ? null : e.target.value)
         }
         defaultValue={defaultItem ? defaultValue : undefined}
-        value={defaultValue ? undefined : value ?? ''}
+        value={defaultValue ? undefined : (value ?? '')}
         style={{
           WebkitAppearance: 'none',
           MozAppearance: 'none',

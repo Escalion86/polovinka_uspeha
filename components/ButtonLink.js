@@ -9,6 +9,7 @@ const ButtonLink = ({
   classBgColor = 'bg-general',
 }) => (
   <Link
+    prefetch={false}
     href={href}
     shallow
     className={cn(

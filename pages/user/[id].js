@@ -86,7 +86,7 @@ function UserPage(props) {
             )}
             {/* {!loggedUser && (
               <>
-                <Link
+                <Link prefetch={false}
                   href={{
                     pathname: '/login',
                     query,
@@ -99,7 +99,7 @@ function UserPage(props) {
                     // onClick={() => router.push('./login', '', { shallow: true })}
                   />
                 </Link>
-                <Link
+                <Link prefetch={false}
                   href={{
                     pathname: '/login',
                     query: { ...query, registration: true },

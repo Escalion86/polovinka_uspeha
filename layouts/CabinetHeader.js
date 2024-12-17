@@ -43,6 +43,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
       {title ? (
         <div className="flex items-center flex-1">
           <Link
+            prefetch={false}
             href="/"
             shallow
             className="hidden tablet:block h-[56px] w-[44px] aspect-1 relative"
@@ -65,7 +66,12 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
           </Link>
           <div className="flex items-center flex-1 leading-4 min-h-[42px] tablet:border-gray-600 tablet:border-l-1 tablet:pl-3 tablet:ml-3">
             {titleLink ? (
-              <Link href={titleLink} shallow className="hover:text-gray-300">
+              <Link
+                prefetch={false}
+                href={titleLink}
+                shallow
+                className="hover:text-gray-300"
+              >
                 <h1>{title}</h1>
               </Link>
             ) : (
@@ -75,7 +81,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
         </div>
       ) : (
         <div className="absolute z-10 -translate-x-1/2 left-1/2">
-          <Link href="/" shallow>
+          <Link prefetch={false} href="/" shallow>
             <img className="h-12" src="/img/logo_horizontal.png" alt="logo" />
           </Link>
         </div>
