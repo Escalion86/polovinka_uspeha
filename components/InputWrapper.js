@@ -165,4 +165,6 @@ const InputWrapper = forwardRef(
   }
 )
 
+InputWrapper.displayName = 'InputWrapper'
+
 export default InputWrapper
