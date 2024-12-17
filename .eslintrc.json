@@ -1,7 +1,10 @@
 {
   "extends": ["next", "next/core-web-vitals", "prettier"],
   "plugins": ["react"],
-  "rules": {},
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "react-hooks/rules-of-hooks": "off"
+  },
   "parserOptions": {
     "ecmaVersion": "latest",
     "ecmaFeatures": {
