@@ -123,7 +123,7 @@ export default async function handler(req, res) {
                 event.dateStart
               )}${event.subEvents.length > 1 ? `\n<b>Вариант участия</b>: ${subEvent.title}` : ''}`
             } else {
-              text = `ОШИБКА - ${result.data.error}`
+              text = `Не удалось записаться на мероприятие - ${result.data.error}`
             }
 
             await sendTelegramMessage({

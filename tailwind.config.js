@@ -20,6 +20,10 @@ module.exports = {
   },
   theme: {
     extend: {
+      aspectRatio: {
+        '4/3': '4 / 3',
+        1: '1 / 1',
+      },
       transitionProperty: {
         scale:
           'width, height, background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter !important',
@@ -29,11 +33,14 @@ module.exports = {
         3: '3 3 0%',
       },
       backgroundImage: (theme) => ({
-        check: "url('/icons/check.svg')",
-        radio: "url('/icons/radio.svg')",
+        // check: "url('/icons/check.svg')",
+        // radio: "url('/icons/radio.svg')",
         hearts: "url('/img/hearts_texture.jpg')",
       }),
       colors: {
+        green: colors.emerald,
+        yellow: colors.amber,
+        purple: colors.violet,
         header: '#4D9DC4',
         general: '#7a5151',
         'general-light': '#ebe0e0',
@@ -287,6 +294,7 @@ module.exports = {
       },
       opacity: {
         15: '15%',
+        20: '20%',
       },
       borderWidth: {
         1: '1px',
@@ -304,34 +312,30 @@ module.exports = {
     },
   },
   variants: {
-    extend: {
-      overflow: ['hover', 'focus'],
-      backgroundColor: ['checked'],
-      borderColor: ['checked'],
-      inset: ['checked'],
-      zIndex: ['hover', 'active'],
-    },
-    backgroundColor: [
-      'responsive',
-      'hover',
-      'focus',
-      'group-hover',
-      'group-focus',
-    ],
-    textColor: ['responsive', 'hover', 'focus', 'group-hover', 'group-focus'],
-    // boxShadow: ['responsive', 'hover', 'focus'],
-    transform: ['hover', 'responsive', 'group-hover'],
-    scale: ['hover', 'responsive', 'group-hover'],
-    translate: ['hover', 'responsive', 'group-hover'],
+    extend: {},
   },
-  plugins: [
-    require('@tailwindcss/aspect-ratio'),
-    require('tailwindcss-scoped-groups')({
-      groups: ['one', 'two'],
-    }),
-    // require('preline/plugin'),
-    require('flowbite/plugin'),
-  ],
+  // variants: {
+  //   extend: {
+  //     overflow: ['hover', 'focus'],
+  //     backgroundColor: ['checked'],
+  //     borderColor: ['checked'],
+  //     inset: ['checked'],
+  //     zIndex: ['hover', 'active'],
+  //   },
+  //   backgroundColor: [
+  //     'responsive',
+  //     'hover',
+  //     'focus',
+  //     'group-hover',
+  //     'group-focus',
+  //   ],
+  //   textColor: ['responsive', 'hover', 'focus', 'group-hover', 'group-focus'],
+  //   // boxShadow: ['responsive', 'hover', 'focus'],
+  //   transform: ['hover', 'responsive', 'group-hover'],
+  //   scale: ['hover', 'responsive', 'group-hover'],
+  //   translate: ['hover', 'responsive', 'group-hover'],
+  // },
+  plugins: [require('flowbite/plugin')],
   future: {
     purgeLayersByDefault: true,
   },

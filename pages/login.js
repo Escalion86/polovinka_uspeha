@@ -31,8 +31,6 @@ import MaskedInput from 'react-text-mask'
 import { useRecoilValue } from 'recoil'
 import SvgLove from 'svg/SvgLove'
 import SvgWave from 'svg/SvgWave'
-import tailwindConfig from 'tailwind.config.js'
-import resolveConfig from 'tailwindcss/resolveConfig'
 
 import TelegramLoginButton from 'react-telegram-login'
 import Divider from '@components/Divider'
@@ -50,7 +48,7 @@ const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
   return (
     <m.div
       className={cn(
-        'absolute transform duration-200 top-0 left-0 bottom-0 right-0 z-50 flex bg-opacity-80 tablet:items-center justify-center tablet:overflow-y-auto bg-gray-800',
+        'absolute transform duration-200 top-0 left-0 bottom-0 right-0 z-50 flex tablet:items-center justify-center tablet:overflow-y-auto bg-gray-800/80',
         subModalText ? 'tablet:pt-10 tablet:pb-5' : 'tablet:py-5'
       )}
       initial={{ opacity: 0 }}
@@ -104,6 +102,7 @@ const Input = ({
   max,
   maxLength,
   readOnly,
+  autoComplete,
 }) => {
   const [focused, setFocused] = useState(false)
   const onFocus = () => setFocused(true)
@@ -150,7 +149,7 @@ const Input = ({
           </h5>
           {type === 'location' ? (
             <select
-              className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-3 text-lg text-gray-600"
+              className="absolute w-full h-full top-0 left-0 border-none outline-hidden bg-transparent py-0.5 px-3 text-lg text-gray-600"
               style={{
                 WebkitAppearance: 'none',
                 MozAppearance: 'none',
@@ -177,7 +176,7 @@ const Input = ({
               name={name}
               disabled={readOnly}
               ref={inputRef}
-              className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-1 text-lg text-gray-600"
+              className="absolute w-full h-full top-0 left-0 border-none outline-hidden bg-transparent py-0.5 px-1 text-lg text-gray-600"
               showMask={value == '7'}
               onFocus={onFocus}
               onBlur={onBlur}
@@ -214,7 +213,7 @@ const Input = ({
             <input
               name={name}
               ref={inputRef}
-              className="absolute w-full h-full top-0 left-0 border-none outline-none bg-transparent py-0.5 px-1 text-lg text-gray-600"
+              className="absolute w-full h-full top-0 left-0 border-none outline-hidden bg-transparent py-0.5 px-1 text-lg text-gray-600"
               type={type === 'location' ? 'text' : type}
               onFocus={onFocus}
               onBlur={onBlur}
@@ -224,6 +223,7 @@ const Input = ({
               max={max}
               maxLength={maxLength}
               disabled={readOnly}
+              autoComplete={autoComplete}
             />
           )}
         </div>
@@ -247,8 +247,7 @@ const Input = ({
   )
 }
 
-const fullConfig = resolveConfig(tailwindConfig)
-const generalColor = fullConfig.theme.colors.general
+const generalColor = '#7a5151'
 
 const secondsToWait = 60
 
@@ -1067,6 +1066,7 @@ const LoginPage = (props) => {
                     registrationLevel !== 3)
                 }
                 readOnly={waitingResponse}
+                autoComplete="on"
               />
               <Input
                 type="password"
@@ -1087,6 +1087,7 @@ const LoginPage = (props) => {
                 }
                 hidden={process === 'authorization' || registrationLevel !== 3}
                 readOnly={waitingResponse}
+                autoComplete="on"
               />
               {process === 'authorization' && type === 'phone' && (
                 <a
@@ -1184,7 +1185,7 @@ const LoginPage = (props) => {
                 (waitingResponse ? (
                   <div
                     className={cn(
-                      'block border-gray-500 bg-gray-200 w-full h-12 mt-4 text-white uppercase duration-300 border-2 outline-none rounded-3xl'
+                      'block border-gray-500 bg-gray-200 w-full h-12 mt-4 text-white uppercase duration-300 border-2 outline-hidden rounded-3xl'
                     )}
                   >
                     <LoadingSpinner size="xxs" />
@@ -1199,7 +1200,7 @@ const LoginPage = (props) => {
                       isButtonDisabled
                         ? 'bg-gray-200'
                         : 'bg-gray-500 focus:bg-general focus:border-2 focus:border-black hover:bg-general',
-                      'block w-full h-12 text-white uppercase duration-300  border-0 outline-none  rounded-3xl'
+                      'block w-full h-12 text-white uppercase duration-300  border-0 outline-hidden  rounded-3xl'
                     )}
                     tabIndex={0}
                     disabled={isButtonDisabled}
@@ -1512,7 +1513,7 @@ const LoginPage = (props) => {
                     Или если вы зашли на сайт с компьютера, то отсканируйте
                     штрихкод телефоном для звонка
                   </div>
-                  <img src={backCallRes?.url_image} />
+                  <img src={backCallRes?.url_image} alt="qrcode" />
                 </div>
               </>
             )}

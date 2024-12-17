@@ -234,7 +234,7 @@ const UserLikesItem = ({
         )}
       </div>
       {selectedIds?.length > 0 ? (
-        <div className="z-10 flex flex-col items-center overflow-hidden border border-gray-500 rounded gap-x-1">
+        <div className="z-10 flex flex-col items-center overflow-hidden border border-gray-500 rounded-sm gap-x-1">
           {otherUsersData
             .filter(({ user }) => selectedIds.includes(user._id))
             .map(({ user }, index) => (

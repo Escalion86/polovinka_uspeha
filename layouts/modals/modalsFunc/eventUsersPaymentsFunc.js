@@ -128,7 +128,7 @@ const UserPayment = ({
   return (
     <div
       // key={'payment' + user._id}
-      className="overflow-hidden border border-gray-700 rounded"
+      className="overflow-hidden border border-gray-700 rounded-sm"
     >
       <div className="flex">
         <div className="flex-1">
@@ -260,7 +260,7 @@ const UserPayment = ({
           initial={{ height: 0 }}
           animate={{ height: isCollapsed ? 0 : 'auto' }}
         >
-          <div className="p-1 border-t border-gray-700 rounded-b bg-opacity-30 bg-general">
+          <div className="p-1 border-t border-gray-700 rounded-b bg-general/30">
             {paymentsWithoutEventOfUser.length > 0 && (
               <div className="mb-2">
                 <div className="flex items-center gap-x-1">
@@ -1044,7 +1044,7 @@ const eventUsersPaymentsFunc = (eventId) => {
               </div>
             </div>
             {paymentsToEvent.length > 0 && (
-              <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded bg-general">
+              <div className="p-1  border-t border-gray-700 rounded-sm bg-general/50">
                 {paymentsToEvent.map((payment) => (
                   <div
                     key={payment._id}
@@ -1094,7 +1094,7 @@ const eventUsersPaymentsFunc = (eventId) => {
               </div>
             </div>
             {paymentsFromEvent.length > 0 && (
-              <div className="p-1 bg-opacity-50 border-t border-gray-700 rounded bg-general">
+              <div className="p-1 border-t border-gray-700 rounded-sm bg-general/50">
                 {paymentsFromEvent.map((payment) => (
                   <div
                     key={payment._id}

@@ -1,6 +1,11 @@
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+const path = require('path')
+
+// const __dirname = new URL('.', import.meta.url).pathname
+
+// const withBundleAnalyzer = require('@next/bundle-analyzer')({
+//   enabled: process.env.ANALYZE === 'true',
+// })
+
 const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
@@ -9,13 +14,26 @@ const withPWA = require('next-pwa')({
   disable: process.env.NODE_ENV === 'development',
 })
 
-module.exports = withBundleAnalyzer(
+module.exports = //withBundleAnalyzer(
   withPWA({
     // webpack: (config) => {
-    //   // config.experiments = { topLevelAwait: true }
+    //   config.resolve.alias = {
+    //     ...config.resolve.alias,
+    //     '@components': path.join(__dirname, 'components'),
+    //     '@helpers': path.join(__dirname, 'helpers'),
+    //     '@pages': path.join(__dirname, 'pages'),
+    //     '@models': path.join(__dirname, 'models'),
+    //     '@utils': path.join(__dirname, 'utils'),
+    //     '@server': path.join(__dirname, 'server'),
+    //     '@state': path.join(__dirname, 'state'),
+    //     '@schemas': path.join(__dirname, 'schemas'),
+    //     '@layouts': path.join(__dirname, 'layouts'),
+    //     '@blocks': path.join(__dirname, 'blocks'),
+    //     '@svg': path.join(__dirname, 'svg'),
+    //   }
     //   return config
     // },
-    swcMinify: false,
+    // swcMinify: false,
     experimental: {
       largePageDataBytes: 512 * 100000,
     },
@@ -76,4 +94,4 @@ module.exports = withBundleAnalyzer(
     //   return config
     // },
   })
-)
+//)

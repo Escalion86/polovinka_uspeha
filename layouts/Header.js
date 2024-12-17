@@ -32,7 +32,7 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
     <li className="flex flex-1">
       <a
         href={href}
-        className="flex-1 px-2 py-1 text-2xl duration-300 rounded cursor-pointer whitespace-nowrap hover:bg-general hover:text-white"
+        className="flex-1 px-2 py-1 text-2xl duration-300 rounded-sm cursor-pointer whitespace-nowrap hover:bg-general hover:text-white"
         onClick={() => setMenuOpen(false)}
       >
         {text}
@@ -106,7 +106,7 @@ const Header = ({ noMenu }) => {
       </div>
       {!noMenu && (
         <>
-          <ul className="items-center justify-center hidden w-full h-[40px] text-lg duration-300 bg-white bg-opacity-75 laptop:flex gap-x-4 hover:bg-opacity-100">
+          <ul className="items-center justify-center hidden w-full h-[40px] text-lg duration-300 bg-white/75 laptop:flex gap-x-4 hover:bg-white/100">
             {menu.map(({ name, href }, index) => {
               return (
                 <MenuItem key={'menuItem' + name} text={name} href={href} />

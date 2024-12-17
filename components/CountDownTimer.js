@@ -18,7 +18,7 @@ const CountDownTimer = ({}) => {
             <span
               style={{ lineHeight: 1 }}
               className={cn(
-                'box-border overflow-hidden p-[0.25em] h-[0.75em] bg-[#f7f7f7] rounded-t-[0.1em] flex border-b-[1px] border-black border-opacity-10'
+                'box-border overflow-hidden p-[0.25em] h-[0.75em] bg-[#f7f7f7] rounded-t-[0.1em] flex border-b-[1px] border-black/10'
               )}
             >
               2

@@ -100,7 +100,7 @@ const RemindDatesContent = (props) => {
     <div className="flex flex-col flex-1 h-screen px-1 my-1">
       {dates.map((remindDate) => (
         <div
-          className="flex p-1 gap-x-1 cursor-pointer hover:bg-blue-200 items-center [&:not(:first-child)]:border-t border-gray-500"
+          className="flex p-1 gap-x-1 cursor-pointer hover:bg-blue-200 items-center not-first:border-t border-gray-500"
           onClick={() => onClickEdit(remindDate)}
         >
           <div className="flex-1 text-general">{remindDate.name}</div>

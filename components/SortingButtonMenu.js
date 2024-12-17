@@ -41,8 +41,8 @@ const sortParams = [
     type: 'string',
   },
   {
-    key: 'firstNameAndGender',
-    title: 'по имени и полу',
+    key: 'genderAndFirstName',
+    title: 'по полу и имени',
     type: 'string',
   },
   { key: 'dateStart', title: 'по дате', type: 'number' },
@@ -58,7 +58,7 @@ const sortParams = [
 
 const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
   return (
-    <div className="relative flex items-center h-8 m-0.5 group-one">
+    <div className="relative flex items-center h-8 m-0.5 group/one">
       <div
         onClick={() => onChange('asc')}
         className="absolute left-0 z-10 flex items-center justify-end w-1/2 h-8 cursor-pointer group"
@@ -68,7 +68,7 @@ const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
             'flex items-center justify-end mr-[calc(100%-2.5rem)] h-8 overflow-hidden rounded-l',
             value === 'asc'
               ? 'w-10 bg-success'
-              : 'duration-300 w-2 group-hover:w-10 group-one-hover:bg-general'
+              : 'duration-300 w-2 group-hover:w-10 group-hover/one:bg-general'
           )}
         >
           <FontAwesomeIcon
@@ -86,7 +86,7 @@ const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
           'mx-3 px-1 flex items-center justify-center flex-1 h-8 group whitespace-nowrap',
           value
             ? 'bg-success text-white'
-            : 'duration-300 text-black group-one-hover:bg-general group-one-hover:text-white'
+            : 'duration-300 text-black group-hover/one:bg-general group-hover/one:text-white'
         )}
       >
         {title}
@@ -101,7 +101,7 @@ const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
             'flex items-center justify-start ml-[calc(100%-2.5rem)] h-8 overflow-hidden rounded-r',
             value === 'desc'
               ? 'w-10 bg-success'
-              : 'duration-300 w-2 group-hover:w-10 group-one-hover:bg-general'
+              : 'duration-300 w-2 group-hover:w-10 group-hover/one:bg-general'
           )}
         >
           {value && (
@@ -149,7 +149,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
     >
       <div className="relative">
         <m.div
-          className="absolute right-0 z-0 flex flex-col overflow-hidden duration-300 bg-white border border-gray-300 rounded top-10"
+          className="absolute right-0 z-0 flex flex-col overflow-hidden duration-300 bg-white border border-gray-300 rounded-sm top-10"
           variants={variants}
           animate={isUserMenuOpened ? 'show' : 'hide'}
           initial="hide"

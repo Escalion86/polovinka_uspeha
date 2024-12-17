@@ -1,6 +1,6 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import formatAddress from '@helpers/formatAddress'
-import formatEventDateTime from '@helpers/formatEventDateTime'
+// import formatEventDateTime from '@helpers/formatEventDateTime'
 import getUserFullName from '@helpers/getUserFullName'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import Events from '@models/Events'
@@ -13,10 +13,10 @@ import { DEFAULT_ROLES } from '@helpers/constants'
 import Roles from '@models/Roles'
 import mongoose from 'mongoose'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
-import subEventsSummator from '@helpers/subEventsSummator'
+// import subEventsSummator from '@helpers/subEventsSummator'
 import ServicesUsers from '@models/ServicesUsers'
 import serviceUserTelegramNotification from './serviceUserTelegramNotification'
-import { telegramCmdToIndex } from './telegramCmd'
+// import { telegramCmdToIndex } from './telegramCmd'
 
 function isJson(str) {
   try {
@@ -388,202 +388,202 @@ const updateEventInCalendar = async (event, req) => {
   return updatedCalendarEvent
 }
 
-const notificateUsersAboutEvent = async (event, req) => {
-  if (!event || event.blank) return
-  await dbConnect()
-  const rolesSettings = await Roles.find({}).lean()
-  const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
-  const rolesIdsToNewEventsByTagsNotification = allRoles
-    .filter((role) => role?.notifications?.newEventsByTags)
-    .map((role) => role._id)
+// const notificateUsersAboutEvent = async (event, req) => {
+//   if (!event || event.blank) return
+//   await dbConnect()
+//   const rolesSettings = await Roles.find({}).lean()
+//   const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
+//   const rolesIdsToNewEventsByTagsNotification = allRoles
+//     .filter((role) => role?.notifications?.newEventsByTags)
+//     .map((role) => role._id)
 
-  const users = await Users.find({
-    role:
-      process.env.NODE_ENV === 'development'
-        ? 'dev'
-        : { $in: rolesIdsToNewEventsByTagsNotification },
-    'notifications.settings.newEventsByTags': true,
-    'notifications.telegram.active': true,
-    'notifications.telegram.id': {
-      $exists: true,
-      $ne: null,
-    },
-  }).lean()
+//   const users = await Users.find({
+//     role:
+//       process.env.NODE_ENV === 'development'
+//         ? 'dev'
+//         : { $in: rolesIdsToNewEventsByTagsNotification },
+//     'notifications.settings.newEventsByTags': true,
+//     'notifications.telegram.active': true,
+//     'notifications.telegram.id': {
+//       $exists: true,
+//       $ne: null,
+//     },
+//   }).lean()
 
-  const subEventSum = subEventsSummator(event.subEvents)
+//   const subEventSum = subEventsSummator(event.subEvents)
 
-  const usersToNotificate = users.filter((user) => {
-    if (
-      !(
-        !user.eventsTagsNotification ||
-        user.eventsTagsNotification?.length === 0 ||
-        user.eventsTagsNotification.find((tag) => event.tags.includes(tag))
-      )
-    )
-      return false
+//   const usersToNotificate = users.filter((user) => {
+//     if (
+//       !(
+//         !user.eventsTagsNotification ||
+//         user.eventsTagsNotification?.length === 0 ||
+//         user.eventsTagsNotification.find((tag) => event.tags.includes(tag))
+//       )
+//     )
+//       return false
 
-    const userAge = new Number(
-      birthDateToAge(user.birthday, undefined, false, false)
-    )
+//     const userAge = new Number(
+//       birthDateToAge(user.birthday, undefined, false, false)
+//     )
 
-    const isUserTooOld =
-      userAge &&
-      ((user.gender === 'male' &&
-        typeof subEventSum.maxMansAge === 'number' &&
-        subEventSum.maxMansAge < userAge) ||
-        (user.gender === 'famale' &&
-          typeof subEventSum.maxWomansAge === 'number' &&
-          subEventSum.maxWomansAge < userAge))
-    if (isUserTooOld) return false
+//     const isUserTooOld =
+//       userAge &&
+//       ((user.gender === 'male' &&
+//         typeof subEventSum.maxMansAge === 'number' &&
+//         subEventSum.maxMansAge < userAge) ||
+//         (user.gender === 'famale' &&
+//           typeof subEventSum.maxWomansAge === 'number' &&
+//           subEventSum.maxWomansAge < userAge))
+//     if (isUserTooOld) return false
 
-    const isUserTooYoung =
-      userAge &&
-      ((user.gender === 'male' &&
-        typeof subEventSum.maxMansAge === 'number' &&
-        subEventSum.minMansAge > userAge) ||
-        (user.gender === 'famale' &&
-          typeof subEventSum.maxWomansAge === 'number' &&
-          subEventSum.minWomansAge > userAge))
-    if (isUserTooYoung) return false
+//     const isUserTooYoung =
+//       userAge &&
+//       ((user.gender === 'male' &&
+//         typeof subEventSum.maxMansAge === 'number' &&
+//         subEventSum.minMansAge > userAge) ||
+//         (user.gender === 'famale' &&
+//           typeof subEventSum.maxWomansAge === 'number' &&
+//           subEventSum.minWomansAge > userAge))
+//     if (isUserTooYoung) return false
 
-    const isUserStatusCorrect = user.status
-      ? subEventSum.usersStatusAccess[user.status]
-      : subEventSum.usersStatusAccess.novice
-    if (!isUserStatusCorrect) return false
+//     const isUserStatusCorrect = user.status
+//       ? subEventSum.usersStatusAccess[user.status]
+//       : subEventSum.usersStatusAccess.novice
+//     if (!isUserStatusCorrect) return false
 
-    const isUserRelationshipCorrect =
-      !subEventSum.usersRelationshipAccess ||
-      subEventSum.usersRelationshipAccess === 'yes' ||
-      (user.relationship
-        ? subEventSum.usersRelationshipAccess === 'only'
-        : subEventSum.usersRelationshipAccess === 'no')
-    if (!isUserRelationshipCorrect) return false
+//     const isUserRelationshipCorrect =
+//       !subEventSum.usersRelationshipAccess ||
+//       subEventSum.usersRelationshipAccess === 'yes' ||
+//       (user.relationship
+//         ? subEventSum.usersRelationshipAccess === 'only'
+//         : subEventSum.usersRelationshipAccess === 'no')
+//     if (!isUserRelationshipCorrect) return false
 
-    return true
-  })
+//     return true
+//   })
 
-  if (usersToNotificate.length === 0) return
+//   if (usersToNotificate.length === 0) return
 
-  const novicesTelegramIds = usersToNotificate
-    .filter((user) => user.status === 'novice' || !user.status)
-    .map((user) => user.notifications?.telegram?.id)
+//   const novicesTelegramIds = usersToNotificate
+//     .filter((user) => user.status === 'novice' || !user.status)
+//     .map((user) => user.notifications?.telegram?.id)
 
-  const membersTelegramIds = usersToNotificate
-    .filter((user) => user.status === 'member')
-    .map((user) => user.notifications?.telegram?.id)
+//   const membersTelegramIds = usersToNotificate
+//     .filter((user) => user.status === 'member')
+//     .map((user) => user.notifications?.telegram?.id)
 
-  // const eventPrice = subEventSum.price / 100
-  // const eventPriceForMember =
-  //   (subEventSum.price -
-  //     (subEventSum.usersStatusDiscount ? subEventSum.usersStatusDiscount?.member : 0)) /
-  //   100
-  // const eventPriceForNovice =
-  //   (subEventSum.price -
-  //     (subEventSum.usersStatusDiscount ? subEventSum.usersStatusDiscount?.novice : 0)) /
-  //   100
+//   // const eventPrice = subEventSum.price / 100
+//   // const eventPriceForMember =
+//   //   (subEventSum.price -
+//   //     (subEventSum.usersStatusDiscount ? subEventSum.usersStatusDiscount?.member : 0)) /
+//   //   100
+//   // const eventPriceForNovice =
+//   //   (subEventSum.price -
+//   //     (subEventSum.usersStatusDiscount ? subEventSum.usersStatusDiscount?.novice : 0)) /
+//   //   100
 
-  const address = event.address
-    ? `\n\n\u{1F4CD} <b>Место проведения</b>:\n${formatAddress(
-        JSON.parse(JSON.stringify(event.address))
-      )}`
-    : ''
+//   const address = event.address
+//     ? `\n\n\u{1F4CD} <b>Место проведения</b>:\n${formatAddress(
+//         JSON.parse(JSON.stringify(event.address))
+//       )}`
+//     : ''
 
-  const textStart = `\u{1F4C5} ${formatEventDateTime(event, {
-    fullWeek: true,
-    weekInBrackets: true,
-  }).toUpperCase()}\n<b>${event.title}</b>\n${DOMPurify.sanitize(
-    event.description
-      .replaceAll('<p><br></p>', '\n')
-      .replaceAll('<blockquote>', '\n<blockquote>')
-      .replaceAll('<li>', '\n\u{2764} <li>')
-      .replaceAll('<p>', '\n<p>')
-      .replaceAll('<br>', '\n')
-      .replaceAll('&nbsp;', ' ')
-      .trim('\n'),
-    {
-      ALLOWED_TAGS: [],
-      ALLOWED_ATTR: [],
-    }
-  )}${address}`
+//   const textStart = `\u{1F4C5} ${formatEventDateTime(event, {
+//     fullWeek: true,
+//     weekInBrackets: true,
+//   }).toUpperCase()}\n<b>${event.title}</b>\n${DOMPurify.sanitize(
+//     event.description
+//       .replaceAll('<p><br></p>', '\n')
+//       .replaceAll('<blockquote>', '\n<blockquote>')
+//       .replaceAll('<li>', '\n\u{2764} <li>')
+//       .replaceAll('<p>', '\n<p>')
+//       .replaceAll('<br>', '\n')
+//       .replaceAll('&nbsp;', ' ')
+//       .trim('\n'),
+//     {
+//       ALLOWED_TAGS: [],
+//       ALLOWED_ATTR: [],
+//     }
+//   )}${address}`
 
-  const textPriceForNovice = event.subEvents
-    .map(({ price, usersStatusDiscount, title }, index) => {
-      const eventPriceForStatus =
-        ((price ?? 0) - (usersStatusDiscount.novice ?? 0)) / 100
+//   const textPriceForNovice = event.subEvents
+//     .map(({ price, usersStatusDiscount, title }, index) => {
+//       const eventPriceForStatus =
+//         ((price ?? 0) - (usersStatusDiscount.novice ?? 0)) / 100
 
-      return `${index === 0 ? `\n\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '\n' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${
-        usersStatusDiscount.novice > 0
-          ? `<s>${price / 100}</s>   <b>${eventPriceForStatus}</b>`
-          : eventPriceForStatus
-      } руб`
-    })
-    .join('\n')
+//       return `${index === 0 ? `\n\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '\n' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${
+//         usersStatusDiscount.novice > 0
+//           ? `<s>${price / 100}</s>   <b>${eventPriceForStatus}</b>`
+//           : eventPriceForStatus
+//       } руб`
+//     })
+//     .join('\n')
 
-  const textPriceForMember = event.subEvents
-    .map(({ price, usersStatusDiscount, title }, index) => {
-      const eventPriceForStatus =
-        ((price ?? 0) - (usersStatusDiscount.member ?? 0)) / 100
+//   const textPriceForMember = event.subEvents
+//     .map(({ price, usersStatusDiscount, title }, index) => {
+//       const eventPriceForStatus =
+//         ((price ?? 0) - (usersStatusDiscount.member ?? 0)) / 100
 
-      return `${index === 0 ? `\n\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '\n' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${
-        usersStatusDiscount.member > 0
-          ? `<s>${price / 100}</s>   <b>${eventPriceForStatus}</b>`
-          : eventPriceForStatus
-      } руб`
-    })
-    .join('\n')
+//       return `${index === 0 ? `\n\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '\n' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${
+//         usersStatusDiscount.member > 0
+//           ? `<s>${price / 100}</s>   <b>${eventPriceForStatus}</b>`
+//           : eventPriceForStatus
+//       } руб`
+//     })
+//     .join('\n')
 
-  // const textPriceForNovice = `\n\u{1F4B0} <b>Стоимость</b>: ${
-  //   eventPriceForNovice !== eventPrice
-  //     ? `<s>${eventPrice}</s>   <b>${eventPriceForNovice}</b>`
-  //     : eventPriceForNovice
-  // } руб`
+//   // const textPriceForNovice = `\n\u{1F4B0} <b>Стоимость</b>: ${
+//   //   eventPriceForNovice !== eventPrice
+//   //     ? `<s>${eventPrice}</s>   <b>${eventPriceForNovice}</b>`
+//   //     : eventPriceForNovice
+//   // } руб`
 
-  // const textPriceForMember = `\n\u{1F4B0} <b>Стоимость</b>: ${
-  //   eventPriceForMember !== eventPrice
-  //     ? `<s>${eventPrice}</s>   <b>${eventPriceForMember}</b>`
-  //     : eventPriceForMember
-  // } руб`
+//   // const textPriceForMember = `\n\u{1F4B0} <b>Стоимость</b>: ${
+//   //   eventPriceForMember !== eventPrice
+//   //     ? `<s>${eventPrice}</s>   <b>${eventPriceForMember}</b>`
+//   //     : eventPriceForMember
+//   // } руб`
 
-  const eventTags =
-    typeof event.tags === 'object' && event.tags?.length > 0
-      ? event.tags.filter((tag) => tag)
-      : []
-  const textEnd = eventTags.length > 0 ? `\n\n#${eventTags.join(' #')}` : ''
+//   const eventTags =
+//     typeof event.tags === 'object' && event.tags?.length > 0
+//       ? event.tags.filter((tag) => tag)
+//       : []
+//   const textEnd = eventTags.length > 0 ? `\n\n#${eventTags.join(' #')}` : ''
 
-  const inline_keyboard = [
-    [
-      {
-        text: '\u{1F4C5} На сайте',
-        url: process.env.DOMAIN + '/event/' + String(event._id),
-      },
-      // TODO Исправить запись через телеграм
-      {
-        text: '\u{1F4DD} Записаться',
-        callback_data: JSON.stringify({
-          c: telegramCmdToIndex('eventSignIn'),
-          eventId: event._id,
-        }),
-      },
-    ],
-  ]
+//   const inline_keyboard = [
+//     [
+//       {
+//         text: '\u{1F4C5} На сайте',
+//         url: process.env.DOMAIN + '/event/' + String(event._id),
+//       },
+//       // TODO Исправить запись через телеграм
+//       {
+//         text: '\u{1F4DD} Записаться',
+//         callback_data: JSON.stringify({
+//           c: telegramCmdToIndex('eventSignIn'),
+//           eventId: event._id,
+//         }),
+//       },
+//     ],
+//   ]
 
-  if (novicesTelegramIds.length > 0) {
-    sendTelegramMessage({
-      req,
-      telegramIds: novicesTelegramIds,
-      text: textStart + textPriceForNovice + textEnd,
-      inline_keyboard,
-    })
-  }
-  if (membersTelegramIds.length > 0) {
-    sendTelegramMessage({
-      req,
-      telegramIds: membersTelegramIds,
-      text: textStart + textPriceForMember + textEnd,
-      inline_keyboard,
-    })
-  }
-}
+//   if (novicesTelegramIds.length > 0) {
+//     sendTelegramMessage({
+//       req,
+//       telegramIds: novicesTelegramIds,
+//       text: textStart + textPriceForNovice + textEnd,
+//       inline_keyboard,
+//     })
+//   }
+//   if (membersTelegramIds.length > 0) {
+//     sendTelegramMessage({
+//       req,
+//       telegramIds: membersTelegramIds,
+//       text: textStart + textPriceForMember + textEnd,
+//       inline_keyboard,
+//     })
+//   }
+// }
 
 export default async function handler(Schema, req, res, params = null) {
   const { query, method, body } = req
@@ -659,9 +659,9 @@ export default async function handler(Schema, req, res, params = null) {
             const calendarEvent = updateEventInCalendar(jsonData, req)
 
             // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
-            if (jsonData.showOnSite) {
-              notificateUsersAboutEvent(jsonData, req)
-            }
+            // if (jsonData.showOnSite) {
+            //   notificateUsersAboutEvent(jsonData, req)
+            // }
           }
 
           if (Schema === ServicesUsers) {
@@ -705,9 +705,9 @@ export default async function handler(Schema, req, res, params = null) {
 
           if (Schema === Events) {
             const calendarEvent = updateEventInCalendar(data, req)
-            if (!oldData.showOnSite && data.showOnSite) {
-              notificateUsersAboutEvent(data, req)
-            }
+            // if (!oldData.showOnSite && data.showOnSite) {
+            //   notificateUsersAboutEvent(data, req)
+            // }
           }
 
           const difference = compareObjectsWithDif(oldData, data)

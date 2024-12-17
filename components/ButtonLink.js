@@ -12,11 +12,11 @@ const ButtonLink = ({
     href={href}
     shallow
     className={cn(
-      'flex justify-center items-center px-4 h-10 py-1 text-white border border-gray-200 bg-opacity-90',
+      'flex justify-center items-center px-4 h-10 py-1 text-white border border-gray-200',
       className,
       disabled
-        ? 'bg-gray-300 text-white cursor-not-allowed'
-        : cn('hover:bg-green-600', classBgColor)
+        ? 'bg-gray-300/90 text-white cursor-not-allowed'
+        : cn('hover:bg-green-600/90', classBgColor)
     )}
   >
     {name}

@@ -102,6 +102,7 @@ const AddressPicker = ({
             label="Показывать ссылку 2ГИС"
             src="/img/navigators/2gis.png"
             big
+            alt="2gis"
           />
           {address.link2GisShow &&
             (address.link2Gis || (address?.town && address?.street)) && (
@@ -142,6 +143,7 @@ const AddressPicker = ({
             label="Показывать ссылку Yandex Navigator"
             src="/img/navigators/yandex.png"
             big
+            alt="yandex_nav"
           />
           {address.linkYandexShow &&
             (address.linkYandexNavigator ||

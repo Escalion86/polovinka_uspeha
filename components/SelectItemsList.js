@@ -41,7 +41,7 @@ const ItemRow = ({
             <FontAwesomeIcon
               className={
                 count > 1
-                  ? 'text-gray-700 transform group-hover:hover:scale-125 duration-200 '
+                  ? 'text-gray-700 transform hover:group-hover:scale-125 duration-200 '
                   : 'text-red-700'
               }
               icon={count > 1 ? faMinus : faTrash}
@@ -49,7 +49,7 @@ const ItemRow = ({
             />
           </div>
           <input
-            className="w-10 text-sm text-center bg-gray-200 border-l border-r border-gray-700 outline-none"
+            className="w-10 text-sm text-center bg-gray-200 border-l border-r border-gray-700 outline-hidden"
             type="text"
             value={parseInt(count)}
             onChange={onChangeCount}
@@ -66,7 +66,7 @@ const ItemRow = ({
             onClick={incCount}
           >
             <FontAwesomeIcon
-              className="text-gray-700 duration-200 transform group-hover:hover:scale-125"
+              className="text-gray-700 duration-200 transform hover:group-hover:scale-125"
               icon={faPlus}
               size="sm"
             />

@@ -15,6 +15,7 @@ const ImageCheckBox = ({
   noMargin,
   disabled,
   src,
+  alt,
 }) => {
   if (readOnly && !checked) return null
 
@@ -42,6 +43,7 @@ const ImageCheckBox = ({
           onClick={!readOnly || disabled ? onClick : null}
         >
           <Image
+            alt={alt}
             src={src}
             width={big ? 24 : small ? 16 : 20}
             height={big ? 24 : small ? 16 : 20}

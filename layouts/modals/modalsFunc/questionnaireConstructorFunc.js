@@ -135,7 +135,7 @@ const ListConstructor = ({ list = [], onChange }) => {
                 onChange(newList.map(({ value }) => value))
                 setListState(newList)
               }}
-              className="flex-1 px-1 border border-gray-400 rounded"
+              className="flex-1 px-1 border border-gray-400 rounded-sm"
             />
             <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-6 h-6 hover:scale-110">
               <FontAwesomeIcon
@@ -387,7 +387,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                           type="number"
                           min="1"
                           placeholder="1"
-                          className="w-12 py-0 text-center border-b border-gray-400 outline-none"
+                          className="w-12 py-0 text-center border-b border-gray-400 outline-hidden"
                         />
                         <div>
                           {getNoun(

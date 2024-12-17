@@ -142,7 +142,7 @@ export const SelectItemList = ({
         <div
           name="itemsIds"
           className={cn(
-            'flex flex-col flex-wrap-reverse bg-gray-200 border rounded overflow-hidden',
+            'flex flex-col flex-wrap-reverse bg-gray-200 border rounded-sm overflow-hidden',
             required && (itemsId.length === 0 || itemsId[0] === '?')
               ? 'border-red-700'
               : 'border-gray-700'
@@ -156,7 +156,7 @@ export const SelectItemList = ({
               onClick={addButtonIsActive ? addRow : null}
               className={cn(
                 'group flex items-center justify-center h-6 bg-white',
-                itemRows.length > 0 ? 'rounded-b' : 'rounded',
+                itemRows.length > 0 ? 'rounded-b' : 'rounded-sm',
                 { 'cursor-pointer': addButtonIsActive }
               )}
             >

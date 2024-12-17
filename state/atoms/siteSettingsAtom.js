@@ -1,4 +1,4 @@
-import { DEFAULT_SITE_SETTINGS } from '@helpers/constants'
+// import { DEFAULT_SITE_SETTINGS } from '@helpers/constants'
 import { atom } from 'recoil'
 
 const siteSettingsAtom = atom({

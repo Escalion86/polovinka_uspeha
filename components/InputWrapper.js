@@ -46,7 +46,7 @@ const InputWrapper = forwardRef(
           noMargin ? '' : smallMargin ? 'mt-3' : 'mt-3.5 mb-1',
           noBorder
             ? 'min-h-[36px] tablet:min-h-[40px]'
-            : `min-h-[40px] tablet:min-h-[44px] border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50 ${
+            : `min-h-[40px] tablet:min-h-[44px] border-2 rounded focus-within:border-general hover:border-general not-focus-within:hover:border-general/50 ${
                 error ? 'border-danger' : 'border-gray-300'
               }`,
           fullWidth ? 'w-full' : '',
@@ -104,7 +104,7 @@ const InputWrapper = forwardRef(
           {label && (
             <div
               className={cn(
-                'pointer-events-none select-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
+                'pointer-events-none select-none absolute rounded-sm px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
                 'h-5 leading-[12px] peer-placeholder-shown:leading-[14px]',
                 'flex items-center',
                 required
@@ -164,5 +164,7 @@ const InputWrapper = forwardRef(
     )
   }
 )
+
+InputWrapper.displayName = 'InputWrapper'
 
 export default InputWrapper

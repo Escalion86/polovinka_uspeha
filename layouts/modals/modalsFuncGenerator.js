@@ -234,7 +234,7 @@ const modalsFuncGenerator = (
         )
       ),
     selectUsers: (
-      itemsId,
+      items,
       filterRules,
       onChange,
       exceptedIds,
@@ -246,7 +246,7 @@ const modalsFuncGenerator = (
     ) =>
       addModal(
         require('./modalsFunc/selectUsersFunc').default(
-          itemsId,
+          items,
           filterRules,
           onChange,
           exceptedIds,
@@ -420,6 +420,12 @@ const modalsFuncGenerator = (
         addModal(
           require('./modalsFunc/copyEventUserListFunc').default(eventId)
         ),
+      notificateAboutEvent: (eventId) =>
+        addModal(
+          require('./modalsFunc/notificateAboutEventTelegramFunc').default(
+            eventId
+          )
+        ),
       signUp: (event, status = 'participant', comment) => {
         if (checkLoggedUser('Для записи на мероприятие', `event=${event._id}`))
           addModal(
@@ -475,11 +481,12 @@ const modalsFuncGenerator = (
         addModal(
           require('./modalsFunc/eventUserStatusChangeFunc').default(eventUser)
         ),
-      editSubEvent: (eventUser, onConfirm) =>
+      editSubEvent: (eventUser, onConfirm, selectedSubEventId) =>
         addModal(
           require('./modalsFunc/eventUserSubEventChangeFunc').default(
             eventUser,
-            onConfirm
+            onConfirm,
+            selectedSubEventId
           )
         ),
       editLike: (eventUser, adminView) =>

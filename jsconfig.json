@@ -9,10 +9,10 @@
       "@utils/*": ["utils/*"],
       "@server/*": ["server/*"],
       "@state/*": ["state/*"],
-      "@styles/*": ["styles/*"],
       "@schemas/*": ["schemas/*"],
       "@layouts/*": ["layouts/*"],
-      "@blocks/*": ["blocks/*"]
+      "@blocks/*": ["blocks/*"],
+      "@svg/*": ["svg/*"]
     }
   }
 }

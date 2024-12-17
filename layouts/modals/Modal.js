@@ -281,7 +281,7 @@ const Modal = ({
     <m.div
       className={
         cn(
-          'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 tablet:items-center justify-center w-full h-screen tablet:overflow-y-auto bg-gray-800',
+          'absolute transform duration-200 top-0 left-0 z-50 flex tablet:items-center justify-center w-full h-screen tablet:overflow-y-auto bg-gray-800/80',
           subModalText ? 'tablet:pt-10 tablet:pb-5' : 'tablet:py-5'
         )
         //  + (rendered ? ' opacity-100' : ' opacity-0')
@@ -334,7 +334,7 @@ const Modal = ({
           </Tooltip>
         )}
         {titleState && (
-          <div className="mx-10 mb-2 text-lg font-bold leading-4 text-center whitespace-pre-line mt-9 tablet:mb-3 tablet:mt-0 tablet:mx-24">
+          <div className="mx-10 mt-8 mb-2 text-lg font-bold leading-4 text-center whitespace-pre-line tablet:mb-3 tablet:mt-2 tablet:mx-24">
             {titleState}
           </div>
         )}

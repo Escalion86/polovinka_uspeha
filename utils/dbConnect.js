@@ -133,21 +133,38 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null }
 }
 
-async function dbConnect() {
+let prevDbConnection
+
+async function dbConnect(domen) {
+  var dbName = process.env.MONGODB_DBNAME
+  if (domen === 'krsk') dbName = process.env.MONGODB_KRSK_DBNAME
+  if (domen === 'nrsk') dbName = process.env.MONGODB_NRSK_DBNAME
+  if (domen === 'ekb') dbName = process.env.MONGODB_EKB_DBNAME
+
+  if (prevDbConnection !== dbName) {
+    console.log('domen changed !!')
+    cached = { conn: null, promise: null }
+    await mongoose.disconnect()
+  }
+
+  if (prevDbConnection !== dbName) {
+    prevDbConnection = dbName
+  }
+
   if (cached.conn) {
-    console.log('dbConnect: используется текущее соединение')
+    // console.log('dbConnect: используется текущее соединение')
     // console.log('dbConnect: cached.conn', cached.conn)
     return cached.conn
   }
 
   if (!cached.promise) {
-    console.log('dbConnect: соединяем')
+    // console.log('dbConnect: соединяем')
     const opts = {
       // useNewUrlParser: true,
       // useUnifiedTopology: true,
       // bufferCommands: false,
       // useFindAndModify: false,
-      dbName: process.env.MONGODB_DBNAME,
+      dbName,
     }
 
     const db = mongoose.connection

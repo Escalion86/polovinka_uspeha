@@ -19,13 +19,13 @@ const CountDown = ({ children, Wrapper = ({ children }) => children }) => {
     device === 'phoneV'
       ? 0.65
       : device === 'phoneH'
-      ? 0.8
-      : device === 'tablet'
-      ? 1
-      : 1.1
+        ? 0.8
+        : device === 'tablet'
+          ? 1
+          : 1.1
 
   return showCoundownTimer ? (
-    <div className="flex flex-col items-center px-6 py-2 bg-white tablet:px-10 gap-y-1 bg-opacity-20 rounded-2xl">
+    <div className="flex flex-col items-center px-6 py-2 bg-white/20 tablet:px-10 gap-y-1 rounded-2xl">
       <div
         className="text-xl text-white uppercase tablet:text-2xl"
         style={{ textShadow: '1px 1px 2px black' }}

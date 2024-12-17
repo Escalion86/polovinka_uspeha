@@ -11,7 +11,7 @@ const UsersList = ({ users }) => {
     <ListWrapper
       itemCount={users.length}
       itemSize={widthNum > 2 ? 98 : 101}
-      className="bg-opacity-15 bg-general"
+      className="bg-general/15"
     >
       {({ index, style }) => (
         <UserCard

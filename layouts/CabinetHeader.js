@@ -42,13 +42,25 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
     >
       {title ? (
         <div className="flex items-center flex-1">
-          <Link href="/" shallow className="hidden tablet:block h-[56px]">
+          <Link
+            href="/"
+            shallow
+            className="hidden tablet:block h-[56px] w-[44px] aspect-1 relative"
+            // as="image"
+            // rel="preload"
+          >
             <Image
               className="rounded-full"
               src={icon || '/img/logo_heart.png'}
               alt="logo"
-              height={56}
-              width={44.33}
+              fill
+              // height={56}
+              // width={44.33}
+              // style={{ width: 'auto', height: 'auto' }}
+              // priority
+              // placeholder="blur"
+              // blurDataURL={'/img/logo_heart_24px.png'}
+              sizes="(max-width: 125px) 100vw"
             />
           </Link>
           <div className="flex items-center flex-1 leading-4 min-h-[42px] tablet:border-gray-600 tablet:border-l-1 tablet:pl-3 tablet:ml-3">

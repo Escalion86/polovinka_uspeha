@@ -31,7 +31,7 @@ const CoincidenceItem = ({ user, coincidence, like, likeSortNum }) => {
   return (
     <div
       key={'like' + user._id}
-      className="flex items-center pl-1 overflow-hidden border border-gray-500 rounded gap-x-1"
+      className="flex items-center pl-1 overflow-hidden border border-gray-500 rounded-sm gap-x-1"
     >
       {coincidence ? (
         <div className="relative flex items-center justify-center w-10 h-10 min-w-8 min-h-8">
@@ -292,7 +292,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
               return (
                 <div
                   key={'like' + user._id}
-                  className="flex items-center pl-1 overflow-hidden border border-gray-500 rounded gap-x-1"
+                  className="flex items-center pl-1 overflow-hidden border border-gray-500 rounded-sm gap-x-1"
                 >
                   <div
                     className={cn(

@@ -8,7 +8,7 @@ const ServicesUsersList = ({ servicesUsers, showUser = true }) => {
     <ListWrapper
       itemCount={servicesUsers.length}
       itemSize={showUser ? 123 : 82}
-      className="bg-opacity-15 bg-general"
+      className="bg-general/15"
     >
       {({ index, style }) => (
         <ServiceUserCard

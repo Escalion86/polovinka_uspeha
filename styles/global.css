@@ -1,40 +1,63 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-html,
-body {
-  margin: 0;
-  padding: 0;
+@config '../tailwind.config.js';
 
-  background: #F5F6F8;
-  color: #1C1D1F;
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 
-  /* overflow-y: hidden;
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #E5E7EB;
+  }
+}
+
+@layer utilities {
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+
+    background: #f5f6f8;
+    color: #1c1d1f;
+
+    /* overflow-y: hidden;
   max-height: 100%; */
 
-  /* font-family: 'Futura PT', sans-serif; */
-}
+    /* font-family: 'Futura PT', sans-serif; */
+  }
 
-input {
-  border-color: transparent;
-  border-width: 0 !important;
-  outline: none !important;
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000) !important;
-}
+  input {
+    border-color: transparent;
+    border-width: 0 !important;
+    outline: none !important;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+      var(--tw-shadow, 0 0 #0000) !important;
+  }
 
-* {
-  outline: none !important;
-}
+  * {
+    outline: none !important;
+  }
 
-.tilt {
-  transform-style: preserve-3d;
-}
+  .tilt {
+    transform-style: preserve-3d;
+  }
 
-.tilt-element {
-  transform: translateZ(12px);
+  .tilt-element {
+    transform: translateZ(12px);
+  }
 }
 
 @layer base {
@@ -120,7 +143,8 @@ blockquote {
   font-size: 0.67em;
 }
 
-.ql ul li, .ql ol li {
+.ql ul li,
+.ql ol li {
   list-style: none;
   display: flex;
   flex-direction: row;
@@ -160,10 +184,9 @@ blockquote {
   text-align: justify;
 } */
 
-
-li[data-list="bullet"] span.ql-ui:before {
+li[data-list='bullet'] span.ql-ui:before {
   text-align: right;
-  content: url("/img/logo_heart_16x20px.png") !important;
+  content: url('/img/logo_heart_16x20px.png') !important;
   width: 24px;
   min-width: 24px;
   max-width: 24px;
@@ -176,7 +199,7 @@ li[data-list="bullet"] span.ql-ui:before {
   text-align: right;
   /* display: inline-block; */
   /* vertical-align: middle; */
-  content: url("/img/logo_heart_16x20px.png") !important;
+  content: url('/img/logo_heart_16x20px.png') !important;
   /* content: ''; */
   /* margin-left: -0.5rem; */
   /* width: 30px; */
@@ -207,7 +230,7 @@ li[data-list="bullet"] span.ql-ui:before {
 }
 
 .ql-list-logo {
-  background-image: url("/img/logo_heart_16x20px.png") !important;
+  background-image: url('/img/logo_heart_16x20px.png') !important;
   background-repeat: no-repeat !important;
   background-size: 16px !important;
   background-position: 6px 1px !important;
@@ -243,7 +266,8 @@ li[data-list="bullet"] span.ql-ui:before {
   max-width: 16px;
 }
 
-.ql ol li, .ql ul li {
+.ql ol li,
+.ql ul li {
   padding-left: 1.5em;
 }
 
@@ -258,7 +282,7 @@ li[data-list="bullet"] span.ql-ui:before {
   content: '\2022';
 }
 
-[contenteditable=true]:empty:before {
+[contenteditable='true']:empty:before {
   content: attr(placeholder);
   /* display: block; */
   color: #aaa;
@@ -320,18 +344,21 @@ li[data-list="bullet"] span.ql-ui:before {
   margin-bottom: 30px;
 }
 
-
 .image-gallery-slides {
   height: 500px;
 }
 
-.image-gallery-slide, .image-gallery-image {
+.image-gallery-slide,
+.image-gallery-image {
   max-height: unset;
   height: 100%;
   object-fit: contain;
 }
 
-.image-gallery-content, .image-gallery-slide-wrapper, .image-gallery-swipe, .image-gallery-slides {
+.image-gallery-content,
+.image-gallery-slide-wrapper,
+.image-gallery-swipe,
+.image-gallery-slides {
   height: 100%;
 }
 

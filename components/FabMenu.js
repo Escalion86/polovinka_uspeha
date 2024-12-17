@@ -128,7 +128,7 @@ const FabMenu = ({ show = true, ping = true }) => {
           }}
         >
           {fabs.map((props, index) => (
-            <FabItem key={'fab' + index} {...props} show={isItemsShowing} />
+            <FabItem {...props} show={isItemsShowing} key={'fab' + index} />
           ))}
         </m.div>
         <div

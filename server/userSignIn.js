@@ -9,6 +9,9 @@ import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 import eventUsersTelegramNotification from './eventUsersTelegramNotification'
 import isEventExpired from './isEventExpired'
+import userToEventStatus from '@helpers/userToEventStatus'
+import subEventsSummator from '@helpers/subEventsSummator'
+import Directions from '@models/Directions'
 
 const userSignIn = async ({
   req,
@@ -31,6 +34,7 @@ const userSignIn = async ({
       res?.status(400).json(result)
       return result
     }
+
     if (!isUserQuestionnaireFilled(user)) {
       const result = {
         success: false,
@@ -53,6 +57,18 @@ const userSignIn = async ({
 
     // Теперь проверяем есть ли место
     const event = await Events.findById(eventId).lean()
+
+    // Скрыто ли мероприятие?
+    if (!event.showOnSite) {
+      const result = {
+        success: false,
+        data: {
+          error: `мероприятие закрыто для записи`,
+        },
+      }
+      res?.status(202).json(result)
+      return result
+    }
     // Закрыто ли мероприятие?
     if (isEventClosed(event)) {
       const result = {
@@ -100,32 +116,45 @@ const userSignIn = async ({
       return result
     }
 
-    // TODO FIX Сделать проверку на возможность зарегистрироваться на суб мероприятие
-    // Проверяем параметры пользователя
-    const userAge = new Number(
-      birthDateToAge(user.birthday, new Date(), false, false)
+    const eventUsers = await EventsUsers.find({ eventId }).lean()
+    const subEventSum = subEventsSummator([subEvent])
+    const direction = await Directions.findById(event.directionId).lean()
+    const rules = direction?.rules
+    const userEventStatus = userToEventStatus(
+      event,
+      user,
+      eventUsers,
+      subEventSum,
+      rules
     )
 
-    const isUserTooOld =
-      userAge &&
-      ((user.gender === 'male' &&
-        typeof subEvent.maxMansAge === 'number' &&
-        subEvent.maxMansAge < userAge) ||
-        (user.gender === 'famale' &&
-          typeof subEvent.maxWomansAge === 'number' &&
-          subEvent.maxWomansAge < userAge))
+    // TODO FIX Сделать проверку на возможность зарегистрироваться на суб мероприятие
+    // Проверяем параметры пользователя
+    // const userAge = new Number(
+    //   birthDateToAge(user.birthday, new Date(), false, false)
+    // )
 
-    const isUserTooYoung =
-      userAge &&
-      ((user.gender === 'male' &&
-        typeof subEvent.maxMansAge === 'number' &&
-        subEvent.minMansAge > userAge) ||
-        (user.gender === 'famale' &&
-          typeof subEvent.maxWomansAge === 'number' &&
-          subEvent.minWomansAge > userAge))
+    // const isUserTooOld =
+    //   userAge &&
+    //   ((user.gender === 'male' &&
+    //     typeof subEvent.maxMansAge === 'number' &&
+    //     subEvent.maxMansAge < userAge) ||
+    //     (user.gender === 'famale' &&
+    //       typeof subEvent.maxWomansAge === 'number' &&
+    //       subEvent.maxWomansAge < userAge))
 
-    const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
-    if (!isAgeOfUserCorrect) {
+    // const isUserTooYoung =
+    //   userAge &&
+    //   ((user.gender === 'male' &&
+    //     typeof subEvent.maxMansAge === 'number' &&
+    //     subEvent.minMansAge > userAge) ||
+    //     (user.gender === 'famale' &&
+    //       typeof subEvent.maxWomansAge === 'number' &&
+    //       subEvent.minWomansAge > userAge))
+
+    // const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
+    // if (!isAgeOfUserCorrect) {
+    if (!userEventStatus.isAgeOfUserCorrect) {
       const result = {
         success: false,
         data: {
@@ -136,11 +165,12 @@ const userSignIn = async ({
       return result
     }
 
-    const isUserStatusCorrect = user.status
-      ? subEvent.usersStatusAccess[user.status]
-      : false
+    // const isUserStatusCorrect = user.status
+    //   ? subEvent.usersStatusAccess[user.status]
+    //   : false
 
-    if (!isUserStatusCorrect) {
+    // if (!isUserStatusCorrect) {
+    if (!userEventStatus.isUserStatusCorrect) {
       const result = {
         success: false,
         data: {
@@ -150,131 +180,175 @@ const userSignIn = async ({
       res?.status(202).json(result)
       return result
     }
-    // Завершили проверку параметров пользователя
 
-    const canSignInReserve =
-      subEvent.isReserveActive ?? DEFAULT_EVENT.isReserveActive
-
-    var errorText
-    // // Если пользователь хочет зарегистрироваться в основной состав, то проверяем есть ли место
-    if (!status || status === 'participant') {
-      const subEventUsersParticipants = await EventsUsers.find({
-        eventId,
-        status: 'participant',
-        subEventId: subEvent.id,
-      })
-      const subEventParticipantsIds = subEventUsersParticipants.map(
-        (eventUser) => eventUser.userId
-      )
-      const subEventParticipants = await Users.find({
-        _id: { $in: subEventParticipantsIds },
-      })
-      const subEventParticipantsMans = subEventParticipants.filter(
-        (user) => user.gender === 'male'
-      )
-      const subEventParticipantsWomans = subEventParticipants.filter(
-        (user) => user.gender === 'famale'
-      )
-      const subEventParticipantsMansCount = subEventParticipantsMans.length
-      const subEventParticipantsWomansCount = subEventParticipantsWomans.length
-      const subEventParticipantsCount =
-        subEventParticipantsMansCount + subEventParticipantsWomansCount
-
-      // Если мероприятие забито
-      if (
-        typeof subEvent.maxParticipants === 'number' &&
-        subEvent.maxParticipants <= subEventParticipantsCount
-      ) {
-        errorText = `свободных мест на мероприятии уже нет`
-      } else if (
-        user.gender === 'male' &&
-        typeof subEvent.maxMans === 'number' &&
-        subEvent.maxMans <= subEventParticipantsMansCount
-      ) {
-        errorText = `свободных мест для мужчин на мероприятии уже нет`
-      } else if (
-        user.gender === 'famale' &&
-        typeof subEvent.maxWomans === 'number' &&
-        subEvent.maxWomans <= subEventParticipantsWomansCount
-      ) {
-        errorText = `свободных мест для женщин на мероприятии уже нет`
+    if (!userEventStatus.isUserRelationshipCorrect) {
+      const result = {
+        success: false,
+        data: {
+          error: `ваш статус отношений не имеет допуска на мероприятие`,
+        },
       }
+      res?.status(202).json(result)
+      return result
+    }
 
-      // Проверям места для клуба/центра
-      if (!errorText) {
-        // Если пользователь мужчина
-        if (user.gender === 'male') {
-          if (!user.status || user.status === 'novice') {
-            if (typeof subEvent.maxMansNovice === 'number') {
-              const subEventParticipantsNoviceMansCount =
-                subEventParticipantsMans.filter(
-                  (user) => !user.status || user.status === 'novice'
-                ).length
-              if (
-                subEventParticipantsNoviceMansCount >= subEvent.maxMansNovice
-              ) {
-                errorText = `свободных мест для мужчин из центра уже нет`
-              }
-            }
-          } else if (!user.status || user.status === 'member') {
-            if (typeof subEvent.maxMansMember === 'number') {
-              const subEventParticipantsMemberMansCount =
-                subEventParticipantsMans.filter(
-                  (user) => user.status === 'member'
-                ).length
-              if (
-                subEventParticipantsMemberMansCount >= subEvent.maxMansMember
-              ) {
-                errorText = `свободных мест для мужчин из клуба уже нет`
-              }
-            }
-          }
-          // Если пользователь женщина
-        } else if (user.gender === 'famale') {
-          if (!user.status || user.status === 'novice') {
-            if (typeof subEvent.maxWomansNovice === 'number') {
-              const subEventParticipantsNoviceWomansCount =
-                subEventParticipantsWomans.filter(
-                  (user) => !user.status || user.status === 'novice'
-                ).length
-              if (
-                subEventParticipantsNoviceWomansCount >=
-                subEvent.maxWomansNovice
-              ) {
-                errorText = `свободных мест для женщин из центра уже нет`
-              }
-            }
-          } else if (!user.status || user.status === 'member') {
-            if (typeof subEvent.maxWomansMember === 'number') {
-              const subEventParticipantsMemberWomansCount =
-                subEventParticipantsWomans.filter(
-                  (user) => user.status === 'member'
-                ).length
-              if (
-                subEventParticipantsMemberWomansCount >=
-                subEvent.maxWomansMember
-              ) {
-                errorText = `свободных мест для женщин из клуба уже нет`
-              }
-            }
-          }
-        }
-      }
-
-      if (errorText) {
-        if (!autoReserve || !canSignInReserve) {
+    if (!userEventStatus.canSignIn) {
+      if (userEventStatus.canSignInReserve) {
+        if (!autoReserve) {
           const result = {
             success: false,
             data: {
-              error: errorText,
-              solution: canSignInReserve ? 'reserve' : undefined,
+              error: `нет мест, но вы можете зарегистрироваться в резерв через сайт`,
+              solution: 'reserve',
             },
           }
           res?.status(202).json(result)
           return result
         }
+      } else {
+        const result = {
+          success: false,
+          data: {
+            error: `нет мест`,
+          },
+        }
+        res?.status(202).json(result)
+        return result
       }
     }
+
+    // status: 'event full',
+    // status: 'event full of mans',
+    // status: 'event full of womans',
+    // status: 'event full of novice mans',
+    // status: 'event full of member mans',
+    // status: 'event full of novice womans',
+    // status: 'event full of member womans',
+
+    // Завершили проверку параметров пользователя
+    // const canSignInReserve =
+    //   subEvent.isReserveActive ?? DEFAULT_EVENT.isReserveActive
+
+    // var errorText
+    // // // Если пользователь хочет зарегистрироваться в основной состав, то проверяем есть ли место
+    // if (!status || status === 'participant') {
+    //   const subEventUsersParticipants = await EventsUsers.find({
+    //     eventId,
+    //     status: 'participant',
+    //     subEventId: subEvent.id,
+    //   })
+    //   const subEventParticipantsIds = subEventUsersParticipants.map(
+    //     (eventUser) => eventUser.userId
+    //   )
+    //   const subEventParticipants = await Users.find({
+    //     _id: { $in: subEventParticipantsIds },
+    //   })
+    //   const subEventParticipantsMans = subEventParticipants.filter(
+    //     (user) => user.gender === 'male'
+    //   )
+    //   const subEventParticipantsWomans = subEventParticipants.filter(
+    //     (user) => user.gender === 'famale'
+    //   )
+    //   const subEventParticipantsMansCount = subEventParticipantsMans.length
+    //   const subEventParticipantsWomansCount = subEventParticipantsWomans.length
+    //   const subEventParticipantsCount =
+    //     subEventParticipantsMansCount + subEventParticipantsWomansCount
+
+    //   // Если мероприятие забито
+    //   if (
+    //     typeof subEvent.maxParticipants === 'number' &&
+    //     subEvent.maxParticipants <= subEventParticipantsCount
+    //   ) {
+    //     errorText = `свободных мест на мероприятии уже нет`
+    //   } else if (
+    //     user.gender === 'male' &&
+    //     typeof subEvent.maxMans === 'number' &&
+    //     subEvent.maxMans <= subEventParticipantsMansCount
+    //   ) {
+    //     errorText = `свободных мест для мужчин на мероприятии уже нет`
+    //   } else if (
+    //     user.gender === 'famale' &&
+    //     typeof subEvent.maxWomans === 'number' &&
+    //     subEvent.maxWomans <= subEventParticipantsWomansCount
+    //   ) {
+    //     errorText = `свободных мест для женщин на мероприятии уже нет`
+    //   }
+
+    //   // Проверям места для клуба/центра
+    //   if (!errorText) {
+    //     // Если пользователь мужчина
+    //     if (user.gender === 'male') {
+    //       if (!user.status || user.status === 'novice') {
+    //         if (typeof subEvent.maxMansNovice === 'number') {
+    //           const subEventParticipantsNoviceMansCount =
+    //             subEventParticipantsMans.filter(
+    //               (user) => !user.status || user.status === 'novice'
+    //             ).length
+    //           if (
+    //             subEventParticipantsNoviceMansCount >= subEvent.maxMansNovice
+    //           ) {
+    //             errorText = `свободных мест для мужчин из центра уже нет`
+    //           }
+    //         }
+    //       } else if (!user.status || user.status === 'member') {
+    //         if (typeof subEvent.maxMansMember === 'number') {
+    //           const subEventParticipantsMemberMansCount =
+    //             subEventParticipantsMans.filter(
+    //               (user) => user.status === 'member'
+    //             ).length
+    //           if (
+    //             subEventParticipantsMemberMansCount >= subEvent.maxMansMember
+    //           ) {
+    //             errorText = `свободных мест для мужчин из клуба уже нет`
+    //           }
+    //         }
+    //       }
+    //       // Если пользователь женщина
+    //     } else if (user.gender === 'famale') {
+    //       if (!user.status || user.status === 'novice') {
+    //         if (typeof subEvent.maxWomansNovice === 'number') {
+    //           const subEventParticipantsNoviceWomansCount =
+    //             subEventParticipantsWomans.filter(
+    //               (user) => !user.status || user.status === 'novice'
+    //             ).length
+    //           if (
+    //             subEventParticipantsNoviceWomansCount >=
+    //             subEvent.maxWomansNovice
+    //           ) {
+    //             errorText = `свободных мест для женщин из центра уже нет`
+    //           }
+    //         }
+    //       } else if (!user.status || user.status === 'member') {
+    //         if (typeof subEvent.maxWomansMember === 'number') {
+    //           const subEventParticipantsMemberWomansCount =
+    //             subEventParticipantsWomans.filter(
+    //               (user) => user.status === 'member'
+    //             ).length
+    //           if (
+    //             subEventParticipantsMemberWomansCount >=
+    //             subEvent.maxWomansMember
+    //           ) {
+    //             errorText = `свободных мест для женщин из клуба уже нет`
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+
+    //   if (errorText) {
+    //     if (!autoReserve || !canSignInReserve) {
+    //       const result = {
+    //         success: false,
+    //         data: {
+    //           error: errorText,
+    //           solution: canSignInReserve ? 'reserve' : undefined,
+    //         },
+    //       }
+    //       res?.status(202).json(result)
+    //       return result
+    //     }
+    //   }
+    // }
 
     // const resultStatus =
     //   (!status || status === 'participant') &&
@@ -286,13 +360,25 @@ const userSignIn = async ({
     //       ? 'reserve'
     //       : status
 
+    // const result = {
+    //   success: true,
+    //   data: {
+    //     error: `нет мест, но вы зарегистрированы В РЕЗЕРВ`,
+    //     status: 'reserve',
+    //   },
+    // }
+    // res?.status(202).json(result)
+    // return result
+
+    const realStatus = !userEventStatus.canSignIn ? 'reserve' : status
+
     const newEventUser = await EventsUsers.create({
       eventId,
       userId,
-      status:
-        status ??
-        // resultStatus
-        'participant',
+      status: realStatus,
+      // status ??
+      // // resultStatus
+      // 'participant',
       userStatus: user?.status,
       subEventId: subEvent.id,
     })

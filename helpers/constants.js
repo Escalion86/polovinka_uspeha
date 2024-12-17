@@ -931,6 +931,7 @@ export const DEFAULT_ROLES = [
       eventUsersCounterAndAgeFull: false,
       seeHistory: false,
       editLikes: false,
+      sendNotifications: false,
     },
     eventsUsers: {
       see: false, // member
@@ -1063,6 +1064,7 @@ export const DEFAULT_ROLES = [
       eventUsersCounterAndAgeFull: true,
       seeHistory: false,
       editLikes: false,
+      sendNotifications: false,
     },
     eventsUsers: {
       see: true, // member
@@ -1195,6 +1197,7 @@ export const DEFAULT_ROLES = [
       eventUsersCounterAndAgeFull: true,
       seeHistory: false,
       editLikes: false,
+      sendNotifications: false,
     },
     eventsUsers: {
       see: true, // member
@@ -1327,6 +1330,7 @@ export const DEFAULT_ROLES = [
       eventUsersCounterAndAgeFull: true,
       seeHistory: true,
       editLikes: true,
+      sendNotifications: true,
     },
     eventsUsers: {
       see: true, // member
@@ -1459,6 +1463,7 @@ export const DEFAULT_ROLES = [
       eventUsersCounterAndAgeFull: true,
       seeHistory: true,
       editLikes: true,
+      sendNotifications: true,
     },
     eventsUsers: {
       see: true, // ! member

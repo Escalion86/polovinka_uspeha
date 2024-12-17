@@ -11,17 +11,23 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 import directionSelector from '@state/selectors/directionSelector'
+import Note from '@components/Note'
 
-const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
+const eventUserSubEventChangeFunc = (
+  { eventId, userId },
+  onConfirm,
+  selectedSubEventId
+) => {
   const EventUserSubEventChangeModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnShowOnCloseConfirmDialog,
     setDisableConfirm,
+    setBottomLeftComponent,
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const user = useRecoilValue(userSelector(userId))
@@ -33,18 +39,21 @@ const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
       (eventUser) => eventUser.userId === userId
     )
 
-    const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
+    // const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
 
-    const [subEventId, setSubEventId] = useState(eventUser.subEventId)
+    const [subEventId, setSubEventId] = useState(
+      selectedSubEventId ?? eventUser.subEventId
+    )
 
-    const isFormChanged = subEventId !== eventUser.subEventId
+    const isFormChanged =
+      subEventId !== (selectedSubEventId ?? eventUser.subEventId)
 
     const onClickConfirm = async () => {
       closeModal()
-      setEventUser({
-        _id: eventUser?._id,
-        subEventId,
-      })
+      // setEventUser({
+      //   _id: eventUser?._id,
+      //   subEventId,
+      // })
       if (onConfirm) onConfirm({ eventId, userId, subEventId })
     }
 
@@ -74,6 +83,25 @@ const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
       }
     })
 
+    const setError = useCallback((set) => {
+      setBottomLeftComponent(
+        set ? (
+          <Note type="error" noMargin>
+            Обратите внимание, что данный пользователь не подходит по кретериям
+            для данного варианта участия
+          </Note>
+        ) : null
+      )
+    }, [])
+
+    useEffect(() => {
+      const subEvent = subEventsUserStatus.find(
+        (s) => s.id === subEventId
+      )?.userStatus
+      const canCheck = subEvent.canSignIn || subEvent.canSignInReserve
+      setError(!canCheck)
+    }, [])
+
     return (
       <FormWrapper className="gap-y-2">
         {event.subEvents?.length > 1 && (
@@ -96,7 +124,10 @@ const eventUserSubEventChangeFunc = ({ eventId, userId }, onConfirm) => {
                         ? 'bg-green-100 border-success'
                         : 'bg-gray-100 border-gray-400'
                   )}
-                  onClick={() => setSubEventId(props.id)}
+                  onClick={() => {
+                    setError(!canCheck)
+                    setSubEventId(props.id)
+                  }}
                 >
                   <div className="flex items-center border-b border-gray-300 gap-x-1">
                     <div

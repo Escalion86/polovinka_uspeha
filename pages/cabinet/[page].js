@@ -1,5 +1,3 @@
-// import Fab from '@components/Fab'
-
 import LoadingSpinner from '@components/LoadingSpinner'
 import StateLoader from '@components/StateLoader'
 import { CONTENTS } from '@helpers/constants'

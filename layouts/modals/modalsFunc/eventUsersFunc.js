@@ -37,92 +37,301 @@ import formatDateTime from '@helpers/formatDateTime'
 import Note from '@components/Note'
 import cn from 'classnames'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
+import CheckBox from '@components/CheckBox'
+import { UserItem } from '@components/ItemCards'
+import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
+import Tooltip from '@components/Tooltip'
 
-const EventsUsers = ({
+const ItemButton = ({
+  onClick,
+  icon,
+  iconClassName,
+  tooltip,
+  text,
+  textClassName,
+  thin,
+}) => (
+  <div className="flex items-center justify-center bg-gray-100 border-l border-gray-700 hover:bg-blue-200">
+    <Tooltip title={tooltip}>
+      <button
+        onClick={onClick}
+        className={cn(
+          'flex items-center justify-center gap-x-0.5 h-full rounded-r shadow-sm group whitespace-nowrap font-futuraDemi cursor-pointer',
+          thin ? 'px-1' : 'px-1.5'
+        )}
+      >
+        {icon ? (
+          <FontAwesomeIcon
+            className={cn(
+              'w-4 h-4 duration-300 group-hover:scale-125',
+              iconClassName
+            )}
+            icon={icon}
+          />
+        ) : null}
+        {text ? <div className={cn(textClassName)}>{text}</div> : null}
+      </button>
+    </Tooltip>
+  </div>
+)
+
+const EventUsers2 = ({
   event,
-  label,
-  modalTitle,
-  selectedIds = [],
-  setSelectedIds,
-  exceptedIds,
-  canEdit,
+  selectedUsers,
+  setSelectedUsers,
+  readOnly,
   toReserveFunc,
   fromReserveFunc,
-  noButtons,
-  itemChildren,
-  nameFieldWrapperClassName,
+  exceptedIds,
+  subEventId,
+  onChangeSubEvent,
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-
-  const isEventClosed = isEventClosedFunc(event)
+  const addRow = () => {
+    modalsFunc.selectUsers(
+      selectedUsers,
+      null,
+      setSelectedUsers,
+      exceptedIds
+      // acceptedIds,
+      // maxItems,
+      // canSelectNone,
+      // modalTitle,
+      // showCountNumber
+    )
+  }
 
   return (
-    <>
-      <SelectUserList
-        showCounter={false}
-        className="w-full"
-        filter={{ gender: { operand: '!==', value: null } }}
-        label={label}
-        modalTitle={modalTitle}
-        usersId={selectedIds}
-        onChange={setSelectedIds}
-        exceptedIds={exceptedIds}
-        readOnly={!canEdit || isEventClosed}
-        itemChildren={itemChildren}
-        nameFieldWrapperClassName={nameFieldWrapperClassName}
-        buttons={
-          !noButtons && canEdit && !isEventClosed
-            ? [
-                event.subEvents.length > 1
-                  ? (id) => ({
-                      onClick: () => {
-                        modalsFunc.eventUser.editSubEvent({
-                          eventId: event._id,
-                          userId: id,
-                        })
-                      },
-                      icon: faStreetView,
-                      iconClassName: 'text-blue-600',
-                      tooltip: 'Изменить вариант участия',
-                    })
-                  : undefined,
-                toReserveFunc
-                  ? (id) => ({
-                      onClick: () => {
-                        setSelectedIds(
-                          selectedIds.filter((userId) => userId !== id)
-                        )
-                        toReserveFunc(id)
-                        // setReservedParticipantsIds(
-                        //   sortUsersIds([...reservedParticipantsIds, id])
-                        // )
-                      },
-                      icon: faArrowAltCircleRight,
-                      iconClassName: 'text-general',
-                      tooltip: 'Перенести в резерв',
-                    })
-                  : undefined,
-                fromReserveFunc
-                  ? (id) => ({
-                      onClick: () => {
-                        fromReserveFunc(id)
-                        // setSelectedIds([...selectedIds, id])
-                        setSelectedIds(
-                          selectedIds.filter((userId) => userId !== id)
-                        )
-                      },
-                      icon: faArrowAltCircleLeft,
-                      iconClassName: 'text-general',
-                      tooltip: 'Перенести в активный состав',
-                    })
-                  : undefined,
-              ]
-            : []
-        }
-      />
-    </>
+    <div
+      name="itemsIds"
+      className={cn(
+        'flex flex-col flex-wrap-reverse bg-gray-100 border rounded-sm overflow-hidden',
+        // required && (itemsId.length === 0 || itemsId[0] === '?')
+        //   ? 'border-red-700'
+        //   : 'border-gray-700',
+        'border-gray-700'
+      )}
+    >
+      {selectedUsers.map((user, index) => (
+        <div
+          key={user._id}
+          className={cn('flex', {
+            'border-b last:border-b-0 border-gray-700':
+              index < selectedUsers.length,
+          })}
+        >
+          <UserItem
+            item={user}
+            onClick={() => modalsFunc.user.view(user._id)}
+            nameFieldWrapperClassName={
+              user.eventUserCreatedAt ? 'pb-2' : undefined
+            }
+            noBorder
+            // {...props}
+          >
+            {!readOnly &&
+              (() => (
+                <div className="absolute bottom-0 max-h-[13px] flex justify-center items-end w-full text-xs font-normal">
+                  <div
+                    className={cn(
+                      'max-h-[13px] leading-[13px] border-t border-r border-l rounded-t-md px-2 border-gray-700',
+                      user.eventUserCreatedAt ? 'bg-teal-50' : 'bg-red-50'
+                    )}
+                  >
+                    {user.eventUserCreatedAt
+                      ? formatDateTime(user.eventUserCreatedAt)
+                      : 'Запись еще не создана'}
+                  </div>
+                </div>
+              ))}
+          </UserItem>
+          {!readOnly && event.subEvents.length > 1 ? (
+            <ItemButton
+              onClick={() =>
+                modalsFunc.eventUser.editSubEvent(
+                  {
+                    eventId: event._id,
+                    userId: user._id,
+                  },
+                  ({ eventId, userId, subEventId }) => {
+                    onChangeSubEvent(user, subEventId)
+                  },
+                  subEventId
+                )
+              }
+              icon={faStreetView}
+              iconClassName="text-blue-600"
+              tooltip="Изменить вариант участия"
+            />
+          ) : undefined}
+
+          {!readOnly && toReserveFunc ? (
+            <ItemButton
+              onClick={() => {
+                setSelectedUsers(
+                  selectedUsers.filter(({ _id }) => _id !== user._id)
+                )
+                toReserveFunc(user)
+              }}
+              icon={faArrowAltCircleRight}
+              iconClassName="text-general"
+              tooltip="Перенести в резерв"
+            />
+          ) : undefined}
+
+          {!readOnly && fromReserveFunc ? (
+            <ItemButton
+              onClick={() => {
+                fromReserveFunc(user)
+                setSelectedUsers(
+                  selectedUsers.filter(({ _id }) => _id !== user._id)
+                )
+              }}
+              icon={faArrowAltCircleLeft}
+              iconClassName="text-general"
+              tooltip="Перенести в активный состав"
+            />
+          ) : undefined}
+          {!readOnly && (
+            <ItemButton
+              tooltip="Удалить из списка"
+              onClick={() =>
+                setSelectedUsers(
+                  selectedUsers.filter(({ _id }) => _id !== user._id)
+                )
+              }
+              icon={faTimes}
+              iconClassName="text-red-700"
+            />
+          )}
+        </div>
+      ))}
+      {!readOnly && (
+        <div
+          onClick={addRow}
+          className={cn(
+            'group flex items-center justify-center h-6 bg-white',
+            selectedUsers.length > 0 ? 'rounded-b' : 'rounded-sm',
+            'cursor-pointer'
+          )}
+        >
+          <div
+            className={cn(
+              'flex items-center justify-center transparent duration-200 group-hover:scale-110'
+            )}
+          >
+            <FontAwesomeIcon className="w-5 h-5 text-gray-700" icon={faPlus} />
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
+// const EventsUsers = ({
+//   event,
+//   label,
+//   modalTitle,
+//   selectedIds = [],
+//   setSelectedIds,
+//   exceptedIds,
+//   canEdit,
+//   toReserveFunc,
+//   fromReserveFunc,
+//   noButtons,
+//   itemChildren,
+//   nameFieldWrapperClassName,
+//   createdAtObject,
+// }) => {
+//   const modalsFunc = useRecoilValue(modalsFuncAtom)
+
+//   const isEventClosed = isEventClosedFunc(event)
+
+//   return (
+//     <>
+//       <SelectUserList
+//         showCounter={false}
+//         className="w-full"
+//         filter={{ gender: { operand: '!==', value: null } }}
+//         label={label}
+//         modalTitle={modalTitle}
+//         usersId={selectedIds}
+//         onChange={setSelectedIds}
+//         exceptedIds={exceptedIds}
+//         readOnly={!canEdit || isEventClosed}
+//         itemChildren={
+//           createdAtObject
+//             ? (user) => {
+//                 return (
+//                   <div className="absolute bottom-0 max-h-[13px] flex justify-center items-end w-full text-xs font-normal">
+//                     <div
+//                       className={cn(
+//                         'max-h-[13px] leading-[13px] border-t border-r border-l rounded-t-md px-2 border-gray-700',
+//                         createdAtObject[user._id] ? 'bg-teal-50' : 'bg-red-50'
+//                       )}
+//                     >
+//                       {createdAtObject[user._id]
+//                         ? formatDateTime(createdAtObject[user._id])
+//                         : 'Запись еще не создана'}
+//                     </div>
+//                   </div>
+//                 )
+//               }
+//             : undefined
+//         }
+//         nameFieldWrapperClassName={createdAtObject ? 'pb-2' : undefined}
+//         buttons={
+//           !noButtons && canEdit && !isEventClosed
+//             ? [
+//                 event.subEvents.length > 1
+//                   ? (id) => ({
+//                       onClick: () => {
+//                         modalsFunc.eventUser.editSubEvent({
+//                           eventId: event._id,
+//                           userId: id,
+//                         })
+//                       },
+//                       icon: faStreetView,
+//                       iconClassName: 'text-blue-600',
+//                       tooltip: 'Изменить вариант участия',
+//                     })
+//                   : undefined,
+//                 toReserveFunc
+//                   ? (id) => ({
+//                       onClick: () => {
+//                         setSelectedIds(
+//                           selectedIds.filter((userId) => userId !== id)
+//                         )
+//                         toReserveFunc(id)
+//                         // setReservedParticipantsIds(
+//                         //   sortUsersIds([...reservedParticipantsIds, id])
+//                         // )
+//                       },
+//                       icon: faArrowAltCircleRight,
+//                       iconClassName: 'text-general',
+//                       tooltip: 'Перенести в резерв',
+//                     })
+//                   : undefined,
+//                 fromReserveFunc
+//                   ? (id) => ({
+//                       onClick: () => {
+//                         fromReserveFunc(id)
+//                         // setSelectedIds([...selectedIds, id])
+//                         setSelectedIds(
+//                           selectedIds.filter((userId) => userId !== id)
+//                         )
+//                       },
+//                       icon: faArrowAltCircleLeft,
+//                       iconClassName: 'text-general',
+//                       tooltip: 'Перенести в активный состав',
+//                     })
+//                   : undefined,
+//               ]
+//             : []
+//         }
+//       />
+//     </>
+//   )
+// }
 
 const sortFunctionEventUser = (a, b) =>
   a.user?.firstName < b.user?.firstName ? -1 : 1
@@ -160,75 +369,183 @@ const eventUsersFunc = (eventId) => {
       loggedUserActiveRole?.eventsUsers?.copyListToClipboard
 
     const [dataChanged, setDataChanged] = useState(isDataChanged)
+    const [isSortingByGenderAndName, setIsSortingByGenderAndName] =
+      useState(true)
     // const [sortType, setSortType] = useState('name')
-    // const [sort, setSort] = useState({ firstNameAndGender: 'asc' })
+    // const [sort, setSort] = useState({ genderAndFirstName: 'asc' })
     // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
     const event = useRecoilValue(eventSelector(eventId))
     const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
-    const users = useRecoilValue(usersAtom)
+    // const users = useRecoilValue(usersAtom)
     const isEventClosed = isEventClosedFunc(event)
 
     const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
 
-    const sortedUsers = useMemo(
-      () => [...users].sort(sortFunctions.firstNameAndGender.asc),
-      [users]
-    )
-
-    const sortUsersByIds = useCallback(
-      (ids) => sortedUsers.filter((user) => ids.includes(user._id)),
-      [sortedUsers]
-    )
+    // const sortedUsers = useMemo(
+    //   () => [...users].sort(sortFunctions.genderAndFirstName.asc),
+    //   [users]
+    // )
 
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
-
-    const sortUsersByCreatedAt = useCallback(
-      (ids) => {
-        const filteredUsers = sortedUsers.filter((user) =>
-          ids.includes(user._id)
-        )
-        const filteredEventUsers = filteredUsers.map(
-          (user) =>
-            eventUsers.find(({ userId }) => userId === user._id) || { user }
-        )
-        filteredEventUsers.sort(sortFunctions.createdAt.asc)
-        const result = filteredEventUsers.map(({ user }) => user)
-        return result
-      },
-      [sortedUsers]
+    const eventUsersCreatedAtObject = useMemo(
+      () =>
+        eventUsers.reduce((acc, { createdAt, userId }) => {
+          acc[userId] = createdAt
+          return acc
+        }, {}),
+      [eventUsers]
     )
+
+    // const filteredUsers = useMemo(
+    //   () => eventUsers.map(({ user }) => user),
+    //   [eventUsers]
+    // )
+
+    // const sortUsersByIds = useCallback(
+    //   (ids) =>
+    //     users
+    //       .filter((user) => ids.includes(user._id))
+    //       .map((user) => ({
+    //         ...user,
+    //         eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
+    //       })),
+    //   [users]
+    // )
+
+    // const sortUsersByCreatedAt = useCallback(
+    //   (ids) => {
+    //     const filteredUsers = users.filter((user) => ids.includes(user._id))
+    //     const filteredEventUsers = filteredUsers.map((user) => ({
+    //       ...(eventUsers.find(({ userId }) => userId === user._id) || { user }),
+    //       eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
+    //     }))
+    //     filteredEventUsers.sort(sortFunctions.eventUserCreatedAt.asc)
+    //     const result = filteredEventUsers.map(({ user }) => user)
+    //     return result
+    //   },
+    //   [users]
+    // )
+
+    const sortUsersByGenderAndFirstNameFull = useCallback((selectedUsers) => {
+      // const filteredUsers = users.filter((user) => ids.includes(user._id))
+      const updatedUsers = selectedUsers.map((user) => ({
+        ...user,
+        eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
+      }))
+      return updatedUsers.toSorted(sortFunctions.genderAndFirstName.asc)
+    }, [])
+
+    const sortUsersByCreatedAtFull = useCallback((selectedUsers) => {
+      // const filteredUsers = users.filter((user) => ids.includes(user._id))
+      const updatedUsers = selectedUsers.map((user) => ({
+        ...user,
+        eventUserCreatedAt: eventUsersCreatedAtObject[user._id],
+      }))
+      return updatedUsers.toSorted(sortFunctions.eventUserCreatedAt.asc)
+    }, [])
+
+    // const sortFunc = useMemo(
+    //   () => (isSortingByGenderAndName ? sortUsersByIds : sortUsersByCreatedAt),
+    //   [isSortingByGenderAndName]
+    // )
+
+    const sortFuncFull = useMemo(
+      () =>
+        isSortingByGenderAndName
+          ? sortUsersByGenderAndFirstNameFull
+          : sortUsersByCreatedAtFull,
+      [isSortingByGenderAndName]
+    )
+
+    const sortAllByCreatedAt = useCallback((sortByCreatedAt) => {
+      const sortFunc = sortByCreatedAt
+        ? sortFunctions.eventUserCreatedAt.asc
+        : sortFunctions.genderAndFirstName.asc
+      setParticipants((state) => {
+        const tempParticipant = {}
+        for (const participantKey in state) {
+          tempParticipant[participantKey] =
+            state[participantKey].toSorted(sortFunc)
+        }
+        return tempParticipant
+      })
+      // setReserve((state) => {
+      //   const tempReserve = { ...state }
+      //   for (const reserveKey in tempReserve) {
+      //     tempReserve[reserveKey] = sortFunc(tempReserve[reserveKey])
+      //   }
+      //   return tempReserve
+      // })
+      setAssistants((state) => state.toSorted(sortFunc))
+      // setBanned((state) => sortFunc(state))
+    }, [])
 
     const sortedEventUsersParticipants = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'participant')].sort(
-          (a, b) => sortFunctions.firstNameAndGender.asc(a.user, b.user)
+          // isSortingByGenderAndName
+          //   ?
+          (a, b) => sortFunctions.genderAndFirstName.asc(a.user, b.user)
+          //   :
+          // sortFunctions.createdAt.asc
         ),
-      [eventUsers]
+      [
+        eventUsers,
+        // isSortingByGenderAndName
+      ]
     )
 
     const sortedEventUsersReserve = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'reserve')].sort(
-          sortFunctions.createdAt.asc
+          // isSortingByGenderAndName
+          //   ?
+          (a, b) => sortFunctions.genderAndFirstName.asc(a.user, b.user)
+          // : sortFunctions.createdAt.asc
         ),
-      [eventUsers]
+      [
+        eventUsers,
+        // isSortingByGenderAndName
+      ]
     )
 
     const arrayAssistants = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'assistant')]
-          .sort((a, b) => sortFunctions.firstNameAndGender.asc(a.user, b.user))
-          .map(({ user }) => user),
-      [eventUsers]
+          .sort(
+            // isSortingByGenderAndName
+            // ?
+            (a, b) => sortFunctions.genderAndFirstName.asc(a.user, b.user)
+            // : sortFunctions.createdAt.asc
+          )
+          .map(({ user, createdAt }) => ({
+            ...user,
+            eventUserCreatedAt: createdAt,
+          })),
+      [
+        eventUsers,
+        // isSortingByGenderAndName
+      ]
     )
 
     const arrayBanned = useMemo(
       () =>
         [...eventUsers.filter(({ status }) => status === 'ban')]
-          .sort((a, b) => sortFunctions.firstNameAndGender.asc(a.user, b.user))
-          .map(({ user }) => user),
-      [eventUsers]
+          .sort(
+            // isSortingByGenderAndName
+            // ?
+            (a, b) => sortFunctions.genderAndFirstName.asc(a.user, b.user)
+            // : sortFunctions.createdAt.asc
+          )
+          .map(({ user, createdAt }) => ({
+            ...user,
+            eventUserCreatedAt: createdAt,
+          })),
+      [
+        eventUsers,
+        // , isSortingByGenderAndName
+      ]
     )
 
     const objParticipants = useMemo(
@@ -238,7 +555,7 @@ const eventUsersFunc = (eventId) => {
           'subEventId',
           true,
           event._id,
-          ({ user }) => user
+          ({ user, createdAt }) => ({ ...user, eventUserCreatedAt: createdAt })
         ),
       [sortedEventUsersParticipants]
     )
@@ -250,7 +567,7 @@ const eventUsersFunc = (eventId) => {
           'subEventId',
           true,
           event._id,
-          ({ user }) => user
+          ({ user, createdAt }) => ({ ...user, eventUserCreatedAt: createdAt })
         ),
       [sortedEventUsersReserve]
     )
@@ -396,23 +713,41 @@ const eventUsersFunc = (eventId) => {
       setOnlyCloseButtonShow(!canEdit || isEventClosed)
     }, [participants, assistants, reserve, banned, canEdit, isEventClosed])
 
-    const setParticipantsState = (subEventId, ids) => {
+    // const setParticipantsState = (subEventId, ids) => {
+    //   setParticipants((state) => ({
+    //     ...state,
+    //     [subEventId]: sortFunc(ids),
+    //   }))
+    // }
+
+    // const setReserveState = (subEventId, ids) => {
+    //   setReserve((state) => ({
+    //     ...state,
+    //     [subEventId]: sortFunc(ids),
+    //   }))
+    // }
+
+    const setParticipantsStateFull = (subEventId, users) => {
       setParticipants((state) => ({
         ...state,
-        [subEventId]: sortUsersByIds(ids),
+        [subEventId]: sortFuncFull(users),
       }))
     }
 
-    const setReserveState = (subEventId, ids) => {
+    const setReserveStateFull = (subEventId, users) => {
       setReserve((state) => ({
         ...state,
-        [subEventId]: sortUsersByCreatedAt(ids),
+        [subEventId]: sortFuncFull(users),
       }))
     }
 
-    const setAssistantsState = (ids) => setAssistants(sortUsersByIds(ids))
+    // const setAssistantsState = (ids) => setAssistants(sortFunc(ids))
 
-    const setBannedState = (ids) => setBanned(sortUsersByIds(ids))
+    const setAssistantsStateFull = (users) => setAssistants(sortFuncFull(users))
+
+    // const setBannedState = (ids) => setBanned(sortFunc(ids))
+
+    const setBannedStateFull = (users) => setBanned(sortFuncFull(users))
 
     const participantsCount = Object.keys(participants).reduce(
       (sum, subEventId) => sum + participants[subEventId]?.length ?? 0,
@@ -469,12 +804,16 @@ const eventUsersFunc = (eventId) => {
                 paddingX="small"
                 noMargin
                 centerLabel
-                wrapperClassName="flex flex-col items-stretch"
+                wrapperClassName="flex flex-col items-stretch gap-y-1.5"
               >
                 {children}
               </InputWrapper>
             )
-          : ({ children }) => children,
+          : ({ children }) => (
+              <div className="flex flex-col items-stretch gap-y-1.5">
+                {children}
+              </div>
+            ),
       [event]
     )
 
@@ -484,10 +823,20 @@ const eventUsersFunc = (eventId) => {
           <SortingButtonMenu
             sort={sort}
             onChange={setSort}
-            sortKeys={['firstNameAndGender', 'createdAt']}
+            sortKeys={['genderAndFirstName', 'createdAt']}
             showTitle
           />
         </div> */}
+        {canEdit && (
+          <CheckBox
+            label="Сортировать по дате создания записи"
+            checked={!isSortingByGenderAndName}
+            onChange={() => {
+              sortAllByCreatedAt(isSortingByGenderAndName)
+              setIsSortingByGenderAndName((checked) => !checked)
+            }}
+          />
+        )}
         {canEdit && isEventClosed && (
           <P className="text-danger">
             Мероприятие закрыто, поэтому редактирование состава участников
@@ -530,19 +879,46 @@ const eventUsersFunc = (eventId) => {
                   key={'Участники' + id}
                   label={title || 'Основной тип участия'}
                 >
-                  {canEdit && (
-                    <div className="flex justify-center">
-                      <EventUsersCounterAndAge
-                        event={event}
-                        subEvent={subEvent}
-                        eventUsersToUse={eventUsersToUse[id] ?? []}
-                        // showNoviceAndMemberSum
-                        showAges={false}
-                        dontShowLabel
-                      />
-                    </div>
-                  )}
-                  <EventsUsers
+                  <div className="flex justify-center">
+                    <EventUsersCounterAndAge
+                      event={event}
+                      subEvent={subEvent}
+                      eventUsersToUse={eventUsersToUse[id] ?? []}
+                      // showNoviceAndMemberSum
+                      showAges={false}
+                      dontShowLabel
+                    />
+                  </div>
+                  <EventUsers2
+                    modalTitle="Выбор участников"
+                    selectedUsers={participants[id] ?? []}
+                    event={event}
+                    setSelectedUsers={(selectedUsers) =>
+                      setParticipantsStateFull(id, selectedUsers)
+                    }
+                    toReserveFunc={(newUser) => {
+                      setReserveStateFull(id, [...(reserve[id] || []), newUser])
+                    }}
+                    readOnly={!canEdit}
+                    exceptedIds={[
+                      ...reserveIdsAll,
+                      ...assistantsIds,
+                      ...bannedIds,
+                      ...otherSubEventsPartisipantsIds,
+                    ]}
+                    subEventId={id}
+                    onChangeSubEvent={(user, newSubEventId) => {
+                      setParticipantsStateFull(
+                        id,
+                        participants[id].filter(({ _id }) => _id !== user._id)
+                      )
+                      setParticipantsStateFull(newSubEventId, [
+                        ...participants[newSubEventId],
+                        user,
+                      ])
+                    }}
+                  />
+                  {/* <EventsUsers
                     event={event}
                     modalTitle="Выбор участников"
                     selectedIds={participantsIds[id]}
@@ -557,23 +933,10 @@ const eventUsersFunc = (eventId) => {
                     toReserveFunc={(newId) => {
                       setReserveState(id, [...reserveIds[id], newId])
                     }}
-                    // itemChildren={
-                    //   eventUsers
-                    //     ? (user) => {
-                    //         const eventUser = eventUsers.find(
-                    //           ({ userId }) => userId === user._id
-                    //         )
-                    //         return (
-                    //           <div className="text-xs font-normal tablet:text-sm">
-                    //             <div className="leading-[14px]">
-                    //               {formatDateTime(eventUser.createdAt)}
-                    //             </div>
-                    //           </div>
-                    //         )
-                    //       }
-                    //     : undefined
-                    // }
-                  />
+                    createdAtObject={
+                      canEdit ? eventUsersCreatedAtObject : undefined
+                    }
+                  /> */}
                 </Wrapper>
               )
             })}
@@ -584,7 +947,6 @@ const eventUsersFunc = (eventId) => {
               tabAddToLabel={`(${reserveCount})`}
               className="flex flex-col gap-y-5"
             >
-              <Note noMargin>Резерв отсортирован по дате создания заявки</Note>
               {event.subEvents.map((subEvent) => {
                 const { id, title } = subEvent
 
@@ -601,7 +963,39 @@ const eventUsersFunc = (eventId) => {
                     key={'Резерв' + id}
                     label={title || 'Основной тип участия'}
                   >
-                    <EventsUsers
+                    <EventUsers2
+                      modalTitle="Выбор резерва"
+                      selectedUsers={reserve[id] ?? []}
+                      event={event}
+                      setSelectedUsers={(selectedUsers) =>
+                        setReserveStateFull(id, selectedUsers)
+                      }
+                      fromReserveFunc={(newUser) => {
+                        setParticipantsStateFull(id, [
+                          ...(participants[id] || []),
+                          newUser,
+                        ])
+                      }}
+                      readOnly={!canEdit}
+                      exceptedIds={[
+                        ...participantsIdsAll,
+                        ...assistantsIds,
+                        ...bannedIds,
+                        ...otherSubEventsReserveIds,
+                      ]}
+                      subEventId={id}
+                      onChangeSubEvent={(user, newSubEventId) => {
+                        setReserveStateFull(
+                          id,
+                          reserve[id].filter(({ _id }) => _id !== user._id)
+                        )
+                        setReserveStateFull(newSubEventId, [
+                          ...reserve[newSubEventId],
+                          user,
+                        ])
+                      }}
+                    />
+                    {/* <EventsUsers
                       event={event}
                       modalTitle="Выбор резерва"
                       selectedIds={reserveIds[id]}
@@ -621,33 +1015,8 @@ const eventUsersFunc = (eventId) => {
                           ])
                         // setReserveState(sortUsersByIds([...reserveIds[id], id]))
                       }
-                      nameFieldWrapperClassName="pb-2 laptop:pb-0"
-                      itemChildren={
-                        eventUsers
-                          ? (user) => {
-                              const eventUser = eventUsers.find(
-                                ({ userId }) => userId === user._id
-                              )
-                              return (
-                                <div className="absolute bottom-0 max-h-[13px] flex justify-center items-end w-full text-xs font-normal">
-                                  <div
-                                    className={cn(
-                                      'max-h-[13px] leading-[13px] border-t border-r border-l rounded-t-md px-2 border-gray-700',
-                                      eventUser?.createdAt
-                                        ? 'bg-teal-50'
-                                        : 'bg-red-50'
-                                    )}
-                                  >
-                                    {eventUser?.createdAt
-                                      ? formatDateTime(eventUser.createdAt)
-                                      : 'Запись еще не создана'}
-                                  </div>
-                                </div>
-                              )
-                            }
-                          : undefined
-                      }
-                    />
+                      createdAtObject={eventUsersCreatedAtObject}
+                    /> */}
                   </Wrapper>
                 )
               })}
@@ -658,7 +1027,21 @@ const eventUsersFunc = (eventId) => {
             tabAddToLabel={`(${assistantsCount})`}
             className="flex flex-col mt-2 gap-y-5"
           >
-            <EventsUsers
+            <EventUsers2
+              modalTitle="Выбор ведущих"
+              selectedUsers={assistants ?? []}
+              setSelectedUsers={(selectedUsers) =>
+                setAssistantsStateFull(selectedUsers)
+              }
+              event={event}
+              readOnly={!canEdit}
+              exceptedIds={[
+                ...participantsIdsAll,
+                ...reserveIdsAll,
+                ...bannedIds,
+              ]}
+            />
+            {/* <EventsUsers
               event={event}
               modalTitle="Выбор ведущих"
               selectedIds={assistantsIds}
@@ -670,7 +1053,7 @@ const eventUsersFunc = (eventId) => {
               ]}
               canEdit={canEdit}
               noButtons
-            />
+            /> */}
           </TabPanel>
           {canEdit && (
             <TabPanel
@@ -678,7 +1061,21 @@ const eventUsersFunc = (eventId) => {
               tabAddToLabel={`(${bannedCount})`}
               className="flex flex-col mt-2 gap-y-5"
             >
-              <EventsUsers
+              <EventUsers2
+                modalTitle="Выбор забаненых участников"
+                selectedUsers={banned ?? []}
+                setSelectedUsers={(selectedUsers) =>
+                  setBannedStateFull(selectedUsers)
+                }
+                event={event}
+                readOnly={!canEdit}
+                exceptedIds={[
+                  ...participantsIdsAll,
+                  ...reserveIdsAll,
+                  ...assistantsIds,
+                ]}
+              />
+              {/* <EventsUsers
                 event={event}
                 modalTitle="Выбор забаненых участников"
                 selectedIds={bannedIds}
@@ -690,7 +1087,7 @@ const eventUsersFunc = (eventId) => {
                 ]}
                 canEdit={canEdit}
                 noButtons
-              />
+              /> */}
             </TabPanel>
           )}
         </TabContext>

@@ -182,7 +182,7 @@ const DevContent = () => {
                   icon={userGender.icon}
                 />
               </div>
-              <img src={photo_100} className="w-9 h-9" />
+              <img src={photo_100} className="w-9 h-9" alt="dev" />
               <div className="flex-1 px-1">
                 {first_name} {last_name}
               </div>

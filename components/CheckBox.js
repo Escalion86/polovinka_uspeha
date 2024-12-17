@@ -35,20 +35,20 @@ const CheckBox = ({
           type={type}
           className={cn(
             'duration-300 transition-all',
-            type === 'checkbox'
-              ? checked
-                ? 'bg-check'
-                : ''
-              : checked
-                ? 'bg-radio'
-                : '',
+            // type === 'checkbox'
+            //   ? checked
+            //     ? '' //'bg-check'
+            //     : ''
+            //   : checked
+            //     ? '' //'bg-radio'
+            //     : '',
             disabled ? 'cursor-not-allowed bg-gray-400' : 'bg-white',
             readOnly
               ? 'bg-gray-500'
               : !disabled
                 ? 'checked:bg-general cursor-pointer'
                 : '',
-            'border appearance-none from-blue-900 checked:border-transparent focus:outline-none',
+            'border appearance-none checked:border-transparent focus:outline-hidden',
             big
               ? 'min-w-6 min-h-6 w-6 h-6'
               : small
@@ -58,7 +58,7 @@ const CheckBox = ({
               ? big
                 ? 'rounded-lg'
                 : small
-                  ? 'rounded-sm'
+                  ? 'rounded-xs'
                   : 'rounded-md'
               : 'rounded-full',
             error ? 'border-danger' : ' border-gray-400'

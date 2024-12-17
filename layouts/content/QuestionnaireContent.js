@@ -340,11 +340,11 @@ const QuestionnaireContent = (props) => {
             <span className="leading-4 text-right tablet:text-lg">
               Чтобы изменения вступили в силу нажмите:
             </span>
-          ) : (
+          ) : isImageLoading ? (
             <span className="leading-4 text-right text-gray-500 tablet:text-lg">
               Идет загрузка фотографии...
             </span>
-          )}
+          ) : null}
         </div>
         <Button
           // classBgColor=""

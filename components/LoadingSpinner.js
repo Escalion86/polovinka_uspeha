@@ -55,14 +55,22 @@ export const LoadingSpinner = ({
           }}
           className="flex items-center justify-center h-full"
         >
-          <Image
-            className="object-contain max-h-[80%] aspect-1 h-[70%] w-[70%]"
-            // style={{ maxHeight: widthHeight, maxWidth: widthHeight }}
-            src="/img/logo_heart.png"
-            alt="logo"
-            width={widthHeight}
-            height={widthHeight}
-          />
+          <div className="max-h-[80%] aspect-1 h-[70%] w-[70%] relative">
+            <Image
+              className="object-contain"
+              // style={{ maxHeight: widthHeight, maxWidth: widthHeight }}
+              src="/img/logo_heart.png"
+              alt="logo"
+              fill
+              // width={widthHeight}
+              // height={widthHeight}
+              // style={{ width: 'auto', height: 'auto' }}
+              priority
+              // placeholder="blur"
+              // blurDataURL={'/img/logo_heart_24px.png'}
+              sizes="(max-width: 125px) 100vw"
+            />
+          </div>
         </m.div>
       </div>
       {text && <div className="text-lg font-bold animate-pulse">{text}</div>}

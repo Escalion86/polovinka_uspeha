@@ -11,7 +11,7 @@ const PaymentsList = ({ payments }) => {
     <ListWrapper
       itemCount={payments.length}
       itemSize={widthNum > 2 ? 68 : 60}
-      className="bg-opacity-15 bg-general"
+      className="bg-general/15"
     >
       {({ index, style }) => (
         <PaymentCard

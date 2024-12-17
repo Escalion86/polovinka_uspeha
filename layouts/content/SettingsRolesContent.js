@@ -233,6 +233,11 @@ const SettingsRolesContent = (props) => {
               item="events"
               subItem="editLikes"
             />
+            <RoleItem
+              label="Отправка уведомлений"
+              item="events"
+              subItem="sendNotifications"
+            />
             {/*  */}
             <SubTitle name="Список участников мероприятия" />
             <RoleItem label="Видит список" item="eventsUsers" subItem="see" />

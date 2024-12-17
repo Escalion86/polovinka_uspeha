@@ -25,7 +25,7 @@ const TitleBlock = () => {
         backgroundSize: 'cover',
       }}
     >
-      <div className="relative flex flex-col items-center justify-center w-full h-full max-h-[calc(100vh-70px)] px-10 pt-5 tablet:pt-12 pb-8 tablet:pb-10 text-white bg-gray-800 bg-opacity-20 laptop:px-20 ">
+      <div className="relative flex flex-col items-center justify-center w-full h-full max-h-[calc(100vh-70px)] px-10 pt-5 tablet:pt-12 pb-8 tablet:pb-10 text-white bg-gray-800/20 laptop:px-20">
         <Svg30Plus className="absolute w-12 h-12 tablet:w-16 tablet:h-16 top-6 right-6 tablet:top-14 tablet:right-12 laptop:h-20 laptop:w-20 fill-general" />
 
         <div className="flex justify-center flex-1 max-h-[350px] h-[20%]">
@@ -38,7 +38,7 @@ const TitleBlock = () => {
 
         <CountDown
           Wrapper={({ children }) => (
-            <div className="flex flex-col items-center px-6 py-2 bg-white tablet:px-10 gap-y-1 bg-opacity-20 rounded-2xl">
+            <div className="flex flex-col items-center px-6 py-2 bg-white/20 tablet:px-10 gap-y-1 rounded-2xl">
               <div
                 className="text-xl uppercase tablet:text-2xl"
                 style={{ textShadow: '1px 1px 2px black' }}
@@ -55,7 +55,7 @@ const TitleBlock = () => {
           </H1>
           <div className="text-center">
             <h4
-              className="px-2 py-1 text-2xl font-bold text-center duration-300 bg-white border cursor-pointer rounded-xl hover:text-white border-general hover:bg-general bg-opacity-20 text-general"
+              className="px-2 py-1 text-2xl font-bold text-center duration-300 bg-white/20 border cursor-pointer rounded-xl hover:text-white border-general hover:bg-general/20 text-general"
               onClick={() => modalsFunc.browseLocation()}
             >
               г.{upperCaseFirst(townRu)}

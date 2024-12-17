@@ -81,13 +81,13 @@ const DevSwitch = () => {
         name="Выбрать аккаунт"
         onClick={() =>
           modalsFunc.selectUsers(
-            [loggedUserActive._id],
+            [loggedUserActive],
             {},
-            (ids) => {
-              const selectedUser = users.find(({ _id }) => _id === ids[0])
-              setLoggedUserActive(selectedUser)
-              setLoggedUserActiveRoleName(selectedUser.role)
-              setLoggedUserActiveStatus(selectedUser.status)
+            (user) => {
+              // const selectedUser = users.find(({ _id }) => _id === ids[0])
+              setLoggedUserActive(user)
+              setLoggedUserActiveRoleName(user.role)
+              setLoggedUserActiveStatus(user.status)
             },
             [],
             undefined,

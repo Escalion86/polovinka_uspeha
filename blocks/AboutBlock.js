@@ -2,10 +2,10 @@ import BlockContainer from '@components/BlockContainer'
 import BlockTitle from '@components/BlockTitle'
 import ListItem from '@components/ListItem'
 import { H4, P } from '@components/tags'
-import SvgKavichki from 'svg/SvgKavichki'
+import SvgKavichki from '@svg/SvgKavichki'
 
 const Item = ({ children }) => (
-  <ListItem className="[&:not(:first-child)]:mt-3">
+  <ListItem className="not-first:mt-3">
     <P className="leading-5">{children}</P>
   </ListItem>
 )

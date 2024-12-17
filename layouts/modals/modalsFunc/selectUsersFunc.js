@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
 const selectUsersFunc = (
-  state,
+  usersState,
   filterRules,
   onConfirm,
   exceptedIds,
@@ -29,9 +29,7 @@ const selectUsersFunc = (
   }) => {
     const users = useRecoilValue(usersAtom)
     const [selectedUsers, setSelectedUsers] = useState(
-      isObject(state)
-        ? state.filter((item) => typeof item === 'string' && item !== '')
-        : []
+      isObject(usersState) ? usersState.filter((item) => isObject(item)) : []
     )
     const [showErrorMax, setShowErrorMax] = useState(false)
 
@@ -76,19 +74,21 @@ const selectUsersFunc = (
         : -1
     )
 
-    const onClick = (userId) => {
-      const index = selectedUsers.indexOf(userId)
+    const onClick = (user) => {
+      const index = selectedUsers.findIndex((item) => item._id == user._id)
       // Клик по уже выбранному зрителю?
       if (index >= 0) {
         setShowErrorMax(false)
-        setSelectedUsers((state) => state.filter((item) => item !== userId)) //state.splice(index, 1)
+        setSelectedUsers((state) =>
+          state.filter((item) => item._id != user._id)
+        ) //state.splice(index, 1)
       } else {
         if (!maxUsers || selectedUsers.length < maxUsers) {
           setShowErrorMax(false)
-          setSelectedUsers((state) => [...state, userId])
+          setSelectedUsers((state) => [...state, user])
         } else {
           if (maxUsers === 1) {
-            setSelectedUsers([userId])
+            setSelectedUsers([user])
           } else setShowErrorMax(true)
         }
       }
@@ -147,13 +147,13 @@ const selectUsersFunc = (
         />
         {/* <div
           className={cn(
-            'flex gap-1 items-center border-gray-700 border p-1 mb-1 rounded'
+            'flex gap-1 items-center border-gray-700 border p-1 mb-1 rounded-sm'
             // { hidden: !isMenuOpen }
           )}
         >
           <input
             ref={inputRef}
-            className="flex-1 bg-transparent outline-none"
+            className="flex-1 bg-transparent outline-hidden"
             type="text"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -179,8 +179,12 @@ const selectUsersFunc = (
                   // style={style}
                   item={sortedUsers[index]}
                   key={sortedUsers[index]._id}
-                  active={selectedUsers.includes(sortedUsers[index]._id)}
-                  onClick={() => onClick(sortedUsers[index]._id)}
+                  active={
+                    !!selectedUsers.find(
+                      (user) => user._id == sortedUsers[index]._id
+                    )
+                  }
+                  onClick={() => onClick(sortedUsers[index])}
                 />
               </div>
             )}

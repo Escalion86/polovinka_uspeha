@@ -1,11 +1,8 @@
 // import SvgWave from 'svg/SvgWave'
 import SvgLove from 'svg/SvgLove'
-import tailwindConfig from 'tailwind.config.js'
-import resolveConfig from 'tailwindcss/resolveConfig'
 
 const Page502 = (props) => {
-  const fullConfig = resolveConfig(tailwindConfig)
-  const generalColor = fullConfig.theme.colors.general
+  const generalColor = '#7a5151'
 
   return (
     <div className="box-border w-screen h-screen overflow-y-auto">
