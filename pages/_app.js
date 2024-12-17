@@ -16,13 +16,13 @@ import 'quill/dist/quill.snow.css'
 import 'react-toastify/dist/ReactToastify.css'
 import { RecoilEnv, RecoilRoot } from 'recoil'
 import RecoilNexus from 'recoil-nexus'
-import '@styles/burger.css'
-import '@styles/fonts/Lora.css'
-import '@styles/fonts/AdleryPro.css'
-import '@styles/fonts/Enchants.css'
+import '../styles/burger.css'
+import '../styles/fonts/Lora.css'
+import '../styles/fonts/AdleryPro.css'
+import '../styles/fonts/Enchants.css'
 // import '../styles/fonts/Frankinity.css'
-import '@styles/fonts/FuturaPT.css'
-import '@styles/global.css'
+import '../styles/fonts/FuturaPT.css'
+import '../styles/global.css'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 // import isPWAAtom from '@state/atoms/isPWAAtom'
 import { LazyMotion, domAnimation } from 'framer-motion'
@@ -96,11 +96,11 @@ const theme = createTheme({
 
 const futura = localFont({
   src: [
-    // {
-    //   path: '../styles/fonts/FuturaPT-Light.ttf',
-    //   weight: '300',
-    //   style: 'normal',
-    // },
+    {
+      path: '../styles/fonts/FuturaPT-Light.ttf',
+      weight: '300',
+      style: 'normal',
+    },
     {
       path: '../styles/fonts/FuturaPT-LightObl.ttf',
       weight: '300',
@@ -159,11 +159,11 @@ const futura = localFont({
 
 const futuraDemi = localFont({
   src: [
-    // {
-    //   path: '../styles/fonts/FuturaPT-DemiObl.ttf',
-    //   weight: '600',
-    //   style: 'italic',
-    // },
+    {
+      path: '../styles/fonts/FuturaPT-DemiObl.ttf',
+      weight: '600',
+      style: 'italic',
+    },
     {
       path: '../styles/fonts/FuturaPT-Demi.ttf',
       weight: '600',
