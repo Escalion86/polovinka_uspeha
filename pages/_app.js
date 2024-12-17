@@ -96,11 +96,11 @@ const theme = createTheme({
 
 const futura = localFont({
   src: [
-    {
-      path: '../styles/fonts/FuturaPT-Light.ttf',
-      weight: '300',
-      style: 'normal',
-    },
+    // {
+    //   path: '../styles/fonts/FuturaPT-Light.ttf',
+    //   weight: '300',
+    //   style: 'normal',
+    // },
     {
       path: '../styles/fonts/FuturaPT-LightObl.ttf',
       weight: '300',
@@ -159,11 +159,11 @@ const futura = localFont({
 
 const futuraDemi = localFont({
   src: [
-    {
-      path: '../styles/fonts/FuturaPT-DemiObl.ttf',
-      weight: '600',
-      style: 'italic',
-    },
+    // {
+    //   path: '../styles/fonts/FuturaPT-DemiObl.ttf',
+    //   weight: '600',
+    //   style: 'italic',
+    // },
     {
       path: '../styles/fonts/FuturaPT-Demi.ttf',
       weight: '600',
