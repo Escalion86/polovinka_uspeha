@@ -3,7 +3,8 @@
   "plugins": ["react"],
   "rules": {
     "react/no-unescaped-entities": "off",
-    "react-hooks/rules-of-hooks": "off"
+    "react-hooks/rules-of-hooks": "off",
+    "react/no-children-prop": "off"
   },
   "parserOptions": {
     "ecmaVersion": "latest",
