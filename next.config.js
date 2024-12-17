@@ -1,3 +1,7 @@
+const path = require('path')
+
+// const __dirname = new URL('.', import.meta.url).pathname
+
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: process.env.ANALYZE === 'true',
 // })
@@ -12,10 +16,13 @@ const withPWA = require('next-pwa')({
 
 module.exports = //withBundleAnalyzer(
   withPWA({
-    // webpack: (config) => {
-    //   // config.experiments = { topLevelAwait: true }
-    //   return config
-    // },
+    webpack: (config) => {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@': path.resolve(__dirname, './'),
+      }
+      return config
+    },
     // swcMinify: false,
     experimental: {
       largePageDataBytes: 512 * 100000,
