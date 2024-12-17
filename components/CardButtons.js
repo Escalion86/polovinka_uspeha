@@ -32,6 +32,7 @@ import DropDown from './DropDown'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import { faBullhorn } from '@fortawesome/free-solid-svg-icons'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -100,6 +101,9 @@ const CardButtons = ({
     (typeOfItem === 'event' && loggedUserActiveRole?.events?.seeHistory) ||
     (typeOfItem === 'payment' && loggedUserActiveRole?.payments?.seeHistory) ||
     (typeOfItem === 'user' && loggedUserActiveRole?.users?.seeHistory)
+  const sendNotifications =
+    typeOfItem === 'event' && loggedUserActiveRole?.events?.sendNotifications
+
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
   // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
@@ -146,6 +150,7 @@ const CardButtons = ({
     userEvents: rule?.seeUserEvents,
     userPaymentsBtn: rule?.seeUserPayments,
     loginHistory: loggedUserActiveRole?.dev && typeOfItem === 'user',
+    sendNotifications,
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -220,6 +225,14 @@ const CardButtons = ({
           onClick={() => goToUrlForAddEventToCalendar(item)}
           color="purple"
           tooltipText="Добавить в Google календарь"
+        />
+      )}
+      {show.sendNotifications && (
+        <ItemComponent
+          icon={faBullhorn}
+          onClick={() => modalsFunc[typeOfItem].notificateAboutEvent(item._id)}
+          color="blue"
+          tooltipText="Уведомление пользователей о мероприятии"
         />
       )}
       {show.eventUsersBtn && (

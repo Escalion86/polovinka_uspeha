@@ -33,8 +33,8 @@ module.exports = {
         3: '3 3 0%',
       },
       backgroundImage: (theme) => ({
-        check: "url('/icons/check.svg')",
-        radio: "url('/icons/radio.svg')",
+        // check: "url('/icons/check.svg')",
+        // radio: "url('/icons/radio.svg')",
         hearts: "url('/img/hearts_texture.jpg')",
       }),
       colors: {

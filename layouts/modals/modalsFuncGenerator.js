@@ -420,6 +420,12 @@ const modalsFuncGenerator = (
         addModal(
           require('./modalsFunc/copyEventUserListFunc').default(eventId)
         ),
+      notificateAboutEvent: (eventId) =>
+        addModal(
+          require('./modalsFunc/notificateAboutEventTelegramFunc').default(
+            eventId
+          )
+        ),
       signUp: (event, status = 'participant', comment) => {
         if (checkLoggedUser('Для записи на мероприятие', `event=${event._id}`))
           addModal(
