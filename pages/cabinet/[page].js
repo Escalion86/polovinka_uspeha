@@ -1,3 +1,4 @@
+'use client'
 // import Fab from '@components/Fab'
 
 import LoadingSpinner from '@components/LoadingSpinner'
