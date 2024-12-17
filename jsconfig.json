@@ -11,9 +11,8 @@
       "@state/*": ["state/*"],
       "@schemas/*": ["schemas/*"],
       "@layouts/*": ["layouts/*"],
-      "@blocks/*": ["blocks/*"]
+      "@blocks/*": ["blocks/*"],
+      "@svg/*": ["svg/*"]
     }
   }
-  // "include": ["."],
-  // "exclude": ["node_modules"]
 }
