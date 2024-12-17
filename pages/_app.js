@@ -223,7 +223,7 @@ const adleryProSwash = localFont({
 const lora = localFont({
   src: [
     {
-      path: './styles/fonts/Lora.ttf',
+      path: '../styles/fonts/Lora.ttf',
       weight: '400',
       style: 'normal',
     },
