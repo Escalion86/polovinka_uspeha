@@ -24,7 +24,7 @@ const jsonFunc = (data) => {
             copyToClipboard(json)
           }}
         >
-          <div className="flex items-center justify-center p-1 bg-gray-100 border border-gray-400 rounded cursor-pointer group">
+          <div className="flex items-center justify-center p-1 bg-gray-100 border border-gray-400 rounded-sm cursor-pointer group">
             Копировать в буфер обмена
           </div>
         </div>

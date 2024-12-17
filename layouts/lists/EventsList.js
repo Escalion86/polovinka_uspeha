@@ -12,7 +12,7 @@ const EventsList = ({ events, onTagClick }) => {
     <ListWrapper
       itemCount={events.length}
       itemSize={widthNum > 3 ? 165 : widthNum === 3 ? 176 : 224}
-      className="bg-opacity-15 bg-general"
+      className="bg-general/15"
     >
       {({ index, style }) => (
         <EventCard

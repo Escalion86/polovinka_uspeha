@@ -234,7 +234,7 @@ const modalsFuncGenerator = (
         )
       ),
     selectUsers: (
-      itemsId,
+      items,
       filterRules,
       onChange,
       exceptedIds,
@@ -246,7 +246,7 @@ const modalsFuncGenerator = (
     ) =>
       addModal(
         require('./modalsFunc/selectUsersFunc').default(
-          itemsId,
+          items,
           filterRules,
           onChange,
           exceptedIds,
@@ -475,11 +475,12 @@ const modalsFuncGenerator = (
         addModal(
           require('./modalsFunc/eventUserStatusChangeFunc').default(eventUser)
         ),
-      editSubEvent: (eventUser, onConfirm) =>
+      editSubEvent: (eventUser, onConfirm, selectedSubEventId) =>
         addModal(
           require('./modalsFunc/eventUserSubEventChangeFunc').default(
             eventUser,
-            onConfirm
+            onConfirm,
+            selectedSubEventId
           )
         ),
       editLike: (eventUser, adminView) =>

@@ -14,5 +14,7 @@
       "@layouts/*": ["layouts/*"],
       "@blocks/*": ["blocks/*"]
     }
-  }
+  },
+  "include": ["."],
+  "exclude": ["node_modules"]
 }

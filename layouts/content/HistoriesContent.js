@@ -99,7 +99,7 @@ const HistoryEventItem = ({ data, eventId, isLast }) => {
         </div>
         {/* <SelectEventList eventsId={[eventId]} readOnly /> */}
         {/* <div className="h-auto overflow-hidden"> */}
-        <div className="flex flex-col items-stretch overflow-hidden bg-gray-200 border border-gray-700 rounded">
+        <div className="flex flex-col items-stretch overflow-hidden bg-gray-200 border border-gray-700 rounded-sm">
           <div className="flex items-stretch overflow-hidden -mb-[1px] border-b border-gray-700 flex-nowrap rouded-b">
             <EventItemFromId
               eventId={eventId}

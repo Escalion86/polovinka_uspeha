@@ -37,7 +37,7 @@ const Search = ({
         className
       )}
     >
-      <div className="min-h-[34px] h-[34px] absolute bottom-0 left-0 right-0 flex w-full gap-1 items-center border-gray-700 border p-1 bg-white rounded my-0.5">
+      <div className="min-h-[34px] h-[34px] absolute bottom-0 left-0 right-0 flex w-full gap-1 items-center border-gray-700 border p-1 bg-white rounded-sm my-0.5">
         <input
           ref={inputRef}
           className="flex-1 bg-transparent"

@@ -22,6 +22,7 @@ import {
 } from './ItemCards'
 import Tooltip from './Tooltip'
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
+import userSelector from '@state/selectors/userSelector'
 
 export const SelectItem = ({
   items,
@@ -79,7 +80,7 @@ const ItemButton = ({
       <button
         onClick={onClick}
         className={cn(
-          'flex items-center justify-center gap-x-0.5 h-full rounded-r shadow group whitespace-nowrap font-futuraDemi',
+          'flex items-center justify-center gap-x-0.5 h-full rounded-r shadow-sm group whitespace-nowrap font-futuraDemi',
           thin ? 'px-1' : 'px-1.5'
         )}
       >
@@ -130,7 +131,7 @@ const SelectItemContainer = ({
           <div
             className={cn(
               'flex flex-1',
-              rounded ? 'rounded overflow-hidden' : '',
+              rounded ? 'rounded-sm overflow-hidden' : '',
               bordered ? 'border border-gray-700' : ''
             )}
           >
@@ -143,7 +144,7 @@ const SelectItemContainer = ({
       <div
         className={cn(
           'flex flex-1',
-          rounded ? 'rounded overflow-hidden' : '',
+          rounded ? 'rounded-sm overflow-hidden' : '',
           error
             ? 'border border-red-500'
             : bordered
@@ -235,6 +236,7 @@ export const SelectUser = ({
 }) => {
   const users = useRecoilValue(usersAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const selectedUser = useRecoilValue(userSelector(selectedId))
 
   const filteredUsers = filterWithRules(users, filter)
 
@@ -273,7 +275,7 @@ export const SelectUser = ({
         selectedId={selectedId}
         className={cn(
           'flex-1',
-          selectedId && clearButton ? 'rounded-l' : 'rounded'
+          selectedId && clearButton ? 'rounded-l' : 'rounded-sm'
         )}
         active={active}
         exceptedIds={exceptedIds}
@@ -282,9 +284,9 @@ export const SelectUser = ({
             ? onChange
               ? () =>
                   modalsFunc.selectUsers(
-                    [selectedId],
+                    [selectedUser],
                     filter,
-                    (data) => onChange(data[0]),
+                    (data) => onChange(data[0]._id),
                     [],
                     null,
                     1,
@@ -346,7 +348,7 @@ export const SelectService = ({
         selectedId={selectedId}
         className={cn(
           'flex-1',
-          selectedId && clearButton ? 'rounded-l' : 'rounded'
+          selectedId && clearButton ? 'rounded-l' : 'rounded-sm'
         )}
         exceptedIds={exceptedIds}
         onClick={
@@ -418,7 +420,7 @@ export const SelectEvent = ({
         selectedId={selectedId}
         className={cn(
           'flex-1',
-          selectedId && clearButton ? 'rounded-l' : 'rounded'
+          selectedId && clearButton ? 'rounded-l' : 'rounded-sm'
         )}
         onClick={
           !readOnly
@@ -520,7 +522,7 @@ export const SelectDirection = ({
         selectedId={selectedId}
         className={cn(
           'flex-1',
-          selectedId && clearButton ? 'rounded-l' : 'rounded'
+          selectedId && clearButton ? 'rounded-l' : 'rounded-sm'
         )}
         onClick={
           onChange
@@ -592,7 +594,7 @@ export const SelectPayment = ({
         selectedId={selectedId}
         className={cn(
           'flex-1',
-          selectedId && clearButton ? ' rounded-l' : ' rounded'
+          selectedId && clearButton ? ' rounded-l' : ' rounded-sm'
         )}
         onClick={
           !readOnly ? (payment) => modalsFunc.payment.edit(payment._id) : null

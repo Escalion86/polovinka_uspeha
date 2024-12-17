@@ -27,7 +27,7 @@ const TimePicker = ({
       error={error}
     >
       <input
-        className={cn('text-input max-w-40 outline-none', {
+        className={cn('text-input max-w-40 outline-hidden', {
           'text-disabled': disabled,
         })}
         type="time"

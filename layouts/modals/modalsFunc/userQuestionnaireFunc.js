@@ -45,7 +45,7 @@ const CheckBoxItem = ({
           onInputChange(e.target.value)
         }}
         placeholder="Мой ответ"
-        className="flex-1 py-0 border-b border-gray-400 outline-none"
+        className="flex-1 py-0 border-b border-gray-400 outline-hidden"
       />
       {onDelete && (
         <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-6 h-6 hover:scale-110">
@@ -305,7 +305,7 @@ const RadioBoxList = ({
                 setOwnItemInput(e.target.value)
               }}
               placeholder="Мой ответ"
-              className="flex-1 py-0 border-b border-gray-400 outline-none"
+              className="flex-1 py-0 border-b border-gray-400 outline-hidden"
             />
           </div>
         )}
@@ -328,7 +328,7 @@ const CustomItem = ({ number, value, onChange, onDelete }) => {
           onChange(e.target.value)
         }}
         placeholder="Мой ответ"
-        className="flex-1 py-0 border-b border-gray-400 outline-none"
+        className="flex-1 py-0 border-b border-gray-400 outline-hidden"
       />
       {onDelete && (
         <div className="flex items-center justify-center p-0.5 duration-200 transform cursor-pointer w-6 h-6 hover:scale-110">

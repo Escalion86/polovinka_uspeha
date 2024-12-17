@@ -12,8 +12,10 @@ const Item = ({ towns = [], checked, onClick }) => (
   <div
     onClick={onClick}
     className={cn(
-      checked ? 'border-success bg-green-300' : 'bg-gray-200 border-gray-500',
-      'bg-opacity-50 min-h-[3rem] flex items-center px-3 py-2 border rounded-md gap-x-1 cursor-pointer'
+      checked
+        ? 'border-success bg-green-300/50'
+        : 'bg-gray-200/50 border-gray-500',
+      'min-h-[3rem] flex items-center px-3 py-2 border rounded-md gap-x-1 cursor-pointer'
     )}
   >
     <div className="flex flex-wrap gap-x-1 gap-y-1">

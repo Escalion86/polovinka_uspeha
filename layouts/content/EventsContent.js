@@ -212,7 +212,7 @@ const EventsContent = () => {
           setShowFilter(true)
         }}
       />
-      {/* <div className="flex-1 w-full bg-opacity-15 bg-general">
+      {/* <div className="flex-1 w-full bg-general/15">
         <AutoSizer>
           {({ height, width }) => (
             <FixedSizeList

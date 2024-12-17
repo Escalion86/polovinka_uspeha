@@ -13,7 +13,7 @@ const UserName = ({
   showStatus,
   trunc,
   children,
-  leadingClass = 'leading-[14px]',
+  leadingClass = 'leading-[14px] phoneH:leading-[18px]',
 }) => {
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   if (!user) return null

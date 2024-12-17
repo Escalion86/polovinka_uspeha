@@ -659,9 +659,9 @@ export default async function handler(Schema, req, res, params = null) {
             const calendarEvent = updateEventInCalendar(jsonData, req)
 
             // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
-            if (jsonData.showOnSite) {
-              notificateUsersAboutEvent(jsonData, req)
-            }
+            // if (jsonData.showOnSite) {
+            //   notificateUsersAboutEvent(jsonData, req)
+            // }
           }
 
           if (Schema === ServicesUsers) {
@@ -705,9 +705,9 @@ export default async function handler(Schema, req, res, params = null) {
 
           if (Schema === Events) {
             const calendarEvent = updateEventInCalendar(data, req)
-            if (!oldData.showOnSite && data.showOnSite) {
-              notificateUsersAboutEvent(data, req)
-            }
+            // if (!oldData.showOnSite && data.showOnSite) {
+            //   notificateUsersAboutEvent(data, req)
+            // }
           }
 
           const difference = compareObjectsWithDif(oldData, data)

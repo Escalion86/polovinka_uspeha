@@ -189,7 +189,7 @@ const SelectImage = ({
         {isAddingImage && (
           <LoadingSpinner
             heightClassName="h-20"
-            className="w-20 border border-gray-300 bg-general bg-opacity-20"
+            className="w-20 border border-gray-300 bg-general/20"
           />
         )}
       </div>

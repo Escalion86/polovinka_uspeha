@@ -15,7 +15,7 @@ const ValueItem = ({
 }) => (
   <button
     className={cn(
-      `h-[30px] flex min-w-22 duration-300 outline-none items-center justify-center border px-2 py-0.5 rounded gap-x-2 flex-nowrap border-${color} group`,
+      `h-[30px] flex min-w-22 duration-300 outline-hidden items-center justify-center border px-2 py-0.5 rounded-sm gap-x-2 flex-nowrap border-${color} group`,
       active
         ? `text-white bg-${color}`
         : onClick
@@ -30,7 +30,13 @@ const ValueItem = ({
     {icon && <FontAwesomeIcon icon={icon} className="h-5" />}
     {imageSrc && (
       <div className="w-5 h-5">
-        <Image src={imageSrc} width="20" height="20" alt={value} />
+        <Image
+          src={imageSrc}
+          width="20"
+          height="20"
+          alt={value}
+          style={{ width: 'auto', height: 'auto' }}
+        />
       </div>
     )}
     <div

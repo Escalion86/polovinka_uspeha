@@ -46,7 +46,7 @@ const ComboBox = ({
     >
       <select
         className={cn(
-          'flex-1 cursor-pointer outline-none bg-transparent px-1',
+          'flex-1 cursor-pointer outline-hidden bg-transparent px-1',
           value === null || value === undefined ? 'text-disabled' : '',
           selectClassName
         )}

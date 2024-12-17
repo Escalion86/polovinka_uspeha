@@ -18,10 +18,10 @@ import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
-const fetchProps = async (user) => {
+const fetchProps = async (user, domen) => {
   const serverDateTime = new Date()
   try {
-    const db = await dbConnect()
+    const db = await dbConnect(domen)
 
     var users = await Users.find({}).select('-password').lean()
 

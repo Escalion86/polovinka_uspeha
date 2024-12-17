@@ -40,6 +40,7 @@ const UserStatusIcon = forwardRef(({ status, size, slashed = false }, ref) => {
                 src="/img/svg_icons/medal.svg"
                 width={numSize * 4}
                 height={numSize * 4}
+                style={{ width: 'auto', height: 'auto' }}
               />
             </div>
             {slashed && (
@@ -64,6 +65,7 @@ const UserStatusIcon = forwardRef(({ status, size, slashed = false }, ref) => {
                 src="/img/svg_icons/medal.svg"
                 width={numSize * 4}
                 height={numSize * 4}
+                style={{ width: 'auto', height: 'auto' }}
               />
             </div>
             {slashed && (

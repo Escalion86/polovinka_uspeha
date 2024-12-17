@@ -33,7 +33,7 @@ const PhoneInput = ({
       disabled={disabled}
       placeholder={label}
       className={cn(
-        'w-full px-1 focus:outline-none bg-transparent peer placeholder-transparent',
+        'w-full px-1 focus:outline-hidden bg-transparent peer placeholder-transparent',
         required && (!value || value.toString().length !== 11)
           ? 'border-red-700'
           : 'border-gray-400',

@@ -25,7 +25,7 @@ const EventUsersInTimeLine = ({ createdAt, eventUsers, creatorId }) => {
           className={
             'bg-' +
             eventUserStatus.color +
-            ' rounded px-1 text-sm flex items-center'
+            ' rounded-sm px-1 text-sm flex items-center'
           }
         >
           {eventUserStatus.name}

@@ -159,16 +159,16 @@ export const UserItem = ({
         alt="user"
       />
       <div className="relative flex-1 flex items-center py-0.5 px-1 gap-x-0.5">
-        <div
-          className={cn(
-            'flex items-center flex-1 max-h-full',
-            nameFieldWrapperClassName
-          )}
-        >
-          <div className="flex flex-col flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1">
+        <div className="flex items-center flex-1 max-h-full">
+          <div
+            className={cn(
+              'flex flex-col flex-1 max-h-full text-xs text-gray-800 phoneH:text-sm tablet:text-base gap-x-1',
+              nameFieldWrapperClassName
+            )}
+          >
             <UserName
               user={item}
-              className="flex-1 inline min-h-[28px] font-bold"
+              className="flex-1 min-h-[28px] font-bold"
               thin
               trunc={2}
               children={
@@ -289,7 +289,7 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
   >
     {item?.image && (
       <img
-        className="object-cover h-[50px] aspect-1"
+        className="object-cover h-[50px] 1"
         src={item.image}
         alt="direction"
       />

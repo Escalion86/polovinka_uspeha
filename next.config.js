@@ -1,6 +1,7 @@
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+// const withBundleAnalyzer = require('@next/bundle-analyzer')({
+//   enabled: process.env.ANALYZE === 'true',
+// })
+
 const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
@@ -9,13 +10,13 @@ const withPWA = require('next-pwa')({
   disable: process.env.NODE_ENV === 'development',
 })
 
-module.exports = withBundleAnalyzer(
+module.exports = //withBundleAnalyzer(
   withPWA({
     // webpack: (config) => {
     //   // config.experiments = { topLevelAwait: true }
     //   return config
     // },
-    swcMinify: false,
+    // swcMinify: false,
     experimental: {
       largePageDataBytes: 512 * 100000,
     },
@@ -76,4 +77,4 @@ module.exports = withBundleAnalyzer(
     //   return config
     // },
   })
-)
+//)

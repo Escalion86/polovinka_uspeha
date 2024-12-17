@@ -34,7 +34,7 @@ const Input = forwardRef(
       noMargin = false,
       smallMargin = false,
       showArrows = true,
-      autoComplete,
+      autoComplete = 'on',
       maxLength,
       dataList,
     },
@@ -126,7 +126,7 @@ const Input = forwardRef(
             }
           }}
           placeholder={label}
-          autoComplete={autoComplete}
+          autoComplete="on"
           list={dataList?.name}
         />
         {dataList?.list && (

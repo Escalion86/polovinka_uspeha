@@ -11,9 +11,33 @@ const BlockTitle = ({ title, className }) => {
         className
       )}
     >
-      <Image src="/img/svg_icons/logo.svg" width="36" height="36" />
+      <div className="w-[36px] h-[36px] relative">
+        <Image
+          src="/img/svg_icons/logo.svg"
+          // width={36}
+          // height={36}
+          fill
+          alt="logo"
+          // priority
+          // placeholder="blur"
+          // blurDataURL={'/img/logo_heart_24px.png'}
+          // style={{ width: 'auto', height: 'auto' }}
+        />
+      </div>
       <H2>{title}</H2>
-      <Image src="/img/svg_icons/logo.svg" width="36" height="36" />
+      <div className="w-[36px] h-[36px] relative">
+        <Image
+          src="/img/svg_icons/logo.svg"
+          // width={36}
+          // height={36}
+          fill
+          alt="logo"
+          // priority
+          // placeholder="blur"
+          // blurDataURL={'/img/logo_heart_24px.png'}
+          // style={{ width: 'auto', height: 'auto' }}
+        />
+      </div>
     </div>
   )
 }

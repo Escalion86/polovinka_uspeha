@@ -125,7 +125,7 @@ const UserMenu = () => {
                   {loggedUserActive.personalStatus}
                   <SvgKavichki className="absolute w-3 h-3 rotate-180 top-1 right-1 fill-general" />
                 </div>
-                <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center text-opacity-0 duration-300 group-hover:text-opacity-100 text-general">
+                <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center duration-300 group-hover:text-general/100 text-general/0">
                   Изменить статус
                 </div>
               </>

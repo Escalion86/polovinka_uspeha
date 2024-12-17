@@ -235,7 +235,7 @@ const EventButtonSignIn = ({
         />
       </Suspense>
       <Suspense fallback={<Skeleton className="h-[80%] w-[100px] mr-1" />}>
-        <div className="flex items-center h-full pl-1">
+        <div className="flex items-center pl-1">
           <Status
             event={event}
             eventStatus={eventStatus}

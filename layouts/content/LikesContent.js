@@ -158,7 +158,7 @@ const LikesContent = () => {
             <br />
             Пока прием лайков не закрыт вы можете отредактировать свой выбор
           </Note>
-          <div className="flex flex-col items-stretch w-full border border-gray-700 rounded">
+          <div className="flex flex-col items-stretch w-full border border-gray-700 rounded-sm">
             {eventsWithWaitingLikes.map((eventWithEventUsers, index) => (
               <div key={eventWithEventUsers._id} className="overflow-hidden">
                 <EventLikesItem
@@ -186,7 +186,7 @@ const LikesContent = () => {
             <br />
             Для просмотра результата кликните по мероприятию
           </Note>
-          <div className="flex flex-col items-stretch w-full border border-gray-700 rounded">
+          <div className="flex flex-col items-stretch w-full border border-gray-700 rounded-sm">
             {eventsWithSettedLikes.map((eventWithEventUsers, index) => (
               <div key={eventWithEventUsers._id} className="overflow-hidden">
                 <EventLikesItem
@@ -209,7 +209,7 @@ const LikesContent = () => {
           <div className="w-full mb-3 text-lg font-bold leading-4 text-center mt-7">
             Участники с которыми у Вас есть совпадения
           </div>
-          <div className="flex flex-col items-stretch w-full border border-gray-700 rounded">
+          <div className="flex flex-col items-stretch w-full border border-gray-700 rounded-sm">
             {usersWithLikesCoincidences.map((userId, index) => (
               <div key={userId} className="overflow-hidden">
                 <UserItemFromId

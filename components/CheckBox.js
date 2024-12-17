@@ -48,7 +48,7 @@ const CheckBox = ({
               : !disabled
                 ? 'checked:bg-general cursor-pointer'
                 : '',
-            'border appearance-none from-blue-900 checked:border-transparent focus:outline-none',
+            'border appearance-none from-blue-900 checked:border-transparent focus:outline-hidden',
             big
               ? 'min-w-6 min-h-6 w-6 h-6'
               : small
@@ -58,7 +58,7 @@ const CheckBox = ({
               ? big
                 ? 'rounded-lg'
                 : small
-                  ? 'rounded-sm'
+                  ? 'rounded-xs'
                   : 'rounded-md'
               : 'rounded-full',
             error ? 'border-danger' : ' border-gray-400'

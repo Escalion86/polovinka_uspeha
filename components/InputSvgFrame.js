@@ -37,7 +37,7 @@ const InputSvgFrame = ({
     >
       <div
         className={cn(
-          'relative border rounded-sm h-20 w-20 overflow-hidden group',
+          'relative border rounded-xs h-20 w-20 overflow-hidden group',
           error ? ' border-red-700' : ' border-gray-400'
         )}
       >

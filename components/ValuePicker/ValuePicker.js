@@ -30,7 +30,7 @@ const ValuePicker = ({
     >
       <div className="relative flex flex-wrap items-center gap-x-2 gap-y-1 max-w-fit">
         {error && (
-          <div className="z-0 top-0 bottom-0 right-0 left-0 absolute -m-0.5 border border-red-500 rounded" />
+          <div className="z-0 top-0 bottom-0 right-0 left-0 absolute -m-0.5 border border-red-500 rounded-sm" />
         )}
         {valuesArray.map((item) => (
           <ValueItem

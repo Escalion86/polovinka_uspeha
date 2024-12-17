@@ -291,12 +291,19 @@ const Counter = (props) => (
   </Suspense>
 )
 
-const SumCounterComponent = ({ event, subEvent, showReserve }) => {
+const SumCounterComponent = ({
+  event,
+  subEvent,
+  showReserve,
+  eventUsersToUse,
+}) => {
   const subEventSum = subEvent
     ? subEvent
     : useRecoilValue(subEventsSumOfEventSelector(event._id))
 
-  const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(event._id))
+  const eventUsers =
+    eventUsersToUse ??
+    useRecoilValue(eventsUsersFullByEventIdSelector(event._id))
 
   const subEventUsers = subEvent
     ? eventUsers.filter(({ user, subEventId }) => subEventId === subEvent.id)
@@ -450,6 +457,7 @@ const EventUsersCounterAndAge = ({
           event={event}
           subEvent={subEvent}
           showReserve={showReserve}
+          eventUsersToUse={eventUsersToUse}
         />
       </div>
     </div>

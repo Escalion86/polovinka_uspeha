@@ -36,7 +36,7 @@ export const CardWrapper = ({
       {/* <div className="py-0.5"> */}
       <div
         className={cn(
-          'bg-white border-t border-b border-gray-400 relative w-full duration-300 shadow-sm hover:shadow-medium-active',
+          'bg-white border-t border-b border-gray-400 relative w-full duration-300 shadow-xs hover:shadow-medium-active',
           { 'cursor-pointer': !loading },
           {
             'flex flex-col laptop:flex-row items-center laptop:items-stretch':
@@ -47,12 +47,12 @@ export const CardWrapper = ({
         )}
       >
         {error && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center text-2xl text-white bg-red-800 bg-opacity-80">
+          <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center text-2xl text-white bg-red-800/80">
             ОШИБКА
           </div>
         )}
         {loading && !error && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex items-center justify-center bg-general bg-opacity-80">
+          <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex items-center justify-center bg-general/80">
             <LoadingSpinner />
           </div>
         )}

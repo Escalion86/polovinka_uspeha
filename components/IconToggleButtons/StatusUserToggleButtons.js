@@ -29,6 +29,7 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
             src="/img/svg_icons/medal.svg"
             width="24"
             height="24"
+            style={{ width: 'auto', height: 'auto' }}
           />
         </div>
       </Button>
@@ -51,6 +52,7 @@ const StatusUserToggleButtons = ({ value, onChange }) => {
             src="/img/svg_icons/medal.svg"
             width="24"
             height="24"
+            style={{ width: 'auto', height: 'auto' }}
           />
         </div>
       </Button>

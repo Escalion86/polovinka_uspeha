@@ -1,7 +1,7 @@
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import birthDateToAge from './birthDateToAge'
 import { DEFAULT_EVENT } from './constants'
-import isEventCanceled from './isEventCanceled'
+import isEventCanceledFunc from './isEventCanceled'
 import isEventExpiredFunc from './isEventExpired'
 import isEventInProcessFunc from './isEventInProcess'
 import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
@@ -16,8 +16,9 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       canSignIn: false,
       canSignInReserve: false,
       canSignOut: false,
-      isEventExpired: true,
+      isEventExpired: false,
       isEventInProcess: false,
+      isEventHidden: false,
       userStatus: undefined,
       userEventStatus: undefined,
       status: 'no eventId',
@@ -28,16 +29,19 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
 
   const isEventExpired = isEventExpiredFunc(event)
   const isEventInProcess = isEventInProcessFunc(event)
+  const isEventCanceled = isEventCanceledFunc(event)
+  const isEventHidden = !event.showOnSite
 
   if (!user?._id)
     return {
-      canSee: subEventSum.usersStatusAccess?.noReg && event.showOnSite,
+      canSee: subEventSum.usersStatusAccess?.noReg && !isEventHidden,
       alreadySignIn: false,
       canSignIn: false,
       canSignInReserve: false,
       canSignOut: false,
       isEventExpired,
       isEventInProcess,
+      isEventHidden,
       userStatus: undefined,
       userEventStatus: undefined,
       status: 'user not signIn in site',
@@ -98,7 +102,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
   // TODO Поправить права роли
   const canSee =
     ['admin', 'moder', 'dev'].includes(user.role) ||
-    (event.showOnSite &&
+    (!isEventHidden &&
       (alreadySignIn ||
         (isAgeOfUserCorrect &&
           isUserStatusCorrect &&
@@ -126,6 +130,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
+      isEventHidden,
       userStatus,
       userEventStatus,
       status: 'user questionnaire not filled',
@@ -134,7 +139,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       isUserRelationshipCorrect,
     }
 
-  if (isEventCanceled(event))
+  if (isEventHidden)
     return {
       canSee,
       alreadySignIn,
@@ -143,6 +148,25 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
+      isEventHidden,
+      userStatus,
+      userEventStatus,
+      status: 'event hidden',
+      isAgeOfUserCorrect,
+      isUserStatusCorrect,
+      isUserRelationshipCorrect,
+    }
+
+  if (isEventCanceled)
+    return {
+      canSee,
+      alreadySignIn,
+      canSignIn: false,
+      canSignInReserve: false,
+      canSignOut,
+      isEventExpired,
+      isEventInProcess,
+      isEventHidden,
       userStatus,
       userEventStatus,
       status: 'event canceled',
@@ -160,6 +184,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
+      isEventHidden,
       userStatus,
       userEventStatus,
       status: 'event expired',
@@ -195,6 +220,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
+      isEventHidden,
       userStatus,
       userEventStatus,
       status: 'event full',
@@ -216,6 +242,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
+      isEventHidden,
       userStatus,
       userEventStatus,
       status: 'event full of mans',
@@ -237,6 +264,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       canSignOut,
       isEventExpired,
       isEventInProcess,
+      isEventHidden,
       userStatus,
       userEventStatus,
       status: 'event full of womans',
@@ -272,6 +300,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
         canSignOut,
         isEventExpired,
         isEventInProcess,
+        isEventHidden,
         userStatus,
         userEventStatus,
         status: 'event full of novice mans',
@@ -292,6 +321,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
         canSignOut,
         isEventExpired,
         isEventInProcess,
+        isEventHidden,
         userStatus,
         userEventStatus,
         status: 'event full of member mans',
@@ -314,6 +344,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
         canSignOut,
         isEventExpired,
         isEventInProcess,
+        isEventHidden,
         userStatus,
         userEventStatus,
         status: 'event full of novice womans',
@@ -334,6 +365,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
         canSignOut,
         isEventExpired,
         isEventInProcess,
+        isEventHidden,
         userStatus,
         userEventStatus,
         status: 'event full of member womans',
@@ -352,6 +384,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
     canSignOut,
     isEventExpired,
     isEventInProcess,
+    isEventHidden,
     userStatus,
     userEventStatus,
     status: 'ok',
