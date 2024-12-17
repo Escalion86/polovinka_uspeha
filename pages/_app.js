@@ -17,12 +17,13 @@ import 'react-toastify/dist/ReactToastify.css'
 import { RecoilEnv, RecoilRoot } from 'recoil'
 import RecoilNexus from 'recoil-nexus'
 import '../styles/burger.css'
-import '../styles/fonts/Lora.css'
-import '../styles/fonts/AdleryPro.css'
-import '../styles/fonts/Enchants.css'
-// import '../styles/fonts/Frankinity.css'
-import '../styles/fonts/FuturaPT.css'
 import '../styles/global.css'
+import '../pages/styles/fonts/Lora.css'
+import '../pages/styles/fonts/AdleryPro.css'
+import '../pages/styles/fonts/Enchants.css'
+// import '../styles/fonts/Frankinity.css'
+import '../pages/styles/fonts/FuturaPT.css'
+
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 // import isPWAAtom from '@state/atoms/isPWAAtom'
 import { LazyMotion, domAnimation } from 'framer-motion'
@@ -223,7 +224,7 @@ const adleryProSwash = localFont({
 const lora = localFont({
   src: [
     {
-      path: '../styles/fonts/Lora.ttf',
+      path: './styles/fonts/Lora.ttf',
       weight: '400',
       style: 'normal',
     },
