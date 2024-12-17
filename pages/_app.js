@@ -97,42 +97,42 @@ const theme = createTheme({
 const futura = localFont({
   src: [
     {
-      path: '../styles/fonts/FuturaPT-Light.ttf',
+      path: './styles/fonts/FuturaPT-Light.ttf',
       weight: '300',
       style: 'normal',
     },
     {
-      path: '../styles/fonts/FuturaPT-LightObl.ttf',
+      path: './styles/fonts/FuturaPT-LightObl.ttf',
       weight: '300',
       style: 'italic',
     },
     {
-      path: '../styles/fonts/FuturaPT-Medium.ttf',
+      path: './styles/fonts/FuturaPT-Medium.ttf',
       weight: '500',
       style: 'normal',
     },
     {
-      path: '../styles/fonts/FuturaPT-MediumObl.ttf',
+      path: './styles/fonts/FuturaPT-MediumObl.ttf',
       weight: '500',
       style: 'italic',
     },
     {
-      path: '../styles/fonts/FuturaPT-Bold.ttf',
+      path: './styles/fonts/FuturaPT-Bold.ttf',
       weight: 'bold',
       style: 'normal',
     },
     {
-      path: '../styles/fonts/FuturaPT-BoldObl.ttf',
+      path: './styles/fonts/FuturaPT-BoldObl.ttf',
       weight: 'bold',
       style: 'italic',
     },
     {
-      path: '../styles/fonts/FuturaPT-Heavy.ttf',
+      path: './styles/fonts/FuturaPT-Heavy.ttf',
       weight: '900',
       style: 'normal',
     },
     {
-      path: '../styles/fonts/FuturaPT-HeavyObl.ttf',
+      path: './styles/fonts/FuturaPT-HeavyObl.ttf',
       weight: '900',
       style: 'italic',
     },
@@ -160,12 +160,12 @@ const futura = localFont({
 const futuraDemi = localFont({
   src: [
     {
-      path: '../styles/fonts/FuturaPT-DemiObl.ttf',
+      path: './styles/fonts/FuturaPT-DemiObl.ttf',
       weight: '600',
       style: 'italic',
     },
     {
-      path: '../styles/fonts/FuturaPT-Demi.ttf',
+      path: './styles/fonts/FuturaPT-Demi.ttf',
       weight: '600',
       style: 'normal',
     },
@@ -177,7 +177,7 @@ const futuraDemi = localFont({
 const adlery = localFont({
   src: [
     {
-      path: '../styles/fonts/AdleryProBlockletter.otf',
+      path: './styles/fonts/AdleryProBlockletter.otf',
       weight: '500',
       style: 'normal',
     },
@@ -189,7 +189,7 @@ const adlery = localFont({
 const adleryProSwash = localFont({
   src: [
     {
-      path: '../styles/fonts/AdleryProSwash.woff',
+      path: './styles/fonts/AdleryProSwash.woff',
       weight: '500',
       style: 'normal',
     },
@@ -223,12 +223,12 @@ const adleryProSwash = localFont({
 const lora = localFont({
   src: [
     {
-      path: '../styles/fonts/Lora.ttf',
+      path: './styles/fonts/Lora.ttf',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../styles/fonts/Lora-Italic.ttf',
+      path: './styles/fonts/Lora-Italic.ttf',
       weight: '400',
       style: 'italic',
     },
