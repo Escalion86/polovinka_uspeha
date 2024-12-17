@@ -137,6 +137,7 @@ let prevDbConnection
 
 async function dbConnect(domen) {
   var dbName = process.env.MONGODB_DBNAME
+  if (domen === 'krsk') dbName = process.env.MONGODB_KRSK_DBNAME
   if (domen === 'nrsk') dbName = process.env.MONGODB_NRSK_DBNAME
   if (domen === 'ekb') dbName = process.env.MONGODB_EKB_DBNAME
 
