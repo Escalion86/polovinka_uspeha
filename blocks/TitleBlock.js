@@ -72,6 +72,7 @@ const TitleBlock = () => {
           </H3>
         </div>
         <Link
+          prefetch={false}
           href={{
             pathname: userIsLogged ? '/cabinet/events' : '/login',
             query: !userIsLogged && { ...router.query, registration: true },

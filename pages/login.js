@@ -1340,6 +1340,7 @@ const LoginPage = (props) => {
                 <>
                   <Divider />
                   <Link
+                    prefetch={false}
                     href="/"
                     shallow
                     tabIndex={0}

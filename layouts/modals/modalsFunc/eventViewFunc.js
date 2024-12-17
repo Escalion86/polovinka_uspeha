@@ -322,6 +322,7 @@ const EventView = (props) => {
               пользователям, пожалуйста авторизируйтесь
             </span>
             <Link
+              prefetch={false}
               className="max-w-[76%]"
               href={{
                 pathname: '/login',
@@ -336,6 +337,7 @@ const EventView = (props) => {
               />
             </Link>
             <Link
+              prefetch={false}
               className="max-w-[76%]"
               href={{
                 pathname: '/login',

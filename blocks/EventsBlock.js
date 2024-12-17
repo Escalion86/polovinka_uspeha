@@ -26,6 +26,7 @@ const Button = ({ title, className, href, onClick }) => {
     )
   return (
     <Link
+      prefetch={false}
       href={href}
       shallow
       className={cn(

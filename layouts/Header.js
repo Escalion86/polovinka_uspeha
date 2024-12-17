@@ -91,7 +91,7 @@ const Header = ({ noMenu }) => {
           <Burger />
         </div>
         <div className="absolute z-10 hidden -translate-x-1/2 tablet:block left-1/2">
-          <Link href="/" shallow>
+          <Link prefetch={false} href="/" shallow>
             <img
               className="object-contain h-16 laptop:min-w-min"
               src={'/img/logo_horizontal.png'}
@@ -123,6 +123,7 @@ const Header = ({ noMenu }) => {
               <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
                 {loggedUserActive?._id ? (
                   <Link
+                    prefetch={false}
                     href="/cabinet"
                     shallow
                     className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general"
@@ -132,6 +133,7 @@ const Header = ({ noMenu }) => {
                   </Link>
                 ) : (
                   <Link
+                    prefetch={false}
                     href="/login"
                     shallow
                     className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general"
