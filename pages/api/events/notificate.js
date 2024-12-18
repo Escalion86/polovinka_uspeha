@@ -183,13 +183,15 @@ const notificateUsersAboutEvent = async (eventId, req) => {
         url: process.env.DOMAIN + '/event/' + String(event._id),
       },
       // TODO Исправить запись через телеграм
-      {
-        text: '\u{1F4DD} Записаться',
-        callback_data: JSON.stringify({
-          c: telegramCmdToIndex('eventSignIn'),
-          eventId: event._id,
-        }),
-      },
+      // ---------------------------------------
+      // {
+      //   text: '\u{1F4DD} Записаться',
+      //   callback_data: JSON.stringify({
+      //     c: telegramCmdToIndex('eventSignIn'),
+      //     eventId: event._id,
+      //   }),
+      // },
+      // ---------------------------------------
     ],
   ]
 
