@@ -21,6 +21,18 @@ export default async function handler(req, res) {
           if (cmd === 'eventSignIn') {
             const { eventId, subEventId } = cmdProps
             const userTelegramId = callback_query.from.id
+
+            // TODO Удалить после исправления записи через телеграм
+            // ---------------------------------------
+            await sendTelegramMessage({
+              req,
+              telegramIds: userTelegramId,
+              text: 'Запись через телеграм временно не работает. Пожалуйста запишитесь через сайт!',
+            })
+
+            return res?.status(201).json({ success: true })
+            // ---------------------------------------
+
             const user = await Users.findOne({
               'notifications.telegram.id': userTelegramId,
             })
@@ -37,7 +49,6 @@ export default async function handler(req, res) {
                 ?.status(400)
                 .json({ success: false, error: 'Не найдено мероприятие' })
 
-            console.log('subEventId :>> ', subEventId)
             if (!subEventId && event.subEvents.length > 1) {
               const inline_keyboard = event.subEvents.map(
                 ({ title, id }, index) => [
