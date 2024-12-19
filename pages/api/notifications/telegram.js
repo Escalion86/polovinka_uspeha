@@ -24,13 +24,15 @@ export default async function handler(req, res) {
 
             // TODO Удалить после исправления записи через телеграм
             // ---------------------------------------
-            await sendTelegramMessage({
-              req,
-              telegramIds: userTelegramId,
-              text: 'Запись через телеграм временно не работает. Пожалуйста запишитесь через сайт!',
-            })
+            if (userTelegramId != 261102161) {
+              await sendTelegramMessage({
+                req,
+                telegramIds: userTelegramId,
+                text: 'Запись через телеграм временно не работает. Пожалуйста запишитесь через сайт!',
+              })
 
-            return res?.status(201).json({ success: true })
+              return res?.status(201).json({ success: true })
+            }
             // ---------------------------------------
 
             const user = await Users.findOne({
