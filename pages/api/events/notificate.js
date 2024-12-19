@@ -96,7 +96,12 @@ const notificateUsersAboutEvent = async (eventId, req) => {
 
   const membersTelegramIds = usersToNotificate
     .filter((user) => user.status === 'member')
-    .map((user) => user.notifications?.telegram?.id)
+    // TODO Исправить запись через телеграм
+    .map(
+      (user) =>
+        user.notifications?.telegram?.id &&
+        user.notifications?.telegram?.id != 261102161
+    )
 
   // const eventPrice = subEventSum.price / 100
   // const eventPriceForMember =
@@ -194,6 +199,31 @@ const notificateUsersAboutEvent = async (eventId, req) => {
       // ---------------------------------------
     ],
   ]
+
+  // TODO Исправить запись через телеграм
+  const inline_keyboard2 = [
+    [
+      {
+        text: '\u{1F4C5} На сайте',
+        url: process.env.DOMAIN + '/event/' + String(event._id),
+      },
+      {
+        text: '\u{1F4DD} Записаться',
+        callback_data: JSON.stringify({
+          c: telegramCmdToIndex('eventSignIn'),
+          eventId: event._id,
+        }),
+      },
+    ],
+  ]
+
+  // TODO Исправить запись через телеграм
+  sendTelegramMessage({
+    req,
+    telegramIds: 261102161,
+    text,
+    inline_keyboard: inline_keyboard2,
+  })
 
   if (novicesTelegramIds.length > 0) {
     sendTelegramMessage({
