@@ -2,10 +2,47 @@ import cn from 'classnames'
 import Image from 'next/image'
 import { useCallback, useState } from 'react'
 import ReactImageGallery from 'react-image-gallery'
-import Zoom, {
-  Controlled as ControlledZoom,
-  RightNav,
-} from 'react-medium-image-zoom'
+import LoadingSpinner from './LoadingSpinner'
+// import Zoom, {
+//   Controlled as ControlledZoom,
+//   RightNav,
+// } from 'react-medium-image-zoom'
+
+const ImageWithLoading = ({ original, originalClass }) => {
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [isError, setIsError] = useState(false)
+  // // <Zoom zoomMargin={20}>
+  // <ControlledZoom
+  //   zoomMargin={20}
+  //   isZoomed={isZoomed}
+  //   onZoomChange={handleZoomChange}
+  // >
+  return (
+    <div className="flex items-center justify-center object-contain h-full max-h-screen min-w-full min-h-full">
+      {!isError ? (
+        <Image
+          alt="image"
+          src={original}
+          width="0"
+          height="0"
+          sizes="100vw"
+          className={cn(originalClass, 'object-contain')}
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setIsError(true)}
+        />
+      ) : (
+        <div className="h-full aspect-[16/9] flex justify-center items-center">
+          Ошибка загрузки фотографии
+        </div>
+      )}
+      {!isLoaded && !isError ? (
+        <div className="h-full aspect-[16/9]">
+          <LoadingSpinner size="lg" />
+        </div>
+      ) : null}
+    </div>
+  )
+}
 
 const ImageGallery = ({ images, noImage, className }) => {
   const [isZoomed, setIsZoomed] = useState(false)
@@ -39,26 +76,7 @@ const ImageGallery = ({ images, noImage, className }) => {
           //   />
           // )}
           // className="object-cover"
-          renderItem={(e) => (
-            // // <Zoom zoomMargin={20}>
-            // <ControlledZoom
-            //   zoomMargin={20}
-            //   isZoomed={isZoomed}
-            //   onZoomChange={handleZoomChange}
-            // >
-            <div className="flex items-center justify-center object-contain h-full max-h-screen min-w-full">
-              <Image
-                alt="image"
-                src={e.original}
-                width="0"
-                height="0"
-                sizes="100vw"
-                className={cn(e.originalClass, 'object-contain')}
-              />
-            </div>
-            // </ControlledZoom>
-            // // </Zoom>
-          )}
+          renderItem={(e) => <ImageWithLoading {...e} />}
           showPlayButton={false}
           showFullscreenButton={true}
           useBrowserFullscreen={false}
