@@ -221,7 +221,7 @@ const notificateUsersAboutEvent = async (eventId, req) => {
   sendTelegramMessage({
     req,
     telegramIds: 261102161,
-    text,
+    text: textStart + textPriceForMember + textEnd,
     inline_keyboard: inline_keyboard2,
   })
 
