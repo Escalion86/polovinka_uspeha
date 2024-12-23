@@ -100,8 +100,6 @@ export const postData = async (
       },
       body,
     })
-    console.log('res :>> ', res)
-
     // Throw error with status code in case Fetch API req failed
     if (!res.ok) {
       throw new Error(res.status)

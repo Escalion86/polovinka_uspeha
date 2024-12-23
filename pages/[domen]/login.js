@@ -700,7 +700,6 @@ const LoginPage = (props) => {
         phone: inputPhone,
         password: inputPassword,
       }).then((res) => {
-        console.log('res :>> ', res)
         if (res?.error === 'CredentialsSignin') {
           setWaitingResponse(false)
           setInputPassword('')

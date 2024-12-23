@@ -47,7 +47,6 @@ const handler = (req, res) => {
         )
         .then(async (response) => {
           console.log('response :>> ', response)
-          // console.log('res :>> ', res)
 
           // You can save the file
           await response.saveFile('test.mp3')

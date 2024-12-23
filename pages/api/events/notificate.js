@@ -213,21 +213,21 @@ const notificateUsersAboutEvent = async (eventId, req) => {
     ],
   ]
   // TODO Исправить запись через телеграм
-  await sendTelegramMessage({
+  sendTelegramMessage({
     telegramIds: 261102161,
     text: textStart + textPriceForMember + textEnd,
     inline_keyboard: inline_keyboard2,
   })
 
   if (novicesTelegramIds.length > 0) {
-    await sendTelegramMessage({
+    sendTelegramMessage({
       telegramIds: novicesTelegramIds,
       text: textStart + textPriceForNovice + textEnd,
       inline_keyboard,
     })
   }
   if (membersTelegramIds.length > 0) {
-    await sendTelegramMessage({
+    sendTelegramMessage({
       telegramIds: membersTelegramIds.filter(
         (telegramId) => telegramId != 261102161
       ),
@@ -235,6 +235,8 @@ const notificateUsersAboutEvent = async (eventId, req) => {
       inline_keyboard,
     })
   }
+
+  return
 }
 
 export default async function handler(req, res) {
