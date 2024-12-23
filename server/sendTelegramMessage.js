@@ -86,6 +86,9 @@ const sendTelegramMessage = async ({
     return undefined
   }
 
+  console.log('telegramIds :>> ', telegramIds)
+  return
+
   const successes = []
   const errors = []
   let error = false
