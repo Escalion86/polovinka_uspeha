@@ -431,7 +431,8 @@ const ToolsEventAnonsVkContent = () => {
               fill={dateColor}
               textAnchor="middle"
               fontFamily="Lora"
-              className="font-bold uppercase"
+              // className="font-bold uppercase"
+              style={{ fontWeight: 700, textTransform: 'uppercase' }}
               // className="font-bold uppercase font-lora"
             >
               {date1}
@@ -443,7 +444,8 @@ const ToolsEventAnonsVkContent = () => {
               fill={timeColor}
               textAnchor="middle"
               fontFamily="Lora"
-              className="font-bold uppercase"
+              // className="font-bold uppercase"
+              style={{ fontWeight: 700, textTransform: 'uppercase' }}
               // className="font-bold uppercase font-lora"
             >
               {time}
@@ -456,7 +458,8 @@ const ToolsEventAnonsVkContent = () => {
                 fill={dateColor}
                 textAnchor="middle"
                 fontFamily="Lora"
-                className="font-bold uppercase"
+                // className="font-bold uppercase"
+                style={{ fontWeight: 700, textTransform: 'uppercase' }}
                 // className="font-bold uppercase font-lora"
               >
                 {date2}
@@ -476,7 +479,8 @@ const ToolsEventAnonsVkContent = () => {
                   fill={anonsColor}
                   textAnchor="middle"
                   fontFamily="Lora"
-                  className="font-bold uppercase"
+                  style={{ fontWeight: 700, textTransform: 'uppercase' }}
+                  // className="font-bold uppercase"
                   // className="font-bold uppercase font-lora"
                 >
                   {textLine}
