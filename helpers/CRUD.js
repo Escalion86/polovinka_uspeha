@@ -88,16 +88,19 @@ export const postData = async (
   dontAddUserId = false
 ) => {
   try {
+    const body = dontAddUserId
+      ? JSON.stringify(form)
+      : JSON.stringify({ data: form, userId })
+
     const res = await fetch(url, {
       method: 'POST',
       headers: {
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: dontAddUserId
-        ? JSON.stringify(form)
-        : JSON.stringify({ data: form, userId }),
+      body,
     })
+    console.log('res :>> ', res)
 
     // Throw error with status code in case Fetch API req failed
     if (!res.ok) {
@@ -125,13 +128,14 @@ export const deleteData = async (
   // dontAddUserId = false
 ) => {
   try {
+    const body = JSON.stringify({ params, userId })
     const res = await fetch(url, {
       method: 'DELETE',
       headers: {
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify({ params, userId }),
+      body,
       // body: dontAddUserId
       //   ? JSON.stringify(form)
       //   : JSON.stringify({ data: form, userId }),
