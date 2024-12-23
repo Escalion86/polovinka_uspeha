@@ -97,11 +97,7 @@ const notificateUsersAboutEvent = async (eventId, req) => {
   const membersTelegramIds = usersToNotificate
     .filter((user) => user.status === 'member')
     // TODO Исправить запись через телеграм
-    .map(
-      (user) =>
-        user.notifications?.telegram?.id &&
-        user.notifications?.telegram?.id != 261102161
-    )
+    .map((user) => user.notifications?.telegram?.id)
 
   // const eventPrice = subEventSum.price / 100
   // const eventPriceForMember =
@@ -234,7 +230,9 @@ const notificateUsersAboutEvent = async (eventId, req) => {
   }
   if (membersTelegramIds.length > 0) {
     await sendTelegramMessage({
-      telegramIds: membersTelegramIds,
+      telegramIds: membersTelegramIds.filter(
+        (telegramId) => telegramId != 261102161
+      ),
       text: textStart + textPriceForMember + textEnd,
       inline_keyboard,
     })
