@@ -164,6 +164,8 @@ const sendTelegramMessage = async ({
     errorCount,
   })
 
+  return { successes, errors, successCount, errorCount }
+
   // const result = await Promise.all(
   //   telegramIds.map(
   //     async (telegramId) =>
