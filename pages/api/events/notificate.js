@@ -212,14 +212,12 @@ const notificateUsersAboutEvent = async (eventId, req) => {
       },
     ],
   ]
-  console.log(1)
   // TODO Исправить запись через телеграм
   await sendTelegramMessage({
     telegramIds: 261102161,
     text: textStart + textPriceForMember + textEnd,
     inline_keyboard: inline_keyboard2,
   })
-  console.log(2)
 
   if (novicesTelegramIds.length > 0) {
     await sendTelegramMessage({
