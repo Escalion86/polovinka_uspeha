@@ -90,6 +90,8 @@ const sendTelegramMessage = async ({
 
   let result = []
   let error = false
+  let errorCount = 0
+  let successCount = 0
   if (['string', 'number'].includes(typeof telegramIds)) {
     const res = await sendMessageWithRepeats({
       req,
@@ -100,6 +102,8 @@ const sendTelegramMessage = async ({
     })
     result.push(res.result)
     error = res.error
+    if (res.error) ++errorCount
+    else ++successCount
   } else {
     for (const telegramId of telegramIds) {
       const res = await sendMessageWithRepeats({
@@ -110,11 +114,14 @@ const sendTelegramMessage = async ({
         inline_keyboard,
       })
       result.push(res.result)
-      if (!error) error = res.error
+      if (res.error) {
+        if (!error) error = res.error
+        ++errorCount
+      } else ++successCount
     }
   }
 
-  await Test.create({ data: result, error })
+  await Test.create({ data: result, error, successCount, errorCount })
 
   // const result = await Promise.all(
   //   telegramIds.map(
