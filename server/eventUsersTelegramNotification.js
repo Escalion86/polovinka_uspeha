@@ -278,7 +278,6 @@ const eventUsersTelegramNotification = async ({
     )
 
     const result = await sendTelegramMessage({
-      req,
       telegramIds: usersTelegramIds,
       text,
       inline_keyboard: [

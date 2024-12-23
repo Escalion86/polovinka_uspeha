@@ -26,7 +26,6 @@ export default async function handler(req, res) {
             // ---------------------------------------
             if (userTelegramId != 261102161) {
               await sendTelegramMessage({
-                req,
                 telegramIds: userTelegramId,
                 text: 'Запись через телеграм временно не работает. Пожалуйста запишитесь через сайт!',
               })
@@ -85,7 +84,6 @@ export default async function handler(req, res) {
               const text =
                 'На мероприятие возможно записаться разными вариантами. Выберите вариант:'
               sendTelegramMessage({
-                req,
                 telegramIds: userTelegramId,
                 text,
                 inline_keyboard,
@@ -140,7 +138,6 @@ export default async function handler(req, res) {
             }
 
             await sendTelegramMessage({
-              req,
               telegramIds: userTelegramId,
               text,
             })
@@ -156,7 +153,6 @@ export default async function handler(req, res) {
       if (message?.text) {
         // if (!message.from.username) {
         //   await sendTelegramMessage({
-        //     req,
         //     telegramIds: message.from.id,
         //     text: 'Похоже, что вы не указали ник telegram на сайте половинкауспеха.рф .\n\nВозможно имя пользователя у вас не задано в самом telegram. Чтобы задать имя пользователя, зайдите в настройки telegram => Мой аккаунт => Имя пользователя и задайте имя',
         //   })
@@ -173,7 +169,6 @@ export default async function handler(req, res) {
 
           if (isActivation) {
             await sendTelegramMessage({
-              req,
               telegramIds: message.from.id,
               text: `Ваш Telegram ID <code>${message.from.id}</code>\n(нажмите на код, чтобы скопировать его)\n\nУкажите его на сайте Половинкауспеха.рф в разделе "Мой профиль" => "Оповещения"`,
             })
@@ -225,7 +220,6 @@ export default async function handler(req, res) {
           // )
           // if (userFromReq) {
           //   await sendTelegramMessage({
-          //     req,
           //     telegramIds: message.from.id,
           //     text: isActivation
           //       ? 'Активация уведомлений прошла успешно!'
@@ -243,7 +237,6 @@ export default async function handler(req, res) {
           //   return res?.status(200).json({ success: true, data: userFromReq })
           // }
           // await sendTelegramMessage({
-          //   req,
           //   telegramIds: message.from.id,
           //   text: isActivation
           //     ? 'ОШИБКА! Активация уведомлений не удалась. Проверьте, что вы верно указали логин телеграм на сайте!'
