@@ -100,10 +100,26 @@ const sendTelegramMessage = async ({
     })
     error = res.error
     if (res.error) {
-      errors.push(res)
+      errors.push({
+        body: {
+          telegramId: telegramIds,
+          text,
+          images,
+          inline_keyboard,
+        },
+        result: res.result,
+      })
       ++errorCount
     } else {
-      successes.push(res.result)
+      successes.push({
+        body: {
+          telegramId: telegramIds,
+          text,
+          images,
+          inline_keyboard,
+        },
+        result: res.result,
+      })
       ++successCount
     }
   } else {
@@ -116,10 +132,26 @@ const sendTelegramMessage = async ({
       })
       if (res.error) {
         if (!error) error = res.error
-        errors.push(res.error)
+        errors.push({
+          body: {
+            telegramId,
+            text,
+            images,
+            inline_keyboard,
+          },
+          result: res.result,
+        })
         ++errorCount
       } else {
-        successes.push(res.result)
+        successes.push({
+          body: {
+            telegramId,
+            text,
+            images,
+            inline_keyboard,
+          },
+          result: res.result,
+        })
         ++successCount
       }
     }
