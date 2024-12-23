@@ -102,7 +102,9 @@ const CardButtons = ({
     (typeOfItem === 'payment' && loggedUserActiveRole?.payments?.seeHistory) ||
     (typeOfItem === 'user' && loggedUserActiveRole?.users?.seeHistory)
   const sendNotifications =
-    typeOfItem === 'event' && loggedUserActiveRole?.events?.sendNotifications
+    typeOfItem === 'event' &&
+    loggedUserActiveRole?.events?.sendNotifications &&
+    item.showOnSite
 
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
