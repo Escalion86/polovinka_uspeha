@@ -7,9 +7,7 @@ import textAge from '@helpers/textAge'
 import RemindDates from '@models/RemindDates'
 import Roles from '@models/Roles'
 import Users from '@models/Users'
-import sendTelegramMessage, {
-  sendMessageWithRepeats,
-} from '@server/sendTelegramMessage'
+import { sendMessageWithRepeats } from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 
 var daysBeforeBirthday = (birthday, dateNow = new Date()) => {

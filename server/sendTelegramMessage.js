@@ -3,7 +3,6 @@ import Test from '@models/Test'
 import dbConnect from '@utils/dbConnect'
 
 export const sendMessageToTelegramId = async ({
-  req,
   telegramId,
   text,
   images,
@@ -73,7 +72,6 @@ export const sendMessageWithRepeats = async (body, repeats = 5) => {
 }
 
 const sendTelegramMessage = async ({
-  req,
   telegramIds,
   text,
   images,
@@ -88,33 +86,83 @@ const sendTelegramMessage = async ({
     return undefined
   }
 
-  let result = []
+  const successes = []
+  const errors = []
   let error = false
+  let errorCount = 0
+  let successCount = 0
   if (['string', 'number'].includes(typeof telegramIds)) {
     const res = await sendMessageWithRepeats({
-      req,
       telegramId: telegramIds,
       text,
       images,
       inline_keyboard,
     })
-    result.push(res.result)
     error = res.error
+    if (res.error) {
+      errors.push({
+        body: {
+          telegramId: telegramIds,
+          text,
+          images,
+          inline_keyboard,
+        },
+        result: res.result,
+      })
+      ++errorCount
+    } else {
+      successes.push({
+        body: {
+          telegramId: telegramIds,
+          text,
+          images,
+          inline_keyboard,
+        },
+        result: res.result,
+      })
+      ++successCount
+    }
   } else {
     for (const telegramId of telegramIds) {
       const res = await sendMessageWithRepeats({
-        req,
         telegramId,
         text,
         images,
         inline_keyboard,
       })
-      result.push(res.result)
-      if (!error) error = res.error
+      if (res.error) {
+        if (!error) error = res.error
+        errors.push({
+          body: {
+            telegramId,
+            text,
+            images,
+            inline_keyboard,
+          },
+          result: res.result,
+        })
+        ++errorCount
+      } else {
+        successes.push({
+          body: {
+            telegramId,
+            text,
+            images,
+            inline_keyboard,
+          },
+          result: res.result,
+        })
+        ++successCount
+      }
     }
   }
 
-  await Test.create({ data: result, error })
+  await Test.create({
+    data: { successes, errors },
+    error,
+    successCount,
+    errorCount,
+  })
 
   // const result = await Promise.all(
   //   telegramIds.map(

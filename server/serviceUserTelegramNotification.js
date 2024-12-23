@@ -50,7 +50,6 @@ const serviceUserTelegramNotification = async ({ req, serviceId, userId }) => {
     )
 
     const result = await sendTelegramMessage({
-      req,
       telegramIds: usersTelegramIds,
       text,
       inline_keyboard: [

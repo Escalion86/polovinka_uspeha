@@ -97,11 +97,7 @@ const notificateUsersAboutEvent = async (eventId, req) => {
   const membersTelegramIds = usersToNotificate
     .filter((user) => user.status === 'member')
     // TODO Исправить запись через телеграм
-    .map(
-      (user) =>
-        user.notifications?.telegram?.id &&
-        user.notifications?.telegram?.id != 261102161
-    )
+    .map((user) => user.notifications?.telegram?.id)
 
   // const eventPrice = subEventSum.price / 100
   // const eventPriceForMember =
@@ -216,31 +212,31 @@ const notificateUsersAboutEvent = async (eventId, req) => {
       },
     ],
   ]
-
   // TODO Исправить запись через телеграм
-  await sendTelegramMessage({
-    req,
+  sendTelegramMessage({
     telegramIds: 261102161,
     text: textStart + textPriceForMember + textEnd,
     inline_keyboard: inline_keyboard2,
   })
 
   if (novicesTelegramIds.length > 0) {
-    await sendTelegramMessage({
-      req,
+    sendTelegramMessage({
       telegramIds: novicesTelegramIds,
       text: textStart + textPriceForNovice + textEnd,
       inline_keyboard,
     })
   }
   if (membersTelegramIds.length > 0) {
-    await sendTelegramMessage({
-      req,
-      telegramIds: membersTelegramIds,
+    sendTelegramMessage({
+      telegramIds: membersTelegramIds.filter(
+        (telegramId) => telegramId != 261102161
+      ),
       text: textStart + textPriceForMember + textEnd,
       inline_keyboard,
     })
   }
+
+  return
 }
 
 export default async function handler(req, res) {
