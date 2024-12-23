@@ -96,7 +96,6 @@ const notificateUsersAboutEvent = async (eventId, req) => {
 
   const membersTelegramIds = usersToNotificate
     .filter((user) => user.status === 'member')
-    // TODO Исправить запись через телеграм
     .map((user) => user.notifications?.telegram?.id)
 
   // const eventPrice = subEventSum.price / 100
@@ -213,11 +212,6 @@ const notificateUsersAboutEvent = async (eventId, req) => {
     ],
   ]
   // TODO Исправить запись через телеграм
-  sendTelegramMessage({
-    telegramIds: 261102161,
-    text: textStart + textPriceForMember + textEnd,
-    inline_keyboard: inline_keyboard2,
-  })
 
   if (novicesTelegramIds.length > 0) {
     sendTelegramMessage({
@@ -228,11 +222,10 @@ const notificateUsersAboutEvent = async (eventId, req) => {
   }
   if (membersTelegramIds.length > 0) {
     sendTelegramMessage({
-      telegramIds: membersTelegramIds.filter(
-        (telegramId) => telegramId != 261102161
-      ),
+      telegramIds: membersTelegramIds,
       text: textStart + textPriceForMember + textEnd,
-      inline_keyboard,
+      inline_keyboard:
+        telegramId == 261102161 ? inline_keyboard2 : inline_keyboard,
     })
   }
 
