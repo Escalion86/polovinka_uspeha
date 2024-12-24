@@ -9,14 +9,14 @@ import loggedUserRealRoleSelector from '@state/selectors/loggedUserRealRoleSelec
 import rolesAtom from '@state/atoms/rolesAtom'
 import Button from './Button'
 import { modalsFuncAtom } from '@state/atoms'
-import usersAtom from '@state/atoms/usersAtom'
+// import usersAtom from '@state/atoms/usersAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const DevSwitch = () => {
   const roles = useRecoilValue(rolesAtom)
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const users = useRecoilValue(usersAtom)
+  // const users = useRecoilValue(usersAtom)
   const loggedUserRealRole = useRecoilValue(loggedUserRealRoleSelector)
   const loggedUser = useRecoilValue(loggedUserAtom)
   const [loggedUserActive, setLoggedUserActive] =
@@ -83,7 +83,8 @@ const DevSwitch = () => {
           modalsFunc.selectUsers(
             [loggedUserActive],
             {},
-            (user) => {
+            (users) => {
+              const user = users[0]
               // const selectedUser = users.find(({ _id }) => _id === ids[0])
               setLoggedUserActive(user)
               setLoggedUserActiveRoleName(user.role)
