@@ -1,12 +1,12 @@
 // import EventCard from '@layouts/cards/EventCard'
 import dynamic from 'next/dynamic'
 const EventCard = dynamic(() => import('@layouts/cards/EventCard'))
-import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
-import { useRecoilValue } from 'recoil'
+import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
+import { useAtomValue } from 'jotai'
 import ListWrapper from './ListWrapper'
 
 const EventsList = ({ events, onTagClick }) => {
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
 
   return (
     <ListWrapper

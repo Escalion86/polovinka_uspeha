@@ -1,12 +1,12 @@
 // import UserCard from '@layouts/cards/UserCard'
 import dynamic from 'next/dynamic'
 const UserCard = dynamic(() => import('@layouts/cards/UserCard'))
-import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
-import { useRecoilValue } from 'recoil'
+import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
+import { useAtomValue } from 'jotai'
 import ListWrapper from './ListWrapper'
 
 const UsersList = ({ users }) => {
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
   return (
     <ListWrapper
       itemCount={users.length}

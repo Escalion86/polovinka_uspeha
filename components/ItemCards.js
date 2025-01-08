@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
@@ -21,7 +23,7 @@ import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
 import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
-import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
+import windowDimensionsTailwindSelector from '@state/jotai/selectors/windowDimensionsTailwindSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import UserRelationshipIcon from './UserRelationshipIcon'
 import serviceSelector from '@state/selectors/serviceSelector'
@@ -121,7 +123,7 @@ export const UserItem = ({
       item.security?.showBirthday === true ||
       item.security?.showBirthday === 'full')
 
-  const device = useRecoilValue(windowDimensionsTailwindSelector)
+  const device = useAtomValue(windowDimensionsTailwindSelector)
 
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)

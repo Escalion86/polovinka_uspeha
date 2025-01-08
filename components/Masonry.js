@@ -1,6 +1,7 @@
-import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
+import { useAtomValue } from 'jotai'
+
+import windowDimensionsAtom from '@state/jotai/atoms/windowDimensionsAtom'
 import { useEffect, useRef, useState } from 'react'
-import { useRecoilValue } from 'recoil'
 
 const Masonry = ({
   cols = {
@@ -12,7 +13,7 @@ const Masonry = ({
 }) => {
   const isInitialMount = useRef(true)
   const [readyElements, setReadyElements] = useState(null)
-  const { width } = useRecoilValue(windowDimensionsAtom)
+  const { width } = useAtomValue(windowDimensionsAtom)
   const childrenRef = useRef([])
 
   let columns = 1

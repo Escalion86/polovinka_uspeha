@@ -1,10 +1,12 @@
+import { useAtomValue } from 'jotai'
+
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { pages, pagesGroups } from '@helpers/constants'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
-import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
+import windowDimensionsAtom from '@state/jotai/atoms/windowDimensionsAtom'
 import badgesGroupSelector from '@state/selectors/badgesGroupSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
@@ -287,7 +289,7 @@ const SideBar = ({ page }) => {
   const [scrollable, setScrollable] = useState(false)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
-  const { height } = useRecoilValue(windowDimensionsAtom)
+  const { height } = useAtomValue(windowDimensionsAtom)
   const [menuIndex, setMenuIndex] = useState()
 
   const onChangeMenuIndex = (index) => {

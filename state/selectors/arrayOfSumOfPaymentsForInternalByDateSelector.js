@@ -1,5 +1,5 @@
 import { selector } from 'recoil'
-import allPaymentsOfInternalSelector from './allPaymentsOfInternalSelector '
+import allPaymentsOfInternalSelector from './allPaymentsOfInternalSelector'
 
 export const arrayOfSumOfPaymentsForInternalByDateSelector = selector({
   key: 'arrayOfSumOfPaymentsForInternalByDateSelector',

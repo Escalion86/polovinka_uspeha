@@ -1,8 +1,9 @@
+import { useAtomValue } from 'jotai'
+
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons/faEyeSlash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
+import windowDimensionsTailwindSelector from '@state/jotai/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
 import LoadingSpinner from './LoadingSpinner'
 
 const parentHasAttr = (e, attr) => {
@@ -23,7 +24,7 @@ export const CardWrapper = ({
   hidden,
   style,
 }) => {
-  const device = useRecoilValue(windowDimensionsTailwindSelector)
+  const device = useAtomValue(windowDimensionsTailwindSelector)
   return (
     <div
       style={style}

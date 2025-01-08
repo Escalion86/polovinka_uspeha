@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import { faCalendarPlus } from '@fortawesome/free-regular-svg-icons/faCalendarPlus'
 import { faCopy } from '@fortawesome/free-regular-svg-icons/faCopy'
 import { faEye } from '@fortawesome/free-regular-svg-icons/faEye'
@@ -24,7 +26,7 @@ import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
 import { modalsFuncAtom } from '@state/atoms'
-import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
+import windowDimensionsTailwindSelector from '@state/jotai/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'
 import { useRecoilValue } from 'recoil'
 import CardButton from './CardButton'
@@ -73,7 +75,7 @@ const CardButtons = ({
 }) => {
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const device = useRecoilValue(windowDimensionsTailwindSelector)
+  const device = useAtomValue(windowDimensionsTailwindSelector)
   const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
 
   const copyEventLink = useCopyEventLinkToClipboard(item._id)

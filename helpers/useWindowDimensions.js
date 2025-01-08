@@ -1,6 +1,8 @@
 import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
+import windowDimensionsAtomJ from '@state/jotai/atoms/windowDimensionsAtom'
 import { useState, useEffect } from 'react'
 import setRecoilFunc from './setRecoilFunc'
+import setJotaiFunc from './setJotaiFunc'
 
 function getWindowDimensions() {
   if (typeof window !== 'undefined') {
@@ -58,10 +60,14 @@ export const useWindowDimensionsTailwindNum = () => {
   return 5
 }
 
-export const useWindowDimensionsRecoil = () => {
+export const useWindowDimensionsStore = () => {
   useEffect(() => {
     function handleResize() {
       setRecoilFunc(windowDimensionsAtom)({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+      setJotaiFunc(windowDimensionsAtomJ)({
         width: window.innerWidth,
         height: window.innerHeight,
       })

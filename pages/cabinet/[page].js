@@ -23,6 +23,11 @@ import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 
+import { useAtomValue } from 'jotai'
+import loggedUserActiveStatusAtomJ from '@state/jotai/atoms/loggedUserActiveStatusAtom'
+import loggedUserActiveAtomJ from '@state/jotai/atoms/loggedUserActiveAtom'
+import loggedUserActiveRoleSelectorJ from '@state/jotai/selectors/loggedUserActiveRoleSelector'
+
 const SuspenseChild = () => (
   <div className="z-10 flex items-center justify-center w-full h-[calc(100vh-4rem)]">
     <LoadingSpinner text="идет загрузка...." />
@@ -35,6 +40,9 @@ function CabinetPage(props) {
   const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
+  const loggedUserActiveJ = useAtomValue(loggedUserActiveAtomJ)
+  const loggedUserActiveRoleJ = useAtomValue(loggedUserActiveRoleSelectorJ)
+  const loggedUserActiveStatusNameJ = useAtomValue(loggedUserActiveStatusAtomJ)
   const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
 
   let redirect

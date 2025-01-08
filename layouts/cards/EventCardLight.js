@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DateTimeEvent from '@components/DateTimeEvent'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
@@ -11,7 +13,7 @@ import errorAtom from '@state/atoms/errorAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
-import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
+import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -26,7 +28,7 @@ const parentHasAttr = (e, attr) => {
 }
 
 const EventCardLight = ({ eventId, onTagClick, style }) => {
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))

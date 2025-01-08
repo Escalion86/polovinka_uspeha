@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
@@ -16,7 +18,7 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
-import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
+import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
 import { useRecoilValue } from 'recoil'
@@ -34,7 +36,7 @@ const EventCard = ({
   changeStyle = 'laptop',
 }) => {
   // const widthNum = useWindowDimensionsTailwindNum()
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
   const event = useRecoilValue(eventSelector(eventId))

@@ -4,7 +4,7 @@
 // import productsUsersAtom from '@state/atoms/productsUsersAtom'
 import { selector } from 'recoil'
 import allClosedEventsSelector from './allClosedEventsSelector'
-import allPaymentsOfInternalSelector from './allPaymentsOfInternalSelector '
+import allPaymentsOfInternalSelector from './allPaymentsOfInternalSelector'
 import totalIncomeOfEventSelector from './totalIncomeOfEventSelector'
 // import totalIncomeOfProductUserSelector from './totalIncomeOfProductUserSelector'
 // import totalIncomeOfServiceUserSelector from './totalIncomeOfServiceUserSelector'
