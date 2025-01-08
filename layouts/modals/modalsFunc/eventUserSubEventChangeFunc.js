@@ -6,7 +6,7 @@ import { faCancel } from '@fortawesome/free-solid-svg-icons/faCancel'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import userToEventStatus from '@helpers/userToEventStatus'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+// import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import userSelector from '@state/selectors/userSelector'
@@ -16,6 +16,7 @@ import { useRecoilValue } from 'recoil'
 import eventSelector from '@state/selectors/eventSelector'
 import directionSelector from '@state/selectors/directionSelector'
 import Note from '@components/Note'
+import isEventExpiredFunc from '@helpers/isEventExpired'
 
 const eventUserSubEventChangeFunc = (
   { eventId, userId },
@@ -33,6 +34,7 @@ const eventUserSubEventChangeFunc = (
     const user = useRecoilValue(userSelector(userId))
     const direction = useRecoilValue(directionSelector(event.directionId))
     const rules = direction?.rules
+    const isEventExpired = isEventExpiredFunc(event)
 
     const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = eventUsers.find(
@@ -78,7 +80,8 @@ const eventUserSubEventChangeFunc = (
           user,
           eventUsersOfSubEvent,
           subEvent,
-          rules
+          rules,
+          true // ignoreEventIsExpired
         ),
       }
     })
@@ -104,6 +107,11 @@ const eventUserSubEventChangeFunc = (
 
     return (
       <FormWrapper className="gap-y-2">
+        {isEventExpired && (
+          <Note type="warning" noMargin>
+            Обратите внимание, что мероприятие завершено (но не закрыто)
+          </Note>
+        )}
         {event.subEvents?.length > 1 && (
           <div className="flex flex-col py-1 gap-y-1">
             {event.subEvents?.map((props) => {

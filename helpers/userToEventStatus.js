@@ -8,7 +8,14 @@ import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
 import { getRecoil } from 'recoil-nexus'
 import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
 
-const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
+const userToEventStatus = (
+  event,
+  user,
+  eventUsersFull,
+  subEventSum,
+  rules,
+  ignoreEventIsExpired = false
+) => {
   if (!event?._id)
     return {
       canSee: false,
@@ -27,7 +34,9 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       isUserRelationshipCorrect: undefined,
     }
 
-  const isEventExpired = isEventExpiredFunc(event)
+  const isEventExpired = ignoreEventIsExpired
+    ? undefined
+    : isEventExpiredFunc(event)
   const isEventInProcess = isEventInProcessFunc(event)
   const isEventCanceled = isEventCanceledFunc(event)
   const isEventHidden = !event.showOnSite
