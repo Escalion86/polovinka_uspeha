@@ -23,7 +23,10 @@ const Textarea = ({
       error={error}
     >
       <textarea
-        className={cn('px-1 outline-hidden flex-1', inputClassName)}
+        className={cn(
+          'px-1 outline-hidden ring-0 border-0 flex-1',
+          inputClassName
+        )}
         rows={rows}
         value={value}
         defaultValue={defaultValue}
