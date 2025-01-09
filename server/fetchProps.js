@@ -82,7 +82,12 @@ const fetchProps = async (user, domen) => {
       })
       .lean()
 
-    const directions = await Directions.find({}).lean()
+    const directions = await Directions.find({})
+      .select({
+        description: 0,
+        plugins: 0,
+      })
+      .lean()
     const reviews = await Reviews.find({}).lean()
     const additionalBlocks = await AdditionalBlocks.find({}).lean()
     // const eventsUsers = await EventsUsers.find({}).lean()
