@@ -181,7 +181,6 @@ const StateLoader = (props) => {
     if (props.users?.length > 0) {
       setUsersState(props.users)
       setIsLoadedUsersAtom(true)
-      console.log('1 :>> ', 1)
     }
     setReviewsState(props.reviews)
     // setPaymentsState(props.payments)

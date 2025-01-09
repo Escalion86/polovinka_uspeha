@@ -24,7 +24,20 @@ const fetchProps = async (user, domen) => {
     const isAdmin = isUserAdmin(user)
     // const db = await dbConnect(domen)
 
-    var users = isAdmin ? await Users.find({}).select('-password').lean() : null
+    var users = isAdmin
+      ? await Users.find({})
+          .select({
+            password: 0,
+            orientation: 0,
+            firstname: 0,
+            secondname: 0,
+            thirdname: 0,
+            interests: 0,
+            profession: 0,
+            about: 0,
+          })
+          .lean()
+      : null
 
     // if (!(isModer || isAdmin)) {
     //   users = JSON.parse(JSON.stringify(users)).map((user) => {
@@ -157,7 +170,7 @@ const fetchProps = async (user, domen) => {
       'questionnairesUsers :>> ',
       JSON.stringify(questionnairesUsers).length
     )
-    console.log('rolesSettservicesings :>> ', JSON.stringify(services).length)
+    console.log('services :>> ', JSON.stringify(services).length)
     // console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
 
     const fetchResult = {
