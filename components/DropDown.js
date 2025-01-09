@@ -1,4 +1,5 @@
 // import cn from 'classnames'
+import useIsTouchDevice from '@helpers/useIsTouchDevice'
 import { Dropdown } from 'flowbite-react'
 // import { useRef } from 'react'
 const DropDown = ({
@@ -10,8 +11,9 @@ const DropDown = ({
   // turnOffAutoClose = false,
   // strategyAbsolute = true,
   className,
-  // placement,
+  placement = 'left-start',
 }) => {
+  const isTouchDevice = useIsTouchDevice()
   // const ref = useRef()
   // const padding =
   //   menuPadding === 'md'
@@ -38,12 +40,13 @@ const DropDown = ({
   return (
     <Dropdown
       // ref={ref}
-      trigger={openOnHover ? 'hover' : 'click'}
+      trigger={openOnHover && !isTouchDevice ? 'hover' : 'click'}
       // label="Dropdown button"
       // dismissOnClick={false}
       renderTrigger={() => trigger}
       className={className}
       theme={{ content: '' }}
+      placement={placement}
     >
       {/* <div onClick={() => ref.current.hide()}> */}
       {/* <Dropdown.Item>Dashboard</Dropdown.Item>

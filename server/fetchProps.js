@@ -53,6 +53,19 @@ const fetchProps = async (user, domen) => {
         organizerId: 0,
         warning: 0,
         googleCalendarId: 0,
+        maxMansMember: 0,
+        maxMansNovice: 0,
+        maxWomansMember: 0,
+        maxWomansNovice: 0,
+        maxParticipants: 0,
+        maxMans: 0,
+        maxWomans: 0,
+        minMansAge: 0,
+        minWomansAge: 0,
+        maxMansAge: 0,
+        maxWomansAge: 0,
+        usersStatusAccess: 0,
+        usersStatusDiscount: 0,
       })
       .lean()
 

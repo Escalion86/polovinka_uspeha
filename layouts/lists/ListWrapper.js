@@ -12,6 +12,7 @@ const ListWrapper = ({ itemCount, itemSize, children, className }) => {
             itemCount={itemCount}
             itemSize={itemSize}
             width={width}
+            className="overflow-y-scroll"
           >
             {children}
           </FixedSizeList>
