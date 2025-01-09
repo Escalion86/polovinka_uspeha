@@ -15,7 +15,7 @@ import { DEFAULT_USER } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
@@ -42,7 +42,7 @@ const userFunc = (userId, clone = false) => {
 
     const user = useAtomValue(userSelector(userId))
     const setUser = useAtomValue(itemsFuncAtom).user.set
-    const users = useAtomValue(usersAtom)
+    const users = useAtomValue(usersAtomAsync)
 
     const [firstName, setFirstName] = useState(
       user?.firstName ?? DEFAULT_USER.firstName

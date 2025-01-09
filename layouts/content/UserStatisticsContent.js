@@ -45,6 +45,7 @@ const Cup = ({ place, className }) => {
         width="0"
         height="0"
         sizes="77px"
+        alt="cup"
       />
     )
   return (

@@ -19,8 +19,6 @@ const asyncPaymentsOfUserIdAtom = atomFamily((userId) =>
 
     const res = await getData('/api/payments', { userId }, null, null, false)
     store.set(isLoadedAtom('asyncPaymentsOfUserIdAtom' + userId), true)
-    // setRecoil(isLoadedAtom('asyncEventsUsersAllAtom'), true)
-    // setRecoil(isLoadedAtom('asyncEventsUsersAllSelector'), true)
     // // Throw error with status code in case Fetch API req failed
     // if (!res.ok) {
     //   throw new Error(res.status)

@@ -1,15 +1,14 @@
-import { atom } from 'jotai'
+// import { atom } from 'jotai'
 
 import { getData } from '@helpers/CRUD'
-import { DEFAULT_EVENT } from '@helpers/constants'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import store from '../store'
+import { atomWithDefault } from 'jotai/utils'
 
-export const usersAtomAsync = atom(async () => {
-  if (!id) return DEFAULT_EVENT
+export const usersAtomAsync = atomWithDefault(async () => {
   const res = await getData('/api/users/', {}, null, null, false)
   store.set(isLoadedAtom('usersAtomAsync'), true)
-  console.log('!!! :>> ')
+  console.log('!! usersAtomAsync is Loaded!!')
   return res
 })
 

@@ -8,7 +8,7 @@ import formatDate from '@helpers/formatDate'
 import getDaysBetween from '@helpers/getDaysBetween'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
@@ -86,7 +86,7 @@ const tooltipCaptions = (dateNow = new Date()) => {
 
 const StatisticsUsersContent = () => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
-  const users = useAtomValue(usersAtom)
+  const users = useAtomValue(usersAtomAsync)
 
   const [filterUsers, setFilterUsers] = useState({
     status: {

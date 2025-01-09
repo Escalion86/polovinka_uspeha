@@ -8,11 +8,11 @@ import {
 } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import { useAtomValue } from 'jotai'
 
 const ExportUsers = () => {
-  const users = useAtomValue(usersAtom)
+  const users = useAtomValue(usersAtomAsync)
 
   const exportExcelFile = async () => {
     const ExcelJs = await import('exceljs')

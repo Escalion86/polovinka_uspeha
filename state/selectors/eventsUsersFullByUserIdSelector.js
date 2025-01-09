@@ -16,7 +16,7 @@ export const eventsUsersFullByUserIdSelector = atomFamily((id) =>
           eventsUsers
             // .filter((item) => item.eventId && item.userId && item.userId === id)
             .map(async (item) => {
-              const user = get(userSelector(item.userId))
+              const user = await get(userSelector(item.userId))
               const event = await get(eventSelector(item.eventId))
               return {
                 ...item,

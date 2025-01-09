@@ -24,9 +24,7 @@ const fetchProps = async (user, domen) => {
     const isAdmin = isUserAdmin(user)
     // const db = await dbConnect(domen)
 
-    var users = isAdmin
-      ? await Users.find({}).select('-password').lean()
-      : undefined
+    var users = isAdmin ? await Users.find({}).select('-password').lean() : null
 
     // if (!(isModer || isAdmin)) {
     //   users = JSON.parse(JSON.stringify(users)).map((user) => {
@@ -131,7 +129,7 @@ const fetchProps = async (user, domen) => {
     console.log('')
     console.log('')
     console.log('-----------------------------')
-    console.log('users :>> ', JSON.stringify(users).length)
+    console.log('users :>> ', users ? JSON.stringify(users).length : 0)
     console.log('events :>> ', JSON.stringify(events).length)
     console.log('directions :>> ', JSON.stringify(directions).length)
     console.log('reviews :>> ', JSON.stringify(reviews).length)

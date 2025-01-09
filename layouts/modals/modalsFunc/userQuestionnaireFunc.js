@@ -608,7 +608,7 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     // const user = useAtomValue(userSelector(userId))
     // const setUser = useAtomValue(itemsFuncAtom).user.set
-    // const users = useAtomValue(usersAtom)
+    // const users = useAtomValue(usersAtomAsync)
 
     const [state, setState] = useState(stateDefault)
     const [errors, setErrors] = useState({})

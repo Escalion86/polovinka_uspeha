@@ -1,12 +1,12 @@
 import { atom } from 'jotai'
 
 import { DEFAULT_USER } from '@helpers/constants'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 
-const userDeleteSelector = atom(DEFAULT_USER, (get, set, itemId) => {
-  const items = get(usersAtom)
-  const newItemsList = items.filter((item) => item._id !== itemId)
-  set(usersAtom, newItemsList)
+const userDeleteSelector = atom(DEFAULT_USER, async (get, set, itemId) => {
+  const users = await get(usersAtomAsync)
+  const newItemsList = users.filter((item) => item._id !== itemId)
+  set(usersAtomAsync, newItemsList)
 })
 
 export default userDeleteSelector

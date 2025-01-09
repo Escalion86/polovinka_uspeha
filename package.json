@@ -27,7 +27,7 @@
     "@nivo/pie": "^0.80.0",
     "@nivo/stream": "^0.80.0",
     "@popperjs/core": "^2.11.8",
-    "@tailwindcss/postcss": "^4.0.0-beta.8",
+    "@tailwindcss/postcss": "^4.0.0-beta.9",
     "array-move": "^4.0.0",
     "classnames": "^2.5.1",
     "crypto-js": "^4.1.1",
@@ -70,8 +70,6 @@
     "react-toastify": "^9.1.1",
     "react-virtualized-auto-sizer": "^1.0.7",
     "react-window": "^1.8.8",
-    "recoil": "^0.7.7",
-    "recoil-nexus": "^0.5.0",
     "save-svg-as-png": "^1.4.17",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
@@ -90,6 +88,6 @@
     "eslint-config-prettier": "^9.1.0",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
-    "tailwindcss": "^4.0.0-beta.8"
+    "tailwindcss": "^4.0.0-beta.9"
   }
 }

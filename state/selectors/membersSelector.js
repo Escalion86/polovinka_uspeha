@@ -1,9 +1,10 @@
 import { atom } from 'jotai'
 
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 
-export const membersSelector = atom((get) => {
-  return get(usersAtom).filter((user) => user.status === 'member')
+export const membersSelector = atom(async (get) => {
+  const users = await get(usersAtomAsync)
+  return users.filter((user) => user.status === 'member')
 })
 
 export default membersSelector

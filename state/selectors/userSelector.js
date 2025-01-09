@@ -4,7 +4,8 @@ import { atomFamily } from 'jotai/utils'
 import { DEFAULT_USER } from '@helpers/constants'
 import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
-// import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
+// import usersAtomAsync from '@state/async/usersAtomAsync'
 
 export const userSelector = atomFamily((id) =>
   atom(async (get) => {
@@ -18,7 +19,7 @@ export const userSelector = atomFamily((id) =>
 
     const res = await getData('/api/users/' + id, {}, null, null, false)
     return res
-    // return get(usersAtom).find((item) => item._id === id)
+    // return get(usersAtomAsync).find((item) => item._id === id)
   })
 )
 

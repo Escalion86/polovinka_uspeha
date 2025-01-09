@@ -14,8 +14,6 @@ import 'react-medium-image-zoom/dist/styles.css'
 // import 'quill/dist/quill.bubble.css'
 import 'quill/dist/quill.snow.css'
 import 'react-toastify/dist/ReactToastify.css'
-// import { RecoilEnv, RecoilRoot } from 'jotai'
-import RecoilNexus from 'recoil-nexus'
 import '../styles/burger.css'
 import '../styles/global.css'
 import '../styles/fonts/Lora.css'
@@ -31,8 +29,6 @@ import localFont from 'next/font/local'
 import PWAChecker from '@components/PWAChecker'
 import { Provider as JotaiProvider } from 'jotai'
 import store from '@state/store'
-
-// RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
 // Create a theme instance.
 const theme = createTheme({
@@ -276,8 +272,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       </Head>
       <SessionProvider session={session} refetchInterval={5 * 60}>
         <JotaiProvider store={store}>
-          {/* <RecoilRoot> */}
-          <RecoilNexus />
           <ThemeProvider theme={theme}>
             <div
               className={`${lora.variable} ${adlery.variable} ${adleryProSwash.variable} ${futura.variable} ${futuraDemi.variable} font-futura`} // ${enchants.variable} ${frankinity.variable}
@@ -310,7 +304,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
               {/* </div> */}
             </div>
           </ThemeProvider>
-          {/* </RecoilRoot> */}
         </JotaiProvider>
       </SessionProvider>
     </>

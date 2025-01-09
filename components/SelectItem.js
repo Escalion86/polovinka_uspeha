@@ -9,7 +9,7 @@ import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 import InputWrapper from './InputWrapper'
@@ -234,7 +234,7 @@ export const SelectUser = ({
   itemChildren,
   nameFieldWrapperClassName,
 }) => {
-  const users = useAtomValue(usersAtom)
+  const users = useAtomValue(usersAtomAsync)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const selectedUser = useAtomValue(userSelector(selectedId))
 

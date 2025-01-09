@@ -1,10 +1,10 @@
 import { atom } from 'jotai'
 
 import { DEFAULT_USER } from '@helpers/constants'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 
-const userEditSelector = atom(DEFAULT_USER, (get, set, newItem) => {
-  const items = get(usersAtom)
+const userEditSelector = atom(DEFAULT_USER, async (get, set, newItem) => {
+  const items = await get(usersAtomAsync)
   if (!newItem?._id) return
   const findedItem = items.find((event) => event._id === newItem._id)
   // Если мы обновляем существующий атом
@@ -13,10 +13,10 @@ const userEditSelector = atom(DEFAULT_USER, (get, set, newItem) => {
       if (event._id === newItem._id) return newItem
       return event
     })
-    set(usersAtom, newItemsList)
+    set(usersAtomAsync, newItemsList)
   } else {
     // Если такого атома нет и мы добавляем новый, то просто добавляем атом в список
-    set(usersAtom, [...items, newItem])
+    set(usersAtomAsync, [...items, newItem])
   }
 })
 

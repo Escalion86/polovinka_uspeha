@@ -15,7 +15,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 // import historiesAtom from '@state/atoms/historiesAtom'
@@ -38,7 +38,7 @@ import rolesAtom from '@state/atoms/rolesAtom'
 // import itemsFuncAtomJ from '@state/atoms/itemsFuncAtom'
 // import loggedUserAtomJ from '@state/atoms/loggedUserAtom'
 // import reviewsAtomJ from '@state/atoms/reviewsAtom'
-// import usersAtomJ from '@state/atoms/usersAtom'
+// import usersAtomJ from '@state/atoms/usersAtomAsync'
 
 // import modalsFuncAtomJ from '@state/atoms/modalsFuncAtom'
 // // import historiesAtomJ from '@state/atoms/historiesAtom'
@@ -65,6 +65,8 @@ import { useWindowDimensionsStore } from '@helpers/useWindowDimensions'
 import TopInfo from './TopInfo'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import CheckSiteUpdateNotification from './CheckSiteUpdateNotification'
+// import usersAtomAsync from '@state/async/usersAtomAsync'
+import isLoadedAtom from '@state/atoms/isLoadedAtom'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -90,7 +92,8 @@ const StateLoader = (props) => {
   const setEventsState = useSetAtom(eventsAtom)
   const setDirectionsState = useSetAtom(directionsAtom)
   const setAdditionalBlocksState = useSetAtom(additionalBlocksAtom)
-  // const setUsersState = useSetAtom(usersAtom)
+  const setUsersState = useSetAtom(usersAtomAsync)
+  const setIsLoadedUsersAtom = useSetAtom(isLoadedAtom('usersAtomAsync'))
   const setReviewsState = useSetAtom(reviewsAtom)
   const [siteSettingsState, setSiteSettingsState] = useAtom(siteSettingsAtom)
   const setRolesSettingsState = useSetAtom(rolesAtom)
@@ -175,7 +178,11 @@ const StateLoader = (props) => {
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
-    // setUsersState(props.users)
+    if (props.users?.length > 0) {
+      setUsersState(props.users)
+      setIsLoadedUsersAtom(true)
+      console.log('1 :>> ', 1)
+    }
     setReviewsState(props.reviews)
     // setPaymentsState(props.payments)
     setSiteSettingsState(props.siteSettings)

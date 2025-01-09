@@ -1,9 +1,9 @@
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
-import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
+import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect } from 'react'
-import { useRecoilRefresher_UNSTABLE, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
   const EventSignUpToReserveAfterErrorModal = ({
@@ -20,8 +20,8 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
 
     const eventId = event._id
 
-    const refreshEventState = useRecoilRefresher_UNSTABLE(
-      asyncEventsUsersByEventIdSelector(eventId)
+    const [, refreshEventState] = useAtom(
+      asyncEventsUsersByEventIdAtom(eventId)
     )
 
     const onClickConfirm = async (onSuccess) => {

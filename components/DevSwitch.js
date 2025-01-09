@@ -9,14 +9,14 @@ import loggedUserRealRoleSelector from '@state/selectors/loggedUserRealRoleSelec
 import rolesAtom from '@state/atoms/rolesAtom'
 import Button from './Button'
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
-// import usersAtom from '@state/atoms/usersAtom'
+// import usersAtomAsync from '@state/async/usersAtomAsync'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const DevSwitch = () => {
   const roles = useAtomValue(rolesAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  // const users = useAtomValue(usersAtom)
+  // const users = useAtomValue(usersAtomAsync)
   const loggedUserRealRole = useAtomValue(loggedUserRealRoleSelector)
   const loggedUser = useAtomValue(loggedUserAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)

@@ -15,7 +15,7 @@ import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
 import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
@@ -27,7 +27,7 @@ const defaultFilterValue = {
 const ServicesUsersContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const servicesUsers = useAtomValue(asyncServicesUsersAtom)
-  const users = useAtomValue(usersAtom)
+  const users = useAtomValue(usersAtomAsync)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.servicesUsers?.add
 

@@ -22,7 +22,7 @@ import upperCaseFirst from '@helpers/upperCaseFirst'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
@@ -102,7 +102,7 @@ const tooltipCaptions = (dateNow = new Date()) => {
 
 const StatisticsContent = () => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
-  const users = useAtomValue(usersAtom)
+  const users = useAtomValue(usersAtomAsync)
   const events = useAtomValue(eventsAtom)
   const directions = useAtomValue(directionsAtom)
   // const closedPayments = useAtomValue(allPaymentsForClosedEventsSelector)

@@ -21,7 +21,7 @@ import {
 } from '@mui/lab'
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import { Suspense, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
@@ -58,7 +58,7 @@ var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
 // }
 
 const BirthdaysContentComponent = () => {
-  const users = useAtomValue(usersAtom)
+  const users = useAtomValue(usersAtomAsync)
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const [periodDays, setPeriodDays] = useState(90)
 

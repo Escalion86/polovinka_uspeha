@@ -1,10 +1,10 @@
 import { atom } from 'jotai'
 
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 
-export const badgeBirthdaysTodayCountSelector = atom((get) => {
-  const users = get(usersAtom)
+export const badgeBirthdaysTodayCountSelector = atom(async (get) => {
+  const users = await get(usersAtomAsync)
   const dateNow = new Date(get(serverSettingsAtom)?.dateTime)
   const monthNow = dateNow.getMonth()
   const dayNow = dateNow.getDate()

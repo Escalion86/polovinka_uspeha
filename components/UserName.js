@@ -16,8 +16,7 @@ const UserName = ({
   leadingClass = 'leading-[14px] phoneH:leading-[18px]',
 }) => {
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-  if (!user) return null
-
+  if (!user || typeof user !== 'object') return null
   const seeFullNames = loggedUserActiveRole?.users?.seeFullNames
 
   return (

@@ -1,6 +1,6 @@
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import fetchProps from '@server/fetchProps'
 import Header from '@layouts/Header'
 import ContactsBlock from '@blocks/ContactsBlock'
@@ -37,7 +37,7 @@ function UserPage(props) {
 
   // const router = useRouter()
 
-  const usersState = useAtomValue(usersAtom)
+  const usersState = useAtomValue(usersAtomAsync)
 
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const seeMembersOnly = loggedUserActiveRole?.users?.seeMembersOnly

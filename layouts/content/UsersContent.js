@@ -11,7 +11,7 @@ import { getNounUsers } from '@helpers/getNoun'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import UsersList from '@layouts/lists/UsersList'
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -20,7 +20,7 @@ import { useAtomValue } from 'jotai'
 
 const UsersContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const users = useAtomValue(usersAtom)
+  const users = useAtomValue(usersAtomAsync)
 
   // const notCanceledAndFinishedEventsUsers = useAtomValue(
   //   eventsUsersNotCanceledAndFinishedSelector

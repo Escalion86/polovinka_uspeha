@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
 
-const usersAtom = atom([])
+const usersAtomAsync = atom([])
 
-export default usersAtom
+export default usersAtomAsync

@@ -1,7 +1,7 @@
 import CardButton from '@components/CardButton'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import InputWrapper from '@components/InputWrapper'
-import { SelectUserList } from '@components/SelectItemList'
+// import { SelectUserList } from '@components/SelectItemList'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import { P } from '@components/tags'
@@ -21,20 +21,16 @@ import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventI
 // import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import usersAtom from '@state/atoms/usersAtom'
+// import usersAtomAsync from '@state/async/usersAtomAsync'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  useRecoilRefresher_UNSTABLE,
-  // useRecoilRefresher_UNSTABLE,
-  useAtomValue,
-} from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import sortFunctions from '@helpers/sortFunctions'
 import formatDateTime from '@helpers/formatDateTime'
-import Note from '@components/Note'
+// import Note from '@components/Note'
 import cn from 'classnames'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
 import CheckBox from '@components/CheckBox'
@@ -377,7 +373,7 @@ const eventUsersFunc = (eventId) => {
 
     const event = useAtomValue(eventSelector(eventId))
     const setEventUsersId = useAtomValue(itemsFuncAtom).event.setEventUsers
-    // const users = useAtomValue(usersAtom)
+    // const users = useAtomValue(usersAtomAsync)
     const isEventClosed = isEventClosedFunc(event)
 
     const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
@@ -1097,11 +1093,10 @@ const eventUsersFunc = (eventId) => {
 
   const ModalRefresher = (props) => {
     const [isRefreshed, setIsRefreshed] = useState(false)
-    const data = useAtomValue(asyncEventsUsersByEventIdAtom(eventId))
-    const [prevData, setPravData] = useState(data)
-    const refreshEventState = useRecoilRefresher_UNSTABLE(
+    const [data, refreshEventState] = useAtom(
       asyncEventsUsersByEventIdAtom(eventId)
     )
+    const [prevData, setPravData] = useState(data)
     // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     // const canEdit = loggedUserActiveRole?.eventsUsers?.edit
 
