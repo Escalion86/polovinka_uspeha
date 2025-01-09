@@ -1,5 +1,5 @@
-import { DEFAULT_ROLES } from '@helpers/constants'
-import getUserRole from '@helpers/getUserRole'
+// import { DEFAULT_ROLES } from '@helpers/constants'
+// import getUserRole from '@helpers/getUserRole'
 import isUserAdmin from '@helpers/isUserAdmin'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
@@ -16,14 +16,17 @@ import Services from '@models/Services'
 // import ServicesUsers from '@models/ServicesUsers'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
-import dbConnect from '@utils/dbConnect'
+// import dbConnect from '@utils/dbConnect'
 
 const fetchProps = async (user, domen) => {
   const serverDateTime = new Date()
   try {
-    const db = await dbConnect(domen)
+    const isAdmin = isUserAdmin(user)
+    // const db = await dbConnect(domen)
 
-    var users = await Users.find({}).select('-password').lean()
+    var users = isAdmin
+      ? await Users.find({}).select('-password').lean()
+      : undefined
 
     // if (!(isModer || isAdmin)) {
     //   users = JSON.parse(JSON.stringify(users)).map((user) => {
@@ -77,9 +80,8 @@ const fetchProps = async (user, domen) => {
     const services = await Services.find({}).lean()
     // const servicesUsers = await ServicesUsers.find({}).lean()
 
-    const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
-    const seeFullNames = userRole?.users?.seeFullNames
-    const isAdmin = isUserAdmin(user)
+    // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
+    // const seeFullNames = userRole?.users?.seeFullNames
 
     if (isAdmin) {
       const canceledEventsIds = events
@@ -109,23 +111,23 @@ const fetchProps = async (user, domen) => {
       }))
     }
 
-    if (!seeFullNames) {
-      users = users.map((user) => {
-        return {
-          ...user,
-          secondName: user.secondName
-            ? user.security?.fullSecondName
-              ? user.secondName
-              : user.secondName[0] + '.'
-            : '',
-          thirdName: user.thirdName
-            ? user.security?.fullThirdName
-              ? user.thirdName
-              : user.thirdName[0] + '.'
-            : '',
-        }
-      })
-    }
+    // if (!seeFullNames) {
+    //   users = users.map((user) => {
+    //     return {
+    //       ...user,
+    //       secondName: user.secondName
+    //         ? user.security?.fullSecondName
+    //           ? user.secondName
+    //           : user.secondName[0] + '.'
+    //         : '',
+    //       thirdName: user.thirdName
+    //         ? user.security?.fullThirdName
+    //           ? user.thirdName
+    //           : user.thirdName[0] + '.'
+    //         : '',
+    //     }
+    //   })
+    // }
     console.log('')
     console.log('')
     console.log('-----------------------------')

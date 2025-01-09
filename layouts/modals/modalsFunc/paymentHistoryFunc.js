@@ -4,7 +4,7 @@ import { getData } from '@helpers/CRUD'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 import paymentSelector from '@state/selectors/paymentSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import PaymentKeyValueItem from './historyKeyValuesItems/PaymentKeyValueItem'
 import { paymentKeys } from './historyKeyValuesItems/keys'
 
@@ -18,7 +18,7 @@ const paymentHistoryFunc = (paymentId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const payment = useRecoilValue(paymentSelector(paymentId))
+    const payment = useAtomValue(paymentSelector(paymentId))
     const [paymentHistory, setPaymentHistory] = useState()
 
     if (!payment || !paymentId)

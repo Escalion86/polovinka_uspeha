@@ -1,9 +1,9 @@
 import userSelector from '@state/selectors/userSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import UserName from './UserName'
 
 const UserNameById = ({ userId, className, noWrap, showStatus, trunc }) => {
-  const user = useRecoilValue(userSelector(userId))
+  const user = useAtomValue(userSelector(userId))
   return (
     <UserName
       user={user}

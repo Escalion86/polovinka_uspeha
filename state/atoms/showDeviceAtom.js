@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const showDeviceAtom = atom({
-  key: 'showDeviceAtom',
-  default: false,
-})
+const showDeviceAtom = atom(false)
 
 export default showDeviceAtom

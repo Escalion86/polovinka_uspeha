@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const modeAtom = atom({
-  key: 'modeAtom', // unique ID (with respect to other atoms/selectors)
-  default: 'production', // default value (aka initial value)
-})
+const modeAtom = atom('production')
 
 export default modeAtom

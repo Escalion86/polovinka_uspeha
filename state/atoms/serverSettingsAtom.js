@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const serverSettingsAtom = atom({
-  key: 'serverSettings',
-  default: {},
-})
+const serverSettingsAtom = atom({})
 
 export default serverSettingsAtom

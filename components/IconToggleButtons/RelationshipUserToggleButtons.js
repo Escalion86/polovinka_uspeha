@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
-import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import Image from 'next/image'
 
 const RelationshipUserToggleButtons = ({ value, onChange }) => {

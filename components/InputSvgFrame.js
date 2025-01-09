@@ -1,6 +1,6 @@
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import InputWrapper from './InputWrapper'
 import frames from './frames/frames'
 
@@ -13,7 +13,7 @@ const InputSvgFrame = ({
   className,
   error,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   var Copmponent = () => (
     <div className="flex items-center justify-center w-20 h-20 leading-4 text-center text-disabled">

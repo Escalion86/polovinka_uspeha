@@ -1,9 +1,9 @@
 import menuOpenAtom from '@state/atoms/menuOpen'
 import cn from 'classnames'
-import { useRecoilState } from 'recoil'
+import { useAtom } from 'jotai'
 
 const Burger = () => {
-  const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
+  const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   return (
     <div
       className={'menu-btn' + (menuOpen ? ' open' : '')}

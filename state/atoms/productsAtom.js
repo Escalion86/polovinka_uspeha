@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const productsAtom = atom({
-  key: 'products',
-  default: [],
-})
+const productsAtom = atom([])
 
 export default productsAtom

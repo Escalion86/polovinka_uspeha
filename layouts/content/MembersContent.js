@@ -10,16 +10,16 @@ import filterItems from '@helpers/filterItems'
 import { getNounUsers } from '@helpers/getNoun'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import UsersList from '@layouts/lists/UsersList'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import membersSelector from '@state/selectors/membersSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const MembersContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const members = useRecoilValue(membersSelector)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const members = useAtomValue(membersSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.users?.add
   const seeFullNames = loggedUserActiveRole?.users?.seeFullNames
 

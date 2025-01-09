@@ -9,10 +9,10 @@ import {
 import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
 import usersAtom from '@state/atoms/usersAtom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ExportUsers = () => {
-  const users = useRecoilValue(usersAtom)
+  const users = useAtomValue(usersAtom)
 
   const exportExcelFile = async () => {
     const ExcelJs = await import('exceljs')

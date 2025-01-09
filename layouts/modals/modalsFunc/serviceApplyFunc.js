@@ -1,12 +1,12 @@
 import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import { faIdCard } from '@fortawesome/free-regular-svg-icons/faIdCard'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import serviceSelector from '@state/selectors/serviceSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const serviceApplyFunc = (serviceId) => {
   const ServiceApplyModal = ({
@@ -17,10 +17,10 @@ const serviceApplyFunc = (serviceId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-    const service = useRecoilValue(serviceSelector(serviceId))
-    const itemsFunc = useRecoilValue(itemsFuncAtom)
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+    const service = useAtomValue(serviceSelector(serviceId))
+    const itemsFunc = useAtomValue(itemsFuncAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
 
     const [answers, setAnswers] = useState({})
 

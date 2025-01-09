@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import windowDimensionsAtom from '@state/jotai/atoms/windowDimensionsAtom'
+import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import { useEffect, useRef, useState } from 'react'
 
 const Masonry = ({

@@ -1,12 +1,12 @@
+import { atom } from 'jotai'
+
 import { DEFAULT_PAYMENT } from '@helpers/constants'
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
-import { selector } from 'recoil'
 
-const paymentEditSelector = selector({
-  key: 'paymentEditSelector',
-  get: () => DEFAULT_PAYMENT,
-  set: ({ set, get }, newItem) => {
-    const items = get(asyncPaymentsAtom)
+const paymentEditSelector = atom(
+  () => DEFAULT_PAYMENT,
+  async (get, set, newItem) => {
+    const items = await get(asyncPaymentsAtom)
     if (!newItem?._id) return
     const findedItem = items.find((event) => event._id === newItem._id)
     // Если мы обновляем существующий атом
@@ -20,7 +20,7 @@ const paymentEditSelector = selector({
       // Если такого атома нет и мы добавляем новый, то просто добавляем атом в список
       set(asyncPaymentsAtom, [...items, newItem])
     }
-  },
-})
+  }
+)
 
 export default paymentEditSelector

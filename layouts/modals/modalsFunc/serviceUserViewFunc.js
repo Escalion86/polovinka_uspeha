@@ -7,12 +7,12 @@ import UserName from '@components/UserName'
 import { faEye } from '@fortawesome/free-regular-svg-icons/faEye'
 import formatDateTime from '@helpers/formatDateTime'
 import isObject from '@helpers/isObject'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import serviceSelector from '@state/selectors/serviceSelector'
 import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const serviceUserViewFunc = (serviceUserId) => {
   const ServiceUserViewModal = ({
@@ -24,11 +24,11 @@ const serviceUserViewFunc = (serviceUserId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const serviceUser = useRecoilValue(servicesUsersSelector(serviceUserId))
+    const serviceUser = useAtomValue(servicesUsersSelector(serviceUserId))
 
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const user = useRecoilValue(userSelector(serviceUser.userId))
-    const service = useRecoilValue(serviceSelector(serviceUser.serviceId))
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const user = useAtomValue(userSelector(serviceUser.userId))
+    const service = useAtomValue(serviceSelector(serviceUser.serviceId))
 
     if (!serviceUser || !serviceUserId)
       return (

@@ -4,12 +4,12 @@ import Divider from '@components/Divider'
 import ImageGallery from '@components/ImageGallery'
 import PriceDiscount from '@components/PriceDiscount'
 import TextLine from '@components/TextLine'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const CardButtonsComponent = ({ service }) => (
   <CardButtons item={service} typeOfItem="service" forForm />
@@ -25,9 +25,9 @@ const serviceViewFunc = (serviceId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const service = useRecoilValue(serviceSelector(serviceId))
-    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const service = useAtomValue(serviceSelector(serviceId))
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
     const canEdit = loggedUserActiveRole?.services?.edit
 

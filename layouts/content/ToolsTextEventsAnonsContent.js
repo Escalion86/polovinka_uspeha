@@ -16,8 +16,8 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import { getRecoil } from 'recoil-nexus'
+import { useAtomValue } from 'jotai'
+import store from '@state/store'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
@@ -132,7 +132,7 @@ const textForming = ({
       const maxParticipants = getEventMaxParticipants(subEventSum)
 
       if (maxParticipants) {
-        const assistants = getRecoil(eventAssistantsSelector(event._id))
+        const assistants = store.get(eventAssistantsSelector(event._id))
         elementOfTextArray.push(
           `\u{1F465} <b>Количество участников</b>: ${getNoun(
             maxParticipants,
@@ -185,7 +185,7 @@ const ToolsTextEventsAnonsContent = () => {
   const [showParticipantsCount, setShowParticipantsCount] = useState(true)
   const [showTextSignUp, setShowTextSignUp] = useState(true)
   const [showLink, setShowLink] = useState(true)
-  const events = useRecoilValue(eventsAtom)
+  const events = useAtomValue(eventsAtom)
   const [eventsFull, setEventsFull] = useState([])
 
   const [socialTag, setSocialTag] = useState(null)

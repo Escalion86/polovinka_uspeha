@@ -10,7 +10,7 @@ import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import ComboBox from '@components/ComboBox'
@@ -27,8 +27,8 @@ const directionFunc = (directionId, clone = false) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const direction = useRecoilValue(directionSelector(directionId))
-    const setDirection = useRecoilValue(itemsFuncAtom).direction.set
+    const direction = useAtomValue(directionSelector(directionId))
+    const setDirection = useAtomValue(itemsFuncAtom).direction.set
 
     const [title, setTitle] = useState(
       direction?.title ?? DEFAULT_DIRECTION.title

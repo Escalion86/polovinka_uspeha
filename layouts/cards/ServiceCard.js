@@ -3,20 +3,20 @@ import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import PriceDiscount from '@components/PriceDiscount'
 import TextLinesLimiter from '@components/TextLinesLimiter'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import serviceSelector from '@state/selectors/serviceSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ServiceCard = ({ serviceId, hidden = false, style }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const service = useRecoilValue(serviceSelector(serviceId))
-  const loading = useRecoilValue(loadingAtom('service' + serviceId))
-  const itemFunc = useRecoilValue(itemsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const service = useAtomValue(serviceSelector(serviceId))
+  const loading = useAtomValue(loadingAtom('service' + serviceId))
+  const itemFunc = useAtomValue(itemsFuncAtom)
 
-  const services = useRecoilValue(servicesAtom)
+  const services = useAtomValue(servicesAtom)
 
   const setUp = async () => {
     if (service.index === 0) return

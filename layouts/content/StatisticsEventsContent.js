@@ -12,11 +12,11 @@ import isEventExpiredFunc from '@helpers/isEventExpired'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const StatisticsEventsContent = () => {
-  const events = useRecoilValue(eventsAtom)
-  const directions = useRecoilValue(directionsAtom)
+  const events = useAtomValue(eventsAtom)
+  const directions = useAtomValue(directionsAtom)
 
   const [filterEvents, setFilterEvents] = useState({
     status: {

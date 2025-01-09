@@ -10,8 +10,8 @@ const selectImageFunc = (directory, aspect, onSelect) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // const modalsFunc = useRecoilValue(modalsFuncAtom)
-    // const { imageFolder } = useRecoilValue(locationPropsSelector)
+    // const modalsFunc = useAtomValue(modalsFuncAtom)
+    // const { imageFolder } = useAtomValue(locationPropsSelector)
     // const snackbar = useSnackbar()
 
     const [selectedImage, setSelectedImage] = useState()

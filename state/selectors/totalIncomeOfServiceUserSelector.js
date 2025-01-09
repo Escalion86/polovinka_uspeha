@@ -1,23 +1,20 @@
-import { selectorFamily } from 'recoil'
-// import servicesUsersSelector from './servicesUsersSelector'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 
-export const totalIncomeOfServiceUserSelector = selectorFamily({
-  key: 'totalIncomeOfServiceUserSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return []
-      // const serviceUser = get(servicesUsersSelector(id))
+export const totalIncomeOfServiceUserSelector = atomFamily((id) =>
+  atom((get) => {
+    if (!id) return []
+    // const serviceUser = get(servicesUsersSelector(id))
 
-      return (
-        // get(sumOfPaymentsFromParticipantsSelector(id)) +
-        // get(sumOfPaymentsFromEventToAssistantsSelector(id)) +
-        // get(sumOfPaymentsToEventSelector(id)) +
-        // get(sumOfPaymentsFromEventSelector(id)) +
-        // get(sumOfPaymentsFromNotParticipantsToEventSelector(id))
-        0
-      )
-    },
-})
+    return (
+      // get(sumOfPaymentsFromParticipantsSelector(id)) +
+      // get(sumOfPaymentsFromEventToAssistantsSelector(id)) +
+      // get(sumOfPaymentsToEventSelector(id)) +
+      // get(sumOfPaymentsFromEventSelector(id)) +
+      // get(sumOfPaymentsFromNotParticipantsToEventSelector(id))
+      0
+    )
+  })
+)
 
 export default totalIncomeOfServiceUserSelector

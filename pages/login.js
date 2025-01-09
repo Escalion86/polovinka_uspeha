@@ -28,7 +28,7 @@ import {
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
 import MaskedInput from 'react-text-mask'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import SvgLove from 'svg/SvgLove'
 import SvgWave from 'svg/SvgWave'
 
@@ -350,7 +350,7 @@ const LoginPage = (props) => {
     ? LOCATIONS[inputLocation].telegramBotName
     : LOCATIONS['krasnoyarsk'].telegramBotName
 
-  const isPWA = useRecoilValue(isPWAAtom)
+  const isPWA = useAtomValue(isPWAAtom)
 
   const inputPhoneRef = useRef()
   const inputPasswordRef = useRef()

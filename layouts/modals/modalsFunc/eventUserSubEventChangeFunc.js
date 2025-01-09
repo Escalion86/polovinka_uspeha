@@ -12,7 +12,7 @@ import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullBy
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useCallback, useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import directionSelector from '@state/selectors/directionSelector'
 import Note from '@components/Note'
@@ -30,18 +30,18 @@ const eventUserSubEventChangeFunc = (
     setDisableConfirm,
     setBottomLeftComponent,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
-    const user = useRecoilValue(userSelector(userId))
-    const direction = useRecoilValue(directionSelector(event.directionId))
+    const event = useAtomValue(eventSelector(eventId))
+    const user = useAtomValue(userSelector(userId))
+    const direction = useAtomValue(directionSelector(event.directionId))
     const rules = direction?.rules
     const isEventExpired = isEventExpiredFunc(event)
 
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = eventUsers.find(
       (eventUser) => eventUser.userId === userId
     )
 
-    // const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
+    // const setEventUser = useAtomValue(itemsFuncAtom).eventsUser.set
 
     const [subEventId, setSubEventId] = useState(
       selectedSubEventId ?? eventUser.subEventId

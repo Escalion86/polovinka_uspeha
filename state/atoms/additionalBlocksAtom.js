@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const additionalBlocksAtom = atom({
-  key: 'additionalBlocks',
-  default: [],
-})
+const additionalBlocksAtom = atom([])
 
 export default additionalBlocksAtom

@@ -1,6 +1,6 @@
 import ComboBox from '@components/ComboBox'
 import directionsAtom from '@state/atoms/directionsAtom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const DirectionSelector = ({
   value,
@@ -11,7 +11,7 @@ const DirectionSelector = ({
   activePlaceholder,
   fullWidth,
 }) => {
-  const directions = useRecoilValue(directionsAtom)
+  const directions = useAtomValue(directionsAtom)
   const items = directions.map((item, index) => ({
     name: item.title,
     value: item._id,

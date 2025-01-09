@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons/faEyeSlash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import windowDimensionsTailwindSelector from '@state/jotai/selectors/windowDimensionsTailwindSelector'
+import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'
 import LoadingSpinner from './LoadingSpinner'
 

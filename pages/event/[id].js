@@ -17,7 +17,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 // import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import Skeleton from 'react-loading-skeleton'
 
 const Event = ({ event }) => {
@@ -74,7 +74,7 @@ const Event = ({ event }) => {
 }
 
 const EventBlock = ({ event }) => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   if (event?.blank) return
 
   return (
@@ -107,11 +107,11 @@ const EventBlock = ({ event }) => {
 
 function EventPage(props) {
   const eventId = props.id
-  const eventsState = useRecoilValue(eventsAtom)
+  const eventsState = useAtomValue(eventsAtom)
 
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const hideFab = loggedUserActiveRole?.hideFab
-  const isPWA = useRecoilValue(isPWAAtom)
+  const isPWA = useAtomValue(isPWAAtom)
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01

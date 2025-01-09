@@ -9,11 +9,11 @@ import { faSave } from '@fortawesome/free-solid-svg-icons/faSave'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import compareObjects from '@helpers/compareObjects'
 import { useCallback, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import rolesAtom from '@state/atoms/rolesAtom'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import CheckBox from '@components/CheckBox'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 
@@ -29,12 +29,12 @@ const SubTitle = ({ name }) => (
 )
 
 const SettingsRolesContent = (props) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
-  const rolesSettings = useRecoilValue(rolesAtom)
+  const rolesSettings = useAtomValue(rolesAtom)
   const [rolesTemp, setRolesTemp] = useState(rolesSettings)
 
-  const updateRoles = useRecoilValue(itemsFuncAtom).roles.update
+  const updateRoles = useAtomValue(itemsFuncAtom).roles.update
 
   const formChanged = !compareObjects(rolesSettings, rolesTemp)
 

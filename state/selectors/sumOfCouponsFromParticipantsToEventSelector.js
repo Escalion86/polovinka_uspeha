@@ -1,18 +1,18 @@
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import couponsOfEventFromUsersSelector from './couponsOfEventFromUsersSelector'
 import eventParticipantsIdsSelector from './eventParticipantsIdsSelector'
 
-export const sumOfCouponsFromParticipantsToEventSelector = selectorFamily({
-  key: 'sumOfCouponsFromParticipantsToEventSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return 0
-      return (
-        get(couponsOfEventFromUsersSelector(id)).reduce((p, payment) => {
-          const isUserParticipant = get(
-            eventParticipantsIdsSelector(id)
-          ).includes(payment.userId)
+export const sumOfCouponsFromParticipantsToEventSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return 0
+    const coupons = await get(couponsOfEventFromUsersSelector(id))
+    return (
+      (await Promise.all(
+        coupons.reduce(async (p, payment) => {
+          const participantsIds = await get(eventParticipantsIdsSelector(id))
+          const isUserParticipant = participantsIds.includes(payment.userId)
           if (isUserParticipant)
             return (
               p +
@@ -20,9 +20,10 @@ export const sumOfCouponsFromParticipantsToEventSelector = selectorFamily({
             )
 
           return p
-        }, 0) / 100
-      )
-    },
-})
+        }, 0)
+      )) / 100
+    )
+  })
+)
 
 export default sumOfCouponsFromParticipantsToEventSelector

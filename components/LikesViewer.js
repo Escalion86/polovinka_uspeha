@@ -8,8 +8,8 @@ import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GENDERS } from '@helpers/constants'
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import { useAtomValue } from 'jotai'
 import { UserItem } from './ItemCards'
 import ContactsIconsButtons from './ContactsIconsButtons'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
@@ -87,8 +87,8 @@ const UserLikesItem = ({
   onDownClick,
   likeSortNum,
 }) => {
-  const event = useRecoilValue(eventSelector(eventId))
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const event = useAtomValue(eventSelector(eventId))
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   // const userGender =
   //   user.gender && GENDERS.find((gender) => gender.value === user.gender)
 
@@ -356,9 +356,9 @@ const setDown = (array, key, clickedIndex) => {
 }
 
 const LikesViewer = ({ eventId }) => {
-  const event = useRecoilValue(eventSelector(eventId))
-  const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
-  const eventUsers = useRecoilValue(
+  const event = useAtomValue(eventSelector(eventId))
+  const setEventUser = useAtomValue(itemsFuncAtom).eventsUser.set
+  const eventUsers = useAtomValue(
     eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
   )
 

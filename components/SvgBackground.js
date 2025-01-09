@@ -1,8 +1,8 @@
 // import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import { useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 // import Button from './Button'
 import ColorPicker from './ColorPicker'
 import ComboBox from './ComboBox'
@@ -148,8 +148,8 @@ export const SvgBackgroundInput = ({
   rerender,
   imagesFolder,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  // const { imageFolder } = useRecoilValue(locationPropsSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  // const { imageFolder } = useAtomValue(locationPropsSelector)
 
   // const hiddenFileInput = useRef(null)
   // const addImageClick = () => {

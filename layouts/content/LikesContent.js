@@ -1,8 +1,8 @@
 'use client'
 
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import { EventItem, UserItemFromId } from '@components/ItemCards'
 import eventsLoggedUserWithLikesSelector from '@state/selectors/eventsLoggedUserWithLikesSelector'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,8 +13,8 @@ import Note from '@components/Note'
 import { SelectUserList } from '@components/SelectItemList'
 
 const EventLikesItem = ({ eventWithEventUsers, className }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const { eventUsers } = eventWithEventUsers
   const eventLoggedUser = eventUsers.find(
     ({ userId }) => userId === loggedUserActive?._id
@@ -98,9 +98,9 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
 }
 
 const LikesContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const eventsWithLikes = useRecoilValue(eventsLoggedUserWithLikesSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const eventsWithLikes = useAtomValue(eventsLoggedUserWithLikesSelector)
 
   const usersWithLikesCoincidences = eventsWithLikes.reduce(
     (acc, { likesProcessActive, eventUsers }) => {

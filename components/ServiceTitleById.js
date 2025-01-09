@@ -1,8 +1,8 @@
 import serviceSelector from '@state/selectors/serviceSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ServiceTitleById = ({ serviceId, className }) => {
-  const service = useRecoilValue(serviceSelector(serviceId))
+  const service = useAtomValue(serviceSelector(serviceId))
   return service.title
 }
 

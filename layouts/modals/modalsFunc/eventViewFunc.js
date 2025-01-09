@@ -17,7 +17,7 @@ import formatDateTime from '@helpers/formatDateTime'
 import formatMinutes from '@helpers/formatMinutes'
 import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
@@ -31,11 +31,12 @@ import DOMPurify from 'isomorphic-dompurify'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventLoggedUserByEventIdSelector from '@state/selectors/eventLoggedUserByEventIdSelector'
 
 const NamesOfUsersAssistantsOfEventComponent = ({ eventId }) => {
-  const users = useRecoilValue(eventAssistantsSelector(eventId))
+  const users = useAtomValue(eventAssistantsSelector(eventId))
+
   return (
     users &&
     users?.length > 0 && (
@@ -92,18 +93,18 @@ const EventViewModal = ({
   setTopLeftComponent,
 }) => {
   const { eventId } = data
-  const event = useRecoilValue(eventFullAtomAsync(eventId))
-  const eventUser = useRecoilValue(eventLoggedUserByEventIdSelector(eventId))
-  const subEventSum = useRecoilValue(subEventsSumOfEventSelector(eventId))
-  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const event = useAtomValue(eventFullAtomAsync(eventId))
+  const eventUser = useAtomValue(eventLoggedUserByEventIdSelector(eventId))
+  const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
+  const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const canEdit = loggedUserActiveRole?.events?.edit
   const seeEventsUsers = loggedUserActiveRole?.eventsUsers?.see
   const isLoggedUserDev = loggedUserActiveRole?.dev
 
-  const direction = useRecoilValue(directionSelector(event?.directionId))
-  const organizer = useRecoilValue(userSelector(event?.organizerId))
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const direction = useAtomValue(directionSelector(event?.directionId))
+  const organizer = useAtomValue(userSelector(event?.organizerId))
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const duration = getEventDuration(event)
 
@@ -278,12 +279,13 @@ const EventViewModal = ({
 
 const EventView = (props) => {
   const { eventId } = props.data
-  const event = useRecoilValue(eventFullAtomAsync(eventId))
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const { canSee, isAgeOfUserCorrect, isUserStatusCorrect } = useRecoilValue(
-    loggedUserToEventStatusSelector(event?._id)
-  )
-  const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
+  const event = useAtomValue(eventFullAtomAsync(eventId))
+
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const { canSee, isAgeOfUserCorrect, isUserStatusCorrect, status } =
+    useAtomValue(loggedUserToEventStatusSelector(event?._id))
+
+  const subEventSum = useAtomValue(subEventsSumOfEventSelector(event._id))
 
   const router = useRouter()
   const routerQuery = { ...router.query }

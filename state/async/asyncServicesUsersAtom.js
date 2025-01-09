@@ -1,9 +1,14 @@
-import { atom } from 'recoil'
-import asyncServicesUsersSelector from './asyncServicesUsersSelector'
+import { atom } from 'jotai'
 
-const asyncServicesUsersAtom = atom({
-  key: 'asyncServicesUsersAtom',
-  default: asyncServicesUsersSelector,
+import store from '../store'
+import isLoadedAtom from '@state/atoms/isLoadedAtom'
+import { getData } from '@helpers/CRUD'
+
+const asyncServicesUsersAtom = atom(async () => {
+  const res = await getData('/api/servicesusers', null, null, null, false)
+  store.set(isLoadedAtom('asyncServicesUsersAtom'), true)
+
+  return res
 })
 
 export default asyncServicesUsersAtom

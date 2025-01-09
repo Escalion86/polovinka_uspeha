@@ -7,8 +7,7 @@ import locationPropsSelector from '@state/selectors/locationPropsSelector'
 // import useErrors from '@helpers/useErrors'
 // import useSnackbar from '@helpers/useSnackbar'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-// import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const notificationsTelegramFunc = (onStartActivate, onCancel) => {
   const NotificationsTelegramModal = ({
@@ -19,8 +18,8 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // const location = useRecoilValue(locationAtom)
-    const { telegramBotName } = useRecoilValue(locationPropsSelector)
+    // const location = useAtomValue(locationAtom)
+    const { telegramBotName } = useAtomValue(locationPropsSelector)
 
     // const [userName, setUserName] = useState(
     //   loggedUser?.notifications?.telegram?.userName ?? ''

@@ -16,7 +16,7 @@ import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullBy
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const eventSignUpFunc = (
   event,
@@ -38,17 +38,15 @@ const eventSignUpFunc = (
     setDisableDecline,
     setConfirmButtonName,
   }) => {
-    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-    const itemsFunc = useRecoilValue(itemsFuncAtom)
-    const eventUsers = useRecoilValue(
-      eventsUsersFullByEventIdSelector(event._id)
-    )
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+    const itemsFunc = useAtomValue(itemsFuncAtom)
+    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(event._id))
 
     const [check, setCheck] = useState(false)
     const [subEventId, setSubEventId] = useState(
       event.subEvents.length > 1 ? undefined : event.subEvents[0].id
     )
-    const direction = useRecoilValue(directionSelector(event.directionId))
+    const direction = useAtomValue(directionSelector(event.directionId))
     const rules = direction?.rules
 
     const eventId = event._id

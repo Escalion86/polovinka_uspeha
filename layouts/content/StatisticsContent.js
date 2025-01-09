@@ -25,7 +25,7 @@ import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -101,13 +101,13 @@ const tooltipCaptions = (dateNow = new Date()) => {
 }
 
 const StatisticsContent = () => {
-  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
-  const users = useRecoilValue(usersAtom)
-  const events = useRecoilValue(eventsAtom)
-  const directions = useRecoilValue(directionsAtom)
-  // const closedPayments = useRecoilValue(allPaymentsForClosedEventsSelector)
+  const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
+  const users = useAtomValue(usersAtom)
+  const events = useAtomValue(eventsAtom)
+  const directions = useAtomValue(directionsAtom)
+  // const closedPayments = useAtomValue(allPaymentsForClosedEventsSelector)
   // const closedEvents =
-  const incomeByDate = useRecoilValue(
+  const incomeByDate = useAtomValue(
     arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector
   )
 

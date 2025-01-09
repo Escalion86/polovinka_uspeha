@@ -1,12 +1,9 @@
-import loadingAtom from '@state/atoms/loadingAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-const setLoadingSelector = selector({
-  key: 'setLoadingSelector',
-  get: ({ get }) => false,
-  set: ({ set }, itemNameId) => {
-    set(loadingAtom(itemNameId), true)
-  },
+import loadingAtom from '@state/atoms/loadingAtom'
+
+const setLoadingSelector = atom(false, (get, set, itemNameId) => {
+  set(loadingAtom(itemNameId), true)
 })
 
 export default setLoadingSelector

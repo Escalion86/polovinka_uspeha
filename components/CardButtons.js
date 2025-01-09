@@ -25,10 +25,9 @@ import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
-import { modalsFuncAtom } from '@state/atoms'
-import windowDimensionsTailwindSelector from '@state/jotai/selectors/windowDimensionsTailwindSelector'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
 import CardButton from './CardButton'
 import DropDown from './DropDown'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -73,10 +72,10 @@ const CardButtons = ({
   showCloneButton = true,
   onEditQuestionnaire,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const device = useAtomValue(windowDimensionsTailwindSelector)
-  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
 
   const copyEventLink = useCopyEventLinkToClipboard(item._id)
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)

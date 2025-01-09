@@ -16,14 +16,13 @@ import directionSelector from '@state/selectors/directionSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
-import { useRecoilValue } from 'recoil'
 import DateTimeEvent from './DateTimeEvent'
 import EventNameById from './EventNameById'
 import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
 import UserNameById from './UserNameById'
 import UserStatusIcon from './UserStatusIcon'
-import windowDimensionsTailwindSelector from '@state/jotai/selectors/windowDimensionsTailwindSelector'
+import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import UserRelationshipIcon from './UserRelationshipIcon'
 import serviceSelector from '@state/selectors/serviceSelector'
@@ -91,7 +90,7 @@ export const UserItemFromId = ({
   noBorder,
   ...props
 }) => {
-  const user = useRecoilValue(userSelector(userId))
+  const user = useAtomValue(userSelector(userId))
   return (
     <UserItem
       item={user}
@@ -114,8 +113,8 @@ export const UserItem = ({
   children,
   nameFieldWrapperClassName,
 }) => {
-  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   const seeBirthday =
     item.birthday &&
@@ -201,7 +200,7 @@ export const UserItem = ({
 }
 
 export const EventItemFromId = ({ eventId, ...props }) => {
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useAtomValue(eventSelector(eventId))
   return <EventItem item={event} {...props} />
 }
 
@@ -215,7 +214,7 @@ export const EventItem = ({
   noBorder,
   noStatusIcon,
 }) => {
-  const direction = useRecoilValue(directionSelector(item.directionId))
+  const direction = useAtomValue(directionSelector(item.directionId))
 
   const eventStatus = eventStatusFunc(item)
   const eventStatusObj = EVENT_STATUSES_WITH_TIME.find(
@@ -320,7 +319,7 @@ export const ServiceItemFromId = ({
   active = false,
   bordered = false,
 }) => {
-  const service = useRecoilValue(serviceSelector(serviceId))
+  const service = useAtomValue(serviceSelector(serviceId))
   return (
     <ServiceItem
       item={service}

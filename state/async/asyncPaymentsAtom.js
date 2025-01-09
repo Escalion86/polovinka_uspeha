@@ -1,9 +1,14 @@
-import { atom } from 'recoil'
-import asyncPaymentsSelector from './asyncPaymentsSelector'
+import { atom } from 'jotai'
 
-const asyncPaymentsAtom = atom({
-  key: 'asyncPaymentsAtom',
-  default: asyncPaymentsSelector,
+import store from '../store'
+import isLoadedAtom from '@state/atoms/isLoadedAtom'
+import { getData } from '@helpers/CRUD'
+
+const asyncPaymentsAtom = atom(async () => {
+  const res = await getData('/api/payments', null, null, null, false)
+  store.set(isLoadedAtom('asyncPaymentsAtom'), true)
+
+  return res
 })
 
 export default asyncPaymentsAtom

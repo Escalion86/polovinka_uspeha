@@ -9,7 +9,7 @@ import sortFunctions from '@helpers/sortFunctions'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const selectEventsFunc = (
   state,
@@ -31,7 +31,7 @@ const selectEventsFunc = (
     setDisableDecline,
     setComponentInFooter,
   }) => {
-    const events = useRecoilValue(eventsAtom)
+    const events = useAtomValue(eventsAtom)
     const [selectedEvents, setSelectedEvents] = useState(
       isObject(state)
         ? state.filter((item) => typeof item === 'string' && item !== '')

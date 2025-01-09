@@ -1,15 +1,15 @@
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import eventAssistantsSelector from './eventAssistantsSelector'
 
-export const eventAssistantsIdsSelector = selectorFamily({
-  key: 'eventAssistantsIdsSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return []
+export const eventAssistantsIdsSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return []
+    const eventAssistant = await get(eventAssistantsSelector(id))
 
-      return get(eventAssistantsSelector(id)).map((user) => user._id)
-    },
-})
+    return eventAssistant.map((user) => user._id)
+  })
+)
 
 export default eventAssistantsIdsSelector

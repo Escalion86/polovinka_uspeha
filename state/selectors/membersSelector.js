@@ -1,11 +1,9 @@
-import usersAtom from '@state/atoms/usersAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-export const membersSelector = selector({
-  key: 'membersSelector',
-  get: ({ get }) => {
-    return get(usersAtom).filter((user) => user.status === 'member')
-  },
+import usersAtom from '@state/atoms/usersAtom'
+
+export const membersSelector = atom((get) => {
+  return get(usersAtom).filter((user) => user.status === 'member')
 })
 
 export default membersSelector

@@ -3,10 +3,10 @@ import Input from '@components/Input'
 import SelectTemplate from '@components/SelectTemplate'
 import { postData, putData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const saveTemplateFunc = (tool, template, onSave, aspect) => {
   const SaveTemplateFuncModal = ({
@@ -17,8 +17,8 @@ const saveTemplateFunc = (tool, template, onSave, aspect) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const [selectedTemplate, setSelectedTemplate] = useState()
     const snackbar = useSnackbar()
 

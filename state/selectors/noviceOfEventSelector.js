@@ -1,17 +1,15 @@
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import eventParticipantsSelector from './eventParticipantsSelector'
 
-export const noviceOfEventSelector = selectorFamily({
-  key: 'noviceOfEventSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return []
+export const noviceOfEventSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return []
+    const participants = await get(eventParticipantsSelector(id))
 
-      return get(eventParticipantsSelector(id)).filter(
-        (user) => user.status === 'novice'
-      )
-    },
-})
+    return participants.filter((user) => user.status === 'novice')
+  })
+)
 
 export default noviceOfEventSelector

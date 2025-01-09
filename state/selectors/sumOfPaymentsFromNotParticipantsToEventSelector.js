@@ -1,13 +1,13 @@
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import paymentsOfEventFromNotParticipantsSelector from './paymentsOfEventFromNotParticipantsSelector'
 
-export const sumOfPaymentsFromNotParticipantsToEventSelector = selectorFamily({
-  key: 'sumOfPaymentsFromNotParticipantsToEventSelector',
-  get:
-    (id) =>
-    ({ get }) => {
+export const sumOfPaymentsFromNotParticipantsToEventSelector = atomFamily(
+  (id) =>
+    atom(async (get) => {
       if (!id) return 0
-      const paymentsFromNotParticipants = get(
+      const paymentsFromNotParticipants = await get(
         paymentsOfEventFromNotParticipantsSelector(id)
       )
       return (
@@ -18,7 +18,7 @@ export const sumOfPaymentsFromNotParticipantsToEventSelector = selectorFamily({
           )
         }, 0) / 100
       )
-    },
-})
+    })
+)
 
 export default sumOfPaymentsFromNotParticipantsToEventSelector

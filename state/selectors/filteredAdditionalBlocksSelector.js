@@ -1,14 +1,12 @@
-import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-const filteredAdditionalBlocksSelector = selector({
-  key: 'filteredAdditionalBlocksSelector',
-  get: ({ get }) => {
-    const additionalBlocks = get(additionalBlocksAtom)
-    return additionalBlocks?.length > 0
-      ? additionalBlocks.filter((additionalBlock) => additionalBlock.showOnSite)
-      : []
-  },
+import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
+
+const filteredAdditionalBlocksSelector = atom((get) => {
+  const additionalBlocks = get(additionalBlocksAtom)
+  return additionalBlocks?.length > 0
+    ? additionalBlocks.filter((additionalBlock) => additionalBlock.showOnSite)
+    : []
 })
 
 export default filteredAdditionalBlocksSelector

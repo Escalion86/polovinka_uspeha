@@ -1,14 +1,14 @@
-import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-const paymentsAddSelector = selector({
-  key: 'paymentsAddSelector',
-  get: () => get(asyncPaymentsAtom),
-  set: ({ set, get }, items) => {
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
+
+const paymentsAddSelector = atom(
+  () => get(asyncPaymentsAtom),
+  async (get, set, items) => {
     if (typeof items !== 'object') return
-    const payments = get(asyncPaymentsAtom)
+    const payments = await get(asyncPaymentsAtom)
     set(asyncPaymentsAtom, [...payments, ...items])
-  },
-})
+  }
+)
 
 export default paymentsAddSelector

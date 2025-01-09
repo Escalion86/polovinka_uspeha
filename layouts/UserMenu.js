@@ -10,10 +10,10 @@ import { m } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtomValue, useSetAtom } from 'jotai'
 import Avatar from './Avatar'
 import SvgKavichki from 'svg/SvgKavichki'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 
 const variants = {
   show: {
@@ -62,11 +62,11 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 }
 
 const UserMenu = () => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const setMenuOpen = useSetRecoilState(menuOpenAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const setMenuOpen = useSetAtom(menuOpenAtom)
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   // const router = useRouter()
 

@@ -9,15 +9,15 @@ import paymentSectorFunc from '@helpers/paymentSector'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import PaymentsList from '@layouts/lists/PaymentsList'
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const PaymentsContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const payments = useRecoilValue(asyncPaymentsAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const payments = useAtomValue(asyncPaymentsAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.payments?.add
 
   const [filter, setFilter] = useState({

@@ -1,19 +1,19 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import TextInRing from '@components/TextInRing'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const DirectionCard = ({ directionId, hidden = false, style }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const direction = useRecoilValue(directionSelector(directionId))
-  const loading = useRecoilValue(loadingAtom('direction' + directionId))
-  const itemFunc = useRecoilValue(itemsFuncAtom)
-  const directions = useRecoilValue(directionsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const direction = useAtomValue(directionSelector(directionId))
+  const loading = useAtomValue(loadingAtom('direction' + directionId))
+  const itemFunc = useAtomValue(itemsFuncAtom)
+  const directions = useAtomValue(directionsAtom)
 
   const setUp = async () => {
     if (direction.index === 0) return

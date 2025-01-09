@@ -4,7 +4,7 @@ import { DEFAULT_SERVICE_USER } from '@helpers/constants'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
 import { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const serviceUserStatusEditFunc = (serviceUserId) => {
   const ServiceUserStatusEditModal = ({
@@ -16,12 +16,12 @@ const serviceUserStatusEditFunc = (serviceUserId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const serviceUser = useRecoilValue(servicesUsersSelector(serviceUserId))
-    const setServiceUser = useRecoilValue(itemsFuncAtom).servicesUser.set
+    const serviceUser = useAtomValue(servicesUsersSelector(serviceUserId))
+    const setServiceUser = useAtomValue(itemsFuncAtom).servicesUser.set
     // const isEventExpired = isEventExpiredFunc(event)
 
-    // const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
-    // const expectedIncome = useRecoilValue(
+    // const totalIncome = useAtomValue(totalIncomeOfEventSelector(eventId))
+    // const expectedIncome = useAtomValue(
     //   expectedIncomeOfEventSelector(eventId)
     // )
     // const canSetClosed = totalIncome >= expectedIncome && isEventExpired

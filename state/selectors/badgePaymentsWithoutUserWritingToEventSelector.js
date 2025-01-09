@@ -1,9 +1,9 @@
-import { selector } from 'recoil'
+import { atom } from 'jotai'
+
 import paymentsWithoutUserWritingToEventSelector from './paymentsWithoutUserWritingToEventSelector'
 
-export const badgePaymentsWithoutUserWritingToEventSelector = selector({
-  key: 'badgePaymentsWithoutUserWritingToEventSelector',
-  get: ({ get }) => get(paymentsWithoutUserWritingToEventSelector).length,
-})
+export const badgePaymentsWithoutUserWritingToEventSelector = atom(
+  async (get) => await get(paymentsWithoutUserWritingToEventSelector).length
+)
 
 export default badgePaymentsWithoutUserWritingToEventSelector

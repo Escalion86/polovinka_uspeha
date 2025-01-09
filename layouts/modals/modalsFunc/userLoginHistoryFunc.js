@@ -3,10 +3,10 @@ import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import { getData } from '@helpers/CRUD'
 import formatDateTime from '@helpers/formatDateTime'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const userLoginHistoryFunc = (userId, clone = false) => {
   const UserLoginHistoryModal = ({
@@ -17,10 +17,10 @@ const userLoginHistoryFunc = (userId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
     const [loginHistories, setLoginHistories] = useState()
 
-    const user = useRecoilValue(userSelector(userId))
+    const user = useAtomValue(userSelector(userId))
 
     useEffect(() => {
       getData(

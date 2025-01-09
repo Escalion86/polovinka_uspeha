@@ -1,6 +1,6 @@
 import Input from '@components/Input'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const roleFunc = (role, onConfirm) => {
   const RoleFuncModal = ({
@@ -12,7 +12,7 @@ const roleFunc = (role, onConfirm) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const [text, setText] = useState(role ? role?.name ?? '' : '')
+    const [text, setText] = useState(role ? (role?.name ?? '') : '')
 
     const onClickConfirm = async () => {
       closeModal()

@@ -1,6 +1,6 @@
 import { TAILWIND_COLORS } from '@helpers/constants'
 import ValuePicker from './ValuePicker'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import rolesAtom from '@state/atoms/rolesAtom'
 
 const UserRolePicker = ({
@@ -10,7 +10,7 @@ const UserRolePicker = ({
   error = false,
   noDev = true,
 }) => {
-  const roles = useRecoilValue(rolesAtom)
+  const roles = useAtomValue(rolesAtom)
 
   const rolesValues = roles.map(({ _id, name }, index) => ({
     value: _id,

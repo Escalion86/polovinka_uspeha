@@ -1,18 +1,6 @@
-import { atomFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 
-const isLoadedAtom = atomFamily({
-  key: 'isLoadedAtom',
-  default: false,
-  // effects: (param) => [
-  //   ({ node, onSet, getInfo_UNSTABLE }) => {
-  //     onSet((newID) => {
-  //       if (param === 'asyncEventsUsersAllAtom')
-  //         console.debug('!!!!! onSet asyncEventsUsersAllAtom')
-  //       console.debug('onSet isLoadedAtom', param)
-  //     })
-  //   },
-  //   // (params) => console.log('params isLoadedAtom :>> ', params),
-  // ],
-})
+const isLoadedAtom = atomFamily((param) => atom(false))
 
 export default isLoadedAtom

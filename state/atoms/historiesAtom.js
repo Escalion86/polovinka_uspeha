@@ -1,14 +1,6 @@
 import { getData } from '@helpers/CRUD'
-import { atom, selector } from 'recoil'
+import { atom } from 'jotai'
 
-export const historiesSelector = selector({
-  key: 'historiesSelector',
-  get: async ({ get }) => await getData(`/api/histories`, {}),
-})
-
-const historiesAtom = atom({
-  key: 'histories',
-  default: [],
-})
+const historiesAtom = atom(async (get) => await getData(`/api/histories`, {}))
 
 export default historiesAtom

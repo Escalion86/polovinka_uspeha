@@ -18,12 +18,12 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 export default function Home(props) {
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const hideFab = loggedUserActiveRole?.hideFab
-  const isPWA = useRecoilValue(isPWAAtom)
+  const isPWA = useAtomValue(isPWAAtom)
   const router = useRouter()
 
   console.log('isPWA :>> ', isPWA)

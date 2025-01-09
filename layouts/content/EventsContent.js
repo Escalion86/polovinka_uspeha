@@ -19,13 +19,13 @@ import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import EventsList from '@layouts/lists/EventsList'
 import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const defaultFilterValue = {
   directions: null,
@@ -33,18 +33,18 @@ const defaultFilterValue = {
 }
 
 const EventsContent = () => {
-  const events = useRecoilValue(eventsAtom)
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const events = useAtomValue(eventsAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   const seeHidden = loggedUserActiveRole?.events?.seeHidden
   const statusFilterFull = loggedUserActiveRole?.events?.statusFilterFull
   const seeAddButton = loggedUserActiveRole?.events?.add
 
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
-  const eventsLoggedUser = useRecoilValue(
+  const eventsLoggedUser = useAtomValue(
     asyncEventsUsersByUserIdAtom(loggedUserActive?._id)
   )
 

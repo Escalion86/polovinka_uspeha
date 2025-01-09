@@ -1,35 +1,32 @@
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
-import { selectorFamily } from 'recoil'
-import { getRecoil } from 'recoil-nexus'
 import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 
-const updateEventsUsersSelector = selectorFamily({
-  key: 'updateEventsUsersSelector',
-  set:
-    (eventId) =>
-    ({ set, get }, updatedEventUsers) => {
-      const isLoadedEventId = getRecoil(
-        isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)
-      )
-      if (isLoadedEventId) {
-        const eventUsers = get(asyncEventsUsersByEventIdAtom(eventId))
-        // Обновляем записи у пользователей
-        // for (let i = 0; i < eventUsers.length; i++) {
-        // const eventUser = eventUsers[i]
-        const newEventUsers = eventUsers.map((eventUser) => {
+const updateEventsUsersSelector = atomFamily((eventId) =>
+  atom(async (get, set, updatedEventUsers) => {
+    const isLoadedEventId = get(
+      isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)
+    )
+    if (isLoadedEventId) {
+      const eventUsers = await get(asyncEventsUsersByEventIdAtom(eventId))
+      // Обновляем записи у пользователей
+      const newEventUsers = await Promise.all(
+        eventUsers.map(async (eventUser) => {
           const updatedEventUser = updatedEventUsers.find(
             ({ _id }) => eventUser._id === _id
           )
           if (updatedEventUser) {
-            const isLoadedUserId = getRecoil(
+            const isLoadedUserId = get(
               isLoadedAtom(
                 'asyncEventsUsersByUserIdAtom' + updatedEventUser.userId
               )
             )
             if (isLoadedUserId) {
-              const eventsUser = get(
+              const eventsUser = await get(
                 asyncEventsUsersByUserIdAtom(updatedEventUser.userId)
               )
               const updatedEventsUser = eventsUser.map((eventUser) => {
@@ -47,26 +44,27 @@ const updateEventsUsersSelector = selectorFamily({
           }
           return eventUser
         })
-        // Заменяем записи у мероприятия
-        set(asyncEventsUsersByEventIdAtom(eventId), newEventUsers)
+      )
+      // Заменяем записи у мероприятия
+      set(asyncEventsUsersByEventIdAtom(eventId), newEventUsers)
 
-        // Обновляем все eventUsers если необходимо
-        const isLoadedEventsUsersAll = getRecoil(
-          isLoadedAtom('asyncEventsUsersAllAtom')
+      // Обновляем все eventUsers если необходимо
+      const isLoadedEventsUsersAll = get(
+        isLoadedAtom('asyncEventsUsersAllAtom')
+      )
+
+      if (isLoadedEventsUsersAll) {
+        const eventsUsers = await get(asyncEventsUsersAllAtom)
+        const newEventUsersIds = newEventUsers.map(({ _id }) => _id)
+        const cleanedEventsUsers = eventsUsers.filter(
+          ({ _id }) => !newEventUsersIds.includes(_id)
         )
+        const updatedEventsUsers = [...cleanedEventsUsers, ...newEventUsers]
 
-        if (isLoadedEventsUsersAll) {
-          const eventsUsers = get(asyncEventsUsersAllAtom)
-          const newEventUsersIds = newEventUsers.map(({ _id }) => _id)
-          const cleanedEventsUsers = eventsUsers.filter(
-            ({ _id }) => !newEventUsersIds.includes(_id)
-          )
-          const updatedEventsUsers = [...cleanedEventsUsers, ...newEventUsers]
-
-          set(asyncEventsUsersAllAtom, updatedEventsUsers)
-        }
+        set(asyncEventsUsersAllAtom, updatedEventsUsers)
       }
-    },
-})
+    }
+  })
+)
 
 export default updateEventsUsersSelector

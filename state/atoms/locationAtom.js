@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const locationAtom = atom({
-  key: 'locationAtom', // unique ID (with respect to other atoms/selectors)
-  default: 'krasnoyarsk', // default value (aka initial value)
-})
+const locationAtom = atom('krasnoyarsk')
 
 export default locationAtom

@@ -14,7 +14,7 @@ import 'react-medium-image-zoom/dist/styles.css'
 // import 'quill/dist/quill.bubble.css'
 import 'quill/dist/quill.snow.css'
 import 'react-toastify/dist/ReactToastify.css'
-import { RecoilEnv, RecoilRoot } from 'recoil'
+// import { RecoilEnv, RecoilRoot } from 'jotai'
 import RecoilNexus from 'recoil-nexus'
 import '../styles/burger.css'
 import '../styles/global.css'
@@ -30,9 +30,9 @@ import { LazyMotion, domAnimation } from 'framer-motion'
 import localFont from 'next/font/local'
 import PWAChecker from '@components/PWAChecker'
 import { Provider as JotaiProvider } from 'jotai'
-import store from '@state/jotai/store'
+import store from '@state/store'
 
-RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
+// RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
 // Create a theme instance.
 const theme = createTheme({
@@ -276,41 +276,41 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       </Head>
       <SessionProvider session={session} refetchInterval={5 * 60}>
         <JotaiProvider store={store}>
-          <RecoilRoot>
-            <RecoilNexus />
-            <ThemeProvider theme={theme}>
-              <div
-                className={`${lora.variable} ${adlery.variable} ${adleryProSwash.variable} ${futura.variable} ${futuraDemi.variable} font-futura`} // ${enchants.variable} ${frankinity.variable}
-              >
-                {/* <div
+          {/* <RecoilRoot> */}
+          <RecoilNexus />
+          <ThemeProvider theme={theme}>
+            <div
+              className={`${lora.variable} ${adlery.variable} ${adleryProSwash.variable} ${futura.variable} ${futuraDemi.variable} font-futura`} // ${enchants.variable} ${frankinity.variable}
+            >
+              {/* <div
               className={`${futura.variable} ${adlery.variable} font-futura`}
             > */}
-                <SnackbarProvider maxSnack={4}>
-                  {/* <Script
+              <SnackbarProvider maxSnack={4}>
+                {/* <Script
                 src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"
                 strategy="beforeInteractive"
               /> */}
-                  {/* <Script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.5/dist/quill.js"></Script> */}
-                  {/* <Script src="https://cdn.jsdelivr.net/npm/quill-emoji@0.2.0/dist/quill-emoji.js"></Script> */}
-                  {/* <CssBaseline /> */}
-                  <LazyMotion features={domAnimation}>
-                    <Suspense
-                      fallback={
-                        <div className="z-10 flex items-center justify-center w-screen h-screen">
-                          <LoadingSpinner text="идет загрузка...." />
-                        </div>
-                      }
-                    >
-                      <PWAChecker>
-                        <Component {...pageProps} />
-                      </PWAChecker>
-                    </Suspense>
-                  </LazyMotion>
-                </SnackbarProvider>
-                {/* </div> */}
-              </div>
-            </ThemeProvider>
-          </RecoilRoot>
+                {/* <Script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.5/dist/quill.js"></Script> */}
+                {/* <Script src="https://cdn.jsdelivr.net/npm/quill-emoji@0.2.0/dist/quill-emoji.js"></Script> */}
+                {/* <CssBaseline /> */}
+                <LazyMotion features={domAnimation}>
+                  <Suspense
+                    fallback={
+                      <div className="z-10 flex items-center justify-center w-screen h-screen">
+                        <LoadingSpinner text="идет загрузка...." />
+                      </div>
+                    }
+                  >
+                    <PWAChecker>
+                      <Component {...pageProps} />
+                    </PWAChecker>
+                  </Suspense>
+                </LazyMotion>
+              </SnackbarProvider>
+              {/* </div> */}
+            </div>
+          </ThemeProvider>
+          {/* </RecoilRoot> */}
         </JotaiProvider>
       </SessionProvider>
     </>

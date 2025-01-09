@@ -9,7 +9,7 @@ import allClosedEventsSelector from '@state/selectors/allClosedEventsSelector'
 import arrayOfSumOfPaymentsForClosedEventsByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsByDateSelector'
 import arrayOfSumOfPaymentsForInternalByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForInternalByDateSelector'
 import { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const monthsObj = {
   янв: { name: 'Январь', index: 0 },
@@ -85,18 +85,18 @@ const StatisticsFinanceContent = () => {
   const [month, setMonth] = useState()
   const [year, setYear] = useState()
 
-  const allClosedEvents = useRecoilValue(allClosedEventsSelector)
+  const allClosedEvents = useAtomValue(allClosedEventsSelector)
   const filteredEvents = allClosedEvents.filter(({ dateStart }) => {
     const yearOfEvent = new Date(dateStart).getFullYear()
     const monthOfEvent = new Date(dateStart).getMonth()
     return monthOfEvent === month && yearOfEvent === year
   })
 
-  const incomeOfEventsByDate = useRecoilValue(
+  const incomeOfEventsByDate = useAtomValue(
     arrayOfSumOfPaymentsForClosedEventsByDateSelector
   )
 
-  const incomeOfInternalByDate = useRecoilValue(
+  const incomeOfInternalByDate = useAtomValue(
     arrayOfSumOfPaymentsForInternalByDateSelector
   )
 

@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
-import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
 
 const ToggleButtons = ({

@@ -10,7 +10,7 @@ import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
 import UserKeyValueItem from './historyKeyValuesItems/UserKeyValueItem'
 import PaymentKeyValueItem from './historyKeyValuesItems/PaymentKeyValueItem'
@@ -244,7 +244,7 @@ const userActionsHistoryFunc = (userId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const user = useRecoilValue(userSelector(userId))
+    const user = useAtomValue(userSelector(userId))
     const [userActionsHistory, setUserActionsHistory] = useState()
     const [periodHours, setPeriodHours] = useState(24)
 

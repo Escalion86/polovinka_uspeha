@@ -3,11 +3,10 @@ import { useAtomValue } from 'jotai'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
-import { useRecoilValue } from 'recoil'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 
 const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   const eventStatusFilterFull = loggedUserActiveRole?.events?.statusFilterFull
 

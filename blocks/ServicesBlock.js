@@ -1,12 +1,12 @@
 import BlockContainer from '@components/BlockContainer'
 import Button from '@components/Button'
 import Masonry from '@components/Masonry'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ServiceItem = ({ serviceId, title, shortDescription, images }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   return (
     <div className="flex-col w-full max-w-[430px] overflow-hidden bg-white rounded-lg shadow-xl gap-y-1">
       {images && (
@@ -35,7 +35,7 @@ const ServiceItem = ({ serviceId, title, shortDescription, images }) => {
 }
 
 const ServicesBlock = () => {
-  const filteredServices = useRecoilValue(filteredServicesSelector)
+  const filteredServices = useAtomValue(filteredServicesSelector)
   if (!filteredServices || filteredServices.length === 0) return null
   return (
     <>

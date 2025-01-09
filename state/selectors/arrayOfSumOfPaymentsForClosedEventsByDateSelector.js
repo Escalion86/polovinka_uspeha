@@ -1,27 +1,25 @@
-import { selector } from 'recoil'
+import { atom } from 'jotai'
+
 import allClosedEventsSelector from './allClosedEventsSelector'
 import totalIncomeOfEventSelector from './totalIncomeOfEventSelector'
 
-export const arrayOfSumOfPaymentsForClosedEventsByDateSelector = selector({
-  key: 'arrayOfSumOfPaymentsForClosedEventsByDateSelector',
-  get: ({ get }) => {
+export const arrayOfSumOfPaymentsForClosedEventsByDateSelector = atom(
+  async (get) => {
     const array = {}
-    get(allClosedEventsSelector).forEach((event) => {
-      const incomeOfEvent = get(totalIncomeOfEventSelector(event._id))
-      const eventDate = event.dateStart
-      const yearOfEvent = new Date(eventDate).getFullYear()
-      const monthOfEvent = new Date(eventDate).getMonth()
-      if (!array[yearOfEvent])
-        array[yearOfEvent] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      array[yearOfEvent][monthOfEvent] += incomeOfEvent
-    })
+    const allClosedEvents = get(allClosedEventsSelector)
+    await Promise.all(
+      allClosedEvents.forEach(async (event) => {
+        const incomeOfEvent = await get(totalIncomeOfEventSelector(event._id))
+        const eventDate = event.dateStart
+        const yearOfEvent = new Date(eventDate).getFullYear()
+        const monthOfEvent = new Date(eventDate).getMonth()
+        if (!array[yearOfEvent])
+          array[yearOfEvent] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        array[yearOfEvent][monthOfEvent] += incomeOfEvent
+      })
+    )
     return array
-  },
-  // set:
-  //   (id) =>
-  //   ({ set }, event) => {
-  //     set(eventsSelector, event)
-  //   },
-})
+  }
+)
 
 export default arrayOfSumOfPaymentsForClosedEventsByDateSelector

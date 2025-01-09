@@ -5,15 +5,15 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 import { getNounReviews } from '@helpers/getNoun'
 import ReviewCard from '@layouts/cards/ReviewCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ReviewsContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const reviews = useRecoilValue(reviewsAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const reviews = useAtomValue(reviewsAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.generalPage?.reviews
 
   return (

@@ -6,8 +6,8 @@ import LoadingSpinner from './LoadingSpinner'
 import { deleteData, getData } from '@helpers/CRUD'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import { useAtomValue } from 'jotai'
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import useSnackbar from '@helpers/useSnackbar'
@@ -31,7 +31,7 @@ const SelectTemplate = ({
   templateToCreateNew,
   onSave,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const snackbar = useSnackbar()
 
   const [isLoading, setIsLoading] = useState(true)

@@ -4,7 +4,7 @@ import { postData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const newTemplateFunc = (tool, template, onSave) => {
   const NewTemplateFuncModal = ({
@@ -15,7 +15,7 @@ const newTemplateFunc = (tool, template, onSave) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const [name, setName] = useState('')
     const snackbar = useSnackbar()
 

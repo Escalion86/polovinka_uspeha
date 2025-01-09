@@ -1,12 +1,12 @@
 import Button from '@components/Button'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import cn from 'classnames'
 import { useRouter } from 'next/router'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 
 const EventButtonSignIn = ({
@@ -15,13 +15,13 @@ const EventButtonSignIn = ({
   noButtonIfAlreadySignIn,
   thin,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const event = useRecoilValue(eventSelector(eventId))
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const event = useAtomValue(eventSelector(eventId))
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
 
   const router = useRouter()
 
-  const eventLoggedUserStatus = useRecoilValue(
+  const eventLoggedUserStatus = useAtomValue(
     loggedUserToEventStatusSelector(eventId)
   )
 

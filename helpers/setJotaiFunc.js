@@ -1,4 +1,4 @@
-import store from '@state/jotai/store'
+import store from '@state/store'
 
 const setJotaiFunc = (atom) => (value) => store.set(atom, value)
 

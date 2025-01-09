@@ -1,22 +1,21 @@
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import eventNotParticipantsWithPaymentsSelector from './eventNotParticipantsWithPaymentsSelector'
 import paymentsOfEventFromAndToUsersSelector from './paymentsOfEventFromAndToUsersSelector'
 
-export const paymentsOfEventFromNotParticipantsSelector = selectorFamily({
-  key: 'paymentsOfEventFromNotParticipantsSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return []
-      const paymentsOfEvent = get(paymentsOfEventFromAndToUsersSelector(id))
-      const notParticipantsIdsWithPayments = get(
-        eventNotParticipantsWithPaymentsSelector(id)
-      )
+export const paymentsOfEventFromNotParticipantsSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return []
+    const paymentsOfEvent = await get(paymentsOfEventFromAndToUsersSelector(id))
+    const notParticipantsIdsWithPayments = await get(
+      eventNotParticipantsWithPaymentsSelector(id)
+    )
 
-      return paymentsOfEvent.filter((payment) =>
-        notParticipantsIdsWithPayments.includes(payment.userId)
-      )
-    },
-})
+    return paymentsOfEvent.filter((payment) =>
+      notParticipantsIdsWithPayments.includes(payment.userId)
+    )
+  })
+)
 
 export default paymentsOfEventFromNotParticipantsSelector

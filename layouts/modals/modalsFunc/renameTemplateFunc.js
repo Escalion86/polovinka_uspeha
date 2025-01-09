@@ -4,7 +4,7 @@ import { postData, putData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const renameTemplateFunc = (templateId, oldName = '', onSuccess) => {
   const RenameTemplateFuncModal = ({

@@ -15,7 +15,7 @@ import cn from 'classnames'
 import Image from 'next/image'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowContainer, Popover } from 'react-tiny-popover'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import Tilt from 'react-parallax-tilt'
 
 const place = (count, places) => {
@@ -206,14 +206,14 @@ const Achivement = ({ name, place, tooltipText }) => {
 }
 
 const UserStatisticsContent = () => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const events = useRecoilValue(eventsAtom)
-  const directions = useRecoilValue(directionsAtom)
-  const eventsUser = useRecoilValue(
+  // const modalsFunc = useAtomValue(modalsFuncAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const events = useAtomValue(eventsAtom)
+  const directions = useAtomValue(directionsAtom)
+  const eventsUser = useAtomValue(
     asyncEventsUsersByUserIdAtom(loggedUserActive._id)
   )
-  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const siteSettings = useAtomValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
   const userEventsIds = eventsUser.map((eventUser) => eventUser.eventId)
 

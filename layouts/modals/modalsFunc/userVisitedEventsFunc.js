@@ -2,7 +2,7 @@ import FormWrapper from '@components/FormWrapper'
 import { SelectEventList } from '@components/SelectItemList'
 import UserNameById from '@components/UserNameById'
 import eventsUsersVisitedByUserIdSelector from '@state/selectors/eventsUsersVisitedByUserIdSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const userVisitedEventsFunc = (userId, clone = false) => {
   const UserVisitedEventsModal = ({
@@ -13,9 +13,7 @@ const userVisitedEventsFunc = (userId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const eventUsers = useRecoilValue(
-      eventsUsersVisitedByUserIdSelector(userId)
-    )
+    const eventUsers = useAtomValue(eventsUsersVisitedByUserIdSelector(userId))
 
     const eventsAsParticipant = eventUsers.filter(
       (eventUser) => eventUser.status === 'participant'

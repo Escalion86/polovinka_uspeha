@@ -1,6 +1,6 @@
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const PriceDiscount = ({
   item,
@@ -10,7 +10,7 @@ const PriceDiscount = ({
   priceForStatus,
   mobileVertical,
 }) => {
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
+  const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
   if (!item) return null
 
   const fixedUserStatus =

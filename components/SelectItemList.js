@@ -1,8 +1,8 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import Label from './Label'
 import {
   SelectEvent,
@@ -62,7 +62,7 @@ export const SelectItemList = ({
   className,
   showCountNumber,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   if (!itemsId) itemsId = []
 

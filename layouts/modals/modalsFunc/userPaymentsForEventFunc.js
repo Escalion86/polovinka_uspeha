@@ -3,7 +3,7 @@ import UserName from '@components/UserName'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventSelector from '@state/selectors/eventSelector'
 import userSelector from '@state/selectors/userSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const userPaymentsForEventFunc = (userId, eventId) => {
   const UserPaymentsForEventModal = ({
@@ -14,10 +14,10 @@ const userPaymentsForEventFunc = (userId, eventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const user = useRecoilValue(userSelector(userId))
-    const event = useRecoilValue(eventSelector(eventId))
+    const user = useAtomValue(userSelector(userId))
+    const event = useAtomValue(eventSelector(eventId))
 
-    // const eventUsers = useRecoilValue(
+    // const eventUsers = useAtomValue(
     //   eventsUsersSignedUpByUserIdSelector(userId)
     // )
     // const sortedEventUsers = [...eventUsers]

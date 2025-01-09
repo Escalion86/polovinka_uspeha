@@ -4,7 +4,7 @@ import { getData } from '@helpers/CRUD'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import UserKeyValueItem from './historyKeyValuesItems/UserKeyValueItem'
 import { userKeys } from './historyKeyValuesItems/keys'
 import UserName from '@components/UserName'
@@ -20,7 +20,7 @@ const userHistoryFunc = (userId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const user = useRecoilValue(userSelector(userId))
+    const user = useAtomValue(userSelector(userId))
     const [userHistory, setUserHistory] = useState()
     const [periodHours, setPeriodHours] = useState(24)
 

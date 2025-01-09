@@ -1,9 +1,9 @@
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import birthDateToAge from './birthDateToAge'
-import { getRecoil } from 'recoil-nexus'
 import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
 import subEventsSummator from './subEventsSummator'
 import directionSelector from '@state/selectors/directionSelector'
+import store from '@state/store'
 
 const visibleEventsForUser = (
   events,
@@ -32,7 +32,7 @@ const visibleEventsForUser = (
   } else {
     if (seeAll) return events
 
-    const serverDate = new Date(getRecoil(serverSettingsAtom)?.dateTime)
+    const serverDate = new Date(store.get(serverSettingsAtom)?.dateTime)
     const userAge = new Number(
       birthDateToAge(user.birthday, serverDate, false, false)
     )
@@ -41,7 +41,7 @@ const visibleEventsForUser = (
     return events.filter((event) => {
       if (event.blank) return true
       const subEventsSum = subEventsSummator(event.subEvents)
-      const direction = getRecoil(directionSelector(event.directionId))
+      const direction = store.get(directionSelector(event.directionId))
       const rules = direction?.rules
 
       if (

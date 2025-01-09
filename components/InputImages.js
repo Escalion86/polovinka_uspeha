@@ -4,12 +4,12 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import arrayMove from '@helpers/arrayMove'
 import { sendImage } from '@helpers/cloudinary'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import Zoom from 'react-medium-image-zoom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
@@ -36,8 +36,8 @@ const InputImages = ({
   onLoading,
   onLoaded,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const { imageFolder } = useRecoilValue(locationPropsSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const { imageFolder } = useAtomValue(locationPropsSelector)
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
   const addImageClick = () => {

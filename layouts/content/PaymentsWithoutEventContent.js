@@ -8,11 +8,11 @@ import sortFunctions from '@helpers/sortFunctions'
 import PaymentsList from '@layouts/lists/PaymentsList'
 import paymentsOfEventWithoutEventIdSelector from '@state/selectors/paymentsOfEventWithoutEventIdSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const PaymentsWithoutEventContent = () => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const paymentsWithoutEvent = useRecoilValue(
+  // const modalsFunc = useAtomValue(modalsFuncAtom)
+  const paymentsWithoutEvent = useAtomValue(
     paymentsOfEventWithoutEventIdSelector
   )
 

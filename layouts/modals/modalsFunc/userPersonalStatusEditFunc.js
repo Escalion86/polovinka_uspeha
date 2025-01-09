@@ -4,7 +4,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 
 const userPersonalStatusEditFunc = (userId) => {
   const UserPersonalStatusEditModal = ({
@@ -17,9 +17,9 @@ const userPersonalStatusEditFunc = (userId) => {
     setTopLeftComponent,
   }) => {
     const [loggedUserActive, setLoggedUserActive] =
-      useRecoilState(loggedUserActiveAtom)
-    const user = useRecoilValue(userSelector(userId))
-    const setUser = useRecoilValue(itemsFuncAtom).user.set
+      useAtom(loggedUserActiveAtom)
+    const user = useAtomValue(userSelector(userId))
+    const setUser = useAtomValue(itemsFuncAtom).user.set
 
     const [personalStatus, setPersonalStatus] = useState(user?.personalStatus)
 

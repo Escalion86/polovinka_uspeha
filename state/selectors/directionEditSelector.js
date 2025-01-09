@@ -1,11 +1,11 @@
+import { atom } from 'jotai'
+
 import { DEFAULT_DIRECTION } from '@helpers/constants'
 import directionsAtom from '@state/atoms/directionsAtom'
-import { selector } from 'recoil'
 
-const directionEditSelector = selector({
-  key: 'directionEditSelector',
-  get: () => DEFAULT_DIRECTION,
-  set: ({ set, get }, newItem) => {
+const directionEditSelector = atom(
+  () => DEFAULT_DIRECTION,
+  (get, set, newItem) => {
     const items = get(directionsAtom)
     if (!newItem?._id) return
     const findedItem = items.find((event) => event._id === newItem._id)
@@ -20,7 +20,7 @@ const directionEditSelector = selector({
       // Если такого атома нет и мы добавляем новый, то просто добавляем атом в список
       set(directionsAtom, [...items, newItem])
     }
-  },
-})
+  }
+)
 
 export default directionEditSelector

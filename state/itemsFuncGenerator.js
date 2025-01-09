@@ -1,7 +1,6 @@
 import { postData, putData, deleteData } from '@helpers/CRUD'
 import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
 
-import { setRecoil } from 'recoil-nexus'
 import addErrorModalSelector from './selectors/addErrorModalSelector'
 import setLoadingSelector from './selectors/setLoadingSelector'
 import setNotLoadingSelector from './selectors/setNotLoadingSelector'
@@ -35,6 +34,8 @@ import signUpUserSelector from './async/signUpUserSelector'
 import setEventUserSelector from './async/setEventUserSelector'
 import rolesAtom from './atoms/rolesAtom'
 import updateEventsUsersSelector from './async/updateEventsUsersSelector'
+
+import store from './store'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -183,9 +184,9 @@ const messages = {
   },
 }
 
-const setFunc = (selector) => (value) => setRecoil(selector, value)
+const setFunc = (selector) => (value) => store.set(selector, value)
 const setFamilyFunc = (selector) => (id, value) =>
-  setRecoil(selector(id), value)
+  store.set(selector(id), value)
 
 const props = {
   setLoading: setFunc(isSiteLoadingAtom),

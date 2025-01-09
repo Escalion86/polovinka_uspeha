@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const isSiteLoadingAtom = atom({
-  key: 'isSiteLoading',
-  default: true,
-})
+const isSiteLoadingAtom = atom(true)
 
 export default isSiteLoadingAtom

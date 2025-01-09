@@ -2,7 +2,7 @@ import FormWrapper from '@components/FormWrapper'
 import { SelectPaymentList } from '@components/SelectItemList'
 import UserNameById from '@components/UserNameById'
 import paymentsByUserIdSelector from '@state/selectors/paymentsByUserIdSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const userPaymentsFunc = (userId, clone = false) => {
   const UserPaymentsModal = ({
@@ -13,7 +13,7 @@ const userPaymentsFunc = (userId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const userPayments = useRecoilValue(paymentsByUserIdSelector(userId))
+    const userPayments = useAtomValue(paymentsByUserIdSelector(userId))
 
     return (
       <FormWrapper flex className="flex flex-col gap-y-2">

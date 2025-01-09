@@ -20,7 +20,7 @@ import { EVENT_STATUSES } from '@helpers/constants'
 import eventPricesWithStatus from '@helpers/eventPricesWithStatus'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
@@ -31,7 +31,7 @@ import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSel
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 
 const TotalItem = ({ title, className, valueClassName, value }) => (
@@ -71,21 +71,21 @@ const UserPayment = ({
   readOnly,
   defaultPayDirection,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
-  const itemsFunc = useRecoilValue(itemsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const paymentsOfEvent = useAtomValue(paymentsByEventIdSelector(event._id))
+  const itemsFunc = useAtomValue(itemsFuncAtom)
   const setPaymentLink = itemsFunc.payment.link
   const setPaymentUnlink = itemsFunc.payment.unlink
-  const paymentsWithoutEventOfUser = useRecoilValue(
+  const paymentsWithoutEventOfUser = useAtomValue(
     paymentsOfEventWithoutEventIdByUserIdSelector(user._id)
   )
   const subEventSum = subEvent
     ? subEvent
-    : useRecoilValue(subEventsSumOfEventSelector(event._id))
+    : useAtomValue(subEventsSumOfEventSelector(event._id))
 
   const [isCollapsed, setIsCollapsed] = useState(true)
 
-  // const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
+  // const sumOfPaymentsWithoutEventOfUser = useAtomValue(
   //   sumOfPaymentsWithoutEventIdByUserIdSelector(user._id)
   // )
 
@@ -382,12 +382,12 @@ const UsersPayments = ({
   noEventPriceForUser,
   readOnly = false,
 }) => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  // const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
-  // const itemsFunc = useRecoilValue(itemsFuncAtom)
+  // const modalsFunc = useAtomValue(modalsFuncAtom)
+  // const paymentsOfEvent = useAtomValue(paymentsByEventIdSelector(event._id))
+  // const itemsFunc = useAtomValue(itemsFuncAtom)
   // const setPaymentLink = itemsFunc.payment.link
   // const setPaymentUnlink = itemsFunc.payment.unlink
-  // const paymentsFromNotParticipants = useRecoilValue(
+  // const paymentsFromNotParticipants = useAtomValue(
   //   paymentsOfEventFromNotParticipantsSelector(event._id)
   // )
   const arrayOfUsers = usersIds
@@ -451,17 +451,17 @@ const eventUsersPaymentsFunc = (eventId) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
-    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const statusEdit = loggedUserActiveRole?.events?.statusEdit
     const paymentsEdit = loggedUserActiveRole?.events?.paymentsEdit
 
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useAtomValue(eventSelector(eventId))
     const isEventClosed = isEventClosedFunc(event)
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
 
-    const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
+    const subEventSum = useAtomValue(subEventsSumOfEventSelector(event._id))
 
-    const paymentsOfEvent = useRecoilValue(paymentsByEventIdSelector(event._id))
+    const paymentsOfEvent = useAtomValue(paymentsByEventIdSelector(event._id))
 
     const paymentsToEvent = paymentsOfEvent.filter(
       (payments) => payments.payDirection === 'toEvent'
@@ -470,7 +470,7 @@ const eventUsersPaymentsFunc = (eventId) => {
       (payments) => payments.payDirection === 'fromEvent'
     )
 
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
 
     const eventParticipants = useMemo(
       () =>

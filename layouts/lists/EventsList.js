@@ -1,7 +1,7 @@
 // import EventCard from '@layouts/cards/EventCard'
 import dynamic from 'next/dynamic'
 const EventCard = dynamic(() => import('@layouts/cards/EventCard'))
-import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import { useAtomValue } from 'jotai'
 import ListWrapper from './ListWrapper'
 

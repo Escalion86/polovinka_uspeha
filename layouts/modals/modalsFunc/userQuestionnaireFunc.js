@@ -16,10 +16,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compareObjects from '@helpers/compareObjects'
 import { DEFAULT_QUESTIONNAIRE } from '@helpers/constants'
 import isObject from '@helpers/isObject'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import { uid } from 'uid'
 
 const CheckBoxItem = ({
@@ -236,7 +236,7 @@ const RadioBoxList = ({
     !list.includes(defaultValue) && !!defaultValue
   )
   const [ownItemInput, setOwnItemInput] = useState(
-    list.includes(defaultValue) ? '' : defaultValue ?? ''
+    list.includes(defaultValue) ? '' : (defaultValue ?? '')
   )
 
   return (
@@ -588,8 +588,8 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
     stateDefault[item.key] =
       isObject(value) && value.hasOwnProperty(item.key)
         ? value[item.key]
-        : item.defaultValue ??
-            ['checkList', 'customList', 'images'].includes(item.type)
+        : (item.defaultValue ??
+            ['checkList', 'customList', 'images'].includes(item.type))
           ? []
           : null
     // stateDefault.push(item.show ? item.defaultValue : undefined)
@@ -605,10 +605,10 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
     setBottomLeftButtonProps,
     setBottomLeftComponent,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    // const user = useRecoilValue(userSelector(userId))
-    // const setUser = useRecoilValue(itemsFuncAtom).user.set
-    // const users = useRecoilValue(usersAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    // const user = useAtomValue(userSelector(userId))
+    // const setUser = useAtomValue(itemsFuncAtom).user.set
+    // const users = useAtomValue(usersAtom)
 
     const [state, setState] = useState(stateDefault)
     const [errors, setErrors] = useState({})

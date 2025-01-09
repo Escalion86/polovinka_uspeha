@@ -1,18 +1,18 @@
+import { atom } from 'jotai'
+
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import { selector } from 'recoil'
 
-export const eventsWithLikesSelector = selector({
-  key: 'eventsWithLikesSelector',
-  get: ({ get }) => {
-    const eventsWithLikes = get(eventsAtom)
-      .filter(({ likes }) => likes)
-      .map((event) => {
-        const eventUsers = get(asyncEventsUsersByEventIdAtom(event._id))
-        return { ...event, usersLikes: eventUsers.map(({ likes }) => likes) }
-      })
-    return eventsWithLikes
-  },
+export const eventsWithLikesSelector = atom(async (get) => {
+  const eventsWithLikes = get(eventsAtom).filter(({ likes }) => likes)
+
+  const preparedEventsWithLikes = await Promise.all(
+    eventsWithLikes.map(async (event) => {
+      const eventUsers = await get(asyncEventsUsersByEventIdAtom(event._id))
+      return { ...event, usersLikes: eventUsers.map(({ likes }) => likes) }
+    })
+  )
+  return preparedEventsWithLikes
 })
 
 export default eventsWithLikesSelector

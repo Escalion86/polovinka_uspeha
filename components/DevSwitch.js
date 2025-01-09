@@ -3,32 +3,32 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import showDeviceAtom from '@state/atoms/showDeviceAtom'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 import CheckBox from './CheckBox'
 import loggedUserRealRoleSelector from '@state/selectors/loggedUserRealRoleSelector'
 import rolesAtom from '@state/atoms/rolesAtom'
 import Button from './Button'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 // import usersAtom from '@state/atoms/usersAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const DevSwitch = () => {
-  const roles = useRecoilValue(rolesAtom)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  // const users = useRecoilValue(usersAtom)
-  const loggedUserRealRole = useRecoilValue(loggedUserRealRoleSelector)
-  const loggedUser = useRecoilValue(loggedUserAtom)
-  const [loggedUserActive, setLoggedUserActive] =
-    useRecoilState(loggedUserActiveAtom)
+  const roles = useAtomValue(rolesAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  // const users = useAtomValue(usersAtom)
+  const loggedUserRealRole = useAtomValue(loggedUserRealRoleSelector)
+  const loggedUser = useAtomValue(loggedUserAtom)
+  const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
 
-  const [loggedUserActiveRoleName, setLoggedUserActiveRoleName] =
-    useRecoilState(loggedUserActiveRoleNameAtom)
-  const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
+  const [loggedUserActiveRoleName, setLoggedUserActiveRoleName] = useAtom(
+    loggedUserActiveRoleNameAtom
+  )
+  const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useAtom(
     loggedUserActiveStatusAtom
   )
 
-  const [showDevice, setShowDevice] = useRecoilState(showDeviceAtom)
+  const [showDevice, setShowDevice] = useAtom(showDeviceAtom)
 
   if (!loggedUserRealRole?.dev) return null
 

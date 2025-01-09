@@ -1,11 +1,11 @@
 import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const EventProfit = ({ eventId, className }) => {
-  const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
-  const expectedIncome = useRecoilValue(expectedIncomeOfEventSelector(eventId))
+  const totalIncome = useAtomValue(totalIncomeOfEventSelector(eventId))
+  const expectedIncome = useAtomValue(expectedIncomeOfEventSelector(eventId))
   return (
     <div
       className={cn(
@@ -13,10 +13,10 @@ const EventProfit = ({ eventId, className }) => {
         totalIncome === 0
           ? 'bg-gray-600'
           : totalIncome > 0
-          ? totalIncome > expectedIncome
-            ? 'bg-blue-700'
-            : 'bg-success'
-          : 'bg-danger',
+            ? totalIncome > expectedIncome
+              ? 'bg-blue-700'
+              : 'bg-success'
+            : 'bg-danger',
         className
       )}
     >

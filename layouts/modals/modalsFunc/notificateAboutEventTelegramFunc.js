@@ -3,8 +3,7 @@ import { getData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import eventSelector from '@state/selectors/eventSelector'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-// import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const notificateAboutEventTelegramFunc = (eventId) => {
   const NotificationsTelegramModal = ({
@@ -15,7 +14,7 @@ const notificateAboutEventTelegramFunc = (eventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useAtomValue(eventSelector(eventId))
     const { success, error } = useSnackbar()
 
     const onClickConfirm = async () => {

@@ -2,7 +2,7 @@ import BlockContainer from '@components/BlockContainer'
 import Masonry from '@components/Masonry'
 import textAge from '@helpers/textAge'
 import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const Review = ({ review, style }) => (
   <div
@@ -20,7 +20,7 @@ const Review = ({ review, style }) => (
 )
 
 const ReviewsBlock = () => {
-  const filteredReviews = useRecoilValue(filteredReviewsSelector)
+  const filteredReviews = useAtomValue(filteredReviewsSelector)
   if (!filteredReviews || filteredReviews.length === 0) return null
   return (
     <BlockContainer

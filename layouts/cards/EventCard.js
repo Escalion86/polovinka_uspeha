@@ -11,17 +11,16 @@ import TextInRing from '@components/TextInRing'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import eventStatusFunc from '@helpers/eventStatus'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import errorAtom from '@state/atoms/errorAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
-import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
-import { useRecoilValue } from 'recoil'
 import EventCardSkeleton from './Skeletons/EventCardSkeleton'
 import eventSelector from '@state/selectors/eventSelector'
 import Venzel1 from 'svg/venzels/1'
@@ -38,17 +37,17 @@ const EventCard = ({
   // const widthNum = useWindowDimensionsTailwindNum()
   const widthNum = useAtomValue(windowDimensionsNumSelector)
 
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const event = useRecoilValue(eventSelector(eventId))
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const event = useAtomValue(eventSelector(eventId))
 
   const eventStatus = eventStatusFunc(event)
 
-  const direction = useRecoilValue(directionSelector(event?.directionId))
-  const loading = useRecoilValue(loadingAtom('event' + eventId))
-  const error = useRecoilValue(errorAtom('event' + eventId))
-  const itemFunc = useRecoilValue(itemsFuncAtom)
-  const subEventSum = useRecoilValue(subEventsSumOfEventSelector(eventId))
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const direction = useAtomValue(directionSelector(event?.directionId))
+  const loading = useAtomValue(loadingAtom('event' + eventId))
+  const error = useAtomValue(errorAtom('event' + eventId))
+  const itemFunc = useAtomValue(itemsFuncAtom)
+  const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const canEdit = loggedUserActiveRole?.events?.edit
 
   if (!event) return null
@@ -72,9 +71,9 @@ const EventCard = ({
       </div>
     )
 
-  // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+  // const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
 
-  // const eventLoggedUserStatus = useRecoilValue(
+  // const eventLoggedUserStatus = useAtomValue(
   //   loggedUserToEventStatusSelector(eventId)
   // )
 
@@ -82,7 +81,7 @@ const EventCard = ({
   //   .filter((item) => item.user && item.status === 'assistant')
   //   .map((item) => item.user)
 
-  // const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
+  // const eventAssistants = useAtomValue(eventAssistantsSelector(eventId))
 
   // const formatedAddress = formatAddress(event.address)
 
@@ -351,8 +350,8 @@ const EventCard = ({
 
 const EventCardWrapper = (props) => {
   // const { changeStyle = 'laptop', style, hidden, eventId, noButtons } = props
-  // const widthNum = useRecoilValue(windowDimensionsNumSelector)
-  // const loading = useRecoilValue(loadingAtom('event' + eventId))
+  // const widthNum = useAtomValue(windowDimensionsNumSelector)
+  // const loading = useAtomValue(loadingAtom('event' + eventId))
 
   return (
     <Suspense fallback={<EventCardSkeleton />}>

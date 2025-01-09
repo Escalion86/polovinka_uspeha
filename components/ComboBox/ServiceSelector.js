@@ -1,6 +1,6 @@
 import ComboBox from '@components/ComboBox'
 import servicesAtom from '@state/atoms/servicesAtom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ServiceSelector = ({
   value,
@@ -11,7 +11,7 @@ const ServiceSelector = ({
   activePlaceholder,
   fullWidth,
 }) => {
-  const services = useRecoilValue(servicesAtom)
+  const services = useAtomValue(servicesAtom)
   const items = services.map((item, index) => ({
     name: item.title,
     value: item._id,

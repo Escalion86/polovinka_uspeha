@@ -8,11 +8,11 @@ import sortFunctions from '@helpers/sortFunctions'
 import PaymentsList from '@layouts/lists/PaymentsList'
 import paymentsWithoutUserWritingToEventSelector from '@state/selectors/paymentsWithoutUserWritingToEventSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const PaymentsNotParticipantsEventContent = () => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const paymentsWithoutUserWritingToEvent = useRecoilValue(
+  // const modalsFunc = useAtomValue(modalsFuncAtom)
+  const paymentsWithoutUserWritingToEvent = useAtomValue(
     paymentsWithoutUserWritingToEventSelector
   )
 

@@ -1,14 +1,12 @@
-import directionsAtom from '@state/atoms/directionsAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-const filteredDirectionsSelector = selector({
-  key: 'filteredDirectionsSelector',
-  get: ({ get }) => {
-    const directions = get(directionsAtom)
-    return directions?.length > 0
-      ? directions.filter((direction) => direction.showOnSite)
-      : []
-  },
+import directionsAtom from '@state/atoms/directionsAtom'
+
+const filteredDirectionsSelector = atom((get) => {
+  const directions = get(directionsAtom)
+  return directions?.length > 0
+    ? directions.filter((direction) => direction.showOnSite)
+    : []
 })
 
 export default filteredDirectionsSelector

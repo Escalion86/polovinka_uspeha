@@ -1,5 +1,5 @@
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import ChipsSelector from './ChipsSelector'
 
 const EventTagsChipsSelector = ({
@@ -14,7 +14,7 @@ const EventTagsChipsSelector = ({
   placeholder,
   fullWidth,
 }) => {
-  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const siteSettings = useAtomValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
   return (
     <ChipsSelector

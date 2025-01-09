@@ -1,6 +1,6 @@
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons/faEnvelope'
@@ -66,7 +66,7 @@ const ContactsIconsButtons = ({
   forceShowAll,
 }) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   const canSeeAllContacts =
     forceShowAll || loggedUserActiveRole?.users?.seeAllContacts

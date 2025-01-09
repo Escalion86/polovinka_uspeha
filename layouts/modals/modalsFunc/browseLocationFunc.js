@@ -6,7 +6,7 @@ import locationAtom from '@state/atoms/locationAtom'
 import cn from 'classnames'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const Item = ({ towns = [], checked, onClick }) => (
   <div
@@ -52,7 +52,7 @@ const browseLocationFunc = () => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const location = useRecoilValue(locationAtom)
+    const location = useAtomValue(locationAtom)
     const [selectedLocation, setSelectedLocation] = useState(location)
     const router = useRouter()
 

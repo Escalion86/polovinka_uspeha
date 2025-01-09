@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const loggedUserActiveStatusAtom = atom({
-  key: 'loggedUserActiveStatus',
-  default: null,
-})
+const loggedUserActiveStatusAtom = atom(null)
 
 export default loggedUserActiveStatusAtom

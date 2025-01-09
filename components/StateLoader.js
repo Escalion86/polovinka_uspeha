@@ -1,4 +1,3 @@
-import { useRecoilState, useSetRecoilState } from 'recoil'
 import { useAtom, useSetAtom } from 'jotai'
 
 import { useEffect } from 'react'
@@ -33,28 +32,28 @@ import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import rolesAtom from '@state/atoms/rolesAtom'
 
-import additionalBlocksAtomJ from '@state/jotai/atoms/additionalBlocksAtom'
-import directionsAtomJ from '@state/jotai/atoms/directionsAtom'
-import eventsAtomJ from '@state/jotai/atoms/eventsAtom'
-import itemsFuncAtomJ from '@state/jotai/atoms/itemsFuncAtom'
-import loggedUserAtomJ from '@state/jotai/atoms/loggedUserAtom'
-import reviewsAtomJ from '@state/jotai/atoms/reviewsAtom'
-import usersAtomJ from '@state/jotai/atoms/usersAtom'
+// import additionalBlocksAtomJ from '@state/atoms/additionalBlocksAtom'
+// import directionsAtomJ from '@state/atoms/directionsAtom'
+// import eventsAtomJ from '@state/atoms/eventsAtom'
+// import itemsFuncAtomJ from '@state/atoms/itemsFuncAtom'
+// import loggedUserAtomJ from '@state/atoms/loggedUserAtom'
+// import reviewsAtomJ from '@state/atoms/reviewsAtom'
+// import usersAtomJ from '@state/atoms/usersAtom'
 
-import modalsFuncAtomJ from '@state/jotai/atoms/modalsFuncAtom'
-// import historiesAtomJ from '@state/jotai/atoms/historiesAtom'
-import isSiteLoadingAtomJ from '@state/jotai/atoms/isSiteLoadingAtom'
-import loggedUserActiveRoleNameAtomJ from '@state/jotai/atoms/loggedUserActiveRoleNameAtom'
-import loggedUserActiveStatusAtomJ from '@state/jotai/atoms/loggedUserActiveStatusAtom'
-import questionnairesAtomJ from '@state/jotai/atoms/questionnairesAtom'
-import questionnairesUsersAtomJ from '@state/jotai/atoms/questionnairesUsersAtom'
-import siteSettingsAtomJ from '@state/jotai/atoms/siteSettingsAtom'
-import servicesAtomJ from '@state/jotai/atoms/servicesAtom'
-import modeAtomJ from '@state/jotai/atoms/modeAtom'
-import serverSettingsAtomJ from '@state/jotai/atoms/serverSettingsAtom'
-import locationAtomJ from '@state/jotai/atoms/locationAtom'
-import loggedUserActiveAtomJ from '@state/jotai/atoms/loggedUserActiveAtom'
-import rolesAtomJ from '@state/jotai/atoms/rolesAtom'
+// import modalsFuncAtomJ from '@state/atoms/modalsFuncAtom'
+// // import historiesAtomJ from '@state/atoms/historiesAtom'
+// import isSiteLoadingAtomJ from '@state/atoms/isSiteLoadingAtom'
+// import loggedUserActiveRoleNameAtomJ from '@state/atoms/loggedUserActiveRoleNameAtom'
+// import loggedUserActiveStatusAtomJ from '@state/atoms/loggedUserActiveStatusAtom'
+// import questionnairesAtomJ from '@state/atoms/questionnairesAtom'
+// import questionnairesUsersAtomJ from '@state/atoms/questionnairesUsersAtom'
+// import siteSettingsAtomJ from '@state/atoms/siteSettingsAtom'
+// import servicesAtomJ from '@state/atoms/servicesAtom'
+// import modeAtomJ from '@state/atoms/modeAtom'
+// import serverSettingsAtomJ from '@state/atoms/serverSettingsAtom'
+// import locationAtomJ from '@state/atoms/locationAtom'
+// import loggedUserActiveAtomJ from '@state/atoms/loggedUserActiveAtom'
+// import rolesAtomJ from '@state/atoms/rolesAtom'
 
 import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 // import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
@@ -75,69 +74,67 @@ const StateLoader = (props) => {
 
   const router = useRouter()
 
-  const [modalsFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
+  const [modalsFunc, setModalsFunc] = useAtom(modalsFuncAtom)
 
-  const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
-  const [mode, setMode] = useRecoilState(modeAtom)
-  const [location, setLocation] = useRecoilState(locationAtom)
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
-  const [loggedUserActive, setLoggedUserActive] =
-    useRecoilState(loggedUserActiveAtom)
-  const [loggedUserActiveRole, setLoggedUserActiveRole] = useRecoilState(
+  const [isSiteLoading, setIsSiteLoading] = useAtom(isSiteLoadingAtom)
+  const [mode, setMode] = useAtom(modeAtom)
+  const [location, setLocation] = useAtom(locationAtom)
+  const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
+  const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
+  const [loggedUserActiveRole, setLoggedUserActiveRole] = useAtom(
     loggedUserActiveRoleNameAtom
   )
-  const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useRecoilState(
+  const [loggedUserActiveStatus, setLoggedUserActiveStatus] = useAtom(
     loggedUserActiveStatusAtom
   )
-  const setEventsState = useSetRecoilState(eventsAtom)
-  const setDirectionsState = useSetRecoilState(directionsAtom)
-  const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
-  const setUsersState = useSetRecoilState(usersAtom)
-  const setReviewsState = useSetRecoilState(reviewsAtom)
-  const [siteSettingsState, setSiteSettingsState] =
-    useRecoilState(siteSettingsAtom)
-  const setRolesSettingsState = useSetRecoilState(rolesAtom)
-  // const setHistoriesState = useSetRecoilState(historiesAtom)
-  const setQuestionnairesState = useSetRecoilState(questionnairesAtom)
-  const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
-  const setServicesState = useSetRecoilState(servicesAtom)
-  // const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
-  const setServerSettingsState = useSetRecoilState(serverSettingsAtom)
+  const setEventsState = useSetAtom(eventsAtom)
+  const setDirectionsState = useSetAtom(directionsAtom)
+  const setAdditionalBlocksState = useSetAtom(additionalBlocksAtom)
+  // const setUsersState = useSetAtom(usersAtom)
+  const setReviewsState = useSetAtom(reviewsAtom)
+  const [siteSettingsState, setSiteSettingsState] = useAtom(siteSettingsAtom)
+  const setRolesSettingsState = useSetAtom(rolesAtom)
+  // const setHistoriesState = useSetAtom(historiesAtom)
+  const setQuestionnairesState = useSetAtom(questionnairesAtom)
+  const setQuestionnairesUsersState = useSetAtom(questionnairesUsersAtom)
+  const setServicesState = useSetAtom(servicesAtom)
+  // const setServicesUsersState = useSetAtom(servicesUsersAtom)
+  const setServerSettingsState = useSetAtom(serverSettingsAtom)
 
-  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
+  const setItemsFunc = useSetAtom(itemsFuncAtom)
 
   // JOTAI
 
-  const [modalsFuncJ, setModalsFuncJ] = useAtom(modalsFuncAtomJ)
+  // const [modalsFuncJ, setModalsFuncJ] = useAtom(modalsFuncAtomJ)
 
-  const [isSiteLoadingJ, setIsSiteLoadingJ] = useAtom(isSiteLoadingAtomJ)
-  const [modeJ, setModeJ] = useAtom(modeAtomJ)
-  const [locationJ, setLocationJ] = useAtom(locationAtomJ)
-  const [loggedUserJ, setLoggedUserJ] = useAtom(loggedUserAtomJ)
-  const [loggedUserActiveJ, setLoggedUserActiveJ] = useAtom(
-    loggedUserActiveAtomJ
-  )
-  const [loggedUserActiveRoleJ, setLoggedUserActiveRoleJ] = useAtom(
-    loggedUserActiveRoleNameAtomJ
-  )
-  const [loggedUserActiveStatusJ, setLoggedUserActiveStatusJ] = useAtom(
-    loggedUserActiveStatusAtomJ
-  )
-  const setEventsStateJ = useSetAtom(eventsAtomJ)
-  const setDirectionsStateJ = useSetAtom(directionsAtomJ)
-  const setAdditionalBlocksStateJ = useSetAtom(additionalBlocksAtomJ)
-  const setUsersStateJ = useSetAtom(usersAtomJ)
-  const setReviewsStateJ = useSetAtom(reviewsAtomJ)
-  const [siteSettingsStateJ, setSiteSettingsStateJ] = useAtom(siteSettingsAtomJ)
-  const setRolesSettingsStateJ = useSetAtom(rolesAtomJ)
-  // const setHistoriesStateJ = useSetAtom(historiesAtomJ)
-  const setQuestionnairesStateJ = useSetAtom(questionnairesAtomJ)
-  const setQuestionnairesUsersStateJ = useSetAtom(questionnairesUsersAtomJ)
-  const setServicesStateJ = useSetAtom(servicesAtomJ)
-  // const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
-  const setServerSettingsStateJ = useSetAtom(serverSettingsAtomJ)
+  // const [isSiteLoadingJ, setIsSiteLoadingJ] = useAtom(isSiteLoadingAtomJ)
+  // const [modeJ, setModeJ] = useAtom(modeAtomJ)
+  // const [locationJ, setLocationJ] = useAtom(locationAtomJ)
+  // const [loggedUserJ, setLoggedUserJ] = useAtom(loggedUserAtomJ)
+  // const [loggedUserActiveJ, setLoggedUserActiveJ] = useAtom(
+  //   loggedUserActiveAtomJ
+  // )
+  // const [loggedUserActiveRoleJ, setLoggedUserActiveRoleJ] = useAtom(
+  //   loggedUserActiveRoleNameAtomJ
+  // )
+  // const [loggedUserActiveStatusJ, setLoggedUserActiveStatusJ] = useAtom(
+  //   loggedUserActiveStatusAtomJ
+  // )
+  // const setEventsStateJ = useSetAtom(eventsAtomJ)
+  // const setDirectionsStateJ = useSetAtom(directionsAtomJ)
+  // const setAdditionalBlocksStateJ = useSetAtom(additionalBlocksAtomJ)
+  // const setUsersStateJ = useSetAtom(usersAtomJ)
+  // const setReviewsStateJ = useSetAtom(reviewsAtomJ)
+  // const [siteSettingsStateJ, setSiteSettingsStateJ] = useAtom(siteSettingsAtomJ)
+  // const setRolesSettingsStateJ = useSetAtom(rolesAtomJ)
+  // // const setHistoriesStateJ = useSetAtom(historiesAtomJ)
+  // const setQuestionnairesStateJ = useSetAtom(questionnairesAtomJ)
+  // const setQuestionnairesUsersStateJ = useSetAtom(questionnairesUsersAtomJ)
+  // const setServicesStateJ = useSetAtom(servicesAtomJ)
+  // // const setServicesUsersState = useSetAtom(servicesUsersAtom)
+  // const setServerSettingsStateJ = useSetAtom(serverSettingsAtomJ)
 
-  const setItemsFuncJ = useSetAtom(itemsFuncAtomJ)
+  // const setItemsFuncJ = useSetAtom(itemsFuncAtomJ)
 
   // ------ Finish Jotai
 
@@ -146,7 +143,7 @@ const StateLoader = (props) => {
   useEffect(() => {
     const itemsFunc = itemsFuncGenerator(snackbar, loggedUserActive)
     setItemsFunc(itemsFunc)
-    setItemsFuncJ(itemsFunc)
+    // setItemsFuncJ(itemsFunc)
 
     const generatedModalsFunc = modalsFuncGenerator(
       router,
@@ -156,7 +153,7 @@ const StateLoader = (props) => {
       loggedUserActiveRole,
       loggedUserActiveStatus
     )
-    setModalsFuncJ(generatedModalsFunc)
+    // setModalsFuncJ(generatedModalsFunc)
     setModalsFunc(generatedModalsFunc)
   }, [
     loggedUserActive,
@@ -178,7 +175,7 @@ const StateLoader = (props) => {
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setAdditionalBlocksState(props.additionalBlocks)
-    setUsersState(props.users)
+    // setUsersState(props.users)
     setReviewsState(props.reviews)
     // setPaymentsState(props.payments)
     setSiteSettingsState(props.siteSettings)
@@ -198,35 +195,35 @@ const StateLoader = (props) => {
 
     //jotai
 
-    if (!loggedUserActiveRoleJ || props.loggedUser?.role !== loggedUser?.role)
-      setLoggedUserActiveRoleJ(props.loggedUser?.role ?? 'client')
-    if (
-      !loggedUserActiveStatusJ ||
-      props.loggedUser?.status !== loggedUser?.status
-    )
-      setLoggedUserActiveStatusJ(props.loggedUser?.status ?? 'novice')
-    setLoggedUserActiveJ(props.loggedUser)
-    setLoggedUserJ(props.loggedUser)
-    setEventsStateJ(props.events)
-    setDirectionsStateJ(props.directions)
-    setAdditionalBlocksStateJ(props.additionalBlocks)
-    setUsersStateJ(props.users)
-    setReviewsStateJ(props.reviews)
-    // setPaymentsState(props.payments)
-    setSiteSettingsStateJ(props.siteSettings)
-    setRolesSettingsStateJ([
-      ...DEFAULT_ROLES,
-      ...(typeof props.rolesSettings === 'object' ? props.rolesSettings : []),
-    ])
-    // setHistoriesStateJ(props.histories)
-    setQuestionnairesStateJ(props.questionnaires)
-    setQuestionnairesUsersStateJ(props.questionnairesUsers)
-    setServicesStateJ(props.services)
-    // setServicesUsersState(props.servicesUsers)
-    setServerSettingsStateJ(props.serverSettings)
-    setModeJ(props.mode ?? 'production')
-    setLocationJ(props.location ?? 'krasnoyarsk')
-    setIsSiteLoadingJ(false)
+    // if (!loggedUserActiveRoleJ || props.loggedUser?.role !== loggedUser?.role)
+    //   setLoggedUserActiveRoleJ(props.loggedUser?.role ?? 'client')
+    // if (
+    //   !loggedUserActiveStatusJ ||
+    //   props.loggedUser?.status !== loggedUser?.status
+    // )
+    //   setLoggedUserActiveStatusJ(props.loggedUser?.status ?? 'novice')
+    // setLoggedUserActiveJ(props.loggedUser)
+    // setLoggedUserJ(props.loggedUser)
+    // setEventsStateJ(props.events)
+    // setDirectionsStateJ(props.directions)
+    // setAdditionalBlocksStateJ(props.additionalBlocks)
+    // setUsersStateJ(props.users)
+    // setReviewsStateJ(props.reviews)
+    // // setPaymentsState(props.payments)
+    // setSiteSettingsStateJ(props.siteSettings)
+    // setRolesSettingsStateJ([
+    //   ...DEFAULT_ROLES,
+    //   ...(typeof props.rolesSettings === 'object' ? props.rolesSettings : []),
+    // ])
+    // // setHistoriesStateJ(props.histories)
+    // setQuestionnairesStateJ(props.questionnaires)
+    // setQuestionnairesUsersStateJ(props.questionnairesUsers)
+    // setServicesStateJ(props.services)
+    // // setServicesUsersState(props.servicesUsers)
+    // setServerSettingsStateJ(props.serverSettings)
+    // setModeJ(props.mode ?? 'production')
+    // setLocationJ(props.location ?? 'krasnoyarsk')
+    // setIsSiteLoadingJ(false)
 
     // finish jotai
   }, [props.loggedUser])
@@ -235,7 +232,7 @@ const StateLoader = (props) => {
     if (modalsFunc && !isSiteLoading) {
       if (props.isCabinet) {
         const url = isBrowserNeedToBeUpdate()
-        if (url) modalsFunc.browserUpdate(url) //getRecoil(modalsFuncAtom).browserUpdate(url)
+        if (url) modalsFunc.browserUpdate(url)
       }
       if (location !== 'dev')
         if (!props.isCabinet) {

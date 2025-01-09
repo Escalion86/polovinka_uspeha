@@ -8,7 +8,7 @@ import userViewFunc from '@layouts/modals/modalsFunc/userViewFunc'
 import { H2 } from '@components/tags'
 import StateLoader from '@components/StateLoader'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import BlockContainer from '@components/BlockContainer'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
@@ -37,9 +37,9 @@ function UserPage(props) {
 
   // const router = useRouter()
 
-  const usersState = useRecoilValue(usersAtom)
+  const usersState = useAtomValue(usersAtom)
 
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const seeMembersOnly = loggedUserActiveRole?.users?.seeMembersOnly
 
   const user =

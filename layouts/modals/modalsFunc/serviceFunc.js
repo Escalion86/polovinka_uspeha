@@ -22,15 +22,15 @@ import {
 } from '@helpers/constants'
 import { getNounQuestions } from '@helpers/getNoun'
 import useErrors from '@helpers/useErrors'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import serviceSelector from '@state/selectors/serviceSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const Questionnaire = ({ data, onChange }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   // if (!props.data)
   return (
     <InputWrapper
@@ -102,11 +102,11 @@ const serviceFunc = (serviceId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const services = useRecoilValue(servicesAtom)
+    const services = useAtomValue(servicesAtom)
 
-    const service = useRecoilValue(serviceSelector(serviceId))
+    const service = useAtomValue(serviceSelector(serviceId))
 
-    const setService = useRecoilValue(itemsFuncAtom).service.set
+    const setService = useAtomValue(itemsFuncAtom).service.set
 
     const [title, setTitle] = useState(service?.title ?? DEFAULT_SERVICE.title)
     const [description, setDescription] = useState(

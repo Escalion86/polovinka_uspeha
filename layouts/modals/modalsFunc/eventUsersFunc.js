@@ -19,7 +19,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 // import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import usersAtom from '@state/atoms/usersAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
@@ -29,8 +29,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   useRecoilRefresher_UNSTABLE,
   // useRecoilRefresher_UNSTABLE,
-  useRecoilValue,
-} from 'recoil'
+  useAtomValue,
+} from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import sortFunctions from '@helpers/sortFunctions'
 import formatDateTime from '@helpers/formatDateTime'
@@ -86,7 +86,7 @@ const EventUsers2 = ({
   subEventId,
   onChangeSubEvent,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const addRow = () => {
     modalsFunc.selectUsers(
       selectedUsers,
@@ -242,7 +242,7 @@ const EventUsers2 = ({
 //   nameFieldWrapperClassName,
 //   createdAtObject,
 // }) => {
-//   const modalsFunc = useRecoilValue(modalsFuncAtom)
+//   const modalsFunc = useAtomValue(modalsFuncAtom)
 
 //   const isEventClosed = isEventClosedFunc(event)
 
@@ -360,8 +360,8 @@ const eventUsersFunc = (eventId) => {
     setTopLeftComponent,
     isDataChanged,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const statusEdit = loggedUserActiveRole?.events?.statusEdit
     const canEdit = loggedUserActiveRole?.eventsUsers?.edit
     const seeHistory = loggedUserActiveRole?.eventsUsers?.seeHistory
@@ -375,9 +375,9 @@ const eventUsersFunc = (eventId) => {
     // const [sort, setSort] = useState({ genderAndFirstName: 'asc' })
     // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
-    const event = useRecoilValue(eventSelector(eventId))
-    const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
-    // const users = useRecoilValue(usersAtom)
+    const event = useAtomValue(eventSelector(eventId))
+    const setEventUsersId = useAtomValue(itemsFuncAtom).event.setEventUsers
+    // const users = useAtomValue(usersAtom)
     const isEventClosed = isEventClosedFunc(event)
 
     const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
@@ -387,7 +387,7 @@ const eventUsersFunc = (eventId) => {
     //   [users]
     // )
 
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUsersCreatedAtObject = useMemo(
       () =>
         eventUsers.reduce((acc, { createdAt, userId }) => {
@@ -1097,12 +1097,12 @@ const eventUsersFunc = (eventId) => {
 
   const ModalRefresher = (props) => {
     const [isRefreshed, setIsRefreshed] = useState(false)
-    const data = useRecoilValue(asyncEventsUsersByEventIdAtom(eventId))
+    const data = useAtomValue(asyncEventsUsersByEventIdAtom(eventId))
     const [prevData, setPravData] = useState(data)
     const refreshEventState = useRecoilRefresher_UNSTABLE(
       asyncEventsUsersByEventIdAtom(eventId)
     )
-    // const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     // const canEdit = loggedUserActiveRole?.eventsUsers?.edit
 
     useEffect(() => {

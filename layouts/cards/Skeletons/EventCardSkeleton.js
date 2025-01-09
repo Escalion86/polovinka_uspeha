@@ -1,4 +1,4 @@
-import windowDimensionsNumSelector from '@state/jotai/selectors/windowDimensionsNumSelector'
+import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import Skeleton from 'react-loading-skeleton'
 import { useAtomValue } from 'jotai'
 import cn from 'classnames'

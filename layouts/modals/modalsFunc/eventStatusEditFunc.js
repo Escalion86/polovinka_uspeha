@@ -6,7 +6,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 
 const eventStatusEditFunc = (eventId) => {
@@ -19,14 +19,12 @@ const eventStatusEditFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
-    const setEvent = useRecoilValue(itemsFuncAtom).event.set
+    const event = useAtomValue(eventSelector(eventId))
+    const setEvent = useAtomValue(itemsFuncAtom).event.set
     const isEventExpired = isEventExpiredFunc(event)
 
-    const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
-    const expectedIncome = useRecoilValue(
-      expectedIncomeOfEventSelector(eventId)
-    )
+    const totalIncome = useAtomValue(totalIncomeOfEventSelector(eventId))
+    const expectedIncome = useAtomValue(expectedIncomeOfEventSelector(eventId))
     const canSetClosed = totalIncome >= expectedIncome && isEventExpired
 
     const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)

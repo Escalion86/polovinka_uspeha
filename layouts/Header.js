@@ -10,7 +10,7 @@ import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelec
 import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
 import cn from 'classnames'
 import Link from 'next/link'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtomValue, useSetAtom } from 'jotai'
 import Avatar from './Avatar'
 import UserMenu from './UserMenu'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
@@ -27,7 +27,7 @@ const MenuItem = ({ text, href = '#' }) => (
 )
 
 const BurgerMenuItem = ({ text, href = '#' }) => {
-  const setMenuOpen = useSetRecoilState(menuOpenAtom)
+  const setMenuOpen = useSetAtom(menuOpenAtom)
   return (
     <li className="flex flex-1">
       <a
@@ -52,12 +52,12 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 // ]
 
 const Header = ({ noMenu }) => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  // const events = useRecoilValue(filteredEventsSelector)
-  const reviews = useRecoilValue(filteredReviewsSelector)
-  const directions = useRecoilValue(filteredDirectionsSelector)
-  const services = useRecoilValue(filteredServicesSelector)
-  const additionalBlocks = useRecoilValue(filteredAdditionalBlocksSelector)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  // const events = useAtomValue(filteredEventsSelector)
+  const reviews = useAtomValue(filteredReviewsSelector)
+  const directions = useAtomValue(filteredDirectionsSelector)
+  const services = useAtomValue(filteredServicesSelector)
+  const additionalBlocks = useAtomValue(filteredAdditionalBlocksSelector)
 
   const menu = [{ name: 'Миссия и цели', href: '/#about' }]
   // if (events?.length > 0)
@@ -81,7 +81,7 @@ const Header = ({ noMenu }) => {
   //     !menuItem.key || (props[menuItem.key] && props[menuItem.key].length > 0)
   // )
 
-  const menuOpen = useRecoilValue(menuOpenAtom)
+  const menuOpen = useAtomValue(menuOpenAtom)
   return (
     // <div className="w-full h-18">
     <div className="sticky top-0 left-0 right-0 z-20 flex flex-col items-center justify-between shadow-md h-18 min-h-[4.5rem]">

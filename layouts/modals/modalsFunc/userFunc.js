@@ -19,7 +19,7 @@ import usersAtom from '@state/atoms/usersAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 import CopyPasteButtons from '@components/CopyPasteButtons'
 
 const userFunc = (userId, clone = false) => {
@@ -33,16 +33,16 @@ const userFunc = (userId, clone = false) => {
     setTopLeftComponent,
   }) => {
     const [loggedUserActive, setLoggedUserActive] =
-      useRecoilState(loggedUserActiveAtom)
+      useAtom(loggedUserActiveAtom)
 
-    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
     const canSetRole = loggedUserActiveRole?.users?.setRole
     const canSetStatus = loggedUserActiveRole?.users?.setStatus
 
-    const user = useRecoilValue(userSelector(userId))
-    const setUser = useRecoilValue(itemsFuncAtom).user.set
-    const users = useRecoilValue(usersAtom)
+    const user = useAtomValue(userSelector(userId))
+    const setUser = useAtomValue(itemsFuncAtom).user.set
+    const users = useAtomValue(usersAtom)
 
     const [firstName, setFirstName] = useState(
       user?.firstName ?? DEFAULT_USER.firstName

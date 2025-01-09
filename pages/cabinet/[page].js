@@ -21,12 +21,11 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-
 import { useAtomValue } from 'jotai'
-import loggedUserActiveStatusAtomJ from '@state/jotai/atoms/loggedUserActiveStatusAtom'
-import loggedUserActiveAtomJ from '@state/jotai/atoms/loggedUserActiveAtom'
-import loggedUserActiveRoleSelectorJ from '@state/jotai/selectors/loggedUserActiveRoleSelector'
+
+import loggedUserActiveStatusAtomJ from '@state/atoms/loggedUserActiveStatusAtom'
+import loggedUserActiveAtomJ from '@state/atoms/loggedUserActiveAtom'
+import loggedUserActiveRoleSelectorJ from '@state/selectors/loggedUserActiveRoleSelector'
 
 const SuspenseChild = () => (
   <div className="z-10 flex items-center justify-center w-full h-[calc(100vh-4rem)]">
@@ -37,9 +36,9 @@ const SuspenseChild = () => (
 function CabinetPage(props) {
   const router = useRouter()
   const page = router.asPath.replace('/cabinet/', '').split('?')[0]
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)
   const loggedUserActiveJ = useAtomValue(loggedUserActiveAtomJ)
   const loggedUserActiveRoleJ = useAtomValue(loggedUserActiveRoleSelectorJ)
   const loggedUserActiveStatusNameJ = useAtomValue(loggedUserActiveStatusAtomJ)

@@ -11,11 +11,11 @@ import useErrors from '@helpers/useErrors'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 
 const SupervisorBlockContent = (props) => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [photo, setPhoto] = useState(siteSettings?.supervisor?.photo)
   const [quote, setQuote] = useState(siteSettings?.supervisor?.quote)
   const [name, setName] = useState(siteSettings?.supervisor?.name)

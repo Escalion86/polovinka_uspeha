@@ -1,37 +1,18 @@
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
-import { selectorFamily } from 'recoil'
 import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
 
-// export const eventUsersInReserveSelector = selectorFamily({
-//   key: 'eventUsersInReserveSelector',
-//   get:
-//     (id) =>
-//     ({ get }) => {
-//       if (!id) return []
+export const eventUsersInReserveSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return []
+    const eventUsersFull = await get(eventsUsersFullByEventIdSelector(id))
 
-//       return get(eventsUsersFullByEventIdSelector(id))
-//         .filter((item) => item.status === 'reserve')
-//         .map((item) => item.user)
-//     },
-// })
-
-export const eventUsersInReserveSelector = selectorFamily({
-  key: 'eventUsersInReserveSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return []
-
-      return [
-        ...get(eventsUsersFullByEventIdSelector(id)).filter(
-          (item) => item.status === 'reserve'
-        ),
-      ]
-        .sort((a, b) =>
-          getDiffBetweenDates(a.createdAt, b.createdAt) ? 1 : -1
-        )
-        .map((item) => item.user)
-    },
-})
+    return [...eventUsersFull.filter((item) => item.status === 'reserve')]
+      .sort((a, b) => (getDiffBetweenDates(a.createdAt, b.createdAt) ? 1 : -1))
+      .map((item) => item.user)
+  })
+)
 
 export default eventUsersInReserveSelector

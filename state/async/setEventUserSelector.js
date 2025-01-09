@@ -1,80 +1,53 @@
-import { noWait, selector } from 'recoil'
+import { atom } from 'jotai'
+
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
-import { getRecoil } from 'recoil-nexus'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
 // import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 
-const setEventUserSelector = selector({
-  key: 'setEventUserSelector',
-  get: ({ get }) => {
-    return undefined
-  },
-  set: ({ set, get }, updateEventUser) => {
-    const { _id, eventId, userId } = updateEventUser
+const setEventUserSelector = atom(null, async (get, set, updateEventUser) => {
+  const { _id, eventId, userId } = updateEventUser
 
-    const isLoadedEventId = getRecoil(
-      isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)
+  const isLoadedEventId = get(
+    isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)
+  )
+  if (isLoadedEventId) {
+    const eventUsers = await get(asyncEventsUsersByEventIdAtom(eventId))
+    const updatedEventUsers = eventUsers.map((eventUser) =>
+      eventUser._id === _id ? updateEventUser : eventUser
     )
-    if (isLoadedEventId) {
-      const eventUsers = get(asyncEventsUsersByEventIdAtom(eventId))
-      const updatedEventUsers = eventUsers.map((eventUser) =>
-        eventUser._id === _id ? updateEventUser : eventUser
-      )
-      set(asyncEventsUsersByEventIdAtom(eventId), updatedEventUsers)
-    }
-    //   else {
-    //   const eventUsers = get(noWait(asyncEventsUsersByEventIdAtom(eventId)))
-    //   if (eventUsers.state === 'hasValue') {
-    //     const updatedEventUsers = eventUsers.contents.map((eventUser) =>
-    //       eventUser._id === _id ? updateEventUser : eventUser
-    //     )
-    //     set(asyncEventsUsersByEventIdAtom(eventId), updatedEventUsers)
-    //   }
-    // }
-    const isLoadedUserId = getRecoil(
-      isLoadedAtom('asyncEventsUsersByUserIdAtom' + userId)
+    set(asyncEventsUsersByEventIdAtom(eventId), updatedEventUsers)
+  }
+  //   else {
+  //   const eventUsers = get(noWait(asyncEventsUsersByEventIdAtom(eventId)))
+  //   if (eventUsers.state === 'hasValue') {
+  //     const updatedEventUsers = eventUsers.contents.map((eventUser) =>
+  //       eventUser._id === _id ? updateEventUser : eventUser
+  //     )
+  //     set(asyncEventsUsersByEventIdAtom(eventId), updatedEventUsers)
+  //   }
+  // }
+  const isLoadedUserId = get(
+    isLoadedAtom('asyncEventsUsersByUserIdAtom' + userId)
+  )
+  if (isLoadedUserId) {
+    const eventsUser = await get(asyncEventsUsersByUserIdAtom(userId))
+    const updatedEventsUser = eventsUser.map((eventUser) =>
+      eventUser._id === _id ? updateEventUser : eventUser
     )
-    if (isLoadedUserId) {
-      const eventsUser = get(asyncEventsUsersByUserIdAtom(userId))
-      const updatedEventsUser = eventsUser.map((eventUser) =>
-        eventUser._id === _id ? updateEventUser : eventUser
-      )
-      set(asyncEventsUsersByUserIdAtom(userId), updatedEventsUser)
-    }
-    // else {
-    //   const eventsUser = get(noWait(asyncEventsUsersByUserIdAtom(userId)))
-    //   if (eventsUser.state === 'hasValue') {
-    //     const updatedEventsUser = eventsUser.contents.map((eventUser) =>
-    //       eventUser._id === _id ? updateEventUser : eventUser
-    //     )
+    set(asyncEventsUsersByUserIdAtom(userId), updatedEventsUser)
+  }
 
-    //     set(asyncEventsUsersByUserIdAtom(userId), updatedEventsUser)
-    //   }
-    // }
-
-    const isLoadedEventsUsersAll = getRecoil(
-      isLoadedAtom('asyncEventsUsersAllAtom')
+  const isLoadedEventsUsersAll = get(isLoadedAtom('asyncEventsUsersAllAtom'))
+  if (isLoadedEventsUsersAll) {
+    const eventsUsers = await get(asyncEventsUsersAllAtom)
+    const updatedEventsUser = eventsUsers.map((eventUser) =>
+      eventUser._id === _id ? updateEventUser : eventUser
     )
-    if (isLoadedEventsUsersAll) {
-      const eventsUsers = get(asyncEventsUsersAllAtom)
-      const updatedEventsUser = eventsUsers.map((eventUser) =>
-        eventUser._id === _id ? updateEventUser : eventUser
-      )
 
-      set(asyncEventsUsersAllAtom, updatedEventsUser)
-    }
-
-    // const eventsUsers = get(noWait(asyncEventsUsersAllSelector))
-    // if (eventsUsers.state === 'hasValue') {
-    //   const updatedEventsUser = eventsUsers.contents.map((eventUser) =>
-    //     eventUser._id === _id ? updateEventUser : eventUser
-    //   )
-
-    //   set(asyncEventsUsersAllSelector, updatedEventsUser)
-    // }
-  },
+    set(asyncEventsUsersAllAtom, updatedEventsUser)
+  }
 })
 
 export default setEventUserSelector

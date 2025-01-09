@@ -1,21 +1,14 @@
-import { atom } from 'recoil'
-import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
-// import { setRecoil } from 'recoil-nexus'
-// import isLoadedAtom from '@state/atoms/isLoadedAtom'
+import { atom } from 'jotai'
 
-const asyncEventsUsersAllAtom = atom({
-  key: 'asyncEventsUsersAllAtom',
-  default: asyncEventsUsersAllSelector,
-  // default: errorSelector('Attempt to use Atom before initialization'),
-  // effects: [
-  //   ({ onSet }) => {
-  //     onSet((newID) => {
-  //       console.debug('onSet asyncEventsUsersAllAtom', newID)
-  //       setRecoil(isLoadedAtom('asyncEventsUsersAllAtom'), true)
-  //     })
-  //   },
-  //   (params) => console.log('params :>> ', params),
-  // ],
+import { getData } from '@helpers/CRUD'
+import isLoadedAtom from '@state/atoms/isLoadedAtom'
+import store from '../store'
+
+const asyncEventsUsersAllAtom = atom(async (get) => {
+  const res = await getData('/api/eventsusers', null, null, null, false)
+  store.set(isLoadedAtom('asyncEventsUsersAllAtom'), true)
+
+  return res
 })
 
 export default asyncEventsUsersAllAtom

@@ -1,10 +1,12 @@
-import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-export const allPaymentsOfInternalSelector = selector({
-  key: 'allPaymentsOfInternalSelector ',
-  get: ({ get }) =>
-    get(asyncPaymentsAtom).filter((payment) => payment.sector === 'internal'),
-})
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
+
+export const allPaymentsOfInternalSelector = atom(
+  async (get) =>
+    await get(asyncPaymentsAtom).filter(
+      (payment) => payment.sector === 'internal'
+    )
+)
 
 export default allPaymentsOfInternalSelector

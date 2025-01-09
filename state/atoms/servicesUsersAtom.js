@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const servicesUsersAtom = atom({
-  key: 'servicesUsers',
-  default: [],
-})
+const servicesUsersAtom = atom([])
 
 export default servicesUsersAtom

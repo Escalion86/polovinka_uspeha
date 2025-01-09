@@ -23,7 +23,7 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const SuspenseChild = () => (
   <div className="z-10 flex items-center justify-center w-full h-[calc(100vh-4rem)]">
@@ -34,9 +34,9 @@ const SuspenseChild = () => (
 function CabinetPage(props) {
   const router = useRouter()
   const page = router.asPath.replace('/cabinet/', '').split('?')[0]
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)
   const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
 
   let redirect

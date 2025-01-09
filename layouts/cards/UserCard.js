@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 // import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
@@ -23,10 +23,10 @@ import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 // import { Suspense } from 'react'
 // import Skeleton from 'react-loading-skeleton'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
-  const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
+  const sumOfPaymentsWithoutEventOfUser = useAtomValue(
     sumOfPaymentsWithoutEventIdByUserIdSelector(userId)
   )
 
@@ -46,14 +46,14 @@ const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
 }
 
 // const SignedUpCountComponent = ({ userId }) => {
-//   const eventsUsersSignedUpCount = useRecoilValue(
+//   const eventsUsersSignedUpCount = useAtomValue(
 //     eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
 //   )
 //   return <span className="font-normal">{eventsUsersSignedUpCount.signUp}</span>
 // }
 
 // const FinishedComponent = ({ userId }) => {
-//   const eventsUsersSignedUpCount = useRecoilValue(
+//   const eventsUsersSignedUpCount = useAtomValue(
 //     eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
 //   )
 //   return (
@@ -74,12 +74,12 @@ const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
 // )
 
 const UserCard = ({ userId, hidden = false, style }) => {
-  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const user = useRecoilValue(userSelector(userId))
-  const loading = useRecoilValue(loadingAtom('user' + userId))
-  // const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const user = useAtomValue(userSelector(userId))
+  const loading = useAtomValue(loadingAtom('user' + userId))
+  // const eventUsers = useAtomValue(eventsUsersSignedUpByUserIdSelector(userId))
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
   const seeNotificationIcon =
@@ -87,7 +87,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
   const seeSumOfPaymentsWithoutEventOnCard =
     loggedUserActiveRole?.seeSumOfPaymentsWithoutEventOnCard
   // const widthNum = useWindowDimensionsTailwindNum()
-  // const itemFunc = useRecoilValue(itemsFuncAtom)
+  // const itemFunc = useAtomValue(itemsFuncAtom)
 
   const userGender =
     user.gender && GENDERS.find((gender) => gender.value === user.gender)

@@ -15,7 +15,7 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const Service = ({ service }) => {
   const serviceView = serviceViewFunc(service._id)
@@ -42,15 +42,15 @@ function ServicePage(props) {
 
   // const router = useRouter()
 
-  const servicesState = useRecoilValue(servicesAtom)
+  const servicesState = useAtomValue(servicesAtom)
 
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
 
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const hideFab = loggedUserActiveRole?.hideFab
-  const isPWA = useRecoilValue(isPWAAtom)
+  const isPWA = useAtomValue(isPWAAtom)
 
-  // const { canSee } = useRecoilValue(loggedUserToEventStatusSelector(serviceId))
+  // const { canSee } = useAtomValue(loggedUserToEventStatusSelector(serviceId))
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01

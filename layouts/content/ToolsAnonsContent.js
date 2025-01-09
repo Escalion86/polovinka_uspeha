@@ -1,5 +1,8 @@
 'use client'
 
+import { useMemo, useState } from 'react'
+import { useAtomValue } from 'jotai'
+
 import Button from '@components/Button'
 import ColorPicker from '@components/ColorPicker'
 import ComboBox from '@components/ComboBox'
@@ -21,9 +24,7 @@ import sortFunctions from '@helpers/sortFunctions'
 import eventsAtom from '@state/atoms/eventsAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
-import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import { saveSvgAsPng, svgAsPngUri, uriToBlob } from 'save-svg-as-png'
+import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 
 const styles = [
   {
@@ -73,9 +74,9 @@ const save2 = async (listsCount, name) => {
 }
 
 const ToolsAnonsContent = () => {
-  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
-  const events = useRecoilValue(eventsAtom)
-  const { imageFolder } = useRecoilValue(locationPropsSelector)
+  const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
+  const events = useAtomValue(eventsAtom)
+  const { imageFolder } = useAtomValue(locationPropsSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
   const rerender = () => setRerenderState((state) => !state)
@@ -473,7 +474,7 @@ const ToolsAnonsContent = () => {
         </div>
       </div>
       {/* <image id="preview1" height="1920" width="1080" /> */}
-      <div className="flex overflow-x-auto py-2 gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
+      <div className="flex overflow-x-auto py-2 gap-x-1 max-w-full tablet:max-w-[calc(100%-48px)] max-h-[calc(100vh-160px)] overflow-y-auto">
         {listsWithPreparedItems.map((preparedItems, index) => {
           addedLines = 0
           const fullHeight = preparedItems.reduce(

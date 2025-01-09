@@ -32,19 +32,19 @@ import getEventDuration from '@helpers/getEventDuration'
 import isObject from '@helpers/isObject'
 import subEventsSummator from '@helpers/subEventsSummator'
 import useErrors from '@helpers/useErrors'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import { uid } from 'uid'
 import { faComment as faCommentRegular } from '@fortawesome/free-regular-svg-icons/faComment'
 import { faComment } from '@fortawesome/free-solid-svg-icons/faComment'
 
 const SubEvents = ({ subEvents, onChange, rules }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const addItem = (props) => {
     const newItem = { ...(props ?? DEFAULT_SUBEVENT), id: uid(24) }
@@ -102,35 +102,35 @@ const eventFunc = (eventId, clone = false, props = {}) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const event = useRecoilValue(eventFullAtomAsync(eventId))
-    const directions = useRecoilValue(directionsAtom)
-    const setEvent = useRecoilValue(itemsFuncAtom).event.set
+    const event = useAtomValue(eventFullAtomAsync(eventId))
+    const directions = useAtomValue(directionsAtom)
+    const setEvent = useAtomValue(itemsFuncAtom).event.set
     const [directionId, setDirectionId] = useState(
       props?.directionId !== undefined
         ? props.directionId
-        : event?.directionId ?? DEFAULT_EVENT.directionId
+        : (event?.directionId ?? DEFAULT_EVENT.directionId)
     )
 
     const defaultOrganizerId =
       props?.organizerId !== undefined
         ? props.organizerId
-        : event?.organizerId ?? useRecoilValue(loggedUserActiveAtom)._id
+        : (event?.organizerId ?? useAtomValue(loggedUserActiveAtom)._id)
     const [organizerId, setOrganizerId] = useState(defaultOrganizerId)
 
     const [title, setTitle] = useState(
       props?.title !== undefined
         ? props.title
-        : event?.title ?? DEFAULT_EVENT.title
+        : (event?.title ?? DEFAULT_EVENT.title)
     )
     const [images, setImages] = useState(
       props?.images !== undefined
         ? props.images
-        : event?.images ?? DEFAULT_EVENT.images
+        : (event?.images ?? DEFAULT_EVENT.images)
     )
     const [description, setDescription] = useState(
       props?.description !== undefined
         ? props.description
-        : event?.description ?? DEFAULT_EVENT.description
+        : (event?.description ?? DEFAULT_EVENT.description)
     )
 
     const defaultTags = useMemo(
@@ -148,7 +148,7 @@ const eventFunc = (eventId, clone = false, props = {}) => {
       () =>
         props?.dateStart !== undefined
           ? props.dateStart
-          : event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000,
+          : (event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000),
       []
     )
 
@@ -156,7 +156,7 @@ const eventFunc = (eventId, clone = false, props = {}) => {
       () =>
         props?.dateEnd !== undefined
           ? props.dateEnd
-          : event?.dateEnd ?? defaultDateStart + 3600000,
+          : (event?.dateEnd ?? defaultDateStart + 3600000),
       []
     )
 
@@ -188,35 +188,35 @@ const eventFunc = (eventId, clone = false, props = {}) => {
     const [showOnSite, setShowOnSite] = useState(
       props?.showOnSite !== undefined
         ? props.showOnSite
-        : event?.showOnSite ?? DEFAULT_EVENT.showOnSite
+        : (event?.showOnSite ?? DEFAULT_EVENT.showOnSite)
     )
     const [reportImages, setReportImages] = useState(
       props?.reportImages !== undefined
         ? props.reportImages
-        : event?.reportImages ?? DEFAULT_EVENT.reportImages
+        : (event?.reportImages ?? DEFAULT_EVENT.reportImages)
     )
     const [report, setReport] = useState(
       props?.report !== undefined
         ? props.report
-        : event?.report ?? DEFAULT_EVENT.report
+        : (event?.report ?? DEFAULT_EVENT.report)
     )
 
     const [warning, setWarning] = useState(
       props?.warning !== undefined
         ? props.warning
-        : event?.warning ?? DEFAULT_EVENT.warning
+        : (event?.warning ?? DEFAULT_EVENT.warning)
     )
 
     const [blank, setBlank] = useState(
       props?.blank !== undefined
         ? props.blank
-        : event?.blank ?? DEFAULT_EVENT.blank
+        : (event?.blank ?? DEFAULT_EVENT.blank)
     )
 
     const [likes, setLikes] = useState(
       props?.likes !== undefined
         ? props.likes
-        : event?.likes ?? DEFAULT_EVENT.likes
+        : (event?.likes ?? DEFAULT_EVENT.likes)
     )
 
     const direction = useMemo(

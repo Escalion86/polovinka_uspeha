@@ -26,7 +26,7 @@ import useErrors from '@helpers/useErrors'
 import useFocus from '@helpers/useFocus'
 // import directionsAtom from '@state/atoms/directionsAtom'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-// import { useRecoilValue } from 'recoil'
+// import { useAtomValue } from 'jotai'
 import SvgSigma from 'svg/SvgSigma'
 
 const subEventFunc = (props, onChange, rules) => {
@@ -38,7 +38,7 @@ const subEventFunc = (props, onChange, rules) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // const directions = useRecoilValue(directionsAtom)
+    // const directions = useAtomValue(directionsAtom)
     const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()
     const [refMansMax, setFocusMansMax] = useFocus()
     const [refWomansMax, setFocusWomansMax] = useFocus()
@@ -153,8 +153,8 @@ const subEventFunc = (props, onChange, rules) => {
             ? 'no'
             : rules?.userRelationship === 'pair'
               ? 'only'
-              : props?.usersRelationshipAccess ??
-                DEFAULT_SUBEVENT.usersRelationshipAccess,
+              : (props?.usersRelationshipAccess ??
+                DEFAULT_SUBEVENT.usersRelationshipAccess),
       [props, rules]
     )
 
@@ -180,13 +180,13 @@ const subEventFunc = (props, onChange, rules) => {
           title: title.trim(),
           description,
           price,
-          maxParticipants: maxParticipantsCheck ? null : maxParticipants ?? 0,
-          maxMans: maxMansCheck ? null : maxMans ?? 0,
-          maxWomans: maxWomansCheck ? null : maxWomans ?? 0,
-          maxMansNovice: maxMansNoviceCheck ? null : maxMansNovice ?? 0,
-          maxWomansNovice: maxWomansNoviceCheck ? null : maxWomansNovice ?? 0,
-          maxMansMember: maxMansMemberCheck ? null : maxMansMember ?? 0,
-          maxWomansMember: maxWomansMemberCheck ? null : maxWomansMember ?? 0,
+          maxParticipants: maxParticipantsCheck ? null : (maxParticipants ?? 0),
+          maxMans: maxMansCheck ? null : (maxMans ?? 0),
+          maxWomans: maxWomansCheck ? null : (maxWomans ?? 0),
+          maxMansNovice: maxMansNoviceCheck ? null : (maxMansNovice ?? 0),
+          maxWomansNovice: maxWomansNoviceCheck ? null : (maxWomansNovice ?? 0),
+          maxMansMember: maxMansMemberCheck ? null : (maxMansMember ?? 0),
+          maxWomansMember: maxWomansMemberCheck ? null : (maxWomansMember ?? 0),
           maxMansAge,
           minMansAge,
           maxWomansAge,
@@ -204,17 +204,17 @@ const subEventFunc = (props, onChange, rules) => {
         props?.title !== title ||
         (props?.description ?? DEFAULT_SUBEVENT.description) !== description ||
         props?.maxParticipants !==
-          (maxParticipantsCheck ? null : maxParticipants ?? 0) ||
-        props?.maxMans !== (maxMansCheck ? null : maxMans ?? 0) ||
-        props?.maxWomans !== (maxWomansCheck ? null : maxWomans ?? 0) ||
+          (maxParticipantsCheck ? null : (maxParticipants ?? 0)) ||
+        props?.maxMans !== (maxMansCheck ? null : (maxMans ?? 0)) ||
+        props?.maxWomans !== (maxWomansCheck ? null : (maxWomans ?? 0)) ||
         props?.maxMansNovice !==
-          (maxMansNoviceCheck ? null : maxMansNovice ?? 0) ||
+          (maxMansNoviceCheck ? null : (maxMansNovice ?? 0)) ||
         props?.maxWomansNovice !==
-          (maxWomansNoviceCheck ? null : maxWomansNovice ?? 0) ||
+          (maxWomansNoviceCheck ? null : (maxWomansNovice ?? 0)) ||
         props?.maxMansMember !==
-          (maxMansMemberCheck ? null : maxMansMember ?? 0) ||
+          (maxMansMemberCheck ? null : (maxMansMember ?? 0)) ||
         props?.maxWomansMember !==
-          (maxWomansMemberCheck ? null : maxWomansMember ?? 0) ||
+          (maxWomansMemberCheck ? null : (maxWomansMember ?? 0)) ||
         props?.minMansAge !== minMansAge ||
         props?.maxMansAge !== maxMansAge ||
         props?.minWomansAge !== minWomansAge ||
@@ -450,7 +450,7 @@ const subEventFunc = (props, onChange, rules) => {
                 value={
                   maxParticipantsCheck
                     ? 'Без ограничений'
-                    : maxParticipants ?? 0
+                    : (maxParticipants ?? 0)
                 }
                 onChange={setMaxParticipants}
                 placeholder={maxParticipantsCheck ? '' : '0'}
@@ -496,7 +496,7 @@ const subEventFunc = (props, onChange, rules) => {
                       type={maxMansCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      value={maxMansCheck ? 'Без ограничений' : maxMans ?? 0}
+                      value={maxMansCheck ? 'Без ограничений' : (maxMans ?? 0)}
                       onChange={setMaxMans}
                       placeholder={maxMansCheck ? '' : '0'}
                       disabled={maxMansCheck}
@@ -528,7 +528,7 @@ const subEventFunc = (props, onChange, rules) => {
                       value={
                         maxMansNoviceCheck
                           ? 'Без ограничений'
-                          : maxMansNovice ?? 0
+                          : (maxMansNovice ?? 0)
                       }
                       onChange={setMaxMansNovice}
                       placeholder={maxMansNoviceCheck ? '' : '0'}
@@ -561,7 +561,7 @@ const subEventFunc = (props, onChange, rules) => {
                       value={
                         maxMansMemberCheck
                           ? 'Без ограничений'
-                          : maxMansMember ?? 0
+                          : (maxMansMember ?? 0)
                       }
                       onChange={setMaxMansMember}
                       placeholder={maxMansMemberCheck ? '' : '0'}
@@ -620,7 +620,7 @@ const subEventFunc = (props, onChange, rules) => {
                       className="w-44"
                       inputClassName="w-16 text-center"
                       value={
-                        maxWomansCheck ? 'Без ограничений' : maxWomans ?? 0
+                        maxWomansCheck ? 'Без ограничений' : (maxWomans ?? 0)
                       }
                       onChange={setMaxWomans}
                       placeholder={maxWomansCheck ? '' : '0'}
@@ -653,7 +653,7 @@ const subEventFunc = (props, onChange, rules) => {
                       value={
                         maxWomansNoviceCheck
                           ? 'Без ограничений'
-                          : maxWomansNovice ?? 0
+                          : (maxWomansNovice ?? 0)
                       }
                       onChange={setMaxWomansNovice}
                       placeholder={maxWomansNoviceCheck ? '' : '0'}
@@ -686,7 +686,7 @@ const subEventFunc = (props, onChange, rules) => {
                       value={
                         maxWomansMemberCheck
                           ? 'Без ограничений'
-                          : maxWomansMember ?? 0
+                          : (maxWomansMember ?? 0)
                       }
                       onChange={setMaxWomansMember}
                       placeholder={maxWomansMemberCheck ? '' : '0'}

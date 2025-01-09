@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import birthDateToAge from './birthDateToAge'
 import validateEmail from './validateEmail'
-import { getRecoil } from 'recoil-nexus'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
+import store from '@state/store'
 
 const useErrors = () => {
   const [errors, setErrors] = useState({})
@@ -28,7 +28,7 @@ const useErrors = () => {
   }
 
   const checkErrors = (object) => {
-    const serverDate = new Date(getRecoil(serverSettingsAtom)?.dateTime)
+    const serverDate = new Date(store.get(serverSettingsAtom)?.dateTime)
     clearErrors()
     let error = false
     const setError = (data) => {

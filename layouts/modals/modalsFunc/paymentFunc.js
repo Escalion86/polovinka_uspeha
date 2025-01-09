@@ -17,7 +17,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import paymentSelector from '@state/selectors/paymentSelector'
 import { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 
 const paymentFunc = (paymentId, clone = false, props = {}) => {
@@ -31,13 +31,13 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     setOnlyCloseButtonShow,
     setTopLeftComponent,
   }) => {
-    const payment = useRecoilValue(paymentSelector(paymentId))
-    const setPayment = useRecoilValue(itemsFuncAtom).payment.set
+    const payment = useAtomValue(paymentSelector(paymentId))
+    const setPayment = useAtomValue(itemsFuncAtom).payment.set
 
-    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
 
-    const event = useRecoilValue(
+    const event = useAtomValue(
       eventSelector(
         props?.eventId !== undefined ? props.eventId : payment?.eventId
       )
@@ -57,11 +57,11 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     const defaultSector =
       props?.sector ??
       payment?.sector ??
-      (props?.eventId ?? payment?.eventId
+      ((props?.eventId ?? payment?.eventId)
         ? 'event'
-        : props?.serviceId ?? payment?.serviceId
+        : (props?.serviceId ?? payment?.serviceId)
           ? 'service'
-          : props?.productId ?? payment?.productId
+          : (props?.productId ?? payment?.productId)
             ? 'product'
             : DEFAULT_PAYMENT.sector)
 
@@ -70,51 +70,55 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     const [payDirection, setPayDirection] = useState(
       props?.payDirection !== undefined
         ? props.payDirection
-        : payment?.payDirection ?? DEFAULT_PAYMENT.payDirection
+        : (payment?.payDirection ?? DEFAULT_PAYMENT.payDirection)
     )
     const [userId, setUserId] = useState(
       props?.userId !== undefined
         ? props.userId
-        : payment?.userId ?? DEFAULT_PAYMENT.userId
+        : (payment?.userId ?? DEFAULT_PAYMENT.userId)
     )
     const [eventId, setEventId] = useState(
       props?.eventId !== undefined
         ? props.eventId
-        : payment?.eventId ?? DEFAULT_PAYMENT.eventId
+        : (payment?.eventId ?? DEFAULT_PAYMENT.eventId)
     )
     const [serviceId, setServiceId] = useState(
       props?.serviceId !== undefined
         ? props.serviceId
-        : payment?.serviceId ?? DEFAULT_PAYMENT.serviceId
+        : (payment?.serviceId ?? DEFAULT_PAYMENT.serviceId)
     )
     const [productId, setProductId] = useState(
       props?.productId !== undefined
         ? props.productId
-        : payment?.productId ?? DEFAULT_PAYMENT.productId
+        : (payment?.productId ?? DEFAULT_PAYMENT.productId)
     )
     const [sum, setSum] = useState(
-      props?.sum !== undefined ? props.sum : payment?.sum ?? DEFAULT_PAYMENT.sum
+      props?.sum !== undefined
+        ? props.sum
+        : (payment?.sum ?? DEFAULT_PAYMENT.sum)
     )
     const [status, setStatus] = useState(
       props?.status !== undefined
         ? props.status
-        : payment?.status ?? DEFAULT_PAYMENT.status
+        : (payment?.status ?? DEFAULT_PAYMENT.status)
     )
     const defaultPayAt = useMemo(
       () =>
-        props?.payAt !== undefined ? props.payAt : payment?.payAt ?? Date.now(),
+        props?.payAt !== undefined
+          ? props.payAt
+          : (payment?.payAt ?? Date.now()),
       []
     )
     const [payAt, setPayAt] = useState(defaultPayAt)
     const [payType, setPayType] = useState(
       props?.payType !== undefined
         ? props.payType
-        : payment?.payType ?? DEFAULT_PAYMENT.payType
+        : (payment?.payType ?? DEFAULT_PAYMENT.payType)
     )
     const [comment, setComment] = useState(
       props?.comment !== undefined
         ? props.comment
-        : payment?.comment ?? DEFAULT_PAYMENT.comment
+        : (payment?.comment ?? DEFAULT_PAYMENT.comment)
     )
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
@@ -200,33 +204,33 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
         defaultSector !== sector ||
         (props?.payDirection !== undefined
           ? props.payDirection
-          : payment?.payDirection ?? DEFAULT_PAYMENT.payDirection) !==
+          : (payment?.payDirection ?? DEFAULT_PAYMENT.payDirection)) !==
           payDirection ||
         (props?.userId !== undefined
           ? props.userId
-          : payment?.userId ?? DEFAULT_PAYMENT.userId) !== userId ||
+          : (payment?.userId ?? DEFAULT_PAYMENT.userId)) !== userId ||
         (props?.eventId !== undefined
           ? props.eventId
-          : payment?.eventId ?? DEFAULT_PAYMENT.eventId) !== eventId ||
+          : (payment?.eventId ?? DEFAULT_PAYMENT.eventId)) !== eventId ||
         (props?.serviceId !== undefined
           ? props.serviceId
-          : payment?.serviceId ?? DEFAULT_PAYMENT.serviceId) !== serviceId ||
+          : (payment?.serviceId ?? DEFAULT_PAYMENT.serviceId)) !== serviceId ||
         (props?.productId !== undefined
           ? props.productId
-          : payment?.productId ?? DEFAULT_PAYMENT.productId) !== productId ||
+          : (payment?.productId ?? DEFAULT_PAYMENT.productId)) !== productId ||
         (props?.sum !== undefined
           ? props.sum
-          : payment?.sum ?? DEFAULT_PAYMENT.sum) !== sum ||
+          : (payment?.sum ?? DEFAULT_PAYMENT.sum)) !== sum ||
         (props?.status !== undefined
           ? props.status
-          : payment?.status ?? DEFAULT_PAYMENT.status) !== status ||
+          : (payment?.status ?? DEFAULT_PAYMENT.status)) !== status ||
         defaultPayAt !== payAt ||
         (props?.payType !== undefined
           ? props.payType
-          : payment?.payType ?? DEFAULT_PAYMENT.payType) !== payType ||
+          : (payment?.payType ?? DEFAULT_PAYMENT.payType)) !== payType ||
         (props?.comment !== undefined
           ? props.comment
-          : payment?.comment ?? DEFAULT_PAYMENT.comment) !== comment
+          : (payment?.comment ?? DEFAULT_PAYMENT.comment)) !== comment
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -249,16 +253,20 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
 
     useEffect(() => {
       if (setTopLeftComponent) {
-        setTopLeftComponent(clone ? undefined : () => (
-          <CardButtons
-            item={payment}
-            typeOfItem="payment"
-            forForm
-            showEditButton={false}
-            showDeleteButton={false}
-            itemProps={isEventClosed ? { eventId: null } : undefined}
-          />
-        ))
+        setTopLeftComponent(
+          clone
+            ? undefined
+            : () => (
+                <CardButtons
+                  item={payment}
+                  typeOfItem="payment"
+                  forForm
+                  showEditButton={false}
+                  showDeleteButton={false}
+                  itemProps={isEventClosed ? { eventId: null } : undefined}
+                />
+              )
+        )
       }
     }, [setTopLeftComponent, isEventClosed, clone])
 

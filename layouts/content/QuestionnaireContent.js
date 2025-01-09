@@ -25,7 +25,7 @@ import { DEFAULT_USER } from '@helpers/constants'
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import useErrors from '@helpers/useErrors'
 import useSnackbar from '@helpers/useSnackbar'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
@@ -33,7 +33,7 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import userEditSelector from '@state/selectors/userEditSelector'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -50,14 +50,11 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
 )
 
 const QuestionnaireContent = (props) => {
-  const [loggedUserActive, setLoggedUserActive] =
-    useRecoilState(loggedUserActiveAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const setLoggedUserActiveRoleName = useSetRecoilState(
-    loggedUserActiveRoleNameAtom
-  )
+  const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const setLoggedUserActiveRoleName = useSetAtom(loggedUserActiveRoleNameAtom)
 
-  const { towns } = useRecoilValue(locationPropsSelector)
+  const { towns } = useAtomValue(locationPropsSelector)
 
   const setSelfStatus = loggedUserActiveRole?.setSelfStatus
   const setSelfRole = loggedUserActiveRole?.setSelfRole
@@ -65,7 +62,7 @@ const QuestionnaireContent = (props) => {
 
   const [isImageLoading, setIsImageLoading] = useState(false)
 
-  const setUserInUsersState = useSetRecoilState(userEditSelector)
+  const setUserInUsersState = useSetAtom(userEditSelector)
 
   const [firstName, setFirstName] = useState(
     loggedUserActive?.firstName ?? DEFAULT_USER.firstName
@@ -163,7 +160,7 @@ const QuestionnaireContent = (props) => {
     })
   }
 
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 

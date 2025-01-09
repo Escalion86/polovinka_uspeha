@@ -5,7 +5,7 @@ import isObject from '@helpers/isObject'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import directionsAtom from '@state/atoms/directionsAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const selectDirectionsFunc = (
   state,
@@ -27,7 +27,7 @@ const selectDirectionsFunc = (
     setDisableDecline,
     setComponentInFooter,
   }) => {
-    const directions = useRecoilValue(directionsAtom)
+    const directions = useAtomValue(directionsAtom)
     const [selectedDirections, setSelectedDirections] = useState(
       isObject(state)
         ? state.filter((item) => typeof item === 'string' && item !== '')

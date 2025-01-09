@@ -14,21 +14,21 @@ import { getNounServicesUsers } from '@helpers/getNoun'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
 import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const defaultFilterValue = {
   services: null,
 }
 
 const ServicesUsersContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const servicesUsers = useRecoilValue(asyncServicesUsersAtom)
-  const users = useRecoilValue(usersAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const servicesUsers = useAtomValue(asyncServicesUsersAtom)
+  const users = useAtomValue(usersAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.servicesUsers?.add
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)

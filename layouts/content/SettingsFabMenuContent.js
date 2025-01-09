@@ -16,7 +16,7 @@ import compareObjects from '@helpers/compareObjects'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 import { uid } from 'uid'
 
 const ItemMenu = ({
@@ -89,8 +89,8 @@ const ItemMenu = ({
 }
 
 const SettingsFabMenuContent = (props) => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [fabMenu, setFabMenu] = useState(siteSettings?.fabMenu ?? [])
 
   const [message, setMessage] = useState('')

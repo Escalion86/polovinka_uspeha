@@ -21,14 +21,14 @@ import {
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
 import eventsAtom from '@state/atoms/eventsAtom'
 import React, { Suspense, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import { historiesOfEventUsersSelector } from '@state/atoms/historiesOfEventUsersAtom'
+import { useAtomValue } from 'jotai'
+import historiesOfEventUsersAtom from '@state/atoms/historiesOfEventUsersAtom'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { EventItemFromId } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import cn from 'classnames'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import HistoriesOfEvent from './HistoriesComponents/HistoriesOfEvent'
 
 const dotColors = {
@@ -37,7 +37,7 @@ const dotColors = {
 }
 
 const HistoryEventItem = ({ data, eventId, isLast }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const [isCollapsed, setIsCollapsed] = useState(true)
   const [firstCreatedAtDate, firstCreatedAtTime] = useMemo(
     () => dateToDateTimeStr(data[0].createdAt, true, false),
@@ -185,8 +185,8 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
 // }
 
 const HistoriesContentComponent = () => {
-  const histories = useRecoilValue(historiesOfEventUsersSelector)
-  const events = useRecoilValue(eventsAtom)
+  const histories = useAtomValue(historiesOfEventUsersAtom)
+  const events = useAtomValue(eventsAtom)
 
   const [periodHours, setPeriodHours] = useState(24)
 

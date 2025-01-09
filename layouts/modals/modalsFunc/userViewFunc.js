@@ -12,14 +12,14 @@ import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const CardButtonsComponent = ({ user }) => (
   <CardButtons item={user} typeOfItem="user" forForm />
@@ -35,17 +35,17 @@ const userViewFunc = (userId, params = {}) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
-    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
     const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
     const seeUserEvents = loggedUserActiveRole?.users?.seeUserEvents
 
-    const user = useRecoilValue(userSelector(userId))
+    const user = useAtomValue(userSelector(userId))
 
-    const eventsUsersSignedUpCount = useRecoilValue(
+    const eventsUsersSignedUpCount = useAtomValue(
       eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
     )
 

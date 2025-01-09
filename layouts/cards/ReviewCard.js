@@ -1,18 +1,18 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import { getNounAges } from '@helpers/getNoun'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import reviewSelector from '@state/selectors/reviewSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ReviewCard = ({ reviewId, hidden = false, style }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const review = useRecoilValue(reviewSelector(reviewId))
-  const loading = useRecoilValue(loadingAtom('review' + reviewId))
-  const itemFunc = useRecoilValue(itemsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const review = useAtomValue(reviewSelector(reviewId))
+  const loading = useAtomValue(loadingAtom('review' + reviewId))
+  const itemFunc = useAtomValue(itemsFuncAtom)
 
   return (
     <CardWrapper

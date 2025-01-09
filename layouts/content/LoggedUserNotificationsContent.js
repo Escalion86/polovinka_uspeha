@@ -11,21 +11,20 @@ import { putData } from '@helpers/CRUD'
 import compareObjects from '@helpers/compareObjects'
 import { DEFAULT_USER } from '@helpers/constants'
 import useSnackbar from '@helpers/useSnackbar'
-// import { modalsFuncAtom } from '@state/atoms'
+// import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import TelegramLoginButton from 'react-telegram-login'
 import Note from '@components/Note'
 
 const LoggedUserNotificationsContent = (props) => {
-  const [loggedUserActive, setLoggedUserActive] =
-    useRecoilState(loggedUserActiveAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const { telegramBotName } = useRecoilValue(locationPropsSelector)
+  const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const { telegramBotName } = useAtomValue(locationPropsSelector)
 
   const birthdays = loggedUserActiveRole?.notifications?.birthdays
   const remindDates = loggedUserActiveRole?.notifications?.remindDates
@@ -36,7 +35,7 @@ const LoggedUserNotificationsContent = (props) => {
     loggedUserActiveRole?.notifications?.serviceRegistration
   const newEventsByTags = loggedUserActiveRole?.notifications?.newEventsByTags
   const isLoggedUserDev = loggedUserActiveRole?.dev
-  const setUserInUsersState = useSetRecoilState(userEditSelector)
+  const setUserInUsersState = useSetAtom(userEditSelector)
 
   const [notifications, setNotifications] = useState(
     loggedUserActive?.notifications ?? DEFAULT_USER.notifications
@@ -68,7 +67,7 @@ const LoggedUserNotificationsContent = (props) => {
       },
     }))
 
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
+  // const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
 

@@ -3,7 +3,7 @@ import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsers
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect } from 'react'
-import { useRecoilRefresher_UNSTABLE, useRecoilValue } from 'recoil'
+import { useRecoilRefresher_UNSTABLE, useAtomValue } from 'jotai'
 
 const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
   const EventSignUpToReserveAfterErrorModal = ({
@@ -15,8 +15,8 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-    const itemsFunc = useRecoilValue(itemsFuncAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+    const itemsFunc = useAtomValue(itemsFuncAtom)
 
     const eventId = event._id
 

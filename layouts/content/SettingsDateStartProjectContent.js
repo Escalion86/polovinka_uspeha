@@ -7,11 +7,11 @@ import { postData } from '@helpers/CRUD'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 
 const SettingsDateStartProjectContent = (props) => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [dateStartProject, setDateStartProject] = useState(
     siteSettings?.dateStartProject ?? null
   )

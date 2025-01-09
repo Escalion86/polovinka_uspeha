@@ -1,14 +1,14 @@
 import Button from '@components/Button'
 import eventPriceByStatus from '@helpers/eventPriceByStatus'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import EventProfit from './EventProfit'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
@@ -31,12 +31,12 @@ const TextStatus = ({ children, className }) => (
 const PaymentsFromLoggedUser = ({ event, eventStatus, noBorders }) => {
   const { userStatus, userEventStatus } = eventStatus
 
-  const sumOfPaymentsFromLoggedUserToEvent = useRecoilValue(
+  const sumOfPaymentsFromLoggedUserToEvent = useAtomValue(
     sumOfPaymentsFromLoggedUserToEventSelector(event._id)
   )
 
-  const eventUser = useRecoilValue(eventLoggedUserByEventIdSelector(event._id))
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+  const eventUser = useAtomValue(eventLoggedUserByEventIdSelector(event._id))
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   if (
     !eventUser ||
     !loggedUserActive ||
@@ -85,13 +85,13 @@ const Status = ({
   noButtonIfAlreadySignIn,
   className,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   const showProfitOnCard = loggedUserActiveRole?.events?.showProfitOnCard
 
-  const eventUser = useRecoilValue(eventLoggedUserByEventIdSelector(event._id))
+  const eventUser = useAtomValue(eventLoggedUserByEventIdSelector(event._id))
 
   const isUserQuestionnaireFilled =
     isUserQuestionnaireFilledFunc(loggedUserActive)
@@ -214,9 +214,9 @@ const EventButtonSignIn = ({
   classNameProfit,
   noBorders,
 }) => {
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useAtomValue(eventSelector(eventId))
 
-  const eventStatus = useRecoilValue(loggedUserToEventStatusSelector(eventId))
+  const eventStatus = useAtomValue(loggedUserToEventStatusSelector(eventId))
 
   return (
     <div className={cn('flex', className)}>

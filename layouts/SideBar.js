@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { pages, pagesGroups } from '@helpers/constants'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
-import windowDimensionsAtom from '@state/jotai/atoms/windowDimensionsAtom'
+import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import badgesGroupSelector from '@state/selectors/badgesGroupSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
@@ -14,7 +14,6 @@ import { m } from 'framer-motion'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 const menuCfg = (
   userActiveRole,
@@ -67,7 +66,7 @@ const menuCfg = (
 }
 
 const MenuItem = ({ item, active = false, badgeNum }) => {
-  const setMenuOpen = useSetRecoilState(menuOpenAtom)
+  const setMenuOpen = useSetAtom(menuOpenAtom)
   return (
     <Link
       prefetch={false}
@@ -118,7 +117,7 @@ const Group = ({
   activePage,
   onChangeMenuIndex,
 }) => {
-  const { groupHidden, pagesIdsWithBadge } = useRecoilValue(
+  const { groupHidden, pagesIdsWithBadge } = useAtomValue(
     badgesGroupSelector(item.id)
   )
   // const items = item.items.filter(({ id }) => !hiddenMenus.includes(id))
@@ -230,7 +229,7 @@ const GroupSuspence = (props) => (
 )
 
 const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
-  const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
+  const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
 
   useEffect(() => {
@@ -284,11 +283,11 @@ var handler
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const menuRef = useRef(null)
-  const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
+  const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   const [scrollPos, setScrollPos] = useState(0)
   const [scrollable, setScrollable] = useState(false)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
   const { height } = useAtomValue(windowDimensionsAtom)
   const [menuIndex, setMenuIndex] = useState()
 

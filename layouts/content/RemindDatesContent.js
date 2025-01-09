@@ -8,15 +8,15 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { deleteData, getData, postData, putData } from '@helpers/CRUD'
 import formatDate from '@helpers/formatDate'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import useSnackbar from '@helpers/useSnackbar'
 
 const RemindDatesContent = (props) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const snackbar = useSnackbar()
 
   const [dates, setDates] = useState([])
