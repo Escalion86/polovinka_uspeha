@@ -188,14 +188,30 @@ const Input = forwardRef(
                 (typeof min !== 'number' || value >= min) &&
                 (typeof max !== 'number' || value <= max)
               ) {
-                if (stateValue === '') onChange(0)
-                else onChange(parseInt(value))
-              } else if (typeof min === 'number' && value < min) onChange(min)
-              else if (typeof max === 'number' && value > max) onChange(max)
+                if (stateValue === '') {
+                  onChange(0)
+                  setStateValue(0)
+                } else {
+                  const newValue = parseInt(value)
+                  setStateValue(newValue)
+                  onChange(newValue)
+                }
+              } else if (typeof min === 'number' && value < min) {
+                setStateValue(min)
+                onChange(min)
+              } else if (typeof max === 'number' && value > max) {
+                setStateValue(max)
+                onChange(max)
+              }
             } else {
-              if (maxLength && value?.length > maxLength)
-                onChange(value.substring(0, maxLength))
-              else onChange(value)
+              if (maxLength && value?.length > maxLength) {
+                const newValue = value.substring(0, maxLength)
+                setStateValue(newValue)
+                onChange(newValue)
+              } else {
+                setStateValue(value)
+                onChange(value)
+              }
             }
           }}
           placeholder={label}
