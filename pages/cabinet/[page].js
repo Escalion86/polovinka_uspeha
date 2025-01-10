@@ -39,9 +39,6 @@ function CabinetPage(props) {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)
-  const loggedUserActiveJ = useAtomValue(loggedUserActiveAtomJ)
-  const loggedUserActiveRoleJ = useAtomValue(loggedUserActiveRoleSelectorJ)
-  const loggedUserActiveStatusNameJ = useAtomValue(loggedUserActiveStatusAtomJ)
   const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
 
   let redirect
@@ -158,7 +155,9 @@ export const getServerSideProps = async (context) => {
     }
   }
 
-  const fetchedProps = await fetchProps(session?.user, domen)
+  const fetchedProps = await fetchProps(session?.user, domen, {
+    additionalBlocks: false,
+  })
 
   return {
     props: {

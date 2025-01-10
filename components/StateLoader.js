@@ -177,7 +177,9 @@ const StateLoader = (props) => {
     setLoggedUser(props.loggedUser)
     setEventsState(props.events)
     setDirectionsState(props.directions)
-    setAdditionalBlocksState(props.additionalBlocks)
+    if (props.additionalBlocks?.length > 0) {
+      setAdditionalBlocksState(props.additionalBlocks)
+    }
     if (props.users?.length > 0) {
       setUsersState(props.users)
       setIsLoadedUsersAtom(true)

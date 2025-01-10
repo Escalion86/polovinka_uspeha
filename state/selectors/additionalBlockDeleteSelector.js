@@ -5,8 +5,8 @@ import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 
 const additionalBlockDeleteSelector = atom(
   () => DEFAULT_ADDITIONAL_BLOCK,
-  (get, set, itemId) => {
-    const items = get(additionalBlocksAtom)
+  async (get, set, itemId) => {
+    const items = await get(additionalBlocksAtom)
     const newItemsList = items.filter((item) => item._id !== itemId)
     set(additionalBlocksAtom, newItemsList)
   }

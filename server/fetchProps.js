@@ -81,11 +81,6 @@ const fetchProps = async (user, domen, params) => {
       })
       .lean()
 
-    console.log(
-      'params?.directions?.shortDescription :>> ',
-      params?.directions?.shortDescription
-    )
-
     const directions = await Directions.find({})
       .select({
         description: 0,
@@ -97,7 +92,10 @@ const fetchProps = async (user, domen, params) => {
       })
       .lean()
     const reviews = await Reviews.find({}).lean()
-    const additionalBlocks = await AdditionalBlocks.find({}).lean()
+    const additionalBlocks =
+      params.additionalBlocks === false
+        ? []
+        : await AdditionalBlocks.find({}).lean()
     // const eventsUsers = await EventsUsers.find({}).lean()
     // const payments = await Payments.find({})
     //   .select({

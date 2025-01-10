@@ -5,8 +5,8 @@ import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 
 const additionalBlockEditSelector = atom(
   () => DEFAULT_ADDITIONAL_BLOCK,
-  (get, set, newItem) => {
-    const items = get(additionalBlocksAtom)
+  async (get, set, newItem) => {
+    const items = await get(additionalBlocksAtom)
     if (!newItem?._id) return
     const findedItem = items.find((item) => item._id === newItem._id)
     // Если мы обновляем существующий атом

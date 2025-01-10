@@ -5,9 +5,11 @@ import { DEFAULT_ADDITIONAL_BLOCK } from '@helpers/constants'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 
 export const additionalBlockSelector = atomFamily((id) =>
-  atom((get) => {
+  atom(async (get) => {
     if (!id) return DEFAULT_ADDITIONAL_BLOCK
-    return get(additionalBlocksAtom).find((item) => item._id === id)
+    const additionalBlocks = await get(additionalBlocksAtom)
+
+    return additionalBlocks.find((item) => item._id === id)
   })
 )
 
