@@ -4,9 +4,10 @@ import { atomFamily, atomWithRefresh } from 'jotai/utils'
 import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import store from '../store'
+import atomWithRefreshAndDefault from '@state/atomWithRefreshAndDefault'
 
 const asyncEventsUsersByEventIdAtom = atomFamily((eventId) =>
-  atomWithRefresh(async () => {
+  atomWithRefreshAndDefault(async () => {
     if (!eventId) return undefined
     const res = await getData(
       '/api/eventsusers',

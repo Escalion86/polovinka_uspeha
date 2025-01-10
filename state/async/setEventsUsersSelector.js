@@ -23,7 +23,7 @@ const setEventsUsersSelector = atomFamily((eventId) =>
         )
 
         if (isLoadedUserId) {
-          const eventsUser = get(
+          const eventsUser = await get(
             asyncEventsUsersByUserIdAtom(oldEventUser.userId)
           )
           const newEventsUser = eventsUser.filter(
@@ -39,7 +39,7 @@ const setEventsUsersSelector = atomFamily((eventId) =>
           isLoadedAtom('asyncEventsUsersByUserIdAtom' + newEventUser.userId)
         )
         if (isLoadedUserId) {
-          const eventsUser = get(
+          const eventsUser = await get(
             asyncEventsUsersByUserIdAtom(newEventUser.userId)
           )
           const newEventsUser = [...eventsUser, newEventUser]
