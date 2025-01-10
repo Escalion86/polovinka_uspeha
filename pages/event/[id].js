@@ -187,8 +187,11 @@ export const getServerSideProps = async (context) => {
 
   const { params } = context
   const { id } = params
+  const domen = params?.domen
 
-  const fetchedProps = await fetchProps(session?.user)
+  const fetchedProps = await fetchProps(session?.user, domen, {
+    additionalBlocks: false,
+  })
 
   return {
     props: {

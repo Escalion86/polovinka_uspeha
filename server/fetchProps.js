@@ -93,7 +93,7 @@ const fetchProps = async (user, domen, params) => {
       .lean()
     const reviews = await Reviews.find({}).lean()
     const additionalBlocks =
-      params.additionalBlocks === false
+      params?.additionalBlocks === false
         ? []
         : await AdditionalBlocks.find({}).lean()
     // const eventsUsers = await EventsUsers.find({}).lean()
