@@ -5,12 +5,12 @@ import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
-import directionSelector from '@state/selectors/directionSelector'
+import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
 import { useAtomValue } from 'jotai'
 
 const DirectionCard = ({ directionId, hidden = false, style }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const direction = useAtomValue(directionSelector(directionId))
+  const direction = useAtomValue(directionFullSelectorAsync(directionId))
   const loading = useAtomValue(loadingAtom('direction' + directionId))
   const itemFunc = useAtomValue(itemsFuncAtom)
   const directions = useAtomValue(directionsAtom)

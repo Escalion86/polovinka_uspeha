@@ -88,6 +88,8 @@ export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
   console.log('context :>> ', Object.keys(context))
   console.log('query', context.query)
+  const { params } = context
+  const domen = params?.domen
 
   if (session) {
     return {
@@ -96,7 +98,13 @@ export const getServerSideProps = async (context) => {
       },
     }
   }
-  const response = await getServerSidePropsFunc(context, getSession, fetchProps)
+  const response = await getServerSidePropsFunc(
+    context,
+    getSession,
+    fetchProps,
+    domen,
+    { directions: { shortDescription: true } }
+  )
 
   return response
 }

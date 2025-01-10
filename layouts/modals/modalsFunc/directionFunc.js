@@ -8,7 +8,7 @@ import Textarea from '@components/Textarea'
 import { DEFAULT_DIRECTION } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import directionSelector from '@state/selectors/directionSelector'
+import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import TabContext from '@components/Tabs/TabContext'
@@ -27,7 +27,7 @@ const directionFunc = (directionId, clone = false) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const direction = useAtomValue(directionSelector(directionId))
+    const direction = useAtomValue(directionFullSelectorAsync(directionId))
     const setDirection = useAtomValue(itemsFuncAtom).direction.set
 
     const [title, setTitle] = useState(

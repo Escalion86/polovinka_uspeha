@@ -1,5 +1,3 @@
-// import { atom } from 'jotai'
-
 import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import store from '../store'

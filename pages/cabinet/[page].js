@@ -139,7 +139,7 @@ export const getServerSideProps = async (context) => {
   console.log('query :>> ', context.query)
   console.log('params :>> ', context.params)
   const { params } = context
-  const { page } = params
+  const { page, domen } = params
 
   if (!session?.user) {
     return {
@@ -158,7 +158,7 @@ export const getServerSideProps = async (context) => {
     }
   }
 
-  const fetchedProps = await fetchProps(session?.user)
+  const fetchedProps = await fetchProps(session?.user, domen)
 
   return {
     props: {

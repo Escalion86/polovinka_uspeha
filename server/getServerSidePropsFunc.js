@@ -1,12 +1,18 @@
 // import { getSession } from 'next-auth/react'
 // import fetchProps from './fetchProps'
 
-const getServerSidePropsFunc = async (context, getSession, fetchProps) => {
+const getServerSidePropsFunc = async (
+  context,
+  getSession,
+  fetchProps,
+  domen,
+  params
+) => {
   var session
   try {
     session = await getSession({ req: context.req })
 
-    const fetchedProps = await fetchProps(session?.user)
+    const fetchedProps = await fetchProps(session?.user, domen, params)
     return {
       props: {
         users: null,

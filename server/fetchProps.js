@@ -16,25 +16,25 @@ import Services from '@models/Services'
 // import ServicesUsers from '@models/ServicesUsers'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
-// import dbConnect from '@utils/dbConnect'
+import dbConnect from '@utils/dbConnect'
 
-const fetchProps = async (user, domen) => {
+const fetchProps = async (user, domen, params) => {
   const serverDateTime = new Date()
   try {
     const isAdmin = isUserAdmin(user)
-    // const db = await dbConnect(domen)
+    const db = await dbConnect(domen)
 
     var users = isAdmin
       ? await Users.find({})
           .select({
             password: 0,
-            orientation: 0,
-            firstname: 0,
-            secondname: 0,
-            thirdname: 0,
-            interests: 0,
-            profession: 0,
-            about: 0,
+            // orientation: 0,
+            // firstname: 0,
+            // secondname: 0,
+            // thirdname: 0,
+            // interests: 0,
+            // profession: 0,
+            // about: 0,
           })
           .lean()
       : null
@@ -56,7 +56,6 @@ const fetchProps = async (user, domen) => {
     //     }
     //   })
     // }
-    //1570383
 
     const events = await Events.find({})
       .select({
@@ -66,26 +65,35 @@ const fetchProps = async (user, domen) => {
         organizerId: 0,
         warning: 0,
         googleCalendarId: 0,
-        maxMansMember: 0,
-        maxMansNovice: 0,
-        maxWomansMember: 0,
-        maxWomansNovice: 0,
-        maxParticipants: 0,
-        maxMans: 0,
-        maxWomans: 0,
-        minMansAge: 0,
-        minWomansAge: 0,
-        maxMansAge: 0,
-        maxWomansAge: 0,
-        usersStatusAccess: 0,
-        usersStatusDiscount: 0,
+        // maxMansMember: 0,
+        // maxMansNovice: 0,
+        // maxWomansMember: 0,
+        // maxWomansNovice: 0,
+        // maxParticipants: 0,
+        // maxMans: 0,
+        // maxWomans: 0,
+        // minMansAge: 0,
+        // minWomansAge: 0,
+        // maxMansAge: 0,
+        // maxWomansAge: 0,
+        // usersStatusAccess: 0,
+        // usersStatusDiscount: 0,
       })
       .lean()
+
+    console.log(
+      'params?.directions?.shortDescription :>> ',
+      params?.directions?.shortDescription
+    )
 
     const directions = await Directions.find({})
       .select({
         description: 0,
-        plugins: 0,
+
+        // plugins: 0,
+        ...(params?.directions?.shortDescription
+          ? {}
+          : { shortDescription: 0 }),
       })
       .lean()
     const reviews = await Reviews.find({}).lean()

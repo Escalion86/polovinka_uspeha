@@ -1,8 +1,9 @@
 // import Events from '@models/Events'
 // import EventsUsers from '@models/EventsUsers'
+import Directions from '@models/Directions'
 import Events from '@models/Events'
-import EventsUsers from '@models/EventsUsers'
-import Histories from '@models/Histories'
+// import EventsUsers from '@models/EventsUsers'
+// import Histories from '@models/Histories'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
@@ -84,57 +85,69 @@ export default async function handler(req, res) {
 
       console.log('1 :>> ', 1)
 
-      const users = await Users.updateMany(
+      const users = await Users.collection.updateMany(
         {},
         {
           $unset: {
-            image: '',
-            interests: '',
-            firstname: '',
-            secondname: '',
-            thirdname: '',
-            about: '',
-            profession: '',
+            image: 1,
+            interests: 1,
+            firstname: 1,
+            secondname: 1,
+            thirdname: 1,
+            about: 1,
+            profession: 1,
+            orientation: 1,
           },
         }
       )
 
       console.log('users :>> ', users)
 
-      const events = await Events.updateMany(
+      const events = await Events.collection.updateMany(
         {},
         {
           $unset: {
-            duration: '',
-            date: '',
-            price: '',
-            maxParticipants: '',
-            maxMans: '',
-            maxWomans: '',
-            minMansAge: '',
-            maxMansAge: '',
-            minWomansAge: '',
-            maxWomansAge: '',
-            usersStatusAccess: '',
-            usersStatusDiscount: '',
-            isReserveActive: '',
-            maxMansMember: '',
-            maxMansNovice: '',
-            maxWomansMember: '',
-            maxWomansNovice: '',
+            duration: 1,
+            date: 1,
+            price: 1,
+            maxParticipants: 1,
+            maxMans: 1,
+            maxWomans: 1,
+            minMansAge: 1,
+            maxMansAge: 1,
+            minWomansAge: 1,
+            maxWomansAge: 1,
+            usersStatusAccess: 1,
+            usersStatusDiscount: 1,
+            isReserveActive: 1,
+            maxMansMember: 1,
+            maxMansNovice: 1,
+            maxWomansMember: 1,
+            maxWomansNovice: 1,
           },
         }
       )
 
       console.log('events :>> ', events)
 
+      const directions = await Directions.collection.updateMany(
+        {},
+        {
+          $unset: {
+            plugins: 1,
+          },
+        }
+      )
+
+      console.log('directions :>> ', directions)
+
       // console.log(
       //   '!! :>> ',
       //   users.map(({ interests }) => interests)
       // )
       // const users = await Users.updateMany(
-      //   { interests: { $ne: '' } },
-      //   { interests: '' }
+      //   { interests: { $ne: 1 } },
+      //   { interests: 1 }
       // )
       // const events = await Events.updateMany(
       //   {
@@ -152,8 +165,8 @@ export default async function handler(req, res) {
       //     subEvents: [
       //       {
       //         id: event._id,
-      //         title: '',
-      //         description: '',
+      //         title: 1,
+      //         description: 1,
       //         price: event.price,
       //         maxParticipants: event.maxParticipants,
       //         maxMans: event.maxMans,

@@ -1,4 +1,4 @@
-import directionSelector from '@state/selectors/directionSelector'
+import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
 import DOMPurify from 'isomorphic-dompurify'
 import { useAtomValue } from 'jotai'
 
@@ -12,7 +12,7 @@ const directionViewFunc = (directionId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const direction = useAtomValue(directionSelector(directionId))
+    const direction = useAtomValue(directionFullSelectorAsync(directionId))
 
     if (!directionId || !direction)
       return (
