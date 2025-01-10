@@ -182,22 +182,20 @@ const Input = forwardRef(
           }
           defaultValue={defaultValue}
           onChange={(e) => {
-            const { stateValue } = e.target
+            const { value } = e.target
             if (type === 'number') {
               if (
-                (typeof min !== 'number' || stateValue >= min) &&
-                (typeof max !== 'number' || stateValue <= max)
+                (typeof min !== 'number' || value >= min) &&
+                (typeof max !== 'number' || value <= max)
               ) {
                 if (stateValue === '') onChange(0)
-                else onChange(parseInt(stateValue))
-              } else if (typeof min === 'number' && stateValue < min)
-                onChange(min)
-              else if (typeof max === 'number' && stateValue > max)
-                onChange(max)
+                else onChange(parseInt(value))
+              } else if (typeof min === 'number' && value < min) onChange(min)
+              else if (typeof max === 'number' && value > max) onChange(max)
             } else {
-              if (maxLength && stateValue?.length > maxLength)
-                onChange(stateValue.substring(0, maxLength))
-              else onChange(stateValue)
+              if (maxLength && value?.length > maxLength)
+                onChange(value.substring(0, maxLength))
+              else onChange(value)
             }
           }}
           placeholder={label}
