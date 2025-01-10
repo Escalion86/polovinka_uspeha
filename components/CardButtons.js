@@ -34,6 +34,7 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
 import { faBullhorn } from '@fortawesome/free-solid-svg-icons'
+import { getEventById } from '@helpers/getById'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -225,7 +226,10 @@ const CardButtons = ({
       {show.addToCalendar && (
         <ItemComponent
           icon={faCalendarPlus}
-          onClick={() => goToUrlForAddEventToCalendar(item)}
+          onClick={async () => {
+            const event = await getEventById(item._id)
+            goToUrlForAddEventToCalendar(event)
+          }}
           color="purple"
           tooltipText="Добавить в Google календарь"
         />

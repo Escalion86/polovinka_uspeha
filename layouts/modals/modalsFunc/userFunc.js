@@ -277,7 +277,7 @@ const userFunc = (userId, clone = false) => {
           />
         ))
     }, [setTopLeftComponent])
-    console.log('phone :>> ', phone)
+
     return (
       <FormWrapper>
         {/* <InputImage

@@ -37,6 +37,7 @@ import CheckBox from '@components/CheckBox'
 import { UserItem } from '@components/ItemCards'
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@components/Tooltip'
+import Note from '@components/Note'
 
 const ItemButton = ({
   onClick,
@@ -813,6 +814,8 @@ const eventUsersFunc = (eventId) => {
       [event]
     )
 
+    const readOnly = !canEdit || isEventClosed
+
     return (
       <>
         {/* <div className="absolute z-50 top-1 right-11">
@@ -834,20 +837,20 @@ const eventUsersFunc = (eventId) => {
           />
         )}
         {canEdit && isEventClosed && (
-          <P className="text-danger">
+          <Note type="warning">
             Мероприятие закрыто, поэтому редактирование состава участников
             запрещено
-          </P>
+          </Note>
         )}
         {canEdit && dataChanged && (
           <div
             className="flex items-center px-1 leading-[14px] cursor-pointer select-none gap-x-1 text-success"
             onClick={() => setDataChanged(false)}
           >
-            <div>
+            <Note type="warning">
               Обратите внимание! Данные были изменены с момента предыдущей
               загрузки. Отображены актуальные данные.
-            </div>
+            </Note>
             <FontAwesomeIcon
               className="w-4 h-4 min-w-4 min-h-4"
               icon={faTimesCircle}
@@ -895,7 +898,7 @@ const eventUsersFunc = (eventId) => {
                     toReserveFunc={(newUser) => {
                       setReserveStateFull(id, [...(reserve[id] || []), newUser])
                     }}
-                    readOnly={!canEdit}
+                    readOnly={readOnly}
                     exceptedIds={[
                       ...reserveIdsAll,
                       ...assistantsIds,
@@ -972,7 +975,7 @@ const eventUsersFunc = (eventId) => {
                           newUser,
                         ])
                       }}
-                      readOnly={!canEdit}
+                      readOnly={readOnly}
                       exceptedIds={[
                         ...participantsIdsAll,
                         ...assistantsIds,
@@ -1030,7 +1033,7 @@ const eventUsersFunc = (eventId) => {
                 setAssistantsStateFull(selectedUsers)
               }
               event={event}
-              readOnly={!canEdit}
+              readOnly={readOnly}
               exceptedIds={[
                 ...participantsIdsAll,
                 ...reserveIdsAll,
@@ -1064,7 +1067,7 @@ const eventUsersFunc = (eventId) => {
                   setBannedStateFull(selectedUsers)
                 }
                 event={event}
-                readOnly={!canEdit}
+                readOnly={readOnly}
                 exceptedIds={[
                   ...participantsIdsAll,
                   ...reserveIdsAll,
