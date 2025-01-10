@@ -6,10 +6,9 @@ import paymentsOfEventFromAndToUsersSelector from './paymentsOfEventFromAndToUse
 export const couponsOfEventFromUsersSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return []
+    const payments = await get(paymentsOfEventFromAndToUsersSelector(id))
 
-    return await get(paymentsOfEventFromAndToUsersSelector(id)).filter(
-      (payment) => payment.payType === 'coupon'
-    )
+    return payments.filter((payment) => payment.payType === 'coupon')
   })
 )
 
