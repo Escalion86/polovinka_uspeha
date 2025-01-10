@@ -1104,8 +1104,11 @@ const eventUsersFunc = (eventId) => {
     // const canEdit = loggedUserActiveRole?.eventsUsers?.edit
 
     useEffect(() => {
-      refreshEventState()
-      setIsRefreshed(true)
+      const refreshFunc = async () => {
+        await refreshEventState()
+        setIsRefreshed(true)
+      }
+      refreshFunc()
     }, [])
 
     const isDataChanged = JSON.stringify(prevData) !== JSON.stringify(data)
