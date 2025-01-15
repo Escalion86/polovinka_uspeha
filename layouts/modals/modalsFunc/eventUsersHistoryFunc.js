@@ -2,9 +2,10 @@ import DateTimeEvent from '@components/DateTimeEvent'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { getData } from '@helpers/CRUD'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import HistoriesOfEvent from '@layouts/content/HistoriesComponents/HistoriesOfEvent'
+import locationAtom from '@state/atoms/locationAtom'
 
 const eventUsersHistoryFunc = (eventId) => {
   const EventUsersHistoryFuncModal = ({
@@ -16,7 +17,8 @@ const eventUsersHistoryFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
+    const location = useAtomValue(locationAtom)
+    const event = useAtomValue(eventSelector(eventId))
     const [eventUsersHistory, setEventUsersHistory] = useState()
 
     if (!event || !eventId)
@@ -28,7 +30,7 @@ const eventUsersHistoryFunc = (eventId) => {
 
     useEffect(() => {
       const fetchData = async () => {
-        const result = await getData(`/api/histories`, {
+        const result = await getData(`/api/${location}/histories`, {
           schema: 'eventsusers',
           // data: { $in: [{ eventId }] },
           'data.eventId': eventId,

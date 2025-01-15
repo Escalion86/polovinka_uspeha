@@ -1,4 +1,4 @@
-import birthDateToAge from '@helpers/birthDateToAge'
+// import birthDateToAge from '@helpers/birthDateToAge'
 import isEventCanceled from '@helpers/isEventCanceled'
 import isEventClosed from '@helpers/isEventClosed'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
@@ -21,9 +21,12 @@ const userSignIn = async ({
   status,
   subEventId,
   autoReserve = false,
+  location,
 }) => {
   try {
-    await dbConnect()
+    const db = await dbConnect(location)
+    if (!db) return res?.status(400).json({ success: false, error: 'db error' })
+
     // Проверка что пользователь заполнил анкету и вообще существует
     const user = await Users.findById(userId).lean()
     if (!user) {
@@ -44,21 +47,31 @@ const userSignIn = async ({
       return result
     }
 
+    // Теперь проверяем есть ли место
+    const event = await Events.findById(eventId).lean()
+
+    if (!event) {
+      const result = {
+        success: false,
+        data: {
+          error: `мероприятие удалено`,
+        },
+      }
+      res?.status(400).json(result)
+      return result
+    }
     // Сначала проверяем есть ли такой пользователь в мероприятии
     const eventUser = await EventsUsers.findOne({ eventId, userId }).lean()
+
     if (eventUser) {
       const result = {
         success: false,
         data: { error: 'вы уже зарегистрированы на мероприятие' },
       }
-      res?.status(202).json(result)
+      res?.status(400).json(result)
       return result
     }
 
-    // Теперь проверяем есть ли место
-    const event = await Events.findById(eventId).lean()
-
-    // Скрыто ли мероприятие?
     if (!event.showOnSite) {
       const result = {
         success: false,
@@ -66,20 +79,21 @@ const userSignIn = async ({
           error: `мероприятие закрыто для записи`,
         },
       }
-      res?.status(202).json(result)
+      res?.status(400).json(result)
       return result
     }
-    // Закрыто ли мероприятие?
-    if (isEventClosed(event)) {
+    // Скрыто ли мероприятие?
+    if (event.blank) {
       const result = {
         success: false,
         data: {
-          error: `мероприятие закрыто`,
+          error: `мероприятие пустое, на него невозможно записаться`,
         },
       }
-      res?.status(202).json(result)
+      res?.status(400).json(result)
       return result
     }
+    // Закрыто ли мероприятие?
     if (isEventExpired(event)) {
       const result = {
         success: false,
@@ -87,9 +101,10 @@ const userSignIn = async ({
           error: `мероприятие завершено`,
         },
       }
-      res?.status(202).json(result)
+      res?.status(400).json(result)
       return result
     }
+
     if (isEventCanceled(event)) {
       const result = {
         success: false,
@@ -97,14 +112,22 @@ const userSignIn = async ({
           error: `мероприятие отменено`,
         },
       }
-      res?.status(202).json(result)
+      res?.status(400).json(result)
       return result
     }
-
+    if (isEventClosed(event)) {
+      const result = {
+        success: false,
+        data: {
+          error: `мероприятие закрыто`,
+        },
+      }
+      res?.status(400).json(result)
+      return result
+    }
     const subEvent = subEventId
       ? event.subEvents.find(({ id }) => subEventId === id)
       : event.subEvents[0]
-
     if (!subEvent) {
       const result = {
         success: false,
@@ -115,7 +138,6 @@ const userSignIn = async ({
       res?.status(202).json(result)
       return result
     }
-
     const eventUsers = await EventsUsers.find({ eventId }).lean()
     const subEventSum = subEventsSummator([subEvent])
     const direction = await Directions.findById(event.directionId).lean()
@@ -407,6 +429,7 @@ const userSignIn = async ({
       eventId,
       addedEventUsers: [newEventUserJson],
       itIsSelfRecord: true,
+      location,
     })
 
     const result = { success: true, data: newEventUserJson }

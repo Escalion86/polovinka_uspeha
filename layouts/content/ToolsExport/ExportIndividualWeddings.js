@@ -6,17 +6,17 @@ import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
 import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
-import usersAtom from '@state/atoms/usersAtom'
-import { useRecoilValue } from 'recoil'
+import usersAtomAsync from '@state/async/usersAtomAsync'
+import { useAtomValue } from 'jotai'
 
 const ExportIndividualWeddings = () => {
-  const services = useRecoilValue(servicesAtom)
-  const users = useRecoilValue(usersAtom)
+  const services = useAtomValue(servicesAtom)
+  const users = useAtomValue(usersAtomAsync)
   const serviceIS = services.find(
     (service) => service.title === 'Индивидуальные свидания'
   )
 
-  const servicesUsers = useRecoilValue(asyncServicesUsersAtom)
+  const servicesUsers = useAtomValue(asyncServicesUsersAtom)
   const serviceUsers = servicesUsers.filter(
     (serviceUser) => serviceUser.serviceId === serviceIS?._id
   )

@@ -1,5 +1,6 @@
-import { modalsAtom } from '@state/atoms'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
+
+import modalsAtom from '@state/atoms/modalsAtom'
 
 const addModal = (modals, props) => {
   const maxId =
@@ -18,12 +19,11 @@ const addModal = (modals, props) => {
   return [...modals, { id: idForNewModal, props }]
 }
 
-const addModalSelector = selector({
-  key: 'addModalSelector',
-  get: () => get(modalsAtom),
-  set: ({ set, get }, props) => {
+const addModalSelector = atom(
+  () => get(modalsAtom),
+  (get, set, props) => {
     set(modalsAtom, addModal(get(modalsAtom), props))
-  },
-})
+  }
+)
 
 export default addModalSelector

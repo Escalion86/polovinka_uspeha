@@ -1,8 +1,6 @@
-import { atomFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 
-const loadingAtom = atomFamily({
-  key: 'loadingAtom',
-  default: false,
-})
+const loadingAtom = atomFamily((params) => atom(false))
 
 export default loadingAtom

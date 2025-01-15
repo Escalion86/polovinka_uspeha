@@ -1,20 +1,13 @@
 import { getData } from '@helpers/CRUD'
-import { atomFamily, selectorFamily } from 'recoil'
+import { atomFamily } from 'jotai/utils'
+import locationAtom from './locationAtom'
 
-export const historiesOfPaymentSelector = selectorFamily({
-  key: 'historiesOfPaymentSelector',
-  get:
-    (id) =>
-    async ({ get }) =>
-      await getData(`/api/histories`, {
-        schema: 'payments',
-        'data._id': id,
-      }),
-})
-
-const historiesOfPaymentAtom = atomFamily({
-  key: 'historiesOfPaymentAtom',
-  default: [],
+const historiesOfPaymentAtom = atomFamily((id) => async (get) => {
+  const location = get(locationAtom)
+  return await getData(`/api/${location}/histories`, {
+    schema: 'payments',
+    'data._id': id,
+  })
 })
 
 export default historiesOfPaymentAtom

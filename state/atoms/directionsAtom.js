@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const directionsAtom = atom({
-  key: 'directions',
-  default: [],
-})
+const directionsAtom = atom([])
 
 export default directionsAtom

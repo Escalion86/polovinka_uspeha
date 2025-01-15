@@ -2,11 +2,10 @@
 // import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { sendImage } from '@helpers/cloudinary'
-// import { modalsFuncAtom } from '@state/atoms'
+// import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-// import { useRecoilValue } from 'recoil'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
 // import locationPropsSelector from '@state/selectors/locationPropsSelector'
@@ -17,8 +16,7 @@ import { faFolder } from '@fortawesome/free-regular-svg-icons/faFolder'
 import Zoom from 'react-medium-image-zoom'
 import TextLinesLimiter from './TextLinesLimiter'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 
 function isFileFunc(pathname) {
   return pathname.split('/').pop().indexOf('.') > -1
@@ -47,8 +45,8 @@ const SelectFile = ({
   paddingX,
   canDeleteFile,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  // const { imageFolder } = useRecoilValue(locationPropsSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  // const { imageFolder } = useAtomValue(locationPropsSelector)
   const [isLoading, setIsLoading] = useState(true)
 
   const [files, setFiles] = useState([])
@@ -60,7 +58,7 @@ const SelectFile = ({
       (response) => {
         //{status: 'ok', message: 'File deleted!'}
         if (response?.status === 'ok') {
-          console.log('response :>> ', response)
+          // console.log('response :>> ', response)
           setFiles((state) =>
             state.filter(
               (file) => file !== `https://escalioncloud.ru/uploads/${filePath}`

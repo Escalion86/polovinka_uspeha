@@ -5,7 +5,7 @@ import isObject from '@helpers/isObject'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import servicesAtom from '@state/atoms/servicesAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const selectPaymentsFunc = (
   state,
@@ -27,7 +27,7 @@ const selectPaymentsFunc = (
     setDisableDecline,
     setComponentInFooter,
   }) => {
-    const services = useRecoilValue(servicesAtom)
+    const services = useAtomValue(servicesAtom)
     const [selectedServices, setSelectedServices] = useState(
       isObject(state)
         ? state.filter((item) => typeof item === 'string' && item !== '')

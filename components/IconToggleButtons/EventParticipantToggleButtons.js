@@ -1,10 +1,12 @@
+import { useAtomValue } from 'jotai'
+
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
-import { useRecoilValue } from 'recoil'
 
 const EventParticipantToggleButtons = ({ value, onChange, noClosed }) => {
-  const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
+  const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
+
   return (
     <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
       <Button

@@ -7,11 +7,13 @@ import { postData } from '@helpers/CRUD'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const SettingsDateStartProjectContent = (props) => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
+  const location = useAtomValue(locationAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [dateStartProject, setDateStartProject] = useState(
     siteSettings?.dateStartProject ?? null
   )
@@ -23,12 +25,11 @@ const SettingsDateStartProjectContent = (props) => {
 
   const onClickConfirm = async () => {
     await postData(
-      `/api/site`,
+      `/api/${location}/site`,
       {
         dateStartProject,
       },
       (data) => {
-        console.log('data :>> ', data)
         setSiteSettings(data)
         setMessage('Данные обновлены успешно')
         setIsWaitingToResponse(false)

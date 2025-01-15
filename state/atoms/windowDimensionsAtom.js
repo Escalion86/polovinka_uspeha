@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const windowDimensionsAtom = atom({
-  key: 'windowDimensions',
-  default: { width: undefined, height: undefined },
-})
+const windowDimensionsAtom = atom({ width: undefined, height: undefined })
 
 export default windowDimensionsAtom

@@ -2,11 +2,11 @@
 import dynamic from 'next/dynamic'
 const PaymentCard = dynamic(() => import('@layouts/cards/PaymentCard'))
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import ListWrapper from './ListWrapper'
 
 const PaymentsList = ({ payments }) => {
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
   return (
     <ListWrapper
       itemCount={payments.length}

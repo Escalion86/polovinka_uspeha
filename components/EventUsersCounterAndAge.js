@@ -9,7 +9,7 @@ import cn from 'classnames'
 import Image from 'next/image'
 import { Suspense } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import SvgSigma from 'svg/SvgSigma'
 import UserStatusIcon from './UserStatusIcon'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -32,11 +32,10 @@ const CounterComponent = ({
 }) => {
   const subEventSum = subEvent
     ? subEvent
-    : useRecoilValue(subEventsSumOfEventSelector(event._id))
+    : useAtomValue(subEventsSumOfEventSelector(event._id))
 
   const eventUsers =
-    eventUsersToUse ??
-    useRecoilValue(eventsUsersFullByEventIdSelector(event._id))
+    eventUsersToUse ?? useAtomValue(eventsUsersFullByEventIdSelector(event._id))
 
   const eventUsersParticipants = eventUsers.filter(
     ({ status }) => status === 'participant'
@@ -299,11 +298,10 @@ const SumCounterComponent = ({
 }) => {
   const subEventSum = subEvent
     ? subEvent
-    : useRecoilValue(subEventsSumOfEventSelector(event._id))
+    : useAtomValue(subEventsSumOfEventSelector(event._id))
 
   const eventUsers =
-    eventUsersToUse ??
-    useRecoilValue(eventsUsersFullByEventIdSelector(event._id))
+    eventUsersToUse ?? useAtomValue(eventsUsersFullByEventIdSelector(event._id))
 
   const subEventUsers = subEvent
     ? eventUsers.filter(({ user, subEventId }) => subEventId === subEvent.id)
@@ -372,7 +370,7 @@ export const EventUsersCounterAndAgeByEventId = ({
   showAges,
   dontShowLabel,
 }) => {
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useAtomValue(eventSelector(eventId))
   if (!eventId || !event) return null
   return (
     <EventUsersCounterAndAge
@@ -393,8 +391,8 @@ const EventUsersCounterAndAge = ({
   showNoviceAndMemberSum,
   eventUsersToUse,
 }) => {
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
   const showReserve =
     loggedUserActiveRole?.events?.seeReserveOnCard || isLoggedUserMember
 

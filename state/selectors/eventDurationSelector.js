@@ -1,25 +1,15 @@
-// import { DEFAULT_EVENT } from '@helpers/constants'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import getEventDuration from '@helpers/getEventDuration'
-// import getMinutesBetween from '@helpers/getMinutesBetween'
-// import eventsAtom from '@state/atoms/eventsAtom'
-import { selectorFamily } from 'recoil'
-// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventSelector from './eventSelector'
 
-export const eventDurationSelector = selectorFamily({
-  key: 'eventDurationSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return null
-      const event = get(eventSelector(id))
-      return getEventDuration(event)
-    },
-  // set:
-  //   (id) =>
-  //   ({ set }, event) => {
-  //     set(eventsSelector, event)
-  //   },
-})
+export const eventDurationSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return null
+    const event = await get(eventSelector(id))
+    return getEventDuration(event)
+  })
+)
 
 export default eventDurationSelector

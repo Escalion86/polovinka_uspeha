@@ -4,7 +4,7 @@ import Button from '@components/Button'
 
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import { useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 // text/html; charset=UTF-8
 var requestOptions = {
   // headers: {
@@ -17,7 +17,7 @@ var requestOptions = {
 }
 
 const ToolsNewsletterContent = () => {
-  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
+  const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const [instanceId, setInstanceId] = useState('65410E28CF02E')
 
   const sendMessage = async ({ message, number }) => {
@@ -46,7 +46,6 @@ const ToolsNewsletterContent = () => {
         return response.json()
       })
       .then((result) => {
-        console.log('result :>> ', result)
         setInstanceId(result.instance_id)
       })
       .catch((error) => console.log('error', error))

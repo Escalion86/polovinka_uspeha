@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const loggedUserActiveRoleNameAtom = atom({
-  key: 'loggedUserActiveRoleName',
-  default: null,
-})
+const loggedUserActiveRoleNameAtom = atom(null)
 
 export default loggedUserActiveRoleNameAtom

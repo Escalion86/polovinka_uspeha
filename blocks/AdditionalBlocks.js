@@ -1,10 +1,10 @@
 import transliterate from '@helpers/transliterate'
 import filteredAdditionalBlocksSelector from '@state/selectors/filteredAdditionalBlocksSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import DirectionBlock from './DirectionBlock'
 
 const AdditionalBlocks = ({ startInverse }) => {
-  const filteredAdditionalBlocks = useRecoilValue(
+  const filteredAdditionalBlocks = useAtomValue(
     filteredAdditionalBlocksSelector
   )
   if (!filteredAdditionalBlocks) return null

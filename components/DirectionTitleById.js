@@ -1,8 +1,8 @@
 import directionSelector from '@state/selectors/directionSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const DirectionTitleById = ({ directionId }) => {
-  const direction = useRecoilValue(directionSelector(directionId))
+  const direction = useAtomValue(directionSelector(directionId))
   return direction.title
 }
 

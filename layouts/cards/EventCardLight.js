@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DateTimeEvent from '@components/DateTimeEvent'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
@@ -6,7 +8,7 @@ import TextInRing from '@components/TextInRing'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import eventStatusFunc from '@helpers/eventStatus'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import errorAtom from '@state/atoms/errorAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
@@ -14,7 +16,6 @@ import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSel
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
-import { useRecoilValue } from 'recoil'
 import EventCardSkeleton from './Skeletons/EventCardSkeleton'
 import eventSelector from '@state/selectors/eventSelector'
 import Button from '@components/Button'
@@ -26,17 +27,17 @@ const parentHasAttr = (e, attr) => {
 }
 
 const EventCardLight = ({ eventId, onTagClick, style }) => {
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
 
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const event = useRecoilValue(eventSelector(eventId))
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const event = useAtomValue(eventSelector(eventId))
 
   const eventStatus = eventStatusFunc(event)
 
-  const direction = useRecoilValue(directionSelector(event?.directionId))
-  const loading = useRecoilValue(loadingAtom('event' + eventId))
-  const error = useRecoilValue(errorAtom('event' + eventId))
-  const subEventSum = useRecoilValue(subEventsSumOfEventSelector(eventId))
+  const direction = useAtomValue(directionSelector(event?.directionId))
+  const loading = useAtomValue(loadingAtom('event' + eventId))
+  const error = useAtomValue(errorAtom('event' + eventId))
+  const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
 
   if (
     !event ||

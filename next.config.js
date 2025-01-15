@@ -38,10 +38,10 @@ module.exports = //withBundleAnalyzer(
       largePageDataBytes: 512 * 100000,
     },
     reactStrictMode: true,
-    env: {
-      // @see https://github.com/facebookexperimental/Recoil/issues/2135#issuecomment-1362197710
-      RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED: 'false',
-    },
+    // env: {
+    //   // @see https://github.com/facebookexperimental/Recoil/issues/2135#issuecomment-1362197710
+    //   RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED: 'false',
+    // },
     images: {
       // domains: ['localhost', 'escalioncloud.ru', 't.me'],
       remotePatterns: [

@@ -1,9 +1,5 @@
-// import { DEFAULT_USER } from '@helpers/constants'
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const loggedUserAtom = atom({
-  key: 'loggedUser',
-  default: null,
-})
+const loggedUserAtom = atom(null)
 
 export default loggedUserAtom

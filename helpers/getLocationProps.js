@@ -1,7 +1,8 @@
 import { LOCATIONS } from './constants'
 
 const getLocationProps = (location) => {
-  if (!LOCATIONS[location]) return LOCATIONS.krasnoyarsk
+  if (!LOCATIONS[location]) return
+
   return LOCATIONS[location]
 }
 

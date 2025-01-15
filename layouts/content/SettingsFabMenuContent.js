@@ -16,8 +16,9 @@ import compareObjects from '@helpers/compareObjects'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 import { uid } from 'uid'
+import locationAtom from '@state/atoms/locationAtom'
 
 const ItemMenu = ({
   item,
@@ -89,8 +90,9 @@ const ItemMenu = ({
 }
 
 const SettingsFabMenuContent = (props) => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
+  const location = useAtomValue(locationAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [fabMenu, setFabMenu] = useState(siteSettings?.fabMenu ?? [])
 
   const [message, setMessage] = useState('')
@@ -99,7 +101,7 @@ const SettingsFabMenuContent = (props) => {
 
   const onClickConfirm = async () => {
     await postData(
-      `/api/site`,
+      `/api/${location}/site`,
       {
         fabMenu,
       },

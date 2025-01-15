@@ -5,11 +5,11 @@ import { getNounServicesUsers } from '@helpers/getNoun'
 import ServicesUsersList from '@layouts/lists/ServicesUsersList'
 import asyncServicesUsersByUserIdSelector from '@state/async/asyncServicesUsersByUserIdSelector'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ServicesLoggedUserContent = () => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const servicesLoggedUser = useRecoilValue(
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const servicesLoggedUser = useAtomValue(
     asyncServicesUsersByUserIdSelector(loggedUserActive._id)
   )
 

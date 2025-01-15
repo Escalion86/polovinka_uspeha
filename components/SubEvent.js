@@ -9,9 +9,9 @@ import { faRegistered } from '@fortawesome/free-solid-svg-icons/faRegistered'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import SvgSigma from 'svg/SvgSigma'
 import Ages from './Ages'
 import Image from 'next/image'
@@ -156,7 +156,7 @@ const SubEvent = ({
   rules,
   ...props
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const { id } = props
 
   return (

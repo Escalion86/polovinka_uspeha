@@ -3,7 +3,7 @@ import { SelectEventList } from '@components/SelectItemList'
 import UserNameById from '@components/UserNameById'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import eventsUsersSignedUpByUserIdSelector from '@state/selectors/eventsUsersSignedUpByUserIdSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const userSignedUpEventsFunc = (userId, clone = false) => {
   const UserSignedUpEventsModal = ({
@@ -14,9 +14,7 @@ const userSignedUpEventsFunc = (userId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const eventUsers = useRecoilValue(
-      eventsUsersSignedUpByUserIdSelector(userId)
-    )
+    const eventUsers = useAtomValue(eventsUsersSignedUpByUserIdSelector(userId))
     const sortedEventUsers = [...eventUsers]
       // .filter(
       //   (item) => item.event && item.user && item.event.status !== 'canceled'

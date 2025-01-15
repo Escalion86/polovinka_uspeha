@@ -5,13 +5,13 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import filterWithRules from '@helpers/filterWithRules'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import InputWrapper from './InputWrapper'
 import {
   DirectionItem,
@@ -234,9 +234,9 @@ export const SelectUser = ({
   itemChildren,
   nameFieldWrapperClassName,
 }) => {
-  const users = useRecoilValue(usersAtom)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const selectedUser = useRecoilValue(userSelector(selectedId))
+  const users = useAtomValue(usersAtomAsync)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const selectedUser = useAtomValue(userSelector(selectedId))
 
   const filteredUsers = filterWithRules(users, filter)
 
@@ -319,8 +319,8 @@ export const SelectService = ({
   rounded = true,
   readOnly,
 }) => {
-  const services = useRecoilValue(servicesAtom)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const services = useAtomValue(servicesAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const filteredServices = filterWithRules(services, filter)
 
@@ -394,8 +394,8 @@ export const SelectEvent = ({
   showEventUsersButton = false,
   showEditButton = false,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const events = useRecoilValue(eventsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const events = useAtomValue(eventsAtom)
   return (
     <SelectItemContainer
       required={required}
@@ -497,8 +497,8 @@ export const SelectDirection = ({
   modalTitle,
   rounded = true,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const directions = useRecoilValue(directionsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const directions = useAtomValue(directionsAtom)
 
   return (
     <SelectItemContainer
@@ -562,8 +562,8 @@ export const SelectPayment = ({
   showEvent,
   showSectorIcon,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const payments = useRecoilValue(asyncPaymentsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const payments = useAtomValue(asyncPaymentsAtom)
 
   return (
     <SelectItemContainer

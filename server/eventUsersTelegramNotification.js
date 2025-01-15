@@ -27,6 +27,7 @@ const eventUsersTelegramNotification = async ({
   addedEventUsers = [],
   itIsSelfRecord = false,
   notificationOnMassiveChange = false,
+  location,
 }) => {
   if (
     eventId &&
@@ -36,7 +37,9 @@ const eventUsersTelegramNotification = async ({
       (itIsSelfRecord &&
         addedEventUsers.length + deletedEventUsers.length === 1))
   ) {
-    await dbConnect()
+    const db = await dbConnect(location)
+    if (!db) return
+
     const rolesSettings = await Roles.find({})
     const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
     const rolesIdsToEventUsersNotification = allRoles
@@ -294,6 +297,7 @@ const eventUsersTelegramNotification = async ({
             : undefined,
         ],
       ],
+      location,
     })
 
     return result

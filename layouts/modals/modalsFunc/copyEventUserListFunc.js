@@ -14,7 +14,7 @@ import useSnackbar from '@helpers/useSnackbar'
 // import eventWomansSelector from '@state/selectors/eventWomansSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import { useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 
 const copyEventUserListFunc = (eventId) => {
@@ -29,14 +29,14 @@ const copyEventUserListFunc = (eventId) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
-    // const assistants = useRecoilValue(eventAssistantsSelector(eventId))
-    // const participants = useRecoilValue(
+    const event = useAtomValue(eventSelector(eventId))
+    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
+    // const assistants = useAtomValue(eventAssistantsSelector(eventId))
+    // const participants = useAtomValue(
     //   eventParticipantsFullByEventIdSelector(eventId)
     // )
-    // const mans = useRecoilValue(eventMansSelector(eventId))
-    // const womans = useRecoilValue(eventWomansSelector(eventId))
+    // const mans = useAtomValue(eventMansSelector(eventId))
+    // const womans = useAtomValue(eventWomansSelector(eventId))
     const { info } = useSnackbar()
 
     const [showSecondName, setShowSecondName] = useState(true)

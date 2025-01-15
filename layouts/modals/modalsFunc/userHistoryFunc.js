@@ -4,11 +4,12 @@ import { getData } from '@helpers/CRUD'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import UserKeyValueItem from './historyKeyValuesItems/UserKeyValueItem'
 import { userKeys } from './historyKeyValuesItems/keys'
 import UserName from '@components/UserName'
 import ComboBox from '@components/ComboBox'
+import locationAtom from '@state/atoms/locationAtom'
 
 const userHistoryFunc = (userId) => {
   const UserHistoryModal = ({
@@ -20,7 +21,8 @@ const userHistoryFunc = (userId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const user = useRecoilValue(userSelector(userId))
+    const location = useAtomValue(locationAtom)
+    const user = useAtomValue(userSelector(userId))
     const [userHistory, setUserHistory] = useState()
     const [periodHours, setPeriodHours] = useState(24)
 
@@ -35,7 +37,7 @@ const userHistoryFunc = (userId) => {
       const fetchData = async () => {
         var cutoff = new Date()
         cutoff.setHours(cutoff.getHours() - periodHours)
-        const result = await getData(`/api/histories`, {
+        const result = await getData(`/api/${location}/histories`, {
           schema: 'users',
           'data._id': userId,
           createdAt: { $gte: cutoff },

@@ -11,7 +11,7 @@ import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const additionalBlockFunc = (additionalBlockId, clone = false) => {
   const AdditionalBlockModal = ({
@@ -23,13 +23,13 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const additionalBlocks = useRecoilValue(additionalBlocksAtom)
+    const additionalBlocks = useAtomValue(additionalBlocksAtom)
 
-    const additionalBlock = useRecoilValue(
+    const additionalBlock = useAtomValue(
       additionalBlockSelector(additionalBlockId)
     )
 
-    const setAdditionalBlock = useRecoilValue(itemsFuncAtom).additionalBlock.set
+    const setAdditionalBlock = useAtomValue(itemsFuncAtom).additionalBlock.set
 
     const [title, setTitle] = useState(
       additionalBlock?.title ?? DEFAULT_ADDITIONAL_BLOCK.title

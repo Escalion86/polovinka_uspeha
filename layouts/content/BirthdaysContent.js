@@ -21,9 +21,9 @@ import {
 } from '@mui/lab'
 import { timelineItemClasses } from '@mui/lab/TimelineItem'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import { Suspense, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
   if (!birthday) return undefined
@@ -58,8 +58,8 @@ var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
 // }
 
 const BirthdaysContentComponent = () => {
-  const users = useRecoilValue(usersAtom)
-  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
+  const users = useAtomValue(usersAtomAsync)
+  const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const [periodDays, setPeriodDays] = useState(90)
 
   // const usersBirthday = users.map((user) => ({

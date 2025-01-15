@@ -1,14 +1,13 @@
-import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 
-const isUserHaveActionsSelector = selectorFamily({
-  key: 'isUserHaveActionsSelector',
-  get:
-    (id) =>
-    async ({ get }) => {
-      const eventsOfUser = await get(asyncEventsUsersByUserIdAtom(id))
-      return eventsOfUser.length > 0
-    },
-})
+import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
+
+const isUserHaveActionsSelector = atomFamily((id) =>
+  atom(async (get) => {
+    const eventsOfUser = await get(asyncEventsUsersByUserIdAtom(id))
+    return eventsOfUser.length > 0
+  })
+)
 
 export default isUserHaveActionsSelector

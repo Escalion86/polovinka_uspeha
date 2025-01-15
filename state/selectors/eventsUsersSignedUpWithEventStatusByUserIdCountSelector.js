@@ -1,23 +1,22 @@
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import isEventExpired from '@helpers/isEventExpired'
-import { selectorFamily } from 'recoil'
 import eventsUsersSignedUpByUserIdSelector from './eventsUsersSignedUpByUserIdSelector'
 
 export const eventsUsersSignedUpWithEventStatusByUserIdCountSelector =
-  selectorFamily({
-    key: 'eventsUsersSignedUpWithEventStatusByUserIdCountSelector',
-    get:
-      (id) =>
-      ({ get }) => {
-        if (!id) return []
-        const eventsUsers = get(eventsUsersSignedUpByUserIdSelector(id))
-        const result = { signUp: 0, finished: 0 }
-        eventsUsers.forEach((eventUser) => {
-          if (isEventExpired(eventUser.event)) ++result.finished
-          else ++result.signUp
-        })
+  atomFamily((id) =>
+    atom(async (get) => {
+      if (!id) return []
+      const eventsUsers = await get(eventsUsersSignedUpByUserIdSelector(id))
+      const result = { signUp: 0, finished: 0 }
+      eventsUsers.forEach((eventUser) => {
+        if (isEventExpired(eventUser.event)) ++result.finished
+        else ++result.signUp
+      })
 
-        return result
-      },
-  })
+      return result
+    })
+  )
 
 export default eventsUsersSignedUpWithEventStatusByUserIdCountSelector

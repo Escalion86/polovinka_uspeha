@@ -1,14 +1,15 @@
+import { useAtomValue } from 'jotai'
+
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import React, { useState } from 'react'
-import { useRecoilValue } from 'recoil'
 
 const CountDown = ({ children, Wrapper = ({ children }) => children }) => {
-  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const siteSettings = useAtomValue(siteSettingsAtom)
 
-  const device = useRecoilValue(windowDimensionsTailwindSelector)
+  const device = useAtomValue(windowDimensionsTailwindSelector)
 
   const [showCoundownTimer, setShowCoundownTimer] = useState(
     siteSettings.dateStartProject &&

@@ -3,10 +3,11 @@ import Input from '@components/Input'
 import SelectTemplate from '@components/SelectTemplate'
 import { postData, putData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const saveTemplateFunc = (tool, template, onSave, aspect) => {
   const SaveTemplateFuncModal = ({
@@ -17,8 +18,9 @@ const saveTemplateFunc = (tool, template, onSave, aspect) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+    const location = useAtomValue(locationAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const [selectedTemplate, setSelectedTemplate] = useState()
     const snackbar = useSnackbar()
 
@@ -40,7 +42,7 @@ const saveTemplateFunc = (tool, template, onSave, aspect) => {
               text: 'Вы уверены что хотите заменить шаблон?',
               onConfirm: async () => {
                 const response = await putData(
-                  '/api/templates/' + selectedTemplate._id,
+                  `/api/${location}/templates/${selectedTemplate._id}`,
                   {
                     tool,
                     name: selectedTemplate.name,

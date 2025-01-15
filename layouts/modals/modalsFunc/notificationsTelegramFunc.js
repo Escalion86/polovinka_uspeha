@@ -1,14 +1,13 @@
 // import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 // import locationAtom from '@state/atoms/locationAtom'
-import locationPropsSelector from '@state/selectors/locationPropsSelector'
 // import Input from '@components/Input'
 // import { putData } from '@helpers/CRUD'
 // import useErrors from '@helpers/useErrors'
 // import useSnackbar from '@helpers/useSnackbar'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
-// import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
+import telegramBotNameSelector from '@state/selectors/telegramBotNameSelector'
 
 const notificationsTelegramFunc = (onStartActivate, onCancel) => {
   const NotificationsTelegramModal = ({
@@ -19,8 +18,8 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // const location = useRecoilValue(locationAtom)
-    const { telegramBotName } = useRecoilValue(locationPropsSelector)
+    // const location = useAtomValue(locationAtom)
+    const telegramBotName = useAtomValue(telegramBotNameSelector)
 
     // const [userName, setUserName] = useState(
     //   loggedUser?.notifications?.telegram?.userName ?? ''

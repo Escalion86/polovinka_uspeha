@@ -1,9 +1,9 @@
-import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-const isLoggedUserMemberSelector = selector({
-  key: 'isLoggedUserMemberSelector',
-  get: ({ get }) => get(loggedUserActiveStatusAtom) === 'member',
-})
+import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+
+const isLoggedUserMemberSelector = atom(
+  (get) => get(loggedUserActiveStatusAtom) === 'member'
+)
 
 export default isLoggedUserMemberSelector

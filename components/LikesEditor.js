@@ -2,14 +2,14 @@ import Button from '@components/Button'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import UserLikesItem from './UserLikesItem'
 
 const getLikesObject = (eventUsers) =>
   eventUsers.reduce((a, { userId, likes }) => ({ ...a, [userId]: likes }), {})
 
 const LikesEditor = ({ eventId, readOnly }) => {
-  const eventUsers = useRecoilValue(
+  const eventUsers = useAtomValue(
     eventParticipantsFullByEventIdSelector(eventId)
   )
 
@@ -42,7 +42,7 @@ const LikesEditor = ({ eventId, readOnly }) => {
     defaultWomansSelections
   )
 
-  const setEventLikes = useRecoilValue(itemsFuncAtom).event.setLikes
+  const setEventLikes = useAtomValue(itemsFuncAtom).event.setLikes
   const [isResultSaved, setIsResultSaved] = useState(false)
 
   const setManState = (key) => (value) => {

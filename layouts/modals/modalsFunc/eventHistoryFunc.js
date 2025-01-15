@@ -5,13 +5,14 @@ import { getData } from '@helpers/CRUD'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
 import { eventKeys } from './historyKeyValuesItems/keys'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import eventSelector from '@state/selectors/eventSelector'
+import locationAtom from '@state/atoms/locationAtom'
 
 const eventHistoryFunc = (eventId) => {
   const EventHistoryModal = ({
@@ -23,10 +24,11 @@ const eventHistoryFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const event = useRecoilValue(eventSelector(eventId))
+    const location = useAtomValue(locationAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const event = useAtomValue(eventSelector(eventId))
     const [eventHistory, setEventHistory] = useState()
-    const setEvent = useRecoilValue(itemsFuncAtom).event.set
+    const setEvent = useAtomValue(itemsFuncAtom).event.set
 
     if (!event || !eventId)
       return (
@@ -37,7 +39,7 @@ const eventHistoryFunc = (eventId) => {
 
     useEffect(() => {
       const fetchData = async () => {
-        const result = await getData(`/api/histories`, {
+        const result = await getData(`/api/${location}/histories`, {
           schema: 'events',
           'data._id': eventId,
         })

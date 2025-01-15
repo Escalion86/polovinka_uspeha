@@ -7,9 +7,16 @@ import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 
 // Оповещение в телеграм
-const serviceUserTelegramNotification = async ({ req, serviceId, userId }) => {
+const serviceUserTelegramNotification = async ({
+  req,
+  serviceId,
+  userId,
+  location,
+}) => {
   if (serviceId && userId) {
-    await dbConnect()
+    const db = await dbConnect(location)
+    if (!db) return
+
     const rolesSettings = await Roles.find({})
     const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
     const rolesIdsToServiceUsersNotification = allRoles
@@ -64,6 +71,7 @@ const serviceUserTelegramNotification = async ({ req, serviceId, userId }) => {
           },
         ],
       ],
+      location,
     })
 
     return result

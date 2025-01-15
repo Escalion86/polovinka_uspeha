@@ -5,7 +5,7 @@ import UserName from '@components/UserName'
 import { faHeartBroken } from '@fortawesome/free-solid-svg-icons/faHeartBroken'
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
@@ -13,7 +13,7 @@ import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelec
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 
 const Heart = ({ small, broken, gray }) => (
@@ -25,8 +25,8 @@ const Heart = ({ small, broken, gray }) => (
 )
 
 const CoincidenceItem = ({ user, coincidence, like, likeSortNum }) => {
-  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   return (
     <div
@@ -96,10 +96,10 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     setDeclineButtonShow,
     setTitle,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const event = useRecoilValue(eventSelector(eventId))
-    const user = useRecoilValue(userSelector(userId))
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const event = useAtomValue(eventSelector(eventId))
+    const user = useAtomValue(userSelector(userId))
+    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUser = useMemo(
       () => eventUsers.find((eventUser) => eventUser.userId === userId),
       [eventUsers]
@@ -107,12 +107,12 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
 
     const [likes, setLikes] = useState(eventUser?.likes ?? [])
 
-    const participantsWithoutRelationship = useRecoilValue(
+    const participantsWithoutRelationship = useAtomValue(
       eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
     )
 
-    const setEventUserData = useRecoilValue(itemsFuncAtom).eventsUser.setData
-    const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+    const setEventUserData = useAtomValue(itemsFuncAtom).eventsUser.setData
+    const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
 
     useEffect(() => {
       if (

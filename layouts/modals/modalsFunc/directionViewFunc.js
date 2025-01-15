@@ -1,6 +1,6 @@
-import directionSelector from '@state/selectors/directionSelector'
+import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
 import DOMPurify from 'isomorphic-dompurify'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const directionViewFunc = (directionId) => {
   const DirectionViewModal = ({
@@ -12,7 +12,7 @@ const directionViewFunc = (directionId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const direction = useRecoilValue(directionSelector(directionId))
+    const direction = useAtomValue(directionFullSelectorAsync(directionId))
 
     if (!directionId || !direction)
       return (

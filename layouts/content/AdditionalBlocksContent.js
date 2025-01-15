@@ -5,15 +5,15 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 import { getNounAdditionalBlocks } from '@helpers/getNoun'
 import AdditionalBlockCard from '@layouts/cards/AdditionalBlockCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const AdditionalBlocksContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const additionalBlocks = useRecoilValue(additionalBlocksAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const additionalBlocks = useAtomValue(additionalBlocksAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const seeAddButton = loggedUserActiveRole?.generalPage?.additionalBlocks
   // const sortedAdditionalBlocks = additionalBlocks
   // .sort((a, b) => (a.index < b.index ? -1 : 1))

@@ -10,10 +10,11 @@ import { m } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtomValue, useSetAtom } from 'jotai'
 import Avatar from './Avatar'
 import SvgKavichki from 'svg/SvgKavichki'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import locationAtom from '@state/atoms/locationAtom'
 
 const variants = {
   show: {
@@ -62,11 +63,12 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 }
 
 const UserMenu = () => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const setMenuOpen = useSetRecoilState(menuOpenAtom)
+  const location = useAtomValue(locationAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const setMenuOpen = useSetAtom(menuOpenAtom)
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   // const router = useRouter()
 
@@ -142,12 +144,12 @@ const UserMenu = () => {
               title="Мероприятия"
             /> */}
           <MenuItem
-            href="/cabinet/questionnaire"
+            href={`/${location}/cabinet/questionnaire`}
             icon={faUserAlt}
             title="Моя анкета"
           />
           <MenuItem
-            href="/cabinet/notifications"
+            href={`/${location}/cabinet/notifications`}
             icon={faBell}
             title="Настройка уведомлений"
           />
@@ -171,7 +173,7 @@ const UserMenu = () => {
   ) : (
     <Link
       prefetch={false}
-      href="/login"
+      href={`/${location}/login`}
       shallow
       className="flex items-center justify-center h-12 px-2 text-white duration-300 border border-white rounded-lg hover:text-general hover:bg-white"
     >

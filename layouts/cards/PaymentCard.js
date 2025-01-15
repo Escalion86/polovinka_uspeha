@@ -26,14 +26,14 @@ import formatDateTime from '@helpers/formatDateTime'
 import paymentSectorFunc from '@helpers/paymentSector'
 import serviceStatusFunc from '@helpers/serviceStatus'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import paymentSelector from '@state/selectors/paymentSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import isEventClosedFunc from '@helpers/isEventClosed'
 
@@ -53,7 +53,7 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 
 // const EventStatusByEventId = ({ eventId }) => {
 //   if (!eventId) return null
-//   const event = useRecoilValue(eventFullAtomAsync(eventId))
+//   const event = useAtomValue(eventFullAtomAsync(eventId))
 //   const eventStatus = eventStatusFunc(event)
 
 //   const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
@@ -221,7 +221,7 @@ const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
 }
 
 const PaymentEventUserLeftComponent = ({ payment, event }) => {
-  const eventUsers = useRecoilValue(asyncEventsUsersByEventIdAtom(event?._id))
+  const eventUsers = useAtomValue(asyncEventsUsersByEventIdAtom(event?._id))
   const eventUser = eventUsers.find(
     (eventUser) => eventUser.userId === payment.userId
   )
@@ -242,7 +242,7 @@ const PaymentEventUserLeft = (props) => (
 )
 
 const PaymentEvent = ({ payment }) => {
-  const event = useRecoilValue(eventSelector(payment.eventId))
+  const event = useAtomValue(eventSelector(payment.eventId))
   const eventStatus = eventStatusFunc(event)
 
   const isEventClosed = isEventClosedFunc(event)
@@ -271,7 +271,7 @@ const PaymentEvent = ({ payment }) => {
 }
 
 const PaymentService = ({ payment }) => {
-  const service = useRecoilValue(serviceSelector(payment.serviceId))
+  const service = useAtomValue(serviceSelector(payment.serviceId))
   const serviceStatus = serviceStatusFunc(service)
 
   const serviceStatusProps = SERVICE_USER_STATUSES.find(
@@ -292,7 +292,7 @@ const PaymentService = ({ payment }) => {
         payment.payDirection === 'fromUser') &&
         payment.eventId &&
         (() => {
-          const eventUsers = useRecoilValue(
+          const eventUsers = useAtomValue(
             asyncEventsUsersByEventIdAtom(event?._id)
           )
           const eventUser = eventUsers.find(
@@ -312,7 +312,7 @@ const PaymentService = ({ payment }) => {
 }
 
 const PaymentProduct = ({ payment }) => {
-  const product = useRecoilValue(serviceSelector(payment.productId))
+  const product = useAtomValue(serviceSelector(payment.productId))
   const productStatus = serviceStatusFunc(product)
 
   const productStatusProps = PRODUCT_USER_STATUSES.find(
@@ -333,7 +333,7 @@ const PaymentProduct = ({ payment }) => {
         payment.payDirection === 'fromUser') &&
         payment.eventId &&
         (() => {
-          const eventUsers = useRecoilValue(
+          const eventUsers = useAtomValue(
             asyncEventsUsersByEventIdAtom(event?._id)
           )
           const eventUser = eventUsers.find(
@@ -367,7 +367,7 @@ const PaymentInternal = ({ payment }) => {
         payment.payDirection === 'fromUser') &&
         payment.eventId &&
         (() => {
-          const eventUsers = useRecoilValue(
+          const eventUsers = useAtomValue(
             asyncEventsUsersByEventIdAtom(event?._id)
           )
           const eventUser = eventUsers.find(
@@ -387,9 +387,9 @@ const PaymentInternal = ({ payment }) => {
 }
 
 const PaymentCard = ({ paymentId, hidden = false, style }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const payment = useRecoilValue(paymentSelector(paymentId))
-  const loading = useRecoilValue(loadingAtom('payment' + paymentId))
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const payment = useAtomValue(paymentSelector(paymentId))
+  const loading = useAtomValue(loadingAtom('payment' + paymentId))
   const paymentSector = paymentSectorFunc(payment)
   // const selector =
   //   paymentSector === 'event'
@@ -402,7 +402,7 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
 
   const sectorProps = SECTORS.find((sector) => sector.value === paymentSector)
 
-  // const item = selector ? useRecoilValue(selector) : null
+  // const item = selector ? useAtomValue(selector) : null
 
   return (
     <CardWrapper

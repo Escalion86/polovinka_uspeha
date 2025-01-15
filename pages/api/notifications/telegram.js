@@ -1,6 +1,9 @@
 import formatDateTime from '@helpers/formatDateTime'
+import isEventCanceled from '@helpers/isEventCanceled'
+import isEventClosed from '@helpers/isEventClosed'
 import Events from '@models/Events'
 import Users from '@models/Users'
+import isEventExpired from '@server/isEventExpired'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import { telegramCmdToIndex, telegramIndexToCmd } from '@server/telegramCmd'
 import userSignIn from '@server/userSignIn'
@@ -37,18 +40,47 @@ export default async function handler(req, res) {
             const user = await Users.findOne({
               'notifications.telegram.id': userTelegramId,
             })
-            if (!user)
-              return res
-                ?.status(400)
-                .json({ success: false, error: 'Не найден пользователь' })
+
+            const sendErrorMessage = async (text) => {
+              await sendTelegramMessage({
+                telegramIds: userTelegramId,
+                text,
+              })
+
+              return res?.status(400).json({ success: false, error: text })
+            }
+
+            if (!user) {
+              return sendErrorMessage('Ошибка определения пользователя')
+            }
 
             const event = await Events.findOne(
               subEventId ? { 'subEvents.id': subEventId } : { _id: eventId }
             )
-            if (!event || event.blank)
-              return res
-                ?.status(400)
-                .json({ success: false, error: 'Не найдено мероприятие' })
+
+            if (!event || !event.showOnSite) {
+              return await sendErrorMessage(
+                'Не найдено мероприятие. Возможно оно было удалено или скрыто'
+              )
+            }
+
+            if (event.blank) {
+              return await sendErrorMessage(
+                'Это пустое мероприятие. На него невозможно записаться'
+              )
+            }
+
+            if (isEventCanceled(event)) {
+              return await sendErrorMessage('Мероприятие отменено')
+            }
+
+            if (isEventExpired(event)) {
+              return await sendErrorMessage('Мероприятие завершено')
+            }
+
+            if (isEventClosed(event)) {
+              return await sendErrorMessage('Мероприятие закрыто')
+            }
 
             if (!subEventId && event.subEvents.length > 1) {
               const inline_keyboard = event.subEvents.map(

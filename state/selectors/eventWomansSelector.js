@@ -1,17 +1,19 @@
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import eventParticipantsFullByEventIdSelector from './eventParticipantsFullByEventIdSelector'
 
-export const eventWomansSelector = selectorFamily({
-  key: 'eventWomansSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return []
+export const eventWomansSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return []
+    const eventParticipantsFull = await get(
+      eventParticipantsFullByEventIdSelector(id)
+    )
 
-      return get(eventParticipantsFullByEventIdSelector(id))
-        .filter((item) => item.user?.gender == 'famale')
-        .map((item) => item.user)
-    },
-})
+    return eventParticipantsFull
+      .filter((item) => item.user?.gender == 'famale')
+      .map((item) => item.user)
+  })
+)
 
 export default eventWomansSelector

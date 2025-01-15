@@ -1,9 +1,5 @@
-// import { DEFAULT_ROLES } from '@helpers/constants'
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const rolesAtom = atom({
-  key: 'rolesSettings',
-  default: [],
-})
+const rolesAtom = atom([])
 
 export default rolesAtom

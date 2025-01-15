@@ -1,5 +1,5 @@
-export async function fetchingAll(setState = () => {}) {
-  const urls = ['/api/admin']
+export async function fetchingAll(location, setState = () => {}) {
+  const urls = [`/api/${location}/admin`]
   const result = await Promise.all(
     urls.map(async (url) => {
       const resp = await fetch(url)
@@ -12,89 +12,81 @@ export async function fetchingAll(setState = () => {}) {
   return result[0]
 }
 
-export async function fetchingEvents(domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/events`)
+export async function fetchingEvents(location) {
+  const resp = await fetch(`/api/${location}/events`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingEvents ERROR:', error))
   return resp
 }
 
-export async function fetchingDirections(domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/directions`)
+export async function fetchingDirections(location) {
+  const resp = await fetch(`/api/${location}/directions`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingDirections ERROR:', error))
   return resp
 }
 
-export async function fetchingReviews(domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/reviews`)
+export async function fetchingReviews(location) {
+  const resp = await fetch(`/api/${location}/reviews`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingReviews ERROR:', error))
   return resp
 }
 
-export async function fetchingAdditionalBlocks(
-  domen = process.env.NEXTAUTH_SITE
-) {
-  const resp = await fetch(`${domen}/api/additionalblocks`)
+export async function fetchingAdditionalBlocks(location) {
+  const resp = await fetch(`/api/${location}/additionalblocks`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingAdditionalBlocks ERROR:', error))
   return resp
 }
 
-export async function fetchingPayments(domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/payments`)
+export async function fetchingPayments(location) {
+  const resp = await fetch(`/api/${location}/payments`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingPayments ERROR:', error))
   return resp
 }
 
-export async function fetchingUsers(domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/users`)
+export async function fetchingUsers(location) {
+  const resp = await fetch(`/api/${location}/users`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingUsers ERROR:', error))
   return resp
 }
 
-export async function fetchingUsersById(id, domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/users/byId/${id}`)
+export async function fetchingUsersById(id, location) {
+  const resp = await fetch(`/api/${location}/users/byId/${id}`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingUsersById ERROR:', error))
   return resp
 }
 
-export async function fetchingUserByEmail(
-  email,
-  domen = process.env.NEXTAUTH_SITE
-) {
-  const resp = await fetch(`${domen}/api/users/byEmail/${email}`)
+export async function fetchingUserByEmail(email, location) {
+  const resp = await fetch(`/api/${location}/users/byEmail/${email}`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingUserByEmail ERROR:', error))
   return resp
 }
 
-export async function fetchingUserByPhone(
-  phone,
-  domen = process.env.NEXTAUTH_SITE
-) {
-  const resp = await fetch(`${domen}/api/users/byPhone/${phone}`)
+export async function fetchingUserByPhone(phone, location) {
+  const resp = await fetch(`/api/${location}/users/byPhone/${phone}`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingUserByPhone ERROR:', error))
   return resp
 }
 
-export async function fetchingLog(data, domen = process.env.NEXTAUTH_SITE) {
+export async function fetchingLog(data, location) {
   // console.log('Запущен fetchingLog')
-  const resp = await fetch(`${domen}/api/log`, {
+  const resp = await fetch(`/api/${location}/log`, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     // mode: 'cors', // no-cors, *cors, same-origin
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -113,32 +105,32 @@ export async function fetchingLog(data, domen = process.env.NEXTAUTH_SITE) {
   return resp
 }
 
-export async function fetchingEventsUsers(domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/eventsusers`)
+export async function fetchingEventsUsers(location) {
+  const resp = await fetch(`/api/${location}/eventsusers`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingEventsUsers ERROR:', error))
   return resp
 }
 
-export async function fetchingSiteSettings(domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/site`)
+export async function fetchingSiteSettings(location) {
+  const resp = await fetch(`/api/${location}/site`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingSiteSettings ERROR:', error))
   return resp
 }
 
-export async function fetchingHistories(domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/histories`)
+export async function fetchingHistories(location) {
+  const resp = await fetch(`/api/${location}/histories`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingHistories ERROR:', error))
   return resp
 }
 
-export async function fetchingLoginHistory(domen = process.env.NEXTAUTH_SITE) {
-  const resp = await fetch(`${domen}/api/loginhistory`)
+export async function fetchingLoginHistory(location) {
+  const resp = await fetch(`/api/${location}/loginhistory`)
     .then((res) => res.json())
     .then((json) => json.data)
     .catch((error) => console.log('fetchingLoginHistory ERROR:', error))

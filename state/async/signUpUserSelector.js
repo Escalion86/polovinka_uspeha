@@ -1,69 +1,38 @@
-import { noWait, selector } from 'recoil'
+import { atom } from 'jotai'
+
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
-import { getRecoil } from 'recoil-nexus'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
-// import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
-// import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 
-const signUpUserSelector = selector({
-  key: 'signUpUserSelector',
-  get: ({ get }) => {
-    return undefined
-  },
-  set: ({ set, get }, newEventUser) => {
-    const { eventId, userId } = newEventUser
+const signUpUserSelector = atom(null, async (get, set, newEventUser) => {
+  const { eventId, userId } = newEventUser
 
-    // const test = getRecoil(asyncEventsUsersByEventIdAtom(eventId))
-    // console.log('test :>> ', test)
-    const isLoadedEventId = getRecoil(
-      isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)
-    )
-    if (isLoadedEventId) {
-      const eventUsers = get(asyncEventsUsersByEventIdAtom(eventId))
-      const newEventUsers = [...eventUsers, newEventUser]
-      set(asyncEventsUsersByEventIdAtom(eventId), newEventUsers)
-    }
-    // else {
-    //   const eventUsers = get(noWait(asyncEventsUsersByEventIdAtom(eventId)))
+  const isLoadedEventId = get(
+    isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)
+  )
+  if (isLoadedEventId) {
+    const eventUsers = await get(asyncEventsUsersByEventIdAtom(eventId))
+    const newEventUsers = [...eventUsers, newEventUser]
+    set(asyncEventsUsersByEventIdAtom(eventId), newEventUsers)
+  }
 
-    // if (eventUsers.state === 'hasValue') {
-    //   const newEventUsers = [...eventUsers.contents, newEventUser]
-    //   set(asyncEventsUsersByEventIdAtom(eventId), newEventUsers)
-    // }
-    const isLoadedUserId = getRecoil(
-      isLoadedAtom('asyncEventsUsersByUserIdAtom' + userId)
-    )
-    if (isLoadedUserId) {
-      const eventsUser = get(asyncEventsUsersByUserIdAtom(userId))
-      const newEventsUser = [...eventsUser, newEventUser]
-      set(asyncEventsUsersByUserIdAtom(userId), newEventsUser)
-    }
-    //   else {
+  const isLoadedUserId = get(
+    isLoadedAtom('asyncEventsUsersByUserIdAtom' + userId)
+  )
+  if (isLoadedUserId) {
+    const eventsUser = await get(asyncEventsUsersByUserIdAtom(userId))
+    const newEventsUser = [...eventsUser, newEventUser]
+    set(asyncEventsUsersByUserIdAtom(userId), newEventsUser)
+  }
 
-    //   const eventsUser = get(noWait(asyncEventsUsersByUserIdAtom(userId)))
-    //   if (eventsUser.state === 'hasValue') {
-    //     const newEventsUser = [...eventsUser.contents, newEventUser]
-    //     set(asyncEventsUsersByUserIdAtom(userId), newEventsUser)
-    //   }
-    //   // const eventsUsers = get(noWait(asyncEventsUsersAllSelector))
-    //   // if (eventsUsers.state === 'hasValue') {
-    //   //   const newEventsUser = [...eventsUsers.contents, newEventUser]
-    //   //   set(asyncEventsUsersAllSelector, newEventsUser)
-    //   // }
-    // }
+  const isLoadedEventsUsersAll = get(isLoadedAtom('asyncEventsUsersAllAtom'))
+  if (isLoadedEventsUsersAll) {
+    const eventsUsers = await get(asyncEventsUsersAllAtom)
+    const newEventsUser = [...eventsUsers, newEventUser]
 
-    const isLoadedEventsUsersAll = getRecoil(
-      isLoadedAtom('asyncEventsUsersAllAtom')
-    )
-    if (isLoadedEventsUsersAll) {
-      const eventsUsers = get(asyncEventsUsersAllAtom)
-      const newEventsUser = [...eventsUsers, newEventUser]
-
-      set(asyncEventsUsersAllAtom, newEventsUser)
-    }
-  },
+    set(asyncEventsUsersAllAtom, newEventsUser)
+  }
 })
 
 export default signUpUserSelector

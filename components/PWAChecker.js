@@ -2,10 +2,10 @@
 
 import isPWAAtom from '@state/atoms/isPWAAtom'
 import { useEffect } from 'react'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 
 const PWAChecker = ({ children }) => {
-  const setIsPWA = useSetRecoilState(isPWAAtom)
+  const setIsPWA = useSetAtom(isPWAAtom)
 
   useEffect(() => {
     window

@@ -179,7 +179,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    // const questionnaire = useRecoilValue(questionnaireSelector(questionnaireId))
+    // const questionnaire = useAtomValue(questionnaireSelector(questionnaireId))
     const [questionnaireName, setQuestionnaireName] = useState(
       startData?.title ?? DEFAULT_QUESTIONNAIRE.title
     )

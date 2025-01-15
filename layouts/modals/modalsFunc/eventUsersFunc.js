@@ -1,7 +1,7 @@
 import CardButton from '@components/CardButton'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import InputWrapper from '@components/InputWrapper'
-import { SelectUserList } from '@components/SelectItemList'
+// import { SelectUserList } from '@components/SelectItemList'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import { P } from '@components/tags'
@@ -19,28 +19,25 @@ import isEventClosedFunc from '@helpers/isEventClosed'
 import subEventsSummator from '@helpers/subEventsSummator'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 // import { asyncEventsUsersByEventIdSelector } from '@state/async/asyncEventsUsersByEventIdAtom'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import usersAtom from '@state/atoms/usersAtom'
+// import usersAtomAsync from '@state/async/usersAtomAsync'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  useRecoilRefresher_UNSTABLE,
-  // useRecoilRefresher_UNSTABLE,
-  useRecoilValue,
-} from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import sortFunctions from '@helpers/sortFunctions'
 import formatDateTime from '@helpers/formatDateTime'
-import Note from '@components/Note'
+// import Note from '@components/Note'
 import cn from 'classnames'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
 import CheckBox from '@components/CheckBox'
 import { UserItem } from '@components/ItemCards'
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@components/Tooltip'
+import Note from '@components/Note'
 
 const ItemButton = ({
   onClick,
@@ -86,7 +83,7 @@ const EventUsers2 = ({
   subEventId,
   onChangeSubEvent,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const addRow = () => {
     modalsFunc.selectUsers(
       selectedUsers,
@@ -242,7 +239,7 @@ const EventUsers2 = ({
 //   nameFieldWrapperClassName,
 //   createdAtObject,
 // }) => {
-//   const modalsFunc = useRecoilValue(modalsFuncAtom)
+//   const modalsFunc = useAtomValue(modalsFuncAtom)
 
 //   const isEventClosed = isEventClosedFunc(event)
 
@@ -360,8 +357,8 @@ const eventUsersFunc = (eventId) => {
     setTopLeftComponent,
     isDataChanged,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const statusEdit = loggedUserActiveRole?.events?.statusEdit
     const canEdit = loggedUserActiveRole?.eventsUsers?.edit
     const seeHistory = loggedUserActiveRole?.eventsUsers?.seeHistory
@@ -375,9 +372,9 @@ const eventUsersFunc = (eventId) => {
     // const [sort, setSort] = useState({ genderAndFirstName: 'asc' })
     // const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
-    const event = useRecoilValue(eventSelector(eventId))
-    const setEventUsersId = useRecoilValue(itemsFuncAtom).event.setEventUsers
-    // const users = useRecoilValue(usersAtom)
+    const event = useAtomValue(eventSelector(eventId))
+    const setEventUsersId = useAtomValue(itemsFuncAtom).event.setEventUsers
+    // const users = useAtomValue(usersAtomAsync)
     const isEventClosed = isEventClosedFunc(event)
 
     const showLikes = loggedUserActiveRole?.events?.editLikes && event.likes
@@ -387,7 +384,7 @@ const eventUsersFunc = (eventId) => {
     //   [users]
     // )
 
-    const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const eventUsersCreatedAtObject = useMemo(
       () =>
         eventUsers.reduce((acc, { createdAt, userId }) => {
@@ -817,6 +814,8 @@ const eventUsersFunc = (eventId) => {
       [event]
     )
 
+    const readOnly = !canEdit || isEventClosed
+
     return (
       <>
         {/* <div className="absolute z-50 top-1 right-11">
@@ -838,20 +837,20 @@ const eventUsersFunc = (eventId) => {
           />
         )}
         {canEdit && isEventClosed && (
-          <P className="text-danger">
+          <Note type="warning">
             Мероприятие закрыто, поэтому редактирование состава участников
             запрещено
-          </P>
+          </Note>
         )}
         {canEdit && dataChanged && (
           <div
             className="flex items-center px-1 leading-[14px] cursor-pointer select-none gap-x-1 text-success"
             onClick={() => setDataChanged(false)}
           >
-            <div>
+            <Note type="warning">
               Обратите внимание! Данные были изменены с момента предыдущей
               загрузки. Отображены актуальные данные.
-            </div>
+            </Note>
             <FontAwesomeIcon
               className="w-4 h-4 min-w-4 min-h-4"
               icon={faTimesCircle}
@@ -899,7 +898,7 @@ const eventUsersFunc = (eventId) => {
                     toReserveFunc={(newUser) => {
                       setReserveStateFull(id, [...(reserve[id] || []), newUser])
                     }}
-                    readOnly={!canEdit}
+                    readOnly={readOnly}
                     exceptedIds={[
                       ...reserveIdsAll,
                       ...assistantsIds,
@@ -976,7 +975,7 @@ const eventUsersFunc = (eventId) => {
                           newUser,
                         ])
                       }}
-                      readOnly={!canEdit}
+                      readOnly={readOnly}
                       exceptedIds={[
                         ...participantsIdsAll,
                         ...assistantsIds,
@@ -1034,7 +1033,7 @@ const eventUsersFunc = (eventId) => {
                 setAssistantsStateFull(selectedUsers)
               }
               event={event}
-              readOnly={!canEdit}
+              readOnly={readOnly}
               exceptedIds={[
                 ...participantsIdsAll,
                 ...reserveIdsAll,
@@ -1068,7 +1067,7 @@ const eventUsersFunc = (eventId) => {
                   setBannedStateFull(selectedUsers)
                 }
                 event={event}
-                readOnly={!canEdit}
+                readOnly={readOnly}
                 exceptedIds={[
                   ...participantsIdsAll,
                   ...reserveIdsAll,
@@ -1097,17 +1096,19 @@ const eventUsersFunc = (eventId) => {
 
   const ModalRefresher = (props) => {
     const [isRefreshed, setIsRefreshed] = useState(false)
-    const data = useRecoilValue(asyncEventsUsersByEventIdAtom(eventId))
-    const [prevData, setPravData] = useState(data)
-    const refreshEventState = useRecoilRefresher_UNSTABLE(
+    const [data, refreshEventState] = useAtom(
       asyncEventsUsersByEventIdAtom(eventId)
     )
-    // const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const [prevData, setPravData] = useState(data)
+    // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     // const canEdit = loggedUserActiveRole?.eventsUsers?.edit
 
     useEffect(() => {
-      refreshEventState()
-      setIsRefreshed(true)
+      const refreshFunc = async () => {
+        await refreshEventState()
+        setIsRefreshed(true)
+      }
+      refreshFunc()
     }, [])
 
     const isDataChanged = JSON.stringify(prevData) !== JSON.stringify(data)

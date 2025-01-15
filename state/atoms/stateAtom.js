@@ -1,8 +1,5 @@
-import { atomFamily } from 'recoil'
+import { atomFamily } from 'jotai/utils'
 
-const stateAtom = atomFamily({
-  key: 'stateAtom',
-  default: { loading: false, error: false },
-})
+const stateAtom = atomFamily({ loading: false, error: false })
 
 export default stateAtom

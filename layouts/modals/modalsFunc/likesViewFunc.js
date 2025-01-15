@@ -11,15 +11,15 @@ import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import CheckBox from '@components/CheckBox'
 // import { useState } from 'react'
 import eventParticipantsFullWithoutRelationshipByEventIdSelector from '@state/selectors/eventParticipantsFullWithoutRelationshipByEventIdSelector'
 import eventSelector from '@state/selectors/eventSelector'
 
 const LikesToggle = ({ eventId }) => {
-  const event = useRecoilValue(eventSelector(eventId))
-  const setEvent = useRecoilValue(itemsFuncAtom).event.set
+  const event = useAtomValue(eventSelector(eventId))
+  const setEvent = useAtomValue(itemsFuncAtom).event.set
 
   const onClick = () => {
     setEvent({
@@ -53,14 +53,14 @@ const likesViewFunc = (eventId) => {
     setBottomLeftButtonProps,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useAtomValue(eventSelector(eventId))
     // const [likesNumSort, setLikesNumSort] = useState(event.likesNumSort)
     const likesNumSort = event.likesNumSort
-    const eventUsers = useRecoilValue(
+    const eventUsers = useAtomValue(
       eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
     )
-    const setEvent = useRecoilValue(itemsFuncAtom).event.set
-    const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
+    const setEvent = useAtomValue(itemsFuncAtom).event.set
+    const setEventUser = useAtomValue(itemsFuncAtom).eventsUser.set
 
     const likesNumSortToggle = () => {
       if (!likesNumSort) {

@@ -1,9 +1,10 @@
 import SiteSettings from '@models/SiteSettings'
 import dbConnect from '@utils/dbConnect'
 
-const fetchSiteSettings = async (user) => {
+const fetchSiteSettings = async (user, location, params) => {
   try {
-    const db = await dbConnect()
+    const db = await dbConnect(location)
+    if (!db) return { error: 'db error' }
 
     const siteSettings = await SiteSettings.find({}).lean()
 

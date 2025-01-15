@@ -8,12 +8,12 @@ import { faIdCard } from '@fortawesome/free-regular-svg-icons/faIdCard'
 import compareObjects from '@helpers/compareObjects'
 import { DEFAULT_SERVICE_USER } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import serviceSelector from '@state/selectors/serviceSelector'
 import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const serviceUserFunc = (serviceUserId, clone = false, props) => {
   const ServiceUserModal = ({
@@ -25,10 +25,10 @@ const serviceUserFunc = (serviceUserId, clone = false, props) => {
     setDisableDecline,
     setOnlyCloseButtonShow,
   }) => {
-    const serviceUser = useRecoilValue(servicesUsersSelector(serviceUserId))
-    const setServiceUser = useRecoilValue(itemsFuncAtom).servicesUser.set
-    const service = useRecoilValue(serviceSelector(serviceUser?.serviceId))
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
+    const serviceUser = useAtomValue(servicesUsersSelector(serviceUserId))
+    const setServiceUser = useAtomValue(itemsFuncAtom).servicesUser.set
+    const service = useAtomValue(serviceSelector(serviceUser?.serviceId))
+    const modalsFunc = useAtomValue(modalsFuncAtom)
 
     const [userId, setUserId] = useState(
       props?.userId ?? serviceUser?.userId ?? DEFAULT_SERVICE_USER.userId

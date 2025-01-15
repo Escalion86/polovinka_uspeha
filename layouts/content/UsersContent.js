@@ -10,19 +10,19 @@ import filterItems from '@helpers/filterItems'
 import { getNounUsers } from '@helpers/getNoun'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import UsersList from '@layouts/lists/UsersList'
-import { modalsFuncAtom } from '@state/atoms'
-import usersAtom from '@state/atoms/usersAtom'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const UsersContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const users = useRecoilValue(usersAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const users = useAtomValue(usersAtomAsync)
 
-  // const notCanceledAndFinishedEventsUsers = useRecoilValue(
+  // const notCanceledAndFinishedEventsUsers = useAtomValue(
   //   eventsUsersNotCanceledAndFinishedSelector
   // )
 
@@ -38,9 +38,9 @@ const UsersContent = () => {
   //   [users, notCanceledAndFinishedEventsUsers]
   // )
 
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-  const isLoggedUserAdmin = useRecoilValue(isLoggedUserAdminSelector)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+  const isLoggedUserAdmin = useAtomValue(isLoggedUserAdminSelector)
   const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
   const addButton = loggedUserActiveRole?.users?.add
 

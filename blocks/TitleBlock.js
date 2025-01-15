@@ -1,19 +1,21 @@
 import PulseButton from '@components/PulseButton'
 import { H1, H3 } from '@components/tags'
 import upperCaseFirst from '@helpers/upperCaseFirst'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import Svg30Plus from 'svg/Svg30Plus'
 import CountDown from './components/CountDown'
+import locationAtom from '@state/atoms/locationAtom'
 
 const TitleBlock = () => {
-  const userIsLogged = !!useRecoilValue(loggedUserAtom)
-  const { townRu } = useRecoilValue(locationPropsSelector)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const userIsLogged = !!useAtomValue(loggedUserAtom)
+  const location = useAtomValue(locationAtom)
+  const { townRu } = useAtomValue(locationPropsSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const router = useRouter()
 
   return (
@@ -55,7 +57,7 @@ const TitleBlock = () => {
           </H1>
           <div className="text-center">
             <h4
-              className="px-2 py-1 text-2xl font-bold text-center duration-300 bg-white/20 border cursor-pointer rounded-xl hover:text-white border-general hover:bg-general/20 text-general"
+              className="px-2 py-1 text-2xl font-bold text-center duration-300 border cursor-pointer bg-white/20 rounded-xl hover:text-white border-general hover:bg-general/20 text-general"
               onClick={() => modalsFunc.browseLocation()}
             >
               г.{upperCaseFirst(townRu)}
@@ -74,7 +76,9 @@ const TitleBlock = () => {
         <Link
           prefetch={false}
           href={{
-            pathname: userIsLogged ? '/cabinet/events' : '/login',
+            pathname: userIsLogged
+              ? `/${location}/cabinet/events`
+              : `/${location}/login`,
             query: !userIsLogged && { ...router.query, registration: true },
           }}
           shallow

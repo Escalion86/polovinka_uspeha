@@ -1,19 +1,14 @@
-import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 
-export const servicesUsersSelector = selectorFamily({
-  key: 'servicesUsersSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return null
-      return get(asyncServicesUsersAtom).find((item) => item._id === id)
-    },
-  // set:
-  //   (id) =>
-  //   ({ set }, event) => {
-  //     set(eventsSelector, event)
-  //   },
-})
+import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
+
+export const servicesUsersSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return null
+    const servicesUsers = await get(asyncServicesUsersAtom)
+    return servicesUsers?.find((item) => item._id === id)
+  })
+)
 
 export default servicesUsersSelector

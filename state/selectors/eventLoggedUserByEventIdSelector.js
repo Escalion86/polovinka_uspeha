@@ -1,21 +1,20 @@
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 
-export const eventLoggedUserByEventIdSelector = selectorFamily({
-  key: 'eventLoggedUserByEventIdSelector',
-  get:
-    (id) =>
-    async ({ get }) => {
-      if (!id) return []
-      const loggedUser = get(loggedUserActiveAtom)
-      if (!loggedUser) return
+export const eventLoggedUserByEventIdSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return []
+    const loggedUser = get(loggedUserActiveAtom)
+    if (!loggedUser) return
 
-      const eventsUser = await get(asyncEventsUsersByUserIdAtom(loggedUser._id))
-      const eventUser = eventsUser.find(({ eventId }) => eventId === id)
+    const eventsUser = await get(asyncEventsUsersByUserIdAtom(loggedUser._id))
+    const eventUser = eventsUser.find(({ eventId }) => eventId === id)
 
-      return eventUser
-    },
-})
+    return eventUser
+  })
+)
 
 export default eventLoggedUserByEventIdSelector

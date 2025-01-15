@@ -5,10 +5,17 @@ import isEventCanceledFunc from './isEventCanceled'
 import isEventExpiredFunc from './isEventExpired'
 import isEventInProcessFunc from './isEventInProcess'
 import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
-import { getRecoil } from 'recoil-nexus'
 import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
+import store from '@state/store'
 
-const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
+const userToEventStatus = (
+  event,
+  user,
+  eventUsersFull,
+  subEventSum,
+  rules,
+  ignoreEventIsExpired = false
+) => {
   if (!event?._id)
     return {
       canSee: false,
@@ -27,7 +34,9 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       isUserRelationshipCorrect: undefined,
     }
 
-  const isEventExpired = isEventExpiredFunc(event)
+  const isEventExpired = ignoreEventIsExpired
+    ? undefined
+    : isEventExpiredFunc(event)
   const isEventInProcess = isEventInProcessFunc(event)
   const isEventCanceled = isEventCanceledFunc(event)
   const isEventHidden = !event.showOnSite
@@ -52,7 +61,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
 
   const userEvent =
     user?._id &&
-    eventUsersFull.find((eventUser) => eventUser.user?._id === user._id)
+    eventUsersFull?.find((eventUser) => eventUser.user?._id === user._id)
 
   const alreadySignIn = !!userEvent
 
@@ -61,7 +70,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
 
   const canSignOut = alreadySignIn && !isEventExpired
 
-  const serverDate = new Date(getRecoil(serverSettingsAtom)?.dateTime)
+  const serverDate = new Date(store.get(serverSettingsAtom)?.dateTime)
   const userAge = new Number(
     birthDateToAge(user.birthday, serverDate, false, false)
   )
@@ -85,6 +94,7 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
         subEventSum.minWomansAge > userAge))
 
   const isAgeOfUserCorrect = !isUserTooOld && !isUserTooYoung
+
   const isUserStatusCorrect =
     user.status === 'ban'
       ? false
@@ -192,12 +202,16 @@ const userToEventStatus = (event, user, eventUsersFull, subEventSum, rules) => {
       isUserStatusCorrect,
       isUserRelationshipCorrect,
     }
-  const eventMans = eventUsersFull.filter(
-    (item) => item.user?.gender == 'male' && item.status === 'participant'
-  )
-  const eventWomans = eventUsersFull.filter(
-    (item) => item.user?.gender == 'famale' && item.status === 'participant'
-  )
+  const eventMans = eventUsersFull
+    ? eventUsersFull.filter(
+        (item) => item.user?.gender == 'male' && item.status === 'participant'
+      )
+    : []
+  const eventWomans = eventUsersFull
+    ? eventUsersFull.filter(
+        (item) => item.user?.gender == 'famale' && item.status === 'participant'
+      )
+    : []
   const eventMansCount = eventMans.length
   const eventWomansCount = eventWomans.length
   const eventParticipantsCount = eventWomansCount + eventMansCount

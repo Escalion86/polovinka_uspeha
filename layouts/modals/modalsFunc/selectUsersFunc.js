@@ -3,9 +3,9 @@ import Search from '@components/Search'
 import filterItems from '@helpers/filterItems'
 import isObject from '@helpers/isObject'
 import ListWrapper from '@layouts/lists/ListWrapper'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const selectUsersFunc = (
   usersState,
@@ -27,7 +27,7 @@ const selectUsersFunc = (
     setDisableDecline,
     setComponentInFooter,
   }) => {
-    const users = useRecoilValue(usersAtom)
+    const users = useAtomValue(usersAtomAsync)
     const [selectedUsers, setSelectedUsers] = useState(
       isObject(usersState) ? usersState.filter((item) => isObject(item)) : []
     )

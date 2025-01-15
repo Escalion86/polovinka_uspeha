@@ -5,7 +5,7 @@ import PriceDiscount from '@components/PriceDiscount'
 import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import formatDateTime from '@helpers/formatDateTime'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import errorAtom from '@state/atoms/errorAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
@@ -15,7 +15,7 @@ import serviceSelector from '@state/selectors/serviceSelector'
 import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ServiceUserCard = ({
   serviceUserId,
@@ -23,21 +23,21 @@ const ServiceUserCard = ({
   style,
   showUser,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   const servicesUsersEdit = loggedUserActiveRole?.servicesUsers?.edit
 
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
 
-  const serviceUser = useRecoilValue(servicesUsersSelector(serviceUserId))
+  const serviceUser = useAtomValue(servicesUsersSelector(serviceUserId))
   if (!serviceUser) return null
 
-  const loading = useRecoilValue(loadingAtom('serviceUser' + serviceUserId))
-  const error = useRecoilValue(errorAtom('serviceUser' + serviceUserId))
-  const itemsFunc = useRecoilValue(itemsFuncAtom)
-  const user = useRecoilValue(userSelector(serviceUser.userId))
-  const service = useRecoilValue(serviceSelector(serviceUser.serviceId))
+  const loading = useAtomValue(loadingAtom('serviceUser' + serviceUserId))
+  const error = useAtomValue(errorAtom('serviceUser' + serviceUserId))
+  const itemsFunc = useAtomValue(itemsFuncAtom)
+  const user = useAtomValue(userSelector(serviceUser.userId))
+  const service = useAtomValue(serviceSelector(serviceUser.serviceId))
 
   return (
     <CardWrapper

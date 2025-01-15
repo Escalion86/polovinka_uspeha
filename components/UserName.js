@@ -1,6 +1,6 @@
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import TextLinesLimiter from './TextLinesLimiter'
 import UserStatusIcon from './UserStatusIcon'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -15,9 +15,8 @@ const UserName = ({
   children,
   leadingClass = 'leading-[14px] phoneH:leading-[18px]',
 }) => {
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  if (!user) return null
-
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  if (!user || typeof user !== 'object') return null
   const seeFullNames = loggedUserActiveRole?.users?.seeFullNames
 
   return (

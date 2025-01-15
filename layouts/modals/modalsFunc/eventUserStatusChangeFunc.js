@@ -4,7 +4,7 @@ import useErrors from '@helpers/useErrors'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const eventUserStatusChangeFunc = ({ eventId, userId }) => {
   const EventUserStatusChangeModal = ({
@@ -17,12 +17,12 @@ const eventUserStatusChangeFunc = ({ eventId, userId }) => {
     setOnlyCloseButtonShow,
     setBottomLeftButtonProps,
   }) => {
-    const eventUsers = useRecoilValue(asyncEventsUsersByEventIdAtom(eventId))
+    const eventUsers = useAtomValue(asyncEventsUsersByEventIdAtom(eventId))
     const eventUser = eventUsers.find(
       (eventUser) => eventUser.userId === userId
     )
 
-    const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
+    const setEventUser = useAtomValue(itemsFuncAtom).eventsUser.set
 
     const defaultStatus = eventUser.userStatus //  ?? user.status ?? 'novice'
     const [status, setStatus] = useState(defaultStatus)

@@ -2,7 +2,7 @@ import Input from '@components/Input'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const userSetPasswordFunc = (userId) => {
   const UserSetPasswordModal = ({
@@ -14,8 +14,8 @@ const userSetPasswordFunc = (userId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const user = useRecoilValue(userSelector(userId))
-    const setUser = useRecoilValue(itemsFuncAtom).user.set
+    const user = useAtomValue(userSelector(userId))
+    const setUser = useAtomValue(itemsFuncAtom).user.set
 
     const [password, setPassword] = useState('')
     const [password2, setPassword2] = useState('')

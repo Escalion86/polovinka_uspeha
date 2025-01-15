@@ -2,14 +2,15 @@ import Tooltip from '@components/Tooltip'
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ModalButtons from '@layouts/modals/ModalButtons'
-import { modalsAtom, modalsFuncAtom } from '@state/atoms'
+import modalsAtom from '@state/atoms/modalsAtom'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 import { Suspense, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 const Modal = ({
   Children,
@@ -47,9 +48,9 @@ const Modal = ({
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
   const effectRan = useRef(false)
-  const modals = useRecoilValue(modalsAtom)
+  const modals = useAtomValue(modalsAtom)
   const [titleState, setTitleState] = useState(title)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const [disableConfirm, setDisableConfirm] = useState(false)
   const [disableDecline, setDisableDecline] = useState(false)
   const [closeButtonNameState, setCloseButtonNameState] =
@@ -63,7 +64,7 @@ const Modal = ({
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
   const [onConfirm2Func, setOnConfirm2Func] = useState(null)
   const [onDeclineFunc, setOnDeclineFunc] = useState(null)
-  const setModals = useSetRecoilState(modalsAtom)
+  const setModals = useSetAtom(modalsAtom)
   const [close, setClose] = useState(false)
   const [ComponentInFooter, setComponentInFooter] = useState(null)
   const [closeButtonShowState, setCloseButtonShowState] =

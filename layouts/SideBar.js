@@ -1,3 +1,5 @@
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,7 +14,7 @@ import { m } from 'framer-motion'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import locationAtom from '@state/atoms/locationAtom'
 
 const menuCfg = (
   userActiveRole,
@@ -65,14 +67,13 @@ const menuCfg = (
 }
 
 const MenuItem = ({ item, active = false, badgeNum }) => {
-  const setMenuOpen = useSetRecoilState(menuOpenAtom)
+  const location = useAtomValue(locationAtom)
+  const setMenuOpen = useSetAtom(menuOpenAtom)
+
+  const href = `/${location}/cabinet/${item.href}`
+
   return (
-    <Link
-      prefetch={false}
-      href={'/cabinet/' + item.href}
-      shallow
-      legacyBehavior
-    >
+    <Link prefetch={false} href={href} shallow legacyBehavior>
       <a
         onClick={() => setMenuOpen(false)}
         className={cn(
@@ -116,15 +117,14 @@ const Group = ({
   activePage,
   onChangeMenuIndex,
 }) => {
-  const { groupHidden, pagesIdsWithBadge } = useRecoilValue(
+  const location = useAtomValue(locationAtom)
+  const { groupHidden, pagesIdsWithBadge } = useAtomValue(
     badgesGroupSelector(item.id)
   )
   // const items = item.items.filter(({ id }) => !hiddenMenus.includes(id))
 
   if (groupHidden) return null
-  // console.log('pagesIdsWithBadge :>> ', pagesIdsWithBadge)
   const items = item.items
-  // console.log('items :>> ', items)
   const groupBadge = items.reduce((total, { id }) => {
     if (pagesIdsWithBadge[id]) return total + pagesIdsWithBadge[id]
     return total
@@ -156,7 +156,7 @@ const Group = ({
             'flex gap-x-2 cursor-pointer items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
             // active ? 'text-ganeral' : 'text-white'
           )}
-          href={items[0].href}
+          href={`/${location}/cabinet/${items[0].href}`}
           onClick={() => {
             if (items.length === 1) {
               // setPageId(item.items[0].id)
@@ -228,7 +228,7 @@ const GroupSuspence = (props) => (
 )
 
 const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
-  const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
+  const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
 
   useEffect(() => {
@@ -282,12 +282,12 @@ var handler
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
   const menuRef = useRef(null)
-  const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
+  const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   const [scrollPos, setScrollPos] = useState(0)
   const [scrollable, setScrollable] = useState(false)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
-  const { height } = useRecoilValue(windowDimensionsAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
+  const { height } = useAtomValue(windowDimensionsAtom)
   const [menuIndex, setMenuIndex] = useState()
 
   const onChangeMenuIndex = (index) => {

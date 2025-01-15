@@ -1,12 +1,9 @@
-import loadingAtom from '@state/atoms/loadingAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-const setNotLoadingSelector = selector({
-  key: 'setNotLoadingSelector',
-  get: ({ get }) => false,
-  set: ({ set }, itemNameId) => {
-    set(loadingAtom(itemNameId), false)
-  },
+import loadingAtom from '@state/atoms/loadingAtom'
+
+const setNotLoadingSelector = atom(false, (get, set, itemNameId) => {
+  set(loadingAtom(itemNameId), false)
 })
 
 export default setNotLoadingSelector

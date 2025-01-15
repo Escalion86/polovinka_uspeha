@@ -1,5 +1,5 @@
-import { DEFAULT_ROLES } from '@helpers/constants'
-import getUserRole from '@helpers/getUserRole'
+// import { DEFAULT_ROLES } from '@helpers/constants'
+// import getUserRole from '@helpers/getUserRole'
 import isUserAdmin from '@helpers/isUserAdmin'
 import AdditionalBlocks from '@models/AdditionalBlocks'
 import Directions from '@models/Directions'
@@ -18,12 +18,54 @@ import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
-const fetchProps = async (user, domen) => {
+const fetchProps = async (user, location, params) => {
   const serverDateTime = new Date()
   try {
-    const db = await dbConnect(domen)
+    const isAdmin = isUserAdmin(user)
+    const db = await dbConnect(location)
+    if (!db)
+      return {
+        users: [],
+        events: [],
+        directions: [],
+        reviews: [],
+        additionalBlocks: [],
+        // eventsUsers: [],
+        // payments: [],
+        siteSettings: {},
+        rolesSettings: [],
+        // histories: [],
+        questionnaires: [],
+        questionnairesUsers: [],
+        services: [],
+        // servicesUsers: [],
+        serverSettings: JSON.parse(
+          JSON.stringify({
+            dateTime: serverDateTime,
+          })
+        ),
+        mode: process.env.NODE_ENV,
+        // location: process.env.LOCATION,
+        error: 'db error',
+        location,
+      }
 
-    var users = await Users.find({}).select('-password').lean()
+    console.log('fetchProps location :>> ', location)
+
+    var users = isAdmin
+      ? await Users.find({})
+          .select({
+            password: 0,
+            // orientation: 0,
+            // firstname: 0,
+            // secondname: 0,
+            // thirdname: 0,
+            // interests: 0,
+            // profession: 0,
+            // about: 0,
+          })
+          .lean()
+      : null
 
     // if (!(isModer || isAdmin)) {
     //   users = JSON.parse(JSON.stringify(users)).map((user) => {
@@ -42,7 +84,6 @@ const fetchProps = async (user, domen) => {
     //     }
     //   })
     // }
-    //1570383
 
     const events = await Events.find({})
       .select({
@@ -52,12 +93,37 @@ const fetchProps = async (user, domen) => {
         organizerId: 0,
         warning: 0,
         googleCalendarId: 0,
+        // maxMansMember: 0,
+        // maxMansNovice: 0,
+        // maxWomansMember: 0,
+        // maxWomansNovice: 0,
+        // maxParticipants: 0,
+        // maxMans: 0,
+        // maxWomans: 0,
+        // minMansAge: 0,
+        // minWomansAge: 0,
+        // maxMansAge: 0,
+        // maxWomansAge: 0,
+        // usersStatusAccess: 0,
+        // usersStatusDiscount: 0,
       })
       .lean()
 
-    const directions = await Directions.find({}).lean()
+    const directions = await Directions.find({})
+      .select({
+        description: 0,
+
+        // plugins: 0,
+        ...(params?.directions?.shortDescription
+          ? {}
+          : { shortDescription: 0 }),
+      })
+      .lean()
     const reviews = await Reviews.find({}).lean()
-    const additionalBlocks = await AdditionalBlocks.find({}).lean()
+    const additionalBlocks =
+      params?.additionalBlocks === false
+        ? []
+        : await AdditionalBlocks.find({}).lean()
     // const eventsUsers = await EventsUsers.find({}).lean()
     // const payments = await Payments.find({})
     //   .select({
@@ -77,9 +143,8 @@ const fetchProps = async (user, domen) => {
     const services = await Services.find({}).lean()
     // const servicesUsers = await ServicesUsers.find({}).lean()
 
-    const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
-    const seeFullNames = userRole?.users?.seeFullNames
-    const isAdmin = isUserAdmin(user)
+    // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
+    // const seeFullNames = userRole?.users?.seeFullNames
 
     if (isAdmin) {
       const canceledEventsIds = events
@@ -109,27 +174,27 @@ const fetchProps = async (user, domen) => {
       }))
     }
 
-    if (!seeFullNames) {
-      users = users.map((user) => {
-        return {
-          ...user,
-          secondName: user.secondName
-            ? user.security?.fullSecondName
-              ? user.secondName
-              : user.secondName[0] + '.'
-            : '',
-          thirdName: user.thirdName
-            ? user.security?.fullThirdName
-              ? user.thirdName
-              : user.thirdName[0] + '.'
-            : '',
-        }
-      })
-    }
+    // if (!seeFullNames) {
+    //   users = users.map((user) => {
+    //     return {
+    //       ...user,
+    //       secondName: user.secondName
+    //         ? user.security?.fullSecondName
+    //           ? user.secondName
+    //           : user.secondName[0] + '.'
+    //         : '',
+    //       thirdName: user.thirdName
+    //         ? user.security?.fullThirdName
+    //           ? user.thirdName
+    //           : user.thirdName[0] + '.'
+    //         : '',
+    //     }
+    //   })
+    // }
     console.log('')
     console.log('')
     console.log('-----------------------------')
-    console.log('users :>> ', JSON.stringify(users).length)
+    console.log('users :>> ', users ? JSON.stringify(users).length : 0)
     console.log('events :>> ', JSON.stringify(events).length)
     console.log('directions :>> ', JSON.stringify(directions).length)
     console.log('reviews :>> ', JSON.stringify(reviews).length)
@@ -144,7 +209,7 @@ const fetchProps = async (user, domen) => {
       'questionnairesUsers :>> ',
       JSON.stringify(questionnairesUsers).length
     )
-    console.log('rolesSettservicesings :>> ', JSON.stringify(services).length)
+    console.log('services :>> ', JSON.stringify(services).length)
     // console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
 
     const fetchResult = {
@@ -170,7 +235,8 @@ const fetchProps = async (user, domen) => {
         })
       ),
       mode: process.env.NODE_ENV,
-      location: process.env.LOCATION,
+      // location: process.env.LOCATION,
+      location,
     }
 
     return fetchResult
@@ -196,8 +262,9 @@ const fetchProps = async (user, domen) => {
         })
       ),
       mode: process.env.NODE_ENV,
-      location: process.env.LOCATION,
+      // location: process.env.LOCATION,
       error: JSON.parse(JSON.stringify(error)),
+      location,
     }
   }
 }

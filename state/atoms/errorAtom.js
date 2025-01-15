@@ -1,8 +1,6 @@
-import { atomFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 
-const errorAtom = atomFamily({
-  key: 'errorAtom',
-  default: false,
-})
+const errorAtom = atomFamily((params) => atom(false))
 
 export default errorAtom

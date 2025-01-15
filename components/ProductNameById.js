@@ -1,9 +1,9 @@
 import productSelector from '@state/selectors/productSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ProductNameById = ({ productId, className }) => {
-  const product = useRecoilValue(productSelector(productId))
+  const product = useAtomValue(productSelector(productId))
   return <div className={cn('leading-4', className)}>{product.title}</div>
 }
 

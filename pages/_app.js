@@ -14,8 +14,6 @@ import 'react-medium-image-zoom/dist/styles.css'
 // import 'quill/dist/quill.bubble.css'
 import 'quill/dist/quill.snow.css'
 import 'react-toastify/dist/ReactToastify.css'
-import { RecoilEnv, RecoilRoot } from 'recoil'
-import RecoilNexus from 'recoil-nexus'
 import '../styles/burger.css'
 import '../styles/global.css'
 import '../styles/fonts/Lora.css'
@@ -29,8 +27,8 @@ import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 import { LazyMotion, domAnimation } from 'framer-motion'
 import localFont from 'next/font/local'
 import PWAChecker from '@components/PWAChecker'
-
-RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
+import { Provider as JotaiProvider } from 'jotai'
+import store from '@state/store'
 
 // Create a theme instance.
 const theme = createTheme({
@@ -273,9 +271,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         {/* <script src="https://smtpjs.com/v3/smtp.js"></script> */}
       </Head>
       <SessionProvider session={session} refetchInterval={5 * 60}>
-        {/* <Provider store={store}> */}
-        <RecoilRoot>
-          <RecoilNexus />
+        <JotaiProvider store={store}>
           <ThemeProvider theme={theme}>
             <div
               className={`${lora.variable} ${adlery.variable} ${adleryProSwash.variable} ${futura.variable} ${futuraDemi.variable} font-futura`} // ${enchants.variable} ${frankinity.variable}
@@ -308,8 +304,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
               {/* </div> */}
             </div>
           </ThemeProvider>
-        </RecoilRoot>
-        {/* </Provider> */}
+        </JotaiProvider>
       </SessionProvider>
     </>
   )

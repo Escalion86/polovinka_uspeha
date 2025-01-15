@@ -5,15 +5,15 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 import { getNounDirections } from '@helpers/getNoun'
 import DirectionCard from '@layouts/cards/DirectionCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const DirectionsContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const directions = useRecoilValue(directionsAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const directions = useAtomValue(directionsAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const seeAddButton = loggedUserActiveRole?.generalPage?.directions
 
   return (

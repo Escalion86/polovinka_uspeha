@@ -15,11 +15,11 @@ import { DEFAULT_USER } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import usersAtom from '@state/atoms/usersAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 import CopyPasteButtons from '@components/CopyPasteButtons'
 
 const userFunc = (userId, clone = false) => {
@@ -33,16 +33,16 @@ const userFunc = (userId, clone = false) => {
     setTopLeftComponent,
   }) => {
     const [loggedUserActive, setLoggedUserActive] =
-      useRecoilState(loggedUserActiveAtom)
+      useAtom(loggedUserActiveAtom)
 
-    const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
     const canSetRole = loggedUserActiveRole?.users?.setRole
     const canSetStatus = loggedUserActiveRole?.users?.setStatus
 
-    const user = useRecoilValue(userSelector(userId))
-    const setUser = useRecoilValue(itemsFuncAtom).user.set
-    const users = useRecoilValue(usersAtom)
+    const user = useAtomValue(userSelector(userId))
+    const setUser = useAtomValue(itemsFuncAtom).user.set
+    const users = useAtomValue(usersAtomAsync)
 
     const [firstName, setFirstName] = useState(
       user?.firstName ?? DEFAULT_USER.firstName
@@ -277,7 +277,7 @@ const userFunc = (userId, clone = false) => {
           />
         ))
     }, [setTopLeftComponent])
-    console.log('phone :>> ', phone)
+
     return (
       <FormWrapper>
         {/* <InputImage

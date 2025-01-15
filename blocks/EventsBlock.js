@@ -6,7 +6,7 @@ import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import cn from 'classnames'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import CountDown from './components/CountDown'
 import dynamic from 'next/dynamic'
 const EventCardLight = dynamic(() => import('@layouts/cards/EventCardLight'))
@@ -46,7 +46,7 @@ const EventsBlock = ({
 }) => {
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
 
-  const events = useRecoilValue(filteredEventsSelector)
+  const events = useAtomValue(filteredEventsSelector)
 
   const filteredEvents = events.filter(
     (event) =>

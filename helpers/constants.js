@@ -434,27 +434,28 @@ export const PASTEL_COLORS = [
 export const GRADIENT_COLORS = ['#504436', '#84725A']
 
 export const LOCATIONS = {
-  dev: {
+  // dev: {
+  //   townRu: 'тестовый город',
+  //   roditPadeg: 'тестового города',
+  //   // domen: 'https://половинкауспеха.рф',
+  //   // short: 'krsk',
+  //   imageFolder: 'polovinka_uspeha_dev',
+  //   telegramBotName: 'polovinka_uspeha_bot',
+  //   towns: [
+  //     'Тест',
+  //     // 'Сосновоборск',
+  //     // 'Дивногорск',
+  //     // 'Железногорск',
+  //     // 'Дрокино',
+  //     // 'Емельяново',
+  //   ],
+  //   hidden: true,
+  // },
+  krsk: {
     townRu: 'красноярск',
     roditPadeg: 'красноярского',
-    domen: 'https://половинкауспеха.рф',
-    short: 'krsk',
-    imageFolder: 'polovinka_uspeha_dev',
-    telegramBotName: 'polovinka_uspeha_bot',
-    towns: [
-      'Красноярск',
-      'Сосновоборск',
-      'Дивногорск',
-      'Железногорск',
-      'Дрокино',
-      'Емельяново',
-    ],
-  },
-  krasnoyarsk: {
-    townRu: 'красноярск',
-    roditPadeg: 'красноярского',
-    domen: 'https://половинкауспеха.рф',
-    short: 'krsk',
+    // domen: 'https://половинкауспеха.рф',
+    // short: 'krsk',
     imageFolder: 'polovinka_uspeha',
     telegramBotName: 'polovinka_uspeha_bot',
     towns: [
@@ -465,17 +466,40 @@ export const LOCATIONS = {
       'Дрокино',
       'Емельяново',
     ],
+    hidden: false,
   },
-  norilsk: {
+  nrsk: {
     townRu: 'норильск',
     roditPadeg: 'норильского',
-    domen: 'https://nrsk.половинкауспеха.рф',
-    short: 'nrsk',
+    // domen: 'https://nrsk.половинкауспеха.рф',
+    // short: 'nrsk',
     imageFolder: 'polovinka_uspeha_nrsk',
     telegramBotName: 'polovinka_uspeha_nrsk_bot',
     towns: ['Норильск', 'Талнах', 'Кайеркан', 'Оганер', 'Дудинка', 'Алыкель'],
+    hidden: false,
+  },
+  ekb: {
+    townRu: 'екатеринбург',
+    roditPadeg: 'екатеринбуржского',
+    // domen: 'https://nrsk.половинкауспеха.рф',
+    // short: 'nrsk',
+    imageFolder: 'polovinka_uspeha_ekb',
+    telegramBotName: 'polovinka_uspeha_ekb_bot',
+    towns: [
+      'Екатеринбург',
+      'Среднеуральск',
+      'Нижний Тагил',
+      'Полевской',
+      'Верхняя Пышма',
+      'Березовский',
+    ],
+    hidden: false,
   },
 }
+
+export const LOCATIONS_KEYS_VISIBLE = Object.keys(LOCATIONS).map(
+  (location) => !LOCATIONS[location].hidden
+)
 
 export const MONTHS = [
   'янв',

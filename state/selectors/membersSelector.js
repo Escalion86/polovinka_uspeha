@@ -1,11 +1,10 @@
-import usersAtom from '@state/atoms/usersAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-export const membersSelector = selector({
-  key: 'membersSelector',
-  get: ({ get }) => {
-    return get(usersAtom).filter((user) => user.status === 'member')
-  },
+import usersAtomAsync from '@state/async/usersAtomAsync'
+
+export const membersSelector = atom(async (get) => {
+  const users = await get(usersAtomAsync)
+  return users.filter((user) => user.status === 'member')
 })
 
 export default membersSelector

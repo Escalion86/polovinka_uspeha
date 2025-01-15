@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const snackbarAtom = atom({
-  key: 'snackbarAtom',
-  default: {},
-})
+const snackbarAtom = atom({})
 
 export default snackbarAtom

@@ -1,9 +1,5 @@
-import { DEFAULT_EVENT } from '@helpers/constants'
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const itemsFuncAtom = atom({
-  key: 'items',
-  default: null,
-})
+const itemsFuncAtom = atom(null)
 
 export default itemsFuncAtom

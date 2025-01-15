@@ -5,7 +5,7 @@ import SelectFile from '@components/SelectFile'
 import BackButton from '@components/IconToggleButtons/BackButton'
 
 const ImagesServerContent = () => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
+  // const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const [directory, setDirectory] = useState('')
   const [selectedFile, setSelectedFile] = useState()

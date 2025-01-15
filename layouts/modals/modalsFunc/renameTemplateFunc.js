@@ -1,10 +1,11 @@
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
-import { postData, putData } from '@helpers/CRUD'
+import { putData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
-import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+// import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const renameTemplateFunc = (templateId, oldName = '', onSuccess) => {
   const RenameTemplateFuncModal = ({
@@ -15,6 +16,7 @@ const renameTemplateFunc = (templateId, oldName = '', onSuccess) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    const location = useAtomValue(locationAtom)
     const [name, setName] = useState(oldName)
     const snackbar = useSnackbar()
 
@@ -22,9 +24,12 @@ const renameTemplateFunc = (templateId, oldName = '', onSuccess) => {
       setOnConfirmFunc(
         oldName !== name
           ? async () => {
-              const response = await putData('/api/templates/' + templateId, {
-                name,
-              })
+              const response = await putData(
+                `/api/${location}/templates/${templateId}`,
+                {
+                  name,
+                }
+              )
               if (response) {
                 snackbar.success('Имя шаблона изменено')
                 onSuccess && onSuccess(response)

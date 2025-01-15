@@ -1,9 +1,10 @@
-import { selector } from 'recoil'
+import { atom } from 'jotai'
+
 import paymentsOfEventWithoutEventIdSelector from './paymentsOfEventWithoutEventIdSelector'
 
-export const badgePaymentsOfEventWithoutEventIdSelector = selector({
-  key: 'badgePaymentsOfEventWithoutEventIdSelector',
-  get: ({ get }) => get(paymentsOfEventWithoutEventIdSelector).length,
+export const badgePaymentsOfEventWithoutEventIdSelector = atom(async (get) => {
+  const payments = await get(paymentsOfEventWithoutEventIdSelector)
+  return payments.length
 })
 
 export default badgePaymentsOfEventWithoutEventIdSelector

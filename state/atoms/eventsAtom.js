@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const eventsAtom = atom({
-  key: 'events',
-  default: [],
-})
+const eventsAtom = atom([])
 
 export default eventsAtom

@@ -7,7 +7,7 @@ import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import Link from 'next/link'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import UserMenu from './UserMenu'
 import UserStatusIcon from '@components/UserStatusIcon'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
@@ -24,10 +24,10 @@ const CheckedItem = ({ children }) => (
 )
 
 const CabinetHeader = ({ title = '', titleLink, icon }) => {
-  const loggedUser = useRecoilValue(loggedUserAtom)
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
-  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const loggedUser = useAtomValue(loggedUserAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
+  const siteSettings = useAtomValue(siteSettingsAtom)
   const headerInfo = siteSettings?.headerInfo
 
   if (!loggedUserActive) return null

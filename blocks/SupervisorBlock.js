@@ -3,12 +3,12 @@ import { H4 } from '@components/tags'
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import SvgKavichki from 'svg/SvgKavichki'
 
 const SupervisorBlock = () => {
-  const siteSettings = useRecoilValue(siteSettingsAtom)
-  const { roditPadeg } = useRecoilValue(locationPropsSelector)
+  const siteSettings = useAtomValue(siteSettingsAtom)
+  const { roditPadeg } = useAtomValue(locationPropsSelector)
   const showOnSite = siteSettings?.supervisor?.showOnSite
   if (!showOnSite) return null
 

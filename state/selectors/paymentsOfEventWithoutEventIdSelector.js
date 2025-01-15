@@ -1,17 +1,16 @@
-import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-export const paymentsOfEventWithoutEventIdSelector = selector({
-  key: 'paymentsOfEventWithoutEventIdSelector',
-  get: ({ get }) => {
-    return get(asyncPaymentsAtom).filter(
-      (payment) =>
-        (!payment.sector || payment.sector === 'event') &&
-        !payment.eventId &&
-        !payment.serviceId &&
-        !payment.productId
-    )
-  },
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
+
+export const paymentsOfEventWithoutEventIdSelector = atom(async (get) => {
+  const payments = await get(asyncPaymentsAtom)
+  return payments.filter(
+    (payment) =>
+      (!payment.sector || payment.sector === 'event') &&
+      !payment.eventId &&
+      !payment.serviceId &&
+      !payment.productId
+  )
 })
 
 export default paymentsOfEventWithoutEventIdSelector

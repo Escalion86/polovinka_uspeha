@@ -5,7 +5,7 @@ import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import TelegramIcon from 'svg/TelegramIcon'
 
 const FabItem = ({ text, whatsapp, telegram, show }) => (
@@ -83,7 +83,7 @@ const FabItem = ({ text, whatsapp, telegram, show }) => (
 )
 
 const FabMenu = ({ show = true, ping = true }) => {
-  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const siteSettings = useAtomValue(siteSettingsAtom)
   const [isItemsShowing, setIsItemsShowing] = useState(false)
 
   const fabs = siteSettings.fabMenu

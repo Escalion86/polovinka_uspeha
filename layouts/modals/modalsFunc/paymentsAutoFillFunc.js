@@ -8,7 +8,7 @@ import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 
 const paymentsAutoFillFunc = (eventId) => {
@@ -22,9 +22,9 @@ const paymentsAutoFillFunc = (eventId) => {
     setOnlyCloseButtonShow,
   }) => {
     const autofillPayments =
-      useRecoilValue(itemsFuncAtom).payment.autofillPayments
+      useAtomValue(itemsFuncAtom).payment.autofillPayments
 
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useAtomValue(eventSelector(eventId))
     // const isEventClosed = isEventClosedFunc(event)
 
     // const [payDirection, setPayDirection] = useState(

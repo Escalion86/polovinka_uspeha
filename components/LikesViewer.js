@@ -8,8 +8,8 @@ import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GENDERS } from '@helpers/constants'
-import { modalsFuncAtom } from '@state/atoms'
-import { useRecoilValue } from 'recoil'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import { useAtomValue } from 'jotai'
 import { UserItem } from './ItemCards'
 import ContactsIconsButtons from './ContactsIconsButtons'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
@@ -87,8 +87,8 @@ const UserLikesItem = ({
   onDownClick,
   likeSortNum,
 }) => {
-  const event = useRecoilValue(eventSelector(eventId))
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const event = useAtomValue(eventSelector(eventId))
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   // const userGender =
   //   user.gender && GENDERS.find((gender) => gender.value === user.gender)
 
@@ -305,8 +305,6 @@ const setUp = (array, key, clickedIndex) => {
     })
     .filter((item) => item)
 
-  console.log('itemsToChange :>> ', itemsToChange)
-
   return itemsToChange
   // await Promise.all(
   //   itemsToChange.map(async (item) => {
@@ -321,8 +319,6 @@ const setUp = (array, key, clickedIndex) => {
 
 const setDown = (array, key, clickedIndex) => {
   if (clickedIndex >= array.length - 1) return []
-  console.log('clickedIndex :>> ', clickedIndex)
-  console.log('array[clickedIndex] :>> ', array[clickedIndex])
 
   var movedUp = false
   var movedDown = false
@@ -341,8 +337,6 @@ const setDown = (array, key, clickedIndex) => {
     })
     .filter((item) => item)
 
-  console.log('itemsToChange :>> ', itemsToChange)
-
   return itemsToChange
   // await Promise.all(
   //   itemsToChange.map(async (item) => {
@@ -356,9 +350,9 @@ const setDown = (array, key, clickedIndex) => {
 }
 
 const LikesViewer = ({ eventId }) => {
-  const event = useRecoilValue(eventSelector(eventId))
-  const setEventUser = useRecoilValue(itemsFuncAtom).eventsUser.set
-  const eventUsers = useRecoilValue(
+  const event = useAtomValue(eventSelector(eventId))
+  const setEventUser = useAtomValue(itemsFuncAtom).eventsUser.set
+  const eventUsers = useAtomValue(
     eventParticipantsFullWithoutRelationshipByEventIdSelector(eventId)
   )
 

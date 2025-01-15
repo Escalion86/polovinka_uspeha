@@ -16,8 +16,9 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import { getRecoil } from 'recoil-nexus'
+import { useAtomValue } from 'jotai'
+import store from '@state/store'
+import locationAtom from '@state/atoms/locationAtom'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
@@ -132,7 +133,7 @@ const textForming = ({
       const maxParticipants = getEventMaxParticipants(subEventSum)
 
       if (maxParticipants) {
-        const assistants = getRecoil(eventAssistantsSelector(event._id))
+        const assistants = store.get(eventAssistantsSelector(event._id))
         elementOfTextArray.push(
           `\u{1F465} <b>Количество участников</b>: ${getNoun(
             maxParticipants,
@@ -176,6 +177,7 @@ const textForming = ({
 }
 
 const ToolsTextEventsAnonsContent = () => {
+  const location = useAtomValue(locationAtom)
   const [eventsId, setEventsId] = useState([])
   const [text, setText] = useState('')
   const [showTags, setShowTags] = useState(true)
@@ -185,7 +187,7 @@ const ToolsTextEventsAnonsContent = () => {
   const [showParticipantsCount, setShowParticipantsCount] = useState(true)
   const [showTextSignUp, setShowTextSignUp] = useState(true)
   const [showLink, setShowLink] = useState(true)
-  const events = useRecoilValue(eventsAtom)
+  const events = useAtomValue(eventsAtom)
   const [eventsFull, setEventsFull] = useState([])
 
   const [socialTag, setSocialTag] = useState(null)
@@ -193,7 +195,7 @@ const ToolsTextEventsAnonsContent = () => {
 
   const { info } = useSnackbar()
 
-  const getEvents = async (eventsId) => {
+  const getEvents = async (eventsId, location) => {
     const eventsFullRes = []
     // const filteredEvents = events.filter(({ _id }) => eventsId.includes(_id))
     const filteredEvents = eventsId.map((id) =>
@@ -201,7 +203,13 @@ const ToolsTextEventsAnonsContent = () => {
     )
     for (let i = 0; i < filteredEvents.length; i++) {
       const eventId = filteredEvents[i]._id
-      const res = await getData('/api/events/' + eventId, {}, null, null, false)
+      const res = await getData(
+        `/api/${location}/events/${eventId}`,
+        {},
+        null,
+        null,
+        false
+      )
       eventsFullRes.push(res)
     }
     setEventsFull(eventsFullRes)
@@ -267,7 +275,7 @@ const ToolsTextEventsAnonsContent = () => {
         eventsId={eventsId}
         onChange={(value) => {
           setEventsId(value)
-          getEvents(value)
+          getEvents(value, location)
         }}
         canAddItem
         showCountNumber

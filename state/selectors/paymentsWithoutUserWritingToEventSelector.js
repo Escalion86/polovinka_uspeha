@@ -1,25 +1,23 @@
-import asyncEventsUsersAllSelector from '@state/async/asyncEventsUsersAllSelector'
+import { atom } from 'jotai'
+
+import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 
-import { selector } from 'recoil'
+export const paymentsWithoutUserWritingToEventSelector = atom(async (get) => {
+  const eventUsers = await get(asyncEventsUsersAllAtom)
+  const payments = await get(asyncPaymentsAtom)
 
-export const paymentsWithoutUserWritingToEventSelector = selector({
-  key: 'paymentsWithoutUserWritingToEventSelector',
-  get: async ({ get, set }) => {
-    const eventUsers = get(asyncEventsUsersAllSelector)
-
-    return get(asyncPaymentsAtom).filter(
-      (payment) =>
-        (payment.payDirection === 'toUser' ||
-          payment.payDirection === 'fromUser') &&
-        !!payment.eventId &&
-        !eventUsers.find(
-          (eventUser) =>
-            eventUser.eventId === payment.eventId &&
-            eventUser.userId === payment.userId
-        )
-    )
-  },
+  return payments.filter(
+    (payment) =>
+      (payment.payDirection === 'toUser' ||
+        payment.payDirection === 'fromUser') &&
+      !!payment.eventId &&
+      !eventUsers.find(
+        (eventUser) =>
+          eventUser.eventId === payment.eventId &&
+          eventUser.userId === payment.userId
+      )
+  )
 })
 
 export default paymentsWithoutUserWritingToEventSelector

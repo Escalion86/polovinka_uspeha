@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const modalsFuncAtom = atom({
-  key: 'modalsFunc', // unique ID (with respect to other atoms/selectors)
-  default: {}, // default value (aka initial value)
-})
+const modalsFuncAtom = atom({})
 
 export default modalsFuncAtom

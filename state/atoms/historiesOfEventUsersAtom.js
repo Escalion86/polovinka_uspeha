@@ -1,15 +1,10 @@
 import { getData } from '@helpers/CRUD'
-import { atom, selector } from 'recoil'
+import { atom } from 'jotai'
+import locationAtom from './locationAtom'
 
-export const historiesOfEventUsersSelector = selector({
-  key: 'historiesOfEventUsersSelector',
-  get: async ({ get }) =>
-    await getData(`/api/histories`, { schema: 'eventsusers' }),
-})
-
-const historiesOfEventUsersAtom = atom({
-  key: 'historiesOfEventUsers',
-  default: [],
+const historiesOfEventUsersAtom = atom(async (get) => {
+  const location = get(locationAtom)
+  return await getData(`/api/${location}/histories`, { schema: 'eventsusers' })
 })
 
 export default historiesOfEventUsersAtom

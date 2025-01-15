@@ -5,6 +5,7 @@ const QuestionnaireAnswersFill = ({
   questionnaireData = [],
   small,
 }) => {
+  console.log('answers', answers)
   var hiddenKeys = []
   const filteredQuestionnaireData = questionnaireData.filter((item) => {
     if (item.show) return true

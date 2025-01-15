@@ -1,13 +1,14 @@
+import { useAtomValue } from 'jotai'
+
 import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import Image from 'next/image'
-import { useRecoilValue } from 'recoil'
 
 const StatusUserToggleButtons = ({ value, onChange }) => {
-  const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
+  const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
   return (
     <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
       <Button

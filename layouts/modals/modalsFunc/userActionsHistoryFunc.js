@@ -10,7 +10,7 @@ import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import EventKeyValueItem from './historyKeyValuesItems/EventKeyValueItem'
 import UserKeyValueItem from './historyKeyValuesItems/UserKeyValueItem'
 import PaymentKeyValueItem from './historyKeyValuesItems/PaymentKeyValueItem'
@@ -22,6 +22,7 @@ import ComboBox from '@components/ComboBox'
 import { SelectEventList, SelectPaymentList } from '@components/SelectItemList'
 import DirectionTitleById from '@components/DirectionTitleById'
 import AdditionalBlockTitleById from '@components/AdditionalBlockTitleById'
+import locationAtom from '@state/atoms/locationAtom'
 
 const schemasNames = {
   events: 'Мероприятие',
@@ -244,7 +245,8 @@ const userActionsHistoryFunc = (userId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const user = useRecoilValue(userSelector(userId))
+    const location = useAtomValue(locationAtom)
+    const user = useAtomValue(userSelector(userId))
     const [userActionsHistory, setUserActionsHistory] = useState()
     const [periodHours, setPeriodHours] = useState(24)
 
@@ -261,7 +263,7 @@ const userActionsHistoryFunc = (userId) => {
       const fetchData = async () => {
         var cutoff = new Date()
         cutoff.setHours(cutoff.getHours() - periodHours)
-        const result = await getData(`/api/histories`, {
+        const result = await getData(`/api/${location}/histories`, {
           userId,
           createdAt: { $gte: cutoff },
         })

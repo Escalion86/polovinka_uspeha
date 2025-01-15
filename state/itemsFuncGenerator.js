@@ -1,7 +1,6 @@
 import { postData, putData, deleteData } from '@helpers/CRUD'
 import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
 
-import { setRecoil } from 'recoil-nexus'
 import addErrorModalSelector from './selectors/addErrorModalSelector'
 import setLoadingSelector from './selectors/setLoadingSelector'
 import setNotLoadingSelector from './selectors/setNotLoadingSelector'
@@ -35,6 +34,8 @@ import signUpUserSelector from './async/signUpUserSelector'
 import setEventUserSelector from './async/setEventUserSelector'
 import rolesAtom from './atoms/rolesAtom'
 import updateEventsUsersSelector from './async/updateEventsUsersSelector'
+
+import store from './store'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -183,9 +184,9 @@ const messages = {
   },
 }
 
-const setFunc = (selector) => (value) => setRecoil(selector, value)
+const setFunc = (selector) => (value) => store.set(selector, value)
 const setFamilyFunc = (selector) => (id, value) =>
-  setRecoil(selector(id), value)
+  store.set(selector(id), value)
 
 const props = {
   setLoading: setFunc(isSiteLoadingAtom),
@@ -229,6 +230,7 @@ const props = {
 const itemsFuncGenerator = (
   snackbar,
   loggedUser,
+  location,
   array = [
     'event',
     'eventsUser',
@@ -261,7 +263,7 @@ const itemsFuncGenerator = (
           if (item?._id && !clone) {
             setLoadingCard(itemName + item._id)
             return await putData(
-              `/api/${itemName.toLowerCase()}s/${item._id}`,
+              `/api/${location}/${itemName.toLowerCase()}s/${item._id}`,
               item,
               (data) => {
                 setNotLoadingCard(itemName + item._id)
@@ -289,7 +291,7 @@ const itemsFuncGenerator = (
             const clearedItem = { ...item }
             delete clearedItem._id
             return await postData(
-              `/api/${itemName.toLowerCase()}s`,
+              `/api/${location}/${itemName.toLowerCase()}s`,
               clearedItem,
               (data) => {
                 if (!noSnackbar && messages[itemName]?.add?.success)
@@ -318,7 +320,7 @@ const itemsFuncGenerator = (
         delete: async (itemId) => {
           setLoadingCard(itemName + itemId)
           return await deleteData(
-            `/api/${itemName.toLowerCase()}s/${itemId}`,
+            `/api/${location}/${itemName.toLowerCase()}s/${itemId}`,
             () => {
               if (messages[itemName]?.delete?.success)
                 snackbar.success(messages[itemName].delete.success)
@@ -349,7 +351,7 @@ const itemsFuncGenerator = (
   //   // Сначала получаем список элементов которые можно поднять
   //   toggleLoading('additionalBlock' + itemId)
   //   await putData(
-  //     `/api/additionalblocks/${itemId}`,
+  //     `/api/${location}/additionalblocks/${itemId}`,
   //     () => props['setAdditionalBlock'](itemId)
   //     //  deleteEvent(itemId)
   //   )
@@ -358,7 +360,7 @@ const itemsFuncGenerator = (
   obj.event.cancel = async (eventId) => {
     setLoadingCard('event' + eventId)
     return await putData(
-      `/api/events/${eventId}`,
+      `/api/${location}/events/${eventId}`,
       { status: 'canceled' },
       (data) => {
         snackbar.success('Мероприятие отменено')
@@ -380,7 +382,7 @@ const itemsFuncGenerator = (
   obj.event.close = async (eventId) => {
     setLoadingCard('event' + eventId)
     return await putData(
-      `/api/events/${eventId}`,
+      `/api/${location}/events/${eventId}`,
       { status: 'close' },
       (data) => {
         snackbar.success('Мероприятие закрыто')
@@ -401,7 +403,7 @@ const itemsFuncGenerator = (
   obj.roles = {}
   obj.roles.update = async (roles) => {
     return await postData(
-      `/api/roles`,
+      `/api/${location}/roles`,
       roles,
       (data) => {
         snackbar.success('Роли обновлены')
@@ -421,7 +423,7 @@ const itemsFuncGenerator = (
   obj.payment.link = async (paymentId, eventId) => {
     setLoadingCard('payment' + paymentId)
     return await putData(
-      `/api/payments/${paymentId}`,
+      `/api/${location}/payments/${paymentId}`,
       { eventId },
       (data) => {
         snackbar.success('Транзакция привязана к мероприятию')
@@ -448,7 +450,7 @@ const itemsFuncGenerator = (
   obj.payment.unlink = async (paymentId) => {
     setLoadingCard('payment' + paymentId)
     return await putData(
-      `/api/payments/${paymentId}`,
+      `/api/${location}/payments/${paymentId}`,
       { eventId: null },
       (data) => {
         snackbar.success('Транзакция отвязана от мероприятия')
@@ -474,7 +476,7 @@ const itemsFuncGenerator = (
   obj.event.uncancel = async (eventId) => {
     setLoadingCard('event' + eventId)
     return await putData(
-      `/api/events/${eventId}`,
+      `/api/${location}/events/${eventId}`,
       { status: 'active' },
       (data) => {
         snackbar.success('Мероприятие активировано')
@@ -499,7 +501,7 @@ const itemsFuncGenerator = (
 
     setLoadingCard('event' + eventId)
     return await postData(
-      `/api/eventsusers`,
+      `/api/${location}/eventsusers`,
       propsObj,
       (data) => {
         // Если запрос прошел, но записаться нельзя, так как уже ктото успел записаться
@@ -547,7 +549,7 @@ const itemsFuncGenerator = (
   obj.event.signOut = async (eventId, userId, activeStatus) => {
     setLoadingCard('event' + eventId)
     return await deleteData(
-      `/api/eventsusers`,
+      `/api/${location}/eventsusers`,
       (data) => {
         snackbar.success(
           `Вы успешно отписались${
@@ -583,7 +585,7 @@ const itemsFuncGenerator = (
   // obj.event.setUsers = async (eventId, usersId) => {
   //   toggleLoading('event' + eventId)
   //   await postData(
-  //     `/api/eventsusers`,
+  //     `/api/${location}/eventsusers`,
   //     { eventId, usersId },
   //     (data) => {
   //       toggleLoading('event' + eventId)
@@ -598,7 +600,7 @@ const itemsFuncGenerator = (
   obj.event.setEventUsers = async (eventId, eventUsersStatuses) => {
     setLoadingCard('event' + eventId)
     return await postData(
-      `/api/eventsusers`,
+      `/api/${location}/eventsusers`,
       { eventId, eventUsersStatuses },
       (data) => {
         snackbar.success('Список участников мероприятия успешно обновлен')
@@ -628,7 +630,7 @@ const itemsFuncGenerator = (
   obj.eventsUser.setData = async (eventId, data, dontShowSnackBar) => {
     setLoadingCard('event' + eventId)
     return await putData(
-      `/api/eventsusers`,
+      `/api/${location}/eventsusers`,
       { data },
       (res) => {
         !dontShowSnackBar &&
@@ -656,7 +658,7 @@ const itemsFuncGenerator = (
 
   obj.service.buy = async (serviceId, userId) => {
     return await postData(
-      `/api/services/buy`,
+      `/api/${location}/services/buy`,
       { serviceId, userId },
       (data) => {
         snackbar.success('Заявка на покупку услуги успешно отправлена')
@@ -688,7 +690,7 @@ const itemsFuncGenerator = (
     couponForOrganizer,
   }) => {
     return await postData(
-      `/api/payments/autofill`,
+      `/api/${location}/payments/autofill`,
       {
         eventId,
         payType,
@@ -728,19 +730,19 @@ const itemsFuncGenerator = (
   //     set: async (event, clone) => {
   //       if (event?._id && !clone) {
   //         toggleLoading('event' + event._id)
-  //         await putData(`/api/events/${event._id}`, event, (data) => {
+  //         await putData(`/api/${location}/events/${event._id}`, event, (data) => {
   //           toggleLoading('event' + event._id)
   //           setEvent(data)
   //         })
   //       } else {
-  //         await postData(`/api/events`, event, (data) => {
+  //         await postData(`/api/${location}/events`, event, (data) => {
   //           setEvent(data)
   //         })
   //       }
   //     },
   //     delete: async (eventId) => {
   //       toggleLoading('event' + eventId)
-  //       await deleteData(`/api/events/${eventId}`, () => deleteEvent(eventId))
+  //       await deleteData(`/api/${location}/events/${eventId}`, () => deleteEvent(eventId))
   //     },
   //   },
   //   direction: {
@@ -748,7 +750,7 @@ const itemsFuncGenerator = (
   //       if (direction?._id && !clone) {
   //         toggleLoading('direction' + direction._id)
   //         await putData(
-  //           `/api/directions/${direction._id}`,
+  //           `/api/${location}/directions/${direction._id}`,
   //           direction,
   //           (data) => {
   //             toggleLoading('direction' + direction._id)
@@ -756,14 +758,14 @@ const itemsFuncGenerator = (
   //           }
   //         )
   //       } else {
-  //         await postData(`/api/directions`, direction, (data) => {
+  //         await postData(`/api/${location}/directions`, direction, (data) => {
   //           setDirection(data)
   //         })
   //       }
   //     },
   //     delete: async (directionId) => {
   //       toggleLoading('direction' + directionId)
-  //       await deleteData(`/api/directions/${directionId}`, () =>
+  //       await deleteData(`/api/${location}/directions/${directionId}`, () =>
   //         deleteDirection(directionId)
   //       )
   //     },

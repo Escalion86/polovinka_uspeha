@@ -4,9 +4,10 @@ import { getData } from '@helpers/CRUD'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 import paymentSelector from '@state/selectors/paymentSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import PaymentKeyValueItem from './historyKeyValuesItems/PaymentKeyValueItem'
 import { paymentKeys } from './historyKeyValuesItems/keys'
+import locationAtom from '@state/atoms/locationAtom'
 
 const paymentHistoryFunc = (paymentId) => {
   const PaymentHistoryModal = ({
@@ -18,7 +19,8 @@ const paymentHistoryFunc = (paymentId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const payment = useRecoilValue(paymentSelector(paymentId))
+    const location = useAtomValue(locationAtom)
+    const payment = useAtomValue(paymentSelector(paymentId))
     const [paymentHistory, setPaymentHistory] = useState()
 
     if (!payment || !paymentId)
@@ -30,7 +32,7 @@ const paymentHistoryFunc = (paymentId) => {
 
     useEffect(() => {
       const fetchData = async () => {
-        const result = await getData(`/api/histories`, {
+        const result = await getData(`/api/${location}/histories`, {
           schema: 'payments',
           'data._id': paymentId,
         })

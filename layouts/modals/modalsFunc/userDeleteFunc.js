@@ -2,7 +2,7 @@ import FormWrapper from '@components/FormWrapper'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import isUserHaveActionsSelector from '@state/selectors/isUserHaveActionsSelector'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const userDeleteFunc = (userId) => {
   const UserDeleteModal = ({
@@ -13,8 +13,8 @@ const userDeleteFunc = (userId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const itemsFunc = useRecoilValue(itemsFuncAtom)
-    const isUserHaveActions = useRecoilValue(isUserHaveActionsSelector(userId))
+    const itemsFunc = useAtomValue(itemsFuncAtom)
+    const isUserHaveActions = useAtomValue(isUserHaveActionsSelector(userId))
 
     const onClickConfirm = async () => {
       closeModal()

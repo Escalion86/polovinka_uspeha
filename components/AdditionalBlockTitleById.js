@@ -1,8 +1,8 @@
 import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const AdditionalBlockTitleById = ({ additionalBlockId }) => {
-  const additionalBlock = useRecoilValue(
+  const additionalBlock = useAtomValue(
     additionalBlockSelector(additionalBlockId)
   )
   return additionalBlock.title

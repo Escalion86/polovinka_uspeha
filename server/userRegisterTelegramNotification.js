@@ -10,8 +10,10 @@ const userRegisterTelegramNotification = async ({
   first_name,
   last_name,
   images,
+  location,
 }) => {
-  await dbConnect()
+  const db = await dbConnect(location)
+  if (!db) return
   const usersCount = await Users.countDocuments({})
 
   const rolesSettings = await Roles.find({})

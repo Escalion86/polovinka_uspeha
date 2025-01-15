@@ -4,7 +4,8 @@ import { postData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const newTemplateFunc = (tool, template, onSave) => {
   const NewTemplateFuncModal = ({
@@ -15,7 +16,8 @@ const newTemplateFunc = (tool, template, onSave) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
+    const location = useAtomValue(locationAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const [name, setName] = useState('')
     const snackbar = useSnackbar()
 
@@ -23,7 +25,7 @@ const newTemplateFunc = (tool, template, onSave) => {
       setOnConfirmFunc(
         name
           ? async () => {
-              const response = await postData('/api/templates', {
+              const response = await postData(`/api/${location}/templates`, {
                 tool,
                 name,
                 template,

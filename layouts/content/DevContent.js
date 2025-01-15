@@ -2,60 +2,51 @@
 
 import Button from '@components/Button'
 import { CardWrapper } from '@components/CardWrapper'
-import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
-import asyncEventsUsersAllSelector from '@state/async/asyncEventsUsersAllSelector'
-import { modalsFuncAtom } from '@state/atoms'
-import eventsAtom from '@state/atoms/eventsAtom'
-import {
-  useRecoilState,
-  useRecoilValue,
-  useRecoilValueLoadable,
-  useSetRecoilState,
-} from 'recoil'
-import { postData } from '@helpers/CRUD'
-import { useEffect, useState } from 'react'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import { useAtomValue } from 'jotai'
+import { useState } from 'react'
 import Input from '@components/Input'
 import { GENDERS } from '@helpers/constants'
 import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import FormData from 'form-data'
 
-const DevCard = ({ title, data }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+// const DevCard = ({ title, data }) => {
+//   const modalsFunc = useAtomValue(modalsFuncAtom)
 
-  return (
-    <CardWrapper
-      // loading={loading}
-      // onClick={() => !loading && modalsFunc.direction.edit(direction._id)}
-      // showOnSite={direction.showOnSite}
-      onClick={() => modalsFunc.json(data)}
-    >
-      <div className="flex items-center px-1 gap-x-2">
-        <div className="text-xl font-bold">{title}</div>
-        <span className="text-xl font-bold text-red-600">{data.length}</span>
-        {/* <pre>{JSON.stringify(data, null, 4)}</pre> */}
-      </div>
-    </CardWrapper>
-  )
-}
+//   return (
+//     <CardWrapper
+//       // loading={loading}
+//       // onClick={() => !loading && modalsFunc.direction.edit(direction._id)}
+//       // showOnSite={direction.showOnSite}
+//       onClick={() => modalsFunc.json(data)}
+//     >
+//       <div className="flex items-center px-1 gap-x-2">
+//         <div className="text-xl font-bold">{title}</div>
+//         <span className="text-xl font-bold text-red-600">{data.length}</span>
+//         {/* <pre>{JSON.stringify(data, null, 4)}</pre> */}
+//       </div>
+//     </CardWrapper>
+//   )
+// }
 
-const useAtom = (atom, selector) => {
-  const eventsUsers = useRecoilValueLoadable(atom).valueMaybe()
-  if (!eventsUsers) {
-    console.log('get selector :>> ')
-    const setAtom = useSetRecoilState(atom)
-    const selectorState = useRecoilValue(selector)
-    setAtom(selectorState)
-    return selectorState
-  } else {
-    console.log('get atom :>> ')
-    return useRecoilValue(atom)
-  }
-}
+// const useAtom = (atom, selector) => {
+//   const eventsUsers = useAtomValueLoadable(atom).valueMaybe()
+//   if (!eventsUsers) {
+//     console.log('get selector :>> ')
+//     const setAtom = useSetAtom(atom)
+//     const selectorState = useAtomValue(selector)
+//     setAtom(selectorState)
+//     return selectorState
+//   } else {
+//     console.log('get atom :>> ')
+//     return useAtomValue(atom)
+//   }
+// }
 
 const DevContent = () => {
-  // const modalsFunc = useRecoilValue(modalsFuncAtom)
-  // const events = useRecoilValue(eventsAtom)
+  // const modalsFunc = useAtomValue(modalsFuncAtom)
+  // const events = useAtomValue(eventsAtom)
   // console.log('1 :>> ', 1)
   const [test, setTest] = useState()
   const [input, setInput] = useState('')
@@ -98,16 +89,6 @@ const DevContent = () => {
       console.log('e :>> ', e)
     }
   }
-  // const users = useRecoilValue(usersAtom)
-  // const eventsUsers = useAtom(
-  //   asyncEventsUsersAllAtom,
-  //   asyncEventsUsersAllSelector
-  // )
-
-  // const eventsUsers = useGetRecoilValueInfo_UNSTABLE()(asyncEventsUsersAllAtom)
-  // console.log('eventsUsers :>> ', eventsUsers)
-
-  // useEffect(() => {}, [])
 
   const kad = async () => {
     const formData = new FormData()

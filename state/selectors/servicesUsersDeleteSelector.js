@@ -1,16 +1,11 @@
-import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-const servicesUsersDeleteSelector = selector({
-  key: 'servicesUsersDeleteSelector',
-  get: () => {
-    return null
-  },
-  set: ({ set, get }, itemId) => {
-    const items = get(asyncServicesUsersAtom)
-    const newItemsList = items.filter((item) => item._id !== itemId)
-    set(asyncServicesUsersAtom, newItemsList)
-  },
+import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
+
+const servicesUsersDeleteSelector = atom(null, async (get, set, itemId) => {
+  const items = await get(asyncServicesUsersAtom)
+  const newItemsList = items.filter((item) => item._id !== itemId)
+  set(asyncServicesUsersAtom, newItemsList)
 })
 
 export default servicesUsersDeleteSelector

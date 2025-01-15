@@ -1,6 +1,6 @@
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import Skeleton from 'react-loading-skeleton'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import cn from 'classnames'
 import { CardWrapper } from '@components/CardWrapper'
 
@@ -11,7 +11,7 @@ const EventCardSkeleton = ({
   noButtons,
   changeStyle = 'laptop',
 }) => {
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
 
   return (
     <CardWrapper

@@ -1,20 +1,18 @@
-import { selectorFamily } from 'recoil'
-// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import subEventsSummator from '@helpers/subEventsSummator'
 import { DEFAULT_SUBEVENT_GENERATOR } from '@helpers/constants'
 import eventSelector from './eventSelector'
 
-export const subEventsSumOfEventSelector = selectorFamily({
-  key: 'subEventsSumOfEventSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return []
-      const event = get(eventSelector(id))
-      return event?.subEvents
-        ? subEventsSummator(event.subEvents)
-        : subEventsSummator([DEFAULT_SUBEVENT_GENERATOR()])
-    },
-})
+export const subEventsSumOfEventSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return []
+    const event = await get(eventSelector(id))
+    return event?.subEvents
+      ? subEventsSummator(event.subEvents)
+      : subEventsSummator([DEFAULT_SUBEVENT_GENERATOR()])
+  })
+)
 
 export default subEventsSumOfEventSelector

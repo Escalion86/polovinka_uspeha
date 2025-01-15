@@ -1,24 +1,23 @@
-import { selectorFamily } from 'recoil'
-// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import userSelector from './userSelector'
 import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
 import eventSelector from './eventSelector'
 
-export const eventsUsersFullByUserIdSelector = selectorFamily({
-  key: 'eventsUsersFullByUserIdSelector',
-  get:
-    (id) =>
-    async ({ get }) => {
-      if (!id) return []
+export const eventsUsersFullByUserIdSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return []
 
-      const eventsUsers = await get(asyncEventsUsersByUserIdAtom(id))
+    const eventsUsers = await get(asyncEventsUsersByUserIdAtom(id))
 
-      return eventsUsers
-        ? eventsUsers
+    return eventsUsers
+      ? await Promise.all(
+          eventsUsers
             // .filter((item) => item.eventId && item.userId && item.userId === id)
-            .map((item) => {
-              const user = get(userSelector(item.userId))
-              const event = get(eventSelector(item.eventId))
+            .map(async (item) => {
+              const user = await get(userSelector(item.userId))
+              const event = await get(eventSelector(item.eventId))
               return {
                 ...item,
                 user,
@@ -28,8 +27,9 @@ export const eventsUsersFullByUserIdSelector = selectorFamily({
                 // comment: item.comment,
               }
             })
-        : []
-    },
-})
+        )
+      : []
+  })
+)
 
 export default eventsUsersFullByUserIdSelector

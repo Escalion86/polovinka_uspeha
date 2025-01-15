@@ -1,24 +1,24 @@
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
 import DOMPurify from 'isomorphic-dompurify'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const additionalBlock = useRecoilValue(
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const additionalBlock = useAtomValue(
     additionalBlockSelector(additionalBlockId)
   )
-  const loading = useRecoilValue(
+  const loading = useAtomValue(
     loadingAtom('additionalBlock' + additionalBlockId)
   )
-  const itemFunc = useRecoilValue(itemsFuncAtom)
+  const itemFunc = useAtomValue(itemsFuncAtom)
 
-  const additionalBlocks = useRecoilValue(additionalBlocksAtom)
+  const additionalBlocks = useAtomValue(additionalBlocksAtom)
 
   const setUp = async () => {
     if (additionalBlock.index === 0) return

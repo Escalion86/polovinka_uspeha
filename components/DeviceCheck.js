@@ -1,11 +1,11 @@
 import showDeviceAtom from '@state/atoms/showDeviceAtom'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const DeviceCheck = ({ textClassName = null }) => {
-  const isLoggedUserDev = useRecoilValue(isLoggedUserDevSelector)
-  const showDevice = useRecoilValue(showDeviceAtom)
+  const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+  const showDevice = useAtomValue(showDeviceAtom)
 
   if (!isLoggedUserDev) return null
 

@@ -1,6 +1,6 @@
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import addModalSelector from '@state/selectors/addModalSelector'
-import { setRecoil } from 'recoil-nexus'
+import store from '@state/store'
 
 // import dynamic from 'next/dynamic'
 // const additionalBlockFunc = dynamic(
@@ -125,7 +125,7 @@ const modalsFuncGenerator = (
   loggedUserActiveRole,
   loggedUserActiveStatus
 ) => {
-  const addModal = (value) => setRecoil(addModalSelector, value)
+  const addModal = (value) => store.set(addModalSelector, value)
 
   const fixEventStatus = (eventId, status) => {
     itemsFunc.event.set({ _id: eventId, status }, false, true)

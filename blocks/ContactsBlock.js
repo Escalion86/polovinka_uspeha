@@ -1,6 +1,6 @@
 import BlockContainer from '@components/BlockContainer'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ContactImage = ({ src, href }) => (
   <a href={href} className="duration-300 hover:scale-125">
@@ -13,7 +13,7 @@ const ContactImage = ({ src, href }) => (
 )
 
 const ContactsBlock = () => {
-  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const siteSettings = useAtomValue(siteSettingsAtom)
 
   return (
     <BlockContainer id="contacts" small title="Контакты">

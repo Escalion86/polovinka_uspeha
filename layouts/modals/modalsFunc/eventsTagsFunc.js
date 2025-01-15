@@ -12,7 +12,8 @@ import { PASTEL_COLORS } from '@helpers/constants'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 function randomIntFromInterval(min, max) {
   // min and max included
@@ -28,9 +29,10 @@ const eventsTagsFunc = () => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-    const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
-    // const setEventsTags = useRecoilValue(itemsFuncAtom).eventsTags.set
+    const location = useAtomValue(locationAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+    const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
+    // const setEventsTags = useAtomValue(itemsFuncAtom).eventsTags.set
     const [tags, setTags] = useState(siteSettings.eventsTags ?? [])
 
     const onAdd = () => {
@@ -74,7 +76,7 @@ const eventsTagsFunc = () => {
         text: tag.text.toLowerCase(),
       }))
       await postData(
-        `/api/site`,
+        `/api/${location}/site`,
         {
           eventsTags: modifedTags,
         },

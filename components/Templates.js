@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { useRecoilValue } from 'recoil'
-
-const { modalsFuncAtom } = require('@state/atoms')
-const { default: Button } = require('./Button')
-const { default: InputWrapper } = require('./InputWrapper')
+import { useAtomValue } from 'jotai'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import InputWrapper from './InputWrapper'
+import Button from './Button'
 
 const Templates = ({
   tool,
@@ -13,7 +12,7 @@ const Templates = ({
   aspect,
   templateFunc,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const [loadingTemplate, setLoadingTemplate] = useState(false)
 
   return (

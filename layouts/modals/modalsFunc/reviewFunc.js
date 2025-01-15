@@ -9,7 +9,7 @@ import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import reviewSelector from '@state/selectors/reviewSelector'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const reviewFunc = (reviewId, clone = false) => {
   const ReviewModal = ({
@@ -21,8 +21,8 @@ const reviewFunc = (reviewId, clone = false) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const review = useRecoilValue(reviewSelector(reviewId))
-    const setReview = useRecoilValue(itemsFuncAtom).review.set
+    const review = useAtomValue(reviewSelector(reviewId))
+    const setReview = useAtomValue(itemsFuncAtom).review.set
 
     const [author, setAuthor] = useState(
       review?.author ?? DEFAULT_REVIEW.author

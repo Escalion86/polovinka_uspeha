@@ -10,7 +10,8 @@ import useErrors from '@helpers/useErrors'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const getBalance = async (onSuccess, onError) =>
   await postData(
@@ -26,8 +27,9 @@ const getBalance = async (onSuccess, onError) =>
   )
 
 const SettingsCodeSendServiceContent = (props) => {
-  const loggedUserActive = useRecoilValue(loggedUserActiveAtom)
-  const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
+  const location = useAtomValue(locationAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [codeSendService, setCodeSendService] = useState(
     siteSettings?.codeSendService
   )
@@ -51,7 +53,7 @@ const SettingsCodeSendServiceContent = (props) => {
 
   const onClickConfirm = async () => {
     await postData(
-      `/api/site`,
+      `/api/${location}/site`,
       {
         codeSendService,
       },

@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const isPWAAtom = atom({
-  key: 'isPWAAtom',
-  default: false,
-})
+const isPWAAtom = atom(false)
 
 export default isPWAAtom

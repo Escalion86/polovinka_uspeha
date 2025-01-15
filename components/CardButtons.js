@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import { faCalendarPlus } from '@fortawesome/free-regular-svg-icons/faCalendarPlus'
 import { faCopy } from '@fortawesome/free-regular-svg-icons/faCopy'
 import { faEye } from '@fortawesome/free-regular-svg-icons/faEye'
@@ -23,16 +25,16 @@ import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
 import CardButton from './CardButton'
 import DropDown from './DropDown'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
 import { faBullhorn } from '@fortawesome/free-solid-svg-icons'
+import { getEventById } from '@helpers/getById'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -71,10 +73,10 @@ const CardButtons = ({
   showCloneButton = true,
   onEditQuestionnaire,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const device = useRecoilValue(windowDimensionsTailwindSelector)
-  const isLoggedUserMember = useRecoilValue(isLoggedUserMemberSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const device = useAtomValue(windowDimensionsTailwindSelector)
+  const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
 
   const copyEventLink = useCopyEventLinkToClipboard(item._id)
   const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
@@ -102,7 +104,9 @@ const CardButtons = ({
     (typeOfItem === 'payment' && loggedUserActiveRole?.payments?.seeHistory) ||
     (typeOfItem === 'user' && loggedUserActiveRole?.users?.seeHistory)
   const sendNotifications =
-    typeOfItem === 'event' && loggedUserActiveRole?.events?.sendNotifications
+    typeOfItem === 'event' &&
+    loggedUserActiveRole?.events?.sendNotifications &&
+    item.showOnSite
 
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
@@ -222,7 +226,10 @@ const CardButtons = ({
       {show.addToCalendar && (
         <ItemComponent
           icon={faCalendarPlus}
-          onClick={() => goToUrlForAddEventToCalendar(item)}
+          onClick={async () => {
+            const event = await getEventById(item._id)
+            goToUrlForAddEventToCalendar(event)
+          }}
           color="purple"
           tooltipText="Добавить в Google календарь"
         />

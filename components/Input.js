@@ -2,8 +2,9 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import { forwardRef } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 import InputWrapper from './InputWrapper'
+import useLongPress from '@helpers/useLongPress'
 
 const Input = forwardRef(
   (
@@ -34,17 +35,72 @@ const Input = forwardRef(
       noMargin = false,
       smallMargin = false,
       showArrows = true,
-      autoComplete = 'on',
       maxLength,
       dataList,
     },
     ref
   ) => {
+    const [stateValue, setStateValue] = useState(value)
+    const [isMounted, setIsMounted] = useState(false)
+
+    const longPressArrowDownEvent = useLongPress(
+      () => {
+        var newNumber
+        setStateValue((state) => {
+          if (state === undefined) return state
+          newNumber =
+            typeof min !== 'number'
+              ? Number(state) - Number(step)
+              : Math.max(Number(state) - Number(step), min)
+          // onChange(newNumber)
+          // console.log(newNumber)
+          return newNumber
+        })
+        // console.log(newNumber)
+        // if (newNumber !== undefined) onChange(newNumber)
+      },
+      () => onChange(stateValue)
+    )
+
+    const longPressArrowUpEvent = useLongPress(
+      () => {
+        var newNumber
+        setStateValue((state) => {
+          if (state === undefined) return state
+          newNumber =
+            typeof max !== 'number'
+              ? Number(state) + Number(step)
+              : Math.min(Number(state) + Number(step), max)
+          // onChange(newNumber)
+          // console.log(newNumber)
+          return newNumber
+        })
+        // console.log(newNumber)
+        // onChange(stateValue)
+      },
+      () => {
+        onChange(stateValue)
+      }
+    )
+
+    useEffect(() => {
+      if (type === 'number' && !stateValue && stateValue != 0) {
+        const minValue = min > 0 ? min : 0
+        setStateValue(minValue)
+        onChange(minValue)
+      }
+      //  else if (isMounted) onChange(stateValue)
+    }, [stateValue])
+
+    useEffect(() => {
+      setIsMounted(true)
+    }, [])
+
     return (
       <InputWrapper
         label={label}
         labelClassName={labelClassName}
-        value={value ?? defaultValue}
+        value={stateValue ?? defaultValue}
         className={className}
         required={required}
         floatingLabel={floatingLabel}
@@ -62,10 +118,10 @@ const Input = forwardRef(
         smallMargin={smallMargin}
         showDisabledIcon={showDisabledIcon}
         comment={
-          maxLength ? `${String(value)?.length} / ${maxLength}` : undefined
+          maxLength ? `${String(stateValue)?.length} / ${maxLength}` : undefined
         }
         commentClassName={
-          maxLength && String(value)?.length >= maxLength
+          maxLength && String(stateValue)?.length >= maxLength
             ? 'text-danger'
             : undefined
         }
@@ -74,15 +130,16 @@ const Input = forwardRef(
           <div
             className={cn(
               'p-1 duration-300',
-              typeof min === 'number' && value <= min
+              typeof min === 'number' && stateValue <= min
                 ? 'text-disabled cursor-not-allowed'
                 : 'cursor-pointer text-general hover:text-success'
             )}
-            onClick={() => {
-              if (typeof min !== 'number')
-                onChange(Number(value) - Number(step))
-              else onChange(Math.max(Number(value) - Number(step), min))
-            }}
+            // onClick={() => {
+            //   if (typeof min !== 'number')
+            //     onChange(Number(value) - Number(step))
+            //   else onChange(Math.max(Number(value) - Number(step), min))
+            // }}
+            {...longPressArrowDownEvent}
           >
             <FontAwesomeIcon icon={faArrowDown} className="w-5 h-5" />
           </div>
@@ -101,11 +158,11 @@ const Input = forwardRef(
           max={max}
           disabled={disabled}
           value={
-            value === null
+            stateValue === null
               ? ''
-              : typeof value === 'number'
-                ? String(value)
-                : value
+              : typeof stateValue === 'number'
+                ? String(stateValue)
+                : stateValue
           }
           defaultValue={defaultValue}
           onChange={(e) => {
@@ -115,14 +172,30 @@ const Input = forwardRef(
                 (typeof min !== 'number' || value >= min) &&
                 (typeof max !== 'number' || value <= max)
               ) {
-                if (value === '') onChange(0)
-                else onChange(parseInt(value))
-              } else if (typeof min === 'number' && value < min) onChange(min)
-              else if (typeof max === 'number' && value > max) onChange(max)
+                if (stateValue === '') {
+                  onChange(0)
+                  setStateValue(0)
+                } else {
+                  const newValue = parseInt(value)
+                  setStateValue(newValue)
+                  onChange(newValue)
+                }
+              } else if (typeof min === 'number' && value < min) {
+                setStateValue(min)
+                onChange(min)
+              } else if (typeof max === 'number' && value > max) {
+                setStateValue(max)
+                onChange(max)
+              }
             } else {
-              if (maxLength && value?.length > maxLength)
-                onChange(value.substring(0, maxLength))
-              else onChange(value)
+              if (maxLength && value?.length > maxLength) {
+                const newValue = value.substring(0, maxLength)
+                setStateValue(newValue)
+                onChange(newValue)
+              } else {
+                setStateValue(value)
+                onChange(value)
+              }
             }
           }}
           placeholder={label}
@@ -140,15 +213,16 @@ const Input = forwardRef(
           <div
             className={cn(
               'p-1 duration-300',
-              typeof max === 'number' && value >= max
+              typeof max === 'number' && stateValue >= max
                 ? 'text-disabled cursor-not-allowed'
                 : 'cursor-pointer text-general hover:text-success'
             )}
-            onClick={() => {
-              if (typeof max !== 'number')
-                onChange(Number(value) + Number(step))
-              else onChange(Math.min(Number(value) + Number(step), max))
-            }}
+            // onClick={() => {
+            //   if (typeof max !== 'number')
+            //     onChange(Number(value) + Number(step))
+            //   else onChange(Math.min(Number(value) + Number(step), max))
+            // }}
+            {...longPressArrowUpEvent}
           >
             <FontAwesomeIcon icon={faArrowUp} className="w-5 h-5" />
           </div>

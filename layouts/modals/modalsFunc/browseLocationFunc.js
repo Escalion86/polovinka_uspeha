@@ -5,8 +5,8 @@ import { LOCATIONS } from '@helpers/constants'
 import locationAtom from '@state/atoms/locationAtom'
 import cn from 'classnames'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useEffect, useMemo, useState } from 'react'
+import { useAtomValue } from 'jotai'
 
 const Item = ({ towns = [], checked, onClick }) => (
   <div
@@ -52,24 +52,29 @@ const browseLocationFunc = () => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const location = useRecoilValue(locationAtom)
-    const [selectedLocation, setSelectedLocation] = useState(location)
+    const locationState = useAtomValue(locationAtom)
+    const [selectedLocation, setSelectedLocation] = useState(locationState)
     const router = useRouter()
 
+    const locationsList = useMemo(
+      () =>
+        Object.keys(LOCATIONS).filter(
+          (location) => !LOCATIONS[location].hidden
+        ),
+      []
+    )
+
     const onClickConfirm = async () => {
-      if (selectedLocation === location) {
-        localStorage.setItem('location', selectedLocation)
+      if (selectedLocation === locationState) {
+        // localStorage.setItem('location', selectedLocation)
         closeModal()
       } else {
-        localStorage.removeItem('location')
+        // localStorage.removeItem('location')
         // if (selectedLocation === 'norilsk')
-        router.push(
-          `${LOCATIONS[selectedLocation].domen}?location=${selectedLocation}`,
-          '',
-          {
-            shallow: false,
-          }
-        )
+        router.push(`/${selectedLocation}`, '', {
+          shallow: false,
+        })
+        closeModal()
         // if (selectedLocation === 'krasnoyarsk')
         //   router.push('https://половинкауспеха.рф?location=krasnoyarsk', '', {
         //     shallow: false,
@@ -80,7 +85,7 @@ const browseLocationFunc = () => {
     useEffect(() => {
       setOnConfirmFunc(onClickConfirm)
       // setOnShowOnCloseConfirmDialog(isFormChanged)
-      setDisableConfirm(!['krasnoyarsk', 'norilsk'].includes(selectedLocation))
+      setDisableConfirm(!locationsList.includes(selectedLocation))
     }, [selectedLocation])
 
     return (
@@ -91,7 +96,15 @@ const browseLocationFunc = () => {
             проживания, необходимо выбрать регион из предложенных вариантов:
           </div>
           <div className="flex flex-col gap-y-1">
-            <Item
+            {locationsList.map((location) => (
+              <Item
+                key={location}
+                checked={selectedLocation === location}
+                towns={LOCATIONS[location].towns}
+                onClick={() => setSelectedLocation(location)}
+              />
+            ))}
+            {/* <Item
               checked={selectedLocation === 'krasnoyarsk'}
               towns={['Красноярск', 'Сосновоборск', 'Дивногорск']}
               onClick={() => setSelectedLocation('krasnoyarsk')}
@@ -100,7 +113,7 @@ const browseLocationFunc = () => {
               checked={selectedLocation === 'norilsk'}
               towns={['Норильск', 'Оганер', 'Кайеркан', 'Талнах', 'Дудинка']}
               onClick={() => setSelectedLocation('norilsk')}
-            />
+            /> */}
           </div>
           <div>
             Если Вашего региона нет в списке, значит наш проект пока еще не

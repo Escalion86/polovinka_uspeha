@@ -1,16 +1,14 @@
-import { selectorFamily } from 'recoil'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+
 import paymentsByEventIdSelector from './paymentsByEventIdSelector'
 
-export const paymentsToEventSelector = selectorFamily({
-  key: 'paymentsToEventSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return 0
-      return get(paymentsByEventIdSelector(id)).filter(
-        (payment) => payment.payDirection === 'toEvent'
-      )
-    },
-})
+export const paymentsToEventSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return 0
+    const payments = await get(paymentsByEventIdSelector(id))
+    return payments.filter((payment) => payment.payDirection === 'toEvent')
+  })
+)
 
 export default paymentsToEventSelector

@@ -1,15 +1,12 @@
-import { DEFAULT_USER } from '@helpers/constants'
-import usersAtom from '@state/atoms/usersAtom'
-import { selector } from 'recoil'
+import { atom } from 'jotai'
 
-const userDeleteSelector = selector({
-  key: 'userDeleteSelector',
-  get: () => DEFAULT_USER,
-  set: ({ set, get }, itemId) => {
-    const items = get(usersAtom)
-    const newItemsList = items.filter((item) => item._id !== itemId)
-    set(usersAtom, newItemsList)
-  },
+import { DEFAULT_USER } from '@helpers/constants'
+import usersAtomAsync from '@state/async/usersAtomAsync'
+
+const userDeleteSelector = atom(DEFAULT_USER, async (get, set, itemId) => {
+  const users = await get(usersAtomAsync)
+  const newItemsList = users.filter((item) => item._id !== itemId)
+  set(usersAtomAsync, newItemsList)
 })
 
 export default userDeleteSelector

@@ -5,15 +5,15 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 import { getNounServices } from '@helpers/getNoun'
 import ServiceCard from '@layouts/cards/ServiceCard'
 import CardListWrapper from '@layouts/wrappers/CardListWrapper'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ServicesContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const services = useRecoilValue(servicesAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const services = useAtomValue(servicesAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const seeHidden = loggedUserActiveRole?.services?.seeHidden
   const addButton = loggedUserActiveRole?.services?.add
 

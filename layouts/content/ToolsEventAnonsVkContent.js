@@ -14,11 +14,11 @@ import { sendImage } from '@helpers/cloudinary'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import getDaysBetween from '@helpers/getDaysBetween'
 import textArrayFunc from '@helpers/textArrayFunc'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 
 const getPreview = async () => {
@@ -35,9 +35,9 @@ const save = async (name) => {
 }
 
 const ToolsEventAnonsVkContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const events = useRecoilValue(eventsAtom)
-  const { imageFolder } = useRecoilValue(locationPropsSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const events = useAtomValue(eventsAtom)
+  const { imageFolder } = useAtomValue(locationPropsSelector)
 
   const [rerenderState, setRerenderState] = useState(false)
   const rerender = () => setRerenderState((state) => !state)
@@ -431,7 +431,8 @@ const ToolsEventAnonsVkContent = () => {
               fill={dateColor}
               textAnchor="middle"
               fontFamily="Lora"
-              className="font-bold uppercase"
+              // className="font-bold uppercase"
+              style={{ fontWeight: 700, textTransform: 'uppercase' }}
               // className="font-bold uppercase font-lora"
             >
               {date1}
@@ -443,7 +444,8 @@ const ToolsEventAnonsVkContent = () => {
               fill={timeColor}
               textAnchor="middle"
               fontFamily="Lora"
-              className="font-bold uppercase"
+              // className="font-bold uppercase"
+              style={{ fontWeight: 700, textTransform: 'uppercase' }}
               // className="font-bold uppercase font-lora"
             >
               {time}
@@ -456,7 +458,8 @@ const ToolsEventAnonsVkContent = () => {
                 fill={dateColor}
                 textAnchor="middle"
                 fontFamily="Lora"
-                className="font-bold uppercase"
+                // className="font-bold uppercase"
+                style={{ fontWeight: 700, textTransform: 'uppercase' }}
                 // className="font-bold uppercase font-lora"
               >
                 {date2}
@@ -476,7 +479,8 @@ const ToolsEventAnonsVkContent = () => {
                   fill={anonsColor}
                   textAnchor="middle"
                   fontFamily="Lora"
-                  className="font-bold uppercase"
+                  style={{ fontWeight: 700, textTransform: 'uppercase' }}
+                  // className="font-bold uppercase"
                   // className="font-bold uppercase font-lora"
                 >
                   {textLine}

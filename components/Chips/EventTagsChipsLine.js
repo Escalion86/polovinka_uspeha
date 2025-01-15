@@ -1,9 +1,9 @@
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import ChipsLine from './ChipsLine'
 
 const EventTagsChipsLine = ({ tags, onTagClick, className, noWrap }) => {
-  const siteSettings = useRecoilValue(siteSettingsAtom)
+  const siteSettings = useAtomValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
   return (
     <ChipsLine

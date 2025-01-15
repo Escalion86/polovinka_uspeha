@@ -1,4 +1,7 @@
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faExclamationTriangle,
+  faWarning,
+} from '@fortawesome/free-solid-svg-icons'
 import { faQuoteRight } from '@fortawesome/free-solid-svg-icons/faQuoteRight'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
@@ -17,16 +20,28 @@ const Note = ({ children, noMargin, className, type }) => (
       noMargin ? '' : 'my-2',
       type === 'error'
         ? 'text-red-900 bg-red-100 border-red-400'
-        : 'text-teal-900 bg-teal-100 border-teal-400',
+        : type === 'warning'
+          ? 'text-orange-600 bg-orange-100 border-orange-300'
+          : 'text-teal-900 bg-teal-100 border-teal-400',
       className
     )}
   >
     {children}
     <FontAwesomeIcon
-      icon={type === 'error' ? faExclamationTriangle : faQuoteRight}
+      icon={
+        type === 'error'
+          ? faExclamationTriangle
+          : type === 'warning'
+            ? faWarning
+            : faQuoteRight
+      }
       className={cn(
         'absolute w-4 h-4 right-1 top-1',
-        type === 'error' ? 'text-red-600/70' : 'text-teal-600/70'
+        type === 'error'
+          ? 'text-red-600/70'
+          : type === 'warning'
+            ? 'text-orange-500/70'
+            : 'text-teal-600/70'
       )}
     />
   </div>
