@@ -15,6 +15,7 @@ export default async function handler(req, res) {
     if (query.test) {
       for (const location of LOCATIONS_KEYS_VISIBLE) {
         const db = await dbConnect(location)
+        console.log('location', location)
         if (!db)
           return res?.status(400).json({ success: false, error: 'db error' })
 
