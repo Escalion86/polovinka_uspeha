@@ -44,7 +44,7 @@ const fetchProps = async (user, location, params) => {
             dateTime: serverDateTime,
           })
         ),
-        mode: process.env.NODE_ENV,
+        mode: process.env.MODE,
         // location: process.env.LOCATION,
         error: 'db error',
         location,
@@ -232,7 +232,7 @@ const fetchProps = async (user, location, params) => {
           dateTime: serverDateTime,
         })
       ),
-      mode: process.env.NODE_ENV,
+      mode: process.env.MODE,
       // location: process.env.LOCATION,
       location,
     }
@@ -259,7 +259,7 @@ const fetchProps = async (user, location, params) => {
           dateTime: serverDateTime,
         })
       ),
-      mode: process.env.NODE_ENV,
+      mode: process.env.MODE,
       // location: process.env.LOCATION,
       error: JSON.parse(JSON.stringify(error)),
       location,

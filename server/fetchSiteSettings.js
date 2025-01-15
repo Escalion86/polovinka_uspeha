@@ -17,7 +17,7 @@ const fetchSiteSettings = async (user, location, params) => {
     return {
       siteSettings: JSON.parse(JSON.stringify([])),
       error: JSON.parse(JSON.stringify(error)),
-      mode: process.env.NODE_ENV,
+      mode: process.env.MODE,
       location,
     }
   }

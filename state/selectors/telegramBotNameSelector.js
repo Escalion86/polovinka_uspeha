@@ -5,7 +5,7 @@ import modeAtom from '@state/atoms/modeAtom'
 export const telegramBotNameSelector = atom((get) => {
   const defaultTelegramBotName = get(locationPropsSelector).telegramBotName
 
-  const isDevMode = get(modeAtom) === 'development'
+  const isDevMode = get(modeAtom) === 'dev'
   const resultTelegramBotName = `${isDevMode ? 'dev_' : ''}${defaultTelegramBotName}`
   return resultTelegramBotName
 })

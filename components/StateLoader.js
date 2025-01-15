@@ -284,7 +284,7 @@ const StateLoader = (props) => {
         </div>
       ) : (
         <div className="relative w-full bg-white">
-          {mode === 'development' && <TopInfo />}
+          {mode === 'dev' && <TopInfo />}
           <DeviceCheck right />
           {props.children}
         </div>

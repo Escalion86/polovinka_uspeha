@@ -401,7 +401,7 @@ const updateEventInCalendar = async (event, location) => {
 
 //   const users = await Users.find({
 //     role:
-//       process.env.NODE_ENV === 'development'
+//       process.env.MODE === 'dev'
 //         ? 'dev'
 //         : { $in: rolesIdsToNewEventsByTagsNotification },
 //     'notifications.settings.newEventsByTags': true,
@@ -781,7 +781,7 @@ export default async function handler(Schema, req, res, params = null) {
               const usersWithTelegramNotificationsOfEventUsersON =
                 await Users.find({
                   role:
-                    process.env.NODE_ENV === 'development'
+                    process.env.MODE === 'dev'
                       ? 'dev'
                       : { $in: rolesIdsToNewUserRegistredNotification },
                   'notifications.settings.newUserRegistred': true,

@@ -71,7 +71,7 @@ export default async function handler(req, res) {
 
           const usersToNotificate = await Users.find({
             role:
-              process.env.NODE_ENV === 'development'
+              process.env.MODE === 'dev'
                 ? 'dev'
                 : { $in: rolesIdsToNotification },
 
@@ -234,7 +234,7 @@ export default async function handler(req, res) {
 
         // const usersToNotificate = await Users.find({
         //   role:
-        //     process.env.NODE_ENV === 'development'
+        //     process.env.MODE === 'dev'
         //       ? 'dev'
         //       : { $in: rolesIdsToNotification },
 

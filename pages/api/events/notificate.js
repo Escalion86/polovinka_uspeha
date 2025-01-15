@@ -25,7 +25,7 @@ const notificateUsersAboutEvent = async (eventId, req) => {
 
   const users = await Users.find({
     role:
-      process.env.NODE_ENV === 'development'
+      process.env.MODE === 'dev'
         ? 'dev'
         : { $in: rolesIdsToNewEventsByTagsNotification },
     'notifications.settings.newEventsByTags': true,

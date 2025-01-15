@@ -348,7 +348,7 @@ const LoginPage = (props) => {
 
   const telegramBotName = useMemo(
     () =>
-      `${props.mode === 'development' ? 'dev_' : ''}${getLocationProps(inputLocation).telegramBotName}`,
+      `${props.mode === 'dev' ? 'dev_' : ''}${getLocationProps(inputLocation).telegramBotName}`,
     [inputLocation]
   )
   console.log('props.mode :>> ', props.mode)
@@ -1695,7 +1695,7 @@ export const getServerSideProps = async (context) => {
   const { params } = context
   const location = params?.location
 
-  const mode = process.env.NODE_ENV
+  const mode = process.env.MODE
   console.log('test mode :>> ', mode)
 
   if (session) {
