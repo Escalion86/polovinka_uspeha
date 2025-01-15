@@ -1,44 +1,5 @@
-import ContactsBlock from '@blocks/ContactsBlock'
-import EventsBlock from '@blocks/EventsBlock'
-import FooterBlock from '@blocks/FooterBlock'
-import FabMenu from '@components/FabMenu'
-import StateLoader from '@components/StateLoader'
-import Header from '@layouts/Header'
-import fetchProps from '@server/fetchProps'
-import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
-import isPWAAtom from '@state/atoms/isPWAAtom'
-import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { getSession } from 'next-auth/react'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useAtomValue } from 'jotai'
-
 export default function Home(props) {
-  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-  const hideFab = loggedUserActiveRole?.hideFab
-  const isPWA = useAtomValue(isPWAAtom)
-  const router = useRouter()
-
-  if (isPWA) {
-    router.push('/login', '', { shallow: true })
-    return null
-  }
-
-  return (
-    <>
-      <Head>
-        <title>{`Мероприятия - ЦОЗ "Половинка успеха"`}</title>
-      </Head>
-      <StateLoader {...props}>
-        <Header />
-        {/* <TitleBlock /> */}
-        <EventsBlock />
-        <ContactsBlock />
-        <FooterBlock />
-        <FabMenu show={!hideFab} />
-      </StateLoader>
-    </>
-  )
+  return null
 }
 
 export const getServerSideProps = async (context) => {
@@ -47,27 +8,4 @@ export const getServerSideProps = async (context) => {
       destination: `/krsk/events`,
     },
   }
-  // const session = await getSession({ req: context.req })
-
-  // const { params } = context
-  // const domen = params?.domen
-
-  // if (session) {
-  //   return {
-  //     redirect: {
-  //       destination: `/cabinet`,
-  //     },
-  //   }
-  // }
-  // const response = await getServerSidePropsFunc(
-  //   context,
-  //   getSession,
-  //   fetchProps,
-  //   domen,
-  //   {
-  //     additionalBlocks: false,
-  //   }
-  // )
-
-  // return response
 }
