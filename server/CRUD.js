@@ -95,6 +95,7 @@ const {
   GOOGLE_CLIENT_EMAIL,
   GOOGLE_PROJECT_NUMBER,
   GOOGLE_CALENDAR_ID,
+  MODE,
 } = process.env
 
 const connectToGoogleCalendar = () => {
@@ -651,7 +652,7 @@ export default async function handler(Schema, req, res, params = null) {
           delete clearedBody._id
 
           // Создаем пустой календарь и получаем его id
-          if (Schema === Events) {
+          if (Schema === Events && MODE !== 'production') {
             clearedBody.googleCalendarId = await addBlankEventToCalendar()
           }
 
@@ -661,7 +662,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
           const jsonData = data.toJSON()
 
-          if (Schema === Events) {
+          if (Schema === Events && MODE !== 'production') {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
             const calendarEvent = updateEventInCalendar(jsonData, location)
 
@@ -711,7 +712,7 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
-          if (Schema === Events) {
+          if (Schema === Events && MODE !== 'production') {
             const calendarEvent = updateEventInCalendar(data, location)
             // if (!oldData.showOnSite && data.showOnSite) {
             //   notificateUsersAboutEvent(data, req)
@@ -781,7 +782,7 @@ export default async function handler(Schema, req, res, params = null) {
               const usersWithTelegramNotificationsOfEventUsersON =
                 await Users.find({
                   role:
-                    process.env.MODE === 'dev'
+                    MODE === 'dev'
                       ? 'dev'
                       : { $in: rolesIdsToNewUserRegistredNotification },
                   'notifications.settings.newUserRegistred': true,
@@ -924,7 +925,7 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
-          if (Schema === Events) {
+          if (Schema === Events && MODE !== 'production') {
             deleteEventFromCalendar(existingData.googleCalendarId)
           }
 
