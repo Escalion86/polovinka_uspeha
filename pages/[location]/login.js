@@ -1696,7 +1696,7 @@ export const getServerSideProps = async (context) => {
   const location = params?.location
 
   const mode = process.env.MODE
-  console.log('test mode :>> ', mode)
+  console.log('test mode_ :>> ', mode)
 
   if (session) {
     return {
