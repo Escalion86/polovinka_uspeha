@@ -325,6 +325,9 @@ const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
 
 const LoginPage = (props) => {
   const router = useRouter()
+  const query = { ...router.query }
+  delete query.location
+
   const { location } = props
 
   const [process, setProcess] = useState('authorization')
@@ -351,7 +354,7 @@ const LoginPage = (props) => {
       `${props.mode === 'dev' ? 'dev_' : ''}${getLocationProps(inputLocation).telegramBotName}`,
     [inputLocation]
   )
-  console.log('props.mode :>> ', props.mode)
+
   console.log('telegramBotName :>> ', telegramBotName)
 
   const isPWA = useAtomValue(isPWAAtom)
@@ -483,7 +486,10 @@ const LoginPage = (props) => {
       // localStorage.removeItem('location')
       // if (selectedLocation === 'norilsk')
       router.push(
-        `/${inputLocation}/login${process === 'registration' ? '?registration=true' : ''}`,
+        {
+          pathname: `/${inputLocation}/login`,
+          query,
+        },
         '',
         {
           shallow: false,
@@ -1247,6 +1253,7 @@ const LoginPage = (props) => {
                       </div>
                     ) : (
                       <div
+                        key={telegramBotName}
                         className={cn(
                           'relative',
                           process === 'registration' &&
@@ -1694,9 +1701,6 @@ export const getServerSideProps = async (context) => {
 
   const { params } = context
   const location = params?.location
-
-  const mode = process.env.MODE
-  console.log('test mode_ :>> ', mode)
 
   if (session) {
     return {
