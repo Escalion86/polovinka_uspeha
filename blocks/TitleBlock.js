@@ -17,6 +17,8 @@ const TitleBlock = () => {
   const { townRu } = useAtomValue(locationPropsSelector)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const router = useRouter()
+  const query = { ...router.query }
+  delete query.location
 
   return (
     <div
@@ -79,7 +81,10 @@ const TitleBlock = () => {
             pathname: userIsLogged
               ? `/${location}/cabinet/events`
               : `/${location}/login`,
-            query: !userIsLogged && { ...router.query, registration: true },
+            query: !userIsLogged && {
+              ...query,
+              registration: true,
+            },
           }}
           shallow
         >

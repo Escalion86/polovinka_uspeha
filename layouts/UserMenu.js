@@ -15,6 +15,7 @@ import Avatar from './Avatar'
 import SvgKavichki from 'svg/SvgKavichki'
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import locationAtom from '@state/atoms/locationAtom'
+import { useRouter } from 'next/router'
 
 const variants = {
   show: {
@@ -63,6 +64,9 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 }
 
 const UserMenu = () => {
+  const router = useRouter()
+  const query = { ...router.query }
+  delete query.location
   const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const setMenuOpen = useSetAtom(menuOpenAtom)
@@ -173,7 +177,10 @@ const UserMenu = () => {
   ) : (
     <Link
       prefetch={false}
-      href={`/${location}/login`}
+      href={{
+        pathname: `/${location}/login`,
+        query,
+      }}
       shallow
       className="flex items-center justify-center h-12 px-2 text-white duration-300 border border-white rounded-lg hover:text-general hover:bg-white"
     >

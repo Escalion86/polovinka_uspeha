@@ -28,6 +28,8 @@ export default function Home(props) {
   const hideFab = loggedUserActiveRole?.hideFab
   const isPWA = useAtomValue(isPWAAtom)
   const router = useRouter()
+  const query = { ...router.query }
+  delete query.location
   const { location } = props
 
   useEffect(() => setLocationState(location), [location])
@@ -35,7 +37,14 @@ export default function Home(props) {
   console.log('isPWA :>> ', isPWA)
 
   if (isPWA) {
-    router.push(`/${location}/login`, '', { shallow: true })
+    router.push(
+      {
+        pathname: `/${location}/login`,
+        query,
+      },
+      '',
+      { shallow: true }
+    )
     return null
   }
 
