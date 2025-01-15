@@ -351,7 +351,7 @@ const LoginPage = (props) => {
       `${props.mode === 'development' ? 'dev_' : ''}${getLocationProps(inputLocation).telegramBotName}`,
     [inputLocation]
   )
-
+  console.log('props.mode :>> ', props.mode)
   console.log('telegramBotName :>> ', telegramBotName)
 
   const isPWA = useAtomValue(isPWAAtom)
