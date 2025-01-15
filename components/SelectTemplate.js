@@ -11,6 +11,7 @@ import { useAtomValue } from 'jotai'
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import useSnackbar from '@helpers/useSnackbar'
+import locationAtom from '@state/atoms/locationAtom'
 
 const SelectTemplate = ({
   selectedTemplate,
@@ -31,6 +32,7 @@ const SelectTemplate = ({
   templateToCreateNew,
   onSave,
 }) => {
+  const location = useAtomValue(locationAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const snackbar = useSnackbar()
 
@@ -40,12 +42,12 @@ const SelectTemplate = ({
 
   useEffect(() => {
     const loadTemplates = async () => {
-      const response = await getData('/api/templates', { tool })
+      const response = await getData(`/api/${location}/templates`, { tool })
       setTemplates(response)
       setIsLoading(false)
     }
     loadTemplates()
-  }, [])
+  }, [location])
 
   if (isLoading) return <LoadingSpinner />
 
@@ -143,7 +145,7 @@ const SelectTemplate = ({
                       text: `Вы действительно хотите удалить шаблон "${template.name}"?`,
                       onConfirm: async () =>
                         await deleteData(
-                          '/api/templates/' + template._id,
+                          `/api/${location}/templates/` + template._id,
                           () => {
                             snackbar.success('Шаблон удален')
                             setTemplates((state) =>

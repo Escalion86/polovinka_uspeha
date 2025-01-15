@@ -75,7 +75,6 @@ export default async function handler(req, res) {
 
   if (method === 'POST') {
     try {
-      await dbConnect()
       console.log('body', body)
       const {
         phone,
@@ -85,7 +84,12 @@ export default async function handler(req, res) {
         get_balance,
         backCall,
         checkBackCallId,
+        location,
       } = body
+
+      const db = await dbConnect(location)
+      if (!db)
+        return res?.status(400).json({ success: false, error: 'db error' })
 
       if (checkBackCallId) {
         const response = await fetch(

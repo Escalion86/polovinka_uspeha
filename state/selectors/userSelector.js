@@ -5,6 +5,7 @@ import { DEFAULT_USER } from '@helpers/constants'
 import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
+import locationAtom from '@state/atoms/locationAtom'
 // import usersAtomAsync from '@state/async/usersAtomAsync'
 
 export const userSelector = atomFamily((id) =>
@@ -17,7 +18,15 @@ export const userSelector = atomFamily((id) =>
       return user
     }
 
-    const res = await getData('/api/users/' + id, {}, null, null, false)
+    const location = get(locationAtom)
+
+    const res = await getData(
+      `/api/${location}/users/${id}`,
+      {},
+      null,
+      null,
+      false
+    )
     return res
     // return get(usersAtomAsync).find((item) => item._id === id)
   })

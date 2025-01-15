@@ -12,8 +12,10 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const HeaderInfoContactsContent = (props) => {
+  const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [whatsapp, setWhatsapp] = useState(siteSettings?.headerInfo?.whatsapp)
@@ -39,7 +41,7 @@ const HeaderInfoContactsContent = (props) => {
       })
     )
       await postData(
-        `/api/site`,
+        `/api/${location}/site`,
         {
           headerInfo: { whatsapp, telegram, memberChatLink },
         },

@@ -58,7 +58,7 @@ const SelectFile = ({
       (response) => {
         //{status: 'ok', message: 'File deleted!'}
         if (response?.status === 'ok') {
-          console.log('response :>> ', response)
+          // console.log('response :>> ', response)
           setFiles((state) =>
             state.filter(
               (file) => file !== `https://escalioncloud.ru/uploads/${filePath}`

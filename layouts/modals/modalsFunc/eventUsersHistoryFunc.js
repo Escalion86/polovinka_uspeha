@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import HistoriesOfEvent from '@layouts/content/HistoriesComponents/HistoriesOfEvent'
+import locationAtom from '@state/atoms/locationAtom'
 
 const eventUsersHistoryFunc = (eventId) => {
   const EventUsersHistoryFuncModal = ({
@@ -16,6 +17,7 @@ const eventUsersHistoryFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
+    const location = useAtomValue(locationAtom)
     const event = useAtomValue(eventSelector(eventId))
     const [eventUsersHistory, setEventUsersHistory] = useState()
 
@@ -28,7 +30,7 @@ const eventUsersHistoryFunc = (eventId) => {
 
     useEffect(() => {
       const fetchData = async () => {
-        const result = await getData(`/api/histories`, {
+        const result = await getData(`/api/${location}/histories`, {
           schema: 'eventsusers',
           // data: { $in: [{ eventId }] },
           'data.eventId': eventId,

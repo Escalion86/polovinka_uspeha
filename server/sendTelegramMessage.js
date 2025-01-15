@@ -1,13 +1,18 @@
 import { postData } from '@helpers/CRUD'
 import Test from '@models/Test'
 import dbConnect from '@utils/dbConnect'
+import getTelegramTokenByLocation from './getTelegramTokenByLocation'
 
 export const sendMessageToTelegramId = async ({
   telegramId,
   text,
   images,
   inline_keyboard,
+  location,
 }) => {
+  const telegramToken = getTelegramTokenByLocation(location)
+  if (!telegramToken) return
+
   if (images && typeof images === 'object') {
     const media = JSON.stringify(
       images.map((photo) => {
@@ -18,7 +23,7 @@ export const sendMessageToTelegramId = async ({
       })
     )
     await postData(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMediaGroup`,
+      `https://api.telegram.org/bot${telegramToken}/sendMediaGroup`,
       {
         chat_id: telegramId,
         media,
@@ -39,7 +44,7 @@ export const sendMessageToTelegramId = async ({
       : undefined
 
     const result = await postData(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+      `https://api.telegram.org/bot${telegramToken}/sendMessage`,
       {
         chat_id: telegramId,
         text,
@@ -76,8 +81,11 @@ const sendTelegramMessage = async ({
   text,
   images,
   inline_keyboard,
+  location,
 }) => {
-  await dbConnect()
+  const db = await dbConnect(location)
+  if (!db) return
+
   if (
     !telegramIds ||
     !['object', 'string', 'number'].includes(typeof telegramIds)
@@ -97,6 +105,7 @@ const sendTelegramMessage = async ({
       text,
       images,
       inline_keyboard,
+      location,
     })
     error = res.error
     if (res.error) {
@@ -129,6 +138,7 @@ const sendTelegramMessage = async ({
         text,
         images,
         inline_keyboard,
+        location,
       })
       if (res.error) {
         if (!error) error = res.error

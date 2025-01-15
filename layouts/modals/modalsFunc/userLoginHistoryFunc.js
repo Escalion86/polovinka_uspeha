@@ -3,10 +3,11 @@ import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import { getData } from '@helpers/CRUD'
 import formatDateTime from '@helpers/formatDateTime'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
-import userSelector from '@state/selectors/userSelector'
+// import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+// import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const userLoginHistoryFunc = (userId, clone = false) => {
   const UserLoginHistoryModal = ({
@@ -17,14 +18,15 @@ const userLoginHistoryFunc = (userId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const location = useAtomValue(locationAtom)
+    // const modalsFunc = useAtomValue(modalsFuncAtom)
     const [loginHistories, setLoginHistories] = useState()
 
-    const user = useAtomValue(userSelector(userId))
+    // const user = useAtomValue(userSelector(userId))
 
     useEffect(() => {
       getData(
-        `/api/loginhistory`,
+        `/api/${location}/loginhistory`,
         { userId },
         ({ data }) => setLoginHistories(data),
         null,
@@ -41,7 +43,6 @@ const userLoginHistoryFunc = (userId, clone = false) => {
     if (loginHistories.length === 0)
       return <div>Пользователь ни разу на заходил на сайт</div>
 
-    console.log('loginHistories :>> ', loginHistories)
     const unicLogins = loginHistories.filter(
       ({ createdAt, browser }, index, array) => {
         return !array.find(

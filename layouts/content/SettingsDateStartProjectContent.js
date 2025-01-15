@@ -8,8 +8,10 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const SettingsDateStartProjectContent = (props) => {
+  const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [dateStartProject, setDateStartProject] = useState(
@@ -23,12 +25,11 @@ const SettingsDateStartProjectContent = (props) => {
 
   const onClickConfirm = async () => {
     await postData(
-      `/api/site`,
+      `/api/${location}/site`,
       {
         dateStartProject,
       },
       (data) => {
-        console.log('data :>> ', data)
         setSiteSettings(data)
         setMessage('Данные обновлены успешно')
         setIsWaitingToResponse(false)

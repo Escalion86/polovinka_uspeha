@@ -12,6 +12,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import eventSelector from '@state/selectors/eventSelector'
+import locationAtom from '@state/atoms/locationAtom'
 
 const eventHistoryFunc = (eventId) => {
   const EventHistoryModal = ({
@@ -23,6 +24,7 @@ const eventHistoryFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
+    const location = useAtomValue(locationAtom)
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const event = useAtomValue(eventSelector(eventId))
     const [eventHistory, setEventHistory] = useState()
@@ -37,7 +39,7 @@ const eventHistoryFunc = (eventId) => {
 
     useEffect(() => {
       const fetchData = async () => {
-        const result = await getData(`/api/histories`, {
+        const result = await getData(`/api/${location}/histories`, {
           schema: 'events',
           'data._id': eventId,
         })

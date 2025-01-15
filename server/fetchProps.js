@@ -18,11 +18,39 @@ import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
 
-const fetchProps = async (user, domen, params) => {
+const fetchProps = async (user, location, params) => {
   const serverDateTime = new Date()
   try {
     const isAdmin = isUserAdmin(user)
-    const db = await dbConnect(domen)
+    const db = await dbConnect(location)
+    if (!db)
+      return {
+        users: [],
+        events: [],
+        directions: [],
+        reviews: [],
+        additionalBlocks: [],
+        // eventsUsers: [],
+        // payments: [],
+        siteSettings: {},
+        rolesSettings: [],
+        // histories: [],
+        questionnaires: [],
+        questionnairesUsers: [],
+        services: [],
+        // servicesUsers: [],
+        serverSettings: JSON.parse(
+          JSON.stringify({
+            dateTime: serverDateTime,
+          })
+        ),
+        mode: process.env.NODE_ENV,
+        // location: process.env.LOCATION,
+        error: 'db error',
+        location,
+      }
+
+    console.log('fetchProps location :>> ', location)
 
     var users = isAdmin
       ? await Users.find({})
@@ -207,7 +235,8 @@ const fetchProps = async (user, domen, params) => {
         })
       ),
       mode: process.env.NODE_ENV,
-      location: process.env.LOCATION,
+      // location: process.env.LOCATION,
+      location,
     }
 
     return fetchResult
@@ -233,8 +262,9 @@ const fetchProps = async (user, domen, params) => {
         })
       ),
       mode: process.env.NODE_ENV,
-      location: process.env.LOCATION,
+      // location: process.env.LOCATION,
       error: JSON.parse(JSON.stringify(error)),
+      location,
     }
   }
 }

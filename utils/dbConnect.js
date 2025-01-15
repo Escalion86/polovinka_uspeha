@@ -135,14 +135,17 @@ if (!cached) {
 
 let prevDbConnection
 
-async function dbConnect(domen) {
-  var dbName = process.env.MONGODB_DBNAME
-  if (domen === 'krsk') dbName = process.env.MONGODB_KRSK_DBNAME
-  if (domen === 'nrsk') dbName = process.env.MONGODB_NRSK_DBNAME
-  if (domen === 'ekb') dbName = process.env.MONGODB_EKB_DBNAME
+async function dbConnect(location) {
+  if (!location) return
+
+  var dbName // = process.env.MONGODB_DBNAME
+  console.log('location :>> ', location)
+  if (location === 'krsk') dbName = process.env.MONGODB_KRSK_DBNAME
+  if (location === 'nrsk') dbName = process.env.MONGODB_NRSK_DBNAME
+  if (location === 'ekb') dbName = process.env.MONGODB_EKB_DBNAME
 
   if (prevDbConnection !== dbName) {
-    console.log('domen changed !!')
+    console.log('location changed !!')
     cached = { conn: null, promise: null }
     await mongoose.disconnect()
   }

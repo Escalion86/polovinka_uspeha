@@ -42,27 +42,32 @@ export default function Home(props) {
 }
 
 export const getServerSideProps = async (context) => {
-  const session = await getSession({ req: context.req })
-
-  const { params } = context
-  const domen = params?.domen
-
-  if (session) {
-    return {
-      redirect: {
-        destination: `/cabinet`,
-      },
-    }
+  return {
+    redirect: {
+      destination: `/krsk/events`,
+    },
   }
-  const response = await getServerSidePropsFunc(
-    context,
-    getSession,
-    fetchProps,
-    domen,
-    {
-      additionalBlocks: false,
-    }
-  )
+  // const session = await getSession({ req: context.req })
 
-  return response
+  // const { params } = context
+  // const domen = params?.domen
+
+  // if (session) {
+  //   return {
+  //     redirect: {
+  //       destination: `/cabinet`,
+  //     },
+  //   }
+  // }
+  // const response = await getServerSidePropsFunc(
+  //   context,
+  //   getSession,
+  //   fetchProps,
+  //   domen,
+  //   {
+  //     additionalBlocks: false,
+  //   }
+  // )
+
+  // return response
 }

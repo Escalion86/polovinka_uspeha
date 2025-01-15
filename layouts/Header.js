@@ -14,6 +14,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import Avatar from './Avatar'
 import UserMenu from './UserMenu'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
+import locationAtom from '@state/atoms/locationAtom'
 
 const MenuItem = ({ text, href = '#' }) => (
   <li>
@@ -52,6 +53,7 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 // ]
 
 const Header = ({ noMenu }) => {
+  const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   // const events = useAtomValue(filteredEventsSelector)
   const reviews = useAtomValue(filteredReviewsSelector)
@@ -59,28 +61,27 @@ const Header = ({ noMenu }) => {
   const services = useAtomValue(filteredServicesSelector)
   const additionalBlocks = useAtomValue(filteredAdditionalBlocksSelector)
 
-  const menu = [{ name: 'Миссия и цели', href: '/#about' }]
+  const menu = [{ name: 'Миссия и цели', href: `#about` }]
   // if (events?.length > 0)
-  menu.push({ name: 'Мероприятия', href: '/#events' })
+  menu.push({ name: 'Мероприятия', href: `#events` })
   if (directions?.length > 0)
-    menu.push({ name: 'Направления', href: '/#directions' })
-  if (services?.length > 0) menu.push({ name: 'Услуги', href: '/#services' })
+    menu.push({ name: 'Направления', href: `#directions` })
+  if (services?.length > 0) menu.push({ name: 'Услуги', href: `#services` })
   if (additionalBlocks?.length > 0)
     additionalBlocks.forEach((additionalBlock) => {
       if (additionalBlock.menuName)
         menu.push({
           name: additionalBlock.menuName,
-          href: '/#' + transliterate(additionalBlock.menuName),
+          href: `#` + transliterate(additionalBlock.menuName),
         })
     })
-  if (reviews?.length > 0) menu.push({ name: 'Отзывы', href: '/#reviews' })
-  menu.push({ name: 'Контакты', href: '/#contacts' })
+  if (reviews?.length > 0) menu.push({ name: 'Отзывы', href: `#reviews` })
+  menu.push({ name: 'Контакты', href: `#contacts` })
 
   // const filteredMenu = menu.filter(
   //   (menuItem) =>
   //     !menuItem.key || (props[menuItem.key] && props[menuItem.key].length > 0)
   // )
-
   const menuOpen = useAtomValue(menuOpenAtom)
   return (
     // <div className="w-full h-18">
@@ -91,7 +92,7 @@ const Header = ({ noMenu }) => {
           <Burger />
         </div>
         <div className="absolute z-10 hidden -translate-x-1/2 tablet:block left-1/2">
-          <Link prefetch={false} href="/" shallow>
+          <Link prefetch={false} href={`/${location}`} shallow>
             <img
               className="object-contain h-16 laptop:min-w-min"
               src={'/img/logo_horizontal.png'}
@@ -124,7 +125,7 @@ const Header = ({ noMenu }) => {
                 {loggedUserActive?._id ? (
                   <Link
                     prefetch={false}
-                    href="/cabinet"
+                    href={`/${location}/cabinet`}
                     shallow
                     className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general"
                   >
@@ -134,7 +135,7 @@ const Header = ({ noMenu }) => {
                 ) : (
                   <Link
                     prefetch={false}
-                    href="/login"
+                    href={`/${location}/login`}
                     shallow
                     className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general"
                   >

@@ -46,7 +46,6 @@ const ToolsNewsletterContent = () => {
         return response.json()
       })
       .then((result) => {
-        console.log('result :>> ', result)
         setInstanceId(result.instance_id)
       })
       .catch((error) => console.log('error', error))

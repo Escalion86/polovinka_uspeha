@@ -1,4 +1,4 @@
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 import { useEffect } from 'react'
 import LoadingSpinner from '@components/LoadingSpinner'
@@ -76,11 +76,13 @@ const StateLoader = (props) => {
 
   const router = useRouter()
 
+  const location = useAtomValue(locationAtom)
+
   const [modalsFunc, setModalsFunc] = useAtom(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useAtom(isSiteLoadingAtom)
   const [mode, setMode] = useAtom(modeAtom)
-  const [location, setLocation] = useAtom(locationAtom)
+  // const [location, setLocation] = useAtom(locationAtom)
   const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useAtom(
@@ -144,7 +146,7 @@ const StateLoader = (props) => {
   useWindowDimensionsStore()
 
   useEffect(() => {
-    const itemsFunc = itemsFuncGenerator(snackbar, loggedUserActive)
+    const itemsFunc = itemsFuncGenerator(snackbar, loggedUserActive, location)
     setItemsFunc(itemsFunc)
     // setItemsFuncJ(itemsFunc)
 
@@ -163,6 +165,7 @@ const StateLoader = (props) => {
     siteSettingsState,
     loggedUserActiveRole,
     loggedUserActiveStatus,
+    location,
   ])
 
   useEffect(() => {
@@ -198,7 +201,7 @@ const StateLoader = (props) => {
     // setServicesUsersState(props.servicesUsers)
     setServerSettingsState(props.serverSettings)
     setMode(props.mode ?? 'production')
-    setLocation(props.location ?? 'krasnoyarsk')
+    // setLocation(props.location ?? 'krasnoyarsk')
     setIsSiteLoading(false)
 
     //jotai
@@ -242,24 +245,24 @@ const StateLoader = (props) => {
         const url = isBrowserNeedToBeUpdate()
         if (url) modalsFunc.browserUpdate(url)
       }
-      if (location !== 'dev')
-        if (!props.isCabinet) {
-          if (router.query?.location) {
-            localStorage.setItem('location', router.query?.location)
-          } else {
-            const storagedLocation = localStorage.getItem('location')
-            if (!storagedLocation) {
-              modalsFunc.browseLocation()
-            }
-          }
-        }
+      // if (location !== 'dev')
+      //   if (!props.isCabinet) {
+      //     if (router.query?.location) {
+      //       localStorage.setItem('location', router.query?.location)
+      //     } else {
+      //       const storagedLocation = localStorage.getItem('location')
+      //       if (!storagedLocation) {
+      //         modalsFunc.browseLocation()
+      //       }
+      //     }
+      //   }
     }
   }, [props.isCabinet, isSiteLoading])
 
   useEffect(() => {
     if (loggedUser) {
       postData(
-        `/api/loginhistory`,
+        `/api/${location}/loginhistory`,
         {
           userId: loggedUser._id,
           browser: browserVer(true),
@@ -271,7 +274,7 @@ const StateLoader = (props) => {
         true
       )
     }
-  }, [loggedUser])
+  }, [loggedUser, location])
 
   return (
     <div className={cn('relative', props.className)}>

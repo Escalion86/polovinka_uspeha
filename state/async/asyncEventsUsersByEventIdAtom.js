@@ -5,17 +5,20 @@ import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import store from '../store'
 import atomWithRefreshAndDefault from '@state/atomWithRefreshAndDefault'
+import locationAtom from '@state/atoms/locationAtom'
 
 const asyncEventsUsersByEventIdAtom = atomFamily((eventId) =>
-  atomWithRefreshAndDefault(async () => {
+  atomWithRefreshAndDefault(async (get) => {
     if (!eventId) return undefined
+    const location = get(locationAtom)
     const res = await getData(
-      '/api/eventsusers',
+      `/api/${location}/eventsusers`,
       { eventId },
       null,
       null,
       false
     )
+
     store.set(isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId), true)
     return res
   })

@@ -305,8 +305,6 @@ const setUp = (array, key, clickedIndex) => {
     })
     .filter((item) => item)
 
-  console.log('itemsToChange :>> ', itemsToChange)
-
   return itemsToChange
   // await Promise.all(
   //   itemsToChange.map(async (item) => {
@@ -321,8 +319,6 @@ const setUp = (array, key, clickedIndex) => {
 
 const setDown = (array, key, clickedIndex) => {
   if (clickedIndex >= array.length - 1) return []
-  console.log('clickedIndex :>> ', clickedIndex)
-  console.log('array[clickedIndex] :>> ', array[clickedIndex])
 
   var movedUp = false
   var movedDown = false
@@ -340,8 +336,6 @@ const setDown = (array, key, clickedIndex) => {
         }
     })
     .filter((item) => item)
-
-  console.log('itemsToChange :>> ', itemsToChange)
 
   return itemsToChange
   // await Promise.all(

@@ -19,11 +19,14 @@ export default async function auth(req, res) {
         credentials: {
           phone: { label: 'Phone', type: 'text', placeholder: '' },
           password: { label: 'Password', type: 'password' },
+          location: { label: 'Location', type: 'text' },
         },
         authorize: async (credentials, req) => {
-          const { phone, password } = credentials
-          if (phone && password) {
-            await dbConnect()
+          const { phone, password, location } = credentials
+          // console.log('!! location :>> ', location)
+          if (phone && password && location) {
+            const db = await dbConnect(location)
+            if (!db) return null
 
             // await fetchingLog(
             //   { from: 'update User activity time in nextauth authorize' },
@@ -42,6 +45,7 @@ export default async function auth(req, res) {
             if (fetchedUser) {
               return {
                 name: fetchedUser._id,
+                email: location,
               }
             } else {
               return null
@@ -65,6 +69,7 @@ export default async function auth(req, res) {
             type: 'text',
             placeholder: 'false',
           },
+          location: { label: 'Location', type: 'text' },
         },
         authorize: async (credentials, req) => {
           const {
@@ -74,14 +79,16 @@ export default async function auth(req, res) {
             photo_url,
             username,
             registration,
+            location,
           } = credentials
           if (telegramId) {
             const telegramIdNum = parseInt(telegramId)
-            if (!telegramIdNum) {
+            if (!telegramIdNum || !location) {
               return null
             }
 
-            await dbConnect()
+            const db = await dbConnect(location)
+            if (!db) return null
 
             const fetchedUser = await Users.findOne({
               'notifications.telegram.id': telegramIdNum,
@@ -150,24 +157,24 @@ export default async function auth(req, res) {
         //   { from: 'nextauth callback session', user: session?.user },
         //   process.env.NEXTAUTH_SITE
         // )
-
+        // console.log('session', Object.keys(session))
+        // console.log('session.user', session.user)
         const userId = session.user.name
+        const location = session.user.email
 
         // Находим данные пользователя и обновляем время активности
         // await fetchingLog(
         //   { from: 'start dbConnect in nextauth' },
         //   process.env.NEXTAUTH_SITE
         // )
-        await dbConnect()
+        const db = await dbConnect(location)
+        if (!db) return null
         // await fetchingLog(
         //   { from: 'finish dbConnect in nextauth' },
         //   process.env.NEXTAUTH_SITE
         // )
 
-        console.log('dbConnect')
-
         const result = await Users.findById(userId)
-        console.log('userId :>> ', userId)
         // const result = await Users.findOneAndUpdate(
         //   { phone: userPhone },
         //   {

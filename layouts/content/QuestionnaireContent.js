@@ -34,6 +34,7 @@ import userEditSelector from '@state/selectors/userEditSelector'
 import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -50,6 +51,7 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
 )
 
 const QuestionnaireContent = (props) => {
+  const location = useAtomValue(locationAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const setLoggedUserActiveRoleName = useSetAtom(loggedUserActiveRoleNameAtom)
@@ -215,7 +217,7 @@ const QuestionnaireContent = (props) => {
     ) {
       setIsWaitingToResponse(true)
       await putData(
-        `/api/users/${loggedUserActive._id}`,
+        `/api/${location}/users/${loggedUserActive._id}`,
         {
           firstName: firstName.trim(),
           secondName: secondName.trim(),

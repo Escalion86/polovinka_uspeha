@@ -151,7 +151,6 @@ const ToolsImageConstructorContent = () => {
   const [size, setSize] = useState({ w: 480, h: 480 })
   const [data, setData] = useState([])
   const [backgroundProps, setBackgroundProps] = useState()
-  console.log('data :>> ', data)
 
   const setDataStateByIndex = (index) => (key, value) =>
     setData((state) => {

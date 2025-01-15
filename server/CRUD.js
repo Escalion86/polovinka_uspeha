@@ -227,7 +227,7 @@ const deleteEventFromCalendar = async (googleCalendarId) => {
   return calendarEventData
 }
 
-const updateEventInCalendar = async (event, req) => {
+const updateEventInCalendar = async (event, location) => {
   const calendar = connectToGoogleCalendar()
   if (!calendar) return undefined
 
@@ -343,7 +343,9 @@ const updateEventInCalendar = async (event, req) => {
       )
     })
 
-    await dbConnect()
+    const db = await dbConnect(location)
+    if (!db) return
+
     const updatedEvent = await Events.findByIdAndUpdate(
       event._id,
       { googleCalendarId: createdCalendarEvent.data.id },
@@ -587,11 +589,18 @@ export default async function handler(Schema, req, res, params = null) {
   const { query, method, body } = req
 
   const id = query?.id
+  const location = query?.location
+  if (!location)
+    return res?.status(400).json({ success: false, error: 'No location' })
 
-  await dbConnect()
+  console.log('CRUD', { Schema, method, params, id, body, query })
+
+  delete query.location
+
+  const db = await dbConnect(location)
+  if (!db) return res?.status(400).json({ success: false, error: 'db error' })
 
   let data
-  console.log('CRUD', { Schema, method, params, id, body, query })
 
   switch (method) {
     case 'GET':
@@ -654,7 +663,7 @@ export default async function handler(Schema, req, res, params = null) {
 
           if (Schema === Events) {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
-            const calendarEvent = updateEventInCalendar(jsonData, req)
+            const calendarEvent = updateEventInCalendar(jsonData, location)
 
             // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
             // if (jsonData.showOnSite) {
@@ -667,6 +676,7 @@ export default async function handler(Schema, req, res, params = null) {
               userId: jsonData.userId,
               serviceId: jsonData.serviceId,
               req,
+              location,
             })
           }
 
@@ -702,7 +712,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
 
           if (Schema === Events) {
-            const calendarEvent = updateEventInCalendar(data, req)
+            const calendarEvent = updateEventInCalendar(data, location)
             // if (!oldData.showOnSite && data.showOnSite) {
             //   notificateUsersAboutEvent(data, req)
             // }
@@ -736,6 +746,7 @@ export default async function handler(Schema, req, res, params = null) {
                 await sendTelegramMessage({
                   telegramIds: newTelegramId,
                   text: '\u{2705} Уведомления подключены!',
+                  location,
                 })
               }
               // Если выключили уведомления
@@ -747,6 +758,7 @@ export default async function handler(Schema, req, res, params = null) {
                 await sendTelegramMessage({
                   telegramIds: newTelegramId,
                   text: '\u{26D4} Уведомления отключены!',
+                  location,
                 })
               }
               // Если ID удален
@@ -754,6 +766,7 @@ export default async function handler(Schema, req, res, params = null) {
                 await sendTelegramMessage({
                   telegramIds: oldTelegramId,
                   text: '\u{26D4} Уведомления отключены!',
+                  location,
                 })
               }
             }
@@ -810,6 +823,7 @@ export default async function handler(Schema, req, res, params = null) {
                     },
                   ],
                 ],
+                location,
               })
               // await Promise.all(
               //   usersTelegramIds.map(async (telegramId) => {

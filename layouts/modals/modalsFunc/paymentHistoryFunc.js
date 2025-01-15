@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import PaymentKeyValueItem from './historyKeyValuesItems/PaymentKeyValueItem'
 import { paymentKeys } from './historyKeyValuesItems/keys'
+import locationAtom from '@state/atoms/locationAtom'
 
 const paymentHistoryFunc = (paymentId) => {
   const PaymentHistoryModal = ({
@@ -18,6 +19,7 @@ const paymentHistoryFunc = (paymentId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
+    const location = useAtomValue(locationAtom)
     const payment = useAtomValue(paymentSelector(paymentId))
     const [paymentHistory, setPaymentHistory] = useState()
 
@@ -30,7 +32,7 @@ const paymentHistoryFunc = (paymentId) => {
 
     useEffect(() => {
       const fetchData = async () => {
-        const result = await getData(`/api/histories`, {
+        const result = await getData(`/api/${location}/histories`, {
           schema: 'payments',
           'data._id': paymentId,
         })

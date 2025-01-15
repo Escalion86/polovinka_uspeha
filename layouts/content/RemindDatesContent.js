@@ -2,7 +2,6 @@
 
 import Button from '@components/Button'
 import LoadingSpinner from '@components/LoadingSpinner'
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,8 +12,10 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import useSnackbar from '@helpers/useSnackbar'
+import locationAtom from '@state/atoms/locationAtom'
 
 const RemindDatesContent = (props) => {
+  const location = useAtomValue(locationAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const snackbar = useSnackbar()
@@ -25,7 +26,7 @@ const RemindDatesContent = (props) => {
 
   useEffect(() => {
     const loadTemplates = async () => {
-      const response = await getData('/api/reminddates')
+      const response = await getData(`/api/${location}/reminddates`)
       setDates(response)
       setIsLoading(false)
     }
@@ -37,7 +38,7 @@ const RemindDatesContent = (props) => {
   const onClickAdd = async (data) => {
     modalsFunc.remindDate(data, async (remindDate) => {
       await postData(
-        `/api/reminddates`,
+        `/api/${location}/reminddates`,
         remindDate,
         (data) => {
           setDates((state) => [...state, data])
@@ -57,7 +58,7 @@ const RemindDatesContent = (props) => {
   const onClickEdit = async (data) => {
     modalsFunc.remindDate(data, async (remindDate) => {
       await putData(
-        `/api/reminddates/` + data._id,
+        `/api/${location}/reminddates/${data._id}`,
         remindDate,
         (data) => {
           setDates((state) =>
@@ -84,7 +85,7 @@ const RemindDatesContent = (props) => {
       text: `Вы действительно хотите удалить дату "${remindDate.name}"?`,
       onConfirm: async () =>
         await deleteData(
-          '/api/reminddates/' + remindDate._id,
+          `/api/${location}/reminddates/${remindDate._id}`,
           () => {
             snackbar.success('Дата удалена')
             setDates((state) =>

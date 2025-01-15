@@ -14,8 +14,6 @@ import passwordValidator from '@helpers/passwordValidator'
 import phoneValidator from '@helpers/phoneValidator'
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import useErrors from '@helpers/useErrors'
-import fetchSiteSettings from '@server/fetchSiteSettings'
-import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import isPWAAtom from '@state/atoms/isPWAAtom'
 import cn from 'classnames'
 import { m } from 'framer-motion'
@@ -35,6 +33,7 @@ import SvgWave from 'svg/SvgWave'
 import TelegramLoginButton from 'react-telegram-login'
 import Divider from '@components/Divider'
 import Button from '@components/Button'
+import getLocationProps from '@helpers/getLocationProps'
 // import TelegramLoginButton from '@components/TelegramLoginButton'
 
 const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
@@ -346,9 +345,7 @@ const LoginPage = (props) => {
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
-  const telegramBotName = LOCATIONS[inputLocation]
-    ? LOCATIONS[inputLocation].telegramBotName
-    : LOCATIONS['krasnoyarsk'].telegramBotName
+  const telegramBotName = getLocationProps(inputLocation).telegramBotName
 
   const isPWA = useAtomValue(isPWAAtom)
 
@@ -490,13 +487,13 @@ const LoginPage = (props) => {
     }
   }, [inputLocation])
 
-  useEffect(() => {
-    if (telegramRegistrationConfirm)
-      console.log(
-        'telegramRegistrationConfirm :>> ',
-        telegramRegistrationConfirm
-      )
-  }, [telegramRegistrationConfirm])
+  // useEffect(() => {
+  //   if (telegramRegistrationConfirm)
+  //     console.log(
+  //       'telegramRegistrationConfirm :>> ',
+  //       telegramRegistrationConfirm
+  //     )
+  // }, [telegramRegistrationConfirm])
 
   useEffect(() => {
     if (router.query?.registration === 'true') setProcess('registration')
@@ -1675,22 +1672,27 @@ const Login = (props) => (
 export default Login
 
 export const getServerSideProps = async (context) => {
-  const session = await getSession({ req: context.req })
-
-  if (session) {
-    return {
-      redirect: {
-        destination: `/cabinet`,
-      },
-    }
+  return {
+    redirect: {
+      destination: `/krsk/cabinet`,
+    },
   }
-  const response = await getServerSidePropsFunc(
-    context,
-    getSession,
-    fetchSiteSettings
-  )
+  // const session = await getSession({ req: context.req })
 
-  return response
+  // if (session) {
+  //   return {
+  //     redirect: {
+  //       destination: `/cabinet`,
+  //     },
+  //   }
+  // }
+  // const response = await getServerSidePropsFunc(
+  //   context,
+  //   getSession,
+  //   fetchSiteSettings
+  // )
+
+  // return response
 
   // return {
   //   props: {

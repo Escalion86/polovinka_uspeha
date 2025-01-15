@@ -7,6 +7,7 @@ import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const saveTemplateFunc = (tool, template, onSave, aspect) => {
   const SaveTemplateFuncModal = ({
@@ -17,6 +18,7 @@ const saveTemplateFunc = (tool, template, onSave, aspect) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
+    const location = useAtomValue(locationAtom)
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const [selectedTemplate, setSelectedTemplate] = useState()
@@ -40,7 +42,7 @@ const saveTemplateFunc = (tool, template, onSave, aspect) => {
               text: 'Вы уверены что хотите заменить шаблон?',
               onConfirm: async () => {
                 const response = await putData(
-                  '/api/templates/' + selectedTemplate._id,
+                  `/api/${location}/templates/${selectedTemplate._id}`,
                   {
                     tool,
                     name: selectedTemplate.name,

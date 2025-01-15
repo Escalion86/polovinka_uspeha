@@ -5,10 +5,10 @@ import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import store from '../store'
 import asyncPaymentsAtom from './asyncPaymentsAtom'
+import locationAtom from '@state/atoms/locationAtom'
 
 const asyncPaymentsOfUserIdAtom = atomFamily((userId) =>
   atom(async (get) => {
-    // console.log('!!! asyncEventsUsersAllSelector ')
     if (!userId) return []
 
     if (get(isLoadedAtom('asyncPaymentsAtom'))) {
@@ -17,7 +17,15 @@ const asyncPaymentsOfUserIdAtom = atomFamily((userId) =>
       return allPayments.filter((payment) => payment.userId === userId)
     }
 
-    const res = await getData('/api/payments', { userId }, null, null, false)
+    const location = get(locationAtom)
+
+    const res = await getData(
+      `/api/${location}/payments`,
+      { userId },
+      null,
+      null,
+      false
+    )
     store.set(isLoadedAtom('asyncPaymentsOfUserIdAtom' + userId), true)
     // // Throw error with status code in case Fetch API req failed
     // if (!res.ok) {

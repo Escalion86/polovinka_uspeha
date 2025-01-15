@@ -22,6 +22,7 @@ import ComboBox from '@components/ComboBox'
 import { SelectEventList, SelectPaymentList } from '@components/SelectItemList'
 import DirectionTitleById from '@components/DirectionTitleById'
 import AdditionalBlockTitleById from '@components/AdditionalBlockTitleById'
+import locationAtom from '@state/atoms/locationAtom'
 
 const schemasNames = {
   events: 'Мероприятие',
@@ -244,6 +245,7 @@ const userActionsHistoryFunc = (userId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
+    const location = useAtomValue(locationAtom)
     const user = useAtomValue(userSelector(userId))
     const [userActionsHistory, setUserActionsHistory] = useState()
     const [periodHours, setPeriodHours] = useState(24)
@@ -261,7 +263,7 @@ const userActionsHistoryFunc = (userId) => {
       const fetchData = async () => {
         var cutoff = new Date()
         cutoff.setHours(cutoff.getHours() - periodHours)
-        const result = await getData(`/api/histories`, {
+        const result = await getData(`/api/${location}/histories`, {
           userId,
           createdAt: { $gte: cutoff },
         })

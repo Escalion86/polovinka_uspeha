@@ -5,6 +5,7 @@ import { getData } from '@helpers/CRUD'
 import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import store from '../store'
+import locationAtom from '@state/atoms/locationAtom'
 
 export const asyncServicesUsersByUserIdSelector = atomFamily((userId) =>
   atom(async (get) => {
@@ -21,8 +22,10 @@ export const asyncServicesUsersByUserIdSelector = atomFamily((userId) =>
       )
     }
 
+    const location = get(locationAtom)
+
     const res = await getData(
-      '/api/servicesusers',
+      `/api/${location}/servicesusers`,
       { userId },
       null,
       null,

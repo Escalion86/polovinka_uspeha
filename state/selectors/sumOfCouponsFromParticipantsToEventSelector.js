@@ -8,8 +8,9 @@ export const sumOfCouponsFromParticipantsToEventSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return 0
     const coupons = await get(couponsOfEventFromUsersSelector(id))
-    const result = await coupons.reduce(async (p, payment) => {
-      const participantsIds = await get(eventParticipantsIdsSelector(id))
+    const participantsIds = await get(eventParticipantsIdsSelector(id))
+
+    const result = coupons.reduce((p, payment) => {
       const isUserParticipant = participantsIds.includes(payment.userId)
       if (isUserParticipant)
         return (

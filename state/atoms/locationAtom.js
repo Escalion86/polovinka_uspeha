@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
 
-const locationAtom = atom('krasnoyarsk')
+const locationAtom = atom(null)
 
 export default locationAtom

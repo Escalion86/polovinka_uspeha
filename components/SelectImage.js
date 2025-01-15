@@ -38,8 +38,6 @@ const SelectImage = ({
 
   const [images, setImages] = useState([])
 
-  console.log('aspect :>> ', aspect)
-
   useEffect(() => {
     const loadImages = async () =>
       await getData(

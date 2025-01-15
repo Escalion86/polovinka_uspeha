@@ -1,9 +1,10 @@
 import FormWrapper from '@components/FormWrapper'
 import { getData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
-import eventSelector from '@state/selectors/eventSelector'
+// import eventSelector from '@state/selectors/eventSelector'
 import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const notificateAboutEventTelegramFunc = (eventId) => {
   const NotificationsTelegramModal = ({
@@ -14,12 +15,13 @@ const notificateAboutEventTelegramFunc = (eventId) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const event = useAtomValue(eventSelector(eventId))
+    const location = useAtomValue(locationAtom)
+    // const event = useAtomValue(eventSelector(eventId))
     const { success, error } = useSnackbar()
 
     const onClickConfirm = async () => {
       await getData(
-        `/api/events/notificate`,
+        `/api/${location}/events/notificate`,
         {
           eventId,
         },

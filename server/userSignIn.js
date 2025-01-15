@@ -21,9 +21,12 @@ const userSignIn = async ({
   status,
   subEventId,
   autoReserve = false,
+  location,
 }) => {
   try {
-    await dbConnect()
+    const db = await dbConnect(location)
+    if (!db) return res?.status(400).json({ success: false, error: 'db error' })
+
     // Проверка что пользователь заполнил анкету и вообще существует
     const user = await Users.findById(userId).lean()
     if (!user) {
@@ -46,7 +49,7 @@ const userSignIn = async ({
 
     // Теперь проверяем есть ли место
     const event = await Events.findById(eventId).lean()
-    console.log('!!event :>> ', !!event)
+
     if (!event) {
       const result = {
         success: false,
@@ -59,7 +62,7 @@ const userSignIn = async ({
     }
     // Сначала проверяем есть ли такой пользователь в мероприятии
     const eventUser = await EventsUsers.findOne({ eventId, userId }).lean()
-    console.log('!!eventUser :>> ', !!eventUser)
+
     if (eventUser) {
       const result = {
         success: false,
@@ -92,7 +95,6 @@ const userSignIn = async ({
     }
     // Закрыто ли мероприятие?
     if (isEventExpired(event)) {
-      console.log('4 :>> ', 4)
       const result = {
         success: false,
         data: {
@@ -427,6 +429,7 @@ const userSignIn = async ({
       eventId,
       addedEventUsers: [newEventUserJson],
       itIsSelfRecord: true,
+      location,
     })
 
     const result = { success: true, data: newEventUserJson }

@@ -11,6 +11,7 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const getBalance = async (onSuccess, onError) =>
   await postData(
@@ -26,6 +27,7 @@ const getBalance = async (onSuccess, onError) =>
   )
 
 const SettingsCodeSendServiceContent = (props) => {
+  const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [codeSendService, setCodeSendService] = useState(
@@ -51,7 +53,7 @@ const SettingsCodeSendServiceContent = (props) => {
 
   const onClickConfirm = async () => {
     await postData(
-      `/api/site`,
+      `/api/${location}/site`,
       {
         codeSendService,
       },

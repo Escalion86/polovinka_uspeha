@@ -61,6 +61,7 @@ const subEventFunc = (props, onChange, rules) => {
     const [maxParticipants, setMaxParticipants] = useState(
       props?.maxParticipants ?? DEFAULT_SUBEVENT.maxParticipants
     )
+    console.log('maxParticipants :>> ', maxParticipants)
     const [maxMans, setMaxMans] = useState(
       props?.maxMans ?? DEFAULT_SUBEVENT.maxMans
     )

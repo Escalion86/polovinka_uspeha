@@ -241,7 +241,6 @@ export default async function handler(req, res) {
   const { query, method, body } = req
   if (method === 'GET') {
     const eventId = query.eventId
-    console.log('eventId: ', eventId)
     await notificateUsersAboutEvent(eventId, req)
     return res?.status(200).json({ success: true })
   }

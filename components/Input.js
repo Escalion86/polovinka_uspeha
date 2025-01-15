@@ -2,7 +2,7 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import { forwardRef, useState } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 import InputWrapper from './InputWrapper'
 import useLongPress from '@helpers/useLongPress'
 
@@ -41,76 +41,60 @@ const Input = forwardRef(
     ref
   ) => {
     const [stateValue, setStateValue] = useState(value)
+    const [isMounted, setIsMounted] = useState(false)
 
     const longPressArrowDownEvent = useLongPress(
       () => {
-        if (typeof min !== 'number')
-          setStateValue((state) => {
-            const newNumber = Number(state) - Number(step)
-            return newNumber
-          })
-        else
-          setStateValue((state) => {
-            const newNumber = Math.max(Number(state) - Number(step), min)
-            return newNumber
-          })
+        var newNumber
+        setStateValue((state) => {
+          if (state === undefined) return state
+          newNumber =
+            typeof min !== 'number'
+              ? Number(state) - Number(step)
+              : Math.max(Number(state) - Number(step), min)
+          // onChange(newNumber)
+          // console.log(newNumber)
+          return newNumber
+        })
+        // console.log(newNumber)
+        // if (newNumber !== undefined) onChange(newNumber)
       },
-      () => {
-        if (typeof min !== 'number')
-          setStateValue((state) => {
-            const newNumber = Number(state) - Number(step)
-            return newNumber
-          })
-        else
-          setStateValue((state) => {
-            const newNumber = Math.max(Number(state) - Number(step), min)
-            return newNumber
-          })
-      },
-      () => onChange(stateValue),
-      {
-        shouldPreventDefault: true,
-        repeatDelay: 50,
-        delay: 500,
-      }
+      () => onChange(stateValue)
     )
 
     const longPressArrowUpEvent = useLongPress(
       () => {
-        if (typeof max !== 'number')
-          setStateValue((state) => {
-            const newNumber = Number(state) + Number(step)
-            // onChange(newNumber)
-            return newNumber
-          })
-        else
-          setStateValue((state) => {
-            const newNumber = Math.min(Number(state) + Number(step), max)
-            // onChange(newNumber)
-            return newNumber
-          })
+        var newNumber
+        setStateValue((state) => {
+          if (state === undefined) return state
+          newNumber =
+            typeof max !== 'number'
+              ? Number(state) + Number(step)
+              : Math.min(Number(state) + Number(step), max)
+          // onChange(newNumber)
+          // console.log(newNumber)
+          return newNumber
+        })
+        // console.log(newNumber)
+        // onChange(stateValue)
       },
       () => {
-        if (typeof max !== 'number')
-          setStateValue((state) => {
-            const newNumber = Number(state) + Number(step)
-            // onChange(newNumber)
-            return newNumber
-          })
-        else
-          setStateValue((state) => {
-            const newNumber = Math.min(Number(state) + Number(step), max)
-            // onChange(newNumber)
-            return newNumber
-          })
-      },
-      () => onChange(stateValue),
-      {
-        shouldPreventDefault: true,
-        repeatDelay: 50,
-        delay: 500,
+        onChange(stateValue)
       }
     )
+
+    useEffect(() => {
+      if (type === 'number' && !stateValue && stateValue != 0) {
+        const minValue = min > 0 ? min : 0
+        setStateValue(minValue)
+        onChange(minValue)
+      }
+      //  else if (isMounted) onChange(stateValue)
+    }, [stateValue])
+
+    useEffect(() => {
+      setIsMounted(true)
+    }, [])
 
     return (
       <InputWrapper

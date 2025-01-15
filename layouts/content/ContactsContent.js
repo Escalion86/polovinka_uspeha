@@ -11,8 +11,10 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
 
 const ContactsContent = (props) => {
+  const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
   const [phone, setPhone] = useState(siteSettings?.phone)
@@ -47,7 +49,7 @@ const ContactsContent = (props) => {
       })
     )
       await postData(
-        `/api/site`,
+        `/api/${location}/site`,
         {
           phone,
           whatsapp,

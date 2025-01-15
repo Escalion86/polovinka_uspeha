@@ -13,18 +13,20 @@ import { DEFAULT_USER } from '@helpers/constants'
 import useSnackbar from '@helpers/useSnackbar'
 // import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userEditSelector from '@state/selectors/userEditSelector'
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import TelegramLoginButton from 'react-telegram-login'
 import Note from '@components/Note'
+import locationAtom from '@state/atoms/locationAtom'
+import telegramBotNameSelector from '@state/selectors/telegramBotNameSelector'
 
 const LoggedUserNotificationsContent = (props) => {
+  const location = useAtomValue(locationAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-  const { telegramBotName } = useAtomValue(locationPropsSelector)
+  const telegramBotName = useAtomValue(telegramBotNameSelector)
 
   const birthdays = loggedUserActiveRole?.notifications?.birthdays
   const remindDates = loggedUserActiveRole?.notifications?.remindDates
@@ -80,7 +82,7 @@ const LoggedUserNotificationsContent = (props) => {
   const onClickConfirm = async () => {
     setIsWaitingToResponse(true)
     await putData(
-      `/api/users/${loggedUserActive._id}`,
+      `/api/${location}/users/${loggedUserActive._id}`,
       {
         notifications,
       },

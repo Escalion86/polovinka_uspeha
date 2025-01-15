@@ -4,11 +4,19 @@ import { getData } from '@helpers/CRUD'
 import { DEFAULT_EVENT } from '@helpers/constants'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import store from '../store'
+import locationAtom from '@state/atoms/locationAtom'
 
 export const eventFullAtomAsync = atomFamily((id) =>
-  atomWithDefault(async () => {
+  atomWithDefault(async (get) => {
     if (!id) return DEFAULT_EVENT
-    const res = await getData('/api/events/' + id, {}, null, null, false)
+    const location = get(locationAtom)
+    const res = await getData(
+      `/api/${location}/events/` + id,
+      {},
+      null,
+      null,
+      false
+    )
     store.set(isLoadedAtom('eventFullAtomAsync' + id), true)
     return res
   })
