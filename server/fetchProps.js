@@ -50,8 +50,6 @@ const fetchProps = async (user, location, params) => {
         location,
       }
 
-    console.log('fetchProps location :>> ', location)
-
     var users = isAdmin
       ? await Users.find({})
           .select({

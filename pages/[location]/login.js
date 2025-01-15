@@ -1695,6 +1695,9 @@ export const getServerSideProps = async (context) => {
   const { params } = context
   const location = params?.location
 
+  const mode = process.env.NODE_ENV
+  console.log('test mode :>> ', mode)
+
   if (session) {
     return {
       redirect: {
