@@ -497,7 +497,7 @@ export const LOCATIONS = {
   },
 }
 
-export const LOCATIONS_KEYS_VISIBLE = Object.keys(LOCATIONS).map(
+export const LOCATIONS_KEYS_VISIBLE = Object.keys(LOCATIONS).filter(
   (location) => !LOCATIONS[location].hidden
 )
 
