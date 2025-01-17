@@ -18,7 +18,6 @@ import Image from 'next/image'
 import isUserAdmin from '@helpers/isUserAdmin'
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import { faQrcode } from '@fortawesome/free-solid-svg-icons'
-import isUserDev from '@helpers/isUserDev'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -91,7 +90,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
           </Link>
         </div>
       )}
-      {isUserDev(loggedUser) && (
+      {isUserAdmin(loggedUser) && (
         <div
           className="flex items-center justify-center w-6 h-6 cursor-pointer"
           onClick={() => {
