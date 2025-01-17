@@ -142,11 +142,17 @@ export const getServerSideProps = async (context) => {
 
   const { params } = context
   const { page, location } = params
+  console.log('')
+  console.log('')
+  console.log('---------------- params-------------------')
+  console.log('params', params)
+  console.log('')
+  console.log('')
 
   if (!session?.user) {
     return {
       redirect: {
-        destination: `/${location}/`,
+        destination: `/${location}?page=${page}`,
       },
     }
   }

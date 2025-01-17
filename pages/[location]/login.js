@@ -724,12 +724,16 @@ const LoginPage = (props) => {
           setInputPassword('')
           addError({ password: 'Телефон или пароль не верны' })
         } else {
-          if (router.query?.event)
-            router.push(`/${location}/event/` + router.query?.event, '', {
+          if (router.query?.page)
+            router.push(`/${location}/cabinet/${router.query?.page}`, '', {
+              shallow: true,
+            })
+          else if (router.query?.event)
+            router.push(`/${location}/event/${router.query?.event}`, '', {
               shallow: true,
             })
           else if (router.query?.service)
-            router.push(`/${location}/service/` + router.query?.service, '', {
+            router.push(`/${location}/service/${router.query?.service}`, '', {
               shallow: true,
             })
           else router.push(`/${location}/cabinet`, '', { shallow: true })

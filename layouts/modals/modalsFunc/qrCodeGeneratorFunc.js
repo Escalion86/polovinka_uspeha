@@ -1,13 +1,9 @@
 import FormWrapper from '@components/FormWrapper'
-import Input from '@components/Input'
-import { getData } from '@helpers/CRUD'
-// import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
-import LoadingSpinner from '@components/LoadingSpinner'
+import { useRouter } from 'next/router'
 
-const qrCodeGeneratorFunc = (type, id, onSuccess) => {
+const qrCodeGeneratorFunc = ({ type, id, title }) => {
   const QRCodeGeneratorFuncModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -17,28 +13,26 @@ const qrCodeGeneratorFunc = (type, id, onSuccess) => {
     setDisableDecline,
   }) => {
     const location = useAtomValue(locationAtom)
-    const [qrCode, setQrCode] = useState()
-    console.log('qrCode', qrCode)
-
-    useEffect(() => {
-      const getQrCode = async () => {
-        const data = await getData(
-          `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example `
-        )
-        setQrCode(data)
-      }
-      getQrCode()
-    }, [])
+    const router = useRouter()
+    const origin =
+      typeof window !== 'undefined' && window.location.origin
+        ? window.location.origin
+        : ''
 
     return (
-      <FormWrapper flex className="flex-col">
-        {!qrCode ? <LoadingSpinner /> : <div>Загружено</div>}
+      <FormWrapper flex className="flex justify-center">
+        <img
+          src={`https://api.qrserver.com/v1/create-qr-code/?data=${origin}/${location}/cabinet/${type ?? router.query.page}${id ? `?id=${id}` : ''}&amp;size=300x300`}
+          alt=""
+          title=""
+        />
+        {/* {!qrCode ? <LoadingSpinner /> : <div>Загружено</div>} */}
       </FormWrapper>
     )
   }
 
   return {
-    title: `Генератор QR-кодов`,
+    title: title ?? `Генератор QR-кодов`,
     declineButtonName: 'Закрыть',
     closeButtonShow: true,
     Children: QRCodeGeneratorFuncModal,

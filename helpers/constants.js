@@ -198,8 +198,9 @@ import { uid } from 'uid'
 import ImagesServerContent from '@layouts/content/ImagesServerContent'
 import LikesContent from '@layouts/content/LikesContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
-import menuHiddenLoggedUserLikesSelector from '@state/selectors/menuHiddenLoggedUserLikesSelector'
+// import menuHiddenLoggedUserLikesSelector from '@state/selectors/menuHiddenLoggedUserLikesSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
+
 const colors = [
   'border-blue-400',
   'border-red-400',
@@ -1901,7 +1902,7 @@ export const pages = [
     href: 'likes',
     icon: faHeart,
     badge: badgeLoggedUserLikesToSeeSelector,
-    hidden: menuHiddenLoggedUserLikesSelector,
+    // hidden: menuHiddenLoggedUserLikesSelector,
     accessRoles: CONTENTS['likes'].accessRoles,
     roleAccess: CONTENTS['likes'].roleAccess,
   },

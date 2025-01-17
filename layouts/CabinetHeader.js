@@ -95,7 +95,9 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
         <div
           className="flex items-center justify-center w-6 h-6 cursor-pointer"
           onClick={() => {
-            modalsFunc.external.qrCodeGenerator('events')
+            modalsFunc.external.qrCodeGenerator({
+              title: 'QR-код на текущую страницу',
+            })
           }}
         >
           <FontAwesomeIcon icon={faQrcode} className="w-5 h-5 text-white" />
