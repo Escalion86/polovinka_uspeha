@@ -20,6 +20,7 @@ import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
+import InputNumber from '@components/InputNumber'
 
 const getPreview = async () => {
   const input = document.querySelector('#input')
@@ -262,9 +263,9 @@ const ToolsEventAnonsVkContent = () => {
           centerLabel
         >
           <div className="flex flex-wrap items-center flex-1 gap-x-2">
-            <Input
+            <InputNumber
               label="Размер шрифта"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={dateFontSize}
@@ -272,9 +273,9 @@ const ToolsEventAnonsVkContent = () => {
               min={20}
               max={200}
             />
-            <Input
+            <InputNumber
               label="Позиция по Y"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={dateStartY}
@@ -296,9 +297,9 @@ const ToolsEventAnonsVkContent = () => {
           centerLabel
         >
           <div className="flex flex-wrap items-center flex-1 gap-x-2">
-            <Input
+            <InputNumber
               label="Размер шрифта"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={timeFontSize}
@@ -306,9 +307,9 @@ const ToolsEventAnonsVkContent = () => {
               min={20}
               max={200}
             />
-            <Input
+            <InputNumber
               label="Позиция по Y"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={timeStartY}
@@ -330,9 +331,9 @@ const ToolsEventAnonsVkContent = () => {
           centerLabel
         >
           <div className="flex flex-wrap items-center flex-1 gap-x-2">
-            <Input
+            <InputNumber
               label="Позиция по Y"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={lineStartY}
@@ -354,9 +355,9 @@ const ToolsEventAnonsVkContent = () => {
           centerLabel
         >
           <div className="flex flex-wrap items-center flex-1 gap-x-2">
-            <Input
+            <InputNumber
               label="Размер шрифта"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={fontSize}
@@ -364,9 +365,9 @@ const ToolsEventAnonsVkContent = () => {
               min={20}
               max={200}
             />
-            <Input
+            <InputNumber
               label="Позиция по Y"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={startY}

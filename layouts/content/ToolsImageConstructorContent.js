@@ -6,6 +6,7 @@ import ColorPicker from '@components/ColorPicker'
 import Divider from '@components/Divider'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
+import InputNumber from '@components/InputNumber'
 import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
@@ -213,9 +214,9 @@ const ToolsImageConstructorContent = () => {
             smallMargin
           />
           <div className="flex gap-x-1">
-            <Input
+            <InputNumber
               label="Ширина картинки"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={size.w}
@@ -224,9 +225,9 @@ const ToolsImageConstructorContent = () => {
               max={2000}
               smallMargin
             />
-            <Input
+            <InputNumber
               label="Высота картинки"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={size.h}
@@ -279,9 +280,9 @@ const ToolsImageConstructorContent = () => {
                           onChange={(value) => setDataState('color', value)}
                           smallMargin
                         />
-                        <Input
+                        <InputNumber
                           label="Позиция по X"
-                          type="number"
+                          // type="number"
                           className="w-[128px]"
                           inputClassName="w-[64px]"
                           value={item.params?.posX ?? 0}
@@ -290,9 +291,9 @@ const ToolsImageConstructorContent = () => {
                           max={1000}
                           // noMargin
                         />
-                        <Input
+                        <InputNumber
                           label="Позиция по Y"
-                          type="number"
+                          // type="number"
                           className="w-[128px]"
                           inputClassName="w-[64px]"
                           value={item.params?.posY ?? 0}

@@ -55,6 +55,7 @@ export default async function handler(req, res) {
         // locations.forEach(async (location) =>
 
         for (const location of LOCATIONS_KEYS_VISIBLE) {
+          console.log('!!location!!', location)
           const db = await dbConnect(location)
           if (!db)
             return res?.status(400).json({ success: false, error: 'db error' })

@@ -1,6 +1,7 @@
 import cn from 'classnames'
 import Input from './Input'
 import InputWrapper from './InputWrapper'
+import InputNumber from './InputNumber'
 
 const PriceInput = ({
   value,
@@ -36,11 +37,11 @@ const PriceInput = ({
       noMargin={noMargin}
       required={required}
     >
-      <Input
+      <InputNumber
         step="100"
         noBorder
         inputClassName="w-16"
-        type="number"
+        // type="number"
         name={name + '₽'}
         value={String(rubles)}
         onChange={(value) => onChangeUpd(value, true)}
@@ -55,11 +56,11 @@ const PriceInput = ({
         showDisabledIcon={false}
         showArrows
       />
-      <Input
+      <InputNumber
         step="10"
         noBorder
         inputClassName="w-8"
-        type="number"
+        // type="number"
         name={name + 'коп'}
         value={String(cops)}
         onChange={(value) => onChangeUpd(value, false)}

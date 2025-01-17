@@ -10,6 +10,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import reviewSelector from '@state/selectors/reviewSelector'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import InputNumber from '@components/InputNumber'
 
 const reviewFunc = (reviewId, clone = false) => {
   const ReviewModal = ({
@@ -123,9 +124,9 @@ const reviewFunc = (reviewId, clone = false) => {
           // labelClassName="w-40"
           error={errors.author}
         />
-        <Input
+        <InputNumber
           label="Возраст автора, лет"
-          type="number"
+          // type="number"
           value={authorAge}
           onChange={(value) => {
             removeError('authorAge')

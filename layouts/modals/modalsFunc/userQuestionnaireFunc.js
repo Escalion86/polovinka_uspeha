@@ -21,6 +21,7 @@ import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import { uid } from 'uid'
+import InputNumber from '@components/InputNumber'
 
 const CheckBoxItem = ({
   checked,
@@ -455,16 +456,16 @@ const Q = ({ data, state, onChange, errors }) => {
             )
           if (item.type === 'number') {
             return (
-              <Input
+              <InputNumber
                 {...item.params}
                 key={item.key}
                 label={item.label}
                 defaultValue={state[item.key]}
-                type="number"
+                // type="number"
                 onChange={onItemChange}
                 error={errors[item.key]}
                 required={item.required}
-                showArrows={false}
+                // showArrows={false}
               />
             )
           }
