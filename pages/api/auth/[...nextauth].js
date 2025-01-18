@@ -83,6 +83,15 @@ export default async function auth(req, res) {
           } = credentials
           if (telegramId) {
             const telegramIdNum = parseInt(telegramId)
+            console.log('authorize', {
+              telegramId,
+              first_name,
+              last_name,
+              photo_url,
+              username,
+              registration,
+              location,
+            })
             if (!telegramIdNum || !location) {
               return null
             }
@@ -124,6 +133,7 @@ export default async function auth(req, res) {
                   first_name,
                   last_name: last_name === 'undefined' ? undefined : last_name,
                   images: [photo_url],
+                  location,
                 })
                 return {
                   name: newUser._id,
