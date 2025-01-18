@@ -322,6 +322,25 @@ const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
     })
 }
 
+const routeAfterLogin = (router) => {
+  if (router.query?.page)
+    return router.push(`/${location}/cabinet/${router.query?.page}`, '', {
+      shallow: true,
+    })
+
+  if (router.query?.event)
+    return router.push(`/${location}/event/${router.query?.event}`, '', {
+      shallow: true,
+    })
+
+  if (router.query?.service)
+    return router.push(`/${location}/service/${router.query?.service}`, '', {
+      shallow: true,
+    })
+
+  return router.push(`/${location}/cabinet`, '', { shallow: true })
+}
+
 const LoginPage = (props) => {
   const router = useRouter()
   const query = { ...router.query }
@@ -384,6 +403,7 @@ const LoginPage = (props) => {
         photo_url,
         username: username === 'undefined' ? undefined : username,
         registration: forceReg || process === 'registration' ? 'true' : 'false',
+        location,
       }).then((res) => {
         if (res.error === 'CredentialsSignin') {
           setWaitingResponse(false)
@@ -400,15 +420,7 @@ const LoginPage = (props) => {
             username: username === 'undefined' ? undefined : username,
           })
         } else {
-          if (router.query?.event)
-            router.push(`/${location}/event/` + router.query?.event, '', {
-              shallow: true,
-            })
-          else if (router.query?.service)
-            router.push(`/${location}/service/` + router.query?.service, '', {
-              shallow: true,
-            })
-          else router.push(`/${location}/cabinet`, '', { shallow: true })
+          routeAfterLogin(router)
         }
       })
     }
@@ -719,19 +731,7 @@ const LoginPage = (props) => {
           setInputPassword('')
           addError({ password: 'Телефон или пароль не верны' })
         } else {
-          if (router.query?.page)
-            router.push(`/${location}/cabinet/${router.query?.page}`, '', {
-              shallow: true,
-            })
-          else if (router.query?.event)
-            router.push(`/${location}/event/${router.query?.event}`, '', {
-              shallow: true,
-            })
-          else if (router.query?.service)
-            router.push(`/${location}/service/${router.query?.service}`, '', {
-              shallow: true,
-            })
-          else router.push(`/${location}/cabinet`, '', { shallow: true })
+          routeAfterLogin(router)
         }
       })
     }
