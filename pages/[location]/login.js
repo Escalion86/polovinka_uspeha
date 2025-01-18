@@ -1279,21 +1279,6 @@ const LoginPage = (props) => {
                           botName={telegramBotName}
                           lang="ru"
                         />
-                        <div
-                          onClick={() =>
-                            handleTelegramResponse({
-                              id: 261102161,
-                              first_name: 'Алексей',
-                              last_name: 'Белинский Иллюзионист',
-                              photo_url:
-                                'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
-                              username: 'Escalion',
-                            })
-                          }
-                          className="px-2 py-2 bg-green-200 border"
-                        >
-                          test
-                        </div>
                       </div>
                     )}
                   </div>
