@@ -81,6 +81,7 @@ export default async function auth(req, res) {
             registration,
             location,
           } = credentials
+          console.log('credentials', credentials)
           if (telegramId) {
             const telegramIdNum = parseInt(telegramId)
             console.log('authorize', {
@@ -102,11 +103,11 @@ export default async function auth(req, res) {
             const fetchedUser = await Users.findOne({
               'notifications.telegram.id': telegramIdNum,
             }).lean()
-            console.log('fetchedUser._id', fetchedUser?._id)
 
             if (fetchedUser?._id) {
               return {
                 name: fetchedUser._id,
+                email: location,
               }
             } else {
               if (registration === 'true') {
@@ -138,6 +139,7 @@ export default async function auth(req, res) {
                 })
                 return {
                   name: newUser._id,
+                  email: location,
                 }
               }
               return null

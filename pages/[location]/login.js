@@ -397,7 +397,6 @@ const LoginPage = (props) => {
       last_name,
       photo_url,
       username,
-      username,
     })
     if (typeof id === 'number') {
       // console.log(response)
@@ -414,7 +413,7 @@ const LoginPage = (props) => {
         registration: forceReg || process === 'registration' ? 'true' : 'false',
         location,
       }).then((res) => {
-        if (res.error === 'CredentialsSignin') {
+        if (res?.error === 'CredentialsSignin') {
           setWaitingResponse(false)
           setInputPassword('')
           // addError({
@@ -702,11 +701,11 @@ const LoginPage = (props) => {
                 password: inputPassword,
                 location: inputLocation,
               }).then((res) => {
-                if (res.error === 'CredentialsSignin') {
+                if (res?.error === 'CredentialsSignin') {
                   setWaitingResponse(false)
                   setInputPassword('')
                   addError({ password: 'Телефон или пароль не верны' })
-                } else router.push(`/${inputLocation}/cabinet/questionnaire`)
+                } else routeAfterLogin(router, inputLocation)
               })
             }
             // Если код не верный
@@ -1280,6 +1279,21 @@ const LoginPage = (props) => {
                           botName={telegramBotName}
                           lang="ru"
                         />
+                        <div
+                          onClick={() =>
+                            handleTelegramResponse({
+                              id: 261102161,
+                              first_name: 'Алексей',
+                              last_name: 'Белинский Иллюзионист',
+                              photo_url:
+                                'https://t.me/i/userpic/320/i4TFzvCH_iU5FLtMAmYEpCPz7guDcuETRzLoynlZamo.jpg',
+                              username: 'Escalion',
+                            })
+                          }
+                          className="px-2 py-2 bg-green-200 border"
+                        >
+                          test
+                        </div>
                       </div>
                     )}
                   </div>
