@@ -32,6 +32,8 @@ import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import rolesAtom from '@state/atoms/rolesAtom'
 
+import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
+
 // import additionalBlocksAtomJ from '@state/atoms/additionalBlocksAtom'
 // import directionsAtomJ from '@state/atoms/directionsAtom'
 // import eventsAtomJ from '@state/atoms/eventsAtom'
@@ -81,6 +83,7 @@ const StateLoader = (props) => {
   const [modalsFunc, setModalsFunc] = useAtom(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useAtom(isSiteLoadingAtom)
+  const [telegramBotName, setTelegramBotName] = useAtom(telegramBotNameAtom)
   const [mode, setMode] = useAtom(modeAtom)
   // const [location, setLocation] = useAtom(locationAtom)
   const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
@@ -201,6 +204,7 @@ const StateLoader = (props) => {
     // setServicesUsersState(props.servicesUsers)
     setServerSettingsState(props.serverSettings)
     setMode(props.mode ?? 'production')
+    setTelegramBotName(props.telegramBotName)
     // setLocation(props.location ?? 'krasnoyarsk')
     setIsSiteLoading(false)
 

@@ -17,9 +17,11 @@ import Services from '@models/Services'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
 import dbConnect from '@utils/dbConnect'
+import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
 
 const fetchProps = async (user, location, params) => {
   const serverDateTime = new Date()
+  const telegramBotName = getTelegramBotNameByLocation(location)
   try {
     const isAdmin = isUserAdmin(user)
     const db = await dbConnect(location)
@@ -48,6 +50,7 @@ const fetchProps = async (user, location, params) => {
         // location: process.env.LOCATION,
         error: 'db error',
         location,
+        telegramBotName,
       }
 
     var users = isAdmin
@@ -235,6 +238,7 @@ const fetchProps = async (user, location, params) => {
       mode: process.env.MODE,
       // location: process.env.LOCATION,
       location,
+      telegramBotName,
     }
 
     return fetchResult
@@ -263,6 +267,7 @@ const fetchProps = async (user, location, params) => {
       // location: process.env.LOCATION,
       error: JSON.parse(JSON.stringify(error)),
       location,
+      telegramBotName,
     }
   }
 }

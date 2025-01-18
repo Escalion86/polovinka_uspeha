@@ -458,7 +458,7 @@ export const LOCATIONS = {
     // domen: 'https://половинкауспеха.рф',
     // short: 'krsk',
     imageFolder: 'polovinka_uspeha',
-    telegramBotName: 'polovinka_uspeha_bot',
+    // telegramBotName: 'polovinka_uspeha_bot',
     towns: [
       'Красноярск',
       'Сосновоборск',
@@ -475,7 +475,7 @@ export const LOCATIONS = {
     // domen: 'https://nrsk.половинкауспеха.рф',
     // short: 'nrsk',
     imageFolder: 'polovinka_uspeha_nrsk',
-    telegramBotName: 'polovinka_uspeha_nrsk_bot',
+    // telegramBotName: 'polovinka_uspeha_nrsk_bot',
     towns: ['Норильск', 'Талнах', 'Кайеркан', 'Оганер', 'Дудинка', 'Алыкель'],
     hidden: false,
   },
@@ -485,7 +485,7 @@ export const LOCATIONS = {
     // domen: 'https://nrsk.половинкауспеха.рф',
     // short: 'nrsk',
     imageFolder: 'polovinka_uspeha_ekb',
-    telegramBotName: 'polovinka_uspeha_ekb_bot',
+    // telegramBotName: 'polovinka_uspeha_ekb_bot',
     towns: [
       'Екатеринбург',
       'Среднеуральск',

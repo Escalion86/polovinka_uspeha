@@ -22,7 +22,7 @@ import { m } from 'framer-motion'
 import { getSession, signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
@@ -35,7 +35,6 @@ import SvgWave from 'svg/SvgWave'
 import TelegramLoginButton from 'react-telegram-login'
 import Divider from '@components/Divider'
 import Button from '@components/Button'
-import getLocationProps from '@helpers/getLocationProps'
 // import TelegramLoginButton from '@components/TelegramLoginButton'
 
 const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
@@ -349,11 +348,7 @@ const LoginPage = (props) => {
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
-  const telegramBotName = useMemo(
-    () =>
-      `${props.mode === 'dev' ? 'dev_' : ''}${getLocationProps(inputLocation).telegramBotName}`,
-    [inputLocation]
-  )
+  const telegramBotName = props.telegramBotName
 
   console.log('telegramBotName :>> ', telegramBotName)
 

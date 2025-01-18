@@ -20,13 +20,13 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import TelegramLoginButton from 'react-telegram-login'
 import Note from '@components/Note'
 import locationAtom from '@state/atoms/locationAtom'
-import telegramBotNameSelector from '@state/selectors/telegramBotNameSelector'
+import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
 
 const LoggedUserNotificationsContent = (props) => {
   const location = useAtomValue(locationAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-  const telegramBotName = useAtomValue(telegramBotNameSelector)
+  const telegramBotName = useAtomValue(telegramBotNameAtom)
 
   const birthdays = loggedUserActiveRole?.notifications?.birthdays
   const remindDates = loggedUserActiveRole?.notifications?.remindDates

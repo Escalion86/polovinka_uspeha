@@ -7,7 +7,7 @@ import FormWrapper from '@components/FormWrapper'
 // import useSnackbar from '@helpers/useSnackbar'
 import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
-import telegramBotNameSelector from '@state/selectors/telegramBotNameSelector'
+import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
 
 const notificationsTelegramFunc = (onStartActivate, onCancel) => {
   const NotificationsTelegramModal = ({
@@ -19,7 +19,7 @@ const notificationsTelegramFunc = (onStartActivate, onCancel) => {
     setDisableDecline,
   }) => {
     // const location = useAtomValue(locationAtom)
-    const telegramBotName = useAtomValue(telegramBotNameSelector)
+    const telegramBotName = useAtomValue(telegramBotNameAtom)
 
     // const [userName, setUserName] = useState(
     //   loggedUser?.notifications?.telegram?.userName ?? ''
