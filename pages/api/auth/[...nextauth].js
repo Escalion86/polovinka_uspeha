@@ -102,8 +102,9 @@ export default async function auth(req, res) {
             const fetchedUser = await Users.findOne({
               'notifications.telegram.id': telegramIdNum,
             }).lean()
+            console.log('fetchedUser._id', fetchedUser?._id)
 
-            if (fetchedUser) {
+            if (fetchedUser?._id) {
               return {
                 name: fetchedUser._id,
               }
