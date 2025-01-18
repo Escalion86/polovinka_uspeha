@@ -322,11 +322,12 @@ const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
     })
 }
 
-const routeAfterLogin = (router) => {
-  if (router.query?.page)
+const routeAfterLogin = (router, location) => {
+  if (router.query?.page) {
     return router.push(`/${location}/cabinet/${router.query?.page}`, '', {
       shallow: true,
     })
+  }
 
   if (router.query?.event)
     return router.push(`/${location}/event/${router.query?.event}`, '', {
@@ -420,7 +421,7 @@ const LoginPage = (props) => {
             username: username === 'undefined' ? undefined : username,
           })
         } else {
-          routeAfterLogin(router)
+          routeAfterLogin(router, location)
         }
       })
     }
@@ -731,7 +732,7 @@ const LoginPage = (props) => {
           setInputPassword('')
           addError({ password: 'Телефон или пароль не верны' })
         } else {
-          routeAfterLogin(router)
+          routeAfterLogin(router, location)
         }
       })
     }
