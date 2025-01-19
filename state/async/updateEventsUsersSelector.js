@@ -7,7 +7,7 @@ import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 
 const updateEventsUsersSelector = atomFamily((eventId) =>
-  atom(async (get, set, updatedEventUsers) => {
+  atom(null, async (get, set, updatedEventUsers) => {
     const isLoadedEventId = get(
       isLoadedAtom('asyncEventsUsersByEventIdAtom' + eventId)
     )

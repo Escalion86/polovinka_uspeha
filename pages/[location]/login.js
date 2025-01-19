@@ -370,8 +370,6 @@ const LoginPage = (props) => {
 
   const telegramBotName = props.telegramBotName
 
-  console.log('telegramBotName :>> ', telegramBotName)
-
   const isPWA = useAtomValue(isPWAAtom)
 
   const inputPhoneRef = useRef()
@@ -391,13 +389,6 @@ const LoginPage = (props) => {
     username,
     forceReg = false,
   }) => {
-    console.log('telegramResponce', {
-      id,
-      first_name,
-      last_name,
-      photo_url,
-      username,
-    })
     if (typeof id === 'number') {
       // console.log(response)
       // if (process === 'authorization') {
