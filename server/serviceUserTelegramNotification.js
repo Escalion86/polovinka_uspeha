@@ -26,7 +26,7 @@ const serviceUserTelegramNotification = async ({
     // Получаем список подписанных на уведомления, и если их нет, то выходим сразу
     const usersWithTelegramNotificationsOfServiceUsersON = await Users.find({
       role:
-        process.env.MODE === 'dev'
+        process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
           ? 'dev'
           : { $in: rolesIdsToServiceUsersNotification },
       'notifications.settings.serviceRegistration': true,

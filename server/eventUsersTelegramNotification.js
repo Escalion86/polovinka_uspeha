@@ -49,7 +49,7 @@ const eventUsersTelegramNotification = async ({
     // Получаем список подписанных на уведомления, и если их нет, то выходим сразу
     const usersWithTelegramNotificationsOfEventUsersON = await Users.find({
       role:
-        process.env.MODE === 'dev'
+        process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
           ? 'dev'
           : { $in: rolesIdsToEventUsersNotification },
       'notifications.settings.eventRegistration': true,

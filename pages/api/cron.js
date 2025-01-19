@@ -72,7 +72,7 @@ export default async function handler(req, res) {
 
           const usersToNotificate = await Users.find({
             role:
-              process.env.MODE === 'dev'
+              process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
                 ? 'dev'
                 : { $in: rolesIdsToNotification },
 
@@ -235,7 +235,7 @@ export default async function handler(req, res) {
 
         // const usersToNotificate = await Users.find({
         //   role:
-        //     process.env.MODE === 'dev'
+        //     process.env.TELEGRAM_NOTIFICATION_DEV_ONLY
         //       ? 'dev'
         //       : { $in: rolesIdsToNotification },
 

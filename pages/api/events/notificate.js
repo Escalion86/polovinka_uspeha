@@ -25,7 +25,7 @@ const notificateUsersAboutEvent = async (eventId, req) => {
 
   const users = await Users.find({
     role:
-      process.env.MODE === 'dev'
+      process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
         ? 'dev'
         : { $in: rolesIdsToNewEventsByTagsNotification },
     'notifications.settings.newEventsByTags': true,

@@ -142,12 +142,6 @@ export const getServerSideProps = async (context) => {
 
   const { params } = context
   const { page, location } = params
-  console.log('')
-  console.log('')
-  console.log('---------------- params-------------------')
-  console.log('params', params)
-  console.log('')
-  console.log('')
 
   if (!session?.user) {
     return {
@@ -159,7 +153,6 @@ export const getServerSideProps = async (context) => {
 
   // Редиректим пользователей незаполнившим профиль
   if (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) {
-    console.log('----------!!!!----------')
     return {
       redirect: {
         destination: `/${location}/cabinet/questionnaire`,

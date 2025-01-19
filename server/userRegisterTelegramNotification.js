@@ -24,7 +24,7 @@ const userRegisterTelegramNotification = async ({
 
   const usersWithTelegramNotificationsOfEventUsersON = await Users.find({
     role:
-      process.env.MODE === 'dev'
+      process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
         ? 'dev'
         : { $in: rolesIdsToEventUsersNotification },
     'notifications.settings.newUserRegistred': true,
