@@ -20,9 +20,9 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
 
     const eventId = event._id
 
-    const [, refreshEventState] = useAtom(
-      asyncEventsUsersByEventIdAtom(eventId)
-    )
+    // const [, refreshEventState] = useAtom(
+    //   asyncEventsUsersByEventIdAtom(eventId)
+    // )
 
     const onClickConfirm = async (onSuccess) => {
       closeModal()
@@ -57,7 +57,9 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
       )
     }, [])
 
-    useEffect(() => refreshEventState(), [])
+    // useEffect(() => {
+    //   refreshEventState()
+    // }, [])
 
     const subEvent =
       event?.subEvents?.length > 1 && subEventId

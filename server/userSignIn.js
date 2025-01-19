@@ -216,7 +216,7 @@ const userSignIn = async ({
 
     if (!userEventStatus.canSignIn) {
       if (userEventStatus.canSignInReserve) {
-        if (!autoReserve) {
+        if (!autoReserve && status !== 'reserve') {
           const result = {
             success: false,
             data: {
