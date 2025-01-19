@@ -3,7 +3,7 @@ import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventI
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 
 const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
   const EventSignUpToReserveAfterErrorModal = ({
