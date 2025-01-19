@@ -15,7 +15,7 @@ const ImageWithLoading = ({ original, originalClass }) => {
   return (
     <div className="flex items-center justify-center object-contain h-full max-h-screen min-w-full min-h-full">
       {/* {!isError ? ( */}
-      <div className="relative h-full aspect-[16/9]">
+      <div className="relative min-h-full h-full aspect-[16/9]">
         <LoadingSpinner
           className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
           size="lg"
