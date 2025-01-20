@@ -9,7 +9,7 @@ import locationAtom from '@state/atoms/locationAtom'
 
 const asyncEventsUsersByEventIdAtom = atomFamily((eventId) =>
   atomWithRefreshAndDefault(async (get) => {
-    if (!eventId) return undefined
+    if (!eventId) return
     const location = get(locationAtom)
     const res = await getData(
       `/api/${location}/eventsusers`,

@@ -72,15 +72,16 @@ const ContactsIconsButtons = ({
     forceShowAll || loggedUserActiveRole?.users?.seeAllContacts
 
   if (
-    !canSeeAllContacts &&
-    user.security?.showContacts === false &&
-    !user.security?.showPhone &&
-    !user.security?.showWhatsapp &&
-    !user.security?.showViber &&
-    !user.security?.showTelegram &&
-    !user.security?.showInstagram &&
-    !user.security?.showVk &&
-    !user.security?.showEmail
+    !user ||
+    (!canSeeAllContacts &&
+      user.security?.showContacts === false &&
+      !user.security?.showPhone &&
+      !user.security?.showWhatsapp &&
+      !user.security?.showViber &&
+      !user.security?.showTelegram &&
+      !user.security?.showInstagram &&
+      !user.security?.showVk &&
+      !user.security?.showEmail)
   )
     return null
 

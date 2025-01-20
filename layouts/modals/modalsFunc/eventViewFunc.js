@@ -104,6 +104,8 @@ const EventViewModal = ({
 
   const direction = useAtomValue(directionSelector(event?.directionId))
   const organizer = useAtomValue(userSelector(event?.organizerId))
+  console.log('event?.organizerId :>> ', event?.organizerId)
+  console.log('organizer :>> ', organizer)
   const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const duration = getEventDuration(event)

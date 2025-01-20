@@ -181,7 +181,8 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
     [
       {
         text: '\u{1F4C5} На сайте',
-        url: process.env.DOMAIN + '/event/' + String(event._id),
+        url:
+          process.env.DOMAIN + '/' + location + '/event/' + String(event._id),
       },
       // TODO Исправить запись через телеграм
       // ---------------------------------------
@@ -201,7 +202,8 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
     [
       {
         text: '\u{1F4C5} На сайте',
-        url: process.env.DOMAIN + '/event/' + String(event._id),
+        url:
+          process.env.DOMAIN + '/' + location + '/event/' + String(event._id),
       },
       {
         text: '\u{1F4DD} Записаться',

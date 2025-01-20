@@ -63,11 +63,11 @@ const serviceUserTelegramNotification = async ({
         [
           {
             text: '\u{1F4C5} Услуга',
-            url: process.env.DOMAIN + '/service/' + serviceId,
+            url: process.env.DOMAIN + '/' + location + '/service/' + serviceId,
           },
           {
             text: '\u{1F464} Пользователь',
-            url: process.env.DOMAIN + '/user/' + userId,
+            url: process.env.DOMAIN + '/' + location + '/user/' + userId,
           },
         ],
       ],

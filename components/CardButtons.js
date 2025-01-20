@@ -35,6 +35,7 @@ import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelec
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
 import { faBullhorn } from '@fortawesome/free-solid-svg-icons'
 import { getEventById } from '@helpers/getById'
+import locationAtom from '@state/atoms/locationAtom'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -74,13 +75,20 @@ const CardButtons = ({
   onEditQuestionnaire,
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
+  const location = useAtomValue(locationAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const device = useAtomValue(windowDimensionsTailwindSelector)
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
 
-  const copyEventLink = useCopyEventLinkToClipboard(item._id)
-  const copyServiceLink = useCopyServiceLinkToClipboard(item._id)
-  const copyUserLink = useCopyUserLinkToClipboard(item._id)
+  const copyLink =
+    typeOfItem === 'event'
+      ? useCopyEventLinkToClipboard(location, item._id)
+      : typeOfItem === 'service'
+        ? useCopyServiceLinkToClipboard(location, item._id)
+        : typeOfItem === 'user'
+          ? useCopyUserLinkToClipboard(location, item._id)
+          : undefined
+
   const copyId = useCopyToClipboard(item._id, 'ID скопирован в буфер обмена')
 
   const key = typeToKey(typeOfItem)
@@ -185,15 +193,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faShareAlt}
           onClick={() => {
-            if (typeOfItem === 'event') {
-              copyEventLink()
-            }
-            if (typeOfItem === 'service') {
-              copyServiceLink()
-            }
-            if (typeOfItem === 'user') {
-              copyUserLink()
-            }
+            if (copyLink) copyLink()
           }}
           color="blue"
           tooltipText={`Скопировать ссылку на ${

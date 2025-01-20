@@ -287,12 +287,12 @@ const eventUsersTelegramNotification = async ({
         [
           {
             text: '\u{1F4C5} Мероприятие',
-            url: process.env.DOMAIN + '/event/' + eventId,
+            url: process.env.DOMAIN + '/' + location + '/event/' + eventId,
           },
           userId
             ? {
                 text: '\u{1F464} Пользователь',
-                url: process.env.DOMAIN + '/user/' + userId,
+                url: process.env.DOMAIN + '/' + location + '/user/' + userId,
               }
             : undefined,
         ],

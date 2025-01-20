@@ -10,7 +10,7 @@ import locationAtom from '@state/atoms/locationAtom'
 
 export const userSelector = atomFamily((id) =>
   atom(async (get) => {
-    if (!id) return DEFAULT_USER
+    if (!id) return
 
     if (get(isLoadedAtom('usersAtomAsync'))) {
       const allUsers = await get(usersAtomAsync)
@@ -19,6 +19,7 @@ export const userSelector = atomFamily((id) =>
     }
 
     const location = get(locationAtom)
+    if (!location) return
 
     const res = await getData(
       `/api/${location}/users/${id}`,

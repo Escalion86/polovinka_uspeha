@@ -55,7 +55,6 @@ export default async function handler(req, res) {
         // locations.forEach(async (location) =>
 
         for (const location of LOCATIONS_KEYS_VISIBLE) {
-          console.log('!!location!!', location)
           const db = await dbConnect(location)
           if (!db)
             return res?.status(400).json({ success: false, error: 'db error' })
@@ -148,7 +147,7 @@ export default async function handler(req, res) {
             const birthdayButton = [
               {
                 text: '\u{1F382} Посмотреть дни рождения на сайте',
-                url: process.env.DOMAIN + '/cabinet/birthdays', // req.headers.origin
+                url: process.env.DOMAIN + '/' + location + '/cabinet/birthdays', // req.headers.origin
               },
             ]
 

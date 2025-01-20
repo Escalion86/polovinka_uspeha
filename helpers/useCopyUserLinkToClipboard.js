@@ -1,11 +1,11 @@
 import copyToClipboard from './copyToClipboard'
 import useSnackbar from './useSnackbar'
 
-const useCopyUserLinkToClipboard = (userId) => {
+const useCopyUserLinkToClipboard = (location, userId) => {
   const { info } = useSnackbar()
 
   return () => {
-    copyToClipboard(window.location.origin + '/user/' + userId)
+    copyToClipboard(window.location.origin + '/' + location + '/user/' + userId)
     info('Ссылка на пользователя скопирована в буфер обмена')
   }
 }

@@ -81,18 +81,8 @@ export default async function auth(req, res) {
             registration,
             location,
           } = credentials
-          console.log('credentials', credentials)
           if (telegramId) {
             const telegramIdNum = parseInt(telegramId)
-            console.log('authorize', {
-              telegramId,
-              first_name,
-              last_name,
-              photo_url,
-              username,
-              registration,
-              location,
-            })
             if (!telegramIdNum || !location) {
               return null
             }
@@ -170,7 +160,6 @@ export default async function auth(req, res) {
         //   { from: 'nextauth callback session', user: session?.user },
         //   process.env.NEXTAUTH_SITE
         // )
-        // console.log('session', Object.keys(session))
         // console.log('session.user', session.user)
         const userId = session.user.name
         const location = session.user.email
@@ -266,6 +255,7 @@ export default async function auth(req, res) {
         //     },
         //   })
         // }
+        session.location = location
         return Promise.resolve(session)
       },
     },

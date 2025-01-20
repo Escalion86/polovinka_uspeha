@@ -286,7 +286,7 @@ const updateEventInCalendar = async (event, location) => {
         }
       ) +
       `\n\nСсылка на мероприятие:\n${
-        process.env.DOMAIN + '/event/' + event._id
+        process.env.DOMAIN + '/' + location + '/event/' + event._id
       }`,
     start: {
       dateTime: event.dateStart,
@@ -626,7 +626,7 @@ export default async function handler(Schema, req, res, params = null) {
                   [
                     {
                       text: '\u{1F464} Пользователь',
-                      url: process.env.DOMAIN + '/user/' + id,
+                      url: process.env.DOMAIN + '/' + location + '/user/' + id,
                     },
                   ],
                 ],

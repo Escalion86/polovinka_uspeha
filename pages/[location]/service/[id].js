@@ -9,13 +9,16 @@ import serviceViewFunc from '@layouts/modals/modalsFunc/serviceViewFunc'
 import fetchProps from '@server/fetchProps'
 import isPWAAtom from '@state/atoms/isPWAAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import servicesAtom from '@state/atoms/servicesAtom'
+// import servicesAtom from '@state/atoms/servicesAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
+import serviceSelector from '@state/selectors/serviceSelector'
+import SignOut from '@components/SignOut'
+import locationAtom from '@state/atoms/locationAtom'
 
 const Service = ({ service }) => {
   const serviceView = serviceViewFunc(service._id)
@@ -38,11 +41,14 @@ const Service = ({ service }) => {
 }
 
 function ServicePage(props) {
+  const { location } = props
+  const [locationState, setLocationState] = useAtom(locationAtom)
+
   const serviceId = props.id
 
   // const router = useRouter()
 
-  const servicesState = useAtomValue(servicesAtom)
+  const service = useAtomValue(serviceSelector(serviceId))
 
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
 
@@ -61,10 +67,16 @@ function ServicePage(props) {
     })
   }, [])
 
-  const service =
-    servicesState?.length > 0
-      ? servicesState.find((service) => service._id === serviceId)
-      : undefined
+  // const service =
+  //   servicesState?.length > 0
+  //     ? servicesState.find((service) => service._id === serviceId)
+  //     : undefined
+
+  useEffect(() => setLocationState(location), [location])
+
+  if (props.wrongSession) return <SignOut />
+
+  if (!locationState) return null
 
   const title = service?.title ?? ''
   const query = service?._id ? { service: service._id } : {}
@@ -144,15 +156,27 @@ export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
 
   const { params } = context
-  const { id } = params
+  const { id, location } = params
 
-  const fetchedProps = await fetchProps(session?.user)
+  const fetchedProps = await fetchProps(session?.user, location, {
+    additionalBlocks: false,
+  })
+
+  if (session?.user && (session.location !== location || !session?.user?._id)) {
+    return {
+      props: {
+        location,
+        wrongSession: true,
+      },
+    }
+  }
 
   return {
     props: {
       ...fetchedProps,
       id,
       loggedUser: session?.user ?? null,
+      location,
     },
   }
 }
