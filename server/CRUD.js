@@ -454,17 +454,20 @@ export default async function handler(Schema, req, res, params = null) {
           const clearedBody = { ...body.data }
           delete clearedBody._id
 
+          console.log(1)
           // Создаем пустой календарь и получаем его id
           if (Schema === Events && MODE === 'production') {
             clearedBody.googleCalendarId =
               await addBlankEventToCalendar(location)
           }
+          console.log(2)
 
           data = await Schema.create(clearedBody)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           const jsonData = data.toJSON()
+          console.log(3)
 
           if (Schema === Events && MODE === 'production') {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
@@ -475,6 +478,7 @@ export default async function handler(Schema, req, res, params = null) {
             //   notificateUsersAboutEvent(jsonData, req)
             // }
           }
+          console.log(4)
 
           if (Schema === ServicesUsers) {
             serviceUserTelegramNotification({
@@ -491,6 +495,7 @@ export default async function handler(Schema, req, res, params = null) {
             data: jsonData,
             userId: body.userId,
           })
+          console.log(5)
 
           return res?.status(201).json({ success: true, data: jsonData })
         }
