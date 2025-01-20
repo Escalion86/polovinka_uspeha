@@ -351,13 +351,14 @@ const updateEventInCalendar = async (event, location) => {
     return createdCalendarEvent
   }
 
+  if (!event?.googleCalendarId) return
   // Обновляем событие в календаре
   const updatedCalendarEvent = await new Promise((resolve, reject) => {
     calendar.events.update(
       {
         auth: authProcess,
         calendarId,
-        eventId: event.googleCalendarId ?? undefined,
+        eventId: event.googleCalendarId,
         resource: calendarEvent,
       },
       (error, result) => {
@@ -449,20 +450,17 @@ export default async function handler(Schema, req, res, params = null) {
           const clearedBody = { ...body.data }
           delete clearedBody._id
 
-          console.log(1)
           // Создаем пустой календарь и получаем его id
           if (Schema === Events && MODE === 'production') {
             clearedBody.googleCalendarId =
               await addBlankEventToCalendar(location)
           }
-          console.log(2)
 
           data = await Schema.create(clearedBody)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           const jsonData = data.toJSON()
-          console.log(3)
 
           if (Schema === Events && MODE === 'production') {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
@@ -473,7 +471,6 @@ export default async function handler(Schema, req, res, params = null) {
             //   notificateUsersAboutEvent(jsonData, req)
             // }
           }
-          console.log(4)
 
           if (Schema === ServicesUsers) {
             serviceUserTelegramNotification({
@@ -516,7 +513,7 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
-          if (Schema === Events && MODE !== 'production') {
+          if (Schema === Events && MODE === 'production') {
             const calendarEvent = updateEventInCalendar(data, location)
             // if (!oldData.showOnSite && data.showOnSite) {
             //   notificateUsersAboutEvent(data, req)
@@ -668,7 +665,7 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
-          if (Schema === Events && MODE !== 'production') {
+          if (Schema === Events && MODE === 'production') {
             deleteEventFromCalendar(existingData.googleCalendarId, location)
           }
 
