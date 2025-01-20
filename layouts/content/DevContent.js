@@ -50,7 +50,6 @@ const DevContent = () => {
   // console.log('1 :>> ', 1)
   const [test, setTest] = useState()
   const [input, setInput] = useState('')
-  console.log('test :>> ', test)
 
   const getVKUsers = async () => {
     try {

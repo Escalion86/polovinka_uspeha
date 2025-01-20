@@ -10,8 +10,6 @@ export const arrayOfSumOfPaymentsForClosedEventsByDateSelector = atom(
     for (let i = 0; i < allClosedEvents.length; i++) {
       const event = allClosedEvents[i]
       const incomeOfEvent = await get(totalIncomeOfEventSelector(event._id))
-      console.log('event', event)
-      // console.log('incomeOfEvent', incomeOfEvent)
       const eventDate = event.dateStart
       const yearOfEvent = new Date(eventDate).getFullYear()
       const monthOfEvent = new Date(eventDate).getMonth()

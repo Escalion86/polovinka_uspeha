@@ -16,6 +16,9 @@ import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 // import subEventsSummator from '@helpers/subEventsSummator'
 import ServicesUsers from '@models/ServicesUsers'
 import serviceUserTelegramNotification from './serviceUserTelegramNotification'
+import getGoogleCalendarJSONByLocation from './getGoogleCalendarJSONByLocation'
+import getTimeZoneByLocation from './getTimeZoneByLocation'
+import getGoogleCalendarConstantsByLocation from './getGoogleCalendarConstantsByLocation'
 // import { telegramCmdToIndex } from './telegramCmd'
 
 function isJson(str) {
@@ -98,45 +101,44 @@ const {
   MODE,
 } = process.env
 
-const connectToGoogleCalendar = () => {
-  if (
-    !GOOGLE_CLIENT_EMAIL ||
-    !GOOGLE_PRIVATE_KEY ||
-    !SCOPES ||
-    !GOOGLE_PROJECT_NUMBER
-  )
-    return undefined
+const connectToGoogleCalendar = (location) => {
+  const calendarConstants = getGoogleCalendarConstantsByLocation(location)
+  if (!calendarConstants) return
 
-  const jwtClient = new google.auth.JWT(
-    GOOGLE_CLIENT_EMAIL,
-    null,
-    GOOGLE_PRIVATE_KEY,
-    SCOPES
-  )
+  const { calendarId, email, privateKey, projectNumber } = calendarConstants
+
+  const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
 
   const calendar = google.calendar({
     version: 'v3',
-    project: GOOGLE_PROJECT_NUMBER,
+    project: projectNumber,
     auth: jwtClient,
   })
 
   return calendar
 }
 
-const addBlankEventToCalendar = async () => {
-  const calendar = connectToGoogleCalendar()
-  if (!calendar) return undefined
+const addBlankEventToCalendar = async (location) => {
+  const calendar = connectToGoogleCalendar(location)
+  if (!calendar) return
+
+  const calendarConstants = getGoogleCalendarConstantsByLocation(location)
+  if (!calendarConstants) return
+
+  const { calendarId, email, privateKey, projectNumber } = calendarConstants
+
+  const timeZone = getTimeZoneByLocation(location)
 
   const calendarEvent = {
     summary: '[blank]',
     description: '',
     start: {
       dateTime: new Date(),
-      timeZone: 'Asia/Krasnoyarsk',
+      timeZone,
     },
     end: {
       dateTime: new Date(),
-      timeZone: 'Asia/Krasnoyarsk',
+      timeZone,
     },
     attendees: [],
     reminders: {
@@ -148,8 +150,10 @@ const addBlankEventToCalendar = async () => {
     },
   }
 
+  const keyFile = getGoogleCalendarJSONByLocation(location)
+
   const auth = new google.auth.GoogleAuth({
-    keyFile: './google_calendar_token.json',
+    keyFile,
     scopes: SCOPES,
   })
 
@@ -159,7 +163,7 @@ const addBlankEventToCalendar = async () => {
     calendar.events.insert(
       {
         auth: authProcess,
-        calendarId: GOOGLE_CALENDAR_ID,
+        calendarId,
         resource: calendarEvent,
       },
       (error, result) => {
@@ -185,14 +189,21 @@ const addBlankEventToCalendar = async () => {
   return calendarEventData?.data?.id
 }
 
-const deleteEventFromCalendar = async (googleCalendarId) => {
+const deleteEventFromCalendar = async (googleCalendarId, location) => {
   if (!googleCalendarId) return
 
-  const calendar = connectToGoogleCalendar()
+  const calendar = connectToGoogleCalendar(location)
   if (!calendar) return undefined
 
+  const calendarConstants = getGoogleCalendarConstantsByLocation(location)
+  if (!calendarConstants) return
+
+  const { calendarId, email, privateKey, projectNumber } = calendarConstants
+
+  const keyFile = getGoogleCalendarJSONByLocation(location)
+
   const auth = new google.auth.GoogleAuth({
-    keyFile: './google_calendar_token.json',
+    keyFile,
     scopes: SCOPES,
   })
 
@@ -202,7 +213,7 @@ const deleteEventFromCalendar = async (googleCalendarId) => {
     calendar.events.delete(
       {
         auth: authProcess,
-        calendarId: GOOGLE_CALENDAR_ID,
+        calendarId,
         eventId: googleCalendarId,
       },
       (error, result) => {
@@ -229,32 +240,14 @@ const deleteEventFromCalendar = async (googleCalendarId) => {
 }
 
 const updateEventInCalendar = async (event, location) => {
-  const calendar = connectToGoogleCalendar()
-  if (!calendar) return undefined
+  const calendar = connectToGoogleCalendar(location)
+  if (!calendar) return
 
-  // calendar.events.list(
-  //   {
-  //     calendarId: GOOGLE_CALENDAR_ID,
-  //     timeMin: new Date().toISOString(),
-  //     maxResults: 10,
-  //     singleEvents: true,
-  //     orderBy: 'startTime',
-  //   },
-  //   (error, result) => {
-  //     if (error) {
-  //       console.log({ error })
-  //       // res.send(JSON.stringify({ error: error }))
-  //     } else {
-  //       if (result.data.items.length) {
-  //         console.log({ events: result.data.items })
-  //         // res.send(JSON.stringify({ events: result.data.items }))
-  //       } else {
-  //         console.log({ message: 'No upcoming events found.' })
-  //         // res.send(JSON.stringify({ message: 'No upcoming events found.' }))
-  //       }
-  //     }
-  //   }
-  // )
+  const calendarConstants = getGoogleCalendarConstantsByLocation(location)
+  if (!calendarConstants) return
+
+  const { calendarId, email, privateKey, projectNumber } = calendarConstants
+
   var preparedText = event.description
   const aTags = event.description.match(/<a[^>]*>([^<]+)<\/a>/g)
   // const linksReformated = []
@@ -262,6 +255,8 @@ const updateEventInCalendar = async (event, location) => {
     for (let i = 0; i < aTags.length; i++)
       preparedText = preparedText.replaceAll(aTags[i], linkAReformer(aTags[i]))
   }
+
+  const timeZone = getTimeZoneByLocation(location)
 
   const calendarEvent = {
     summary: `${event.showOnSite ? '' : '[СКРЫТО] '}${
@@ -290,11 +285,11 @@ const updateEventInCalendar = async (event, location) => {
       }`,
     start: {
       dateTime: event.dateStart,
-      timeZone: 'Asia/Krasnoyarsk',
+      timeZone,
     },
     end: {
       dateTime: event.dateEnd,
-      timeZone: 'Asia/Krasnoyarsk',
+      timeZone,
     },
     location: formatAddress(event.address),
     attendees: [],
@@ -308,8 +303,10 @@ const updateEventInCalendar = async (event, location) => {
     // visibility: event.showOnSite ? 'default' : 'private',
   }
 
+  const keyFile = getGoogleCalendarJSONByLocation(location)
+
   const auth = new google.auth.GoogleAuth({
-    keyFile: './google_calendar_token.json',
+    keyFile,
     scopes: SCOPES,
   })
 
@@ -321,7 +318,7 @@ const updateEventInCalendar = async (event, location) => {
       calendar.events.insert(
         {
           auth: authProcess,
-          calendarId: GOOGLE_CALENDAR_ID,
+          calendarId,
           resource: calendarEvent,
         },
         (error, result) => {
@@ -364,7 +361,7 @@ const updateEventInCalendar = async (event, location) => {
     calendar.events.update(
       {
         auth: authProcess,
-        calendarId: GOOGLE_CALENDAR_ID,
+        calendarId,
         eventId: event.googleCalendarId ?? undefined,
         resource: calendarEvent,
       },
@@ -458,8 +455,9 @@ export default async function handler(Schema, req, res, params = null) {
           delete clearedBody._id
 
           // Создаем пустой календарь и получаем его id
-          if (Schema === Events && MODE !== 'production') {
-            clearedBody.googleCalendarId = await addBlankEventToCalendar()
+          if (Schema === Events && MODE === 'production') {
+            clearedBody.googleCalendarId =
+              await addBlankEventToCalendar(location)
           }
 
           data = await Schema.create(clearedBody)
@@ -468,7 +466,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
           const jsonData = data.toJSON()
 
-          if (Schema === Events && MODE !== 'production') {
+          if (Schema === Events && MODE === 'production') {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
             const calendarEvent = updateEventInCalendar(jsonData, location)
 
@@ -588,7 +586,7 @@ export default async function handler(Schema, req, res, params = null) {
               const usersWithTelegramNotificationsOfEventUsersON =
                 await Users.find({
                   role:
-                    MODE === 'dev'
+                    process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
                       ? 'dev'
                       : { $in: rolesIdsToNewUserRegistredNotification },
                   'notifications.settings.newUserRegistred': true,
@@ -632,67 +630,6 @@ export default async function handler(Schema, req, res, params = null) {
                 ],
                 location,
               })
-              // await Promise.all(
-              //   usersTelegramIds.map(async (telegramId) => {
-              //     await postData(
-              //       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-              //       {
-              //         chat_id: telegramId,
-              //         text: `Пользователь с номером +${
-              //           data.phone
-              //         } заполнил анкету:\n - Полное имя: ${fullUserName}\n - Пол: ${
-              //           data.gender === 'male' ? 'Мужчина' : 'Женщина'
-              //         }\n - Дата рождения: ${birthDateToAge(
-              //           data.birthday,
-              //           new Date(),
-              //           true,
-              //           true,
-              //           true
-              //         )}`,
-              //         parse_mode: 'html',
-              //         reply_markup:
-              //           process.env.DOMAIN.substr(0, 5) === 'https'
-              //             ? JSON.stringify({
-              //                 inline_keyboard: [
-              //                   [
-              //                     {
-              //                       text: '\u{1F464} Пользователь',
-              //                       url: process.env.DOMAIN + '/user/' + id,
-              //                     },
-              //                   ],
-              //                 ].filter((botton) => botton),
-              //               })
-              //             : undefined,
-              //       },
-              //       (data) => console.log('data', data),
-              //       (data) => console.log('error', data),
-              //       true,
-              //       null,
-              //       true
-              //     )
-              //     if (data.images && data.images[0]) {
-              //       await postData(
-              //         `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMediaGroup`,
-              //         {
-              //           chat_id: telegramId,
-              //           media: JSON.stringify(
-              //             data.images.map((photo) => {
-              //               return {
-              //                 type: 'photo',
-              //                 media: photo,
-              //               }
-              //             })
-              //           ),
-              //         },
-              //         (data) => console.log('data', data),
-              //         (data) => console.log('error', data),
-              //         true,
-              //         null,
-              //         true
-              //       )
-              //     }
-              //   })
-              // )
             }
           }
 
@@ -732,7 +669,7 @@ export default async function handler(Schema, req, res, params = null) {
           }
 
           if (Schema === Events && MODE !== 'production') {
-            deleteEventFromCalendar(existingData.googleCalendarId)
+            deleteEventFromCalendar(existingData.googleCalendarId, location)
           }
 
           await Histories.create({

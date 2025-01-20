@@ -8,16 +8,19 @@ import Roles from '@models/Roles'
 import Users from '@models/Users'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
+import getTimeZoneByLocation from './getTimeZoneByLocation'
 
-function convertTZ(date, tzString = 'Asia/Krasnoyarsk') {
+function convertTZ(date, location) {
+  const timeZone = getTimeZoneByLocation(location)
   return new Date(
     (typeof date === 'string' ? new Date(date) : date).toLocaleString('en-US', {
-      timeZone: tzString,
+      timeZone,
     })
   )
 }
 
-const formatDateTime = (date) => formatDateTimeFunc(convertTZ(date))
+const formatDateTime = (date, location) =>
+  formatDateTimeFunc(convertTZ(date, location))
 
 // Оповещение в телеграм
 const eventUsersTelegramNotification = async ({
@@ -125,7 +128,7 @@ const eventUsersTelegramNotification = async ({
         status === 'reserve'
           ? '<b>ИЗ РЕЗЕРВА</b> мероприятия'
           : 'от мероприятия'
-      } "${event.title}" от ${formatDateTime(event.dateStart)}${subEventName ? ` (${subEventName})` : ''}.`
+      } "${event.title}" от ${formatDateTime(event.dateStart, location)}${subEventName ? ` (${subEventName})` : ''}.`
     } else if (
       itIsSelfRecord &&
       deletedEventUsers.length === 0 &&
@@ -143,7 +146,7 @@ const eventUsersTelegramNotification = async ({
         user.gender === 'male' ? `ЗАПИСАЛСЯ` : 'ЗАПИСАЛАСЬ'
       }</b> ${
         status === 'reserve' ? '<b>В РЕЗЕРВ</b> мероприятия' : 'на мероприятие'
-      } "${event.title}" от ${formatDateTime(event.dateStart)}${subEventName ? ` (${subEventName})` : ''}.`
+      } "${event.title}" от ${formatDateTime(event.dateStart, location)}${subEventName ? ` (${subEventName})` : ''}.`
     } else if (notificationOnMassiveChange) {
       // const deletedUsersNames = deletedUsers.map((user) =>
       //   getUserFullName(user)
@@ -152,7 +155,7 @@ const eventUsersTelegramNotification = async ({
 
       text = `\u{1F4C5} Изменение списка участников в мероприятии "${
         event.title
-      }" от ${formatDateTime(event.dateStart)}.${
+      }" от ${formatDateTime(event.dateStart, location)}.${
         addedEventUsersFull.length > 0
           ? `\n\nЗаписались:\n${addedEventUsersFull
               .map(
@@ -212,7 +215,6 @@ const eventUsersTelegramNotification = async ({
     const womansReserveCount = womans.filter(
       (eventUser) => eventUser.status === 'reserve'
     ).length
-    // console.log('req.protocol', process.env.DOMAIN.substr(0, 5))
 
     text += `\n`
 
@@ -301,43 +303,6 @@ const eventUsersTelegramNotification = async ({
     })
 
     return result
-
-    // await Promise.all(
-    //   usersTelegramIds.map(async (telegramId) => {
-    //     await postData(
-    //       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-    //       {
-    //         chat_id: telegramId,
-    //         text,
-    //         parse_mode: 'html',
-    //         reply_markup:
-    //           process.env.DOMAIN.substr(0, 5) === 'https'
-    //             ? JSON.stringify({
-    //                 inline_keyboard: [
-    //                   [
-    //                     {
-    //                       text: '\u{1F4C5} Мероприятие',
-    //                       url: process.env.DOMAIN + '/event/' + eventId,
-    //                     },
-    //                     userId
-    //                       ? {
-    //                           text: '\u{1F464} Пользователь',
-    //                           url: process.env.DOMAIN + '/user/' + userId,
-    //                         }
-    //                       : undefined,
-    //                   ],
-    //                 ].filter((botton) => botton),
-    //               })
-    //             : undefined,
-    //       },
-    //       (data) => console.log('data', data),
-    //       (data) => console.log('error', data),
-    //       true,
-    //       null,
-    //       true
-    //     )
-    //   })
-    // )
   }
 }
 

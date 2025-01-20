@@ -34,8 +34,6 @@ export default function Home(props) {
 
   useEffect(() => setLocationState(location), [location])
 
-  console.log('isPWA :>> ', isPWA)
-
   if (isPWA) {
     router.push(
       {

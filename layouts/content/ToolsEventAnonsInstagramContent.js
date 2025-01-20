@@ -307,10 +307,7 @@ const ToolsEventAnonsInstagramContent = () => {
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={fontSize}
-              onChange={(value) => {
-                console.log('111value', value)
-                setFontSize(value)
-              }}
+              onChange={setFontSize}
               min={20}
               max={200}
               // noMargin
@@ -321,10 +318,7 @@ const ToolsEventAnonsInstagramContent = () => {
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={startY}
-              onChange={(value) => {
-                console.log('222value', value)
-                setStartY(value)
-              }}
+              onChange={setStartY}
               min={0}
               max={1000}
             />

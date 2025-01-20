@@ -47,7 +47,6 @@ const fetchProps = async (user, location, params) => {
           })
         ),
         mode: process.env.MODE,
-        // location: process.env.LOCATION,
         error: 'db error',
         location,
         telegramBotName,
@@ -236,7 +235,6 @@ const fetchProps = async (user, location, params) => {
         })
       ),
       mode: process.env.MODE,
-      // location: process.env.LOCATION,
       location,
       telegramBotName,
     }
@@ -264,7 +262,6 @@ const fetchProps = async (user, location, params) => {
         })
       ),
       mode: process.env.MODE,
-      // location: process.env.LOCATION,
       error: JSON.parse(JSON.stringify(error)),
       location,
       telegramBotName,
