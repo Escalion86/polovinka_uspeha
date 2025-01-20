@@ -22,7 +22,7 @@ import { m } from 'framer-motion'
 import { getSession, signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
@@ -35,7 +35,6 @@ import SvgWave from 'svg/SvgWave'
 import TelegramLoginButton from 'react-telegram-login'
 import Divider from '@components/Divider'
 import Button from '@components/Button'
-import getLocationProps from '@helpers/getLocationProps'
 // import TelegramLoginButton from '@components/TelegramLoginButton'
 
 const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
@@ -323,8 +322,31 @@ const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
     })
 }
 
+const routeAfterLogin = (router, location) => {
+  if (router.query?.page) {
+    return router.push(`/${location}/cabinet/${router.query?.page}`, '', {
+      shallow: true,
+    })
+  }
+
+  if (router.query?.event)
+    return router.push(`/${location}/event/${router.query?.event}`, '', {
+      shallow: true,
+    })
+
+  if (router.query?.service)
+    return router.push(`/${location}/service/${router.query?.service}`, '', {
+      shallow: true,
+    })
+
+  return router.push(`/${location}/cabinet`, '', { shallow: true })
+}
+
 const LoginPage = (props) => {
   const router = useRouter()
+  const query = { ...router.query }
+  delete query.location
+
   const { location } = props
 
   const [process, setProcess] = useState('authorization')
@@ -346,13 +368,7 @@ const LoginPage = (props) => {
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
-  const telegramBotName = useMemo(
-    () =>
-      `${props.mode === 'development' ? 'dev_' : ''}${getLocationProps(inputLocation).telegramBotName}`,
-    [inputLocation]
-  )
-
-  console.log('telegramBotName :>> ', telegramBotName)
+  const telegramBotName = props.telegramBotName
 
   const isPWA = useAtomValue(isPWAAtom)
 
@@ -386,8 +402,9 @@ const LoginPage = (props) => {
         photo_url,
         username: username === 'undefined' ? undefined : username,
         registration: forceReg || process === 'registration' ? 'true' : 'false',
+        location,
       }).then((res) => {
-        if (res.error === 'CredentialsSignin') {
+        if (res?.error === 'CredentialsSignin') {
           setWaitingResponse(false)
           setInputPassword('')
           // addError({
@@ -402,15 +419,7 @@ const LoginPage = (props) => {
             username: username === 'undefined' ? undefined : username,
           })
         } else {
-          if (router.query?.event)
-            router.push(`/${location}/event/` + router.query?.event, '', {
-              shallow: true,
-            })
-          else if (router.query?.service)
-            router.push(`/${location}/service/` + router.query?.service, '', {
-              shallow: true,
-            })
-          else router.push(`/${location}/cabinet`, '', { shallow: true })
+          routeAfterLogin(router, location)
         }
       })
     }
@@ -483,7 +492,10 @@ const LoginPage = (props) => {
       // localStorage.removeItem('location')
       // if (selectedLocation === 'norilsk')
       router.push(
-        `/${inputLocation}/login${process === 'registration' ? '?registration=true' : ''}`,
+        {
+          pathname: `/${inputLocation}/login`,
+          query,
+        },
         '',
         {
           shallow: false,
@@ -680,11 +692,11 @@ const LoginPage = (props) => {
                 password: inputPassword,
                 location: inputLocation,
               }).then((res) => {
-                if (res.error === 'CredentialsSignin') {
+                if (res?.error === 'CredentialsSignin') {
                   setWaitingResponse(false)
                   setInputPassword('')
                   addError({ password: 'Телефон или пароль не верны' })
-                } else router.push(`/${inputLocation}/cabinet/questionnaire`)
+                } else routeAfterLogin(router, inputLocation)
               })
             }
             // Если код не верный
@@ -718,15 +730,7 @@ const LoginPage = (props) => {
           setInputPassword('')
           addError({ password: 'Телефон или пароль не верны' })
         } else {
-          if (router.query?.event)
-            router.push(`/${location}/event/` + router.query?.event, '', {
-              shallow: true,
-            })
-          else if (router.query?.service)
-            router.push(`/${location}/service/` + router.query?.service, '', {
-              shallow: true,
-            })
-          else router.push(`/${location}/cabinet`, '', { shallow: true })
+          routeAfterLogin(router, location)
         }
       })
     }
@@ -1247,6 +1251,7 @@ const LoginPage = (props) => {
                       </div>
                     ) : (
                       <div
+                        key={telegramBotName}
                         className={cn(
                           'relative',
                           process === 'registration' &&

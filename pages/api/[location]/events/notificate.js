@@ -26,7 +26,7 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
 
   const users = await Users.find({
     role:
-      process.env.NODE_ENV === 'development'
+      process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
         ? 'dev'
         : { $in: rolesIdsToNewEventsByTagsNotification },
     'notifications.settings.newEventsByTags': true,
@@ -181,7 +181,8 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
     [
       {
         text: '\u{1F4C5} На сайте',
-        url: process.env.DOMAIN + '/event/' + String(event._id),
+        url:
+          process.env.DOMAIN + '/' + location + '/event/' + String(event._id),
       },
       // TODO Исправить запись через телеграм
       // ---------------------------------------
@@ -201,7 +202,8 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
     [
       {
         text: '\u{1F4C5} На сайте',
-        url: process.env.DOMAIN + '/event/' + String(event._id),
+        url:
+          process.env.DOMAIN + '/' + location + '/event/' + String(event._id),
       },
       {
         text: '\u{1F4DD} Записаться',
@@ -252,7 +254,6 @@ export default async function handler(req, res) {
 
   if (method === 'GET') {
     const eventId = query.eventId
-    console.log('eventId: ', eventId)
     await notificateUsersAboutEvent(eventId, location, req)
     return res?.status(200).json({ success: true })
   }

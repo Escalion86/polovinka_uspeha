@@ -5,6 +5,7 @@ import Divider from '@components/Divider'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
+import InputNumber from '@components/InputNumber'
 import InputWrapper from '@components/InputWrapper'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
@@ -301,7 +302,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
 
         <FormWrapper className="gap-y-1">
           <Input
-            label="Название анкеты"
+            label="Название анкеты (будет видно пользователем в заголовке)"
             value={questionnaireName}
             onChange={setQuestionnaireName}
           />
@@ -446,7 +447,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                   )}
                   {item.type === 'customList' && (
                     <div className="flex mt-3 gap-x-1">
-                      <Input
+                      <InputNumber
                         label="Минимум пунктов"
                         value={item.params?.minItems}
                         onChange={(newValue) =>
@@ -464,11 +465,11 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                             )
                           )
                         }
-                        type="number"
+                        // type="number"
                         // inputClassName="w-40"
                         noMargin
                       />
-                      <Input
+                      <InputNumber
                         label="Максимум пунктов"
                         value={item.params?.maxItems}
                         onChange={(newValue) =>
@@ -486,7 +487,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                             )
                           )
                         }
-                        type="number"
+                        // type="number"
                         // inputClassName="w-40"
                         noMargin
                       />
@@ -537,7 +538,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                         // inputClassName="w-40"
                         noMargin
                       /> */}
-                      <Input
+                      <InputNumber
                         label="Максимум фотографий"
                         value={item.params?.maxImages}
                         onChange={(newValue) =>
@@ -555,7 +556,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                             )
                           )
                         }
-                        type="number"
+                        // type="number"
                         // inputClassName="w-40"
                         noMargin
                       />
@@ -563,7 +564,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                   )}
                   {item.type === 'number' && (
                     <div className="flex mt-3 gap-x-1">
-                      <Input
+                      <InputNumber
                         label="Минимум"
                         value={item.params?.min}
                         onChange={
@@ -580,11 +581,11 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                             )
                           // onChange({ params: { min: newValue } }, index)
                         }
-                        type="number"
+                        // type="number"
                         // inputClassName="w-40"
                         noMargin
                       />
-                      <Input
+                      <InputNumber
                         label="Максимум"
                         value={item.params?.max}
                         onChange={
@@ -601,7 +602,7 @@ const questionnaireConstructorFunc = (startData, onConfirm) => {
                             )
                           // onChange({ params: { max: newValue } }, index)
                         }
-                        type="number"
+                        // type="number"
                         // inputClassName="w-40"
                         noMargin
                       />

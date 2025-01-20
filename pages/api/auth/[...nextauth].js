@@ -94,9 +94,10 @@ export default async function auth(req, res) {
               'notifications.telegram.id': telegramIdNum,
             }).lean()
 
-            if (fetchedUser) {
+            if (fetchedUser?._id) {
               return {
                 name: fetchedUser._id,
+                email: location,
               }
             } else {
               if (registration === 'true') {
@@ -124,9 +125,11 @@ export default async function auth(req, res) {
                   first_name,
                   last_name: last_name === 'undefined' ? undefined : last_name,
                   images: [photo_url],
+                  location,
                 })
                 return {
                   name: newUser._id,
+                  email: location,
                 }
               }
               return null
@@ -157,7 +160,6 @@ export default async function auth(req, res) {
         //   { from: 'nextauth callback session', user: session?.user },
         //   process.env.NEXTAUTH_SITE
         // )
-        // console.log('session', Object.keys(session))
         // console.log('session.user', session.user)
         const userId = session.user.name
         const location = session.user.email
@@ -253,6 +255,7 @@ export default async function auth(req, res) {
         //     },
         //   })
         // }
+        session.location = location
         return Promise.resolve(session)
       },
     },

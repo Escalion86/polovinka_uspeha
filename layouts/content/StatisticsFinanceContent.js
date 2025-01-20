@@ -105,6 +105,9 @@ const StatisticsFinanceContent = () => {
     [incomeOfEventsByDate, incomeOfInternalByDate]
   )
 
+  // console.log('incomeAverageByYears :>> ', incomeAverageByYears)
+  // console.log('dataOfIncomeByDate :>> ', dataOfIncomeByDate)
+
   const years = useMemo(
     () => Object.keys(incomeAverageByYears).sort((a, b) => a - b),
     [incomeAverageByYears]

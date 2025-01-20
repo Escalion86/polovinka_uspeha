@@ -198,8 +198,9 @@ import { uid } from 'uid'
 import ImagesServerContent from '@layouts/content/ImagesServerContent'
 import LikesContent from '@layouts/content/LikesContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
-import menuHiddenLoggedUserLikesSelector from '@state/selectors/menuHiddenLoggedUserLikesSelector'
+// import menuHiddenLoggedUserLikesSelector from '@state/selectors/menuHiddenLoggedUserLikesSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
+
 const colors = [
   'border-blue-400',
   'border-red-400',
@@ -457,7 +458,7 @@ export const LOCATIONS = {
     // domen: 'https://половинкауспеха.рф',
     // short: 'krsk',
     imageFolder: 'polovinka_uspeha',
-    telegramBotName: 'polovinka_uspeha_bot',
+    // telegramBotName: 'polovinka_uspeha_bot',
     towns: [
       'Красноярск',
       'Сосновоборск',
@@ -474,7 +475,7 @@ export const LOCATIONS = {
     // domen: 'https://nrsk.половинкауспеха.рф',
     // short: 'nrsk',
     imageFolder: 'polovinka_uspeha_nrsk',
-    telegramBotName: 'polovinka_uspeha_nrsk_bot',
+    // telegramBotName: 'polovinka_uspeha_nrsk_bot',
     towns: ['Норильск', 'Талнах', 'Кайеркан', 'Оганер', 'Дудинка', 'Алыкель'],
     hidden: false,
   },
@@ -484,7 +485,7 @@ export const LOCATIONS = {
     // domen: 'https://nrsk.половинкауспеха.рф',
     // short: 'nrsk',
     imageFolder: 'polovinka_uspeha_ekb',
-    telegramBotName: 'polovinka_uspeha_ekb_bot',
+    // telegramBotName: 'polovinka_uspeha_ekb_bot',
     towns: [
       'Екатеринбург',
       'Среднеуральск',
@@ -497,7 +498,7 @@ export const LOCATIONS = {
   },
 }
 
-export const LOCATIONS_KEYS_VISIBLE = Object.keys(LOCATIONS).map(
+export const LOCATIONS_KEYS_VISIBLE = Object.keys(LOCATIONS).filter(
   (location) => !LOCATIONS[location].hidden
 )
 
@@ -1901,7 +1902,7 @@ export const pages = [
     href: 'likes',
     icon: faHeart,
     badge: badgeLoggedUserLikesToSeeSelector,
-    hidden: menuHiddenLoggedUserLikesSelector,
+    // hidden: menuHiddenLoggedUserLikesSelector,
     accessRoles: CONTENTS['likes'].accessRoles,
     roleAccess: CONTENTS['likes'].roleAccess,
   },

@@ -7,7 +7,7 @@ import { H2 } from '@components/tags'
 import Header from '@layouts/Header'
 import eventViewFunc from '@layouts/modals/modalsFunc/eventViewFunc'
 import fetchProps from '@server/fetchProps'
-import eventsAtom from '@state/atoms/eventsAtom'
+// import eventsAtom from '@state/atoms/eventsAtom'
 import isPWAAtom from '@state/atoms/isPWAAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -17,8 +17,11 @@ import Head from 'next/head'
 import Link from 'next/link'
 // import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import Skeleton from 'react-loading-skeleton'
+import eventSelector from '@state/selectors/eventSelector'
+import SignOut from '@components/SignOut'
+import locationAtom from '@state/atoms/locationAtom'
 
 const Event = ({ event }) => {
   const eventView = eventViewFunc(event._id)
@@ -75,14 +78,13 @@ const Event = ({ event }) => {
 
 const EventBlock = ({ event }) => {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
-  if (event?.blank) return
 
   return (
     <BlockContainer small>
-      {!event.blank ? (
-        <Event event={event} />
-      ) : (
+      {!event || event?.blank ? (
         <H2>Мероприятие отсутствует</H2>
+      ) : (
+        <Event event={event} />
       )}
       <div className="flex flex-col items-center">
         {loggedUserActive && (
@@ -106,8 +108,11 @@ const EventBlock = ({ event }) => {
 }
 
 function EventPage(props) {
+  const { location } = props
+  const [locationState, setLocationState] = useAtom(locationAtom)
+
   const eventId = props.id
-  const eventsState = useAtomValue(eventsAtom)
+  const event = useAtomValue(eventSelector(eventId))
 
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const hideFab = loggedUserActiveRole?.hideFab
@@ -122,10 +127,16 @@ function EventPage(props) {
     })
   }, [])
 
-  const event =
-    eventsState?.length > 0
-      ? eventsState.find((event) => event._id === eventId)
-      : undefined
+  useEffect(() => setLocationState(location), [location])
+
+  if (props.wrongSession) return <SignOut />
+
+  if (!locationState) return null
+
+  // const event =
+  //   eventsState?.length > 0
+  //     ? eventsState.find((event) => event._id === eventId)
+  //     : undefined
 
   const title = event?.title ?? ''
 
@@ -184,20 +195,38 @@ export default EventPage
 
 export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
+  // console.log('context.req.headers.host  :>> ', context.req.headers.host)
+  // const domain = context.req.headers.host
+  // if (domain === 'nrsk.xn--80aaennmesfbiiz1a7a.xn--p1ai') {
+  //   return {redirect: {
+  //     destination: `/${location}/cabinet/questionnaire`,
+  //   },
+  // }
+  // }
+  // console.log('context.resolvedUrl  :>> ', context.resolvedUrl)
 
   const { params } = context
-  const { id } = params
-  const domen = params?.domen
+  const { id, location } = params
 
-  const fetchedProps = await fetchProps(session?.user, domen, {
+  const fetchedProps = await fetchProps(session?.user, location, {
     additionalBlocks: false,
   })
+
+  if (session?.user && (session.location !== location || !session?.user?._id)) {
+    return {
+      props: {
+        location,
+        wrongSession: true,
+      },
+    }
+  }
 
   return {
     props: {
       ...fetchedProps,
       id,
       loggedUser: session?.user ?? null,
+      location,
     },
   }
 }

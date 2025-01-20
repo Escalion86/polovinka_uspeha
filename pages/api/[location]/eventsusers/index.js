@@ -165,6 +165,7 @@ export default async function handler(req, res) {
       const db = await dbConnect(location)
       if (!db)
         return res?.status(400).json({ success: false, error: 'db error' })
+
       const { data } = body.data
       if (!data)
         return res?.status(400).json({ success: false, data: 'No data' })

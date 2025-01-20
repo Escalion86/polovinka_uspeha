@@ -3,7 +3,7 @@ import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventI
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 
 const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
   const EventSignUpToReserveAfterErrorModal = ({
@@ -20,9 +20,9 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
 
     const eventId = event._id
 
-    const [, refreshEventState] = useAtom(
-      asyncEventsUsersByEventIdAtom(eventId)
-    )
+    // const [, refreshEventState] = useAtom(
+    //   asyncEventsUsersByEventIdAtom(eventId)
+    // )
 
     const onClickConfirm = async (onSuccess) => {
       closeModal()
@@ -57,7 +57,9 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
       )
     }, [])
 
-    useEffect(() => refreshEventState(), [])
+    // useEffect(() => {
+    //   refreshEventState()
+    // }, [])
 
     const subEvent =
       event?.subEvents?.length > 1 && subEventId

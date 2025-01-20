@@ -1,6 +1,6 @@
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
-import usersAtomAsync from '@state/async/usersAtomAsync'
+// import usersAtomAsync from '@state/async/usersAtomAsync'
 import fetchProps from '@server/fetchProps'
 import Header from '@layouts/Header'
 import ContactsBlock from '@blocks/ContactsBlock'
@@ -8,9 +8,11 @@ import userViewFunc from '@layouts/modals/modalsFunc/userViewFunc'
 import { H2 } from '@components/tags'
 import StateLoader from '@components/StateLoader'
 import { useEffect } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import BlockContainer from '@components/BlockContainer'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import userSelector from '@state/selectors/userSelector'
+import locationAtom from '@state/atoms/locationAtom'
 
 const User = ({ user }) => {
   const userView = userViewFunc(user._id)
@@ -33,19 +35,22 @@ const User = ({ user }) => {
 }
 
 function UserPage(props) {
+  const { location } = props
+  const [locationState, setLocationState] = useAtom(locationAtom)
+
   const userId = props.id
 
   // const router = useRouter()
 
-  const usersState = useAtomValue(usersAtomAsync)
+  const user = useAtomValue(userSelector(userId))
 
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const seeMembersOnly = loggedUserActiveRole?.users?.seeMembersOnly
 
-  const user =
-    usersState?.length > 0
-      ? usersState.find((user) => user?._id === userId)
-      : undefined
+  // const user =
+  //   usersState?.length > 0
+  //     ? usersState.find((user) => user?._id === userId)
+  //     : undefined
 
   const canSee =
     loggedUserActiveRole?.users?.see &&
@@ -59,6 +64,12 @@ function UserPage(props) {
       document.documentElement.style.setProperty('--vh', `${vh}px`)
     })
   }, [])
+
+  useEffect(() => setLocationState(location), [location])
+
+  if (props.wrongSession) return <SignOut />
+
+  if (!locationState) return null
 
   // const title = event?.title ?? ''
   // const query = event?._id ? { event: event._id } : {}
@@ -159,15 +170,27 @@ export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
 
   const { params } = context
-  const { id } = params
+  const { id, location } = params
 
-  const fetchedProps = await fetchProps(session?.user)
+  const fetchedProps = await fetchProps(session?.user, location, {
+    additionalBlocks: false,
+  })
+
+  if (session?.user && (session.location !== location || !session?.user?._id)) {
+    return {
+      props: {
+        location,
+        wrongSession: true,
+      },
+    }
+  }
 
   return {
     props: {
       ...fetchedProps,
       id,
       loggedUser: session?.user ?? null,
+      location,
     },
   }
 }

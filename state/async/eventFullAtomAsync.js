@@ -8,7 +8,7 @@ import locationAtom from '@state/atoms/locationAtom'
 
 export const eventFullAtomAsync = atomFamily((id) =>
   atomWithDefault(async (get) => {
-    if (!id) return DEFAULT_EVENT
+    if (!id) return
     const location = get(locationAtom)
     const res = await getData(
       `/api/${location}/events/` + id,

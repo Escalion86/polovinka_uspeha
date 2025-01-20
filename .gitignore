@@ -47,6 +47,7 @@ REST
 requests.rest
 
 google_calendar_token.json
+/google_calendar_tokens
 
 #temp
 /app2

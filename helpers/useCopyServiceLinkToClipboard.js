@@ -1,11 +1,13 @@
 import copyToClipboard from './copyToClipboard'
 import useSnackbar from './useSnackbar'
 
-const useCopyServiceLinkToClipboard = (serviceId) => {
+const useCopyServiceLinkToClipboard = (location, serviceId) => {
   const { info } = useSnackbar()
 
   return () => {
-    copyToClipboard(window.location.origin + '/service/' + serviceId)
+    copyToClipboard(
+      window.location.origin + '/' + location + '/service/' + serviceId
+    )
     info('Ссылка на услугу скопирована в буфер обмена')
   }
 }

@@ -14,6 +14,7 @@ import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import cn from 'classnames'
+import InputNumber from './InputNumber'
 
 // function urlToBase64(url) {
 //   return fetch(url)
@@ -235,9 +236,9 @@ export const SvgBackgroundInput = ({
                 set({ gradient2Color: value })
               }}
             />
-            <Input
+            <InputNumber
               label="Угол"
-              type="number"
+              // type="number"
               // className="w-[70px]"
               inputClassName="w-[36px]"
               value={angle}

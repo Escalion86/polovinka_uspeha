@@ -743,6 +743,16 @@ const modalsFuncGenerator = (
       addModal(
         require('./modalsFunc/remindDateFunc').default(remindDate, onAdd)
       ),
+    external: {
+      qrCodeGenerator: ({ type, id, title }) =>
+        addModal(
+          require('./modalsFunc/qrCodeGeneratorFunc').default({
+            type,
+            id,
+            title,
+          })
+        ),
+    },
   }
 }
 

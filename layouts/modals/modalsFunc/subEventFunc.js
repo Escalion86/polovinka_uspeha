@@ -5,6 +5,7 @@ import FormRow from '@components/FormRow'
 import IconCheckBox from '@components/IconCheckBox'
 import InfinityToggleButton from '@components/IconToggleButtons/InfinityToggleButton'
 import Input from '@components/Input'
+import InputNumber from '@components/InputNumber'
 import InputWrapper from '@components/InputWrapper'
 import PriceInput from '@components/PriceInput'
 import Slider from '@components/Slider'
@@ -61,7 +62,7 @@ const subEventFunc = (props, onChange, rules) => {
     const [maxParticipants, setMaxParticipants] = useState(
       props?.maxParticipants ?? DEFAULT_SUBEVENT.maxParticipants
     )
-    console.log('maxParticipants :>> ', maxParticipants)
+
     const [maxMans, setMaxMans] = useState(
       props?.maxMans ?? DEFAULT_SUBEVENT.maxMans
     )
@@ -435,7 +436,7 @@ const subEventFunc = (props, onChange, rules) => {
               label="Если мест нет, то возможно записаться в резерв"
             /> */}
             <FormRow>
-              <Input
+              <InputNumber
                 ref={refPerticipantsMax}
                 label={
                   <div className="flex items-center gap-x-1">
@@ -445,21 +446,19 @@ const subEventFunc = (props, onChange, rules) => {
                     <span>max участников</span>
                   </div>
                 }
-                type={maxParticipantsCheck ? 'text' : 'number'}
+                // type={maxParticipantsCheck ? 'text' : 'number'}
                 className="w-44"
                 inputClassName="w-16 text-center"
-                value={
-                  maxParticipantsCheck
-                    ? 'Без ограничений'
-                    : (maxParticipants ?? 0)
-                }
+                value={maxParticipantsCheck ? null : (maxParticipants ?? 0)}
                 onChange={setMaxParticipants}
-                placeholder={maxParticipantsCheck ? '' : '0'}
+                // placeholder={'Без ограничений'}
                 disabled={maxParticipantsCheck}
                 min={0}
                 onFocus={handleFocus}
                 fullWidth={false}
                 noMargin
+                placeholderOnDisabled="Без ограничений"
+                showDisabledIcon={false}
               />
               <InfinityToggleButton
                 size="s"
@@ -484,7 +483,7 @@ const subEventFunc = (props, onChange, rules) => {
               >
                 <div className="flex-1 px-1">
                   <FormRow>
-                    <Input
+                    <InputNumber
                       ref={refMansMax}
                       label={
                         <div className="flex items-center gap-x-1">
@@ -494,17 +493,19 @@ const subEventFunc = (props, onChange, rules) => {
                           <span>max</span>
                         </div>
                       }
-                      type={maxMansCheck ? 'text' : 'number'}
+                      // type={maxMansCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      value={maxMansCheck ? 'Без ограничений' : (maxMans ?? 0)}
+                      value={maxMansCheck ? null : (maxMans ?? 0)}
                       onChange={setMaxMans}
-                      placeholder={maxMansCheck ? '' : '0'}
+                      // placeholder={maxMansCheck ? '' : '0'}
                       disabled={maxMansCheck}
                       min={0}
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
+                      placeholderOnDisabled="Без ограничений"
+                      showDisabledIcon={false}
                     />
                     <InfinityToggleButton
                       size="s"
@@ -515,7 +516,7 @@ const subEventFunc = (props, onChange, rules) => {
                     />
                   </FormRow>
                   <FormRow>
-                    <Input
+                    <InputNumber
                       ref={refMansNoviceMax}
                       label={
                         <div className="flex items-center gap-x-1">
@@ -523,21 +524,19 @@ const subEventFunc = (props, onChange, rules) => {
                           <span>max</span>
                         </div>
                       }
-                      type={maxMansNoviceCheck ? 'text' : 'number'}
+                      // type={maxMansNoviceCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      value={
-                        maxMansNoviceCheck
-                          ? 'Без ограничений'
-                          : (maxMansNovice ?? 0)
-                      }
+                      value={maxMansNoviceCheck ? null : (maxMansNovice ?? 0)}
                       onChange={setMaxMansNovice}
-                      placeholder={maxMansNoviceCheck ? '' : '0'}
+                      // placeholder={maxMansNoviceCheck ? '' : '0'}
                       disabled={maxMansNoviceCheck}
                       min={0}
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
+                      placeholderOnDisabled="Без ограничений"
+                      showDisabledIcon={false}
                     />
                     <InfinityToggleButton
                       size="s"
@@ -548,7 +547,7 @@ const subEventFunc = (props, onChange, rules) => {
                     />
                   </FormRow>
                   <FormRow>
-                    <Input
+                    <InputNumber
                       ref={refMansMemberMax}
                       label={
                         <div className="flex items-center gap-x-1">
@@ -556,21 +555,19 @@ const subEventFunc = (props, onChange, rules) => {
                           <span>max</span>
                         </div>
                       }
-                      type={maxMansMemberCheck ? 'text' : 'number'}
+                      // type={maxMansMemberCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      value={
-                        maxMansMemberCheck
-                          ? 'Без ограничений'
-                          : (maxMansMember ?? 0)
-                      }
+                      value={maxMansMemberCheck ? null : (maxMansMember ?? 0)}
                       onChange={setMaxMansMember}
-                      placeholder={maxMansMemberCheck ? '' : '0'}
+                      // placeholder={maxMansMemberCheck ? '' : '0'}
                       disabled={maxMansMemberCheck}
                       min={0}
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
+                      placeholderOnDisabled="Без ограничений"
+                      showDisabledIcon={false}
                     />
                     <InfinityToggleButton
                       size="s"
@@ -607,7 +604,7 @@ const subEventFunc = (props, onChange, rules) => {
               >
                 <div className="flex-1 px-1">
                   <FormRow>
-                    <Input
+                    <InputNumber
                       ref={refWomansMax}
                       label={
                         <div className="flex items-center gap-x-1">
@@ -617,19 +614,19 @@ const subEventFunc = (props, onChange, rules) => {
                           <span>max</span>
                         </div>
                       }
-                      type={maxWomansCheck ? 'text' : 'number'}
+                      // type={maxWomansCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
-                      value={
-                        maxWomansCheck ? 'Без ограничений' : (maxWomans ?? 0)
-                      }
+                      value={maxWomansCheck ? null : (maxWomans ?? 0)}
                       onChange={setMaxWomans}
-                      placeholder={maxWomansCheck ? '' : '0'}
+                      // placeholder={maxWomansCheck ? '' : '0'}
                       disabled={maxWomansCheck}
                       min={0}
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
+                      placeholderOnDisabled="Без ограничений"
+                      showDisabledIcon={false}
                     />
                     <InfinityToggleButton
                       size="s"
@@ -640,7 +637,7 @@ const subEventFunc = (props, onChange, rules) => {
                     />
                   </FormRow>
                   <FormRow>
-                    <Input
+                    <InputNumber
                       ref={refWomansNoviceMax}
                       label={
                         <div className="flex items-center gap-x-1">
@@ -648,21 +645,21 @@ const subEventFunc = (props, onChange, rules) => {
                           <span>max</span>
                         </div>
                       }
-                      type={maxWomansNoviceCheck ? 'text' : 'number'}
+                      // type={maxWomansNoviceCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
                       value={
-                        maxWomansNoviceCheck
-                          ? 'Без ограничений'
-                          : (maxWomansNovice ?? 0)
+                        maxWomansNoviceCheck ? null : (maxWomansNovice ?? 0)
                       }
                       onChange={setMaxWomansNovice}
-                      placeholder={maxWomansNoviceCheck ? '' : '0'}
+                      // placeholder={maxWomansNoviceCheck ? '' : '0'}
                       disabled={maxWomansNoviceCheck}
                       min={0}
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
+                      placeholderOnDisabled="Без ограничений"
+                      showDisabledIcon={false}
                     />
                     <InfinityToggleButton
                       size="s"
@@ -673,7 +670,7 @@ const subEventFunc = (props, onChange, rules) => {
                     />
                   </FormRow>
                   <FormRow>
-                    <Input
+                    <InputNumber
                       ref={refWomansMemberMax}
                       label={
                         <div className="flex items-center gap-x-1">
@@ -681,21 +678,21 @@ const subEventFunc = (props, onChange, rules) => {
                           <span>max</span>
                         </div>
                       }
-                      type={maxWomansMemberCheck ? 'text' : 'number'}
+                      // type={maxWomansMemberCheck ? 'text' : 'number'}
                       className="w-44"
                       inputClassName="w-16 text-center"
                       value={
-                        maxWomansMemberCheck
-                          ? 'Без ограничений'
-                          : (maxWomansMember ?? 0)
+                        maxWomansMemberCheck ? null : (maxWomansMember ?? 0)
                       }
                       onChange={setMaxWomansMember}
-                      placeholder={maxWomansMemberCheck ? '' : '0'}
+                      // placeholder={maxWomansMemberCheck ? '' : '0'}
                       disabled={maxWomansMemberCheck}
                       min={0}
                       onFocus={handleFocus}
                       fullWidth={false}
                       noMargin
+                      placeholderOnDisabled="Без ограничений"
+                      showDisabledIcon={false}
                     />
                     <InfinityToggleButton
                       size="s"

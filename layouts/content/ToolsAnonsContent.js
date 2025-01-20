@@ -25,6 +25,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
+import InputNumber from '@components/InputNumber'
 
 const styles = [
   {
@@ -336,9 +337,9 @@ const ToolsAnonsContent = () => {
         }}
       />
       <div className="flex flex-wrap gap-x-1">
-        <Input
+        <InputNumber
           label="Макс. мероприятий на странице"
-          type="number"
+          // type="number"
           className="w-[146px]"
           inputClassName="w-[64px]"
           value={maxItemsOnList}
@@ -348,9 +349,9 @@ const ToolsAnonsContent = () => {
           fullWidth={false}
           // noMargin
         />
-        <Input
+        <InputNumber
           label="Размер шрифта мероприятий"
-          type="number"
+          // type="number"
           className="w-[128px]"
           inputClassName="w-[64px]"
           value={fontSize}
@@ -360,9 +361,9 @@ const ToolsAnonsContent = () => {
           fullWidth={false}
           // noMargin
         />
-        <Input
+        <InputNumber
           label="Размер шрифта даты"
-          type="number"
+          // type="number"
           className="w-[128px]"
           inputClassName="w-[64px]"
           value={dateFontSize}
@@ -372,9 +373,9 @@ const ToolsAnonsContent = () => {
           fullWidth={false}
           // noMargin
         />
-        <Input
+        <InputNumber
           label="Позиция по X"
-          type="number"
+          // type="number"
           className="w-[128px]"
           inputClassName="w-[64px]"
           value={startX}
@@ -384,9 +385,9 @@ const ToolsAnonsContent = () => {
           fullWidth={false}
           // noMargin
         />
-        <Input
+        <InputNumber
           label="Позиция по Y"
-          type="number"
+          // type="number"
           className="w-[128px]"
           inputClassName="w-[64px]"
           value={startY}
@@ -395,9 +396,9 @@ const ToolsAnonsContent = () => {
           max={1400}
           fullWidth={false}
         />
-        <Input
+        <InputNumber
           label="Макс высота списка"
-          type="number"
+          // type="number"
           className="w-[128px]"
           inputClassName="w-[64px]"
           value={maxHeight}
@@ -406,9 +407,9 @@ const ToolsAnonsContent = () => {
           max={1920}
           fullWidth={false}
         />
-        <Input
+        <InputNumber
           label="Отступ списка от заголовка"
-          type="number"
+          // type="number"
           className="w-[128px]"
           inputClassName="w-[64px]"
           value={titleGap}

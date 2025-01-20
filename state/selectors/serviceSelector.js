@@ -6,7 +6,7 @@ import servicesAtom from '@state/atoms/servicesAtom'
 
 export const serviceSelector = atomFamily((id) =>
   atom((get) => {
-    if (!id) return DEFAULT_SERVICE
+    if (!id) return
     return get(servicesAtom).find((item) => item._id === id)
   })
 )

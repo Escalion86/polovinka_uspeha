@@ -71,7 +71,7 @@ export default async function handler(req, res) {
 
           const usersToNotificate = await Users.find({
             role:
-              process.env.NODE_ENV === 'development'
+              process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
                 ? 'dev'
                 : { $in: rolesIdsToNotification },
 
@@ -147,7 +147,7 @@ export default async function handler(req, res) {
             const birthdayButton = [
               {
                 text: '\u{1F382} Посмотреть дни рождения на сайте',
-                url: process.env.DOMAIN + '/cabinet/birthdays', // req.headers.origin
+                url: process.env.DOMAIN + '/' + location + '/cabinet/birthdays', // req.headers.origin
               },
             ]
 
@@ -234,7 +234,7 @@ export default async function handler(req, res) {
 
         // const usersToNotificate = await Users.find({
         //   role:
-        //     process.env.NODE_ENV === 'development'
+        //     process.env.TELEGRAM_NOTIFICATION_DEV_ONLY
         //       ? 'dev'
         //       : { $in: rolesIdsToNotification },
 

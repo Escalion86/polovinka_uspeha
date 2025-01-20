@@ -32,6 +32,8 @@ import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import rolesAtom from '@state/atoms/rolesAtom'
 
+import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
+
 // import additionalBlocksAtomJ from '@state/atoms/additionalBlocksAtom'
 // import directionsAtomJ from '@state/atoms/directionsAtom'
 // import eventsAtomJ from '@state/atoms/eventsAtom'
@@ -66,7 +68,7 @@ import TopInfo from './TopInfo'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import CheckSiteUpdateNotification from './CheckSiteUpdateNotification'
 // import usersAtomAsync from '@state/async/usersAtomAsync'
-import isLoadedAtom from '@state/atoms/isLoadedAtom'
+// import isLoadedAtom from '@state/atoms/isLoadedAtom'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
@@ -81,6 +83,7 @@ const StateLoader = (props) => {
   const [modalsFunc, setModalsFunc] = useAtom(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useAtom(isSiteLoadingAtom)
+  const setTelegramBotName = useSetAtom(telegramBotNameAtom)
   const [mode, setMode] = useAtom(modeAtom)
   // const [location, setLocation] = useAtom(locationAtom)
   const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
@@ -95,7 +98,7 @@ const StateLoader = (props) => {
   const setDirectionsState = useSetAtom(directionsAtom)
   const setAdditionalBlocksState = useSetAtom(additionalBlocksAtom)
   const setUsersState = useSetAtom(usersAtomAsync)
-  const setIsLoadedUsersAtom = useSetAtom(isLoadedAtom('usersAtomAsync'))
+  // const setIsLoadedUsersAtom = useSetAtom(isLoadedAtom('usersAtomAsync'))
   const setReviewsState = useSetAtom(reviewsAtom)
   const [siteSettingsState, setSiteSettingsState] = useAtom(siteSettingsAtom)
   const setRolesSettingsState = useSetAtom(rolesAtom)
@@ -185,7 +188,7 @@ const StateLoader = (props) => {
     }
     if (props.users?.length > 0) {
       setUsersState(props.users)
-      setIsLoadedUsersAtom(true)
+      // setIsLoadedUsersAtom(true)
     }
     setReviewsState(props.reviews)
     // setPaymentsState(props.payments)
@@ -201,6 +204,7 @@ const StateLoader = (props) => {
     // setServicesUsersState(props.servicesUsers)
     setServerSettingsState(props.serverSettings)
     setMode(props.mode ?? 'production')
+    setTelegramBotName(props.telegramBotName)
     // setLocation(props.location ?? 'krasnoyarsk')
     setIsSiteLoading(false)
 
@@ -284,7 +288,7 @@ const StateLoader = (props) => {
         </div>
       ) : (
         <div className="relative w-full bg-white">
-          {mode === 'development' && <TopInfo />}
+          {mode === 'dev' && <TopInfo />}
           <DeviceCheck right />
           {props.children}
         </div>

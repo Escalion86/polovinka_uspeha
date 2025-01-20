@@ -15,6 +15,9 @@ import DropDown from '@components/DropDown'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import Image from 'next/image'
+import isUserAdmin from '@helpers/isUserAdmin'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import { faQrcode } from '@fortawesome/free-solid-svg-icons'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -24,6 +27,7 @@ const CheckedItem = ({ children }) => (
 )
 
 const CabinetHeader = ({ title = '', titleLink, icon }) => {
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const loggedUser = useAtomValue(loggedUserAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
@@ -84,6 +88,18 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
           <Link prefetch={false} href="/" shallow>
             <img className="h-12" src="/img/logo_horizontal.png" alt="logo" />
           </Link>
+        </div>
+      )}
+      {isUserAdmin(loggedUser) && (
+        <div
+          className="flex items-center justify-center w-6 h-6 cursor-pointer"
+          onClick={() => {
+            modalsFunc.external.qrCodeGenerator({
+              title: 'QR-код на текущую страницу',
+            })
+          }}
+        >
+          <FontAwesomeIcon icon={faQrcode} className="w-5 h-5 text-white" />
         </div>
       )}
       {loggedUser.role === 'dev' && (

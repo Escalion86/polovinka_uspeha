@@ -23,6 +23,7 @@ import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
+import SignOut from '@components/SignOut'
 
 // import loggedUserActiveStatusAtomJ from '@state/atoms/loggedUserActiveStatusAtom'
 // import loggedUserActiveAtomJ from '@state/atoms/loggedUserActiveAtom'
@@ -46,21 +47,23 @@ function CabinetPage(props) {
   const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
 
   let redirect
-  if (!props.loggedUser) redirect = '/'
-  else if (
-    loggedUserActive &&
-    ((page !== 'questionnaire' &&
-      !isUserQuestionnaireFilled(loggedUserActive)) ||
-      !CONTENTS[page] ||
-      !CONTENTS[page].roleAccess(
-        loggedUserActiveRole,
-        loggedUserActiveStatusName
-      ))
-    // !CONTENTS[page].accessRoles.includes(loggedUserActiveRoleName) ||
-    // (CONTENTS[page].accessStatuses &&
-    //   !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus))
-  )
-    redirect = `/${location}/cabinet/questionnaire`
+  if (!props.wrongSession) {
+    if (!props.loggedUser) redirect = '/'
+    else if (
+      loggedUserActive &&
+      ((page !== 'questionnaire' &&
+        !isUserQuestionnaireFilled(loggedUserActive)) ||
+        !CONTENTS[page] ||
+        !CONTENTS[page].roleAccess(
+          loggedUserActiveRole,
+          loggedUserActiveStatusName
+        ))
+      // !CONTENTS[page].accessRoles.includes(loggedUserActiveRoleName) ||
+      // (CONTENTS[page].accessStatuses &&
+      //   !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus))
+    )
+      redirect = `/${location}/cabinet/questionnaire`
+  }
 
   // Ограничиваем пользователям доступ к страницам
   useEffect(() => {
@@ -68,6 +71,9 @@ function CabinetPage(props) {
   }, [redirect])
 
   useEffect(() => setLocationState(location), [location])
+
+  if (props.wrongSession)
+    return <SignOut callbackUrl={location ? `/${location}` : '/'} />
 
   if (redirect || !locationState) return null
 
@@ -143,17 +149,33 @@ export const getServerSideProps = async (context) => {
   const { params } = context
   const { page, location } = params
 
+  if (!location) {
+    return {
+      redirect: {
+        destination: '/',
+      },
+    }
+  }
+
   if (!session?.user) {
     return {
       redirect: {
-        destination: `/${location}/`,
+        destination: `/${location}?page=${page}`,
+      },
+    }
+  }
+
+  if (session.location !== location || !session?.user?._id) {
+    return {
+      props: {
+        location,
+        wrongSession: true,
       },
     }
   }
 
   // Редиректим пользователей незаполнившим профиль
   if (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) {
-    console.log('----------!!!!----------')
     return {
       redirect: {
         destination: `/${location}/cabinet/questionnaire`,

@@ -15,6 +15,7 @@ export default async function handler(req, res) {
     if (query.test) {
       for (const location of LOCATIONS_KEYS_VISIBLE) {
         const db = await dbConnect(location)
+
         if (!db)
           return res?.status(400).json({ success: false, error: 'db error' })
 
@@ -88,8 +89,6 @@ export default async function handler(req, res) {
         //   },
         // })
 
-        console.log('1 :>> ', 1)
-
         const users = await Users.collection.updateMany(
           {},
           {
@@ -105,8 +104,6 @@ export default async function handler(req, res) {
             },
           }
         )
-
-        console.log('users :>> ', users)
 
         const events = await Events.collection.updateMany(
           {},
@@ -133,8 +130,6 @@ export default async function handler(req, res) {
           }
         )
 
-        console.log('events :>> ', events)
-
         const directions = await Directions.collection.updateMany(
           {},
           {
@@ -143,8 +138,6 @@ export default async function handler(req, res) {
             },
           }
         )
-
-        console.log('directions :>> ', directions)
 
         // console.log(
         //   '!! :>> ',

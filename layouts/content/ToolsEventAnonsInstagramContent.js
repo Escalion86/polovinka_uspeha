@@ -23,6 +23,7 @@ import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
+import InputNumber from '@components/InputNumber'
 
 const getPreview = async () => {
   const input = document.querySelector('#input')
@@ -265,24 +266,24 @@ const ToolsEventAnonsInstagramContent = () => {
           centerLabel
         >
           <div className="flex flex-wrap items-center flex-1 gap-x-2">
-            <Input
+            <InputNumber
               label="Размер шрифта"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={dateFontSize}
-              onChange={(value) => setDateFontSize(parseInt(value))}
+              onChange={(value) => setDateFontSize(value)}
               min={20}
               max={200}
               // noMargin
             />
-            <Input
+            <InputNumber
               label="Позиция по Y"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={dateStartY}
-              onChange={(value) => setDateStartY(parseInt(value))}
+              onChange={(value) => setDateStartY(value)}
               min={0}
               max={1000}
             />
@@ -300,24 +301,24 @@ const ToolsEventAnonsInstagramContent = () => {
           centerLabel
         >
           <div className="flex flex-wrap items-center flex-1 gap-x-2">
-            <Input
+            <InputNumber
               label="Размер шрифта"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={fontSize}
-              onChange={(value) => setFontSize(parseInt(value))}
+              onChange={setFontSize}
               min={20}
               max={200}
               // noMargin
             />
-            <Input
+            <InputNumber
               label="Позиция по Y"
-              type="number"
+              // type="number"
               className="w-[128px]"
               inputClassName="w-[64px]"
               value={startY}
-              onChange={(value) => setStartY(parseInt(value))}
+              onChange={setStartY}
               min={0}
               max={1000}
             />

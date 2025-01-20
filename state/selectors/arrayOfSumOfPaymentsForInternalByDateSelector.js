@@ -6,7 +6,8 @@ export const arrayOfSumOfPaymentsForInternalByDateSelector = atom(
   async (get) => {
     const array = {}
     const allPayments = await get(allPaymentsOfInternalSelector)
-    allPayments.forEach(({ payAt, sum, payDirection }) => {
+    for (let i = 0; i < allPayments.length; i++) {
+      const { payAt, sum, payDirection } = allPayments[i]
       const yearOfPayment = new Date(payAt).getFullYear()
       const monthOfPayment = new Date(payAt).getMonth()
       if (!array[yearOfPayment])
@@ -14,7 +15,7 @@ export const arrayOfSumOfPaymentsForInternalByDateSelector = atom(
       if (payDirection === 'fromInternal')
         array[yearOfPayment][monthOfPayment] += sum / 100
       else array[yearOfPayment][monthOfPayment] -= sum / 100
-    })
+    }
     return array
   }
 )

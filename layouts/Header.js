@@ -15,6 +15,7 @@ import Avatar from './Avatar'
 import UserMenu from './UserMenu'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 import locationAtom from '@state/atoms/locationAtom'
+import { useRouter } from 'next/router'
 
 const MenuItem = ({ text, href = '#' }) => (
   <li>
@@ -53,6 +54,10 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 // ]
 
 const Header = ({ noMenu }) => {
+  const router = useRouter()
+  const query = { ...router.query }
+  delete query.location
+
   const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   // const events = useAtomValue(filteredEventsSelector)
@@ -82,6 +87,7 @@ const Header = ({ noMenu }) => {
   //   (menuItem) =>
   //     !menuItem.key || (props[menuItem.key] && props[menuItem.key].length > 0)
   // )
+
   const menuOpen = useAtomValue(menuOpenAtom)
   return (
     // <div className="w-full h-18">
@@ -92,7 +98,14 @@ const Header = ({ noMenu }) => {
           <Burger />
         </div>
         <div className="absolute z-10 hidden -translate-x-1/2 tablet:block left-1/2">
-          <Link prefetch={false} href={`/${location}`} shallow>
+          <Link
+            prefetch={false}
+            href={{
+              pathname: `/${location}`,
+              query,
+            }}
+            shallow
+          >
             <img
               className="object-contain h-16 laptop:min-w-min"
               src={'/img/logo_horizontal.png'}

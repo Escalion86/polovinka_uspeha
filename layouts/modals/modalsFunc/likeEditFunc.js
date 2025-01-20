@@ -217,33 +217,33 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       //       ? closeModal
       //       : onClickConfirm
       // )
-      setCloseButtonShow(
-        !(eventUser?._id && event.likesProcessActive && likes?.length === 0)
-      )
+      // setCloseButtonShow(
+      //   !(eventUser?._id && event.likesProcessActive && likes?.length === 0)
+      // )
 
-      setOnConfirmFunc(
-        eventUser?._id && event.likesProcessActive && likes?.length === 0
-          ? () => {
-              setEventUserData(
-                eventId,
-                {
-                  likes: {
-                    [eventUser._id]: [],
-                  },
-                },
-                true
-              )
-              closeModal()
-            }
-          : undefined
-      )
+      // setOnConfirmFunc(
+      //   eventUser?._id && event.likesProcessActive && likes?.length === 0
+      //     ? () => {
+      //         setEventUserData(
+      //           eventId,
+      //           {
+      //             likes: {
+      //               [eventUser._id]: [],
+      //             },
+      //           },
+      //           true
+      //         )
+      //         closeModal()
+      //       }
+      //     : undefined
+      // )
       // setCloseButtonShow(!event.likesProcessActive)
-      setConfirmButtonName(
+      setCloseButtonName(
         eventUser?._id && event.likesProcessActive && likes?.length === 0
           ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
           : 'Закрыть'
       )
-      setDeclineButtonShow(adminView)
+      // setDeclineButtonShow(adminView)
       if (!event.likesProcessActive)
         setTitle(
           `Совпадения лайков с участни${user.gender === 'male' ? 'ц' : 'к'}ами`
@@ -461,7 +461,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     title: `Лайки участникам мероприятия`,
     // declineButtonName: 'Оставить как было',
     // confirmButtonName: 'Применить',
-    // closeButtonShow: false,
+    closeButtonShow: true,
     Children: LikeEditModal,
   }
 }
