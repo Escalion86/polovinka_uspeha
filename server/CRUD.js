@@ -101,15 +101,12 @@ const connectToGoogleCalendar = (location) => {
   if (!calendarConstants) return
 
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
-  console.log('111111111 :>> ', 111111111)
   const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
-  console.log('2222222 :>> ', 2222222)
   const calendar = google.calendar({
     version: 'v3',
     project: projectNumber,
     auth: jwtClient,
   })
-  console.log('33333333 :>> ', 33333333)
 
   return calendar
 }
@@ -149,11 +146,6 @@ const addBlankEventToCalendar = async (location) => {
   }
 
   const keyFile = getGoogleCalendarJSONByLocation(location)
-
-  console.log(
-    'getGoogleCalendarJSONByLocation :>> ',
-    getGoogleCalendarJSONByLocation
-  )
 
   const auth = new google.auth.GoogleAuth({
     keyFile,
