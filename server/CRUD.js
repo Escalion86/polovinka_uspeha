@@ -93,27 +93,23 @@ const linkAReformer = (link) => {
 
 const { google } = require('googleapis')
 const SCOPES = ['https://www.googleapis.com/auth/calendar']
-const {
-  GOOGLE_PRIVATE_KEY,
-  GOOGLE_CLIENT_EMAIL,
-  GOOGLE_PROJECT_NUMBER,
-  GOOGLE_CALENDAR_ID,
-  MODE,
-} = process.env
+const { MODE } = process.env
 
 const connectToGoogleCalendar = (location) => {
   const calendarConstants = getGoogleCalendarConstantsByLocation(location)
+  console.log('calendarConstants :>> ', calendarConstants)
   if (!calendarConstants) return
 
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
-
+  console.log('111111111 :>> ', 111111111)
   const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
-
+  console.log('2222222 :>> ', 2222222)
   const calendar = google.calendar({
     version: 'v3',
     project: projectNumber,
     auth: jwtClient,
   })
+  console.log('33333333 :>> ', 33333333)
 
   return calendar
 }
@@ -128,6 +124,8 @@ const addBlankEventToCalendar = async (location) => {
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
 
   const timeZone = getTimeZoneByLocation(location)
+
+  console.log('timeZone :>> ', timeZone)
 
   const calendarEvent = {
     summary: '[blank]',
@@ -151,6 +149,11 @@ const addBlankEventToCalendar = async (location) => {
   }
 
   const keyFile = getGoogleCalendarJSONByLocation(location)
+
+  console.log(
+    'getGoogleCalendarJSONByLocation :>> ',
+    getGoogleCalendarJSONByLocation
+  )
 
   const auth = new google.auth.GoogleAuth({
     keyFile,
