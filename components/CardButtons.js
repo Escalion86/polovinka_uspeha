@@ -80,8 +80,11 @@ const CardButtons = ({
   const device = useAtomValue(windowDimensionsTailwindSelector)
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
 
-  const copyLink =
-    typeOfItem === 'event'
+  if (!item) return null
+
+  const copyLink = !item?._id
+    ? undefined
+    : typeOfItem === 'event'
       ? useCopyEventLinkToClipboard(location, item._id)
       : typeOfItem === 'service'
         ? useCopyServiceLinkToClipboard(location, item._id)

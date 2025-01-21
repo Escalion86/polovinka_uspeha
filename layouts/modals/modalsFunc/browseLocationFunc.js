@@ -8,9 +8,10 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
-const Item = ({ towns = [], checked, onClick }) => (
-  <div
-    onClick={onClick}
+const Item = ({ towns = [], checked, onClick, location }) => (
+  <a
+    href={`/${location}`}
+    // onClick={onClick}
     className={cn(
       checked
         ? 'border-success bg-green-300/50'
@@ -40,7 +41,7 @@ const Item = ({ towns = [], checked, onClick }) => (
         <div className="w-5" />
       )}
     </div>
-  </div>
+  </a>
 )
 
 const browseLocationFunc = () => {
@@ -71,9 +72,13 @@ const browseLocationFunc = () => {
       } else {
         // localStorage.removeItem('location')
         // if (selectedLocation === 'norilsk')
-        router.push(`/${selectedLocation}`, '', {
-          shallow: false,
-        })
+        router.push(
+          { pathname: `/${selectedLocation}`, query: { u: 'true' } },
+          '',
+          {
+            shallow: false,
+          }
+        )
         closeModal()
         // if (selectedLocation === 'krasnoyarsk')
         //   router.push('https://половинкауспеха.рф?location=krasnoyarsk', '', {
@@ -101,6 +106,7 @@ const browseLocationFunc = () => {
                 key={location}
                 checked={selectedLocation === location}
                 towns={LOCATIONS[location].towns}
+                location={location}
                 onClick={() => setSelectedLocation(location)}
               />
             ))}

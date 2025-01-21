@@ -53,7 +53,7 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 //   { name: 'Контакты', href: '#contacts', key: null },
 // ]
 
-const Header = ({ noMenu }) => {
+const Header = ({ noMenu, fullLinkInMenu }) => {
   const router = useRouter()
   const query = { ...router.query }
   delete query.location
@@ -66,22 +66,46 @@ const Header = ({ noMenu }) => {
   const services = useAtomValue(filteredServicesSelector)
   const additionalBlocks = useAtomValue(filteredAdditionalBlocksSelector)
 
-  const menu = [{ name: 'Миссия и цели', href: `#about` }]
+  const menu = [
+    {
+      name: 'Миссия и цели',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#about`,
+    },
+  ]
   // if (events?.length > 0)
-  menu.push({ name: 'Мероприятия', href: `#events` })
+  menu.push({
+    name: 'Мероприятия',
+    href: `${fullLinkInMenu ? `/${location}` : ''}#events`,
+  })
   if (directions?.length > 0)
-    menu.push({ name: 'Направления', href: `#directions` })
-  if (services?.length > 0) menu.push({ name: 'Услуги', href: `#services` })
+    menu.push({
+      name: 'Направления',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#directions`,
+    })
+  if (services?.length > 0)
+    menu.push({
+      name: 'Услуги',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#services`,
+    })
   if (additionalBlocks?.length > 0)
     additionalBlocks.forEach((additionalBlock) => {
       if (additionalBlock.menuName)
         menu.push({
           name: additionalBlock.menuName,
-          href: `#` + transliterate(additionalBlock.menuName),
+          href:
+            `${fullLinkInMenu ? `/${location}` : ''}#` +
+            transliterate(additionalBlock.menuName),
         })
     })
-  if (reviews?.length > 0) menu.push({ name: 'Отзывы', href: `#reviews` })
-  menu.push({ name: 'Контакты', href: `#contacts` })
+  if (reviews?.length > 0)
+    menu.push({
+      name: 'Отзывы',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#reviews`,
+    })
+  menu.push({
+    name: 'Контакты',
+    href: `${fullLinkInMenu ? `/${location}` : ''}#contacts`,
+  })
 
   // const filteredMenu = menu.filter(
   //   (menuItem) =>

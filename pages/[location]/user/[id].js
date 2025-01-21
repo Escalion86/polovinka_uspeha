@@ -81,7 +81,7 @@ function UserPage(props) {
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
       <StateLoader {...props}>
-        <Header />
+        <Header noMenu={isPWA} fullLinkInMenu />
         {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
         <BlockContainer small>
           {user?._id && canSee && <User user={user} />}
