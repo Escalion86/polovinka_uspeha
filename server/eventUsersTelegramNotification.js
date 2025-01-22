@@ -49,6 +49,11 @@ const eventUsersTelegramNotification = async ({
       .filter((role) => role?.notifications?.eventRegistration)
       .map((role) => role._id)
 
+    console.log(
+      'rolesIdsToEventUsersNotification :>> ',
+      rolesIdsToEventUsersNotification
+    )
+
     // Получаем список подписанных на уведомления, и если их нет, то выходим сразу
     const usersWithTelegramNotificationsOfEventUsersON = await Users.find({
       role:
@@ -62,6 +67,11 @@ const eventUsersTelegramNotification = async ({
         $ne: null,
       },
     }).lean()
+
+    console.log(
+      'usersWithTelegramNotificationsOfEventUsersON :>> ',
+      usersWithTelegramNotificationsOfEventUsersON
+    )
 
     if (
       !usersWithTelegramNotificationsOfEventUsersON ||
