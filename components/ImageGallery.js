@@ -20,7 +20,7 @@ const ImageWithLoading = ({ original, originalClass }) => {
         className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
         size="lg"
       />
-      {/* <Image
+      <Image
         alt="image"
         src={original}
         width="0"
@@ -30,7 +30,7 @@ const ImageWithLoading = ({ original, originalClass }) => {
         // onLoad={() => setIsLoaded(true)}
         // onError={() => setIsError(true)}
         priority
-      /> */}
+      />
       {/* </div> */}
       {/* ) : (
         <div className="h-full aspect-[16/9] flex justify-center items-center">
