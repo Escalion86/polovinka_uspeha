@@ -56,8 +56,11 @@ const ImageGallery = ({ images, noImage, className }) => {
   if (images?.length === 0 && !noImage) return null
 
   return (
-    <div className="flex justify-center w-full">
-      <div className="flex justify-center border border-gray-400 phoneH:h-60 laptop:h-80 phoneH:max-h-60 laptop:max-h-80 aspect-[16/9] rounded-2xl overflow-hidden shadow-sm">
+    <div className="flex justify-center">
+      <div
+        // style={{ aspectRatio: 'auto 16/9' }}
+        className="flex justify-center overflow-hidden border border-gray-400 shadow-sm min-h-40 phoneH:h-60 laptop:h-80 phoneH:max-h-60 laptop:max-h-80 rounded-2xl"
+      >
         {/* // {images?.length > 0 ? (
           // <ControlledZoom
           //   zoomMargin={20}
