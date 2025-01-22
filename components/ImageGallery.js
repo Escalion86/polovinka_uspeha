@@ -20,7 +20,7 @@ const ImageWithLoading = ({ original, originalClass }) => {
         className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
         size="lg"
       />
-      <Image
+      {/* <Image
         alt="image"
         src={original}
         width="0"
@@ -30,7 +30,7 @@ const ImageWithLoading = ({ original, originalClass }) => {
         // onLoad={() => setIsLoaded(true)}
         // onError={() => setIsError(true)}
         priority
-      />
+      /> */}
       {/* </div> */}
       {/* ) : (
         <div className="h-full aspect-[16/9] flex justify-center items-center">
@@ -59,7 +59,7 @@ const ImageGallery = ({ images, noImage, className }) => {
     <div className="flex justify-center">
       <div
         // style={{ aspectRatio: 'auto 16/9' }}
-        className="flex justify-center overflow-hidden border border-gray-400 shadow-sm min-h-40 phoneH:h-60 laptop:h-80 phoneH:max-h-60 laptop:max-h-80 rounded-2xl"
+        className="flex justify-center aspect-[16/9] w-full phoneH:w-auto overflow-hidden border border-gray-400 shadow-sm min-h-40 phoneH:h-60 laptop:h-80 phoneH:max-h-60 laptop:max-h-80 rounded-2xl"
       >
         {/* // {images?.length > 0 ? (
           // <ControlledZoom

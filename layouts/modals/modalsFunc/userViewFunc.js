@@ -68,7 +68,7 @@ const userViewFunc = (userId, params = {}) => {
     if (!user) return null
 
     return (
-      <FormWrapper flex className="flex-col">
+      <FormWrapper className="flex flex-col">
         <ImageGallery images={user?.images} />
         <div className="flex flex-col flex-1 mt-1">
           <div className="relative flex items-center mb-1 gap-x-2 min-h-6">
