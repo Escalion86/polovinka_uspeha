@@ -16,6 +16,7 @@ import UserMenu from './UserMenu'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 import locationAtom from '@state/atoms/locationAtom'
 import { useRouter } from 'next/router'
+import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 
 const MenuItem = ({ text, href = '#' }) => (
   <li>
@@ -60,7 +61,7 @@ const Header = ({ noMenu, fullLinkInMenu }) => {
 
   const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
-  // const events = useAtomValue(filteredEventsSelector)
+  const events = useAtomValue(filteredEventsSelector)
   const reviews = useAtomValue(filteredReviewsSelector)
   const directions = useAtomValue(filteredDirectionsSelector)
   const services = useAtomValue(filteredServicesSelector)
@@ -72,11 +73,11 @@ const Header = ({ noMenu, fullLinkInMenu }) => {
       href: `${fullLinkInMenu ? `/${location}` : ''}#about`,
     },
   ]
-  // if (events?.length > 0)
-  menu.push({
-    name: 'Мероприятия',
-    href: `${fullLinkInMenu ? `/${location}` : ''}#events`,
-  })
+  if (events?.length > 0)
+    menu.push({
+      name: 'Мероприятия',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#events`,
+    })
   if (directions?.length > 0)
     menu.push({
       name: 'Направления',
@@ -140,7 +141,7 @@ const Header = ({ noMenu, fullLinkInMenu }) => {
           </Link>
         </div>
 
-        <UserMenu />
+        {location && <UserMenu />}
       </div>
       {!noMenu && (
         <>
@@ -158,29 +159,33 @@ const Header = ({ noMenu, fullLinkInMenu }) => {
             )}
           >
             <div className="pt-20 pb-4 w-60">
-              <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
-                {loggedUserActive?._id ? (
-                  <Link
-                    prefetch={false}
-                    href={`/${location}/cabinet`}
-                    shallow
-                    className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general"
-                  >
-                    <Avatar user={loggedUserActive} />
-                    <span className="prevent-select-text">Мой кабинет</span>
-                  </Link>
-                ) : (
-                  <Link
-                    prefetch={false}
-                    href={`/${location}/login`}
-                    shallow
-                    className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general"
-                  >
-                    <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
-                    <span className="prevent-select-text">Авторизоваться</span>
-                  </Link>
-                )}
-              </div>
+              {location && (
+                <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
+                  {loggedUserActive?._id ? (
+                    <Link
+                      prefetch={false}
+                      href={`/${location}/cabinet`}
+                      shallow
+                      className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general"
+                    >
+                      <Avatar user={loggedUserActive} />
+                      <span className="prevent-select-text">Мой кабинет</span>
+                    </Link>
+                  ) : (
+                    <Link
+                      prefetch={false}
+                      href={`/${location}/login`}
+                      shallow
+                      className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general"
+                    >
+                      <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
+                      <span className="prevent-select-text">
+                        Авторизоваться
+                      </span>
+                    </Link>
+                  )}
+                </div>
+              )}
               <div className="px-2 py-2 w-60 laptop:py-0">
                 <ul className="flex flex-col gap-y-2">
                   {menu.map(({ name, href }, index) => (

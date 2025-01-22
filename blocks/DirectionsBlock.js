@@ -41,7 +41,7 @@ const DirectionItem = ({
   )
 }
 
-const DirectionsBlock = ({ startInverse = false }) => {
+const DirectionsBlock = () => {
   const filteredDirections = useAtomValue(filteredDirectionsSelector)
   const events = useAtomValue(eventsAtom)
   const finishedEvents = events.filter((event) => event.status === 'closed')

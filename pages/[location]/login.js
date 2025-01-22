@@ -1360,7 +1360,7 @@ const LoginPage = (props) => {
                   <Divider />
                   <Link
                     prefetch={false}
-                    href="/"
+                    href={`/${location}`}
                     shallow
                     tabIndex={0}
                     className="block py-1 mb-5 text-sm duration-300 cursor-pointer phoneH:text-base hover:text-general"

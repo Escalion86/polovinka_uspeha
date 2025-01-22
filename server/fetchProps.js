@@ -85,29 +85,32 @@ const fetchProps = async (user, location, params) => {
     //   })
     // }
 
-    const events = await Events.find({})
-      .select({
-        description: 0,
-        address: 0,
-        images: 0,
-        organizerId: 0,
-        warning: 0,
-        googleCalendarId: 0,
-        // maxMansMember: 0,
-        // maxMansNovice: 0,
-        // maxWomansMember: 0,
-        // maxWomansNovice: 0,
-        // maxParticipants: 0,
-        // maxMans: 0,
-        // maxWomans: 0,
-        // minMansAge: 0,
-        // minWomansAge: 0,
-        // maxMansAge: 0,
-        // maxWomansAge: 0,
-        // usersStatusAccess: 0,
-        // usersStatusDiscount: 0,
-      })
-      .lean()
+    const events =
+      params?.events === false
+        ? []
+        : await Events.find({})
+            .select({
+              description: 0,
+              address: 0,
+              images: 0,
+              organizerId: 0,
+              warning: 0,
+              googleCalendarId: 0,
+              // maxMansMember: 0,
+              // maxMansNovice: 0,
+              // maxWomansMember: 0,
+              // maxWomansNovice: 0,
+              // maxParticipants: 0,
+              // maxMans: 0,
+              // maxWomans: 0,
+              // minMansAge: 0,
+              // minWomansAge: 0,
+              // maxMansAge: 0,
+              // maxWomansAge: 0,
+              // usersStatusAccess: 0,
+              // usersStatusDiscount: 0,
+            })
+            .lean()
 
     const directions = await Directions.find({})
       .select({
@@ -131,8 +134,12 @@ const fetchProps = async (user, location, params) => {
     //   })
     //   .lean()
     const siteSettings = await SiteSettings.find({}).lean()
-    const rolesSettings = await Roles.find({}).lean()
-    const questionnaires = await Questionnaires.find({}).lean()
+    const rolesSettings =
+      params?.rolesSettings === false ? [] : await Roles.find({}).lean()
+    const questionnaires =
+      params?.questionnaires === false
+        ? []
+        : await Questionnaires.find({}).lean()
     const questionnairesUsers = await QuestionnairesUsers.find({}).lean()
     // const histories = isModer
     //   ? await Histories.find({
@@ -140,7 +147,8 @@ const fetchProps = async (user, location, params) => {
     //     })
     //   : []
 
-    const services = await Services.find({}).lean()
+    const services =
+      params?.services === false ? [] : await Services.find({}).lean()
     // const servicesUsers = await ServicesUsers.find({}).lean()
 
     // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])

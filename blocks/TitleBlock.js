@@ -14,11 +14,13 @@ import locationAtom from '@state/atoms/locationAtom'
 const TitleBlock = () => {
   const userIsLogged = !!useAtomValue(loggedUserAtom)
   const location = useAtomValue(locationAtom)
-  const { townRu } = useAtomValue(locationPropsSelector)
+  const locationProps = useAtomValue(locationPropsSelector)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const router = useRouter()
   const query = { ...router.query }
   delete query.location
+
+  const townRu = locationProps?.townRu
 
   return (
     <div
@@ -57,43 +59,54 @@ const TitleBlock = () => {
           <H1 style={{ textShadow: '1px 1px 2px black' }}>
             Центр серьёзных знакомств
           </H1>
-          <div className="text-center">
-            <h4
-              className="px-2 py-1 text-2xl font-bold text-center duration-300 border cursor-pointer bg-white/20 rounded-xl hover:text-white border-general hover:bg-general/20 text-general"
-              onClick={() => modalsFunc.browseLocation()}
-            >
-              г.{upperCaseFirst(townRu)}
-            </h4>
-            <p className="font-sans text-[12px]">
-              *- если это не ваш регион, то пожалуйста нажмите на него, чтобы
-              сменить
-            </p>
-          </div>
+
+          {townRu && (
+            <div className="text-center">
+              <h4
+                className="px-2 py-1 text-2xl font-bold text-center duration-300 border cursor-pointer bg-white/20 rounded-xl hover:text-white border-general hover:bg-general/20 text-general"
+                onClick={() => modalsFunc.browseLocation()}
+              >
+                {`г.${upperCaseFirst(townRu)}`}
+              </h4>
+              <p className="font-sans text-[12px]">
+                *- если это не ваш регион, то пожалуйста нажмите на него, чтобы
+                сменить
+              </p>
+            </div>
+          )}
           <H3 style={{ textShadow: '1px 1px 2px black' }}>
             Уникальные форматы знакомств
             <br />
             для поиска своей второй половинки
           </H3>
         </div>
-        <Link
-          prefetch={false}
-          href={{
-            pathname: userIsLogged
-              ? `/${location}/cabinet/events`
-              : `/${location}/login`,
-            query: !userIsLogged && {
-              ...query,
-              registration: true,
-            },
-          }}
-          shallow
-        >
+        {townRu ? (
+          <Link
+            prefetch={false}
+            href={{
+              pathname: userIsLogged
+                ? `/${location}/cabinet/events`
+                : `/${location}/login`,
+              query: !userIsLogged && {
+                ...query,
+                registration: true,
+              },
+            }}
+            shallow
+          >
+            <PulseButton
+              className="mt-4"
+              title={userIsLogged ? 'Мой кабинет' : 'Зарегистрироваться'}
+              noPulse={userIsLogged}
+            />
+          </Link>
+        ) : (
           <PulseButton
             className="mt-4"
-            title={userIsLogged ? 'Мой кабинет' : 'Зарегистрироваться'}
-            noPulse={userIsLogged}
+            title="Выбрать регион"
+            onClick={() => modalsFunc.browseLocation()}
           />
-        </Link>
+        )}
       </div>
     </div>
   )
