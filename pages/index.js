@@ -28,7 +28,6 @@ export default function Home(props) {
     router.push(
       {
         pathname: `/krsk/login`,
-        query,
       },
       '',
       { shallow: true }
