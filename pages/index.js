@@ -1,12 +1,12 @@
 import AboutBlock from '@blocks/AboutBlock'
-import AdditionalBlocks from '@blocks/AdditionalBlocks'
+// import AdditionalBlocks from '@blocks/AdditionalBlocks'
 import ContactsBlock from '@blocks/ContactsBlock'
 import DirectionsBlock from '@blocks/DirectionsBlock'
-import EventsBlock from '@blocks/EventsBlock'
+// import EventsBlock from '@blocks/EventsBlock'
 import FooterBlock from '@blocks/FooterBlock'
 import ReviewsBlock from '@blocks/ReviewsBlock'
-import ServicesBlock from '@blocks/ServicesBlock'
-import SupervisorBlock from '@blocks/SupervisorBlock'
+// import ServicesBlock from '@blocks/ServicesBlock'
+// import SupervisorBlock from '@blocks/SupervisorBlock'
 import TitleBlock from '@blocks/TitleBlock'
 import FabMenu from '@components/FabMenu'
 import StateLoader from '@components/StateLoader'
@@ -14,7 +14,7 @@ import Header from '@layouts/Header'
 import fetchProps from '@server/fetchProps'
 import getServerSidePropsFunc from '@server/getServerSidePropsFunc'
 import isPWAAtom from '@state/atoms/isPWAAtom'
-import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+// import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -27,7 +27,7 @@ export default function Home(props) {
   if (isPWA) {
     router.push(
       {
-        pathname: `/${location}/login`,
+        pathname: `/krsk/login`,
         query,
       },
       '',
