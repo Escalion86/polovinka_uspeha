@@ -160,7 +160,7 @@ export const getServerSideProps = async (context) => {
   if (!session?.user) {
     return {
       redirect: {
-        destination: `/${location}?page=${page}`,
+        destination: `/${location}${page ? `?page=${page}` : ''}`,
       },
     }
   }
@@ -185,6 +185,7 @@ export const getServerSideProps = async (context) => {
 
   const fetchedProps = await fetchProps(session?.user, location, {
     additionalBlocks: false,
+    reviews: false,
   })
 
   return {

@@ -122,7 +122,8 @@ const fetchProps = async (user, location, params) => {
           : { shortDescription: 0 }),
       })
       .lean()
-    const reviews = await Reviews.find({}).lean()
+    const reviews =
+      params?.reviews === false ? [] : await Reviews.find({}).lean()
     const additionalBlocks =
       params?.additionalBlocks === false
         ? []
@@ -140,7 +141,10 @@ const fetchProps = async (user, location, params) => {
       params?.questionnaires === false
         ? []
         : await Questionnaires.find({}).lean()
-    const questionnairesUsers = await QuestionnairesUsers.find({}).lean()
+    const questionnairesUsers =
+      params?.questionnairesUsers === false
+        ? []
+        : await QuestionnairesUsers.find({}).lean()
     // const histories = isModer
     //   ? await Histories.find({
     //       // createdAt: { $gt: user.prevActivityAt },
