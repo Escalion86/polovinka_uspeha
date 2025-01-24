@@ -31,7 +31,7 @@ export const getServerSideProps = async (context) => {
     }
   }
 
-  if (session) {
+  if (!session) {
     return {
       redirect: {
         destination: `/${location}${page ? `?page=${page}` : ''}`,
@@ -41,7 +41,7 @@ export const getServerSideProps = async (context) => {
 
   return {
     redirect: {
-      destination: `/${location}/`,
+      destination: `/${location}/cabinet/events`,
     },
   }
 }

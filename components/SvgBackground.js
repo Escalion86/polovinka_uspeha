@@ -1,6 +1,6 @@
 // import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import { useState } from 'react'
 import { useAtomValue } from 'jotai'
 // import Button from './Button'

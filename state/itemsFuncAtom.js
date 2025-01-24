@@ -1,41 +1,48 @@
+// import itemsFuncGenerator from '@state/itemsFuncGenerator'
+// import { atom } from 'jotai'
+import { withAtomEffect } from 'jotai-effect'
+
 import { postData, putData, deleteData } from '@helpers/CRUD'
-import isSiteLoadingAtom from '@state/atoms/isSiteLoadingAtom'
 
-import addErrorModalSelector from '@state/selectors/addErrorModalSelector'
-import setLoadingSelector from '@state/selectors/setLoadingSelector'
-import setNotLoadingSelector from '@state/selectors/setNotLoadingSelector'
-import setErrorSelector from '@state/selectors/setErrorSelector'
-import setNotErrorSelector from '@state/selectors/setNotErrorSelector'
-import eventEditSelector from '@state/selectors/eventEditSelector'
-import eventDeleteSelector from '@state/selectors/eventDeleteSelector'
-import directionEditSelector from '@state/selectors/directionEditSelector'
-import directionDeleteSelector from '@state/selectors/directionDeleteSelector'
-import additionalBlockEditSelector from '@state/selectors/additionalBlockEditSelector'
-import additionalBlockDeleteSelector from '@state/selectors/additionalBlockDeleteSelector'
-import userDeleteSelector from '@state/selectors/userDeleteSelector'
-import userEditSelector from '@state/selectors/userEditSelector'
-import reviewEditSelector from '@state/selectors/reviewEditSelector'
-import reviewDeleteSelector from '@state/selectors/reviewDeleteSelector'
-import paymentsAddSelector from '@state/selectors/paymentsAddSelector'
-import paymentEditSelector from '@state/selectors/paymentEditSelector'
-import paymentsDeleteSelector from '@state/selectors/paymentsDeleteSelector'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import questionnaireEditSelector from '@state/selectors/questionnaireEditSelector'
-import questionnaireDeleteSelector from '@state/selectors/questionnaireDeleteSelector'
-import questionnaireUsersEditSelector from '@state/selectors/questionnaireUsersEditSelector'
-import questionnaireUsersDeleteSelector from '@state/selectors/questionnaireUsersDeleteSelector'
-import serviceEditSelector from '@state/selectors/serviceEditSelector'
-import serviceDeleteSelector from '@state/selectors/serviceDeleteSelector'
-import servicesUsersEditSelector from '@state/selectors/servicesUsersEditSelector'
-import servicesUsersDeleteSelector from '@state/selectors/servicesUsersDeleteSelector'
-import setEventsUsersSelector from '@state/async/setEventsUsersSelector'
-import signOutUserSelector from '@state/async/signOutUserSelector'
-import signUpUserSelector from '@state/async/signUpUserSelector'
-import setEventUserSelector from '@state/async/setEventUserSelector'
-import rolesAtom from '@state/atoms/rolesAtom'
-import updateEventsUsersSelector from '@state/async/updateEventsUsersSelector'
+import addErrorModalSelector from './selectors/addErrorModalSelector'
+import setLoadingSelector from './selectors/setLoadingSelector'
+import setNotLoadingSelector from './selectors/setNotLoadingSelector'
+import setErrorSelector from './selectors/setErrorSelector'
+import setNotErrorSelector from './selectors/setNotErrorSelector'
+import eventEditSelector from './selectors/eventEditSelector'
+import eventDeleteSelector from './selectors/eventDeleteSelector'
+import directionEditSelector from './selectors/directionEditSelector'
+import directionDeleteSelector from './selectors/directionDeleteSelector'
+import additionalBlockEditSelector from './selectors/additionalBlockEditSelector'
+import additionalBlockDeleteSelector from './selectors/additionalBlockDeleteSelector'
+import userDeleteSelector from './selectors/userDeleteSelector'
+import userEditSelector from './selectors/userEditSelector'
+import reviewEditSelector from './selectors/reviewEditSelector'
+import reviewDeleteSelector from './selectors/reviewDeleteSelector'
+import paymentsAddSelector from './selectors/paymentsAddSelector'
+import paymentEditSelector from './selectors/paymentEditSelector'
+import paymentsDeleteSelector from './selectors/paymentsDeleteSelector'
+import siteSettingsAtom from './atoms/siteSettingsAtom'
+import questionnaireEditSelector from './selectors/questionnaireEditSelector'
+import questionnaireDeleteSelector from './selectors/questionnaireDeleteSelector'
+import questionnaireUsersEditSelector from './selectors/questionnaireUsersEditSelector'
+import questionnaireUsersDeleteSelector from './selectors/questionnaireUsersDeleteSelector'
+import serviceEditSelector from './selectors/serviceEditSelector'
+import serviceDeleteSelector from './selectors/serviceDeleteSelector'
+import servicesUsersEditSelector from './selectors/servicesUsersEditSelector'
+import servicesUsersDeleteSelector from './selectors/servicesUsersDeleteSelector'
+import setEventsUsersSelector from './async/setEventsUsersSelector'
+import signOutUserSelector from './async/signOutUserSelector'
+import signUpUserSelector from './async/signUpUserSelector'
+import setEventUserSelector from './async/setEventUserSelector'
+import rolesAtom from './atoms/rolesAtom'
+import updateEventsUsersSelector from './async/updateEventsUsersSelector'
 
-import store from './store'
+import locationAtom from './atoms/locationAtom'
+import loggedUserActiveAtom from './atoms/loggedUserActiveAtom'
+import snackbarAtom from './atoms/snackbarAtom'
+import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
+import { atom } from 'jotai'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -184,69 +191,73 @@ const messages = {
   },
 }
 
-const setFunc = (selector) => (value) => store.set(selector, value)
-const setFamilyFunc = (selector) => (id, value) =>
-  store.set(selector(id), value)
+const array = [
+  'event',
+  'eventsUser',
+  'direction',
+  'additionalBlock',
+  'user',
+  'review',
+  'payment',
+  'questionnaire',
+  'questionnairesUser',
+  'service',
+  'eventsUser',
+  'servicesUser',
+  'eventsTag',
+]
 
-const props = {
-  setLoading: setFunc(isSiteLoadingAtom),
-  addErrorModal: setFunc(addErrorModalSelector),
-  setLoadingCard: setFunc(setLoadingSelector),
-  setNotLoadingCard: setFunc(setNotLoadingSelector),
-  setErrorCard: setFunc(setErrorSelector),
-  setNotErrorCard: setFunc(setNotErrorSelector),
-  setEvent: setFunc(eventEditSelector),
-  deleteEvent: setFunc(eventDeleteSelector),
-  setDirection: setFunc(directionEditSelector),
-  deleteDirection: setFunc(directionDeleteSelector),
-  setAdditionalBlock: setFunc(additionalBlockEditSelector),
-  deleteAdditionalBlock: setFunc(additionalBlockDeleteSelector),
-  setUser: setFunc(userEditSelector),
-  deleteUser: setFunc(userDeleteSelector),
-  setReview: setFunc(reviewEditSelector),
-  deleteReview: setFunc(reviewDeleteSelector),
-  addPayments: setFunc(paymentsAddSelector),
-  setPayment: setFunc(paymentEditSelector),
-  deletePayment: setFunc(paymentsDeleteSelector),
+const itemsFuncGenerator = (get, set) => {
+  const isSiteLodaing = get(isSiteLoadingAtom)
 
-  setEventsUsers: setFamilyFunc(setEventsUsersSelector),
-  updateEventsUsers: setFamilyFunc(updateEventsUsersSelector),
-  deleteEventsUser: setFunc(signOutUserSelector),
-  addEventsUser: setFunc(signUpUserSelector),
-  setEventsUser: setFunc(setEventUserSelector),
+  if (isSiteLodaing) return () => {}
 
-  setSiteSettings: setFunc(siteSettingsAtom),
-  setQuestionnaire: setFunc(questionnaireEditSelector),
-  deleteQuestionnaire: setFunc(questionnaireDeleteSelector),
-  setQuestionnaireUsers: setFunc(questionnaireUsersEditSelector),
-  deleteQuestionnaireUsers: setFunc(questionnaireUsersDeleteSelector),
-  setService: setFunc(serviceEditSelector),
-  deleteService: setFunc(serviceDeleteSelector),
-  setServicesUser: setFunc(servicesUsersEditSelector),
-  deleteServicesUser: setFunc(servicesUsersDeleteSelector),
-  setRoles: setFunc(rolesAtom),
-}
+  const location = get(locationAtom)
+  const loggedUser = get(loggedUserActiveAtom)
+  const snackbar = get(snackbarAtom)
 
-const itemsFuncGenerator = (
-  snackbar,
-  loggedUser,
-  location,
-  array = [
-    'event',
-    'eventsUser',
-    'direction',
-    'additionalBlock',
-    'user',
-    'review',
-    'payment',
-    'questionnaire',
-    'questionnairesUser',
-    'service',
-    'eventsUser',
-    'servicesUser',
-    'eventsTag',
-  ]
-) => {
+  const setFunc = (selector) => (value) => set(selector, value)
+  const setFamilyFunc = (selector) => (id, value) => set(selector(id), value)
+
+  const props = {
+    setLoading: setFunc(isSiteLoadingAtom),
+    addErrorModal: setFunc(addErrorModalSelector),
+    setLoadingCard: setFunc(setLoadingSelector),
+    setNotLoadingCard: setFunc(setNotLoadingSelector),
+    setErrorCard: setFunc(setErrorSelector),
+    setNotErrorCard: setFunc(setNotErrorSelector),
+    setEvent: setFunc(eventEditSelector),
+    deleteEvent: setFunc(eventDeleteSelector),
+    setDirection: setFunc(directionEditSelector),
+    deleteDirection: setFunc(directionDeleteSelector),
+    setAdditionalBlock: setFunc(additionalBlockEditSelector),
+    deleteAdditionalBlock: setFunc(additionalBlockDeleteSelector),
+    setUser: setFunc(userEditSelector),
+    deleteUser: setFunc(userDeleteSelector),
+    setReview: setFunc(reviewEditSelector),
+    deleteReview: setFunc(reviewDeleteSelector),
+    addPayments: setFunc(paymentsAddSelector),
+    setPayment: setFunc(paymentEditSelector),
+    deletePayment: setFunc(paymentsDeleteSelector),
+
+    setEventsUsers: setFamilyFunc(setEventsUsersSelector),
+    updateEventsUsers: setFamilyFunc(updateEventsUsersSelector),
+    deleteEventsUser: setFunc(signOutUserSelector),
+    addEventsUser: setFunc(signUpUserSelector),
+    setEventsUser: setFunc(setEventUserSelector),
+
+    setSiteSettings: setFunc(siteSettingsAtom),
+    setQuestionnaire: setFunc(questionnaireEditSelector),
+    deleteQuestionnaire: setFunc(questionnaireDeleteSelector),
+    setQuestionnaireUsers: setFunc(questionnaireUsersEditSelector),
+    deleteQuestionnaireUsers: setFunc(questionnaireUsersDeleteSelector),
+    setService: setFunc(serviceEditSelector),
+    deleteService: setFunc(serviceDeleteSelector),
+    setServicesUser: setFunc(servicesUsersEditSelector),
+    deleteServicesUser: setFunc(servicesUsersDeleteSelector),
+    setRoles: setFunc(rolesAtom),
+  }
+
   const {
     setLoadingCard,
     setNotLoadingCard,
@@ -255,6 +266,7 @@ const itemsFuncGenerator = (
     addErrorModal,
     // snackbar = {},
   } = props
+
   const obj = {}
   array?.length > 0 &&
     array.forEach((itemName) => {
@@ -773,4 +785,9 @@ const itemsFuncGenerator = (
   // }
 }
 
-export default itemsFuncGenerator
+const itemsFuncAtom = withAtomEffect(atom(null), (get, set) => {
+  const func = itemsFuncGenerator(get, set)
+  set(itemsFuncAtom, func)
+})
+
+export default itemsFuncAtom

@@ -8,7 +8,7 @@ import locationAtom from '@state/atoms/locationAtom'
 
 export const directionFullSelectorAsync = atomFamily((id) =>
   atom(async (get) => {
-    if (!id) return DEFAULT_DIRECTION
+    if (!id) return
     // return get(directionsAtom).find((item) => item._id === id)
     const location = get(locationAtom)
     const res = await getData(

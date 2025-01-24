@@ -1,7 +1,7 @@
 import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import { DEFAULT_EVENT } from '@helpers/constants'
 import isEventExpiredFunc from '@helpers/isEventExpired'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'

@@ -2,7 +2,7 @@
 // import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { sendImage } from '@helpers/cloudinary'
-// import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+// import modalsFuncAtom from '@state/modalsFuncAtom'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
@@ -16,7 +16,7 @@ import { faFolder } from '@fortawesome/free-regular-svg-icons/faFolder'
 import Zoom from 'react-medium-image-zoom'
 import TextLinesLimiter from './TextLinesLimiter'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 
 function isFileFunc(pathname) {
   return pathname.split('/').pop().indexOf('.') > -1

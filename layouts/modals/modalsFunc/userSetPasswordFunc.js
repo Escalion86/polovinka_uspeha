@@ -1,5 +1,5 @@
 import Input from '@components/Input'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'

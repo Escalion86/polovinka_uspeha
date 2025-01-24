@@ -1,7 +1,7 @@
 import BlockContainer from '@components/BlockContainer'
 import Button from '@components/Button'
 import Masonry from '@components/Masonry'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 import { useAtomValue } from 'jotai'
 

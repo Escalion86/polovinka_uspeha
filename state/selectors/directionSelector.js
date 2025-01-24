@@ -6,7 +6,7 @@ import directionsAtom from '@state/atoms/directionsAtom'
 
 export const directionSelector = atomFamily((id) =>
   atom(async (get) => {
-    if (!id) return DEFAULT_DIRECTION
+    if (!id) return
     return get(directionsAtom).find((item) => item._id === id)
   })
 )

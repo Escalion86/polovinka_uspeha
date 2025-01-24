@@ -22,7 +22,7 @@ import { m } from 'framer-motion'
 import { getSession, signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
@@ -36,6 +36,14 @@ import TelegramLoginButton from 'react-telegram-login'
 import Divider from '@components/Divider'
 import Button from '@components/Button'
 // import TelegramLoginButton from '@components/TelegramLoginButton'
+
+const Divider2 = ({ title }) => (
+  <div className="flex items-center text-gray-600 gap-x-2">
+    <div className="flex-1 h-0 border-t border-gray-600" />
+    <div className="mb-1">{title}</div>
+    <div className="flex-1 h-0 border-t border-gray-600" />
+  </div>
+)
 
 const Modal = ({ children, id, title, text, subModalText = null, onClose }) => {
   const [close, setClose] = useState(false)
@@ -103,6 +111,7 @@ const Input = ({
   maxLength,
   readOnly,
   autoComplete,
+  onKeyDown,
 }) => {
   const [focused, setFocused] = useState(false)
   const onFocus = () => setFocused(true)
@@ -208,6 +217,7 @@ const Input = ({
                     : value.toString()
                   : ''
               }
+              onKeyDown={onKeyDown}
             />
           ) : (
             <input
@@ -224,6 +234,7 @@ const Input = ({
               maxLength={maxLength}
               disabled={readOnly}
               autoComplete={autoComplete}
+              onKeyDown={onKeyDown}
             />
           )}
         </div>
@@ -251,52 +262,52 @@ const generalColor = '#7a5151'
 
 const secondsToWait = 60
 
-const RepeatCall = ({ onClickRepeat, onClickBackCall }) => {
-  const timer = useRef(null)
-  const [secondsLeft, setIsSecondsLeft] = useState(secondsToWait)
+// const RepeatCall = ({ onClickRepeat, onClickBackCall }) => {
+//   const timer = useRef(null)
+//   const [secondsLeft, setIsSecondsLeft] = useState(secondsToWait)
 
-  const stopInterval = () => {
-    if (timer?.current) clearInterval(timer?.current)
-  }
+//   const stopInterval = () => {
+//     if (timer?.current) clearInterval(timer?.current)
+//   }
 
-  const startInterval = () => {
-    stopInterval()
-    timer.current = setInterval(() => {
-      setIsSecondsLeft((state) => state - 1)
-    }, 1000)
-  }
+//   const startInterval = () => {
+//     stopInterval()
+//     timer.current = setInterval(() => {
+//       setIsSecondsLeft((state) => state - 1)
+//     }, 1000)
+//   }
 
-  useEffect(() => {
-    if (secondsLeft === secondsToWait) {
-      startInterval()
-    } else if (timer?.current && secondsLeft <= 0) {
-      stopInterval()
-    }
-  }, [secondsLeft])
+//   useEffect(() => {
+//     if (secondsLeft === secondsToWait) {
+//       startInterval()
+//     } else if (timer?.current && secondsLeft <= 0) {
+//       stopInterval()
+//     }
+//   }, [secondsLeft])
 
-  return (
-    <div className="mt-2">
-      {secondsLeft > 0 ? (
-        <>Запросить повторый звонок возможно через {secondsLeft} сек</>
-      ) : (
-        <>
-          Звонок не поступил?
-          <div className="flex flex-col items-center gap-y-3">
-            <div
-              onClick={async () => {
-                onClickRepeat && (await onClickRepeat())
-                setIsSecondsLeft(secondsToWait)
-              }}
-              className="font-bold cursor-pointer"
-            >
-              Повторный звонок
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
+//   return (
+//     <div className="mt-2">
+//       {secondsLeft > 0 ? (
+//         <>Запросить повторый звонок возможно через {secondsLeft} сек</>
+//       ) : (
+//         <>
+//           Звонок не поступил?
+//           <div className="flex flex-col items-center gap-y-3">
+//             <div
+//               onClick={async () => {
+//                 onClickRepeat && (await onClickRepeat())
+//                 setIsSecondsLeft(secondsToWait)
+//               }}
+//               className="font-bold cursor-pointer"
+//             >
+//               Повторный звонок
+//             </div>
+//           </div>
+//         </>
+//       )}
+//     </div>
+//   )
+// }
 
 const submitEnquiryForm = (gReCaptchaToken, onSuccess, onError) => {
   fetch('/api/enquiry', {
@@ -344,8 +355,12 @@ const routeAfterLogin = (router, location) => {
 
 const LoginPage = (props) => {
   const router = useRouter()
-  const query = { ...router.query }
-  delete query.location
+
+  const query = useMemo(() => {
+    const newQuery = { ...router.query }
+    delete newQuery.location
+    return newQuery
+  }, [router])
 
   const { location } = props
 
@@ -368,6 +383,15 @@ const LoginPage = (props) => {
   const [showAgreement, setShowAgreement] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
+  const isRegistration = useMemo(() => process === 'registration', [process])
+  const isAuthorization = useMemo(() => process === 'authorization', [process])
+  const isForgotPassword = useMemo(
+    () => process === 'forgotPassword',
+    [process]
+  )
+
+  console.log('registrationLevel', registrationLevel)
+
   const telegramBotName = props.telegramBotName
 
   const isPWA = useAtomValue(isPWAAtom)
@@ -381,56 +405,64 @@ const LoginPage = (props) => {
     props?.siteSettings?.codeSendService ??
     DEFAULT_SITE_SETTINGS.codeSendService
 
-  const handleTelegramResponse = async ({
-    id,
-    first_name,
-    last_name,
-    photo_url,
-    username,
-    forceReg = false,
-  }) => {
-    if (typeof id === 'number') {
-      // console.log(response)
-      // if (process === 'authorization') {
-      setWaitingResponse(true)
-      // Если это авторизация
-      await signIn('telegram', {
-        redirect: false,
-        telegramId: id,
-        first_name: first_name === 'undefined' ? undefined : first_name,
-        last_name: last_name === 'undefined' ? undefined : last_name,
-        photo_url,
-        username: username === 'undefined' ? undefined : username,
-        registration: forceReg || process === 'registration' ? 'true' : 'false',
-        location,
-      }).then((res) => {
-        if (res?.error === 'CredentialsSignin') {
-          setWaitingResponse(false)
-          setInputPassword('')
-          // addError({
-          //   telegram:
-          //     'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
-          // })
-          setTelegramRegistrationConfirm({
-            id,
-            first_name: first_name === 'undefined' ? undefined : first_name,
-            last_name: last_name === 'undefined' ? undefined : last_name,
-            photo_url,
-            username: username === 'undefined' ? undefined : username,
-          })
-        } else {
-          routeAfterLogin(router, location)
-        }
-      })
-    }
-    // }
-    else {
-      addError({
-        telegram:
-          'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
-      })
-    }
-  }
+  const handleTelegramResponse = useCallback(
+    async ({
+      id,
+      first_name,
+      last_name,
+      photo_url,
+      username,
+      forceReg = false,
+    }) => {
+      if (typeof id === 'number') {
+        // console.log(response)
+        // if (isAuthorization) {
+        setWaitingResponse(true)
+        // Если это авторизация
+        await signIn('telegram', {
+          redirect: false,
+          telegramId: id,
+          first_name: first_name === 'undefined' ? undefined : first_name,
+          last_name: last_name === 'undefined' ? undefined : last_name,
+          photo_url,
+          username: username === 'undefined' ? undefined : username,
+          registration: forceReg || isRegistration ? 'true' : 'false',
+          location,
+        }).then((res) => {
+          if (res?.error === 'CredentialsSignin') {
+            setWaitingResponse(false)
+            setInputPassword('')
+            // addError({
+            //   telegram:
+            //     'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
+            // })
+            setTelegramRegistrationConfirm({
+              id,
+              first_name: first_name === 'undefined' ? undefined : first_name,
+              last_name: last_name === 'undefined' ? undefined : last_name,
+              photo_url,
+              username: username === 'undefined' ? undefined : username,
+            })
+          } else {
+            routeAfterLogin(router, location)
+          }
+        })
+      }
+      // }
+      else {
+        addError({
+          telegram:
+            'Ошибка! Попробуйте другой способ или свяжитесь с администратором',
+        })
+      }
+    },
+    [
+      addError,
+      setTelegramRegistrationConfirm,
+      setWaitingResponse,
+      setInputPassword,
+    ]
+  )
 
   // const test = () => {
   //   handleTelegramResponse({
@@ -527,6 +559,88 @@ const LoginPage = (props) => {
     }
   }, [router, inputPasswordRef.current])
 
+  const onClickBackCall = useCallback(async () => {
+    const result = await postData(
+      `/api/telefonip`,
+      {
+        phone: inputPhone,
+        location: inputLocation,
+        forgotPassword: isForgotPassword,
+        backCall: true,
+      },
+      (res) => {
+        if (res.error) {
+          addError({ [res.error.type]: res.error.message })
+          setBackCallRes()
+          setWaitingResponse(false)
+          // updateErrors(res.error.type, res.error.message)
+          return
+        }
+        setBackCall(true)
+        console.log('res1 :>> ', res)
+        var timer = setInterval(() => {
+          postData(
+            `/api/telefonip`,
+            {
+              phone: inputPhone,
+              location: inputLocation,
+              checkBackCallId: res.data.id,
+            },
+            (res) => {
+              console.log('res2 :>> ', res)
+              if (res.data.status === 'expired') {
+                clearInterval(timer)
+                setBackCallRes(res.data)
+              } else if (res.data.status === 'ok') {
+                clearInterval(timer)
+                var phone = String(res.data.phone).substring(1)
+                var phone2 = String(inputPhone).substring(1)
+                if (phone === phone2) {
+                  setBackCall(false)
+                  setBackCallRes()
+                  setRegistrationLevel(3)
+                  clearErrors()
+                } else {
+                  setBackCallRes({ ...res.data, status: 'wrong phone' })
+                }
+              }
+              setWaitingResponse(false)
+            },
+            null,
+            false,
+            null,
+            true
+          )
+        }, 3000)
+
+        setBackCallRes(res.data)
+        // setWaitingResponse(false)
+        // if (res.error) {
+        //   addError({ [res.error.type]: res.error.message })
+        //   // updateErrors(res.error.type, res.error.message)
+        // } else {
+        //   setRegistrationLevel(2)
+        // }
+      },
+      null,
+      // (error) => {
+      //   setWaitingResponse(false)
+      //   addError({ error })
+      // },
+      false,
+      null,
+      true
+    )
+    return result
+  }, [
+    inputPhone,
+    inputLocation,
+    isForgotPassword,
+    setBackCallRes,
+    setRegistrationLevel,
+    clearErrors,
+  ])
+
   const submit = () => {
     clearErrors()
 
@@ -536,11 +650,11 @@ const LoginPage = (props) => {
       return addError({ phone: 'Телефон указан не верно' })
     }
 
-    if (process === 'authorization') {
+    if (isAuthorization) {
       if (inputPassword === '') {
         return addError({ password: 'Введите пароль' })
       }
-    } else if (process === 'registration' || process === 'forgotPassword') {
+    } else if (isRegistration || isForgotPassword) {
       if (registrationLevel === 3) {
         if (!passwordValidator(inputPassword)) {
           return addError({
@@ -560,10 +674,10 @@ const LoginPage = (props) => {
     //   newErrors.phone = 'Телефон указан не верно'
     // }
 
-    // if (process === 'registration') {
+    // if (isRegistration) {
     //   if (inputPassword === '') {
     //     newErrors.password = 'Введите пароль'
-    //   } else if (process === 'authorization') {
+    //   } else if (isAuthorization) {
     //     if (!passwordValidator(inputPassword)) {
     //       newErrors.password =
     //         'Пароль должен содержать строчные и заглавные буквы, а также минимум одну цифру'
@@ -579,7 +693,7 @@ const LoginPage = (props) => {
     //   clearErrors()
     // }
 
-    if (process === 'registration' || process === 'forgotPassword') {
+    if (isRegistration || isForgotPassword) {
       if (registrationLevel === 1) {
         if (!executeRecaptcha) {
           console.log('Execute recaptcha not yet available')
@@ -592,30 +706,31 @@ const LoginPage = (props) => {
           submitEnquiryForm(
             gReCaptchaToken,
             () => {
-              postData(
-                `/api/${codeSendService}`,
-                {
-                  phone: inputPhone,
-                  location: inputLocation,
-                  forgotPassword: process === 'forgotPassword',
-                },
-                (res) => {
-                  setWaitingResponse(false)
-                  if (res.error) {
-                    addError({ [res.error.type]: res.error.message })
-                    // updateErrors(res.error.type, res.error.message)
-                  } else {
-                    setRegistrationLevel(2)
-                  }
-                },
-                (error) => {
-                  setWaitingResponse(false)
-                  addError({ error })
-                },
-                false,
-                null,
-                true
-              )
+              onClickBackCall()
+              // postData(
+              //   `/api/${codeSendService}`,
+              //   {
+              //     phone: inputPhone,
+              //     location: inputLocation,
+              //     forgotPassword: isForgotPassword,
+              //   },
+              //   (res) => {
+              //     setWaitingResponse(false)
+              //     if (res.error) {
+              //       addError({ [res.error.type]: res.error.message })
+              //       // updateErrors(res.error.type, res.error.message)
+              //     } else {
+              //       setRegistrationLevel(2)
+              //     }
+              //   },
+              //   (error) => {
+              //     setWaitingResponse(false)
+              //     addError({ error })
+              //   },
+              //   false,
+              //   null,
+              //   true
+              // )
             },
             () => {
               addError({
@@ -636,7 +751,7 @@ const LoginPage = (props) => {
             phone: inputPhone,
             code: inputPinCode,
             location: inputLocation,
-            forgotPassword: process === 'forgotPassword',
+            forgotPassword: isForgotPassword,
           },
           (res) => {
             setWaitingResponse(false)
@@ -674,7 +789,7 @@ const LoginPage = (props) => {
             phone: inputPhone,
             password: inputPassword,
             location: inputLocation,
-            forgotPassword: process === 'forgotPassword',
+            forgotPassword: isForgotPassword,
             soctag,
             custag,
           },
@@ -736,70 +851,8 @@ const LoginPage = (props) => {
     }
   }
 
-  const onClickBackCall = async () => {
-    setBackCall(true)
-
-    const result = await postData(
-      `/api/telefonip`,
-      {
-        phone: inputPhone,
-        location: inputLocation,
-        forgotPassword: process === 'forgotPassword',
-        backCall: true,
-      },
-      (res) => {
-        var timer = setInterval(() => {
-          postData(
-            `/api/telefonip`,
-            {
-              phone: inputPhone,
-              location: inputLocation,
-              checkBackCallId: res.data.id,
-            },
-            (res) => {
-              if (res.data.status === 'expired') {
-                clearInterval(timer)
-                setBackCallRes(res.data)
-              } else if (res.data.status === 'ok') {
-                clearInterval(timer)
-                var phone = String(res.data.phone).substring(1)
-                var phone2 = String(inputPhone).substring(1)
-                if (phone === phone2) {
-                  setBackCall(false)
-                  setBackCallRes()
-                  setRegistrationLevel(3)
-                  clearErrors()
-                } else {
-                  setBackCallRes({ ...res.data, status: 'wrong phone' })
-                }
-              }
-            },
-            null,
-            false,
-            null,
-            true
-          )
-        }, 5000)
-
-        setBackCallRes(res.data)
-        // setWaitingResponse(false)
-        // if (res.error) {
-        //   addError({ [res.error.type]: res.error.message })
-        //   // updateErrors(res.error.type, res.error.message)
-        // } else {
-        //   setRegistrationLevel(2)
-        // }
-      },
-      null,
-      // (error) => {
-      //   setWaitingResponse(false)
-      //   addError({ error })
-      // },
-      false,
-      null,
-      true
-    )
-    return result
+  const handleKeypressEnter = (e) => {
+    if (e.keyCode === 13) submit()
   }
 
   // const clearErrors = () => {
@@ -829,8 +882,7 @@ const LoginPage = (props) => {
   const varifyPhone = inputPhone?.toString().length === 11
 
   const message =
-    (process === 'registration' || process === 'forgotPassword') &&
-    registrationLevel === 2 ? (
+    (isRegistration || isForgotPassword) && registrationLevel === 2 ? (
       // UCALLER_MIX ? (
       //   <>
       //     На телефон <b>+{inputPhone}</b> поступит звонок. Введите последние 4
@@ -848,7 +900,7 @@ const LoginPage = (props) => {
         брать не нужно, введите 4 последние цифры номера входящего звонка
       </>
     ) : // )
-    process === 'registration' && registrationLevel === 3 ? (
+    isRegistration && registrationLevel === 3 ? (
       <>
         Для завершения регистрации создайте пароль.
         <br />
@@ -858,7 +910,7 @@ const LoginPage = (props) => {
         <br />
         Ваш логин: <b>+{inputPhone}</b>
       </>
-    ) : process === 'forgotPassword' && registrationLevel === 3 ? (
+    ) : isForgotPassword && registrationLevel === 3 ? (
       <>
         Создайте новый пароль.
         <br />
@@ -872,13 +924,13 @@ const LoginPage = (props) => {
 
   const isButtonDisabled =
     !varifyPhone ||
-    (process === 'authorization' && inputPassword.length === 0) ||
-    (process === 'registration' &&
+    (isAuthorization && inputPassword.length === 0) ||
+    (isRegistration &&
       ((registrationLevel === 1 && (!checkHave18Years || !checkAgreement)) ||
         (registrationLevel === 2 && inputPinCode.length !== 4) ||
         (registrationLevel === 3 &&
           (inputPassword.length === 0 || inputPasswordRepeat.length === 0)))) ||
-    (process === 'forgotPassword' &&
+    (isForgotPassword &&
       ((registrationLevel === 2 && inputPinCode.length !== 4) ||
         (registrationLevel === 3 &&
           (inputPassword.length === 0 || inputPasswordRepeat.length === 0))))
@@ -898,7 +950,7 @@ const LoginPage = (props) => {
           <SvgLove color={generalColor} className="z-20 w-124" />
         </div>
         <div className="flex items-center justify-center flex-1 text-center">
-          <form className="w-full mt-4 phoneH:mt-8 mb-4 phoneH:mb-10 max-w-[360px]">
+          <div className="w-full mt-4 phoneH:mt-8 mb-4 phoneH:mb-10 max-w-[360px]">
             <div className="flex justify-center w-full h-48 phoneH:h-60">
               {/* <SvgAvatar color={generalColor} className="w-24" /> */}
               <img
@@ -976,13 +1028,9 @@ const LoginPage = (props) => {
                   setInputLocation(event.target.value)
                 }}
                 value={inputLocation}
-                hidden={
-                  type || (process === 'registration' && registrationLevel > 1)
-                }
+                hidden={type || (isRegistration && registrationLevel > 1)}
                 tabIndex={
-                  type || (process === 'registration' && registrationLevel > 1)
-                    ? -1
-                    : 0
+                  type || (isRegistration && registrationLevel > 1) ? -1 : 0
                 }
                 readOnly={waitingResponse}
               />
@@ -1008,27 +1056,26 @@ const LoginPage = (props) => {
                 }}
                 value={inputPhone}
                 error={errors.phone}
+                onKeyDown={handleKeypressEnter}
                 max={9999999999}
                 maxLength="10"
                 tabIndex={
                   type !== 'phone' ||
-                  ((process === 'registration' ||
-                    process === 'forgotPassword') &&
+                  ((isRegistration || isForgotPassword) &&
                     registrationLevel !== 1)
                     ? -1
                     : 0
                 }
                 hidden={
                   type !== 'phone' ||
-                  ((process === 'registration' ||
-                    process === 'forgotPassword') &&
+                  ((isRegistration || isForgotPassword) &&
                     registrationLevel !== 1)
                 }
                 readOnly={waitingResponse}
               />
 
               {message && <div className="mt-2">{message}</div>}
-              <Input
+              {/* <Input
                 type="text"
                 label="Последние 4 цифры номера"
                 name="pinCode"
@@ -1038,23 +1085,20 @@ const LoginPage = (props) => {
                   // updateErrors('pinCode', null)
                   setInputPinCode(event.target.value)
                 }}
+                onKeyDown={handleKeypressEnter}
                 value={inputPinCode}
                 error={errors.pinCode}
                 hidden={
-                  type !== 'phone' ||
-                  process === 'authorization' ||
-                  registrationLevel !== 2
+                  type !== 'phone' || isAuthorization || registrationLevel !== 2
                 }
                 tabIndex={
-                  type !== 'phone' ||
-                  process === 'authorization' ||
-                  registrationLevel !== 2
+                  type !== 'phone' || isAuthorization || registrationLevel !== 2
                     ? -1
                     : 0
                 }
                 readOnly={waitingResponse}
                 maxLength="4"
-              />
+              /> */}
               <Input
                 inputRef={inputPasswordRef}
                 className="mt-0"
@@ -1067,20 +1111,23 @@ const LoginPage = (props) => {
                   // updateErrors('password', null)
                   setInputPassword(event.target.value)
                 }}
+                onKeyDown={(e) => {
+                  if (isAuthorization || registrationLevel !== 3)
+                    handleKeypressEnter(e)
+                }}
                 value={inputPassword}
                 error={errors.password}
                 tabIndex={
                   type !== 'phone' &&
-                  ((process === 'registration' && registrationLevel !== 3) ||
-                    process === 'authorization')
+                  ((isRegistration && registrationLevel !== 3) ||
+                    isAuthorization)
                     ? -1
                     : 0
                 }
                 hidden={
                   type !== 'phone' ||
                   (process !== 'authorization' &&
-                    (process === 'forgotPassword' ||
-                      process === 'registration') &&
+                    (isForgotPassword || isRegistration) &&
                     registrationLevel !== 3)
                 }
                 readOnly={waitingResponse}
@@ -1096,18 +1143,15 @@ const LoginPage = (props) => {
                   // updateErrors('password', null)
                   setInputPasswordRepeat(event.target.value)
                 }}
+                onKeyDown={handleKeypressEnter}
                 value={inputPasswordRepeat}
                 error={errors.password}
-                tabIndex={
-                  process === 'authorization' || registrationLevel !== 3
-                    ? -1
-                    : 0
-                }
-                hidden={process === 'authorization' || registrationLevel !== 3}
+                tabIndex={isAuthorization || registrationLevel !== 3 ? -1 : 0}
+                hidden={isAuthorization || registrationLevel !== 3}
                 readOnly={waitingResponse}
                 autoComplete="on"
               />
-              {process === 'authorization' && type === 'phone' && (
+              {isAuthorization && type === 'phone' && (
                 <a
                   tabIndex={0}
                   className={cn(
@@ -1127,9 +1171,11 @@ const LoginPage = (props) => {
                 </a>
               )}
               {!type &&
-                process === 'registration' &&
-                registrationLevel === 1 && (
+                isRegistration &&
+                registrationLevel === 1 &&
+                (!checkHave18Years || !checkAgreement) && (
                   <>
+                    <Divider2 title="Подтвердите поставив галочки" />
                     <CheckBox
                       checked={checkHave18Years}
                       labelPos="right"
@@ -1137,7 +1183,7 @@ const LoginPage = (props) => {
                       label="Мне исполнилось 18 лет"
                       wrapperClassName={cn(
                         'overflow-hidden',
-                        process === 'registration' && registrationLevel === 1
+                        isRegistration && registrationLevel === 1
                           ? 'max-h-15 mb-3 mt-2 py-1'
                           : ''
                       )}
@@ -1159,7 +1205,7 @@ const LoginPage = (props) => {
                       }
                       wrapperClassName={cn(
                         'overflow-hidden',
-                        process === 'registration' && registrationLevel === 1
+                        isRegistration && registrationLevel === 1
                           ? 'max-h-15 mt-3 py-1 mb-4'
                           : ''
                       )}
@@ -1167,21 +1213,43 @@ const LoginPage = (props) => {
                     />
                   </>
                 )}
-              {!type && (
-                <Button
-                  name="По номеру телефона"
-                  outline
-                  className="w-full"
-                  icon={faPhone}
-                  onClick={() => {
-                    setType('phone')
-                    clearErrors()
-                  }}
-                  disabled={
-                    process === 'registration' &&
-                    (!checkAgreement || !checkHave18Years)
-                  }
-                />
+              {(isRegistration
+                ? !type && checkAgreement && checkHave18Years
+                : !type) && (
+                <>
+                  {isRegistration && (
+                    <Divider2 title="Рекомендуемая регистрация" />
+                  )}
+                  <div className="flex justify-center w-full">
+                    {waitingResponse ? (
+                      <div className={cn('w-full h-10')}>
+                        <LoadingSpinner size="xxs" />
+                      </div>
+                    ) : (
+                      <div
+                        key={telegramBotName}
+                        className={cn(
+                          'relative',
+                          isRegistration &&
+                            (!checkAgreement || !checkHave18Years)
+                            ? 'grayscale cursor-not-allowed'
+                            : ''
+                        )}
+                      >
+                        {/* <Button name="test" onClick={test} preventDefault /> */}
+                        {isRegistration &&
+                          (!checkAgreement || !checkHave18Years) && (
+                            <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
+                          )}
+                        <TelegramLoginButton
+                          dataOnauth={handleTelegramResponse}
+                          botName={telegramBotName}
+                          lang="ru"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
               {Object.values(errors).length > 0 && (
                 <ul className="mb-3 ml-5 text-left text-red-600 list-disc">
@@ -1217,80 +1285,61 @@ const LoginPage = (props) => {
                     className={cn(
                       isButtonDisabled
                         ? 'bg-gray-200'
-                        : 'bg-gray-500 focus:bg-general focus:border-2 focus:border-black hover:bg-general',
-                      'block w-full h-12 text-white uppercase duration-300  border-0 outline-hidden  rounded-3xl'
+                        : 'bg-gray-500 cursor-pointer focus:bg-general focus:border-2 focus:border-black hover:bg-general',
+                      'block w-full h-12 text-white uppercase duration-300 border-0 outline-hidden rounded-3xl'
                     )}
                     tabIndex={0}
                     disabled={isButtonDisabled}
                   >
-                    {process === 'authorization'
+                    {isAuthorization
                       ? 'Авторизироваться'
                       : registrationLevel === 1
-                        ? process === 'registration'
+                        ? isRegistration
                           ? 'Зарегистрироваться'
                           : 'Сменить пароль'
                         : registrationLevel === 2
                           ? 'Отправить код'
-                          : process === 'registration'
+                          : isRegistration
                             ? 'Завершить регистрацию'
                             : 'Сменить пароль и авторизироваться'}
                   </button>
                 ))}
-              {!type ? (
+
+              {(isRegistration
+                ? !type && checkAgreement && checkHave18Years
+                : !type) && (
                 <>
-                  <div className="flex items-center text-gray-600 gap-x-2">
-                    <div className="flex-1 h-0 border-t border-gray-600" />
-                    <div className="mb-1">или</div>
-                    <div className="flex-1 h-0 border-t border-gray-600" />
-                  </div>
-                  {/* <Button name="test2" onClick={test2} preventDefault /> */}
-                  <div className="flex justify-center w-full">
-                    {waitingResponse ? (
-                      <div className={cn('w-full h-10')}>
-                        <LoadingSpinner size="xxs" />
-                      </div>
-                    ) : (
-                      <div
-                        key={telegramBotName}
-                        className={cn(
-                          'relative',
-                          process === 'registration' &&
-                            (!checkAgreement || !checkHave18Years)
-                            ? 'grayscale cursor-not-allowed'
-                            : ''
-                        )}
-                      >
-                        {/* <Button name="test" onClick={test} preventDefault /> */}
-                        {process === 'registration' &&
-                          (!checkAgreement || !checkHave18Years) && (
-                            <div className="absolute top-0 bottom-0 left-0 right-0 z-10" />
-                          )}
-                        <TelegramLoginButton
-                          dataOnauth={handleTelegramResponse}
-                          botName={telegramBotName}
-                          lang="ru"
-                        />
-                      </div>
-                    )}
-                  </div>
+                  <Divider2 title="или" />
+                  <Button
+                    name="По номеру телефона"
+                    outline
+                    className="w-full"
+                    icon={faPhone}
+                    onClick={() => {
+                      setType('phone')
+                      clearErrors()
+                    }}
+                    disabled={
+                      isRegistration && (!checkAgreement || !checkHave18Years)
+                    }
+                  />
                 </>
-              ) : (
+              )}
+              {type && (
                 <div
                   className="mt-2 leading-4 text-gray-600 duration-300 cursor-pointer hover:text-success"
                   onClick={() => {
                     setType()
                     setRegistrationLevel(1)
                     clearErrors()
-                    if (process === 'forgotPassword')
-                      setProcess('authorization')
+                    if (isForgotPassword) setProcess('authorization')
                   }}
                 >
                   Изменить способ{' '}
-                  {process === 'registration' ? 'регистрации' : 'авторизации'}{' '}
-                  или регион
+                  {isRegistration ? 'регистрации' : 'авторизации'} или регион
                 </div>
               )}
-              {(process === 'registration' || process === 'forgotPassword') &&
+              {/* {(isRegistration || isForgotPassword) &&
                 registrationLevel === 2 && (
                   <RepeatCall
                     onClickBackCall={onClickBackCall}
@@ -1300,7 +1349,7 @@ const LoginPage = (props) => {
                         `/api/${codeSendService}`,
                         {
                           phone: inputPhone,
-                          forgotPassword: process === 'forgotPassword',
+                          forgotPassword: isForgotPassword,
                         },
                         (res) => {
                           setWaitingResponse(false)
@@ -1316,8 +1365,8 @@ const LoginPage = (props) => {
                       )
                     }}
                   />
-                )}
-              {(((process === 'registration' || process === 'forgotPassword') &&
+                )} */}
+              {/* {(((isRegistration || isForgotPassword) &&
                 registrationLevel === 1 &&
                 Object.values(errors).length > 0) ||
                 registrationLevel === 2) && (
@@ -1335,6 +1384,7 @@ const LoginPage = (props) => {
                   </div>
                 </div>
               )}
+              <Divider /> */}
               <div className="flex justify-center mt-4">
                 <a
                   tabIndex={0}
@@ -1350,7 +1400,7 @@ const LoginPage = (props) => {
                   }}
                   className="block text-sm text-right duration-300 cursor-pointer hover:text-general"
                 >
-                  {process === 'authorization'
+                  {isAuthorization
                     ? 'Я не зарегистрирован'
                     : 'Я уже зарегистрирован'}
                 </a>
@@ -1371,7 +1421,7 @@ const LoginPage = (props) => {
               )}
             </>
             {/* )} */}
-          </form>
+          </div>
         </div>
       </div>
       {telegramRegistrationConfirm && (

@@ -1,4 +1,4 @@
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 import InputWrapper from './InputWrapper'

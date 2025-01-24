@@ -13,9 +13,9 @@ import { useAtomValue } from 'jotai'
 import rolesAtom from '@state/atoms/rolesAtom'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import CheckBox from '@components/CheckBox'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 
 const genRanHex = (size) =>
   [...Array(size)]

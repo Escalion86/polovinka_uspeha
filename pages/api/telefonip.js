@@ -97,6 +97,7 @@ export default async function handler(req, res) {
           { method: 'GET' }
         ).then((response) => response.json())
 
+        console.log('-----------response :>> ', response)
         if (response?.success) {
           var phone1 = String(response.data.phone).substring(1)
           var phone2 = String(phone).substring(1)
@@ -104,29 +105,6 @@ export default async function handler(req, res) {
             await PhoneConfirms.findOneAndUpdate({ phone }, { confirmed: true })
             // await PhoneConfirms.findOneAndDelete({ phone })
           }
-        }
-
-        console.log(response)
-
-        return res?.status(201).json({
-          success: true,
-          data: response,
-        })
-      }
-
-      if (backCall) {
-        var formatedPhone = '8' + String(phone).substring(1)
-        const url = `https://api.telefon-ip.ru/api/v1/authcalls/${token}/reverse_auth_phone_get?phone=${formatedPhone}`
-        const response = await fetch(url, { method: 'GET' }).then((response) =>
-          response.json()
-        )
-
-        console.log('!!response', response)
-        if (response?.success) {
-          await PhoneConfirms.findOneAndUpdate(
-            { phone },
-            { callId: response.data.id }
-          )
         }
 
         return res?.status(201).json({
@@ -170,6 +148,8 @@ export default async function handler(req, res) {
 
       // Сначала проверяем - есть ли уже такой зарегистрированный номер?
       const existingUser = await Users.findOne({ phone })
+      console.log('forgotPassword :>> ', forgotPassword)
+      console.log('existingUser :>> ', existingUser)
       if (!forgotPassword && existingUser && existingUser.password) {
         return res?.status(200).json({
           success: false,
@@ -181,6 +161,30 @@ export default async function handler(req, res) {
           },
         })
       }
+
+      if (backCall) {
+        var formatedPhone = '8' + String(phone).substring(1)
+        const url = `https://api.telefon-ip.ru/api/v1/authcalls/${token}/reverse_auth_phone_get?phone=${formatedPhone}`
+        const response = await fetch(url, { method: 'GET' }).then((response) =>
+          response.json()
+        )
+
+        console.log('!!response', response)
+        if (response?.success) {
+          const phoneConfirm = await PhoneConfirms.findOneAndUpdate(
+            { phone },
+            { callId: response.data.id },
+            { upsert: true }
+          )
+          console.log('--------phoneConfirm:', phoneConfirm)
+        }
+
+        return res?.status(201).json({
+          success: true,
+          data: response,
+        })
+      }
+
       if (forgotPassword && !existingUser) {
         return res?.status(200).json({
           success: false,
@@ -197,105 +201,108 @@ export default async function handler(req, res) {
       const existingPhoneConfirm = await PhoneConfirms.findOne({ phone })
       // console.log('existingPhoneConfirm', existingPhoneConfirm)
 
+      // TODO Временно удаленный код для смс авторизации
       // Если код уже был отправлен
-      // if (existingPhoneConfirm)
-      if (!code && !password && existingPhoneConfirm) {
-        // Если  код уже был отправлен, но идет запрос снова на отправку кода
-        const minutesBeetween = getMinutesBetween(
-          existingPhoneConfirm.updatedAt
-        )
-        // Смотрим как давно был отправлен код
-        if (minutesBeetween < 1)
-          return res?.status(200).json({
-            success: false,
-            data: {
-              error: {
-                message:
-                  'Код уже отправлен на номер +' +
-                  phone +
-                  '. Запрашивать код можно не чаще, чем раз в минуту',
-                type: 'pinCode',
-              },
-            },
-          })
-        else {
-          // Если более чем минуту назад был отправлен код
-          // Смотрим какая это была попытка
-          // Было уже сделано 3 попытки
-          if (existingPhoneConfirm.tryNum >= 3) {
-            // Прошло ли пол часа с момента последней попытки?
-            if (minutesBeetween >= 30) {
-              await sendCode(res, phone, 1, true)
-              return
-            } else
-              return res?.status(200).json({
-                success: false,
-                data: {
-                  error: {
-                    message:
-                      'Код уже отправлен на номер +' +
-                      phone +
-                      ' более 3 раз! Повторный запрос можно сделать через ' +
-                      Math.ceil(30 - minutesBeetween) +
-                      ' мин',
-                    type: 'pinCodeCountLimit',
-                  },
-                },
-              })
-          } else {
-            // Если было менее 3 попыток
+      // if (!code && !password && existingPhoneConfirm) {
+      //   // Если  код уже был отправлен, но идет запрос снова на отправку кода
+      //   const minutesBeetween = getMinutesBetween(
+      //     existingPhoneConfirm.updatedAt
+      //   )
+      //   // Смотрим как давно был отправлен код
+      //   if (minutesBeetween < 1)
+      //     return res?.status(200).json({
+      //       success: false,
+      //       data: {
+      //         error: {
+      //           message:
+      //             'Код уже отправлен на номер +' +
+      //             phone +
+      //             '. Запрашивать код можно не чаще, чем раз в минуту',
+      //           type: 'pinCode',
+      //         },
+      //       },
+      //     })
+      //   else {
+      //     // Если более чем минуту назад был отправлен код
+      //     // Смотрим какая это была попытка
+      //     // Было уже сделано 3 попытки
+      //     if (existingPhoneConfirm.tryNum >= 3) {
+      //       // Прошло ли пол часа с момента последней попытки?
+      //       if (minutesBeetween >= 30) {
+      //         await sendCode(res, phone, 1, true)
+      //         return
+      //       } else
+      //         return res?.status(200).json({
+      //           success: false,
+      //           data: {
+      //             error: {
+      //               message:
+      //                 'Код уже отправлен на номер +' +
+      //                 phone +
+      //                 ' более 3 раз! Повторный запрос можно сделать через ' +
+      //                 Math.ceil(30 - minutesBeetween) +
+      //                 ' мин',
+      //               type: 'pinCodeCountLimit',
+      //             },
+      //           },
+      //         })
+      //     } else {
+      //       // Если было менее 3 попыток
 
-            await sendCode(res, phone, 1, true)
-            return
-            // if (response?.success) {
-            //   const newPhoneConfirm = await PhoneConfirms.findOneAndUpdate(
-            //     { phone },
-            //     {
-            //       status: response.success,
-            //       code: response.data.code,
-            //       id: response.data.id,
-            //       confirmed: false,
-            //       tryNum: existingPhoneConfirm.tryNum + 1,
-            //     }
-            //   )
-            //   return res?.status(201).json({
-            //     success: true,
-            //     data: {
-            //       status: response.success,
-            //       phone,
-            //       id: response.data.id,
-            //       confirmed: false,
-            //       tryNum: newPhoneConfirm.tryNum,
-            //     },
-            //   })
-            // } else {
-            //   // if (response.code == 11 || response.code == 13) {
-            //   //   await sendCode(
-            //   //     res,
-            //   //     phone,
-            //   //     existingPhoneConfirm.tryNum + 1,
-            //   //     true,
-            //   //     existingPhoneConfirm.code
-            //   //   )
-            //   // } else
-            //   return res?.status(200).json({
-            //     success: false,
-            //     data: {
-            //       error: {
-            //         message: 'Не удалось отправить код на номер +' + phone,
-            //         type: 'pinCode',
-            //       },
-            //     },
-            //   })
-            // }
-          }
-        }
-      }
+      //       await sendCode(res, phone, 1, true)
+      //       return
+      //       // if (response?.success) {
+      //       //   const newPhoneConfirm = await PhoneConfirms.findOneAndUpdate(
+      //       //     { phone },
+      //       //     {
+      //       //       status: response.success,
+      //       //       code: response.data.code,
+      //       //       id: response.data.id,
+      //       //       confirmed: false,
+      //       //       tryNum: existingPhoneConfirm.tryNum + 1,
+      //       //     }
+      //       //   )
+      //       //   return res?.status(201).json({
+      //       //     success: true,
+      //       //     data: {
+      //       //       status: response.success,
+      //       //       phone,
+      //       //       id: response.data.id,
+      //       //       confirmed: false,
+      //       //       tryNum: newPhoneConfirm.tryNum,
+      //       //     },
+      //       //   })
+      //       // } else {
+      //       //   // if (response.code == 11 || response.code == 13) {
+      //       //   //   await sendCode(
+      //       //   //     res,
+      //       //   //     phone,
+      //       //   //     existingPhoneConfirm.tryNum + 1,
+      //       //   //     true,
+      //       //   //     existingPhoneConfirm.code
+      //       //   //   )
+      //       //   // } else
+      //       //   return res?.status(200).json({
+      //       //     success: false,
+      //       //     data: {
+      //       //       error: {
+      //       //         message: 'Не удалось отправить код на номер +' + phone,
+      //       //         type: 'pinCode',
+      //       //       },
+      //       //     },
+      //       //   })
+      //       // }
+      //     }
+      //   }
+      // }
 
       // Если код уже подтвержден, то создаем пользователя
+      console.log('password :>> ', password)
+      console.log('existingPhoneConfirm :>> ', existingPhoneConfirm)
       if (password && existingPhoneConfirm?.confirmed === true) {
+        console.log(1)
         await PhoneConfirms.findOneAndDelete({ phone })
-
+        console.log(2)
         // Проверяем - возможно такой пользователь есть, просто у него не задан пароль
         if (existingUser && (!existingUser.password || forgotPassword)) {
           const updatedUser = await Users.findOneAndUpdate(
@@ -323,47 +330,58 @@ export default async function handler(req, res) {
         }
       }
 
+      return res?.status(200).json({
+        success: false,
+        data: {
+          error: {
+            message: 'Неизвестная ошибка',
+            type: 'unknown',
+          },
+        },
+      })
+
+      // TODO Временно удаленный код для смс авторизации
       // Если был также отправлен код, тоесть проверка
-      if (code) {
-        if (!existingPhoneConfirm) {
-          return res?.status(200).json({
-            success: false,
-            data: {
-              error: {
-                message:
-                  'Ошибка. Не найдена запись кода. Обратитесь к администратору',
-                type: 'pinCode',
-              },
-            },
-          })
-        }
-        if (!pinValidator(code) || existingPhoneConfirm.code !== code) {
-          return res?.status(200).json({
-            success: false,
-            data: {
-              error: {
-                message: 'Ошибка. Неверный код',
-                type: 'pinCode',
-              },
-            },
-          })
-        } else {
-          await PhoneConfirms.findOneAndUpdate({ phone }, { confirmed: true })
-          return res?.status(201).json({
-            success: true,
-            data: {
-              status: true,
-              phone,
-              code,
-              id: existingPhoneConfirm.id,
-              confirmed: true,
-            },
-          })
-        }
-      } else {
-        await sendCode(res, phone, 1)
-        return
-      }
+      // if (code) {
+      //   if (!existingPhoneConfirm) {
+      //     return res?.status(200).json({
+      //       success: false,
+      //       data: {
+      //         error: {
+      //           message:
+      //             'Ошибка. Не найдена запись кода. Обратитесь к администратору',
+      //           type: 'pinCode',
+      //         },
+      //       },
+      //     })
+      //   }
+      //   if (!pinValidator(code) || existingPhoneConfirm.code !== code) {
+      //     return res?.status(200).json({
+      //       success: false,
+      //       data: {
+      //         error: {
+      //           message: 'Ошибка. Неверный код',
+      //           type: 'pinCode',
+      //         },
+      //       },
+      //     })
+      //   } else {
+      //     await PhoneConfirms.findOneAndUpdate({ phone }, { confirmed: true })
+      //     return res?.status(201).json({
+      //       success: true,
+      //       data: {
+      //         status: true,
+      //         phone,
+      //         code,
+      //         id: existingPhoneConfirm.id,
+      //         confirmed: true,
+      //       },
+      //     })
+      //   }
+      // } else {
+      //   await sendCode(res, phone, 1)
+      //   return
+      // }
     } catch (error) {
       console.log(error)
       return res?.status(400).json({ success: false, error })

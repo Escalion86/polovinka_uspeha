@@ -1,0 +1,644 @@
+import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
+import addModalSelector from '@state/selectors/addModalSelector'
+import store from '@state/store'
+
+const modalsFuncGenerator = (
+  router,
+  itemsFunc,
+  loggedUser,
+  siteSettings,
+  loggedUserActiveRole,
+  loggedUserActiveStatus
+) => {
+  const addModal = (value) => store.set(addModalSelector, value)
+
+  const fixEventStatus = (eventId, status) => {
+    itemsFunc.event.set({ _id: eventId, status }, false, true)
+  }
+
+  const checkLoggedUser = (forWhat = 'Для записи на мероприятие', query) => {
+    if (!loggedUser?._id) {
+      addModal({
+        title: 'Необходимо зарегистрироваться и авторизироваться',
+        text: `${forWhat}, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте`,
+        confirmButtonName: 'Авторизироваться',
+        confirmButtonName2: 'Зарегистрироваться',
+        onConfirm: () =>
+          router.push(`/login${query ? `?${query}` : ''}`, '', {
+            shallow: true,
+          }),
+        onConfirm2: () =>
+          router.push(`/login?registration=true`, '', {
+            shallow: true,
+          }),
+      })
+      return false
+    } else if (!isUserQuestionnaireFilled(loggedUser)) {
+      addModal({
+        title: 'Необходимо заполнить профиль',
+        text: `${forWhat}, необходимо сначала заполнить профиль`,
+        confirmButtonName: 'Заполнить',
+        onConfirm: () =>
+          router.push(`/cabinet/questionnaire`, '', { shallow: true }),
+      })
+      return false
+    }
+    return true
+  }
+
+  return {
+    add: addModal,
+    confirm: ({
+      title = 'Отмена изменений',
+      text = 'Вы уверены, что хотите закрыть окно без сохранения изменений?',
+      onConfirm,
+    }) =>
+      addModal({
+        title,
+        text,
+        onConfirm,
+      }),
+    minimalSize: () =>
+      addModal({
+        title: 'Маленький размер фотографии',
+        text: 'Фотография слишком маленькая. Размер должен быть не менее 100x100',
+        confirmButtonName: `Понятно`,
+        onConfirm: true,
+        showDecline: false,
+      }),
+    copyLink: (data) =>
+      addModal(require('./modalsFunc/copyLinkFunc').default(data)),
+    browserUpdate: (url) =>
+      addModal({
+        title: 'Устаревшая версия браузера',
+        text: `Необходимо обновить браузер. Некоторые функции сайта могут не работать. Пожалуйста обновите браузер.\n\nТекущая версия браузера: ${navigator.userAgent}`,
+        confirmButtonName: `Обновить`,
+        onConfirm: true,
+        showDecline: true,
+        onConfirm: () => router.push(url, ''),
+      }),
+    custom: addModal,
+    cropImage: (...data) =>
+      addModal(require('./modalsFunc/cropImageFunc').default(...data)),
+    error: (data) => addModal(require('./modalsFunc/errorFunc').default(data)),
+    json: (data) => addModal(require('./modalsFunc/jsonFunc').default(data)),
+    selectSvgFrame: (itemId, onChange) =>
+      addModal(
+        require('./modalsFunc/selectSvgFrameFunc').default(itemId, onChange)
+      ),
+    selectImage: (directory, aspect, onSelect) =>
+      addModal(
+        require('./modalsFunc/selectImageFunc').default(
+          directory,
+          aspect,
+          onSelect
+        )
+      ),
+    selectEvents: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      acceptedIds,
+      maxEvents,
+      canSelectNone,
+      modalTitle,
+      showCountNumber
+    ) =>
+      addModal(
+        require('./modalsFunc/selectEventsFunc').default(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          acceptedIds,
+          maxEvents,
+          canSelectNone,
+          modalTitle,
+          showCountNumber
+        )
+      ),
+    selectUsers: (
+      items,
+      filterRules,
+      onChange,
+      exceptedIds,
+      acceptedIds,
+      maxUsers,
+      canSelectNone,
+      modalTitle,
+      showCountNumber
+    ) =>
+      addModal(
+        require('./modalsFunc/selectUsersFunc').default(
+          items,
+          filterRules,
+          onChange,
+          exceptedIds,
+          acceptedIds,
+          maxUsers,
+          canSelectNone,
+          modalTitle,
+          showCountNumber
+        )
+      ),
+    selectDirections: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      acceptedIds,
+      maxDirections,
+      canSelectNone,
+      modalTitle,
+      showCountNumber
+    ) =>
+      addModal(
+        require('./modalsFunc/selectDirectionsFunc').default(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          acceptedIds,
+          maxDirections,
+          canSelectNone,
+          modalTitle,
+          showCountNumber
+        )
+      ),
+    selectServices: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      acceptedIds,
+      maxServices,
+      canSelectNone,
+      modalTitle,
+      showCountNumber
+    ) =>
+      addModal(
+        require('./modalsFunc/selectServicesFunc').default(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          acceptedIds,
+          maxServices,
+          canSelectNone,
+          modalTitle,
+          showCountNumber
+        )
+      ),
+    selectPayments: (
+      itemsId,
+      filterRules,
+      onChange,
+      exceptedIds,
+      acceptedIds,
+      maxPayments,
+      canSelectNone,
+      modalTitle,
+      showCountNumber
+    ) =>
+      addModal(
+        require('./modalsFunc/selectPaymentsFunc').default(
+          itemsId,
+          filterRules,
+          onChange,
+          exceptedIds,
+          acceptedIds,
+          maxPayments,
+          canSelectNone,
+          modalTitle,
+          showCountNumber
+        )
+      ),
+    review: {
+      add: (reviewId) =>
+        addModal(require('./modalsFunc/reviewFunc').default(reviewId, true)),
+      edit: (reviewId) =>
+        addModal(require('./modalsFunc/reviewFunc').default(reviewId)),
+      delete: (reviewId) =>
+        addModal({
+          title: 'Удаление отзыва',
+          text: 'Вы уверены, что хотите удалить отзыв?',
+          onConfirm: async () => itemsFunc.review.delete(reviewId),
+        }),
+    },
+    direction: {
+      add: (directionId) =>
+        addModal(
+          require('./modalsFunc/directionFunc').default(directionId, true)
+        ),
+      edit: (directionId) =>
+        addModal(require('./modalsFunc/directionFunc').default(directionId)),
+      delete: (directionId) =>
+        addModal({
+          title: 'Удаление направления',
+          text: 'Вы уверены, что хотите удалить направление?',
+          onConfirm: async () => itemsFunc.direction.delete(directionId),
+        }),
+      view: (directionId) =>
+        addModal(
+          require('./modalsFunc/directionViewFunc').default(directionId)
+        ),
+    },
+    eventsTags: {
+      edit: () => addModal(require('./modalsFunc/eventsTagsFunc').default()),
+    },
+    event: {
+      add: (eventId, props) =>
+        addModal(
+          require('./modalsFunc/eventFunc').default(eventId, true, props)
+        ),
+      edit: (eventId) =>
+        addModal(require('./modalsFunc/eventFunc').default(eventId)),
+      subEventEdit: (props, onChange, rules) =>
+        addModal(
+          require('./modalsFunc/subEventFunc').default(props, onChange, rules)
+        ),
+      users: (eventId) =>
+        addModal(require('./modalsFunc/eventUsersFunc').default(eventId)),
+      history: (eventId) =>
+        addModal(require('./modalsFunc/eventHistoryFunc').default(eventId)),
+      statusEdit: (eventId) =>
+        addModal(require('./modalsFunc/eventStatusEditFunc').default(eventId)),
+      historyEventUsers: (eventId) =>
+        addModal(
+          require('./modalsFunc/eventUsersHistoryFunc').default(eventId)
+        ),
+      payments: (eventId) =>
+        addModal(
+          require('./modalsFunc/eventUsersPaymentsFunc').default(eventId)
+        ),
+      close: (eventId) =>
+        addModal({
+          title: 'Закрытие мероприятия',
+          text: 'Вы уверены, что хотите закрыть мероприятие?',
+          onConfirm: async () => itemsFunc.event.close(eventId),
+        }),
+      cancel: (eventId) =>
+        addModal({
+          title: 'Отмена события',
+          text: 'Вы уверены, что хотите отменить мероприятие (это не удалит мероприятие, а лишь изменит его статус на отмененное)?',
+          onConfirm: async () => itemsFunc.event.cancel(eventId),
+        }),
+      uncancel: (eventId) =>
+        addModal({
+          title: 'Возобновление события',
+          text: 'Вы уверены, что хотите возобновить мероприятие?',
+          onConfirm: async () => itemsFunc.event.uncancel(eventId),
+        }),
+      delete: (eventId) =>
+        addModal({
+          title: 'Удаление события',
+          text: 'Вы уверены, что хотите удалить мероприятие?',
+          onConfirm: async () => itemsFunc.event.delete(eventId),
+        }),
+      view: (eventId) =>
+        addModal(require('./modalsFunc/eventViewFunc').default(eventId)),
+      // editLikes: (eventId) => addModal(require('./modalsFunc/likesEditFunc').default(eventId)),
+      viewLikes: (eventId) =>
+        addModal(require('./modalsFunc/likesViewFunc').default(eventId)),
+      copyUsersList: (eventId) =>
+        addModal(
+          require('./modalsFunc/copyEventUserListFunc').default(eventId)
+        ),
+      notificateAboutEvent: (eventId) =>
+        addModal(
+          require('./modalsFunc/notificateAboutEventTelegramFunc').default(
+            eventId
+          )
+        ),
+      signUp: (event, status = 'participant', comment) => {
+        if (checkLoggedUser('Для записи на мероприятие', `event=${event._id}`))
+          addModal(
+            require('./modalsFunc/eventSignUpFunc').default(
+              event,
+              status,
+              comment,
+              fixEventStatus,
+              (event, error, comment, subEventId) =>
+                addModal(
+                  require('./modalsFunc/eventSignUpToReserveAfterError').default(
+                    event,
+                    error,
+                    comment,
+                    subEventId
+                  )
+                ),
+              (event, status, comment, subEventId) =>
+                addModal(
+                  require('./modalsFunc/eventAfterSignUpMessageFunc').default(
+                    event,
+                    status,
+                    comment,
+                    subEventId
+                  )
+                )
+            )
+          )
+      },
+      signOut: (event, activeStatus) => {
+        const postfixStatus = activeStatus === 'reserve' ? ' в резерв' : ''
+        addModal({
+          title: `Отмена записи${postfixStatus} на мероприятие`,
+          text: `Вы уверены что хотите отменить запись${postfixStatus} на мероприятие?`,
+          confirmButtonName: `Отменить запись${postfixStatus}`,
+          onConfirm: () => {
+            itemsFunc.event.signOut(event._id, loggedUser?._id, activeStatus)
+          },
+        })
+        // }
+      },
+      cantSignUp: () =>
+        addModal({
+          title: 'Запись на мероприятие невозможна',
+          text: 'Ваша учетная запись заблокирована, поэтому вы не можете записываться на мероприятия. Пожалуйста обратитесь к администратору.',
+          confirmButtonName: `Понятно`,
+          onConfirm: true,
+          showDecline: false,
+        }),
+    },
+    eventUser: {
+      editStatus: (eventUser) =>
+        addModal(
+          require('./modalsFunc/eventUserStatusChangeFunc').default(eventUser)
+        ),
+      editSubEvent: (eventUser, onConfirm, selectedSubEventId) =>
+        addModal(
+          require('./modalsFunc/eventUserSubEventChangeFunc').default(
+            eventUser,
+            onConfirm,
+            selectedSubEventId
+          )
+        ),
+      editLike: (eventUser, adminView) =>
+        addModal(
+          require('./modalsFunc/likeEditFunc').default(eventUser, adminView)
+        ),
+      likesResult: (eventUser) =>
+        addModal(require('./modalsFunc/likeEditFunc').default(eventUser)),
+    },
+    payment: {
+      add: (paymentId, props) =>
+        addModal(
+          require('./modalsFunc/paymentFunc').default(paymentId, true, props)
+        ),
+      edit: (paymentId) =>
+        addModal(require('./modalsFunc/paymentFunc').default(paymentId)),
+      history: (paymentId) =>
+        addModal(require('./modalsFunc/paymentHistoryFunc').default(paymentId)),
+      autoFill: (eventId) =>
+        addModal(require('./modalsFunc/paymentsAutoFillFunc').default(eventId)),
+      delete: (paymentId) =>
+        addModal({
+          title: 'Удаление транзакции',
+          text: 'Вы уверены, что хотите удалить транзакцию?',
+          onConfirm: async () => itemsFunc.payment.delete(paymentId),
+        }),
+      userEvent: (userId, eventId) =>
+        addModal(
+          require('./modalsFunc/userPaymentsForEventFunc').default(
+            userId,
+            eventId
+          )
+        ),
+    },
+    user: {
+      add: (userId) =>
+        addModal(require('./modalsFunc/userFunc').default(userId, true)),
+      edit: (userId) =>
+        addModal(require('./modalsFunc/userFunc').default(userId)),
+      history: (userId) =>
+        addModal(require('./modalsFunc/userHistoryFunc').default(userId)),
+      historyActions: (userId) =>
+        addModal(
+          require('./modalsFunc/userActionsHistoryFunc').default(userId)
+        ),
+      editPersonalStatus: (userId) =>
+        addModal(
+          require('./modalsFunc/userPersonalStatusEditFunc').default(userId)
+        ),
+      delete: (userId) =>
+        addModal(
+          require('./modalsFunc/userDeleteFunc').default(userId)
+          //   {
+          //   title: 'Удаление пользователя',
+          //   text: 'Вы уверены, что хотите удалить пользователя?',
+          //   onConfirm: async () => itemsFunc.user.delete(userId),
+          // }
+        ),
+      view: (userId, params) =>
+        addModal(require('./modalsFunc/userViewFunc').default(userId, params)),
+      events: (userId) =>
+        addModal(
+          require('./modalsFunc/userSignedUpEventsFunc').default(userId)
+        ),
+      payments: (userId) =>
+        addModal(require('./modalsFunc/userPaymentsFunc').default(userId)),
+      setPassword: (userId) =>
+        addModal(require('./modalsFunc/userSetPasswordFunc').default(userId)),
+    },
+    questionnaire: {
+      // add: (questionnaireId) =>
+      //   addModal(require('./modalsFunc/questionnaireConstructorFunc').default(questionnaireId, true)),
+      open: (questionnaire, value, onConfirm) =>
+        addModal(
+          require('./modalsFunc/userQuestionnaireFunc').default(
+            questionnaire,
+            value,
+            onConfirm
+          )
+        ),
+      constructor: (questionnaire, onConfirm) =>
+        addModal(
+          require('./modalsFunc/questionnaireConstructorFunc').default(
+            questionnaire,
+            onConfirm
+          )
+        ),
+    },
+    additionalBlock: {
+      add: (additionalBlockId) =>
+        addModal(
+          require('./modalsFunc/additionalBlockFunc').default(
+            additionalBlockId,
+            true
+          )
+        ),
+      edit: (additionalBlockId) =>
+        addModal(
+          require('./modalsFunc/additionalBlockFunc').default(additionalBlockId)
+        ),
+      delete: (additionalBlockId) =>
+        addModal({
+          title: 'Удаление дополнительного блока',
+          text: 'Вы уверены, что хотите удалить дополнительный блок?',
+          onConfirm: async () =>
+            itemsFunc.additionalBlock.delete(additionalBlockId),
+        }),
+    },
+    service: {
+      add: (serviceId) =>
+        addModal(require('./modalsFunc/serviceFunc').default(serviceId, true)),
+      edit: (serviceId) =>
+        addModal(require('./modalsFunc/serviceFunc').default(serviceId)),
+      view: (serviceId) =>
+        addModal(require('./modalsFunc/serviceViewFunc').default(serviceId)),
+      apply: (serviceId) => {
+        if (!loggedUser?._id) {
+          addModal({
+            title: 'Необходимо зарегистрироваться и авторизироваться',
+            text: 'Для покупки услуги, необходимо сначала зарегистрироваться, а затем авторизироваться на сайте',
+            confirmButtonName: 'Авторизироваться',
+            confirmButtonName2: 'Зарегистрироваться',
+            onConfirm: () =>
+              router.push(`/login?service=${serviceId}`, '', { shallow: true }),
+            onConfirm2: () =>
+              router.push(`/login?registration=true`, '', {
+                shallow: true,
+              }),
+          })
+        } else if (!isUserQuestionnaireFilled(loggedUser))
+          addModal({
+            title: 'Необходимо заполнить профиль',
+            text: 'Для покупки услуги, необходимо сначала заполнить профиль',
+            confirmButtonName: 'Заполнить',
+            onConfirm: () =>
+              router.push(`/cabinet/questionnaire`, '', { shallow: true }),
+          })
+        else
+          addModal(require('./modalsFunc/serviceApplyFunc').default(serviceId))
+      },
+      delete: (serviceId) =>
+        addModal({
+          title: 'Удаление услуги',
+          text: 'Вы уверены, что хотите удалить услугу?',
+          onConfirm: async () => itemsFunc.service.delete(serviceId),
+        }),
+      buy: (serviceId, userId) =>
+        addModal({
+          title: 'Покупка услуги',
+          text: 'Вы уверены, что хотите приобрести услугу?',
+          onConfirm: async () => {
+            itemsFunc.service.buy(serviceId, userId)
+            addModal({
+              title: 'Покупка услуги',
+              text: 'Заявка на покупку услуги отправлена! Администратор свяжется с вами в ближайшее время.',
+            })
+          },
+        }),
+    },
+    serviceUser: {
+      add: (serviceId) =>
+        addModal(
+          require('./modalsFunc/serviceUserFunc').default(serviceId, true)
+        ),
+      edit: (serviceId) =>
+        addModal(require('./modalsFunc/serviceUserFunc').default(serviceId)),
+      view: (serviceUserId) =>
+        addModal(
+          require('./modalsFunc/serviceUserViewFunc').default(serviceUserId)
+        ),
+      delete: (serviceUserId) =>
+        addModal({
+          title: 'Удаление заявки на услугу',
+          text: 'Вы уверены, что хотите удалить заявку на услугу?',
+          onConfirm: async () => itemsFunc.servicesUser.delete(serviceUserId),
+        }),
+      statusEdit: (serviceUserId) =>
+        addModal(
+          require('./modalsFunc/serviceUserStatusEditFunc').default(
+            serviceUserId
+          )
+        ),
+    },
+    notifications: {
+      telegram: {
+        activate: (onStartActivate, onCancel) =>
+          addModal(
+            require('./modalsFunc/notificationsTelegramFunc').default(
+              onStartActivate,
+              onCancel
+            )
+          ),
+        deactivate: (onSuccess) =>
+          addModal(
+            require('./modalsFunc/notificationsDeativateTelegramFunc').default(
+              onSuccess
+            )
+          ),
+      },
+    },
+    loginHistory: {
+      user: (userId) =>
+        addModal(require('./modalsFunc/userLoginHistoryFunc').default(userId)),
+    },
+    role: {
+      add: (onConfirm) =>
+        addModal(
+          require('./modalsFunc/roleFunc').default(undefined, onConfirm)
+        ),
+      edit: (role, onConfirm) =>
+        addModal(require('./modalsFunc/roleFunc').default(role, onConfirm)),
+    },
+    template: {
+      select: (tool, aspect, onSelect) =>
+        addModal(
+          require('./modalsFunc/selectTemplateFunc').default(
+            tool,
+            aspect,
+            onSelect
+          )
+        ),
+      save: (tool, template, onSave, aspect) => {
+        addModal(
+          require('./modalsFunc/saveTemplateFunc').default(
+            tool,
+            template,
+            onSave,
+            aspect
+          )
+        )
+      },
+      add: (tool, template, onSave) => {
+        addModal(
+          require('./modalsFunc/newTemplateFunc').default(
+            tool,
+            template,
+            onSave
+          )
+        )
+      },
+      rename: (templateId, oldName, onSuccess) => {
+        addModal(
+          require('./modalsFunc/renameTemplateFunc').default(
+            templateId,
+            oldName,
+            onSuccess
+          )
+        )
+      },
+    },
+    browseLocation: () =>
+      addModal(require('./modalsFunc/browseLocationFunc').default()),
+    remindDate: (remindDate, onAdd) =>
+      addModal(
+        require('./modalsFunc/remindDateFunc').default(remindDate, onAdd)
+      ),
+    external: {
+      qrCodeGenerator: ({ type, id, title }) =>
+        addModal(
+          require('./modalsFunc/qrCodeGeneratorFunc').default({
+            type,
+            id,
+            title,
+          })
+        ),
+    },
+  }
+}
+
+export default modalsFuncGenerator

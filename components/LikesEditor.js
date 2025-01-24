@@ -1,5 +1,5 @@
 import Button from '@components/Button'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'

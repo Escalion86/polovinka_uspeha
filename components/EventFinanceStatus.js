@@ -1,6 +1,6 @@
 import Button from '@components/Button'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'

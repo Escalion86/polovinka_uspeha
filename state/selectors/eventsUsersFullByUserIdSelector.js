@@ -11,24 +11,26 @@ export const eventsUsersFullByUserIdSelector = atomFamily((id) =>
 
     const eventsUsers = await get(asyncEventsUsersByUserIdAtom(id))
 
-    return eventsUsers
-      ? await Promise.all(
-          eventsUsers
-            // .filter((item) => item.eventId && item.userId && item.userId === id)
-            .map(async (item) => {
-              const user = await get(userSelector(item.userId))
-              const event = await get(eventSelector(item.eventId))
-              return {
-                ...item,
-                user,
-                event,
-                // userStatus: item.userStatus ?? user.status,
-                // eventSubtypeNum: item.eventSubtypeNum,
-                // comment: item.comment,
-              }
-            })
-        )
-      : []
+    if (!eventsUsers) return []
+
+    const eventsUsersFull = await Promise.all(
+      eventsUsers
+        // .filter((item) => item.eventId && item.userId && item.userId === id)
+        .map(async (item) => {
+          const user = await get(userSelector(item.userId))
+          const event = await get(eventSelector(item.eventId))
+          return {
+            ...item,
+            user,
+            event,
+            // userStatus: item.userStatus ?? user.status,
+            // eventSubtypeNum: item.eventSubtypeNum,
+            // comment: item.comment,
+          }
+        })
+    )
+
+    return eventsUsersFull
   })
 )
 

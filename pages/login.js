@@ -7,7 +7,7 @@ export default Login
 export const getServerSideProps = async (context) => {
   return {
     redirect: {
-      destination: `/krsk/login`,
+      destination: `/`,
     },
   }
 }

@@ -16,7 +16,7 @@ import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import Image from 'next/image'
 import isUserAdmin from '@helpers/isUserAdmin'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import { faQrcode } from '@fortawesome/free-solid-svg-icons'
 
 const CheckedItem = ({ children }) => (

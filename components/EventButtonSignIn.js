@@ -1,7 +1,7 @@
 import Button from '@components/Button'
 import eventPriceByStatus from '@helpers/eventPriceByStatus'
 import isUserQuestionnaireFilledFunc from '@helpers/isUserQuestionnaireFilled'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
 import sumOfPaymentsFromLoggedUserToEventSelector from '@state/selectors/sumOfPaymentsFromLoggedUserToEventSelector'

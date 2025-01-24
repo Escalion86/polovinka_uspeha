@@ -29,7 +29,7 @@ const PieChart = ({ title, data }) => {
     <div className="w-[340px] min-w-[340px]">
       {title && <H3>{title}</H3>}
       {/* <div className="h-80"> */}
-      {!data ? (
+      {data?.length > 0 ? (
         <Pie
           height={320 + 18 * data.length}
           width={340}
@@ -165,7 +165,7 @@ const PieChart = ({ title, data }) => {
           ]}
         />
       ) : (
-        'Нет данных'
+        <div className="flex justify-center w-full">Нет данных</div>
       )}
       {/* </div> */}
     </div>

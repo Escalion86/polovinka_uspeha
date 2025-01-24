@@ -1,7 +1,7 @@
 import DateTimePicker from '@components/DateTimePicker'
 import ServiceUserStatusPicker from '@components/ValuePicker/ServiceUserStatusPicker'
 import { DEFAULT_SERVICE_USER } from '@helpers/constants'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 import servicesUsersSelector from '@state/selectors/servicesUsersSelector'
 import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'

@@ -1,7 +1,7 @@
 import PulseButton from '@components/PulseButton'
 import { H1, H3 } from '@components/tags'
 import upperCaseFirst from '@helpers/upperCaseFirst'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import Link from 'next/link'
