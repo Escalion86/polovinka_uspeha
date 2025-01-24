@@ -29,7 +29,7 @@ const ImageWithLoading = ({ original, originalClass }) => {
         className={cn(originalClass, 'object-contain relative')}
         // onLoad={() => setIsLoaded(true)}
         // onError={() => setIsError(true)}
-        priority
+        // priority
       />
       {/* </div> */}
       {/* ) : (

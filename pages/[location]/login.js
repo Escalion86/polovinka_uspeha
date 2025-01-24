@@ -381,7 +381,9 @@ const LoginPage = (props) => {
   const [checkHaveNoAccounts, setCheckHaveNoAccounts] = useState(false)
   const [checkAgreement, setCheckAgreement] = useState(false)
   const [showAgreement, setShowAgreement] = useState(false)
+  const [showPhoneRecovery, setShowPhoneRecovery] = useState(false)
   const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
+  const [submitAfterRerender, setSubmitAfterRerender] = useState(false)
 
   const isRegistration = useMemo(() => process === 'registration', [process])
   const isAuthorization = useMemo(() => process === 'authorization', [process])
@@ -389,8 +391,6 @@ const LoginPage = (props) => {
     () => process === 'forgotPassword',
     [process]
   )
-
-  console.log('registrationLevel', registrationLevel)
 
   const telegramBotName = props.telegramBotName
 
@@ -571,13 +571,13 @@ const LoginPage = (props) => {
       (res) => {
         if (res.error) {
           addError({ [res.error.type]: res.error.message })
+          if (res.error.existingPhone) setShowPhoneRecovery(true)
           setBackCallRes()
           setWaitingResponse(false)
           // updateErrors(res.error.type, res.error.message)
           return
         }
         setBackCall(true)
-        console.log('res1 :>> ', res)
         var timer = setInterval(() => {
           postData(
             `/api/telefonip`,
@@ -587,7 +587,6 @@ const LoginPage = (props) => {
               checkBackCallId: res.data.id,
             },
             (res) => {
-              console.log('res2 :>> ', res)
               if (res.data.status === 'expired') {
                 clearInterval(timer)
                 setBackCallRes(res.data)
@@ -640,6 +639,10 @@ const LoginPage = (props) => {
     setRegistrationLevel,
     clearErrors,
   ])
+
+  setRegistrationLevel
+  setType
+  setShowPhoneRecovery
 
   const submit = () => {
     clearErrors()
@@ -850,6 +853,13 @@ const LoginPage = (props) => {
       })
     }
   }
+
+  useEffect(() => {
+    if (submitAfterRerender) {
+      setSubmitAfterRerender(false)
+      submit()
+    }
+  })
 
   const handleKeypressEnter = (e) => {
     if (e.keyCode === 13) submit()
@@ -1606,6 +1616,51 @@ const LoginPage = (props) => {
                 />
               </div>
             )}
+        </Modal>
+      )}
+      {showPhoneRecovery && (
+        <Modal
+          title="Номер телефона уже зарегистрирован"
+          text={`Телефон +${inputPhone} который Вы ввели уже зарегистрирован на сайте, возможно вы забыли пароль? Если да, то нажмите на кнопку "Да, я забыл пароль!"`}
+          onClose={() => setShowPhoneRecovery(false)}
+        >
+          <div className="flex justify-between gap-x-4">
+            <div
+              tabIndex={0}
+              // className={cn(
+              //   'block mb-2 border text-right duration-300 cursor-pointer hover:text-general',
+              //   errors.password ? 'font-bold text-base text-danger' : 'text-sm'
+              // )}
+              className={cn(
+                'whitespace-nowrap duration-300 w-full mt-3 font-bold cursor-pointer hover:text-general text-lg border-2 border-gray-800 rounded-full px-3 py-1 hover:border-general'
+              )}
+              onClick={() => {
+                clearErrors()
+                setProcess('forgotPassword')
+                setRegistrationLevel(1)
+                setType('phone')
+                setShowPhoneRecovery(false)
+                setSubmitAfterRerender(true)
+              }}
+            >
+              Да, я забыл пароль!
+            </div>
+            <div
+              tabIndex={0}
+              // className={cn(
+              //   'block mb-2 border text-right duration-300 cursor-pointer hover:text-general',
+              //   errors.password ? 'font-bold text-base text-danger' : 'text-sm'
+              // )}
+              className={cn(
+                'whitespace-nowrap duration-300 w-full mt-3 font-bold cursor-pointer hover:text-general text-lg border-2 border-gray-800 rounded-full px-3 py-1 hover:border-general'
+              )}
+              onClick={() => {
+                setShowPhoneRecovery(false)
+              }}
+            >
+              Нет! (закрыть окно)
+            </div>
+          </div>
         </Modal>
       )}
       {showAgreement && (

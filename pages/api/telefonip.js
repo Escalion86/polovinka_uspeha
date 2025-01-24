@@ -1,6 +1,6 @@
-import getMinutesBetween from '@helpers/getMinutesBetween'
+// import getMinutesBetween from '@helpers/getMinutesBetween'
 import phoneValidator from '@helpers/phoneValidator'
-import pinValidator from '@helpers/pinValidator'
+// import pinValidator from '@helpers/pinValidator'
 import Histories from '@models/Histories'
 import PhoneConfirms from '@models/PhoneConfirms'
 import Users from '@models/Users'
@@ -9,66 +9,66 @@ import dbConnect from '@utils/dbConnect'
 
 const token = process.env.TELEFONIP
 
-const fetchCode = async (phone) => {
-  const formatedPhone = '8' + String(phone).substring(1)
-  const response = await fetch(
-    `https://api.telefon-ip.ru/api/v1/authcalls/${token}/get_code/${formatedPhone}`,
-    { method: 'GET' }
-  ).then((response) => response.json())
-  return response
-}
+// const fetchCode = async (phone) => {
+//   const formatedPhone = '8' + String(phone).substring(1)
+//   const response = await fetch(
+//     `https://api.telefon-ip.ru/api/v1/authcalls/${token}/get_code/${formatedPhone}`,
+//     { method: 'GET' }
+//   ).then((response) => response.json())
+//   return response
+// }
 
-const sendCode = async (res, phone, tryNum = 1, update = false) => {
-  if (!phone)
-    return res?.status(200).json({
-      success: false,
-      data: {
-        error: {
-          message: 'Недостаточно параметров',
-          type: 'phone',
-        },
-      },
-    })
-  const response = await fetchCode(phone)
-  console.log('response', response)
-  if (response?.success) {
-    if (update) {
-      await PhoneConfirms.findOneAndUpdate(
-        { phone },
-        { tryNum, confirmed: false, code: response.data.code }
-      )
-    } else {
-      const newPhoneConfirm = await PhoneConfirms.create({
-        phone,
-        status: response.success,
-        code: response.data.code,
-        id: response.data.id,
-        confirmed: false,
-        tryNum,
-      })
-    }
-    return res?.status(201).json({
-      success: true,
-      data: {
-        status: response.success,
-        phone,
-        id: response.data.id,
-        confirmed: false,
-        tryNum,
-      },
-    })
-  } else {
-    return res?.status(200).json({
-      success: false,
-      data: {
-        error: {
-          message: `Не удалось отправить код на номер +${phone}. Ответ сервиса: ${response.error}`,
-          type: 'pinCode',
-        },
-      },
-    })
-  }
-}
+// const sendCode = async (res, phone, tryNum = 1, update = false) => {
+//   if (!phone)
+//     return res?.status(200).json({
+//       success: false,
+//       data: {
+//         error: {
+//           message: 'Недостаточно параметров',
+//           type: 'phone',
+//         },
+//       },
+//     })
+//   const response = await fetchCode(phone)
+//   console.log('response', response)
+//   if (response?.success) {
+//     if (update) {
+//       await PhoneConfirms.findOneAndUpdate(
+//         { phone },
+//         { tryNum, confirmed: false, code: response.data.code }
+//       )
+//     } else {
+//       const newPhoneConfirm = await PhoneConfirms.create({
+//         phone,
+//         status: response.success,
+//         code: response.data.code,
+//         id: response.data.id,
+//         confirmed: false,
+//         tryNum,
+//       })
+//     }
+//     return res?.status(201).json({
+//       success: true,
+//       data: {
+//         status: response.success,
+//         phone,
+//         id: response.data.id,
+//         confirmed: false,
+//         tryNum,
+//       },
+//     })
+//   } else {
+//     return res?.status(200).json({
+//       success: false,
+//       data: {
+//         error: {
+//           message: `Не удалось отправить код на номер +${phone}. Ответ сервиса: ${response.error}`,
+//           type: 'pinCode',
+//         },
+//       },
+//     })
+//   }
+// }
 
 export default async function handler(req, res) {
   const { query, method, body } = req
@@ -148,8 +148,7 @@ export default async function handler(req, res) {
 
       // Сначала проверяем - есть ли уже такой зарегистрированный номер?
       const existingUser = await Users.findOne({ phone })
-      console.log('forgotPassword :>> ', forgotPassword)
-      console.log('existingUser :>> ', existingUser)
+
       if (!forgotPassword && existingUser && existingUser.password) {
         return res?.status(200).json({
           success: false,
@@ -157,6 +156,20 @@ export default async function handler(req, res) {
             error: {
               message: 'Такой номер телефона уже зарегистрирован',
               type: 'phone',
+              existingPhone: true,
+            },
+          },
+        })
+      }
+
+      if (forgotPassword && !existingUser) {
+        return res?.status(200).json({
+          success: false,
+          data: {
+            error: {
+              message: 'Такой номер телефона не зарегистрирован',
+              type: 'phone',
+              notExistingPhone: true,
             },
           },
         })
@@ -182,18 +195,6 @@ export default async function handler(req, res) {
         return res?.status(201).json({
           success: true,
           data: response,
-        })
-      }
-
-      if (forgotPassword && !existingUser) {
-        return res?.status(200).json({
-          success: false,
-          data: {
-            error: {
-              message: 'Такой номер телефона не зарегистрирован',
-              type: 'phone',
-            },
-          },
         })
       }
 
