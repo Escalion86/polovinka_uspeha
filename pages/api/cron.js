@@ -208,6 +208,7 @@ export default async function handler(req, res) {
                   text,
                   // images,
                   inline_keyboard,
+                  location,
                 })
               }
             }
