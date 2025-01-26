@@ -1,5 +1,5 @@
 import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
+import CardWrapper from '@components/CardWrapper'
 import { UserItem } from '@components/ItemCards'
 import PriceDiscount from '@components/PriceDiscount'
 import QuestionnaireAnswersFill from '@components/QuestionnaireAnswersFill'

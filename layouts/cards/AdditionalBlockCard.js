@@ -1,5 +1,5 @@
 import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
+import CardWrapper from '@components/CardWrapper'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
@@ -123,7 +123,7 @@ const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
         </div>
         {/* <div>{direction.description}</div> */}
         <div
-          className="px-2 py-1 text-sm w-full max-w-full overflow-hidden textarea ql"
+          className="w-full max-w-full px-2 py-1 overflow-hidden text-sm textarea ql"
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(additionalBlock.description),
           }}

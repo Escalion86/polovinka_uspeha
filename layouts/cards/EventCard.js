@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
 import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
+import CardWrapper from '@components/CardWrapper'
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DateTimeEvent from '@components/DateTimeEvent'
 import EventButtonSignIn from '@components/EventButtonSignIn'

@@ -17,6 +17,8 @@ import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import { HorizontalRuleSharp } from '@mui/icons-material'
+import subEventsSummator from '@helpers/subEventsSummator'
 
 const eventSignUpFunc = (
   event,
@@ -40,7 +42,9 @@ const eventSignUpFunc = (
   }) => {
     const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const itemsFunc = useAtomValue(itemsFuncAtom)
-    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(event._id))
+    const eventUsersFull = useAtomValue(
+      eventsUsersFullByEventIdSelector(event._id)
+    )
 
     const [check, setCheck] = useState(false)
     const [subEventId, setSubEventId] = useState(
@@ -86,18 +90,19 @@ const eventSignUpFunc = (
     }
 
     const subEventsUserStatus = event.subEvents.map((subEvent) => {
-      const eventUsersOfSubEvent = eventUsers.filter(
+      const subEventSum = subEventsSummator([subEvent])
+      const eventUsersFullOfSubEvent = eventUsersFull.filter(
         (eventUser) => eventUser.subEventId === subEvent.id
       )
       return {
         id: subEvent.id,
-        userStatus: userToEventStatus(
+        userStatus: userToEventStatus({
           event,
-          loggedUserActive,
-          eventUsersOfSubEvent,
-          subEvent,
-          rules
-        ),
+          user: loggedUserActive,
+          eventUsersFull: eventUsersFullOfSubEvent,
+          subEventSum,
+          rules,
+        }),
       }
     })
 

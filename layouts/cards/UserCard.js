@@ -1,5 +1,5 @@
 import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
+import CardWrapper from '@components/CardWrapper'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import UserName from '@components/UserName'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'

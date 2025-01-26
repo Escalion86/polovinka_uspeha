@@ -17,13 +17,13 @@ export const loggedUserToEventStatusSelector = atomFamily((id) =>
     const direction = get(directionSelector(event.directionId))
     const rules = direction?.rules
 
-    return userToEventStatus(
+    return userToEventStatus({
       event,
-      loggedUserActive,
-      eventUsers,
+      user: loggedUserActive,
+      eventUsersFull: eventUsers,
       subEventSum,
-      rules
-    )
+      rules,
+    })
   })
 )
 

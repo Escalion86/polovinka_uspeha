@@ -1,5 +1,5 @@
 import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
+import CardWrapper from '@components/CardWrapper'
 import { getNounAges } from '@helpers/getNoun'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'

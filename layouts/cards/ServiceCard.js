@@ -1,6 +1,6 @@
 import Button from '@components/Button'
 import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
+import CardWrapper from '@components/CardWrapper'
 import PriceDiscount from '@components/PriceDiscount'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import modalsFuncAtom from '@state/modalsFuncAtom'

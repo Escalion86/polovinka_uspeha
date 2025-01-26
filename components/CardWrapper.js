@@ -12,7 +12,7 @@ const parentHasAttr = (e, attr) => {
   return parentHasAttr(e.parentNode, attr)
 }
 
-export const CardWrapper = ({
+const CardWrapper = ({
   onClick,
   loading,
   error,
@@ -76,3 +76,5 @@ export const CardWrapper = ({
     </div>
   )
 }
+
+export default CardWrapper

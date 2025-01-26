@@ -1,5 +1,5 @@
 import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
+import CardWrapper from '@components/CardWrapper'
 import EventNameById from '@components/EventNameById'
 import IconWithTooltip from '@components/IconWithTooltip'
 import PayTypeIcon from '@components/PayTypeIcon'

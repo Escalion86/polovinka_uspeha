@@ -1,5 +1,5 @@
 import CardButtons from '@components/CardButtons'
-import { CardWrapper } from '@components/CardWrapper'
+import CardWrapper from '@components/CardWrapper'
 import TextInRing from '@components/TextInRing'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'

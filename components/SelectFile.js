@@ -17,6 +17,7 @@ import Zoom from 'react-medium-image-zoom'
 import TextLinesLimiter from './TextLinesLimiter'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import modalsFuncAtom from '@state/modalsFuncAtom'
+import { useAtomValue } from 'jotai'
 
 function isFileFunc(pathname) {
   return pathname.split('/').pop().indexOf('.') > -1
