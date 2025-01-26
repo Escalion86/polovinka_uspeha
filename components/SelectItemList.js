@@ -1,6 +1,6 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 import Label from './Label'
@@ -36,7 +36,7 @@ const ItemRow = ({
   </div>
 )
 
-export const SelectItemList = ({
+const SelectItemList = ({
   itemsId = [],
   SelectItemComponent,
   label,

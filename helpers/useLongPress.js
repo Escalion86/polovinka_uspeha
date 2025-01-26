@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export const useLongPress = (onLongPressRepeat, onFinish) => {
+const useLongPress = (onLongPressRepeat, onFinish) => {
   // const [isLongPressed, setIsLongPressed] = useState(false)
   const [timerId, setTimerId] = useState(null)
   const [intervalId, setIntervalId] = useState(null)

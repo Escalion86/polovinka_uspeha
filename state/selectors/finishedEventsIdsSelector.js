@@ -4,7 +4,7 @@ import isEventActive from '@helpers/isEventActive'
 import isEventExpired from '@helpers/isEventExpired'
 import eventsAtom from '@state/atoms/eventsAtom'
 
-export const finishedEventsIdsSelector = atom((get) => {
+const finishedEventsIdsSelector = atom((get) => {
   const events = get(eventsAtom)
   const finishedEvents = events.filter(
     (event) => isEventExpired(event) && isEventActive(event)

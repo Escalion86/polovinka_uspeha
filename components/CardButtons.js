@@ -25,7 +25,7 @@ import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 import useCopyEventLinkToClipboard from '@helpers/useCopyEventLinkToClipboard'
 import useCopyServiceLinkToClipboard from '@helpers/useCopyServiceLinkToClipboard'
 import useCopyUserLinkToClipboard from '@helpers/useCopyUserLinkToClipboard'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'
 import CardButton from './CardButton'
@@ -80,8 +80,11 @@ const CardButtons = ({
   const device = useAtomValue(windowDimensionsTailwindSelector)
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
 
-  const copyLink =
-    typeOfItem === 'event'
+  if (!item) return null
+
+  const copyLink = !item?._id
+    ? undefined
+    : typeOfItem === 'event'
       ? useCopyEventLinkToClipboard(location, item._id)
       : typeOfItem === 'service'
         ? useCopyServiceLinkToClipboard(location, item._id)

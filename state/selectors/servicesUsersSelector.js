@@ -3,7 +3,7 @@ import { atomFamily } from 'jotai/utils'
 
 import asyncServicesUsersAtom from '@state/async/asyncServicesUsersAtom'
 
-export const servicesUsersSelector = atomFamily((id) =>
+const servicesUsersSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return null
     const servicesUsers = await get(asyncServicesUsersAtom)

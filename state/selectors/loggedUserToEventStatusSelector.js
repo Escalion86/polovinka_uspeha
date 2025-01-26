@@ -8,7 +8,7 @@ import subEventsSumOfEventSelector from './subEventsSumOfEventSelector'
 import eventSelector from './eventSelector'
 import directionSelector from './directionSelector'
 
-export const loggedUserToEventStatusSelector = atomFamily((id) =>
+const loggedUserToEventStatusSelector = atomFamily((id) =>
   atom(async (get) => {
     const event = await get(eventSelector(id))
     const loggedUserActive = get(loggedUserActiveAtom)
@@ -17,13 +17,13 @@ export const loggedUserToEventStatusSelector = atomFamily((id) =>
     const direction = get(directionSelector(event.directionId))
     const rules = direction?.rules
 
-    return userToEventStatus(
+    return userToEventStatus({
       event,
-      loggedUserActive,
-      eventUsers,
+      user: loggedUserActive,
+      eventUsersFull: eventUsers,
       subEventSum,
-      rules
-    )
+      rules,
+    })
   })
 )
 

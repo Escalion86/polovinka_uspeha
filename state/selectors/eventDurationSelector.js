@@ -4,7 +4,7 @@ import { atomFamily } from 'jotai/utils'
 import getEventDuration from '@helpers/getEventDuration'
 import eventSelector from './eventSelector'
 
-export const eventDurationSelector = atomFamily((id) =>
+const eventDurationSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return null
     const event = await get(eventSelector(id))

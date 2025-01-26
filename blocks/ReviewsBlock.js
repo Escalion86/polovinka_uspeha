@@ -1,8 +1,9 @@
+import { useAtomValue } from 'jotai'
+
 import BlockContainer from '@components/BlockContainer'
 import Masonry from '@components/Masonry'
 import textAge from '@helpers/textAge'
 import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
-import { useAtomValue } from 'jotai'
 
 const Review = ({ review, style }) => (
   <div

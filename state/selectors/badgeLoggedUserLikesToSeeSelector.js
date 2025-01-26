@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import eventsLoggedUserWithLikesSelector from './eventsLoggedUserWithLikesSelector'
 
-export const badgeLoggedUserLikesToSeeSelector = atom(async (get) => {
+const badgeLoggedUserLikesToSeeSelector = atom(async (get) => {
   const loggedUser = get(loggedUserActiveAtom)
   const eventsWithLikes = await get(eventsLoggedUserWithLikesSelector)
   const eventsWithWaitingLikes = eventsWithLikes.filter(

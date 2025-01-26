@@ -2,7 +2,7 @@ import ErrorsList from '@components/ErrorsList'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import useErrors from '@helpers/useErrors'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 

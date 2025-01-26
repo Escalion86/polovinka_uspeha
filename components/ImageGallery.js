@@ -1,6 +1,6 @@
 import cn from 'classnames'
 import Image from 'next/image'
-import { useState } from 'react'
+// import { useState } from 'react'
 import ReactImageGallery from 'react-image-gallery'
 import LoadingSpinner from './LoadingSpinner'
 // import Zoom, {
@@ -8,7 +8,7 @@ import LoadingSpinner from './LoadingSpinner'
 //   RightNav,
 // } from 'react-medium-image-zoom'
 
-const ImageWithLoading = ({ original, originalClass }) => {
+const ImageWithLoading = ({ src }) => {
   // const [isLoaded, setIsLoaded] = useState(false)
   // const [isError, setIsError] = useState(false)
 
@@ -20,16 +20,16 @@ const ImageWithLoading = ({ original, originalClass }) => {
         className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
         size="lg"
       />
-      <Image
+      <img
         alt="image"
-        src={original}
+        src={src}
         width="0"
         height="0"
         sizes="100vw"
-        className={cn(originalClass, 'object-contain relative')}
+        className="relative object-contain w-full max-h-screen min-h-full"
         // onLoad={() => setIsLoaded(true)}
         // onError={() => setIsError(true)}
-        priority
+        // priority
       />
       {/* </div> */}
       {/* ) : (
@@ -55,9 +55,42 @@ const ImageGallery = ({ images, noImage, className }) => {
 
   if (images?.length === 0 && !noImage) return null
 
+  // const PREFIX_URL =
+  // "https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/";
+  // console.log('images', images)
+  // const preparedImages = images.map((image) => ({
+  //   original: image,
+  //   thumbnail: image,
+  //   // thumbnailWidth: 100,
+  //   // thumbnailHeight: 50,
+  // }))
+
+  // console.log('preparedImages :>> ', preparedImages)
+
+  // const preparedImages = [
+  //   {
+  //     thumbnail: `${PREFIX_URL}4v.jpg`,
+  //     original: `${PREFIX_URL}4v.jpg`,
+  //     embedUrl:
+  //       "https://www.youtube.com/embed/4pSzhZ76GdM?autoplay=1&showinfo=0",
+  //     description: "Render custom slides (such as videos)",
+  //     // renderItem: this._renderVideo.bind(this),
+  //   },
+  //   {
+  //     original: `${PREFIX_URL}1.jpg`,
+  //     thumbnail: `${PREFIX_URL}1t.jpg`,
+  //     originalClass: "featured-slide",
+  //     thumbnailClass: "featured-thumb",
+  //     description: "Custom class for slides & thumbnails",
+  //   },
+  // ]
+
   return (
-    <div className="flex justify-center w-full">
-      <div className="flex justify-center border border-gray-400 h-60 laptop:h-80 max-h-60 laptop:max-h-80 aspect-[16/9] rounded-2xl overflow-hidden shadow-sm">
+    <div className="flex justify-center">
+      <div
+        // style={{ aspectRatio: 'auto 16/9' }}
+        className="w-full aspect-[16/9] overflow-hidden border border-gray-400 shadow-sm phoneH:w-auto min-h-40 phoneH:h-60 laptop:h-80 phoneH:max-h-60 laptop:max-h-80 rounded-2xl"
+      >
         {/* // {images?.length > 0 ? (
           // <ControlledZoom
           //   zoomMargin={20}
@@ -65,11 +98,9 @@ const ImageGallery = ({ images, noImage, className }) => {
           //   onZoomChange={handleZoomChange}
           // > */}
         <ReactImageGallery
-          className="aspect-[16/9]"
-          items={images.map((image) => ({
-            original: image,
-            originalClass: 'w-full min-h-full max-h-screen',
-          }))}
+          // className="aspect-[16/9]"
+          items={images}
+          // items={preparedImages}
           // renderRightNav={(onClick, disabled) => (
           //   <div
           //     onClick={onClick}
@@ -78,7 +109,7 @@ const ImageGallery = ({ images, noImage, className }) => {
           //   />
           // )}
           // className="object-cover"
-          renderItem={(e) => <ImageWithLoading {...e} />}
+          renderItem={(src) => <ImageWithLoading src={src} />}
           showPlayButton={false}
           showFullscreenButton={true}
           useBrowserFullscreen={false}
@@ -87,6 +118,9 @@ const ImageGallery = ({ images, noImage, className }) => {
           //   'w-full max-h-60 laptop:max-h-80 max-w-full',
           //   className
           // )}
+          // showThumbnails
+          // showNav
+          showBullets={images?.length > 1}
         />
         {/* // ) : (
           // </ControlledZoom>

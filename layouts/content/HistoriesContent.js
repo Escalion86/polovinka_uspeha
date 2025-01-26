@@ -28,7 +28,7 @@ import { EventItemFromId } from '@components/ItemCards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import cn from 'classnames'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import HistoriesOfEvent from './HistoriesComponents/HistoriesOfEvent'
 
 const dotColors = {

@@ -17,11 +17,11 @@ const phoneConfirmsSchema = {
   },
   code: {
     type: String,
-    required: true,
+    required: false,
   },
   status: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   confirmed: {
     type: Boolean,
@@ -29,8 +29,7 @@ const phoneConfirmsSchema = {
   },
   tryNum: {
     type: Number,
-    required: true,
-    default: 1,
+    required: false,
   },
 }
 

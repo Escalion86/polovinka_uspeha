@@ -19,7 +19,7 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useAtom, useAtomValue } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import locationAtom from '@state/atoms/locationAtom'
 
 export default function Home(props) {
@@ -28,8 +28,13 @@ export default function Home(props) {
   const hideFab = loggedUserActiveRole?.hideFab
   const isPWA = useAtomValue(isPWAAtom)
   const router = useRouter()
-  const query = { ...router.query }
-  delete query.location
+
+  const query = useMemo(() => {
+    const newQuery = { ...router.query }
+    delete newQuery.location
+    return newQuery
+  }, [router])
+
   const { location } = props
 
   useEffect(() => setLocationState(location), [location])
@@ -106,12 +111,14 @@ export const getServerSideProps = async (context) => {
   const location = params?.location
 
   if (session) {
+    console.log('SESSION')
     return {
       redirect: {
         destination: `/${location}/cabinet`,
       },
     }
   }
+
   const response = await getServerSidePropsFunc(
     context,
     getSession,
@@ -119,6 +126,7 @@ export const getServerSideProps = async (context) => {
     location,
     { directions: { shortDescription: true } }
   )
+  console.log('response :>> ', Object.keys(response))
 
   return response
 }

@@ -6,7 +6,7 @@ import { faCancel } from '@fortawesome/free-solid-svg-icons/faCancel'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import userToEventStatus from '@helpers/userToEventStatus'
-// import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+// import itemsFuncAtom from '@state/itemsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import userSelector from '@state/selectors/userSelector'
@@ -17,6 +17,7 @@ import eventSelector from '@state/selectors/eventSelector'
 import directionSelector from '@state/selectors/directionSelector'
 import Note from '@components/Note'
 import isEventExpiredFunc from '@helpers/isEventExpired'
+import subEventsSummator from '@helpers/subEventsSummator'
 
 const eventUserSubEventChangeFunc = (
   { eventId, userId },
@@ -36,8 +37,10 @@ const eventUserSubEventChangeFunc = (
     const rules = direction?.rules
     const isEventExpired = isEventExpiredFunc(event)
 
-    const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
-    const eventUser = eventUsers.find(
+    const eventUsersFull = useAtomValue(
+      eventsUsersFullByEventIdSelector(eventId)
+    )
+    const eventUser = eventUsersFull.find(
       (eventUser) => eventUser.userId === userId
     )
 
@@ -59,7 +62,7 @@ const eventUserSubEventChangeFunc = (
       if (onConfirm) onConfirm({ eventId, userId, subEventId })
     }
 
-    const eventUsersWithOutOurUser = eventUsers.filter(
+    const eventUsersFullWithOutOurUser = eventUsersFull.filter(
       (eventUser) => eventUser.userId !== userId
     )
 
@@ -70,19 +73,20 @@ const eventUserSubEventChangeFunc = (
     }, [isFormChanged])
 
     const subEventsUserStatus = event.subEvents.map((subEvent) => {
-      const eventUsersOfSubEvent = eventUsersWithOutOurUser.filter(
+      const subEventSum = subEventsSummator([subEvent])
+      const eventUsersFullOfSubEvent = eventUsersFullWithOutOurUser.filter(
         (eventUser) => eventUser.subEventId === subEvent.id
       )
       return {
         id: subEvent.id,
-        userStatus: userToEventStatus(
+        userStatus: userToEventStatus({
           event,
           user,
-          eventUsersOfSubEvent,
-          subEvent,
+          eventUsersFull: eventUsersFullOfSubEvent,
+          subEventSum,
           rules,
-          true // ignoreEventIsExpired
-        ),
+          ignoreEventIsExpired: true,
+        }),
       }
     })
 
@@ -188,7 +192,7 @@ const eventUserSubEventChangeFunc = (
                       className=""
                       showAges
                       dontShowLabel
-                      eventUsersToUse={eventUsersWithOutOurUser}
+                      eventUsersToUse={eventUsersFullWithOutOurUser}
                     />
                     <div className="flex items-center justify-end flex-1">
                       <PriceDiscount item={props} />

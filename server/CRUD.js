@@ -93,22 +93,15 @@ const linkAReformer = (link) => {
 
 const { google } = require('googleapis')
 const SCOPES = ['https://www.googleapis.com/auth/calendar']
-const {
-  GOOGLE_PRIVATE_KEY,
-  GOOGLE_CLIENT_EMAIL,
-  GOOGLE_PROJECT_NUMBER,
-  GOOGLE_CALENDAR_ID,
-  MODE,
-} = process.env
+const { MODE } = process.env
 
 const connectToGoogleCalendar = (location) => {
   const calendarConstants = getGoogleCalendarConstantsByLocation(location)
+  console.log('calendarConstants :>> ', calendarConstants)
   if (!calendarConstants) return
 
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
-
   const jwtClient = new google.auth.JWT(email, null, privateKey, SCOPES)
-
   const calendar = google.calendar({
     version: 'v3',
     project: projectNumber,
@@ -128,6 +121,8 @@ const addBlankEventToCalendar = async (location) => {
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
 
   const timeZone = getTimeZoneByLocation(location)
+
+  console.log('timeZone :>> ', timeZone)
 
   const calendarEvent = {
     summary: '[blank]',
@@ -356,13 +351,14 @@ const updateEventInCalendar = async (event, location) => {
     return createdCalendarEvent
   }
 
+  if (!event?.googleCalendarId) return
   // Обновляем событие в календаре
   const updatedCalendarEvent = await new Promise((resolve, reject) => {
     calendar.events.update(
       {
         auth: authProcess,
         calendarId,
-        eventId: event.googleCalendarId ?? undefined,
+        eventId: event.googleCalendarId,
         resource: calendarEvent,
       },
       (error, result) => {
@@ -491,6 +487,7 @@ export default async function handler(Schema, req, res, params = null) {
             data: jsonData,
             userId: body.userId,
           })
+          console.log(5)
 
           return res?.status(201).json({ success: true, data: jsonData })
         }
@@ -516,7 +513,7 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
-          if (Schema === Events && MODE !== 'production') {
+          if (Schema === Events && MODE === 'production') {
             const calendarEvent = updateEventInCalendar(data, location)
             // if (!oldData.showOnSite && data.showOnSite) {
             //   notificateUsersAboutEvent(data, req)
@@ -668,7 +665,7 @@ export default async function handler(Schema, req, res, params = null) {
             return res?.status(400).json({ success: false })
           }
 
-          if (Schema === Events && MODE !== 'production') {
+          if (Schema === Events && MODE === 'production') {
             deleteEventFromCalendar(existingData.googleCalendarId, location)
           }
 

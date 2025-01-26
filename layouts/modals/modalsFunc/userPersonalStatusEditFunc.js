@@ -1,6 +1,6 @@
 import Input from '@components/Input'
 import Note from '@components/Note'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'

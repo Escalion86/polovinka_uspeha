@@ -4,7 +4,7 @@ import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdA
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import eventSelector from './eventSelector'
 
-export const eventsOfLoggedUserSelector = atom(async (get) => {
+const eventsOfLoggedUserSelector = atom(async (get) => {
   const loggedUser = get(loggedUserActiveAtom)
   if (!loggedUser) return
 

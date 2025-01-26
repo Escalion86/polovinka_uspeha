@@ -7,17 +7,17 @@ import DeviceCheck from './DeviceCheck'
 import useSnackbar from '@helpers/useSnackbar'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 
-import itemsFuncGenerator from '@state/itemsFuncGenerator'
+// import itemsFuncGenerator from '@state/itemsFuncGenerator'
 
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+// import itemsFuncAtom from '@state/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+// import modalsFuncAtom from '@state/modalsFuncAtom'
 // import historiesAtom from '@state/atoms/historiesAtom'
 import isSiteLoadingAtom from '@state/atoms/isSiteLoadingAtom'
 import loggedUserActiveRoleNameAtom from '@state/atoms/loggedUserActiveRoleNameAtom'
@@ -37,7 +37,7 @@ import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
 // import additionalBlocksAtomJ from '@state/atoms/additionalBlocksAtom'
 // import directionsAtomJ from '@state/atoms/directionsAtom'
 // import eventsAtomJ from '@state/atoms/eventsAtom'
-// import itemsFuncAtomJ from '@state/atoms/itemsFuncAtom'
+// import itemsFuncAtomJ from '@state/itemsFuncAtom'
 // import loggedUserAtomJ from '@state/atoms/loggedUserAtom'
 // import reviewsAtomJ from '@state/atoms/reviewsAtom'
 // import usersAtomJ from '@state/atoms/usersAtomAsync'
@@ -57,16 +57,19 @@ import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
 // import loggedUserActiveAtomJ from '@state/atoms/loggedUserActiveAtom'
 // import rolesAtomJ from '@state/atoms/rolesAtom'
 
-import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
+// import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 // import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import { useRouter } from 'next/router'
 import { postData } from '@helpers/CRUD'
-import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
+// import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
 import browserVer from '@helpers/browserVer'
 import { useWindowDimensionsStore } from '@helpers/useWindowDimensions'
 import TopInfo from './TopInfo'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import CheckSiteUpdateNotification from './CheckSiteUpdateNotification'
+import snackbarAtom from '@state/atoms/snackbarAtom'
+import routerAtom from '@state/atoms/routerAtom'
+import CheckBrowserUpdate from './CheckBrowserUpdate'
 // import usersAtomAsync from '@state/async/usersAtomAsync'
 // import isLoadedAtom from '@state/atoms/isLoadedAtom'
 
@@ -80,14 +83,16 @@ const StateLoader = (props) => {
 
   const location = useAtomValue(locationAtom)
 
-  const [modalsFunc, setModalsFunc] = useAtom(modalsFuncAtom)
+  // const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useAtom(isSiteLoadingAtom)
   const setTelegramBotName = useSetAtom(telegramBotNameAtom)
+  const setSnackbar = useSetAtom(snackbarAtom)
+  const setRouter = useSetAtom(routerAtom)
   const [mode, setMode] = useAtom(modeAtom)
   // const [location, setLocation] = useAtom(locationAtom)
   const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
-  const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
+  const setLoggedUserActive = useSetAtom(loggedUserActiveAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useAtom(
     loggedUserActiveRoleNameAtom
   )
@@ -100,7 +105,7 @@ const StateLoader = (props) => {
   const setUsersState = useSetAtom(usersAtomAsync)
   // const setIsLoadedUsersAtom = useSetAtom(isLoadedAtom('usersAtomAsync'))
   const setReviewsState = useSetAtom(reviewsAtom)
-  const [siteSettingsState, setSiteSettingsState] = useAtom(siteSettingsAtom)
+  const setSiteSettingsState = useSetAtom(siteSettingsAtom)
   const setRolesSettingsState = useSetAtom(rolesAtom)
   // const setHistoriesState = useSetAtom(historiesAtom)
   const setQuestionnairesState = useSetAtom(questionnairesAtom)
@@ -109,7 +114,7 @@ const StateLoader = (props) => {
   // const setServicesUsersState = useSetAtom(servicesUsersAtom)
   const setServerSettingsState = useSetAtom(serverSettingsAtom)
 
-  const setItemsFunc = useSetAtom(itemsFuncAtom)
+  // const itemsFunc = useAtomValue(itemsFuncAtom)
 
   // JOTAI
 
@@ -148,30 +153,32 @@ const StateLoader = (props) => {
 
   useWindowDimensionsStore()
 
-  useEffect(() => {
-    const itemsFunc = itemsFuncGenerator(snackbar, loggedUserActive, location)
-    setItemsFunc(itemsFunc)
-    // setItemsFuncJ(itemsFunc)
+  // useEffect(() => {
+  //   const itemsFunc = itemsFuncGenerator(snackbar, loggedUserActive, location)
+  //   // setItemsFunc(itemsFunc)
+  //   // setItemsFuncJ(itemsFunc)
 
-    const generatedModalsFunc = modalsFuncGenerator(
-      router,
-      itemsFunc,
-      loggedUserActive,
-      siteSettingsState,
-      loggedUserActiveRole,
-      loggedUserActiveStatus
-    )
-    // setModalsFuncJ(generatedModalsFunc)
-    setModalsFunc(generatedModalsFunc)
-  }, [
-    loggedUserActive,
-    siteSettingsState,
-    loggedUserActiveRole,
-    loggedUserActiveStatus,
-    location,
-  ])
+  //   const generatedModalsFunc = modalsFuncGenerator(
+  //     router,
+  //     itemsFunc,
+  //     loggedUserActive,
+  //     siteSettingsState,
+  //     loggedUserActiveRole,
+  //     loggedUserActiveStatus
+  //   )
+  //   // setModalsFuncJ(generatedModalsFunc)
+  //   setModalsFunc(generatedModalsFunc)
+  // }, [
+  //   loggedUserActive,
+  //   siteSettingsState,
+  //   loggedUserActiveRole,
+  //   loggedUserActiveStatus,
+  //   location,
+  // ])
 
   useEffect(() => {
+    setRouter(router)
+    setSnackbar(snackbar)
     if (!loggedUserActiveRole || props.loggedUser?.role !== loggedUser?.role)
       setLoggedUserActiveRole(props.loggedUser?.role ?? 'client')
     if (
@@ -244,26 +251,6 @@ const StateLoader = (props) => {
   }, [props.loggedUser])
 
   useEffect(() => {
-    if (modalsFunc && !isSiteLoading) {
-      if (props.isCabinet) {
-        const url = isBrowserNeedToBeUpdate()
-        if (url) modalsFunc.browserUpdate(url)
-      }
-      // if (location !== 'dev')
-      //   if (!props.isCabinet) {
-      //     if (router.query?.location) {
-      //       localStorage.setItem('location', router.query?.location)
-      //     } else {
-      //       const storagedLocation = localStorage.getItem('location')
-      //       if (!storagedLocation) {
-      //         modalsFunc.browseLocation()
-      //       }
-      //     }
-      //   }
-    }
-  }, [props.isCabinet, isSiteLoading])
-
-  useEffect(() => {
     if (loggedUser) {
       postData(
         `/api/${location}/loginhistory`,
@@ -295,6 +282,7 @@ const StateLoader = (props) => {
       )}
       <ModalsPortal />
       <CheckSiteUpdateNotification />
+      <CheckBrowserUpdate />
     </div>
   )
 }

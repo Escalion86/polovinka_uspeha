@@ -16,6 +16,7 @@ import UserMenu from './UserMenu'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 import locationAtom from '@state/atoms/locationAtom'
 import { useRouter } from 'next/router'
+import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 
 const MenuItem = ({ text, href = '#' }) => (
   <li>
@@ -53,35 +54,59 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
 //   { name: 'Контакты', href: '#contacts', key: null },
 // ]
 
-const Header = ({ noMenu }) => {
+const Header = ({ noMenu, fullLinkInMenu }) => {
   const router = useRouter()
   const query = { ...router.query }
   delete query.location
 
   const location = useAtomValue(locationAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
-  // const events = useAtomValue(filteredEventsSelector)
+  const events = useAtomValue(filteredEventsSelector)
   const reviews = useAtomValue(filteredReviewsSelector)
   const directions = useAtomValue(filteredDirectionsSelector)
   const services = useAtomValue(filteredServicesSelector)
   const additionalBlocks = useAtomValue(filteredAdditionalBlocksSelector)
 
-  const menu = [{ name: 'Миссия и цели', href: `#about` }]
-  // if (events?.length > 0)
-  menu.push({ name: 'Мероприятия', href: `#events` })
+  const menu = [
+    {
+      name: 'Миссия и цели',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#about`,
+    },
+  ]
+  if (events?.length > 0)
+    menu.push({
+      name: 'Мероприятия',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#events`,
+    })
   if (directions?.length > 0)
-    menu.push({ name: 'Направления', href: `#directions` })
-  if (services?.length > 0) menu.push({ name: 'Услуги', href: `#services` })
+    menu.push({
+      name: 'Направления',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#directions`,
+    })
+  if (services?.length > 0)
+    menu.push({
+      name: 'Услуги',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#services`,
+    })
   if (additionalBlocks?.length > 0)
     additionalBlocks.forEach((additionalBlock) => {
       if (additionalBlock.menuName)
         menu.push({
           name: additionalBlock.menuName,
-          href: `#` + transliterate(additionalBlock.menuName),
+          href:
+            `${fullLinkInMenu ? `/${location}` : ''}#` +
+            transliterate(additionalBlock.menuName),
         })
     })
-  if (reviews?.length > 0) menu.push({ name: 'Отзывы', href: `#reviews` })
-  menu.push({ name: 'Контакты', href: `#contacts` })
+  if (reviews?.length > 0)
+    menu.push({
+      name: 'Отзывы',
+      href: `${fullLinkInMenu ? `/${location}` : ''}#reviews`,
+    })
+  menu.push({
+    name: 'Контакты',
+    href: `${fullLinkInMenu ? `/${location}` : ''}#contacts`,
+  })
 
   // const filteredMenu = menu.filter(
   //   (menuItem) =>
@@ -116,7 +141,7 @@ const Header = ({ noMenu }) => {
           </Link>
         </div>
 
-        <UserMenu />
+        {location && <UserMenu />}
       </div>
       {!noMenu && (
         <>
@@ -134,29 +159,33 @@ const Header = ({ noMenu }) => {
             )}
           >
             <div className="pt-20 pb-4 w-60">
-              <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
-                {loggedUserActive?._id ? (
-                  <Link
-                    prefetch={false}
-                    href={`/${location}/cabinet`}
-                    shallow
-                    className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general"
-                  >
-                    <Avatar user={loggedUserActive} />
-                    <span className="prevent-select-text">Мой кабинет</span>
-                  </Link>
-                ) : (
-                  <Link
-                    prefetch={false}
-                    href={`/${location}/login`}
-                    shallow
-                    className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general"
-                  >
-                    <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
-                    <span className="prevent-select-text">Авторизоваться</span>
-                  </Link>
-                )}
-              </div>
+              {location && (
+                <div className="flex w-full px-2 pb-2 border-b laptop:hidden border-general">
+                  {loggedUserActive?._id ? (
+                    <Link
+                      prefetch={false}
+                      href={`/${location}/cabinet`}
+                      shallow
+                      className="flex items-center w-full px-1 py-1 text-lg rounded-lg hover:text-white gap-x-2 hover:bg-general"
+                    >
+                      <Avatar user={loggedUserActive} />
+                      <span className="prevent-select-text">Мой кабинет</span>
+                    </Link>
+                  ) : (
+                    <Link
+                      prefetch={false}
+                      href={`/${location}/login`}
+                      shallow
+                      className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general"
+                    >
+                      <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
+                      <span className="prevent-select-text">
+                        Авторизоваться
+                      </span>
+                    </Link>
+                  )}
+                </div>
+              )}
               <div className="px-2 py-2 w-60 laptop:py-0">
                 <ul className="flex flex-col gap-y-2">
                   {menu.map(({ name, href }, index) => (

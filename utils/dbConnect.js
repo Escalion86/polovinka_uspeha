@@ -26,7 +26,6 @@ var mongoose = require('mongoose')
 //   // localPort: 27017,
 // }
 
-// // const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.0ogkw.mongodb.net/${process.env.MONGODB_DBNAME}?retryWrites=true&w=majority`
 // // const MONGODB_URI = process.env.MONGODB_URI
 // // if (!MONGODB_URI) {
 // //   throw new Error(
@@ -112,7 +111,6 @@ var mongoose = require('mongoose')
 // const mongoose = require('mongoose')
 // // const autoIncrement = require('mongoose-auto-increment')
 
-// const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.0ogkw.mongodb.net/${process.env.MONGODB_DBNAME}?retryWrites=true&w=majority`
 const MONGODB_URI = process.env.MONGODB_URI
 if (!MONGODB_URI) {
   throw new Error(
@@ -138,7 +136,7 @@ let prevDbConnection
 async function dbConnect(location) {
   if (!location) return
 
-  var dbName // = process.env.MONGODB_DBNAME
+  var dbName
   console.log('location :>> ', location)
   if (location === 'krsk') dbName = process.env.MONGODB_KRSK_DBNAME
   if (location === 'nrsk') dbName = process.env.MONGODB_NRSK_DBNAME

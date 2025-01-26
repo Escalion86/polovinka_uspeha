@@ -1,9 +1,8 @@
 import { atom } from 'jotai'
 
-import { DEFAULT_SERVICE } from '@helpers/constants'
 import servicesAtom from '@state/atoms/servicesAtom'
 
-const serviceEditSelector = atom(DEFAULT_SERVICE, (get, set, newItem) => {
+const serviceEditSelector = atom(null, (get, set, newItem) => {
   const items = get(servicesAtom)
   if (!newItem?._id) return
   const findedItem = items.find((item) => item._id === newItem._id)

@@ -3,7 +3,7 @@ import Test from '@models/Test'
 import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
 
-export const sendMessageToTelegramId = async ({
+const sendMessageToTelegramId = async ({
   telegramId,
   text,
   images,

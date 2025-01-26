@@ -6,7 +6,8 @@
     "dev": "NODE_OPTIONS='--no-deprecation' next dev",
     "build": "NODE_OPTIONS='--max-old-space-size=2048' next build",
     "start": "next start",
-    "analyze": "ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build",
+    "knip": "knip"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -35,14 +36,15 @@
     "dayjs": "^1.11.7",
     "elevenlabs-js": "^1.2.6",
     "exceljs": "^4.3.0",
-    "flowbite": "^3.0.0-beta.1",
+    "flowbite": "^3.0.0",
     "flowbite-react": "^0.10.2",
     "form-data": "^4.0.0",
     "framer-motion": "^11.12.0",
     "fs": "^0.0.1-security",
     "googleapis": "^144.0.0",
     "isomorphic-dompurify": "^1.8.0",
-    "jotai": "^2.11.0",
+    "jotai": "^2.11.1",
+    "jotai-effect": "^1.1.4",
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.3",
     "next": "^14.2.23",
@@ -88,8 +90,9 @@
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.1.3",
     "eslint-config-prettier": "^9.1.0",
+    "knip": "^5.43.3",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
-    "tailwindcss": "^4.0.0-beta.9"
+    "tailwindcss": "^4.0.0"
   }
 }

@@ -6,7 +6,7 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import isEventStartedOrExpired from '@helpers/isEventStartedOrExpired'
 import isEventCanceled from '@helpers/isEventCanceled'
 
-export const eventsLoggedUserWithLikesSelector = atom(async (get) => {
+const eventsLoggedUserWithLikesSelector = atom(async (get) => {
   const loggedUser = get(loggedUserActiveAtom)
   const eventsOfLoggedUser = await get(eventsOfLoggedUserSelector)
   const activeAndStartedEventsOfLoggedUser = eventsOfLoggedUser.filter(

@@ -4,7 +4,7 @@ import allClosedEventsSelector from './allClosedEventsSelector'
 import allPaymentsOfInternalSelector from './allPaymentsOfInternalSelector'
 import totalIncomeOfEventSelector from './totalIncomeOfEventSelector'
 
-export const arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector =
+const arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector =
   atom(async (get) => {
     const array = {}
     const allClosedEvents = get(allClosedEventsSelector)

@@ -21,7 +21,7 @@ export default CabinetPage
 export const getServerSideProps = async (context) => {
   const session = await getSession({ req: context.req })
   const { params } = context
-  const { location } = params
+  const { page, location } = params
 
   if (!location) {
     return {
@@ -31,17 +31,17 @@ export const getServerSideProps = async (context) => {
     }
   }
 
-  if (session) {
+  if (!session) {
     return {
       redirect: {
-        destination: `/${location}/cabinet/events`,
+        destination: `/${location}${page ? `?page=${page}` : ''}`,
       },
     }
-  } else {
-    return {
-      redirect: {
-        destination: `/${location}/`,
-      },
-    }
+  }
+
+  return {
+    redirect: {
+      destination: `/${location}/cabinet/events`,
+    },
   }
 }

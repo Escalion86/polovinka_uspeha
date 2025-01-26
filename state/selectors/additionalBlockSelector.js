@@ -4,7 +4,7 @@ import { atomFamily } from 'jotai/utils'
 import { DEFAULT_ADDITIONAL_BLOCK } from '@helpers/constants'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 
-export const additionalBlockSelector = atomFamily((id) =>
+const additionalBlockSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return DEFAULT_ADDITIONAL_BLOCK
     const additionalBlocks = await get(additionalBlocksAtom)

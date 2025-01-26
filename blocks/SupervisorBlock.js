@@ -4,7 +4,7 @@ import upperCaseFirst from '@helpers/upperCaseFirst'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { useAtomValue } from 'jotai'
-import SvgKavichki from 'svg/SvgKavichki'
+import SvgKavichki from '@svg/SvgKavichki'
 
 const SupervisorBlock = () => {
   const siteSettings = useAtomValue(siteSettingsAtom)

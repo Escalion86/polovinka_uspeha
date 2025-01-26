@@ -2,7 +2,7 @@ import cn from 'classnames'
 import { m } from 'framer-motion'
 import Image from 'next/image'
 
-export const LoadingSpinner = ({
+const LoadingSpinner = ({
   className,
   size = 'md',
   text = null,

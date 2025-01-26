@@ -5,7 +5,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import filterWithRules from '@helpers/filterWithRules'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
@@ -485,66 +485,66 @@ export const SelectEvent = ({
   )
 }
 
-export const SelectDirection = ({
-  onChange,
-  onDelete,
-  selectedId = null,
-  exceptedIds = [],
-  required = false,
-  clearButton = null,
-  error,
-  bordered = true,
-  modalTitle,
-  rounded = true,
-}) => {
-  const modalsFunc = useAtomValue(modalsFuncAtom)
-  const directions = useAtomValue(directionsAtom)
+// export const SelectDirection = ({
+//   onChange,
+//   onDelete,
+//   selectedId = null,
+//   exceptedIds = [],
+//   required = false,
+//   clearButton = null,
+//   error,
+//   bordered = true,
+//   modalTitle,
+//   rounded = true,
+// }) => {
+//   const modalsFunc = useAtomValue(modalsFuncAtom)
+//   const directions = useAtomValue(directionsAtom)
 
-  return (
-    <SelectItemContainer
-      required={required}
-      label="Направление"
-      onClickClearButton={
-        selectedId && clearButton
-          ? onDelete
-            ? () => onDelete()
-            : () => onChange(null)
-          : null
-      }
-      error={error}
-      bordered={bordered}
-      rounded={rounded}
-      selectedId={selectedId}
-    >
-      <SelectItem
-        items={directions}
-        itemComponent={DirectionItem}
-        componentHeight={50}
-        selectedId={selectedId}
-        className={cn(
-          'flex-1',
-          selectedId && clearButton ? 'rounded-l' : 'rounded-sm'
-        )}
-        onClick={
-          onChange
-            ? () =>
-                modalsFunc.selectDirections(
-                  [selectedId],
-                  [],
-                  (data) => onChange(data[0]),
-                  [],
-                  null,
-                  1,
-                  false,
-                  modalTitle
-                )
-            : (direction) => modalsFunc.direction.view(direction._id)
-        }
-        exceptedIds={exceptedIds}
-      />
-    </SelectItemContainer>
-  )
-}
+//   return (
+//     <SelectItemContainer
+//       required={required}
+//       label="Направление"
+//       onClickClearButton={
+//         selectedId && clearButton
+//           ? onDelete
+//             ? () => onDelete()
+//             : () => onChange(null)
+//           : null
+//       }
+//       error={error}
+//       bordered={bordered}
+//       rounded={rounded}
+//       selectedId={selectedId}
+//     >
+//       <SelectItem
+//         items={directions}
+//         itemComponent={DirectionItem}
+//         componentHeight={50}
+//         selectedId={selectedId}
+//         className={cn(
+//           'flex-1',
+//           selectedId && clearButton ? 'rounded-l' : 'rounded-sm'
+//         )}
+//         onClick={
+//           onChange
+//             ? () =>
+//                 modalsFunc.selectDirections(
+//                   [selectedId],
+//                   [],
+//                   (data) => onChange(data[0]),
+//                   [],
+//                   null,
+//                   1,
+//                   false,
+//                   modalTitle
+//                 )
+//             : (direction) => modalsFunc.direction.view(direction._id)
+//         }
+//         exceptedIds={exceptedIds}
+//       />
+//     </SelectItemContainer>
+//   )
+// }
 
 export const SelectPayment = ({
   onChange,

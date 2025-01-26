@@ -4,7 +4,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import arrayMove from '@helpers/arrayMove'
 import { sendImage } from '@helpers/cloudinary'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
@@ -156,7 +156,10 @@ const InputImages = ({
             className="flex items-center justify-center w-20 h-20 bg-white border-2 border-gray-500 cursor-pointer group rounded-xl"
           >
             <div className="flex items-center justify-center w-12 h-12 duration-200 min-w-12 min-h-12 transparent group-hover:scale-125 ">
-              <FontAwesomeIcon className="text-gray-700" icon={faPlus} />
+              <FontAwesomeIcon
+                className="w-12 h-12 text-gray-700 min-w-12 min-h-12"
+                icon={faPlus}
+              />
               <input
                 type="file"
                 ref={hiddenFileInput}

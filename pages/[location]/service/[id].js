@@ -90,7 +90,7 @@ function ServicePage(props) {
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
       <StateLoader {...props}>
-        <Header noMenu={isPWA} />
+        <Header noMenu={isPWA} fullLinkInMenu />
         {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
         <BlockContainer small>
           {service?._id && (

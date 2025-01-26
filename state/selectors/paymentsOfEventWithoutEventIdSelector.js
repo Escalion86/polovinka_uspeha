@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 
-export const paymentsOfEventWithoutEventIdSelector = atom(async (get) => {
+const paymentsOfEventWithoutEventIdSelector = atom(async (get) => {
   const payments = await get(asyncPaymentsAtom)
   return payments.filter(
     (payment) =>

@@ -1,6 +1,6 @@
 import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'

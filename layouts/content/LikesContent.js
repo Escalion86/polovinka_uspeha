@@ -1,6 +1,6 @@
 'use client'
 
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useAtomValue } from 'jotai'
 import { EventItem, UserItemFromId } from '@components/ItemCards'

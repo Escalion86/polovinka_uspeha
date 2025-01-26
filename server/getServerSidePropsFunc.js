@@ -1,6 +1,3 @@
-// import { getSession } from 'next-auth/react'
-// import fetchProps from './fetchProps'
-
 import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
 
 const getServerSidePropsFunc = async (

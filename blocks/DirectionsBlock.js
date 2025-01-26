@@ -1,12 +1,13 @@
+import { useAtomValue } from 'jotai'
+
 import BlockContainer from '@components/BlockContainer'
 import Button from '@components/Button'
 import Masonry from '@components/Masonry'
 import TextInRing from '@components/TextInRing'
 import { getNounEvents } from '@helpers/getNoun'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
-import { useAtomValue } from 'jotai'
 
 const DirectionItem = ({
   directionId,
@@ -41,7 +42,7 @@ const DirectionItem = ({
   )
 }
 
-const DirectionsBlock = ({ startInverse = false }) => {
+const DirectionsBlock = () => {
   const filteredDirections = useAtomValue(filteredDirectionsSelector)
   const events = useAtomValue(eventsAtom)
   const finishedEvents = events.filter((event) => event.status === 'closed')

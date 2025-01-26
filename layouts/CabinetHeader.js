@@ -16,7 +16,7 @@ import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import Image from 'next/image'
 import isUserAdmin from '@helpers/isUserAdmin'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import { faQrcode } from '@fortawesome/free-solid-svg-icons'
 
 const CheckedItem = ({ children }) => (
@@ -62,7 +62,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
               // height={56}
               // width={44.33}
               // style={{ width: 'auto', height: 'auto' }}
-              // priority
+              priority
               // placeholder="blur"
               // blurDataURL={'/img/logo_heart_24px.png'}
               sizes="(max-width: 125px) 100vw"

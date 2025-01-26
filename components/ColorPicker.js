@@ -1,7 +1,7 @@
 import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
 import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { textColorClassCalc } from '@helpers/calcLuminance'
+import textColorClassCalc from '@helpers/textColorClassCalc'
 import copyToClipboard from '@helpers/copyToClipboard'
 import pasteFromClipboard from '@helpers/pasteFromClipboard'
 import cn from 'classnames'

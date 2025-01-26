@@ -1,6 +1,7 @@
+import { useAtomValue } from 'jotai'
+
 import BlockContainer from '@components/BlockContainer'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import { useAtomValue } from 'jotai'
 
 const ContactImage = ({ src, href }) => (
   <a href={href} className="duration-300 hover:scale-125">

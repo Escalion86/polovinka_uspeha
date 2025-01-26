@@ -5,7 +5,7 @@ import sumOfExpectingPaymentsFromParticipantsToEventSelector from './sumOfExpect
 import sumOfPaymentsFromEventToAssistantsSelector from './sumOfPaymentsFromEventToAssistantsSelector'
 import sumOfPaymentsToEventSelector from './sumOfPaymentsToEventSelector'
 
-export const expectedIncomeOfEventSelector = atomFamily((id) =>
+const expectedIncomeOfEventSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return []
 

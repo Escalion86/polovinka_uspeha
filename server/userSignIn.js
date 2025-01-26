@@ -139,16 +139,27 @@ const userSignIn = async ({
       return result
     }
     const eventUsers = await EventsUsers.find({ eventId }).lean()
+    const usersIds = eventUsers.map((eventUser) => eventUser.userId)
+    const users = await Users.find({ _id: { $in: usersIds } }).lean()
+    const eventUsersFull = eventUsers.map((eventUser) => {
+      const user = users.find(
+        (user) => user._id.toString() === eventUser.userId
+      )
+      return { ...eventUser, user }
+    })
+
     const subEventSum = subEventsSummator([subEvent])
     const direction = await Directions.findById(event.directionId).lean()
     const rules = direction?.rules
-    const userEventStatus = userToEventStatus(
+    const userEventStatus = userToEventStatus({
       event,
       user,
-      eventUsers,
+      eventUsersFull,
       subEventSum,
-      rules
-    )
+      rules,
+    })
+
+    console.log('userEventStatus', userEventStatus)
 
     // TODO FIX Сделать проверку на возможность зарегистрироваться на суб мероприятие
     // Проверяем параметры пользователя

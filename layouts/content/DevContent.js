@@ -1,8 +1,8 @@
 'use client'
 
 import Button from '@components/Button'
-import { CardWrapper } from '@components/CardWrapper'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import CardWrapper from '@components/CardWrapper'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import { useAtomValue } from 'jotai'
 import { useState } from 'react'
 import Input from '@components/Input'

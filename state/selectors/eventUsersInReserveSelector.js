@@ -4,7 +4,7 @@ import { atomFamily } from 'jotai/utils'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
 
-export const eventUsersInReserveSelector = atomFamily((id) =>
+const eventUsersInReserveSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return []
     const eventUsersFull = await get(eventsUsersFullByEventIdSelector(id))

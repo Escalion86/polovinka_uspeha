@@ -12,7 +12,7 @@ import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
@@ -68,7 +68,7 @@ const userViewFunc = (userId, params = {}) => {
     if (!user) return null
 
     return (
-      <FormWrapper flex className="flex-col">
+      <FormWrapper className="flex flex-col">
         <ImageGallery images={user?.images} />
         <div className="flex flex-col flex-1 mt-1">
           <div className="relative flex items-center mb-1 gap-x-2 min-h-6">

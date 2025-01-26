@@ -92,13 +92,15 @@ const StatisticsEventsContent = () => {
       <Divider light />
       <div className="flex flex-col items-center w-[300px]">
         <H3>По направлениям</H3>
-        <EventStatusToggleButtons
-          value={filterEvents.status}
-          onChange={(value) =>
-            setFilterEvents((state) => ({ ...state, status: value }))
-          }
-          noClosed
-        />
+        {eventsByDirectionsData.length > 0 && (
+          <EventStatusToggleButtons
+            value={filterEvents.status}
+            onChange={(value) =>
+              setFilterEvents((state) => ({ ...state, status: value }))
+            }
+            noClosed
+          />
+        )}
         <PieChart data={eventsByDirectionsData} />
       </div>
     </div>

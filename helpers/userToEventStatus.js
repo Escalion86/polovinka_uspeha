@@ -8,14 +8,14 @@ import isUserQuestionnaireFilled from './isUserQuestionnaireFilled'
 import isUserRelationshipCorrectForEvent from '@components/isUserRelationshipCorrectForEvent'
 import store from '@state/store'
 
-const userToEventStatus = (
+const userToEventStatus = ({
   event,
   user,
   eventUsersFull,
   subEventSum,
   rules,
-  ignoreEventIsExpired = false
-) => {
+  ignoreEventIsExpired = false,
+}) => {
   if (!event?._id)
     return {
       canSee: false,
@@ -58,6 +58,25 @@ const userToEventStatus = (
       isUserStatusCorrect: undefined,
       isUserRelationshipCorrect: undefined,
     }
+
+  if (eventUsersFull?.length > 0 && !eventUsersFull[0]?.user) {
+    return {
+      canSee: subEventSum.usersStatusAccess?.noReg && !isEventHidden,
+      alreadySignIn: false,
+      canSignIn: false,
+      canSignInReserve: false,
+      canSignOut: false,
+      isEventExpired,
+      isEventInProcess,
+      isEventHidden,
+      userStatus: undefined,
+      userEventStatus: undefined,
+      status: 'error eventUsersFull',
+      isAgeOfUserCorrect: undefined,
+      isUserStatusCorrect: undefined,
+      isUserRelationshipCorrect: undefined,
+    }
+  }
 
   const userEvent =
     user?._id &&
@@ -344,6 +363,7 @@ const userToEventStatus = (
         isUserRelationshipCorrect,
       }
   }
+
   if (user.gender === 'famale') {
     if (
       (!user.status || user.status === 'novice') &&

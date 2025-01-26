@@ -3,13 +3,12 @@ import { atomFamily } from 'jotai/utils'
 
 import paymentsOfEventFromAndToUsersSelector from './paymentsOfEventFromAndToUsersSelector'
 
-export const paymentsOfEventWithNoCouponsFromAndToUsersSelector = atomFamily(
-  (id) =>
-    atom(async (get) => {
-      if (!id) return []
-      const payments = await get(paymentsOfEventFromAndToUsersSelector(id))
-      return payments.filter((payment) => payment.payType !== 'coupon')
-    })
+const paymentsOfEventWithNoCouponsFromAndToUsersSelector = atomFamily((id) =>
+  atom(async (get) => {
+    if (!id) return []
+    const payments = await get(paymentsOfEventFromAndToUsersSelector(id))
+    return payments.filter((payment) => payment.payType !== 'coupon')
+  })
 )
 
 export default paymentsOfEventWithNoCouponsFromAndToUsersSelector

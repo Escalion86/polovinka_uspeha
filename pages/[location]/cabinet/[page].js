@@ -24,6 +24,7 @@ import { Suspense, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import SignOut from '@components/SignOut'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 
 // import loggedUserActiveStatusAtomJ from '@state/atoms/loggedUserActiveStatusAtom'
 // import loggedUserActiveAtomJ from '@state/atoms/loggedUserActiveAtom'
@@ -160,7 +161,7 @@ export const getServerSideProps = async (context) => {
   if (!session?.user) {
     return {
       redirect: {
-        destination: `/${location}?page=${page}`,
+        destination: `/${location}${page ? `?page=${page}` : ''}`,
       },
     }
   }
@@ -185,6 +186,7 @@ export const getServerSideProps = async (context) => {
 
   const fetchedProps = await fetchProps(session?.user, location, {
     additionalBlocks: false,
+    reviews: false,
   })
 
   return {

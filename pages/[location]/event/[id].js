@@ -149,7 +149,7 @@ function EventPage(props) {
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
       <StateLoader {...props}>
-        <Header noMenu={isPWA} />
+        <Header noMenu={isPWA} fullLinkInMenu />
         <EventBlock event={event} />
         {/* <TitleBlock userIsLogged={!!loggedUserState} /> */}
 

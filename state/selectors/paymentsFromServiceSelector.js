@@ -3,7 +3,7 @@ import { atomFamily } from 'jotai/utils'
 
 import paymentsByServiceIdSelector from './paymentsByServiceIdSelector'
 
-export const paymentsFromServiceSelector = atomFamily((id) =>
+const paymentsFromServiceSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return 0
     const payments = await get(paymentsByServiceIdSelector(id))

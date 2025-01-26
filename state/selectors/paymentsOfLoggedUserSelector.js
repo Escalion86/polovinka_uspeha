@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 import asyncPaymentsOfUserIdAtom from '@state/async/asyncPaymentsOfUserIdAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 
-export const paymentsOfLoggedUserSelector = atom(async (get) => {
+const paymentsOfLoggedUserSelector = atom(async (get) => {
   const loggedUserActive = get(loggedUserActiveAtom)
   if (!loggedUserActive) return []
   const result = await get(asyncPaymentsOfUserIdAtom(loggedUserActive._id))

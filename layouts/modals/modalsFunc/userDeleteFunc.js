@@ -1,5 +1,5 @@
 import FormWrapper from '@components/FormWrapper'
-import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 import isUserHaveActionsSelector from '@state/selectors/isUserHaveActionsSelector'
 import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'

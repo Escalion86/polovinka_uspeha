@@ -6,7 +6,7 @@ import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import TelegramIcon from 'svg/TelegramIcon'
+import TelegramIcon from '@svg/TelegramIcon'
 
 const FabItem = ({ text, whatsapp, telegram, show }) => (
   <div className="relative flex flex-row-reverse gap-x-2 items-center pb-4 min-w-[48px]">

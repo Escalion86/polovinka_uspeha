@@ -4,7 +4,7 @@ import { atomFamily } from 'jotai/utils'
 import eventAssistantsIdsSelector from './eventAssistantsIdsSelector'
 import paymentsOfEventWithNoCouponsFromAndToUsersSelector from './paymentsOfEventWithNoCouponsFromAndToUsersSelector'
 
-export const sumOfPaymentsFromEventToAssistantsSelector = atomFamily((id) =>
+const sumOfPaymentsFromEventToAssistantsSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return 0
     const eventAssistants = await get(eventAssistantsIdsSelector(id))

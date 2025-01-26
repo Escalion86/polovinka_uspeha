@@ -1,4 +1,4 @@
-import SvgWave from 'svg/SvgWave'
+import SvgWave from '@svg/SvgWave'
 
 export function Error404() {
   return (

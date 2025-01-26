@@ -1,22 +1,16 @@
-// import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
-// import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { sendImage } from '@helpers/cloudinary'
-// import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import { useAtomValue } from 'jotai'
+
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
-// import locationPropsSelector from '@state/selectors/locationPropsSelector'
-// import Image from 'next/image'
 import { getData } from '@helpers/CRUD'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder } from '@fortawesome/free-regular-svg-icons/faFolder'
 import Zoom from 'react-medium-image-zoom'
 import TextLinesLimiter from './TextLinesLimiter'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 
 function isFileFunc(pathname) {
   return pathname.split('/').pop().indexOf('.') > -1
@@ -29,20 +23,7 @@ const SelectFile = ({
   onSelectFile,
   onSelectDir,
   setFilesCount,
-  // onDeleteFile,
-  required = false,
-  label = null,
   directory,
-  labelClassName,
-  className,
-  aspect,
-  error,
-  fullWidth,
-  readOnly = false,
-  noMargin,
-  smallMargin,
-  paddingY = true,
-  paddingX,
   canDeleteFile,
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)

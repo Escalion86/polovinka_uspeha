@@ -5,17 +5,18 @@ import { LOCATIONS } from '@helpers/constants'
 import locationAtom from '@state/atoms/locationAtom'
 import cn from 'classnames'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
-const Item = ({ towns = [], checked, onClick }) => (
-  <div
-    onClick={onClick}
+const Item = ({ towns = [], checked, onClick, location }) => (
+  <a
+    href={`/${location}`}
+    // onClick={onClick}
     className={cn(
       checked
         ? 'border-success bg-green-300/50'
         : 'bg-gray-200/50 border-gray-500',
-      'min-h-[3rem] flex items-center px-3 py-2 border rounded-md gap-x-1 cursor-pointer'
+      'min-h-[3rem] flex items-center px-3 py-2 border rounded-md gap-x-1 cursor-pointer hover:shadow-active'
     )}
   >
     <div className="flex flex-wrap gap-x-1 gap-y-1">
@@ -40,18 +41,20 @@ const Item = ({ towns = [], checked, onClick }) => (
         <div className="w-5" />
       )}
     </div>
-  </div>
+  </a>
 )
 
 const browseLocationFunc = () => {
-  const BrowseLocationModal = ({
-    closeModal,
-    setOnConfirmFunc,
-    setOnDeclineFunc,
-    setOnShowOnCloseConfirmDialog,
-    setDisableConfirm,
-    setDisableDecline,
-  }) => {
+  const BrowseLocationModal = (
+    {
+      // closeModal,
+      // setOnConfirmFunc,
+      // setOnDeclineFunc,
+      // setOnShowOnCloseConfirmDialog,
+      // setDisableConfirm,
+      // setDisableDecline,
+    }
+  ) => {
     const locationState = useAtomValue(locationAtom)
     const [selectedLocation, setSelectedLocation] = useState(locationState)
     const router = useRouter()
@@ -64,29 +67,33 @@ const browseLocationFunc = () => {
       []
     )
 
-    const onClickConfirm = async () => {
-      if (selectedLocation === locationState) {
-        // localStorage.setItem('location', selectedLocation)
-        closeModal()
-      } else {
-        // localStorage.removeItem('location')
-        // if (selectedLocation === 'norilsk')
-        router.push(`/${selectedLocation}`, '', {
-          shallow: false,
-        })
-        closeModal()
-        // if (selectedLocation === 'krasnoyarsk')
-        //   router.push('https://половинкауспеха.рф?location=krasnoyarsk', '', {
-        //     shallow: false,
-        //   })
-      }
-    }
+    // const onClickConfirm = async () => {
+    //   if (selectedLocation === locationState) {
+    //     // localStorage.setItem('location', selectedLocation)
+    //     closeModal()
+    //   } else {
+    //     // localStorage.removeItem('location')
+    //     // if (selectedLocation === 'norilsk')
+    //     router.push(
+    //       { pathname: `/${selectedLocation}`, query: { u: 'true' } },
+    //       '',
+    //       {
+    //         shallow: false,
+    //       }
+    //     )
+    //     closeModal()
+    //     // if (selectedLocation === 'krasnoyarsk')
+    //     //   router.push('https://половинкауспеха.рф?location=krasnoyarsk', '', {
+    //     //     shallow: false,
+    //     //   })
+    //   }
+    // }
 
-    useEffect(() => {
-      setOnConfirmFunc(onClickConfirm)
-      // setOnShowOnCloseConfirmDialog(isFormChanged)
-      setDisableConfirm(!locationsList.includes(selectedLocation))
-    }, [selectedLocation])
+    // useEffect(() => {
+    //   setOnConfirmFunc(onClickConfirm)
+    //   // setOnShowOnCloseConfirmDialog(isFormChanged)
+    //   setDisableConfirm(!locationsList.includes(selectedLocation))
+    // }, [selectedLocation])
 
     return (
       <FormWrapper>
@@ -101,6 +108,7 @@ const browseLocationFunc = () => {
                 key={location}
                 checked={selectedLocation === location}
                 towns={LOCATIONS[location].towns}
+                location={location}
                 onClick={() => setSelectedLocation(location)}
               />
             ))}

@@ -2,7 +2,7 @@ import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSel
 import Skeleton from 'react-loading-skeleton'
 import { useAtomValue } from 'jotai'
 import cn from 'classnames'
-import { CardWrapper } from '@components/CardWrapper'
+import CardWrapper from '@components/CardWrapper'
 
 const EventCardSkeleton = ({
   loading,

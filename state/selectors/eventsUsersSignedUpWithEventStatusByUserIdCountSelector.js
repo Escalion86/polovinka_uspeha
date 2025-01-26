@@ -4,8 +4,8 @@ import { atomFamily } from 'jotai/utils'
 import isEventExpired from '@helpers/isEventExpired'
 import eventsUsersSignedUpByUserIdSelector from './eventsUsersSignedUpByUserIdSelector'
 
-export const eventsUsersSignedUpWithEventStatusByUserIdCountSelector =
-  atomFamily((id) =>
+const eventsUsersSignedUpWithEventStatusByUserIdCountSelector = atomFamily(
+  (id) =>
     atom(async (get) => {
       if (!id) return []
       const eventsUsers = await get(eventsUsersSignedUpByUserIdSelector(id))
@@ -17,6 +17,6 @@ export const eventsUsersSignedUpWithEventStatusByUserIdCountSelector =
 
       return result
     })
-  )
+)
 
 export default eventsUsersSignedUpWithEventStatusByUserIdCountSelector

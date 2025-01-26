@@ -3,7 +3,7 @@ import { atomFamily } from 'jotai/utils'
 
 import { pages } from '@helpers/constants'
 
-export const badgesGroupSelector = atomFamily((groupId) =>
+const badgesGroupSelector = atomFamily((groupId) =>
   atom((get) => {
     // const groupPages = pages.filter(({ group }) => groupId === group)
 

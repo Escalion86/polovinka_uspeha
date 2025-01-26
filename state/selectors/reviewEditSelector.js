@@ -1,9 +1,8 @@
 import { atom } from 'jotai'
 
-import { DEFAULT_REVIEW } from '@helpers/constants'
 import reviewsAtom from '@state/atoms/reviewsAtom'
 
-const reviewEditSelector = atom(DEFAULT_REVIEW, (get, set, newItem) => {
+const reviewEditSelector = atom(null, (get, set, newItem) => {
   const items = get(reviewsAtom)
   if (!newItem?._id) return
   const findedItem = items.find((event) => event._id === newItem._id)
