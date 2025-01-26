@@ -1,5 +1,5 @@
-// import SvgWave from 'svg/SvgWave'
-import SvgLove from 'svg/SvgLove'
+// import SvgWave from '@svg/SvgWave'
+import SvgLove from '@svg/SvgLove'
 
 const Page502 = (props) => {
   const generalColor = '#7a5151'

@@ -18,7 +18,7 @@ import isPWAAtom from '@state/atoms/isPWAAtom'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 export default function Home(props) {
   const isPWA = useAtomValue(isPWAAtom)

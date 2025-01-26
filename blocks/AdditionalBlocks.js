@@ -1,6 +1,6 @@
+import { useAtomValue } from 'jotai'
 import transliterate from '@helpers/transliterate'
 import filteredAdditionalBlocksSelector from '@state/selectors/filteredAdditionalBlocksSelector'
-import { useAtomValue } from 'jotai'
 import DirectionBlock from './DirectionBlock'
 
 const AdditionalBlocks = ({ startInverse }) => {

@@ -23,7 +23,7 @@ import cn from 'classnames'
 import { Suspense } from 'react'
 import EventCardSkeleton from './Skeletons/EventCardSkeleton'
 import eventSelector from '@state/selectors/eventSelector'
-import Venzel1 from 'svg/venzels/1'
+import Venzel1 from '@svg/venzels/1'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const EventCard = ({

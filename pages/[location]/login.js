@@ -29,8 +29,8 @@ import {
 } from 'react-google-recaptcha-v3'
 import MaskedInput from 'react-text-mask'
 import { useAtomValue } from 'jotai'
-import SvgLove from 'svg/SvgLove'
-import SvgWave from 'svg/SvgWave'
+import SvgLove from '@svg/SvgLove'
+import SvgWave from '@svg/SvgWave'
 
 import TelegramLoginButton from 'react-telegram-login'
 import Divider from '@components/Divider'

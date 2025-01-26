@@ -3,8 +3,8 @@ import { atomFamily } from 'jotai/utils'
 
 import eventParticipantsFullByEventIdSelector from './eventParticipantsFullByEventIdSelector'
 
-export const eventParticipantsFullWithoutRelationshipByEventIdSelector =
-  atomFamily((id) =>
+const eventParticipantsFullWithoutRelationshipByEventIdSelector = atomFamily(
+  (id) =>
     atom(async (get) => {
       if (!id) return []
       const eventParticipantsFull = await get(
@@ -12,6 +12,6 @@ export const eventParticipantsFullWithoutRelationshipByEventIdSelector =
       )
       return eventParticipantsFull.filter((item) => !item.user?.relationship)
     })
-  )
+)
 
 export default eventParticipantsFullWithoutRelationshipByEventIdSelector

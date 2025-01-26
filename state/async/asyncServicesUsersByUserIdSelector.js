@@ -7,7 +7,7 @@ import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import store from '../store'
 import locationAtom from '@state/atoms/locationAtom'
 
-export const asyncServicesUsersByUserIdSelector = atomFamily((userId) =>
+const asyncServicesUsersByUserIdSelector = atomFamily((userId) =>
   atom(async (get) => {
     if (!userId) return null
     if (get(isLoadedAtom('asyncServicesUsersAtom'))) {

@@ -15,7 +15,7 @@ import setJotaiFunc from './setJotaiFunc'
 //   }
 // }
 
-export default function useWindowDimensions() {
+function useWindowDimensions() {
   const [windowDimensions, setWindowDimensions] = useState(
     // getWindowDimensions()
     { width: undefined, height: undefined }
@@ -39,15 +39,15 @@ export default function useWindowDimensions() {
   return windowDimensions
 }
 
-export const useWindowDimensionsTailwind = () => {
-  const { width } = useWindowDimensions()
-  if (!width) return null
-  if (width < 480) return 'phoneV'
-  if (width < 640) return 'phoneH'
-  if (width < 960) return 'tablet'
-  if (width < 1200) return 'laptop'
-  return 'desktop'
-}
+// export const useWindowDimensionsTailwind = () => {
+//   const { width } = useWindowDimensions()
+//   if (!width) return null
+//   if (width < 480) return 'phoneV'
+//   if (width < 640) return 'phoneH'
+//   if (width < 960) return 'tablet'
+//   if (width < 1200) return 'laptop'
+//   return 'desktop'
+// }
 
 export const useWindowDimensionsTailwindNum = () => {
   const { width } = useWindowDimensions()

@@ -10,7 +10,7 @@ import Image from 'next/image'
 import { Suspense } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useAtomValue } from 'jotai'
-import SvgSigma from 'svg/SvgSigma'
+import SvgSigma from '@svg/SvgSigma'
 import UserStatusIcon from './UserStatusIcon'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
@@ -364,7 +364,7 @@ const SumCounter = (props) => (
   </Suspense>
 )
 
-export const EventUsersCounterAndAgeByEventId = ({
+const EventUsersCounterAndAgeByEventId = ({
   eventId,
   className,
   showAges,

@@ -20,69 +20,69 @@ import isObject from './isObject'
 //   }
 // }
 
-export const deleteImages = async (arrayOfImagesUrls, callback = null) => {
-  // if (arrayOfImagesUrls.length > 0)
-  //   await Promise.all(
-  //     arrayOfImagesUrls.map(async (imageUrl) => {
-  //       if (imageUrl.lastIndexOf(CLOUDINARY_FOLDER + '/') > 0) {
-  //         await deleteImage(
-  //           imageUrl.substring(
-  //             imageUrl.lastIndexOf(CLOUDINARY_FOLDER + '/'),
-  //             imageUrl.lastIndexOf('.')
-  //           )
-  //         )
-  //       } else if (!imageUrl.includes('https://res.cloudinary.com')) {
-  //         await deleteImage(CLOUDINARY_FOLDER + '/' + imageUrl)
-  //       }
-  //     })
-  //   )
-  if (callback) callback()
-}
+// export const deleteImages = async (arrayOfImagesUrls, callback = null) => {
+//   // if (arrayOfImagesUrls.length > 0)
+//   //   await Promise.all(
+//   //     arrayOfImagesUrls.map(async (imageUrl) => {
+//   //       if (imageUrl.lastIndexOf(CLOUDINARY_FOLDER + '/') > 0) {
+//   //         await deleteImage(
+//   //           imageUrl.substring(
+//   //             imageUrl.lastIndexOf(CLOUDINARY_FOLDER + '/'),
+//   //             imageUrl.lastIndexOf('.')
+//   //           )
+//   //         )
+//   //       } else if (!imageUrl.includes('https://res.cloudinary.com')) {
+//   //         await deleteImage(CLOUDINARY_FOLDER + '/' + imageUrl)
+//   //       }
+//   //     })
+//   //   )
+//   if (callback) callback()
+// }
 
-export const getImages = async (
-  directory,
-  callback,
-  project = 'polovinka_uspeha'
-) => {
-  if (directory) {
-    const query = {
-      directory,
-    }
+// export const getImages = async (
+//   directory,
+//   callback,
+//   project = 'polovinka_uspeha'
+// ) => {
+//   if (directory) {
+//     const query = {
+//       directory,
+//     }
 
-    const queryString = new URLSearchParams(query).toString()
-    const urlWithQuery = `https://api.escalioncloud.ru/api/files?${project}/${queryString}`
+//     const queryString = new URLSearchParams(query).toString()
+//     const urlWithQuery = `https://api.escalioncloud.ru/api/files?${project}/${queryString}`
 
-    return await fetch(
-      // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
-      urlWithQuery,
-      {
-        method: 'GET',
-        // body: formData,
-        //  JSON.stringify({
-        //   file: image,
-        //   fileName: imageName ?? 'test.jpg',
-        //   folder: 'events',
-        // })
-        // dataType: 'json',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        // 'Content-Type': "multipart/form-data"
-        // },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('data', data)
-        // if (data.secure_url !== '') {
-        // if (callback) callback(data.secure_url)
-        // return data.secure_url
-        // }
-        if (callback) callback(data)
-        return data
-      })
-      .catch((err) => console.error('ERROR', err))
-  }
-}
+//     return await fetch(
+//       // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
+//       urlWithQuery,
+//       {
+//         method: 'GET',
+//         // body: formData,
+//         //  JSON.stringify({
+//         //   file: image,
+//         //   fileName: imageName ?? 'test.jpg',
+//         //   folder: 'events',
+//         // })
+//         // dataType: 'json',
+//         // headers: {
+//         //   'Content-Type': 'application/json',
+//         // 'Content-Type': "multipart/form-data"
+//         // },
+//       }
+//     )
+//       .then((response) => response.json())
+//       .then((data) => {
+//         console.log('data', data)
+//         // if (data.secure_url !== '') {
+//         // if (callback) callback(data.secure_url)
+//         // return data.secure_url
+//         // }
+//         if (callback) callback(data)
+//         return data
+//       })
+//       .catch((err) => console.error('ERROR', err))
+//   }
+// }
 
 export const sendImage = async (
   image,
@@ -134,54 +134,54 @@ export const sendImage = async (
   }
 }
 
-export const sendFile = async (
-  file,
-  callback,
-  folder,
-  fileName = null,
-  project = 'polovinka_uspeha'
-) => {
-  if (isObject(file)) {
-    const formData = new FormData()
-    formData.append('project', project ?? 'polovinka_uspeha')
+// const sendFile = async (
+//   file,
+//   callback,
+//   folder,
+//   fileName = null,
+//   project = 'polovinka_uspeha'
+// ) => {
+//   if (isObject(file)) {
+//     const formData = new FormData()
+//     formData.append('project', project ?? 'polovinka_uspeha')
 
-    formData.append('folder', folder ?? 'temp')
-    // formData.append('password', 'cloudtest')
-    formData.append('fileType', 'file')
-    formData.append('files', file)
-    formData.append('fileName', fileName)
+//     formData.append('folder', folder ?? 'temp')
+//     // formData.append('password', 'cloudtest')
+//     formData.append('fileType', 'file')
+//     formData.append('files', file)
+//     formData.append('fileName', fileName)
 
-    return await fetch(
-      // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
-      'https://api.escalioncloud.ru/api',
-      {
-        method: 'POST',
-        body: formData,
-        //  JSON.stringify({
-        //   file: image,
-        //   fileName: imageName ?? 'test.jpg',
-        //   folder: 'events',
-        // })
-        // dataType: 'json',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        // 'Content-Type': "multipart/form-data"
-        // },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('data', data)
-        // if (data.secure_url !== '') {
-        // if (callback) callback(data.secure_url)
-        // return data.secure_url
-        // }
-        if (callback) callback(data)
-        return data
-      })
-      .catch((err) => console.error('ERROR', err))
-  }
-}
+//     return await fetch(
+//       // 'https://api.cloudinary.com/v1_1/escalion-ru/image/upload',
+//       'https://api.escalioncloud.ru/api',
+//       {
+//         method: 'POST',
+//         body: formData,
+//         //  JSON.stringify({
+//         //   file: image,
+//         //   fileName: imageName ?? 'test.jpg',
+//         //   folder: 'events',
+//         // })
+//         // dataType: 'json',
+//         // headers: {
+//         //   'Content-Type': 'application/json',
+//         // 'Content-Type': "multipart/form-data"
+//         // },
+//       }
+//     )
+//       .then((response) => response.json())
+//       .then((data) => {
+//         console.log('data', data)
+//         // if (data.secure_url !== '') {
+//         // if (callback) callback(data.secure_url)
+//         // return data.secure_url
+//         // }
+//         if (callback) callback(data)
+//         return data
+//       })
+//       .catch((err) => console.error('ERROR', err))
+//   }
+// }
 
 // export const sendVideo = async (
 //   video,

@@ -3,7 +3,7 @@ import { atomFamily } from 'jotai/utils'
 
 import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
 
-export const eventMansReserveSelector = atomFamily((id) =>
+const eventMansReserveSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return []
     const eventsUsersFull = await get(eventsUsersFullByEventIdSelector(id))

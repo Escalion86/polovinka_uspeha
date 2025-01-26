@@ -9,7 +9,7 @@ function calcLuminance(hex) {
   return (r * 0.299 + g * 0.587 + b * 0.114) / 256
 }
 
-export const textColorClassCalc = (hex) =>
+const textColorClassCalc = (hex) =>
   calcLuminance(hex) < 0.5 ? 'text-white' : 'text-black'
 
-export default calcLuminance
+export default textColorClassCalc

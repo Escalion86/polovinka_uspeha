@@ -5,7 +5,7 @@ import compareArrays from '@helpers/compareArraysWithDif'
 import eventsUsersFullByEventIdSelector from './eventsUsersFullByEventIdSelector'
 import paymentsOfEventFromAndToUsersSelector from './paymentsOfEventFromAndToUsersSelector'
 
-export const eventNotParticipantsWithPaymentsSelector = atomFamily((id) =>
+const eventNotParticipantsWithPaymentsSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return []
 

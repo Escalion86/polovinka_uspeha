@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import BlockContainer from '@components/BlockContainer'
 import Button from '@components/Button'
 import Masonry from '@components/Masonry'
@@ -6,7 +8,6 @@ import { getNounEvents } from '@helpers/getNoun'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
-import { useAtomValue } from 'jotai'
 
 const DirectionItem = ({
   directionId,

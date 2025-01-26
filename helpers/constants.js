@@ -73,18 +73,18 @@ const MembersContent = dynamic(() => import('@layouts/content/MembersContent'))
 // import UsersContent from '@layouts/content/UsersContent'
 // import MembersContent from '@layouts/content/MembersContent'
 
-import ZodiacCapricorn from 'svg/zodiac/ZodiacCapricorn'
-import ZodiacTaurus from 'svg/zodiac/ZodiacTaurus'
-import ZodiacGemini from 'svg/zodiac/ZodiacGemini'
-import ZodiacCancer from 'svg/zodiac/ZodiacCancer'
-import ZodiacLeo from 'svg/zodiac/ZodiacLeo'
-import ZodiacLibra from 'svg/zodiac/ZodiacLibra'
-import ZodiacSagittarius from 'svg/zodiac/ZodiacSagittarius'
-import ZodiacAries from 'svg/zodiac/ZodiacAries'
-import ZodiacAquarius from 'svg/zodiac/ZodiacAquarius'
-import ZodiacPisces from 'svg/zodiac/ZodiacPisces'
-import ZodiacVirgo from 'svg/zodiac/ZodiacVirgo'
-import ZodiacScorpio from 'svg/zodiac/ZodiacScorpio'
+import ZodiacCapricorn from '@svg/zodiac/ZodiacCapricorn'
+import ZodiacTaurus from '@svg/zodiac/ZodiacTaurus'
+import ZodiacGemini from '@svg/zodiac/ZodiacGemini'
+import ZodiacCancer from '@svg/zodiac/ZodiacCancer'
+import ZodiacLeo from '@svg/zodiac/ZodiacLeo'
+import ZodiacLibra from '@svg/zodiac/ZodiacLibra'
+import ZodiacSagittarius from '@svg/zodiac/ZodiacSagittarius'
+import ZodiacAries from '@svg/zodiac/ZodiacAries'
+import ZodiacAquarius from '@svg/zodiac/ZodiacAquarius'
+import ZodiacPisces from '@svg/zodiac/ZodiacPisces'
+import ZodiacVirgo from '@svg/zodiac/ZodiacVirgo'
+import ZodiacScorpio from '@svg/zodiac/ZodiacScorpio'
 // import PaymentsContent from '@layouts/content/PaymentsContent'
 // import ContactsContent from '@layouts/content/ContactsContent'
 // import DevContent from '@layouts/content/DevContent'
@@ -609,7 +609,7 @@ export const DEFAULT_USER = Object.freeze({
   notifications: DEFAULT_USERS_NOTIFICATIONS,
 })
 
-export const DEFAULT_ADDRESS = Object.freeze({
+const DEFAULT_ADDRESS = Object.freeze({
   town: '',
   street: '',
   house: '',
@@ -823,11 +823,11 @@ export const GENDERS_WITH_NO_GENDER = [
   { value: 'null', name: 'Не выбрано', color: 'gray-400', icon: faGenderless },
 ]
 
-export const ORIENTATIONS = [
-  { value: 'getero', name: 'Гетеросексуал', color: 'blue-400' },
-  { value: 'bi', name: 'Бисексуал', color: 'purple-400' },
-  { value: 'homo', name: 'Гомосексуал', color: 'red-400' },
-]
+// export const ORIENTATIONS = [
+//   { value: 'getero', name: 'Гетеросексуал', color: 'blue-400' },
+//   { value: 'bi', name: 'Бисексуал', color: 'purple-400' },
+//   { value: 'homo', name: 'Гомосексуал', color: 'red-400' },
+// ]
 
 export const CODE_SEND_SERVICES = [
   { value: 'telefonip', name: 'TelefonIP', color: 'orange-400' },
@@ -2513,5 +2513,5 @@ export const USERS_ROLES = [
   { value: 'dev', name: 'Разработчик', color: 'danger' },
 ]
 
-export const UCALLER_VOICE = true
-export const UCALLER_MIX = true
+// export const UCALLER_VOICE = true
+// export const UCALLER_MIX = true

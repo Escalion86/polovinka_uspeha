@@ -7,7 +7,7 @@ import isEventExpired from '@helpers/isEventExpired'
 import isEventInProcess from '@helpers/isEventInProcess'
 import eventSelector from './eventSelector'
 
-export const eventStatusSelector = atomFamily((id) =>
+const eventStatusSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return null
     const event = await get(eventSelector(id))

@@ -28,7 +28,7 @@ import useFocus from '@helpers/useFocus'
 // import directionsAtom from '@state/atoms/directionsAtom'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 // import { useAtomValue } from 'jotai'
-import SvgSigma from 'svg/SvgSigma'
+import SvgSigma from '@svg/SvgSigma'
 
 const subEventFunc = (props, onChange, rules) => {
   const SubEventModal = ({

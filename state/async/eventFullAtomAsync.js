@@ -6,7 +6,7 @@ import isLoadedAtom from '@state/atoms/isLoadedAtom'
 import store from '../store'
 import locationAtom from '@state/atoms/locationAtom'
 
-export const eventFullAtomAsync = atomFamily((id) =>
+const eventFullAtomAsync = atomFamily((id) =>
   atomWithDefault(async (get) => {
     if (!id) return
     const location = get(locationAtom)

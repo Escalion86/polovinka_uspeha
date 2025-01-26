@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
-import SvgSigma from 'svg/SvgSigma'
+import SvgSigma from '@svg/SvgSigma'
 import Ages from './Ages'
 import Image from 'next/image'
 

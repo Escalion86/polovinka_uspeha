@@ -7,7 +7,7 @@ import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useAtomValue } from 'jotai'
-import Svg30Plus from 'svg/Svg30Plus'
+import Svg30Plus from '@svg/Svg30Plus'
 import CountDown from './components/CountDown'
 import locationAtom from '@state/atoms/locationAtom'
 

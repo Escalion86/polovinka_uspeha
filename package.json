@@ -74,7 +74,6 @@
     "react-virtualized-auto-sizer": "^1.0.7",
     "react-window": "^1.8.8",
     "save-svg-as-png": "^1.4.17",
-    "sharp": "^0.33.5",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
     "style-loader": "^4.0.0",

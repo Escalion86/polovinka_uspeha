@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 
-export const paymentsWithoutUserWritingToEventSelector = atom(async (get) => {
+const paymentsWithoutUserWritingToEventSelector = atom(async (get) => {
   const eventUsers = await get(asyncEventsUsersAllAtom)
   const payments = await get(asyncPaymentsAtom)
 

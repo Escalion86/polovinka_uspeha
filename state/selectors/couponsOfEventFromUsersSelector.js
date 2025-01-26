@@ -3,7 +3,7 @@ import { atomFamily } from 'jotai/utils'
 
 import paymentsOfEventFromAndToUsersSelector from './paymentsOfEventFromAndToUsersSelector'
 
-export const couponsOfEventFromUsersSelector = atomFamily((id) =>
+const couponsOfEventFromUsersSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return []
     const payments = await get(paymentsOfEventFromAndToUsersSelector(id))

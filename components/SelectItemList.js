@@ -36,7 +36,7 @@ const ItemRow = ({
   </div>
 )
 
-export const SelectItemList = ({
+const SelectItemList = ({
   itemsId = [],
   SelectItemComponent,
   label,

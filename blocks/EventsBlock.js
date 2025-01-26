@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { useAtomValue } from 'jotai'
+
 import BlockContainer from '@components/BlockContainer'
 import { P } from '@components/tags'
 import isEventCanceledFunc from '@helpers/isEventCanceled'
@@ -5,8 +8,6 @@ import isEventExpiredFunc from '@helpers/isEventExpired'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 import cn from 'classnames'
 import Link from 'next/link'
-import { useState } from 'react'
-import { useAtomValue } from 'jotai'
 import CountDown from './components/CountDown'
 import dynamic from 'next/dynamic'
 const EventCardLight = dynamic(() => import('@layouts/cards/EventCardLight'))

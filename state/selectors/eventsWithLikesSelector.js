@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 
-export const eventsWithLikesSelector = atom(async (get) => {
+const eventsWithLikesSelector = atom(async (get) => {
   const eventsWithLikes = get(eventsAtom).filter(({ likes }) => likes)
 
   const preparedEventsWithLikes = await Promise.all(

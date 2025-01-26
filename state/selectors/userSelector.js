@@ -1,11 +1,11 @@
 import { atomFamily, atomWithDefault } from 'jotai/utils'
 
 import { getData } from '@helpers/CRUD'
-import isLoadedAtom from '@state/atoms/isLoadedAtom'
-import usersAtomAsync from '@state/async/usersAtomAsync'
+// import isLoadedAtom from '@state/atoms/isLoadedAtom'
+// import usersAtomAsync from '@state/async/usersAtomAsync'
 import locationAtom from '@state/atoms/locationAtom'
 
-export const userSelector = atomFamily((id) =>
+const userSelector = atomFamily((id) =>
   atomWithDefault(async (get) => {
     if (!id) return
 

@@ -5,7 +5,7 @@ import userSelector from './userSelector'
 import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
 import eventSelector from './eventSelector'
 
-export const eventsUsersFullByUserIdSelector = atomFamily((id) =>
+const eventsUsersFullByUserIdSelector = atomFamily((id) =>
   atom(async (get) => {
     if (!id) return []
 
