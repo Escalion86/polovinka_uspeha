@@ -399,7 +399,8 @@ const ToolsEventAnonsVkContent = () => {
             height="384"
             viewBox="0 0 2028 1536"
             id="input"
-            className="w-full aspect-[507/384] h-full"
+            // className="w-full aspect-[507/384] h-full"
+            style={{ width: '100%', height: '100%', aspectRatio: '507/384' }}
           >
             {/* <image
               // id="preview"

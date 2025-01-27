@@ -349,7 +349,8 @@ const ToolsEventAnonsInstagramContent = () => {
             // height="480"
             viewBox="0 0 1080 1080"
             id="input"
-            className="w-full aspect-1"
+            // className="w-full aspect-1"
+            style={{ aspectRatio: '1/1', width: '100%' }}
           >
             <SvgBackgroundComponent {...backgroundProps} />
             <Frame fill={frameColor} />
