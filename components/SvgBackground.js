@@ -6,7 +6,7 @@ import { useAtomValue } from 'jotai'
 // import Button from './Button'
 import ColorPicker from './ColorPicker'
 import ComboBox from './ComboBox'
-import Input from './Input'
+// import Input from './Input'
 import InputWrapper from './InputWrapper'
 import { useEffect } from 'react'
 // import InputImage from './InputImage'
@@ -204,7 +204,8 @@ export const SvgBackgroundInput = ({
       <div className="flex flex-wrap items-center flex-1 gap-x-2">
         <ComboBox
           label="Тип фона"
-          className="w-[108px]"
+          // className="w-[108px]"
+          style={{ width: '108px' }}
           items={[
             { value: 'color', name: 'Цвет' },
             { value: 'gradient', name: 'Градиент' },

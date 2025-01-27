@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import Image from 'next/image'
+// import Image from 'next/image'
 // import { useState } from 'react'
 import ReactImageGallery from 'react-image-gallery'
 import LoadingSpinner from './LoadingSpinner'
@@ -86,7 +86,7 @@ const ImageGallery = ({ images, noImage, className }) => {
   // ]
 
   return (
-    <div className="flex justify-center">
+    <div className={cn('flex justify-center', className)}>
       <div
         // style={{ aspectRatio: 'auto 16/9' }}
         className="w-full aspect-[16/9] overflow-hidden border border-gray-400 shadow-sm phoneH:w-auto min-h-40 phoneH:h-60 laptop:h-80 phoneH:max-h-60 laptop:max-h-80 rounded-2xl"

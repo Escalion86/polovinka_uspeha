@@ -21,6 +21,7 @@ import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 import InputNumber from '@components/InputNumber'
+import ReactImageGallery from 'react-image-gallery'
 
 const getPreview = async () => {
   const input = document.querySelector('#input')
@@ -68,6 +69,98 @@ const ToolsEventAnonsVkContent = () => {
   )
 
   const aspect = 2028 / 1536
+
+  const Image = () => (
+    <svg
+      width="507"
+      height="384"
+      viewBox="0 0 2028 1536"
+      id="input"
+      // className="w-full aspect-[507/384] h-full"
+      style={{ width: '100%', height: '100%', aspectRatio: '507/384' }}
+    >
+      {/* <image
+    // id="preview"
+    href="/img/anons/background_vk.png"
+    height="100%"
+    width="100%"
+  /> */}
+      <SvgBackgroundComponent {...backgroundProps} />
+      <rect x="214" y="268" width="1600" height="1000" rx="120" fill="white" />
+      <line
+        x1="380"
+        y1={lineStartY}
+        x2="1648"
+        y2={lineStartY}
+        stroke={lineColor}
+        strokeWidth={4}
+      />
+      {/* <SvgBackgroundComponent {...backgroundProps} /> */}
+      <text
+        x={startX}
+        y={dateStartY - (date2 ? 50 : 0)}
+        fontSize={dateFontSize}
+        fill={dateColor}
+        textAnchor="middle"
+        fontFamily="Lora"
+        // className="font-bold uppercase"
+        style={{ fontWeight: 700, textTransform: 'uppercase' }}
+        // className="font-bold uppercase font-lora"
+      >
+        {date1}
+      </text>
+      <text
+        x={startX}
+        y={timeStartY}
+        fontSize={timeFontSize}
+        fill={timeColor}
+        textAnchor="middle"
+        fontFamily="Lora"
+        // className="font-bold uppercase"
+        style={{ fontWeight: 700, textTransform: 'uppercase' }}
+        // className="font-bold uppercase font-lora"
+      >
+        {time}
+      </text>
+      {date2 && (
+        <text
+          x={startX}
+          y={dateStartY + 50}
+          fontSize={dateFontSize}
+          fill={dateColor}
+          textAnchor="middle"
+          fontFamily="Lora"
+          // className="font-bold uppercase"
+          style={{ fontWeight: 700, textTransform: 'uppercase' }}
+          // className="font-bold uppercase font-lora"
+        >
+          {date2}
+        </text>
+      )}
+      {textArray.map((textLine, lineNum) => {
+        return (
+          <text
+            key={textLine + lineNum}
+            x={startX}
+            y={
+              startY +
+              lineNum * fontSize -
+              ((textArray.length - 1) * fontSize) / 2
+            }
+            fontSize={fontSize}
+            fill={anonsColor}
+            textAnchor="middle"
+            fontFamily="Lora"
+            style={{ fontWeight: 700, textTransform: 'uppercase' }}
+            // className="font-bold uppercase"
+            // className="font-bold uppercase font-lora"
+          >
+            {textLine}
+          </text>
+        )
+      })}
+    </svg>
+  )
 
   return (
     <div className="h-full max-h-full px-1 py-1 overflow-y-auto">
@@ -392,104 +485,21 @@ const ToolsEventAnonsVkContent = () => {
       </div>
       {/* <div className="flex py-2 overflow-x-auto gap-x-1 max-h-[calc(100vh-160px)] overflow-y-auto">
         <div className="border-2 border-gray-600"> */}
-      <div className="flex py-2 overflow-x-auto gap-x-1">
-        <div className="border-2 border-gray-600 min-w-[278px] w-full max-w-[511px] aspect-[511/388]">
-          <svg
-            width="507"
-            height="384"
-            viewBox="0 0 2028 1536"
-            id="input"
-            className="w-full aspect-[507/384] h-full"
-          >
-            {/* <image
-              // id="preview"
-              href="/img/anons/background_vk.png"
-              height="100%"
-              width="100%"
-            /> */}
-            <SvgBackgroundComponent {...backgroundProps} />
-            <rect
-              x="214"
-              y="268"
-              width="1600"
-              height="1000"
-              rx="120"
-              fill="white"
-            />
-            <line
-              x1="380"
-              y1={lineStartY}
-              x2="1648"
-              y2={lineStartY}
-              stroke={lineColor}
-              strokeWidth={4}
-            />
-            {/* <SvgBackgroundComponent {...backgroundProps} /> */}
-            <text
-              x={startX}
-              y={dateStartY - (date2 ? 50 : 0)}
-              fontSize={dateFontSize}
-              fill={dateColor}
-              textAnchor="middle"
-              fontFamily="Lora"
-              // className="font-bold uppercase"
-              style={{ fontWeight: 700, textTransform: 'uppercase' }}
-              // className="font-bold uppercase font-lora"
-            >
-              {date1}
-            </text>
-            <text
-              x={startX}
-              y={timeStartY}
-              fontSize={timeFontSize}
-              fill={timeColor}
-              textAnchor="middle"
-              fontFamily="Lora"
-              // className="font-bold uppercase"
-              style={{ fontWeight: 700, textTransform: 'uppercase' }}
-              // className="font-bold uppercase font-lora"
-            >
-              {time}
-            </text>
-            {date2 && (
-              <text
-                x={startX}
-                y={dateStartY + 50}
-                fontSize={dateFontSize}
-                fill={dateColor}
-                textAnchor="middle"
-                fontFamily="Lora"
-                // className="font-bold uppercase"
-                style={{ fontWeight: 700, textTransform: 'uppercase' }}
-                // className="font-bold uppercase font-lora"
-              >
-                {date2}
-              </text>
-            )}
-            {textArray.map((textLine, lineNum) => {
-              return (
-                <text
-                  key={textLine + lineNum}
-                  x={startX}
-                  y={
-                    startY +
-                    lineNum * fontSize -
-                    ((textArray.length - 1) * fontSize) / 2
-                  }
-                  fontSize={fontSize}
-                  fill={anonsColor}
-                  textAnchor="middle"
-                  fontFamily="Lora"
-                  style={{ fontWeight: 700, textTransform: 'uppercase' }}
-                  // className="font-bold uppercase"
-                  // className="font-bold uppercase font-lora"
-                >
-                  {textLine}
-                </text>
-              )
-            })}
-          </svg>
-        </div>
+      {/* <div className="flex py-2 overflow-x-auto gap-x-1">
+        <div className="border-2 border-gray-600 min-w-[278px] w-full max-w-[511px] aspect-[511/388]"> */}
+      <div className="max-w-[507px] my-2 border-2 border-gray-600 aspect-[507/384]">
+        {/* tablet:max-w-[calc(100%-48px)] max-h-[calc(100vh-160px)]  */}
+        <ReactImageGallery
+          items={[Image]}
+          renderItem={(Image) => <Image />}
+          showPlayButton={false}
+          showFullscreenButton={true}
+          // useBrowserFullscreen={false}
+          // showNav
+          // showBullets={images?.length > 1}
+          // additionalClass="h-full w-full"
+        />
+        {/* </div> */}
         <img
           id="output"
           alt=""

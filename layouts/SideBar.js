@@ -338,8 +338,9 @@ const SideBar = ({ page }) => {
       let scrollableCheck =
         menuRef.current?.scrollHeight > menuRef.current?.clientHeight
       setScrollable(scrollableCheck)
+      console.log(scrollableCheck)
     }
-  }, [menuRef.current?.scrollHeight, height])
+  }, [menuRef.current?.scrollHeight, menuRef.current?.clientHeight, height])
 
   return (
     <div
