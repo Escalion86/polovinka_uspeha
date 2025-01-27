@@ -93,8 +93,9 @@ const InputNumber = forwardRef(
     }, [stateValue])
 
     useEffect(() => {
-      setIsMounted(true)
-    }, [])
+      if (!isMounted) setIsMounted(true)
+      else if (value !== stateValue) setStateValue(value)
+    }, [isMounted, value])
 
     const showPlaceholder =
       disabled && ['string', 'number'].includes(typeof placeholderOnDisabled)
