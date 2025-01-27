@@ -93,8 +93,9 @@ const Input = forwardRef(
     }, [stateValue])
 
     useEffect(() => {
-      setIsMounted(true)
-    }, [])
+      if (!isMounted) setIsMounted(true)
+      else if (value !== stateValue) setStateValue(value)
+    }, [isMounted, value])
 
     return (
       <InputWrapper
