@@ -8,7 +8,6 @@ import ColorPicker from '@components/ColorPicker'
 import ComboBox from '@components/ComboBox'
 import MonthSelector from '@components/ComboBox/MonthSelector'
 import YearSelector from '@components/ComboBox/YearSelector'
-import Input from '@components/Input'
 import {
   SvgBackgroundComponent,
   SvgBackgroundInput,
@@ -503,7 +502,8 @@ const ToolsAnonsContent = () => {
                 height="480"
                 viewBox="0 0 1080 1920"
                 id={'input' + index}
-                className="min-w-[270px]"
+                // className="min-w-[270px]"
+                style={{ minWidth: '270px' }}
               >
                 {/* <defs> */}
                 {/* @font-face {
@@ -688,7 +688,8 @@ const ToolsAnonsContent = () => {
                               fontSize={fontSize}
                               fill={textColor}
                               width={800}
-                              className="max-w-[800px]"
+                              style={{ maxWidth: '800px' }}
+                              // className="max-w-[800px]"
                             >
                               {textLine}
                             </text>
