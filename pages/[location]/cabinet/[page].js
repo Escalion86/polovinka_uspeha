@@ -24,7 +24,7 @@ import { Suspense, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import SignOut from '@components/SignOut'
-import itemsFuncAtom from '@state/itemsFuncAtom'
+// import itemsFuncAtom from '@state/itemsFuncAtom'
 
 // import loggedUserActiveStatusAtomJ from '@state/atoms/loggedUserActiveStatusAtom'
 // import loggedUserActiveAtomJ from '@state/atoms/loggedUserActiveAtom'

@@ -1,6 +1,7 @@
 // import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 import { atom } from 'jotai'
 import { withAtomEffect } from 'jotai-effect'
+
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import addModalSelector from '@state/selectors/addModalSelector'
 import itemsFuncAtom from '@state/itemsFuncAtom'
