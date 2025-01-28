@@ -37,6 +37,28 @@
     /* font-family: 'Futura PT', sans-serif; */
   }
 
+  /* width */
+  .sidebar::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  /* Track */
+  .sidebar::-webkit-scrollbar-track {
+    background: #9C6767;
+    border-radius: 5px;
+  }
+
+  /* Handle */
+  .sidebar::-webkit-scrollbar-thumb {
+    background: #614040;
+    border-radius: 5px;
+  }
+
+  /* Handle on hover */
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: #412B2B;
+  }
+
   input {
     border-color: transparent;
     border-width: 0 !important;

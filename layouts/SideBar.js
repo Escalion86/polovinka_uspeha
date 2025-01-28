@@ -1,12 +1,12 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
-import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
+// import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { pages, pagesGroups } from '@helpers/constants'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
-import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
+// import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import badgesGroupSelector from '@state/selectors/badgesGroupSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import cn from 'classnames'
@@ -116,6 +116,7 @@ const Group = ({
   setMenuOpen,
   activePage,
   onChangeMenuIndex,
+  // setMenuScrollPos,
 }) => {
   const location = useAtomValue(locationAtom)
   const { groupHidden, pagesIdsWithBadge } = useAtomValue(
@@ -144,7 +145,7 @@ const Group = ({
       {item.bottom && !menuCfg[index - 1].bottom && <div className="flex-1" />}
       <div
         className={cn(
-          'duration-300 rounded-lg group',
+          'duration-300 rounded-lg group phoneH:min-w-[48px]',
           active
             ? 'bg-white text-general'
             : 'hover:bg-white hover:text-general text-white'
@@ -165,6 +166,7 @@ const Group = ({
               setOpenedMenuIndex(openedMenuIndex === index ? null : index)
               onChangeMenuIndex(openedMenuIndex === index ? null : index)
               setMenuOpen(true)
+              // setMenuScrollPos((state) => state + 100)
             }
           }}
         >
@@ -227,7 +229,12 @@ const GroupSuspence = (props) => (
   </Suspense>
 )
 
-const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
+const Menu = ({
+  menuCfg,
+  activePage,
+  onChangeMenuIndex,
+  // setMenuScrollPos
+}) => {
   const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
 
@@ -260,6 +267,7 @@ const Menu = ({ menuCfg, activePage, onChangeMenuIndex }) => {
               setMenuOpen={setMenuOpen}
               activePage={activePage}
               onChangeMenuIndex={onChangeMenuIndex}
+              // setMenuScrollPos={setMenuScrollPos}
             />
           ))}
     </nav>
@@ -281,13 +289,13 @@ var handler
 
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
-  const menuRef = useRef(null)
+  // const menuRef = useRef(null)
   const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
-  const [scrollPos, setScrollPos] = useState(0)
-  const [scrollable, setScrollable] = useState(false)
+  // const [scrollPos, setScrollPos] = useState(0)
+  // const [scrollable, setScrollable] = useState(false)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
-  const { height } = useAtomValue(windowDimensionsAtom)
+  // const { height } = useAtomValue(windowDimensionsAtom)
   const [menuIndex, setMenuIndex] = useState()
 
   const onChangeMenuIndex = (index) => {
@@ -297,20 +305,32 @@ const SideBar = ({ page }) => {
     }, 500)
   }
 
-  const handleScrollPosition = (scrollAmount) => {
-    var newPos
-    if (scrollAmount < 0) {
-      newPos = Math.max(0, scrollPos + scrollAmount)
-    } else {
-      newPos = Math.min(
-        (menuRef.current?.scrollHeight ?? 0) -
-          (menuRef.current?.clientHeight ?? 0),
-        scrollPos + scrollAmount
-      )
-    }
-    setScrollPos(newPos)
-    menuRef.current.scrollTop = newPos
-  }
+  // const setScrollPosition = (pos) => {
+  //   if (typeof pos === 'number') {
+  //     menuRef.current.scrollTop = pos
+  //     setScrollPos(pos)
+  //     console.log('pos :>> ', pos)
+  //   } else if (typeof pos === 'function') {
+  //     const newPos = pos(scrollPos)
+  //     menuRef.current.scrollTop = newPos
+  //     setScrollPos(newPos)
+  //     console.log('newPos :>> ', newPos)
+  //   }
+  // }
+
+  // const handleScrollPosition = (scrollAmount) => {
+  //   var newPos
+  //   if (scrollAmount < 0) {
+  //     newPos = Math.max(0, scrollPos + scrollAmount)
+  //   } else {
+  //     newPos = Math.min(
+  //       (menuRef.current?.scrollHeight ?? 0) -
+  //         (menuRef.current?.clientHeight ?? 0),
+  //       scrollPos + scrollAmount
+  //     )
+  //   }
+  //   setScrollPosition(newPos)
+  // }
 
   useEffect(() => {
     /**
@@ -333,14 +353,26 @@ const SideBar = ({ page }) => {
     }
   }, [wrapperRef])
 
-  useEffect(() => {
-    if (menuRef.current?.scrollHeight) {
-      let scrollableCheck =
-        menuRef.current?.scrollHeight > menuRef.current?.clientHeight
-      setScrollable(scrollableCheck)
-      console.log(scrollableCheck)
-    }
-  }, [menuRef.current?.scrollHeight, menuRef.current?.clientHeight, height])
+  // useEffect(() => {
+  //   if (menuRef.current?.scrollHeight) {
+  //     // setTimeout(() => {
+  //     //   let scrollableCheck =
+  //     //     menuRef.current?.scrollHeight > menuRef.current?.clientHeight
+  //     //   setScrollable(scrollableCheck)
+  //     // }, 100)
+
+  //     let scrollableCheck =
+  //       menuRef.current?.scrollHeight > menuRef.current?.clientHeight
+  //     setScrollable(scrollableCheck)
+
+  //     // console.log(scrollableCheck)
+  //   }
+  // }, [
+  //   // menuOpen,
+  //   menuRef.current?.scrollHeight,
+  //   menuRef.current?.clientHeight,
+  //   height,
+  // ])
 
   return (
     <div
@@ -349,9 +381,9 @@ const SideBar = ({ page }) => {
       ref={wrapperRef}
     >
       <m.div
-        ref={menuRef}
+        // ref={menuRef}
         className={
-          'absolute top-0 items-start z-10 max-h-full overflow-y-hidden'
+          'sidebar absolute top-0 overflow-y-auto min-w-[1px] -left-[1px] items-start z-10 max-h-full ' // overflow-y-hidden
           // 'sidepanel fixed laptop:static w-64 h-full pb-15 laptop:pb-0 max-h-screen left-0 top-menu laptop:top-0 z-40 transform duration-300 border-t border-primary laptop:border-t-0 bg-white' +
           // (!menuOpen
           //   ? ' scale-x-0 -translate-x-32 w-0 laptop:w-64 laptop:transform-none'
@@ -369,6 +401,7 @@ const SideBar = ({ page }) => {
             menuCfg={menuCfg(loggedUserActiveRole, loggedUserActiveStatus)}
             activePage={page}
             onChangeMenuIndex={onChangeMenuIndex}
+            // setMenuScrollPos={setScrollPosition}
           />
         </div>
       </m.div>
@@ -380,7 +413,7 @@ const SideBar = ({ page }) => {
         layout
         className="absolute top-0 bottom-0 bg-general"
       />
-      {scrollable && (
+      {/* {scrollable && (
         <>
           {scrollPos > 0 && (
             <m.div
@@ -388,7 +421,7 @@ const SideBar = ({ page }) => {
               animate={!menuOpen ? 'min' : 'max'}
               transition={{ duration: 0.5, type: 'tween' }}
               initial={!menuOpen ? 'min' : 'max'}
-              onClick={() => handleScrollPosition(-140)}
+              onClick={() => handleScrollPosition(-200)}
               className="absolute top-0 left-0 z-50 h-10 border-t cursor-pointer bg-general rounded-b-2xl"
             >
               <div className="flex items-center justify-center w-full h-full border-b border-white rounded-2xl">
@@ -407,7 +440,7 @@ const SideBar = ({ page }) => {
               animate={!menuOpen ? 'min' : 'max'}
               transition={{ duration: 0.5, type: 'tween' }}
               initial={!menuOpen ? 'min' : 'max'}
-              onClick={() => handleScrollPosition(140)}
+              onClick={() => handleScrollPosition(200)}
               className="absolute bottom-0 left-0 z-50 h-10 border-b cursor-pointer bg-general rounded-t-2xl"
             >
               <div className="flex items-center justify-center w-full h-full border-t border-white rounded-2xl">
@@ -419,7 +452,7 @@ const SideBar = ({ page }) => {
             </m.div>
           )}
         </>
-      )}
+      )} */}
     </div>
   )
 }

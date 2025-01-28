@@ -24,7 +24,7 @@ import { Suspense, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import SignOut from '@components/SignOut'
-import itemsFuncAtom from '@state/itemsFuncAtom'
+// import itemsFuncAtom from '@state/itemsFuncAtom'
 
 // import loggedUserActiveStatusAtomJ from '@state/atoms/loggedUserActiveStatusAtom'
 // import loggedUserActiveAtomJ from '@state/atoms/loggedUserActiveAtom'
@@ -48,9 +48,16 @@ function CabinetPage(props) {
   const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
 
   let redirect
+  if (loggedUserActiveRole?.dev) {
+    console.log('--------------- :>> ')
+    console.log('wrongSession', props.wrongSession)
+  }
   if (!props.wrongSession) {
-    if (!props.loggedUser) redirect = '/'
-    else if (
+    if (!props.loggedUser) {
+      redirect = '/'
+      if (loggedUserActiveRole?.dev)
+        console.log('loggedUser :>> ', props.loggedUser)
+    } else if (
       loggedUserActive &&
       ((page !== 'questionnaire' &&
         !isUserQuestionnaireFilled(loggedUserActive)) ||
@@ -62,12 +69,15 @@ function CabinetPage(props) {
       // !CONTENTS[page].accessRoles.includes(loggedUserActiveRoleName) ||
       // (CONTENTS[page].accessStatuses &&
       //   !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus))
-    )
+    ) {
+      if (loggedUserActiveRole?.dev) console.log('set redirect')
       redirect = `/${location}/cabinet/questionnaire`
+    }
   }
 
   // Ограничиваем пользователям доступ к страницам
   useEffect(() => {
+    if (loggedUserActiveRole?.dev) console.log('redirect :>> ', redirect)
     if (redirect) router.push(redirect, '', { shallow: true })
   }, [redirect])
 
