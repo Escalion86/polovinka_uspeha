@@ -97,7 +97,6 @@ const { MODE } = process.env
 
 const connectToGoogleCalendar = (location) => {
   const calendarConstants = getGoogleCalendarConstantsByLocation(location)
-  console.log('calendarConstants :>> ', calendarConstants)
   if (!calendarConstants) return
 
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
@@ -121,8 +120,6 @@ const addBlankEventToCalendar = async (location) => {
   const { calendarId, email, privateKey, projectNumber } = calendarConstants
 
   const timeZone = getTimeZoneByLocation(location)
-
-  console.log('timeZone :>> ', timeZone)
 
   const calendarEvent = {
     summary: '[blank]',
@@ -393,7 +390,7 @@ export default async function handler(Schema, req, res, params = null) {
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
 
-  console.log('CRUD', { Schema, method, params, id, body, query })
+  // console.log('CRUD', { Schema, method, params, id, body, query })
 
   delete query.location
 
@@ -487,7 +484,6 @@ export default async function handler(Schema, req, res, params = null) {
             data: jsonData,
             userId: body.userId,
           })
-          console.log(5)
 
           return res?.status(201).json({ success: true, data: jsonData })
         }
