@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'

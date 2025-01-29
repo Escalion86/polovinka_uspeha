@@ -1,5 +1,7 @@
-import { getData } from '@helpers/CRUD'
+'use client'
+
 import { atom } from 'jotai'
+import { getData } from '@helpers/CRUD'
 import locationAtom from './locationAtom'
 
 const historiesAtom = atom(async (get) => {

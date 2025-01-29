@@ -1,5 +1,7 @@
-import { getData } from '@helpers/CRUD'
+'use client'
+
 import { atomWithDefault } from 'jotai/utils'
+import { getData } from '@helpers/CRUD'
 import locationAtom from './locationAtom'
 
 const additionalBlocksAtom = atomWithDefault(async (get) => {

@@ -1,3 +1,5 @@
+'use client'
+
 // import itemsFuncGenerator from '@state/itemsFuncGenerator'
 // import { atom } from 'jotai'
 import { withAtomEffect } from 'jotai-effect'

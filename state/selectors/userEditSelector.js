@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 
 import usersAtomAsync from '@state/async/usersAtomAsync'

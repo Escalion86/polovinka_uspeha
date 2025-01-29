@@ -1,4 +1,5 @@
-// import { atom } from 'jotai'
+'use client'
+
 import { atomFamily } from 'jotai/utils'
 
 import { getData } from '@helpers/CRUD'

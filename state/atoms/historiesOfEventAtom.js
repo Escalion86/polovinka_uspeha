@@ -1,5 +1,7 @@
-import { getData } from '@helpers/CRUD'
+'use client'
+
 import { atomFamily } from 'jotai/utils'
+import { getData } from '@helpers/CRUD'
 import locationAtom from './locationAtom'
 
 const historiesOfEventAtom = atomFamily((id) => async (get) => {

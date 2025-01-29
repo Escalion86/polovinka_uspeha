@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'

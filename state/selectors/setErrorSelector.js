@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 
 import errorAtom from '@state/atoms/errorAtom'

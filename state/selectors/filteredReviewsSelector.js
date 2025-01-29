@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 
 import reviewsAtom from '@state/atoms/reviewsAtom'

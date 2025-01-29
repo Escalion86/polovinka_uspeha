@@ -1,5 +1,6 @@
-// import { atom } from 'jotai'
-import { atomFamily, atomWithRefresh } from 'jotai/utils'
+'use client'
+
+import { atomFamily } from 'jotai/utils'
 
 import { getData } from '@helpers/CRUD'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
