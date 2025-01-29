@@ -137,7 +137,6 @@ async function dbConnect(location) {
   if (!location) return
 
   var dbName
-  console.log('location :>> ', location)
   if (location === 'krsk') dbName = process.env.MONGODB_KRSK_DBNAME
   if (location === 'nrsk') dbName = process.env.MONGODB_NRSK_DBNAME
   if (location === 'ekb') dbName = process.env.MONGODB_EKB_DBNAME
