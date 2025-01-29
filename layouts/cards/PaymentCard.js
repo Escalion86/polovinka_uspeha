@@ -36,6 +36,7 @@ import { Suspense } from 'react'
 import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
 
 // const Status = ({ statusProps }) => {
 //   if (!statusProps) return null
@@ -222,11 +223,11 @@ const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
 
 const PaymentEventUserLeftComponent = ({ payment, event }) => {
   const eventUsers = useAtomValue(asyncEventsUsersByEventIdAtom(event?._id))
-  const eventUser = eventUsers.find(
+  const eventUser = eventUsers?.find(
     (eventUser) => eventUser.userId === payment.userId
   )
 
-  if (eventUser) return null
+  if (eventUser || !event?._id) return null
   return (
     <IconWithTooltip
       icon={faUserTimes}
@@ -269,6 +270,13 @@ const PaymentEvent = ({ payment }) => {
         payment.eventId && (
           <PaymentEventUserLeft payment={payment} event={event} />
         )}
+      {!event && (
+        <IconWithTooltip
+          icon={faBug}
+          className="text-danger"
+          tooltip="ОШИБКА. Мероприятия не существует!"
+        />
+      )}
     </PayCardWrapper>
   )
 }
