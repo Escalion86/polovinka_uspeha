@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 
 import { DEFAULT_ADDITIONAL_BLOCK } from '@helpers/constants'

@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 
 import isEventClosed from '@helpers/isEventClosed'

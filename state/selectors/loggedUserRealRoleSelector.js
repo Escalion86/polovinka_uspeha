@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 
 import rolesAtom from '@state/atoms/rolesAtom'

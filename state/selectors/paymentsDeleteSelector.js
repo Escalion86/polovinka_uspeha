@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 
 import { DEFAULT_PAYMENT } from '@helpers/constants'

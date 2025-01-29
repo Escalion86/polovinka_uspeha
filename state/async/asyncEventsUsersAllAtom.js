@@ -1,3 +1,5 @@
+'use client'
+
 import { atomWithDefault } from 'jotai/utils'
 
 import { getData } from '@helpers/CRUD'

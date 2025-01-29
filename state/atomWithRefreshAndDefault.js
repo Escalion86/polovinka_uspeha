@@ -1,3 +1,5 @@
+'use client'
+
 import { atom } from 'jotai'
 // import { atomWithDefault } from 'jotai/utils'
 

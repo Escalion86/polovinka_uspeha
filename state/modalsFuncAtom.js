@@ -1,3 +1,5 @@
+'use client'
+
 // import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 import { atom } from 'jotai'
 import { withAtomEffect } from 'jotai-effect'
