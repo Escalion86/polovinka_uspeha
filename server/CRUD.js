@@ -638,6 +638,7 @@ export default async function handler(Schema, req, res, params = null) {
     case 'DELETE':
       try {
         if (params) {
+          const existingData = await Schema.find(params)
           data = await Schema.deleteMany(params)
           if (!data) {
             return res?.status(400).json({ success: false })
@@ -645,7 +646,7 @@ export default async function handler(Schema, req, res, params = null) {
           await Histories.create({
             schema: Schema.collection.collectionName,
             action: 'delete',
-            data,
+            data: existingData,
             userId: body.userId,
           })
           return res?.status(200).json({ success: true, data })
@@ -668,11 +669,14 @@ export default async function handler(Schema, req, res, params = null) {
           await Histories.create({
             schema: Schema.collection.collectionName,
             action: 'delete',
-            data,
+            data: existingData,
             userId: body.userId,
           })
           return res?.status(200).json({ success: true, data })
         } else if (body?.params) {
+          const existingData = await Schema.find({
+            _id: { $in: body.params },
+          })
           data = await Schema.deleteMany({
             _id: { $in: body.params },
           })
@@ -682,7 +686,7 @@ export default async function handler(Schema, req, res, params = null) {
           await Histories.create({
             schema: Schema.collection.collectionName,
             action: 'delete',
-            data,
+            data: existingData,
             userId: body.userId,
           })
           return res?.status(200).json({ success: true, data })

@@ -225,6 +225,7 @@ const PaymentEventUserLeftComponent = ({ payment, event }) => {
   const eventUser = eventUsers.find(
     (eventUser) => eventUser.userId === payment.userId
   )
+
   if (eventUser) return null
   return (
     <IconWithTooltip
@@ -244,6 +245,8 @@ const PaymentEventUserLeft = (props) => (
 const PaymentEvent = ({ payment }) => {
   const event = useAtomValue(eventSelector(payment.eventId))
   const eventStatus = eventStatusFunc(event)
+  // console.log('!payment.eventId :>> ', payment.eventId)
+  // console.log('!event :>> ', event)
 
   const isEventClosed = isEventClosedFunc(event)
 

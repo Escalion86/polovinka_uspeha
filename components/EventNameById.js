@@ -35,7 +35,7 @@ const EventNameById = ({ eventId, showStatus, className }) => {
           />
         </div>
       )}
-      <TextLinesLimiter lines={1}>{event.title}</TextLinesLimiter>
+      <TextLinesLimiter lines={1}>{event?.title}</TextLinesLimiter>
     </div>
   )
 }
