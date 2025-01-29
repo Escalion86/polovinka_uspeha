@@ -1,14 +1,17 @@
 import SiteSettings from '@models/SiteSettings'
+import checkLocationValid from '@server/checkLocationValid'
 // import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
 
 export default async function handler(req, res) {
   const { query, method, body } = req
 
-  console.log('site query', query)
   const location = query?.location
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
+
+  if (!checkLocationValid(location))
+    return res?.status(400).json({ success: false, error: 'Invalid location' })
 
   const db = await dbConnect(location)
   if (!db) return res?.status(400).json({ success: false, error: 'db error' })

@@ -1,6 +1,7 @@
 import EventsUsers from '@models/EventsUsers'
 import Histories from '@models/Histories'
 import Users from '@models/Users'
+import checkLocationValid from '@server/checkLocationValid'
 import CRUD from '@server/CRUD'
 import eventUsersTelegramNotification from '@server/eventUsersTelegramNotification'
 import userSignIn from '@server/userSignIn'
@@ -12,6 +13,9 @@ export default async function handler(req, res) {
   const location = query?.location
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
+
+  if (!checkLocationValid(location))
+    return res?.status(400).json({ success: false, error: 'Invalid location' })
 
   if (method === 'POST') {
     try {

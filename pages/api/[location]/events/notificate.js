@@ -10,6 +10,7 @@ import Roles from '@models/Roles'
 import subEventsSummator from '@helpers/subEventsSummator'
 import { telegramCmdToIndex } from '@server/telegramCmd'
 import sendTelegramMessage from '@server/sendTelegramMessage'
+import checkLocationValid from '@server/checkLocationValid'
 
 const notificateUsersAboutEvent = async (eventId, location, req) => {
   const db = await dbConnect(location)
@@ -249,6 +250,9 @@ export default async function handler(req, res) {
   const location = query?.location
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
+
+  if (!checkLocationValid(location))
+    return res?.status(400).json({ success: false, error: 'Invalid location' })
 
   delete query.location
 

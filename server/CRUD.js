@@ -19,6 +19,7 @@ import serviceUserTelegramNotification from './serviceUserTelegramNotification'
 import getGoogleCalendarJSONByLocation from './getGoogleCalendarJSONByLocation'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
 import getGoogleCalendarConstantsByLocation from './getGoogleCalendarConstantsByLocation'
+import checkLocationValid from './checkLocationValid'
 // import { telegramCmdToIndex } from './telegramCmd'
 
 function isJson(str) {
@@ -390,6 +391,8 @@ export default async function handler(Schema, req, res, params = null) {
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
 
+  if (!checkLocationValid(location))
+    return res?.status(400).json({ success: false, error: 'Invalid location' })
   // console.log('CRUD', { Schema, method, params, id, body, query })
 
   delete query.location

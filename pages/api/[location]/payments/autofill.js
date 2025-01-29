@@ -1,8 +1,8 @@
-import { DEFAULT_EVENT } from '@helpers/constants'
 import Events from '@models/Events'
 import EventsUsers from '@models/EventsUsers'
 import Payments from '@models/Payments'
 import Users from '@models/Users'
+import checkLocationValid from '@server/checkLocationValid'
 import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
 
@@ -12,6 +12,9 @@ export default async function handler(req, res) {
   const location = query?.location
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
+
+  if (!checkLocationValid(location))
+    return res?.status(400).json({ success: false, error: 'Invalid location' })
 
   const db = await dbConnect(location)
   if (!db) return res?.status(400).json({ success: false, error: 'db error' })

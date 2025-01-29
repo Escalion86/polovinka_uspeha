@@ -9,6 +9,7 @@ import locationAtom from '@state/atoms/locationAtom'
 
 const asyncPaymentsAtom = atomWithDefault(async (get) => {
   const location = get(locationAtom)
+  console.log('location :>> ', location)
   const res = await getData(
     `/api/${location}/payments`,
     null,

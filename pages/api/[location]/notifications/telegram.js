@@ -3,6 +3,7 @@ import isEventCanceled from '@helpers/isEventCanceled'
 import isEventClosed from '@helpers/isEventClosed'
 import Events from '@models/Events'
 import Users from '@models/Users'
+import checkLocationValid from '@server/checkLocationValid'
 import isEventExpired from '@server/isEventExpired'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import { telegramCmdToIndex, telegramIndexToCmd } from '@server/telegramCmd'
@@ -15,6 +16,9 @@ export default async function handler(req, res) {
   const location = query?.location
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
+
+  if (!checkLocationValid(location))
+    return res?.status(400).json({ success: false, error: 'Invalid location' })
 
   //https://www.xn--80aaennmesfbiiz1a7a.xn--p1ai/api/notifications/telegram/activate
   const db = await dbConnect(location)

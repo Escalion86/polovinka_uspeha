@@ -1,3 +1,5 @@
+import checkLocationValid from '@server/checkLocationValid'
+
 // const fs = require('fs');
 var mongoose = require('mongoose')
 
@@ -111,12 +113,12 @@ var mongoose = require('mongoose')
 // const mongoose = require('mongoose')
 // // const autoIncrement = require('mongoose-auto-increment')
 
-const MONGODB_URI = process.env.MONGODB_URI
-if (!MONGODB_URI) {
-  throw new Error(
-    'Please define the MONGODB_URI environment variable inside .env.local'
-  )
-}
+// const MONGODB_URI = process.env.MONGODB_URI
+// if (!MONGODB_URI) {
+//   throw new Error(
+//     'Please define the MONGODB_URI environment variable inside .env.local'
+//   )
+// }
 // let dbUser = fs.readFileSync(process.env.DB_USER);
 // let dbPassword = fs.readFileSync(process.env.DB_PASSWORD);
 
@@ -134,15 +136,20 @@ if (!cached) {
 let prevDbConnection
 
 async function dbConnect(location) {
-  if (!location) return
+  if (!checkLocationValid(location)) {
+    console.log('invalid location (dbConnect)')
+    cached = { conn: null, promise: null }
+    await mongoose.disconnect()
+    return
+  }
 
   var dbName
   if (location === 'krsk') dbName = process.env.MONGODB_KRSK_DBNAME
   if (location === 'nrsk') dbName = process.env.MONGODB_NRSK_DBNAME
   if (location === 'ekb') dbName = process.env.MONGODB_EKB_DBNAME
 
-  if (prevDbConnection !== dbName) {
-    console.log('location changed !!')
+  if (prevDbConnection && prevDbConnection !== dbName) {
+    console.log('location changed (dbConnect)')
     cached = { conn: null, promise: null }
     await mongoose.disconnect()
   }
@@ -174,9 +181,11 @@ async function dbConnect(location) {
     })
 
     mongoose.set('strictQuery', false)
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose
-    })
+    cached.promise = mongoose
+      .connect(process.env.MONGODB_URI, opts)
+      .then((mongoose) => {
+        return mongoose
+      })
   } else {
     console.log('dbConnect: ожидаем соединения (повторно)')
   }
