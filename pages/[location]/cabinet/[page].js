@@ -48,15 +48,15 @@ function CabinetPage(props) {
   const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
 
   let redirect
-  if (loggedUserActiveRole?.dev) {
-    console.log('--------------- :>> ')
-    console.log('wrongSession', props.wrongSession)
-  }
+  // if (loggedUserActiveRole?.dev) {
+  //   console.log('--------------- :>> ')
+  //   console.log('wrongSession', props.wrongSession)
+  // }
   if (!props.wrongSession) {
     if (!props.loggedUser) {
       redirect = '/'
-      if (loggedUserActiveRole?.dev)
-        console.log('loggedUser :>> ', props.loggedUser)
+      // if (loggedUserActiveRole?.dev)
+      //   console.log('loggedUser :>> ', props.loggedUser)
     } else if (
       loggedUserActive &&
       ((page !== 'questionnaire' &&
@@ -70,14 +70,14 @@ function CabinetPage(props) {
       // (CONTENTS[page].accessStatuses &&
       //   !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus))
     ) {
-      if (loggedUserActiveRole?.dev) console.log('set redirect')
+      // if (loggedUserActiveRole?.dev) console.log('set redirect')
       redirect = `/${location}/cabinet/questionnaire`
     }
   }
 
   // Ограничиваем пользователям доступ к страницам
   useEffect(() => {
-    if (loggedUserActiveRole?.dev) console.log('redirect :>> ', redirect)
+    // if (loggedUserActiveRole?.dev) console.log('redirect :>> ', redirect)
     if (redirect) router.push(redirect, '', { shallow: true })
   }, [redirect])
 
