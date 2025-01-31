@@ -1,8 +1,7 @@
 import formatDateTime from '@helpers/formatDateTime'
 import isEventCanceled from '@helpers/isEventCanceled'
 import isEventClosed from '@helpers/isEventClosed'
-import Events from '@models/Events'
-import Users from '@models/Users'
+
 import checkLocationValid from '@server/checkLocationValid'
 import isEventExpired from '@server/isEventExpired'
 import sendTelegramMessage from '@server/sendTelegramMessage'
@@ -50,7 +49,7 @@ export default async function handler(req, res) {
             }
             // ---------------------------------------
 
-            const user = await Users.findOne({
+            const user = await db.model('Users').findOne({
               'notifications.telegram.id': userTelegramId,
             })
 
@@ -68,9 +67,11 @@ export default async function handler(req, res) {
               return sendErrorMessage('Ошибка определения пользователя')
             }
 
-            const event = await Events.findOne(
-              subEventId ? { 'subEvents.id': subEventId } : { _id: eventId }
-            )
+            const event = await db
+              .model('Events')
+              .findOne(
+                subEventId ? { 'subEvents.id': subEventId } : { _id: eventId }
+              )
 
             if (!event || !event.showOnSite) {
               return await sendErrorMessage(

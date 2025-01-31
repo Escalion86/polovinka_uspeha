@@ -1,4 +1,3 @@
-import LoginHistory from '@models/LoginHistory'
 import checkLocationValid from '@server/checkLocationValid'
 import dbConnect from '@utils/dbConnect'
 
@@ -19,7 +18,7 @@ export default async function handler(req, res) {
       delete query.location
 
       const { userId, browser } = body
-      const newLoginHistory = await LoginHistory.create({
+      const newLoginHistory = await db.model('LoginHistory').create({
         userId,
         browser,
       })
@@ -35,7 +34,7 @@ export default async function handler(req, res) {
       delete query.location
 
       const { userId } = query
-      const loginHistories = await LoginHistory.find({
+      const loginHistories = await db.model('LoginHistory').find({
         userId,
       })
 
@@ -45,5 +44,5 @@ export default async function handler(req, res) {
       return res?.status(400).json({ success: false, error })
     }
   }
-  return await CRUD(LoginHistory, req, res)
+  return await CRUD('LoginHistory', req, res)
 }

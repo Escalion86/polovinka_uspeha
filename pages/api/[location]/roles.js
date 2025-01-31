@@ -1,4 +1,3 @@
-import Roles from '@models/Roles'
 import checkLocationValid from '@server/checkLocationValid'
 // import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
@@ -26,9 +25,9 @@ export default async function handler(req, res) {
         })
       }
       const data = []
-      await Roles.deleteMany({})
+      await db.model('Roles').deleteMany({})
       for (const role of roles) {
-        const res = await Roles.create(role)
+        const res = await db.model('Roles').create(role)
         data.push(res)
       }
 
@@ -41,9 +40,9 @@ export default async function handler(req, res) {
 
       return res?.status(201).json({ success: true, data })
       // Сначала находим запись
-      // const siteSettings = await SiteSettings.findOne()
+      // const siteSettings = await db.model('SiteSettings').findOne()
       // if (!siteSettings) {
-      //   const newSiteSettings = await SiteSettings.create(body)
+      //   const newSiteSettings = await db.model('SiteSettings').create(body)
       //   if (!newSiteSettings)
       //   return res
       //     ?.status(200)
@@ -51,9 +50,9 @@ export default async function handler(req, res) {
       //     return res?.status(201).json({ success: true, data: newSiteSettings })
       // }
 
-      // const data = await SiteSettings.findOneAndUpdate({}, body)
+      // const data = await db.model('SiteSettings').findOneAndUpdate({}, body)
 
-      // const newEventUser = await EventsUsers.create({
+      // const newEventUser = await db.model('EventsUsers').create({
       //   eventId,
       //   userId,
       // })
@@ -73,7 +72,7 @@ export default async function handler(req, res) {
   }
   // if (method === 'GET') {
   //   try {
-  //     const data = await SiteSettings.find()
+  //     const data = await db.model('SiteSettings').find()
   //     if (!data) {
   //       return res?.status(400).json({ success: false })
   //     }
@@ -86,5 +85,4 @@ export default async function handler(req, res) {
   //   }
   // }
   return res?.status(400).json({ success: false, error: 'Wrong method' })
-  // return await CRUD(Reviews, req, res)
 }

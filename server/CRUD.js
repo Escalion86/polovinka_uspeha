@@ -3,18 +3,16 @@ import formatAddress from '@helpers/formatAddress'
 // import formatEventDateTime from '@helpers/formatEventDateTime'
 import getUserFullName from '@helpers/getUserFullName'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
-import Events from '@models/Events'
-import Histories from '@models/Histories'
-import Users from '@models/Users'
+
 import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
 import { DEFAULT_ROLES } from '@helpers/constants'
-import Roles from '@models/Roles'
+
 import mongoose from 'mongoose'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 // import subEventsSummator from '@helpers/subEventsSummator'
-import ServicesUsers from '@models/ServicesUsers'
+
 import serviceUserTelegramNotification from './serviceUserTelegramNotification'
 import getGoogleCalendarJSONByLocation from './getGoogleCalendarJSONByLocation'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
@@ -337,14 +335,17 @@ const updateEventInCalendar = async (event, location) => {
     const db = await dbConnect(location)
     if (!db) return
 
-    const updatedEvent = await Events.findByIdAndUpdate(
-      event._id,
-      { googleCalendarId: createdCalendarEvent.data.id },
-      {
-        new: true,
-        runValidators: true,
-      }
-    ).lean()
+    const updatedEvent = await db
+      .model('Events')
+      .findByIdAndUpdate(
+        event._id,
+        { googleCalendarId: createdCalendarEvent.data.id },
+        {
+          new: true,
+          runValidators: true,
+        }
+      )
+      .lean()
 
     return createdCalendarEvent
   }
@@ -400,13 +401,16 @@ export default async function handler(Schema, req, res, params = null) {
   const db = await dbConnect(location)
   if (!db) return res?.status(400).json({ success: false, error: 'db error' })
 
+  // const test = db.get('polovinka_uspeha_krsk_dev')
+  // console.log('test :>> ', test)
+
   let data
 
   switch (method) {
     case 'GET':
       try {
         if (id) {
-          data = await Schema.findById(id).select({ password: 0 })
+          data = await db.model(Schema).findById(id).select({ password: 0 })
           if (!data) {
             return res?.status(400).json({ success: false })
           }
@@ -420,19 +424,22 @@ export default async function handler(Schema, req, res, params = null) {
             preparedQuery['data._id'] = new mongoose.Types.ObjectId(
               preparedQuery['data._id']
             )
-          data = await Schema.find(preparedQuery).select({ password: 0 })
+          data = await db
+            .model(Schema)
+            .find(preparedQuery)
+            .select({ password: 0 })
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else if (params) {
-          data = await Schema.find(params).select({ password: 0 })
+          data = await db.model(Schema).find(params).select({ password: 0 })
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else {
-          data = await Schema.find().select({ password: 0 })
+          data = await db.model(Schema).find().select({ password: 0 })
           return res?.status(200).json({ success: true, data })
         }
       } catch (error) {
@@ -451,18 +458,18 @@ export default async function handler(Schema, req, res, params = null) {
           delete clearedBody._id
 
           // Создаем пустой календарь и получаем его id
-          if (Schema === Events && MODE === 'production') {
+          if (Schema === 'Events' && MODE === 'production') {
             clearedBody.googleCalendarId =
               await addBlankEventToCalendar(location)
           }
 
-          data = await Schema.create(clearedBody)
+          data = await db.model(Schema).create(clearedBody)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           const jsonData = data.toJSON()
 
-          if (Schema === Events && MODE === 'production') {
+          if (Schema === 'Events' && MODE === 'production') {
             // Вносим данные в календарь так как теперь мы имеем id мероприятия
             const calendarEvent = updateEventInCalendar(jsonData, location)
 
@@ -472,7 +479,7 @@ export default async function handler(Schema, req, res, params = null) {
             // }
           }
 
-          if (Schema === ServicesUsers) {
+          if (Schema === 'ServicesUsers') {
             serviceUserTelegramNotification({
               userId: jsonData.userId,
               serviceId: jsonData.serviceId,
@@ -481,8 +488,8 @@ export default async function handler(Schema, req, res, params = null) {
             })
           }
 
-          await Histories.create({
-            schema: Schema.collection.collectionName,
+          await db.model('Histories').create({
+            schema: Schema.toLowerCase(),
             action: 'add',
             data: jsonData,
             userId: body.userId,
@@ -498,21 +505,24 @@ export default async function handler(Schema, req, res, params = null) {
     case 'PUT':
       try {
         if (id) {
-          const oldData = await Schema.findById(id).lean()
+          const oldData = await db.model(Schema).findById(id).lean()
           if (!oldData) {
             return res?.status(400).json({ success: false })
           }
 
-          data = await Schema.findByIdAndUpdate(id, body.data, {
-            new: true,
-            runValidators: true,
-          }).lean()
+          data = await db
+            .model(Schema)
+            .findByIdAndUpdate(id, body.data, {
+              new: true,
+              runValidators: true,
+            })
+            .lean()
 
           if (!data) {
             return res?.status(400).json({ success: false })
           }
 
-          if (Schema === Events && MODE === 'production') {
+          if (Schema === 'Events' && MODE === 'production') {
             const calendarEvent = updateEventInCalendar(data, location)
             // if (!oldData.showOnSite && data.showOnSite) {
             //   notificateUsersAboutEvent(data, req)
@@ -522,8 +532,8 @@ export default async function handler(Schema, req, res, params = null) {
           const difference = compareObjectsWithDif(oldData, data)
           difference._id = new mongoose.Types.ObjectId(id)
 
-          await Histories.create({
-            schema: Schema.collection.collectionName,
+          await db.model('Histories').create({
+            schema: Schema.toLowerCase(),
             action: 'update',
             data: difference,
             userId: body.userId,
@@ -531,7 +541,7 @@ export default async function handler(Schema, req, res, params = null) {
           })
 
           // Если это пользователь обновляет профиль, то после обновления оповестим о результате через телеграм
-          if (Schema === Users) {
+          if (Schema === 'Users') {
             // Если Telegram ID был обновлен
             const oldTelegramId = oldData.notifications?.telegram?.id
             const newTelegramId = data.notifications?.telegram?.id
@@ -572,15 +582,16 @@ export default async function handler(Schema, req, res, params = null) {
               }
             }
             if (!isUserQuestionnaireFilled(oldData)) {
-              // const users = await Users.find({})
-              const rolesSettings = await Roles.find({}).lean()
+              // const users = await db.model('Users').find({})
+              const rolesSettings = await db.model('Roles').find({}).lean()
               const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
               const rolesIdsToNewUserRegistredNotification = allRoles
                 .filter((role) => role?.notifications?.newUserRegistred)
                 .map((role) => role._id)
 
-              const usersWithTelegramNotificationsOfEventUsersON =
-                await Users.find({
+              const usersWithTelegramNotificationsOfEventUsersON = await db
+                .model('Users')
+                .find({
                   role:
                     process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
                       ? 'dev'
@@ -591,7 +602,8 @@ export default async function handler(Schema, req, res, params = null) {
                     $exists: true,
                     $ne: null,
                   },
-                }).lean()
+                })
+                .lean()
               const usersTelegramIds =
                 usersWithTelegramNotificationsOfEventUsersON.map(
                   (user) => user.notifications?.telegram?.id
@@ -641,53 +653,53 @@ export default async function handler(Schema, req, res, params = null) {
     case 'DELETE':
       try {
         if (params) {
-          const existingData = await Schema.find(params)
-          data = await Schema.deleteMany(params)
+          const existingData = await db.model(Schema).find(params)
+          data = await db.model(Schema).deleteMany(params)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
-          await Histories.create({
-            schema: Schema.collection.collectionName,
+          await db.model('Histories').create({
+            schema: Schema.toLowerCase(),
             action: 'delete',
             data: existingData,
             userId: body.userId,
           })
           return res?.status(200).json({ success: true, data })
         } else if (id) {
-          const existingData = await Schema.findById(id)
+          const existingData = await db.model(Schema).findById(id)
           if (!existingData) {
             return res?.status(400).json({ success: false })
           }
-          data = await Schema.deleteOne({
+          data = await db.model(Schema).deleteOne({
             _id: id,
           })
           if (!data) {
             return res?.status(400).json({ success: false })
           }
 
-          if (Schema === Events && MODE === 'production') {
+          if (Schema === 'Events' && MODE === 'production') {
             deleteEventFromCalendar(existingData.googleCalendarId, location)
           }
 
-          await Histories.create({
-            schema: Schema.collection.collectionName,
+          await db.model('Histories').create({
+            schema: Schema.toLowerCase(),
             action: 'delete',
             data: existingData,
             userId: body.userId,
           })
           return res?.status(200).json({ success: true, data })
         } else if (body?.params) {
-          const existingData = await Schema.find({
+          const existingData = await db.model(Schema).find({
             _id: { $in: body.params },
           })
-          data = await Schema.deleteMany({
+          data = await db.model(Schema).deleteMany({
             _id: { $in: body.params },
           })
           if (!data) {
             return res?.status(400).json({ success: false })
           }
-          await Histories.create({
-            schema: Schema.collection.collectionName,
+          await db.model('Histories').create({
+            schema: Schema.toLowerCase(),
             action: 'delete',
             data: existingData,
             userId: body.userId,

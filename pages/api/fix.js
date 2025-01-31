@@ -1,11 +1,5 @@
-// import Events from '@models/Events'
-// import EventsUsers from '@models/EventsUsers'
 import { LOCATIONS_KEYS_VISIBLE } from '@helpers/constants'
-import Directions from '@models/Directions'
-import Events from '@models/Events'
-// import EventsUsers from '@models/EventsUsers'
-// import Histories from '@models/Histories'
-import Users from '@models/Users'
+
 import dbConnect from '@utils/dbConnect'
 
 export default async function handler(req, res) {
@@ -20,7 +14,7 @@ export default async function handler(req, res) {
           return res?.status(400).json({ success: false, error: 'db error' })
 
         // Восстановление из истории
-        // const histories = await Histories.find({
+        // const histories = await db.model('Histories').find({
         //   createdAt: { $gt: new Date('2024-03-26') },
         // })
         // console.log('histories.length :>> ', histories.length)
@@ -38,7 +32,7 @@ export default async function handler(req, res) {
         //     if (action === 'add') {
         //       for (let j = 0; j < data.length; j++) {
         //         const el = data[j]
-        //         await EventsUsers.create(el)
+        //         await db.model('EventsUsers').create(el)
         //         ++eventUsersAdded
         //         console.log('add Event')
         //       }
@@ -46,14 +40,14 @@ export default async function handler(req, res) {
         //     if (action === 'delete') {
         //       for (let j = 0; j < data.length; j++) {
         //         const el = data[j]
-        //         await EventsUsers.findByIdAndDelete(el._id)
+        //         await db.model('EventsUsers').findByIdAndDelete(el._id)
         //         ++eventUsersDeleted
         //       }
         //     }
         //   } else if (schema === 'events') {
         //     if (action === 'add') {
         //       const el = data[0]
-        //       await Events.create(el)
+        //       await db.model('Events').create(el)
         //       ++eventsAdded
         //     }
         //     if (action === 'update') {
@@ -64,7 +58,7 @@ export default async function handler(req, res) {
         //       for (const [key, value] of Object.entries(el)) {
         //         newData[key] = el[key].new
         //       }
-        //       await Events.findByIdAndUpdate(id, newData)
+        //       await db.model('Events').findByIdAndUpdate(id, newData)
         //       ++eventsUpdated
         //     }
         //   } else {
@@ -89,7 +83,7 @@ export default async function handler(req, res) {
         //   },
         // })
 
-        const users = await Users.collection.updateMany(
+        const users = await db.model('Users').collection.updateMany(
           {},
           {
             $unset: {
@@ -105,7 +99,7 @@ export default async function handler(req, res) {
           }
         )
 
-        const events = await Events.collection.updateMany(
+        const events = await db.model('Events').collection.updateMany(
           {},
           {
             $unset: {
@@ -130,7 +124,7 @@ export default async function handler(req, res) {
           }
         )
 
-        const directions = await Directions.collection.updateMany(
+        const directions = await db.model('Directions').collection.updateMany(
           {},
           {
             $unset: {
@@ -143,11 +137,11 @@ export default async function handler(req, res) {
         //   '!! :>> ',
         //   users.map(({ interests }) => interests)
         // )
-        // const users = await Users.updateMany(
+        // const users = await db.model('Users').updateMany(
         //   { interests: { $ne: 1 } },
         //   { interests: 1 }
         // )
-        // const events = await Events.updateMany(
+        // const events = await db.model('Events').updateMany(
         //   {
         //     dateStart: { $lt: new Date(2023, 0, 1) },
         //     status: 'active',
@@ -155,11 +149,11 @@ export default async function handler(req, res) {
         //   { status: 'closed' }
         // )
 
-        // const events = await Events.find()
+        // const events = await db.model('Events').find()
         // for (let i = 0; i < events.length; i++) {
         //   const event = events[i]
         //   console.log('event :>> ', `${i + 1}/${events.length}`)
-        //   await Events.findByIdAndUpdate(event._id, {
+        //   await db.model('Events').findByIdAndUpdate(event._id, {
         //     subEvents: [
         //       {
         //         id: event._id,
@@ -185,19 +179,19 @@ export default async function handler(req, res) {
         //     ],
         //   })
 
-        //   const eventUsers = await EventsUsers.find({
+        //   const eventUsers = await db.model('EventsUsers').find({
         //     eventId: String(event._id),
         //   })
         //   for (let j = 0; j < eventUsers.length; j++) {
         //     const eventUser = eventUsers[j]
-        //     await EventsUsers.findByIdAndUpdate(eventUser._id, {
+        //     await db.model('EventsUsers').findByIdAndUpdate(eventUser._id, {
         //       subEventId: String(event._id),
         //       // $unset: { priceId: 1, eventSubtypeNum: 1 },
         //     })
         //   }
         // }
-        // const updatedEvents = await Events.find()
-        // const events = await Events.updateMany(
+        // const updatedEvents = await db.model('Events').find()
+        // const events = await db.model('Events').updateMany(
         //   {
         //     dateStart: { $lt: new Date(2023, 0, 1) },
         //     status: 'active',
@@ -212,5 +206,5 @@ export default async function handler(req, res) {
       })
     }
   }
-  // return await CRUD(Users, req, res)
+  return res?.status(400).json({ success: false, error: 'wrong method' })
 }

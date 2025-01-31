@@ -1,5 +1,5 @@
 import { postData } from '@helpers/CRUD'
-import Test from '@models/Test'
+
 import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
 
@@ -90,7 +90,9 @@ const sendTelegramMessage = async ({
     !telegramIds ||
     !['object', 'string', 'number'].includes(typeof telegramIds)
   ) {
-    await Test.create({ data: { telegramIds }, error: 'Wrong telegramIds' })
+    await db
+      .model('Test')
+      .create({ data: { telegramIds }, error: 'Wrong telegramIds' })
     return undefined
   }
 
@@ -167,7 +169,7 @@ const sendTelegramMessage = async ({
     }
   }
 
-  await Test.create({
+  await db.model('Test').create({
     data: { successes, errors },
     error,
     successCount,

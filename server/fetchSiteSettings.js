@@ -1,4 +1,3 @@
-import SiteSettings from '@models/SiteSettings'
 import dbConnect from '@utils/dbConnect'
 import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
 
@@ -9,7 +8,7 @@ const fetchSiteSettings = async (user, location, params) => {
     const db = await dbConnect(location)
     if (!db) return { error: 'db error' }
 
-    const siteSettings = await SiteSettings.find({}).lean()
+    const siteSettings = await db.model('SiteSettings').find({}).lean()
 
     const fetchResult = {
       siteSettings: JSON.parse(JSON.stringify(siteSettings[0])),

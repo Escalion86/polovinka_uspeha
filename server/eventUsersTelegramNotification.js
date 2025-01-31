@@ -2,10 +2,7 @@ import { DEFAULT_ROLES } from '@helpers/constants'
 import formatDateTimeFunc from '@helpers/formatDateTime'
 import getUserFullName from '@helpers/getUserFullName'
 import subEventsSummator from '@helpers/subEventsSummator'
-import Events from '@models/Events'
-import EventsUsers from '@models/EventsUsers'
-import Roles from '@models/Roles'
-import Users from '@models/Users'
+
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
@@ -43,25 +40,28 @@ const eventUsersTelegramNotification = async ({
     const db = await dbConnect(location)
     if (!db) return
 
-    const rolesSettings = await Roles.find({})
+    const rolesSettings = await db.model('Roles').find({})
     const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
     const rolesIdsToEventUsersNotification = allRoles
       .filter((role) => role?.notifications?.eventRegistration)
       .map((role) => role._id)
 
     // Получаем список подписанных на уведомления, и если их нет, то выходим сразу
-    const usersWithTelegramNotificationsOfEventUsersON = await Users.find({
-      role:
-        process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
-          ? 'dev'
-          : { $in: rolesIdsToEventUsersNotification },
-      'notifications.settings.eventRegistration': true,
-      'notifications.telegram.active': true,
-      'notifications.telegram.id': {
-        $exists: true,
-        $ne: null,
-      },
-    }).lean()
+    const usersWithTelegramNotificationsOfEventUsersON = await db
+      .model('Users')
+      .find({
+        role:
+          process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
+            ? 'dev'
+            : { $in: rolesIdsToEventUsersNotification },
+        'notifications.settings.eventRegistration': true,
+        'notifications.telegram.active': true,
+        'notifications.telegram.id': {
+          $exists: true,
+          $ne: null,
+        },
+      })
+      .lean()
 
     if (
       !usersWithTelegramNotificationsOfEventUsersON ||
@@ -69,8 +69,8 @@ const eventUsersTelegramNotification = async ({
     )
       return
 
-    const event = await Events.findById(eventId).lean()
-    const eventUsers = await EventsUsers.find({ eventId }).lean()
+    const event = await db.model('Events').findById(eventId).lean()
+    const eventUsers = await db.model('EventsUsers').find({ eventId }).lean()
     const eventUsersIds = eventUsers.map((eventUser) => eventUser.userId)
 
     // const addedEventUsersIds = addedEventUsers.map(
@@ -86,7 +86,10 @@ const eventUsersTelegramNotification = async ({
       ...deletedEventUsersIds,
     ]
 
-    const users = await Users.find({ _id: { $in: usersIds } }).lean()
+    const users = await db
+      .model('Users')
+      .find({ _id: { $in: usersIds } })
+      .lean()
     const eventUsersFull = eventUsers.map((eventUser) => {
       const user = users.find(
         (user) => user._id.toString() === eventUser.userId

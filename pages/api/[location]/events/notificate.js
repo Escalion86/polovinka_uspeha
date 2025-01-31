@@ -1,12 +1,11 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import formatAddress from '@helpers/formatAddress'
 import formatEventDateTime from '@helpers/formatEventDateTime'
-import Events from '@models/Events'
-import Users from '@models/Users'
+
 import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import { DEFAULT_ROLES } from '@helpers/constants'
-import Roles from '@models/Roles'
+
 import subEventsSummator from '@helpers/subEventsSummator'
 import { telegramCmdToIndex } from '@server/telegramCmd'
 import sendTelegramMessage from '@server/sendTelegramMessage'
@@ -16,27 +15,30 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
   const db = await dbConnect(location)
   if (!db) return
 
-  const event = await Events.findById(eventId).lean()
+  const event = await db.model('Events').findById(eventId).lean()
   if (!event || event.blank) return
 
-  const rolesSettings = await Roles.find({}).lean()
+  const rolesSettings = await db.model('Roles').find({}).lean()
   const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
   const rolesIdsToNewEventsByTagsNotification = allRoles
     .filter((role) => role?.notifications?.newEventsByTags)
     .map((role) => role._id)
 
-  const users = await Users.find({
-    role:
-      process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
-        ? 'dev'
-        : { $in: rolesIdsToNewEventsByTagsNotification },
-    'notifications.settings.newEventsByTags': true,
-    'notifications.telegram.active': true,
-    'notifications.telegram.id': {
-      $exists: true,
-      $ne: null,
-    },
-  }).lean()
+  const users = await db
+    .model('Users')
+    .find({
+      role:
+        process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
+          ? 'dev'
+          : { $in: rolesIdsToNewEventsByTagsNotification },
+      'notifications.settings.newEventsByTags': true,
+      'notifications.telegram.active': true,
+      'notifications.telegram.id': {
+        $exists: true,
+        $ne: null,
+      },
+    })
+    .lean()
 
   const subEventSum = subEventsSummator(event.subEvents)
 

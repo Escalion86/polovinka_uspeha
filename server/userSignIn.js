@@ -2,16 +2,12 @@
 import isEventCanceled from '@helpers/isEventCanceled'
 import isEventClosed from '@helpers/isEventClosed'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
-import Events from '@models/Events'
-import EventsUsers from '@models/EventsUsers'
-import Histories from '@models/Histories'
-import Users from '@models/Users'
+
 import dbConnect from '@utils/dbConnect'
 import eventUsersTelegramNotification from './eventUsersTelegramNotification'
 import isEventExpired from './isEventExpired'
 import userToEventStatus from '@helpers/userToEventStatus'
 import subEventsSummator from '@helpers/subEventsSummator'
-import Directions from '@models/Directions'
 
 const userSignIn = async ({
   req,
@@ -28,7 +24,7 @@ const userSignIn = async ({
     if (!db) return res?.status(400).json({ success: false, error: 'db error' })
 
     // Проверка что пользователь заполнил анкету и вообще существует
-    const user = await Users.findById(userId).lean()
+    const user = await db.model('Users').findById(userId).lean()
     if (!user) {
       const result = {
         success: false,
@@ -48,7 +44,7 @@ const userSignIn = async ({
     }
 
     // Теперь проверяем есть ли место
-    const event = await Events.findById(eventId).lean()
+    const event = await db.model('Events').findById(eventId).lean()
 
     if (!event) {
       const result = {
@@ -61,7 +57,10 @@ const userSignIn = async ({
       return result
     }
     // Сначала проверяем есть ли такой пользователь в мероприятии
-    const eventUser = await EventsUsers.findOne({ eventId, userId }).lean()
+    const eventUser = await db
+      .model('EventsUsers')
+      .findOne({ eventId, userId })
+      .lean()
 
     if (eventUser) {
       const result = {
@@ -138,9 +137,12 @@ const userSignIn = async ({
       res?.status(202).json(result)
       return result
     }
-    const eventUsers = await EventsUsers.find({ eventId }).lean()
+    const eventUsers = await db.model('EventsUsers').find({ eventId }).lean()
     const usersIds = eventUsers.map((eventUser) => eventUser.userId)
-    const users = await Users.find({ _id: { $in: usersIds } }).lean()
+    const users = await db
+      .model('Users')
+      .find({ _id: { $in: usersIds } })
+      .lean()
     const eventUsersFull = eventUsers.map((eventUser) => {
       const user = users.find(
         (user) => user._id.toString() === eventUser.userId
@@ -149,7 +151,10 @@ const userSignIn = async ({
     })
 
     const subEventSum = subEventsSummator([subEvent])
-    const direction = await Directions.findById(event.directionId).lean()
+    const direction = await db
+      .model('Directions')
+      .findById(event.directionId)
+      .lean()
     const rules = direction?.rules
     const userEventStatus = userToEventStatus({
       event,
@@ -265,7 +270,7 @@ const userSignIn = async ({
     // var errorText
     // // // Если пользователь хочет зарегистрироваться в основной состав, то проверяем есть ли место
     // if (!status || status === 'participant') {
-    //   const subEventUsersParticipants = await EventsUsers.find({
+    //   const subEventUsersParticipants = await db.model('EventsUsers').find({
     //     eventId,
     //     status: 'participant',
     //     subEventId: subEvent.id,
@@ -273,7 +278,7 @@ const userSignIn = async ({
     //   const subEventParticipantsIds = subEventUsersParticipants.map(
     //     (eventUser) => eventUser.userId
     //   )
-    //   const subEventParticipants = await Users.find({
+    //   const subEventParticipants = await db.model('Users').find({
     //     _id: { $in: subEventParticipantsIds },
     //   })
     //   const subEventParticipantsMans = subEventParticipants.filter(
@@ -405,7 +410,7 @@ const userSignIn = async ({
 
     const realStatus = !userEventStatus.canSignIn ? 'reserve' : status
 
-    const newEventUser = await EventsUsers.create({
+    const newEventUser = await db.model('EventsUsers').create({
       eventId,
       userId,
       status: realStatus,
@@ -427,7 +432,7 @@ const userSignIn = async ({
 
     const newEventUserJson = newEventUser.toJSON()
 
-    await Histories.create({
+    await db.model('Histories').create({
       schema: EventsUsers.collection.collectionName,
       action: 'add',
       data: newEventUserJson,

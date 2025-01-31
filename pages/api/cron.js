@@ -4,9 +4,7 @@ import { DEFAULT_ROLES, LOCATIONS_KEYS_VISIBLE } from '@helpers/constants'
 import getUserFullName from '@helpers/getUserFullName'
 import padNum from '@helpers/padNum'
 import textAge from '@helpers/textAge'
-import RemindDates from '@models/RemindDates'
-import Roles from '@models/Roles'
-import Users from '@models/Users'
+
 import { sendMessageWithRepeats } from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 
@@ -59,7 +57,7 @@ export default async function handler(req, res) {
           if (!db)
             return res?.status(400).json({ success: false, error: 'db error' })
 
-          const rolesSettings = await Roles.find({}).lean()
+          const rolesSettings = await db.model('Roles').find({}).lean()
           const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
           const rolesIdsToNotification = allRoles
             .filter(
@@ -69,23 +67,26 @@ export default async function handler(req, res) {
             )
             .map((role) => role._id)
 
-          const usersToNotificate = await Users.find({
-            role:
-              process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
-                ? 'dev'
-                : { $in: rolesIdsToNotification },
+          const usersToNotificate = await db
+            .model('Users')
+            .find({
+              role:
+                process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
+                  ? 'dev'
+                  : { $in: rolesIdsToNotification },
 
-            $or: [
-              { 'notifications.settings.birthdays': true },
-              { 'notifications.settings.remindDates': true },
-            ],
-            'notifications.settings.time': strTimeNow,
-            'notifications.telegram.active': true,
-            'notifications.telegram.id': {
-              $exists: true,
-              $ne: null,
-            },
-          }).lean()
+              $or: [
+                { 'notifications.settings.birthdays': true },
+                { 'notifications.settings.remindDates': true },
+              ],
+              'notifications.settings.time': strTimeNow,
+              'notifications.telegram.active': true,
+              'notifications.telegram.id': {
+                $exists: true,
+                $ne: null,
+              },
+            })
+            .lean()
 
           // const usersToNotificate =
           //   usersWithTelegramNotificationsOfBirthday.filter(
@@ -98,7 +99,7 @@ export default async function handler(req, res) {
           if (usersToNotificate.length > 0) {
             const usersWithBirthDayToday = []
             const usersWithBirthDayTomorow = []
-            const users = await Users.find({}).lean()
+            const users = await db.model('Users').find({}).lean()
             users.forEach((user) => {
               if (!user.birthday) return
               const days = daysBeforeBirthday(user.birthday, dateTimeNow)
@@ -224,7 +225,7 @@ export default async function handler(req, res) {
 
         return res?.status(200).json({ success: true })
         // await dbConnect()
-        // const rolesSettings = await Roles.find({}).lean()
+        // const rolesSettings = await db.model('Roles').find({}).lean()
         // const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
         // const rolesIdsToNotification = allRoles
         //   .filter(
@@ -233,7 +234,7 @@ export default async function handler(req, res) {
         //   )
         //   .map((role) => role._id)
 
-        // const usersToNotificate = await Users.find({
+        // const usersToNotificate = await db.model('Users').find({
         //   role:
         //     process.env.TELEGRAM_NOTIFICATION_DEV_ONLY
         //       ? 'dev'
@@ -262,7 +263,7 @@ export default async function handler(req, res) {
         // if (usersToNotificate.length > 0) {
         //   const usersWithBirthDayToday = []
         //   const usersWithBirthDayTomorow = []
-        //   const users = await Users.find({}).lean()
+        //   const users = await db.model('Users').find({}).lean()
         //   users.forEach((user) => {
         //     if (!user.birthday) return
         //     const days = daysBeforeBirthday(user.birthday, dateTimeNow)

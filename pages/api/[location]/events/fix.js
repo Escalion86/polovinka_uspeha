@@ -1,5 +1,4 @@
 import { DEFAULT_EVENT } from '@helpers/constants'
-import Events from '@models/Events'
 import checkLocationValid from '@server/checkLocationValid'
 import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
@@ -20,7 +19,7 @@ export default async function handler(req, res) {
     try {
       delete query.location
 
-      const events = await Events.find({}).lean()
+      const events = await db.model('Events').find({}).lean()
       const updatedEvents = await Promise.all(
         events.map(async (event) => {
           if (event?.duration) {
@@ -29,17 +28,20 @@ export default async function handler(req, res) {
               new Date(dateStart).getTime() +
                 (event?.duration ?? DEFAULT_EVENT.duration) * 60000
             )
-            await Events.findByIdAndUpdate(event._id, {
-              dateStart,
-              dateEnd,
-            }).lean()
+            await db
+              .model('Events')
+              .findByIdAndUpdate(event._id, {
+                dateStart,
+                dateEnd,
+              })
+              .lean()
           }
         })
       ).catch((error) => {
         console.log(error)
         return res?.status(400).json({ success: false, error })
       })
-      const eventsUpdated = await Events.find({}).lean()
+      const eventsUpdated = await db.model('Events').find({}).lean()
       return res?.status(201).json({ success: true, data: eventsUpdated })
     } catch (error) {
       console.log(error)
@@ -47,5 +49,5 @@ export default async function handler(req, res) {
     }
   }
 
-  return await CRUD(Events, req, res)
+  return await CRUD('Events', req, res)
 }

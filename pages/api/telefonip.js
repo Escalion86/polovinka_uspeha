@@ -1,9 +1,9 @@
 // import getMinutesBetween from '@helpers/getMinutesBetween'
 import phoneValidator from '@helpers/phoneValidator'
 // import pinValidator from '@helpers/pinValidator'
-import Histories from '@models/Histories'
+
 import PhoneConfirms from '@models/PhoneConfirms'
-import Users from '@models/Users'
+
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
 import dbConnect from '@utils/dbConnect'
 
@@ -147,7 +147,7 @@ export default async function handler(req, res) {
         })
 
       // Сначала проверяем - есть ли уже такой зарегистрированный номер?
-      const existingUser = await Users.findOne({ phone })
+      const existingUser = await db.model('Users').findOne({ phone })
 
       if (!forgotPassword && existingUser && existingUser.password) {
         return res?.status(200).json({
@@ -306,17 +306,16 @@ export default async function handler(req, res) {
         console.log(2)
         // Проверяем - возможно такой пользователь есть, просто у него не задан пароль
         if (existingUser && (!existingUser.password || forgotPassword)) {
-          const updatedUser = await Users.findOneAndUpdate(
-            { phone },
-            { password }
-          )
+          const updatedUser = await db
+            .model('Users')
+            .findOneAndUpdate({ phone }, { password })
           return res?.status(201).json({
             success: true,
             data: updatedUser,
           })
         } else {
-          const newUser = await Users.create({ phone, password })
-          await Histories.create({
+          const newUser = await db.model('Users').create({ phone, password })
+          await db.model('Histories').create({
             schema: 'users',
             action: 'add',
             data: newUser,

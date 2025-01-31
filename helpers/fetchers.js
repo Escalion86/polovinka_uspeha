@@ -68,14 +68,6 @@ export async function fetchingUsersById(id, location) {
   return resp
 }
 
-export async function fetchingUserByEmail(email, location) {
-  const resp = await fetch(`/api/${location}/users/byEmail/${email}`)
-    .then((res) => res.json())
-    .then((json) => json.data)
-    .catch((error) => console.log('fetchingUserByEmail ERROR:', error))
-  return resp
-}
-
 export async function fetchingUserByPhone(phone, location) {
   const resp = await fetch(`/api/${location}/users/byPhone/${phone}`)
     .then((res) => res.json())
