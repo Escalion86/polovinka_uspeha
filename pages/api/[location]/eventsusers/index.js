@@ -1,6 +1,3 @@
-import EventsUsers from '@models/EventsUsers'
-import Histories from '@models/Histories'
-import Users from '@models/Users'
 import checkLocationValid from '@server/checkLocationValid'
 import CRUD from '@server/CRUD'
 import eventUsersTelegramNotification from '@server/eventUsersTelegramNotification'
@@ -46,7 +43,10 @@ export default async function handler(req, res) {
             .json({ success: false, data: 'error eventUsersStatuses data' })
 
         // Сравниваем участников что были с теми что пришли
-        const eventUsers = await EventsUsers.find({ eventId }).lean()
+        const eventUsers = await db
+          .model('EventsUsers')
+          .find({ eventId })
+          .lean()
         const oldEventUsers = eventUsers.filter((eventUser) =>
           eventUsersStatuses.find(
             (data) =>
@@ -72,9 +72,12 @@ export default async function handler(req, res) {
           (eventUser) => eventUser.userId
         )
 
-        const addedUsers = await Users.find({
-          _id: { $in: addedUsersIds },
-        }).lean()
+        const addedUsers = await db
+          .model('Users')
+          .find({
+            _id: { $in: addedUsersIds },
+          })
+          .lean()
 
         const deletedEventUsers = eventUsers.filter(
           (eventUser) =>
@@ -89,14 +92,14 @@ export default async function handler(req, res) {
 
         // Удаляем тех кого больше нет
         for (let i = 0; i < deletedEventUsers.length; i++) {
-          await EventsUsers.deleteOne({
+          await db.model('EventsUsers').deleteOne({
             eventId,
             userId: deletedEventUsers[i].userId,
           })
         }
 
         if (deletedEventUsers.length > 0) {
-          await Histories.create({
+          await db.model('Histories').create({
             schema: EventsUsers.collection.collectionName,
             action: 'delete',
             data: deletedEventUsers,
@@ -109,7 +112,7 @@ export default async function handler(req, res) {
           const user = addedUsers.find(
             (user) => user._id.toString() === addedEventUsers[i].userId
           )
-          const newEventUser = await EventsUsers.create({
+          const newEventUser = await db.model('EventsUsers').create({
             eventId,
             userId: addedEventUsers[i].userId,
             status: addedEventUsers[i].status,
@@ -120,7 +123,7 @@ export default async function handler(req, res) {
         }
 
         if (data.length > 0)
-          await Histories.create({
+          await db.model('Histories').create({
             schema: EventsUsers.collection.collectionName,
             action: 'add',
             data,
@@ -183,13 +186,15 @@ export default async function handler(req, res) {
       const result = []
       for (const key of dataKeys) {
         for (const [id, value] of Object.entries(data[key])) {
-          const updatedEventUser = await EventsUsers.findByIdAndUpdate(
-            id,
-            {
-              [key]: value,
-            },
-            { new: true }
-          )
+          const updatedEventUser = await db
+            .model('EventsUsers')
+            .findByIdAndUpdate(
+              id,
+              {
+                [key]: value,
+              },
+              { new: true }
+            )
           result.push(updatedEventUser)
         }
       }
@@ -213,19 +218,22 @@ export default async function handler(req, res) {
           .json({ success: false, data: { error: 'No params' } })
       const { eventId, userId } = body.params
       // Сначала проверяем есть ли такой пользователь в мероприятии
-      const eventUser = await EventsUsers.findOne({ eventId, userId }).lean()
+      const eventUser = await db
+        .model('EventsUsers')
+        .findOne({ eventId, userId })
+        .lean()
       if (!eventUser) {
         return res
           ?.status(200)
           .json({ success: false, data: { error: 'Not find user in event' } })
       }
 
-      await EventsUsers.deleteMany({
+      await db.model('EventsUsers').deleteMany({
         eventId,
         userId,
       })
 
-      await Histories.create({
+      await db.model('Histories').create({
         schema: EventsUsers.collection.collectionName,
         action: 'delete',
         data: eventUser,
@@ -247,5 +255,5 @@ export default async function handler(req, res) {
       return res?.status(400).json({ success: false, error })
     }
   }
-  return await CRUD(EventsUsers, req, res)
+  return await CRUD('EventsUsers', req, res)
 }

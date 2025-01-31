@@ -1,7 +1,7 @@
 import { postData } from '@helpers/CRUD'
 import { DEFAULT_ROLES } from '@helpers/constants'
-import Roles from '@models/Roles'
-import Users from '@models/Users'
+//
+//
 import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
 
@@ -19,26 +19,28 @@ const userRegisterTelegramNotification = async ({
   const telegramToken = getTelegramTokenByLocation(location)
   if (!telegramToken) return
 
-  const usersCount = await Users.countDocuments({})
+  const usersCount = await db.model('Users').countDocuments({})
 
-  const rolesSettings = await Roles.find({})
+  const rolesSettings = await db.model('Roles').find({})
   const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
   const rolesIdsToEventUsersNotification = allRoles
     .filter((role) => role?.notifications?.newUserRegistred)
     .map((role) => role._id)
 
-  const usersWithTelegramNotificationsOfEventUsersON = await Users.find({
-    role:
-      process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
-        ? 'dev'
-        : { $in: rolesIdsToEventUsersNotification },
-    'notifications.settings.newUserRegistred': true,
-    'notifications.telegram.active': true,
-    'notifications.telegram.id': {
-      $exists: true,
-      $ne: null,
-    },
-  })
+  const usersWithTelegramNotificationsOfEventUsersON = await db
+    .model('Users')
+    .find({
+      role:
+        process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
+          ? 'dev'
+          : { $in: rolesIdsToEventUsersNotification },
+      'notifications.settings.newUserRegistred': true,
+      'notifications.telegram.active': true,
+      'notifications.telegram.id': {
+        $exists: true,
+        $ne: null,
+      },
+    })
   const usersTelegramIds = usersWithTelegramNotificationsOfEventUsersON.map(
     (user) => user.notifications?.get('telegram')?.id
   )

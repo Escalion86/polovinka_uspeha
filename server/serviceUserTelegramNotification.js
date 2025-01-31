@@ -1,8 +1,6 @@
 import { DEFAULT_ROLES } from '@helpers/constants'
 import getUserFullName from '@helpers/getUserFullName'
-import Roles from '@models/Roles'
-import Services from '@models/Services'
-import Users from '@models/Users'
+
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 
@@ -17,25 +15,28 @@ const serviceUserTelegramNotification = async ({
     const db = await dbConnect(location)
     if (!db) return
 
-    const rolesSettings = await Roles.find({})
+    const rolesSettings = await db.model('Roles').find({})
     const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
     const rolesIdsToServiceUsersNotification = allRoles
       .filter((role) => role?.notifications?.serviceRegistration)
       .map((role) => role._id)
 
     // Получаем список подписанных на уведомления, и если их нет, то выходим сразу
-    const usersWithTelegramNotificationsOfServiceUsersON = await Users.find({
-      role:
-        process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
-          ? 'dev'
-          : { $in: rolesIdsToServiceUsersNotification },
-      'notifications.settings.serviceRegistration': true,
-      'notifications.telegram.active': true,
-      'notifications.telegram.id': {
-        $exists: true,
-        $ne: null,
-      },
-    }).lean()
+    const usersWithTelegramNotificationsOfServiceUsersON = await db
+      .model('Users')
+      .find({
+        role:
+          process.env.TELEGRAM_NOTIFICATION_DEV_ONLY === 'true'
+            ? 'dev'
+            : { $in: rolesIdsToServiceUsersNotification },
+        'notifications.settings.serviceRegistration': true,
+        'notifications.telegram.active': true,
+        'notifications.telegram.id': {
+          $exists: true,
+          $ne: null,
+        },
+      })
+      .lean()
 
     if (
       !usersWithTelegramNotificationsOfServiceUsersON ||
@@ -43,8 +44,8 @@ const serviceUserTelegramNotification = async ({
     )
       return
 
-    const service = await Services.findById(serviceId).lean()
-    const user = await Users.findById(userId).lean()
+    const service = await db.model('Services').findById(serviceId).lean()
+    const user = await db.model('Users').findById(userId).lean()
 
     const text = `\u{1F91D}\u{2795}${user.gender === 'male' ? '♂️' : '♀️'} ${getUserFullName(
       user

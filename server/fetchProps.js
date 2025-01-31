@@ -1,21 +1,21 @@
 // import { DEFAULT_ROLES } from '@helpers/constants'
 // import getUserRole from '@helpers/getUserRole'
 import isUserAdmin from '@helpers/isUserAdmin'
-import AdditionalBlocks from '@models/AdditionalBlocks'
-import Directions from '@models/Directions'
-import Events from '@models/Events'
-import EventsUsers from '@models/EventsUsers'
-// import EventsUsers from '@models/EventsUsers'
-// import Histories from '@models/Histories'
-// import Payments from '@models/Payments'
-import Questionnaires from '@models/Questionnaires'
-import QuestionnairesUsers from '@models/QuestionnairesUsers'
-import Reviews from '@models/Reviews'
-import Roles from '@models/Roles'
-import Services from '@models/Services'
-// import ServicesUsers from '@models/ServicesUsers'
-import SiteSettings from '@models/SiteSettings'
-import Users from '@models/Users'
+// import AdditionalBlocks from '@models/AdditionalBlocks'
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 import dbConnect from '@utils/dbConnect'
 import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
 
@@ -53,7 +53,9 @@ const fetchProps = async (user, location, params) => {
       }
 
     var users = isAdmin
-      ? await Users.find({})
+      ? await db
+          .model('Users')
+          .find({})
           .select({
             password: 0,
             // orientation: 0,
@@ -88,7 +90,9 @@ const fetchProps = async (user, location, params) => {
     const events =
       params?.events === false
         ? []
-        : await Events.find({})
+        : await db
+            .model('Events')
+            .find({})
             .select({
               description: 0,
               address: 0,
@@ -112,7 +116,9 @@ const fetchProps = async (user, location, params) => {
             })
             .lean()
 
-    const directions = await Directions.find({})
+    const directions = await db
+      .model('Directions')
+      .find({})
       .select({
         description: 0,
 
@@ -123,37 +129,41 @@ const fetchProps = async (user, location, params) => {
       })
       .lean()
     const reviews =
-      params?.reviews === false ? [] : await Reviews.find({}).lean()
+      params?.reviews === false ? [] : await db.model('Reviews').find({}).lean()
     const additionalBlocks =
       params?.additionalBlocks === false
         ? []
-        : await AdditionalBlocks.find({}).lean()
-    // const eventsUsers = await EventsUsers.find({}).lean()
-    // const payments = await Payments.find({})
+        : await db.model('AdditionalBlocks').find({}).lean()
+    // const eventsUsers = await db.model('EventsUsers').find({}).lean()
+    // const payments = await db.model('Payments').find({})
     //   .select({
     //     status: 0,
     //   })
     //   .lean()
-    const siteSettings = await SiteSettings.find({}).lean()
+    const siteSettings = await db.model('SiteSettings').find({}).lean()
     const rolesSettings =
-      params?.rolesSettings === false ? [] : await Roles.find({}).lean()
+      params?.rolesSettings === false
+        ? []
+        : await db.model('Roles').find({}).lean()
     const questionnaires =
       params?.questionnaires === false
         ? []
-        : await Questionnaires.find({}).lean()
+        : await db.model('Questionnaires').find({}).lean()
     const questionnairesUsers =
       params?.questionnairesUsers === false
         ? []
-        : await QuestionnairesUsers.find({}).lean()
+        : await db.model('QuestionnairesUsers').find({}).lean()
     // const histories = isModer
-    //   ? await Histories.find({
+    //   ? await db.model('Histories').find({
     //       // createdAt: { $gt: user.prevActivityAt },
     //     })
     //   : []
 
     const services =
-      params?.services === false ? [] : await Services.find({}).lean()
-    // const servicesUsers = await ServicesUsers.find({}).lean()
+      params?.services === false
+        ? []
+        : await db.model('Services').find({}).lean()
+    // const servicesUsers = await db.model('ServicesUsers').find({}).lean()
 
     // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
     // const seeFullNames = userRole?.users?.seeFullNames
@@ -163,7 +173,7 @@ const fetchProps = async (user, location, params) => {
         .filter(({ status }) => status === 'canceled')
         .map(({ _id }) => String(_id))
 
-      const res = await EventsUsers.aggregate([
+      const res = await db.model('EventsUsers').aggregate([
         {
           $match: {
             eventId: { $nin: canceledEventsIds },
@@ -203,6 +213,14 @@ const fetchProps = async (user, location, params) => {
     //     }
     //   })
     // }
+    // const directions = []
+    // const reviews = []
+    // const additionalBlocks = []
+    // const siteSettings = []
+    // const questionnaires = []
+    // const questionnairesUsers = []
+    // const services = []
+
     console.log('')
     console.log('')
     console.log('-----------------------------')

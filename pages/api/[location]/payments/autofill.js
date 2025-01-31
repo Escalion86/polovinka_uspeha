@@ -1,9 +1,4 @@
-import Events from '@models/Events'
-import EventsUsers from '@models/EventsUsers'
-import Payments from '@models/Payments'
-import Users from '@models/Users'
 import checkLocationValid from '@server/checkLocationValid'
-import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
 
 export default async function handler(req, res) {
@@ -24,9 +19,9 @@ export default async function handler(req, res) {
       delete query.location
 
       const { eventId, payType, payAt, couponForOrganizer } = body.data
-      const event = await Events.findById(eventId)
+      const event = await db.model('Events').findById(eventId)
 
-      const eventParticipants = await EventsUsers.find({
+      const eventParticipants = await db.model('EventsUsers').find({
         eventId,
         status: 'participant',
       })
@@ -34,15 +29,17 @@ export default async function handler(req, res) {
       const participantsIds = eventParticipants.map(
         (eventUser) => eventUser.userId
       )
-      const participants = await Users.find({
+      const participants = await db.model('Users').find({
         _id: { $in: participantsIds },
       })
 
-      const paymentsFromAndToParticipantsOfEvent = await Payments.find({
-        eventId,
-        payDirection: { $in: ['fromUser', 'toUser'] },
-        userId: { $in: participantsIds },
-      })
+      const paymentsFromAndToParticipantsOfEvent = await db
+        .model('Payments')
+        .find({
+          eventId,
+          payDirection: { $in: ['fromUser', 'toUser'] },
+          userId: { $in: participantsIds },
+        })
 
       const needToPayUsers = []
 
@@ -110,7 +107,7 @@ export default async function handler(req, res) {
 
       const payments =
         needToPayUsers.length > 0
-          ? await Payments.insertMany(needToPayUsers)
+          ? await db.model('Payments').insertMany(needToPayUsers)
           : []
       // const updatedEvents = await Promise.all(
       //   events.map(async (event) => {
@@ -120,14 +117,14 @@ export default async function handler(req, res) {
       //         new Date(dateStart).getTime() +
       //           (event?.duration ?? DEFAULT_EVENT.duration) * 60000
       //       )
-      //       await Events.findByIdAndUpdate(event._id, { dateStart, dateEnd })
+      //       await db.model('Events').findByIdAndUpdate(event._id, { dateStart, dateEnd })
       //     }
       //   })
       // ).catch((error) => {
       //   console.log(error)
       //   return res?.status(400).json({ success: false, error })
       // })
-      // const eventsUpdated = await Events.find({})
+      // const eventsUpdated = await db.model('Events').find({})
       return res?.status(201).json({ success: true, data: payments })
     } catch (error) {
       console.log(error)
@@ -135,5 +132,5 @@ export default async function handler(req, res) {
     }
   }
 
-  return await CRUD(Events, req, res)
+  return res?.status(400).json({ success: false, error: 'wrong method' })
 }

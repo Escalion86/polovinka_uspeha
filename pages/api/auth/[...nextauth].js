@@ -1,8 +1,6 @@
 import NextAuth from 'next-auth'
-import Users from '@models/Users'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import dbConnect from '@utils/dbConnect'
-import Histories from '@models/Histories'
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
 
 export default async function auth(req, res) {
@@ -33,8 +31,11 @@ export default async function auth(req, res) {
             //   process.env.NEXTAUTH_SITE
             // )
 
-            const fetchedUser = await Users.findOne({ phone, password }).lean()
-            // await Users.findOneAndUpdate(
+            const fetchedUser = await db
+              .model('Users')
+              .findOne({ phone, password })
+              .lean()
+            // await db.model('Users').findOneAndUpdate(
             //   { phone, password },
             //   {
             //     lastActivityAt: Date.now(),
@@ -90,9 +91,12 @@ export default async function auth(req, res) {
             const db = await dbConnect(location)
             if (!db) return null
 
-            const fetchedUser = await Users.findOne({
-              'notifications.telegram.id': telegramIdNum,
-            }).lean()
+            const fetchedUser = await db
+              .model('Users')
+              .findOne({
+                'notifications.telegram.id': telegramIdNum,
+              })
+              .lean()
 
             if (fetchedUser?._id) {
               return {
@@ -101,7 +105,7 @@ export default async function auth(req, res) {
               }
             } else {
               if (registration === 'true') {
-                const newUser = await Users.create({
+                const newUser = await db.model('Users').create({
                   notifications: {
                     telegram: {
                       id: telegramIdNum,
@@ -114,7 +118,7 @@ export default async function auth(req, res) {
                   images: [photo_url],
                   registrationType: 'telegram',
                 })
-                await Histories.create({
+                await db.model('Histories').create({
                   schema: 'users',
                   action: 'add',
                   data: newUser,
@@ -176,8 +180,8 @@ export default async function auth(req, res) {
         //   process.env.NEXTAUTH_SITE
         // )
 
-        const result = await Users.findById(userId)
-        // const result = await Users.findOneAndUpdate(
+        const result = await db.model('Users').findById(userId)
+        // const result = await db.model('Users').findOneAndUpdate(
         //   { phone: userPhone },
         //   {
         //     lastActivityAt: Date.now(),
@@ -245,16 +249,7 @@ export default async function auth(req, res) {
           session.user.createdAt = result.createdAt
           session.user.updatedAt = result.updatedAt
         }
-        //  else {
-        //   // если пользователь не зарегистрирован
-        //   await CRUD(Users, {
-        //     method: 'POST',
-        //     body: {
-        //       phone: userPhone,
-        //       role: 'client',
-        //     },
-        //   })
-        // }
+
         session.location = location
         return Promise.resolve(session)
       },

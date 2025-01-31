@@ -1,6 +1,5 @@
-import Users from '@models/Users'
 import CRUD from '@server/CRUD'
 
 export default async function handler(req, res) {
-  return await CRUD(Users, req, res, { phone: req.query.phone })
+  return await CRUD('Users', req, res, { phone: req.query.phone })
 }
