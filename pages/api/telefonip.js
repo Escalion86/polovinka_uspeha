@@ -2,8 +2,6 @@
 import phoneValidator from '@helpers/phoneValidator'
 // import pinValidator from '@helpers/pinValidator'
 
-import PhoneConfirms from '@models/PhoneConfirms'
-
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
 import dbConnect from '@utils/dbConnect'
 
@@ -33,12 +31,12 @@ const token = process.env.TELEFONIP
 //   console.log('response', response)
 //   if (response?.success) {
 //     if (update) {
-//       await PhoneConfirms.findOneAndUpdate(
+//       await db.model('PhoneConfirms').findOneAndUpdate(
 //         { phone },
 //         { tryNum, confirmed: false, code: response.data.code }
 //       )
 //     } else {
-//       const newPhoneConfirm = await PhoneConfirms.create({
+//       const newPhoneConfirm = await db.model('PhoneConfirms').create({
 //         phone,
 //         status: response.success,
 //         code: response.data.code,
@@ -102,8 +100,10 @@ export default async function handler(req, res) {
           var phone1 = String(response.data.phone).substring(1)
           var phone2 = String(phone).substring(1)
           if (phone1 === phone2) {
-            await PhoneConfirms.findOneAndUpdate({ phone }, { confirmed: true })
-            // await PhoneConfirms.findOneAndDelete({ phone })
+            await db
+              .model('PhoneConfirms')
+              .findOneAndUpdate({ phone }, { confirmed: true })
+            // await db.model('PhoneConfirms').findOneAndDelete({ phone })
           }
         }
 
@@ -184,11 +184,13 @@ export default async function handler(req, res) {
 
         console.log('!!response', response)
         if (response?.success) {
-          const phoneConfirm = await PhoneConfirms.findOneAndUpdate(
-            { phone },
-            { callId: response.data.id },
-            { upsert: true }
-          )
+          const phoneConfirm = await db
+            .model('PhoneConfirms')
+            .findOneAndUpdate(
+              { phone },
+              { callId: response.data.id },
+              { upsert: true }
+            )
           console.log('--------phoneConfirm:', phoneConfirm)
         }
 
@@ -199,7 +201,9 @@ export default async function handler(req, res) {
       }
 
       // Теперь проверяем есть ли уже запрос на подтверждение номера
-      const existingPhoneConfirm = await PhoneConfirms.findOne({ phone })
+      const existingPhoneConfirm = await db
+        .model('PhoneConfirms')
+        .findOne({ phone })
       // console.log('existingPhoneConfirm', existingPhoneConfirm)
 
       // TODO Временно удаленный код для смс авторизации
@@ -253,7 +257,7 @@ export default async function handler(req, res) {
       //       await sendCode(res, phone, 1, true)
       //       return
       //       // if (response?.success) {
-      //       //   const newPhoneConfirm = await PhoneConfirms.findOneAndUpdate(
+      //       //   const newPhoneConfirm = await db.model('PhoneConfirms').findOneAndUpdate(
       //       //     { phone },
       //       //     {
       //       //       status: response.success,
@@ -302,7 +306,7 @@ export default async function handler(req, res) {
       console.log('existingPhoneConfirm :>> ', existingPhoneConfirm)
       if (password && existingPhoneConfirm?.confirmed === true) {
         console.log(1)
-        await PhoneConfirms.findOneAndDelete({ phone })
+        await db.model('PhoneConfirms').findOneAndDelete({ phone })
         console.log(2)
         // Проверяем - возможно такой пользователь есть, просто у него не задан пароль
         if (existingUser && (!existingUser.password || forgotPassword)) {
@@ -366,7 +370,7 @@ export default async function handler(req, res) {
       //       },
       //     })
       //   } else {
-      //     await PhoneConfirms.findOneAndUpdate({ phone }, { confirmed: true })
+      //     await db.model('PhoneConfirms').findOneAndUpdate({ phone }, { confirmed: true })
       //     return res?.status(201).json({
       //       success: true,
       //       data: {
