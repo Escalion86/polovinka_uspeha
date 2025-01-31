@@ -181,6 +181,7 @@ async function dbConnect(location) {
     console.log('')
     console.log('------------------------------')
     console.log('dbConnect: создаем соединение', location)
+    console.log('------------------------------')
     console.log('')
     connections[location] = mongoose.createConnection(process.env.MONGODB_URI, {
       dbName,
