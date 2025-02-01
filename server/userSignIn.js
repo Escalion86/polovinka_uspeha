@@ -433,7 +433,7 @@ const userSignIn = async ({
     const newEventUserJson = newEventUser.toJSON()
 
     await db.model('Histories').create({
-      schema: EventsUsers.collection.collectionName,
+      schema: 'EventsUsers'.toLowerCase(),
       action: 'add',
       data: newEventUserJson,
       userId,

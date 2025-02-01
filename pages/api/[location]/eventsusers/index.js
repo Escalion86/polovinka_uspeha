@@ -100,7 +100,7 @@ export default async function handler(req, res) {
 
         if (deletedEventUsers.length > 0) {
           await db.model('Histories').create({
-            schema: EventsUsers.collection.collectionName,
+            schema: 'EventsUsers'.toLowerCase(),
             action: 'delete',
             data: deletedEventUsers,
             userId: body.userId,
@@ -124,7 +124,7 @@ export default async function handler(req, res) {
 
         if (data.length > 0)
           await db.model('Histories').create({
-            schema: EventsUsers.collection.collectionName,
+            schema: 'EventsUsers'.toLowerCase(),
             action: 'add',
             data,
             userId: body.userId,
@@ -234,7 +234,7 @@ export default async function handler(req, res) {
       })
 
       await db.model('Histories').create({
-        schema: EventsUsers.collection.collectionName,
+        schema: 'EventsUsers'.toLowerCase(),
         action: 'delete',
         data: eventUser,
         userId: body.userId,
