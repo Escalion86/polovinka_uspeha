@@ -28,7 +28,7 @@
     "@nivo/pie": "^0.80.0",
     "@nivo/stream": "^0.80.0",
     "@popperjs/core": "^2.11.8",
-    "@tailwindcss/postcss": "^4.0.2",
+    "@tailwindcss/postcss": "^4.0.3",
     "array-move": "^4.0.0",
     "classnames": "^2.5.1",
     "crypto-js": "^4.1.1",
@@ -43,7 +43,7 @@
     "fs": "^0.0.1-security",
     "googleapis": "^144.0.0",
     "isomorphic-dompurify": "^1.8.0",
-    "jotai": "^2.11.2",
+    "jotai": "^2.11.3",
     "jotai-effect": "^1.1.6",
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.5",
@@ -72,12 +72,11 @@
     "react-tiny-popover": "^8.1.4",
     "react-toastify": "^9.1.1",
     "react-virtualized-auto-sizer": "^1.0.7",
-    "react-window": "^1.8.8",
+    "react-window": "^1.8.11",
     "save-svg-as-png": "^1.4.17",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
     "style-loader": "^4.0.0",
-    "styled-components": "^6.0.8",
     "tailwind-merge": "^3.0.1",
     "uid": "^2.0.2",
     "use-long-press": "^3.2.0",
@@ -93,6 +92,6 @@
     "knip": "^5.43.3",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
-    "tailwindcss": "^4.0.2"
+    "tailwindcss": "^4.0.3"
   }
 }
