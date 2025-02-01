@@ -28,7 +28,7 @@
     "@nivo/pie": "^0.80.0",
     "@nivo/stream": "^0.80.0",
     "@popperjs/core": "^2.11.8",
-    "@tailwindcss/postcss": "^4.0.1",
+    "@tailwindcss/postcss": "^4.0.2",
     "array-move": "^4.0.0",
     "classnames": "^2.5.1",
     "crypto-js": "^4.1.1",
@@ -93,6 +93,6 @@
     "knip": "^5.43.3",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
-    "tailwindcss": "^4.0.1"
+    "tailwindcss": "^4.0.2"
   }
 }
