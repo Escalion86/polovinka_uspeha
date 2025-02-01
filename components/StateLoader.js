@@ -66,7 +66,7 @@ import browserVer from '@helpers/browserVer'
 import { useWindowDimensionsStore } from '@helpers/useWindowDimensions'
 import TopInfo from './TopInfo'
 import { DEFAULT_ROLES } from '@helpers/constants'
-import CheckSiteUpdateNotification from './CheckSiteUpdateNotification'
+// import CheckSiteUpdateNotification from './CheckSiteUpdateNotification'
 import snackbarAtom from '@state/atoms/snackbarAtom'
 import routerAtom from '@state/atoms/routerAtom'
 import CheckBrowserUpdate from './CheckBrowserUpdate'
@@ -281,7 +281,7 @@ const StateLoader = (props) => {
         </div>
       )}
       <ModalsPortal />
-      <CheckSiteUpdateNotification />
+      {/* <CheckSiteUpdateNotification /> */}
       <CheckBrowserUpdate />
     </div>
   )
