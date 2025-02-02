@@ -165,6 +165,10 @@ const usersSchema = {
     type: String,
     default: null,
   },
+  signedUpEventsCount: {
+    type: Number,
+    default: 0,
+  },
 }
 
 export default usersSchema

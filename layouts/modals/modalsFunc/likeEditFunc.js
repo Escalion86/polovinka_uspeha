@@ -217,28 +217,28 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
       //       ? closeModal
       //       : onClickConfirm
       // )
-      // setCloseButtonShow(
-      //   !(eventUser?._id && event.likesProcessActive && likes?.length === 0)
-      // )
+      setCloseButtonShow(
+        !(eventUser?._id && event.likesProcessActive && likes?.length === 0)
+      )
 
-      // setOnConfirmFunc(
-      //   eventUser?._id && event.likesProcessActive && likes?.length === 0
-      //     ? () => {
-      //         setEventUserData(
-      //           eventId,
-      //           {
-      //             likes: {
-      //               [eventUser._id]: [],
-      //             },
-      //           },
-      //           true
-      //         )
-      //         closeModal()
-      //       }
-      //     : undefined
-      // )
+      setOnConfirmFunc(
+        eventUser?._id && event.likesProcessActive && likes?.length === 0
+          ? () => {
+              setEventUserData(
+                eventId,
+                {
+                  likes: {
+                    [eventUser._id]: [],
+                  },
+                },
+                true
+              )
+              closeModal()
+            }
+          : undefined
+      )
       // setCloseButtonShow(!event.likesProcessActive)
-      setCloseButtonName(
+      setConfirmButtonName(
         eventUser?._id && event.likesProcessActive && likes?.length === 0
           ? `Решил${user.gender === 'male' ? '' : 'а'} никому не ставить лайки`
           : 'Закрыть'
@@ -248,7 +248,7 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
         setTitle(
           `Совпадения лайков с участни${user.gender === 'male' ? 'ц' : 'к'}ами`
         )
-    }, [likes, event])
+    }, [likes, event, adminView])
 
     return (
       <div className="flex flex-col">
@@ -461,7 +461,9 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
     title: `Лайки участникам мероприятия`,
     // declineButtonName: 'Оставить как было',
     // confirmButtonName: 'Применить',
-    closeButtonShow: true,
+    declineButtonName: 'Закрыть',
+    declineButtonShow: false,
+    closeButtonShow: false,
     Children: LikeEditModal,
   }
 }

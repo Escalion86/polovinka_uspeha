@@ -1,6 +1,5 @@
 import FormWrapper from '@components/FormWrapper'
 import UserName from '@components/UserName'
-// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventSelector from '@state/selectors/eventSelector'
 import userSelector from '@state/selectors/userSelector'
 import { useAtomValue } from 'jotai'

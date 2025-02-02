@@ -4,7 +4,6 @@ import InputWrapper from '@components/InputWrapper'
 // import { SelectUserList } from '@components/SelectItemList'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
-import { P } from '@components/tags'
 import { faArrowAltCircleLeft } from '@fortawesome/free-regular-svg-icons/faArrowAltCircleLeft'
 import { faArrowAltCircleRight } from '@fortawesome/free-regular-svg-icons/faArrowAltCircleRight'
 import { faHeartCirclePlus } from '@fortawesome/free-solid-svg-icons/faHeartCirclePlus'
@@ -22,7 +21,6 @@ import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventI
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 // import usersAtomAsync from '@state/async/usersAtomAsync'
-// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -38,6 +36,7 @@ import { UserItem } from '@components/ItemCards'
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@components/Tooltip'
 import Note from '@components/Note'
+import { RESET } from 'jotai/utils'
 
 const ItemButton = ({
   onClick,
@@ -1105,7 +1104,7 @@ const eventUsersFunc = (eventId) => {
 
     useEffect(() => {
       const refreshFunc = async () => {
-        await refreshEventState()
+        await refreshEventState(RESET)
         setIsRefreshed(true)
       }
       refreshFunc()

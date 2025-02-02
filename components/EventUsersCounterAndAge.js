@@ -16,9 +16,7 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import Ages from './Ages'
 import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
-// import eventParticipantsFullByEventIdSelector from '@state/selectors/eventParticipantsFullByEventIdSelector'
 import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
-// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import eventSelector from '@state/selectors/eventSelector'
 
 const CounterComponent = ({

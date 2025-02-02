@@ -36,7 +36,7 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
-import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+import eventSelector from '@state/selectors/eventSelector'
 import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import { uid } from 'uid'
@@ -102,7 +102,7 @@ const eventFunc = (eventId, clone = false, props = {}) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const event = useAtomValue(eventFullAtomAsync(eventId))
+    const event = useAtomValue(eventSelector(eventId))
     const directions = useAtomValue(directionsAtom)
     const setEvent = useAtomValue(itemsFuncAtom).event.set
     const [directionId, setDirectionId] = useState(
@@ -180,9 +180,7 @@ const eventFunc = (eventId, clone = false, props = {}) => {
         ? props.subEvents
         : event?.subEvents
           ? event.subEvents
-          : eventId
-            ? []
-            : [DEFAULT_SUBEVENT_GENERATOR()]
+          : [DEFAULT_SUBEVENT_GENERATOR()]
     )
 
     const [showOnSite, setShowOnSite] = useState(
@@ -279,11 +277,11 @@ const eventFunc = (eventId, clone = false, props = {}) => {
         : checkErrors({
             title,
             dateStart,
+            dateEnd,
           })
       if (getDiffBetweenDates(dateStart, dateEnd) < 0) {
         addError({
-          dateEnd:
-            'Дата завершения не может быть раньше даты начала мероприятия',
+          dateEnd: 'Дата завершения не может быть раньше даты начала',
         })
         isErrorsExists = true
       }
@@ -292,18 +290,19 @@ const eventFunc = (eventId, clone = false, props = {}) => {
         setEvent(
           {
             _id: event?._id,
-            images,
+            images: blank ? [] : images,
             title: title.trim(),
-            description,
-            tags,
+            description: blank ? '' : description,
+            tags: blank ? [] : tags,
             showOnSite,
             dateStart,
             dateEnd,
             // duration,
-            address,
+            address: blank ? {} : address,
             // price,
-            subEvents,
-            directionId,
+            subEvents: blank ? [DEFAULT_SUBEVENT_GENERATOR()] : subEvents,
+            directionId: blank ? null : directionId,
+            ...(blank ? { status: 'active' } : {}),
             // maxParticipants: maxParticipantsCheck ? null : maxParticipants ?? 0,
             // maxMans: maxMansCheck ? null : maxMans ?? 0,
             // maxWomans: maxWomansCheck ? null : maxWomans ?? 0,
@@ -321,10 +320,10 @@ const eventFunc = (eventId, clone = false, props = {}) => {
             // usersStatusDiscount,
             // usersRelationshipAccess,
             // isReserveActive,
-            report,
-            reportImages,
-            warning,
-            likes,
+            report: blank ? null : report,
+            reportImages: blank ? [] : reportImages,
+            warning: blank ? false : warning,
+            likes: blank ? false : likes,
             blank,
           },
           clone

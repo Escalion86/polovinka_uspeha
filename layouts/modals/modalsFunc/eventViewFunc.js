@@ -21,7 +21,7 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import directionSelector from '@state/selectors/directionSelector'
 import eventAssistantsSelector from '@state/selectors/eventAssistantsSelector'
-import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+import eventSelector from '@state/selectors/eventSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import loggedUserToEventStatusSelector from '@state/selectors/loggedUserToEventStatusSelector'
@@ -93,7 +93,7 @@ const EventViewModal = ({
   setTopLeftComponent,
 }) => {
   const { eventId } = data
-  const event = useAtomValue(eventFullAtomAsync(eventId))
+  const event = useAtomValue(eventSelector(eventId))
   const eventUser = useAtomValue(eventLoggedUserByEventIdSelector(eventId))
   const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
@@ -279,7 +279,7 @@ const EventViewModal = ({
 
 const EventView = (props) => {
   const { eventId } = props.data
-  const event = useAtomValue(eventFullAtomAsync(eventId))
+  const event = useAtomValue(eventSelector(eventId))
 
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const { canSee, isAgeOfUserCorrect, isUserStatusCorrect, status } =

@@ -18,6 +18,7 @@ import getGoogleCalendarJSONByLocation from './getGoogleCalendarJSONByLocation'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
 import getGoogleCalendarConstantsByLocation from './getGoogleCalendarConstantsByLocation'
 import checkLocationValid from './checkLocationValid'
+import refreshSignedUpEventsCount from './refreshSignedUpEventsCount'
 // import { telegramCmdToIndex } from './telegramCmd'
 
 function isJson(str) {
@@ -383,7 +384,7 @@ const updateEventInCalendar = async (event, location) => {
   return updatedCalendarEvent
 }
 
-export default async function handler(Schema, req, res, params = null) {
+export default async function handler(Schema, req, res, params = null, select) {
   const { query, method, body } = req
 
   const id = query?.id
@@ -406,11 +407,13 @@ export default async function handler(Schema, req, res, params = null) {
 
   let data
 
+  const selectOpts = { ...(select ?? {}), password: 0 }
+
   switch (method) {
     case 'GET':
       try {
         if (id) {
-          data = await db.model(Schema).findById(id).select({ password: 0 })
+          data = await db.model(Schema).findById(id).select(selectOpts)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
@@ -424,22 +427,19 @@ export default async function handler(Schema, req, res, params = null) {
             preparedQuery['data._id'] = new mongoose.Types.ObjectId(
               preparedQuery['data._id']
             )
-          data = await db
-            .model(Schema)
-            .find(preparedQuery)
-            .select({ password: 0 })
+          data = await db.model(Schema).find(preparedQuery).select(selectOpts)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else if (params) {
-          data = await db.model(Schema).find(params).select({ password: 0 })
+          data = await db.model(Schema).find(params).select(selectOpts)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else {
-          data = await db.model(Schema).find().select({ password: 0 })
+          data = await db.model(Schema).find().select(selectOpts)
           return res?.status(200).json({ success: true, data })
         }
       } catch (error) {
@@ -527,6 +527,16 @@ export default async function handler(Schema, req, res, params = null) {
             // if (!oldData.showOnSite && data.showOnSite) {
             //   notificateUsersAboutEvent(data, req)
             // }
+          }
+
+          if (
+            Schema === 'Events' &&
+            (oldData.status === 'closed' || data.status === 'closed')
+          ) {
+            const result = await refreshSignedUpEventsCount(location, {
+              eventId: id,
+            })
+            console.log('result :>> ', result)
           }
 
           const difference = compareObjectsWithDif(oldData, data)

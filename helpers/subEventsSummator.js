@@ -2,7 +2,34 @@ import eventPricesWithStatus from './eventPricesWithStatus'
 import isObject from './isObject'
 
 const subEventsSummator = (subEvents) => {
-  if (!isObject(subEvents)) return
+  if (!isObject(subEvents) || subEvents.length === 0)
+    return {
+      maxParticipants: null,
+      maxMans: null,
+      maxWomans: null,
+      maxMansNovice: null,
+      maxMansMember: null,
+      maxWomansNovice: null,
+      maxWomansMember: null,
+      minMansAge: 18,
+      minWomansAge: 18,
+      maxMansAge: 60,
+      maxWomansAge: 60,
+      usersStatusAccess: {
+        noReg: true,
+        novice: true,
+        member: true,
+      },
+      isReserveActive: false,
+      usersRelationshipAccess: 'yes',
+
+      usersStatusDiscountResult: {
+        novice: 0,
+        noviceFrom: 0,
+        member: 0,
+        memberFrom: 0,
+      },
+    }
 
   const sum = subEvents.reduce((sum, subEvent) => {
     let result

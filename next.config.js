@@ -34,6 +34,7 @@ module.exports = //withBundleAnalyzer(
     //   return config
     // },
     // swcMinify: false,
+    transpilePackages: ['jotai-devtools'],
     experimental: {
       largePageDataBytes: 512 * 100000,
     },

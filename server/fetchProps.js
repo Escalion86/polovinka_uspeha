@@ -1,6 +1,6 @@
 // import { DEFAULT_ROLES } from '@helpers/constants'
 // import getUserRole from '@helpers/getUserRole'
-import isUserAdmin from '@helpers/isUserAdmin'
+// import isUserAdmin from '@helpers/isUserAdmin'
 
 import dbConnect from '@utils/dbConnect'
 import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
@@ -9,11 +9,11 @@ const fetchProps = async (user, location, params) => {
   const serverDateTime = new Date()
   const telegramBotName = getTelegramBotNameByLocation(location)
   try {
-    const isAdmin = isUserAdmin(user)
+    // const isAdmin = isUserAdmin(user)
     const db = await dbConnect(location)
     if (!db)
       return {
-        users: [],
+        // users: [],
         events: [],
         directions: [],
         reviews: [],
@@ -38,22 +38,27 @@ const fetchProps = async (user, location, params) => {
         telegramBotName,
       }
 
-    var users = isAdmin
-      ? await db
-          .model('Users')
-          .find({})
-          .select({
-            password: 0,
-            // orientation: 0,
-            // firstname: 0,
-            // secondname: 0,
-            // thirdname: 0,
-            // interests: 0,
-            // profession: 0,
-            // about: 0,
-          })
-          .lean()
-      : null
+    // var users = isAdmin
+    //   ? await db
+    //       .model('Users')
+    //       .find({})
+    //       .select({
+    //         password: 0,
+    //         images: 0,
+    //         haveKids: 0,
+    //         security: 0,
+    //         notifications: 0,
+    //         soctag: 0,
+    //         custag: 0,
+    //         town: 0,
+    //         prevActivityAt: 0,
+    //         lastActivityAt: 0,
+    //         archive: 0,
+    //         role: 0,
+    //         registrationType: 0,
+    //       })
+    //       .lean()
+    //   : null
 
     // if (!(isModer || isAdmin)) {
     //   users = JSON.parse(JSON.stringify(users)).map((user) => {
@@ -154,33 +159,33 @@ const fetchProps = async (user, location, params) => {
     // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
     // const seeFullNames = userRole?.users?.seeFullNames
 
-    if (isAdmin) {
-      const canceledEventsIds = events
-        .filter(({ status }) => status === 'canceled')
-        .map(({ _id }) => String(_id))
+    // if (isAdmin) {
+    //   const canceledEventsIds = events
+    //     .filter(({ status }) => status === 'canceled')
+    //     .map(({ _id }) => String(_id))
 
-      const res = await db.model('EventsUsers').aggregate([
-        {
-          $match: {
-            eventId: { $nin: canceledEventsIds },
-            status: { $nin: ['reserve', 'ban'] },
-          },
-        },
-        {
-          $group: { _id: '$userId', total: { $sum: 1 } },
-        },
-      ])
+    //   const res = await db.model('EventsUsers').aggregate([
+    //     {
+    //       $match: {
+    //         eventId: { $nin: canceledEventsIds },
+    //         status: { $nin: ['reserve', 'ban'] },
+    //       },
+    //     },
+    //     {
+    //       $group: { _id: '$userId', total: { $sum: 1 } },
+    //     },
+    //   ])
 
-      const preparedRes = res.reduce(function (result, { _id, total }) {
-        result[_id] = total
-        return result
-      }, {})
+    //   const preparedRes = res.reduce(function (result, { _id, total }) {
+    //     result[_id] = total
+    //     return result
+    //   }, {})
 
-      users = users.map((user) => ({
-        ...user,
-        signedUpEventsCount: preparedRes[user._id] || 0,
-      }))
-    }
+    //   users = users.map((user) => ({
+    //     ...user,
+    //     signedUpEventsCount: preparedRes[user._id] || 0,
+    //   }))
+    // }
 
     // if (!seeFullNames) {
     //   users = users.map((user) => {
@@ -210,7 +215,7 @@ const fetchProps = async (user, location, params) => {
     console.log('')
     console.log('')
     console.log('-----------------------------')
-    console.log('users :>> ', users ? JSON.stringify(users).length : 0)
+    // console.log('users :>> ', users ? JSON.stringify(users).length : 0)
     console.log('events :>> ', JSON.stringify(events).length)
     console.log('directions :>> ', JSON.stringify(directions).length)
     console.log('reviews :>> ', JSON.stringify(reviews).length)
@@ -229,7 +234,7 @@ const fetchProps = async (user, location, params) => {
     // console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
 
     const fetchResult = {
-      users: JSON.parse(JSON.stringify(users)),
+      // users: JSON.parse(JSON.stringify(users)),
       events: JSON.parse(JSON.stringify(events)),
       directions: JSON.parse(JSON.stringify(directions)),
       reviews: JSON.parse(JSON.stringify(reviews)),
@@ -258,7 +263,7 @@ const fetchProps = async (user, location, params) => {
     return fetchResult
   } catch (error) {
     return {
-      users: [],
+      // users: [],
       events: [],
       directions: [],
       reviews: [],

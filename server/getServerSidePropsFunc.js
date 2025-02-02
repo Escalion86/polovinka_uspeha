@@ -15,7 +15,7 @@ const getServerSidePropsFunc = async (
     const fetchedProps = await fetchProps(session?.user, location, params)
     return {
       props: {
-        users: null,
+        // users: null,
         events: null,
         directions: null,
         reviews: null,
@@ -39,7 +39,7 @@ const getServerSidePropsFunc = async (
   } catch (error) {
     return {
       props: {
-        users: null,
+        // users: null,
         events: null,
         directions: null,
         reviews: null,

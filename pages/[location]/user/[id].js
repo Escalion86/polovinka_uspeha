@@ -13,6 +13,7 @@ import BlockContainer from '@components/BlockContainer'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
 import locationAtom from '@state/atoms/locationAtom'
+import isPWAAtom from '@state/atoms/isPWAAtom'
 
 const User = ({ user }) => {
   const userView = userViewFunc(user._id)
@@ -51,6 +52,8 @@ function UserPage(props) {
   //   usersState?.length > 0
   //     ? usersState.find((user) => user?._id === userId)
   //     : undefined
+
+  const isPWA = useAtomValue(isPWAAtom)
 
   const canSee =
     loggedUserActiveRole?.users?.see &&
@@ -129,7 +132,7 @@ function UserPage(props) {
         </BlockContainer>
         {/* <div className="pb-6 mt-2 border-b border-gray-700 tablet:mt-9">
         </div> */}
-        <ContactsBlock />
+        {!isPWA && <ContactsBlock />}
       </StateLoader>
     </>
   )

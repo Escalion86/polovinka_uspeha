@@ -2,8 +2,13 @@
 
 import { atom } from 'jotai'
 
-import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
+import eventSelector from '@state/selectors/eventSelector'
 import eventsAtom from '@state/atoms/eventsAtom'
+import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
+import userSelector from './userSelector'
+import { RESET } from 'jotai/utils'
+import usersAtomAsync from '@state/async/usersAtomAsync'
+import isLoadedAtom from '@state/atoms/isLoadedAtom'
 
 const eventEditSelector = atom(null, (get, set, newItem) => {
   const items = get(eventsAtom)
@@ -15,7 +20,28 @@ const eventEditSelector = atom(null, (get, set, newItem) => {
       if (event._id === newItem._id) return newItem
       return event
     })
-    set(eventFullAtomAsync(newItem._id), newItem)
+
+    // Если мы изменяем status с закрытого на иной или наоборот, то нужно обновить пользователей записанных на это мероприятие
+    if (
+      findedItem?.status !== newItem?.status &&
+      (newItem?.status === 'closed' || findedItem?.status === 'closed')
+    ) {
+      get(asyncEventsUsersByEventIdAtom(newItem._id)).then(
+        async (eventUsers) => {
+          const usersIds = eventUsers.map((eventUser) => eventUser.userId)
+          // console.log('usersIds', usersIds)
+          for (const userId of usersIds) {
+            // console.log('userId :>> ', userId)
+            set(userSelector(userId), RESET)
+          }
+        }
+      )
+      if (get(isLoadedAtom('usersAtomAsync'))) {
+        set(usersAtomAsync, RESET)
+      }
+    }
+
+    set(eventSelector(newItem._id), newItem)
     set(eventsAtom, newItemsList)
   } else {
     // Если такого атома нет и мы добавляем новый, то просто добавляем атом в список
