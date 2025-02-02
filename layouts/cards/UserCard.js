@@ -206,7 +206,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                       {typeof user.signedUpEventsCount === 'number' && (
                         <div className="flex text-sm leading-4 gap-x-2">
                           <span className="font-bold">
-                            Записей на мероприятия:
+                            Посетил мероприятий:
                           </span>
                           {/* <FinishedCount userId={userId} /> */}
                           <span className="font-normal">

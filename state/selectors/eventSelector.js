@@ -1,19 +1,22 @@
 'use client'
 
-import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily, atomWithDefault } from 'jotai/utils'
 
-import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
-import eventsAtom from '@state/atoms/eventsAtom'
-import isLoadedAtom from '@state/atoms/isLoadedAtom'
+import { getData } from '@helpers/CRUD'
+import locationAtom from '@state/atoms/locationAtom'
 
 const eventSelector = atomFamily((id) =>
-  atom(async (get) => {
+  atomWithDefault(async (get) => {
     if (!id) return
-    if (get(isLoadedAtom('eventFullAtomAsync' + id))) {
-      return await get(eventFullAtomAsync(id))
-    }
-    return get(eventsAtom).find((item) => item._id === id)
+    const location = get(locationAtom)
+    const res = await getData(
+      `/api/${location}/events/` + id,
+      {},
+      null,
+      null,
+      false
+    )
+    return res
   })
 )
 

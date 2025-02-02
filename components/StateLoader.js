@@ -251,7 +251,7 @@ const StateLoader = (props) => {
   }, [props.loggedUser])
 
   useEffect(() => {
-    if (loggedUser) {
+    if (loggedUser && location) {
       postData(
         `/api/${location}/loginhistory`,
         {

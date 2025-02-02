@@ -24,6 +24,16 @@ import { Suspense, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import SignOut from '@components/SignOut'
+
+import { DevTools } from 'jotai-devtools'
+// Note that this may get included in your production builds. Please import it conditionally if you want to avoid that
+import 'jotai-devtools/styles.css'
+
+const DevToolsClient = () => {
+  'use client'
+
+  return <DevTools />
+}
 // import itemsFuncAtom from '@state/itemsFuncAtom'
 
 // import loggedUserActiveStatusAtomJ from '@state/atoms/loggedUserActiveStatusAtom'
@@ -119,6 +129,7 @@ function CabinetPage(props) {
           </CabinetWrapper>
         )}
       </StateLoader>
+      {props.mode === 'dev' && <DevToolsClient />}
     </>
   )
 }

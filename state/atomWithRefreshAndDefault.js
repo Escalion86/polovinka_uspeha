@@ -1,21 +1,23 @@
 'use client'
 
 import { atom } from 'jotai'
+import { RESET } from 'jotai/utils'
 // import { atomWithDefault } from 'jotai/utils'
 
 const atomWithRefreshAndDefault = (func) => {
-  const overwrittenAtom = atom(null)
-  const refreshAtom = atom(func)
+  const overwrittenAtom = atom(RESET)
+  // const refreshAtom = atom(func)
   return atom(
     async (get) => {
       const lastState = get(overwrittenAtom)
-      if (lastState && lastState.refresh === get(refreshAtom)) {
-        return lastState.value
-      }
-      return await func(get)
+      // if (lastState && lastState.refresh === get(refreshAtom)) {
+      //   return lastState.value
+      // }
+      if (lastState === RESET) return await func(get)
+      else return lastState
     },
     async (get, set, update) => {
-      set(overwrittenAtom, { refresh: await get(refreshAtom), value: update })
+      set(overwrittenAtom, update === RESET ? await func(get) : update)
     }
   )
 }

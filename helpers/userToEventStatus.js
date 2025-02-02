@@ -34,12 +34,32 @@ const userToEventStatus = ({
       isUserRelationshipCorrect: undefined,
     }
 
+  const isEventHidden = !event.showOnSite
   const isEventExpired = ignoreEventIsExpired
     ? undefined
     : isEventExpiredFunc(event)
   const isEventInProcess = isEventInProcessFunc(event)
+
+  if (event.blank) {
+    return {
+      canSee: !isEventHidden,
+      alreadySignIn: false,
+      canSignIn: false,
+      canSignInReserve: false,
+      canSignOut: false,
+      isEventExpired,
+      isEventInProcess,
+      isEventHidden,
+      userStatus: undefined,
+      userEventStatus: undefined,
+      status: 'event blank',
+      isAgeOfUserCorrect: undefined,
+      isUserStatusCorrect: undefined,
+      isUserRelationshipCorrect: undefined,
+    }
+  }
+
   const isEventCanceled = isEventCanceledFunc(event)
-  const isEventHidden = !event.showOnSite
 
   if (!user?._id)
     return {

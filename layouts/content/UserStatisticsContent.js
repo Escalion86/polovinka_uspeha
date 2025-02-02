@@ -216,7 +216,9 @@ const UserStatisticsContent = () => {
   )
   const siteSettings = useAtomValue(siteSettingsAtom)
   const eventsTags = siteSettings.eventsTags ?? []
-  const userEventsIds = eventsUser.map((eventUser) => eventUser.eventId)
+  const userEventsIds = eventsUser
+    .filter(({ status }) => !['ban', 'reserve'].includes(status))
+    .map((eventUser) => eventUser.eventId)
 
   const [showAllAchivement, setShowAllAchivement] = useState(false)
 
