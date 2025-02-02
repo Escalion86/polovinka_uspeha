@@ -42,6 +42,7 @@ const EditableTextarea = ({
       paddingY="small"
       paddingX={false}
       disabled={disabled}
+      error={error}
     >
       {/* <Script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.5/dist/quill.js"></Script> */}
       <Suspense>
