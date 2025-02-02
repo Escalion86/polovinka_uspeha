@@ -28,7 +28,6 @@ import serviceStatusFunc from '@helpers/serviceStatus'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
-// import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import paymentSelector from '@state/selectors/paymentSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
 import cn from 'classnames'
@@ -37,43 +36,6 @@ import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
-
-// const Status = ({ statusProps }) => {
-//   if (!statusProps) return null
-//   return (
-//     <div
-//       className={cn(
-//         'flex items-center justify-center w-8 text-white',
-//         statusProps ? 'bg-' + statusProps.color : 'bg-gray-400'
-//       )}
-//     >
-//       <FontAwesomeIcon icon={statusProps?.icon ?? faQuestion} className="w-6" />
-//     </div>
-//   )
-// }
-
-// const EventStatusByEventId = ({ eventId }) => {
-//   if (!eventId) return null
-//   const event = useAtomValue(eventFullAtomAsync(eventId))
-//   const eventStatus = eventStatusFunc(event)
-
-//   const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
-//     (payTypeItem) => payTypeItem.value === eventStatus
-//   )
-//   return (
-//     <div
-//       className={cn(
-//         'flex items-center justify-center w-4',
-//         eventStatusProps ? 'text-' + eventStatusProps.color : 'text-disabled'
-//       )}
-//     >
-//       <FontAwesomeIcon
-//         icon={eventStatusProps?.icon ?? faQuestion}
-//         className="w-4 h-4"
-//       />
-//     </div>
-//   )
-// }
 
 const PaySum = ({ payment }) => {
   const isExpenses = [
@@ -402,14 +364,6 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
   const payment = useAtomValue(paymentSelector(paymentId))
   const loading = useAtomValue(loadingAtom('payment' + paymentId))
   const paymentSector = paymentSectorFunc(payment)
-  // const selector =
-  //   paymentSector === 'event'
-  //     ? eventFullAtomAsync(payment.eventId)
-  //     : paymentSector === 'service'
-  //     ? serviceSelector(payment.serviceId)
-  //     : paymentSector === 'product'
-  //     ? productSelector(payment.productId)
-  //     : null
 
   const sectorProps = SECTORS.find((sector) => sector.value === paymentSector)
 
