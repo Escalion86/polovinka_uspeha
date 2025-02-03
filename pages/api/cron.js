@@ -154,7 +154,7 @@ export default async function handler(req, res) {
 
             const remindDatesToday = []
             const remindDatesTomorow = []
-            const remindDates = await RemindDates.find({}).lean()
+            const remindDates = await db.model('RemindDates').find({}).lean()
             remindDates.forEach((remindDate) => {
               const days = daysBeforeBirthday(remindDate.date, dateTimeNow)
               const years = yearsBeetwenDates(remindDate.date, dateTimeNow)
@@ -318,7 +318,7 @@ export default async function handler(req, res) {
 
         //   const remindDatesToday = []
         //   const remindDatesTomorow = []
-        //   const remindDates = await RemindDates.find({}).lean()
+        //   const remindDates = await db.model('RemindDates').find({}).lean()
         //   remindDates.forEach((remindDate) => {
         //     const days = daysBeforeBirthday(remindDate.date, dateTimeNow)
         //     const years = yearsBeetwenDates(remindDate.date, dateTimeNow)
