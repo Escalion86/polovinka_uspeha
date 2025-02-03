@@ -27,11 +27,8 @@
     "@nivo/line": "^0.80.0",
     "@nivo/pie": "^0.80.0",
     "@nivo/stream": "^0.80.0",
-    "@popperjs/core": "^2.11.8",
     "@tailwindcss/postcss": "^4.0.3",
-    "array-move": "^4.0.0",
     "classnames": "^2.5.1",
-    "crypto-js": "^4.1.1",
     "css-loader": "^7.1.2",
     "dayjs": "^1.11.7",
     "elevenlabs-js": "^1.2.6",
@@ -77,15 +74,11 @@
     "save-svg-as-png": "^1.4.17",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
-    "style-loader": "^4.0.0",
     "tailwind-merge": "^3.0.1",
-    "uid": "^2.0.2",
-    "use-long-press": "^3.2.0",
-    "xlsx-calc": "^0.8.0"
+    "uid": "^2.0.2"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
-    "autoresponsive-react": "^1.2.3",
     "cross-env": "^7.0.3",
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.1.3",
