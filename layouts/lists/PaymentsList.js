@@ -18,6 +18,11 @@ const PaymentsList = ({ payments }) => {
           style={style}
           key={payments[index]._id}
           paymentId={payments[index]._id}
+          payment={
+            payments[index]?.location === null || payments[index]?.location
+              ? payments[index]
+              : undefined
+          }
         />
       )}
     </ListWrapper>

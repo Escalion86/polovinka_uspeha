@@ -1,6 +1,5 @@
 import CardButtons from '@components/CardButtons'
 import CardWrapper from '@components/CardWrapper'
-import EventNameById from '@components/EventNameById'
 import IconWithTooltip from '@components/IconWithTooltip'
 import PayTypeIcon from '@components/PayTypeIcon'
 import ProductNameById from '@components/ProductNameById'
@@ -36,6 +35,8 @@ import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
+import EventName, { EventNameById } from '@components/EventName'
+import UserName from '@components/UserName'
 
 const PaySum = ({ payment }) => {
   const isExpenses = [
@@ -67,13 +68,22 @@ const PayText = ({ payment, sector }) => {
       {sector === 'event' && (
         <EventPayDirectionIconText value={payment.payDirection} />
       )}
-      {sector === 'event' && payment.eventId && (
-        <EventNameById
-          eventId={payment.eventId}
-          className="font-bold text-general"
-          showStatus
-        />
-      )}
+      {sector === 'event' &&
+        (payment.event === null ? (
+          <div className="font-bold text-general">???</div>
+        ) : payment.event ? (
+          <EventNameById
+            event={payment.event}
+            className="font-bold text-general"
+            showStatus
+          />
+        ) : (
+          <EventName
+            eventId={payment.eventId}
+            className="font-bold text-general"
+            showStatus
+          />
+        ))}
       {sector === 'service' && (
         <ServicePayDirectionIconText value={payment.payDirection} />
       )}
@@ -105,14 +115,24 @@ const PayText = ({ payment, sector }) => {
             {payment.comment}
           </TextLinesLimiter>
         )}
-      {payment.userId && (
-        <UserNameById
-          showStatus
-          userId={payment.userId}
-          className="font-bold"
-          trunc
-        />
-      )}
+      {payment.userId &&
+        (payment.user === null ? (
+          <div className="font-bold">???</div>
+        ) : payment.user ? (
+          <UserName
+            showStatus
+            user={payment.user}
+            className="font-bold"
+            trunc
+          />
+        ) : (
+          <UserNameById
+            showStatus
+            userId={payment.userId}
+            className="font-bold"
+            trunc
+          />
+        ))}
     </div>
   )
 }
@@ -124,6 +144,15 @@ const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
       <div className="flex items-center justify-between">
         <div className="flex gap-x-3">
           {children}
+          {(payment?.location === null || payment?.location) && (
+            <div className="flex items-center text-danger gap-x-1">
+              <div>{payment.location === null ? '?' : payment.location}</div>
+              <IconWithTooltip
+                icon={faBug}
+                tooltip="ОШИБКА! Транзакция из другого города"
+              />
+            </div>
+          )}
           {!sector && (
             <IconWithTooltip
               icon={faTimesCircle}
@@ -232,13 +261,6 @@ const PaymentEvent = ({ payment }) => {
         payment.eventId && (
           <PaymentEventUserLeft payment={payment} event={event} />
         )}
-      {!event && (
-        <IconWithTooltip
-          icon={faBug}
-          className="text-danger"
-          tooltip="ОШИБКА. Мероприятия не существует!"
-        />
-      )}
     </PayCardWrapper>
   )
 }
@@ -359,11 +381,13 @@ const PaymentInternal = ({ payment }) => {
   )
 }
 
-const PaymentCard = ({ paymentId, hidden = false, style }) => {
+const PaymentCard = ({ paymentId, hidden = false, style, payment }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const payment = useAtomValue(paymentSelector(paymentId))
-  const loading = useAtomValue(loadingAtom('payment' + paymentId))
-  const paymentSector = paymentSectorFunc(payment)
+  const paymentState = payment ?? useAtomValue(paymentSelector(paymentId))
+  const loading = useAtomValue(
+    loadingAtom('payment' + (paymentId ?? payment._id))
+  )
+  const paymentSector = paymentSectorFunc(paymentState)
 
   const sectorProps = SECTORS.find((sector) => sector.value === paymentSector)
 
@@ -372,7 +396,7 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
   return (
     <CardWrapper
       loading={loading}
-      onClick={() => !loading && modalsFunc.payment.edit(payment._id)}
+      onClick={() => !loading && modalsFunc.payment.edit(paymentState._id)}
       className="flex items-stretch h-14 tablet:h-16"
       flex={false}
       hidden={hidden}
@@ -390,11 +414,13 @@ const PaymentCard = ({ paymentId, hidden = false, style }) => {
           className="w-5 tablet:w-6"
         />
       </div>
-      {paymentSector === 'event' && <PaymentEvent payment={payment} />}
-      {paymentSector === 'service' && <PaymentService payment={payment} />}
-      {paymentSector === 'product' && <PaymentProduct payment={payment} />}
-      {paymentSector === 'internal' && <PaymentInternal payment={payment} />}
-      {!paymentSector && <PayCardWrapper payment={payment} />}
+      {paymentSector === 'event' && <PaymentEvent payment={paymentState} />}
+      {paymentSector === 'service' && <PaymentService payment={paymentState} />}
+      {paymentSector === 'product' && <PaymentProduct payment={paymentState} />}
+      {paymentSector === 'internal' && (
+        <PaymentInternal payment={paymentState} />
+      )}
+      {!paymentSector && <PayCardWrapper payment={paymentState} />}
     </CardWrapper>
   )
 }

@@ -136,6 +136,12 @@ const SettingsCodeSendServiceContent = dynamic(
 const PaymentsNotParticipantsEventContent = dynamic(
   () => import('@layouts/content/PaymentsNotParticipantsEventContent')
 )
+const PaymentsForNotExistedEventsContent = dynamic(
+  () => import('@layouts/content/PaymentsForNotExistedEventsContent')
+)
+const PaymentsFromNotExistedUsersContent = dynamic(
+  () => import('@layouts/content/PaymentsFromNotExistedUsersContent')
+)
 const ServicesUsersContent = dynamic(
   () => import('@layouts/content/ServicesUsersContent')
 )
@@ -1745,6 +1751,19 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.payments?.paymentsNotParticipantsEvent,
   },
+  // TODO Временное
+  paymentsForNotExistedEvents: {
+    Component: PaymentsForNotExistedEventsContent,
+    name: 'Транзакции / Со ссылками на несуществующие мероприятия',
+    accessRoles: ['dev'],
+    roleAccess: (role) => role?.dev,
+  },
+  paymentsFromNotExistedUsers: {
+    Component: PaymentsFromNotExistedUsersContent,
+    name: 'Транзакции / Со ссылками на несуществующих пользователей',
+    accessRoles: ['dev'],
+    roleAccess: (role) => role?.dev,
+  },
   dev: {
     Component: DevContent,
     name: 'Разработчик',
@@ -2027,6 +2046,26 @@ export const pages = [
   },
   {
     id: 15,
+    group: 6,
+    name: 'Со ссылками на несущ. мероприятия',
+    href: 'paymentsForNotExistedEvents',
+    icon: faBug,
+    // badge: badgePaymentsWithoutUserWritingToEventSelector,
+    accessRoles: CONTENTS['paymentsForNotExistedEvents'].accessRoles,
+    roleAccess: CONTENTS['paymentsForNotExistedEvents'].roleAccess,
+  },
+  {
+    id: 16,
+    group: 6,
+    name: 'Со ссылками на несущ. пользователей',
+    href: 'paymentsFromNotExistedUsers',
+    icon: faBug,
+    // badge: badgePaymentsWithoutUserWritingToEventSelector,
+    accessRoles: CONTENTS['paymentsFromNotExistedUsers'].accessRoles,
+    roleAccess: CONTENTS['paymentsFromNotExistedUsers'].roleAccess,
+  },
+  {
+    id: 17,
     group: 7,
     name: 'Записи на мероприятия',
     href: 'histories',
@@ -2035,7 +2074,7 @@ export const pages = [
     roleAccess: CONTENTS['histories'].roleAccess,
   },
   {
-    id: 16,
+    id: 18,
     group: 7,
     name: 'Дни рождения',
     href: 'birthdays',
@@ -2053,7 +2092,7 @@ export const pages = [
   //   accessRoles: CONTENTS['statistics'].accessRoles,
   // },
   {
-    id: 17,
+    id: 19,
     group: 8,
     name: 'Мероприятия',
     href: 'statisticsEvents',
@@ -2062,7 +2101,7 @@ export const pages = [
     roleAccess: CONTENTS['statisticsEvents'].roleAccess,
   },
   {
-    id: 18,
+    id: 20,
     group: 8,
     name: 'Пользователи',
     href: 'statisticsUsers',
@@ -2071,7 +2110,7 @@ export const pages = [
     roleAccess: CONTENTS['statisticsUsers'].roleAccess,
   },
   {
-    id: 19,
+    id: 21,
     group: 8,
     name: 'Финансы',
     href: 'statisticsFinance',
