@@ -25,7 +25,6 @@ import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 import InputNumber from '@components/InputNumber'
-import ImageGallery from '@components/ImageGallery'
 import ReactImageGallery from 'react-image-gallery'
 
 const styles = [
@@ -61,6 +60,7 @@ const getPreview = async () => {
   const input = document.querySelector('#input0')
   const response = await svgAsPngUri(input, {
     scale: 240 / 1920,
+    canvg: true,
   })
   return response
 }
