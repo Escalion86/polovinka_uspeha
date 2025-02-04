@@ -10,7 +10,7 @@ const PayTypeIcon = ({ payment, size }) => {
     <IconWithTooltip
       icon={payType?.icon ?? faQuestion}
       className={payType ? 'text-' + payType.color : 'text-disabled'}
-      tooltip={PAY_TYPES_OBJECT[payType.value]}
+      tooltip={payType?.value ? PAY_TYPES_OBJECT[payType.value] : undefined}
       size={size}
     />
   )

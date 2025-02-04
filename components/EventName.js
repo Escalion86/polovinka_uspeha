@@ -7,10 +7,15 @@ import { useAtomValue } from 'jotai'
 import TextLinesLimiter from './TextLinesLimiter'
 import eventSelector from '@state/selectors/eventSelector'
 
-const EventNameById = ({ eventId, showStatus, className }) => {
+export const EventNameById = ({ eventId, showStatus, className }) => {
   if (!eventId) return null
   const event = useAtomValue(eventSelector(eventId))
+  return (
+    <EventName event={event} showStatus={showStatus} className={className} />
+  )
+}
 
+const EventName = ({ event, showStatus, className }) => {
   const eventStatus = eventStatusFunc(event)
 
   const eventStatusProps = EVENT_STATUSES_WITH_TIME.find(
@@ -39,4 +44,4 @@ const EventNameById = ({ eventId, showStatus, className }) => {
   )
 }
 
-export default EventNameById
+export default EventName

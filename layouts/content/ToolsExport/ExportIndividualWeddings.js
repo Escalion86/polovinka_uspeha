@@ -101,12 +101,6 @@ const ExportIndividualWeddings = () => {
       },
     }
 
-    // serviceUsers.map((serviceUser) => sheet.addRow(serviceUser.ansvers))
-
-    // var XLSX_CALC = require('xlsx-calc')
-    // XLSX_CALC(workbook)
-    // XLSX_CALC(workbook, { continue_after_error: true, log_error: true })
-
     workbook.xlsx.writeBuffer().then((data) => {
       const blob = new Blob([data], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheet.sheet',
