@@ -60,7 +60,6 @@ const getPreview = async () => {
   const input = document.querySelector('#input0')
   const response = await svgAsPngUri(input, {
     scale: 240 / 1920,
-    canvg: true,
   })
   return response
 }
