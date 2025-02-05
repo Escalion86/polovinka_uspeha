@@ -54,7 +54,7 @@ const ColorPicker = ({
         // turnOffAutoClose="inside"
         // strategyAbsolute
       >
-        <div className="flex flex-col gap-y-2 w-[200px]">
+        <div className="flex flex-col gap-y-2 border-gray-200 border w-[216px] bg-white p-2 rounded-md shadow">
           <HexColorPicker color={value} onChange={onChange} />
           <div className="flex items-center justify-between gap-x-2 w-[200px]">
             <Input
@@ -62,7 +62,7 @@ const ColorPicker = ({
               onChange={onChange}
               paddingY={false}
               noMargin
-              className="max-w-[132px]"
+              className="max-w-[110px]"
             />
             <FontAwesomeIcon
               className="w-5 h-5 duration-200 transform cursor-pointer text-general hover:scale-110"
