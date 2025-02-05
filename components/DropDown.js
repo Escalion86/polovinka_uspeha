@@ -1,5 +1,6 @@
 // import cn from 'classnames'
 import useIsTouchDevice from '@helpers/useIsTouchDevice'
+import cn from 'classnames'
 import { Dropdown } from 'flowbite-react'
 // import { useRef } from 'react'
 const DropDown = ({
@@ -44,7 +45,7 @@ const DropDown = ({
       // label="Dropdown button"
       // dismissOnClick={false}
       renderTrigger={() => trigger}
-      className={className}
+      className={cn('bg-transparent border-0', className)}
       theme={{ content: '' }}
       placement={placement}
     >
@@ -53,7 +54,8 @@ const DropDown = ({
       <Dropdown.Item>Settings</Dropdown.Item>
       <Dropdown.Item>Earnings</Dropdown.Item>
       <Dropdown.Item>Sign out</Dropdown.Item> */}
-      <Dropdown.Item className="p-0">{children}</Dropdown.Item>
+      {/* <Dropdown.Item className="p-0">{children}</Dropdown.Item> */}
+      {children}
       {/* </div> */}
     </Dropdown>
   )
