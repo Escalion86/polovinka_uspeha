@@ -466,15 +466,15 @@ const eventUsersFunc = (eventId) => {
         }
         return tempParticipant
       })
-      // setReserve((state) => {
-      //   const tempReserve = { ...state }
-      //   for (const reserveKey in tempReserve) {
-      //     tempReserve[reserveKey] = sortFunc(tempReserve[reserveKey])
-      //   }
-      //   return tempReserve
-      // })
+      setReserve((state) => {
+        const tempReserve = {}
+        for (const reserveKey in state) {
+          tempReserve[reserveKey] = state[reserveKey].toSorted(sortFunc)
+        }
+        return tempReserve
+      })
       setAssistants((state) => state.toSorted(sortFunc))
-      // setBanned((state) => sortFunc(state))
+      setBanned((state) => state.toSorted(sortFunc))
     }, [])
 
     const sortedEventUsersParticipants = useMemo(
