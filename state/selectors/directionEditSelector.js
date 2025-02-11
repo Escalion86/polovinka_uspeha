@@ -3,6 +3,7 @@
 import { atom } from 'jotai'
 
 import directionsAtom from '@state/atoms/directionsAtom'
+import directionFullSelectorAsync from './directionFullSelectorAsync'
 
 const directionEditSelector = atom(null, (get, set, newItem) => {
   const items = get(directionsAtom)
@@ -14,6 +15,7 @@ const directionEditSelector = atom(null, (get, set, newItem) => {
       if (event._id === newItem._id) return newItem
       return event
     })
+    set(directionFullSelectorAsync(newItem._id), newItem)
     set(directionsAtom, newItemsList)
   } else {
     // Если такого атома нет и мы добавляем новый, то просто добавляем атом в список

@@ -7,6 +7,7 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import additionalBlockSelector from '@state/selectors/additionalBlockSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useAtomValue } from 'jotai'
+import snackbarAtom from '@state/atoms/snackbarAtom'
 
 const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -19,39 +20,47 @@ const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
   const itemFunc = useAtomValue(itemsFuncAtom)
 
   const additionalBlocks = useAtomValue(additionalBlocksAtom)
+  const snackbar = useAtomValue(snackbarAtom)
 
   const setUp = async () => {
     if (additionalBlock.index === 0) return
 
     var movedUp = false
     var movedDown = false
-    const itemsToChange = additionalBlocks.map((item) => {
-      if (!item.index && item.index === 0)
-        Object.keys(additionalBlocks).reduce((key, v) =>
-          additionalBlocks[v] < additionalBlocks[key] ? v : key
-        )
+    const itemsToChange = additionalBlocks
+      .map((item) => {
+        if (item.index === additionalBlock.index)
+          if (!movedUp) {
+            movedUp = true
+            return { ...item, index: item.index - 1 }
+          }
 
-      if (item.index === additionalBlock.index)
-        if (!movedUp) {
-          movedUp = true
-          return { ...item, index: item.index - 1 }
-        }
-
-      if (item.index === additionalBlock.index - 1)
-        if (!movedDown) {
-          movedDown = true
-          return { ...item, index: item.index + 1 }
-        }
-    })
-    await Promise.all(
-      itemsToChange.map(async (item) => {
-        if (item)
-          await itemFunc.additionalBlock.set({
-            _id: item._id,
-            index: item.index,
-          })
+        if (item.index === additionalBlock.index - 1)
+          if (!movedDown) {
+            movedDown = true
+            return { ...item, index: item.index + 1 }
+          }
       })
+      .filter((item) => item)
+    const result = await Promise.all(
+      itemsToChange.map(
+        async (item) =>
+          await itemFunc.additionalBlock.set(
+            {
+              _id: item._id,
+              index: item.index,
+            },
+            false,
+            true
+          )
+      )
     )
+    if (result.filter((item) => item).length === itemsToChange.length)
+      snackbar.success(`Доп. блок "${additionalBlock.title}" перемещен выше`)
+    else
+      snackbar.error(
+        `Не удеалось переместить доп. блок "${additionalBlock.title}"`
+      )
   }
 
   const setDown = async () => {
@@ -59,27 +68,39 @@ const AdditionalBlockCard = ({ additionalBlockId, hidden = false, style }) => {
 
     var movedUp = false
     var movedDown = false
-    const itemsToChange = additionalBlocks.map((item) => {
-      if (item.index === additionalBlock.index)
-        if (!movedDown) {
-          movedDown = true
-          return { ...item, index: item.index + 1 }
-        }
-      if (item.index === additionalBlock.index + 1)
-        if (!movedUp) {
-          movedUp = true
-          return { ...item, index: item.index - 1 }
-        }
-    })
-    await Promise.all(
-      itemsToChange.map(async (item) => {
-        if (item)
-          await itemFunc.additionalBlock.set({
-            _id: item._id,
-            index: item.index,
-          })
+    const itemsToChange = additionalBlocks
+      .map((item) => {
+        if (item.index === additionalBlock.index)
+          if (!movedDown) {
+            movedDown = true
+            return { ...item, index: item.index + 1 }
+          }
+        if (item.index === additionalBlock.index + 1)
+          if (!movedUp) {
+            movedUp = true
+            return { ...item, index: item.index - 1 }
+          }
       })
+      .filter((item) => item)
+    const result = await Promise.all(
+      itemsToChange.map(
+        async (item) =>
+          await itemFunc.additionalBlock.set(
+            {
+              _id: item._id,
+              index: item.index,
+            },
+            false,
+            true
+          )
+      )
     )
+    if (result.filter((item) => item).length === itemsToChange.length)
+      snackbar.success(`Доп. блок "${additionalBlock.title}" перемещен ниже`)
+    else
+      snackbar.error(
+        `Не удеалось переместить доп. блок "${additionalBlock.title}"`
+      )
   }
 
   return (

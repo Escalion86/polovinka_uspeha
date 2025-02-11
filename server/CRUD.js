@@ -384,7 +384,8 @@ const updateEventInCalendar = async (event, location) => {
   return updatedCalendarEvent
 }
 
-export default async function handler(Schema, req, res, params = null, select) {
+export default async function handler(Schema, req, res, props = {}) {
+  const { params, select, autoIncrementIndex } = props
   const { query, method, body } = req
 
   const id = query?.id
@@ -461,6 +462,11 @@ export default async function handler(Schema, req, res, params = null, select) {
           if (Schema === 'Events' && MODE === 'production') {
             clearedBody.googleCalendarId =
               await addBlankEventToCalendar(location)
+          }
+
+          if (autoIncrementIndex) {
+            const itemsInModelCount = await db.model(Schema).countDocuments({})
+            clearedBody.index = itemsInModelCount
           }
 
           data = await db.model(Schema).create(clearedBody)
