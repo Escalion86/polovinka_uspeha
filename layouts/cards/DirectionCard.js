@@ -7,6 +7,7 @@ import itemsFuncAtom from '@state/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
 import { useAtomValue } from 'jotai'
+import snackbarAtom from '@state/atoms/snackbarAtom'
 
 const DirectionCard = ({ directionId, hidden = false, style }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -14,39 +15,50 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
   const loading = useAtomValue(loadingAtom('direction' + directionId))
   const itemFunc = useAtomValue(itemsFuncAtom)
   const directions = useAtomValue(directionsAtom)
+  const snackbar = useAtomValue(snackbarAtom)
 
   const setUp = async () => {
     if (direction.index === 0) return
 
     var movedUp = false
     var movedDown = false
-    const itemsToChange = directions.map((item) => {
-      if (!item.index && item.index === 0)
-        Object.keys(directions).reduce((key, v) =>
-          directions[v] < directions[key] ? v : key
-        )
+    const itemsToChange = directions
+      .map((item) => {
+        // if (!item.index && item.index === 0)
+        //   Object.keys(directions).reduce((key, v) =>
+        //     directions[v] < directions[key] ? v : key
+        //   )
 
-      if (item.index === direction.index)
-        if (!movedUp) {
-          movedUp = true
-          return { ...item, index: item.index - 1 }
-        }
+        if (item.index === direction.index)
+          if (!movedUp) {
+            movedUp = true
+            return { ...item, index: item.index - 1 }
+          }
 
-      if (item.index === direction.index - 1)
-        if (!movedDown) {
-          movedDown = true
-          return { ...item, index: item.index + 1 }
-        }
-    })
-    await Promise.all(
-      itemsToChange.map(async (item) => {
-        if (item)
-          await itemFunc.direction.set({
-            _id: item._id,
-            index: item.index,
-          })
+        if (item.index === direction.index - 1)
+          if (!movedDown) {
+            movedDown = true
+            return { ...item, index: item.index + 1 }
+          }
       })
+      .filter((item) => item)
+    const result = await Promise.all(
+      itemsToChange.map(
+        async (item) =>
+          await itemFunc.direction.set(
+            {
+              _id: item._id,
+              index: item.index,
+            },
+            false,
+            true
+          )
+      )
     )
+    if (result.filter((item) => item).length === itemsToChange.length)
+      snackbar.success(`Направление "${direction.title}" перемещено выше`)
+    else
+      snackbar.error(`Не удеалось переместить направление "${direction.title}"`)
   }
 
   const setDown = async () => {
@@ -54,27 +66,37 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
 
     var movedUp = false
     var movedDown = false
-    const itemsToChange = directions.map((item) => {
-      if (item.index === direction.index)
-        if (!movedDown) {
-          movedDown = true
-          return { ...item, index: item.index + 1 }
-        }
-      if (item.index === direction.index + 1)
-        if (!movedUp) {
-          movedUp = true
-          return { ...item, index: item.index - 1 }
-        }
-    })
-    await Promise.all(
-      itemsToChange.map(async (item) => {
-        if (item)
-          await itemFunc.direction.set({
-            _id: item._id,
-            index: item.index,
-          })
+    const itemsToChange = directions
+      .map((item) => {
+        if (item.index === direction.index)
+          if (!movedDown) {
+            movedDown = true
+            return { ...item, index: item.index + 1 }
+          }
+        if (item.index === direction.index + 1)
+          if (!movedUp) {
+            movedUp = true
+            return { ...item, index: item.index - 1 }
+          }
       })
+      .filter((item) => item)
+    const result = await Promise.all(
+      itemsToChange.map(
+        async (item) =>
+          await itemFunc.direction.set(
+            {
+              _id: item._id,
+              index: item.index,
+            },
+            false,
+            true
+          )
+      )
     )
+    if (result.filter((item) => item).length === itemsToChange.length)
+      snackbar.success(`Направление "${direction.title}" перемещено ниже`)
+    else
+      snackbar.error(`Не удеалось переместить направление "${direction.title}"`)
   }
 
   return (
@@ -103,6 +125,7 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
           <div className="flex-1 px-2 py-1 text-xl font-bold ">
             {direction.title}
           </div>
+          <div className="font-bold text-blue-600">{direction.index}</div>
           <CardButtons
             item={direction}
             typeOfItem="direction"
