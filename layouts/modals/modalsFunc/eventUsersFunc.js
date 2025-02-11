@@ -697,11 +697,30 @@ const eventUsersFunc = (eventId) => {
     }
 
     useEffect(() => {
+      let participantsCheck = true
+      for (const [key, value] of Object.entries(participants)) {
+        if (
+          !compareObjects(participants[key], objParticipants[key], {
+            byIDs: true,
+          })
+        ) {
+          participantsCheck = false
+          break
+        }
+      }
+      let reserveCheck = true
+      for (const [key, value] of Object.entries(reserve)) {
+        if (!compareObjects(reserve[key], objReserve[key], { byIDs: true })) {
+          reserveCheck = false
+          break
+        }
+      }
+
       const isFormChanged =
-        !compareObjects(participants, objParticipants) ||
-        !compareObjects(assistants, arrayAssistants) ||
-        !compareObjects(reserve, objReserve) ||
-        !compareObjects(banned, arrayBanned)
+        !reserveCheck ||
+        !participantsCheck ||
+        !compareObjects(assistants, arrayAssistants, { byIDs: true }) ||
+        !compareObjects(banned, arrayBanned, { byIDs: true })
 
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)

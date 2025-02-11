@@ -729,7 +729,9 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
       //   user?.status !== status ||
       //   user?.role !== role
       if (onConfirm) setOnConfirmFunc(onClickConfirm)
-      setOnShowOnCloseConfirmDialog(!compareObjects(state, stateDefault, true))
+      setOnShowOnCloseConfirmDialog(
+        !compareObjects(state, stateDefault, { oneWay: true })
+      )
       // setDisableConfirm(!isAllRequiredFilled)
     }, [state])
 
