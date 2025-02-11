@@ -60,6 +60,14 @@ export async function fetchingUsers(location) {
   return resp
 }
 
+export async function fetchUser(location, id) {
+  const resp = await fetch(`/api/${location}/users/${id}`)
+    .then((res) => res.json())
+    .then((json) => json.data)
+    .catch((error) => console.log('fetchingUsers ERROR:', error))
+  return resp
+}
+
 export async function fetchingUsersById(id, location) {
   const resp = await fetch(`/api/${location}/users/byId/${id}`)
     .then((res) => res.json())

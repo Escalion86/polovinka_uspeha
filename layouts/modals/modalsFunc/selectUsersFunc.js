@@ -6,6 +6,8 @@ import ListWrapper from '@layouts/lists/ListWrapper'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import locationAtom from '@state/atoms/locationAtom'
+import { fetchUser } from '@helpers/fetchers'
 
 const selectUsersFunc = (
   usersState,
@@ -27,6 +29,7 @@ const selectUsersFunc = (
     setDisableDecline,
     setComponentInFooter,
   }) => {
+    const location = useAtomValue(locationAtom)
     const users = useAtomValue(usersAtomAsync)
     const [selectedUsers, setSelectedUsers] = useState(
       isObject(usersState) ? usersState.filter((item) => isObject(item)) : []
@@ -115,10 +118,17 @@ const selectUsersFunc = (
           <span>чел.</span>
         </div>
       )
-      setOnConfirmFunc(() => {
-        onConfirm(selectedUsers)
+      setOnConfirmFunc(async () => {
+        const fullUsers = []
+        for (const user of selectedUsers) {
+          const fullUser = await fetchUser(location, user._id)
+          fullUsers.push(fullUser)
+        }
         closeModal()
+        onConfirm(fullUsers)
       })
+
+      // })
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       // setDisableConfirm(!isFormChanged)
     }, [
