@@ -1,7 +1,7 @@
 import CRUD from '@server/CRUD'
 
 export default async function handler(req, res) {
-  return await CRUD('Users', req, res, null, {
+  return await CRUD('Users', req, res, {
     select: {
       images: 0,
       haveKids: 0,
