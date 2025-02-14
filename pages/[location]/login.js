@@ -559,6 +559,11 @@ const LoginPage = (props) => {
     }
   }, [router, inputPasswordRef.current])
 
+  useEffect(() => {
+    if (inputPhone && String(inputPhone).substring(0, 1) != '7')
+      setInputPhone(Number('7' + String(inputPhone).substring(1)))
+  }, [inputPhone])
+
   const onClickBackCall = useCallback(async () => {
     const result = await postData(
       `/api/telefonip`,
