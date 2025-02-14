@@ -51,7 +51,6 @@ const Contacts = ({ user, coincidencUsers }) => {
       <ContactsIconsButtons
         className="px-2"
         user={user}
-        // message={message}
         smsViaPhone
         forceWhatsApp
       />
