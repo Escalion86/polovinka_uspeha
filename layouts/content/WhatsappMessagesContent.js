@@ -16,7 +16,7 @@ const WhatsappMessagesContent = () => {
   // const modalsFunc = useAtomValue(modalsFuncAtom)
   const listRef = useRef(null)
   const [selectedUserId, setSelectedUserId] = useState(null)
-  const [resp, setResp] = useState(null)
+  const [resp, setResp] = useState([])
   const [waAvatar, setWaAvatar] = useState(null)
   const [instanceState, setInstanceState] = useState(null)
   const [messageToSend, setMessageToSend] = useState('')
@@ -43,6 +43,7 @@ const WhatsappMessagesContent = () => {
       },
       (newResp) => {
         if (JSON.stringify(newResp) === JSON.stringify(resp)) return
+        console.log('newResp', newResp)
         setResp(newResp)
       }
     )
@@ -100,7 +101,7 @@ const WhatsappMessagesContent = () => {
               disabled={!messageToSend}
             />
           </div>
-          {resp && (
+          {resp?.length > 0 && (
             <div className="flex py-0.5 flex-col-reverse overflow-y-scroll gap-y-1">
               {resp?.map(
                 ({
