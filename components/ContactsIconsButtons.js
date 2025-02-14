@@ -64,6 +64,7 @@ const ContactsIconsButtons = ({
   smsViaPhone,
   forceWhatsApp,
   forceShowAll,
+  forceTelegram,
 }) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -155,17 +156,27 @@ const ContactsIconsButtons = ({
         )}
 
       {!message &&
-        user?.telegram &&
-        (user.security?.showContacts ||
-          user.security?.showTelegram ||
-          canSeeAllContacts) && (
-          <Btn
-            icon={faTelegramPlane}
-            className="text-blue-600"
-            url={`https://t.me/${user.telegram}`}
-            title={'@' + user.telegram}
-          />
-        )}
+        (user?.telegram
+          ? (user.security?.showContacts ||
+              user.security?.showTelegram ||
+              canSeeAllContacts) && (
+              <Btn
+                icon={faTelegramPlane}
+                className="text-blue-600"
+                url={`https://t.me/${user.telegram}`}
+                title={'@' + user.telegram}
+              />
+            )
+          : forceTelegram && (
+              <Btn
+                icon={faTelegramPlane}
+                className="text-red-400"
+                url={`https://t.me/+${user.phone}${
+                  message ? `?text=${encodedMessage}` : ''
+                }`}
+                title={'+' + user.phone}
+              />
+            ))}
       {!message &&
         user?.instagram &&
         (user.security?.showContacts ||

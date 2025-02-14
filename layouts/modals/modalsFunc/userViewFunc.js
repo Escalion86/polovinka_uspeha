@@ -42,6 +42,7 @@ const userViewFunc = (userId, params = {}) => {
     const isLoggedUserDev = loggedUserActiveRole?.dev
     const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
     const seeUserEvents = loggedUserActiveRole?.users?.seeUserEvents
+    const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
 
     const user = useAtomValue(userSelector(userId))
 
@@ -142,7 +143,9 @@ const userViewFunc = (userId, params = {}) => {
             user={user}
             withTitle
             grid
-            forceShowAll={params?.showContacts}
+            forceShowAll={params?.showContacts || seeAllContacts}
+            forceWhatsApp={seeAllContacts}
+            forceTelegram={seeAllContacts}
           />
           <TextLine label="Дата регистрации">
             {formatDate(user.createdAt)}
