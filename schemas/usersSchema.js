@@ -29,18 +29,18 @@ const usersSchema = {
     ],
     default: '',
   },
-  firstname: {
-    type: String,
-    default: '',
-  },
-  secondname: {
-    type: String,
-    default: '',
-  },
-  thirdname: {
-    type: String,
-    default: '',
-  },
+  // firstname: {
+  //   type: String,
+  //   default: '',
+  // },
+  // secondname: {
+  //   type: String,
+  //   default: '',
+  // },
+  // thirdname: {
+  //   type: String,
+  //   default: '',
+  // },
   email: {
     type: String,
     lowercase: true,
@@ -70,22 +70,22 @@ const usersSchema = {
     type: String,
     default: '',
   },
-  about: {
-    type: String,
-    default: '',
-  },
-  interests: {
-    type: String,
-    default: '',
-  },
-  profession: {
-    type: String,
-    default: '',
-  },
-  orientation: {
-    type: String,
-    default: null,
-  },
+  // about: {
+  //   type: String,
+  //   default: '',
+  // },
+  // interests: {
+  //   type: String,
+  //   default: '',
+  // },
+  // profession: {
+  //   type: String,
+  //   default: '',
+  // },
+  // orientation: {
+  //   type: String,
+  //   default: null,
+  // },
   phone: {
     type: Number,
     // required: [true, 'Введите Телефон'],
