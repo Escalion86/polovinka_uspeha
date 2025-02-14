@@ -206,6 +206,7 @@ import LikesContent from '@layouts/content/LikesContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 // import menuHiddenLoggedUserLikesSelector from '@state/selectors/menuHiddenLoggedUserLikesSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
+import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
 
 const colors = [
   'border-blue-400',
@@ -1770,6 +1771,12 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['dev'],
     roleAccess: (role) => role?.dev,
   },
+  whatsappMessaging: {
+    Component: WhatsappMessagesContent,
+    name: 'Рассылка WhatsApp',
+    accessRoles: ['dev'],
+    roleAccess: (role) => role?.dev,
+  },
   toolsTextEventsAnons: {
     Component: ToolsTextEventsAnonsContent,
     name: 'Инструменты / Генератор текста анонса мероприятий',
@@ -2243,6 +2250,16 @@ export const pages = [
     icon: faCalendarAlt,
     accessRoles: CONTENTS['remindDates'].accessRoles,
     roleAccess: CONTENTS['remindDates'].roleAccess,
+  },
+
+  {
+    id: 97,
+    group: 99,
+    name: 'Рассылка WhatsApp',
+    href: 'whatsappMessaging',
+    icon: faWhatsapp,
+    accessRoles: CONTENTS['dev'].accessRoles,
+    roleAccess: CONTENTS['dev'].roleAccess,
   },
   {
     id: 98,

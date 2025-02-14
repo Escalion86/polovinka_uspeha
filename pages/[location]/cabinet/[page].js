@@ -129,7 +129,7 @@ function CabinetPage(props) {
           </CabinetWrapper>
         )}
       </StateLoader>
-      {props.mode === 'dev' && <DevToolsClient />}
+      {/* {props.mode === 'dev' && <DevToolsClient />} */}
     </>
   )
 }
