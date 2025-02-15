@@ -187,27 +187,6 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
         url:
           process.env.DOMAIN + '/' + location + '/event/' + String(event._id),
       },
-      // TODO Исправить запись через телеграм
-      // ---------------------------------------
-      // {
-      //   text: '\u{1F4DD} Записаться',
-      //   callback_data: JSON.stringify({
-      //     c: telegramCmdToIndex('eventSignIn'),
-      //     eventId: event._id,
-      //   }),
-      // },
-      // ---------------------------------------
-    ],
-  ]
-
-  // TODO Исправить запись через телеграм
-  const inline_keyboard2 = [
-    [
-      {
-        text: '\u{1F4C5} На сайте',
-        url:
-          process.env.DOMAIN + '/' + location + '/event/' + String(event._id),
-      },
       {
         text: '\u{1F4DD} Записаться',
         callback_data: JSON.stringify({
@@ -217,13 +196,7 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
       },
     ],
   ]
-  // TODO Исправить запись через телеграм
-  sendTelegramMessage({
-    telegramIds: [261102161],
-    text: textStart + textPriceForMember + textEnd,
-    inline_keyboard: inline_keyboard2,
-    location,
-  })
+
   if (novicesTelegramIds.length > 0) {
     sendTelegramMessage({
       telegramIds: novicesTelegramIds,
@@ -234,9 +207,7 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
   }
   if (membersTelegramIds.length > 0) {
     sendTelegramMessage({
-      telegramIds: membersTelegramIds.filter(
-        (telegramId) => telegramId !== 261102161
-      ),
+      telegramIds: membersTelegramIds,
       text: textStart + textPriceForMember + textEnd,
       inline_keyboard,
       location,
