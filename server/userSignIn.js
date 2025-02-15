@@ -137,7 +137,10 @@ const userSignIn = async ({
       res?.status(202).json(result)
       return result
     }
-    const eventUsers = await db.model('EventsUsers').find({ eventId }).lean()
+    const eventUsers = await db
+      .model('EventsUsers')
+      .find({ eventId, subEventId })
+      .lean()
     const usersIds = eventUsers.map((eventUser) => eventUser.userId)
     const users = await db
       .model('Users')
@@ -163,8 +166,6 @@ const userSignIn = async ({
       subEventSum,
       rules,
     })
-
-    console.log('userEventStatus', userEventStatus)
 
     // TODO FIX Сделать проверку на возможность зарегистрироваться на суб мероприятие
     // Проверяем параметры пользователя

@@ -16,7 +16,7 @@ const WhatsappMessagesContent = () => {
   // const modalsFunc = useAtomValue(modalsFuncAtom)
   const listRef = useRef(null)
   const [selectedUserId, setSelectedUserId] = useState(null)
-  const [resp, setResp] = useState(null)
+  const [resp, setResp] = useState([])
   const [waAvatar, setWaAvatar] = useState(null)
   const [instanceState, setInstanceState] = useState(null)
   const [messageToSend, setMessageToSend] = useState('')
@@ -49,12 +49,15 @@ const WhatsappMessagesContent = () => {
   }, [])
 
   useEffect(() => {
+    if (interval) clearInterval(interval)
     if (user) {
-      if (interval) clearInterval(interval)
       fetchChatHystory(user)
       interval = setInterval(() => {
         fetchChatHystory(user)
       }, 2000)
+    }
+    return () => {
+      if (interval) clearInterval(interval)
     }
   }, [user])
 
@@ -70,18 +73,18 @@ const WhatsappMessagesContent = () => {
     <div className="flex flex-col h-full max-h-full p-1 gap-y-1">
       <div className="flex flex-col h-fit gap-y-1">
         <SelectUser selectedId={selectedUserId} onChange={setSelectedUserId} />
-        {selectedUserId && (
+        {/* {selectedUserId && (
           <Button
             name="Обновить список сообщений"
             onClick={() => {
               fetchChatHystory(user)
             }}
           />
-        )}
+        )} */}
       </div>
       {selectedUserId && (
         <div
-          className="flex flex-col-reverse h-[calc(100%-88px)] max-h-[calc(100%-88px)] gap-y-1"
+          className="flex flex-col-reverse h-[calc(100%-50px)] max-h-[calc(100%-50px)] gap-y-1"
           ref={listRef}
         >
           <div className="flex items-center gap-x-1">
@@ -100,7 +103,7 @@ const WhatsappMessagesContent = () => {
               disabled={!messageToSend}
             />
           </div>
-          {resp && (
+          {resp?.length > 0 && (
             <div className="flex py-0.5 flex-col-reverse overflow-y-scroll gap-y-1">
               {resp?.map(
                 ({
@@ -141,8 +144,9 @@ const WhatsappMessagesContent = () => {
                   //   isEdited: false,
                   //   isDeleted: false
                   // },
-                  const dateTime = dateToDateTimeStr(Date(timestamp))
-                  var start = new Date(timestamp)
+                  const dateTimeStamp = new Date(timestamp * 1000)
+                  const dateTime = dateToDateTimeStr(dateTimeStamp)
+                  var start = dateTimeStamp
                   var today = new Date()
 
                   return (
@@ -157,8 +161,8 @@ const WhatsappMessagesContent = () => {
                         className={cn(
                           'relative flex flex-col pt-1 px-1 pb-2.5 border border-gray-400 rounded-b-lg w-fit min-w-[70%]',
                           type === 'outgoing'
-                            ? 'rounded-tl-lg bg-general/20'
-                            : 'rounded-tr-lg bg-blue-600/20'
+                            ? 'rounded-tr-lg bg-general/20'
+                            : 'rounded-tl-lg bg-blue-600/20'
                         )}
                       >
                         {/* <div className="flex items-center text-sm text-gray-600 gap-x-1"> */}
