@@ -3,6 +3,16 @@ import { postData } from '@helpers/CRUD'
 import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
 
+function splitText(text) {
+  const chunks = []
+  let i = 0
+  while (i < text.length) {
+    chunks.push(text.slice(i, Math.min(i + 4096, text.length)))
+    i += 4096
+  }
+  return chunks
+}
+
 const sendMessageToTelegramId = async ({
   telegramId,
   text,
@@ -43,22 +53,47 @@ const sendMessageToTelegramId = async ({
         })
       : undefined
 
-    const result = await postData(
-      `https://api.telegram.org/bot${telegramToken}/sendMessage`,
-      {
-        chat_id: telegramId,
-        text,
-        parse_mode: 'html',
-        reply_markup,
-      },
-      null,
-      // (data) => console.log('data', data),
-      (data) => console.log('error', data),
-      true,
-      null,
-      true
-    )
-    return result
+    if (text.length > 4096) {
+      const preparedText = splitText(text)
+      const result = []
+      for (let i = 0; i < preparedText.length; i++) {
+        const res = await postData(
+          `https://api.telegram.org/bot${telegramToken}/sendMessage`,
+          {
+            chat_id: telegramId,
+            text: preparedText[i],
+            parse_mode: 'html',
+            reply_markup:
+              i === preparedText.length - 1 ? reply_markup : undefined,
+          },
+          null,
+          // (data) => console.log('data', data),
+          (data) => console.log('error', data),
+          true,
+          null,
+          true
+        )
+        result.push(res)
+      }
+      return result
+    } else {
+      const result = await postData(
+        `https://api.telegram.org/bot${telegramToken}/sendMessage`,
+        {
+          chat_id: telegramId,
+          text,
+          parse_mode: 'html',
+          reply_markup,
+        },
+        null,
+        // (data) => console.log('data', data),
+        (data) => console.log('error', data),
+        true,
+        null,
+        true
+      )
+      return result
+    }
   }
 }
 
