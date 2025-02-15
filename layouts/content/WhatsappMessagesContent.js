@@ -4,30 +4,37 @@ import Button from '@components/Button'
 import { SelectUser } from '@components/SelectItem'
 import { getData, postData } from '@helpers/CRUD'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
+import locationAtom from '@state/atoms/locationAtom'
 // import modalsFuncAtom from '@state/modalsFuncAtom'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
+import Image from 'next/image'
 import { useCallback } from 'react'
 import { useEffect, useState, useRef } from 'react'
 
 var interval
 const WhatsappMessagesContent = () => {
   // const modalsFunc = useAtomValue(modalsFuncAtom)
+  const location = useAtomValue(locationAtom)
   const listRef = useRef(null)
   const [selectedUserId, setSelectedUserId] = useState(null)
   const [resp, setResp] = useState([])
-  const [waAvatar, setWaAvatar] = useState(null)
-  const [instanceState, setInstanceState] = useState(null)
+  const [waSettings, setWaSettings] = useState(null)
   const [messageToSend, setMessageToSend] = useState('')
   const user = useAtomValue(userSelector(selectedUserId))
 
   useEffect(() => {
     const fetchResp = async () => {
-      await getData('/api/whatsapp/getWaSettings', {}, (newResp) => {
-        setWaAvatar(newResp.avatar)
-        setInstanceState(newResp.stateInstance)
-      })
+      await getData(
+        `/api/${location}/whatsapp/getWaSettings`,
+        {},
+        (newResp) => {
+          setWaSettings(newResp)
+          console.log('newResp :>> ', newResp)
+        },
+        (error) => console.error('fetchResp error', error)
+      )
     }
     fetchResp()
   }, [])
@@ -36,10 +43,9 @@ const WhatsappMessagesContent = () => {
     // setResp(null)
     // await getData('/api/whatsapp/lastIncomingMessages', {})
     await postData(
-      '/api/whatsapp',
+      `/api/${location}/whatsapp/getChatHystory`,
       {
         phone: user.whatsapp || user.phone,
-        type: 'getChatHystory', //'lastIncomingMessages',
       },
       (newResp) => {
         if (JSON.stringify(newResp) === JSON.stringify(resp)) return
@@ -62,15 +68,29 @@ const WhatsappMessagesContent = () => {
   }, [user])
 
   const sendMessage = async (message) => {
-    await postData('/api/whatsapp', {
+    await postData(`/api/${location}/whatsapp/sendMessage`, {
       phone: user.whatsapp || user.phone,
-      type: 'sendMessage', //'lastIncomingMessages',
       message,
     })
   }
 
+  console.log('waSettings :>> ', waSettings)
+
   return (
     <div className="flex flex-col h-full max-h-full p-1 gap-y-1">
+      <div className="flex items-center gap-x-1">
+        <Image
+          src={waSettings?.avatar || '/img/whatsapp_default_avatar.jpg'}
+          width={40}
+          height={40}
+        />
+        <div>+{waSettings?.phone}</div>
+        {waSettings?.stateInstance === 'authorized' ? (
+          <div className="text-success">Авторизован</div>
+        ) : (
+          <div className="text-danger">Не авторизован</div>
+        )}
+      </div>
       <div className="flex flex-col h-fit gap-y-1">
         <SelectUser selectedId={selectedUserId} onChange={setSelectedUserId} />
         {/* {selectedUserId && (
@@ -84,7 +104,7 @@ const WhatsappMessagesContent = () => {
       </div>
       {selectedUserId && (
         <div
-          className="flex flex-col-reverse h-[calc(100%-50px)] max-h-[calc(100%-50px)] gap-y-1"
+          className="flex flex-col-reverse h-[calc(100%-90px)] max-h-[calc(100%-90px)] gap-y-1"
           ref={listRef}
         >
           <div className="flex items-center gap-x-1">
