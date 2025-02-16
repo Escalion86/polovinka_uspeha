@@ -3,7 +3,7 @@ import CRUD from '@server/CRUD'
 export default async function handler(req, res) {
   return await CRUD('Users', req, res, {
     select: {
-      images: 0,
+      images: { $slice: [0, 1] },
       haveKids: 0,
       security: 0,
       notifications: 0,
