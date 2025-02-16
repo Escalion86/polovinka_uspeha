@@ -144,7 +144,7 @@ const modalsFuncGenerator = (get, set) => {
       maxUsers,
       canSelectNone,
       modalTitle,
-      showCountNumber
+      getFullUsers
     ) =>
       addModal(
         require('../layouts/modals/modalsFunc/selectUsersFunc').default(
@@ -156,7 +156,7 @@ const modalsFuncGenerator = (get, set) => {
           maxUsers,
           canSelectNone,
           modalTitle,
-          showCountNumber
+          getFullUsers
         )
       ),
     selectDirections: (

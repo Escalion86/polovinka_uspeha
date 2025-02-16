@@ -13,11 +13,11 @@ import UserStatusIcon from '@components/UserStatusIcon'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import DropDown from '@components/DropDown'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import Image from 'next/image'
-import isUserAdmin from '@helpers/isUserAdmin'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import { faQrcode } from '@fortawesome/free-solid-svg-icons'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -28,9 +28,10 @@ const CheckedItem = ({ children }) => (
 
 const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const loggedUser = useAtomValue(loggedUserAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
+  const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+  const isLoggedUserAdmin = useAtomValue(isLoggedUserAdminSelector)
   const siteSettings = useAtomValue(siteSettingsAtom)
   const headerInfo = siteSettings?.headerInfo
 
@@ -90,7 +91,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
           </Link>
         </div>
       )}
-      {isUserAdmin(loggedUser) && (
+      {isLoggedUserAdmin && (
         <div
           className="flex items-center justify-center w-6 h-6 cursor-pointer"
           onClick={() => {
@@ -102,7 +103,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
           <FontAwesomeIcon icon={faQrcode} className="w-5 h-5 text-white" />
         </div>
       )}
-      {loggedUser.role === 'dev' && (
+      {isLoggedUserDev && (
         <Menu
           trigger={
             <div className="flex items-center justify-center w-6 h-6">
@@ -118,7 +119,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
         // menuPadding={false}
         openOnHover
       >
-        <div className="flex flex-col justify-center px-3 py-1 leading-5 text-black cursor-default w-80">
+        <div className="flex flex-col justify-center px-3 py-1 leading-5 text-black bg-white rounded-md cursor-default w-80">
           {isLoggedUserNovice ? (
             <>
               <span className="font-bold">Ваш статус: Новичок</span>

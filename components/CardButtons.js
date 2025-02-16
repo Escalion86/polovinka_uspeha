@@ -36,6 +36,8 @@ import useCopyToClipboard from '@helpers/useCopyToClipboard'
 import { faBullhorn } from '@fortawesome/free-solid-svg-icons'
 import { getEventById } from '@helpers/getById'
 import locationAtom from '@state/atoms/locationAtom'
+import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresidentSelector'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -79,6 +81,8 @@ const CardButtons = ({
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const device = useAtomValue(windowDimensionsTailwindSelector)
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
+  const isLoggedUserPresident = useAtomValue(isLoggedUserPresidentSelector)
+  const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
 
   if (!item) return null
 
@@ -99,6 +103,12 @@ const CardButtons = ({
     ? loggedUserActiveRole?.generalPage[key]
     : loggedUserActiveRole[key]
 
+  const isMorePrivelegetUser = !(
+    typeOfItem !== 'user' ||
+    ((item.role !== 'dev' || isLoggedUserDev) &&
+      (item.role !== 'president' || isLoggedUserPresident))
+  )
+
   const upDownSee =
     (!forForm &&
       typeOfItem === 'service' &&
@@ -109,11 +119,16 @@ const CardButtons = ({
     (typeOfItem === 'direction' &&
       loggedUserActiveRole?.generalPage?.directions)
 
-  const editSee = item.status !== 'closed' && (rule?.edit || rule === true)
+  const editSee =
+    !isMorePrivelegetUser &&
+    item.status !== 'closed' &&
+    (rule?.edit || rule === true)
   const seeHistory =
-    (typeOfItem === 'event' && loggedUserActiveRole?.events?.seeHistory) ||
-    (typeOfItem === 'payment' && loggedUserActiveRole?.payments?.seeHistory) ||
-    (typeOfItem === 'user' && loggedUserActiveRole?.users?.seeHistory)
+    !isMorePrivelegetUser &&
+    ((typeOfItem === 'event' && loggedUserActiveRole?.events?.seeHistory) ||
+      (typeOfItem === 'payment' &&
+        loggedUserActiveRole?.payments?.seeHistory) ||
+      (typeOfItem === 'user' && loggedUserActiveRole?.users?.seeHistory))
   const sendNotifications =
     typeOfItem === 'event' &&
     loggedUserActiveRole?.events?.sendNotifications &&
@@ -136,12 +151,14 @@ const CardButtons = ({
       typeOfItem === 'event' &&
       item.likes &&
       loggedUserActiveRole?.events?.editLikes,
-    copyId: loggedUserActiveRole?.dev,
+    copyId: isLoggedUserDev,
     history: seeHistory,
     userActionsHistory:
-      typeOfItem === 'user' && loggedUserActiveRole?.users?.seeActionsHistory,
+      !isMorePrivelegetUser &&
+      typeOfItem === 'user' &&
+      loggedUserActiveRole?.users?.seeActionsHistory,
     editQuestionnaire: !!onEditQuestionnaire,
-    setPasswordBtn: rule?.setPassword,
+    setPasswordBtn: !isMorePrivelegetUser && rule?.setPassword,
     shareBtn:
       window?.location?.origin &&
       ['event', 'service', 'user', 'product'].includes(typeOfItem),
@@ -158,13 +175,14 @@ const CardButtons = ({
       showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true),
     statusBtn: rule?.statusEdit,
     deleteBtn:
+      !isMorePrivelegetUser &&
       showDeleteButton &&
       item.status !== 'closed' &&
       (rule?.delete || rule === true),
     paymentsUsersBtn: rule?.paymentsEdit,
     userEvents: rule?.seeUserEvents,
     userPaymentsBtn: rule?.seeUserPayments,
-    loginHistory: loggedUserActiveRole?.dev && typeOfItem === 'user',
+    loginHistory: isLoggedUserDev && typeOfItem === 'user',
     sendNotifications,
   }
 

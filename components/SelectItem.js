@@ -233,6 +233,7 @@ export const SelectUser = ({
   active,
   itemChildren,
   nameFieldWrapperClassName,
+  getFullUser,
 }) => {
   const users = useAtomValue(usersAtomAsync)
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -292,7 +293,8 @@ export const SelectUser = ({
                     null,
                     1,
                     false,
-                    modalTitle
+                    modalTitle,
+                    getFullUser
                   )
               : (user) => modalsFunc.user.view(user._id)
             : null

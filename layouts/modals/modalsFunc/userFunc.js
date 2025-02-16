@@ -21,6 +21,7 @@ import userSelector from '@state/selectors/userSelector'
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import CopyPasteButtons from '@components/CopyPasteButtons'
+import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresidentSelector'
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -36,6 +37,7 @@ const userFunc = (userId, clone = false) => {
       useAtom(loggedUserActiveAtom)
 
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+    const isLoggedUserPresident = useAtomValue(isLoggedUserPresidentSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
     const canSetRole = loggedUserActiveRole?.users?.setRole
     const canSetStatus = loggedUserActiveRole?.users?.setStatus
@@ -473,6 +475,7 @@ const userFunc = (userId, clone = false) => {
             roleId={role}
             onChange={setRole}
             error={errors.role}
+            noPresident={!isLoggedUserPresident}
             noDev={!isLoggedUserDev}
           />
         )}

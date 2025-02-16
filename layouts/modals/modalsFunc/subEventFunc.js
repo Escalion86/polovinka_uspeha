@@ -302,9 +302,7 @@ const subEventFunc = (props, onChange, rules) => {
             <EditableTextarea
               label="Описание типа участия (показывается при записи)"
               html={description}
-              uncontrolled={false}
               onChange={setDescription}
-              placeholder="Описание мероприятия..."
             />
           </TabPanel>
           <TabPanel tabName="Доступ и стоимость" className="px-0">

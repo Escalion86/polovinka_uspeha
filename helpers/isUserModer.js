@@ -1,5 +1,5 @@
 const isUserModer = (user) =>
-  ['moder', 'supervisor', 'dev'].includes(
+  ['president', 'moder', 'supervisor', 'dev'].includes(
     typeof user === 'string' ? user : user?.role
   )
 

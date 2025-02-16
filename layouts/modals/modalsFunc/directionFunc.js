@@ -200,7 +200,6 @@ const directionFunc = (directionId, clone = false) => {
             <EditableTextarea
               label="Описание"
               html={description}
-              uncontrolled={false}
               onChange={(value) => {
                 removeError('description')
                 setDescription(value)

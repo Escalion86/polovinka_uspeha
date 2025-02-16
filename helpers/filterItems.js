@@ -6,11 +6,16 @@ const filterItems = (
   exceptedIds = [],
   rules = {},
   keys = ['title', 'firstName', 'secondName', 'thirdName'],
-  parentKey
+  parentKey,
+  filterFunc
 ) =>
   // (
   {
     const filteredWithRules = filterWithRules(items, rules)
+
+    const filteredWithRulesAndFunc = filterFunc
+      ? filteredWithRules.filter(filterFunc)
+      : filteredWithRules
 
     const searchWordsArray = searchText
       ? searchText
@@ -20,7 +25,7 @@ const filterItems = (
       : []
 
     return searchText || exceptedIds?.length
-      ? filteredWithRules.filter((item) => {
+      ? filteredWithRulesAndFunc.filter((item) => {
           if (searchText) {
             if (searchText[0] === '>') {
               if (searchText[1] === '=')
@@ -99,7 +104,7 @@ const filterItems = (
               !exceptedIds?.includes(item._id)
             )
         })
-      : filteredWithRules
+      : filteredWithRulesAndFunc
   }
 // ).sort((a, b) => {
 //   if (a.name < b.name) {

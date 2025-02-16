@@ -19,38 +19,13 @@ import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import store from '@state/store'
 import locationAtom from '@state/atoms/locationAtom'
+import convertHtmlToText from '@helpers/convertHtmlToText'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
 
   const { maxMans, maxWomans, maxParticipants } = event
   return maxMans && maxWomans ? maxMans + maxWomans : maxParticipants
-}
-
-const formatTextConverter = (text, type) => {
-  if (type === 'telegram')
-    return text
-      .replaceAll('<b>', '**')
-      .replaceAll('</b>', '**')
-      .replaceAll('<i>', '__')
-      .replaceAll('</i>', '__')
-      .replaceAll('<s>', '~~')
-      .replaceAll('</s>', '~~')
-  if (type === 'whatsapp')
-    return text
-      .replaceAll('<b>', '*')
-      .replaceAll('</b>', '*')
-      .replaceAll('<i>', '_')
-      .replaceAll('</i>', '_')
-      .replaceAll('<s>', '~')
-      .replaceAll('</s>', '~')
-  return text
-    .replaceAll('<b>', '')
-    .replaceAll('</b>', '')
-    .replaceAll('<i>', '')
-    .replaceAll('</i>', '')
-    .replaceAll('<s>', '')
-    .replaceAll('</s>', '')
 }
 
 const textForming = ({
@@ -242,17 +217,10 @@ const ToolsTextEventsAnonsContent = () => {
 
   const copyToClipboardText = (type) => {
     const preparedToCopyText = DOMPurify.sanitize(
-      formatTextConverter(
+      convertHtmlToText(
         textForming({ ...textFormatingProps, noSlashedPrice: !type }),
         type
-      )
-        .replaceAll('<p><br></p>', '\n')
-        .replaceAll('<blockquote>', '\n<blockquote>')
-        .replaceAll('<li>', '\n\u{2764} <li>')
-        .replaceAll('<p>', '\n<p>')
-        .replaceAll('<br>', '\n')
-        .replaceAll('&nbsp;', ' ')
-        .trim('\n'),
+      ),
       {
         ALLOWED_TAGS: [],
         ALLOWED_ATTR: [],
@@ -341,6 +309,11 @@ const ToolsTextEventsAnonsContent = () => {
         <Button
           name="Скопировать текст без форматирования"
           onClick={copyToClipboardText}
+          disabled={!eventsId.length}
+        />
+        <Button
+          name="Скопировать html"
+          onClick={() => copyToClipboard(tempText)}
           disabled={!eventsId.length}
         />
       </div>

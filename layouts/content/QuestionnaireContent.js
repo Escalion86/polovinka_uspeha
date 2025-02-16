@@ -35,6 +35,8 @@ import cn from 'classnames'
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
+import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresidentSelector'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -54,13 +56,14 @@ const QuestionnaireContent = (props) => {
   const location = useAtomValue(locationAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const isLoggedUserPresident = useAtomValue(isLoggedUserPresidentSelector)
   const setLoggedUserActiveRoleName = useSetAtom(loggedUserActiveRoleNameAtom)
+  const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
 
   const { towns } = useAtomValue(locationPropsSelector)
 
   const setSelfStatus = loggedUserActiveRole?.setSelfStatus
   const setSelfRole = loggedUserActiveRole?.setSelfRole
-  const isLoggedUserDev = loggedUserActiveRole?.dev
 
   const [isImageLoading, setIsImageLoading] = useState(false)
 
@@ -686,6 +689,7 @@ const QuestionnaireContent = (props) => {
             roleId={role}
             onChange={setRole}
             error={errors.role}
+            noPresident={!isLoggedUserPresident}
             noDev={!isLoggedUserDev}
           />
         )}
