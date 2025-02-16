@@ -31,8 +31,6 @@ const UserRolePicker = ({
     ? rolesValues.filter(({ _id }) => _id !== 'dev')
     : rolesValues
 
-  console.log('valuesArray :>> ', valuesArray)
-
   return (
     <ValuePicker
       value={roleId}
