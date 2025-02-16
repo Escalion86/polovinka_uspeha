@@ -517,12 +517,10 @@ const eventFunc = (eventId, clone = false, props = {}) => {
                 <EditableTextarea
                   label="Описание"
                   html={description}
-                  uncontrolled={false}
                   onChange={(value) => {
                     removeError('description')
                     setDescription(value)
                   }}
-                  placeholder="Описание мероприятия..."
                   required
                   error={errors.description}
                 />

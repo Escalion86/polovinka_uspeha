@@ -13,13 +13,7 @@ const EditableTextarea = ({
   html = '',
   disabled,
   onChange,
-  onBlur,
-  placeholder,
-  onSave,
   labelClassName,
-  wrapperClassName,
-  btnSaveName = 'Сохранить',
-  disableUndo = false,
   label,
   required,
   error,
@@ -35,7 +29,7 @@ const EditableTextarea = ({
       label={label}
       labelClassName={labelClassName}
       value={html}
-      className={cn('', wrapperClassName)}
+      className={className}
       // paddingY={false}
       required={required}
       fullWidth={false}

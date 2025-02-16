@@ -367,7 +367,7 @@ const Modal = ({
         {/* {noPropsToChildren
           ? children
           : cloneElement(children, { onClose: closeModal, setBeforeCloseFunc })} */}
-        <div className="flex-1 px-2 overflow-y-auto tablet:px-3">
+        <div className="flex-1 px-2 overflow-x-hidden overflow-y-auto tablet:px-3">
           {Children && (
             <Suspense fallback={<Skeleton count={12} />}>
               <Children
@@ -395,6 +395,7 @@ const Modal = ({
                 setConfirmButtonName2={setConfirmButtonName2State}
                 setCloseButtonName={setCloseButtonNameState}
                 setTitle={setTitleState}
+                TopLeftComponent={TopLeftComponentState}
               />
             </Suspense>
           )}

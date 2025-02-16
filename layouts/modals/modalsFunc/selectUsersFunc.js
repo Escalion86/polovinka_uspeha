@@ -8,6 +8,15 @@ import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import { fetchUser } from '@helpers/fetchers'
+import UsersFilter from '@components/Filter/UsersFilter'
+import { useMemo } from 'react'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+// import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import ContentHeader from '@components/ContentHeader'
+import Button from '@components/Button'
+import { faCheckDouble } from '@fortawesome/free-solid-svg-icons/faCheckDouble'
+import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
 
 const selectUsersFunc = (
   usersState,
@@ -18,7 +27,7 @@ const selectUsersFunc = (
   maxUsers,
   canSelectNone = true,
   title,
-  showCountNumber
+  getFullUsers = false
 ) => {
   const SelectUsersModal = ({
     closeModal,
@@ -28,13 +37,40 @@ const selectUsersFunc = (
     setDisableConfirm,
     setDisableDecline,
     setComponentInFooter,
+    setTopLeftComponent,
+    TopLeftComponent,
   }) => {
     const location = useAtomValue(locationAtom)
     const users = useAtomValue(usersAtomAsync)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+    const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+    // const isLoggedUserAdmin = useAtomValue(isLoggedUserAdminSelector)
+    const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
+
     const [selectedUsers, setSelectedUsers] = useState(
       isObject(usersState) ? usersState.filter((item) => isObject(item)) : []
     )
+    const [lastSelectedUsersCount, setLastSelectedUsersCount] = useState(
+      selectedUsers.length
+    )
+
     const [showErrorMax, setShowErrorMax] = useState(false)
+
+    const [filter, setFilter] = useState({
+      gender: {
+        male: true,
+        famale: true,
+        null: true,
+      },
+      status: {
+        novice: true,
+        member: true,
+      },
+      relationship: {
+        havePartner: true,
+        noPartner: true,
+      },
+    })
 
     const [searchText, setSearchText] = useState('')
 
@@ -44,12 +80,49 @@ const selectUsersFunc = (
         : users.filter(({ _id }) => acceptedIds.includes(_id))
       : users
 
-    const filteredUsers = filterItems(
-      acceptedUsers,
-      searchText,
-      exceptedIds,
-      filterRules,
-      ['firstName', 'secondName', 'thirdName']
+    const searchByFields = useMemo(() => {
+      const addSearchProps = seeAllContacts
+        ? ['phone', 'whatsapp', 'viber', 'instagram', 'telegram', 'vk', 'email']
+        : []
+      const addDevSearchProps = isLoggedUserDev ? ['_id'] : []
+
+      return [
+        'firstName',
+        'secondName',
+        'thirdName',
+        ...addSearchProps,
+        ...addDevSearchProps,
+      ]
+    }, [seeAllContacts, isLoggedUserDev])
+
+    const filteredUsers = useMemo(
+      () =>
+        filterItems(
+          acceptedUsers,
+          searchText,
+          exceptedIds,
+          filterRules,
+          searchByFields,
+          null,
+          (user) =>
+            user &&
+            (filter.gender[String(user.gender)] ||
+              (filter.gender.null &&
+                user.gender !== 'male' &&
+                user.gender !== 'famale')) &&
+            filter.status[user?.status ?? 'novice'] &&
+            (user.relationship
+              ? filter.relationship.havePartner
+              : filter.relationship.noPartner)
+        ),
+      [
+        acceptedUsers,
+        searchText,
+        exceptedIds,
+        filterRules,
+        filter,
+        searchByFields,
+      ]
     )
 
     // var filteredUsers = filter
@@ -119,13 +192,18 @@ const selectUsersFunc = (
         </div>
       )
       setOnConfirmFunc(async () => {
-        const fullUsers = []
-        for (const user of selectedUsers) {
-          const fullUser = await fetchUser(location, user._id)
-          fullUsers.push(fullUser)
+        if (getFullUsers) {
+          const fullUsers = []
+          for (const user of selectedUsers) {
+            const fullUser = await fetchUser(location, user._id)
+            fullUsers.push(fullUser)
+          }
+          closeModal()
+          onConfirm(fullUsers)
+        } else {
+          closeModal()
+          onConfirm(selectedUsers)
         }
-        closeModal()
-        onConfirm(fullUsers)
       })
 
       // })
@@ -147,14 +225,46 @@ const selectUsersFunc = (
       if (!canSelectNone) setDisableConfirm(selectedUsers.length === 0)
     }, [canSelectNone, selectedUsers])
 
+    // useEffect(() => {
+    //   if (
+    //     !maxUsers
+    //     //  &&
+    //     // !TopLeftComponent &&
+    //     // (lastSelectedUsersCount !== selectedUsers.length ||
+    //     //   sortedUsers.length !== lastSelectedUsersCount)
+    //   ) {
+    //     setTopLeftComponent(() => (
+    //       <Button
+    //         thin
+    //         icon={faListCheck}
+    //         name="Выбрать всех по фильтру"
+    //         onClick={() => {
+    //           setSelectedUsers(sortedUsers)
+    //           // setLastSelectedUsersCount(sortedUsers.length)
+    //           // setTopLeftComponent()
+    //         }}
+    //       />
+    //     ))
+    //   }
+    // }, [
+    //   // lastSelectedUsersCount, selectedUsers.length,
+    //   maxUsers,
+    //   selectedUsers.length,
+    //   sortedUsers.length,
+    // ])
+
     return (
-      <div className="flex flex-col w-full h-full max-h-full gap-y-0.5">
+      <div className="flex flex-col items-stretch w-full h-full max-h-full gap-y-0.5">
+        <ContentHeader noBorder>
+          <UsersFilter value={filter} onChange={setFilter} />
+        </ContentHeader>
         <Search
           searchText={searchText}
           show={true}
           onChange={setSearchText}
           className="h-[38px] min-h-[38px]"
         />
+
         {/* <div
           className={cn(
             'flex gap-1 items-center border-gray-700 border p-1 mb-1 rounded-sm'
@@ -180,7 +290,7 @@ const selectUsersFunc = (
         </div> */}
         <div
           style={{ height: sortedUsers.length * 41 + 2 }}
-          className={`tablet:flex-none border-gray-700 border-t flex-col tablet:max-h-[calc(100vh-185px)]`}
+          className={`flex-1 tablet:flex-none border-gray-700 border-t tablet:max-h-[calc(100vh-270px)]`}
         >
           <ListWrapper itemCount={sortedUsers.length} itemSize={41}>
             {({ index, style }) => (
@@ -199,6 +309,24 @@ const selectUsersFunc = (
               </div>
             )}
           </ListWrapper>
+        </div>
+        <div className="flex justify-center gap-2 pt-1 -mx-3 border-t border-gray-400">
+          <Button
+            thin
+            icon={faCheckDouble}
+            name="Выбрать всех по фильтру"
+            onClick={() => {
+              setSelectedUsers(sortedUsers)
+            }}
+          />
+          <Button
+            thin
+            icon={faSquare}
+            name="Отменить выбор"
+            onClick={() => {
+              setSelectedUsers([])
+            }}
+          />
         </div>
         {showErrorMax && (
           <div className="text-danger">

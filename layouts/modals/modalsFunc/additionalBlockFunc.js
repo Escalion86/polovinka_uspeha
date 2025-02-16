@@ -120,7 +120,6 @@ const additionalBlockFunc = (additionalBlockId, clone = false) => {
         <EditableTextarea
           label="Описание"
           html={description}
-          uncontrolled={false}
           onChange={(value) => {
             removeError('description')
             setDescription(value)
