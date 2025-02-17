@@ -25,15 +25,16 @@ import { useAtom, useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import SignOut from '@components/SignOut'
 
-import { DevTools } from 'jotai-devtools'
+// import { DevTools } from 'jotai-devtools'
 // Note that this may get included in your production builds. Please import it conditionally if you want to avoid that
 import 'jotai-devtools/styles.css'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
-const DevToolsClient = () => {
-  'use client'
+// const DevToolsClient = () => {
+//   'use client'
 
-  return <DevTools />
-}
+//   return <DevTools />
+// }
 // import itemsFuncAtom from '@state/itemsFuncAtom'
 
 // import loggedUserActiveStatusAtomJ from '@state/atoms/loggedUserActiveStatusAtom'
@@ -50,6 +51,7 @@ function CabinetPage(props) {
   const router = useRouter()
   const { location } = props
   const [locationState, setLocationState] = useAtom(locationAtom)
+  const siteSettings = useAtomValue(siteSettingsAtom)
 
   const page = router.asPath.replace(`/${location}/cabinet/`, '').split('?')[0]
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
@@ -68,14 +70,15 @@ function CabinetPage(props) {
       // if (loggedUserActiveRole?.dev)
       //   console.log('loggedUser :>> ', props.loggedUser)
     } else if (
-      loggedUserActive &&
-      ((page !== 'questionnaire' &&
-        !isUserQuestionnaireFilled(loggedUserActive)) ||
-        !CONTENTS[page] ||
-        !CONTENTS[page].roleAccess(
-          loggedUserActiveRole,
-          loggedUserActiveStatusName
-        ))
+      (loggedUserActive &&
+        ((page !== 'questionnaire' &&
+          !isUserQuestionnaireFilled(loggedUserActive)) ||
+          !CONTENTS[page] ||
+          !CONTENTS[page].roleAccess(
+            loggedUserActiveRole,
+            loggedUserActiveStatusName
+          ))) ||
+      (CONTENTS[page].siteConfirm && !CONTENTS[page].siteConfirm(siteSettings))
       // !CONTENTS[page].accessRoles.includes(loggedUserActiveRoleName) ||
       // (CONTENTS[page].accessStatuses &&
       //   !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus))

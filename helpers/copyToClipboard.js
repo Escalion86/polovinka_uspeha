@@ -1,3 +1,4 @@
-const copyToClipboard = (text) => navigator.clipboard.writeText(text)
+const copyToClipboard = async (text) =>
+  await navigator.clipboard.writeText(text)
 
 export default copyToClipboard

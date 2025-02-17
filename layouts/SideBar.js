@@ -15,10 +15,12 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import locationAtom from '@state/atoms/locationAtom'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
 const menuCfg = (
   userActiveRole,
-  userActiveStatusName
+  userActiveStatusName,
+  siteSettings
   // disabledGroupsIds
 ) => {
   // const visiblePages = pages.filter((page) => )
@@ -37,7 +39,8 @@ const menuCfg = (
       const pagesItems = pages.reduce((totalPages, page) => {
         if (
           page.group === group.id &&
-          page.roleAccess(userActiveRole, userActiveStatusName)
+          page.roleAccess(userActiveRole, userActiveStatusName) &&
+          (!page.siteConfirm || page.siteConfirm(siteSettings))
           // page.accessRoles.includes(userActiveRole) &&
           // (!page.accessStatuses ||
           //   page.accessStatuses.includes(userActiveStatus))
@@ -289,6 +292,7 @@ var handler
 
 const SideBar = ({ page }) => {
   const wrapperRef = useRef(null)
+  const siteSettings = useAtomValue(siteSettingsAtom)
   // const menuRef = useRef(null)
   const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   // const [scrollPos, setScrollPos] = useState(0)
@@ -398,7 +402,11 @@ const SideBar = ({ page }) => {
       >
         <div className="flex flex-col w-full overflow-x-hidden">
           <MenuSuspense
-            menuCfg={menuCfg(loggedUserActiveRole, loggedUserActiveStatus)}
+            menuCfg={menuCfg(
+              loggedUserActiveRole,
+              loggedUserActiveStatus,
+              siteSettings
+            )}
             activePage={page}
             onChangeMenuIndex={onChangeMenuIndex}
             // setMenuScrollPos={setScrollPosition}

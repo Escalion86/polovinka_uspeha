@@ -71,6 +71,16 @@ const siteSettingsSchema = {
       },
     },
   },
+  newsletter: {
+    whatsappActivated: {
+      type: Boolean,
+      default: false,
+    },
+    blackList: {
+      type: Array,
+      default: [],
+    },
+  },
 }
 
 export default siteSettingsSchema
