@@ -85,11 +85,12 @@ const InputNumber = forwardRef(
     )
 
     useEffect(() => {
-      if (!stateValue && stateValue != 0) {
-        const minValue = parseInt(min > 0 ? min : 0)
-        setStateValue(minValue)
-        onChange(minValue)
-      } else if (isMounted && stateValue !== undefined) onChange(stateValue)
+      // if (!stateValue && stateValue != 0) {
+      //   const minValue = parseInt(min > 0 ? min : 0)
+      //   setStateValue(minValue)
+      //   onChange(minValue)
+      // } else
+      if (isMounted && stateValue !== undefined) onChange(stateValue)
     }, [stateValue])
 
     useEffect(() => {
@@ -159,8 +160,8 @@ const InputNumber = forwardRef(
             inputClassName
           )}
           onWheel={(e) => e.target.blur()}
-          min={min}
-          max={max}
+          // min={min}
+          // max={max}
           disabled={disabled}
           value={
             showPlaceholder
@@ -174,29 +175,41 @@ const InputNumber = forwardRef(
           defaultValue={defaultValue}
           onChange={(e) => {
             const { value } = e.target
-            if (
-              (typeof min !== 'number' || value >= min) &&
-              (typeof max !== 'number' || value <= max)
-            ) {
-              if (stateValue === '') {
-                onChange(0)
-                setStateValue(0)
-              } else {
-                const newValue = parseInt(value)
-                setStateValue(newValue)
-                onChange(newValue)
-              }
-            } else if (typeof min === 'number' && value < min) {
-              setStateValue(min)
-              onChange(min)
-            } else if (typeof max === 'number' && value > max) {
-              setStateValue(max)
-              onChange(max)
+            // if (
+            //   (typeof min !== 'number' || value >= min) &&
+            //   (typeof max !== 'number' || value <= max)
+            // ) {
+            if (stateValue === '') {
+              onChange(0)
+              setStateValue(0)
+            } else {
+              const newValue = parseInt(value)
+              setStateValue(newValue)
+              onChange(newValue)
             }
+            // } else if (typeof min === 'number' && value < min) {
+            //   setStateValue(min)
+            //   onChange(min)
+            // } else if (typeof max === 'number' && value > max) {
+            //   setStateValue(max)
+            //   onChange(max)
+            // }
           }}
           placeholder={label}
           autoComplete="on"
           list={dataList?.name}
+          onBlur={() => {
+            const minValue = parseInt(min > 0 ? min : 0)
+            if ((!stateValue && stateValue != 0) || stateValue < minValue) {
+              setStateValue(minValue)
+              onChange(minValue)
+            }
+
+            if (typeof max === 'number' && stateValue > max) {
+              setStateValue(max)
+              onChange(max)
+            }
+          }}
         />
         {dataList?.list && (
           <datalist id={dataList?.name}>
