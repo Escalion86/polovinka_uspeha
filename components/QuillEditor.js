@@ -255,7 +255,7 @@ const QuillEditor = forwardRef(
 
     // return <DynamicTextEditor />
 
-    return <div id="quill-editor" ref={containerRef}></div>
+    return <div className="w-full" id="quill-editor" ref={containerRef}></div>
   }
 )
 
