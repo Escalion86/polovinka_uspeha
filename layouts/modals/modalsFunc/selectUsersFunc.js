@@ -17,6 +17,7 @@ import ContentHeader from '@components/ContentHeader'
 import Button from '@components/Button'
 import { faCheckDouble } from '@fortawesome/free-solid-svg-icons/faCheckDouble'
 import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
+import compareObjects from '@helpers/compareObjects'
 
 const selectUsersFunc = (
   usersState,
@@ -47,12 +48,16 @@ const selectUsersFunc = (
     // const isLoggedUserAdmin = useAtomValue(isLoggedUserAdminSelector)
     const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
 
-    const [selectedUsers, setSelectedUsers] = useState(
-      isObject(usersState) ? usersState.filter((item) => isObject(item)) : []
+    const defaultUsersState = useMemo(
+      () =>
+        isObject(usersState) ? usersState.filter((item) => isObject(item)) : [],
+      [usersState]
     )
-    const [lastSelectedUsersCount, setLastSelectedUsersCount] = useState(
-      selectedUsers.length
-    )
+
+    const [selectedUsers, setSelectedUsers] = useState(defaultUsersState)
+    // const [lastSelectedUsersCount, setLastSelectedUsersCount] = useState(
+    //   selectedUsers.length
+    // )
 
     const [showErrorMax, setShowErrorMax] = useState(false)
 
@@ -69,6 +74,10 @@ const selectUsersFunc = (
       relationship: {
         havePartner: true,
         noPartner: true,
+      },
+      checked: {
+        checked: true,
+        unchecked: true,
       },
     })
 
@@ -95,6 +104,11 @@ const selectUsersFunc = (
       ]
     }, [seeAllContacts, isLoggedUserDev])
 
+    const selectedUsersIds = useMemo(
+      () => selectedUsers.map((user) => user._id),
+      [selectedUsers]
+    )
+
     const filteredUsers = useMemo(
       () =>
         filterItems(
@@ -113,7 +127,11 @@ const selectUsersFunc = (
             filter.status[user?.status ?? 'novice'] &&
             (user.relationship
               ? filter.relationship.havePartner
-              : filter.relationship.noPartner)
+              : filter.relationship.noPartner) &&
+            (((filter.checked.checked ||
+              !selectedUsersIds.includes(user._id)) &&
+              filter.checked.unchecked) ||
+              selectedUsersIds.includes(user._id))
         ),
       [
         acceptedUsers,
@@ -122,6 +140,7 @@ const selectUsersFunc = (
         filterRules,
         filter,
         searchByFields,
+        selectedUsersIds,
       ]
     )
 
@@ -191,20 +210,25 @@ const selectUsersFunc = (
           <span>чел.</span>
         </div>
       )
-      setOnConfirmFunc(async () => {
-        if (getFullUsers) {
-          const fullUsers = []
-          for (const user of selectedUsers) {
-            const fullUser = await fetchUser(location, user._id)
-            fullUsers.push(fullUser)
-          }
-          closeModal()
-          onConfirm(fullUsers)
-        } else {
-          closeModal()
-          onConfirm(selectedUsers)
-        }
-      })
+      const isFormChanged = !compareObjects(selectedUsers, defaultUsersState)
+      setOnConfirmFunc(
+        isFormChanged
+          ? async () => {
+              if (getFullUsers) {
+                const fullUsers = []
+                for (const user of selectedUsers) {
+                  const fullUser = await fetchUser(location, user._id)
+                  fullUsers.push(fullUser)
+                }
+                closeModal()
+                onConfirm(fullUsers)
+              } else {
+                closeModal()
+                onConfirm(selectedUsers)
+              }
+            }
+          : undefined
+      )
 
       // })
       // setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -212,6 +236,7 @@ const selectUsersFunc = (
     }, [
       selectedUsers,
       maxUsers,
+      getFullUsers,
       // mansIds,
       // womansIds,
       // assistantsIds,
@@ -310,24 +335,26 @@ const selectUsersFunc = (
             )}
           </ListWrapper>
         </div>
-        <div className="flex justify-center gap-2 pt-1 -mx-3 border-t border-gray-400">
-          <Button
-            thin
-            icon={faCheckDouble}
-            name="Выбрать всех по фильтру"
-            onClick={() => {
-              setSelectedUsers(sortedUsers)
-            }}
-          />
-          <Button
-            thin
-            icon={faSquare}
-            name="Отменить выбор"
-            onClick={() => {
-              setSelectedUsers([])
-            }}
-          />
-        </div>
+        {!maxUsers && (
+          <div className="flex justify-center gap-2 pt-1 -mx-3 border-t border-gray-400">
+            <Button
+              thin
+              icon={faCheckDouble}
+              name="Выбрать всех по фильтру"
+              onClick={() => {
+                setSelectedUsers(sortedUsers)
+              }}
+            />
+            <Button
+              thin
+              icon={faSquare}
+              name="Отменить выбор"
+              onClick={() => {
+                setSelectedUsers([])
+              }}
+            />
+          </div>
+        )}
         {showErrorMax && (
           <div className="text-danger">
             Выбрано максимальное количество пользователей

@@ -159,6 +159,13 @@ const modalsFuncGenerator = (get, set) => {
           getFullUsers
         )
       ),
+    selectUsersByStatusesFromEvent: (eventId, onSelect) =>
+      addModal(
+        require('../layouts/modals/modalsFunc/selectUsersByStatusesFromSelectedEventFunc').default(
+          eventId,
+          onSelect
+        )
+      ),
     selectDirections: (
       itemsId,
       filterRules,

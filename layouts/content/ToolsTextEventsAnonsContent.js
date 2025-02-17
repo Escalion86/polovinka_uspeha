@@ -20,6 +20,10 @@ import { useAtomValue } from 'jotai'
 import store from '@state/store'
 import locationAtom from '@state/atoms/locationAtom'
 import convertHtmlToText from '@helpers/convertHtmlToText'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
+import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
@@ -297,23 +301,30 @@ const ToolsTextEventsAnonsContent = () => {
       />
       <div className="flex flex-wrap gap-x-2 gap-y-1">
         <Button
+          icon={faTelegram}
           name="Скопировать текст для телеграм"
           onClick={() => copyToClipboardText('telegram')}
           disabled={!eventsId.length}
         />
         <Button
+          icon={faWhatsapp}
           name="Скопировать текст для whatsapp"
           onClick={() => copyToClipboardText('whatsapp')}
           disabled={!eventsId.length}
         />
         <Button
+          icon={faCopy}
           name="Скопировать текст без форматирования"
           onClick={copyToClipboardText}
           disabled={!eventsId.length}
         />
         <Button
+          icon={faHtml5}
           name="Скопировать html"
-          onClick={() => copyToClipboard(tempText)}
+          onClick={() => {
+            copyToClipboard(tempText)
+            info('Html скопирован в буфер обмена')
+          }}
           disabled={!eventsId.length}
         />
       </div>

@@ -207,6 +207,7 @@ import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserL
 // import menuHiddenLoggedUserLikesSelector from '@state/selectors/menuHiddenLoggedUserLikesSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
+import { faSquare } from '@fortawesome/free-regular-svg-icons'
 
 const colors = [
   'border-blue-400',
@@ -815,14 +816,19 @@ export const EVENT_STATUSES_WITH_TIME = [
 
 export const EVENT_USER_STATUSES = [
   { value: 'participant', name: 'Участник', color: 'green-400' },
+  { value: 'reserve', name: 'Резерв', color: 'orange-400' },
   { value: 'assistant', name: 'Ведущий', color: 'blue-400' },
-  { value: 'reserve', name: 'Резерв', color: 'yellow-400' },
   { value: 'ban', name: 'Бан', color: 'red-400' },
 ]
 
 export const GENDERS = [
   { value: 'male', name: 'Мужчина', color: 'blue-400', icon: faMars },
   { value: 'famale', name: 'Женщина', color: 'red-400', icon: faVenus },
+]
+
+export const CHECKED_BUTTONS = [
+  { value: 'checked', name: 'Выбрано', color: 'general', icon: faCheck },
+  { value: 'unchecked', name: 'Не выбрано', color: 'gray-500', icon: faSquare },
 ]
 
 export const GENDERS_WITH_NO_GENDER = [
@@ -1438,7 +1444,7 @@ export const DEFAULT_ROLES = [
       anonsEventImageGenerator: true,
       anonsEventListImageGenerator: true,
       export: true,
-      newsletter: false,
+      newsletter: true,
       imageConstructor: false,
     },
     generalPage: {
@@ -1951,6 +1957,7 @@ export const CONTENTS = Object.freeze({
     name: 'Инструменты / Рассылка',
     accessRoles: ['dev'],
     roleAccess: (role) => role?.instruments?.newsletter,
+    siteConfirm: (siteSettings) => siteSettings?.newsletter?.whatsappActivated,
   },
   histories: {
     Component: HistoriesContent,
@@ -2320,6 +2327,7 @@ export const pages = [
     icon: faEnvelope,
     accessRoles: CONTENTS['newsletter'].accessRoles,
     roleAccess: CONTENTS['newsletter'].roleAccess,
+    siteConfirm: CONTENTS['newsletter'].siteConfirm,
   },
   {
     id: 76,

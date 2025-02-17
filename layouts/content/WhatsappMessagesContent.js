@@ -29,10 +29,7 @@ const WhatsappMessagesContent = () => {
       await getData(
         `/api/${location}/whatsapp/getWaSettings`,
         {},
-        (newResp) => {
-          setWaSettings(newResp)
-          console.log('newResp :>> ', newResp)
-        },
+        setWaSettings,
         (error) => console.error('fetchResp error', error)
       )
     }
@@ -40,8 +37,6 @@ const WhatsappMessagesContent = () => {
   }, [])
 
   const fetchChatHystory = useCallback(async (user) => {
-    // setResp(null)
-    // await getData('/api/whatsapp/lastIncomingMessages', {})
     await postData(
       `/api/${location}/whatsapp/getChatHystory`,
       {
@@ -73,8 +68,6 @@ const WhatsappMessagesContent = () => {
       message,
     })
   }
-
-  console.log('waSettings :>> ', waSettings)
 
   return (
     <div className="flex flex-col h-full max-h-full p-1 gap-y-1">
