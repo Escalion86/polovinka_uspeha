@@ -35,21 +35,17 @@ const useLongPress = (onLongPressRepeat, onFinish) => {
 
   return {
     onMouseDown: () => {
-      console.log('onMouseDown :>> ')
       onLongPressRepeat()
       handleMouseDown()
     },
     onMouseUp: () => {
-      console.log('onMouseUp :>> ')
       handleMouseUp()
       onFinish && onFinish()
     },
     onTouchStart: () => {
-      console.log('onTouchStart :>> ')
       handleMouseDown()
     },
     onTouchEnd: () => {
-      console.log('onTouchEnd :>> ')
       handleMouseUp()
     },
   }
