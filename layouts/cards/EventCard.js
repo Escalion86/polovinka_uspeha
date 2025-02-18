@@ -6,24 +6,23 @@ import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 import DateTimeEvent from '@components/DateTimeEvent'
 import EventButtonSignIn from '@components/EventButtonSignIn'
 import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
-import PriceDiscount from '@components/PriceDiscount'
 import TextInRing from '@components/TextInRing'
 import TextLinesLimiter from '@components/TextLinesLimiter'
-import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import eventStatusFunc from '@helpers/eventStatus'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import errorAtom from '@state/atoms/errorAtom'
 import itemsFuncAtom from '@state/itemsFuncAtom'
-import loadingAtom from '@state/atoms/loadingAtom'
 import directionSelector from '@state/selectors/directionSelector'
-import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
 import EventCardSkeleton from './Skeletons/EventCardSkeleton'
-import eventSelector from '@state/selectors/eventSelector'
+import eventCutedSelector from '@state/selectors/eventCutedSelector'
 import Venzel1 from '@svg/venzels/1'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import { UserRelationshipIconByEventId } from '@components/UserRelationshipIcon'
+import { PriceDiscountByEventId } from '@components/PriceDiscount'
+import loadingAtom from '@state/atoms/loadingAtom'
 
 const EventCard = ({
   eventId,
@@ -37,7 +36,7 @@ const EventCard = ({
   const widthNum = useAtomValue(windowDimensionsNumSelector)
 
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const event = useAtomValue(eventSelector(eventId))
+  const event = useAtomValue(eventCutedSelector(eventId))
 
   const eventStatus = eventStatusFunc(event)
 
@@ -45,7 +44,7 @@ const EventCard = ({
   const loading = useAtomValue(loadingAtom('event' + eventId))
   const error = useAtomValue(errorAtom('event' + eventId))
   const itemFunc = useAtomValue(itemsFuncAtom)
-  const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
+  // const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const canEdit = loggedUserActiveRole?.events?.edit
 
@@ -88,7 +87,10 @@ const EventCard = ({
     <CardWrapper
       loading={loading}
       error={error}
-      onClick={() => !loading && modalsFunc.event.view(event._id)}
+      onClick={() =>
+        // !loading &&
+        modalsFunc.event.view(event._id)
+      }
       showOnSite={event.showOnSite}
       gap={false}
       hidden={hidden}
@@ -110,7 +112,7 @@ const EventCard = ({
             // height={48}
           />
           {event.status === 'canceled' && (
-            <div className="absolute text-3xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white/50 border-2 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
+            <div className="absolute text-3xl font-bold -translate-x-1/2 -translate-y-1/2 border-2 bg-white/50 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
               Отменено
             </div>
           )}
@@ -140,17 +142,17 @@ const EventCard = ({
           {/* // )} */}
 
           {eventStatus === 'canceled' && (
-            <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white/50 border-2 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
+            <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 border-2 bg-white/50 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
               Отменено
             </div>
           )}
           {['finished', 'closed'].includes(eventStatus) && (
-            <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white/50 border-2 top-1/2 text-success left-1/2 rotate-15 border-success shadow-white2">
+            <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 border-2 bg-white/50 top-1/2 text-success left-1/2 rotate-15 border-success shadow-white2">
               Завершено
             </div>
           )}
           {!event.showOnSite && (
-            <div className="absolute text-3xl font-bold text-purple-500 -translate-x-1/2 -translate-y-1/2 bg-white/50 border-2 border-purple-500 top-1/2 left-1/2 -rotate-15 shadow-white2">
+            <div className="absolute text-3xl font-bold text-purple-500 -translate-x-1/2 -translate-y-1/2 border-2 border-purple-500 bg-white/50 top-1/2 left-1/2 -rotate-15 shadow-white2">
               Скрыто
             </div>
           )}
@@ -171,7 +173,7 @@ const EventCard = ({
       //       // height={48}
       //     />
       //     {event.status === 'canceled' && (
-      //       <div className="absolute text-3xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white/50 border-2 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
+      //       <div className="absolute text-3xl font-bold -translate-x-1/2 -translate-y-1/2 border-2 bg-white/50 top-1/2 text-danger left-1/2 rotate-15 border-danger shadow-white2">
       //         Отменено
       //       </div>
       //     )}
@@ -186,15 +188,7 @@ const EventCard = ({
                 event.showOnSite ? '' : 'pl-10 laptop:pl-0'
               )}
             >
-              {subEventSum.usersRelationshipAccess &&
-                subEventSum.usersRelationshipAccess !== 'yes' && (
-                  <UserRelationshipIcon
-                    relationship={
-                      subEventSum.usersRelationshipAccess === 'only'
-                    }
-                    nameForEvent
-                  />
-                )}
+              <UserRelationshipIconByEventId eventId={eventId} />
               {/* <TextLinesLimiter
                 className="flex-1 text-lg font-bold laptop:text-xl "
                 lines={1}
@@ -282,8 +276,8 @@ const EventCard = ({
                     {event.title}
                   </TextLinesLimiter>
                 </div>
-                <PriceDiscount
-                  item={subEventSum}
+                <PriceDiscountByEventId
+                  eventId={eventId}
                   className="hidden tablet:flex"
                 />
               </div>
@@ -338,7 +332,7 @@ const EventCard = ({
             className="flex-1 min-w-full border-t border-b h-[38px] laptop:h-[42px]"
           />
           <div className="flex items-stretch justify-end flex-1 w-full pr-1 h-9">
-            <PriceDiscount item={subEventSum} className="flex-1 mx-2" />
+            <PriceDiscountByEventId eventId={eventId} className="flex-1 mx-2" />
             <EventButtonSignIn eventId={eventId} noButtonIfAlreadySignIn thin />
           </div>
         </div>
@@ -347,16 +341,10 @@ const EventCard = ({
   )
 }
 
-const EventCardWrapper = (props) => {
-  // const { changeStyle = 'laptop', style, hidden, eventId, noButtons } = props
-  // const widthNum = useAtomValue(windowDimensionsNumSelector)
-  // const loading = useAtomValue(loadingAtom('event' + eventId))
-
-  return (
-    <Suspense fallback={<EventCardSkeleton />}>
-      <EventCard {...props} />
-    </Suspense>
-  )
-}
+const EventCardWrapper = (props) => (
+  <Suspense fallback={<EventCardSkeleton {...props} />}>
+    <EventCard {...props} />
+  </Suspense>
+)
 
 export default EventCardWrapper

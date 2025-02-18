@@ -1,5 +1,27 @@
 import Image from 'next/image'
 import Tooltip from './Tooltip'
+import { Suspense } from 'react'
+import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
+import { useAtomValue } from 'jotai'
+
+const UserRelationshipIconByEventIdComponent = ({ eventId, ...props }) => {
+  const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
+  return (
+    subEventSum.usersRelationshipAccess &&
+    subEventSum.usersRelationshipAccess !== 'yes' && (
+      <UserRelationshipIconByEventId
+        {...props}
+        relationship={subEventSum.usersRelationshipAccess === 'only'}
+      />
+    )
+  )
+}
+
+export const UserRelationshipIconByEventId = (props) => (
+  <Suspense>
+    <UserRelationshipIconByEventIdComponent {...props} />
+  </Suspense>
+)
 
 const UserRelationshipIcon = ({
   relationship,

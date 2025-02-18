@@ -161,7 +161,7 @@ const modalsFuncGenerator = (get, set) => {
       ),
     selectUsersByStatusesFromEvent: (eventId, onSelect) =>
       addModal(
-        require('../layouts/modals/modalsFunc/selectUsersByStatusesFromSelectedEventFunc').default(
+        require('../layouts/modals/modalsFunc/selectUsersByFilterFromSelectedEventFunc').default(
           eventId,
           onSelect
         )
@@ -750,6 +750,15 @@ const modalsFuncGenerator = (get, set) => {
           require('../layouts/modals/modalsFunc/roleFunc').default(
             role,
             onConfirm
+          )
+        ),
+    },
+    newsletter: {
+      add: (users, message) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/newsletterFunc').default(
+            users,
+            message
           )
         ),
     },

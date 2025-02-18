@@ -11,7 +11,6 @@ import { fetchUser } from '@helpers/fetchers'
 import UsersFilter from '@components/Filter/UsersFilter'
 import { useMemo } from 'react'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-// import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import ContentHeader from '@components/ContentHeader'
 import Button from '@components/Button'
@@ -20,7 +19,7 @@ import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
 import compareObjects from '@helpers/compareObjects'
 
 const selectUsersFunc = (
-  usersState,
+  selectedUsersState,
   filterRules,
   onConfirm,
   exceptedIds,
@@ -50,8 +49,10 @@ const selectUsersFunc = (
 
     const defaultUsersState = useMemo(
       () =>
-        isObject(usersState) ? usersState.filter((item) => isObject(item)) : [],
-      [usersState]
+        isObject(selectedUsersState)
+          ? selectedUsersState.filter((item) => isObject(item))
+          : [],
+      [selectedUsersState]
     )
 
     const [selectedUsers, setSelectedUsers] = useState(defaultUsersState)

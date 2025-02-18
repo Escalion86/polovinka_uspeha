@@ -33,11 +33,13 @@ import DropDown from './DropDown'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
-import { faBullhorn } from '@fortawesome/free-solid-svg-icons'
+import { faBullhorn } from '@fortawesome/free-solid-svg-icons/faBullhorn'
 import { getEventById } from '@helpers/getById'
 import locationAtom from '@state/atoms/locationAtom'
 import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresidentSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import { faWhatsappSquare } from '@fortawesome/free-brands-svg-icons/faWhatsappSquare'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -256,12 +258,28 @@ const CardButtons = ({
         />
       )}
       {show.sendNotifications && (
-        <ItemComponent
-          icon={faBullhorn}
-          onClick={() => modalsFunc[typeOfItem].notificateAboutEvent(item._id)}
-          color="blue"
-          tooltipText="Уведомление пользователей о мероприятии"
-        />
+        <>
+          <ItemComponent
+            icon={faWhatsappSquare}
+            onClick={() => {
+              modalsFunc.selectUsersByStatusesFromEvent(
+                item._id,
+                (users, description) =>
+                  modalsFunc.newsletter.add(users, description)
+              )
+            }}
+            color="green"
+            tooltipText="Рассылка"
+          />
+          <ItemComponent
+            icon={faTelegram}
+            onClick={() =>
+              modalsFunc[typeOfItem].notificateAboutEvent(item._id)
+            }
+            color="blue"
+            tooltipText="Уведомление пользователей о мероприятии"
+          />
+        </>
       )}
       {show.eventUsersBtn && (
         <ItemComponent

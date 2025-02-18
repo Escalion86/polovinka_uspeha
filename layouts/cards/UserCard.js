@@ -19,11 +19,13 @@ import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 // import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import sumOfPaymentsWithoutEventIdByUserIdSelector from '@state/selectors/sumOfPaymentsWithoutEventIdByUserIdSelector'
-import userSelector from '@state/selectors/userSelector'
+import userCutedSelector from '@state/selectors/userCutedSelector'
 import cn from 'classnames'
 // import { Suspense } from 'react'
 // import Skeleton from 'react-loading-skeleton'
 import { useAtomValue } from 'jotai'
+import { Suspense } from 'react'
+import UserCardSkeleton from './Skeletons/UserCardSkeleton'
 
 const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
   const sumOfPaymentsWithoutEventOfUser = useAtomValue(
@@ -76,7 +78,7 @@ const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
 const UserCard = ({ userId, hidden = false, style }) => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const user = useAtomValue(userSelector(userId))
+  const user = useAtomValue(userCutedSelector(userId))
   const loading = useAtomValue(loadingAtom('user' + userId))
   // const eventUsers = useAtomValue(eventsUsersSignedUpByUserIdSelector(userId))
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -293,4 +295,10 @@ const UserCard = ({ userId, hidden = false, style }) => {
   )
 }
 
-export default UserCard
+const UserCardWrapper = (props) => (
+  <Suspense fallback={<UserCardSkeleton {...props} />}>
+    <UserCard {...props} />
+  </Suspense>
+)
+
+export default UserCardWrapper

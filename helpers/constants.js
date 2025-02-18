@@ -46,6 +46,8 @@ import { faVk } from '@fortawesome/free-brands-svg-icons/faVk'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
 
 import { faImages } from '@fortawesome/free-solid-svg-icons/faImages'
+import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
+import { faCheckSquare } from '@fortawesome/free-regular-svg-icons/faCheckSquare'
 
 import dynamic from 'next/dynamic'
 const ServicesContent = dynamic(
@@ -64,59 +66,7 @@ const QuestionnaireContent = dynamic(
 )
 const UsersContent = dynamic(() => import('@layouts/content/UsersContent'))
 const MembersContent = dynamic(() => import('@layouts/content/MembersContent'))
-// import ServicesContent from '@layouts/content/ServicesContent'
-// import DirectionsContent from '@layouts/content/DirectionsContent'
-// import ReviewsContent from '@layouts/content/ReviewsContent'
-// import EventsContent from '@layouts/content/EventsContent'
-// import AdditionalBlocksContent from '@layouts/content/AdditionalBlocksContent'
-// import QuestionnaireContent from '@layouts/content/QuestionnaireContent'
-// import UsersContent from '@layouts/content/UsersContent'
-// import MembersContent from '@layouts/content/MembersContent'
 
-import ZodiacCapricorn from '@svg/zodiac/ZodiacCapricorn'
-import ZodiacTaurus from '@svg/zodiac/ZodiacTaurus'
-import ZodiacGemini from '@svg/zodiac/ZodiacGemini'
-import ZodiacCancer from '@svg/zodiac/ZodiacCancer'
-import ZodiacLeo from '@svg/zodiac/ZodiacLeo'
-import ZodiacLibra from '@svg/zodiac/ZodiacLibra'
-import ZodiacSagittarius from '@svg/zodiac/ZodiacSagittarius'
-import ZodiacAries from '@svg/zodiac/ZodiacAries'
-import ZodiacAquarius from '@svg/zodiac/ZodiacAquarius'
-import ZodiacPisces from '@svg/zodiac/ZodiacPisces'
-import ZodiacVirgo from '@svg/zodiac/ZodiacVirgo'
-import ZodiacScorpio from '@svg/zodiac/ZodiacScorpio'
-// import PaymentsContent from '@layouts/content/PaymentsContent'
-// import ContactsContent from '@layouts/content/ContactsContent'
-// import DevContent from '@layouts/content/DevContent'
-// import HistoriesContent from '@layouts/content/HistoriesContent'
-// import BirthdaysContent from '@layouts/content/BirthdaysContent'
-// import StatisticsContent from '@layouts/content/StatisticsContent'
-// import badgePaymentsOfEventWithoutEventIdSelector from '@state/selectors/badgePaymentsOfEventWithoutEventIdSelector'
-// import SettingsCodeSendServiceContent from '@layouts/content/SettingsCodeSendServiceContent'
-// import PaymentsWithoutEventContent from '@layouts/content/PaymentsWithoutEventContent'
-// import badgePaymentsWithoutUserWritingToEventSelector from '@state/selectors/badgePaymentsWithoutUserWritingToEventSelector'
-// import PaymentsNotParticipantsEventContent from '@layouts/content/PaymentsNotParticipantsEventContent'
-// import ServicesUsersContent from '@layouts/content/ServicesUsersContent'
-// import ServicesLoggedUserContent from '@layouts/content/ServicesLoggedUserContent'
-import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTodayCountSelector'
-// import ToolsAnonsContent from '@layouts/content/ToolsAnonsContent'
-// import ToolsExportContent from '@layouts/content/ToolsExportContent'
-// import StatisticsFinanceContent from '@layouts/content/StatisticsFinanceContent'
-// import StatisticsUsersContent from '@layouts/content/StatisticsUsersContent'
-// import StatisticsEventsContent from '@layouts/content/StatisticsEventsContent'
-// import ToolsEventAnonsInstagramContent from '@layouts/content/ToolsEventAnonsInstagramContent'
-
-// import ToolsTextEventsAnonsContent from '@layouts/content/ToolsTextEventsAnonsContent'
-// import UserStatisticsContent from '@layouts/content/UserStatisticsContent'
-// import ToolsNewsletterContent from '@layouts/content/ToolsNewsletterContent'
-// import LoggedUserNotificationsContent from '@layouts/content/LoggedUserNotificationsContent'
-// import SettingsFabMenuContent from '@layouts/content/SettingsFabMenuContent'
-// import SettingsRolesContent from '@layouts/content/SettingsRolesContent'
-// import SupervisorBlockContent from '@layouts/content/SupervisorBlockContent'
-// import SettingsDateStartProjectContent from '@layouts/content/SettingsDateStartProjectContent'
-// import HeaderInfoContactsContent from '@layouts/content/HeaderInfoContactsContent'
-// import ToolsImageConstructorContent from '@layouts/content/ToolsImageConstructorContent'
-// import ToolsEventAnonsVkContent from '@layouts/content/ToolsEventAnonsVkContent'const SettingsCodeSendServiceContent = dynamic(() => import('@layouts/content/SettingsCodeSendServiceContent'))
 const PaymentsContent = dynamic(
   () => import('@layouts/content/PaymentsContent')
 )
@@ -187,7 +137,6 @@ const SettingsRolesContent = dynamic(
 const SupervisorBlockContent = dynamic(
   () => import('@layouts/content/SupervisorBlockContent')
 )
-
 const SettingsDateStartProjectContent = dynamic(
   () => import('@layouts/content/SettingsDateStartProjectContent')
 )
@@ -200,192 +149,206 @@ const ToolsImageConstructorContent = dynamic(
 const ToolsEventAnonsVkContent = dynamic(
   () => import('@layouts/content/ToolsEventAnonsVkContent')
 )
+
+import ZodiacCapricorn from '@svg/zodiac/ZodiacCapricorn'
+import ZodiacTaurus from '@svg/zodiac/ZodiacTaurus'
+import ZodiacGemini from '@svg/zodiac/ZodiacGemini'
+import ZodiacCancer from '@svg/zodiac/ZodiacCancer'
+import ZodiacLeo from '@svg/zodiac/ZodiacLeo'
+import ZodiacLibra from '@svg/zodiac/ZodiacLibra'
+import ZodiacSagittarius from '@svg/zodiac/ZodiacSagittarius'
+import ZodiacAries from '@svg/zodiac/ZodiacAries'
+import ZodiacAquarius from '@svg/zodiac/ZodiacAquarius'
+import ZodiacPisces from '@svg/zodiac/ZodiacPisces'
+import ZodiacVirgo from '@svg/zodiac/ZodiacVirgo'
+import ZodiacScorpio from '@svg/zodiac/ZodiacScorpio'
+
+import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTodayCountSelector'
+
 import { uid } from 'uid'
 import ImagesServerContent from '@layouts/content/ImagesServerContent'
 import LikesContent from '@layouts/content/LikesContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
-// import menuHiddenLoggedUserLikesSelector from '@state/selectors/menuHiddenLoggedUserLikesSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
-import { faSquare } from '@fortawesome/free-regular-svg-icons'
 
-const colors = [
-  'border-blue-400',
-  'border-red-400',
-  'border-yellow-400',
-  'border-green-400',
-  'border-purple-400',
-  'border-orange-400',
-  'border-gray-400',
-  'border-amber-400',
-  'border-pink-400',
-  'text-red-400',
-  'text-blue-400',
-  'text-yellow-400',
-  'text-green-400',
-  'text-purple-400',
-  'text-orange-400',
-  'text-disabled',
-  'text-amber-400',
-  'text-pink-400',
-  'bg-blue-400',
-  'bg-red-400',
-  'bg-yellow-400',
-  'bg-green-400',
-  'bg-purple-400',
-  'bg-orange-400',
-  'bg-gray-400',
-  'bg-amber-400',
-  'bg-pink-400',
-  'border-blue-500',
-  'border-red-500',
-  'border-yellow-500',
-  'border-green-500',
-  'border-purple-500',
-  'border-orange-500',
-  'border-gray-500',
-  'border-amber-500',
-  'border-pink-500',
-  'text-red-500',
-  'text-blue-500',
-  'text-yellow-500',
-  'text-green-500',
-  'text-purple-500',
-  'text-orange-500',
-  'text-gray-500',
-  'text-amber-500',
-  'text-pink-500',
-  'bg-blue-500',
-  'bg-red-500',
-  'bg-yellow-500',
-  'bg-green-500',
-  'bg-purple-500',
-  'bg-orange-500',
-  'bg-gray-500',
-  'bg-amber-500',
-  'bg-pink-500',
-  'border-blue-600',
-  'border-yellow-600',
-  'border-red-600',
-  'border-green-600',
-  'border-purple-600',
-  'border-orange-600',
-  'border-gray-600',
-  'border-amber-600',
-  'border-pink-600',
-  'border-amber-700',
-  'border-orange-700',
-  'text-gray-600',
-  'text-blue-600',
-  'text-yellow-600',
-  'text-green-600',
-  'text-purple-600',
-  'text-orange-600',
-  'text-gray-600',
-  'text-amber-600',
-  'text-pink-600',
-  'text-amber-700',
-  'text-orange-700',
-  'bg-blue-600',
-  'bg-red-600',
-  'bg-yellow-600',
-  'bg-green-600',
-  'bg-purple-600',
-  'bg-orange-600',
-  'bg-gray-600',
-  'bg-amber-600',
-  'bg-pink-600',
-  'bg-amber-700',
-  'bg-orange-700',
-  'hover:border-blue-400',
-  'hover:border-red-400',
-  'hover:border-yellow-400',
-  'hover:border-green-400',
-  'hover:border-purple-400',
-  'hover:border-orange-400',
-  'hover:border-gray-400',
-  'hover:border-amber-400',
-  'hover:border-pink-400',
-  'hover:text-red-400',
-  'hover:text-blue-400',
-  'hover:text-yellow-400',
-  'hover:text-green-400',
-  'hover:text-purple-400',
-  'hover:text-orange-400',
-  'hover:text-disabled',
-  'hover:text-amber-400',
-  'hover:text-pink-400',
-  'hover:bg-blue-400',
-  'hover:bg-red-400',
-  'hover:bg-yellow-400',
-  'hover:bg-green-400',
-  'hover:bg-purple-400',
-  'hover:bg-orange-400',
-  'hover:bg-gray-400',
-  'hover:bg-amber-400',
-  'hover:bg-pink-400',
-  'hover:border-blue-500',
-  'hover:border-red-500',
-  'hover:border-yellow-500',
-  'hover:border-green-500',
-  'hover:border-purple-500',
-  'hover:border-orange-500',
-  'hover:border-gray-500',
-  'hover:border-amber-500',
-  'hover:border-pink-500',
-  'hover:text-red-500',
-  'hover:text-blue-500',
-  'hover:text-yellow-500',
-  'hover:text-green-500',
-  'hover:text-purple-500',
-  'hover:text-orange-500',
-  'hover:text-gray-500',
-  'hover:text-amber-500',
-  'hover:text-pink-500',
-  'hover:text-amber-600',
-  'hover:bg-blue-500',
-  'hover:bg-red-500',
-  'hover:bg-yellow-500',
-  'hover:bg-green-500',
-  'hover:bg-purple-500',
-  'hover:bg-orange-500',
-  'hover:bg-gray-500',
-  'hover:bg-amber-500',
-  'hover:bg-pink-500',
-  'hover:border-blue-600',
-  'hover:border-red-600',
-  'hover:border-yellow-600',
-  'hover:border-green-600',
-  'hover:border-purple-600',
-  'hover:border-orange-600',
-  'hover:border-gray-600',
-  'hover:border-amber-600',
-  'hover:border-pink-600',
-  'hover:border-amber-700',
-  'hover:border-orange-700',
-  'hover:text-red-600',
-  'hover:text-blue-600',
-  'hover:text-yellow-600',
-  'hover:text-green-600',
-  'hover:text-purple-600',
-  'hover:text-orange-600',
-  'hover:text-gray-600',
-  'hover:text-amber-600',
-  'hover:text-pink-600',
-  'hover:text-amber-700',
-  'hover:text-orange-700',
-  'hover:bg-blue-600',
-  'hover:bg-red-600',
-  'hover:bg-yellow-600',
-  'hover:bg-green-600',
-  'hover:bg-purple-600',
-  'hover:bg-orange-600',
-  'hover:bg-gray-600',
-  'hover:bg-amber-600',
-  'hover:bg-pink-600',
-  'hover:bg-amber-700',
-  'hover:bg-orange-700',
-]
+// const colors = [
+//   'border-blue-400',
+//   'border-red-400',
+//   'border-yellow-400',
+//   'border-green-400',
+//   'border-purple-400',
+//   'border-orange-400',
+//   'border-gray-400',
+//   'border-amber-400',
+//   'border-pink-400',
+//   'text-red-400',
+//   'text-blue-400',
+//   'text-yellow-400',
+//   'text-green-400',
+//   'text-purple-400',
+//   'text-orange-400',
+//   'text-disabled',
+//   'text-amber-400',
+//   'text-pink-400',
+//   'bg-blue-400',
+//   'bg-red-400',
+//   'bg-yellow-400',
+//   'bg-green-400',
+//   'bg-purple-400',
+//   'bg-orange-400',
+//   'bg-gray-400',
+//   'bg-amber-400',
+//   'bg-pink-400',
+//   'border-blue-500',
+//   'border-red-500',
+//   'border-yellow-500',
+//   'border-green-500',
+//   'border-purple-500',
+//   'border-orange-500',
+//   'border-gray-500',
+//   'border-amber-500',
+//   'border-pink-500',
+//   'text-red-500',
+//   'text-blue-500',
+//   'text-yellow-500',
+//   'text-green-500',
+//   'text-purple-500',
+//   'text-orange-500',
+//   'text-gray-500',
+//   'text-amber-500',
+//   'text-pink-500',
+//   'bg-blue-500',
+//   'bg-red-500',
+//   'bg-yellow-500',
+//   'bg-green-500',
+//   'bg-purple-500',
+//   'bg-orange-500',
+//   'bg-gray-500',
+//   'bg-amber-500',
+//   'bg-pink-500',
+//   'border-blue-600',
+//   'border-yellow-600',
+//   'border-red-600',
+//   'border-green-600',
+//   'border-purple-600',
+//   'border-orange-600',
+//   'border-gray-600',
+//   'border-amber-600',
+//   'border-pink-600',
+//   'border-amber-700',
+//   'border-orange-700',
+//   'text-gray-600',
+//   'text-blue-600',
+//   'text-yellow-600',
+//   'text-green-600',
+//   'text-purple-600',
+//   'text-orange-600',
+//   'text-gray-600',
+//   'text-amber-600',
+//   'text-pink-600',
+//   'text-amber-700',
+//   'text-orange-700',
+//   'bg-blue-600',
+//   'bg-red-600',
+//   'bg-yellow-600',
+//   'bg-green-600',
+//   'bg-purple-600',
+//   'bg-orange-600',
+//   'bg-gray-600',
+//   'bg-amber-600',
+//   'bg-pink-600',
+//   'bg-amber-700',
+//   'bg-orange-700',
+//   'hover:border-blue-400',
+//   'hover:border-red-400',
+//   'hover:border-yellow-400',
+//   'hover:border-green-400',
+//   'hover:border-purple-400',
+//   'hover:border-orange-400',
+//   'hover:border-gray-400',
+//   'hover:border-amber-400',
+//   'hover:border-pink-400',
+//   'hover:text-red-400',
+//   'hover:text-blue-400',
+//   'hover:text-yellow-400',
+//   'hover:text-green-400',
+//   'hover:text-purple-400',
+//   'hover:text-orange-400',
+//   'hover:text-disabled',
+//   'hover:text-amber-400',
+//   'hover:text-pink-400',
+//   'hover:bg-blue-400',
+//   'hover:bg-red-400',
+//   'hover:bg-yellow-400',
+//   'hover:bg-green-400',
+//   'hover:bg-purple-400',
+//   'hover:bg-orange-400',
+//   'hover:bg-gray-400',
+//   'hover:bg-amber-400',
+//   'hover:bg-pink-400',
+//   'hover:border-blue-500',
+//   'hover:border-red-500',
+//   'hover:border-yellow-500',
+//   'hover:border-green-500',
+//   'hover:border-purple-500',
+//   'hover:border-orange-500',
+//   'hover:border-gray-500',
+//   'hover:border-amber-500',
+//   'hover:border-pink-500',
+//   'hover:text-red-500',
+//   'hover:text-blue-500',
+//   'hover:text-yellow-500',
+//   'hover:text-green-500',
+//   'hover:text-purple-500',
+//   'hover:text-orange-500',
+//   'hover:text-gray-500',
+//   'hover:text-amber-500',
+//   'hover:text-pink-500',
+//   'hover:text-amber-600',
+//   'hover:bg-blue-500',
+//   'hover:bg-red-500',
+//   'hover:bg-yellow-500',
+//   'hover:bg-green-500',
+//   'hover:bg-purple-500',
+//   'hover:bg-orange-500',
+//   'hover:bg-gray-500',
+//   'hover:bg-amber-500',
+//   'hover:bg-pink-500',
+//   'hover:border-blue-600',
+//   'hover:border-red-600',
+//   'hover:border-yellow-600',
+//   'hover:border-green-600',
+//   'hover:border-purple-600',
+//   'hover:border-orange-600',
+//   'hover:border-gray-600',
+//   'hover:border-amber-600',
+//   'hover:border-pink-600',
+//   'hover:border-amber-700',
+//   'hover:border-orange-700',
+//   'hover:text-red-600',
+//   'hover:text-blue-600',
+//   'hover:text-yellow-600',
+//   'hover:text-green-600',
+//   'hover:text-purple-600',
+//   'hover:text-orange-600',
+//   'hover:text-gray-600',
+//   'hover:text-amber-600',
+//   'hover:text-pink-600',
+//   'hover:text-amber-700',
+//   'hover:text-orange-700',
+//   'hover:bg-blue-600',
+//   'hover:bg-red-600',
+//   'hover:bg-yellow-600',
+//   'hover:bg-green-600',
+//   'hover:bg-purple-600',
+//   'hover:bg-orange-600',
+//   'hover:bg-gray-600',
+//   'hover:bg-amber-600',
+//   'hover:bg-pink-600',
+//   'hover:bg-amber-700',
+//   'hover:bg-orange-700',
+// ]
 
 export const TAILWIND_COLORS = [
   'blue-400',
@@ -827,7 +790,7 @@ export const GENDERS = [
 ]
 
 export const CHECKED_BUTTONS = [
-  { value: 'checked', name: 'Выбрано', color: 'general', icon: faCheck },
+  { value: 'checked', name: 'Выбрано', color: 'general', icon: faCheckSquare },
   { value: 'unchecked', name: 'Не выбрано', color: 'gray-500', icon: faSquare },
 ]
 

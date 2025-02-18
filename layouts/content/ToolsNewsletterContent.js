@@ -15,8 +15,6 @@ import locationAtom from '@state/atoms/locationAtom'
 import EditableTextarea from '@components/EditableTextarea'
 import convertHtmlToText from '@helpers/convertHtmlToText'
 import pasteFromClipboard from '@helpers/pasteFromClipboard'
-import store from '@state/store'
-import eventsUsersFullByEventIdSelector from '@state/selectors/eventsUsersFullByEventIdSelector'
 import getNoun, { getNounUsers } from '@helpers/getNoun'
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons/faCalendarAlt'
@@ -27,6 +25,7 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import useSnackbar from '@helpers/useSnackbar'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
+import CheckBox from '@components/CheckBox'
 
 const getUsersData = (users) => {
   const mans = users.filter((user) => user.gender === 'male')
@@ -74,6 +73,8 @@ const ToolsNewsletterContent = () => {
 
   const blackList = siteSettings?.newsletter?.blackList || []
 
+  const [checkBlackList, setCheckBlackList] = useState(true)
+
   const [selectedUsers, setSelectedUsers] = useState([])
   // const [blackList, setBlackList] = useState([])
   const [message, setMessage] = useState('')
@@ -82,8 +83,9 @@ const ToolsNewsletterContent = () => {
   const toggleRerender = () => setRerender((state) => !state)
 
   const filteredSelectedUsers = useMemo(() => {
+    if (!checkBlackList) return selectedUsers
     return selectedUsers.filter((user) => !blackList.includes(user._id))
-  }, [selectedUsers, blackList])
+  }, [selectedUsers, blackList, checkBlackList])
 
   const selectedUsersData = useMemo(
     () => getUsersData(filteredSelectedUsers),
@@ -198,31 +200,41 @@ const ToolsNewsletterContent = () => {
             }
           />
 
-          <Button
-            name={'Черный список (' + blackList.length + ' чел.)'}
-            icon={faCancel}
-            onClick={() =>
-              modalsFunc.selectUsers(
-                users.filter((user) => blackList.includes(user._id)),
-                {},
-                (users) => {
-                  const usersIds = users.map((user) => user._id)
-                  setBlackList(usersIds)
-                },
-                [] //exceptedIds,
-                //acceptedIds,
-                // maxUsers,
-                // canSelectNone,
-                // modalTitle,
-                // showCountNumber
-              )
-            }
-          />
-          {blockedUsersCount > 0 && (
-            <div className="flex text-danger">
-              Отфильтровано: {getNounUsers(blockedUsersCount)}
-            </div>
+          {checkBlackList && (
+            <>
+              <Button
+                name={'Черный список (' + blackList.length + ' чел.)'}
+                icon={faCancel}
+                onClick={() =>
+                  modalsFunc.selectUsers(
+                    users.filter((user) => blackList.includes(user._id)),
+                    {},
+                    (users) => {
+                      const usersIds = users.map((user) => user._id)
+                      setBlackList(usersIds)
+                    },
+                    [], //exceptedIds
+                    undefined, //acceptedIds
+                    undefined, // maxUsers
+                    true, // canSelectNone
+                    'Выбор черного списка', //  modalTitle
+                    false // getFullUser
+                  )
+                }
+              />
+              {blockedUsersCount > 0 && (
+                <div className="flex text-danger">
+                  Отфильтровано: {getNounUsers(blockedUsersCount)}
+                </div>
+              )}
+            </>
           )}
+          <CheckBox
+            label="Использовать черный список"
+            checked={checkBlackList}
+            onChange={() => setCheckBlackList((checked) => !checked)}
+            noMargin
+          />
         </div>
 
         <div className="flex flex-wrap items-center gap-1">
