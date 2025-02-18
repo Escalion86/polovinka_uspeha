@@ -6,7 +6,7 @@ import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import { useAtom, useAtomValue } from 'jotai'
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
 import UserStatusIcon from '@components/UserStatusIcon'
 import SvgSigma from '@svg/SvgSigma'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
@@ -156,6 +156,32 @@ const newsletterFunc = (selectedUsersState, messageState) => {
 
     const blockedUsersCount =
       selectedUsers.length - filteredSelectedUsers.length
+
+    useEffect(() => {
+      if (!message || !filteredSelectedUsers?.length) {
+        setOnConfirmFunc()
+      } else {
+        const prepearedText = DOMPurify.sanitize(
+          convertHtmlToText(message, 'whatsapp'),
+          {
+            ALLOWED_TAGS: [],
+            ALLOWED_ATTR: [],
+          }
+        )
+
+        if (!prepearedText) {
+          setOnConfirmFunc()
+        } else {
+          setOnConfirmFunc(() =>
+            modalsFunc.confirm({
+              title: 'Отправка сообщений на Whatsapp пользователям',
+              text: `Вы уверены, что хотите сообщение ${getNoun(filteredSelectedUsers?.length, 'пользователю', 'пользователям', 'пользователям')}?`,
+              onConfirm: () => sendMessage(prepearedText),
+            })
+          )
+        }
+      }
+    }, [message, filteredSelectedUsers?.length])
 
     return (
       <div className="flex flex-col px-1 py-1 overflow-y-auto gap-y-1">
@@ -346,7 +372,7 @@ const newsletterFunc = (selectedUsersState, messageState) => {
             required
           />
         </div>
-        <div>
+        {/* <div>
           <Button
             disabled={!message || !filteredSelectedUsers?.length}
             name="Отправить сообщение"
@@ -367,14 +393,14 @@ const newsletterFunc = (selectedUsersState, messageState) => {
               })
             }}
           />
-        </div>
+        </div> */}
       </div>
     )
   }
 
   return {
     title: `Создание рассылки`,
-    // confirmButtonName: 'Применить',
+    confirmButtonName: 'Отправить сообщение',
     // bottomLeftComponent: <LikesToggle eventId={eventId} />,
     Children: NewsletterModal,
   }

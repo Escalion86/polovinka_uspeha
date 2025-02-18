@@ -39,6 +39,7 @@ import locationAtom from '@state/atoms/locationAtom'
 import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresidentSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import { faWhatsappSquare } from '@fortawesome/free-brands-svg-icons/faWhatsappSquare'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -259,22 +260,24 @@ const CardButtons = ({
       {show.sendNotifications && (
         <>
           <ItemComponent
-            icon={faBullhorn}
+            icon={faWhatsappSquare}
+            onClick={() => {
+              modalsFunc.selectUsersByStatusesFromEvent(
+                item._id,
+                (users, description) =>
+                  modalsFunc.newsletter.add(users, description)
+              )
+            }}
+            color="green"
+            tooltipText="Рассылка"
+          />
+          <ItemComponent
+            icon={faTelegram}
             onClick={() =>
               modalsFunc[typeOfItem].notificateAboutEvent(item._id)
             }
             color="blue"
             tooltipText="Уведомление пользователей о мероприятии"
-          />
-          <ItemComponent
-            icon={faWhatsappSquare}
-            onClick={() =>
-              modalsFunc.selectUsersByStatusesFromEvent(item._id, (users) =>
-                modalsFunc.newsletter.add(users, item.description)
-              )
-            }
-            color="blue"
-            tooltipText="Рассылка"
           />
         </>
       )}

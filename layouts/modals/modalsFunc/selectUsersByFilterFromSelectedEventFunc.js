@@ -1,6 +1,6 @@
+// import CheckBox from '@components/CheckBox'
 import ContentHeader from '@components/ContentHeader'
 import Divider from '@components/Divider'
-import UsersFilter from '@components/Filter/UsersFilter'
 import FormWrapper from '@components/FormWrapper'
 import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
 import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
@@ -46,6 +46,9 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
         noPartner: true,
       },
     })
+
+    // const [checkAddEventDescription, setCheckAddEventDescription] =
+    //   useState(true)
 
     const usersStatusesCount = useMemo(
       () => ({
@@ -117,7 +120,9 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
                 : filter.relationship.noPartner)
           )
           .map(({ user }) => user)
-        onSelect(fullyFilteredUsers)
+        // if (checkAddEventDescription)
+        onSelect(fullyFilteredUsers, event.description)
+        // else onSelect(fullyFilteredUsers)
         closeModal()
       })
     }, [eventUsers, filteredByEventStatusUsers, filter])
@@ -199,6 +204,10 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
           Итого выбрано:{' '}
           {eventUsers.filter(({ status }) => statusInEvent[status]).length}
         </div>
+        {/* <CheckBox
+          checked={checkAddEventDescription}
+          onChange={() => setCheckAddEventDescription}
+        /> */}
       </FormWrapper>
     )
   }
