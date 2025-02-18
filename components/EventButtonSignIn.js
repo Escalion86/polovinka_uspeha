@@ -26,7 +26,10 @@ const TextStatus = ({ children, className }) => (
   </div>
 )
 
-const PaymentsFromLoggedUser = ({ event, eventStatus, noBorders }) => {
+const PaymentsFromLoggedUser = ({ eventId, noBorders }) => {
+  const event = useAtomValue(eventSelector(eventId))
+  const eventStatus = useAtomValue(loggedUserToEventStatusSelector(eventId))
+
   const { userStatus, userEventStatus } = eventStatus
 
   const sumOfPaymentsFromLoggedUserToEvent = useAtomValue(
@@ -76,14 +79,15 @@ const PaymentsFromLoggedUser = ({ event, eventStatus, noBorders }) => {
 }
 
 const Status = ({
-  event,
-  eventStatus,
+  eventId,
   thin,
   classNameProfit,
   noButtonIfAlreadySignIn,
   className,
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
+  const event = useAtomValue(eventSelector(eventId))
+  const eventStatus = useAtomValue(loggedUserToEventStatusSelector(eventId))
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
@@ -211,41 +215,30 @@ const EventButtonSignIn = ({
   thin,
   classNameProfit,
   noBorders,
-}) => {
-  const event = useAtomValue(eventSelector(eventId))
-
-  const eventStatus = useAtomValue(loggedUserToEventStatusSelector(eventId))
-
-  return (
-    <div className={cn('flex', className)}>
-      <Suspense
-        fallback={
-          <Skeleton
-            className="h-[18px] w-[110px] mr-1"
-            containerClassName="flex items-center"
-          />
-        }
-      >
-        <PaymentsFromLoggedUser
-          event={event}
-          eventStatus={eventStatus}
-          noBorders={noBorders}
+}) => (
+  <div className={cn('flex', className)}>
+    <Suspense
+      fallback={
+        <Skeleton
+          className="h-[18px] w-[110px] mr-1"
+          containerClassName="flex items-center"
         />
-      </Suspense>
-      <Suspense fallback={<Skeleton className="h-[80%] w-[100px] mr-1" />}>
-        <div className="flex items-center pl-1">
-          <Status
-            event={event}
-            eventStatus={eventStatus}
-            thin={thin}
-            classNameProfit={classNameProfit}
-            noButtonIfAlreadySignIn={noButtonIfAlreadySignIn}
-            className={className}
-          />
-        </div>
-      </Suspense>
-    </div>
-  )
-}
+      }
+    >
+      <PaymentsFromLoggedUser eventId={eventId} noBorders={noBorders} />
+    </Suspense>
+    <Suspense fallback={<Skeleton className="h-[80%] w-[100px] mr-1" />}>
+      <div className="flex items-center pl-1">
+        <Status
+          eventId={eventId}
+          thin={thin}
+          classNameProfit={classNameProfit}
+          noButtonIfAlreadySignIn={noButtonIfAlreadySignIn}
+          className={className}
+        />
+      </div>
+    </Suspense>
+  </div>
+)
 
 export default EventButtonSignIn

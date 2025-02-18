@@ -5,11 +5,11 @@ import cn from 'classnames'
 import CardWrapper from '@components/CardWrapper'
 
 const EventCardSkeleton = ({
-  loading,
   hidden,
   style,
   noButtons,
   changeStyle = 'laptop',
+  loading,
 }) => {
   const widthNum = useAtomValue(windowDimensionsNumSelector)
 

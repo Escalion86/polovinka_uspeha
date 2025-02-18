@@ -1,6 +1,31 @@
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSelector'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
+import { Suspense } from 'react'
+import Skeleton from 'react-loading-skeleton'
+
+const PriceDiscountByEventIdComponent = ({ eventId, ...props }) => {
+  const subEventSum = useAtomValue(subEventsSumOfEventSelector(eventId))
+  return <PriceDiscount {...props} item={subEventSum} />
+}
+
+export const PriceDiscountByEventId = (props) => (
+  <Suspense
+    fallback={
+      <div
+        className={cn(
+          '-mt-1 flex flex-wrap items-center gap-x-1',
+          props?.className
+        )}
+      >
+        <Skeleton className="w-[60px] laptop:w-[75px] h-[24px] laptop:h-[28px]" />
+      </div>
+    }
+  >
+    <PriceDiscountByEventIdComponent {...props} />
+  </Suspense>
+)
 
 const PriceDiscount = ({
   item,
