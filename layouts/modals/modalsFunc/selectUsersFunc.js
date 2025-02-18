@@ -19,7 +19,7 @@ import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
 import compareObjects from '@helpers/compareObjects'
 
 const selectUsersFunc = (
-  selectedUsers,
+  selectedUsersState,
   filterRules,
   onConfirm,
   exceptedIds,
@@ -49,10 +49,10 @@ const selectUsersFunc = (
 
     const defaultUsersState = useMemo(
       () =>
-        isObject(selectedUsers)
-          ? selectedUsers.filter((item) => isObject(item))
+        isObject(selectedUsersState)
+          ? selectedUsersState.filter((item) => isObject(item))
           : [],
-      [selectedUsers]
+      [selectedUsersState]
     )
 
     const [selectedUsers, setSelectedUsers] = useState(defaultUsersState)

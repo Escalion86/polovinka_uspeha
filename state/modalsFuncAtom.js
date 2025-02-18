@@ -753,6 +753,15 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
     },
+    newsletter: {
+      add: (users, message) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/newsletterFunc').default(
+            users,
+            message
+          )
+        ),
+    },
     template: {
       select: (tool, aspect, onSelect) =>
         addModal(
