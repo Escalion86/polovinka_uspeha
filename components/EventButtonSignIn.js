@@ -151,7 +151,9 @@ const Status = ({
     <TextStatus className="text-success">Завершено</TextStatus>
   ) : userEventStatus === 'assistant' ? (
     <TextStatus className="text-general">Ведущий</TextStatus>
-  ) : (noButtonIfAlreadySignIn && canSignOut && !event.likes) ||
+  ) : (noButtonIfAlreadySignIn &&
+      canSignOut &&
+      (!isEventInProcess || !event.likes)) ||
     (isEventInProcess && canSignOut && !event.likes) ? (
     <TextStatus className="text-blue-600">
       {userEventStatus === 'reserve' ? 'В резерве' : 'Записан'}
