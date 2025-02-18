@@ -29,6 +29,8 @@ import IconWithTooltip from './IconWithTooltip'
 import paymentSectorFunc from '@helpers/paymentSector'
 import PayTypeIcon from './PayTypeIcon'
 import eventSelector from '@state/selectors/eventSelector'
+import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
+import { faCheckSquare } from '@fortawesome/free-regular-svg-icons/faCheckSquare'
 
 const ItemContainer = ({
   onClick,
@@ -37,7 +39,6 @@ const ItemContainer = ({
   noPadding = false,
   className,
   noBorder = false,
-  checkable = true,
   style,
 }) => (
   <div
@@ -59,23 +60,27 @@ const ItemContainer = ({
         : null
     }
   >
-    {checkable && (
+    {typeof active === 'boolean' && (
       <div
         className={cn(
-          'transition-all absolute flex items-center top-0 bottom-0 left-0 overflow-hidden duration-300 bg-general',
-          active ? 'w-7' : 'w-0'
+          'transition-all absolute flex items-center top-0 bottom-0 left-0 overflow-hidden duration-300',
+          // active ? 'w-7' : 'w-0'
+          active ? 'bg-general' : 'bg-gray-400'
         )}
       >
-        {typeof active === 'boolean' ? (
-          <FontAwesomeIcon
-            icon={faCheck}
-            className="w-6 h-6 ml-0.5 text-white"
-          />
-        ) : (
+        {/* {typeof active === 'boolean' ? ( */}
+        <FontAwesomeIcon
+          icon={active ? faCheckSquare : faSquare}
+          className={cn(
+            'w-6 h-6 ml-0.5',
+            faCheck ? 'text-white' : 'text-gray-400'
+          )}
+        />
+        {/* ) : (
           <div className="w-6 h-6 text-lg flex items-center justify-center ml-0.5 text-white">
             {active}
           </div>
-        )}
+        )} */}
       </div>
     )}
     {children}
@@ -104,7 +109,7 @@ export const UserItemFromId = ({
 export const UserItem = ({
   item,
   onClick = null,
-  active = false,
+  active,
   noBorder = false,
   style,
   className,

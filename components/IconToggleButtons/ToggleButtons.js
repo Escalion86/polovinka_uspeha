@@ -12,6 +12,7 @@ const ToggleButtons = ({
   buttonsConfig,
   canSelectNone,
   iconsOnly,
+  names,
 }) => {
   const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
 
@@ -59,6 +60,7 @@ const ToggleButtons = ({
               <FontAwesomeIcon className="w-6 h-6" icon={cfg.icon} />
             )}
             {!iconsOnly && cfg.name}
+            {names ? names[cfg.value] : null}
           </Button>
         )
       })}

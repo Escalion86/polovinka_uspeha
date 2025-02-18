@@ -161,7 +161,7 @@ const modalsFuncGenerator = (get, set) => {
       ),
     selectUsersByStatusesFromEvent: (eventId, onSelect) =>
       addModal(
-        require('../layouts/modals/modalsFunc/selectUsersByStatusesFromSelectedEventFunc').default(
+        require('../layouts/modals/modalsFunc/selectUsersByFilterFromSelectedEventFunc').default(
           eventId,
           onSelect
         )

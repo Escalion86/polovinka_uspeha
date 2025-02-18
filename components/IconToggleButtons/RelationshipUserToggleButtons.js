@@ -4,8 +4,9 @@ import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import Image from 'next/image'
+import cn from 'classnames'
 
-const RelationshipUserToggleButtons = ({ value, onChange }) => {
+const RelationshipUserToggleButtons = ({ value, onChange, names }) => {
   const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
   return (
     <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
@@ -20,6 +21,10 @@ const RelationshipUserToggleButtons = ({ value, onChange }) => {
         variant={value.noPartner ? 'contained' : 'outlined'}
         color="blue"
         aria-label="noPartner"
+        className={cn(
+          'flex gap-x-2',
+          value.noPartner ? 'text-white' : 'text-blue-400'
+        )}
       >
         <div className="w-6 h-6">
           <Image
@@ -29,6 +34,7 @@ const RelationshipUserToggleButtons = ({ value, onChange }) => {
             alt="noPartner"
           />
         </div>
+        {names?.havePartner}
       </Button>
       <Button
         onClick={() =>
@@ -41,6 +47,10 @@ const RelationshipUserToggleButtons = ({ value, onChange }) => {
         variant={value.havePartner ? 'contained' : 'outlined'}
         color="green"
         aria-label="havePartner"
+        className={cn(
+          'flex gap-x-2',
+          value.havePartner ? 'text-white' : 'text-green-400'
+        )}
       >
         <div className="w-6 h-6">
           <Image
@@ -50,6 +60,7 @@ const RelationshipUserToggleButtons = ({ value, onChange }) => {
             alt="havePartner"
           />
         </div>
+        {names?.noPartner}
       </Button>
     </ButtonGroup>
   )
