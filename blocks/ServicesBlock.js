@@ -10,11 +10,7 @@ const ServiceItem = ({ serviceId, title, shortDescription, images }) => {
   return (
     <div className="flex-col w-full max-w-[430px] overflow-hidden bg-white rounded-lg shadow-xl gap-y-1">
       {images && (
-        <img
-          className="object-cover w-full max-h-[220px]"
-          src={images[0]}
-          alt="service"
-        />
+        <img className="object-cover w-full" src={images[0]} alt="service" />
       )}
       <div className="px-3 py-2 text-base font-bold leading-3 text-center border-b border-gray-400 text-general laptop:text-lg laptop:leading-4">
         {title}
