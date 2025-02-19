@@ -1,6 +1,5 @@
 import birthDateToAge from '@helpers/birthDateToAge'
 import formatAddress from '@helpers/formatAddress'
-// import formatEventDateTime from '@helpers/formatEventDateTime'
 import getUserFullName from '@helpers/getUserFullName'
 import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 
