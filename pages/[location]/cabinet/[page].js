@@ -138,19 +138,6 @@ function CabinetPage(props) {
   )
 }
 
-console.log(
-  'test',
-  dateToDateTimeStr(
-    new Date(),
-    true,
-    true,
-    true,
-    false,
-    false,
-    'Asia/Yekaterinburg'
-  )
-)
-
 export default CabinetPage
 
 // export const getStaticPaths = async () => {
