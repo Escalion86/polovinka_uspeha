@@ -10,13 +10,17 @@ import subEventsSummator from '@helpers/subEventsSummator'
 import { telegramCmdToIndex } from '@server/telegramCmd'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import checkLocationValid from '@server/checkLocationValid'
+import getTimeZoneByLocation from '@server/getTimeZoneByLocation'
 
-const notificateUsersAboutEvent = async (eventId, location, req) => {
+const notificateUsersAboutEvent = async (eventId, location) => {
+  if (!checkLocationValid(location)) return { error: 'Invalid location' }
+
   const db = await dbConnect(location)
-  if (!db) return
+  if (!db) return { error: 'Invalid db' }
 
   const event = await db.model('Events').findById(eventId).lean()
-  if (!event || event.blank) return
+  if (!event) return { error: 'not found event' }
+  if (event.blank) return { error: 'event is blank' }
 
   const rolesSettings = await db.model('Roles').find({}).lean()
   const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
@@ -121,6 +125,7 @@ const notificateUsersAboutEvent = async (eventId, location, req) => {
   const textStart = `\u{1F4C5} ${formatEventDateTime(event, {
     fullWeek: true,
     weekInBrackets: true,
+    timeZone: getTimeZoneByLocation(location),
   }).toUpperCase()}\n<b>${event.title}</b>\n${DOMPurify.sanitize(
     event.description
       .replaceAll('<p><br></p>', '\n')
@@ -231,7 +236,9 @@ export default async function handler(req, res) {
 
   if (method === 'GET') {
     const eventId = query.eventId
-    await notificateUsersAboutEvent(eventId, location, req)
+    const result = await notificateUsersAboutEvent(eventId, location)
+    if (result?.error)
+      return res?.status(400).json({ success: false, error: result.error })
     return res?.status(200).json({ success: true })
   }
   return res?.status(400).json({ success: false })

@@ -1,3 +1,4 @@
+import changeTimezone from './changeTimezone'
 import {
   DAYS_OF_WEEK,
   DAYS_OF_WEEK_FULL,
@@ -11,10 +12,13 @@ const dateToDateTimeStr = (
   fullMonth,
   showYear = true,
   fullSeparete = false,
-  dayOfWeekFull = false
+  dayOfWeekFull = false,
+  timeZone
 ) => {
-  var d = new Date(date),
-    minutes = '' + d.getMinutes(),
+  var d = new Date(date)
+  if (timeZone) d = changeTimezone(date, timeZone)
+
+  var minutes = '' + d.getMinutes(),
     hours = '' + d.getHours(),
     month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),

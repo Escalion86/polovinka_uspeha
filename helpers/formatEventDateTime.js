@@ -1,11 +1,16 @@
-import { DAYS_OF_WEEK, MONTHS, MONTHS_FULL } from './constants'
 import dateToDateTimeStr from './dateToDateTimeStr'
 
 function formatEventDateTime(event, props = {}) {
   if (!event) return undefined
 
-  const { dontShowDayOfWeek, fullWeek, showYear, fullMonth, weekInBrackets } =
-    props
+  const {
+    dontShowDayOfWeek,
+    fullWeek,
+    showYear,
+    fullMonth,
+    weekInBrackets,
+    timeZone,
+  } = props
 
   const dateStart = dateToDateTimeStr(
     event.dateStart,
@@ -13,7 +18,8 @@ function formatEventDateTime(event, props = {}) {
     fullMonth,
     showYear,
     true,
-    fullWeek
+    fullWeek,
+    timeZone
   )
   const dateEnd = dateToDateTimeStr(
     event.dateEnd,
@@ -21,7 +27,8 @@ function formatEventDateTime(event, props = {}) {
     fullMonth,
     showYear,
     true,
-    fullWeek
+    fullWeek,
+    timeZone
   )
   var date = ''
   if (
