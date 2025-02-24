@@ -16,7 +16,7 @@ const Note = ({ children, noMargin, className, type }) => (
   // </div>
   <div
     className={cn(
-      'relative pt-2.5 pb-2 px-2 text-base leading-4 italic border-l-4 rounded-[4px]',
+      'relative pt-2.5 pb-2 pl-2 pr-5 text-base leading-4 italic border-l-4 rounded-[4px]',
       noMargin ? '' : 'my-2',
       type === 'error'
         ? 'text-red-900 bg-red-100 border-red-400'
@@ -36,7 +36,7 @@ const Note = ({ children, noMargin, className, type }) => (
             : faQuoteRight
       }
       className={cn(
-        'absolute w-4 h-4 right-1 top-1',
+        'absolute w-3.5 h-3.5 right-1 top-1',
         type === 'error'
           ? 'text-red-600/70'
           : type === 'warning'
