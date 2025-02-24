@@ -76,7 +76,8 @@ const LoggedUserNotificationsContent = (props) => {
   const { success, error } = useSnackbar()
 
   const isNotificationActivated = !!(
-    notifications?.telegram?.id && notifications?.telegram?.active
+    (notifications?.telegram?.id && notifications?.telegram?.active) ||
+    notifications?.whatsapp?.active
   )
 
   const onClickConfirm = async () => {
@@ -132,8 +133,21 @@ const LoggedUserNotificationsContent = (props) => {
         />
       </div>
       <div className="p-2">
+        {!notifications?.telegram?.id && (
+          <div className="flex flex-col">
+            <Note>
+              Для подключения оповещений через Телеграм - нажмите на кнопку ниже
+              и авторизируйтесь
+            </Note>
+            <TelegramLoginButton
+              dataOnauth={handleTelegramResponse}
+              botName={telegramBotName}
+              lang="ru"
+            />
+          </div>
+        )}
         <div className="flex flex-wrap items-center gap-x-2">
-          {notifications?.telegram?.id ? (
+          {notifications?.telegram?.id && (
             <YesNoPicker
               label="Оповещения в Telegram"
               value={!!notifications?.telegram?.active}
@@ -150,19 +164,23 @@ const LoggedUserNotificationsContent = (props) => {
                 }))
               }}
             />
-          ) : (
-            <>
-              <Note>
-                Для подключения оповещений через Телеграм - нажмите на кнопку
-                ниже и авторизируйтесь
-              </Note>
-              <TelegramLoginButton
-                dataOnauth={handleTelegramResponse}
-                botName={telegramBotName}
-                lang="ru"
-              />
-            </>
           )}
+          <YesNoPicker
+            label="Оповещения в Whatsapp"
+            value={!!notifications?.whatsapp?.active}
+            onChange={() => {
+              // if (!notifications?.telegram?.active) {
+              //   modalsFunc.notifications.telegram.activate()
+              // }
+              setNotifications((state) => ({
+                ...state,
+                whatsapp: {
+                  ...state?.whatsapp,
+                  active: !state?.whatsapp?.active,
+                },
+              }))
+            }}
+          />
           {/* <Input
             type="number"
             label="Telegram ID"

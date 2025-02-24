@@ -96,6 +96,9 @@ export default async function handler(req, res) {
               profession: 1,
               orientation: 1,
             },
+            $set: {
+              'notifications.whatsapp.active': true,
+            },
           }
         )
 
