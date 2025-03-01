@@ -141,7 +141,7 @@ const EventUsers2 = ({
                 </div>
               ))}
           </UserItem>
-          {!readOnly && event.subEvents.length > 1 ? (
+          {!readOnly && event.subEvents.length > 1 && subEventId ? (
             <ItemButton
               onClick={() =>
                 modalsFunc.eventUser.editSubEvent(
