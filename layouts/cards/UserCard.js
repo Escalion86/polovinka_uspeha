@@ -26,6 +26,7 @@ import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 import { Suspense } from 'react'
 import UserCardSkeleton from './Skeletons/UserCardSkeleton'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
 
 const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
   const sumOfPaymentsWithoutEventOfUser = useAtomValue(
@@ -222,26 +223,57 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     <div className="flex items-end justify-end flex-1 py-1 pr-1 gap-x-1">
                       {seeNotificationIcon && (
                         <div className="flex items-center justify-end gap-x-1">
-                          <FontAwesomeIcon
-                            className={cn(
-                              'h-3',
-                              user.notifications?.telegram?.active &&
-                                user.notifications?.telegram?.id
-                                ? 'text-success'
-                                : 'text-gray-800'
-                            )}
-                            icon={
-                              user.notifications?.telegram?.active &&
-                              user.notifications?.telegram?.id
-                                ? faVolumeHigh
-                                : faVolumeMute
-                            }
-                            size="xs"
-                          />
-                          {user.notifications?.telegram?.id && (
+                          {!user.notifications?.telegram?.active &&
+                          !user.notifications?.whatsapp?.active ? (
+                            <FontAwesomeIcon
+                              // className={cn(
+                              //   'h-3',
+                              //   user.notifications?.telegram?.active &&
+                              //     user.notifications?.telegram?.id
+                              //     ? 'text-success'
+                              //     : 'text-gray-800'
+                              // )}
+                              className="h-3 text-gray-800"
+                              // icon={
+                              //   user.notifications?.telegram?.active &&
+                              //   user.notifications?.telegram?.id
+                              //     ? faVolumeHigh
+                              //     : faVolumeMute
+                              // }
+                              icon={faVolumeMute}
+                              size="xs"
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              // className={cn(
+                              //   'h-3',
+                              //   user.notifications?.telegram?.active &&
+                              //     user.notifications?.telegram?.id
+                              //     ? 'text-success'
+                              //     : 'text-gray-800'
+                              // )}
+                              className="h-3 text-success"
+                              // icon={
+                              //   user.notifications?.telegram?.active &&
+                              //   user.notifications?.telegram?.id
+                              //     ? faVolumeHigh
+                              //     : faVolumeMute
+                              // }
+                              icon={faVolumeHigh}
+                              size="xs"
+                            />
+                          )}
+                          {user.notifications?.telegram?.active && (
                             <FontAwesomeIcon
                               className="h-5 text-blue-600"
                               icon={faTelegram}
+                              size="xs"
+                            />
+                          )}
+                          {user.notifications?.whatsapp?.active && (
+                            <FontAwesomeIcon
+                              className="h-5 text-green-600"
+                              icon={faWhatsapp}
                               size="xs"
                             />
                           )}

@@ -136,17 +136,24 @@ const newsletterFunc = (selectedUsersState, messageState) => {
     // const blackListData = useMemo(() => getUsersData(blackList), [blackList])
 
     const sendMessage = async (message) => {
-      const result = []
+      // const result = []
 
-      for (let i = 0; i < filteredSelectedUsers.length; i++) {
-        const user = filteredSelectedUsers[i]
-        const res = await postData(`/api/${location}/whatsapp/sendMessage`, {
+      // for (let i = 0; i < filteredSelectedUsers.length; i++) {
+      //   const user = filteredSelectedUsers[i]
+      const res = await postData(`/api/${location}/whatsapp/sendMessage`, {
+        // phone: user.whatsapp || user.phone,
+        users: filteredSelectedUsers.map((user) => ({
+          userId: user._id,
           phone: user.whatsapp || user.phone,
-          message,
-        })
-        result.push(res)
-      }
-      return result
+        })),
+        message,
+      })
+      success('Рассылка отправлена')
+      //   const idMessage = res?.idMessage
+      //   result.push({ userId: user._id, message, idMessage })
+      // }
+      // console.log('res :>> ', res)
+      return res
     }
 
     const Component = useCallback(
@@ -158,7 +165,11 @@ const newsletterFunc = (selectedUsersState, messageState) => {
       selectedUsers.length - filteredSelectedUsers.length
 
     useEffect(() => {
-      if (!message || !filteredSelectedUsers?.length) {
+      if (
+        !message ||
+        !filteredSelectedUsers?.length ||
+        !siteSettings?.newsletter?.whatsappActivated
+      ) {
         setOnConfirmFunc()
       } else {
         const prepearedText = DOMPurify.sanitize(
@@ -175,13 +186,16 @@ const newsletterFunc = (selectedUsersState, messageState) => {
           setOnConfirmFunc(() =>
             modalsFunc.confirm({
               title: 'Отправка сообщений на Whatsapp пользователям',
-              text: `Вы уверены, что хотите сообщение ${getNoun(filteredSelectedUsers?.length, 'пользователю', 'пользователям', 'пользователям')}?`,
+              text: `Вы уверены, что хотите отправить сообщение ${getNoun(filteredSelectedUsers?.length, 'пользователю', 'пользователям', 'пользователям')} на Whatsapp?`,
               onConfirm: () => sendMessage(prepearedText),
             })
           )
         }
       }
-    }, [message, filteredSelectedUsers?.length])
+    }, [message, filteredSelectedUsers?.length, siteSettings])
+
+    if (!siteSettings?.newsletter?.whatsappActivated)
+      return <div>Рассылка на Whatsapp не доступна</div>
 
     return (
       <div className="flex flex-col px-1 py-1 overflow-y-auto gap-y-1">

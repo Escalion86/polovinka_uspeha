@@ -45,7 +45,7 @@ const ItemContainer = ({
     className={cn(
       'relative flex w-full max-w-full',
       { 'hover:bg-blue-200 cursor-pointer': onClick },
-      { 'bg-green-200': active },
+      { 'bg-general/20': active },
       { 'py-0.5 px-1': !noPadding },
       { 'border-b border-gray-700 last:border-0': !noBorder },
       className
@@ -63,7 +63,7 @@ const ItemContainer = ({
     {typeof active === 'boolean' && (
       <div
         className={cn(
-          'transition-all absolute flex items-center top-0 bottom-0 left-0 overflow-hidden duration-300',
+          'transition-all flex items-center overflow-hidden duration-300',
           // active ? 'w-7' : 'w-0'
           active ? 'bg-general' : 'bg-gray-400'
         )}
@@ -72,7 +72,7 @@ const ItemContainer = ({
         <FontAwesomeIcon
           icon={active ? faCheckSquare : faSquare}
           className={cn(
-            'w-6 h-6 ml-0.5',
+            'w-5 h-5 mx-0.5',
             faCheck ? 'text-white' : 'text-gray-400'
           )}
         />
