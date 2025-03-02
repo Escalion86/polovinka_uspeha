@@ -125,17 +125,31 @@ const ToolsNewsletterContent = () => {
   // const blackListData = useMemo(() => getUsersData(blackList), [blackList])
 
   const sendMessage = async (message) => {
-    const result = []
+    // const result = []
 
-    for (let i = 0; i < filteredSelectedUsers.length; i++) {
-      const user = filteredSelectedUsers[i]
-      const res = await postData(`/api/${location}/whatsapp/sendMessage`, {
+    // for (let i = 0; i < filteredSelectedUsers.length; i++) {
+    //   const user = filteredSelectedUsers[i]
+    const res = await postData(`/api/${location}/whatsapp/sendMessage`, {
+      // phone: user.whatsapp || user.phone,
+      users: filteredSelectedUsers.map((user) => ({
+        userId: user._id,
         phone: user.whatsapp || user.phone,
-        message,
-      })
-      result.push(res)
-    }
-    return result
+      })),
+      message,
+    })
+    //   const idMessage = res?.idMessage
+    //   result.push({ userId: user._id, message, idMessage })
+    // }
+    // console.log('res :>> ', res)
+    // Example
+    // res :>>  [
+    //   {
+    //     userId: '6252f733183ed7f8da6baa54',
+    //     success: true,
+    //     resp: { idMessage: 'BAE5E9A4F28119D2' }
+    //   }
+    // ]
+    return res
   }
 
   const Component = useCallback(
@@ -144,6 +158,9 @@ const ToolsNewsletterContent = () => {
   )
 
   const blockedUsersCount = selectedUsers.length - filteredSelectedUsers.length
+
+  if (!siteSettings?.newsletter?.whatsappActivated)
+    return <div>Рассылка на Whatsapp не доступна</div>
 
   return (
     <div className="flex flex-col px-1 py-1 overflow-y-auto gap-y-1">

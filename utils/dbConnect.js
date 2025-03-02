@@ -21,6 +21,7 @@ import testSchema from '@schemas/testSchema'
 import toolsTemplatesSchema from '@schemas/toolsTemplatesSchema'
 import usersSchema from '@schemas/usersSchema'
 import checkLocationValid from '@server/checkLocationValid'
+import newsLettersSchema from '@schemas/newsLettersSchema'
 
 // var tunnel = require('tunnel-ssh')
 
@@ -265,6 +266,10 @@ async function dbConnect(location) {
     connections[location].model(
       'ToolsTemplates',
       mongoose.Schema(toolsTemplatesSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'Newsletters',
+      mongoose.Schema(newsLettersSchema, { timestamps: true })
     )
   }
 

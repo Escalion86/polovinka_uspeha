@@ -21,12 +21,20 @@ import TelegramLoginButton from 'react-telegram-login'
 import Note from '@components/Note'
 import locationAtom from '@state/atoms/locationAtom'
 import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
+import PhoneInput from '@components/PhoneInput'
+import useErrors from '@helpers/useErrors'
 
 const LoggedUserNotificationsContent = (props) => {
   const location = useAtomValue(locationAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const telegramBotName = useAtomValue(telegramBotNameAtom)
+
+  const [whatsapp, setWhatsapp] = useState(
+    loggedUserActive?.whatsapp ?? DEFAULT_USER.whatsapp
+  )
+
+  const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
   const birthdays = loggedUserActiveRole?.notifications?.birthdays
   const remindDates = loggedUserActiveRole?.notifications?.remindDates
@@ -86,6 +94,7 @@ const LoggedUserNotificationsContent = (props) => {
       `/api/${location}/users/${loggedUserActive._id}`,
       {
         notifications,
+        whatsapp,
       },
       (data) => {
         setLoggedUserActive(data)
@@ -108,10 +117,9 @@ const LoggedUserNotificationsContent = (props) => {
     }
   }, [props])
 
-  const formChanged = !compareObjects(
-    loggedUserActive?.notifications,
-    notifications
-  )
+  const formChanged =
+    !compareObjects(loggedUserActive?.notifications, notifications) ||
+    loggedUserActive?.whatsapp !== whatsapp
 
   const buttonDisabled = !formChanged
 
@@ -152,9 +160,6 @@ const LoggedUserNotificationsContent = (props) => {
               label="Оповещения в Telegram"
               value={!!notifications?.telegram?.active}
               onChange={() => {
-                // if (!notifications?.telegram?.active) {
-                //   modalsFunc.notifications.telegram.activate()
-                // }
                 setNotifications((state) => ({
                   ...state,
                   telegram: {
@@ -165,13 +170,10 @@ const LoggedUserNotificationsContent = (props) => {
               }}
             />
           )}
-          <YesNoPicker
+          {/* <YesNoPicker
             label="Оповещения в Whatsapp"
             value={!!notifications?.whatsapp?.active}
             onChange={() => {
-              // if (!notifications?.telegram?.active) {
-              //   modalsFunc.notifications.telegram.activate()
-              // }
               setNotifications((state) => ({
                 ...state,
                 whatsapp: {
@@ -180,24 +182,21 @@ const LoggedUserNotificationsContent = (props) => {
                 },
               }))
             }}
-          />
-          {/* <Input
-            type="number"
-            label="Telegram ID"
-            value={notifications?.telegram?.id ?? ''}
-            onChange={(value) => {
-              setNotifications((state) => ({
-                ...state,
-                telegram: {
-                  ...notifications?.telegram,
-                  id: value,
-                },
-              }))
-            }}
-            showArrows={false}
           /> */}
         </div>
-
+        {/* {!!notifications?.whatsapp?.active && (
+          <div className="flex flex-col">
+            <Note>Убедитесь, что ваш номер Whatsapp введен верно!</Note>
+            <PhoneInput
+              label="Whatsapp"
+              value={whatsapp}
+              onChange={setWhatsapp}
+              // error={errors.whatsapp}
+              copyPasteButtons
+              noMargin
+            />
+          </div>
+        )} */}
         {isNotificationActivated && (
           <>
             {(birthdays || remindDates) && (

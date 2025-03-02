@@ -40,6 +40,7 @@ import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresiden
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import { faWhatsappSquare } from '@fortawesome/free-brands-svg-icons/faWhatsappSquare'
 import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -85,6 +86,7 @@ const CardButtons = ({
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
   const isLoggedUserPresident = useAtomValue(isLoggedUserPresidentSelector)
   const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+  const siteSettings = useAtomValue(siteSettingsAtom)
 
   if (!item) return null
 
@@ -134,7 +136,8 @@ const CardButtons = ({
   const sendNotifications =
     typeOfItem === 'event' &&
     loggedUserActiveRole?.events?.sendNotifications &&
-    item.showOnSite
+    item.showOnSite &&
+    siteSettings?.newsletter?.whatsappActivated
 
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||

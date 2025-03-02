@@ -31,27 +31,53 @@ export default async function handler(req, res) {
   const { urlWithInstance, token } = whatsappConstants[location]
 
   if (method === 'POST') {
-    const { phone, message } = body.data
-
     if (type === 'sendMessage') {
+      const { users, message } = body.data
       const url = `${urlWithInstance}/sendMessage/${token}`
 
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chatId: `${phone}@c.us`,
-          message,
-        }),
-      })
-        .then((res) => res.json())
-        .catch((error) => console.log('fetchingEvents ERROR:', error))
+      const result = []
+      for (let i = 0; i < users.length; i++) {
+        const { phone, userId } = users[i]
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chatId: `${phone}@c.us`,
+            message,
+          }),
+        })
 
-      return res?.status(200).json({ success: true, data: resp })
+        if (resp) {
+          result.push({ userId, success: true, resp: await resp.json() })
+        } else {
+          result.push({ userId, success: false, error: 'no response' })
+        }
+      }
+      // .then((res) => res.json())
+      // .catch((error) => console.log('fetchingEvents ERROR:', error))
+      console.log('result :>> ', result)
+
+      // Example
+      // result :>>  [
+      //   {
+      //     userId: '6252f733183ed7f8da6baa54',
+      //     success: true,
+      //     resp: { idMessage: 'BAE5E9A4F28119D2' }
+      //   }
+      // ]
+
+      return res?.status(200).json({ success: true, data: result })
+    }
+    if (type === 'checkWhatsapp') {
+      const { phone } = body.data
+      const url = `${urlWithInstance}/checkWhatsapp/${token}`
+      // Вариант ответа:
+      // { "existsWhatsapp": true }
     }
     if (type === 'getChatHystory') {
+      const { phone } = body.data
       const url = `${urlWithInstance}/getChatHistory/${token}`
 
       const resp = await fetch(url, {
