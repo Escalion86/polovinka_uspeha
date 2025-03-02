@@ -223,8 +223,8 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     <div className="flex items-end justify-end flex-1 py-1 pr-1 gap-x-1">
                       {seeNotificationIcon && (
                         <div className="flex items-center justify-end gap-x-1">
-                          {!user.notifications?.telegram?.active &&
-                          !user.notifications?.whatsapp?.active ? (
+                          {!user.notifications?.telegram?.active ? (
+                            //  && !user.notifications?.whatsapp?.active
                             <FontAwesomeIcon
                               // className={cn(
                               //   'h-3',
@@ -270,13 +270,13 @@ const UserCard = ({ userId, hidden = false, style }) => {
                               size="xs"
                             />
                           )}
-                          {user.notifications?.whatsapp?.active && (
+                          {/* {user.notifications?.whatsapp?.active && (
                             <FontAwesomeIcon
                               className="h-5 text-green-600"
                               icon={faWhatsapp}
                               size="xs"
                             />
-                          )}
+                          )} */}
                         </div>
                       )}
                       {seeSumOfPaymentsWithoutEventOnCard && (
