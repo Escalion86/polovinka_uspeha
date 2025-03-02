@@ -137,10 +137,12 @@ const ToolsNewsletterContent = () => {
       })),
       message,
     })
+
+    success('Рассылка отправлена')
     //   const idMessage = res?.idMessage
     //   result.push({ userId: user._id, message, idMessage })
     // }
-    // console.log('res :>> ', res)
+    console.log('res :>> ', res)
     // Example
     // res :>>  [
     //   {

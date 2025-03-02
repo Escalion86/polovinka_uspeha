@@ -148,6 +148,7 @@ const newsletterFunc = (selectedUsersState, messageState) => {
         })),
         message,
       })
+      success('Рассылка отправлена')
       //   const idMessage = res?.idMessage
       //   result.push({ userId: user._id, message, idMessage })
       // }
