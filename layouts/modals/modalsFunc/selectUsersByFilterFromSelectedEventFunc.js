@@ -121,7 +121,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
           )
           .map(({ user }) => user)
         // if (checkAddEventDescription)
-        onSelect(fullyFilteredUsers, event.description)
+        onSelect(fullyFilteredUsers, event)
         // else onSelect(fullyFilteredUsers)
         closeModal()
       })

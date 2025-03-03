@@ -45,6 +45,8 @@ import loggedUserActiveAtom from './atoms/loggedUserActiveAtom'
 import snackbarAtom from './atoms/snackbarAtom'
 import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
 import { atom } from 'jotai'
+import newsletterEditSelector from './selectors/newsletterEditSelector'
+import newsletterDeleteSelector from './selectors/newsletterDeleteSelector'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -191,6 +193,20 @@ const messages = {
       error: 'Не удалось удалить заявку на услугу',
     },
   },
+  newsletter: {
+    update: {
+      success: 'Рассылка обновлена',
+      error: 'Не удалось обновить рассылку',
+    },
+    add: {
+      success: 'Рассылка создана',
+      error: 'Не удалось создать рассылку',
+    },
+    delete: {
+      success: 'Рассылка удалена',
+      error: 'Не удалось удалить рассылку',
+    },
+  },
 }
 
 const array = [
@@ -207,6 +223,7 @@ const array = [
   'eventsUser',
   'servicesUser',
   'eventsTag',
+  'newsletter',
 ]
 
 const itemsFuncGenerator = (get, set) => {
@@ -236,6 +253,8 @@ const itemsFuncGenerator = (get, set) => {
     deleteAdditionalBlock: setFunc(additionalBlockDeleteSelector),
     setUser: setFunc(userEditSelector),
     deleteUser: setFunc(userDeleteSelector),
+    setNewsletter: setFunc(newsletterEditSelector),
+    deleteNewsletter: setFunc(newsletterDeleteSelector),
     setReview: setFunc(reviewEditSelector),
     deleteReview: setFunc(reviewDeleteSelector),
     addPayments: setFunc(paymentsAddSelector),

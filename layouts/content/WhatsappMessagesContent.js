@@ -27,7 +27,7 @@ const WhatsappMessagesContent = () => {
   useEffect(() => {
     const fetchResp = async () => {
       await getData(
-        `/api/${location}/whatsapp/getWaSettings`,
+        `/api/${location}/newsletters/byType/getWaSettings`,
         {},
         setWaSettings,
         (error) => console.error('fetchResp error', error)
@@ -38,7 +38,7 @@ const WhatsappMessagesContent = () => {
 
   const fetchChatHystory = useCallback(async (user) => {
     await postData(
-      `/api/${location}/whatsapp/getChatHystory`,
+      `/api/${location}/newsletters/byType/getChatHystory`,
       {
         phone: user.whatsapp || user.phone,
       },
@@ -63,7 +63,7 @@ const WhatsappMessagesContent = () => {
   }, [user])
 
   const sendMessage = async (message) => {
-    await postData(`/api/${location}/whatsapp/sendMessage`, {
+    await postData(`/api/${location}/newsletters/byType/sendMessage`, {
       phone: user.whatsapp || user.phone,
       message,
     })
