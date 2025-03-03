@@ -754,11 +754,16 @@ const modalsFuncGenerator = (get, set) => {
         ),
     },
     newsletter: {
-      add: (users, message) =>
+      add: (props) =>
         addModal(
           require('../layouts/modals/modalsFunc/newsletterFunc').default(
-            users,
-            message
+            props || {}
+          )
+        ),
+      view: (newsletterId) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/newsletterViewFunc').default(
+            newsletterId
           )
         ),
     },

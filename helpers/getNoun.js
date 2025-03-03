@@ -64,3 +64,9 @@ export const getNounQuestions = (number) =>
 
 export const getNounServicesUsers = (number) =>
   getNoun(number, 'заявка', 'заявки', 'заявок')
+
+export const getNounNewsletters = (number) =>
+  getNoun(number, 'рассылка', 'рассылки', 'рассылок')
+
+export const getNounMessages = (number) =>
+  getNoun(number, 'сообщение', 'сообщения', 'сообщений')

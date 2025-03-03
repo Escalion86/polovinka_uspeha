@@ -267,8 +267,7 @@ const CardButtons = ({
             onClick={() => {
               modalsFunc.selectUsersByStatusesFromEvent(
                 item._id,
-                (users, description) =>
-                  modalsFunc.newsletter.add(users, description)
+                (users, event) => modalsFunc.newsletter.add({ users, event })
               )
             }}
             color="green"
