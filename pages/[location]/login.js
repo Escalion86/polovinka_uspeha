@@ -414,6 +414,14 @@ const LoginPage = (props) => {
       username,
       forceReg = false,
     }) => {
+      console.log({
+        id,
+        first_name,
+        last_name,
+        photo_url,
+        username,
+        forceReg,
+      })
       if (typeof id === 'number') {
         // console.log(response)
         // if (isAuthorization) {
