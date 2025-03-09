@@ -45,7 +45,7 @@ import FormData from 'form-data'
 // }
 
 const DevContent = () => {
-  // const modalsFunc = useAtomValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   // const events = useAtomValue(eventsAtom)
   // console.log('1 :>> ', 1)
   const [test, setTest] = useState()
@@ -143,6 +143,7 @@ const DevContent = () => {
 
   return (
     <div className="flex flex-col gap-y-0.5">
+      <Button name="AI" onClick={() => modalsFunc.external.ai()} />
       <Button name="kad" onClick={() => kad()} />
       <Button name="test" onClick={() => getVKUsers()} />
       <Input name="input" onChange={setInput} value={input} />

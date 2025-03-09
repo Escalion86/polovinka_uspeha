@@ -149,6 +149,9 @@ const ToolsImageConstructorContent = dynamic(
 const ToolsEventAnonsVkContent = dynamic(
   () => import('@layouts/content/ToolsEventAnonsVkContent')
 )
+const IndividualWeddingsContent = dynamic(
+  () => import('@layouts/content/IndividualWeddingsContent')
+)
 
 import ZodiacCapricorn from '@svg/zodiac/ZodiacCapricorn'
 import ZodiacTaurus from '@svg/zodiac/ZodiacTaurus'
@@ -171,6 +174,7 @@ import LikesContent from '@layouts/content/LikesContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
+import { faHeartCircleCheck } from '@fortawesome/free-solid-svg-icons'
 
 // const colors = [
 //   'border-blue-400',
@@ -1916,6 +1920,12 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.export,
   },
+  toolsIndividualWeddings: {
+    Component: IndividualWeddingsContent,
+    name: 'Инструменты / Индивидуальные свидания',
+    accessRoles: ['president', 'dev'],
+    roleAccess: (role) => true,
+  },
   newsletter: {
     Component: ToolsNewsletterContent,
     name: 'Инструменты / Рассылка',
@@ -2296,12 +2306,22 @@ export const pages = [
   {
     id: 76,
     group: 10,
+    name: 'Индивидуальные свидания',
+    href: 'toolsIndividualWeddings',
+    icon: faHeartCircleCheck,
+    accessRoles: CONTENTS['toolsIndividualWeddings'].accessRoles,
+    roleAccess: CONTENTS['toolsIndividualWeddings'].roleAccess,
+  },
+  {
+    id: 77,
+    group: 10,
     name: 'Конструктор картинок',
     href: 'toolsImageConstructor',
     icon: faImage,
     accessRoles: CONTENTS['toolsImageConstructor'].accessRoles,
     roleAccess: CONTENTS['toolsImageConstructor'].roleAccess,
   },
+
   {
     id: 80,
     group: 11,

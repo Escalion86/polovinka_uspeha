@@ -22,6 +22,8 @@ import '../styles/fonts/Enchants.css'
 // import '../styles/fonts/Frankinity.css'
 import '../styles/fonts/FuturaPT.css'
 
+import 'katex/dist/katex.min.css'
+
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 // import isPWAAtom from '@state/atoms/isPWAAtom'
 import { LazyMotion, domAnimation } from 'framer-motion'

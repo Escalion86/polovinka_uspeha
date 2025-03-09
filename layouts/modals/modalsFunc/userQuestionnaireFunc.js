@@ -582,7 +582,7 @@ const Q = ({ data, state, onChange, errors }) => {
   )
 }
 
-const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
+const userQuestionnaireFunc = (questionnaire, value, onConfirm, modalTitle) => {
   const { title, data } = questionnaire ?? DEFAULT_QUESTIONNAIRE
   const stateDefault = {}
   data.forEach((item) => {
@@ -686,7 +686,7 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
       const errorsArr = checkRequiredFields()
       if (Object.keys(errorsArr).length === 0) {
         closeModal()
-        onConfirm(state)
+        onConfirm && onConfirm(state)
       } else {
         modalsFunc.add({
           title: 'Не все обязательные поля заполнены',
@@ -696,7 +696,7 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
           showDecline: true,
           onConfirm: () => {
             closeModal()
-            onConfirm(state)
+            onConfirm && onConfirm(state)
           },
         })
         setErrors(errorsArr)
@@ -750,7 +750,7 @@ const userQuestionnaireFunc = (questionnaire, value, onConfirm) => {
   }
 
   return {
-    title: `Анкета "${title}"`,
+    title: modalTitle ?? `Анкета "${title}"`,
     confirmButtonName: 'Применить',
     Children: UserQuestionnaireFuncModal,
   }

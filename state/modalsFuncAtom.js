@@ -575,12 +575,13 @@ const modalsFuncGenerator = (get, set) => {
     questionnaire: {
       // add: (questionnaireId) =>
       //   addModal(require('../layouts/modals/modalsFunc/questionnaireConstructorFunc').default(questionnaireId, true)),
-      open: (questionnaire, value, onConfirm) =>
+      open: (questionnaire, value, onConfirm, title) =>
         addModal(
           require('../layouts/modals/modalsFunc/userQuestionnaireFunc').default(
             questionnaire,
             value,
-            onConfirm
+            onConfirm,
+            title
           )
         ),
       constructor: (questionnaire, onConfirm) =>
@@ -825,6 +826,8 @@ const modalsFuncGenerator = (get, set) => {
             title,
           })
         ),
+      ai: () =>
+        addModal(require('../layouts/modals/modalsFunc/aiFunc').default()),
     },
   }
 }

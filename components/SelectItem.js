@@ -80,7 +80,7 @@ const ItemButton = ({
       <button
         onClick={onClick}
         className={cn(
-          'flex items-center justify-center gap-x-0.5 h-full rounded-r shadow-sm group whitespace-nowrap font-futuraDemi',
+          'cursor-pointer flex items-center justify-center gap-x-0.5 h-full rounded-r shadow-sm group whitespace-nowrap font-futuraDemi',
           thin ? 'px-1' : 'px-1.5'
         )}
       >
@@ -219,6 +219,7 @@ export const SelectUser = ({
   onChange,
   onDelete,
   selectedId = null,
+  acceptedIds = null,
   exceptedIds = [],
   required = false,
   clearButton = null,
@@ -280,7 +281,6 @@ export const SelectUser = ({
           selectedId && clearButton ? 'rounded-l' : 'rounded-sm'
         )}
         active={active}
-        exceptedIds={exceptedIds}
         onClick={
           !readOnly
             ? onChange
@@ -289,8 +289,8 @@ export const SelectUser = ({
                     [selectedUser],
                     filter,
                     (data) => onChange(data[0]._id),
-                    [],
-                    null,
+                    exceptedIds,
+                    acceptedIds,
                     1,
                     false,
                     modalTitle,
