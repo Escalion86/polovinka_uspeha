@@ -1015,6 +1015,7 @@ export const DEFAULT_ROLES = [
       export: false,
       newsletter: false,
       imageConstructor: false,
+      individualWeddings: false,
     },
     generalPage: {
       directions: false,
@@ -1148,6 +1149,7 @@ export const DEFAULT_ROLES = [
       export: true,
       newsletter: false,
       imageConstructor: false,
+      individualWeddings: false,
     },
     generalPage: {
       directions: true,
@@ -1281,6 +1283,7 @@ export const DEFAULT_ROLES = [
       export: true,
       newsletter: false,
       imageConstructor: false,
+      individualWeddings: false,
     },
     generalPage: {
       directions: true,
@@ -1414,6 +1417,7 @@ export const DEFAULT_ROLES = [
       export: true,
       newsletter: true,
       imageConstructor: false,
+      individualWeddings: false,
     },
     generalPage: {
       directions: true,
@@ -1547,6 +1551,7 @@ export const DEFAULT_ROLES = [
       export: true,
       newsletter: true,
       imageConstructor: false,
+      individualWeddings: true,
     },
     generalPage: {
       directions: true,
@@ -1680,6 +1685,7 @@ export const DEFAULT_ROLES = [
       export: true,
       newsletter: true,
       imageConstructor: true,
+      individualWeddings: true,
     },
     generalPage: {
       directions: true,
@@ -1924,7 +1930,7 @@ export const CONTENTS = Object.freeze({
     Component: IndividualWeddingsContent,
     name: 'Инструменты / Индивидуальные свидания',
     accessRoles: ['president', 'dev'],
-    roleAccess: (role) => true,
+    roleAccess: (role) => role?.instruments?.individualWeddings,
   },
   newsletter: {
     Component: ToolsNewsletterContent,

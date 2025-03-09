@@ -16,8 +16,8 @@ import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import Image from 'next/image'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import { faQrcode } from '@fortawesome/free-solid-svg-icons'
-import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -30,7 +30,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
-  const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
+  const isLoggedUserDev = useAtomValue(loggedUserAtom)?.role === 'dev'
   const isLoggedUserAdmin = useAtomValue(isLoggedUserAdminSelector)
   const siteSettings = useAtomValue(siteSettingsAtom)
   const headerInfo = siteSettings?.headerInfo
