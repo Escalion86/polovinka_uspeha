@@ -13,7 +13,6 @@ import Latex from 'react-latex-next'
 import formatDate from '@helpers/formatDate'
 import { postData } from '@helpers/CRUD'
 import { getNounAnkets } from '@helpers/getNoun'
-import { SelectUserList } from '@components/SelectItemList'
 import { faIdCard } from '@fortawesome/free-regular-svg-icons/faIdCard'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 
@@ -125,21 +124,25 @@ const IndividualWeddingsContent = () => {
           acceptedIds={acceptedUsersIds}
           readOnly={waitForResponse}
           modalTitle="Пользователи с анкетами"
-          buttons={[
-            (id) => ({
-              onClick: () => {
-                modalsFunc.questionnaire.open(
-                  service.questionnaire,
-                  selectedUserQuestionire,
-                  undefined,
-                  `Анкета пользователя "${getUserFullName(selectedUser)}"`
-                )
-              },
-              icon: faIdCard,
-              iconClassName: 'text-purple-600',
-              tooltip: 'Анкета',
-            }),
-          ]}
+          buttons={
+            selectedUser
+              ? [
+                  (id) => ({
+                    onClick: () => {
+                      modalsFunc.questionnaire.open(
+                        service.questionnaire,
+                        selectedUserQuestionire,
+                        undefined,
+                        `Анкета пользователя "${getUserFullName(selectedUser)}"`
+                      )
+                    },
+                    icon: faIdCard,
+                    iconClassName: 'text-purple-600',
+                    tooltip: 'Анкета',
+                  }),
+                ]
+              : undefined
+          }
         />
       </InputWrapper>
       <Button
