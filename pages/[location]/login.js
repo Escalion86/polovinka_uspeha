@@ -1458,7 +1458,8 @@ const LoginPage = (props) => {
         >
           <div className="flex flex-col items-center gap-y-2">
             <div>
-              {telegramRegistrationConfirm === 'shure' ? (
+              {telegramRegistrationConfirm ? (
+                //  === 'shure'
                 <>
                   <span>
                     Если у Вас уже есть аккаунт <i>"Половинки успеха"</i>{' '}
@@ -1512,16 +1513,17 @@ const LoginPage = (props) => {
                 icon={faCheck}
                 classBgColor="bg-success"
                 onClick={() => {
-                  if (telegramRegistrationConfirm === 'shure') {
-                    handleTelegramResponse({
-                      ...telegramRegistrationConfirm,
-                      forceReg: true,
-                    })
-                    setTelegramRegistrationConfirm(false)
-                  } else setTelegramRegistrationConfirm('shure')
+                  // if (telegramRegistrationConfirm === 'shure') {
+                  handleTelegramResponse({
+                    ...telegramRegistrationConfirm,
+                    forceReg: true,
+                  })
+                  setTelegramRegistrationConfirm(false)
+                  // } else setTelegramRegistrationConfirm('shure')
                 }}
                 disabled={
-                  telegramRegistrationConfirm === 'shure' &&
+                  telegramRegistrationConfirm &&
+                  //  === 'shure'
                   (!checkHave18Years || !checkAgreement || !checkHaveNoAccounts)
                 }
               />
