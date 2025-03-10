@@ -8,19 +8,24 @@ import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSel
 import Image from 'next/image'
 import cn from 'classnames'
 
-const StatusUserToggleButtons = ({ value, onChange, names }) => {
+const StatusUserToggleButtons = ({ value, onChange, names, hideBanned }) => {
   const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
   return (
     <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
       <Button
-        onClick={() =>
-          onChange({
+        onClick={() => {
+          // if (hideBanned)
+          //   return onChange({
+          //     novice: !value.novice && value.member && value.novice,
+          //     member: !value.member,
+          //   })
+          return onChange({
             novice:
               !value.novice && value.member && !value.ban ? true : value.novice,
             member: !value.member,
             ban: value.ban,
           })
-        }
+        }}
         variant={value.member ? 'contained' : 'outlined'}
         color="blue"
         aria-label="novice"
@@ -41,14 +46,19 @@ const StatusUserToggleButtons = ({ value, onChange, names }) => {
         {names?.member}
       </Button>
       <Button
-        onClick={() =>
-          onChange({
+        onClick={() => {
+          // if (hideBanned)
+          //   return onChange({
+          //     novice: !value.novice,
+          //     member: value.novice && !value.member && value.member,
+          //   })
+          return onChange({
             novice: !value.novice,
             member:
               value.novice && !value.member && !value.ban ? true : value.member,
             ban: value.ban,
           })
-        }
+        }}
         variant={value.novice ? 'contained' : 'outlined'}
         color="gray"
         aria-label="member"
@@ -68,26 +78,30 @@ const StatusUserToggleButtons = ({ value, onChange, names }) => {
         </div>
         {names?.novice}
       </Button>
-      <Button
-        onClick={() =>
-          onChange({
-            novice:
-              !value.member && !value.novice && value.ban ? true : value.novice,
-            member: value.member,
-            ban: !value.ban,
-          })
-        }
-        variant={value.ban ? 'contained' : 'outlined'}
-        color="red"
-        className={cn(
-          'flex gap-x-2',
-          value.ban ? 'text-white' : 'text-red-400'
-        )}
-        aria-label="ban"
-      >
-        <FontAwesomeIcon className="w-6 h-6" icon={faBan} />
-        {names?.ban}
-      </Button>
+      {!hideBanned && (
+        <Button
+          onClick={() =>
+            onChange({
+              novice:
+                !value.member && !value.novice && value.ban
+                  ? true
+                  : value.novice,
+              member: value.member,
+              ban: !value.ban,
+            })
+          }
+          variant={value.ban ? 'contained' : 'outlined'}
+          color="red"
+          className={cn(
+            'flex gap-x-2',
+            value.ban ? 'text-white' : 'text-red-400'
+          )}
+          aria-label="ban"
+        >
+          <FontAwesomeIcon className="w-6 h-6" icon={faBan} />
+          {names?.ban}
+        </Button>
+      )}
     </ButtonGroup>
   )
 }

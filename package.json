@@ -49,6 +49,7 @@
     "next-auth": "^4.24.11",
     "next-deploy-notifications": "^0.1.6",
     "next-pwa": "^5.6.0",
+    "nextjs-url": "^1.0.4",
     "nodemailer": "^6.9.0",
     "notistack": "^3.0.1",
     "openai": "^4.85.1",
