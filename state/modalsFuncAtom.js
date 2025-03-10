@@ -694,10 +694,12 @@ const modalsFuncGenerator = (get, set) => {
             serviceId
           )
         ),
-      view: (serviceUserId) =>
+      view: (serviceUserId, showQuestionnaireOnly, title) =>
         addModal(
           require('../layouts/modals/modalsFunc/serviceUserViewFunc').default(
-            serviceUserId
+            serviceUserId,
+            showQuestionnaireOnly,
+            title
           )
         ),
       delete: (serviceUserId) =>
