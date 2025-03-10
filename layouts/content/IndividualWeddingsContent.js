@@ -204,11 +204,13 @@ const IndividualWeddingsContent = () => {
           }
         />
       </InputWrapper>
-      <Button
-        loading={waitForResponse}
-        name={`Подобрать пару (${getNounAnkets(servicesUsersAnotherGender?.length || 0)} противопол. пола)`}
-        onClick={sendRequest}
-      />
+      {selectedUserId && (
+        <Button
+          loading={waitForResponse}
+          name={`${response ? 'Обновить' : 'Подобрать'} кандидатов (${getNounAnkets(servicesUsersAnotherGender?.length || 0)} противопол. пола)`}
+          onClick={sendRequest}
+        />
+      )}
       {!waitForResponse && candidates?.length > 0 && (
         <InputWrapper
           label="Кандидаты"
@@ -261,7 +263,7 @@ const IndividualWeddingsContent = () => {
                 <LoadingSpinner size="lg" />
               </div>
             ) : (
-              <div className="max-h-full overflow-y-scroll">
+              <div className="w-full max-h-full overflow-y-scroll">
                 <Latex displayMode={true}>{response}</Latex>
               </div>
             )}
