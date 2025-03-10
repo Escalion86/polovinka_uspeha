@@ -3,7 +3,7 @@ import RelationshipUserToggleButtons from '@components/IconToggleButtons/Relatio
 import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
 import CheckedUserToggleButtons from '@components/IconToggleButtons/CheckedUserToggleButtons'
 
-const UsersFilter = ({ value, onChange, hideNullGender }) => {
+const UsersFilter = ({ value, onChange, hideNullGender, hideBanned }) => {
   return (
     <>
       {value?.gender && (
@@ -21,6 +21,7 @@ const UsersFilter = ({ value, onChange, hideNullGender }) => {
           onChange={(value) =>
             onChange((state) => ({ ...state, status: value }))
           }
+          hideBanned={hideBanned}
         />
       )}
       {value?.relationship && (

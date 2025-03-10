@@ -770,6 +770,20 @@ const modalsFuncGenerator = (get, set) => {
           )
         ),
     },
+    individualWedding: {
+      add: (props) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/individualWeddingFunc').default(
+            props || {}
+          )
+        ),
+      view: (props) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/individualWeddingViewFunc').default(
+            props
+          )
+        ),
+    },
     template: {
       select: (tool, aspect, onSelect) =>
         addModal(

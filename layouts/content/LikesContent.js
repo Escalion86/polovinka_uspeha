@@ -7,10 +7,10 @@ import { EventItem, UserItemFromId } from '@components/ItemCards'
 import eventsLoggedUserWithLikesSelector from '@state/selectors/eventsLoggedUserWithLikesSelector'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart'
-import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
+// import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import cn from 'classnames'
 import Note from '@components/Note'
-import { SelectUserList } from '@components/SelectItemList'
+// import { SelectUserList } from '@components/SelectItemList'
 
 const EventLikesItem = ({ eventWithEventUsers, className }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)

@@ -6,7 +6,15 @@ const individualWeddingsSchema = {
   aiResponse: {
     type: String,
   },
-  candidates: {
+  usersFilter: {
+    type: {},
+    default: {},
+  },
+  allCandidatesIds: {
+    type: [String],
+    default: [],
+  },
+  chosenCandidatesIds: {
     type: [String],
     default: [],
   },
