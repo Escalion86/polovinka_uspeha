@@ -50,9 +50,10 @@ const IndividualWeddingsContent = () => {
   }, [individualWeddings])
 
   const acceptedUsersIds = servicesUsers.map((user) => user.userId)
-  const selectedUser = selectedUserId
-    ? servicesUsers.find(({ userId }) => userId === selectedUserId)?.user
+  const selectedServiceUser = selectedUserId
+    ? servicesUsers.find(({ userId }) => userId === selectedUserId)
     : null
+  const selectedUser = selectedServiceUser?.user
   const selectedUserQuestionire = selectedUserId
     ? servicesUsers.find(({ userId }) => userId === selectedUserId)?.answers
     : null
@@ -178,16 +179,21 @@ const IndividualWeddingsContent = () => {
           readOnly={waitForResponse}
           modalTitle="Пользователи с анкетами"
           buttons={
-            selectedUser
+            selectedServiceUser
               ? [
                   (id) => ({
                     onClick: () => {
-                      modalsFunc.questionnaire.open(
-                        service.questionnaire,
-                        selectedUserQuestionire,
-                        undefined,
+                      modalsFunc.serviceUser.view(
+                        selectedServiceUser._id,
+                        true,
                         `Анкета пользователя "${getUserFullName(selectedUser)}"`
                       )
+                      // modalsFunc.questionnaire.open(
+                      //   service.questionnaire,
+                      //   selectedUserQuestionire,
+                      //   undefined,
+                      //   `Анкета пользователя "${getUserFullName(selectedUser)}"`
+                      // )
                     },
                     icon: faIdCard,
                     iconClassName: 'text-purple-600',
@@ -219,12 +225,17 @@ const IndividualWeddingsContent = () => {
                     const seriviceUser = servicesUsersAnotherGender.find(
                       ({ userId }) => userId === id
                     )
-                    modalsFunc.questionnaire.open(
-                      service.questionnaire,
-                      seriviceUser.answers,
-                      undefined,
+                    modalsFunc.serviceUser.view(
+                      seriviceUser._id,
+                      true,
                       `Анкета кандидата "${getUserFullName(seriviceUser.user)}"`
                     )
+                    // modalsFunc.questionnaire.open(
+                    //   service.questionnaire,
+                    //   seriviceUser.answers,
+                    //   undefined,
+                    //   `Анкета кандидата "${getUserFullName(seriviceUser.user)}"`
+                    // )
                   },
                   icon: faIdCard,
                   iconClassName: 'text-purple-600',

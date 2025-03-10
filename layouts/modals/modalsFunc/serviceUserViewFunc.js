@@ -14,7 +14,11 @@ import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 
-const serviceUserViewFunc = (serviceUserId) => {
+const serviceUserViewFunc = (
+  serviceUserId,
+  showQuestionnaireOnly = false,
+  title
+) => {
   const ServiceUserViewModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -39,30 +43,34 @@ const serviceUserViewFunc = (serviceUserId) => {
 
     return (
       <div className="flex flex-col gap-y-1">
-        <TextLine label="Дата заявки">
-          {formatDateTime(serviceUser?.createdAt)}
-        </TextLine>
-        <TextLine label="Услуга">
-          {service.title}
-          <CardButton
-            icon={faEye}
-            color="orange"
-            onClick={() => modalsFunc.service.view(service._id)}
-            paddingY={false}
-          />
-        </TextLine>
-        <TextLine label="Стоимсоть">
-          <PriceDiscount item={service} priceForStatus={user.status} />
-        </TextLine>
-        <TextLine label="Покупатель">
-          <UserName user={user} noWrap />
-          <CardButton
-            icon={faEye}
-            color="orange"
-            onClick={() => modalsFunc.user.view(user._id)}
-            paddingY={false}
-          />
-        </TextLine>
+        {!showQuestionnaireOnly && (
+          <>
+            <TextLine label="Дата заявки">
+              {formatDateTime(serviceUser?.createdAt)}
+            </TextLine>
+            <TextLine label="Услуга">
+              {service.title}
+              <CardButton
+                icon={faEye}
+                color="orange"
+                onClick={() => modalsFunc.service.view(service._id)}
+                paddingY={false}
+              />
+            </TextLine>
+            <TextLine label="Стоимсоть">
+              <PriceDiscount item={service} priceForStatus={user.status} />
+            </TextLine>
+            <TextLine label="Покупатель">
+              <UserName user={user} noWrap />
+              <CardButton
+                icon={faEye}
+                color="orange"
+                onClick={() => modalsFunc.user.view(user._id)}
+                paddingY={false}
+              />
+            </TextLine>
+          </>
+        )}
         {service.questionnaire && (
           <InputWrapper label={`Анкета "${service.questionnaire.title}"`}>
             <div className="flex flex-col w-full gap-y-1">
@@ -123,7 +131,7 @@ const serviceUserViewFunc = (serviceUserId) => {
   }
 
   return {
-    title: `Заявка на услугу`,
+    title: title ?? `Заявка на услугу`,
     // confirmButtonName: 'Подать заявку',
     Children: ServiceUserViewModal,
   }
