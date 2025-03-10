@@ -47,6 +47,8 @@ import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
 import { atom } from 'jotai'
 import newsletterEditSelector from './selectors/newsletterEditSelector'
 import newsletterDeleteSelector from './selectors/newsletterDeleteSelector'
+import individualWeddingEditSelector from './selectors/individualWeddingEditSelector'
+import individualWeddingDeleteSelector from './selectors/individualWeddingDeleteSelector'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -207,6 +209,20 @@ const messages = {
       error: 'Не удалось удалить рассылку',
     },
   },
+  individualWedding: {
+    update: {
+      success: 'Результат подбора кандидатов обновлен',
+      error: 'Не удалось обновить результат подбора кандидатов',
+    },
+    add: {
+      success: 'Результат подбора кандидатов создан',
+      error: 'Не удалось создать результат подбора кандидатов',
+    },
+    delete: {
+      success: 'Результат подбора кандидатов удален',
+      error: 'Не удалось удалить результат подбора кандидатов',
+    },
+  },
 }
 
 const array = [
@@ -224,6 +240,7 @@ const array = [
   'servicesUser',
   'eventsTag',
   'newsletter',
+  'individualWedding',
 ]
 
 const itemsFuncGenerator = (get, set) => {
@@ -255,6 +272,8 @@ const itemsFuncGenerator = (get, set) => {
     deleteUser: setFunc(userDeleteSelector),
     setNewsletter: setFunc(newsletterEditSelector),
     deleteNewsletter: setFunc(newsletterDeleteSelector),
+    setIndividualWedding: setFunc(individualWeddingEditSelector),
+    deleteIndividualWedding: setFunc(individualWeddingDeleteSelector),
     setReview: setFunc(reviewEditSelector),
     deleteReview: setFunc(reviewDeleteSelector),
     addPayments: setFunc(paymentsAddSelector),

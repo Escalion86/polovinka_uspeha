@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { SelectUser } from '@components/SelectItem'
 import { useAtomValue } from 'jotai'
 import InputWrapper from '@components/InputWrapper'
@@ -15,18 +15,39 @@ import { postData } from '@helpers/CRUD'
 import { getNounAnkets } from '@helpers/getNoun'
 import { faIdCard } from '@fortawesome/free-regular-svg-icons/faIdCard'
 import modalsFuncAtom from '@state/modalsFuncAtom'
+import individualWeddingsByUserIdAtom from '@state/async/individualWeddingsByUserIdAtom'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 
 const IndividualWeddingsContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const serviceId = '6421df68fa505d8e86b92166'
   const service = useAtomValue(serviceSelector(serviceId))
   const [selectedUserId, setSelectedUserId] = useState(null)
+  const individualWeddings = useAtomValue(
+    individualWeddingsByUserIdAtom(selectedUserId)
+  )
   const [waitForResponse, setWaitForResponse] = useState(false)
-  const [response, setResponse] = useState('')
-  const [condidates, setCondidates] = useState([])
+  const [response, setResponse] = useState(
+    individualWeddings ? individualWeddings.aiResponse : ''
+  )
+  const [candidates, setCandidates] = useState(
+    individualWeddings ? individualWeddings.candidates : []
+  )
   const servicesUsers = useAtomValue(
     servicesUsersFullByServiceIdSelector(serviceId)
   )
+  const setIndividualWeddings =
+    useAtomValue(itemsFuncAtom).individualWedding.set
+
+  useEffect(() => {
+    if (individualWeddings?.length > 0) {
+      setResponse(individualWeddings[0].aiResponse)
+      setCandidates(individualWeddings[0].candidates)
+    } else {
+      setResponse('')
+      setCandidates([])
+    }
+  }, [individualWeddings])
 
   const acceptedUsersIds = servicesUsers.map((user) => user.userId)
   const selectedUser = selectedUserId
@@ -62,6 +83,9 @@ const IndividualWeddingsContent = () => {
       `Ниже приведены списки пользователей-кандидатов с анкетами:\n\n${servicesUsersAnotherGender.map(({ user, answers }) => `ID: ${user._id}\nФИО: ${getUserFullName(user)}\nДата рождения: ${formatDate(user.birthday, false, false, true)}\n${questionsKeysArray.map((key, index) => `${index + 1}. ${answers[key]}`).join('\n')}`).join('\n\n')}`
     )
     formedContent.push(
+      'Учитывай критерий возраста как приоритетный, желательно чтобы разница в возрасте была не существенной'
+    )
+    formedContent.push(
       'Ответ напиши в виде списка с указанием ФИО кандидата, его возраста, основных полей анкет на которых ты сделал вывод, что это подходящий кандидат, а также аргументы - почему ты выбрал именно этих кандидатов'
     )
     formedContent.push(
@@ -72,24 +96,57 @@ const IndividualWeddingsContent = () => {
     )
     console.log('formedContent :>> ', formedContent)
 
-    const result = await postData(
-      '/api/deepseek',
-      { content: formedContent.join('\n\n') },
-      (response) => {
-        console.log('response :>> ', response)
+    // const result = await postData(
+    //   '/api/deepseek',
+    //   { content: formedContent.join('\n\n') },
+    //   (response) => {
+    //     console.log('response :>> ', response)
+    //   },
+    //   (error) => console.log('error :>> ', error),
+    //   true,
+    //   null,
+    //   true
+    // )
+    const result = {
+      success: true,
+      data: {
+        id: '4c5aad67-0f66-40d9-9df1-23143b6c2f11',
+        object: 'chat.completion',
+        created: 1741582089,
+        model: 'deepseek-chat',
+        choices: [
+          {
+            index: 0,
+            message: {
+              role: 'assistant',
+              content:
+                '### Список подходящих кандидатов:\n\n1. **ФИО: Ольга Будяева**  \n   **Возраст:** 43 года  \n   **Основные поля анкеты:**  \n   - Город проживания: Красноярск (совпадает с Александром).  \n   - Готова поменять место жительства: Да (Александр не готов, но это не критично).  \n   - Семейное положение: Разведена (как и Александр).  \n   - Есть дети: Несовершеннолетние (у Александра тоже).  \n   - Хочет детей: Затрудняется ответить (Александр хочет).  \n   - Религия: Христианство (совпадает).  \n   - Интересы: Природа, спорт, животные (частично совпадают с интересами Александра).  \n   - Жизненные приоритеты: Семья, работа, друзья (совпадают).  \n   - Отношение к домашним животным: Любит всех животных (Александр нейтрален).  \n   - Ищет мужчину: Возраст не важен (Александр подходит по возрасту).  \n\n   **Аргументы:**  \n   Ольга живет в том же городе, что и Александр, имеет схожие жизненные приоритеты и интересы. Она разведена, как и Александр, и у нее есть дети, что может быть плюсом для построения отношений. Ее открытость к переезду и любовь к животным делают ее гибкой в вопросах совместной жизни.\n\n2. **ФИО: Ольга Перепелкина**  \n   **Возраст:** 42 года  \n   **Основные поля анкеты:**  \n   - Город проживания: Красноярск (совпадает).  \n   - Готова поменять место жительства: Да (Александр не готов, но это не критично).  \n   - Семейное положение: Не замужем (Александр разведен).  \n   - Есть дети: Нет (у Александра есть).  \n   - Хочет детей: Затрудняется ответить (Александр хочет).  \n   - Религия: Христианство (совпадает).  \n   - Интересы: Природа, книги, путешествия (частично совпадают).  \n   - Жизненные приоритеты: Работа, отношения, отдых (частично совпадают).  \n   - Ищет мужчину: Возраст не важен (Александр подходит).  \n\n   **Аргументы:**  \n   Ольга живет в Красноярске, как и Александр, и имеет схожие интересы. Она не замужем и открыта к отношениям. Ее нейтральное отношение к детям и желание построить семью делают ее подходящей кандидатурой.\n\n3. **ФИО: Елена Фролова**  \n   **Возраст:** 43 года  \n   **Основные поля анкеты:**  \n   - Город проживания: Красноярск (совпадает).  \n   - Готова поменять место жительства: Да (Александр не готов, но это не критично).  \n   - Семейное положение: Разведена (как и Александр).  \n   - Есть дети: Несовершеннолетние (у Александра тоже).  \n   - Хочет детей: Нет (Александр хочет).  \n   - Религия: Христианство (совпадает).  \n   - Интересы: Театр, кино, природа (частично совпадают).  \n   - Жизненные приоритеты: Семья, здоровье, самореализация (совпадают).  \n   - Ищет мужчину: Возраст не важен (Александр подходит).  \n\n   **Аргументы:**  \n   Елена живет в том же городе, что и Александр, и имеет схожие жизненные приоритеты. Она разведена, как и Александр, и у нее есть дети. Ее интересы частично совпадают с интересами Александра, что может стать основой для общения.\n\n---\n\n### Итоги:\nДля Александра Перелыгина подходят кандидаты, которые живут в Красноярске, имеют схожие жизненные приоритеты (семья, здоровье, карьера) и интересы (природа, спорт, книги). Все кандидаты разведены или не замужем, что делает их открытыми для новых отношений. Некоторые из них имеют детей, что может быть плюсом для Александра, так как у него тоже есть ребенок. Религиозные взгляды всех кандидатов совпадают с взглядами Александра (христианство).\n\ncandidates=["63076cb5b1edf3c208b1d93b", "63325f67f43331805556b53a", "642d034365aee29391b61b64"]',
+            },
+            logprobs: null,
+            finish_reason: 'stop',
+          },
+        ],
+        usage: {
+          prompt_tokens: 47007,
+          completion_tokens: 1184,
+          total_tokens: 48191,
+          prompt_tokens_details: {
+            cached_tokens: 768,
+          },
+          prompt_cache_hit_tokens: 768,
+          prompt_cache_miss_tokens: 46239,
+        },
+        system_fingerprint: 'fp_3a5770e1b4_prod0225',
       },
-      (error) => console.log('error :>> ', error),
-      true,
-      null,
-      true
-    )
+    }
+    console.log('result :>> ', result)
     if (!result?.success) {
       alert('Произошла ошибка')
       setWaitForResponse(false)
     } else {
       const content =
         result.data.choices[0].message.content.split('candidates=')
-      const newCondidates = content[1]
+      const newCandidates = content[1]
       const formatedContent = content[0]
         .trim('\n')
         .trim(' ')
@@ -99,20 +156,16 @@ const IndividualWeddingsContent = () => {
         .replace(/--(.*?)--/g, '<del>$1</del>')
         .replace(/<<(.*?)>>/g, "<a href='$1'>Link</a>")
         .replace(/\n/g, '<br>')
-      setResponse(formatedContent)
-      console.log('newCondidates :>> ', newCondidates)
-      setCondidates(
-        newCondidates
-          ? JSON.parse(newCondidates)
-          : // ?.map(
-            //     (id) => servicesUsersAnotherGender[id - 1]?.userId
-            //   )
-            []
-      )
-      // setTokensUsed(result.data.usage.total_tokens)
+      // setResponse(formatedContent)
+      const parsedCandidates = newCandidates ? JSON.parse(newCandidates) : []
+      // setCandidates(parsedCandidates)
+      setIndividualWeddings({
+        userId: selectedUser._id,
+        aiResponse: formatedContent,
+        candidates: parsedCandidates,
+      })
       setWaitForResponse(false)
     }
-    // setWaitForResponse(false)
   }
 
   return (
@@ -150,13 +203,13 @@ const IndividualWeddingsContent = () => {
         name={`Подобрать пару (${getNounAnkets(servicesUsersAnotherGender?.length || 0)} противопол. пола)`}
         onClick={sendRequest}
       />
-      {!waitForResponse && condidates?.length > 0 && (
+      {!waitForResponse && candidates?.length > 0 && (
         <InputWrapper
           label="Кандидаты"
           className="w-full"
           wrapperClassName="flex-col min-h-full w-full flex items-stretch"
         >
-          {condidates.map((id) => (
+          {candidates.map((id) => (
             <SelectUser
               key={id}
               selectedId={id}
