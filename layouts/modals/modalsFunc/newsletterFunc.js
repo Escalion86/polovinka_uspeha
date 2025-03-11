@@ -167,8 +167,9 @@ const newsletterFunc = ({ name, users, event }) => {
           usersMessages: filteredSelectedUsers.map((user) => ({
             userId: user._id,
             whatsappPhone: user.whatsapp || user.phone,
-            whatsappMessage: message,
+            // whatsappMessage: message,
           })),
+          message,
         }
       )
 

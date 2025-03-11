@@ -33,7 +33,7 @@ export default async function handler(req, res) {
 
   if (method === 'POST') {
     if (type === 'sendMessage') {
-      const { name, usersMessages } = body.data
+      const { name, usersMessages, message } = body.data
 
       const db = await dbConnect(location)
       if (!db)
@@ -90,7 +90,7 @@ export default async function handler(req, res) {
           },
           body: JSON.stringify({
             chatId: `${whatsappPhone}@c.us`,
-            message: whatsappMessage,
+            message: message,
           }),
         })
         if (respSend) {
@@ -99,13 +99,13 @@ export default async function handler(req, res) {
             userId,
             whatsappSuccess: true,
             whatsappMessageId: respSendJson?.idMessage,
-            whatsappMessage,
+            // whatsappMessage,
           }
         } else {
           resultJson = {
             userId,
             success: false,
-            whatsappMessage,
+            // whatsappMessage,
             whatsappError: 'no response',
           }
         }
@@ -119,6 +119,7 @@ export default async function handler(req, res) {
         name,
         newsletters: result,
         status: 'active',
+        message,
       })
 
       console.log('newNewsletter :>> ', newNewsletter)
