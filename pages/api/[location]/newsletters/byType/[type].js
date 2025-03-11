@@ -40,9 +40,10 @@ export default async function handler(req, res) {
         return res?.status(400).json({ success: false, error: 'db error' })
 
       const urlSend = `${urlWithInstance}/sendMessage/${token}`
-      const urlCheckWhatsapp = `${urlWithInstance}/checkWhatsapp/${token}`
+      // const urlCheckWhatsapp = `${urlWithInstance}/checkWhatsapp/${token}`
 
       const result = []
+      console.log('usersMessages[0]', usersMessages[0])
       for (let i = 0; i < usersMessages.length; i++) {
         const {
           whatsappPhone,
@@ -55,62 +56,62 @@ export default async function handler(req, res) {
         let resultJson = {}
 
         // Если отправляем через WhatsApp
-        if (whatsappMessage) {
-          const respCheckWhatsapp = await fetch(urlCheckWhatsapp, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              phoneNumber: whatsappPhone,
-            }),
-          })
-          if (!respCheckWhatsapp) {
-            resultJson = {
-              userId,
-              whatsappMessage,
-              whatsappSuccess: false,
-              whatsappError: 'checkWhatsapp error',
-            }
-          } else {
-            const respCheckWhatsappJson = await respCheckWhatsapp.json()
-            if (!respCheckWhatsappJson.existsWhatsapp) {
-              resultJson = {
-                userId,
-                whatsappMessage,
-                whatsappSuccess: false,
-                whatsappError: 'no whatsapp on number',
-              }
-            } else {
-              const respSend = await fetch(urlSend, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  chatId: `${whatsappPhone}@c.us`,
-                  message: whatsappMessage,
-                }),
-              })
-              if (respSend) {
-                const respSendJson = await respSend.json()
-                resultJson = {
-                  userId,
-                  whatsappSuccess: true,
-                  whatsappMessageId: respSendJson?.idMessage,
-                  whatsappMessage,
-                }
-              } else {
-                resultJson = {
-                  userId,
-                  success: false,
-                  whatsappMessage,
-                  whatsappError: 'no response',
-                }
-              }
-            }
+        // if (whatsappMessage) {
+        //   const respCheckWhatsapp = await fetch(urlCheckWhatsapp, {
+        //     method: 'POST',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //       phoneNumber: whatsappPhone,
+        //     }),
+        //   })
+        // if (!respCheckWhatsapp) {
+        //   resultJson = {
+        //     userId,
+        //     whatsappMessage,
+        //     whatsappSuccess: false,
+        //     whatsappError: 'checkWhatsapp error',
+        //   }
+        // } else {
+        // const respCheckWhatsappJson = await respCheckWhatsapp.json()
+        // if (!respCheckWhatsappJson.existsWhatsapp) {
+        //   resultJson = {
+        //     userId,
+        //     whatsappMessage,
+        //     whatsappSuccess: false,
+        //     whatsappError: 'no whatsapp on number',
+        //   }
+        // } else {
+        const respSend = await fetch(urlSend, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chatId: `${whatsappPhone}@c.us`,
+            message: whatsappMessage,
+          }),
+        })
+        if (respSend) {
+          const respSendJson = await respSend.json()
+          resultJson = {
+            userId,
+            whatsappSuccess: true,
+            whatsappMessageId: respSendJson?.idMessage,
+            whatsappMessage,
+          }
+        } else {
+          resultJson = {
+            userId,
+            success: false,
+            whatsappMessage,
+            whatsappError: 'no response',
           }
         }
+        // }
+        // }
+        // }
         result.push(resultJson)
       }
 
@@ -119,6 +120,8 @@ export default async function handler(req, res) {
         newsletters: result,
         status: 'active',
       })
+
+      console.log('newNewsletter :>> ', newNewsletter)
       // .then((res) => res.json())
       // .catch((error) => console.log('fetchingEvents ERROR:', error))
 
