@@ -29,6 +29,7 @@ import CheckBox from '@components/CheckBox'
 import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
 import itemsFuncAtom from '@state/itemsFuncAtom'
+import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
 
 const getUsersData = (users) => {
   const mans = users.filter((user) => user.gender === 'male')
@@ -262,7 +263,7 @@ const newsletterFunc = ({ name, users, event }) => {
                       const eventId = data[0]
                       modalsFunc.selectUsersByStatusesFromEvent(
                         eventId,
-                        setSelectedUsers
+                        (users, event) => setSelectedUsers(users)
                       )
                       // setSelectedUsers(users)
                     },
@@ -271,6 +272,37 @@ const newsletterFunc = ({ name, users, event }) => {
                     1,
                     false,
                     'Выбрать пользователей из мероприятия'
+                    // itemsId,
+                    // filterRules,
+                    // onChange,
+                    // exceptedIds,
+                    // acceptedIds,
+                    // maxEvents,
+                    // canSelectNone,
+                    // modalTitle,
+                    // showCountNumber
+                  )
+                }
+              />
+              <Button
+                name="Выбрать из подавших заявку на услугу"
+                icon={faHandshake}
+                onClick={() =>
+                  modalsFunc.selectServices(
+                    [],
+                    null,
+                    async (data) => {
+                      const serviceId = data[0]
+                      modalsFunc.selectUsersByStatusesFromService(
+                        serviceId,
+                        (users, service) => setSelectedUsers(users)
+                      )
+                    },
+                    [],
+                    null,
+                    1,
+                    false,
+                    'Выбрать пользователей из подавших заявку на услугу'
                     // itemsId,
                     // filterRules,
                     // onChange,

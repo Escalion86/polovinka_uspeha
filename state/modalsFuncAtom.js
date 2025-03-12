@@ -166,6 +166,13 @@ const modalsFuncGenerator = (get, set) => {
           onSelect
         )
       ),
+    selectUsersByStatusesFromService: (serviceId, onSelect) =>
+      addModal(
+        require('../layouts/modals/modalsFunc/selectUsersByFilterFromSelectedServiceFunc').default(
+          serviceId,
+          onSelect
+        )
+      ),
     selectDirections: (
       itemsId,
       filterRules,
