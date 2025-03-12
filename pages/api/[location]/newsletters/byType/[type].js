@@ -47,9 +47,9 @@ export default async function handler(req, res) {
       for (let i = 0; i < usersMessages.length; i++) {
         const {
           whatsappPhone,
-          whatsappMessage,
-          telegramId,
-          telegramMessage,
+          // whatsappMessage,
+          // telegramId,
+          // telegramMessage,
           userId,
         } = usersMessages[i]
 

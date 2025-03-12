@@ -42,7 +42,7 @@ import { useAtomValue } from 'jotai'
 import { uid } from 'uid'
 import { faComment as faCommentRegular } from '@fortawesome/free-regular-svg-icons/faComment'
 import { faComment } from '@fortawesome/free-solid-svg-icons/faComment'
-import splitText from '@helpers/splitText'
+// import splitText from '@helpers/splitText'
 
 const SubEvents = ({ subEvents, onChange, rules }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -134,8 +134,8 @@ const eventFunc = (eventId, clone = false, props = {}) => {
         : (event?.description ?? DEFAULT_EVENT.description)
     )
 
-    const test = splitText(description)
-    console.log('test :>> ', test)
+    // const test = splitText(description)
+    // console.log('test :>> ', test)
 
     const defaultTags = useMemo(
       () =>
