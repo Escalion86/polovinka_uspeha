@@ -192,14 +192,14 @@ const QuillEditor = forwardRef(
 
           // Quill.register({ 'modules/emoji-toolbar': Emoji })
 
-          const toolbar = useMemo(() => {
-            if (!customButtons) return toolbarOptions
+          // const toolbar = useMemo(() => {
+          //   if (!customButtons) return toolbarOptions
 
-            const tempToolbar = {
-              handlers: { ...toolbarOptions.handlers },
-              container: [...toolbarOptions.container],
-            }
-          }, [])
+          //   const tempToolbar = {
+          //     handlers: { ...toolbarOptions.handlers },
+          //     container: [...toolbarOptions.container],
+          //   }
+          // }, [])
 
           quill = new Quill(
             // '#quill-editor'

@@ -132,14 +132,19 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       .replaceAll('<blockquote>', '\n<blockquote>')
       .replaceAll('<li>', '\n\u{2764} <li>')
       .replaceAll('<p>', '\n<p>')
+      .replaceAll('<strong>', '<b>')
+      .replaceAll('</strong>', '</b>')
       .replaceAll('<br>', '\n')
       .replaceAll('&nbsp;', ' ')
       .trim('\n'),
     {
-      ALLOWED_TAGS: [],
+      ALLOWED_TAGS: ['b', 'i', 's'],
       ALLOWED_ATTR: [],
     }
   )}${address}`
+  console.log('event.description :>> ', event.description)
+
+  console.log('textStart :>> ', textStart)
 
   const textPriceForNovice = event.subEvents
     .map(({ price, usersStatusDiscount, title }, index) => {

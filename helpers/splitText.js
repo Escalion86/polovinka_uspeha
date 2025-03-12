@@ -9,7 +9,7 @@ export default function splitText(text, splitStr = '\n', maxLength = 4096) {
       ++j
       chunks[j] = ''
     }
-    chunks[j] = `${chunks[j] || ''}${splitedText[i]}`
+    chunks[j] = `${chunks[j] ? `${chunks[j]}\n` : ''}${splitedText[i]}`
   }
 
   // const chunks = []
