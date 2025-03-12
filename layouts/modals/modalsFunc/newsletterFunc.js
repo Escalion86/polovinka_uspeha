@@ -270,7 +270,7 @@ const newsletterFunc = ({ name, users, event }) => {
                     null,
                     1,
                     false,
-                    'Выбрать пользователей из мероприятия...'
+                    'Выбрать пользователей из мероприятия'
                     // itemsId,
                     // filterRules,
                     // onChange,
