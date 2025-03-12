@@ -142,9 +142,6 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       ALLOWED_ATTR: [],
     }
   )}${address}`
-  console.log('event.description :>> ', event.description)
-
-  console.log('textStart :>> ', textStart)
 
   const textPriceForNovice = event.subEvents
     .map(({ price, usersStatusDiscount, title }, index) => {
@@ -190,22 +187,29 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       : []
   const textEnd = eventTags.length > 0 ? `\n\n#${eventTags.join(' #')}` : ''
 
-  const inline_keyboard = [
-    [
-      {
-        text: '\u{1F4C5} На сайте',
-        url:
-          process.env.DOMAIN + '/' + location + '/event/' + String(event._id),
-      },
-      {
-        text: '\u{1F4DD} Записаться',
-        callback_data: JSON.stringify({
-          c: telegramCmdToIndex('eventSignIn'),
-          eventId: event._id,
-        }),
-      },
-    ],
-  ]
+  const inline_keyboard =
+    process.env.MODE === 'dev'
+      ? undefined
+      : [
+          [
+            {
+              text: '\u{1F4C5} На сайте',
+              url:
+                process.env.DOMAIN +
+                '/' +
+                location +
+                '/event/' +
+                String(event._id),
+            },
+            {
+              text: '\u{1F4DD} Записаться',
+              callback_data: JSON.stringify({
+                c: telegramCmdToIndex('eventSignIn'),
+                eventId: event._id,
+              }),
+            },
+          ],
+        ]
 
   if (novicesTelegramIds.length > 0) {
     sendTelegramMessage({
