@@ -99,7 +99,14 @@ const toolbarOptions = {
 
 const QuillEditor = forwardRef(
   (
-    { readOnly, defaultValue, onTextChange, onSelectionChange, onChange },
+    {
+      readOnly,
+      defaultValue,
+      onTextChange,
+      onSelectionChange,
+      onChange,
+      customButtons,
+    },
     ref
   ) => {
     const containerRef = useRef(null)
@@ -184,6 +191,15 @@ const QuillEditor = forwardRef(
           // if (!Quill.imports['modules/emoji'])
 
           // Quill.register({ 'modules/emoji-toolbar': Emoji })
+
+          // const toolbar = useMemo(() => {
+          //   if (!customButtons) return toolbarOptions
+
+          //   const tempToolbar = {
+          //     handlers: { ...toolbarOptions.handlers },
+          //     container: [...toolbarOptions.container],
+          //   }
+          // }, [])
 
           quill = new Quill(
             // '#quill-editor'

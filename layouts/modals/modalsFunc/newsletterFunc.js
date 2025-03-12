@@ -167,8 +167,9 @@ const newsletterFunc = ({ name, users, event }) => {
           usersMessages: filteredSelectedUsers.map((user) => ({
             userId: user._id,
             whatsappPhone: user.whatsapp || user.phone,
-            whatsappMessage: message,
+            // whatsappMessage: message,
           })),
+          message,
         }
       )
 
@@ -269,7 +270,7 @@ const newsletterFunc = ({ name, users, event }) => {
                     null,
                     1,
                     false,
-                    'Выбрать пользователей из мероприятия...'
+                    'Выбрать пользователей из мероприятия'
                     // itemsId,
                     // filterRules,
                     // onChange,

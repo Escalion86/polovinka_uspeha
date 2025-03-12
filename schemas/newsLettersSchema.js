@@ -12,12 +12,18 @@ const newsLettersSchema = {
         telegramMessage: String,
         whatsappMessageId: String,
         telegramMessageId: String,
+        whatsappError: String,
+        telegramError: String,
       },
     ],
   },
   status: {
     type: String,
     default: 'active',
+  },
+  message: {
+    type: String,
+    default: '',
   },
 }
 

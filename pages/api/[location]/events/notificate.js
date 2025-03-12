@@ -132,11 +132,13 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       .replaceAll('<blockquote>', '\n<blockquote>')
       .replaceAll('<li>', '\n\u{2764} <li>')
       .replaceAll('<p>', '\n<p>')
+      .replaceAll('<strong>', '<b>')
+      .replaceAll('</strong>', '</b>')
       .replaceAll('<br>', '\n')
       .replaceAll('&nbsp;', ' ')
       .trim('\n'),
     {
-      ALLOWED_TAGS: [],
+      ALLOWED_TAGS: ['b', 'i', 's'],
       ALLOWED_ATTR: [],
     }
   )}${address}`
@@ -185,22 +187,29 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       : []
   const textEnd = eventTags.length > 0 ? `\n\n#${eventTags.join(' #')}` : ''
 
-  const inline_keyboard = [
-    [
-      {
-        text: '\u{1F4C5} На сайте',
-        url:
-          process.env.DOMAIN + '/' + location + '/event/' + String(event._id),
-      },
-      {
-        text: '\u{1F4DD} Записаться',
-        callback_data: JSON.stringify({
-          c: telegramCmdToIndex('eventSignIn'),
-          eventId: event._id,
-        }),
-      },
-    ],
-  ]
+  const inline_keyboard =
+    process.env.MODE === 'dev'
+      ? undefined
+      : [
+          [
+            {
+              text: '\u{1F4C5} На сайте',
+              url:
+                process.env.DOMAIN +
+                '/' +
+                location +
+                '/event/' +
+                String(event._id),
+            },
+            {
+              text: '\u{1F4DD} Записаться',
+              callback_data: JSON.stringify({
+                c: telegramCmdToIndex('eventSignIn'),
+                eventId: event._id,
+              }),
+            },
+          ],
+        ]
 
   if (novicesTelegramIds.length > 0) {
     sendTelegramMessage({

@@ -1,6 +1,5 @@
-export default function splitText(text, splitStr = '<br>', maxLength = 4096) {
+export default function splitText(text, splitStr = '\n', maxLength = 4096) {
   if (maxLength >= text.length) return [text]
-
   const splitedText = text.split(splitStr)
 
   const chunks = ['']
@@ -10,7 +9,7 @@ export default function splitText(text, splitStr = '<br>', maxLength = 4096) {
       ++j
       chunks[j] = ''
     }
-    chunks[j] = `${chunks[j] || ''}${splitedText[i]}`
+    chunks[j] = `${chunks[j] ? `${chunks[j]}\n` : ''}${splitedText[i]}`
   }
 
   // const chunks = []

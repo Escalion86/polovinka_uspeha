@@ -70,8 +70,6 @@ const ToolsNewsletterContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const newsletters = useAtomValue(newslettersAtomAsync)
 
-  console.log('newsletters :>> ', newsletters)
-
   return (
     <>
       <ContentHeader>
