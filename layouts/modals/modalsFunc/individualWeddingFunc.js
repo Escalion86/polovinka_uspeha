@@ -1,21 +1,21 @@
-import CheckBox from '@components/CheckBox'
-import EditableTextarea from '@components/EditableTextarea'
-import ErrorsList from '@components/ErrorsList'
-import FormWrapper from '@components/FormWrapper'
-import Input from '@components/Input'
+// import CheckBox from '@components/CheckBox'
+// import EditableTextarea from '@components/EditableTextarea'
+// import ErrorsList from '@components/ErrorsList'
+// import FormWrapper from '@components/FormWrapper'
+// import Input from '@components/Input'
 // import InputImage from '@components/InputImage'
-import Textarea from '@components/Textarea'
-import { DEFAULT_DIRECTION } from '@helpers/constants'
-import useErrors from '@helpers/useErrors'
-import itemsFuncAtom from '@state/itemsFuncAtom'
-import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
+// import Textarea from '@components/Textarea'
+// import { DEFAULT_DIRECTION } from '@helpers/constants'
+// import useErrors from '@helpers/useErrors'
+// import itemsFuncAtom from '@state/itemsFuncAtom'
+// import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
 import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import TabContext from '@components/Tabs/TabContext'
-import TabPanel from '@components/Tabs/TabPanel'
-import ComboBox from '@components/ComboBox'
-import compareObjects from '@helpers/compareObjects'
-import CardButtons from '@components/CardButtons'
+// import TabContext from '@components/Tabs/TabContext'
+// import TabPanel from '@components/Tabs/TabPanel'
+// import ComboBox from '@components/ComboBox'
+// import compareObjects from '@helpers/compareObjects'
+// import CardButtons from '@components/CardButtons'
 import serviceSelector from '@state/selectors/serviceSelector'
 import servicesUsersFullByServiceIdSelector from '@state/selectors/servicesUsersFullByServiceIdSelector'
 import userSelector from '@state/selectors/userSelector'
@@ -53,8 +53,8 @@ const individualWeddingFunc = ({ userId, title, onConfirm, onFinished }) => {
     )
     // const users = servicesUsersWithoutClientUser.map(({ user }) => user)
 
-    const setIndividualWeddings =
-      useAtomValue(itemsFuncAtom).individualWedding.set
+    // const setIndividualWeddings =
+    //   useAtomValue(itemsFuncAtom).individualWedding.set
 
     const [filter, setFilter] = useState({
       gender: {
@@ -131,7 +131,7 @@ const individualWeddingFunc = ({ userId, title, onConfirm, onFinished }) => {
         'Учитывай критерий возраста как приоритетный, желательно чтобы разница в возрасте была не существенной'
       )
       formedContent.push(
-        'Ответ напиши в виде списка с указанием ФИО кандидата, его возраста, основных полей анкет на которых ты сделал вывод, что это подходящий кандидат, а также аргументы - почему ты выбрал именно этих кандидатов'
+        'Ответ напиши в виде спискав формате:\n N. ФИО: [ФИО кандидата]\nВозраст: [возраст кандидата] ([дата рождения])\nОсновные поля анкеты: [основные поля анкет на которых ты сделал вывод, что это подходящий кандидат с указанием в скобках запроса по этому полю пользователя, и если запрос только частично совпал, то указать в чем именно совпадение]\nАргументы: [аргументы - почему ты выбрал именно этого кандидата]'
       )
       formedContent.push(
         'После завершения списка кандидатов подведи итоги и в общих чертах опиши какие кандидаты подходят для выбранного пользователя'
@@ -141,7 +141,7 @@ const individualWeddingFunc = ({ userId, title, onConfirm, onFinished }) => {
       )
       // console.log('formedContent :>> ', formedContent)
 
-      const result = postData(
+      postData(
         `/api/${location}/individualweddings`,
         {
           userId,

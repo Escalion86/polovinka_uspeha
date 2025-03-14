@@ -1,32 +1,8 @@
-import CheckBox from '@components/CheckBox'
-import EditableTextarea from '@components/EditableTextarea'
-import ErrorsList from '@components/ErrorsList'
-import FormWrapper from '@components/FormWrapper'
-import Input from '@components/Input'
-// import InputImage from '@components/InputImage'
-import Textarea from '@components/Textarea'
-import { DEFAULT_DIRECTION } from '@helpers/constants'
-import useErrors from '@helpers/useErrors'
-import itemsFuncAtom from '@state/itemsFuncAtom'
-import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
-import { useEffect, useMemo, useState } from 'react'
+// import { useState } from 'react'
 import { useAtomValue } from 'jotai'
-import TabContext from '@components/Tabs/TabContext'
-import TabPanel from '@components/Tabs/TabPanel'
-import ComboBox from '@components/ComboBox'
-import compareObjects from '@helpers/compareObjects'
-import CardButtons from '@components/CardButtons'
-import serviceSelector from '@state/selectors/serviceSelector'
 import servicesUsersFullByServiceIdSelector from '@state/selectors/servicesUsersFullByServiceIdSelector'
-import userSelector from '@state/selectors/userSelector'
-import UsersFilter from '@components/Filter/UsersFilter'
-import ContentHeader from '@components/ContentHeader'
-import Note from '@components/Note'
-import { getNounUsers } from '@helpers/getNoun'
+// import userSelector from '@state/selectors/userSelector'
 import getUserFullName from '@helpers/getUserFullName'
-import formatDate from '@helpers/formatDate'
-import { postData } from '@helpers/CRUD'
-import locationAtom from '@state/atoms/locationAtom'
 import Latex from 'react-latex-next'
 import InputWrapper from '@components/InputWrapper'
 import modalsFuncAtom from '@state/modalsFuncAtom'
@@ -35,9 +11,15 @@ import individualWeddingsSelector from '@state/async/individualWeddingsSelector'
 import { faIdCard } from '@fortawesome/free-regular-svg-icons/faIdCard'
 import formatDateTime from '@helpers/formatDateTime'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
+import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
+import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
 import Image from 'next/image'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
+import { SelectUser } from '@components/SelectItem'
+import { useEffect } from 'react'
+import copyToClipboard from '@helpers/copyToClipboard'
+import useCopyToClipboard from '@helpers/useCopyToClipboard'
 
 const individualWeddingViewFunc = ({ individualWeddingId, title }) => {
   const IndividualWeddingViewModal = ({
@@ -48,17 +30,38 @@ const individualWeddingViewFunc = ({ individualWeddingId, title }) => {
     setDisableConfirm,
     setDisableDecline,
     setTopLeftComponent,
+    setBottomLeftButtonProps,
   }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const individualWedding = useAtomValue(
       individualWeddingsSelector(individualWeddingId)
     )
-    const user = useAtomValue(userSelector(individualWedding?.userId))
+    const copyResult = useCopyToClipboard(
+      DOMPurify.sanitize(
+        individualWedding?.aiResponse
+          .replaceAll('<p><br></p>', '\n')
+          .replaceAll('<blockquote>', '\n<blockquote>')
+          .replaceAll('<li>', '\n\u{2764} <li>')
+          .replaceAll('<p>', '\n<p>')
+          .replaceAll('<br>', '\n')
+          .replaceAll('&nbsp;', ' ')
+          .trim('\n'),
+        {
+          ALLOWED_TAGS: [],
+          ALLOWED_ATTR: [],
+        }
+      ),
+      'Результат скопирован в буфер обмена'
+    )
+    // const user = useAtomValue(userSelector(individualWedding?.userId))
 
     const serviceId = '6421df68fa505d8e86b92166'
     const servicesUsers = useAtomValue(
       servicesUsersFullByServiceIdSelector(serviceId)
     )
+    // const serviceUser = servicesUsers.find(
+    //   ({ userId }) => userId === individualWedding?.userId
+    // )
 
     //     userId
     // aiResponse
@@ -66,27 +69,68 @@ const individualWeddingViewFunc = ({ individualWeddingId, title }) => {
     // allCandidatesIds
     // chosenCandidatesIds
 
-    const [filter, setFilter] = useState({
-      gender: {
-        male: user?.gender !== 'male',
-        famale: user?.gender !== 'famale',
-        // null: true,
-      },
-      status: {
-        novice: true,
-        member: true,
-      },
-      relationship: {
-        havePartner: false,
-        noPartner: true,
-      },
-    })
+    // const [filter, setFilter] = useState({
+    //   gender: {
+    //     male: user?.gender !== 'male',
+    //     famale: user?.gender !== 'famale',
+    //     // null: true,
+    //   },
+    //   status: {
+    //     novice: true,
+    //     member: true,
+    //   },
+    //   relationship: {
+    //     havePartner: false,
+    //     noPartner: true,
+    //   },
+    // })
+
+    useEffect(() => {
+      setBottomLeftButtonProps({
+        name: 'Скопировать результат в буфер',
+        classBgColor: 'bg-general',
+        icon: faCopy,
+        onClick: () => copyResult(),
+      })
+    }, [individualWedding?.aiResponse])
 
     return (
       <div>
         <div className="flex justify-center w-full">
           Дата подбора: {formatDateTime(individualWedding?.createdAt)}
         </div>
+        <InputWrapper label="Заказчик услуги">
+          <SelectUser
+            // readOnly
+            selectedId={individualWedding.userId}
+            buttons={[
+              (id) => ({
+                onClick: () => {
+                  const seriviceUser = servicesUsers.find(
+                    ({ userId }) => userId === id
+                  )
+                  modalsFunc.serviceUser.view(
+                    seriviceUser._id,
+                    true,
+                    `Анкета кандидата "${getUserFullName(seriviceUser.user)}"`
+                  )
+                  // modalsFunc.questionnaire.open(
+                  //   service.questionnaire,
+                  //   seriviceUser.answers,
+                  //   undefined,
+                  //   `Анкета кандидата "${getUserFullName(seriviceUser.user)}"`
+                  // )
+                },
+                icon: faIdCard,
+                iconClassName: 'text-purple-600',
+                tooltip: 'Анкета',
+                // text,
+                // textClassName,
+                // thin,
+              }),
+            ]}
+          />
+        </InputWrapper>
         <InputWrapper label="Фильтр" wrapperClassName="flex-col">
           <div className="flex gap-x-1">
             <div>Пол:</div>
@@ -137,10 +181,12 @@ const individualWeddingViewFunc = ({ individualWeddingId, title }) => {
               <UserRelationshipIcon relationship />
             )}
           </div>
+          <div>
+            Всего кандидатов по фильтру:{' '}
+            {individualWedding?.allCandidatesIds?.length} чел.
+          </div>
         </InputWrapper>
-        <div>
-          Всего кандидатов: {individualWedding?.allCandidatesIds?.length} чел.
-        </div>
+
         {individualWedding?.chosenCandidatesIds?.length > 0 && (
           <InputWrapper
             label="Выбранные кандидаты"
