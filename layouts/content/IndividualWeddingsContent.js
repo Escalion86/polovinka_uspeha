@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { SelectUser } from '@components/SelectItem'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import InputWrapper from '@components/InputWrapper'
 import Button from '@components/Button'
 // import LoadingSpinner from '@components/LoadingSpinner'
@@ -16,12 +16,13 @@ import getUserFullName from '@helpers/getUserFullName'
 import { faIdCard } from '@fortawesome/free-regular-svg-icons/faIdCard'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import individualWeddingsByUserIdAtom from '@state/async/individualWeddingsByUserIdAtom'
-import itemsFuncAtom from '@state/itemsFuncAtom'
+// import itemsFuncAtom from '@state/itemsFuncAtom'
 // import { SelectUserList } from '@components/SelectItemList'
 import IndividualWeddingCard from '@layouts/cards/IndividualWeddingCard'
 import LoadingSpinner from '@components/LoadingSpinner'
 import individualWeddingEditSelector from '@state/selectors/individualWeddingEditSelector'
 import useSnackbar from '@helpers/useSnackbar'
+import waitForResponseIndividualWeddingForUserIdAtom from '@state/atoms/waitForResponseIndividualWeddingForUserIdAtom'
 
 const IndividualWeddingsContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -32,7 +33,9 @@ const IndividualWeddingsContent = () => {
     individualWeddingsByUserIdAtom(selectedUserId)
   )
   const snackbar = useSnackbar()
-  const [waitForResponse, setWaitForResponse] = useState(false)
+  const [waitForResponse, setWaitForResponse] = useAtom(
+    waitForResponseIndividualWeddingForUserIdAtom(selectedUserId)
+  )
   // const [response, setResponse] = useState(
   //   individualWeddings ? individualWeddings.aiResponse : ''
   // )
@@ -185,7 +188,7 @@ const IndividualWeddingsContent = () => {
           selectedId={selectedUserId}
           onChange={setSelectedUserId}
           acceptedIds={acceptedUsersIds}
-          readOnly={waitForResponse}
+          // readOnly={waitForResponse}
           modalTitle="Пользователи с анкетами"
           buttons={
             selectedServiceUser
@@ -228,6 +231,7 @@ const IndividualWeddingsContent = () => {
                 if (response.error) {
                   snackbar.error('Ошибка создания подборки кандидатов')
                 } else {
+                  console.log('response.data :>> ', response.data)
                   snackbar.success('Подборка кандидатов создана')
                   setIndividualWeddings(response.data)
                 }

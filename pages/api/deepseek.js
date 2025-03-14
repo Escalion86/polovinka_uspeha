@@ -10,6 +10,7 @@ export default async function handler(req, res) {
     })
 
     const content = body.content
+    const model = body.deep ? 'deepseek-reasoner' : 'deepseek-chat'
 
     // const system_prompt = `The user will provide some exam text. Please parse the "question" and "answer" and output them in JSON format.
 
@@ -36,7 +37,7 @@ export default async function handler(req, res) {
           { role: 'system', content: 'Напиши ответ на русском языке' },
           { role: 'user', content },
         ],
-        model: 'deepseek-chat',
+        model,
       })
 
       return completion

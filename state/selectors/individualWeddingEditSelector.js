@@ -10,7 +10,8 @@ import { RESET } from 'jotai/utils'
 import individualWeddingsByUserIdAtom from '@state/async/individualWeddingsByUserIdAtom'
 
 const individualWeddingEditSelector = atom(null, async (get, set, newItem) => {
-  const userId = newItem.userId
+  const userId = newItem?.userId
+  if (!newItem || !userId) return
   // const individualWedding = await get(individualWeddingsSelector(itemId))
   // if (get(isLoadedAtom('individualWeddingsByUserIdAtom' + userId))) {
   // set(individualWeddingsByUserIdAtom(userId), [
