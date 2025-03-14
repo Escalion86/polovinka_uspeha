@@ -540,13 +540,13 @@ export const DEFAULT_USERS_SECURITY = Object.freeze({
   showBirthday: true,
   // showAge: null,
   // showContacts: null,
-  showPhone: true,
-  showWhatsapp: true,
-  showViber: true,
-  showTelegram: true,
-  showInstagram: true,
-  showVk: true,
-  showEmail: true,
+  showPhone: false,
+  showWhatsapp: false,
+  showViber: false,
+  showTelegram: false,
+  showInstagram: false,
+  showVk: false,
+  showEmail: false,
 })
 
 export const DEFAULT_USERS_NOTIFICATIONS = Object.freeze({
