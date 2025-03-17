@@ -17,13 +17,33 @@ const EditableTextarea = ({
   label,
   required,
   error,
+  customButtons,
 }) => {
   // const [range, setRange] = useState()
   // const [lastChange, setLastChange] = useState()
   // const [readOnly, setReadOnly] = useState(false)
 
   // Use a ref to access the quill instance directly
-
+  // console.log('html :>> ', html)
+  const prepearedText = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['em'],
+    ALLOWED_ATTR: [],
+  })
+  function replaceClubTemplate(str, variables) {
+    return str.replace(
+      /<em>{(\w+)}{<\/em>(.+?)<em>}{<\/em>(.+?)<em>}<\/em>/g,
+      (match, varName, text1, text2) => {
+        return typeof variables[varName] === 'boolean'
+          ? variables[varName]
+            ? text1
+            : text2
+          : ''
+      }
+    )
+  }
+  const test = replaceClubTemplate(prepearedText, { club: true })
+  console.log(test)
+  // console.log('prepearedText :>> ', prepearedText)
   return (
     <InputWrapper
       label={label}
@@ -46,6 +66,7 @@ const EditableTextarea = ({
           // onSelectionChange={setRange}
           // onTextChange={setLastChange}
           onChange={onChange}
+          customButtons={customButtons}
         />
       </Suspense>
       {/* <div class="controls">
