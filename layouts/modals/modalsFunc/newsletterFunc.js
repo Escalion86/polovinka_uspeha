@@ -193,82 +193,86 @@ const newsletterFunc = ({ name, users, event }) => {
       [rerender]
     )
 
-    const customButtons = undefined
+    // const customButtons = undefined
 
-    // const customButtons = useMemo(() => {
-    //   return {
-    //     handlers: {
-    //       club: function (value) {
-    //         // const range = this.quill.getSelection()
-    //         // if (range) {
-    //         //   if (range.length == 0) {
-    //         //     console.log('User cursor is at index', range.index)
-    //         //   } else {
-    //         //     const text = this.quill.getText(range.index, range.length)
-    //         //     console.log('User has highlighted: ', text)
-    //         //   }
-    //         // } else {
-    //         //   console.log('User cursor is not in editor')
-    //         // }
-    //         if (value) {
-    //           const text1 = prompt('Введите текст для пользователя из клуба')
-    //           const text2 = prompt('Введите текст для пользователя из центра')
-    //           // if (text1 || text1 ==='') {
-    //           // this.quill.getBounds
-    //           const range = this.quill.getSelection()
-    //           this.quill.insertText(range.index, '}', {
-    //             color: 'white',
-    //             background: '#7a5151',
-    //             italic: true,
-    //             bold: false,
-    //           })
-    //           this.quill.insertText(range.index, text2, {
-    //             color: false,
-    //             background: false,
-    //             italic: false,
-    //             bold: false,
-    //           })
-    //           this.quill.insertText(range.index, '}{', {
-    //             color: 'white',
-    //             background: '#7a5151',
-    //             italic: true,
-    //             bold: false,
-    //           })
-    //           this.quill.insertText(range.index, text1, {
-    //             color: false,
-    //             background: false,
-    //             italic: false,
-    //             bold: false,
-    //           })
-    //           this.quill.insertText(range.index, '}{', {
-    //             color: 'white',
-    //             background: '#7a5151',
-    //             italic: true,
-    //             bold: false,
-    //           })
-    //           this.quill.insertText(range.index, 'club', {
-    //             color: 'white',
-    //             background: '#7a5151',
-    //             italic: true,
-    //             bold: false,
-    //           })
-    //           this.quill.insertText(range.index, '{', {
-    //             color: 'white',
-    //             background: '#7a5151',
-    //             italic: true,
-    //             bold: false,
-    //           })
-    //           // }
-    //           // } else {
-    //           // this.quill.format('link', false)
-    //           // this.quill.format('color', false)
-    //           // this.quill.format('underline', false)
-    //         }
-    //       },
-    //     },
-    //     container: [['club']],
-    //   }
-    // }, [])
+    const customButtons = useMemo(() => {
+      return {
+        handlers: {
+          club: function (value) {
+            // const range = this.quill.getSelection()
+            // if (range) {
+            //   if (range.length == 0) {
+            //     console.log('User cursor is at index', range.index)
+            //   } else {
+            //     const text = this.quill.getText(range.index, range.length)
+            //     console.log('User has highlighted: ', text)
+            //   }
+            // } else {
+            //   console.log('User cursor is not in editor')
+            // }
+            if (value) {
+              const text1 = prompt('Введите текст для пользователя из клуба')
+              if (text1 === null) return
+              const text2 = prompt('Введите текст для пользователя из центра')
+              if (text2 === null) return
+              // if (text1 || text1 ==='') {
+              // this.quill.getBounds
+              const range = this.quill.getSelection()
+              this.quill.insertText(range.index, '}', {
+                color: 'white',
+                background: '#7a5151',
+                italic: true,
+                bold: false,
+              })
+              if (text2)
+                this.quill.insertText(range.index, text2, {
+                  color: false,
+                  background: false,
+                  italic: false,
+                  bold: false,
+                })
+              this.quill.insertText(range.index, '}{', {
+                color: 'white',
+                background: '#7a5151',
+                italic: true,
+                bold: false,
+              })
+              if (text1)
+                this.quill.insertText(range.index, text1, {
+                  color: false,
+                  background: false,
+                  italic: false,
+                  bold: false,
+                })
+              this.quill.insertText(range.index, '}{', {
+                color: 'white',
+                background: '#7a5151',
+                italic: true,
+                bold: false,
+              })
+              this.quill.insertText(range.index, 'club', {
+                color: 'white',
+                background: '#7a5151',
+                italic: true,
+                bold: false,
+              })
+              this.quill.insertText(range.index, '{', {
+                color: 'white',
+                background: '#7a5151',
+                italic: true,
+                bold: false,
+              })
+              // }
+              // } else {
+              // this.quill.format('link', false)
+              // this.quill.format('color', false)
+              // this.quill.format('underline', false)
+            }
+          },
+        },
+        container: [['club']],
+      }
+    }, [])
 
     const blockedUsersCount =
       selectedUsers.length - filteredSelectedUsers.length
