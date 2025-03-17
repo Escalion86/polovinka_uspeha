@@ -42,8 +42,13 @@ export default async function handler(req, res) {
       const urlSend = `${urlWithInstance}/sendMessage/${token}`
       // const urlCheckWhatsapp = `${urlWithInstance}/checkWhatsapp/${token}`
 
+      // const prepearedText = DOMPurify.sanitize(html, {
+      //   ALLOWED_TAGS: ['em'],
+      //   ALLOWED_ATTR: [],
+      // })
+      // const test = replaceVariableInTextTemplate(prepearedText, { club: true })
+
       const result = []
-      console.log('usersMessages[0]', usersMessages[0])
       for (let i = 0; i < usersMessages.length; i++) {
         const {
           whatsappPhone,

@@ -81,7 +81,7 @@ const newsletterFunc = ({ name, users, event }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const location = useAtomValue(locationAtom)
     const loggedUserActive = useAtomValue(loggedUserActiveAtom)
-    const { success, error } = useSnackbar()
+    const { info, success, error } = useSnackbar()
     const usersAll = useAtomValue(usersAtomAsync)
     const setNewsletter = useAtomValue(itemsFuncAtom).newsletter.set
 
@@ -173,13 +173,17 @@ const newsletterFunc = ({ name, users, event }) => {
           message,
         },
         (data) => {
+          // success('Рассылка отправлена успешно')
           setNewsletter(data)
+        },
+        (data) => {
+          error('Ошибка отправки рассылки! Ответ сервиса: ' + data)
         }
       )
 
       closeModal()
-      success(
-        'Рассылка отправлена и в ближайшее время появится в списке рассылок'
+      info(
+        'Рассылка отправлена и после обработки запроса появится в списке рассылок'
       )
       //   const idMessage = res?.idMessage
       //   result.push({ userId: user._id, message, idMessage })
