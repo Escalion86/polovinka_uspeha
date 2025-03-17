@@ -76,19 +76,20 @@ const ContactsIconsButtons = ({
 
   const isMemberAndUserIsMember = user.status === 'member' && isLoggedUserMember
 
-  if (
-    !user ||
-    (!canSeeAllContacts && !isMemberAndUserIsMember) ||
-    (user.security?.showContacts === false &&
+  if (!user) return null
+  if (!canSeeAllContacts) {
+    if (!isMemberAndUserIsMember) return null
+    if (
       !user.security?.showPhone &&
       !user.security?.showWhatsapp &&
       !user.security?.showViber &&
       !user.security?.showTelegram &&
       !user.security?.showInstagram &&
       !user.security?.showVk &&
-      !user.security?.showEmail)
-  )
-    return null
+      !user.security?.showEmail
+    )
+      return null
+  }
 
   const encodedMessage =
     message !== undefined || message !== null
@@ -108,8 +109,7 @@ const ContactsIconsButtons = ({
     >
       {user?.phone &&
         (canSeeAllContacts ||
-          (isMemberAndUserIsMember &&
-            (user.security?.showContacts || user.security?.showPhone))) && (
+          (isMemberAndUserIsMember && user.security?.showPhone)) && (
           <Btn
             icon={message || smsViaPhone ? faSms : faPhone}
             className="text-yellow-600"
@@ -124,8 +124,7 @@ const ContactsIconsButtons = ({
           />
         )}
       {user?.whatsapp
-        ? ((isMemberAndUserIsMember &&
-            (user.security?.showContacts || user.security?.showWhatsapp)) ||
+        ? ((isMemberAndUserIsMember && user.security?.showWhatsapp) ||
             canSeeAllContacts) && (
             <Btn
               icon={faWhatsapp}
@@ -137,8 +136,7 @@ const ContactsIconsButtons = ({
             />
           )
         : forceWhatsApp &&
-          ((isMemberAndUserIsMember &&
-            (user.security?.showContacts || user.security?.showWhatsapp)) ||
+          ((isMemberAndUserIsMember && user.security?.showWhatsapp) ||
             canSeeAllContacts) && (
             <Btn
               icon={faWhatsapp}
@@ -151,8 +149,7 @@ const ContactsIconsButtons = ({
           )}
       {!message &&
         user?.viber &&
-        ((isMemberAndUserIsMember &&
-          (user.security?.showContacts || user.security?.showViber)) ||
+        ((isMemberAndUserIsMember && user.security?.showViber) ||
           canSeeAllContacts) && (
           <Btn
             icon={faViber}
@@ -164,8 +161,7 @@ const ContactsIconsButtons = ({
 
       {!message &&
         (user?.telegram
-          ? ((isMemberAndUserIsMember &&
-              (user.security?.showContacts || user.security?.showTelegram)) ||
+          ? ((isMemberAndUserIsMember && user.security?.showTelegram) ||
               canSeeAllContacts) && (
               <Btn
                 icon={faTelegramPlane}
@@ -175,8 +171,7 @@ const ContactsIconsButtons = ({
               />
             )
           : forceTelegram &&
-            ((isMemberAndUserIsMember &&
-              (user.security?.showContacts || user.security?.showTelegram)) ||
+            ((isMemberAndUserIsMember && user.security?.showTelegram) ||
               canSeeAllContacts) && (
               <Btn
                 icon={faTelegramPlane}
@@ -189,8 +184,7 @@ const ContactsIconsButtons = ({
             ))}
       {!message &&
         user?.instagram &&
-        ((isMemberAndUserIsMember &&
-          (user.security?.showContacts || user.security?.showInstagram)) ||
+        ((isMemberAndUserIsMember && user.security?.showInstagram) ||
           canSeeAllContacts) && (
           <Btn
             icon={faInstagram}
@@ -201,8 +195,7 @@ const ContactsIconsButtons = ({
         )}
       {!message &&
         user?.vk &&
-        ((isMemberAndUserIsMember &&
-          (user.security?.showContacts || user.security?.showVk)) ||
+        ((isMemberAndUserIsMember && user.security?.showVk) ||
           canSeeAllContacts) && (
           <Btn
             icon={faVk}
@@ -213,8 +206,7 @@ const ContactsIconsButtons = ({
         )}
       {!message &&
         user?.email &&
-        ((isMemberAndUserIsMember &&
-          (user.security?.showContacts || user.security?.showEmail)) ||
+        ((isMemberAndUserIsMember && user.security?.showEmail) ||
           canSeeAllContacts) && (
           <Btn
             icon={faEnvelope}

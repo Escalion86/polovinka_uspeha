@@ -160,7 +160,7 @@ const newsletterFunc = ({ name, users, event }) => {
 
       // for (let i = 0; i < filteredSelectedUsers.length; i++) {
       //   const user = filteredSelectedUsers[i]
-      const res = await postData(
+      const res = postData(
         `/api/${location}/newsletters/byType/sendMessage`,
         {
           // phone: user.whatsapp || user.phone,
@@ -171,24 +171,104 @@ const newsletterFunc = ({ name, users, event }) => {
             // whatsappMessage: message,
           })),
           message,
+        },
+        (data) => {
+          setNewsletter(data)
         }
       )
 
       closeModal()
-      setNewsletter(res)
-
-      success('Рассылка отправлена')
+      success(
+        'Рассылка отправлена и в ближайшее время появится в списке рассылок'
+      )
       //   const idMessage = res?.idMessage
       //   result.push({ userId: user._id, message, idMessage })
       // }
       // console.log('res :>> ', res)
-      return res
+      // return res
     }
 
     const Component = useCallback(
       (props) => <EditableTextarea {...props} />,
       [rerender]
     )
+
+    const customButtons = undefined
+
+    // const customButtons = useMemo(() => {
+    //   return {
+    //     handlers: {
+    //       club: function (value) {
+    //         // const range = this.quill.getSelection()
+    //         // if (range) {
+    //         //   if (range.length == 0) {
+    //         //     console.log('User cursor is at index', range.index)
+    //         //   } else {
+    //         //     const text = this.quill.getText(range.index, range.length)
+    //         //     console.log('User has highlighted: ', text)
+    //         //   }
+    //         // } else {
+    //         //   console.log('User cursor is not in editor')
+    //         // }
+    //         if (value) {
+    //           const text1 = prompt('Введите текст для пользователя из клуба')
+    //           const text2 = prompt('Введите текст для пользователя из центра')
+    //           // if (text1 || text1 ==='') {
+    //           // this.quill.getBounds
+    //           const range = this.quill.getSelection()
+    //           this.quill.insertText(range.index, '}', {
+    //             color: 'white',
+    //             background: '#7a5151',
+    //             italic: true,
+    //             bold: false,
+    //           })
+    //           this.quill.insertText(range.index, text2, {
+    //             color: false,
+    //             background: false,
+    //             italic: false,
+    //             bold: false,
+    //           })
+    //           this.quill.insertText(range.index, '}{', {
+    //             color: 'white',
+    //             background: '#7a5151',
+    //             italic: true,
+    //             bold: false,
+    //           })
+    //           this.quill.insertText(range.index, text1, {
+    //             color: false,
+    //             background: false,
+    //             italic: false,
+    //             bold: false,
+    //           })
+    //           this.quill.insertText(range.index, '}{', {
+    //             color: 'white',
+    //             background: '#7a5151',
+    //             italic: true,
+    //             bold: false,
+    //           })
+    //           this.quill.insertText(range.index, 'club', {
+    //             color: 'white',
+    //             background: '#7a5151',
+    //             italic: true,
+    //             bold: false,
+    //           })
+    //           this.quill.insertText(range.index, '{', {
+    //             color: 'white',
+    //             background: '#7a5151',
+    //             italic: true,
+    //             bold: false,
+    //           })
+    //           // }
+    //           // } else {
+    //           // this.quill.format('link', false)
+    //           // this.quill.format('color', false)
+    //           // this.quill.format('underline', false)
+    //         }
+    //       },
+    //     },
+    //     container: [['club']],
+    //   }
+    // }, [])
 
     const blockedUsersCount =
       selectedUsers.length - filteredSelectedUsers.length
@@ -450,6 +530,7 @@ const newsletterFunc = ({ name, users, event }) => {
             onChange={setMessage}
             // placeholder="Описание мероприятия..."
             required
+            customButtons={customButtons}
           />
         </div>
         <div>

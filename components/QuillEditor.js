@@ -93,7 +93,9 @@ const toolbarOptions = {
     ],
     // ['emoji'],
     // ['polovinkauspeha'],
+
     ['clean'],
+    // ['club'],
   ],
 }
 
@@ -192,22 +194,33 @@ const QuillEditor = forwardRef(
 
           // Quill.register({ 'modules/emoji-toolbar': Emoji })
 
-          // const toolbar = useMemo(() => {
-          //   if (!customButtons) return toolbarOptions
+          const toolbar = !customButtons
+            ? toolbarOptions
+            : {
+                handlers: {
+                  ...toolbarOptions.handlers,
+                  ...customButtons.handlers,
+                },
+                container: [
+                  ...toolbarOptions.container,
+                  ...customButtons.container,
+                ],
+              }
 
-          //   const tempToolbar = {
-          //     handlers: { ...toolbarOptions.handlers },
-          //     container: [...toolbarOptions.container],
-          //   }
-          // }, [])
-
+          if (customButtons) {
+            var icons = Quill.import('ui/icons')
+            for (var key in customButtons.handlers) {
+              icons[key] =
+                `<div class="text-sm -ml-[9px] -mt-[1px]">{${key}}</div>`
+            }
+          }
           quill = new Quill(
             // '#quill-editor'
             editorContainer,
             {
               theme: 'snow',
               modules: {
-                toolbar: toolbarOptions,
+                toolbar,
                 // 'emoji-toolbar': true,
                 // 'emoji-textarea': true,
                 // 'emoji-shortname': true,

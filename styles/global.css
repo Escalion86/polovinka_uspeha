@@ -278,6 +278,16 @@ li[data-list='bullet'] span.ql-ui:before {
   border-right: 0px !important;
 }
 
+/* .ql-test {
+  background: no-repeat scroll 50% 50% transparent !important;
+  background-image: url("../svg/filter_close.svg") !important;
+  text-align: center;
+} */
+
+/* .ql-test:hover {
+  background-image: url("filter_close.svg") !important
+} */
+
 .ql ol li:before {
   content: counter(list-0, decimal) '. ';
   text-align: right;

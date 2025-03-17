@@ -124,20 +124,20 @@ const QuestionnaireContent = (props) => {
   )
 
   var defaultSecurity = { ...loggedUserActive?.security }
-  if (
-    loggedUserActive?.security?.showContacts === true ||
-    loggedUserActive?.security?.showContacts === false ||
-    loggedUserActive?.security?.showContacts === null
-  ) {
-    defaultSecurity.showPhone = !!loggedUserActive?.security.showContacts
-    defaultSecurity.showWhatsapp = !!loggedUserActive?.security.showContacts
-    defaultSecurity.showViber = !!loggedUserActive?.security.showContacts
-    defaultSecurity.showTelegram = !!loggedUserActive?.security.showContacts
-    defaultSecurity.showInstagram = !!loggedUserActive?.security.showContacts
-    defaultSecurity.showVk = !!loggedUserActive?.security.showContacts
-    defaultSecurity.showEmail = !!loggedUserActive?.security.showContacts
-    delete defaultSecurity.showContacts
-  }
+  // if (
+  //   loggedUserActive?.security?.showContacts === true ||
+  //   loggedUserActive?.security?.showContacts === false ||
+  //   loggedUserActive?.security?.showContacts === null
+  // ) {
+  //   defaultSecurity.showPhone = !!loggedUserActive?.security.showContacts
+  //   defaultSecurity.showWhatsapp = !!loggedUserActive?.security.showContacts
+  //   defaultSecurity.showViber = !!loggedUserActive?.security.showContacts
+  //   defaultSecurity.showTelegram = !!loggedUserActive?.security.showContacts
+  //   defaultSecurity.showInstagram = !!loggedUserActive?.security.showContacts
+  //   defaultSecurity.showVk = !!loggedUserActive?.security.showContacts
+  //   defaultSecurity.showEmail = !!loggedUserActive?.security.showContacts
+  //   delete defaultSecurity.showContacts
+  // }
 
   if (loggedUserActive?.security?.showAge === true) {
     defaultSecurity.showBirthday = 'full'

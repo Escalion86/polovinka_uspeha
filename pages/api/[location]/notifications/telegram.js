@@ -29,12 +29,9 @@ export default async function handler(req, res) {
       // console.log(body)
       const { update_id, message, callback_query } = body
       if (callback_query?.data) {
-        console.log('!!!telegram callback_query recived:>> ')
         const cmdProps = JSON.parse(callback_query.data)
-        console.log('cmdProps :>> ', cmdProps)
         if (typeof cmdProps === 'object') {
           const cmd = telegramIndexToCmd(cmdProps.c)
-          console.log('cmd :>> ', cmd)
           if (cmd === 'eventSignIn') {
             const { eventId, subEventId } = cmdProps
             const userTelegramId = callback_query.from.id
