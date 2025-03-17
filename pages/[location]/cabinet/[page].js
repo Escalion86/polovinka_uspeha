@@ -65,6 +65,7 @@ function CabinetPage(props) {
   //   console.log('--------------- :>> ')
   //   console.log('wrongSession', props.wrongSession)
   // }
+
   if (!props.wrongSession) {
     if (!props.loggedUser) {
       redirect = '/'
@@ -79,7 +80,8 @@ function CabinetPage(props) {
             loggedUserActiveRole,
             loggedUserActiveStatusName
           ))) ||
-      (CONTENTS[page].siteConfirm && !CONTENTS[page].siteConfirm(siteSettings))
+      (CONTENTS[page].siteConfirm &&
+        !CONTENTS[page].siteConfirm(props.siteSettings))
       // !CONTENTS[page].accessRoles.includes(loggedUserActiveRoleName) ||
       // (CONTENTS[page].accessStatuses &&
       //   !CONTENTS[page].accessStatuses.includes(loggedUserActiveStatus))
