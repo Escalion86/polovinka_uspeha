@@ -101,6 +101,45 @@ export default async function handler(req, res) {
             },
           }
         )
+        const usersShowContactsTrue = await db
+          .model('Users')
+          .collection.updateMany(
+            { 'security.showContacts': true },
+            {
+              $set: {
+                'security.showPhone': true,
+                'security.showWhatsapp': true,
+                'security.showViber': true,
+                'security.showTelegram': true,
+                'security.showInstagram': true,
+                'security.showVk': true,
+                'security.showEmail': true,
+              },
+              $unset: {
+                'security.showContacts': 1,
+              },
+            }
+          )
+
+        const usersShowContactsFalse = await db
+          .model('Users')
+          .collection.updateMany(
+            { 'security.showContacts': false },
+            {
+              $set: {
+                'security.showPhone': false,
+                'security.showWhatsapp': false,
+                'security.showViber': false,
+                'security.showTelegram': false,
+                'security.showInstagram': false,
+                'security.showVk': false,
+                'security.showEmail': false,
+              },
+              $unset: {
+                'security.showContacts': 1,
+              },
+            }
+          )
 
         const events = await db.model('Events').collection.updateMany(
           {},
