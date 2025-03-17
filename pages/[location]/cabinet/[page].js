@@ -28,8 +28,6 @@ import SignOut from '@components/SignOut'
 // import { DevTools } from 'jotai-devtools'
 // Note that this may get included in your production builds. Please import it conditionally if you want to avoid that
 import 'jotai-devtools/styles.css'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 
 // const DevToolsClient = () => {
 //   'use client'
@@ -52,7 +50,6 @@ function CabinetPage(props) {
   const router = useRouter()
   const { location } = props
   const [locationState, setLocationState] = useAtom(locationAtom)
-  const siteSettings = useAtomValue(siteSettingsAtom)
 
   const page = router.asPath.replace(`/${location}/cabinet/`, '').split('?')[0]
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
