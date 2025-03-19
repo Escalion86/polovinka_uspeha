@@ -24,23 +24,15 @@ const EditableTextarea = ({
   // const [readOnly, setReadOnly] = useState(false)
 
   // const prepearedText = DOMPurify.sanitize(html, {
-  //   ALLOWED_TAGS: ['em'],
+  //   ALLOWED_TAGS: [],
   //   ALLOWED_ATTR: [],
   // })
-  // function replaceClubTemplate(str, variables) {
-  //   return str.replace(
-  //     /<em>{(\w+)}{<\/em>(.+?)<em>}{<\/em>(.+?)<em>}<\/em>/g,
-  //     (match, varName, text1, text2) => {
-  //       return typeof variables[varName] === 'boolean'
-  //         ? variables[varName]
-  //           ? text1
-  //           : text2
-  //         : ''
-  //     }
-  //   )
-  // }
-  // const test = replaceClubTemplate(prepearedText, { club: true })
-  // console.log(test)
+  // console.log('prepearedText :>> ', prepearedText)
+  // const test = replaceVariableInTextTemplate(prepearedText, {
+  //   club: true,
+  //   male: true,
+  // })
+  // console.log('text', test)
   // console.log('prepearedText :>> ', prepearedText)
   return (
     <InputWrapper

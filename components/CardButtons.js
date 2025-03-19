@@ -101,7 +101,6 @@ const CardButtons = ({
           : undefined
 
   const copyId = useCopyToClipboard(item._id, 'ID скопирован в буфер обмена')
-
   const key = typeToKey(typeOfItem)
   const rule = ['additionalBlocks', 'directions', 'reviews'].includes(key)
     ? loggedUserActiveRole?.generalPage[key]
@@ -136,8 +135,12 @@ const CardButtons = ({
   const sendNotifications =
     typeOfItem === 'event' &&
     loggedUserActiveRole?.events?.sendNotifications &&
+    item.showOnSite
+  const sendNotificationsWhatsapp =
+    typeOfItem === 'event' &&
     item.showOnSite &&
-    siteSettings?.newsletter?.whatsappActivated
+    siteSettings?.newsletter?.whatsappActivated &&
+    loggedUserActiveRole?.newsletters?.add
 
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
@@ -175,7 +178,7 @@ const CardButtons = ({
     downBtn: onDownClick && upDownSee,
     editBtn: showEditButton && editSee,
     cloneBtn:
-      showCloneButton && !['user', 'review'].includes(typeOfItem) && rule?.edit,
+      showCloneButton && !['user', 'review'].includes(typeOfItem) && rule?.add,
     showOnSiteBtn:
       showOnSiteOnClick && (rule?.seeHidden || rule?.edit || rule === true),
     statusBtn: rule?.statusEdit,
@@ -189,6 +192,7 @@ const CardButtons = ({
     userPaymentsBtn: rule?.seeUserPayments,
     loginHistory: isLoggedUserDev && typeOfItem === 'user',
     sendNotifications,
+    sendNotificationsWhatsapp,
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -260,28 +264,27 @@ const CardButtons = ({
           tooltipText="Добавить в Google календарь"
         />
       )}
+      {show.sendNotificationsWhatsapp && (
+        <ItemComponent
+          icon={faWhatsappSquare}
+          onClick={() => {
+            modalsFunc.selectUsersByStatusesFromEvent(
+              item._id,
+              (users, event) =>
+                modalsFunc.newsletter.add(undefined, { users, event })
+            )
+          }}
+          color="green"
+          tooltipText="Рассылка"
+        />
+      )}
       {show.sendNotifications && (
-        <>
-          <ItemComponent
-            icon={faWhatsappSquare}
-            onClick={() => {
-              modalsFunc.selectUsersByStatusesFromEvent(
-                item._id,
-                (users, event) => modalsFunc.newsletter.add({ users, event })
-              )
-            }}
-            color="green"
-            tooltipText="Рассылка"
-          />
-          <ItemComponent
-            icon={faTelegram}
-            onClick={() =>
-              modalsFunc[typeOfItem].notificateAboutEvent(item._id)
-            }
-            color="blue"
-            tooltipText="Уведомление пользователей о мероприятии"
-          />
-        </>
+        <ItemComponent
+          icon={faTelegram}
+          onClick={() => modalsFunc[typeOfItem].notificateAboutEvent(item._id)}
+          color="blue"
+          tooltipText="Уведомление пользователей о мероприятии"
+        />
       )}
       {show.eventUsersBtn && (
         <ItemComponent

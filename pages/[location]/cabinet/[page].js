@@ -77,7 +77,7 @@ function CabinetPage(props) {
             loggedUserActiveRole,
             loggedUserActiveStatusName
           ))) ||
-      (CONTENTS[page].siteConfirm &&
+      (CONTENTS[page]?.siteConfirm &&
         !CONTENTS[page].siteConfirm(props.siteSettings))
       // !CONTENTS[page].accessRoles.includes(loggedUserActiveRoleName) ||
       // (CONTENTS[page].accessStatuses &&

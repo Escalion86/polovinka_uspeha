@@ -5,7 +5,7 @@
 // import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 // import { useMemo, useState, useCallback } from 'react'
 // import UserStatusIcon from '@components/UserStatusIcon'
 // import SvgSigma from '@svg/SvgSigma'
@@ -30,6 +30,7 @@ import ContentHeader from '@components/ContentHeader'
 import newslettersAtomAsync from '@state/async/newslettersAtomAsync'
 import NewslettersList from '@layouts/lists/NewslettersList'
 import AddButton from '@components/IconToggleButtons/AddButton'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 // const getUsersData = (users) => {
 //   const mans = users.filter((user) => user.gender === 'male')
@@ -69,6 +70,8 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 const ToolsNewsletterContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const newsletters = useAtomValue(newslettersAtomAsync)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const addButton = loggedUserActiveRole?.newsletters?.add
 
   return (
     <>
@@ -77,7 +80,9 @@ const ToolsNewsletterContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounNewsletters(newsletters?.length)}
           </div>
-          <AddButton onClick={() => modalsFunc.newsletter.add()} />
+          {addButton && (
+            <AddButton onClick={() => modalsFunc.newsletter.add()} />
+          )}
         </div>
       </ContentHeader>
       <NewslettersList newsletters={newsletters} />

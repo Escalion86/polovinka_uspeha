@@ -18,7 +18,6 @@ import Image from 'next/image'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import { SelectUser } from '@components/SelectItem'
 import { useEffect } from 'react'
-import copyToClipboard from '@helpers/copyToClipboard'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
 
 const individualWeddingViewFunc = ({ individualWeddingId, title }) => {
