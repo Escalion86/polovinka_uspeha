@@ -285,7 +285,7 @@ export const EventItem = ({
   )
 }
 
-export const DirectionItem = ({ item, onClick = null, active = false }) => (
+export const DirectionItem = ({ item, onClick = null, active }) => (
   <ItemContainer
     onClick={onClick}
     active={active}
@@ -320,7 +320,7 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
 export const ServiceItemFromId = ({
   serviceId,
   onClick = null,
-  active = false,
+  active,
   bordered = false,
 }) => {
   const service = useAtomValue(serviceSelector(serviceId))
@@ -337,7 +337,7 @@ export const ServiceItemFromId = ({
 export const ServiceItem = ({
   item,
   onClick = null,
-  active = false,
+  active,
   className,
   noBorder,
   style,
@@ -377,7 +377,7 @@ export const ServiceItem = ({
 export const PaymentItem = ({
   item,
   onClick = null,
-  active = false,
+  active,
   noBorder = false,
   checkable,
   className,
