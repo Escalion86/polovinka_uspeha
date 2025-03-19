@@ -211,7 +211,7 @@ export const EventItemFromId = ({ eventId, ...props }) => {
 export const EventItem = ({
   item,
   onClick = null,
-  active = false,
+  active,
   bordered = false,
   className,
   classNameHeight = 'h-[33px]',
