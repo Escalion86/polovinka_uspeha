@@ -40,7 +40,8 @@ const menuCfg = (
         if (
           page.group === group.id &&
           page.roleAccess(userActiveRole, userActiveStatusName) &&
-          (!page.siteConfirm || page.siteConfirm(siteSettings))
+          (!page.siteConfirm ||
+            (page.siteConfirm && page.siteConfirm(siteSettings)))
           // page.accessRoles.includes(userActiveRole) &&
           // (!page.accessStatuses ||
           //   page.accessStatuses.includes(userActiveStatus))
