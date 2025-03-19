@@ -7,12 +7,15 @@ import { useAtomValue } from 'jotai'
 import newsletterSelector from '@state/selectors/newsletterSelector'
 import formatDateTime from '@helpers/formatDateTime'
 import { getNounMessages } from '@helpers/getNoun'
+import InputWrapper from '@components/InputWrapper'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
+import useCopyToClipboard from '@helpers/useCopyToClipboard'
 
 // const CardButtonsComponent = ({ newsletter }) => (
 //   <CardButtons item={newsletter} typeOfItem="newsletter" forForm />
 // )
 
-const newsletterViewFunc = (newsletterId, params = {}) => {
+const newsletterViewFunc = (newsletterId) => {
   const NewsletterModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -21,6 +24,7 @@ const newsletterViewFunc = (newsletterId, params = {}) => {
     setDisableConfirm,
     setDisableDecline,
     setTopLeftComponent,
+    setBottomLeftButtonProps,
   }) => {
     // const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
     // const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -32,6 +36,11 @@ const newsletterViewFunc = (newsletterId, params = {}) => {
     // const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
 
     const newsletter = useAtomValue(newsletterSelector(newsletterId))
+
+    const copyResult = useCopyToClipboard(
+      newsletter.message,
+      'Сообщение скопировано в буфер обмена'
+    )
 
     useEffect(() => {
       if (!newsletter) closeModal()
@@ -48,6 +57,19 @@ const newsletterViewFunc = (newsletterId, params = {}) => {
     //       />
     //     ))
     // }, [setTopLeftComponent])
+
+    useEffect(() => {
+      setBottomLeftButtonProps(
+        newsletter?.message
+          ? {
+              name: 'Скопировать результат в буфер',
+              classBgColor: 'bg-general',
+              icon: faCopy,
+              onClick: () => copyResult(),
+            }
+          : undefined
+      )
+    }, [newsletter])
 
     if (!newsletter) return null
 
@@ -71,6 +93,20 @@ const newsletterViewFunc = (newsletterId, params = {}) => {
           <TextLine label="Количество сообщений">
             {getNounMessages(newsletter?.newsletters?.length)}
           </TextLine>
+          {(newsletter?.message ||
+            newsletter?.newsletters[0]?.whatsappMessage) && (
+            <InputWrapper label="Текст сообщения">
+              <div
+                className="w-full max-w-full overflow-hidden list-disc textarea ql"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(
+                    newsletter?.message ||
+                      newsletter?.newsletters[0]?.whatsappMessage
+                  ),
+                }}
+              />
+            </InputWrapper>
+          )}
         </div>
 
         {/* <SelectEventList

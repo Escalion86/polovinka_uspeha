@@ -79,6 +79,7 @@
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
     "tailwind-merge": "^3.0.2",
+    "turndown": "^7.2.0",
     "uid": "^2.0.2"
   },
   "devDependencies": {

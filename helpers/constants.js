@@ -1013,9 +1013,13 @@ export const DEFAULT_ROLES = [
       anonsEventImageGenerator: false,
       anonsEventListImageGenerator: false,
       export: false,
-      newsletter: false,
       imageConstructor: false,
       individualWeddings: false,
+    },
+    newsletters: {
+      see: false,
+      add: false,
+      delete: false,
     },
     generalPage: {
       directions: false,
@@ -1147,9 +1151,13 @@ export const DEFAULT_ROLES = [
       anonsEventImageGenerator: true,
       anonsEventListImageGenerator: true,
       export: true,
-      newsletter: false,
       imageConstructor: false,
       individualWeddings: false,
+    },
+    newsletters: {
+      see: false,
+      add: false,
+      delete: false,
     },
     generalPage: {
       directions: true,
@@ -1281,9 +1289,13 @@ export const DEFAULT_ROLES = [
       anonsEventImageGenerator: true,
       anonsEventListImageGenerator: true,
       export: true,
-      newsletter: false,
       imageConstructor: false,
       individualWeddings: false,
+    },
+    newsletters: {
+      see: false,
+      add: false,
+      delete: false,
     },
     generalPage: {
       directions: true,
@@ -1415,9 +1427,13 @@ export const DEFAULT_ROLES = [
       anonsEventImageGenerator: true,
       anonsEventListImageGenerator: true,
       export: true,
-      newsletter: true,
       imageConstructor: false,
       individualWeddings: false,
+    },
+    newsletters: {
+      see: true,
+      add: true,
+      delete: true,
     },
     generalPage: {
       directions: true,
@@ -1549,9 +1565,13 @@ export const DEFAULT_ROLES = [
       anonsEventImageGenerator: true,
       anonsEventListImageGenerator: true,
       export: true,
-      newsletter: true,
       imageConstructor: false,
       individualWeddings: true,
+    },
+    newsletters: {
+      see: true,
+      add: true,
+      delete: true,
     },
     generalPage: {
       directions: true,
@@ -1683,9 +1703,13 @@ export const DEFAULT_ROLES = [
       anonsEventImageGenerator: true,
       anonsEventListImageGenerator: true,
       export: true,
-      newsletter: true,
       imageConstructor: true,
       individualWeddings: true,
+    },
+    newsletters: {
+      see: true,
+      add: true,
+      delete: true,
     },
     generalPage: {
       directions: true,
@@ -1936,7 +1960,7 @@ export const CONTENTS = Object.freeze({
     Component: ToolsNewsletterContent,
     name: 'Инструменты / Рассылка',
     accessRoles: ['dev'],
-    roleAccess: (role) => role?.instruments?.newsletter,
+    roleAccess: (role) => role?.newsletters?.see,
     siteConfirm: (siteSettings) => siteSettings?.newsletter?.whatsappActivated,
   },
   histories: {

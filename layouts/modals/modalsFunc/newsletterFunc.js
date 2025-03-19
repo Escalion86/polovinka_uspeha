@@ -30,6 +30,15 @@ import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
+import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
+import extractVariables from '@helpers/extractVariables'
+import replaceVariableInTextTemplate from '@helpers/replaceVariableInTextTemplate'
+import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
+import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
+import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import newsletterSelector from '@state/selectors/newsletterSelector'
 
 const getUsersData = (users) => {
   const mans = users.filter((user) => user.gender === 'male')
@@ -66,7 +75,7 @@ const getUsersData = (users) => {
   }
 }
 
-const newsletterFunc = ({ name, users, event }) => {
+const newsletterFunc = (newsletterId, { name, users, event }) => {
   const NewsletterModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -79,8 +88,10 @@ const newsletterFunc = ({ name, users, event }) => {
     setTopLeftComponent,
   }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
+    const newsletter = useAtomValue(newsletterSelector(newsletterId))
     const location = useAtomValue(locationAtom)
     const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const { info, success, error } = useSnackbar()
     const usersAll = useAtomValue(usersAtomAsync)
     const setNewsletter = useAtomValue(itemsFuncAtom).newsletter.set
@@ -90,21 +101,37 @@ const newsletterFunc = ({ name, users, event }) => {
     const blackList = siteSettings?.newsletter?.blackList || []
 
     const [checkBlackList, setCheckBlackList] = useState(true)
+    const [previewVariables, setPreviewVariables] = useState({
+      муж: true,
+      клуб: true,
+      пара: true,
+    })
 
     const defaultNameState = useMemo(
-      () => name || (event ? `Мероприятие "${event.title}"` : ''),
+      () =>
+        newsletter?.name
+          ? newsletter.name
+          : name || (event ? `Мероприятие "${event.title}"` : ''),
       [name, event]
     )
 
     const [newsletterName, setNewsletterName] = useState(defaultNameState)
 
-    const [selectedUsers, setSelectedUsers] = useState(users || [])
+    const [selectedUsers, setSelectedUsers] = useState(() =>
+      newsletter?.newsletters
+        ? newsletter.newsletters.map(({ userId }) =>
+            usersAll.find((user) => user._id === userId)
+          )
+        : users || []
+    )
 
     const defaultMessageState = useMemo(
       () =>
-        event
-          ? `<b>Мероприятие "${event.title}"</b><br><br>${event.description}`
-          : '',
+        newsletter?.message
+          ? newsletter.message
+          : event
+            ? `<b>Мероприятие "${event.title}"</b><br><br>${event.description}`
+            : '',
       [event]
     )
     // const [blackList, setBlackList] = useState([])
@@ -153,13 +180,51 @@ const newsletterFunc = ({ name, users, event }) => {
       [location, loggedUserActive]
     )
 
-    // const blackListData = useMemo(() => getUsersData(blackList), [blackList])
+    const prepearedText = useMemo(
+      () =>
+        DOMPurify.sanitize(message, {
+          ALLOWED_TAGS: ['b', 'i', 's', 'strong', 'br', 'p', 'em'],
+          ALLOWED_ATTR: [],
+        }),
+      [message]
+    )
+
+    const preview = useMemo(
+      () => replaceVariableInTextTemplate(prepearedText, previewVariables),
+      [prepearedText, previewVariables]
+    )
 
     const sendMessage = async (name, message) => {
       // const result = []
 
       // for (let i = 0; i < filteredSelectedUsers.length; i++) {
       //   const user = filteredSelectedUsers[i]
+
+      const variables = extractVariables(prepearedText)
+
+      const variablesObject = {}
+      for (let i = 0; i < variables.length; i++) {
+        const varName = variables[i]
+        variablesObject[varName] = true
+      }
+
+      // const testUsers = filteredSelectedUsers.map((user) => ({
+      //   userId: user._id,
+      //   whatsappPhone: user.whatsapp || user.phone,
+      //   variables: {
+      //     ...(variablesObject.mуж ? { муж: user.gender === 'male' } : {}),
+      //     ...(variablesObject.клуб ? { клуб: user.status === 'member' } : {}),
+      //     ...(variablesObject.пара ? { пара: !!user.relationship } : {}),
+      //   },
+      // }))
+
+      // console.log('testUsers :>> ', testUsers)
+
+      // const preview = replaceVariableInTextTemplate(
+      //   prepearedText,
+      //   variablesObject
+      // )
+
       const res = postData(
         `/api/${location}/newsletters/byType/sendMessage`,
         {
@@ -168,6 +233,13 @@ const newsletterFunc = ({ name, users, event }) => {
           usersMessages: filteredSelectedUsers.map((user) => ({
             userId: user._id,
             whatsappPhone: user.whatsapp || user.phone,
+            variables: {
+              ...(variablesObject.муж ? { муж: user.gender === 'male' } : {}),
+              ...(variablesObject.клуб
+                ? { клуб: user.status === 'member' }
+                : {}),
+              ...(variablesObject.пара ? { пара: !!user.relationship } : {}),
+            },
             // whatsappMessage: message,
           })),
           message,
@@ -202,7 +274,7 @@ const newsletterFunc = ({ name, users, event }) => {
     const customButtons = useMemo(() => {
       return {
         handlers: {
-          club: function (value) {
+          клуб: function (value) {
             // const range = this.quill.getSelection()
             // if (range) {
             //   if (range.length == 0) {
@@ -219,26 +291,33 @@ const newsletterFunc = ({ name, users, event }) => {
               if (text1 === null) return
               const text2 = prompt('Введите текст для пользователя из центра')
               if (text2 === null) return
-              // if (text1 || text1 ==='') {
+              if (text1 === '' && text2 === '') return
               // this.quill.getBounds
               const range = this.quill.getSelection()
-              this.quill.insertText(range.index, '}', {
-                color: 'white',
-                background: '#7a5151',
-                italic: true,
-                bold: false,
-              })
-              if (text2)
+              if (text2) {
+                this.quill.insertText(range.index, '}', {
+                  color: 'white',
+                  background: '#7a5151',
+                  italic: false,
+                  bold: false,
+                })
                 this.quill.insertText(range.index, text2, {
                   color: false,
                   background: false,
                   italic: false,
                   bold: false,
                 })
-              this.quill.insertText(range.index, '}{', {
+                this.quill.insertText(range.index, '{', {
+                  color: 'white',
+                  background: '#7a5151',
+                  italic: false,
+                  bold: false,
+                })
+              }
+              this.quill.insertText(range.index, '}', {
                 color: 'white',
                 background: '#7a5151',
-                italic: true,
+                italic: false,
                 bold: false,
               })
               if (text1)
@@ -251,42 +330,182 @@ const newsletterFunc = ({ name, users, event }) => {
               this.quill.insertText(range.index, '}{', {
                 color: 'white',
                 background: '#7a5151',
-                italic: true,
+                italic: false,
                 bold: false,
               })
-              this.quill.insertText(range.index, 'club', {
+              this.quill.insertText(range.index, 'клуб', {
                 color: 'white',
                 background: '#7a5151',
-                italic: true,
+                italic: false,
                 bold: false,
               })
               this.quill.insertText(range.index, '{', {
                 color: 'white',
                 background: '#7a5151',
-                italic: true,
+                italic: false,
                 bold: false,
               })
-              // }
-              // } else {
-              // this.quill.format('link', false)
-              // this.quill.format('color', false)
-              // this.quill.format('underline', false)
+            }
+          },
+          муж: function (value) {
+            if (value) {
+              const text1 = prompt(
+                'Введите текст если пользователь мужского пола'
+              )
+              if (text1 === null) return
+              const text2 = prompt(
+                'Введите текст если пользователь женского пола'
+              )
+              if (text2 === null) return
+              if (text1 === '' && text2 === '') return
+              const range = this.quill.getSelection()
+              if (text2) {
+                this.quill.insertText(range.index, '}', {
+                  color: 'white',
+                  background: '#7a5151',
+                  italic: false,
+                  bold: false,
+                })
+                this.quill.insertText(range.index, text2, {
+                  color: false,
+                  background: false,
+                  italic: false,
+                  bold: false,
+                })
+                this.quill.insertText(range.index, '{', {
+                  color: 'white',
+                  background: '#7a5151',
+                  italic: false,
+                  bold: false,
+                })
+              }
+              this.quill.insertText(range.index, '}', {
+                color: 'white',
+                background: '#7a5151',
+                italic: false,
+                bold: false,
+              })
+              if (text1)
+                this.quill.insertText(range.index, text1, {
+                  color: false,
+                  background: false,
+                  italic: false,
+                  bold: false,
+                })
+              this.quill.insertText(range.index, '}{', {
+                color: 'white',
+                background: '#7a5151',
+                italic: false,
+                bold: false,
+              })
+              this.quill.insertText(range.index, 'муж', {
+                color: 'white',
+                background: '#7a5151',
+                italic: false,
+                bold: false,
+              })
+              this.quill.insertText(range.index, '{', {
+                color: 'white',
+                background: '#7a5151',
+                italic: false,
+                bold: false,
+              })
+            }
+          },
+          пара: function (value) {
+            if (value) {
+              const text1 = prompt('Введите текст если пользователь в паре')
+              if (text1 === null) return
+              const text2 = prompt('Введите текст если пользователь без пары')
+              if (text2 === null) return
+              if (text1 === '' && text2 === '') return
+              const range = this.quill.getSelection()
+              if (text2) {
+                this.quill.insertText(range.index, '}', {
+                  color: 'white',
+                  background: '#7a5151',
+                  italic: false,
+                  bold: false,
+                })
+                this.quill.insertText(range.index, text2, {
+                  color: false,
+                  background: false,
+                  italic: false,
+                  bold: false,
+                })
+                this.quill.insertText(range.index, '{', {
+                  color: 'white',
+                  background: '#7a5151',
+                  italic: false,
+                  bold: false,
+                })
+              }
+              this.quill.insertText(range.index, '}', {
+                color: 'white',
+                background: '#7a5151',
+                italic: false,
+                bold: false,
+              })
+              if (text1)
+                this.quill.insertText(range.index, text1, {
+                  color: false,
+                  background: false,
+                  italic: false,
+                  bold: false,
+                })
+              this.quill.insertText(range.index, '}{', {
+                color: 'white',
+                background: '#7a5151',
+                italic: false,
+                bold: false,
+              })
+              this.quill.insertText(range.index, 'пара', {
+                color: 'white',
+                background: '#7a5151',
+                italic: false,
+                bold: false,
+              })
+              this.quill.insertText(range.index, '{', {
+                color: 'white',
+                background: '#7a5151',
+                italic: false,
+                bold: false,
+              })
             }
           },
         },
-        container: [['club']],
+        container: [['клуб'], ['муж'], ['пара']],
       }
     }, [])
 
     const blockedUsersCount =
       selectedUsers.length - filteredSelectedUsers.length
 
+    const copyResult = useCopyToClipboard(
+      DOMPurify.sanitize(
+        message
+          .replaceAll('<p><br></p>', '\n')
+          .replaceAll('<blockquote>', '\n<blockquote>')
+          .replaceAll('<li>', '\n\u{2764} <li>')
+          .replaceAll('<p>', '\n<p>')
+          .replaceAll('<br>', '\n')
+          .replaceAll('&nbsp;', ' ')
+          .trim('\n'),
+        {
+          ALLOWED_TAGS: [],
+          ALLOWED_ATTR: [],
+        }
+      ),
+      'Результат скопирован в буфер обмена'
+    )
+
     useEffect(() => {
       if (
         !newsletterName ||
         !message ||
         !filteredSelectedUsers?.length ||
-        !siteSettings?.newsletter?.whatsappActivated
+        !siteSettings?.newsletter?.whatsappActivated ||
+        !loggedUserActiveRole?.newsletters?.add
       ) {
         setOnConfirmFunc()
       } else {
@@ -314,8 +533,20 @@ const newsletterFunc = ({ name, users, event }) => {
       }
     }, [newsletterName, message, filteredSelectedUsers?.length, siteSettings])
 
-    if (!siteSettings?.newsletter?.whatsappActivated)
+    if (
+      !siteSettings?.newsletter?.whatsappActivated ||
+      !loggedUserActiveRole?.newsletters?.add
+    )
       return <div>Рассылка на Whatsapp не доступна</div>
+
+    useEffect(() => {
+      setBottomLeftButtonProps({
+        name: 'Скопировать сообщение (html) в буфер',
+        classBgColor: 'bg-general',
+        icon: faCopy,
+        onClick: () => copyResult(),
+      })
+    }, [message])
 
     return (
       <div className="flex flex-col px-1 py-1 overflow-y-auto gap-y-1">
@@ -551,6 +782,58 @@ const newsletterFunc = ({ name, users, event }) => {
             }}
           />
         </div>
+        <InputWrapper
+          label="Предпросмотр сообщения"
+          wrapperClassName="flex-col gap-y-1"
+        >
+          <div className="flex flex-wrap items-center justify-center w-full pb-2 border-b border-gray-400 gap-x-2">
+            <GenderToggleButtons
+              value={{
+                male: previewVariables.муж,
+                famale: !previewVariables.муж,
+              }}
+              onChange={() =>
+                setPreviewVariables((state) => ({ ...state, муж: !state.муж }))
+              }
+              hideNullGender
+            />
+            <StatusUserToggleButtons
+              value={{
+                novice: !previewVariables.клуб,
+                member: previewVariables.клуб,
+              }}
+              onChange={() =>
+                setPreviewVariables((state) => ({
+                  ...state,
+                  клуб: !state.клуб,
+                }))
+              }
+              hideBanned
+            />
+            <RelationshipUserToggleButtons
+              value={{
+                havePartner: previewVariables.пара,
+                noPartner: !previewVariables.пара,
+              }}
+              onChange={() =>
+                setPreviewVariables((state) => ({
+                  ...state,
+                  пара: !state.пара,
+                }))
+              }
+            />
+          </div>
+          {preview ? (
+            <div
+              className="w-full max-w-full overflow-hidden list-disc textarea ql"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(preview),
+              }}
+            />
+          ) : (
+            <div className="text-gray-400">[нет сообщения]</div>
+          )}
+        </InputWrapper>
         {/* <div>
           <Button
             disabled={!message || !filteredSelectedUsers?.length}

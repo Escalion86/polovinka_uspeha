@@ -8,12 +8,15 @@ const newsLettersSchema = {
     default: [
       {
         userId: String,
-        whatsappMessage: String,
-        telegramMessage: String,
+        // whatsappMessage: String,
+        // telegramMessage: String,
         whatsappMessageId: String,
         telegramMessageId: String,
+        whatsappSuccess: Boolean,
+        telegramSuccess: Boolean,
         whatsappError: String,
         telegramError: String,
+        variables: Object,
       },
     ],
   },

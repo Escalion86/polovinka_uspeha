@@ -24,11 +24,15 @@ const EditableTextarea = ({
   // const [readOnly, setReadOnly] = useState(false)
 
   // const prepearedText = DOMPurify.sanitize(html, {
-  //   ALLOWED_TAGS: ['em'],
+  //   ALLOWED_TAGS: [],
   //   ALLOWED_ATTR: [],
   // })
-  // const test = replaceVariableInTextTemplate(prepearedText, { club: true })
-  // console.log(test)
+  // console.log('prepearedText :>> ', prepearedText)
+  // const test = replaceVariableInTextTemplate(prepearedText, {
+  //   club: true,
+  //   male: true,
+  // })
+  // console.log('text', test)
   // console.log('prepearedText :>> ', prepearedText)
   return (
     <InputWrapper

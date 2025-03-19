@@ -8,6 +8,8 @@ const convertHtmlToText = (text, type) => {
       .replaceAll('</i>', '__')
       .replaceAll('<s>', '~~')
       .replaceAll('</s>', '~~')
+      .replaceAll('<strong>', '**')
+      .replaceAll('</strong>', '**')
   } else if (type === 'whatsapp') {
     preparedText = text
       .replaceAll('<b>', '*')
@@ -16,6 +18,8 @@ const convertHtmlToText = (text, type) => {
       .replaceAll('</i>', '_')
       .replaceAll('<s>', '~')
       .replaceAll('</s>', '~')
+      .replaceAll('<strong>', '*')
+      .replaceAll('</strong>', '*')
   } else {
     preparedText = text
       .replaceAll('<b>', '')
@@ -24,6 +28,8 @@ const convertHtmlToText = (text, type) => {
       .replaceAll('</i>', '')
       .replaceAll('<s>', '')
       .replaceAll('</s>', '')
+      .replaceAll('<strong>', '')
+      .replaceAll('</strong>', '')
   }
 
   return preparedText

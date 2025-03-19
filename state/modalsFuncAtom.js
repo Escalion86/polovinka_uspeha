@@ -764,9 +764,10 @@ const modalsFuncGenerator = (get, set) => {
         ),
     },
     newsletter: {
-      add: (props) =>
+      add: (newsletterId, props) =>
         addModal(
           require('../layouts/modals/modalsFunc/newsletterFunc').default(
+            newsletterId,
             props || {}
           )
         ),
@@ -776,6 +777,12 @@ const modalsFuncGenerator = (get, set) => {
             newsletterId
           )
         ),
+      delete: (newsletterId) =>
+        addModal({
+          title: 'Удаление рассылки',
+          text: 'Вы уверены, что хотите удалить рассылку? Учтите, что это не отменит отправку сообщений, если рассылка еще не завершена.',
+          onConfirm: async () => itemsFunc.newsletter.delete(newsletterId),
+        }),
     },
     individualWedding: {
       add: (props) =>

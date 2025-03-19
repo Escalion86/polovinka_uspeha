@@ -1,5 +1,8 @@
+import extractVariables from '@helpers/extractVariables'
+import replaceVariableInTextTemplate from '@helpers/replaceVariableInTextTemplate'
 import checkLocationValid from '@server/checkLocationValid'
 import dbConnect from '@utils/dbConnect'
+import TurndownService from 'turndown'
 
 const whatsappConstants = {
   krsk: {
@@ -14,6 +17,40 @@ const whatsappConstants = {
     urlWithInstance: `${process.env.WHATSAPP_API_URL_EKB}/waInstance${process.env.WHATSAPP_ID_INSTANCE_EKB}`,
     token: process.env.WHATSAPP_TOKEN_EKB,
   },
+}
+
+function generateArray(n) {
+  if (n === 0) {
+    return Array(1)
+  }
+  if (n === 1) {
+    return Array(2)
+  } else {
+    return [generateArray(n - 1), generateArray(n - 1)]
+  }
+}
+
+function getText(variablesInMessage, userVariables, messageArray, message) {
+  if (!variablesInMessage?.length) return message
+  let current = messageArray
+
+  // Проходим по всем ключам, кроме последнего
+  for (let i = 0; i < variablesInMessage.length - 1; i++) {
+    const key = variablesInMessage[i]
+    const index = userVariables[key] ? 1 : 0
+    current = current[index]
+  }
+
+  // Обрабатываем последний ключ
+  const lastKey = variablesInMessage[variablesInMessage.length - 1]
+  const lastIndex = userVariables[lastKey] ? 1 : 0
+
+  // Если значение не сгенерировано ранее, задаем его
+  if (!current[lastIndex]) {
+    current[lastIndex] = replaceVariableInTextTemplate(message, userVariables)
+  }
+
+  return current[lastIndex]
 }
 
 export default async function handler(req, res) {
@@ -34,10 +71,12 @@ export default async function handler(req, res) {
   if (method === 'POST') {
     if (type === 'sendMessage') {
       const { name, usersMessages, message } = body.data
-
       const db = await dbConnect(location)
       if (!db)
         return res?.status(400).json({ success: false, error: 'db error' })
+
+      var turndownService = new TurndownService()
+      var markdownMessage = turndownService.turndown(message)
 
       const urlSend = `${urlWithInstance}/sendMessage/${token}`
       // const urlCheckWhatsapp = `${urlWithInstance}/checkWhatsapp/${token}`
@@ -46,7 +85,10 @@ export default async function handler(req, res) {
       //   ALLOWED_TAGS: ['em'],
       //   ALLOWED_ATTR: [],
       // })
-      // const test = replaceVariableInTextTemplate(prepearedText, { club: true })
+
+      const variablesInMessage = extractVariables(markdownMessage)
+
+      const messageArray = generateArray(variablesInMessage.length)
 
       const result = []
       for (let i = 0; i < usersMessages.length; i++) {
@@ -56,9 +98,29 @@ export default async function handler(req, res) {
           // telegramId,
           // telegramMessage,
           userId,
+          variables,
         } = usersMessages[i]
 
         let resultJson = {}
+
+        const messageToSend = getText(
+          variablesInMessage,
+          variables,
+          messageArray,
+          markdownMessage
+        )
+
+        // // const message = messageArray[variablesInMessage]
+        // console.log('variablesInMessage :>> ', variablesInMessage)
+        // console.log('variables :>> ', variables)
+        // console.log('messageArray1 :>> ', messageArray)
+        // console.log(
+        //   'gettext',
+        //   getText(variablesInMessage, variables, messageArray, markdown)
+        // )
+        // console.log('messageArray', messageArray)
+
+        // continue
 
         // Если отправляем через WhatsApp
         // if (whatsappMessage) {
@@ -95,7 +157,7 @@ export default async function handler(req, res) {
           },
           body: JSON.stringify({
             chatId: `${whatsappPhone}@c.us`,
-            message: message,
+            message: messageToSend,
           }),
         })
         if (respSend) {
@@ -109,7 +171,7 @@ export default async function handler(req, res) {
         } else {
           resultJson = {
             userId,
-            success: false,
+            whatsappSuccess: false,
             // whatsappMessage,
             whatsappError: 'no response',
           }
@@ -127,7 +189,6 @@ export default async function handler(req, res) {
         message,
       })
 
-      console.log('newNewsletter :>> ', newNewsletter)
       // .then((res) => res.json())
       // .catch((error) => console.log('fetchingEvents ERROR:', error))
 

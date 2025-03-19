@@ -69,7 +69,7 @@ export default async function handler(req, res) {
     //   },
     // }
 
-    console.log('json :>> ', json)
+    // console.log('json :>> ', json)
 
     if (!json?.success) {
       return res?.status(400).json({ success: false, error: 'result error' })
