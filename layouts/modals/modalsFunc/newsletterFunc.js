@@ -13,7 +13,7 @@ import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { postData } from '@helpers/CRUD'
 import locationAtom from '@state/atoms/locationAtom'
 import EditableTextarea from '@components/EditableTextarea'
-import convertHtmlToText from '@helpers/convertHtmlToText'
+// import convertHtmlToText from '@helpers/convertHtmlToText'
 import pasteFromClipboard from '@helpers/pasteFromClipboard'
 import getNoun, { getNounUsers } from '@helpers/getNoun'
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
@@ -39,6 +39,7 @@ import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserTog
 import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import newsletterSelector from '@state/selectors/newsletterSelector'
+// import TurndownService from 'turndown'
 
 const getUsersData = (users) => {
   const mans = users.filter((user) => user.gender === 'male')
@@ -180,14 +181,94 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
       [location, loggedUserActive]
     )
 
-    const prepearedText = useMemo(
-      () =>
-        DOMPurify.sanitize(message, {
+    const prepearedText = useMemo(() => {
+      // var turndownService = new TurndownService()
+      // return turndownService.turndown(
+      //   message
+      //   // .replaceAll('<p><br></p>', '<br>')
+      //   // .replaceAll('<blockquote>', '<br><blockquote>')
+      //   // .replaceAll('<li>', '<br>\u{2764} <li>')
+      //   // .replaceAll('<p>', '<br><p>')
+      //   // .replaceAll('<p><br></p>', '\n')
+      //   // .replaceAll('<br>', '\n')
+      // )
+      return DOMPurify.sanitize(
+        message.replaceAll('-', '—').replaceAll('*', '⚹'),
+        {
           ALLOWED_TAGS: ['b', 'i', 's', 'strong', 'br', 'p', 'em'],
           ALLOWED_ATTR: [],
-        }),
-      [message]
-    )
+        }
+      )
+    }, [message])
+
+    // function htmlToWhatsappMD(htmlText) {
+    //   console.log('htmlText :>> ', htmlText)
+    //   let markdown = (htmlText || '')
+    //     // 1. Замена HTML-сущностей
+    //     .replace(/&lt;/g, '<')
+    //     .replace(/&gt;/g, '>')
+    //     .replace(/&amp;/g, '&')
+    //     .replace(/&quot;/g, '"')
+
+    //     // 2. Обработка переносов строк
+    //     .replace(/<\/p><p><br><\/p><p><br><\/p><p>/gi, '\n\n\n')
+    //     .replace(/<\/p><p><br><\/p><p>/gi, '\n\n')
+    //     .replace(/<p><br><\/p>/gi, '\n')
+    //     .replace(/<br><p>/gi, '\n')
+
+    //     .replace(/<br\s*\/?>/gi, '\n') // <br> → перенос
+    //     .replace(/<\/p><p>/gi, '\n') // </p> → перенос
+    //     .replace(/<\/p>/gi, '\n') // </p> → перенос
+    //     .replace(/<p>/gi, '\n') // <p> → начало нового абзаца
+
+    //     // Обработка пробелов вокруг открывающих тегов
+    //     .replace(
+    //       /(\s*)<(b|strong)>(\s*)(.*?)(\s*)<\/\2>(\s*)/gi,
+    //       (_, before, tag, wsOpen, content, wsClose, after) => {
+    //         return `${before}*${content.trim()}*${after}`
+    //       }
+    //     )
+    //     .replace(
+    //       /(\s*)<(i|em)>(\s*)(.*?)(\s*)<\/\3>(\s*)/gi,
+    //       (_, before, tag, wsOpen, content, wsClose, after) => {
+    //         return `${before}_${content.trim()}_${after}`
+    //       }
+    //     )
+    //     .replace(
+    //       /(\s*)<(s|del|strike)>(\s*)(.*?)(\s*)<\/\4>(\s*)/gi,
+    //       (_, before, tag, wsOpen, content, wsClose, after) => {
+    //         return `${before}~${content.trim()}~${after}`
+    //       }
+    //     )
+
+    //     // 3. Обработка форматирования
+    //     .replace(/\s<(b|strong)>(.*?)<\/\1>/gi, '*$2* ')
+    //     .replace(/<(b|strong)>(.*?)<\/\1>/gi, '*$2*')
+    //     .replace(/<(i|em)>(.*?)<\/\1>/gi, '_$2_')
+    //     .replace(/<(s|del)>(.*?)<\/\1>/gi, '~$2~')
+
+    //     // 4. Удаление HTML-тегов (сохраняем пробелы)
+    //     .replace(/<[^>]+>/g, ' ')
+
+    //     // 5. Чистка пробелов (БЕЗ УДАЛЕНИЯ ПЕРЕНОСОВ)
+    //     .replace(/[ \t]+/g, ' ') // Схлопываем пробелы и табы
+    //     .replace(/ +(\n)/g, '$1') // Убираем пробелы перед переносами
+    //     .replace(/(\n) +/g, '$1') // Убираем пробелы после переносов
+    //     // .replace(/(\*|_|~) /g, '$1') // Пробелы после форматирования
+    //     .replace(/ (\*|_|~)/g, '$1') // Пробелы перед форматированием
+
+    //     // 6. Нормализация переносов
+    //     .replace(/\n{4,}/g, '\n\n\n') // Максимум 3 переноса подряд
+    //     .trim()
+    //   return markdown
+    // }
+
+    // const inputText = `<b>Мероприятие "Баня с купанием в р. Енисей (детская)"</b><br><br><p>Идём клубом в баню "Белый медведь". У нас большая баня, дверь слева. </p><p><br></p><p>🔥 <strong>Найди свою пару в жарких объятиях настоящей русской бани! </strong>🔥</p><p>Приглашаем тебя в уникальное приключение, где искры страсти зажигаются среди пара, а смех и оздоровление становятся мостиком к новым знакомствам!</p><p><br></p><p>✅ <strong>Что ждёт вас:</strong></p><p>✨ <strong>Царство пара и берёзовых веников</strong> — почувствуйте силу настоящего русской бани! Наши мастера запарят для вас ароматные берёзовые веники, которые взбодрят кожу, прогонят усталость и наполнят тело энергией.</p><p><br></p><p>❄️ <strong>Экстрим по-сибирски</strong> — после жара парной — ледяной восторг купания в Енисее! А для самых смелых — обтирание снегом, которое подарит коже румянец, а душе — незабываемые эмоции.</p><p><br></p><p>🦶 <strong>Секрет бодрости и здоровья </strong>— освоим технику «пробивания стоп»! Этот древний метод вернёт лёгкость ногам, активирует энергетические точки и заставит вас почувствовать себя словно заново рождённым.</p><p><br></p><p>🌿 <strong>Соляная терапия </strong>— подышите целебными испарениями соли, очистите лёгкие и зарядитесь сибирской энергией.</p><p><br></p><p>🍲 <strong>Пир для души и тела </strong>— вовремя банных процедур вас ждёт душевное застолье! Ароматный травяной чай, мёд с таёжными травами, сибирские пироги и закуски, которые согреют сердце и развеселят даже самых стеснительных.</p><p><br></p><p>💞 <strong>Здесь легко завязать искренний разговор: </strong>общие впечатления от экстремального купания или смех над попытками попарить друг друга вениками сближают быстрее любого свидания!</p><p>💪 Оздоровитесь, зарядитесь энергией и, возможно, встретите того, с кем захотите повторить этот опыт снова и снова. 😉</p><p><br></p><p>✅ <strong>Ждём всех, кто:</strong></p><p>— Любит активный отдых и не боится вызовов;</p><p>— Ценит традиции и хочет попробовать что-то новое;</p><p>— Готов смеяться, общаться и открывать сердца!</p><p><br></p><p>Подари себе не просто вечер, а приключение, где пар, снег и Енисей станут началом вашей истории. Встретимся в бане — жарко будет не только от печки! ❤️‍🔥</p><p><br></p><p>✅ <strong>С собой в баню берём: </strong></p><p>- тапки</p><p>- купальники</p><p>- шапки и полотенца</p><p>- простынь под попу</p><p><br></p><p>Чай, обычно берём к чаю что-нибудь, мед, фрукты, сухофрукты.</p><p>Стол общий, фена нет.</p><p><br></p><p>*Можно с детьми.</p>`
+    // console.log('message :>> ', message)
+    // console.log(
+    //   'test :>> ',
+    //   JSON.stringify({ test: htmlToWhatsappMD(message) })
+    // )
 
     const preview = useMemo(
       () => replaceVariableInTextTemplate(prepearedText, previewVariables),
@@ -482,21 +563,22 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
       selectedUsers.length - filteredSelectedUsers.length
 
     const copyResult = useCopyToClipboard(
-      DOMPurify.sanitize(
-        message
-          .replaceAll('<p><br></p>', '\n')
-          .replaceAll('<blockquote>', '\n<blockquote>')
-          .replaceAll('<li>', '\n\u{2764} <li>')
-          .replaceAll('<p>', '\n<p>')
-          .replaceAll('<br>', '\n')
-          .replaceAll('&nbsp;', ' ')
-          .trim('\n'),
-        {
-          ALLOWED_TAGS: [],
-          ALLOWED_ATTR: [],
-        }
-      ),
-      'Результат скопирован в буфер обмена'
+      message,
+      // DOMPurify.sanitize(
+      //   message
+      //     .replaceAll('<p><br></p>', '\n')
+      //     .replaceAll('<blockquote>', '\n<blockquote>')
+      //     .replaceAll('<li>', '\n\u{2764} <li>')
+      //     .replaceAll('<p>', '\n<p>')
+      //     .replaceAll('<br>', '\n')
+      //     .replaceAll('&nbsp;', ' ')
+      //     .trim('\n'),
+      //   {
+      //     ALLOWED_TAGS: [],
+      //     ALLOWED_ATTR: [],
+      //   }
+      // ),
+      'HTML скопирован в буфер обмена'
     )
 
     useEffect(() => {
@@ -509,15 +591,15 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
       ) {
         setOnConfirmFunc()
       } else {
-        const prepearedText = DOMPurify.sanitize(
-          convertHtmlToText(message, 'whatsapp'),
-          {
-            ALLOWED_TAGS: [],
-            ALLOWED_ATTR: [],
-          }
-        )
+        // const prepearedText = DOMPurify.sanitize(
+        //   convertHtmlToText(message, 'whatsapp'),
+        //   {
+        //     ALLOWED_TAGS: [],
+        //     ALLOWED_ATTR: [],
+        //   }
+        // )
 
-        if (!prepearedText) {
+        if (!message) {
           setOnConfirmFunc()
         } else {
           setOnConfirmFunc(() =>
@@ -525,7 +607,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
               title: 'Отправка сообщений на Whatsapp пользователям',
               text: `Вы уверены, что хотите отправить сообщение ${getNoun(filteredSelectedUsers?.length, 'пользователю', 'пользователям', 'пользователям')} на Whatsapp?`,
               onConfirm: () => {
-                sendMessage(newsletterName, prepearedText)
+                sendMessage(newsletterName, message)
               },
             })
           )
