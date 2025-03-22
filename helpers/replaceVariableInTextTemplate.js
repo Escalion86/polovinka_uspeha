@@ -15,6 +15,7 @@ function replaceVariableInTextTemplate(str, variables) {
   const regex = /\{([а-яА-ЯёЁ\w]+)\}\{(.*?)\}(?:\{(.*?)\})?/gu
 
   const process = (s) => {
+    if (!s) return ''
     let newStr = s.replace(regex, (match, varName, text1, text2) => {
       const value = variables[varName]
       // Если text2 есть, выбираем между text1/text2, иначе text1/пустота
