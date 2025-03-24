@@ -79,37 +79,39 @@ function htmlToWhatsappMD(htmlText) {
     .replace(
       /(\s*)<(b|strong)>(\s*)(.*?)(\s*)<\/\2>(\s*)/gi,
       (_, before, tag, wsOpen, content, wsClose, after) => {
-        return `${before}*${content.trim()}*${after}`
+        return `${before + wsOpen || ' '}*${content.trim()}*${wsClose + after || ' '}`
       }
     )
     .replace(
       /(\s*)<(i|em)>(\s*)(.*?)(\s*)<\/\3>(\s*)/gi,
       (_, before, tag, wsOpen, content, wsClose, after) => {
-        return `${before}_${content.trim()}_${after}`
+        return `${before + wsOpen || ' '}_${content.trim()}_${wsClose + after || ' '}`
       }
     )
     .replace(
       /(\s*)<(s|del|strike)>(\s*)(.*?)(\s*)<\/\4>(\s*)/gi,
       (_, before, tag, wsOpen, content, wsClose, after) => {
-        return `${before}~${content.trim()}~${after}`
+        return `${before + wsOpen || ' '}~${content.trim()}~${wsClose + after || ' '}`
       }
     )
 
     // 3. Обработка форматирования
-    .replace(/\s<(b|strong)>(.*?)<\/\1>/gi, '*$2* ')
-    .replace(/<(b|strong)>(.*?)<\/\1>/gi, '*$2*')
-    .replace(/<(i|em)>(.*?)<\/\1>/gi, '_$2_')
-    .replace(/<(s|del)>(.*?)<\/\1>/gi, '~$2~')
+    // .replace(/\s<(b|strong)>(.*?)<\/\1>/gi, '*$2* ')
+    // .replace(/<(b|strong)>(.*?)<\/\1>/gi, '*$2*')
+    // .replace(/<(i|em)>(.*?)<\/\1>/gi, '_$2_')
+    // .replace(/<(s|del)>(.*?)<\/\1>/gi, '~$2~')
 
     // 4. Удаление HTML-тегов (сохраняем пробелы)
-    .replace(/<[^>]+>/g, ' ')
+    // .replace(/<[^>]+>/g, ' ')
 
     // 5. Чистка пробелов (БЕЗ УДАЛЕНИЯ ПЕРЕНОСОВ)
-    .replace(/[ \t]+/g, ' ') // Схлопываем пробелы и табы
+    // console.log('1', JSON.stringify({ markdown }))
+    // markdown = markdown
+    // .replace(/[ \t]+/g, ' ') // Схлопываем пробелы и табы
     .replace(/ +(\n)/g, '$1') // Убираем пробелы перед переносами
     .replace(/(\n) +/g, '$1') // Убираем пробелы после переносов
     // .replace(/(\*|_|~) /g, '$1') // Пробелы после форматирования
-    .replace(/ (\*|_|~)/g, '$1') // Пробелы перед форматированием
+    // .replace(/ (\*|_|~)/g, '$1') // Пробелы перед форматированием
 
     // 6. Нормализация переносов
     .replace(/\n{4,}/g, '\n\n\n') // Максимум 3 переноса подряд
