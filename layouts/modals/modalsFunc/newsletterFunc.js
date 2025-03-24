@@ -194,7 +194,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
       // )
       return DOMPurify.sanitize(
         message
-          .replaceAll('-', '—')
+          // .replaceAll('-', '—')
           .replaceAll('*', '⚹')
           .replace(
             /(\s*)<(b|strong)>(\s*)(.*?)(\s*)<\/\2>(\s*)/gi,

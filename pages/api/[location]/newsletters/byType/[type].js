@@ -56,7 +56,7 @@ function getText(variablesInMessage, userVariables, messageArray, message) {
 function htmlToWhatsappMD(htmlText) {
   let markdown = (htmlText || '')
     // 0. Замена символов влияющих на форматирование
-    .replaceAll('-', '—')
+    // .replaceAll('-', '—')
     .replaceAll('*', '⚹')
     // 1. Замена HTML-сущностей
     .replace(/&lt;/g, '<')
