@@ -15,6 +15,8 @@ const newsLettersSchema = {
         telegramMessageId: String,
         whatsappSuccess: Boolean,
         telegramSuccess: Boolean,
+        whatsappStatus: String,
+        telegramStatus: String,
         whatsappError: String,
         telegramError: String,
         variables: Object,

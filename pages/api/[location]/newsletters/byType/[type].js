@@ -1,23 +1,9 @@
 import extractVariables from '@helpers/extractVariables'
 import replaceVariableInTextTemplate from '@helpers/replaceVariableInTextTemplate'
 import checkLocationValid from '@server/checkLocationValid'
+import { whatsappConstants } from '@server/constants'
 import dbConnect from '@utils/dbConnect'
 // import TurndownService from 'turndown'
-
-const whatsappConstants = {
-  krsk: {
-    urlWithInstance: `${process.env.WHATSAPP_API_URL_KRSK}/waInstance${process.env.WHATSAPP_ID_INSTANCE_KRSK}`,
-    token: process.env.WHATSAPP_TOKEN_KRSK,
-  },
-  nrsk: {
-    urlWithInstance: `${process.env.WHATSAPP_API_URL_NRSK}/waInstance${process.env.WHATSAPP_ID_INSTANCE_NRSK}`,
-    token: process.env.WHATSAPP_TOKEN_NRSK,
-  },
-  ekb: {
-    urlWithInstance: `${process.env.WHATSAPP_API_URL_EKB}/waInstance${process.env.WHATSAPP_ID_INSTANCE_EKB}`,
-    token: process.env.WHATSAPP_TOKEN_EKB,
-  },
-}
 
 function generateArray(n) {
   if (n === 0) {

@@ -120,6 +120,8 @@ export const UserItem = ({
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
+  if (!item) return null
+
   const seeBirthday =
     item.birthday &&
     (loggedUserActiveRole?.users?.seeBirthday ||

@@ -10,7 +10,7 @@ const NewslettersList = ({ newsletters }) => {
   return (
     <ListWrapper
       itemCount={newsletters?.length}
-      itemSize={widthNum > 2 ? 52 : 52}
+      itemSize={widthNum > 2 ? 74 : 74}
       className="bg-general/15"
     >
       {({ index, style }) => (

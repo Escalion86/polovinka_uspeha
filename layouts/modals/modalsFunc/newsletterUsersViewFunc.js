@@ -1,57 +1,121 @@
-import CardButtons from '@components/CardButtons'
 import FormWrapper from '@components/FormWrapper'
-import TextLine from '@components/TextLine'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import newsletterSelector from '@state/selectors/newsletterSelector'
-import formatDateTime from '@helpers/formatDateTime'
-import { getNounMessages } from '@helpers/getNoun'
-import InputWrapper from '@components/InputWrapper'
-import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
-import useCopyToClipboard from '@helpers/useCopyToClipboard'
-import { SelectUserList } from '@components/SelectItemList'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import { UserItemFromId } from '@components/ItemCards'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import locationAtom from '@state/atoms/locationAtom'
-import userSelector from '@state/selectors/userSelector'
-import { postData } from '@helpers/CRUD'
-import LoadingContent from '@layouts/content/LoadingContent'
 import LoadingSpinner from '@components/LoadingSpinner'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
+import { faCheckDouble } from '@fortawesome/free-solid-svg-icons/faCheckDouble'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
+import Tooltip from '@components/Tooltip'
+import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 
 // const CardButtonsComponent = ({ newsletter }) => (
 //   <CardButtons item={newsletter} typeOfItem="newsletter" forForm />
 // )
 
-const WhatsAppStatus = ({ userId, phone, messageId }) => {
-  const location = useAtomValue(locationAtom)
-  const [messageStatus, setMessageStatus] = useState(null)
-  const user = useAtomValue(userSelector(userId))
-  const userPhone = phone || user?.whatsapp || user?.phone
+const WhatsAppStatus = ({
+  statusMessage,
+  userId,
+  phone,
+  messageId,
+  newsletterId,
+}) => {
+  // const location = useAtomValue(locationAtom)
+  // console.log('statusMessage :>> ', statusMessage)
+  const [messageStatus, setMessageStatus] = useState(statusMessage)
+  // const user = useAtomValue(userSelector(userId))
+  // const userPhone = phone || user?.whatsapp || user?.phone
 
-  console.log('messageStatus :>> ', messageStatus)
+  // useEffect(() => {
+  //   const fetchMessageStatus = async () => {
+  //     const resp = await postData(
+  //       `/api/${location}/newsletters/byType/getMessage`,
+  //       {
+  //         phone: userPhone,
+  //         messageId,
+  //       }
+  //     )
+  //     setMessageStatus(resp?.statusMessage || resp?.message)
+  //     if (resp?.statusMessage) {
+  //       const put = await putData(
+  //         `/api/${location}/newsletters/` + newsletterId,
+  //         {
+  //           phone: userPhone,
+  //           userId,
+  //           messageStatus: resp?.statusMessage,
+  //         }
+  //       )
+  //     }
+  //   }
+  //   if (!messageStatus) fetchMessageStatus()
+  // }, [statusMessage, user, phone, messageId])
 
-  useEffect(() => {
-    const fetchMessageStatus = async () => {
-      const resp = await postData(
-        `/api/${location}/newsletters/byType/getMessage`,
-        {
-          phone: userPhone,
-          messageId,
-        }
-      )
-      setMessageStatus(resp)
-    }
-    fetchMessageStatus()
-  }, [])
+  //   {
+  //     "statusCode": 400,
+  //     "timestamp": "2025-03-31T16:50:20.397375467Z",
+  //     "path": "/waInstance1103192825/getMessage/6a7dbc4088534c4aa91c66ba5141583bf71472a915f24ab69e",
+  //     "message": "Message not found by id BAE5F5720F0482B7"
+  // }
+
+  // if (
+  //   messageStatus &&
+  //   !['read', 'sent', 'delivered'].includes(messageStatus?.statusMessage)
+  // ) {
+  // console.log('messageStatus :>> ', messageStatus)
+  // }
 
   return (
-    <div className="flex items-center justify-center w-24 h-full border-l border-gray-700">
+    <div className="flex items-center justify-center w-8 h-full px-1 border-l border-gray-700">
       {messageStatus ? (
         <div className="">
-          {messageStatus.statusMessage === 'read' && (
-            <div className="font-bold text-success">Прочитано</div>
+          {messageStatus === 'pending' && (
+            // <div className="font-bold text-success">Прочитано</div>
+            <Tooltip title="Отправляется">
+              <FontAwesomeIcon
+                className="w-5 h-5 text-gray-600"
+                icon={faClock}
+              />
+            </Tooltip>
+          )}
+          {messageStatus === 'read' && (
+            // <div className="font-bold text-success">Прочитано</div>
+            <Tooltip title="Прочитано">
+              <FontAwesomeIcon
+                className="w-5 h-5 text-success"
+                icon={faCheckDouble}
+              />
+            </Tooltip>
+          )}
+          {messageStatus === 'sent' && (
+            <Tooltip title="Отправлено">
+              <FontAwesomeIcon
+                className="w-5 h-5 text-gray-600"
+                icon={faCheck}
+              />
+            </Tooltip>
+          )}
+          {messageStatus === 'delivered' && (
+            <Tooltip title="Доставлено">
+              <FontAwesomeIcon
+                className="w-5 h-5 text-gray-600"
+                icon={faCheckDouble}
+              />
+            </Tooltip>
+          )}
+          {/* {!['read', 'sent', 'delivered'].includes(messageStatus) && (
+            <div className="text-danger">{messageStatus}</div>
+          )} */}
+          {!['read', 'sent', 'delivered', 'pending'].includes(
+            messageStatus
+          ) && (
+            <Tooltip title={messageStatus}>
+              <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
+            </Tooltip>
           )}
         </div>
       ) : (
@@ -77,7 +141,7 @@ const newsletterUsersViewFunc = (newsletterId) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     // const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
-    const isLoggedUserDev = loggedUserActiveRole?.dev
+    // const isLoggedUserDev = loggedUserActiveRole?.dev
     // const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
     // const seeUserEvents = loggedUserActiveRole?.users?.seeUserEvents
     // const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
@@ -137,6 +201,8 @@ const newsletterUsersViewFunc = (newsletterId) => {
                   userId={usersIds[index]}
                   phone={newsletter.newsletters[index].whatsappPhone}
                   messageId={newsletter.newsletters[index].whatsappMessageId}
+                  newsletterId={newsletterId}
+                  statusMessage={newsletter.newsletters[index].whatsappStatus}
                 />
               </div>
             )}
