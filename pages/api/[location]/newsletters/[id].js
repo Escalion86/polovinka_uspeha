@@ -98,11 +98,13 @@ export default async function handler(req, res) {
       // )
       // )
 
-      const updatedNewsletter = await db
-        .model('Newsletters')
-        .findByIdAndUpdate(query.id, {
+      const updatedNewsletter = await db.model('Newsletters').findByIdAndUpdate(
+        query.id,
+        {
           newsletters: updatedNewsletters,
-        })
+        },
+        { new: true }
+      )
       // console.log('updatedNewsletter :>> ', updatedNewsletter)
       return res?.status(200).json({ success: true, data: updatedNewsletter })
     }
