@@ -24,6 +24,7 @@ import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
 import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
 import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
 import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
@@ -85,26 +86,44 @@ const textForming = ({
     if (showAddress) {
       const address = formatAddress(event.address)
       if (address) {
-        elementOfTextArray.push('\u{1F4CD} <b>Место проведения</b>:')
-        elementOfTextArray.push(formatAddress(event.address))
+        const formatedAddress = formatAddress(event.address)
+        elementOfTextArray.push(
+          `\u{1F4CD} <b>Место проведения</b>: ${formatedAddress}`
+        )
       }
     }
 
     if (showPrice) {
-      event.subEvents.forEach(
-        ({ price, usersStatusDiscount, title }, index) => {
-          const eventPriceForStatus =
-            ((price ?? 0) - (usersStatusDiscount[showPrice] ?? 0)) / 100
+      if (showPrice === 'formula') {
+        event.subEvents.forEach(
+          ({ price, usersStatusDiscount, title }, index) => {
+            const eventPriceForNovice =
+              ((price ?? 0) - (usersStatusDiscount.novice ?? 0)) / 100
+            const eventPriceForMember =
+              ((price ?? 0) - (usersStatusDiscount.member ?? 0)) / 100
 
-          elementOfTextArray.push(
-            `${index === 0 ? `\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '<br>' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${
-              !noSlashedPrice && usersStatusDiscount[showPrice] > 0
-                ? `<s>${price / 100}</s> `
-                : ''
-            }${eventPriceForStatus} руб`
-          )
-        }
-      )
+            elementOfTextArray.push(
+              `${index === 0 ? `\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '<br>' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${`<span style="color: white; background-color: rgb(122, 81, 81);">{клуб}{</span>${price / 100 > eventPriceForMember ? `<s>${price / 100}</s> ` : ''}${eventPriceForMember}<span style="color: white; background-color: rgb(122, 81, 81);">}{</span>${price / 100 > eventPriceForNovice ? `<s>${price / 100}</s> ` : ''}${eventPriceForNovice}<span style="color: white; background-color: rgb(122, 81, 81);">}</span>`} руб`
+            )
+          }
+        )
+        // <p>222<span style="color: white; background-color: rgb(122, 81, 81);">}{</span>333<span style="color: white; background-color: rgb(122, 81, 81);">}</span></p>
+      } else {
+        event.subEvents.forEach(
+          ({ price, usersStatusDiscount, title }, index) => {
+            const eventPriceForStatus =
+              ((price ?? 0) - (usersStatusDiscount[showPrice] ?? 0)) / 100
+
+            elementOfTextArray.push(
+              `${index === 0 ? `\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '<br>' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${
+                !noSlashedPrice && usersStatusDiscount[showPrice] > 0
+                  ? `<s>${price / 100}</s> `
+                  : ''
+              }${eventPriceForStatus} руб`
+            )
+          }
+        )
+      }
     }
 
     if (showParticipantsCount) {
@@ -156,6 +175,7 @@ const textForming = ({
 }
 
 const ToolsTextEventsAnonsContent = () => {
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const location = useAtomValue(locationAtom)
   const [eventsId, setEventsId] = useState([])
   const [text, setText] = useState('')
@@ -214,8 +234,8 @@ const ToolsTextEventsAnonsContent = () => {
       .replaceAll('<li>', '<br>\u{2764} <li>')
       .replaceAll('<p>', '<br><p>'),
     {
-      ALLOWED_TAGS: ['br', 'i', 'b', 's'],
-      ALLOWED_ATTR: [],
+      ALLOWED_TAGS: ['br', 'i', 'b', 's', 'strong', 'em', 'span'],
+      // ALLOWED_ATTR: [],
     }
   )
 
@@ -283,6 +303,11 @@ const ToolsTextEventsAnonsContent = () => {
           onClick={() => setShowPrice('member')}
           label="Показывать цену члена клуба"
         />
+        <RadioBox
+          checked={showPrice === 'formula'}
+          onClick={() => setShowPrice('formula')}
+          label="Сделать формулой (для рассылки)"
+        />
       </div>
       <CheckBox
         checked={showParticipantsCount}
@@ -325,6 +350,14 @@ const ToolsTextEventsAnonsContent = () => {
             copyToClipboard(tempText)
             info('Html скопирован в буфер обмена')
           }}
+          disabled={!eventsId.length}
+        />
+        <Button
+          icon={faWhatsapp}
+          name="Создать рассылку"
+          onClick={() =>
+            modalsFunc.newsletter.add(undefined, { message: tempText })
+          }
           disabled={!eventsId.length}
         />
       </div>

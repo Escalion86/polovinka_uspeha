@@ -84,7 +84,7 @@ function convertWhatsAppToHTML(text) {
     .replaceAll('\n', '<br>')
 }
 
-const newsletterFunc = (newsletterId, { name, users, event }) => {
+const newsletterFunc = (newsletterId, { name, users, event, message }) => {
   const NewsletterModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -138,13 +138,15 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
       () =>
         newsletter?.message
           ? newsletter.message
-          : event
-            ? `<b>Мероприятие "${event.title}"</b><br><br>${event.description}`
-            : '',
+          : message
+            ? message
+            : event
+              ? `<b>Мероприятие "${event.title}"</b><br><br>${event.description}`
+              : '',
       [event]
     )
     // const [blackList, setBlackList] = useState([])
-    const [message, setMessage] = useState(defaultMessageState)
+    const [messageState, setMessageState] = useState(defaultMessageState)
     const [rerender, setRerender] = useState(false)
 
     const toggleRerender = () => setRerender((state) => !state)
@@ -172,13 +174,13 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
           (data) => {
             setSiteSettings(data)
             success('Черный список обновлен')
-            // setMessage('Данные черного списка обновлены успешно')
+            // setMessageState('Данные черного списка обновлены успешно')
             // setIsWaitingToResponse(false)
             // refreshPage()
           },
           () => {
             error('Ошибка обновления черного списка')
-            // setMessage('')
+            // setMessageState('')
             // addError({ response: 'Ошибка обновления данных черного списка' })
             // setIsWaitingToResponse(false)
           },
@@ -192,7 +194,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
     const prepearedText = useMemo(() => {
       // var turndownService = new TurndownService()
       // return turndownService.turndown(
-      //   message
+      //   messageState
       //   // .replaceAll('<p><br></p>', '<br>')
       //   // .replaceAll('<blockquote>', '<br><blockquote>')
       //   // .replaceAll('<li>', '<br>\u{2764} <li>')
@@ -201,7 +203,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
       //   // .replaceAll('<br>', '\n')
       // )
       return DOMPurify.sanitize(
-        message
+        messageState
           // .replaceAll('-', '—')
           .replaceAll('*', '⚹')
           .replace(
@@ -237,7 +239,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
           ALLOWED_ATTR: [],
         }
       )
-    }, [message])
+    }, [messageState])
 
     // function htmlToWhatsappMD(htmlText) {
     //   console.log('htmlText :>> ', htmlText)
@@ -307,7 +309,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
     // }
 
     // const inputText = `<p>Добрый день.  🙌</p><p>Меня зовут Надежда - я руководитель центра знакомств "Половинка успеха"❤️.</p><p><br></p><p>Напоминаю, что вы записаны<strong>26 марта (среда) с 19.00 до 22.30  на</strong>формат "Покер для всех". </p><p><br></p><p>‼️<strong>Подскажите у вас всё в силе, планируете придти на игру?😊</strong>🙌</p>`
-    // // console.log('message :>> ', message)
+    // // console.log('messageState :>> ', messageState)
     // console.log(
     //   'test :>> ',
     //   JSON.stringify({ test: htmlToWhatsappMD(inputText) })
@@ -318,7 +320,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
       [prepearedText, previewVariables]
     )
 
-    const sendMessage = async (name, message) => {
+    const sendMessage = async (name, messageState) => {
       // const result = []
 
       // for (let i = 0; i < filteredSelectedUsers.length; i++) {
@@ -364,9 +366,9 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
                 : {}),
               ...(variablesObject.пара ? { пара: !!user.relationship } : {}),
             },
-            // whatsappMessage: message,
+            // whatsappMessage: messageState,
           })),
-          message,
+          messageState,
         },
         (data) => {
           // success('Рассылка отправлена успешно')
@@ -382,7 +384,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
         'Рассылка отправлена и после обработки запроса появится в списке рассылок'
       )
       //   const idMessage = res?.idMessage
-      //   result.push({ userId: user._id, message, idMessage })
+      //   result.push({ userId: user._id, messageState, idMessage })
       // }
       // console.log('res :>> ', res)
       // return res
@@ -606,9 +608,9 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
       selectedUsers.length - filteredSelectedUsers.length
 
     const copyResult = useCopyToClipboard(
-      message,
+      messageState,
       // DOMPurify.sanitize(
-      //   message
+      //   messageState
       //     .replaceAll('<p><br></p>', '\n')
       //     .replaceAll('<blockquote>', '\n<blockquote>')
       //     .replaceAll('<li>', '\n\u{2764} <li>')
@@ -627,7 +629,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
     useEffect(() => {
       if (
         !newsletterName ||
-        !message ||
+        !messageState ||
         !filteredSelectedUsers?.length ||
         !siteSettings?.newsletter?.whatsappActivated ||
         !loggedUserActiveRole?.newsletters?.add
@@ -635,14 +637,14 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
         setOnConfirmFunc()
       } else {
         // const prepearedText = DOMPurify.sanitize(
-        //   convertHtmlToText(message, 'whatsapp'),
+        //   convertHtmlToText(messageState, 'whatsapp'),
         //   {
         //     ALLOWED_TAGS: [],
         //     ALLOWED_ATTR: [],
         //   }
         // )
 
-        if (!message) {
+        if (!messageState) {
           setOnConfirmFunc()
         } else {
           setOnConfirmFunc(() =>
@@ -650,13 +652,18 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
               title: 'Отправка сообщений на Whatsapp пользователям',
               text: `Вы уверены, что хотите отправить сообщение ${getNoun(filteredSelectedUsers?.length, 'пользователю', 'пользователям', 'пользователям')} на Whatsapp?`,
               onConfirm: () => {
-                sendMessage(newsletterName, message)
+                sendMessage(newsletterName, messageState)
               },
             })
           )
         }
       }
-    }, [newsletterName, message, filteredSelectedUsers?.length, siteSettings])
+    }, [
+      newsletterName,
+      messageState,
+      filteredSelectedUsers?.length,
+      siteSettings,
+    ])
 
     if (
       !siteSettings?.newsletter?.whatsappActivated ||
@@ -671,7 +678,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
         icon: faCopy,
         onClick: () => copyResult(),
       })
-    }, [message])
+    }, [messageState])
 
     return (
       <div className="flex flex-col px-1 py-1 overflow-y-auto gap-y-1">
@@ -890,8 +897,8 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
         <div>
           <Component
             label="Текст сообщения"
-            html={message}
-            onChange={setMessage}
+            html={messageState}
+            onChange={setMessageState}
             // placeholder="Описание мероприятия..."
             required
             customButtons={customButtons}
@@ -902,7 +909,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
             name="Вставить html из буфера"
             icon={faPaste}
             onClick={async () => {
-              await pasteFromClipboard(setMessage)
+              await pasteFromClipboard(setMessageState)
               toggleRerender()
             }}
           />
@@ -914,7 +921,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
             onClick={async () => {
               await pasteFromClipboard((text) => {
                 const prepearedText = convertWhatsAppToHTML(text)
-                setMessage(prepearedText)
+                setMessageState(prepearedText)
               })
               toggleRerender()
             }}
@@ -974,7 +981,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
         </InputWrapper>
         {/* <div>
           <Button
-            disabled={!message || !filteredSelectedUsers?.length}
+            disabled={!messageState || !filteredSelectedUsers?.length}
             name="Отправить сообщение"
             onClick={() => {
               modalsFunc.confirm({
@@ -982,7 +989,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
                 text: `Вы уверены, что хотите сообщение ${getNoun(filteredSelectedUsers?.length, 'пользователю', 'пользователям', 'пользователям')}?`,
                 onConfirm: () => {
                   const prepearedText = DOMPurify.sanitize(
-                    convertHtmlToText(message, 'whatsapp'),
+                    convertHtmlToText(messageState, 'whatsapp'),
                     {
                       ALLOWED_TAGS: [],
                       ALLOWED_ATTR: [],
