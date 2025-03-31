@@ -76,6 +76,14 @@ const getUsersData = (users) => {
   }
 }
 
+function convertWhatsAppToHTML(text) {
+  return text
+    .replace(/~([^~]+)~/g, '<s>$1</s>')
+    .replace(/\*([^*]+)\*/g, '<strong>$1</strong>')
+    .replace(/_([^_]+)_/g, '<em>$1</em>')
+    .replaceAll('\n', '<br>')
+}
+
 const newsletterFunc = (newsletterId, { name, users, event }) => {
   const NewsletterModal = ({
     closeModal,
@@ -281,7 +289,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
     //     // .replace(/<(s|del)>(.*?)<\/\1>/gi, '~$2~')
 
     //     // 4. Удаление HTML-тегов (сохраняем пробелы)
-    //     // .replace(/<[^>]+>/g, ' ')
+    //     .replace(/<[^>]+>/g, ' ')
 
     //     // 5. Чистка пробелов (БЕЗ УДАЛЕНИЯ ПЕРЕНОСОВ)
     //     // console.log('1', JSON.stringify({ markdown }))
@@ -891,10 +899,23 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
         </div>
         <div>
           <Button
-            name="Вставить текст из буфера"
+            name="Вставить html из буфера"
             icon={faPaste}
             onClick={async () => {
               await pasteFromClipboard(setMessage)
+              toggleRerender()
+            }}
+          />
+        </div>
+        <div>
+          <Button
+            name="Вставить текст скопированный из whatsapp"
+            icon={faPaste}
+            onClick={async () => {
+              await pasteFromClipboard((text) => {
+                const prepearedText = convertWhatsAppToHTML(text)
+                setMessage(prepearedText)
+              })
               toggleRerender()
             }}
           />
@@ -979,7 +1000,7 @@ const newsletterFunc = (newsletterId, { name, users, event }) => {
 
   return {
     title: `Создание рассылки`,
-    confirmButtonName: 'Созать рассылку',
+    confirmButtonName: 'Создать рассылку',
     // bottomLeftComponent: <LikesToggle eventId={eventId} />,
     Children: NewsletterModal,
   }

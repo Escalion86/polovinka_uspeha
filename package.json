@@ -7,7 +7,8 @@
     "build": "NODE_OPTIONS='--max-old-space-size=2048' next build",
     "start": "next start",
     "analyze": "ANALYZE=true npm run build",
-    "knip": "knip"
+    "knip": "knip",
+    "postinstall": "flowbite-react patch"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -27,16 +28,16 @@
     "@nivo/line": "^0.80.0",
     "@nivo/pie": "^0.80.0",
     "@nivo/stream": "^0.80.0",
-    "@tailwindcss/postcss": "^4.0.14",
+    "@tailwindcss/postcss": "^4.0.17",
     "classnames": "^2.5.1",
     "css-loader": "^7.1.2",
     "dayjs": "^1.11.7",
     "elevenlabs-js": "^1.2.6",
     "exceljs": "^4.3.0",
     "flowbite": "^3.1.1",
-    "flowbite-react": "^0.10.2",
+    "flowbite-react": "^0.11.5",
     "form-data": "^4.0.0",
-    "framer-motion": "^11.12.0",
+    "framer-motion": "^12.6.2",
     "fs": "^0.0.1-security",
     "googleapis": "^144.0.0",
     "isomorphic-dompurify": "^1.8.0",
@@ -45,7 +46,7 @@
     "jotai-effect": "^2.0.0",
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.6",
-    "next": "^14.2.25",
+    "next": "^14.2.26",
     "next-auth": "^4.24.11",
     "next-deploy-notifications": "^0.1.6",
     "next-pwa": "^5.6.0",
@@ -78,8 +79,6 @@
     "save-svg-as-png": "^1.4.17",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
-    "tailwind-merge": "^3.0.2",
-    "turndown": "^7.2.0",
     "uid": "^2.0.2"
   },
   "devDependencies": {
@@ -91,6 +90,6 @@
     "knip": "^5.43.3",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
-    "tailwindcss": "^4.0.14"
+    "tailwindcss": "^4.0.17"
   }
 }

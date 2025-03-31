@@ -90,7 +90,7 @@ const ItemContainer = ({
 export const UserItemFromId = ({
   userId,
   onClick = null,
-  active = false,
+  active,
   noBorder,
   ...props
 }) => {

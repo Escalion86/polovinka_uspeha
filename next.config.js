@@ -5,6 +5,7 @@ const path = require('path')
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: process.env.ANALYZE === 'true',
 // })
+const withFlowbiteReact = require('flowbite-react/plugin/nextjs')
 
 const withPWA = require('next-pwa')({
   dest: 'public',
@@ -14,7 +15,8 @@ const withPWA = require('next-pwa')({
   disable: process.env.MODE === 'dev',
 })
 
-module.exports = //withBundleAnalyzer(
+module.exports = withFlowbiteReact(
+  //withBundleAnalyzer()
   withPWA({
     // webpack: (config) => {
     //   config.resolve.alias = {
@@ -95,4 +97,4 @@ module.exports = //withBundleAnalyzer(
     //   return config
     // },
   })
-//)
+)
