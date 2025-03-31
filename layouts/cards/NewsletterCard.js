@@ -73,7 +73,9 @@ const NewsletterCard = ({ newsletterId, style }) => {
         <div className="flex flex-wrap items-center gap-x-5">
           <div className="flex items-center gap-x-1">
             <FontAwesomeIcon className="w-5 h-5 text-success" icon={faCheck} />
-            {statuses.read + statuses.delivered + statuses.sent || '0'}
+            {(statuses.read || 0) +
+              (statuses.delivered || 0) +
+              (statuses.sent || 0)}
           </div>
           {/* <div className="flex items-center gap-x-1">
             <FontAwesomeIcon
