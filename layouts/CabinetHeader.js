@@ -15,7 +15,7 @@ import DropDown from '@components/DropDown'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import Image from 'next/image'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import { faQrcode } from '@fortawesome/free-solid-svg-icons'
+import { faQrcode } from '@fortawesome/free-solid-svg-icons/faQrcode'
 import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
