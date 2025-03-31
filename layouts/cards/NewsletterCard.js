@@ -30,6 +30,8 @@ const NewsletterCard = ({ newsletterId, style }) => {
       statuses[whatsappStatus] = statuses[whatsappStatus]
         ? statuses[whatsappStatus] + 1
         : 1
+    } else if (!whatsappStatus) {
+      statuses.pending = statuses.pending ? statuses.pending + 1 : 1
     } else {
       statuses.other = statuses.other ? statuses.other + 1 : 1
     }
