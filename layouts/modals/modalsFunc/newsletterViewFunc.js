@@ -1,4 +1,4 @@
-import CardButtons from '@components/CardButtons'
+// import CardButtons from '@components/CardButtons'
 import FormWrapper from '@components/FormWrapper'
 import TextLine from '@components/TextLine'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -10,6 +10,9 @@ import { getNounMessages } from '@helpers/getNoun'
 import InputWrapper from '@components/InputWrapper'
 import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import Button from '@components/Button'
+import modalsFuncAtom from '@state/modalsFuncAtom'
+// import { SelectUserList } from '@components/SelectItemList'
 
 // const CardButtonsComponent = ({ newsletter }) => (
 //   <CardButtons item={newsletter} typeOfItem="newsletter" forForm />
@@ -27,7 +30,7 @@ const newsletterViewFunc = (newsletterId) => {
     setBottomLeftButtonProps,
   }) => {
     // const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
-    // const modalsFunc = useAtomValue(modalsFuncAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
     // const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
@@ -62,7 +65,7 @@ const newsletterViewFunc = (newsletterId) => {
       setBottomLeftButtonProps(
         newsletter?.message
           ? {
-              name: 'Скопировать результат в буфер',
+              name: 'Скопировать html текста в буфер',
               classBgColor: 'bg-general',
               icon: faCopy,
               onClick: () => copyResult(),
@@ -93,6 +96,10 @@ const newsletterViewFunc = (newsletterId) => {
           <TextLine label="Количество сообщений">
             {getNounMessages(newsletter?.newsletters?.length)}
           </TextLine>
+          <Button
+            name="Посмотреть получателей"
+            onClick={() => modalsFunc.newsletter.usersView(newsletter._id)}
+          />
           {(newsletter?.message ||
             newsletter?.newsletters[0]?.whatsappMessage) && (
             <InputWrapper label="Текст сообщения">
@@ -108,6 +115,10 @@ const newsletterViewFunc = (newsletterId) => {
             </InputWrapper>
           )}
         </div>
+        {/* <SelectUserList
+          usersId={newsletter?.newsletters.map(({ userId }) => userId)}
+          readOnly
+        /> */}
 
         {/* <SelectEventList
           eventsId={eventUsers.map((eventUser) => eventUser.eventId)}

@@ -174,7 +174,7 @@ import LikesContent from '@layouts/content/LikesContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
-import { faHeartCircleCheck } from '@fortawesome/free-solid-svg-icons'
+import { faHeartCircleCheck } from '@fortawesome/free-solid-svg-icons/faHeartCircleCheck'
 
 // const colors = [
 //   'border-blue-400',

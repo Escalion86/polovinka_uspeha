@@ -1,20 +1,15 @@
-import CardButtons from '@components/CardButtons'
 import CardWrapper from '@components/CardWrapper'
-import TextInRing from '@components/TextInRing'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import directionsAtom from '@state/atoms/directionsAtom'
-import itemsFuncAtom from '@state/itemsFuncAtom'
-import loadingAtom from '@state/atoms/loadingAtom'
-import directionFullSelectorAsync from '@state/selectors/directionFullSelectorAsync'
 import { useAtomValue } from 'jotai'
-import snackbarAtom from '@state/atoms/snackbarAtom'
 import individualWeddingsSelector from '@state/async/individualWeddingsSelector'
 import formatDateTime from '@helpers/formatDateTime'
 import userSelector from '@state/selectors/userSelector'
 import getUserFullName from '@helpers/getUserFullName'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMars, faVenus } from '@fortawesome/free-solid-svg-icons'
+import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
+import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
+
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
 
 const IndividualWeddingCard = ({

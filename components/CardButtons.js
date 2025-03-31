@@ -41,6 +41,8 @@ import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import { faWhatsappSquare } from '@fortawesome/free-brands-svg-icons/faWhatsappSquare'
 import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import { faRefresh } from '@fortawesome/free-solid-svg-icons/faRefresh'
+import itemsFuncAtom from '@state/itemsFuncAtom'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -80,6 +82,7 @@ const CardButtons = ({
   onEditQuestionnaire,
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
+  const itemsFunc = useAtomValue(itemsFuncAtom)
   const location = useAtomValue(locationAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const device = useAtomValue(windowDimensionsTailwindSelector)
@@ -193,6 +196,7 @@ const CardButtons = ({
     loginHistory: isLoggedUserDev && typeOfItem === 'user',
     sendNotifications,
     sendNotificationsWhatsapp,
+    updateNewslettersStatuses: isLoggedUserDev && typeOfItem === 'newsletter',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -409,6 +413,16 @@ const CardButtons = ({
           }}
           color="purple"
           tooltipText="Показывать на сайте"
+        />
+      )}
+      {show.updateNewslettersStatuses && (
+        <ItemComponent
+          icon={faRefresh}
+          onClick={() => {
+            itemsFunc.newsletter.refresh(item._id)
+          }}
+          color="blue"
+          tooltipText="Обновить статус отправленных сообщений"
         />
       )}
       {show.statusBtn

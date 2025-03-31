@@ -777,6 +777,12 @@ const modalsFuncGenerator = (get, set) => {
             newsletterId
           )
         ),
+      usersView: (newsletterId) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/newsletterUsersViewFunc').default(
+            newsletterId
+          )
+        ),
       delete: (newsletterId) =>
         addModal({
           title: 'Удаление рассылки',

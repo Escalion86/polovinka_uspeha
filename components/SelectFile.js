@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder } from '@fortawesome/free-regular-svg-icons/faFolder'
 import Zoom from 'react-medium-image-zoom'
 import TextLinesLimiter from './TextLinesLimiter'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 
 function isFileFunc(pathname) {

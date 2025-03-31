@@ -1,23 +1,9 @@
 import extractVariables from '@helpers/extractVariables'
 import replaceVariableInTextTemplate from '@helpers/replaceVariableInTextTemplate'
 import checkLocationValid from '@server/checkLocationValid'
+import { whatsappConstants } from '@server/constants'
 import dbConnect from '@utils/dbConnect'
-import TurndownService from 'turndown'
-
-const whatsappConstants = {
-  krsk: {
-    urlWithInstance: `${process.env.WHATSAPP_API_URL_KRSK}/waInstance${process.env.WHATSAPP_ID_INSTANCE_KRSK}`,
-    token: process.env.WHATSAPP_TOKEN_KRSK,
-  },
-  nrsk: {
-    urlWithInstance: `${process.env.WHATSAPP_API_URL_NRSK}/waInstance${process.env.WHATSAPP_ID_INSTANCE_NRSK}`,
-    token: process.env.WHATSAPP_TOKEN_NRSK,
-  },
-  ekb: {
-    urlWithInstance: `${process.env.WHATSAPP_API_URL_EKB}/waInstance${process.env.WHATSAPP_ID_INSTANCE_EKB}`,
-    token: process.env.WHATSAPP_TOKEN_EKB,
-  },
-}
+// import TurndownService from 'turndown'
 
 function generateArray(n) {
   if (n === 0) {
@@ -102,7 +88,7 @@ function htmlToWhatsappMD(htmlText) {
     // .replace(/<(s|del)>(.*?)<\/\1>/gi, '~$2~')
 
     // 4. Удаление HTML-тегов (сохраняем пробелы)
-    // .replace(/<[^>]+>/g, ' ')
+    .replace(/<[^>]+>/g, '')
 
     // 5. Чистка пробелов (БЕЗ УДАЛЕНИЯ ПЕРЕНОСОВ)
     // console.log('1', JSON.stringify({ markdown }))
@@ -234,6 +220,7 @@ export default async function handler(req, res) {
           const respSendJson = await respSend.json()
           resultJson = {
             userId,
+            whatsappPhone,
             whatsappSuccess: true,
             whatsappMessageId: respSendJson?.idMessage,
             // whatsappMessage,
@@ -241,6 +228,7 @@ export default async function handler(req, res) {
         } else {
           resultJson = {
             userId,
+            whatsappPhone,
             whatsappSuccess: false,
             // whatsappMessage,
             whatsappError: 'no response',
@@ -273,6 +261,33 @@ export default async function handler(req, res) {
 
       return res?.status(200).json({ success: true, data: newNewsletter })
     }
+    if (type === 'getMessage') {
+      const { phone, messageId } = body.data
+      console.log('{ phone, messageId } :>> ', { phone, messageId })
+      const url = `${urlWithInstance}/getMessage/${token}`
+      // Вариант ответа:
+      // { "existsWhatsapp": true }
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chatId: `${phone}@c.us`,
+          idMessage: messageId,
+        }),
+      })
+
+      if (resp) {
+        const respJson = await resp.json()
+        return res?.status(200).json({ success: true, data: respJson })
+      } else {
+        console.log('whatsapp getMessage ERROR:', error)
+        return res
+          ?.status(400)
+          .json({ success: false, error: 'getMessage error' })
+      }
+    }
     if (type === 'checkWhatsapp') {
       const { phone } = body.data
       const url = `${urlWithInstance}/checkWhatsapp/${token}`
@@ -287,8 +302,15 @@ export default async function handler(req, res) {
           phoneNumber: phone,
         }),
       })
-        .then((res) => res.json())
-        .catch((error) => console.log('whatsapp checkWhatsapp ERROR:', error))
+      if (resp) {
+        const respJson = await resp.json()
+        return res?.status(200).json({ success: true, data: respJson })
+      } else {
+        console.log('whatsapp checkWhatsapp ERROR:', error)
+        return res
+          ?.status(400)
+          .json({ success: false, error: 'checkWhatsapp error' })
+      }
     }
     if (type === 'getChatHystory') {
       const { phone } = body.data
@@ -304,9 +326,15 @@ export default async function handler(req, res) {
           // count:10,
         }),
       })
-        .then((res) => res.json())
-        .catch((error) => console.log('whatsapp getChatHystory ERROR:', error))
-      return res?.status(200).json({ success: true, data: resp })
+      if (resp) {
+        const respJson = await resp.json()
+        return res?.status(200).json({ success: true, data: respJson })
+      } else {
+        console.log('whatsapp getChatHystory ERROR:', error)
+        return res
+          ?.status(400)
+          .json({ success: false, error: 'getChatHystory error' })
+      }
     }
   }
 

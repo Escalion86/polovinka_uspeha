@@ -1,7 +1,5 @@
-import {
-  faExclamationTriangle,
-  faWarning,
-} from '@fortawesome/free-solid-svg-icons'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons/faExclamationTriangle'
+import { faWarning } from '@fortawesome/free-solid-svg-icons/faWarning'
 import { faQuoteRight } from '@fortawesome/free-solid-svg-icons/faQuoteRight'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'

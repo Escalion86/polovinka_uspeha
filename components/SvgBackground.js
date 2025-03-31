@@ -12,7 +12,9 @@ import { useEffect } from 'react'
 // import InputImage from './InputImage'
 // import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+
 import cn from 'classnames'
 import InputNumber from './InputNumber'
 
