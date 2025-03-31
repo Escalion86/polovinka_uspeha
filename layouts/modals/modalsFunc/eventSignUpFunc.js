@@ -17,7 +17,6 @@ import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import { HorizontalRuleSharp } from '@mui/icons-material'
 import subEventsSummator from '@helpers/subEventsSummator'
 
 const eventSignUpFunc = (

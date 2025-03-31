@@ -1,7 +1,5 @@
-import FormWrapper from '@components/FormWrapper'
-import Input from '@components/Input'
 import SelectTemplate from '@components/SelectTemplate'
-import { postData, putData } from '@helpers/CRUD'
+import { putData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'

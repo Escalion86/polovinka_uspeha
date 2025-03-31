@@ -62,7 +62,7 @@ const newsletterViewFunc = (newsletterId) => {
       setBottomLeftButtonProps(
         newsletter?.message
           ? {
-              name: 'Скопировать результат в буфер',
+              name: 'Скопировать html текста в буфер',
               classBgColor: 'bg-general',
               icon: faCopy,
               onClick: () => copyResult(),
