@@ -154,6 +154,7 @@ const userSignIn = async ({
     })
 
     const subEventSum = subEventsSummator([subEvent])
+    console.log('userSignIn event:', event)
     const direction = await db
       .model('Directions')
       .findById(event.directionId)

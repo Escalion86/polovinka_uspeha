@@ -158,9 +158,9 @@ const selectEventsFunc = (
                   key={sortedEvents[index]._id}
                   item={sortedEvents[index]}
                   active={
-                    showCountNumber
+                    !!(showCountNumber
                       ? selectedEvents.indexOf(sortedEvents[index]._id) + 1
-                      : selectedEvents.includes(sortedEvents[index]._id)
+                      : selectedEvents.includes(sortedEvents[index]._id))
                   }
                   onClick={() => onClick(sortedEvents[index]._id)}
                 />
