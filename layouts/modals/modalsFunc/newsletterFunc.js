@@ -39,6 +39,11 @@ import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserTog
 import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import newsletterSelector from '@state/selectors/newsletterSelector'
+import DropdownButton from '@components/DropdownButton'
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
+import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
+import htmlToWhatsapp from '@helpers/htmlToWhatsapp'
+
 // import TurndownService from 'turndown'
 
 const getUsersData = (users) => {
@@ -95,6 +100,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     setOnlyCloseButtonShow,
     setBottomLeftButtonProps,
     setTopLeftComponent,
+    setBottomLeftComponent,
   }) => {
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const newsletter = useAtomValue(newsletterSelector(newsletterId))
@@ -153,7 +159,9 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
 
     const filteredSelectedUsers = useMemo(() => {
       if (!checkBlackList) return selectedUsers
-      return selectedUsers.filter((user) => !blackList.includes(user._id))
+      return selectedUsers.filter(
+        (user) => user?._id && !blackList.includes(user?._id)
+      )
     }, [selectedUsers, blackList, checkBlackList])
 
     const selectedUsersData = useMemo(
@@ -607,23 +615,13 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     const blockedUsersCount =
       selectedUsers.length - filteredSelectedUsers.length
 
-    const copyResult = useCopyToClipboard(
+    const copyResultHtml = useCopyToClipboard(
       messageState,
-      // DOMPurify.sanitize(
-      //   messageState
-      //     .replaceAll('<p><br></p>', '\n')
-      //     .replaceAll('<blockquote>', '\n<blockquote>')
-      //     .replaceAll('<li>', '\n\u{2764} <li>')
-      //     .replaceAll('<p>', '\n<p>')
-      //     .replaceAll('<br>', '\n')
-      //     .replaceAll('&nbsp;', ' ')
-      //     .trim('\n'),
-      //   {
-      //     ALLOWED_TAGS: [],
-      //     ALLOWED_ATTR: [],
-      //   }
-      // ),
       'HTML скопирован в буфер обмена'
+    )
+    const copyResultWhatsapp = useCopyToClipboard(
+      htmlToWhatsapp(messageState),
+      'Текст для Whatsapp скопирован в буфер обмена'
     )
 
     useEffect(() => {
@@ -672,12 +670,31 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       return <div>Рассылка на Whatsapp не доступна</div>
 
     useEffect(() => {
-      setBottomLeftButtonProps({
-        name: 'Скопировать сообщение (html) в буфер',
-        classBgColor: 'bg-general',
-        icon: faCopy,
-        onClick: () => copyResult(),
-      })
+      // setBottomLeftButtonProps({
+      //   name: 'Скопировать сообщение (html) в буфер',
+      //   classBgColor: 'bg-general',
+      //   icon: faCopy,
+      //   onClick: () => copyResult(),
+      // })
+      setBottomLeftComponent(
+        <DropdownButton
+          name="Скопировать сообщение"
+          icon={faCopy}
+          items={[
+            {
+              name: 'В формате Html',
+              onClick: copyResultHtml,
+              icon: faHtml5,
+            },
+            {
+              name: 'В формате Whatsapp',
+              onClick: copyResultWhatsapp,
+              icon: faWhatsapp,
+            },
+          ]}
+          disabled={!messageState}
+        />
+      )
     }, [messageState])
 
     return (
@@ -904,7 +921,32 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             customButtons={customButtons}
           />
         </div>
-        <div>
+        <DropdownButton
+          name="Вставить текст"
+          icon={faPaste}
+          items={[
+            {
+              name: 'Html из буфера',
+              onClick: async () => {
+                await pasteFromClipboard(setMessageState)
+                toggleRerender()
+              },
+              icon: faHtml5,
+            },
+            {
+              name: 'Скопированный из Whatsapp',
+              onClick: async () => {
+                await pasteFromClipboard((text) => {
+                  const prepearedText = convertWhatsAppToHTML(text)
+                  setMessageState(prepearedText)
+                })
+                toggleRerender()
+              },
+              icon: faWhatsapp,
+            },
+          ]}
+        />
+        {/* <div>
           <Button
             name="Вставить html из буфера"
             icon={faPaste}
@@ -926,7 +968,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               toggleRerender()
             }}
           />
-        </div>
+        </div> */}
         <InputWrapper
           label="Предпросмотр сообщения"
           wrapperClassName="flex-col gap-y-1"

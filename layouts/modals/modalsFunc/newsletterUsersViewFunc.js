@@ -1,6 +1,6 @@
 import FormWrapper from '@components/FormWrapper'
 // import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import newsletterSelector from '@state/selectors/newsletterSelector'
 import ListWrapper from '@layouts/lists/ListWrapper'
@@ -13,6 +13,10 @@ import { faCheckDouble } from '@fortawesome/free-solid-svg-icons/faCheckDouble'
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import Tooltip from '@components/Tooltip'
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
+import MessageStatusToggleButtons from '@components/IconToggleButtons/MessageStatusToggleButtons'
+import ContentHeader from '@components/ContentHeader'
+import itemsFuncAtom from '@state/itemsFuncAtom'
+import loadingAtom from '@state/atoms/loadingAtom'
 
 // const CardButtonsComponent = ({ newsletter }) => (
 //   <CardButtons item={newsletter} typeOfItem="newsletter" forForm />
@@ -71,7 +75,7 @@ const WhatsAppStatus = ({
 
   return (
     <div className="flex items-center justify-center w-8 h-full px-1 border-l border-gray-700">
-      {statusMessage === 'pending' && (
+      {(!statusMessage || statusMessage === 'pending') && (
         // <div className="font-bold text-success">Прочитано</div>
         <Tooltip title="Отправляется">
           <FontAwesomeIcon className="w-5 h-5 text-gray-600" icon={faClock} />
@@ -102,11 +106,12 @@ const WhatsAppStatus = ({
       {/* {!['read', 'sent', 'delivered'].includes(messageStatus) && (
             <div className="text-danger">{messageStatus}</div>
           )} */}
-      {!['read', 'sent', 'delivered', 'pending'].includes(statusMessage) && (
-        <Tooltip title={statusMessage}>
-          <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
-        </Tooltip>
-      )}
+      {statusMessage &&
+        !['read', 'sent', 'delivered', 'pending'].includes(statusMessage) && (
+          <Tooltip title={statusMessage}>
+            <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
+          </Tooltip>
+        )}
     </div>
   )
 }
@@ -125,6 +130,10 @@ const newsletterUsersViewFunc = (newsletterId) => {
   }) => {
     // const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
     const modalsFunc = useAtomValue(modalsFuncAtom)
+    const itemsFunc = useAtomValue(itemsFuncAtom)
+    const loading = useAtomValue(
+      loadingAtom('newsletterStatusMessages' + newsletterId)
+    )
     // const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
     // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     // const isLoggedUserDev = loggedUserActiveRole?.dev
@@ -133,6 +142,52 @@ const newsletterUsersViewFunc = (newsletterId) => {
     // const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
 
     const newsletter = useAtomValue(newsletterSelector(newsletterId))
+
+    const newsellersStatusCount = useMemo(
+      () => ({
+        read: newsletter.newsletters.filter(
+          ({ whatsappStatus }) => whatsappStatus === 'read'
+        ).length,
+        delivered: newsletter.newsletters.filter(
+          ({ whatsappStatus }) => whatsappStatus === 'delivered'
+        ).length,
+        sent: newsletter.newsletters.filter(
+          ({ whatsappStatus }) => whatsappStatus === 'sent'
+        ).length,
+        other: newsletter.newsletters.filter(
+          ({ whatsappStatus }) =>
+            whatsappStatus &&
+            !['read', 'delivered', 'sent', 'pending'].includes(whatsappStatus)
+        ).length,
+        pending: newsletter.newsletters.filter(
+          ({ whatsappStatus }) =>
+            whatsappStatus === 'pending' || !whatsappStatus
+        ).length,
+      }),
+      [newsletter]
+    )
+
+    const [filter, setFilter] = useState({
+      messageStatus: {
+        read: true,
+        delivered: true,
+        sent: true,
+        other: true,
+        pending: true,
+      },
+    })
+
+    const filteredNewsletters = useMemo(
+      () =>
+        newsletter.newsletters.filter(({ whatsappStatus }) =>
+          !whatsappStatus
+            ? filter.messageStatus.pending
+            : typeof filter.messageStatus[whatsappStatus] === 'boolean'
+              ? filter.messageStatus[whatsappStatus]
+              : filter.messageStatus.other
+        ),
+      [newsletter, filter]
+    )
 
     // const copyResult = useCopyToClipboard(
     //   newsletter.message,
@@ -143,29 +198,34 @@ const newsletterUsersViewFunc = (newsletterId) => {
       if (!newsletter) closeModal()
     }, [newsletter])
 
-    // useEffect(() => {
-    //   if (setTopLeftComponent)
-    //     setTopLeftComponent(() => (
-    //       <CardButtons
-    //         item={user}
-    //         typeOfItem="user"
-    //         forForm
-    //         showDeleteButton={false}
-    //       />
-    //     ))
-    // }, [setTopLeftComponent])
+    useEffect(() => {
+      if (setBottomLeftButtonProps)
+        setBottomLeftButtonProps({
+          name: 'Обновить статусы сообщений',
+          onClick: () => itemsFunc.newsletter.refresh(newsletterId),
+          loading,
+          loadingText: 'Обновление статусов...',
+        })
+    }, [setBottomLeftButtonProps, loading])
 
     useEffect(() => {
       if (newsletter?.name)
-        setTitle(`Пользователи рассылки "${newsletter?.name}"`)
+        setTitle(`Получатели рассылки "${newsletter?.name}"`)
     }, [newsletter])
 
     if (!newsletter) return null
 
-    const usersIds = newsletter.newsletters.map(({ userId }) => userId)
+    const usersIds = filteredNewsletters.map(({ userId }) => userId)
 
     return (
       <FormWrapper className="flex flex-col h-full">
+        <ContentHeader noBorder>
+          <MessageStatusToggleButtons
+            value={filter.messageStatus}
+            onChange={(value) => setFilter({ messageStatus: value })}
+            names={newsellersStatusCount}
+          />
+        </ContentHeader>
         <div
           style={{ height: usersIds.length * 43 + 2 }}
           className={`flex-1 tablet:flex-none border-b border-t border-gray-700 tablet:max-h-[calc(100vh-270px)]`}
@@ -176,10 +236,7 @@ const newsletterUsersViewFunc = (newsletterId) => {
             itemSize={43}
           >
             {({ index, style }) => (
-              <div
-                style={style}
-                className="flex border-b border-gray-700 last:border-0"
-              >
+              <div style={style} className="flex border-b border-gray-700">
                 <UserItemFromId
                   key={usersIds[index]}
                   userId={usersIds[index]}
@@ -193,10 +250,10 @@ const newsletterUsersViewFunc = (newsletterId) => {
                 />
                 <WhatsAppStatus
                   userId={usersIds[index]}
-                  phone={newsletter.newsletters[index].whatsappPhone}
-                  messageId={newsletter.newsletters[index].whatsappMessageId}
+                  phone={filteredNewsletters[index].whatsappPhone}
+                  messageId={filteredNewsletters[index].whatsappMessageId}
                   newsletterId={newsletterId}
-                  statusMessage={newsletter.newsletters[index].whatsappStatus}
+                  statusMessage={filteredNewsletters[index].whatsappStatus}
                 />
               </div>
             )}
@@ -249,14 +306,10 @@ const newsletterUsersViewFunc = (newsletterId) => {
   }
 
   return {
-    title: `Пользователи рассылки`,
+    title: `Получатели рассылки`,
     declineButtonName: 'Закрыть',
     closeButtonShow: true,
     Children: NewsletterUsersModal,
-    // TopLeftComponent: () => {
-    //   return (
-    //   <CardButtons id={userId} typeOfItem="user" forForm direction="right" />
-    // )},
   }
 }
 

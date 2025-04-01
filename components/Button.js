@@ -27,24 +27,35 @@ const Button = forwardRef(
       rounded = true,
       iconRight = false,
       outline = false,
+      loadingText,
       ...props
     },
     ref
   ) => {
     return loading ? (
-      <div
+      <button
         {...props}
         ref={ref}
         className={cn(
-          'px-4 text-white bg-gray-300/90 cursor-not-allowed',
+          'relative px-4 bg-gray-300/90 cursor-not-allowed',
+          'flex gap-x-2 justify-center items-center whitespace-nowrap duration-300 text-transparent font-normal prevent-select-text overflow-hidden',
           big ? 'text-xl py-2' : thin ? 'h-8 py-0.5' : 'h-9 py-1',
           rounded ? (big ? 'rounded-lg' : 'rounded-sm') : '',
           className
         )}
-        onClick={onClick}
+        onClick={undefined}
       >
-        <LoadingSpinner size="xxs" />
-      </div>
+        {icon && (
+          <FontAwesomeIcon icon={icon} className="w-5 h-5 min-w-5 min-h-5" />
+        )}
+        {name}
+        <div className="absolute flex items-center justify-center w-full px-2 -translate-x-1/2 -translate-y-1/2 gap-x-1 top-1/2 left-1/2">
+          <LoadingSpinner size="xxs" />
+          {loadingText && (
+            <div className="flex-1 text-gray-600/80">{loadingText}</div>
+          )}
+        </div>
+      </button>
     ) : (
       <button
         {...props}

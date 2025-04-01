@@ -13,6 +13,7 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 import SvgSigma from '@svg/SvgSigma'
+import LoadingSpinner from '@components/LoadingSpinner'
 // import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 // import { useAtomValue } from 'jotai'
 // import { Suspense } from 'react'
@@ -23,6 +24,9 @@ const NewsletterCard = ({ newsletterId, style }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const newsletter = useAtomValue(newsletterCutedSelector(newsletterId))
   const loading = useAtomValue(loadingAtom('newsletter' + newsletterId))
+  const loadingStatusMessages = useAtomValue(
+    loadingAtom('newsletterStatusMessages' + newsletterId)
+  )
 
   const statuses = {}
   newsletter.newsletters.forEach(({ whatsappStatus }) => {
@@ -75,9 +79,13 @@ const NewsletterCard = ({ newsletterId, style }) => {
         <div className="flex flex-wrap items-center gap-x-5">
           <div className="flex items-center gap-x-1">
             <FontAwesomeIcon className="w-5 h-5 text-success" icon={faCheck} />
-            {(statuses.read || 0) +
+            {loadingStatusMessages ? (
+              <LoadingSpinner size="xxs" />
+            ) : (
+              (statuses.read || 0) +
               (statuses.delivered || 0) +
-              (statuses.sent || 0)}
+              (statuses.sent || 0)
+            )}
           </div>
           {/* <div className="flex items-center gap-x-1">
             <FontAwesomeIcon
@@ -100,7 +108,11 @@ const NewsletterCard = ({ newsletterId, style }) => {
 
           <div className="flex items-center gap-x-1">
             <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
-            {statuses.other || '0'}
+            {loadingStatusMessages ? (
+              <LoadingSpinner size="xxs" />
+            ) : (
+              statuses.other || '0'
+            )}
           </div>
           {statuses.pending && (
             <div className="flex items-center gap-x-1">
@@ -108,14 +120,22 @@ const NewsletterCard = ({ newsletterId, style }) => {
                 className="w-5 h-5 text-gray-600"
                 icon={faClock}
               />
-              {statuses.pending}
+              {loadingStatusMessages ? (
+                <LoadingSpinner size="xxs" />
+              ) : (
+                statuses.pending
+              )}
             </div>
           )}
           <div className="flex items-center gap-x-1">
             <div className="w-5 h-5 min-w-5">
               <SvgSigma className="fill-general" />
             </div>
-            {newsletter.newsletters?.length || '0'}
+            {loadingStatusMessages ? (
+              <LoadingSpinner size="xxs" />
+            ) : (
+              newsletter.newsletters?.length || '0'
+            )}
           </div>
         </div>
       </div>
