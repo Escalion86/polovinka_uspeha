@@ -776,7 +776,7 @@ const itemsFuncGenerator = (get, set) => {
   }
 
   obj.newsletter.refresh = async (newsletterId) => {
-    setLoadingCard('newsletter' + newsletterId)
+    setLoadingCard('newsletterStatusMessages' + newsletterId)
     snackbar.info(
       'Обновление статуса сообщений рассылки запущено. Ждите сообщения о завершении'
     )
@@ -785,13 +785,13 @@ const itemsFuncGenerator = (get, set) => {
       { messageStatusesUpdate: true },
       (data) => {
         props.setNewsletter(data)
-        setNotLoadingCard('newsletter' + newsletterId)
+        setNotLoadingCard('newsletterStatusMessages' + newsletterId)
         snackbar.success('Обновление статуса сообщение рассылки завершено')
       },
       (error) => {
-        setErrorCard('newsletter' + newsletterId)
+        setErrorCard('newsletterStatusMessages' + newsletterId)
         const data = {
-          errorPlace: 'refresh newsletter ERROR',
+          errorPlace: 'refresh newsletterStatusMessages ERROR',
           newsletterId,
           error,
         }

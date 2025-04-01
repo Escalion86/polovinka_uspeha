@@ -19,7 +19,7 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 // )
 
 const newsletterViewFunc = (newsletterId) => {
-  const NewsletterModal = ({
+  const NewsletterViewModal = ({
     closeModal,
     setOnConfirmFunc,
     setOnDeclineFunc,
@@ -132,7 +132,7 @@ const newsletterViewFunc = (newsletterId) => {
     title: `Рассылка`,
     declineButtonName: 'Закрыть',
     closeButtonShow: true,
-    Children: NewsletterModal,
+    Children: NewsletterViewModal,
     // TopLeftComponent: () => {
     //   return (
     //   <CardButtons id={userId} typeOfItem="user" forForm direction="right" />

@@ -195,7 +195,8 @@ const CardButtons = ({
     loginHistory: isLoggedUserDev && typeOfItem === 'user',
     sendNotifications,
     sendNotificationsWhatsapp,
-    updateNewslettersStatuses: isLoggedUserDev && typeOfItem === 'newsletter',
+    updateNewslettersStatuses:
+      isLoggedUserPresident && typeOfItem === 'newsletter',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -415,14 +416,24 @@ const CardButtons = ({
         />
       )}
       {show.updateNewslettersStatuses && (
-        <ItemComponent
-          icon={faRefresh}
-          onClick={() => {
-            itemsFunc.newsletter.refresh(item._id)
-          }}
-          color="purple"
-          tooltipText="Обновить статус отправленных сообщений"
-        />
+        <>
+          <ItemComponent
+            icon={faRefresh}
+            onClick={() => {
+              itemsFunc.newsletter.refresh(item._id)
+            }}
+            color="purple"
+            tooltipText="Обновить статус отправленных сообщений"
+          />
+          <ItemComponent
+            icon={faUsers}
+            onClick={() => {
+              modalsFunc.newsletter.usersView(item._id)
+            }}
+            color="green"
+            tooltipText="Посмотреть получателей"
+          />
+        </>
       )}
       {show.statusBtn
         ? (() => {

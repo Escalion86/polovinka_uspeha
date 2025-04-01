@@ -25,6 +25,7 @@ import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
 import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
 import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
 import modalsFuncAtom from '@state/modalsFuncAtom'
+import DropdownButton from '@components/DropdownButton'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
@@ -325,7 +326,7 @@ const ToolsTextEventsAnonsContent = () => {
         label="Показывать ссылку на мероприятие"
       />
       <div className="flex flex-wrap gap-x-2 gap-y-1">
-        <Button
+        {/* <Button
           icon={faTelegram}
           name="Скопировать текст для телеграм"
           onClick={() => copyToClipboardText('telegram')}
@@ -350,6 +351,36 @@ const ToolsTextEventsAnonsContent = () => {
             copyToClipboard(tempText)
             info('Html скопирован в буфер обмена')
           }}
+          disabled={!eventsId.length}
+        /> */}
+        <DropdownButton
+          name="Копировать текст"
+          icon={faCopy}
+          items={[
+            {
+              name: 'Telegram',
+              onClick: () => copyToClipboardText('telegram'),
+              icon: faTelegram,
+            },
+            {
+              name: 'Whatsapp',
+              onClick: () => copyToClipboardText('whatsapp'),
+              icon: faWhatsapp,
+            },
+            {
+              name: 'Html',
+              onClick: () => {
+                copyToClipboard(tempText)
+                info('Html скопирован в буфер обмена')
+              },
+              icon: faHtml5,
+            },
+            {
+              name: 'Без форматирования',
+              onClick: copyToClipboardText,
+              icon: faCopy,
+            },
+          ]}
           disabled={!eventsId.length}
         />
         <Button

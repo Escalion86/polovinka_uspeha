@@ -28,7 +28,7 @@ const StatusUserToggleButtons = ({ value, onChange, names, hideBanned }) => {
         }}
         variant={value.member ? 'contained' : 'outlined'}
         color="blue"
-        aria-label="novice"
+        aria-label="member"
         className={cn(
           'flex gap-x-2',
           value.member ? 'text-white' : 'text-blue-400'
@@ -61,7 +61,7 @@ const StatusUserToggleButtons = ({ value, onChange, names, hideBanned }) => {
         }}
         variant={value.novice ? 'contained' : 'outlined'}
         color="gray"
-        aria-label="member"
+        aria-label="novice"
         className={cn(
           'flex gap-x-2',
           value.novice ? 'text-white' : 'text-gray-400'

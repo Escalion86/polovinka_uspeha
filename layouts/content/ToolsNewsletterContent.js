@@ -31,6 +31,9 @@ import newslettersAtomAsync from '@state/async/newslettersAtomAsync'
 import NewslettersList from '@layouts/lists/NewslettersList'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import SortingButtonMenu from '@components/SortingButtonMenu'
+import sortFuncGenerator from '@helpers/sortFuncGenerator'
+import { useMemo, useState } from 'react'
 
 // const getUsersData = (users) => {
 //   const mans = users.filter((user) => user.gender === 'male')
@@ -73,6 +76,14 @@ const ToolsNewsletterContent = () => {
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.newsletters?.add
 
+  const [sort, setSort] = useState({ createdAt: 'desc' })
+  const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
+
+  const sortedNewsletters = useMemo(
+    () => [...newsletters].sort(sortFunc),
+    [newsletters, sort]
+  )
+
   return (
     <>
       <ContentHeader>
@@ -80,12 +91,17 @@ const ToolsNewsletterContent = () => {
           <div className="text-lg font-bold whitespace-nowrap">
             {getNounNewsletters(newsletters?.length)}
           </div>
+          <SortingButtonMenu
+            sort={sort}
+            onChange={setSort}
+            sortKeys={['createdAt']}
+          />
           {addButton && (
             <AddButton onClick={() => modalsFunc.newsletter.add()} />
           )}
         </div>
       </ContentHeader>
-      <NewslettersList newsletters={newsletters} />
+      <NewslettersList newsletters={sortedNewsletters} />
     </>
   )
   // const modalsFunc = useAtomValue(modalsFuncAtom)
