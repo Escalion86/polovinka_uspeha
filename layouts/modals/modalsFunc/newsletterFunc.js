@@ -320,7 +320,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       [prepearedText, previewVariables]
     )
 
-    const sendMessage = async (name, messageState) => {
+    const sendMessage = async (name, message) => {
       // const result = []
 
       // for (let i = 0; i < filteredSelectedUsers.length; i++) {
@@ -368,7 +368,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             },
             // whatsappMessage: messageState,
           })),
-          messageState,
+          message,
         },
         (data) => {
           // success('Рассылка отправлена успешно')
@@ -687,7 +687,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           <div className="flex flex-wrap gap-x-1 gap-y-1">
             <div className="flex flex-col gap-y-1">
               <Button
-                name="Редактировать список"
+                name="Редактировать список пользователей"
                 icon={faPencil}
                 onClick={() =>
                   modalsFunc.selectUsers(
@@ -704,7 +704,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                 }
               />
               <Button
-                name="Выбрать из мероприятия"
+                name="Выбрать пользователей из мероприятия"
                 icon={faCalendarAlt}
                 onClick={() =>
                   modalsFunc.selectEvents(
@@ -806,7 +806,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-1">
+            <div className="flex flex-wrap items-center justify-center flex-1 gap-1">
               <div className="w-fit grid grid-cols-[30px_64px_64px_64px] grid-rows-[30px_30px_30px_30px_30px] items-stretch justify-center overflow-hidden border rounded-lg border-general">
                 <div className="border-b border-r" />
                 <div className="flex items-center justify-center border-b border-r gap-x-1">

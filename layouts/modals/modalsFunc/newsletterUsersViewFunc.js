@@ -1,12 +1,12 @@
 import FormWrapper from '@components/FormWrapper'
-import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useEffect, useState } from 'react'
+// import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import newsletterSelector from '@state/selectors/newsletterSelector'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import { UserItemFromId } from '@components/ItemCards'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import LoadingSpinner from '@components/LoadingSpinner'
+// import LoadingSpinner from '@components/LoadingSpinner'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faCheckDouble } from '@fortawesome/free-solid-svg-icons/faCheckDouble'
@@ -20,14 +20,14 @@ import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 
 const WhatsAppStatus = ({
   statusMessage,
-  userId,
-  phone,
-  messageId,
-  newsletterId,
+  // userId,
+  // phone,
+  // messageId,
+  // newsletterId,
 }) => {
   // const location = useAtomValue(locationAtom)
   // console.log('statusMessage :>> ', statusMessage)
-  const [messageStatus, setMessageStatus] = useState(statusMessage)
+  // const [messageStatus, setMessageStatus] = useState(statusMessage)
   // const user = useAtomValue(userSelector(userId))
   // const userPhone = phone || user?.whatsapp || user?.phone
 
@@ -71,55 +71,41 @@ const WhatsAppStatus = ({
 
   return (
     <div className="flex items-center justify-center w-8 h-full px-1 border-l border-gray-700">
-      {messageStatus ? (
-        <div className="">
-          {messageStatus === 'pending' && (
-            // <div className="font-bold text-success">Прочитано</div>
-            <Tooltip title="Отправляется">
-              <FontAwesomeIcon
-                className="w-5 h-5 text-gray-600"
-                icon={faClock}
-              />
-            </Tooltip>
-          )}
-          {messageStatus === 'read' && (
-            // <div className="font-bold text-success">Прочитано</div>
-            <Tooltip title="Прочитано">
-              <FontAwesomeIcon
-                className="w-5 h-5 text-success"
-                icon={faCheckDouble}
-              />
-            </Tooltip>
-          )}
-          {messageStatus === 'sent' && (
-            <Tooltip title="Отправлено">
-              <FontAwesomeIcon
-                className="w-5 h-5 text-gray-600"
-                icon={faCheck}
-              />
-            </Tooltip>
-          )}
-          {messageStatus === 'delivered' && (
-            <Tooltip title="Доставлено">
-              <FontAwesomeIcon
-                className="w-5 h-5 text-gray-600"
-                icon={faCheckDouble}
-              />
-            </Tooltip>
-          )}
-          {/* {!['read', 'sent', 'delivered'].includes(messageStatus) && (
+      {statusMessage === 'pending' && (
+        // <div className="font-bold text-success">Прочитано</div>
+        <Tooltip title="Отправляется">
+          <FontAwesomeIcon className="w-5 h-5 text-gray-600" icon={faClock} />
+        </Tooltip>
+      )}
+      {statusMessage === 'read' && (
+        // <div className="font-bold text-success">Прочитано</div>
+        <Tooltip title="Прочитано">
+          <FontAwesomeIcon
+            className="w-5 h-5 text-success"
+            icon={faCheckDouble}
+          />
+        </Tooltip>
+      )}
+      {statusMessage === 'sent' && (
+        <Tooltip title="Отправлено">
+          <FontAwesomeIcon className="w-5 h-5 text-gray-600" icon={faCheck} />
+        </Tooltip>
+      )}
+      {statusMessage === 'delivered' && (
+        <Tooltip title="Доставлено">
+          <FontAwesomeIcon
+            className="w-5 h-5 text-gray-600"
+            icon={faCheckDouble}
+          />
+        </Tooltip>
+      )}
+      {/* {!['read', 'sent', 'delivered'].includes(messageStatus) && (
             <div className="text-danger">{messageStatus}</div>
           )} */}
-          {!['read', 'sent', 'delivered', 'pending'].includes(
-            messageStatus
-          ) && (
-            <Tooltip title={messageStatus}>
-              <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
-            </Tooltip>
-          )}
-        </div>
-      ) : (
-        <LoadingSpinner size="xxs" />
+      {!['read', 'sent', 'delivered', 'pending'].includes(statusMessage) && (
+        <Tooltip title={statusMessage}>
+          <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
+        </Tooltip>
       )}
     </div>
   )
@@ -140,7 +126,7 @@ const newsletterUsersViewFunc = (newsletterId) => {
     // const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
     const modalsFunc = useAtomValue(modalsFuncAtom)
     // const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
-    const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+    // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     // const isLoggedUserDev = loggedUserActiveRole?.dev
     // const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
     // const seeUserEvents = loggedUserActiveRole?.users?.seeUserEvents
@@ -170,7 +156,8 @@ const newsletterUsersViewFunc = (newsletterId) => {
     // }, [setTopLeftComponent])
 
     useEffect(() => {
-      setTitle(`Пользователи рассылки "${newsletter?.name}"`)
+      if (newsletter?.name)
+        setTitle(`Пользователи рассылки "${newsletter?.name}"`)
     }, [newsletter])
 
     if (!newsletter) return null
@@ -178,14 +165,21 @@ const newsletterUsersViewFunc = (newsletterId) => {
     const usersIds = newsletter.newsletters.map(({ userId }) => userId)
 
     return (
-      <FormWrapper className="flex flex-col">
+      <FormWrapper className="flex flex-col h-full">
         <div
-          style={{ height: usersIds.length * 42 + 2 }}
-          className={`flex-1 tablet:flex-none border-gray-700 border-t tablet:max-h-[calc(100vh-270px)]`}
+          style={{ height: usersIds.length * 43 + 2 }}
+          className={`flex-1 tablet:flex-none border-b border-t border-gray-700 tablet:max-h-[calc(100vh-270px)]`}
         >
-          <ListWrapper itemCount={usersIds.length} itemSize={42}>
+          <ListWrapper
+            // className="h-full"
+            itemCount={usersIds.length}
+            itemSize={43}
+          >
             {({ index, style }) => (
-              <div style={style} className="flex border-b border-gray-700">
+              <div
+                style={style}
+                className="flex border-b border-gray-700 last:border-0"
+              >
                 <UserItemFromId
                   key={usersIds[index]}
                   userId={usersIds[index]}

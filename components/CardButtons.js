@@ -33,7 +33,6 @@ import DropDown from './DropDown'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
-import { faBullhorn } from '@fortawesome/free-solid-svg-icons/faBullhorn'
 import { getEventById } from '@helpers/getById'
 import locationAtom from '@state/atoms/locationAtom'
 import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresidentSelector'
@@ -421,7 +420,7 @@ const CardButtons = ({
           onClick={() => {
             itemsFunc.newsletter.refresh(item._id)
           }}
-          color="blue"
+          color="purple"
           tooltipText="Обновить статус отправленных сообщений"
         />
       )}
