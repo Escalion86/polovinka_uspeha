@@ -18,7 +18,19 @@ function htmlToWhatsapp(htmlText) {
     .replace(/<br\s*\/?>/gi, '\n') // <br> → перенос
     .replace(/<\/p><p>/gi, '\n') // </p> → перенос
     .replace(/<\/p>/gi, '\n') // </p> → перенос
-    .replace(/<p>/gi, '\n') // <p> → начало нового абзаца
+    .replace(/<p>/gi, '\n')
+    .replace(/<ol\b[^>]*>[\s\S]*?<\/ol>/gi, (olBlock) => {
+      let counter = 1
+      return olBlock
+        .replace(
+          /<li\b[^>]*data-list="ordered"[^>]*>[\s\S]*?<\/li>/gi,
+          (liTag) => `${counter++}. ${liTag.trim()}\n`
+        )
+        .replace(/<\/?ol[^>]*>/g, '') // Удаляем оставшиеся теги списка
+        .trim()
+    })
+    .replace(/<li data-list="bullet">/gi, '❤️ ')
+    .replace(/<\/li>/gi, '\n')
 
     // Обработка пробелов вокруг открывающих тегов
     .replace(
@@ -28,13 +40,13 @@ function htmlToWhatsapp(htmlText) {
       }
     )
     .replace(
-      /(\s*)<(i|em)>(\s*)(.*?)(\s*)<\/\3>(\s*)/gi,
+      /(\s*)<(i|em)>(\s*)(.*?)(\s*)<\/\2>(\s*)/gi,
       (_, before, tag, wsOpen, content, wsClose, after) => {
         return `${before + wsOpen || ' '}_${content.trim()}_${wsClose + after || ' '}`
       }
     )
     .replace(
-      /(\s*)<(s|del|strike)>(\s*)(.*?)(\s*)<\/\4>(\s*)/gi,
+      /(\s*)<(s|del|strike)>(\s*)(.*?)(\s*)<\/\2>(\s*)/gi,
       (_, before, tag, wsOpen, content, wsClose, after) => {
         return `${before + wsOpen || ' '}~${content.trim()}~${wsClose + after || ' '}`
       }

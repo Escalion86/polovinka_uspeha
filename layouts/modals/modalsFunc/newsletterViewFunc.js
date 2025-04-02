@@ -8,10 +8,9 @@ import newsletterSelector from '@state/selectors/newsletterSelector'
 import formatDateTime from '@helpers/formatDateTime'
 import { getNounMessages } from '@helpers/getNoun'
 import InputWrapper from '@components/InputWrapper'
-import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
-import useCopyToClipboard from '@helpers/useCopyToClipboard'
 import Button from '@components/Button'
 import modalsFuncAtom from '@state/modalsFuncAtom'
+import DropdownButtonCopyTextFormats from '@components/DropdownButtons/DropdownButtonCopyTextFormats'
 // import { SelectUserList } from '@components/SelectItemList'
 
 // const CardButtonsComponent = ({ newsletter }) => (
@@ -28,6 +27,7 @@ const newsletterViewFunc = (newsletterId) => {
     setDisableDecline,
     setTopLeftComponent,
     setBottomLeftButtonProps,
+    setBottomLeftComponent,
   }) => {
     // const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
     const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -39,11 +39,6 @@ const newsletterViewFunc = (newsletterId) => {
     // const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
 
     const newsletter = useAtomValue(newsletterSelector(newsletterId))
-
-    const copyResult = useCopyToClipboard(
-      newsletter.message,
-      'Сообщение скопировано в буфер обмена'
-    )
 
     useEffect(() => {
       if (!newsletter) closeModal()
@@ -62,15 +57,8 @@ const newsletterViewFunc = (newsletterId) => {
     // }, [setTopLeftComponent])
 
     useEffect(() => {
-      setBottomLeftButtonProps(
-        newsletter?.message
-          ? {
-              name: 'Скопировать html текста в буфер',
-              classBgColor: 'bg-general',
-              icon: faCopy,
-              onClick: () => copyResult(),
-            }
-          : undefined
+      setBottomLeftComponent(
+        <DropdownButtonCopyTextFormats text={newsletter?.message} />
       )
     }, [newsletter])
 
