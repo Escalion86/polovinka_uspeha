@@ -14,7 +14,7 @@ import { postData } from '@helpers/CRUD'
 import locationAtom from '@state/atoms/locationAtom'
 import EditableTextarea from '@components/EditableTextarea'
 // import convertHtmlToText from '@helpers/convertHtmlToText'
-import pasteFromClipboard from '@helpers/pasteFromClipboard'
+// import pasteFromClipboard from '@helpers/pasteFromClipboard'
 import getNoun, { getNounUsers } from '@helpers/getNoun'
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons/faCalendarAlt'
@@ -24,14 +24,12 @@ import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import useSnackbar from '@helpers/useSnackbar'
 import usersAtomAsync from '@state/async/usersAtomAsync'
-import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
+// import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
 import CheckBox from '@components/CheckBox'
 import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
-import useCopyToClipboard from '@helpers/useCopyToClipboard'
-import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
 import extractVariables from '@helpers/extractVariables'
 import replaceVariableInTextTemplate from '@helpers/replaceVariableInTextTemplate'
 import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
@@ -39,10 +37,11 @@ import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserTog
 import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import newsletterSelector from '@state/selectors/newsletterSelector'
-import DropdownButton from '@components/DropdownButton'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
-import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
-import htmlToWhatsapp from '@helpers/htmlToWhatsapp'
+// import DropdownButton from '@components/DropdownButton'
+// import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
+// import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
+import DropdownButtonCopyTextFormats from '@components/DropdownButtons/DropdownButtonCopyTextFormats'
+import DropdownButtonPasteTextFormats from '@components/DropdownButtons/DropdownButtonPasteTextFormats'
 
 // import TurndownService from 'turndown'
 
@@ -79,14 +78,6 @@ const getUsersData = (users) => {
     member,
     total,
   }
-}
-
-function convertWhatsAppToHTML(text) {
-  return text
-    .replace(/~([^~]+)~/g, '<s>$1</s>')
-    .replace(/\*([^*]+)\*/g, '<strong>$1</strong>')
-    .replace(/_([^_]+)_/g, '<em>$1</em>')
-    .replaceAll('\n', '<br>')
 }
 
 const newsletterFunc = (newsletterId, { name, users, event, message }) => {
@@ -214,6 +205,26 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         messageState
           // .replaceAll('-', '—')
           .replaceAll('*', '⚹')
+          .replace(/<ol\b[^>]*>[\s\S]*?<\/ol>/gi, (olBlock) => {
+            let counter = 1
+            return olBlock
+              .replace(
+                /<li\b[^>]*data-list="ordered"[^>]*>[\s\S]*?<\/li>/gi,
+                (liTag) => {
+                  // Извлекаем текст, удаляя все внутренние HTML-теги
+                  const text = liTag
+                    // .replace(/<span\b[^>]*>[\s\S]*?<\/span>/gi, '') // Удаляем элемент span
+                    // .replace(/<[^>]+>/g, '') // Удаляем оставшиеся HTML-теги
+                    .trim()
+
+                  return `${counter++}. ${text}\n`
+                }
+              )
+              .replace(/<\/?ol[^>]*>/g, '') // Удаляем оставшиеся теги списка
+              .trim()
+          })
+          .replace(/<li data-list="bullet">/gi, '❤️ ')
+          .replace(/<\/li>/gi, '<br>')
           .replace(
             /(\s*)<(b|strong)>(\s*)(.*?)(\s*)<\/\2>(\s*)/gi,
             (_, before, tag, wsOpen, content, wsClose, after) => {
@@ -221,17 +232,18 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             }
           )
           .replace(
-            /(\s*)<(i|em)>(\s*)(.*?)(\s*)<\/\3>(\s*)/gi,
+            /(\s*)<(i|em)>(\s*)(.*?)(\s*)<\/\2>(\s*)/gi,
             (_, before, tag, wsOpen, content, wsClose, after) => {
               return `${before + wsOpen || ' '}<${tag}>${content.trim()}</${tag}>${wsClose + after || ' '}`
             }
           )
           .replace(
-            /(\s*)<(s|del|strike)>(\s*)(.*?)(\s*)<\/\4>(\s*)/gi,
+            /(\s*)<(s|del|strike)>(\s*)(.*?)(\s*)<\/\2>(\s*)/gi,
             (_, before, tag, wsOpen, content, wsClose, after) => {
               return `${before + wsOpen || ' '}<${tag}>${content.trim()}</${tag}>${wsClose + after || ' '}`
             }
-          ),
+          )
+          .trim(),
         {
           ALLOWED_TAGS: [
             'b',
@@ -247,6 +259,8 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           ALLOWED_ATTR: [],
         }
       )
+        .replace(/^(<br[^>]*>)+/gi, '') // Удалить теги br в начале
+        .replace(/(<br[^>]*>)+$/gi, '') // Удалить теги br в конце
     }, [messageState])
 
     // function htmlToWhatsappMD(htmlText) {
@@ -615,15 +629,6 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     const blockedUsersCount =
       selectedUsers.length - filteredSelectedUsers.length
 
-    const copyResultHtml = useCopyToClipboard(
-      messageState,
-      'HTML скопирован в буфер обмена'
-    )
-    const copyResultWhatsapp = useCopyToClipboard(
-      htmlToWhatsapp(messageState),
-      'Текст для Whatsapp скопирован в буфер обмена'
-    )
-
     useEffect(() => {
       if (
         !newsletterName ||
@@ -677,23 +682,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       //   onClick: () => copyResult(),
       // })
       setBottomLeftComponent(
-        <DropdownButton
-          name="Скопировать сообщение"
-          icon={faCopy}
-          items={[
-            {
-              name: 'В формате Html',
-              onClick: copyResultHtml,
-              icon: faHtml5,
-            },
-            {
-              name: 'В формате Whatsapp',
-              onClick: copyResultWhatsapp,
-              icon: faWhatsapp,
-            },
-          ]}
-          disabled={!messageState}
-        />
+        <DropdownButtonCopyTextFormats text={messageState} />
       )
     }, [messageState])
 
@@ -921,7 +910,13 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             customButtons={customButtons}
           />
         </div>
-        <DropdownButton
+        <DropdownButtonPasteTextFormats
+          onSelect={(text) => {
+            setMessageState(text)
+            toggleRerender()
+          }}
+        />
+        {/* <DropdownButton
           name="Вставить текст"
           icon={faPaste}
           items={[
@@ -945,7 +940,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               icon: faWhatsapp,
             },
           ]}
-        />
+        /> */}
         {/* <div>
           <Button
             name="Вставить html из буфера"
@@ -970,7 +965,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           />
         </div> */}
         <InputWrapper
-          label="Предпросмотр сообщения"
+          label="Предпросмотр сообщения (как в Whatsapp)"
           wrapperClassName="flex-col gap-y-1"
         >
           <div className="flex flex-wrap items-center justify-center w-full pb-2 border-b border-gray-400 gap-x-2">
@@ -1011,6 +1006,8 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             />
           </div>
           {preview ? (
+            // <div className="relative w-full max-w-full pl-3">
+            //   <div className="absolute -rotate-90 -left-2">Предпросмотр</div>
             <div
               className="w-full max-w-full overflow-hidden list-disc textarea ql"
               dangerouslySetInnerHTML={{
@@ -1018,6 +1015,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               }}
             />
           ) : (
+            // </div>
             <div className="text-gray-400">[нет сообщения]</div>
           )}
         </InputWrapper>
