@@ -11,6 +11,12 @@ import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import DatePicker from '@components/DatePicker'
+import ListWrapper from '@layouts/lists/ListWrapper'
+import { UserItemFromId } from '@components/ItemCards'
+import modalsFuncAtom from '@state/modalsFuncAtom'
+import eventsUsersFullAllSelector from '@state/selectors/eventsUsersFullAllSelector'
+import ContentHeader from '@components/ContentHeader'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -86,7 +92,69 @@ const tooltipCaptions = (dateNow = new Date()) => {
 
 const StatisticsUsersContent = () => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
+
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const users = useAtomValue(usersAtomAsync)
+  const eventsUsers = useAtomValue(eventsUsersFullAllSelector)
+
+  const [periodStart, setPeriodStart] = useState(addDaysToDate(serverDate, -90))
+  const [periodEnd, setPeriodEnd] = useState(serverDate)
+
+  const [filterUsers2, setFilterUsers2] = useState({
+    gender: {
+      male: true,
+      famale: true,
+      null: true,
+    },
+    status: {
+      novice: true,
+      member: true,
+    },
+    relationship: {
+      havePartner: true,
+      noPartner: true,
+    },
+  })
+
+  const filteredEventsUsers = useMemo(
+    () =>
+      eventsUsers.filter((eventUser) => {
+        if (!eventUser.event || !eventUser.user) return false
+        if (
+          !(
+            (filterUsers2.gender[String(eventUser.user.gender)] ||
+              (filterUsers2.gender.null &&
+                eventUser.user.gender !== 'male' &&
+                eventUser.user.gender !== 'famale')) &&
+            filterUsers2.status[eventUser.user?.status ?? 'novice'] &&
+            (eventUser.user.relationship
+              ? filterUsers2.relationship.havePartner
+              : filterUsers2.relationship.noPartner)
+          )
+        )
+          return false
+
+        return (
+          getDiffBetweenDates(periodStart, eventUser.event.dateStart) > 0 &&
+          getDiffBetweenDates(periodEnd, eventUser.event.dateEnd) < 0
+        )
+      }),
+    [eventsUsers, periodStart, periodEnd, filterUsers2]
+  )
+
+  const usersIdsFromFilteredEventUsers = useMemo(() => {
+    const usersIds = []
+    const usersEventsCount = {}
+    filteredEventsUsers.forEach((eventUser) => {
+      usersIds.includes(eventUser.userId) || usersIds.push(eventUser.userId)
+      usersEventsCount[eventUser.userId] =
+        (usersEventsCount[eventUser.userId] || 0) + 1
+    })
+    const sortedUsersIds = usersIds.sort(
+      (a, b) => usersEventsCount[b] - usersEventsCount[a]
+    )
+    return sortedUsersIds
+  }, [filteredEventsUsers])
 
   const [filterUsers, setFilterUsers] = useState({
     status: {
@@ -176,6 +244,61 @@ const StatisticsUsersContent = () => {
           legend={false}
           tooltipCaptions={tooltipCaptions(serverDate)}
         />
+      </div>
+      <div className="flex flex-col items-center w-full">
+        <H4>Пользователи по посещению за выбранный период</H4>
+        <div className="flex items-center gap-x-1">
+          <DatePicker
+            label="От"
+            value={periodStart}
+            onChange={setPeriodStart}
+            showYears
+          />
+          <DatePicker
+            label="До"
+            value={periodEnd}
+            onChange={setPeriodEnd}
+            showYears
+          />
+        </div>
+        <ContentHeader>
+          <UsersFilter value={filterUsers2} onChange={setFilterUsers2} />
+        </ContentHeader>
+        <div className="flex w-full max-h-100 min-h-100 justify-stretch">
+          <ListWrapper
+            // className="h-full"
+            itemCount={usersIdsFromFilteredEventUsers.length}
+            itemSize={43}
+          >
+            {({ index, style }) => (
+              <div style={style} className="flex border-b border-gray-700">
+                <UserItemFromId
+                  key={usersIdsFromFilteredEventUsers[index]}
+                  userId={usersIdsFromFilteredEventUsers[index]}
+                  noBorder
+                  onClick={() => {
+                    console.log(
+                      'object :>> ',
+                      filteredEventsUsers.filter(
+                        ({ userId }) =>
+                          usersIdsFromFilteredEventUsers[index] === userId
+                      )
+                    )
+                    modalsFunc.user.view(usersIdsFromFilteredEventUsers[index])
+                  }}
+                />
+                <div className="flex items-center justify-center w-10 text-lg font-bold">
+                  {
+                    filteredEventsUsers.filter(
+                      ({ userId }) =>
+                        usersIdsFromFilteredEventUsers[index] === userId
+                    ).length
+                  }
+                </div>
+              </div>
+            )}
+          </ListWrapper>
+        </div>
       </div>
     </div>
   )
