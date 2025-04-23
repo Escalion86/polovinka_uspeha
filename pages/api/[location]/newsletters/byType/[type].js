@@ -1,6 +1,7 @@
 import extractVariables from '@helpers/extractVariables'
 import htmlToWhatsapp from '@helpers/htmlToWhatsapp'
 import replaceVariableInTextTemplate from '@helpers/replaceVariableInTextTemplate'
+import timeout from '@helpers/timoutPromise'
 import checkLocationValid from '@server/checkLocationValid'
 import { whatsappConstants } from '@server/constants'
 import dbConnect from '@utils/dbConnect'
@@ -82,105 +83,114 @@ export default async function handler(req, res) {
       const messageArray = generateArray(variablesInMessage.length)
 
       const result = []
-      for (let i = 0; i < usersMessages.length; i++) {
-        const {
-          whatsappPhone,
-          // whatsappMessage,
-          // telegramId,
-          // telegramMessage,
-          userId,
-          variables,
-        } = usersMessages[i]
 
-        let resultJson = {}
-
-        const messageToSend = getText(
-          variablesInMessage,
-          variables,
-          messageArray,
-          markdownMessage
-        )
-
-        // // const message = messageArray[variablesInMessage]
-        // console.log('variablesInMessage :>> ', variablesInMessage)
-        // console.log('variables :>> ', variables)
-        // console.log('messageArray1 :>> ', messageArray)
-        // console.log(
-        //   'gettext',
-        //   getText(variablesInMessage, variables, messageArray, markdown)
-        // )
-        // console.log('messageArray', messageArray)
-
-        // continue
-
-        // Если отправляем через WhatsApp
-        // if (whatsappMessage) {
-        //   const respCheckWhatsapp = await fetch(urlCheckWhatsapp, {
-        //     method: 'POST',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //       phoneNumber: whatsappPhone,
-        //     }),
-        //   })
-        // if (!respCheckWhatsapp) {
-        //   resultJson = {
-        //     userId,
-        //     whatsappMessage,
-        //     whatsappSuccess: false,
-        //     whatsappError: 'checkWhatsapp error',
-        //   }
-        // } else {
-        // const respCheckWhatsappJson = await respCheckWhatsapp.json()
-        // if (!respCheckWhatsappJson.existsWhatsapp) {
-        //   resultJson = {
-        //     userId,
-        //     whatsappMessage,
-        //     whatsappSuccess: false,
-        //     whatsappError: 'no whatsapp on number',
-        //   }
-        // } else {
-        const respSend = await fetch(urlSend, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            chatId: `${whatsappPhone}@c.us`,
-            message: messageToSend,
-          }),
-        })
-        if (respSend) {
-          const respSendJson = await respSend.json()
-          resultJson = {
-            userId,
+      try {
+        for (let i = 0; i < usersMessages.length; i++) {
+          const {
             whatsappPhone,
-            whatsappSuccess: true,
-            whatsappMessageId: respSendJson?.idMessage,
             // whatsappMessage,
-          }
-        } else {
-          resultJson = {
+            // telegramId,
+            // telegramMessage,
             userId,
-            whatsappPhone,
-            whatsappSuccess: false,
-            // whatsappMessage,
-            whatsappError: 'no response',
+            variables,
+          } = usersMessages[i]
+
+          let resultJson = {}
+
+          const messageToSend = getText(
+            variablesInMessage,
+            variables,
+            messageArray,
+            markdownMessage
+          )
+
+          // // const message = messageArray[variablesInMessage]
+          // console.log('variablesInMessage :>> ', variablesInMessage)
+          // console.log('variables :>> ', variables)
+          // console.log('messageArray1 :>> ', messageArray)
+          // console.log(
+          //   'gettext',
+          //   getText(variablesInMessage, variables, messageArray, markdown)
+          // )
+          // console.log('messageArray', messageArray)
+
+          // continue
+
+          // Если отправляем через WhatsApp
+          // if (whatsappMessage) {
+          //   const respCheckWhatsapp = await fetch(urlCheckWhatsapp, {
+          //     method: 'POST',
+          //     headers: {
+          //       'Content-Type': 'application/json',
+          //     },
+          //     body: JSON.stringify({
+          //       phoneNumber: whatsappPhone,
+          //     }),
+          //   })
+          // if (!respCheckWhatsapp) {
+          //   resultJson = {
+          //     userId,
+          //     whatsappMessage,
+          //     whatsappSuccess: false,
+          //     whatsappError: 'checkWhatsapp error',
+          //   }
+          // } else {
+          // const respCheckWhatsappJson = await respCheckWhatsapp.json()
+          // if (!respCheckWhatsappJson.existsWhatsapp) {
+          //   resultJson = {
+          //     userId,
+          //     whatsappMessage,
+          //     whatsappSuccess: false,
+          //     whatsappError: 'no whatsapp on number',
+          //   }
+          // } else {
+          const respSend = await fetch(urlSend, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              chatId: `${whatsappPhone}@c.us`,
+              message: messageToSend,
+            }),
+          })
+          if (respSend) {
+            const respSendJson = await respSend.json()
+            resultJson = {
+              userId,
+              whatsappPhone,
+              whatsappSuccess: true,
+              whatsappMessageId: respSendJson?.idMessage,
+              // whatsappMessage,
+            }
+          } else {
+            resultJson = {
+              userId,
+              whatsappPhone,
+              whatsappSuccess: false,
+              // whatsappMessage,
+              whatsappError: 'no response',
+            }
           }
+          // }
+          // }
+          // }
+          result.push(resultJson)
+          await timeout(20)
         }
-        // }
-        // }
-        // }
-        result.push(resultJson)
-      }
 
-      const newNewsletter = await db.model('Newsletters').create({
-        name,
-        newsletters: result,
-        status: 'active',
-        message,
-      })
+        const newNewsletter = await db.model('Newsletters').create({
+          name,
+          newsletters: result,
+          status: 'active',
+          message,
+        })
+      } catch (error) {
+        await db.model('Test').create({
+          data: { success: result, error },
+          error: true,
+        })
+      }
 
       // .then((res) => res.json())
       // .catch((error) => console.log('fetchingEvents ERROR:', error))

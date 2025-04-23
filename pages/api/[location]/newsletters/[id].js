@@ -62,7 +62,7 @@ export default async function handler(req, res) {
             }),
           })
           // console.log('resp :>> ', resp)
-          console.log('resp.status :>> ', i + ' <== ' + resp.status)
+          // console.log('resp.status :>> ', i + ' <== ' + resp.status)
           if (resp.status === 200 || resp.status === 400) {
             const respJson = await resp.json()
             updatedNewsletters.push({
@@ -72,10 +72,10 @@ export default async function handler(req, res) {
               whatsappSuccess: !!respJson?.statusMessage,
             })
             i++
-            await timeout(10)
+            await timeout(20)
           } else {
-            console.log('resp :>> ', resp)
-            console.log('object :>> ', { phone, whatsappMessageId })
+            // console.log('resp :>> ', resp)
+            // console.log('object :>> ', { phone, whatsappMessageId })
             // updatedNewsletters.push({
             //   ...item,
             //   whatsappPhone: phone,
@@ -92,7 +92,7 @@ export default async function handler(req, res) {
             whatsappSuccess: 'error',
           })
           i++
-          await timeout(10)
+          await timeout(20)
         }
       }
       // )
