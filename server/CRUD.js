@@ -389,6 +389,7 @@ export default async function handler(Schema, req, res, props = {}) {
 
   const id = query?.id
   const location = query?.location
+  const querySelect = query?.select // array
 
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
@@ -398,16 +399,17 @@ export default async function handler(Schema, req, res, props = {}) {
   // console.log('CRUD', { Schema, method, params, id, body, query })
 
   delete query.location
+  delete query.select
 
   const db = await dbConnect(location)
   if (!db) return res?.status(400).json({ success: false, error: 'db error' })
 
-  // const test = db.get('polovinka_uspeha_krsk_dev')
-  // console.log('test :>> ', test)
-
   let data
 
-  const selectOpts = { ...(select ?? {}), password: 0 }
+  const selectOpts =
+    !select && querySelect
+      ? querySelect.split(',')
+      : { ...(select ?? {}), password: 0 }
 
   switch (method) {
     case 'GET':
