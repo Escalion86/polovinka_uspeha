@@ -7,6 +7,7 @@ export default async function handler(req, res) {
 
   if (method === 'GET') {
     if (query.test) {
+      const test = []
       for (const location of LOCATIONS_KEYS_VISIBLE) {
         const db = await dbConnect(location)
 
@@ -166,6 +167,18 @@ export default async function handler(req, res) {
           }
         )
 
+        const eventsNotBlanks = await db.model('Events').collection.updateMany(
+          {
+            $or: [
+              { blank: { $exists: false } },
+              { blank: null },
+              { blank: undefined },
+            ],
+          },
+          { $set: { blank: false } }
+        )
+        test.push(eventsNotBlanks)
+
         const directions = await db.model('Directions').collection.updateMany(
           {},
           {
@@ -245,6 +258,7 @@ export default async function handler(req, res) {
       return res?.status(201).json({
         success: true,
         data: 'ok',
+        test,
       })
     }
   }
