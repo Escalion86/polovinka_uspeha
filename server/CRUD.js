@@ -424,6 +424,8 @@ export default async function handler(Schema, req, res, props = {}) {
           const preparedQuery = { ...query }
           for (const [key, value] of Object.entries(preparedQuery)) {
             if (isJson(value)) preparedQuery[key] = JSON.parse(value)
+            if (value === 'true') preparedQuery[key] = true
+            if (value === 'false') preparedQuery[key] = false
           }
           if (preparedQuery['data._id'])
             preparedQuery['data._id'] = new mongoose.Types.ObjectId(
