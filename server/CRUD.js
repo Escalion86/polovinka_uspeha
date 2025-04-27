@@ -383,6 +383,44 @@ const updateEventInCalendar = async (event, location) => {
   return updatedCalendarEvent
 }
 
+function transformQuery(query) {
+  const transformed = {}
+
+  for (const [key, value] of Object.entries(query)) {
+    // Обрабатываем вложенные объекты с массивами (например _id[$in][])
+    if (key.includes('[')) {
+      const parts = key.split(/\[|\]/g).filter((p) => p)
+      let current = transformed
+
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i]
+        const isLast = i === parts.length - 1
+
+        if (isLast) {
+          if (Array.isArray(current[part])) {
+            current[part].push(...(Array.isArray(value) ? value : [value]))
+          } else {
+            current[part] = Array.isArray(value) ? value : [value]
+          }
+        } else {
+          current[part] = current[part] || (parts[i + 1] === '0' ? [] : {})
+          current = current[part]
+        }
+      }
+    } else {
+      // Обрабатываем простые поля
+      transformed[key] = value
+    }
+  }
+
+  // Преобразовываем типы данных
+  if ('blank' in transformed) {
+    transformed.blank = transformed.blank === 'true'
+  }
+
+  return transformed
+}
+
 function convertQuery(query) {
   const converted = {}
   for (const key in query) {
@@ -471,7 +509,7 @@ export default async function handler(Schema, req, res, props = {}) {
           }
           return res?.status(200).json({ success: true, data })
         } else if (Object.keys(query).length > 0) {
-          const preparedQuery = convertQuery(query)
+          const preparedQuery = convertQuery(transformQuery(query))
           console.log('preparedQuery :>> ', preparedQuery)
           for (const [key, value] of Object.entries(preparedQuery)) {
             if (isJson(value)) preparedQuery[key] = JSON.parse(value)
