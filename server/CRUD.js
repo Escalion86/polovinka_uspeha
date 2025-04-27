@@ -383,6 +383,54 @@ const updateEventInCalendar = async (event, location) => {
   return updatedCalendarEvent
 }
 
+function convertQuery(query) {
+  const converted = {}
+  for (const key in query) {
+    let value = query[key]
+    if (key === '_id') {
+      converted[key] = processIdValue(value)
+    } else if (
+      ['dateStart', 'dateEnd', 'createdAt', 'updatedAt'].includes(key)
+    ) {
+      converted[key] = processDateValue(value)
+    } else {
+      converted[key] = value
+    }
+  }
+  return converted
+}
+
+function processIdValue(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const processed = {}
+    for (const op in value) {
+      const opValue = value[op]
+      if (op === '$in' && Array.isArray(opValue)) {
+        processed[op] = opValue.map((id) => new mongoose.Types.ObjectId(id))
+      } else if (typeof opValue === 'object' && opValue !== null) {
+        processed[op] = processIdValue(opValue)
+      } else {
+        processed[op] = new mongoose.Types.ObjectId(opValue)
+      }
+    }
+    return processed
+  } else {
+    return new mongoose.Types.ObjectId(value)
+  }
+}
+
+function processDateValue(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const processed = {}
+    for (const op in value) {
+      processed[op] = new Date(value[op])
+    }
+    return processed
+  } else {
+    return new Date(value)
+  }
+}
+
 export default async function handler(Schema, req, res, props = {}) {
   const { params, select, autoIncrementIndex } = props
   const { query, method, body } = req
@@ -423,7 +471,8 @@ export default async function handler(Schema, req, res, props = {}) {
           }
           return res?.status(200).json({ success: true, data })
         } else if (Object.keys(query).length > 0) {
-          const preparedQuery = { ...query }
+          const preparedQuery = convertQuery(query)
+          console.log('preparedQuery :>> ', preparedQuery)
           for (const [key, value] of Object.entries(preparedQuery)) {
             if (isJson(value)) preparedQuery[key] = JSON.parse(value)
             if (value === 'true') preparedQuery[key] = true
@@ -433,7 +482,7 @@ export default async function handler(Schema, req, res, props = {}) {
             preparedQuery['data._id'] = new mongoose.Types.ObjectId(
               preparedQuery['data._id']
             )
-          console.log('querySort :>> ', querySort)
+          // console.log('querySort :>> ', querySort)
           data = await db
             .model(Schema)
             .find(preparedQuery)
