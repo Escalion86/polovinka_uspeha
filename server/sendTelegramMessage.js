@@ -1,6 +1,6 @@
 import { postData } from '@helpers/CRUD'
 
-import dbConnect from '@utils/dbConnect'
+// import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
 import splitText from '@helpers/splitText'
 
@@ -109,18 +109,18 @@ const sendTelegramMessage = async ({
   inline_keyboard,
   location,
 }) => {
-  const db = await dbConnect(location)
-  if (!db) return
+  // const db = await dbConnect(location)
+  // if (!db) return
 
-  if (
-    !telegramIds ||
-    !['object', 'string', 'number'].includes(typeof telegramIds)
-  ) {
-    await db
-      .model('Test')
-      .create({ data: { telegramIds }, error: 'Wrong telegramIds' })
-    return undefined
-  }
+  // if (
+  //   !telegramIds ||
+  //   !['object', 'string', 'number'].includes(typeof telegramIds)
+  // ) {
+  //   await db
+  //     .model('Test')
+  //     .create({ data: { telegramIds }, error: 'Wrong telegramIds' })
+  //   return undefined
+  // }
 
   const successes = []
   const errors = []
@@ -195,12 +195,12 @@ const sendTelegramMessage = async ({
     }
   }
 
-  await db.model('Test').create({
-    data: { successes, errors },
-    error,
-    successCount,
-    errorCount,
-  })
+  // await db.model('Test').create({
+  //   data: { successes, errors },
+  //   error,
+  //   successCount,
+  //   errorCount,
+  // })
 
   return { successes, errors, successCount, errorCount }
 
