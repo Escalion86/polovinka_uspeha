@@ -4,8 +4,8 @@ import dbConnect from '@utils/dbConnect'
 import mongoose from 'mongoose'
 
 const query = {
-  // collection: 'events',
-  // select: 'title,dateStart,dateEnd,status',
+  collection: 'events',
+  select: 'title,dateStart,dateEnd,status',
   _id: {
     $in: [
       '63e366408eada61cda620a49',
@@ -71,7 +71,7 @@ const query = {
     ],
   },
   blank: false,
-  // sort: 'dateStart',
+  status: 'active',
 }
 
 function convertQuery(query) {
