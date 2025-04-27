@@ -390,6 +390,7 @@ export default async function handler(Schema, req, res, props = {}) {
   const id = query?.id
   const location = query?.location
   const querySelect = query?.select // array
+  const querySort = query?.sort
 
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
@@ -400,6 +401,7 @@ export default async function handler(Schema, req, res, props = {}) {
 
   delete query.location
   delete query.select
+  delete query.sort
 
   const db = await dbConnect(location)
   if (!db) return res?.status(400).json({ success: false, error: 'db error' })
@@ -431,7 +433,12 @@ export default async function handler(Schema, req, res, props = {}) {
             preparedQuery['data._id'] = new mongoose.Types.ObjectId(
               preparedQuery['data._id']
             )
-          data = await db.model(Schema).find(preparedQuery).select(selectOpts)
+          console.log('querySort :>> ', querySort)
+          data = await db
+            .model(Schema)
+            .find(preparedQuery)
+            .select(selectOpts)
+            .sort(querySort)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
