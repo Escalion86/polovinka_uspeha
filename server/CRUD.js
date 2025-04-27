@@ -399,7 +399,7 @@ function transformQuery(query) {
     if (
       lowercasedKey === 'createdat' ||
       lowercasedKey === 'updatedat' ||
-      key.toLowerCase().includes('date')
+      lowercasedKey.includes('date')
     ) {
       const date = new Date(value)
       if (isNaN(date.getTime())) throw new Error(`Invalid Date: ${value}`)
@@ -484,6 +484,8 @@ export default async function handler(Schema, req, res, props = {}) {
     !select && querySelect
       ? querySelect.split(',')
       : { ...(select ?? {}), password: 0 }
+
+  const lowercasedSchema = Schema.toLowerCase()
 
   switch (method) {
     case 'GET':
@@ -578,7 +580,7 @@ export default async function handler(Schema, req, res, props = {}) {
           }
 
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'add',
             data: jsonData,
             userId: body.userId,
@@ -632,7 +634,7 @@ export default async function handler(Schema, req, res, props = {}) {
           difference._id = new mongoose.Types.ObjectId(id)
 
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'update',
             data: difference,
             userId: body.userId,
@@ -758,7 +760,7 @@ export default async function handler(Schema, req, res, props = {}) {
             return res?.status(400).json({ success: false })
           }
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'delete',
             data: existingData,
             userId: body.userId,
@@ -781,7 +783,7 @@ export default async function handler(Schema, req, res, props = {}) {
           }
 
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'delete',
             data: existingData,
             userId: body.userId,
@@ -798,7 +800,7 @@ export default async function handler(Schema, req, res, props = {}) {
             return res?.status(400).json({ success: false })
           }
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'delete',
             data: existingData,
             userId: body.userId,
