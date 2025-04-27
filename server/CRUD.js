@@ -384,89 +384,75 @@ const updateEventInCalendar = async (event, location) => {
 }
 
 function transformQuery(query) {
-  const transformed = {}
-
-  for (const [key, value] of Object.entries(query)) {
-    // Обрабатываем вложенные объекты с массивами (например _id[$in][])
-    if (key.includes('[')) {
-      const parts = key.split(/\[|\]/g).filter((p) => p)
-      let current = transformed
-
-      for (let i = 0; i < parts.length; i++) {
-        const part = parts[i]
-        const isLast = i === parts.length - 1
-
-        if (isLast) {
-          if (Array.isArray(current[part])) {
-            current[part].push(...(Array.isArray(value) ? value : [value]))
-          } else {
-            current[part] = Array.isArray(value) ? value : [value]
-          }
-        } else {
-          current[part] = current[part] || (parts[i + 1] === '0' ? [] : {})
-          current = current[part]
-        }
+  const processSingleValue = (key, value) => {
+    const lowercasedKey = key.toLowerCase()
+    // Обработка ObjectId
+    if (lowercasedKey.endsWith('_id') || key === '$in') {
+      try {
+        return new mongoose.Types.ObjectId(value)
+      } catch (e) {
+        throw new Error(`Invalid ObjectId: ${value}`)
       }
-    } else {
-      // Обрабатываем простые поля
-      transformed[key] = value
     }
-  }
 
-  // Преобразовываем типы данных
-  if ('blank' in transformed) {
-    transformed.blank = transformed.blank === 'true'
-  }
-
-  return transformed
-}
-
-function convertQuery(query) {
-  const converted = {}
-  for (const key in query) {
-    let value = query[key]
-    if (key === '_id') {
-      converted[key] = processIdValue(value)
-    } else if (
-      ['dateStart', 'dateEnd', 'createdAt', 'updatedAt'].includes(key)
+    // Обработка дат
+    if (
+      lowercasedKey === 'createdat' ||
+      lowercasedKey === 'updatedat' ||
+      key.toLowerCase().includes('date')
     ) {
-      converted[key] = processDateValue(value)
-    } else {
-      converted[key] = value
+      const date = new Date(value)
+      if (isNaN(date.getTime())) throw new Error(`Invalid Date: ${value}`)
+      return date
+    }
+
+    // Обработка boolean
+    if (value === 'true') return true
+    if (value === 'false') return false
+
+    return value
+  }
+
+  const buildNestedStructure = (keys, value, ctx) => {
+    const [currentKey, ...restKeys] = keys
+
+    if (restKeys.length === 0) {
+      ctx[currentKey] = processSingleValue(currentKey, value)
+      return
+    }
+
+    if (!ctx[currentKey]) {
+      ctx[currentKey] = !isNaN(restKeys[0]) ? [] : {}
+    }
+
+    buildNestedStructure(restKeys, value, ctx[currentKey])
+  }
+
+  const result = {}
+
+  for (const [rawKey, rawValue] of Object.entries(query)) {
+    const keys = rawKey.split(/\[|\]/g).filter((k) => k !== '')
+    const values = Array.isArray(rawValue) ? rawValue : [rawValue]
+
+    for (const val of values) {
+      buildNestedStructure(keys, val, result)
     }
   }
-  return converted
-}
 
-function processIdValue(value) {
-  if (value && typeof value === 'object' && !Array.isArray(value)) {
-    const processed = {}
-    for (const op in value) {
-      const opValue = value[op]
-      if (op === '$in' && Array.isArray(opValue)) {
-        processed[op] = opValue.map((id) => new mongoose.Types.ObjectId(id))
-      } else if (typeof opValue === 'object' && opValue !== null) {
-        processed[op] = processIdValue(opValue)
-      } else {
-        processed[op] = new mongoose.Types.ObjectId(opValue)
+  // Специальная обработка для массивов $in
+  const processInOperator = (obj) => {
+    for (const key in obj) {
+      if (key === '$in' && Array.isArray(obj[key])) {
+        obj[key] = obj[key].map((item) => processSingleValue('_id', item))
+      } else if (typeof obj[key] === 'object') {
+        processInOperator(obj[key])
       }
     }
-    return processed
-  } else {
-    return new mongoose.Types.ObjectId(value)
   }
-}
 
-function processDateValue(value) {
-  if (value && typeof value === 'object' && !Array.isArray(value)) {
-    const processed = {}
-    for (const op in value) {
-      processed[op] = new Date(value[op])
-    }
-    return processed
-  } else {
-    return new Date(value)
-  }
+  processInOperator(result)
+
+  return result
 }
 
 export default async function handler(Schema, req, res, props = {}) {
@@ -509,7 +495,7 @@ export default async function handler(Schema, req, res, props = {}) {
           }
           return res?.status(200).json({ success: true, data })
         } else if (Object.keys(query).length > 0) {
-          const preparedQuery = convertQuery(transformQuery(query))
+          const preparedQuery = transformQuery(query)
           console.log('preparedQuery :>> ', preparedQuery)
           for (const [key, value] of Object.entries(preparedQuery)) {
             if (isJson(value)) preparedQuery[key] = JSON.parse(value)
