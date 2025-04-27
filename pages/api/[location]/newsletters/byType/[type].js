@@ -186,6 +186,8 @@ export default async function handler(req, res) {
           message,
         })
       } catch (error) {
+        console.log('resultJson.length :>> ', resultJson.length)
+        console.log('error :>> ', error)
         await db.model('Test').create({
           data: { success: result, error },
           error: true,
