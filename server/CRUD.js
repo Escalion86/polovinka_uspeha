@@ -384,10 +384,15 @@ const updateEventInCalendar = async (event, location) => {
 }
 
 function transformQuery(query) {
+  console.log('query :>> ', query)
   const processSingleValue = (key, value) => {
+    // Добавляем проверку на отсутствие ключа (на случай корневого уровня)
+    if (!key) return value
+
     const lowercasedKey = key.toLowerCase()
+
     // Обработка ObjectId
-    if (lowercasedKey.endsWith('_id') || key === '$in') {
+    if (lowercasedKey === '_id') {
       try {
         return new mongoose.Types.ObjectId(value)
       } catch (e) {
@@ -417,7 +422,16 @@ function transformQuery(query) {
     const [currentKey, ...restKeys] = keys
 
     if (restKeys.length === 0) {
-      ctx[currentKey] = processSingleValue(currentKey, value)
+      // Изменения здесь: добавляем проверку на оператор $in
+      if (currentKey === '$in' && !Array.isArray(ctx[currentKey])) {
+        ctx[currentKey] = []
+      }
+
+      if (Array.isArray(ctx[currentKey])) {
+        ctx[currentKey].push(processSingleValue(currentKey, value))
+      } else {
+        ctx[currentKey] = processSingleValue(currentKey, value)
+      }
       return
     }
 
@@ -440,17 +454,17 @@ function transformQuery(query) {
   }
 
   // Специальная обработка для массивов $in
-  const processInOperator = (obj) => {
+  const processInOperator = (obj, parentKey) => {
     for (const key in obj) {
       if (key === '$in' && Array.isArray(obj[key])) {
-        obj[key] = obj[key].map((item) => processSingleValue('_id', item))
+        obj[key] = obj[key].map((item) => processSingleValue(parentKey, item))
       } else if (typeof obj[key] === 'object') {
-        processInOperator(obj[key])
+        processInOperator(obj[key], key)
       }
     }
   }
 
-  processInOperator(result)
+  processInOperator(result, '')
 
   return result
 }
@@ -463,6 +477,7 @@ export default async function handler(Schema, req, res, props = {}) {
   const location = query?.location
   const querySelect = query?.select // array
   const querySort = query?.sort
+  const queryLimit = query?.limit
 
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
@@ -474,6 +489,7 @@ export default async function handler(Schema, req, res, props = {}) {
   delete query.location
   delete query.select
   delete query.sort
+  delete query.limit
 
   const db = await dbConnect(location)
   if (!db) return res?.status(400).json({ success: false, error: 'db error' })
@@ -513,19 +529,30 @@ export default async function handler(Schema, req, res, props = {}) {
             .model(Schema)
             .find(preparedQuery)
             .select(selectOpts)
+            .limit(queryLimit)
             .sort(querySort)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else if (params) {
-          data = await db.model(Schema).find(params).select(selectOpts)
+          data = await db
+            .model(Schema)
+            .find(params)
+            .select(selectOpts)
+            .limit(queryLimit)
+            .sort(querySort)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else {
-          data = await db.model(Schema).find().select(selectOpts)
+          data = await db
+            .model(Schema)
+            .find()
+            .select(selectOpts)
+            .limit(queryLimit)
+            .sort(querySort)
           return res?.status(200).json({ success: true, data })
         }
       } catch (error) {
