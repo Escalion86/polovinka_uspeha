@@ -384,7 +384,6 @@ const updateEventInCalendar = async (event, location) => {
 }
 
 function transformQuery(query) {
-  console.log('query :>> ', query)
   const processSingleValue = (key, value) => {
     // Добавляем проверку на отсутствие ключа (на случай корневого уровня)
     if (!key) return value
@@ -478,6 +477,7 @@ export default async function handler(Schema, req, res, props = {}) {
   const querySelect = query?.select // array
   const querySort = query?.sort
   const queryLimit = query?.limit
+  const isCountReturn = !!query?.countReturn
 
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
@@ -490,6 +490,7 @@ export default async function handler(Schema, req, res, props = {}) {
   delete query.select
   delete query.sort
   delete query.limit
+  delete query.countReturn
 
   const db = await dbConnect(location)
   if (!db) return res?.status(400).json({ success: false, error: 'db error' })
@@ -514,45 +515,54 @@ export default async function handler(Schema, req, res, props = {}) {
           return res?.status(200).json({ success: true, data })
         } else if (Object.keys(query).length > 0) {
           const preparedQuery = transformQuery(query)
-          console.log('preparedQuery :>> ', preparedQuery)
           for (const [key, value] of Object.entries(preparedQuery)) {
             if (isJson(value)) preparedQuery[key] = JSON.parse(value)
-            if (value === 'true') preparedQuery[key] = true
-            if (value === 'false') preparedQuery[key] = false
+            // if (value === 'true') preparedQuery[key] = true
+            // if (value === 'false') preparedQuery[key] = false
           }
           if (preparedQuery['data._id'])
             preparedQuery['data._id'] = new mongoose.Types.ObjectId(
               preparedQuery['data._id']
             )
           // console.log('querySort :>> ', querySort)
-          data = await db
-            .model(Schema)
-            .find(preparedQuery)
-            .select(selectOpts)
-            .limit(queryLimit)
-            .sort(querySort)
+          data = isCountReturn
+            ? await db
+                .model(Schema)
+                .find(preparedQuery)
+                .limit(queryLimit)
+                .count()
+            : await db
+                .model(Schema)
+                .find(preparedQuery)
+                .select(selectOpts)
+                .limit(queryLimit)
+                .sort(querySort)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else if (params) {
-          data = await db
-            .model(Schema)
-            .find(params)
-            .select(selectOpts)
-            .limit(queryLimit)
-            .sort(querySort)
+          data = isCountReturn
+            ? await db.model(Schema).find(params).limit(queryLimit).count()
+            : await db
+                .model(Schema)
+                .find(params)
+                .select(selectOpts)
+                .limit(queryLimit)
+                .sort(querySort)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else {
-          data = await db
-            .model(Schema)
-            .find()
-            .select(selectOpts)
-            .limit(queryLimit)
-            .sort(querySort)
+          data = isCountReturn
+            ? await db.model(Schema).find().limit(queryLimit).count()
+            : await db
+                .model(Schema)
+                .find()
+                .select(selectOpts)
+                .limit(queryLimit)
+                .sort(querySort)
           return res?.status(200).json({ success: true, data })
         }
       } catch (error) {
