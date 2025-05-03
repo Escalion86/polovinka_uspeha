@@ -524,13 +524,16 @@ export default async function handler(Schema, req, res, props = {}) {
             preparedQuery['data._id'] = new mongoose.Types.ObjectId(
               preparedQuery['data._id']
             )
+          console.log('selectOpts :>> ', selectOpts)
           // console.log('querySort :>> ', querySort)
           data = isCountReturn
-            ? await db
-                .model(Schema)
-                .find(preparedQuery)
-                .limit(queryLimit)
-                .count()
+            ? (
+                await db
+                  .model(Schema)
+                  .find(preparedQuery)
+                  .select({ _id: 1 })
+                  .limit(queryLimit)
+              ).length
             : await db
                 .model(Schema)
                 .find(preparedQuery)
@@ -543,11 +546,11 @@ export default async function handler(Schema, req, res, props = {}) {
           return res?.status(200).json({ success: true, data })
         } else if (params) {
           data = isCountReturn
-            ? await db.model(Schema).find(params).limit(queryLimit).count()
+            ? (await db.model(Schema).find(params).limit(queryLimit)).length
             : await db
                 .model(Schema)
                 .find(params)
-                .select(selectOpts)
+                .select({ _id: 1 })
                 .limit(queryLimit)
                 .sort(querySort)
           if (!data) {
@@ -556,7 +559,13 @@ export default async function handler(Schema, req, res, props = {}) {
           return res?.status(200).json({ success: true, data })
         } else {
           data = isCountReturn
-            ? await db.model(Schema).find().limit(queryLimit).count()
+            ? (
+                await db
+                  .model(Schema)
+                  .find()
+                  .select({ _id: 1 })
+                  .limit(queryLimit)
+              ).length
             : await db
                 .model(Schema)
                 .find()
