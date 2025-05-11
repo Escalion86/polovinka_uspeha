@@ -185,6 +185,8 @@ export default async function handler(req, res) {
           status: 'active',
           message,
         })
+
+        return res?.status(200).json({ success: true, data: newNewsletter })
       } catch (error) {
         console.log('resultJson.length :>> ', resultJson.length)
         console.log('error :>> ', error)
@@ -192,6 +194,8 @@ export default async function handler(req, res) {
           data: { success: result, error },
           error: true,
         })
+
+        return res?.status(200).json({ success: false, error })
       }
 
       // .then((res) => res.json())
@@ -205,8 +209,6 @@ export default async function handler(req, res) {
       //     resp: { idMessage: 'BAE5E9A4F28119D2' }
       //   }
       // ]
-
-      return res?.status(200).json({ success: true, data: newNewsletter })
     }
     if (type === 'getMessage') {
       const { phone, messageId } = body.data
