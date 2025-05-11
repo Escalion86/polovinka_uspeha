@@ -497,9 +497,18 @@ export default async function handler(Schema, req, res, props = {}) {
 
   let data
 
+  const queryStringForm = (queryString) => {
+    const query = queryString.split(',')
+    if (query.includes('_id')) return query
+    else {
+      query.push('-_id')
+      return query
+    }
+  }
+
   const selectOpts =
     !select && querySelect
-      ? querySelect.split(',')
+      ? queryStringForm(querySelect)
       : { ...(select ?? {}), password: 0 }
 
   const lowercasedSchema = Schema.toLowerCase()
@@ -524,7 +533,6 @@ export default async function handler(Schema, req, res, props = {}) {
             preparedQuery['data._id'] = new mongoose.Types.ObjectId(
               preparedQuery['data._id']
             )
-          console.log('selectOpts :>> ', selectOpts)
           // console.log('querySort :>> ', querySort)
           data = isCountReturn
             ? (
