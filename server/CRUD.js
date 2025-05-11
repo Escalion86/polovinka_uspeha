@@ -477,6 +477,9 @@ export default async function handler(Schema, req, res, props = {}) {
   const querySelect = query?.select // array
   const querySort = query?.sort
   const queryLimit = query?.limit
+  const queryAggregate = query?.aggregate
+    ? JSON.parse(query?.aggregate)
+    : undefined
   const isCountReturn = !!query?.countReturn
 
   if (!location)
@@ -491,6 +494,7 @@ export default async function handler(Schema, req, res, props = {}) {
   delete query.sort
   delete query.limit
   delete query.countReturn
+  delete query.aggregate
 
   const db = await dbConnect(location)
   if (!db) return res?.status(400).json({ success: false, error: 'db error' })
@@ -537,12 +541,14 @@ export default async function handler(Schema, req, res, props = {}) {
           data = isCountReturn
             ? (await db.model(Schema).find(preparedQuery).select({ _id: 1 }))
                 .length
-            : await db
-                .model(Schema)
-                .find(preparedQuery)
-                .select(selectOpts)
-                .limit(queryLimit)
-                .sort(querySort)
+            : queryAggregate
+              ? await db.model(Schema).aggregate(queryAggregate)
+              : await db
+                  .model(Schema)
+                  .find(preparedQuery)
+                  .select(selectOpts)
+                  .limit(queryLimit)
+                  .sort(querySort)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
@@ -550,12 +556,14 @@ export default async function handler(Schema, req, res, props = {}) {
         } else if (params) {
           data = isCountReturn
             ? (await db.model(Schema).find(params).select({ _id: 1 })).length
-            : await db
-                .model(Schema)
-                .find(params)
-                // .select({ _id: 1 })
-                .limit(queryLimit)
-                .sort(querySort)
+            : queryAggregate
+              ? await db.model(Schema).aggregate(queryAggregate)
+              : await db
+                  .model(Schema)
+                  .find(params)
+                  // .select({ _id: 1 })
+                  .limit(queryLimit)
+                  .sort(querySort)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
@@ -563,12 +571,14 @@ export default async function handler(Schema, req, res, props = {}) {
         } else {
           data = isCountReturn
             ? (await db.model(Schema).find().select({ _id: 1 })).length
-            : await db
-                .model(Schema)
-                .find()
-                .select(selectOpts)
-                .limit(queryLimit)
-                .sort(querySort)
+            : queryAggregate
+              ? await db.model(Schema).aggregate(queryAggregate)
+              : await db
+                  .model(Schema)
+                  .find()
+                  .select(selectOpts)
+                  .limit(queryLimit)
+                  .sort(querySort)
           return res?.status(200).json({ success: true, data })
         }
       } catch (error) {
