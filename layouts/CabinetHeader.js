@@ -31,7 +31,6 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
   const isLoggedUserDev = useAtomValue(loggedUserAtom)?.role === 'dev'
-  const isLoggedUserAdmin = useAtomValue(isLoggedUserAdminSelector)
   const siteSettings = useAtomValue(siteSettingsAtom)
   const headerInfo = siteSettings?.headerInfo
 
@@ -91,18 +90,16 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
           </Link>
         </div>
       )}
-      {isLoggedUserAdmin && (
-        <div
-          className="flex items-center justify-center w-6 h-6 cursor-pointer"
-          onClick={() => {
-            modalsFunc.external.qrCodeGenerator({
-              title: 'QR-код на текущую страницу',
-            })
-          }}
-        >
-          <FontAwesomeIcon icon={faQrcode} className="w-5 h-5 text-white" />
-        </div>
-      )}
+      <div
+        className="flex items-center justify-center w-6 h-6 cursor-pointer"
+        onClick={() => {
+          modalsFunc.external.qrCodeGenerator({
+            title: 'QR-код на текущую страницу',
+          })
+        }}
+      >
+        <FontAwesomeIcon icon={faQrcode} className="w-5 h-5 text-white" />
+      </div>
       {isLoggedUserDev && (
         <Menu
           trigger={

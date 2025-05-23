@@ -383,6 +383,115 @@ const updateEventInCalendar = async (event, location) => {
   return updatedCalendarEvent
 }
 
+function transformQuery(query) {
+  const tryParseJSON = (value) => {
+    if (typeof value !== 'string') return value
+    try {
+      return JSON.parse(value)
+    } catch {
+      return value
+    }
+  }
+
+  const processSingleValue = (key, value) => {
+    if (!key) return value
+
+    const lowercasedKey = key.toLowerCase()
+
+    // Обработка ObjectId
+    if (lowercasedKey === '_id') {
+      if (typeof value !== 'string') {
+        throw new Error(
+          `Invalid ObjectId: expected string, got ${typeof value}`
+        )
+      }
+      try {
+        return new mongoose.Types.ObjectId(value)
+      } catch (e) {
+        throw new Error(`Invalid ObjectId: ${value}`)
+      }
+    }
+
+    // Обработка дат (только для строковых значений)
+    if (
+      (lowercasedKey === 'createdat' ||
+        lowercasedKey === 'updatedat' ||
+        lowercasedKey.includes('date')) &&
+      typeof value === 'string'
+    ) {
+      const date = new Date(value)
+      if (isNaN(date.getTime())) throw new Error(`Invalid Date: ${value}`)
+      return date
+    }
+
+    // Обработка boolean
+    if (value === 'true') return true
+    if (value === 'false') return false
+
+    return value
+  }
+
+  const buildNestedStructure = (keys, rawValue, ctx) => {
+    const value =
+      typeof rawValue === 'string' ? tryParseJSON(rawValue) : rawValue
+
+    const [currentKey, ...restKeys] = keys
+
+    if (restKeys.length === 0) {
+      if (currentKey === '$in' && !Array.isArray(ctx[currentKey])) {
+        ctx[currentKey] = []
+      }
+
+      if (typeof value === 'object' && value !== null) {
+        ctx[currentKey] = transformQuery(value)
+      } else {
+        if (Array.isArray(ctx[currentKey])) {
+          ctx[currentKey].push(value)
+        } else {
+          ctx[currentKey] = value
+        }
+      }
+      return
+    }
+
+    if (!ctx[currentKey]) {
+      ctx[currentKey] = !isNaN(restKeys[0]) ? [] : {}
+    }
+
+    buildNestedStructure(restKeys, value, ctx[currentKey])
+  }
+
+  const result = {}
+
+  // Основной цикл обработки
+  for (const [rawKey, rawValue] of Object.entries(query)) {
+    const parsedValue = tryParseJSON(rawValue)
+    const keys = rawKey.split(/\[|\]/g).filter((k) => k !== '')
+    const values = Array.isArray(parsedValue) ? parsedValue : [parsedValue]
+
+    for (const val of values) {
+      buildNestedStructure(keys, val, result)
+    }
+  }
+
+  // Рекурсивная постобработка
+  const recursiveProcess = (obj, parentKey = '') => {
+    for (const [key, value] of Object.entries(obj)) {
+      const fullPath = parentKey ? `${parentKey}.${key}` : key
+
+      if (typeof value === 'object' && value !== null) {
+        recursiveProcess(value, fullPath)
+      } else {
+        obj[key] = processSingleValue(fullPath, value)
+      }
+    }
+  }
+
+  recursiveProcess(result)
+
+  return result
+}
+
 export default async function handler(Schema, req, res, props = {}) {
   const { params, select, autoIncrementIndex } = props
   const { query, method, body } = req
@@ -391,6 +500,11 @@ export default async function handler(Schema, req, res, props = {}) {
   const location = query?.location
   const querySelect = query?.select // array
   const querySort = query?.sort
+  const queryLimit = query?.limit
+  const queryAggregate = query?.aggregate
+    ? JSON.parse(query?.aggregate)
+    : undefined
+  const isCountReturn = !!query?.countReturn
 
   if (!location)
     return res?.status(400).json({ success: false, error: 'No location' })
@@ -402,16 +516,30 @@ export default async function handler(Schema, req, res, props = {}) {
   delete query.location
   delete query.select
   delete query.sort
+  delete query.limit
+  delete query.countReturn
+  delete query.aggregate
 
   const db = await dbConnect(location)
   if (!db) return res?.status(400).json({ success: false, error: 'db error' })
 
   let data
 
+  const queryStringForm = (queryString) => {
+    const query = queryString.split(',')
+    if (query.includes('_id')) return query
+    else {
+      query.push('-_id')
+      return query
+    }
+  }
+
   const selectOpts =
     !select && querySelect
-      ? querySelect.split(',')
+      ? queryStringForm(querySelect)
       : { ...(select ?? {}), password: 0 }
+
+  const lowercasedSchema = Schema.toLowerCase()
 
   switch (method) {
     case 'GET':
@@ -423,34 +551,60 @@ export default async function handler(Schema, req, res, props = {}) {
           }
           return res?.status(200).json({ success: true, data })
         } else if (Object.keys(query).length > 0) {
-          const preparedQuery = { ...query }
+          const preparedQuery = transformQuery(query)
+          // console.log('preparedQuery :>> ', preparedQuery)
           for (const [key, value] of Object.entries(preparedQuery)) {
             if (isJson(value)) preparedQuery[key] = JSON.parse(value)
-            if (value === 'true') preparedQuery[key] = true
-            if (value === 'false') preparedQuery[key] = false
+            // if (value === 'true') preparedQuery[key] = true
+            // if (value === 'false') preparedQuery[key] = false
           }
           if (preparedQuery['data._id'])
             preparedQuery['data._id'] = new mongoose.Types.ObjectId(
               preparedQuery['data._id']
             )
-          console.log('querySort :>> ', querySort)
-          data = await db
-            .model(Schema)
-            .find(preparedQuery)
-            .select(selectOpts)
-            .sort(querySort)
+          // console.log('querySort :>> ', querySort)
+          data = isCountReturn
+            ? (await db.model(Schema).find(preparedQuery).select({ _id: 1 }))
+                .length
+            : queryAggregate
+              ? await db.model(Schema).aggregate(queryAggregate)
+              : await db
+                  .model(Schema)
+                  .find(preparedQuery)
+                  .select(selectOpts)
+                  .limit(queryLimit)
+                  .sort(querySort)
+          console.log('data :>> ', data)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else if (params) {
-          data = await db.model(Schema).find(params).select(selectOpts)
+          data = isCountReturn
+            ? (await db.model(Schema).find(params).select({ _id: 1 })).length
+            : queryAggregate
+              ? await db.model(Schema).aggregate(queryAggregate)
+              : await db
+                  .model(Schema)
+                  .find(params)
+                  // .select({ _id: 1 })
+                  .limit(queryLimit)
+                  .sort(querySort)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
           return res?.status(200).json({ success: true, data })
         } else {
-          data = await db.model(Schema).find().select(selectOpts)
+          data = isCountReturn
+            ? (await db.model(Schema).find().select({ _id: 1 })).length
+            : queryAggregate
+              ? await db.model(Schema).aggregate(queryAggregate)
+              : await db
+                  .model(Schema)
+                  .find()
+                  .select(selectOpts)
+                  .limit(queryLimit)
+                  .sort(querySort)
           return res?.status(200).json({ success: true, data })
         }
       } catch (error) {
@@ -505,7 +659,7 @@ export default async function handler(Schema, req, res, props = {}) {
           }
 
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'add',
             data: jsonData,
             userId: body.userId,
@@ -559,7 +713,7 @@ export default async function handler(Schema, req, res, props = {}) {
           difference._id = new mongoose.Types.ObjectId(id)
 
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'update',
             data: difference,
             userId: body.userId,
@@ -685,7 +839,7 @@ export default async function handler(Schema, req, res, props = {}) {
             return res?.status(400).json({ success: false })
           }
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'delete',
             data: existingData,
             userId: body.userId,
@@ -708,7 +862,7 @@ export default async function handler(Schema, req, res, props = {}) {
           }
 
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'delete',
             data: existingData,
             userId: body.userId,
@@ -725,7 +879,7 @@ export default async function handler(Schema, req, res, props = {}) {
             return res?.status(400).json({ success: false })
           }
           await db.model('Histories').create({
-            schema: Schema.toLowerCase(),
+            schema: lowercasedSchema,
             action: 'delete',
             data: existingData,
             userId: body.userId,
