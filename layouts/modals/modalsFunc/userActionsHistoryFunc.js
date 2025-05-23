@@ -66,20 +66,21 @@ const HistoryItemContent = ({ data, schema, userId, difference }) => {
     for (const [key, value] of Object.entries(data[0]))
       if (!['_id', 'createdAt', 'updatedAt', '__v'].includes(key)) {
         const { keys, KeyValueComponent } = keysComponents[schema]
-        arrayOfItems.push(
-          <div key={data[0]._id + schema + key} className="flex flex-col">
-            <div className="font-bold">{keys[key]}</div>
-            {difference ? (
-              <DifferenceComponent
-                objKey={key}
-                value={value}
-                KeyValueItem={KeyValueComponent}
-              />
-            ) : (
-              <KeyValueComponent objKey={key} value={value} />
-            )}
-          </div>
-        )
+        if (!['Отчет', 'Картинки в отчете'].includes(keys[key]))
+          arrayOfItems.push(
+            <div key={data[0]._id + schema + key} className="flex flex-col">
+              <div className="font-bold">{keys[key]}</div>
+              {difference ? (
+                <DifferenceComponent
+                  objKey={key}
+                  value={value}
+                  KeyValueItem={KeyValueComponent}
+                />
+              ) : (
+                <KeyValueComponent objKey={key} value={value} />
+              )}
+            </div>
+          )
       }
   } else if (schema === 'eventsusers') {
     arrayOfItems.push(
@@ -99,7 +100,6 @@ const HistoryActionsItem = ({
   data,
   schema,
   createdAt,
-  _id,
   userId,
   difference,
 }) => {
@@ -260,6 +260,7 @@ const userActionsHistoryFunc = (userId) => {
       )
 
     useEffect(() => {
+      if (userActionsHistory) setUserActionsHistory()
       const fetchData = async () => {
         var cutoff = new Date()
         cutoff.setHours(cutoff.getHours() - periodHours)
@@ -272,9 +273,10 @@ const userActionsHistoryFunc = (userId) => {
       fetchData().catch(console.error)
     }, [periodHours])
 
-    const filteredUserActionsHistory = filter
-      ? userActionsHistory.filter(({ schema }) => schema === filter)
-      : userActionsHistory
+    const filteredUserActionsHistory =
+      filter && userActionsHistory
+        ? userActionsHistory.filter(({ schema }) => schema === filter)
+        : userActionsHistory
 
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">
