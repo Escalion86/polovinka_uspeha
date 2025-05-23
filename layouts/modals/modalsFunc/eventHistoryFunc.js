@@ -78,7 +78,6 @@ const eventHistoryFunc = (eventId) => {
                     // console.log('data[0] :>> ', data[0])
                     const redoChanges = {}
                     for (let i = eventHistory.length - 1; i >= index; i--) {
-                      // console.log('i :>> ', i)
                       const { data, difference } = eventHistory[i]
                       const changes = difference
                         ? data[0]
@@ -88,9 +87,10 @@ const eventHistoryFunc = (eventId) => {
                           )
                       Object.keys(changes).forEach((key) => {
                         redoChanges[key] =
-                          i === index ? changes[key].new : changes[key].old
+                          i === index ? changes[key].old : changes[key].new
                       })
                     }
+                    // console.log('eventHistory :>> ', eventHistory)
 
                     return (
                       <HistoryItem
@@ -102,16 +102,56 @@ const eventHistoryFunc = (eventId) => {
                         keys={eventKeys}
                         KeyValueItem={EventKeyValueItem}
                         onClickRedo={
-                          // () => console.log('redoChanges :>> ', redoChanges)
-                          () =>
-                            modalsFunc.confirm({
-                              title: 'Откат изменений мероприятия',
-                              text:
-                                'Подтверждение отката внесет изменения в мероприятие, преведя его к виду на момент последнего изменения от ' +
-                                dateToDateTimeStr(createdAt, true, false),
-                              onConfirm: () =>
-                                setEvent({ ...redoChanges, _id: event._id }),
-                            })
+                          action !== 'add'
+                            ? () => {
+                                modalsFunc.confirm({
+                                  title: 'Откат изменений мероприятия',
+                                  text: (
+                                    <div className="flex flex-col gap-y-1">
+                                      <div>
+                                        Подтверждение отката внесет изменения в
+                                        мероприятие, создав новое действие в
+                                        истории (тоесть действие обратимо).
+                                      </div>
+                                      <div>{`Мероприятие будет преведено к виду на момент ДО изменения от ${dateToDateTimeStr(createdAt, true, false)}, тоесть все изменения сделанные в это время, а также все последующие будут отменены (но НЕ удалены)!`}</div>
+                                      <div className="flex justify-center pt-1 pb-1 mt-2 text-lg font-bold border-t border-gray-400">
+                                        Будут применены следующие изменения:
+                                      </div>
+                                      {Object.entries(redoChanges)
+                                        .filter(
+                                          ([key, value]) =>
+                                            ![
+                                              '_id',
+                                              'createdAt',
+                                              'updatedAt',
+                                              '__v',
+                                              'lastActivityAt',
+                                              'prevActivityAt',
+                                            ].includes(key)
+                                        )
+                                        .map(([key, value]) => {
+                                          return (
+                                            <div className="flex flex-wrap justify-start gap-x-1">
+                                              <div className="font-bold">
+                                                {eventKeys[key] ?? key}:
+                                              </div>
+                                              <EventKeyValueItem
+                                                objKey={key}
+                                                value={value}
+                                              />
+                                            </div>
+                                          )
+                                        })}
+                                    </div>
+                                  ),
+                                  onConfirm: () =>
+                                    setEvent({
+                                      ...redoChanges,
+                                      _id: event._id,
+                                    }),
+                                })
+                              }
+                            : undefined
                         }
                       />
                     )
