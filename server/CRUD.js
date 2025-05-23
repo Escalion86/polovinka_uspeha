@@ -384,14 +384,27 @@ const updateEventInCalendar = async (event, location) => {
 }
 
 function transformQuery(query) {
+  const tryParseJSON = (value) => {
+    if (typeof value !== 'string') return value
+    try {
+      return JSON.parse(value)
+    } catch {
+      return value
+    }
+  }
+
   const processSingleValue = (key, value) => {
-    // Добавляем проверку на отсутствие ключа (на случай корневого уровня)
     if (!key) return value
 
     const lowercasedKey = key.toLowerCase()
 
     // Обработка ObjectId
     if (lowercasedKey === '_id') {
+      if (typeof value !== 'string') {
+        throw new Error(
+          `Invalid ObjectId: expected string, got ${typeof value}`
+        )
+      }
       try {
         return new mongoose.Types.ObjectId(value)
       } catch (e) {
@@ -399,11 +412,12 @@ function transformQuery(query) {
       }
     }
 
-    // Обработка дат
+    // Обработка дат (только для строковых значений)
     if (
-      lowercasedKey === 'createdat' ||
-      lowercasedKey === 'updatedat' ||
-      lowercasedKey.includes('date')
+      (lowercasedKey === 'createdat' ||
+        lowercasedKey === 'updatedat' ||
+        lowercasedKey.includes('date')) &&
+      typeof value === 'string'
     ) {
       const date = new Date(value)
       if (isNaN(date.getTime())) throw new Error(`Invalid Date: ${value}`)
@@ -417,19 +431,25 @@ function transformQuery(query) {
     return value
   }
 
-  const buildNestedStructure = (keys, value, ctx) => {
+  const buildNestedStructure = (keys, rawValue, ctx) => {
+    const value =
+      typeof rawValue === 'string' ? tryParseJSON(rawValue) : rawValue
+
     const [currentKey, ...restKeys] = keys
 
     if (restKeys.length === 0) {
-      // Изменения здесь: добавляем проверку на оператор $in
       if (currentKey === '$in' && !Array.isArray(ctx[currentKey])) {
         ctx[currentKey] = []
       }
 
-      if (Array.isArray(ctx[currentKey])) {
-        ctx[currentKey].push(processSingleValue(currentKey, value))
+      if (typeof value === 'object' && value !== null) {
+        ctx[currentKey] = transformQuery(value)
       } else {
-        ctx[currentKey] = processSingleValue(currentKey, value)
+        if (Array.isArray(ctx[currentKey])) {
+          ctx[currentKey].push(value)
+        } else {
+          ctx[currentKey] = value
+        }
       }
       return
     }
@@ -443,27 +463,31 @@ function transformQuery(query) {
 
   const result = {}
 
+  // Основной цикл обработки
   for (const [rawKey, rawValue] of Object.entries(query)) {
+    const parsedValue = tryParseJSON(rawValue)
     const keys = rawKey.split(/\[|\]/g).filter((k) => k !== '')
-    const values = Array.isArray(rawValue) ? rawValue : [rawValue]
+    const values = Array.isArray(parsedValue) ? parsedValue : [parsedValue]
 
     for (const val of values) {
       buildNestedStructure(keys, val, result)
     }
   }
 
-  // Специальная обработка для массивов $in
-  const processInOperator = (obj, parentKey) => {
-    for (const key in obj) {
-      if (key === '$in' && Array.isArray(obj[key])) {
-        obj[key] = obj[key].map((item) => processSingleValue(parentKey, item))
-      } else if (typeof obj[key] === 'object') {
-        processInOperator(obj[key], key)
+  // Рекурсивная постобработка
+  const recursiveProcess = (obj, parentKey = '') => {
+    for (const [key, value] of Object.entries(obj)) {
+      const fullPath = parentKey ? `${parentKey}.${key}` : key
+
+      if (typeof value === 'object' && value !== null) {
+        recursiveProcess(value, fullPath)
+      } else {
+        obj[key] = processSingleValue(fullPath, value)
       }
     }
   }
 
-  processInOperator(result, '')
+  recursiveProcess(result)
 
   return result
 }
@@ -528,6 +552,7 @@ export default async function handler(Schema, req, res, props = {}) {
           return res?.status(200).json({ success: true, data })
         } else if (Object.keys(query).length > 0) {
           const preparedQuery = transformQuery(query)
+          // console.log('preparedQuery :>> ', preparedQuery)
           for (const [key, value] of Object.entries(preparedQuery)) {
             if (isJson(value)) preparedQuery[key] = JSON.parse(value)
             // if (value === 'true') preparedQuery[key] = true
@@ -549,6 +574,7 @@ export default async function handler(Schema, req, res, props = {}) {
                   .select(selectOpts)
                   .limit(queryLimit)
                   .sort(querySort)
+          console.log('data :>> ', data)
           if (!data) {
             return res?.status(400).json({ success: false })
           }
