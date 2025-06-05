@@ -12,7 +12,7 @@ const PulseButton = forwardRef(
       />
       <button
         onClick={onClick}
-        className="relative z-10 px-4 py-2 text-xl duration-300 border rounded-lg bg-general border-general tablet:w-auto hover:text-general hover:bg-white hover:border-general"
+        className="relative z-10 px-4 py-2 text-xl duration-300 border rounded-lg cursor-pointer bg-general border-general tablet:w-auto hover:text-general hover:bg-white hover:border-general"
       >
         {title}
       </button>

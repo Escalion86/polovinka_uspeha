@@ -49,6 +49,9 @@ import { faImages } from '@fortawesome/free-solid-svg-icons/faImages'
 import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
 import { faCheckSquare } from '@fortawesome/free-regular-svg-icons/faCheckSquare'
 
+import { faHeartCircleCheck } from '@fortawesome/free-solid-svg-icons/faHeartCircleCheck'
+import { faHeading } from '@fortawesome/free-solid-svg-icons/faHeading'
+
 import dynamic from 'next/dynamic'
 const ServicesContent = dynamic(
   () => import('@layouts/content/ServicesContent')
@@ -73,6 +76,9 @@ const PaymentsContent = dynamic(
 const DevContent = dynamic(() => import('@layouts/content/DevContent'))
 const ContactsContent = dynamic(
   () => import('@layouts/content/ContactsContent')
+)
+const TitleBlockContent = dynamic(
+  () => import('@layouts/content/TitleBlockContent')
 )
 const HistoriesContent = dynamic(
   () => import('@layouts/content/HistoriesContent')
@@ -174,7 +180,6 @@ import LikesContent from '@layouts/content/LikesContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
-import { faHeartCircleCheck } from '@fortawesome/free-solid-svg-icons/faHeartCircleCheck'
 
 // const colors = [
 //   'border-blue-400',
@@ -1027,6 +1032,7 @@ export const DEFAULT_ROLES = [
       reviews: false,
       supervisor: false,
       contacts: false,
+      siteTitleSettings: false,
     },
     siteSettings: {
       phoneConfirmService: false,
@@ -1165,6 +1171,7 @@ export const DEFAULT_ROLES = [
       reviews: true,
       supervisor: false,
       contacts: false,
+      siteTitleSettings: false,
     },
     siteSettings: {
       phoneConfirmService: false,
@@ -1303,6 +1310,7 @@ export const DEFAULT_ROLES = [
       reviews: true,
       supervisor: false,
       contacts: true,
+      siteTitleSettings: false,
     },
     siteSettings: {
       phoneConfirmService: false,
@@ -1441,6 +1449,7 @@ export const DEFAULT_ROLES = [
       reviews: true,
       supervisor: true,
       contacts: true,
+      siteTitleSettings: true,
     },
     siteSettings: {
       phoneConfirmService: false,
@@ -1579,6 +1588,7 @@ export const DEFAULT_ROLES = [
       reviews: true,
       supervisor: true,
       contacts: true,
+      siteTitleSettings: true,
     },
     siteSettings: {
       phoneConfirmService: false,
@@ -1717,6 +1727,7 @@ export const DEFAULT_ROLES = [
       reviews: true,
       supervisor: true,
       contacts: true,
+      siteTitleSettings: true,
     },
     siteSettings: {
       phoneConfirmService: true,
@@ -1827,6 +1838,12 @@ export const CONTENTS = Object.freeze({
     name: 'Сайт / Контакты на сайте',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.contacts,
+  },
+  siteTitleSettings: {
+    Component: TitleBlockContent,
+    name: 'Сайт / Заголовоки',
+    accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.generalPage?.siteTitleSettings,
   },
   supervisor: {
     Component: SupervisorBlockContent,
@@ -2062,7 +2079,7 @@ export const pages = [
     name: 'Моя статистика',
     href: 'userStatistics',
     icon: faTrophy,
-    accessRoles: CONTENTS['userStatistics'].accessRoles,
+    // accessRoles: CONTENTS['userStatistics'].accessRoles,
     roleAccess: CONTENTS['userStatistics'].roleAccess,
   },
   {
@@ -2073,7 +2090,7 @@ export const pages = [
     icon: faHeart,
     badge: badgeLoggedUserLikesToSeeSelector,
     // hidden: menuHiddenLoggedUserLikesSelector,
-    accessRoles: CONTENTS['likes'].accessRoles,
+    // accessRoles: CONTENTS['likes'].accessRoles,
     roleAccess: CONTENTS['likes'].roleAccess,
   },
   {
@@ -2082,7 +2099,7 @@ export const pages = [
     name: 'Услуги',
     href: 'services',
     icon: faHandshake,
-    accessRoles: CONTENTS['services'].accessRoles,
+    // accessRoles: CONTENTS['services'].accessRoles,
     roleAccess: CONTENTS['services'].roleAccess,
   },
   {
@@ -2091,7 +2108,7 @@ export const pages = [
     name: 'Заявки на услуги',
     href: 'servicesUsers',
     icon: faHands,
-    accessRoles: CONTENTS['servicesUsers'].accessRoles,
+    // accessRoles: CONTENTS['servicesUsers'].accessRoles,
     roleAccess: CONTENTS['servicesUsers'].roleAccess,
   },
   {
@@ -2100,7 +2117,7 @@ export const pages = [
     name: 'Мои заявки на услуги',
     href: 'myServices',
     icon: faHands,
-    accessRoles: CONTENTS['myServices'].accessRoles,
+    // accessRoles: CONTENTS['myServices'].accessRoles,
     roleAccess: CONTENTS['myServices'].roleAccess,
   },
   {
@@ -2109,70 +2126,79 @@ export const pages = [
     name: 'Мероприятия',
     href: 'events',
     icon: faCalendarAlt,
-    accessRoles: CONTENTS['events'].accessRoles,
+    // accessRoles: CONTENTS['events'].accessRoles,
     roleAccess: CONTENTS['events'].roleAccess,
   },
   {
     id: 7,
     group: 4,
-    name: 'Направления',
-    href: 'directions',
-    icon: faHeart,
-    accessRoles: CONTENTS['directions'].accessRoles,
-    roleAccess: CONTENTS['directions'].roleAccess,
+    name: 'Заголовки',
+    href: 'siteTitleSettings',
+    icon: faHeading,
+    // accessRoles: CONTENTS['siteTitleSettings'].accessRoles,
+    roleAccess: CONTENTS['siteTitleSettings'].roleAccess,
   },
   {
     id: 8,
     group: 4,
-    name: 'Доп. блоки',
-    href: 'additionalBlocks',
-    icon: faCube,
-    accessRoles: CONTENTS['additionalBlocks'].accessRoles,
-    roleAccess: CONTENTS['additionalBlocks'].roleAccess,
+    name: 'Направления',
+    href: 'directions',
+    icon: faHeart,
+    // accessRoles: CONTENTS['directions'].accessRoles,
+    roleAccess: CONTENTS['directions'].roleAccess,
   },
   {
     id: 9,
     group: 4,
-    name: 'Отзывы',
-    href: 'reviews',
-    icon: faComments,
-    accessRoles: CONTENTS['reviews'].accessRoles,
-    roleAccess: CONTENTS['reviews'].roleAccess,
+    name: 'Доп. блоки',
+    href: 'additionalBlocks',
+    icon: faCube,
+    // accessRoles: CONTENTS['additionalBlocks'].accessRoles,
+    roleAccess: CONTENTS['additionalBlocks'].roleAccess,
   },
   {
     id: 10,
     group: 4,
-    name: 'Контакты',
-    href: 'contacts',
-    icon: faPhone,
-    accessRoles: CONTENTS['contacts'].accessRoles,
-    roleAccess: CONTENTS['contacts'].roleAccess,
+    name: 'Отзывы',
+    href: 'reviews',
+    icon: faComments,
+    // accessRoles: CONTENTS['reviews'].accessRoles,
+    roleAccess: CONTENTS['reviews'].roleAccess,
   },
   {
     id: 11,
     group: 4,
-    name: 'Руководитель региона',
-    href: 'supervisor',
-    icon: faUserTie,
-    accessRoles: CONTENTS['supervisor'].accessRoles,
-    roleAccess: CONTENTS['supervisor'].roleAccess,
+    name: 'Контакты',
+    href: 'contacts',
+    icon: faPhone,
+    // accessRoles: CONTENTS['contacts'].accessRoles,
+    roleAccess: CONTENTS['contacts'].roleAccess,
   },
   {
     id: 12,
+    group: 4,
+    name: 'Руководитель региона',
+    href: 'supervisor',
+    icon: faUserTie,
+    // accessRoles: CONTENTS['supervisor'].accessRoles,
+    roleAccess: CONTENTS['supervisor'].roleAccess,
+  },
+  {
+    id: 13,
     group: 5,
     name: 'Пользователи',
     href: 'users',
     icon: faUser,
-    accessRoles: CONTENTS['users'].accessRoles,
+    // accessRoles: CONTENTS['users'].accessRoles,
     roleAccess: CONTENTS['users'].roleAccess,
   },
   {
-    id: 13,
+    id: 14,
     group: 6,
     name: 'Транзакции',
     href: 'payments',
     icon: faMoneyBill,
-    accessRoles: CONTENTS['payments'].accessRoles,
+    // accessRoles: CONTENTS['payments'].accessRoles,
     roleAccess: CONTENTS['payments'].roleAccess,
   },
   // {
@@ -2186,51 +2212,51 @@ export const pages = [
   //   roleAccess: CONTENTS['paymentsWithNoEvent'].roleAccess,
   // },
   {
-    id: 14,
+    id: 15,
     group: 6,
     name: 'Не пришли на мероприятие',
     href: 'paymentsNotParticipantsEvent',
     icon: faUserTimes,
     // badge: badgePaymentsWithoutUserWritingToEventSelector,
-    accessRoles: CONTENTS['paymentsNotParticipantsEvent'].accessRoles,
+    // accessRoles: CONTENTS['paymentsNotParticipantsEvent'].accessRoles,
     roleAccess: CONTENTS['paymentsNotParticipantsEvent'].roleAccess,
   },
   {
-    id: 15,
+    id: 16,
     group: 6,
     name: 'Со ссылками на несущ. мероприятия',
     href: 'paymentsForNotExistedEvents',
     icon: faBug,
     // badge: badgePaymentsWithoutUserWritingToEventSelector,
-    accessRoles: CONTENTS['paymentsForNotExistedEvents'].accessRoles,
+    // accessRoles: CONTENTS['paymentsForNotExistedEvents'].accessRoles,
     roleAccess: CONTENTS['paymentsForNotExistedEvents'].roleAccess,
   },
   {
-    id: 16,
+    id: 17,
     group: 6,
     name: 'Со ссылками на несущ. пользователей',
     href: 'paymentsFromNotExistedUsers',
     icon: faBug,
     // badge: badgePaymentsWithoutUserWritingToEventSelector,
-    accessRoles: CONTENTS['paymentsFromNotExistedUsers'].accessRoles,
+    // accessRoles: CONTENTS['paymentsFromNotExistedUsers'].accessRoles,
     roleAccess: CONTENTS['paymentsFromNotExistedUsers'].roleAccess,
-  },
-  {
-    id: 17,
-    group: 7,
-    name: 'Записи на мероприятия',
-    href: 'histories',
-    icon: faUsers,
-    accessRoles: CONTENTS['histories'].accessRoles,
-    roleAccess: CONTENTS['histories'].roleAccess,
   },
   {
     id: 18,
     group: 7,
+    name: 'Записи на мероприятия',
+    href: 'histories',
+    icon: faUsers,
+    // accessRoles: CONTENTS['histories'].accessRoles,
+    roleAccess: CONTENTS['histories'].roleAccess,
+  },
+  {
+    id: 19,
+    group: 7,
     name: 'Дни рождения',
     href: 'birthdays',
     icon: faBirthdayCake,
-    accessRoles: CONTENTS['birthdays'].accessRoles,
+    // accessRoles: CONTENTS['birthdays'].accessRoles,
     badge: badgeBirthdaysTodayCountSelector,
     roleAccess: CONTENTS['birthdays'].roleAccess,
   },
@@ -2243,30 +2269,30 @@ export const pages = [
   //   accessRoles: CONTENTS['statistics'].accessRoles,
   // },
   {
-    id: 19,
+    id: 20,
     group: 8,
     name: 'Мероприятия',
     href: 'statisticsEvents',
     icon: faCalendarAlt,
-    accessRoles: CONTENTS['statisticsEvents'].accessRoles,
+    // accessRoles: CONTENTS['statisticsEvents'].accessRoles,
     roleAccess: CONTENTS['statisticsEvents'].roleAccess,
-  },
-  {
-    id: 20,
-    group: 8,
-    name: 'Пользователи',
-    href: 'statisticsUsers',
-    icon: faUser,
-    accessRoles: CONTENTS['statisticsUsers'].accessRoles,
-    roleAccess: CONTENTS['statisticsUsers'].roleAccess,
   },
   {
     id: 21,
     group: 8,
+    name: 'Пользователи',
+    href: 'statisticsUsers',
+    icon: faUser,
+    // accessRoles: CONTENTS['statisticsUsers'].accessRoles,
+    roleAccess: CONTENTS['statisticsUsers'].roleAccess,
+  },
+  {
+    id: 22,
+    group: 8,
     name: 'Финансы',
     href: 'statisticsFinance',
     icon: faMoneyBill,
-    accessRoles: CONTENTS['statisticsFinance'].accessRoles,
+    // accessRoles: CONTENTS['statisticsFinance'].accessRoles,
     roleAccess: CONTENTS['statisticsFinance'].roleAccess,
   },
   {
@@ -2275,7 +2301,7 @@ export const pages = [
     name: 'Участники клуба',
     href: 'members',
     icon: faUser,
-    accessRoles: CONTENTS['members'].accessRoles,
+    // accessRoles: CONTENTS['members'].accessRoles,
     roleAccess: CONTENTS['members'].roleAccess,
   },
   {
@@ -2284,7 +2310,7 @@ export const pages = [
     name: 'Генератор текста анонса мероприятий',
     href: 'toolsTextEventsAnons',
     icon: faFileText,
-    accessRoles: CONTENTS['toolsTextEventsAnons'].accessRoles,
+    // accessRoles: CONTENTS['toolsTextEventsAnons'].accessRoles,
     roleAccess: CONTENTS['toolsTextEventsAnons'].roleAccess,
   },
   {
@@ -2293,7 +2319,7 @@ export const pages = [
     name: 'Редактор анонса в Instagram',
     href: 'toolsEventAnonsInstagram',
     icon: faImage,
-    accessRoles: CONTENTS['toolsEventAnonsInstagram'].accessRoles,
+    // accessRoles: CONTENTS['toolsEventAnonsInstagram'].accessRoles,
     roleAccess: CONTENTS['toolsEventAnonsInstagram'].roleAccess,
   },
   {
@@ -2302,7 +2328,7 @@ export const pages = [
     name: 'Редактор анонса в Vk',
     href: 'toolsEventAnonsVk',
     icon: faImage,
-    accessRoles: CONTENTS['toolsEventAnonsVk'].accessRoles,
+    // accessRoles: CONTENTS['toolsEventAnonsVk'].accessRoles,
     roleAccess: CONTENTS['toolsEventAnonsVk'].roleAccess,
   },
   {
@@ -2311,7 +2337,7 @@ export const pages = [
     name: 'Редактор анонса списка мероприятий',
     href: 'toolsAnons',
     icon: faImage,
-    accessRoles: CONTENTS['toolsAnons'].accessRoles,
+    // accessRoles: CONTENTS['toolsAnons'].accessRoles,
     roleAccess: CONTENTS['toolsAnons'].roleAccess,
   },
   {
@@ -2320,7 +2346,7 @@ export const pages = [
     name: 'Экспорт данных',
     href: 'toolsExport',
     icon: faUpload,
-    accessRoles: CONTENTS['toolsExport'].accessRoles,
+    // accessRoles: CONTENTS['toolsExport'].accessRoles,
     roleAccess: CONTENTS['toolsExport'].roleAccess,
   },
   {
@@ -2329,7 +2355,7 @@ export const pages = [
     name: 'Рассылки',
     href: 'newsletter',
     icon: faEnvelope,
-    accessRoles: CONTENTS['newsletter'].accessRoles,
+    // accessRoles: CONTENTS['newsletter'].accessRoles,
     roleAccess: CONTENTS['newsletter'].roleAccess,
     siteConfirm: CONTENTS['newsletter'].siteConfirm,
   },
@@ -2339,7 +2365,7 @@ export const pages = [
     name: 'Индивидуальные свидания',
     href: 'toolsIndividualWeddings',
     icon: faHeartCircleCheck,
-    accessRoles: CONTENTS['toolsIndividualWeddings'].accessRoles,
+    // accessRoles: CONTENTS['toolsIndividualWeddings'].accessRoles,
     roleAccess: CONTENTS['toolsIndividualWeddings'].roleAccess,
   },
   {
@@ -2348,7 +2374,7 @@ export const pages = [
     name: 'Конструктор картинок',
     href: 'toolsImageConstructor',
     icon: faImage,
-    accessRoles: CONTENTS['toolsImageConstructor'].accessRoles,
+    // accessRoles: CONTENTS['toolsImageConstructor'].accessRoles,
     roleAccess: CONTENTS['toolsImageConstructor'].roleAccess,
   },
 
@@ -2358,7 +2384,7 @@ export const pages = [
     name: 'Сервис подтверждения номера',
     href: 'settingsCodeSendService',
     icon: faPhone,
-    accessRoles: CONTENTS['settingsCodeSendService'].accessRoles,
+    // accessRoles: CONTENTS['settingsCodeSendService'].accessRoles,
     roleAccess: CONTENTS['settingsCodeSendService'].roleAccess,
   },
   {
@@ -2367,7 +2393,7 @@ export const pages = [
     name: 'Меню "Вопрос"',
     href: 'settingsFabMenu',
     icon: faQuestion,
-    accessRoles: CONTENTS['settingsFabMenu'].accessRoles,
+    // accessRoles: CONTENTS['settingsFabMenu'].accessRoles,
     roleAccess: CONTENTS['settingsFabMenu'].roleAccess,
   },
   {
@@ -2376,7 +2402,7 @@ export const pages = [
     name: 'Роли',
     href: 'settingsRoles',
     icon: faUsers,
-    accessRoles: CONTENTS['settingsRoles'].accessRoles,
+    // accessRoles: CONTENTS['settingsRoles'].accessRoles,
     roleAccess: CONTENTS['settingsRoles'].roleAccess,
   },
   {
@@ -2385,7 +2411,7 @@ export const pages = [
     name: 'Дата старта проекта',
     href: 'settingsDateStartProject',
     icon: faStar,
-    accessRoles: CONTENTS['settingsDateStartProject'].accessRoles,
+    // accessRoles: CONTENTS['settingsDateStartProject'].accessRoles,
     roleAccess: CONTENTS['settingsDateStartProject'].roleAccess,
   },
   {
@@ -2394,7 +2420,7 @@ export const pages = [
     name: 'Информация для вступления в клуб',
     href: 'settingsHeaderInfoContacts',
     icon: faMedal,
-    accessRoles: CONTENTS['settingsHeaderInfoContacts'].accessRoles,
+    // accessRoles: CONTENTS['settingsHeaderInfoContacts'].accessRoles,
     roleAccess: CONTENTS['settingsHeaderInfoContacts'].roleAccess,
   },
   {
@@ -2403,7 +2429,7 @@ export const pages = [
     name: 'Особые даты ПУ',
     href: 'remindDates',
     icon: faCalendarAlt,
-    accessRoles: CONTENTS['remindDates'].accessRoles,
+    // accessRoles: CONTENTS['remindDates'].accessRoles,
     roleAccess: CONTENTS['remindDates'].roleAccess,
   },
 
@@ -2413,7 +2439,7 @@ export const pages = [
     name: 'Рассылка WhatsApp',
     href: 'whatsappMessaging',
     icon: faWhatsapp,
-    accessRoles: CONTENTS['dev'].accessRoles,
+    // accessRoles: CONTENTS['dev'].accessRoles,
     roleAccess: CONTENTS['dev'].roleAccess,
   },
   {
@@ -2422,7 +2448,7 @@ export const pages = [
     name: 'Тестирование',
     href: 'dev',
     icon: faBug,
-    accessRoles: CONTENTS['dev'].accessRoles,
+    // accessRoles: CONTENTS['dev'].accessRoles,
     roleAccess: CONTENTS['dev'].roleAccess,
   },
   {
@@ -2431,7 +2457,7 @@ export const pages = [
     name: 'Сервер картинок',
     href: 'imagesServer',
     icon: faImages,
-    accessRoles: CONTENTS['dev'].accessRoles,
+    // accessRoles: CONTENTS['dev'].accessRoles,
     roleAccess: CONTENTS['dev'].roleAccess,
   },
 ]

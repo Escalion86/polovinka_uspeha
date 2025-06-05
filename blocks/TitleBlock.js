@@ -10,8 +10,10 @@ import { useAtomValue } from 'jotai'
 import Svg30Plus from '@svg/Svg30Plus'
 import CountDown from './components/CountDown'
 import locationAtom from '@state/atoms/locationAtom'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 
 const TitleBlock = () => {
+  const siteSettings = useAtomValue(siteSettingsAtom)
   const userIsLogged = !!useAtomValue(loggedUserAtom)
   const location = useAtomValue(locationAtom)
   const locationProps = useAtomValue(locationPropsSelector)
@@ -57,7 +59,7 @@ const TitleBlock = () => {
         />
         <div className="flex flex-col justify-between gap-y-2">
           <H1 style={{ textShadow: '1px 1px 2px black' }}>
-            Центр серьёзных знакомств
+            {townRu ? siteSettings.title : 'Центр серьёзных знакомств'}
           </H1>
 
           {townRu && (
@@ -74,10 +76,24 @@ const TitleBlock = () => {
               </p>
             </div>
           )}
-          <H3 style={{ textShadow: '1px 1px 2px black' }}>
-            Уникальные форматы знакомств
-            <br />
-            для поиска своей второй половинки
+          <H3
+            className="flex flex-col text-center"
+            style={{ textShadow: '1px 1px 2px black' }}
+          >
+            {townRu ? (
+              siteSettings.subtitle?.split('\n').map((str, index) => (
+                <>
+                  {index !== 0 && <br />}
+                  {str}
+                </>
+              ))
+            ) : (
+              <>
+                Уникальные форматы знакомств
+                <br />
+                для поиска своей второй половинки
+              </>
+            )}
           </H3>
         </div>
         {townRu ? (

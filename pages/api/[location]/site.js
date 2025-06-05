@@ -1,6 +1,8 @@
+import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 import checkLocationValid from '@server/checkLocationValid'
 // import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'
+import mongoose from 'mongoose'
 
 export default async function handler(req, res) {
   const { query, method, body } = req
@@ -18,6 +20,8 @@ export default async function handler(req, res) {
     try {
       delete query.location
 
+      const oldData = await db.model('SiteSettings').findOne({}).lean()
+
       const data = await db
         .model('SiteSettings')
         .findOneAndUpdate({}, body.data, {
@@ -30,6 +34,16 @@ export default async function handler(req, res) {
           data: { error: `Can't update settings` },
         })
       }
+
+      const difference = compareObjectsWithDif(oldData, data)
+
+      await db.model('Histories').create({
+        schema: 'sitesettings',
+        action: 'update',
+        data: difference,
+        userId: body.userId,
+        difference: true,
+      })
 
       return res?.status(201).json({ success: true, data })
       // Сначала находим запись
