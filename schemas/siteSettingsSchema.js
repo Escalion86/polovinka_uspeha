@@ -81,6 +81,14 @@ const siteSettingsSchema = {
       default: [],
     },
   },
+  title: {
+    type: String,
+    default: 'Центр серёзных знакомств',
+  },
+  subtitle: {
+    type: String,
+    default: 'Уникальные форматы знакомств\nдля поиска своей второй половинки',
+  },
 }
 
 export default siteSettingsSchema
