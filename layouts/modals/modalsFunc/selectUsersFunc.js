@@ -17,6 +17,7 @@ import Button from '@components/Button'
 import { faCheckDouble } from '@fortawesome/free-solid-svg-icons/faCheckDouble'
 import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
 import compareObjects from '@helpers/compareObjects'
+import birthDateToAge from '@helpers/birthDateToAge'
 
 const selectUsersFunc = (
   selectedUsersState,
@@ -80,15 +81,32 @@ const selectUsersFunc = (
         checked: true,
         unchecked: true,
       },
+      ages: {
+        min: 18,
+        max: 70,
+      },
     })
 
     const [searchText, setSearchText] = useState('')
 
-    const acceptedUsers = isObject(acceptedIds)
-      ? acceptedIds.length === 0
-        ? []
-        : users.filter(({ _id }) => acceptedIds.includes(_id))
-      : users
+    const acceptedUsers = useMemo(
+      () =>
+        isObject(acceptedIds)
+          ? acceptedIds.length === 0
+            ? []
+            : users.filter(({ _id }) => acceptedIds.includes(_id))
+          : users,
+      [acceptedIds, users]
+    )
+
+    const acceptedUsersWithAges = useMemo(
+      () =>
+        acceptedUsers.map((user) => ({
+          ...user,
+          age: birthDateToAge(user.birthday, new Date(), false),
+        })),
+      [acceptedUsers]
+    )
 
     const searchByFields = useMemo(() => {
       const addSearchProps = seeAllContacts
@@ -113,29 +131,36 @@ const selectUsersFunc = (
     const filteredUsers = useMemo(
       () =>
         filterItems(
-          acceptedUsers,
+          acceptedUsersWithAges,
           searchText,
           exceptedIds,
           filterRules,
           searchByFields,
           null,
-          (user) =>
-            user &&
-            (filter.gender[String(user.gender)] ||
-              (filter.gender.null &&
-                user.gender !== 'male' &&
-                user.gender !== 'famale')) &&
-            filter.status[user?.status ?? 'novice'] &&
-            (user.relationship
-              ? filter.relationship.havePartner
-              : filter.relationship.noPartner) &&
-            (((filter.checked.checked ||
-              !selectedUsersIds.includes(user._id)) &&
-              filter.checked.unchecked) ||
-              selectedUsersIds.includes(user._id))
+          (user) => {
+            // const ages = birthDateToAge(user.birthday)
+            return (
+              user &&
+              (filter.gender[String(user.gender)] ||
+                (filter.gender.null &&
+                  user.gender !== 'male' &&
+                  user.gender !== 'famale')) &&
+              filter.status[user?.status ?? 'novice'] &&
+              (user.relationship
+                ? filter.relationship.havePartner
+                : filter.relationship.noPartner) &&
+              (((filter.checked.checked ||
+                !selectedUsersIds.includes(user._id)) &&
+                filter.checked.unchecked) ||
+                selectedUsersIds.includes(user._id)) &&
+              (!filter.ages ||
+                (user.age >= (filter.ages.min || 18) &&
+                  user.age <= (filter.ages.max || 70)))
+            )
+          }
         ),
       [
-        acceptedUsers,
+        acceptedUsersWithAges,
         searchText,
         exceptedIds,
         filterRules,
