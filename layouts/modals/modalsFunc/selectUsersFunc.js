@@ -63,32 +63,6 @@ const selectUsersFunc = (
 
     const [showErrorMax, setShowErrorMax] = useState(false)
 
-    const [filter, setFilter] = useState({
-      gender: {
-        male: true,
-        famale: true,
-        null: true,
-      },
-      status: {
-        novice: true,
-        member: true,
-      },
-      relationship: {
-        havePartner: true,
-        noPartner: true,
-      },
-      checked: {
-        checked: true,
-        unchecked: true,
-      },
-      ages: {
-        min: 18,
-        max: 70,
-      },
-    })
-
-    const [searchText, setSearchText] = useState('')
-
     const acceptedUsers = useMemo(
       () =>
         isObject(acceptedIds)
@@ -107,6 +81,41 @@ const selectUsersFunc = (
         })),
       [acceptedUsers]
     )
+
+    const minMaxAges = useMemo(
+      () =>
+        acceptedUsersWithAges.reduce(
+          (acc, user) => ({
+            min: user.age < acc.min ? user.age : acc.min,
+            max: user.age > acc.max ? user.age : acc.max,
+          }),
+          { min: 70, max: 18 }
+        ),
+      [acceptedUsersWithAges]
+    )
+
+    const [filter, setFilter] = useState({
+      gender: {
+        male: true,
+        famale: true,
+        null: true,
+      },
+      status: {
+        novice: true,
+        member: true,
+      },
+      relationship: {
+        havePartner: true,
+        noPartner: true,
+      },
+      checked: {
+        checked: true,
+        unchecked: true,
+      },
+      ages: { min: minMaxAges?.min || 18, max: minMaxAges?.max || 70 },
+    })
+
+    const [searchText, setSearchText] = useState('')
 
     const searchByFields = useMemo(() => {
       const addSearchProps = seeAllContacts
@@ -307,7 +316,11 @@ const selectUsersFunc = (
     return (
       <div className="flex flex-col items-stretch w-full h-full max-h-full gap-y-0.5">
         <ContentHeader noBorder>
-          <UsersFilter value={filter} onChange={setFilter} />
+          <UsersFilter
+            value={filter}
+            onChange={setFilter}
+            minMaxAges={minMaxAges}
+          />
         </ContentHeader>
         <Search
           searchText={searchText}
