@@ -10,6 +10,7 @@ import cn from 'classnames'
 import Link from 'next/link'
 import CountDown from './components/CountDown'
 import dynamic from 'next/dynamic'
+import locationAtom from '@state/atoms/locationAtom'
 const EventCardLight = dynamic(() => import('@layouts/cards/EventCardLight'))
 
 const Button = ({ title, className, href, onClick }) => {
@@ -45,7 +46,11 @@ const EventsBlock = ({
   hideBlockOnZeroEvents = false,
   title = 'Ближайшие мероприятия',
 }) => {
+  const location = useAtomValue(locationAtom)
+  console.log('location :>> ', location)
+
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
+  console.log(maxShowedEvents)
 
   const events = useAtomValue(filteredEventsSelector)
 
@@ -67,7 +72,7 @@ const EventsBlock = ({
               <EventCardLight key={event._id} eventId={event._id} />
             ))}
           {maxEvents && filteredEvents?.length > maxShowedEvents && (
-            <Button title="Посмотреть все" href="/events#events" />
+            <Button title="Посмотреть все" href={`/${location}/events`} />
           )}
           {!maxEvents && filteredEvents?.length > maxShowedEvents && (
             <Button
