@@ -733,7 +733,7 @@ const eventUsersPaymentsFunc = (eventId) => {
 
     const TotalFromParticipants = ({ className }) => (
       <div className={cn('flex flex-wrap gap-x-1', className)}>
-        <span>Всего получено от участников:</span>
+        <span>Получено от участников:</span>
         <div className="flex gap-x-0.5 flex-nowrap">
           <span
             className={cn(
@@ -777,7 +777,7 @@ const eventUsersPaymentsFunc = (eventId) => {
 
     const TotalToAssistants = ({ className }) => (
       <TotalItem
-        title="Всего затрат на ведущих и ассистентов"
+        title="На ведущих и ассистентов"
         className={className}
         valueClassName={cn(
           'whitespace-nowrap',
@@ -793,7 +793,7 @@ const eventUsersPaymentsFunc = (eventId) => {
 
     const TotalToEvent = ({ className }) => (
       <TotalItem
-        title="Всего затрат на расходники и организацию"
+        title="На расходники и организацию"
         className={className}
         valueClassName={
           sumOfPaymentsToEvent === 0
@@ -806,21 +806,20 @@ const eventUsersPaymentsFunc = (eventId) => {
       />
     )
 
-    const TotalFromEvent = ({ className }) =>
-      paymentsFromEvent.length > 0 ? (
-        <TotalItem
-          title="Всего доп. доходов от мероприятия"
-          className={className}
-          valueClassName={
-            sumOfPaymentsFromEvent === 0
-              ? 'text-gray-600'
-              : sumOfPaymentsFromEvent > 0
-                ? 'text-success'
-                : 'text-danger'
-          }
-          value={`${sumOfPaymentsFromEvent} ₽`}
-        />
-      ) : null
+    const TotalFromEvent = ({ className }) => (
+      <TotalItem
+        title="Доп. доходов от мероприятия"
+        className={className}
+        valueClassName={
+          sumOfPaymentsFromEvent === 0
+            ? 'text-gray-600'
+            : sumOfPaymentsFromEvent > 0
+              ? 'text-success'
+              : 'text-danger'
+        }
+        value={`${sumOfPaymentsFromEvent} ₽`}
+      />
+    )
 
     const TotalExpect = ({ className }) => {
       const expect = sumOfPaymentsToExpectFromParticipants + outcome
@@ -888,11 +887,13 @@ const eventUsersPaymentsFunc = (eventId) => {
                   : 'text-danger'
             }
             value={
-              outcome === 0
-                ? '∞'
-                : profitability
-                  ? `${(profitability * 100).toFixed(0)} %`
-                  : 'нет поступлений'
+              cashReceipts === 0
+                ? 'нет поступлений'
+                : outcome === 0
+                  ? '∞'
+                  : profitability
+                    ? `${(profitability * 100).toFixed(0)} %`
+                    : 'нет поступлений'
             }
           />
           <div className="text-sm leading-3 text-gray-600">
@@ -1193,7 +1194,7 @@ const eventUsersPaymentsFunc = (eventId) => {
             />
             <Divider title="Расходы" />
             <TotalToEvent />
-            {eventAssistants.length > 0 && <TotalToAssistants />}
+            <TotalToAssistants />
             <TotalItem
               title="ИТОГО"
               valueClassName={
