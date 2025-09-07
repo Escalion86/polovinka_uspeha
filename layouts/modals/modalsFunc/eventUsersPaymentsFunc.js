@@ -395,32 +395,38 @@ const UsersPayments = ({
 
   return (
     <div className="flex flex-col gap-y-1">
-      {arrayOfUsers.map((props) => {
-        const {
-          _id,
-          user,
-          // event,
-          userStatus,
-          // eventSubtypeNum,
-          // comment,
-        } = props
-        return (
-          <UserPayment
-            key={user._id}
-            // id={_id}
-            noEventPriceForUser={noEventPriceForUser}
-            event={event}
-            subEvent={subEvent}
-            user={user}
-            userStatus={userStatus}
-            // eventSubtypeNum={eventSubtypeNum}
-            // comment={comment}
-            usersIds={usersIds}
-            readOnly={readOnly}
-            defaultPayDirection={defaultPayDirection}
-          />
-        )
-      })}
+      {arrayOfUsers?.length > 0 ? (
+        arrayOfUsers.map((props) => {
+          const {
+            _id,
+            user,
+            // event,
+            userStatus,
+            // eventSubtypeNum,
+            // comment,
+          } = props
+          return (
+            <UserPayment
+              key={user._id}
+              // id={_id}
+              noEventPriceForUser={noEventPriceForUser}
+              event={event}
+              subEvent={subEvent}
+              user={user}
+              userStatus={userStatus}
+              // eventSubtypeNum={eventSubtypeNum}
+              // comment={comment}
+              usersIds={usersIds}
+              readOnly={readOnly}
+              defaultPayDirection={defaultPayDirection}
+            />
+          )
+        })
+      ) : (
+        <div className="w-full italic text-center text-gray-600">
+          нет участников
+        </div>
+      )}
     </div>
   )
 }
