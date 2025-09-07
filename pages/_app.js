@@ -248,33 +248,33 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     })
   }, [])
 
-  useEffect(() => {
-    // Обработчик ошибок
-    const handleError = (error, componentStack) => {
-      console.error('Client-side error:', { error, componentStack })
-      // Отправка на сервер/сохранение в localStorage
-    }
+  // useEffect(() => {
+  //   // Обработчик ошибок
+  //   const handleError = (error, componentStack) => {
+  //     console.error('Client-side error:', { error, componentStack })
+  //     // Отправка на сервер/сохранение в localStorage
+  //   }
 
-    // Перехватчик ошибок React
-    window.onerror = (message, source, lineno, colno, error) => {
-      handleError(error, `Line ${lineno}:${colno}`)
-      return true // Предотвращаем вывод в консоль по умолчанию
-    }
+  //   // Перехватчик ошибок React
+  //   window.onerror = (message, source, lineno, colno, error) => {
+  //     handleError(error, `Line ${lineno}:${colno}`)
+  //     return true // Предотвращаем вывод в консоль по умолчанию
+  //   }
 
-    // Перехватчик необработанных Promise
-    window.addEventListener('unhandledrejection', (event) => {
-      handleError(event.reason, 'Unhandled Promise Rejection')
-    })
+  //   // Перехватчик необработанных Promise
+  //   window.addEventListener('unhandledrejection', (event) => {
+  //     handleError(event.reason, 'Unhandled Promise Rejection')
+  //   })
 
-    // Error Boundary (для классовых компонентов)
-    if (typeof window !== 'undefined') {
-      const originalConsoleError = console.error
-      console.error = (...args) => {
-        originalConsoleError.apply(console, args)
-        handleError(args[0], 'Console Error')
-      }
-    }
-  }, [])
+  //   // Error Boundary (для классовых компонентов)
+  //   if (typeof window !== 'undefined') {
+  //     const originalConsoleError = console.error
+  //     console.error = (...args) => {
+  //       originalConsoleError.apply(console, args)
+  //       handleError(args[0], 'Console Error')
+  //     }
+  //   }
+  // }, [])
 
   // useEffect(() => {
   //   import('preline')

@@ -53,6 +53,9 @@ const Slider = ({
   max = 100,
   required,
   noInputs = false,
+  paddingY = true,
+  noMargin = false,
+  smallMargin = false,
 }) => (
   <InputWrapper
     label={label}
@@ -60,6 +63,9 @@ const Slider = ({
     value={value}
     className={cn('flex-1', wrapperClassName)}
     required={required}
+    paddingY={paddingY}
+    noMargin={noMargin}
+    smallMargin={smallMargin}
   >
     <div className="flex flex-1 w-max min-w-40 gap-x-4">
       {!noInputs && (

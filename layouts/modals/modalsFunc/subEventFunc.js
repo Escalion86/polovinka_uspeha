@@ -582,7 +582,7 @@ const subEventFunc = (props, onChange, rules) => {
                       setMaxMansAge(max)
                     }}
                     min={18}
-                    max={60}
+                    max={70}
                     label="Возраст"
                     labelClassName="w-16 min-w-16"
                   />
@@ -707,7 +707,7 @@ const subEventFunc = (props, onChange, rules) => {
                       setMaxWomansAge(max)
                     }}
                     min={18}
-                    max={60}
+                    max={70}
                     label="Возраст"
                     labelClassName="w-16 min-w-16"
                   />

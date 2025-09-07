@@ -82,10 +82,10 @@ const TitleBlock = () => {
           >
             {townRu ? (
               siteSettings.subtitle?.split('\n').map((str, index) => (
-                <>
-                  {index !== 0 && <br />}
+                <span key={'subtitle' + index}>
+                  {/* {index !== 0 && <br />} */}
                   {str}
-                </>
+                </span>
               ))
             ) : (
               <>

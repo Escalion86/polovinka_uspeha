@@ -17,6 +17,7 @@ import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import birthDateToAge from '@helpers/birthDateToAge'
 
 const UsersContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -42,9 +43,36 @@ const UsersContent = () => {
   const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
   const isLoggedUserAdmin = useAtomValue(isLoggedUserAdminSelector)
   const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
+  const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
   const addButton = loggedUserActiveRole?.users?.add
 
   const [isSearching, setIsSearching] = useState(false)
+  const [searchText, setSearchText] = useState('')
+
+  const [sort, setSort] = useState({ name: 'asc' })
+  const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
+
+  const usersWithAges = useMemo(
+    () =>
+      users.map((user) => ({
+        ...user,
+        age: birthDateToAge(user.birthday, new Date(), false),
+      })),
+    [users]
+  )
+
+  const minMaxAges = useMemo(
+    () =>
+      usersWithAges.reduce(
+        (acc, user) => ({
+          min: user.age < acc.min ? user.age : acc.min,
+          max: user.age > acc.max ? user.age : acc.max,
+        }),
+        { min: 70, max: 18 }
+      ),
+    [usersWithAges]
+  )
+
   const [filter, setFilter] = useState({
     gender: {
       male: true,
@@ -59,11 +87,10 @@ const UsersContent = () => {
       havePartner: true,
       noPartner: true,
     },
+    ...(seeBirthday
+      ? { ages: { min: minMaxAges?.min || 18, max: minMaxAges?.max || 70 } }
+      : {}),
   })
-  const [searchText, setSearchText] = useState('')
-
-  const [sort, setSort] = useState({ name: 'asc' })
-  const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
   // const visibleUsersIds = useMemo(
   //   () =>
@@ -80,7 +107,7 @@ const UsersContent = () => {
   const filteredUsers = useMemo(
     () =>
       // updatedUsers
-      users.filter(
+      usersWithAges.filter(
         (user) =>
           user &&
           (filter.gender[String(user.gender)] ||
@@ -90,11 +117,14 @@ const UsersContent = () => {
           filter.status[user?.status ?? 'novice'] &&
           (user.relationship
             ? filter.relationship.havePartner
-            : filter.relationship.noPartner)
+            : filter.relationship.noPartner) &&
+          (!filter.ages ||
+            (user.age >= (filter.ages.min || 18) &&
+              user.age <= (filter.ages.max || 70)))
       ),
     [
       // updatedUsers,
-      users,
+      usersWithAges,
       filter,
     ]
   )
@@ -118,7 +148,11 @@ const UsersContent = () => {
   return (
     <>
       <ContentHeader>
-        <UsersFilter value={filter} onChange={setFilter} />
+        <UsersFilter
+          value={filter}
+          onChange={setFilter}
+          minMaxAges={minMaxAges}
+        />
         {/* // <GenderToggleButtons value={genderFilter} onChange={setGenderFilter} />
         // <StatusUserToggleButtons
         //   value={statusFilter}

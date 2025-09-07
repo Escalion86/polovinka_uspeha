@@ -17,6 +17,7 @@ import Button from '@components/Button'
 import { faCheckDouble } from '@fortawesome/free-solid-svg-icons/faCheckDouble'
 import { faSquare } from '@fortawesome/free-regular-svg-icons/faSquare'
 import compareObjects from '@helpers/compareObjects'
+import birthDateToAge from '@helpers/birthDateToAge'
 
 const selectUsersFunc = (
   selectedUsersState,
@@ -62,6 +63,37 @@ const selectUsersFunc = (
 
     const [showErrorMax, setShowErrorMax] = useState(false)
 
+    const acceptedUsers = useMemo(
+      () =>
+        isObject(acceptedIds)
+          ? acceptedIds.length === 0
+            ? []
+            : users.filter(({ _id }) => acceptedIds.includes(_id))
+          : users,
+      [acceptedIds, users]
+    )
+
+    const acceptedUsersWithAges = useMemo(
+      () =>
+        acceptedUsers.map((user) => ({
+          ...user,
+          age: birthDateToAge(user.birthday, new Date(), false),
+        })),
+      [acceptedUsers]
+    )
+
+    const minMaxAges = useMemo(
+      () =>
+        acceptedUsersWithAges.reduce(
+          (acc, user) => ({
+            min: user.age < acc.min ? user.age : acc.min,
+            max: user.age > acc.max ? user.age : acc.max,
+          }),
+          { min: 70, max: 18 }
+        ),
+      [acceptedUsersWithAges]
+    )
+
     const [filter, setFilter] = useState({
       gender: {
         male: true,
@@ -80,15 +112,10 @@ const selectUsersFunc = (
         checked: true,
         unchecked: true,
       },
+      ages: { min: minMaxAges?.min || 18, max: minMaxAges?.max || 70 },
     })
 
     const [searchText, setSearchText] = useState('')
-
-    const acceptedUsers = isObject(acceptedIds)
-      ? acceptedIds.length === 0
-        ? []
-        : users.filter(({ _id }) => acceptedIds.includes(_id))
-      : users
 
     const searchByFields = useMemo(() => {
       const addSearchProps = seeAllContacts
@@ -113,29 +140,36 @@ const selectUsersFunc = (
     const filteredUsers = useMemo(
       () =>
         filterItems(
-          acceptedUsers,
+          acceptedUsersWithAges,
           searchText,
           exceptedIds,
           filterRules,
           searchByFields,
           null,
-          (user) =>
-            user &&
-            (filter.gender[String(user.gender)] ||
-              (filter.gender.null &&
-                user.gender !== 'male' &&
-                user.gender !== 'famale')) &&
-            filter.status[user?.status ?? 'novice'] &&
-            (user.relationship
-              ? filter.relationship.havePartner
-              : filter.relationship.noPartner) &&
-            (((filter.checked.checked ||
-              !selectedUsersIds.includes(user._id)) &&
-              filter.checked.unchecked) ||
-              selectedUsersIds.includes(user._id))
+          (user) => {
+            // const ages = birthDateToAge(user.birthday)
+            return (
+              user &&
+              (filter.gender[String(user.gender)] ||
+                (filter.gender.null &&
+                  user.gender !== 'male' &&
+                  user.gender !== 'famale')) &&
+              filter.status[user?.status ?? 'novice'] &&
+              (user.relationship
+                ? filter.relationship.havePartner
+                : filter.relationship.noPartner) &&
+              (((filter.checked.checked ||
+                !selectedUsersIds.includes(user._id)) &&
+                filter.checked.unchecked) ||
+                selectedUsersIds.includes(user._id)) &&
+              (!filter.ages ||
+                (user.age >= (filter.ages.min || 18) &&
+                  user.age <= (filter.ages.max || 70)))
+            )
+          }
         ),
       [
-        acceptedUsers,
+        acceptedUsersWithAges,
         searchText,
         exceptedIds,
         filterRules,
@@ -282,7 +316,11 @@ const selectUsersFunc = (
     return (
       <div className="flex flex-col items-stretch w-full h-full max-h-full gap-y-0.5">
         <ContentHeader noBorder>
-          <UsersFilter value={filter} onChange={setFilter} />
+          <UsersFilter
+            value={filter}
+            onChange={setFilter}
+            minMaxAges={minMaxAges}
+          />
         </ContentHeader>
         <Search
           searchText={searchText}

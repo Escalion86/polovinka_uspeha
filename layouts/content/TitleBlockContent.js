@@ -12,7 +12,6 @@ import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
-import EditableTextarea from '@components/EditableTextarea'
 import Textarea from '@components/Textarea'
 
 const TitleBlockContent = (props) => {
