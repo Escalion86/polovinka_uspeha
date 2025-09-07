@@ -775,22 +775,21 @@ const eventUsersPaymentsFunc = (eventId) => {
         />
       ) : null
 
-    const TotalToAssistants = ({ className }) =>
-      eventAssistantsIds.length > 0 ? (
-        <TotalItem
-          title="Всего затрат на ведущих и ассистентов"
-          className={className}
-          valueClassName={cn(
-            'whitespace-nowrap',
-            sumOfPaymentsOfEventToAssistants === 0
-              ? 'text-success'
-              : sumOfPaymentsOfEventToAssistants > 0
-                ? 'text-blue-700'
-                : 'text-danger'
-          )}
-          value={`${sumOfPaymentsOfEventToAssistants} ₽`}
-        />
-      ) : null
+    const TotalToAssistants = ({ className }) => (
+      <TotalItem
+        title="Всего затрат на ведущих и ассистентов"
+        className={className}
+        valueClassName={cn(
+          'whitespace-nowrap',
+          sumOfPaymentsOfEventToAssistants === 0
+            ? 'text-success'
+            : sumOfPaymentsOfEventToAssistants > 0
+              ? 'text-blue-700'
+              : 'text-danger'
+        )}
+        value={`${sumOfPaymentsOfEventToAssistants} ₽`}
+      />
+    )
 
     const TotalToEvent = ({ className }) => (
       <TotalItem
