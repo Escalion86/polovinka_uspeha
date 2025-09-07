@@ -922,7 +922,7 @@ const eventUsersPaymentsFunc = (eventId) => {
             value={
               efficiency
                 ? `${(efficiency * 100).toFixed(0)} %`
-                : 'нет поступлений'
+                : 'невозможно расчитать'
             }
           />
           <div className="text-sm leading-3 text-gray-600">
