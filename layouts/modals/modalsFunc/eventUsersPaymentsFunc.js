@@ -826,36 +826,80 @@ const eventUsersPaymentsFunc = (eventId) => {
     const TotalExpect = ({ className }) => {
       const expect = sumOfPaymentsToExpectFromParticipants + outcome
       return (
-        <TotalItem
-          title="Ожидаемая прибыль"
-          valueClassName={
-            expect <= 0
-              ? 'text-danger'
-              : // : totalIncome > expectedMaxIncome
-                // ? 'text-blue-700'
-                'text-success'
-          }
-          value={`${expect} ₽`}
-        />
+        <div className="flex flex-wrap items-center gap-x-1">
+          <TotalItem
+            title="Ожидаемая чистая прибыль"
+            valueClassName={
+              expect <= 0
+                ? 'text-danger'
+                : // : totalIncome > expectedMaxIncome
+                  // ? 'text-blue-700'
+                  'text-success'
+            }
+            value={`${expect} ₽`}
+          />
+          <div className="text-sm leading-3 text-gray-600">
+            (прибыль без учета доп. доходов и расходов)
+          </div>
+        </div>
       )
     }
 
     const TotalMargin = ({ className }) => {
-      const margin = cashReceipts > 0 ? totalIncome / cashReceipts : null
+      const margin =
+        cashReceipts > 0
+          ? ((cashReceipts + outcome) / cashReceipts) * 100
+          : null
 
       return (
-        <TotalItem
-          title="Маржа"
-          className={className}
-          valueClassName={
-            !margin
-              ? 'text-gray-600'
-              : margin > 0
-                ? 'text-success'
-                : 'text-danger'
-          }
-          value={margin ? `${(margin * 100).toFixed(0)} %` : 'нет поступлений'}
-        />
+        <div className="flex flex-wrap items-center gap-x-1">
+          <TotalItem
+            title="Маржа"
+            className={className}
+            valueClassName={
+              !margin
+                ? 'text-gray-600'
+                : margin > 0
+                  ? 'text-success'
+                  : 'text-danger'
+            }
+            value={margin ? `${margin.toFixed(0)} %` : 'нет поступлений'}
+          />
+          <div className="text-sm leading-3 text-gray-600">
+            (какая доля от полученных средств остается на руках)
+          </div>
+        </div>
+      )
+    }
+
+    const TotalProfitability = ({ className }) => {
+      const profitability =
+        cashReceipts > 0 && outcome !== 0 ? cashReceipts / (-1 * outcome) : null
+
+      return (
+        <div className="flex flex-wrap items-center gap-x-1">
+          <TotalItem
+            title="Рентабельность"
+            className={className}
+            valueClassName={
+              !profitability
+                ? 'text-gray-600'
+                : profitability > 0
+                  ? 'text-success'
+                  : 'text-danger'
+            }
+            value={
+              outcome === 0
+                ? '∞'
+                : profitability
+                  ? `${(profitability * 100).toFixed(0)} %`
+                  : 'нет поступлений'
+            }
+          />
+          <div className="text-sm leading-3 text-gray-600">
+            (сколько прибыли с каждого потраченного рубля)
+          </div>
+        </div>
       )
     }
 
@@ -864,22 +908,28 @@ const eventUsersPaymentsFunc = (eventId) => {
         maxPossibleIncome > 0 ? totalIncome / maxPossibleIncome : null
 
       return (
-        <TotalItem
-          title="Финансовая эффективность мероприятия"
-          className={className}
-          valueClassName={
-            !efficiency
-              ? 'text-gray-600'
-              : efficiency > 0
-                ? 'text-success'
-                : 'text-danger'
-          }
-          value={
-            efficiency
-              ? `${(efficiency * 100).toFixed(0)} %`
-              : 'нет поступлений'
-          }
-        />
+        <div>
+          <TotalItem
+            title="Финансовая эффективность мероприятия"
+            className={className}
+            valueClassName={
+              !efficiency
+                ? 'text-gray-600'
+                : efficiency > 0
+                  ? 'text-success'
+                  : 'text-danger'
+            }
+            value={
+              efficiency
+                ? `${(efficiency * 100).toFixed(0)} %`
+                : 'нет поступлений'
+            }
+          />
+          <div className="text-sm leading-3 text-gray-600">
+            (соотношение фактической чистой прибыли к максимальной возможной
+            прибыли)
+          </div>
+        </div>
       )
     }
 
@@ -1043,7 +1093,7 @@ const eventUsersPaymentsFunc = (eventId) => {
               </div>
             </div>
             {paymentsToEvent.length > 0 && (
-              <div className="p-1  border-t border-gray-700 rounded-sm bg-general/50">
+              <div className="p-1 border-t border-gray-700 rounded-sm bg-general/50">
                 {paymentsToEvent.map((payment) => (
                   <div
                     key={payment._id}
@@ -1126,13 +1176,40 @@ const eventUsersPaymentsFunc = (eventId) => {
             )}
           </TabPanel>
           <TabPanel tabName="Сводка" tabAddToLabel={`${totalIncome} ₽`}>
+            <Divider title="Приход средств" />
             <TotalFromParticipants />
             <TotalFromNotParticipants />
-            {eventAssistants.length > 0 && <TotalToAssistants />}
-            <TotalToEvent />
             <TotalFromEvent />
             <TotalItem
-              title="Текущая прибыль"
+              title="ИТОГО"
+              valueClassName={
+                cashReceipts
+                  ? cashReceipts < 0
+                    ? 'text-danger'
+                    : 'text-success'
+                  : 'text-gray-600'
+              }
+              value={`${cashReceipts} ₽`}
+              className="font-bold"
+            />
+            <Divider title="Расходы" />
+            <TotalToEvent />
+            {eventAssistants.length > 0 && <TotalToAssistants />}
+            <TotalItem
+              title="ИТОГО"
+              valueClassName={
+                outcome
+                  ? outcome < 0
+                    ? 'text-danger'
+                    : 'text-success'
+                  : 'text-gray-600'
+              }
+              value={`${outcome} ₽`}
+              className="font-bold"
+            />
+            <Divider title="Итоги" />
+            <TotalItem
+              title="ИТОГОВАЯ ЧИСТАЯ ПРИБЫЛЬ"
               valueClassName={
                 totalIncome
                   ? totalIncome < 0
@@ -1141,24 +1218,34 @@ const eventUsersPaymentsFunc = (eventId) => {
                   : 'text-gray-600'
               }
               value={`${totalIncome} ₽`}
+              className="font-bold"
             />
+
             <TotalExpect />
+            <Divider title="Прочие фин. показатели" />
             <TotalMargin />
-            <Divider />
-            <TotalItem
-              title="Максимально возможная прибыль"
-              valueClassName={
-                maxPossibleIncome
-                  ? maxPossibleIncome < 0
-                    ? 'text-danger'
-                    : 'text-success'
-                  : 'text-gray-600'
-              }
-              value={
-                maxPossibleIncome ? `${maxPossibleIncome} ₽` : 'не ограничено'
-              }
-            />
+            <TotalProfitability />
+            <div>
+              <TotalItem
+                title="Максимально возможная прибыль"
+                valueClassName={
+                  maxPossibleIncome
+                    ? maxPossibleIncome < 0
+                      ? 'text-danger'
+                      : 'text-success'
+                    : 'text-gray-600'
+                }
+                value={
+                  maxPossibleIncome ? `${maxPossibleIncome} ₽` : 'не ограничено'
+                }
+              />
+              <div className="text-sm leading-3 text-gray-600">
+                (чистая прибыль при максимальной заполненности мероприятия и
+                отсутствии расходов)
+              </div>
+            </div>
             <TotalEfficiency />
+
             {/* {expectedMaxIncome !== null && (
               <div className="flex flex-wrap gap-x-1">
                 <span>{'Максимально возможная прибыль:'}</span>
