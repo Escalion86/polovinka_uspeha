@@ -1,7 +1,20 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import mongoose from 'mongoose'
 import dbConnect from '@utils/dbConnect'
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
+
+const resolveReferrerId = async (db, referrerId) => {
+  if (!referrerId || !mongoose.Types.ObjectId.isValid(referrerId)) return null
+
+  const referrer = await db
+    .model('Users')
+    .findById(referrerId)
+    .select({ _id: 1 })
+    .lean()
+
+  return referrer?._id ?? null
+}
 
 export default async function auth(req, res) {
   return await NextAuth(req, res, {
@@ -71,6 +84,7 @@ export default async function auth(req, res) {
             placeholder: 'false',
           },
           location: { label: 'Location', type: 'text' },
+          referrerId: { label: 'ReferrerId', type: 'text' },
         },
         authorize: async (credentials, req) => {
           const {
@@ -81,6 +95,7 @@ export default async function auth(req, res) {
             username,
             registration,
             location,
+            referrerId,
           } = credentials
           if (telegramId) {
             const telegramIdNum = parseInt(telegramId)
@@ -105,6 +120,10 @@ export default async function auth(req, res) {
               }
             } else {
               if (registration === 'true') {
+                const resolvedReferrerId = await resolveReferrerId(
+                  db,
+                  referrerId
+                )
                 const newUser = await db.model('Users').create({
                   notifications: {
                     telegram: {
@@ -117,6 +136,7 @@ export default async function auth(req, res) {
                   secondName: last_name === 'undefined' ? undefined : last_name,
                   images: [photo_url],
                   registrationType: 'telegram',
+                  referrerId: resolvedReferrerId,
                 })
                 await db.model('Histories').create({
                   schema: 'users',
@@ -246,6 +266,7 @@ export default async function auth(req, res) {
           session.user.notifications = result.notifications
           session.user.eventsTagsNotification = result.eventsTagsNotification
           session.user.registrationType = result.registrationType
+          session.user.referrerId = result.referrerId
           session.user.createdAt = result.createdAt
           session.user.updatedAt = result.updatedAt
         }

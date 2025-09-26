@@ -27,6 +27,7 @@ import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { faUserTie } from '@fortawesome/free-solid-svg-icons/faUserTie'
 import { faUserTimes } from '@fortawesome/free-solid-svg-icons/faUserTimes'
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
 import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
 import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
@@ -177,6 +178,7 @@ import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTod
 import { uid } from 'uid'
 import ImagesServerContent from '@layouts/content/ImagesServerContent'
 import LikesContent from '@layouts/content/LikesContent'
+import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
@@ -2052,6 +2054,12 @@ export const CONTENTS = Object.freeze({
     accessStatuses: ['member'],
     roleAccess: (role, status) => role?.seeMyStatistics || status === 'member',
   },
+  referrals: {
+    Component: ReferralsContent,
+    name: 'Реферальная программа',
+    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: () => true,
+  },
   imagesServer: {
     Component: ImagesServerContent,
     name: 'Сервер картинок',
@@ -2081,6 +2089,14 @@ export const pages = [
     icon: faTrophy,
     // accessRoles: CONTENTS['userStatistics'].accessRoles,
     roleAccess: CONTENTS['userStatistics'].roleAccess,
+  },
+  {
+    id: 1,
+    group: 0,
+    name: 'Рефералы',
+    href: 'referrals',
+    icon: faUserPlus,
+    roleAccess: CONTENTS['referrals'].roleAccess,
   },
   {
     id: 2,
