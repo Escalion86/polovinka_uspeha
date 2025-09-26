@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import { useRouter } from 'next/router'
 
-const qrCodeGeneratorFunc = ({ type, id, title }) => {
+const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
   const QRCodeGeneratorFuncModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -19,12 +19,19 @@ const qrCodeGeneratorFunc = ({ type, id, title }) => {
         ? window.location.origin
         : ''
 
+    const targetLink = link
+      ? link
+      : `${origin ? `${origin}/` : '/'}${location}/cabinet/${
+          type ?? router.query.page
+        }${id ? `?id=${id}` : ''}`
+    const encodedLink = encodeURIComponent(targetLink)
+
     return (
       <FormWrapper flex className="flex justify-center">
         {/* <div className="relative"> */}
         <img
           className="max-w-[300px] aspect-1 w-full"
-          src={`https://api.qrserver.com/v1/create-qr-code/?data=${origin}/${location}/cabinet/${type ?? router.query.page}${id ? `?id=${id}` : ''}&amp;size=300x300`}
+          src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodedLink}&size=300x300`}
           alt="qr-code"
         />
         {/* <Image
