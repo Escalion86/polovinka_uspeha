@@ -3,21 +3,26 @@
 import Button from '@components/Button'
 import LoadingSpinner from '@components/LoadingSpinner'
 import Note from '@components/Note'
+import UserName from '@components/UserName'
 import formatDate from '@helpers/formatDate'
+import useSnackbar from '@helpers/useSnackbar'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
+import modalsFuncAtom from '@state/modalsFuncAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
-import cn from 'classnames'
 import { useAtomValue } from 'jotai'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
 
 const ReferralsContent = () => {
   const loggedUser = useAtomValue(loggedUserActiveAtom)
   const location = useAtomValue(locationAtom)
   const users = useAtomValue(usersAtomAsync)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const router = useRouter()
+  const { success, error } = useSnackbar()
 
   const [origin, setOrigin] = useState('')
-  const [copyStatus, setCopyStatus] = useState('')
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -25,16 +30,9 @@ const ReferralsContent = () => {
     }
   }, [])
 
-  useEffect(() => {
-    if (copyStatus) {
-      const timer = setTimeout(() => setCopyStatus(''), 3000)
-      return () => clearTimeout(timer)
-    }
-  }, [copyStatus])
-
   const referralPath = useMemo(() => {
     if (!loggedUser?._id || !location) return ''
-    return `/${location}/login?ref=${loggedUser._id}`
+    return `/${location}/login?registration=true&ref=${loggedUser._id}`
   }, [loggedUser?._id, location])
 
   const referralLink = useMemo(() => {
@@ -58,16 +56,33 @@ const ReferralsContent = () => {
     })
   }, [referrals])
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     if (!referralLink) return
 
     try {
       await navigator.clipboard.writeText(referralLink)
-      setCopyStatus('Ссылка скопирована в буфер обмена')
-    } catch (error) {
-      setCopyStatus('Не удалось автоматически скопировать ссылку')
+      success('Реферальная ссылка скопирована в буфер обмена')
+    } catch (copyError) {
+      error('Не удалось автоматически скопировать ссылку')
     }
-  }
+  }, [referralLink, success, error])
+
+  const handleQrCode = useCallback(() => {
+    if (!referralLink || !modalsFunc?.external?.qrCodeGenerator) return
+
+    modalsFunc.external.qrCodeGenerator({
+      title: 'QR-код реферальной ссылки',
+      link: referralLink,
+    })
+  }, [modalsFunc, referralLink])
+
+  const handleOpenReferral = useCallback(
+    (userId) => {
+      if (!location || !userId) return
+      router.push(`/${location}/user/${userId}`)
+    },
+    [router, location]
+  )
 
   if (!loggedUser?._id) {
     return (
@@ -85,8 +100,6 @@ const ReferralsContent = () => {
     )
   }
 
-  const isCopyError = copyStatus.startsWith('Не удалось')
-
   return (
     <div className="flex flex-col gap-y-4 px-1 pb-4">
       <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -102,16 +115,16 @@ const ReferralsContent = () => {
             onClick={handleCopy}
             disabled={!referralLink}
           />
-          {copyStatus && (
-            <span
-              className={cn(
-                'text-sm',
-                isCopyError ? 'text-red-600' : 'text-success'
-              )}
-            >
-              {copyStatus}
-            </span>
-          )}
+          <Button
+            name="QR код"
+            outline
+            classOutlineColor="border-general"
+            classOutlineTextColor="text-general"
+            classHoverOutlineColor="hover:border-general"
+            classHoverOutlineTextColor="hover:text-general"
+            onClick={handleQrCode}
+            disabled={!referralLink}
+          />
         </div>
         <Note className="mt-3">
           Поделитесь этой ссылкой с друзьями. После регистрации по ней вы
@@ -125,8 +138,7 @@ const ReferralsContent = () => {
             Мои рефералы
           </div>
           <div className="text-sm text-gray-600">
-            {sortedReferrals.length}
-            {' '}
+            {sortedReferrals.length}{' '}
             {sortedReferrals.length === 1
               ? 'приглашенный пользователь'
               : 'приглашенных пользователей'}
@@ -154,11 +166,13 @@ const ReferralsContent = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedReferrals.map((user) => (
-                  <tr key={user._id}>
+                  <tr
+                    key={user._id}
+                    className="transition-colors cursor-pointer hover:bg-gray-50"
+                    onClick={() => handleOpenReferral(user._id)}
+                  >
                     <td className="px-4 py-2 text-sm text-gray-700">
-                      {[user.secondName, user.firstName, user.thirdName]
-                        .filter(Boolean)
-                        .join(' ') || '—'}
+                      <UserName user={user} />
                     </td>
                     <td className="px-4 py-2 text-sm text-gray-700">
                       {user.phone ? `+${user.phone}` : '—'}
