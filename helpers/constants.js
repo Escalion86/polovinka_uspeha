@@ -11,6 +11,7 @@ import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faHands } from '@fortawesome/free-solid-svg-icons/faHands'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
+import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
 import { faMedal } from '@fortawesome/free-solid-svg-icons/faMedal'
@@ -27,6 +28,7 @@ import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { faUserTie } from '@fortawesome/free-solid-svg-icons/faUserTie'
 import { faUserTimes } from '@fortawesome/free-solid-svg-icons/faUserTimes'
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
 import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
 import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
@@ -137,6 +139,9 @@ const LoggedUserNotificationsContent = dynamic(
 const SettingsFabMenuContent = dynamic(
   () => import('@layouts/content/SettingsFabMenuContent')
 )
+const SettingsReferralSystemContent = dynamic(
+  () => import('@layouts/content/SettingsReferralSystemContent')
+)
 const SettingsRolesContent = dynamic(
   () => import('@layouts/content/SettingsRolesContent')
 )
@@ -177,6 +182,7 @@ import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTod
 import { uid } from 'uid'
 import ImagesServerContent from '@layouts/content/ImagesServerContent'
 import LikesContent from '@layouts/content/LikesContent'
+import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
@@ -700,6 +706,8 @@ export const DEFAULT_PAYMENT = Object.freeze({
   status: 'created',
   payAt: undefined,
   comment: '',
+  isReferralCoupon: false,
+  referralReward: null,
 })
 
 export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
@@ -755,6 +763,11 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   instagram: '',
   vk: '',
   codeSendService: 'telefonip',
+  referralProgram: {
+    referrerCouponAmount: 0,
+    referralCouponAmount: 0,
+    requirePaidEvent: false,
+  },
 })
 
 export const EVENT_RELATIONSHIP_ACCESS = [
@@ -1037,6 +1050,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: false,
+      referralSystem: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1176,6 +1190,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: false,
+      referralSystem: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1315,6 +1330,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: false,
+      referralSystem: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1454,6 +1470,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: true,
+      referralSystem: true,
       roles: true,
       dateStartProject: false,
       headerInfo: true,
@@ -1593,6 +1610,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: true,
+      referralSystem: true,
       roles: true,
       dateStartProject: false,
       headerInfo: true,
@@ -1732,6 +1750,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: true,
       fabMenu: true,
+      referralSystem: true,
       roles: true,
       dateStartProject: true,
       headerInfo: true,
@@ -2027,6 +2046,12 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.fabMenu,
   },
+  settingsReferralSystem: {
+    Component: SettingsReferralSystemContent,
+    name: 'Настройки / Реферальная система',
+    accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.siteSettings?.referralSystem,
+  },
   settingsDateStartProject: {
     Component: SettingsDateStartProjectContent,
     name: 'Настройки / Дата старта проекта',
@@ -2051,6 +2076,12 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['client', 'admin', 'supervisor', 'dev'],
     accessStatuses: ['member'],
     roleAccess: (role, status) => role?.seeMyStatistics || status === 'member',
+  },
+  referrals: {
+    Component: ReferralsContent,
+    name: 'Реферальная программа',
+    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: () => true,
   },
   imagesServer: {
     Component: ImagesServerContent,
@@ -2081,6 +2112,14 @@ export const pages = [
     icon: faTrophy,
     // accessRoles: CONTENTS['userStatistics'].accessRoles,
     roleAccess: CONTENTS['userStatistics'].roleAccess,
+  },
+  {
+    id: 1,
+    group: 0,
+    name: 'Рефералы',
+    href: 'referrals',
+    icon: faUserPlus,
+    roleAccess: CONTENTS['referrals'].roleAccess,
   },
   {
     id: 2,
@@ -2395,6 +2434,15 @@ export const pages = [
     icon: faQuestion,
     // accessRoles: CONTENTS['settingsFabMenu'].accessRoles,
     roleAccess: CONTENTS['settingsFabMenu'].roleAccess,
+  },
+  {
+    id: 86,
+    group: 11,
+    name: 'Реферальная система',
+    href: 'settingsReferralSystem',
+    icon: faGift,
+    // accessRoles: CONTENTS['settingsReferralSystem'].accessRoles,
+    roleAccess: CONTENTS['settingsReferralSystem'].roleAccess,
   },
   {
     id: 82,

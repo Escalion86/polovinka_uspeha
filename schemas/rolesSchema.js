@@ -160,6 +160,7 @@ const rolesSchema = {
     default: {
       phoneConfirmService: false,
       fabMenu: false,
+      referralSystem: false,
       roles: false,
     },
   },
