@@ -11,6 +11,7 @@ import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faHands } from '@fortawesome/free-solid-svg-icons/faHands'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
+import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { faMars } from '@fortawesome/free-solid-svg-icons/faMars'
 import { faMedal } from '@fortawesome/free-solid-svg-icons/faMedal'
@@ -137,6 +138,9 @@ const LoggedUserNotificationsContent = dynamic(
 )
 const SettingsFabMenuContent = dynamic(
   () => import('@layouts/content/SettingsFabMenuContent')
+)
+const SettingsReferralSystemContent = dynamic(
+  () => import('@layouts/content/SettingsReferralSystemContent')
 )
 const SettingsRolesContent = dynamic(
   () => import('@layouts/content/SettingsRolesContent')
@@ -702,6 +706,8 @@ export const DEFAULT_PAYMENT = Object.freeze({
   status: 'created',
   payAt: undefined,
   comment: '',
+  isReferralCoupon: false,
+  referralReward: null,
 })
 
 export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
@@ -757,6 +763,11 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   instagram: '',
   vk: '',
   codeSendService: 'telefonip',
+  referralProgram: {
+    referrerCouponAmount: 0,
+    referralCouponAmount: 0,
+    requirePaidEvent: false,
+  },
 })
 
 export const EVENT_RELATIONSHIP_ACCESS = [
@@ -1039,6 +1050,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: false,
+      referralSystem: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1178,6 +1190,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: false,
+      referralSystem: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1317,6 +1330,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: false,
+      referralSystem: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1456,6 +1470,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: true,
+      referralSystem: true,
       roles: true,
       dateStartProject: false,
       headerInfo: true,
@@ -1595,6 +1610,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: false,
       fabMenu: true,
+      referralSystem: true,
       roles: true,
       dateStartProject: false,
       headerInfo: true,
@@ -1734,6 +1750,7 @@ export const DEFAULT_ROLES = [
     siteSettings: {
       phoneConfirmService: true,
       fabMenu: true,
+      referralSystem: true,
       roles: true,
       dateStartProject: true,
       headerInfo: true,
@@ -2028,6 +2045,12 @@ export const CONTENTS = Object.freeze({
     name: 'Настройки / Меню "Вопрос"',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.fabMenu,
+  },
+  settingsReferralSystem: {
+    Component: SettingsReferralSystemContent,
+    name: 'Настройки / Реферальная система',
+    accessRoles: ['supervisor', 'dev'],
+    roleAccess: (role) => role?.siteSettings?.referralSystem,
   },
   settingsDateStartProject: {
     Component: SettingsDateStartProjectContent,
@@ -2411,6 +2434,15 @@ export const pages = [
     icon: faQuestion,
     // accessRoles: CONTENTS['settingsFabMenu'].accessRoles,
     roleAccess: CONTENTS['settingsFabMenu'].roleAccess,
+  },
+  {
+    id: 86,
+    group: 11,
+    name: 'Реферальная система',
+    href: 'settingsReferralSystem',
+    icon: faGift,
+    // accessRoles: CONTENTS['settingsReferralSystem'].accessRoles,
+    roleAccess: CONTENTS['settingsReferralSystem'].roleAccess,
   },
   {
     id: 82,

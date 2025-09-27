@@ -10,14 +10,23 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import eventsAtom from '@state/atoms/eventsAtom'
+import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
 import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
 
 const ReferralsContent = () => {
   const loggedUser = useAtomValue(loggedUserActiveAtom)
   const location = useAtomValue(locationAtom)
   const users = useAtomValue(usersAtomAsync)
+  const siteSettings = useAtomValue(siteSettingsAtom)
+  const events = useAtomValue(eventsAtom)
+  const eventsUsers = useAtomValue(asyncEventsUsersAllAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const router = useRouter()
   const { success, error } = useSnackbar()
@@ -40,6 +49,27 @@ const ReferralsContent = () => {
     return origin ? `${origin}${referralPath}` : referralPath
   }, [origin, referralPath])
 
+  const referralProgram = siteSettings?.referralProgram ?? {}
+
+  const formatCurrency = useCallback((amount) => {
+    if (typeof amount !== 'number') return '—'
+    const hasFraction = amount % 100 !== 0
+    return `${(amount / 100).toLocaleString('ru-RU', {
+      minimumFractionDigits: hasFraction ? 2 : 0,
+      maximumFractionDigits: hasFraction ? 2 : 0,
+    })} ₽`
+  }, [])
+
+  const requirePaidEvent = referralProgram.requirePaidEvent ?? false
+
+  const conditionText = useMemo(
+    () =>
+      requirePaidEvent
+        ? 'Посещение платного мероприятия'
+        : 'Посещение любого мероприятия',
+    [requirePaidEvent]
+  )
+
   const referrals = useMemo(() => {
     if (!Array.isArray(users) || !loggedUser?._id) return []
     return users.filter(
@@ -55,6 +85,64 @@ const ReferralsContent = () => {
       return dateB - dateA
     })
   }, [referrals])
+
+  const eventsById = useMemo(() => {
+    const map = new Map()
+    if (Array.isArray(events)) {
+      events.forEach((eventItem) => {
+        if (eventItem?._id) {
+          map.set(String(eventItem._id), eventItem)
+        }
+      })
+    }
+    return map
+  }, [events])
+
+  const participantsByUser = useMemo(() => {
+    const map = new Map()
+    if (!Array.isArray(eventsUsers)) return map
+
+    eventsUsers.forEach((eventUser) => {
+      if (!eventUser?.userId) return
+      if (['reserve', 'ban'].includes(eventUser.status)) return
+
+      const userId = String(eventUser.userId)
+      if (map.has(userId)) {
+        map.get(userId).push(eventUser)
+      } else {
+        map.set(userId, [eventUser])
+      }
+    })
+
+    return map
+  }, [eventsUsers])
+
+  const conditionStatusByUser = useMemo(() => {
+    const map = new Map()
+    if (participantsByUser.size === 0) return map
+
+    participantsByUser.forEach((userEvents, userId) => {
+      const hasQualifyingEvent = userEvents.some((eventUser) => {
+        const event = eventsById.get(String(eventUser.eventId))
+        if (!event || event.status !== 'closed') return false
+
+        if (requirePaidEvent) {
+          const isPaidEvent =
+            Array.isArray(event.subEvents) &&
+            event.subEvents.some(
+              (subEvent) => Number(subEvent?.price ?? 0) > 0
+            )
+          if (!isPaidEvent) return false
+        }
+
+        return true
+      })
+
+      map.set(userId, hasQualifyingEvent)
+    })
+
+    return map
+  }, [participantsByUser, eventsById, requirePaidEvent])
 
   const handleCopy = useCallback(async () => {
     if (!referralLink) return
@@ -133,6 +221,21 @@ const ReferralsContent = () => {
       </div>
 
       <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="text-lg font-semibold text-general">
+          Условия программы
+        </div>
+        <div className="mt-2 text-sm text-gray-700">
+          Условие для получения купона: {conditionText}.
+        </div>
+        <div className="mt-1 text-sm text-gray-700">
+          Купон для реферала: {formatCurrency(referralProgram.referralCouponAmount ?? 0)}.
+        </div>
+        <div className="mt-1 text-sm text-gray-700">
+          Купон для реферера: {formatCurrency(referralProgram.referrerCouponAmount ?? 0)}.
+        </div>
+      </div>
+
+      <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div className="flex items-center justify-between">
           <div className="text-lg font-semibold text-general">
             Мои рефералы
@@ -162,26 +265,43 @@ const ReferralsContent = () => {
                   <th className="px-4 py-2 text-sm font-medium text-gray-600">
                     Дата регистрации
                   </th>
+                  <th className="px-4 py-2 text-sm font-medium text-gray-600">
+                    Статус условия
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {sortedReferrals.map((user) => (
-                  <tr
-                    key={user._id}
-                    className="transition-colors cursor-pointer hover:bg-gray-50"
-                    onClick={() => handleOpenReferral(user._id)}
-                  >
-                    <td className="px-4 py-2 text-sm text-gray-700">
-                      <UserName user={user} />
-                    </td>
-                    <td className="px-4 py-2 text-sm text-gray-700">
-                      {user.phone ? `+${user.phone}` : '—'}
-                    </td>
-                    <td className="px-4 py-2 text-sm text-gray-700">
-                      {user.createdAt ? formatDate(user.createdAt) : '—'}
-                    </td>
-                  </tr>
-                ))}
+                {sortedReferrals.map((user) => {
+                  const conditionMet =
+                    conditionStatusByUser.get(String(user._id)) ?? false
+
+                  return (
+                    <tr
+                      key={user._id}
+                      className="transition-colors cursor-pointer hover:bg-gray-50"
+                      onClick={() => handleOpenReferral(user._id)}
+                    >
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        <UserName user={user} />
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        {user.phone ? `+${user.phone}` : '—'}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        {user.createdAt ? formatDate(user.createdAt) : '—'}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        <div className="flex items-center gap-2">
+                          <FontAwesomeIcon
+                            icon={conditionMet ? faCheckCircle : faTimesCircle}
+                            className={conditionMet ? 'text-success' : 'text-danger'}
+                          />
+                          <span>{conditionMet ? 'Выполнено' : 'Не выполнено'}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
