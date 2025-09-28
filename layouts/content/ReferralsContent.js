@@ -210,9 +210,7 @@ const ReferralsContent = () => {
 
   const handleOpenReferral = useCallback(
     (userId) => {
-      if (!userId || !modalsFunc?.user?.view) return
-
-      modalsFunc.user.view(userId)
+      if (!userId || !modalsFunc?.user?.view) return modalsFunc.user.view(userId)
     },
     [modalsFunc]
   )

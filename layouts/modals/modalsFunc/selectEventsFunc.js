@@ -50,6 +50,7 @@ const selectEventsFunc = (
 
     var filteredEvents = filterItems(
       events.filter((event) => {
+        if (event?.blank) return false
         const isEventExpired = isEventExpiredFunc(event)
         if (event.status === 'active') {
           if (filter.active && !isEventExpired) return true
