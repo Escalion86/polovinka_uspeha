@@ -29,6 +29,7 @@ import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { faUserTie } from '@fortawesome/free-solid-svg-icons/faUserTie'
 import { faUserTimes } from '@fortawesome/free-solid-svg-icons/faUserTimes'
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
 import { faVenus } from '@fortawesome/free-solid-svg-icons/faVenus'
 import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
@@ -2082,7 +2083,6 @@ export const CONTENTS = Object.freeze({
     Component: ReferralsContent,
     name: 'Реферальная программа',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
-    roleAccess: () => true,
     siteConfirm: (siteSettings) => siteSettings?.referralProgram?.enabled === true,
   },
   imagesServer: {
