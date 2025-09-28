@@ -20,21 +20,31 @@ const SettingsReferralSystemContent = () => {
   const [referrerCouponAmount, setReferrerCouponAmount] = useState(0)
   const [referralCouponAmount, setReferralCouponAmount] = useState(0)
   const [requirePaidEvent, setRequirePaidEvent] = useState(false)
-  const [enabled, setEnabled] = useState(false)
+  const [enabledForCenter, setEnabledForCenter] = useState(false)
+  const [enabledForClub, setEnabledForClub] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
 
   const currentProgram = siteSettings?.referralProgram ?? {}
-  const normalizedEnabled = currentProgram.enabled ?? false
+  const normalizedCenterEnabled =
+    typeof currentProgram.enabledForCenter === 'boolean'
+      ? currentProgram.enabledForCenter
+      : currentProgram.enabled === true
+  const normalizedClubEnabled =
+    typeof currentProgram.enabledForClub === 'boolean'
+      ? currentProgram.enabledForClub
+      : currentProgram.enabled === true
 
   useEffect(() => {
-    setEnabled(normalizedEnabled)
+    setEnabledForCenter(normalizedCenterEnabled)
+    setEnabledForClub(normalizedClubEnabled)
     setReferrerCouponAmount(currentProgram.referrerCouponAmount ?? 0)
     setReferralCouponAmount(currentProgram.referralCouponAmount ?? 0)
     setRequirePaidEvent(currentProgram.requirePaidEvent ?? false)
   }, [
-    normalizedEnabled,
+    normalizedCenterEnabled,
+    normalizedClubEnabled,
     currentProgram.referrerCouponAmount,
     currentProgram.referralCouponAmount,
     currentProgram.requirePaidEvent,
@@ -42,32 +52,37 @@ const SettingsReferralSystemContent = () => {
 
   const formChanged = useMemo(() => {
     return (
-      normalizedEnabled !== enabled ||
+      normalizedCenterEnabled !== enabledForCenter ||
+      normalizedClubEnabled !== enabledForClub ||
       (currentProgram.referrerCouponAmount ?? 0) !== referrerCouponAmount ||
       (currentProgram.referralCouponAmount ?? 0) !== referralCouponAmount ||
       (currentProgram.requirePaidEvent ?? false) !== requirePaidEvent
     )
   }, [
-    normalizedEnabled,
+    normalizedCenterEnabled,
+    normalizedClubEnabled,
     currentProgram.referrerCouponAmount,
     currentProgram.referralCouponAmount,
     currentProgram.requirePaidEvent,
     referrerCouponAmount,
     referralCouponAmount,
     requirePaidEvent,
-    enabled,
+    enabledForCenter,
+    enabledForClub,
   ])
 
   const amountsZero = referrerCouponAmount === 0 && referralCouponAmount === 0
-  const applyDisabled = !formChanged || isSaving || (enabled && amountsZero)
-  const showZeroWarning = amountsZero && enabled
+  const programEnabled = enabledForCenter || enabledForClub
+  const applyDisabled =
+    !formChanged || isSaving || (programEnabled && amountsZero)
+  const showZeroWarning = amountsZero && programEnabled
 
   const handleSave = async () => {
     if (!location) return
-    if (enabled && amountsZero) {
+    if (programEnabled && amountsZero) {
       setMessage('')
       setError(
-        'Нельзя включить реферальную систему, если суммы купонов для реферала и реферера равны нулю.'
+        'Нельзя включить реферальную систему для Центра или Клуба, если суммы купонов для реферала и реферера равны нулю.'
       )
       return
     }
@@ -80,7 +95,9 @@ const SettingsReferralSystemContent = () => {
       `/api/${location}/site`,
       {
         referralProgram: {
-          enabled,
+          enabled: programEnabled,
+          enabledForCenter,
+          enabledForClub,
           referrerCouponAmount,
           referralCouponAmount,
           requirePaidEvent,
@@ -121,14 +138,19 @@ const SettingsReferralSystemContent = () => {
       {message && !isSaving && <div className="text-success">{message}</div>}
       <FormWrapper>
         <CheckBox
-          checked={enabled}
-          label="Включить реферальную систему"
-          onClick={() => setEnabled((state) => !state)}
+          checked={enabledForCenter}
+          label="Для Центра"
+          onClick={() => setEnabledForCenter((state) => !state)}
+        />
+        <CheckBox
+          checked={enabledForClub}
+          label="Для Клуба"
+          onClick={() => setEnabledForClub((state) => !state)}
         />
         {showZeroWarning && (
           <Note className="!text-danger">
-            Нельзя включить реферальную систему с нулевыми суммами купонов для
-            реферала и реферера.
+            Нельзя включить реферальную систему для Центра или Клуба с
+            нулевыми суммами купонов для реферала и реферера.
           </Note>
         )}
         <PriceInput

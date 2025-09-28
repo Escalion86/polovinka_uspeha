@@ -766,6 +766,8 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   codeSendService: 'telefonip',
   referralProgram: {
     enabled: false,
+    enabledForCenter: false,
+    enabledForClub: false,
     referrerCouponAmount: 0,
     referralCouponAmount: 0,
     requirePaidEvent: false,
@@ -1817,6 +1819,35 @@ export const SOCIALS = [
   },
 ]
 
+const getReferralProgramFlags = (referralProgram = {}) => {
+  const fallbackEnabled = referralProgram?.enabled === true
+  const enabledForCenter =
+    typeof referralProgram?.enabledForCenter === 'boolean'
+      ? referralProgram.enabledForCenter
+      : fallbackEnabled
+  const enabledForClub =
+    typeof referralProgram?.enabledForClub === 'boolean'
+      ? referralProgram.enabledForClub
+      : fallbackEnabled
+
+  return {
+    enabledForCenter,
+    enabledForClub,
+    isEnabled: enabledForCenter || enabledForClub,
+  }
+}
+
+const isReferralProgramEnabled = (referralProgram) =>
+  getReferralProgramFlags(referralProgram).isEnabled
+
+const isReferralProgramEnabledForStatus = (referralProgram, status) => {
+  const { enabledForCenter, enabledForClub } =
+    getReferralProgramFlags(referralProgram)
+
+  if (status === 'member') return enabledForClub
+  return enabledForCenter
+}
+
 export const CONTENTS = Object.freeze({
   services: {
     Component: ServicesContent,
@@ -2083,7 +2114,17 @@ export const CONTENTS = Object.freeze({
     Component: ReferralsContent,
     name: 'Реферальная программа',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
-    siteConfirm: (siteSettings) => siteSettings?.referralProgram?.enabled === true,
+    roleAccess: (role, status, siteSettings) => {
+      const roleId = role?._id
+      if (roleId && roleId !== 'client') return true
+
+      return isReferralProgramEnabledForStatus(
+        siteSettings?.referralProgram,
+        status
+      )
+    },
+    siteConfirm: (siteSettings) =>
+      isReferralProgramEnabled(siteSettings?.referralProgram),
   },
   imagesServer: {
     Component: ImagesServerContent,

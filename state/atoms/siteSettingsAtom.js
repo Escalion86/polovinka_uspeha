@@ -12,6 +12,8 @@ const siteSettingsAtom = atom({
   vk: null,
   referralProgram: {
     enabled: false,
+    enabledForCenter: false,
+    enabledForClub: false,
     referrerCouponAmount: 0,
     referralCouponAmount: 0,
     requirePaidEvent: false,
