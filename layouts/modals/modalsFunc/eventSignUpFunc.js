@@ -61,7 +61,7 @@ const eventSignUpFunc = (
           eventId,
           userId: loggedUserActive?._id,
           status,
-          userStatus: loggedUserActive.status,
+          userStatus: loggedUserActive?.status,
           comment,
           subEventId,
         },
