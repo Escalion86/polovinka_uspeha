@@ -426,6 +426,11 @@ const SettingsRolesContent = (props) => {
               subItem="fabMenu"
             />
             <RoleItem
+              label="Настройки реферальной системы"
+              item="siteSettings"
+              subItem="referralSystem"
+            />
+            <RoleItem
               label="Редактирование ролей"
               item="siteSettings"
               subItem="roles"

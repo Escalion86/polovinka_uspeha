@@ -68,6 +68,19 @@ const paymentsSchema = {
     type: String,
     default: '',
   },
+  isReferralCoupon: {
+    type: Boolean,
+    default: false,
+  },
+  referralReward: {
+    type: {
+      eventId: { type: String, default: null },
+      referralUserId: { type: String, default: null },
+      referrerId: { type: String, default: null },
+      rewardFor: { type: String, default: null },
+    },
+    default: null,
+  },
 }
 
 export default paymentsSchema
