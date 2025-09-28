@@ -75,7 +75,8 @@ function CabinetPage(props) {
           !CONTENTS[page] ||
           !CONTENTS[page].roleAccess(
             loggedUserActiveRole,
-            loggedUserActiveStatusName
+            loggedUserActiveStatusName,
+            props.siteSettings
           ))) ||
       (typeof CONTENTS[page]?.siteConfirm === 'function' &&
         !CONTENTS[page].siteConfirm(props.siteSettings))

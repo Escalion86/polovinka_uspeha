@@ -364,6 +364,12 @@ const LoginPage = (props) => {
 
   const { location } = props
 
+  const referralId = useMemo(() => {
+    const value = router.query?.ref ?? router.query?.referrer
+    if (Array.isArray(value)) return value[0]
+    return typeof value === 'string' ? value : undefined
+  }, [router.query])
+
   const [process, setProcess] = useState('authorization')
   const [type, setType] = useState()
   const [registrationLevel, setRegistrationLevel] = useState(1)
@@ -428,6 +434,7 @@ const LoginPage = (props) => {
           username: username === 'undefined' ? undefined : username,
           registration: forceReg || isRegistration ? 'true' : 'false',
           location,
+          referrerId: referralId,
         }).then((res) => {
           if (res?.error === 'CredentialsSignin') {
             setWaitingResponse(false)
@@ -461,6 +468,7 @@ const LoginPage = (props) => {
       setTelegramRegistrationConfirm,
       setWaitingResponse,
       setInputPassword,
+      referralId,
     ]
   )
 
@@ -800,6 +808,7 @@ const LoginPage = (props) => {
             forgotPassword: isForgotPassword,
             soctag,
             custag,
+            referrerId: referralId,
           },
           (res) => {
             if (res.error) {
