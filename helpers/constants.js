@@ -10,7 +10,7 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faHands } from '@fortawesome/free-solid-svg-icons/faHands'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
-import faHandsHoldingHeart from '@helpers/customIcons/faHandsHoldingHeart'
+import { faHandHoldingHeart } from '@fortawesome/free-solid-svg-icons/faHandHoldingHeart'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
 import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
@@ -2181,7 +2181,7 @@ export const pages = [
     group: 2,
     name: 'Услуги',
     href: 'services',
-    icon: faHandsHoldingHeart,
+    icon: faHandHoldingHeart,
     // accessRoles: CONTENTS['services'].accessRoles,
     roleAccess: CONTENTS['services'].roleAccess,
   },
@@ -2583,7 +2583,7 @@ export const pagesGroups = [
   {
     id: 2,
     name: 'Услуги',
-    icon: faHandsHoldingHeart,
+    icon: faHandHoldingHeart,
     // accessRoles: ['client', 'admin', 'supervisor', 'dev'],
   },
   {
