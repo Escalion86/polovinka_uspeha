@@ -81,6 +81,20 @@ const siteSettingsSchema = {
       default: [],
     },
   },
+  referralProgram: {
+    type: {
+      enabled: { type: Boolean, default: false },
+      referrerCouponAmount: { type: Number, default: 0 },
+      referralCouponAmount: { type: Number, default: 0 },
+      requirePaidEvent: { type: Boolean, default: false },
+    },
+    default: {
+      enabled: false,
+      referrerCouponAmount: 0,
+      referralCouponAmount: 0,
+      requirePaidEvent: false,
+    },
+  },
   title: {
     type: String,
     default: 'Центр серёзных знакомств',
