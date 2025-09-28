@@ -4,6 +4,7 @@ import phoneValidator from '@helpers/phoneValidator'
 
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
 import dbConnect from '@utils/dbConnect'
+import mongoose from 'mongoose'
 
 const token = process.env.TELEFONIP
 
@@ -83,6 +84,7 @@ export default async function handler(req, res) {
         backCall,
         checkBackCallId,
         location,
+        referrerId,
       } = body
 
       const db = await dbConnect(location)
@@ -148,6 +150,18 @@ export default async function handler(req, res) {
 
       // Сначала проверяем - есть ли уже такой зарегистрированный номер?
       const existingUser = await db.model('Users').findOne({ phone })
+
+      let resolvedReferrerId = null
+      if (referrerId && mongoose.Types.ObjectId.isValid(referrerId)) {
+        const referrer = await db
+          .model('Users')
+          .findById(referrerId)
+          .select({ _id: 1 })
+          .lean()
+        if (referrer?._id) {
+          resolvedReferrerId = referrer._id
+        }
+      }
 
       if (!forgotPassword && existingUser && existingUser.password) {
         return res?.status(200).json({
@@ -310,15 +324,23 @@ export default async function handler(req, res) {
         console.log(2)
         // Проверяем - возможно такой пользователь есть, просто у него не задан пароль
         if (existingUser && (!existingUser.password || forgotPassword)) {
+          const updateData = { password }
+          if (resolvedReferrerId && !existingUser.referrerId) {
+            updateData.referrerId = resolvedReferrerId
+          }
           const updatedUser = await db
             .model('Users')
-            .findOneAndUpdate({ phone }, { password })
+            .findOneAndUpdate({ phone }, updateData)
           return res?.status(201).json({
             success: true,
             data: updatedUser,
           })
         } else {
-          const newUser = await db.model('Users').create({ phone, password })
+          const newUser = await db.model('Users').create({
+            phone,
+            password,
+            referrerId: resolvedReferrerId,
+          })
           await db.model('Histories').create({
             schema: 'users',
             action: 'add',

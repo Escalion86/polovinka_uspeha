@@ -5,6 +5,7 @@ import { atom } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 import eventsAtom from '@state/atoms/eventsAtom'
 import asyncEventsUsersByEventIdAtom from '@state/async/asyncEventsUsersByEventIdAtom'
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 import userSelector from './userSelector'
 import { RESET } from 'jotai/utils'
 import usersAtomAsync from '@state/async/usersAtomAsync'
@@ -38,6 +39,10 @@ const eventEditSelector = atom(null, (get, set, newItem) => {
       )
       if (get(isLoadedAtom('usersAtomAsync'))) {
         set(usersAtomAsync, RESET)
+      }
+
+      if (get(isLoadedAtom('asyncPaymentsAtom'))) {
+        set(asyncPaymentsAtom, RESET)
       }
     }
 
