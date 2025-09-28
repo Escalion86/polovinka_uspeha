@@ -1,6 +1,7 @@
 import ContentHeader from '@components/ContentHeader'
 import Divider from '@components/Divider'
 import FormWrapper from '@components/FormWrapper'
+import CheckBox from '@components/CheckBox'
 import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
 import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
 import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
@@ -202,22 +203,35 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
       subEventsFilter,
     ])
 
-    const subEventsButtonsConfig = useMemo(() => {
+    const subEventsOptions = useMemo(() => {
       if (!shouldShowSubEventsFilter) return []
 
-      const buttons = []
+      const options = []
 
       if (Object.prototype.hasOwnProperty.call(subEventsFilter, 'null')) {
-        buttons.push({ value: 'null', name: 'Без варианта', color: 'gray-500' })
+        options.push({ value: 'null', name: 'Без варианта' })
       }
 
       subEvents.forEach(({ id, title }) => {
         if (Object.prototype.hasOwnProperty.call(subEventsFilter, id))
-          buttons.push({ value: id, name: title, color: 'general' })
+          options.push({ value: id, name: title })
       })
 
-      return buttons
+      return options
     }, [subEvents, shouldShowSubEventsFilter, subEventsFilter])
+
+    const handleSubEventToggle = (key) => {
+      setSubEventsFilter((prev) => {
+        const nextState = {
+          ...prev,
+          [key]: !prev[key],
+        }
+
+        if (!Object.values(nextState).some(Boolean)) return prev
+
+        return nextState
+      })
+    }
 
     useEffect(() => {
       setOnConfirmFunc(() => {
@@ -289,12 +303,16 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
           <>
             <Divider title="Фильтр по вариантам участия" />
             <ContentHeader noBorder>
-              <ToggleButtons
-                value={subEventsFilter}
-                onChange={setSubEventsFilter}
-                buttonsConfig={subEventsButtonsConfig}
-                names={usersSubEventsCount}
-              />
+              <div className="flex flex-col gap-y-1">
+                {subEventsOptions.map(({ value, name }) => (
+                  <CheckBox
+                    key={value}
+                    checked={!!subEventsFilter[value]}
+                    onClick={() => handleSubEventToggle(value)}
+                    label={`${name}${usersSubEventsCount[value] ?? ''}`}
+                  />
+                ))}
+              </div>
             </ContentHeader>
           </>
         )}
