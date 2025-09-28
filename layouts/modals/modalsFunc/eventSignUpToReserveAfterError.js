@@ -31,7 +31,7 @@ const eventSignUpToReserveAfterError = (event, error, comment, subEventId) => {
           eventId,
           userId: loggedUserActive?._id,
           status: 'reserve',
-          userStatus: loggedUserActive.status,
+          userStatus: loggedUserActive?.status,
           comment,
           subEventId,
         },
