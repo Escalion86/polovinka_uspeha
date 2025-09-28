@@ -10,6 +10,7 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faHands } from '@fortawesome/free-solid-svg-icons/faHands'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
+import { faHandsHoldingHeart } from '@fortawesome/free-solid-svg-icons/faHandsHoldingHeart'
 import { faHistory } from '@fortawesome/free-solid-svg-icons/faHistory'
 import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
@@ -764,6 +765,7 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   vk: '',
   codeSendService: 'telefonip',
   referralProgram: {
+    enabled: false,
     referrerCouponAmount: 0,
     referralCouponAmount: 0,
     requirePaidEvent: false,
@@ -2081,7 +2083,7 @@ export const CONTENTS = Object.freeze({
     Component: ReferralsContent,
     name: 'Реферальная программа',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
-    roleAccess: () => true,
+    siteConfirm: (siteSettings) => siteSettings?.referralProgram?.enabled === true,
   },
   imagesServer: {
     Component: ImagesServerContent,
@@ -2115,11 +2117,12 @@ export const pages = [
   },
   {
     id: 1,
-    group: 0,
+    group: 12,
     name: 'Рефералы',
     href: 'referrals',
-    icon: faUserPlus,
+    icon: faHandshake,
     roleAccess: CONTENTS['referrals'].roleAccess,
+    siteConfirm: CONTENTS['referrals'].siteConfirm,
   },
   {
     id: 2,
@@ -2137,7 +2140,7 @@ export const pages = [
     group: 2,
     name: 'Услуги',
     href: 'services',
-    icon: faHandshake,
+    icon: faHandsHoldingHeart,
     // accessRoles: CONTENTS['services'].accessRoles,
     roleAccess: CONTENTS['services'].roleAccess,
   },
@@ -2519,6 +2522,12 @@ export const pagesGroups = [
     // accessStatuses: ['member'],
   },
   {
+    id: 12,
+    name: 'Рефералы',
+    icon: faHandshake,
+    // accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+  },
+  {
     id: 3,
     name: 'Мероприятия',
     icon: faCalendarAlt,
@@ -2533,7 +2542,7 @@ export const pagesGroups = [
   {
     id: 2,
     name: 'Услуги',
-    icon: faHandshake,
+    icon: faHandsHoldingHeart,
     // accessRoles: ['client', 'admin', 'supervisor', 'dev'],
   },
   {

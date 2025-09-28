@@ -20,35 +20,57 @@ const SettingsReferralSystemContent = () => {
   const [referrerCouponAmount, setReferrerCouponAmount] = useState(0)
   const [referralCouponAmount, setReferralCouponAmount] = useState(0)
   const [requirePaidEvent, setRequirePaidEvent] = useState(false)
+  const [enabled, setEnabled] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
 
   const currentProgram = siteSettings?.referralProgram ?? {}
+  const normalizedEnabled = currentProgram.enabled ?? false
 
   useEffect(() => {
+    setEnabled(normalizedEnabled)
     setReferrerCouponAmount(currentProgram.referrerCouponAmount ?? 0)
     setReferralCouponAmount(currentProgram.referralCouponAmount ?? 0)
     setRequirePaidEvent(currentProgram.requirePaidEvent ?? false)
-  }, [currentProgram.referrerCouponAmount, currentProgram.referralCouponAmount, currentProgram.requirePaidEvent])
+  }, [
+    normalizedEnabled,
+    currentProgram.referrerCouponAmount,
+    currentProgram.referralCouponAmount,
+    currentProgram.requirePaidEvent,
+  ])
 
   const formChanged = useMemo(() => {
     return (
+      normalizedEnabled !== enabled ||
       (currentProgram.referrerCouponAmount ?? 0) !== referrerCouponAmount ||
       (currentProgram.referralCouponAmount ?? 0) !== referralCouponAmount ||
       (currentProgram.requirePaidEvent ?? false) !== requirePaidEvent
     )
   }, [
+    normalizedEnabled,
     currentProgram.referrerCouponAmount,
     currentProgram.referralCouponAmount,
     currentProgram.requirePaidEvent,
     referrerCouponAmount,
     referralCouponAmount,
     requirePaidEvent,
+    enabled,
   ])
+
+  const amountsZero = referrerCouponAmount === 0 && referralCouponAmount === 0
+  const applyDisabled = !formChanged || isSaving || (enabled && amountsZero)
+  const showZeroWarning = amountsZero && enabled
 
   const handleSave = async () => {
     if (!location) return
+    if (enabled && amountsZero) {
+      setMessage('')
+      setError(
+        'Нельзя включить реферальную систему, если суммы купонов для реферала и реферера равны нулю.'
+      )
+      return
+    }
 
     setIsSaving(true)
     setMessage('')
@@ -58,6 +80,7 @@ const SettingsReferralSystemContent = () => {
       `/api/${location}/site`,
       {
         referralProgram: {
+          enabled,
           referrerCouponAmount,
           referralCouponAmount,
           requirePaidEvent,
@@ -89,7 +112,7 @@ const SettingsReferralSystemContent = () => {
         </div>
         <Button
           name="Применить"
-          disabled={!formChanged || isSaving}
+          disabled={applyDisabled}
           loading={isSaving}
           onClick={handleSave}
         />
@@ -97,6 +120,17 @@ const SettingsReferralSystemContent = () => {
       {error && <div className="text-danger">{error}</div>}
       {message && !isSaving && <div className="text-success">{message}</div>}
       <FormWrapper>
+        <CheckBox
+          checked={enabled}
+          label="Включить реферальную систему"
+          onClick={() => setEnabled((state) => !state)}
+        />
+        {showZeroWarning && (
+          <Note className="!text-danger">
+            Нельзя включить реферальную систему с нулевыми суммами купонов для
+            реферала и реферера.
+          </Note>
+        )}
         <PriceInput
           label="Сумма купона для реферера"
           value={referrerCouponAmount}

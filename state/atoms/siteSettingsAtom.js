@@ -11,6 +11,7 @@ const siteSettingsAtom = atom({
   instagram: null,
   vk: null,
   referralProgram: {
+    enabled: false,
     referrerCouponAmount: 0,
     referralCouponAmount: 0,
     requirePaidEvent: false,

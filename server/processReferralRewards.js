@@ -18,6 +18,7 @@ export default async function processReferralRewards({ db, event }) {
   try {
     const siteSettings = await db.model('SiteSettings').findOne({}).lean()
     const referralProgram = siteSettings?.referralProgram ?? {}
+    if (referralProgram.enabled !== true) return
     const referrerCouponAmount = referralProgram.referrerCouponAmount ?? 0
     const referralCouponAmount = referralProgram.referralCouponAmount ?? 0
     const requirePaidEvent = referralProgram.requirePaidEvent ?? false
