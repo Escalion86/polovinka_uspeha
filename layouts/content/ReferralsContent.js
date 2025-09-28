@@ -16,7 +16,6 @@ import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
 import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
@@ -30,7 +29,6 @@ const ReferralsContent = () => {
   const eventsUsers = useAtomValue(asyncEventsUsersAllAtom)
   const payments = useAtomValue(asyncPaymentsAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const router = useRouter()
   const { success, error } = useSnackbar()
 
   const [origin, setOrigin] = useState('')
@@ -183,7 +181,6 @@ const ReferralsContent = () => {
       if (!referralUserId) return
 
       map.set(String(referralUserId), {
-        couponId: payment?._id ? String(payment._id) : null,
         sum: typeof payment?.sum === 'number' ? payment.sum : null,
       })
     })
@@ -213,10 +210,9 @@ const ReferralsContent = () => {
 
   const handleOpenReferral = useCallback(
     (userId) => {
-      if (!location || !userId) return
-      router.push(`/${location}/user/${userId}`)
+      if (!userId || !modalsFunc?.user?.view) return modalsFunc.user.view(userId)
     },
-    [router, location]
+    [modalsFunc]
   )
 
   if (!loggedUser?._id) {
@@ -361,13 +357,9 @@ const ReferralsContent = () => {
                               {conditionMet ? 'Выполнено' : 'Не выполнено'}
                             </span>
                           </div>
-                          {conditionMet && rewardDetails && (
+                          {conditionMet && rewardDetails && rewardSumText && (
                             <div className="text-xs text-gray-500 sm:ml-0">
-                              Купон
-                              {rewardDetails.couponId
-                                ? ` №${rewardDetails.couponId}`
-                                : ''}
-                              {rewardSumText ? ` на ${rewardSumText}` : ''}
+                              Купон на {rewardSumText}
                             </div>
                           )}
                         </div>

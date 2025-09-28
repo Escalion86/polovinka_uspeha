@@ -90,16 +90,20 @@ export default async function processReferralRewards({ db, event }) {
       const user = await db.model('Users').findById(userId).lean()
       if (!user) continue
 
-      const userStatus = user.status ?? 'novice'
-      if (!isStatusEligibleForProgram(referralProgramFlags, userStatus)) {
+      const referrerId = toStringOrNull(user.referrerId)
+      if (!referrerId) {
         continue
       }
 
-      const referrerId = toStringOrNull(user.referrerId)
+      if (referrerId === userId) {
+        continue
+      }
+
       const referralUserName = getUserName(user)
       const referralNameSuffix = referralUserName ? ` (${referralUserName})` : ''
 
       let referrerExists = false
+      let referrerStatus = null
       if (referrerId) {
         let referrer = referrerCache.get(referrerId)
         if (!referrer) {
@@ -111,12 +115,22 @@ export default async function processReferralRewards({ db, event }) {
 
         if (referrer) {
           referrerExists = true
+          referrerStatus = referrer.status ?? 'novice'
         }
       }
 
+      if (!referrerExists) {
+        continue
+      }
+
+      const referrerEligible = isStatusEligibleForProgram(
+        referralProgramFlags,
+        referrerStatus
+      )
+
       const shouldCreateReferralCoupon = referralCouponAmount > 0
       const shouldCreateReferrerCoupon =
-        referrerCouponAmount > 0 && referrerId && referrerExists
+        referrerCouponAmount > 0 && referrerEligible
 
       if (!shouldCreateReferralCoupon && !shouldCreateReferrerCoupon) {
         continue
