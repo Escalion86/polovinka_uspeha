@@ -99,7 +99,7 @@ export default async function processReferralRewards({ db, event }) {
       const referralUserName = getUserName(user)
       const referralNameSuffix = referralUserName ? ` (${referralUserName})` : ''
 
-      let referrerEligible = false
+      let referrerExists = false
       if (referrerId) {
         let referrer = referrerCache.get(referrerId)
         if (!referrer) {
@@ -110,14 +110,19 @@ export default async function processReferralRewards({ db, event }) {
         }
 
         if (referrer) {
-          referrerEligible = isStatusEligibleForProgram(
-            referralProgramFlags,
-            referrer.status ?? 'novice'
-          )
+          referrerExists = true
         }
       }
 
-      if (referralCouponAmount > 0) {
+      const shouldCreateReferralCoupon = referralCouponAmount > 0
+      const shouldCreateReferrerCoupon =
+        referrerCouponAmount > 0 && referrerId && referrerExists
+
+      if (!shouldCreateReferralCoupon && !shouldCreateReferrerCoupon) {
+        continue
+      }
+
+      if (shouldCreateReferralCoupon) {
         const referralCouponExists = await db.model('Payments').findOne({
           userId,
           'referralReward.eventId': eventId,
@@ -131,7 +136,6 @@ export default async function processReferralRewards({ db, event }) {
             sector: 'event',
             payDirection: 'toUser',
             userId,
-            eventId,
             payType: 'coupon',
             sum: referralCouponAmount,
             payAt: new Date(),
@@ -149,7 +153,7 @@ export default async function processReferralRewards({ db, event }) {
         }
       }
 
-      if (referrerCouponAmount > 0 && referrerId && referrerEligible) {
+      if (shouldCreateReferrerCoupon) {
         const referrerCouponExists = await db.model('Payments').findOne({
           userId: referrerId,
           'referralReward.eventId': eventId,
@@ -163,7 +167,6 @@ export default async function processReferralRewards({ db, event }) {
             sector: 'event',
             payDirection: 'toUser',
             userId: referrerId,
-            eventId,
             payType: 'coupon',
             sum: referrerCouponAmount,
             payAt: new Date(),

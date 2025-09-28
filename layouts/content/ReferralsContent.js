@@ -13,6 +13,7 @@ import usersAtomAsync from '@state/async/usersAtomAsync'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -27,11 +28,14 @@ const ReferralsContent = () => {
   const siteSettings = useAtomValue(siteSettingsAtom)
   const events = useAtomValue(eventsAtom)
   const eventsUsers = useAtomValue(asyncEventsUsersAllAtom)
+  const payments = useAtomValue(asyncPaymentsAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const router = useRouter()
   const { success, error } = useSnackbar()
 
   const [origin, setOrigin] = useState('')
+
+  const loggedUserId = loggedUser?._id ? String(loggedUser._id) : null
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -40,9 +44,9 @@ const ReferralsContent = () => {
   }, [])
 
   const referralPath = useMemo(() => {
-    if (!loggedUser?._id || !location) return ''
-    return `/${location}/login?registration=true&ref=${loggedUser._id}`
-  }, [loggedUser?._id, location])
+    if (!loggedUserId || !location) return ''
+    return `/${location}/login?registration=true&ref=${loggedUserId}`
+  }, [loggedUserId, location])
 
   const referralLink = useMemo(() => {
     if (!referralPath) return ''
@@ -50,6 +54,8 @@ const ReferralsContent = () => {
   }, [origin, referralPath])
 
   const referralProgram = siteSettings?.referralProgram ?? {}
+  const referrerCouponAmount = referralProgram.referrerCouponAmount ?? 0
+  const referralCouponAmount = referralProgram.referralCouponAmount ?? 0
 
   const formatCurrency = useCallback((amount) => {
     if (typeof amount !== 'number') return '—'
@@ -62,6 +68,24 @@ const ReferralsContent = () => {
 
   const requirePaidEvent = referralProgram.requirePaidEvent ?? false
 
+  const referralRewardsNote = useMemo(() => {
+    const parts = []
+
+    if (referrerCouponAmount > 0) {
+      parts.push(
+        `За каждого приглашённого вы получите ${formatCurrency(referrerCouponAmount)}.`
+      )
+    }
+
+    if (referralCouponAmount > 0) {
+      parts.push(
+        `При регистрации по вашей ссылке приглашённый получит ${formatCurrency(referralCouponAmount)}.`
+      )
+    }
+
+    return parts.join(' ')
+  }, [referrerCouponAmount, referralCouponAmount, formatCurrency])
+
   const conditionText = useMemo(
     () =>
       requirePaidEvent
@@ -71,12 +95,12 @@ const ReferralsContent = () => {
   )
 
   const referrals = useMemo(() => {
-    if (!Array.isArray(users) || !loggedUser?._id) return []
+    if (!Array.isArray(users) || !loggedUserId) return []
     return users.filter(
       (user) =>
-        user?.referrerId && String(user.referrerId) === String(loggedUser._id)
+        user?.referrerId && String(user.referrerId) === loggedUserId
     )
-  }, [users, loggedUser?._id])
+  }, [users, loggedUserId])
 
   const sortedReferrals = useMemo(() => {
     return [...referrals].sort((a, b) => {
@@ -143,6 +167,29 @@ const ReferralsContent = () => {
 
     return map
   }, [participantsByUser, eventsById, requirePaidEvent])
+
+  const referrerCouponsByReferralId = useMemo(() => {
+    const map = new Map()
+    if (!loggedUserId || !Array.isArray(payments)) return map
+
+    payments.forEach((payment) => {
+      if (!payment?.isReferralCoupon) return
+      if (String(payment.userId ?? '') !== loggedUserId) return
+
+      const reward = payment.referralReward ?? {}
+      if (reward.rewardFor !== 'referrer') return
+
+      const referralUserId = reward.referralUserId
+      if (!referralUserId) return
+
+      map.set(String(referralUserId), {
+        couponId: payment?._id ? String(payment._id) : null,
+        sum: typeof payment?.sum === 'number' ? payment.sum : null,
+      })
+    })
+
+    return map
+  }, [loggedUserId, payments])
 
   const handleCopy = useCallback(async () => {
     if (!referralLink) return
@@ -228,11 +275,14 @@ const ReferralsContent = () => {
           Условие для получения купона: {conditionText}.
         </div>
         <div className="mt-1 text-sm text-gray-700">
-          Купон для реферала: {formatCurrency(referralProgram.referralCouponAmount ?? 0)}.
+          Купон для реферала: {formatCurrency(referralCouponAmount)}.
         </div>
         <div className="mt-1 text-sm text-gray-700">
-          Купон для реферера: {formatCurrency(referralProgram.referrerCouponAmount ?? 0)}.
+          Купон для реферера: {formatCurrency(referrerCouponAmount)}.
         </div>
+        {referralRewardsNote && (
+          <Note className="mt-3">{referralRewardsNote}</Note>
+        )}
       </div>
 
       <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -272,8 +322,16 @@ const ReferralsContent = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedReferrals.map((user) => {
-                  const conditionMet =
-                    conditionStatusByUser.get(String(user._id)) ?? false
+                  const referralId = String(user._id)
+                  const conditionMetByEvent =
+                    conditionStatusByUser.get(referralId) ?? false
+                  const rewardDetails =
+                    referrerCouponsByReferralId.get(referralId) ?? null
+                  const rewardSumText =
+                    typeof rewardDetails?.sum === 'number'
+                      ? formatCurrency(rewardDetails.sum)
+                      : null
+                  const conditionMet = conditionMetByEvent || !!rewardDetails
 
                   return (
                     <tr
@@ -291,12 +349,27 @@ const ReferralsContent = () => {
                         {user.createdAt ? formatDate(user.createdAt) : '—'}
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-700">
-                        <div className="flex items-center gap-2">
-                          <FontAwesomeIcon
-                            icon={conditionMet ? faCheckCircle : faTimesCircle}
-                            className={conditionMet ? 'text-success' : 'text-danger'}
-                          />
-                          <span>{conditionMet ? 'Выполнено' : 'Не выполнено'}</span>
+                        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+                          <div className="flex items-center gap-2">
+                            <FontAwesomeIcon
+                              icon={conditionMet ? faCheckCircle : faTimesCircle}
+                              className={`h-5 w-5 flex-shrink-0 ${
+                                conditionMet ? 'text-success' : 'text-danger'
+                              }`}
+                            />
+                            <span>
+                              {conditionMet ? 'Выполнено' : 'Не выполнено'}
+                            </span>
+                          </div>
+                          {conditionMet && rewardDetails && (
+                            <div className="text-xs text-gray-500 sm:ml-0">
+                              Купон
+                              {rewardDetails.couponId
+                                ? ` №${rewardDetails.couponId}`
+                                : ''}
+                              {rewardSumText ? ` на ${rewardSumText}` : ''}
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>
