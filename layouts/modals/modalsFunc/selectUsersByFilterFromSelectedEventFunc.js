@@ -1,6 +1,7 @@
 import ContentHeader from '@components/ContentHeader'
 import Divider from '@components/Divider'
 import FormWrapper from '@components/FormWrapper'
+import CheckBox from '@components/CheckBox'
 import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
 import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
 import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserToggleButtons'
@@ -23,6 +24,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
   }) => {
     const event = useAtomValue(eventSelector(eventId))
     const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
+    const subEvents = event?.subEvents ?? []
     const [statusInEvent, setStatusInEvent] = useState({
       participant: true,
       assistant: false,
@@ -45,6 +47,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
         noPartner: true,
       },
     })
+    const [subEventsFilter, setSubEventsFilter] = useState({})
 
     // const [checkAddEventDescription, setCheckAddEventDescription] =
     //   useState(true)
@@ -67,48 +70,172 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
       [eventUsers, statusInEvent]
     )
 
+    useEffect(() => {
+      if (!event) {
+        if (Object.keys(subEventsFilter).length) setSubEventsFilter({})
+        return
+      }
+
+      const hasMultipleSubEvents = subEvents.length > 1
+      const hasUsersWithoutSubEvent = eventUsers.some(
+        ({ subEventId }) => !subEventId
+      )
+
+      if (!hasMultipleSubEvents && !hasUsersWithoutSubEvent) {
+        if (Object.keys(subEventsFilter).length) setSubEventsFilter({})
+        return
+      }
+
+      const nextState = {}
+
+      if (subEvents.length) {
+        subEvents.forEach(({ id }) => {
+          if (hasMultipleSubEvents) {
+            nextState[id] =
+              subEventsFilter[id] !== undefined ? subEventsFilter[id] : true
+          }
+        })
+      }
+
+      if (!hasMultipleSubEvents && subEvents.length === 1) {
+        const [onlySubEvent] = subEvents
+        if (onlySubEvent?.id !== undefined)
+          nextState[onlySubEvent.id] =
+            subEventsFilter[onlySubEvent.id] !== undefined
+              ? subEventsFilter[onlySubEvent.id]
+              : true
+      }
+
+      if (hasUsersWithoutSubEvent) {
+        nextState.null =
+          subEventsFilter.null !== undefined ? subEventsFilter.null : true
+      }
+
+      if (!Object.values(nextState).some(Boolean)) {
+        const firstKey = Object.keys(nextState)[0]
+        if (firstKey !== undefined) nextState[firstKey] = true
+      }
+
+      const nextKeys = Object.keys(nextState)
+      const currentKeys = Object.keys(subEventsFilter)
+      const isSameLength = nextKeys.length === currentKeys.length
+      const isSame =
+        isSameLength &&
+        nextKeys.every((key) => subEventsFilter[key] === nextState[key])
+
+      if (!isSame) setSubEventsFilter(nextState)
+    }, [event, eventUsers, subEventsFilter])
+
+    const shouldShowSubEventsFilter = Object.keys(subEventsFilter).length > 0
+
+    const filteredBySubEventUsers = useMemo(() => {
+      if (!shouldShowSubEventsFilter) return filteredByEventStatusUsers
+      return filteredByEventStatusUsers.filter(({ subEventId }) => {
+        const key = subEventId ?? 'null'
+        return subEventsFilter[key]
+      })
+    }, [
+      filteredByEventStatusUsers,
+      shouldShowSubEventsFilter,
+      subEventsFilter,
+    ])
+
     const usersGendersCount = useMemo(
       () => ({
-        male: filteredByEventStatusUsers.filter(
+        male: filteredBySubEventUsers.filter(
           ({ user }) => user.gender === 'male'
         ).length,
-        famale: filteredByEventStatusUsers.filter(
+        famale: filteredBySubEventUsers.filter(
           ({ user }) => user.gender === 'famale'
         ).length,
       }),
-      [filteredByEventStatusUsers]
+      [filteredBySubEventUsers]
     )
 
     const usersStatusCount = useMemo(
       () => ({
-        novice: filteredByEventStatusUsers.filter(
+        novice: filteredBySubEventUsers.filter(
           ({ userStatus }) => userStatus === 'novice'
         ).length,
-        member: filteredByEventStatusUsers.filter(
+        member: filteredBySubEventUsers.filter(
           ({ userStatus }) => userStatus === 'member'
         ).length,
-        ban: filteredByEventStatusUsers.filter(
+        ban: filteredBySubEventUsers.filter(
           ({ userStatus }) => userStatus === 'ban'
         ).length,
       }),
-      [filteredByEventStatusUsers]
+      [filteredBySubEventUsers]
     )
 
     const usersRelationshipCount = useMemo(
       () => ({
-        havePartner: filteredByEventStatusUsers.filter(
+        havePartner: filteredBySubEventUsers.filter(
           ({ user }) => user.relationship
         ).length,
-        noPartner: filteredByEventStatusUsers.filter(
+        noPartner: filteredBySubEventUsers.filter(
           ({ user }) => !user.relationship
         ).length,
       }),
-      [filteredByEventStatusUsers]
+      [filteredBySubEventUsers]
     )
+
+    const usersSubEventsCount = useMemo(() => {
+      if (!shouldShowSubEventsFilter) return {}
+
+      const counts = {}
+      Object.keys(subEventsFilter).forEach((key) => {
+        counts[key] = 0
+      })
+
+      filteredByEventStatusUsers.forEach(({ subEventId }) => {
+        const key = subEventId ?? 'null'
+        if (counts[key] !== undefined) counts[key] += 1
+      })
+
+      Object.keys(counts).forEach((key) => {
+        counts[key] = ` (${counts[key]} чел.)`
+      })
+
+      return counts
+    }, [
+      filteredByEventStatusUsers,
+      shouldShowSubEventsFilter,
+      subEventsFilter,
+    ])
+
+    const subEventsOptions = useMemo(() => {
+      if (!shouldShowSubEventsFilter) return []
+
+      const options = []
+
+      if (Object.prototype.hasOwnProperty.call(subEventsFilter, 'null')) {
+        options.push({ value: 'null', name: 'Без варианта' })
+      }
+
+      subEvents.forEach(({ id, title }) => {
+        if (Object.prototype.hasOwnProperty.call(subEventsFilter, id))
+          options.push({ value: id, name: title })
+      })
+
+      return options
+    }, [subEvents, shouldShowSubEventsFilter, subEventsFilter])
+
+    const handleSubEventToggle = (key) => {
+      setSubEventsFilter((prev) => {
+        const nextState = {
+          ...prev,
+          [key]: !prev[key],
+        }
+
+        if (!Object.values(nextState).some(Boolean)) return prev
+
+        return nextState
+      })
+    }
 
     useEffect(() => {
       setOnConfirmFunc(() => {
-        const fullyFilteredUsers = filteredByEventStatusUsers
+        const fullyFilteredUsers = filteredBySubEventUsers
           .filter(
             ({ user }) =>
               user &&
@@ -124,7 +251,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
         // else onSelect(fullyFilteredUsers)
         closeModal()
       })
-    }, [eventUsers, filteredByEventStatusUsers, filter])
+    }, [eventUsers, filteredBySubEventUsers, filter])
 
     const statusInEventBottonsConfig = useMemo(
       () =>
@@ -172,6 +299,23 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
             buttonsConfig={statusInEventBottonsConfig}
           />
         </ContentHeader>
+        {shouldShowSubEventsFilter && (
+          <>
+            <Divider title="Фильтр по вариантам участия" />
+            <ContentHeader noBorder>
+              <div className="flex flex-col gap-y-1">
+                {subEventsOptions.map(({ value, name }) => (
+                  <CheckBox
+                    key={value}
+                    checked={!!subEventsFilter[value]}
+                    onClick={() => handleSubEventToggle(value)}
+                    label={`${name}${usersSubEventsCount[value] ?? ''}`}
+                  />
+                ))}
+              </div>
+            </ContentHeader>
+          </>
+        )}
         {/* </div> */}
         <Divider title="Фильтр по пользователям" />
         <ContentHeader noBorder>
