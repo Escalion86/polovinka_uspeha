@@ -19,6 +19,7 @@ import getGoogleCalendarConstantsByLocation from './getGoogleCalendarConstantsBy
 import checkLocationValid from './checkLocationValid'
 import refreshSignedUpEventsCount from './refreshSignedUpEventsCount'
 // import { telegramCmdToIndex } from './telegramCmd'
+import processReferralRewards from './processReferralRewards'
 
 function isJson(str) {
   try {
@@ -697,6 +698,18 @@ export default async function handler(Schema, req, res, props = {}) {
             // if (!oldData.showOnSite && data.showOnSite) {
             //   notificateUsersAboutEvent(data, req)
             // }
+          }
+
+          if (
+            Schema === 'Events' &&
+            oldData.status !== 'closed' &&
+            data.status === 'closed'
+          ) {
+            try {
+              await processReferralRewards({ db, event: data })
+            } catch (rewardError) {
+              console.log('processReferralRewards error :>> ', rewardError)
+            }
           }
 
           if (
