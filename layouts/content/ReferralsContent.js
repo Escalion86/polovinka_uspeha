@@ -324,9 +324,6 @@ const ReferralsContent = () => {
                     Имя
                   </th>
                   <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                    Телефон
-                  </th>
-                  <th className="px-4 py-2 text-sm font-medium text-gray-600">
                     Дата регистрации
                   </th>
                   <th className="px-4 py-2 text-sm font-medium text-gray-600">
@@ -390,9 +387,6 @@ const ReferralsContent = () => {
                     >
                       <td className="px-4 py-2 text-sm text-gray-700">
                         <UserName user={user} />
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-700">
-                        {user.phone ? `+${user.phone}` : '—'}
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-700">
                         {user.createdAt ? formatDate(user.createdAt) : '—'}
