@@ -327,10 +327,7 @@ const ReferralsContent = () => {
                     Дата регистрации
                   </th>
                   <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                    Статус условия
-                  </th>
-                  <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                    Статус вознаграждения
+                    Статус
                   </th>
                 </tr>
               </thead>
@@ -372,12 +369,12 @@ const ReferralsContent = () => {
                       : null
                   const rewardStatusText =
                     usedCoupon && rewardAmountText
-                      ? `Купон ${rewardAmountText} использован на мероприятии "${
+                      ? `Купон ${rewardAmountText} получен и использован на мероприятии "${
                           usageEvent?.title ?? '—'
                         }"${usageEventDate ? ` ${usageEventDate}` : ''}`
                       : issuedCoupon && rewardAmountText
                         ? `Купон ${rewardAmountText} получен`
-                        : '—'
+                        : null
 
                   return (
                     <tr
@@ -403,9 +400,12 @@ const ReferralsContent = () => {
                               }`}
                             />
                             <span>
-                              {conditionMet ? 'Выполнено' : 'Не выполнено'}
+                              {conditionMet
+                                ? 'Условие выполнено'
+                                : 'Условие не выполнено'}
                             </span>
                           </div>
+                          {rewardStatusText}
                         </div>
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-700">
