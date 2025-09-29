@@ -100,7 +100,9 @@ export default async function processReferralRewards({ db, event }) {
       }
 
       const referralUserName = getUserName(user)
-      const referralNameSuffix = referralUserName ? ` (${referralUserName})` : ''
+      const referralNameSuffix = referralUserName
+        ? ` (${referralUserName})`
+        : ''
 
       let referrerExists = false
       let referrerStatus = null
@@ -148,7 +150,7 @@ export default async function processReferralRewards({ db, event }) {
         if (!referralCouponExists) {
           await db.model('Payments').create({
             sector: 'event',
-            payDirection: 'toUser',
+            payDirection: 'toEvent',
             userId,
             payType: 'coupon',
             sum: referralCouponAmount,
@@ -179,7 +181,7 @@ export default async function processReferralRewards({ db, event }) {
         if (!referrerCouponExists) {
           await db.model('Payments').create({
             sector: 'event',
-            payDirection: 'toUser',
+            payDirection: 'toEvent',
             userId: referrerId,
             payType: 'coupon',
             sum: referrerCouponAmount,

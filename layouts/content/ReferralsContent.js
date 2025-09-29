@@ -373,13 +373,14 @@ const ReferralsContent = () => {
                     : usageEvent?.date
                       ? formatDate(usageEvent.date)
                       : null
-                  const rewardStatusText = usedCoupon && rewardAmountText
-                    ? `Купон ${rewardAmountText} использован на мероприятии "${
-                        usageEvent?.title ?? '—'
-                      }"${usageEventDate ? ` ${usageEventDate}` : ''}`
-                    : issuedCoupon && rewardAmountText
-                      ? `Купон ${rewardAmountText} получен`
-                      : '—'
+                  const rewardStatusText =
+                    usedCoupon && rewardAmountText
+                      ? `Купон ${rewardAmountText} использован на мероприятии "${
+                          usageEvent?.title ?? '—'
+                        }"${usageEventDate ? ` ${usageEventDate}` : ''}`
+                      : issuedCoupon && rewardAmountText
+                        ? `Купон ${rewardAmountText} получен`
+                        : '—'
 
                   return (
                     <tr
@@ -411,11 +412,6 @@ const ReferralsContent = () => {
                               {conditionMet ? 'Выполнено' : 'Не выполнено'}
                             </span>
                           </div>
-                          {conditionMet && rewardDetails && rewardSumText && (
-                            <div className="text-xs text-gray-500 sm:ml-0">
-                              Купон на {rewardSumText}
-                            </div>
-                          )}
                         </div>
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-700">
