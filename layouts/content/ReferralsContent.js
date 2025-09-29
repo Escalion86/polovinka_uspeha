@@ -177,9 +177,32 @@ const ReferralsContent = () => {
       const referralUserId = reward.referralUserId
       if (!referralUserId) return
 
-      map.set(String(referralUserId), {
+      const referralKey = String(referralUserId)
+      const existingDetails = map.get(referralKey) ?? {}
+
+      const couponDetails = {
         sum: typeof payment?.sum === 'number' ? payment.sum : null,
-      })
+        payAt: payment?.payAt ?? null,
+        eventId: payment?.eventId ?? reward?.eventId ?? null,
+        comment: payment?.comment ?? '',
+      }
+
+      if (payment?.payDirection === 'fromUser') {
+        map.set(referralKey, {
+          ...existingDetails,
+          used: couponDetails,
+        })
+      } else if (payment?.payDirection === 'toUser') {
+        map.set(referralKey, {
+          ...existingDetails,
+          issued: couponDetails,
+        })
+      } else {
+        map.set(referralKey, {
+          ...existingDetails,
+          issued: existingDetails.issued ?? couponDetails,
+        })
+      }
     })
 
     return map
@@ -309,6 +332,9 @@ const ReferralsContent = () => {
                   <th className="px-4 py-2 text-sm font-medium text-gray-600">
                     Статус условия
                   </th>
+                  <th className="px-4 py-2 text-sm font-medium text-gray-600">
+                    Статус вознаграждения
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -318,11 +344,42 @@ const ReferralsContent = () => {
                     conditionStatusByUser.get(referralId) ?? false
                   const rewardDetails =
                     referrerCouponsByReferralId.get(referralId) ?? null
+                  const issuedCoupon = rewardDetails?.issued ?? null
+                  const usedCoupon = rewardDetails?.used ?? null
+                  const couponSum =
+                    typeof usedCoupon?.sum === 'number'
+                      ? usedCoupon.sum
+                      : typeof issuedCoupon?.sum === 'number'
+                        ? issuedCoupon.sum
+                        : null
                   const rewardSumText =
-                    typeof rewardDetails?.sum === 'number'
-                      ? formatCurrency(rewardDetails.sum)
+                    typeof couponSum === 'number'
+                      ? formatCurrency(couponSum)
                       : null
-                  const conditionMet = conditionMetByEvent || !!rewardDetails
+                  const conditionMet =
+                    conditionMetByEvent || !!issuedCoupon || !!usedCoupon
+                  const rewardAmountText = rewardSumText
+                    ? rewardSumText
+                        .replace('₽', 'руб')
+                        .replace(/\s+руб/, ' руб')
+                        .trim()
+                    : null
+                  const usageEventId = usedCoupon?.eventId
+                  const usageEvent = usageEventId
+                    ? eventsById.get(String(usageEventId))
+                    : null
+                  const usageEventDate = usageEvent?.dateStart
+                    ? formatDate(usageEvent.dateStart)
+                    : usageEvent?.date
+                      ? formatDate(usageEvent.date)
+                      : null
+                  const rewardStatusText = usedCoupon && rewardAmountText
+                    ? `Купон ${rewardAmountText} использован на мероприятии "${
+                        usageEvent?.title ?? '—'
+                      }"${usageEventDate ? ` ${usageEventDate}` : ''}`
+                    : issuedCoupon && rewardAmountText
+                      ? `Купон ${rewardAmountText} получен`
+                      : '—'
 
                   return (
                     <tr
@@ -360,6 +417,9 @@ const ReferralsContent = () => {
                             </div>
                           )}
                         </div>
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        {rewardStatusText}
                       </td>
                     </tr>
                   )
