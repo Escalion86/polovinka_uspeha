@@ -95,8 +95,7 @@ const ReferralsContent = () => {
   const referrals = useMemo(() => {
     if (!Array.isArray(users) || !loggedUserId) return []
     return users.filter(
-      (user) =>
-        user?.referrerId && String(user.referrerId) === loggedUserId
+      (user) => user?.referrerId && String(user.referrerId) === loggedUserId
     )
   }, [users, loggedUserId])
 
@@ -151,9 +150,7 @@ const ReferralsContent = () => {
         if (requirePaidEvent) {
           const isPaidEvent =
             Array.isArray(event.subEvents) &&
-            event.subEvents.some(
-              (subEvent) => Number(subEvent?.price ?? 0) > 0
-            )
+            event.subEvents.some((subEvent) => Number(subEvent?.price ?? 0) > 0)
           if (!isPaidEvent) return false
         }
 
@@ -210,7 +207,7 @@ const ReferralsContent = () => {
 
   const handleOpenReferral = useCallback(
     (userId) => {
-      if (!userId || !modalsFunc?.user?.view) return modalsFunc.user.view(userId)
+      if (userId && modalsFunc?.user?.view) return modalsFunc.user.view(userId)
     },
     [modalsFunc]
   )
@@ -232,12 +229,12 @@ const ReferralsContent = () => {
   }
 
   return (
-    <div className="flex flex-col gap-y-4 px-1 pb-4">
+    <div className="flex flex-col px-1 pb-4 gap-y-4">
       <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div className="text-lg font-semibold text-general">
           Ваша реферальная ссылка
         </div>
-        <div className="mt-2 text-sm break-all text-gray-700">
+        <div className="mt-2 text-sm text-gray-700 break-all">
           {referralLink || 'Ссылка появится после загрузки данных пользователя'}
         </div>
         <div className="flex flex-wrap items-center gap-2 mt-3">
@@ -283,9 +280,7 @@ const ReferralsContent = () => {
 
       <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div className="flex items-center justify-between">
-          <div className="text-lg font-semibold text-general">
-            Мои рефералы
-          </div>
+          <div className="text-lg font-semibold text-general">Мои рефералы</div>
           <div className="text-sm text-gray-600">
             {sortedReferrals.length}{' '}
             {sortedReferrals.length === 1
@@ -348,7 +343,9 @@ const ReferralsContent = () => {
                         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
                           <div className="flex items-center gap-2">
                             <FontAwesomeIcon
-                              icon={conditionMet ? faCheckCircle : faTimesCircle}
+                              icon={
+                                conditionMet ? faCheckCircle : faTimesCircle
+                              }
                               className={`h-5 w-5 flex-shrink-0 ${
                                 conditionMet ? 'text-success' : 'text-danger'
                               }`}

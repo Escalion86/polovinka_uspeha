@@ -2563,12 +2563,6 @@ export const pagesGroups = [
     // accessStatuses: ['member'],
   },
   {
-    id: 12,
-    name: 'Рефералы',
-    icon: faHandshake,
-    // accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
-  },
-  {
     id: 3,
     name: 'Мероприятия',
     icon: faCalendarAlt,
@@ -2622,6 +2616,12 @@ export const pagesGroups = [
     icon: faUser,
     // accessRoles: ['client'],
     // accessStatuses: ['member'],
+  },
+  {
+    id: 12,
+    name: 'Рефералы',
+    icon: faHandshake,
+    // accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
   },
   {
     id: 10,
