@@ -71,12 +71,12 @@ const ContactsIconsButtons = ({
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
+  if (!user) return null
+
   const canSeeAllContacts =
     forceShowAll || loggedUserActiveRole?.users?.seeAllContacts
 
   const isMemberAndUserIsMember = user.status === 'member' && isLoggedUserMember
-
-  if (!user) return null
   if (!canSeeAllContacts) {
     if (!isMemberAndUserIsMember) return null
     if (

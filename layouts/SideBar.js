@@ -39,7 +39,7 @@ const menuCfg = (
       const pagesItems = pages.reduce((totalPages, page) => {
         if (
           page.group === group.id &&
-          page.roleAccess(userActiveRole, userActiveStatusName) &&
+          page.roleAccess(userActiveRole, userActiveStatusName, siteSettings) &&
           (!page.siteConfirm ||
             (typeof page.siteConfirm === 'function' &&
               page.siteConfirm(siteSettings)))

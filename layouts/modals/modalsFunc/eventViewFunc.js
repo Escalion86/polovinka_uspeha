@@ -282,10 +282,11 @@ const EventView = (props) => {
   const event = useAtomValue(eventSelector(eventId))
 
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
-  const { canSee, isAgeOfUserCorrect, isUserStatusCorrect, status } =
-    useAtomValue(loggedUserToEventStatusSelector(event?._id))
+  const { canSee, isAgeOfUserCorrect, isUserStatusCorrect } =
+    useAtomValue(loggedUserToEventStatusSelector(event?._id)) ?? {}
 
-  const subEventSum = useAtomValue(subEventsSumOfEventSelector(event._id))
+  const subEventSum =
+    useAtomValue(subEventsSumOfEventSelector(event?._id)) ?? {}
 
   const router = useRouter()
   const routerQuery = { ...router.query }
@@ -299,11 +300,14 @@ const EventView = (props) => {
     <EventViewModal {...props} />
   ) : (
     <div className="flex flex-col items-center">
-      {loggedUserActive && !isUserStatusCorrect ? (
+      {loggedUserActive && isUserStatusCorrect === false ? (
         <span className="text-xl">
           {`К сожалению данное мероприятие не доступно для вашего статуса пользователя`}
         </span>
-      ) : loggedUserActive && isUserStatusCorrect && !isAgeOfUserCorrect ? (
+      ) :
+      loggedUserActive &&
+      isUserStatusCorrect !== false &&
+      isAgeOfUserCorrect === false ? (
         <span className="text-xl">
           {`К сожалению данное мероприятие доступно для возрастной категории ${
             loggedUserActive?.gender === 'male'
@@ -311,7 +315,10 @@ const EventView = (props) => {
               : `женщин от ${subEventSum.minWomansAge} до ${subEventSum.maxWomansAge} лет`
           }`}
         </span>
-      ) : !canSee && isUserStatusCorrect && isAgeOfUserCorrect ? (
+      ) :
+      canSee === false &&
+      isUserStatusCorrect !== false &&
+      isAgeOfUserCorrect !== false ? (
         <span className="text-xl">
           Мероприятие скрыто, если вы не ошиблись со ссылкой, то пожалуйста
           обратитесь к администратору
