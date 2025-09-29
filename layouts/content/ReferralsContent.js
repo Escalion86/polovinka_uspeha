@@ -389,7 +389,7 @@ const ReferralsContent = () => {
                         {user.createdAt ? formatDate(user.createdAt) : '—'}
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-700">
-                        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+                        <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2">
                             <FontAwesomeIcon
                               icon={
@@ -405,11 +405,8 @@ const ReferralsContent = () => {
                                 : 'Условие не выполнено'}
                             </span>
                           </div>
-                          {rewardStatusText}
+                          <div>{rewardStatusText}</div>
                         </div>
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-700">
-                        {rewardStatusText}
                       </td>
                     </tr>
                   )
