@@ -141,7 +141,6 @@ export default async function processReferralRewards({ db, event }) {
       if (shouldCreateReferralCoupon) {
         const referralCouponExists = await db.model('Payments').findOne({
           userId,
-          'referralReward.eventId': eventId,
           'referralReward.referralUserId': userId,
           'referralReward.rewardFor': 'referral',
           isReferralCoupon: true,
