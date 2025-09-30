@@ -17,6 +17,7 @@ const SettingsReferralSystemContent = () => {
   const loggedUser = useAtomValue(loggedUserActiveAtom)
   const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
 
+  const [enabled, setEnabled] = useState(false)
   const [referrerCouponAmount, setReferrerCouponAmount] = useState(0)
   const [referralCouponAmount, setReferralCouponAmount] = useState(0)
   const [requirePaidEvent, setRequirePaidEvent] = useState(false)
@@ -27,22 +28,29 @@ const SettingsReferralSystemContent = () => {
   const [isSaving, setIsSaving] = useState(false)
 
   const currentProgram = siteSettings?.referralProgram ?? {}
+  const normalizedEnabled =
+    typeof currentProgram.enabled === 'boolean'
+      ? currentProgram.enabled === true
+      : currentProgram.enabledForCenter === true ||
+        currentProgram.enabledForClub === true
   const normalizedCenterEnabled =
     typeof currentProgram.enabledForCenter === 'boolean'
       ? currentProgram.enabledForCenter
-      : currentProgram.enabled === true
+      : normalizedEnabled
   const normalizedClubEnabled =
     typeof currentProgram.enabledForClub === 'boolean'
       ? currentProgram.enabledForClub
-      : currentProgram.enabled === true
+      : normalizedEnabled
 
   useEffect(() => {
+    setEnabled(normalizedEnabled)
     setEnabledForCenter(normalizedCenterEnabled)
     setEnabledForClub(normalizedClubEnabled)
     setReferrerCouponAmount(currentProgram.referrerCouponAmount ?? 0)
     setReferralCouponAmount(currentProgram.referralCouponAmount ?? 0)
     setRequirePaidEvent(currentProgram.requirePaidEvent ?? false)
   }, [
+    normalizedEnabled,
     normalizedCenterEnabled,
     normalizedClubEnabled,
     currentProgram.referrerCouponAmount,
@@ -52,6 +60,7 @@ const SettingsReferralSystemContent = () => {
 
   const formChanged = useMemo(() => {
     return (
+      normalizedEnabled !== enabled ||
       normalizedCenterEnabled !== enabledForCenter ||
       normalizedClubEnabled !== enabledForClub ||
       (currentProgram.referrerCouponAmount ?? 0) !== referrerCouponAmount ||
@@ -59,6 +68,7 @@ const SettingsReferralSystemContent = () => {
       (currentProgram.requirePaidEvent ?? false) !== requirePaidEvent
     )
   }, [
+    normalizedEnabled,
     normalizedCenterEnabled,
     normalizedClubEnabled,
     currentProgram.referrerCouponAmount,
@@ -67,12 +77,13 @@ const SettingsReferralSystemContent = () => {
     referrerCouponAmount,
     referralCouponAmount,
     requirePaidEvent,
+    enabled,
     enabledForCenter,
     enabledForClub,
   ])
 
   const amountsZero = referrerCouponAmount === 0 && referralCouponAmount === 0
-  const programEnabled = enabledForCenter || enabledForClub
+  const programEnabled = enabled
   const applyDisabled =
     !formChanged || isSaving || (programEnabled && amountsZero)
   const showZeroWarning = amountsZero && programEnabled
@@ -82,7 +93,7 @@ const SettingsReferralSystemContent = () => {
     if (programEnabled && amountsZero) {
       setMessage('')
       setError(
-        'Нельзя включить реферальную систему для Центра или Клуба, если суммы купонов для реферала и реферера равны нулю.'
+        'Нельзя включить реферальную систему, если суммы купонов для реферала и реферера равны нулю.'
       )
       return
     }
@@ -95,7 +106,7 @@ const SettingsReferralSystemContent = () => {
       `/api/${location}/site`,
       {
         referralProgram: {
-          enabled: programEnabled,
+          enabled,
           enabledForCenter,
           enabledForClub,
           referrerCouponAmount,
@@ -138,6 +149,11 @@ const SettingsReferralSystemContent = () => {
       {message && !isSaving && <div className="text-success">{message}</div>}
       <FormWrapper>
         <CheckBox
+          checked={enabled}
+          label="Реферальная система включена"
+          onClick={() => setEnabled((state) => !state)}
+        />
+        <CheckBox
           checked={enabledForCenter}
           label="Для Центра"
           onClick={() => setEnabledForCenter((state) => !state)}
@@ -147,10 +163,14 @@ const SettingsReferralSystemContent = () => {
           label="Для Клуба"
           onClick={() => setEnabledForClub((state) => !state)}
         />
+        <Note>
+          Галочки «Для Центра» и «Для Клуба» управляют доступностью страницы
+          «Рефералы» для соответствующих пользователей.
+        </Note>
         {showZeroWarning && (
           <Note className="!text-danger">
-            Нельзя включить реферальную систему для Центра или Клуба с
-            нулевыми суммами купонов для реферала и реферера.
+            Нельзя включить реферальную систему с нулевыми суммами купонов для
+            реферала и реферера.
           </Note>
         )}
         <PriceInput
