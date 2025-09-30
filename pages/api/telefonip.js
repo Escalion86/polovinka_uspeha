@@ -3,6 +3,7 @@ import phoneValidator from '@helpers/phoneValidator'
 // import pinValidator from '@helpers/pinValidator'
 
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
+import createReferralRegistrationCoupon from '@server/createReferralRegistrationCoupon'
 import dbConnect from '@utils/dbConnect'
 import mongoose from 'mongoose'
 
@@ -330,7 +331,18 @@ export default async function handler(req, res) {
           }
           const updatedUser = await db
             .model('Users')
-            .findOneAndUpdate({ phone }, updateData)
+            .findOneAndUpdate({ phone }, updateData, { new: true })
+
+          if (updatedUser) {
+            try {
+              await createReferralRegistrationCoupon({ db, user: updatedUser })
+            } catch (couponError) {
+              console.log(
+                'createReferralRegistrationCoupon error :>> ',
+                couponError
+              )
+            }
+          }
           return res?.status(201).json({
             success: true,
             data: updatedUser,
@@ -341,6 +353,15 @@ export default async function handler(req, res) {
             password,
             referrerId: resolvedReferrerId,
           })
+
+          try {
+            await createReferralRegistrationCoupon({ db, user: newUser })
+          } catch (couponError) {
+            console.log(
+              'createReferralRegistrationCoupon error :>> ',
+              couponError
+            )
+          }
           await db.model('Histories').create({
             schema: 'users',
             action: 'add',
