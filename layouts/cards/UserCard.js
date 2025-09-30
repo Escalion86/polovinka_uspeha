@@ -93,7 +93,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
   // const itemFunc = useAtomValue(itemsFuncAtom)
 
   const userGender =
-    user.gender && GENDERS.find((gender) => gender.value === user.gender)
+    user?.gender && GENDERS.find((gender) => gender.value === user?.gender)
 
   // const userStatusArr = USERS_STATUSES.find(
   //   (userStatus) => userStatus.value === user.status
@@ -102,7 +102,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
   return (
     <CardWrapper
       loading={loading}
-      onClick={() => modalsFunc.user.view(user._id)}
+      onClick={user ? () => modalsFunc.user.view(user._id) : undefined}
       hidden={hidden}
       style={style}
     >
@@ -133,10 +133,10 @@ const UserCard = ({ userId, hidden = false, style }) => {
                   <div className="flex h-8 max-h-8 flex-nowrap items-start pl-1 py-0.5 leading-6 gap-x-1">
                     <div className="flex items-center flex-1 h-7 max-h-7 flex-nowrap">
                       <UserRelationshipIcon
-                        relationship={user.relationship}
+                        relationship={user?.relationship}
                         showHavePartnerOnly
                       />
-                      <UserStatusIcon status={user.status} size="m" />
+                      <UserStatusIcon status={user?.status} size="m" />
                       <UserName
                         user={user}
                         className="h-8 text-base font-bold tablet:text-lg -mt-0.5 tablet:mt-0"
@@ -177,10 +177,10 @@ const UserCard = ({ userId, hidden = false, style }) => {
                           {user.personalStatus}
                         </TextLinesLimiter>
                       </div>
-                      {user.birthday &&
+                      {user?.birthday &&
                         (seeBirthday ||
-                          user.security?.showBirthday === true ||
-                          user.security?.showBirthday === 'full') && (
+                          user?.security?.showBirthday === true ||
+                          user?.security?.showBirthday === 'full') && (
                           <div className="flex text-sm leading-4 gap-x-2 ">
                             <span className="flex items-center font-bold">
                               Возраст:
@@ -188,14 +188,14 @@ const UserCard = ({ userId, hidden = false, style }) => {
                             <div className="flex items-center text-sm font-normal whitespace-nowrap gap-x-2">
                               <span className="leading-4">
                                 {birthDateToAge(
-                                  user.birthday,
+                                  user?.birthday,
                                   serverDate,
                                   true,
                                   false,
                                   true
                                 )}
                               </span>
-                              <ZodiacIcon date={user.birthday} small />
+                              <ZodiacIcon date={user?.birthday} small />
                             </div>
                           </div>
                         )}
@@ -213,7 +213,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                           </span>
                           {/* <FinishedCount userId={userId} /> */}
                           <span className="font-normal">
-                            {user.signedUpEventsCount}
+                            {user?.signedUpEventsCount}
                           </span>
                           {/* <span className="font-bold">Записан:</span> */}
                           {/* <SignedUpCount userId={userId} /> */}
@@ -223,7 +223,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     <div className="flex items-end justify-end flex-1 py-1 pr-1 gap-x-1">
                       {seeNotificationIcon && (
                         <div className="flex items-center justify-end gap-x-1">
-                          {!user.notifications?.telegram?.active ? (
+                          {!user?.notifications?.telegram?.active ? (
                             //  && !user.notifications?.whatsapp?.active
                             <FontAwesomeIcon
                               // className={cn(
@@ -263,7 +263,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                               size="xs"
                             />
                           )}
-                          {user.notifications?.telegram?.active && (
+                          {user?.notifications?.telegram?.active && (
                             <FontAwesomeIcon
                               className="h-5 text-blue-600"
                               icon={faTelegram}
