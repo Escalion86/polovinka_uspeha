@@ -1,18 +1,24 @@
 const getReferralProgramFlags = (referralProgram = {}) => {
-  const fallbackEnabled = referralProgram?.enabled === true
+  const hasExplicitEnabled = typeof referralProgram?.enabled === 'boolean'
+  const fallbackEnabled =
+    referralProgram?.enabledForCenter === true ||
+    referralProgram?.enabledForClub === true
+  const enabled = hasExplicitEnabled
+    ? referralProgram.enabled === true
+    : fallbackEnabled
   const enabledForCenter =
     typeof referralProgram?.enabledForCenter === 'boolean'
       ? referralProgram.enabledForCenter
-      : fallbackEnabled
+      : enabled
   const enabledForClub =
     typeof referralProgram?.enabledForClub === 'boolean'
       ? referralProgram.enabledForClub
-      : fallbackEnabled
+      : enabled
 
   return {
+    enabled,
     enabledForCenter,
     enabledForClub,
-    isEnabled: enabledForCenter || enabledForClub,
   }
 }
 
@@ -37,7 +43,7 @@ export default async function createReferralRegistrationCoupon({ db, user }) {
     const siteSettings = await db.model('SiteSettings').findOne({}).lean()
     const referralProgram = siteSettings?.referralProgram ?? {}
     const referralProgramFlags = getReferralProgramFlags(referralProgram)
-    if (!referralProgramFlags.isEnabled) return
+    if (!referralProgramFlags.enabled) return
 
     const referralCouponAmount = referralProgram.referralCouponAmount ?? 0
     if (!(referralCouponAmount > 0)) return
