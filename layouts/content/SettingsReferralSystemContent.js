@@ -11,6 +11,7 @@ import locationAtom from '@state/atoms/locationAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useMemo, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
+import InputWrapper from '@components/InputWrapper'
 
 const SettingsReferralSystemContent = () => {
   const location = useAtomValue(locationAtom)
@@ -147,50 +148,53 @@ const SettingsReferralSystemContent = () => {
       </div>
       {error && <div className="text-danger">{error}</div>}
       {message && !isSaving && <div className="text-success">{message}</div>}
+      {showZeroWarning && (
+        <Note type="error">
+          Нельзя включить реферальную систему для Центра или Клуба с нулевыми
+          суммами купонов для реферала и реферера.
+        </Note>
+      )}
       <FormWrapper>
         <CheckBox
           checked={enabled}
           label="Реферальная система включена"
           onClick={() => setEnabled((state) => !state)}
         />
-        <CheckBox
-          checked={enabledForCenter}
-          label="Для Центра"
-          onClick={() => setEnabledForCenter((state) => !state)}
-        />
-        <CheckBox
-          checked={enabledForClub}
-          label="Для Клуба"
-          onClick={() => setEnabledForClub((state) => !state)}
-        />
-        <Note>
-          Галочки «Для Центра» и «Для Клуба» управляют доступностью страницы
-          «Рефералы» для соответствующих пользователей.
-        </Note>
-        {showZeroWarning && (
-          <Note type="error">
-            Нельзя включить реферальную систему для Центра или Клуба с нулевыми
-            суммами купонов для реферала и реферера.
-          </Note>
-        )}
+        <InputWrapper
+          wrapperClassName="flex-col items-start"
+          label="Вкладка Рефералы доступна"
+        >
+          <CheckBox
+            checked={enabledForCenter}
+            label="Для Центра"
+            onClick={() => setEnabledForCenter((state) => !state)}
+          />
+          <CheckBox
+            checked={enabledForClub}
+            label="Для Клуба"
+            onClick={() => setEnabledForClub((state) => !state)}
+          />
+        </InputWrapper>
         <Note className="mt-2">
           Реферер - тот кто приглашает;
           <br />
           Реферал - тот кого приглашают.
         </Note>
-        <PriceInput
-          label="Сумма купона для реферера"
-          value={referrerCouponAmount}
-          onChange={setReferrerCouponAmount}
-        />
-        <PriceInput
-          label="Сумма купона для реферала"
-          value={referralCouponAmount}
-          onChange={setReferralCouponAmount}
-        />
+        <div className="flex flex-wrap gap-x-2">
+          <PriceInput
+            label="Сумма купона для реферера"
+            value={referrerCouponAmount}
+            onChange={setReferrerCouponAmount}
+          />
+          <PriceInput
+            label="Сумма купона для реферала"
+            value={referralCouponAmount}
+            onChange={setReferralCouponAmount}
+          />
+        </div>
         <CheckBox
           checked={requirePaidEvent}
-          label="Купоны рефереру выдаются только за посещение ПЛАТНОГО мероприятия рефералом"
+          label="Купоны рефереру выдавать только за посещение ПЛАТНОГО мероприятия рефералом"
           onClick={() => setRequirePaidEvent((state) => !state)}
         />
         <Note className="mt-2">
