@@ -47,10 +47,8 @@ const EventsBlock = ({
   title = 'Ближайшие мероприятия',
 }) => {
   const location = useAtomValue(locationAtom)
-  console.log('location :>> ', location)
 
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)
-  console.log(maxShowedEvents)
 
   const events = useAtomValue(filteredEventsSelector)
 

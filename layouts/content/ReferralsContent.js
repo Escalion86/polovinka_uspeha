@@ -180,27 +180,29 @@ const ReferralsContent = () => {
       const referralKey = String(referralUserId)
       const existingDetails = map.get(referralKey) ?? {}
 
+      const paymentEventId =
+        payment?.eventId != null ? String(payment.eventId) : null
+      const rewardEventId =
+        reward?.eventId != null ? String(reward.eventId) : null
+
       const couponDetails = {
         sum: typeof payment?.sum === 'number' ? payment.sum : null,
         payAt: payment?.payAt ?? null,
-        eventId: payment?.eventId ?? reward?.eventId ?? null,
+        rewardEventId,
+        usageEventId: paymentEventId,
         comment: payment?.comment ?? '',
       }
 
-      if (payment?.payDirection === 'fromUser') {
+      if (paymentEventId) {
         map.set(referralKey, {
           ...existingDetails,
           used: couponDetails,
-        })
-      } else if (payment?.payDirection === 'toUser') {
-        map.set(referralKey, {
-          ...existingDetails,
-          issued: couponDetails,
+          issued: existingDetails.issued ?? null,
         })
       } else {
         map.set(referralKey, {
           ...existingDetails,
-          issued: existingDetails.issued ?? couponDetails,
+          issued: couponDetails,
         })
       }
     })
@@ -358,7 +360,8 @@ const ReferralsContent = () => {
                         .replace(/\s+руб/, ' руб')
                         .trim()
                     : null
-                  const usageEventId = usedCoupon?.eventId
+                  const usageEventId =
+                    usedCoupon?.usageEventId ?? usedCoupon?.eventId ?? null
                   const usageEvent = usageEventId
                     ? eventsById.get(String(usageEventId))
                     : null

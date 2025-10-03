@@ -68,6 +68,7 @@ const UserLikesItem = ({
   otherUsersData,
   readOnly,
 }) => {
+  if (!user) return null
   const userGender =
     user.gender && GENDERS.find((gender) => gender.value === user.gender)
 

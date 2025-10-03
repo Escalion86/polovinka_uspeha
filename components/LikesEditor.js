@@ -16,14 +16,14 @@ const LikesEditor = ({ eventId, readOnly }) => {
   const eventMans = useMemo(
     () =>
       eventUsers.filter(
-        ({ user }) => !user.relationship && user.gender === 'male'
+        ({ user }) => !user.relationship && user?.gender === 'male'
       ),
     [eventUsers]
   )
   const eventWomans = useMemo(
     () =>
       eventUsers.filter(
-        ({ user }) => !user.relationship && user.gender === 'famale'
+        ({ user }) => !user.relationship && user?.gender === 'famale'
       ),
     [eventUsers]
   )

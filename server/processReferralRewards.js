@@ -6,27 +6,27 @@ const isPaidEvent = (event) =>
   event.subEvents.some((subEvent) => Number(subEvent?.price ?? 0) > 0)
 
 const getReferralProgramFlags = (referralProgram = {}) => {
-  const fallbackEnabled = referralProgram?.enabled === true
+  const hasExplicitEnabled = typeof referralProgram?.enabled === 'boolean'
+  const fallbackEnabled =
+    referralProgram?.enabledForCenter === true ||
+    referralProgram?.enabledForClub === true
+  const enabled = hasExplicitEnabled
+    ? referralProgram.enabled === true
+    : fallbackEnabled
   const enabledForCenter =
     typeof referralProgram?.enabledForCenter === 'boolean'
       ? referralProgram.enabledForCenter
-      : fallbackEnabled
+      : enabled
   const enabledForClub =
     typeof referralProgram?.enabledForClub === 'boolean'
       ? referralProgram.enabledForClub
-      : fallbackEnabled
+      : enabled
 
   return {
+    enabled,
     enabledForCenter,
     enabledForClub,
-    isEnabled: enabledForCenter || enabledForClub,
   }
-}
-
-const isStatusEligibleForProgram = (flags, status) => {
-  if (!flags) return false
-  if (status === 'member') return flags.enabledForClub
-  return flags.enabledForCenter
 }
 
 const getUserName = (user) =>
@@ -43,7 +43,7 @@ export default async function processReferralRewards({ db, event }) {
     const siteSettings = await db.model('SiteSettings').findOne({}).lean()
     const referralProgram = siteSettings?.referralProgram ?? {}
     const referralProgramFlags = getReferralProgramFlags(referralProgram)
-    if (!referralProgramFlags.isEnabled) return
+    if (!referralProgramFlags.enabled) return
     const referrerCouponAmount = referralProgram.referrerCouponAmount ?? 0
     const referralCouponAmount = referralProgram.referralCouponAmount ?? 0
     const requirePaidEvent = referralProgram.requirePaidEvent ?? false
@@ -105,7 +105,6 @@ export default async function processReferralRewards({ db, event }) {
         : ''
 
       let referrerExists = false
-      let referrerStatus = null
       if (referrerId) {
         let referrer = referrerCache.get(referrerId)
         if (!referrer) {
@@ -117,7 +116,6 @@ export default async function processReferralRewards({ db, event }) {
 
         if (referrer) {
           referrerExists = true
-          referrerStatus = referrer.status ?? 'novice'
         }
       }
 
@@ -125,10 +123,7 @@ export default async function processReferralRewards({ db, event }) {
         continue
       }
 
-      const referrerEligible = isStatusEligibleForProgram(
-        referralProgramFlags,
-        referrerStatus
-      )
+      const referrerEligible = referralProgramFlags.enabled
 
       const shouldCreateReferralCoupon = referralCouponAmount > 0
       const shouldCreateReferrerCoupon =
@@ -141,7 +136,6 @@ export default async function processReferralRewards({ db, event }) {
       if (shouldCreateReferralCoupon) {
         const referralCouponExists = await db.model('Payments').findOne({
           userId,
-          'referralReward.eventId': eventId,
           'referralReward.referralUserId': userId,
           'referralReward.rewardFor': 'referral',
           isReferralCoupon: true,
@@ -181,7 +175,7 @@ export default async function processReferralRewards({ db, event }) {
         if (!referrerCouponExists) {
           await db.model('Payments').create({
             sector: 'event',
-            payDirection: 'toEvent',
+            payDirection: 'fromUser',
             userId: referrerId,
             payType: 'coupon',
             sum: referrerCouponAmount,

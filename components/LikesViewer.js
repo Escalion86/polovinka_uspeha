@@ -87,8 +87,6 @@ const UserLikesItem = ({
 }) => {
   const event = useAtomValue(eventSelector(eventId))
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  // const userGender =
-  //   user.gender && GENDERS.find((gender) => gender.value === user.gender)
 
   const coincidenceCount = activeIds?.length ?? 0
 

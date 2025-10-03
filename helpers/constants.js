@@ -1820,30 +1820,37 @@ export const SOCIALS = [
 ]
 
 const getReferralProgramFlags = (referralProgram = {}) => {
-  const fallbackEnabled = referralProgram?.enabled === true
+  const hasExplicitEnabled = typeof referralProgram?.enabled === 'boolean'
+  const fallbackEnabled =
+    referralProgram?.enabledForCenter === true ||
+    referralProgram?.enabledForClub === true
+  const enabled = hasExplicitEnabled
+    ? referralProgram.enabled === true
+    : fallbackEnabled
   const enabledForCenter =
     typeof referralProgram?.enabledForCenter === 'boolean'
       ? referralProgram.enabledForCenter
-      : fallbackEnabled
+      : enabled
   const enabledForClub =
     typeof referralProgram?.enabledForClub === 'boolean'
       ? referralProgram.enabledForClub
-      : fallbackEnabled
+      : enabled
 
   return {
+    enabled,
     enabledForCenter,
     enabledForClub,
-    isEnabled: enabledForCenter || enabledForClub,
   }
 }
 
 const isReferralProgramEnabled = (referralProgram) =>
-  getReferralProgramFlags(referralProgram).isEnabled
+  getReferralProgramFlags(referralProgram).enabled
 
 const isReferralProgramEnabledForStatus = (referralProgram, status) => {
-  const { enabledForCenter, enabledForClub } =
+  const { enabled, enabledForCenter, enabledForClub } =
     getReferralProgramFlags(referralProgram)
 
+  if (!enabled) return false
   if (status === 'member') return enabledForClub
   return enabledForCenter
 }

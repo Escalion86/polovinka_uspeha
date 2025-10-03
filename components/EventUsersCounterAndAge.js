@@ -46,11 +46,11 @@ const CounterComponent = ({
     gender === 'mans'
       ? eventUsersParticipants.filter(
           ({ user, subEventId }) =>
-            user.gender === 'male' && (!subEvent || subEventId === subEvent.id)
+            user?.gender === 'male' && (!subEvent || subEventId === subEvent.id)
         )
       : eventUsersParticipants.filter(
           ({ user, subEventId }) =>
-            user.gender === 'famale' &&
+            user?.gender === 'famale' &&
             (!subEvent || subEventId === subEvent.id)
         )
 
@@ -65,11 +65,11 @@ const CounterComponent = ({
     gender === 'mans'
       ? eventUsersReserve.filter(
           ({ user, subEventId }) =>
-            user.gender === 'male' && (!subEvent || subEventId === subEvent.id)
+            user?.gender === 'male' && (!subEvent || subEventId === subEvent.id)
         )
       : eventUsersReserve.filter(
           ({ user, subEventId }) =>
-            user.gender === 'famale' &&
+            user?.gender === 'famale' &&
             (!subEvent || subEventId === subEvent.id)
         )
 
@@ -302,11 +302,11 @@ const SumCounterComponent = ({
     eventUsersToUse ?? useAtomValue(eventsUsersFullByEventIdSelector(event._id))
 
   const subEventUsers = subEvent
-    ? eventUsers.filter(({ user, subEventId }) => subEventId === subEvent.id)
+    ? eventUsers.filter(({ subEventId }) => subEventId === subEvent.id)
     : eventUsers
 
-  const mans = subEventUsers.filter(({ user }) => user.gender === 'male')
-  const womans = subEventUsers.filter(({ user }) => user.gender === 'famale')
+  const mans = subEventUsers.filter(({ user }) => user?.gender === 'male')
+  const womans = subEventUsers.filter(({ user }) => user?.gender === 'famale')
 
   const eventMansCount = mans.filter(
     ({ status }) => status === 'participant'
