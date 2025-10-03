@@ -25,19 +25,17 @@ const getReferralProgramFlags = (referralProgram = {}) => {
 const getUserName = (user) =>
   [user?.firstName, user?.secondName].filter(Boolean).join(' ').trim()
 
-const toPlainObject = (value) =>
-  typeof value?.toObject === 'function' ? value.toObject() : value
-
 const toStringOrNull = (value) => (value ? String(value) : null)
 
 export default async function createReferralRegistrationCoupon({ db, user }) {
   if (!db) return
 
-  const plainUser = toPlainObject(user)
-  const userId = toStringOrNull(plainUser?._id)
-  const referrerId = toStringOrNull(plainUser?.referrerId)
+  const userId = toStringOrNull(user?._id)
+  const referrerId = toStringOrNull(user?.referrerId)
 
   if (!userId || !referrerId || referrerId === userId) return
+
+  const referrerUser = await db.model('Users').findById(referrerId).lean()
 
   try {
     const siteSettings = await db.model('SiteSettings').findOne({}).lean()
@@ -59,19 +57,19 @@ export default async function createReferralRegistrationCoupon({ db, user }) {
 
     if (referralCouponExists) return
 
-    const referralUserName = getUserName(plainUser)
-    const referralNameSuffix = referralUserName
-      ? ` (${referralUserName})`
+    const referrerUserName = getUserName(referrerUser)
+    const referrerNameSuffix = referrerUserName
+      ? ` (по приглашению от ${referrerUserName})`
       : ''
 
     await db.model('Payments').create({
       sector: 'event',
-      payDirection: 'toEvent',
+      payDirection: 'fromUser',
       userId,
       payType: 'coupon',
       sum: referralCouponAmount,
       payAt: new Date(),
-      comment: `Реферальный купон за регистрацию${referralNameSuffix}`,
+      comment: `Реферальный купон за регистрацию${referrerNameSuffix}`,
       isReferralCoupon: true,
       referralReward: {
         eventId: null,

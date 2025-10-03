@@ -175,7 +175,7 @@ export default async function processReferralRewards({ db, event }) {
         if (!referrerCouponExists) {
           await db.model('Payments').create({
             sector: 'event',
-            payDirection: 'toEvent',
+            payDirection: 'fromUser',
             userId: referrerId,
             payType: 'coupon',
             sum: referrerCouponAmount,
