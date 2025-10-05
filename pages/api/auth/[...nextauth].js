@@ -3,6 +3,11 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import mongoose from 'mongoose'
 import dbConnect from '@utils/dbConnect'
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
+import {
+  hashPassword,
+  shouldRehashPassword,
+  verifyPassword,
+} from '@helpers/passwordUtils'
 
 const resolveReferrerId = async (db, referrerId) => {
   if (!referrerId || !mongoose.Types.ObjectId.isValid(referrerId)) return null
@@ -46,7 +51,7 @@ export default async function auth(req, res) {
 
             const fetchedUser = await db
               .model('Users')
-              .findOne({ phone, password })
+              .findOne({ phone })
               .lean()
             // await db.model('Users').findOneAndUpdate(
             //   { phone, password },
@@ -56,13 +61,31 @@ export default async function auth(req, res) {
             //   }
             // )
 
-            if (fetchedUser) {
-              return {
-                name: fetchedUser._id,
-                email: location,
-              }
-            } else {
+            if (!fetchedUser?.password) {
               return null
+            }
+
+            const passwordIsValid = await verifyPassword(
+              password,
+              fetchedUser.password
+            )
+
+            if (!passwordIsValid) {
+              return null
+            }
+
+            if (shouldRehashPassword(fetchedUser.password)) {
+              const newPasswordHash = await hashPassword(password)
+              await db
+                .model('Users')
+                .findByIdAndUpdate(fetchedUser._id, {
+                  password: newPasswordHash,
+                })
+            }
+
+            return {
+              name: fetchedUser._id,
+              email: location,
             }
           } else {
             return null

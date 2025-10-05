@@ -7,6 +7,7 @@ import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
 import { DEFAULT_ROLES } from '@helpers/constants'
+import { hashPassword } from '@helpers/passwordUtils'
 
 import mongoose from 'mongoose'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
@@ -623,6 +624,14 @@ export default async function handler(Schema, req, res, props = {}) {
           const clearedBody = { ...body.data }
           delete clearedBody._id
 
+          if (
+            Schema === 'Users' &&
+            typeof clearedBody.password === 'string' &&
+            clearedBody.password
+          ) {
+            clearedBody.password = await hashPassword(clearedBody.password)
+          }
+
           // Создаем пустой календарь и получаем его id
           if (Schema === 'Events' && MODE === 'production') {
             clearedBody.googleCalendarId =
@@ -681,9 +690,19 @@ export default async function handler(Schema, req, res, props = {}) {
             return res?.status(400).json({ success: false })
           }
 
+          const updateData = { ...body.data }
+
+          if (
+            Schema === 'Users' &&
+            typeof updateData.password === 'string' &&
+            updateData.password
+          ) {
+            updateData.password = await hashPassword(updateData.password)
+          }
+
           data = await db
             .model(Schema)
-            .findByIdAndUpdate(id, body.data, {
+            .findByIdAndUpdate(id, updateData, {
               new: true,
               runValidators: true,
             })
