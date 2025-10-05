@@ -5,6 +5,24 @@
 import dbConnect from '@utils/dbConnect'
 import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
 
+const isObjectId = (value) =>
+  value && typeof value === 'object' && value.constructor?.name === 'ObjectId'
+
+const serializeLeanDoc = (doc) => {
+  if (doc == null) return doc
+  if (isObjectId(doc)) return doc.toString()
+  if (doc instanceof Date) return doc.toISOString()
+  if (Array.isArray(doc)) return doc.map(serializeLeanDoc)
+  if (typeof doc === 'object') {
+    return Object.entries(doc).reduce((acc, [key, value]) => {
+      acc[key] = serializeLeanDoc(value)
+      return acc
+    }, {})
+  }
+
+  return doc
+}
+
 const fetchProps = async (user, location, params) => {
   const serverDateTime = new Date()
   const telegramBotName = getTelegramBotNameByLocation(location)
@@ -27,11 +45,9 @@ const fetchProps = async (user, location, params) => {
         questionnairesUsers: [],
         services: [],
         // servicesUsers: [],
-        serverSettings: JSON.parse(
-          JSON.stringify({
-            dateTime: serverDateTime,
-          })
-        ),
+        serverSettings: {
+          dateTime: serverDateTime.toISOString(),
+        },
         mode: process.env.MODE,
         error: 'db error',
         location,
@@ -240,26 +256,22 @@ const fetchProps = async (user, location, params) => {
 
     const fetchResult = {
       // users: JSON.parse(JSON.stringify(users)),
-      events: JSON.parse(JSON.stringify(events)),
-      directions: JSON.parse(JSON.stringify(directions)),
-      reviews: JSON.parse(JSON.stringify(reviews)),
-      additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
+      events: serializeLeanDoc(events),
+      directions: serializeLeanDoc(directions),
+      reviews: serializeLeanDoc(reviews),
+      additionalBlocks: serializeLeanDoc(additionalBlocks),
       // eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
       // payments: JSON.parse(JSON.stringify(payments)),
-      siteSettings: JSON.parse(
-        JSON.stringify(siteSettings?.length > 0 ? siteSettings[0] : {})
-      ),
-      rolesSettings: JSON.parse(JSON.stringify(rolesSettings)),
+      siteSettings: serializeLeanDoc(siteSettings?.length > 0 ? siteSettings[0] : {}),
+      rolesSettings: serializeLeanDoc(rolesSettings),
       // histories: JSON.parse(JSON.stringify(histories)),
-      questionnaires: JSON.parse(JSON.stringify(questionnaires)),
-      questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
-      services: JSON.parse(JSON.stringify(services)),
+      questionnaires: serializeLeanDoc(questionnaires),
+      questionnairesUsers: serializeLeanDoc(questionnairesUsers),
+      services: serializeLeanDoc(services),
       // servicesUsers: JSON.parse(JSON.stringify(servicesUsers)),
-      serverSettings: JSON.parse(
-        JSON.stringify({
-          dateTime: serverDateTime,
-        })
-      ),
+      serverSettings: {
+        dateTime: serverDateTime.toISOString(),
+      },
       mode: process.env.MODE,
       location,
       telegramBotName,
@@ -282,13 +294,11 @@ const fetchProps = async (user, location, params) => {
       questionnairesUsers: [],
       services: [],
       // servicesUsers: [],
-      serverSettings: JSON.parse(
-        JSON.stringify({
-          dateTime: serverDateTime,
-        })
-      ),
+      serverSettings: {
+        dateTime: serverDateTime.toISOString(),
+      },
       mode: process.env.MODE,
-      error: JSON.parse(JSON.stringify(error)),
+      error: error instanceof Error ? error.message : String(error),
       location,
       telegramBotName,
     }
