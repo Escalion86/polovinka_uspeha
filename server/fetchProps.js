@@ -78,10 +78,20 @@ const fetchProps = async (user, location, params) => {
     //   })
     // }
 
-    const events =
+    const [
+      events,
+      directions,
+      reviews,
+      additionalBlocks,
+      siteSettings,
+      rolesSettings,
+      questionnaires,
+      questionnairesUsers,
+      services,
+    ] = await Promise.all([
       params?.events === false
-        ? []
-        : await db
+        ? Promise.resolve([])
+        : db
             .model('Events')
             .find({})
             .select({
@@ -105,55 +115,50 @@ const fetchProps = async (user, location, params) => {
               // usersStatusAccess: 0,
               // usersStatusDiscount: 0,
             })
-            .lean()
+            .lean(),
+      db
+        .model('Directions')
+        .find({})
+        .select({
+          description: 0,
 
-    const directions = await db
-      .model('Directions')
-      .find({})
-      .select({
-        description: 0,
-
-        // plugins: 0,
-        ...(params?.directions?.shortDescription
-          ? {}
-          : { shortDescription: 0 }),
-      })
-      .lean()
-    const reviews =
-      params?.reviews === false ? [] : await db.model('Reviews').find({}).lean()
-    const additionalBlocks =
+          // plugins: 0,
+          ...(params?.directions?.shortDescription
+            ? {}
+            : { shortDescription: 0 }),
+        })
+        .lean(),
+      params?.reviews === false
+        ? Promise.resolve([])
+        : db.model('Reviews').find({}).lean(),
       params?.additionalBlocks === false
-        ? []
-        : await db.model('AdditionalBlocks').find({}).lean()
+        ? Promise.resolve([])
+        : db.model('AdditionalBlocks').find({}).lean(),
+      db.model('SiteSettings').find({}).lean(),
+      params?.rolesSettings === false
+        ? Promise.resolve([])
+        : db.model('Roles').find({}).lean(),
+      params?.questionnaires === false
+        ? Promise.resolve([])
+        : db.model('Questionnaires').find({}).lean(),
+      params?.questionnairesUsers === false
+        ? Promise.resolve([])
+        : db.model('QuestionnairesUsers').find({}).lean(),
+      params?.services === false
+        ? Promise.resolve([])
+        : db.model('Services').find({}).lean(),
+    ])
     // const eventsUsers = await db.model('EventsUsers').find({}).lean()
     // const payments = await db.model('Payments').find({})
     //   .select({
     //     status: 0,
     //   })
     //   .lean()
-    const siteSettings = await db.model('SiteSettings').find({}).lean()
-    const rolesSettings =
-      params?.rolesSettings === false
-        ? []
-        : await db.model('Roles').find({}).lean()
-    const questionnaires =
-      params?.questionnaires === false
-        ? []
-        : await db.model('Questionnaires').find({}).lean()
-    const questionnairesUsers =
-      params?.questionnairesUsers === false
-        ? []
-        : await db.model('QuestionnairesUsers').find({}).lean()
     // const histories = isModer
     //   ? await db.model('Histories').find({
     //       // createdAt: { $gt: user.prevActivityAt },
     //     })
     //   : []
-
-    const services =
-      params?.services === false
-        ? []
-        : await db.model('Services').find({}).lean()
     // const servicesUsers = await db.model('ServicesUsers').find({}).lean()
 
     // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
