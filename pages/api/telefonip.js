@@ -1,5 +1,6 @@
 // import getMinutesBetween from '@helpers/getMinutesBetween'
 import phoneValidator from '@helpers/phoneValidator'
+import { hashPassword } from '@helpers/passwordUtils'
 // import pinValidator from '@helpers/pinValidator'
 
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
@@ -75,7 +76,10 @@ export default async function handler(req, res) {
 
   if (method === 'POST') {
     try {
-      console.log('body', body)
+      console.log('body', {
+        ...body,
+        password: body?.password ? '[redacted]' : body?.password,
+      })
       const {
         phone,
         code,
@@ -317,15 +321,12 @@ export default async function handler(req, res) {
       // }
 
       // Если код уже подтвержден, то создаем пользователя
-      console.log('password :>> ', password)
-      console.log('existingPhoneConfirm :>> ', existingPhoneConfirm)
       if (password && existingPhoneConfirm?.confirmed === true) {
-        console.log(1)
         await db.model('PhoneConfirms').findOneAndDelete({ phone })
-        console.log(2)
         // Проверяем - возможно такой пользователь есть, просто у него не задан пароль
         if (existingUser && (!existingUser.password || forgotPassword)) {
-          const updateData = { password }
+          const hashedPassword = await hashPassword(password)
+          const updateData = { password: hashedPassword }
           if (resolvedReferrerId && !existingUser.referrerId) {
             updateData.referrerId = resolvedReferrerId
           }
@@ -348,9 +349,10 @@ export default async function handler(req, res) {
             data: updatedUser,
           })
         } else {
+          const hashedPassword = await hashPassword(password)
           const newUser = await db.model('Users').create({
             phone,
-            password,
+            password: hashedPassword,
             referrerId: resolvedReferrerId,
           })
 
