@@ -6,6 +6,7 @@ import eventsSchema from '@schemas/eventsSchema'
 import eventsUsersSchema from '@schemas/eventsUsersSchema'
 import historiesSchema from '@schemas/historiesSchema'
 import loginHistorySchema from '@schemas/loginHistorySchema'
+import clientErrorLogsSchema from '@schemas/clientErrorLogsSchema'
 import paymentsSchema from '@schemas/paymentsSchema'
 import phoneConfirmsSchema from '@schemas/phoneConfirmsSchema'
 import productsSchema from '@schemas/productsSchema'
@@ -199,6 +200,10 @@ async function dbConnect(location) {
     connections[location].model(
       'Histories',
       mongoose.Schema(historiesSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'ClientErrorLogs',
+      mongoose.Schema(clientErrorLogsSchema, { timestamps: true })
     )
     connections[location].model(
       'AdditionalBlocks',
