@@ -2124,6 +2124,19 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.headerInfo,
   },
+  myAchievements: {
+    Component: MyAchievementsContent,
+    name: 'Мои достижения',
+    accessRoles: [
+      'client',
+      'moder',
+      'admin',
+      'supervisor',
+      'president',
+      'dev',
+    ],
+    roleAccess: () => true,
+  },
   userStatistics: {
     Component: UserStatisticsContent,
     name: 'Моя статистика',
@@ -2176,6 +2189,15 @@ export const pages = [
     icon: faTrophy,
     // accessRoles: CONTENTS['userStatistics'].accessRoles,
     roleAccess: CONTENTS['userStatistics'].roleAccess,
+  },
+  {
+    id: 900,
+    group: 0,
+    name: 'Мои достижения',
+    href: 'myAchievements',
+    icon: faMedal,
+    hidden: menuHiddenLoggedUserAchievementsSelector,
+    roleAccess: CONTENTS['myAchievements'].roleAccess,
   },
   {
     id: 1,
