@@ -9,6 +9,8 @@ import ModalsPortal from '@layouts/modals/ModalsPortal'
 
 // import itemsFuncGenerator from '@state/itemsFuncGenerator'
 
+import achievementsAtom from '@state/atoms/achievementsAtom'
+import achievementsUsersAtom from '@state/atoms/achievementsUsersAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -101,6 +103,8 @@ const StateLoader = (props) => {
   )
   const setEventsState = useSetAtom(eventsAtom)
   const setDirectionsState = useSetAtom(directionsAtom)
+  const setAchievementsState = useSetAtom(achievementsAtom)
+  const setAchievementsUsersState = useSetAtom(achievementsUsersAtom)
   const setAdditionalBlocksState = useSetAtom(additionalBlocksAtom)
   const setUsersState = useSetAtom(usersAtomAsync)
   // const setIsLoadedUsersAtom = useSetAtom(isLoadedAtom('usersAtomAsync'))
@@ -208,6 +212,8 @@ const StateLoader = (props) => {
     setQuestionnairesState(props.questionnaires)
     setQuestionnairesUsersState(props.questionnairesUsers)
     setServicesState(props.services)
+    setAchievementsState(props.achievements ?? [])
+    setAchievementsUsersState(props.achievementsUsers ?? [])
     // setServicesUsersState(props.servicesUsers)
     setServerSettingsState(props.serverSettings)
     setMode(props.mode ?? 'production')

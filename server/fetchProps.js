@@ -26,6 +26,8 @@ const fetchProps = async (user, location, params) => {
         questionnaires: [],
         questionnairesUsers: [],
         services: [],
+        achievements: [],
+        achievementsUsers: [],
         // servicesUsers: [],
         serverSettings: JSON.parse(
           JSON.stringify({
@@ -156,6 +158,16 @@ const fetchProps = async (user, location, params) => {
         : await db.model('Services').find({}).lean()
     // const servicesUsers = await db.model('ServicesUsers').find({}).lean()
 
+    const achievements =
+      params?.achievements === false
+        ? []
+        : await db.model('Achievements').find({}).lean()
+
+    const achievementsUsers =
+      params?.achievementsUsers === false
+        ? []
+        : await db.model('AchievementsUsers').find({}).lean()
+
     // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
     // const seeFullNames = userRole?.users?.seeFullNames
 
@@ -249,6 +261,8 @@ const fetchProps = async (user, location, params) => {
       questionnaires: JSON.parse(JSON.stringify(questionnaires)),
       questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
       services: JSON.parse(JSON.stringify(services)),
+      achievements: JSON.parse(JSON.stringify(achievements)),
+      achievementsUsers: JSON.parse(JSON.stringify(achievementsUsers)),
       // servicesUsers: JSON.parse(JSON.stringify(servicesUsers)),
       serverSettings: JSON.parse(
         JSON.stringify({
@@ -276,6 +290,8 @@ const fetchProps = async (user, location, params) => {
       questionnaires: [],
       questionnairesUsers: [],
       services: [],
+      achievements: [],
+      achievementsUsers: [],
       // servicesUsers: [],
       serverSettings: JSON.parse(
         JSON.stringify({

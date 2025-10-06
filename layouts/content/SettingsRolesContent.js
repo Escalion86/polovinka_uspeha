@@ -431,6 +431,11 @@ const SettingsRolesContent = (props) => {
               subItem="referralSystem"
             />
             <RoleItem
+              label="Настройки достижений"
+              item="siteSettings"
+              subItem="achievements"
+            />
+            <RoleItem
               label="Редактирование ролей"
               item="siteSettings"
               subItem="roles"

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 
 import additionalBlocksSchema from '@schemas/additionalBlocksSchema'
+import achievementsSchema from '@schemas/achievementsSchema'
+import achievementsUsersSchema from '@schemas/achievementsUsersSchema'
 import directionsSchema from '@schemas/directionsSchema'
 import eventsSchema from '@schemas/eventsSchema'
 import eventsUsersSchema from '@schemas/eventsUsersSchema'
@@ -192,6 +194,14 @@ async function dbConnect(location) {
     connections[location].model(
       'Users',
       mongoose.Schema(usersSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'Achievements',
+      mongoose.Schema(achievementsSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'AchievementsUsers',
+      mongoose.Schema(achievementsUsersSchema, { timestamps: true })
     )
     connections[location].model(
       'Events',
