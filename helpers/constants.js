@@ -164,6 +164,12 @@ const ToolsEventAnonsVkContent = dynamic(
 const IndividualWeddingsContent = dynamic(
   () => import('@layouts/content/IndividualWeddingsContent')
 )
+const MyAchievementsContent = dynamic(
+  () => import('@layouts/content/MyAchievementsContent')
+)
+const SettingsAchievementsContent = dynamic(
+  () => import('@layouts/content/SettingsAchievementsContent')
+)
 
 import ZodiacCapricorn from '@svg/zodiac/ZodiacCapricorn'
 import ZodiacTaurus from '@svg/zodiac/ZodiacTaurus'
@@ -187,6 +193,7 @@ import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
+import menuHiddenLoggedUserAchievementsSelector from '@state/selectors/menuHiddenLoggedUserAchievementsSelector'
 
 // const colors = [
 //   'border-blue-400',
@@ -1055,6 +1062,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: false,
       referralSystem: false,
+      achievements: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1195,6 +1203,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: false,
       referralSystem: false,
+      achievements: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1335,6 +1344,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: false,
       referralSystem: false,
+      achievements: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1475,6 +1485,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: true,
       referralSystem: true,
+      achievements: true,
       roles: true,
       dateStartProject: false,
       headerInfo: true,
@@ -1615,6 +1626,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: true,
       referralSystem: true,
+      achievements: true,
       roles: true,
       dateStartProject: false,
       headerInfo: true,
@@ -1755,6 +1767,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: true,
       fabMenu: true,
       referralSystem: true,
+      achievements: true,
       roles: true,
       dateStartProject: true,
       headerInfo: true,
@@ -2086,6 +2099,12 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.fabMenu,
   },
+  settingsAchievements: {
+    Component: SettingsAchievementsContent,
+    name: 'Настройки / Достижения',
+    accessRoles: ['supervisor', 'president', 'dev'],
+    roleAccess: (role) => role?.siteSettings?.achievements,
+  },
   settingsReferralSystem: {
     Component: SettingsReferralSystemContent,
     name: 'Настройки / Реферальная система',
@@ -2109,6 +2128,19 @@ export const CONTENTS = Object.freeze({
     name: 'Настройки / Информация для вступления в клуб',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.headerInfo,
+  },
+  myAchievements: {
+    Component: MyAchievementsContent,
+    name: 'Мои достижения',
+    accessRoles: [
+      'client',
+      'moder',
+      'admin',
+      'supervisor',
+      'president',
+      'dev',
+    ],
+    roleAccess: () => true,
   },
   userStatistics: {
     Component: UserStatisticsContent,
@@ -2162,6 +2194,15 @@ export const pages = [
     icon: faTrophy,
     // accessRoles: CONTENTS['userStatistics'].accessRoles,
     roleAccess: CONTENTS['userStatistics'].roleAccess,
+  },
+  {
+    id: 900,
+    group: 0,
+    name: 'Мои достижения',
+    href: 'myAchievements',
+    icon: faMedal,
+    hidden: menuHiddenLoggedUserAchievementsSelector,
+    roleAccess: CONTENTS['myAchievements'].roleAccess,
   },
   {
     id: 1,
@@ -2485,6 +2526,15 @@ export const pages = [
     icon: faQuestion,
     // accessRoles: CONTENTS['settingsFabMenu'].accessRoles,
     roleAccess: CONTENTS['settingsFabMenu'].roleAccess,
+  },
+  {
+    id: 85,
+    group: 11,
+    name: 'Достижения',
+    href: 'settingsAchievements',
+    icon: faMedal,
+    // accessRoles: CONTENTS['settingsAchievements'].accessRoles,
+    roleAccess: CONTENTS['settingsAchievements'].roleAccess,
   },
   {
     id: 86,
