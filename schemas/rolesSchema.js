@@ -161,6 +161,7 @@ const rolesSchema = {
       phoneConfirmService: false,
       fabMenu: false,
       referralSystem: false,
+      achievements: false,
       roles: false,
     },
   },
