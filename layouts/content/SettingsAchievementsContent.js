@@ -6,8 +6,7 @@ import Image from 'next/image'
 
 import Button from '@components/Button'
 import FormWrapper from '@components/FormWrapper'
-import Input from '@components/Input'
-import InputImage from '@components/InputImage'
+import LoadingSpinner from '@components/LoadingSpinner'
 import Textarea from '@components/Textarea'
 import achievementsAtom from '@state/atoms/achievementsAtom'
 import achievementsUsersAtom from '@state/atoms/achievementsUsersAtom'
@@ -18,15 +17,99 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 import usersAtomAsync from '@state/async/usersAtomAsync'
 import { postData, putData, deleteData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
-import compareObjects from '@helpers/compareObjects'
 import getUserFullName from '@helpers/getUserFullName'
 import formatDateTime from '@helpers/formatDateTime'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/free-solid-svg-icons/faPen'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 
-const defaultNewAchievement = {
-  name: '',
-  description: '',
-  image: null,
+const AchievementTile = ({
+  achievement,
+  onEdit,
+  onDelete,
+  isDeleting,
+  isSaving,
+}) => {
+  const name = achievement?.name?.trim() || 'Достижение'
+  const description = achievement?.description?.trim()
+  const hasImage = Boolean(achievement?.image)
+
+  return (
+    <div className="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+      <div className="relative aspect-[4/3] w-full overflow-hidden group">
+        {hasImage ? (
+          <Image
+            src={achievement.image}
+            alt={name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 300px"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gray-100 text-xs font-semibold uppercase tracking-wide text-gray-400">
+            Нет изображения
+          </div>
+        )}
+        <div className="absolute inset-0 flex flex-col justify-between bg-gradient-to-t from-black/60 via-black/25 to-transparent p-3 text-white">
+          <div className="text-sm font-semibold leading-tight line-clamp-2">
+            {name}
+          </div>
+          <div className="flex flex-wrap gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 rounded bg-white/85 px-3 py-1 text-xs font-semibold text-gray-900 shadow-sm transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+              onClick={onEdit}
+              disabled={isSaving || isDeleting}
+            >
+              <FontAwesomeIcon icon={faPen} className="h-3.5 w-3.5" />
+              Редактировать
+            </button>
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 rounded bg-red-600/85 px-3 py-1 text-xs font-semibold text-white shadow-sm transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-70"
+              onClick={onDelete}
+              disabled={isDeleting}
+            >
+              <FontAwesomeIcon icon={faTrash} className="h-3.5 w-3.5" />
+              Удалить
+            </button>
+          </div>
+        </div>
+        {(isSaving || isDeleting) && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70">
+            <LoadingSpinner size="xs" />
+          </div>
+        )}
+      </div>
+      {description && (
+        <div className="px-3 pb-3 text-sm text-gray-600 whitespace-pre-line">
+          {description}
+        </div>
+      )}
+    </div>
+  )
 }
+
+const AddAchievementTile = ({ onClick, disabled, loading }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    disabled={disabled || loading}
+    className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-gray-300 bg-white text-gray-500 shadow-sm transition hover:border-general hover:text-general disabled:cursor-not-allowed disabled:opacity-60"
+  >
+    {loading ? (
+      <LoadingSpinner size="xs" />
+    ) : (
+      <>
+        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-current">
+          <FontAwesomeIcon icon={faPlus} className="h-5 w-5" />
+        </span>
+        <span className="text-sm font-semibold">Новое достижение</span>
+      </>
+    )}
+  </button>
+)
 
 const SettingsAchievementsContent = () => {
   const snackbar = useSnackbar()
@@ -37,10 +120,7 @@ const SettingsAchievementsContent = () => {
   const users = useAtomValue(usersAtomAsync)
 
   const [achievements, setAchievements] = useAtom(achievementsAtom)
-  const [editedAchievements, setEditedAchievements] = useState([])
   const [achievementsUsers, setAchievementsUsers] = useAtom(achievementsUsersAtom)
-
-  const [newAchievement, setNewAchievement] = useState(defaultNewAchievement)
 
   const [selectedUsers, setSelectedUsers] = useState([])
   const [selectedAchievementId, setSelectedAchievementId] = useState('')
@@ -53,91 +133,92 @@ const SettingsAchievementsContent = () => {
   const [removingUserAchievementIds, setRemovingUserAchievementIds] = useState([])
 
   useEffect(() => {
-    setEditedAchievements(
-      achievements.map((achievement) => ({ ...achievement }))
-    )
-  }, [achievements])
-
-  const updateEditedAchievement = (id, field, value) => {
-    setEditedAchievements((state) =>
-      state.map((item) =>
-        item._id === id
-          ? {
-              ...item,
-              [field]: value,
-            }
-          : item
+    if (
+      selectedAchievementId &&
+      !achievements.some(
+        ({ _id }) => String(_id) === String(selectedAchievementId)
       )
-    )
-  }
-
-  const handleCreateAchievement = async () => {
-    if (!newAchievement.name.trim()) {
-      snackbar.error('Укажите название достижения')
-      return
+    ) {
+      setSelectedAchievementId('')
     }
+  }, [achievements, selectedAchievementId])
 
-    setCreating(true)
-    const payload = {
-      name: newAchievement.name.trim(),
-      description: newAchievement.description?.trim() ?? '',
-      image: newAchievement.image ?? '',
-    }
+  const openCreateAchievementModal = () => {
+    modalsFunc.achievement.create(async (values) => {
+      if (isCreating) return
 
-    try {
-      const created = await postData(
-        `/api/${location}/achievements`,
-        payload,
-        null,
-        null,
-        false,
-        loggedUser?._id
-      )
-
-      if (created) {
-        setAchievements((state) => [...state, created])
-        setNewAchievement(defaultNewAchievement)
-        snackbar.success('Достижение создано')
+      setCreating(true)
+      const payload = {
+        name: values.name?.trim() ?? '',
+        description: values.description?.trim() ?? '',
+        image: values.image ?? '',
       }
-    } catch (error) {
-      snackbar.error('Не удалось создать достижение')
-    } finally {
-      setCreating(false)
-    }
-  }
 
-  const handleSaveAchievement = async (achievement) => {
-    const original = achievements.find(({ _id }) => _id === achievement._id)
-    if (!original || compareObjects(original, achievement)) return
-
-    setSavingIds((state) => [...state, achievement._id])
-    const payload = {
-      name: achievement.name?.trim() ?? '',
-      description: achievement.description?.trim() ?? '',
-      image: achievement.image ?? '',
-    }
-
-    try {
-      const updated = await putData(
-        `/api/${location}/achievements/${achievement._id}`,
-        payload,
-        null,
-        null,
-        false,
-        loggedUser?._id
-      )
-
-      if (updated) {
-        setAchievements((state) =>
-          state.map((item) => (item._id === updated._id ? updated : item))
+      try {
+        const created = await postData(
+          `/api/${location}/achievements`,
+          payload,
+          null,
+          null,
+          false,
+          loggedUser?._id
         )
-        snackbar.success('Достижение обновлено')
+
+        if (created) {
+          setAchievements((state) => [...state, created])
+          snackbar.success('Достижение создано')
+        }
+      } catch (error) {
+        snackbar.error('Не удалось создать достижение')
+      } finally {
+        setCreating(false)
       }
-    } catch (error) {
-      snackbar.error('Не удалось сохранить достижение')
-    } finally {
-      setSavingIds((state) => state.filter((id) => id !== achievement._id))
-    }
+    })
+  }
+
+  const openEditAchievementModal = (achievement) => {
+    if (!achievement?._id) return
+
+    modalsFunc.achievement.edit(achievement, async (values) => {
+      const payload = {
+        name: values.name?.trim() ?? '',
+        description: values.description?.trim() ?? '',
+        image: values.image ?? '',
+      }
+
+      const hasChanges =
+        payload.name !== (achievement.name ?? '') ||
+        payload.description !== (achievement.description ?? '') ||
+        payload.image !== (achievement.image ?? '')
+
+      if (!hasChanges) return
+
+      setSavingIds((state) => [...state, achievement._id])
+
+      try {
+        const updated = await putData(
+          `/api/${location}/achievements/${achievement._id}`,
+          payload,
+          null,
+          null,
+          false,
+          loggedUser?._id
+        )
+
+        if (updated) {
+          setAchievements((state) =>
+            state.map((item) => (item._id === updated._id ? updated : item))
+          )
+          snackbar.success('Достижение обновлено')
+        }
+      } catch (error) {
+        snackbar.error('Не удалось сохранить достижение')
+      } finally {
+        setSavingIds((state) =>
+          state.filter((id) => id !== achievement._id)
+        )
+      }
+    })
   }
 
   const handleDeleteAchievement = (achievementId) => {
@@ -160,8 +241,11 @@ const SettingsAchievementsContent = () => {
             setAchievements((state) =>
               state.filter((achievement) => achievement._id !== achievementId)
             )
-            setEditedAchievements((state) =>
-              state.filter((achievement) => achievement._id !== achievementId)
+            setAchievementsUsers((state) =>
+              state.filter(
+                (assignment) =>
+                  String(assignment.achievementId) !== String(achievementId)
+              )
             )
             snackbar.success('Достижение удалено')
           }
@@ -324,124 +408,55 @@ const SettingsAchievementsContent = () => {
     }
   }
 
-  const isCreateDisabled = !newAchievement.name.trim() || isCreating
   const isIssueDisabled =
     !selectedAchievementId || selectedUsers.length === 0 || isIssuing
 
   return (
     <div className="flex flex-col flex-1 h-screen max-h-screen gap-y-4 overflow-y-auto p-2">
       <FormWrapper className="flex flex-col gap-y-3">
-        <h2 className="text-lg font-semibold">Создание нового достижения</h2>
-        <div className="grid gap-3 tablet:grid-cols-2">
-          <Input
-            label="Название"
-            value={newAchievement.name}
-            onChange={(value) =>
-              setNewAchievement((state) => ({ ...state, name: value }))
-            }
-          />
-          <InputImage
-            label="Изображение"
-            directory="achievements"
-            image={newAchievement.image}
-            onChange={(value) =>
-              setNewAchievement((state) => ({ ...state, image: value }))
-            }
-          />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold">Достижения</h2>
+          {achievements.length > 0 && (
+            <Button
+              name="Создать достижение"
+              icon={faPlus}
+              onClick={openCreateAchievementModal}
+              disabled={isCreating}
+              loading={isCreating}
+            />
+          )}
         </div>
-        <Textarea
-          label="Описание"
-          value={newAchievement.description}
-          onChange={(value) =>
-            setNewAchievement((state) => ({ ...state, description: value }))
-          }
-          rows={3}
-        />
-        <div className="flex gap-2">
-          <Button
-            name="Создать"
-            onClick={handleCreateAchievement}
-            disabled={isCreateDisabled}
-            loading={isCreating}
-          />
-        </div>
-      </FormWrapper>
-
-      {editedAchievements.length > 0 && (
-        <FormWrapper className="flex flex-col gap-y-3">
-          <h2 className="text-lg font-semibold">Существующие достижения</h2>
-          <div className="grid gap-3 laptop:grid-cols-2">
-            {editedAchievements.map((achievement) => {
-              const original = achievements.find(
-                ({ _id }) => _id === achievement._id
-              )
-              const isChanged =
-                original && !compareObjects(original, achievement)
-
-              return (
-                <div
-                  key={achievement._id}
-                  className="flex flex-col gap-y-2 rounded-lg border border-gray-200 bg-white p-3 shadow-sm"
-                >
-                  <Input
-                    label="Название"
-                    value={achievement.name}
-                    onChange={(value) =>
-                      updateEditedAchievement(achievement._id, 'name', value)
-                    }
-                  />
-                  <Textarea
-                    label="Описание"
-                    value={achievement.description ?? ''}
-                    onChange={(value) =>
-                      updateEditedAchievement(
-                        achievement._id,
-                        'description',
-                        value
-                      )
-                    }
-                    rows={3}
-                  />
-                  <div>
-                    <div className="text-xs font-medium text-gray-600">
-                      Изображение
-                    </div>
-                    <div className="mt-1">
-                      <InputImage
-                        directory="achievements"
-                        image={achievement.image}
-                        onChange={(value) =>
-                          updateEditedAchievement(
-                            achievement._id,
-                            'image',
-                            value
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    <Button
-                      name="Сохранить"
-                      onClick={() => handleSaveAchievement(achievement)}
-                      disabled={!isChanged || savingIds.includes(achievement._id)}
-                      loading={savingIds.includes(achievement._id)}
-                    />
-                    <Button
-                      name="Удалить"
-                      classBgColor="bg-red-600"
-                      classHoverBgColor="hover:bg-red-700"
-                      onClick={() => handleDeleteAchievement(achievement._id)}
-                      disabled={deletingIds.includes(achievement._id)}
-                      loading={deletingIds.includes(achievement._id)}
-                    />
-                  </div>
-                </div>
-              )
-            })}
+        {achievements.length > 0 ? (
+          <div className="grid gap-3 phoneH:grid-cols-2 laptop:grid-cols-3 2xl:grid-cols-4">
+            {achievements.map((achievement) => (
+              <AchievementTile
+                key={achievement._id}
+                achievement={achievement}
+                onEdit={() => openEditAchievementModal(achievement)}
+                onDelete={() => handleDeleteAchievement(achievement._id)}
+                isDeleting={deletingIds.includes(achievement._id)}
+                isSaving={savingIds.includes(achievement._id)}
+              />
+            ))}
+            <AddAchievementTile
+              onClick={openCreateAchievementModal}
+              disabled={isCreating}
+              loading={isCreating}
+            />
           </div>
-        </FormWrapper>
-      )}
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-gray-300 px-6 py-12 text-center text-gray-500">
+            <div>Пока нет созданных достижений.</div>
+            <Button
+              name="Создать достижение"
+              icon={faPlus}
+              onClick={openCreateAchievementModal}
+              disabled={isCreating}
+              loading={isCreating}
+            />
+          </div>
+        )}
+      </FormWrapper>
 
       <FormWrapper className="flex flex-col gap-y-3">
         <h2 className="text-lg font-semibold">Выдача достижений пользователям</h2>

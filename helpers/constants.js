@@ -164,9 +164,6 @@ const ToolsEventAnonsVkContent = dynamic(
 const IndividualWeddingsContent = dynamic(
   () => import('@layouts/content/IndividualWeddingsContent')
 )
-const MyAchievementsContent = dynamic(
-  () => import('@layouts/content/MyAchievementsContent')
-)
 const SettingsAchievementsContent = dynamic(
   () => import('@layouts/content/SettingsAchievementsContent')
 )
@@ -193,8 +190,6 @@ import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
-import menuHiddenLoggedUserAchievementsSelector from '@state/selectors/menuHiddenLoggedUserAchievementsSelector'
-
 // const colors = [
 //   'border-blue-400',
 //   'border-red-400',
