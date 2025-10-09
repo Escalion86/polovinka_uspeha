@@ -164,6 +164,9 @@ const ToolsEventAnonsVkContent = dynamic(
 const IndividualWeddingsContent = dynamic(
   () => import('@layouts/content/IndividualWeddingsContent')
 )
+const SettingsAchievementsContent = dynamic(
+  () => import('@layouts/content/SettingsAchievementsContent')
+)
 
 import ZodiacCapricorn from '@svg/zodiac/ZodiacCapricorn'
 import ZodiacTaurus from '@svg/zodiac/ZodiacTaurus'
@@ -187,7 +190,6 @@ import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
-
 // const colors = [
 //   'border-blue-400',
 //   'border-red-400',
@@ -1055,6 +1057,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: false,
       referralSystem: false,
+      achievements: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1195,6 +1198,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: false,
       referralSystem: false,
+      achievements: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1335,6 +1339,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: false,
       referralSystem: false,
+      achievements: false,
       roles: false,
       dateStartProject: false,
       headerInfo: false,
@@ -1475,6 +1480,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: true,
       referralSystem: true,
+      achievements: true,
       roles: true,
       dateStartProject: false,
       headerInfo: true,
@@ -1615,6 +1621,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: false,
       fabMenu: true,
       referralSystem: true,
+      achievements: true,
       roles: true,
       dateStartProject: false,
       headerInfo: true,
@@ -1755,6 +1762,7 @@ export const DEFAULT_ROLES = [
       phoneConfirmService: true,
       fabMenu: true,
       referralSystem: true,
+      achievements: true,
       roles: true,
       dateStartProject: true,
       headerInfo: true,
@@ -2085,6 +2093,12 @@ export const CONTENTS = Object.freeze({
     name: 'Настройки / Меню "Вопрос"',
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.fabMenu,
+  },
+  settingsAchievements: {
+    Component: SettingsAchievementsContent,
+    name: 'Настройки / Достижения',
+    accessRoles: ['supervisor', 'president', 'dev'],
+    roleAccess: (role) => role?.siteSettings?.achievements,
   },
   settingsReferralSystem: {
     Component: SettingsReferralSystemContent,
@@ -2485,6 +2499,15 @@ export const pages = [
     icon: faQuestion,
     // accessRoles: CONTENTS['settingsFabMenu'].accessRoles,
     roleAccess: CONTENTS['settingsFabMenu'].roleAccess,
+  },
+  {
+    id: 85,
+    group: 11,
+    name: 'Достижения',
+    href: 'settingsAchievements',
+    icon: faMedal,
+    // accessRoles: CONTENTS['settingsAchievements'].accessRoles,
+    roleAccess: CONTENTS['settingsAchievements'].roleAccess,
   },
   {
     id: 86,

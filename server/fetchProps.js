@@ -44,6 +44,8 @@ const fetchProps = async (user, location, params) => {
         questionnaires: [],
         questionnairesUsers: [],
         services: [],
+        achievements: [],
+        achievementsUsers: [],
         // servicesUsers: [],
         serverSettings: {
           dateTime: serverDateTime.toISOString(),
@@ -104,6 +106,8 @@ const fetchProps = async (user, location, params) => {
       questionnaires,
       questionnairesUsers,
       services,
+      achievements,
+      achievementsUsers
     ] = await Promise.all([
       params?.events === false
         ? Promise.resolve([])
@@ -163,6 +167,12 @@ const fetchProps = async (user, location, params) => {
       params?.services === false
         ? Promise.resolve([])
         : db.model('Services').find({}).lean(),
+      params?.achievements === false
+        ? Promise.resolve([])
+        : db.model('Achievements').find({}).lean(),
+      params?.achievementsUsers === false
+        ? Promise.resolve([])
+        : db.model('AchievementsUsers').find({}).lean(),
     ])
     // const eventsUsers = await db.model('EventsUsers').find({}).lean()
     // const payments = await db.model('Payments').find({})
@@ -176,7 +186,6 @@ const fetchProps = async (user, location, params) => {
     //     })
     //   : []
     // const servicesUsers = await db.model('ServicesUsers').find({}).lean()
-
     // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
     // const seeFullNames = userRole?.users?.seeFullNames
 
@@ -265,6 +274,8 @@ const fetchProps = async (user, location, params) => {
       siteSettings: serializeLeanDoc(siteSettings?.length > 0 ? siteSettings[0] : {}),
       rolesSettings: serializeLeanDoc(rolesSettings),
       // histories: JSON.parse(JSON.stringify(histories)),
+      achievements: serializeLeanDoc(achievements),
+      achievementsUsers: serializeLeanDoc(achievementsUsers),
       questionnaires: serializeLeanDoc(questionnaires),
       questionnairesUsers: serializeLeanDoc(questionnairesUsers),
       services: serializeLeanDoc(services),
@@ -293,6 +304,8 @@ const fetchProps = async (user, location, params) => {
       questionnaires: [],
       questionnairesUsers: [],
       services: [],
+      achievements: [],
+      achievementsUsers: [],
       // servicesUsers: [],
       serverSettings: {
         dateTime: serverDateTime.toISOString(),
