@@ -1,4 +1,5 @@
 import CardButtons from '@components/CardButtons'
+import CheckBox from '@components/CheckBox'
 import DateTimePicker from '@components/DateTimePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
@@ -7,6 +8,7 @@ import PriceInput from '@components/PriceInput'
 import { SelectEvent, SelectService, SelectUser } from '@components/SelectItem'
 import PayDirectionPicker from '@components/ValuePicker/PayDirectionPicker'
 import PayTypePicker from '@components/ValuePicker/PayTypePicker'
+import ReferralRewardForPicker from '@components/ValuePicker/ReferralRewardForPicker'
 import SectorPicker from '@components/ValuePicker/SectorPicker'
 import { P } from '@components/tags'
 import { DEFAULT_PAYMENT } from '@helpers/constants'
@@ -120,6 +122,27 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
         : (payment?.comment ?? DEFAULT_PAYMENT.comment)
     )
 
+    const defaultReferralReward = useMemo(() => {
+      const rewardSource =
+        props?.referralReward !== undefined
+          ? props.referralReward
+          : payment?.referralReward ?? DEFAULT_PAYMENT.referralReward
+
+      return {
+        eventId: rewardSource?.eventId ?? null,
+        referralUserId: rewardSource?.referralUserId ?? null,
+        referrerId: rewardSource?.referrerId ?? null,
+        rewardFor: rewardSource?.rewardFor ?? null,
+      }
+    }, [])
+
+    const [isReferralCoupon, setIsReferralCoupon] = useState(
+      props?.isReferralCoupon !== undefined
+        ? props.isReferralCoupon
+        : payment?.isReferralCoupon ?? DEFAULT_PAYMENT.isReferralCoupon
+    )
+    const [referralReward, setReferralReward] = useState(defaultReferralReward)
+
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
 
@@ -158,6 +181,15 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
             payType,
             payAt,
             comment,
+            isReferralCoupon,
+            referralReward: isReferralCoupon
+              ? {
+                  eventId: referralReward?.eventId ?? null,
+                  referralUserId: referralReward?.referralUserId ?? null,
+                  referrerId: referralReward?.referrerId ?? null,
+                  rewardFor: referralReward?.rewardFor ?? null,
+                }
+              : null,
           },
           clone
         )
@@ -229,7 +261,16 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
           : (payment?.payType ?? DEFAULT_PAYMENT.payType)) !== payType ||
         (props?.comment !== undefined
           ? props.comment
-          : (payment?.comment ?? DEFAULT_PAYMENT.comment)) !== comment
+          : (payment?.comment ?? DEFAULT_PAYMENT.comment)) !== comment ||
+        ((props?.isReferralCoupon !== undefined
+          ? props.isReferralCoupon
+          : payment?.isReferralCoupon ?? DEFAULT_PAYMENT.isReferralCoupon) !==
+          isReferralCoupon ||
+          ['eventId', 'referralUserId', 'referrerId', 'rewardFor'].some(
+            (key) =>
+              (defaultReferralReward?.[key] ?? null) !==
+              (referralReward?.[key] ?? null)
+          ))
 
       setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -247,8 +288,17 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
       payAt,
       payType,
       comment,
+      isReferralCoupon,
+      referralReward,
+      defaultReferralReward,
       props,
     ])
+
+    useEffect(() => {
+      if (payType !== 'coupon' && isReferralCoupon) {
+        setIsReferralCoupon(false)
+      }
+    }, [payType, isReferralCoupon])
 
     useEffect(() => {
       if (setTopLeftComponent) {
@@ -382,6 +432,84 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
           error={errors.payType}
           readOnly={isEventClosed}
         />
+        {payType === 'coupon' && (
+          <>
+            <CheckBox
+              checked={isReferralCoupon}
+              onClick={
+                isEventClosed
+                  ? undefined
+                  : () => setIsReferralCoupon((state) => !state)
+              }
+              label="Это реферальный купон"
+              disabled={isEventClosed}
+            />
+            {isReferralCoupon && (
+              <>
+                <ReferralRewardForPicker
+                  value={referralReward?.rewardFor ?? null}
+                  onChange={
+                    isEventClosed
+                      ? undefined
+                      : (value) =>
+                          setReferralReward((prev) => ({
+                            ...prev,
+                            rewardFor: value ?? null,
+                          }))
+                  }
+                  readOnly={isEventClosed}
+                />
+                <div className="flex flex-wrap gap-2">
+                  <SelectUser
+                    label="Реферал"
+                    selectedId={referralReward?.referralUserId ?? null}
+                    onChange={
+                      isEventClosed
+                        ? null
+                        : (userId) =>
+                            setReferralReward((prev) => ({
+                              ...prev,
+                              referralUserId: userId ?? null,
+                            }))
+                    }
+                    clearButton={!isEventClosed}
+                    readOnly={isEventClosed}
+                  />
+                  <SelectUser
+                    label="Реферер"
+                    selectedId={referralReward?.referrerId ?? null}
+                    onChange={
+                      isEventClosed
+                        ? null
+                        : (userId) =>
+                            setReferralReward((prev) => ({
+                              ...prev,
+                              referrerId: userId ?? null,
+                            }))
+                    }
+                    clearButton={!isEventClosed}
+                    readOnly={isEventClosed}
+                  />
+                </div>
+                <SelectEvent
+                  label="Мероприятие, за которое начислен купон"
+                  selectedId={referralReward?.eventId ?? null}
+                  onChange={
+                    isEventClosed
+                      ? null
+                      : (selectedEventId) =>
+                          setReferralReward((prev) => ({
+                            ...prev,
+                            eventId: selectedEventId ?? null,
+                          }))
+                  }
+                  clearButton={!isEventClosed}
+                  readOnly={isEventClosed}
+                />
+              </>
+            )}
+          </>
+        )}
         <Input
           label="Комментарий"
           type="text"
