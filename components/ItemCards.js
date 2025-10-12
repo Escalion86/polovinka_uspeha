@@ -2,8 +2,11 @@ import { useAtomValue } from 'jotai'
 
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
+import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
+import { faUserTie } from '@fortawesome/free-solid-svg-icons/faUserTie'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { EVENT_STATUSES_WITH_TIME, GENDERS, SECTORS } from '@helpers/constants'
@@ -389,6 +392,20 @@ export const PaymentItem = ({
 }) => {
   const paymentSector = paymentSectorFunc(item)
   const sectorProps = SECTORS.find((sector) => sector.value === paymentSector)
+  const referralReward = item?.referralReward ?? null
+  const referralRewardFor = referralReward?.rewardFor ?? null
+
+  const referralCouponIcon = referralRewardFor === 'referrer'
+    ? faUserTie
+    : referralRewardFor === 'referral'
+      ? faUserPlus
+      : faGift
+
+  const referralCouponTooltip = referralRewardFor === 'referrer'
+    ? 'Реферальный купон для пригласившего'
+    : referralRewardFor === 'referral'
+      ? 'Реферальный купон для приглашённого'
+      : 'Реферальный купон'
 
   return (
     <ItemContainer
@@ -435,6 +452,13 @@ export const PaymentItem = ({
           )}
         </div>
         <div className="flex justify-end flex-1 gap-x-3">
+          {item.isReferralCoupon && (
+            <IconWithTooltip
+              icon={referralCouponIcon}
+              className="text-general"
+              tooltip={referralCouponTooltip}
+            />
+          )}
           {item.sector === 'event' && !item.eventId && (
             <IconWithTooltip
               icon={faUnlink}

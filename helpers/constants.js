@@ -2698,6 +2698,21 @@ export const PAY_TYPES_OBJECT = PAY_TYPES.reduce(
   {}
 )
 
+export const REFERRAL_REWARD_FOR_VALUES = [
+  {
+    value: 'referral',
+    name: 'Реферал',
+    color: 'green-400',
+    icon: faUserPlus,
+  },
+  {
+    value: 'referrer',
+    name: 'Реферер',
+    color: 'blue-400',
+    icon: faUserTie,
+  },
+]
+
 export const PAY_DIRECTIONS = [
   {
     value: 'toUser',
