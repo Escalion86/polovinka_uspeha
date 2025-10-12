@@ -370,7 +370,13 @@ export default async function handler(req, res) {
             data: newUser,
             userId: newUser._id,
           })
-          await userRegisterTelegramNotification({ phone, location })
+          await userRegisterTelegramNotification({
+            phone,
+            location,
+            referrerId: resolvedReferrerId
+              ? resolvedReferrerId.toString()
+              : undefined,
+          })
 
           return res?.status(201).json({
             success: true,
