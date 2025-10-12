@@ -184,7 +184,10 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
             isReferralCoupon,
             referralReward: isReferralCoupon
               ? {
-                  eventId: referralReward?.eventId ?? null,
+                  eventId:
+                    referralReward?.rewardFor === 'referral'
+                      ? null
+                      : referralReward?.eventId ?? null,
                   referralUserId: referralReward?.referralUserId ?? null,
                   referrerId: referralReward?.referrerId ?? null,
                   rewardFor: referralReward?.rewardFor ?? null,
@@ -452,18 +455,10 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
                     isEventClosed
                       ? undefined
                       : (value) =>
-                          setReferralReward((prev) => {
-                            const rewardFor = value ?? null
-
-                            return {
-                              ...prev,
-                              rewardFor,
-                              eventId:
-                                rewardFor === 'referral'
-                                  ? null
-                                  : prev?.eventId ?? null,
-                            }
-                          })
+                          setReferralReward((prev) => ({
+                            ...prev,
+                            rewardFor: value ?? null,
+                          }))
                   }
                   readOnly={isEventClosed}
                 />
