@@ -186,6 +186,7 @@ import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTod
 import { uid } from 'uid'
 import ImagesServerContent from '@layouts/content/ImagesServerContent'
 import LikesContent from '@layouts/content/LikesContent'
+import ReferralsAdminContent from '@layouts/content/ReferralsAdminContent'
 import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
@@ -2147,6 +2148,12 @@ export const CONTENTS = Object.freeze({
     siteConfirm: (siteSettings) =>
       isReferralProgramEnabled(siteSettings?.referralProgram),
   },
+  referralsAdmin: {
+    Component: ReferralsAdminContent,
+    name: 'Реферальная программа / Администрирование',
+    accessRoles: ['admin', 'president', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.payments?.see,
+  },
   imagesServer: {
     Component: ImagesServerContent,
     name: 'Сервер картинок',
@@ -2185,6 +2192,14 @@ export const pages = [
     icon: faHandshake,
     roleAccess: CONTENTS['referrals'].roleAccess,
     siteConfirm: CONTENTS['referrals'].siteConfirm,
+  },
+  {
+    id: 87,
+    group: 12,
+    name: 'Рефералы / Администрирование',
+    href: 'referralsAdmin',
+    icon: faUserTie,
+    roleAccess: CONTENTS['referralsAdmin'].roleAccess,
   },
   {
     id: 2,
