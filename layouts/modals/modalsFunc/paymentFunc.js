@@ -452,10 +452,18 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
                     isEventClosed
                       ? undefined
                       : (value) =>
-                          setReferralReward((prev) => ({
-                            ...prev,
-                            rewardFor: value ?? null,
-                          }))
+                          setReferralReward((prev) => {
+                            const rewardFor = value ?? null
+
+                            return {
+                              ...prev,
+                              rewardFor,
+                              eventId:
+                                rewardFor === 'referral'
+                                  ? null
+                                  : prev?.eventId ?? null,
+                            }
+                          })
                   }
                   readOnly={isEventClosed}
                 />
@@ -491,21 +499,23 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
                     readOnly={isEventClosed}
                   />
                 </div>
-                <SelectEvent
-                  label="Мероприятие, за которое начислен купон"
-                  selectedId={referralReward?.eventId ?? null}
-                  onChange={
-                    isEventClosed
-                      ? null
-                      : (selectedEventId) =>
-                          setReferralReward((prev) => ({
-                            ...prev,
-                            eventId: selectedEventId ?? null,
-                          }))
-                  }
-                  clearButton={!isEventClosed}
-                  readOnly={isEventClosed}
-                />
+                {referralReward?.rewardFor !== 'referral' && (
+                  <SelectEvent
+                    label="Мероприятие, за которое начислен купон"
+                    selectedId={referralReward?.eventId ?? null}
+                    onChange={
+                      isEventClosed
+                        ? null
+                        : (selectedEventId) =>
+                            setReferralReward((prev) => ({
+                              ...prev,
+                              eventId: selectedEventId ?? null,
+                            }))
+                    }
+                    clearButton={!isEventClosed}
+                    readOnly={isEventClosed}
+                  />
+                )}
               </>
             )}
           </>
