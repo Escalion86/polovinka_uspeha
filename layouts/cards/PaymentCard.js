@@ -10,10 +10,13 @@ import EventPayDirectionIconText from '@components/ValueIconText/EventPayDirecti
 import InternalPayDirectionIconText from '@components/ValueIconText/InternalPayDirectionIconText'
 import ProductPayDirectionIconText from '@components/ValueIconText/ProductPayDirectionIconText'
 import ServicePayDirectionIconText from '@components/ValueIconText/ServicePayDirectionIconText'
+import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
 import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
 import { faUserTimes } from '@fortawesome/free-solid-svg-icons/faUserTimes'
+import { faUserTie } from '@fortawesome/free-solid-svg-icons/faUserTie'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   PRODUCT_USER_STATUSES,
@@ -138,11 +141,35 @@ const PayText = ({ payment, sector }) => {
 }
 
 const PayCardWrapper = ({ sector, payment, children, cardButtonsProps }) => {
+  const referralReward = payment?.referralReward ?? null
+  const referralRewardFor = referralReward?.rewardFor ?? null
+
+  const referralCouponIcon =
+    referralRewardFor === 'referrer'
+      ? faUserTie
+      : referralRewardFor === 'referral'
+        ? faUserPlus
+        : faGift
+
+  const referralCouponTooltip =
+    referralRewardFor === 'referrer'
+      ? 'Реферальный купон для пригласившего'
+      : referralRewardFor === 'referral'
+        ? 'Реферальный купон для приглашённого'
+        : 'Реферальный купон'
+
   return (
     <div className="flex flex-1">
       <PayText payment={payment} sector={sector} />
       <div className="flex items-center justify-between">
         <div className="flex gap-x-3">
+          {payment?.isReferralCoupon && (
+            <IconWithTooltip
+              icon={referralCouponIcon}
+              className="text-general"
+              tooltip={referralCouponTooltip}
+            />
+          )}
           {children}
           {(payment?.location === null || payment?.location) && (
             <div className="flex items-center text-danger gap-x-1">
