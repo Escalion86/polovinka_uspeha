@@ -128,8 +128,7 @@ const usersSchema = {
     default: 'novice',
   },
   referrerId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Users',
+    type: String,
     default: null,
   },
   lastActivityAt: {
