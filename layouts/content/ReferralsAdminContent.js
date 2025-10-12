@@ -168,30 +168,62 @@ const ReferralsAdminContent = () => {
     return map
   }, [eventsUsers])
 
-  const conditionStatusByUser = useMemo(() => {
-    const map = new Map()
-    if (participantsByUser.size === 0) return map
+const conditionStatusByUser = useMemo(() => {
+  const map = new Map()
+  if (participantsByUser.size === 0) return map
 
-    participantsByUser.forEach((userEvents, userId) => {
-      const hasQualifyingEvent = userEvents.some((eventUser) => {
-        const event = eventsById.get(String(eventUser.eventId))
-        if (!event || event.status !== 'closed') return false
+  const pickLatestEventDetail = (existing, candidate) => {
+    if (!candidate) return existing ?? null
+    if (!existing) return candidate
 
-        if (requirePaidEvent) {
-          const isPaidEvent =
-            Array.isArray(event.subEvents) &&
-            event.subEvents.some((subEvent) => Number(subEvent?.price ?? 0) > 0)
-          if (!isPaidEvent) return false
-        }
+    const existingTime =
+      typeof existing.timestamp === 'number' ? existing.timestamp : 0
+    const candidateTime =
+      typeof candidate.timestamp === 'number' ? candidate.timestamp : 0
 
-        return true
-      })
+    return candidateTime >= existingTime ? candidate : existing
+  }
 
-      map.set(userId, hasQualifyingEvent)
+  participantsByUser.forEach((userEvents, userId) => {
+    let qualifyingEventDetail = null
+
+    userEvents.forEach((eventUser) => {
+      const event = eventsById.get(String(eventUser.eventId))
+      if (!event || event.status !== 'closed') return
+
+      if (requirePaidEvent) {
+        const isPaidEvent =
+          Array.isArray(event.subEvents) &&
+          event.subEvents.some((subEvent) => Number(subEvent?.price ?? 0) > 0)
+        if (!isPaidEvent) return
+      }
+
+      const rawDate =
+        event?.dateStart ?? event?.date ?? eventUser?.createdAt ?? null
+      const timestamp = rawDate ? new Date(rawDate).getTime() : 0
+
+      const detail = {
+        eventId: event?._id ? String(event._id) : String(eventUser.eventId),
+        eventTitle: event?.title ?? null,
+        eventDate: rawDate,
+        timestamp,
+      }
+
+      qualifyingEventDetail = pickLatestEventDetail(
+        qualifyingEventDetail,
+        detail
+      )
     })
 
-    return map
-  }, [participantsByUser, eventsById, requirePaidEvent])
+    if (qualifyingEventDetail) {
+      map.set(userId, { met: true, event: qualifyingEventDetail })
+    } else {
+      map.set(userId, { met: false, event: null })
+    }
+  })
+
+  return map
+}, [participantsByUser, eventsById, requirePaidEvent])
 
   const couponsByPair = useMemo(() => {
     const map = new Map()
@@ -280,24 +312,17 @@ const ReferralsAdminContent = () => {
     let referralsCount = 0
     let conditionMetCount = 0
 
-    referralsByReferrer.forEach((referrals, referrerId) => {
+    referralsByReferrer.forEach((referrals) => {
       referralsCount += referrals.length
 
       referrals.forEach((referral) => {
         const referralId = referral?._id ? String(referral._id) : null
         if (!referralId) return
 
-        const mapKey = `${referrerId}|${referralId}`
-        const coupons = couponsByPair.get(mapKey)
-        const conditionMetByEvent = conditionStatusByUser.get(referralId) ?? false
-        const hasCoupon = !!(
-          coupons?.referrer?.issued ||
-          coupons?.referrer?.used ||
-          coupons?.referral?.issued ||
-          coupons?.referral?.used
-        )
+        const conditionStatus = conditionStatusByUser.get(referralId)
+        const conditionMetByEvent = conditionStatus?.met === true
 
-        if (conditionMetByEvent || hasCoupon) {
+        if (conditionMetByEvent) {
           conditionMetCount += 1
         }
       })
@@ -308,7 +333,7 @@ const ReferralsAdminContent = () => {
       conditionMetCount,
       referrerCount: referralsByReferrer.size,
     }
-  }, [referralsByReferrer, couponsByPair, conditionStatusByUser])
+  }, [referralsByReferrer, conditionStatusByUser])
 
   const handleOpenUser = useCallback(
     (userId) => {
@@ -449,21 +474,25 @@ const ReferralsAdminContent = () => {
                       const referrerCoupon = coupons?.referrer ?? null
                       const referralCoupon = coupons?.referral ?? null
 
-                      const conditionMetByEvent =
-                        conditionStatusByUser.get(referralId) ?? false
-                      const hasCoupon = !!(
-                        referrerCoupon?.issued ||
-                        referrerCoupon?.used ||
-                        referralCoupon?.issued ||
-                        referralCoupon?.used
-                      )
-                      const conditionMet = conditionMetByEvent || hasCoupon
+                      const conditionStatus =
+                        conditionStatusByUser.get(referralId) ?? {
+                          met: false,
+                          event: null,
+                        }
+                      const conditionMet = conditionStatus.met === true
+                      const visitedEvent = conditionStatus.event
 
-                      const conditionDescription = conditionMetByEvent
-                        ? 'Посетил(а) подходящее мероприятие'
-                        : hasCoupon
-                        ? 'Купон начислен'
-                        : 'Условия пока не выполнены'
+                      const visitedEventDate = visitedEvent?.eventDate
+                        ? formatDate(visitedEvent.eventDate)
+                        : null
+
+                      const conditionDescription = conditionMet
+                        ? visitedEvent?.eventTitle
+                          ? `Посещено мероприятие "${visitedEvent.eventTitle}"${
+                              visitedEventDate ? ` ${visitedEventDate}` : ''
+                            }`
+                          : 'Посещено подходящее мероприятие'
+                        : 'Посещений подходящих мероприятий пока нет'
 
                       const referrerCouponStatus = getCouponStatus(
                         referrerCoupon,
@@ -522,8 +551,8 @@ const ReferralsAdminContent = () => {
                                 />
                                 <span>
                                   {conditionMet
-                                    ? 'Условие выполнено'
-                                    : 'Условие не выполнено'}
+                                    ? 'Условие посещения выполнено'
+                                    : 'Условие посещения не выполнено'}
                                 </span>
                               </div>
                               <div className="text-xs text-gray-600">
