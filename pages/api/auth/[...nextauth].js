@@ -182,6 +182,9 @@ export default async function auth(req, res) {
                   last_name: last_name === 'undefined' ? undefined : last_name,
                   images: [photo_url],
                   location,
+                  referrerId: resolvedReferrerId
+                    ? resolvedReferrerId.toString()
+                    : undefined,
                 })
                 return {
                   name: newUser._id,

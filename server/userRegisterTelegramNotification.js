@@ -1,9 +1,20 @@
 import { postData } from '@helpers/CRUD'
 import { DEFAULT_ROLES } from '@helpers/constants'
+import mongoose from 'mongoose'
 //
 //
 import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
+
+const buildFullName = (user) => {
+  if (!user) return null
+
+  const parts = [user?.secondName, user?.firstName, user?.thirdName]
+    .map((part) => (typeof part === 'string' ? part.trim() : ''))
+    .filter(Boolean)
+
+  return parts.length ? parts.join(' ') : null
+}
 
 const userRegisterTelegramNotification = async ({
   phone,
@@ -12,6 +23,7 @@ const userRegisterTelegramNotification = async ({
   last_name,
   images,
   location,
+  referrerId,
 }) => {
   const db = await dbConnect(location)
   if (!db) return
@@ -20,6 +32,17 @@ const userRegisterTelegramNotification = async ({
   if (!telegramToken) return
 
   const usersCount = await db.model('Users').countDocuments({})
+
+  let referrerFullName = null
+  if (referrerId && mongoose.Types.ObjectId.isValid(referrerId)) {
+    const referrer = await db
+      .model('Users')
+      .findById(referrerId)
+      .select({ firstName: 1, secondName: 1, thirdName: 1 })
+      .lean()
+
+    referrerFullName = buildFullName(referrer)
+  }
 
   const rolesSettings = await db.model('Roles').find({})
   const allRoles = [...DEFAULT_ROLES, ...rolesSettings]
@@ -47,11 +70,26 @@ const userRegisterTelegramNotification = async ({
 
   return await Promise.all(
     usersTelegramIds.map(async (chat_id) => {
+      const messageParts = [`Зарегистрирован новый пользователь №${usersCount}`]
+      if (phone) {
+        messageParts.push(`с телефонным номером +${phone}`)
+      }
+      if (telegramId) {
+        const namePart = first_name
+          ? ` с именем ${first_name}${last_name ? ` ${last_name}` : ''}`
+          : ''
+        messageParts.push(`через Телеграм${namePart}`)
+      }
+
+      const referrerPart = referrerFullName
+        ? `\nРеферер: ${referrerFullName}`
+        : ''
+
       await postData(
         `https://api.telegram.org/bot${telegramToken}/sendMessage`,
         {
           chat_id,
-          text: `Зарегистрирован новый пользователь №${usersCount} ${phone ? `с телефонным номером +${phone}` : ''}${telegramId ? `через Телеграм${first_name ? ` с именем ${first_name}${last_name ? ` ${last_name}` : ''}` : ''}` : ''}`,
+          text: `${messageParts.join(' ')}${referrerPart}`,
           parse_mode: 'html',
         },
         (data) => console.log('data', data),
