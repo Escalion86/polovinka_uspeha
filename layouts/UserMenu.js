@@ -44,11 +44,8 @@ const MenuItem = ({ onClick, icon, title, href }) => {
     onClick?.(event)
   }
 
-  const Component = (
-    <div
-      onClick={handleClick}
-      className="flex items-center px-3 py-2 duration-300 bg-white border border-gray-300 cursor-pointer group gap-x-2 hover:bg-gray-500"
-    >
+  const content = (
+    <div className="flex items-center px-3 py-2 duration-300 bg-white border border-gray-300 cursor-pointer group gap-x-2 hover:bg-gray-500">
       <FontAwesomeIcon
         icon={icon}
         className="w-5 h-5 text-general group-hover:text-white"
@@ -61,11 +58,20 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 
   if (href)
     return (
-      <Link prefetch={false} href={href} shallow>
-        {Component}
+      <Link prefetch={false} href={href} shallow legacyBehavior>
+        <a onClick={handleClick}>{content}</a>
       </Link>
     )
-  else return Component
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className="p-0 m-0 bg-transparent border-0 text-left"
+    >
+      {content}
+    </button>
+  )
 }
 
 const UserMenu = () => {
