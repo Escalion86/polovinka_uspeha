@@ -442,7 +442,7 @@ const userSignIn = async ({
     })
 
     // Оповещение в телеграм
-    await eventUsersTelegramNotification({
+    eventUsersTelegramNotification({
       req,
       eventId,
       addedEventUsers: [newEventUserJson],
