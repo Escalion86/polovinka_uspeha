@@ -1,10 +1,10 @@
 import { postData } from '@helpers/CRUD'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import mongoose from 'mongoose'
-//
-//
 import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
+import sendPushNotification from './sendPushNotification'
+import getUsersPushSubscriptions from './getUsersPushSubscriptions'
 
 const buildFullName = (user) => {
   if (!user) return null
@@ -50,7 +50,7 @@ const userRegisterTelegramNotification = async ({
     .filter((role) => role?.notifications?.newUserRegistred)
     .map((role) => role._id)
 
-  const usersWithTelegramNotificationsOfEventUsersON = await db
+  const usersWithNotificationsOfEventUsersON = await db
     .model('Users')
     .find({
       role:
@@ -58,47 +58,81 @@ const userRegisterTelegramNotification = async ({
           ? 'dev'
           : { $in: rolesIdsToEventUsersNotification },
       'notifications.settings.newUserRegistred': true,
-      'notifications.telegram.active': true,
-      'notifications.telegram.id': {
-        $exists: true,
-        $ne: null,
-      },
+      $or: [
+        {
+          'notifications.telegram.active': true,
+          'notifications.telegram.id': {
+            $exists: true,
+            $ne: null,
+          },
+        },
+        {
+          'notifications.push.active': true,
+          'notifications.push.subscriptions.0': { $exists: true },
+        },
+      ],
     })
-  const usersTelegramIds = usersWithTelegramNotificationsOfEventUsersON.map(
-    (user) => user.notifications?.get('telegram')?.id
+    .lean()
+
+  const usersTelegramIds = usersWithNotificationsOfEventUsersON
+    .filter((user) => user.notifications?.telegram?.active)
+    .map((user) => user.notifications?.telegram?.id)
+
+  const pushSubscriptions = getUsersPushSubscriptions(
+    usersWithNotificationsOfEventUsersON
   )
 
-  return await Promise.all(
-    usersTelegramIds.map(async (chat_id) => {
-      const messageParts = [`Зарегистрирован новый пользователь №${usersCount}`]
-      if (phone) {
-        messageParts.push(`с телефонным номером +${phone}`)
-      }
-      if (telegramId) {
-        const namePart = first_name
-          ? ` с именем ${first_name}${last_name ? ` ${last_name}` : ''}`
-          : ''
-        messageParts.push(`через Телеграм${namePart}`)
-      }
+  const messageParts = [`Зарегистрирован новый пользователь №${usersCount}`]
+  if (phone) {
+    messageParts.push(`с телефонным номером +${phone}`)
+  }
+  if (telegramId) {
+    const namePart = first_name
+      ? ` с именем ${first_name}${last_name ? ` ${last_name}` : ''}`
+      : ''
+    messageParts.push(`через Телеграм${namePart}`)
+  }
 
-      const referrerPart = referrerFullName
-        ? `\nРеферер: ${referrerFullName}`
-        : ''
+  const referrerPart = referrerFullName
+    ? `\nРеферер: ${referrerFullName}`
+    : ''
 
-      await postData(
-        `https://api.telegram.org/bot${telegramToken}/sendMessage`,
-        {
-          chat_id,
-          text: `${messageParts.join(' ')}${referrerPart}`,
-          parse_mode: 'html',
+  const text = `${messageParts.join(' ')}${referrerPart}`
+
+  if (pushSubscriptions.length > 0) {
+    await sendPushNotification({
+      subscriptions: pushSubscriptions,
+      payload: {
+        title: 'Новый пользователь зарегистрирован',
+        body: text,
+        data: {
+          url: process.env.DOMAIN
+            ? `${process.env.DOMAIN}/${location}/users`
+            : `/${location}/users`,
         },
-        (data) => console.log('data', data),
-        (data) => console.log('error', data),
-        true,
-        null,
-        true
-      )
+        tag: `user-register-${usersCount}`,
+      },
     })
+  }
+
+  return await Promise.all(
+    usersTelegramIds
+      .filter(Boolean)
+      .map(async (chat_id) =>
+        postData(
+          `https://api.telegram.org/bot${telegramToken}/sendMessage`,
+          {
+            chat_id,
+            text,
+            parse_mode: 'html',
+          },
+          (data) => console.log('data', data),
+          (data) => console.log('error', data),
+          true,
+          null,
+          true
+        )
+      )
   )
 }
 
