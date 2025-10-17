@@ -36,7 +36,10 @@ const getWebPush = async () => {
     const module = await import('web-push')
     cachedWebPush = module?.default ?? module
   } catch (error) {
-    console.error('[sendPushNotification] Failed to load web-push module', error)
+    console.error(
+      '[sendPushNotification] Failed to load web-push module',
+      error
+    )
     throw error
   }
 
