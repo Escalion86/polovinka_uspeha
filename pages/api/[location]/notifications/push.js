@@ -1,5 +1,6 @@
 import checkLocationValid from '@server/checkLocationValid'
 import sendPushNotification, {
+  getVapidConfigurationStatus,
   hasVapidKeyPairConfigured,
 } from '@server/sendPushNotification'
 import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
@@ -80,16 +81,28 @@ export default async function handler(req, res) {
         { new: true }
       ).lean()
 
+      const debugEnabled = process.env.NODE_ENV !== 'production'
+      const vapidStatus = getVapidConfigurationStatus()
+      const responsePayload = { success: true, data: updatedUser }
+
       if (updatedUser?.notifications?.push?.active) {
+        const subscriptions = getUsersPushSubscriptions([updatedUser])
+
         if (!hasVapidKeyPairConfigured()) {
           console.warn(
-            '[notifications/push] Skip confirmation push: VAPID keys are not configured'
+            '[notifications/push] Skip confirmation push: VAPID keys are not configured',
+            { status: vapidStatus }
           )
+        } else if (subscriptions.length === 0) {
+          if (debugEnabled) {
+            console.debug(
+              '[notifications/push] Skip confirmation push: no subscriptions found for user',
+              { userId }
+            )
+          }
         } else {
-          const subscriptions = getUsersPushSubscriptions([updatedUser])
-
           try {
-            await sendPushNotification({
+            const result = await sendPushNotification({
               subscriptions,
               payload: {
                 title: 'Push-уведомления подключены',
@@ -100,7 +113,25 @@ export default async function handler(req, res) {
                     : `/${location}/cabinet/notifications`,
                 },
               },
+              context: 'push-confirmation',
+              debug: debugEnabled,
             })
+
+            if (debugEnabled) {
+              console.debug('[notifications/push] Confirmation push result', {
+                userId,
+                subscriptions: subscriptions.length,
+                statusCode: Array.isArray(result)
+                  ? result
+                      .map((item) =>
+                        item.status === 'fulfilled'
+                          ? item.value?.statusCode
+                          : 'rejected'
+                      )
+                      .join(',')
+                  : result?.statusCode,
+              })
+            }
           } catch (error) {
             console.error(
               '[notifications/push] Failed to send confirmation push',
@@ -110,7 +141,18 @@ export default async function handler(req, res) {
         }
       }
 
-      return res?.status(200).json({ success: true, data: updatedUser })
+      if (debugEnabled) {
+        responsePayload.meta = {
+          vapid: vapidStatus,
+          subscriptionsCount: Array.isArray(
+            updatedUser?.notifications?.push?.subscriptions
+          )
+            ? updatedUser.notifications.push.subscriptions.length
+            : 0,
+        }
+      }
+
+      return res?.status(200).json(responsePayload)
     }
 
     if (method === 'DELETE') {
