@@ -669,10 +669,15 @@ export default async function handler(Schema, req, res, props = {}) {
             try {
               const [user, achievement] = await Promise.all([
                 db.model('Users').findById(jsonData.userId).lean(),
-                db.model('Achievements').findById(jsonData.achievementId).lean(),
+                db
+                  .model('Achievements')
+                  .findById(jsonData.achievementId)
+                  .lean(),
               ])
 
-              const subscriptions = getUsersPushSubscriptions(user ? [user] : [])
+              const subscriptions = getUsersPushSubscriptions(
+                user ? [user] : []
+              )
               const vapidStatus = getVapidConfigurationStatus()
               const debugEnabled = process.env.NODE_ENV !== 'production'
 
@@ -687,12 +692,17 @@ export default async function handler(Schema, req, res, props = {}) {
                   logPrefix: '[CRUD] Achievement push',
                 })
 
-                const achievementName = achievement?.name?.trim() || 'Достижение'
-                const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
+                const achievementName =
+                  achievement?.name?.trim() || 'Достижение'
+                const bodyParts = [
+                  `Вам присвоено достижение «${achievementName}».`,
+                ]
 
-                if (achievement?.description) bodyParts.push(achievement.description)
+                if (achievement?.description)
+                  bodyParts.push(achievement.description)
                 if (jsonData.comment) bodyParts.push(jsonData.comment)
-                if (jsonData.eventName) bodyParts.push(`Мероприятие: ${jsonData.eventName}`)
+                if (jsonData.eventName)
+                  bodyParts.push(`Мероприятие: ${jsonData.eventName}`)
 
                 const achievementUrl = process.env.DOMAIN
                   ? `${process.env.DOMAIN}/${location}/cabinet/achievements`
@@ -706,7 +716,8 @@ export default async function handler(Schema, req, res, props = {}) {
                   achievementUserId: String(jsonData._id),
                 }
 
-                if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
+                if (jsonData.eventId)
+                  payloadData.eventId = String(jsonData.eventId)
 
                 try {
                   const result = await sendPushNotification({
@@ -721,6 +732,7 @@ export default async function handler(Schema, req, res, props = {}) {
                     debug: debugEnabled,
                     onSubscriptionRejected: pushCleanup.handleRejected,
                   })
+                  console.log('result :>> ', result)
 
                   if (debugEnabled) {
                     console.debug('[CRUD] Achievement push result', {
@@ -742,9 +754,12 @@ export default async function handler(Schema, req, res, props = {}) {
                   await pushCleanup.flush()
                 }
               } else if (debugEnabled) {
-                console.debug('[CRUD] Skip achievement push notification: no subscriptions', {
-                  userId: jsonData.userId,
-                })
+                console.debug(
+                  '[CRUD] Skip achievement push notification: no subscriptions',
+                  {
+                    userId: jsonData.userId,
+                  }
+                )
               }
             } catch (error) {
               console.error(
