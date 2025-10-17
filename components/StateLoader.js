@@ -307,6 +307,12 @@ const StateLoader = (props) => {
 
       if (payloadType !== 'achievement-assigned') return
 
+      console.info('[Push debug] Получено уведомление о достижении', {
+        payload,
+        payloadData,
+        loggedUserActiveId,
+      })
+
       if (
         payloadData?.userId &&
         String(payloadData.userId) !== String(loggedUserActiveId)
