@@ -186,6 +186,7 @@ import badgeBirthdaysTodayCountSelector from '@state/selectors/badgeBirthdaysTod
 import { uid } from 'uid'
 import ImagesServerContent from '@layouts/content/ImagesServerContent'
 import LikesContent from '@layouts/content/LikesContent'
+import ReferralsAdminContent from '@layouts/content/ReferralsAdminContent'
 import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
 import badgeUnviewedAchievementsSelector from '@state/selectors/badgeUnviewedAchievementsSelector'
@@ -567,6 +568,7 @@ export const DEFAULT_USERS_SECURITY = Object.freeze({
 export const DEFAULT_USERS_NOTIFICATIONS = Object.freeze({
   telegram: { active: false, userName: null, id: null },
   whatsapp: { active: true },
+  push: { active: false, subscriptions: [] },
 })
 
 export const DEFAULT_USER = Object.freeze({
@@ -2148,6 +2150,12 @@ export const CONTENTS = Object.freeze({
     siteConfirm: (siteSettings) =>
       isReferralProgramEnabled(siteSettings?.referralProgram),
   },
+  referralsAdmin: {
+    Component: ReferralsAdminContent,
+    name: 'Реферальная программа / Администрирование',
+    accessRoles: ['admin', 'president', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.payments?.see,
+  },
   imagesServer: {
     Component: ImagesServerContent,
     name: 'Сервер картинок',
@@ -2187,6 +2195,14 @@ export const pages = [
     icon: faHandshake,
     roleAccess: CONTENTS['referrals'].roleAccess,
     siteConfirm: CONTENTS['referrals'].siteConfirm,
+  },
+  {
+    id: 87,
+    group: 12,
+    name: 'Рефералы / Администрирование',
+    href: 'referralsAdmin',
+    icon: faUserTie,
+    roleAccess: CONTENTS['referralsAdmin'].roleAccess,
   },
   {
     id: 2,
@@ -2699,6 +2715,21 @@ export const PAY_TYPES_OBJECT = PAY_TYPES.reduce(
   (obj, item) => Object.assign(obj, { [item.value]: item.name }),
   {}
 )
+
+export const REFERRAL_REWARD_FOR_VALUES = [
+  {
+    value: 'referral',
+    name: 'Реферал',
+    color: 'green-400',
+    icon: faUserPlus,
+  },
+  {
+    value: 'referrer',
+    name: 'Реферер',
+    color: 'blue-400',
+    icon: faUserTie,
+  },
+]
 
 export const PAY_DIRECTIONS = [
   {

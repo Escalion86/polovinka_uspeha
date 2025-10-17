@@ -5,6 +5,24 @@
 import dbConnect from '@utils/dbConnect'
 import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
 
+const isObjectId = (value) =>
+  value && typeof value === 'object' && value.constructor?.name === 'ObjectId'
+
+const serializeLeanDoc = (doc) => {
+  if (doc == null) return doc
+  if (isObjectId(doc)) return doc.toString()
+  if (doc instanceof Date) return doc.toISOString()
+  if (Array.isArray(doc)) return doc.map(serializeLeanDoc)
+  if (typeof doc === 'object') {
+    return Object.entries(doc).reduce((acc, [key, value]) => {
+      acc[key] = serializeLeanDoc(value)
+      return acc
+    }, {})
+  }
+
+  return doc
+}
+
 const fetchProps = async (user, location, params) => {
   const serverDateTime = new Date()
   const telegramBotName = getTelegramBotNameByLocation(location)
@@ -29,11 +47,9 @@ const fetchProps = async (user, location, params) => {
         achievements: [],
         achievementsUsers: [],
         // servicesUsers: [],
-        serverSettings: JSON.parse(
-          JSON.stringify({
-            dateTime: serverDateTime,
-          })
-        ),
+        serverSettings: {
+          dateTime: serverDateTime.toISOString(),
+        },
         mode: process.env.MODE,
         error: 'db error',
         location,
@@ -80,10 +96,22 @@ const fetchProps = async (user, location, params) => {
     //   })
     // }
 
-    const events =
+    const [
+      events,
+      directions,
+      reviews,
+      additionalBlocks,
+      siteSettings,
+      rolesSettings,
+      questionnaires,
+      questionnairesUsers,
+      services,
+      achievements,
+      achievementsUsers,
+    ] = await Promise.all([
       params?.events === false
-        ? []
-        : await db
+        ? Promise.resolve([])
+        : db
             .model('Events')
             .find({})
             .select({
@@ -107,55 +135,56 @@ const fetchProps = async (user, location, params) => {
               // usersStatusAccess: 0,
               // usersStatusDiscount: 0,
             })
-            .lean()
+            .lean(),
+      db
+        .model('Directions')
+        .find({})
+        .select({
+          description: 0,
 
-    const directions = await db
-      .model('Directions')
-      .find({})
-      .select({
-        description: 0,
-
-        // plugins: 0,
-        ...(params?.directions?.shortDescription
-          ? {}
-          : { shortDescription: 0 }),
-      })
-      .lean()
-    const reviews =
-      params?.reviews === false ? [] : await db.model('Reviews').find({}).lean()
-    const additionalBlocks =
+          // plugins: 0,
+          ...(params?.directions?.shortDescription
+            ? {}
+            : { shortDescription: 0 }),
+        })
+        .lean(),
+      params?.reviews === false
+        ? Promise.resolve([])
+        : db.model('Reviews').find({}).lean(),
       params?.additionalBlocks === false
-        ? []
-        : await db.model('AdditionalBlocks').find({}).lean()
+        ? Promise.resolve([])
+        : db.model('AdditionalBlocks').find({}).lean(),
+      db.model('SiteSettings').find({}).lean(),
+      params?.rolesSettings === false
+        ? Promise.resolve([])
+        : db.model('Roles').find({}).lean(),
+      params?.questionnaires === false
+        ? Promise.resolve([])
+        : db.model('Questionnaires').find({}).lean(),
+      params?.questionnairesUsers === false
+        ? Promise.resolve([])
+        : db.model('QuestionnairesUsers').find({}).lean(),
+      params?.services === false
+        ? Promise.resolve([])
+        : db.model('Services').find({}).lean(),
+      params?.achievements === false
+        ? Promise.resolve([])
+        : db.model('Achievements').find({}).lean(),
+      params?.achievementsUsers === false
+        ? Promise.resolve([])
+        : db.model('AchievementsUsers').find({}).lean(),
+    ])
     // const eventsUsers = await db.model('EventsUsers').find({}).lean()
     // const payments = await db.model('Payments').find({})
     //   .select({
     //     status: 0,
     //   })
     //   .lean()
-    const siteSettings = await db.model('SiteSettings').find({}).lean()
-    const rolesSettings =
-      params?.rolesSettings === false
-        ? []
-        : await db.model('Roles').find({}).lean()
-    const questionnaires =
-      params?.questionnaires === false
-        ? []
-        : await db.model('Questionnaires').find({}).lean()
-    const questionnairesUsers =
-      params?.questionnairesUsers === false
-        ? []
-        : await db.model('QuestionnairesUsers').find({}).lean()
     // const histories = isModer
     //   ? await db.model('Histories').find({
     //       // createdAt: { $gt: user.prevActivityAt },
     //     })
     //   : []
-
-    const services =
-      params?.services === false
-        ? []
-        : await db.model('Services').find({}).lean()
     // const servicesUsers = await db.model('ServicesUsers').find({}).lean()
 
     const achievements =
@@ -247,28 +276,26 @@ const fetchProps = async (user, location, params) => {
 
     const fetchResult = {
       // users: JSON.parse(JSON.stringify(users)),
-      events: JSON.parse(JSON.stringify(events)),
-      directions: JSON.parse(JSON.stringify(directions)),
-      reviews: JSON.parse(JSON.stringify(reviews)),
-      additionalBlocks: JSON.parse(JSON.stringify(additionalBlocks)),
+      events: serializeLeanDoc(events),
+      directions: serializeLeanDoc(directions),
+      reviews: serializeLeanDoc(reviews),
+      additionalBlocks: serializeLeanDoc(additionalBlocks),
       // eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
       // payments: JSON.parse(JSON.stringify(payments)),
-      siteSettings: JSON.parse(
-        JSON.stringify(siteSettings?.length > 0 ? siteSettings[0] : {})
+      siteSettings: serializeLeanDoc(
+        siteSettings?.length > 0 ? siteSettings[0] : {}
       ),
-      rolesSettings: JSON.parse(JSON.stringify(rolesSettings)),
+      rolesSettings: serializeLeanDoc(rolesSettings),
       // histories: JSON.parse(JSON.stringify(histories)),
-      questionnaires: JSON.parse(JSON.stringify(questionnaires)),
-      questionnairesUsers: JSON.parse(JSON.stringify(questionnairesUsers)),
-      services: JSON.parse(JSON.stringify(services)),
-      achievements: JSON.parse(JSON.stringify(achievements)),
-      achievementsUsers: JSON.parse(JSON.stringify(achievementsUsers)),
+      achievements: serializeLeanDoc(achievements),
+      achievementsUsers: serializeLeanDoc(achievementsUsers),
+      questionnaires: serializeLeanDoc(questionnaires),
+      questionnairesUsers: serializeLeanDoc(questionnairesUsers),
+      services: serializeLeanDoc(services),
       // servicesUsers: JSON.parse(JSON.stringify(servicesUsers)),
-      serverSettings: JSON.parse(
-        JSON.stringify({
-          dateTime: serverDateTime,
-        })
-      ),
+      serverSettings: {
+        dateTime: serverDateTime.toISOString(),
+      },
       mode: process.env.MODE,
       location,
       telegramBotName,
@@ -293,13 +320,11 @@ const fetchProps = async (user, location, params) => {
       achievements: [],
       achievementsUsers: [],
       // servicesUsers: [],
-      serverSettings: JSON.parse(
-        JSON.stringify({
-          dateTime: serverDateTime,
-        })
-      ),
+      serverSettings: {
+        dateTime: serverDateTime.toISOString(),
+      },
       mode: process.env.MODE,
-      error: JSON.parse(JSON.stringify(error)),
+      error: error instanceof Error ? error.message : String(error),
       location,
       telegramBotName,
     }

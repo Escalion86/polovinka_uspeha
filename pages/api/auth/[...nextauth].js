@@ -2,6 +2,7 @@ import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import mongoose from 'mongoose'
 import dbConnect from '@utils/dbConnect'
+import createReferralRegistrationCoupon from '@server/createReferralRegistrationCoupon'
 import userRegisterTelegramNotification from '@server/userRegisterTelegramNotification'
 import {
   hashPassword,
@@ -167,12 +168,23 @@ export default async function auth(req, res) {
                   data: newUser,
                   userId: newUser._id,
                 })
+                try {
+                  await createReferralRegistrationCoupon({ db, user: newUser })
+                } catch (couponError) {
+                  console.log(
+                    'createReferralRegistrationCoupon error :>> ',
+                    couponError
+                  )
+                }
                 await userRegisterTelegramNotification({
                   telegramId: telegramIdNum,
                   first_name,
                   last_name: last_name === 'undefined' ? undefined : last_name,
                   images: [photo_url],
                   location,
+                  referrerId: resolvedReferrerId
+                    ? resolvedReferrerId.toString()
+                    : undefined,
                 })
                 return {
                   name: newUser._id,
