@@ -661,6 +661,53 @@ export default async function handler(Schema, req, res, props = {}) {
             // }
           }
 
+          if (Schema === 'AchievementsUsers') {
+            try {
+              const [user, achievement] = await Promise.all([
+                db.model('Users').findById(jsonData.userId).lean(),
+                db.model('Achievements').findById(jsonData.achievementId).lean(),
+              ])
+
+              const subscriptions = getUsersPushSubscriptions(user ? [user] : [])
+
+              if (subscriptions.length > 0) {
+                const achievementName = achievement?.name?.trim() || 'Достижение'
+                const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
+
+                if (achievement?.description) bodyParts.push(achievement.description)
+                if (jsonData.comment) bodyParts.push(jsonData.comment)
+                if (jsonData.eventName) bodyParts.push(`Мероприятие: ${jsonData.eventName}`)
+
+                const achievementUrl = process.env.DOMAIN
+                  ? `${process.env.DOMAIN}/${location}/cabinet/achievements`
+                  : `/${location}/cabinet/achievements`
+
+                const payloadData = {
+                  url: achievementUrl,
+                  achievementId: String(jsonData.achievementId),
+                  achievementUserId: String(jsonData._id),
+                }
+
+                if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
+
+                await sendPushNotification({
+                  subscriptions,
+                  payload: {
+                    title: 'Новое достижение',
+                    body: bodyParts.join('\n'),
+                    data: payloadData,
+                    tag: `achievement-${jsonData._id}`,
+                  },
+                })
+              }
+            } catch (error) {
+              console.error(
+                '[CRUD] Failed to send achievement push notification',
+                error
+              )
+            }
+          }
+
           if (Schema === 'ServicesUsers') {
             serviceUserTelegramNotification({
               userId: jsonData.userId,
