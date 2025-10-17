@@ -693,7 +693,9 @@ export default async function handler(Schema, req, res, props = {}) {
                   : `/${location}/cabinet/achievements`
 
                 const payloadData = {
+                  type: 'achievement-assigned',
                   url: achievementUrl,
+                  userId: String(jsonData.userId),
                   achievementId: String(jsonData.achievementId),
                   achievementUserId: String(jsonData._id),
                 }
