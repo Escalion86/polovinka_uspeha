@@ -187,16 +187,6 @@ const fetchProps = async (user, location, params) => {
     //   : []
     // const servicesUsers = await db.model('ServicesUsers').find({}).lean()
 
-    const achievements =
-      params?.achievements === false
-        ? []
-        : await db.model('Achievements').find({}).lean()
-
-    const achievementsUsers =
-      params?.achievementsUsers === false
-        ? []
-        : await db.model('AchievementsUsers').find({}).lean()
-
     // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
     // const seeFullNames = userRole?.users?.seeFullNames
 
