@@ -28,6 +28,17 @@ import urlBase64ToUint8Array from '@helpers/urlBase64ToUint8Array'
 const SERVICE_WORKER_READY_TIMEOUT = 10000
 const SERVICE_WORKER_CANDIDATES = ['/sw.js', '/service-worker.js']
 
+const parseJsonResponse = async (response) => {
+  const contentType = response.headers.get('content-type') ?? ''
+  if (contentType.includes('application/json')) {
+    return response.json()
+  }
+
+  const text = await response.text()
+  const message = text?.trim()
+  throw new Error(message || 'Некорректный ответ от сервера')
+}
+
 const ensureServiceWorkerRegistration = async () => {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
     return null
@@ -295,7 +306,7 @@ const LoggedUserNotificationsContent = (props) => {
         }),
       })
 
-      const responseJson = await response.json()
+      const responseJson = await parseJsonResponse(response)
 
       if (!response.ok) {
         throw new Error(
@@ -345,7 +356,7 @@ const LoggedUserNotificationsContent = (props) => {
           }),
         })
 
-        const responseJson = await response.json()
+        const responseJson = await parseJsonResponse(response)
 
         if (!response.ok) {
           throw new Error(responseJson?.error || 'Ошибка удаления push-подписки')

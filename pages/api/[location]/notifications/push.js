@@ -29,108 +29,120 @@ export default async function handler(req, res) {
 
   const Users = db.model('Users')
 
-  if (method === 'POST') {
-    const { userId, subscription, userAgent } = body || {}
-    const sanitizedSubscription = sanitizeSubscription(subscription)
-    if (!userId || !sanitizedSubscription)
-      return res
-        ?.status(400)
-        .json({ success: false, error: 'userId or subscription missing' })
+  try {
+    if (method === 'POST') {
+      const { userId, subscription, userAgent } = body || {}
+      const sanitizedSubscription = sanitizeSubscription(subscription)
+      if (!userId || !sanitizedSubscription)
+        return res
+          ?.status(400)
+          .json({ success: false, error: 'userId or subscription missing' })
 
-    const user = await Users.findById(userId).lean()
-    if (!user) return res?.status(404).json({ success: false, error: 'user not found' })
+      const user = await Users.findById(userId).lean()
+      if (!user)
+        return res?.status(404).json({ success: false, error: 'user not found' })
 
-    const push = user.notifications?.push || {}
-    const now = new Date().toISOString()
-    const existingSubscriptions = Array.isArray(push.subscriptions)
-      ? push.subscriptions
-      : []
+      const push = user.notifications?.push || {}
+      const now = new Date().toISOString()
+      const existingSubscriptions = Array.isArray(push.subscriptions)
+        ? push.subscriptions
+        : []
 
-    const existingSubscription = existingSubscriptions.find(
-      ({ endpoint }) => endpoint === sanitizedSubscription.endpoint
-    )
+      const existingSubscription = existingSubscriptions.find(
+        ({ endpoint }) => endpoint === sanitizedSubscription.endpoint
+      )
 
-    const filtered = existingSubscriptions.filter(
-      ({ endpoint }) => endpoint !== sanitizedSubscription.endpoint
-    )
+      const filtered = existingSubscriptions.filter(
+        ({ endpoint }) => endpoint !== sanitizedSubscription.endpoint
+      )
 
-    const updatedSubscriptions = [
-      ...filtered,
-      {
-        ...sanitizedSubscription,
-        userAgent: userAgent || existingSubscription?.userAgent || null,
-        createdAt: existingSubscription?.createdAt || now,
-        updatedAt: now,
-      },
-    ]
-
-    const updatedUser = await Users.findByIdAndUpdate(
-      userId,
-      {
-        $set: {
-          'notifications.push.active': true,
-          'notifications.push.subscriptions': updatedSubscriptions,
-          'notifications.push.updatedAt': now,
+      const updatedSubscriptions = [
+        ...filtered,
+        {
+          ...sanitizedSubscription,
+          userAgent: userAgent || existingSubscription?.userAgent || null,
+          createdAt: existingSubscription?.createdAt || now,
+          updatedAt: now,
         },
-      },
-      { new: true }
-    ).lean()
+      ]
 
-    if (updatedUser?.notifications?.push?.active) {
-      const subscriptions = getUsersPushSubscriptions([updatedUser])
-      await sendPushNotification({
-        subscriptions,
-        payload: {
-          title: 'Push-уведомления подключены',
-          body: 'Вы успешно подключили push-уведомления на сайте Половинка успеха.',
-          data: {
-            url: process.env.DOMAIN
-              ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
-              : `/${location}/cabinet/notifications`,
+      const updatedUser = await Users.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            'notifications.push.active': true,
+            'notifications.push.subscriptions': updatedSubscriptions,
+            'notifications.push.updatedAt': now,
           },
         },
-      })
+        { new: true }
+      ).lean()
+
+      if (updatedUser?.notifications?.push?.active) {
+        const subscriptions = getUsersPushSubscriptions([updatedUser])
+        await sendPushNotification({
+          subscriptions,
+          payload: {
+            title: 'Push-уведомления подключены',
+            body: 'Вы успешно подключили push-уведомления на сайте Половинка успеха.',
+            data: {
+              url: process.env.DOMAIN
+                ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
+                : `/${location}/cabinet/notifications`,
+            },
+          },
+        })
+      }
+
+      return res?.status(200).json({ success: true, data: updatedUser })
     }
 
-    return res?.status(200).json({ success: true, data: updatedUser })
+    if (method === 'DELETE') {
+      const { userId, endpoint } = body || {}
+      if (!userId || !endpoint)
+        return res
+          ?.status(400)
+          .json({ success: false, error: 'userId or endpoint missing' })
+
+      const user = await Users.findById(userId).lean()
+      if (!user)
+        return res?.status(404).json({ success: false, error: 'user not found' })
+
+      const push = user.notifications?.push || {}
+      const existingSubscriptions = Array.isArray(push.subscriptions)
+        ? push.subscriptions
+        : []
+
+      const updatedSubscriptions = existingSubscriptions.filter(
+        (subscriptionItem) => subscriptionItem?.endpoint !== endpoint
+      )
+
+      const update = {
+        'notifications.push.subscriptions': updatedSubscriptions,
+        'notifications.push.updatedAt': new Date().toISOString(),
+      }
+
+      if (updatedSubscriptions.length === 0) {
+        update['notifications.push.active'] = false
+      }
+
+      const updatedUser = await Users.findByIdAndUpdate(
+        userId,
+        {
+          $set: update,
+        },
+        { new: true }
+      ).lean()
+
+      return res?.status(200).json({ success: true, data: updatedUser })
+    }
+
+    return res?.status(405).json({ success: false, error: 'Method not allowed' })
+  } catch (error) {
+    console.error('[notifications/push] handler failed', error)
+    return res?.status(500).json({
+      success: false,
+      error: error?.message || 'Internal server error',
+    })
   }
-
-  if (method === 'DELETE') {
-    const { userId, endpoint } = body || {}
-    if (!userId || !endpoint)
-      return res?.status(400).json({ success: false, error: 'userId or endpoint missing' })
-
-    const user = await Users.findById(userId).lean()
-    if (!user) return res?.status(404).json({ success: false, error: 'user not found' })
-
-    const push = user.notifications?.push || {}
-    const existingSubscriptions = Array.isArray(push.subscriptions)
-      ? push.subscriptions
-      : []
-
-    const updatedSubscriptions = existingSubscriptions.filter(
-      (subscriptionItem) => subscriptionItem?.endpoint !== endpoint
-    )
-
-    const update = {
-      'notifications.push.subscriptions': updatedSubscriptions,
-      'notifications.push.updatedAt': new Date().toISOString(),
-    }
-
-    if (updatedSubscriptions.length === 0) {
-      update['notifications.push.active'] = false
-    }
-
-    const updatedUser = await Users.findByIdAndUpdate(
-      userId,
-      {
-        $set: update,
-      },
-      { new: true }
-    ).lean()
-
-    return res?.status(200).json({ success: true, data: updatedUser })
-  }
-
-  return res?.status(405).json({ success: false, error: 'Method not allowed' })
 }
