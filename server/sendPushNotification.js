@@ -193,8 +193,9 @@ const encryptPayload = (subscription, payloadBuffer) => {
   padding.writeUInt16BE(0, 0)
   const plaintext = Buffer.concat([padding, payloadBuffer])
 
-  const cipher = crypto.createCipheriv('aes-128-gcm', contentEncryptionKey, nonce)
-  cipher.setAuthTagLength(16)
+  const cipher = crypto.createCipheriv('aes-128-gcm', contentEncryptionKey, nonce, {
+    authTagLength: 16,
+  })
   cipher.setAAD(Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02]))
 
   const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()])
