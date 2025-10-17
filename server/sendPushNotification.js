@@ -18,6 +18,12 @@ const base64UrlEncode = (input) => {
     .replace(/\//g, '_')
 }
 
+const base64Encode = (input) => {
+  if (!input) return ''
+  const buffer = Buffer.isBuffer(input) ? input : Buffer.from(input)
+  return buffer.toString('base64')
+}
+
 const base64UrlDecode = (input) => {
   if (!input) return Buffer.alloc(0)
   const normalized = input.replace(/-/g, '+').replace(/_/g, '/')
@@ -203,8 +209,10 @@ const encryptPayload = (subscription, payloadBuffer) => {
 
   return {
     body: Buffer.concat([ciphertext, authTag]),
-    salt: base64UrlEncode(salt),
+    salt: base64Encode(salt),
+    saltUrl: base64UrlEncode(salt),
     serverPublicKey: base64UrlEncode(serverPublicKey),
+    serverPublicKeyBase64: base64Encode(serverPublicKey),
   }
 }
 
@@ -293,9 +301,22 @@ const sendPushRequest = async ({
 
   const ttl = Math.max(0, options?.TTL ?? options?.ttl ?? DEFAULT_TTL_SECONDS)
 
-  let cryptoKeyHeader = `p256ecdsa=${publicKey}`
+  const vapidPublicKeyBuffer = base64UrlDecode(publicKey)
+  const vapidPublicKeyHeaderValue =
+    vapidPublicKeyBuffer.length > 0
+      ? base64UrlEncode(vapidPublicKeyBuffer)
+      : publicKey
+
+  let cryptoKeyHeader = ''
   if (encryptionResult.serverPublicKey) {
-    cryptoKeyHeader = `${cryptoKeyHeader};dh=${encryptionResult.serverPublicKey}`
+    const serverPublicKeyHeaderValue =
+      encryptionResult.serverPublicKey || encryptionResult.serverPublicKeyBase64
+    cryptoKeyHeader = `dh=${serverPublicKeyHeaderValue}`
+    if (vapidPublicKeyHeaderValue) {
+      cryptoKeyHeader = `${cryptoKeyHeader};p256ecdsa=${vapidPublicKeyHeaderValue}`
+    }
+  } else {
+    cryptoKeyHeader = `p256ecdsa=${vapidPublicKeyHeaderValue}`
   }
 
   const headers = {
@@ -305,15 +326,16 @@ const sendPushRequest = async ({
   }
 
   if (encryptionResult.salt) {
-    headers.Encryption = `salt=${encryptionResult.salt}`
+    const recordSize = options?.recordSize || options?.rs || 4096
+    headers.Encryption = `salt=${encryptionResult.salt};rs=${recordSize}`
   }
 
   if (body.length > 0) {
     headers['Content-Encoding'] = 'aes128gcm'
     headers['Content-Type'] = 'application/octet-stream'
-    headers['Content-Length'] = body.length
+    headers['Content-Length'] = String(body.length)
   } else {
-    headers['Content-Length'] = 0
+    headers['Content-Length'] = '0'
   }
 
   if (options?.urgency) headers.Urgency = options.urgency
