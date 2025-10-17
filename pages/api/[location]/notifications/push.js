@@ -1,5 +1,7 @@
 import checkLocationValid from '@server/checkLocationValid'
-import sendPushNotification from '@server/sendPushNotification'
+import sendPushNotification, {
+  hasVapidKeyPairConfigured,
+} from '@server/sendPushNotification'
 import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import dbConnect from '@utils/dbConnect'
 
@@ -79,13 +81,7 @@ export default async function handler(req, res) {
       ).lean()
 
       if (updatedUser?.notifications?.push?.active) {
-        const hasVapidKeys = Boolean(
-          (process.env.WEB_PUSH_PUBLIC_KEY ||
-            process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY) &&
-            process.env.WEB_PUSH_PRIVATE_KEY
-        )
-
-        if (!hasVapidKeys) {
+        if (!hasVapidKeyPairConfigured()) {
           console.warn(
             '[notifications/push] Skip confirmation push: VAPID keys are not configured'
           )

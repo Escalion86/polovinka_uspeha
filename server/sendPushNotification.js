@@ -1,5 +1,12 @@
 let cachedWebPush
 
+const hasVapidKeyPairConfigured = () =>
+  Boolean(
+    (process.env.WEB_PUSH_PUBLIC_KEY ||
+      process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY) &&
+      process.env.WEB_PUSH_PRIVATE_KEY
+  )
+
 const getWebPush = async () => {
   if (cachedWebPush) return cachedWebPush
 
@@ -13,10 +20,11 @@ const getWebPush = async () => {
 
   const subject =
     process.env.WEB_PUSH_SUBJECT || process.env.NEXT_PUBLIC_WEB_PUSH_SUBJECT || 'mailto:admin@polovinka.ru'
-  const publicKey = process.env.WEB_PUSH_PUBLIC_KEY || process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY
+  const publicKey =
+    process.env.WEB_PUSH_PUBLIC_KEY || process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY
   const privateKey = process.env.WEB_PUSH_PRIVATE_KEY
 
-  if (publicKey && privateKey) {
+  if (hasVapidKeyPairConfigured()) {
     try {
       cachedWebPush.setVapidDetails(subject, publicKey, privateKey)
     } catch (error) {
@@ -112,4 +120,4 @@ const sendPushNotification = async ({
 }
 
 export default sendPushNotification
-export { getWebPush }
+export { getWebPush, hasVapidKeyPairConfigured }

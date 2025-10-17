@@ -6,7 +6,9 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
-import sendPushNotification from './sendPushNotification'
+import sendPushNotification, {
+  hasVapidKeyPairConfigured,
+} from './sendPushNotification'
 import getUsersPushSubscriptions from './getUsersPushSubscriptions'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import { hashPassword } from '@helpers/passwordUtils'
@@ -670,7 +672,11 @@ export default async function handler(Schema, req, res, props = {}) {
 
               const subscriptions = getUsersPushSubscriptions(user ? [user] : [])
 
-              if (subscriptions.length > 0) {
+              if (!hasVapidKeyPairConfigured()) {
+                console.warn(
+                  '[CRUD] Skip achievement push notification: VAPID keys are not configured'
+                )
+              } else if (subscriptions.length > 0) {
                 const achievementName = achievement?.name?.trim() || 'Достижение'
                 const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
 
