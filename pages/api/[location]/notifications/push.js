@@ -79,19 +79,39 @@ export default async function handler(req, res) {
       ).lean()
 
       if (updatedUser?.notifications?.push?.active) {
-        const subscriptions = getUsersPushSubscriptions([updatedUser])
-        await sendPushNotification({
-          subscriptions,
-          payload: {
-            title: 'Push-уведомления подключены',
-            body: 'Вы успешно подключили push-уведомления на сайте Половинка успеха.',
-            data: {
-              url: process.env.DOMAIN
-                ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
-                : `/${location}/cabinet/notifications`,
-            },
-          },
-        })
+        const hasVapidKeys = Boolean(
+          (process.env.WEB_PUSH_PUBLIC_KEY ||
+            process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY) &&
+            process.env.WEB_PUSH_PRIVATE_KEY
+        )
+
+        if (!hasVapidKeys) {
+          console.warn(
+            '[notifications/push] Skip confirmation push: VAPID keys are not configured'
+          )
+        } else {
+          const subscriptions = getUsersPushSubscriptions([updatedUser])
+
+          try {
+            await sendPushNotification({
+              subscriptions,
+              payload: {
+                title: 'Push-уведомления подключены',
+                body: 'Вы успешно подключили push-уведомления на сайте Половинка успеха.',
+                data: {
+                  url: process.env.DOMAIN
+                    ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
+                    : `/${location}/cabinet/notifications`,
+                },
+              },
+            })
+          } catch (error) {
+            console.error(
+              '[notifications/push] Failed to send confirmation push',
+              error
+            )
+          }
+        }
       }
 
       return res?.status(200).json({ success: true, data: updatedUser })
