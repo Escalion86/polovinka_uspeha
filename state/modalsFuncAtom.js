@@ -621,6 +621,22 @@ const modalsFuncGenerator = (get, set) => {
             itemsFunc.additionalBlock.delete(additionalBlockId),
         }),
     },
+    achievement: {
+      create: (onSubmit) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/achievementFunc').default(
+            null,
+            onSubmit
+          )
+        ),
+      edit: (achievement, onSubmit) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/achievementFunc').default(
+            achievement,
+            onSubmit
+          )
+        ),
+    },
     service: {
       add: (serviceId) =>
         addModal(
