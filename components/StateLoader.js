@@ -340,6 +340,74 @@ const StateLoader = (props) => {
         return
       }
 
+      const showForegroundNotification = (assignmentData) => {
+        if (typeof window === 'undefined') return false
+        if (typeof document !== 'undefined' && document.visibilityState !== 'visible') {
+          return false
+        }
+
+        const hasNotificationApi =
+          typeof Notification !== 'undefined' && Notification.permission === 'granted'
+
+        const titleFromPayload =
+          payload?.title || assignmentData?.achievement?.title || 'Половинка успеха'
+        const bodyFromPayload =
+          payload?.body ||
+          payloadData?.body ||
+          assignmentData?.achievement?.description ||
+          'У вас новое достижение'
+
+        const notificationOptions = {
+          body: bodyFromPayload,
+          icon: payload?.icon || '/icon-192x192.png',
+          badge: payload?.badge || '/icon-192x192.png',
+          data: payload?.data || {},
+          silent: false,
+        }
+
+        let notificationShown = false
+
+        if (hasNotificationApi) {
+          try {
+            const notification = new Notification(
+              titleFromPayload,
+              notificationOptions
+            )
+            notificationShown = true
+
+            const notificationUrl = notificationOptions?.data?.url
+            if (notificationUrl) {
+              notification.onclick = () => {
+                try {
+                  window.focus()
+                } catch (error) {
+                  console.warn('Не удалось сфокусировать окно после клика по уведомлению', error)
+                }
+                window.open(notificationUrl, '_blank')
+              }
+            }
+          } catch (error) {
+            console.warn(
+              '[Push debug] Не удалось показать foreground-уведомление через Notification API',
+              error
+            )
+          }
+        }
+
+        if (!notificationShown && snackbar?.info) {
+          snackbar.info(titleFromPayload, {
+            autoHideDuration: 4000,
+          })
+          notificationShown = true
+        }
+
+        if (notificationShown) {
+          console.info('[Push debug] Foreground-уведомление показано в активной вкладке')
+        }
+
+        return notificationShown
+      }
+
       try {
         const assignment = await getData(
           `/api/${location}/achievementsusers/${achievementUserId}`
@@ -351,6 +419,8 @@ const StateLoader = (props) => {
           )
           return
         }
+
+        showForegroundNotification(assignment)
 
         setAchievementsUsersState((state) => {
           const nextState = Array.isArray(state) ? [...state] : []
