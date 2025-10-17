@@ -5,8 +5,48 @@ import { registerRoute } from 'workbox-routing'
 import { NetworkFirst, StaleWhileRevalidate, CacheFirst } from 'workbox-strategies'
 import { ExpirationPlugin } from 'workbox-expiration'
 
-self.skipWaiting()
-clientsClaim()
+const workerVersion = '2025-10-17T20:32:00Z'
+
+console.info('[ServiceWorker] Boot', { version: workerVersion, timestamp: Date.now() })
+
+self.addEventListener('install', (event) => {
+  console.info('[ServiceWorker] Install event', { timestamp: Date.now(), version: workerVersion })
+  event.waitUntil(self.skipWaiting())
+})
+
+self.addEventListener('activate', (event) => {
+  console.info('[ServiceWorker] Activate event', { timestamp: Date.now(), version: workerVersion })
+  event.waitUntil(
+    (async () => {
+      try {
+        await clients.claim()
+      } catch (error) {
+        console.error('[ServiceWorker] Failed to claim clients during activate', error)
+      }
+    })()
+  )
+})
+
+const broadcastPushPayload = async (payload) => {
+  if (!payload) return
+
+  try {
+    const clientList = await clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true,
+    })
+
+    for (const client of clientList) {
+      try {
+        client.postMessage({ type: 'push-notification', payload })
+      } catch (error) {
+        console.error('Failed to post push payload to client', error)
+      }
+    }
+  } catch (error) {
+    console.error('Failed to broadcast push payload', error)
+  }
+}
 
 precacheAndRoute(self.__WB_MANIFEST || [])
 
@@ -36,26 +76,87 @@ registerRoute(
 )
 
 self.addEventListener('push', (event) => {
-  if (!event?.data) return
-  let payload
-  try {
-    payload = event.data.json()
-  } catch (error) {
-    payload = { title: 'Половинка успеха', body: event.data.text() }
+  console.info('[ServiceWorker] Push event received', {
+    hasData: Boolean(event?.data),
+    timestamp: Date.now(),
+  })
+
+  const processPushEvent = async () => {
+    const rawData = event?.data
+    let payload
+    let fallbackText
+
+    if (rawData) {
+      try {
+        payload = rawData.json()
+      } catch (error) {
+        console.warn('[ServiceWorker] Failed to parse push payload as JSON', error)
+        try {
+          fallbackText = rawData.text()
+        } catch (textError) {
+          console.warn('[ServiceWorker] Failed to read push payload as text', textError)
+        }
+      }
+    }
+
+    if (!payload) {
+      const bodyText = fallbackText || 'У вас новое уведомление'
+      payload = {
+        title: 'Половинка успеха',
+        body: bodyText,
+        data: {
+          type: 'generic-notification',
+          fallback: true,
+          body: bodyText,
+        },
+      }
+    } else if (typeof payload === 'object' && payload !== null) {
+      const payloadData = payload.data && typeof payload.data === 'object' ? payload.data : {}
+      payload = {
+        ...payload,
+        data: {
+          ...payloadData,
+          fallback: false,
+        },
+      }
+      if (!payload.body && fallbackText) {
+        payload.body = fallbackText
+      }
+    }
+
+    console.info('[ServiceWorker] Получено push-сообщение', {
+      hasData: Boolean(rawData),
+      payload,
+    })
+
+    const { title, ...options } = payload
+    const notificationTitle = title || 'Половинка успеха'
+    const notificationOptions = {
+      icon: '/icon-192x192.png',
+      badge: '/icon-192x192.png',
+      data: {},
+      ...options,
+    }
+
+    notificationOptions.data = {
+      ...(typeof notificationOptions.data === 'object' && notificationOptions.data
+        ? notificationOptions.data
+        : {}),
+      receivedAt: Date.now(),
+    }
+
+    await Promise.all([
+      self.registration.showNotification(notificationTitle, notificationOptions),
+      broadcastPushPayload(payload),
+    ])
   }
 
-  if (!payload) return
-
-  const { title, ...options } = payload
-  const notificationTitle = title || 'Половинка успеха'
-  const notificationOptions = {
-    icon: '/icon-192x192.png',
-    badge: '/icon-192x192.png',
-    data: {},
-    ...options,
-  }
-
-  event.waitUntil(self.registration.showNotification(notificationTitle, notificationOptions))
+  event.waitUntil(
+    processPushEvent().catch((error) => {
+      console.error('[ServiceWorker] Push handler failed', error)
+      throw error
+    })
+  )
 })
 
 self.addEventListener('notificationclick', (event) => {
