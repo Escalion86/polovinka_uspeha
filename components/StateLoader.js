@@ -297,13 +297,21 @@ const StateLoader = (props) => {
       return undefined
     }
 
-    const handleServiceWorkerMessage = async (event) => {
+    const processPushNotificationMessage = async (event, source) => {
       const message = event?.data
       if (!message || message.type !== 'push-notification') return
 
       const payload = message.payload || {}
       const payloadData = payload?.data || {}
       const payloadType = payloadData?.type || payload?.type
+
+      console.info('[Push debug] Получено push-сообщение', {
+        source,
+        payload,
+        payloadData,
+        payloadType,
+        loggedUserActiveId,
+      })
 
       if (payloadType !== 'achievement-assigned') return
 
@@ -317,18 +325,32 @@ const StateLoader = (props) => {
         payloadData?.userId &&
         String(payloadData.userId) !== String(loggedUserActiveId)
       ) {
+        console.debug('[Push debug] Сообщение не для активного пользователя', {
+          payloadUserId: payloadData.userId,
+          loggedUserActiveId,
+        })
         return
       }
 
       const achievementUserId = payloadData?.achievementUserId
-      if (!achievementUserId) return
+      if (!achievementUserId) {
+        console.warn(
+          '[Push debug] Получено уведомление без идентификатора выдачи достижения'
+        )
+        return
+      }
 
       try {
         const assignment = await getData(
           `/api/${location}/achievementsusers/${achievementUserId}`
         )
 
-        if (!assignment) return
+        if (!assignment) {
+          console.warn(
+            '[Push debug] Не удалось загрузить информацию о выдаче достижения'
+          )
+          return
+        }
 
         setAchievementsUsersState((state) => {
           const nextState = Array.isArray(state) ? [...state] : []
@@ -353,13 +375,31 @@ const StateLoader = (props) => {
       }
     }
 
+    const handleServiceWorkerMessage = (event) => {
+      processPushNotificationMessage(event, 'serviceWorker').catch((error) => {
+        console.error('[Push debug] Ошибка обработки push-сообщения', error)
+      })
+    }
+
+    const handleWindowMessage = (event) => {
+      processPushNotificationMessage(event, 'window').catch((error) => {
+        console.error('[Push debug] Ошибка обработки push-сообщения (window)', error)
+      })
+    }
+
     navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage)
+    window.addEventListener('message', handleWindowMessage)
+
+    if (typeof navigator.serviceWorker.startMessages === 'function') {
+      navigator.serviceWorker.startMessages()
+    }
 
     return () => {
       navigator.serviceWorker.removeEventListener(
         'message',
         handleServiceWorkerMessage
       )
+      window.removeEventListener('message', handleWindowMessage)
     }
   }, [getData, location, loggedUserActiveId, setAchievementsUsersState])
 
