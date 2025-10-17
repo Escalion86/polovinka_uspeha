@@ -8,6 +8,27 @@ import { ExpirationPlugin } from 'workbox-expiration'
 self.skipWaiting()
 clientsClaim()
 
+const broadcastPushPayload = async (payload) => {
+  if (!payload) return
+
+  try {
+    const clientList = await clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true,
+    })
+
+    for (const client of clientList) {
+      try {
+        client.postMessage({ type: 'push-notification', payload })
+      } catch (error) {
+        console.error('Failed to post push payload to client', error)
+      }
+    }
+  } catch (error) {
+    console.error('Failed to broadcast push payload', error)
+  }
+}
+
 precacheAndRoute(self.__WB_MANIFEST || [])
 
 registerRoute(
@@ -55,7 +76,12 @@ self.addEventListener('push', (event) => {
     ...options,
   }
 
-  event.waitUntil(self.registration.showNotification(notificationTitle, notificationOptions))
+  const tasks = [
+    self.registration.showNotification(notificationTitle, notificationOptions),
+    broadcastPushPayload(payload),
+  ]
+
+  event.waitUntil(Promise.all(tasks))
 })
 
 self.addEventListener('notificationclick', (event) => {
