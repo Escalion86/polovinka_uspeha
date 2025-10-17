@@ -340,14 +340,11 @@ const StateLoader = (props) => {
         return
       }
 
-      const showForegroundNotification = (assignmentData) => {
+      const showForegroundNotification = async (assignmentData) => {
         if (typeof window === 'undefined') return false
         if (typeof document !== 'undefined' && document.visibilityState !== 'visible') {
           return false
         }
-
-        const hasNotificationApi =
-          typeof Notification !== 'undefined' && Notification.permission === 'granted'
 
         const titleFromPayload =
           payload?.title || assignmentData?.achievement?.title || 'Половинка успеха'
@@ -367,34 +364,57 @@ const StateLoader = (props) => {
 
         let notificationShown = false
 
-        if (hasNotificationApi) {
+        if (typeof navigator !== 'undefined' && navigator.serviceWorker) {
           try {
-            const notification = new Notification(
-              titleFromPayload,
-              notificationOptions
-            )
-            notificationShown = true
-
-            const notificationUrl = notificationOptions?.data?.url
-            if (notificationUrl) {
-              notification.onclick = () => {
-                try {
-                  window.focus()
-                } catch (error) {
-                  console.warn('Не удалось сфокусировать окно после клика по уведомлению', error)
-                }
-                window.open(notificationUrl, '_blank')
-              }
+            const registration = await navigator.serviceWorker.getRegistration()
+            if (registration?.showNotification) {
+              await registration.showNotification(titleFromPayload, notificationOptions)
+              notificationShown = true
             }
           } catch (error) {
             console.warn(
-              '[Push debug] Не удалось показать foreground-уведомление через Notification API',
+              '[Push debug] Не удалось показать foreground-уведомление через service worker',
               error
             )
           }
         }
 
-        if (!notificationShown && snackbar?.info) {
+        if (!notificationShown) {
+          const hasNotificationApi =
+            typeof Notification !== 'undefined' && Notification.permission === 'granted'
+
+          if (hasNotificationApi) {
+            try {
+              const notification = new Notification(
+                titleFromPayload,
+                notificationOptions
+              )
+              notificationShown = true
+
+              const notificationUrl = notificationOptions?.data?.url
+              if (notificationUrl) {
+                notification.onclick = () => {
+                  try {
+                    window.focus()
+                  } catch (error) {
+                    console.warn(
+                      'Не удалось сфокусировать окно после клика по уведомлению',
+                      error
+                    )
+                  }
+                  window.open(notificationUrl, '_blank')
+                }
+              }
+            } catch (error) {
+              console.warn(
+                '[Push debug] Не удалось показать foreground-уведомление через Notification API',
+                error
+              )
+            }
+          }
+        }
+
+        if (snackbar?.info) {
           snackbar.info(titleFromPayload, {
             autoHideDuration: 4000,
           })
@@ -420,7 +440,7 @@ const StateLoader = (props) => {
           return
         }
 
-        showForegroundNotification(assignment)
+        await showForegroundNotification(assignment)
 
         setAchievementsUsersState((state) => {
           const nextState = Array.isArray(state) ? [...state] : []
