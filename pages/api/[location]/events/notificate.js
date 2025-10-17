@@ -13,6 +13,7 @@ import sendPushNotification from '@server/sendPushNotification'
 import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import checkLocationValid from '@server/checkLocationValid'
 import getTimeZoneByLocation from '@server/getTimeZoneByLocation'
+import { createInvalidPushSubscriptionCollector } from '@server/pushSubscriptionsCleanup'
 
 const notificateUsersAboutEvent = async (eventId, location) => {
   if (!checkLocationValid(location)) return { error: 'Invalid location' }
@@ -234,28 +235,48 @@ const notificateUsersAboutEvent = async (eventId, location) => {
 
   const novicesPushSubscriptions = getUsersPushSubscriptions(novicesUsers)
   if (novicesPushSubscriptions.length > 0) {
-    await sendPushNotification({
-      subscriptions: novicesPushSubscriptions,
-      payload: {
-        title: event.title,
-        body: textStart + textPriceForNovice + textEnd,
-        data: { url: eventUrl },
-        tag: `event-${event._id}`,
-      },
+    const pushCleanup = createInvalidPushSubscriptionCollector({
+      db,
+      logPrefix: '[events/notificate] Novices event push',
     })
+
+    try {
+      await sendPushNotification({
+        subscriptions: novicesPushSubscriptions,
+        payload: {
+          title: event.title,
+          body: textStart + textPriceForNovice + textEnd,
+          data: { url: eventUrl },
+          tag: `event-${event._id}`,
+        },
+        onSubscriptionRejected: pushCleanup.handleRejected,
+      })
+    } finally {
+      await pushCleanup.flush()
+    }
   }
 
   const membersPushSubscriptions = getUsersPushSubscriptions(membersUsers)
   if (membersPushSubscriptions.length > 0) {
-    await sendPushNotification({
-      subscriptions: membersPushSubscriptions,
-      payload: {
-        title: event.title,
-        body: textStart + textPriceForMember + textEnd,
-        data: { url: eventUrl },
-        tag: `event-${event._id}`,
-      },
+    const pushCleanup = createInvalidPushSubscriptionCollector({
+      db,
+      logPrefix: '[events/notificate] Members event push',
     })
+
+    try {
+      await sendPushNotification({
+        subscriptions: membersPushSubscriptions,
+        payload: {
+          title: event.title,
+          body: textStart + textPriceForMember + textEnd,
+          data: { url: eventUrl },
+          tag: `event-${event._id}`,
+        },
+        onSubscriptionRejected: pushCleanup.handleRejected,
+      })
+    } finally {
+      await pushCleanup.flush()
+    }
   }
 
   if (novicesTelegramIds.filter(Boolean).length > 0) {

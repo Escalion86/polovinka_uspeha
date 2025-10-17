@@ -6,8 +6,12 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
-import sendPushNotification from './sendPushNotification'
+import sendPushNotification, {
+  getVapidConfigurationStatus,
+  hasVapidKeyPairConfigured,
+} from './sendPushNotification'
 import getUsersPushSubscriptions from './getUsersPushSubscriptions'
+import { createInvalidPushSubscriptionCollector } from './pushSubscriptionsCleanup'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import { hashPassword } from '@helpers/passwordUtils'
 
@@ -661,6 +665,95 @@ export default async function handler(Schema, req, res, props = {}) {
             // }
           }
 
+          if (Schema === 'AchievementsUsers') {
+            try {
+              const [user, achievement] = await Promise.all([
+                db.model('Users').findById(jsonData.userId).lean(),
+                db.model('Achievements').findById(jsonData.achievementId).lean(),
+              ])
+
+              const subscriptions = getUsersPushSubscriptions(user ? [user] : [])
+              const vapidStatus = getVapidConfigurationStatus()
+              const debugEnabled = process.env.NODE_ENV !== 'production'
+
+              if (!hasVapidKeyPairConfigured()) {
+                console.warn(
+                  '[CRUD] Skip achievement push notification: VAPID keys are not configured',
+                  { status: vapidStatus }
+                )
+              } else if (subscriptions.length > 0) {
+                const pushCleanup = createInvalidPushSubscriptionCollector({
+                  db,
+                  logPrefix: '[CRUD] Achievement push',
+                })
+
+                const achievementName = achievement?.name?.trim() || 'Достижение'
+                const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
+
+                if (achievement?.description) bodyParts.push(achievement.description)
+                if (jsonData.comment) bodyParts.push(jsonData.comment)
+                if (jsonData.eventName) bodyParts.push(`Мероприятие: ${jsonData.eventName}`)
+
+                const achievementUrl = process.env.DOMAIN
+                  ? `${process.env.DOMAIN}/${location}/cabinet/achievements`
+                  : `/${location}/cabinet/achievements`
+
+                const payloadData = {
+                  type: 'achievement-assigned',
+                  url: achievementUrl,
+                  userId: String(jsonData.userId),
+                  achievementId: String(jsonData.achievementId),
+                  achievementUserId: String(jsonData._id),
+                }
+
+                if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
+
+                try {
+                  const result = await sendPushNotification({
+                    subscriptions,
+                    payload: {
+                      title: 'Новое достижение',
+                      body: bodyParts.join('\n'),
+                      data: payloadData,
+                      tag: `achievement-${jsonData._id}`,
+                    },
+                    context: 'achievement-notification',
+                    debug: debugEnabled,
+                    onSubscriptionRejected: pushCleanup.handleRejected,
+                  })
+
+                  if (debugEnabled) {
+                    console.debug('[CRUD] Achievement push result', {
+                      userId: jsonData.userId,
+                      achievementId: jsonData.achievementId,
+                      subscriptions: subscriptions.length,
+                      statusCode: Array.isArray(result)
+                        ? result
+                            .map((item) =>
+                              item.status === 'fulfilled'
+                                ? item.value?.statusCode
+                                : 'rejected'
+                            )
+                            .join(',')
+                        : result?.statusCode,
+                    })
+                  }
+                } finally {
+                  await pushCleanup.flush()
+                }
+              } else if (debugEnabled) {
+                console.debug('[CRUD] Skip achievement push notification: no subscriptions', {
+                  userId: jsonData.userId,
+                })
+              }
+            } catch (error) {
+              console.error(
+                '[CRUD] Failed to send achievement push notification',
+                error
+              )
+            }
+          }
+
           if (Schema === 'ServicesUsers') {
             serviceUserTelegramNotification({
               userId: jsonData.userId,
@@ -828,23 +921,33 @@ export default async function handler(Schema, req, res, props = {}) {
               ])
 
               if (targetSubscriptions.length > 0) {
-                await sendPushNotification({
-                  subscriptions: targetSubscriptions,
-                  payload: {
-                    title: newPushActive
-                      ? 'Push-уведомления подключены'
-                      : 'Push-уведомления отключены',
-                    body: newPushActive
-                      ? 'Вы успешно подключили push-уведомления.'
-                      : 'Push-уведомления отключены для данного пользователя.',
-                    data: {
-                      url: process.env.DOMAIN
-                        ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
-                        : `/${location}/cabinet/notifications`,
-                    },
-                    tag: `push-settings-${data._id}`,
-                  },
+                const pushCleanup = createInvalidPushSubscriptionCollector({
+                  db,
+                  logPrefix: '[CRUD] User push settings notification',
                 })
+
+                try {
+                  await sendPushNotification({
+                    subscriptions: targetSubscriptions,
+                    payload: {
+                      title: newPushActive
+                        ? 'Push-уведомления подключены'
+                        : 'Push-уведомления отключены',
+                      body: newPushActive
+                        ? 'Вы успешно подключили push-уведомления.'
+                        : 'Push-уведомления отключены для данного пользователя.',
+                      data: {
+                        url: process.env.DOMAIN
+                          ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
+                          : `/${location}/cabinet/notifications`,
+                      },
+                      tag: `push-settings-${data._id}`,
+                    },
+                    onSubscriptionRejected: pushCleanup.handleRejected,
+                  })
+                } finally {
+                  await pushCleanup.flush()
+                }
               }
             }
             if (!isUserQuestionnaireFilled(oldData)) {
@@ -901,19 +1004,29 @@ export default async function handler(Schema, req, res, props = {}) {
               )}`
 
               if (pushSubscriptions.length > 0) {
-                await sendPushNotification({
-                  subscriptions: pushSubscriptions,
-                  payload: {
-                    title: 'Пользователь заполнил анкету',
-                    body: text,
-                    data: {
-                      url: process.env.DOMAIN
-                        ? `${process.env.DOMAIN}/${location}/user/${id}`
-                        : `/${location}/user/${id}`,
-                    },
-                    tag: `user-questionnaire-${id}`,
-                  },
+                const pushCleanup = createInvalidPushSubscriptionCollector({
+                  db,
+                  logPrefix: '[CRUD] User questionnaire notification',
                 })
+
+                try {
+                  await sendPushNotification({
+                    subscriptions: pushSubscriptions,
+                    payload: {
+                      title: 'Пользователь заполнил анкету',
+                      body: text,
+                      data: {
+                        url: process.env.DOMAIN
+                          ? `${process.env.DOMAIN}/${location}/user/${id}`
+                          : `/${location}/user/${id}`,
+                      },
+                      tag: `user-questionnaire-${id}`,
+                    },
+                    onSubscriptionRejected: pushCleanup.handleRejected,
+                  })
+                } finally {
+                  await pushCleanup.flush()
+                }
               }
 
               if (usersTelegramIds.filter(Boolean).length > 0) {
