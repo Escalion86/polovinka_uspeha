@@ -11,6 +11,7 @@ import sendPushNotification, {
   hasVapidKeyPairConfigured,
 } from './sendPushNotification'
 import getUsersPushSubscriptions from './getUsersPushSubscriptions'
+import { createInvalidPushSubscriptionCollector } from './pushSubscriptionsCleanup'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import { hashPassword } from '@helpers/passwordUtils'
 
@@ -681,6 +682,11 @@ export default async function handler(Schema, req, res, props = {}) {
                   { status: vapidStatus }
                 )
               } else if (subscriptions.length > 0) {
+                const pushCleanup = createInvalidPushSubscriptionCollector({
+                  db,
+                  logPrefix: '[CRUD] Achievement push',
+                })
+
                 const achievementName = achievement?.name?.trim() || 'Достижение'
                 const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
 
@@ -702,33 +708,38 @@ export default async function handler(Schema, req, res, props = {}) {
 
                 if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
 
-                const result = await sendPushNotification({
-                  subscriptions,
-                  payload: {
-                    title: 'Новое достижение',
-                    body: bodyParts.join('\n'),
-                    data: payloadData,
-                    tag: `achievement-${jsonData._id}`,
-                  },
-                  context: 'achievement-notification',
-                  debug: debugEnabled,
-                })
-
-                if (debugEnabled) {
-                  console.debug('[CRUD] Achievement push result', {
-                    userId: jsonData.userId,
-                    achievementId: jsonData.achievementId,
-                    subscriptions: subscriptions.length,
-                    statusCode: Array.isArray(result)
-                      ? result
-                          .map((item) =>
-                            item.status === 'fulfilled'
-                              ? item.value?.statusCode
-                              : 'rejected'
-                          )
-                          .join(',')
-                      : result?.statusCode,
+                try {
+                  const result = await sendPushNotification({
+                    subscriptions,
+                    payload: {
+                      title: 'Новое достижение',
+                      body: bodyParts.join('\n'),
+                      data: payloadData,
+                      tag: `achievement-${jsonData._id}`,
+                    },
+                    context: 'achievement-notification',
+                    debug: debugEnabled,
+                    onSubscriptionRejected: pushCleanup.handleRejected,
                   })
+
+                  if (debugEnabled) {
+                    console.debug('[CRUD] Achievement push result', {
+                      userId: jsonData.userId,
+                      achievementId: jsonData.achievementId,
+                      subscriptions: subscriptions.length,
+                      statusCode: Array.isArray(result)
+                        ? result
+                            .map((item) =>
+                              item.status === 'fulfilled'
+                                ? item.value?.statusCode
+                                : 'rejected'
+                            )
+                            .join(',')
+                        : result?.statusCode,
+                    })
+                  }
+                } finally {
+                  await pushCleanup.flush()
                 }
               } else if (debugEnabled) {
                 console.debug('[CRUD] Skip achievement push notification: no subscriptions', {
@@ -910,23 +921,33 @@ export default async function handler(Schema, req, res, props = {}) {
               ])
 
               if (targetSubscriptions.length > 0) {
-                await sendPushNotification({
-                  subscriptions: targetSubscriptions,
-                  payload: {
-                    title: newPushActive
-                      ? 'Push-уведомления подключены'
-                      : 'Push-уведомления отключены',
-                    body: newPushActive
-                      ? 'Вы успешно подключили push-уведомления.'
-                      : 'Push-уведомления отключены для данного пользователя.',
-                    data: {
-                      url: process.env.DOMAIN
-                        ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
-                        : `/${location}/cabinet/notifications`,
-                    },
-                    tag: `push-settings-${data._id}`,
-                  },
+                const pushCleanup = createInvalidPushSubscriptionCollector({
+                  db,
+                  logPrefix: '[CRUD] User push settings notification',
                 })
+
+                try {
+                  await sendPushNotification({
+                    subscriptions: targetSubscriptions,
+                    payload: {
+                      title: newPushActive
+                        ? 'Push-уведомления подключены'
+                        : 'Push-уведомления отключены',
+                      body: newPushActive
+                        ? 'Вы успешно подключили push-уведомления.'
+                        : 'Push-уведомления отключены для данного пользователя.',
+                      data: {
+                        url: process.env.DOMAIN
+                          ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
+                          : `/${location}/cabinet/notifications`,
+                      },
+                      tag: `push-settings-${data._id}`,
+                    },
+                    onSubscriptionRejected: pushCleanup.handleRejected,
+                  })
+                } finally {
+                  await pushCleanup.flush()
+                }
               }
             }
             if (!isUserQuestionnaireFilled(oldData)) {
@@ -983,19 +1004,29 @@ export default async function handler(Schema, req, res, props = {}) {
               )}`
 
               if (pushSubscriptions.length > 0) {
-                await sendPushNotification({
-                  subscriptions: pushSubscriptions,
-                  payload: {
-                    title: 'Пользователь заполнил анкету',
-                    body: text,
-                    data: {
-                      url: process.env.DOMAIN
-                        ? `${process.env.DOMAIN}/${location}/user/${id}`
-                        : `/${location}/user/${id}`,
-                    },
-                    tag: `user-questionnaire-${id}`,
-                  },
+                const pushCleanup = createInvalidPushSubscriptionCollector({
+                  db,
+                  logPrefix: '[CRUD] User questionnaire notification',
                 })
+
+                try {
+                  await sendPushNotification({
+                    subscriptions: pushSubscriptions,
+                    payload: {
+                      title: 'Пользователь заполнил анкету',
+                      body: text,
+                      data: {
+                        url: process.env.DOMAIN
+                          ? `${process.env.DOMAIN}/${location}/user/${id}`
+                          : `/${location}/user/${id}`,
+                      },
+                      tag: `user-questionnaire-${id}`,
+                    },
+                    onSubscriptionRejected: pushCleanup.handleRejected,
+                  })
+                } finally {
+                  await pushCleanup.flush()
+                }
               }
 
               if (usersTelegramIds.filter(Boolean).length > 0) {

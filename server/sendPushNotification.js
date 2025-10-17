@@ -100,6 +100,7 @@ const sendPushNotification = async ({
   options,
   context,
   debug,
+  onSubscriptionRejected,
 } = {}) => {
   const targets = normalizeSubscriptions(subscription, subscriptions)
 
@@ -123,25 +124,53 @@ const sendPushNotification = async ({
   const webPush = await getWebPush()
   const serializedPayload = serializePayload(payload)
 
+  const handleRejected = ({ error, subscription: rejectedSubscription, target }) => {
+    if (typeof onSubscriptionRejected === 'function') {
+      try {
+        onSubscriptionRejected({
+          error,
+          subscription: rejectedSubscription,
+          target,
+        })
+      } catch (callbackError) {
+        console.error(
+          `${logPrefix} Failed to handle rejected subscription callback`,
+          callbackError
+        )
+      }
+    }
+  }
+
   const sendSingle = async (target) => {
     const normalizedSubscription = extractSubscription(target)
 
     if (!normalizedSubscription) {
-      throw new Error('[sendPushNotification] Invalid subscription payload')
+      const error = new Error('[sendPushNotification] Invalid subscription payload')
+      handleRejected({ error, subscription: normalizedSubscription, target })
+      throw error
     }
 
-    const response = await webPush.sendNotification(
-      normalizedSubscription,
-      serializedPayload,
-      options
-    )
+    try {
+      const response = await webPush.sendNotification(
+        normalizedSubscription,
+        serializedPayload,
+        options
+      )
 
-    debugLog('Push delivered', {
-      endpoint: normalizedSubscription.endpoint,
-      statusCode: response?.statusCode,
-    })
+      debugLog('Push delivered', {
+        endpoint: normalizedSubscription.endpoint,
+        statusCode: response?.statusCode,
+      })
 
-    return response
+      return response
+    } catch (error) {
+      handleRejected({
+        error,
+        subscription: normalizedSubscription,
+        target,
+      })
+      throw error
+    }
   }
 
   if (targets.length === 1) {

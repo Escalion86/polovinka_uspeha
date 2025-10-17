@@ -4,6 +4,7 @@ import sendPushNotification, {
   hasVapidKeyPairConfigured,
 } from '@server/sendPushNotification'
 import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
+import { createInvalidPushSubscriptionCollector } from '@server/pushSubscriptionsCleanup'
 import dbConnect from '@utils/dbConnect'
 
 const sanitizeSubscription = (subscription) => {
@@ -101,6 +102,11 @@ export default async function handler(req, res) {
             )
           }
         } else {
+          const pushCleanup = createInvalidPushSubscriptionCollector({
+            db,
+            logPrefix: '[notifications/push] Confirmation push',
+          })
+
           try {
             const result = await sendPushNotification({
               subscriptions,
@@ -115,6 +121,7 @@ export default async function handler(req, res) {
               },
               context: 'push-confirmation',
               debug: debugEnabled,
+              onSubscriptionRejected: pushCleanup.handleRejected,
             })
 
             if (debugEnabled) {
@@ -137,6 +144,8 @@ export default async function handler(req, res) {
               '[notifications/push] Failed to send confirmation push',
               error
             )
+          } finally {
+            await pushCleanup.flush()
           }
         }
       }
