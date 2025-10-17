@@ -62,7 +62,7 @@ import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
 // import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 // import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
 import { useRouter } from 'next/router'
-import { postData } from '@helpers/CRUD'
+import { getData, postData } from '@helpers/CRUD'
 // import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
 import browserVer from '@helpers/browserVer'
 import { useWindowDimensionsStore } from '@helpers/useWindowDimensions'
@@ -95,6 +95,9 @@ const StateLoader = (props) => {
   // const [location, setLocation] = useAtom(locationAtom)
   const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+  const loggedUserActiveId = loggedUserActive?._id
+    ? String(loggedUserActive._id)
+    : null
   const setLoggedUserActive = useSetAtom(loggedUserActiveAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useAtom(
     loggedUserActiveRoleNameAtom
@@ -283,6 +286,122 @@ const StateLoader = (props) => {
       )
     }
   }, [loggedUser, location])
+
+  useEffect(() => {
+    if (
+      typeof window === 'undefined' ||
+      !('serviceWorker' in navigator) ||
+      !location ||
+      !loggedUserActiveId
+    ) {
+      return undefined
+    }
+
+    const processPushNotificationMessage = async (event, source) => {
+      const message = event?.data
+      if (!message || message.type !== 'push-notification') return
+
+      const payload = message.payload || {}
+      const payloadData = payload?.data || {}
+      const payloadType = payloadData?.type || payload?.type
+
+      console.info('[Push debug] Получено push-сообщение', {
+        source,
+        payload,
+        payloadData,
+        payloadType,
+        loggedUserActiveId,
+      })
+
+      if (payloadType !== 'achievement-assigned') return
+
+      console.info('[Push debug] Получено уведомление о достижении', {
+        payload,
+        payloadData,
+        loggedUserActiveId,
+      })
+
+      if (
+        payloadData?.userId &&
+        String(payloadData.userId) !== String(loggedUserActiveId)
+      ) {
+        console.debug('[Push debug] Сообщение не для активного пользователя', {
+          payloadUserId: payloadData.userId,
+          loggedUserActiveId,
+        })
+        return
+      }
+
+      const achievementUserId = payloadData?.achievementUserId
+      if (!achievementUserId) {
+        console.warn(
+          '[Push debug] Получено уведомление без идентификатора выдачи достижения'
+        )
+        return
+      }
+
+      try {
+        const assignment = await getData(
+          `/api/${location}/achievementsusers/${achievementUserId}`
+        )
+
+        if (!assignment) {
+          console.warn(
+            '[Push debug] Не удалось загрузить информацию о выдаче достижения'
+          )
+          return
+        }
+
+        setAchievementsUsersState((state) => {
+          const nextState = Array.isArray(state) ? [...state] : []
+          const normalizedId = String(assignment._id)
+          const existingIndex = nextState.findIndex(
+            (item) => String(item?._id) === normalizedId
+          )
+
+          if (existingIndex >= 0) {
+            nextState[existingIndex] = assignment
+            return nextState
+          }
+
+          nextState.push(assignment)
+          return nextState
+        })
+      } catch (error) {
+        console.error(
+          'Не удалось обновить достижения после push-уведомления',
+          error
+        )
+      }
+    }
+
+    const handleServiceWorkerMessage = (event) => {
+      processPushNotificationMessage(event, 'serviceWorker').catch((error) => {
+        console.error('[Push debug] Ошибка обработки push-сообщения', error)
+      })
+    }
+
+    const handleWindowMessage = (event) => {
+      processPushNotificationMessage(event, 'window').catch((error) => {
+        console.error('[Push debug] Ошибка обработки push-сообщения (window)', error)
+      })
+    }
+
+    navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage)
+    window.addEventListener('message', handleWindowMessage)
+
+    if (typeof navigator.serviceWorker.startMessages === 'function') {
+      navigator.serviceWorker.startMessages()
+    }
+
+    return () => {
+      navigator.serviceWorker.removeEventListener(
+        'message',
+        handleServiceWorkerMessage
+      )
+      window.removeEventListener('message', handleWindowMessage)
+    }
+  }, [getData, location, loggedUserActiveId, setAchievementsUsersState])
 
   return (
     <div className={cn('relative', props.className)}>
