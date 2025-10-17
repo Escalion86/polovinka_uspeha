@@ -8,6 +8,7 @@ import textAge from '@helpers/textAge'
 import { sendMessageWithRepeats } from '@server/sendTelegramMessage'
 import sendPushNotification from '@server/sendPushNotification'
 import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
+import { createInvalidPushSubscriptionCollector } from '@server/pushSubscriptionsCleanup'
 import dbConnect from '@utils/dbConnect'
 
 var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
@@ -218,19 +219,29 @@ export default async function handler(req, res) {
                 ])
 
                 if (pushSubscriptions.length > 0) {
-                  await sendPushNotification({
-                    subscriptions: pushSubscriptions,
-                    payload: {
-                      title: 'Ежедневные уведомления',
-                      body: text,
-                      data: {
-                        url: process.env.DOMAIN
-                          ? `${process.env.DOMAIN}/${location}/cabinet/birthdays`
-                          : `/${location}/cabinet/birthdays`,
-                      },
-                      tag: `daily-${location}`,
-                    },
+                  const pushCleanup = createInvalidPushSubscriptionCollector({
+                    db,
+                    logPrefix: '[cron] Daily notifications push',
                   })
+
+                  try {
+                    await sendPushNotification({
+                      subscriptions: pushSubscriptions,
+                      payload: {
+                        title: 'Ежедневные уведомления',
+                        body: text,
+                        data: {
+                          url: process.env.DOMAIN
+                            ? `${process.env.DOMAIN}/${location}/cabinet/birthdays`
+                            : `/${location}/cabinet/birthdays`,
+                        },
+                        tag: `daily-${location}`,
+                      },
+                      onSubscriptionRejected: pushCleanup.handleRejected,
+                    })
+                  } finally {
+                    await pushCleanup.flush()
+                  }
                 }
 
                 if (notifications.telegram?.active && notifications.telegram?.id) {

@@ -211,7 +211,7 @@ const Group = ({
           >
             {items.map((subitem, index) => (
               <MenuItem
-                key={'menu' + subitem.id}
+                key={`menu-${item.id}-${subitem.id ?? subitem.href ?? index}`}
                 item={subitem}
                 active={activePage === subitem.href}
                 badgeNum={pagesIdsWithBadge[subitem.id]}
