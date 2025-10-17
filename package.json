@@ -73,7 +73,8 @@
     "save-svg-as-png": "^1.4.17",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
-    "uid": "^2.0.2"
+    "uid": "^2.0.2",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
