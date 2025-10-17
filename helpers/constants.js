@@ -189,6 +189,7 @@ import LikesContent from '@layouts/content/LikesContent'
 import ReferralsAdminContent from '@layouts/content/ReferralsAdminContent'
 import ReferralsContent from '@layouts/content/ReferralsContent'
 import badgeLoggedUserLikesToSeeSelector from '@state/selectors/badgeLoggedUserLikesToSeeSelector'
+import badgeUnviewedAchievementsSelector from '@state/selectors/badgeUnviewedAchievementsSelector'
 import RemindDatesContent from '@layouts/content/RemindDatesContent'
 import WhatsappMessagesContent from '@layouts/content/WhatsappMessagesContent'
 // const colors = [
@@ -2182,6 +2183,7 @@ export const pages = [
     name: 'Моя статистика',
     href: 'userStatistics',
     icon: faTrophy,
+    badge: badgeUnviewedAchievementsSelector,
     // accessRoles: CONTENTS['userStatistics'].accessRoles,
     roleAccess: CONTENTS['userStatistics'].roleAccess,
   },

@@ -24,6 +24,10 @@ const achievementsUsersSchema = {
     type: String,
     default: '',
   },
+  viewedAt: {
+    type: Date,
+    default: null,
+  },
   issuedAt: {
     type: Date,
     default: () => Date.now(),
