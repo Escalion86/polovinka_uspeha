@@ -25,6 +25,84 @@ import PhoneInput from '@components/PhoneInput'
 import useErrors from '@helpers/useErrors'
 import urlBase64ToUint8Array from '@helpers/urlBase64ToUint8Array'
 
+const SERVICE_WORKER_READY_TIMEOUT = 10000
+const SERVICE_WORKER_CANDIDATES = ['/sw.js', '/service-worker.js']
+
+const parseJsonResponse = async (response) => {
+  const contentType = response.headers.get('content-type') ?? ''
+  if (contentType.includes('application/json')) {
+    return response.json()
+  }
+
+  const text = await response.text()
+  const message = text?.trim()
+  throw new Error(message || 'Некорректный ответ от сервера')
+}
+
+const ensureServiceWorkerRegistration = async () => {
+  if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
+    return null
+  }
+
+  const existingRegistration = await navigator.serviceWorker
+    .getRegistration()
+    .catch(() => undefined)
+
+  if (existingRegistration?.active) {
+    return existingRegistration
+  }
+
+  let registration = existingRegistration
+
+  if (!registration) {
+    for (const script of SERVICE_WORKER_CANDIDATES) {
+      try {
+        registration = await navigator.serviceWorker.register(script)
+        if (registration) break
+      } catch (err) {
+        console.warn(
+          `Не удалось зарегистрировать service worker по адресу ${script}`,
+          err
+        )
+      }
+    }
+
+    if (!registration) {
+      throw new Error(
+        'Не удалось зарегистрировать сервис-воркер для push-уведомлений'
+      )
+    }
+  }
+
+  if (registration?.active) {
+    return registration
+  }
+
+  try {
+    const readyRegistration = await Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise((_, reject) =>
+        setTimeout(
+          () =>
+            reject(
+              new Error(
+                'Сервис-воркер не активирован, push-уведомления недоступны'
+              )
+            ),
+          SERVICE_WORKER_READY_TIMEOUT
+        )
+      ),
+    ])
+
+    return readyRegistration
+  } catch (err) {
+    console.error('Сервис-воркер не готов к работе', err)
+    throw new Error(
+      'Сервис-воркер не готов для push-уведомлений. Проверьте сборку приложения или настройки PWA.'
+    )
+  }
+}
+
 const LoggedUserNotificationsContent = (props) => {
   const location = useAtomValue(locationAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
@@ -200,7 +278,13 @@ const LoggedUserNotificationsContent = (props) => {
         return
       }
 
-      const registration = await navigator.serviceWorker.ready
+      const registration = await ensureServiceWorkerRegistration()
+      if (!registration) {
+        throw new Error(
+          'Сервис-воркер недоступен, push-уведомления не поддерживаются'
+        )
+      }
+
       let subscription = await registration.pushManager.getSubscription()
       if (!subscription) {
         const applicationServerKey = urlBase64ToUint8Array(
@@ -222,7 +306,7 @@ const LoggedUserNotificationsContent = (props) => {
         }),
       })
 
-      const responseJson = await response.json()
+      const responseJson = await parseJsonResponse(response)
 
       if (!response.ok) {
         throw new Error(
@@ -248,7 +332,13 @@ const LoggedUserNotificationsContent = (props) => {
     if (!isPushSupported || !loggedUserActive?._id) return
     setIsPushUnsubscribing(true)
     try {
-      const registration = await navigator.serviceWorker.ready
+      const registration = await ensureServiceWorkerRegistration()
+      if (!registration) {
+        throw new Error(
+          'Сервис-воркер недоступен, push-уведомления не поддерживаются'
+        )
+      }
+
       const subscription = await registration.pushManager.getSubscription()
       const endpoint = subscription?.endpoint
 
@@ -266,7 +356,7 @@ const LoggedUserNotificationsContent = (props) => {
           }),
         })
 
-        const responseJson = await response.json()
+        const responseJson = await parseJsonResponse(response)
 
         if (!response.ok) {
           throw new Error(responseJson?.error || 'Ошибка удаления push-подписки')
