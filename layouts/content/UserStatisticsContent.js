@@ -4,18 +4,24 @@ import PieChart from '@components/Charts/PieChart'
 import CheckBox from '@components/CheckBox'
 import { H3 } from '@components/tags'
 import formatDate from '@helpers/formatDate'
+import formatDateTime from '@helpers/formatDateTime'
 import getDataStringBetweenDates from '@helpers/getDataStringBetweenDates'
 import isEventClosedFunc from '@helpers/isEventClosed'
+import { putData } from '@helpers/CRUD'
+import useSnackbar from '@helpers/useSnackbar'
 import asyncEventsUsersByUserIdAtom from '@state/async/asyncEventsUsersByUserIdAtom'
+import achievementsAtom from '@state/atoms/achievementsAtom'
+import achievementsUsersAtom from '@state/atoms/achievementsUsersAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import locationAtom from '@state/atoms/locationAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
 import Image from 'next/image'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowContainer, Popover } from 'react-tiny-popover'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import Tilt from 'react-parallax-tilt'
 
 const place = (count, places) => {
@@ -33,7 +39,25 @@ const place = (count, places) => {
   return
 }
 
-const Cup = ({ place, className }) => {
+const Cup = ({ place, className, image }) => {
+  if (image)
+    return (
+      <div
+        className={cn(
+          'relative w-[65px] h-[65px] laptop:w-[77px] laptop:h-[77px] overflow-hidden rounded-lg border border-gray-200 bg-white',
+          className
+        )}
+      >
+        <Image
+          src={image}
+          alt="achievement"
+          fill
+          className="object-cover"
+          sizes="77px"
+        />
+      </div>
+    )
+
   if (typeof place === 'number')
     return (
       <Image
@@ -58,11 +82,19 @@ const Cup = ({ place, className }) => {
       width="0"
       height="0"
       sizes="77px"
+      alt="cup"
     />
   )
 }
 
-const Achivement = ({ name, place, tooltipText }) => {
+const Achivement = ({
+  name,
+  place,
+  tooltipText,
+  image,
+  isUnviewed = false,
+  onClick,
+}) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const refFlip = useRef()
 
@@ -75,13 +107,18 @@ const Achivement = ({ name, place, tooltipText }) => {
     }
   }, [])
 
+  const handleClick = () => {
+    setIsPopoverOpen(true)
+    if (onClick) onClick()
+  }
+
   return (
     <>
       {/* //   <div> */}
       <Tilt
         className={cn(
           'tilt',
-          'rounded-lg border-gray-200 border hover:border-general duration-300 cursor-pointer',
+          'relative rounded-lg border-gray-200 border hover:border-general duration-300 cursor-pointer',
           place === 0
             ? 'bg-blue-100'
             : place === 1
@@ -92,7 +129,10 @@ const Achivement = ({ name, place, tooltipText }) => {
                   ? 'bg-amber-100'
                   : place === 4
                     ? 'bg-green-100'
-                    : 'bg-white'
+                    : 'bg-white',
+          isUnviewed
+            ? 'ring-2 ring-offset-2 ring-yellow-300 shadow-[0_0_25px_rgba(253,224,71,0.7)] animate-pulse'
+            : null
         )}
         glareEnable
         tiltReverse
@@ -132,12 +172,16 @@ const Achivement = ({ name, place, tooltipText }) => {
           <div
             onMouseEnter={() => setIsPopoverOpen(true)}
             onMouseLeave={() => setIsPopoverOpen(false)}
+            onClick={handleClick}
             className={cn(
               'flex flex-col h-[100px] w-[100px] laptop:h-[120px] laptop:w-[120px] rounded-lg border-gray-200 border hover:border-general duration-300 cursor-pointer',
               // "inner-element"
               // 'track-on-window'
               // 'animate-shadow-pulse'
-              'tilt'
+              'tilt',
+              isUnviewed
+                ? 'ring-2 ring-yellow-300 ring-offset-2 shadow-[0_0_25px_rgba(253,224,71,0.5)]'
+                : null
             )}
           >
             <div
@@ -146,7 +190,15 @@ const Achivement = ({ name, place, tooltipText }) => {
                 'tilt-element'
               )}
             >
-              <Cup place={place} />
+              <Cup
+                place={place}
+                image={image}
+                className={cn(
+                  isUnviewed
+                    ? 'drop-shadow-[0_0_18px_rgba(253,224,71,0.8)]'
+                    : null
+                )}
+              />
               <div
                 className={cn(
                   'text-sm laptop:text-base text-center -mx-[8px]',
@@ -211,10 +263,17 @@ const UserStatisticsContent = () => {
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const events = useAtomValue(eventsAtom)
   const directions = useAtomValue(directionsAtom)
+  const achievementsList = useAtomValue(achievementsAtom)
+  const achievementsUsers = useAtomValue(achievementsUsersAtom)
+  const setAchievementsUsers = useSetAtom(achievementsUsersAtom)
   const eventsUser = useAtomValue(
     asyncEventsUsersByUserIdAtom(loggedUserActive._id)
   )
+  const location = useAtomValue(locationAtom)
   const siteSettings = useAtomValue(siteSettingsAtom)
+  const snackbar = useSnackbar()
+  const pendingViewIdsRef = useRef(new Set())
+  const loggedUserId = loggedUserActive?._id
   const eventsTags = siteSettings.eventsTags ?? []
   const userEventsIds = eventsUser
     .filter(({ status }) => !['ban', 'reserve'].includes(status))
@@ -246,6 +305,141 @@ const UserStatisticsContent = () => {
     }
   )
 
+  const assignedAchievements = useMemo(() => {
+    if (!loggedUserActive?._id) return []
+
+    return (
+      achievementsUsers
+        ?.filter(
+          ({ userId }) => String(userId) === String(loggedUserActive._id)
+        )
+        .map((item) => {
+          const achievement = achievementsList.find(
+            ({ _id }) => String(_id) === String(item.achievementId)
+          )
+          const event = events.find(
+            ({ _id }) => String(_id) === String(item.eventId)
+          )
+
+          return {
+            ...item,
+            achievement,
+            event,
+          }
+        })
+        .sort((a, b) => new Date(b.issuedAt) - new Date(a.issuedAt)) || []
+    )
+  }, [achievementsUsers, achievementsList, events, loggedUserActive])
+
+  const assignedAchievementCards = useMemo(
+    () =>
+      assignedAchievements.map((item) => {
+        const name = item.achievement?.name ?? 'Достижение'
+        const tooltipParts = []
+
+        if (item.achievement?.description)
+          tooltipParts.push(item.achievement.description)
+        if (item.comment) tooltipParts.push(`Комментарий: ${item.comment}`)
+
+        const eventTitle = item.event?.title || item.eventName
+        if (eventTitle) tooltipParts.push(`Мероприятие: ${eventTitle}`)
+
+        if (item.issuedAt)
+          tooltipParts.push(
+            `Выдано: ${formatDateTime(
+              item.issuedAt,
+              true,
+              false,
+              false,
+              false,
+              undefined,
+              true,
+              true
+            )}`
+          )
+
+        return {
+          key: `assigned-${item._id}`,
+          name,
+          place: 0,
+          tooltipText: tooltipParts.join('\n'),
+          image: item.achievement?.image,
+          assignmentId: String(item._id),
+          isViewed: Boolean(item.viewedAt),
+        }
+      }),
+    [assignedAchievements]
+  )
+
+  const handleAchievementCardClick = useCallback(
+    async (assignmentId) => {
+      if (!assignmentId || !loggedUserId) return
+
+      const normalizedId = String(assignmentId)
+      if (pendingViewIdsRef.current.has(normalizedId)) return
+
+      const targetAssignment = assignedAchievements.find(
+        ({ _id }) => String(_id) === normalizedId
+      )
+
+      if (!targetAssignment || targetAssignment.viewedAt) return
+
+      pendingViewIdsRef.current.add(normalizedId)
+
+      const optimisticViewedAt = new Date().toISOString()
+
+      setAchievementsUsers((state) =>
+        state.map((item) =>
+          String(item._id) === normalizedId
+            ? { ...item, viewedAt: optimisticViewedAt }
+            : item
+        )
+      )
+
+      try {
+        const updated = await putData(
+          `/api/${location}/achievementsusers/${normalizedId}`,
+          { viewedAt: optimisticViewedAt },
+          null,
+          null,
+          false,
+          loggedUserId
+        )
+
+        if (!updated) {
+          setAchievementsUsers((state) =>
+            state.map((item) =>
+              String(item._id) === normalizedId
+                ? { ...item, viewedAt: targetAssignment.viewedAt ?? null }
+                : item
+            )
+          )
+          snackbar.error('Не удалось отметить достижение просмотренным')
+        } else if (
+          updated?.viewedAt &&
+          updated.viewedAt !== optimisticViewedAt
+        ) {
+          setAchievementsUsers((state) =>
+            state.map((item) =>
+              String(item._id) === normalizedId
+                ? { ...item, viewedAt: updated.viewedAt }
+                : item
+            )
+          )
+        }
+      } finally {
+        pendingViewIdsRef.current.delete(normalizedId)
+      }
+    },
+    [
+      assignedAchievements,
+      location,
+      loggedUserId,
+      setAchievementsUsers,
+      snackbar,
+    ]
+  )
+
   const eventsByDirectionsData = directions.map((direction) => {
     const eventsInDirectionCount = filteredEvents.filter(
       (event) => event.directionId === direction._id
@@ -269,7 +463,7 @@ const UserStatisticsContent = () => {
   const tagEventsCount = (tag) =>
     eventsTagsWithCount.find(({ text }) => text === tag)?.count
 
-  const achievements = [
+  const metricAchievements = [
     {
       name: 'Активист',
       cause: 'Количество посещенных мероприятий',
@@ -406,16 +600,38 @@ const UserStatisticsContent = () => {
     },
   ]
 
-  const achievementsWithPlace = achievements.map((achive) => ({
+  const metricAchievementsWithPlace = metricAchievements.map((achive) => ({
     ...achive,
     place: place(achive.num, achive.counts),
   }))
 
   const sortedAchievementsWithPlace = [
-    ...achievementsWithPlace.filter(
+    ...metricAchievementsWithPlace.filter(
       ({ place }) => showAllAchivement || typeof place === 'number'
     ),
   ].sort((a, b) => ((a.place ?? 5) > (b.place ?? 5) ? 1 : -1))
+
+  const metricAchievementCards = sortedAchievementsWithPlace.map(
+    ({ name, cause, counts, num, place }) => ({
+      key: `metric-${name}`,
+      name,
+      place,
+      tooltipText: `${cause}: ${num ?? 0}\n${
+        place === 0
+          ? 'У Вас Высшая награда!'
+          : typeof place !== 'number'
+            ? `Для достижения необходимо: ${[...counts].reverse()[0]}`
+            : `Следующее достижение: ${counts[place - 1]}`
+      }`,
+      assignmentId: null,
+      isViewed: true,
+    })
+  )
+
+  const achievementsCards = [
+    ...assignedAchievementCards,
+    ...metricAchievementCards,
+  ]
 
   return (
     <div className="flex flex-col items-center p-2 overflow-y-auto gap-y-5">
@@ -438,20 +654,29 @@ const UserStatisticsContent = () => {
           onChange={() => setShowAllAchivement((state) => !state)}
         />
         <div className="flex flex-wrap justify-center gap-2">
-          {sortedAchievementsWithPlace.length > 0 ? (
-            sortedAchievementsWithPlace.map(
-              ({ name, cause, counts, num, place }) => (
+          {achievementsCards.length > 0 ? (
+            achievementsCards.map(
+              ({
+                key,
+                name,
+                place,
+                tooltipText,
+                image,
+                assignmentId,
+                isViewed,
+              }) => (
                 <Achivement
-                  key={'achive' + name}
+                  key={key}
                   name={name}
                   place={place}
-                  tooltipText={`${cause}: ${num ?? 0}\n${
-                    place === 0
-                      ? 'У Вас Высшая награда!'
-                      : typeof place !== 'number'
-                        ? `Для достижения необходимо: ${[...counts].reverse()[0]}`
-                        : `Следующее достижение: ${counts[place - 1]}`
-                  }`}
+                  tooltipText={tooltipText}
+                  image={image}
+                  isUnviewed={Boolean(assignmentId) && !isViewed}
+                  onClick={
+                    assignmentId
+                      ? () => handleAchievementCardClick(assignmentId)
+                      : undefined
+                  }
                 />
               )
             )
