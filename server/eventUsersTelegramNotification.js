@@ -4,6 +4,8 @@ import getUserFullName from '@helpers/getUserFullName'
 import subEventsSummator from '@helpers/subEventsSummator'
 
 import sendTelegramMessage from '@server/sendTelegramMessage'
+import sendPushNotification from '@server/sendPushNotification'
+import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import dbConnect from '@utils/dbConnect'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
 
@@ -47,7 +49,7 @@ const eventUsersTelegramNotification = async ({
       .map((role) => role._id)
 
     // Получаем список подписанных на уведомления, и если их нет, то выходим сразу
-    const usersWithTelegramNotificationsOfEventUsersON = await db
+    const usersWithNotificationsOfEventUsersON = await db
       .model('Users')
       .find({
         role:
@@ -55,17 +57,25 @@ const eventUsersTelegramNotification = async ({
             ? 'dev'
             : { $in: rolesIdsToEventUsersNotification },
         'notifications.settings.eventRegistration': true,
-        'notifications.telegram.active': true,
-        'notifications.telegram.id': {
-          $exists: true,
-          $ne: null,
-        },
+        $or: [
+          {
+            'notifications.telegram.active': true,
+            'notifications.telegram.id': {
+              $exists: true,
+              $ne: null,
+            },
+          },
+          {
+            'notifications.push.active': true,
+            'notifications.push.subscriptions.0': { $exists: true },
+          },
+        ],
       })
       .lean()
 
     if (
-      !usersWithTelegramNotificationsOfEventUsersON ||
-      usersWithTelegramNotificationsOfEventUsersON?.length === 0
+      !usersWithNotificationsOfEventUsersON ||
+      usersWithNotificationsOfEventUsersON?.length === 0
     )
       return
 
@@ -281,18 +291,45 @@ const eventUsersTelegramNotification = async ({
           : `\nЗапись в резерв закрыта`
       }`
 
-    const usersTelegramIds = usersWithTelegramNotificationsOfEventUsersON.map(
-      (user) => user.notifications?.telegram?.id
+    const usersTelegramIds = usersWithNotificationsOfEventUsersON
+      .filter((user) => user.notifications?.telegram?.active)
+      .map((user) => user.notifications?.telegram?.id)
+
+    const pushSubscriptions = getUsersPushSubscriptions(
+      usersWithNotificationsOfEventUsersON
     )
 
+    const eventUrl = process.env.DOMAIN
+      ? `${process.env.DOMAIN}/${location}/event/${eventId}`
+      : `/${location}/event/${eventId}`
+
+    if (pushSubscriptions.length > 0) {
+      await sendPushNotification({
+        subscriptions: pushSubscriptions,
+        payload: {
+          title: 'Изменения по мероприятию',
+          body: text,
+          data: {
+            url: eventUrl,
+            userId: userId ? String(userId) : undefined,
+          },
+          tag: `event-users-${eventId}`,
+        },
+      })
+    }
+
+    const filteredTelegramIds = usersTelegramIds.filter(Boolean)
+
+    if (filteredTelegramIds.length === 0) return
+
     const result = await sendTelegramMessage({
-      telegramIds: usersTelegramIds,
+      telegramIds: filteredTelegramIds,
       text,
       inline_keyboard: [
         [
           {
             text: '\u{1F4C5} Мероприятие',
-            url: process.env.DOMAIN + '/' + location + '/event/' + eventId,
+            url: eventUrl,
           },
           userId
             ? {

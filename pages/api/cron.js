@@ -6,6 +6,8 @@ import padNum from '@helpers/padNum'
 import textAge from '@helpers/textAge'
 
 import { sendMessageWithRepeats } from '@server/sendTelegramMessage'
+import sendPushNotification from '@server/sendPushNotification'
+import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import dbConnect from '@utils/dbConnect'
 
 var daysBeforeBirthday = (birthday, dateNow = new Date()) => {
@@ -80,11 +82,19 @@ export default async function handler(req, res) {
                 { 'notifications.settings.remindDates': true },
               ],
               'notifications.settings.time': strTimeNow,
-              'notifications.telegram.active': true,
-              'notifications.telegram.id': {
-                $exists: true,
-                $ne: null,
-              },
+              $or: [
+                {
+                  'notifications.telegram.active': true,
+                  'notifications.telegram.id': {
+                    $exists: true,
+                    $ne: null,
+                  },
+                },
+                {
+                  'notifications.push.active': true,
+                  'notifications.push.subscriptions.0': { $exists: true },
+                },
+              ],
             })
             .lean()
 
@@ -203,14 +213,36 @@ export default async function handler(req, res) {
                 textArray.push(remindDatesText)
               const text = textArray.join('\n\n')
               if (textArray.length > 0) {
-                const res = await sendMessageWithRepeats({
-                  req,
-                  telegramId: notifications.telegram.id,
-                  text,
-                  // images,
-                  inline_keyboard,
-                  location,
-                })
+                const pushSubscriptions = getUsersPushSubscriptions([
+                  usersToNotificate[index],
+                ])
+
+                if (pushSubscriptions.length > 0) {
+                  await sendPushNotification({
+                    subscriptions: pushSubscriptions,
+                    payload: {
+                      title: 'Ежедневные уведомления',
+                      body: text,
+                      data: {
+                        url: process.env.DOMAIN
+                          ? `${process.env.DOMAIN}/${location}/cabinet/birthdays`
+                          : `/${location}/cabinet/birthdays`,
+                      },
+                      tag: `daily-${location}`,
+                    },
+                  })
+                }
+
+                if (notifications.telegram?.active && notifications.telegram?.id) {
+                  await sendMessageWithRepeats({
+                    req,
+                    telegramId: notifications.telegram.id,
+                    text,
+                    // images,
+                    inline_keyboard,
+                    location,
+                  })
+                }
               }
             }
 

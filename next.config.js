@@ -13,6 +13,7 @@ const withPWA = require('next-pwa')({
   skipWaiting: true,
   disableDevLogs: true,
   disable: process.env.MODE === 'dev',
+  swSrc: 'service-worker.js',
 })
 
 module.exports = withFlowbiteReact(

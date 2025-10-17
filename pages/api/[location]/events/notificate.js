@@ -9,6 +9,8 @@ import { DEFAULT_ROLES } from '@helpers/constants'
 import subEventsSummator from '@helpers/subEventsSummator'
 import { telegramCmdToIndex } from '@server/telegramCmd'
 import sendTelegramMessage from '@server/sendTelegramMessage'
+import sendPushNotification from '@server/sendPushNotification'
+import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import checkLocationValid from '@server/checkLocationValid'
 import getTimeZoneByLocation from '@server/getTimeZoneByLocation'
 
@@ -36,11 +38,19 @@ const notificateUsersAboutEvent = async (eventId, location) => {
           ? 'dev'
           : { $in: rolesIdsToNewEventsByTagsNotification },
       'notifications.settings.newEventsByTags': true,
-      'notifications.telegram.active': true,
-      'notifications.telegram.id': {
-        $exists: true,
-        $ne: null,
-      },
+      $or: [
+        {
+          'notifications.telegram.active': true,
+          'notifications.telegram.id': {
+            $exists: true,
+            $ne: null,
+          },
+        },
+        {
+          'notifications.push.active': true,
+          'notifications.push.subscriptions.0': { $exists: true },
+        },
+      ],
     })
     .lean()
 
@@ -98,12 +108,19 @@ const notificateUsersAboutEvent = async (eventId, location) => {
 
   if (usersToNotificate.length === 0) return
 
-  const novicesTelegramIds = usersToNotificate
-    .filter((user) => user.status === 'novice' || !user.status)
+  const novicesUsers = usersToNotificate.filter(
+    (user) => user.status === 'novice' || !user.status
+  )
+  const membersUsers = usersToNotificate.filter(
+    (user) => user.status === 'member'
+  )
+
+  const novicesTelegramIds = novicesUsers
+    .filter((user) => user.notifications?.telegram?.active)
     .map((user) => user.notifications?.telegram?.id)
 
-  const membersTelegramIds = usersToNotificate
-    .filter((user) => user.status === 'member')
+  const membersTelegramIds = membersUsers
+    .filter((user) => user.notifications?.telegram?.active)
     .map((user) => user.notifications?.telegram?.id)
 
   // const eventPrice = subEventSum.price / 100
@@ -211,7 +228,37 @@ const notificateUsersAboutEvent = async (eventId, location) => {
           ],
         ]
 
-  if (novicesTelegramIds.length > 0) {
+  const eventUrl = process.env.DOMAIN
+    ? `${process.env.DOMAIN}/${location}/event/${String(event._id)}`
+    : `/${location}/event/${String(event._id)}`
+
+  const novicesPushSubscriptions = getUsersPushSubscriptions(novicesUsers)
+  if (novicesPushSubscriptions.length > 0) {
+    await sendPushNotification({
+      subscriptions: novicesPushSubscriptions,
+      payload: {
+        title: event.title,
+        body: textStart + textPriceForNovice + textEnd,
+        data: { url: eventUrl },
+        tag: `event-${event._id}`,
+      },
+    })
+  }
+
+  const membersPushSubscriptions = getUsersPushSubscriptions(membersUsers)
+  if (membersPushSubscriptions.length > 0) {
+    await sendPushNotification({
+      subscriptions: membersPushSubscriptions,
+      payload: {
+        title: event.title,
+        body: textStart + textPriceForMember + textEnd,
+        data: { url: eventUrl },
+        tag: `event-${event._id}`,
+      },
+    })
+  }
+
+  if (novicesTelegramIds.filter(Boolean).length > 0) {
     sendTelegramMessage({
       telegramIds: novicesTelegramIds,
       text: textStart + textPriceForNovice + textEnd,
@@ -219,7 +266,7 @@ const notificateUsersAboutEvent = async (eventId, location) => {
       location,
     })
   }
-  if (membersTelegramIds.length > 0) {
+  if (membersTelegramIds.filter(Boolean).length > 0) {
     sendTelegramMessage({
       telegramIds: membersTelegramIds,
       text: textStart + textPriceForMember + textEnd,

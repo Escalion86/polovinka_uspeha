@@ -135,7 +135,7 @@ export default async function handler(req, res) {
         //   (eventUser) => eventUser.userId
         // )
         // const addedUsersIds = addedEventUsers.map((eventUser) => eventUser.userId)
-        await eventUsersTelegramNotification({
+        eventUsersTelegramNotification({
           req,
           eventId,
           deletedEventUsers,
@@ -241,7 +241,7 @@ export default async function handler(req, res) {
       })
 
       // Оповещение в телеграм
-      await eventUsersTelegramNotification({
+      eventUsersTelegramNotification({
         req,
         eventId,
         deletedEventUsers: [eventUser],

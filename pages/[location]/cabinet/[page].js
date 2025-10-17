@@ -21,7 +21,8 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Suspense, useEffect } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
+import { useHydrateAtoms } from 'jotai/utils'
 import locationAtom from '@state/atoms/locationAtom'
 import SignOut from '@components/SignOut'
 
@@ -49,7 +50,10 @@ const SuspenseChild = () => (
 function CabinetPage(props) {
   const router = useRouter()
   const { location } = props
-  const [locationState, setLocationState] = useAtom(locationAtom)
+
+  useHydrateAtoms([[locationAtom, location]])
+
+  const locationState = useAtomValue(locationAtom)
 
   const page = router.asPath.replace(`/${location}/cabinet/`, '').split('?')[0]
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
@@ -95,12 +99,10 @@ function CabinetPage(props) {
     if (redirect) router.push(redirect, '', { shallow: true })
   }, [redirect])
 
-  useEffect(() => setLocationState(location), [location])
-
   if (props.wrongSession)
-    return <SignOut callbackUrl={location ? `/${location}` : '/'} />
+    return <SignOut callbackUrl={locationState ? `/${locationState}` : '/'} />
 
-  if (redirect || !locationState) return null
+  if (redirect) return null
 
   const Component = CONTENTS[page]
     ? CONTENTS[page].Component

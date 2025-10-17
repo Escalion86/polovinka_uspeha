@@ -94,6 +94,7 @@ const StateLoader = (props) => {
   const [mode, setMode] = useAtom(modeAtom)
   // const [location, setLocation] = useAtom(locationAtom)
   const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const setLoggedUserActive = useSetAtom(loggedUserActiveAtom)
   const [loggedUserActiveRole, setLoggedUserActiveRole] = useAtom(
     loggedUserActiveRoleNameAtom
@@ -190,7 +191,17 @@ const StateLoader = (props) => {
       props.loggedUser?.status !== loggedUser?.status
     )
       setLoggedUserActiveStatus(props.loggedUser?.status ?? 'novice')
-    setLoggedUserActive(props.loggedUser)
+    // Для разработчиков позволяем оставаться под выбранным аккаунтом,
+    // пока они сознательно не вернутся в свой профиль
+    const shouldSyncActiveUser =
+      !props.loggedUser?.role ||
+      props.loggedUser?.role !== 'dev' ||
+      !loggedUserActive?._id ||
+      loggedUserActive._id === props.loggedUser._id
+
+    if (shouldSyncActiveUser) {
+      setLoggedUserActive(props.loggedUser)
+    }
     setLoggedUser(props.loggedUser)
     setEventsState(props.events)
     setDirectionsState(props.directions)
