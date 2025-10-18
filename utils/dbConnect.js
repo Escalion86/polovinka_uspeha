@@ -188,37 +188,9 @@ async function dbConnect(location) {
     console.log('dbConnect: создаем соединение', location)
     console.log('------------------------------')
     console.log('')
-    const locationEnvKey = location
-      ? `MONGODB_${location.toUpperCase()}_URI`
-      : undefined
-    const connectionUri =
-      (locationEnvKey && process.env[locationEnvKey]) ||
-      process.env.MONGODB_URI
-
-    if (!connectionUri) {
-      const messageParts = [
-        'dbConnect: невозможно создать соединение с базой данных.',
-        `Не задана переменная окружения ${
-          locationEnvKey ? `"${locationEnvKey}"` : '"MONGODB_URI"'
-        }.`,
-      ]
-      if (locationEnvKey) {
-        messageParts.push(
-          `Укажите ${locationEnvKey} для конкретной локации или общий MONGODB_URI.`
-        )
-      } else {
-        messageParts.push('Укажите MONGODB_URI.')
-      }
-      console.error(messageParts.join(' '))
-      return null
-    }
-
-    const connectionOptions = dbName ? { dbName } : undefined
-
-    connections[location] = mongoose.createConnection(
-      connectionUri,
-      connectionOptions
-    )
+    connections[location] = mongoose.createConnection(process.env.MONGODB_URI, {
+      dbName,
+    })
     connections[location].model(
       'Users',
       mongoose.Schema(usersSchema, { timestamps: true })
