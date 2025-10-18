@@ -9,8 +9,6 @@ import { DEFAULT_ROLES } from '@helpers/constants'
 import subEventsSummator from '@helpers/subEventsSummator'
 import { telegramCmdToIndex } from '@server/telegramCmd'
 import sendTelegramMessage from '@server/sendTelegramMessage'
-import sendPushNotification from '@server/sendPushNotification'
-import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import checkLocationValid from '@server/checkLocationValid'
 import getTimeZoneByLocation from '@server/getTimeZoneByLocation'
 
@@ -38,19 +36,11 @@ const notificateUsersAboutEvent = async (eventId, location) => {
           ? 'dev'
           : { $in: rolesIdsToNewEventsByTagsNotification },
       'notifications.settings.newEventsByTags': true,
-      $or: [
-        {
-          'notifications.telegram.active': true,
-          'notifications.telegram.id': {
-            $exists: true,
-            $ne: null,
-          },
-        },
-        {
-          'notifications.push.active': true,
-          'notifications.push.subscriptions.0': { $exists: true },
-        },
-      ],
+      'notifications.telegram.active': true,
+      'notifications.telegram.id': {
+        $exists: true,
+        $ne: null,
+      },
     })
     .lean()
 
@@ -231,32 +221,6 @@ const notificateUsersAboutEvent = async (eventId, location) => {
   const eventUrl = process.env.DOMAIN
     ? `${process.env.DOMAIN}/${location}/event/${String(event._id)}`
     : `/${location}/event/${String(event._id)}`
-
-  const novicesPushSubscriptions = getUsersPushSubscriptions(novicesUsers)
-  if (novicesPushSubscriptions.length > 0) {
-    await sendPushNotification({
-      subscriptions: novicesPushSubscriptions,
-      payload: {
-        title: event.title,
-        body: textStart + textPriceForNovice + textEnd,
-        data: { url: eventUrl },
-        tag: `event-${event._id}`,
-      },
-    })
-  }
-
-  const membersPushSubscriptions = getUsersPushSubscriptions(membersUsers)
-  if (membersPushSubscriptions.length > 0) {
-    await sendPushNotification({
-      subscriptions: membersPushSubscriptions,
-      payload: {
-        title: event.title,
-        body: textStart + textPriceForMember + textEnd,
-        data: { url: eventUrl },
-        tag: `event-${event._id}`,
-      },
-    })
-  }
 
   if (novicesTelegramIds.filter(Boolean).length > 0) {
     sendTelegramMessage({
