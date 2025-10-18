@@ -107,7 +107,7 @@ const fetchProps = async (user, location, params) => {
       questionnairesUsers,
       services,
       achievements,
-      achievementsUsers
+      achievementsUsers,
     ] = await Promise.all([
       params?.events === false
         ? Promise.resolve([])
@@ -186,16 +186,6 @@ const fetchProps = async (user, location, params) => {
     //     })
     //   : []
     // const servicesUsers = await db.model('ServicesUsers').find({}).lean()
-
-    const achievements =
-      params?.achievements === false
-        ? []
-        : await db.model('Achievements').find({}).lean()
-
-    const achievementsUsers =
-      params?.achievementsUsers === false
-        ? []
-        : await db.model('AchievementsUsers').find({}).lean()
 
     // const userRole = getUserRole(user, [...DEFAULT_ROLES, ...rolesSettings])
     // const seeFullNames = userRole?.users?.seeFullNames
@@ -282,7 +272,9 @@ const fetchProps = async (user, location, params) => {
       additionalBlocks: serializeLeanDoc(additionalBlocks),
       // eventsUsers: JSON.parse(JSON.stringify(eventsUsers)),
       // payments: JSON.parse(JSON.stringify(payments)),
-      siteSettings: serializeLeanDoc(siteSettings?.length > 0 ? siteSettings[0] : {}),
+      siteSettings: serializeLeanDoc(
+        siteSettings?.length > 0 ? siteSettings[0] : {}
+      ),
       rolesSettings: serializeLeanDoc(rolesSettings),
       // histories: JSON.parse(JSON.stringify(histories)),
       achievements: serializeLeanDoc(achievements),
