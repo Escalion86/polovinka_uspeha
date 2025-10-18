@@ -6,8 +6,6 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
-import sendPushNotification from './sendPushNotification'
-import getUsersPushSubscriptions from './getUsersPushSubscriptions'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import { hashPassword } from '@helpers/passwordUtils'
 
@@ -796,57 +794,6 @@ export default async function handler(Schema, req, res, props = {}) {
               }
             }
 
-            const oldPushSettings = oldData.notifications?.push || {}
-            const newPushSettings = data.notifications?.push || {}
-            const oldPushActive = oldPushSettings?.active
-            const newPushActive = newPushSettings?.active
-            const oldPushSubscriptions = Array.isArray(
-              oldPushSettings?.subscriptions
-            )
-              ? oldPushSettings.subscriptions
-              : []
-            const newPushSubscriptions = Array.isArray(
-              newPushSettings?.subscriptions
-            )
-              ? newPushSettings.subscriptions
-              : []
-
-            if (oldPushActive !== newPushActive) {
-              const targetSubscriptions = getUsersPushSubscriptions([
-                {
-                  _id: data._id,
-                  notifications: {
-                    push: {
-                      active: true,
-                      subscriptions:
-                        newPushActive && newPushSubscriptions.length > 0
-                          ? newPushSubscriptions
-                          : oldPushSubscriptions,
-                    },
-                  },
-                },
-              ])
-
-              if (targetSubscriptions.length > 0) {
-                await sendPushNotification({
-                  subscriptions: targetSubscriptions,
-                  payload: {
-                    title: newPushActive
-                      ? 'Push-уведомления подключены'
-                      : 'Push-уведомления отключены',
-                    body: newPushActive
-                      ? 'Вы успешно подключили push-уведомления.'
-                      : 'Push-уведомления отключены для данного пользователя.',
-                    data: {
-                      url: process.env.DOMAIN
-                        ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
-                        : `/${location}/cabinet/notifications`,
-                    },
-                    tag: `push-settings-${data._id}`,
-                  },
-                })
-              }
-            }
             if (!isUserQuestionnaireFilled(oldData)) {
               // const users = await db.model('Users').find({})
               const rolesSettings = await db.model('Roles').find({}).lean()
@@ -863,28 +810,16 @@ export default async function handler(Schema, req, res, props = {}) {
                       ? 'dev'
                       : { $in: rolesIdsToNewUserRegistredNotification },
                   'notifications.settings.newUserRegistred': true,
-                  $or: [
-                    {
-                      'notifications.telegram.active': true,
-                      'notifications.telegram.id': {
-                        $exists: true,
-                        $ne: null,
-                      },
-                    },
-                    {
-                      'notifications.push.active': true,
-                      'notifications.push.subscriptions.0': { $exists: true },
-                    },
-                  ],
+                  'notifications.telegram.active': true,
+                  'notifications.telegram.id': {
+                    $exists: true,
+                    $ne: null,
+                  },
                 })
                 .lean()
               const usersTelegramIds = usersWithNotificationsOfEventUsersON
                 .filter((user) => user.notifications?.telegram?.active)
                 .map((user) => user.notifications?.telegram?.id)
-
-              const pushSubscriptions = getUsersPushSubscriptions(
-                usersWithNotificationsOfEventUsersON
-              )
 
               const text = `Пользователь с номером +${
                 data.phone
@@ -899,22 +834,6 @@ export default async function handler(Schema, req, res, props = {}) {
                 true,
                 true
               )}`
-
-              if (pushSubscriptions.length > 0) {
-                await sendPushNotification({
-                  subscriptions: pushSubscriptions,
-                  payload: {
-                    title: 'Пользователь заполнил анкету',
-                    body: text,
-                    data: {
-                      url: process.env.DOMAIN
-                        ? `${process.env.DOMAIN}/${location}/user/${id}`
-                        : `/${location}/user/${id}`,
-                    },
-                    tag: `user-questionnaire-${id}`,
-                  },
-                })
-              }
 
               if (usersTelegramIds.filter(Boolean).length > 0) {
                 sendTelegramMessage({

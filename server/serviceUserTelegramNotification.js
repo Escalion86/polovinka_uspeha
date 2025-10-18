@@ -2,8 +2,6 @@ import { DEFAULT_ROLES } from '@helpers/constants'
 import getUserFullName from '@helpers/getUserFullName'
 
 import sendTelegramMessage from '@server/sendTelegramMessage'
-import sendPushNotification from '@server/sendPushNotification'
-import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import dbConnect from '@utils/dbConnect'
 
 // Оповещение в телеграм
@@ -32,19 +30,11 @@ const serviceUserTelegramNotification = async ({
             ? 'dev'
             : { $in: rolesIdsToServiceUsersNotification },
         'notifications.settings.serviceRegistration': true,
-        $or: [
-          {
-            'notifications.telegram.active': true,
-            'notifications.telegram.id': {
-              $exists: true,
-              $ne: null,
-            },
-          },
-          {
-            'notifications.push.active': true,
-            'notifications.push.subscriptions.0': { $exists: true },
-          },
-        ],
+        'notifications.telegram.active': true,
+        'notifications.telegram.id': {
+          $exists: true,
+          $ne: null,
+        },
       })
       .lean()
 
@@ -67,28 +57,9 @@ const serviceUserTelegramNotification = async ({
       .filter((user) => user.notifications?.telegram?.active)
       .map((user) => user.notifications?.telegram?.id)
 
-    const pushSubscriptions = getUsersPushSubscriptions(
-      usersWithNotificationsOfServiceUsersON
-    )
-
     const serviceUrl = process.env.DOMAIN
       ? `${process.env.DOMAIN}/${location}/service/${serviceId}`
       : `/${location}/service/${serviceId}`
-
-    if (pushSubscriptions.length > 0) {
-      await sendPushNotification({
-        subscriptions: pushSubscriptions,
-        payload: {
-          title: 'Новая заявка на услугу',
-          body: text,
-          data: {
-            url: serviceUrl,
-            userId: String(userId),
-          },
-          tag: `service-request-${serviceId}`,
-        },
-      })
-    }
 
     const filteredTelegramIds = usersTelegramIds.filter(Boolean)
 
