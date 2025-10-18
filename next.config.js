@@ -11,7 +11,6 @@ const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disableDevLogs: true,
   disable: process.env.MODE === 'dev',
   swSrc: 'service-worker.js',
 })
