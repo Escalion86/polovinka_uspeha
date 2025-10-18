@@ -3,8 +3,6 @@ import { DEFAULT_ROLES } from '@helpers/constants'
 import mongoose from 'mongoose'
 import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
-import sendPushNotification from './sendPushNotification'
-import getUsersPushSubscriptions from './getUsersPushSubscriptions'
 
 const buildFullName = (user) => {
   if (!user) return null
@@ -58,29 +56,17 @@ const userRegisterTelegramNotification = async ({
           ? 'dev'
           : { $in: rolesIdsToEventUsersNotification },
       'notifications.settings.newUserRegistred': true,
-      $or: [
-        {
-          'notifications.telegram.active': true,
-          'notifications.telegram.id': {
-            $exists: true,
-            $ne: null,
-          },
-        },
-        {
-          'notifications.push.active': true,
-          'notifications.push.subscriptions.0': { $exists: true },
-        },
-      ],
+      'notifications.telegram.active': true,
+      'notifications.telegram.id': {
+        $exists: true,
+        $ne: null,
+      },
     })
     .lean()
 
   const usersTelegramIds = usersWithNotificationsOfEventUsersON
     .filter((user) => user.notifications?.telegram?.active)
     .map((user) => user.notifications?.telegram?.id)
-
-  const pushSubscriptions = getUsersPushSubscriptions(
-    usersWithNotificationsOfEventUsersON
-  )
 
   const messageParts = [`Зарегистрирован новый пользователь №${usersCount}`]
   if (phone) {
@@ -98,22 +84,6 @@ const userRegisterTelegramNotification = async ({
     : ''
 
   const text = `${messageParts.join(' ')}${referrerPart}`
-
-  if (pushSubscriptions.length > 0) {
-    await sendPushNotification({
-      subscriptions: pushSubscriptions,
-      payload: {
-        title: 'Новый пользователь зарегистрирован',
-        body: text,
-        data: {
-          url: process.env.DOMAIN
-            ? `${process.env.DOMAIN}/${location}/users`
-            : `/${location}/users`,
-        },
-        tag: `user-register-${usersCount}`,
-      },
-    })
-  }
 
   return await Promise.all(
     usersTelegramIds

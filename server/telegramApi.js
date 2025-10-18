@@ -1,5 +1,5 @@
 import dns from 'dns'
-import { Agent as UndiciAgent } from 'undici'
+import https from 'https'
 
 const contentType = 'application/json'
 
@@ -11,11 +11,9 @@ const lookupIPv4 = (hostname, options, callback) => {
   return dns.lookup(hostname, { ...(options || {}), family: 4 }, callback)
 }
 
-const telegramDispatcher = new UndiciAgent({
-  connect: {
-    lookup: lookupIPv4,
-    family: 4,
-  },
+const telegramAgent = new https.Agent({
+  lookup: lookupIPv4,
+  keepAlive: true,
 })
 
 export const telegramPost = async (
@@ -33,7 +31,7 @@ export const telegramPost = async (
         'Content-Type': contentType,
       },
       body: JSON.stringify(form),
-      dispatcher: telegramDispatcher,
+      agent: telegramAgent,
     })
 
     if (!res.ok) {
