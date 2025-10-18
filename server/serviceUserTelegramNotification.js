@@ -5,7 +5,6 @@ import sendTelegramMessage from '@server/sendTelegramMessage'
 import sendPushNotification from '@server/sendPushNotification'
 import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import dbConnect from '@utils/dbConnect'
-import { createInvalidPushSubscriptionCollector } from './pushSubscriptionsCleanup'
 
 // Оповещение в телеграм
 const serviceUserTelegramNotification = async ({
@@ -77,28 +76,18 @@ const serviceUserTelegramNotification = async ({
       : `/${location}/service/${serviceId}`
 
     if (pushSubscriptions.length > 0) {
-      const pushCleanup = createInvalidPushSubscriptionCollector({
-        db,
-        logPrefix: '[serviceUserTelegramNotification] Service request push',
-      })
-
-      try {
-        await sendPushNotification({
-          subscriptions: pushSubscriptions,
-          payload: {
-            title: 'Новая заявка на услугу',
-            body: text,
-            data: {
-              url: serviceUrl,
-              userId: String(userId),
-            },
-            tag: `service-request-${serviceId}`,
+      await sendPushNotification({
+        subscriptions: pushSubscriptions,
+        payload: {
+          title: 'Новая заявка на услугу',
+          body: text,
+          data: {
+            url: serviceUrl,
+            userId: String(userId),
           },
-          onSubscriptionRejected: pushCleanup.handleRejected,
-        })
-      } finally {
-        await pushCleanup.flush()
-      }
+          tag: `service-request-${serviceId}`,
+        },
+      })
     }
 
     const filteredTelegramIds = usersTelegramIds.filter(Boolean)

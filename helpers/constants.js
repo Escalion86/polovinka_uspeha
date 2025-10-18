@@ -2519,7 +2519,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsFabMenu'].roleAccess,
   },
   {
-    id: 82,
+    id: 85,
     group: 11,
     name: 'Достижения',
     href: 'settingsAchievements',
@@ -2528,7 +2528,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsAchievements'].roleAccess,
   },
   {
-    id: 83,
+    id: 86,
     group: 11,
     name: 'Реферальная система',
     href: 'settingsReferralSystem',
@@ -2537,7 +2537,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsReferralSystem'].roleAccess,
   },
   {
-    id: 84,
+    id: 82,
     group: 11,
     name: 'Роли',
     href: 'settingsRoles',
@@ -2546,7 +2546,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsRoles'].roleAccess,
   },
   {
-    id: 85,
+    id: 83,
     group: 11,
     name: 'Дата старта проекта',
     href: 'settingsDateStartProject',
@@ -2555,7 +2555,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsDateStartProject'].roleAccess,
   },
   {
-    id: 86,
+    id: 84,
     group: 11,
     name: 'Информация для вступления в клуб',
     href: 'settingsHeaderInfoContacts',
@@ -2564,7 +2564,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsHeaderInfoContacts'].roleAccess,
   },
   {
-    id: 87,
+    id: 85,
     group: 11,
     name: 'Особые даты ПУ',
     href: 'remindDates',
@@ -2574,7 +2574,7 @@ export const pages = [
   },
 
   {
-    id: 90,
+    id: 97,
     group: 99,
     name: 'Рассылка WhatsApp',
     href: 'whatsappMessaging',
@@ -2583,7 +2583,7 @@ export const pages = [
     roleAccess: CONTENTS['dev'].roleAccess,
   },
   {
-    id: 91,
+    id: 98,
     group: 99,
     name: 'Тестирование',
     href: 'dev',
@@ -2592,7 +2592,7 @@ export const pages = [
     roleAccess: CONTENTS['dev'].roleAccess,
   },
   {
-    id: 92,
+    id: 99,
     group: 99,
     name: 'Сервер картинок',
     href: 'imagesServer',

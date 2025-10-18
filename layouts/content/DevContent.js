@@ -10,8 +10,6 @@ import { GENDERS } from '@helpers/constants'
 import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import FormData from 'form-data'
-import locationAtom from '@state/atoms/locationAtom'
-import useSnackbar from '@helpers/useSnackbar'
 
 // const DevCard = ({ title, data }) => {
 //   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -48,13 +46,10 @@ import useSnackbar from '@helpers/useSnackbar'
 
 const DevContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const location = useAtomValue(locationAtom)
-  const snackbar = useSnackbar()
   // const events = useAtomValue(eventsAtom)
   // console.log('1 :>> ', 1)
   const [test, setTest] = useState()
   const [input, setInput] = useState('')
-  const [isSendingPushTest, setIsSendingPushTest] = useState(false)
 
   const getVKUsers = async () => {
     try {
@@ -146,69 +141,11 @@ const DevContent = () => {
       .catch((err) => console.error('ERROR', err))
   }
 
-  const sendPushTest = async () => {
-    if (isSendingPushTest) return
-
-    if (!location) {
-      snackbar.error('Не удалось определить локацию для API-запроса')
-      return
-    }
-
-    setIsSendingPushTest(true)
-
-    try {
-      const response = await fetch(`/api/${location}/notifications/push-test`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      })
-
-      let payload
-      try {
-        payload = await response.json()
-      } catch (error) {
-        console.error('Не удалось разобрать ответ push-test', error)
-      }
-
-      if (!response.ok || !payload?.success) {
-        const errorMessage =
-          payload?.error ||
-          `Не удалось отправить тестовое push-уведомление (статус ${response.status})`
-        snackbar.error(errorMessage)
-        console.error('Ошибка отправки тестового push-уведомления', {
-          status: response.status,
-          payload,
-        })
-        return
-      }
-
-      const deliveries = payload?.data?.deliveries
-      const total = deliveries?.total ?? 0
-      const successful = deliveries?.successful ?? 0
-      const message = successful > 0
-        ? `Отправлено ${successful} из ${total} push-уведомлений`
-        : 'Push-уведомления не были доставлены'
-
-      snackbar.success(message)
-      console.log('Результат тестовой рассылки push-уведомлений', payload?.data)
-    } catch (error) {
-      console.error('Неожиданная ошибка отправки тестового push-уведомления', error)
-      snackbar.error('Ошибка при отправке тестового push-уведомления')
-    } finally {
-      setIsSendingPushTest(false)
-    }
-  }
-
   return (
     <div className="flex flex-col gap-y-0.5">
       <Button name="AI" onClick={() => modalsFunc.external.ai()} />
       <Button name="kad" onClick={() => kad()} />
       <Button name="test" onClick={() => getVKUsers()} />
-      <Button
-        name="Отправить тестовое push-уведомление"
-        onClick={sendPushTest}
-        loading={isSendingPushTest}
-        loadingText="Отправка..."
-      />
       <Input name="input" onChange={setInput} value={input} />
       {test &&
         test.map(({ id, first_name, last_name, photo_100, sex }) => {
