@@ -313,6 +313,7 @@ const extractSubscription = (target) => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 const sendPushRequest = async ({
   target,
   payloadBuffer,
@@ -473,11 +474,14 @@ const sendPushRequest = async ({
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
 =======
 >>>>>>> 9108424a (Fix push notifications for achievements)
+=======
+>>>>>>> 57ac204a (Expose push public key to frontend)
 const sendPushNotification = async ({
   subscription,
   subscriptions,
   payload,
   options,
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -496,6 +500,8 @@ const sendPushNotification = async ({
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
 =======
 >>>>>>> 9108424a (Fix push notifications for achievements)
+=======
+>>>>>>> 57ac204a (Expose push public key to frontend)
 } = {}) => {
   const targets = normalizeSubscriptions(subscription, subscriptions)
 
@@ -569,6 +575,7 @@ const sendPushNotification = async ({
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     const response = await webPush.sendNotification(
 =======
     return webPush.sendNotification(
@@ -582,10 +589,14 @@ const sendPushNotification = async ({
 =======
     return webPush.sendNotification(
 >>>>>>> 9108424a (Fix push notifications for achievements)
+=======
+    return webPush.sendNotification(
+>>>>>>> 57ac204a (Expose push public key to frontend)
       normalizedSubscription,
       serializedPayload,
       options
     )
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -606,6 +617,8 @@ const sendPushNotification = async ({
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
 =======
 >>>>>>> 9108424a (Fix push notifications for achievements)
+=======
+>>>>>>> 57ac204a (Expose push public key to frontend)
   }
 
   if (targets.length === 1) {
@@ -616,6 +629,7 @@ const sendPushNotification = async ({
 
   results
     .filter((result) => result.status === 'rejected')
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -643,11 +657,16 @@ const sendPushNotification = async ({
     .forEach((result) =>
       console.error('[sendPushNotification] Push delivery failed', result.reason)
 >>>>>>> 9108424a (Fix push notifications for achievements)
+=======
+    .forEach((result) =>
+      console.error('[sendPushNotification] Push delivery failed', result.reason)
+>>>>>>> 57ac204a (Expose push public key to frontend)
     )
 
   const hasSuccessfulDeliveries = results.some(
     (result) => result.status === 'fulfilled'
   )
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -669,10 +688,13 @@ const sendPushNotification = async ({
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
 =======
 >>>>>>> 9108424a (Fix push notifications for achievements)
+=======
+>>>>>>> 57ac204a (Expose push public key to frontend)
 
   if (!hasSuccessfulDeliveries) {
     throw new Error('[sendPushNotification] Failed to deliver push notification')
   }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -683,6 +705,8 @@ const sendPushNotification = async ({
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
 =======
 >>>>>>> 9108424a (Fix push notifications for achievements)
+=======
+>>>>>>> 57ac204a (Expose push public key to frontend)
 
   return results
 }
