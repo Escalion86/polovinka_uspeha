@@ -314,6 +314,7 @@ const extractSubscription = (target) => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 const sendPushRequest = async ({
   target,
   payloadBuffer,
@@ -476,11 +477,14 @@ const sendPushRequest = async ({
 >>>>>>> 9108424a (Fix push notifications for achievements)
 =======
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
 const sendPushNotification = async ({
   subscription,
   subscriptions,
   payload,
   options,
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -502,6 +506,8 @@ const sendPushNotification = async ({
 >>>>>>> 9108424a (Fix push notifications for achievements)
 =======
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
 } = {}) => {
   const targets = normalizeSubscriptions(subscription, subscriptions)
 
@@ -576,6 +582,7 @@ const sendPushNotification = async ({
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     const response = await webPush.sendNotification(
 =======
     return webPush.sendNotification(
@@ -592,10 +599,14 @@ const sendPushNotification = async ({
 =======
     return webPush.sendNotification(
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+    return webPush.sendNotification(
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
       normalizedSubscription,
       serializedPayload,
       options
     )
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -619,6 +630,8 @@ const sendPushNotification = async ({
 >>>>>>> 9108424a (Fix push notifications for achievements)
 =======
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
   }
 
   if (targets.length === 1) {
@@ -629,6 +642,7 @@ const sendPushNotification = async ({
 
   results
     .filter((result) => result.status === 'rejected')
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -661,11 +675,16 @@ const sendPushNotification = async ({
     .forEach((result) =>
       console.error('[sendPushNotification] Push delivery failed', result.reason)
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+    .forEach((result) =>
+      console.error('[sendPushNotification] Push delivery failed', result.reason)
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
     )
 
   const hasSuccessfulDeliveries = results.some(
     (result) => result.status === 'fulfilled'
   )
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -690,10 +709,13 @@ const sendPushNotification = async ({
 >>>>>>> 9108424a (Fix push notifications for achievements)
 =======
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
 
   if (!hasSuccessfulDeliveries) {
     throw new Error('[sendPushNotification] Failed to deliver push notification')
   }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -707,6 +729,8 @@ const sendPushNotification = async ({
 >>>>>>> 9108424a (Fix push notifications for achievements)
 =======
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
 
   return results
 }

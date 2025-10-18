@@ -28,6 +28,7 @@ import urlBase64ToUint8Array from '@helpers/urlBase64ToUint8Array'
 const SERVICE_WORKER_READY_TIMEOUT = 10000
 const SERVICE_WORKER_CANDIDATES = ['/sw.js', '/service-worker.js']
 
+<<<<<<< HEAD
 const parseJsonResponse = async (response) => {
   const contentType = response.headers.get('content-type') ?? ''
   if (contentType.includes('application/json')) {
@@ -39,6 +40,8 @@ const parseJsonResponse = async (response) => {
   throw new Error(message || 'Некорректный ответ от сервера')
 }
 
+=======
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
 const ensureServiceWorkerRegistration = async () => {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
     return null

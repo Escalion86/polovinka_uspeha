@@ -681,6 +681,7 @@ export default async function handler(Schema, req, res, props = {}) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
               const vapidStatus = getVapidConfigurationStatus()
               const debugEnabled = process.env.NODE_ENV !== 'production'
 
@@ -722,6 +723,10 @@ export default async function handler(Schema, req, res, props = {}) {
 
               if (subscriptions.length > 0) {
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+
+              if (subscriptions.length > 0) {
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
                 const achievementName = achievement?.name?.trim() || 'Достижение'
                 const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
 
@@ -734,6 +739,7 @@ export default async function handler(Schema, req, res, props = {}) {
                   : `/${location}/cabinet/achievements`
 
                 const payloadData = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -761,12 +767,16 @@ export default async function handler(Schema, req, res, props = {}) {
 =======
                   url: achievementUrl,
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+                  url: achievementUrl,
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
                   achievementId: String(jsonData.achievementId),
                   achievementUserId: String(jsonData._id),
                 }
 
                 if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -822,6 +832,9 @@ export default async function handler(Schema, req, res, props = {}) {
 =======
                 await sendPushNotification({
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+                await sendPushNotification({
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
                   subscriptions,
                   payload: {
                     title: 'Новое достижение',
@@ -829,6 +842,7 @@ export default async function handler(Schema, req, res, props = {}) {
                     data: payloadData,
                     tag: `achievement-${jsonData._id}`,
                   },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -868,6 +882,8 @@ export default async function handler(Schema, req, res, props = {}) {
 >>>>>>> 9108424a (Fix push notifications for achievements)
 =======
 >>>>>>> 57ac204a (Expose push public key to frontend)
+=======
+>>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
                 })
               }
             } catch (error) {
