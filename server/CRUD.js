@@ -677,6 +677,7 @@ export default async function handler(Schema, req, res, props = {}) {
 
               const subscriptions = getUsersPushSubscriptions(user ? [user] : [])
 <<<<<<< HEAD
+<<<<<<< HEAD
               const vapidStatus = getVapidConfigurationStatus()
               const debugEnabled = process.env.NODE_ENV !== 'production'
 
@@ -702,6 +703,10 @@ export default async function handler(Schema, req, res, props = {}) {
                 )
               } else if (subscriptions.length > 0) {
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
+=======
+
+              if (subscriptions.length > 0) {
+>>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
                 const achievementName = achievement?.name?.trim() || 'Достижение'
                 const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
 
@@ -716,6 +721,7 @@ export default async function handler(Schema, req, res, props = {}) {
                 const payloadData = {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                   type: 'achievement-assigned',
                   url: achievementUrl,
                   userId: String(jsonData.userId),
@@ -725,12 +731,16 @@ export default async function handler(Schema, req, res, props = {}) {
 =======
                   url: achievementUrl,
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
+=======
+                  url: achievementUrl,
+>>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
                   achievementId: String(jsonData.achievementId),
                   achievementUserId: String(jsonData._id),
                 }
 
                 if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                 try {
@@ -770,6 +780,9 @@ export default async function handler(Schema, req, res, props = {}) {
 =======
                 await sendPushNotification({
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
+=======
+                await sendPushNotification({
+>>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
                   subscriptions,
                   payload: {
                     title: 'Новое достижение',
@@ -777,6 +790,7 @@ export default async function handler(Schema, req, res, props = {}) {
                     data: payloadData,
                     tag: `achievement-${jsonData._id}`,
                   },
+<<<<<<< HEAD
 <<<<<<< HEAD
                   context: 'achievement-notification',
                   debug: debugEnabled,
@@ -804,6 +818,8 @@ export default async function handler(Schema, req, res, props = {}) {
                   userId: jsonData.userId,
 =======
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
+=======
+>>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
                 })
               }
             } catch (error) {

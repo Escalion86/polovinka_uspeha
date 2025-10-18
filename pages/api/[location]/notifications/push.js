@@ -86,6 +86,7 @@ export default async function handler(req, res) {
       ).lean()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       const debugEnabled = process.env.NODE_ENV !== 'production'
       const vapidStatus = getVapidConfigurationStatus()
       const responsePayload = { success: true, data: updatedUser }
@@ -119,6 +120,16 @@ export default async function handler(req, res) {
 =======
       if (updatedUser?.notifications?.push?.active) {
         if (!hasVapidKeyPairConfigured()) {
+=======
+      if (updatedUser?.notifications?.push?.active) {
+        const hasVapidKeys = Boolean(
+          (process.env.WEB_PUSH_PUBLIC_KEY ||
+            process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY) &&
+            process.env.WEB_PUSH_PRIVATE_KEY
+        )
+
+        if (!hasVapidKeys) {
+>>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
           console.warn(
             '[notifications/push] Skip confirmation push: VAPID keys are not configured'
           )
@@ -127,7 +138,10 @@ export default async function handler(req, res) {
 
           try {
             await sendPushNotification({
+<<<<<<< HEAD
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
+=======
+>>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
               subscriptions,
               payload: {
                 title: 'Push-уведомления подключены',
@@ -138,6 +152,7 @@ export default async function handler(req, res) {
                     : `/${location}/cabinet/notifications`,
                 },
               },
+<<<<<<< HEAD
 <<<<<<< HEAD
               context: 'push-confirmation',
               debug: debugEnabled,
@@ -165,11 +180,15 @@ export default async function handler(req, res) {
 =======
             })
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
+=======
+            })
+>>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
           } catch (error) {
             console.error(
               '[notifications/push] Failed to send confirmation push',
               error
             )
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
           } finally {
@@ -178,10 +197,13 @@ export default async function handler(req, res) {
 >>>>>>> 0af74715 (Add debug logging for push notifications)
 =======
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
+=======
+>>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
           }
         }
       }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       if (debugEnabled) {
         responsePayload.meta = {
@@ -198,6 +220,9 @@ export default async function handler(req, res) {
 =======
       return res?.status(200).json({ success: true, data: updatedUser })
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
+=======
+      return res?.status(200).json({ success: true, data: updatedUser })
+>>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
     }
 
     if (method === 'DELETE') {
