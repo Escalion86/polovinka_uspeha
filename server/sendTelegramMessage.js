@@ -1,4 +1,4 @@
-import { postData } from '@helpers/CRUD'
+import telegramPost from './telegramApi'
 
 // import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
@@ -23,7 +23,7 @@ const sendMessageToTelegramId = async ({
         }
       })
     )
-    await postData(
+    await telegramPost(
       `https://api.telegram.org/bot${telegramToken}/sendMediaGroup`,
       {
         chat_id: telegramId,
@@ -32,8 +32,6 @@ const sendMessageToTelegramId = async ({
       null,
       // (data) => console.log('data', data),
       (data) => console.log('error', data),
-      true,
-      null,
       true
     )
   }
@@ -48,7 +46,7 @@ const sendMessageToTelegramId = async ({
     const preparedText = splitText(text)
     const result = []
     for (let i = 0; i < preparedText.length; i++) {
-      const res = await postData(
+      const res = await telegramPost(
         `https://api.telegram.org/bot${telegramToken}/sendMessage`,
         {
           chat_id: telegramId,
@@ -60,8 +58,6 @@ const sendMessageToTelegramId = async ({
         null,
         // (data) => console.log('data', data),
         (data) => console.log('error', data),
-        true,
-        null,
         true
       )
       result.push(res)
