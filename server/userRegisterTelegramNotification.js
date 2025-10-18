@@ -5,7 +5,6 @@ import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'
 import sendPushNotification from './sendPushNotification'
 import getUsersPushSubscriptions from './getUsersPushSubscriptions'
-import { createInvalidPushSubscriptionCollector } from './pushSubscriptionsCleanup'
 
 const buildFullName = (user) => {
   if (!user) return null
@@ -101,29 +100,19 @@ const userRegisterTelegramNotification = async ({
   const text = `${messageParts.join(' ')}${referrerPart}`
 
   if (pushSubscriptions.length > 0) {
-    const pushCleanup = createInvalidPushSubscriptionCollector({
-      db,
-      logPrefix: '[userRegisterTelegramNotification] New user push',
-    })
-
-    try {
-      await sendPushNotification({
-        subscriptions: pushSubscriptions,
-        payload: {
-          title: 'Новый пользователь зарегистрирован',
-          body: text,
-          data: {
-            url: process.env.DOMAIN
-              ? `${process.env.DOMAIN}/${location}/users`
-              : `/${location}/users`,
-          },
-          tag: `user-register-${usersCount}`,
+    await sendPushNotification({
+      subscriptions: pushSubscriptions,
+      payload: {
+        title: 'Новый пользователь зарегистрирован',
+        body: text,
+        data: {
+          url: process.env.DOMAIN
+            ? `${process.env.DOMAIN}/${location}/users`
+            : `/${location}/users`,
         },
-        onSubscriptionRejected: pushCleanup.handleRejected,
-      })
-    } finally {
-      await pushCleanup.flush()
-    }
+        tag: `user-register-${usersCount}`,
+      },
+    })
   }
 
   return await Promise.all(

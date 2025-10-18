@@ -42,12 +42,10 @@ module.exports = withFlowbiteReact(
       largePageDataBytes: 512 * 100000,
     },
     reactStrictMode: true,
-    env: {
-      NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY:
-        'BMRlXmcruzi7uhyHFnqCjhlCMX0owOkHA6rJTU8E7tPDhBEr5yMVYwiHQ0QP78XfV-F832k1AZUAJFoikxYQUNw',
-      // @see https://github.com/facebookexperimental/Recoil/issues/2135#issuecomment-1362197710
-      // RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED: 'false',
-    },
+    // env: {
+    //   // @see https://github.com/facebookexperimental/Recoil/issues/2135#issuecomment-1362197710
+    //   RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED: 'false',
+    // },
     images: {
       // domains: ['localhost', 'escalioncloud.ru', 't.me'],
       remotePatterns: [

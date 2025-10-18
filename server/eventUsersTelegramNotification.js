@@ -8,7 +8,6 @@ import sendPushNotification from '@server/sendPushNotification'
 import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import dbConnect from '@utils/dbConnect'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
-import { createInvalidPushSubscriptionCollector } from './pushSubscriptionsCleanup'
 
 function convertTZ(date, location) {
   const timeZone = getTimeZoneByLocation(location)
@@ -305,28 +304,18 @@ const eventUsersTelegramNotification = async ({
       : `/${location}/event/${eventId}`
 
     if (pushSubscriptions.length > 0) {
-      const pushCleanup = createInvalidPushSubscriptionCollector({
-        db,
-        logPrefix: '[eventUsersTelegramNotification] Event updates push',
-      })
-
-      try {
-        await sendPushNotification({
-          subscriptions: pushSubscriptions,
-          payload: {
-            title: 'Изменения по мероприятию',
-            body: text,
-            data: {
-              url: eventUrl,
-              userId: userId ? String(userId) : undefined,
-            },
-            tag: `event-users-${eventId}`,
+      await sendPushNotification({
+        subscriptions: pushSubscriptions,
+        payload: {
+          title: 'Изменения по мероприятию',
+          body: text,
+          data: {
+            url: eventUrl,
+            userId: userId ? String(userId) : undefined,
           },
-          onSubscriptionRejected: pushCleanup.handleRejected,
-        })
-      } finally {
-        await pushCleanup.flush()
-      }
+          tag: `event-users-${eventId}`,
+        },
+      })
     }
 
     const filteredTelegramIds = usersTelegramIds.filter(Boolean)

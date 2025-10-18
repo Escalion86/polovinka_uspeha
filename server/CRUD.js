@@ -6,15 +6,8 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
-import sendPushNotification, {
-<<<<<<< HEAD
-  getVapidConfigurationStatus,
-=======
->>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
-  hasVapidKeyPairConfigured,
-} from './sendPushNotification'
+import sendPushNotification from './sendPushNotification'
 import getUsersPushSubscriptions from './getUsersPushSubscriptions'
-import { createInvalidPushSubscriptionCollector } from './pushSubscriptionsCleanup'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import { hashPassword } from '@helpers/passwordUtils'
 
@@ -668,262 +661,6 @@ export default async function handler(Schema, req, res, props = {}) {
             // }
           }
 
-          if (Schema === 'AchievementsUsers') {
-            try {
-              const [user, achievement] = await Promise.all([
-                db.model('Users').findById(jsonData.userId).lean(),
-                db
-                  .model('Achievements')
-                  .findById(jsonData.achievementId)
-                  .lean(),
-              ])
-
-<<<<<<< HEAD
-              const subscriptions = getUsersPushSubscriptions(user ? [user] : [])
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-              const subscriptions = getUsersPushSubscriptions(
-                user ? [user] : []
-              )
->>>>>>> f99e1afd (fix)
-              const vapidStatus = getVapidConfigurationStatus()
-              const debugEnabled = process.env.NODE_ENV !== 'production'
-
-              if (!hasVapidKeyPairConfigured()) {
-                console.warn(
-                  '[CRUD] Skip achievement push notification: VAPID keys are not configured',
-                  { status: vapidStatus }
-                )
-              } else if (subscriptions.length > 0) {
-<<<<<<< HEAD
-                const pushCleanup = createInvalidPushSubscriptionCollector({
-                  db,
-                  logPrefix: '[CRUD] Achievement push',
-                })
-
-<<<<<<< HEAD
-=======
->>>>>>> 0af74715 (Add debug logging for push notifications)
-=======
-
-              if (!hasVapidKeyPairConfigured()) {
-                console.warn(
-                  '[CRUD] Skip achievement push notification: VAPID keys are not configured'
-                )
-              } else if (subscriptions.length > 0) {
->>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
-=======
-
-              if (subscriptions.length > 0) {
->>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
-=======
-
-              if (subscriptions.length > 0) {
->>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
-=======
-
-              if (subscriptions.length > 0) {
->>>>>>> 9108424a (Fix push notifications for achievements)
-=======
-
-              if (subscriptions.length > 0) {
->>>>>>> 57ac204a (Expose push public key to frontend)
-=======
-
-              if (subscriptions.length > 0) {
->>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
-                const achievementName = achievement?.name?.trim() || 'Достижение'
-                const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
-=======
-                const achievementName =
-                  achievement?.name?.trim() || 'Достижение'
-                const bodyParts = [
-                  `Вам присвоено достижение «${achievementName}».`,
-                ]
->>>>>>> f99e1afd (fix)
-
-                if (achievement?.description)
-                  bodyParts.push(achievement.description)
-                if (jsonData.comment) bodyParts.push(jsonData.comment)
-                if (jsonData.eventName)
-                  bodyParts.push(`Мероприятие: ${jsonData.eventName}`)
-
-                const achievementUrl = process.env.DOMAIN
-                  ? `${process.env.DOMAIN}/${location}/cabinet/achievements`
-                  : `/${location}/cabinet/achievements`
-
-                const payloadData = {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                  type: 'achievement-assigned',
-                  url: achievementUrl,
-                  userId: String(jsonData.userId),
-=======
-                  url: achievementUrl,
->>>>>>> 0af74715 (Add debug logging for push notifications)
-=======
-                  url: achievementUrl,
->>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
-=======
-                  url: achievementUrl,
->>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
-=======
-                  url: achievementUrl,
->>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
-=======
-                  url: achievementUrl,
->>>>>>> 9108424a (Fix push notifications for achievements)
-=======
-                  url: achievementUrl,
->>>>>>> 57ac204a (Expose push public key to frontend)
-=======
-                  url: achievementUrl,
->>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
-                  achievementId: String(jsonData.achievementId),
-                  achievementUserId: String(jsonData._id),
-                }
-
-                if (jsonData.eventId)
-                  payloadData.eventId = String(jsonData.eventId)
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                try {
-                  const result = await sendPushNotification({
-                    subscriptions,
-                    payload: {
-                      title: 'Новое достижение',
-                      body: bodyParts.join('\n'),
-                      data: payloadData,
-                      tag: `achievement-${jsonData._id}`,
-                    },
-                    context: 'achievement-notification',
-                    debug: debugEnabled,
-                    onSubscriptionRejected: pushCleanup.handleRejected,
-                  })
-                  console.log('result :>> ', result)
-
-                  if (debugEnabled) {
-                    console.debug('[CRUD] Achievement push result', {
-                      userId: jsonData.userId,
-                      achievementId: jsonData.achievementId,
-                      subscriptions: subscriptions.length,
-                      statusCode: Array.isArray(result)
-                        ? result
-                            .map((item) =>
-                              item.status === 'fulfilled'
-                                ? item.value?.statusCode
-                                : 'rejected'
-                            )
-                            .join(',')
-                        : result?.statusCode,
-                    })
-                  }
-                } finally {
-                  await pushCleanup.flush()
-=======
-                const result = await sendPushNotification({
-=======
-                await sendPushNotification({
->>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
-=======
-                await sendPushNotification({
->>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
-=======
-                await sendPushNotification({
->>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
-=======
-                await sendPushNotification({
->>>>>>> 9108424a (Fix push notifications for achievements)
-=======
-                await sendPushNotification({
->>>>>>> 57ac204a (Expose push public key to frontend)
-=======
-                await sendPushNotification({
->>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
-                  subscriptions,
-                  payload: {
-                    title: 'Новое достижение',
-                    body: bodyParts.join('\n'),
-                    data: payloadData,
-                    tag: `achievement-${jsonData._id}`,
-                  },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                  context: 'achievement-notification',
-                  debug: debugEnabled,
-                })
-
-                if (debugEnabled) {
-                  console.debug('[CRUD] Achievement push result', {
-                    userId: jsonData.userId,
-                    achievementId: jsonData.achievementId,
-                    subscriptions: subscriptions.length,
-                    statusCode: Array.isArray(result)
-                      ? result
-                          .map((item) =>
-                            item.status === 'fulfilled'
-                              ? item.value?.statusCode
-                              : 'rejected'
-                          )
-                          .join(',')
-                      : result?.statusCode,
-                  })
->>>>>>> 0af74715 (Add debug logging for push notifications)
-                }
-              } else if (debugEnabled) {
-<<<<<<< HEAD
-                console.debug('[CRUD] Skip achievement push notification: no subscriptions', {
-                  userId: jsonData.userId,
-=======
->>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
-=======
->>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
-=======
->>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
-=======
->>>>>>> 9108424a (Fix push notifications for achievements)
-=======
->>>>>>> 57ac204a (Expose push public key to frontend)
-=======
->>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
-                })
-=======
-                console.debug(
-                  '[CRUD] Skip achievement push notification: no subscriptions',
-                  {
-                    userId: jsonData.userId,
-                  }
-                )
->>>>>>> f99e1afd (fix)
-              }
-            } catch (error) {
-              console.error(
-                '[CRUD] Failed to send achievement push notification',
-                error
-              )
-            }
-          }
-
           if (Schema === 'ServicesUsers') {
             serviceUserTelegramNotification({
               userId: jsonData.userId,
@@ -1091,33 +828,23 @@ export default async function handler(Schema, req, res, props = {}) {
               ])
 
               if (targetSubscriptions.length > 0) {
-                const pushCleanup = createInvalidPushSubscriptionCollector({
-                  db,
-                  logPrefix: '[CRUD] User push settings notification',
-                })
-
-                try {
-                  await sendPushNotification({
-                    subscriptions: targetSubscriptions,
-                    payload: {
-                      title: newPushActive
-                        ? 'Push-уведомления подключены'
-                        : 'Push-уведомления отключены',
-                      body: newPushActive
-                        ? 'Вы успешно подключили push-уведомления.'
-                        : 'Push-уведомления отключены для данного пользователя.',
-                      data: {
-                        url: process.env.DOMAIN
-                          ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
-                          : `/${location}/cabinet/notifications`,
-                      },
-                      tag: `push-settings-${data._id}`,
+                await sendPushNotification({
+                  subscriptions: targetSubscriptions,
+                  payload: {
+                    title: newPushActive
+                      ? 'Push-уведомления подключены'
+                      : 'Push-уведомления отключены',
+                    body: newPushActive
+                      ? 'Вы успешно подключили push-уведомления.'
+                      : 'Push-уведомления отключены для данного пользователя.',
+                    data: {
+                      url: process.env.DOMAIN
+                        ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
+                        : `/${location}/cabinet/notifications`,
                     },
-                    onSubscriptionRejected: pushCleanup.handleRejected,
-                  })
-                } finally {
-                  await pushCleanup.flush()
-                }
+                    tag: `push-settings-${data._id}`,
+                  },
+                })
               }
             }
             if (!isUserQuestionnaireFilled(oldData)) {
@@ -1174,29 +901,19 @@ export default async function handler(Schema, req, res, props = {}) {
               )}`
 
               if (pushSubscriptions.length > 0) {
-                const pushCleanup = createInvalidPushSubscriptionCollector({
-                  db,
-                  logPrefix: '[CRUD] User questionnaire notification',
-                })
-
-                try {
-                  await sendPushNotification({
-                    subscriptions: pushSubscriptions,
-                    payload: {
-                      title: 'Пользователь заполнил анкету',
-                      body: text,
-                      data: {
-                        url: process.env.DOMAIN
-                          ? `${process.env.DOMAIN}/${location}/user/${id}`
-                          : `/${location}/user/${id}`,
-                      },
-                      tag: `user-questionnaire-${id}`,
+                await sendPushNotification({
+                  subscriptions: pushSubscriptions,
+                  payload: {
+                    title: 'Пользователь заполнил анкету',
+                    body: text,
+                    data: {
+                      url: process.env.DOMAIN
+                        ? `${process.env.DOMAIN}/${location}/user/${id}`
+                        : `/${location}/user/${id}`,
                     },
-                    onSubscriptionRejected: pushCleanup.handleRejected,
-                  })
-                } finally {
-                  await pushCleanup.flush()
-                }
+                    tag: `user-questionnaire-${id}`,
+                  },
+                })
               }
 
               if (usersTelegramIds.filter(Boolean).length > 0) {
