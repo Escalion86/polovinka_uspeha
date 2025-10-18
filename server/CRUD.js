@@ -672,9 +672,13 @@ export default async function handler(Schema, req, res, props = {}) {
             try {
               const [user, achievement] = await Promise.all([
                 db.model('Users').findById(jsonData.userId).lean(),
-                db.model('Achievements').findById(jsonData.achievementId).lean(),
+                db
+                  .model('Achievements')
+                  .findById(jsonData.achievementId)
+                  .lean(),
               ])
 
+<<<<<<< HEAD
               const subscriptions = getUsersPushSubscriptions(user ? [user] : [])
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -682,6 +686,11 @@ export default async function handler(Schema, req, res, props = {}) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+              const subscriptions = getUsersPushSubscriptions(
+                user ? [user] : []
+              )
+>>>>>>> f99e1afd (fix)
               const vapidStatus = getVapidConfigurationStatus()
               const debugEnabled = process.env.NODE_ENV !== 'production'
 
@@ -697,6 +706,7 @@ export default async function handler(Schema, req, res, props = {}) {
                   logPrefix: '[CRUD] Achievement push',
                 })
 
+<<<<<<< HEAD
 =======
 >>>>>>> 0af74715 (Add debug logging for push notifications)
 =======
@@ -729,10 +739,19 @@ export default async function handler(Schema, req, res, props = {}) {
 >>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
                 const achievementName = achievement?.name?.trim() || 'Достижение'
                 const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
+=======
+                const achievementName =
+                  achievement?.name?.trim() || 'Достижение'
+                const bodyParts = [
+                  `Вам присвоено достижение «${achievementName}».`,
+                ]
+>>>>>>> f99e1afd (fix)
 
-                if (achievement?.description) bodyParts.push(achievement.description)
+                if (achievement?.description)
+                  bodyParts.push(achievement.description)
                 if (jsonData.comment) bodyParts.push(jsonData.comment)
-                if (jsonData.eventName) bodyParts.push(`Мероприятие: ${jsonData.eventName}`)
+                if (jsonData.eventName)
+                  bodyParts.push(`Мероприятие: ${jsonData.eventName}`)
 
                 const achievementUrl = process.env.DOMAIN
                   ? `${process.env.DOMAIN}/${location}/cabinet/achievements`
@@ -774,7 +793,8 @@ export default async function handler(Schema, req, res, props = {}) {
                   achievementUserId: String(jsonData._id),
                 }
 
-                if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
+                if (jsonData.eventId)
+                  payloadData.eventId = String(jsonData.eventId)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -796,6 +816,7 @@ export default async function handler(Schema, req, res, props = {}) {
                     debug: debugEnabled,
                     onSubscriptionRejected: pushCleanup.handleRejected,
                   })
+                  console.log('result :>> ', result)
 
                   if (debugEnabled) {
                     console.debug('[CRUD] Achievement push result', {
@@ -870,6 +891,7 @@ export default async function handler(Schema, req, res, props = {}) {
 >>>>>>> 0af74715 (Add debug logging for push notifications)
                 }
               } else if (debugEnabled) {
+<<<<<<< HEAD
                 console.debug('[CRUD] Skip achievement push notification: no subscriptions', {
                   userId: jsonData.userId,
 =======
@@ -885,6 +907,14 @@ export default async function handler(Schema, req, res, props = {}) {
 =======
 >>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
                 })
+=======
+                console.debug(
+                  '[CRUD] Skip achievement push notification: no subscriptions',
+                  {
+                    userId: jsonData.userId,
+                  }
+                )
+>>>>>>> f99e1afd (fix)
               }
             } catch (error) {
               console.error(

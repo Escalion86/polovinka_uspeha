@@ -21,8 +21,8 @@ const getVapidConfigurationStatus = () => {
     publicKeySource: process.env.WEB_PUSH_PUBLIC_KEY
       ? 'WEB_PUSH_PUBLIC_KEY'
       : process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY
-      ? 'NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY'
-      : null,
+        ? 'NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY'
+        : null,
     missing: [],
   }
 
@@ -48,6 +48,7 @@ const getWebPush = async () => {
   if (cachedWebPush) return cachedWebPush
 >>>>>>> 0af74715 (Add debug logging for push notifications)
 
+<<<<<<< HEAD
 const normalizeVapidKey = (value) => (value ? value.replace(/\s+/g, '') : '')
 
 const base64UrlEncode = (input) => {
@@ -170,6 +171,17 @@ const hkdfExpand = (prk, info, length) => {
     hmac.update(Buffer.from([i + 1]))
     prev = hmac.digest()
     buffers.push(prev)
+=======
+  try {
+    const module = await import('web-push')
+    cachedWebPush = module?.default ?? module
+  } catch (error) {
+    console.error(
+      '[sendPushNotification] Failed to load web-push module',
+      error
+    )
+    throw error
+>>>>>>> f99e1afd (fix)
   }
 
   return Buffer.concat(buffers).slice(0, length)
@@ -207,9 +219,12 @@ const encryptPayload = (subscription, payloadBuffer) => {
     }
 =======
   const subject =
-    process.env.WEB_PUSH_SUBJECT || process.env.NEXT_PUBLIC_WEB_PUSH_SUBJECT || 'mailto:admin@polovinka.ru'
+    process.env.WEB_PUSH_SUBJECT ||
+    process.env.NEXT_PUBLIC_WEB_PUSH_SUBJECT ||
+    'mailto:admin@polovinka.ru'
   const publicKey =
-    process.env.WEB_PUSH_PUBLIC_KEY || process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY
+    process.env.WEB_PUSH_PUBLIC_KEY ||
+    process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY
   const privateKey = process.env.WEB_PUSH_PRIVATE_KEY
 
   if (hasVapidKeyPairConfigured()) {
@@ -509,7 +524,17 @@ const sendPushNotification = async ({
 =======
 >>>>>>> b54bc306 (Handle missing service worker when enabling push notifications)
 } = {}) => {
+  console.log('[sendPushNotification] Attempt to send push', {
+    subscription,
+    subscriptions,
+    payload,
+    options,
+    context,
+    debug,
+    onSubscriptionRejected,
+  })
   const targets = normalizeSubscriptions(subscription, subscriptions)
+  console.log('targets :>> ', targets)
 
   if (targets.length === 0) {
     throw new Error('[sendPushNotification] `subscription` is required')
@@ -535,7 +560,18 @@ const sendPushNotification = async ({
   })
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   const handleRejected = ({ error, subscription: rejectedSubscription, target }) => {
+=======
+  const webPush = await getWebPush()
+  const serializedPayload = serializePayload(payload)
+
+  const handleRejected = ({
+    error,
+    subscription: rejectedSubscription,
+    target,
+  }) => {
+>>>>>>> f99e1afd (fix)
     if (typeof onSubscriptionRejected === 'function') {
       try {
         onSubscriptionRejected({
@@ -574,7 +610,15 @@ const sendPushNotification = async ({
     const normalizedSubscription = extractSubscription(target)
 
     if (!normalizedSubscription) {
+<<<<<<< HEAD
       throw new Error('[sendPushNotification] Invalid subscription payload')
+=======
+      const error = new Error(
+        '[sendPushNotification] Invalid subscription payload'
+      )
+      handleRejected({ error, subscription: normalizedSubscription, target })
+      throw error
+>>>>>>> f99e1afd (fix)
     }
 
 <<<<<<< HEAD
@@ -697,7 +741,8 @@ const sendPushNotification = async ({
   }
 
   debugLog('Push delivery summary', {
-    successful: results.filter((result) => result.status === 'fulfilled').length,
+    successful: results.filter((result) => result.status === 'fulfilled')
+      .length,
     failed: results.filter((result) => result.status === 'rejected').length,
   })
 =======
