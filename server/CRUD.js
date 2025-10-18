@@ -682,11 +682,14 @@ export default async function handler(Schema, req, res, props = {}) {
                   { status: vapidStatus }
                 )
               } else if (subscriptions.length > 0) {
+<<<<<<< HEAD
                 const pushCleanup = createInvalidPushSubscriptionCollector({
                   db,
                   logPrefix: '[CRUD] Achievement push',
                 })
 
+=======
+>>>>>>> 0af74715 (Add debug logging for push notifications)
                 const achievementName = achievement?.name?.trim() || 'Достижение'
                 const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
 
@@ -699,15 +702,20 @@ export default async function handler(Schema, req, res, props = {}) {
                   : `/${location}/cabinet/achievements`
 
                 const payloadData = {
+<<<<<<< HEAD
                   type: 'achievement-assigned',
                   url: achievementUrl,
                   userId: String(jsonData.userId),
+=======
+                  url: achievementUrl,
+>>>>>>> 0af74715 (Add debug logging for push notifications)
                   achievementId: String(jsonData.achievementId),
                   achievementUserId: String(jsonData._id),
                 }
 
                 if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
 
+<<<<<<< HEAD
                 try {
                   const result = await sendPushNotification({
                     subscriptions,
@@ -740,6 +748,35 @@ export default async function handler(Schema, req, res, props = {}) {
                   }
                 } finally {
                   await pushCleanup.flush()
+=======
+                const result = await sendPushNotification({
+                  subscriptions,
+                  payload: {
+                    title: 'Новое достижение',
+                    body: bodyParts.join('\n'),
+                    data: payloadData,
+                    tag: `achievement-${jsonData._id}`,
+                  },
+                  context: 'achievement-notification',
+                  debug: debugEnabled,
+                })
+
+                if (debugEnabled) {
+                  console.debug('[CRUD] Achievement push result', {
+                    userId: jsonData.userId,
+                    achievementId: jsonData.achievementId,
+                    subscriptions: subscriptions.length,
+                    statusCode: Array.isArray(result)
+                      ? result
+                          .map((item) =>
+                            item.status === 'fulfilled'
+                              ? item.value?.statusCode
+                              : 'rejected'
+                          )
+                          .join(',')
+                      : result?.statusCode,
+                  })
+>>>>>>> 0af74715 (Add debug logging for push notifications)
                 }
               } else if (debugEnabled) {
                 console.debug('[CRUD] Skip achievement push notification: no subscriptions', {

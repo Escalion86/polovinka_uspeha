@@ -3,9 +3,43 @@ import http from 'http'
 import https from 'https'
 import { URL } from 'url'
 
+<<<<<<< HEAD
 const DEFAULT_TTL_SECONDS = 60 * 60 * 24
 const DEFAULT_EXPIRATION_SECONDS = 12 * 60 * 60
 const FALLBACK_SUBJECT = 'mailto:admin@polovinka.ru'
+=======
+const getVapidConfigurationStatus = () => {
+  const publicKey =
+    process.env.WEB_PUSH_PUBLIC_KEY ||
+    process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY ||
+    ''
+  const privateKey = process.env.WEB_PUSH_PRIVATE_KEY || ''
+
+  const status = {
+    hasPublicKey: Boolean(publicKey),
+    hasPrivateKey: Boolean(privateKey),
+    publicKeySource: process.env.WEB_PUSH_PUBLIC_KEY
+      ? 'WEB_PUSH_PUBLIC_KEY'
+      : process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY
+      ? 'NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY'
+      : null,
+    missing: [],
+  }
+
+  if (!status.hasPublicKey) status.missing.push('publicKey')
+  if (!status.hasPrivateKey) status.missing.push('privateKey')
+
+  return status
+}
+
+const hasVapidKeyPairConfigured = () => {
+  const status = getVapidConfigurationStatus()
+  return status.hasPublicKey && status.hasPrivateKey
+}
+
+const getWebPush = async () => {
+  if (cachedWebPush) return cachedWebPush
+>>>>>>> 0af74715 (Add debug logging for push notifications)
 
 const normalizeVapidKey = (value) => (value ? value.replace(/\s+/g, '') : '')
 
@@ -40,6 +74,7 @@ const toPemFormat = (derBuffer, type) => {
   return `-----BEGIN PUBLIC KEY-----\n${formatted}\n-----END PUBLIC KEY-----`
 }
 
+<<<<<<< HEAD
 const createEcPrivateKeyPem = (privateKeyBase64Url, publicKeyBase64Url) => {
   const privateKey = base64UrlDecode(privateKeyBase64Url)
   const publicKey = base64UrlDecode(publicKeyBase64Url)
@@ -163,6 +198,26 @@ const encryptPayload = (subscription, payloadBuffer) => {
       salt: null,
       serverPublicKey: null,
     }
+=======
+  const subject =
+    process.env.WEB_PUSH_SUBJECT || process.env.NEXT_PUBLIC_WEB_PUSH_SUBJECT || 'mailto:admin@polovinka.ru'
+  const publicKey =
+    process.env.WEB_PUSH_PUBLIC_KEY || process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY
+  const privateKey = process.env.WEB_PUSH_PRIVATE_KEY
+
+  if (hasVapidKeyPairConfigured()) {
+    try {
+      cachedWebPush.setVapidDetails(subject, publicKey, privateKey)
+    } catch (error) {
+      console.error('[sendPushNotification] Failed to set VAPID details', error)
+    }
+  } else {
+    const status = getVapidConfigurationStatus()
+    console.warn(
+      '[sendPushNotification] VAPID keys are not configured, push delivery will fail',
+      { status }
+    )
+>>>>>>> 0af74715 (Add debug logging for push notifications)
   }
 
   const subscriptionKeys = subscription?.keys || {}
@@ -246,6 +301,7 @@ const extractSubscription = (target) => {
   return target
 }
 
+<<<<<<< HEAD
 const sendPushRequest = async ({
   target,
   payloadBuffer,
@@ -396,6 +452,8 @@ const sendPushRequest = async ({
   return response
 }
 
+=======
+>>>>>>> 0af74715 (Add debug logging for push notifications)
 const sendPushNotification = async ({
   subscription,
   subscriptions,
@@ -403,7 +461,10 @@ const sendPushNotification = async ({
   options,
   context,
   debug,
+<<<<<<< HEAD
   onSubscriptionRejected,
+=======
+>>>>>>> 0af74715 (Add debug logging for push notifications)
 } = {}) => {
   const targets = normalizeSubscriptions(subscription, subscriptions)
 
@@ -411,9 +472,12 @@ const sendPushNotification = async ({
     throw new Error('[sendPushNotification] `subscription` is required')
   }
 
+<<<<<<< HEAD
   const serializedPayload = serializePayload(payload)
   const payloadBuffer = Buffer.from(serializedPayload, 'utf8')
 
+=======
+>>>>>>> 0af74715 (Add debug logging for push notifications)
   const debugEnabled =
     typeof debug === 'boolean' ? debug : process.env.NODE_ENV !== 'production'
   const logPrefix = context
@@ -427,6 +491,7 @@ const sendPushNotification = async ({
     subscriptionCount: targets.length,
   })
 
+<<<<<<< HEAD
   const handleRejected = ({ error, subscription: rejectedSubscription, target }) => {
     if (typeof onSubscriptionRejected === 'function') {
       try {
@@ -458,6 +523,30 @@ const sendPushNotification = async ({
       handleRejected({ error, subscription: extractSubscription(targetItem), target: targetItem })
       throw error
     }
+=======
+  const webPush = await getWebPush()
+  const serializedPayload = serializePayload(payload)
+
+  const sendSingle = async (target) => {
+    const normalizedSubscription = extractSubscription(target)
+
+    if (!normalizedSubscription) {
+      throw new Error('[sendPushNotification] Invalid subscription payload')
+    }
+
+    const response = await webPush.sendNotification(
+      normalizedSubscription,
+      serializedPayload,
+      options
+    )
+
+    debugLog('Push delivered', {
+      endpoint: normalizedSubscription.endpoint,
+      statusCode: response?.statusCode,
+    })
+
+    return response
+>>>>>>> 0af74715 (Add debug logging for push notifications)
   }
 
   if (targets.length === 1) {
@@ -468,9 +557,19 @@ const sendPushNotification = async ({
 
   results
     .filter((result) => result.status === 'rejected')
+<<<<<<< HEAD
     .forEach((result) => console.error(`${logPrefix} Push delivery failed`, result.reason))
 
   const hasSuccessfulDeliveries = results.some((result) => result.status === 'fulfilled')
+=======
+    .forEach((result) =>
+      console.error(`${logPrefix} Push delivery failed`, result.reason)
+    )
+
+  const hasSuccessfulDeliveries = results.some(
+    (result) => result.status === 'fulfilled'
+  )
+>>>>>>> 0af74715 (Add debug logging for push notifications)
 
   if (!hasSuccessfulDeliveries) {
     throw new Error(`${logPrefix} Failed to deliver push notification`)
@@ -485,4 +584,8 @@ const sendPushNotification = async ({
 }
 
 export default sendPushNotification
+<<<<<<< HEAD
 export { getVapidConfigurationStatus, hasVapidKeyPairConfigured }
+=======
+export { getWebPush, getVapidConfigurationStatus, hasVapidKeyPairConfigured }
+>>>>>>> 0af74715 (Add debug logging for push notifications)

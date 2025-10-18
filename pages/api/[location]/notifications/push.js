@@ -102,11 +102,14 @@ export default async function handler(req, res) {
             )
           }
         } else {
+<<<<<<< HEAD
           const pushCleanup = createInvalidPushSubscriptionCollector({
             db,
             logPrefix: '[notifications/push] Confirmation push',
           })
 
+=======
+>>>>>>> 0af74715 (Add debug logging for push notifications)
           try {
             const result = await sendPushNotification({
               subscriptions,
@@ -121,7 +124,10 @@ export default async function handler(req, res) {
               },
               context: 'push-confirmation',
               debug: debugEnabled,
+<<<<<<< HEAD
               onSubscriptionRejected: pushCleanup.handleRejected,
+=======
+>>>>>>> 0af74715 (Add debug logging for push notifications)
             })
 
             if (debugEnabled) {
@@ -144,8 +150,11 @@ export default async function handler(req, res) {
               '[notifications/push] Failed to send confirmation push',
               error
             )
+<<<<<<< HEAD
           } finally {
             await pushCleanup.flush()
+=======
+>>>>>>> 0af74715 (Add debug logging for push notifications)
           }
         }
       }
