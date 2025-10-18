@@ -6,6 +6,11 @@ import {
   StaleWhileRevalidate,
   CacheFirst,
 } from 'workbox-strategies'
+import {
+  NetworkFirst,
+  StaleWhileRevalidate,
+  CacheFirst,
+} from 'workbox-strategies'
 import { ExpirationPlugin } from 'workbox-expiration'
 
 const workerVersion = '2025-10-17T20:32:00Z'
@@ -14,8 +19,16 @@ console.info('[ServiceWorker] Boot', {
   version: workerVersion,
   timestamp: Date.now(),
 })
+console.info('[ServiceWorker] Boot', {
+  version: workerVersion,
+  timestamp: Date.now(),
+})
 
 self.addEventListener('install', (event) => {
+  console.info('[ServiceWorker] Install event', {
+    timestamp: Date.now(),
+    version: workerVersion,
+  })
   console.info('[ServiceWorker] Install event', {
     timestamp: Date.now(),
     version: workerVersion,
@@ -28,11 +41,19 @@ self.addEventListener('activate', (event) => {
     timestamp: Date.now(),
     version: workerVersion,
   })
+  console.info('[ServiceWorker] Activate event', {
+    timestamp: Date.now(),
+    version: workerVersion,
+  })
   event.waitUntil(
     (async () => {
       try {
         await clients.claim()
       } catch (error) {
+        console.error(
+          '[ServiceWorker] Failed to claim clients during activate',
+          error
+        )
         console.error(
           '[ServiceWorker] Failed to claim clients during activate',
           error
@@ -55,6 +76,8 @@ registerRoute(
 registerRoute(
   ({ request }) =>
     request.destination === 'style' || request.destination === 'script',
+  ({ request }) =>
+    request.destination === 'style' || request.destination === 'script',
   new StaleWhileRevalidate({
     cacheName: 'static-resources',
   })
@@ -65,6 +88,10 @@ registerRoute(
   new CacheFirst({
     cacheName: 'images',
     plugins: [
+      new ExpirationPlugin({
+        maxEntries: 60,
+        maxAgeSeconds: 30 * 24 * 60 * 60,
+      }),
       new ExpirationPlugin({
         maxEntries: 60,
         maxAgeSeconds: 30 * 24 * 60 * 60,
