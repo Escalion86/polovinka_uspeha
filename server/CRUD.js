@@ -679,6 +679,7 @@ export default async function handler(Schema, req, res, props = {}) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
               const vapidStatus = getVapidConfigurationStatus()
               const debugEnabled = process.env.NODE_ENV !== 'production'
 
@@ -712,6 +713,10 @@ export default async function handler(Schema, req, res, props = {}) {
 
               if (subscriptions.length > 0) {
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+
+              if (subscriptions.length > 0) {
+>>>>>>> 9108424a (Fix push notifications for achievements)
                 const achievementName = achievement?.name?.trim() || 'Достижение'
                 const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
 
@@ -724,6 +729,7 @@ export default async function handler(Schema, req, res, props = {}) {
                   : `/${location}/cabinet/achievements`
 
                 const payloadData = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -743,12 +749,16 @@ export default async function handler(Schema, req, res, props = {}) {
 =======
                   url: achievementUrl,
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+                  url: achievementUrl,
+>>>>>>> 9108424a (Fix push notifications for achievements)
                   achievementId: String(jsonData.achievementId),
                   achievementUserId: String(jsonData._id),
                 }
 
                 if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -796,6 +806,9 @@ export default async function handler(Schema, req, res, props = {}) {
 =======
                 await sendPushNotification({
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+                await sendPushNotification({
+>>>>>>> 9108424a (Fix push notifications for achievements)
                   subscriptions,
                   payload: {
                     title: 'Новое достижение',
@@ -803,6 +816,7 @@ export default async function handler(Schema, req, res, props = {}) {
                     data: payloadData,
                     tag: `achievement-${jsonData._id}`,
                   },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -836,6 +850,8 @@ export default async function handler(Schema, req, res, props = {}) {
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
 =======
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+>>>>>>> 9108424a (Fix push notifications for achievements)
                 })
               }
             } catch (error) {

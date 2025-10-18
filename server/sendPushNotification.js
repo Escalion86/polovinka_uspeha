@@ -312,6 +312,7 @@ const extractSubscription = (target) => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 const sendPushRequest = async ({
   target,
   payloadBuffer,
@@ -470,11 +471,14 @@ const sendPushRequest = async ({
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
 =======
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+>>>>>>> 9108424a (Fix push notifications for achievements)
 const sendPushNotification = async ({
   subscription,
   subscriptions,
   payload,
   options,
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -490,6 +494,8 @@ const sendPushNotification = async ({
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
 =======
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+>>>>>>> 9108424a (Fix push notifications for achievements)
 } = {}) => {
   const targets = normalizeSubscriptions(subscription, subscriptions)
 
@@ -562,6 +568,7 @@ const sendPushNotification = async ({
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     const response = await webPush.sendNotification(
 =======
     return webPush.sendNotification(
@@ -572,10 +579,14 @@ const sendPushNotification = async ({
 =======
     return webPush.sendNotification(
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+    return webPush.sendNotification(
+>>>>>>> 9108424a (Fix push notifications for achievements)
       normalizedSubscription,
       serializedPayload,
       options
     )
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -593,6 +604,8 @@ const sendPushNotification = async ({
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
 =======
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+>>>>>>> 9108424a (Fix push notifications for achievements)
   }
 
   if (targets.length === 1) {
@@ -603,6 +616,7 @@ const sendPushNotification = async ({
 
   results
     .filter((result) => result.status === 'rejected')
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -625,11 +639,16 @@ const sendPushNotification = async ({
     .forEach((result) =>
       console.error('[sendPushNotification] Push delivery failed', result.reason)
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+    .forEach((result) =>
+      console.error('[sendPushNotification] Push delivery failed', result.reason)
+>>>>>>> 9108424a (Fix push notifications for achievements)
     )
 
   const hasSuccessfulDeliveries = results.some(
     (result) => result.status === 'fulfilled'
   )
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -648,10 +667,13 @@ const sendPushNotification = async ({
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
 =======
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+>>>>>>> 9108424a (Fix push notifications for achievements)
 
   if (!hasSuccessfulDeliveries) {
     throw new Error('[sendPushNotification] Failed to deliver push notification')
   }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
@@ -659,6 +681,8 @@ const sendPushNotification = async ({
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
 =======
 >>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
+=======
+>>>>>>> 9108424a (Fix push notifications for achievements)
 
   return results
 }
