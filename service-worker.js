@@ -6,11 +6,6 @@ import {
   StaleWhileRevalidate,
   CacheFirst,
 } from 'workbox-strategies'
-import {
-  NetworkFirst,
-  StaleWhileRevalidate,
-  CacheFirst,
-} from 'workbox-strategies'
 import { ExpirationPlugin } from 'workbox-expiration'
 
 const workerVersion = '2025-10-17T20:32:00Z'
