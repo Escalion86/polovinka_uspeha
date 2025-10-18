@@ -678,6 +678,7 @@ export default async function handler(Schema, req, res, props = {}) {
               const subscriptions = getUsersPushSubscriptions(user ? [user] : [])
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
               const vapidStatus = getVapidConfigurationStatus()
               const debugEnabled = process.env.NODE_ENV !== 'production'
 
@@ -707,6 +708,10 @@ export default async function handler(Schema, req, res, props = {}) {
 
               if (subscriptions.length > 0) {
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
+=======
+
+              if (subscriptions.length > 0) {
+>>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
                 const achievementName = achievement?.name?.trim() || 'Достижение'
                 const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
 
@@ -722,6 +727,7 @@ export default async function handler(Schema, req, res, props = {}) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                   type: 'achievement-assigned',
                   url: achievementUrl,
                   userId: String(jsonData.userId),
@@ -734,12 +740,16 @@ export default async function handler(Schema, req, res, props = {}) {
 =======
                   url: achievementUrl,
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
+=======
+                  url: achievementUrl,
+>>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
                   achievementId: String(jsonData.achievementId),
                   achievementUserId: String(jsonData._id),
                 }
 
                 if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -783,6 +793,9 @@ export default async function handler(Schema, req, res, props = {}) {
 =======
                 await sendPushNotification({
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
+=======
+                await sendPushNotification({
+>>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
                   subscriptions,
                   payload: {
                     title: 'Новое достижение',
@@ -790,6 +803,7 @@ export default async function handler(Schema, req, res, props = {}) {
                     data: payloadData,
                     tag: `achievement-${jsonData._id}`,
                   },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                   context: 'achievement-notification',
@@ -820,6 +834,8 @@ export default async function handler(Schema, req, res, props = {}) {
 >>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
 =======
 >>>>>>> 2639adba (Gracefully handle missing push VAPID keys)
+=======
+>>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
                 })
               }
             } catch (error) {

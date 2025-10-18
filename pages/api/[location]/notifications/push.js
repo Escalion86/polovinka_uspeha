@@ -87,6 +87,7 @@ export default async function handler(req, res) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       const debugEnabled = process.env.NODE_ENV !== 'production'
       const vapidStatus = getVapidConfigurationStatus()
       const responsePayload = { success: true, data: updatedUser }
@@ -265,6 +266,67 @@ export default async function handler(req, res) {
       return res?.status(200).json({ success: true, data: updatedUser })
     }
 
+=======
+      if (updatedUser?.notifications?.push?.active) {
+        const subscriptions = getUsersPushSubscriptions([updatedUser])
+        await sendPushNotification({
+          subscriptions,
+          payload: {
+            title: 'Push-уведомления подключены',
+            body: 'Вы успешно подключили push-уведомления на сайте Половинка успеха.',
+            data: {
+              url: process.env.DOMAIN
+                ? `${process.env.DOMAIN}/${location}/cabinet/notifications`
+                : `/${location}/cabinet/notifications`,
+            },
+          },
+        })
+      }
+
+      return res?.status(200).json({ success: true, data: updatedUser })
+    }
+
+    if (method === 'DELETE') {
+      const { userId, endpoint } = body || {}
+      if (!userId || !endpoint)
+        return res
+          ?.status(400)
+          .json({ success: false, error: 'userId or endpoint missing' })
+
+      const user = await Users.findById(userId).lean()
+      if (!user)
+        return res?.status(404).json({ success: false, error: 'user not found' })
+
+      const push = user.notifications?.push || {}
+      const existingSubscriptions = Array.isArray(push.subscriptions)
+        ? push.subscriptions
+        : []
+
+      const updatedSubscriptions = existingSubscriptions.filter(
+        (subscriptionItem) => subscriptionItem?.endpoint !== endpoint
+      )
+
+      const update = {
+        'notifications.push.subscriptions': updatedSubscriptions,
+        'notifications.push.updatedAt': new Date().toISOString(),
+      }
+
+      if (updatedSubscriptions.length === 0) {
+        update['notifications.push.active'] = false
+      }
+
+      const updatedUser = await Users.findByIdAndUpdate(
+        userId,
+        {
+          $set: update,
+        },
+        { new: true }
+      ).lean()
+
+      return res?.status(200).json({ success: true, data: updatedUser })
+    }
+
+>>>>>>> 97eaf8ae (Handle non-JSON push responses and fix sidebar keys)
     return res?.status(405).json({ success: false, error: 'Method not allowed' })
   } catch (error) {
     console.error('[notifications/push] handler failed', error)
