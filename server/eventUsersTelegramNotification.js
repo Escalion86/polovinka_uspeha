@@ -4,8 +4,6 @@ import getUserFullName from '@helpers/getUserFullName'
 import subEventsSummator from '@helpers/subEventsSummator'
 
 import sendTelegramMessage from '@server/sendTelegramMessage'
-import sendPushNotification from '@server/sendPushNotification'
-import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
 import dbConnect from '@utils/dbConnect'
 import getTimeZoneByLocation from './getTimeZoneByLocation'
 
@@ -57,19 +55,11 @@ const eventUsersTelegramNotification = async ({
             ? 'dev'
             : { $in: rolesIdsToEventUsersNotification },
         'notifications.settings.eventRegistration': true,
-        $or: [
-          {
-            'notifications.telegram.active': true,
-            'notifications.telegram.id': {
-              $exists: true,
-              $ne: null,
-            },
-          },
-          {
-            'notifications.push.active': true,
-            'notifications.push.subscriptions.0': { $exists: true },
-          },
-        ],
+        'notifications.telegram.active': true,
+        'notifications.telegram.id': {
+          $exists: true,
+          $ne: null,
+        },
       })
       .lean()
 
@@ -295,28 +285,9 @@ const eventUsersTelegramNotification = async ({
       .filter((user) => user.notifications?.telegram?.active)
       .map((user) => user.notifications?.telegram?.id)
 
-    const pushSubscriptions = getUsersPushSubscriptions(
-      usersWithNotificationsOfEventUsersON
-    )
-
     const eventUrl = process.env.DOMAIN
       ? `${process.env.DOMAIN}/${location}/event/${eventId}`
       : `/${location}/event/${eventId}`
-
-    if (pushSubscriptions.length > 0) {
-      await sendPushNotification({
-        subscriptions: pushSubscriptions,
-        payload: {
-          title: 'Изменения по мероприятию',
-          body: text,
-          data: {
-            url: eventUrl,
-            userId: userId ? String(userId) : undefined,
-          },
-          tag: `event-users-${eventId}`,
-        },
-      })
-    }
 
     const filteredTelegramIds = usersTelegramIds.filter(Boolean)
 

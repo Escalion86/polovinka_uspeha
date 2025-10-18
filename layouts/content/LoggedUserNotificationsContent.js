@@ -21,21 +21,12 @@ import TelegramLoginButton from 'react-telegram-login'
 import Note from '@components/Note'
 import locationAtom from '@state/atoms/locationAtom'
 import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
-import PhoneInput from '@components/PhoneInput'
-import useErrors from '@helpers/useErrors'
-import urlBase64ToUint8Array from '@helpers/urlBase64ToUint8Array'
 
 const LoggedUserNotificationsContent = (props) => {
   const location = useAtomValue(locationAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const telegramBotName = useAtomValue(telegramBotNameAtom)
-
-  const [whatsapp, setWhatsapp] = useState(
-    loggedUserActive?.whatsapp ?? DEFAULT_USER.whatsapp
-  )
-
-  const [errors, checkErrors, addError, removeError, clearErrors] = useErrors()
 
   const birthdays = loggedUserActiveRole?.notifications?.birthdays
   const remindDates = loggedUserActiveRole?.notifications?.remindDates
@@ -51,20 +42,9 @@ const LoggedUserNotificationsContent = (props) => {
   const prepareNotifications = useMemo(
     () =>
       (source = {}) => ({
-        ...DEFAULT_USER.notifications,
-        ...source,
         telegram: {
           ...DEFAULT_USER.notifications.telegram,
           ...(source?.telegram ?? {}),
-        },
-        whatsapp: {
-          ...DEFAULT_USER.notifications.whatsapp,
-          ...(source?.whatsapp ?? {}),
-        },
-        push: {
-          ...DEFAULT_USER.notifications.push,
-          ...(source?.push ?? {}),
-          subscriptions: source?.push?.subscriptions ?? [],
         },
         settings: {
           ...(DEFAULT_USER.notifications?.settings ?? {}),
@@ -107,36 +87,12 @@ const LoggedUserNotificationsContent = (props) => {
   // const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const [isWaitingToResponse, setIsWaitingToResponse] = useState(false)
-  const [isPushSupported, setIsPushSupported] = useState(false)
-  const [isPushSubscribing, setIsPushSubscribing] = useState(false)
-  const [isPushUnsubscribing, setIsPushUnsubscribing] = useState(false)
-  const [pushPermission, setPushPermission] = useState(
-    typeof window !== 'undefined' && 'Notification' in window
-      ? Notification.permission
-      : 'default'
-  )
 
   const { success, error } = useSnackbar()
 
-  const pushSubscriptionsCount =
-    notifications?.push?.subscriptions?.length ?? 0
-
-  const isNotificationActivated = !!(
-    (notifications?.telegram?.id && notifications?.telegram?.active) ||
-    notifications?.whatsapp?.active ||
-    (notifications?.push?.active && pushSubscriptionsCount > 0)
+  const isNotificationActivated = Boolean(
+    notifications?.telegram?.id && notifications?.telegram?.active
   )
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const supported =
-        'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window
-      setIsPushSupported(supported)
-      if (supported) {
-        setPushPermission(Notification.permission)
-      }
-    }
-  }, [])
 
   useEffect(() => {
     setNotifications(prepareNotifications(loggedUserActive?.notifications))
@@ -148,7 +104,6 @@ const LoggedUserNotificationsContent = (props) => {
       `/api/${location}/users/${loggedUserActive._id}`,
       {
         notifications,
-        whatsapp,
       },
       (data) => {
         setLoggedUserActive(data)
@@ -171,126 +126,10 @@ const LoggedUserNotificationsContent = (props) => {
     }
   }, [props])
 
-  const refreshPushPermission = () => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setPushPermission(Notification.permission)
-    }
-  }
-
-  const subscribePush = async () => {
-    if (!isPushSupported || !loggedUserActive?._id) return
-    if (!process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY) {
-      error('Публичный ключ push-уведомлений не настроен')
-      return
-    }
-    setIsPushSubscribing(true)
-    try {
-      if (Notification.permission === 'default') {
-        const permission = await Notification.requestPermission()
-        setPushPermission(permission)
-        if (permission !== 'granted') {
-          error('Разрешение на push-уведомления не предоставлено')
-          setIsPushSubscribing(false)
-          return
-        }
-      }
-      if (Notification.permission === 'denied') {
-        error('В браузере заблокированы push-уведомления')
-        setIsPushSubscribing(false)
-        return
-      }
-
-      const registration = await navigator.serviceWorker.ready
-      let subscription = await registration.pushManager.getSubscription()
-      if (!subscription) {
-        const applicationServerKey = urlBase64ToUint8Array(
-          process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY
-        )
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey,
-        })
-      }
-
-      const response = await fetch(`/api/${location}/notifications/push`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: loggedUserActive._id,
-          subscription: subscription.toJSON(),
-          userAgent: navigator.userAgent,
-        }),
-      })
-
-      const responseJson = await response.json()
-
-      if (!response.ok) {
-        throw new Error(
-          responseJson?.error || 'Ошибка подключения push-уведомлений'
-        )
-      }
-
-      const { data } = responseJson
-      setLoggedUserActive(data)
-      setUserInUsersState(data)
-      setNotifications(prepareNotifications(data?.notifications))
-      success('Push-уведомления подключены')
-      refreshPushPermission()
-    } catch (err) {
-      console.error(err)
-      error(err?.message || 'Не удалось подключить push-уведомления')
-    } finally {
-      setIsPushSubscribing(false)
-    }
-  }
-
-  const unsubscribePush = async () => {
-    if (!isPushSupported || !loggedUserActive?._id) return
-    setIsPushUnsubscribing(true)
-    try {
-      const registration = await navigator.serviceWorker.ready
-      const subscription = await registration.pushManager.getSubscription()
-      const endpoint = subscription?.endpoint
-
-      if (subscription) {
-        await subscription.unsubscribe()
-      }
-
-      if (endpoint) {
-        const response = await fetch(`/api/${location}/notifications/push`, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: loggedUserActive._id,
-            endpoint,
-          }),
-        })
-
-        const responseJson = await response.json()
-
-        if (!response.ok) {
-          throw new Error(responseJson?.error || 'Ошибка удаления push-подписки')
-        }
-
-        const { data } = responseJson
-        setLoggedUserActive(data)
-        setUserInUsersState(data)
-        setNotifications(prepareNotifications(data?.notifications))
-      }
-
-      success('Подписка push-уведомлений на этом устройстве отключена')
-      refreshPushPermission()
-    } catch (err) {
-      console.error(err)
-      error(err?.message || 'Не удалось отключить push-уведомления')
-    } finally {
-      setIsPushUnsubscribing(false)
-    }
-  }
-
-  const formChanged =
-    !compareObjects(loggedUserActive?.notifications, notifications) ||
-    loggedUserActive?.whatsapp !== whatsapp
+  const formChanged = !compareObjects(
+    loggedUserActive?.notifications,
+    notifications
+  )
 
   const buttonDisabled = !formChanged
 
@@ -341,80 +180,7 @@ const LoggedUserNotificationsContent = (props) => {
               }}
             />
           )}
-          {/* <YesNoPicker
-            label="Оповещения в Whatsapp"
-            value={!!notifications?.whatsapp?.active}
-            onChange={() => {
-              setNotifications((state) => ({
-                ...state,
-                whatsapp: {
-                  ...state?.whatsapp,
-                  active: !state?.whatsapp?.active,
-                },
-              }))
-            }}
-          /> */}
-          {isPushSupported && (
-            <YesNoPicker
-              label={`Оповещения через push${
-                pushSubscriptionsCount > 0 ? ` (${pushSubscriptionsCount})` : ''
-              }`}
-              value={!!notifications?.push?.active && pushSubscriptionsCount > 0}
-              onChange={() => {
-                setNotifications((state) => ({
-                  ...state,
-                  push: {
-                    ...state?.push,
-                    active: !state?.push?.active,
-                  },
-                }))
-              }}
-            />
-          )}
         </div>
-        {!isPushSupported && (
-          <Note className="mt-2">
-            Push-уведомления не поддерживаются вашим браузером или устройством.
-          </Note>
-        )}
-        {isPushSupported && (
-          <div className="flex flex-col gap-2 mt-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                name="Подключить push"
-                onClick={subscribePush}
-                loading={isPushSubscribing}
-                disabled={isPushSubscribing}
-              />
-              <Button
-                name="Отключить push на этом устройстве"
-                onClick={unsubscribePush}
-                loading={isPushUnsubscribing}
-                disabled={isPushUnsubscribing}
-                color="cancel"
-              />
-            </div>
-            {pushPermission === 'denied' && (
-              <Note>
-                В браузере запрещены уведомления. Разрешите уведомления в настройках
-                браузера, чтобы получать push-оповещения.
-              </Note>
-            )}
-          </div>
-        )}
-        {/* {!!notifications?.whatsapp?.active && (
-          <div className="flex flex-col">
-            <Note>Убедитесь, что ваш номер Whatsapp введен верно!</Note>
-            <PhoneInput
-              label="Whatsapp"
-              value={whatsapp}
-              onChange={setWhatsapp}
-              // error={errors.whatsapp}
-              copyPasteButtons
-              noMargin
-            />
-          </div>
-        )} */}
         {isNotificationActivated && (
           <>
             {(birthdays || remindDates) && (
