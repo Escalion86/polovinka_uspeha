@@ -1,6 +1,9 @@
 import checkLocationValid from '@server/checkLocationValid'
 import sendPushNotification, {
+<<<<<<< HEAD
   getVapidConfigurationStatus,
+=======
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
   hasVapidKeyPairConfigured,
 } from '@server/sendPushNotification'
 import getUsersPushSubscriptions from '@server/getUsersPushSubscriptions'
@@ -82,6 +85,7 @@ export default async function handler(req, res) {
         { new: true }
       ).lean()
 
+<<<<<<< HEAD
       const debugEnabled = process.env.NODE_ENV !== 'production'
       const vapidStatus = getVapidConfigurationStatus()
       const responsePayload = { success: true, data: updatedUser }
@@ -112,6 +116,18 @@ export default async function handler(req, res) {
 >>>>>>> 0af74715 (Add debug logging for push notifications)
           try {
             const result = await sendPushNotification({
+=======
+      if (updatedUser?.notifications?.push?.active) {
+        if (!hasVapidKeyPairConfigured()) {
+          console.warn(
+            '[notifications/push] Skip confirmation push: VAPID keys are not configured'
+          )
+        } else {
+          const subscriptions = getUsersPushSubscriptions([updatedUser])
+
+          try {
+            await sendPushNotification({
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
               subscriptions,
               payload: {
                 title: 'Push-уведомления подключены',
@@ -122,6 +138,7 @@ export default async function handler(req, res) {
                     : `/${location}/cabinet/notifications`,
                 },
               },
+<<<<<<< HEAD
               context: 'push-confirmation',
               debug: debugEnabled,
 <<<<<<< HEAD
@@ -145,20 +162,27 @@ export default async function handler(req, res) {
                   : result?.statusCode,
               })
             }
+=======
+            })
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
           } catch (error) {
             console.error(
               '[notifications/push] Failed to send confirmation push',
               error
             )
 <<<<<<< HEAD
+<<<<<<< HEAD
           } finally {
             await pushCleanup.flush()
 =======
 >>>>>>> 0af74715 (Add debug logging for push notifications)
+=======
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
           }
         }
       }
 
+<<<<<<< HEAD
       if (debugEnabled) {
         responsePayload.meta = {
           vapid: vapidStatus,
@@ -171,6 +195,9 @@ export default async function handler(req, res) {
       }
 
       return res?.status(200).json(responsePayload)
+=======
+      return res?.status(200).json({ success: true, data: updatedUser })
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
     }
 
     if (method === 'DELETE') {

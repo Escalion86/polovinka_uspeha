@@ -37,6 +37,13 @@ const hasVapidKeyPairConfigured = () => {
   return status.hasPublicKey && status.hasPrivateKey
 }
 
+const hasVapidKeyPairConfigured = () =>
+  Boolean(
+    (process.env.WEB_PUSH_PUBLIC_KEY ||
+      process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY) &&
+      process.env.WEB_PUSH_PRIVATE_KEY
+  )
+
 const getWebPush = async () => {
   if (cachedWebPush) return cachedWebPush
 >>>>>>> 0af74715 (Add debug logging for push notifications)
@@ -302,6 +309,7 @@ const extractSubscription = (target) => {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const sendPushRequest = async ({
   target,
   payloadBuffer,
@@ -454,17 +462,22 @@ const sendPushRequest = async ({
 
 =======
 >>>>>>> 0af74715 (Add debug logging for push notifications)
+=======
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
 const sendPushNotification = async ({
   subscription,
   subscriptions,
   payload,
   options,
+<<<<<<< HEAD
   context,
   debug,
 <<<<<<< HEAD
   onSubscriptionRejected,
 =======
 >>>>>>> 0af74715 (Add debug logging for push notifications)
+=======
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
 } = {}) => {
   const targets = normalizeSubscriptions(subscription, subscriptions)
 
@@ -534,11 +547,16 @@ const sendPushNotification = async ({
       throw new Error('[sendPushNotification] Invalid subscription payload')
     }
 
+<<<<<<< HEAD
     const response = await webPush.sendNotification(
+=======
+    return webPush.sendNotification(
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
       normalizedSubscription,
       serializedPayload,
       options
     )
+<<<<<<< HEAD
 
     debugLog('Push delivered', {
       endpoint: normalizedSubscription.endpoint,
@@ -547,6 +565,8 @@ const sendPushNotification = async ({
 
     return response
 >>>>>>> 0af74715 (Add debug logging for push notifications)
+=======
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
   }
 
   if (targets.length === 1) {
@@ -558,17 +578,23 @@ const sendPushNotification = async ({
   results
     .filter((result) => result.status === 'rejected')
 <<<<<<< HEAD
+<<<<<<< HEAD
     .forEach((result) => console.error(`${logPrefix} Push delivery failed`, result.reason))
 
   const hasSuccessfulDeliveries = results.some((result) => result.status === 'fulfilled')
 =======
     .forEach((result) =>
       console.error(`${logPrefix} Push delivery failed`, result.reason)
+=======
+    .forEach((result) =>
+      console.error('[sendPushNotification] Push delivery failed', result.reason)
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
     )
 
   const hasSuccessfulDeliveries = results.some(
     (result) => result.status === 'fulfilled'
   )
+<<<<<<< HEAD
 >>>>>>> 0af74715 (Add debug logging for push notifications)
 
   if (!hasSuccessfulDeliveries) {
@@ -579,13 +605,23 @@ const sendPushNotification = async ({
     successful: results.filter((result) => result.status === 'fulfilled').length,
     failed: results.filter((result) => result.status === 'rejected').length,
   })
+=======
+
+  if (!hasSuccessfulDeliveries) {
+    throw new Error('[sendPushNotification] Failed to deliver push notification')
+  }
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
 
   return results
 }
 
 export default sendPushNotification
 <<<<<<< HEAD
+<<<<<<< HEAD
 export { getVapidConfigurationStatus, hasVapidKeyPairConfigured }
 =======
 export { getWebPush, getVapidConfigurationStatus, hasVapidKeyPairConfigured }
 >>>>>>> 0af74715 (Add debug logging for push notifications)
+=======
+export { getWebPush, hasVapidKeyPairConfigured }
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)

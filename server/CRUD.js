@@ -7,7 +7,10 @@ import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
 import sendPushNotification, {
+<<<<<<< HEAD
   getVapidConfigurationStatus,
+=======
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
   hasVapidKeyPairConfigured,
 } from './sendPushNotification'
 import getUsersPushSubscriptions from './getUsersPushSubscriptions'
@@ -673,6 +676,7 @@ export default async function handler(Schema, req, res, props = {}) {
               ])
 
               const subscriptions = getUsersPushSubscriptions(user ? [user] : [])
+<<<<<<< HEAD
               const vapidStatus = getVapidConfigurationStatus()
               const debugEnabled = process.env.NODE_ENV !== 'production'
 
@@ -690,6 +694,14 @@ export default async function handler(Schema, req, res, props = {}) {
 
 =======
 >>>>>>> 0af74715 (Add debug logging for push notifications)
+=======
+
+              if (!hasVapidKeyPairConfigured()) {
+                console.warn(
+                  '[CRUD] Skip achievement push notification: VAPID keys are not configured'
+                )
+              } else if (subscriptions.length > 0) {
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
                 const achievementName = achievement?.name?.trim() || 'Достижение'
                 const bodyParts = [`Вам присвоено достижение «${achievementName}».`]
 
@@ -703,18 +715,23 @@ export default async function handler(Schema, req, res, props = {}) {
 
                 const payloadData = {
 <<<<<<< HEAD
+<<<<<<< HEAD
                   type: 'achievement-assigned',
                   url: achievementUrl,
                   userId: String(jsonData.userId),
 =======
                   url: achievementUrl,
 >>>>>>> 0af74715 (Add debug logging for push notifications)
+=======
+                  url: achievementUrl,
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
                   achievementId: String(jsonData.achievementId),
                   achievementUserId: String(jsonData._id),
                 }
 
                 if (jsonData.eventId) payloadData.eventId = String(jsonData.eventId)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                 try {
                   const result = await sendPushNotification({
@@ -750,6 +767,9 @@ export default async function handler(Schema, req, res, props = {}) {
                   await pushCleanup.flush()
 =======
                 const result = await sendPushNotification({
+=======
+                await sendPushNotification({
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
                   subscriptions,
                   payload: {
                     title: 'Новое достижение',
@@ -757,6 +777,7 @@ export default async function handler(Schema, req, res, props = {}) {
                     data: payloadData,
                     tag: `achievement-${jsonData._id}`,
                   },
+<<<<<<< HEAD
                   context: 'achievement-notification',
                   debug: debugEnabled,
                 })
@@ -781,6 +802,8 @@ export default async function handler(Schema, req, res, props = {}) {
               } else if (debugEnabled) {
                 console.debug('[CRUD] Skip achievement push notification: no subscriptions', {
                   userId: jsonData.userId,
+=======
+>>>>>>> 249f1281 (Skip achievement pushes without VAPID keys)
                 })
               }
             } catch (error) {
