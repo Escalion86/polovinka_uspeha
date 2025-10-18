@@ -1,4 +1,4 @@
-import { postData } from '@helpers/CRUD'
+import telegramPost from './telegramApi'
 import { DEFAULT_ROLES } from '@helpers/constants'
 import mongoose from 'mongoose'
 import dbConnect from '@utils/dbConnect'
@@ -119,7 +119,7 @@ const userRegisterTelegramNotification = async ({
     usersTelegramIds
       .filter(Boolean)
       .map(async (chat_id) =>
-        postData(
+        telegramPost(
           `https://api.telegram.org/bot${telegramToken}/sendMessage`,
           {
             chat_id,
@@ -128,8 +128,6 @@ const userRegisterTelegramNotification = async ({
           },
           (data) => console.log('data', data),
           (data) => console.log('error', data),
-          true,
-          null,
           true
         )
       )
