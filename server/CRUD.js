@@ -576,7 +576,6 @@ export default async function handler(Schema, req, res, props = {}) {
                   .select(selectOpts)
                   .limit(queryLimit)
                   .sort(querySort)
-          console.log('data :>> ', data)
           if (!data) {
             return res?.status(400).json({ success: false })
           }

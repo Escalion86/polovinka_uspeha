@@ -77,11 +77,9 @@ export default async function auth(req, res) {
 
             if (shouldRehashPassword(fetchedUser.password)) {
               const newPasswordHash = await hashPassword(password)
-              await db
-                .model('Users')
-                .findByIdAndUpdate(fetchedUser._id, {
-                  password: newPasswordHash,
-                })
+              await db.model('Users').findByIdAndUpdate(fetchedUser._id, {
+                password: newPasswordHash,
+              })
             }
 
             return {
