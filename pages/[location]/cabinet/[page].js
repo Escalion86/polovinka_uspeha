@@ -188,7 +188,7 @@ export const getServerSideProps = async (context) => {
   if (!session?.user) {
     return {
       redirect: {
-        destination: `/${location}${page ? `?page=${page}` : ''}`,
+        destination: `/${location}/login${page ? `?page=${page}` : ''}`,
       },
     }
   }
