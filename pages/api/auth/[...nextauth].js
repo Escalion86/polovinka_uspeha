@@ -10,6 +10,22 @@ import {
   verifyPassword,
 } from '@helpers/passwordUtils'
 
+const parsePhoneNumber = (value) => {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : null
+  }
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    if (!trimmed || !/^\d+$/.test(trimmed)) return null
+
+    const parsed = Number(trimmed)
+    return Number.isFinite(parsed) ? parsed : null
+  }
+
+  return null
+}
+
 const resolveReferrerId = async (db, referrerId) => {
   if (!referrerId || !mongoose.Types.ObjectId.isValid(referrerId)) return null
 
@@ -100,6 +116,7 @@ export default async function auth(req, res) {
           last_name: { label: 'last_name', type: 'text', placeholder: '' },
           photo_url: { label: 'photo_url', type: 'text', placeholder: '' },
           username: { label: 'username', type: 'text', placeholder: '' },
+          phone: { label: 'phone', type: 'text', placeholder: '' },
           registration: {
             label: 'registration',
             type: 'text',
@@ -115,6 +132,7 @@ export default async function auth(req, res) {
             last_name,
             photo_url,
             username,
+            phone,
             registration,
             location,
             referrerId,
@@ -125,28 +143,72 @@ export default async function auth(req, res) {
               return null
             }
 
+            const phoneNumber = parsePhoneNumber(phone)
             const db = await dbConnect(location)
             if (!db) return null
 
-            const fetchedUser = await db
-              .model('Users')
+            const usersModel = db.model('Users')
+
+            const fetchedUser = await usersModel
               .findOne({
                 'notifications.telegram.id': telegramIdNum,
               })
               .lean()
 
             if (fetchedUser?._id) {
+              if (phoneNumber && !fetchedUser.phone) {
+                await usersModel.findByIdAndUpdate(fetchedUser._id, {
+                  $set: { phone: phoneNumber },
+                })
+              }
               return {
                 name: fetchedUser._id,
                 email: location,
               }
             } else {
+              if (phoneNumber) {
+                const userByPhone = await usersModel
+                  .findOne({ phone: phoneNumber })
+                  .lean()
+
+                if (userByPhone?._id) {
+                  const existingTelegramNotification =
+                    userByPhone.notifications?.telegram ??
+                    userByPhone.notifications?.get?.('telegram')
+
+                  const telegramUpdate = {
+                    'notifications.telegram.id': telegramIdNum,
+                    'notifications.telegram.active':
+                      typeof existingTelegramNotification?.active === 'boolean'
+                        ? existingTelegramNotification.active
+                        : false,
+                  }
+
+                  if (typeof username !== 'undefined') {
+                    telegramUpdate['notifications.telegram.userName'] = username
+                  }
+
+                  if (!userByPhone.phone) {
+                    telegramUpdate.phone = phoneNumber
+                  }
+
+                  await usersModel.findByIdAndUpdate(userByPhone._id, {
+                    $set: telegramUpdate,
+                  })
+
+                  return {
+                    name: userByPhone._id,
+                    email: location,
+                  }
+                }
+              }
+
               if (registration === 'true') {
                 const resolvedReferrerId = await resolveReferrerId(
                   db,
                   referrerId
                 )
-                const newUser = await db.model('Users').create({
+                const newUser = await usersModel.create({
                   notifications: {
                     telegram: {
                       id: telegramIdNum,
@@ -158,6 +220,7 @@ export default async function auth(req, res) {
                   secondName: last_name === 'undefined' ? undefined : last_name,
                   images: [photo_url],
                   registrationType: 'telegram',
+                  ...(phoneNumber ? { phone: phoneNumber } : {}),
                   referrerId: resolvedReferrerId,
                 })
                 await db.model('Histories').create({
