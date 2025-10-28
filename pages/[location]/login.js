@@ -435,6 +435,7 @@ const LoginPage = (props) => {
           registration: forceReg || isRegistration ? 'true' : 'false',
           location,
           referrerId: referralId,
+          ...(inputPhone ? { phone: String(inputPhone) } : {}),
         }).then((res) => {
           if (res?.error === 'CredentialsSignin') {
             setWaitingResponse(false)
@@ -469,6 +470,7 @@ const LoginPage = (props) => {
       setWaitingResponse,
       setInputPassword,
       referralId,
+      inputPhone,
     ]
   )
 
