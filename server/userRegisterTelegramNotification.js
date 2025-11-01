@@ -1,5 +1,5 @@
 import telegramPost from './telegramApi'
-import { DEFAULT_ROLES } from '@helpers/constants'
+import { DEFAULT_ROLES } from '@helpers/constantsServer'
 import mongoose from 'mongoose'
 import dbConnect from '@utils/dbConnect'
 import getTelegramTokenByLocation from './getTelegramTokenByLocation'

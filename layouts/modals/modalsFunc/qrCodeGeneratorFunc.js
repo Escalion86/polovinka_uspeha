@@ -1,7 +1,7 @@
 import FormWrapper from '@components/FormWrapper'
 import { useAtomValue } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
-import { useRouter } from 'next/router'
+import useRouter from '@utils/useRouter'
 
 const qrCodeGeneratorFunc = ({ type, id, title, link }) => {
   const QRCodeGeneratorFuncModal = ({

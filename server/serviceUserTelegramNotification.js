@@ -1,4 +1,4 @@
-import { DEFAULT_ROLES } from '@helpers/constants'
+import { DEFAULT_ROLES } from '@helpers/constantsServer'
 import getUserFullName from '@helpers/getUserFullName'
 
 import sendTelegramMessage from '@server/sendTelegramMessage'

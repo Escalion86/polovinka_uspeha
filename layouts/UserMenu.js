@@ -15,7 +15,7 @@ import Avatar from './Avatar'
 import SvgKavichki from '@svg/SvgKavichki'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import locationAtom from '@state/atoms/locationAtom'
-import { useRouter } from 'next/router'
+import useRouter from '@utils/useRouter'
 
 const variants = {
   show: {

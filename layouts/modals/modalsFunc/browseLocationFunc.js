@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { LOCATIONS } from '@helpers/constants'
 import locationAtom from '@state/atoms/locationAtom'
 import cn from 'classnames'
-import { useRouter } from 'next/router'
+import useRouter from '@utils/useRouter'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
