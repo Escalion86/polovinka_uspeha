@@ -1,5 +1,5 @@
 import birthDateToAge from '@helpers/birthDateToAge'
-import { DEFAULT_ROLES, LOCATIONS_KEYS_VISIBLE } from '@helpers/constants'
+import { DEFAULT_ROLES, LOCATIONS_KEYS_VISIBLE } from '@helpers/constantsServer'
 // import formatDate from '@helpers/formatDate'
 import getUserFullName from '@helpers/getUserFullName'
 import padNum from '@helpers/padNum'

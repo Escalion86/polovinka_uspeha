@@ -1,4 +1,4 @@
-import { DEFAULT_EVENT } from '@helpers/constants'
+import { DEFAULT_EVENT } from '@helpers/constantsServer'
 import checkLocationValid from '@server/checkLocationValid'
 import CRUD from '@server/CRUD'
 import dbConnect from '@utils/dbConnect'

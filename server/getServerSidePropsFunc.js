@@ -1,66 +1,46 @@
 import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
 
-const getServerSidePropsFunc = async (
-  context,
-  getSession,
-  fetchProps,
-  location,
-  params
-) => {
-  const telegramBotName = getTelegramBotNameByLocation(location)
-  var session
-  try {
-    session = await getSession({ req: context.req })
+const EMPTY_PROPS = {
+  events: null,
+  directions: null,
+  reviews: null,
+  additionalBlocks: null,
+  eventsUsers: null,
+  payments: null,
+  siteSettings: null,
+  rolesSettings: null,
+  questionnaires: null,
+  questionnairesUsers: null,
+  services: null,
+  servicesUsers: null,
+}
 
-    const fetchedProps = await fetchProps(session?.user, location, params)
+const buildBaseProps = (location, telegramBotName, loggedUser) => ({
+  ...EMPTY_PROPS,
+  mode: process.env.MODE,
+  loggedUser: loggedUser ?? null,
+  location,
+  telegramBotName,
+})
+
+const buildPageProps = async ({ session, fetcher, location, params }) => {
+  const telegramBotName = getTelegramBotNameByLocation(location)
+  const loggedUser = session?.user ?? null
+
+  try {
+    const fetchedProps = await fetcher(loggedUser, location, params)
+
     return {
-      props: {
-        // users: null,
-        events: null,
-        directions: null,
-        reviews: null,
-        additionalBlocks: null,
-        eventsUsers: null,
-        payments: null,
-        siteSettings: null,
-        rolesSettings: null,
-        // histories: null,
-        questionnaires: null,
-        questionnairesUsers: null,
-        services: null,
-        servicesUsers: null,
-        mode: process.env.MODE,
-        ...fetchedProps,
-        loggedUser: session?.user ?? null,
-        location,
-        telegramBotName,
-      },
+      ...buildBaseProps(location, telegramBotName, loggedUser),
+      ...fetchedProps,
+      telegramBotName,
     }
   } catch (error) {
     return {
-      props: {
-        // users: null,
-        events: null,
-        directions: null,
-        reviews: null,
-        additionalBlocks: null,
-        eventsUsers: null,
-        payments: null,
-        siteSettings: null,
-        rolesSettings: null,
-        // histories: null,
-        questionnaires: null,
-        questionnairesUsers: null,
-        services: null,
-        servicesUsers: null,
-        mode: process.env.MODE,
-        loggedUser: session?.user ?? null,
-        error: JSON.parse(JSON.stringify(error)),
-        location,
-        telegramBotName,
-      },
+      ...buildBaseProps(location, telegramBotName, loggedUser),
+      error: JSON.parse(JSON.stringify(error)),
     }
   }
 }
 
-export default getServerSidePropsFunc
+export default buildPageProps

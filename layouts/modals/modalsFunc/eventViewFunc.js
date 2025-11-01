@@ -29,7 +29,7 @@ import subEventsSumOfEventSelector from '@state/selectors/subEventsSumOfEventSel
 import userSelector from '@state/selectors/userSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import useRouter from '@utils/useRouter'
 import { Suspense, useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import eventLoggedUserByEventIdSelector from '@state/selectors/eventLoggedUserByEventIdSelector'

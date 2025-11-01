@@ -15,7 +15,7 @@ import Avatar from './Avatar'
 import UserMenu from './UserMenu'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 import locationAtom from '@state/atoms/locationAtom'
-import { useRouter } from 'next/router'
+import useRouter from '@utils/useRouter'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 
 const MenuItem = ({ text, href = '#' }) => (

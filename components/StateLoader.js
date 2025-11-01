@@ -61,7 +61,7 @@ import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
 
 // import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
 // import servicesUsersAtom from '@state/atoms/servicesUsersAtom'
-import { useRouter } from 'next/router'
+import useRouter from '@utils/useRouter'
 import { postData } from '@helpers/CRUD'
 // import isBrowserNeedToBeUpdate from '@helpers/browserCheck'
 import browserVer from '@helpers/browserVer'

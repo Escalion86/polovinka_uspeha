@@ -6,7 +6,7 @@ import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 import sendTelegramMessage from './sendTelegramMessage'
-import { DEFAULT_ROLES } from '@helpers/constants'
+import { DEFAULT_ROLES } from '@helpers/constantsServer'
 import { hashPassword } from '@helpers/passwordUtils'
 
 import mongoose from 'mongoose'

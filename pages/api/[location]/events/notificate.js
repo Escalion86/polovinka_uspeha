@@ -4,7 +4,7 @@ import formatEventDateTime from '@helpers/formatEventDateTime'
 
 import dbConnect from '@utils/dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
-import { DEFAULT_ROLES } from '@helpers/constants'
+import { DEFAULT_ROLES } from '@helpers/constantsServer'
 
 import subEventsSummator from '@helpers/subEventsSummator'
 import { telegramCmdToIndex } from '@server/telegramCmd'

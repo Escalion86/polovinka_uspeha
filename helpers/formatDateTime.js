@@ -1,4 +1,4 @@
-import { DAYS_OF_WEEK, MONTHS, MONTHS_FULL } from './constants'
+import { DAYS_OF_WEEK, MONTHS, MONTHS_FULL } from './constantsServer'
 
 /**
  * Returns the week number for this date.  dowOffset is the day of week the week
