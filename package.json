@@ -33,7 +33,7 @@
     "dayjs": "^1.11.7",
     "exceljs": "^4.3.0",
     "flowbite": "^3.1.2",
-    "flowbite-react": "^0.12.8",
+    "flowbite-react": "^0.12.10",
     "form-data": "^4.0.0",
     "framer-motion": "^12.6.2",
     "googleapis": "^144.0.0",

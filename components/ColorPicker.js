@@ -42,7 +42,7 @@ const ColorPicker = ({
         trigger={
           <div
             className={cn(
-              'cursor-pointer flex justify-center items-center w-full h-[24px] border border-gray-200 rounded-lg mt-1',
+              'cursor-pointer flex justify-center items-center w-full h-6 border border-gray-200 rounded-lg mt-1',
               textColorClassCalc(value)
             )}
             style={{ backgroundColor: value }}
@@ -66,7 +66,7 @@ const ColorPicker = ({
             />
             <button
               type="button"
-              className="flex items-center justify-center w-7 h-7 text-general transition-transform duration-200 transform rounded hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-general"
+              className="flex items-center justify-center transition-transform duration-200 transform rounded w-7 h-7 text-general hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-general"
               onClick={(event) => {
                 event.stopPropagation()
                 copyToClipboard(value)
@@ -76,7 +76,7 @@ const ColorPicker = ({
             </button>
             <button
               type="button"
-              className="flex items-center justify-center w-7 h-7 text-general transition-transform duration-200 transform rounded hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-general"
+              className="flex items-center justify-center transition-transform duration-200 transform rounded w-7 h-7 text-general hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-general"
               onClick={(event) => {
                 event.stopPropagation()
                 pasteFromClipboard(onChange)
