@@ -8,7 +8,10 @@ const EventParticipantToggleButtons = ({ value, onChange, noClosed }) => {
   const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
 
   return (
-    <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
+    <ButtonGroup
+      size={windowDimensionsNum < 2 ? 'small' : undefined}
+      className="text-white"
+    >
       <Button
         onClick={() =>
           onChange({
@@ -21,7 +24,7 @@ const EventParticipantToggleButtons = ({ value, onChange, noClosed }) => {
         }
         variant={value.participant ? 'contained' : 'outlined'}
         color="green"
-        className={value.participant ? 'text-white' : 'text-green-400'}
+        className={value.participant ? '' : 'text-green-400'}
       >
         Записан
       </Button>
@@ -37,7 +40,7 @@ const EventParticipantToggleButtons = ({ value, onChange, noClosed }) => {
         }
         variant={value.notParticipant ? 'contained' : 'outlined'}
         color="red"
-        className={value.notParticipant ? 'text-white' : 'text-red-400'}
+        className={value.notParticipant ? '' : 'text-red-400'}
       >
         Не записан
       </Button>

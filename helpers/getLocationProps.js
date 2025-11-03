@@ -1,4 +1,4 @@
-import { LOCATIONS } from './constants'
+import { LOCATIONS } from './constantsServer'
 
 const getLocationProps = (location) => {
   if (!LOCATIONS[location]) return

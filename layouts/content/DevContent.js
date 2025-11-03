@@ -159,7 +159,7 @@ const DevContent = () => {
                 )}
               >
                 <FontAwesomeIcon
-                  className="w-6 h-6 text-white"
+                  className="w-6 h-6 text-white min-h-6"
                   icon={userGender.icon}
                 />
               </div>

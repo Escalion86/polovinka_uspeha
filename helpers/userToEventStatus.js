@@ -1,6 +1,6 @@
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import birthDateToAge from './birthDateToAge'
-import { DEFAULT_EVENT } from './constants'
+import { DEFAULT_EVENT } from './constantsServer'
 import isEventCanceledFunc from './isEventCanceled'
 import isEventExpiredFunc from './isEventExpired'
 import isEventInProcessFunc from './isEventInProcess'

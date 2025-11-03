@@ -15,7 +15,7 @@ import Avatar from './Avatar'
 import UserMenu from './UserMenu'
 import filteredServicesSelector from '@state/selectors/filteredServicesSelector'
 import locationAtom from '@state/atoms/locationAtom'
-import { useRouter } from 'next/router'
+import useRouter from '@utils/useRouter'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
 
 const MenuItem = ({ text, href = '#' }) => (
@@ -178,7 +178,10 @@ const Header = ({ noMenu, fullLinkInMenu }) => {
                       shallow
                       className="flex items-center w-full px-2 py-2 text-lg text-center border border-white rounded-lg gap-x-2 flexpx-2 text-general laptop:px-3 hover:text-white hover:bg-general"
                     >
-                      <FontAwesomeIcon icon={faSignInAlt} className="w-6 h-6" />
+                      <FontAwesomeIcon
+                        icon={faSignInAlt}
+                        className="w-6 h-6 min-h-6"
+                      />
                       <span className="prevent-select-text">
                         Авторизоваться
                       </span>

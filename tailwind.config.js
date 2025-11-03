@@ -1,9 +1,10 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  important: true,
+  important: 'body',
   mode: 'jit',
   content: [
+    './app/**/*.{js,jsx}',
     './pages/**/*.{js,jsx}',
     './components/**/*.{js,jsx}',
     './helpers/**/*.{js,jsx}',
@@ -81,14 +82,14 @@ module.exports = {
         // enchants: ['Enchants', 'sans-serif'],
         // frankinity: ['Frankinity', 'sans-serif'],
         // lora: ['Lora', 'sans-serif'],
-        futuraDemi: 'var(--font-futuraDemi)',
+        futuraDemi: ['var(--font-futuraDemi)', 'sans-serif'],
         // futuraBook: 'var(--font-futuraBook)',
-        futura: 'var(--font-futura)',
-        adlery: 'var(--font-adlery)',
-        adleryProSwash: 'var(--font-adleryProSwash)',
+        futura: ['var(--font-futura)', 'sans-serif'],
+        adlery: ['var(--font-adlery)', 'sans-serif'],
+        adleryProSwash: ['var(--font-adleryProSwash)', 'sans-serif'],
         // enchants: 'var(--font-enchants)',
         // frankinity: 'var(--font-frankinity)',
-        lora: 'var(--font-lora)',
+        lora: ['var(--font-lora)', 'serif'],
       },
       width: {
         phoneV: '300px',

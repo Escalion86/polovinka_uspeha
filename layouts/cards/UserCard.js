@@ -26,7 +26,7 @@ import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 import { Suspense } from 'react'
 import UserCardSkeleton from './Skeletons/UserCardSkeleton'
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
+import Image from 'next/image'
 
 const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
   const sumOfPaymentsWithoutEventOfUser = useAtomValue(
@@ -114,18 +114,19 @@ const UserCard = ({ userId, hidden = false, style }) => {
           )}
         >
           <FontAwesomeIcon
-            className="w-8 h-8 text-white"
+            className="w-8 h-8 text-white min-h-6"
             icon={userGender ? userGender.icon : faGenderless}
           />
         </div>
         <div className="flex flex-col flex-1 tablet:flex-row">
           <div className="flex flex-1 border-b tablet:border-b-0">
-            <img
-              className="hidden object-cover w-[92px] h-[92px] tablet:block min-w-[92px] min-h-[92px]"
+            <Image
+              className="hidden object-cover tablet:block w-[92px] h-[92px] min-w-[92px] min-h-[92px]"
               src={getUserAvatarSrc(user)}
-              alt="user"
-              // width={48}
-              // height={48}
+              alt="Аватар пользователя"
+              width={92}
+              height={92}
+              sizes="(max-width: 1023px) 92px, 92px"
             />
             <div className="flex flex-col flex-1 text-xl font-bold">
               <div className="flex flex-1">

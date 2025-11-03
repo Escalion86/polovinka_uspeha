@@ -3,6 +3,7 @@ import BlockTitle from '@components/BlockTitle'
 import ListItem from '@components/ListItem'
 import { H4, P } from '@components/tags'
 import SvgKavichki from '@svg/SvgKavichki'
+import Image from 'next/image'
 
 const Item = ({ children }) => (
   <ListItem className="not-first:mt-3">
@@ -51,10 +52,13 @@ const AboutBlock = () => (
       </ul>
       <div className="grid grid-col-1 tablet:grid-cols-2 gap-x-4">
         <div className="flex flex-col items-center justify-center col-span-1">
-          <img
-            className="object-contain max-h-100"
-            src={'/img/other/gubina2.png'}
-            alt="polovinka_uspeha"
+          <Image
+            className="object-contain w-full h-auto max-h-100"
+            src="/img/other/gubina2.png"
+            alt="Надежда Губина"
+            width={497}
+            height={449}
+            sizes="(min-width: 768px) 320px, 70vw"
           />
           <H4 className="italic">
             <span className="font-normal">

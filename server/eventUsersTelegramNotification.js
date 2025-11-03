@@ -1,4 +1,4 @@
-import { DEFAULT_ROLES } from '@helpers/constants'
+import { DEFAULT_ROLES } from '@helpers/constantsServer'
 import formatDateTimeFunc from '@helpers/formatDateTime'
 import getUserFullName from '@helpers/getUserFullName'
 import subEventsSummator from '@helpers/subEventsSummator'

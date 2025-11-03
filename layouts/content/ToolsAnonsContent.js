@@ -340,7 +340,7 @@ const ToolsAnonsContent = () => {
                     fill={anonsColor}
                     fontWeight="300"
                     textAnchor="middle"
-                    fontFamily="Futura PT"
+                    fontFamily="Futura"
                   >
                     {MONTHS_FULL_1[month].toLocaleUpperCase()}
                   </text>
@@ -392,6 +392,7 @@ const ToolsAnonsContent = () => {
                         fill={dateColor}
                         fontWeight="bold"
                         textAnchor="middle"
+                        fontFamily="Futura"
                       >
                         {day}
                       </text>
@@ -412,6 +413,7 @@ const ToolsAnonsContent = () => {
                         fill={dateColor}
                         // fontWeight="bold"
                         textAnchor="middle"
+                        fontFamily="Futura"
                       >
                         {week}
                       </text>
@@ -434,6 +436,7 @@ const ToolsAnonsContent = () => {
                     fontSize={dateFontSize}
                     fill={dateColor}
                     fontWeight="bold"
+                    fontFamily="Futura"
                   >
                     {date}
                   </text>
@@ -461,6 +464,7 @@ const ToolsAnonsContent = () => {
                         width={800}
                         style={{ maxWidth: '800px' }}
                         // className="max-w-[800px]"
+                        fontFamily="Futura"
                       >
                         {textLine}
                       </text>

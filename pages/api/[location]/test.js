@@ -1,4 +1,4 @@
-import { LOCATIONS_KEYS_VISIBLE } from '@helpers/constants'
+import { LOCATIONS_KEYS_VISIBLE } from '@helpers/constantsServer'
 
 import dbConnect from '@utils/dbConnect'
 import mongoose from 'mongoose'

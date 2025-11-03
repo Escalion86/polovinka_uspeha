@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import useSnackbar from '@helpers/useSnackbar'
-import { useRouter } from 'next/router'
+import useRouter from '@utils/useRouter'
 
 import { useHasNewDeploy } from 'next-deploy-notifications'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

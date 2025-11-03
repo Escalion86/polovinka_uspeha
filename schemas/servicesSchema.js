@@ -1,7 +1,7 @@
 import {
   DEFAULT_USERS_STATUS_ACCESS,
   DEFAULT_USERS_STATUS_DISCOUNT,
-} from '@helpers/constants'
+} from '@helpers/constantsServer'
 
 const servicesSchema = {
   title: {

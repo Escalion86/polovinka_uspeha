@@ -10,6 +10,7 @@ import isEventCanceled from '@helpers/isEventCanceled'
 
 const eventsLoggedUserWithLikesSelector = atom(async (get) => {
   const loggedUser = get(loggedUserActiveAtom)
+  if (!loggedUser || loggedUser.relationship) return []
   const eventsOfLoggedUser = await get(eventsOfLoggedUserSelector)
   const activeAndStartedEventsOfLoggedUser = eventsOfLoggedUser.filter(
     (event) => isEventStartedOrExpired(event) && !isEventCanceled(event)
@@ -25,9 +26,7 @@ const eventsLoggedUserWithLikesSelector = atom(async (get) => {
         (eventUser) => eventUser.userId === loggedUser._id
       )
       if (eventLoggedUser.status !== 'participant') return undefined
-      if (!loggedUser.relationship) return { ...event, eventUsers }
-      if (eventLoggedUser?.likes) return { ...event, eventUsers }
-      return undefined
+      return { ...event, eventUsers }
     })
   )
   return eventsWithLikesWithEventsUsers.filter((event) => event)

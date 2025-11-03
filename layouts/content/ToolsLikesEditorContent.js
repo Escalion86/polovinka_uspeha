@@ -2,7 +2,7 @@
 
 import { SelectEvent } from '@components/SelectItem'
 import LikesEditor from '@components/LikesEditor'
-import { useRouter } from 'next/router'
+import useRouter from '@utils/useRouter'
 import { useState } from 'react'
 
 const ToolsLikesEditorContent = (props) => {

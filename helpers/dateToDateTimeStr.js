@@ -4,7 +4,7 @@ import {
   DAYS_OF_WEEK_FULL,
   MONTHS,
   MONTHS_FULL,
-} from './constants'
+} from './constantsServer'
 
 const dateToDateTimeStr = (
   date,

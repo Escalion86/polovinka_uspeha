@@ -42,7 +42,7 @@ const ColorPicker = ({
         trigger={
           <div
             className={cn(
-              'cursor-pointer flex justify-center items-center w-full h-[24px] border border-gray-200 rounded-lg mt-1',
+              'cursor-pointer flex justify-center items-center w-full h-6 border border-gray-200 rounded-lg mt-1',
               textColorClassCalc(value)
             )}
             style={{ backgroundColor: value }}
@@ -64,16 +64,26 @@ const ColorPicker = ({
               noMargin
               className="max-w-[110px]"
             />
-            <FontAwesomeIcon
-              className="w-5 h-5 duration-200 transform cursor-pointer text-general hover:scale-110"
-              icon={faCopy}
-              onClick={() => copyToClipboard(value)}
-            />
-            <FontAwesomeIcon
-              className="w-5 h-5 duration-200 transform cursor-pointer text-general hover:scale-110"
-              icon={faPaste}
-              onClick={() => pasteFromClipboard(onChange)}
-            />
+            <button
+              type="button"
+              className="flex items-center justify-center transition-transform duration-200 transform rounded w-7 h-7 text-general hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-general"
+              onClick={(event) => {
+                event.stopPropagation()
+                copyToClipboard(value)
+              }}
+            >
+              <FontAwesomeIcon className="w-5 h-5" icon={faCopy} />
+            </button>
+            <button
+              type="button"
+              className="flex items-center justify-center transition-transform duration-200 transform rounded w-7 h-7 text-general hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-general"
+              onClick={(event) => {
+                event.stopPropagation()
+                pasteFromClipboard(onChange)
+              }}
+            >
+              <FontAwesomeIcon className="w-5 h-5" icon={faPaste} />
+            </button>
           </div>
         </div>
       </DropDown>

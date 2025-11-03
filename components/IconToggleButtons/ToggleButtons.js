@@ -38,7 +38,10 @@ const ToggleButtons = ({
   }
 
   return (
-    <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
+    <ButtonGroup
+      size={windowDimensionsNum < 2 ? 'small' : undefined}
+      className="text-white"
+    >
       {buttonsConfig.map((cfg) => {
         return (
           <Button
@@ -52,12 +55,12 @@ const ToggleButtons = ({
             }
             className={cn(
               'flex items-center gap-x-1',
-              value[cfg.value] ? 'text-white' : `text-${cfg.color}`
+              value[cfg.value] ? '' : `text-${cfg.color}`
             )}
             aria-label={cfg.value}
           >
             {cfg.icon && (
-              <FontAwesomeIcon className="w-6 h-6" icon={cfg.icon} />
+              <FontAwesomeIcon className="w-6 h-6 min-h-6" icon={cfg.icon} />
             )}
             {!iconsOnly && cfg.name}
             {names ? names[cfg.value] : null}

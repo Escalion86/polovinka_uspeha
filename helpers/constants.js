@@ -2165,7 +2165,8 @@ export const CONTENTS = Object.freeze({
     Component: LikesContent,
     name: 'Лайки',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
-    roleAccess: (role, status) => true,
+    roleAccess: (role, status, siteSettings, loggedUser) =>
+      !loggedUser?.relationship,
   },
   remindDates: {
     Component: RemindDatesContent,
@@ -2196,7 +2197,7 @@ export const pages = [
     siteConfirm: CONTENTS['referrals'].siteConfirm,
   },
   {
-    id: 87,
+    id: 2,
     group: 12,
     name: 'Рефералы / Администрирование',
     href: 'referralsAdmin',
@@ -2204,7 +2205,7 @@ export const pages = [
     roleAccess: CONTENTS['referralsAdmin'].roleAccess,
   },
   {
-    id: 2,
+    id: 3,
     group: 1,
     name: 'Лайки',
     href: 'likes',
@@ -2215,7 +2216,7 @@ export const pages = [
     roleAccess: CONTENTS['likes'].roleAccess,
   },
   {
-    id: 3,
+    id: 4,
     group: 2,
     name: 'Услуги',
     href: 'services',
@@ -2224,7 +2225,7 @@ export const pages = [
     roleAccess: CONTENTS['services'].roleAccess,
   },
   {
-    id: 4,
+    id: 5,
     group: 2,
     name: 'Заявки на услуги',
     href: 'servicesUsers',
@@ -2233,7 +2234,7 @@ export const pages = [
     roleAccess: CONTENTS['servicesUsers'].roleAccess,
   },
   {
-    id: 5,
+    id: 6,
     group: 2,
     name: 'Мои заявки на услуги',
     href: 'myServices',
@@ -2242,7 +2243,7 @@ export const pages = [
     roleAccess: CONTENTS['myServices'].roleAccess,
   },
   {
-    id: 6,
+    id: 7,
     group: 3,
     name: 'Мероприятия',
     href: 'events',
@@ -2251,7 +2252,7 @@ export const pages = [
     roleAccess: CONTENTS['events'].roleAccess,
   },
   {
-    id: 7,
+    id: 8,
     group: 4,
     name: 'Заголовки',
     href: 'siteTitleSettings',
@@ -2260,7 +2261,7 @@ export const pages = [
     roleAccess: CONTENTS['siteTitleSettings'].roleAccess,
   },
   {
-    id: 8,
+    id: 9,
     group: 4,
     name: 'Направления',
     href: 'directions',
@@ -2269,7 +2270,7 @@ export const pages = [
     roleAccess: CONTENTS['directions'].roleAccess,
   },
   {
-    id: 9,
+    id: 10,
     group: 4,
     name: 'Доп. блоки',
     href: 'additionalBlocks',
@@ -2278,7 +2279,7 @@ export const pages = [
     roleAccess: CONTENTS['additionalBlocks'].roleAccess,
   },
   {
-    id: 10,
+    id: 11,
     group: 4,
     name: 'Отзывы',
     href: 'reviews',
@@ -2287,7 +2288,7 @@ export const pages = [
     roleAccess: CONTENTS['reviews'].roleAccess,
   },
   {
-    id: 11,
+    id: 12,
     group: 4,
     name: 'Контакты',
     href: 'contacts',
@@ -2296,7 +2297,7 @@ export const pages = [
     roleAccess: CONTENTS['contacts'].roleAccess,
   },
   {
-    id: 12,
+    id: 13,
     group: 4,
     name: 'Руководитель региона',
     href: 'supervisor',
@@ -2305,7 +2306,7 @@ export const pages = [
     roleAccess: CONTENTS['supervisor'].roleAccess,
   },
   {
-    id: 13,
+    id: 14,
     group: 5,
     name: 'Пользователи',
     href: 'users',
@@ -2314,7 +2315,7 @@ export const pages = [
     roleAccess: CONTENTS['users'].roleAccess,
   },
   {
-    id: 14,
+    id: 15,
     group: 6,
     name: 'Транзакции',
     href: 'payments',
@@ -2333,7 +2334,7 @@ export const pages = [
   //   roleAccess: CONTENTS['paymentsWithNoEvent'].roleAccess,
   // },
   {
-    id: 15,
+    id: 16,
     group: 6,
     name: 'Не пришли на мероприятие',
     href: 'paymentsNotParticipantsEvent',
@@ -2343,7 +2344,7 @@ export const pages = [
     roleAccess: CONTENTS['paymentsNotParticipantsEvent'].roleAccess,
   },
   {
-    id: 16,
+    id: 17,
     group: 6,
     name: 'Со ссылками на несущ. мероприятия',
     href: 'paymentsForNotExistedEvents',
@@ -2353,7 +2354,7 @@ export const pages = [
     roleAccess: CONTENTS['paymentsForNotExistedEvents'].roleAccess,
   },
   {
-    id: 17,
+    id: 18,
     group: 6,
     name: 'Со ссылками на несущ. пользователей',
     href: 'paymentsFromNotExistedUsers',
@@ -2363,7 +2364,7 @@ export const pages = [
     roleAccess: CONTENTS['paymentsFromNotExistedUsers'].roleAccess,
   },
   {
-    id: 18,
+    id: 19,
     group: 7,
     name: 'Записи на мероприятия',
     href: 'histories',
@@ -2372,7 +2373,7 @@ export const pages = [
     roleAccess: CONTENTS['histories'].roleAccess,
   },
   {
-    id: 19,
+    id: 20,
     group: 7,
     name: 'Дни рождения',
     href: 'birthdays',
@@ -2390,7 +2391,7 @@ export const pages = [
   //   accessRoles: CONTENTS['statistics'].accessRoles,
   // },
   {
-    id: 20,
+    id: 21,
     group: 8,
     name: 'Мероприятия',
     href: 'statisticsEvents',
@@ -2399,7 +2400,7 @@ export const pages = [
     roleAccess: CONTENTS['statisticsEvents'].roleAccess,
   },
   {
-    id: 21,
+    id: 22,
     group: 8,
     name: 'Пользователи',
     href: 'statisticsUsers',
@@ -2408,7 +2409,7 @@ export const pages = [
     roleAccess: CONTENTS['statisticsUsers'].roleAccess,
   },
   {
-    id: 22,
+    id: 23,
     group: 8,
     name: 'Финансы',
     href: 'statisticsFinance',
@@ -2518,7 +2519,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsFabMenu'].roleAccess,
   },
   {
-    id: 85,
+    id: 82,
     group: 11,
     name: 'Достижения',
     href: 'settingsAchievements',
@@ -2527,7 +2528,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsAchievements'].roleAccess,
   },
   {
-    id: 86,
+    id: 83,
     group: 11,
     name: 'Реферальная система',
     href: 'settingsReferralSystem',
@@ -2536,7 +2537,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsReferralSystem'].roleAccess,
   },
   {
-    id: 82,
+    id: 84,
     group: 11,
     name: 'Роли',
     href: 'settingsRoles',
@@ -2545,7 +2546,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsRoles'].roleAccess,
   },
   {
-    id: 83,
+    id: 85,
     group: 11,
     name: 'Дата старта проекта',
     href: 'settingsDateStartProject',
@@ -2554,7 +2555,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsDateStartProject'].roleAccess,
   },
   {
-    id: 84,
+    id: 86,
     group: 11,
     name: 'Информация для вступления в клуб',
     href: 'settingsHeaderInfoContacts',
@@ -2563,7 +2564,7 @@ export const pages = [
     roleAccess: CONTENTS['settingsHeaderInfoContacts'].roleAccess,
   },
   {
-    id: 85,
+    id: 87,
     group: 11,
     name: 'Особые даты ПУ',
     href: 'remindDates',

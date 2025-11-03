@@ -5,7 +5,8 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Image from 'next/image'
+import useRouter from '@utils/useRouter'
 import { useAtomValue } from 'jotai'
 import Svg30Plus from '@svg/Svg30Plus'
 import CountDown from './components/CountDown'
@@ -37,10 +38,14 @@ const TitleBlock = () => {
         <Svg30Plus className="absolute w-12 h-12 tablet:w-16 tablet:h-16 top-6 right-6 tablet:top-14 tablet:right-12 laptop:h-20 laptop:w-20 fill-general" />
 
         <div className="flex justify-center flex-1 max-h-[350px] h-[20%]">
-          <img
-            className="object-contain max-w-[90%] laptop:max-w-[100%] h-full"
-            src={'/img/logo.webp'}
+          <Image
+            src="/img/logo.webp"
             alt="polovinka_uspeha"
+            width={290}
+            height={294}
+            sizes="(min-width: 1024px) 340px, (min-width: 768px) 280px, 60vw"
+            priority
+            className="object-contain max-w-[90%] laptop:max-w-[100%] h-full w-auto"
           />
         </div>
 
@@ -117,11 +122,24 @@ const TitleBlock = () => {
             />
           </Link>
         ) : (
-          <PulseButton
-            className="mt-4"
-            title="Выбрать регион"
-            onClick={() => modalsFunc.browseLocation()}
-          />
+          <>
+            <PulseButton
+              className="mt-4"
+              title="Зарегистрироваться"
+              onClick={() => modalsFunc.browseLocation({ isRegister: true })}
+            />
+            <div
+              className="mt-4 font-bold"
+              style={{ textShadow: '1px 1px 2px black' }}
+            >
+              или если вы уже зарегистрированы, то
+            </div>
+            <PulseButton
+              className="mt-4"
+              title="Авторизироваться"
+              onClick={() => modalsFunc.browseLocation({ isRegister: false })}
+            />
+          </>
         )}
       </div>
     </div>

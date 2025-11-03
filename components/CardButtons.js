@@ -53,7 +53,7 @@ const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
       onClick && onClick()
     }}
   >
-    <FontAwesomeIcon icon={icon} className="w-7 h-7" />
+    <FontAwesomeIcon icon={icon} className="w-7 h-7 min-h-7" />
     <div className="whitespace-nowrap prevent-select-text">{tooltipText}</div>
   </div>
 )
@@ -477,7 +477,7 @@ const CardButtons = ({
       <DropDown
         trigger={
           <div className="flex flex-col items-center justify-center cursor-pointer w-9 h-9 text-general">
-            <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7" />
+            <FontAwesomeIcon icon={faEllipsisV} className="w-7 h-7 min-h-7" />
           </div>
         }
         className={className}

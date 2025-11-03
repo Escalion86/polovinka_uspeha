@@ -5,6 +5,7 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { pages, pagesGroups } from '@helpers/constants'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 // import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
 import badgesGroupSelector from '@state/selectors/badgesGroupSelector'
@@ -20,7 +21,8 @@ import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 const menuCfg = (
   userActiveRole,
   userActiveStatusName,
-  siteSettings
+  siteSettings,
+  loggedUser
   // disabledGroupsIds
 ) => {
   // const visiblePages = pages.filter((page) => )
@@ -39,7 +41,12 @@ const menuCfg = (
       const pagesItems = pages.reduce((totalPages, page) => {
         if (
           page.group === group.id &&
-          page.roleAccess(userActiveRole, userActiveStatusName, siteSettings) &&
+          page.roleAccess(
+            userActiveRole,
+            userActiveStatusName,
+            siteSettings,
+            loggedUser
+          ) &&
           (!page.siteConfirm ||
             (typeof page.siteConfirm === 'function' &&
               page.siteConfirm(siteSettings)))
@@ -78,37 +85,39 @@ const MenuItem = ({ item, active = false, badgeNum }) => {
   const href = `/${location}/cabinet/${item.href}`
 
   return (
-    <Link prefetch={false} href={href} shallow legacyBehavior>
-      <a
-        onClick={() => setMenuOpen(false)}
-        className={cn(
-          'flex items-center justify-between mb-1 rounded-lg cursor-pointer flex-nowrap ',
-          active ? 'bg-general text-white' : '',
-          'hover:bg-general hover:text-white'
-        )}
-      >
-        <div className={cn('flex items-center w-full px-3 py-1 gap-x-2 ')}>
-          <FontAwesomeIcon icon={item.icon} className="w-5 h-5 min-w-5" />
-          <span className={'text-sm font-medium whitespace-nowrap'}>
-            {item.name}
+    <Link
+      prefetch={false}
+      href={href}
+      shallow
+      onClick={() => setMenuOpen(false)}
+      className={cn(
+        'flex items-center justify-between mb-1 rounded-lg cursor-pointer flex-nowrap ',
+        active ? 'bg-general text-white' : '',
+        'hover:bg-general hover:text-white'
+      )}>
+
+      <div className={cn('flex items-center w-full px-3 py-1 gap-x-2 ')}>
+        <FontAwesomeIcon icon={item.icon} className="w-5 h-5 min-w-5" />
+        <span className={'text-sm font-medium whitespace-nowrap'}>
+          {item.name}
+        </span>
+        {item.num !== null && (
+          <span className="text-xs font-semibold text-general">
+            {item.num}
           </span>
-          {item.num !== null && (
-            <span className="text-xs font-semibold text-general">
-              {item.num}
-            </span>
-          )}
-          {typeof badgeNum === 'number' && badgeNum > 0 && (
-            <>
-              <div className="flex-1" />
-              <div className="flex items-center justify-center w-5 h-5 -mr-2 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger">
-                {badgeNum <= 99 ? badgeNum : '!'}
-              </div>
-            </>
-          )}
-        </div>
-      </a>
+        )}
+        {typeof badgeNum === 'number' && badgeNum > 0 && (
+          <>
+            <div className="flex-1" />
+            <div className="flex items-center justify-center w-5 h-5 -mr-2 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger">
+              {badgeNum <= 99 ? badgeNum : '!'}
+            </div>
+          </>
+        )}
+      </div>
+
     </Link>
-  )
+  );
 }
 
 const Group = ({
@@ -299,6 +308,7 @@ const SideBar = ({ page }) => {
   const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   // const [scrollPos, setScrollPos] = useState(0)
   // const [scrollable, setScrollable] = useState(false)
+  const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const loggedUserActiveStatus = useAtomValue(loggedUserActiveStatusAtom)
   // const { height } = useAtomValue(windowDimensionsAtom)
@@ -407,7 +417,8 @@ const SideBar = ({ page }) => {
             menuCfg={menuCfg(
               loggedUserActiveRole,
               loggedUserActiveStatus,
-              siteSettings
+              siteSettings,
+              loggedUserActive
             )}
             activePage={page}
             onChangeMenuIndex={onChangeMenuIndex}
