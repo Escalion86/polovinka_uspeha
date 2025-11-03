@@ -17,7 +17,7 @@ const TextInRing = ({ text, fullHeight = true }) => {
         <Image
           className="w-full h-full"
           alt="text_ring"
-          src="/img/ring160px.png"
+          src="/img/ring150px.png"
           // layout="responsive"
           // height="80%"
           // width="80%"
@@ -25,6 +25,7 @@ const TextInRing = ({ text, fullHeight = true }) => {
           width="0"
           height="0"
           sizes="100vw"
+          loading="eager"
         />
         {text && (
           <div

@@ -9,7 +9,10 @@ import cn from 'classnames'
 const RelationshipUserToggleButtons = ({ value, onChange, names }) => {
   const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
   return (
-    <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
+    <ButtonGroup
+      size={windowDimensionsNum < 2 ? 'small' : undefined}
+      className="text-white"
+    >
       <Button
         onClick={() =>
           onChange({
@@ -21,12 +24,9 @@ const RelationshipUserToggleButtons = ({ value, onChange, names }) => {
         variant={value.noPartner ? 'contained' : 'outlined'}
         color="blue"
         aria-label="noPartner"
-        className={cn(
-          'flex gap-x-2',
-          value.noPartner ? 'text-white' : 'text-blue-400'
-        )}
+        className={cn('flex gap-x-2', value.noPartner ? '' : 'text-blue-400')}
       >
-        <div className="w-6 h-6">
+        <div className="w-6 h-6 min-h-6">
           <Image
             src="/img/relationships/noPartner.png"
             width="24"
@@ -49,10 +49,10 @@ const RelationshipUserToggleButtons = ({ value, onChange, names }) => {
         aria-label="havePartner"
         className={cn(
           'flex gap-x-2',
-          value.havePartner ? 'text-white' : 'text-green-400'
+          value.havePartner ? '' : 'text-green-400'
         )}
       >
-        <div className="w-6 h-6">
+        <div className="w-6 h-6 min-h-6">
           <Image
             src="/img/relationships/havePartner.png"
             width="24"

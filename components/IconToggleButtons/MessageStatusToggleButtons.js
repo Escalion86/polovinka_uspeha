@@ -12,7 +12,10 @@ import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 const MessageStatusToggleButtons = ({ value, onChange, names }) => {
   const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
   return (
-    <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
+    <ButtonGroup
+      size={windowDimensionsNum < 2 ? 'small' : undefined}
+      className="text-white"
+    >
       <Button
         onClick={() => {
           // if (hideBanned)
@@ -38,12 +41,9 @@ const MessageStatusToggleButtons = ({ value, onChange, names }) => {
         variant={value.read ? 'contained' : 'outlined'}
         color="green"
         aria-label="read"
-        className={cn(
-          'flex gap-x-2',
-          value.read ? 'text-white' : 'text-success'
-        )}
+        className={cn('flex gap-x-2', value.read ? '' : 'text-success')}
       >
-        <FontAwesomeIcon className="w-6 h-6" icon={faCheckDouble} />
+        <FontAwesomeIcon className="w-6 h-6 min-h-6" icon={faCheckDouble} />
         {names?.read}
       </Button>
       <Button
@@ -71,12 +71,9 @@ const MessageStatusToggleButtons = ({ value, onChange, names }) => {
         variant={value.delivered ? 'contained' : 'outlined'}
         color="gray"
         aria-label="delivered"
-        className={cn(
-          'flex gap-x-2',
-          value.delivered ? 'text-white' : 'text-gray-600'
-        )}
+        className={cn('flex gap-x-2', value.delivered ? '' : 'text-gray-600')}
       >
-        <FontAwesomeIcon className="w-6 h-6" icon={faCheckDouble} />
+        <FontAwesomeIcon className="w-6 h-6 min-h-6" icon={faCheckDouble} />
         {names?.delivered}
       </Button>
       <Button
@@ -104,12 +101,9 @@ const MessageStatusToggleButtons = ({ value, onChange, names }) => {
         variant={value.sent ? 'contained' : 'outlined'}
         color="gray"
         aria-label="sent"
-        className={cn(
-          'flex gap-x-2',
-          value.sent ? 'text-white' : 'text-gray-600'
-        )}
+        className={cn('flex gap-x-2', value.sent ? '' : 'text-gray-600')}
       >
-        <FontAwesomeIcon className="w-6 h-6" icon={faCheck} />
+        <FontAwesomeIcon className="w-6 h-6 min-h-6" icon={faCheck} />
         {names?.sent}
       </Button>
       <Button
@@ -137,12 +131,9 @@ const MessageStatusToggleButtons = ({ value, onChange, names }) => {
         variant={value.other ? 'contained' : 'outlined'}
         color="red"
         aria-label="other"
-        className={cn(
-          'flex gap-x-2',
-          value.other ? 'text-white' : 'text-danger'
-        )}
+        className={cn('flex gap-x-2', value.other ? '' : 'text-danger')}
       >
-        <FontAwesomeIcon className="w-6 h-6" icon={faTimes} />
+        <FontAwesomeIcon className="w-6 h-6 min-h-6" icon={faTimes} />
         {names?.other}
       </Button>
       <Button
@@ -170,12 +161,9 @@ const MessageStatusToggleButtons = ({ value, onChange, names }) => {
         variant={value.pending ? 'contained' : 'outlined'}
         color="gray"
         aria-label="pending"
-        className={cn(
-          'flex gap-x-2',
-          value.pending ? 'text-white' : 'text-gray-600'
-        )}
+        className={cn('flex gap-x-2', value.pending ? '' : 'text-gray-600')}
       >
-        <FontAwesomeIcon className="w-6 h-6" icon={faClock} />
+        <FontAwesomeIcon className="w-6 h-6 min-h-6" icon={faClock} />
         {names?.pending}
       </Button>
     </ButtonGroup>

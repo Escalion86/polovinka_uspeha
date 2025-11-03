@@ -11,8 +11,12 @@ const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
   const eventStatusFilterFull = loggedUserActiveRole?.events?.statusFilterFull
 
   const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
+
   return (
-    <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
+    <ButtonGroup
+      size={windowDimensionsNum < 2 ? 'small' : undefined}
+      className="text-white"
+    >
       <Button
         onClick={() =>
           onChange({
@@ -27,7 +31,7 @@ const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
         }
         variant={value.active ? 'contained' : 'outlined'}
         color="blue"
-        className={value.active ? 'text-white' : 'text-blue-400'}
+        className={value.active ? '' : 'text-blue-400'}
       >
         Предстоят
       </Button>
@@ -45,7 +49,7 @@ const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
         }
         variant={value.finished ? 'contained' : 'outlined'}
         color="green"
-        className={value.finished ? 'text-white' : 'text-green-400'}
+        className={value.finished ? '' : 'text-green-400'}
       >
         Завершены
       </Button>
@@ -67,7 +71,7 @@ const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
           }
           variant={value.closed ? 'contained' : 'outlined'}
           color="green"
-          className={value.closed ? 'text-white' : 'text-green-400'}
+          className={value.closed ? '' : 'text-green-400'}
         >
           Закрыты
         </Button>
@@ -86,7 +90,7 @@ const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
         }
         variant={value.canceled ? 'contained' : 'outlined'}
         color="red"
-        className={value.canceled ? 'text-white' : 'text-red-400'}
+        className={value.canceled ? '' : 'text-red-400'}
       >
         Отменены
       </Button>

@@ -23,7 +23,7 @@ const CardButton = ({
         onClick && onClick()
       }}
     >
-      <FontAwesomeIcon icon={icon} className="w-6 h-6" />
+      <FontAwesomeIcon icon={icon} className="w-6 h-6 min-h-6" />
     </div>
   </Tooltip>
 )

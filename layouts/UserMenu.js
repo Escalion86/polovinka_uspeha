@@ -58,10 +58,10 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 
   if (href)
     return (
-      <Link prefetch={false} href={href} shallow legacyBehavior>
-        <a onClick={handleClick}>{content}</a>
+      <Link prefetch={false} href={href} shallow onClick={handleClick}>
+        {content}
       </Link>
-    )
+    );
 
   return (
     <button

@@ -395,17 +395,19 @@ export const PaymentItem = ({
   const referralReward = item?.referralReward ?? null
   const referralRewardFor = referralReward?.rewardFor ?? null
 
-  const referralCouponIcon = referralRewardFor === 'referrer'
-    ? faUserTie
-    : referralRewardFor === 'referral'
-      ? faUserPlus
-      : faGift
+  const referralCouponIcon =
+    referralRewardFor === 'referrer'
+      ? faUserTie
+      : referralRewardFor === 'referral'
+        ? faUserPlus
+        : faGift
 
-  const referralCouponTooltip = referralRewardFor === 'referrer'
-    ? 'Реферальный купон для пригласившего'
-    : referralRewardFor === 'referral'
-      ? 'Реферальный купон для приглашённого'
-      : 'Реферальный купон'
+  const referralCouponTooltip =
+    referralRewardFor === 'referrer'
+      ? 'Реферальный купон для пригласившего'
+      : referralRewardFor === 'referral'
+        ? 'Реферальный купон для приглашённого'
+        : 'Реферальный купон'
 
   return (
     <ItemContainer
@@ -425,7 +427,7 @@ export const PaymentItem = ({
         >
           <FontAwesomeIcon
             icon={sectorProps?.icon ?? faQuestion}
-            className="w-6 h-6"
+            className="w-6 h-6 min-h-6"
           />
         </div>
       )}
