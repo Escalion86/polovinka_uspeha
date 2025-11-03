@@ -26,123 +26,151 @@ const TitleBlock = () => {
   const townRu = locationProps?.townRu
 
   return (
-    <div
-      className="h-[calc(100vh-70px)]"
-      style={{
-        backgroundImage: `url("/img/bg.webp")`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-      }}
-    >
-      <div className="relative flex flex-col items-center justify-center w-full h-full max-h-[calc(100vh-70px)] px-10 pt-5 tablet:pt-12 pb-8 tablet:pb-10 text-white bg-gray-800/20 laptop:px-20">
-        <Svg30Plus className="absolute w-12 h-12 tablet:w-16 tablet:h-16 top-6 right-6 tablet:top-14 tablet:right-12 laptop:h-20 laptop:w-20 fill-general" />
-
-        <div className="flex justify-center flex-1 max-h-[350px] h-[20%]">
-          <Image
-            src="/img/logo.webp"
-            alt="polovinka_uspeha"
-            width={290}
-            height={294}
-            sizes="(min-width: 1024px) 340px, (min-width: 768px) 280px, 60vw"
-            priority
-            className="object-contain max-w-[90%] laptop:max-w-[100%] h-full w-auto"
-          />
-        </div>
-
-        <CountDown
-          Wrapper={({ children }) => (
-            <div className="flex flex-col items-center px-6 py-2 bg-white/20 tablet:px-10 gap-y-1 rounded-2xl">
-              <div
-                className="text-xl uppercase tablet:text-2xl"
-                style={{ textShadow: '1px 1px 2px black' }}
-              >
-                Старт проекта через
-              </div>
-              {children}
-            </div>
-          )}
+    <section className="relative h-[calc(100vh-70px)] overflow-hidden text-white">
+      <div className="absolute inset-0">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(/img/bg.webp)',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         />
-        <div className="flex flex-col justify-between gap-y-2">
-          <H1 style={{ textShadow: '1px 1px 2px black' }}>
-            {townRu ? siteSettings.title : 'Центр серьёзных знакомств'}
-          </H1>
+        <div className="absolute inset-0 bg-gray-900/75" />
+      </div>
 
-          {townRu && (
-            <div className="text-center">
-              <h4
-                className="px-2 py-1 text-2xl font-bold text-center duration-300 border cursor-pointer bg-white/20 rounded-xl hover:text-white border-general hover:bg-general/20 text-general"
-                onClick={() => modalsFunc.browseLocation()}
-              >
-                {`г.${upperCaseFirst(townRu)}`}
-              </h4>
-              <p className="font-sans text-[12px]">
-                *- если это не ваш регион, то пожалуйста нажмите на него, чтобы
-                сменить
+      <div className="relative flex h-full items-center justify-center px-6 py-12 tablet:px-12 laptop:px-20">
+        <Svg30Plus className="absolute right-6 top-6 h-12 w-12 fill-general tablet:right-12 tablet:top-12 tablet:h-16 tablet:w-16 laptop:right-20 laptop:top-16 laptop:h-20 laptop:w-20" />
+
+        <div className="grid w-full max-w-7xl items-center gap-10 tablet:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+          <div className="flex flex-col gap-6">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white backdrop-blur-sm tablet:text-base">
+              Программа живого общения и ярких событий
+            </span>
+
+            <div className="space-y-4">
+              <H1 className="text-left drop-shadow-lg">
+                {townRu ? siteSettings.title : 'Клуб встреч «Половинка успеха»'}
+              </H1>
+
+              {townRu && (
+                <div className="text-left">
+                  <button
+                    type="button"
+                    className="inline-flex items-center rounded-xl border border-white/30 bg-white/15 px-3 py-1 text-lg font-semibold text-white transition hover:border-general hover:bg-general/20"
+                    onClick={() => modalsFunc.browseLocation()}
+                  >
+                    {`г.${upperCaseFirst(townRu)}`}
+                  </button>
+                  <p className="mt-2 text-xs font-sans text-white/80">
+                    Нажмите, чтобы выбрать другой город
+                  </p>
+                </div>
+              )}
+
+              <H3 className="flex flex-col text-left text-white/90 drop-shadow-lg">
+                {townRu ? (
+                  siteSettings.subtitle?.split('\n').map((str, index) => (
+                    <span key={'subtitle' + index}>{str}</span>
+                  ))
+                ) : (
+                  <>
+                    Организуем мероприятия, где легко найти близких по духу людей
+                    и построить серьёзные отношения
+                  </>
+                )}
+              </H3>
+
+              <p className="text-base text-white/80 tablet:text-lg">
+                {townRu
+                  ? `Встретимся в компании интересных людей ${upperCaseFirst(
+                      townRu
+                    )}, чтобы вместе ходить на мероприятия, учиться новому и начинать отношения, которые действительно важны.`
+                  : 'Мы создаём тёплую атмосферу, объединяем единомышленников и регулярно проводим события, которые помогают раскрыться, расслабиться и встретить свою вторую половинку.'}
               </p>
             </div>
-          )}
-          <H3
-            className="flex flex-col text-center"
-            style={{ textShadow: '1px 1px 2px black' }}
-          >
-            {townRu ? (
-              siteSettings.subtitle?.split('\n').map((str, index) => (
-                <span key={'subtitle' + index}>
-                  {/* {index !== 0 && <br />} */}
-                  {str}
+
+            <div className="flex flex-wrap gap-3 text-sm tablet:text-base">
+              {['Кино и театральные вечера', 'Настольные игры и квизы', 'Гастровстречи и путешествия', 'Психологические и творческие мастерские'].map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-white/30 bg-white/10 px-4 py-2 text-white/90 backdrop-blur-sm"
+                >
+                  {item}
                 </span>
-              ))
-            ) : (
-              <>
-                Уникальные форматы знакомств
-                <br />
-                для поиска своей второй половинки
-              </>
-            )}
-          </H3>
-        </div>
-        {townRu ? (
-          <Link
-            prefetch={false}
-            href={{
-              pathname: userIsLogged
-                ? `/${location}/cabinet/events`
-                : `/${location}/login`,
-              query: !userIsLogged && {
-                ...query,
-                registration: true,
-              },
-            }}
-            shallow
-          >
-            <PulseButton
-              className="mt-4"
-              title={userIsLogged ? 'Мой кабинет' : 'Зарегистрироваться'}
-              noPulse={userIsLogged}
-            />
-          </Link>
-        ) : (
-          <>
-            <PulseButton
-              className="mt-4"
-              title="Зарегистрироваться"
-              onClick={() => modalsFunc.browseLocation({ isRegister: true })}
-            />
-            <div
-              className="mt-4 font-bold"
-              style={{ textShadow: '1px 1px 2px black' }}
-            >
-              или если вы уже зарегистрированы, то
+              ))}
             </div>
-            <PulseButton
-              className="mt-4"
-              title="Авторизироваться"
-              onClick={() => modalsFunc.browseLocation({ isRegister: false })}
+
+            <div className="flex flex-col items-start gap-4 tablet:flex-row tablet:items-center tablet:gap-6">
+              {townRu ? (
+                <Link
+                  prefetch={false}
+                  href={{
+                    pathname: userIsLogged
+                      ? `/${location}/cabinet/events`
+                      : `/${location}/login`,
+                    query: !userIsLogged && {
+                      ...query,
+                      registration: true,
+                    },
+                  }}
+                  shallow
+                >
+                  <PulseButton
+                    className="min-w-[220px]"
+                    title={userIsLogged ? 'Перейти в кабинет' : 'Присоединиться к событиям'}
+                    noPulse={userIsLogged}
+                  />
+                </Link>
+              ) : (
+                <>
+                  <PulseButton
+                    className="min-w-[220px]"
+                    title="Выбрать город и зарегистрироваться"
+                    onClick={() => modalsFunc.browseLocation({ isRegister: true })}
+                  />
+                  <PulseButton
+                    className="min-w-[220px]"
+                    title="Уже с нами — войти"
+                    onClick={() => modalsFunc.browseLocation({ isRegister: false })}
+                  />
+                </>
+              )}
+
+              <div className="text-sm text-white/70 tablet:text-base">
+                Живые эмоции, новые друзья и встречи офлайн каждую неделю
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center justify-center gap-6">
+            <div className="relative flex h-full w-full max-w-sm items-center justify-center overflow-hidden rounded-3xl bg-white/10 p-6 backdrop-blur-sm tablet:p-8">
+              <Image
+                src="/img/logo.webp"
+                alt="polovinka_uspeha"
+                width={320}
+                height={320}
+                sizes="(min-width: 1024px) 360px, (min-width: 768px) 320px, 70vw"
+                priority
+                className="h-auto w-full max-w-[260px] object-contain tablet:max-w-[300px]"
+              />
+            </div>
+
+            <CountDown
+              Wrapper={({ children }) => (
+                <div className="flex w-full max-w-sm flex-col items-center gap-y-2 rounded-2xl bg-white/10 px-6 py-4 text-center backdrop-blur">
+                  <div className="text-lg font-semibold uppercase tracking-wide text-white/80 tablet:text-xl">
+                    До ближайшего события осталось
+                  </div>
+                  {children}
+                </div>
+              )}
             />
-          </>
-        )}
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
 
