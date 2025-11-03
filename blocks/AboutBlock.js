@@ -12,36 +12,24 @@ const Item = ({ children }) => (
 )
 
 const AboutBlock = () => (
-  <BlockContainer id="about" title="О клубе «Половинка успеха»" className="bg-white">
-    <div className="flex flex-col gap-5 tablet:gap-8">
+  <BlockContainer id="about" title="Наша миссия" className="bg-white">
+    <div className="flex flex-col gap-4 tablet:gap-6">
       <ul>
         <Item>
-          Мы объединяем людей, которые ценят живое общение и стремятся наполнять
-          свои вечера вдохновляющими встречами. Каждое мероприятие — возможность
-          познакомиться с интересными собеседниками, найти партнёра для отношений
-          или открыть новые общие увлечения.
+          {/* Помочь найти пару человеку в возрасте от 30 до 55 лет, который уже
+          твердо стоит на ногах, успешен в какой-либо деятельности и
+          заинтересован в построении серьёзных отношений. */}
+          Создавать благоприятные условия для одиноких мужчин и женщин старше 25
+          лет, чтобы они могли найти свои вторые половинки, установить глубокие
+          и значимые отношения, и построить успешные семьи через специально
+          организованные мероприятия и поддержку в процессе знакомства.
         </Item>
         <Item>
-          Команда организаторов тщательно продумывает формат встреч, атмосферу и
-          состав участников, чтобы каждому было комфортно раскрыться, проявить
-          себя и уходить домой с ощущением, что время прошло с пользой и в
-          компании близких по духу людей.
-        </Item>
-      </ul>
-      <BlockTitle title="Что вас ждёт на наших событиях" />
-      <ul>
-        <Item>
-          Регулярные форматы для досуга: игровые вечера, гастровстречи,
-          выездные экскурсии, совместные походы в театр и кино.
-        </Item>
-        <Item>
-          Тёплая модерация и профессиональные ведущие, которые помогают быстро
-          познакомиться, почувствовать себя частью сообщества и создать искренние
-          связи.
-        </Item>
-        <Item>
-          Поддержка после мероприятий — продолжайте общение в клубных чатах,
-          договаривайтесь о совместных активностях и находите свою пару.
+          {/* Также помогаем расширить свои личные и деловые связи, через разные
+          интересные форматы знакомств. */}
+          Стремится стать надежным партнером для каждого, кто ищет настоящую
+          любовь и долгосрочные отношения, предоставляя все необходимые ресурсы
+          и поддержку на пути к семейному счастью.
         </Item>
       </ul>
       <BlockTitle title="Наши цели" />
@@ -62,7 +50,7 @@ const AboutBlock = () => (
           возможности для знакомств.
         </Item>
       </ul>
-      <div className="grid grid-cols-1 gap-x-6 gap-y-6 tablet:grid-cols-2">
+      <div className="grid grid-col-1 tablet:grid-cols-2 gap-x-4">
         <div className="flex flex-col items-center justify-center col-span-1">
           <Image
             className="object-contain w-full h-auto max-h-100"
@@ -80,14 +68,14 @@ const AboutBlock = () => (
           </H4>
         </div>
         <div className="flex items-center">
-          <div className="relative rounded-3xl bg-general/5 px-6 py-6 tablet:px-10 tablet:py-10">
-            <SvgKavichki className="absolute bottom-4 left-4 h-6 w-6 fill-general tablet:bottom-6 tablet:left-6 tablet:h-8 tablet:w-8 laptop:h-10 laptop:w-10" />
-            <div className="italic text-center text-lg text-general tablet:text-2xl">
+          <div className="relative px-6 py-6 tablet:py-10">
+            <SvgKavichki className="absolute bottom-0 left-0 w-6 h-6 tablet:w-8 tablet:h-8 laptop:w-10 laptop:h-10 fill-general" />
+            <div className="italic text-center taxt-lg tablet:text-2xl">
               Я уверена, что каждый может здесь найти не только свою половинку,
-              но и близкий круг друзей, с которыми интересно проводить свободное
-              время и воплощать общие идеи.
+              но и партнеров по бизнесу, а также близкий круг друзей и
+              единомышленников по своим интересам.
             </div>
-            <SvgKavichki className="absolute top-4 right-4 h-6 w-6 rotate-180 fill-general tablet:top-6 tablet:right-6 tablet:h-8 tablet:w-8 laptop:h-10 laptop:w-10" />
+            <SvgKavichki className="absolute top-0 right-0 w-6 h-6 rotate-180 tablet:w-8 tablet:h-8 laptop:w-10 laptop:h-10 fill-general" />
           </div>
         </div>
       </div>
