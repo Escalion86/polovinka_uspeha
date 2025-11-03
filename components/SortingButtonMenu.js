@@ -172,7 +172,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
           {showTitle ? sortParam.title : null}
           <FontAwesomeIcon
             icon={sortIcons[sortParam.type][sortValue]}
-            className="h-6"
+            className="h-6 min-h-6"
           />
         </IconToggleButton>
       </div>

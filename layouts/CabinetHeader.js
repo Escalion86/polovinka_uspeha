@@ -16,7 +16,6 @@ import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import Image from 'next/image'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import { faQrcode } from '@fortawesome/free-solid-svg-icons/faQrcode'
-import isLoggedUserAdminSelector from '@state/selectors/isLoggedUserAdminSelector'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 
 const CheckedItem = ({ children }) => (
@@ -86,25 +85,39 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
       ) : (
         <div className="absolute z-10 -translate-x-1/2 left-1/2">
           <Link prefetch={false} href="/" shallow>
-            <img className="h-12" src="/img/logo_horizontal.png" alt="logo" />
+            <Image
+              className="h-12 w-auto"
+              src="/img/logo_horizontal.png"
+              alt="Логотип Половинка успеха"
+              width={409}
+              height={145}
+              sizes="(max-width: 768px) 192px, 176px"
+              priority
+            />
           </Link>
         </div>
       )}
       <div
-        className="flex items-center justify-center w-6 h-6 cursor-pointer"
+        className="flex items-center justify-center w-6 h-6 cursor-pointer min-h-6"
         onClick={() => {
           modalsFunc.external.qrCodeGenerator({
             title: 'QR-код на текущую страницу',
           })
         }}
       >
-        <FontAwesomeIcon icon={faQrcode} className="w-5 h-5 text-white" />
+        <FontAwesomeIcon
+          icon={faQrcode}
+          className="w-5 h-5 text-white min-h-5"
+        />
       </div>
       {isLoggedUserDev && (
         <Menu
           trigger={
-            <div className="flex items-center justify-center w-6 h-6">
-              <FontAwesomeIcon icon={faBug} className="w-5 h-5 text-white" />
+            <div className="flex items-center justify-center w-6 h-6 min-h-6">
+              <FontAwesomeIcon
+                icon={faBug}
+                className="w-5 h-5 text-white min-h-5"
+              />
             </div>
           }
         >

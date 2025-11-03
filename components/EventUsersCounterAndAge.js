@@ -414,7 +414,7 @@ const EventUsersCounterAndAge = ({
       <div className="flex items-center px-1 laptop:px-2 laptop:border-r gap-x-1">
         <FontAwesomeIcon
           icon={faMars}
-          className="w-5 h-5 text-blue-600 laptop:w-6 laptop:h-6"
+          className="w-5 h-5 text-blue-600 min-h-6 laptop:w-6 laptop:h-6"
         />
         <Counter
           gender="mans"
@@ -431,7 +431,7 @@ const EventUsersCounterAndAge = ({
       <div className="flex items-center px-1 laptop:px-2 laptop:border-r gap-x-1">
         <FontAwesomeIcon
           icon={faVenus}
-          className="w-5 h-5 text-red-600 laptop:w-6 laptop:h-6"
+          className="w-5 h-5 text-red-600 min-h-6 laptop:w-6 laptop:h-6"
         />
         <Counter
           gender="womans"
@@ -446,7 +446,7 @@ const EventUsersCounterAndAge = ({
         />
       </div>
       <div className="flex items-center px-2 py-1 gap-x-1 laptop:gap-x-1">
-        <div className="w-5 h-5 min-w-5">
+        <div className="w-5 h-5 min-h-5">
           <SvgSigma className="fill-general" />
         </div>
         <SumCounter

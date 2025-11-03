@@ -7,8 +7,9 @@ import LocationCabinetClient from '../../../_components/location/LocationCabinet
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
-export function generateMetadata({ params }) {
-  const pageTitle = CABINET_PAGE_TITLES[params.page]
+export async function generateMetadata({ params }) {
+  const { page } = await params
+  const pageTitle = CABINET_PAGE_TITLES[page]
   const suffix = pageTitle ? ` / ${pageTitle}` : ''
   return {
     title: `Половинка успеха - Кабинет${suffix}`,

@@ -68,7 +68,7 @@ const IconButtonMenu = ({
         onClick={handleClick}
         aria-label="ButtonMenu"
       >
-        <FontAwesomeIcon icon={icon} className="h-6" />
+        <FontAwesomeIcon icon={icon} className="h-6 min-h-6" />
         {!!name && <div>{name}</div>}
       </IconToggleButton>
     </div>

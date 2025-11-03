@@ -145,7 +145,7 @@ const UserLikesItem = ({
           )}
         >
           <FontAwesomeIcon
-            className="w-6 h-6"
+            className="w-6 h-6 min-h-6"
             icon={userGender ? userGender.icon : faGenderless}
           />
         </div> */}
@@ -432,7 +432,7 @@ const LikesViewer = ({ eventId }) => {
       <div className="flex items-center justify-center w-full gap-x-1">
         <div className={'text-' + userGendersObject.male.color}>
           <FontAwesomeIcon
-            className="w-6 h-6"
+            className="w-6 h-6 min-h-6"
             icon={userGendersObject.male.icon}
           />
         </div>
@@ -466,7 +466,7 @@ const LikesViewer = ({ eventId }) => {
       <div className="flex items-center justify-center w-full mt-3 gap-x-1">
         <div className={'text-' + userGendersObject.famale.color}>
           <FontAwesomeIcon
-            className="w-6 h-6"
+            className="w-6 h-6 min-h-6"
             icon={userGendersObject.famale.icon}
           />
         </div>

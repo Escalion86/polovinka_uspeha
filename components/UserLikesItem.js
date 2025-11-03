@@ -91,7 +91,7 @@ const UserLikesItem = ({
           )}
         >
           <FontAwesomeIcon
-            className="w-6 h-6"
+            className="w-6 h-6 min-h-6"
             icon={selectedIds === null ? faGenderless : faCheck}
           />
         </div>
@@ -102,7 +102,7 @@ const UserLikesItem = ({
           )}
         >
           <FontAwesomeIcon
-            className="w-6 h-6"
+            className="w-6 h-6 min-h-6"
             icon={userGender ? userGender.icon : faGenderless}
           />
         </div>

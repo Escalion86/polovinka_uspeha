@@ -7,7 +7,10 @@ import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSel
 const ServiceStatusToggleButtons = ({ value, onChange }) => {
   const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
   return (
-    <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
+    <ButtonGroup
+      size={windowDimensionsNum < 2 ? 'small' : undefined}
+      className="text-white"
+    >
       <Button
         onClick={() =>
           onChange({
@@ -21,7 +24,7 @@ const ServiceStatusToggleButtons = ({ value, onChange }) => {
         }
         variant={value.active ? 'contained' : 'outlined'}
         color="blue"
-        className={value.active ? 'text-white' : 'text-blue-400'}
+        className={value.active ? '' : 'text-blue-400'}
       >
         Активные
       </Button>
@@ -38,7 +41,7 @@ const ServiceStatusToggleButtons = ({ value, onChange }) => {
         }
         variant={value.closed ? 'contained' : 'outlined'}
         color="green"
-        className={value.closed ? 'text-white' : 'text-green-400'}
+        className={value.closed ? '' : 'text-green-400'}
       >
         Исполнены
       </Button>
@@ -55,7 +58,7 @@ const ServiceStatusToggleButtons = ({ value, onChange }) => {
         }
         variant={value.canceled ? 'contained' : 'outlined'}
         color="red"
-        className={value.canceled ? 'text-white' : 'text-red-400'}
+        className={value.canceled ? '' : 'text-red-400'}
       >
         Отменены
       </Button>
