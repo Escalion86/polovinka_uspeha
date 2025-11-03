@@ -25,7 +25,9 @@ const buildBaseProps = (location, telegramBotName, loggedUser) => ({
 
 const buildPageProps = async ({ session, fetcher, location, params }) => {
   const telegramBotName = getTelegramBotNameByLocation(location)
-  const loggedUser = session?.user ?? null
+  const loggedUser = session?.user
+    ? JSON.parse(JSON.stringify(session.user))
+    : null
 
   try {
     const fetchedProps = await fetcher(loggedUser, location, params)

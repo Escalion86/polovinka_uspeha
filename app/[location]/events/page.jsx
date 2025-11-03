@@ -11,7 +11,7 @@ export const metadata = {
 
 export default async function LocationEventsPage({ params }) {
   const session = await getServerSession(authOptions)
-  const { location } = params
+  const { location } = await params
 
   if (!location) {
     redirect('/')

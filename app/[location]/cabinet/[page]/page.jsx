@@ -17,7 +17,7 @@ export function generateMetadata({ params }) {
 
 export default async function LocationCabinetPage({ params, searchParams }) {
   const session = await getServerSession(authOptions)
-  const { location, page } = params
+  const { location, page } = await params
 
   if (!location) {
     redirect('/')
@@ -33,7 +33,12 @@ export default async function LocationCabinetPage({ params, searchParams }) {
     redirect(`/${location}/login${query ? `?${query}` : ''}`)
   }
 
-  if (session.location !== location || !session.user?._id) {
+  if (session.location !== location) {
+    const targetPage = page && page !== 'events' ? page : 'events'
+    redirect(`/${session.location}/cabinet/${targetPage}`)
+  }
+
+  if (!session.user?._id) {
     return <LocationCabinetClient location={location} wrongSession />
   }
 

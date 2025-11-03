@@ -117,11 +117,24 @@ const TitleBlock = () => {
             />
           </Link>
         ) : (
-          <PulseButton
-            className="mt-4"
-            title="Выбрать регион"
-            onClick={() => modalsFunc.browseLocation()}
-          />
+          <>
+            <PulseButton
+              className="mt-4"
+              title="Зарегистрироваться"
+              onClick={() => modalsFunc.browseLocation({ isRegister: true })}
+            />
+            <div
+              className="mt-4 font-bold"
+              style={{ textShadow: '1px 1px 2px black' }}
+            >
+              или если вы уже зарегистрированы, то
+            </div>
+            <PulseButton
+              className="mt-4"
+              title="Авторизироваться"
+              onClick={() => modalsFunc.browseLocation({ isRegister: false })}
+            />
+          </>
         )}
       </div>
     </div>

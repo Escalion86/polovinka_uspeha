@@ -7,10 +7,14 @@ import { authOptions } from '@server/authOptions'
 
 export default async function LocationPage({ params }) {
   const session = await getServerSession(authOptions)
-  const { location } = params
+  const { location } = await params
 
   if (!location) {
     redirect('/')
+  }
+
+  if (session?.location && session.location !== location) {
+    redirect(`/${session.location}/cabinet`)
   }
 
   if (session) {

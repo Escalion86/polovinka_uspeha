@@ -13,18 +13,20 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: #E5E7EB;
+    border-color: #e5e7eb;
+  }
+
+  body {
+    font-family: var(--font-futura), sans-serif;
   }
 }
 
 @layer utilities {
-
   html,
   body {
     margin: 0;
@@ -46,7 +48,7 @@
 
   /* Track */
   .sidebar::-webkit-scrollbar-track {
-    background: #9C6767;
+    background: #9c6767;
     border-radius: 5px;
   }
 
@@ -58,15 +60,17 @@
 
   /* Handle on hover */
   .sidebar::-webkit-scrollbar-thumb:hover {
-    background: #412B2B;
+    background: #412b2b;
   }
 
   input {
     border-color: transparent;
     border-width: 0 !important;
     outline: none !important;
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+      var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+      calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
     box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
       var(--tw-shadow, 0 0 #0000) !important;
   }
@@ -85,7 +89,6 @@
 }
 
 @layer base {
-
   input[type='number']::-webkit-outer-spin-button,
   input[type='number']::-webkit-inner-spin-button,
   input[type='number'] {
@@ -312,7 +315,7 @@ li[data-list='bullet'] span.ql-ui:before {
   min-width: 24px;
   text-align: right;
 } */
-.ql ul>li::before {
+.ql ul > li::before {
   content: '\2022';
 }
 
@@ -372,7 +375,7 @@ li[data-list='bullet'] span.ql-ui:before {
 }
 
 /* Style your items */
-.my-masonry-grid_column>div {
+.my-masonry-grid_column > div {
   /* change div to reference your elements you put in <Masonry> */
   background: grey;
   margin-bottom: 30px;

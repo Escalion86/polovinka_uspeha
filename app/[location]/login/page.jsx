@@ -11,10 +11,14 @@ export const metadata = {
 
 export default async function LocationLoginPage({ params }) {
   const session = await getServerSession(authOptions)
-  const { location } = params
+  const { location } = await params
 
   if (!location) {
     redirect('/')
+  }
+
+  if (session?.location && session.location !== location) {
+    redirect(`/${session.location}/cabinet`)
   }
 
   if (session) {

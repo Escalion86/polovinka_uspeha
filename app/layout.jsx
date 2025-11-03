@@ -24,7 +24,6 @@ export const metadata = {
   description:
     'Половинка успеха - проект, созданный для тех, кто ищет серьёзные знакомства и живые встречи.',
   applicationName: 'Приложение «Половинка успеха»',
-  themeColor: '#7a5151',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: '/favicon.ico',
@@ -34,6 +33,10 @@ export const metadata = {
   other: {
     'mobile-web-app-capable': 'yes',
   },
+}
+
+export const viewport = {
+  themeColor: '#7a5151',
 }
 
 const futura = localFont({

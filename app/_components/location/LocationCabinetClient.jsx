@@ -25,10 +25,6 @@ import { useHydrateAtoms } from 'jotai/utils'
 import locationAtom from '@state/atoms/locationAtom'
 import SignOut from '@components/SignOut'
 
-// import { DevTools } from 'jotai-devtools'
-// Note that this may get included in your production builds. Please import it conditionally if you want to avoid that
-import 'jotai-devtools/styles.css'
-
 // const DevToolsClient = () => {
 //   'use client'
 
@@ -68,7 +64,7 @@ function CabinetPage(props) {
 
   if (!props.wrongSession) {
     if (!props.loggedUser) {
-      redirect = '/'
+      redirect = `/${location}/login`
       // if (loggedUserActiveRole?.dev)
       //   console.log('loggedUser :>> ', props.loggedUser)
     } else if (
@@ -111,7 +107,6 @@ function CabinetPage(props) {
 
   return (
     <>
-
       <StateLoader {...props} isCabinet>
         {loggedUserActive && (
           <CabinetWrapper>

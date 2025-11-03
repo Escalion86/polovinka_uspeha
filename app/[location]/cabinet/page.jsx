@@ -2,12 +2,19 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@server/authOptions'
 
-export default async function LocationCabinetIndexPage({ params, searchParams }) {
+export default async function LocationCabinetIndexPage({
+  params,
+  searchParams,
+}) {
   const session = await getServerSession(authOptions)
-  const { location } = params
+  const { location } = await params
 
   if (!location) {
     redirect('/')
+  }
+
+  if (session?.location && session.location !== location) {
+    redirect(`/${session.location}/cabinet`)
   }
 
   if (!session) {
