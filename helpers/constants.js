@@ -2165,7 +2165,8 @@ export const CONTENTS = Object.freeze({
     Component: LikesContent,
     name: 'Лайки',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
-    roleAccess: (role, status) => true,
+    roleAccess: (role, status, siteSettings, loggedUser) =>
+      !loggedUser?.relationship,
   },
   remindDates: {
     Component: RemindDatesContent,
