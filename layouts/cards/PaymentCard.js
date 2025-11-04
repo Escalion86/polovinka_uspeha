@@ -438,7 +438,7 @@ const PaymentCard = ({ paymentId, hidden = false, style, payment }) => {
       >
         <FontAwesomeIcon
           icon={sectorProps?.icon ?? faQuestion}
-          className="w-5 tablet:w-6"
+          className="w-5 h-5 min-h-5 tablet:h-6 tablet:min-h-6"
         />
       </div>
       {paymentSector === 'event' && <PaymentEvent payment={paymentState} />}

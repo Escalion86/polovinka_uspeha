@@ -57,10 +57,6 @@ function CabinetPage(props) {
   const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
 
   let redirect
-  // if (loggedUserActiveRole?.dev) {
-  //   console.log('--------------- :>> ')
-  //   console.log('wrongSession', props.wrongSession)
-  // }
 
   if (!props.wrongSession) {
     if (!props.loggedUser) {

@@ -326,7 +326,7 @@ const Modal = ({
           <Tooltip title="Закрыть">
             <div className="absolute right-2 top-2">
               <FontAwesomeIcon
-                className="w-8 h-8 text-black duration-200 transform cursor-pointer hover:scale-110"
+                className="w-8 h-8 text-black duration-200 transform cursor-pointer min-h-8 hover:scale-110"
                 icon={faTimes}
                 // size="1x"
                 onClick={onDeclineClick || closeModal}

@@ -109,7 +109,7 @@ const LimitsAndAge = ({
       <div className="flex items-center px-1 border-l border-r laptop:px-2 gap-x-1">
         <FontAwesomeIcon
           icon={faMars}
-          className="w-5 h-5 text-blue-600 laptop:w-6 laptop:h-6"
+          className="w-5 h-5 text-blue-600 min-h-5 laptop:w-6 laptop:h-6"
         />
         <Counter
           gender="mans"
@@ -123,7 +123,7 @@ const LimitsAndAge = ({
       <div className="flex items-center px-1 border-r laptop:px-2 gap-x-1">
         <FontAwesomeIcon
           icon={faVenus}
-          className="w-5 h-5 text-red-600 laptop:w-6 laptop:h-6"
+          className="w-5 h-5 text-red-600 min-h-5 laptop:w-6 laptop:h-6"
         />
         <Counter
           gender="womans"
@@ -135,7 +135,7 @@ const LimitsAndAge = ({
         />
       </div>
       <div className="flex items-center px-2 py-1 gap-x-1 laptop:gap-x-1">
-        <div className="w-5 h-5 min-w-5">
+        <div className="w-5 h-5 min-w-5 min-h-5">
           <SvgSigma className="fill-general" />
         </div>
         <div className="flex laptop:gap-x-0.5">

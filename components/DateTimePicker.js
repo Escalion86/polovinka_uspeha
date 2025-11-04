@@ -62,14 +62,10 @@ const DateTimePicker = ({
       >
         <MUIDateTimePicker
           sx={{
-            boxShadow: 'none',
-            '.MuiOutlinedInput-notchedOutline': {
-              borderStyle: 'none',
-              outline: 'none',
-            },
             '.MuiPickersOutlinedInput-notchedOutline': {
               borderStyle: 'none',
               outline: 'none',
+              boxShadow: 'none',
             },
             '.MuiPickersOutlinedInput-root': {
               borderStyle: 'none',
@@ -83,31 +79,6 @@ const DateTimePicker = ({
               marginLeft: -2,
               marginRight: 2,
             },
-            '& .MuiInputBase-root': {
-              padding: 0,
-              '& .MuiButtonBase-root': {
-                padding: 0,
-                // paddingRight: 3,
-                // paddingLeft: 10
-              },
-              '& .MuiInputBase-input': {
-                padding: 0,
-                // paddingLeft: 1,
-              },
-              '& .MuiPickersInputBase-root': {
-                padding: 0,
-                border: 'none',
-                boxShadow: 'none',
-                '& .MuiPickersSectionList-root': {
-                  padding: 0,
-                },
-              },
-              '& .MuiPickersOutlinedInput-root': {
-                padding: 0,
-                border: 'none',
-              },
-            },
-            disableUnderline: true,
           }}
           inputFormat={widthNum <= 2 ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'}
           openTo={startWithYear ? 'year' : 'day'}
@@ -121,45 +92,48 @@ const DateTimePicker = ({
           onChange={(date) => onChange(date.toISOString())}
           disabled={disabled}
           showDisabledIcon={false}
-          slotProps={{
-            textField: {
-              // sx: { outline: 'none' },
-              // disableUnderline: true,
-              // outlined: false,
-              // size: 'small',
-              // paddingX: 0,
-              // sx: { paddingX: 0, padding: 0 },
-              // margin: 0,
-            },
-            // layout: {
-            //   sx: { padding: 0, margin: 0, p: 0, px: 0 },
-            //   slotProps: {
-            //     root: { sx: { padding: 0, margin: 0, p: 0, px: 0 } },
-            //   },
-            // },
-          }}
+          // slotProps={{
+          //   textField: {
+          //     sx: { boxShadow: 'none' },
+          //     // sx: { outline: 'none' },
+          //     // disableUnderline: true,
+          //     // outlined: false,
+          //     // size: 'small',
+          //     // paddingX: 0,
+          //     // sx: { paddingX: 0, padding: 0 },
+          //     // margin: 0,
+          //   },
+          //   // layout: {
+          //   //   sx: { padding: 0, margin: 0, p: 0, px: 0 },
+          //   //   slotProps: {
+          //   //     root: { sx: { padding: 0, margin: 0, p: 0, px: 0 } },
+          //   //   },
+          //   // },
+          // }}
         />
         {widthNum > 2 && (
           <MUIDateTimePicker
-            className="w-[10rem] pl-4"
+            className="w-[10rem] pl-4 border-0 ring-0 outline-hidden"
             sx={{
-              boxShadow: 'none',
               '.MuiOutlinedInput-notchedOutline': {
                 borderStyle: 'none',
                 outline: 'none',
+                boxShadow: 'none',
               },
               '.MuiPickersOutlinedInput-notchedOutline': {
                 borderStyle: 'none',
                 outline: 'none',
+                boxShadow: 'none',
               },
               '.MuiPickersOutlinedInput-root': {
                 borderStyle: 'none',
                 marginLeft: 2,
                 padding: 0,
+                boxShadow: 'none',
               },
               '.MuiPickersSectionList-root': {
                 padding: 1,
-
+                boxShadow: 'none',
                 borderStyle: 'none',
               },
               '.MuiInputAdornment-root': {

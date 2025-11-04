@@ -58,6 +58,7 @@ const DatePicker = ({
       >
         {/* <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none"> */}
         <MUIDatePicker
+          className="border-0 ring-0 outline-hidden"
           // disableFuture
           // label={label}
           sx={{
