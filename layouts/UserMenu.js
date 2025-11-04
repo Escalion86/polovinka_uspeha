@@ -40,13 +40,11 @@ const variants = {
 }
 
 const MenuItem = ({ onClick, icon, title, href }) => {
-  const handleClick = (event) => {
-    event.stopPropagation()
-    onClick?.(event)
-  }
-
   const content = (
-    <div className="flex items-center px-3 py-2 duration-300 bg-white border border-gray-300 cursor-pointer group gap-x-2 hover:bg-gray-500">
+    <div
+      onClick={onClick}
+      className="flex items-center px-3 py-2 duration-300 bg-white border border-gray-300 cursor-pointer group gap-x-2 hover:bg-gray-500"
+    >
       <FontAwesomeIcon
         icon={icon}
         className="w-5 h-5 min-h-5 text-general group-hover:text-white"
@@ -59,20 +57,12 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 
   if (href)
     return (
-      <Link prefetch={false} href={href} shallow onClick={handleClick}>
+      <Link prefetch={false} href={href} shallow>
         {content}
       </Link>
     )
 
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="p-0 m-0 text-left bg-transparent border-0"
-    >
-      {content}
-    </button>
-  )
+  return content
 }
 
 const UserMenu = () => {
@@ -104,34 +94,22 @@ const UserMenu = () => {
 
   const handleMouseOut = () => setIsUserMenuOpened(false)
 
-  const toggleMenu = () => {
-    setTurnOnHandleMouseOver(false)
-    setIsUserMenuOpened((prev) => !prev)
-    const timer = setTimeout(() => {
-      setTurnOnHandleMouseOver(true)
-      clearTimeout(timer)
-    }, 500)
-  }
-
-  const handleMenuItemClick = () => {
-    setIsUserMenuOpened(false)
-  }
-
   return loggedUserActive ? (
     <div
       className="z-50 flex items-start justify-end h-16"
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
+      onClick={() => {
+        setTurnOnHandleMouseOver(false)
+        setIsUserMenuOpened(!isUserMenuOpened)
+        const timer = setTimeout(() => {
+          setTurnOnHandleMouseOver(true)
+          clearTimeout(timer)
+        }, 500)
+      }}
     >
       <div className="relative flex flex-col items-end mt-2.5 w-12">
-        <button
-          type="button"
-          className="z-10 p-0 m-0 bg-transparent border-0 focus:outline-none"
-          onClick={toggleMenu}
-        >
-          <Avatar user={loggedUserActive} className="z-10" />
-        </button>
-        {/* {router && ( */}
+        <Avatar user={loggedUserActive} className="z-10" />
         <m.div
           className={cn(
             'absolute overflow-hidden duration-300 border border-gray-800 rounded-tr-3xl'
@@ -143,7 +121,6 @@ const UserMenu = () => {
           animate={isUserMenuOpened ? 'show' : 'hide'}
           initial="hide"
           transition={{ duration: 0.2, type: 'tween' }}
-          onClick={(event) => event.stopPropagation()}
         >
           <div className="flex flex-col justify-center px-3 py-1 font-bold leading-4 text-white border-b border-gray-800 cursor-default bg-general rounded-tr-3xl h-11">
             <span>{loggedUserActive.firstName}</span>
@@ -182,14 +159,12 @@ const UserMenu = () => {
             href={`/${location}/cabinet/questionnaire`}
             icon={faUserAlt}
             title="Моя анкета"
-            onClick={handleMenuItemClick}
           />
           {notificationsVisible && (
             <MenuItem
               href={`/${location}/cabinet/notifications`}
               icon={faBell}
               title="Настройка уведомлений"
-              onClick={handleMenuItemClick}
             />
           )}
           {/* {getParentDir(router.asPath) === 'cabinet' && (
@@ -201,10 +176,7 @@ const UserMenu = () => {
               <MenuItem href="/cabinet" icon={faListAlt} title="Мой кабинет" />
             )} */}
           <MenuItem
-            onClick={() => {
-              handleMenuItemClick()
-              signOut()
-            }}
+            onClick={signOut}
             icon={faSignOutAlt}
             title="Выйти из учетной записи"
           />
