@@ -243,7 +243,7 @@ export const SvgBackgroundInput = ({
               label="Угол"
               // type="number"
               // className="w-[70px]"
-              inputClassName="w-[36px]"
+              inputClassName="w-9"
               value={angle}
               onChange={(value) => {
                 setAngle(parseInt(value))

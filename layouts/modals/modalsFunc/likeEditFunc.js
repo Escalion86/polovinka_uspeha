@@ -326,7 +326,9 @@ const likeEditFunc = ({ eventId, userId }, adminView) => {
                     <FontAwesomeIcon
                       className={cn(
                         'duration-300',
-                        checked ? 'w-9 h-9' : 'w-7 h-7 group-hover:scale-110'
+                        checked
+                          ? 'w-9 h-9 min-h-9'
+                          : 'w-7 h-7 min-h-7 group-hover:scale-110'
                       )}
                       icon={faHeart}
                       color={checked ? '#EC4899' : '#9ca3af'}

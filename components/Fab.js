@@ -47,14 +47,14 @@ const Fab = ({
     >
       <div
         className={cn(
-          'absolute animate-ping w-[48px] h-[48px] max-h-[48px] max-w-[48px] rounded-full',
+          'absolute animate-ping w-12 h-12 max-h-12 max-w-12 rounded-full',
           bgClass
         )}
       ></div>
       {href ? (
         <a
           className={cn(
-            'relative flex items-center justify-center rounded-full cursor-pointer w-[48px] h-[48px] group max-h-[48px] max-w-[48px]',
+            'relative flex items-center justify-center rounded-full cursor-pointer w-12 h-12 group max-h-12 max-w-12',
             bgClass
           )}
           // ref={wrapperRef}
@@ -69,7 +69,7 @@ const Fab = ({
       ) : (
         <div
           className={cn(
-            'relative flex items-center justify-center rounded-full cursor-pointer fab w-[48px] h-[48px] group max-h-[48px] max-w-[48px]',
+            'relative flex items-center justify-center rounded-full cursor-pointer fab w-12 h-12 group max-h-12 max-w-12',
             bgClass
           )}
           onClick={onClick}

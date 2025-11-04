@@ -5,7 +5,7 @@ import cn from 'classnames'
 const Chip = ({ text, color, onClose, onClick }) => (
   <div
     className={cn(
-      'flex items-center h-[24px] tablet:h-[28px] tablet:py-0.5 tablet:pl-3 pl-2 pr-1 rounded-full',
+      'flex items-center h-6 tablet:h-7 tablet:py-0.5 tablet:pl-3 pl-2 pr-1 rounded-full',
       onClick ? 'cursor-pointer' : 'cursor-default'
     )}
     style={{ backgroundColor: color }}

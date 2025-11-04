@@ -45,8 +45,8 @@ const InputWrapper = forwardRef(
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
           noMargin ? '' : smallMargin ? 'mt-3' : 'mt-3.5 mb-1',
           noBorder
-            ? 'min-h-[36px] tablet:min-h-[40px]'
-            : `min-h-[40px] tablet:min-h-[44px] border-2 rounded focus-within:border-general hover:border-general not-focus-within:hover:border-general/50 ${
+            ? 'min-h-9 tablet:min-h-10'
+            : `min-h-10 tablet:min-h-11 border-2 rounded focus-within:border-general hover:border-general not-focus-within:hover:border-general/50 ${
                 error ? 'border-danger' : 'border-gray-300'
               }`,
           fullWidth ? 'w-full' : '',
@@ -68,7 +68,7 @@ const InputWrapper = forwardRef(
       >
         <div
           className={cn(
-            'flex items-center w-full min-h-[24px] tablet:min-h-[28px]',
+            'flex items-center w-full min-h-6 tablet:min-h-7',
             wrapperClassName,
             disabled ? 'cursor-not-allowed' : ''
           )}
@@ -104,16 +104,16 @@ const InputWrapper = forwardRef(
           {label && (
             <div
               className={cn(
-                'pointer-events-none select-none absolute rounded-sm px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
-                'h-5 leading-[12px] peer-placeholder-shown:leading-[14px]',
+                'pointer-events-none select-none absolute rounded-sm px-1 text-sm peer-focus:text-general peer-focus:leading-3 transition-all bg-white text-general',
+                'h-5 leading-3 peer-placeholder-shown:leading-3.5',
                 'flex items-center',
                 required
                   ? 'max-w-[calc(100%-16px)] peer-focus:max-w-[calc(100%-16px)] peer-placeholder-shown:max-w-full'
                   : '',
                 centerLabel ? 'left-1/2 -translate-x-1/2' : 'left-2',
                 floatingLabel
-                  ? `-top-[12px] peer-focus:-top-[12px] peer-focus:text-sm peer-placeholder-shown:text-disabled peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
-                  : '-top-[12px]',
+                  ? `-top-3 peer-focus:-top-3 peer-focus:text-sm peer-placeholder-shown:text-disabled peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
+                  : '-top-3',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
               )}
@@ -144,7 +144,7 @@ const InputWrapper = forwardRef(
         {error && showErrorText && (
           <div
             className={cn(
-              'absolute px-1 leading-[12px] text-xs bg-white left-1 -bottom-[15px] text-danger whitespace-nowrap'
+              'absolute px-1 leading-3 text-xs bg-white left-1 -bottom-[15px] text-danger whitespace-nowrap'
             )}
           >
             {error}
@@ -153,7 +153,7 @@ const InputWrapper = forwardRef(
         {comment && (
           <div
             className={cn(
-              'absolute px-1 leading-[12px] text-xs bg-white right-1 -bottom-[15px] whitespace-nowrap',
+              'absolute px-1 leading-3 text-xs bg-white right-1 -bottom-[15px] whitespace-nowrap',
               commentClassName
             )}
           >

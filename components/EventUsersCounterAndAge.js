@@ -197,7 +197,7 @@ const CounterComponent = ({
         {!showNoviceAndMemberSum && typeof actualMax === 'number' ? (
           <div className="flex gap-x-0.5 items-center">
             {/* <span className="text-4xl">{'}'}</span> */}
-            <div className="hidden min-w-[9px] h-[36px] tablet:block w-[9px]">
+            <div className="hidden min-w-[9px] h-9 tablet:block w-[9px]">
               <Image
                 alt="bracet_left"
                 src="/img/other/bracet_left.png"
@@ -205,7 +205,7 @@ const CounterComponent = ({
                 height={36}
               />
             </div>
-            <div className="min-w-[7px] h-[28px] tablet:hidden w-[8px]">
+            <div className="min-w-[7px] h-7 tablet:hidden w-2">
               <Image
                 alt="bracet_left"
                 src="/img/other/bracet_left.png"
@@ -213,7 +213,7 @@ const CounterComponent = ({
                 height={28}
               />
             </div>
-            <div className="flex flex-col items-center leading-[0.5rem] tablet:leading-3">
+            <div className="flex flex-col items-center leading-2 tablet:leading-3">
               <span className="text-xs">max</span>
               <span
                 className={
@@ -280,9 +280,7 @@ const CounterComponent = ({
 
 const Counter = (props) => (
   <Suspense
-    fallback={
-      <Skeleton className="w-[40px] laptop:w-[65px] h-[16px] laptop:h-[20px]" />
-    }
+    fallback={<Skeleton className="w-10 laptop:w-[65px] h-4 laptop:h-5" />}
   >
     <CounterComponent {...props} />
   </Suspense>
@@ -354,9 +352,7 @@ const SumCounterComponent = ({
 
 const SumCounter = (props) => (
   <Suspense
-    fallback={
-      <Skeleton className="w-[40px] laptop:w-[65px] h-[16px] laptop:h-[20px]" />
-    }
+    fallback={<Skeleton className="w-10 laptop:w-[65px] h-4 laptop:h-5" />}
   >
     <SumCounterComponent {...props} />
   </Suspense>

@@ -65,13 +65,13 @@ const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
 // }
 
 // const SignedUpCount = (props) => (
-//   <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
+//   <Suspense fallback={<Skeleton className="w-[8px] h-4 " />}>
 //     <SignedUpCountComponent {...props} />
 //   </Suspense>
 // )
 
 // const FinishedCount = (props) => (
-//   <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
+//   <Suspense fallback={<Skeleton className="w-[8px] h-4 " />}>
 //     <FinishedComponent {...props} />
 //   </Suspense>
 // )
@@ -170,7 +170,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     <div className="flex flex-col justify-end h-full px-1">
                       <div className="flex items-center flex-1">
                         <TextLinesLimiter
-                          className="text-sm italic font-normal leading-[14px] text-general"
+                          className="text-sm italic font-normal leading-3.5 text-general"
                           // textClassName="leading-5"
                           lines={2}
                           textCenter={false}

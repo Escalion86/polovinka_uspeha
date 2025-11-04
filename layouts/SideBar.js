@@ -94,17 +94,15 @@ const MenuItem = ({ item, active = false, badgeNum }) => {
         'flex items-center justify-between mb-1 rounded-lg cursor-pointer flex-nowrap ',
         active ? 'bg-general text-white' : '',
         'hover:bg-general hover:text-white'
-      )}>
-
-      <div className={cn('flex items-center w-full px-3 py-1 gap-x-2 ')}>
-        <FontAwesomeIcon icon={item.icon} className="w-5 h-5 min-w-5" />
+      )}
+    >
+      <div className={cn('flex items-center w-full px-3 py-1 gap-x-2')}>
+        <FontAwesomeIcon icon={item.icon} className="w-5 h-5 min-w-5 min-h-5" />
         <span className={'text-sm font-medium whitespace-nowrap'}>
           {item.name}
         </span>
         {item.num !== null && (
-          <span className="text-xs font-semibold text-general">
-            {item.num}
-          </span>
+          <span className="text-xs font-semibold text-general">{item.num}</span>
         )}
         {typeof badgeNum === 'number' && badgeNum > 0 && (
           <>
@@ -115,9 +113,8 @@ const MenuItem = ({ item, active = false, badgeNum }) => {
           </>
         )}
       </div>
-
     </Link>
-  );
+  )
 }
 
 const Group = ({
@@ -399,7 +396,7 @@ const SideBar = ({ page }) => {
       <m.div
         // ref={menuRef}
         className={
-          'sidebar absolute top-0 overflow-y-auto min-w-[1px] -left-[1px] items-start z-10 max-h-full ' // overflow-y-hidden
+          'sidebar absolute top-0 overflow-y-auto min-w-px -left-px items-start z-10 max-h-full ' // overflow-y-hidden
           // 'sidepanel fixed laptop:static w-64 h-full pb-15 laptop:pb-0 max-h-screen left-0 top-menu laptop:top-0 z-40 transform duration-300 border-t border-primary laptop:border-t-0 bg-white' +
           // (!menuOpen
           //   ? ' scale-x-0 -translate-x-32 w-0 laptop:w-64 laptop:transform-none'

@@ -5,7 +5,7 @@ const ChipsLine = ({ value, items, className, onChipClick, noWrap }) => {
   return (
     <div
       className={cn(
-        'flex gap-x-1 gap-y-1 h-[24px] tablet:h-[28px] overflow-hidden',
+        'flex gap-x-1 gap-y-1 h-6 tablet:h-7 overflow-hidden',
         noWrap ? '' : 'flex-wrap',
         className
       )}

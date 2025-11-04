@@ -41,7 +41,7 @@ const Counter = ({ gender, maxNovice, maxMember, max, minAge, maxAge }) => {
             </div>
           </div>
           <div className="flex gap-x-0.5 items-center">
-            <div className="hidden min-w-[9px] h-[36px] tablet:block w-[9px]">
+            <div className="hidden min-w-[9px] h-9 tablet:block w-[9px]">
               <Image
                 src="/img/other/bracet_left.png"
                 width={9}
@@ -49,7 +49,7 @@ const Counter = ({ gender, maxNovice, maxMember, max, minAge, maxAge }) => {
                 alt="bracet_left"
               />
             </div>
-            <div className="min-w-[7px] h-[28px] tablet:hidden w-[8px]">
+            <div className="min-w-[7px] h-7 tablet:hidden w-2">
               <Image
                 src="/img/other/bracet_left.png"
                 width={7}
@@ -57,7 +57,7 @@ const Counter = ({ gender, maxNovice, maxMember, max, minAge, maxAge }) => {
                 alt="bracet_left"
               />
             </div>
-            <div className="flex flex-col items-center leading-[0.5rem] tablet:leading-3">
+            <div className="flex flex-col items-center leading-2 tablet:leading-3">
               <span className="text-xs">max</span>
               <span>{max ?? <Infinity />}</span>
               <span className="text-xs -mt-0.5">чел.</span>
@@ -284,7 +284,7 @@ const SubEvent = ({
                   />
                 </div>
                 <div
-                  className={`absolute -left-0.5 w-5 h-0 border rotate-[30deg] top-1/2 border-danger`}
+                  className={`absolute -left-0.5 w-5 h-0 border rotate-30 top-1/2 border-danger`}
                 />
               </div>
             </Tooltip>
