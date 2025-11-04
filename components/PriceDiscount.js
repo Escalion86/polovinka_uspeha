@@ -19,7 +19,7 @@ export const PriceDiscountByEventId = (props) => (
           props?.className
         )}
       >
-        <Skeleton className="w-[60px] laptop:w-[75px] h-[24px] laptop:h-[28px]" />
+        <Skeleton className="w-[60px] laptop:w-[75px] h-6 laptop:h-7" />
       </div>
     }
   >

@@ -301,7 +301,7 @@ const Modal = ({
       <m.div
         className={
           cn(
-            'flex flex-col real-screen-height tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
+            'flex flex-col tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
             titleState ? 'pt-3' : 'pt-12'
           )
           // + (rendered ? '' : ' scale-50')
@@ -326,7 +326,7 @@ const Modal = ({
           <Tooltip title="Закрыть">
             <div className="absolute right-2 top-2">
               <FontAwesomeIcon
-                className="w-8 h-8 text-black duration-200 transform cursor-pointer hover:scale-110"
+                className="w-8 h-8 text-black duration-200 transform cursor-pointer min-h-8 hover:scale-110"
                 icon={faTimes}
                 // size="1x"
                 onClick={onDeclineClick || closeModal}

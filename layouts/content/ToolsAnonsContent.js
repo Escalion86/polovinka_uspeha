@@ -267,7 +267,7 @@ const ToolsAnonsContent = () => {
         key={month + year + index}
         className="flex items-center justify-center w-full h-full max-h-screen max-w-screen"
       >
-        <div className="aspect-[1080/1920] flex items-center justify-center h-full max-w-full max-h-full">
+        <div className="aspect-1080/1920 flex items-center justify-center h-full max-w-full max-h-full">
           <svg
             // key={month + year + index}
             // width="270"
@@ -587,7 +587,7 @@ const ToolsAnonsContent = () => {
           label="Макс. мероприятий на странице"
           // type="number"
           className="w-[146px]"
-          inputClassName="w-[64px]"
+          inputClassName="w-16"
           value={maxItemsOnList}
           onChange={(value) => setMaxItemsOnList(parseInt(value))}
           min={1}
@@ -598,8 +598,8 @@ const ToolsAnonsContent = () => {
         <InputNumber
           label="Размер шрифта мероприятий"
           // type="number"
-          className="w-[128px]"
-          inputClassName="w-[64px]"
+          className="w-32"
+          inputClassName="w-16"
           value={fontSize}
           onChange={(value) => setFontSize(parseInt(value))}
           min={10}
@@ -610,8 +610,8 @@ const ToolsAnonsContent = () => {
         <InputNumber
           label="Размер шрифта даты"
           // type="number"
-          className="w-[128px]"
-          inputClassName="w-[64px]"
+          className="w-32"
+          inputClassName="w-16"
           value={dateFontSize}
           onChange={(value) => setDateFontSize(parseInt(value))}
           min={10}
@@ -622,8 +622,8 @@ const ToolsAnonsContent = () => {
         <InputNumber
           label="Позиция по X"
           // type="number"
-          className="w-[128px]"
-          inputClassName="w-[64px]"
+          className="w-32"
+          inputClassName="w-16"
           value={startX}
           onChange={(value) => setStartX(parseInt(value))}
           min={0}
@@ -634,8 +634,8 @@ const ToolsAnonsContent = () => {
         <InputNumber
           label="Позиция по Y"
           // type="number"
-          className="w-[128px]"
-          inputClassName="w-[64px]"
+          className="w-32"
+          inputClassName="w-16"
           value={startY}
           onChange={(value) => setStartY(parseInt(value))}
           min={0}
@@ -645,8 +645,8 @@ const ToolsAnonsContent = () => {
         <InputNumber
           label="Макс высота списка"
           // type="number"
-          className="w-[128px]"
-          inputClassName="w-[64px]"
+          className="w-32"
+          inputClassName="w-16"
           value={maxHeight}
           onChange={(value) => setMaxHeight(parseInt(value))}
           min={0}
@@ -656,8 +656,8 @@ const ToolsAnonsContent = () => {
         <InputNumber
           label="Отступ списка от заголовка"
           // type="number"
-          className="w-[128px]"
-          inputClassName="w-[64px]"
+          className="w-32"
+          inputClassName="w-16"
           value={titleGap}
           onChange={(value) => setTitleGap(parseInt(value))}
           min={0}

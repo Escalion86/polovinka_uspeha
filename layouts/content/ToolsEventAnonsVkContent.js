@@ -342,8 +342,8 @@ const ToolsEventAnonsVkContent = () => {
         {/* <Input
           label="Позиция по X текста"
           type="number"
-          className="w-[128px]"
-          inputClassName="w-[64px]"
+          className="w-32"
+          inputClassName="w-16"
           value={startX}
           onChange={(value) => setStartX(parseInt(value))}
           min={0}
@@ -359,8 +359,8 @@ const ToolsEventAnonsVkContent = () => {
             <InputNumber
               label="Размер шрифта"
               // type="number"
-              className="w-[128px]"
-              inputClassName="w-[64px]"
+              className="w-32"
+              inputClassName="w-16"
               value={dateFontSize}
               onChange={(value) => setDateFontSize(parseInt(value))}
               min={20}
@@ -369,8 +369,8 @@ const ToolsEventAnonsVkContent = () => {
             <InputNumber
               label="Позиция по Y"
               // type="number"
-              className="w-[128px]"
-              inputClassName="w-[64px]"
+              className="w-32"
+              inputClassName="w-16"
               value={dateStartY}
               onChange={(value) => setDateStartY(parseInt(value))}
               min={0}
@@ -393,8 +393,8 @@ const ToolsEventAnonsVkContent = () => {
             <InputNumber
               label="Размер шрифта"
               // type="number"
-              className="w-[128px]"
-              inputClassName="w-[64px]"
+              className="w-32"
+              inputClassName="w-16"
               value={timeFontSize}
               onChange={(value) => setTimeFontSize(parseInt(value))}
               min={20}
@@ -403,8 +403,8 @@ const ToolsEventAnonsVkContent = () => {
             <InputNumber
               label="Позиция по Y"
               // type="number"
-              className="w-[128px]"
-              inputClassName="w-[64px]"
+              className="w-32"
+              inputClassName="w-16"
               value={timeStartY}
               onChange={(value) => setTimeStartY(parseInt(value))}
               min={0}
@@ -427,8 +427,8 @@ const ToolsEventAnonsVkContent = () => {
             <InputNumber
               label="Позиция по Y"
               // type="number"
-              className="w-[128px]"
-              inputClassName="w-[64px]"
+              className="w-32"
+              inputClassName="w-16"
               value={lineStartY}
               onChange={(value) => setLineStartY(parseInt(value))}
               min={0}
@@ -451,8 +451,8 @@ const ToolsEventAnonsVkContent = () => {
             <InputNumber
               label="Размер шрифта"
               // type="number"
-              className="w-[128px]"
-              inputClassName="w-[64px]"
+              className="w-32"
+              inputClassName="w-16"
               value={fontSize}
               onChange={(value) => setFontSize(parseInt(value))}
               min={20}
@@ -461,8 +461,8 @@ const ToolsEventAnonsVkContent = () => {
             <InputNumber
               label="Позиция по Y"
               // type="number"
-              className="w-[128px]"
-              inputClassName="w-[64px]"
+              className="w-32"
+              inputClassName="w-16"
               value={startY}
               onChange={(value) => setStartY(parseInt(value))}
               min={0}
@@ -487,7 +487,7 @@ const ToolsEventAnonsVkContent = () => {
         <div className="border-2 border-gray-600"> */}
       {/* <div className="flex py-2 overflow-x-auto gap-x-1">
         <div className="border-2 border-gray-600 min-w-[278px] w-full max-w-[511px] aspect-[511/388]"> */}
-      <div className="max-w-[507px] my-2 border-2 border-gray-600 aspect-[507/384]">
+      <div className="max-w-[507px] my-2 border-2 border-gray-600 aspect-507/384">
         {/* tablet:max-w-[calc(100%-48px)] max-h-[calc(100vh-160px)]  */}
         <ReactImageGallery
           items={[Image]}

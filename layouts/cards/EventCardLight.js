@@ -92,7 +92,7 @@ const EventCardLight = ({ eventId, onTagClick, style }) => {
             <div className="flex pl-2">
               <div
                 className={cn(
-                  'flex items-center flex-1 h-[36px] gap-x-1',
+                  'flex items-center flex-1 h-9 gap-x-1',
                   event.showOnSite ? '' : 'pl-10 laptop:pl-0'
                 )}
               >
@@ -112,13 +112,13 @@ const EventCardLight = ({ eventId, onTagClick, style }) => {
                 />
               </div>
             </div>
-            <div className="flex flex-1 min-h-[32px] h-[32px]">
+            <div className="flex flex-1 min-h-[32px] h-8">
               <div className="flex flex-col flex-1 laptop:flex-row">
                 <div className="flex items-center justify-center flex-1 gap-2 px-1">
                   <div
                     className={cn(
-                      'flex min-h-[64px] flex-col items-stretch justify-center flex-1',
-                      'laptop:min-h-[40px]'
+                      'flex min-h-16 flex-col items-stretch justify-center flex-1',
+                      'laptop:min-h-10'
                     )}
                   >
                     <TextLinesLimiter
@@ -128,8 +128,8 @@ const EventCardLight = ({ eventId, onTagClick, style }) => {
                       {direction?.title ?? '[неизвестное направление]'}
                     </TextLinesLimiter>
                     <TextLinesLimiter
-                      className="flex-1 text-lg font-bold flex items-center justify-center max-h-[36px] laptop:text-xl"
-                      textClassName="leading-[20px] desktop:leading-5"
+                      className="flex-1 text-lg font-bold flex items-center justify-center max-h-9 laptop:text-xl"
+                      textClassName="leading-5 desktop:leading-5"
                       lines={2}
                     >
                       {event.title}

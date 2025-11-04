@@ -75,7 +75,7 @@ const ItemContainer = ({
         <FontAwesomeIcon
           icon={active ? faCheckSquare : faSquare}
           className={cn(
-            'w-5 h-5 min-w-5 mx-0.5',
+            'w-5 h-5 min-w-5 mx-0.5 min-h-5',
             faCheck ? 'text-white' : 'text-gray-400'
           )}
         />
@@ -178,7 +178,7 @@ export const UserItem = ({
           >
             <UserName
               user={item}
-              className="flex-1 min-h-[28px] font-bold"
+              className="flex-1 font-bold min-h-7"
               thin
               trunc={2}
               children={
@@ -259,7 +259,7 @@ export const EventItem = ({
       <div className="flex items-center justify-between flex-1 px-1 leading-4">
         <div className="flex flex-col h-full justify-evenly">
           <TextLinesLimiter
-            className="font-bold text-general -mb-[1px]"
+            className="font-bold text-general -mb-px"
             textCenter={false}
             lines={1}
           >

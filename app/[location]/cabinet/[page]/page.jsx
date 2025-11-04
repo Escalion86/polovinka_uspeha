@@ -23,7 +23,6 @@ export default async function LocationCabinetPage({ params, searchParams }) {
   if (!location) {
     redirect('/')
   }
-
   if (!session?.user) {
     const target = new URLSearchParams()
     if (page) target.set('page', page)
@@ -42,7 +41,6 @@ export default async function LocationCabinetPage({ params, searchParams }) {
   if (!session.user?._id) {
     return <LocationCabinetClient location={location} wrongSession />
   }
-
   if (page !== 'questionnaire' && !isUserQuestionnaireFilled(session.user)) {
     redirect(`/${location}/cabinet/questionnaire`)
   }

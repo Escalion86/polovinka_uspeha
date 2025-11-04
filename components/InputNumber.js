@@ -134,7 +134,7 @@ const InputNumber = forwardRef(
         {showArrows && !disabled && (
           <div
             className={cn(
-              'p-1 duration-300',
+              'px-1 duration-300',
               typeof min === 'number' && stateValue <= min
                 ? 'text-disabled cursor-not-allowed'
                 : 'cursor-pointer text-general hover:text-success'
@@ -221,7 +221,7 @@ const InputNumber = forwardRef(
         {showArrows && !disabled && (
           <div
             className={cn(
-              'p-1 duration-300',
+              'px-1 duration-300',
               typeof max === 'number' && stateValue >= max
                 ? 'text-disabled cursor-not-allowed'
                 : 'cursor-pointer text-general hover:text-success'

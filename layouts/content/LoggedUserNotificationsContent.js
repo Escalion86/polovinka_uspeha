@@ -24,6 +24,7 @@ import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
 
 const LoggedUserNotificationsContent = (props) => {
   const location = useAtomValue(locationAtom)
+  console.log('location', location)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const telegramBotName = useAtomValue(telegramBotNameAtom)
@@ -38,6 +39,9 @@ const LoggedUserNotificationsContent = (props) => {
   const newEventsByTags = loggedUserActiveRole?.notifications?.newEventsByTags
   const isLoggedUserDev = loggedUserActiveRole?.dev
   const setUserInUsersState = useSetAtom(userEditSelector)
+
+  console.log('serviceRegistration', serviceRegistration)
+  console.log('loggedUserActive', loggedUserActive)
 
   const prepareNotifications = useMemo(
     () =>

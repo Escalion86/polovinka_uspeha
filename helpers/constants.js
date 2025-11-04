@@ -1085,7 +1085,7 @@ export const DEFAULT_ROLES = [
       newUserRegistred: false,
       eventRegistration: false,
       serviceRegistration: false,
-      newEventsByTags: false,
+      newEventsByTags: true,
       remindDates: true,
       // eventUserMoves: false,
       // eventCancel: false,

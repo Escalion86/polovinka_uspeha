@@ -58,21 +58,55 @@ const DatePicker = ({
       >
         {/* <FormControl sx={{ m: 1, width: 300 }} size="small" margin="none"> */}
         <MUIDatePicker
+          className="border-0 ring-0 outline-hidden"
           // disableFuture
           // label={label}
           sx={{
             boxShadow: 'none',
-            '.MuiOutlinedInput-notchedOutline': { borderStyle: 'none' },
+            '.MuiOutlinedInput-notchedOutline': {
+              borderStyle: 'none',
+              outline: 'none',
+            },
+            '.MuiPickersOutlinedInput-notchedOutline': {
+              borderStyle: 'none',
+              outline: 'none',
+            },
+            '.MuiPickersOutlinedInput-root': {
+              borderStyle: 'none',
+              marginLeft: 2,
+              padding: 0,
+            },
+            '.MuiPickersSectionList-root': {
+              padding: 1,
+
+              borderStyle: 'none',
+            },
+            '.MuiInputAdornment-root': {
+              marginLeft: -2,
+              marginRight: 2,
+            },
             '& .MuiInputBase-root': {
               padding: 0,
               '& .MuiButtonBase-root': {
                 padding: 0,
-                paddingRight: 3,
+                // paddingRight: 3,
                 // paddingLeft: 10
               },
               '& .MuiInputBase-input': {
                 padding: 0,
-                paddingLeft: 1,
+                // paddingLeft: 1,
+              },
+              '& .MuiPickersInputBase-root': {
+                padding: 0,
+                border: 'none',
+                boxShadow: 'none',
+                '& .MuiPickersSectionList-root': {
+                  padding: 0,
+                },
+              },
+              '& .MuiPickersOutlinedInput-root': {
+                padding: 0,
+                border: 'none',
               },
             },
             disableUnderline: true,

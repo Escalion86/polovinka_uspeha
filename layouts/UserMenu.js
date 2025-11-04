@@ -16,6 +16,7 @@ import SvgKavichki from '@svg/SvgKavichki'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import locationAtom from '@state/atoms/locationAtom'
 import useRouter from '@utils/useRouter'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const variants = {
   show: {
@@ -48,7 +49,7 @@ const MenuItem = ({ onClick, icon, title, href }) => {
     <div className="flex items-center px-3 py-2 duration-300 bg-white border border-gray-300 cursor-pointer group gap-x-2 hover:bg-gray-500">
       <FontAwesomeIcon
         icon={icon}
-        className="w-5 h-5 text-general group-hover:text-white"
+        className="w-5 h-5 min-h-5 text-general group-hover:text-white"
       />
       <span className="text-black prevent-select-text whitespace-nowrap group-hover:text-white">
         {title}
@@ -61,13 +62,13 @@ const MenuItem = ({ onClick, icon, title, href }) => {
       <Link prefetch={false} href={href} shallow onClick={handleClick}>
         {content}
       </Link>
-    );
+    )
 
   return (
     <button
       type="button"
       onClick={handleClick}
-      className="p-0 m-0 bg-transparent border-0 text-left"
+      className="p-0 m-0 text-left bg-transparent border-0"
     >
       {content}
     </button>
@@ -84,6 +85,13 @@ const UserMenu = () => {
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
   const modalsFunc = useAtomValue(modalsFuncAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+
+  const notificationsVisible =
+    loggedUserActiveRole?.notifications?.newEventsByTags ||
+    loggedUserActiveRole?.notifications?.birthdays ||
+    loggedUserActiveRole?.notifications?.newUserRegistred ||
+    loggedUserActiveRole?.notifications?.eventRegistration
 
   // const router = useRouter()
 
@@ -176,12 +184,14 @@ const UserMenu = () => {
             title="Моя анкета"
             onClick={handleMenuItemClick}
           />
-          <MenuItem
-            href={`/${location}/cabinet/notifications`}
-            icon={faBell}
-            title="Настройка уведомлений"
-            onClick={handleMenuItemClick}
-          />
+          {notificationsVisible && (
+            <MenuItem
+              href={`/${location}/cabinet/notifications`}
+              icon={faBell}
+              title="Настройка уведомлений"
+              onClick={handleMenuItemClick}
+            />
+          )}
           {/* {getParentDir(router.asPath) === 'cabinet' && (
               <MenuItem href="/" icon={faHome} title="Главная страница сайта" />
             )} */}

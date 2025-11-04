@@ -75,6 +75,21 @@
       var(--tw-shadow, 0 0 #0000) !important;
   }
 
+  @layer base {
+    input[type='checkbox'],
+    input[type='radio'] {
+      color: #614040;
+      border-width: 1 !important;
+      border-color: #614040 !important;
+      accent-color: #614040;
+    }
+
+    input[type='checkbox']:checked,
+    input[type='radio']:checked {
+      background-color: #614040;
+      border-color: #614040;
+    }
+  }
   * {
     outline: none !important;
   }

@@ -39,7 +39,7 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
   return (
     <div
       className={cn(
-        'flex cursor-pointer hover:bg-blue-100 duration-300 hover:shadow-medium-active bg-gray-100 min-h-[36px] h-[36px] tablet:h-10 tablet:min-h-10',
+        'flex cursor-pointer hover:bg-blue-100 duration-300 hover:shadow-medium-active bg-gray-100 min-h-9 h-9 tablet:h-10 tablet:min-h-10',
         className
       )}
       onClick={
@@ -55,21 +55,21 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
         item={eventWithEventUsers}
         bordered={false}
         noBorder
-        classNameHeight="min-h-[36px] h-[36px] tablet:h-10 tablet:min-h-10"
+        classNameHeight="min-h-9 h-9 tablet:h-10 tablet:min-h-10"
         noStatusIcon
       />
       {coincidenceCount !== null && !eventLoggedUser.seeLikesResult ? (
-        <div className="relative leading-3 text-center h-[36px] w-24 text-[#EC4899] tablet:text-lg font-bold tablet:leading-4 tablet:w-32 tablet:h-10 flex items-center justify-center px-1 border-l border-gray-700">
+        <div className="relative leading-3 text-center h-9 w-24 text-[#EC4899] tablet:text-lg font-bold tablet:leading-4 tablet:w-32 tablet:h-10 flex items-center justify-center px-1 border-l border-gray-700">
           Посмотреть результат
         </div>
       ) : coincidenceCount === null && !loggedUserLikes ? (
-        <div className="relative leading-3 text-center h-[36px] w-24 text-[#EC4899] tablet:text-lg font-bold tablet:leading-4 tablet:w-32 tablet:h-10 flex items-center justify-center px-1 border-l border-gray-700">
+        <div className="relative leading-3 text-center h-9 w-24 text-[#EC4899] tablet:text-lg font-bold tablet:leading-4 tablet:w-32 tablet:h-10 flex items-center justify-center px-1 border-l border-gray-700">
           Поставить лайки
         </div>
       ) : (
-        <div className="relative h-[36px] w-[36px] tablet:w-10 tablet:h-10 flex items-center justify-center px-1 border-l border-gray-700">
+        <div className="relative flex items-center justify-center px-1 border-l border-gray-700 h-9 w-9 tablet:w-10 tablet:h-10">
           <FontAwesomeIcon
-            className="w-7 h-7 tablet:w-8 tablet:h-8"
+            className="w-7 h-7 min-h-7 tablet:w-8 tablet:h-8 tablet:min-h-8"
             icon={faHeart}
             color={
               coincidenceCount === null
@@ -81,7 +81,7 @@ const EventLikesItem = ({ eventWithEventUsers, className }) => {
           />
           {coincidenceCount > 0 && eventLoggedUser.seeLikesResult && (
             <FontAwesomeIcon
-              className="absolute left-1 top-1 w-7 h-7 tablet:w-8 tablet:h-8 animate-ping-light"
+              className="absolute left-1 top-1 w-7 h-7 min-h-7 tablet:min-h-8 tablet:w-8 tablet:h-8 animate-ping-light"
               icon={faHeart}
               color="#EC4899"
             />

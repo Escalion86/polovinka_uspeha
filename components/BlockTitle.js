@@ -11,7 +11,7 @@ const BlockTitle = ({ title, className }) => {
         className
       )}
     >
-      <div className="w-[36px] h-[36px] relative">
+      <div className="w-9 h-9 relative">
         <Image
           src="/img/svg_icons/logo.svg"
           // width={36}
@@ -25,7 +25,7 @@ const BlockTitle = ({ title, className }) => {
         />
       </div>
       <H2>{title}</H2>
-      <div className="w-[36px] h-[36px] relative">
+      <div className="w-9 h-9 relative">
         <Image
           src="/img/svg_icons/logo.svg"
           // width={36}

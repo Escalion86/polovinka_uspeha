@@ -38,7 +38,7 @@ const EventCardSkeleton = ({
       <div className="relative flex flex-col justify-between flex-1 w-full">
         <div className="flex flex-col flex-1">
           <div className="flex px-2">
-            <div className="flex items-center justify-between flex-1 h-[36px] gap-x-1">
+            <div className="flex items-center justify-between flex-1 h-9 gap-x-1">
               <Skeleton
                 count={1}
                 height={28}
@@ -47,28 +47,28 @@ const EventCardSkeleton = ({
               <Skeleton count={1} height={28} containerClassName="w-12" />
             </div>
           </div>
-          <div className="flex flex-1 min-h-[32px] h-[32px]">
+          <div className="flex flex-1 min-h-[32px] h-8">
             <div className="flex flex-col flex-1 laptop:flex-row">
               <div className="flex items-center justify-center flex-1 gap-2 px-2">
                 <div
                   className={cn(
-                    'flex min-h-[64px] flex-col items-center justify-center flex-1',
+                    'flex min-h-16 flex-col items-center justify-center flex-1',
                     changeStyle === 'laptop'
-                      ? 'laptop:min-h-[40px]'
-                      : 'desktop:min-h-[40px]'
+                      ? 'laptop:min-h-10'
+                      : 'desktop:min-h-10'
                   )}
                 >
                   <Skeleton
                     count={1}
                     height={18}
                     containerClassName={cn(
-                      'w-[80%] py-1 h-[28px]',
+                      'w-[80%] py-1 h-7',
                       changeStyle === 'laptop'
                         ? 'laptop:hidden'
                         : 'desktop:hidden'
                     )}
                   />
-                  <div className="flex items-center h-[36px] w-full justify-center">
+                  <div className="flex items-center h-9 w-full justify-center">
                     <Skeleton
                       count={1}
                       height={18}
@@ -93,7 +93,7 @@ const EventCardSkeleton = ({
               count={1}
               // height={widthNum >= 2 ? 16 : 28}
               containerClassName="min-w-[150px] w-[150px] tablet:w-[300px]"
-              className="h-[28px] tablet:h-[16px]"
+              className="h-7 tablet:h-4"
             />
           </div>
         </div>

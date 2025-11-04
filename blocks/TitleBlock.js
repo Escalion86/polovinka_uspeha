@@ -45,7 +45,7 @@ const TitleBlock = () => {
             height={294}
             sizes="(min-width: 1024px) 340px, (min-width: 768px) 280px, 60vw"
             priority
-            className="object-contain max-w-[90%] laptop:max-w-[100%] h-full w-auto"
+            className="object-contain max-w-[90%] laptop:max-w-full h-full w-auto"
           />
         </div>
 
