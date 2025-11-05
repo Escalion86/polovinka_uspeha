@@ -24,7 +24,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const defaultFilterValue = {
@@ -32,7 +32,7 @@ const defaultFilterValue = {
   tags: [],
 }
 
-const EventsContent = () => {
+const EventsContent = ({ mode = 'all' }) => {
   const events = useAtomValue(eventsAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)
@@ -42,21 +42,56 @@ const EventsContent = () => {
   const statusFilterFull = loggedUserActiveRole?.events?.statusFilterFull
   const seeAddButton = loggedUserActiveRole?.events?.add
 
+  const isClient = loggedUserActiveRole?._id === 'client'
+
   const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const eventsLoggedUser = useAtomValue(
     asyncEventsUsersByUserIdAtom(loggedUserActive?._id)
   )
 
-  const [isSearching, setIsSearching] = useState(false)
-  const [showFilter, setShowFilter] = useState(false)
-  const [filter, setFilter] = useState({
-    status: {
+  const statusDefault = useMemo(() => {
+    if (mode === 'past')
+      return {
+        active: false,
+        finished: true,
+        closed: true,
+        canceled: false,
+      }
+    if (mode === 'upcoming')
+      return {
+        active: true,
+        finished: false,
+        closed: false,
+        canceled: false,
+      }
+    return {
       active: true,
       finished: false,
       closed: false,
       canceled: false,
-    },
+    }
+  }, [mode])
+
+  const statusButtons = useMemo(() => {
+    if (isClient) return []
+    if (mode === 'upcoming') return ['canceled']
+    if (mode === 'past') return ['finished', 'closed', 'canceled']
+    return ['active', 'finished', 'closed', 'canceled']
+  }, [isClient, mode])
+
+  const statusLabels = useMemo(() => {
+    if (mode === 'upcoming')
+      return {
+        canceled: 'Показывать отмененные',
+      }
+    return undefined
+  }, [mode])
+
+  const [isSearching, setIsSearching] = useState(false)
+  const [showFilter, setShowFilter] = useState(false)
+  const [filter, setFilter] = useState({
+    status: statusDefault,
     participant: {
       participant: true,
       notParticipant: true,
@@ -64,10 +99,35 @@ const EventsContent = () => {
   })
   const [searchText, setSearchText] = useState('')
 
-  const [sort, setSort] = useState({ dateStart: 'asc' })
+  const [sort, setSort] = useState({
+    dateStart: mode === 'past' ? 'desc' : 'asc',
+  })
   const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
+
+  useEffect(() => {
+    setFilter((state) => {
+      const nextStatus = statusDefault
+      if (
+        state.status.active === nextStatus.active &&
+        state.status.finished === nextStatus.finished &&
+        state.status.closed === nextStatus.closed &&
+        state.status.canceled === nextStatus.canceled
+      ) {
+        return state
+      }
+      return {
+        ...state,
+        status: nextStatus,
+      }
+    })
+    setSort((state) => {
+      const desired = mode === 'past' ? 'desc' : 'asc'
+      if (state.dateStart === desired) return state
+      return { dateStart: desired }
+    })
+  }, [mode, statusDefault])
 
   const filteredEvents = useMemo(
     () =>
@@ -141,12 +201,16 @@ const EventsContent = () => {
   return (
     <>
       <ContentHeader>
-        <EventStatusToggleButtons
-          value={filter.status}
-          onChange={(value) =>
-            setFilter((state) => ({ ...state, status: value }))
-          }
-        />
+        {statusButtons.length > 0 && (
+          <EventStatusToggleButtons
+            value={filter.status}
+            onChange={(value) =>
+              setFilter((state) => ({ ...state, status: value }))
+            }
+            availableButtons={statusButtons}
+            labels={statusLabels}
+          />
+        )}
         <EventParticipantToggleButtons
           value={filter.participant}
           onChange={(value) =>

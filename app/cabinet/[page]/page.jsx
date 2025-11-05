@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
 
 export default function CabinetPageRedirect() {
-  redirect('/krsk/cabinet/events')
+  redirect('/krsk/cabinet/eventsUpcoming')
 }

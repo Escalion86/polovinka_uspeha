@@ -91,7 +91,7 @@ const EventBlock = ({ event }) => {
             prefetch={false}
             className="max-w-[76%]"
             href={{
-              pathname: '/cabinet/events',
+              pathname: '/cabinet/eventsUpcoming',
             }}
             shallow
           >
