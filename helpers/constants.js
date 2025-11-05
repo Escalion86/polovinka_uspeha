@@ -63,7 +63,12 @@ const DirectionsContent = dynamic(
   () => import('@layouts/content/DirectionsContent')
 )
 const ReviewsContent = dynamic(() => import('@layouts/content/ReviewsContent'))
-const EventsContent = dynamic(() => import('@layouts/content/EventsContent'))
+const EventsUpcomingContent = dynamic(
+  () => import('@layouts/content/EventsUpcomingContent')
+)
+const EventsPastContent = dynamic(
+  () => import('@layouts/content/EventsPastContent')
+)
 const AdditionalBlocksContent = dynamic(
   () => import('@layouts/content/AdditionalBlocksContent')
 )
@@ -1920,9 +1925,15 @@ export const CONTENTS = Object.freeze({
     accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.supervisor,
   },
-  events: {
-    Component: EventsContent,
-    name: 'Мероприятия',
+  eventsUpcoming: {
+    Component: EventsUpcomingContent,
+    name: 'Предстоящие мероприятия',
+    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
+    roleAccess: (role) => role?.events?.see,
+  },
+  eventsPast: {
+    Component: EventsPastContent,
+    name: 'Прошедшие мероприятия',
     accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => role?.events?.see,
   },
@@ -2245,11 +2256,18 @@ export const pages = [
   {
     id: 7,
     group: 3,
-    name: 'Мероприятия',
-    href: 'events',
+    name: 'Предстоящие мероприятия',
+    href: 'eventsUpcoming',
     icon: faCalendarAlt,
-    // accessRoles: CONTENTS['events'].accessRoles,
-    roleAccess: CONTENTS['events'].roleAccess,
+    roleAccess: CONTENTS['eventsUpcoming'].roleAccess,
+  },
+  {
+    id: 24,
+    group: 3,
+    name: 'Прошедшие мероприятия',
+    href: 'eventsPast',
+    icon: faCalendarAlt,
+    roleAccess: CONTENTS['eventsPast'].roleAccess,
   },
   {
     id: 8,
