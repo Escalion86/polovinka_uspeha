@@ -106,7 +106,7 @@ const TitleBlock = () => {
             prefetch={false}
             href={{
               pathname: userIsLogged
-                ? `/${location}/cabinet/events`
+                ? `/${location}/cabinet/eventsUpcoming`
                 : `/${location}/login`,
               query: !userIsLogged && {
                 ...query,

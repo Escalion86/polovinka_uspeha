@@ -151,7 +151,7 @@ const UserMenu = () => {
             )}
           </div>
           {/* <MenuItem
-              href="/cabinet/events"
+              href="/cabinet/eventsUpcoming"
               icon={faCalendarAlt}
               title="Мероприятия"
             /> */}
