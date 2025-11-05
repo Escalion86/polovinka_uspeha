@@ -261,7 +261,7 @@ const CardButtons = ({
         <ItemComponent
           icon={faCalendarPlus}
           onClick={async () => {
-            const event = await getEventById(item._id)
+            const event = await getEventById(item._id, location)
             goToUrlForAddEventToCalendar(event)
           }}
           color="purple"
