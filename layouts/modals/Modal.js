@@ -11,6 +11,7 @@ import { useEffect, useRef } from 'react'
 import { Suspense, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useAtomValue, useSetAtom } from 'jotai'
+import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 
 const Modal = ({
   Children,
@@ -47,6 +48,7 @@ const Modal = ({
 }) => {
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
+  const widthNum = useWindowDimensionsTailwindNum()
   const effectRan = useRef(false)
   const modals = useAtomValue(modalsAtom)
   const [titleState, setTitleState] = useState(title)
@@ -302,7 +304,8 @@ const Modal = ({
         className={
           cn(
             'flex flex-col tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
-            titleState ? 'pt-3' : 'pt-12'
+            titleState ? 'pt-3' : 'pt-12',
+            widthNum <= 2 ? 'real-screen-height' : ''
           )
           // + (rendered ? '' : ' scale-50')
         }
