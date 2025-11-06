@@ -46,6 +46,7 @@ const textForming = ({
   showLink,
   noSlashedPrice,
   showTextSignUp,
+  location,
 }) => {
   const tagsStringify = () => {
     const tags = []
@@ -161,7 +162,7 @@ const textForming = ({
         } на сайте по ссылке:`
       )
       elementOfTextArray.push(
-        `${window.location.origin}/event/${event._id}${tagsStringify()}`
+        `${window.location.origin}/${location}/event/${event._id}${tagsStringify()}`
       )
     } else if (showTextSignUp) {
       elementOfTextArray.push(``)
@@ -226,6 +227,7 @@ const ToolsTextEventsAnonsContent = () => {
     showParticipantsCount,
     showLink,
     showTextSignUp,
+    location,
   }
 
   const cleanedUpText = DOMPurify.sanitize(
