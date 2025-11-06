@@ -37,6 +37,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import locationAtom from '@state/atoms/locationAtom'
 import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresidentSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
+import useRouter from '@utils/useRouter'
 
 const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
   <div className="flex items-center py-3 pb-0 gap-x-1">
@@ -53,6 +54,7 @@ const ShowWrapper = ({ children, securytyKey, value, setSecurytyKey }) => (
 )
 
 const QuestionnaireContent = (props) => {
+  const router = useRouter()
   const location = useAtomValue(locationAtom)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
@@ -252,6 +254,7 @@ const QuestionnaireContent = (props) => {
           setUserInUsersState(data)
           if (data.role !== 'dev') setLoggedUserActiveRoleName(data.role)
           success('Данные профиля обновлены успешно')
+          router.push(`/${location}/cabinet/eventsUpcoming`)
           setIsWaitingToResponse(false)
         },
         () => {
