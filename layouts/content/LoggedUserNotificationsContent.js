@@ -21,8 +21,10 @@ import TelegramLoginButton from 'react-telegram-login'
 import Note from '@components/Note'
 import locationAtom from '@state/atoms/locationAtom'
 import telegramBotNameAtom from '@state/atoms/telegramBotNameAtom'
+import useRouter from '@utils/useRouter'
 
 const LoggedUserNotificationsContent = (props) => {
+  const router = useRouter()
   const location = useAtomValue(locationAtom)
   console.log('location', location)
   const [loggedUserActive, setLoggedUserActive] = useAtom(loggedUserActiveAtom)
@@ -113,6 +115,7 @@ const LoggedUserNotificationsContent = (props) => {
         setLoggedUserActive(data)
         setUserInUsersState(data)
         success('Данные уведомлений обновлены успешно')
+        router.push(`/${location}/cabinet/eventsUpcoming`)
         setIsWaitingToResponse(false)
       },
       () => {

@@ -41,6 +41,15 @@ module.exports = withFlowbiteReact(
       largePageDataBytes: 512 * 100000,
     },
     reactStrictMode: true,
+    async redirects() {
+      return [
+        {
+          source: '/event/:id',
+          destination: '/krsk/event/:id',
+          permanent: false,
+        },
+      ]
+    },
     // env: {
     //   // @see https://github.com/facebookexperimental/Recoil/issues/2135#issuecomment-1362197710
     //   RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED: 'false',
