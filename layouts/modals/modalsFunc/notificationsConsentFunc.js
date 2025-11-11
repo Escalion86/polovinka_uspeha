@@ -82,15 +82,7 @@ const notificationsConsentFunc = ({ location, user, onUpdateUser }) => {
         closeModal(false)
         router.push(redirectPath)
       },
-      [
-        closeModal,
-        isSaving,
-        location,
-        onUpdateUser,
-        router,
-        showError,
-        user,
-      ]
+      [closeModal, isSaving, location, onUpdateUser, router, showError, user]
     )
 
     useEffect(() => {
@@ -107,7 +99,7 @@ const notificationsConsentFunc = ({ location, user, onUpdateUser }) => {
     }, [saveConsent, setOnDeclineFunc, targetPaths])
 
     return (
-      <div className="flex flex-col gap-y-4">
+      <div className="flex flex-col text-lg gap-y-4 ">
         <p className="leading-5">
           Мы можем присылать вам уведомления о новых мероприятиях. Вы можете
           изменить решение в любой момент в настройках уведомлений.
@@ -125,7 +117,7 @@ const notificationsConsentFunc = ({ location, user, onUpdateUser }) => {
   return {
     title: 'Настройка уведомлений',
     Children: NotificationsConsentModal,
-    confirmButtonName: 'Настроить',
+    confirmButtonName: 'Настроить уведомления',
     declineButtonName: 'Отмена',
     closeButtonShow: false,
   }

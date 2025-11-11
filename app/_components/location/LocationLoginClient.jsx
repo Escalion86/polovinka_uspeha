@@ -1220,14 +1220,13 @@ const LoginPage = (props) => {
                       onChange={(e) => setCheckAgreement(!checkAgreement)}
                       label={
                         <div className="text-left">
-                          Согласен на{' '}
-                          <button
-                            type="button"
+                          <span>Согласен на </span>
+                          <span
                             onClick={() => setShowAgreement(true)}
-                            className="italic font-bold underline duration-300 cursor-pointer text-general hover:text-success focus:outline-none bg-transparent border-0"
+                            className="italic font-bold underline duration-300 bg-transparent border-0 cursor-pointer text-general hover:text-success focus:outline-none"
                           >
                             обработку персональных данных
-                          </button>
+                          </span>
                         </div>
                       }
                       wrapperClassName={cn(
@@ -1599,13 +1598,17 @@ const LoginPage = (props) => {
             backCallRes?.status !== 'wrong phone' &&
             backCallRes?.status !== 'expired' && (
               <>
-                <div className="flex flex-col items-center">
-                  <div>{`Позвоните по номеру телефона (это бесплатно):`}</div>
+                <div className="flex flex-col items-center mt-40 text-xl text-center tablet:mt-0">
+                  <div>
+                    {`Позвоните по номеру телефона`}
+                    <br />
+                    {`(это БЕСПЛАТНО):`}
+                  </div>
                   <a
-                    className="text-2xl font-bold hover:text-general"
+                    className="text-4xl font-bold hover:text-general"
                     href={`tel:+${backCallRes?.auth_phone}`}
                   >{`+${backCallRes?.auth_phone}`}</a>
-                  <div className="text-sm">{`(Нажмите на номер для звонка)`}</div>
+                  <div className="text-md">{`(Нажмите на номер для звонка)`}</div>
                 </div>
                 <div className="hidden text-center md:flex md:flex-col md:items-center">
                   <div>

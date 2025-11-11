@@ -261,17 +261,19 @@ const QuestionnaireContent = (props) => {
           if (!wasQuestionnaireFilled && isNowQuestionnaireFilled) {
             if (modalsFunc?.custom) {
               modalsFunc.custom(
-                require('../modals/modalsFunc/notificationsConsentFunc').default({
-                  user: data,
-                  location,
-                  onUpdateUser: (updatedUser) => {
-                    setLoggedUserActive(updatedUser)
-                    setUserInUsersState(updatedUser)
-                    if (updatedUser.role !== 'dev') {
-                      setLoggedUserActiveRoleName(updatedUser.role)
-                    }
-                  },
-                })
+                require('../modals/modalsFunc/notificationsConsentFunc').default(
+                  {
+                    user: data,
+                    location,
+                    onUpdateUser: (updatedUser) => {
+                      setLoggedUserActive(updatedUser)
+                      setUserInUsersState(updatedUser)
+                      if (updatedUser.role !== 'dev') {
+                        setLoggedUserActiveRoleName(updatedUser.role)
+                      }
+                    },
+                  }
+                )
               )
             } else {
               router.push(`/${location}/cabinet/notifications`)
@@ -311,12 +313,12 @@ const QuestionnaireContent = (props) => {
         uid: 'questionnaireNotFilled',
         title: 'Необходимо заполнить профиль',
         text: (
-          <div className="leading-4">
-            <span>
+          <div className="flex flex-col text-lg leading-5 gap-y-3">
+            <div>
               {
                 'Для возможности записи на мероприятия, а также покупки услуг и товаров необходимо заполнить обязательные поля профиля:'
               }
-            </span>
+            </div>
             <ul className="ml-4 leading-5 list-disc">
               {!loggedUserActive.firstName && (
                 <li className="font-bold text-red-500">Имя</li>
