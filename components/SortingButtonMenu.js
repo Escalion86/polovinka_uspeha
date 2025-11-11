@@ -170,6 +170,15 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
     }, 500)
   }
 
+  const handleClick = () => {
+    setTurnOnHandleMouseOver(false)
+    setIsUserMenuOpened((state) => !state)
+    const timer = setTimeout(() => {
+      setTurnOnHandleMouseOver(true)
+      clearTimeout(timer)
+    }, 500)
+  }
+
   return (
     <div
       className="flex items-start justify-end h-10"
