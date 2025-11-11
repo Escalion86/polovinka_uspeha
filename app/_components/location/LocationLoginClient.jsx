@@ -1221,12 +1221,13 @@ const LoginPage = (props) => {
                       label={
                         <div className="text-left">
                           Согласен на{' '}
-                          <span
+                          <button
+                            type="button"
                             onClick={() => setShowAgreement(true)}
-                            className="italic duration-300 cursor-pointer text-general hover:text-success"
+                            className="italic font-bold underline duration-300 cursor-pointer text-general hover:text-success focus:outline-none bg-transparent border-0"
                           >
                             обработку персональных данных
-                          </span>
+                          </button>
                         </div>
                       }
                       wrapperClassName={cn(
@@ -1606,8 +1607,8 @@ const LoginPage = (props) => {
                   >{`+${backCallRes?.auth_phone}`}</a>
                   <div className="text-sm">{`(Нажмите на номер для звонка)`}</div>
                 </div>
-                <div className="flex flex-col items-center">
-                  <div className="text-center">
+                <div className="hidden text-center md:flex md:flex-col md:items-center">
+                  <div>
                     Или если вы зашли на сайт с компьютера, то отсканируйте
                     штрихкод телефоном для звонка
                   </div>

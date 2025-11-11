@@ -119,6 +119,7 @@ const UsersContent = () => {
             ? filter.relationship.havePartner
             : filter.relationship.noPartner) &&
           (!filter.ages ||
+            user.age === undefined ||
             (user.age >= (filter.ages.min || 18) &&
               user.age <= (filter.ages.max || 70)))
       ),

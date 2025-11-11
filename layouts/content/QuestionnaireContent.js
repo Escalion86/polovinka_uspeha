@@ -22,6 +22,7 @@ import { putData } from '@helpers/CRUD'
 import compareArrays from '@helpers/compareArrays'
 import compareObjects from '@helpers/compareObjects'
 import { DEFAULT_USER } from '@helpers/constants'
+import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import useErrors from '@helpers/useErrors'
 import useSnackbar from '@helpers/useSnackbar'
@@ -220,6 +221,7 @@ const QuestionnaireContent = (props) => {
         // images,
       })
     ) {
+      const wasQuestionnaireFilled = isUserQuestionnaireFilled(loggedUserActive)
       setIsWaitingToResponse(true)
       await putData(
         `/api/${location}/users/${loggedUserActive._id}`,
@@ -254,8 +256,29 @@ const QuestionnaireContent = (props) => {
           setUserInUsersState(data)
           if (data.role !== 'dev') setLoggedUserActiveRoleName(data.role)
           success('Данные профиля обновлены успешно')
-          router.push(`/${location}/cabinet/eventsUpcoming`)
+          const isNowQuestionnaireFilled = isUserQuestionnaireFilled(data)
           setIsWaitingToResponse(false)
+          if (!wasQuestionnaireFilled && isNowQuestionnaireFilled) {
+            if (modalsFunc?.custom) {
+              modalsFunc.custom(
+                require('../modals/modalsFunc/notificationsConsentFunc').default({
+                  user: data,
+                  location,
+                  onUpdateUser: (updatedUser) => {
+                    setLoggedUserActive(updatedUser)
+                    setUserInUsersState(updatedUser)
+                    if (updatedUser.role !== 'dev') {
+                      setLoggedUserActiveRoleName(updatedUser.role)
+                    }
+                  },
+                })
+              )
+            } else {
+              router.push(`/${location}/cabinet/notifications`)
+            }
+          } else {
+            router.push(`/${location}/cabinet/eventsUpcoming`)
+          }
         },
         () => {
           error('Ошибка обновления данных профиля')
