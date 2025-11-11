@@ -133,19 +133,20 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
 
   const handleMouseOut = () => setIsUserMenuOpened(false)
 
+  const handleClick = () => {
+    setTurnOnHandleMouseOver(false)
+    setIsUserMenuOpened((state) => !state)
+    const timer = setTimeout(() => {
+      setTurnOnHandleMouseOver(true)
+      clearTimeout(timer)
+    }, 500)
+  }
+
   return (
     <div
       className="flex items-start justify-end h-10"
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
-      onClick={() => {
-        setTurnOnHandleMouseOver(false)
-        setIsUserMenuOpened(!isUserMenuOpened)
-        const timer = setTimeout(() => {
-          setTurnOnHandleMouseOver(true)
-          clearTimeout(timer)
-        }, 500)
-      }}
     >
       <div className="relative">
         <m.div
@@ -168,7 +169,7 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
               />
             ))}
         </m.div>
-        <IconToggleButton value="sort" aria-label="Sorting">
+        <IconToggleButton value="sort" aria-label="Sorting" onClick={handleClick}>
           {showTitle ? sortParam.title : null}
           <FontAwesomeIcon
             icon={sortIcons[sortParam.type][sortValue]}
