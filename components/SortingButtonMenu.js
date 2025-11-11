@@ -5,7 +5,7 @@ import { faSortNumericDesc } from '@fortawesome/free-solid-svg-icons/faSortNumer
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import { m } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import IconToggleButton from './IconToggleButtons/IconToggleButton'
 
 const variants = {
@@ -120,6 +120,30 @@ const SortItem = ({ title, iconAsc, iconDesc, value, onChange }) => {
 const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
+  const [hasHoverSupport, setHasHoverSupport] = useState(true)
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return
+    }
+
+    const mediaQuery = window.matchMedia('(hover: hover)')
+
+    const handleChange = (event) => {
+      setHasHoverSupport(event.matches)
+    }
+
+    setHasHoverSupport(mediaQuery.matches)
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange)
+      return () => mediaQuery.removeEventListener('change', handleChange)
+    }
+
+    mediaQuery.addListener(handleChange)
+
+    return () => mediaQuery.removeListener(handleChange)
+  }, [])
 
   const sortKey = Object.keys(sort)[0]
   const sortValue = sort[sortKey]
@@ -131,7 +155,20 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
     }
   }
 
-  const handleMouseOut = () => setIsUserMenuOpened(false)
+  const handleMouseOut = () => {
+    if (hasHoverSupport) {
+      setIsUserMenuOpened(false)
+    }
+  }
+
+  const handleClick = () => {
+    setTurnOnHandleMouseOver(false)
+    setIsUserMenuOpened((state) => !state)
+    const timer = setTimeout(() => {
+      setTurnOnHandleMouseOver(true)
+      clearTimeout(timer)
+    }, 500)
+  }
 
   const handleClick = () => {
     setTurnOnHandleMouseOver(false)
@@ -145,8 +182,8 @@ const SortingButtonMenu = ({ sort, onChange, sortKeys = [], showTitle }) => {
   return (
     <div
       className="flex items-start justify-end h-10"
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
+      onMouseOver={hasHoverSupport ? handleMouseOver : undefined}
+      onMouseOut={hasHoverSupport ? handleMouseOut : undefined}
     >
       <div className="relative">
         <m.div
