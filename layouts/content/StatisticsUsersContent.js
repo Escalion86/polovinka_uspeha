@@ -191,6 +191,24 @@ const StatisticsUsersContent = () => {
     [users, filterUsers]
   )
 
+  if (isEventsUsersLoading) {
+    return (
+      <div className="flex items-center justify-center w-full py-10">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
+  }
+
+  if (eventsUsersError) {
+    return (
+      <div className="p-4">
+        <P>
+          Не удалось загрузить данные о посещениях. Попробуйте обновить страницу.
+        </P>
+      </div>
+    )
+  }
+
   const mansCount = filteredUsers.filter(
     (user) => user.gender === 'male'
   ).length
