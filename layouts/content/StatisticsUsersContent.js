@@ -179,6 +179,15 @@ const StatisticsUsersContent = () => {
     },
   })
 
+  const filteredUsers = useMemo(
+    () =>
+      users.filter((user) => {
+        const statusKey = user?.status ?? 'novice'
+        return filterUsers.status[statusKey] === true
+      }),
+    [users, filterUsers]
+  )
+
   if (isEventsUsersLoading) {
     return (
       <div className="flex items-center justify-center w-full py-10">
@@ -191,20 +200,12 @@ const StatisticsUsersContent = () => {
     return (
       <div className="p-4">
         <P>
-          Не удалось загрузить данные о посещениях. Попробуйте обновить страницу.
+          Не удалось загрузить данные о посещениях. Попробуйте обновить
+          страницу.
         </P>
       </div>
     )
   }
-
-  const filteredUsers = useMemo(
-    () =>
-      users.filter((user) => {
-        const statusKey = user?.status ?? 'novice'
-        return filterUsers.status[statusKey] === true
-      }),
-    [users, filterUsers]
-  )
 
   if (isEventsUsersLoading || isUsersLoading) {
     return (
@@ -334,10 +335,7 @@ const StatisticsUsersContent = () => {
               const { user, count } = usersFromFilteredEventsUsers[index]
 
               return (
-                <div
-                  style={style}
-                  className="flex border-b border-gray-700"
-                >
+                <div style={style} className="flex border-b border-gray-700">
                   <UserItem
                     key={user._id}
                     item={user}
