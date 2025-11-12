@@ -8,16 +8,16 @@ import formatDate from '@helpers/formatDate'
 import getDaysBetween from '@helpers/getDaysBetween'
 import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import usersAtomAsync from '@state/async/usersAtomAsync'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import DatePicker from '@components/DatePicker'
 import ListWrapper from '@layouts/lists/ListWrapper'
-import { UserItemFromId } from '@components/ItemCards'
+import { UserItem } from '@components/ItemCards'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import ContentHeader from '@components/ContentHeader'
 import LoadingSpinner from '@components/LoadingSpinner'
 import useEventsUsersFull from '@helpers/useEventsUsersFull'
+import useUsersStatistics from '@helpers/useUsersStatistics'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -95,7 +95,11 @@ const StatisticsUsersContent = () => {
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
 
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const users = useAtomValue(usersAtomAsync)
+  const {
+    users,
+    isLoading: isUsersLoading,
+    error: usersError,
+  } = useUsersStatistics()
   const {
     eventsUsers,
     isLoading: isEventsUsersLoading,
@@ -147,18 +151,25 @@ const StatisticsUsersContent = () => {
     [eventsUsers, periodStart, periodEnd, filterUsers2]
   )
 
-  const usersIdsFromFilteredEventUsers = useMemo(() => {
-    const usersIds = []
-    const usersEventsCount = {}
+  const usersFromFilteredEventsUsers = useMemo(() => {
+    const usersMap = new Map()
+
     filteredEventsUsers.forEach((eventUser) => {
-      usersIds.includes(eventUser.userId) || usersIds.push(eventUser.userId)
-      usersEventsCount[eventUser.userId] =
-        (usersEventsCount[eventUser.userId] || 0) + 1
+      const user = eventUser.user
+      const userId = user?._id
+      if (!userId) return
+
+      if (usersMap.has(userId)) {
+        usersMap.get(userId).count += 1
+      } else {
+        usersMap.set(userId, {
+          user,
+          count: 1,
+        })
+      }
     })
-    const sortedUsersIds = usersIds.sort(
-      (a, b) => usersEventsCount[b] - usersEventsCount[a]
-    )
-    return sortedUsersIds
+
+    return Array.from(usersMap.values()).sort((a, b) => b.count - a.count)
   }, [filteredEventsUsers])
 
   const [filterUsers, setFilterUsers] = useState({
@@ -187,11 +198,15 @@ const StatisticsUsersContent = () => {
   }
 
   const filteredUsers = useMemo(
-    () => users.filter((user) => filterUsers.status[user.status ?? 'novice']),
+    () =>
+      users.filter((user) => {
+        const statusKey = user?.status ?? 'novice'
+        return filterUsers.status[statusKey] === true
+      }),
     [users, filterUsers]
   )
 
-  if (isEventsUsersLoading) {
+  if (isEventsUsersLoading || isUsersLoading) {
     return (
       <div className="flex items-center justify-center w-full py-10">
         <LoadingSpinner size="lg" />
@@ -199,11 +214,16 @@ const StatisticsUsersContent = () => {
     )
   }
 
-  if (eventsUsersError) {
+  if (eventsUsersError || usersError) {
+    const failedParts = []
+    if (eventsUsersError) failedParts.push('данные о посещениях')
+    if (usersError) failedParts.push('данные о пользователях')
+
     return (
       <div className="p-4">
         <P>
-          Не удалось загрузить данные о посещениях. Попробуйте обновить страницу.
+          Не удалось загрузить {failedParts.join(' и ')}. Попробуйте обновить
+          страницу.
         </P>
       </div>
     )
@@ -307,37 +327,31 @@ const StatisticsUsersContent = () => {
         </ContentHeader>
         <div className="flex w-full max-h-100 min-h-100 justify-stretch">
           <ListWrapper
-            // className="h-full"
-            itemCount={usersIdsFromFilteredEventUsers.length}
+            itemCount={usersFromFilteredEventsUsers.length}
             itemSize={43}
           >
-            {({ index, style }) => (
-              <div style={style} className="flex border-b border-gray-700">
-                <UserItemFromId
-                  key={usersIdsFromFilteredEventUsers[index]}
-                  userId={usersIdsFromFilteredEventUsers[index]}
-                  noBorder
-                  onClick={() => {
-                    console.log(
-                      'object :>> ',
-                      filteredEventsUsers.filter(
-                        ({ userId }) =>
-                          usersIdsFromFilteredEventUsers[index] === userId
-                      )
-                    )
-                    modalsFunc.user.view(usersIdsFromFilteredEventUsers[index])
-                  }}
-                />
-                <div className="flex items-center justify-center w-10 text-lg font-bold">
-                  {
-                    filteredEventsUsers.filter(
-                      ({ userId }) =>
-                        usersIdsFromFilteredEventUsers[index] === userId
-                    ).length
-                  }
+            {({ index, style }) => {
+              const { user, count } = usersFromFilteredEventsUsers[index]
+
+              return (
+                <div
+                  style={style}
+                  className="flex border-b border-gray-700"
+                >
+                  <UserItem
+                    key={user._id}
+                    item={user}
+                    noBorder
+                    onClick={() => {
+                      modalsFunc.user.view(user._id)
+                    }}
+                  />
+                  <div className="flex items-center justify-center w-10 text-lg font-bold">
+                    {count}
+                  </div>
                 </div>
-              </div>
-            )}
+              )
+            }}
           </ListWrapper>
         </div>
       </div>

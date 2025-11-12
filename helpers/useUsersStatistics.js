@@ -6,11 +6,11 @@ import { useAtomValue } from 'jotai'
 import { getData } from '@helpers/CRUD'
 import locationAtom from '@state/atoms/locationAtom'
 
-const isValidArray = (value) => Array.isArray(value)
+const isArray = (value) => Array.isArray(value)
 
-const useEventsUsersFull = () => {
+const useUsersStatistics = () => {
   const location = useAtomValue(locationAtom)
-  const [eventsUsers, setEventsUsers] = useState([])
+  const [users, setUsers] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -18,7 +18,7 @@ const useEventsUsersFull = () => {
     let ignore = false
 
     if (!location) {
-      setEventsUsers([])
+      setUsers([])
       setIsLoading(false)
       setError(null)
       return
@@ -27,22 +27,23 @@ const useEventsUsersFull = () => {
     setIsLoading(true)
     setError(null)
 
-    getData(`/api/${location}/eventsusers/full`, {}, null, null, false)
+    getData(`/api/${location}/users/statistics`, {}, null, null, false)
       .then((result) => {
         if (ignore) return
-        if (isValidArray(result)) {
-          setEventsUsers(result)
+
+        if (isArray(result)) {
+          setUsers(result)
         } else {
-          setEventsUsers([])
+          setUsers([])
           if (result === null) {
-            setError(new Error('Не удалось загрузить данные по посещениям'))
+            setError(new Error('Не удалось загрузить данные о пользователях'))
           }
         }
       })
       .catch((err) => {
         if (!ignore) {
           setError(err instanceof Error ? err : new Error(String(err)))
-          setEventsUsers([])
+          setUsers([])
         }
       })
       .finally(() => {
@@ -54,7 +55,7 @@ const useEventsUsersFull = () => {
     }
   }, [location])
 
-  return { eventsUsers, isLoading, error }
+  return { users, isLoading, error }
 }
 
-export default useEventsUsersFull
+export default useUsersStatistics
