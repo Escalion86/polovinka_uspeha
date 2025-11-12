@@ -9,11 +9,7 @@ import useSnackbar from '@helpers/useSnackbar'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import locationAtom from '@state/atoms/locationAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import usersAtomAsync from '@state/async/usersAtomAsync'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import eventsAtom from '@state/atoms/eventsAtom'
-import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
-import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
+import useReferralsSummary from '@helpers/useReferralsSummary'
 import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -23,11 +19,6 @@ import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
 const ReferralsContent = () => {
   const loggedUser = useAtomValue(loggedUserActiveAtom)
   const location = useAtomValue(locationAtom)
-  const users = useAtomValue(usersAtomAsync)
-  const siteSettings = useAtomValue(siteSettingsAtom)
-  const events = useAtomValue(eventsAtom)
-  const eventsUsers = useAtomValue(asyncEventsUsersAllAtom)
-  const payments = useAtomValue(asyncPaymentsAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const { success, error } = useSnackbar()
 
@@ -51,9 +42,16 @@ const ReferralsContent = () => {
     return origin ? `${origin}${referralPath}` : referralPath
   }, [origin, referralPath])
 
-  const referralProgram = siteSettings?.referralProgram ?? {}
-  const referrerCouponAmount = referralProgram.referrerCouponAmount ?? 0
-  const referralCouponAmount = referralProgram.referralCouponAmount ?? 0
+  const {
+    referrals: referralEntries,
+    referralProgram,
+    isLoading: isSummaryLoading,
+    error: referralsError,
+  } = useReferralsSummary(loggedUserId)
+
+  const program = referralProgram ?? {}
+  const referrerCouponAmount = program.referrerCouponAmount ?? 0
+  const referralCouponAmount = program.referralCouponAmount ?? 0
 
   const formatCurrency = useCallback((amount) => {
     if (typeof amount !== 'number') return '—'
@@ -64,7 +62,7 @@ const ReferralsContent = () => {
     })} ₽`
   }, [])
 
-  const requirePaidEvent = referralProgram.requirePaidEvent ?? false
+  const requirePaidEvent = program.requirePaidEvent ?? false
 
   const referralRewardsNote = useMemo(() => {
     const parts = []
@@ -92,123 +90,14 @@ const ReferralsContent = () => {
     [requirePaidEvent]
   )
 
-  const referrals = useMemo(() => {
-    if (!Array.isArray(users) || !loggedUserId) return []
-    return users.filter(
-      (user) => user?.referrerId && String(user.referrerId) === loggedUserId
-    )
-  }, [users, loggedUserId])
-
   const sortedReferrals = useMemo(() => {
-    return [...referrals].sort((a, b) => {
+    if (!Array.isArray(referralEntries)) return []
+    return [...referralEntries].sort((a, b) => {
       const dateA = a?.createdAt ? new Date(a.createdAt).getTime() : 0
       const dateB = b?.createdAt ? new Date(b.createdAt).getTime() : 0
       return dateB - dateA
     })
-  }, [referrals])
-
-  const eventsById = useMemo(() => {
-    const map = new Map()
-    if (Array.isArray(events)) {
-      events.forEach((eventItem) => {
-        if (eventItem?._id) {
-          map.set(String(eventItem._id), eventItem)
-        }
-      })
-    }
-    return map
-  }, [events])
-
-  const participantsByUser = useMemo(() => {
-    const map = new Map()
-    if (!Array.isArray(eventsUsers)) return map
-
-    eventsUsers.forEach((eventUser) => {
-      if (!eventUser?.userId) return
-      if (['reserve', 'ban'].includes(eventUser.status)) return
-
-      const userId = String(eventUser.userId)
-      if (map.has(userId)) {
-        map.get(userId).push(eventUser)
-      } else {
-        map.set(userId, [eventUser])
-      }
-    })
-
-    return map
-  }, [eventsUsers])
-
-  const conditionStatusByUser = useMemo(() => {
-    const map = new Map()
-    if (participantsByUser.size === 0) return map
-
-    participantsByUser.forEach((userEvents, userId) => {
-      const hasQualifyingEvent = userEvents.some((eventUser) => {
-        const event = eventsById.get(String(eventUser.eventId))
-        if (!event || event.status !== 'closed') return false
-
-        if (requirePaidEvent) {
-          const isPaidEvent =
-            Array.isArray(event.subEvents) &&
-            event.subEvents.some((subEvent) => Number(subEvent?.price ?? 0) > 0)
-          if (!isPaidEvent) return false
-        }
-
-        return true
-      })
-
-      map.set(userId, hasQualifyingEvent)
-    })
-
-    return map
-  }, [participantsByUser, eventsById, requirePaidEvent])
-
-  const referrerCouponsByReferralId = useMemo(() => {
-    const map = new Map()
-    if (!loggedUserId || !Array.isArray(payments)) return map
-
-    payments.forEach((payment) => {
-      if (!payment?.isReferralCoupon) return
-      if (String(payment.userId ?? '') !== loggedUserId) return
-
-      const reward = payment.referralReward ?? {}
-      if (reward.rewardFor !== 'referrer') return
-
-      const referralUserId = reward.referralUserId
-      if (!referralUserId) return
-
-      const referralKey = String(referralUserId)
-      const existingDetails = map.get(referralKey) ?? {}
-
-      const paymentEventId =
-        payment?.eventId != null ? String(payment.eventId) : null
-      const rewardEventId =
-        reward?.eventId != null ? String(reward.eventId) : null
-
-      const couponDetails = {
-        sum: typeof payment?.sum === 'number' ? payment.sum : null,
-        payAt: payment?.payAt ?? null,
-        rewardEventId,
-        usageEventId: paymentEventId,
-        comment: payment?.comment ?? '',
-      }
-
-      if (paymentEventId) {
-        map.set(referralKey, {
-          ...existingDetails,
-          used: couponDetails,
-          issued: existingDetails.issued ?? null,
-        })
-      } else {
-        map.set(referralKey, {
-          ...existingDetails,
-          issued: couponDetails,
-        })
-      }
-    })
-
-    return map
-  }, [loggedUserId, payments])
+  }, [referralEntries])
 
   const handleCopy = useCallback(async () => {
     if (!referralLink) return
@@ -245,10 +134,21 @@ const ReferralsContent = () => {
     )
   }
 
-  if (!Array.isArray(users)) {
+  if (isSummaryLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <LoadingSpinner text="Загрузка списка пользователей..." />
+        <LoadingSpinner text="Загрузка данных по рефералам..." />
+      </div>
+    )
+  }
+
+  if (referralsError) {
+    return (
+      <div className="flex items-center justify-center h-full px-4">
+        <Note>
+          Не удалось загрузить данные реферальной программы. Попробуйте
+          обновить страницу.
+        </Note>
       </div>
     )
   }
@@ -334,14 +234,9 @@ const ReferralsContent = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {sortedReferrals.map((user) => {
-                  const referralId = String(user._id)
-                  const conditionMetByEvent =
-                    conditionStatusByUser.get(referralId) ?? false
-                  const rewardDetails =
-                    referrerCouponsByReferralId.get(referralId) ?? null
-                  const issuedCoupon = rewardDetails?.issued ?? null
-                  const usedCoupon = rewardDetails?.used ?? null
+                {sortedReferrals.map((referral) => {
+                  const issuedCoupon = referral?.coupon?.issued ?? null
+                  const usedCoupon = referral?.coupon?.used ?? null
                   const couponSum =
                     typeof usedCoupon?.sum === 'number'
                       ? usedCoupon.sum
@@ -352,24 +247,21 @@ const ReferralsContent = () => {
                     typeof couponSum === 'number'
                       ? formatCurrency(couponSum)
                       : null
-                  const conditionMet =
-                    conditionMetByEvent || !!issuedCoupon || !!usedCoupon
+                  const conditionMet = referral?.conditionMet ?? false
                   const rewardAmountText = rewardSumText
                     ? rewardSumText
                         .replace('₽', 'руб')
                         .replace(/\s+руб/, ' руб')
                         .trim()
                     : null
-                  const usageEventId =
-                    usedCoupon?.usageEventId ?? usedCoupon?.eventId ?? null
-                  const usageEvent = usageEventId
-                    ? eventsById.get(String(usageEventId))
-                    : null
+                  const usageEvent = usedCoupon?.usageEvent ?? null
                   const usageEventDate = usageEvent?.dateStart
                     ? formatDate(usageEvent.dateStart)
                     : usageEvent?.date
                       ? formatDate(usageEvent.date)
-                      : null
+                      : usedCoupon?.payAt
+                        ? formatDate(usedCoupon.payAt)
+                        : null
                   const rewardStatusText =
                     usedCoupon && rewardAmountText
                       ? `Купон ${rewardAmountText} получен и использован на мероприятии "${
@@ -381,15 +273,15 @@ const ReferralsContent = () => {
 
                   return (
                     <tr
-                      key={user._id}
+                      key={referral._id}
                       className="transition-colors cursor-pointer hover:bg-gray-50"
-                      onClick={() => handleOpenReferral(user._id)}
+                      onClick={() => handleOpenReferral(referral._id)}
                     >
                       <td className="px-4 py-2 text-sm text-gray-700">
-                        <UserName user={user} />
+                        <UserName user={referral} />
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-700">
-                        {user.createdAt ? formatDate(user.createdAt) : '—'}
+                        {referral.createdAt ? formatDate(referral.createdAt) : '—'}
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-700">
                         <div className="flex flex-col gap-1 leading-[14px] phoneH:leading-[18px]">
