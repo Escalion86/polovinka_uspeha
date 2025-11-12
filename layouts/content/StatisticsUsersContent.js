@@ -179,6 +179,24 @@ const StatisticsUsersContent = () => {
     },
   })
 
+  if (isEventsUsersLoading) {
+    return (
+      <div className="flex items-center justify-center w-full py-10">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
+  }
+
+  if (eventsUsersError) {
+    return (
+      <div className="p-4">
+        <P>
+          Не удалось загрузить данные о посещениях. Попробуйте обновить страницу.
+        </P>
+      </div>
+    )
+  }
+
   const filteredUsers = useMemo(
     () =>
       users.filter((user) => {
