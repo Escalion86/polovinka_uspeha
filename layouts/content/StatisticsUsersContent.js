@@ -15,8 +15,9 @@ import DatePicker from '@components/DatePicker'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import { UserItemFromId } from '@components/ItemCards'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import eventsUsersFullAllSelector from '@state/selectors/eventsUsersFullAllSelector'
 import ContentHeader from '@components/ContentHeader'
+import LoadingSpinner from '@components/LoadingSpinner'
+import useEventsUsersFull from '@helpers/useEventsUsersFull'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -95,7 +96,11 @@ const StatisticsUsersContent = () => {
 
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const users = useAtomValue(usersAtomAsync)
-  const eventsUsers = useAtomValue(eventsUsersFullAllSelector)
+  const {
+    eventsUsers,
+    isLoading: isEventsUsersLoading,
+    error: eventsUsersError,
+  } = useEventsUsersFull()
 
   const [periodStart, setPeriodStart] = useState(addDaysToDate(serverDate, -90))
   const [periodEnd, setPeriodEnd] = useState(serverDate)
@@ -162,6 +167,24 @@ const StatisticsUsersContent = () => {
       member: true,
     },
   })
+
+  if (isEventsUsersLoading) {
+    return (
+      <div className="flex items-center justify-center w-full py-10">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
+  }
+
+  if (eventsUsersError) {
+    return (
+      <div className="p-4">
+        <P>
+          Не удалось загрузить данные о посещениях. Попробуйте обновить страницу.
+        </P>
+      </div>
+    )
+  }
 
   const filteredUsers = useMemo(
     () => users.filter((user) => filterUsers.status[user.status ?? 'novice']),
