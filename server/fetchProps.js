@@ -23,6 +23,42 @@ const serializeLeanDoc = (doc) => {
   return doc
 }
 
+const buildEventsQueryOptions = (eventsParam, now) => {
+  if (eventsParam === false) return null
+
+  const option =
+    eventsParam == null || eventsParam === true
+      ? { mode: 'all' }
+      : typeof eventsParam === 'string'
+        ? { mode: eventsParam }
+        : eventsParam
+
+  const mode = option?.mode ?? 'all'
+  const filter = {}
+
+  if (mode === 'upcoming') {
+    filter.$or = [
+      { dateEnd: { $gte: now } },
+      { dateEnd: null, dateStart: { $gte: now } },
+      { dateEnd: null, dateStart: null },
+    ]
+  } else if (mode === 'past') {
+    filter.$or = [
+      { dateEnd: { $lt: now } },
+      { dateEnd: null, dateStart: { $lt: now } },
+    ]
+  }
+
+  const sort =
+    option?.sort ?? (mode === 'past' ? { dateStart: -1, _id: -1 } : { dateStart: 1, _id: 1 })
+  const limit =
+    typeof option?.limit === 'number' && option.limit > 0
+      ? option.limit
+      : undefined
+
+  return { filter, sort, limit }
+}
+
 const fetchProps = async (user, location, params) => {
   const serverDateTime = new Date()
   const telegramBotName = getTelegramBotNameByLocation(location)
@@ -96,6 +132,11 @@ const fetchProps = async (user, location, params) => {
     //   })
     // }
 
+    const eventsQueryOptions = buildEventsQueryOptions(
+      params?.events,
+      serverDateTime
+    )
+
     const [
       events,
       directions,
@@ -109,33 +150,41 @@ const fetchProps = async (user, location, params) => {
       achievements,
       achievementsUsers,
     ] = await Promise.all([
-      params?.events === false
+      eventsQueryOptions === null
         ? Promise.resolve([])
-        : db
-            .model('Events')
-            .find({})
-            .select({
-              description: 0,
-              address: 0,
-              images: 0,
-              organizerId: 0,
-              warning: 0,
-              googleCalendarId: 0,
-              // maxMansMember: 0,
-              // maxMansNovice: 0,
-              // maxWomansMember: 0,
-              // maxWomansNovice: 0,
-              // maxParticipants: 0,
-              // maxMans: 0,
-              // maxWomans: 0,
-              // minMansAge: 0,
-              // minWomansAge: 0,
-              // maxMansAge: 0,
-              // maxWomansAge: 0,
-              // usersStatusAccess: 0,
-              // usersStatusDiscount: 0,
-            })
-            .lean(),
+        : (() => {
+            let query = db
+              .model('Events')
+              .find(eventsQueryOptions.filter)
+              .select({
+                description: 0,
+                address: 0,
+                images: 0,
+                organizerId: 0,
+                warning: 0,
+                googleCalendarId: 0,
+                // maxMansMember: 0,
+                // maxMansNovice: 0,
+                // maxWomansMember: 0,
+                // maxWomansNovice: 0,
+                // maxParticipants: 0,
+                // maxMans: 0,
+                // maxWomans: 0,
+                // minMansAge: 0,
+                // minWomansAge: 0,
+                // maxMansAge: 0,
+                // maxWomansAge: 0,
+                // usersStatusAccess: 0,
+                // usersStatusDiscount: 0,
+              })
+            if (eventsQueryOptions.sort) {
+              query = query.sort(eventsQueryOptions.sort)
+            }
+            if (typeof eventsQueryOptions.limit === 'number') {
+              query = query.limit(eventsQueryOptions.limit)
+            }
+            return query.lean()
+          })(),
       db
         .model('Directions')
         .find({})

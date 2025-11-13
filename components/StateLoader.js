@@ -203,7 +203,7 @@ const StateLoader = (props) => {
       setLoggedUserActive(props.loggedUser)
     }
     setLoggedUser(props.loggedUser)
-    setEventsState(props.events)
+    setEventsState(Array.isArray(props.events) ? props.events : [])
     setDirectionsState(props.directions)
     if (props.additionalBlocks?.length > 0) {
       setAdditionalBlocksState(props.additionalBlocks)
