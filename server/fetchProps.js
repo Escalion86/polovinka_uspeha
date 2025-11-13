@@ -80,7 +80,10 @@ const fetchProps = async (user, location, params) => {
     //   })
     // }
 
-    const eventsParam = params?.events
+    const eventsParam =
+      params && Object.prototype.hasOwnProperty.call(params, 'events')
+        ? params.events
+        : { lazy: true }
     const eventsLazy =
       typeof eventsParam === 'object' && eventsParam !== null && eventsParam.lazy
 
