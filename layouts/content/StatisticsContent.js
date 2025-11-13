@@ -26,6 +26,7 @@ import usersAtomAsync from '@state/async/usersAtomAsync'
 import arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector from '@state/selectors/arrayOfSumOfPaymentsForClosedEventsProductsAndServicesByDateSelector'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const addDaysToDate = (date, days) => {
   if (days === 0) return date
@@ -101,6 +102,8 @@ const tooltipCaptions = (dateNow = new Date()) => {
 }
 
 const StatisticsContent = () => {
+  useEnsureEventsLoaded('all')
+
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const users = useAtomValue(usersAtomAsync)
   const events = useAtomValue(eventsAtom)

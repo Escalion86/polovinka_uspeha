@@ -26,6 +26,7 @@ import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
 import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import DropdownButton from '@components/DropdownButton'
+import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const getEventMaxParticipants = (event) => {
   if (!event) return
@@ -177,6 +178,8 @@ const textForming = ({
 }
 
 const ToolsTextEventsAnonsContent = () => {
+  useEnsureEventsLoaded('upcoming')
+
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const location = useAtomValue(locationAtom)
   const [eventsId, setEventsId] = useState([])

@@ -22,6 +22,7 @@ import { useAtomValue } from 'jotai'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 import InputNumber from '@components/InputNumber'
 import ReactImageGallery from 'react-image-gallery'
+import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const getPreview = async () => {
   const input = document.querySelector('#input')
@@ -37,6 +38,8 @@ const save = async (name) => {
 }
 
 const ToolsEventAnonsVkContent = () => {
+  useEnsureEventsLoaded('upcoming')
+
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const events = useAtomValue(eventsAtom)
   const { imageFolder } = useAtomValue(locationPropsSelector)
