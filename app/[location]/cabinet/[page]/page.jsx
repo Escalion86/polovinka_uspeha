@@ -56,6 +56,13 @@ export default async function LocationCabinetPage({ params, searchParams }) {
     redirect(`/${location}/cabinet/questionnaire`)
   }
 
+  const eventsParam =
+    normalizedPage === 'eventsUpcoming'
+      ? { mode: 'upcoming' }
+      : normalizedPage === 'eventsPast'
+        ? { mode: 'past' }
+        : undefined
+
   const props = await buildPageProps({
     session,
     fetcher: fetchProps,
