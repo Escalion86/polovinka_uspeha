@@ -5,7 +5,6 @@ import { atom } from 'jotai'
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
-import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
 // import asyncEventsUsersAllSelector from './asyncEventsUsersAllSelector'
 
 const setEventUserSelector = atom(null, async (get, set, updateEventUser) => {
@@ -39,16 +38,6 @@ const setEventUserSelector = atom(null, async (get, set, updateEventUser) => {
       eventUser._id === _id ? updateEventUser : eventUser
     )
     set(asyncEventsUsersByUserIdAtom(userId), updatedEventsUser)
-  }
-
-  const isLoadedEventsUsersAll = get(isLoadedAtom('asyncEventsUsersAllAtom'))
-  if (isLoadedEventsUsersAll) {
-    const eventsUsers = await get(asyncEventsUsersAllAtom)
-    const updatedEventsUser = eventsUsers.map((eventUser) =>
-      eventUser._id === _id ? updateEventUser : eventUser
-    )
-
-    set(asyncEventsUsersAllAtom, updatedEventsUser)
   }
 })
 

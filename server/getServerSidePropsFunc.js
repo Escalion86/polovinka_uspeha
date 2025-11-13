@@ -1,7 +1,7 @@
 import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
 
 const EMPTY_PROPS = {
-  events: null,
+  events: undefined,
   directions: null,
   reviews: null,
   additionalBlocks: null,

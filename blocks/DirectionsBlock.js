@@ -8,6 +8,7 @@ import { getNounEvents } from '@helpers/getNoun'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
+import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const DirectionItem = ({
   directionId,
@@ -43,6 +44,8 @@ const DirectionItem = ({
 }
 
 const DirectionsBlock = () => {
+  useEnsureEventsLoaded('upcoming')
+
   const filteredDirections = useAtomValue(filteredDirectionsSelector)
   const events = useAtomValue(eventsAtom)
   const finishedEvents = events.filter((event) => event.status === 'closed')
