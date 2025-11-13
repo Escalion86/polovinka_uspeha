@@ -265,9 +265,13 @@ const fetchProps = async (user, location, params) => {
     console.log('services :>> ', JSON.stringify(services).length)
     // console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
 
+    const serializedEvents = Array.isArray(events)
+      ? serializeLeanDoc(events)
+      : undefined
+
     const fetchResult = {
       // users: JSON.parse(JSON.stringify(users)),
-      events: serializeLeanDoc(events ?? []),
+      events: serializedEvents,
       directions: serializeLeanDoc(directions),
       reviews: serializeLeanDoc(reviews),
       additionalBlocks: serializeLeanDoc(additionalBlocks),
