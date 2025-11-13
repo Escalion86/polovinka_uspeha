@@ -14,6 +14,7 @@ import achievementsUsersAtom from '@state/atoms/achievementsUsersAtom'
 import additionalBlocksAtom from '@state/atoms/additionalBlocksAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
+import eventsLoadStatusAtom from '@state/atoms/eventsLoadStatusAtom'
 // import itemsFuncAtom from '@state/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import reviewsAtom from '@state/atoms/reviewsAtom'
@@ -118,6 +119,7 @@ const StateLoader = (props) => {
   const setServicesState = useSetAtom(servicesAtom)
   // const setServicesUsersState = useSetAtom(servicesUsersAtom)
   const setServerSettingsState = useSetAtom(serverSettingsAtom)
+  const setEventsLoadStatus = useSetAtom(eventsLoadStatusAtom)
 
   // const itemsFunc = useAtomValue(itemsFuncAtom)
 
@@ -203,7 +205,6 @@ const StateLoader = (props) => {
       setLoggedUserActive(props.loggedUser)
     }
     setLoggedUser(props.loggedUser)
-    setEventsState(props.events)
     setDirectionsState(props.directions)
     if (props.additionalBlocks?.length > 0) {
       setAdditionalBlocksState(props.additionalBlocks)
@@ -266,6 +267,18 @@ const StateLoader = (props) => {
 
     // finish jotai
   }, [props.loggedUser])
+
+  useEffect(() => {
+    if (!Array.isArray(props.events)) return
+
+    setEventsState(props.events)
+    setEventsLoadStatus((prev) => ({
+      ...prev,
+      all: 'loaded',
+      upcoming: prev.upcoming ?? 'loaded',
+      past: prev.past ?? 'loaded',
+    }))
+  }, [props.events, setEventsLoadStatus, setEventsState])
 
   useEffect(() => {
     if (loggedUser && location) {

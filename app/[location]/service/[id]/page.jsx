@@ -27,6 +27,7 @@ export default async function LocationServicePage({ params }) {
     location,
     params: {
       additionalBlocks: false,
+      events: false,
     },
   })
 
