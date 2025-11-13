@@ -26,6 +26,7 @@ import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
+import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const defaultFilterValue = {
   directions: null,
@@ -33,6 +34,8 @@ const defaultFilterValue = {
 }
 
 const EventsContent = ({ mode = 'all' }) => {
+  useEnsureEventsLoaded(mode === 'all' ? 'all' : mode)
+
   const events = useAtomValue(eventsAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)

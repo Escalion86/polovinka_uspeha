@@ -63,6 +63,7 @@ export default async function LocationCabinetPage({ params, searchParams }) {
     params: {
       additionalBlocks: false,
       reviews: false,
+      events: false,
     },
   })
 
