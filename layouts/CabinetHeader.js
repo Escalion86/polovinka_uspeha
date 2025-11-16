@@ -4,6 +4,7 @@ import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle'
 import { faBug } from '@fortawesome/free-solid-svg-icons/faBug'
+import { faBell } from '@fortawesome/free-solid-svg-icons/faBell'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import Link from 'next/link'
@@ -17,6 +18,8 @@ import Image from 'next/image'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import { faQrcode } from '@fortawesome/free-solid-svg-icons/faQrcode'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import locationAtom from '@state/atoms/locationAtom'
+import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 
 const CheckedItem = ({ children }) => (
   <li className="flex italic gap-x-1">
@@ -32,11 +35,28 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
   const isLoggedUserDev = useAtomValue(loggedUserAtom)?.role === 'dev'
   const siteSettings = useAtomValue(siteSettingsAtom)
   const headerInfo = siteSettings?.headerInfo
+  const location = useAtomValue(locationAtom)
+  const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
 
   if (!loggedUserActive) return null
 
   const isLoggedUserNovice =
     !loggedUserActiveStatus || loggedUserActiveStatus === 'novice'
+  const notificationsVisible =
+    loggedUserActiveRole?.notifications?.newEventsByTags ||
+    loggedUserActiveRole?.notifications?.birthdays ||
+    loggedUserActiveRole?.notifications?.newUserRegistred ||
+    loggedUserActiveRole?.notifications?.eventRegistration
+
+  const statusTrigger = (
+    <button
+      type="button"
+      className="flex items-center justify-center w-6 h-6 cursor-pointer min-h-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/80"
+      aria-label="Открыть информацию о статусе"
+    >
+      <UserStatusIcon status={loggedUserActiveStatus} />
+    </button>
+  )
 
   return (
     <div
@@ -124,12 +144,20 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
           <DevSwitch />
         </Menu>
       )}
-      <DropDown
-        trigger={<UserStatusIcon status={loggedUserActiveStatus} />}
-        // menuPadding={false}
-        openOnHover
-      >
-        <div className="flex flex-col justify-center px-3 py-1 leading-5 text-black bg-white rounded-md cursor-default w-80">
+      <div className="flex items-center gap-x-2">
+        {notificationsVisible && (
+          <Link
+            prefetch={false}
+            href={`/${location}/cabinet/notifications`}
+            shallow
+            className="flex items-center justify-center w-6 h-6 text-white cursor-pointer min-h-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/80"
+          >
+            <span className="sr-only">Настройка уведомлений</span>
+            <FontAwesomeIcon icon={faBell} className="w-5 h-5" />
+          </Link>
+        )}
+        <DropDown trigger={statusTrigger} openOnHover>
+          <div className="flex flex-col justify-center px-3 py-1 leading-5 text-black bg-white rounded-md cursor-default w-80">
           {isLoggedUserNovice ? (
             <>
               <span className="font-bold">Ваш статус: Новичок</span>
@@ -202,8 +230,9 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
               </a>
             )
           )}
-        </div>
-      </DropDown>
+          </div>
+        </DropDown>
+      </div>
       <UserMenu />
     </div>
   )
