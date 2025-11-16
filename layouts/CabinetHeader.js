@@ -106,7 +106,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
         <div className="absolute z-10 -translate-x-1/2 left-1/2">
           <Link prefetch={false} href="/" shallow>
             <Image
-              className="h-12 w-auto"
+              className="w-auto h-12"
               src="/img/logo_horizontal.png"
               alt="Логотип Половинка успеха"
               width={409}
@@ -144,7 +144,7 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
           <DevSwitch />
         </Menu>
       )}
-      <div className="flex items-center gap-x-2">
+      <div className="flex items-center gap-x-4">
         {notificationsVisible && (
           <Link
             prefetch={false}
@@ -153,83 +153,83 @@ const CabinetHeader = ({ title = '', titleLink, icon }) => {
             className="flex items-center justify-center w-6 h-6 text-white cursor-pointer min-h-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/80"
           >
             <span className="sr-only">Настройка уведомлений</span>
-            <FontAwesomeIcon icon={faBell} className="w-5 h-5" />
+            <FontAwesomeIcon icon={faBell} className="w-5 h-5 min-h-5" />
           </Link>
         )}
-        <DropDown trigger={statusTrigger} openOnHover>
+        <DropDown trigger={statusTrigger} openOnHover placement="bottom">
           <div className="flex flex-col justify-center px-3 py-1 leading-5 text-black bg-white rounded-md cursor-default w-80">
-          {isLoggedUserNovice ? (
-            <>
-              <span className="font-bold">Ваш статус: Новичок</span>
-              <span>
-                После посещения хотя-бы одного мероприятия вы сможете вступить в
-                клуб!
-              </span>
-              <span className="mt-1">
-                Участники клуба имеют следующие привелегии:
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="font-bold">Ваш статус: Участник клуба</span>
-              <div className="flex flex-col items-start">
-                <div>Ваши привелегии:</div>
-              </div>
-            </>
-          )}
-          <ul className="flex flex-col my-1 gap-y-1">
-            <CheckedItem>Доступ к закрытым мероприятиям</CheckedItem>
-            <CheckedItem>Просмотр других участников клуба</CheckedItem>
-            <CheckedItem>Просмотр участников мероприятий</CheckedItem>
-            <CheckedItem>Страница достижений и личная статистика</CheckedItem>
-            <CheckedItem>Доступ к закрытому чату</CheckedItem>
-          </ul>
-          {isLoggedUserNovice ? (
-            <div className="flex flex-col py-1 font-bold gap-y-1">
-              <span>Для вступления в клуб свяжитесь с администратором:</span>
-              {(headerInfo?.telegram || headerInfo?.whatsapp) && (
-                <div className="flex font-bold gap-x-2">
-                  {headerInfo?.whatsapp && (
-                    <a
-                      className="flex items-center px-2 py-1 text-white duration-300 bg-green-500 rounded-md hover:bg-general gap-x-1"
-                      href={'https://wa.me/' + headerInfo?.whatsapp}
-                      target="_blank"
-                    >
-                      <FontAwesomeIcon
-                        icon={faWhatsapp}
-                        className="w-5 h-5 text-white"
-                      />
-                      <span>WhatsApp</span>
-                    </a>
-                  )}
-                  {headerInfo?.telegram && (
-                    <a
-                      className="flex items-center px-2 py-1 text-white duration-300 bg-blue-500 rounded-md hover:bg-general gap-x-1"
-                      href={'https://t.me/' + headerInfo?.telegram}
-                      target="_blank"
-                    >
-                      <FontAwesomeIcon
-                        icon={faTelegram}
-                        className="w-5 h-5 text-white"
-                      />
-                      <span>Telegram</span>
-                    </a>
-                  )}
+            {isLoggedUserNovice ? (
+              <>
+                <span className="font-bold">Ваш статус: Новичок</span>
+                <span>
+                  После посещения хотя-бы одного мероприятия вы сможете вступить
+                  в клуб!
+                </span>
+                <span className="mt-1">
+                  Участники клуба имеют следующие привелегии:
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="font-bold">Ваш статус: Участник клуба</span>
+                <div className="flex flex-col items-start">
+                  <div>Ваши привелегии:</div>
                 </div>
-              )}
-            </div>
-          ) : (
-            headerInfo?.memberChatLink && (
-              <a
-                className="flex items-center justify-center px-3 py-2 my-1 text-white duration-300 border rounded-lg gap-x-2 bg-general hover:text-general hover:bg-white border-general"
-                href={'https://t.me/' + headerInfo?.memberChatLink}
-                target="_blank"
-              >
-                <FontAwesomeIcon icon={faTelegram} className="w-5 h-5" />
-                <span>Открыть чат клуба</span>
-              </a>
-            )
-          )}
+              </>
+            )}
+            <ul className="flex flex-col my-1 gap-y-1">
+              <CheckedItem>Доступ к закрытым мероприятиям</CheckedItem>
+              <CheckedItem>Просмотр других участников клуба</CheckedItem>
+              <CheckedItem>Просмотр участников мероприятий</CheckedItem>
+              <CheckedItem>Страница достижений и личная статистика</CheckedItem>
+              <CheckedItem>Доступ к закрытому чату</CheckedItem>
+            </ul>
+            {isLoggedUserNovice ? (
+              <div className="flex flex-col py-1 font-bold gap-y-1">
+                <span>Для вступления в клуб свяжитесь с администратором:</span>
+                {(headerInfo?.telegram || headerInfo?.whatsapp) && (
+                  <div className="flex font-bold gap-x-2">
+                    {headerInfo?.whatsapp && (
+                      <a
+                        className="flex items-center px-2 py-1 text-white duration-300 bg-green-500 rounded-md hover:bg-general gap-x-1"
+                        href={'https://wa.me/' + headerInfo?.whatsapp}
+                        target="_blank"
+                      >
+                        <FontAwesomeIcon
+                          icon={faWhatsapp}
+                          className="w-5 h-5 text-white"
+                        />
+                        <span>WhatsApp</span>
+                      </a>
+                    )}
+                    {headerInfo?.telegram && (
+                      <a
+                        className="flex items-center px-2 py-1 text-white duration-300 bg-blue-500 rounded-md hover:bg-general gap-x-1"
+                        href={'https://t.me/' + headerInfo?.telegram}
+                        target="_blank"
+                      >
+                        <FontAwesomeIcon
+                          icon={faTelegram}
+                          className="w-5 h-5 text-white"
+                        />
+                        <span>Telegram</span>
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              headerInfo?.memberChatLink && (
+                <a
+                  className="flex items-center justify-center px-3 py-2 my-1 text-white duration-300 border rounded-lg gap-x-2 bg-general hover:text-general hover:bg-white border-general"
+                  href={'https://t.me/' + headerInfo?.memberChatLink}
+                  target="_blank"
+                >
+                  <FontAwesomeIcon icon={faTelegram} className="w-5 h-5" />
+                  <span>Открыть чат клуба</span>
+                </a>
+              )
+            )}
           </div>
         </DropDown>
       </div>
