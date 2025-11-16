@@ -27,7 +27,6 @@ export default async function LocationUserPage({ params }) {
     location,
     params: {
       additionalBlocks: false,
-      events: false,
     },
   })
 

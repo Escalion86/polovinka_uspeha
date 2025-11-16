@@ -4,13 +4,27 @@ import LoadingSpinner from '@components/LoadingSpinner'
 import Note from '@components/Note'
 import UserName from '@components/UserName'
 import formatDate from '@helpers/formatDate'
-import useReferralsAdminSummary from '@helpers/useReferralsAdminSummary'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import eventsAtom from '@state/atoms/eventsAtom'
+import asyncEventsUsersAllAtom from '@state/async/asyncEventsUsersAllAtom'
+import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
+import usersAtomAsync from '@state/async/usersAtomAsync'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAtomValue } from 'jotai'
 import { useCallback, useMemo } from 'react'
+
+const pickLatestByDate = (existing, candidate) => {
+  if (!candidate) return existing ?? null
+  if (!existing) return candidate
+
+  const existingTime = existing?.payAt ? new Date(existing.payAt).getTime() : 0
+  const candidateTime = candidate?.payAt ? new Date(candidate.payAt).getTime() : 0
+
+  return candidateTime >= existingTime ? candidate : existing
+}
 
 const formatCurrencyValue = (amount) => {
   if (typeof amount !== 'number') return '—'
@@ -77,31 +91,249 @@ const getCouponStatus = (coupon, eventsById) => {
 }
 
 const ReferralsAdminContent = () => {
-  const {
-    referrers,
-    referralProgram,
-    totals,
-    events,
-    isLoading,
-    error,
-  } = useReferralsAdminSummary()
+  const siteSettings = useAtomValue(siteSettingsAtom)
+  const users = useAtomValue(usersAtomAsync)
+  const events = useAtomValue(eventsAtom)
+  const eventsUsers = useAtomValue(asyncEventsUsersAllAtom)
+  const payments = useAtomValue(asyncPaymentsAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
 
-  const program = referralProgram ?? {}
+  const program = siteSettings?.referralProgram ?? {}
   const programEnabled = getProgramEnabled(program)
   const referrerCouponAmount = program?.referrerCouponAmount ?? 0
   const referralCouponAmount = program?.referralCouponAmount ?? 0
   const requirePaidEvent = program?.requirePaidEvent ?? false
 
-  const eventsById = useMemo(() => {
+  const usersById = useMemo(() => {
     const map = new Map()
-    events.forEach((eventItem) => {
-      if (eventItem?._id) {
-        map.set(String(eventItem._id), eventItem)
+    if (!Array.isArray(users)) return map
+
+    users.forEach((user) => {
+      if (user?._id) {
+        map.set(String(user._id), user)
       }
     })
+
+    return map
+  }, [users])
+
+  const eventsById = useMemo(() => {
+    const map = new Map()
+    if (Array.isArray(events)) {
+      events.forEach((eventItem) => {
+        if (eventItem?._id) {
+          map.set(String(eventItem._id), eventItem)
+        }
+      })
+    }
+
     return map
   }, [events])
+
+  const referralsByReferrer = useMemo(() => {
+    const map = new Map()
+    if (!Array.isArray(users)) return map
+
+    users.forEach((user) => {
+      const referrerId = user?.referrerId
+      if (!referrerId) return
+
+      const key = String(referrerId)
+      if (map.has(key)) {
+        map.get(key).push(user)
+      } else {
+        map.set(key, [user])
+      }
+    })
+
+    return map
+  }, [users])
+
+  const participantsByUser = useMemo(() => {
+    const map = new Map()
+    if (!Array.isArray(eventsUsers)) return map
+
+    eventsUsers.forEach((eventUser) => {
+      if (!eventUser?.userId) return
+      if (['reserve', 'ban'].includes(eventUser.status)) return
+
+      const userId = String(eventUser.userId)
+      if (map.has(userId)) {
+        map.get(userId).push(eventUser)
+      } else {
+        map.set(userId, [eventUser])
+      }
+    })
+
+    return map
+  }, [eventsUsers])
+
+const conditionStatusByUser = useMemo(() => {
+  const map = new Map()
+  if (participantsByUser.size === 0) return map
+
+  const pickLatestEventDetail = (existing, candidate) => {
+    if (!candidate) return existing ?? null
+    if (!existing) return candidate
+
+    const existingTime =
+      typeof existing.timestamp === 'number' ? existing.timestamp : 0
+    const candidateTime =
+      typeof candidate.timestamp === 'number' ? candidate.timestamp : 0
+
+    return candidateTime >= existingTime ? candidate : existing
+  }
+
+  participantsByUser.forEach((userEvents, userId) => {
+    let qualifyingEventDetail = null
+
+    userEvents.forEach((eventUser) => {
+      const event = eventsById.get(String(eventUser.eventId))
+      if (!event || event.status !== 'closed') return
+
+      if (requirePaidEvent) {
+        const isPaidEvent =
+          Array.isArray(event.subEvents) &&
+          event.subEvents.some((subEvent) => Number(subEvent?.price ?? 0) > 0)
+        if (!isPaidEvent) return
+      }
+
+      const rawDate =
+        event?.dateStart ?? event?.date ?? eventUser?.createdAt ?? null
+      const timestamp = rawDate ? new Date(rawDate).getTime() : 0
+
+      const detail = {
+        eventId: event?._id ? String(event._id) : String(eventUser.eventId),
+        eventTitle: event?.title ?? null,
+        eventDate: rawDate,
+        timestamp,
+      }
+
+      qualifyingEventDetail = pickLatestEventDetail(
+        qualifyingEventDetail,
+        detail
+      )
+    })
+
+    if (qualifyingEventDetail) {
+      map.set(userId, { met: true, event: qualifyingEventDetail })
+    } else {
+      map.set(userId, { met: false, event: null })
+    }
+  })
+
+  return map
+}, [participantsByUser, eventsById, requirePaidEvent])
+
+  const couponsByPair = useMemo(() => {
+    const map = new Map()
+    if (!Array.isArray(payments)) return map
+
+    payments.forEach((payment) => {
+      if (!payment?.isReferralCoupon) return
+
+      const reward = payment?.referralReward ?? {}
+      const referralUserId = reward?.referralUserId
+      if (!referralUserId) return
+
+      const referrerId = reward?.referrerId ?? payment?.userId ?? null
+      const key = `${referrerId ? String(referrerId) : 'null'}|${String(
+        referralUserId
+      )}`
+
+      const detail = {
+        sum: typeof payment?.sum === 'number' ? payment.sum : null,
+        payAt: payment?.payAt ?? null,
+        rewardEventId:
+          reward?.eventId != null ? String(reward.eventId) : null,
+        usageEventId:
+          payment?.eventId != null ? String(payment.eventId) : null,
+        comment: payment?.comment ?? '',
+      }
+
+      const entry = map.get(key) ?? {
+        referrer: { issued: null, used: null },
+        referral: { issued: null, used: null },
+      }
+
+      if (reward?.rewardFor === 'referrer') {
+        if (detail.usageEventId) {
+          entry.referrer.used = pickLatestByDate(entry.referrer.used, detail)
+        } else {
+          entry.referrer.issued = pickLatestByDate(entry.referrer.issued, detail)
+        }
+      } else if (reward?.rewardFor === 'referral') {
+        if (detail.usageEventId) {
+          entry.referral.used = pickLatestByDate(entry.referral.used, detail)
+        } else {
+          entry.referral.issued = pickLatestByDate(entry.referral.issued, detail)
+        }
+      }
+
+      map.set(key, entry)
+    })
+
+    return map
+  }, [payments])
+
+  const referrerEntries = useMemo(() => {
+    const entries = []
+
+    referralsByReferrer.forEach((referrals, referrerId) => {
+      const sortedReferrals = [...referrals].sort((a, b) => {
+        const dateA = a?.createdAt ? new Date(a.createdAt).getTime() : 0
+        const dateB = b?.createdAt ? new Date(b.createdAt).getTime() : 0
+        return dateB - dateA
+      })
+
+      entries.push({
+        referrerId,
+        referrer: usersById.get(referrerId) ?? null,
+        referrals: sortedReferrals,
+      })
+    })
+
+    entries.sort((a, b) => {
+      if (b.referrals.length !== a.referrals.length) {
+        return b.referrals.length - a.referrals.length
+      }
+
+      const referrerA = a.referrer
+      const referrerB = b.referrer
+      const nameA = referrerA?.firstName ? referrerA.firstName : ''
+      const nameB = referrerB?.firstName ? referrerB.firstName : ''
+      return nameA.localeCompare(nameB, 'ru')
+    })
+
+    return entries
+  }, [referralsByReferrer, usersById])
+
+  const totals = useMemo(() => {
+    let referralsCount = 0
+    let conditionMetCount = 0
+
+    referralsByReferrer.forEach((referrals) => {
+      referralsCount += referrals.length
+
+      referrals.forEach((referral) => {
+        const referralId = referral?._id ? String(referral._id) : null
+        if (!referralId) return
+
+        const conditionStatus = conditionStatusByUser.get(referralId)
+        const conditionMetByEvent = conditionStatus?.met === true
+
+        if (conditionMetByEvent) {
+          conditionMetCount += 1
+        }
+      })
+    })
+
+    return {
+      referralsCount,
+      conditionMetCount,
+      referrerCount: referralsByReferrer.size,
+    }
+  }, [referralsByReferrer, conditionStatusByUser])
 
   const handleOpenUser = useCallback(
     (userId) => {
@@ -120,21 +352,14 @@ const ReferralsAdminContent = () => {
     return <span className="text-sm text-gray-500">{fallback}</span>
   }, [])
 
-  if (isLoading) {
+  if (
+    !Array.isArray(users) ||
+    !Array.isArray(eventsUsers) ||
+    !Array.isArray(payments)
+  ) {
     return (
       <div className="flex items-center justify-center h-full">
         <LoadingSpinner text="Загрузка данных о рефералах..." />
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-full p-4">
-        <Note type="danger">
-          Не удалось загрузить статистику по рефералам. Попробуйте обновить
-          страницу.
-        </Note>
       </div>
     )
   }
@@ -182,14 +407,14 @@ const ReferralsAdminContent = () => {
         </div>
       </div>
 
-      {referrers.length === 0 ? (
+      {referrerEntries.length === 0 ? (
         <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="text-sm text-gray-600">
             Пользователи, указавшие реферера при регистрации, пока отсутствуют.
           </div>
         </div>
       ) : (
-        referrers.map(({ referrerId, referrer, referrals }) => {
+        referrerEntries.map(({ referrerId, referrer, referrals }) => {
           const referrerLabel = referrer
             ? renderUserName(referrer)
             : null
@@ -241,32 +466,29 @@ const ReferralsAdminContent = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {referrals.map((referral) => {
-                      const referralUser = referral?.user ?? null
-                      const referralId = referralUser?._id
-                        ? String(referralUser._id)
-                        : null
+                      const referralId = referral?._id ? String(referral._id) : null
                       if (!referralId) return null
 
-                      const coupons = referral?.coupons ?? null
+                      const mapKey = `${referrerId}|${referralId}`
+                      const coupons = couponsByPair.get(mapKey) ?? null
                       const referrerCoupon = coupons?.referrer ?? null
                       const referralCoupon = coupons?.referral ?? null
 
-                      const condition = referral?.condition ?? {
-                        met: false,
-                        event: null,
-                      }
-                      const conditionMet = condition.met === true
-                      const visitedEvent = condition.event
+                      const conditionStatus =
+                        conditionStatusByUser.get(referralId) ?? {
+                          met: false,
+                          event: null,
+                        }
+                      const conditionMet = conditionStatus.met === true
+                      const visitedEvent = conditionStatus.event
 
-                      const visitedEventDate = visitedEvent?.dateStart
-                        ? formatDate(visitedEvent.dateStart)
-                        : visitedEvent?.date
-                        ? formatDate(visitedEvent.date)
+                      const visitedEventDate = visitedEvent?.eventDate
+                        ? formatDate(visitedEvent.eventDate)
                         : null
 
                       const conditionDescription = conditionMet
-                        ? visitedEvent?.title
-                          ? `Посещено мероприятие "${visitedEvent.title}"${
+                        ? visitedEvent?.eventTitle
+                          ? `Посещено мероприятие "${visitedEvent.eventTitle}"${
                               visitedEventDate ? ` ${visitedEventDate}` : ''
                             }`
                           : 'Посещено подходящее мероприятие'
@@ -311,7 +533,7 @@ const ReferralsAdminContent = () => {
                         >
                           <td className="px-4 py-2 text-sm text-gray-700">
                             {renderUserName(
-                              referralUser,
+                              referral,
                               `Пользователь не найден (ID: ${referralId})`
                             )}
                           </td>

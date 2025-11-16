@@ -12,7 +12,6 @@
       "@schemas/*": ["schemas/*"],
       "@layouts/*": ["layouts/*"],
       "@blocks/*": ["blocks/*"],
-      "@hooks/*": ["hooks/*"],
       "@svg/*": ["svg/*"]
     }
   }

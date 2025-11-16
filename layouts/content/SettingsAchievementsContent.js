@@ -23,7 +23,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/free-solid-svg-icons/faPen'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
-import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const AchievementTile = ({
   achievement,
@@ -113,8 +112,6 @@ const AddAchievementTile = ({ onClick, disabled, loading }) => (
 )
 
 const SettingsAchievementsContent = () => {
-  useEnsureEventsLoaded('all')
-
   const snackbar = useSnackbar()
   const location = useAtomValue(locationAtom)
   const loggedUser = useAtomValue(loggedUserActiveAtom)

@@ -13,11 +13,8 @@ import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const StatisticsEventsContent = () => {
-  useEnsureEventsLoaded('all')
-
   const events = useAtomValue(eventsAtom)
   const directions = useAtomValue(directionsAtom)
 

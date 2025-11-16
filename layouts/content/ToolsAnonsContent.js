@@ -26,7 +26,6 @@ import locationPropsSelector from '@state/selectors/locationPropsSelector'
 import { saveSvgAsPng, svgAsPngUri } from 'save-svg-as-png'
 import InputNumber from '@components/InputNumber'
 import ReactImageGallery from 'react-image-gallery'
-import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const styles = [
   {
@@ -76,8 +75,6 @@ const save2 = async (listsCount, name) => {
 }
 
 const ToolsAnonsContent = () => {
-  useEnsureEventsLoaded('upcoming')
-
   const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const events = useAtomValue(eventsAtom)
   const { imageFolder } = useAtomValue(locationPropsSelector)

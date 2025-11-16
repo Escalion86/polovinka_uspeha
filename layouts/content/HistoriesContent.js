@@ -30,7 +30,6 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
 import cn from 'classnames'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import HistoriesOfEvent from './HistoriesComponents/HistoriesOfEvent'
-import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const dotColors = {
   add: 'success',
@@ -186,8 +185,6 @@ const HistoriesOfEvents = ({ eventsHistories }) => {
 // }
 
 const HistoriesContentComponent = () => {
-  useEnsureEventsLoaded('all')
-
   const histories = useAtomValue(historiesOfEventUsersAtom)
   const events = useAtomValue(eventsAtom)
 

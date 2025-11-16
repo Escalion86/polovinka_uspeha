@@ -27,7 +27,6 @@ export default async function LocationPage({ params }) {
     location,
     params: {
       directions: { shortDescription: true },
-      events: false,
     },
   })
 

@@ -4,6 +4,7 @@ import { atom } from 'jotai'
 import { atomFamily } from 'jotai/utils'
 
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
+import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 
@@ -46,6 +47,21 @@ const setEventsUsersSelector = atomFamily((eventId) =>
           const newEventsUser = [...eventsUser, newEventUser]
           set(asyncEventsUsersByUserIdAtom(newEventUser.userId), newEventsUser)
         }
+      }
+      // Также обновляем все eventUsers если необходимо
+      const isLoadedEventsUsersAll = get(
+        isLoadedAtom('asyncEventsUsersAllAtom')
+      )
+
+      if (isLoadedEventsUsersAll) {
+        const eventsUsers = await get(asyncEventsUsersAllAtom)
+        const oldEventUsersIds = oldEventUsers.map(({ _id }) => _id)
+        const cleanedEventsUsers = eventsUsers.filter(
+          ({ _id }) => !oldEventUsersIds.includes(_id)
+        )
+        const updatedEventsUsers = [...cleanedEventsUsers, ...newEventsUsers]
+
+        set(asyncEventsUsersAllAtom, updatedEventsUsers)
       }
     }
   })

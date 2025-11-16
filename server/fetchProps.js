@@ -2,10 +2,26 @@
 // import getUserRole from '@helpers/getUserRole'
 // import isUserAdmin from '@helpers/isUserAdmin'
 
-import buildEventsQueryOptions from '@helpers/buildEventsQueryOptions'
-import serializeLeanDoc from '@helpers/serializeLeanDoc'
 import dbConnect from '@utils/dbConnect'
 import getTelegramBotNameByLocation from './getTelegramBotNameByLocation'
+
+const isObjectId = (value) =>
+  value && typeof value === 'object' && value.constructor?.name === 'ObjectId'
+
+const serializeLeanDoc = (doc) => {
+  if (doc == null) return doc
+  if (isObjectId(doc)) return doc.toString()
+  if (doc instanceof Date) return doc.toISOString()
+  if (Array.isArray(doc)) return doc.map(serializeLeanDoc)
+  if (typeof doc === 'object') {
+    return Object.entries(doc).reduce((acc, [key, value]) => {
+      acc[key] = serializeLeanDoc(value)
+      return acc
+    }, {})
+  }
+
+  return doc
+}
 
 const fetchProps = async (user, location, params) => {
   const serverDateTime = new Date()
@@ -80,52 +96,6 @@ const fetchProps = async (user, location, params) => {
     //   })
     // }
 
-    const eventsParam =
-      params && Object.prototype.hasOwnProperty.call(params, 'events')
-        ? params.events
-        : { lazy: true }
-    const eventsLazy =
-      typeof eventsParam === 'object' && eventsParam !== null && eventsParam.lazy
-
-    const eventsQueryOptions = buildEventsQueryOptions(eventsParam, serverDateTime)
-
-    const eventsPromise =
-      eventsQueryOptions === null || eventsLazy
-        ? Promise.resolve(undefined)
-        : (() => {
-            let query = db
-              .model('Events')
-              .find(eventsQueryOptions.filter)
-              .select({
-                description: 0,
-                address: 0,
-                images: 0,
-                organizerId: 0,
-                warning: 0,
-                googleCalendarId: 0,
-                // maxMansMember: 0,
-                // maxMansNovice: 0,
-                // maxWomansMember: 0,
-                // maxWomansNovice: 0,
-                // maxParticipants: 0,
-                // maxMans: 0,
-                // maxWomans: 0,
-                // minMansAge: 0,
-                // minWomansAge: 0,
-                // maxMansAge: 0,
-                // maxWomansAge: 0,
-                // usersStatusAccess: 0,
-                // usersStatusDiscount: 0,
-              })
-            if (eventsQueryOptions.sort) {
-              query = query.sort(eventsQueryOptions.sort)
-            }
-            if (typeof eventsQueryOptions.limit === 'number') {
-              query = query.limit(eventsQueryOptions.limit)
-            }
-            return query.lean()
-          })()
-
     const [
       events,
       directions,
@@ -139,7 +109,33 @@ const fetchProps = async (user, location, params) => {
       achievements,
       achievementsUsers,
     ] = await Promise.all([
-      eventsPromise,
+      params?.events === false
+        ? Promise.resolve([])
+        : db
+            .model('Events')
+            .find({})
+            .select({
+              description: 0,
+              address: 0,
+              images: 0,
+              organizerId: 0,
+              warning: 0,
+              googleCalendarId: 0,
+              // maxMansMember: 0,
+              // maxMansNovice: 0,
+              // maxWomansMember: 0,
+              // maxWomansNovice: 0,
+              // maxParticipants: 0,
+              // maxMans: 0,
+              // maxWomans: 0,
+              // minMansAge: 0,
+              // minWomansAge: 0,
+              // maxMansAge: 0,
+              // maxWomansAge: 0,
+              // usersStatusAccess: 0,
+              // usersStatusDiscount: 0,
+            })
+            .lean(),
       db
         .model('Directions')
         .find({})
@@ -251,7 +247,7 @@ const fetchProps = async (user, location, params) => {
     console.log('')
     console.log('-----------------------------')
     // console.log('users :>> ', users ? JSON.stringify(users).length : 0)
-    console.log('events :>> ', JSON.stringify(events ?? []).length)
+    console.log('events :>> ', JSON.stringify(events).length)
     console.log('directions :>> ', JSON.stringify(directions).length)
     console.log('reviews :>> ', JSON.stringify(reviews).length)
     console.log(
@@ -268,13 +264,9 @@ const fetchProps = async (user, location, params) => {
     console.log('services :>> ', JSON.stringify(services).length)
     // console.log('servicesUsers :>> ', JSON.stringify(servicesUsers).length)
 
-    const serializedEvents = Array.isArray(events)
-      ? serializeLeanDoc(events)
-      : undefined
-
     const fetchResult = {
       // users: JSON.parse(JSON.stringify(users)),
-      events: serializedEvents,
+      events: serializeLeanDoc(events),
       directions: serializeLeanDoc(directions),
       reviews: serializeLeanDoc(reviews),
       additionalBlocks: serializeLeanDoc(additionalBlocks),

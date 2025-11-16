@@ -23,7 +23,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowContainer, Popover } from 'react-tiny-popover'
 import { useAtomValue, useSetAtom } from 'jotai'
 import Tilt from 'react-parallax-tilt'
-import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 
 const place = (count, places) => {
   if (
@@ -260,8 +259,6 @@ const Achivement = ({
 }
 
 const UserStatisticsContent = () => {
-  useEnsureEventsLoaded('all')
-
   // const modalsFunc = useAtomValue(modalsFuncAtom)
   const loggedUserActive = useAtomValue(loggedUserActiveAtom)
   const events = useAtomValue(eventsAtom)

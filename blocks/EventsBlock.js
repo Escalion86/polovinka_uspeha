@@ -11,7 +11,6 @@ import Link from 'next/link'
 import CountDown from './components/CountDown'
 import dynamic from 'next/dynamic'
 import locationAtom from '@state/atoms/locationAtom'
-import useEnsureEventsLoaded from '@hooks/useEnsureEventsLoaded'
 const EventCardLight = dynamic(() => import('@layouts/cards/EventCardLight'))
 
 const Button = ({ title, className, href, onClick }) => {
@@ -47,8 +46,6 @@ const EventsBlock = ({
   hideBlockOnZeroEvents = false,
   title = 'Ближайшие мероприятия',
 }) => {
-  useEnsureEventsLoaded('upcoming')
-
   const location = useAtomValue(locationAtom)
 
   const [maxShowedEvents, setMaxShowedEvents] = useState(maxEvents ?? 10)

@@ -5,6 +5,8 @@ import { atom } from 'jotai'
 import asyncEventsUsersByUserIdAtom from './asyncEventsUsersByUserIdAtom'
 import asyncEventsUsersByEventIdAtom from './asyncEventsUsersByEventIdAtom'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
+import asyncEventsUsersAllAtom from './asyncEventsUsersAllAtom'
+
 const signOutUserSelector = atom(null, async (get, set, delEventUser) => {
   const { eventId, userId } = delEventUser
 
@@ -29,6 +31,17 @@ const signOutUserSelector = atom(null, async (get, set, delEventUser) => {
     )
 
     set(asyncEventsUsersByUserIdAtom(userId), newEventsUser)
+  }
+
+  const isLoadedEventsUsersAll = get(isLoadedAtom('asyncEventsUsersAllAtom'))
+  if (isLoadedEventsUsersAll) {
+    const eventsUsers = await get(asyncEventsUsersAllAtom)
+    const newEventsUser = eventsUsers.filter(
+      (eventUser) =>
+        !(eventUser.eventId === eventId && eventUser.userId === userId)
+    )
+
+    set(asyncEventsUsersAllAtom, newEventsUser)
   }
 })
 
