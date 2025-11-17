@@ -1,9 +1,11 @@
 import extractVariables from '@helpers/extractVariables'
 import htmlToWhatsapp from '@helpers/htmlToWhatsapp'
+import htmlToTelegram from '@helpers/htmlToTelegram'
 import replaceVariableInTextTemplate from '@helpers/replaceVariableInTextTemplate'
 import timeout from '@helpers/timoutPromise'
 import checkLocationValid from '@server/checkLocationValid'
 import { whatsappConstants } from '@server/constants'
+import sendTelegramMessage from '@server/sendTelegramMessage'
 import dbConnect from '@utils/dbConnect'
 // import TurndownService from 'turndown'
 
@@ -58,7 +60,7 @@ export default async function handler(req, res) {
 
   if (method === 'POST') {
     if (type === 'sendMessage') {
-      const { name, usersMessages, message } = body.data
+      const { name, usersMessages, message, sendType } = body.data
       const db = await dbConnect(location)
       if (!db)
         return res?.status(400).json({ success: false, error: 'db error' })
@@ -68,7 +70,8 @@ export default async function handler(req, res) {
       //   message.replaceAll('-', '—').replaceAll('*', '⚹')
       // )
 
-      var markdownMessage = htmlToWhatsapp(message)
+      const whatsappMessage = htmlToWhatsapp(message)
+      const telegramMessage = htmlToTelegram(message)
 
       const urlSend = `${urlWithInstance}/sendMessage/${token}`
       // const urlCheckWhatsapp = `${urlWithInstance}/checkWhatsapp/${token}`
@@ -78,9 +81,66 @@ export default async function handler(req, res) {
       //   ALLOWED_ATTR: [],
       // })
 
-      const variablesInMessage = extractVariables(markdownMessage)
+      const variablesInMessage = extractVariables(telegramMessage)
 
       const messageArray = generateArray(variablesInMessage.length)
+      const messageArrayTelegram = generateArray(variablesInMessage.length)
+
+      const normalizedSendType = (sendType || 'whatsapp-only').toLowerCase()
+
+      const sendWhatsapp = async (whatsappPhone, messageToSend) => {
+        if (!whatsappPhone)
+          return { success: false, error: 'no whatsapp phone number' }
+
+        const respSend = await fetch(urlSend, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chatId: `${whatsappPhone}@c.us`,
+            message: messageToSend,
+          }),
+        })
+
+        if (respSend) {
+          const respSendJson = await respSend.json()
+          return {
+            success: true,
+            messageId: respSendJson?.idMessage,
+          }
+        }
+
+        return { success: false, error: 'no response' }
+      }
+
+      const sendTelegram = async (telegramId, messageToSend) => {
+        if (!telegramId) return { success: false, error: 'no telegram id' }
+
+        const telegramResult = await sendTelegramMessage({
+          telegramIds: telegramId,
+          text: messageToSend,
+          location,
+        })
+
+        const success = telegramResult?.successCount > 0
+        const messageId =
+          telegramResult?.successes?.[0]?.result?.[0]?.result?.result
+            ?.message_id ||
+          telegramResult?.successes?.[0]?.result?.[0]?.result?.message_id
+
+        const errorText = telegramResult?.errors?.[0]
+          ? typeof telegramResult.errors[0] === 'string'
+            ? telegramResult.errors[0]
+            : JSON.stringify(telegramResult.errors[0])
+          : undefined
+
+        return {
+          success,
+          messageId,
+          error: success ? undefined : errorText,
+        }
+      }
 
       const result = []
 
@@ -88,20 +148,25 @@ export default async function handler(req, res) {
         for (let i = 0; i < usersMessages.length; i++) {
           const {
             whatsappPhone,
-            // whatsappMessage,
-            // telegramId,
-            // telegramMessage,
+            telegramId,
             userId,
             variables,
           } = usersMessages[i]
 
           let resultJson = {}
 
-          const messageToSend = getText(
+          const messageToSendWhatsapp = getText(
             variablesInMessage,
             variables,
             messageArray,
-            markdownMessage
+            whatsappMessage
+          )
+
+          const messageToSendTelegram = getText(
+            variablesInMessage,
+            variables,
+            messageArrayTelegram,
+            telegramMessage
           )
 
           // // const message = messageArray[variablesInMessage]
@@ -144,33 +209,55 @@ export default async function handler(req, res) {
           //     whatsappError: 'no whatsapp on number',
           //   }
           // } else {
-          const respSend = await fetch(urlSend, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              chatId: `${whatsappPhone}@c.us`,
-              message: messageToSend,
-            }),
-          })
-          if (respSend) {
-            const respSendJson = await respSend.json()
-            resultJson = {
-              userId,
-              whatsappPhone,
-              whatsappSuccess: true,
-              whatsappMessageId: respSendJson?.idMessage,
-              // whatsappMessage,
-            }
-          } else {
-            resultJson = {
-              userId,
-              whatsappPhone,
-              whatsappSuccess: false,
-              // whatsappMessage,
-              whatsappError: 'no response',
-            }
+          let telegramResult
+          let whatsappResult
+
+          switch (normalizedSendType) {
+            case 'telegram-only':
+              telegramResult = await sendTelegram(
+                telegramId,
+                messageToSendTelegram
+              )
+              break
+            case 'telegram-first':
+              telegramResult = await sendTelegram(
+                telegramId,
+                messageToSendTelegram
+              )
+              if (!telegramResult?.success) {
+                whatsappResult = await sendWhatsapp(
+                  whatsappPhone,
+                  messageToSendWhatsapp
+                )
+              }
+              break
+            case 'both':
+              telegramResult = await sendTelegram(
+                telegramId,
+                messageToSendTelegram
+              )
+              whatsappResult = await sendWhatsapp(
+                whatsappPhone,
+                messageToSendWhatsapp
+              )
+              break
+            default:
+              whatsappResult = await sendWhatsapp(
+                whatsappPhone,
+                messageToSendWhatsapp
+              )
+          }
+
+          resultJson = {
+            userId,
+            whatsappPhone,
+            telegramId,
+            whatsappSuccess: whatsappResult?.success,
+            whatsappMessageId: whatsappResult?.messageId,
+            whatsappError: whatsappResult?.error,
+            telegramSuccess: telegramResult?.success,
+            telegramMessageId: telegramResult?.messageId,
+            telegramError: telegramResult?.error,
           }
           // }
           // }

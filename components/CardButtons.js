@@ -135,9 +135,10 @@ const CardButtons = ({
         loggedUserActiveRole?.payments?.seeHistory) ||
       (typeOfItem === 'user' && loggedUserActiveRole?.users?.seeHistory))
   const sendNotifications =
-    typeOfItem === 'event' &&
-    loggedUserActiveRole?.events?.sendNotifications &&
-    item.showOnSite
+    false || // временно скрыто
+    (typeOfItem === 'event' &&
+      loggedUserActiveRole?.events?.sendNotifications &&
+      item.showOnSite)
   const sendNotificationsWhatsapp =
     typeOfItem === 'event' &&
     item.showOnSite &&

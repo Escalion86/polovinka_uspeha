@@ -28,6 +28,7 @@ import usersAtomAsync from '@state/async/usersAtomAsync'
 import CheckBox from '@components/CheckBox'
 import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
+import RadioBox from '@components/RadioBox'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
 import extractVariables from '@helpers/extractVariables'
@@ -107,6 +108,8 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
 
     const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
 
+    const whatsappActivated = siteSettings?.newsletter?.whatsappActivated
+
     const blackList = siteSettings?.newsletter?.blackList || []
 
     const [checkBlackList, setCheckBlackList] = useState(true)
@@ -152,9 +155,23 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     )
     // const [blackList, setBlackList] = useState([])
     const [messageState, setMessageState] = useState(defaultMessageState)
+    const [newsletterSendType, setNewsletterSendType] = useState(
+      whatsappActivated ? 'both' : 'telegram-only'
+    )
     const [rerender, setRerender] = useState(false)
 
     const toggleRerender = () => setRerender((state) => !state)
+
+    useEffect(() => {
+      if (
+        !whatsappActivated &&
+        ['both', 'telegram-first', 'whatsapp-only'].includes(
+          newsletterSendType
+        )
+      ) {
+        setNewsletterSendType('telegram-only')
+      }
+    }, [newsletterSendType, whatsappActivated])
 
     const filteredSelectedUsers = useMemo(() => {
       if (!checkBlackList) return selectedUsers
@@ -162,6 +179,41 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         (user) => user?._id && !blackList.includes(user?._id)
       )
     }, [selectedUsers, blackList, checkBlackList])
+
+    const sendTypeOptions = useMemo(
+      () => [
+        {
+          value: 'both',
+          label: 'Whatsapp и Telegram',
+          requiresWhatsapp: true,
+        },
+        {
+          value: 'telegram-first',
+          label: 'Сначала Telegram, если ошибка — Whatsapp',
+          requiresWhatsapp: true,
+        },
+        {
+          value: 'whatsapp-only',
+          label: 'Только Whatsapp',
+          requiresWhatsapp: true,
+        },
+        {
+          value: 'telegram-only',
+          label: 'Только Telegram',
+          requiresWhatsapp: false,
+        },
+      ],
+      []
+    )
+
+    const sendTypeTitles = useMemo(
+      () =>
+        sendTypeOptions.reduce((acc, option) => {
+          acc[option.value] = option.label
+          return acc
+        }, {}),
+      [sendTypeOptions]
+    )
 
     const selectedUsersData = useMemo(
       () => getUsersData(filteredSelectedUsers),
@@ -479,9 +531,11 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         {
           // phone: user.whatsapp || user.phone,
           name,
+          sendType: newsletterSendType,
           usersMessages: filteredSelectedUsers.map((user) => ({
             userId: user._id,
             whatsappPhone: user.whatsapp || user.phone,
+            telegramId: user.notifications?.telegram?.id,
             variables: {
               ...(variablesObject.муж ? { муж: user.gender === 'male' } : {}),
               ...(variablesObject.клуб
@@ -731,12 +785,15 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       selectedUsers.length - filteredSelectedUsers.length
 
     useEffect(() => {
+      const isWhatsappRequired =
+        newsletterSendType !== 'telegram-only'
+
       if (
         !newsletterName ||
         !messageState ||
         !filteredSelectedUsers?.length ||
-        !siteSettings?.newsletter?.whatsappActivated ||
-        !loggedUserActiveRole?.newsletters?.add
+        !loggedUserActiveRole?.newsletters?.add ||
+        (isWhatsappRequired && !whatsappActivated)
       ) {
         setOnConfirmFunc()
       } else {
@@ -753,8 +810,13 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         } else {
           setOnConfirmFunc(() =>
             modalsFunc.confirm({
-              title: 'Отправка сообщений на Whatsapp пользователям',
-              text: `Вы уверены, что хотите отправить сообщение ${getNoun(filteredSelectedUsers?.length, 'пользователю', 'пользователям', 'пользователям')} на Whatsapp?`,
+              title: 'Отправка сообщений пользователям',
+              text: `Вы уверены, что хотите отправить сообщение ${getNoun(
+                filteredSelectedUsers?.length,
+                'пользователю',
+                'пользователям',
+                'пользователям'
+              )} (${sendTypeTitles[newsletterSendType]})?`,
               onConfirm: () => {
                 sendMessage(newsletterName, messageState)
               },
@@ -766,14 +828,14 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       newsletterName,
       messageState,
       filteredSelectedUsers?.length,
-      siteSettings,
+      loggedUserActiveRole,
+      newsletterSendType,
+      sendTypeTitles,
+      whatsappActivated,
     ])
 
-    if (
-      !siteSettings?.newsletter?.whatsappActivated ||
-      !loggedUserActiveRole?.newsletters?.add
-    )
-      return <div>Рассылка на Whatsapp не доступна</div>
+    if (!loggedUserActiveRole?.newsletters?.add)
+      return <div>Рассылка недоступна</div>
 
     useEffect(() => {
       // setBottomLeftButtonProps({
@@ -999,6 +1061,32 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           onChange={setNewsletterName}
           required
         />
+        <InputWrapper label="Тип рассылки" wrapperClassName="flex-col gap-y-1">
+          <div className="flex flex-col gap-y-1">
+            {sendTypeOptions.map((option) => {
+              const disabled =
+                option.requiresWhatsapp && !whatsappActivated
+              return (
+                <RadioBox
+                  key={option.value}
+                  label={option.label}
+                  checked={newsletterSendType === option.value}
+                  onChange={() => {
+                    if (disabled) return
+                    setNewsletterSendType(option.value)
+                  }}
+                  disabled={disabled}
+                  noMargin
+                />
+              )
+            })}
+            {!whatsappActivated && (
+              <div className="text-sm text-gray-500">
+                Отправка в Whatsapp сейчас недоступна.
+              </div>
+            )}
+          </div>
+        </InputWrapper>
         {/* <Divider title="Текст сообщения" light thin /> */}
 
         <div>
@@ -1134,7 +1222,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           />
         </div> */}
         <InputWrapper
-          label="Предпросмотр сообщения (как в Whatsapp)"
+          label="Предпросмотр сообщения"
           wrapperClassName="flex-col gap-y-1"
         >
           <div className="flex flex-wrap items-center justify-center w-full pb-2 border-b border-gray-400 gap-x-2">
