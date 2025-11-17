@@ -28,6 +28,7 @@ import usersAtomAsync from '@state/async/usersAtomAsync'
 import CheckBox from '@components/CheckBox'
 import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
+import RadioBox from '@components/RadioBox'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
 import extractVariables from '@helpers/extractVariables'
@@ -37,12 +38,12 @@ import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserTog
 import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import newsletterSelector from '@state/selectors/newsletterSelector'
+import formatEventNotificationText from '@helpers/formatEventNotificationText'
 // import DropdownButton from '@components/DropdownButton'
 // import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
 // import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
 import DropdownButtonCopyTextFormats from '@components/DropdownButtons/DropdownButtonCopyTextFormats'
 import DropdownButtonPasteTextFormats from '@components/DropdownButtons/DropdownButtonPasteTextFormats'
-import Textarea from '@components/Textarea'
 import DOMPurify from 'isomorphic-dompurify'
 import { faRobot } from '@fortawesome/free-solid-svg-icons/faRobot'
 
@@ -107,6 +108,8 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
 
     const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
 
+    const whatsappActivated = siteSettings?.newsletter?.whatsappActivated
+
     const blackList = siteSettings?.newsletter?.blackList || []
 
     const [checkBlackList, setCheckBlackList] = useState(true)
@@ -115,12 +118,6 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       клуб: true,
       пара: true,
     })
-    const [isAIDialogOpen, setIsAIDialogOpen] = useState(false)
-    const [aiPrompt, setAIPrompt] = useState('')
-    const [aiIncludeCurrentText, setAiIncludeCurrentText] = useState(true)
-    const [aiResponse, setAIResponse] = useState('')
-    const [aiIsLoading, setAiIsLoading] = useState(false)
-
     const defaultNameState = useMemo(
       () =>
         newsletter?.name
@@ -131,30 +128,64 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
 
     const [newsletterName, setNewsletterName] = useState(defaultNameState)
 
-    const [selectedUsers, setSelectedUsers] = useState(() =>
-      newsletter?.newsletters
-        ? newsletter.newsletters.map(({ userId }) =>
-            usersAll.find((user) => user._id === userId)
-          )
-        : users || []
+    const initialSelectedUsers = useMemo(
+      () =>
+        newsletter?.newsletters
+          ? newsletter.newsletters.map(({ userId }) =>
+              usersAll.find((user) => user._id === userId)
+            )
+          : users || [],
+      [newsletter?.newsletters, users, usersAll]
     )
 
-    const defaultMessageState = useMemo(
-      () =>
-        newsletter?.message
-          ? newsletter.message
-          : message
-            ? message
-            : event
-              ? `<b>Мероприятие "${event.title}"</b><br><br>${event.description}`
-              : '',
-      [event]
-    )
+    const [selectedUsers, setSelectedUsers] = useState(initialSelectedUsers)
+
+    const defaultMessageState = useMemo(() => {
+      if (newsletter?.message) return newsletter.message
+      if (message) return message
+      if (!event) return ''
+
+      const onlyMembersSelected =
+        initialSelectedUsers.length > 0 &&
+        initialSelectedUsers.every((user) => user?.status === 'member')
+
+      const notificationText = formatEventNotificationText(event, {
+        location,
+        userStatus: onlyMembersSelected ? 'member' : 'novice',
+        withEventLink: true,
+      })
+
+      return notificationText.replaceAll('\n', '<br>')
+    }, [
+      event,
+      initialSelectedUsers,
+      location,
+      message,
+      newsletter?.message,
+    ])
     // const [blackList, setBlackList] = useState([])
     const [messageState, setMessageState] = useState(defaultMessageState)
+    const [newsletterSendType, setNewsletterSendType] = useState(
+      newsletter?.sendType || (whatsappActivated ? 'both' : 'telegram-only')
+    )
     const [rerender, setRerender] = useState(false)
 
     const toggleRerender = () => setRerender((state) => !state)
+
+    useEffect(() => {
+      if (
+        !whatsappActivated &&
+        ['both', 'telegram-first', 'whatsapp-only'].includes(
+          newsletterSendType
+        )
+      ) {
+        setNewsletterSendType('telegram-only')
+      }
+    }, [newsletterSendType, whatsappActivated])
+
+    useEffect(() => {
+      if (newsletter?.sendType) setNewsletterSendType(newsletter.sendType)
+    }, [newsletter?.sendType])
 
     const filteredSelectedUsers = useMemo(() => {
       if (!checkBlackList) return selectedUsers
@@ -163,103 +194,57 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       )
     }, [selectedUsers, blackList, checkBlackList])
 
+    const sendTypeOptions = useMemo(
+      () => [
+        {
+          value: 'both',
+          label: 'Whatsapp и Telegram',
+          requiresWhatsapp: true,
+        },
+        {
+          value: 'telegram-first',
+          label: 'Сначала Telegram, если ошибка — Whatsapp',
+          requiresWhatsapp: true,
+        },
+        {
+          value: 'whatsapp-only',
+          label: 'Только Whatsapp',
+          requiresWhatsapp: true,
+        },
+        {
+          value: 'telegram-only',
+          label: 'Только Telegram',
+          requiresWhatsapp: false,
+        },
+      ],
+      []
+    )
+
+    const sendTypeTitles = useMemo(
+      () =>
+        sendTypeOptions.reduce((acc, option) => {
+          acc[option.value] = option.label
+          return acc
+        }, {}),
+      [sendTypeOptions]
+    )
+
     const selectedUsersData = useMemo(
       () => getUsersData(filteredSelectedUsers),
       [filteredSelectedUsers]
     )
 
-    const getCurrentMessageForAI = useCallback(() => {
-      if (!messageState) return ''
-      const prepared = messageState
-        .replace(/<br\s*\/?>/gi, '\n')
-        .replace(/<\/p>/gi, '\n')
-        .replace(/<li\b[^>]*>/gi, '\n• ')
-        .replace(/<\/li>/gi, '')
-      return DOMPurify.sanitize(prepared, {
-        ALLOWED_TAGS: [],
-        ALLOWED_ATTR: [],
+    const openAIModal = useCallback(() => {
+      if (!modalsFunc?.ai?.request) return
+      modalsFunc.ai.request({
+        currentHtml: messageState,
+        onApply: (aiText) => {
+          setMessageState(aiText)
+          toggleRerender()
+          info('Ответ ИИ добавлен в текст рассылки')
+        },
       })
-        .replace(/&nbsp;/g, ' ')
-        .trim()
-    }, [messageState])
-
-    const formatAIResponse = useCallback((content) => {
-      if (!content) return ''
-      const prepared = content
-        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-        .replace(/__(.*?)__/g, '<u>$1</u>')
-        .replace(/~~(.*?)~~/g, '<i>$1</i>')
-        .replace(/--(.*?)--/g, '<del>$1</del>')
-        .replace(
-          /<<(.*?)>>/g,
-          "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>"
-        )
-        .replace(/\n/g, '<br>')
-      return DOMPurify.sanitize(prepared, {
-        ALLOWED_TAGS: ['b', 'br', 'i', 'u', 'del', 'strong', 'em', 'a'],
-        ALLOWED_ATTR: ['href', 'target', 'rel'],
-      })
-    }, [])
-
-    const handleAISubmit = useCallback(async () => {
-      const promptText = aiPrompt.trim()
-      const promptParts = []
-
-      if (aiIncludeCurrentText) {
-        const currentText = getCurrentMessageForAI()
-        if (currentText) {
-          promptParts.push(
-            `Есть описание мероприятия (текущий текст): ${currentText}`
-          )
-        }
-      }
-
-      if (!promptText && !promptParts.length) {
-        error('Введите запрос для ИИ или включите передачу текущего текста')
-        return
-      }
-
-      if (promptText) promptParts.push(promptText)
-
-      const content = promptParts.join('\n\n')
-
-      setAiIsLoading(true)
-      setAIResponse('')
-      try {
-        const response = await fetch('/api/deepseek', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ content }),
-        })
-        if (!response.ok) throw new Error('Bad response')
-        const result = await response.json()
-        if (!result?.success) throw new Error('Request failed')
-        const aiContent = result?.data?.choices?.[0]?.message?.content?.trim()
-        if (!aiContent) throw new Error('Empty AI response')
-        setAIResponse(formatAIResponse(aiContent))
-      } catch (err) {
-        console.error(err)
-        error('Не удалось получить ответ от ИИ')
-      } finally {
-        setAiIsLoading(false)
-      }
-    }, [
-      aiPrompt,
-      aiIncludeCurrentText,
-      getCurrentMessageForAI,
-      formatAIResponse,
-      error,
-    ])
-
-    const handleApplyAIResponse = useCallback(() => {
-      if (!aiResponse) return
-      setMessageState(aiResponse)
-      toggleRerender()
-      setIsAIDialogOpen(false)
-      info('Ответ ИИ добавлен в текст рассылки')
-    }, [aiResponse, info, toggleRerender])
+    }, [info, messageState, modalsFunc, toggleRerender])
 
     const setBlackList = useCallback(
       async (usersIdsBlackList) => {
@@ -479,9 +464,11 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         {
           // phone: user.whatsapp || user.phone,
           name,
+          sendType: newsletterSendType,
           usersMessages: filteredSelectedUsers.map((user) => ({
             userId: user._id,
             whatsappPhone: user.whatsapp || user.phone,
+            telegramId: user.notifications?.telegram?.id,
             variables: {
               ...(variablesObject.муж ? { муж: user.gender === 'male' } : {}),
               ...(variablesObject.клуб
@@ -731,12 +718,15 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       selectedUsers.length - filteredSelectedUsers.length
 
     useEffect(() => {
+      const isWhatsappRequired =
+        newsletterSendType !== 'telegram-only'
+
       if (
         !newsletterName ||
         !messageState ||
         !filteredSelectedUsers?.length ||
-        !siteSettings?.newsletter?.whatsappActivated ||
-        !loggedUserActiveRole?.newsletters?.add
+        !loggedUserActiveRole?.newsletters?.add ||
+        (isWhatsappRequired && !whatsappActivated)
       ) {
         setOnConfirmFunc()
       } else {
@@ -753,8 +743,13 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         } else {
           setOnConfirmFunc(() =>
             modalsFunc.confirm({
-              title: 'Отправка сообщений на Whatsapp пользователям',
-              text: `Вы уверены, что хотите отправить сообщение ${getNoun(filteredSelectedUsers?.length, 'пользователю', 'пользователям', 'пользователям')} на Whatsapp?`,
+              title: 'Отправка сообщений пользователям',
+              text: `Вы уверены, что хотите отправить сообщение ${getNoun(
+                filteredSelectedUsers?.length,
+                'пользователю',
+                'пользователям',
+                'пользователям'
+              )} (${sendTypeTitles[newsletterSendType]})?`,
               onConfirm: () => {
                 sendMessage(newsletterName, messageState)
               },
@@ -766,14 +761,14 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       newsletterName,
       messageState,
       filteredSelectedUsers?.length,
-      siteSettings,
+      loggedUserActiveRole,
+      newsletterSendType,
+      sendTypeTitles,
+      whatsappActivated,
     ])
 
-    if (
-      !siteSettings?.newsletter?.whatsappActivated ||
-      !loggedUserActiveRole?.newsletters?.add
-    )
-      return <div>Рассылка на Whatsapp не доступна</div>
+    if (!loggedUserActiveRole?.newsletters?.add)
+      return <div>Рассылка недоступна</div>
 
     useEffect(() => {
       // setBottomLeftButtonProps({
@@ -999,6 +994,32 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           onChange={setNewsletterName}
           required
         />
+        <InputWrapper label="Тип рассылки" wrapperClassName="flex-col gap-y-1">
+          <div className="flex flex-col gap-y-1">
+            {sendTypeOptions.map((option) => {
+              const disabled =
+                option.requiresWhatsapp && !whatsappActivated
+              return (
+                <RadioBox
+                  key={option.value}
+                  label={option.label}
+                  checked={newsletterSendType === option.value}
+                  onChange={() => {
+                    if (disabled) return
+                    setNewsletterSendType(option.value)
+                  }}
+                  disabled={disabled}
+                  noMargin
+                />
+              )
+            })}
+            {!whatsappActivated && (
+              <div className="text-sm text-gray-500">
+                Отправка в Whatsapp сейчас недоступна.
+              </div>
+            )}
+          </div>
+        </InputWrapper>
         {/* <Divider title="Текст сообщения" light thin /> */}
 
         <div>
@@ -1016,10 +1037,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             name="Обработать с помощью ИИ"
             outline
             icon={faRobot}
-            onClick={() => {
-              setIsAIDialogOpen(true)
-              setAIResponse('')
-            }}
+            onClick={openAIModal}
           />
         </div>
         <DropdownButtonPasteTextFormats
@@ -1028,63 +1046,6 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             toggleRerender()
           }}
         />
-        {isAIDialogOpen && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
-            onClick={() => setIsAIDialogOpen(false)}
-          >
-            <div
-              className="relative w-full max-w-2xl p-5 overflow-y-auto bg-white rounded-lg shadow-xl max-h-[90vh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="mb-3 text-lg font-semibold">
-                Обработать текст с помощью ИИ
-              </div>
-              <Textarea
-                label="Запрос к ИИ"
-                value={aiPrompt}
-                onChange={setAIPrompt}
-                rows={5}
-              />
-              <CheckBox
-                label="Передать ИИ существующий текст"
-                checked={aiIncludeCurrentText}
-                onChange={() =>
-                  setAiIncludeCurrentText((state) => !state)
-                }
-                noMargin
-              />
-              <div className="flex flex-wrap gap-2 mt-4">
-                <Button
-                  name="Отправить запрос"
-                  onClick={handleAISubmit}
-                  loading={aiIsLoading}
-                />
-                <Button
-                  name="Закрыть"
-                  outline
-                  onClick={() => setIsAIDialogOpen(false)}
-                />
-              </div>
-              {aiResponse && (
-                <InputWrapper label="Ответ ИИ" className="mt-4">
-                  <div
-                    className="w-full max-h-64 p-3 overflow-y-auto border rounded-md textarea ql"
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(aiResponse),
-                    }}
-                  />
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    <Button
-                      name="Подставить в текст"
-                      onClick={handleApplyAIResponse}
-                    />
-                  </div>
-                </InputWrapper>
-              )}
-            </div>
-          </div>
-        )}
         {/* <DropdownButton
           name="Вставить текст"
           icon={faPaste}
@@ -1134,7 +1095,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           />
         </div> */}
         <InputWrapper
-          label="Предпросмотр сообщения (как в Whatsapp)"
+          label="Предпросмотр сообщения"
           wrapperClassName="flex-col gap-y-1"
         >
           <div className="flex flex-wrap items-center justify-center w-full pb-2 border-b border-gray-400 gap-x-2">
