@@ -20,7 +20,9 @@ const newsletterSelector = atomFamily((id) => {
       null,
       false
     )
-    return res
+    if (!res) return res
+
+    return { ...res, sendType: res.sendType || 'whatsapp-only' }
   })
 
   return newsletterSelectorAtom

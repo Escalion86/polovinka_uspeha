@@ -48,6 +48,8 @@ const newsletterViewFunc = (newsletterId) => {
       'telegram-only': 'Только Telegram',
     }
 
+    const sendType = newsletter?.sendType || 'whatsapp-only'
+
     useEffect(() => {
       if (!newsletter) closeModal()
     }, [newsletter])
@@ -87,7 +89,7 @@ const newsletterViewFunc = (newsletterId) => {
             {newsletter.name || '[без названия]'}
           </TextLine>
           <TextLine label="Тип рассылки">
-            {sendTypeTitles[newsletter?.sendType] || 'Не указан'}
+            {sendTypeTitles[sendType] || 'Не указан'}
           </TextLine>
           <TextLine label="Дата рассылки">
             {formatDateTime(newsletter?.createdAt)}
