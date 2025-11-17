@@ -38,6 +38,7 @@ import StatusUserToggleButtons from '@components/IconToggleButtons/StatusUserTog
 import RelationshipUserToggleButtons from '@components/IconToggleButtons/RelationshipUserToggleButtons'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import newsletterSelector from '@state/selectors/newsletterSelector'
+import formatEventNotificationText from '@helpers/formatEventNotificationText'
 // import DropdownButton from '@components/DropdownButton'
 // import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp'
 // import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
@@ -128,25 +129,41 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
 
     const [newsletterName, setNewsletterName] = useState(defaultNameState)
 
-    const [selectedUsers, setSelectedUsers] = useState(() =>
-      newsletter?.newsletters
-        ? newsletter.newsletters.map(({ userId }) =>
-            usersAll.find((user) => user._id === userId)
-          )
-        : users || []
+    const initialSelectedUsers = useMemo(
+      () =>
+        newsletter?.newsletters
+          ? newsletter.newsletters.map(({ userId }) =>
+              usersAll.find((user) => user._id === userId)
+            )
+          : users || [],
+      [newsletter?.newsletters, users, usersAll]
     )
 
-    const defaultMessageState = useMemo(
-      () =>
-        newsletter?.message
-          ? newsletter.message
-          : message
-            ? message
-            : event
-              ? `<b>Мероприятие "${event.title}"</b><br><br>${event.description}`
-              : '',
-      [event]
-    )
+    const [selectedUsers, setSelectedUsers] = useState(initialSelectedUsers)
+
+    const defaultMessageState = useMemo(() => {
+      if (newsletter?.message) return newsletter.message
+      if (message) return message
+      if (!event) return ''
+
+      const onlyMembersSelected =
+        initialSelectedUsers.length > 0 &&
+        initialSelectedUsers.every((user) => user?.status === 'member')
+
+      const notificationText = formatEventNotificationText(event, {
+        location,
+        userStatus: onlyMembersSelected ? 'member' : 'novice',
+        withEventLink: true,
+      })
+
+      return notificationText.replaceAll('\n', '<br>')
+    }, [
+      event,
+      initialSelectedUsers,
+      location,
+      message,
+      newsletter?.message,
+    ])
     // const [blackList, setBlackList] = useState([])
     const [messageState, setMessageState] = useState(defaultMessageState)
     const [newsletterSendType, setNewsletterSendType] = useState(
