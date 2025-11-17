@@ -45,6 +45,7 @@ import DropdownButtonCopyTextFormats from '@components/DropdownButtons/DropdownB
 import DropdownButtonPasteTextFormats from '@components/DropdownButtons/DropdownButtonPasteTextFormats'
 import DOMPurify from 'isomorphic-dompurify'
 import { faRobot } from '@fortawesome/free-solid-svg-icons/faRobot'
+import ModalButtons from '@layouts/modals/ModalButtons'
 
 // import TurndownService from 'turndown'
 
