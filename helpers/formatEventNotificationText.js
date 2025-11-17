@@ -37,16 +37,21 @@ const sanitizeDescription = (description) =>
     }
   )
 
-const getPriceText = (event, userStatus) => {
+const getPriceText = (event) => {
   if (!event?.subEvents?.length) return ''
 
-  const statusKey = userStatus === 'member' ? 'member' : 'novice'
+  const formatPrice = (price = 0, discount = 0) => {
+    const basePrice = price / 100
+    const finalPrice = (price - discount) / 100
+    const hasDiscount = discount > 0
+
+    return hasDiscount ? `<s>${basePrice}</s> ${finalPrice}` : `${finalPrice}`
+  }
 
   return event.subEvents
     .map(({ price = 0, usersStatusDiscount = {}, title }, index) => {
-      const discount = usersStatusDiscount[statusKey] ?? 0
-      const priceForStatus = (price - discount) / 100
-      const basePrice = price / 100
+      const novicePrice = formatPrice(price, usersStatusDiscount.novice ?? 0)
+      const memberPrice = formatPrice(price, usersStatusDiscount.member ?? 0)
       const prefix =
         index === 0
           ? `\n\u{1F4B0} <b>Стоимость</b>:` +
@@ -54,12 +59,8 @@ const getPriceText = (event, userStatus) => {
           : ''
       const subEventTitle =
         event.subEvents.length > 1 ? ` - ${title}: ` : ' '
-      const priceText =
-        discount > 0
-          ? `<s>${basePrice}</s>   <b>${priceForStatus}</b>`
-          : priceForStatus
 
-      return `${prefix}${subEventTitle}${priceText} руб`
+      return `${prefix}${subEventTitle}{клуб}{${memberPrice}}{${novicePrice}} руб`
     })
     .join('\n')
 }
@@ -88,7 +89,7 @@ const formatEventNotificationText = (
     event.title
   }</b>\n${description}${address}`
 
-  const priceText = getPriceText(event, userStatus)
+  const priceText = getPriceText(event)
 
   const eventTags =
     typeof event.tags === 'object' && event.tags?.length > 0
