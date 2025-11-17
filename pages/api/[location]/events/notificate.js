@@ -1,16 +1,13 @@
 import birthDateToAge from '@helpers/birthDateToAge'
-import formatAddress from '@helpers/formatAddress'
-import formatEventDateTime from '@helpers/formatEventDateTime'
+import formatEventNotificationText from '@helpers/formatEventNotificationText'
 
 import dbConnect from '@utils/dbConnect'
-import DOMPurify from 'isomorphic-dompurify'
 import { DEFAULT_ROLES } from '@helpers/constantsServer'
 
 import subEventsSummator from '@helpers/subEventsSummator'
 import { telegramCmdToIndex } from '@server/telegramCmd'
 import sendTelegramMessage from '@server/sendTelegramMessage'
 import checkLocationValid from '@server/checkLocationValid'
-import getTimeZoneByLocation from '@server/getTimeZoneByLocation'
 
 const notificateUsersAboutEvent = async (eventId, location) => {
   if (!checkLocationValid(location)) return { error: 'Invalid location' }
@@ -123,76 +120,15 @@ const notificateUsersAboutEvent = async (eventId, location) => {
   //     (subEventSum.usersStatusDiscount ? subEventSum.usersStatusDiscount?.novice : 0)) /
   //   100
 
-  const address = event.address
-    ? `\n\n\u{1F4CD} <b>Место проведения</b>:\n${formatAddress(
-        JSON.parse(JSON.stringify(event.address))
-      )}`
-    : ''
+  const noviceNotificationText = formatEventNotificationText(event, {
+    location,
+    userStatus: 'novice',
+  })
 
-  const textStart = `\u{1F4C5} ${formatEventDateTime(event, {
-    fullWeek: true,
-    weekInBrackets: true,
-    timeZone: getTimeZoneByLocation(location),
-  }).toUpperCase()}\n<b>${event.title}</b>\n${DOMPurify.sanitize(
-    event.description
-      .replaceAll('<p><br></p>', '\n')
-      .replaceAll('<blockquote>', '\n<blockquote>')
-      .replaceAll('<li>', '\n\u{2764} <li>')
-      .replaceAll('<p>', '\n<p>')
-      .replaceAll('<strong>', '<b>')
-      .replaceAll('</strong>', '</b>')
-      .replaceAll('<br>', '\n')
-      .replaceAll('&nbsp;', ' ')
-      .trim('\n'),
-    {
-      ALLOWED_TAGS: ['b', 'i', 's'],
-      ALLOWED_ATTR: [],
-    }
-  )}${address}`
-
-  const textPriceForNovice = event.subEvents
-    .map(({ price, usersStatusDiscount, title }, index) => {
-      const eventPriceForStatus =
-        ((price ?? 0) - (usersStatusDiscount.novice ?? 0)) / 100
-
-      return `${index === 0 ? `\n\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '\n' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${
-        usersStatusDiscount.novice > 0
-          ? `<s>${price / 100}</s>   <b>${eventPriceForStatus}</b>`
-          : eventPriceForStatus
-      } руб`
-    })
-    .join('\n')
-
-  const textPriceForMember = event.subEvents
-    .map(({ price, usersStatusDiscount, title }, index) => {
-      const eventPriceForStatus =
-        ((price ?? 0) - (usersStatusDiscount.member ?? 0)) / 100
-
-      return `${index === 0 ? `\n\u{1F4B0} <b>Стоимость</b>:${event.subEvents.length > 1 ? '\n' : ''}` : ''}${event.subEvents.length > 1 ? ` - ${title}: ` : ' '}${
-        usersStatusDiscount.member > 0
-          ? `<s>${price / 100}</s>   <b>${eventPriceForStatus}</b>`
-          : eventPriceForStatus
-      } руб`
-    })
-    .join('\n')
-
-  // const textPriceForNovice = `\n\u{1F4B0} <b>Стоимость</b>: ${
-  //   eventPriceForNovice !== eventPrice
-  //     ? `<s>${eventPrice}</s>   <b>${eventPriceForNovice}</b>`
-  //     : eventPriceForNovice
-  // } руб`
-
-  // const textPriceForMember = `\n\u{1F4B0} <b>Стоимость</b>: ${
-  //   eventPriceForMember !== eventPrice
-  //     ? `<s>${eventPrice}</s>   <b>${eventPriceForMember}</b>`
-  //     : eventPriceForMember
-  // } руб`
-
-  const eventTags =
-    typeof event.tags === 'object' && event.tags?.length > 0
-      ? event.tags.filter((tag) => tag)
-      : []
-  const textEnd = eventTags.length > 0 ? `\n\n#${eventTags.join(' #')}` : ''
+  const memberNotificationText = formatEventNotificationText(event, {
+    location,
+    userStatus: 'member',
+  })
 
   const inline_keyboard =
     process.env.MODE === 'dev'
@@ -218,14 +154,10 @@ const notificateUsersAboutEvent = async (eventId, location) => {
           ],
         ]
 
-  const eventUrl = process.env.DOMAIN
-    ? `${process.env.DOMAIN}/${location}/event/${String(event._id)}`
-    : `/${location}/event/${String(event._id)}`
-
   if (novicesTelegramIds.filter(Boolean).length > 0) {
     sendTelegramMessage({
       telegramIds: novicesTelegramIds,
-      text: textStart + textPriceForNovice + textEnd,
+      text: noviceNotificationText,
       inline_keyboard,
       location,
     })
@@ -233,7 +165,7 @@ const notificateUsersAboutEvent = async (eventId, location) => {
   if (membersTelegramIds.filter(Boolean).length > 0) {
     sendTelegramMessage({
       telegramIds: membersTelegramIds,
-      text: textStart + textPriceForMember + textEnd,
+      text: memberNotificationText,
       inline_keyboard,
       location,
     })
