@@ -12,6 +12,7 @@ const Search = ({
   onChange,
   className,
   debounceDelay = 500,
+  alwaysShow = false,
 }) => {
   const inputRef = useRef()
 
@@ -24,13 +25,16 @@ const Search = ({
   }, [debouncedSearchTerm])
 
   useEffect(() => {
-    if (show) inputRef?.current?.focus()
+    if (show || alwaysShow) inputRef?.current?.focus()
   }, [inputRef, show])
 
   return (
     <m.div
-      initial={{ height: 0, minHeight: 0 }}
-      animate={{ height: show ? 38 : 0, minHeight: show ? 38 : 0 }}
+      initial={{ height: alwaysShow ? 38 : 0, minHeight: alwaysShow ? 38 : 0 }}
+      animate={{
+        height: alwaysShow || show ? 38 : 0,
+        minHeight: alwaysShow || show ? 38 : 0,
+      }}
       transition={{ type: 'just' }}
       className={cn(
         'relative flex flex-wrap justify-end overflow-hidden',

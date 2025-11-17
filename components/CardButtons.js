@@ -37,11 +37,11 @@ import { getEventById } from '@helpers/getById'
 import locationAtom from '@state/atoms/locationAtom'
 import isLoggedUserPresidentSelector from '@state/selectors/isLoggedUserPresidentSelector'
 import isLoggedUserDevSelector from '@state/selectors/isLoggedUserDevSelector'
-import { faWhatsappSquare } from '@fortawesome/free-brands-svg-icons/faWhatsappSquare'
 import { faTelegram } from '@fortawesome/free-brands-svg-icons/faTelegram'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { faRefresh } from '@fortawesome/free-solid-svg-icons/faRefresh'
 import itemsFuncAtom from '@state/itemsFuncAtom'
+import { faBullhorn } from '@fortawesome/free-solid-svg-icons/faBullhorn'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -135,6 +135,7 @@ const CardButtons = ({
         loggedUserActiveRole?.payments?.seeHistory) ||
       (typeOfItem === 'user' && loggedUserActiveRole?.users?.seeHistory))
   const sendNotifications =
+    false && // временно скрыто
     typeOfItem === 'event' &&
     loggedUserActiveRole?.events?.sendNotifications &&
     item.showOnSite
@@ -270,7 +271,7 @@ const CardButtons = ({
       )}
       {show.sendNotificationsWhatsapp && (
         <ItemComponent
-          icon={faWhatsappSquare}
+          icon={faBullhorn}
           onClick={() => {
             modalsFunc.selectUsersByStatusesFromEvent(
               item._id,
@@ -278,7 +279,7 @@ const CardButtons = ({
                 modalsFunc.newsletter.add(undefined, { users, event })
             )
           }}
-          color="green"
+          color="blue"
           tooltipText="Рассылка"
         />
       )}
