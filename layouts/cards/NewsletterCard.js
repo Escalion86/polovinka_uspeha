@@ -28,6 +28,13 @@ const NewsletterCard = ({ newsletterId, style }) => {
     loadingAtom('newsletterStatusMessages' + newsletterId)
   )
 
+  const sendTypeTitles = {
+    both: 'Whatsapp и Telegram',
+    'telegram-first': 'Сначала Telegram, если ошибка — Whatsapp',
+    'whatsapp-only': 'Только Whatsapp',
+    'telegram-only': 'Только Telegram',
+  }
+
   const statuses = {}
   newsletter.newsletters.forEach(({ whatsappStatus }) => {
     if (['read', 'sent', 'delivered', 'pending'].includes(whatsappStatus)) {
@@ -63,6 +70,9 @@ const NewsletterCard = ({ newsletterId, style }) => {
           {/* <div className="w-full">
             Отправлено: {getNounMessages(newsletter.newsletters?.length || 0)}
           </div>{' '} */}
+          <div className="text-sm text-gray-600">
+            {sendTypeTitles[newsletter.sendType] || 'Тип не указан'}
+          </div>
           <div className="text-sm leading-4 whitespace-nowrap">
             {formatDateTime(
               newsletter.createdAt,
