@@ -40,6 +40,13 @@ const newsletterViewFunc = (newsletterId) => {
 
     const newsletter = useAtomValue(newsletterSelector(newsletterId))
 
+    const sendTypeTitles = {
+      both: 'Whatsapp и Telegram',
+      'telegram-first': 'Сначала Telegram, если ошибка — Whatsapp',
+      'whatsapp-only': 'Только Whatsapp',
+      'telegram-only': 'Только Telegram',
+    }
+
     useEffect(() => {
       if (!newsletter) closeModal()
     }, [newsletter])
@@ -77,6 +84,9 @@ const newsletterViewFunc = (newsletterId) => {
           {isLoggedUserDev && <TextLine label="ID">{newsletter?._id}</TextLine>}
           <TextLine label="Название">
             {newsletter.name || '[без названия]'}
+          </TextLine>
+          <TextLine label="Тип рассылки">
+            {sendTypeTitles[newsletter?.sendType] || 'Не указан'}
           </TextLine>
           <TextLine label="Дата рассылки">
             {formatDateTime(newsletter?.createdAt)}

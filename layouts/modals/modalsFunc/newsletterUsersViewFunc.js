@@ -17,17 +17,24 @@ import MessageStatusToggleButtons from '@components/IconToggleButtons/MessageSta
 import ContentHeader from '@components/ContentHeader'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
+import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus'
 
 // const CardButtonsComponent = ({ newsletter }) => (
 //   <CardButtons item={newsletter} typeOfItem="newsletter" forForm />
 // )
 
+const normalizeStatus = (statusMessage, success, errorMessage) => {
+  if (statusMessage) return statusMessage
+  if (success === true) return 'sent'
+  if (success === false) return errorMessage || 'error'
+  return 'pending'
+}
+
 const WhatsAppStatus = ({
   statusMessage,
-  // userId,
-  // phone,
-  // messageId,
-  // newsletterId,
+  success,
+  errorMessage,
+  used = true,
 }) => {
   // const location = useAtomValue(locationAtom)
   // console.log('statusMessage :>> ', statusMessage)
@@ -73,42 +80,115 @@ const WhatsAppStatus = ({
   // console.log('messageStatus :>> ', messageStatus)
   // }
 
+  if (!used)
+    return (
+      <div className="flex items-center justify-center w-8 h-full px-1 border-l border-gray-700">
+        <Tooltip title="Whatsapp не выбран для этой рассылки">
+          <FontAwesomeIcon className="w-5 h-5 text-gray-400" icon={faMinus} />
+        </Tooltip>
+      </div>
+    )
+
+  const normalizedStatus = normalizeStatus(statusMessage, success, errorMessage)
+
   return (
     <div className="flex items-center justify-center w-8 h-full px-1 border-l border-gray-700">
-      {(!statusMessage || statusMessage === 'pending') && (
-        // <div className="font-bold text-success">Прочитано</div>
-        <Tooltip title="Отправляется">
+      {(!normalizedStatus || normalizedStatus === 'pending') && (
+        <Tooltip title="Whatsapp: отправляется">
           <FontAwesomeIcon className="w-5 h-5 text-gray-600" icon={faClock} />
         </Tooltip>
       )}
-      {statusMessage === 'read' && (
-        // <div className="font-bold text-success">Прочитано</div>
-        <Tooltip title="Прочитано">
+      {normalizedStatus === 'read' && (
+        <Tooltip title="Whatsapp: прочитано">
           <FontAwesomeIcon
             className="w-5 h-5 text-success"
             icon={faCheckDouble}
           />
         </Tooltip>
       )}
-      {statusMessage === 'sent' && (
-        <Tooltip title="Отправлено">
+      {normalizedStatus === 'sent' && (
+        <Tooltip title="Whatsapp: отправлено">
           <FontAwesomeIcon className="w-5 h-5 text-gray-600" icon={faCheck} />
         </Tooltip>
       )}
-      {statusMessage === 'delivered' && (
-        <Tooltip title="Доставлено">
+      {normalizedStatus === 'delivered' && (
+        <Tooltip title="Whatsapp: доставлено">
           <FontAwesomeIcon
             className="w-5 h-5 text-gray-600"
             icon={faCheckDouble}
           />
         </Tooltip>
       )}
-      {/* {!['read', 'sent', 'delivered'].includes(messageStatus) && (
-            <div className="text-danger">{messageStatus}</div>
-          )} */}
-      {statusMessage &&
-        !['read', 'sent', 'delivered', 'pending'].includes(statusMessage) && (
-          <Tooltip title={statusMessage}>
+      {normalizedStatus &&
+        !['read', 'sent', 'delivered', 'pending'].includes(normalizedStatus) && (
+          <Tooltip
+            title={
+              typeof normalizedStatus === 'string'
+                ? `Whatsapp: ${normalizedStatus}`
+                : 'Whatsapp: ошибка'
+            }
+          >
+            <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
+          </Tooltip>
+        )}
+    </div>
+  )
+}
+
+const TelegramStatus = ({
+  statusMessage,
+  success,
+  errorMessage,
+  used = true,
+}) => {
+  if (!used)
+    return (
+      <div className="flex items-center justify-center w-8 h-full px-1 border-l border-gray-700">
+        <Tooltip title="Telegram не выбран для этой рассылки">
+          <FontAwesomeIcon className="w-5 h-5 text-gray-400" icon={faMinus} />
+        </Tooltip>
+      </div>
+    )
+
+  const normalizedStatus = normalizeStatus(statusMessage, success, errorMessage)
+
+  return (
+    <div className="flex items-center justify-center w-8 h-full px-1 border-l border-gray-700">
+      {(!normalizedStatus || normalizedStatus === 'pending') && (
+        <Tooltip title="Telegram: отправляется">
+          <FontAwesomeIcon className="w-5 h-5 text-gray-600" icon={faClock} />
+        </Tooltip>
+      )}
+      {normalizedStatus === 'read' && (
+        <Tooltip title="Telegram: прочитано">
+          <FontAwesomeIcon
+            className="w-5 h-5 text-success"
+            icon={faCheckDouble}
+          />
+        </Tooltip>
+      )}
+      {normalizedStatus === 'sent' && (
+        <Tooltip title="Telegram: отправлено">
+          <FontAwesomeIcon className="w-5 h-5 text-gray-600" icon={faCheck} />
+        </Tooltip>
+      )}
+      {normalizedStatus === 'delivered' && (
+        <Tooltip title="Telegram: доставлено">
+          <FontAwesomeIcon
+            className="w-5 h-5 text-gray-600"
+            icon={faCheckDouble}
+          />
+        </Tooltip>
+      )}
+      {normalizedStatus &&
+        !['read', 'sent', 'delivered', 'pending'].includes(normalizedStatus) && (
+          <Tooltip
+            title={
+              typeof normalizedStatus === 'string'
+                ? `Telegram: ${normalizedStatus}`
+                : 'Telegram: ошибка'
+            }
+          >
             <FontAwesomeIcon className="w-5 h-5 text-danger" icon={faTimes} />
           </Tooltip>
         )}
@@ -142,29 +222,31 @@ const newsletterUsersViewFunc = (newsletterId) => {
     // const seeAllContacts = loggedUserActiveRole?.users?.seeAllContacts
 
     const newsletter = useAtomValue(newsletterSelector(newsletterId))
+    const newslettersList = newsletter?.newsletters || []
+    const sendType = newsletter?.sendType || 'whatsapp-only'
 
     const newsellersStatusCount = useMemo(
       () => ({
-        read: newsletter.newsletters.filter(
+        read: newslettersList.filter(
           ({ whatsappStatus }) => whatsappStatus === 'read'
         ).length,
-        delivered: newsletter.newsletters.filter(
+        delivered: newslettersList.filter(
           ({ whatsappStatus }) => whatsappStatus === 'delivered'
         ).length,
-        sent: newsletter.newsletters.filter(
+        sent: newslettersList.filter(
           ({ whatsappStatus }) => whatsappStatus === 'sent'
         ).length,
-        other: newsletter.newsletters.filter(
+        other: newslettersList.filter(
           ({ whatsappStatus }) =>
             whatsappStatus &&
             !['read', 'delivered', 'sent', 'pending'].includes(whatsappStatus)
         ).length,
-        pending: newsletter.newsletters.filter(
+        pending: newslettersList.filter(
           ({ whatsappStatus }) =>
             whatsappStatus === 'pending' || !whatsappStatus
         ).length,
       }),
-      [newsletter]
+      [newslettersList]
     )
 
     const [filter, setFilter] = useState({
@@ -179,14 +261,14 @@ const newsletterUsersViewFunc = (newsletterId) => {
 
     const filteredNewsletters = useMemo(
       () =>
-        newsletter.newsletters.filter(({ whatsappStatus }) =>
+        newslettersList.filter(({ whatsappStatus }) =>
           !whatsappStatus
             ? filter.messageStatus.pending
             : typeof filter.messageStatus[whatsappStatus] === 'boolean'
               ? filter.messageStatus[whatsappStatus]
               : filter.messageStatus.other
         ),
-      [newsletter, filter]
+      [newslettersList, filter]
     )
 
     // const copyResult = useCopyToClipboard(
@@ -216,6 +298,8 @@ const newsletterUsersViewFunc = (newsletterId) => {
     if (!newsletter) return null
 
     const usersIds = filteredNewsletters.map(({ userId }) => userId)
+    const usesWhatsapp = sendType !== 'telegram-only'
+    const usesTelegram = sendType !== 'whatsapp-only'
 
     return (
       <FormWrapper className="flex flex-col h-full">
@@ -248,13 +332,24 @@ const newsletterUsersViewFunc = (newsletterId) => {
                   noBorder
                   onClick={() => modalsFunc.user.view(usersIds[index])}
                 />
-                <WhatsAppStatus
-                  userId={usersIds[index]}
-                  phone={filteredNewsletters[index].whatsappPhone}
-                  messageId={filteredNewsletters[index].whatsappMessageId}
-                  newsletterId={newsletterId}
-                  statusMessage={filteredNewsletters[index].whatsappStatus}
-                />
+                <div className="flex">
+                  <WhatsAppStatus
+                    userId={usersIds[index]}
+                    phone={filteredNewsletters[index].whatsappPhone}
+                    messageId={filteredNewsletters[index].whatsappMessageId}
+                    newsletterId={newsletterId}
+                    statusMessage={filteredNewsletters[index].whatsappStatus}
+                    success={filteredNewsletters[index].whatsappSuccess}
+                    errorMessage={filteredNewsletters[index].whatsappError}
+                    used={usesWhatsapp}
+                  />
+                  <TelegramStatus
+                    statusMessage={filteredNewsletters[index].telegramStatus}
+                    success={filteredNewsletters[index].telegramSuccess}
+                    errorMessage={filteredNewsletters[index].telegramError}
+                    used={usesTelegram}
+                  />
+                </div>
               </div>
             )}
           </ListWrapper>
