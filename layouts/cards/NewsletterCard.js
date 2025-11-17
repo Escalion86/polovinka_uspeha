@@ -48,6 +48,8 @@ const NewsletterCard = ({ newsletterId, style }) => {
     }
   })
 
+  const sendType = newsletter.sendType || 'whatsapp-only'
+
   return (
     <CardWrapper
       loading={loading}
@@ -71,7 +73,7 @@ const NewsletterCard = ({ newsletterId, style }) => {
             Отправлено: {getNounMessages(newsletter.newsletters?.length || 0)}
           </div>{' '} */}
           <div className="text-sm text-gray-600">
-            {sendTypeTitles[newsletter.sendType] || 'Тип не указан'}
+            {sendTypeTitles[sendType] || 'Тип не указан'}
           </div>
           <div className="text-sm leading-4 whitespace-nowrap">
             {formatDateTime(

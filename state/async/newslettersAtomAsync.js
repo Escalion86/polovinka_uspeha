@@ -13,7 +13,10 @@ const newslettersAtomAsync = atomWithRefreshAndDefault(async (get) => {
     null,
     false
   )
-  return res
+  return res?.map((newsletter) => ({
+    ...newsletter,
+    sendType: newsletter?.sendType || 'whatsapp-only',
+  }))
 })
 
 export default newslettersAtomAsync

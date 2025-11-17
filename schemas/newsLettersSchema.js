@@ -31,6 +31,10 @@ const newsLettersSchema = {
     type: String,
     default: 'whatsapp-only',
   },
+  image: {
+    type: String,
+    default: '',
+  },
   message: {
     type: String,
     default: '',
