@@ -16,7 +16,7 @@ const dateToDateTimeStr = (
   timeZone
 ) => {
   var d = new Date(date)
-  if (timeZone) d = changeTimezone(date, timeZone)
+  if (timeZone) d = changeTimezone(d, timeZone)
 
   var minutes = '' + d.getMinutes(),
     hours = '' + d.getHours(),
