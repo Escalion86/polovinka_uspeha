@@ -295,7 +295,6 @@ export default async function handler(req, res) {
     }
     if (type === 'getMessage') {
       const { phone, messageId } = body.data
-      console.log('{ phone, messageId } :>> ', { phone, messageId })
       const url = `${urlWithInstance}/getMessage/${token}`
       // Вариант ответа:
       // { "existsWhatsapp": true }
