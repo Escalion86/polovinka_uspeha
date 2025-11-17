@@ -324,7 +324,8 @@ const selectUsersFunc = (
         </ContentHeader>
         <Search
           searchText={searchText}
-          show={true}
+          show
+          alwaysShow
           onChange={setSearchText}
           className="h-[38px] min-h-[38px]"
         />

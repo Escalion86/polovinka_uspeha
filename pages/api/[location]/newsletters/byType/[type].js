@@ -276,7 +276,6 @@ export default async function handler(req, res) {
 
         return res?.status(200).json({ success: true, data: newNewsletter })
       } catch (error) {
-        console.log('resultJson.length :>> ', resultJson.length)
         console.log('error :>> ', error)
         await db.model('Test').create({
           data: { success: result, error },
@@ -300,7 +299,6 @@ export default async function handler(req, res) {
     }
     if (type === 'getMessage') {
       const { phone, messageId } = body.data
-      console.log('{ phone, messageId } :>> ', { phone, messageId })
       const url = `${urlWithInstance}/getMessage/${token}`
       // Вариант ответа:
       // { "existsWhatsapp": true }

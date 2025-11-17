@@ -6,7 +6,7 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faClock } from '@fortawesome/free-solid-svg-icons/faClock'
 import { faComments } from '@fortawesome/free-solid-svg-icons/faComments'
 import { faCube } from '@fortawesome/free-solid-svg-icons/faCube'
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
+import { faBullhorn } from '@fortawesome/free-solid-svg-icons/faBullhorn'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
 import { faHands } from '@fortawesome/free-solid-svg-icons/faHands'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
@@ -2494,7 +2494,7 @@ export const pages = [
     group: 10,
     name: 'Рассылки',
     href: 'newsletter',
-    icon: faEnvelope,
+    icon: faBullhorn,
     // accessRoles: CONTENTS['newsletter'].accessRoles,
     roleAccess: CONTENTS['newsletter'].roleAccess,
     siteConfirm: CONTENTS['newsletter'].siteConfirm,
