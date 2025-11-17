@@ -47,7 +47,7 @@ import DropdownButtonPasteTextFormats from '@components/DropdownButtons/Dropdown
 import DOMPurify from 'isomorphic-dompurify'
 import { faRobot } from '@fortawesome/free-solid-svg-icons/faRobot'
 import ModalButtons from '@layouts/modals/ModalButtons'
-import SelectImage from '@components/SelectImage'
+import InputImage from '@components/InputImage'
 
 // import TurndownService from 'turndown'
 
@@ -1032,38 +1032,14 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             )}
           </div>
         </InputWrapper>
-        <InputWrapper
+        <InputImage
           label="Картинка для рассылки"
-          wrapperClassName="flex-col gap-y-2"
-        >
-          <div className="flex flex-col gap-2">
-            {newsletterImage ? (
-              <div className="flex items-start gap-2">
-                <img
-                  src={newsletterImage}
-                  alt="newsletter_image"
-                  className="object-cover max-h-32 rounded-xl"
-                />
-                <Button
-                  name="Убрать картинку"
-                  outline
-                  onClick={() => setNewsletterImage('')}
-                  thin
-                />
-              </div>
-            ) : (
-              <div className="text-gray-500">Картинка не выбрана</div>
-            )}
-            <SelectImage
-              directory="newsletters"
-              selectedImage={newsletterImage}
-              onSelect={setNewsletterImage}
-              paddingY={false}
-              noMargin
-              labelClassName="!hidden"
-            />
-          </div>
-        </InputWrapper>
+          directory="newsletters"
+          image={newsletterImage}
+          onChange={(image) => setNewsletterImage(image || '')}
+          noMargin
+          paddingY={false}
+        />
         {/* <Divider title="Текст сообщения" light thin /> */}
 
         <div>
