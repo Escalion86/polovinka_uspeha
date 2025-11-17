@@ -47,6 +47,7 @@ import DropdownButtonPasteTextFormats from '@components/DropdownButtons/Dropdown
 import DOMPurify from 'isomorphic-dompurify'
 import { faRobot } from '@fortawesome/free-solid-svg-icons/faRobot'
 import ModalButtons from '@layouts/modals/ModalButtons'
+import SelectImage from '@components/SelectImage'
 
 // import TurndownService from 'turndown'
 
@@ -164,8 +165,13 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       message,
       newsletter?.message,
     ])
+    const defaultImageState = useMemo(
+      () => newsletter?.image || '',
+      [newsletter?.image]
+    )
     // const [blackList, setBlackList] = useState([])
     const [messageState, setMessageState] = useState(defaultMessageState)
+    const [newsletterImage, setNewsletterImage] = useState(defaultImageState)
     const [newsletterSendType, setNewsletterSendType] = useState(
       newsletter?.sendType || (whatsappActivated ? 'both' : 'telegram-only')
     )
@@ -187,6 +193,10 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     useEffect(() => {
       if (newsletter?.sendType) setNewsletterSendType(newsletter.sendType)
     }, [newsletter?.sendType])
+
+    useEffect(() => {
+      setNewsletterImage(defaultImageState)
+    }, [defaultImageState])
 
     const filteredSelectedUsers = useMemo(() => {
       if (!checkBlackList) return selectedUsers
@@ -479,6 +489,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             },
             // whatsappMessage: messageState,
           })),
+          image: newsletterImage,
           message,
         },
         (data) => {
@@ -1021,6 +1032,38 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             )}
           </div>
         </InputWrapper>
+        <InputWrapper
+          label="Картинка для рассылки"
+          wrapperClassName="flex-col gap-y-2"
+        >
+          <div className="flex flex-col gap-2">
+            {newsletterImage ? (
+              <div className="flex items-start gap-2">
+                <img
+                  src={newsletterImage}
+                  alt="newsletter_image"
+                  className="object-cover max-h-32 rounded-xl"
+                />
+                <Button
+                  name="Убрать картинку"
+                  outline
+                  onClick={() => setNewsletterImage('')}
+                  thin
+                />
+              </div>
+            ) : (
+              <div className="text-gray-500">Картинка не выбрана</div>
+            )}
+            <SelectImage
+              directory="newsletters"
+              selectedImage={newsletterImage}
+              onSelect={setNewsletterImage}
+              paddingY={false}
+              noMargin
+              labelClassName="!hidden"
+            />
+          </div>
+        </InputWrapper>
         {/* <Divider title="Текст сообщения" light thin /> */}
 
         <div>
@@ -1136,6 +1179,15 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               }
             />
           </div>
+          {newsletterImage && (
+            <div className="flex justify-center w-full">
+              <img
+                src={newsletterImage}
+                alt="newsletter_image_preview"
+                className="object-cover max-h-60 rounded-xl"
+              />
+            </div>
+          )}
           {preview ? (
             // <div className="relative w-full max-w-full pl-3">
             //   <div className="absolute -rotate-90 -left-2">Предпросмотр</div>
