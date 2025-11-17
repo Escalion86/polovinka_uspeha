@@ -156,7 +156,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     // const [blackList, setBlackList] = useState([])
     const [messageState, setMessageState] = useState(defaultMessageState)
     const [newsletterSendType, setNewsletterSendType] = useState(
-      whatsappActivated ? 'both' : 'telegram-only'
+      newsletter?.sendType || (whatsappActivated ? 'both' : 'telegram-only')
     )
     const [rerender, setRerender] = useState(false)
 
@@ -172,6 +172,10 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         setNewsletterSendType('telegram-only')
       }
     }, [newsletterSendType, whatsappActivated])
+
+    useEffect(() => {
+      if (newsletter?.sendType) setNewsletterSendType(newsletter.sendType)
+    }, [newsletter?.sendType])
 
     const filteredSelectedUsers = useMemo(() => {
       if (!checkBlackList) return selectedUsers

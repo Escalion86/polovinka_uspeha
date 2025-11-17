@@ -27,6 +27,10 @@ const newsLettersSchema = {
     type: String,
     default: 'active',
   },
+  sendType: {
+    type: String,
+    default: 'whatsapp-only',
+  },
   message: {
     type: String,
     default: '',
