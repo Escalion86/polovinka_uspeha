@@ -46,6 +46,7 @@ import DropdownButtonPasteTextFormats from '@components/DropdownButtons/Dropdown
 import Textarea from '@components/Textarea'
 import DOMPurify from 'isomorphic-dompurify'
 import { faRobot } from '@fortawesome/free-solid-svg-icons/faRobot'
+import ModalButtons from '@layouts/modals/ModalButtons'
 
 // import TurndownService from 'turndown'
 
@@ -124,6 +125,8 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     const [aiResponse, setAIResponse] = useState('')
     const [aiIsLoading, setAiIsLoading] = useState(false)
 
+    const canApplyAIResponse = !!aiResponse && !aiIsLoading
+
     const defaultNameState = useMemo(
       () =>
         newsletter?.name
@@ -165,7 +168,9 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     useEffect(() => {
       if (
         !whatsappActivated &&
-        ['both', 'telegram-first', 'whatsapp-only'].includes(newsletterSendType)
+        ['both', 'telegram-first', 'whatsapp-only'].includes(
+          newsletterSendType
+        )
       ) {
         setNewsletterSendType('telegram-only')
       }
@@ -787,7 +792,8 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       selectedUsers.length - filteredSelectedUsers.length
 
     useEffect(() => {
-      const isWhatsappRequired = newsletterSendType !== 'telegram-only'
+      const isWhatsappRequired =
+        newsletterSendType !== 'telegram-only'
 
       if (
         !newsletterName ||
@@ -1065,7 +1071,8 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         <InputWrapper label="Тип рассылки" wrapperClassName="flex-col gap-y-1">
           <div className="flex flex-col gap-y-1">
             {sendTypeOptions.map((option) => {
-              const disabled = option.requiresWhatsapp && !whatsappActivated
+              const disabled =
+                option.requiresWhatsapp && !whatsappActivated
               return (
                 <RadioBox
                   key={option.value}
@@ -1146,11 +1153,6 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                   onClick={handleAISubmit}
                   loading={aiIsLoading}
                 />
-                <Button
-                  name="Закрыть"
-                  outline
-                  onClick={() => setIsAIDialogOpen(false)}
-                />
               </div>
               {aiResponse && (
                 <InputWrapper label="Ответ ИИ" className="mt-4">
@@ -1160,14 +1162,17 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                       __html: DOMPurify.sanitize(aiResponse),
                     }}
                   />
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    <Button
-                      name="Подставить в текст"
-                      onClick={handleApplyAIResponse}
-                    />
-                  </div>
                 </InputWrapper>
               )}
+              <ModalButtons
+                closeModal={() => setIsAIDialogOpen(false)}
+                closeButtonShow
+                bottomLeftButton={{
+                  name: 'Подставить в текст',
+                  onClick: handleApplyAIResponse,
+                  disabled: !canApplyAIResponse,
+                }}
+              />
             </div>
           </div>
         )}
