@@ -156,7 +156,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     // const [blackList, setBlackList] = useState([])
     const [messageState, setMessageState] = useState(defaultMessageState)
     const [newsletterSendType, setNewsletterSendType] = useState(
-      whatsappActivated ? 'both' : 'telegram-only'
+      newsletter?.sendType || (whatsappActivated ? 'both' : 'telegram-only')
     )
     const [rerender, setRerender] = useState(false)
 
@@ -165,13 +165,15 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     useEffect(() => {
       if (
         !whatsappActivated &&
-        ['both', 'telegram-first', 'whatsapp-only'].includes(
-          newsletterSendType
-        )
+        ['both', 'telegram-first', 'whatsapp-only'].includes(newsletterSendType)
       ) {
         setNewsletterSendType('telegram-only')
       }
     }, [newsletterSendType, whatsappActivated])
+
+    useEffect(() => {
+      if (newsletter?.sendType) setNewsletterSendType(newsletter.sendType)
+    }, [newsletter?.sendType])
 
     const filteredSelectedUsers = useMemo(() => {
       if (!checkBlackList) return selectedUsers
@@ -785,8 +787,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       selectedUsers.length - filteredSelectedUsers.length
 
     useEffect(() => {
-      const isWhatsappRequired =
-        newsletterSendType !== 'telegram-only'
+      const isWhatsappRequired = newsletterSendType !== 'telegram-only'
 
       if (
         !newsletterName ||
@@ -1064,8 +1065,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         <InputWrapper label="Тип рассылки" wrapperClassName="flex-col gap-y-1">
           <div className="flex flex-col gap-y-1">
             {sendTypeOptions.map((option) => {
-              const disabled =
-                option.requiresWhatsapp && !whatsappActivated
+              const disabled = option.requiresWhatsapp && !whatsappActivated
               return (
                 <RadioBox
                   key={option.value}
@@ -1137,9 +1137,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               <CheckBox
                 label="Передать ИИ существующий текст"
                 checked={aiIncludeCurrentText}
-                onChange={() =>
-                  setAiIncludeCurrentText((state) => !state)
-                }
+                onChange={() => setAiIncludeCurrentText((state) => !state)}
                 noMargin
               />
               <div className="flex flex-wrap gap-2 mt-4">
@@ -1157,7 +1155,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               {aiResponse && (
                 <InputWrapper label="Ответ ИИ" className="mt-4">
                   <div
-                    className="w-full max-h-64 p-3 overflow-y-auto border rounded-md textarea ql"
+                    className="w-full p-3 overflow-y-auto border rounded-md max-h-64 textarea ql"
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(aiResponse),
                     }}
