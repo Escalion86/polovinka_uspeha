@@ -11,6 +11,7 @@ import InputWrapper from '@components/InputWrapper'
 import Button from '@components/Button'
 import modalsFuncAtom from '@state/modalsFuncAtom'
 import DropdownButtonCopyTextFormats from '@components/DropdownButtons/DropdownButtonCopyTextFormats'
+import DOMPurify from 'isomorphic-dompurify'
 // import { SelectUserList } from '@components/SelectItemList'
 
 // const CardButtonsComponent = ({ newsletter }) => (
@@ -46,6 +47,8 @@ const newsletterViewFunc = (newsletterId) => {
       'whatsapp-only': 'Только Whatsapp',
       'telegram-only': 'Только Telegram',
     }
+
+    const sendType = newsletter?.sendType || 'whatsapp-only'
 
     useEffect(() => {
       if (!newsletter) closeModal()
@@ -86,7 +89,7 @@ const newsletterViewFunc = (newsletterId) => {
             {newsletter.name || '[без названия]'}
           </TextLine>
           <TextLine label="Тип рассылки">
-            {sendTypeTitles[newsletter?.sendType] || 'Не указан'}
+            {sendTypeTitles[sendType] || 'Не указан'}
           </TextLine>
           <TextLine label="Дата рассылки">
             {formatDateTime(newsletter?.createdAt)}
@@ -98,6 +101,17 @@ const newsletterViewFunc = (newsletterId) => {
             name="Посмотреть получателей"
             onClick={() => modalsFunc.newsletter.usersView(newsletter._id)}
           />
+          {newsletter?.image && (
+            <InputWrapper label="Картинка">
+              <div className="flex justify-center">
+                <img
+                  src={newsletter.image}
+                  alt="newsletter_image"
+                  className="max-h-60 rounded-xl"
+                />
+              </div>
+            </InputWrapper>
+          )}
           {(newsletter?.message ||
             newsletter?.newsletters[0]?.whatsappMessage) && (
             <InputWrapper label="Текст сообщения">

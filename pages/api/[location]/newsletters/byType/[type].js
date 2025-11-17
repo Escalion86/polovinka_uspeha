@@ -60,7 +60,7 @@ export default async function handler(req, res) {
 
   if (method === 'POST') {
     if (type === 'sendMessage') {
-      const { name, usersMessages, message, sendType } = body.data
+      const { name, usersMessages, message, sendType, image } = body.data
       const db = await dbConnect(location)
       if (!db)
         return res?.status(400).json({ success: false, error: 'db error' })
@@ -88,6 +88,38 @@ export default async function handler(req, res) {
 
       const normalizedSendType = (sendType || 'whatsapp-only').toLowerCase()
 
+      const sendWhatsappImage = async (whatsappPhone, imageUrl) => {
+        if (!whatsappPhone)
+          return { success: false, error: 'no whatsapp phone number' }
+        if (!imageUrl) return { success: false, error: 'no image url' }
+
+        const respSend = await fetch(`${urlWithInstance}/sendFileByUrl/${token}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chatId: `${whatsappPhone}@c.us`,
+            urlFile: imageUrl,
+            fileName: imageUrl.split('/').pop() || 'image.jpg',
+          }),
+        })
+
+        if (respSend) {
+          const respSendJson = await respSend.json()
+          const messageId =
+            respSendJson?.idMessage || respSendJson?.message?.idMessage
+          const errorText = respSendJson?.reason || respSendJson?.error
+          return {
+            success: !!messageId,
+            messageId,
+            error: errorText,
+          }
+        }
+
+        return { success: false, error: 'no response' }
+      }
+
       const sendWhatsapp = async (whatsappPhone, messageToSend) => {
         if (!whatsappPhone)
           return { success: false, error: 'no whatsapp phone number' }
@@ -114,20 +146,26 @@ export default async function handler(req, res) {
         return { success: false, error: 'no response' }
       }
 
-      const sendTelegram = async (telegramId, messageToSend) => {
+      const sendTelegram = async (telegramId, messageToSend, imageUrl) => {
         if (!telegramId) return { success: false, error: 'no telegram id' }
 
         const telegramResult = await sendTelegramMessage({
           telegramIds: telegramId,
           text: messageToSend,
+          images: imageUrl ? [imageUrl] : undefined,
           location,
         })
 
         const success = telegramResult?.successCount > 0
+        const telegramResultEntry = telegramResult?.successes?.[0]?.result?.[0]
+        const lastMessageResult = Array.isArray(telegramResultEntry)
+          ? telegramResultEntry[telegramResultEntry.length - 1]
+          : telegramResultEntry
+
         const messageId =
-          telegramResult?.successes?.[0]?.result?.[0]?.result?.result
-            ?.message_id ||
-          telegramResult?.successes?.[0]?.result?.[0]?.result?.message_id
+          lastMessageResult?.result?.message_id ||
+          lastMessageResult?.result?.result?.message_id ||
+          telegramResult?.successes?.[0]?.result?.result?.message_id
 
         const errorText = telegramResult?.errors?.[0]
           ? typeof telegramResult.errors[0] === 'string'
@@ -154,6 +192,7 @@ export default async function handler(req, res) {
           } = usersMessages[i]
 
           let resultJson = {}
+          let whatsappImageResult
 
           const messageToSendWhatsapp = getText(
             variablesInMessage,
@@ -216,15 +255,22 @@ export default async function handler(req, res) {
             case 'telegram-only':
               telegramResult = await sendTelegram(
                 telegramId,
-                messageToSendTelegram
+                messageToSendTelegram,
+                image
               )
               break
             case 'telegram-first':
               telegramResult = await sendTelegram(
                 telegramId,
-                messageToSendTelegram
+                messageToSendTelegram,
+                image
               )
               if (!telegramResult?.success) {
+                if (image)
+                  whatsappImageResult = await sendWhatsappImage(
+                    whatsappPhone,
+                    image
+                  )
                 whatsappResult = await sendWhatsapp(
                   whatsappPhone,
                   messageToSendWhatsapp
@@ -234,19 +280,37 @@ export default async function handler(req, res) {
             case 'both':
               telegramResult = await sendTelegram(
                 telegramId,
-                messageToSendTelegram
+                messageToSendTelegram,
+                image
               )
+              if (image)
+                whatsappImageResult = await sendWhatsappImage(
+                  whatsappPhone,
+                  image
+                )
               whatsappResult = await sendWhatsapp(
                 whatsappPhone,
                 messageToSendWhatsapp
               )
               break
             default:
+              if (image)
+                whatsappImageResult = await sendWhatsappImage(
+                  whatsappPhone,
+                  image
+                )
               whatsappResult = await sendWhatsapp(
                 whatsappPhone,
                 messageToSendWhatsapp
               )
           }
+
+          const whatsappError =
+            whatsappResult?.error || whatsappImageResult?.error
+              ? [whatsappImageResult?.error, whatsappResult?.error]
+                  .filter((errorText) => errorText)
+                  .join('; ')
+              : undefined
 
           resultJson = {
             userId,
@@ -254,7 +318,7 @@ export default async function handler(req, res) {
             telegramId,
             whatsappSuccess: whatsappResult?.success,
             whatsappMessageId: whatsappResult?.messageId,
-            whatsappError: whatsappResult?.error,
+            whatsappError,
             telegramSuccess: telegramResult?.success,
             telegramMessageId: telegramResult?.messageId,
             telegramError: telegramResult?.error,
@@ -272,6 +336,7 @@ export default async function handler(req, res) {
           status: 'active',
           message,
           sendType: normalizedSendType,
+          image,
         })
 
         return res?.status(200).json({ success: true, data: newNewsletter })
