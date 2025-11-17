@@ -146,12 +146,8 @@ export default async function handler(req, res) {
 
       try {
         for (let i = 0; i < usersMessages.length; i++) {
-          const {
-            whatsappPhone,
-            telegramId,
-            userId,
-            variables,
-          } = usersMessages[i]
+          const { whatsappPhone, telegramId, userId, variables } =
+            usersMessages[i]
 
           let resultJson = {}
 
@@ -275,7 +271,6 @@ export default async function handler(req, res) {
 
         return res?.status(200).json({ success: true, data: newNewsletter })
       } catch (error) {
-        console.log('resultJson.length :>> ', resultJson.length)
         console.log('error :>> ', error)
         await db.model('Test').create({
           data: { success: result, error },
