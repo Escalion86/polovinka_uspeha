@@ -1144,9 +1144,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               <CheckBox
                 label="Передать ИИ существующий текст"
                 checked={aiIncludeCurrentText}
-                onChange={() =>
-                  setAiIncludeCurrentText((state) => !state)
-                }
+                onChange={() => setAiIncludeCurrentText((state) => !state)}
                 noMargin
               />
               <div className="flex flex-wrap gap-2 mt-4">
@@ -1159,7 +1157,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               {aiResponse && (
                 <InputWrapper label="Ответ ИИ" className="mt-4">
                   <div
-                    className="w-full max-h-64 p-3 overflow-y-auto border rounded-md textarea ql"
+                    className="w-full p-3 overflow-y-auto border rounded-md max-h-64 textarea ql"
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(aiResponse),
                     }}
