@@ -871,6 +871,12 @@ const modalsFuncGenerator = (get, set) => {
           onAdd
         )
       ),
+    ai: {
+      request: (props) =>
+        addModal(
+          require('../layouts/modals/modalsFunc/aiRequestFunc').default(props)
+        ),
+    },
     external: {
       qrCodeGenerator: ({ type, id, title, link }) =>
         addModal(

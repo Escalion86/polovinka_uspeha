@@ -43,7 +43,6 @@ import newsletterSelector from '@state/selectors/newsletterSelector'
 // import { faHtml5 } from '@fortawesome/free-brands-svg-icons/faHtml5'
 import DropdownButtonCopyTextFormats from '@components/DropdownButtons/DropdownButtonCopyTextFormats'
 import DropdownButtonPasteTextFormats from '@components/DropdownButtons/DropdownButtonPasteTextFormats'
-import Textarea from '@components/Textarea'
 import DOMPurify from 'isomorphic-dompurify'
 import { faRobot } from '@fortawesome/free-solid-svg-icons/faRobot'
 import ModalButtons from '@layouts/modals/ModalButtons'
@@ -119,14 +118,6 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       клуб: true,
       пара: true,
     })
-    const [isAIDialogOpen, setIsAIDialogOpen] = useState(false)
-    const [aiPrompt, setAIPrompt] = useState('')
-    const [aiIncludeCurrentText, setAiIncludeCurrentText] = useState(true)
-    const [aiResponse, setAIResponse] = useState('')
-    const [aiIsLoading, setAiIsLoading] = useState(false)
-
-    const canApplyAIResponse = !!aiResponse && !aiIsLoading
-
     const defaultNameState = useMemo(
       () =>
         newsletter?.name
@@ -227,98 +218,17 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       [filteredSelectedUsers]
     )
 
-    const getCurrentMessageForAI = useCallback(() => {
-      if (!messageState) return ''
-      const prepared = messageState
-        .replace(/<br\s*\/?>/gi, '\n')
-        .replace(/<\/p>/gi, '\n')
-        .replace(/<li\b[^>]*>/gi, '\n• ')
-        .replace(/<\/li>/gi, '')
-      return DOMPurify.sanitize(prepared, {
-        ALLOWED_TAGS: [],
-        ALLOWED_ATTR: [],
+    const openAIModal = useCallback(() => {
+      if (!modalsFunc?.ai?.request) return
+      modalsFunc.ai.request({
+        currentHtml: messageState,
+        onApply: (aiText) => {
+          setMessageState(aiText)
+          toggleRerender()
+          info('Ответ ИИ добавлен в текст рассылки')
+        },
       })
-        .replace(/&nbsp;/g, ' ')
-        .trim()
-    }, [messageState])
-
-    const formatAIResponse = useCallback((content) => {
-      if (!content) return ''
-      const prepared = content
-        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-        .replace(/__(.*?)__/g, '<u>$1</u>')
-        .replace(/~~(.*?)~~/g, '<i>$1</i>')
-        .replace(/--(.*?)--/g, '<del>$1</del>')
-        .replace(
-          /<<(.*?)>>/g,
-          "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>"
-        )
-        .replace(/\n/g, '<br>')
-      return DOMPurify.sanitize(prepared, {
-        ALLOWED_TAGS: ['b', 'br', 'i', 'u', 'del', 'strong', 'em', 'a'],
-        ALLOWED_ATTR: ['href', 'target', 'rel'],
-      })
-    }, [])
-
-    const handleAISubmit = useCallback(async () => {
-      const promptText = aiPrompt.trim()
-      const promptParts = []
-
-      if (aiIncludeCurrentText) {
-        const currentText = getCurrentMessageForAI()
-        if (currentText) {
-          promptParts.push(
-            `Есть описание мероприятия (текущий текст): ${currentText}`
-          )
-        }
-      }
-
-      if (!promptText && !promptParts.length) {
-        error('Введите запрос для ИИ или включите передачу текущего текста')
-        return
-      }
-
-      if (promptText) promptParts.push(promptText)
-
-      const content = promptParts.join('\n\n')
-
-      setAiIsLoading(true)
-      setAIResponse('')
-      try {
-        const response = await fetch('/api/deepseek', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ content }),
-        })
-        if (!response.ok) throw new Error('Bad response')
-        const result = await response.json()
-        if (!result?.success) throw new Error('Request failed')
-        const aiContent = result?.data?.choices?.[0]?.message?.content?.trim()
-        if (!aiContent) throw new Error('Empty AI response')
-        setAIResponse(formatAIResponse(aiContent))
-      } catch (err) {
-        console.error(err)
-        error('Не удалось получить ответ от ИИ')
-      } finally {
-        setAiIsLoading(false)
-      }
-    }, [
-      aiPrompt,
-      aiIncludeCurrentText,
-      getCurrentMessageForAI,
-      formatAIResponse,
-      error,
-    ])
-
-    const handleApplyAIResponse = useCallback(() => {
-      if (!aiResponse) return
-      setMessageState(aiResponse)
-      toggleRerender()
-      setIsAIDialogOpen(false)
-      info('Ответ ИИ добавлен в текст рассылки')
-    }, [aiResponse, info, toggleRerender])
+    }, [info, messageState, modalsFunc, toggleRerender])
 
     const setBlackList = useCallback(
       async (usersIdsBlackList) => {
@@ -1111,10 +1021,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             name="Обработать с помощью ИИ"
             outline
             icon={faRobot}
-            onClick={() => {
-              setIsAIDialogOpen(true)
-              setAIResponse('')
-            }}
+            onClick={openAIModal}
           />
         </div>
         <DropdownButtonPasteTextFormats
@@ -1123,59 +1030,6 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             toggleRerender()
           }}
         />
-        {isAIDialogOpen && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
-            onClick={() => setIsAIDialogOpen(false)}
-          >
-            <div
-              className="relative w-full max-w-2xl p-5 overflow-y-auto bg-white rounded-lg shadow-xl max-h-[90vh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="mb-3 text-lg font-semibold">
-                Обработать текст с помощью ИИ
-              </div>
-              <Textarea
-                label="Запрос к ИИ"
-                value={aiPrompt}
-                onChange={setAIPrompt}
-                rows={5}
-              />
-              <CheckBox
-                label="Передать ИИ существующий текст"
-                checked={aiIncludeCurrentText}
-                onChange={() => setAiIncludeCurrentText((state) => !state)}
-                noMargin
-              />
-              <div className="flex flex-wrap gap-2 mt-4">
-                <Button
-                  name="Отправить запрос"
-                  onClick={handleAISubmit}
-                  loading={aiIsLoading}
-                />
-              </div>
-              {aiResponse && (
-                <InputWrapper label="Ответ ИИ" className="mt-4">
-                  <div
-                    className="w-full p-3 overflow-y-auto border rounded-md max-h-64 textarea ql"
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(aiResponse),
-                    }}
-                  />
-                </InputWrapper>
-              )}
-              <ModalButtons
-                closeModal={() => setIsAIDialogOpen(false)}
-                closeButtonShow
-                bottomLeftButton={{
-                  name: 'Подставить в текст',
-                  onClick: handleApplyAIResponse,
-                  disabled: !canApplyAIResponse,
-                }}
-              />
-            </div>
-          </div>
-        )}
         {/* <DropdownButton
           name="Вставить текст"
           icon={faPaste}
