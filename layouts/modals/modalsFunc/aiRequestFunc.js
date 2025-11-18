@@ -2,28 +2,38 @@ import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
 import InputWrapper from '@components/InputWrapper'
 import Textarea from '@components/Textarea'
+import { postData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import DOMPurify from 'isomorphic-dompurify'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import modalsFuncAtom from '@state/modalsFuncAtom'
+import locationAtom from '@state/atoms/locationAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import { useAtomValue } from 'jotai'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 const aiRequestFunc = ({
   title = 'Обработать текст с помощью ИИ',
   currentHtml = '',
   includeCurrentText = true,
   initialPrompt = '',
+  section = 'newsletterText',
   onApply,
 } = {}) => {
   const AiRequestModal = ({
     closeModal,
     setBottomLeftButtonProps,
   }) => {
-    const { error } = useSnackbar()
+    const location = useAtomValue(locationAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const { error, success } = useSnackbar()
 
     const [aiPrompt, setAIPrompt] = useState(initialPrompt)
     const [aiIncludeCurrentText, setAiIncludeCurrentText] =
       useState(includeCurrentText)
     const [aiResponse, setAIResponse] = useState('')
     const [aiIsLoading, setAiIsLoading] = useState(false)
+    const lastPromptTitleRef = useRef('')
 
     const canApplyAIResponse = !!aiResponse && !aiIsLoading
 
@@ -112,20 +122,119 @@ const aiRequestFunc = ({
       error,
     ])
 
-    const handleApplyAIResponse = useCallback(() => {
-      if (!aiResponse || !onApply) return
-      onApply(aiResponse)
-      closeModal()
-    }, [aiResponse, closeModal, onApply])
+    const applyAIResponseRef = useRef(() => {})
 
     useEffect(() => {
-      if (!setBottomLeftButtonProps) return
-      setBottomLeftButtonProps({
+      applyAIResponseRef.current = () => {
+        if (!aiResponse || !onApply) return
+        onApply(aiResponse)
+        closeModal()
+      }
+    }, [aiResponse, closeModal, onApply])
+
+    const handleApplyAIResponse = useCallback(
+      () => applyAIResponseRef.current(),
+      []
+    )
+
+    const handleSavePrompt = useCallback(() => {
+      const promptText = aiPrompt.trim()
+
+      if (!promptText) {
+        error('Введите запрос для ИИ, чтобы сохранить его')
+        return
+      }
+
+      if (!loggedUserActive?._id) {
+        error('Не удалось определить пользователя')
+        return
+      }
+
+      if (!modalsFunc?.ai?.prompts?.save) return
+
+      modalsFunc.ai.prompts.save({
+        initialTitle: lastPromptTitleRef.current,
+        onSubmit: async (title, closeSaveModal, setIsSubmitting) => {
+          const trimmedTitle = title?.trim()
+
+          if (!trimmedTitle) {
+            error('Введите название промпта')
+            return
+          }
+
+          setIsSubmitting(true)
+          try {
+            const response = await postData(
+              `/api/${location}/ai-prompts`,
+              {
+                title: trimmedTitle,
+                prompt: promptText,
+                section,
+                userId: loggedUserActive._id,
+              },
+              null,
+              null,
+              false,
+              loggedUserActive._id
+            )
+
+            if (!response) {
+              error('Не удалось сохранить промпт')
+              return
+            }
+
+            lastPromptTitleRef.current = trimmedTitle
+            success('Промпт сохранен')
+            closeSaveModal()
+          } catch (err) {
+            console.error(err)
+            error('Не удалось сохранить промпт')
+          } finally {
+            setIsSubmitting(false)
+          }
+        },
+      })
+    }, [
+      aiPrompt,
+      error,
+      location,
+      loggedUserActive,
+      modalsFunc,
+      section,
+      success,
+    ])
+
+    const handleOpenSavedPrompts = useCallback(() => {
+      if (!modalsFunc?.ai?.prompts?.list) return
+
+      if (!loggedUserActive?._id) {
+        error('Не удалось определить пользователя')
+        return
+      }
+
+      modalsFunc.ai.prompts.list({
+        section,
+        userId: loggedUserActive._id,
+        onSelect: (savedPrompt) => {
+          if (savedPrompt?.prompt) setAIPrompt(savedPrompt.prompt)
+          if (savedPrompt?.title) lastPromptTitleRef.current = savedPrompt.title
+        },
+      })
+    }, [error, loggedUserActive, modalsFunc, section])
+
+    const bottomLeftButtonProps = useMemo(
+      () => ({
         name: 'Подставить в текст',
         onClick: handleApplyAIResponse,
         disabled: !canApplyAIResponse,
-      })
-    }, [setBottomLeftButtonProps, handleApplyAIResponse, canApplyAIResponse])
+      }),
+      [handleApplyAIResponse, canApplyAIResponse]
+    )
+
+    useEffect(() => {
+      if (!setBottomLeftButtonProps) return
+      setBottomLeftButtonProps(bottomLeftButtonProps)
+    }, [bottomLeftButtonProps, setBottomLeftButtonProps])
 
     const preview = useMemo(
       () => (aiResponse ? DOMPurify.sanitize(aiResponse) : ''),
@@ -151,6 +260,16 @@ const aiRequestFunc = ({
             name="Отправить запрос"
             onClick={handleAISubmit}
             loading={aiIsLoading}
+          />
+          <Button
+            name="Сохранить промпт"
+            onClick={handleSavePrompt}
+            outline
+          />
+          <Button
+            name="Загрузить промпт"
+            onClick={handleOpenSavedPrompts}
+            outline
           />
         </div>
         {aiResponse && (
