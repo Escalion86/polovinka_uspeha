@@ -137,13 +137,8 @@ const CardButtons = ({
   const sendNotifications =
     false && // временно скрыто
     typeOfItem === 'event' &&
-    loggedUserActiveRole?.events?.sendNotifications &&
+    loggedUserActiveRole?.newsletters?.add &&
     item.showOnSite
-  const sendNotificationsWhatsapp =
-    typeOfItem === 'event' &&
-    item.showOnSite &&
-    siteSettings?.newsletter?.whatsappActivated &&
-    loggedUserActiveRole?.newsletters?.add
 
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
@@ -195,7 +190,6 @@ const CardButtons = ({
     userPaymentsBtn: rule?.seeUserPayments,
     loginHistory: isLoggedUserDev && typeOfItem === 'user',
     sendNotifications,
-    sendNotificationsWhatsapp,
     updateNewslettersStatuses:
       isLoggedUserPresident && typeOfItem === 'newsletter',
   }
@@ -269,7 +263,7 @@ const CardButtons = ({
           tooltipText="Добавить в Google календарь"
         />
       )}
-      {show.sendNotificationsWhatsapp && (
+      {show.sendNotifications && (
         <ItemComponent
           icon={faBullhorn}
           onClick={() => {
@@ -283,14 +277,14 @@ const CardButtons = ({
           tooltipText="Рассылка"
         />
       )}
-      {show.sendNotifications && (
+      {/* {show.sendNotifications && (
         <ItemComponent
           icon={faTelegram}
           onClick={() => modalsFunc[typeOfItem].notificateAboutEvent(item._id)}
           color="blue"
           tooltipText="Уведомление пользователей о мероприятии"
         />
-      )}
+      )} */}
       {show.eventUsersBtn && (
         <ItemComponent
           icon={faUsers}

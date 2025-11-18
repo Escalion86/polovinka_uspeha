@@ -165,7 +165,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     const [messageState, setMessageState] = useState(defaultMessageState)
     const [newsletterImage, setNewsletterImage] = useState(defaultImageState)
     const [newsletterSendType, setNewsletterSendType] = useState(
-      newsletter?.sendType || (whatsappActivated ? 'both' : 'telegram-only')
+      whatsappActivated ? newsletter?.sendType || 'both' : 'telegram-only'
     )
     const [rerender, setRerender] = useState(false)
 
