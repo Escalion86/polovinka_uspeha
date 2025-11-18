@@ -1,17 +1,17 @@
 'use client'
 
-import { atomFamily } from 'jotai/utils'
-
 import { atom } from 'jotai'
+import { atomFamily, selectAtom } from 'jotai/utils'
 import newslettersAtomAsync from '@state/async/newslettersAtomAsync'
 
+const newslettersSelector = atom((get) => get(newslettersAtomAsync) ?? [])
+
 const newsletterCutedSelector = atomFamily((id) =>
-  atom(async (get) => {
-    if (!id) return
-    const newsletters = await get(newslettersAtomAsync)
-    const newsletter = newsletters.find((item) => item._id === id)
-    return newsletter
-  })
+  selectAtom(
+    newslettersSelector,
+    (newsletters) => newsletters.find((item) => item._id === id),
+    (prev, next) => prev === next
+  )
 )
 
 export default newsletterCutedSelector
