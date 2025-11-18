@@ -165,7 +165,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     const [messageState, setMessageState] = useState(defaultMessageState)
     const [newsletterImage, setNewsletterImage] = useState(defaultImageState)
     const [newsletterSendType, setNewsletterSendType] = useState(
-      newsletter?.sendType || (whatsappActivated ? 'both' : 'telegram-only')
+      whatsappActivated ? newsletter?.sendType || 'both' : 'telegram-only'
     )
     const [rerender, setRerender] = useState(false)
 
@@ -195,8 +195,8 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       )
     }, [selectedUsers, blackList, checkBlackList])
 
-    const sendTypeOptions = useMemo(
-      () => [
+    const sendTypeOptions = useMemo(() => {
+      const options = [
         {
           value: 'both',
           label: 'Whatsapp и Telegram',
@@ -217,9 +217,12 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           label: 'Только Telegram',
           requiresWhatsapp: false,
         },
-      ],
-      []
-    )
+      ]
+
+      if (whatsappActivated) return options
+
+      return options.filter(({ requiresWhatsapp }) => !requiresWhatsapp)
+    }, [whatsappActivated])
 
     const sendTypeTitles = useMemo(
       () =>

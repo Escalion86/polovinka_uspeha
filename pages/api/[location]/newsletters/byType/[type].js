@@ -88,6 +88,20 @@ export default async function handler(req, res) {
 
       const normalizedSendType = (sendType || 'whatsapp-only').toLowerCase()
 
+      const siteSettings = await db
+        .model('SiteSettings')
+        .findOne({}, { 'newsletter.whatsappActivated': 1 })
+        .lean()
+
+      const whatsappActivated = siteSettings?.newsletter?.whatsappActivated === true
+
+      if (!whatsappActivated && normalizedSendType !== 'telegram-only') {
+        return res?.status(403).json({
+          success: false,
+          error: 'Whatsapp рассылка недоступна',
+        })
+      }
+
       const sendWhatsappImage = async (whatsappPhone, imageUrl) => {
         if (!whatsappPhone)
           return { success: false, error: 'no whatsapp phone number' }

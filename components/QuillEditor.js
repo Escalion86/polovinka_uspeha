@@ -255,7 +255,7 @@ l0 83 -160 0 -160 0 0 -100 c0 -137 -28 -185 -121 -210 -77 -21 -166 31 -189
               icons[key] =
                 key === 'ИИ'
                   ? robotIcon
-                  : `<div class="text-sm -ml-[9px] -mt-px">{${key}}</div>`
+                  : `<div class="text-sm -ml-[9px] -mt-px">${key}</div>`
             }
           }
           const quill = new Quill(
