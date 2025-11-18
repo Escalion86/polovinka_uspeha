@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useMemo } from 'react'
+import React, { Suspense, useCallback, useEffect, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 // import QuillEditor from './QuillEditor'
@@ -22,16 +22,29 @@ const EditableTextarea = ({
   aiSection = 'textEditor',
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
+  const currentHtmlRef = useRef(html)
+
+  useEffect(() => {
+    currentHtmlRef.current = html
+  }, [html])
+
+  const handleChange = useCallback(
+    (value) => {
+      currentHtmlRef.current = value
+      onChange?.(value)
+    },
+    [onChange]
+  )
 
   const handleAiProcess = useCallback(() => {
     if (!modalsFunc?.ai?.request) return
 
     modalsFunc.ai.request({
-      currentHtml: html,
+      currentHtml: currentHtmlRef.current,
       section: aiSection,
-      onApply: (aiText) => onChange?.(aiText),
+      onApply: (aiText) => handleChange(aiText),
     })
-  }, [aiSection, html, modalsFunc, onChange])
+  }, [aiSection, handleChange, modalsFunc])
 
   const editorCustomButtons = useMemo(() => {
     const aiButton = {
@@ -91,7 +104,7 @@ const EditableTextarea = ({
           defaultValue={html}
           // onSelectionChange={setRange}
           // onTextChange={setLastChange}
-          onChange={onChange}
+          onChange={handleChange}
           customButtons={editorCustomButtons}
         />
       </Suspense>
