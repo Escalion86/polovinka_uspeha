@@ -6,6 +6,7 @@ import { RESET } from 'jotai/utils'
 
 const atomWithRefreshAndDefault = (func) => {
   const overwrittenAtom = atom(RESET)
+  const isDebug = process.env.NEXT_PUBLIC_DEBUG_NEWSLETTERS === 'true'
   // const refreshAtom = atom(func)
   return atom(
     async (get) => {
@@ -13,11 +14,27 @@ const atomWithRefreshAndDefault = (func) => {
       // if (lastState && lastState.refresh === get(refreshAtom)) {
       //   return lastState.value
       // }
-      if (lastState === RESET) return await func(get)
-      else return lastState
+      if (lastState === RESET) {
+        const value = await func(get)
+        if (isDebug) {
+          console.debug('[Newsletters][atom] первичная загрузка', {
+            time: new Date().toISOString(),
+          })
+        }
+        return value
+      }
+      return lastState
     },
     async (get, set, update) => {
-      set(overwrittenAtom, update === RESET ? await func(get) : update)
+      const nextValue = update === RESET ? await func(get) : update
+      if (isDebug) {
+        console.debug('[Newsletters][atom] обновление', {
+          time: new Date().toISOString(),
+          type: update === RESET ? 'refresh' : 'manual',
+          hasValue: nextValue !== undefined,
+        })
+      }
+      set(overwrittenAtom, nextValue)
     }
   )
 }
