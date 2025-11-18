@@ -25,6 +25,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
     const event = useAtomValue(eventSelector(eventId))
     const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const subEvents = event?.subEvents ?? []
+    const [withEventText, setWithEventText] = useState(true)
     const [statusInEvent, setStatusInEvent] = useState({
       participant: true,
       assistant: false,
@@ -247,11 +248,11 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
           )
           .map(({ user }) => user)
         // if (checkAddEventDescription)
-        onSelect(fullyFilteredUsers, event)
+        onSelect(fullyFilteredUsers, event, withEventText)
         // else onSelect(fullyFilteredUsers)
         closeModal()
       })
-    }, [eventUsers, filteredBySubEventUsers, filter])
+    }, [eventUsers, filteredBySubEventUsers, filter, withEventText])
 
     const statusInEventBottonsConfig = useMemo(
       () =>
@@ -347,6 +348,11 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
           Итого выбрано:{' '}
           {eventUsers.filter(({ status }) => statusInEvent[status]).length}
         </div>
+        <CheckBox
+          checked={withEventText}
+          label="Взять текст из мероприятия"
+          onChange={() => setWithEventText((prev) => !prev)}
+        />
         {/* <CheckBox
           checked={checkAddEventDescription}
           onChange={() => setCheckAddEventDescription}
