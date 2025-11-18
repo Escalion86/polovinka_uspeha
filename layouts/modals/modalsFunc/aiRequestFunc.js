@@ -34,7 +34,7 @@ const aiRequestFunc = ({
       useState(includeCurrentText)
     const [aiResponse, setAIResponse] = useState('')
     const [aiIsLoading, setAiIsLoading] = useState(false)
-    const [lastPromptTitle, setLastPromptTitle] = useState('')
+    const lastPromptTitleRef = useRef('')
 
     const canApplyAIResponse = !!aiResponse && !aiIsLoading
 
@@ -154,7 +154,7 @@ const aiRequestFunc = ({
       if (!modalsFunc?.ai?.prompts?.save) return
 
       modalsFunc.ai.prompts.save({
-        initialTitle: lastPromptTitle,
+        initialTitle: lastPromptTitleRef.current,
         onSubmit: async (title, closeSaveModal, setIsSubmitting) => {
           const trimmedTitle = title?.trim()
 
@@ -184,7 +184,7 @@ const aiRequestFunc = ({
               return
             }
 
-            setLastPromptTitle(trimmedTitle)
+            lastPromptTitleRef.current = trimmedTitle
             success('Промпт сохранен')
             closeSaveModal()
           } catch (err) {
@@ -198,7 +198,6 @@ const aiRequestFunc = ({
     }, [
       aiPrompt,
       error,
-      lastPromptTitle,
       location,
       loggedUserActive,
       modalsFunc,
@@ -219,7 +218,7 @@ const aiRequestFunc = ({
         userId: loggedUserActive._id,
         onSelect: (savedPrompt) => {
           if (savedPrompt?.prompt) setAIPrompt(savedPrompt.prompt)
-          if (savedPrompt?.title) setLastPromptTitle(savedPrompt.title)
+          if (savedPrompt?.title) lastPromptTitleRef.current = savedPrompt.title
         },
       })
     }, [error, loggedUserActive, modalsFunc, section])
