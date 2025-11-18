@@ -7,7 +7,7 @@ import modalsFuncAtom from '@state/modalsFuncAtom'
 import cn from 'classnames'
 import { m } from 'framer-motion'
 import useRouter from '@utils/useRouter'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { Suspense, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -85,16 +85,19 @@ const Modal = ({
 
   const router = useRouter()
 
-  const closeModal = (routerBack = true) => {
-    onClose && typeof onClose === 'function' && onClose()
-    setClose(true)
-    setTimeout(
-      () => setModals((modals) => modals.filter((modal) => modal.id !== id)),
-      200
-    )
-    // window.history.back()
-    // if (routerBack) router.back()
-  }
+  const closeModal = useCallback(
+    (routerBack = true) => {
+      onClose && typeof onClose === 'function' && onClose()
+      setClose(true)
+      setTimeout(
+        () => setModals((modals) => modals.filter((modal) => modal.id !== id)),
+        200
+      )
+      // window.history.back()
+      // if (routerBack) router.back()
+    },
+    [id, onClose, setModals]
+  )
 
   const refreshPage = () => {
     router.replace(router.asPath)

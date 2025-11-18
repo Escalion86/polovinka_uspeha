@@ -1,23 +1,30 @@
 import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
+import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
 import Textarea from '@components/Textarea'
+import { postData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import DOMPurify from 'isomorphic-dompurify'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import modalsFuncAtom from '@state/modalsFuncAtom'
+import locationAtom from '@state/atoms/locationAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import { useAtomValue } from 'jotai'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 const aiRequestFunc = ({
   title = 'Обработать текст с помощью ИИ',
   currentHtml = '',
   includeCurrentText = true,
   initialPrompt = '',
+  section = 'newsletterText',
   onApply,
 } = {}) => {
-  const AiRequestModal = ({
-    closeModal,
-    setBottomLeftButtonProps,
-  }) => {
-    const { error } = useSnackbar()
+  const AiRequestModal = ({ closeModal, setBottomLeftButtonProps }) => {
+    const location = useAtomValue(locationAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const { error, success } = useSnackbar()
 
     const [aiPrompt, setAIPrompt] = useState(initialPrompt)
     const [aiIncludeCurrentText, setAiIncludeCurrentText] =
@@ -112,20 +119,117 @@ const aiRequestFunc = ({
       error,
     ])
 
-    const handleApplyAIResponse = useCallback(() => {
-      if (!aiResponse || !onApply) return
-      onApply(aiResponse)
-      closeModal()
-    }, [aiResponse, closeModal, onApply])
+    const applyAIResponseRef = useRef(() => {})
 
     useEffect(() => {
-      if (!setBottomLeftButtonProps) return
-      setBottomLeftButtonProps({
+      applyAIResponseRef.current = () => {
+        if (!aiResponse || !onApply) return
+        onApply(aiResponse)
+        closeModal()
+      }
+    }, [aiResponse, closeModal, onApply])
+
+    const handleApplyAIResponse = useCallback(
+      () => applyAIResponseRef.current(),
+      []
+    )
+
+    const handleSavePrompt = useCallback(() => {
+      const promptText = aiPrompt.trim()
+
+      if (!promptText) {
+        error('Введите запрос для ИИ, чтобы сохранить его')
+        return
+      }
+
+      if (!loggedUserActive?._id) {
+        error('Не удалось определить пользователя')
+        return
+      }
+
+      if (!modalsFunc?.ai?.prompts?.save) return
+
+      modalsFunc.ai.prompts.save({
+        initialTitle: '',
+        onSubmit: async (title, closeSaveModal, setIsSubmitting) => {
+          const trimmedTitle = title?.trim()
+
+          if (!trimmedTitle) {
+            error('Введите название промпта')
+            return
+          }
+
+          setIsSubmitting(true)
+          try {
+            const response = await postData(
+              `/api/${location}/ai-prompts`,
+              {
+                title: trimmedTitle,
+                prompt: promptText,
+                section,
+                userId: loggedUserActive._id,
+              },
+              null,
+              null,
+              false,
+              loggedUserActive._id
+            )
+
+            if (!response) {
+              error('Не удалось сохранить промпт')
+              return
+            }
+
+            success('Промпт сохранен')
+            closeSaveModal()
+          } catch (err) {
+            console.error(err)
+            error('Не удалось сохранить промпт')
+          } finally {
+            setIsSubmitting(false)
+          }
+        },
+      })
+    }, [
+      aiPrompt,
+      error,
+      location,
+      loggedUserActive,
+      modalsFunc,
+      section,
+      success,
+    ])
+
+    const handleOpenSavedPrompts = useCallback(() => {
+      if (!modalsFunc?.ai?.prompts?.list) return
+
+      if (!loggedUserActive?._id) {
+        error('Не удалось определить пользователя')
+        return
+      }
+
+      modalsFunc.ai.prompts.list({
+        section,
+        userId: loggedUserActive._id,
+        onSelect: (savedPrompt) => {
+          if (savedPrompt?.prompt) setAIPrompt(savedPrompt.prompt)
+        },
+      })
+    }, [error, loggedUserActive, modalsFunc, section])
+
+    const bottomLeftButtonProps = useMemo(
+      () => ({
         name: 'Подставить в текст',
         onClick: handleApplyAIResponse,
         disabled: !canApplyAIResponse,
-      })
-    }, [setBottomLeftButtonProps, handleApplyAIResponse, canApplyAIResponse])
+      }),
+      [handleApplyAIResponse, canApplyAIResponse]
+    )
+
+    useEffect(() => {
+      if (!setBottomLeftButtonProps) return
+      setBottomLeftButtonProps(bottomLeftButtonProps)
+    }, [bottomLeftButtonProps, setBottomLeftButtonProps])
 
     const preview = useMemo(
       () => (aiResponse ? DOMPurify.sanitize(aiResponse) : ''),
@@ -134,6 +238,19 @@ const aiRequestFunc = ({
 
     return (
       <div className="space-y-4">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            name="Сохранить промпт"
+            onClick={handleSavePrompt}
+            outline
+            disabled={!aiPrompt}
+          />
+          <Button
+            name="Загрузить промпт"
+            onClick={handleOpenSavedPrompts}
+            outline
+          />
+        </div>
         <Textarea
           label="Запрос к ИИ"
           value={aiPrompt}
@@ -146,17 +263,15 @@ const aiRequestFunc = ({
           onChange={() => setAiIncludeCurrentText((state) => !state)}
           noMargin
         />
-        <div className="flex flex-wrap gap-2">
-          <Button
-            name="Отправить запрос"
-            onClick={handleAISubmit}
-            loading={aiIsLoading}
-          />
-        </div>
+        <Button
+          name="Отправить запрос"
+          onClick={handleAISubmit}
+          loading={aiIsLoading}
+        />
         {aiResponse && (
           <InputWrapper label="Ответ ИИ" className="mt-2">
             <div
-              className="w-full max-h-64 p-3 overflow-y-auto border rounded-md textarea ql"
+              className="w-full p-3 overflow-y-auto border rounded-md max-h-64 textarea ql"
               dangerouslySetInnerHTML={{
                 __html: preview,
               }}

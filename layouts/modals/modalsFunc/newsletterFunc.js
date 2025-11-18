@@ -158,13 +158,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       })
 
       return notificationText.replaceAll('\n', '<br>')
-    }, [
-      event,
-      initialSelectedUsers,
-      location,
-      message,
-      newsletter?.message,
-    ])
+    }, [event, initialSelectedUsers, location, message, newsletter?.message])
     const defaultImageState = useMemo(
       () => newsletter?.image || '',
       [newsletter?.image]
@@ -182,9 +176,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     useEffect(() => {
       if (
         !whatsappActivated &&
-        ['both', 'telegram-first', 'whatsapp-only'].includes(
-          newsletterSendType
-        )
+        ['both', 'telegram-first', 'whatsapp-only'].includes(newsletterSendType)
       ) {
         setNewsletterSendType('telegram-only')
       }
@@ -249,6 +241,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       if (!modalsFunc?.ai?.request) return
       modalsFunc.ai.request({
         currentHtml: messageState,
+        section: 'newsletterText',
         onApply: (aiText) => {
           setMessageState(aiText)
           toggleRerender()
@@ -730,8 +723,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       selectedUsers.length - filteredSelectedUsers.length
 
     useEffect(() => {
-      const isWhatsappRequired =
-        newsletterSendType !== 'telegram-only'
+      const isWhatsappRequired = newsletterSendType !== 'telegram-only'
 
       if (
         !newsletterName ||
@@ -818,7 +810,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                 }
               />
               <Button
-                name="Выбрать пользователей из мероприятия"
+                name="Выбрать данные из мероприятия"
                 icon={faCalendarAlt}
                 onClick={() =>
                   modalsFunc.selectEvents(
@@ -828,7 +820,30 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                       const eventId = data[0]
                       modalsFunc.selectUsersByStatusesFromEvent(
                         eventId,
-                        (users, event) => setSelectedUsers(users)
+                        (users, selectedEvent, withEventText) => {
+                          if (users !== undefined) setSelectedUsers(users)
+                          if (withEventText && selectedEvent) {
+                            const onlyMembersSelected =
+                              users?.length > 0 &&
+                              users.every((user) => user?.status === 'member')
+
+                            const notificationText = formatEventNotificationText(
+                              selectedEvent,
+                              {
+                                location,
+                                userStatus: onlyMembersSelected
+                                  ? 'member'
+                                  : 'novice',
+                                withEventLink: true,
+                              }
+                            )
+
+                            setMessageState(
+                              notificationText.replaceAll('\n', '<br>')
+                            )
+                            toggleRerender()
+                          }
+                        }
                       )
                       // setSelectedUsers(users)
                     },
@@ -836,7 +851,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                     null,
                     1,
                     false,
-                    'Выбрать пользователей из мероприятия'
+                    'Выбрать данные из мероприятия'
                     // itemsId,
                     // filterRules,
                     // onChange,
@@ -1009,8 +1024,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         <InputWrapper label="Тип рассылки" wrapperClassName="flex-col gap-y-1">
           <div className="flex flex-col gap-y-1">
             {sendTypeOptions.map((option) => {
-              const disabled =
-                option.requiresWhatsapp && !whatsappActivated
+              const disabled = option.requiresWhatsapp && !whatsappActivated
               return (
                 <RadioBox
                   key={option.value}
@@ -1037,8 +1051,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           directory="newsletters"
           image={newsletterImage}
           onChange={(image) => setNewsletterImage(image || '')}
-          noMargin
-          paddingY={false}
+          paddingY="small"
         />
         {/* <Divider title="Текст сообщения" light thin /> */}
 
