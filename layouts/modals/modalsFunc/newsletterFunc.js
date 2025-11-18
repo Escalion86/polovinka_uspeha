@@ -158,13 +158,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       })
 
       return notificationText.replaceAll('\n', '<br>')
-    }, [
-      event,
-      initialSelectedUsers,
-      location,
-      message,
-      newsletter?.message,
-    ])
+    }, [event, initialSelectedUsers, location, message, newsletter?.message])
     const defaultImageState = useMemo(
       () => newsletter?.image || '',
       [newsletter?.image]
@@ -182,9 +176,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     useEffect(() => {
       if (
         !whatsappActivated &&
-        ['both', 'telegram-first', 'whatsapp-only'].includes(
-          newsletterSendType
-        )
+        ['both', 'telegram-first', 'whatsapp-only'].includes(newsletterSendType)
       ) {
         setNewsletterSendType('telegram-only')
       }
@@ -731,8 +723,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       selectedUsers.length - filteredSelectedUsers.length
 
     useEffect(() => {
-      const isWhatsappRequired =
-        newsletterSendType !== 'telegram-only'
+      const isWhatsappRequired = newsletterSendType !== 'telegram-only'
 
       if (
         !newsletterName ||
@@ -1010,8 +1001,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
         <InputWrapper label="Тип рассылки" wrapperClassName="flex-col gap-y-1">
           <div className="flex flex-col gap-y-1">
             {sendTypeOptions.map((option) => {
-              const disabled =
-                option.requiresWhatsapp && !whatsappActivated
+              const disabled = option.requiresWhatsapp && !whatsappActivated
               return (
                 <RadioBox
                   key={option.value}
@@ -1038,8 +1028,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           directory="newsletters"
           image={newsletterImage}
           onChange={(image) => setNewsletterImage(image || '')}
-          noMargin
-          paddingY={false}
+          paddingY="small"
         />
         {/* <Divider title="Текст сообщения" light thin /> */}
 

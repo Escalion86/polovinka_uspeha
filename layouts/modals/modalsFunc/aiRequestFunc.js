@@ -20,10 +20,7 @@ const aiRequestFunc = ({
   section = 'newsletterText',
   onApply,
 } = {}) => {
-  const AiRequestModal = ({
-    closeModal,
-    setBottomLeftButtonProps,
-  }) => {
+  const AiRequestModal = ({ closeModal, setBottomLeftButtonProps }) => {
     const location = useAtomValue(locationAtom)
     const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -34,7 +31,6 @@ const aiRequestFunc = ({
       useState(includeCurrentText)
     const [aiResponse, setAIResponse] = useState('')
     const [aiIsLoading, setAiIsLoading] = useState(false)
-    const lastPromptTitleRef = useRef('')
 
     const canApplyAIResponse = !!aiResponse && !aiIsLoading
 
@@ -154,7 +150,7 @@ const aiRequestFunc = ({
       if (!modalsFunc?.ai?.prompts?.save) return
 
       modalsFunc.ai.prompts.save({
-        initialTitle: lastPromptTitleRef.current,
+        initialTitle: '',
         onSubmit: async (title, closeSaveModal, setIsSubmitting) => {
           const trimmedTitle = title?.trim()
 
@@ -184,7 +180,6 @@ const aiRequestFunc = ({
               return
             }
 
-            lastPromptTitleRef.current = trimmedTitle
             success('Промпт сохранен')
             closeSaveModal()
           } catch (err) {
@@ -218,7 +213,6 @@ const aiRequestFunc = ({
         userId: loggedUserActive._id,
         onSelect: (savedPrompt) => {
           if (savedPrompt?.prompt) setAIPrompt(savedPrompt.prompt)
-          if (savedPrompt?.title) lastPromptTitleRef.current = savedPrompt.title
         },
       })
     }, [error, loggedUserActive, modalsFunc, section])
@@ -244,34 +238,12 @@ const aiRequestFunc = ({
 
     return (
       <div className="space-y-4">
-        <Textarea
-          label="Запрос к ИИ"
-          value={aiPrompt}
-          onChange={setAIPrompt}
-          rows={5}
-        />
-        <Input
-          label="Заголовок промпта"
-          value={promptTitle}
-          onChange={setPromptTitle}
-          placeholder="Например: Заготовка рассылки"
-        />
-        <CheckBox
-          label="Передать ИИ существующий текст"
-          checked={aiIncludeCurrentText}
-          onChange={() => setAiIncludeCurrentText((state) => !state)}
-          noMargin
-        />
         <div className="flex flex-wrap gap-2">
-          <Button
-            name="Отправить запрос"
-            onClick={handleAISubmit}
-            loading={aiIsLoading}
-          />
           <Button
             name="Сохранить промпт"
             onClick={handleSavePrompt}
             outline
+            disabled={!aiPrompt}
           />
           <Button
             name="Загрузить промпт"
@@ -279,10 +251,27 @@ const aiRequestFunc = ({
             outline
           />
         </div>
+        <Textarea
+          label="Запрос к ИИ"
+          value={aiPrompt}
+          onChange={setAIPrompt}
+          rows={5}
+        />
+        <CheckBox
+          label="Передать ИИ существующий текст"
+          checked={aiIncludeCurrentText}
+          onChange={() => setAiIncludeCurrentText((state) => !state)}
+          noMargin
+        />
+        <Button
+          name="Отправить запрос"
+          onClick={handleAISubmit}
+          loading={aiIsLoading}
+        />
         {aiResponse && (
           <InputWrapper label="Ответ ИИ" className="mt-2">
             <div
-              className="w-full max-h-64 p-3 overflow-y-auto border rounded-md textarea ql"
+              className="w-full p-3 overflow-y-auto border rounded-md max-h-64 textarea ql"
               dangerouslySetInnerHTML={{
                 __html: preview,
               }}

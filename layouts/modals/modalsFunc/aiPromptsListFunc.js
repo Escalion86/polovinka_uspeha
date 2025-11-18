@@ -121,7 +121,7 @@ const aiPromptsListFunc = ({ section, onSelect, userId }) => {
                 <div className="font-semibold break-words">{prompt.title}</div>
                 <button
                   type="button"
-                  className="text-red-600 transition-transform duration-150 hover:scale-110"
+                  className="text-red-600 transition-transform duration-150 cursor-pointer hover:scale-110"
                   onClick={() => handleDeletePrompt(prompt._id)}
                   title="Удалить"
                 >
@@ -129,7 +129,7 @@ const aiPromptsListFunc = ({ section, onSelect, userId }) => {
                 </button>
               </div>
               {prompt.prompt && (
-                <div className="text-sm text-gray-700 whitespace-pre-line break-words">
+                <div className="text-sm text-gray-700 break-words whitespace-pre-line">
                   {prompt.prompt}
                 </div>
               )}
