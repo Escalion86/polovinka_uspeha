@@ -1,0 +1,103 @@
+import Button from '@components/Button'
+import LoadingSpinner from '@components/LoadingSpinner'
+import { getData } from '@helpers/CRUD'
+import locationAtom from '@state/atoms/locationAtom'
+import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
+import { useAtomValue } from 'jotai'
+import { useEffect, useMemo, useState } from 'react'
+import useSnackbar from '@helpers/useSnackbar'
+
+const aiPromptsListFunc = ({ section, onSelect, userId }) => {
+  const AiPromptsListModal = ({ closeModal }) => {
+    const location = useAtomValue(locationAtom)
+    const loggedUserActive = useAtomValue(loggedUserActiveAtom)
+    const [prompts, setPrompts] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const { error } = useSnackbar()
+
+    const currentUserId = useMemo(
+      () => userId || loggedUserActive?._id,
+      [loggedUserActive?._id, userId]
+    )
+
+    useEffect(() => {
+      let isMounted = true
+
+      const loadPrompts = async () => {
+        if (!currentUserId) {
+          setIsLoading(false)
+          return
+        }
+
+        setIsLoading(true)
+        const response = await getData(`/api/${location}/ai-prompts`, {
+          userId: currentUserId,
+          section,
+          sort: JSON.stringify({ createdAt: -1 }),
+        })
+
+        if (!isMounted) return
+
+        if (!response) error('Не удалось загрузить сохраненные промпты')
+        setPrompts(response || [])
+        setIsLoading(false)
+      }
+
+      loadPrompts()
+
+      return () => {
+        isMounted = false
+      }
+    }, [currentUserId, error, location, section])
+
+    const handleSelectPrompt = (prompt) => {
+      if (!onSelect) return
+      onSelect(prompt)
+      closeModal()
+    }
+
+    if (!currentUserId)
+      return <div>Не удалось определить пользователя для загрузки промптов</div>
+
+    if (isLoading) return <LoadingSpinner />
+
+    return (
+      <div className="space-y-3">
+        {prompts?.length ? (
+          prompts.map((prompt) => (
+            <div
+              key={prompt._id}
+              className="p-3 space-y-2 border rounded-md bg-general-ultralight"
+            >
+              <div className="font-semibold break-words">{prompt.title}</div>
+              {prompt.prompt && (
+                <div className="text-sm text-gray-700 whitespace-pre-line break-words">
+                  {prompt.prompt}
+                </div>
+              )}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  name="Использовать промпт"
+                  onClick={() => handleSelectPrompt(prompt)}
+                  thin
+                />
+              </div>
+            </div>
+          ))
+        ) : (
+          <div>Нет сохраненных промптов</div>
+        )}
+      </div>
+    )
+  }
+
+  return {
+    title: 'Сохраненные промпты',
+    closeButtonShow: true,
+    declineButtonShow: false,
+    onlyCloseButtonShow: true,
+    Children: AiPromptsListModal,
+  }
+}
+
+export default aiPromptsListFunc

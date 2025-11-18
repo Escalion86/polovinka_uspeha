@@ -249,6 +249,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       if (!modalsFunc?.ai?.request) return
       modalsFunc.ai.request({
         currentHtml: messageState,
+        section: 'newsletterText',
         onApply: (aiText) => {
           setMessageState(aiText)
           toggleRerender()
