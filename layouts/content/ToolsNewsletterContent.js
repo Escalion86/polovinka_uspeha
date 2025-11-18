@@ -33,7 +33,7 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 // const getUsersData = (users) => {
 //   const mans = users.filter((user) => user.gender === 'male')
@@ -78,11 +78,46 @@ const ToolsNewsletterContent = () => {
 
   const [sort, setSort] = useState({ createdAt: 'desc' })
   const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
+  const debugNewsletters =
+    process.env.NEXT_PUBLIC_DEBUG_NEWSLETTERS === 'true'
+
+  const rawNewslettersRef = useRef()
+  const sortedNewslettersRef = useRef()
 
   const sortedNewsletters = useMemo(() => {
     if (!Array.isArray(newsletters)) return []
     return [...newsletters].sort(sortFunc)
   }, [newsletters, sortFunc])
+
+  useEffect(() => {
+    if (!debugNewsletters) return
+    const prev = rawNewslettersRef.current
+    rawNewslettersRef.current = newsletters
+    console.debug('[Newsletters][raw] изменился источник', {
+      time: new Date().toISOString(),
+      prevLength: prev?.length ?? 0,
+      nextLength: newsletters?.length ?? 0,
+      prevFirstId: prev?.[0]?._id,
+      nextFirstId: newsletters?.[0]?._id,
+    })
+  }, [newsletters, debugNewsletters])
+
+  useEffect(() => {
+    if (!debugNewsletters) return
+    const prev = sortedNewslettersRef.current
+    sortedNewslettersRef.current = sortedNewsletters
+    const prevIds = prev?.slice(0, 5).map((item) => item?._id)
+    const nextIds = sortedNewsletters?.slice(0, 5).map((item) => item?._id)
+
+    console.debug('[Newsletters][sorted] обновился список', {
+      time: new Date().toISOString(),
+      prevLength: prev?.length ?? 0,
+      nextLength: sortedNewsletters?.length ?? 0,
+      prevSampleIds: prevIds,
+      nextSampleIds: nextIds,
+      sort,
+    })
+  }, [debugNewsletters, sort, sortedNewsletters])
 
   return (
     <>
