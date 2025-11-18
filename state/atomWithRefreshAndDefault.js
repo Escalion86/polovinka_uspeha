@@ -7,6 +7,23 @@ import { RESET } from 'jotai/utils'
 const atomWithRefreshAndDefault = (func) => {
   const overwrittenAtom = atom(RESET)
   const isDebug = process.env.NEXT_PUBLIC_DEBUG_NEWSLETTERS === 'true'
+
+  const isEqual = (prev, next) => {
+    if (prev === next) return true
+    if (typeof prev !== 'object' || typeof next !== 'object') return false
+
+    try {
+      return JSON.stringify(prev) === JSON.stringify(next)
+    } catch (error) {
+      if (isDebug) {
+        console.debug('[Newsletters][atom] ошибка сравнения', {
+          time: new Date().toISOString(),
+          error,
+        })
+      }
+      return false
+    }
+  }
   // const refreshAtom = atom(func)
   return atom(
     async (get) => {
@@ -27,6 +44,17 @@ const atomWithRefreshAndDefault = (func) => {
     },
     async (get, set, update) => {
       const nextValue = update === RESET ? await func(get) : update
+      const prevValue = get(overwrittenAtom)
+
+      if (isEqual(prevValue, nextValue)) {
+        if (isDebug) {
+          console.debug('[Newsletters][atom] пропуск одинаковых данных', {
+            time: new Date().toISOString(),
+          })
+        }
+        return
+      }
+
       if (isDebug) {
         console.debug('[Newsletters][atom] обновление', {
           time: new Date().toISOString(),
