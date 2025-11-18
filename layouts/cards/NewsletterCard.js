@@ -14,6 +14,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 import SvgSigma from '@svg/SvgSigma'
 import LoadingSpinner from '@components/LoadingSpinner'
+import { useMemo } from 'react'
 // import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 // import { useAtomValue } from 'jotai'
 // import { Suspense } from 'react'
@@ -35,18 +36,21 @@ const NewsletterCard = ({ newsletterId, style }) => {
     'telegram-only': 'Только Telegram',
   }
 
-  const statuses = {}
-  newsletter.newsletters.forEach(({ whatsappStatus }) => {
-    if (['read', 'sent', 'delivered', 'pending'].includes(whatsappStatus)) {
-      statuses[whatsappStatus] = statuses[whatsappStatus]
-        ? statuses[whatsappStatus] + 1
-        : 1
-    } else if (!whatsappStatus) {
-      statuses.pending = statuses.pending ? statuses.pending + 1 : 1
-    } else {
-      statuses.other = statuses.other ? statuses.other + 1 : 1
-    }
-  })
+  const statuses = useMemo(() => {
+    const temp = {}
+    newsletter.newsletters.forEach(({ whatsappStatus }) => {
+      if (['read', 'sent', 'delivered', 'pending'].includes(whatsappStatus)) {
+        temp[whatsappStatus] = temp[whatsappStatus]
+          ? temp[whatsappStatus] + 1
+          : 1
+      } else if (!whatsappStatus) {
+        temp.pending = temp.pending ? temp.pending + 1 : 1
+      } else {
+        temp.other = temp.other ? temp.other + 1 : 1
+      }
+    })
+    return temp
+  }, [newsletter.newsletters])
 
   const sendType = newsletter.sendType || 'whatsapp-only'
 
@@ -69,9 +73,6 @@ const NewsletterCard = ({ newsletterId, style }) => {
           </TextLinesLimiter>
         </div>
         <div className="flex items-center justify-between w-full min-w-full">
-          {/* <div className="w-full">
-            Отправлено: {getNounMessages(newsletter.newsletters?.length || 0)}
-          </div>{' '} */}
           <div className="text-sm text-gray-600">
             {sendTypeTitles[sendType] || 'Тип не указан'}
           </div>
