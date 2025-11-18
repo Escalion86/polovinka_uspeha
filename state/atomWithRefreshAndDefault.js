@@ -8,12 +8,29 @@ const atomWithRefreshAndDefault = (func) => {
   const overwrittenAtom = atom(RESET)
   const isDebug = process.env.NEXT_PUBLIC_DEBUG_NEWSLETTERS === 'true'
 
+  const sortRecursively = (value) => {
+    if (Array.isArray(value)) return value.map(sortRecursively)
+
+    if (value && typeof value === 'object') {
+      return Object.keys(value)
+        .sort()
+        .reduce((acc, key) => {
+          acc[key] = sortRecursively(value[key])
+          return acc
+        }, {})
+    }
+
+    return value
+  }
+
   const isEqual = (prev, next) => {
     if (prev === next) return true
     if (typeof prev !== 'object' || typeof next !== 'object') return false
 
     try {
-      return JSON.stringify(prev) === JSON.stringify(next)
+      const prevStr = JSON.stringify(sortRecursively(prev))
+      const nextStr = JSON.stringify(sortRecursively(next))
+      return prevStr === nextStr
     } catch (error) {
       if (isDebug) {
         console.debug('[Newsletters][atom] ошибка сравнения', {
