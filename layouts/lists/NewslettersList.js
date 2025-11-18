@@ -12,12 +12,13 @@ const NewslettersList = ({ newsletters }) => {
       itemCount={newsletters?.length}
       itemSize={widthNum > 2 ? 74 : 74}
       className="bg-general/15"
+      itemData={newsletters}
+      itemKey={(index, data) => data?.[index]?._id ?? index}
     >
-      {({ index, style }) => (
+      {({ index, style, data }) => (
         <NewsletterCard
           style={style}
-          key={newsletters[index]._id}
-          newsletterId={newsletters[index]._id}
+          newsletterId={data[index]._id}
         />
       )}
     </ListWrapper>
