@@ -136,11 +136,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
         const key = subEventId ?? 'null'
         return subEventsFilter[key]
       })
-    }, [
-      filteredByEventStatusUsers,
-      shouldShowSubEventsFilter,
-      subEventsFilter,
-    ])
+    }, [filteredByEventStatusUsers, shouldShowSubEventsFilter, subEventsFilter])
 
     const usersGendersCount = useMemo(
       () => ({
@@ -199,11 +195,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
       })
 
       return counts
-    }, [
-      filteredByEventStatusUsers,
-      shouldShowSubEventsFilter,
-      subEventsFilter,
-    ])
+    }, [filteredByEventStatusUsers, shouldShowSubEventsFilter, subEventsFilter])
 
     const subEventsOptions = useMemo(() => {
       if (!shouldShowSubEventsFilter) return []
