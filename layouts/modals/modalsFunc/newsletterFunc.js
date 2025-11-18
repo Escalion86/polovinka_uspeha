@@ -810,7 +810,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                 }
               />
               <Button
-                name="Выбрать пользователей из мероприятия"
+                name="Выбрать данные из мероприятия"
                 icon={faCalendarAlt}
                 onClick={() =>
                   modalsFunc.selectEvents(
@@ -851,7 +851,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                     null,
                     1,
                     false,
-                    'Выбрать пользователей из мероприятия'
+                    'Выбрать данные из мероприятия'
                     // itemsId,
                     // filterRules,
                     // onChange,
