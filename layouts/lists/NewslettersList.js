@@ -18,7 +18,7 @@ const NewslettersList = ({ newsletters }) => {
       {({ index, style, data }) => (
         <NewsletterCard
           style={style}
-          newsletterId={data[index]._id}
+          newsletter={data[index]}
         />
       )}
     </ListWrapper>
