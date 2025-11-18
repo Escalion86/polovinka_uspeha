@@ -1,5 +1,6 @@
 import Button from '@components/Button'
 import CheckBox from '@components/CheckBox'
+import Input from '@components/Input'
 import InputWrapper from '@components/InputWrapper'
 import Textarea from '@components/Textarea'
 import { postData } from '@helpers/CRUD'
@@ -248,6 +249,12 @@ const aiRequestFunc = ({
           value={aiPrompt}
           onChange={setAIPrompt}
           rows={5}
+        />
+        <Input
+          label="Заголовок промпта"
+          value={promptTitle}
+          onChange={setPromptTitle}
+          placeholder="Например: Заготовка рассылки"
         />
         <CheckBox
           label="Передать ИИ существующий текст"
