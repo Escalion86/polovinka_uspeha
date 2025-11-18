@@ -34,6 +34,7 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { selectAtom } from 'jotai/utils'
 
 // const getUsersData = (users) => {
 //   const mans = users.filter((user) => user.gender === 'male')
@@ -70,9 +71,33 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 //   }
 // }
 
+const areNewslettersEqual = (prev, next) => {
+  if (prev === next) return true
+  if (!Array.isArray(prev) || !Array.isArray(next)) return false
+  if (prev.length !== next.length) return false
+
+  for (let i = 0; i < prev.length; i += 1) {
+    const prevItem = prev[i]
+    const nextItem = next[i]
+
+    if (prevItem === nextItem) continue
+    if (!prevItem || !nextItem) return false
+    if (prevItem._id !== nextItem._id) return false
+    if (JSON.stringify(prevItem) !== JSON.stringify(nextItem)) return false
+  }
+
+  return true
+}
+
+const newslettersSelector = selectAtom(
+  newslettersAtomAsync,
+  (value) => (Array.isArray(value) ? value : []),
+  areNewslettersEqual
+)
+
 const ToolsNewsletterContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const newsletters = useAtomValue(newslettersAtomAsync)
+  const newsletters = useAtomValue(newslettersSelector)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.newsletters?.add
 
