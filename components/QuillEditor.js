@@ -4,7 +4,6 @@ import React, {
   forwardRef,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -112,12 +111,13 @@ const QuillEditor = forwardRef(
     ref
   ) => {
     const containerRef = useRef(null)
+    const quillRef = useRef(null)
+    const lastDefaultValueRef = useRef(defaultValue)
     // const defaultValueRef = useRef(defaultValue)
     const onTextChangeRef = useRef(onTextChange)
     const onSelectionChangeRef = useRef(onSelectionChange)
     const onChangeRef = useRef(onChange)
 
-    var quill
     // const [loading, setLoading] = useState(false)
     // const [ReactQuill, setReactQuill] = useState(null)
 
@@ -172,7 +172,7 @@ const QuillEditor = forwardRef(
       // const quilLoader = async () => {
       // const Quill = await import('quill')
       // console.log('Quill :>> ', Quill)
-      if (!quill) {
+      if (!quillRef.current) {
         const init = async () => {
           const container = containerRef.current
           const editorContainer = container.appendChild(
@@ -214,7 +214,7 @@ const QuillEditor = forwardRef(
                 `<div class="text-sm -ml-[9px] -mt-[1px]">{${key}}</div>`
             }
           }
-          quill = new Quill(
+          const quill = new Quill(
             // '#quill-editor'
             editorContainer,
             {
@@ -227,6 +227,7 @@ const QuillEditor = forwardRef(
               },
             }
           )
+          quillRef.current = quill
           // console.log('quill :>> ', quill)
           // Quill.register({ 'modules/emoji': require('quill-emoji') })
 
@@ -243,6 +244,7 @@ const QuillEditor = forwardRef(
             //   // console.log(quill)
             //   // quill.pasteHTML(defaultValue)
             quill.clipboard.dangerouslyPasteHTML(defaultValue)
+            lastDefaultValueRef.current = defaultValue
           }
 
           quill.on(Quill.events.TEXT_CHANGE, (...args) => {
@@ -266,6 +268,27 @@ const QuillEditor = forwardRef(
         init()
       }
     }, [ref])
+
+    useEffect(() => {
+      const quill = quillRef.current
+      if (!quill || defaultValue === undefined) return
+
+      if (lastDefaultValueRef.current === defaultValue) return
+
+      const normalizeHtml = (value) =>
+        value && value.trim() ? value.trim() : '<p><br></p>'
+
+      const currentHtml = normalizeHtml(quill.root.innerHTML)
+      const preparedDefaultValue = normalizeHtml(defaultValue)
+
+      if (currentHtml === preparedDefaultValue) {
+        lastDefaultValueRef.current = defaultValue
+        return
+      }
+
+      quill.clipboard.dangerouslyPasteHTML(defaultValue)
+      lastDefaultValueRef.current = defaultValue
+    }, [defaultValue])
 
     // if (typeof window !== 'undefined' && ReactQuill) {
     //   const quill = ReactQuill // Save a reference to ReactQuill

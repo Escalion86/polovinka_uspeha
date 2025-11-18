@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { Suspense, useCallback, useEffect, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 // import QuillEditor from './QuillEditor'
 import InputWrapper from './InputWrapper'
 // import cn from 'classnames'
-import { Suspense } from 'react'
+import modalsFuncAtom from '@state/modalsFuncAtom'
+import { useAtomValue } from 'jotai'
 
 // const Delta = Quill.import('delta')
 
@@ -18,7 +19,55 @@ const EditableTextarea = ({
   required,
   error,
   customButtons,
+  aiSection = 'textEditor',
 }) => {
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const currentHtmlRef = useRef(html)
+
+  useEffect(() => {
+    currentHtmlRef.current = html
+  }, [html])
+
+  const handleChange = useCallback(
+    (value) => {
+      currentHtmlRef.current = value
+      onChange?.(value)
+    },
+    [onChange]
+  )
+
+  const handleAiProcess = useCallback(() => {
+    if (!modalsFunc?.ai?.request) return
+
+    modalsFunc.ai.request({
+      currentHtml: currentHtmlRef.current,
+      section: aiSection,
+      onApply: (aiText) => handleChange(aiText),
+    })
+  }, [aiSection, handleChange, modalsFunc])
+
+  const editorCustomButtons = useMemo(() => {
+    const aiButton = {
+      handlers: {
+        ИИ: () => handleAiProcess(),
+      },
+      container: [['ИИ']],
+    }
+
+    if (!customButtons) return aiButton
+
+    return {
+      handlers: {
+        ...aiButton.handlers,
+        ...(customButtons.handlers || {}),
+      },
+      container: [
+        ...aiButton.container,
+        ...(customButtons.container || []),
+      ],
+    }
+  }, [customButtons, handleAiProcess])
+
   // const [range, setRange] = useState()
   // const [lastChange, setLastChange] = useState()
   // const [readOnly, setReadOnly] = useState(false)
@@ -55,8 +104,8 @@ const EditableTextarea = ({
           defaultValue={html}
           // onSelectionChange={setRange}
           // onTextChange={setLastChange}
-          onChange={onChange}
-          customButtons={customButtons}
+          onChange={handleChange}
+          customButtons={editorCustomButtons}
         />
       </Suspense>
       {/* <div class="controls">
