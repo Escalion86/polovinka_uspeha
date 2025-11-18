@@ -34,7 +34,6 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { selectAtom } from 'jotai/utils'
 
 // const getUsersData = (users) => {
 //   const mans = users.filter((user) => user.gender === 'male')
@@ -89,15 +88,9 @@ const areNewslettersEqual = (prev, next) => {
   return true
 }
 
-const newslettersSelector = selectAtom(
-  newslettersAtomAsync,
-  (value) => (Array.isArray(value) ? value : []),
-  areNewslettersEqual
-)
-
 const ToolsNewsletterContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const newsletters = useAtomValue(newslettersSelector)
+  const newslettersSource = useAtomValue(newslettersAtomAsync)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.newsletters?.add
 
@@ -106,8 +99,21 @@ const ToolsNewsletterContent = () => {
   const debugNewsletters =
     process.env.NEXT_PUBLIC_DEBUG_NEWSLETTERS === 'true'
 
+  const stableNewslettersRef = useRef()
   const rawNewslettersRef = useRef()
   const sortedNewslettersRef = useRef()
+
+  const newsletters = useMemo(() => {
+    const normalized = Array.isArray(newslettersSource)
+      ? newslettersSource
+      : []
+
+    const prev = stableNewslettersRef.current
+    if (areNewslettersEqual(prev, normalized)) return prev ?? normalized
+
+    stableNewslettersRef.current = normalized
+    return normalized
+  }, [newslettersSource])
 
   const sortedNewsletters = useMemo(() => {
     if (!Array.isArray(newsletters)) return []
