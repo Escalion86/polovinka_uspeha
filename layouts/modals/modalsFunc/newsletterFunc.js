@@ -195,8 +195,8 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       )
     }, [selectedUsers, blackList, checkBlackList])
 
-    const sendTypeOptions = useMemo(
-      () => [
+    const sendTypeOptions = useMemo(() => {
+      const options = [
         {
           value: 'both',
           label: 'Whatsapp и Telegram',
@@ -217,9 +217,12 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           label: 'Только Telegram',
           requiresWhatsapp: false,
         },
-      ],
-      []
-    )
+      ]
+
+      if (whatsappActivated) return options
+
+      return options.filter(({ requiresWhatsapp }) => !requiresWhatsapp)
+    }, [whatsappActivated])
 
     const sendTypeTitles = useMemo(
       () =>
