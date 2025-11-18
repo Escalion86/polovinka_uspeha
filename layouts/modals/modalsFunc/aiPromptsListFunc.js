@@ -1,11 +1,11 @@
 import Button from '@components/Button'
 import LoadingSpinner from '@components/LoadingSpinner'
 import { getData } from '@helpers/CRUD'
-import useSnackbar from '@helpers/useSnackbar'
 import locationAtom from '@state/atoms/locationAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import { useAtomValue } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import useSnackbar from '@helpers/useSnackbar'
 
 const aiPromptsListFunc = ({ section, onSelect, userId }) => {
   const AiPromptsListModal = ({ closeModal }) => {
@@ -13,32 +13,42 @@ const aiPromptsListFunc = ({ section, onSelect, userId }) => {
     const loggedUserActive = useAtomValue(loggedUserActiveAtom)
     const [prompts, setPrompts] = useState([])
     const [isLoading, setIsLoading] = useState(true)
-    const snackbar = useSnackbar()
+    const { error } = useSnackbar()
 
     const currentUserId = useMemo(
       () => userId || loggedUserActive?._id,
       [loggedUserActive?._id, userId]
     )
 
-    const loadPrompts = useCallback(async () => {
-      if (!currentUserId) {
-        setIsLoading(false)
-        return
-      }
-      setIsLoading(true)
-      const response = await getData(`/api/${location}/ai-prompts`, {
-        userId: currentUserId,
-        section,
-        sort: JSON.stringify({ createdAt: -1 }),
-      })
-      if (!response) snackbar.error('Не удалось загрузить сохраненные промпты')
-      setPrompts(response || [])
-      setIsLoading(false)
-    }, [currentUserId, location, section, snackbar])
-
     useEffect(() => {
+      let isMounted = true
+
+      const loadPrompts = async () => {
+        if (!currentUserId) {
+          setIsLoading(false)
+          return
+        }
+
+        setIsLoading(true)
+        const response = await getData(`/api/${location}/ai-prompts`, {
+          userId: currentUserId,
+          section,
+          sort: JSON.stringify({ createdAt: -1 }),
+        })
+
+        if (!isMounted) return
+
+        if (!response) error('Не удалось загрузить сохраненные промпты')
+        setPrompts(response || [])
+        setIsLoading(false)
+      }
+
       loadPrompts()
-    }, [loadPrompts])
+
+      return () => {
+        isMounted = false
+      }
+    }, [currentUserId, error, location, section])
 
     const handleSelectPrompt = (prompt) => {
       if (!onSelect) return
