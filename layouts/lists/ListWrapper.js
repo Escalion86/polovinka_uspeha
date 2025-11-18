@@ -10,13 +10,14 @@ const ListWrapper = ({
   itemData,
   itemKey,
 }) => {
+  const safeItemCount = itemCount ?? 0
   return (
     <div className={cn('flex-1 w-full h-full', className)}>
       <AutoSizer>
         {({ height, width }) => (
           <FixedSizeList
             height={height}
-            itemCount={itemCount}
+            itemCount={safeItemCount}
             itemSize={itemSize}
             width={width}
             itemData={itemData}
