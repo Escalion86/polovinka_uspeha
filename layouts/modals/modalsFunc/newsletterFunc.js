@@ -810,7 +810,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                 }
               />
               <Button
-                name="Выбрать пользователей из мероприятия"
+                name="Выбрать данные из мероприятия"
                 icon={faCalendarAlt}
                 onClick={() =>
                   modalsFunc.selectEvents(
@@ -820,7 +820,30 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                       const eventId = data[0]
                       modalsFunc.selectUsersByStatusesFromEvent(
                         eventId,
-                        (users, event) => setSelectedUsers(users)
+                        (users, selectedEvent, withEventText) => {
+                          setSelectedUsers(users)
+                          if (withEventText && selectedEvent) {
+                            const onlyMembersSelected =
+                              users.length > 0 &&
+                              users.every((user) => user?.status === 'member')
+
+                            const notificationText = formatEventNotificationText(
+                              selectedEvent,
+                              {
+                                location,
+                                userStatus: onlyMembersSelected
+                                  ? 'member'
+                                  : 'novice',
+                                withEventLink: true,
+                              }
+                            )
+
+                            setMessageState(
+                              notificationText.replaceAll('\n', '<br>')
+                            )
+                            toggleRerender()
+                          }
+                        }
                       )
                       // setSelectedUsers(users)
                     },
@@ -828,7 +851,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                     null,
                     1,
                     false,
-                    'Выбрать пользователей из мероприятия'
+                    'Выбрать данные из мероприятия'
                     // itemsId,
                     // filterRules,
                     // onChange,
