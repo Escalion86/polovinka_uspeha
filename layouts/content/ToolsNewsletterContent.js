@@ -88,6 +88,48 @@ const areNewslettersEqual = (prev, next) => {
   return true
 }
 
+const getNewslettersDiff = (prev = [], next = []) => {
+  const prevMap = new Map(prev?.map((item) => [item?._id, item]))
+  const nextMap = new Map(next?.map((item) => [item?._id, item]))
+
+  const added = []
+  const removed = []
+  const updated = []
+
+  nextMap.forEach((nextItem, id) => {
+    const prevItem = prevMap.get(id)
+    if (!prevItem) {
+      added.push(id)
+      return
+    }
+
+    const changedFields = Object.keys(nextItem || {}).filter((key) => {
+      if (key === '_id') return false
+
+      const prevValue = prevItem?.[key]
+      const nextValue = nextItem?.[key]
+
+      if (prevValue === nextValue) return false
+
+      try {
+        return JSON.stringify(prevValue) !== JSON.stringify(nextValue)
+      } catch (error) {
+        return true
+      }
+    })
+
+    if (changedFields.length) {
+      updated.push({ id, changedFields })
+    }
+  })
+
+  prevMap.forEach((_, id) => {
+    if (!nextMap.has(id)) removed.push(id)
+  })
+
+  return { added, removed, updated }
+}
+
 const ToolsNewsletterContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const newslettersSource = useAtomValue(newslettersAtomAsync)
@@ -124,12 +166,14 @@ const ToolsNewsletterContent = () => {
     if (!debugNewsletters) return
     const prev = rawNewslettersRef.current
     rawNewslettersRef.current = newsletters
+    const diff = getNewslettersDiff(prev, newsletters)
     console.debug('[Newsletters][raw] изменился источник', {
       time: new Date().toISOString(),
       prevLength: prev?.length ?? 0,
       nextLength: newsletters?.length ?? 0,
       prevFirstId: prev?.[0]?._id,
       nextFirstId: newsletters?.[0]?._id,
+      diff,
     })
   }, [newsletters, debugNewsletters])
 
