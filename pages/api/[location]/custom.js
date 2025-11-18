@@ -42,6 +42,8 @@ const collectionCheck = (collection) => {
       return 'SiteSettings'
     case 'test':
       return 'Test'
+    case 'aiprompts':
+      return 'AiPrompts'
     case 'toolstemplates':
       return 'ToolsTemplates'
     case 'newsletters':
