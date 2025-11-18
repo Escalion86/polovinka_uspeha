@@ -841,6 +841,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                             setMessageState(
                               notificationText.replaceAll('\n', '<br>')
                             )
+                            toggleRerender()
                           }
                         }
                       )

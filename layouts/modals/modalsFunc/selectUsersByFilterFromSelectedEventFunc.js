@@ -25,7 +25,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
     const event = useAtomValue(eventSelector(eventId))
     const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const subEvents = event?.subEvents ?? []
-    const [withEventText, setWithEventText] = useState(false)
+    const [withEventText, setWithEventText] = useState(true)
     const [statusInEvent, setStatusInEvent] = useState({
       participant: true,
       assistant: false,
