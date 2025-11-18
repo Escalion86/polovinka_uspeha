@@ -27,13 +27,13 @@ import { getNounNewsletters } from '@helpers/getNoun'
 // import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
 // import CheckBox from '@components/CheckBox'
 import ContentHeader from '@components/ContentHeader'
-import newslettersAtomAsync from '@state/async/newslettersAtomAsync'
+import newslettersSortedSelector from '@state/selectors/newslettersSortedSelector'
 import NewslettersList from '@layouts/lists/NewslettersList'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 // const getUsersData = (users) => {
 //   const mans = users.filter((user) => user.gender === 'male')
@@ -70,19 +70,103 @@ import { useMemo, useState } from 'react'
 //   }
 // }
 
+const getNewslettersDiff = (prev = [], next = []) => {
+  const prevMap = new Map(prev?.map((item) => [item?._id, item]))
+  const nextMap = new Map(next?.map((item) => [item?._id, item]))
+
+  const added = []
+  const removed = []
+  const updated = []
+
+  nextMap.forEach((nextItem, id) => {
+    const prevItem = prevMap.get(id)
+    if (!prevItem) {
+      added.push(id)
+      return
+    }
+
+    const changedFields = Object.keys(nextItem || {}).filter((key) => {
+      if (key === '_id') return false
+
+      const prevValue = prevItem?.[key]
+      const nextValue = nextItem?.[key]
+
+      if (prevValue === nextValue) return false
+
+      try {
+        return JSON.stringify(prevValue) !== JSON.stringify(nextValue)
+      } catch (error) {
+        return true
+      }
+    })
+
+    if (changedFields.length) {
+      updated.push({ id, changedFields })
+    }
+  })
+
+  prevMap.forEach((_, id) => {
+    if (!nextMap.has(id)) removed.push(id)
+  })
+
+  return { added, removed, updated }
+}
+
 const ToolsNewsletterContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const newsletters = useAtomValue(newslettersAtomAsync)
+  const newslettersSource = useAtomValue(newslettersSortedSelector)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.newsletters?.add
 
   const [sort, setSort] = useState({ createdAt: 'desc' })
   const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
+  const debugNewsletters =
+    process.env.NEXT_PUBLIC_DEBUG_NEWSLETTERS === 'true'
 
-  const sortedNewsletters = useMemo(
-    () => [...newsletters].sort(sortFunc),
-    [newsletters, sort]
-  )
+  const rawNewslettersRef = useRef()
+  const sortedNewslettersRef = useRef()
+
+  const newsletters = useMemo(() => {
+    if (!Array.isArray(newslettersSource)) return []
+    return newslettersSource
+  }, [newslettersSource])
+
+  const sortedNewsletters = useMemo(() => {
+    if (!Array.isArray(newsletters)) return []
+    return [...newsletters].sort(sortFunc)
+  }, [newsletters, sortFunc])
+
+  useEffect(() => {
+    if (!debugNewsletters) return
+    const prev = rawNewslettersRef.current
+    rawNewslettersRef.current = newsletters
+    const diff = getNewslettersDiff(prev, newsletters)
+    console.debug('[Newsletters][raw] изменился источник', {
+      time: new Date().toISOString(),
+      prevLength: prev?.length ?? 0,
+      nextLength: newsletters?.length ?? 0,
+      prevFirstId: prev?.[0]?._id,
+      nextFirstId: newsletters?.[0]?._id,
+      diff,
+    })
+  }, [newsletters, debugNewsletters])
+
+  useEffect(() => {
+    if (!debugNewsletters) return
+    const prev = sortedNewslettersRef.current
+    sortedNewslettersRef.current = sortedNewsletters
+    const prevIds = prev?.slice(0, 5).map((item) => item?._id)
+    const nextIds = sortedNewsletters?.slice(0, 5).map((item) => item?._id)
+
+    console.debug('[Newsletters][sorted] обновился список', {
+      time: new Date().toISOString(),
+      prevLength: prev?.length ?? 0,
+      nextLength: sortedNewsletters?.length ?? 0,
+      prevSampleIds: prevIds,
+      nextSampleIds: nextIds,
+      sort,
+    })
+  }, [debugNewsletters, sort, sortedNewsletters])
 
   return (
     <>
