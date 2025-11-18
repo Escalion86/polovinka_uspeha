@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { Suspense, useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 // import QuillEditor from './QuillEditor'
 import InputWrapper from './InputWrapper'
 // import cn from 'classnames'
-import { Suspense } from 'react'
+import modalsFuncAtom from '@state/modalsFuncAtom'
+import { useAtomValue } from 'jotai'
 
 // const Delta = Quill.import('delta')
 
@@ -18,7 +19,42 @@ const EditableTextarea = ({
   required,
   error,
   customButtons,
+  aiSection = 'textEditor',
 }) => {
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+
+  const handleAiProcess = useCallback(() => {
+    if (!modalsFunc?.ai?.request) return
+
+    modalsFunc.ai.request({
+      currentHtml: html,
+      section: aiSection,
+      onApply: (aiText) => onChange?.(aiText),
+    })
+  }, [aiSection, html, modalsFunc, onChange])
+
+  const editorCustomButtons = useMemo(() => {
+    const aiButton = {
+      handlers: {
+        ИИ: () => handleAiProcess(),
+      },
+      container: [['ИИ']],
+    }
+
+    if (!customButtons) return aiButton
+
+    return {
+      handlers: {
+        ...aiButton.handlers,
+        ...(customButtons.handlers || {}),
+      },
+      container: [
+        ...aiButton.container,
+        ...(customButtons.container || []),
+      ],
+    }
+  }, [customButtons, handleAiProcess])
+
   // const [range, setRange] = useState()
   // const [lastChange, setLastChange] = useState()
   // const [readOnly, setReadOnly] = useState(false)
@@ -56,7 +92,7 @@ const EditableTextarea = ({
           // onSelectionChange={setRange}
           // onTextChange={setLastChange}
           onChange={onChange}
-          customButtons={customButtons}
+          customButtons={editorCustomButtons}
         />
       </Suspense>
       {/* <div class="controls">
