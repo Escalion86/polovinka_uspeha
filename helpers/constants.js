@@ -1874,79 +1874,66 @@ export const CONTENTS = Object.freeze({
   services: {
     Component: ServicesContent,
     name: 'Услуги / Список услуг',
-    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => role?.services?.see,
   },
   servicesUsers: {
     Component: ServicesUsersContent,
     name: 'Услуги / Заявки на услуги',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.servicesUsers?.see,
   },
   myServices: {
     Component: ServicesLoggedUserContent,
     name: 'Услуги / Мои заявки на услуги',
-    accessRoles: ['client', 'moder', 'admin', 'dev'],
     roleAccess: (role) => role?.services?.see,
   },
   directions: {
     Component: DirectionsContent,
     name: 'Сайт / Направления',
-    accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.directions,
   },
   reviews: {
     Component: ReviewsContent,
     name: 'Сайт / Отзывы',
-    accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.reviews,
   },
   additionalBlocks: {
     Component: AdditionalBlocksContent,
     name: 'Сайт / Доп. блоки',
-    accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.additionalBlocks,
   },
   contacts: {
     Component: ContactsContent,
     name: 'Сайт / Контакты на сайте',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.contacts,
   },
   siteTitleSettings: {
     Component: TitleBlockContent,
     name: 'Сайт / Заголовоки',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.siteTitleSettings,
   },
   supervisor: {
     Component: SupervisorBlockContent,
     name: 'Сайт / Руководитель региона',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.generalPage?.supervisor,
   },
   eventsUpcoming: {
     Component: EventsUpcomingContent,
     name: 'Предстоящие мероприятия',
-    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => role?.events?.see,
   },
   eventsPast: {
     Component: EventsPastContent,
     name: 'Прошедшие мероприятия',
-    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => role?.events?.see,
   },
   questionnaire: {
     Component: QuestionnaireContent,
     name: 'Мой профиль',
-    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => true,
   },
   notifications: {
     Component: LoggedUserNotificationsContent,
     name: 'Уведомления',
-    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) =>
       role?.notifications?.newEventsByTags ||
       role?.notifications?.birthdays ||
@@ -1956,14 +1943,11 @@ export const CONTENTS = Object.freeze({
   users: {
     Component: UsersContent,
     name: 'Пользователи',
-    accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => role?.users?.see && !role?.users?.seeMembersOnly,
   },
   members: {
     Component: MembersContent,
     name: 'Участники клуба',
-    accessRoles: ['client'],
-    accessStatuses: ['member'],
     roleAccess: (role, status) =>
       (role?.users?.see && role?.users?.seeMembersOnly) ||
       (status === 'member' && !role?.users?.see),
@@ -1971,183 +1955,148 @@ export const CONTENTS = Object.freeze({
   payments: {
     Component: PaymentsContent,
     name: 'Транзакции / Все транзакции',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.payments?.see,
   },
   // paymentsWithNoEvent: {
   //   Component: PaymentsWithoutEventContent,
   //   name: 'Транзакции / Непривязанные транзакции',
-  //   accessRoles: ['supervisor', 'dev'],
   //   roleAccess: (role) => role?.payments?.paymentsWithNoEvent,
   // },
   paymentsNotParticipantsEvent: {
     Component: PaymentsNotParticipantsEventContent,
     name: 'Транзакции / Не пришли на мероприятие',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.payments?.paymentsNotParticipantsEvent,
   },
   // TODO Временное
   paymentsForNotExistedEvents: {
     Component: PaymentsForNotExistedEventsContent,
     name: 'Транзакции / Со ссылками на несуществующие мероприятия',
-    accessRoles: ['dev'],
     roleAccess: (role) => role?.dev,
   },
   paymentsFromNotExistedUsers: {
     Component: PaymentsFromNotExistedUsersContent,
     name: 'Транзакции / Со ссылками на несуществующих пользователей',
-    accessRoles: ['dev'],
     roleAccess: (role) => role?.dev,
   },
   dev: {
     Component: DevContent,
     name: 'Разработчик',
-    accessRoles: ['dev'],
     roleAccess: (role) => role?.dev,
   },
   whatsappMessaging: {
     Component: WhatsappMessagesContent,
     name: 'Рассылка WhatsApp',
-    accessRoles: ['dev'],
     roleAccess: (role) => role?.dev,
   },
   toolsTextEventsAnons: {
     Component: ToolsTextEventsAnonsContent,
     name: 'Инструменты / Генератор текста анонса мероприятий',
-    accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.anonsTextGenerator,
   },
   toolsEventAnonsInstagram: {
     Component: ToolsEventAnonsInstagramContent,
     name: 'Инструменты / Редактор анонса в Instagram',
-    accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.anonsEventImageGenerator,
   },
   toolsEventAnonsVk: {
     Component: ToolsEventAnonsVkContent,
     name: 'Инструменты / Редактор анонса в VK',
-    accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.anonsEventImageGenerator,
   },
   toolsAnons: {
     Component: ToolsAnonsContent,
     name: 'Инструменты / Редактор анонса списка мероприятий',
-    accessRoles: ['moder', 'supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.anonsEventListImageGenerator,
   },
   toolsImageConstructor: {
     Component: ToolsImageConstructorContent,
     name: 'Инструменты / Конструктор картинок',
-    accessRoles: ['dev'],
     roleAccess: (role) => role?.instruments?.imageConstructor,
   },
   toolsExport: {
     Component: ToolsExportContent,
     name: 'Инструменты / Экспорт данных',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.instruments?.export,
   },
   toolsIndividualWeddings: {
     Component: IndividualWeddingsContent,
     name: 'Инструменты / Индивидуальные свидания',
-    accessRoles: ['president', 'dev'],
     roleAccess: (role) => role?.instruments?.individualWeddings,
   },
   newsletter: {
     Component: ToolsNewsletterContent,
     name: 'Инструменты / Рассылка',
-    accessRoles: ['dev'],
     roleAccess: (role) => role?.newsletters?.see,
     siteConfirm: (siteSettings) => siteSettings?.newsletter?.whatsappActivated,
   },
   histories: {
     Component: HistoriesContent,
     name: 'События / Записи на мероприятия',
-    accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => role?.notices?.histories,
   },
   birthdays: {
     Component: BirthdaysContent,
     name: 'События / Дни рождения',
-    accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role) => role?.notices?.birthdays,
   },
-  // statistics: {
-  //   Component: StatisticsContent,
-  //   name: 'Статистика',
-  //   accessRoles: ['admin', 'dev'],
-  // },
   statisticsFinance: {
     Component: StatisticsFinanceContent,
     name: 'Статистика / Финансы',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.statistics?.finances,
   },
   statisticsUsers: {
     Component: StatisticsUsersContent,
     name: 'Статистика / Пользователи',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.statistics?.users,
   },
   statisticsEvents: {
     Component: StatisticsEventsContent,
     name: 'Статистика / Мероприятия',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.statistics?.events,
   },
   settingsCodeSendService: {
     Component: SettingsCodeSendServiceContent,
     name: 'Настройки / Сервис подтверждения номера',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.phoneConfirmService,
   },
   settingsFabMenu: {
     Component: SettingsFabMenuContent,
     name: 'Настройки / Меню "Вопрос"',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.fabMenu,
   },
   settingsAchievements: {
     Component: SettingsAchievementsContent,
     name: 'Настройки / Достижения',
-    accessRoles: ['supervisor', 'president', 'dev'],
     roleAccess: (role) => role?.siteSettings?.achievements,
   },
   settingsReferralSystem: {
     Component: SettingsReferralSystemContent,
     name: 'Настройки / Реферальная система',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.referralSystem,
   },
   settingsDateStartProject: {
     Component: SettingsDateStartProjectContent,
     name: 'Настройки / Дата старта проекта',
-    accessRoles: ['dev'],
     roleAccess: (role) => role?.siteSettings?.dateStartProject,
   },
   settingsRoles: {
     Component: SettingsRolesContent,
     name: 'Настройки / Роли',
-    accessRoles: ['dev'],
     roleAccess: (role) => role?.siteSettings?.roles,
   },
   settingsHeaderInfoContacts: {
     Component: HeaderInfoContactsContent,
     name: 'Настройки / Информация для вступления в клуб',
-    accessRoles: ['supervisor', 'dev'],
     roleAccess: (role) => role?.siteSettings?.headerInfo,
   },
   userStatistics: {
     Component: UserStatisticsContent,
     name: 'Моя статистика',
-    accessRoles: ['client', 'admin', 'supervisor', 'dev'],
-    accessStatuses: ['member'],
     roleAccess: (role, status) => role?.seeMyStatistics || status === 'member',
   },
   referrals: {
     Component: ReferralsContent,
     name: 'Реферальная программа',
-    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role, status, siteSettings) => {
       const roleId = role?._id
       if (roleId && roleId !== 'client') return true
@@ -2163,26 +2112,22 @@ export const CONTENTS = Object.freeze({
   referralsAdmin: {
     Component: ReferralsAdminContent,
     name: 'Реферальная программа / Администрирование',
-    accessRoles: ['admin', 'president', 'supervisor', 'dev'],
     roleAccess: (role) => role?.payments?.see,
   },
   imagesServer: {
     Component: ImagesServerContent,
     name: 'Сервер картинок',
-    accessRoles: ['dev'],
     roleAccess: (role) => role?.dev,
   },
   likes: {
     Component: LikesContent,
     name: 'Лайки',
-    accessRoles: ['client', 'moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role, status, siteSettings, loggedUser) =>
       !loggedUser?.relationship,
   },
   remindDates: {
     Component: RemindDatesContent,
     name: 'Особые даты ПУ',
-    accessRoles: ['moder', 'admin', 'supervisor', 'dev'],
     roleAccess: (role, status) => role?.siteSettings?.remindDatesEdit,
   },
 })
