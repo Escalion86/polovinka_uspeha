@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import additionalBlocksSchema from '@schemas/additionalBlocksSchema'
 import achievementsSchema from '@schemas/achievementsSchema'
 import achievementsUsersSchema from '@schemas/achievementsUsersSchema'
+import aiPromptsSchema from '@schemas/aiPromptsSchema'
 import directionsSchema from '@schemas/directionsSchema'
 import eventsSchema from '@schemas/eventsSchema'
 import eventsUsersSchema from '@schemas/eventsUsersSchema'
@@ -278,6 +279,10 @@ async function dbConnect(location) {
     connections[location].model(
       'Test',
       mongoose.Schema(testSchema, { timestamps: true })
+    )
+    connections[location].model(
+      'AiPrompts',
+      mongoose.Schema(aiPromptsSchema, { timestamps: true })
     )
     connections[location].model(
       'ToolsTemplates',
