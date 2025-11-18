@@ -27,7 +27,7 @@ import { getNounNewsletters } from '@helpers/getNoun'
 // import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
 // import CheckBox from '@components/CheckBox'
 import ContentHeader from '@components/ContentHeader'
-import newslettersAtomAsync from '@state/async/newslettersAtomAsync'
+import newslettersSortedSelector from '@state/selectors/newslettersSortedSelector'
 import NewslettersList from '@layouts/lists/NewslettersList'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -69,24 +69,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 //     total,
 //   }
 // }
-
-const areNewslettersEqual = (prev, next) => {
-  if (prev === next) return true
-  if (!Array.isArray(prev) || !Array.isArray(next)) return false
-  if (prev.length !== next.length) return false
-
-  for (let i = 0; i < prev.length; i += 1) {
-    const prevItem = prev[i]
-    const nextItem = next[i]
-
-    if (prevItem === nextItem) continue
-    if (!prevItem || !nextItem) return false
-    if (prevItem._id !== nextItem._id) return false
-    if (JSON.stringify(prevItem) !== JSON.stringify(nextItem)) return false
-  }
-
-  return true
-}
 
 const getNewslettersDiff = (prev = [], next = []) => {
   const prevMap = new Map(prev?.map((item) => [item?._id, item]))
@@ -132,7 +114,7 @@ const getNewslettersDiff = (prev = [], next = []) => {
 
 const ToolsNewsletterContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const newslettersSource = useAtomValue(newslettersAtomAsync)
+  const newslettersSource = useAtomValue(newslettersSortedSelector)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
   const addButton = loggedUserActiveRole?.newsletters?.add
 
@@ -141,20 +123,12 @@ const ToolsNewsletterContent = () => {
   const debugNewsletters =
     process.env.NEXT_PUBLIC_DEBUG_NEWSLETTERS === 'true'
 
-  const stableNewslettersRef = useRef()
   const rawNewslettersRef = useRef()
   const sortedNewslettersRef = useRef()
 
   const newsletters = useMemo(() => {
-    const normalized = Array.isArray(newslettersSource)
-      ? newslettersSource
-      : []
-
-    const prev = stableNewslettersRef.current
-    if (areNewslettersEqual(prev, normalized)) return prev ?? normalized
-
-    stableNewslettersRef.current = normalized
-    return normalized
+    if (!Array.isArray(newslettersSource)) return []
+    return newslettersSource
   }, [newslettersSource])
 
   const sortedNewsletters = useMemo(() => {
