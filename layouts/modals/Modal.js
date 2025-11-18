@@ -283,6 +283,21 @@ const Modal = ({
   //   }, 10)
   // }, [])
 
+  const handleSetOnConfirmFunc = useCallback(
+    (func) => setOnConfirmFunc(func ? () => func : null),
+    [setOnConfirmFunc]
+  )
+
+  const handleSetOnConfirm2Func = useCallback(
+    (func) => setOnConfirm2Func(func ? () => func : null),
+    [setOnConfirm2Func]
+  )
+
+  const handleSetOnDeclineFunc = useCallback(
+    (func) => setOnDeclineFunc(func ? () => func : null),
+    [setOnDeclineFunc]
+  )
+
   return (
     <m.div
       className={
@@ -378,15 +393,9 @@ const Modal = ({
             <Suspense fallback={<Skeleton count={12} />}>
               <Children
                 closeModal={closeModal}
-                setOnConfirmFunc={(func) =>
-                  setOnConfirmFunc(func ? () => func : null)
-                }
-                setOnConfirm2Func={(func) =>
-                  setOnConfirm2Func(func ? () => func : null)
-                }
-                setOnDeclineFunc={(func) =>
-                  setOnDeclineFunc(func ? () => func : null)
-                }
+                setOnConfirmFunc={handleSetOnConfirmFunc}
+                setOnConfirm2Func={handleSetOnConfirm2Func}
+                setOnDeclineFunc={handleSetOnDeclineFunc}
                 setOnShowOnCloseConfirmDialog={setOnShowOnCloseConfirmDialog}
                 setDisableConfirm={setDisableConfirm}
                 setDisableDecline={setDisableDecline}
