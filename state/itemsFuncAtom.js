@@ -50,6 +50,9 @@ import newsletterDeleteSelector from './selectors/newsletterDeleteSelector'
 import individualWeddingEditSelector from './selectors/individualWeddingEditSelector'
 import individualWeddingDeleteSelector from './selectors/individualWeddingDeleteSelector'
 
+const debugNewsletters =
+  process.env.NEXT_PUBLIC_DEBUG_NEWSLETTERS === 'true'
+
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
@@ -780,6 +783,12 @@ const itemsFuncGenerator = (get, set) => {
     snackbar.info(
       'Обновление статуса сообщений рассылки запущено. Ждите сообщения о завершении'
     )
+    if (debugNewsletters) {
+      console.debug('[Newsletters][refresh] старт', {
+        time: new Date().toISOString(),
+        newsletterId,
+      })
+    }
     return await putData(
       `/api/${location}/newsletters/${newsletterId}`,
       { messageStatusesUpdate: true },
@@ -787,6 +796,13 @@ const itemsFuncGenerator = (get, set) => {
         props.setNewsletter(data)
         setNotLoadingCard('newsletterStatusMessages' + newsletterId)
         snackbar.success('Обновление статуса сообщение рассылки завершено')
+        if (debugNewsletters) {
+          console.debug('[Newsletters][refresh] завершено', {
+            time: new Date().toISOString(),
+            newsletterId,
+            status: 'success',
+          })
+        }
       },
       (error) => {
         setErrorCard('newsletterStatusMessages' + newsletterId)
@@ -797,6 +813,13 @@ const itemsFuncGenerator = (get, set) => {
         }
         addErrorModal(data)
         console.log(data)
+        if (debugNewsletters) {
+          console.debug('[Newsletters][refresh] завершено с ошибкой', {
+            time: new Date().toISOString(),
+            newsletterId,
+            status: 'error',
+          })
+        }
       },
       false,
       loggedUser?._id
