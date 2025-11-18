@@ -6,7 +6,6 @@ import formatDateTime from '@helpers/formatDateTime'
 // import { getNounMessages } from '@helpers/getNoun'
 import loadingAtom from '@state/atoms/loadingAtom'
 import modalsFuncAtom from '@state/modalsFuncAtom'
-import newsletterCutedSelector from '@state/selectors/newsletterCutedSelector'
 import { useAtomValue } from 'jotai'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 // import { faCheckDouble } from '@fortawesome/free-solid-svg-icons/faCheckDouble'
@@ -20,14 +19,16 @@ import { useMemo } from 'react'
 // import { Suspense } from 'react'
 // import UserCardSkeleton from './Skeletons/UserCardSkeleton'
 
-const NewsletterCard = ({ newsletterId, style }) => {
+const NewsletterCard = ({ newsletter, style }) => {
   // const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const modalsFunc = useAtomValue(modalsFuncAtom)
-  const newsletter = useAtomValue(newsletterCutedSelector(newsletterId))
+  const newsletterId = newsletter?._id
   const loading = useAtomValue(loadingAtom('newsletter' + newsletterId))
   const loadingStatusMessages = useAtomValue(
     loadingAtom('newsletterStatusMessages' + newsletterId)
   )
+
+  if (!newsletter) return null
 
   const sendTypeTitles = {
     both: 'Whatsapp и Telegram',
