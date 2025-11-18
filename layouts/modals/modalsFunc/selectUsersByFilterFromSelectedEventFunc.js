@@ -136,11 +136,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
         const key = subEventId ?? 'null'
         return subEventsFilter[key]
       })
-    }, [
-      filteredByEventStatusUsers,
-      shouldShowSubEventsFilter,
-      subEventsFilter,
-    ])
+    }, [filteredByEventStatusUsers, shouldShowSubEventsFilter, subEventsFilter])
 
     const usersGendersCount = useMemo(
       () => ({
@@ -199,11 +195,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
       })
 
       return counts
-    }, [
-      filteredByEventStatusUsers,
-      shouldShowSubEventsFilter,
-      subEventsFilter,
-    ])
+    }, [filteredByEventStatusUsers, shouldShowSubEventsFilter, subEventsFilter])
 
     const subEventsOptions = useMemo(() => {
       if (!shouldShowSubEventsFilter) return []
@@ -300,16 +292,16 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
     return (
       <FormWrapper flex className="flex-col">
         <div className="flex flex-col gap-y-2">
-          <CheckBox
-            checked={selectByFilter}
-            onChange={() => setSelectByFilter((prev) => !prev)}
-            label="Выбрать участников из мероприятия по фильтру"
-          />
           <div className="flex flex-col items-center justify-center text-lg">
             <div className="flex justify-center w-full text-lg font-bold">
               {event?.title}
             </div>
           </div>
+          <CheckBox
+            checked={selectByFilter}
+            onChange={() => setSelectByFilter((prev) => !prev)}
+            label="Выбрать участников из мероприятия по фильтру"
+          />
         </div>
         {selectByFilter && (
           <>
