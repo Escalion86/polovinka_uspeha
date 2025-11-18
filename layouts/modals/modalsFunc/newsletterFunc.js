@@ -821,10 +821,10 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                       modalsFunc.selectUsersByStatusesFromEvent(
                         eventId,
                         (users, selectedEvent, withEventText) => {
-                          setSelectedUsers(users)
+                          if (users !== undefined) setSelectedUsers(users)
                           if (withEventText && selectedEvent) {
                             const onlyMembersSelected =
-                              users.length > 0 &&
+                              users?.length > 0 &&
                               users.every((user) => user?.status === 'member')
 
                             const notificationText = formatEventNotificationText(

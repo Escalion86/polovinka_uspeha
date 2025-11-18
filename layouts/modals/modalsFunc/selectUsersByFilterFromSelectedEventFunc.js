@@ -230,6 +230,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
     useEffect(() => {
       setOnConfirmFunc(() => {
         if (!selectByFilter) {
+          if (withEventText) onSelect(undefined, event, withEventText)
           closeModal()
           return
         }
@@ -292,16 +293,16 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
     return (
       <FormWrapper flex className="flex-col">
         <div className="flex flex-col gap-y-2">
-          <div className="flex flex-col items-center justify-center text-lg">
-            <div className="flex justify-center w-full text-lg font-bold">
-              {event?.title}
-            </div>
-          </div>
           <CheckBox
             checked={selectByFilter}
             onChange={() => setSelectByFilter((prev) => !prev)}
             label="Выбрать участников из мероприятия по фильтру"
           />
+          <div className="flex flex-col items-center justify-center text-lg">
+            <div className="flex justify-center w-full text-lg font-bold">
+              {event?.title}
+            </div>
+          </div>
         </div>
         {selectByFilter && (
           <>
