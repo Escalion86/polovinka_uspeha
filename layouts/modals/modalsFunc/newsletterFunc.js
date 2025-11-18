@@ -45,8 +45,6 @@ import formatEventNotificationText from '@helpers/formatEventNotificationText'
 import DropdownButtonCopyTextFormats from '@components/DropdownButtons/DropdownButtonCopyTextFormats'
 import DropdownButtonPasteTextFormats from '@components/DropdownButtons/DropdownButtonPasteTextFormats'
 import DOMPurify from 'isomorphic-dompurify'
-import { faRobot } from '@fortawesome/free-solid-svg-icons/faRobot'
-import ModalButtons from '@layouts/modals/ModalButtons'
 import InputImage from '@components/InputImage'
 
 // import TurndownService from 'turndown'
@@ -236,19 +234,6 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       () => getUsersData(filteredSelectedUsers),
       [filteredSelectedUsers]
     )
-
-    const openAIModal = useCallback(() => {
-      if (!modalsFunc?.ai?.request) return
-      modalsFunc.ai.request({
-        currentHtml: messageState,
-        section: 'newsletterText',
-        onApply: (aiText) => {
-          setMessageState(aiText)
-          toggleRerender()
-          info('Ответ ИИ добавлен в текст рассылки')
-        },
-      })
-    }, [info, messageState, modalsFunc, toggleRerender])
 
     const setBlackList = useCallback(
       async (usersIdsBlackList) => {
@@ -515,7 +500,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     const customButtons = useMemo(() => {
       return {
         handlers: {
-          клуб: function (value) {
+          '{клуб}': function (value) {
             // const range = this.quill.getSelection()
             // if (range) {
             //   if (range.length == 0) {
@@ -588,7 +573,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               })
             }
           },
-          муж: function (value) {
+          '{муж}': function (value) {
             if (value) {
               const text1 = prompt(
                 'Введите текст если пользователь мужского пола'
@@ -653,7 +638,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               })
             }
           },
-          пара: function (value) {
+          '{пара}': function (value) {
             if (value) {
               const text1 = prompt('Введите текст если пользователь в паре')
               if (text1 === null) return
@@ -715,7 +700,7 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             }
           },
         },
-        container: [['клуб'], ['муж'], ['пара']],
+        container: [['{клуб}'], ['{муж}'], ['{пара}']],
       }
     }, [])
 
@@ -827,16 +812,14 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
                               users?.length > 0 &&
                               users.every((user) => user?.status === 'member')
 
-                            const notificationText = formatEventNotificationText(
-                              selectedEvent,
-                              {
+                            const notificationText =
+                              formatEventNotificationText(selectedEvent, {
                                 location,
                                 userStatus: onlyMembersSelected
                                   ? 'member'
                                   : 'novice',
                                 withEventLink: true,
-                              }
-                            )
+                              })
 
                             setMessageState(
                               notificationText.replaceAll('\n', '<br>')
@@ -1063,14 +1046,6 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
             // placeholder="Описание мероприятия..."
             required
             customButtons={customButtons}
-          />
-        </div>
-        <div className="flex flex-wrap gap-2 mt-2">
-          <Button
-            name="Обработать с помощью ИИ"
-            outline
-            icon={faRobot}
-            onClick={openAIModal}
           />
         </div>
         <DropdownButtonPasteTextFormats
