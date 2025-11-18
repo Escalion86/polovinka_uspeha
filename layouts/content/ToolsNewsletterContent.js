@@ -79,10 +79,10 @@ const ToolsNewsletterContent = () => {
   const [sort, setSort] = useState({ createdAt: 'desc' })
   const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
 
-  const sortedNewsletters = useMemo(
-    () => [...newsletters].sort(sortFunc),
-    [newsletters, sort]
-  )
+  const sortedNewsletters = useMemo(() => {
+    if (!Array.isArray(newsletters)) return []
+    return [...newsletters].sort(sortFunc)
+  }, [newsletters, sortFunc])
 
   return (
     <>
