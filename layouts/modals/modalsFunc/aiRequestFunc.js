@@ -34,8 +34,7 @@ const aiRequestFunc = ({
       useState(includeCurrentText)
     const [aiResponse, setAIResponse] = useState('')
     const [aiIsLoading, setAiIsLoading] = useState(false)
-    const [promptTitle, setPromptTitle] = useState('')
-    const [isSavingPrompt, setIsSavingPrompt] = useState(false)
+    const [lastPromptTitle, setLastPromptTitle] = useState('')
 
     const canApplyAIResponse = !!aiResponse && !aiIsLoading
 
@@ -139,17 +138,11 @@ const aiRequestFunc = ({
       []
     )
 
-    const handleSavePrompt = useCallback(async () => {
+    const handleSavePrompt = useCallback(() => {
       const promptText = aiPrompt.trim()
-      const title = promptTitle.trim()
 
       if (!promptText) {
         error('Введите запрос для ИИ, чтобы сохранить его')
-        return
-      }
-
-      if (!title) {
-        error('Введите заголовок промпта')
         return
       }
 
@@ -158,40 +151,57 @@ const aiRequestFunc = ({
         return
       }
 
-      setIsSavingPrompt(true)
-      try {
-        const response = await postData(
-          `/api/${location}/ai-prompts`,
-          {
-            title,
-            prompt: promptText,
-            section,
-            userId: loggedUserActive._id,
-          },
-          null,
-          null,
-          false,
-          loggedUserActive._id
-        )
+      if (!modalsFunc?.ai?.prompts?.save) return
 
-        if (!response) {
-          error('Не удалось сохранить промпт')
-          return
-        }
+      modalsFunc.ai.prompts.save({
+        initialTitle: lastPromptTitle,
+        onSubmit: async (title, closeSaveModal, setIsSubmitting) => {
+          const trimmedTitle = title?.trim()
 
-        success('Промпт сохранен')
-      } catch (err) {
-        console.error(err)
-        error('Не удалось сохранить промпт')
-      } finally {
-        setIsSavingPrompt(false)
-      }
+          if (!trimmedTitle) {
+            error('Введите название промпта')
+            return
+          }
+
+          setIsSubmitting(true)
+          try {
+            const response = await postData(
+              `/api/${location}/ai-prompts`,
+              {
+                title: trimmedTitle,
+                prompt: promptText,
+                section,
+                userId: loggedUserActive._id,
+              },
+              null,
+              null,
+              false,
+              loggedUserActive._id
+            )
+
+            if (!response) {
+              error('Не удалось сохранить промпт')
+              return
+            }
+
+            setLastPromptTitle(trimmedTitle)
+            success('Промпт сохранен')
+            closeSaveModal()
+          } catch (err) {
+            console.error(err)
+            error('Не удалось сохранить промпт')
+          } finally {
+            setIsSubmitting(false)
+          }
+        },
+      })
     }, [
       aiPrompt,
       error,
+      lastPromptTitle,
       location,
       loggedUserActive,
-      promptTitle,
+      modalsFunc,
       section,
       success,
     ])
@@ -209,7 +219,7 @@ const aiRequestFunc = ({
         userId: loggedUserActive._id,
         onSelect: (savedPrompt) => {
           if (savedPrompt?.prompt) setAIPrompt(savedPrompt.prompt)
-          if (savedPrompt?.title) setPromptTitle(savedPrompt.title)
+          if (savedPrompt?.title) setLastPromptTitle(savedPrompt.title)
         },
       })
     }, [error, loggedUserActive, modalsFunc, section])
@@ -262,7 +272,6 @@ const aiRequestFunc = ({
           <Button
             name="Сохранить промпт"
             onClick={handleSavePrompt}
-            loading={isSavingPrompt}
             outline
           />
           <Button

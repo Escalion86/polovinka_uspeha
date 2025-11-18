@@ -883,6 +883,12 @@ const modalsFuncGenerator = (get, set) => {
               props
             )
           ),
+        save: (props) =>
+          addModal(
+            require('../layouts/modals/modalsFunc/aiPromptSaveFunc').default(
+              props
+            )
+          ),
       },
     },
     external: {
