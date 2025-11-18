@@ -25,9 +25,7 @@ const aiPromptSaveFunc = ({ initialTitle = '', onSubmit }) => {
     useEffect(() => {
       if (!onSubmit) return
 
-      setOnConfirmFunc?.(() => () =>
-        onSubmit(title, closeModal, setIsSubmitting)
-      )
+      setOnConfirmFunc?.(() => onSubmit(title, closeModal, setIsSubmitting))
     }, [closeModal, onSubmit, setOnConfirmFunc, title])
 
     return (

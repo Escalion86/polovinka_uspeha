@@ -2027,7 +2027,7 @@ export const CONTENTS = Object.freeze({
     Component: ToolsNewsletterContent,
     name: 'Инструменты / Рассылка',
     roleAccess: (role) => role?.newsletters?.see,
-    siteConfirm: (siteSettings) => siteSettings?.newsletter?.whatsappActivated,
+    // siteConfirm: (siteSettings) => siteSettings?.newsletter?.whatsappActivated,
   },
   histories: {
     Component: HistoriesContent,
