@@ -25,6 +25,8 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
     const event = useAtomValue(eventSelector(eventId))
     const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
     const subEvents = event?.subEvents ?? []
+    const [selectByFilter, setSelectByFilter] = useState(true)
+    const [withEventText, setWithEventText] = useState(true)
     const [statusInEvent, setStatusInEvent] = useState({
       participant: true,
       assistant: false,
@@ -235,6 +237,11 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
 
     useEffect(() => {
       setOnConfirmFunc(() => {
+        if (!selectByFilter) {
+          closeModal()
+          return
+        }
+
         const fullyFilteredUsers = filteredBySubEventUsers
           .filter(
             ({ user }) =>
@@ -247,11 +254,18 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
           )
           .map(({ user }) => user)
         // if (checkAddEventDescription)
-        onSelect(fullyFilteredUsers, event)
+        onSelect(fullyFilteredUsers, event, withEventText)
         // else onSelect(fullyFilteredUsers)
         closeModal()
       })
-    }, [eventUsers, filteredBySubEventUsers, filter])
+    }, [
+      closeModal,
+      eventUsers,
+      filteredBySubEventUsers,
+      filter,
+      selectByFilter,
+      withEventText,
+    ])
 
     const statusInEventBottonsConfig = useMemo(
       () =>
@@ -285,68 +299,82 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
 
     return (
       <FormWrapper flex className="flex-col">
-        <div className="flex flex-col items-center justify-center text-lg">
-          <div className="flex justify-center w-full text-lg font-bold">
-            {event?.title}
+        <div className="flex flex-col gap-y-2">
+          <CheckBox
+            checked={selectByFilter}
+            onChange={() => setSelectByFilter((prev) => !prev)}
+            label="Выбрать участников из мероприятия по фильтру"
+          />
+          <div className="flex flex-col items-center justify-center text-lg">
+            <div className="flex justify-center w-full text-lg font-bold">
+              {event?.title}
+            </div>
           </div>
         </div>
-        {/* <div> */}
-        <Divider title="Фильтр по статусу на мероприятии" />
-        <ContentHeader noBorder>
-          <ToggleButtons
-            value={statusInEvent}
-            onChange={setStatusInEvent}
-            buttonsConfig={statusInEventBottonsConfig}
-          />
-        </ContentHeader>
-        {shouldShowSubEventsFilter && (
+        {selectByFilter && (
           <>
-            <Divider title="Фильтр по вариантам участия" />
+            <Divider title="Фильтр по статусу на мероприятии" />
             <ContentHeader noBorder>
-              <div className="flex flex-col gap-y-1">
-                {subEventsOptions.map(({ value, name }) => (
-                  <CheckBox
-                    key={value}
-                    checked={!!subEventsFilter[value]}
-                    onClick={() => handleSubEventToggle(value)}
-                    label={`${name}${usersSubEventsCount[value] ?? ''}`}
-                  />
-                ))}
-              </div>
+              <ToggleButtons
+                value={statusInEvent}
+                onChange={setStatusInEvent}
+                buttonsConfig={statusInEventBottonsConfig}
+              />
             </ContentHeader>
+            {shouldShowSubEventsFilter && (
+              <>
+                <Divider title="Фильтр по вариантам участия" />
+                <ContentHeader noBorder>
+                  <div className="flex flex-col gap-y-1">
+                    {subEventsOptions.map(({ value, name }) => (
+                      <CheckBox
+                        key={value}
+                        checked={!!subEventsFilter[value]}
+                        onClick={() => handleSubEventToggle(value)}
+                        label={`${name}${usersSubEventsCount[value] ?? ''}`}
+                      />
+                    ))}
+                  </div>
+                </ContentHeader>
+              </>
+            )}
+            <Divider title="Фильтр по пользователям" />
+            <ContentHeader noBorder>
+              <GenderToggleButtons
+                value={filter.gender}
+                onChange={(value) =>
+                  setFilter((state) => ({ ...state, gender: value }))
+                }
+                hideNullGender
+                names={usersGendersCount}
+              />
+              <StatusUserToggleButtons
+                value={filter.status}
+                onChange={(value) =>
+                  setFilter((state) => ({ ...state, status: value }))
+                }
+                names={usersStatusCount}
+              />
+              <RelationshipUserToggleButtons
+                value={filter.relationship}
+                onChange={(value) =>
+                  setFilter((state) => ({ ...state, relationship: value }))
+                }
+                names={usersRelationshipCount}
+              />
+              {/* <UsersFilter value={filter} onChange={setFilter} /> */}
+            </ContentHeader>
+            <div>
+              Итого выбрано:{' '}
+              {eventUsers.filter(({ status }) => statusInEvent[status]).length}
+            </div>
           </>
         )}
-        {/* </div> */}
-        <Divider title="Фильтр по пользователям" />
-        <ContentHeader noBorder>
-          <GenderToggleButtons
-            value={filter.gender}
-            onChange={(value) =>
-              setFilter((state) => ({ ...state, gender: value }))
-            }
-            hideNullGender
-            names={usersGendersCount}
-          />
-          <StatusUserToggleButtons
-            value={filter.status}
-            onChange={(value) =>
-              setFilter((state) => ({ ...state, status: value }))
-            }
-            names={usersStatusCount}
-          />
-          <RelationshipUserToggleButtons
-            value={filter.relationship}
-            onChange={(value) =>
-              setFilter((state) => ({ ...state, relationship: value }))
-            }
-            names={usersRelationshipCount}
-          />
-          {/* <UsersFilter value={filter} onChange={setFilter} /> */}
-        </ContentHeader>
-        <div>
-          Итого выбрано:{' '}
-          {eventUsers.filter(({ status }) => statusInEvent[status]).length}
-        </div>
+        <CheckBox
+          checked={withEventText}
+          label="Взять текст из мероприятия"
+          onChange={() => setWithEventText((prev) => !prev)}
+        />
         {/* <CheckBox
           checked={checkAddEventDescription}
           onChange={() => setCheckAddEventDescription}
@@ -356,7 +384,7 @@ const selectUsersByFilterFromSelectedEventFunc = (eventId, onSelect) => {
   }
 
   return {
-    title: `Выбор участников на мероприятии по фильтру`,
+    title: `Выбор данных из мероприятия`,
     // declineButtonName: 'Закрыть',
     closeButtonShow: true,
     Children: SelectUsersByFilterFromSelectedEventModal,
