@@ -88,7 +88,7 @@ const CardButtons = ({
   const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
   const isLoggedUserPresident = useAtomValue(isLoggedUserPresidentSelector)
   const isLoggedUserDev = useAtomValue(isLoggedUserDevSelector)
-  const siteSettings = useAtomValue(siteSettingsAtom)
+  // const siteSettings = useAtomValue(siteSettingsAtom)
 
   if (!item) return null
 
@@ -135,7 +135,6 @@ const CardButtons = ({
         loggedUserActiveRole?.payments?.seeHistory) ||
       (typeOfItem === 'user' && loggedUserActiveRole?.users?.seeHistory))
   const sendNotifications =
-    false && // временно скрыто
     typeOfItem === 'event' &&
     loggedUserActiveRole?.newsletters?.add &&
     item.showOnSite
