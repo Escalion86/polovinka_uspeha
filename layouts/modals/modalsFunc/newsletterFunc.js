@@ -19,7 +19,7 @@ import getNoun, { getNounUsers } from '@helpers/getNoun'
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons/faCalendarAlt'
 // import Divider from '@components/Divider'
-import { faCancel } from '@fortawesome/free-solid-svg-icons/faCancel'
+// import { faCancel } from '@fortawesome/free-solid-svg-icons/faCancel'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserActiveAtom from '@state/atoms/loggedUserActiveAtom'
 import useSnackbar from '@helpers/useSnackbar'
@@ -31,6 +31,8 @@ import InputWrapper from '@components/InputWrapper'
 import RadioBox from '@components/RadioBox'
 import itemsFuncAtom from '@state/itemsFuncAtom'
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake'
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus'
+import { faUserMinus } from '@fortawesome/free-solid-svg-icons/faUserMinus'
 import extractVariables from '@helpers/extractVariables'
 import replaceVariableInTextTemplate from '@helpers/replaceVariableInTextTemplate'
 import GenderToggleButtons from '@components/IconToggleButtons/GenderToggleButtons'
@@ -111,6 +113,22 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
     const whatsappActivated = siteSettings?.newsletter?.whatsappActivated
 
     const blackList = siteSettings?.newsletter?.blackList || []
+
+    const blacklistUsers = useMemo(
+      () =>
+        (usersAll || []).filter(
+          (user) => user?._id && blackList.includes(user._id)
+        ),
+      [blackList, usersAll]
+    )
+
+    const availableUsersForBlacklist = useMemo(
+      () =>
+        (usersAll || []).filter(
+          (user) => user?._id && !blackList.includes(user._id)
+        ),
+      [blackList, usersAll]
+    )
 
     const [checkBlackList, setCheckBlackList] = useState(true)
     const [previewVariables, setPreviewVariables] = useState({
@@ -250,16 +268,10 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
           },
           (data) => {
             setSiteSettings(data)
-            success('Черный список обновлен')
-            // setMessageState('Данные черного списка обновлены успешно')
-            // setIsWaitingToResponse(false)
-            // refreshPage()
+            success('Черный список обновлен')
           },
           () => {
-            error('Ошибка обновления черного списка')
-            // setMessageState('')
-            // addError({ response: 'Ошибка обновления данных черного списка' })
-            // setIsWaitingToResponse(false)
+            error('Не удалось обновить черный список')
           },
           false,
           loggedUserActive?._id
@@ -267,6 +279,106 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
       },
       [location, loggedUserActive]
     )
+
+    const openEditBlacklistSelector = useCallback(
+      (usersSource, title, onSelect) => {
+        if (!usersSource?.length) return false
+        modalsFunc.selectUsers(
+          usersSource,
+          {},
+          onSelect,
+          [],
+          undefined,
+          undefined,
+          true,
+          title,
+          false
+        )
+        return true
+      },
+      [modalsFunc]
+    )
+
+    const openBlacklistSelector = useCallback(
+      (usersSource, title, onSelect) => {
+        if (!usersSource?.length) return false
+        modalsFunc.selectUsers(
+          undefined,
+          {},
+          onSelect,
+          [],
+          usersSource.map(({ _id }) => _id),
+          undefined,
+          true,
+          title,
+          false
+        )
+        return true
+      },
+      [modalsFunc]
+    )
+
+    const handleBlacklistEdit = useCallback(() => {
+      if (
+        !openEditBlacklistSelector(
+          blacklistUsers,
+          'Редактирование черного списка рассылки',
+          (selectedUsers) => {
+            if (!selectedUsers) return
+            const ids = selectedUsers.map((user) => user?._id).filter(Boolean)
+            setBlackList(ids)
+          }
+        )
+      ) {
+        info('Черный список обновлен')
+      }
+    }, [blacklistUsers, info, openBlacklistSelector, setBlackList])
+
+    const handleBlacklistAdd = useCallback(() => {
+      if (
+        !openBlacklistSelector(
+          availableUsersForBlacklist,
+          'Добавление в черный список рассылки',
+          (selectedUsers) => {
+            if (!selectedUsers?.length) return
+            const idsToAdd = selectedUsers
+              .map((user) => user?._id)
+              .filter(Boolean)
+            if (!idsToAdd.length) return
+            const updated = Array.from(new Set([...blackList, ...idsToAdd]))
+            setBlackList(updated)
+          }
+        )
+      ) {
+        info('Черный список обновлен')
+      }
+    }, [
+      availableUsersForBlacklist,
+      blackList,
+      info,
+      openBlacklistSelector,
+      setBlackList,
+    ])
+
+    const handleBlacklistRemove = useCallback(() => {
+      if (
+        !openBlacklistSelector(
+          blacklistUsers,
+          'Удаление из черного списка рассылки',
+          (selectedUsers) => {
+            if (!selectedUsers?.length) return
+            const idsToRemove = new Set(
+              selectedUsers.map((user) => user?._id).filter(Boolean)
+            )
+            if (!idsToRemove.size) return
+            const updated = blackList.filter((id) => !idsToRemove.has(id))
+            setBlackList(updated)
+          }
+        )
+      ) {
+        info('Черный список обновлен')
+      }
+    }, [blackList, blacklistUsers, info, openBlacklistSelector, setBlackList])
 
     const prepearedText = useMemo(() => {
       // var turndownService = new TurndownService()
@@ -883,38 +995,39 @@ const newsletterFunc = (newsletterId, { name, users, event, message }) => {
               />
 
               {checkBlackList && (
-                <>
-                  <Button
-                    name={'Черный список (' + blackList.length + ' чел.)'}
-                    icon={faCancel}
-                    onClick={() =>
-                      modalsFunc.selectUsers(
-                        usersAll.filter((user) => blackList.includes(user._id)),
-                        {},
-                        (selectedUsers) => {
-                          const selectedUsersIds = selectedUsers.map(
-                            (user) => user._id
-                          )
-                          setBlackList(selectedUsersIds)
-                        },
-                        [], //exceptedIds
-                        undefined, //acceptedIds
-                        undefined, // maxUsers
-                        true, // canSelectNone
-                        'Выбор черного списка', //  modalTitle
-                        false // getFullUser
-                      )
-                    }
-                  />
-                  {blockedUsersCount > 0 && (
+                <InputWrapper
+                  label={`Чёрный список (${getNounUsers(blackList.length)})`}
+                  wrapperClassName="flex-col gap-y-2"
+                >
+                  <div className="flex flex-wrap gap-1">
+                    <Button
+                      name="Редактировать"
+                      icon={faPencil}
+                      onClick={handleBlacklistEdit}
+                      disabled={!blacklistUsers.length}
+                    />
+                    <Button
+                      name="Добавить"
+                      icon={faUserPlus}
+                      onClick={handleBlacklistAdd}
+                      disabled={!availableUsersForBlacklist.length}
+                    />
+                    <Button
+                      name="Удалить"
+                      icon={faUserMinus}
+                      onClick={handleBlacklistRemove}
+                      disabled={!blacklistUsers.length}
+                    />
+                  </div>
+                  {checkBlackList && blockedUsersCount > 0 && (
                     <div className="flex text-danger">
-                      Отфильтровано: {getNounUsers(blockedUsersCount)}
+                      Скрыто: {getNounUsers(blockedUsersCount)}
                     </div>
                   )}
-                </>
+                </InputWrapper>
               )}
               <CheckBox
-                label="Использовать черный список"
+                label="Учитывать черный список"
                 checked={checkBlackList}
                 onChange={() => setCheckBlackList((checked) => !checked)}
                 noMargin
