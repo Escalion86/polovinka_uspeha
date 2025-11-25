@@ -112,6 +112,10 @@ const selectUsersFunc = (
         checked: true,
         unchecked: true,
       },
+      consent: {
+        consented: true,
+        notConsented: true,
+      },
       ages: { min: minMaxAges?.min || 18, max: minMaxAges?.max || 70 },
     })
 
@@ -162,6 +166,8 @@ const selectUsersFunc = (
                 !selectedUsersIds.includes(user._id)) &&
                 filter.checked.unchecked) ||
                 selectedUsersIds.includes(user._id)) &&
+              ((filter.consent.consented && user.consentToMailing) ||
+                (filter.consent.notConsented && !user.consentToMailing)) &&
               (!filter.ages ||
                 (user.age >= (filter.ages.min || 18) &&
                   user.age <= (filter.ages.max || 70)))

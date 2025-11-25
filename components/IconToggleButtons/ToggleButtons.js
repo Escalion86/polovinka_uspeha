@@ -42,20 +42,28 @@ const ToggleButtons = ({
       size={windowDimensionsNum < 2 ? 'small' : undefined}
       className="text-white"
     >
-      {buttonsConfig.map((cfg) => {
+      {(buttonsConfig || []).map((cfg) => {
+        const isActive = !!value[cfg.value]
+        const buttonColor = cfg.color || 'primary'
+        const muiColor =
+          buttonColor.indexOf('-') > 0
+            ? buttonColor.slice(0, buttonColor.indexOf('-'))
+            : buttonColor
         return (
           <Button
             key={cfg.value}
             onClick={() => onClick(cfg)}
-            variant={value[cfg.value] ? 'contained' : 'outlined'}
-            color={
-              cfg.color.indexOf('-') > 0
-                ? cfg.color.slice(0, cfg.color.indexOf('-'))
-                : cfg.color
-            }
+            variant={isActive ? 'contained' : 'outlined'}
+            color={muiColor}
             className={cn(
               'flex items-center gap-x-1',
-              value[cfg.value] ? '' : `text-${cfg.color}`
+              cfg.className,
+              isActive
+                ? cfg.activeClassName
+                : cfg.inactiveClassName,
+              !isActive && cfg.color && !cfg.skipDefaultColorClass
+                ? `text-${cfg.color}`
+                : null
             )}
             aria-label={cfg.value}
           >
