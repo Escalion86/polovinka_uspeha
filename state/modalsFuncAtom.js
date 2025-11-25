@@ -636,6 +636,10 @@ const modalsFuncGenerator = (get, set) => {
             onSubmit
           )
         ),
+      issue: () =>
+        addModal(
+          require('../layouts/modals/modalsFunc/achievementIssueFunc').default()
+        ),
     },
     service: {
       add: (serviceId) =>

@@ -1,13 +1,12 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import Image from 'next/image'
 
 import Button from '@components/Button'
 import FormWrapper from '@components/FormWrapper'
 import LoadingSpinner from '@components/LoadingSpinner'
-import Textarea from '@components/Textarea'
 import achievementsAtom from '@state/atoms/achievementsAtom'
 import achievementsUsersAtom from '@state/atoms/achievementsUsersAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
@@ -23,6 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/free-solid-svg-icons/faPen'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
+import { faGift } from '@fortawesome/free-solid-svg-icons/faGift'
 
 const AchievementTile = ({
   achievement,
@@ -122,26 +122,10 @@ const SettingsAchievementsContent = () => {
   const [achievements, setAchievements] = useAtom(achievementsAtom)
   const [achievementsUsers, setAchievementsUsers] = useAtom(achievementsUsersAtom)
 
-  const [selectedUsers, setSelectedUsers] = useState([])
-  const [selectedAchievementId, setSelectedAchievementId] = useState('')
-  const [selectedEventId, setSelectedEventId] = useState('')
-  const [issueComment, setIssueComment] = useState('')
-  const [isIssuing, setIssuing] = useState(false)
   const [isCreating, setCreating] = useState(false)
   const [savingIds, setSavingIds] = useState([])
   const [deletingIds, setDeletingIds] = useState([])
   const [removingUserAchievementIds, setRemovingUserAchievementIds] = useState([])
-
-  useEffect(() => {
-    if (
-      selectedAchievementId &&
-      !achievements.some(
-        ({ _id }) => String(_id) === String(selectedAchievementId)
-      )
-    ) {
-      setSelectedAchievementId('')
-    }
-  }, [achievements, selectedAchievementId])
 
   const openCreateAchievementModal = () => {
     modalsFunc.achievement.create(async (values) => {
@@ -260,104 +244,6 @@ const SettingsAchievementsContent = () => {
     })
   }
 
-  const openUsersModal = () => {
-    modalsFunc.selectUsers(
-      selectedUsers,
-      null,
-      (usersList) => setSelectedUsers(usersList ?? []),
-      null,
-      null,
-      null,
-      true,
-      'Выбор пользователей',
-      false
-    )
-  }
-
-  const removeSelectedUser = (userId) => {
-    setSelectedUsers((state) => state.filter((user) => user._id !== userId))
-  }
-
-  const handleIssueAchievement = async () => {
-    if (!selectedAchievementId) {
-      snackbar.error('Выберите достижение для выдачи')
-      return
-    }
-    if (selectedUsers.length === 0) {
-      snackbar.error('Выберите хотя бы одного пользователя')
-      return
-    }
-
-    setIssuing(true)
-    const event = events.find(({ _id }) => String(_id) === selectedEventId)
-    const createdRecords = []
-    const skippedUsers = []
-    const normalizedAchievementId = String(selectedAchievementId)
-    const alreadyIssuedUserIds = new Set(
-      (achievementsUsers ?? [])
-        .filter(
-          ({ achievementId }) =>
-            String(achievementId) === normalizedAchievementId
-        )
-        .map(({ userId }) => String(userId))
-    )
-
-    try {
-      for (const user of selectedUsers) {
-        const userId = String(user._id)
-        if (alreadyIssuedUserIds.has(userId)) {
-          skippedUsers.push(user)
-          continue
-        }
-
-        const payload = {
-          achievementId: selectedAchievementId,
-          userId: user._id,
-          eventId: selectedEventId || null,
-          eventName: event?.title ?? '',
-          comment: issueComment?.trim() ?? '',
-        }
-
-        const created = await postData(
-          `/api/${location}/achievementsusers`,
-          payload,
-          null,
-          null,
-          false,
-          loggedUser?._id
-        )
-
-        if (created) {
-          createdRecords.push(created)
-          alreadyIssuedUserIds.add(userId)
-        }
-      }
-
-      if (createdRecords.length > 0) {
-        setAchievementsUsers((state) => [...state, ...createdRecords])
-        snackbar.success(
-          `Достижение выдано ${createdRecords.length} пользовател${
-            createdRecords.length === 1 ? 'ю' : 'ям'
-          }`
-        )
-        setSelectedUsers([])
-        setIssueComment('')
-      }
-
-      if (skippedUsers.length > 0) {
-        snackbar.info(
-          `Пропущено ${skippedUsers.length} пользовател${
-            skippedUsers.length === 1 ? 'я' : 'ей'
-          }, у которых уже есть это достижение`
-        )
-      }
-    } catch (error) {
-      snackbar.error('Не удалось выдать достижение')
-    } finally {
-      setIssuing(false)
-    }
-  }
-
   const achievementsUsersDetailed = useMemo(() => {
     return achievementsUsers
       ?.map((item) => {
@@ -408,23 +294,32 @@ const SettingsAchievementsContent = () => {
     }
   }
 
-  const isIssueDisabled =
-    !selectedAchievementId || selectedUsers.length === 0 || isIssuing
+  const openIssueAchievementModal = () => {
+    modalsFunc.achievement.issue()
+  }
 
   return (
     <div className="flex flex-col flex-1 h-screen max-h-screen gap-y-4 overflow-y-auto p-2">
       <FormWrapper className="flex flex-col gap-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold">Достижения</h2>
-          {achievements.length > 0 && (
+          <div className="flex gap-2">
             <Button
-              name="Создать достижение"
-              icon={faPlus}
-              onClick={openCreateAchievementModal}
-              disabled={isCreating}
-              loading={isCreating}
+              name="Выдать достижения"
+              icon={faGift}
+              onClick={openIssueAchievementModal}
+              disabled={achievements.length === 0}
             />
-          )}
+            {achievements.length > 0 && (
+              <Button
+                name="Создать достижение"
+                icon={faPlus}
+                onClick={openCreateAchievementModal}
+                disabled={isCreating}
+                loading={isCreating}
+              />
+            )}
+          </div>
         </div>
         {achievements.length > 0 ? (
           <div className="grid gap-3 phoneH:grid-cols-2 laptop:grid-cols-3 2xl:grid-cols-4">
@@ -456,94 +351,6 @@ const SettingsAchievementsContent = () => {
             />
           </div>
         )}
-      </FormWrapper>
-
-      <FormWrapper className="flex flex-col gap-y-3">
-        <h2 className="text-lg font-semibold">Выдача достижений пользователям</h2>
-        <div className="grid gap-3 laptop:grid-cols-2">
-          <div className="flex flex-col gap-y-2">
-            <div className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Выбранные пользователи
-            </div>
-            <div className="flex flex-wrap gap-2 rounded-lg border border-gray-200 bg-white p-2 min-h-[3.25rem]">
-              {selectedUsers.length === 0 && (
-                <div className="text-sm text-gray-500">Пользователи не выбраны</div>
-              )}
-              {selectedUsers.map((user) => (
-                <div
-                  key={user._id}
-                  className="flex items-center gap-x-2 rounded-full bg-gray-100 px-3 py-1 text-sm"
-                >
-                  <span>{getUserFullName(user)}</span>
-                  <button
-                    type="button"
-                    className="text-gray-500 transition hover:text-red-600"
-                    onClick={() => removeSelectedUser(user._id)}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-            <Button name="Выбрать пользователей" onClick={openUsersModal} />
-          </div>
-          <div className="flex flex-col gap-y-2">
-            <label className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Достижение
-            </label>
-            <select
-              className="h-10 rounded border border-gray-300 bg-white px-3 text-sm focus:border-general focus:outline-none"
-              value={selectedAchievementId}
-              onChange={(event) => setSelectedAchievementId(event.target.value)}
-            >
-              <option value="">Не выбрано</option>
-              {achievements.map((achievement) => (
-                <option key={achievement._id} value={achievement._id}>
-                  {achievement.name}
-                </option>
-              ))}
-            </select>
-            <label className="pt-2 text-xs font-medium uppercase tracking-wide text-gray-500">
-              Мероприятие (необязательно)
-            </label>
-            <select
-              className="h-10 rounded border border-gray-300 bg-white px-3 text-sm focus:border-general focus:outline-none"
-              value={selectedEventId}
-              onChange={(event) => setSelectedEventId(event.target.value)}
-            >
-              <option value="">Не выбрано</option>
-              {events
-                .slice()
-                .sort((a, b) => {
-                  const toTime = (item) => {
-                    const value = item?.dateStart || item?.date
-                    const time = value ? new Date(value).getTime() : 0
-                    return Number.isNaN(time) ? 0 : time
-                  }
-                  return toTime(b) - toTime(a)
-                })
-                .map((event) => (
-                  <option key={event._id} value={event._id}>
-                    {event.title}
-                  </option>
-                ))}
-            </select>
-          </div>
-        </div>
-        <Textarea
-          label="Комментарий (необязательно)"
-          value={issueComment}
-          onChange={setIssueComment}
-          rows={3}
-        />
-        <div className="flex gap-2">
-          <Button
-            name="Выдать достижение"
-            onClick={handleIssueAchievement}
-            disabled={isIssueDisabled}
-            loading={isIssuing}
-          />
-        </div>
       </FormWrapper>
 
       <FormWrapper className="flex flex-col gap-y-3">
@@ -636,3 +443,6 @@ const SettingsAchievementsContent = () => {
 }
 
 export default SettingsAchievementsContent
+
+
+

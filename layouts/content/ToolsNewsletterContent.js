@@ -15,6 +15,7 @@ import { useAtomValue } from 'jotai'
 // import EditableTextarea from '@components/EditableTextarea'
 // import convertHtmlToText from '@helpers/convertHtmlToText'
 // import pasteFromClipboard from '@helpers/pasteFromClipboard'
+import Button from '@components/Button'
 import { getNounNewsletters } from '@helpers/getNoun'
 // import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
 // import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons/faCalendarAlt'
@@ -33,7 +34,12 @@ import AddButton from '@components/IconToggleButtons/AddButton'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import SortingButtonMenu from '@components/SortingButtonMenu'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
-import { useMemo, useState } from 'react'
+import locationAtom from '@state/atoms/locationAtom'
+import useSnackbar from '@helpers/useSnackbar'
+import { faStop } from '@fortawesome/free-solid-svg-icons/faStop'
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons/faRotateRight'
+import { faKey } from '@fortawesome/free-solid-svg-icons/faKey'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 // const getUsersData = (users) => {
 //   const mans = users.filter((user) => user.gender === 'male')
@@ -74,31 +80,248 @@ const ToolsNewsletterContent = () => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const newsletters = useAtomValue(newslettersAtomAsync)
   const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  const location = useAtomValue(locationAtom)
+  const { success: notifySuccess, error: notifyError } = useSnackbar()
   const addButton = loggedUserActiveRole?.newsletters?.add
 
   const [sort, setSort] = useState({ createdAt: 'desc' })
   const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
+  const [messagesCount, setMessagesCount] = useState(null)
+  const [isCountLoading, setIsCountLoading] = useState(false)
+  const [isStopping, setIsStopping] = useState(false)
+  const [instanceState, setInstanceState] = useState(null)
+  const [isStateLoading, setIsStateLoading] = useState(false)
+  const [isAuthorizationLoading, setIsAuthorizationLoading] = useState(false)
+  const isAuthorized = instanceState === 'authorized'
+
+  const fetchMessagesCount = useCallback(async () => {
+    if (!location) return
+    setIsCountLoading(true)
+    try {
+      const response = await fetch(`/api/${location}/newsletters/queue`)
+      const result = await response.json()
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || 'Ошибка запроса')
+      }
+      setMessagesCount(result?.data?.totalMessages ?? 0)
+    } catch (error) {
+      notifyError('Не удалось обновить счётчик сообщений')
+    } finally {
+      setIsCountLoading(false)
+    }
+  }, [location, notifyError])
+
+  const stateErrorNotifiedRef = useRef(false)
+
+  const fetchInstanceState = useCallback(async () => {
+    if (!location) return
+    setIsStateLoading(true)
+    try {
+      const response = await fetch(`/api/${location}/newsletters/state`)
+      const result = await response.json()
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || 'Ошибка получения статуса')
+      }
+      stateErrorNotifiedRef.current = false
+      setInstanceState(result?.data?.stateInstance || null)
+    } catch (error) {
+      if (!stateErrorNotifiedRef.current) {
+        notifyError('Не удалось получить статус рассылки')
+        stateErrorNotifiedRef.current = true
+      }
+    } finally {
+      setIsStateLoading(false)
+    }
+  }, [location, notifyError])
+
+  const handleStopNewsletter = useCallback(async () => {
+    if (!location || isStopping) return
+    setIsStopping(true)
+    try {
+      const response = await fetch(`/api/${location}/newsletters/queue`, {
+        method: 'POST',
+      })
+      const result = await response.json()
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || 'Ошибка остановки')
+      }
+      notifySuccess('Рассылка остановлена')
+      if (isAuthorized) {
+        await fetchMessagesCount()
+      }
+      fetchInstanceState()
+    } catch (error) {
+      notifyError('Не удалось остановить рассылку')
+    } finally {
+      setIsStopping(false)
+    }
+  }, [
+    fetchInstanceState,
+    fetchMessagesCount,
+    isAuthorized,
+    isStopping,
+    location,
+    notifyError,
+    notifySuccess,
+  ])
+  const handleRequestAuthorization = useCallback(async () => {
+    if (!location || isAuthorizationLoading) return
+    const phoneNumber =
+      typeof window !== 'undefined'
+        ? window.prompt('Введите номер телефона (формат без + и 00)')
+        : null
+    if (!phoneNumber) return
+    setIsAuthorizationLoading(true)
+    try {
+      const response = await fetch(`/api/${location}/newsletters/state`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneNumber }),
+      })
+      const result = await response.json()
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || 'Ошибка авторизации')
+      }
+      const code = result?.data?.code
+      notifySuccess('Код авторизации получен')
+      modalsFunc.add({
+        title: 'Код авторизации',
+        text: code ? `Код: ${code}` : 'Код не получен. Попробуйте снова.',
+        confirmButtonName: 'Понятно',
+        onConfirm: true,
+        showDecline: false,
+      })
+      fetchInstanceState()
+    } catch (error) {
+      notifyError('Не удалось запросить код авторизации')
+    } finally {
+      setIsAuthorizationLoading(false)
+    }
+  }, [
+    fetchInstanceState,
+    isAuthorizationLoading,
+    location,
+    modalsFunc,
+    notifyError,
+    notifySuccess,
+  ])
+
+  const fetchedStateLocationRef = useRef(null)
+  useEffect(() => {
+    if (!location) return
+    if (fetchedStateLocationRef.current === location) return
+    fetchedStateLocationRef.current = location
+    fetchInstanceState()
+  }, [fetchInstanceState, location])
+
+  useEffect(() => {
+    if (isAuthorized) {
+      fetchMessagesCount()
+    }
+  }, [fetchMessagesCount, isAuthorized])
+
+  const newslettersLength = newsletters?.length ?? 0
+  const prevLengthRef = useRef(newslettersLength)
+  useEffect(() => {
+    if (newslettersLength > prevLengthRef.current) {
+      if (isAuthorized) {
+        fetchMessagesCount()
+      }
+      fetchInstanceState()
+    }
+    prevLengthRef.current = newslettersLength
+  }, [fetchInstanceState, fetchMessagesCount, isAuthorized, newslettersLength])
 
   const sortedNewsletters = useMemo(
-    () => [...newsletters].sort(sortFunc),
+    () => [...(newsletters || [])].sort(sortFunc),
     [newsletters, sort]
   )
+
+  const displayMessagesCount =
+    messagesCount === null || messagesCount === undefined
+      ? '-'
+      : messagesCount
+
+  const STATE_LABELS = {
+    notAuthorized: 'Не авторизован',
+    authorized: 'Авторизован',
+    blocked: 'Блокировка',
+    sleepMode: 'Спящий режим',
+    starting: 'Сервисный режим',
+    yellowCard: 'Частично приостановлен',
+  }
+
+  const stateLabel =
+    instanceState && STATE_LABELS[instanceState]
+      ? STATE_LABELS[instanceState]
+      : instanceState || '-'
 
   return (
     <>
       <ContentHeader>
-        <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
-          <div className="text-lg font-bold whitespace-nowrap">
-            {getNounNewsletters(newsletters?.length)}
+        <div className="flex flex-wrap items-center justify-between w-full gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {isAuthorized && (
+              <Button
+                name="Остановить рассылку"
+                onClick={handleStopNewsletter}
+                loading={isStopping}
+                disabled={!location}
+                thin
+                icon={faStop}
+              />
+            )}
+            {instanceState === 'notAuthorized' && (
+              <Button
+                name="Авторизация"
+                onClick={handleRequestAuthorization}
+                loading={isAuthorizationLoading}
+                disabled={!location}
+                thin
+                classBgColor="bg-blue-600"
+                classHoverBgColor="hover:bg-blue-700"
+                icon={faKey}
+              />
+            )}
+            <div className="flex flex-wrap items-center gap-2 text-sm text-general">
+              {isAuthorized && (
+                <span className="flex items-center gap-1 font-semibold text-black">
+                  Отправляется:{' '}
+                  <span>
+                    {isCountLoading ? '...' : displayMessagesCount}
+                  </span>
+                </span>
+              )}
+              {isAuthorized && (
+                <Button
+                  name="Обновить"
+                  onClick={fetchMessagesCount}
+                  loading={isCountLoading}
+                  thin
+                  icon={faRotateRight}
+                />
+              )}
+              <span className="flex items-center gap-1 text-black">
+                Статус:{' '}
+                <span className="font-semibold">
+                  {isStateLoading ? '...' : stateLabel}
+                </span>
+              </span>
+            </div>
           </div>
-          <SortingButtonMenu
-            sort={sort}
-            onChange={setSort}
-            sortKeys={['createdAt']}
-          />
-          {addButton && (
-            <AddButton onClick={() => modalsFunc.newsletter.add()} />
-          )}
+          <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
+            <div className="text-lg font-bold whitespace-nowrap">
+              {getNounNewsletters(newsletters?.length)}
+            </div>
+            <SortingButtonMenu
+              sort={sort}
+              onChange={setSort}
+              sortKeys={['createdAt']}
+            />
+            {addButton && isAuthorized && (
+              <AddButton onClick={() => modalsFunc.newsletter.add()} />
+            )}
+          </div>
         </div>
       </ContentHeader>
       <NewslettersList newsletters={sortedNewsletters} />
@@ -421,3 +644,9 @@ const ToolsNewsletterContent = () => {
 }
 
 export default ToolsNewsletterContent
+
+
+
+
+
+
